@@ -19,7 +19,7 @@ const DashboardView = () => {
     <div className="relative">
       <PageBack className="absolute left-[36px] top-[31px]" />
       <PageTitle className="pt-[30px]">Dashboard</PageTitle>
-      <div className="w-[882px] mx-auto">
+      <div className="w-[882px] mx-auto mt-[30px]">
         <Tabs
           currentTab={currentTab}
           tabs={tabs}
