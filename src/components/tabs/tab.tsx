@@ -1,19 +1,7 @@
-import { useMemo } from 'react';
-
-const Offset = 10;
+const Offset = 20;
 
 const Tab = (props: Props) => {
-  const { children, width, height, marginWidth, currentTabIndex, total, index, onClick } = props;
-
-  const left = useMemo(() => {
-    if (index > currentTabIndex) {
-      if (currentTabIndex > 0) {
-        return -marginWidth;
-      }
-      return -marginWidth / 2;
-    }
-    return 0;
-  }, [currentTabIndex, marginWidth]);
+  const { children, width, height, onClick } = props;
 
   return (
     <div
@@ -21,14 +9,14 @@ const Tab = (props: Props) => {
       style={{
         width,
         height,
-        left: left,
+        left: 0,
         paddingTop: Offset,
       }}
     >
       <div
         className="w-full flex justify-center items-center bg-[#E9E3B5] rounded-[20px] border border-black cursor-pointer"
         style={{
-          paddingBottom: Offset * 2,
+          paddingBottom: Offset * 1.5,
           height: height + Offset,
         }}
         onClick={onClick}
