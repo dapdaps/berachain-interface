@@ -46,3 +46,10 @@ body {
     text-wrap: balance;
   }
 }
+
+
+.route-wrapper {
+  &>.flex:not(:last-child) {
+    border-bottom: 1px solid #373A53;
+  }
+}
