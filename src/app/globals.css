@@ -9,6 +9,13 @@
   font-stretch: 75% 125%;
 }
 
+@font-face {
+  font-family: 'Cherry Bomb';
+  src: url('./fonts/CherryBombOne-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+}
+
 html,
 body {
   min-height: 100vh;

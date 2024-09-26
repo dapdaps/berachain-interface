@@ -11,6 +11,7 @@ const config: Config = {
   theme: {
     fontFamily: {
       Montserrat: ['Montserrat'],
+      CherryBomb: ['Cherry Bomb'],
     },
     extend: {
       boxShadow: {
