@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('./fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-family: "Montserrat";
+  src: url("./fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
@@ -24,13 +24,13 @@ body {
 }
 
 :root {
-  --background: #96D6FF;
+  --background: #96d6ff;
   --foreground: #000000;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #96D6FF;
+    --background: #96d6ff;
     --foreground: #000000;
   }
 }

@@ -1,7 +1,6 @@
 
 
 'use client';
-import BearBackground from "@/components/bear-background";
 import ArrowTopSvg from "@public/images/arrow-top.svg";
 import BearCircleSvg from "@public/images/bear-circle.svg";
 import BearSvg from "@public/images/bear.svg";
@@ -66,10 +65,50 @@ const Navigation = function () {
   )
 }
 
-export default memo(function Home() {
+const BearTown = function () {
   return (
-    <BearBackground>
-      <Navigation />
-    </BearBackground>
+    <div className="absolute bottom-[389px] left-1/2 translate-x-[-149px] flex flex-col items-center">
+      <BearCircleSvg />
+      <div className="mt-[-42px] text-[90px] text-[#9F9EFF] font-CherryBomb leading-[90%]" style={{ "-webkit-text-stroke-width": 6, "-webkit-text-stroke-color": "#000" }}>BERA</div>
+      <div className="mt-[-13px] text-[90px] text-[#EBF479] font-CherryBomb leading-[90%]" style={{ "-webkit-text-stroke-width": 6, "-webkit-text-stroke-color": "#000" }}>TOWN</div>
+    </div>
+  )
+}
+const HomeBear = function () {
+  return (
+    <div className="absolute left-1/2 bottom-[186px] translate-x-[-120px] z-10">
+      <BearSvg />
+    </div>
+  )
+}
+
+const Flowers = function () {
+  return (
+    <div className="absolute right-0 bottom-0 z-10">
+      <FlowersSvg />
+    </div>
+  )
+}
+
+const Ground = function () {
+  return (
+    <div className="absolute bottom-0 left-0 w-full h-[233px] bg-[#B6DF5D] border-t border-black" />
+  )
+}
+
+type PropsType = {
+  type: "home" | "dashboard" | "dapps";
+  children: React.ReactNode
+}
+
+export default memo(function BearBackground({ type, children }: PropsType) {
+  return (
+    <div className="relative" style={{ height: 'calc(100dvh - 68px)', minHeight: 899, overflow: "hidden" }}>
+      <Clouds />
+      {children}
+      <BearTown />
+      <HomeBear />
+      <Ground />
+    </div>
   );
 });
