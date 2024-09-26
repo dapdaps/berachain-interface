@@ -46,10 +46,13 @@ const DashboardPortfolio = (props: Props) => {
         <Title>Details</Title>
         <div className="flex justify-between items-stretch gap-[15px] mt-[18px]">
           <DashboardPortfolioDetail
-            name="Bend"
-            icon="/images/dapps/bend.svg"
-            category="Lending"
-            value="96.82"
+            dapp={{
+              show_name: 'Bend',
+              dappLogo: '/images/dapps/bend.svg',
+              type: 'Lending',
+              totalUsd: '96.82',
+              detailList: [],
+            }}
           />
         </div>
       </section>
