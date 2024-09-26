@@ -1,0 +1,112 @@
+import Loading from '@/components/loading';
+import React from 'react';
+
+const FlexTable = (props: FlexTableProps) => {
+  const {
+    wrapperClass = '',
+    headClass = '',
+    bodyClass = '',
+    loading,
+    list,
+    columns,
+    pagination,
+    renderEmpty = () => (
+      <div className="text-[#6f6f6f] flex items-center justify-center py-[30px]">
+        No Data
+      </div>
+    ),
+    renderTitle,
+  } = props;
+
+  return (
+    <div>
+      <div className={wrapperClass}>
+        <div className={`flex items-center py-[14px] ${headClass}`}>
+          {
+            columns.map((column: any, columnIdx) => (
+              <div
+                key={column.dataIndex}
+                style={{
+                  width: column.width ?? 0,
+                  flexGrow: column.width ? 0 : 1,
+                  textAlign: column.align ?? 'left',
+                  flexShrink: column.width ? 0 : 1,
+                }}
+                className="flex-shrink-0 text-[14px] text-[#3D405A]">
+                {renderTitle ? renderTitle(column, columnIdx) : column.title}
+              </div>
+            ))
+          }
+        </div>
+        {
+          loading ? (
+            <div className="flex items-center justify-center py-[30px] flex-col">
+              <Loading size={24} />
+            </div>
+          ) : (
+            <div>
+              {
+                list.length > 0
+                  ? list.map((record: any, index: number) => (
+                    <div
+                      className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] py-[16px] flex-shrink-0 flex items-center ${bodyClass}`}
+                      key={index}
+                    >
+                      {
+                        columns.map((column: any) => (
+                          <div
+                            key={column.dataIndex + column.title}
+                            style={{
+                              width: column.width ?? 0,
+                              flexGrow: column.width ? 0 : 1,
+                              textAlign: column.align ?? 'left',
+                              flexShrink: column.width ? 0 : 1,
+                            }}
+                            className={`font-[600] first:pl-[13px] last:pr-[13px] ${column.ellipsis ? 'truncate' : ''}`}
+                          >
+                            {
+                              typeof column.render === 'function'
+                                ? column.render(JSON.stringify(record[column.dataIndex]), record, index)
+                                : record[column.dataIndex]
+                            }
+                          </div>
+                        ))
+                      }
+                    </div>
+                  ))
+                  : renderEmpty()
+              }
+            </div>)
+        }
+      </div>
+      {
+        !loading && (pagination ?? null)
+      }
+    </div>
+  );
+};
+
+export default FlexTable;
+
+export type Column = {
+  title: string | React.ReactNode;
+  dataIndex: string;
+  render?: (text: any, record: Record<string, any>, idx?: number) => any;
+  width?: string | number;
+  align?: 'left' | 'center' | 'right';
+  ellipsis?: boolean;
+};
+
+export type FlexTableProps = {
+  columns: Column[];
+  list: Record<string, any>[];
+  loading: boolean;
+  wrapperClass?: string;
+  headClass?: string;
+  bodyClass?: string;
+  pagination?: any;
+
+  renderEmpty?(): any;
+
+  renderTitle?(column: Column, columnIdx: number): any;
+}
