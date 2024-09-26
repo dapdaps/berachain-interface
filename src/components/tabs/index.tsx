@@ -30,7 +30,14 @@ const Tabs = (props: TabsProps) => {
   };
 
   const [contentBorderTopRightRadius, setContentBorderTopRightRadius] = useState(0);
+  const [platform, setPlatform] = useState('MacOS');
   useEffect(() => {
+    const userAgent = navigator.userAgent;
+    let _platform = 'MacOS';
+    if (userAgent.includes('Win')) {
+      _platform = 'Windows';
+    }
+    setPlatform(_platform);
     if (!bodyRef.current) return;
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
     const tabsWidth = tabWidth * tabs.length;
@@ -110,7 +117,7 @@ const Tabs = (props: TabsProps) => {
                           zIndex: 1,
                           left: idx > 0 ? tabWidth * idx - 1 - tabMarginWidth / 2 : tabWidth * idx - 1,
                           top: -1,
-                          transform: `translateY(-${tabHeight - 1.5}px)`,
+                          transform: `translateY(-${tabHeight - (platform === 'MacOS' ? 1.5 : 2)}px)`,
                         }}
                       >
                         {tab.label}
