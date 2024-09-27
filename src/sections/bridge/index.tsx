@@ -4,7 +4,7 @@ import Routes from "./Routes"
 import SubmitBtn from "./SubmitBtn"
 
 export default function Bridge() {
-    return <div className="w-[520px] m-auto">
+    return <div className="w-[520px] m-auto relative z-10">
         <div className="text-[60px] text-center py-[30px]">Bridge</div>
         <Card>
             <TokenAmout />
