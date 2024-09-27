@@ -1,9 +1,14 @@
 "use client"
 
+import { useState } from "react"
+import TokenSelector from "../TokenSelector"
+
 export default function TokenAmout() {
+    const [tokenSelectorShow, setTokenSelectorShow] = useState(false)
+
     return <div className="border border-[#000] rounded-[12px] p-[14px] bg-white">
         <div className="flex items-center justify-between gap-[10px]">
-            <div className="border flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]">
+            <div onClick={() => { setTokenSelectorShow(true) }} className="border cursor-pointer flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]">
                 <div className="flex items-center gap-[10px]">
                     <div className="relative">
                         <img className="w-[26px] h-[26px]" src="https://s3.amazonaws.com/dapdap.main/avatar/0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef1727332750443" />
@@ -27,5 +32,7 @@ export default function TokenAmout() {
             <div>balance: 0</div>
             <div>$2637.88</div>
         </div>
+
+        <TokenSelector show={tokenSelectorShow} onClose={() => { setTokenSelectorShow(false) }}/>
     </div>
 }

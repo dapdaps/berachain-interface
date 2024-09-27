@@ -2,8 +2,12 @@ import Card from "@/components/card"
 import TokenAmout from "./TokenAmount"
 import Routes from "./Routes"
 import SubmitBtn from "./SubmitBtn"
+import Confirm from "./Confrim"
+import { useState } from "react"
 
 export default function Bridge() {
+    const [confirmShow, setConfirmShow] = useState(true)
+
     return <div className="w-[520px] m-auto relative z-10">
         <div className="text-[60px] text-center py-[30px]">Bridge</div>
         <Card>
@@ -31,5 +35,7 @@ export default function Bridge() {
 
             <SubmitBtn />
         </Card>
+
+        <Confirm show={confirmShow} onClose={() => { setConfirmShow(false) }}/>
     </div>
 }
