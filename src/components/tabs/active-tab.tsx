@@ -5,7 +5,7 @@ const ActiveTab = (props: Props) => {
     <div
       className={`relative z-[1] flex justify-between items-stretch ${className}`}
       style={{
-        width,
+        width: width + (isLast ? 11 : 0),
         height: height,
         ...style,
       }}
