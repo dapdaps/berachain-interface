@@ -1,6 +1,10 @@
 'use client';
 
 import HoneypotCard from '@/sections/marketplace/HoneypotCard';
+import PageBack from '@/components/back';
+import PageTitle from '@/components/title';
+import Image from '@/components/layz-image';
+import Tooltip from '@/components/tooltip';
 
 const splitArray = (list: Record<string, any>[]) =>  {
   const length = list.length;
@@ -11,11 +15,45 @@ const splitArray = (list: Record<string, any>[]) =>  {
   return listAfter;
 }
 
+const MoreButton = (props: {click: () => void, classname?: string}) => {
+  const {
+    click = () => {},
+    classname = ''
+  } = props;
+
+  return (<button
+    onClick={click}
+    className={`pt-[8px] rounded-[16px] border border-black font-CherryBomb text-[20px] font-[400]  bg-[#FFAFDF] shadow-shadow1 ${classname}`}>
+    <div className="rounded-[16px] bg-[#FF80CC] px-[16px] pt-[7px] pb-[15px] leading-none">more</div>
+  </button>);
+}
+
 const MarketplaceView = () => {
 
+  const List = [
+    {
+      key: 'price',
+      label: 'Price',
+      value: '$0.0000001',
+    },
+    {
+      key: 'volume',
+      label: 'Volume',
+      value: '$0.9717',
+    },
+  ]
+
+  const onMore = () => {}
+  const onFooterMore = () => {}
+
   return (
-      <div className='relative w-[1200px] mx-auto rounded-[20px] p-[10px] mt-[75px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
-        <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] text-[32px] rotate-[-5.851deg] px-[24px] pt-[18px] pb-[22px] shadow-shadow1 font-CherryBomb top-[-27px] left-[50%] translate-x-[-50%]'>
+    <div className="relative pb-[197px]">
+      <PageBack className="absolute left-[36px] top-[31px]" />
+      <PageTitle className="pt-[30px] mb-[75px]">Marketplace</PageTitle>
+      <div
+        className='relative w-[1200px] mx-auto rounded-[20px] mb-[100px] p-[12px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
+        <div
+          className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] text-[32px] rotate-[-5deg] px-[24px] pt-[18px] pb-[22px] shadow-shadow1 font-CherryBomb top-[-27px] left-[50%] translate-x-[-50%]'>
           Hot Sell Tokens
         </div>
         <div
@@ -23,23 +61,102 @@ const MarketplaceView = () => {
           className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-hidden'
         >
           {
-              splitArray(new Array(8).fill(0)).map((item, index) => (
-                <div key={'pots' + index} className='pt-[55px] first:pt-[42px] px-[22px] relative flex flex-nowrap after:content-[""] after:block after:w-full after:h-[14px] after:rounded-[10px] after:absolute after:left-0 after:border-black after:border-[2px] after:bg-[#D5AD67] after:bottom-[-12px] after:shadow-shadow1 last:after:hidden'>
+            splitArray(new Array(8).fill(0)).map((item, index) => (
+              <div key={'pots' + index}
+                   className='pt-[55px] last:mb-[-2px] first:pt-[42px] last:pt-[57px] px-[22px] relative flex flex-nowrap after:content-[""] after:block after:w-full after:h-[14px] after:rounded-[10px] after:absolute after:left-0 after:border-black after:border-[2px] after:bg-[#D5AD67] after:bottom-[-12px] after:shadow-shadow1 last:after:hidden'>
+                {
+                  item.length > 0 && item.map((it, idx) => (
+                    <div className="basis-1/3" key={'pot' + idx}>
+                      <HoneypotCard name={'BERA'} color={'red'} icon={'/images/bear.svg'} />
+                    </div>
+                  ))
+                }
+              </div>
+            ))
+          }
+        </div>
+        <MoreButton
+          classname='absolute bottom-[-17px] right-[-12px]'
+          click={onMore}
+        />
+      </div>
+      <div className='h-[197px] w-full fixed bottom-0 left-0 bg-[#7990F4]'>
+        <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] w-[1200px]'>
+          <div
+            className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61]' />
+          <div className='relative z-10 w-[1196px]'>
+            <div
+              className='h-[86px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px]'>
+              <div className="w-full h-[91px] relative top-[-50%] overflow-hidden">
+                <div
+                  className="w-full absolute bottom-0 h-[62px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]">
                   {
-                    item.length > 0 && item.map((it, idx) => (
-                      <div className="basis-1/3" key={'pot' + idx}>
-                        <HoneypotCard name={'BERA'} color={'red'} icon={'/images/bear.svg'} />
-                      </div>
+                    new Array(10).fill(0).map((item, index) => (
+                      <Tooltip
+                        children={(
+                          <Image
+                            variants={{
+                              hover: {
+                                // scale: 1.3,
+                                transition: {
+                                  when: 'beforeChildren',
+                                  delay: 0
+                                }
+                              },
+                              default: {
+                                scale: 1
+                              }
+                            }}
+                            whileHover="hover"
+                            initial="default"
+                            containerStyle={{
+                              transformOrigin: 'bottom center'
+                            }}
+                            alt=""
+                            src="/images/bear-circle.svg"
+                            containerClassName=" rounded-[50%] w-[80px] h-[80px] shadow-shadow1 relative z-[10]"
+                          />
+                        )}
+                       tooltip={(
+                         <div>
+                           <div className='flex items-end gap-x-[3px] mb-[16px]'>
+                             <div className='text-[20px] font-CherryBomb leading-none'>BCAT</div>
+                             <div className='text-[#3D405A] text-[14px] font-Montserrat'>blackcat</div>
+                           </div>
+                           {
+                             List.map(it => (
+                               <div key={it.key} className='flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat'>
+                                 <div className='grow'>{it.label}</div>
+                                 <div className='font-[600] flex-shrink-0'>{it.value}</div>
+                               </div>
+                             ) )
+                           }
+                         </div>
+                       )}>
+                      </Tooltip>
                     ))
                   }
                 </div>
-                  ))
-          }
+              </div>
+            </div>
+            <div className="relative">
+              <div
+                className="absolute top-[9px] left-[50%] translate-x-[-50%] z-10 font-CherryBomb text-[32px] leading-[0.9] p-[21px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit">Meme
+                Tokens
+              </div>
+              <MoreButton
+                classname="absolute top-[50%] translate-y-[-50%] right-[-12px]"
+                click={onFooterMore}
+              />
+              <div
+                className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]" />
+              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
+            </div>
+          </div>
         </div>
-        <button className='absolute bottom-[-17px] right-[-12px] pt-[8px] rounded-[16px] border border-black font-CherryBomb text-[20px] font-[400]  bg-[#FFAFDF] shadow-shadow1'>
-          <div className='rounded-[16px] bg-[#FF80CC] px-[16px] pt-[7px] pb-[15px] leading-none'>more</div>
-        </button>
       </div>
+    </div>
+
   )
 }
 
