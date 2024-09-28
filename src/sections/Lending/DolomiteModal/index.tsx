@@ -12,11 +12,11 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
   const [currentTab, setCurrentTab] = useState<string>('supply');
 
   const supplyTokens = [
-    { symbol: 'BERA', name: 'Berachain token', icon: '', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
-    { symbol: 'ETH', name: 'Ethereum', icon: '', apr: '0.00', balance: '0.00', walletBalance: '1.23' },
-    { symbol: 'HONEY', name: 'Honey Stablecoin', icon: '', apr: '78.20', balance: '0.00', walletBalance: '0.00' },
-    { symbol: 'USDC', name: 'USD coin', icon: '', apr: '78.50', balance: '120.34', walletBalance: '0.00' },
-    { symbol: 'WBERA', name: 'Wrapped Bera', icon: '', apr: '78.15', balance: '0.00', walletBalance: '0.00' },
+    { symbol: 'BERA', name: 'Berachain token', icon: '/images/tokens/bera.svg', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
+    { symbol: 'ETH', name: 'Ethereum', icon: '/images/tokens/eth.svg', apr: '0.00', balance: '0.00', walletBalance: '1.23' },
+    { symbol: 'HONEY', name: 'Honey Stablecoin', icon: '/images/tokens/honey.svg', apr: '78.20', balance: '0.00', walletBalance: '0.00' },
+    { symbol: 'USDC', name: 'USD coin', icon: '/images/tokens/usdc.svg', apr: '78.50', balance: '120.34', walletBalance: '0.00' },
+    { symbol: 'WBERA', name: 'Wrapped Bera', icon: '/images/tokens/wbera.svg', apr: '78.15', balance: '0.00', walletBalance: '0.00' },
   ];
 
   const borrowTokens = [
@@ -48,7 +48,7 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
   const tabs = [
     { 
       key: 'supply', 
-      label: 'Supply', 
+      label: 'Balances',
       children: (
         <Panel
           totalBalance="240.57"

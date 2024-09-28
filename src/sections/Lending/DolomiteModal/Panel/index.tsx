@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import Popover, { PopoverPlacement } from '@/components/popover';
+import ActionPanel from '@/sections/Lending/components/action-panel';
+import Button from '@/components/button';
 // import { Switch } from '@/components/ui/switch';
 
 interface TokenInfo {
@@ -39,25 +42,25 @@ const TabPanel: React.FC<TabPanelProps> = ({
         <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">${totalBalance}</p>
         </div>
         <div className="w-[150px] ml-[142px]">
-        <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">Your balance</div>
+        <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">Earning APR</div>
           <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">{totalRate}%</p>
         </div>
         {showRateSwitch && (
           <div className="ml-auto">
-            <div className="w-[150px] h-[40px] bg-gray-200 rounded-full flex items-center justify-between p-1">
+            <div className="w-[150px] h-[40px] bg-[#FFF] rounded-[12px] border border-[#373A53] flex items-center justify-between p-[4px]">
               <button
-                className={`w-1/2 h-[34px] rounded-full transition-all ${
-                  isAlternateRate ? "bg-yellow-400 text-black" : "text-gray-600"
+                className={`w-1/2 h-[32px] rounded-[10px] transition-all text-black font-[14px] ${
+                  isAlternateRate ? "bg-[#FFDC50] border border-[#000]" : ""
                 }`}
                 onClick={() => setIsAlternateRate(true)}
               >
                 APY
               </button>
               <button
-                className={`w-1/2 h-[34px] rounded-full transition-all ${
+                className={`w-1/2 h-[32px] rounded-[10px] transition-all text-black font-[14px] ${
                   !isAlternateRate
-                    ? "bg-yellow-400 text-black"
-                    : "text-gray-600"
+                    ? "bg-[#FFDC50] border border-[#000]"
+                    : ""
                 }`}
                 onClick={() => setIsAlternateRate(false)}
               >
@@ -69,41 +72,55 @@ const TabPanel: React.FC<TabPanelProps> = ({
       </div>
 
       <div className="rounded-lg p-4">
-        <div className="grid grid-cols-5 gap-4 font-bold mb-2">
-          <div>Token</div>
-          <div>{rateName}</div>
-          <div>Balance</div>
-          <div>In Wallet</div>
-          <div></div>
+        <div className="grid grid-cols-[3fr_2fr_2fr_2fr_1fr] gap-4 font-bold mb-2 ">
+          <div className="font-[500] text-[#3D405A]">Token</div>
+          <div className="font-[500] text-[#3D405A]">{rateName}</div>
+          <div className="font-[500] text-[#3D405A]">Balance</div>
+          <div className="font-[500] text-[#3D405A]">In Wallet</div>
+          <div className="font-[500] text-[#3D405A]"></div>
         </div>
         {tokens.map((token) => (
           <div
             key={token.symbol}
-            className="grid grid-cols-5 gap-4 items-center py-2"
+            className="grid grid-cols-[3fr_2fr_2fr_2fr_1fr] gap-4 items-center py-[10px]"
           >
-            <div className="flex items-center space-x-2">
-              <img src={token.icon} alt={token.symbol} className="w-8 h-8" />
+            <div className="flex items-center space-x-[12px]">
+              <img src={token.icon} alt={token.symbol} className="w-[30px] h-[30px]" />
               <div>
-                <div className="font-bold">{token.symbol}</div>
-                <div className="text-sm text-gray-500">{token.name}</div>
+                <div className="font-[600] text-[16px]">{token.symbol}</div>
+                <div className="text-[10px] text-black">{token.name}</div>
               </div>
             </div>
-            <div>{token.apr}%</div>
-            <div>{token.balance}</div>
-            <div>{token.walletBalance}</div>
-            <div className="flex space-x-2">
-              <button
-                className="bg-yellow-400 text-black font-bold py-1 px-3 rounded"
-                onClick={() => onDeposit(token.symbol)}
+            <div className="font-[600] text-[16px]">{token.apr}%</div>
+            <div className="font-[600] text-[16px]">{token.balance}</div>
+            <div className="font-[600] text-[16px]">{token.walletBalance}</div>
+            <div className="flex space-x-[10px]">
+              <Popover
+                placement={PopoverPlacement.BottomRight}
+                content={(
+                  <ActionPanel title="Deposit" actionText="Deposit" placeholder="0.00" />
+                )}
               >
-                +
-              </button>
-              <button
-                className="bg-yellow-400 text-black font-bold py-1 px-3 rounded"
-                onClick={() => onWithdraw(token.symbol)}
+                <Button
+                  style={{ width: 32 }}
+                  onClick={() => onDeposit(token.symbol)}
+                >
+                  +
+                </Button>
+              </Popover>
+              <Popover
+                placement={PopoverPlacement.BottomRight}
+                content={(
+                  <ActionPanel title="Withdraw" actionText="Withdraw" placeholder="0.00" />
+                )}
               >
-                -
-              </button>
+                <Button
+                  style={{ width: 32 }}
+                  onClick={() => onWithdraw(token.symbol)}
+                >
+                  -
+                </Button>
+              </Popover>
             </div>
           </div>
         ))}
