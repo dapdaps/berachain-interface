@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import Modal from '@/components/Modal';
+import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
-import TabPanel from '../DolomiteModal/Panel';
+import DepositPanel from './DepositPanel';
+import SupplyBorrowPanel from './SupplyBorrowPanel';
 
 interface LendingModalProps {
   open: boolean;
@@ -9,7 +10,7 @@ interface LendingModalProps {
 }
 
 const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
-  const [currentTab, setCurrentTab] = useState<string>('supply');
+  const [currentTab, setCurrentTab] = useState<string>('deposit');
 
   const supplyTokens = [
     { symbol: 'BERA', name: 'Berachain token', icon: '', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
@@ -47,31 +48,17 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
 
   const tabs = [
     { 
-      key: 'Deposit', 
+      key: 'deposit', 
       label: 'Deposit', 
       children: (
-        <TabPanel
-          totalBalance="240.57"
-          totalRate="5.23"
-          rateName="Earning APR"
-          tokens={supplyTokens}
-          onDeposit={handleDeposit}
-          onWithdraw={handleWithdraw}
-        />
+        <DepositPanel />
       )
     },
     { 
-      key: 'SupplyBorrowHONEY', 
+      key: 'supplyBorrowHoney', 
       label: 'Supply & Borrow HONEY', 
       children: (
-        <TabPanel
-          totalBalance="150.50"
-          totalRate="2.38"
-          rateName="Borrow APR"
-          tokens={borrowTokens}
-          onDeposit={handleBorrow}
-          onWithdraw={handleRepay}
-        />
+        <SupplyBorrowPanel />
       )
     },
   ];
