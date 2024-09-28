@@ -1,33 +1,14 @@
 
 
 'use client';
-import BearBackground from "@/components/bear-background";
-import ArrowTopSvg from "@public/images/arrow-top.svg";
-import BearCircleSvg from "@public/images/bear-circle.svg";
-import BearSvg from "@public/images/bear.svg";
-import BridgeSvg from "@public/images/bridge.svg";
-import CloudSvg from "@public/images/cloud.svg";
-import DappsSvg from "@public/images/dapps.svg";
-import DashboardSvg from "@public/images/dashboard.svg";
-import ExploreSvg from "@public/images/explore.svg";
-import FlowersSvg from "@public/images/flowers.svg"
+import BearBackground from '@/components/bear-background';
+import ArrowTopSvg from "@public/images/background/arrow-top.svg";
+import BridgeSvg from "@public/images/background/bridge.svg";
+import DappsSvg from "@public/images/background/dapps.svg";
+import DashboardSvg from "@public/images/background/dashboard.svg";
+import ExploreSvg from "@public/images/background/explore.svg";
 import { memo } from "react";
 
-const Clouds = function () {
-  return (
-    <>
-      <div className="absolute left-1/2 top-[109px] translate-x-[-465px]">
-        <CloudSvg />
-      </div>
-      <div className="absolute left-1/2 top-[13px] translate-x-[154px]">
-        <CloudSvg />
-      </div>
-      <div className="absolute left-1/2 top-[143px] translate-x-[360px]">
-        <CloudSvg />
-      </div>
-    </>
-  )
-}
 const Navigation = function () {
   return (
     <>
@@ -68,7 +49,7 @@ const Navigation = function () {
 
 export default memo(function Home() {
   return (
-    <BearBackground>
+    <BearBackground type='home'>
       <Navigation />
     </BearBackground>
   );

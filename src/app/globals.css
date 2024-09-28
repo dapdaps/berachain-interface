@@ -10,8 +10,8 @@
 }
 
 @font-face {
-  font-family: 'Cherry Bomb';
-  src: url('./fonts/CherryBombOne-Regular.ttf') format('truetype');
+  font-family: "Cherry Bomb";
+  src: url("./fonts/CherryBombOne-Regular.ttf") format("truetype");
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
@@ -39,6 +39,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Montserrat;
+  cursor: url("../../public/images/bee.svg"), auto;
 }
 
 body,
@@ -54,8 +55,8 @@ a {
 }
 
 .route-wrapper {
-  &>.flex:not(:last-child) {
-    border-bottom: 1px solid #373A53;
+  & > .flex:not(:last-child) {
+    border-bottom: 1px solid #373a53;
   }
 }
 

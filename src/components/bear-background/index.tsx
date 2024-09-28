@@ -1,20 +1,24 @@
 
 
 'use client';
-import ArrowTopSvg from "@public/images/arrow-top.svg";
-import BearCircleSvg from "@public/images/bear-circle.svg";
-import BearSvg from "@public/images/bear.svg";
-import BridgeSvg from "@public/images/bridge.svg";
-import CloudSvg from "@public/images/cloud.svg";
-import DappsSvg from "@public/images/dapps.svg";
-import DashboardSvg from "@public/images/dashboard.svg";
-import ExploreSvg from "@public/images/explore.svg";
-import FlowersSvg from "@public/images/flowers.svg"
+import ArrowTopSvg from "@public/images/background/arrow-top.svg";
+import BearCircleSvg from "@public/images/background/bear-circle.svg";
+import BearSvg from "@public/images/background/bear.svg";
+import BridgeSvg from "@public/images/background/bridge.svg";
+import CloudSvg from "@public/images/background/cloud.svg";
+import DappsSvg from "@public/images/background/dapps.svg";
+import DashboardSvg from "@public/images/background/dashboard.svg";
+import ExploreSvg from "@public/images/background/explore.svg";
+import FlowersSvg from "@public/images/background/flowers.svg"
 
-import DashboardFlowersSvg from '@public/images/dashboard-flowers.svg'
-import HillsideSvg from '@public/images/hillside.svg'
-import GrassSvg from '@public/images/grass.svg'
-import DashboardBearSvg from '@public/images/dashboard-bear.svg'
+import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg'
+import HillsideSvg from '@public/images/background/hillside.svg'
+import GrassSvg from '@public/images/background/grass.svg'
+import DashboardBearSvg from '@public/images/background/dashboard-bear.svg'
+import BridgeGroudSvg from '@public/images/background/bridge-groud.svg'
+import LeftTreeSvg from '@public/images/background/tree.svg'
+import RightTreeSvg from '@public/images/background/tree-2.svg'
+import HatBearSvg from '@public/images/background/hat-bear.svg'
 
 import { memo } from "react";
 
@@ -33,43 +37,37 @@ const Clouds = function () {
     </>
   )
 }
-const Navigation = function () {
+const DappClouds = function () {
   return (
     <>
-      <div className="absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]">
-        <div className="flex flex-col gap-[19px] items-center pt-[10px]">
-          <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Explore</div>
-          <ArrowTopSvg />
-        </div>
-        <ExploreSvg />
+      <div className="absolute left-[73px] bottom-[479px]">
+        <CloudSvg />
       </div>
-
-      <div className="absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]">
-        <BridgeSvg />
-        <div className="flex items-center justify-end gap-[27px] pr-[19px]">
-          <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
-          <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Explore</div>
-        </div>
+      <div className="absolute right-[248px] bottom-[559px]">
+        <CloudSvg />
       </div>
-
-      <div className="absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]">
-        <div className="flex flex-col gap-[19px] items-center pt-[29px]">
-          <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
-          <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Dashboard</div>
-        </div>
-        <DashboardSvg />
-      </div>
-
-      <div className="absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]">
-        <DappsSvg />
-        <div className="flex gap-[15px] items-center pl-[25px]">
-          <div className="text-[20px] text-black font-CherryBomb leading-[90%]">dApps</div>
-          <ArrowTopSvg style={{ transform: 'rotate(270deg)' }} />
-        </div>
+      <div className="absolute right-[455px] bottom-[129px]">
+        <CloudSvg />
       </div>
     </>
   )
 }
+const LeftTree = function () {
+  return (
+    <div className="absolute left-0 bottom-0">
+      <LeftTreeSvg />
+    </div>
+  )
+}
+
+const RightTree = function () {
+  return (
+    <div className="absolute right-0 bottom-0">
+      <RightTreeSvg />
+    </div>
+  )
+}
+
 
 const BearTown = function () {
   return (
@@ -83,6 +81,14 @@ const BearTown = function () {
 const HomeBear = function () {
   return (
     <div className="absolute left-1/2 bottom-[186px] translate-x-[-120px] z-10">
+      <BearSvg />
+    </div>
+  )
+}
+
+const BrigeBear = function () {
+  return (
+    <div className="absolute left-1/2 bottom-[186px] translate-x-[-676px] z-10">
       <BearSvg />
     </div>
   )
@@ -111,7 +117,7 @@ const DashboardBear = function () {
   )
 }
 
-const HomeGround = function () {
+const Ground = function () {
   return (
     <div className="absolute bottom-0 left-0 w-full h-[233px] bg-[#B6DF5D] border-t border-black" />
   )
@@ -122,8 +128,19 @@ const DashboardGroud = function () {
     <div className="absolute bottom-0 left-0 w-full">
       <HillsideSvg className="absolute left-0 bottom-[186px]" />
       <GrassSvg className="absolute right-0 bottom-[220px]" />
-      {/* <HomeGround /> */}
       <div className="absolute left-0 bottom-0 w-full h-[233px] bg-[#B6DF5D]" />
+    </div>
+  )
+}
+
+const BridgeGroud = function () {
+  return (
+    <div className="absolute left-0 bottom-0 w-full">
+      <BridgeGroudSvg className="relative mx-auto z-[5]" />
+      <div className="absolute bottom-[154px] left-[-21px] right-1/2 rounded-[8px] border border-black bg-[#B6DF5D] h-[80px]" />
+      <div className="absolute bottom-[-142px] left-0 right-1/2 bg-[#A7CC55] h-[297px] border-t border-black " />
+      <div className="absolute bottom-[154px] right-[-21px] left-1/2 rounded-[8px] border border-black bg-[#B6DF5D] h-[80px]" />
+      <div className="absolute bottom-[-142px] right-0 left-1/2 bg-[#A7CC55] h-[297px] border-t border-black " />
     </div>
   )
 }
@@ -131,37 +148,53 @@ const DashboardGroud = function () {
 
 
 type PropsType = {
-  type: "home" | "dashboard" | "dapps";
+  type: "home" | "dashboard" | "bridge" | "dapps" | "dapp";
   children: React.ReactNode
 }
 
 export default memo(function BearBackground({ type, children }: PropsType) {
-
-
   return (
     <div className="relative" style={{ height: 'calc(100dvh - 68px)', minHeight: 899, overflow: "hidden" }}>
       {
         type === "home" ? (
           <>
             <Clouds />
-            {children}
             <BearTown />
             <Flowers />
             <HomeBear />
-            <HomeGround />
+            <Ground />
           </>
         ) : type === "dashboard" ? (
           <>
             <Clouds />
-            {children}
             <DashboardFlowers />
             <DashboardBear />
             <DashboardGroud />
+          </>
+        ) : type === "bridge" ? (
+          <>
+            <Clouds />
+            <BrigeBear />
+            <BridgeGroud />
+          </>
+        ) : type === "dapps" ? (
+          <>
+            <Clouds />
+            <Flowers />
+            <Ground />
+            <HatBearSvg className="absolute  left-[86px] bottom-[186px]" />
+          </>
+        ) : type === "dapp" ? (
+          <>
+            <DappClouds />
+            <LeftTree />
+            <RightTree />
           </>
         ) : (
           <></>
         )
       }
+      {children}
     </div>
   );
 });

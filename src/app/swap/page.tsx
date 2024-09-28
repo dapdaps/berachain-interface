@@ -1,6 +1,6 @@
 "use client"
 
-import BearBackground from '@/components/bear-background'
+import BearBackground from '@public/images/background'
 import SwapView from '@/sections/swap'
 
 export default function Bridge() {
