@@ -6,6 +6,7 @@ import Tabs, { TabKey } from '@/components/tabs';
 import DashboardTab from '@/sections/dashboard/components/tab';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import BearBackground from '@/components/bear-background';
 
 const DashboardWallet = dynamic(() => import('@/sections/dashboard/components/wallet'));
 const DashboardPortfolio = dynamic(() => import('@/sections/dashboard/components/portfolio'));
@@ -16,10 +17,10 @@ const DashboardView = () => {
   const [currentTab, setCurrentTab] = useState<TabKey>(tabs[0].key);
 
   return (
-    <div className="relative">
+    <BearBackground type='dashboard'>
       <PageBack className="absolute left-[36px] top-[31px]" />
       <PageTitle className="pt-[30px]">Dashboard</PageTitle>
-      <div className="w-[882px] mx-auto mt-[30px]">
+      <div className="relative w-[882px] mx-auto mt-[30px] z-50">
         <Tabs
           currentTab={currentTab}
           tabs={tabs}
@@ -28,7 +29,7 @@ const DashboardView = () => {
           }}
         />
       </div>
-    </div>
+    </BearBackground>
   );
 };
 

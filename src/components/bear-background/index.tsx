@@ -10,6 +10,12 @@ import DappsSvg from "@public/images/dapps.svg";
 import DashboardSvg from "@public/images/dashboard.svg";
 import ExploreSvg from "@public/images/explore.svg";
 import FlowersSvg from "@public/images/flowers.svg"
+
+import DashboardFlowersSvg from '@public/images/dashboard-flowers.svg'
+import HillsideSvg from '@public/images/hillside.svg'
+import GrassSvg from '@public/images/grass.svg'
+import DashboardBearSvg from '@public/images/dashboard-bear.svg'
+
 import { memo } from "react";
 
 const Clouds = function () {
@@ -90,11 +96,39 @@ const Flowers = function () {
   )
 }
 
-const Ground = function () {
+const DashboardFlowers = function () {
+  return (
+    <div className="absolute left-0 bottom-0 z-10">
+      <DashboardFlowersSvg />
+    </div>
+  )
+}
+const DashboardBear = function () {
+  return (
+    <div className="absolute right-0 bottom-[31px] z-10">
+      <DashboardBearSvg />
+    </div>
+  )
+}
+
+const HomeGround = function () {
   return (
     <div className="absolute bottom-0 left-0 w-full h-[233px] bg-[#B6DF5D] border-t border-black" />
   )
 }
+
+const DashboardGroud = function () {
+  return (
+    <div className="absolute bottom-0 left-0 w-full">
+      <HillsideSvg className="absolute left-0 bottom-[186px]" />
+      <GrassSvg className="absolute right-0 bottom-[220px]" />
+      {/* <HomeGround /> */}
+      <div className="absolute left-0 bottom-0 w-full h-[233px] bg-[#B6DF5D]" />
+    </div>
+  )
+}
+
+
 
 type PropsType = {
   type: "home" | "dashboard" | "dapps";
@@ -102,13 +136,32 @@ type PropsType = {
 }
 
 export default memo(function BearBackground({ type, children }: PropsType) {
+
+
   return (
     <div className="relative" style={{ height: 'calc(100dvh - 68px)', minHeight: 899, overflow: "hidden" }}>
-      <Clouds />
-      {children}
-      <BearTown />
-      <HomeBear />
-      <Ground />
+      {
+        type === "home" ? (
+          <>
+            <Clouds />
+            {children}
+            <BearTown />
+            <Flowers />
+            <HomeBear />
+            <HomeGround />
+          </>
+        ) : type === "dashboard" ? (
+          <>
+            <Clouds />
+            {children}
+            <DashboardFlowers />
+            <DashboardBear />
+            <DashboardGroud />
+          </>
+        ) : (
+          <></>
+        )
+      }
     </div>
   );
 });
