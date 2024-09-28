@@ -41,15 +41,42 @@ body {
   font-family: Montserrat;
 }
 
+body,
+button,
+a {
+  cursor: url("/images/cursor.svg"), auto;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
-
 .route-wrapper {
   &>.flex:not(:last-child) {
     border-bottom: 1px solid #373A53;
   }
+}
+
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  /**/
+}
+body::-webkit-scrollbar-track,
+div::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 6px;
+}
+body::-webkit-scrollbar-thumb,
+div::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+}
+body::-webkit-scrollbar-thumb:hover,
+div::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

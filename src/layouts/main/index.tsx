@@ -13,7 +13,7 @@ const MainLayout = (props: Props) => {
       style={style}
     >
       <MainLayoutHeader />
-      <div>{children}</div>
+      <div className='grow'>{children}</div>
     </div>
   );
 };
