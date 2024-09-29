@@ -6,7 +6,8 @@ import { Token } from '@/types';
 // import { Switch } from '@/components/ui/switch';
 
 interface TokenInfo extends Token {
-  apr: string;
+  APR: string;
+  APY: string;
   balance: string;
   walletBalance: string;
 }
@@ -17,8 +18,12 @@ interface TabPanelProps {
   rateName: string;
   tokens: TokenInfo[];
   showRateSwitch?: boolean;
+  rateKey: 'APY' | 'APR',
+  totalRateLabel: string;
+  totalBalanceLabel: string;
   onDeposit: (symbol: string) => void;
   onWithdraw: (symbol: string) => void;
+  setRateKey: (rateKey: 'APY' | 'APR') => void;
 }
 
 const TabPanel: React.FC<TabPanelProps> = ({
@@ -28,7 +33,11 @@ const TabPanel: React.FC<TabPanelProps> = ({
   tokens,
   onDeposit,
   onWithdraw,
-  showRateSwitch = true
+  showRateSwitch = true,
+  rateKey,
+  setRateKey,
+  totalRateLabel,
+  totalBalanceLabel,
 }) => {
   const [isAlternateRate, setIsAlternateRate] = useState(false);
 
@@ -36,31 +45,31 @@ const TabPanel: React.FC<TabPanelProps> = ({
     <div className="h-[490px]">
       <div className="flex mb-10 items-center">
         <div className="w-[150px]">
-        <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">Your balance</div>
-        <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">${totalBalance}</p>
+        <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">{totalBalanceLabel}</div>
+        <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">{totalBalance}</p>
         </div>
         <div className="w-[150px] ml-[142px]">
-        <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">Earning APR</div>
-          <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">{totalRate}%</p>
+        <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">{totalRateLabel} {rateKey}</div>
+          <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">{totalRate}</p>
         </div>
         {showRateSwitch && (
           <div className="ml-auto">
             <div className="w-[150px] h-[40px] bg-[#FFF] rounded-[12px] border border-[#373A53] flex items-center justify-between p-[4px]">
               <button
                 className={`w-1/2 h-[32px] rounded-[10px] transition-all text-black font-[14px] ${
-                  isAlternateRate ? "bg-[#FFDC50] border border-[#000]" : ""
+                  rateKey === 'APY' ? "bg-[#FFDC50] border border-[#000]" : ""
                 }`}
-                onClick={() => setIsAlternateRate(true)}
+                onClick={() => setRateKey('APY')}
               >
                 APY
               </button>
               <button
                 className={`w-1/2 h-[32px] rounded-[10px] transition-all text-black font-[14px] ${
-                  !isAlternateRate
+                  rateKey === 'APR'
                     ? "bg-[#FFDC50] border border-[#000]"
                     : ""
                 }`}
-                onClick={() => setIsAlternateRate(false)}
+                onClick={() => setRateKey('APR')}
               >
                 APR
               </button>
@@ -89,7 +98,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
                 <div className="text-[10px] text-black">{token.name}</div>
               </div>
             </div>
-            <div className="font-[600] text-[16px]">{token.apr}%</div>
+            <div className="font-[600] text-[16px]">{token[rateKey]}</div>
             <div className="font-[600] text-[16px]">{token.balance}</div>
             <div className="font-[600] text-[16px]">{token.walletBalance}</div>
             <div className="flex space-x-[10px]">

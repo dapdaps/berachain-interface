@@ -3,6 +3,8 @@ import { ethers } from 'ethers';
 import { useEffect } from 'react';
 
 import { post } from '@/utils/http';
+import multicallAddresses from '@/configs/contract/multicall';
+import { multicall } from '@/utils/multicall';
 
 const ERC20_ABI = [
   {
@@ -2895,9 +2897,11 @@ const MARGIN_ABI = [
   }
 ];
 
-const apr2Apy = (apr: string, n: number) => {
+const apr2Apy = (apr: string, n: number, isGteZero?: boolean) => {
   const base = Big(1).plus(Big(apr).div(n));
-  return base.pow(n).minus(1).times(100).minus(0.065).toFixed(2) + '%';
+  let apy = base.pow(n).minus(1).times(100).minus(0.065);
+  apy = Big(apy).lt(0) ? Big(0) : apy;
+  return apy.toFixed(2) + '%';
 };
 
 const minimumCollateralizationToLTV = (minCollateralization: string) => {
@@ -2906,25 +2910,31 @@ const minimumCollateralizationToLTV = (minCollateralization: string) => {
 
 const DolomiteData = (props: any) => {
   const {
-    multicallAddress,
+    //#region Local Config
     marginAddress,
     blockNumberApi,
     blockNumberApiQuery,
     positionListApi,
     positionListApiQuery,
     liquidationRatio,
-    account,
-    update,
-    name,
-    onLoad,
+    interestRatesApi,
     markets,
-    multicall,
-    prices,
-    provider
+    name,
+    //#endregion
+
+    update,
+    onLoad,
+    chainId,
+    account,
+    provider,
   } = props;
 
+  console.log('Dolomite data props: %o', props);
+
+  const multicallAddress = multicallAddresses[chainId];
+
   useEffect(() => {
-    if (!marginAddress || !update || !account) return;
+    if (!marginAddress || !update || !account || !provider) return;
 
     const _cTokensData: any = {};
     let _positionList: any = [];
@@ -3059,9 +3069,9 @@ const DolomiteData = (props: any) => {
       onLoad({
         markets: _cTokensData,
         positionList: _positionList,
-        userTotalBorrowUsd: userTotalBorrowUsd.toString(),
-        userTotalCollateralUsd: userTotalCollateralUsd.toString(),
-        userTotalSupplyUsd: userTotalSupplyUsd.toString()
+        userTotalBorrowUsd: userTotalBorrowUsd.toFixed(30).replace(/[.]?0*$/, ''),
+        userTotalCollateralUsd: userTotalCollateralUsd.toFixed(30).replace(/[.]?0*$/, ''),
+        userTotalSupplyUsd: userTotalSupplyUsd.toFixed(30).replace(/[.]?0*$/, ''),
       });
     };
     const getWalletBalance = () => {
@@ -3261,10 +3271,10 @@ const DolomiteData = (props: any) => {
 
           const LiquidationPenalty = ethers.utils.formatUnits(res[3][0]?.value?._hex || 0, 18);
 
-          const MarketSupplyInterestRateApr = ethers.utils.formatUnits(res[1] ? res[1][0]?.value?._hex || 0 : 0, 18);
+          let MarketSupplyInterestRateApr = ethers.utils.formatUnits(res[1] ? res[1][0]?.value?._hex || 0 : 0, 18);
           const supplyApy = apr2Apy(MarketSupplyInterestRateApr, 12);
 
-          const MarketBorrowInterestRateApr = ethers.utils.formatUnits(res[2] ? res[2][0]?.value?._hex || 0 : 0, 18);
+          let MarketBorrowInterestRateApr = ethers.utils.formatUnits(res[2] ? res[2][0]?.value?._hex || 0 : 0, 18);
           const borrowApy = apr2Apy(MarketBorrowInterestRateApr, 12);
 
           const [Market, Interest, MonetaryPrice, InterestRate] = res[0];

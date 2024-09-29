@@ -10,7 +10,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'BERA',
     decimals: 18,
     name: 'BERA',
-    icon: '/images/tokens/bera.png'
+    icon: '/assets/tokens/bera.svg'
   },
   wbera: {
     address: '0x7507c1dc16935B82698e4C63f2746A2fCf994dF8',
@@ -18,7 +18,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'WBERA',
     decimals: 18,
     name: 'WBERA',
-    icon: '/images/tokens/wbera.png'
+    icon: '/assets/tokens/wbera.svg'
   },
   honey: {
     address: '0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03',
@@ -26,7 +26,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'HONEY',
     decimals: 18,
     name: 'HONEY',
-    icon: '/images/tokens/honey.png'
+    icon: '/assets/tokens/honey.svg'
   },
   usdt: {
     chainId: CHAIN_ID,

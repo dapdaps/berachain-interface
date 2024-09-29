@@ -63,7 +63,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const balanceShown = useMemo(() => {
     if (balance?.data?.value) {
       return Big(
-        ethers.formatUnits(balance.data.value.toString(), balance.data.decimals)
+        ethers.utils.formatUnits(balance.data.value.toString(), balance.data.decimals)
       ).toFixed(3, 0);
     }
     return '0.000';
