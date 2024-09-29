@@ -8,19 +8,19 @@ import { icons } from '@/configs/chains';
 import { AnimatePresence, motion } from 'framer-motion';
 import Big from 'big.js';
 import allTokens from '@/configs/allTokens';
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 
 const dropdownAnimations = {
   active: {
     opacity: [0, 1],
     y: [10, 0],
-    display: 'block',
+    display: 'block'
   },
   default: {
     opacity: [1, 0],
     y: [0, 10],
-    display: 'none',
-  },
+    display: 'none'
+  }
 };
 
 const ConnectWallet = ({ className }: { className?: string }) => {
@@ -30,11 +30,11 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const { disconnect } = useDisconnect();
   const { chains, switchChain } = useSwitchChain();
   const balance = useBalance({
-    address,
+    address
   });
   const { walletInfo } = useWalletInfo();
 
-  const [ chainDropdownShow, setChainDropdownShow ] = useState<boolean>(false);
+  const [chainDropdownShow, setChainDropdownShow] = useState<boolean>(false);
 
   const chainListRef = useRef<any>();
 
@@ -63,7 +63,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const balanceShown = useMemo(() => {
     if (balance?.data?.value) {
       return Big(
-        ethers.formatUnits(balance.data.value.toString(), balance.data.decimals)
+        utils.formatUnits(balance.data.value.toString(), balance.data.decimals)
       ).toFixed(3, 0);
     }
     return '0.000';
@@ -98,7 +98,11 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   }, [chainId, tokenSymbolShown]);
 
   const handleClickOutside = (event: any) => {
-    if (chainListRef.current && !chainListRef.current?.contains(event.target) && !chainListRef.current.contains(event.target)) {
+    if (
+      chainListRef.current &&
+      !chainListRef.current?.contains(event.target) &&
+      !chainListRef.current.contains(event.target)
+    ) {
       setChainDropdownShow(false);
     }
   };
@@ -115,120 +119,124 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       {isConnected ? (
         <div className='flex justify-start items-center gap-x-[20px]'>
           <motion.div
-            className={`relative rounded-[10px] px-[6px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${ chainDropdownShow ? 'bg-[rgba(0,0,0,0.04)]' : '' }`}
+            className={`relative rounded-[10px] px-[6px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${
+              chainDropdownShow ? 'bg-[rgba(0,0,0,0.04)]' : ''
+            }`}
             ref={chainListRef}
             onClick={() => setChainDropdownShow(true)}
           >
             {chainId && icons[chainId] ? (
               <div className='flex items-center gap-x-[8px]'>
                 <Image src={icons[chainId]} alt='' width={26} height={26} />
-                <Image src='/images/icon-arrow.svg' width={11} height={5} alt=''/>
+                <Image
+                  src='/images/icon-arrow.svg'
+                  width={11}
+                  height={5}
+                  alt=''
+                />
               </div>
             ) : (
               <div className='w-[26px] h-[26px] shrink-0 rounded-[8px] bg-[#eceff0]'></div>
             )}
             {/*#region dropdown*/}
             <AnimatePresence mode='wait'>
-              {
-                chainDropdownShow && (
-                  <motion.div
-                    animate={{
-                      opacity: [0, 1],
-                      y: [10, 0],
-                      display: 'block',
-                      transition: {
-                        duration: 0.3,
-                      }
-                    }}
-
-                    className="absolute pt-[11px] top-[30px] left-[-114px] w-[228px]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="pt-[6px] pb-[5px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]">
-                      {chains.map((_chain: any) => (
-                        <div
-                          key={_chain.name}
-                          className="w-full h-[45px] flex justify-start gap-[9px] items-center px-[20px] cursor-pointer hover:bg-[#F2F2F2] transition-all ease-in-out duration-300"
-                          style={{
-                            background: chainId === _chain.id ? '#F2F2F2' : '',
-                          }}
-                          onClick={(e) => handleChainSelect(_chain.id, _chain)}
-                        >
-                          {icons[_chain.id] ? (
-                            <Image
-                              src={icons[_chain.id]}
-                              alt=""
-                              width={20}
-                              height={20}
-                            />
-                          ) : (
-                            <div className="w-[20px] h-[20px] shrink-0 rounded-[4px] bg-[#eceff0]"></div>
-                          )}
-                          <div className="text-black text-[16px] font-medium">
-                            {_chain.name}
-                          </div>
-                          {chainId === _chain.id && (
-                            <div className="ml-auto">
-                              <svg
-                                width="13"
-                                height="10"
-                                viewBox="0 0 13 10"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M1 3.72727L5 8L12 1"
-                                  stroke="black"
-                                  strokeWidth="2"
-                                />
-                              </svg>
-                            </div>
-                          )}
+              {chainDropdownShow && (
+                <motion.div
+                  animate={{
+                    opacity: [0, 1],
+                    y: [10, 0],
+                    display: 'block',
+                    transition: {
+                      duration: 0.3
+                    }
+                  }}
+                  className='absolute pt-[11px] top-[30px] left-[-114px] w-[228px]'
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className='pt-[6px] pb-[5px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]'>
+                    {chains.map((_chain: any) => (
+                      <div
+                        key={_chain.name}
+                        className='w-full h-[45px] flex justify-start gap-[9px] items-center px-[20px] cursor-pointer hover:bg-[#F2F2F2] transition-all ease-in-out duration-300'
+                        style={{
+                          background: chainId === _chain.id ? '#F2F2F2' : ''
+                        }}
+                        onClick={(e) => handleChainSelect(_chain.id, _chain)}
+                      >
+                        {icons[_chain.id] ? (
+                          <Image
+                            src={icons[_chain.id]}
+                            alt=''
+                            width={20}
+                            height={20}
+                          />
+                        ) : (
+                          <div className='w-[20px] h-[20px] shrink-0 rounded-[4px] bg-[#eceff0]'></div>
+                        )}
+                        <div className='text-black text-[16px] font-medium'>
+                          {_chain.name}
                         </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )
-              }
+                        {chainId === _chain.id && (
+                          <div className='ml-auto'>
+                            <svg
+                              width='13'
+                              height='10'
+                              viewBox='0 0 13 10'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <path
+                                d='M1 3.72727L5 8L12 1'
+                                stroke='black'
+                                strokeWidth='2'
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
             {/*#endregion*/}
           </motion.div>
           <motion.div
-            className="relative flex justify-center items-center cursor-pointer transition-all duration-300"
+            className='relative flex justify-center items-center cursor-pointer transition-all duration-300'
             onClick={handleConnect}
-            whileHover="active"
-            animate="default"
-            initial="default"
+            whileHover='active'
+            animate='default'
+            initial='default'
           >
-            <div className="w-[28px] h-[28px] rounded-[50%] border-[2px] border-black bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
+            <div className='w-[28px] h-[28px] rounded-[50%] border-[2px] border-black bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]' />
             {/*#region dropdown*/}
             <motion.div
-              className="absolute pt-[11px] top-[26px] right-0 w-[254px] h-[194px] cursor-default"
+              className='absolute pt-[11px] top-[26px] right-0 w-[254px] h-[194px] cursor-default'
               onClick={(e) => e.stopPropagation()}
               variants={dropdownAnimations}
               transition={{
-                duration: 0.3,
+                duration: 0.3
               }}
             >
-              <div className="py-[24px] pl-[22px] pr-[26px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]">
-                <div className="text-[#6F6F6F] text-[16px] font-normal text-nowrap leading-[1]">
+              <div className='py-[24px] pl-[22px] pr-[26px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]'>
+                <div className='text-[#6F6F6F] text-[16px] font-normal text-nowrap leading-[1]'>
                   Connected with {walletInfo?.name}
                 </div>
-                <div className="flex justify-between items-center mt-[13px]">
-                  <div className="text-black text-[16px] font-semibold leading-[1]">
+                <div className='flex justify-between items-center mt-[13px]'>
+                  <div className='text-black text-[16px] font-semibold leading-[1]'>
                     {addressShown}
                   </div>
-                  <div className="click" onClick={handleCopy}>
+                  <div className='click' onClick={handleCopy}>
                     <svg
-                      width="13"
-                      height="12"
-                      viewBox="0 0 13 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                      width='13'
+                      height='12'
+                      viewBox='0 0 13 12'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
                     >
                       <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
+                        fillRule='evenodd'
+                        clipRule='evenodd'
                         d='M3.69238 4.88464C3.69238 4.05622 4.36396 3.38464 5.19238 3.38464H10.577C11.4054 3.38464 12.077 4.05622 12.077 4.88464V10.5C12.077 11.3285 11.4054 12 10.577 12H5.19238C4.36396 12 3.69238 11.3285 3.69238 10.5V4.88464ZM5.19238 4.38464C4.91624 4.38464 4.69238 4.6085 4.69238 4.88464V10.5C4.69238 10.7762 4.91624 11 5.19238 11H10.577C10.8531 11 11.077 10.7762 11.077 10.5V4.88464C11.077 4.6085 10.8531 4.38464 10.577 4.38464H5.19238Z'
                         fill='#6F6F6F'
                       />
@@ -248,7 +256,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                       backgroundImage: `url("${tokenLogoShown}")`,
                       backgroundPosition: 'center',
                       backgroundSize: 'contain',
-                      backgroundRepeat: 'no-repeat',
+                      backgroundRepeat: 'no-repeat'
                     }}
                   >
                     {chainId ? (

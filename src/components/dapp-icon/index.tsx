@@ -31,12 +31,12 @@ export default function DappIcon({ src, alt, name, type }: Props) {
         className='absolute bottom-[-24px] left-[54px]'
       >
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M1 29.5V1H14V23H29C32.5899 23 35.5 25.9101 35.5 29.5C35.5 33.0899 32.5899 36 29 36H7.5C3.91015 36 1 33.0899 1 29.5Z'
           fill='#906925'
           stroke='black'
-          stroke-linejoin='round'
+          strokeLinejoin='round'
         />
       </svg>
     </div>

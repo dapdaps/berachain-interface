@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Montserrat";
-  src: url("./fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+  font-family: 'Montserrat';
+  src: url('./fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
 
 @font-face {
-  font-family: "Cherry Bomb";
-  src: url("./fonts/CherryBombOne-Regular.ttf") format("truetype");
+  font-family: 'Cherry Bomb';
+  src: url('./fonts/CherryBombOne-Regular.ttf') format('truetype');
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
@@ -39,14 +39,14 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Montserrat;
-  cursor: url("../../public/images/bee.svg"), auto;
+  cursor: url('../../public/images/bee.svg'), auto;
 }
 
 body,
 button,
 a,
 .cursor-pointer {
-  cursor: url("/images/cursor.svg"), auto !important;
+  cursor: url('/images/cursor.svg'), auto !important;
 }
 
 @layer utilities {
@@ -81,4 +81,12 @@ div::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover,
 div::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+input {
+  outline: none;
+}
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }

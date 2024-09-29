@@ -1,10 +1,6 @@
-"use client"
+'use client';
+import { redirect } from 'next/navigation';
 
-import BearBackground from '@/components/bear-background'
-import SwapView from '@/sections/swap'
-
-export default function Bridge() {
-    return <BearBackground type="dapp">
-        <SwapView />
-    </BearBackground> 
+export default function SwapPage() {
+  return redirect('/swap/dex');
 }
