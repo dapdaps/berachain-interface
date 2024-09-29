@@ -68,12 +68,13 @@ const RightTree = function () {
   )
 }
 
-
 const BearTown = function () {
   return (
     <div className="absolute bottom-[389px] left-1/2 translate-x-[-149px] flex flex-col items-center">
       <BearCircleSvg />
+      {/* @ts-ignore */}
       <div className="mt-[-42px] text-[90px] text-[#9F9EFF] font-CherryBomb leading-[90%]" style={{ "-webkit-text-stroke-width": 6, "-webkit-text-stroke-color": "#000" }}>BERA</div>
+      {/* @ts-ignore */}
       <div className="mt-[-13px] text-[90px] text-[#EBF479] font-CherryBomb leading-[90%]" style={{ "-webkit-text-stroke-width": 6, "-webkit-text-stroke-color": "#000" }}>TOWN</div>
     </div>
   )
