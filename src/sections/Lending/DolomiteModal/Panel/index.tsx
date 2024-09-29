@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import Popover, { PopoverPlacement } from '@/components/popover';
 import ActionPanel from '@/sections/Lending/components/action-panel';
 import Button from '@/components/button';
+import { Token } from '@/types';
 // import { Switch } from '@/components/ui/switch';
 
-interface TokenInfo {
-  symbol: string;
-  name: string;
-  icon: string;
+interface TokenInfo extends Token {
   apr: string;
   balance: string;
   walletBalance: string;
@@ -98,7 +96,12 @@ const TabPanel: React.FC<TabPanelProps> = ({
               <Popover
                 placement={PopoverPlacement.BottomRight}
                 content={(
-                  <ActionPanel title="Deposit" actionText="Deposit" placeholder="0.00" />
+                  <ActionPanel
+                    title="Deposit"
+                    actionText="Deposit"
+                    placeholder="0.00"
+                    token={token}
+                  />
                 )}
               >
                 <Button
@@ -111,7 +114,13 @@ const TabPanel: React.FC<TabPanelProps> = ({
               <Popover
                 placement={PopoverPlacement.BottomRight}
                 content={(
-                  <ActionPanel title="Withdraw" actionText="Withdraw" placeholder="0.00" />
+                  <ActionPanel
+                    title="Withdraw"
+                    actionText="Withdraw"
+                    placeholder="0.00"
+                    token={token}
+                    isSkipApproved={true}
+                  />
                 )}
               >
                 <Button

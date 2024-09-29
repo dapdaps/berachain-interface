@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
 import Panel from './Panel';
+import { useAccount } from 'wagmi';
+import { ethers } from 'ethers';
 
 interface LendingModalProps {
   open: boolean;
@@ -9,10 +11,15 @@ interface LendingModalProps {
 }
 
 const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
+  // const { address, chainId, connector } = useAccount();
+  // const walletProvider: any = await connector?.getProvider();
+  // const provider = new ethers.providers.Web3Provider(walletProvider, 'any');
+  // const signer = provider.getSigner(address);
+
   const [currentTab, setCurrentTab] = useState<string>('supply');
 
   const supplyTokens = [
-    { symbol: 'BERA', name: 'Berachain token', icon: '/assets/tokens/bera.svg', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
+    { symbol: 'BERA', isNative: true, name: 'Berachain token', icon: '/assets/tokens/bera.svg', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
     { symbol: 'ETH', name: 'Ethereum', icon: '/assets/tokens/eth.png', apr: '0.00', balance: '0.00', walletBalance: '1.23' },
     { symbol: 'HONEY', name: 'Honey Stablecoin', icon: '/assets/tokens/honey.svg', apr: '78.20', balance: '0.00', walletBalance: '0.00' },
     { symbol: 'USDC', name: 'USD coin', icon: '/assets/tokens/usdc.png', apr: '78.50', balance: '120.34', walletBalance: '0.00' },
