@@ -4,6 +4,10 @@ const nextConfig = {
     {
       source: '/assets/:path*',
       destination: 'https://asset.dapdap.net/:path*'
+    },
+    {
+      source: '/dapdap/:path*',
+      destination: 'https://api.dapdap.net/:path*'
     }
   ],
   webpack: (config) => {

@@ -8,7 +8,7 @@ const chains: Record<number, Chain | any> = {
     nativeCurrency: { name: 'BERA', symbol: 'BERA', decimals: 18 },
     rpcUrls: {
       default: {
-        http: ['https://bartio.rpc.berachain.com/'],
+        http: ['https://bartio.rpc.berachain.com/']
       }
     },
     blockExplorers: {
@@ -18,11 +18,10 @@ const chains: Record<number, Chain | any> = {
       }
     }
   }
-}
+};
 
 export const icons: Record<number, string> = {
   80084: '/images/berachain.png'
 };
 
 export default chains;
-

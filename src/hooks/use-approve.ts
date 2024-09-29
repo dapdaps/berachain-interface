@@ -19,6 +19,7 @@ export default function useApprove({
   spender?: string;
   isSkip?: boolean;
   onSuccess?: VoidFunction;
+  checkApproved?: VoidFunction;
 }) {
   const [approved, setApproved] = useState(false);
   const [approving, setApproving] = useState(false);
@@ -95,6 +96,9 @@ export default function useApprove({
       if (res.status === 1) {
         setApproved(true);
         onSuccess?.();
+        toast.success({
+          title: 'Approve Successfully!'
+        });
       }
     } catch (err: any) {
       toast.fail({
@@ -115,5 +119,5 @@ export default function useApprove({
     if (token && amount && spender) checkApproved();
   }, [token, amount, spender, isSkip]);
 
-  return { approved, approve, approving, checking };
+  return { approved, approve, approving, checking, checkApproved };
 }

@@ -26,9 +26,9 @@ const formatTrade = ({
   });
 
   const inputCurrencyPrice =
-    prices[inputCurrency.priceKey || inputCurrency.symbol];
+    prices[inputCurrency.priceKey || inputCurrency.symbol] || 0;
   const outputCurrencyPrice =
-    prices[outputCurrency.priceKey || outputCurrency.symbol];
+    prices[outputCurrency.priceKey || outputCurrency.symbol] || 0;
   let priceImpact = null;
   let priceImpactType = 0;
 
@@ -93,10 +93,12 @@ const formatTrade = ({
     isGasEnough,
     priceImpact,
     priceImpactType,
-    gasUsd: Big(nativeTokenPrice)
-      .mul(gas)
-      .div(10 ** nativeToken.decimals)
-      .toString()
+    gasUsd: nativeTokenPrice
+      ? Big(nativeTokenPrice)
+          .mul(gas)
+          .div(10 ** nativeToken.decimals)
+          .toString()
+      : '-'
   };
 };
 

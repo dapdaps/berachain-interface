@@ -97,7 +97,7 @@ export default function CurrencySelect({
 
   return (
     <Modal open={display} onClose={handleClose}>
-      <div className='w-[520px] p-[20px]'>
+      <div className='w-[520px] p-[20px] bg-[#FFFDEB]'>
         <div className='flex items-center gap-[10px] cursor-pointer text-[20px]'>
           <svg
             width='9'
@@ -110,7 +110,7 @@ export default function CurrencySelect({
               d='M7 2L2.2 8L7 14'
               stroke='black'
               stroke-width='3'
-              stroke-linecap='round'
+              strokeLinecap='round'
             />
           </svg>
           <div>Select Token</div>

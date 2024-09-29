@@ -139,7 +139,7 @@ export default function Swap({ dapp }: Props) {
         onAmountChange={(val: any) => {
           setInputCurrencyAmount(val);
         }}
-        key={`in-${updater}`}
+        updater={`in-${updater}`}
       />
       <ExchangeIcon
         onClick={() => {
@@ -166,7 +166,7 @@ export default function Swap({ dapp }: Props) {
           setSelectType('out');
           setSelectedTokenAddress(outputCurrency?.address);
         }}
-        key={`out-${updater}`}
+        updater={`out-${updater}`}
       />
       {!!(trade && inputCurrency && outputCurrency) && (
         <>
@@ -201,7 +201,7 @@ export default function Swap({ dapp }: Props) {
         onRefresh={() => {
           runQuoter();
         }}
-        key={`button-${updater}`}
+        updater={`button-${updater}`}
       />
       <TokenSelector
         display={displayCurrencySelect}

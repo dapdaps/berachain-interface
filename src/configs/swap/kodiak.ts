@@ -2,7 +2,7 @@ import { beraB } from '../tokens/bera-bArtio';
 
 export default {
   name: 'Kodiak',
-  icon: '/dapps/kodiak.svg',
+  icon: '/images/dapps/kodiak.svg',
   tokens: {
     80084: [
       beraB['bera'],

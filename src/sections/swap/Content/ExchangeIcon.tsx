@@ -26,7 +26,7 @@ export default function ExchangeIcon({ onClick }: any) {
           d='M21.4999 16V26.5M21.4999 26.5L16 21M21.4999 26.5L27 21'
           stroke='black'
           stroke-width='2'
-          stroke-linecap='round'
+          strokeLinecap='round'
         />
       </svg>
     </div>

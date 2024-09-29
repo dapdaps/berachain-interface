@@ -32,7 +32,7 @@ const checkIcon = (
       d='M1 5L6 10L15 1'
       stroke='currentColor'
       stroke-width='2'
-      stroke-linecap='round'
+      strokeLinecap='round'
     />
   </svg>
 );
@@ -44,7 +44,6 @@ const CurrencyLabel = styled.div`
 const CurrencySymbol = styled.div`
   font-size: 16px;
   font-weight: 600;
-  color: var(--agg-text-color, #fff);
 `;
 const CurrencyIcon = styled.img`
   width: 26px;
@@ -55,7 +54,6 @@ const CurrencyIcon = styled.img`
 const CurrencyAmount = styled.div`
   font-size: 16px;
   font-weight: 400;
-  color: var(--agg-text-color, #fff);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -78,6 +76,7 @@ export default function CurrencyRow({
         />
         <div>
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
+          <div className='text-[10px]'>{currency.name}</div>
         </div>
       </CurrencyLabel>
       <CurrencyAmount>

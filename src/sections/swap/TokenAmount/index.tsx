@@ -13,13 +13,14 @@ export default function TokenAmout({
   account,
   onCurrencySelectOpen,
   onAmountChange,
-  onUpdateCurrencyBalance
+  onUpdateCurrencyBalance,
+  updater
 }: any) {
   const tokenPrice = useMemo(
     () => (currency ? prices[currency.priceKey || currency.symbol] : 0),
     [prices, currency]
   );
-  const { tokenBalance, isLoading } = useTokenBalance(
+  const { tokenBalance, isLoading, update } = useTokenBalance(
     currency?.address,
     currency?.decimals,
     currency?.chainId
@@ -28,6 +29,11 @@ export default function TokenAmout({
     if (tokenBalance && onUpdateCurrencyBalance)
       onUpdateCurrencyBalance(tokenBalance);
   }, [tokenBalance]);
+
+  useEffect(() => {
+    update();
+  }, [updater]);
+
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
       <div className='flex items-center justify-between gap-[10px]'>
@@ -36,7 +42,6 @@ export default function TokenAmout({
             <div
               className='flex items-center gap-[10px]'
               onClick={() => {
-                console.log(39);
                 onCurrencySelectOpen();
               }}
             >
@@ -51,7 +56,14 @@ export default function TokenAmout({
               </div>
             </div>
           ) : (
-            <div className='text-[16px] font-[600]'>Select a token</div>
+            <div
+              className='text-[16px] font-[600]'
+              onClick={() => {
+                onCurrencySelectOpen();
+              }}
+            >
+              Select a token
+            </div>
           )}
 
           <svg
@@ -65,7 +77,7 @@ export default function TokenAmout({
               d='M1 1L6 5L11 1'
               stroke='black'
               stroke-width='2'
-              stroke-linecap='round'
+              strokeLinecap='round'
             />
           </svg>
         </div>
@@ -90,7 +102,7 @@ export default function TokenAmout({
         }}
         className='flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]'
       >
-        <div>
+        <div className='flex items-center gap-[4px]'>
           balance:{' '}
           {isLoading ? (
             <Loading />

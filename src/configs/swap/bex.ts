@@ -2,7 +2,9 @@ import { beraB } from '../tokens/bera-bArtio';
 
 export default {
   name: 'BEX',
-  icon: '/dapps/bex.png',
+  icon: '/images/dapps/bex.png',
+  defaultInputCurrency: beraB['bera'],
+  defaultOutputCurrency: beraB['honey'],
   tokens: {
     80084: [
       beraB['bera'],

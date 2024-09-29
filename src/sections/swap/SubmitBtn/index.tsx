@@ -3,6 +3,7 @@ import useApprove from '@/hooks/use-approve';
 import useAccount from '@/hooks/use-account';
 import { useSwitchChain } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useEffect } from 'react';
 
 const BaseButton = ({ loading, onClick, children }: any) => {
   return (
@@ -24,9 +25,10 @@ export default function SubmitBtn({
   errorTips,
   disabled,
   onClick,
-  onRefresh
+  onRefresh,
+  updater
 }: any) {
-  const { approve, approved, approving, checking } = useApprove({
+  const { approve, approved, approving, checking, checkApproved } = useApprove({
     amount,
     token,
     spender,
@@ -35,6 +37,10 @@ export default function SubmitBtn({
   const { isPending: switching, switchChain } = useSwitchChain();
   const { open } = useWeb3Modal();
   const { account, chainId } = useAccount();
+
+  useEffect(() => {
+    checkApproved();
+  }, [updater]);
 
   if (!account || !chainId) {
     return (

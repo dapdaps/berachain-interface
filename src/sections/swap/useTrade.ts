@@ -135,7 +135,6 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
     if (!provider) return;
     const signer = provider.getSigner(account);
     const wethAddress = weth[trade.inputCurrency.chainId];
-
     setLoading(true);
     let toastId = toast.loading({ title: 'Confirming...' });
     try {
@@ -170,7 +169,6 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         token_in_currency: trade.inputCurrency,
         token_out_currency: trade.outputCurrency
       });
-      setLoading(false);
     } catch (err: any) {
       toast.dismiss(toastId);
       toast.fail({

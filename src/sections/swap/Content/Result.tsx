@@ -13,15 +13,15 @@ export default function Result({
   const priceString = useMemo(
     () =>
       reserve
-        ? `1 ${outputCurrency.symbol} ={' '}
+        ? `1 ${outputCurrency.symbol} =
   ${Big(inputCurrencyAmount || 0)
     .div(Big(outputCurrencyAmount || 0).eq(0) ? 1 : outputCurrencyAmount)
-    .toFixed(4)}{' '}
+    .toFixed(4)}
   ${inputCurrency.symbol}`
-        : `1 ${inputCurrency.symbol} ={' '}
+        : `1 ${inputCurrency.symbol} =
   ${Big(outputCurrencyAmount || 0)
     .div(Big(inputCurrencyAmount || 0).eq(0) ? 1 : inputCurrencyAmount)
-    .toFixed(4)}{' '}
+    .toFixed(4)}
   ${outputCurrency.symbol}`,
     [reserve]
   );
@@ -30,26 +30,29 @@ export default function Result({
     <div className='flex items-center justify-between pt-[10px] text-[14px] font-medium'>
       <div className='flex items-center gap-[5px]'>
         <div>{priceString}</div>
-        <svg
-          className='cursor-pointer'
-          width='12'
-          height='12'
-          viewBox='0 0 12 12'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
+        <button
+          className='cursor-pointer p-[5px] duration-500 hover:opacity-60 active:opacity-80'
           onClick={() => {
             setReserve(!reserve);
           }}
         >
-          <path
-            d='M1.01514 6.11148C0.887128 4.95763 1.55283 3.03456 3.70343 3.03456C5.85402 3.03456 10.9999 3.03456 10.9999 3.03456M10.9999 3.03456L9.01977 1M10.9999 3.03456L9.01977 5'
-            stroke='black'
-          />
-          <path
-            d='M10.9849 5.88071C11.1129 7.03456 10.4472 8.95763 8.29657 8.95763C6.14598 8.95763 1.00006 8.95763 1.00006 8.95763M1.00006 8.95763L3.01978 11M1.00006 8.95763L3.01978 7'
-            stroke='black'
-          />
-        </svg>
+          <svg
+            width='12'
+            height='12'
+            viewBox='0 0 12 12'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              d='M1.01514 6.11148C0.887128 4.95763 1.55283 3.03456 3.70343 3.03456C5.85402 3.03456 10.9999 3.03456 10.9999 3.03456M10.9999 3.03456L9.01977 1M10.9999 3.03456L9.01977 5'
+              stroke='black'
+            />
+            <path
+              d='M10.9849 5.88071C11.1129 7.03456 10.4472 8.95763 8.29657 8.95763C6.14598 8.95763 1.00006 8.95763 1.00006 8.95763M1.00006 8.95763L3.01978 11M1.00006 8.95763L3.01978 7'
+              stroke='black'
+            />
+          </svg>
+        </button>
       </div>
       <div className='flex items-center gap-2'>
         {priceImpactType === 2 && (
@@ -79,7 +82,7 @@ export default function Result({
             d='M1 1L6 5L11 1'
             stroke='black'
             stroke-width='2'
-            stroke-linecap='round'
+            strokeLinecap='round'
           />
         </svg>
       </div>
