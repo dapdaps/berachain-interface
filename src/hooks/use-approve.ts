@@ -12,11 +12,13 @@ export default function useApprove({
   amount,
   spender,
   isSkip,
+  onSuccess
 }: {
   token?: Token;
   amount?: string;
   spender?: string;
   isSkip?: boolean;
+  onSuccess?: VoidFunction;
 }) {
   const [approved, setApproved] = useState(false);
   const [approving, setApproving] = useState(false);
@@ -38,13 +40,13 @@ export default function useApprove({
           {
             inputs: [
               { internalType: 'address', name: '', type: 'address' },
-              { internalType: 'address', name: '', type: 'address' },
+              { internalType: 'address', name: '', type: 'address' }
             ],
             name: 'allowance',
             outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
             stateMutability: 'view',
-            type: 'function',
-          },
+            type: 'function'
+          }
         ],
         signer
       );
@@ -74,13 +76,13 @@ export default function useApprove({
           {
             inputs: [
               { internalType: 'address', name: 'spender', type: 'address' },
-              { internalType: 'uint256', name: 'value', type: 'uint256' },
+              { internalType: 'uint256', name: 'value', type: 'uint256' }
             ],
             name: 'approve',
             outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
             stateMutability: 'nonpayable',
-            type: 'function',
-          },
+            type: 'function'
+          }
         ],
         signer
       );
@@ -90,13 +92,16 @@ export default function useApprove({
       );
       const res = await tx.wait();
       setApproving(false);
-      if (res.status === 1) setApproved(true);
+      if (res.status === 1) {
+        setApproved(true);
+        onSuccess?.();
+      }
     } catch (err: any) {
       toast.fail({
-        title: "Approve Failed!",
-        text: err?.message?.includes("user rejected transaction")
-          ? "User rejected transaction"
-          : '',
+        title: 'Approve Failed!',
+        text: err?.message?.includes('user rejected transaction')
+          ? 'User rejected transaction'
+          : ''
       });
       setApproving(false);
     }

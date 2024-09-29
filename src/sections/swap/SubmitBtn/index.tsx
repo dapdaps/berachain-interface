@@ -1,6 +1,6 @@
 import Loading from '@/components/circle-loading';
-import useApprove from '@/hooks/useApprove';
-import useAccount from '@/hooks/useAccount';
+import useApprove from '@/hooks/use-approve';
+import useAccount from '@/hooks/use-account';
 import { useSwitchChain } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 

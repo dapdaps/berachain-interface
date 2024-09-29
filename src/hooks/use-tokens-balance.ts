@@ -3,7 +3,7 @@ import { flatten } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import chains from '@/configs/chains';
 import multicallAddresses from '@/configs/contract/multicall';
-import useAccount from '@/hooks/useAccount';
+import useAccount from '@/hooks/use-account';
 import { multicall } from '@/utils/multicall';
 
 export default function useTokensBalance(tokens: any) {

@@ -1,6 +1,6 @@
 'use client';
 import { useMemo, useEffect } from 'react';
-import useTokenBalance from '@/hooks/useTokenBalance';
+import useTokenBalance from '@/hooks/use-token-balance';
 import { balanceFormated } from '@/utils/balance';
 import Loading from '@/components/circle-loading';
 
@@ -36,6 +36,7 @@ export default function TokenAmout({
             <div
               className='flex items-center gap-[10px]'
               onClick={() => {
+                console.log(39);
                 onCurrencySelectOpen();
               }}
             >

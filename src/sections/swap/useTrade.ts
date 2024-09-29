@@ -1,9 +1,9 @@
 import Big from 'big.js';
 import { useCallback, useRef, useState } from 'react';
 import weth from '@/configs/contract/weth';
-import useAccount from '@/hooks/useAccount';
-import useAddAction from '@/hooks/useAddAction';
-import useToast from '@/hooks/useToast';
+import useAccount from '@/hooks/use-account';
+import useAddAction from '@/hooks/use-add-action';
+import useToast from '@/hooks/use-toast';
 import { useSettingsStore } from '@/stores/settings';
 import checkGas from './checkGas';
 import formatTrade from './formatTrade';

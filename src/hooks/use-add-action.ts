@@ -2,16 +2,17 @@ import { useCallback } from 'react';
 import { getSignature } from '@/utils/signature';
 import chains from '@/configs/chains';
 import axios from 'axios';
-import useAccount from './useAccount';
+import useAccount from './use-account';
 
 export default function useAddAction(source: string) {
   const { account, chainId } = useAccount();
   const addAction = useCallback(
     (data: any) => {
       let params: any = {};
-      const currentChain = chains[chainId];
-      if (!chainId || !account || !currentChain) return;
 
+      if (!chainId || !account) return;
+      const currentChain = chains[chainId];
+      if (!currentChain) return;
       console.info('addAction data: ', data);
 
       if (data.type === 'Swap' && data.template !== 'launchpad') {

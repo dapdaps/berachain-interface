@@ -1,7 +1,7 @@
 import { Contract, providers, utils } from 'ethers';
 import { useEffect, useState } from 'react';
 import chains from '@/configs/chains';
-import useAccount from '@/hooks/useAccount';
+import useAccount from '@/hooks/use-account';
 
 const TOKEN_ABI = [
   {

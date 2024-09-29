@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import useTrade from '../useTrade';
 import { useImportTokensStore } from '@/stores/import-tokens';
 import { useDebounceFn } from 'ahooks';
-import useAccount from '@/hooks/useAccount';
+import useAccount from '@/hooks/use-account';
 import Card from '@/components/card';
 import Header from '../Header';
 import TokenAmout from '../TokenAmount';
@@ -59,12 +59,13 @@ export default function Swap({ dapp }: Props) {
 
   const tokens = useMemo(() => {
     return uniqBy(
-      [...(dapp.tokens || []), ...(importTokens[DEFAULT_CHAIN_ID] || [])].map(
-        (token: any) => ({
-          ...token,
-          address: token.address.toLowerCase()
-        })
-      ),
+      [
+        ...(dapp.tokens[DEFAULT_CHAIN_ID] || []),
+        ...(importTokens[DEFAULT_CHAIN_ID] || [])
+      ].map((token: any) => ({
+        ...token,
+        address: token.address.toLowerCase()
+      })),
       'address'
     );
   }, [importTokens, dapp]);
@@ -131,7 +132,6 @@ export default function Swap({ dapp }: Props) {
           setDisplayCurrencySelect(true);
           setSelectType('in');
           setSelectedTokenAddress(inputCurrency?.address);
-          console.log(134);
         }}
         onUpdateCurrencyBalance={(balance: any) => {
           setMaxInputBalance(balance);
