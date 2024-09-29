@@ -3,15 +3,11 @@ import { beraB } from '@/configs/tokens/bera-bArtio';
 const basic = {
   name: 'Dolomite',
   icon: '/assets/dapps/dolomite.png',
-  type: 'dolomite',
-  defaultTab: 'yours',
-  loaderName: 'Dolomite'
 };
 
 const API_HOST = 'https://subgraphapi.dolomite.io/api/public';
 const API_ID = '1301d2d1-7a9d-4be4-9e9a-061cb8611549';
 const API_VERSION = 'v0.1.2';
-const POSITION_NUMBER = '17274203808773179141146731854563207524076858030869508637919062281941170673014';
 
 const networks = {
   80084: {
@@ -22,20 +18,19 @@ const networks = {
     // if your debt is $100, Liquidation Treshold = when collateral assets < $115 OR debt assets > $104.35
     // $120 / ($100 * liquidationRatio) = ~1.043 Health Factor
     liquidationRatio: '1.15',
-    positionNumber: POSITION_NUMBER,
+    interestRatesApi: 'https://api.dolomite.io/tokens/80084/interest-rates',
     blockNumberApi: `${API_HOST}/${API_ID}/subgraphs/dolomite-berachain/${API_VERSION}/gn`,
     blockNumberApiQuery: () => ({
-      operationName: 'getLatestBlockNumber',
-      variables: {},
-      query:
-        'query getLatestBlockNumber {\n  _meta {\n    block {\n      number\n      __typename\n    }\n    __typename\n  }\n}\n'
+      operationName:"getLatestBlockNumber",
+      variables:{},
+      query:"query getLatestBlockNumber {\n  _meta {\n    block {\n      number\n      __typename\n    }\n    __typename\n  }\n}\n"
     }),
     positionListApi: `${API_HOST}/${API_ID}/subgraphs/dolomite-berachain/${API_VERSION}/gn`,
     positionListApiQuery: ({ walletAddress, blockNumber }: { walletAddress: string; blockNumber: number }) => ({
       operationName: 'borrowPositions',
-      variables: { walletAddress: walletAddress, blockNumber: blockNumber },
+      variables: { walletAddress: walletAddress.toLowerCase(), blockNumber: blockNumber },
       query:
-        'query borrowPositions($blockNumber: Int!, $walletAddress: String!) {\n  borrowPositions(\n    block: {number_gte: $blockNumber}\n    where: {effectiveUser: $walletAddress, status_not: "CLOSED", marginAccount_: {accountNumber_not: 0}}\n    orderBy: openTimestamp\n    orderDirection: desc\n    first: 50\n  ) {\n    id\n    marginAccount {\n      id\n      user {\n        id\n        __typename\n      }\n      accountNumber\n      lastUpdatedTimestamp\n      lastUpdatedBlockNumber\n      __typename\n    }\n    openTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    closeTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    status\n    openTimestamp\n    closeTimestamp\n    effectiveSupplyTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveBorrowTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveUser {\n      id\n      __typename\n    }\n    amounts {\n      token {\n        id\n        symbol\n        name\n        decimals\n        marketId\n        __typename\n      }\n      expirationTimestamp\n      amountPar\n      amountWei\n      __typename\n    }\n    __typename\n  }\n}\n'
+        "query borrowPositions($blockNumber: Int!, $walletAddress: String!) {\n  borrowPositions(\n    block: {number_gte: $blockNumber}\n    where: {effectiveUser: $walletAddress, status_not: \"CLOSED\", marginAccount_: {accountNumber_not: 0}}\n    orderBy: openTimestamp\n    orderDirection: desc\n    first: 50\n  ) {\n    id\n    marginAccount {\n      id\n      user {\n        id\n        __typename\n      }\n      accountNumber\n      lastUpdatedTimestamp\n      lastUpdatedBlockNumber\n      __typename\n    }\n    openTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    closeTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    status\n    openTimestamp\n    closeTimestamp\n    effectiveSupplyTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveBorrowTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveUser {\n      id\n      __typename\n    }\n    amounts {\n      token {\n        id\n        symbol\n        name\n        decimals\n        marketId\n        __typename\n      }\n      expirationTimestamp\n      amountPar\n      amountWei\n      __typename\n    }\n    __typename\n  }\n}\n"
     }),
     approveMax: true,
     markets: {

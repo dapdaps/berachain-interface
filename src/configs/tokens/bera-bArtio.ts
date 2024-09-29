@@ -10,7 +10,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'BERA',
     decimals: 18,
     name: 'BERA',
-    icon: '/images/tokens/bera.png'
+    icon: '/assets/tokens/bera.svg'
   },
   wbera: {
     address: '0x7507c1dc16935B82698e4C63f2746A2fCf994dF8',
@@ -18,7 +18,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'WBERA',
     decimals: 18,
     name: 'WBERA',
-    icon: '/images/tokens/wbera.png'
+    icon: '/assets/tokens/wbera.svg'
   },
   honey: {
     address: '0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03',
@@ -26,7 +26,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'HONEY',
     decimals: 18,
     name: 'HONEY',
-    icon: '/images/tokens/honey.png'
+    icon: '/assets/tokens/honey.svg'
   },
   usdt: {
     chainId: CHAIN_ID,
@@ -67,5 +67,13 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'WETH',
     name: 'Wrapped Ether',
     icon: 'https://ipfs.near.social/ipfs/bafkreihyzmiuawyekwiyofkzm25xzrrfenhvadi6lb42juvq7tah2u7ha4'
+  },
+  eth: {
+    chainId: CHAIN_ID,
+    address: '0x6e1e9896e93f7a71ecb33d4386b49deed67a231a',
+    decimals: 18,
+    symbol: 'ETH',
+    name: 'Ethereum',
+    icon: 'https://ipfs.near.social/ipfs/bafkreibspnls7q67q25r2ifv2rrfmvzl744pzuh3s5ekigeqkmyycl2auq'
   }
 };

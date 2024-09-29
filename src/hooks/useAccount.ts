@@ -1,18 +1,14 @@
-import { useAccount as useWagmiAccount, useChainId } from 'wagmi';
-import chains from '@/configs/chains';
+import { JsonRpcProvider } from 'ethers';
 import { useMemo } from 'react';
-import { providers } from 'ethers';
-
-export default function useAccount() {
-  const { address } = useWagmiAccount();
-  const chainId = useChainId();
-  const provider = useMemo(
-    () =>
-      chainId
-        ? new providers.JsonRpcProvider(chains[chainId].rpcUrls.default.http[0])
-        : null,
-    [chainId]
-  );
-
-  return { account: address, chainId, provider };
+import { useAccount } from 'wagmi';
+export default function useCustomAccount() {
+  const account = useAccount();
+  return useMemo<{ chainId?: number; account?: string; provider?: any }>(() => {
+    return {
+      account: account?.address ?? '',
+      chainId: account?.chainId ?? -1,
+      provider: new JsonRpcProvider('https://bartio.rpc.berachain.com/'),
+      chain: account?.chain ?? null
+    };
+  }, [account]);
 }

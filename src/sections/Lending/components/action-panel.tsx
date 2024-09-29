@@ -1,7 +1,8 @@
-import Button from '@/components/button';
+import LendingButton from '@/sections/Lending/components/button';
+import type { Token } from '@/types';
 
 const ActionPanel = (props: Props) => {
-  const { title, style, className, actionText, placeholder, disabled, loading, inputDisabled } = props;
+  const { token, isSkipApproved, title, style, className, actionText, placeholder, disabled, loading, inputDisabled } = props;
 
   return (
     <div style={style} className={`w-[302px] h-[159px] border border-black rounded-[20px] bg-[#FFFDEB] shadow-shadow1 p-[23px_20px_20px] ${className}`}>
@@ -11,7 +12,20 @@ const ActionPanel = (props: Props) => {
       </div>
       <div className="flex justify-between items-center mt-[13px]">
         <div className="text-[14px] font-[400] text-black">Balance: <a href="javascript: void(0);" className="underline decoration-solid">0.00</a></div>
-        <Button type="primary" disabled={disabled} loading={loading} style={{ fontSize: 14 }}>{actionText}</Button>
+        <LendingButton
+          type="primary"
+          disabled={disabled}
+          loading={loading}
+          style={{ fontSize: 14 }}
+          amount="0"
+          token={token}
+          chain={{ chainId: 80084 }}
+          spender=""
+          onClick={() => {}}
+          isSkipApproved={isSkipApproved}
+        >
+          {actionText}
+        </LendingButton>
       </div>
     </div>
   );
@@ -28,4 +42,6 @@ interface Props {
   inputDisabled?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  token: Token;
+  isSkipApproved?: boolean;
 }

@@ -1,1 +1,1 @@
-export const FontClass = "text-[20px] text-red-500"// "text-[20px] text-black font-CherryBomb leading-[90%]"
+export const FontClass = "text-[20px] text-black font-CherryBomb leading-[90%]"
