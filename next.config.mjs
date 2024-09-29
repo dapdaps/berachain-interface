@@ -1,9 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  rewrites: async () => [
+    {
+      source: '/assets/:path*',
+      destination: 'https://asset.dapdap.net/:path*'
+    }
+  ],
   webpack: (config) => {
     config.resolve.alias.stream = 'stream-browserify';
 
-    const fileLoaderRule = config.module.rules.find((rule) => rule.test?.test?.('.svg'));
+    const fileLoaderRule = config.module.rules.find((rule) =>
+      rule.test?.test?.('.svg')
+    );
     config.module.rules.push(
       {
         ...fileLoaderRule,
