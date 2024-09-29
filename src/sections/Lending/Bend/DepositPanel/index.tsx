@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import IconPlus from "@public/images/modal/plus.svg";
 import IconMinus from "@public/images/modal/minus.svg";
 import ActionModal from "../Action";
-
+import useAaveConfig from "@/stores/useAaveConfig";
 interface TokenInfo {
   name: string;
   icon: string;
@@ -13,7 +13,7 @@ interface TokenInfo {
 }
 
 const DepositPanel: React.FC = () => {
-  const [tokens, setTokens] = useState<TokenInfo[]>([
+  const [markets, setMarkets] = useState<TokenInfo[]>([
     {
       name: "WETH",
       icon: "eth-icon",
@@ -35,6 +35,19 @@ const DepositPanel: React.FC = () => {
   const [modalType, setModalType] = useState("");
   const actionRef = useRef<any>(null);
 
+  const { network } = useAaveConfig()  
+
+  useEffect(() => {
+    if (!network) return
+    const markets = network?.rawMarkets?.map((item: any) => ({
+      ...item,
+      // tokenPrice: network?.prices[item?.symbol] || 1
+      tokenPrice:  1
+    }));
+    setMarkets(markets)
+  }, [network])
+ 
+  
   const handleAction = (tokenName: any, action: any) => {
     setOpenModal({ tokenName, action });
   };
@@ -44,7 +57,7 @@ const DepositPanel: React.FC = () => {
   };
 
 
-  const handleClickOutside = (e: MouseEvent) => {
+  const handleClickOutside = (e) => {
     if (actionRef.current && !actionRef.current.contains(e.target)) {
       closeModal();
     }
@@ -118,13 +131,15 @@ const DepositPanel: React.FC = () => {
           <div className="w-[219px]">In Wallet</div>
           <div className="w-[80px]">Action</div>
         </div>
-        {tokens.map((token, index) => (
+        {markets.map((token, index) => (
           <div
             key={index}
             className="flex items-center px-[26px] py-3 w-[910px] bg-black bg-opacity-[0.06] rounded-[10px] mb-[10px] last:mb-0"
           >
             <div className="w-[340px] flex items-center">
-              <div className="w-10 h-10 bg-gray-300 rounded-full mr-2 flex items-center justify-center"></div>
+              <div className="w-10 h-10 bg-[#FFE873] rounded-full mr-2 flex items-center justify-center">
+                <img className="w-full" src={token.icon} alt="" />
+              </div>
               <span className="font-Montserrat text-base font-medium leading-4 text-left">
                 {token.name}
               </span>
@@ -137,18 +152,18 @@ const DepositPanel: React.FC = () => {
                     : "text-black"
                 }`}
               >
-                {token.deposited.toFixed(token.deposited === 0 ? 2 : 3)}
+                {/* {token.deposited.toFixed(token.deposited === 0 ? 2 : 3)} */}
               </div>
               <div className="mt-2 font-Montserrat text-[10px] font-normal leading-[9px] text-left text-gray-500">
-                {token.depositedValue}
+                {/* {token.depositedValue} */}
               </div>
             </div>
             <div className="w-[219px]">
               <div className="truncate font-Montserrat text-base font-semibold leading-4 text-left">
-                {token.inWallet.toFixed(3)}
+                {/* {token.inWallet.toFixed(3)} */}
               </div>
               <div className="mt-2 font-Montserrat text-[10px] font-normal leading-[9px] text-left text-gray-500">
-                {token.walletValue}
+                {/* {token.walletValue} */}
               </div>
             </div>
             <div className="w-[80px] flex justify-end space-x-2 relative">

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
 import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
-
+import bendConfig from '@/configs/lending/dapps/bend'
+import { useAccount, useBalance } from 'wagmi';
+import useAaveConfig from '@/stores/useAaveConfig';
 interface LendingModalProps {
   open?: boolean;
   onClose?: () => void;
@@ -11,6 +13,8 @@ interface LendingModalProps {
 
 const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
   const [currentTab, setCurrentTab] = useState<string>('deposit');
+  const { chainId } = useAccount()
+  const { config, fetchConfig } = useAaveConfig()  
 
   const supplyTokens = [
     { symbol: 'BERA', name: 'Berachain token', icon: '', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
@@ -25,6 +29,11 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
     { symbol: 'ETH', name: 'Ethereum', icon: '', apr: '3.50', balance: '0.50', walletBalance: '0.00' },
     { symbol: 'USDC', name: 'USD coin', icon: '', apr: '1.50', balance: '100.00', walletBalance: '0.00' },
   ];
+
+  useEffect(() => {
+    if (!chainId) return
+    fetchConfig(chainId)
+  }, [config, fetchConfig, chainId])
 
   const handleDeposit = (symbol: string) => {
     console.log(`Depositing ${symbol}`);
