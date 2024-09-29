@@ -5,7 +5,7 @@ export const multicall = async <T = any>({
   calls,
   options,
   multicallAddress,
-  provider
+  provider,
 }: {
   abi: any[];
   calls: any[];
@@ -23,47 +23,41 @@ export const multicall = async <T = any>({
           {
             components: [
               { internalType: 'address', name: 'target', type: 'address' },
-              { internalType: 'bytes', name: 'callData', type: 'bytes' }
+              { internalType: 'bytes', name: 'callData', type: 'bytes' },
             ],
             internalType: 'struct Multicall2.Call[]',
             name: 'calls',
-            type: 'tuple[]'
-          }
+            type: 'tuple[]',
+          },
         ],
         name: 'tryAggregate',
         outputs: [
           {
             components: [
               { internalType: 'bool', name: 'success', type: 'bool' },
-              { internalType: 'bytes', name: 'returnData', type: 'bytes' }
+              { internalType: 'bytes', name: 'returnData', type: 'bytes' },
             ],
             internalType: 'struct Multicall2.Result[]',
             name: 'returnData',
-            type: 'tuple[]'
-          }
+            type: 'tuple[]',
+          },
         ],
         stateMutability: 'nonpayable',
-        type: 'function'
-      }
+        type: 'function',
+      },
     ],
-    provider
+    provider,
   );
   const itf = new utils.Interface(abi);
   const calldata = calls.map((call) => ({
     target: call.address.toLowerCase(),
-    callData: itf.encodeFunctionData(call.name, call.params)
+    callData: itf.encodeFunctionData(call.name, call.params),
   }));
 
-  const returnData = await multi?.callStatic.tryAggregate(
-    requireSuccess,
-    calldata,
-    overrides
-  );
+  const returnData = await multi?.callStatic.tryAggregate(requireSuccess, calldata, overrides);
   const res = returnData?.map((call: any, i: number) => {
     const [result, data] = call;
-    return result && Number(data) !== 0
-      ? itf.decodeFunctionResult(calls[i].name, data)
-      : null;
+    return result && Number(data) !== 0 ? itf.decodeFunctionResult(calls[i].name, data) : null;
   });
   return res as any;
 };
