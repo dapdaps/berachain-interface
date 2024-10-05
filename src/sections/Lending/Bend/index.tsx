@@ -5,8 +5,8 @@ import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
 
 interface LendingModalProps {
-  open: boolean;
-  onClose: () => void;
+  open?: boolean;
+  onClose?: () => void;
 }
 
 const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {

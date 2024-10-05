@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import DolomiteModal from "./DolomiteModal";
-import BendModal from "./BendModal";
+import DolomiteModal from "./Dolomite";
+import BendModal from "./Bend";
 
 const LendingView = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,8 +12,8 @@ const LendingView = () => {
         <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
         <button onClick={() => setIsBendModalOpen(true)}>Open Bend Modal</button>
 
-        <DolomiteModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        <BendModal open={isBendModalOpen} onClose={() => setIsBendModalOpen(false)} />
+        <DolomiteModal />
+        <BendModal />
       </div>
     );
 }

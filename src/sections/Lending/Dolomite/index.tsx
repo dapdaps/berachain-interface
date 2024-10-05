@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
 import Panel from './Panel';
 import dynamic from 'next/dynamic';
@@ -8,27 +7,28 @@ import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
 import { useMultiState } from '@/hooks/use-multi-state';
 import { numberFormatter } from '@/utils/number-formatter';
+import PositionList from '@/sections/Lending/Dolomite/position/list';
+import DappIcon from '@/components/dapp-icon';
 
 const { basic, networks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('../datas/dolomite'));
 
 interface LendingModalProps {
-  open: boolean;
-  onClose: () => void;
 }
 
-const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
+const LendingModal: React.FC<LendingModalProps> = () => {
   const { address, chainId } = useAccount();
   const { provider } = useProvider();
 
   const [currentTab, setCurrentTab] = useState<string>('supply');
   const [rateKey, setRateKey] = useState<'APY'|'APR'>('APY');
-  const [update, setUpdate] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
   const [data, setData] = useState<any>();
   const [state, updateState] = useMultiState<any>({
     yourBalance: '$0.00',
     yourCollateral: '$0.00',
+    yourBorrowing: '$0.00',
     earningAPR: '0.00%',
     earningAPY: '0.00%',
     borrowAPR: '0.00%',
@@ -36,12 +36,6 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
     supplyTokens: [],
     borrowTokens: [],
   });
-
-  const borrowTokens: any = [
-    { symbol: 'BERA', name: 'Berachain token', icon: '', apr: '2.15', balance: '50.00', walletBalance: '0.00' },
-    { symbol: 'ETH', name: 'Ethereum', icon: '', apr: '3.50', balance: '0.50', walletBalance: '0.00' },
-    { symbol: 'USDC', name: 'USD coin', icon: '', apr: '1.50', balance: '100.00', walletBalance: '0.00' },
-  ];
 
   const handleDeposit = (symbol: string) => {
     console.log(`Depositing ${symbol}`);
@@ -72,7 +66,7 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
   }, [chainId]);
 
   useEffect(() => {
-    setUpdate(isChainSupported);
+    setLoading(isChainSupported);
   }, [isChainSupported, currentTab]);
 
   useEffect(() => {
@@ -82,6 +76,7 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
     updateState({
       yourBalance: numberFormatter(userTotalSupplyUsd, 2, true, { prefix: '$', isZeroPrecision: true }),
       yourCollateral: numberFormatter(userTotalCollateralUsd, 2, true, { prefix: '$', isZeroPrecision: true }),
+      yourBorrowing: numberFormatter(userTotalBorrowUsd, 2, true, { prefix: '$', isZeroPrecision: true }),
       supplyTokens: tokenList.map((it: any) => ({
         ...it,
         APR: it.lendAPR,
@@ -100,68 +95,68 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
   }, [data]);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <div className="rounded-[20px] w-[970px] h-[490px]">
-        <div className="absolute top-0 left-0 right-0">
-          <Tabs
-            currentTab={currentTab}
-            tabs={[
-              {
-                key: 'supply',
-                label: 'Balances',
-                children: (
-                  <Panel
-                    totalBalanceLabel="Your balance"
-                    totalBalance={state.yourBalance}
-                    totalRateLabel="Earning"
-                    totalRate={state[`earning${rateKey}`]}
-                    rateName={`Earning ${rateKey}`}
-                    tokens={state.supplyTokens}
-                    onDeposit={handleDeposit}
-                    onWithdraw={handleWithdraw}
-                    rateKey={rateKey}
-                    setRateKey={setRateKey}
-                  />
-                )
-              },
-              {
-                key: 'borrow',
-                label: 'Borrow',
-                children: (
-                  <Panel
-                    totalBalanceLabel="Your collateral"
-                    totalBalance={state.yourCollateral}
-                    totalRateLabel="Net"
-                    totalRate={state[`borrow${rateKey}`]}
-                    rateName={`Borrow ${rateKey}`}
-                    tokens={state.borrowTokens}
-                    onDeposit={handleBorrow}
-                    onWithdraw={handleRepay}
-                    rateKey={rateKey}
-                    setRateKey={setRateKey}
-                  />
-                )
-              },
-            ]}
-            onChange={(key) => setCurrentTab(key as string)}
-            className="h-full"
-          />
-        </div>
-        <DolomiteData
-          {...networks[chainId + '']}
-          {...basic}
-          chainId={chainId}
-          update={update}
-          account={address}
-          provider={provider}
-          onLoad={(res: any) => {
-            console.log('dolomite data res: %o', res);
-            setData(res);
-            setUpdate(false);
+    <div className="mt-[40px]">
+      <div className="relative w-[970px] mx-auto">
+        <DappIcon
+          src="/images/dapps/dolomite.svg"
+          alt=""
+          name="Dolomite"
+          type="Lending"
+          style={{
+            zIndex: 10,
+            top: -70,
           }}
         />
+        <Tabs
+          currentTab={currentTab}
+          tabs={[
+            {
+              key: 'supply',
+              label: 'Balances',
+              children: (
+                <Panel
+                  loading={loading}
+                  totalBalanceLabel="Your balance"
+                  totalBalance={state.yourBalance}
+                  totalRateLabel="Earning"
+                  totalRate={state[`earning${rateKey}`]}
+                  rateName={`Earning ${rateKey}`}
+                  tokens={state.supplyTokens}
+                  onDeposit={handleDeposit}
+                  onWithdraw={handleWithdraw}
+                  rateKey={rateKey}
+                  setRateKey={setRateKey}
+                />
+              )
+            },
+            {
+              key: 'borrow',
+              label: 'Borrow',
+              children: (
+                <PositionList
+                  data={data}
+                />
+              )
+            },
+          ]}
+          onChange={(key) => setCurrentTab(key as string)}
+          className="h-full"
+        />
       </div>
-    </Modal>
+      <DolomiteData
+        {...networks[chainId + '']}
+        {...basic}
+        chainId={chainId}
+        update={loading}
+        account={address}
+        provider={provider}
+        onLoad={(res: any) => {
+          console.log('dolomite data res: %o', res);
+          setData(res);
+          setLoading(false);
+        }}
+      />
+    </div>
   );
 };
 
