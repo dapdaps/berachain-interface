@@ -3,6 +3,7 @@ import { useAccount, useSwitchChain } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Button from '@/components/button';
 import type { Chain, Token } from '@/types';
+import Big from 'big.js';
 
 const LendingButton = ({
   chain,
@@ -27,6 +28,18 @@ const LendingButton = ({
   const modal = useWeb3Modal();
   const { address, chainId } = useAccount();
 
+  if (!amount || Big(amount).eq(0)) {
+    return (
+      <Button
+        type={type}
+        style={style}
+        disabled={loading || disabled}
+      >
+        Enter An Amount
+      </Button>
+    );
+  }
+
   if (!address || !chainId) {
     return (
       <Button
@@ -35,6 +48,7 @@ const LendingButton = ({
           modal.open();
         }}
         style={style}
+        disabled={loading || disabled}
       >
         Connect wallet
       </Button>
@@ -51,6 +65,7 @@ const LendingButton = ({
           });
         }}
         loading={isPending}
+        disabled={loading || disabled}
         style={style}
       >
         Switch Network

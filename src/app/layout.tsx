@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 import MainLayout from '@/layouts/main';
 import WagmiProvider from '@/context/wagmi';
 import { ToastContainer } from 'react-toastify';
+
+import { SkeletonTheme } from 'react-loading-skeleton';
 
 export const metadata: Metadata = {
   title: 'Berachain',
@@ -19,7 +22,9 @@ export default function RootLayout({
     <html lang='en'>
       <body>
         <WagmiProvider>
-          <MainLayout>{children}</MainLayout>
+          <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
+            <MainLayout>{children}</MainLayout>
+          </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
           position='top-right'

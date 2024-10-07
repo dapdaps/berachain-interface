@@ -5,11 +5,12 @@ type Props = {
   alt?: string;
   name: string;
   type: string;
+  style?: React.CSSProperties;
 };
 
-export default function DappIcon({ src, alt, name, type }: Props) {
+export default function DappIcon({ src, alt, name, type, style }: Props) {
   return (
-    <div className='absolute top-[40px] left-[-80px]'>
+    <div className='absolute top-[40px] left-[-80px]' style={style}>
       <div className='w-[120px] h-[120px] border border-black rounded-[30px] bg-[#B2E946] pt-[10px] relative z-[1]'>
         <div className='h-[108px] rounded-[30px] bg-[#9ACA3B] flex flex-col items-center justify-center'>
           <Image
