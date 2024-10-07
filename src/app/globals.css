@@ -90,3 +90,15 @@ input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
+
+.mp-list tbody tr:nth-child(odd) td {
+  background-color: #0000000F;
+  
+}
+.mp-list tbody tr:nth-child(odd) td:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.mp-list tbody tr:nth-child(odd) td:last-child {
+  border-radius: 0 10px 10px 0;
+}
