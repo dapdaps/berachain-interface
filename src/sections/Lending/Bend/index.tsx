@@ -5,35 +5,16 @@ import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
 import bendConfig from '@/configs/lending/dapps/bend'
 import { useAccount, useBalance } from 'wagmi';
-import useAaveConfig from '@/stores/useAaveConfig';
+import useAaveConfigStore from '@/stores/useAaveConfigStore';
+import DappIcon from '@/components/dapp-icon';
+import useBend from './useBend';
 interface LendingModalProps {
-  open?: boolean;
   onClose?: () => void;
 }
 
-const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
+const LendingModal: React.FC<LendingModalProps> = () => {
   const [currentTab, setCurrentTab] = useState<string>('deposit');
-  const { chainId } = useAccount()
-  const { config, fetchConfig } = useAaveConfig()  
-
-  const supplyTokens = [
-    { symbol: 'BERA', name: 'Berachain token', icon: '', apr: '78.15', balance: '120.23', walletBalance: '0.00' },
-    { symbol: 'ETH', name: 'Ethereum', icon: '', apr: '0.00', balance: '0.00', walletBalance: '1.23' },
-    { symbol: 'HONEY', name: 'Honey Stablecoin', icon: '', apr: '78.20', balance: '0.00', walletBalance: '0.00' },
-    { symbol: 'USDC', name: 'USD coin', icon: '', apr: '78.50', balance: '120.34', walletBalance: '0.00' },
-    { symbol: 'WBERA', name: 'Wrapped Bera', icon: '', apr: '78.15', balance: '0.00', walletBalance: '0.00' },
-  ];
-
-  const borrowTokens = [
-    { symbol: 'BERA', name: 'Berachain token', icon: '', apr: '2.15', balance: '50.00', walletBalance: '0.00' },
-    { symbol: 'ETH', name: 'Ethereum', icon: '', apr: '3.50', balance: '0.50', walletBalance: '0.00' },
-    { symbol: 'USDC', name: 'USD coin', icon: '', apr: '1.50', balance: '100.00', walletBalance: '0.00' },
-  ];
-
-  useEffect(() => {
-    if (!chainId) return
-    fetchConfig(chainId)
-  }, [config, fetchConfig, chainId])
+  const { markets, userAccountData }= useBend()
 
   const handleDeposit = (symbol: string) => {
     console.log(`Depositing ${symbol}`);
@@ -55,25 +36,39 @@ const LendingModal: React.FC<LendingModalProps> = ({ open, onClose }) => {
     // Implement repay logic
   };
 
+  if (!markets) {
+    return null;
+  } 
+
   const tabs = [
     { 
       key: 'deposit', 
       label: 'Deposit', 
       children: (
-        <DepositPanel />
+        <DepositPanel markets={markets} userAccountData={userAccountData} />
       )
     },
     { 
       key: 'supplyBorrowHoney', 
       label: 'Supply & Borrow HONEY', 
       children: (
-        <SupplyBorrowPanel />
+        <SupplyBorrowPanel markets={markets} />
       )
     },
   ];
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={true}>
+      <DappIcon
+        src="/images/dapps/dolomite.svg"
+        alt=""
+        name="Bend"
+        type="Lending"
+        style={{
+          zIndex: 10,
+          top: -70,
+        }}
+      />
       <div className="rounded-[20px] w-[970px] h-[490px]">
         <div className="absolute top-0 left-0 right-0">
           <Tabs

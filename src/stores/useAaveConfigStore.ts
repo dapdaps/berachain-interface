@@ -13,7 +13,7 @@ interface NetworkConfig {
 }
 
 interface AaveStore {
-  config: object | null;
+  config: any | null;
   network: any;
   fetchConfig: (chainId: number) => Promise<void>;
 }

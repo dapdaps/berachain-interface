@@ -61,7 +61,11 @@ const networks = {
         variableBorrowAPY: '',
         supportPermit: false,
         LTV: 0,
-        supportBorrow: true
+        supportBorrow: true,
+        debt: '',
+        debtInUSD: '',
+        supplyRewardApy: '',
+        borrowAPY: ''
       },
       {
         id: '2',
@@ -78,7 +82,11 @@ const networks = {
         availableLiquidity: 0,
         availableLiquidityUSD: '',
         supportPermit: false,
-        LTV: 0
+        LTV: 0,
+        debt: '',
+        debtInUSD: '',
+        supplyRewardApy: '',
+        borrowAPY: ''
       },
       {
         id: '3',
@@ -95,7 +103,11 @@ const networks = {
         availableLiquidity: 0,
         availableLiquidityUSD: '',
         supportPermit: false,
-        LTV: 0
+        LTV: 0,
+        debt: '',
+        debtInUSD: '',
+        supplyRewardApy: '',
+        borrowAPY: ''
       }
     ],
     CONTRACT_ABI,
