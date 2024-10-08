@@ -56,7 +56,8 @@ export default function CurrencySelect({
     if (
       _tokens.length === 0 &&
       utils.isAddress(searchVal) &&
-      !tokenIsAvailable
+      !tokenIsAvailable &&
+      onImport
     ) {
       setCurrencies([]);
       queryToken({
@@ -174,19 +175,20 @@ export default function CurrencySelect({
           )}
         </div>
         <div className='flex items-center gap-[44px] text-[14px] px-[30px] py-[12px] border-b border-[##373A53]'>
-          {TABS.map((_tab) => (
-            <div
-              key={_tab}
-              className={`cursor-pointer ${
-                _tab === tab ? 'opacity-100' : 'opacity-50'
-              }`}
-              onClick={() => {
-                setTab(_tab);
-              }}
-            >
-              {_tab}
-            </div>
-          ))}
+          {!!onImport &&
+            TABS.map((_tab) => (
+              <div
+                key={_tab}
+                className={`cursor-pointer ${
+                  _tab === tab ? 'opacity-100' : 'opacity-50'
+                }`}
+                onClick={() => {
+                  setTab(_tab);
+                }}
+              >
+                {_tab}
+              </div>
+            ))}
         </div>
         <div className='h-[calc(60vh-120px)] overflow-x-auto'>
           {loading && (

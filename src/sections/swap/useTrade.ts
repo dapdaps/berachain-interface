@@ -82,20 +82,27 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
           return;
         }
 
+        const params: any = {
+          inputCurrency,
+          outputCurrency,
+          inputAmount: inputCurrencyAmount,
+          slippage: slippage / 100 || 0.005,
+          account
+        };
+
+        if (typeof template === 'string') {
+          params.template = template;
+        } else {
+          params.templates = template;
+        }
+
         const response = await fetch('/dapdap/quoter', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            params: JSON.stringify({
-              template,
-              inputCurrency,
-              outputCurrency,
-              inputAmount: inputCurrencyAmount,
-              slippage: slippage / 100 || 0.005,
-              account
-            })
+            params: JSON.stringify(params)
           })
         });
         const result = await response.json();
@@ -103,10 +110,13 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         if (!data) {
           throw new Error('No Data.');
         }
+        setLoading(false);
         if (
-          `${inputCurrency.address}-${outputCurrency.address}-${inputCurrencyAmount}` ===
+          `${inputCurrency.address}-${outputCurrency.address}-${inputCurrencyAmount}` !==
           lastestCachedKey.current
-        ) {
+        )
+          return;
+        if (typeof template === 'string') {
           const _trade = {
             ...formatTrade({
               market: { ...data, template },
@@ -120,8 +130,26 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
           };
 
           setTrade(_trade);
+          return;
         }
-        setLoading(false);
+        console.log(data);
+        const _markets = data
+          .filter((item: any) => Big(item.outputCurrencyAmount || 0).gt(0))
+          .sort(
+            (a: any, b: any) => b.outputCurrencyAmount - a.outputCurrencyAmount
+          )
+          .map((item: any) => {
+            return formatTrade({
+              market: item,
+              rawBalance,
+              gasPrice,
+              prices,
+              inputCurrency,
+              outputCurrency,
+              inputCurrencyAmount
+            });
+          });
+        setTrade(_markets[0]);
       } catch (err) {
         console.log(err);
         setTrade(null);

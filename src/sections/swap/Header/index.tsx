@@ -1,9 +1,9 @@
 import Setting from './Setting';
 
-export default function Header() {
+export default function Header({ showSetting }: any) {
   return (
     <div className='h-[50px] flex justify-end items-center mt-[-20px]'>
-      <Setting />
+      {showSetting && <Setting />}
     </div>
   );
 }
