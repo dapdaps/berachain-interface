@@ -39,14 +39,13 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Montserrat;
-  cursor: url('../../public/images/cursor.svg'), auto;
 }
 
 body,
 button,
 a,
 .cursor-pointer {
-  cursor: url('/images/cursor.svg'), auto !important;
+  cursor: url('/images/cursor.svg') 12 0, auto !important;
 }
 
 @layer utilities {
@@ -74,13 +73,13 @@ div::-webkit-scrollbar-track {
 }
 body::-webkit-scrollbar-thumb,
 div::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   cursor: pointer;
 }
 body::-webkit-scrollbar-thumb:hover,
 div::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 input {
@@ -91,14 +90,13 @@ input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-.mp-list tbody tr:nth-child(odd) td {
-  background-color: #0000000F;
-  
+.mp-list .tr:nth-child(odd) .td {
+  background-color: #0000000f;
 }
-.mp-list tbody tr:nth-child(odd) td:first-child {
+.mp-list .tr:nth-child(odd) .td:first-child {
   border-radius: 10px 0 0 10px;
 }
 
-.mp-list tbody tr:nth-child(odd) td:last-child {
+.mp-list .tr:nth-child(odd) .td:last-child {
   border-radius: 0 10px 10px 0;
 }

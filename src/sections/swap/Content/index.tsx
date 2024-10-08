@@ -18,9 +18,15 @@ import chains from '@/configs/chains';
 
 type Props = {
   dapp: any;
+  outputCurrencyReadonly?: boolean;
+  showSetting?: boolean;
 };
 
-export default function Swap({ dapp }: Props) {
+export default function Swap({
+  dapp,
+  outputCurrencyReadonly = false,
+  showSetting = true
+}: Props) {
   const [inputCurrencyAmount, setInputCurrencyAmount] = useState('');
   const [outputCurrencyAmount, setOutputCurrencyAmount] = useState('');
   const [inputCurrency, setInputCurrency] = useState<any>(
@@ -121,7 +127,7 @@ export default function Swap({ dapp }: Props) {
 
   return (
     <Card>
-      <Header />
+      <Header showSetting={showSetting} />
       <TokenAmout
         type='in'
         currency={inputCurrency}
@@ -162,6 +168,7 @@ export default function Swap({ dapp }: Props) {
         prices={{}}
         account
         onCurrencySelectOpen={() => {
+          if (outputCurrencyReadonly) return;
           setDisplayCurrencySelect(true);
           setSelectType('out');
           setSelectedTokenAddress(outputCurrency?.address);

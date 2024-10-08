@@ -52,6 +52,7 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
               'border-black',
               'text-[14px]',
               'text-black',
+              'cursor-pointer',
               {
                 'bg-[#E9E3B5]': index + 1 === currentPage,
                 border: index + 1 === currentPage

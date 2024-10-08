@@ -11,7 +11,13 @@ interface TokenInfo {
   walletValue: string;
 }
 
-const SupplyBorrowPanel: React.FC = () => {
+interface IProps {
+  markets: TokenInfo[];
+}
+
+const SupplyBorrowPanel: React.FC<IProps> = ({
+  markets,
+}) => {
   const [tokens, setTokens] = useState<TokenInfo[]>([
     {
       name: "WETH",

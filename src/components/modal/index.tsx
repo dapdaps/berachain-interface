@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   closeIcon,
   style,
-  className,
+  className
 }) => {
   if (!open) return null;
 
@@ -27,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ${className}`}
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] ${className}`}
       style={style}
       onClick={handleBackdropClick}
     >

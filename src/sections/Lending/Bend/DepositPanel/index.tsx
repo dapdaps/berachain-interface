@@ -2,39 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import IconPlus from "@public/images/modal/plus.svg";
 import IconMinus from "@public/images/modal/minus.svg";
 import ActionModal from "../Action";
+import { formatDisplayCurrency, formatDisplayNumber } from "@/utils/formatMoney";
+import { TokenInfo } from "../useBend";
 
-interface TokenInfo {
-  name: string;
-  icon: string;
-  deposited: number;
-  inWallet: number;
-  depositedValue: string;
-  walletValue: string;
+
+
+interface IProps {
+  markets: TokenInfo[];
+  userAccountData: any;
 }
 
-const DepositPanel: React.FC = () => {
-  const [tokens, setTokens] = useState<TokenInfo[]>([
-    {
-      name: "WETH",
-      icon: "eth-icon",
-      deposited: 0.23,
-      inWallet: 0.0,
-      depositedValue: "$1.56",
-      walletValue: "$0.00",
-    },
-    {
-      name: "WBTC",
-      icon: "btc-icon",
-      deposited: 0.0,
-      inWallet: 0.001,
-      depositedValue: "$0.00",
-      walletValue: "$64.25",
-    },
-  ]);
+const DepositPanel: React.FC<IProps> = ({
+  markets,
+  userAccountData
+}) => {
+  
   const [openModal, setOpenModal] = useState<any>(null);
-  const [modalType, setModalType] = useState("");
   const actionRef = useRef<any>(null);
-
+  
   const handleAction = (tokenName: any, action: any) => {
     setOpenModal({ tokenName, action });
   };
@@ -44,7 +29,7 @@ const DepositPanel: React.FC = () => {
   };
 
 
-  const handleClickOutside = (e: MouseEvent) => {
+  const handleClickOutside = (e) => {
     if (actionRef.current && !actionRef.current.contains(e.target)) {
       closeModal();
     }
@@ -57,6 +42,8 @@ const DepositPanel: React.FC = () => {
     };
   }, []);
 
+  console.log(userAccountData, 'userAccountData');
+  
 
   return (
     <div className="h-[490px]">
@@ -118,15 +105,17 @@ const DepositPanel: React.FC = () => {
           <div className="w-[219px]">In Wallet</div>
           <div className="w-[80px]">Action</div>
         </div>
-        {tokens.map((token, index) => (
+        {(markets || []).map((token, index) => (
           <div
             key={index}
             className="flex items-center px-[26px] py-3 w-[910px] bg-black bg-opacity-[0.06] rounded-[10px] mb-[10px] last:mb-0"
           >
             <div className="w-[340px] flex items-center">
-              <div className="w-10 h-10 bg-gray-300 rounded-full mr-2 flex items-center justify-center"></div>
+              <div className="w-10 h-10 rounded-full mr-2 flex items-center justify-center">
+                <img className="w-full" src={token.icon} alt="" />
+              </div>
               <span className="font-Montserrat text-base font-medium leading-4 text-left">
-                {token.name}
+                {token.symbol}
               </span>
             </div>
             <div className="w-[219px]">
@@ -137,18 +126,18 @@ const DepositPanel: React.FC = () => {
                     : "text-black"
                 }`}
               >
-                {token.deposited.toFixed(token.deposited === 0 ? 2 : 3)}
+                {formatDisplayNumber(token.underlyingBalance)}
               </div>
               <div className="mt-2 font-Montserrat text-[10px] font-normal leading-[9px] text-left text-gray-500">
-                {token.depositedValue}
+                {formatDisplayNumber(token.underlyingBalanceUSD)}
               </div>
             </div>
             <div className="w-[219px]">
               <div className="truncate font-Montserrat text-base font-semibold leading-4 text-left">
-                {token.inWallet.toFixed(3)}
+                {formatDisplayNumber(token.balance)}
               </div>
               <div className="mt-2 font-Montserrat text-[10px] font-normal leading-[9px] text-left text-gray-500">
-                {token.walletValue}
+                {formatDisplayCurrency(token.balanceInUSD)}
               </div>
             </div>
             <div className="w-[80px] flex justify-end space-x-2 relative">
