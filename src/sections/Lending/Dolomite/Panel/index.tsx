@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Popover, { PopoverPlacement } from '@/components/popover';
 import ActionPanel from '@/sections/Lending/components/action-panel';
 import Button from '@/components/button';
@@ -10,7 +10,9 @@ interface TokenInfo extends Token {
   APR: string;
   APY: string;
   balance: string;
+  balanceShown: string;
   walletBalance: string;
+  walletBalanceShown: string;
 }
 
 interface TabPanelProps {
@@ -23,9 +25,9 @@ interface TabPanelProps {
   totalRateLabel: string;
   totalBalanceLabel: string;
   loading?: boolean;
-  onDeposit: (symbol: string) => void;
-  onWithdraw: (symbol: string) => void;
+  CHAIN_ID: number;
   setRateKey: (rateKey: 'APY' | 'APR') => void;
+  onSuccess?(): void;
 }
 
 const Tabs: any = [
@@ -38,17 +40,15 @@ const TabPanel: React.FC<TabPanelProps> = ({
   totalRate,
   rateName,
   tokens,
-  onDeposit,
-  onWithdraw,
+  onSuccess,
   showRateSwitch = true,
   rateKey,
   setRateKey,
   totalRateLabel,
   totalBalanceLabel,
   loading,
+  CHAIN_ID,
 }) => {
-  const [isAlternateRate, setIsAlternateRate] = useState(false);
-
   return (
     <div className="h-[490px] max-h-[calc(100vh_-_300px)] overflow-x-hidden overflow-y-auto">
       <div className="flex mb-10 items-center">
@@ -115,8 +115,8 @@ const TabPanel: React.FC<TabPanelProps> = ({
                 </div>
               </div>
               <div className="font-[600] text-[16px]">{token[rateKey]}</div>
-              <div className="font-[600] text-[16px]">{token.balance}</div>
-              <div className="font-[600] text-[16px]">{token.walletBalance}</div>
+              <div className="font-[600] text-[16px]">{token.balanceShown}</div>
+              <div className="font-[600] text-[16px]">{token.walletBalanceShown}</div>
               <div className="flex space-x-[10px]">
                 <Popover
                   placement={PopoverPlacement.BottomRight}
@@ -126,13 +126,12 @@ const TabPanel: React.FC<TabPanelProps> = ({
                       actionText="Deposit"
                       placeholder="0.00"
                       token={token}
+                      CHAIN_ID={CHAIN_ID}
+                      onSuccess={onSuccess}
                     />
                   )}
                 >
-                  <Button
-                    style={{ width: 32 }}
-                    onClick={() => onDeposit(token.symbol)}
-                  >
+                  <Button style={{ width: 32 }}>
                     +
                   </Button>
                 </Popover>
@@ -145,13 +144,12 @@ const TabPanel: React.FC<TabPanelProps> = ({
                       placeholder="0.00"
                       token={token}
                       isSkipApproved={true}
+                      CHAIN_ID={CHAIN_ID}
+                      onSuccess={onSuccess}
                     />
                   )}
                 >
-                  <Button
-                    style={{ width: 32 }}
-                    onClick={() => onWithdraw(token.symbol)}
-                  >
+                  <Button style={{ width: 32 }}>
                     -
                   </Button>
                 </Popover>

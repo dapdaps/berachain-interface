@@ -1,19 +1,29 @@
 import Position from '@/sections/Lending/Dolomite/position/index';
 import PositionAdd from '@/sections/Lending/Dolomite/position/add';
+import Skeleton from 'react-loading-skeleton';
+import React from 'react';
 
 const PositionList = (props: any) => {
-  const { data } = props;
+  const { data, loading, ...restProps } = props;
 
   const positionList = data?.positionList || [];
 
   return (
     <div className="max-h-[calc(100vh_-_300px)] overflow-x-hidden overflow-y-auto">
       {
-        positionList.map((position: any, idx: number) => (
-          <Position key={idx} position={position} />
+        loading ? (
+          <div className="mb-[30px]">
+            <Skeleton height={151} />
+            <div className="flex justify-between items-stretch gap-[30px] mt-[24px]">
+              <Skeleton width={444} height={311} />
+              <Skeleton width={444} height={311} />
+            </div>
+          </div>
+        ) : positionList.map((position: any, idx: number) => (
+          <Position key={idx} position={position} {...restProps} />
         ))
       }
-      <PositionAdd markets={data?.markets} />
+      <PositionAdd markets={data?.markets} loading={loading} {...restProps} />
     </div>
   );
 };

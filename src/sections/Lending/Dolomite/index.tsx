@@ -10,6 +10,8 @@ import { numberFormatter } from '@/utils/number-formatter';
 import PositionList from '@/sections/Lending/Dolomite/position/list';
 import DappIcon from '@/components/dapp-icon';
 
+const CHAIN_ID = 80084;
+
 const { basic, networks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('../datas/dolomite'));
 
@@ -37,26 +39,6 @@ const LendingModal: React.FC<LendingModalProps> = () => {
     borrowTokens: [],
   });
 
-  const handleDeposit = (symbol: string) => {
-    console.log(`Depositing ${symbol}`);
-    // Implement deposit logic
-  };
-
-  const handleWithdraw = (symbol: string) => {
-    console.log(`Withdrawing ${symbol}`);
-    // Implement withdraw logic
-  };
-
-  const handleBorrow = (symbol: string) => {
-    console.log(`Borrowing ${symbol}`);
-    // Implement borrow logic
-  };
-
-  const handleRepay = (symbol: string) => {
-    console.log(`Repaying ${symbol}`);
-    // Implement repay logic
-  };
-
   useEffect(() => {
     if (!chainId) {
       return;
@@ -81,8 +63,10 @@ const LendingModal: React.FC<LendingModalProps> = () => {
         ...it,
         APR: it.lendAPR,
         APY: it.lendAPY,
-        balance: numberFormatter(it.balance, 4, true),
-        walletBalance: numberFormatter(it.walletBalance, 4, true),
+        balance: it.balance,
+        balanceShown: numberFormatter(it.balance, 4, true),
+        walletBalance: it.walletBalance,
+        walletBalanceShown: numberFormatter(it.walletBalance, 4, true),
       })),
       borrowTokens: tokenList.map((it: any) => ({
         ...it,
@@ -122,10 +106,12 @@ const LendingModal: React.FC<LendingModalProps> = () => {
                   totalRate={state[`earning${rateKey}`]}
                   rateName={`Earning ${rateKey}`}
                   tokens={state.supplyTokens}
-                  onDeposit={handleDeposit}
-                  onWithdraw={handleWithdraw}
                   rateKey={rateKey}
                   setRateKey={setRateKey}
+                  CHAIN_ID={CHAIN_ID}
+                  onSuccess={() => {
+                    setLoading(true);
+                  }}
                 />
               )
             },
@@ -134,7 +120,12 @@ const LendingModal: React.FC<LendingModalProps> = () => {
               label: 'Borrow',
               children: (
                 <PositionList
+                  loading={loading}
                   data={data}
+                  CHAIN_ID={CHAIN_ID}
+                  onSuccess={() => {
+                    setLoading(true);
+                  }}
                 />
               )
             },
@@ -144,7 +135,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
         />
       </div>
       <DolomiteData
-        {...networks[chainId + '']}
+        {...networks[CHAIN_ID + '']}
         {...basic}
         chainId={chainId}
         update={loading}

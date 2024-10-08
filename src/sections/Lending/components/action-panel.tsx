@@ -1,7 +1,15 @@
 import LendingButton from '@/sections/Lending/components/button';
-import type { Token } from '@/types';
-import { useEffect, useState } from 'react';
-import Big from 'big.js';
+import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
+import { useProvider } from '@/hooks/use-provider';
+import { useAccount } from 'wagmi';
+import DolomiteConfig from '@/configs/lending/dolomite';
+import { numberFormatter } from '@/utils/number-formatter';
+import { useHandler } from '@/sections/Lending/hooks/use-handler';
+
+const DolomiteHandler = dynamic(() => import('@/sections/Lending/handlers/dolomite'));
+
+const { basic, networks }: any = DolomiteConfig;
 
 const ActionPanel = (props: Props) => {
   const {
@@ -12,25 +20,39 @@ const ActionPanel = (props: Props) => {
     className,
     actionText,
     placeholder,
-    loading,
     inputDisabled,
+    CHAIN_ID,
+    onSuccess,
   } = props;
 
-  const [amount, setAmount] = useState('');
-  const [disabled, setDisabled] = useState(true);
-
-  const handleAmountChange = (ev: any) => {
-    if (isNaN(Number(ev.target.value))) return;
-    setAmount(ev.target.value.replace(/\s+/g, ''));
-  };
-
-  useEffect(() => {
-    let _disabled = false;
-    if (!amount || Big(amount).lte(0)) {
-      _disabled = true;
+  const networkConfig = networks[CHAIN_ID];
+  const balance = useMemo(() => {
+    if (actionText === 'Deposit') {
+      return {
+        value: token.walletBalance,
+        shown: numberFormatter(token.walletBalance, 2, true),
+      };
     }
-    setDisabled(_disabled);
-  }, [amount]);
+    return {
+      value: token.balance,
+      shown: numberFormatter(token.balance, 2, true),
+    };
+  }, [token, actionText]);
+
+  const { address, chainId } = useAccount();
+  const { provider } = useProvider();
+
+  const {
+    amount,
+    disabled,
+    loading,
+    txData,
+    isMax,
+    setLoading,
+    setTxData,
+    handleAmount,
+    handleBalance,
+  } = useHandler({ balance: balance.value });
 
   return (
     <div style={style} className={`w-[302px] h-[159px] border border-black rounded-[20px] bg-[#FFFDEB] shadow-shadow1 p-[23px_20px_20px] ${className}`}>
@@ -42,7 +64,7 @@ const ActionPanel = (props: Props) => {
           placeholder={placeholder}
           disabled={inputDisabled}
           className="w-full h-[40px] outline-[#FFDC50] leading-[38px] rounded-[12px] border border-[#373A53] bg-white text-[16px] font-[600] px-[10px]"
-          onChange={handleAmountChange}
+          onChange={handleAmount}
         />
       </div>
       <div className="flex justify-between items-center mt-[13px]">
@@ -50,12 +72,10 @@ const ActionPanel = (props: Props) => {
           Balance:&nbsp;
           <a
             href="javascript: void(0);"
-            className="underline decoration-solid"
-            onClick={() => {
-              handleAmountChange({ target: { value: '0' } });
-            }}
+            className="underline decoration-solid whitespace-nowrap"
+            onClick={handleBalance}
           >
-            0.00
+            {balance.shown}
           </a>
         </div>
         <LendingButton
@@ -65,14 +85,44 @@ const ActionPanel = (props: Props) => {
           style={{ fontSize: 14 }}
           amount={amount}
           token={token}
-          chain={{ chainId: 80084 }}
-          spender=""
-          onClick={() => {}}
+          chain={{ chainId: CHAIN_ID }}
+          spender={networkConfig.spenderAddress}
+          onSuccess={() => {
+            onSuccess?.();
+          }}
           isSkipApproved={isSkipApproved}
+          isApproveMax={true}
+          provider={provider}
+          unsignedTx={txData?.unsignedTx}
+          gas={txData?.gas}
+          config={{ ...basic, ...networkConfig }}
+          onApprovedSuccess={() => {
+            setLoading(true);
+          }}
         >
           {actionText}
         </LendingButton>
       </div>
+      <DolomiteHandler
+        data={{
+          config: {
+            ...basic,
+            ...networkConfig,
+          },
+          ...token,
+          actionText,
+        }}
+        provider={provider}
+        update={loading}
+        chainId={chainId}
+        account={address}
+        amount={isMax ? balance.value : amount}
+        onLoad={(txData: any) => {
+          console.log('%chandler DATA onLoad: %o', 'background: #6439FF; color:#fff;', txData);
+          setTxData(txData);
+          setLoading(false);
+        }}
+      />
     </div>
   );
 };
@@ -83,10 +133,11 @@ interface Props {
   title: string;
   actionText: string;
   placeholder?: string;
-  loading?: boolean;
   inputDisabled?: boolean;
   style?: React.CSSProperties;
   className?: string;
-  token: Token;
+  token: any;
   isSkipApproved?: boolean;
+  CHAIN_ID: number;
+  onSuccess?(): void;
 }

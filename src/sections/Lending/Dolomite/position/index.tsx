@@ -1,10 +1,19 @@
 import { numberFormatter } from '@/utils/number-formatter';
 import SwitchTabs from '@/components/switch-tabs';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Empty from '@/components/empty';
 import LendingButton from '@/sections/Lending/components/button';
 import TokenSelector from '@/sections/Lending/components/token-selector';
 import Big from 'big.js';
+import DolomiteConfig from '@/configs/lending/dolomite';
+import { useAccount } from 'wagmi';
+import { useProvider } from '@/hooks/use-provider';
+import dynamic from 'next/dynamic';
+import { useHandler } from '@/sections/Lending/hooks/use-handler';
+
+const DolomiteHandler = dynamic(() => import('@/sections/Lending/handlers/dolomite'));
+
+const { basic, networks }: any = DolomiteConfig;
 
 const Tabs = [
   { value: 'Add Collateral', label: 'Add' },
@@ -13,24 +22,44 @@ const Tabs = [
   { value: 'Repay', label: 'Repay' },
 ];
 
-const CHAIN_ID = 80084;
-
 const Position = (props: Props) => {
-  const { position, loading } = props;
+  const { position, CHAIN_ID, onSuccess } = props;
+
+  const networkConfig = networks[CHAIN_ID];
+
+  const { address, chainId } = useAccount();
+  const { provider } = useProvider();
 
   const [currentTab, setCurrentTab] = useState(Tabs[0].value);
-  const [amount, setAmount] = useState('');
-  const [disabled, setDisabled] = useState(true);
   const [tokens, setTokens] = useState<any>([]);
   const [tokenSelectVisible, setTokenSelectVisible] = useState<any>(false);
   const [tokenSelected, setTokenSelected] = useState<any>();
 
-  const handleAmountChange = (ev: any) => {
-    if (isNaN(Number(ev.target.value))) return;
-    setAmount(ev.target.value.replace(/\s+/g, ''));
-  };
+  const {
+    amount,
+    disabled,
+    loading,
+    txData,
+    isMax,
+    setAmount,
+    setLoading,
+    setTxData,
+    handleAmount,
+    handleBalance,
+  } = useHandler({ balance: tokenSelected?.balance });
 
-  const handleSubmit = () => {};
+  const isClosePosition = useMemo(() => {
+    if (currentTab !== Tabs[1].value) return false;
+    if (Big(position.totalBorrowedUsdValue).gt(0)) return false;
+    if (!amount) return false;
+    return Big(amount).times(tokenSelected.price).gte(position.totalBorrowedUsdValue);
+  }, [currentTab, position, amount, tokenSelected]);
+
+  const isRepayAll = useMemo(() => {
+    if (currentTab !== Tabs[3].value) return false;
+    if (!amount) return false;
+    return Big(amount).gte(tokenSelected.balance);
+  }, [currentTab, position, amount, tokenSelected]);
 
   const handleCurrentTab = (tab: string) => {
     if (tab === currentTab) return;
@@ -64,14 +93,6 @@ const Position = (props: Props) => {
     setTokenSelected(_tokens[0]);
   }, []);
 
-  useEffect(() => {
-    let _disabled = false;
-    if (!amount || Big(amount).lte(0)) {
-      _disabled = true;
-    }
-    setDisabled(_disabled);
-  }, [amount]);
-
   return (
     <div className="mb-[24px]">
       <div className="bg-[#FFDC50] rounded-[10px] p-[16px_19px]">
@@ -80,7 +101,7 @@ const Position = (props: Props) => {
           <Summary label="Collateral" value={position.totalCollateralUsd} prefix="$" />
           <Summary label="Borrowing" value={position.totalBorrowedUsd} prefix="$" />
           <Summary label="Health" value={position.healthFactor} />
-          <Summary label="Net interest" value="100" unit="%" />
+          <Summary label="Net interest" value="0" unit="%" />
         </div>
       </div>
       <div className="flex justify-between items-stretch gap-[30px] mt-[24px]">
@@ -185,7 +206,7 @@ const Position = (props: Props) => {
                 className="w-full h-full border border-[#373A53] bg-white rounded-[12px] text-[26px] font-[700] pl-[20px] pr-[200px]"
                 placeholder="0"
                 value={amount}
-                onChange={handleAmountChange}
+                onChange={handleAmount}
               />
             </div>
             <div className="flex justify-end items-center py-[12px]">
@@ -193,9 +214,7 @@ const Position = (props: Props) => {
                 balance:&nbsp;
                 <span
                   className="underline"
-                  onClick={() => {
-                    handleAmountChange({ target: { value: Big(tokenSelected?.balance).toFixed(tokenSelected?.decimals, 0) } });
-                  }}
+                  onClick={handleBalance}
                 >
                   {numberFormatter(tokenSelected?.balance, 4, true)}
                 </span>
@@ -209,9 +228,18 @@ const Position = (props: Props) => {
               amount={amount}
               token={tokenSelected}
               chain={{ chainId: CHAIN_ID }}
-              spender=""
-              onClick={handleSubmit}
+              spender={networkConfig.spenderAddress}
               isSkipApproved={true}
+              provider={provider}
+              unsignedTx={txData?.unsignedTx}
+              gas={txData?.gas}
+              config={{ ...basic, ...networkConfig }}
+              onApprovedSuccess={() => {
+                setLoading(true);
+              }}
+              onSuccess={() => {
+                onSuccess?.();
+              }}
             >
               {currentTab}
             </LendingButton>
@@ -229,6 +257,29 @@ const Position = (props: Props) => {
           setTokenSelected(token);
         }}
       />
+      <DolomiteHandler
+        data={{
+          config: {
+            ...basic,
+            ...networkConfig,
+          },
+          ...tokenSelected,
+          position,
+          actionText: currentTab,
+          isClosePosition,
+          isRepayAll,
+        }}
+        provider={provider}
+        update={loading}
+        chainId={chainId}
+        account={address}
+        amount={isMax ? tokenSelected?.balance : amount}
+        onLoad={(txData: any) => {
+          console.log('%chandler DATA onLoad: %o', 'background: #6439FF; color:#fff;', txData);
+          setTxData(txData);
+          setLoading(false);
+        }}
+      />
     </div>
   );
 };
@@ -237,8 +288,8 @@ export default Position;
 
 interface Props {
   position: any;
-  disabled?: boolean;
-  loading?: boolean;
+  CHAIN_ID: number;
+  onSuccess?(): void;
 }
 
 const Summary = (props: SummaryProps) => {
@@ -280,7 +331,7 @@ const TokenItem = (props: TokenItemProps) => {
           <div className="text-[10px] font-[400] text-black mt-[2px]">{name}</div>
         </div>
       </div>
-      <div className="">
+      <div className="text-right">
         <div className="text-[16px] font-[600] text-black">{amount}</div>
         <div className="text-[10px] font-[400] text-black mt-[2px]">{value}</div>
       </div>

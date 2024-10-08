@@ -561,7 +561,6 @@ const DolomiteHandler = (props: any) => {
     if (!data.actionText || !data.underlyingToken) return;
 
     if (!isCollateral && !update) return;
-    console.log('HANDLER--', isCollateral, update, data);
     const isNative = data.underlyingToken.isNative;
 
     let options: any = {};
@@ -705,8 +704,6 @@ const DolomiteHandler = (props: any) => {
 
     if (!contract) return;
 
-    console.log('HANDLER--', contract, method, params);
-
     const createTx = (gas?: any) => {
       const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : 4000000;
       contract.populateTransaction[method](...params, {
@@ -721,6 +718,7 @@ const DolomiteHandler = (props: any) => {
           });
         })
         .catch((err: any) => {
+          console.log('createTx failure: %o', err);
           onLoad({});
         });
     };
@@ -730,7 +728,7 @@ const DolomiteHandler = (props: any) => {
         createTx(gas);
       })
       .catch((err: any) => {
-        console.log('estimateGas', err);
+        console.log('estimateGas failure: %o', err);
         createTx();
       });
   }, [update]);
