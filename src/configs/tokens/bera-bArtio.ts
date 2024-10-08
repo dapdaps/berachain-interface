@@ -34,7 +34,7 @@ export const beraB: { [key: string]: Token } = {
     decimals: 6,
     symbol: 'USDT',
     name: 'Tether USD',
-    icon: 'https://ipfs.near.social/ipfs/bafkreih45jy7ggj45ck34rf736kb67smsoa52wd7e46c2grh6etd3bhe5i'
+    icon: '/assets/tokens/usdt.png'
   },
   usdc: {
     chainId: CHAIN_ID,
@@ -42,7 +42,7 @@ export const beraB: { [key: string]: Token } = {
     decimals: 6,
     symbol: 'USDC',
     name: 'USD Coin',
-    icon: 'https://ipfs.near.social/ipfs/bafkreie4jihoa76mgyzxhw2yrapihzu2qhkjz6m7u4opoxjebzg6zc2lla'
+    icon: '/assets/tokens/usdc.png'
   },
   dai: {
     chainId: CHAIN_ID,
@@ -50,7 +50,7 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
-    icon: 'https://ipfs.near.social/ipfs/bafkreieuxntkdzi2mzkzdcbk6kahwxqpftxnipxcwc4oe4p4jm2rhj2xhu'
+    icon: '/assets/tokens/dai.png'
   },
   wbtc: {
     chainId: CHAIN_ID,
@@ -58,7 +58,7 @@ export const beraB: { [key: string]: Token } = {
     decimals: 8,
     symbol: 'WBTC',
     name: 'Wrapped BTC',
-    icon: 'https://ipfs.near.social/ipfs/bafkreigdklwcldjo4w7viyrym54hdb43wgpv23mbicetszygzapttbgo7q'
+    icon: '/assets/tokens/wbtc.png'
   },
   weth: {
     chainId: CHAIN_ID,
@@ -66,7 +66,7 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: 'WETH',
     name: 'Wrapped Ether',
-    icon: 'https://ipfs.near.social/ipfs/bafkreihyzmiuawyekwiyofkzm25xzrrfenhvadi6lb42juvq7tah2u7ha4'
+    icon: '/assets/tokens/weth.png'
   },
   eth: {
     chainId: CHAIN_ID,
@@ -74,6 +74,6 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: 'ETH',
     name: 'Ethereum',
-    icon: 'https://ipfs.near.social/ipfs/bafkreibspnls7q67q25r2ifv2rrfmvzl744pzuh3s5ekigeqkmyycl2auq'
+    icon: '/assets/tokens/eth.png'
   }
 };

@@ -8,12 +8,14 @@ type Props = {
   outputCurrencyReadonly?: boolean;
   defaultInputCurrency?: any;
   defaultOutputCurrency?: any;
+  dexs?: any;
 };
 
 export default function SwapModal({
   defaultInputCurrency,
   defaultOutputCurrency,
-  outputCurrencyReadonly = false
+  outputCurrencyReadonly = false,
+  dexs
 }: Props) {
   const [templates, tokens] = useMemo(() => {
     let _templates: string[] = [];
@@ -29,7 +31,7 @@ export default function SwapModal({
     <Modal open={true} onClose={() => {}}>
       <Content
         dapp={{
-          name: templates,
+          name: dexs || templates,
           tokens: { [DEFAULT_CHAIN_ID]: tokens },
           defaultInputCurrency,
           defaultOutputCurrency
