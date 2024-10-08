@@ -27,6 +27,8 @@ export interface TokenInfo {
   supplyRewardApy: string;
   borrowAPY: string;
   supplyAPY: string;
+  utilized: string;
+  aTokenAddress: string;
 }
 
 const useBend = () => {
@@ -37,12 +39,6 @@ const useBend = () => {
   const [multicallAddress, setMulticallAddress] = useState('');
   const [markets, setMarkets] = useState<TokenInfo[]>([]);
   const marketStore = useMarketStore()
-
-  const [updateCounter, setUpdateCounter] = useState(0);
-
-  const triggerUpdate = useCallback(() => {
-    setUpdateCounter(prev => prev + 1);
-  }, []);
 
   useEffect(() => {
     if (!chainId) return;
@@ -57,7 +53,7 @@ const useBend = () => {
       tokenPrice: prices[item.symbol] || 1
     }));
     setMarkets(updatedMarkets);
-    triggerUpdate()
+    marketStore.triggerUpdate()
   }, [network, prices]);
 
 
@@ -65,20 +61,21 @@ const useBend = () => {
     marketStore.setInitData({
       chainId, account, provider, config, multicallAddress, markets, prices
     })
-  }, [chainId, account, provider, updateCounter]);
+  }, [chainId, account, provider, marketStore.updateCounter]);
+
+  const init = async () => {
+    await marketStore.getBendSupplyBalance();
+    await marketStore.getBendSupply();
+    await marketStore.getUserAccountData();
+    await marketStore.getUserDebts();
+    await marketStore.getPoolDataProvider();
+    await marketStore.calculateNetBaseData();
+  };
 
   useEffect(() => {
-    const init = async () => {
-      await marketStore.getBendSupplyBalance();
-      await marketStore.getBendSupply();
-      await marketStore.getUserAccountData();
-      await marketStore.getUserDebts();
-    };
-
     if (!chainId || !markets.length ) return
-
     init();
-  }, [updateCounter, markets, chainId]);
+  }, [marketStore.updateCounter, markets, chainId]);
 
 
   return {

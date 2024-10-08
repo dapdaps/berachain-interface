@@ -17,15 +17,20 @@ export const formatDisplayNumber = (
     prefix = '',
     suffix = ''
   } = options;
-  if (!value) return '-'
+
+  if (value === undefined || value === null || value === '') return '-';
+
   const bigValue = new Big(value);
+
+  if (bigValue.eq(0)) return '-';
 
   if (bigValue.lt(threshold)) {
     return `${prefix}<${threshold}${suffix}`;
   }
 
-  return `${prefix}${bigValue.toFixed(maximumFractionDigits, 1)}${suffix}`;
+  return `${prefix}${bigValue.toFixed(maximumFractionDigits)}${suffix}`;
 };
+
 
 export const formatDisplayCurrency = (
   value: number | string,
