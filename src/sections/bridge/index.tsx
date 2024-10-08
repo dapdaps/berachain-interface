@@ -10,7 +10,7 @@ export default function Bridge() {
 
   return (
     <div className='w-[520px] m-auto relative z-10'>
-      <div className='text-[60px] text-center py-[30px]'>Bridge</div>
+      <div className='text-[60px] text-center py-[30px] font-CherryBomb'>Bridge</div>
       <Card>
         <TokenAmout />
         <div className='h-[8px] flex justify-center items-center'>
