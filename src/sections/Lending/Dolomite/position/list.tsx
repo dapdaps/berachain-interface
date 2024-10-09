@@ -2,11 +2,19 @@ import Position from '@/sections/Lending/Dolomite/position/index';
 import PositionAdd from '@/sections/Lending/Dolomite/position/add';
 import Skeleton from 'react-loading-skeleton';
 import React from 'react';
+import { beraB } from '@/configs/tokens/bera-bArtio';
 
 const PositionList = (props: any) => {
   const { data, loading, ...restProps } = props;
 
   const positionList = data?.positionList || [];
+
+  const markets: any = data?.markets ?? {};
+  const addMarkets: any = {};
+  for (const market in markets) {
+    if (market.toLowerCase() === beraB['wbera'].address.toLowerCase()) continue;
+    addMarkets[market] = markets[market];
+  }
 
   return (
     <div className="max-h-[calc(100vh_-_300px)] overflow-x-hidden overflow-y-auto">
@@ -23,7 +31,7 @@ const PositionList = (props: any) => {
           <Position key={idx} position={position} {...restProps} />
         ))
       }
-      <PositionAdd markets={data?.markets} loading={loading} {...restProps} />
+      <PositionAdd markets={addMarkets} loading={loading} {...restProps} />
     </div>
   );
 };

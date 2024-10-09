@@ -10,7 +10,7 @@ import { MarketplaceContext, useMarketplaceContext } from '@/sections/marketplac
 const Lending = dynamic(() => import('@/sections/marketplace/components/dapps/lending'));
 
 export default memo(function List() {
-  const context = useMarketplaceContext();
+  const context = useMarketplaceContext({ chainId: 80084 });
 
   return (
     <MarketplaceContext.Provider value={context}>
