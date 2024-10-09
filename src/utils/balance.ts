@@ -91,6 +91,17 @@ export function getFullNum(value: any) {
   return value;
 }
 
+export function formatPrice(price: number) {
+  if (!price || isNaN(price)) return '-';
+  let digits = 0;
+  if (Big(price).gt(10000)) digits = 1;
+  if (Big(price).gt(100) && Big(price).lt(9999)) digits = 2;
+  if (Big(price).gt(10) && Big(price).lt(99)) digits = 3;
+  if (Big(price).gt(1) && Big(price).lt(10)) digits = 4;
+  if (digits === 0) digits = 7;
+  return balanceFormated(price, digits);
+}
+
 export const simplifyNumber = function (number: number, decimal: number) {
   if (typeof Number(number) !== 'number') return 0;
   if (isNaN(Number(number))) return 0;
@@ -104,7 +115,13 @@ export const simplifyNumber = function (number: number, decimal: number) {
     return Big(number).toFixed(decimal);
   }
 };
-export const formatValueDecimal = function (value: any, unit = '', decimal = 0, simplify = false, showLine = true) {
+export const formatValueDecimal = function (
+  value: any,
+  unit = '',
+  decimal = 0,
+  simplify = false,
+  showLine = true
+) {
   const target = Big(1).div(Math.pow(10, decimal));
   if (isNaN(value) || value === '' || Big(value ?? 0).eq(0)) {
     if (showLine) {
@@ -116,9 +133,17 @@ export const formatValueDecimal = function (value: any, unit = '', decimal = 0, 
     if (Big(value).lt(target)) {
       return `<${unit}${target}`;
     } else {
-      return unit + (simplify ? simplifyNumber(value, decimal) : Big(value).toFixed(decimal));
+      return (
+        unit +
+        (simplify
+          ? simplifyNumber(value, decimal)
+          : Big(value).toFixed(decimal))
+      );
     }
   } else {
-    return unit + (simplify ? simplifyNumber(value, decimal) : Big(value).toFixed(decimal));
+    return (
+      unit +
+      (simplify ? simplifyNumber(value, decimal) : Big(value).toFixed(decimal))
+    );
   }
 };

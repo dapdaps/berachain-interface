@@ -1,9 +1,7 @@
 import Big from 'big.js';
 import { memo, useEffect, useState } from 'react';
-
-import { usePriceStore } from '@/stores/price';
-
-import { getAnotherAmountOut } from '../../AddLiquidity/helpers';
+import { usePriceStore } from '@/stores/usePriceStore';
+import { getAnotherAmountOut } from '../../helpers';
 import Input from './input';
 import { StyledContainer, StyledSubtitle } from './styles';
 
@@ -47,7 +45,7 @@ const DepositAmounts = ({
           upperPrice: isReversed ? 1 / lowerPrice : upperPrice,
           amount: value,
           isToken0,
-          isFullRange: rangeType === 3
+          isFullRange: rangeType === 3 || rangeType === 0
         })
       : '';
 

@@ -9,9 +9,19 @@ type Props = {
   title: string;
   children: React.ReactNode;
   dex: string;
+  fee?: number;
+  version?: string;
+  onClearAll?: VoidFunction;
 };
 
-export default function BasicModal({ children, title, dex }: Props) {
+export default function BasicModal({
+  children,
+  title,
+  dex,
+  fee,
+  version,
+  onClearAll
+}: Props) {
   const pool = useMemo(() => pools[dex?.toLowerCase()], [dex]);
   return (
     <Modal
@@ -21,8 +31,25 @@ export default function BasicModal({ children, title, dex }: Props) {
     >
       <div className='px-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black'>
         <div className='pt-[27px] pb-[10px] flex justify-between'>
-          <div className='text-[20px] font-bold'>{title}</div>
-          <Setting />
+          <div className='flex items-center gap-[10px]'>
+            <div className='text-[20px] font-bold'>{title}</div>
+            {fee && (
+              <div className='border border-[#373A53] bg-white px-[4px] py-[2px] rounded-[6px] text-[12px] text-[#3D405A]'>
+                {fee / 1e4}%
+              </div>
+            )}
+          </div>
+          <div className='flex items-center gap-[10px]'>
+            {version === 'v3' && (
+              <button
+                className='text-[#FE6360] text-[14px] underline'
+                onClick={onClearAll}
+              >
+                Clear all
+              </button>
+            )}
+            <Setting />
+          </div>
         </div>
         {pool && children}
         {pool && (

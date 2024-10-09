@@ -192,7 +192,7 @@ export default function useAddAction(source: string) {
       params.source = source;
       console.log('useAddAction params:', params);
 
-      axios.post('/api/action/add', params);
+      axios.post('/dapdap/api/action/add', params);
     },
     [chainId, account]
   );

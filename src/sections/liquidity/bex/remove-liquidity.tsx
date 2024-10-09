@@ -1,6 +1,5 @@
 'use client';
 
-import Big from 'big.js';
 import { memo, useMemo, useState } from 'react';
 import Tokens from '../components/tokens';
 import RemovePercent from '../components/remove-percent';
