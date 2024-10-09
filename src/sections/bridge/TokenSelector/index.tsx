@@ -1,17 +1,21 @@
 import Card from '@/components/card';
 import Modal from '@/components/modal/index';
+import { Token } from '@/types';
 
 interface Props {
   show: boolean;
   onClose: () => void;
+  tokenList: Token[];
+  token: Token;
+  onTokenSelect: (v: Token) => void;
 }
 
-export default function TokenSelector({ show, onClose }: Props) {
+export default function TokenSelector({ show, onClose, tokenList, token, onTokenSelect }: Props) {
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
         <div className='w-[520px]'>
-          <div className='flex items-center gap-[10px] cursor-pointer text-[20px]'>
+          <div onClick={() => { onClose() }} className='flex items-center gap-[10px] cursor-pointer text-[20px]'>
             <svg
               width='9'
               height='16'
@@ -62,20 +66,28 @@ export default function TokenSelector({ show, onClose }: Props) {
           </div>
 
           <div className='h-[400px] overflow-auto mt-[5px]'>
-            <div className='flex items-center justify-between h-[52px] px-[10px] rounded-[10px] cursor-pointer hover:bg-[#0000000F]'>
-              <div className='flex items-center gap-2'>
-                <img
-                  className='w-[26px] h-[26px]'
-                  src='https://s3.amazonaws.com/dapdap.main/avatar/0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef1727332750443'
-                />
-                <div>
-                  <div className='text-[16px] font-[600] '>BERA</div>
-                  <div className='text-[10px] font-[400]'>Berachain token</div>
+            {
+              tokenList.map((item: Token) => {
+                return <div key={item.symbol} onClick={() => {
+                  onTokenSelect(item)
+                  onClose()
+                }} className={'flex items-center justify-between h-[52px] px-[10px] rounded-[10px] cursor-pointer hover:bg-[#0000000F] ' + (token === item ? 'bg-[#0000000F]' : '')}>
+                <div className='flex items-center gap-2'>
+                  <img
+                    className='w-[26px] h-[26px]'
+                    src={ item.icon }
+                  />
+                  <div>
+                    <div className='text-[16px] font-[600] '>{ item.symbol }</div>
+                    <div className='text-[10px] font-[400]'>{ item.name }</div>
+                  </div>
                 </div>
+  
+                <div className='font-[600] text-[16px]'>123.33</div>
               </div>
-
-              <div className='font-[600] text-[16px]'>123.33</div>
-            </div>
+              })
+            }
+            
           </div>
         </div>
       </Card>

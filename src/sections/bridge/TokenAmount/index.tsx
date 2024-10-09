@@ -2,8 +2,24 @@
 
 import { useState } from 'react';
 import TokenSelector from '../TokenSelector';
+import allTokens from '@/configs/allTokens'
+import { Chain } from 'viem';
+import { Token } from '@/types';
+import chains, { icons } from '@/configs/chains'
 
-export default function TokenAmout() {
+interface Props {
+  chain: Chain;
+  token: Token;
+  disabledInput?: boolean;
+  onTokenChange: (v: Token) => void;
+}
+
+export default function TokenAmout({
+  chain,
+  token,
+  disabledInput = false,
+  onTokenChange
+}: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
 
   return (
@@ -16,19 +32,19 @@ export default function TokenAmout() {
           className='border cursor-pointer flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]'
         >
           <div className='flex items-center gap-[10px]'>
-            <div className='relative'>
+            <div className='relative w-[26px]'>
               <img
                 className='w-[26px] h-[26px]'
-                src='https://s3.amazonaws.com/dapdap.main/avatar/0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef1727332750443'
+                src={token?.icon}
               />
               <img
                 className='w-[10px] h-[10px] absolute right-0 bottom-0'
-                src='https://s3.amazonaws.com/dapdap.main/avatar/0x86cdcd7fa9f3b24d68cbdd9170c3662036bdc2ef1727332750443'
+                src={icons[chain.id]}
               />
             </div>
             <div>
-              <div className='text-[16px] font-[600]'>ETH</div>
-              <div className='text-[12px] font-medium '>Ethereum</div>
+              <div className='text-[16px] font-[600] whitespace-nowrap overflow-hidden text-ellipsis'>{ token?.symbol }</div>
+              <div className='text-[12px] font-medium '>{ chain.name }</div>
             </div>
           </div>
           <svg
@@ -47,7 +63,7 @@ export default function TokenAmout() {
           </svg>
         </div>
         <div className='flex-1'>
-          <input className='w-[100%] h-[100%] text-[26px] text-right' />
+          <input className='w-[100%] h-[100%] text-[26px] text-right' disabled={disabledInput}/>
         </div>
       </div>
 
@@ -58,6 +74,9 @@ export default function TokenAmout() {
 
       <TokenSelector
         show={tokenSelectorShow}
+        tokenList={allTokens[chain.id]}
+        token={token}
+        onTokenSelect={onTokenChange}
         onClose={() => {
           setTokenSelectorShow(false);
         }}

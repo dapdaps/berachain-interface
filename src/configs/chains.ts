@@ -1,4 +1,5 @@
 import { Chain } from 'viem';
+import { mainnet, polygonZkEvm } from 'viem/chains';
 
 const chains: Record<number, Chain | any> = {
   80084: {
@@ -17,11 +18,15 @@ const chains: Record<number, Chain | any> = {
         url: 'https://bartio.beratrail.io'
       }
     }
-  }
+  },
+  [mainnet.id]: mainnet,
+  [polygonZkEvm.id]: polygonZkEvm
 };
 
 export const icons: Record<number, string> = {
-  80084: '/images/berachain.png'
+  80084: '/images/berachain.png',
+  1: 'https://app.dapdap.net/assets/images/bafkreicjsbkvvcxahxjejkctwopcnmzbeskxhfrkg7lyawhkhzrxcmvgfy.svg',
+  1101: 'https://s3.amazonaws.com/dapdap.main/images/polygon-zkevm-chainicon.png'
 };
 
 export default chains;
