@@ -7,6 +7,7 @@ interface ModalProps {
   closeIcon?: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
+  closeIconClassName?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -15,7 +16,8 @@ const Modal: React.FC<ModalProps> = ({
   children,
   closeIcon,
   style,
-  className
+  className,
+  closeIconClassName
 }) => {
   if (!open) return null;
 
@@ -32,14 +34,14 @@ const Modal: React.FC<ModalProps> = ({
       onClick={handleBackdropClick}
     >
       <div className='rounded-lg relative'>
-        {closeIcon || (
+        {closeIcon || onClose ? (
           <button
             onClick={onClose}
-            className='absolute top-5 right-5 cursor-pointer z-100'
+            className={`absolute top-5 right-5 cursor-pointer z-100 ${closeIconClassName}`}
           >
             <IconClose />
           </button>
-        )}
+        ) : null}
         {children}
       </div>
     </div>

@@ -5,6 +5,7 @@ import SearchBox from '../searchbox';
 import List from '../list';
 import dexs from '@/configs/swap';
 import { DEFAULT_CHAIN_ID } from '@/configs';
+import SwapModal from '@/sections/swap/SwapModal';
 
 const PAGE_SIZE = 9;
 

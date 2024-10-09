@@ -8,30 +8,37 @@ type Props = {
   outputCurrencyReadonly?: boolean;
   defaultInputCurrency?: any;
   defaultOutputCurrency?: any;
-  dexs?: any;
+  protocols?: any;
+  show: boolean;
+  onClose: () => void;
 };
 
 export default function SwapModal({
   defaultInputCurrency,
   defaultOutputCurrency,
   outputCurrencyReadonly = false,
-  dexs
+  protocols,
+  show,
+  onClose
 }: Props) {
   const [templates, tokens] = useMemo(() => {
     let _templates: string[] = [];
     let _tokens: any[] = [];
-    Object.values(dexs).forEach((dex: any) => {
+    const _dexs = protocols
+      ? protocols.map((protocol: any) => dexs[protocol.toLowerCase()])
+      : Object.values(dexs);
+    _dexs.forEach((dex: any) => {
       _templates.push(dex.name);
       _tokens = [...dex.tokens[DEFAULT_CHAIN_ID]];
     });
     return [_templates, _tokens];
-  }, [dexs]);
+  }, [dexs, protocols]);
 
   return (
     <Modal open={true} onClose={() => {}}>
       <Content
         dapp={{
-          name: dexs || templates,
+          name: templates,
           tokens: { [DEFAULT_CHAIN_ID]: tokens },
           defaultInputCurrency,
           defaultOutputCurrency
