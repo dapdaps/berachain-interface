@@ -2,11 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import Big from "big.js";
 import { ethers } from "ethers";
 import useAddAction from "@/hooks/use-add-action";
-import useAaveConfig from "@/stores/useAaveConfigStore";
-import useMarketStore from "@/stores/useMarketStore";
 import { isValid } from "@/utils/utils";
-
-const MIN_ETH_GAS_FEE = 0.001;
 
 interface TokenInfo {
   symbol: string;
@@ -29,7 +25,7 @@ interface UseAaveActionsProps {
   triggerUpdate: () => void;
 }
 
-export const useActions = ({
+export const useDepositAndWithdraw = ({
   token,
   isDeposit,
   provider,
@@ -78,7 +74,6 @@ export const useActions = ({
       .getSigner()
       .getAddress()
       .then(async (userAddress: string) => {
-        debugger
         const address = isDeposit ? underlyingAsset : aTokenAddress;
         const token = new ethers.Contract(
           address,
@@ -110,7 +105,7 @@ export const useActions = ({
     (_amount: string, status: number, transactionHash: string) => {
       addAction?.({
         type: "Lending",
-        action: "Supply",
+        action: isDeposit ? "Supply" : "Withdraw",
         token: {
           symbol,
         },

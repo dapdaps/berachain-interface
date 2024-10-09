@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
 
-import ActionModal from "../Action";
 import NetBase from "../NetBase";
 import { TokenInfo } from "../useBend";
 import useMarketStore from "@/stores/useMarketStore";
-
-
+import ActionModal from './actionModal'
+import DepositAction from '../Action'
+import Big from "big.js";
 interface IProps {
   markets: TokenInfo[];
 }
@@ -14,13 +14,12 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
   markets,
 }) => {
   const [openModal, setOpenModal] = useState<any>(null);
-  const [modalType, setModalType] = useState("");
   const actionRef = useRef<any>(null);
 
   const { userAccountData } = useMarketStore()
 
-  const handleAction = (tokenName: any, action: any) => {
-    setOpenModal({ tokenName, action });
+  const handleAction = (action: any) => {
+    setOpenModal({ action });
   };
 
   const closeModal = () => {
@@ -79,13 +78,23 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
               </span>
             </div>
           </div>
-          <div className="flex space-x-[14px] mt-[35px]">
-            <button className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
+          <div className="flex space-x-[14px] mt-[35px] relative">
+            <button onClick={() => handleAction('supply')} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
               Supply
             </button>
-            <button className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center">
+            <button onClick={() => handleAction('withdraw')} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center">
               Withdraw
             </button>
+            {
+              openModal && honeyInfo && ['supply', 'withdraw'].includes(openModal.action) &&  <DepositAction 
+              isOpen={true}
+              onClose={closeModal}
+              action={openModal.action}
+              token={honeyInfo}
+              ref={actionRef}
+              className="left-[50%] transform -translate-x-1/2"
+            />
+            }
           </div>
         </div>
         <div className="bg-black bg-opacity-[0.06] w-1/2 rounded-[10px] p-5">
@@ -100,7 +109,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
               <img src="/images/dapps/honey.png"></img>
             </div>
             <span className="font-montserrat text-lg font-bold leading-[16.2px] text-left">
-            {Number(userAccountData?.totalDebtBaseUSD).toFixed(2) || '0'}/{Number(userAccountData?.availableBorrowsBaseUSD).toFixed(2) || '0'}
+            {Number(userAccountData?.totalDebtBaseUSD || 0).toFixed(2)}/{Number(userAccountData?.availableBorrowsBaseUSD || 0).toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between">
@@ -129,7 +138,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
 
             <div className="flex items-center">
               <div className="w-5 h-5 bg-yellow-400 rounded-full mr-2">
-                {/* 这里放置 BGT 图标 */}
+                <img src="/images/icon-coin.svg" alt="bgt" className="w-full h-full"/>
               </div>
               <span className="font-montserrat text-base font-medium leading-4 text-black mr-2">
                 0 BGT
@@ -139,13 +148,25 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
               </button>
             </div>
           </div>
-          <div className="flex space-x-[14px] mt-5">
-            <button className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
+          <div className="flex space-x-[14px] mt-5 relative">
+            <button onClick={() => handleAction("borrow")}  className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
               Borrow
             </button>
-            <button className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center">
+            <button onClick={() => handleAction("repay")} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30" disabled={Big(userAccountData.totalDebtBaseUSD || 0).eq(0)}>
               Repay
             </button>
+            {
+              openModal && honeyInfo && ['borrow', 'repay'].includes(openModal.action) && (
+                <ActionModal
+                  isOpen={true}
+                  onClose={closeModal}
+                  action={openModal.action}
+                  token={honeyInfo}
+                  ref={actionRef}
+                  className="left-[50%] transform -translate-x-1/2"
+                />
+              )
+            }
           </div>
         </div>
       </div>

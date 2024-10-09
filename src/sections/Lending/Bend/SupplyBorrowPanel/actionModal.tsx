@@ -8,6 +8,7 @@ import { isValid } from "@/utils/utils";
 import { ethers } from "ethers";
 import useAddAction from "@/hooks/use-add-action";
 import { useDepositAndWithdraw } from "../useDepositAndWithdraw";
+import { useBorwAndRepay } from "./useBorwAndRepay";
 
 interface IProps {
   isOpen: boolean;
@@ -47,21 +48,25 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       initData: { provider, chainId, account },
       triggerUpdate,
     } = useMarketStore();
- 
-    const isDeposit = action === "deposit" || action === "supply";
+    const isBorrow = action === "borrow";
 
     const {
-      handleApprove,
-      depositETH,
-      depositErc20,
-      withdrawETH,
-      withdrawErc20,
       needApprove,
       setAmount,
-      amount
-    } = useDepositAndWithdraw({
-      token, isDeposit, provider, chainId, account, config, triggerUpdate
-    });
+      amount,
+      borrowETH,
+      borrowERC20,
+      repayETH,
+      repayERC20,
+    } = useBorwAndRepay({
+      token,
+      isBorrow,
+      provider,
+      chainId,
+      account,
+      config,
+      triggerUpdate,
+    })
 
     console.log(token, "<===token");
 
@@ -69,10 +74,10 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       symbol,
       balance,
       decimals,
-      underlyingBalance,
+      availableBorrows
     } = token;
 
-    const currentBalance = isDeposit ? balance : underlyingBalance;
+    const currentBalance = isBorrow ? availableBorrows : balance;
 
     const isDisabled = useMemo(() => {
       return (
@@ -92,21 +97,21 @@ const Action = forwardRef<HTMLDivElement, IProps>(
 
     const handleAction = async () => {
       const value = Big(amount).mul(Big(10).pow(decimals)).toFixed(0);
-
-      if (isDeposit) {
+      if (isBorrow) {
         if (symbol === config.nativeCurrency.symbol) {
-          await depositETH(value);
+          await borrowETH(value);
         } else {
-          await depositErc20(value);
+          await borrowERC20(value);
         }
       } else {
         if (symbol === config.nativeCurrency.symbol) {
-          await withdrawETH(value);
+          await repayETH(value);
         } else {
-          await withdrawErc20(value);
+          await repayERC20(value);
+        }
       }
+
       onClose();
-    }
   }
 
 
@@ -116,7 +121,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       <div className={`absolute z-50 top-[40px] ${className}`} ref={ref}>
         <div className="w-[302px] h-[160px] bg-[#FFFDEB] shadow-shadow1 border border-black rounded-[20px] p-5">
           <h2 className="font-Montserrat text-base font-semibold leading-[14.4px] text-left mb-[18px]">
-          {isDeposit ? action === 'supply' ? 'Supply' : 'Deposit' : "Withdraw"}
+            {isBorrow ? "Borrow" : "Repay"}
           </h2>
           <input
             type="number"
@@ -130,7 +135,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
           />
           <div className="flex justify-between items-center mt-3">
             <div className="font-Montserrat text-sm font-normal leading-[17px] text-left">
-              {isDeposit ? "Balance: " : "Available: "}
+              {isBorrow ? "Borrow Max: " : "Balance: "}
               <span className="underline" onClick={() => setAmount(maxValue)}>
                 {formatDisplayNumber(currentBalance)}
               </span>
@@ -144,7 +149,6 @@ const Action = forwardRef<HTMLDivElement, IProps>(
                                ? "opacity-30 cursor-not-allowed"
                                : "hover:bg-[#FFD700]"
                            }`}
-                onClick={() => handleApprove(amount)}
               >
                 Approve
               </button>
@@ -160,7 +164,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
                 disabled={isDisabled}
                 onClick={handleAction}
               >
-                {isDeposit ? action === 'supply' ? 'Supply' : 'Deposit' : "Withdraw"}
+                {isBorrow ? "Borrow" : "Repay"}
               </button>
             )}
           </div>

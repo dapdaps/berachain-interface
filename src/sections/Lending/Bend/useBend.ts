@@ -29,6 +29,10 @@ export interface TokenInfo {
   supplyAPY: string;
   utilized: string;
   aTokenAddress: string;
+  availableLiquidity: string;
+  availableLiquidityUSD: string;
+  availableBorrows: any;
+  availableBorrowsUSD: any;
 }
 
 const useBend = () => {
@@ -41,6 +45,8 @@ const useBend = () => {
   const marketStore = useMarketStore()
 
   useEffect(() => {
+    console.log(chainId, 'chainId');
+    
     if (!chainId) return;
     setMulticallAddress(multicallAddresses[chainId])
     fetchConfig(chainId);
@@ -61,21 +67,24 @@ const useBend = () => {
     marketStore.setInitData({
       chainId, account, provider, config, multicallAddress, markets, prices
     })
-  }, [chainId, account, provider, marketStore.updateCounter]);
+  }, [chainId, account, provider, marketStore.updateCounter, config]);
 
   const init = async () => {
-    await marketStore.getBendSupplyBalance();
-    await marketStore.getBendSupply();
-    await marketStore.getUserAccountData();
-    await marketStore.getUserDebts();
-    await marketStore.getPoolDataProvider();
-    await marketStore.calculateNetBaseData();
+    try {
+      await marketStore.getBendSupplyBalance();
+      await marketStore.getBendSupply();
+      await marketStore.getUserAccountData();
+      await marketStore.getUserDebts();
+      await marketStore.getPoolDataProvider();
+    } catch (error) {
+      console.log('init-error', error);
+    }
   };
 
   useEffect(() => {
     if (!chainId || !markets.length ) return
     init();
-  }, [marketStore.updateCounter, markets, chainId]);
+  }, [marketStore.updateCounter, markets, chainId, config]);
 
 
   return {
