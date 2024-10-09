@@ -132,7 +132,7 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
           setTrade(_trade);
           return;
         }
-        console.log(data);
+
         const _markets = data
           .filter((item: any) => Big(item.outputCurrencyAmount || 0).gt(0))
           .sort(

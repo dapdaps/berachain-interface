@@ -85,6 +85,9 @@ div::-webkit-scrollbar-thumb:hover {
 input {
   outline: none;
 }
+input:disabled {
+  background-color: transparent;
+}
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;

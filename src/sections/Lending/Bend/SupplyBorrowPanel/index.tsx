@@ -1,15 +1,10 @@
 import React, { useRef, useState } from "react";
 
 import ActionModal from "../Action";
+import NetBase from "../NetBase";
+import { TokenInfo } from "../useBend";
+import useMarketStore from "@/stores/useMarketStore";
 
-interface TokenInfo {
-  name: string;
-  icon: string;
-  deposited: number;
-  inWallet: number;
-  depositedValue: string;
-  walletValue: string;
-}
 
 interface IProps {
   markets: TokenInfo[];
@@ -18,27 +13,11 @@ interface IProps {
 const SupplyBorrowPanel: React.FC<IProps> = ({
   markets,
 }) => {
-  const [tokens, setTokens] = useState<TokenInfo[]>([
-    {
-      name: "WETH",
-      icon: "eth-icon",
-      deposited: 0.23,
-      inWallet: 0.0,
-      depositedValue: "$1.56",
-      walletValue: "$0.00",
-    },
-    {
-      name: "WBTC",
-      icon: "btc-icon",
-      deposited: 0.0,
-      inWallet: 0.001,
-      depositedValue: "$0.00",
-      walletValue: "$64.25",
-    },
-  ]);
   const [openModal, setOpenModal] = useState<any>(null);
   const [modalType, setModalType] = useState("");
   const actionRef = useRef<any>(null);
+
+  const { userAccountData } = useMarketStore()
 
   const handleAction = (tokenName: any, action: any) => {
     setOpenModal({ tokenName, action });
@@ -54,54 +33,20 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
     }
   };
 
+  const honeyInfo = markets.find((market) => market.symbol === "HONEY");
+
+
+  function formatPercent(apy?: string): string {
+    if (!apy) return "0%";
+    let formatted = (parseFloat(apy) * 100).toFixed(2);
+    formatted = parseFloat(formatted).toString();
+    return `${formatted}%`;
+  }
+
+  
   return (
     <div className="mb-5" onClick={handleOutsideClick}>
-      <div className="bg-[#FFE873] rounded-[10px] p-4 flex justify-between items-center">
-        <div className="flex">
-          <div>
-            <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-              You Supplied
-            </div>
-            <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-              $0.00
-            </div>
-          </div>
-          <div className="ml-[80px]">
-            <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-              Net APY
-            </div>
-            <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-              -
-            </div>
-          </div>
-          <div className="ml-[80px]">
-            <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-              Account Health
-            </div>
-            <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-[#7EA82B]">
-              ∞
-            </div>
-          </div>
-        </div>
-        <div className="flex ml-[140px]">
-          <div>
-            <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-              Borrow up to
-            </div>
-            <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-              -
-            </div>
-          </div>
-          <div className="ml-[38px]">
-            <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-              Funds eligible for deposit
-            </div>
-            <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-              -
-            </div>
-          </div>
-        </div>
-      </div>
+      <NetBase />
       <div className="flex space-x-[26px] mt-10 h-[380px]">
         <div className="bg-black bg-opacity-[0.06] w-1/2 rounded-[10px] p-5">
           <p className="font-montserrat text-sm font-medium leading-[17px] my-5 text-[#3D405A]">
@@ -122,7 +67,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
                 Supplied
               </span>
               <span className="font-montserrat text-xl font-semibold leading-5 text-black mt-1">
-                0
+                { Number(honeyInfo?.underlyingBalance || 0).toFixed(2) }
               </span>
             </div>
             <div className="flex flex-col items-center">
@@ -130,7 +75,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
                 Earn APY
               </span>
               <span className="font-montserrat text-xl font-semibold leading-5 text-[#7EA82B] mt-1">
-                0.87%
+                {formatPercent(honeyInfo?.supplyAPY)}
               </span>
             </div>
           </div>
@@ -155,7 +100,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
               <img src="/images/dapps/honey.png"></img>
             </div>
             <span className="font-montserrat text-lg font-bold leading-[16.2px] text-left">
-              0/0
+            {Number(userAccountData?.totalDebtBaseUSD).toFixed(2) || '0'}/{Number(userAccountData?.availableBorrowsBaseUSD).toFixed(2) || '0'}
             </span>
           </div>
           <div className="flex justify-between">
@@ -164,7 +109,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
                 BGT APY
               </span>
               <span className="font-montserrat text-xl font-semibold leading-5 text-[#7EA82B] mt-1">
-                +5.98k%
+                0%
               </span>
             </div>
 
@@ -173,7 +118,7 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
                 Borrow APY
               </span>
               <span className="font-montserrat text-xl font-semibold leading-5 text-[#FF6B6B] mt-1">
-                2.09%
+              {formatPercent(honeyInfo?.borrowAPY)}
               </span>
             </div>
           </div>

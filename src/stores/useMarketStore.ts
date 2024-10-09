@@ -24,7 +24,10 @@ interface BendState {
   userAccountData: any;
   getUserDebts: any;
   netBaseData: any;
+  getPoolDataProvider: any;
   calculateNetBaseData: () => void;
+  triggerUpdate: any;
+  updateCounter: number;
 }
 
 const useBendStore = create<BendState>((set, get) => ({
@@ -37,8 +40,12 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   userAccountData: {},
   netBaseData: {},
+  updateCounter: 0,
   setInitData(data: IData) {
     set({ initData: data });
+  },
+  triggerUpdate: () => {
+    set((prev) => ({ updateCounter: prev.updateCounter + 1 }));
   },
   getBendSupplyBalance: async () => {
     const { initData: {markets, account, chainId, provider, multicallAddress } } = get();
@@ -80,13 +87,14 @@ const useBendStore = create<BendState>((set, get) => ({
         };
       });
 
-      
       set({
         initData: {
           ...get().initData,
           markets: updatedMarkets
         }
       })
+
+      return updatedMarkets;
     } catch (err) {
       console.error('getBendSupplyBalance error:', err);
     }
@@ -136,7 +144,7 @@ const useBendStore = create<BendState>((set, get) => ({
 
       const updatedMarkets = markets.map((market, index) => {
         if (res[index]) {
-          const [currentATokenBalance, currentStableDebt] = res[index];
+          const [currentATokenBalance] = res[index];
           const _bal = ethers.utils.formatUnits(currentATokenBalance, market.decimals);
 
           return {
@@ -151,14 +159,14 @@ const useBendStore = create<BendState>((set, get) => ({
           underlyingBalanceUSD: ''
         };
       });
-      console.log(updatedMarkets, '<=qqq===updatedMarkets');
-      
       set({
         initData: {
           ...get().initData,
           markets: updatedMarkets
         }
       })
+      return updatedMarkets;
+
     } catch (err) {
       console.error('getBendSupply error:', err);
     }
@@ -226,7 +234,8 @@ const useBendStore = create<BendState>((set, get) => ({
           ltv,
           healthFactor
         ] = res;
-
+        console.log(res, 'getUserAccountData: res');
+        
         const totalDebtBaseUSD = ethers.utils.formatUnits(totalDebtBase.toString(), 8);
 
         const totalCollateralBaseUSD = ethers.utils.formatUnits(totalCollateralBase.toString(), 8);
@@ -262,6 +271,7 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   getUserDebts: async () => {
     const { initData: { markets, account, provider, multicallAddress, prices } } = get();
+    
     const variableDebtTokenAddresss = markets?.map((item: any) => item.variableDebtTokenAddress).filter(Boolean);
 
     const calls = variableDebtTokenAddresss?.map((addr: any) => ({
@@ -299,61 +309,55 @@ const useBendStore = create<BendState>((set, get) => ({
     })
       .then((res: any) => {
         console.log('getUserDebts_res', res);
-        const userDebs = [];
-        const _assetsToSupply = [...markets];
-        for (let index = 0; index < res.length; index++) {
+        const updatedMarkets = markets.map((market, index) => {
           if (res[index]) {
-            const market = _assetsToSupply.find(
-              (item) => item.variableDebtTokenAddress === variableDebtTokenAddresss[index]
-            );
-            if (market) {
-              const _debt = ethers.utils.formatUnits(res[index][0], market.decimals);
-  
-              market.debt = _debt;
-              market.debtInUSD = Big(_debt || 0)
-                .mul(prices[market.symbol] || 1)
-                .toFixed();
-              userDebs.push(market);
-            }
+            const currentDebtBalance = res[index][0];
+            const _debt = ethers.utils.formatUnits(currentDebtBalance, market.decimals);
+      
+            return {
+              ...market,
+              debt: _debt,
+              debtInUSD: Big(_debt).mul(market.tokenPrice || 1).toFixed()
+            };
           }
-        }
-        const hash: any = {};
-        const _yourBorrows = userDebs.reduce((accum: any, item: any) => {
-          hash[item['aTokenAddress']] ? '' : (hash[item['aTokenAddress']] = true && accum.push(item));
-          return accum;
-        }, []);
-
+          return {
+            ...market,
+            debt: '',
+            debtInUSD: ''
+          };
+        });
+        
         set({
           initData: {
             ...get().initData,
-            markets: _yourBorrows
+            markets: updatedMarkets
           }
-        })
+        });
+        return updatedMarkets;
       })
       .catch((err: any) => {
         console.log('getUserDebts_err', err);
       });
 
   },
-  calculateNetBaseData: () => {
+  calculateNetBaseData: async () => {
     const { initData: { markets } } = get();
-    const yourSupplies = markets.filter(market => Big(market.underlyingBalance || 0).gt(0));
-    const yourBorrows = markets.filter(market => Big(market.debt || 0).gt(0));
-
-    const supplyBal = yourSupplies.reduce(
+    console.log(markets, 'calculateNetBaseData: markets');
+    
+    const supplyBal = markets.reduce(
       (total, cur) => Big(total).plus(cur.underlyingBalanceUSD || 0).toFixed(),
       '0'
     );
-    const debtsBal = yourBorrows.reduce(
+    const debtsBal = markets.reduce(
       (total, cur) => Big(total).plus(cur.debtInUSD || 0).toFixed(),
       '0'
     );
 
-    const netWorth = Big(supplyBal).minus(debtsBal).toFixed(2);
+    const netWorth = Big(supplyBal).minus(debtsBal).toFixed(2, 0);
 
     if (Big(netWorth).eq(0)) return;
 
-    const weightedAverageSupplyAPY = yourSupplies.reduce(
+    const weightedAverageSupplyAPY = markets.reduce(
       (total, cur) => Big(total).plus(
         Big(cur.underlyingBalanceUSD || 0)
           .times(cur.supplyAPY || 0)
@@ -362,16 +366,16 @@ const useBendStore = create<BendState>((set, get) => ({
       '0'
     );
 
-    const yourSupplyRewardAPY = yourSupplies.reduce(
+    const yourSupplyRewardAPY = markets.reduce(
       (total, cur) => Big(total).plus(cur.supplyRewardApy || 0).toFixed(),
       '0'
     );
 
-    const weightedAverageBorrowsAPY = yourBorrows.reduce(
+    const weightedAverageBorrowsAPY = markets.reduce(
       (total, cur) => Big(total).plus(
         Big(cur.debtInUSD || 0)
           .times(cur.borrowAPY || 1)
-          .div(debtsBal || 1)
+          .div(parseFloat(debtsBal) || 1)
       ).toFixed(),
       '0'
     );
@@ -386,16 +390,24 @@ const useBendStore = create<BendState>((set, get) => ({
       )
       .toFixed();
 
-    const yourTotalSupply = yourSupplies.reduce(
+    const yourTotalSupply = markets.reduce(
       (prev, curr) => Big(prev).plus(curr.underlyingBalanceUSD || 0).toFixed(),
       '0'
     );
 
-    const yourTotalBorrow = yourBorrows.reduce(
+    const yourTotalBorrow = markets.reduce(
       (prev, curr) => Big(prev).plus(curr.debtInUSD || 0).toFixed(),
       '0'
     );
-
+    console.log({
+      netAPY,
+      netWorthUSD: netWorth,
+      yourTotalSupply,
+      yourTotalBorrow,
+      yourSupplyApy: Big(weightedAverageSupplyAPY).plus(yourSupplyRewardAPY).toFixed(),
+      yourBorrowApy: weightedAverageBorrowsAPY
+    }, 'netBaseData');
+    
     set({
       netBaseData: {
         netAPY,
@@ -406,8 +418,145 @@ const useBendStore = create<BendState>((set, get) => ({
         yourBorrowApy: weightedAverageBorrowsAPY
       }
     });
-  }
+  },
+  getPoolDataProvider: () => {
+    const { initData: { config, multicallAddress, provider, markets } } = get();
+    const underlyingTokens = markets?.map((market: any) => market.underlyingAsset);
+    const calls = underlyingTokens?.map((addr: any) => ({
+      address: config.PoolDataProvider,
+      name: 'getReserveData',
+      params: [addr]
+    }));
 
+    multicall({
+      abi: [
+        {
+          inputs: [{ internalType: 'address', name: 'asset', type: 'address' }],
+          name: 'getReserveData',
+          outputs: [
+            { internalType: 'uint256', name: 'unbacked', type: 'uint256' },
+            {
+              internalType: 'uint256',
+              name: 'accruedToTreasuryScaled',
+              type: 'uint256'
+            },
+            { internalType: 'uint256', name: 'totalAToken', type: 'uint256' },
+            {
+              internalType: 'uint256',
+              name: 'totalStableDebt',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'totalVariableDebt',
+              type: 'uint256'
+            },
+            { internalType: 'uint256', name: 'liquidityRate', type: 'uint256' },
+            {
+              internalType: 'uint256',
+              name: 'variableBorrowRate',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'stableBorrowRate',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'averageStableBorrowRate',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'liquidityIndex',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'variableBorrowIndex',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint40',
+              name: 'lastUpdateTimestamp',
+              type: 'uint40'
+            }
+          ],
+          stateMutability: 'view',
+          type: 'function'
+        }
+      ],
+      calls,
+      options: {},
+      multicallAddress,
+      provider
+    })
+    .then((poolData: any) => {
+      if (!Array.isArray(poolData) || !poolData.length) return;
+      console.log(poolData, 'poolData');
+      
+      const _assetsToSupply = [...markets];
+
+      for (let i = 0; i < poolData.length; i++) {
+        if (poolData[i]) {
+          const [
+            unbacked,
+            accruedToTreasuryScaled,
+            totalAToken,
+            totalStableDebt,
+            totalVariableDebt,
+            liquidityRate,
+            variableBorrowRate,
+            stableBorrowRate,
+            averageStableBorrowRate,
+            liquidityIndex,
+            variableBorrowIndex,
+            lastUpdateTimestamp
+          ] = poolData[i];
+          const RAY = Big(10).pow(27);
+          const SECONDS_PER_YEAR = 31_536_000;
+          const depositAPR = Big(liquidityRate).div(RAY || 1);
+          const depositAPY0 = Big(1)
+            .plus(depositAPR.div(Big(SECONDS_PER_YEAR)))
+            .toNumber();
+
+          const _supplyAPY = Big(Math.pow(depositAPY0, SECONDS_PER_YEAR) - 1).toFixed();
+          console.log('_supplyAPY--', _supplyAPY);
+
+          if (!_assetsToSupply[i]) return;
+          const variableBorrowAPR = Big(variableBorrowRate).div(RAY || 1);
+
+          const variableBorrowAPY0 = Big(1)
+            .plus(Big(variableBorrowAPR || 0).div(Big(SECONDS_PER_YEAR)))
+            .toNumber();
+
+          const _borrowAPY = Big(Math.pow(variableBorrowAPY0, SECONDS_PER_YEAR) - 1).toFixed();
+
+          const _utilized = Big(totalVariableDebt || 0)
+            .div(Big(totalAToken || 1))
+            .toFixed();
+
+          _assetsToSupply[i].supplyAPY = _supplyAPY;
+          _assetsToSupply[i].borrowAPY = _borrowAPY;
+          _assetsToSupply[i].utilized = _utilized;
+        }
+      }
+      console.log(_assetsToSupply, '_assetsToSupply');
+      
+      set({
+        initData: {
+          ...get().initData,
+          markets: _assetsToSupply
+        }
+      });
+
+      return _assetsToSupply
+    })
+    .catch((err: any) => {
+      console.log('getPoolDataProvider_err', err);
+    });
+  }
 }));
 
 export default useBendStore;
