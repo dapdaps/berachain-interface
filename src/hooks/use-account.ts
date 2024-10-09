@@ -1,34 +1,41 @@
 import { providers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
-import chains from '@/configs/chains';
+import { useMemo } from 'react';
+import { useAccount, Config, useConnectorClient } from 'wagmi';
 import { DEFAULT_CHAIN_ID } from '@/configs';
+
+function clientToProvider(client: any) {
+  const { account, chain, transport } = client;
+  const network = {
+    chainId: chain.id,
+    name: chain.name,
+    ensAddress: chain.contracts?.ensRegistry?.address
+  };
+  if (transport.type === 'fallback')
+    return new providers.FallbackProvider(
+      (transport.transports as ReturnType<any>[]).map(
+        ({ value }) => new providers.JsonRpcProvider(value?.url, network)
+      )
+    );
+  return account.address
+    ? new providers.Web3Provider(transport, network)
+    : new providers.JsonRpcProvider(transport.url, network);
+}
 
 export default function useCustomAccount() {
   const account = useAccount();
-  const [provider, setProvider] = useState<any>();
+  const { data: client } = useConnectorClient<Config>({
+    chainId: DEFAULT_CHAIN_ID
+  });
 
-  useEffect(() => {
-    const init = async () => {
-      const _provider = await account.connector?.getProvider?.();
-      if (_provider) {
-        setProvider(new providers.Web3Provider(_provider));
-      } else {
-        setProvider(
-          new providers.JsonRpcProvider(
-            chains[DEFAULT_CHAIN_ID].rpcUrls.default.http[0]
-          )
-        );
-      }
-    };
-    init();
-  }, [account]);
+  const provider = useMemo(
+    () => (client ? clientToProvider(client) : undefined),
+    [client]
+  );
 
   return useMemo<{
     chainId?: number;
     account?: string;
     provider?: any;
-    signer?: any;
   }>(
     () => ({
       account: account?.address ?? '',
@@ -36,6 +43,6 @@ export default function useCustomAccount() {
       provider,
       chain: account?.chain ?? null
     }),
-    [account]
+    [account, provider]
   );
 }

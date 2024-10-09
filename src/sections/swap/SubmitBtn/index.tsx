@@ -5,10 +5,11 @@ import { useSwitchChain } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useEffect } from 'react';
 
-const BaseButton = ({ loading, onClick, children }: any) => {
+const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className='h-[60px] w-full duration-500 hover:opacity-70 active:opacity-90 flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] font-[600] mt-[16px] cursor-pointer'
     >
       {loading ? <Loading /> : children}
@@ -58,7 +59,6 @@ export default function SubmitBtn({
   if (chainId !== chain.chainId) {
     return (
       <BaseButton
-        chain={chain}
         onClick={() => {
           switchChain({
             chainId: chain.chainId
@@ -72,7 +72,7 @@ export default function SubmitBtn({
   }
 
   if (checking || approving || loading) {
-    return <BaseButton chain={chain} loading={true} disabled />;
+    return <BaseButton loading={true} disabled />;
   }
 
   if (errorTips) {
@@ -82,15 +82,11 @@ export default function SubmitBtn({
   if (!spender) return <BaseButton disabled>Insufficient Liquidity</BaseButton>;
 
   if (!approved) {
-    return (
-      <BaseButton chain={chain} onClick={approve}>
-        Approve {token?.symbol}
-      </BaseButton>
-    );
+    return <BaseButton onClick={approve}>Approve {token?.symbol}</BaseButton>;
   }
 
   return (
-    <BaseButton chain={chain} onClick={onClick} disabled={disabled}>
+    <BaseButton onClick={onClick} disabled={disabled}>
       Swap
     </BaseButton>
   );

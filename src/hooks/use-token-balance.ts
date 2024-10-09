@@ -63,7 +63,7 @@ export default function useTokenBalance(
   };
   useEffect(() => {
     getBalance();
-  }, [account, address, decimals, fresh, chainId, walletChainId]);
+  }, [account, address, decimals, fresh, chainId, walletChainId, provider]);
 
   return { tokenBalance, isError, isLoading, update };
 }

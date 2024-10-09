@@ -73,6 +73,7 @@ const useAaveConfig = create<AaveStore>()(
     fetchConfig: async (chainId: number) => {
       const network: NetworkConfig | undefined = bendConfig.networks[chainId as keyof typeof bendConfig.networks];
       const { CONTRACT_ABI } = network || {};
+      
       if (!CONTRACT_ABI) return;
 
       try {

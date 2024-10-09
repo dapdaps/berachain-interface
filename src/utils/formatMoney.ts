@@ -58,3 +58,10 @@ export const formatDisplayCurrency = (
     suffix: currency !== 'USD' ? ` ${currency}` : ''
   });
 };
+
+export function bigMin(_a: any, _b: any) {
+  const a = Big(_a || 0);
+  const b = Big(_b || 0);
+  return a.gt(b) ? b : a;
+}
+

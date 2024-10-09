@@ -90,3 +90,35 @@ export function getFullNum(value: any) {
 
   return value;
 }
+
+export const simplifyNumber = function (number: number, decimal: number) {
+  if (typeof Number(number) !== 'number') return 0;
+  if (isNaN(Number(number))) return 0;
+  if (number >= 1e3 && number < 1e6) {
+    return Big(number / 1e3).toFixed(decimal) + 'k';
+  } else if (number >= 1e6 && number < 1e9) {
+    return Big(number / 1e6).toFixed(decimal) + 'm';
+  } else if (number >= 1e9) {
+    return Big(number / 1e9).toFixed(decimal) + 'b';
+  } else {
+    return Big(number).toFixed(decimal);
+  }
+};
+export const formatValueDecimal = function (value: any, unit = '', decimal = 0, simplify = false, showLine = true) {
+  const target = Big(1).div(Math.pow(10, decimal));
+  if (isNaN(value) || value === '' || Big(value ?? 0).eq(0)) {
+    if (showLine) {
+      return '-';
+    } else {
+      return unit + Big(0).toFixed(decimal);
+    }
+  } else if (Big(value).gt(0)) {
+    if (Big(value).lt(target)) {
+      return `<${unit}${target}`;
+    } else {
+      return unit + (simplify ? simplifyNumber(value, decimal) : Big(value).toFixed(decimal));
+    }
+  } else {
+    return unit + (simplify ? simplifyNumber(value, decimal) : Big(value).toFixed(decimal));
+  }
+};
