@@ -249,7 +249,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                     </svg>
                   </div>
                 </div>
-                <div className='w-[136px] h-[36px] border border-black rounded-full flex justify-center items-center gap-[8px] pl-[9px] pr-[16px] mt-[14px]'>
+                <div className='w-fit h-[36px] border border-black rounded-full flex items-center gap-[8px] pl-[9px] pr-[16px] mt-[14px]'>
                   <div
                     className='relative w-[20px] h-[20px] rounded-full shrink-0 bg-[#F0F0F0]'
                     style={{
@@ -271,7 +271,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                       <div className='absolute w-[10px] h-[10px] rounded-[2px] border border-black right-[-3px] bottom-[-3px]' />
                     )}
                   </div>
-                  <div className='text-black text-[16px] font-normal flex-1 w-0 overflow-hidden text-nowrap'>
+                  <div className='text-black text-[16px] font-normal flex-shrink-0 overflow-hidden text-nowrap'>
                     {balanceShown} {tokenSymbolShown}
                   </div>
                 </div>
@@ -279,7 +279,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                   className='flex justify-between items-center mt-[20px] click'
                   onClick={handleDisconnect}
                 >
-                  <div className='text-[#FF3D83] text-[16px] font-medium leading-[1]'>
+                  <div className='text-[#a6703d] text-[16px] font-medium leading-[1]'>
                     Disconnect
                   </div>
                   <div className=''>
@@ -304,7 +304,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
         </div>
       ) : (
         <button
-          className={`click rounded-full text-[14px] font-semibold bg-black shadow-shadow1 text-white ${className}`}
+          className={`click rounded-full px-[8px] py-[4px] text-[14px] font-semibold bg-black shadow-shadow1 text-white ${className}`}
           onClick={handleConnect}
         >
           Connect Wallet

@@ -1,4 +1,5 @@
 import MainLayoutHeader from '@/layouts/main/header';
+import MapModal from '@/sections/home/map-modal';
 
 const MainLayout = (props: Props) => {
   const {
@@ -14,6 +15,7 @@ const MainLayout = (props: Props) => {
     >
       <MainLayoutHeader />
       <div className='grow'>{children}</div>
+      <MapModal />
     </div>
   );
 };
