@@ -39,7 +39,7 @@ const MainLayoutHeader = (props: Props) => {
 
   return (
     <header
-      className={`w-full h-[68px] bg-[#96D6FF] stroke-black sticky font-CherryBomb top-0 z-50 ${className}`}
+      className={`w-full h-[68px] bg-[#96D6FF] stroke-black sticky font-CherryBomb top-0 z-10 ${className}`}
       style={style}
     >
       <div className="w-full h-full px-[40px] flex justify-between items-center">
