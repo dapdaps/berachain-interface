@@ -1,13 +1,14 @@
 'use client';
 
-import Modal from '@/components/modal/index';;
-import { motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import dAppArrowIcon from '@public/images/map/arrow-dApps.svg';
 import BridgeArrowIcon from '@public/images/map/arrow-bridge.svg';
 import MarketPlaceArrowIcon from '@public/images/map/arrow-marketplace.svg';
 import { useRouter } from 'next/navigation';
 import useMapModalStore from '@/stores/useMapModalStore';
+import ReactDOM from 'react-dom';
+import IconClose from '@public/images/modal/close.svg';
 
 const dAppClipPath = 'M208.33 2.96745L11.5462 105.957C4.52793 109.63 0.338879 117.099 0.864137 125.003L9.08074 248.644C9.84853 260.197 20.2364 268.686 31.7113 267.138L216.435 242.211C217.477 242.071 218.506 241.848 219.512 241.546L391.686 189.845C393.552 189.285 395.49 189 397.438 189H500.561C507.102 189 513.229 185.802 516.969 180.436L537.25 151.337C542.176 144.269 542.023 134.841 536.87 127.938L472.504 41.7046C469.303 37.415 464.515 34.5878 459.212 33.8557L220.339 0.875262C216.216 0.305971 212.018 1.03735 208.33 2.96745Z';
 
@@ -155,6 +156,9 @@ const MapModal = () => {
 
   const store: any = useMapModalStore();
 
+  const modalRef = useRef<any>(null);
+  const [visible, setVisible] = useState<boolean>(false);
+
   const router  = useRouter();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -166,7 +170,9 @@ const MapModal = () => {
     store.setOpen(false);
     router.push(link);
   }
+
   useEffect(() => {
+    setVisible(store.open);
 
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -187,64 +193,91 @@ const MapModal = () => {
       return 768;
     }
     return windowWidth * 0.8;
-  }, [windowWidth])
-
+  }, [windowWidth]);
 
   const onClose = () => {
-    store.setOpen(false)
-  }
+    setVisible(false);
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+      store.setOpen(false);
+    }, 100);
+  };
 
-
-  return (
-    <Modal
-      open={store.open}
-      onClose={onClose}
-      children={(
-        <motion.div
-          initial="closed"
-          animate="open"
-          variants={{
-            closed: {
-              scaleY: 0,
-              opacity: 0,
-              transition: { duration: 0.5 },
-            },
-            open: {
-              scaleY: 1,
-              opacity: 1,
-              transition: { duration: 0.8, ease: 'easeInOut' },
-            },
-          }}
-          style={{
-            width: '80vw',
-            minWidth: '768px',
-            maxWidth: '1470px',
-            height: (realWidth ?? 1470) * 0.53,
-            background: 'url(/images/map/background.svg) no-repeat center',
-            backgroundSize: 'contain',
-            overflow: 'hidden',
-            transformOrigin: 'top',
-            marginTop: '20px'
-          }}
-        >
-        {
-            PartList.map(item => (
-              <MapItem
-                key={item.src}
-                onNavigateTo={() => onNavigateTo(item.link)}
-                {...item}
-                styles={{ scale: (realWidth ?? 1470) / 1470 }}
-              />))
-          }
-        </motion.div>
-      )}
-    />
-  )
+  return ReactDOM.createPortal((
+    <AnimatePresence mode="wait">
+      {
+        store.open ? (
+          <motion.div
+            className="fixed z-[50] w-full h-full left-0 top-0 bg-[rgba(0,_0,_0,_.5)] backdrop-blur-md"
+            onClick={(e) => {
+              if (modalRef.current.contains(e.target)) {
+                return;
+              }
+              onClose();
+            }}
+            variants={{
+              closed: {
+                opacity: 0,
+              },
+              open: {
+                opacity: 1,
+              },
+            }}
+            initial="closed"
+            animate="open"
+            exit="closed"
+          >
+            <div
+              ref={modalRef}
+              className="absolute rounded-[0] z-[51] left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
+            >
+              <AnimatePresence mode="wait">
+                {
+                  visible ? (
+                    <motion.div
+                      className="relative w-[80vw] min-w-[768px] max-w-[1470px] bg-[url(/images/map/background.svg)] bg-no-repeat bg-center bg-contain overflow-hidden origin-top mt-[20px]"
+                      initial="closed"
+                      animate="open"
+                      exit="closed"
+                      variants={{
+                        closed: {
+                          scaleY: 0,
+                          opacity: 0,
+                        },
+                        open: {
+                          scaleY: 1,
+                          opacity: 1,
+                          transition: {
+                            delay: 0.1,
+                          },
+                        },
+                      }}
+                      style={{
+                        height: (realWidth ?? 1470) * 0.53,
+                      }}
+                    >
+                      <div className="absolute right-[10px] top-0" onClick={onClose}>
+                        <IconClose />
+                      </div>
+                      {
+                        PartList.map(item => (
+                          <MapItem
+                            key={item.src}
+                            onNavigateTo={() => onNavigateTo(item.link)}
+                            {...item}
+                            styles={{ scale: (realWidth ?? 1470) / 1470 }}
+                          />))
+                      }
+                    </motion.div>
+                  ) : null
+                }
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        ) : null
+      }
+    </AnimatePresence>
+  ), document.body)
 }
 
 export default MapModal;
-
-interface Props {
-  visible: boolean;
-  onClose: () => void;
-}

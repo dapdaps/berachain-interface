@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 const useMapModalStore = create(
   persist((set) => ({
-      open: true,
+      open: false,
       setOpen: (open: boolean) => set({ open }),
     }),{
     name: 'map-opened',
