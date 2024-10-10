@@ -10,6 +10,8 @@ export const useUserStore = create(
         refresh_access_token: '',
         token_type: 'bearer',
       },
+      accessTokenLoading: false,
+      loading: false,
       set: (params: any) => set(() => ({ ...params })),
     }),
     {

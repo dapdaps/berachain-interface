@@ -1,5 +1,6 @@
 import Loading from '@/components/loading';
 import React from 'react';
+import Empty from '@/components/empty';
 
 const FlexTable = (props: FlexTableProps) => {
   const {
@@ -11,8 +12,8 @@ const FlexTable = (props: FlexTableProps) => {
     columns,
     pagination,
     renderEmpty = () => (
-      <div className="text-[#6f6f6f] flex items-center justify-center py-[30px]">
-        No Data
+      <div className="mt-[50px] w-full flex justify-center items-center">
+        <Empty desc="No data" />
       </div>
     ),
     renderTitle,
@@ -100,7 +101,7 @@ export type Column = {
 export type FlexTableProps = {
   columns: Column[];
   list: Record<string, any>[];
-  loading: boolean;
+  loading?: boolean;
   wrapperClass?: string;
   headClass?: string;
   bodyClass?: string;

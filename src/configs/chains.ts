@@ -5,7 +5,7 @@ const chains: Record<number, Chain | any> = {
   80084: {
     id: 80084,
     name: 'Berachain bArtio',
-    icon: '',
+    icon: '/images/berachain.png',
     nativeCurrency: { name: 'BERA', symbol: 'BERA', decimals: 18 },
     rpcUrls: {
       default: {

@@ -7,14 +7,91 @@ import DashboardTab from '@/sections/dashboard/components/tab';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import BearBackground from '@/components/bear-background';
+import chains from '@/configs/chains';
+import { useWallet } from '@/sections/dashboard/hooks/use-wallet';
+import { usePortfolio } from '@/sections/dashboard/hooks/use-portfolio';
+import { useTvl } from '@/sections/dashboard/hooks/use-tvl';
+import { useRecords } from '@/sections/dashboard/hooks/use-records';
 
 const DashboardWallet = dynamic(() => import('@/sections/dashboard/components/wallet'));
 const DashboardPortfolio = dynamic(() => import('@/sections/dashboard/components/portfolio'));
 const DashboardRecords = dynamic(() => import('@/sections/dashboard/components/records'));
 
+const currentChain = chains[80084];
+const networkList = Object.values(chains);
+
 const DashboardView = () => {
 
-  const [currentTab, setCurrentTab] = useState<TabKey>(tabs[0].key);
+  const [currentTab, setCurrentTab] = useState<TabKey>(1);
+
+  const {
+    loading: tokensLoading,
+    tokens,
+    totalBalance,
+  } = useWallet({ currentChain, networkList });
+  const {
+    loading: dappsLoading,
+    dapps,
+    totalBalance: totalBalanceByDapps,
+  } = usePortfolio({ currentChain, networkList });
+  const { tvls, loading: tvlsLoading } = useTvl({ currentChain, networkList });
+  const {
+    hasMore,
+    records,
+    loading: recordsLoading,
+    pageIndex,
+    pageTotal,
+    handleNext,
+    handlePrev,
+  } = useRecords({ currentChain, networkList });
+
+  const tabs = [
+    {
+      key: 1,
+      label: (
+        <DashboardTab icon="icon-in-wallet.svg">
+          In wallet
+        </DashboardTab>
+      ),
+      children: <DashboardWallet tokens={tokens} loading={tokensLoading} totalBalance={totalBalance} />
+    },
+    {
+      key: 2,
+      label: (
+        <DashboardTab icon="icon-portfolio.svg">
+          DeFi Portfolio
+        </DashboardTab>
+      ),
+      children: (
+        <DashboardPortfolio
+          loading={dappsLoading}
+          dapps={dapps}
+          totalBalance={totalBalanceByDapps}
+          tvls={tvls}
+          tvlsLoading={tvlsLoading}
+        />
+      )
+    },
+    {
+      key: 3,
+      label: (
+        <DashboardTab icon="icon-records.svg">
+          Execution Records
+        </DashboardTab>
+      ),
+      children: (
+        <DashboardRecords
+          loading={recordsLoading}
+          records={records}
+          hasMore={hasMore}
+          pageIndex={pageIndex}
+          pageTotal={pageTotal}
+          onNext={handleNext}
+          onPrev={handlePrev}
+        />
+      )
+    },
+  ];
 
   return (
     <BearBackground type='dashboard'>
@@ -37,33 +114,3 @@ const DashboardView = () => {
 };
 
 export default DashboardView;
-
-const tabs = [
-  {
-    key: 1,
-    label: (
-      <DashboardTab icon="icon-in-wallet.svg">
-        In wallet
-      </DashboardTab>
-    ),
-    children: <DashboardWallet />
-  },
-  {
-    key: 2,
-    label: (
-      <DashboardTab icon="icon-portfolio.svg">
-        DeFi Portfolio
-      </DashboardTab>
-    ),
-    children: <DashboardPortfolio />
-  },
-  {
-    key: 3,
-    label: (
-      <DashboardTab icon="icon-records.svg">
-        Execution Records
-      </DashboardTab>
-    ),
-    children: <DashboardRecords />
-  },
-];

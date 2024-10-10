@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import Big from 'big.js';
 import { numberFormatter } from '@/utils/number-formatter';
 import LazyImage from '@/components/layz-image';
+import { DefaultIcon } from '@/sections/dashboard/utils';
 
 const DashboardPortfolioDetail = (props: Props) => {
   const { dapp } = props;
@@ -14,6 +15,7 @@ const DashboardPortfolioDetail = (props: Props) => {
     show_name,
     type,
     totalUsd,
+    version,
   } = dapp;
 
   const isLending = ['Lending', 'Yield'].includes(type);
@@ -29,12 +31,14 @@ const DashboardPortfolioDetail = (props: Props) => {
           return null;
         }
         return (
-          <div className="flex items-center gap-[14px] text-white text-[14px]">
-            <div className="items-center flex text-white text-[14px]">
+          <div className="flex items-center gap-[14px] text-black text-[14px]">
+            <div className="items-center flex text-black text-[16px] font-[600]">
               {
                 record.assets.map((token: any, idx: number) => (
-                  <div className="w-[26px] h-[26px] rounded-[50%] shrink-0 group:not(:first-child):ml-[-10px]"
-                       key={idx}>
+                  <div
+                    className="w-[26px] h-[26px] rounded-[50%] shrink-0 group:not(:first-child):ml-[-10px]"
+                    key={idx}
+                  >
                     <LazyImage
                       src={token.tokenLogo}
                       alt=""
@@ -43,6 +47,7 @@ const DashboardPortfolioDetail = (props: Props) => {
                       style={{
                         borderRadius: '50%',
                       }}
+                      fallbackSrc={DefaultIcon}
                     />
                   </div>
                 ))
@@ -63,7 +68,7 @@ const DashboardPortfolioDetail = (props: Props) => {
           return null;
         }
         return (
-          <div className="flex flex-col text-white text-[14px] gap-[5px]">
+          <div className="flex flex-col text-black text-[14px] gap-[5px] font-[600]">
             {
               record.assets.map((asset: any, idx: number) => (
                 <span key={idx}>{numberFormatter(asset.amount, 6, true)} {asset.symbol}</span>
@@ -79,7 +84,11 @@ const DashboardPortfolioDetail = (props: Props) => {
       align: 'right',
       width: '15%',
       render: (text, record) => {
-        return `${numberFormatter(record.totalUsd, 2, true, { prefix: '$' })}`;
+        return (
+          <div className="font-[600]">
+            {numberFormatter(record.totalUsd, 2, true, { prefix: '$' })}
+          </div>
+        );
       },
     },
   ];
@@ -92,7 +101,7 @@ const DashboardPortfolioDetail = (props: Props) => {
       width: '20%',
       render: (text: string, record: any) => {
         return (
-          <div className="flex items-center gap-[14px] text-white text-[14px]">
+          <div className="flex items-center gap-[14px] text-black text-[16px] font-[600]">
             <div className="flex items-center text-white text-[14px]">
               <div className="w-[26px] h-[26px] rounded-[50%] shrink-0 group:not(:first-child):ml-[-10px]">
                 <LazyImage
@@ -103,6 +112,7 @@ const DashboardPortfolioDetail = (props: Props) => {
                   style={{
                     borderRadius: '50%',
                   }}
+                  fallbackSrc={DefaultIcon}
                 />
               </div>
             </div>
@@ -118,7 +128,12 @@ const DashboardPortfolioDetail = (props: Props) => {
       width: '25%',
       render: (text, record) => {
         if (Big(record.supplyAmount).gt(0)) {
-          return `${numberFormatter(record.supplyAmount, 6, true)} ${record.symbol}`;
+          return (
+            <div className="font-[600]">
+              {numberFormatter(record.supplyAmount, 6, true)}
+              {record.symbol}
+            </div>
+          );
         }
         return '-';
       },
@@ -130,7 +145,12 @@ const DashboardPortfolioDetail = (props: Props) => {
       width: '25%',
       render: (text, record) => {
         if (Big(record.borrowAmount).gt(0)) {
-          return `${numberFormatter(record.borrowAmount, 6, true)} ${record.symbol}`;
+          return (
+            <div className="font-[600]">
+              {numberFormatter(record.borrowAmount, 6, true)}
+              {record.symbol}
+            </div>
+          );
         }
         return '-';
       },
@@ -141,7 +161,11 @@ const DashboardPortfolioDetail = (props: Props) => {
       align: 'left',
       width: '15%',
       render: (text, record) => {
-        return `${calcDebtRatio(record.borrowAmount, record.supplyAmount).toFixed(2)}%`;
+        return (
+          <div className="font-[600]">
+            {calcDebtRatio(record.borrowAmount, record.supplyAmount).toFixed(2)}%
+          </div>
+        );
       },
     },
     columns[2],
@@ -198,7 +222,9 @@ const DashboardPortfolioDetail = (props: Props) => {
       <div className="flex justify-between items-center gap-[10px]">
         <div className="flex items-center gap-[7px]">
           <img src={dappLogo} alt="" width={31} height={31} />
-          <span className="text-black text-[16px] font-[600] leading-[90%]">{show_name}</span>
+          <span className="text-black text-[16px] font-[600] leading-[90%]">
+            {show_name}{version ? ' ' + version : ''}
+          </span>
           <Category className="ml-[3px]">{type}</Category>
         </div>
         <Value>{totalUsd}</Value>
