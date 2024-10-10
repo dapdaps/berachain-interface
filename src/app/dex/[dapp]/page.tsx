@@ -12,7 +12,7 @@ import { DEFAULT_SWAP_DAPP } from '@/configs';
 export default function SwapPage() {
   const params = useParams();
   const dapp = dapps[params.dapp as string] || dapps[DEFAULT_SWAP_DAPP];
-  const [tab, setTab] = useState('liquidity');
+  const [tab, setTab] = useState('swap');
   return (
     <BearBackground type='dapp'>
       <div className='pt-[30px] flex flex-col items-center'>
