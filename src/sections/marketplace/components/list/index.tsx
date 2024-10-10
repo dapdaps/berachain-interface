@@ -1,5 +1,5 @@
 import Pager from '@/components/pager';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface Meta {
   title: string;
@@ -24,16 +24,30 @@ export default function List({
   onPageChange,
   bodyClassName
 }: Props) {
+  const [sortItem, setSortItem] = useState(null)
+  const [sortType, setSortType] = useState(1)
+
   return (
     <div>
       <div className='w-[100%]'>
         <div className='flex items-center'>
-          {meta.map((item) => {
+          {meta.map((item: any) => {
             return (
               <div
                 key={item.key}
                 style={{
                   width: item.width
+                }}
+                onClick={() => {
+                  if (item.sort) {
+                    if (sortItem === item) {
+                      setSortType(sortType ^ 1)
+                    } else {
+                      setSortItem(item)
+                      setSortType(1)
+                    }
+                    
+                  }
                 }}
                 className='text-[14px] font-medium pl-[10px] py-[5px] text-center flex gap-[10px] items-center'
               >
@@ -45,10 +59,11 @@ export default function List({
                     viewBox='0 0 12 8'
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
+                    className={sortItem === item && sortType === 0 ? 'rotate-180' : ''}
                   >
                     <path
                       d='M4.8364 7.5C5.35356 8.16667 6.64644 8.16667 7.1636 7.5L11.818 1.5C12.3351 0.833334 11.6887 4.76837e-07 10.6544 4.76837e-07H1.34561C0.311302 4.76837e-07 -0.335141 0.833334 0.182014 1.5L4.8364 7.5Z'
-                      fill='#D1CEB4'
+                      fill={sortItem === item ? '#000000' : '#D1CEB4'}
                     />
                   </svg>
                 ) : null}

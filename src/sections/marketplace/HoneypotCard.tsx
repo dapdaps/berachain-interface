@@ -1,6 +1,7 @@
 'use client';
 
 import Image from '@/components/layz-image';
+import { balanceFormated } from '@/utils/balance';
 
 const HoneypotCard = (props: Props) => {
 
@@ -54,20 +55,20 @@ const HoneypotCard = (props: Props) => {
       label: 'Price',
       key: 'price',
       type: '+',
-      rate: '2.3%',
-      value: '$18.539'
+      rate:  balanceFormated(Math.random() * 16, 2) +  '%',
+      value: '$' + balanceFormated(Math.random() * 10 + 30, 2)
     },
     {
       label: 'Volume',
       key: 'volume',
-      type: '-',
-      rate: '1.27%',
-      value: '$1.27M'
+      type: '+',
+      rate: balanceFormated(Math.random() * 10, 2) +  '%',
+      value: '$' + balanceFormated(Math.random() * 10 + 2, 2) + 'M'
     },
   ];
 
   return (
-    <div className='flex items-end justify-center'>
+    <div className='flex items-end justify-center relative z-50'>
       <Honeypot />
       <div className='pb-[14px] flex-shrink-0'>
         <div className='rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1'>
@@ -82,13 +83,15 @@ const HoneypotCard = (props: Props) => {
                     <div className='font-[600] mb-[2px]'>{item.value}</div>
                     <div className={`text-[10px] text-right ${ item.type === '+' ? 'text-[#06B000]' : 'text-[#FF008A]' }`}>{item.type}{item.rate}</div>
                   </div>
-
                 </div>
               ))
             }
+            
           </div>
+          
         </div>
       </div>
+      <div className=' absolute bottom-[-12px] right-[100px] w-[95px] border border-[#000000] h-[32px] flex items-center justify-center rounded-[10px] bg-[#FFDC50]'>Swap</div>
     </div>
 
   )

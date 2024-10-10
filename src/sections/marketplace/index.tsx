@@ -6,6 +6,8 @@ import PageTitle from '@/components/title';
 import Image from '@/components/layz-image';
 import Tooltip from '@/components/tooltip';
 import { useRouter } from 'next/navigation';
+import dexs from '@/configs/swap';
+import { useMemo } from 'react';
 
 const splitArray = (list: Record<string, any>[]) =>  {
   const length = list.length;
@@ -56,6 +58,25 @@ const MarketplaceView = () => {
     router.push('/marketplace/list');
   };
 
+  console.log('dexs:', dexs)
+  const tokens = useMemo(() => {
+    const _tokens: any[] = []
+    const hasTokens: any = {}
+    Object.values(dexs).forEach((item) => {
+      console.log('item:', item)
+      item.tokens[80084].forEach((token: any) => {
+        if (!hasTokens[token.symbol]) {
+          _tokens.push(token)
+          hasTokens[token.symbol] = true
+        }
+       
+      })
+    })
+
+    return _tokens
+
+  }, [dexs])
+
   return (
     <div className="relative">
       <PageBack className="absolute left-[36px] top-[31px]" />
@@ -68,16 +89,16 @@ const MarketplaceView = () => {
         </div>
         <div
           style={{ boxShadow: 'inset 10px 10px rgba(0,0,0,0.25)' }}
-          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-hidden'
+          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] '
         >
           {
-            splitArray(new Array(8).fill(0)).map((item, index) => (
+            splitArray(tokens).map((item, index) => (
               <div key={'pots' + index}
                    className='pt-[55px] last:mb-[-2px] first:pt-[42px] last:pt-[57px] px-[22px] relative flex flex-nowrap after:content-[""] after:block after:w-full after:h-[14px] after:rounded-[10px] after:absolute after:left-0 after:border-black after:border-[2px] after:bg-[#D5AD67] after:bottom-[-12px] after:shadow-shadow1 last:after:hidden'>
                 {
-                  item.length > 0 && item.map((it, idx) => (
+                  item.length > 0 && item.map((it: any, idx) => (
                     <div className="basis-1/3" key={'pot' + idx}>
-                      <HoneypotCard name={'BERA'} color={'red'} icon={'/images/bear.svg'} />
+                      <HoneypotCard name={it.symbol} color={'red'} icon={it.icon} />
                     </div>
                   ))
                 }
@@ -85,10 +106,12 @@ const MarketplaceView = () => {
             ))
           }
         </div>
+        <div className='absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]'></div> 
         <MoreButton
           classname='absolute bottom-[-17px] right-[-12px]'
           onClick={onMore}
         />
+        
       </div>
       <div className='relative h-[197px] w-full bg-[#7990F4]'>
         <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] w-[1200px]'>
@@ -101,7 +124,7 @@ const MarketplaceView = () => {
                 <div
                   className="w-full absolute bottom-0 h-[62px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]">
                   {
-                    new Array(10).fill(0).map((item, index) => (
+                    new Array(1).fill(0).map((item, index) => (
                       <Tooltip
                         children={(
                           <Image
@@ -123,14 +146,14 @@ const MarketplaceView = () => {
                               transformOrigin: 'bottom center'
                             }}
                             alt=""
-                            src="/images/bear-circle.svg"
+                            src="/images/dapps/honey.png"
                             containerClassName=" rounded-[50%] w-[80px] h-[80px] shadow-shadow1 relative z-[10]"
                           />
                         )}
                        tooltip={(
                          <div>
                            <div className='flex items-end gap-x-[3px] mb-[16px]'>
-                             <div className='text-[20px] font-CherryBomb leading-none'>BCAT</div>
+                             <div className='text-[20px] font-CherryBomb leading-none'>HONEY</div>
                              <div className='text-[#3D405A] text-[14px] font-Montserrat'>blackcat</div>
                            </div>
                            {

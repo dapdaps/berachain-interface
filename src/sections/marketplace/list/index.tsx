@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import Tab from '../components/tab';
 import { MarketplaceContext, useMarketplaceContext } from '@/sections/marketplace/context';
+import PageBack from '@/components/back';
 
 const Lending = dynamic(() => import('@/sections/marketplace/components/dapps/lending'));
 
@@ -14,8 +15,9 @@ export default memo(function List() {
 
   return (
     <MarketplaceContext.Provider value={context}>
-      <div>
-        <div className='w-[1200px] m-auto'>
+      <div className=' relative'>
+        <PageBack className="absolute left-[36px] top-[31px]" />
+        <div className='w-[1200px] m-auto pt-[31px]'> 
           <div className={clsx(FontClass, 'text-[60px] text-center')}>
             Marketplace
           </div>
