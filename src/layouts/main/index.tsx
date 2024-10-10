@@ -1,5 +1,10 @@
+'use client';
+
 import MainLayoutHeader from '@/layouts/main/header';
 import MapModal from '@/sections/home/map-modal';
+import useUser from '@/hooks/use-user';
+import { useAccount } from 'wagmi';
+import { useEffect } from 'react';
 
 const MainLayout = (props: Props) => {
   const {
@@ -7,6 +12,13 @@ const MainLayout = (props: Props) => {
     className,
     style,
   } = props;
+
+  const { address } = useAccount();
+  const { getAccessToken } = useUser();
+
+  useEffect(() => {
+    getAccessToken();
+  }, [address]);
 
   return (
     <div

@@ -7,7 +7,7 @@ const DashboardPortfolio = (props: Props) => {
   const {} = props;
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <h5 className="font-CherryBomb text-black text-center text-[32px] font-[400] leading-[95%]">$302.56</h5>
       <div className="text-[#3D405A] text-[14px] font-[500] text-center mt-[8px]">Total assets value</div>
       <div className="flex justify-between items-stretch gap-[16px] mt-[29px]">
@@ -44,7 +44,7 @@ const DashboardPortfolio = (props: Props) => {
       </section>
       <section className="mt-[34px] mb-[12px]">
         <Title>Details</Title>
-        <div className="flex justify-between items-stretch gap-[15px] mt-[18px]">
+        <div className="flex justify-between items-stretch gap-[15px]">
           <DashboardPortfolioDetail
             dapp={{
               show_name: 'Bend',

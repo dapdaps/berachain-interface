@@ -1,7 +1,16 @@
 import FlexTable, { Column } from '@/components/flex-table';
+import { useAccount } from 'wagmi';
+import { useEffect } from 'react';
+import useUser from '@/hooks/use-user';
+import { useUserStore } from '@/stores/user';
+import LazyImage from '@/components/layz-image';
 
 const DashboardWallet = (props: Props) => {
   const {} = props;
+
+  const userInfo = useUserStore((store: any) => store.user);
+  const { address } = useAccount();
+  const { accessToken, getUserInfo } = useUser();
 
   const columns: Column[] = [
     {
@@ -39,13 +48,25 @@ const DashboardWallet = (props: Props) => {
     usd: `$${i * 100}`
   }));
 
+  useEffect(() => {
+    if (!accessToken) return;
+    getUserInfo();
+  }, [accessToken]);
+
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <div className="bg-[#FFDC50] py-[18px] pl-[25px] pr-[13px] rounded-[10px] flex items-center gap-x-[18px] mb-[32px]">
-        <div className="w-[85px] h-[85px] rounded-[50%] flex-shrink-0"></div>
+        <LazyImage
+          src={userInfo.avatar}
+          width={85}
+          height={85}
+          className="w-[85px] h-[85px] rounded-full flex-shrink-0"
+        />
         <div className="grow">
-          <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">@beraman</div>
-          <div className="text-[14px] text-[#3D405A] font-Montserrat">0x3bcb...b717</div>
+          <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">@{userInfo.username}</div>
+          <div className="text-[14px] text-[#3D405A] font-Montserrat">
+            {address ? (address.slice(0, 6) + '...' + address.slice(-4)) : ''}
+          </div>
         </div>
         <div className="flex-shrink-0">
           <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">$2562.03</div>
