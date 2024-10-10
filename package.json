@@ -28,7 +28,8 @@
     "viem": "^2.21.15",
     "wagmi": "^2.12.14",
     "zustand": "^5.0.0-rc.2",
-    "jsbi": "^4.3.0"
+    "jsbi": "^4.3.0",
+    "d3": "^7.9.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
@@ -37,6 +38,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/d3": "^7.4.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",

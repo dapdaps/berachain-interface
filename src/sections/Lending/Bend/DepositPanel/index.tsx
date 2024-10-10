@@ -46,10 +46,6 @@ const DepositPanel: React.FC<IProps> = ({
 
   const filterMarkets = markets.filter((market) => market.symbol !== 'HONEY');
   
-  const { netBaseData, calculateNetBaseData } = useMarketStore()
-
-  console.log(netBaseData, 'netBaseData');
-  
   
   return (
     <div className="h-[490px]">

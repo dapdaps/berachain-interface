@@ -33,18 +33,15 @@ const networks = {
         "query borrowPositions($blockNumber: Int!, $walletAddress: String!) {\n  borrowPositions(\n    block: {number_gte: $blockNumber}\n    where: {effectiveUser: $walletAddress, status_not: \"CLOSED\", marginAccount_: {accountNumber_not: 0}}\n    orderBy: openTimestamp\n    orderDirection: desc\n    first: 50\n  ) {\n    id\n    marginAccount {\n      id\n      user {\n        id\n        __typename\n      }\n      accountNumber\n      lastUpdatedTimestamp\n      lastUpdatedBlockNumber\n      __typename\n    }\n    openTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    closeTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    status\n    openTimestamp\n    closeTimestamp\n    effectiveSupplyTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveBorrowTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveUser {\n      id\n      __typename\n    }\n    amounts {\n      token {\n        id\n        symbol\n        name\n        decimals\n        marketId\n        __typename\n      }\n      expirationTimestamp\n      amountPar\n      amountWei\n      __typename\n    }\n    __typename\n  }\n}\n"
     }),
     approveMax: true,
+    wBERA: beraB['wbera'],
     markets: {
       [beraB['wbera'].address]: {
         ...beraB['wbera'],
-        symbol: beraB['bera'].symbol,
-        icon: beraB['bera'].icon,
-        isNative: true,
-        underlyingToken: {
-          ...beraB['wbera'],
-          symbol: beraB['bera'].symbol,
-          icon: beraB['bera'].icon,
-          isNative: true
-        }
+        underlyingToken: beraB['wbera']
+      },
+      [beraB['bera'].address]: {
+        ...beraB['bera'],
+        underlyingToken: beraB['bera']
       },
       [beraB['honey'].address]: {
         ...beraB['honey'],

@@ -5,6 +5,7 @@ import PageBack from '@/components/back';
 import PageTitle from '@/components/title';
 import Image from '@/components/layz-image';
 import Tooltip from '@/components/tooltip';
+import { useRouter } from 'next/navigation';
 
 const splitArray = (list: Record<string, any>[]) =>  {
   const length = list.length;
@@ -15,20 +16,24 @@ const splitArray = (list: Record<string, any>[]) =>  {
   return listAfter;
 }
 
-const MoreButton = (props: {click: () => void, classname?: string}) => {
+const MoreButton = (props: { onClick: () => void; classname?: string; }) => {
   const {
-    click = () => {},
+    onClick = () => {},
     classname = ''
   } = props;
 
-  return (<button
-    onClick={click}
-    className={`pt-[8px] rounded-[16px] border border-black font-CherryBomb text-[20px] font-[400]  bg-[#FFAFDF] shadow-shadow1 ${classname}`}>
-    <div className="rounded-[16px] bg-[#FF80CC] px-[16px] pt-[7px] pb-[15px] leading-none">more</div>
-  </button>);
+  return (
+    <button
+      onClick={onClick}
+      className={`pt-[8px] rounded-[16px] border border-black font-CherryBomb text-[20px] font-[400]  bg-[#FFAFDF] shadow-shadow1 ${classname}`}
+    >
+      <div className="rounded-[16px] bg-[#FF80CC] px-[16px] pt-[7px] pb-[15px] leading-none">more</div>
+    </button>
+  );
 }
 
 const MarketplaceView = () => {
+  const router = useRouter();
 
   const List = [
     {
@@ -43,11 +48,16 @@ const MarketplaceView = () => {
     },
   ]
 
-  const onMore = () => {}
-  const onFooterMore = () => {}
+  const onMore = () => {
+    router.push('/marketplace/list');
+  };
+
+  const onFooterMore = () => {
+    router.push('/marketplace/list');
+  };
 
   return (
-    <div className="relative pb-[197px]">
+    <div className="relative">
       <PageBack className="absolute left-[36px] top-[31px]" />
       <PageTitle className="pt-[30px] mb-[75px]">Marketplace</PageTitle>
       <div
@@ -77,10 +87,10 @@ const MarketplaceView = () => {
         </div>
         <MoreButton
           classname='absolute bottom-[-17px] right-[-12px]'
-          click={onMore}
+          onClick={onMore}
         />
       </div>
-      <div className='h-[197px] w-full fixed bottom-0 left-0 bg-[#7990F4]'>
+      <div className='relative h-[197px] w-full bg-[#7990F4]'>
         <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] w-[1200px]'>
           <div
             className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61]' />
@@ -146,7 +156,7 @@ const MarketplaceView = () => {
               </div>
               <MoreButton
                 classname="absolute top-[50%] translate-y-[-50%] right-[-12px]"
-                click={onFooterMore}
+                onClick={onFooterMore}
               />
               <div
                 className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]" />
@@ -156,7 +166,6 @@ const MarketplaceView = () => {
         </div>
       </div>
     </div>
-
   )
 }
 

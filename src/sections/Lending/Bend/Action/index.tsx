@@ -7,13 +7,14 @@ import useAaveConfig from "@/stores/useAaveConfigStore";
 import { isValid } from "@/utils/utils";
 import { ethers } from "ethers";
 import useAddAction from "@/hooks/use-add-action";
-import { useActions } from "../useActions";
+import { useDepositAndWithdraw } from "../useDepositAndWithdraw";
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
   action: string;
   token: TokenInfo;
+  className?: string;
 }
 
 const MIN_ETH_GAS_FEE = 0.001;
@@ -40,15 +41,14 @@ const calculateMaxValue = (
 };
 
 const Action = forwardRef<HTMLDivElement, IProps>(
-  ({ isOpen, onClose, action, token }: IProps, ref) => {
-    const { addAction } = useAddAction("lending");
+  ({ isOpen, onClose, action, token, className }: IProps, ref) => {
     const { config } = useAaveConfig();
     const {
       initData: { provider, chainId, account },
       triggerUpdate,
     } = useMarketStore();
  
-    const isDeposit = action === "deposit";
+    const isDeposit = action === "deposit" || action === "supply";
 
     const {
       handleApprove,
@@ -59,7 +59,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       needApprove,
       setAmount,
       amount
-    } = useActions({
+    } = useDepositAndWithdraw({
       token, isDeposit, provider, chainId, account, config, triggerUpdate
     });
 
@@ -113,10 +113,10 @@ const Action = forwardRef<HTMLDivElement, IProps>(
     if (!isOpen) return null;
 
     return (
-      <div className={`absolute z-50 top-[40px]`} ref={ref}>
+      <div className={`absolute z-50 top-[40px] ${className}`} ref={ref}>
         <div className="w-[302px] h-[160px] bg-[#FFFDEB] shadow-shadow1 border border-black rounded-[20px] p-5">
           <h2 className="font-Montserrat text-base font-semibold leading-[14.4px] text-left mb-[18px]">
-            {isDeposit ? "Deposit" : "Withdraw"}
+          {isDeposit ? action === 'supply' ? 'Supply' : 'Deposit' : "Withdraw"}
           </h2>
           <input
             type="number"
@@ -160,7 +160,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
                 disabled={isDisabled}
                 onClick={handleAction}
               >
-                {isDeposit ? "Deposit" : "Withdraw"}
+                {isDeposit ? action === 'supply' ? 'Supply' : 'Deposit' : "Withdraw"}
               </button>
             )}
           </div>

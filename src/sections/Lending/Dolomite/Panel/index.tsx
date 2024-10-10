@@ -91,7 +91,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
           <div className="font-[500] text-[#3D405A]"></div>
         </div>
         {
-          loading ? [0, 1, 2, 3].map((i) => (
+          loading ? [0, 1, 2, 3, 4].map((i) => (
             <div
               key={i}
               className="grid grid-cols-[3fr_2fr_2fr_2fr_1fr] gap-4 items-center py-[10px]"

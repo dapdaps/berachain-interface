@@ -2920,6 +2920,7 @@ const DolomiteData = (props: any) => {
     interestRatesApi,
     markets,
     name,
+    wBERA,
     //#endregion
 
     update,
@@ -2965,6 +2966,9 @@ const DolomiteData = (props: any) => {
           token.borrowTokenPrice.push(_token.underlyingPrice);
         }
       });
+
+      const nativeToken = _cTokensData['native'];
+
       _positionList.forEach((position: any) => {
         const baseLTV = Big(1).minus(Big(liquidationRatio).minus(1)).toString();
         let LTV = baseLTV;
@@ -2997,25 +3001,41 @@ const DolomiteData = (props: any) => {
           totalCollateralUsd = totalCollateralUsd.plus(Big(collateral || 0).times(currentToken.price));
 
           if (collateral) {
-            removeCollateralTokens.push({
+            const removeCollateralToken = {
               ...currentToken,
               currentPositionCollateral: collateral,
               currentPositionCollateralValue: _amount.collateralValue,
               currentPositionCollateralUsd: _amount.collateralUsd
-            });
+            };
+            if (currentToken.address.toLowerCase() === wBERA.address.toLowerCase()) {
+              if (nativeToken) {
+                removeCollateralToken.symbol = nativeToken.symbol;
+                removeCollateralToken.icon = nativeToken.icon;
+                removeCollateralToken.name = nativeToken.name;
+              }
+            }
+            removeCollateralTokens.push(removeCollateralToken);
           }
           if (borrow) {
             let _repayBalance = _amount.borrowValue;
             if (Big(borrow).gte(currentToken.balance)) {
               _repayBalance = currentToken.balance;
             }
-            repayTokens.push({
+            const repayToken = {
               ...currentToken,
               balance: _repayBalance,
               currentPositionBorrow: borrow,
               currentPositionBorrowValue: _amount.borrowValue,
               currentPositionBorrowUsd: _amount.borrowUsd
-            });
+            };
+            if (currentToken.address.toLowerCase() === wBERA.address.toLowerCase()) {
+              if (nativeToken) {
+                repayToken.symbol = nativeToken.symbol;
+                repayToken.icon = nativeToken.icon;
+                repayToken.name = nativeToken.name;
+              }
+            }
+            repayTokens.push(repayToken);
           }
         });
 
@@ -3034,17 +3054,36 @@ const DolomiteData = (props: any) => {
         });
 
         tokenList.forEach((token: any) => {
-          if (!removeCollateralTokens.some((it: any) => it.address === token.address)) {
-            borrowTokens.push({
-              ...token,
-              balance: borrowBalance.div(token.price).toFixed(token.decimals, Big.roundDown)
-            });
+          if (token.isNative) {
+            return;
           }
-          if (!repayTokens.some((it: any) => it.address === token.address)) {
-            addCollateralTokens.push({
+          if (!removeCollateralTokens.some((it: any) => it.address.toLowerCase() === token.address.toLowerCase())) {
+            const borrowToken = {
               ...token,
-              balance: token.balance
-            });
+              balance: borrowBalance.div(token.price).toFixed(token.decimals, Big.roundDown),
+            };
+            if (token.address.toLowerCase() === wBERA.address.toLowerCase()) {
+              if (nativeToken) {
+                borrowToken.symbol = nativeToken.symbol;
+                borrowToken.icon = nativeToken.icon;
+                borrowToken.name = nativeToken.name;
+              }
+            }
+            borrowTokens.push(borrowToken);
+          }
+          if (!repayTokens.some((it: any) => it.address.toLowerCase() === token.address.toLowerCase())) {
+            const addCollateralToken = {
+              ...token,
+              balance: token.balance,
+            };
+            if (token.address.toLowerCase() === wBERA.address.toLowerCase()) {
+              if (nativeToken) {
+                addCollateralToken.symbol = nativeToken.symbol;
+                addCollateralToken.icon = nativeToken.icon;
+                addCollateralToken.name = nativeToken.name;
+              }
+            }
+            addCollateralTokens.push(addCollateralToken);
           }
         });
 
@@ -3133,9 +3172,16 @@ const DolomiteData = (props: any) => {
           provider: provider
         })
           .then((res: any) => {
+            console.log('getDolomiteBalance: %o', res);
             const [marketIds, addresses = [], principal, real] = res[0];
             addresses.forEach((address: string, index: number) => {
               const currToken = tokenList.find((token: any) => token.address.toLowerCase() === address.toLowerCase());
+              if (address.toLowerCase() === wBERA.address.toLowerCase()) {
+                result['native'] = ethers.utils.formatUnits(
+                  real[index].value?._hex || 0,
+                  currToken?.decimals || 18
+                );
+              }
               result[address.toLowerCase()] = ethers.utils.formatUnits(
                 real[index].value?._hex || 0,
                 currToken?.decimals || 18
@@ -3161,10 +3207,14 @@ const DolomiteData = (props: any) => {
         });
         const calls = marketList.map((market: any) => {
           tokenMarketIds[market.address.toLowerCase()] = market.marketId;
+          let marketAddress = market.address;
+          if (market.isNative) {
+            marketAddress = wBERA.address;
+          }
           return {
             address: marginAddress,
             name: 'getMarketIdByTokenAddress',
-            params: [market.address]
+            params: [marketAddress]
           };
         });
         multicall({

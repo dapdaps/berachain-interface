@@ -9,15 +9,21 @@ export function useHandler(props: Props) {
   const [txData, setTxData] = useState<any>();
   const [isMax, setIsMax] = useState(false);
 
-  const { run: debouncedGetTrade } = useDebounceFn(() => {
+  const { run: debouncedGetTrade, cancel: cancelGetTrade } = useDebounceFn(() => {
     setLoading(true);
   }, { wait: 500 });
 
   const handleAmountChange = (ev: any) => {
-    if (isNaN(Number(ev.target.value))) return;
+    if (isNaN(Number(ev.target.value))) {
+      setLoading(false);
+      cancelGetTrade();
+      return;
+    }
     const _amount = ev.target.value.replace(/\s+/g, '');
     setAmount(_amount);
     if (!_amount || Big(_amount).lte(0)) {
+      setLoading(false);
+      cancelGetTrade();
       return _amount;
     }
     debouncedGetTrade();

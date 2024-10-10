@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import IconClose from '@public/images/modal/close.svg';
 interface ModalProps {
   open?: boolean;
@@ -19,6 +19,17 @@ const Modal: React.FC<ModalProps> = ({
   className,
   closeIconClassName
 }) => {
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   if (!open) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -37,7 +48,7 @@ const Modal: React.FC<ModalProps> = ({
         {closeIcon || onClose ? (
           <button
             onClick={onClose}
-            className={`absolute top-5 right-5 cursor-pointer z-100 ${closeIconClassName}`}
+            className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
           >
             <IconClose />
           </button>
