@@ -1,4 +1,7 @@
+"use client"
+import useTokenPrice from '@/hooks/use-token-price';
 import MainLayoutHeader from '@/layouts/main/header';
+import { useEffect } from 'react';
 
 const MainLayout = (props: Props) => {
   const {
@@ -6,6 +9,12 @@ const MainLayout = (props: Props) => {
     className,
     style,
   } = props;
+
+  const { initializePrice } = useTokenPrice()
+
+  useEffect(() => {
+    initializePrice()
+  }, [])
 
   return (
     <div

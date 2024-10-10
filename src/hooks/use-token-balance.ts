@@ -28,9 +28,9 @@ const TOKEN_ABI = [
 export default function useTokenBalance(
   address: string | 'native',
   decimals: number,
-  chainId?: number
+  chainId: number = 80084
 ) {
-  // console.info('use-token-bal:', address, decimals);
+  // console.info('use-token-bal:', address, decimals, chainId);
   const { account, provider, chainId: walletChainId } = useAccount();
   const [tokenBalance, setTokenBalance] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,14 +39,22 @@ export default function useTokenBalance(
 
   const getBalance = async () => {
     if (!account || !address || !provider) return;
+
+    // console.log('walletChainId:', walletChainId, chainId)
+
+    const rpcUrl = chains[chainId as number].rpcUrls.default.http[0]
+    const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
+
+    const _provider = rpcProvider
+
     setIsLoading(true);
     try {
-      if (address === 'native') {
-        const rawBalance = await provider.getBalance(account);
+      if (address === 'native') { 
+        const rawBalance = await _provider.getBalance(account);
         // console.info('get-native-bal', rawBalance);
         setTokenBalance(utils.formatEther(rawBalance));
       } else {
-        const TokenContract = new Contract(address, TOKEN_ABI, provider);
+        const TokenContract = new Contract(address, TOKEN_ABI, _provider);
         const rawBalance = await TokenContract.balanceOf(account);
         console.log('rawBalance: ', rawBalance);
         setTokenBalance(utils.formatUnits(rawBalance, decimals));

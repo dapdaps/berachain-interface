@@ -25,8 +25,8 @@ const chains: Record<number, Chain | any> = {
 
 export const icons: Record<number, string> = {
   80084: '/images/berachain.png',
-  1: 'https://app.dapdap.net/assets/images/bafkreicjsbkvvcxahxjejkctwopcnmzbeskxhfrkg7lyawhkhzrxcmvgfy.svg',
-  1101: 'https://s3.amazonaws.com/dapdap.main/images/polygon-zkevm-chainicon.png'
+  1: '/images/berachain.png',
+  1101: '/images/berachain.png'
 };
 
 export default chains;

@@ -6,6 +6,10 @@ import allTokens from '@/configs/allTokens'
 import { Chain } from 'viem';
 import { Token } from '@/types';
 import chains, { icons } from '@/configs/chains'
+import useTokenBalance from '@/hooks/use-token-balance';
+import Loading from '@/components/loading';
+import { usePriceStore } from '@/stores/usePriceStore';
+import { balanceFormated } from '@/utils/balance';
 
 interface Props {
   chain: Chain;
@@ -21,6 +25,8 @@ export default function TokenAmout({
   onTokenChange
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
+  const { tokenBalance, isError, isLoading, update } = useTokenBalance(token.isNative ? 'native' : token.address, token.decimals, token.chainId)
+  const prices: any = usePriceStore(store => store.price);
 
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
@@ -68,8 +74,8 @@ export default function TokenAmout({
       </div>
 
       <div className='flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]'>
-        <div>balance: 0</div>
-        <div>$2637.88</div>
+        <div className='flex items-center'>balance: {isLoading ? <Loading size={12}/> : balanceFormated(tokenBalance, 4)}</div>
+        <div>${(token && tokenBalance) ?  balanceFormated(prices[token.symbol] * (tokenBalance as any), 4) : '~'}</div>
       </div>
 
       <TokenSelector
