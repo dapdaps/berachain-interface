@@ -42,7 +42,7 @@ const DashboardRecords = (props: Props) => {
     time: '2023-10-20 10:45:45'
   }));
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <FlexTable columns={columns} list={data} loading={false} />
     </div>
   );

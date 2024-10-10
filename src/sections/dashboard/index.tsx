@@ -27,6 +27,9 @@ const DashboardView = () => {
           onChange={(tabKey) => {
             setCurrentTab(tabKey);
           }}
+          bodyInnerStyle={{
+            height: 'calc(100vh - 300px)',
+          }}
         />
       </div>
     </BearBackground>

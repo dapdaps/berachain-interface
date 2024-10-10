@@ -13,6 +13,10 @@ const Tabs = (props: TabsProps) => {
     tabs,
     className,
     style,
+    bodyClassName,
+    bodyStyle,
+    bodyInnerStyle,
+    bodyInnerClassName,
     onChange = () => {
     },
   } = props;
@@ -91,10 +95,11 @@ const Tabs = (props: TabsProps) => {
       >
         <div
           ref={bodyRef}
-          className="berachain-tabs-body relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black px-[22px] pt-[24px] min-h-[50px]"
+          className={`berachain-tabs-body relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black px-[22px] pt-[24px] min-h-[50px] ${bodyClassName}`}
           style={{
             borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
             borderTopRightRadius: currentTabIndex === tabs.length - 1 ? contentBorderTopRightRadius : 20,
+            ...bodyStyle,
           }}
         >
           <AnimatePresence mode="wait">
@@ -123,6 +128,7 @@ const Tabs = (props: TabsProps) => {
                         {tab.label}
                       </ActiveTab>
                       <motion.div
+                        className={bodyInnerClassName}
                         key={`content-${tab.key}`}
                         variants={{
                           active: {
@@ -135,6 +141,7 @@ const Tabs = (props: TabsProps) => {
                         initial="inactive"
                         animate="active"
                         exit="inactive"
+                        style={bodyInnerStyle}
                       >
                         {tab.children}
                       </motion.div>
@@ -160,6 +167,10 @@ export interface TabsProps {
   currentTab: TabKey;
   className?: string;
   style?: React.CSSProperties;
+  bodyClassName?: string;
+  bodyStyle?: React.CSSProperties;
+  bodyInnerClassName?: string;
+  bodyInnerStyle?: React.CSSProperties;
 
   onChange?(key: TabKey, tab: Tab, index: number): void;
 }
