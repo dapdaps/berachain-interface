@@ -137,7 +137,7 @@ export default function Token() {
               sort: true,
               width: '10%',
               render: (item: any, index: number) => {
-                return item['tvl'] || (balanceFormated(Math.random() * 1400, 2)) ;
+                return item['tvl'] || balanceFormated(Math.random() * 1400, 2);
               }
             },
             {
@@ -146,7 +146,7 @@ export default function Token() {
               sort: true,
               width: '20%',
               render: (item: any, index: number) => {
-                return item['yours'] || (balanceFormated(Math.random() * 14, 2));
+                return item['yours'] || balanceFormated(Math.random() * 14, 2);
               }
             },
             {

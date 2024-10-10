@@ -12,7 +12,7 @@ import usdAdd from './use-add';
 export default function AddLiquidity({
   from,
   tokenSelectable,
-  onClose,
+  onSuccess,
   defaultToken0,
   defaultToken1
 }: any) {
@@ -43,7 +43,7 @@ export default function AddLiquidity({
     lpAddress: info?.lpAddress,
     poolIdx: info?.poolIdx,
     onSuccess: () => {
-      onClose?.();
+      onSuccess?.();
     }
   });
 

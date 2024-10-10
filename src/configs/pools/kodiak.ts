@@ -15,5 +15,9 @@ export default {
   tokens,
   officalSite:
     'https://app.kodiak.finance/#/liquidity/islands?chain=berachain_bartio',
-  name: 'Kodiak'
+  name: 'Kodiak',
+  graph: {
+    80084:
+      'https://api.goldsky.com/api/public/project_clpx84oel0al201r78jsl0r3i/subgraphs/kodiak-v2-berachain-bartio/latest/gn'
+  }
 };

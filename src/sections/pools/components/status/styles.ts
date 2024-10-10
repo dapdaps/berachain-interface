@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-const StatusColor = {
+export const StatusColor = {
   in: '#55A76C',
   out: 'rgb(238, 179, 23)',
-  removed: '#FF75BF',
+  removed: '#FF75BF'
 };
 
 export const StyledStatus = styled.div<{ status: 'in' | 'out' | 'removed' }>`

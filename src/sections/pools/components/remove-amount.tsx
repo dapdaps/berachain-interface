@@ -33,9 +33,6 @@ const StyledBaseUI = styled.div`
   gap: 22px;
 `;
 const StyledPool = styled(StyledBaseUI)``;
-const StyledEarnedFees = styled(StyledBaseUI)`
-  border-top: 1px solid #373a53;
-`;
 
 const PoolRemoveToken = ({
   percent = 0,
@@ -45,30 +42,36 @@ const PoolRemoveToken = ({
   amount1 = 0,
   feeAmount0 = 0,
   feeAmount1 = 0,
-  type
+  type,
+  from
 }: any) => {
   return (
     <StyledWrap>
-      <StyledPool>
-        <RowData
-          name={`Pooled ${token0?.symbol}:`}
-          value={balanceFormated(
-            Number(amount0 || 0) * (percent / 100) + '',
-            4
-          )}
-          token={token0}
-        />
-        <RowData
-          name={`Pooled ${token1?.symbol}:`}
-          value={balanceFormated(
-            Number(amount1 || 0) * (percent / 100) + '',
-            4
-          )}
-          token={token1}
-        />
-      </StyledPool>
+      {from !== 'collect' && (
+        <StyledPool>
+          <RowData
+            name={`Pooled ${token0?.symbol}:`}
+            value={balanceFormated(
+              Number(amount0 || 0) * (percent / 100) + '',
+              4
+            )}
+            token={token0}
+          />
+          <RowData
+            name={`Pooled ${token1?.symbol}:`}
+            value={balanceFormated(
+              Number(amount1 || 0) * (percent / 100) + '',
+              4
+            )}
+            token={token1}
+          />
+        </StyledPool>
+      )}
+      {from !== 'collect' && type !== 'V2' && (
+        <div className='h-[1px] bg-black' />
+      )}
       {type !== 'V2' && (
-        <StyledEarnedFees>
+        <StyledBaseUI>
           <RowData
             name={`${token0?.symbol} Fees Earned:`}
             value={balanceFormated(feeAmount0, 4)}
@@ -79,7 +82,7 @@ const PoolRemoveToken = ({
             value={balanceFormated(feeAmount1, 4)}
             token={token1}
           />
-        </StyledEarnedFees>
+        </StyledBaseUI>
       )}
     </StyledWrap>
   );

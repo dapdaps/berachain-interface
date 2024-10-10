@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import IconClose from '@public/images/modal/close.svg';
 interface ModalProps {
   open?: boolean;
@@ -19,7 +20,6 @@ const Modal: React.FC<ModalProps> = ({
   className,
   closeIconClassName
 }) => {
-
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -37,26 +37,28 @@ const Modal: React.FC<ModalProps> = ({
       onClose && onClose();
     }
   };
-
-  return (
-    <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] ${className}`}
-      style={style}
-      onClick={handleBackdropClick}
-    >
-      <div className='rounded-lg relative'>
-        {closeIcon || onClose ? (
-          <button
-            onClick={onClose}
-            className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
-          >
-            <IconClose />
-          </button>
-        ) : null}
-        {children}
+  return ReactDOM.createPortal(
+    (
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] ${className}`}
+        style={style}
+        onClick={handleBackdropClick}
+      >
+        <div className='rounded-lg relative'>
+          {closeIcon || onClose ? (
+            <button
+              onClick={onClose}
+              className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
+            >
+              <IconClose />
+            </button>
+          ) : null}
+          {children}
+        </div>
       </div>
-    </div>
-  );
+    ) as any,
+    document.body
+  ) as unknown as React.ReactPortal;
 };
 
 export default Modal;

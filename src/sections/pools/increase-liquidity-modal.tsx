@@ -3,7 +3,7 @@
 import { useRef, forwardRef } from 'react';
 import BasicModal from './components/modal';
 import Bex from './bex/add-liquidity';
-import Kodiak from './kodiak/add-liquidity';
+import Kodiak from './kodiak/increase-liquidity';
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
   if (dex?.toLowerCase() === 'bex') return <Bex {...rest} />;

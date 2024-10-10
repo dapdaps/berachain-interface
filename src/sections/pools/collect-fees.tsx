@@ -1,15 +1,13 @@
 'use client';
 
 import BasicModal from './components/modal';
-import Bex from './bex/remove-liquidity';
-import Kodiak from './kodiak/remove-liquidity';
+import Kodiak from './kodiak/collect-fees';
 
-const RemoveLiquidityPanel = ({ dex, ...rest }: any) => {
-  if (dex?.toLowerCase() === 'bex') return <Bex {...rest} />;
+const Panel = ({ dex, ...rest }: any) => {
   if (dex?.toLowerCase() === 'kodiak') return <Kodiak {...rest} />;
 };
 
-export default function RemoveLiquidityModal({
+export default function CollectFees({
   token0,
   token1,
   version,
@@ -21,7 +19,7 @@ export default function RemoveLiquidityModal({
 }: any) {
   return (
     <BasicModal
-      title={`Remove ${token0?.symbol}-${token1?.symbol}`}
+      title={`Claim Rewards`}
       dex={dex}
       fee={fee}
       version={version}
@@ -29,7 +27,7 @@ export default function RemoveLiquidityModal({
       onClose={onClose}
     >
       <div className='pb-[20px]'>
-        <RemoveLiquidityPanel
+        <Panel
           dex={dex}
           token0={token0}
           token1={token1}

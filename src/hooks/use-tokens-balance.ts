@@ -76,11 +76,11 @@ export default function useTokensBalance(tokens: any) {
       console.log(err);
       setLoading(false);
     }
-  }, [tokens, account]);
+  }, [tokens, account, provider]);
 
   useEffect(() => {
     queryBalance();
-  }, [tokens, account]);
+  }, [tokens, account, provider]);
 
   return { loading, balances, queryBalance };
 }

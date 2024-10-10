@@ -92,7 +92,7 @@ export function getFullNum(value: any) {
 }
 
 export function formatPrice(price: number) {
-  if (!price || isNaN(price)) return '-';
+  if (!price || isNaN(price)) return '';
   let digits = 0;
   if (Big(price).gt(10000)) digits = 1;
   if (Big(price).gt(100) && Big(price).lt(9999)) digits = 2;
