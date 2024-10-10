@@ -29,7 +29,7 @@ export function useRecords(props: Props) {
           address,
           limit: 20,
           start_time: _pageIndex === 1 ? '' : records.slice(-1)[0].tx_time,
-          chain_id: '',
+          chain_id: currentChain.id,
           dapp: '',
         }),
       });
