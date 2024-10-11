@@ -1,3 +1,3 @@
 export default function Liquidity() {
-  return <div>Liquidity</div>;
+  return <div>Liquidity list</div>;
 }
