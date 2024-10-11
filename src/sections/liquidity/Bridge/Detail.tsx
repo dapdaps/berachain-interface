@@ -445,7 +445,7 @@ export default memo(function Detail(props) {
                       .times(data?.initialData?.stake_token?.price ?? 0)
                       .toFixed(2) : '-'}
                   </span>
-                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
+                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={handleMax}>balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
                 </div>
                 {
                   isInSufficient && (
@@ -515,7 +515,7 @@ export default memo(function Detail(props) {
                       .times(data?.initialData?.stake_token?.price ?? 0)
                       .toFixed(2) : '-'}
                   </span>
-                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span onClick={() => {
+                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
                     const newSliderPercent = Big(lpBalance || 0)
                       .div(Big(lpBalance).gt(0) ? lpBalance : 1)
                       .times(100)
@@ -524,7 +524,7 @@ export default memo(function Detail(props) {
                     onUpdateLpPercent(Number(newSliderPercent));
 
                     handleLPChange(lpBalance);
-                  }}>{lpBalance}</span></div>
+                  }}>balance: <span>{lpBalance}</span></div>
                 </div>
                 <button
                   disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}

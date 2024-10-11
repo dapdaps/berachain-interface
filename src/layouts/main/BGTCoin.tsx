@@ -1,5 +1,7 @@
+"use client"
 import Image from '@/components/layz-image';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 const Star = () => (
@@ -35,6 +37,8 @@ const BGTCoin = ({
   count = 0
 }: Props) => {
 
+  const router = useRouter()
+
   const countRef = useRef<number>(-1);
   const [isAnimate, setIsAnimate] = useState(true);
   const prev = countRef.current;
@@ -46,7 +50,11 @@ const BGTCoin = ({
 
   return (
     <div>
-      <div className='relative'>
+      <div className='relative'
+        onClick={() => {
+          router.push(type === CoinType.iBGT ? "/ibgt" : '/bgt')
+        }}
+      >
         <div className='absolute left-[-6px] top-[50%] translate-y-[-50%]'>
           {/*{*/}
           {/*  type === CoinType.iBGT && (*/}
