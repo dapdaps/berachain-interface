@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import CircleLoading from '@/components/circle-loading';
 import SwitchTabs from '@/components/switch-tabs';
 import { DEFAULT_CHAIN_ID } from '@/configs';
@@ -16,41 +16,29 @@ const TABS = [
   {
     value: 'Stake',
     label: 'Stake',
-    disabled: false,
+    disabled: false
   },
   {
     value: 'Unstake',
     label: 'Unstake',
-    disabled: false,
-  },
+    disabled: false
+  }
 ];
 export default memo(function staking(props) {
-  const {
-    stakingVisible,
-    setStakingVisible,
-    stakingData,
-  } = useContext(MarketplaceContext);
+  const { stakingVisible, setStakingVisible, stakingData } =
+    useContext(MarketplaceContext);
 
   const toast = useToast();
-  const { account: sender, provider } = useCustomAccount()
-  const {
-    data,
-    config,
-  } = stakingData
+  const { account: sender, provider } = useCustomAccount();
+  const { data, config } = stakingData;
 
-  const dexConfig = config?.chains[DEFAULT_CHAIN_ID]
-  const { decimals, id, LP_ADDRESS } = data ?? {
-
-  };
-  const {
-    addresses
-  } = dexConfig ?? {
-
-  }
+  const dexConfig = config?.chains[DEFAULT_CHAIN_ID];
+  const { decimals, id, LP_ADDRESS } = data ?? {};
+  const { addresses } = dexConfig ?? {};
 
   const symbol = id;
 
-  const vaultAddress = addresses ? addresses[symbol] : "";
+  const vaultAddress = addresses ? addresses[symbol] : '';
 
   const [currentTab, setCurrentTab] = useState(TABS[0].value);
   const [state, updateState] = useMultiState({
@@ -61,8 +49,7 @@ export default memo(function staking(props) {
     lpAmount: '',
     isLoading: false,
     isTokenApproved: true,
-    isTokenApproving: false,
-
+    isTokenApproving: false
   });
 
   const sourceBalances: any = {};
@@ -74,13 +61,11 @@ export default memo(function staking(props) {
     isTokenApproved,
     isTokenApproving,
     lpBalance,
-    lpAmount,
+    lpAmount
   } = state;
-
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
-
 
   const handleClose = () => {
     setStakingVisible(false);
@@ -88,8 +73,12 @@ export default memo(function staking(props) {
 
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(vaultAddress, abi, provider.getSigner());
-    contract.balanceOf(sender).then((balanceBig) => {
+    const contract = new ethers.Contract(
+      vaultAddress,
+      abi,
+      provider.getSigner()
+    );
+    contract.balanceOf(sender).then((balanceBig: any) => {
       const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
       updateState({
         lpBalance: adjustedBalance
@@ -101,8 +90,10 @@ export default memo(function staking(props) {
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     contract
       .balanceOf(sender)
-      .then((balanceBig) => {
-        const adjustedBalance = Big(ethers.utils.formatUnits(balanceBig)).toFixed();
+      .then((balanceBig: any) => {
+        const adjustedBalance = Big(
+          ethers.utils.formatUnits(balanceBig)
+        ).toFixed();
         sourceBalances[symbol] = adjustedBalance;
         updateState({
           balances: sourceBalances
@@ -117,8 +108,13 @@ export default memo(function staking(props) {
   };
 
   const checkApproval = (amount) => {
-    const wei: any = ethers.utils.parseUnits(Big(amount).toFixed(decimals), decimals);
-    const abi = ['function allowance(address, address) external view returns (uint256)'];
+    const wei: any = ethers.utils.parseUnits(
+      Big(amount).toFixed(decimals),
+      decimals
+    );
+    const abi = [
+      'function allowance(address, address) external view returns (uint256)'
+    ];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     updateState({
       isTokenApproved: false
@@ -135,9 +131,9 @@ export default memo(function staking(props) {
   };
   const handleTokenChange = (amount) => {
     updateState({ inAmount: amount });
-    if (amount === "") {
+    if (amount === '') {
       updateState({
-        inAmount: "",
+        inAmount: '',
         isTokenApproved: true
       });
       return;
@@ -184,11 +180,12 @@ export default memo(function staking(props) {
         toast?.dismiss(toastId);
         toast?.fail({
           title: 'Approve Failed!',
-          text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : null
+          text: error?.message?.includes('user rejected transaction')
+            ? 'User rejected transaction'
+            : null
         });
       });
   };
-
 
   const handleDeposit = () => {
     const toastId = toast?.loading({
@@ -200,7 +197,10 @@ export default memo(function staking(props) {
       isError: false,
       loadingMsg: 'Staking...'
     });
-    const wei = ethers.utils.parseUnits(Big(inAmount).toFixed(decimals), decimals);
+    const wei = ethers.utils.parseUnits(
+      Big(inAmount).toFixed(decimals),
+      decimals
+    );
     const abi = [
       {
         constant: false,
@@ -216,7 +216,11 @@ export default memo(function staking(props) {
         type: 'function'
       }
     ];
-    const contract = new ethers.Contract(vaultAddress, abi, provider.getSigner());
+    const contract = new ethers.Contract(
+      vaultAddress,
+      abi,
+      provider.getSigner()
+    );
     contract
       .stake(wei)
       .then((tx: any) => tx.wait())
@@ -261,7 +265,7 @@ export default memo(function staking(props) {
           title: 'Stake Failed!',
           text: error?.message?.includes('user rejected transaction')
             ? 'User rejected transaction'
-            : (error?.message ?? '')
+            : error?.message ?? ''
         });
       });
   };
@@ -292,7 +296,11 @@ export default memo(function staking(props) {
       }
     ];
 
-    const contract = new ethers.Contract(vaultAddress, abi, provider.getSigner());
+    const contract = new ethers.Contract(
+      vaultAddress,
+      abi,
+      provider.getSigner()
+    );
     contract
       .withdraw(lpWeiAmount)
       .then((tx: any) => tx.wait())
@@ -340,7 +348,7 @@ export default memo(function staking(props) {
           title: 'Unstake Failed!',
           text: error?.message?.includes('user rejected transaction')
             ? 'User rejected transaction'
-            : (error?.message ?? '')
+            : error?.message ?? ''
         });
       });
   };
@@ -352,11 +360,11 @@ export default memo(function staking(props) {
   return (
     <DappModal
       title={`Invest ${data?.id}`}
-      type="Staking"
+      type='Staking'
       visible={stakingVisible}
       onClose={handleClose}
     >
-      <div className="mt-[40px]">
+      <div className='mt-[40px]'>
         <SwitchTabs
           tabs={TABS}
           current={currentTab}
@@ -367,45 +375,66 @@ export default memo(function staking(props) {
 
         <div className='flex items-center mt-[34px] mb-[33px]'>
           <div className='flex-1 flex flex-col gap-[14px]'>
-            <div className='text-black font-Montserrat text-[14px] font-medium'>{data?.id} APY</div>
-            <div className='text-black font-Montserrat text-[20px] font-bold'>{Big(data?.apy ?? 0).toFixed(2)}%</div>
+            <div className='text-black font-Montserrat text-[14px] font-medium'>
+              {data?.id} APY
+            </div>
+            <div className='text-black font-Montserrat text-[20px] font-bold'>
+              {Big(data?.apy ?? 0).toFixed(2)}%
+            </div>
           </div>
           <div className='flex-1 flex flex-col gap-[14px]'>
-            <div className='text-black font-Montserrat text-[14px] font-medium'>Staked</div>
+            <div className='text-black font-Montserrat text-[14px] font-medium'>
+              Staked
+            </div>
             <div className='flex items-center gap-[6px]'>
               <div className='flex items-center'>
                 <div className='w-[26px] h-[26px] rounded-full'>
                   <img src={data?.images[0]} />
                 </div>
-                {
-                  data?.images[1] && (
-                    <div className='ml-[-10px] w-[26px] h-[26px] rounded-full'>
-                      <img src={data?.images[1]} />
-                    </div>
-                  )
-                }
+                {data?.images[1] && (
+                  <div className='ml-[-10px] w-[26px] h-[26px] rounded-full'>
+                    <img src={data?.images[1]} />
+                  </div>
+                )}
               </div>
-              <div className='text-black font-Montserrat text-[20px] font-bold'>{formatValueDecimal(data?.usdDepositAmount, '$', 2, true, false)}</div>
+              <div className='text-black font-Montserrat text-[20px] font-bold'>
+                {formatValueDecimal(
+                  data?.usdDepositAmount,
+                  '$',
+                  2,
+                  true,
+                  false
+                )}
+              </div>
             </div>
           </div>
 
           <div className='flex-1 flex flex-col gap-[14px]'>
-            <div className='text-black font-Montserrat text-[14px] font-medium'>sOOGA</div>
+            <div className='text-black font-Montserrat text-[14px] font-medium'>
+              sOOGA
+            </div>
             <div className='flex items-center gap-[6px]'>
               <div className='w-[26px] h-[26px] rounded-full'>
                 <img src='' />
               </div>
-              <div className='text-black font-Montserrat text-[20px] font-bold'>0</div>
+              <div className='text-black font-Montserrat text-[20px] font-bold'>
+                0
+              </div>
             </div>
           </div>
         </div>
 
         <div className='flex items-center justify-between'>
-          <div className='text-black font-Montserrat text-[14px] font-medium'>Stake</div>
-          <div className='text-black font-Montserrat text-[14px] font-medium'>Balance: <span className='underline'>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
+          <div className='text-black font-Montserrat text-[14px] font-medium'>
+            Stake
+          </div>
+          <div className='text-black font-Montserrat text-[14px] font-medium'>
+            Balance:{' '}
+            <span className='underline'>
+              {Big(balances[symbol] ?? 0).toFixed(6)}
+            </span>
+          </div>
         </div>
-
-
 
         {/* <div className='text-black font-Montserrat text-[14px] font-medium'>For</div>
 
@@ -417,87 +446,117 @@ export default memo(function staking(props) {
           </div>
         </div> */}
 
-        {
-          currentTab === 'Stake' ? (
-            <div>
-              <div className='relative mt-[9px] mb-[19px]'>
-                <input value={inAmount} type="number" onChange={(e) => handleTokenChange(e.target.value, id)} className="w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
-                <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                  <div className='w-[30px] h-[30px] rounded-full'></div>
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>OOGA</div>
+        {currentTab === 'Stake' ? (
+          <div>
+            <div className='relative mt-[9px] mb-[19px]'>
+              <input
+                value={inAmount}
+                type='number'
+                onChange={(e) => handleTokenChange(e.target.value, id)}
+                className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
+                placeholder='0'
+              />
+              <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
+                <div className='w-[30px] h-[30px] rounded-full'></div>
+                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                  OOGA
                 </div>
               </div>
-              {
-                isInSufficient && (
-                  <button className="w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
-                    <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">InSufficient Balance</span>
-                  </button>
-                )
-              }
-              {
-                !isInSufficient &&
-                (isTokenApproved && !isTokenApproving ? (
-                  <button disabled={isLoading || !inAmount}
-                    className={
-                      clsx(
-                        "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
-                        {
-                          "opacity-50": isLoading || !inAmount
-                        })
-                    }
-                    onClick={handleDeposit}
-                  >
-                    <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">{isLoading ? <CircleLoading size={14} /> : 'Stake'}</span>
-                  </button>
-                ) : (
-                  <button disabled={isTokenApproved || isTokenApproving} className={
-                    clsx(
-                      "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
-                      {
-                        "opacity-50": isTokenApproved || isTokenApproving
-                      })
-                  } onClick={() => handleApprove(true)}>
-                    {isTokenApproving ? (
-                      <CircleLoading size={14} />
-                    ) : (
-                      <>
-                        {isTokenApproved ? 'Approved' : 'Approve'} {symbol}
-                      </>
-                    )}
-                  </button>
-                ))
-              }
             </div>
-          ) : (
-            <div>
-              <div className='relative mt-[9px] mb-[19px]'>
-                <input value={inAmount} type="number" onChange={(e) => handleTokenChange(e.target.value, id)} className="w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
-                <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                  <div className='w-[30px] h-[30px] rounded-full'></div>
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>OOGA</div>
-                </div>
-              </div>
-              <button
-                disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}
-                className={
-                  clsx(
-                    "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
-                    {
-                      "opacity-50": isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
-                    })
-                }
-                onClick={handleWithdraw}
-              >
-                {isLoading ? <CircleLoading size={14} /> : <>{isWithdrawInsufficient ? 'InSufficient Balance' : 'Withdraw'}</>}
+            {isInSufficient && (
+              <button className='w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
+                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                  InSufficient Balance
+                </span>
               </button>
+            )}
+            {!isInSufficient &&
+              (isTokenApproved && !isTokenApproving ? (
+                <button
+                  disabled={isLoading || !inAmount}
+                  className={clsx(
+                    'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                    {
+                      'opacity-50': isLoading || !inAmount
+                    }
+                  )}
+                  onClick={handleDeposit}
+                >
+                  <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                    {isLoading ? <CircleLoading size={14} /> : 'Stake'}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  disabled={isTokenApproved || isTokenApproving}
+                  className={clsx(
+                    'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                    {
+                      'opacity-50': isTokenApproved || isTokenApproving
+                    }
+                  )}
+                  onClick={() => handleApprove(true)}
+                >
+                  {isTokenApproving ? (
+                    <CircleLoading size={14} />
+                  ) : (
+                    <>
+                      {isTokenApproved ? 'Approved' : 'Approve'} {symbol}
+                    </>
+                  )}
+                </button>
+              ))}
+          </div>
+        ) : (
+          <div>
+            <div className='relative mt-[9px] mb-[19px]'>
+              <input
+                value={inAmount}
+                type='number'
+                onChange={(e) => handleTokenChange(e.target.value, id)}
+                className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
+                placeholder='0'
+              />
+              <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
+                <div className='w-[30px] h-[30px] rounded-full'></div>
+                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                  OOGA
+                </div>
+              </div>
             </div>
-          )
-        }
+            <button
+              disabled={
+                isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
+              }
+              className={clsx(
+                'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                {
+                  'opacity-50':
+                    isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
+                }
+              )}
+              onClick={handleWithdraw}
+            >
+              {isLoading ? (
+                <CircleLoading size={14} />
+              ) : (
+                <>
+                  {isWithdrawInsufficient ? 'InSufficient Balance' : 'Withdraw'}
+                </>
+              )}
+            </button>
+          </div>
+        )}
         {/* <div className='mb-[16px] flex items-center justify-center w-full h-[60px] rounded-[10px] border border-black bg-[#FFDC50]'>
           <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>Stake</span>
         </div> */}
-        <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>Manage exist assets on <span className='text-black font-Montserrat underline'>Oogabooga</span></div>
+        <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
+          Manage exist assets on{' '}
+          <span className='text-black font-Montserrat underline'>
+            Oogabooga
+          </span>
+        </div>
       </div>
     </DappModal>
-  )
-})
+  );
+});
