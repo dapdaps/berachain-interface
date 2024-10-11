@@ -56,10 +56,10 @@ const TabPanel: React.FC<TabPanelProps> = ({
           <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">{totalBalanceLabel}</div>
           <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">{totalBalance}</p>
         </div>
-        <div className="w-[150px] ml-[142px]">
+        {/*<div className="w-[150px] ml-[142px]">
           <div className="font-Montserrat text-sm font-medium leading-[17px] text-left text-[#3D405A] mb-3">{totalRateLabel} {rateKey}</div>
           <p className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">{totalRate}</p>
-        </div>
+        </div>*/}
         {showRateSwitch && (
           <div className="ml-auto">
             <SwitchTabs

@@ -552,7 +552,8 @@ const generateAccountNumber = () => {
 };
 
 const DolomiteHandler = (props: any) => {
-  const { update, data, amount, account, onLoad, provider, chainId } = props;
+  const { update, data, account, onLoad, provider, chainId } = props;
+  let { amount } = props;
 
   const { marginAccount } = data.position || {};
 
@@ -572,6 +573,7 @@ const DolomiteHandler = (props: any) => {
       return;
     }
 
+    amount = Big(amount).toFixed(data.underlyingToken.decimals, Big.roundDown);
     const parsedAmount = ethers.utils.parseUnits(amount, data.underlyingToken.decimals);
     const accountNumber = marginAccount?.accountNumber || '0';
 

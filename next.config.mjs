@@ -8,6 +8,10 @@ const nextConfig = {
     {
       source: '/dapdap/:path*',
       destination: 'https://api.dapdap.net/:path*'
+    },
+    {
+      source: '/api.dolomite.io/:path*',
+      destination: 'https://api.dolomite.io/:path*'
     }
   ],
   webpack: (config) => {

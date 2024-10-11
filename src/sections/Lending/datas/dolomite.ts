@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { post } from '@/utils/http';
 import multicallAddresses from '@/configs/contract/multicall';
 import { multicall } from '@/utils/multicall';
+import axios from 'axios';
 
 const ERC20_ABI = [
   {
@@ -3039,10 +3040,10 @@ const DolomiteData = (props: any) => {
           }
         });
 
-        // (CollateralUSD-BorrowedUSD/0.869565)/TokenPrice
+        // (CollateralUSD-BorrowedUSD/0.8)/TokenPrice
         const removeCollateralBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(baseLTV));
-        // (CollateralUSD-BorrowedUSD/0.869565)*0.869565/BorrowTokenPrice
-        const borrowBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(baseLTV)).times(LTV);
+        // (CollateralUSD-BorrowedUSD/0.8)*0.8/BorrowTokenPrice
+        const borrowBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(baseLTV)).times(baseLTV);
 
         removeCollateralTokens.forEach((token: any) => {
           const _removeCollateralBalance = removeCollateralBalance.div(token.price);
@@ -3237,6 +3238,39 @@ const DolomiteData = (props: any) => {
           });
       });
     };
+    const getInterestRates = () => {
+      const result: any = {};
+      return new Promise((resolve) => {
+        axios.get(interestRatesApi)
+          .then((interestRatesRes) => {
+            const { status, data } = interestRatesRes;
+            if (status !== 200 || !data) {
+              resolve(result);
+              return;
+            }
+            data.interestRates.forEach((item: any) => {
+              const { token } = item;
+              result[token.tokenAddress.toLowerCase()] = item;
+              if (token.tokenAddress.toLowerCase() === wBERA.address.toLowerCase()) {
+                result['native'] = {
+                  ...item,
+                  token: {
+                    marketId: token.marketId,
+                    tokenAddress: markets['native'].address,
+                    tokenName: markets['native'].name,
+                    tokenSymbol: markets['native'].symbol,
+                  },
+                };
+              }
+            });
+            resolve(result);
+          })
+          .catch((err: any) => {
+            console.log('getInterestRates failure: %o', err);
+            resolve(result);
+          });
+      });
+    };
     const getPositionList = () => {
       const result: any = [];
       return new Promise((resolve) => {
@@ -3315,16 +3349,17 @@ const DolomiteData = (props: any) => {
       })
         .then((res: any) => {
           console.log('%s getCTokenData Res: %o', oToken.symbol, res);
+          console.log('%s getCTokenData interestRates: %o', oToken.symbol, oToken.interestRates);
 
           const MarginRatio = ethers.utils.formatUnits(res[4][0]?.value?._hex || 0, 18);
           const LTV = minimumCollateralizationToLTV(MarginRatio);
 
           const LiquidationPenalty = ethers.utils.formatUnits(res[3][0]?.value?._hex || 0, 18);
 
-          let MarketSupplyInterestRateApr = ethers.utils.formatUnits(res[1] ? res[1][0]?.value?._hex || 0 : 0, 18);
+          let MarketSupplyInterestRateApr = oToken.interestRates.supplyInterestRate;
           const supplyApy = apr2Apy(MarketSupplyInterestRateApr, 12);
 
-          let MarketBorrowInterestRateApr = ethers.utils.formatUnits(res[2] ? res[2][0]?.value?._hex || 0 : 0, 18);
+          let MarketBorrowInterestRateApr = oToken.interestRates.borrowInterestRate;
           const borrowApy = apr2Apy(MarketBorrowInterestRateApr, 12);
 
           const [Market, Interest, MonetaryPrice, InterestRate] = res[0];
@@ -3334,23 +3369,11 @@ const DolomiteData = (props: any) => {
 
           const interestBorrow = ethers.utils.formatUnits(Interest.borrow?._hex || 0, 18);
           const interestSupply = ethers.utils.formatUnits(Interest.supply?._hex || 0, 18);
-          console.log('%s Interest.borrow: %o', oToken.symbol, interestBorrow);
-          console.log('%s Interest.supply: %o', oToken.symbol, interestSupply);
 
           const marketIndexBorrow = ethers.utils.formatUnits(Market.index?.borrow?._hex || 0, 18);
           const marketIndexSupply = ethers.utils.formatUnits(Market.index?.supply?._hex || 0, 18);
-          console.log('%s marketIndexBorrow: %o', oToken.symbol, marketIndexBorrow);
-          console.log('%s marketIndexSupply: %o', oToken.symbol, marketIndexSupply);
-
-          const marketMaxBorrowWei = ethers.utils.formatUnits(Market.maxBorrowWei?.value?._hex || 0, 18);
-          const marketMaxSupplyWei = ethers.utils.formatUnits(Market.maxSupplyWei?.value?._hex || 0, 18);
-          console.log('%s Market.maxBorrowWei: %o', oToken.symbol, marketMaxBorrowWei);
-          console.log('%s Market.maxSupplyWei: %o', oToken.symbol, marketMaxSupplyWei);
 
           const monetaryPrice = ethers.utils.formatUnits(MonetaryPrice.value?._hex || 0, 36 - oToken.decimals);
-
-          const interestRate = ethers.utils.formatUnits(InterestRate.value?._hex || 0, 18);
-          console.log('%s interestRate: %o', oToken.symbol, interestRate);
 
           let currentTokenBorrow = Big(0);
           let currentTokenCollateral = Big(0);
@@ -3385,12 +3408,12 @@ const DolomiteData = (props: any) => {
             dapp: name,
             Utilization: Big(totalParBorrow).div(totalParSupply).times(100).toFixed(2, 0) + '%',
             address: oToken.address,
-            borrowAPR: Big(MarketBorrowInterestRateApr).times(100).toFixed(2) + '%',
+            borrowAPR: Big(MarketBorrowInterestRateApr).times(100).toFixed(2, 0) + '%',
             borrowAPY: borrowApy,
             borrowToken: [],
             borrowTokenPrice: [],
             exchangeRate: '1',
-            lendAPR: Big(MarketSupplyInterestRateApr).times(100).toFixed(2) + '%',
+            lendAPR: Big(MarketSupplyInterestRateApr).times(100).toFixed(2, 0) + '%',
             lendAPY: supplyApy,
             liquidationFee: LiquidationPenalty,
             maxLTV: LTV,
@@ -3433,11 +3456,12 @@ const DolomiteData = (props: any) => {
         });
     };
     const getCTokensData = async () => {
-      const [tokenMarketId, tokenBalances, dolomiteBalance, positionList]: any = await Promise.all([
+      const [tokenMarketId, tokenBalances, dolomiteBalance, positionList, interestRates]: any = await Promise.all([
         getMarketIdByTokenAddress(),
         getWalletBalance(),
         getDolomiteBalance(),
-        getPositionList()
+        getPositionList(),
+        getInterestRates()
       ]);
       _positionList = positionList;
       Object.values(markets).forEach((market: any) => {
@@ -3445,7 +3469,8 @@ const DolomiteData = (props: any) => {
           ...market,
           marketId: tokenMarketId[market.address.toLowerCase()],
           walletBalance: tokenBalances[market.address.toLowerCase()],
-          dolomiteBalance: dolomiteBalance[market.address.toLowerCase()]
+          dolomiteBalance: dolomiteBalance[market.address.toLowerCase()],
+          interestRates: interestRates[market.address.toLowerCase()]
         });
       });
     };

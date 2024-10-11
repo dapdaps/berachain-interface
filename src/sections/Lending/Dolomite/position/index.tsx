@@ -101,7 +101,7 @@ const Position = (props: Props) => {
           <Summary label="Collateral" value={position.totalCollateralUsd} prefix="$" />
           <Summary label="Borrowing" value={position.totalBorrowedUsd} prefix="$" />
           <Summary label="Health" value={position.healthFactor} />
-          <Summary label="Net interest" value="0" unit="%" />
+          {/*<Summary label="Net interest" value="0" unit="%" />*/}
         </div>
       </div>
       <div className="flex justify-between items-stretch gap-[30px] mt-[24px]">
