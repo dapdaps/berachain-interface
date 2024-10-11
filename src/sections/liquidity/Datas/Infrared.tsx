@@ -12,7 +12,8 @@ export default function useInfraredData(props: any) {
     addresses,
     allData,
     onLoad,
-    multicallAddress
+    multicallAddress,
+    IBGT_ADDRESS
   } = props;
   const dataList = [];
 
@@ -49,6 +50,32 @@ export default function useInfraredData(props: any) {
 
   const ERC20_ABI = [
     'function balanceOf(address) view returns (uint256)',
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_rewardsToken",
+          "type": "address"
+        }
+      ],
+      "name": "earned",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+
   ];
   const MulticallContract = multicallAddress && new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
   const multicallv2 = (abi, calls, options, onSuccess, onError) => {
@@ -80,8 +107,10 @@ export default function useInfraredData(props: any) {
   }
   function getDataList() {
     pairs.forEach((pair) => {
+
+      const vaultAddress = addresses[pair?.id]
       const findIndex = allData?.findIndex(
-        (data) => data?.address.toLocaleLowerCase() === addresses[pair.id]?.toLocaleLowerCase()
+        (data) => data?.address.toLocaleLowerCase() === vaultAddress?.toLocaleLowerCase()
       );
       if (findIndex > -1) {
 
@@ -93,8 +122,10 @@ export default function useInfraredData(props: any) {
             .times(initialData?.stake_token?.price ?? 0)
             .toFixed(),
           apy: initialData?.apy_percentage,
-          type: initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals',
-          initialData
+          initialData,
+          type: "Staking",
+          vaultAddress,
+          protocolType: initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals',
         });
       }
     });
@@ -114,13 +145,39 @@ export default function useInfraredData(props: any) {
       calls,
       {},
       (result) => {
-
-        console.log('====result', result)
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
+          dataList[i].depositAmount = Big(ethers.utils.formatUnits(result[i][0])).toFixed()
           dataList[i].usdDepositAmount = Big(ethers.utils.formatUnits(result[i][0])).times(element?.initialData?.stake_token?.price).toFixed()
         }
         formatedData('getUsdDepositAmount')
+      },
+      (error) => {
+        console.log('=error', error);
+      }
+    )
+  }
+
+  function getEarned() {
+    const calls = []
+    dataList.forEach(data => {
+      calls.push({
+        address: ethers.utils.getAddress(addresses[data?.id]),
+        name: 'earned',
+        params: [sender, IBGT_ADDRESS]
+      })
+    })
+
+    multicallv2(
+      ERC20_ABI,
+      calls,
+      {},
+      (result) => {
+        for (let i = 0; i < dataList.length; i++) {
+          const element = dataList[i];
+          dataList[i].earned = Big(ethers.utils.formatUnits(result[i][0])).toFixed()
+        }
+        formatedData('getEarned')
       },
       (error) => {
         console.log('=error', error);
@@ -133,6 +190,7 @@ export default function useInfraredData(props: any) {
     if (allData && sender) {
       getDataList();
       getUsdDepositAmount()
+      getEarned()
     }
     return function () {
       console.log('====销毁=====')

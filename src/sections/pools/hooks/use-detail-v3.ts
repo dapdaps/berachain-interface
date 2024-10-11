@@ -38,7 +38,11 @@ export default function usePoolInfo({
         positionAbi,
         provider
       );
-      const position = await PositionContract.positions(tokenId);
+      let position: any = {};
+
+      if (tokenId) {
+        position = await PositionContract.positions(tokenId);
+      }
 
       if (
         !poolAddress ||

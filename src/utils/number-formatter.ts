@@ -26,7 +26,17 @@ export const numberFormatter = (
 ): any => {
   const { prefix = '', isLTIntegerZero, isZeroPrecision, isShort } = options || {};
 
-  if (!value || Big(value).eq(0)) {
+  const isValid = () => {
+    try {
+      if (!value) return false;
+      Big(value);
+      return true;
+    } catch (err: any) {
+      return false;
+    }
+  };
+
+  if (!value || !isValid() || Big(value).eq(0)) {
     if (isSimple) {
       if (isZeroPrecision) {
         return `${prefix}${Big(0).toFixed(precision)}`;

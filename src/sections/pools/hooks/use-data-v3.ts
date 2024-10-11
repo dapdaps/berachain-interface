@@ -32,8 +32,8 @@ export default function useData({
   });
 
   const onCleanAll = () => {
-    setToken0(null);
-    setToken1(null);
+    // setToken0(null);
+    // setToken1(null);
     setFee('');
     onPriceChange('upper', '');
     onPriceChange('lower', '');
@@ -180,7 +180,7 @@ export default function useData({
       return;
     }
     setNoPair(!info);
-    if (!info) {
+    if (!info.currentTick) {
       setLoading(false);
       setCurrentPrice('');
       setLowerPrice('');

@@ -1,7 +1,19 @@
 import FlexTable, { Column } from '@/components/flex-table';
+import { useAccount } from 'wagmi';
+import React, { useEffect } from 'react';
+import useUser from '@/hooks/use-user';
+import LazyImage from '@/components/layz-image';
+import { DefaultIcon } from '@/sections/dashboard/utils';
+import { numberFormatter } from '@/utils/number-formatter';
+import Big from 'big.js';
+import Skeleton from 'react-loading-skeleton';
+import Empty from '@/components/empty';
 
 const DashboardWallet = (props: Props) => {
-  const {} = props;
+  const { tokens, loading, totalBalance } = props;
+
+  const { address } = useAccount();
+  const { accessToken, getUserInfo, userInfo } = useUser();
 
   const columns: Column[] = [
     {
@@ -9,8 +21,14 @@ const DashboardWallet = (props: Props) => {
       title: 'Token',
       render: (_, record) => (
         <div className="flex items-center gap-x-[14px]">
-          <div className="rounded-[50%] w-[26px] h-[26px] flex-shrink-0" />
-          <div>{record.token}</div>
+          <LazyImage
+            src={record.logo}
+            className="rounded-full w-[26px] h-[26px] flex-shrink-0"
+            width={26}
+            height={26}
+            fallbackSrc={DefaultIcon}
+          />
+          <div>{record.symbol}</div>
         </div>
       ),
       width: '37%'
@@ -18,41 +36,70 @@ const DashboardWallet = (props: Props) => {
     {
       dataIndex: 'price',
       title: 'Price',
-      width: '24%'
+      width: '24%',
+      render: (_, record) => {
+        return numberFormatter(record.price, 2, true, { prefix: '$' });
+      },
     },
     {
       dataIndex: 'amount',
       title: 'Amount',
-      width: '24%'
+      width: '24%',
+      render: (_, record) => {
+        return numberFormatter(record.amount, 2, true);
+      },
     },
     {
       dataIndex: 'usd',
       title: 'USD Value',
-      width: '15%'
+      width: '15%',
+      render: (_, record) => {
+        return numberFormatter(record.usd, 2, true, { prefix: '$' });
+      },
     },
   ];
 
-  const data = [...new Array(10)].map((_, i) => ({
-    token: 'WETH' + i,
-    price: `$${i * 100}`,
-    amount: `$${i * 100}`,
-    usd: `$${i * 100}`
-  }));
+  useEffect(() => {
+    if (!accessToken) return;
+    getUserInfo();
+  }, [accessToken]);
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <div className="bg-[#FFDC50] py-[18px] pl-[25px] pr-[13px] rounded-[10px] flex items-center gap-x-[18px] mb-[32px]">
-        <div className="w-[85px] h-[85px] rounded-[50%] flex-shrink-0"></div>
+        <LazyImage
+          src={userInfo.avatar}
+          width={85}
+          height={85}
+          className="w-[85px] h-[85px] rounded-full flex-shrink-0"
+        />
         <div className="grow">
-          <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">@beraman</div>
-          <div className="text-[14px] text-[#3D405A] font-Montserrat">0x3bcb...b717</div>
+          <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">@{userInfo.username}</div>
+          <div className="text-[14px] text-[#3D405A] font-Montserrat">
+            {address ? (address.slice(0, 6) + '...' + address.slice(-4)) : ''}
+          </div>
         </div>
         <div className="flex-shrink-0">
-          <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">$2562.03</div>
+          <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">
+            {
+              loading ? (
+                <Skeleton width={140} height={32} />
+              ) : numberFormatter(totalBalance, 2, true, { prefix: '$' })
+            }
+          </div>
           <div className="text-[14px] text-[#3D405A] font-Montserrat text-center">Total assets value</div>
         </div>
       </div>
-      <FlexTable columns={columns} list={data} loading={false} />
+      <FlexTable
+        columns={columns}
+        list={tokens}
+        loading={loading}
+        renderEmpty={() => (
+          <div className="mt-[50px] w-full flex justify-center items-center">
+            <Empty desc="No asset found" />
+          </div>
+        )}
+      />
     </div>
   );
 };
@@ -60,4 +107,7 @@ const DashboardWallet = (props: Props) => {
 export default DashboardWallet;
 
 interface Props {
+  tokens: any;
+  totalBalance?: Big.Big;
+  loading?: boolean;
 }

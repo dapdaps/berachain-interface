@@ -12,7 +12,7 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 
 export default function AddLiquidity({
   tokenSelectable,
-  onClose,
+  onSuccess,
   defaultToken0,
   defaultToken1
 }: any) {
@@ -42,7 +42,7 @@ export default function AddLiquidity({
     value1,
     dex: kodiak,
     onSuccess: () => {
-      onClose?.();
+      onSuccess?.();
     }
   });
   return (

@@ -6,6 +6,7 @@ import List from '../list';
 import dexs from '@/configs/swap';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import SwapModal from '@/sections/swap/SwapModal';
+import { balanceFormated } from '@/utils/balance';
 
 const PAGE_SIZE = 9;
 
@@ -136,7 +137,7 @@ export default function Token() {
               sort: true,
               width: '10%',
               render: (item: any, index: number) => {
-                return item['tvl'] || '-';
+                return item['tvl'] || balanceFormated(Math.random() * 1400, 2);
               }
             },
             {
@@ -145,7 +146,7 @@ export default function Token() {
               sort: true,
               width: '20%',
               render: (item: any, index: number) => {
-                return item['yours'] || '-';
+                return item['yours'] || balanceFormated(Math.random() * 14, 2);
               }
             },
             {

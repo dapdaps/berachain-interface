@@ -12,6 +12,8 @@ type Props = {
   fee?: number;
   version?: string;
   onClearAll?: VoidFunction;
+  open: boolean;
+  onClose: VoidFunction;
 };
 
 export default function BasicModal({
@@ -20,13 +22,15 @@ export default function BasicModal({
   dex,
   fee,
   version,
-  onClearAll
+  onClearAll,
+  open,
+  onClose
 }: Props) {
   const pool = useMemo(() => pools[dex?.toLowerCase()], [dex]);
   return (
     <Modal
-      open={true}
-      onClose={() => {}}
+      open={open}
+      onClose={onClose}
       closeIconClassName='top-[-10px] right-[-10px]'
     >
       <div className='px-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black'>
@@ -40,7 +44,7 @@ export default function BasicModal({
             )}
           </div>
           <div className='flex items-center gap-[10px]'>
-            {version === 'v3' && (
+            {onClearAll && (
               <button
                 className='text-[#FE6360] text-[14px] underline'
                 onClick={onClearAll}

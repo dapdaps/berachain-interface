@@ -14,7 +14,8 @@ const Remove = ({ token0, token1, fee, tokenId, onSuccess }: any) => {
     token0,
     token1,
     fee,
-    dex: kodiak
+    dex: kodiak,
+    tokenId
   });
   const { info: feeInfo } = useCollectInfo(tokenId, kodiak);
   const { amount0, amount1, liquidity } = info || {};

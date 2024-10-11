@@ -24,7 +24,7 @@ export const objectToQueryString = (obj: Record<string, any>): string => {
   return keyValuePairs.join('&');
 };
 
-const AUTH_TOKENS = `AUTH_TOKENS_${Date.now()}`;
+const AUTH_TOKENS = `_user`;
 
 const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://api.dapdap.net';
 
@@ -46,7 +46,7 @@ const get = async (url: string, query?: Record<string, any>) => {
   const options = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${tokens.access_token || ''}`,
+      Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ''}`,
       'Content-Type': 'application/json'
     }
   };
@@ -74,7 +74,7 @@ const getWithoutActive = async (
   const options = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${tokens.access_token || ''}`,
+      Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ''}`,
       'Content-Type': 'application/json',
       activity
     }
@@ -95,7 +95,7 @@ const post = async (url: string, data?: object) => {
   const res = await fetch(getUrl(url), {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${tokens.access_token || ''}`,
+      Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ''}`,
       'Content-Type': 'application/json'
     },
     body: data ? JSON.stringify(data) : undefined
@@ -110,7 +110,7 @@ const deleteRequest = async (url: string, data: object) => {
   const res = await fetch(getUrl(url), {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${tokens.access_token || ''}`,
+      Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ''}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
@@ -128,7 +128,7 @@ const postUpload = async (url: string, data: any) => {
   const res = await fetch(getUrl(url), {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${tokens.access_token || ''}`
+      Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ''}`
       // 'Content-Type': 'multipart/form-data'
     },
     body: data

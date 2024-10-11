@@ -1,6 +1,8 @@
 'use client';
 
-const Index = (props: Props) => {
+import { balanceFormated } from '@/utils/balance';
+
+const HoneypotCard = (props: Props) => {
 
   const {
     color,
@@ -57,22 +59,22 @@ const Index = (props: Props) => {
       label: 'Price',
       key: 'price',
       type: '+',
-      rate: '2.3%',
-      value: '$18.539'
+      rate:  balanceFormated(Math.random() * 16, 2) +  '%',
+      value: '$' + balanceFormated(Math.random() * 10 + 30, 2)
     },
     {
       label: 'Volume',
       key: 'volume',
-      type: '-',
-      rate: '1.27%',
-      value: '$1.27M'
+      type: '+',
+      rate: balanceFormated(Math.random() * 10, 2) +  '%',
+      value: '$' + balanceFormated(Math.random() * 10 + 2, 2) + 'M'
     },
   ];
 
   return (
     <div className='flex items-end justify-center'>
       <Honeypot />
-      <div className='flex-shrink-0 relative pb-[12px] '>
+      <div className='flex-shrink-0 relative pb-[12px]'>
         <div className='rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1'>
           <div className='w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] px-[12px]'>
             {/*title*/}
@@ -85,10 +87,10 @@ const Index = (props: Props) => {
                     <div className='font-[600] mb-[2px]'>{item.value}</div>
                     <div className={`text-[10px] text-right ${ item.type === '+' ? 'text-[#06B000]' : 'text-[#FF008A]' }`}>{item.type}{item.rate}</div>
                   </div>
-
                 </div>
               ))
             }
+
           </div>
         </div>
         <button
@@ -100,7 +102,7 @@ const Index = (props: Props) => {
   )
 };
 
-export default Index;
+export default HoneypotCard;
 
 interface Props {
   color: string;

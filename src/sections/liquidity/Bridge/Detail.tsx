@@ -43,7 +43,7 @@ export default memo(function Detail(props) {
     lpAmount,
   } = state;
 
-  const { token0, token1, decimals, id, LP_ADDRESS } = data;
+  const { decimals, id, LP_ADDRESS } = data;
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
@@ -126,7 +126,6 @@ export default memo(function Detail(props) {
   };
 
   const handleApprove = () => {
-    // const _token = isToken0 ? token0 : token1;
     const payload = { isTokenApproving: true };
     const amount = Big(inAmount).toFixed(decimals);
     const toastId = toast?.loading({
@@ -172,13 +171,13 @@ export default memo(function Detail(props) {
 
   const handleDeposit = () => {
     const toastId = toast?.loading({
-      title: `Depositing...`
+      title: `Staking...`
     });
     updateState({
       toastId,
       isLoading: true,
       isError: false,
-      loadingMsg: 'Depositing...'
+      loadingMsg: 'Staking...'
     });
     const wei = ethers.utils.parseUnits(Big(inAmount).toFixed(decimals), decimals);
     const abi = [
@@ -226,7 +225,7 @@ export default memo(function Detail(props) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Deposit Successfully!'
+          title: 'Stake Successfully!'
         });
       })
       .catch((error: Error) => {
@@ -238,7 +237,7 @@ export default memo(function Detail(props) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Deposit Failed!',
+          title: 'Stake Failed!',
           text: error?.message?.includes('user rejected transaction')
             ? 'User rejected transaction'
             : (error?.message ?? '')
@@ -247,12 +246,12 @@ export default memo(function Detail(props) {
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
-      title: `Withdrawing...`
+      title: `Unstaking...`
     });
     updateState({
       isLoading: true,
       isError: false,
-      loadingMsg: 'Withdrawing...'
+      loadingMsg: 'Unstaking...'
     });
 
     const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
@@ -284,18 +283,18 @@ export default memo(function Detail(props) {
         const { status, transactionHash } = receipt;
         console.log('=receipt', receipt);
 
-        addAction?.({
-          type: 'Liquidity',
-          action: 'Withdraw',
-          token0,
-          token1,
-          amount: lpAmount,
-          template: defaultDex,
-          status: status,
-          add: 0,
-          transactionHash,
-          chain_id: props.chainId
-        });
+        // addAction?.({
+        //   type: 'Liquidity',
+        //   action: 'Withdraw',
+        //   token0,
+        //   token1,
+        //   amount: lpAmount,
+        //   template: defaultDex,
+        //   status: status,
+        //   add: 0,
+        //   transactionHash,
+        //   chain_id: props.chainId
+        // });
         setTimeout(() => updateState({ isPostTx: false }), 10_000);
         const { refetch } = props;
         if (refetch) {
@@ -306,7 +305,7 @@ export default memo(function Detail(props) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Withdraw Successfully!'
+          title: 'Unstake Successfully!'
         });
       })
       .catch((error: Error) => {
@@ -317,7 +316,7 @@ export default memo(function Detail(props) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Withdraw Failed!',
+          title: 'Unstake Failed!',
           text: error?.message?.includes('user rejected transaction')
             ? 'User rejected transaction'
             : (error?.message ?? '')
@@ -349,12 +348,12 @@ export default memo(function Detail(props) {
           <div className="flex items-center">
             <div className="w-[48px] h-[48px] rounded-full">
               <img
-                src={`/images/dapps/infrared/${data?.token0.toLocaleLowerCase()}.svg`}
+                src={data?.images[0]}
               />
             </div>
             <div className="ml-[-16px] w-[48px] h-[48px] rounded-full">
               <img
-                src={`/images/dapps/infrared/${data?.token1.toLocaleLowerCase()}.svg`}
+                src={data?.images[1]}
                 style={{ objectPosition: 'left' }}
               />
             </div>
@@ -376,7 +375,7 @@ export default memo(function Detail(props) {
           </div>
           <div className="flex flex-col gap-[12px] w-[130px]">
             <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Type</div>
-            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{data?.type}</div>
+            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{data?.protocolType}</div>
           </div>
         </div>
       </div>
@@ -389,11 +388,11 @@ export default memo(function Detail(props) {
               <div className="flex items-center gap-[10px]">
                 <div className="flex items-center">
                   <div className="w-[30px] h-[30px] rounded-full"><img
-                    src={`/images/dapps/infrared/${data?.token0.toLocaleLowerCase()}.svg`}
+                    src={data?.images[0]}
                   /></div>
                   <div className="ml-[-10px] w-[30px] h-[30px] rounded-full">
                     <img
-                      src={`/images/dapps/infrared/${data?.token1.toLocaleLowerCase()}.svg`}
+                      src={data?.images[1]}
                     />
                   </div>
                 </div>

@@ -13,6 +13,7 @@ import type { ColumnType } from '../types';
 import Skeleton from 'react-loading-skeleton';
 import useInfraredData from '../Datas/Infrared';
 import _ from 'lodash';
+import useInfraredList from '../hooks/use-infrared-list';
 
 export default function List(props: any) {
   const {
@@ -27,31 +28,21 @@ export default function List(props: any) {
   } = props;
 
 
+  const { dataList, loading } = useInfraredList()
   const [state, updateState] = useMultiState<any>({
     allData: null,
-    loading: false,
-    dataList: [],
+    // loading: false,
+    // dataList: [],
     filterList: [],
     sortKey: ''
   })
 
   const tvl = useMemo(() => {
-    return formatValueDecimal(state?.dataList?.reduce((prev, cur) => {
+    return formatValueDecimal(dataList?.reduce((prev, cur) => {
       return prev.plus(Big(ethers.utils.formatUnits(cur?.initialData?.current_staked_amount))
         .times(cur?.initialData?.stake_token?.price ?? 0))
     }, Big(0)), '$', 2, true)
-  }, [state?.dataList])
-  function fetchAllData() {
-    updateState({
-      loading: true
-    });
-    asyncFetch(ALL_DATA_URL).then((res) => {
-      updateState({
-        allData: res?.data,
-        loading: false
-      });
-    });
-  }
+  }, [dataList])
 
   function renderTD(data: any, column: ColumnType, index: number) {
     if (column.type === 'slot') {
@@ -59,40 +50,16 @@ export default function List(props: any) {
     }
     return <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>{data[column.key]}</div>;
   }
-  useEffect(() => {
-    fetchAllData();
-  }, [chainId]);
 
   useEffect(() => {
-    const {
-      sortKey,
-      dataList
-    } = state
     const cloneDataList = _.cloneDeep(dataList)
     updateState({
-      filterList: sortKey ?
+      filterList: state?.sortKey ?
         cloneDataList.sort((prev, next) => {
-          return Big(next[sortKey]).minus(prev[sortKey]).toFixed()
+          return Big(next[state?.sortKey]).minus(prev[state?.sortKey]).toFixed()
         }) : cloneDataList
     })
-  }, [state?.sortKey])
-
-
-  useInfraredData({
-    pairs,
-    sender,
-    provider,
-    addresses,
-    allData: state.allData,
-    multicallAddress,
-    onLoad: (data: any) => {
-      updateState({
-        dataList: data.dataList,
-        filterList: data.dataList,
-        loading: false
-      });
-    }
-  })
+  }, [state?.sortKey, dataList])
 
 
   const columnList: ColunmListType = [
@@ -106,17 +73,17 @@ export default function List(props: any) {
         return (
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center'>
-              {data?.token0 && (
+              {data?.images[0] && (
                 <div className='w-[30px] h-[30px]'>
                   <img
-                    src={`/images/dapps/infrared/${data?.token0.toLocaleLowerCase()}.svg`}
+                    src={data?.images[0]}
                     style={{ objectPosition: 'left' }}
                   />
                 </div>
               )}
-              {data?.token1 && (
+              {data?.images[1] && (
                 <div className='w-[30px] h-[30px] ml-[-10px]'>
-                  <img src={`/images/dapps/infrared/${data?.token1.toLocaleLowerCase()}.svg`} />
+                  <img src={data?.images[1]} />
                 </div>
               )}
             </div>
@@ -248,7 +215,7 @@ export default function List(props: any) {
       </div>
 
       {
-        state?.loading ? (
+        loading ? (
           <div className='flex items-center gap-[4px]'>
             {columnList.map((column: ColumnType) => {
               return (
@@ -256,7 +223,7 @@ export default function List(props: any) {
               )
             })}
           </div>
-        ) : state?.dataList && state?.dataList.length > 0 ? (
+        ) : state?.filterList && state?.filterList.length > 0 ? (
           <div className='flex flex-col gap-[2px]'>
             {state?.filterList.map((data: any, index: number) => {
               return (

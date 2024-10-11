@@ -14,7 +14,10 @@ export default function RemoveLiquidityModal({
   token1,
   version,
   dex,
-  fee
+  fee,
+  tokenId,
+  open,
+  onClose
 }: any) {
   return (
     <BasicModal
@@ -22,6 +25,8 @@ export default function RemoveLiquidityModal({
       dex={dex}
       fee={fee}
       version={version}
+      open={open}
+      onClose={onClose}
     >
       <div className='pb-[20px]'>
         <RemoveLiquidityPanel
@@ -30,6 +35,8 @@ export default function RemoveLiquidityModal({
           token1={token1}
           fee={fee}
           version={version}
+          tokenId={tokenId}
+          onSuccess={onClose}
         />
       </div>
     </BasicModal>

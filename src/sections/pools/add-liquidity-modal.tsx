@@ -15,7 +15,9 @@ export default function AddLiquidityModal({
   token1,
   version,
   dex,
-  fee
+  fee,
+  open,
+  onClose
 }: any) {
   const panelRef = useRef<any>();
   return (
@@ -24,6 +26,8 @@ export default function AddLiquidityModal({
       dex={dex}
       fee={fee}
       version={version}
+      open={open}
+      onClose={onClose}
       onClearAll={() => {
         panelRef?.current?.onClearAll?.();
       }}
@@ -36,6 +40,7 @@ export default function AddLiquidityModal({
           defaultFee={fee}
           version={version}
           ref={panelRef}
+          onSuccess={onClose}
         />
       </div>
     </BasicModal>

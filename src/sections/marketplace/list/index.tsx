@@ -7,7 +7,9 @@ import { memo } from 'react';
 import Tab from '../components/tab';
 import { MarketplaceContext, useMarketplaceContext } from '@/sections/marketplace/context';
 
+const Staking = dynamic(() => import('@/sections/marketplace/components/dapps/staking'));
 const Lending = dynamic(() => import('@/sections/marketplace/components/dapps/lending'));
+const Vaults = dynamic(() => import('@/sections/marketplace/components/dapps/vaults'));
 
 export default memo(function List() {
   const context = useMarketplaceContext({ chainId: 80084 });
@@ -23,7 +25,11 @@ export default memo(function List() {
             <Tab />
           </div>
         </div>
+
         <Lending />
+        <Staking />
+        <Vaults />
+
       </div>
     </MarketplaceContext.Provider>
   );

@@ -1,18 +1,30 @@
+import { useState } from 'react';
+
+import chains, { icons } from '@/configs/chains'
+import allTokens from '@/configs/allTokens'
 import Card from '@/components/card';
 import TokenAmout from './TokenAmount';
 import Routes from './Routes';
 import SubmitBtn from './SubmitBtn';
 import Confirm from './Confrim';
-import { useState } from 'react';
+import { Chain } from 'viem';
+import { Token } from '@/types';
+
 
 export default function Bridge() {
-  const [confirmShow, setConfirmShow] = useState(true);
+  const [confirmShow, setConfirmShow] = useState(false);
+  const [fromChain, setFromChain] = useState<Chain>(chains[1])
+  const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
+  const [toChain, setToChain] = useState<Chain>(chains[1101])
+  const [toToken, setToToken] = useState<Token>(allTokens[chains[1101].id][0])
 
   return (
     <div className='w-[520px] m-auto relative z-10'>
-      <div className='text-[60px] text-center py-[30px]'>Bridge</div>
+      <div className='text-[60px] text-center py-[30px] font-CherryBomb'>Bridge</div>
       <Card>
-        <TokenAmout />
+        <TokenAmout chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
+          setFromToken(token)
+        }}/>
         <div className='h-[8px] flex justify-center items-center'>
           <svg
             className=' cursor-pointer'
@@ -40,7 +52,9 @@ export default function Bridge() {
             />
           </svg>
         </div>
-        <TokenAmout />
+        <TokenAmout chain={toChain}  token={toToken} disabledInput={true}  onTokenChange={(token: Token) => {
+          setToToken(token)
+        }}/>
         <div className='flex items-center justify-between pt-[17px] pl-[20px] text-[14px] text-[#3D405A]'>
           <div>Receive address</div>
           <div className='flex items-center gap-2'>

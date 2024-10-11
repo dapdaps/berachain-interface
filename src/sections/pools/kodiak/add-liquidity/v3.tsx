@@ -14,7 +14,7 @@ import useData from '../../hooks/use-data-v3';
 import kodiak from '@/configs/pools/kodiak';
 
 export default forwardRef(function Add(
-  { onClose, tokenSelectable, defaultToken0, defaultToken1, defaultFee }: any,
+  { onSuccess, tokenSelectable, defaultToken0, defaultToken1, defaultFee }: any,
   ref
 ) {
   const [errorTips, setErrorTips] = useState('');
@@ -58,7 +58,7 @@ export default forwardRef(function Add(
     info,
     dex: kodiak,
     onSuccess() {
-      onClose?.();
+      onSuccess?.();
     }
   });
 

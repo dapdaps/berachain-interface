@@ -9,7 +9,7 @@ import useRemove from './use-remove';
 import usePoolV2Detail from './use-detail-v2';
 import usePoolInfo from './use-pool-info';
 
-const Remove = ({ token0, token1, onClose }: any) => {
+const Remove = ({ token0, token1, onSuccess }: any) => {
   const [percent, setPercent] = useState(0);
   const { info, loading: infoLoading } = usePoolInfo({ token0, token1 });
   const { detail, loading, queryDetail } = usePoolV2Detail(info);
@@ -22,7 +22,7 @@ const Remove = ({ token0, token1, onClose }: any) => {
     amount0,
     amount1,
     onSuccess: () => {
-      onClose();
+      onSuccess();
     }
   });
 
