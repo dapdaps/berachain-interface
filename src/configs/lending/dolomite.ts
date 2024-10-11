@@ -17,7 +17,7 @@ const networks = {
     spenderAddress: '0x07d163861EB93e6A1f985d0caF0f505F66F11D13',
     // if your debt is $100, Liquidation Treshold = when collateral assets < $115 OR debt assets > $104.35
     // $120 / ($100 * liquidationRatio) = ~1.043 Health Factor
-    liquidationRatio: '1.20',
+    liquidationRatio: '1.25',
     interestRatesApi: '/api.dolomite.io/tokens/80084/interest-rates',
     blockNumberApi: `${API_HOST}/${API_ID}/subgraphs/dolomite-berachain/${API_VERSION}/gn`,
     blockNumberApiQuery: () => ({

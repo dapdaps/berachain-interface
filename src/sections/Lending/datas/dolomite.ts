@@ -3040,15 +3040,14 @@ const DolomiteData = (props: any) => {
           }
         });
 
+        const baseOffset = 0.049;
         // (CollateralUSD-BorrowedUSD/0.8)/TokenPrice
-        const removeCollateralBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(baseLTV));
-        // (CollateralUSD-BorrowedUSD/0.8)*0.8/BorrowTokenPrice
-        const borrowBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(baseLTV)).times(baseLTV);
+        const removeCollateralBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(Big(baseLTV).plus(baseOffset)));
 
         removeCollateralTokens.forEach((token: any) => {
           const _removeCollateralBalance = removeCollateralBalance.div(token.price);
           if (_removeCollateralBalance.gte(token.currentPositionCollateral)) {
-            token.balance = token.currentPositionCollateral.toFixed(token.decimals);
+            token.balance = token.currentPositionCollateral.toFixed(token.decimals, Big.roundDown);
             return;
           }
           token.balance = _removeCollateralBalance.toFixed(token.decimals, Big.roundDown);
@@ -3059,6 +3058,8 @@ const DolomiteData = (props: any) => {
             return;
           }
           if (!removeCollateralTokens.some((it: any) => it.address.toLowerCase() === token.address.toLowerCase())) {
+            // (CollateralUSD-BorrowedUSD/0.8)*0.8/BorrowTokenPrice
+            const borrowBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(Big(baseLTV).plus(baseOffset))).times(token.maxLTV);
             const borrowToken = {
               ...token,
               balance: borrowBalance.div(token.price).toFixed(token.decimals, Big.roundDown),
@@ -3311,8 +3312,11 @@ const DolomiteData = (props: any) => {
           });
       });
     };
-    const getCTokenData = (oToken: any) => {
+    const getCTokenData = async (oToken: any) => {
       if (oTokensLength === 0) return;
+      // const blockNumberParams = blockNumberApiQuery();
+      // const blockNumberRes = await post(blockNumberApi, blockNumberParams);
+      // const blockNumber = blockNumberRes?.data?._meta?.block?.number;
       const calls = [
         {
           address: marginAddress,
@@ -3331,14 +3335,14 @@ const DolomiteData = (props: any) => {
         },
         {
           address: marginAddress,
-          name: 'getLiquidationSpreadForPair',
-          params: [oToken.marketId, oToken.marketId]
+          name: 'getLiquidationSpread',
+          params: []
         },
         {
           address: marginAddress,
           name: 'getMarginRatio',
           params: []
-        }
+        },
       ];
       multicall({
         abi: MARGIN_ABI,
@@ -3349,12 +3353,14 @@ const DolomiteData = (props: any) => {
       })
         .then((res: any) => {
           console.log('%s getCTokenData Res: %o', oToken.symbol, res);
-          console.log('%s getCTokenData interestRates: %o', oToken.symbol, oToken.interestRates);
 
           const MarginRatio = ethers.utils.formatUnits(res[4][0]?.value?._hex || 0, 18);
-          const LTV = minimumCollateralizationToLTV(MarginRatio);
+          let LTV = minimumCollateralizationToLTV(MarginRatio);
+          if (oToken.address.toLowerCase() === wBERA.address.toLowerCase() || oToken.isNative) {
+            LTV = '0.8';
+          }
 
-          const LiquidationPenalty = ethers.utils.formatUnits(res[3][0]?.value?._hex || 0, 18);
+          const LiquidationSpread = ethers.utils.formatUnits(res[3][0]?.value?._hex || 0, 18);
 
           let MarketSupplyInterestRateApr = oToken.interestRates.supplyInterestRate;
           const supplyApy = apr2Apy(MarketSupplyInterestRateApr, 12);
@@ -3369,6 +3375,11 @@ const DolomiteData = (props: any) => {
 
           const interestBorrow = ethers.utils.formatUnits(Interest.borrow?._hex || 0, 18);
           const interestSupply = ethers.utils.formatUnits(Interest.supply?._hex || 0, 18);
+
+          const maxBorrowWei = ethers.utils.formatUnits(Interest.maxBorrowWei?.value?._hex || 0, 18);
+          const maxSupplyWei = ethers.utils.formatUnits(Interest.maxSupplyWei?.value?._hex || 0, 18);
+          console.log('>>>>> %s maxBorrowWei: %o', oToken.symbol, maxBorrowWei);
+          console.log('>>>>> %s maxSupplyWei: %o', oToken.symbol, maxSupplyWei);
 
           const marketIndexBorrow = ethers.utils.formatUnits(Market.index?.borrow?._hex || 0, 18);
           const marketIndexSupply = ethers.utils.formatUnits(Market.index?.supply?._hex || 0, 18);
@@ -3415,7 +3426,7 @@ const DolomiteData = (props: any) => {
             exchangeRate: '1',
             lendAPR: Big(MarketSupplyInterestRateApr).times(100).toFixed(2, 0) + '%',
             lendAPY: supplyApy,
-            liquidationFee: LiquidationPenalty,
+            liquidationFee: LiquidationSpread,
             maxLTV: LTV,
             loanToValue: Big(LTV).times(100).toString(),
             name: oToken.symbol,

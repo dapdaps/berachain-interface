@@ -255,6 +255,7 @@ const Position = (props: Props) => {
         }}
         onSelect={(token: any) => {
           setTokenSelected(token);
+          setAmount('');
         }}
       />
       <DolomiteHandler

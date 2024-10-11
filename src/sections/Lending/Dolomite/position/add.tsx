@@ -33,6 +33,7 @@ const PositionAdd = (props: Props) => {
     isMax,
     setLoading,
     setTxData,
+    setAmount,
     handleAmount,
     handleBalance,
   } = useHandler({ balance: tokenSelected?.balance });
@@ -135,6 +136,7 @@ const PositionAdd = (props: Props) => {
         }}
         onSelect={(token: any) => {
           setTokenSelected(token);
+          setAmount('');
         }}
       />
       <DolomiteHandler
