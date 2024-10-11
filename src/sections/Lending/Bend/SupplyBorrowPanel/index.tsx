@@ -1,19 +1,21 @@
 import React, { useRef, useState } from "react";
 
 import NetBase from "../NetBase";
-import { TokenInfo } from "../useBend";
+import { TokenInfo } from "../hooks/useBend";
 import useMarketStore from "@/stores/useMarketStore";
 import ActionModal from './actionModal'
 import DepositAction from '../Action'
 import Big from "big.js";
-import { multicall } from "@/utils/multicall";
+
+import { ethers } from "ethers";
+import { rewardToken } from "@/configs/lending/bend";
 
 
 const SupplyBorrowPanel: React.FC = () => {
   const [openModal, setOpenModal] = useState<any>(null);
   const actionRef = useRef<any>(null);
 
-  const { userAccountData, initData: { markets, config, multicallAddress, provider } } = useMarketStore()
+  const { userAccountData, initData: { markets, config, provider, account } } = useMarketStore()
 
   const handleAction = (action: any) => {
     setOpenModal({ action });
@@ -39,112 +41,63 @@ const SupplyBorrowPanel: React.FC = () => {
     return `${formatted}%`;
   }
 
-  function getRewardsData() {
-    console.log(markets, 'markets');
+  // prepare for BGT rewards
+  function getAllUserRewards() {
+    const arr = markets
+      ?.filter((item: any) => item.variableDebtTokenAddress)
+      .map((item: any) => [
+        item.aTokenAddress,
+        item.variableDebtTokenAddress
+      ]).flat();
+      
+    const addrs = [...arr];
     
-    const aTokenAddresss = markets
-      .filter((asset: any) => asset.variableDebtTokenAddress)
-      ?.map((item: any) => item.aTokenAddress);
-    const calls = aTokenAddresss?.map((addr: any) => ({
-      address: config.incentivesProxy,
-      name: 'getRewardsData',
-      params: [addr, config.rewardAddress]
-    }));
-    multicall({
-      abi: [
+    const rewardsProvider = new ethers.Contract(
+      config.incentivesProxy,
+      [
         {
           inputs: [
-            { internalType: 'address', name: 'asset', type: 'address' },
-            { internalType: 'address', name: 'reward', type: 'address' }
+            { internalType: 'address[]', name: 'assets', type: 'address[]' },
+            { internalType: 'address', name: 'user', type: 'address' }
           ],
-          name: 'getRewardsData',
+          name: 'getAllUserRewards',
           outputs: [
-            { internalType: 'uint256', name: '', type: 'uint256' },
-            { internalType: 'uint256', name: '', type: 'uint256' },
-            { internalType: 'uint256', name: '', type: 'uint256' },
-            { internalType: 'uint256', name: '', type: 'uint256' }
+            {
+              internalType: 'address[]',
+              name: 'rewardsList',
+              type: 'address[]'
+            },
+            {
+              internalType: 'uint256[]',
+              name: 'unclaimedAmounts',
+              type: 'uint256[]'
+            }
           ],
           stateMutability: 'view',
           type: 'function'
         }
       ],
-      calls,
-      options: {},
-      multicallAddress,
-      provider
-    })
+      provider.getSigner()
+    );
+    rewardsProvider
+      .getAllUserRewards(addrs, account)
       .then((res: any) => {
-        console.log(res, '<[=====getRewardsData');
-        
+        try {
+          const _rewardToken = [...rewardToken];
+          const _amount = res[1].reduce((total: any, cur: any) => {
+            return Big(total).plus(ethers.utils.formatUnits(cur)).toFixed();
+          }, 0);
+          _rewardToken[0].unclaimed = _amount;
+          console.log(_rewardToken, '_rewardToken');
+        } catch (error) {
+          console.log('catch_getAllUserRewards_error', error);
+        }
       })
       .catch((err: any) => {
-        console.log('fetchRewardsData_err', err);
+        console.log('getAllUserRewards_error:', err);
       });
   }
-  getRewardsData()
 
-  // function getAllUserRewards() {
-  //   const arr = markets
-  //     ?.filter((item: any) => item.variableDebtTokenAddress)
-  //     .map((item: any) => [
-  //       item.aTokenAddress,
-  //       // item.stableDebtTokenAddress,
-  //       item.variableDebtTokenAddress
-  //     ])
-  //     .flat();
-  //   const addrs = [...new Set(arr)];
-  //   const rewardsProvider = new ethers.Contract(
-  //     config.incentivesProxy,
-  //     [
-  //       {
-  //         inputs: [
-  //           { internalType: 'address[]', name: 'assets', type: 'address[]' },
-  //           { internalType: 'address', name: 'user', type: 'address' }
-  //         ],
-  //         name: 'getAllUserRewards',
-  //         outputs: [
-  //           {
-  //             internalType: 'address[]',
-  //             name: 'rewardsList',
-  //             type: 'address[]'
-  //           },
-  //           {
-  //             internalType: 'uint256[]',
-  //             name: 'unclaimedAmounts',
-  //             type: 'uint256[]'
-  //           }
-  //         ],
-  //         stateMutability: 'view',
-  //         type: 'function'
-  //       }
-  //     ],
-  //     provider.getSigner()
-  //   );
-  //   rewardsProvider
-  //     .getAllUserRewards(addrs, account)
-  //     .then((res: any) => {
-  //       try {
-  //         console.log('getAllUserRewards_res:', res);
-  //         const _rewardToken = [...dexConfig.rewardToken];
-
-  //         const _amount = res[1].reduce((total: any, cur: any) => {
-  //           return Big(total).plus(ethers.utils.formatUnits(cur)).toFixed();
-  //         }, 0);
-
-  //         _rewardToken[0].unclaimed = _amount;
-
-  //         onLoad({
-  //           rewardData: _rewardToken
-  //         });
-  //       } catch (error) {
-  //         console.log('catch_getAllUserRewards_error', error);
-  //       }
-  //     })
-  //     .catch((err: any) => {
-  //       console.log('getAllUserRewards_error:', err);
-  //     });
-  // }
-  
   return (
     <div className="mb-5" onClick={handleOutsideClick}>
       <NetBase />

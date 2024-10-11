@@ -2,7 +2,7 @@ import {create} from 'zustand';
 import { ethers } from 'ethers';
 import Big from 'big.js';
 import { multicall } from '@/utils/multicall';
-import { TokenInfo } from '@/sections/Lending/Bend/useBend';
+import { TokenInfo } from '@/sections/Lending/Bend/hooks/useBend';
 import { formatHealthFactor, isValid } from '@/utils/utils';
 import { bigMin } from '@/utils/formatMoney';
 
@@ -322,7 +322,6 @@ const useBendStore = create<BendState>((set, get) => ({
       provider
     })
       .then((res: any) => {
-        console.log('getUserDebts_res', res);
         const updatedMarkets = markets.map((market, index) => {
           if (res[index]) {
             const currentDebtBalance = res[index][0];
@@ -357,6 +356,25 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   calculateNetBaseData: async () => {
     const { initData: { markets } } = get();
+
+    if (!markets.length) return;
+
+    // const totalWalletInUSD =  markets.reduce((total: any, market: any) => {
+    //   if (market.balanceInUSD && market.balanceInUSD !== '') {
+    //     try {
+    //       return total.plus(Big(market.balanceInUSD));
+    //     } catch (error) {
+    //       console.error(`Error processing balanceInUSD for market ${market.symbol}`, error);
+    //     }
+    //   }
+    //   return total;
+    // }, '0');
+
+    const totalWalletInUSD = markets.reduce(
+      (total, cur) => Big(total).plus(cur.balanceInUSD || 0).toFixed(),
+      '0'
+    );
+
     
     const supplyBal = markets.reduce(
       (total, cur) => Big(total).plus(cur.underlyingBalanceUSD || 0).toFixed(),
@@ -413,14 +431,6 @@ const useBendStore = create<BendState>((set, get) => ({
       (prev, curr) => Big(prev).plus(curr.debtInUSD || 0).toFixed(),
       '0'
     );
-    console.log({
-      netAPY,
-      netWorthUSD: netWorth,
-      yourTotalSupply,
-      yourTotalBorrow,
-      yourSupplyApy: Big(weightedAverageSupplyAPY).plus(yourSupplyRewardAPY).toFixed(),
-      yourBorrowApy: weightedAverageBorrowsAPY
-    }, 'calculateNetBaseData: markets');
 
     set({
       netBaseData: {
@@ -429,7 +439,8 @@ const useBendStore = create<BendState>((set, get) => ({
         yourTotalSupply,
         yourTotalBorrow,
         yourSupplyApy: Big(weightedAverageSupplyAPY).plus(yourSupplyRewardAPY).toFixed(),
-        yourBorrowApy: weightedAverageBorrowsAPY
+        yourBorrowApy: weightedAverageBorrowsAPY,
+        totalWalletInUSD
       }
     });
   },

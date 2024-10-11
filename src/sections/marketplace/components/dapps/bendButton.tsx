@@ -6,7 +6,7 @@ import type { Chain, Token } from '@/types';
 import Big from 'big.js';
 import { useEffect, useState } from 'react';
 import useToast from '@/hooks/use-toast';
-import { TokenInfo } from '@/sections/Lending/Bend/useBend';
+import { TokenInfo } from '@/sections/Lending/Bend/hooks/useBend';
 
 const BendingButton = ({
   chain,

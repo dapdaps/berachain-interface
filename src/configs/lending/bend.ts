@@ -16,7 +16,7 @@ const basic = {
   loaderName: 'AaveV3'
 };
 
-const rewardToken = [
+export const rewardToken = [
   {
     address: '0xbDa130737BDd9618301681329bF2e46A016ff9Ad',
     symbol: 'BGT',

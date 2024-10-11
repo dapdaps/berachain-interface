@@ -3,7 +3,7 @@ import IconPlus from "@public/images/modal/plus.svg";
 import IconMinus from "@public/images/modal/minus.svg";
 import ActionModal from "../Action";
 import { formatDisplayCurrency, formatDisplayNumber } from "@/utils/formatMoney";
-import { TokenInfo } from "../useBend";
+import { TokenInfo } from "../hooks/useBend";
 import NetBase from "../NetBase";
 import Big from "big.js";
 

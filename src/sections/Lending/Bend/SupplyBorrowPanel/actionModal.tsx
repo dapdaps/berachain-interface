@@ -1,10 +1,11 @@
 import { forwardRef, useEffect, useMemo, useState } from "react";
-import { TokenInfo } from "../useBend";
+import { TokenInfo } from "../hooks/useBend";
 import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
 import useMarketStore from "@/stores/useMarketStore";
 import useAaveConfig from "@/stores/useAaveConfigStore";
-import { useBorwAndRepay } from "../useBorwAndRepay";
+import { useBorwAndRepay } from "../hooks/useBorwAndRepay";
+import Button from "../BendButton";
 
 interface IProps {
   isOpen: boolean;
@@ -54,7 +55,9 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       borrowERC20,
       repayETH,
       repayERC20,
-      handleApprove
+      handleApprove,
+      approving,
+      loading,
     } = useBorwAndRepay({
       token,
       isBorrow,
@@ -105,8 +108,6 @@ const Action = forwardRef<HTMLDivElement, IProps>(
           await repayERC20(value);
         }
       }
-
-      onClose();
   }
 
 
@@ -136,32 +137,21 @@ const Action = forwardRef<HTMLDivElement, IProps>(
               </span>
             </div>
             {needApprove ? (
-              <button
-                className={`px-4 py-2 rounded-full font-Montserrat text-sm font-medium leading-[17.07px] text-center
-                           bg-[#FFDC50] border border-black text-black
-                           ${
-                             isDisabled
-                               ? "opacity-30 cursor-not-allowed"
-                               : "hover:bg-[#FFD700]"
-                           }`}
-                           onClick={handleApprove}
+              <Button
+                onClick={handleApprove}
+                disabled={isDisabled}
+                loading={approving}
               >
                 Approve
-              </button>
+              </Button>
             ) : (
-              <button
-                className={`px-4 py-2 rounded-full font-Montserrat text-sm font-medium leading-[17.07px] text-center
-                          bg-[#FFDC50] border border-black text-black
-                          ${
-                            isDisabled
-                              ? "opacity-30 cursor-not-allowed"
-                              : "hover:bg-[#FFD700]"
-                          }`}
+              <Button
                 disabled={isDisabled}
                 onClick={handleAction}
+                loading={loading}
               >
                 {isBorrow ? "Borrow" : "Repay"}
-              </button>
+              </Button>
             )}
           </div>
         </div>

@@ -4,7 +4,7 @@ import Tabs from '@/components/tabs';
 import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
 import DappIcon from '@/components/dapp-icon';
-import useBend from './useBend';
+import useBend from './hooks/useBend';
 interface LendingModalProps {
   onClose?: () => void;
 }

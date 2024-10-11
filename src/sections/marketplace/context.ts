@@ -6,7 +6,7 @@ import {
   useState
 } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
-import useBend from '../Lending/Bend/useBend';
+import useBend from '../Lending/Bend/hooks/useBend';
 
 
 export function useMarketplaceContext(props: Props): Context {

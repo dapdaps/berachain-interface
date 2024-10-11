@@ -1,12 +1,12 @@
 import { forwardRef, useEffect, useMemo, useState } from "react";
-import { TokenInfo } from "../useBend";
+import { TokenInfo } from "../hooks/useBend";
 import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
 import useMarketStore from "@/stores/useMarketStore";
 import useAaveConfig from "@/stores/useAaveConfigStore";
 
 import useAddAction from "@/hooks/use-add-action";
-import { useDepositAndWithdraw } from "../useDepositAndWithdraw";
+import { useDepositAndWithdraw } from "../hooks/useDepositAndWithdraw";
 import Button from "../BendButton";
 
 interface IProps {
@@ -44,13 +44,14 @@ const Action = forwardRef<HTMLDivElement, IProps>(
   ({ isOpen, onClose, action, token, className }: IProps, ref) => {
     const { config } = useAaveConfig();
     const {
-      initData: { provider, chainId, account },
       triggerUpdate,
     } = useMarketStore();
  
     const isDeposit = action === "deposit" || action === "supply";
 
     const {
+      loading,
+      approving,
       handleApprove,
       depositETH,
       depositErc20,
@@ -103,7 +104,6 @@ const Action = forwardRef<HTMLDivElement, IProps>(
         } else {
           await withdrawErc20(value);
       }
-      onClose();
     }
   }
 
@@ -135,14 +135,8 @@ const Action = forwardRef<HTMLDivElement, IProps>(
             </div>
             {needApprove ? (
               <Button
+                loading={approving}
                 disabled={isDisabled}
-                className={`px-4 py-2 rounded-full font-Montserrat text-sm font-medium leading-[17.07px] text-center
-                           bg-[#FFDC50] border border-black text-black
-                           ${
-                             isDisabled
-                               ? "opacity-30 cursor-not-allowed"
-                               : "hover:bg-[#FFD700]"
-                           }`}
                 onClick={() => {
                   const value = Big(amount).mul(Big(10).pow(decimals)).toFixed(0);
                   handleApprove(value)
@@ -152,13 +146,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
               </Button>
             ) : (
               <Button
-                className={`px-4 py-2 rounded-full font-Montserrat text-sm font-medium leading-[17.07px] text-center
-                          bg-[#FFDC50] border border-black text-black
-                          ${
-                            isDisabled
-                              ? "opacity-30 cursor-not-allowed"
-                              : "hover:bg-[#FFD700]"
-                          }`}
+                loading={loading}
                 disabled={isDisabled}
                 onClick={handleAction}
               >

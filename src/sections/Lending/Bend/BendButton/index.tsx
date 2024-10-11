@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
+import LendingButton from '@/components/button';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -29,7 +30,7 @@ const Button: React.FC<ButtonProps> = ({
   const { isPending, switchChain } = useSwitchChain();
   const modal = useWeb3Modal();
 
-  const baseClasses = 'px-4 py-2 rounded-full font-Montserrat text-sm font-medium leading-[17.07px] text-center';
+  const baseClasses = 'px-4 py-2 rounded-full font-Montserrat text-sm font-medium !leading-[17.07px] text-center';
   
   const variantClasses: Record<string, string> = {
     primary: 'bg-[#FFDC50] border border-black text-black hover:bg-[#FFD700]',
@@ -76,15 +77,16 @@ const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <button
-      type={type}
+    <LendingButton
+      type='primary'
       className={buttonClasses}
       onClick={onClick}
       disabled={disabled || loading}
       style={style}
+      loading={loading}
     >
-      {loading ? 'Loading...' : children}
-    </button>
+      {children}
+    </LendingButton>
   );
 };
 

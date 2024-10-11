@@ -49,6 +49,8 @@ export const useBorwAndRepay = ({
   const [needApprove, setNeedApprove] = useState<boolean>(false);
   const [allowanceAmount, setAllowanceAmount] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
+  const [approving, setApproving] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const update = useCallback(() => {
     if (symbol === config.nativeCurrency.symbol) {
@@ -126,8 +128,9 @@ export const useBorwAndRepay = ({
   const handleApprove = useCallback(
     () => {
       if (isBorrow) {
-        return approveDelegation(variableDebtTokenAddress).then(
-          (tx: ethers.ContractTransaction) => {
+        setApproving(true);
+        return approveDelegation(variableDebtTokenAddress)
+          .then((tx: ethers.ContractTransaction) => {
             return tx.wait().then((res: ethers.ContractReceipt) => {
               const { status } = res;
               if (status === 1) {
@@ -136,9 +139,14 @@ export const useBorwAndRepay = ({
               } else {
                 console.log("tx failed", res);
               }
-            });
-          }
-        );
+            }).finally(() => {
+              setApproving(false);
+            })
+          })
+          .catch((err: any) => {
+            setApproving(false);
+            console.log("approveDelegation-err", err);
+          })
       }
 
       const token = new ethers.Contract(
@@ -148,7 +156,7 @@ export const useBorwAndRepay = ({
       );
 
       const approveAmount = Big(amount).mul(Big(10).pow(decimals)).toFixed(0);
-
+      setApproving(true)
       return token["approve(address,uint256)"](
         config.aavePoolV3Address,
         approveAmount
@@ -161,8 +169,14 @@ export const useBorwAndRepay = ({
           } else {
             console.log("tx failed", res);
           }
-        });
-      });
+        })
+        .finally(() => {
+          setApproving(false);
+        })
+      }).catch((err: any) => {
+        setApproving(false);
+        console.log("approve-err", err);
+      })
     },
     [
       isBorrow,
@@ -176,6 +190,7 @@ export const useBorwAndRepay = ({
   );
 
   function borrowETH(amount: string) {
+    setLoading(true);
     const wrappedTokenGateway = new ethers.Contract(
       config.wrappedTokenGatewayV3Address,
       config.wrappedTokenGatewayV3ABI,
@@ -198,15 +213,22 @@ export const useBorwAndRepay = ({
               transactionHash
             );
             triggerUpdate();
-            console.log("tx succeeded", res);
+            setAmount("");
           } else {
             console.log("tx failed", res);
           }
-        });
-      });
+        }).finally(() => {
+          setLoading(false);
+        })
+      })
+      .catch((err: any) => {
+        setLoading(false);
+        console.log(err, "err");
+      })
   }
 
   function borrowERC20(amount: string) {
+    setLoading(true);
     const pool = new ethers.Contract(
       config.aavePoolV3Address,
       config.aavePoolV3ABI,
@@ -227,7 +249,6 @@ export const useBorwAndRepay = ({
       .then((tx: any) => {
         tx.wait().then((res: any) => {
           const { status, transactionHash } = res;
-          console.log("SUCCESS--", status, transactionHash);
           if (status === 1) {
             formatAddAction(
               Big(amount).div(Big(10).pow(decimals)).toFixed(8),
@@ -235,11 +256,14 @@ export const useBorwAndRepay = ({
               transactionHash
             );
             triggerUpdate();
+            setAmount("");
             console.log("tx succeeded", res);
           } else {
             console.log("tx failed", res);
           }
-        });
+        }).finally(() => {
+          setLoading(false);
+        })
       })
       .catch((err: any) => {
         console.log("borrowERC20-err", err);
@@ -267,6 +291,7 @@ export const useBorwAndRepay = ({
   }
 
   function repayETH(amount: any) {
+    setLoading(true);
     const wrappedTokenGateway = new ethers.Contract(
       config.wrappedTokenGatewayV3Address,
       config.wrappedTokenGatewayV3ABI,
@@ -295,21 +320,20 @@ export const useBorwAndRepay = ({
                   Big(amount).div(Big(10).pow(decimals)).toFixed(8),
                   status,
                   transactionHash
-                );
-
-                console.log("tx succeeded", res);
+                )
               } else {
                 console.log("tx failed", res);
               }
-            });
+            })
+            .finally(() => {
+              setLoading(false);
+            })
           })
           .catch((err: any) => {
+            setLoading(false);
             console.log(err, "err");
           });
       })
-      .catch((err: any) => {
-        console.log(err, "err");
-      });
   }
 
   /**
@@ -322,6 +346,7 @@ export const useBorwAndRepay = ({
    * @returns
    */
   function repayERC20(amount: any) {
+    setLoading(true)
     return repayFromApproval(amount).then((tx: any) => {
       tx.wait().then((res: any) => {
         const { status, transactionHash } = res;
@@ -332,11 +357,17 @@ export const useBorwAndRepay = ({
             transactionHash
           );
           triggerUpdate();
-          console.log("tx succeeded", res);
+          setAmount("");
         } else {
           console.log("tx failed", res);
         }
-      });
+      }).finally(() => {
+        setLoading(false);
+      })
+    })
+    .catch((err: any) => {
+      setLoading(false);
+      console.log("repayERC20-err", err);
     });
   }
 
@@ -356,5 +387,7 @@ export const useBorwAndRepay = ({
     borrowERC20,
     repayETH,
     repayERC20,
+    approving,
+    loading,
   };
 };

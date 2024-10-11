@@ -9,7 +9,7 @@ import Skeleton from 'react-loading-skeleton';
 import CircleLoading from '@/components/circle-loading';
 import useMarketStore from '@/stores/useMarketStore';
 
-import { useDepositAndWithdraw } from '@/sections/Lending/Bend/useDepositAndWithdraw';
+import { useDepositAndWithdraw } from '@/sections/Lending/Bend/hooks/useDepositAndWithdraw';
 import Big from 'big.js';
 import BendingButton from './bendButton';
 import GAS_LIMIT_RECOMMENDATIONS from '@/configs/gas-limit';
