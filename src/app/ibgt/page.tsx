@@ -10,9 +10,9 @@ import CircleLoading from '@/components/circle-loading';
 import useInfraredData from '@/sections/liquidity/Datas/Infrared';
 import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
 import useCustomAccount from '@/hooks/use-account';
-export default memo(function IBGTPage(props) {
+export default memo(function IBGTPage(props: any) {
   const { loading, dataList } = useInfraredList()
-  const data = useMemo(() => dataList?.find(d => d.id === "iBGT-HONEY"), [dataList])
+  const data = useMemo(() => dataList?.find((d: any) => d.id === "iBGT-HONEY"), [dataList])
   const { account: sender, provider, } = useCustomAccount()
   const toast = useToast();
   const tabs = ["Stake", "Unstake"]
@@ -23,8 +23,11 @@ export default memo(function IBGTPage(props) {
     inAmount: '',
     lpAmount: '',
     isLoading: false,
+    isError: false,
+    loadingMsg: "",
     isTokenApproved: true,
     isTokenApproving: false,
+
   });
   const sourceBalances: any = {};
 
@@ -54,7 +57,7 @@ export default memo(function IBGTPage(props) {
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner());
-    contract.balanceOf(sender).then((balanceBig) => {
+    contract.balanceOf(sender).then((balanceBig: any) => {
       const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
       updateState({
         lpBalance: adjustedBalance
@@ -66,7 +69,7 @@ export default memo(function IBGTPage(props) {
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     contract
       .balanceOf(sender)
-      .then((balanceBig) => {
+      .then((balanceBig: any) => {
         const adjustedBalance = Big(ethers.utils.formatUnits(balanceBig)).toFixed();
         sourceBalances[symbol] = adjustedBalance;
         updateState({
@@ -76,11 +79,11 @@ export default memo(function IBGTPage(props) {
       .catch((error: Error) => {
         console.log('error: ', error);
         setTimeout(() => {
-          updateBalance(token);
+          updateBalance();
         }, 1500);
       });
   };
-  const checkApproval = (amount) => {
+  const checkApproval = (amount: string) => {
     const wei: any = ethers.utils.parseUnits(Big(amount).toFixed(decimals), decimals);
     const abi = ['function allowance(address, address) external view returns (uint256)'];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
@@ -102,7 +105,7 @@ export default memo(function IBGTPage(props) {
     handleTokenChange(balances[symbol]);
   };
 
-  const handleTokenChange = (amount) => {
+  const handleTokenChange = (amount: string) => {
     updateState({ inAmount: amount });
     if (amount === "") {
       updateState({
@@ -168,7 +171,6 @@ export default memo(function IBGTPage(props) {
       title: `Depositing...`
     });
     updateState({
-      toastId,
       isLoading: true,
       isError: false,
       loadingMsg: 'Depositing...'
@@ -197,9 +199,9 @@ export default memo(function IBGTPage(props) {
         const { status, transactionHash } = receipt;
         updateState({
           isLoading: false,
-          isPostTx: true
+          // isPostTx: true
         });
-        setTimeout(() => updateState({ isPostTx: false }), 10_000);
+        // setTimeout(() => updateState({ isPostTx: false }), 10_000);
         const { refetch } = props;
         if (refetch) {
           refetch();
@@ -260,24 +262,22 @@ export default memo(function IBGTPage(props) {
       .then((receipt: any) => {
         updateState({
           isLoading: false,
-          isPostTx: true
         });
         const { status, transactionHash } = receipt;
         console.log('=receipt', receipt);
 
-        addAction?.({
-          type: 'Liquidity',
-          action: 'Withdraw',
-          token0,
-          token1,
-          amount: lpAmount,
-          template: defaultDex,
-          status: status,
-          add: 0,
-          transactionHash,
-          chain_id: props.chainId
-        });
-        setTimeout(() => updateState({ isPostTx: false }), 10_000);
+        // addAction?.({
+        //   type: 'Liquidity',
+        //   action: 'Withdraw',
+        //   token0,
+        //   token1,
+        //   amount: lpAmount,
+        //   template: defaultDex,
+        //   status: status,
+        //   add: 0,
+        //   transactionHash,
+        //   chain_id: props.chainId
+        // });
         const { refetch } = props;
         if (refetch) {
           setTimeout(() => {
@@ -305,12 +305,6 @@ export default memo(function IBGTPage(props) {
         });
       });
   };
-  const onUpdateLpPercent = (percent: number) => {
-    updateState({
-      lpPercent: percent
-    });
-  };
-
 
   useEffect(() => {
     if (!sender || !data?.vaultAddress) return;
@@ -438,7 +432,7 @@ export default memo(function IBGTPage(props) {
               {
                 tIndex === 0 ? (
                   <div>
-                    <input value={inAmount} type="number" onChange={(e) => handleTokenChange(e.target.value, id)} className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
+                    <input value={inAmount} type="number" onChange={(e) => handleTokenChange(e.target.value)} className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
                     <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
                       <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                         {inAmount ? '$' + Big(inAmount)
@@ -476,7 +470,7 @@ export default memo(function IBGTPage(props) {
                             {
                               "opacity-50": isTokenApproved || isTokenApproving
                             })
-                        } onClick={() => handleApprove(true)}>
+                        } onClick={() => handleApprove()}>
                           {isTokenApproving ? (
                             <CircleLoading size={14} />
                           ) : (
@@ -493,20 +487,6 @@ export default memo(function IBGTPage(props) {
                     <input value={lpAmount} type="number"
                       onChange={(e) => {
                         handleLPChange(e.target.value);
-
-                        const value = e.target.value;
-
-                        if (!value) {
-                          onUpdateLpPercent(0);
-                        }
-
-                        if (value && Big(value).gt(0)) {
-                          const newSliderPercent = Big(value || 0)
-                            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-                            .times(100)
-                            .toFixed(0);
-                          onUpdateLpPercent(Number(newSliderPercent));
-                        }
                       }}
                       className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
                     <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
@@ -516,13 +496,6 @@ export default memo(function IBGTPage(props) {
                           .toFixed(2) : '-'}
                       </span>
                       <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
-                        const newSliderPercent = Big(lpBalance || 0)
-                          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-                          .times(100)
-                          .toFixed(0);
-
-                        onUpdateLpPercent(Number(newSliderPercent));
-
                         handleLPChange(lpBalance);
                       }}>balance: <span>{lpBalance}</span></div>
                     </div>

@@ -122,6 +122,6 @@ export type FlexTableProps = {
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;
-  onChangeSortDataIndex?(string): void;
+  onChangeSortDataIndex?(index: string): void;
   renderTitle?(column: Column, columnIdx: number): any;
 }

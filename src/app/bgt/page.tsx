@@ -1,5 +1,5 @@
 "use client";
-import FlexTable from "@/components/flex-table";
+import FlexTable, { Column } from "@/components/flex-table";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useInfraredList from "@/sections/liquidity/hooks/use-infrared-list";
@@ -9,6 +9,7 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import { memo, useEffect, useMemo, useState } from "react"
 export default memo(function BGTPage() {
+
 
   const Columns: Column[] = [
     {
@@ -116,8 +117,8 @@ export default memo(function BGTPage() {
   const { loading, dataList } = useInfraredList(updater)
   const [sortDataIndex, setSortDataIndex] = useState("")
 
-  const [pageData, setPageData] = useState(null)
-  const filterList = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
+  const [pageData, setPageData] = useState<any>(null)
+  const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)), [dataList])
 
   const queryPageData = async function () {
     const result = await asyncFetch("https://bartio-pol-indexer.berachain-devnet.com/berachain/v1alpha1/beacon/homepage")
@@ -128,7 +129,7 @@ export default memo(function BGTPage() {
     setUpdater(Date.now())
   }
 
-  const handleClaim = function (data) {
+  const handleClaim = function (data: any) {
 
     const toastId = toast?.loading({
       title: `Claim...`
@@ -217,7 +218,7 @@ export default memo(function BGTPage() {
             <div className="mb-[10px] text-[#3D405A] ">Top 3 Validators</div>
             <div className="flex flex-col gap-[12px]">
               {
-                pageData?.top3EmittingValidators?.validators?.map(data => (
+                pageData?.top3EmittingValidators?.validators?.map((data: any) => (
                   <div className="flex items-center h-[36px] py-[5px] pr-[18px] pl-[5px] border border-[#373A53] bg-[#FFFDEB] rounded-[18px]">
                     <div className="w-[26px] h-[26px] rounded-full overflow-hidden">
                       <img src={data?.validator?.metadata?.logoURI} alt={data?.validator?.metadata?.name} />

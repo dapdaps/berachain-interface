@@ -16,9 +16,9 @@ export default function useInfraredList(updater?: number) {
     IBGT_ADDRESS
   } = infraredDexConfig
 
-  const [allData, setAllData] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [dataList, setDataList] = useState(null)
+  const [allData, setAllData] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [dataList, setDataList] = useState<any>(null)
   const multicallAddress = useMemo(() => multicallAddresses[chainId], [chainId])
 
 
