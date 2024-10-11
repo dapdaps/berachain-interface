@@ -4,7 +4,8 @@ const ROUTE_CONFIG = {
     theme: {
       '--button-color': '#FFF',
       '--button-text-color': '#1E2028'
-    }
+    },
+    icon: 'images/dapps/infrared.svg'
   }
 };
 

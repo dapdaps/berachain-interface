@@ -18,7 +18,7 @@ const Navigation = function () {
     router.push('/bridge');
   }
   const onNavigateToDapp = () => {
-    router.push('');
+    router.push('/dapps');
   }
   const onNavigateToMarketplace = () => {
     router.push('/marketplace');

@@ -20,7 +20,8 @@ const ROUTE_CONFIG = {
       '--withdraw-color': '#FFFFFF',
       '--replay-color': '#FFFFFF',
       '--claim-color': '#FFFFFF'
-    }
+    },
+    icon: '/images/dapps/dolomite.svg'
   },
   bend: {
     type: 'lending',
@@ -44,7 +45,8 @@ const ROUTE_CONFIG = {
       '--withdraw-color': '#EAEBEF',
       '--replay-color': '#EAEBEF',
       '--claim-color': '#EAEBEF'
-    }
+    },
+    icon: '/images/dapps/bend.svg'
   }
 };
 
