@@ -1,20 +1,23 @@
 'use client';
 
-import Image from '@/components/layz-image';
-
-const HoneypotCard = (props: Props) => {
+const Index = (props: Props) => {
 
   const {
     color,
     name,
     icon,
-    data = {}
+    data = {},
+    onSwap = () => {},
   } = props;
 
   const Honeypot = () => (
-    <div className='relative left-[26px] flex-shrink-0 ml-[-26px]'>
+    <div className='relative left-[26px] flex-shrink-0 ml-[-26px] z-[3]'>
       <div className='absolute top-[42%] left-[32%] w-[42px] h-[42px] rounded-[50%] border border-black'>
-        <Image alt='' src={icon} />
+        <img
+          alt=''
+          src={icon}
+          className='w-full h-full object-contain'
+        />
       </div>
       <svg
         width="110"
@@ -69,7 +72,7 @@ const HoneypotCard = (props: Props) => {
   return (
     <div className='flex items-end justify-center'>
       <Honeypot />
-      <div className='pb-[14px] flex-shrink-0'>
+      <div className='flex-shrink-0 relative pb-[12px] '>
         <div className='rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1'>
           <div className='w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] px-[12px]'>
             {/*title*/}
@@ -88,17 +91,21 @@ const HoneypotCard = (props: Props) => {
             }
           </div>
         </div>
+        <button
+          onClick={onSwap}
+          className='absolute bottom-[-12px] left-1/2 translate-x-[-50%] z-[2] hover:scale-[1.1] ease-in-out duration-300 border border-black bg-[#FFDC50] rounded-[10px] px-[24px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] text-[16px]'>Swap</button>
       </div>
     </div>
 
   )
 };
 
-export default HoneypotCard;
+export default Index;
 
 interface Props {
   color: string;
   name: string;
   icon: string;
   data?: any;
+  onSwap?: () => void;
 }

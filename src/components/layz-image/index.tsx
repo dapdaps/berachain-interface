@@ -36,7 +36,7 @@ const LazyImage = (props: Props) => {
     <motion.div
       {...restProps}
       ref={containerRef}
-      className={`relative ${containerClassName}`}
+      className={`relative w-full h-full ${containerClassName}`}
       style={{
         width,
         height,

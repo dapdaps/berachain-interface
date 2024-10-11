@@ -1,8 +1,8 @@
 import Image from '@/components/layz-image';
 import { motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const Star = ({ isAnimate }: { isAnimate: boolean }) => (
+const Star = () => (
   <motion.svg
     xmlns="http://www.w3.org/2000/svg"
     width="61"
@@ -10,6 +10,7 @@ const Star = ({ isAnimate }: { isAnimate: boolean }) => (
     viewBox="0 0 61 30"
     fill="none"
     className='absolute top-[-50%] left-[-50%] z-10'
+
   >
     <motion.path
       d="M7.53108 16.708C7.69215 16.2727 8.30785 16.2727 8.46893 16.708L9.53223 19.5816C9.68415 19.9921 10.0079 20.3158 10.4184 20.4678L13.292 21.5311C13.7273 21.6922 13.7273 22.3078 13.292 22.4689L10.4184 23.5322C10.0079 23.6842 9.68415 24.0079 9.53223 24.4184L8.46893 27.292C8.30785 27.7273 7.69215 27.7273 7.53107 27.292L6.46777 24.4184C6.31585 24.0079 5.99213 23.6842 5.58155 23.5322L2.70802 22.4689C2.27271 22.3078 2.27271 21.6922 2.70802 21.5311L5.58155 20.4678C5.99213 20.3158 6.31585 19.9921 6.46777 19.5816L7.53108 16.708Z"
@@ -34,26 +35,26 @@ const BGTCoin = ({
   count = 0
 }: Props) => {
 
-  const countRef = useRef<number>(0);
+  const countRef = useRef<number>(-1);
+  const [isAnimate, setIsAnimate] = useState(true);
+  const prev = countRef.current;
 
   useEffect(() => {
     countRef.current = count;
-  }, [count])
-
-  const prev = countRef.current;
-
+    setIsAnimate(prev < count);
+  }, [count]);
 
   return (
     <div>
       <div className='relative'>
         <div className='absolute left-[-6px] top-[50%] translate-y-[-50%]'>
-          {
-            type === CoinType.iBGT && (
-              <Star isAnimate={prev < count}/>
-            )
-          }
+          {/*{*/}
+          {/*  type === CoinType.iBGT && (*/}
+          {/*    <Star />*/}
+          {/*  )*/}
+          {/*}*/}
           <Image
-            src='/images/icon-iBGT.svg'
+            src={`/images/icon-${type === CoinType.iBGT ? CoinType.iBGT : 'coin'}.svg`}
             alt='coin'
             width={33}
             height={30}

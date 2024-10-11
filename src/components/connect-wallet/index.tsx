@@ -304,7 +304,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
         </div>
       ) : (
         <button
-          className={`click rounded-full px-[8px] py-[4px] text-[14px] font-semibold bg-black shadow-shadow1 text-white ${className}`}
+          className={`click rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black shadow-shadow1 text-white ${className}`}
           onClick={handleConnect}
         >
           Connect Wallet

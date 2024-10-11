@@ -13,10 +13,9 @@ const Tooltip = forwardRef<Refs, Props>((props, ref) => {
     isShake,
     isControlled,
     isControlledAutoClose = true,
-    controlledDuration = 2000
+    controlledDuration = 2000,
+    offset = 10
   } = props;
-
-  const offset = 10;
 
   const triggerRef = useRef<any>();
   const [visible, setVisible] = useState(false);
@@ -91,6 +90,7 @@ const Tooltip = forwardRef<Refs, Props>((props, ref) => {
           onMouseMove(e);
         }}
         onMouseMove={onMouseMove}
+        className="h-fit w-fit"
       >
         {children}
       </motion.div>
@@ -111,7 +111,7 @@ const Tooltip = forwardRef<Refs, Props>((props, ref) => {
                 const { width: elW, x: elX, y: elY } = el.getBoundingClientRect();
                 const middleWidth = elX + elW / 2;
 
-                const { width: w, height: h } = elTooltip.getBoundingClientRect();
+                const { clientWidth: w, clientHeight: h } = elTooltip ?? {};
                 const targetMiddleWidth = elX + w / 2;
                 let targetX = elX - (targetMiddleWidth - middleWidth);
                 if (targetX < 0) {
@@ -153,6 +153,7 @@ export interface Props {
   // in controlled mode
   // set the auto-close time after opening
   controlledDuration?: number;
+  offset?: number;
 }
 
 const Popup = (props: PopupProps) => {
