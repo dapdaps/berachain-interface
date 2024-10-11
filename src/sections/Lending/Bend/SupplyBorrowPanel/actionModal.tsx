@@ -4,7 +4,7 @@ import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
 import useMarketStore from "@/stores/useMarketStore";
 import useAaveConfig from "@/stores/useAaveConfigStore";
-import { useBorwAndRepay } from "./useBorwAndRepay";
+import { useBorwAndRepay } from "../useBorwAndRepay";
 
 interface IProps {
   isOpen: boolean;

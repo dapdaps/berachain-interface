@@ -30,19 +30,16 @@ const TABS = [
 const BendLending = (props: Props) => {
   const {} = props;
   const [lendingVisible, setLendingVisible] = useState(true);
-  const { userAccountData, triggerUpdate, initData: { markets, config, multicallAddress, provider } } = useMarketStore()
+  const { userAccountData, triggerUpdate, initData: { markets, config, provider } } = useMarketStore()
 
   const { address, chainId } = useAccount();
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
-  const [dataLoading, setDataLoading] = useState(false);
-  const [data, setData] = useState<any>({});
-
 
   const [currentTab, setCurrentTab] = useState(TABS[0].value);
   
   const [disabled, setDisabled] = useState(false);
   const [gas, setGas] = useState<any>(0);
-
+  const [dataLoading, setDataLoading] = useState(false);
   const honeyInfo = markets.find((market) => market.symbol === "HONEY");
   
   const balance = useMemo(() => {
@@ -81,9 +78,8 @@ const BendLending = (props: Props) => {
   }, [amount, balance]);
 
   const handleClose = () => {
-    // setLendingVisible(false);
+    setLendingVisible(false);
   };
-
 
   const handleAmount = (e: any ) => {
     if (isNaN(Number(e.target.value))) return;
@@ -95,18 +91,6 @@ const BendLending = (props: Props) => {
     
     setAmount(e.target.value.replace(/\s+/g, ''));
   }
-
-  // useEffect(() => {
-  //   if (!chainId) {
-  //     return;
-  //   }
-  //   const currChain = networks[chainId];
-  //   setIsChainSupported(!!currChain);
-  // }, [chainId, networks]);
-
-  // useEffect(() => {
-  //   setDataLoading(isChainSupported);
-  // }, [isChainSupported, currentTab]);
 
   function formatPercent(apy?: string): string {
     if (!apy) return "0%";
@@ -123,8 +107,6 @@ const BendLending = (props: Props) => {
     }
 
     if(!honeyInfo) return Promise.resolve('-');
-
-    
 
     const { tokenPrice, decimals } = honeyInfo;
     return provider
@@ -154,6 +136,11 @@ const BendLending = (props: Props) => {
       await withdrawErc20(value);
     }
   }
+  
+  useEffect(() => {
+    if (!markets || !userAccountData) return setDataLoading(true);
+    setDataLoading(false);
+  }, [markets, userAccountData] )
 
   if (!honeyInfo) return null;
 

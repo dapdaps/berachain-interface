@@ -5,9 +5,6 @@ const NetBase = () => {
   
   const honeyInfo = markets.find((market) => market.symbol === "HONEY");
 
-  console.log(honeyInfo, 'honeyInfo');
-  
-
   return (
     <div className="bg-[#FFE873] rounded-[10px] p-4 flex justify-between items-center">
       <div className="flex">

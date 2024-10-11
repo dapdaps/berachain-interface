@@ -631,7 +631,6 @@ const useBendStore = create<BendState>((set, get) => ({
               _assetsToSupply[i].availableBorrowsUSD = Big(_availableBorrowsUSD).lt(0) ? 0 : _availableBorrowsUSD;
               _assetsToSupply[i].availableBorrows = Big(_availableBorrows).lt(0) ? 0 : _availableBorrows;
             }
-            console.log(_assetsToSupply, 'getLiquidity_res = _assetsToSupply');
             
             set({
               initData: {

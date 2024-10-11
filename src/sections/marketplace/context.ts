@@ -53,6 +53,7 @@ export function useMarketplaceContext(props: Props): Context {
     });
   }, []);
 
+  // loader for bend
     useEffect(() => {
       bendInit()
     }, []);

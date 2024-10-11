@@ -1,5 +1,5 @@
-import { beraB } from '@/configs/tokens/bera-bArtio';
-const ipfsPrefix = 'https://ipfs.near.social/ipfs';
+import { beraB } from "@/configs/tokens/bera-bArtio";
+
 const CONTRACT_ABI = {
   wrappedTokenGatewayV3ABI:
     'https://raw.githubusercontent.com/corndao/aave-v3-bos-app/main/abi/WrappedTokenGatewayV3ABI.json',
@@ -9,8 +9,7 @@ const CONTRACT_ABI = {
   walletBalanceProviderABI:
     'https://raw.githubusercontent.com/corndao/aave-v3-bos-app/main/abi/WalletBalanceProvider.json'
 };
-const heroData = ['Net Worth', 'Net APY', 'Health Factor'];
-const baseConfig = { heroData, ipfsPrefix };
+
 const basic = {
   name: 'Bend',
   type: 'aave-v3',
@@ -27,11 +26,10 @@ const rewardToken = [
   }
 ];
 
-const networks = {
+const networks: any = {
   // beraB
   80084: {
     config: {
-      ...baseConfig,
       chainName: 'bera-bArtio',
       nativeCurrency: beraB['bera'], // attention this native currency
       nativeWrapCurrency: beraB['weth'],
@@ -61,11 +59,7 @@ const networks = {
         variableBorrowAPY: '',
         supportPermit: false,
         LTV: 0,
-        supportBorrow: true,
-        debt: '',
-        debtInUSD: '',
-        supplyRewardApy: '',
-        borrowAPY: ''
+        supportBorrow: true
       },
       {
         id: '2',
@@ -82,11 +76,7 @@ const networks = {
         availableLiquidity: 0,
         availableLiquidityUSD: '',
         supportPermit: false,
-        LTV: 0,
-        debt: '',
-        debtInUSD: '',
-        supplyRewardApy: '',
-        borrowAPY: ''
+        LTV: 0
       },
       {
         id: '3',
@@ -103,11 +93,7 @@ const networks = {
         availableLiquidity: 0,
         availableLiquidityUSD: '',
         supportPermit: false,
-        LTV: 0,
-        debt: '',
-        debtInUSD: '',
-        supplyRewardApy: '',
-        borrowAPY: ''
+        LTV: 0
       }
     ],
     CONTRACT_ABI,

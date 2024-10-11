@@ -81,7 +81,7 @@ const useBend = () => {
     } catch (error) {
       console.log('init-error', error);
     }
-  }, [chainId, markets, marketStore, provider]);
+  }, [chainId, markets, provider]);
 
   useEffect(() => {
     init();
