@@ -1,19 +1,26 @@
-import { createContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState
+} from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import useBend from '../Lending/Bend/hooks/useBend';
+
 
 export function useMarketplaceContext(props: Props): Context {
   const { chainId } = props;
-
+  
   const [lendingVisible, setLendingVisible] = useState(false);
   const [lendingData, setLendingData] = useState<any>({});
+  const { init: bendInit } = useBend()
 
+  const [stakingVisible, setStakingVisible] = useState(false);
+  const [stakingData, setStakingData] = useState<any>({});
 
-  const [stakingVisible, setStakingVisible] = useState(false)
-  const [stakingData, setStakingData] = useState<any>({})
-
-
-  const [vaultsVisible, setVaultsVisible] = useState(false)
-  const [vaultsData, setVaultsData] = useState<any>({})
+  const [vaultsVisible, setVaultsVisible] = useState(false);
+  const [vaultsData, setVaultsData] = useState<any>({});
 
   const openDolomite = async () => {
     const dolomiteConfig = await import('@/configs/lending/dolomite');
@@ -24,7 +31,7 @@ export function useMarketplaceContext(props: Props): Context {
       dappLink: '/lending/dolomite',
       config: { ...basic, ...networkConfig },
       networks,
-      investToken: beraB['honey'],
+      investToken: beraB['honey']
     });
   };
 
@@ -37,14 +44,19 @@ export function useMarketplaceContext(props: Props): Context {
       data
       // investToken: beraB['honey'],
     });
-  }
+  };
 
   // FIXME Test code for Dolomite
   useEffect(() => {
-    // openDolomite().then(() => {
-    //   setLendingVisible(true);
-    // });
+    openDolomite().then(() => {
+      setLendingVisible(true);
+    });
   }, []);
+
+  // loader for bend
+    useEffect(() => {
+      bendInit()
+    }, []);
 
   return {
     chainId,
@@ -63,9 +75,7 @@ export function useMarketplaceContext(props: Props): Context {
     setVaultsVisible,
     setVaultsData,
 
-
-    openInfrared,
-
+    openInfrared: () => {}
   };
 }
 
@@ -91,30 +101,28 @@ interface Context {
   setVaultsVisible: Dispatch<SetStateAction<boolean>>;
   setVaultsData: Dispatch<SetStateAction<any>>;
   openInfrared(): void;
-
 }
 
-const initialState: Context = {
+const initialState: any = {
   chainId: 80084,
   lendingVisible: false,
   lendingData: {},
-  setLendingVisible: () => { },
-  setLendingData: () => { },
-  openDolomite: () => { },
-
+  setLendingVisible: () => {},
+  setLendingData: () => {},
+  openDolomite: () => {},
 
   stakingVisible: false,
   stakingData: {},
-  setStakingVisible: () => { },
-  setStakingData: () => { },
-  openInfrared: () => { },
+  setStakingVisible: () => {},
+  setStakingData: () => {},
+  openInfrared: () => {}
 };
 
 export const MarketplaceContext = createContext<Context>(initialState);
 
 export enum LendingDApps {
   Bend = 'Bend',
-  Dolomite = 'Dolomite',
+  Dolomite = 'Dolomite'
 }
 
 export enum StakingDApps {

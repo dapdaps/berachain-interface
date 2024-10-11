@@ -5,326 +5,312 @@ import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
 import { ethers } from 'ethers';
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import CircleLoading from '@/components/circle-loading';
-export default memo(function IBGTPage(props) {
-  // const {
-  //   data,
-  //   sender,
-  //   provider,
-  //   defaultIndex = 0,
-  //   addresses,
-  //   onBack
-  // } = props;
-  // const toast = useToast();
+import useInfraredData from '@/sections/liquidity/Datas/Infrared';
+import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
+import useCustomAccount from '@/hooks/use-account';
+export default memo(function IBGTPage(props: any) {
+  const { loading, dataList } = useInfraredList()
+  const data = useMemo(() => dataList?.find((d: any) => d.id === "iBGT-HONEY"), [dataList])
+  const { account: sender, provider, } = useCustomAccount()
+  const toast = useToast();
   const tabs = ["Stake", "Unstake"]
   const [tIndex, setTIndex] = useState(0)
+  const [state, updateState] = useMultiState({
+    balances: [],
+    lpBalance: '',
+    inAmount: '',
+    lpAmount: '',
+    isLoading: false,
+    isError: false,
+    loadingMsg: "",
+    isTokenApproved: true,
+    isTokenApproving: false,
 
-  // const [state, updateState] = useMultiState({
-  //   // isDeposit: tab === "Stake" || !tab,
-  //   balances: [],
-  //   lpBalance: '',
-  //   inAmount: '',
-  //   // lpAmount: '',
-  //   isLoading: false,
-  //   isTokenApproved: true,
-  //   isTokenApproving: false,
+  });
+  const sourceBalances: any = {};
 
-  // });
-  // const sourceBalances: any = {};
+  const {
+    balances,
+    inAmount,
+    isLoading,
+    isTokenApproved,
+    isTokenApproving,
+    lpBalance,
+    lpAmount,
+  } = state;
+  const { token0, token1, decimals, id, LP_ADDRESS } = data ?? {
 
-  // const {
-  //   // isDeposit,
-  //   balances,
-  //   inAmount,
-  //   isLoading,
-  //   isTokenApproved,
-  //   isTokenApproving,
-  //   lpBalance,
-  //   lpAmount,
-  // } = state;
+  };
+  const symbol = id;
+  const isInSufficient = Number(inAmount) > Number(balances[symbol]);
+  const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
+  const balanceLp =
+    !lpAmount || !lpBalance
+      ? '-'
+      : parseFloat(
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
+  const updateLPBalance = () => {
+    const abi = ['function balanceOf(address) view returns (uint256)'];
+    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner());
+    contract.balanceOf(sender).then((balanceBig: any) => {
+      const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
+      updateState({
+        lpBalance: adjustedBalance
+      });
+    });
+  };
+  const updateBalance = () => {
+    const abi = ['function balanceOf(address) view returns (uint256)'];
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+    contract
+      .balanceOf(sender)
+      .then((balanceBig: any) => {
+        const adjustedBalance = Big(ethers.utils.formatUnits(balanceBig)).toFixed();
+        sourceBalances[symbol] = adjustedBalance;
+        updateState({
+          balances: sourceBalances
+        });
+      })
+      .catch((error: Error) => {
+        console.log('error: ', error);
+        setTimeout(() => {
+          updateBalance();
+        }, 1500);
+      });
+  };
+  const checkApproval = (amount: string) => {
+    const wei: any = ethers.utils.parseUnits(Big(amount).toFixed(decimals), decimals);
+    const abi = ['function allowance(address, address) external view returns (uint256)'];
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+    updateState({
+      isTokenApproved: false
+    });
+    contract
+      .allowance(sender, data?.vaultAddress)
+      .then((allowance: any) => {
+        const approved = !new Big(allowance.toString()).lt(wei);
+        updateState({
+          isTokenApproved: approved
+        });
+      })
+      .catch((e: Error) => console.log(e));
+  };
 
-  // const { token0, token1, decimals, id, LP_ADDRESS } = data;
-  // const symbol = id;
-  // const vaultAddress = addresses[symbol];
+  const handleMax = () => {
+    handleTokenChange(balances[symbol]);
+  };
 
-  // const isInSufficient = Number(inAmount) > Number(balances[symbol]);
-  // const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
-  // const balanceLp =
-  //   !lpAmount || !lpBalance
-  //     ? '-'
-  //     : parseFloat(
-  //       Big(lpAmount)
-  //         .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-  //         .toFixed(4)
-  //     );
-  // const updateLPBalance = () => {
-  //   const abi = ['function balanceOf(address) view returns (uint256)'];
-  //   const contract = new ethers.Contract(vaultAddress, abi, provider.getSigner());
-  //   contract.balanceOf(sender).then((balanceBig) => {
-  //     const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
-  //     updateState({
-  //       lpBalance: adjustedBalance
-  //     });
-  //   });
-  // };
-  // const updateBalance = () => {
-  //   const abi = ['function balanceOf(address) view returns (uint256)'];
-  //   const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
-  //   contract
-  //     .balanceOf(sender)
-  //     .then((balanceBig) => {
-  //       const adjustedBalance = Big(ethers.utils.formatUnits(balanceBig)).toFixed();
-  //       sourceBalances[symbol] = adjustedBalance;
-  //       updateState({
-  //         balances: sourceBalances
-  //       });
-  //     })
-  //     .catch((error: Error) => {
-  //       console.log('error: ', error);
-  //       setTimeout(() => {
-  //         updateBalance(token);
-  //       }, 1500);
-  //     });
-  // };
-  // const checkApproval = (amount) => {
-  //   const wei: any = ethers.utils.parseUnits(Big(amount).toFixed(decimals), decimals);
-  //   const abi = ['function allowance(address, address) external view returns (uint256)'];
-  //   const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
-  //   updateState({
-  //     isTokenApproved: false
-  //   });
-  //   contract
-  //     .allowance(sender, vaultAddress)
-  //     .then((allowance: any) => {
-  //       const approved = !new Big(allowance.toString()).lt(wei);
-  //       updateState({
-  //         isTokenApproved: approved
-  //       });
-  //     })
-  //     .catch((e: Error) => console.log(e));
-  // };
+  const handleTokenChange = (amount: string) => {
+    updateState({ inAmount: amount });
+    if (amount === "") {
+      updateState({
+        inAmount: "",
+        isTokenApproved: true
+      });
+      return;
+    }
+    checkApproval(amount);
+  };
+  const handleLPChange = (amount: string) => {
+    updateState({
+      lpAmount: amount
+    });
+  };
 
-  // const handleMax = () => {
-  //   handleTokenChange(balances[symbol]);
-  // };
+  const handleApprove = () => {
+    const payload = { isTokenApproving: true };
+    const amount = Big(inAmount).toFixed(decimals);
+    const toastId = toast?.loading({
+      title: `Approve ${symbol}`
+    });
+    updateState({
+      ...payload,
+      isLoading: true,
+      loadingMsg: `Approving ${symbol}...`
+    });
+    const wei = ethers.utils.parseUnits(amount, decimals);
+    const abi = ['function approve(address, uint) public'];
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
 
-  // const handleTokenChange = (amount) => {
-  //   updateState({ inAmount: amount });
-  //   if (amount === "") {
-  //     updateState({
-  //       inAmount: "",
-  //       isTokenApproved: true
-  //     });
-  //     return;
-  //   }
-  //   checkApproval(amount);
-  // };
-  // const handleLPChange = (amount: string) => {
-  //   updateState({
-  //     lpAmount: amount
-  //   });
-  // };
+    contract
+      .approve(data?.vaultAddress, wei)
+      .then((tx: any) => tx.wait())
+      .then((receipt: any) => {
+        const payload = { isTokenApproved: true, isTokenApproving: false };
+        updateState({ ...payload, isLoading: false, loadingMsg: '' });
+        toast?.dismiss(toastId);
+        toast?.success({
+          title: 'Approve Successfully!',
+          tx: receipt.transactionHash,
+          chainId: props.chainId
+        });
+      })
+      .catch((error: Error) => {
+        console.log('error: ', error);
+        updateState({
+          isError: true,
+          isLoading: false,
+          loadingMsg: error?.message,
+          isTokenApproving: false
+        });
+        toast?.dismiss(toastId);
+        toast?.fail({
+          title: 'Approve Failed!',
+          text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : null
+        });
+      });
+  };
 
-  // const handleApprove = () => {
-  //   // const _token = isToken0 ? token0 : token1;
-  //   const payload = { isTokenApproving: true };
-  //   const amount = Big(inAmount).toFixed(decimals);
-  //   const toastId = toast?.loading({
-  //     title: `Approve ${symbol}`
-  //   });
-  //   updateState({
-  //     ...payload,
-  //     isLoading: true,
-  //     loadingMsg: `Approving ${symbol}...`
-  //   });
-  //   const wei = ethers.utils.parseUnits(amount, decimals);
-  //   const abi = ['function approve(address, uint) public'];
-  //   const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+  const handleDeposit = () => {
+    const toastId = toast?.loading({
+      title: `Depositing...`
+    });
+    updateState({
+      isLoading: true,
+      isError: false,
+      loadingMsg: 'Depositing...'
+    });
+    const wei = ethers.utils.parseUnits(Big(inAmount).toFixed(decimals), decimals);
+    const abi = [
+      {
+        constant: false,
+        inputs: [
+          {
+            name: 'amount',
+            type: 'uint256'
+          }
+        ],
+        name: 'stake',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+      }
+    ];
+    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner());
+    contract
+      .stake(wei)
+      .then((tx: any) => tx.wait())
+      .then((receipt: any) => {
+        const { status, transactionHash } = receipt;
+        updateState({
+          isLoading: false,
+          // isPostTx: true
+        });
+        // setTimeout(() => updateState({ isPostTx: false }), 10_000);
+        const { refetch } = props;
+        if (refetch) {
+          refetch();
+        }
 
-  //   contract
-  //     .approve(vaultAddress, wei)
-  //     .then((tx: any) => tx.wait())
-  //     .then((receipt: any) => {
-  //       const payload = { isTokenApproved: true, isTokenApproving: false };
-  //       updateState({ ...payload, isLoading: false, loadingMsg: '' });
-  //       toast?.dismiss(toastId);
-  //       toast?.success({
-  //         title: 'Approve Successfully!',
-  //         tx: receipt.transactionHash,
-  //         chainId: props.chainId
-  //       });
-  //     })
-  //     .catch((error: Error) => {
-  //       console.log('error: ', error);
-  //       updateState({
-  //         isError: true,
-  //         isLoading: false,
-  //         loadingMsg: error?.message,
-  //         isTokenApproving: false
-  //       });
-  //       toast?.dismiss(toastId);
-  //       toast?.fail({
-  //         title: 'Approve Failed!',
-  //         text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : null
-  //       });
-  //     });
-  // };
+        toast?.dismiss(toastId);
+        toast?.success({
+          title: 'Deposit Successfully!'
+        });
+      })
+      .catch((error: Error) => {
+        console.log('error: ', error);
+        updateState({
+          isError: true,
+          isLoading: false,
+          loadingMsg: error?.message
+        });
+        toast?.dismiss(toastId);
+        toast?.fail({
+          title: 'Deposit Failed!',
+          text: error?.message?.includes('user rejected transaction')
+            ? 'User rejected transaction'
+            : (error?.message ?? '')
+        });
+      });
+  };
+  const handleWithdraw = () => {
+    const toastId = toast?.loading({
+      title: `Withdrawing...`
+    });
+    updateState({
+      isLoading: true,
+      isError: false,
+      loadingMsg: 'Withdrawing...'
+    });
 
-  // const handleDeposit = () => {
-  //   const toastId = toast?.loading({
-  //     title: `Depositing...`
-  //   });
-  //   updateState({
-  //     toastId,
-  //     isLoading: true,
-  //     isError: false,
-  //     loadingMsg: 'Depositing...'
-  //   });
-  //   const wei = ethers.utils.parseUnits(Big(inAmount).toFixed(decimals), decimals);
-  //   const abi = [
-  //     {
-  //       constant: false,
-  //       inputs: [
-  //         {
-  //           name: 'amount',
-  //           type: 'uint256'
-  //         }
-  //       ],
-  //       name: 'stake',
-  //       outputs: [],
-  //       stateMutability: 'nonpayable',
-  //       type: 'function'
-  //     }
-  //   ];
-  //   const contract = new ethers.Contract(vaultAddress, abi, provider.getSigner());
-  //   contract
-  //     .stake(wei)
-  //     .then((tx: any) => tx.wait())
-  //     .then((receipt: any) => {
-  //       const { status, transactionHash } = receipt;
-  //       updateState({
-  //         isLoading: false,
-  //         isPostTx: true
-  //       });
-  //       setTimeout(() => updateState({ isPostTx: false }), 10_000);
-  //       const { refetch } = props;
-  //       if (refetch) {
-  //         refetch();
-  //       }
+    const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
+    const abi = [
+      {
+        constant: false,
+        inputs: [
+          {
+            name: '_shareAmt',
+            type: 'uint256'
+          }
+        ],
+        name: 'withdraw',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+      }
+    ];
 
-  //       toast?.dismiss(toastId);
-  //       toast?.success({
-  //         title: 'Deposit Successfully!'
-  //       });
-  //     })
-  //     .catch((error: Error) => {
-  //       console.log('error: ', error);
-  //       updateState({
-  //         isError: true,
-  //         isLoading: false,
-  //         loadingMsg: error?.message
-  //       });
-  //       toast?.dismiss(toastId);
-  //       toast?.fail({
-  //         title: 'Deposit Failed!',
-  //         text: error?.message?.includes('user rejected transaction')
-  //           ? 'User rejected transaction'
-  //           : (error?.message ?? '')
-  //       });
-  //     });
-  // };
-  // const handleWithdraw = () => {
-  //   const toastId = toast?.loading({
-  //     title: `Withdrawing...`
-  //   });
-  //   updateState({
-  //     isLoading: true,
-  //     isError: false,
-  //     loadingMsg: 'Withdrawing...'
-  //   });
+    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner());
+    contract
+      .withdraw(lpWeiAmount)
+      .then((tx: any) => tx.wait())
+      .then((receipt: any) => {
+        updateState({
+          isLoading: false,
+        });
+        const { status, transactionHash } = receipt;
+        console.log('=receipt', receipt);
 
-  //   const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
-  //   const abi = [
-  //     {
-  //       constant: false,
-  //       inputs: [
-  //         {
-  //           name: '_shareAmt',
-  //           type: 'uint256'
-  //         }
-  //       ],
-  //       name: 'withdraw',
-  //       outputs: [],
-  //       stateMutability: 'nonpayable',
-  //       type: 'function'
-  //     }
-  //   ];
+        // addAction?.({
+        //   type: 'Liquidity',
+        //   action: 'Withdraw',
+        //   token0,
+        //   token1,
+        //   amount: lpAmount,
+        //   template: defaultDex,
+        //   status: status,
+        //   add: 0,
+        //   transactionHash,
+        //   chain_id: props.chainId
+        // });
+        const { refetch } = props;
+        if (refetch) {
+          setTimeout(() => {
+            refetch();
+          }, 3000);
+        }
 
-  //   const contract = new ethers.Contract(vaultAddress, abi, provider.getSigner());
-  //   contract
-  //     .withdraw(lpWeiAmount)
-  //     .then((tx: any) => tx.wait())
-  //     .then((receipt: any) => {
-  //       updateState({
-  //         isLoading: false,
-  //         isPostTx: true
-  //       });
-  //       const { status, transactionHash } = receipt;
-  //       console.log('=receipt', receipt);
+        toast?.dismiss(toastId);
+        toast?.success({
+          title: 'Withdraw Successfully!'
+        });
+      })
+      .catch((error: Error) => {
+        updateState({
+          isError: true,
+          isLoading: false,
+          loadingMsg: error?.message
+        });
+        toast?.dismiss(toastId);
+        toast?.fail({
+          title: 'Withdraw Failed!',
+          text: error?.message?.includes('user rejected transaction')
+            ? 'User rejected transaction'
+            : (error?.message ?? '')
+        });
+      });
+  };
 
-  //       addAction?.({
-  //         type: 'Liquidity',
-  //         action: 'Withdraw',
-  //         token0,
-  //         token1,
-  //         amount: lpAmount,
-  //         template: defaultDex,
-  //         status: status,
-  //         add: 0,
-  //         transactionHash,
-  //         chain_id: props.chainId
-  //       });
-  //       setTimeout(() => updateState({ isPostTx: false }), 10_000);
-  //       const { refetch } = props;
-  //       if (refetch) {
-  //         setTimeout(() => {
-  //           refetch();
-  //         }, 3000);
-  //       }
-
-  //       toast?.dismiss(toastId);
-  //       toast?.success({
-  //         title: 'Withdraw Successfully!'
-  //       });
-  //     })
-  //     .catch((error: Error) => {
-  //       updateState({
-  //         isError: true,
-  //         isLoading: false,
-  //         loadingMsg: error?.message
-  //       });
-  //       toast?.dismiss(toastId);
-  //       toast?.fail({
-  //         title: 'Withdraw Failed!',
-  //         text: error?.message?.includes('user rejected transaction')
-  //           ? 'User rejected transaction'
-  //           : (error?.message ?? '')
-  //       });
-  //     });
-  // };
-  // const onUpdateLpPercent = (percent: number) => {
-  //   updateState({
-  //     lpPercent: percent
-  //   });
-  // };
-
-
-  // useEffect(() => {
-  //   if (!sender || !vaultAddress) return;
-  //   updateBalance();
-  //   updateLPBalance();
-  // }, [sender, vaultAddress]);
+  useEffect(() => {
+    if (!sender || !data?.vaultAddress) return;
+    updateBalance();
+    updateLPBalance();
+  }, [sender, data?.vaultAddress]);
   return (
     <div className='flex flex-col items-center pt-[78px] pb-[30px]'>
       <div className="relative z-20 mb-[25px]">
@@ -366,7 +352,7 @@ export default memo(function IBGTPage(props) {
 
         <div className="min-w-[278px] h-[88px] p-[10px] rounded-[30px] bg-[#F4A634] shadow-[1px_1px_0px_0px_#77481E]">
           <div className="flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-black border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%]">
-            100 BGT
+            100 iBGT
           </div>
         </div>
       </div>
@@ -376,7 +362,7 @@ export default memo(function IBGTPage(props) {
           <div className="relative mb-[24px] flex items-center h-[120px] rounded-[20px] bg-[#FFDC50]">
             <div className="relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">APY</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">120.58%</div>
+              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{Big(data?.apy ?? 0).toFixed(2)}%</div>
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
             <div className="relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]">
@@ -385,8 +371,8 @@ export default memo(function IBGTPage(props) {
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
             <div className="relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]">
-              <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Protocol</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">$16.76M</div>
+              <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Tvl</div>
+              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(data?.tvl, '$', 2, true)}</div>
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
           </div>
@@ -405,7 +391,11 @@ export default memo(function IBGTPage(props) {
                     <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0 iBGT</div>
                   </div>
 
-                  <div className="flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]">
+                  <div className="flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
+                    onClick={() => {
+                      window.open("https://bartio.bex.berachain.com/add-liquidity/" + LP_ADDRESS)
+                    }}
+                  >
                     <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">Mint iBGT</span>
                   </div>
                 </div>
@@ -439,113 +429,92 @@ export default memo(function IBGTPage(props) {
                 }
               </div>
 
-              {/* {
-            tIndex === 0 ? (
-              <div>
-                <input value={inAmount} type="number" onChange={(e) => handleTokenChange(e.target.value, id)} className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
-                <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
-                  <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
-                    {inAmount ? '$' + Big(inAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2) : '-'}
-                  </span>
-                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
-                </div>
-                {
-                  isInSufficient && (
-                    <button className="h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
-                      <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">InSufficient Balance</span>
-                    </button>
-                  )
-                }
-                {
-                  !isInSufficient &&
-                  (isTokenApproved && !isTokenApproving ? (
-                    <button disabled={isLoading || !inAmount}
+              {
+                tIndex === 0 ? (
+                  <div>
+                    <input value={inAmount} type="number" onChange={(e) => handleTokenChange(e.target.value)} className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
+                    <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
+                      <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                        {inAmount ? '$' + Big(inAmount)
+                          .times(data?.initialData?.stake_token?.price ?? 0)
+                          .toFixed(2) : '-'}
+                      </span>
+                      <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={handleMax}>balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
+                    </div>
+                    {
+                      isInSufficient && (
+                        <button className="h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
+                          <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">InSufficient Balance</span>
+                        </button>
+                      )
+                    }
+                    {
+                      !isInSufficient &&
+                      (isTokenApproved && !isTokenApproving ? (
+                        <button disabled={isLoading || !inAmount}
+                          className={
+                            clsx(
+                              "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
+                              {
+                                "opacity-50": isLoading || !inAmount
+                              })
+                          }
+                          onClick={handleDeposit}
+                        >
+                          <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">{isLoading ? <CircleLoading size={14} /> : 'Stake'}</span>
+                        </button>
+                      ) : (
+                        <button disabled={isTokenApproved || isTokenApproving} className={
+                          clsx(
+                            "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
+                            {
+                              "opacity-50": isTokenApproved || isTokenApproving
+                            })
+                        } onClick={() => handleApprove()}>
+                          {isTokenApproving ? (
+                            <CircleLoading size={14} />
+                          ) : (
+                            <>
+                              {isTokenApproved ? 'Approved' : 'Approve'} {symbol}
+                            </>
+                          )}
+                        </button>
+                      ))
+                    }
+                  </div>
+                ) : (
+                  <div>
+                    <input value={lpAmount} type="number"
+                      onChange={(e) => {
+                        handleLPChange(e.target.value);
+                      }}
+                      className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
+                    <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
+                      <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                        {lpAmount ? '$' + Big(lpAmount)
+                          .times(data?.initialData?.stake_token?.price ?? 0)
+                          .toFixed(2) : '-'}
+                      </span>
+                      <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
+                        handleLPChange(lpBalance);
+                      }}>balance: <span>{lpBalance}</span></div>
+                    </div>
+                    <button
+                      disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}
                       className={
                         clsx(
                           "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                           {
-                            "opacity-50": isLoading || !inAmount
+                            "opacity-50": isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
                           })
                       }
-                      onClick={handleDeposit}
+                      onClick={handleWithdraw}
                     >
-                      <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">{isLoading ? <CircleLoading size={14} /> : 'Stake'}</span>
+                      {isLoading ? <CircleLoading size={14} /> : <>{isWithdrawInsufficient ? 'InSufficient Balance' : 'Withdraw'}</>}
                     </button>
-                  ) : (
-                    <button disabled={isTokenApproved || isTokenApproving} className={
-                      clsx(
-                        "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
-                        {
-                          "opacity-50": isTokenApproved || isTokenApproving
-                        })
-                    } onClick={() => handleApprove(true)}>
-                      {isTokenApproving ? (
-                        <CircleLoading size={14} />
-                      ) : (
-                        <>
-                          {isTokenApproved ? 'Approved' : 'Approve'} {symbol}
-                        </>
-                      )}
-                    </button>
-                  ))
-                }
-              </div>
-            ) : (
-              <div>
-                <input value={lpAmount} type="number"
-                  onChange={(e) => {
-                    handleLPChange(e.target.value);
-
-                    const value = e.target.value;
-
-                    if (!value) {
-                      onUpdateLpPercent(0);
-                    }
-
-                    if (value && Big(value).gt(0)) {
-                      const newSliderPercent = Big(value || 0)
-                        .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-                        .times(100)
-                        .toFixed(0);
-                      onUpdateLpPercent(Number(newSliderPercent));
-                    }
-                  }}
-                  className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
-                <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
-                  <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
-                    {lpAmount ? '$' + Big(lpAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2) : '-'}
-                  </span>
-                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span onClick={() => {
-                    const newSliderPercent = Big(lpBalance || 0)
-                      .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-                      .times(100)
-                      .toFixed(0);
-
-                    onUpdateLpPercent(Number(newSliderPercent));
-
-                    handleLPChange(lpBalance);
-                  }}>{lpBalance}</span></div>
-                </div>
-                <button
-                  disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}
-                  className={
-                    clsx(
-                      "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
-                      {
-                        "opacity-50": isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
-                      })
-                  }
-                  onClick={handleWithdraw}
-                >
-                  {isLoading ? <CircleLoading size={14} /> : <>{isWithdrawInsufficient ? 'InSufficient Balance' : 'Withdraw'}</>}
-                </button>
-              </div>
-            )
-          } */}
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>

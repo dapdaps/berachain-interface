@@ -11,59 +11,60 @@ type Props = {
   dapp: any;
 };
 
-const header = [{
-  label: 'Pool'
-}, {
-  label: 'Protocol'
-}, {
-  label: 'TVL',
-  sort: true
-}, {
-  label: 'APY',
-  sort: true
-}, {
-  label: 'Yours',
-  sort: true
-}, {
-  label: 'Action'
-},]
+const header = [
+  {
+    label: 'Pool'
+  },
+  {
+    label: 'Protocol'
+  },
+  {
+    label: 'TVL',
+    sort: true
+  },
+  {
+    label: 'APY',
+    sort: true
+  },
+  {
+    label: 'Yours',
+    sort: true
+  },
+  {
+    label: 'Action'
+  }
+];
 
-export default function Liquidity({
-  dapp,
-}: Props) {
-
-  console.log('====dapp', dapp)
-  const dexConfig = dapp?.chains[DEFAULT_CHAIN_ID]
-  const {
-    ALL_DATA_URL,
-    BHONEY_ADDRESS,
-    addresses,
-    pairs
-  } = dexConfig
+export default function Liquidity({ dapp }: Props) {
+  console.log('====dapp', dapp);
+  const dexConfig = dapp?.chains[DEFAULT_CHAIN_ID];
+  const { ALL_DATA_URL, BHONEY_ADDRESS, addresses, pairs } = dexConfig;
   const { account: sender, chainId } = useAccount();
   const { provider } = useProvider();
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(null);
 
-  const multicallAddress = useMemo(() => multicallAddresses[chainId], [chainId]);
-  const onChangeData = function (data) {
-    setData(data)
-  }
+  const multicallAddress = useMemo(
+    () => chainId && multicallAddresses[chainId],
+    [chainId]
+  );
+  const onChangeData = function (data: any) {
+    setData(data);
+  };
   const onBack = function () {
-    setData(null)
-  }
+    setData(null);
+  };
   return (
     <Card>
       {data ? (
-        
         <Detail
           {...{
             data,
             sender,
             provider,
             addresses,
-            onBack,
-
-          }} />
+            onBack
+          }}
+        />
       ) : (
         <List
           {...{
@@ -74,8 +75,9 @@ export default function Liquidity({
             addresses,
             ALL_DATA_URL,
             multicallAddress,
-            onChangeData,
-          }} />
+            onChangeData
+          }}
+        />
       )}
     </Card>
   );

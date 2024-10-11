@@ -2,7 +2,7 @@ import {create} from 'zustand';
 import { ethers } from 'ethers';
 import Big from 'big.js';
 import { multicall } from '@/utils/multicall';
-import { TokenInfo } from '@/sections/Lending/Bend/useBend';
+import { TokenInfo } from '@/sections/Lending/Bend/hooks/useBend';
 import { formatHealthFactor, isValid } from '@/utils/utils';
 import { bigMin } from '@/utils/formatMoney';
 
@@ -52,9 +52,7 @@ const useBendStore = create<BendState>((set, get) => ({
     set((prev) => ({ updateCounter: prev.updateCounter + 1 }));
   },
   getBendSupplyBalance: async () => {
-    const { initData: {markets, account, chainId, provider, multicallAddress } } = get();
-
-    if (!chainId || !markets.length) return;
+    const { initData: { markets, account, provider, multicallAddress } } = get();
 
     const calls = markets.map((item: TokenInfo) => ({
       address: item.underlyingAsset,
@@ -97,7 +95,8 @@ const useBendStore = create<BendState>((set, get) => ({
           markets: updatedMarkets
         }
       })
-
+      console.log(updatedMarkets, 'getBendSupplyBalance: updatedMarkets');
+      
       return updatedMarkets;
     } catch (err) {
       console.error('getBendSupplyBalance error:', err);
@@ -323,7 +322,6 @@ const useBendStore = create<BendState>((set, get) => ({
       provider
     })
       .then((res: any) => {
-        console.log('getUserDebts_res', res);
         const updatedMarkets = markets.map((market, index) => {
           if (res[index]) {
             const currentDebtBalance = res[index][0];
@@ -358,6 +356,25 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   calculateNetBaseData: async () => {
     const { initData: { markets } } = get();
+
+    if (!markets.length) return;
+
+    // const totalWalletInUSD =  markets.reduce((total: any, market: any) => {
+    //   if (market.balanceInUSD && market.balanceInUSD !== '') {
+    //     try {
+    //       return total.plus(Big(market.balanceInUSD));
+    //     } catch (error) {
+    //       console.error(`Error processing balanceInUSD for market ${market.symbol}`, error);
+    //     }
+    //   }
+    //   return total;
+    // }, '0');
+
+    const totalWalletInUSD = markets.reduce(
+      (total, cur) => Big(total).plus(cur.balanceInUSD || 0).toFixed(),
+      '0'
+    );
+
     
     const supplyBal = markets.reduce(
       (total, cur) => Big(total).plus(cur.underlyingBalanceUSD || 0).toFixed(),
@@ -414,14 +431,6 @@ const useBendStore = create<BendState>((set, get) => ({
       (prev, curr) => Big(prev).plus(curr.debtInUSD || 0).toFixed(),
       '0'
     );
-    console.log({
-      netAPY,
-      netWorthUSD: netWorth,
-      yourTotalSupply,
-      yourTotalBorrow,
-      yourSupplyApy: Big(weightedAverageSupplyAPY).plus(yourSupplyRewardAPY).toFixed(),
-      yourBorrowApy: weightedAverageBorrowsAPY
-    }, 'calculateNetBaseData: markets');
 
     set({
       netBaseData: {
@@ -430,7 +439,8 @@ const useBendStore = create<BendState>((set, get) => ({
         yourTotalSupply,
         yourTotalBorrow,
         yourSupplyApy: Big(weightedAverageSupplyAPY).plus(yourSupplyRewardAPY).toFixed(),
-        yourBorrowApy: weightedAverageBorrowsAPY
+        yourBorrowApy: weightedAverageBorrowsAPY,
+        totalWalletInUSD
       }
     });
   },
@@ -632,7 +642,6 @@ const useBendStore = create<BendState>((set, get) => ({
               _assetsToSupply[i].availableBorrowsUSD = Big(_availableBorrowsUSD).lt(0) ? 0 : _availableBorrowsUSD;
               _assetsToSupply[i].availableBorrows = Big(_availableBorrows).lt(0) ? 0 : _availableBorrows;
             }
-            console.log(_assetsToSupply, 'getLiquidity_res = _assetsToSupply');
             
             set({
               initData: {

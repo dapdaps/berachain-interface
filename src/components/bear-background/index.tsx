@@ -1,6 +1,8 @@
 
 
 'use client';
+import { AnimatePresence, motion } from 'framer-motion';
+
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BearCircleSvg from "@public/images/background/bear-circle.svg";
 import BearSvg from "@public/images/background/bear.svg";

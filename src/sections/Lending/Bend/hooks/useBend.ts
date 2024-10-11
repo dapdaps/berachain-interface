@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import useAaveConfigStore from '@/stores/useAaveConfigStore';
 import multicallAddresses from '@/configs/contract/multicall';
 import useAccount from '@/hooks/use-account';
-import { useProvider } from '@/hooks/use-provider';
+
 import { usePriceStore } from '@/stores/usePriceStore';
 import useMarketStore from '@/stores/useMarketStore';
 
@@ -36,8 +36,7 @@ export interface TokenInfo {
 }
 
 const useBend = () => {
-  const { account, chainId } = useAccount();
-  const { provider } = useProvider();
+  const { account, chainId, provider } = useAccount();
   const { network, config, fetchConfig } = useAaveConfigStore();
   const prices = usePriceStore(store => store.price);
   const [multicallAddress, setMulticallAddress] = useState('');
@@ -45,11 +44,10 @@ const useBend = () => {
   const marketStore = useMarketStore()
 
   useEffect(() => {
-    console.log(chainId, 'chainId');
-    
-    if (!chainId) return;
+    if (chainId === -1 || !chainId) return;
     setMulticallAddress(multicallAddresses[chainId])
     fetchConfig(chainId);
+    marketStore.triggerUpdate()
   }, [chainId, fetchConfig]);
 
   useEffect(() => {
@@ -64,12 +62,16 @@ const useBend = () => {
 
 
   useEffect(() => {
+    if (!chainId || !provider) return
     marketStore.setInitData({
       chainId, account, provider, config, multicallAddress, markets, prices
     })
-  }, [chainId, account, provider, marketStore.updateCounter, config]);
+    marketStore.triggerUpdate()
+  }, [chainId, provider, config, markets, prices]);
 
-  const init = async () => {
+  const init = useCallback(async () => {
+    if (!chainId || !provider) return
+
     try {
       await marketStore.getBendSupplyBalance();
       await marketStore.getBendSupply();
@@ -79,15 +81,15 @@ const useBend = () => {
     } catch (error) {
       console.log('init-error', error);
     }
-  };
+  }, [chainId, markets, provider]);
 
   useEffect(() => {
-    if (!chainId || !markets.length ) return
     init();
   }, [marketStore.updateCounter, markets, chainId, config]);
 
 
   return {
+    init,
     markets: marketStore.initData.markets,
     config,
     userAccountData: marketStore.userAccountData,

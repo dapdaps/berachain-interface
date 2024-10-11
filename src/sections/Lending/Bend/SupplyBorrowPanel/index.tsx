@@ -1,22 +1,21 @@
 import React, { useRef, useState } from "react";
 
 import NetBase from "../NetBase";
-import { TokenInfo } from "../useBend";
+import { TokenInfo } from "../hooks/useBend";
 import useMarketStore from "@/stores/useMarketStore";
 import ActionModal from './actionModal'
 import DepositAction from '../Action'
 import Big from "big.js";
-interface IProps {
-  markets: TokenInfo[];
-}
 
-const SupplyBorrowPanel: React.FC<IProps> = ({
-  markets,
-}) => {
+import { ethers } from "ethers";
+import { rewardToken } from "@/configs/lending/bend";
+
+
+const SupplyBorrowPanel: React.FC = () => {
   const [openModal, setOpenModal] = useState<any>(null);
   const actionRef = useRef<any>(null);
 
-  const { userAccountData } = useMarketStore()
+  const { userAccountData, initData: { markets, config, provider, account } } = useMarketStore()
 
   const handleAction = (action: any) => {
     setOpenModal({ action });
@@ -35,14 +34,70 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
   const honeyInfo = markets.find((market) => market.symbol === "HONEY");
 
 
-  function formatPercent(apy?: string): string {
+   function formatPercent(apy?: string): string {
     if (!apy) return "0%";
     let formatted = (parseFloat(apy) * 100).toFixed(2);
     formatted = parseFloat(formatted).toString();
     return `${formatted}%`;
   }
 
-  
+  // prepare for BGT rewards
+  function getAllUserRewards() {
+    const arr = markets
+      ?.filter((item: any) => item.variableDebtTokenAddress)
+      .map((item: any) => [
+        item.aTokenAddress,
+        item.variableDebtTokenAddress
+      ]).flat();
+      
+    const addrs = [...arr];
+    
+    const rewardsProvider = new ethers.Contract(
+      config.incentivesProxy,
+      [
+        {
+          inputs: [
+            { internalType: 'address[]', name: 'assets', type: 'address[]' },
+            { internalType: 'address', name: 'user', type: 'address' }
+          ],
+          name: 'getAllUserRewards',
+          outputs: [
+            {
+              internalType: 'address[]',
+              name: 'rewardsList',
+              type: 'address[]'
+            },
+            {
+              internalType: 'uint256[]',
+              name: 'unclaimedAmounts',
+              type: 'uint256[]'
+            }
+          ],
+          stateMutability: 'view',
+          type: 'function'
+        }
+      ],
+      provider.getSigner()
+    );
+    rewardsProvider
+      .getAllUserRewards(addrs, account)
+      .then((res: any) => {
+        try {
+          const _rewardToken = [...rewardToken];
+          const _amount = res[1].reduce((total: any, cur: any) => {
+            return Big(total).plus(ethers.utils.formatUnits(cur)).toFixed();
+          }, 0);
+          _rewardToken[0].unclaimed = _amount;
+          console.log(_rewardToken, '_rewardToken');
+        } catch (error) {
+          console.log('catch_getAllUserRewards_error', error);
+        }
+      })
+      .catch((err: any) => {
+        console.log('getAllUserRewards_error:', err);
+      });
+  }
+
   return (
     <div className="mb-5" onClick={handleOutsideClick}>
       <NetBase />
@@ -79,10 +134,10 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
             </div>
           </div>
           <div className="flex space-x-[14px] mt-[35px] relative">
-            <button onClick={() => handleAction('supply')} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
+            <button disabled={!provider} onClick={() => handleAction('supply')} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
               Supply
             </button>
-            <button onClick={() => handleAction('withdraw')} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center">
+            <button disabled={!provider} onClick={() => handleAction('withdraw')} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
               Withdraw
             </button>
             {
@@ -149,10 +204,10 @@ const SupplyBorrowPanel: React.FC<IProps> = ({
             </div>
           </div>
           <div className="flex space-x-[14px] mt-5 relative">
-            <button onClick={() => handleAction("borrow")}  className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
+            <button disabled={!provider} onClick={() => handleAction("borrow")}  className="w-[192px] h-[50px] rounded-[10px] border border-black bg-[#FFDC50] font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30">
               Borrow
             </button>
-            <button onClick={() => handleAction("repay")} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30" disabled={Big(userAccountData.totalDebtBaseUSD || 0).eq(0)}>
+            <button disabled={!provider} onClick={() => handleAction("repay")} className="w-[192px] h-[50px] rounded-[10px] border border-black bg-white font-montserrat text-base font-medium leading-4 text-center disabled:opacity-30" disabled={Big(userAccountData.totalDebtBaseUSD || 0).eq(0)}>
               Repay
             </button>
             {
