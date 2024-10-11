@@ -1,8 +1,13 @@
 import useMarketStore from "@/stores/useMarketStore";
 
 const NetBase = () => {
-  const { userAccountData } = useMarketStore()
+  const { userAccountData, initData: { markets } } = useMarketStore()
   
+  const honeyInfo = markets.find((market) => market.symbol === "HONEY");
+
+  console.log(honeyInfo, 'honeyInfo');
+  
+
   return (
     <div className="bg-[#FFE873] rounded-[10px] p-4 flex justify-between items-center">
       <div className="flex">
@@ -45,7 +50,9 @@ const NetBase = () => {
             Funds eligible for deposit
           </div>
           <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-            -
+            {
+              honeyInfo ? Number(honeyInfo.balance).toFixed(2) : '-'
+            }
           </div>
         </div>
       </div>

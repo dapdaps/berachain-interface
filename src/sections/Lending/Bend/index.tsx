@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
 import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
-import bendConfig from '@/configs/lending/dapps/bend'
-import { useAccount, useBalance } from 'wagmi';
-import useAaveConfigStore from '@/stores/useAaveConfigStore';
 import DappIcon from '@/components/dapp-icon';
 import useBend from './useBend';
 interface LendingModalProps {
@@ -14,27 +11,7 @@ interface LendingModalProps {
 
 const LendingModal: React.FC<LendingModalProps> = () => {
   const [currentTab, setCurrentTab] = useState<string>('deposit');
-  const { markets, userAccountData }= useBend()
-
-  const handleDeposit = (symbol: string) => {
-    console.log(`Depositing ${symbol}`);
-    // Implement deposit logic
-  };
-
-  const handleWithdraw = (symbol: string) => {
-    console.log(`Withdrawing ${symbol}`);
-    // Implement withdraw logic
-  };
-
-  const handleBorrow = (symbol: string) => {
-    console.log(`Borrowing ${symbol}`);
-    // Implement borrow logic
-  };
-
-  const handleRepay = (symbol: string) => {
-    console.log(`Repaying ${symbol}`);
-    // Implement repay logic
-  };
+  const { markets }= useBend()
 
   if (!markets) {
     return null;
@@ -45,22 +22,23 @@ const LendingModal: React.FC<LendingModalProps> = () => {
       key: 'deposit', 
       label: 'Deposit', 
       children: (
-        <DepositPanel markets={markets} userAccountData={userAccountData} />
+        <DepositPanel markets={markets} />
       )
     },
     { 
       key: 'supplyBorrowHoney', 
       label: 'Supply & Borrow HONEY', 
       children: (
-        <SupplyBorrowPanel markets={markets} />
+        <SupplyBorrowPanel />
       )
     },
   ];
 
   return (
-    <Modal open={true}>
+    <div className="mt-[40px]">
+      <div className="relative w-[970px] mx-auto">
       <DappIcon
-        src="/images/dapps/dolomite.svg"
+        src="/images/dapps/bend.svg"
         alt=""
         name="Bend"
         type="Lending"
@@ -79,7 +57,8 @@ const LendingModal: React.FC<LendingModalProps> = () => {
           />
         </div>
       </div>
-    </Modal>
+      </div>
+    </div>
   );
 };
 

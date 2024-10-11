@@ -68,39 +68,28 @@ export const useBorwAndRepay = ({
     }
   }, [symbol, config.nativeCurrency.symbol, allowanceAmount, amount, isBorrow]);
 
-  const getAllowance = useCallback(() => {
-    return provider
-      .getSigner()
-      .getAddress()
-      .then(async (userAddress: string) => {
-        const address = isBorrow ? variableDebtTokenAddress : underlyingAsset;
+  const getAllowance = useCallback(async () => {
+    try {
+      const signer = provider.getSigner();
+  
+      const address = isBorrow ? aTokenAddress : underlyingAsset;
+      const abi = isBorrow ? config.variableDebtTokenABI : config.erc20Abi;
+      const contract = new ethers.Contract(address, abi, signer);
 
-        const abi = isBorrow
-          ? config.variableDebtTokenABI
-          : config.erc20Abi;
-
-        const contract = new ethers.Contract(address, abi, provider.getSigner());
-
-        const allowanceAddr = isBorrow
-          ? config.wrappedTokenGatewayV3Address
-          : config.aavePoolV3Address;
-
-          contract
-          .allowance(userAddress, allowanceAddr)
-          .then((allowanceAmount: ethers.BigNumber) =>
-            allowanceAmount.toString()
-          )
-          .then((allowanceAmount: string) => {
-            setAllowanceAmount(
-              Big(allowanceAmount).div(Big(10).pow(decimals)).toFixed()
-            );
-          })
-          .catch((err: any) => {
-            console.log(err, "getAllowance---err");
-          });
-      });
+      const allowanceAddr = isBorrow
+        ? config.wrappedTokenGatewayV3Address
+        : config.aavePoolV3Address;
+  
+      const allowanceAmount: ethers.BigNumber = await contract.allowance(account, allowanceAddr);
+  
+      setAllowanceAmount(
+        Big(allowanceAmount.toString()).div(Big(10).pow(decimals)).toFixed()
+      );
+    } catch (err) {
+      console.error(err, "getAllowance---err");
+    }
   }, [provider, isBorrow, underlyingAsset, aTokenAddress, config, decimals]);
-
+  
   const formatAddAction = useCallback(
     (_amount: string, status: number, transactionHash: string) => {
       addAction?.({
@@ -135,7 +124,7 @@ export const useBorwAndRepay = ({
   }
 
   const handleApprove = useCallback(
-    (amount: string) => {
+    () => {
       if (isBorrow) {
         return approveDelegation(variableDebtTokenAddress).then(
           (tx: ethers.ContractTransaction) => {
@@ -354,7 +343,7 @@ export const useBorwAndRepay = ({
   useEffect(() => {
     getAllowance();
     update();
-  }, [getAllowance, update, isBorrow]);
+  }, [getAllowance, update, isBorrow, amount]);
 
   return {
     getAllowance,

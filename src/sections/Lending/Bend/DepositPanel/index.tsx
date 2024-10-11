@@ -1,21 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import IconPlus from '@public/images/modal/plus.svg';
-import IconMinus from '@public/images/modal/minus.svg';
-import ActionModal from '../Action';
-import {
-  formatDisplayCurrency,
-  formatDisplayNumber
-} from '@/utils/formatMoney';
-import { TokenInfo } from '../useBend';
-import NetBase from '../NetBase';
-import useMarketStore from '@/stores/useMarketStore';
+import React, { useEffect, useRef, useState } from "react";
+import IconPlus from "@public/images/modal/plus.svg";
+import IconMinus from "@public/images/modal/minus.svg";
+import ActionModal from "../Action";
+import { formatDisplayCurrency, formatDisplayNumber } from "@/utils/formatMoney";
+import { TokenInfo } from "../useBend";
+import NetBase from "../NetBase";
+import Big from "big.js";
 
 interface IProps {
   markets: TokenInfo[];
-  userAccountData: any;
 }
 
-const DepositPanel: React.FC<IProps> = ({ markets, userAccountData }) => {
+const DepositPanel: React.FC<IProps> = ({
+  markets,
+}) => {
+  
   const [openModal, setOpenModal] = useState<any>(null);
   const actionRef = useRef<any>(null);
 
@@ -40,8 +39,6 @@ const DepositPanel: React.FC<IProps> = ({ markets, userAccountData }) => {
     };
   }, []);
 
-  const filterMarkets = markets.filter((market) => market.symbol !== 'HONEY');
-
   return (
     <div className='h-[490px]'>
       <NetBase />
@@ -57,7 +54,7 @@ const DepositPanel: React.FC<IProps> = ({ markets, userAccountData }) => {
           <div className='w-[219px]'>In Wallet</div>
           <div className='w-[80px]'>Action</div>
         </div>
-        {(filterMarkets || []).map((token, index) => (
+        {(markets || []).map((token, index) => (
           <div
             key={index}
             className='flex items-center px-[26px] py-3 w-[910px] bg-black bg-opacity-[0.06] rounded-[10px] mb-[10px] last:mb-0'
@@ -94,23 +91,23 @@ const DepositPanel: React.FC<IProps> = ({ markets, userAccountData }) => {
             </div>
             <div className='w-[80px] flex justify-end space-x-2 relative'>
               <button
-                onClick={() => handleAction(token, 'deposit')}
-                disabled={token.inWallet === 0}
+                onClick={() => handleAction(token, "deposit")}
+                disabled={Big(token.balance || 0).eq(0)}
                 className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${
-                  token.inWallet === 0
-                    ? 'border border-black border-opacity-30 text-black text-opacity-30'
-                    : 'bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]'
+                  Big(token.balance || 0).eq(0)
+                    ? "border border-black border-opacity-30 text-black text-opacity-30"
+                    : "bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]"
                 }`}
               >
                 <IconPlus />
               </button>
               <button
-                onClick={() => handleAction(token, 'withdraw')}
-                disabled={token.deposited === 0}
+                onClick={() => handleAction(token, "withdraw")}
+                disabled={Big(token.underlyingBalance || 0).eq(0)}
                 className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${
-                  token.deposited === 0
-                    ? 'border border-black border-opacity-30 text-black text-opacity-30'
-                    : 'bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]'
+                  Big(token.underlyingBalance || 0).eq(0)
+                    ? "border border-black border-opacity-30 text-black text-opacity-30"
+                    : "bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]"
                 }`}
               >
                 <IconMinus />

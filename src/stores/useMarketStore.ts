@@ -52,9 +52,7 @@ const useBendStore = create<BendState>((set, get) => ({
     set((prev) => ({ updateCounter: prev.updateCounter + 1 }));
   },
   getBendSupplyBalance: async () => {
-    const { initData: {markets, account, chainId, provider, multicallAddress } } = get();
-
-    if (!chainId || !markets.length) return;
+    const { initData: { markets, account, provider, multicallAddress } } = get();
 
     const calls = markets.map((item: TokenInfo) => ({
       address: item.underlyingAsset,
@@ -97,7 +95,8 @@ const useBendStore = create<BendState>((set, get) => ({
           markets: updatedMarkets
         }
       })
-
+      console.log(updatedMarkets, 'getBendSupplyBalance: updatedMarkets');
+      
       return updatedMarkets;
     } catch (err) {
       console.error('getBendSupplyBalance error:', err);

@@ -4,10 +4,6 @@ import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
 import useMarketStore from "@/stores/useMarketStore";
 import useAaveConfig from "@/stores/useAaveConfigStore";
-import { isValid } from "@/utils/utils";
-import { ethers } from "ethers";
-import useAddAction from "@/hooks/use-add-action";
-import { useDepositAndWithdraw } from "../useDepositAndWithdraw";
 import { useBorwAndRepay } from "./useBorwAndRepay";
 
 interface IProps {
@@ -58,6 +54,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       borrowERC20,
       repayETH,
       repayERC20,
+      handleApprove
     } = useBorwAndRepay({
       token,
       isBorrow,
@@ -67,8 +64,6 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       config,
       triggerUpdate,
     })
-
-    console.log(token, "<===token");
 
     const {
       symbol,
@@ -149,6 +144,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
                                ? "opacity-30 cursor-not-allowed"
                                : "hover:bg-[#FFD700]"
                            }`}
+                           onClick={handleApprove}
               >
                 Approve
               </button>

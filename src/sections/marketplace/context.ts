@@ -6,12 +6,15 @@ import {
   useState
 } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import useBend from '../Lending/Bend/useBend';
+
 
 export function useMarketplaceContext(props: Props): Context {
   const { chainId } = props;
-
+  
   const [lendingVisible, setLendingVisible] = useState(false);
   const [lendingData, setLendingData] = useState<any>({});
+  const { init: bendInit } = useBend()
 
   const [stakingVisible, setStakingVisible] = useState(false);
   const [stakingData, setStakingData] = useState<any>({});
@@ -45,10 +48,14 @@ export function useMarketplaceContext(props: Props): Context {
 
   // FIXME Test code for Dolomite
   useEffect(() => {
-    // openDolomite().then(() => {
-    //   setLendingVisible(true);
-    // });
+    openDolomite().then(() => {
+      setLendingVisible(true);
+    });
   }, []);
+
+    useEffect(() => {
+      bendInit()
+    }, []);
 
   return {
     chainId,
