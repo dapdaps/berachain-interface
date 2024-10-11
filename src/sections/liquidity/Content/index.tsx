@@ -54,6 +54,7 @@ export default function Liquidity({
   return (
     <Card>
       {data ? (
+        
         <Detail
           {...{
             data,
