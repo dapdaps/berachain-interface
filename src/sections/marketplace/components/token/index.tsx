@@ -14,6 +14,7 @@ export default function Token() {
   const [protocol, setProtocol] = useState('all');
   const [searchVal, setSearchVal] = useState('');
   const [page, setPage] = useState(1);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [protocols, tokens] = useMemo(() => {
     let _tokens: any = [];
     let _dexs: any = [{ key: 'all', name: 'All Protocols' }];
@@ -23,8 +24,6 @@ export default function Token() {
           ...token,
           protocol: dex.name,
           protocolIcon: dex.icon,
-          defaultInputCurrency: dex.defaultInputCurrency,
-          defaultOutputCurrency: dex.defaultOutputCurrency,
           id: _tokens.length + 1
         });
       });
@@ -156,7 +155,12 @@ export default function Token() {
               width: '15%',
               render: (item: any, index: number) => {
                 return (
-                  <button className='hover:bg-[#FFDC50] text-[16px] font-medium border border-[#000] w-[95px] h-[32px] text-center leading-[32px] bg-white rounded-[10px]'>
+                  <button
+                    onClick={() => {
+                      setSelectedRecord(item);
+                    }}
+                    className='hover:bg-[#FFDC50] text-[16px] font-medium border border-[#000] w-[95px] h-[32px] text-center leading-[32px] bg-white rounded-[10px]'
+                  >
                     Swap
                   </button>
                 );
@@ -169,6 +173,17 @@ export default function Token() {
           bodyClassName='h-[522px] overflow-y-auto'
         />
       </div>
+      {selectedRecord && (
+        <SwapModal
+          defaultOutputCurrency={selectedRecord}
+          outputCurrencyReadonly={true}
+          show={!!selectedRecord}
+          protocols={[selectedRecord.protocol]}
+          onClose={() => {
+            setSelectedRecord(null);
+          }}
+        />
+      )}
     </div>
   );
 }

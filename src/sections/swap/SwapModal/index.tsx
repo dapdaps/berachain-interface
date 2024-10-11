@@ -35,7 +35,7 @@ export default function SwapModal({
   }, [dexs, protocols]);
 
   return (
-    <Modal open={true} onClose={() => {}}>
+    <Modal open={show} onClose={onClose}>
       <Content
         dapp={{
           name: templates,
