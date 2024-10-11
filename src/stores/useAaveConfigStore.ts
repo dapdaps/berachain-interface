@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import bendConfig from '@/configs/lending/bend';
 
 interface NetworkConfig {
-  config: object; 
+  config: object;
   CONTRACT_ABI?: {
     wrappedTokenGatewayV3ABI: string;
     erc20Abi: string;
@@ -71,9 +71,10 @@ const useAaveConfig = create<AaveStore>()(
     config: null,
     network: null,
     fetchConfig: async (chainId: number) => {
-      const network: NetworkConfig | undefined = bendConfig.networks[chainId as keyof typeof bendConfig.networks];
+      const network: NetworkConfig | undefined =
+        bendConfig.networks[chainId as keyof typeof bendConfig.networks];
       const { CONTRACT_ABI } = network || {};
-      
+
       if (!CONTRACT_ABI) return;
 
       try {
@@ -83,7 +84,9 @@ const useAaveConfig = create<AaveStore>()(
           aavePoolV3ABI,
           variableDebtTokenABI
         ] = await Promise.all([
-          fetch(CONTRACT_ABI.wrappedTokenGatewayV3ABI).then((res) => res.json()),
+          fetch(CONTRACT_ABI.wrappedTokenGatewayV3ABI).then((res) =>
+            res.json()
+          ),
           fetch(CONTRACT_ABI.erc20Abi).then((res) => res.json()),
           fetch(CONTRACT_ABI.aavePoolV3ABI).then((res) => res.json()),
           fetch(CONTRACT_ABI.variableDebtTokenABI).then((res) => res.json())
@@ -91,12 +94,14 @@ const useAaveConfig = create<AaveStore>()(
 
         const constants = {
           FIXED_LIQUIDATION_VALUE: '1.0',
-          MAX_UINT_256: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-          AAVE_API_BASE_URL: 'https://aave-data-service-7a85eea3aebe.herokuapp.com'
+          MAX_UINT_256:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          AAVE_API_BASE_URL:
+            'https://aave-data-service-7a85eea3aebe.herokuapp.com'
         };
 
         const finalConfig = {
-          ...network.config,
+          ...network?.config,
           ...constants,
           erc20Abi,
           aavePoolV3ABI,
@@ -107,8 +112,8 @@ const useAaveConfig = create<AaveStore>()(
       } catch (error) {
         console.error('Error fetching AAVE3 config:', error);
       }
-    },
-  }),
+    }
+  })
 );
 
 export default useAaveConfig;
