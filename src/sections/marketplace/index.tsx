@@ -5,13 +5,15 @@ import { motion } from 'framer-motion';
 import HoneypotCard from '@/sections/marketplace/components/honeypot-card/index';
 import PageBack from '@/components/back';
 import PageTitle from '@/components/title';
-import Image from '@/components/layz-image';
 import Tooltip from '@/components/tooltip';
 import dexs from '@/configs/swap';
 import { useMemo } from 'react';
 
 const splitArray = (list: Record<string, any>[]) =>  {
   const length = list.length;
+  if (!length) {
+    return [];
+  }
   const listAfter = [];
   for (let i = 0; i < length; i+=3) {
     listAfter.push(list.slice(i, i + 3));
@@ -72,12 +74,9 @@ const MarketplaceView = () => {
           _tokens.push(token)
           hasTokens[token.symbol] = true
         }
-
       })
     })
-
-    return _tokens
-
+    return splitArray(_tokens)
   }, [dexs])
 
   const getAnimationName = (idx: number) => {
@@ -116,7 +115,7 @@ const MarketplaceView = () => {
           className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible'
         >
           {
-            splitArray(tokens).map((item, index) => (
+            tokens.map((item, index) => (
               <div key={'pots' + index}
                className='overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]'>
                 <div
@@ -130,7 +129,7 @@ const MarketplaceView = () => {
                   }
                 </div>
                 {
-                  index !== tokens?.length - 1 && (<div
+                  index !== tokens.length - 1 && (<div
                   className='w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] bg-[#D5AD67] shadow-shadow1'>
                   </div>)
                 }

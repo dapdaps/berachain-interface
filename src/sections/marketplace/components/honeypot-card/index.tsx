@@ -74,9 +74,9 @@ const HoneypotCard = (props: Props) => {
   return (
     <div className='flex items-end justify-center'>
       <Honeypot />
-      <div className='flex-shrink-0 relative pb-[12px]'>
+      <div className='flex-shrink-0 relative pb-[12px] w-[194px]'>
         <div className='rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1'>
-          <div className='w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] px-[12px]'>
+          <div className='w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] pl-[8px] pr-[12px]'>
             {/*title*/}
             <div className='text-[20px] text-center font-CherryBomb leading-none mb-[7px]'>{name}</div>
             {
