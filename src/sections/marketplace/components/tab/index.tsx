@@ -41,7 +41,7 @@ export default function Tab({ children, index }: any) {
               }}
               className={
                 (index === i
-                  ? 'bg-[#FFFDEB] h-[61px] mt-[-10px] border-t-[#000] border-b-[#FFFDEB] border-x-[#000] shadow-[10px_9px_0px_0px_#00000040] z-10 pb-[0px] pt-[10px] rounded-t-[20px]'
+                  ? 'bg-[#FFFDEB] h-[61px] mt-[-10px] border-t-[#000] border-b-[#FFFDEB] border-x-[#000] shadow-[10px_9px_0px_0px_#00000040] z-10 pb-[0px] pt-[10px] rounded-t-[20px] relative ml-[-1px] mr-[-1px]'
                   : 'bg-[#E9E3B5] h-[80px] rounded-[20px] border-[#000]') +
                 ' flex justify-center items-center  border  flex-1  cursor-pointer pb-[30px] relative'
               }
