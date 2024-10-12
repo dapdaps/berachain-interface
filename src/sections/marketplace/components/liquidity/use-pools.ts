@@ -24,14 +24,16 @@ export default function usePools() {
         token0: wrapNativeToken(beraB['bera']),
         token1: beraB['honey'],
         protocolIcon: '/images/dapps/bex.png',
-        protocol: 'BEX'
+        protocol: 'BEX',
+        id: 1
       },
       {
         token0: wrapNativeToken(beraB['bera']),
         token1: beraB['honey'],
         protocolIcon: '/images/dapps/kodiak.svg',
         protocol: 'Kodiak',
-        version: 'v2'
+        version: 'v2',
+        id: 2
       },
       {
         token0: wrapNativeToken(beraB['bera']),
@@ -39,7 +41,8 @@ export default function usePools() {
         protocolIcon: '/images/dapps/kodiak.svg',
         protocol: 'Kodiak',
         version: 'v3',
-        fee: 3000
+        fee: 3000,
+        id: 3
       }
     ]);
   };
@@ -57,7 +60,6 @@ export default function usePools() {
     if (kodiakV2Pools.length === 0 || pools.length === 0) return {};
     return kodiakV2Pools;
   }, [kodiakV2Pools, pools]);
-
   const kodiakV3Balances = useMemo(() => {
     if (kodiakV3Pools.length === 0 || pools.length === 0) return {};
     const _pools: any = {};
@@ -75,7 +77,7 @@ export default function usePools() {
       }
     });
     return _pools;
-  }, [kodiakV2Pools, pools]);
+  }, [kodiakV3Pools, pools]);
 
   return {
     pools,

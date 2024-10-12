@@ -25,8 +25,11 @@ const TABS = [
   }
 ];
 export default memo(function vaults(props) {
-  const { vaultsVisible, setVaultsVisible, vaultsData } =
-    useContext(MarketplaceContext);
+  const {
+    vaultsVisible,
+    setVaultsVisible,
+    vaultsData = {}
+  } = useContext(MarketplaceContext);
 
   const toast = useToast();
   const { account: sender, provider } = useCustomAccount();

@@ -1,21 +1,17 @@
-'use client';
-import { useState } from 'react';
-import Token from '../token';
-import Liquidity from '../liquidity';
-import Invest from '../lnvest';
+import { useRouter } from 'next/navigation';
 
 const tabs = [
   {
     title: 'Token',
-    content: Token
+    path: '/marketplace/tokens'
   },
   {
     title: 'Liquidity',
-    content: Liquidity
+    path: '/marketplace/liquidity'
   },
   {
     title: 'Invest',
-    content: Invest
+    path: '/marketplace/invest'
   }
 ];
 
@@ -31,21 +27,20 @@ function getStyle(tabs: any[], index: number) {
   return {};
 }
 
-export default function Tab() {
-  const [activeIndex, setActiveIndex] = useState(0);
-
+export default function Tab({ children, index }: any) {
+  const router = useRouter();
   return (
     <div>
       <div className='flex h-[80px]'>
-        {tabs.map((tab: any, index) => {
+        {tabs.map((tab: any, i) => {
           return (
             <div
               key={tab.title}
               onClick={() => {
-                setActiveIndex(index);
+                router.push(tab.path);
               }}
               className={
-                (activeIndex === index
+                (index === i
                   ? 'bg-[#FFFDEB] h-[61px] mt-[-10px] border-t-[#000] border-b-[#FFFDEB] border-x-[#000] shadow-[10px_9px_0px_0px_#00000040] z-10 pb-[0px] pt-[10px] rounded-t-[20px]'
                   : 'bg-[#E9E3B5] h-[80px] rounded-[20px] border-[#000]') +
                 ' flex justify-center items-center  border  flex-1  cursor-pointer pb-[30px] relative'
@@ -54,13 +49,13 @@ export default function Tab() {
               <span className='whitespace-nowrap font-bold text-[18px]'>
                 {tab.title}
               </span>
-              {index !== 0 && activeIndex === index && (
+              {index !== 0 && i === index && (
                 <div className='absolute w-[20px] h-[20px] bg-[#FFFDEB] bottom-[-1px] left-[-20px] overflow-hidden'>
                   <div className='absolute w-[80px] h-[80px] rounded-[20px] border border-r-[#000] border-b-[#000] right-0 bottom-0 bg-[#E9E3B5]'></div>
                 </div>
               )}
 
-              {index !== tabs.length - 1 && activeIndex === index && (
+              {index !== tabs.length - 1 && i === index && (
                 <div className='absolute w-[20px] h-[20px] bg-[#FFFDEB] bottom-[-1px] right-[-20px] overflow-hidden'>
                   <div className='absolute w-[80px] h-[80px] rounded-[20px] border border-l-[#000] border-b-[#000] left-0 bottom-0 bg-[#E9E3B5] overflow-hidden'>
                     <div className='w-[10px] h-[20px] bg-[#00000040] absolute left-0 bottom-0'></div>
@@ -79,21 +74,14 @@ export default function Tab() {
         })}
       </div>
 
-      {tabs.map((tab: any, index) => {
-        return (
-          activeIndex === index && (
-            <div
-              style={getStyle(tabs, index)}
-              key={tab.title}
-              className={
-                'px-[30px] py-[20px] border border-[#000] rounded-[20px] relative mt-[-30px] bg-[#FFFDEB] shadow-[10px_10px_0px_0px_#00000040]'
-              }
-            >
-              <tab.content />
-            </div>
-          )
-        );
-      })}
+      <div
+        style={getStyle(tabs, index)}
+        className={
+          'px-[30px] py-[20px] border border-[#000] rounded-[20px] relative mt-[-30px] bg-[#FFFDEB] shadow-[10px_10px_0px_0px_#00000040]'
+        }
+      >
+        {children}
+      </div>
     </div>
   );
 }
