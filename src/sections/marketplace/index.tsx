@@ -56,11 +56,11 @@ const MarketplaceView = () => {
   ];
 
   const onMore = () => {
-    router.push('/marketplace/list');
+    router.push('/marketplace/tokens');
   };
 
   const onFooterMore = () => {
-    router.push('/marketplace/list');
+    router.push('/marketplace/tokens');
   };
 
   const [protocols, tokens] = useMemo(() => {

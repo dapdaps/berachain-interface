@@ -27,6 +27,7 @@ export default function SwapModal({
     const _dexs = protocols
       ? protocols.map((protocol: any) => dexs[protocol.toLowerCase()])
       : Object.values(dexs);
+
     _dexs.forEach((dex: any) => {
       _templates.push(dex.name);
       _tokens = [...dex.tokens[DEFAULT_CHAIN_ID]];
