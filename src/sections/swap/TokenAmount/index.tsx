@@ -21,7 +21,7 @@ export default function TokenAmout({
     [prices, currency]
   );
   const { tokenBalance, isLoading, update } = useTokenBalance(
-    currency?.address,
+    currency?.isNative ? 'native' : currency?.address,
     currency?.decimals,
     currency?.chainId
   );

@@ -27,7 +27,7 @@ const Input = ({
   onSelectToken
 }: any) => {
   const { tokenBalance: balance, isLoading } = useTokenBalance(
-    token?.address,
+    token?.isNative ? 'native' : token?.address,
     token?.decimals
   );
 
