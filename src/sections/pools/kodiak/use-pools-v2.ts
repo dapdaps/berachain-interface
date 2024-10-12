@@ -9,7 +9,7 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 import { getTokenAmountsV2 } from '../helpers';
 import { TOKENS } from '@/configs';
 
-export default function usePoolsV2() {
+export default function usePoolsV2(isSimple?: boolean) {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const { account, provider } = useAccount();
@@ -25,6 +25,20 @@ export default function usePoolsV2() {
       const data = response.data.data.user.liquidityPositions;
 
       if (!data) throw Error('No Pool');
+      if (isSimple) {
+        setPools(
+          data.reduce(
+            (acc: any, curr: any) => ({
+              ...acc,
+              [curr.pair.token0.id + '-' + curr.pair.token1.id]: true
+            }),
+            {}
+          )
+        );
+        setLoading(false);
+        return;
+      }
+
       const balanceCalls = data.map(({ pair }: any) => ({
         address: pair.id,
         name: 'balanceOf',

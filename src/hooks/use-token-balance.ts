@@ -42,21 +42,20 @@ export default function useTokenBalance(
 
     // console.log('walletChainId:', walletChainId, chainId)
 
-    const rpcUrl = chains[chainId as number].rpcUrls.default.http[0]
+    const rpcUrl = chains[chainId as number].rpcUrls.default.http[0];
     const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
 
-    const _provider = rpcProvider
+    const _provider = rpcProvider;
 
     setIsLoading(true);
     try {
-      if (address === 'native') { 
+      if (address === 'native') {
         const rawBalance = await _provider.getBalance(account);
         // console.info('get-native-bal', rawBalance);
         setTokenBalance(utils.formatEther(rawBalance));
       } else {
         const TokenContract = new Contract(address, TOKEN_ABI, _provider);
         const rawBalance = await TokenContract.balanceOf(account);
-        console.log('rawBalance: ', rawBalance);
         setTokenBalance(utils.formatUnits(rawBalance, decimals));
       }
     } catch (error) {
