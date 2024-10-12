@@ -10,7 +10,7 @@ export default function TokenAmout({
   disabled,
   currency,
   prices,
-  account,
+  outputCurrencyReadonly,
   onCurrencySelectOpen,
   onAmountChange,
   onUpdateCurrencyBalance,
@@ -37,7 +37,11 @@ export default function TokenAmout({
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
       <div className='flex items-center justify-between gap-[10px]'>
-        <div className='border flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]'>
+        <div
+          className={`${
+            outputCurrencyReadonly ? '' : 'border bg-[#FFFDEB]'
+          } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px]`}
+        >
           {currency ? (
             <div
               className='flex items-center gap-[10px]'
@@ -65,21 +69,22 @@ export default function TokenAmout({
               Select a token
             </div>
           )}
-
-          <svg
-            width='12'
-            height='7'
-            viewBox='0 0 12 7'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              d='M1 1L6 5L11 1'
-              stroke='black'
-              stroke-width='2'
-              strokeLinecap='round'
-            />
-          </svg>
+          {!outputCurrencyReadonly && (
+            <svg
+              width='12'
+              height='7'
+              viewBox='0 0 12 7'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M1 1L6 5L11 1'
+                stroke='black'
+                stroke-width='2'
+                strokeLinecap='round'
+              />
+            </svg>
+          )}
         </div>
         <div className='flex-1'>
           <input

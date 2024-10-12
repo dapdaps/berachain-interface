@@ -167,6 +167,7 @@ export default function Swap({
         disabled
         prices={{}}
         account
+        outputCurrencyReadonly={outputCurrencyReadonly}
         onCurrencySelectOpen={() => {
           if (outputCurrencyReadonly) return;
           setDisplayCurrencySelect(true);

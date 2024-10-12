@@ -9,7 +9,7 @@ import poolV2 from '../abi/pool-v2';
 import { getTokenAmountsV2 } from '../helpers';
 import { TOKENS } from '@/configs';
 
-export default function usePools() {
+export default function usePools(isSimple?: boolean) {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const { account, provider } = useAccount();
@@ -29,6 +29,19 @@ export default function usePools() {
       const data = response.data.data.userPools.depositedPools;
       if (!data) throw Error('No Pool');
 
+      if (isSimple) {
+        setPools(
+          data.reduce(
+            (acc: any, curr: any) => ({
+              ...acc,
+              [curr.pool.base + '-' + curr.pool.quote]: true
+            }),
+            {}
+          )
+        );
+        setLoading(false);
+        return;
+      }
       const balanceCalls = data.map(({ pool }: any) => ({
         address: pool.shareAddress.address,
         name: 'balanceOf',

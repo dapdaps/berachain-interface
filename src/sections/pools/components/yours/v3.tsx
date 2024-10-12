@@ -1,9 +1,9 @@
-import Image from 'next/image';
 import List from '@/sections/marketplace/components/list';
 import Dropdown from '@/sections/marketplace/components/dropdown';
 import CircleLoading from '@/components/circle-loading';
 import { StatusColor } from '../status/styles';
 import Big from 'big.js';
+import PoolTable from '../pool-table';
 
 export default function V3List({
   data,
@@ -11,7 +11,8 @@ export default function V3List({
   setPage,
   loading,
   ticksInfo,
-  onAction
+  onAction,
+  withoutHeader
 }: any) {
   return (
     <List
@@ -22,34 +23,7 @@ export default function V3List({
           sort: false,
           width: '28%',
           render: (item: any, index: number) => {
-            return (
-              <div className='flex items-center gap-[12px]'>
-                <div className='flex items-center'>
-                  <Image
-                    src={item.token0.icon || '/assets/tokens/default_icon.png'}
-                    width={30}
-                    height={30}
-                    alt={item.token0.name}
-                    className='rounded-[50%]'
-                  />
-                  <Image
-                    src={item.token1.icon || '/assets/tokens/default_icon.png'}
-                    width={30}
-                    height={30}
-                    alt={item.token1.name}
-                    className='rounded-[50%] ml-[-8px]'
-                  />
-                </div>
-                <div>
-                  <div className='text-[16px]'>
-                    {item.token0.symbol}-{item.token1.symbol}
-                  </div>
-                  {item.fee && (
-                    <div className='text-[10px]'>{item.fee / 1e4} %</div>
-                  )}
-                </div>
-              </div>
-            );
+            return <PoolTable item={item} />;
           }
         },
         {
@@ -158,6 +132,7 @@ export default function V3List({
       onPageChange={setPage}
       bodyClassName='h-[480px] overflow-y-auto'
       loading={loading}
+      withoutHeader={withoutHeader}
     />
   );
 }

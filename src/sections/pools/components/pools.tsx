@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import Image from 'next/image';
+import PoolTable from './pool-table';
 import SearchBox from '@/sections/marketplace/components/searchbox';
 import List from '@/sections/marketplace/components/list';
 import SwitchTabs from '@/components/switch-tabs';
@@ -91,34 +91,7 @@ export default function Pools({
               sort: false,
               width: '50%',
               render: (item: any, index: number) => {
-                return (
-                  <div className='flex items-center gap-[12px]'>
-                    <div className='flex items-center'>
-                      <Image
-                        src={item.token0.icon}
-                        width={30}
-                        height={30}
-                        alt={item.token0.name}
-                        className='rounded-[50%]'
-                      />
-                      <Image
-                        src={item.token1.icon}
-                        width={30}
-                        height={30}
-                        alt={item.token1.name}
-                        className='rounded-[50%] ml-[-8px]'
-                      />
-                    </div>
-                    <div>
-                      <div className='text-[16px]'>
-                        {item.token0.symbol}-{item.token1.symbol}
-                      </div>
-                      {item.fee && (
-                        <div className='text-[10px]'>{item.fee / 1e4} %</div>
-                      )}
-                    </div>
-                  </div>
-                );
+                return <PoolTable item={item} />;
               }
             },
             {
