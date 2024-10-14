@@ -48,9 +48,9 @@ export function useMarketplaceContext(props: Props): Context {
 
   // FIXME Test code for Dolomite
   useEffect(() => {
-    openDolomite().then(() => {
-      setLendingVisible(true);
-    });
+    // openDolomite().then(() => {
+    //   setLendingVisible(true);
+    // });
   }, []);
 
   // loader for bend

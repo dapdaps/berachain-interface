@@ -41,7 +41,7 @@ const DashboardPortfolio = (props: Props) => {
                 icon={dapp.dappLogo}
                 category={dapp.type}
                 value={dapp.totalUsd}
-                percent={numberFormatter(Big(dapp.totalUsd).div(totalBalance || 1).times(100), 0, true)}
+                percent={Big(totalBalance || 0).eq(0) ? '0' : numberFormatter(Big(dapp.totalUsd).div(totalBalance || 1).times(100), 0, true)}
               />
             ))
           }
