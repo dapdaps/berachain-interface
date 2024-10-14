@@ -110,6 +110,11 @@ export function usePortfolio(props: Props) {
       }
       setLoading(false);
     },
+    onEmpty: () => {
+      setDapps([]);
+      setDappsByChain([]);
+      setTotalBalance(Big(0));
+    },
   });
 
   return {

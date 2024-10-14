@@ -13,7 +13,7 @@ export function useRecords(props: Props) {
 
   const [hasMore, setHasMore] = useState(false);
   const [records, setRecords] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
 
@@ -79,7 +79,14 @@ export function useRecords(props: Props) {
   };
 
   useEffect(() => {
-    if (!accessToken || accessTokenLoading) return;
+    if (!accessToken) {
+      setHasMore(false);
+      setPageIndex(1);
+      setPageTotal(1);
+      setRecords([]);
+      return;
+    }
+    if (accessTokenLoading) return;
     getRecords();
   }, [accessToken, accessTokenLoading]);
 

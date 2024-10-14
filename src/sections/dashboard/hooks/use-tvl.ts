@@ -45,6 +45,9 @@ export function useTvl(props: Props) {
         setLoading(false);
       }
     },
+    onEmpty: () => {
+      setTvls(Object.values(CategoryList));
+    },
   });
 
   return {
