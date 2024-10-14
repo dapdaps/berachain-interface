@@ -2,7 +2,6 @@
 
 'use client';
 import { AnimatePresence, motion } from 'framer-motion';
-
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BearCircleSvg from "@public/images/background/bear-circle.svg";
 import BearSvg from "@public/images/background/bear.svg";
@@ -27,30 +26,108 @@ import { memo } from "react";
 const Clouds = function () {
   return (
     <>
-      <div className="absolute left-1/2 top-[109px] translate-x-[-465px]">
+      <motion.div
+        initial={{
+          right: -212
+        }}
+        animate={{
+          right: window?.screen?.availWidth,
+        }}
+        transition={{
+          duration: 12,
+          ease: "linear",
+          repeat: Infinity
+        }}
+        className="absolute top-[109px] "
+      >
         <CloudSvg />
-      </div>
-      <div className="absolute left-1/2 top-[13px] translate-x-[154px]">
+      </motion.div>
+      <motion.div
+        initial={{
+          right: -212
+        }}
+        animate={{
+          right: window?.screen?.availWidth,
+        }}
+        transition={{
+          duration: 12,
+          ease: "linear",
+          repeat: Infinity,
+          delay: 4
+        }}
+        className="absolute top-[13px]">
         <CloudSvg />
-      </div>
-      <div className="absolute left-1/2 top-[143px] translate-x-[360px]">
+      </motion.div>
+
+      <motion.div
+        initial={{
+          right: -212
+        }}
+        animate={{
+          right: window?.screen?.availWidth,
+        }}
+        transition={{
+          duration: 12,
+          ease: "linear",
+          repeat: Infinity,
+          delay: 8
+        }}
+        className="absolute top-[143px]">
         <CloudSvg />
-      </div>
+      </motion.div>
     </>
   )
 }
 const DappClouds = function () {
   return (
     <>
-      <div className="absolute left-[73px] bottom-[479px]">
+      <motion.div
+        initial={{
+          right: -212
+        }}
+        animate={{
+          right: window?.screen?.availWidth,
+        }}
+        transition={{
+          duration: 12,
+          ease: "linear",
+          repeat: Infinity,
+        }}
+        className="absolute left-[73px] bottom-[479px]">
         <CloudSvg />
-      </div>
-      <div className="absolute right-[248px] bottom-[559px]">
+      </motion.div>
+      <motion.div
+        initial={{
+          right: -212
+        }}
+        animate={{
+          right: window?.screen?.availWidth,
+        }}
+        transition={{
+          duration: 12,
+          ease: "linear",
+          repeat: Infinity,
+          delay: 4
+        }}
+        className="absolute right-[248px] bottom-[559px]">
         <CloudSvg />
-      </div>
-      <div className="absolute right-[455px] bottom-[129px]">
+      </motion.div>
+      <motion.div
+        initial={{
+          right: -212
+        }}
+        animate={{
+          right: window?.screen?.availWidth,
+        }}
+        transition={{
+          duration: 12,
+          ease: "linear",
+          repeat: Infinity,
+          delay: 8
+        }}
+        className="absolute right-[455px] bottom-[129px]">
         <CloudSvg />
-      </div>
+      </motion.div>
     </>
   )
 }
@@ -83,16 +160,16 @@ const BearTown = function () {
 }
 const HomeBear = function () {
   return (
-    <div className="absolute left-1/2 bottom-[186px] translate-x-[-120px] z-10">
-      <BearSvg />
+    <div className="absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-168px] z-10">
+      <img src='/images/background/bear.gif' />
     </div>
   )
 }
 
 const BrigeBear = function () {
   return (
-    <div className="absolute left-1/2 bottom-[186px] translate-x-[-676px] z-10">
-      <BearSvg />
+    <div className="absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-10">
+      <img src='/images/background/bear.gif' />
     </div>
   )
 }
@@ -101,6 +178,8 @@ const Flowers = function () {
   return (
     <div className="absolute right-0 bottom-0 z-10">
       <FlowersSvg />
+
+
     </div>
   )
 }

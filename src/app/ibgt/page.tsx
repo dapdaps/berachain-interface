@@ -10,9 +10,12 @@ import CircleLoading from '@/components/circle-loading';
 import useInfraredData from '@/sections/liquidity/Datas/Infrared';
 import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
 import useCustomAccount from '@/hooks/use-account';
+import { useIBGT } from '@/hooks/use-ibgt';
+import Popover, { PopoverPlacement } from '@/components/popover';
 export default memo(function IBGTPage(props: any) {
   const { loading, dataList } = useInfraredList()
   const data = useMemo(() => dataList?.find((d: any) => d.id === "iBGT-HONEY"), [dataList])
+  const { data: ibgtData } = useIBGT()
   const { account: sender, provider, } = useCustomAccount()
   const toast = useToast();
   const tabs = ["Stake", "Unstake"]
@@ -352,7 +355,7 @@ export default memo(function IBGTPage(props: any) {
 
         <div className="min-w-[278px] h-[88px] p-[10px] rounded-[30px] bg-[#F4A634] shadow-[1px_1px_0px_0px_#77481E]">
           <div className="flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-black border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%]">
-            100 iBGT
+            {ibgtData.count} iBGT
           </div>
         </div>
       </div>
@@ -367,7 +370,24 @@ export default memo(function IBGTPage(props: any) {
             </div>
             <div className="relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">% of iBGT staked</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">26.4%</div>
+              <Popover
+                placement={PopoverPlacement.BottomLeft}
+                content={(
+                  <div className='relative pt-[19px] px-[19px] pb-[23px] w-[240px] h-[165px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)]'>
+                    <div className='flex flex-col gap-[13px]'>
+                      <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>Staked</div>
+                      <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>797,080.97 iBGT</div>
+                    </div>
+                    <div className='absolute top-[82px] left-[12px] right-[9px] h-[1px] bg-[rgba(0, 0, 0, 0.15)]' />
+                    <div className='pt-[12px] flex flex-col gap-[13px]'>
+                      <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>Staked</div>
+                      <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>797,080.97 iBGT</div>
+                    </div>
+                  </div>
+                )}
+              >
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.count).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
+              </Popover>
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
             <div className="relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]">
@@ -418,6 +438,7 @@ export default memo(function IBGTPage(props: any) {
                 {
                   tabs.map((tab, index) => (
                     <div
+                      key={index}
                       className={clsx(["flex items-center justify-center border border-transparent rounded-[10px] flex-1", tIndex === index ? "h-full  !border-black bg-[#FFDC50]" : ""])}
                       onClick={() => {
                         setTIndex(index)

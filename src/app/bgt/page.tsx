@@ -1,6 +1,7 @@
 "use client";
 import FlexTable, { Column } from "@/components/flex-table";
 import useCustomAccount from "@/hooks/use-account";
+import { useBGT } from "@/hooks/use-bgt";
 import useToast from "@/hooks/use-toast";
 import useInfraredList from "@/sections/liquidity/hooks/use-infrared-list";
 import { formatValueDecimal } from "@/utils/balance";
@@ -112,6 +113,9 @@ export default memo(function BGTPage() {
     },
   ];
   const toast = useToast();
+
+
+  const { data, } = useBGT()
   const { account, provider } = useCustomAccount()
   const [updater, setUpdater] = useState(0)
   const { loading, dataList } = useInfraredList(updater)
@@ -194,7 +198,7 @@ export default memo(function BGTPage() {
         </div>
         <div className="min-w-[278px] h-[88px] p-[10px] rounded-[30px] bg-[#DAA56B] shadow-[1px_1px_0px_0px_#77481E]">
           <div className="flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-[#924E00] border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%]">
-            100 BGT
+            {data?.count} BGT
           </div>
         </div>
       </div>
