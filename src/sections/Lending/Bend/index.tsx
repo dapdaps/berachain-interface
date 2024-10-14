@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
 import DepositPanel from './DepositPanel';
@@ -11,11 +11,17 @@ interface LendingModalProps {
 
 const LendingModal: React.FC<LendingModalProps> = () => {
   const [currentTab, setCurrentTab] = useState<string>('deposit');
-  const { markets }= useBend()
+  const { markets, init }= useBend()
 
+
+  useEffect(() => {
+    init()
+  }, []);
+  
   if (!markets) {
     return null;
   } 
+  
   
   const tabs = [
     { 

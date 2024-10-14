@@ -1,3 +1,4 @@
+'use client';
 import type { Metadata } from 'next';
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,11 +8,12 @@ import WagmiProvider from '@/context/wagmi';
 import { ToastContainer } from 'react-toastify';
 
 import { SkeletonTheme } from 'react-loading-skeleton';
+import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 
-export const metadata: Metadata = {
-  title: 'Berachain',
-  description: 'berachain-interface'
-};
+// export const metadata: Metadata = {
+//   title: 'Berachain',
+//   description: 'berachain-interface'
+// };
 
 export default function RootLayout({
   children
@@ -37,6 +39,12 @@ export default function RootLayout({
           pauseOnFocusLoss
           closeButton={false}
         />
+        <ProgressBar
+          height="4px"
+          color="#ffdc50"
+          options={{ showSpinner: false }}
+          shallowRouting
+          />
       </body>
     </html>
   );
