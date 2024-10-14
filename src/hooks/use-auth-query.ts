@@ -3,18 +3,23 @@ import { useDebounceFn } from 'ahooks';
 import { useEffect } from 'react';
 
 export function useAuthQuery(props: Props) {
-  const { query } = props;
+  const { query, onEmpty } = props;
 
   const { accessToken, accessTokenLoading } = useUser();
 
   const { run: queryDelay } = useDebounceFn(query, { wait: 50 });
 
   useEffect(() => {
-    if (!accessToken || accessTokenLoading) return;
+    if (!accessToken) {
+      onEmpty && onEmpty();
+      return;
+    }
+    if (accessTokenLoading) return;
     queryDelay();
   }, [accessToken, accessTokenLoading]);
 }
 
 interface Props {
   query(): any;
+  onEmpty?(): void;
 }

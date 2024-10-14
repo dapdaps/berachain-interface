@@ -10,7 +10,7 @@ export function useWallet(props: Props) {
 
   const { address } = useAccount();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState<any>([]);
   const [networks, setNetworks] = useState<any>([]);
   const [totalBalance, setTotalBalance] = useState<Big.Big>(Big(0));
@@ -54,6 +54,11 @@ export function useWallet(props: Props) {
         console.log('getTokens failed: %o', err);
       }
       setLoading(false);
+    },
+    onEmpty: () => {
+      setTokens([]);
+      setNetworks([]);
+      setTotalBalance(Big(0));
     },
   });
 
