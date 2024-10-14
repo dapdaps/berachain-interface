@@ -28,7 +28,7 @@ const PartList = [
     buttonClass: 'rotate-[2.58deg] mb-[8px]',
     arrowClass: 'relative left-[calc(50%-34px)]',
     btnText: 'dApps',
-    link: '',
+    link: '/dapps',
     ArrowIcon: dAppArrowIcon
   },
   {
