@@ -8,6 +8,7 @@ import { formatValueDecimal } from "@/utils/balance";
 import { asyncFetch } from "@/utils/http";
 import Big from "big.js";
 import { ethers } from "ethers";
+import _ from "lodash";
 import { memo, useEffect, useMemo, useState } from "react"
 export default memo(function BGTPage() {
 
@@ -66,7 +67,7 @@ export default memo(function BGTPage() {
       render: (text: string, record: any) => {
         return (
           <div className='flex justify-start'>
-            <div className='px-[10px] py-[5px] rounded-[12px] border border-[#373A53] bg-white text-black font-Montserrat text-[14px] font-medium leading-[100%]'>{record?.type}</div>
+            <div className='px-[10px] py-[5px] rounded-[12px] border border-[#373A53] bg-white text-black font-Montserrat text-[14px] font-medium leading-[100%]'>{formatValueDecimal(record?.depositAmount, "", 2)}</div>
           </div>
         );
       },
@@ -115,19 +116,17 @@ export default memo(function BGTPage() {
   const toast = useToast();
 
 
-  const { data, } = useBGT()
+  const { data: bgtData, } = useBGT()
   const { account, provider } = useCustomAccount()
   const [updater, setUpdater] = useState(0)
   const { loading, dataList } = useInfraredList(updater)
   const [sortDataIndex, setSortDataIndex] = useState("")
 
   const [pageData, setPageData] = useState<any>(null)
-  const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)), [dataList])
-
+  const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)) ?? [], [dataList])
   const queryPageData = async function () {
     const result = await asyncFetch("https://bartio-pol-indexer.berachain-devnet.com/berachain/v1alpha1/beacon/homepage")
     setPageData(result)
-    console.log('====result', result)
   }
   const refresh = function () {
     setUpdater(Date.now())
@@ -198,7 +197,7 @@ export default memo(function BGTPage() {
         </div>
         <div className="min-w-[278px] h-[88px] p-[10px] rounded-[30px] bg-[#DAA56B] shadow-[1px_1px_0px_0px_#77481E]">
           <div className="flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-[#924E00] border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%]">
-            {data?.count} BGT
+            {bgtData?.count} BGT
           </div>
         </div>
       </div>

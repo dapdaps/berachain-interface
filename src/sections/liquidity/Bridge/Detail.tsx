@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
@@ -9,6 +10,7 @@ import { memo, useEffect, useState } from 'react';
 import CircleLoading from '@/components/circle-loading';
 export default memo(function Detail(props: any) {
   const { data, sender, provider, defaultIndex = 0, addresses, onBack } = props;
+  const router = useRouter()
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
 
@@ -46,10 +48,10 @@ export default memo(function Detail(props: any) {
     !lpAmount || !lpBalance
       ? '-'
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(
@@ -452,10 +454,7 @@ export default memo(function Detail(props: any) {
               <div
                 className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
                 onClick={() => {
-                  window.open(
-                    'https://bartio.bex.berachain.com/add-liquidity/' +
-                      LP_ADDRESS
-                  );
+                  router.push("/dex/bex?lp=" + LP_ADDRESS)
                 }}
               >
                 <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
@@ -471,7 +470,9 @@ export default memo(function Detail(props: any) {
             </div>
 
             <div className='flex items-center gap-[14px]'>
-              <div className='w-[32px] h-[32px] rounded-full'></div>
+              <div className='w-[32px] h-[32px] rounded-full'>
+                <img src="/images/dapps/infrared/ibgt.svg" />
+              </div>
               <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
                 0 iBGT
               </div>
@@ -511,9 +512,9 @@ export default memo(function Detail(props: any) {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {inAmount
                     ? '$' +
-                      Big(inAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(inAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : '-'}
                 </span>
                 <div
@@ -596,9 +597,9 @@ export default memo(function Detail(props: any) {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {lpAmount
                     ? '$' +
-                      Big(lpAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(lpAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : '-'}
                 </span>
                 <div

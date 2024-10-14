@@ -177,6 +177,8 @@ export default function useInfraredData(props: any) {
           const element = dataList[i];
           dataList[i].earned = Big(ethers.utils.formatUnits(result[i][0])).toFixed()
         }
+
+        console.log('====dataList', dataList)
         formatedData('getEarned')
       },
       (error) => {

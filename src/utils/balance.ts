@@ -115,6 +115,30 @@ export const simplifyNumber = function (number: number, decimal: number) {
     return Big(number).toFixed(decimal);
   }
 };
+export function formatThousandsSeparator(n: number | string, precision?: number): string {
+  if (isNaN(Number(n))) return '';
+  const strSplit = n.toString().split('.');
+  const integer = strSplit[0].split('');
+  integer.reverse();
+  const decimal = strSplit[1];
+  const newInteger = [];
+  for (let i = 0; i < integer.length; i++) {
+    if (i % 3 === 0 && i !== 0) {
+      newInteger.push(',');
+    }
+    newInteger.push(integer[i]);
+  }
+  newInteger.reverse();
+  let s = newInteger.join('');
+  if (decimal) {
+    if (typeof precision === 'number') {
+      const fixedDecimal = Big(`0.${decimal}`).toFixed(precision, 0).replace(/^\d/, '');
+      return s + fixedDecimal;
+    }
+    s += `.${decimal}`;
+  }
+  return s;
+}
 export const formatValueDecimal = function (
   value: any,
   unit = '',

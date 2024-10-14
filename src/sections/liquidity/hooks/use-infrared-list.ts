@@ -35,7 +35,7 @@ export default function useInfraredList(updater?: number) {
     multicallAddress,
     IBGT_ADDRESS,
     onLoad: (data: any) => {
-      setDataList(data.dataList);
+      setDataList([...data.dataList]);
       setLoading(false);
     }
   });

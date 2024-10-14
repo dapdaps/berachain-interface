@@ -1,7 +1,7 @@
 "use client"
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
-import { formatValueDecimal } from "@/utils/balance";
+import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
 import { ethers } from 'ethers';
@@ -59,7 +59,7 @@ export default memo(function IBGTPage(props: any) {
       );
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner());
+    const contract = new ethers.Contract(data?.vaultAddress, abi, provider?.getSigner());
     contract.balanceOf(sender).then((balanceBig: any) => {
       const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
       updateState({
@@ -69,7 +69,7 @@ export default memo(function IBGTPage(props: any) {
   };
   const updateBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
     contract
       .balanceOf(sender)
       .then((balanceBig: any) => {
@@ -376,17 +376,17 @@ export default memo(function IBGTPage(props: any) {
                   <div className='relative pt-[19px] px-[19px] pb-[23px] w-[240px] h-[165px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)]'>
                     <div className='flex flex-col gap-[13px]'>
                       <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>Staked</div>
-                      <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>797,080.97 iBGT</div>
+                      <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>{formatThousandsSeparator(formatValueDecimal(ibgtData?.staked, '', 2, false, true))} iBGT</div>
                     </div>
                     <div className='absolute top-[82px] left-[12px] right-[9px] h-[1px] bg-[rgba(0, 0, 0, 0.15)]' />
                     <div className='pt-[12px] flex flex-col gap-[13px]'>
-                      <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>Staked</div>
-                      <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>797,080.97 iBGT</div>
+                      <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>Total iBGT</div>
+                      <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>{formatThousandsSeparator(formatValueDecimal(ibgtData?.total, '', 2, false, true))} iBGT</div>
                     </div>
                   </div>
                 )}
               >
-                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.count).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.staked).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
               </Popover>
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
