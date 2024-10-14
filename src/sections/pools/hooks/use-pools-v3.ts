@@ -5,6 +5,7 @@ import { multicall, multicallAddresses } from '@/utils/multicall';
 import positionAbi from '../abi/position';
 import { tickToPrice } from '../tick-math';
 import { balanceFormated } from '@/utils/balance';
+import weth from '@/configs/contract/weth';
 import getPoolsInfo from '../query/getPoolsInfo';
 import { DEFAULT_CHAIN_ID, TOKENS } from '@/configs';
 
@@ -65,8 +66,14 @@ export default function usePoolsV3({ dex }: any) {
       const _pools: any = [];
       const list: any = [];
       positions.forEach((position: any, i: number) => {
-        const token0 = TOKENS[position.token0.toLowerCase()];
-        const token1 = TOKENS[position.token1.toLowerCase()];
+        const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
+        const _token0Address = position.token0.toLowerCase();
+        const _token1Address = position.token1.toLowerCase();
+        const token0 =
+          TOKENS[_token0Address === _weth ? 'native' : _token0Address];
+        const token1 =
+          TOKENS[_token1Address === _weth ? 'native' : _token1Address];
+
         if (!token0 || !token1) return;
         let lowerPrice: string | number = '';
         let upperPrice: string | number = '';
@@ -97,8 +104,8 @@ export default function usePoolsV3({ dex }: any) {
           liquidity: position.liquidity,
           lowerPrice,
           upperPrice,
-          token0: token0,
-          token1: token1,
+          token0: { ...token0, address: _token0Address },
+          token1: { ...token1, address: _token1Address },
           fee: position.fee,
           id: tokenIds[i].toString()
         };
