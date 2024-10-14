@@ -102,7 +102,7 @@ const MarketplaceView = () => {
 
   return (
     <div className='relative'>
-      <PageBack className='absolute left-[36px] top-[31px]' />
+      <PageBack className='absolute left-[40px] top-[31px]' />
       <PageTitle className='pt-[30px] mb-[75px]'>Marketplace</PageTitle>
       <div className='relative w-[1200px] mx-auto rounded-[20px] mb-[100px] p-[12px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
         <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] text-[32px] rotate-[-5deg] px-[24px] pt-[18px] pb-[22px] shadow-shadow1 font-CherryBomb top-[-30px] left-[50%] translate-x-[-50%]'>

@@ -14,8 +14,7 @@ const MainLayoutHeader = (props: Props) => {
   const store: any = useMapModalStore();
 
   const onDapLink = () => {
-    console.log('link to DapDap');
-    // window.open('', '_blank');
+    window.open('https://app.dapdap.net?from=berachain', '_blank');
   }
 
   return (

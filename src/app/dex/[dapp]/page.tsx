@@ -8,6 +8,7 @@ import SwapView from '@/sections/swap';
 import PoolsView from '@/sections/pools';
 import dapps from '@/configs/swap';
 import { DEFAULT_SWAP_DAPP } from '@/configs';
+import PageBack from '@/components/back';
 
 export default function SwapPage() {
   const params = useParams();
@@ -16,6 +17,7 @@ export default function SwapPage() {
   return (
     <BearBackground type='dapp'>
       <div className='pt-[30px] flex flex-col items-center'>
+        <PageBack className="absolute left-[36px] top-[31px]" />
         <SwitchTabs
           tabs={[
             { label: 'Swap', value: 'swap' },

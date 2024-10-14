@@ -122,7 +122,7 @@ const DAppsView = () => {
   }
 
   return (
-    <div>
+    <div className="">
       <PageBack className="absolute left-[36px] top-[31px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
       <div className='absolute bottom-[233px] left-1/2 -translate-x-1/2'>
