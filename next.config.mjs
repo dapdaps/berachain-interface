@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://api.dapdap.net';
+
 const nextConfig = {
   reactStrictMode: false,
   rewrites: async () => [
@@ -8,7 +11,7 @@ const nextConfig = {
     },
     {
       source: '/dapdap/:path*',
-      destination: 'https://api.dapdap.net/:path*'
+      destination: BASE_URL + '/:path*'
     },
     {
       source: '/api.dolomite.io/:path*',
