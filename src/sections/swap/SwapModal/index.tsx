@@ -1,6 +1,6 @@
 import Modal from '@/components/modal';
 import Content from '../Content';
-import dexs from '@/configs/swap';
+import { dexs } from '@/configs/swap';
 import { useMemo } from 'react';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 

@@ -108,7 +108,7 @@ export default function useAddV2({
           estimateGas = new Big(3000000);
         }
       }
-      console.log('estimateGas', estimateGas);
+      console.log('estimateGas', estimateGas.toString());
       const tx = await RouterContract[method](...params, {
         value,
         gasLimit: new Big(estimateGas).mul(120).div(100).toFixed(0)
