@@ -86,16 +86,24 @@ const List = [
           className="scale-x-[-1] absolute right-[44%] bottom-[-28%]"
         />)
       },
-      // TODO add bridge config, replace ooga-booga
+      // TODO add bridge config
       {
-        ..._dApps['ooga-booga'],
+        name: 'Stargate',
+        label: 'Stargate',
+        icon: '/images/dapps/stargate.svg',
+        type: 'bridge',
         attachedIcon: '',
         className: 'mr-[-25px]',
+        disabled: true,
       },
       {
-        ..._dApps['ooga-booga'],
+        name: 'Owlto',
+        label: 'Owlto',
+        icon: '/images/dapps/owlto.svg',
+        type: 'bridge',
         attachedIcon:  '',
         className: 'ml-[-25px]',
+        disabled: true,
       },
     ]
   }
@@ -113,7 +121,6 @@ const DAppsView = () => {
     router.push(`/${_dApp.type === 'swap' ? 'dex' : _dApp.type}/${_dApp.name}`);
   }
 
-
   return (
     <div>
       <PageBack className="absolute left-[36px] top-[31px]" />
@@ -128,23 +135,30 @@ const DAppsView = () => {
                 <Floor
                   key={'floor' + index}
                   className={item.className}
-                  sticks={item.sticks}>
+                  sticks={item.sticks}
+                >
                   {
-                    item.dApps.length  > 0 && (<div className={`flex ${item.dAppClassName}`}>
+                    item.dApps.length  > 0 && (
+                      <div className={`flex ${item.dAppClassName}`}>
                       {
                         item.dApps.map((dApp, idx) => (
-                            <div key={`treeNode_${idx}`} className={ 'relative basis-[120px] ' + (dApp.className ?? '')}>
-                              <DApp
-                                name={dApp.label}
-                                icon={dApp.icon}
-                                type={toFirstUpperCase(dApp.type)}
-                                onClick={() => onNavigateTo(dApp)}
-                              />
-                              {dApp.attachedIcon ?? null}
-                            </div>
+                          <div
+                            key={`treeNode_${idx}`}
+                            className={ 'relative basis-[120px] ' + (dApp.className ?? '')}
+                          >
+                            <DApp
+                              name={dApp.label}
+                              icon={dApp.icon}
+                              type={toFirstUpperCase(dApp.type)}
+                              onClick={() => onNavigateTo(dApp)}
+                              disabled={dApp.disabled}
+                            />
+                            {dApp.attachedIcon ?? null}
+                          </div>
                         ))
                       }
-                    </div>)
+                    </div>
+                    )
                   }
                 </Floor>
               ))

@@ -1,26 +1,40 @@
 import { motion } from "framer-motion";
-import { useState } from 'react';
 
 const DApp = ({
   name = '',
   icon = '',
   type = '',
   className = '',
+  disabled,
   onClick = () => {}
 }: Props) => {
-
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const handleClick = () => {
+    if (disabled) return;
+    onClick();
+  }
 
   return (
     <motion.div
       className={`relative z-[3] ${className}`}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      onClick={onClick}
+      onClick={handleClick}
+      initial="default"
+      whileHover={disabled ? 'default' : 'hover'}
     >
+      {
+        disabled && (
+          <div className="absolute cursor-not-allowed z-[2] left-0 top-0 w-full h-full rounded-[30px] bg-[rgba(0,_0,_0,_0.5)]" />
+        )
+      }
       <motion.div
         className='absolute z-[0] top-0 left-0 w-[120px] h-[120px] rounded-[30px] bg-white'
-        animate={isHovered ? {scale: 1.1} : {scale: 1}}
+        variants={{
+          hover: {
+            scale: 1.1,
+          },
+          default: {
+            scale: 1,
+          },
+        }}
       />
         <div className={`p-[6px] z-[1] overflow-hidden flex-col gap-[6px] flex justify-center items-center w-[120px] h-[120px] rounded-[30px] border-black border-[2px] relative bg-[#B2E946] before:content-[""] before:absolute before:bottom-0 before:w-full before:h-[91.7%] before:bg-[#9ACA3B] before:rounded-[30px] before:z-[-1]`}>
         <img
@@ -44,5 +58,6 @@ interface Props {
   icon: string;
   type: string;
   className?: string;
+  disabled?: boolean;
   onClick: () => void;
 }
