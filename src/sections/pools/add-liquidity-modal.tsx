@@ -20,6 +20,7 @@ export default function AddLiquidityModal({
   onClose
 }: any) {
   const panelRef = useRef<any>();
+
   return (
     <BasicModal
       title={`Provide ${token0?.symbol}-${token1?.symbol}`}

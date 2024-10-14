@@ -28,9 +28,7 @@ export default function AddLiquidityModal({
       version={version}
       open={open}
       onClose={onClose}
-      onClearAll={() => {
-        panelRef?.current?.onClearAll?.();
-      }}
+      onClearAll={panelRef?.current?.onClearAll}
     >
       <div className='pb-[20px]'>
         <AddLiquidityPanel

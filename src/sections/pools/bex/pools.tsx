@@ -9,6 +9,11 @@ export default function Pools() {
           token0: beraB['bera'],
           token1: beraB['honey'],
           id: 1
+        },
+        {
+          token0: beraB['usdt'],
+          token1: beraB['honey'],
+          id: 2
         }
       ]}
       dex='bex'
