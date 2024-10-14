@@ -8,6 +8,7 @@ import { multicall, multicallAddresses } from '@/utils/multicall';
 import poolV2 from '../abi/pool-v2';
 import { getTokenAmountsV2 } from '../helpers';
 import { TOKENS } from '@/configs';
+import weth from '@/configs/contract/weth';
 
 export default function usePools(isSimple?: boolean) {
   const [pools, setPools] = useState<any>([]);
@@ -76,13 +77,20 @@ export default function usePools(isSimple?: boolean) {
               .mul(10 ** pool.baseInfo.decimals)
               .toString(),
             reserve1: Big(pool.quoteAmount)
-              .mul(10 ** pool.baseInfo.decimals)
+              .mul(10 ** pool.quoteInfo.decimals)
               .toString()
           });
+          const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
 
           return {
-            token0: TOKENS[pool.base] || pool.baseInfo,
-            token1: TOKENS[pool.quote] || pool.quoteInfo,
+            token0: {
+              ...TOKENS[pool.base === _weth ? 'native' : pool.base],
+              address: pool.base
+            },
+            token1: {
+              ...TOKENS[pool.quote === _weth ? 'native' : pool.quote],
+              address: pool.quote
+            },
             fee: pool.template.feeRate,
             amount0,
             amount1

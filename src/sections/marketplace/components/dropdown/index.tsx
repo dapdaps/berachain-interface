@@ -53,7 +53,7 @@ export default function Dropdown({
         setModalShow(true);
       }}
       style={style}
-      className='flex relative z-50 justify-between items-center bg-[#fff] gap-8 h-[40px] px-[20px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer'
+      className='flex relative  justify-between items-center bg-[#fff] gap-8 h-[40px] px-[20px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer'
     >
       <div className='text-nowrap'>{title}</div>
       <div>
@@ -75,7 +75,7 @@ export default function Dropdown({
       {modalShow && (
         <div
           style={dropdownStyle}
-          className='absolute w-[100%]  overflow-auto bg-[#fff] rounded-[8px] border border-[#373A53] right-0 top-[45px]'
+          className='absolute w-[100%] z-[10]  overflow-auto bg-[#fff] rounded-[8px] border border-[#373A53] right-0 top-[45px]'
         >
           {list?.map((item) => {
             return (

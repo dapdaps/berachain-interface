@@ -25,7 +25,6 @@ export default function usdAdd({
   const toast = useToast();
   const slippage = useSettingsStore((store: any) => store.slippage);
   const contracts = bex.contracts[DEFAULT_CHAIN_ID];
-
   const { addAction } = useAddAction('dapp');
 
   const onIncrease = async () => {
@@ -96,7 +95,7 @@ export default function usdAdd({
           'address'
         ],
         [
-          isReverse ? 32 : 31,
+          isReverse || _token1.isNative ? 32 : 31,
           _token0.isNative
             ? '0x0000000000000000000000000000000000000000'
             : _token0.address,
@@ -106,7 +105,7 @@ export default function usdAdd({
           poolIdx,
           0,
           0,
-          isReverse ? _amount1 : _amount0,
+          isReverse || _token1.isNative ? _amount1 : _amount0,
           limitLower,
           limitHigher,
           0,
