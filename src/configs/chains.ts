@@ -20,7 +20,7 @@ const chains: Record<number, Chain | any> = {
     }
   },
   [mainnet.id]: mainnet,
-  [polygonZkEvm.id]: polygonZkEvm
+  // [polygonZkEvm.id]: polygonZkEvm
 };
 
 export const icons: Record<number, string> = {
