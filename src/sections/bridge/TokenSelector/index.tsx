@@ -83,7 +83,7 @@ export default function TokenSelector({ show, onClose, tokenList, token, onToken
                   </div>
                 </div>
   
-                <div className='font-[600] text-[16px]'>123.33</div>
+                {/* <div className='font-[600] text-[16px]'>{ Math.random() * 100 }</div> */}
               </div>
               })
             }

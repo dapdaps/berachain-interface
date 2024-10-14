@@ -16,8 +16,8 @@ export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
   const [fromChain, setFromChain] = useState<Chain>(chains[1])
   const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
-  const [toChain, setToChain] = useState<Chain>(chains[1101])
-  const [toToken, setToToken] = useState<Token>(allTokens[chains[1101].id][0])
+  const [toChain, setToChain] = useState<Chain>(chains[80084])
+  const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
 
   return (
     <>
