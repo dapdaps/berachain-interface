@@ -2,9 +2,13 @@ import { useUserStore } from '@/stores/user';
 import { useCallback } from 'react';
 import { get, post } from '@/utils/http';
 import { useAccount } from 'wagmi';
+import { useWalletInfo } from '@web3modal/wagmi/react';
+import useToast from '@/hooks/use-toast';
 
 export function useUser() {
   const { address } = useAccount();
+  const { walletInfo } = useWalletInfo();
+  const toast = useToast();
 
   const accessToken = useUserStore((store: any) => store.accessToken?.access_token);
   const accessTokenLoading = useUserStore((store: any) => store.accessTokenLoading);
@@ -41,6 +45,28 @@ export function useUser() {
       return;
     }
 
+    // register
+    const checkedRes = await checkAccount({
+      address,
+    });
+    if (!checkedRes.isActivated) {
+      const wallet = walletInfo?.name ?? '';
+      const isBitget = wallet.toLowerCase().includes('bitget');
+      const isCoin98 = wallet.toLowerCase().includes('coin98');
+      const isOkx = wallet.toLowerCase().includes('okx');
+      const activateRes = await activateAccount({
+        address,
+        code: '',
+        source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
+      });
+      if (!activateRes.isSuccess) {
+        toast.fail({
+          title: 'Account activated failed, please try again later!',
+          message: activateRes?.message ?? '',
+        });
+      }
+    }
+
     const res = await post('/api/auth/access-token', {
       address,
     });
@@ -62,3 +88,35 @@ export function useUser() {
 }
 
 export default useUser;
+
+const checkAccount = async (params: any) => {
+  try {
+    const checkedRes = await get(`/api/invite/check-address/${params.address}`);
+    return {
+      isActivated: !!checkedRes?.data?.is_activated,
+      message: checkedRes.msg,
+    };
+  } catch (err: any) {
+    console.log(err);
+    return {
+      isActivated: false,
+      message: err?.message ?? '',
+    };
+  }
+};
+
+const activateAccount = async (params: any) => {
+  try {
+    const activateRes = await post(`/api/invite/activate`, params);
+    return {
+      isSuccess: !!activateRes.data?.is_success,
+      message: activateRes.msg,
+    };
+  } catch (err: any) {
+    console.log(err);
+    return {
+      isSuccess: false,
+      message: err?.message ?? '',
+    };
+  }
+};
