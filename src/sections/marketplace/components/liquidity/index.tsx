@@ -175,7 +175,7 @@ export default function Liquidity() {
               sort: false,
               width: '10%',
               render: (item: any, index: number) => {
-                let _removeable = false;
+                let _removeable: any = false;
                 if (item.protocol.toLowerCase() === 'bex') {
                   _removeable = checkIsExist({
                     record: item,
@@ -208,12 +208,19 @@ export default function Liquidity() {
                       setSelectedRecord(item);
                     }}
                     onRemove={() => {
-                      setModalType(item.version === 'v3' ? 'pools' : 'remove');
-                      setSelectedRecord(
-                        item.version === 'v3'
-                          ? { ...item, pools: _removeable }
-                          : item
-                      );
+                      if (item.version !== 'v3') {
+                        setModalType('remove');
+                        setSelectedRecord(item);
+                        return;
+                      }
+                      if (_removeable.length === 1) {
+                        setModalType('remove');
+                        setSelectedRecord(item);
+                        setSelectedTokenId(_removeable[0].tokenId);
+                        return;
+                      }
+                      setModalType('pools');
+                      setSelectedRecord({ ...item, pools: _removeable });
                     }}
                     removeable={_removeable}
                   />
