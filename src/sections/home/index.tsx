@@ -1,19 +1,17 @@
-
-
 'use client';
+
 import BearBackground from '@/components/bear-background';
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BridgeSvg from "@public/images/background/bridge.svg";
 import DappsSvg from "@public/images/background/dapps.svg";
 import DashboardSvg from "@public/images/background/dashboard.svg";
-import ExploreSvg from "@public/images/background/explore.svg";
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import { memo } from "react";
-import { useRouter } from 'next/navigation';
+import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const Navigation = function () {
 
-  const router = useRouter();
+  const router = useProgressRouter();
 
   const onNavigateToBridge = () => {
     router.push('/bridge');
@@ -28,6 +26,7 @@ const Navigation = function () {
   const onNavigateToDashBoard = () => {
     router.push('/dashboard');
   }
+
   return (
     <>
       <div className="absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]" onClick={onNavigateToMarketplace}>

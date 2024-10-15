@@ -1,11 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const PageBack = (props: Props) => {
   const { className, style, onBack } = props;
 
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useProgressRouter();
 
   const handleClick = () => {
     if (onBack) {

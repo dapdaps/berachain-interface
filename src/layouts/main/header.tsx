@@ -1,4 +1,5 @@
 'use client';
+
 import ConnectWallet from '@/components/connect-wallet';
 import BGTCoin, { CoinType } from '@/layouts/main/BGTCoin';
 import Logo from '@/layouts/main/logo';
@@ -36,7 +37,6 @@ const MainLayoutHeader = (props: Props) => {
             className='ml-[-20px] hover:scale-[1.1] ease-in-out duration-300'>
             <IconMap />
           </div>
-
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
           <BGTCoin type={CoinType.BGT} count={0} />
