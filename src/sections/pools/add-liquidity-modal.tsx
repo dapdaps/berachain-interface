@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, forwardRef } from 'react';
+import { useRef, forwardRef, useState, useEffect, useMemo } from 'react';
 import BasicModal from './components/modal';
 import Bex from './bex/add-liquidity';
 import Kodiak from './kodiak/add-liquidity';
@@ -20,6 +20,11 @@ export default function AddLiquidityModal({
   onClose
 }: any) {
   const panelRef = useRef<any>();
+  const [hasClearAll, setHasClearAll] = useState<any>();
+
+  useEffect(() => {
+    setHasClearAll(!!panelRef.current?.onClearAll);
+  }, []);
 
   return (
     <BasicModal
@@ -28,8 +33,11 @@ export default function AddLiquidityModal({
       fee={fee}
       version={version}
       open={open}
+      hasClearAll={hasClearAll}
       onClose={onClose}
-      onClearAll={panelRef?.current?.onClearAll}
+      onClearAll={() => {
+        panelRef.current?.onClearAll();
+      }}
     >
       <div className='pb-[20px]'>
         <AddLiquidityPanel

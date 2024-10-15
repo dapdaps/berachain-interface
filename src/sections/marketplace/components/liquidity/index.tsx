@@ -260,6 +260,7 @@ export default function Liquidity() {
               setModalType('');
               setSelectedRecord(null);
             }}
+            onSuccess={() => {}}
           />
           <V3PoolsModal
             open={modalType === 'pools'}

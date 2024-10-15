@@ -13,6 +13,7 @@ type Props = {
   version?: string;
   onClearAll?: VoidFunction;
   open: boolean;
+  hasClearAll?: boolean;
   onClose: VoidFunction;
 };
 
@@ -22,6 +23,7 @@ export default function BasicModal({
   dex,
   fee,
   version,
+  hasClearAll,
   onClearAll,
   open,
   onClose
@@ -44,7 +46,7 @@ export default function BasicModal({
             )}
           </div>
           <div className='flex items-center gap-[10px]'>
-            {onClearAll && (
+            {hasClearAll && (
               <button
                 className='text-[#FE6360] text-[14px] underline'
                 onClick={onClearAll}

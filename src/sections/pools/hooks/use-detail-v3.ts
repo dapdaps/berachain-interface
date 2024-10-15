@@ -8,6 +8,7 @@ import positionAbi from '../abi/position';
 import { wrapNativeToken, sortTokens } from '../utils';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import { getTokenAmounts } from '../helpers';
+import { tickToPrice } from '../tick-math';
 
 export default function usePoolInfo({
   token0,
@@ -33,16 +34,6 @@ export default function usePoolInfo({
         wrapNativeToken(token1).address,
         fee
       );
-      const PositionContract = new Contract(
-        PositionManager,
-        positionAbi,
-        provider
-      );
-      let position: any = {};
-
-      if (tokenId) {
-        position = await PositionContract.positions(tokenId);
-      }
 
       if (
         !poolAddress ||
@@ -52,6 +43,13 @@ export default function usePoolInfo({
         setLoading(false);
         return;
       }
+
+      const PositionContract = new Contract(
+        PositionManager,
+        positionAbi,
+        provider
+      );
+      const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 
       const calls = [
         {
@@ -65,10 +63,6 @@ export default function usePoolInfo({
         }
       ];
 
-      const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
-
-      const [_token0, _token1] = sortTokens(token0, token1);
-
       const [slot0, tickSpacing, liquidity] = await multicall({
         abi: poolAbi,
         calls: calls,
@@ -77,27 +71,63 @@ export default function usePoolInfo({
         provider
       });
 
-      const [amount0, amount1] = getTokenAmounts({
-        liquidity: position.liquidity ? position.liquidity.toString() : '0',
-        tickLower: position.tickLower,
-        tickUpper: position.tickUpper,
-        currentTick: slot0.tick,
-        token0: _token0,
-        token1: _token1
-      });
+      let position: any = {};
+      let extra: any = {};
+
+      const [_token0, _token1] = sortTokens(token0, token1);
+
+      if (tokenId) {
+        position = await PositionContract.positions(tokenId);
+        const rangeType = (() => {
+          if (position.tickUpper > 887200 && position.tickLower < -887200)
+            return 3;
+          if (slot0.tick < position.tickLower) return 1;
+          if (slot0.tick > position.tickUpper) return 2;
+          return 0;
+        })();
+        const [amount0, amount1] = getTokenAmounts({
+          liquidity: position.liquidity ? position.liquidity.toString() : '0',
+          tickLower: position.tickLower,
+          tickUpper: position.tickUpper,
+          currentTick: slot0.tick,
+          token0: _token0,
+          token1: _token1
+        });
+        extra = {
+          rangeType,
+          amount0,
+          amount1,
+          tickLower: position.tickLower,
+          tickUpper: position.tickUpper,
+          lowerPrice: tickToPrice({
+            tick: position.tickLower,
+            token0: _token0,
+            token1: _token1
+          }),
+          upperPrice: tickToPrice({
+            tick: position.tickUpper,
+            token0: _token0,
+            token1: _token1
+          }),
+          liquidity: position.liquidity ? position.liquidity.toString() : '0'
+        };
+      }
 
       setInfo({
         currentTick: slot0.tick,
+        currentPrice: tickToPrice({
+          tick: slot0.tick,
+          token0: _token0,
+          token1: _token1
+        }),
         tickSpacing: tickSpacing[0],
         sqrtPriceX96: slot0.sqrtPriceX96.toString(),
         poolAddress,
-        liquidity: position.liquidity ? position.liquidity.toString() : '0',
         positionManager: PositionManager,
-        amount0,
-        amount1,
         token0: _token0,
         token1: _token1,
-        tokenId
+        tokenId,
+        ...extra
       });
 
       setLoading(false);
