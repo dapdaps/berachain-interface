@@ -5,6 +5,7 @@ import BGTCoin, { CoinType } from '@/layouts/main/BGTCoin';
 import Logo from '@/layouts/main/logo';
 import IconMap from '@public/images/icon-map.svg';
 import useMapModalStore from '@/stores/useMapModalStore';
+import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const MainLayoutHeader = (props: Props) => {
   const {
@@ -13,9 +14,10 @@ const MainLayoutHeader = (props: Props) => {
   } = props;
 
   const store: any = useMapModalStore();
+  const router = useProgressRouter();
 
-  const onDapLink = () => {
-    window.open('https://app.dapdap.net?from=berachain', '_blank');
+  const goHome = () => {
+    router.replace('/');
   }
 
   return (
@@ -27,10 +29,10 @@ const MainLayoutHeader = (props: Props) => {
         <div className="flex items-center gap-x-[40px]">
           <Logo />
           <button
-            onClick={onDapLink}
-            className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:top-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[16px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
+            onClick={goHome}
+            className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:top-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[25px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
           >
-            <span className="relative z-10">Go to DapDap</span>
+            <span className="relative z-10">Home</span>
           </button>
           <div
             onClick={() => store.setOpen(true)}
