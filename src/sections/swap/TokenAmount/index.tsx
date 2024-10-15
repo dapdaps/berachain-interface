@@ -41,14 +41,12 @@ export default function TokenAmout({
           className={`${
             outputCurrencyReadonly ? '' : 'border bg-[#FFFDEB]'
           } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px]`}
+          onClick={() => {
+            onCurrencySelectOpen();
+          }}
         >
           {currency ? (
-            <div
-              className='flex items-center gap-[10px]'
-              onClick={() => {
-                onCurrencySelectOpen();
-              }}
-            >
+            <div className='flex items-center gap-[10px]'>
               <div className='relative'>
                 <img
                   className='w-[26px] h-[26px]'
@@ -60,12 +58,7 @@ export default function TokenAmout({
               </div>
             </div>
           ) : (
-            <div
-              className='text-[16px] font-[600]'
-              onClick={() => {
-                onCurrencySelectOpen();
-              }}
-            >
+            <div className='text-[16px] font-[600]'>
               Select a token
             </div>
           )}
