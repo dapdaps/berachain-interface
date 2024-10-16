@@ -28,17 +28,17 @@ const MainLayoutHeader = (props: Props) => {
       <div className="w-full h-full px-[40px] flex justify-between items-center">
         <div className="flex items-center gap-x-[40px]">
           <Logo />
-          <button
-            onClick={goHome}
-            className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:top-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[25px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
-          >
-            <span className="relative z-10">Home</span>
-          </button>
           <div
             onClick={() => store.setOpen(true)}
             className='ml-[-20px] hover:scale-[1.1] ease-in-out duration-300'>
             <IconMap />
           </div>
+          <button
+            onClick={goHome}
+            className="hover:scale-[1.1] ease-in-out duration-300 before:content-[''] before:block before:absolute before:bottom-0 before:left-0 before:w-full before:h-[30px] before:rounded-[10px] before:bg-[#CCD55B] before:z-0 relative bg-[#EBF479] rounded-[10px] border border-solid border-black px-[25px] py-[9px] leading-none text-black text-center text-[16px] font-[400]"
+          >
+            <span className="relative z-10">Home</span>
+          </button>
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
           <BGTCoin type={CoinType.BGT} count={0} />
