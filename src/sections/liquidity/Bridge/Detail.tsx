@@ -57,7 +57,7 @@ export default memo(function Detail(props: any) {
     const contract = new ethers.Contract(
       vaultAddress,
       abi,
-      provider.getSigner()
+      provider?.getSigner()
     );
     contract.balanceOf(sender).then((balanceBig) => {
       const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
@@ -68,7 +68,7 @@ export default memo(function Detail(props: any) {
   };
   const updateBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
     contract
       .balanceOf(sender)
       .then((balanceBig) => {
@@ -95,7 +95,7 @@ export default memo(function Detail(props: any) {
     const abi = [
       'function allowance(address, address) external view returns (uint256)'
     ];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
     updateState({
       isTokenApproved: false
     });
@@ -144,7 +144,7 @@ export default memo(function Detail(props: any) {
     });
     const wei = ethers.utils.parseUnits(amount, decimals);
     const abi = ['function approve(address, uint) public'];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
 
     contract
       .approve(vaultAddress, wei)
@@ -209,7 +209,7 @@ export default memo(function Detail(props: any) {
     const contract = new ethers.Contract(
       vaultAddress,
       abi,
-      provider.getSigner()
+      provider?.getSigner()
     );
     contract
       .stake(wei)
@@ -289,7 +289,7 @@ export default memo(function Detail(props: any) {
     const contract = new ethers.Contract(
       vaultAddress,
       abi,
-      provider.getSigner()
+      provider?.getSigner()
     );
     contract
       .withdraw(lpWeiAmount)
@@ -474,7 +474,13 @@ export default memo(function Detail(props: any) {
                 <img src="/images/dapps/infrared/ibgt.svg" />
               </div>
               <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-                0 iBGT
+                {
+                  formatValueDecimal(
+                    data?.earned,
+                    '',
+                    2
+                  )
+                } iBGT
               </div>
             </div>
           </div>
