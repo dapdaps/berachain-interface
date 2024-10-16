@@ -9,7 +9,10 @@ const TokenSelector = (props: Props) => {
   const modalRef = useRef<any>(null);
 
   const handleSelect = (token: any) => {
-    if (token.address === selected.address) return;
+    if (token.address === selected.address) {
+      onClose();
+      return;
+    }
     onSelect(token);
     onClose();
   };

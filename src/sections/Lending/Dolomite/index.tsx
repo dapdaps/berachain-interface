@@ -9,8 +9,9 @@ import { useMultiState } from '@/hooks/use-multi-state';
 import { numberFormatter } from '@/utils/number-formatter';
 import PositionList from '@/sections/Lending/Dolomite/position/list';
 import DappIcon from '@/components/dapp-icon';
-
-const CHAIN_ID = 80084;
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import SwitchNetwork from '@/components/switch-network';
+import chains from '@/configs/chains';
 
 const { basic, networks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('../datas/dolomite'));
@@ -108,7 +109,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
                   tokens={state.supplyTokens}
                   rateKey={rateKey}
                   setRateKey={setRateKey}
-                  CHAIN_ID={CHAIN_ID}
+                  CHAIN_ID={DEFAULT_CHAIN_ID}
                   onSuccess={() => {
                     setLoading(true);
                   }}
@@ -122,7 +123,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
                 <PositionList
                   loading={loading}
                   data={data}
-                  CHAIN_ID={CHAIN_ID}
+                  CHAIN_ID={DEFAULT_CHAIN_ID}
                   onSuccess={() => {
                     setLoading(true);
                   }}
@@ -135,7 +136,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
         />
       </div>
       <DolomiteData
-        {...networks[CHAIN_ID + '']}
+        {...networks[DEFAULT_CHAIN_ID + '']}
         {...basic}
         chainId={chainId}
         update={loading}
@@ -147,6 +148,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
           setLoading(false);
         }}
       />
+      <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
     </div>
   );
 };

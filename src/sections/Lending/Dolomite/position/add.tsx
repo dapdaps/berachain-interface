@@ -121,6 +121,7 @@ const PositionAdd = (props: Props) => {
             }}
             onSuccess={() => {
               onSuccess?.();
+              setAmount('');
             }}
           >
             Add Position
