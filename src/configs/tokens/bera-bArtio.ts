@@ -10,7 +10,8 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'BERA',
     decimals: 18,
     name: 'BERA',
-    icon: '/assets/tokens/bera.svg'
+    icon: '/assets/tokens/bera.svg',
+    color: '#78350F'
   },
   wbera: {
     address: '0x7507c1dc16935B82698e4C63f2746A2fCf994dF8',
@@ -18,7 +19,8 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'WBERA',
     decimals: 18,
     name: 'WBERA',
-    icon: '/assets/tokens/wbera.svg'
+    icon: '/assets/tokens/wbera.svg',
+    color: '#f5f5f4'
   },
   honey: {
     address: '0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03',
@@ -26,7 +28,8 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'HONEY',
     decimals: 18,
     name: 'HONEY',
-    icon: '/images/dapps/honey.png'
+    icon: '/images/dapps/honey.png',
+    color: '#d97706'
   },
   usdt: {
     chainId: CHAIN_ID,
@@ -34,7 +37,8 @@ export const beraB: { [key: string]: Token } = {
     decimals: 6,
     symbol: 'USDT',
     name: 'Tether USD',
-    icon: '/assets/tokens/usdt.png'
+    icon: '/assets/tokens/usdt.png',
+    color: '#059393'
   },
   usdc: {
     chainId: CHAIN_ID,
@@ -42,7 +46,8 @@ export const beraB: { [key: string]: Token } = {
     decimals: 6,
     symbol: 'USDC',
     name: 'USD Coin',
-    icon: '/assets/tokens/usdc.png'
+    icon: '/assets/tokens/usdc.png',
+    color: '#2775CA'
   },
   dai: {
     chainId: CHAIN_ID,
@@ -50,7 +55,8 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
-    icon: '/assets/tokens/dai.png'
+    icon: '/assets/tokens/dai.png',
+    color: '#fbba34'
   },
   wbtc: {
     chainId: CHAIN_ID,
@@ -58,7 +64,8 @@ export const beraB: { [key: string]: Token } = {
     decimals: 8,
     symbol: 'WBTC',
     name: 'Wrapped BTC',
-    icon: '/assets/tokens/wbtc.png'
+    icon: '/assets/tokens/wbtc.png',
+    color: '#F7931A'
   },
   weth: {
     chainId: CHAIN_ID,
@@ -66,7 +73,8 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: 'WETH',
     name: 'Wrapped Ether',
-    icon: '/assets/tokens/weth.png'
+    icon: '/assets/tokens/weth.png',
+    color: '#D2D2D2'
   },
   eth: {
     chainId: CHAIN_ID,
@@ -74,6 +82,16 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: 'ETH',
     name: 'Ethereum',
-    icon: '/assets/tokens/eth.png'
+    icon: '/assets/tokens/eth.png',
+    color: '#5b7ff2'
+  },
+  mimg: {
+    chainId: CHAIN_ID,
+    address: '0x43Eb9f03c5B5C7963B24652BcE396A65F75F16aB',
+    decimals: 18,
+    symbol: 'MIMG',
+    name: 'MIMG',
+    icon: '/assets/tokens/mimg.svg',
+    color: '#FFDD02'
   }
 };

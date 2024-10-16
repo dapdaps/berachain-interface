@@ -15,6 +15,7 @@ export interface Token {
   isNative?: boolean;
   priceKey?: string;
   usd?: string;
+  color?: string;
 }
 
 export interface Chain {
