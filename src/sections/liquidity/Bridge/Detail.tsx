@@ -23,7 +23,8 @@ export default memo(function Detail(props: any) {
     // lpAmount: '',
     isLoading: false,
     isTokenApproved: true,
-    isTokenApproving: false
+    isTokenApproving: false,
+    updater: 0
   });
   const sourceBalances: any = {};
 
@@ -35,7 +36,8 @@ export default memo(function Detail(props: any) {
     isTokenApproved,
     isTokenApproving,
     lpBalance,
-    lpAmount
+    lpAmount,
+    updater
   } = state;
 
   const { decimals, id, LP_ADDRESS } = data;
@@ -233,10 +235,8 @@ export default memo(function Detail(props: any) {
           isPostTx: true
         });
         setTimeout(() => updateState({ isPostTx: false }), 10_000);
-        const { refetch } = props;
-        if (refetch) {
-          refetch();
-        }
+
+        onSuccess?.()
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -315,12 +315,7 @@ export default memo(function Detail(props: any) {
         //   chain_id: props.chainId
         // });
         setTimeout(() => updateState({ isPostTx: false }), 10_000);
-        const { refetch } = props;
-        if (refetch) {
-          setTimeout(() => {
-            refetch();
-          }, 3000);
-        }
+        onSuccess?.()
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -342,17 +337,60 @@ export default memo(function Detail(props: any) {
         });
       });
   };
+  const handleClaim = function () {
+
+    const toastId = toast?.loading({
+      title: `Claim...`
+    });
+
+    const abi = [{
+      "constant": false,
+      "inputs": [],
+      "name": "getReward",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }]
+    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner())
+    contract
+      .getReward()
+      .then((tx: any) => tx.wait())
+      .then((receipt: any) => {
+        toast?.dismiss(toastId);
+        toast?.success({
+          title: 'Claim Successfully!'
+        });
+        onSuccess?.()
+      })
+      .catch((error: Error) => {
+        console.log('error: ', error);
+        toast?.dismiss(toastId);
+        toast?.fail({
+          title: 'Claim Failed!',
+          text: error?.message?.includes('user rejected transaction')
+            ? 'User rejected transaction'
+            : (error?.message ?? '')
+        });
+      });
+  }
   const onUpdateLpPercent = (percent: number) => {
     updateState({
       lpPercent: percent
     });
   };
 
+
+  const onSuccess = function () {
+    updateState({
+      updater: Date.now()
+    })
+  }
+
   useEffect(() => {
     if (!sender || !vaultAddress) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, vaultAddress]);
+  }, [sender, vaultAddress, updater]);
   return (
     <div>
       <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
@@ -468,20 +506,29 @@ export default memo(function Detail(props: any) {
             <div className='mb-[27px] text-black font-Montserrat text-[18px] font-bold leading-[90%]'>
               Rewards
             </div>
+            <div className='flex items-center justify-between'>
 
-            <div className='flex items-center gap-[14px]'>
-              <div className='w-[32px] h-[32px] rounded-full'>
-                <img src="/images/dapps/infrared/ibgt.svg" />
+              <div className='flex items-center gap-[14px]'>
+                <div className='w-[32px] h-[32px] rounded-full'>
+                  <img src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`} />
+                </div>
+                <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
+                  {
+                    formatValueDecimal(
+                      data?.earned,
+                      '',
+                      2
+                    )
+                  } {data?.rewardSymbol}
+                </div>
               </div>
-              <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-                {
-                  formatValueDecimal(
-                    data?.earned,
-                    '',
-                    2
-                  )
-                } iBGT
-              </div>
+              {
+                Big(data?.earned ?? 0).gt(0) && (
+                  <div className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
+                    Claim
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>
@@ -490,6 +537,7 @@ export default memo(function Detail(props: any) {
           <div className='mb-[17px] flex items-center h-[56px] rounded-[12px] border border-[#373A53] bg-white p-[5px]'>
             {tabs.map((tab, index) => (
               <div
+                key={index}
                 className={clsx([
                   'flex items-center justify-center border border-transparent rounded-[10px] flex-1',
                   tIndex === index ? 'h-full  !border-black bg-[#FFDC50]' : ''

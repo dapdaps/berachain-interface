@@ -30,7 +30,7 @@ export default memo(function IBGTPage(props: any) {
     loadingMsg: "",
     isTokenApproved: true,
     isTokenApproving: false,
-
+    updater: 0
   });
   const sourceBalances: any = {};
 
@@ -42,6 +42,7 @@ export default memo(function IBGTPage(props: any) {
     isTokenApproving,
     lpBalance,
     lpAmount,
+    updater
   } = state;
   const { token0, token1, decimals, id, LP_ADDRESS } = data ?? {
 
@@ -204,11 +205,7 @@ export default memo(function IBGTPage(props: any) {
           isLoading: false,
           // isPostTx: true
         });
-        // setTimeout(() => updateState({ isPostTx: false }), 10_000);
-        const { refetch } = props;
-        if (refetch) {
-          refetch();
-        }
+        onSuccess?.()
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -281,12 +278,7 @@ export default memo(function IBGTPage(props: any) {
         //   transactionHash,
         //   chain_id: props.chainId
         // });
-        const { refetch } = props;
-        if (refetch) {
-          setTimeout(() => {
-            refetch();
-          }, 3000);
-        }
+        onSuccess?.()
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -309,11 +301,53 @@ export default memo(function IBGTPage(props: any) {
       });
   };
 
+  const handleClaim = function () {
+
+    const toastId = toast?.loading({
+      title: `Claim...`
+    });
+
+    const abi = [{
+      "constant": false,
+      "inputs": [],
+      "name": "getReward",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }]
+    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner())
+    contract
+      .getReward()
+      .then((tx: any) => tx.wait())
+      .then((receipt: any) => {
+        toast?.dismiss(toastId);
+        toast?.success({
+          title: 'Claim Successfully!'
+        });
+        onSuccess?.()
+      })
+      .catch((error: Error) => {
+        console.log('error: ', error);
+        toast?.dismiss(toastId);
+        toast?.fail({
+          title: 'Claim Failed!',
+          text: error?.message?.includes('user rejected transaction')
+            ? 'User rejected transaction'
+            : (error?.message ?? '')
+        });
+      });
+  }
+  const onSuccess = function () {
+    updateState({
+      updater: Date.now()
+    })
+  }
+
   useEffect(() => {
     if (!sender || !data?.vaultAddress) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, data?.vaultAddress]);
+  }, [sender, data?.vaultAddress, updater]);
   return (
     <div className='flex flex-col items-center pt-[78px] pb-[30px]'>
       <div className="relative z-20 mb-[25px]">
@@ -424,11 +458,21 @@ export default memo(function IBGTPage(props: any) {
               <div className="pt-[19px] pl-[17px]">
                 <div className="mb-[27px] text-black font-Montserrat text-[18px] font-bold leading-[90%]">Rewards</div>
 
-                <div className="flex items-center gap-[14px]">
-                  <div className="w-[32px] h-[32px] rounded-full">
-                    <img src={`/images/dapps/infrared/ibgt.svg`} />
+                <div className='flex items-center justify-between'>
+
+                  <div className="flex items-center gap-[14px]">
+                    <div className="w-[32px] h-[32px] rounded-full">
+                      <img src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`} />
+                    </div>
+                    <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0 {data?.rewardSymbol}</div>
                   </div>
-                  <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0 iBGT</div>
+                  {
+                    Big(data?.earned ?? 0).gt(0) && (
+                      <div className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
+                        Claim
+                      </div>
+                    )
+                  }
                 </div>
               </div>
             </div>
