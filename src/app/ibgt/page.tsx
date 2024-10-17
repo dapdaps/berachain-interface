@@ -205,7 +205,9 @@ export default memo(function IBGTPage(props: any) {
           isLoading: false,
           // isPostTx: true
         });
-        onSuccess?.()
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -278,7 +280,9 @@ export default memo(function IBGTPage(props: any) {
         //   transactionHash,
         //   chain_id: props.chainId
         // });
-        onSuccess?.()
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -286,6 +290,7 @@ export default memo(function IBGTPage(props: any) {
         });
       })
       .catch((error: Error) => {
+        console.log('===error', error)
         updateState({
           isError: true,
           isLoading: false,
@@ -324,7 +329,9 @@ export default memo(function IBGTPage(props: any) {
         toast?.success({
           title: 'Claim Successfully!'
         });
-        onSuccess?.()
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
       })
       .catch((error: Error) => {
         console.log('error: ', error);
@@ -339,8 +346,11 @@ export default memo(function IBGTPage(props: any) {
   }
   const onSuccess = function () {
     updateState({
-      updater: Date.now()
+      updater: Date.now(),
+      isTokenApproved: true,
+      isTokenApproving: false
     })
+    tIndex === 0 ? handleTokenChange("") : handleLPChange("")
   }
 
   useEffect(() => {

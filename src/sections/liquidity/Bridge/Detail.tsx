@@ -234,9 +234,9 @@ export default memo(function Detail(props: any) {
           isLoading: false,
           isPostTx: true
         });
-        setTimeout(() => updateState({ isPostTx: false }), 10_000);
-
-        onSuccess?.()
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -300,7 +300,6 @@ export default memo(function Detail(props: any) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
-        console.log('=receipt', receipt);
 
         // addAction?.({
         //   type: 'Liquidity',
@@ -314,8 +313,9 @@ export default memo(function Detail(props: any) {
         //   transactionHash,
         //   chain_id: props.chainId
         // });
-        setTimeout(() => updateState({ isPostTx: false }), 10_000);
-        onSuccess?.()
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -360,7 +360,9 @@ export default memo(function Detail(props: any) {
         toast?.success({
           title: 'Claim Successfully!'
         });
-        onSuccess?.()
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
       })
       .catch((error: Error) => {
         console.log('error: ', error);
@@ -382,8 +384,11 @@ export default memo(function Detail(props: any) {
 
   const onSuccess = function () {
     updateState({
-      updater: Date.now()
+      updater: Date.now(),
+      isTokenApproved: true,
+      isTokenApproving: false
     })
+    tIndex === 0 ? handleTokenChange("") : handleLPChange("")
   }
 
   useEffect(() => {
