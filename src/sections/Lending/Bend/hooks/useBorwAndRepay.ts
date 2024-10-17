@@ -134,7 +134,6 @@ export const useBorwAndRepay = ({
             return tx.wait().then((res: ethers.ContractReceipt) => {
               const { status } = res;
               if (status === 1) {
-                console.log("tx succeeded", res);
                 setNeedApprove(false);
               } else {
                 console.log("tx failed", res);
@@ -164,7 +163,6 @@ export const useBorwAndRepay = ({
         return tx.wait().then((res: ethers.ContractReceipt) => {
           const { status } = res;
           if (status === 1) {
-            console.log("tx succeeded", res);
             setNeedApprove(false);
           } else {
             console.log("tx failed", res);
@@ -257,7 +255,6 @@ export const useBorwAndRepay = ({
             );
             triggerUpdate();
             setAmount("");
-            console.log("tx succeeded", res);
           } else {
             console.log("tx failed", res);
           }

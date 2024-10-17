@@ -13,7 +13,6 @@ const LendingModal: React.FC<LendingModalProps> = () => {
   const [currentTab, setCurrentTab] = useState<string>('deposit');
   const { markets, init }= useBend()
 
-
   useEffect(() => {
     init()
   }, []);
