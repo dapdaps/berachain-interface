@@ -51,7 +51,7 @@ export default function Invest() {
               )}
             </div>
             <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {record?.id}
+              {record?.tokens?.join("-")}
             </div>
           </div>
         );

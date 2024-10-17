@@ -11,7 +11,7 @@ import useBend from '../Lending/Bend/hooks/useBend';
 
 export function useMarketplaceContext(props: Props): Context {
   const { chainId } = props;
-  
+
   const [lendingVisible, setLendingVisible] = useState(false);
   const [lendingData, setLendingData] = useState<any>({});
   const { init: bendInit } = useBend()
@@ -54,9 +54,9 @@ export function useMarketplaceContext(props: Props): Context {
   }, []);
 
   // loader for bend
-    useEffect(() => {
-      bendInit()
-    }, []);
+  useEffect(() => {
+    bendInit()
+  }, []);
 
   return {
     chainId,
@@ -74,8 +74,7 @@ export function useMarketplaceContext(props: Props): Context {
     vaultsData,
     setVaultsVisible,
     setVaultsData,
-
-    openInfrared: () => {}
+    openInfrared
   };
 }
 
@@ -100,22 +99,22 @@ interface Context {
   vaultsData: any;
   setVaultsVisible: Dispatch<SetStateAction<boolean>>;
   setVaultsData: Dispatch<SetStateAction<any>>;
-  openInfrared(): void;
+  openInfrared(data: any): void;
 }
 
 const initialState: any = {
   chainId: 80084,
   lendingVisible: false,
   lendingData: {},
-  setLendingVisible: () => {},
-  setLendingData: () => {},
-  openDolomite: () => {},
+  setLendingVisible: () => { },
+  setLendingData: () => { },
+  openDolomite: () => { },
 
   stakingVisible: false,
   stakingData: {},
-  setStakingVisible: () => {},
-  setStakingData: () => {},
-  openInfrared: () => {}
+  setStakingVisible: () => { },
+  setStakingData: () => { },
+  openInfrared: (data: any) => { }
 };
 
 export const MarketplaceContext = createContext<Context>(initialState);

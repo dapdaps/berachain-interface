@@ -12,6 +12,7 @@ import { memo, useContext, useEffect, useState } from 'react';
 import DappModal from './modal';
 import useToast from '@/hooks/use-toast';
 import { formatValueDecimal } from '@/utils/balance';
+import { useRouter } from 'next/navigation';
 const TABS = [
   {
     value: 'Deposit',
@@ -25,6 +26,8 @@ const TABS = [
   }
 ];
 export default memo(function vaults(props) {
+
+  const router = useRouter()
   const {
     vaultsVisible,
     setVaultsVisible,
@@ -404,7 +407,7 @@ export default memo(function vaults(props) {
                 {formatValueDecimal(data?.depositAmount, '', 2, true, false)}
               </div>
               <div className='text-black font-Montserrat text-[14px] font-medium'>
-                {data?.id}
+                {data?.tokens?.join("-")}
               </div>
             </div>
           </div>
@@ -415,7 +418,7 @@ export default memo(function vaults(props) {
             </div>
             <div className='flex items-center gap-[6px]'>
               <div className='w-[26px] h-[26px] rounded-full'>
-                <img src='' />
+                <img src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`} />
               </div>
               <div className='text-black font-Montserrat text-[20px] font-bold'>
                 0
@@ -446,9 +449,11 @@ export default memo(function vaults(props) {
                 placeholder='0'
               />
               <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                <div className='w-[30px] h-[30px] rounded-full'></div>
+                <div className='w-[30px] h-[30px] rounded-full'>
+                  <img src={data?.images[0]} alt={data?.tokens?.join("-")} />
+                </div>
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  OOGA
+                  {data?.tokens?.join("-")}
                 </div>
               </div>
             </div>
@@ -505,7 +510,7 @@ export default memo(function vaults(props) {
               <div className='text-black font-Montserrat text-[14px] font-medium'>
                 Balance:{' '}
                 <span className='underline'>
-                  {Big(lpBalance ?? 0).toFixed(6)}
+                  {Big(lpBalance ? lpBalance : 0).toFixed(6)}
                 </span>
               </div>
             </div>
@@ -552,8 +557,10 @@ export default memo(function vaults(props) {
         </div> */}
         <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
           Manage exist assets on{' '}
-          <span className='text-black font-Montserrat underline'>
-            Oogabooga
+          <span className='text-black font-Montserrat underline' onClick={() => {
+            router.push("/liquidity/infrared")
+          }}>
+            Infrared
           </span>
         </div>
       </div>
