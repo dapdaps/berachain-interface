@@ -170,43 +170,6 @@ const MarketplaceView = () => {
                       key={'tooltip' + index}
                       isShake={true}
                       offset={30}
-                      children={
-                        <motion.div
-                          onHoverStart={() => setHoveredIndex(index)}
-                          onHoverEnd={() => setHoveredIndex(null)}
-                        >
-                          <motion.div
-                            className='bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] shadow-shadow1 p-0'
-                            animate={(() => getAnimationName(index)) as any}
-                            variants={{
-                              hover: {
-                                scale: 1.5,
-                                padding: 4
-                              },
-                              default: {
-                                scale: 1,
-                                padding: 0
-                              },
-                              prev: {
-                                x: -10
-                              },
-                              next: {
-                                x: 10
-                              }
-                            }}
-                          >
-                            <img
-                              alt=''
-                              src={item.icon}
-                              style={{
-                                borderRadius: '50%',
-                                objectFit: 'cover'
-                              }}
-                              onClick={() => onSwap(item)}
-                            />
-                          </motion.div>
-                        </motion.div>
-                      }
                       tooltip={
                         <div>
                           <div className="flex items-end gap-x-[3px] mb-[16px]">
@@ -231,7 +194,61 @@ const MarketplaceView = () => {
                           </div>
                         </div>
                       }
-                    ></Tooltip>
+                    >
+                      <motion.div
+                        onHoverStart={() => setHoveredIndex(index)}
+                        onHoverEnd={() => setHoveredIndex(null)}
+                        className="shadow-shadow1 rounded-full"
+                        animate={{
+                          x: [1200, -10, 0],
+                        }}
+                        transition={{
+                          duration: 3.5,
+                          times: [0, 0.85, 1],
+                        }}
+                      >
+                        <motion.div
+                          animate={{
+                            rotate: [0, -1090, -1080],
+                          }}
+                          transition={{
+                            duration: 3.5,
+                            times: [0, 0.85, 1],
+                          }}
+                        >
+                          <motion.div
+                            className="bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] p-0"
+                            animate={(() => getAnimationName(index)) as any}
+                            variants={{
+                              hover: {
+                                scale: 1.5,
+                                padding: 4,
+                              },
+                              default: {
+                                scale: 1,
+                                padding: 0,
+                              },
+                              prev: {
+                                // x: -10
+                              },
+                              next: {
+                                // x: 10
+                              }
+                            }}
+                          >
+                            <motion.img
+                              alt=""
+                              src={item.icon}
+                              style={{
+                                borderRadius: '50%',
+                                objectFit: 'cover'
+                              }}
+                              onClick={() => onSwap(item)}
+                            />
+                          </motion.div>
+                        </motion.div>
+                      </motion.div>
+                    </Tooltip>
                   ))}
                 </div>
               </div>
@@ -241,11 +258,11 @@ const MarketplaceView = () => {
                 Meme Tokens
               </div>
               <MoreButton
-                classname='absolute top-[50%] translate-y-[-50%] right-[-12px]'
+                classname="absolute top-[50%] translate-y-[-50%] right-[-12px]"
                 onClick={onFooterMore}
               />
-              <div className='z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]' />
-              <div className='z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black' />
+              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]" />
+              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
             </div>
           </div>
         </div>
