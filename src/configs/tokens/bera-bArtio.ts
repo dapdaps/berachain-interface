@@ -85,13 +85,13 @@ export const beraB: { [key: string]: Token } = {
     icon: '/assets/tokens/eth.png',
     color: '#5b7ff2'
   },
-  mimg: {
+  red: {
     chainId: CHAIN_ID,
-    address: '0x43Eb9f03c5B5C7963B24652BcE396A65F75F16aB',
+    address: '0x02e68D9037544345161BBFD316B64A1cf3cc5028',
     decimals: 18,
-    symbol: 'MIMG',
-    name: 'MIMG',
-    icon: '/assets/tokens/mimg.svg',
-    color: '#FFDD02'
+    symbol: 'RED',
+    name: 'Pure Red',
+    icon: '/assets/tokens/red.png',
+    color: '#F00'
   }
 };

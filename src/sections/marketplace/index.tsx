@@ -31,7 +31,7 @@ const MemeTokens = [
     volume: '$0.9717',
   },
   {
-    ...beraB.mimg,
+    ...beraB.red,
     price: '$0.0000001',
     volume: '$0.9717',
   }
