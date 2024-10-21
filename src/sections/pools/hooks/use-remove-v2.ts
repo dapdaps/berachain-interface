@@ -77,8 +77,8 @@ export default function useRemove({
       addAction({
         type: 'Liquidity',
         action: 'Remove Liquidity',
-        token0: detail.token0.symbol,
-        token1: detail.token1.symbol,
+        token0: token0.symbol,
+        token1: token1.symbol,
         template: dex.name,
         status,
         transactionHash,
