@@ -43,7 +43,7 @@ const MainLayoutHeader = (props: Props) => {
             window.open("https://bartio.faucet.berachain.com")
           }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10 hover:opacity-80">
+              className="h-10 w-10 hover:opacity-80">
               <g clip-path="url(#clip0_58_106)">
                 <rect width="16" height="16" rx="4" fill="#0284C7"></rect>
                 <path
