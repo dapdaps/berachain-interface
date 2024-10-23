@@ -2,6 +2,325 @@ import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect } from 'react';
 
+const DEPOSIT_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_dolomiteMargin',
+        type: 'address'
+      }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor'
+  },
+  {
+    payable: true,
+    stateMutability: 'payable',
+    type: 'fallback'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'DOLOMITE_MARGIN',
+    outputs: [
+      {
+        internalType: 'contract IDolomiteMargin',
+        name: '',
+        type: 'address'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_toAccountNumber',
+        type: 'uint256'
+      }
+    ],
+    name: 'depositETH',
+    outputs: [],
+    payable: true,
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [],
+    name: 'depositETHIntoDefaultAccount',
+    outputs: [],
+    payable: true,
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_toAccountNumber',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountPar',
+        type: 'uint256'
+      }
+    ],
+    name: 'depositPar',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountPar',
+        type: 'uint256'
+      }
+    ],
+    name: 'depositParIntoDefaultAccount',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_toAccountNumber',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountWei',
+        type: 'uint256'
+      }
+    ],
+    name: 'depositWei',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountWei',
+        type: 'uint256'
+      }
+    ],
+    name: 'depositWeiIntoDefaultAccount',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address payable',
+        name: '_weth',
+        type: 'address'
+      }
+    ],
+    name: 'initializeETHMarket',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_fromAccountNumber',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountWei',
+        type: 'uint256'
+      },
+      {
+        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
+        name: '_balanceCheckFlag',
+        type: 'uint8'
+      }
+    ],
+    name: 'withdrawETH',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_amountWei',
+        type: 'uint256'
+      },
+      {
+        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
+        name: '_balanceCheckFlag',
+        type: 'uint8'
+      }
+    ],
+    name: 'withdrawETHFromDefaultAccount',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_fromAccountNumber',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountPar',
+        type: 'uint256'
+      },
+      {
+        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
+        name: '_balanceCheckFlag',
+        type: 'uint8'
+      }
+    ],
+    name: 'withdrawPar',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountPar',
+        type: 'uint256'
+      },
+      {
+        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
+        name: '_balanceCheckFlag',
+        type: 'uint8'
+      }
+    ],
+    name: 'withdrawParFromDefaultAccount',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_fromAccountNumber',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountWei',
+        type: 'uint256'
+      },
+      {
+        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
+        name: '_balanceCheckFlag',
+        type: 'uint8'
+      }
+    ],
+    name: 'withdrawWei',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_amountWei',
+        type: 'uint256'
+      },
+      {
+        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
+        name: '_balanceCheckFlag',
+        type: 'uint8'
+      }
+    ],
+    name: 'withdrawWeiFromDefaultAccount',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  }
+];
+
 const BERA_DEPOSIT_ABI = [
   {
     inputs: [
@@ -551,9 +870,10 @@ const generateAccountNumber = () => {
   return timestamp + randomDigits;
 };
 
+const BERA_CHAIN = 80084;
+
 const DolomiteHandler = (props: any) => {
-  const { update, data, account, onLoad, provider, chainId } = props;
-  let { amount } = props;
+  const { update, data, amount, account, onLoad, provider, chainId } = props;
 
   const { marginAccount } = data.position || {};
 
@@ -562,6 +882,7 @@ const DolomiteHandler = (props: any) => {
     if (!data.actionText || !data.underlyingToken) return;
 
     if (!isCollateral && !update) return;
+    console.log('HANDLER--', isCollateral, update, data);
     const isNative = data.underlyingToken.isNative;
 
     let options: any = {};
@@ -573,7 +894,6 @@ const DolomiteHandler = (props: any) => {
       return;
     }
 
-    amount = Big(amount).toFixed(data.underlyingToken.decimals, Big.roundDown);
     const parsedAmount = ethers.utils.parseUnits(amount, data.underlyingToken.decimals);
     const accountNumber = marginAccount?.accountNumber || '0';
 
@@ -583,16 +903,29 @@ const DolomiteHandler = (props: any) => {
     };
 
     if (['Deposit', 'Withdraw'].includes(data.actionText)) {
-      contract = new ethers.Contract(data.config.depositWithdrawalProxy, BERA_DEPOSIT_ABI, provider.getSigner());
+      contract = new ethers.Contract(data.config.depositWithdrawalProxy, DEPOSIT_ABI, provider.getSigner());
+      if (chainId === BERA_CHAIN) {
+        contract = new ethers.Contract(data.config.depositWithdrawalProxy, BERA_DEPOSIT_ABI, provider.getSigner());
+      }
 
       if (data.actionText === 'Deposit') {
-        method = isNative ? 'depositPayableIntoDefaultAccount' : 'depositWeiIntoDefaultAccount';
+        method = isNative ? 'depositETHIntoDefaultAccount' : 'depositWeiIntoDefaultAccount';
         params = isNative ? [] : [data.marketId, parsedAmount];
+
+        if (chainId === BERA_CHAIN) {
+          method = isNative ? 'depositPayableIntoDefaultAccount' : 'depositWeiIntoDefaultAccount';
+          params = isNative ? [] : [data.marketId, parsedAmount];
+        }
       }
 
       if (data.actionText === 'Withdraw') {
-        method = isNative ? 'withdrawPayableFromDefaultAccount' : 'withdrawWeiFromDefaultAccount';
+        method = isNative ? 'withdrawETHFromDefaultAccount' : 'withdrawWeiFromDefaultAccount';
         params = isNative ? [parsedAmount, 1] : [data.marketId, parsedAmount, 1];
+
+        if (chainId === BERA_CHAIN) {
+          method = isNative ? 'withdrawPayableFromDefaultAccount' : 'withdrawWeiFromDefaultAccount';
+          params = isNative ? [parsedAmount, 1] : [data.marketId, parsedAmount, 1];
+        }
       }
     }
 
@@ -688,23 +1021,25 @@ const DolomiteHandler = (props: any) => {
           // _balanceCheckFlag
           1
         ];
-        if (data.isRepayAll) {
-          method = 'repayAllForBorrowPosition';
-          params = [
-            // _fromAccountNumber
-            0,
-            // _borrowAccountNumber
-            accountNumber,
-            // _marketId
-            data.marketId,
-            // _balanceCheckFlag
-            1
-          ];
-        }
+        // if (data.isRepayAll) {
+        //   method = 'repayAllForBorrowPosition';
+        //   params = [
+        //     // _fromAccountNumber
+        //     0,
+        //     // _borrowAccountNumber
+        //     accountNumber,
+        //     // _marketId
+        //     data.marketId,
+        //     // _balanceCheckFlag
+        //     1
+        //   ];
+        // }
       }
     }
 
     if (!contract) return;
+
+    console.log('HANDLER--', contract, method, params);
 
     const createTx = (gas?: any) => {
       const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : 4000000;
@@ -720,7 +1055,6 @@ const DolomiteHandler = (props: any) => {
           });
         })
         .catch((err: any) => {
-          console.log('createTx failure: %o', err);
           onLoad({});
         });
     };
@@ -730,7 +1064,7 @@ const DolomiteHandler = (props: any) => {
         createTx(gas);
       })
       .catch((err: any) => {
-        console.log('estimateGas failure: %o', err);
+        console.log('estimateGas', err);
         createTx();
       });
   }, [update]);

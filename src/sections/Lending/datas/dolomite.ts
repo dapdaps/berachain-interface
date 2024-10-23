@@ -1,11 +1,11 @@
+import axios from 'axios';
 import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect } from 'react';
-
-import { post } from '@/utils/http';
 import multicallAddresses from '@/configs/contract/multicall';
 import { multicall } from '@/utils/multicall';
-import axios from 'axios';
+
+import { post } from '@/utils/http';
 
 const ERC20_ABI = [
   {
@@ -31,49 +31,10 @@ const ERC20_ABI = [
 
 const MARGIN_ABI = [
   {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'uint64',
-            name: 'marginRatioMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'liquidationSpreadMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'earningsRateMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'marginPremiumMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'liquidationSpreadPremiumMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint96',
-            name: 'interestRateMax',
-            type: 'uint96'
-          },
-          {
-            internalType: 'uint128',
-            name: 'minBorrowedValueMax',
-            type: 'uint128'
-          }
-        ],
-        internalType: 'struct Storage.RiskLimits',
-        name: 'riskLimits',
-        type: 'tuple'
-      },
+    constant: true,
+    inputs: [],
+    name: 'getLiquidationSpread',
+    outputs: [
       {
         components: [
           {
@@ -83,108 +44,129 @@ const MARGIN_ABI = [
           }
         ],
         internalType: 'struct Decimal.D256',
-        name: 'marginRatio',
+        name: '',
         type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'liquidationSpread',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'earningsRate',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: 'minBorrowedValue',
-        type: 'tuple'
-      },
-      {
-        internalType: 'uint256',
-        name: 'accountMaxNumberOfMarketsWithBalances',
-        type: 'uint256'
-      },
-      {
-        internalType: 'contract IOracleSentinel',
-        name: 'oracleSentinel',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'callbackGasLimit',
-        type: 'uint256'
       }
     ],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'constructor'
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    anonymous: false,
-    inputs: [
+    constant: true,
+    inputs: [],
+    name: 'getMarginRatio',
+    outputs: [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: 'trusted',
-        type: 'bool'
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256'
+          }
+        ],
+        internalType: 'struct Decimal.D256',
+        name: '',
+        type: 'tuple'
       }
     ],
-    name: 'LogOperatorSet',
-    type: 'event'
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    anonymous: false,
+    constant: true,
     inputs: [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address'
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address'
+        internalType: 'uint256',
+        name: 'marketId',
+        type: 'uint256'
       }
     ],
-    name: 'OwnershipTransferred',
-    type: 'event'
+    name: 'getMarketCurrentIndex',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'uint112',
+            name: 'borrow',
+            type: 'uint112'
+          },
+          {
+            internalType: 'uint112',
+            name: 'supply',
+            type: 'uint112'
+          },
+          {
+            internalType: 'uint32',
+            name: 'lastUpdate',
+            type: 'uint32'
+          }
+        ],
+        internalType: 'struct Interest.Index',
+        name: '',
+        type: 'tuple'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'marketId',
+        type: 'uint256'
+      }
+    ],
+    name: 'getMarketMarginPremium',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256'
+          }
+        ],
+        internalType: 'struct Decimal.D256',
+        name: '',
+        type: 'tuple'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'marketId',
+        type: 'uint256'
+      }
+    ],
+    name: 'getMarketSpreadPremium',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256'
+          }
+        ],
+        internalType: 'struct Decimal.D256',
+        name: '',
+        type: 'tuple'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
@@ -262,1177 +244,6 @@ const MARGIN_ABI = [
     constant: true,
     inputs: [
       {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      },
-      {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256'
-      }
-    ],
-    name: 'getAccountMarketWithBalanceAtIndex',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAccountMarketsWithBalances',
-    outputs: [
-      {
-        internalType: 'uint256[]',
-        name: '',
-        type: 'uint256[]'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getAccountMaxNumberOfMarketsWithBalances',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAccountNumberOfMarketsWithBalances',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAccountNumberOfMarketsWithDebt',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      },
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getAccountPar',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'bool',
-            name: 'sign',
-            type: 'bool'
-          },
-          {
-            internalType: 'uint128',
-            name: 'value',
-            type: 'uint128'
-          }
-        ],
-        internalType: 'struct Types.Par',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAccountRiskOverrideByAccount',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'marginRatioOverride',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'liquidationSpreadOverride',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'accountOwner',
-        type: 'address'
-      }
-    ],
-    name: 'getAccountRiskOverrideSetterByAccountOwner',
-    outputs: [
-      {
-        internalType: 'contract IAccountRiskOverrideSetter',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAccountStatus',
-    outputs: [
-      {
-        internalType: 'enum Account.Status',
-        name: '',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAccountValues',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: '',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      },
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getAccountWei',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'bool',
-            name: 'sign',
-            type: 'bool'
-          },
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Types.Wei',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getAdjustedAccountValues',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: '',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getCallbackGasLimit',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getDefaultAccountRiskOverrideSetter',
-    outputs: [
-      {
-        internalType: 'contract IAccountRiskOverrideSetter',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getEarningsRate',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'autoTrader',
-        type: 'address'
-      }
-    ],
-    name: 'getIsAutoTraderSpecial',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getIsBorrowAllowed',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'operator',
-        type: 'address'
-      }
-    ],
-    name: 'getIsGlobalOperator',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getIsLiquidationAllowed',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'operator',
-        type: 'address'
-      }
-    ],
-    name: 'getIsLocalOperator',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getLiquidationSpread',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      },
-      {
-        internalType: 'uint256',
-        name: 'heldMarketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'owedMarketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getLiquidationSpreadForAccountAndPair',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'heldMarketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'owedMarketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getLiquidationSpreadForPair',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getLiquidationSpreadOverrideByAccount',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getMarginRatio',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getMarginRatioForAccount',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info',
-        name: 'account',
-        type: 'tuple'
-      }
-    ],
-    name: 'getMarginRatioOverrideByAccount',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarket',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'token',
-            type: 'address'
-          },
-          {
-            internalType: 'bool',
-            name: 'isClosing',
-            type: 'bool'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint128',
-                name: 'borrow',
-                type: 'uint128'
-              },
-              {
-                internalType: 'uint128',
-                name: 'supply',
-                type: 'uint128'
-              }
-            ],
-            internalType: 'struct Types.TotalPar',
-            name: 'totalPar',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint112',
-                name: 'borrow',
-                type: 'uint112'
-              },
-              {
-                internalType: 'uint112',
-                name: 'supply',
-                type: 'uint112'
-              },
-              {
-                internalType: 'uint32',
-                name: 'lastUpdate',
-                type: 'uint32'
-              }
-            ],
-            internalType: 'struct Interest.Index',
-            name: 'index',
-            type: 'tuple'
-          },
-          {
-            internalType: 'contract IPriceOracle',
-            name: 'priceOracle',
-            type: 'address'
-          },
-          {
-            internalType: 'contract IInterestSetter',
-            name: 'interestSetter',
-            type: 'address'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Decimal.D256',
-            name: 'marginPremium',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Decimal.D256',
-            name: 'liquidationSpreadPremium',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'bool',
-                name: 'sign',
-                type: 'bool'
-              },
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Types.Wei',
-            name: 'maxSupplyWei',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'bool',
-                name: 'sign',
-                type: 'bool'
-              },
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Types.Wei',
-            name: 'maxBorrowWei',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Decimal.D256',
-            name: 'earningsRateOverride',
-            type: 'tuple'
-          }
-        ],
-        internalType: 'struct Storage.Market',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketBorrowInterestRateApr',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Interest.Rate',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketBorrowInterestRatePerSecond',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Interest.Rate',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketCachedIndex',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint112',
-            name: 'borrow',
-            type: 'uint112'
-          },
-          {
-            internalType: 'uint112',
-            name: 'supply',
-            type: 'uint112'
-          },
-          {
-            internalType: 'uint32',
-            name: 'lastUpdate',
-            type: 'uint32'
-          }
-        ],
-        internalType: 'struct Interest.Index',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketCurrentIndex',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint112',
-            name: 'borrow',
-            type: 'uint112'
-          },
-          {
-            internalType: 'uint112',
-            name: 'supply',
-            type: 'uint112'
-          },
-          {
-            internalType: 'uint32',
-            name: 'lastUpdate',
-            type: 'uint32'
-          }
-        ],
-        internalType: 'struct Interest.Index',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketEarningsRateOverride',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
         internalType: 'address',
         name: 'token',
         type: 'address'
@@ -1450,1452 +261,6 @@ const MARGIN_ABI = [
     stateMutability: 'view',
     type: 'function'
   },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketInterestRate',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Interest.Rate',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketInterestSetter',
-    outputs: [
-      {
-        internalType: 'contract IInterestSetter',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketIsClosing',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketLiquidationSpreadPremium',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketMarginPremium',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketMaxBorrowWei',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'bool',
-            name: 'sign',
-            type: 'bool'
-          },
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Types.Wei',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketMaxSupplyWei',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'bool',
-            name: 'sign',
-            type: 'bool'
-          },
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Types.Wei',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketMaxWei',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'bool',
-            name: 'sign',
-            type: 'bool'
-          },
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Types.Wei',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketPrice',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Price',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketPriceOracle',
-    outputs: [
-      {
-        internalType: 'contract IPriceOracle',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketSpreadPremium',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketSupplyInterestRateApr',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Interest.Rate',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketTokenAddress',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketTotalPar',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint128',
-            name: 'borrow',
-            type: 'uint128'
-          },
-          {
-            internalType: 'uint128',
-            name: 'supply',
-            type: 'uint128'
-          }
-        ],
-        internalType: 'struct Types.TotalPar',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketTotalWei',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint128',
-            name: 'borrow',
-            type: 'uint128'
-          },
-          {
-            internalType: 'uint128',
-            name: 'supply',
-            type: 'uint128'
-          }
-        ],
-        internalType: 'struct Types.TotalWei',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getMarketWithInfo',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'token',
-            type: 'address'
-          },
-          {
-            internalType: 'bool',
-            name: 'isClosing',
-            type: 'bool'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint128',
-                name: 'borrow',
-                type: 'uint128'
-              },
-              {
-                internalType: 'uint128',
-                name: 'supply',
-                type: 'uint128'
-              }
-            ],
-            internalType: 'struct Types.TotalPar',
-            name: 'totalPar',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint112',
-                name: 'borrow',
-                type: 'uint112'
-              },
-              {
-                internalType: 'uint112',
-                name: 'supply',
-                type: 'uint112'
-              },
-              {
-                internalType: 'uint32',
-                name: 'lastUpdate',
-                type: 'uint32'
-              }
-            ],
-            internalType: 'struct Interest.Index',
-            name: 'index',
-            type: 'tuple'
-          },
-          {
-            internalType: 'contract IPriceOracle',
-            name: 'priceOracle',
-            type: 'address'
-          },
-          {
-            internalType: 'contract IInterestSetter',
-            name: 'interestSetter',
-            type: 'address'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Decimal.D256',
-            name: 'marginPremium',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Decimal.D256',
-            name: 'liquidationSpreadPremium',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'bool',
-                name: 'sign',
-                type: 'bool'
-              },
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Types.Wei',
-            name: 'maxSupplyWei',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'bool',
-                name: 'sign',
-                type: 'bool'
-              },
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Types.Wei',
-            name: 'maxBorrowWei',
-            type: 'tuple'
-          },
-          {
-            components: [
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Decimal.D256',
-            name: 'earningsRateOverride',
-            type: 'tuple'
-          }
-        ],
-        internalType: 'struct Storage.Market',
-        name: '',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint112',
-            name: 'borrow',
-            type: 'uint112'
-          },
-          {
-            internalType: 'uint112',
-            name: 'supply',
-            type: 'uint112'
-          },
-          {
-            internalType: 'uint32',
-            name: 'lastUpdate',
-            type: 'uint32'
-          }
-        ],
-        internalType: 'struct Interest.Index',
-        name: '',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Price',
-        name: '',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Interest.Rate',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getMinBorrowedValue',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      }
-    ],
-    name: 'getNumExcessTokens',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'bool',
-            name: 'sign',
-            type: 'bool'
-          },
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Types.Wei',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getNumMarkets',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getOracleSentinel',
-    outputs: [
-      {
-        internalType: 'contract IOracleSentinel',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getRiskLimits',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint64',
-            name: 'marginRatioMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'liquidationSpreadMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'earningsRateMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'marginPremiumMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint64',
-            name: 'liquidationSpreadPremiumMax',
-            type: 'uint64'
-          },
-          {
-            internalType: 'uint96',
-            name: 'interestRateMax',
-            type: 'uint96'
-          },
-          {
-            internalType: 'uint128',
-            name: 'minBorrowedValueMax',
-            type: 'uint128'
-          }
-        ],
-        internalType: 'struct Storage.RiskLimits',
-        name: '',
-        type: 'tuple'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'isOwner',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'number',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Account.Info[]',
-        name: 'accounts',
-        type: 'tuple[]'
-      },
-      {
-        components: [
-          {
-            internalType: 'enum Actions.ActionType',
-            name: 'actionType',
-            type: 'uint8'
-          },
-          {
-            internalType: 'uint256',
-            name: 'accountId',
-            type: 'uint256'
-          },
-          {
-            components: [
-              {
-                internalType: 'bool',
-                name: 'sign',
-                type: 'bool'
-              },
-              {
-                internalType: 'enum Types.AssetDenomination',
-                name: 'denomination',
-                type: 'uint8'
-              },
-              {
-                internalType: 'enum Types.AssetReference',
-                name: 'ref',
-                type: 'uint8'
-              },
-              {
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-              }
-            ],
-            internalType: 'struct Types.AssetAmount',
-            name: 'amount',
-            type: 'tuple'
-          },
-          {
-            internalType: 'uint256',
-            name: 'primaryMarketId',
-            type: 'uint256'
-          },
-          {
-            internalType: 'uint256',
-            name: 'secondaryMarketId',
-            type: 'uint256'
-          },
-          {
-            internalType: 'address',
-            name: 'otherAddress',
-            type: 'address'
-          },
-          {
-            internalType: 'uint256',
-            name: 'otherAccountId',
-            type: 'uint256'
-          },
-          {
-            internalType: 'bytes',
-            name: 'data',
-            type: 'bytes'
-          }
-        ],
-        internalType: 'struct Actions.ActionArgs[]',
-        name: 'actions',
-        type: 'tuple[]'
-      }
-    ],
-    name: 'operate',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'owner',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'token',
-        type: 'address'
-      },
-      {
-        internalType: 'contract IPriceOracle',
-        name: 'priceOracle',
-        type: 'address'
-      },
-      {
-        internalType: 'contract IInterestSetter',
-        name: 'interestSetter',
-        type: 'address'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'marginPremium',
-        type: 'tuple'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'spreadPremium',
-        type: 'tuple'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxSupplyWei',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxBorrowWei',
-        type: 'uint256'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'earningsRateOverride',
-        type: 'tuple'
-      },
-      {
-        internalType: 'bool',
-        name: 'isClosing',
-        type: 'bool'
-      }
-    ],
-    name: 'ownerAddMarket',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountMaxNumberOfMarketsWithBalances',
-        type: 'uint256'
-      }
-    ],
-    name: 'ownerSetAccountMaxNumberOfMarketsWithBalances',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'accountOwner',
-        type: 'address'
-      },
-      {
-        internalType: 'contract IAccountRiskOverrideSetter',
-        name: 'accountRiskOverrideSetter',
-        type: 'address'
-      }
-    ],
-    name: 'ownerSetAccountRiskOverride',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'autoTrader',
-        type: 'address'
-      },
-      {
-        internalType: 'bool',
-        name: 'special',
-        type: 'bool'
-      }
-    ],
-    name: 'ownerSetAutoTraderSpecial',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'callbackGasLimit',
-        type: 'uint256'
-      }
-    ],
-    name: 'ownerSetCallbackGasLimit',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'contract IAccountRiskOverrideSetter',
-        name: 'accountRiskOverrideSetter',
-        type: 'address'
-      }
-    ],
-    name: 'ownerSetDefaultAccountRiskOverride',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'earningsRate',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetEarningsRate',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'earningsRateOverride',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetEarningsRateOverride',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'operator',
-        type: 'address'
-      },
-      {
-        internalType: 'bool',
-        name: 'approved',
-        type: 'bool'
-      }
-    ],
-    name: 'ownerSetGlobalOperator',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'contract IInterestSetter',
-        name: 'interestSetter',
-        type: 'address'
-      }
-    ],
-    name: 'ownerSetInterestSetter',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bool',
-        name: 'isClosing',
-        type: 'bool'
-      }
-    ],
-    name: 'ownerSetIsClosing',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'spread',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetLiquidationSpread',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'liquidationSpreadPremium',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetLiquidationSpreadPremium',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'marginPremium',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetMarginPremium',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Decimal.D256',
-        name: 'ratio',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetMarginRatio',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxBorrowWei',
-        type: 'uint256'
-      }
-    ],
-    name: 'ownerSetMaxBorrowWei',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'maxSupplyWei',
-        type: 'uint256'
-      }
-    ],
-    name: 'ownerSetMaxSupplyWei',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256'
-          }
-        ],
-        internalType: 'struct Monetary.Value',
-        name: 'minBorrowedValue',
-        type: 'tuple'
-      }
-    ],
-    name: 'ownerSetMinBorrowedValue',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'contract IOracleSentinel',
-        name: 'oracleSentinel',
-        type: 'address'
-      }
-    ],
-    name: 'ownerSetOracleSentinel',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'contract IPriceOracle',
-        name: 'priceOracle',
-        type: 'address'
-      }
-    ],
-    name: 'ownerSetPriceOracle',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'marketId',
-        type: 'uint256'
-      },
-      {
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address'
-      }
-    ],
-    name: 'ownerWithdrawExcessTokens',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'token',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address'
-      }
-    ],
-    name: 'ownerWithdrawUnsupportedTokens',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'operator',
-            type: 'address'
-          },
-          {
-            internalType: 'bool',
-            name: 'trusted',
-            type: 'bool'
-          }
-        ],
-        internalType: 'struct Types.OperatorArg[]',
-        name: 'args',
-        type: 'tuple[]'
-      }
-    ],
-    name: 'setOperators',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address'
-      }
-    ],
-    name: 'transferOwnership',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  }
 ];
 
 const apr2ApyDaily = (apr: string) => {
@@ -2905,33 +270,29 @@ const apr2ApyDaily = (apr: string) => {
   return apy.times(100).toFixed(2) + '%';
 };
 
-const minimumCollateralizationToLTV = (minCollateralization: string) => {
-  return Big(1).div(Big(minCollateralization).plus(1)).toFixed(6);
-};
-
 const DolomiteData = (props: any) => {
   const {
-    //#region Local Config
     marginAddress,
-    blockNumberApi,
+    graphApi,
     blockNumberApiQuery,
-    positionListApi,
     positionListApiQuery,
     liquidationRatio,
     interestRatesApi,
-    markets,
-    name,
-    wBERA,
-    //#endregion
-
-    update,
-    onLoad,
-    chainId,
+    marketInfoApiQuery,
+    allTokensApiQuery,
+    allTotalParsApiQuery,
+    pricesApi,
     account,
+    update,
+    name,
+    onLoad,
+    markets,
     provider,
+    chainId,
+    wrappedToken = {}
   } = props;
 
-  console.log('Dolomite data props: %o', props);
+  console.log(props);
 
   const multicallAddress = multicallAddresses[chainId];
 
@@ -2967,12 +328,8 @@ const DolomiteData = (props: any) => {
           token.borrowTokenPrice.push(_token.underlyingPrice);
         }
       });
-
       const nativeToken = _cTokensData['native'];
-
       _positionList.forEach((position: any) => {
-        const baseLTV = Big(1).minus(Big(liquidationRatio).minus(1)).toString();
-        let LTV = baseLTV;
         let totalBorrowedUsd = Big(0);
         let totalCollateralUsd = Big(0);
         // Tokens that have been borrowed from the current position cannot be added as collateral again
@@ -2985,10 +342,10 @@ const DolomiteData = (props: any) => {
         const repayTokens: any = [];
 
         const { amounts = [] } = position;
+        let positionBorrowedUsd = Big(0);
         amounts.forEach((_amount: any) => {
           const { collateral, borrow, token } = _amount;
           const currentToken = _cTokensData[token.id.toLowerCase()];
-          LTV = currentToken.maxLTV;
           _amount.collateralValue = Big(collateral || 0).toFixed(currentToken.decimals);
           _amount.collateralUsd = Big(collateral || 0)
             .times(currentToken.price)
@@ -2997,7 +354,11 @@ const DolomiteData = (props: any) => {
           _amount.borrowUsd = Big(borrow || 0)
             .times(currentToken.price)
             .toFixed(2);
-
+          positionBorrowedUsd = Big(positionBorrowedUsd).plus(
+            Big(borrow || 0)
+              .times(currentToken.price)
+              .times(currentToken.liquidationRatio)
+          );
           totalBorrowedUsd = totalBorrowedUsd.plus(Big(borrow || 0).times(currentToken.price));
           totalCollateralUsd = totalCollateralUsd.plus(Big(collateral || 0).times(currentToken.price));
 
@@ -3008,7 +369,7 @@ const DolomiteData = (props: any) => {
               currentPositionCollateralValue: _amount.collateralValue,
               currentPositionCollateralUsd: _amount.collateralUsd
             };
-            if (currentToken.address.toLowerCase() === wBERA.address.toLowerCase()) {
+            if (currentToken.address.toLowerCase() === wrappedToken?.address?.toLowerCase()) {
               if (nativeToken) {
                 removeCollateralToken.symbol = nativeToken.symbol;
                 removeCollateralToken.icon = nativeToken.icon;
@@ -3029,7 +390,7 @@ const DolomiteData = (props: any) => {
               currentPositionBorrowValue: _amount.borrowValue,
               currentPositionBorrowUsd: _amount.borrowUsd
             };
-            if (currentToken.address.toLowerCase() === wBERA.address.toLowerCase()) {
+            if (currentToken.address.toLowerCase() === wrappedToken?.address?.toLowerCase()) {
               if (nativeToken) {
                 repayToken.symbol = nativeToken.symbol;
                 repayToken.icon = nativeToken.icon;
@@ -3040,17 +401,16 @@ const DolomiteData = (props: any) => {
           }
         });
 
-        const baseOffset = 0.049;
-        // (CollateralUSD-BorrowedUSD/0.8)/TokenPrice
-        const removeCollateralBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(Big(baseLTV).plus(baseOffset)));
+        const latestHealth = 1.005;
 
         removeCollateralTokens.forEach((token: any) => {
-          const _removeCollateralBalance = removeCollateralBalance.div(token.price);
-          if (_removeCollateralBalance.gte(token.currentPositionCollateral)) {
-            token.balance = token.currentPositionCollateral.toFixed(token.decimals, Big.roundDown);
+          const removeValue = totalCollateralUsd.minus(positionBorrowedUsd.times(latestHealth)).div(token.price);
+
+          if (removeValue.gte(token.currentPositionCollateral)) {
+            token.balance = token.currentPositionCollateral.toFixed(token.decimals);
             return;
           }
-          token.balance = _removeCollateralBalance.toFixed(token.decimals, Big.roundDown);
+          token.balance = removeValue.toFixed(token.decimals, Big.roundDown);
         });
 
         tokenList.forEach((token: any) => {
@@ -3058,13 +418,17 @@ const DolomiteData = (props: any) => {
             return;
           }
           if (!removeCollateralTokens.some((it: any) => it.address.toLowerCase() === token.address.toLowerCase())) {
-            // (CollateralUSD-BorrowedUSD/0.8)*0.8/BorrowTokenPrice
-            const borrowBalance = totalCollateralUsd.minus(Big(totalBorrowedUsd).div(Big(baseLTV).plus(baseOffset))).times(token.maxLTV);
+            const borrowValue = totalCollateralUsd
+              .minus(positionBorrowedUsd)
+              .div(latestHealth)
+              .div(token.liquidationRatio)
+              .div(token.price);
+
             const borrowToken = {
               ...token,
-              balance: borrowBalance.div(token.price).toFixed(token.decimals, Big.roundDown),
+              balance: borrowValue.toFixed(token.decimals, Big.roundDown)
             };
-            if (token.address.toLowerCase() === wBERA.address.toLowerCase()) {
+            if (token.address.toLowerCase() === wrappedToken?.address?.toLowerCase()) {
               if (nativeToken) {
                 borrowToken.symbol = nativeToken.symbol;
                 borrowToken.icon = nativeToken.icon;
@@ -3076,9 +440,9 @@ const DolomiteData = (props: any) => {
           if (!repayTokens.some((it: any) => it.address.toLowerCase() === token.address.toLowerCase())) {
             const addCollateralToken = {
               ...token,
-              balance: token.balance,
+              balance: token.balance
             };
-            if (token.address.toLowerCase() === wBERA.address.toLowerCase()) {
+            if (token.address.toLowerCase() === wrappedToken?.address?.toLowerCase()) {
               if (nativeToken) {
                 addCollateralToken.symbol = nativeToken.symbol;
                 addCollateralToken.icon = nativeToken.icon;
@@ -3089,17 +453,16 @@ const DolomiteData = (props: any) => {
           }
         });
 
-        position.baseLTV = baseLTV;
         position.totalBorrowedUsd = totalBorrowedUsd.toFixed(2);
+        position.totalBorrowedUsdFull = totalBorrowedUsd.toFixed(18, Big.roundDown).replace(/[.]?0+$/, '');
         position.totalBorrowedUsdValue = totalBorrowedUsd;
         position.totalCollateralUsd = totalCollateralUsd.toFixed(2);
+        position.totalCollateralUsdFull = totalCollateralUsd.toFixed(18, Big.roundDown).replace(/[.]?0+$/, '');
         position.totalCollateralUsdValue = totalCollateralUsd;
         if (totalBorrowedUsd.lte(0)) {
           position.healthFactor = '∞';
         } else {
-          position.healthFactor = totalCollateralUsd
-            .div(totalBorrowedUsd.times(liquidationRatio))
-            .toFixed(2, Big.roundDown);
+          position.healthFactor = totalCollateralUsd.div(positionBorrowedUsd).toFixed(2, Big.roundDown);
         }
         position.addCollateralTokens = addCollateralTokens;
         position.removeCollateralTokens = removeCollateralTokens;
@@ -3110,9 +473,9 @@ const DolomiteData = (props: any) => {
       onLoad({
         markets: _cTokensData,
         positionList: _positionList,
-        userTotalBorrowUsd: userTotalBorrowUsd.toFixed(30).replace(/[.]?0*$/, ''),
-        userTotalCollateralUsd: userTotalCollateralUsd.toFixed(30).replace(/[.]?0*$/, ''),
-        userTotalSupplyUsd: userTotalSupplyUsd.toFixed(30).replace(/[.]?0*$/, ''),
+        userTotalBorrowUsd: userTotalBorrowUsd.toString(),
+        userTotalCollateralUsd: userTotalCollateralUsd.toString(),
+        userTotalSupplyUsd: userTotalSupplyUsd.toString()
       });
     };
     const getWalletBalance = () => {
@@ -3174,15 +537,11 @@ const DolomiteData = (props: any) => {
           provider: provider
         })
           .then((res: any) => {
-            console.log('getDolomiteBalance: %o', res);
             const [marketIds, addresses = [], principal, real] = res[0];
             addresses.forEach((address: string, index: number) => {
               const currToken = tokenList.find((token: any) => token.address.toLowerCase() === address.toLowerCase());
-              if (address.toLowerCase() === wBERA.address.toLowerCase()) {
-                result['native'] = ethers.utils.formatUnits(
-                  real[index].value?._hex || 0,
-                  currToken?.decimals || 18
-                );
+              if (address.toLowerCase() === wrappedToken?.address?.toLowerCase()) {
+                result['native'] = ethers.utils.formatUnits(real[index].value?._hex || 0, currToken?.decimals || 18);
               }
               result[address.toLowerCase()] = ethers.utils.formatUnits(
                 real[index].value?._hex || 0,
@@ -3211,7 +570,7 @@ const DolomiteData = (props: any) => {
           tokenMarketIds[market.address.toLowerCase()] = market.marketId;
           let marketAddress = market.address;
           if (market.isNative) {
-            marketAddress = wBERA.address;
+            marketAddress = wrappedToken.address;
           }
           return {
             address: marginAddress,
@@ -3229,7 +588,10 @@ const DolomiteData = (props: any) => {
           .then((res: any) => {
             console.log('getMarketIdByTokenAddress: %o', res);
             for (let i = 0; i < res.length; i++) {
-              tokenMarketIds[marketList[i].address.toLowerCase()] = ethers.utils.formatUnits(res[i][0]._hex, 0);
+              tokenMarketIds[marketList[i].address.toLowerCase()] = ethers.utils.formatUnits(
+                res[i] ? res[i][0]._hex : '0',
+                0
+              );
             }
             resolve(tokenMarketIds);
           })
@@ -3242,7 +604,8 @@ const DolomiteData = (props: any) => {
     const getInterestRates = () => {
       const result: any = {};
       return new Promise((resolve) => {
-        axios.get(interestRatesApi)
+        axios
+          .get(interestRatesApi)
           .then((interestRatesRes) => {
             const { status, data } = interestRatesRes;
             if (status !== 200 || !data) {
@@ -3252,15 +615,15 @@ const DolomiteData = (props: any) => {
             data.interestRates.forEach((item: any) => {
               const { token } = item;
               result[token.tokenAddress.toLowerCase()] = item;
-              if (token.tokenAddress.toLowerCase() === wBERA.address.toLowerCase()) {
+              if (token.tokenAddress.toLowerCase() === wrappedToken.address.toLowerCase()) {
                 result['native'] = {
                   ...item,
                   token: {
                     marketId: token.marketId,
                     tokenAddress: markets['native'].address,
                     tokenName: markets['native'].name,
-                    tokenSymbol: markets['native'].symbol,
-                  },
+                    tokenSymbol: markets['native'].symbol
+                  }
                 };
               }
             });
@@ -3276,7 +639,7 @@ const DolomiteData = (props: any) => {
       const result: any = [];
       return new Promise((resolve) => {
         const blockNumberParams = blockNumberApiQuery();
-        post(blockNumberApi, blockNumberParams)
+        post(graphApi, blockNumberParams)
           .then((blockNumberRes) => {
             const blockNumber = blockNumberRes?.data?._meta?.block?.number;
             if (!blockNumber) {
@@ -3284,8 +647,8 @@ const DolomiteData = (props: any) => {
               resolve(result);
               return;
             }
-            const positionListParams = positionListApiQuery({ walletAddress: account, blockNumber });
-            post(positionListApi, positionListParams)
+            const positionListParams = positionListApiQuery({ walletAddress: account.toLowerCase(), blockNumber });
+            post(graphApi, positionListParams)
               .then((positionListRes) => {
                 const borrowPositions = positionListRes?.data?.borrowPositions;
                 if (!borrowPositions) {
@@ -3312,27 +675,9 @@ const DolomiteData = (props: any) => {
           });
       });
     };
-    const getCTokenData = async (oToken: any) => {
+    const getCTokenData = (oToken: any) => {
       if (oTokensLength === 0) return;
-      // const blockNumberParams = blockNumberApiQuery();
-      // const blockNumberRes = await post(blockNumberApi, blockNumberParams);
-      // const blockNumber = blockNumberRes?.data?._meta?.block?.number;
       const calls = [
-        {
-          address: marginAddress,
-          name: 'getMarketWithInfo',
-          params: [oToken.marketId]
-        },
-        {
-          address: marginAddress,
-          name: 'getMarketSupplyInterestRateApr',
-          params: [oToken.marketId]
-        },
-        {
-          address: marginAddress,
-          name: 'getMarketBorrowInterestRateApr',
-          params: [oToken.marketId]
-        },
         {
           address: marginAddress,
           name: 'getLiquidationSpread',
@@ -3343,6 +688,21 @@ const DolomiteData = (props: any) => {
           name: 'getMarginRatio',
           params: []
         },
+        {
+          address: marginAddress,
+          name: 'getMarketCurrentIndex',
+          params: [oToken.marketId]
+        },
+        {
+          address: marginAddress,
+          name: 'getMarketMarginPremium',
+          params: [oToken.marketId]
+        },
+        {
+          address: marginAddress,
+          name: 'getMarketSpreadPremium',
+          params: [oToken.marketId]
+        }
       ];
       multicall({
         abi: MARGIN_ABI,
@@ -3352,39 +712,48 @@ const DolomiteData = (props: any) => {
         provider: provider
       })
         .then((res: any) => {
-          console.log('%s getCTokenData Res: %o', oToken.symbol, res);
+          console.log('%s getCTokenData Res: %o, oToken: %o', oToken.symbol, res, oToken);
 
-          const MarginRatio = ethers.utils.formatUnits(res[4][0]?.value?._hex || 0, 18);
-          let LTV = minimumCollateralizationToLTV(MarginRatio);
-          if (oToken.address.toLowerCase() === wBERA.address.toLowerCase() || oToken.isNative) {
-            LTV = '0.8';
-          }
+          const removeLastZero = (str: string) => str.replace(/[.]?0+$/, '');
+          let MarginRatio = ethers.utils.formatUnits(res[1][0]?.value?._hex || 0, 0);
+          let MarketMarginPremium = ethers.utils.formatUnits(res[3]?.[0]?.value?._hex || 0, 0);
+          MarginRatio = Big(MarginRatio).plus(1e18).div(1e18).toFixed(18, Big.roundDown);
+          MarketMarginPremium = Big(MarketMarginPremium).plus(1e18).div(1e18).toFixed(18, Big.roundDown);
+          MarginRatio = removeLastZero(MarginRatio);
+          MarketMarginPremium = removeLastZero(MarketMarginPremium);
+          let _liquidationRatio = Big(MarginRatio).times(MarketMarginPremium).toFixed(18, Big.roundDown);
+          _liquidationRatio = removeLastZero(_liquidationRatio);
+          let LTV = Big(1).div(_liquidationRatio).toFixed(18, Big.roundDown);
+          LTV = removeLastZero(LTV);
 
-          const LiquidationSpread = ethers.utils.formatUnits(res[3][0]?.value?._hex || 0, 18);
+          const LiquidationSpread = ethers.utils.formatUnits(res[0][0]?.value?._hex || 0, 18);
+          const MarketSpreadPremium = ethers.utils.formatUnits(res[4]?.[0]?.value?._hex || 0, 18);
+          const LiquidationPenalty = Big(LiquidationSpread)
+            .times(Big(MarketSpreadPremium).plus(1))
+            .toFixed(18, Big.roundDown);
 
-          let MarketSupplyInterestRateApr = oToken.interestRates.supplyInterestRate;
+          const MarketSupplyInterestRateApr = oToken.interestRates.supplyInterestRate;
           const supplyApy = apr2ApyDaily(MarketSupplyInterestRateApr);
 
-          let MarketBorrowInterestRateApr = oToken.interestRates.borrowInterestRate;
+          const MarketBorrowInterestRateApr = oToken.interestRates.borrowInterestRate;
           const borrowApy = apr2ApyDaily(MarketBorrowInterestRateApr);
 
-          const [Market, Interest, MonetaryPrice, InterestRate] = res[0];
+          let [marketBorrowIndex, marketSupplyIndex] = res[2][0];
+          marketBorrowIndex = ethers.utils.formatUnits(marketBorrowIndex.toString(), 18);
+          marketSupplyIndex = ethers.utils.formatUnits(marketSupplyIndex.toString(), 18);
 
-          const totalParBorrow = ethers.utils.formatUnits(Market.totalPar?.borrow?._hex || 0, oToken.decimals);
-          const totalParSupply = ethers.utils.formatUnits(Market.totalPar?.supply?._hex || 0, oToken.decimals);
+          const monetaryPrice = oToken.price || '0';
+          const totalParBorrow = Big(oToken.borrowPar || '0')
+            .times(marketBorrowIndex)
+            .toString();
+          const totalParSupply = Big(oToken.supplyPar || '0')
+            .times(marketSupplyIndex)
+            .toString();
 
-          const interestBorrow = ethers.utils.formatUnits(Interest.borrow?._hex || 0, 18);
-          const interestSupply = ethers.utils.formatUnits(Interest.supply?._hex || 0, 18);
-
-          const maxBorrowWei = ethers.utils.formatUnits(Interest.maxBorrowWei?.value?._hex || 0, 18);
-          const maxSupplyWei = ethers.utils.formatUnits(Interest.maxSupplyWei?.value?._hex || 0, 18);
-          console.log('>>>>> %s maxBorrowWei: %o', oToken.symbol, maxBorrowWei);
-          console.log('>>>>> %s maxSupplyWei: %o', oToken.symbol, maxSupplyWei);
-
-          const marketIndexBorrow = ethers.utils.formatUnits(Market.index?.borrow?._hex || 0, 18);
-          const marketIndexSupply = ethers.utils.formatUnits(Market.index?.supply?._hex || 0, 18);
-
-          const monetaryPrice = ethers.utils.formatUnits(MonetaryPrice.value?._hex || 0, 36 - oToken.decimals);
+          console.log('totalParBorrow: %o', totalParBorrow);
+          console.log('totalParSupply: %o', totalParSupply);
+          console.log('marketBorrowIndex: %o', marketBorrowIndex);
+          console.log('marketSupplyIndex: %o', marketSupplyIndex);
 
           let currentTokenBorrow = Big(0);
           let currentTokenCollateral = Big(0);
@@ -3395,12 +764,12 @@ const DolomiteData = (props: any) => {
               if (_token.id.toLowerCase() === oToken.address.toLowerCase()) {
                 // Collateral
                 if (Big(amountPar).gte(0)) {
-                  _amount.collateral = Big(amountPar).times(interestSupply);
+                  _amount.collateral = Big(amountPar).times(marketSupplyIndex);
                   currentTokenCollateral = currentTokenCollateral.plus(_amount.collateral);
                 }
                 // Borrow
                 else {
-                  _amount.borrow = Big(amountPar).abs().times(interestBorrow);
+                  _amount.borrow = Big(amountPar).abs().times(marketBorrowIndex);
                   currentTokenBorrow = currentTokenBorrow.plus(_amount.borrow);
                 }
               }
@@ -3411,23 +780,22 @@ const DolomiteData = (props: any) => {
 
           _cTokensData[oToken.address.toLowerCase()] = {
             ...oToken,
-            borrowInterest: interestBorrow,
-            supplyInterest: interestSupply,
-            marketIndexBorrow,
-            marketIndexSupply,
+            borrowInterest: marketBorrowIndex,
+            supplyInterest: marketSupplyIndex,
             marketId: oToken.marketId,
             dapp: name,
-            Utilization: Big(totalParBorrow).div(totalParSupply).times(100).toFixed(2, 0) + '%',
+            Utilization: Big(totalParSupply).lte(0) ? '100.00%' : Big(totalParBorrow).div(totalParSupply).times(100).toFixed(2, 0) + '%',
             address: oToken.address,
-            borrowAPR: Big(MarketBorrowInterestRateApr).times(100).toFixed(2, 0) + '%',
+            borrowAPR: Big(MarketBorrowInterestRateApr).times(100).toFixed(2) + '%',
             borrowAPY: borrowApy,
             borrowToken: [],
             borrowTokenPrice: [],
             exchangeRate: '1',
-            lendAPR: Big(MarketSupplyInterestRateApr).times(100).toFixed(2, 0) + '%',
+            lendAPR: Big(MarketSupplyInterestRateApr).times(100).toFixed(2) + '%',
             lendAPY: supplyApy,
-            liquidationFee: LiquidationSpread,
+            liquidationFee: LiquidationPenalty,
             maxLTV: LTV,
+            liquidationRatio: _liquidationRatio,
             loanToValue: Big(LTV).times(100).toString(),
             name: oToken.symbol,
             totalBorrowUsd: Big(totalParBorrow).times(monetaryPrice).toString(),
@@ -3467,22 +835,173 @@ const DolomiteData = (props: any) => {
         });
     };
     const getCTokensData = async () => {
-      const [tokenMarketId, tokenBalances, dolomiteBalance, positionList, interestRates]: any = await Promise.all([
-        getMarketIdByTokenAddress(),
+      const [
+        tokenBalances,
+        dolomiteBalance,
+        positionList,
+        interestRates,
+        marketInfo,
+        marketTokenInfo,
+        totalPars,
+        prices
+      ]: any = await Promise.all([
         getWalletBalance(),
         getDolomiteBalance(),
         getPositionList(),
-        getInterestRates()
+        getInterestRates(),
+        getMarketInfo(),
+        getMarketTokenInfo(),
+        getTotalPars(),
+        getPrices()
       ]);
       _positionList = positionList;
       Object.values(markets).forEach((market: any) => {
-        getCTokenData({
+        let _address = market.address.toLowerCase();
+        if (market.isNative && wrappedToken) {
+          _address = wrappedToken.address.toLowerCase();
+        }
+        const _obj = {
           ...market,
-          marketId: tokenMarketId[market.address.toLowerCase()],
           walletBalance: tokenBalances[market.address.toLowerCase()],
-          dolomiteBalance: dolomiteBalance[market.address.toLowerCase()],
-          interestRates: interestRates[market.address.toLowerCase()]
-        });
+          dolomiteBalance: dolomiteBalance[_address],
+          interestRates: interestRates[_address],
+          price: Big(prices[_address]).lte(0) ? '1' : prices[_address],
+          borrowPar: totalPars[_address]?.borrowPar || '0',
+          supplyPar: totalPars[_address]?.supplyPar || '0',
+          marketId: marketTokenInfo[_address]?.marketId,
+          isBorrowingDisabled: marketInfo[_address]?.isBorrowingDisabled,
+          liquidationRewardPremium: marketInfo[_address]?.liquidationRewardPremium,
+          marginPremium: marketInfo[_address]?.marginPremium,
+          oracle: marketInfo[_address]?.oracle,
+          supplyMaxWei: marketInfo[_address]?.supplyMaxWei
+        };
+
+        getCTokenData(_obj);
+      });
+    };
+    const getMarketInfo = async () => {
+      const result: any = {};
+      const blockNumberParams = blockNumberApiQuery();
+      return new Promise((resolve) => {
+        post(graphApi, blockNumberParams)
+          .then((blockNumberRes) => {
+            const blockNumber = blockNumberRes?.data?._meta?.block?.number;
+            if (!blockNumber) {
+              console.log('getMarketInfo getBlockNumber failure: %o', blockNumberRes);
+              resolve(result);
+              return;
+            }
+            const marketInfoParams = marketInfoApiQuery({ blockNumber });
+            post(graphApi, marketInfoParams)
+              .then((marketInfoRes) => {
+                const marketRiskInfos = marketInfoRes?.data?.marketRiskInfos;
+                if (!marketRiskInfos) {
+                  console.log('getMarketInfo failure: %o', marketInfoRes);
+                  resolve(result);
+                  return;
+                }
+                marketRiskInfos.forEach((info: any) => {
+                  result[info.token.id] = info;
+                });
+                resolve(result);
+              })
+              .catch((err: any) => {
+                console.log('getMarketInfo failure: %o', err);
+                resolve(result);
+              });
+          })
+          .catch((err: any) => {
+            console.log('getMarketInfo getBlockNumber failure: %o', err);
+            resolve(result);
+          });
+      });
+    };
+    const getMarketTokenInfo = async () => {
+      const result: any = {};
+      const blockNumberParams = blockNumberApiQuery();
+      return new Promise((resolve) => {
+        post(graphApi, blockNumberParams)
+          .then((blockNumberRes) => {
+            const blockNumber = blockNumberRes?.data?._meta?.block?.number;
+            if (!blockNumber) {
+              console.log('getMarketTokenInfo getBlockNumber failure: %o', blockNumberRes);
+              resolve(result);
+              return;
+            }
+            const marketInfoParams = allTokensApiQuery({ blockNumber });
+            post(graphApi, marketInfoParams)
+              .then((marketInfoRes) => {
+                const tokens = marketInfoRes?.data?.tokens;
+                if (!tokens) {
+                  console.log('getMarketTokenInfo failure: %o', marketInfoRes);
+                  resolve(result);
+                  return;
+                }
+                tokens.forEach((info: any) => {
+                  result[info.id] = info;
+                });
+                resolve(result);
+              })
+              .catch((err: any) => {
+                console.log('getMarketTokenInfo failure: %o', err);
+                resolve(result);
+              });
+          })
+          .catch((err: any) => {
+            console.log('getMarketTokenInfo getBlockNumber failure: %o', err);
+            resolve(result);
+          });
+      });
+    };
+    const getTotalPars = async () => {
+      const result: any = {};
+      const blockNumberParams = blockNumberApiQuery();
+      return new Promise((resolve) => {
+        post(graphApi, blockNumberParams)
+          .then((blockNumberRes) => {
+            const blockNumber = blockNumberRes?.data?._meta?.block?.number;
+            if (!blockNumber) {
+              console.log('getTotalPars getBlockNumber failure: %o', blockNumberRes);
+              resolve(result);
+              return;
+            }
+            const totalParsParams = allTotalParsApiQuery({ blockNumber });
+            post(graphApi, totalParsParams)
+              .then((totalParsRes) => {
+                const totalPars = totalParsRes?.data?.totalPars;
+                if (!totalPars) {
+                  console.log('getTotalPars failure: %o', totalParsRes);
+                  resolve(result);
+                  return;
+                }
+                totalPars.forEach((info: any) => {
+                  result[info.id] = info;
+                });
+                resolve(result);
+              })
+              .catch((err: any) => {
+                console.log('getTotalPars failure: %o', err);
+                resolve(result);
+              });
+          })
+          .catch((err: any) => {
+            console.log('getTotalPars getBlockNumber failure: %o', err);
+            resolve(result);
+          });
+      });
+    };
+    const getPrices = async () => {
+      return new Promise((resolve) => {
+        axios
+          .get(pricesApi)
+          .then((res: any) => {
+            const prices = res?.data?.prices ?? {};
+            resolve(prices);
+          })
+          .catch((err: any) => {
+            console.log('getPrices failure: %o', err);
+            resolve({});
+          });
       });
     };
 
