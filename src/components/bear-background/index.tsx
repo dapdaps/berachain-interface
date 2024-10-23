@@ -230,7 +230,7 @@ const BridgeGroud = function () {
 
 
 type PropsType = {
-  type: "home" | "dashboard" | "bridge" | "dapps" | "dapp";
+  type: "home" | "dashboard" | "bridge" | "dapps" | "dapp" | 'cave';
   children: React.ReactNode
 }
 
