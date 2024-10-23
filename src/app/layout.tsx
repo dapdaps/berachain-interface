@@ -9,12 +9,22 @@ import { ToastContainer } from 'react-toastify';
 
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
+import { useRouter } from 'next/router';
+
+let className = ''
+if (typeof window !== 'undefined') {
+  if (location.href.indexOf('/cave') > -1) {
+    className = 'cave-bg'
+  }
+}
 
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang='en'>
       <head>
@@ -24,7 +34,7 @@ export default function RootLayout({
       <body>
         <WagmiProvider>
           <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-            <MainLayout>{children}</MainLayout>
+            <MainLayout className={className}>{children}</MainLayout>
           </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer

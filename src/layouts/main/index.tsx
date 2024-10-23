@@ -28,6 +28,8 @@ const MainLayout = (props: Props) => {
     getAccessToken();
   }, [address]);
 
+  
+
   return (
     <div
       className={`min-h-screen relative flex flex-col items-stretch justify-start ${className}`}

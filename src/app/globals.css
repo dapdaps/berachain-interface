@@ -103,3 +103,12 @@ input[type='number']::-webkit-inner-spin-button {
 .mp-list .tr:nth-child(odd) .td:last-child {
   border-radius: 0 10px 10px 0;
 }
+
+
+.cave-bg {
+  background: url(/images/cave/cave-empty.png) center top no-repeat;
+  background-size: 100% 100%;
+  .bear-header {
+    background: none;
+  }
+}
