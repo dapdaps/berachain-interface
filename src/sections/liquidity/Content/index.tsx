@@ -35,20 +35,22 @@ const header = [
   }
 ];
 
+export type DefaultIndexType = 0 | 1
 export default function Liquidity({ dapp }: Props) {
-  console.log('====dapp', dapp);
   const dexConfig = dapp?.chains[DEFAULT_CHAIN_ID];
   const { ALL_DATA_URL, BHONEY_ADDRESS, addresses, pairs } = dexConfig;
   const { account: sender, chainId } = useAccount();
   const { provider } = useProvider();
   const [data, setData] = useState(null);
+  const [defaultIndex, setDefaultIndex] = useState<DefaultIndexType>(0);
 
   const multicallAddress = useMemo(
     () => chainId && multicallAddresses[chainId],
     [chainId]
   );
-  const onChangeData = function (data: any) {
+  const onChangeData = function (data: any, index: DefaultIndexType) {
     setData(data);
+    setDefaultIndex(index)
   };
   const onBack = function () {
     setData(null);
@@ -62,6 +64,7 @@ export default function Liquidity({ dapp }: Props) {
             sender,
             provider,
             addresses,
+            defaultIndex,
             onBack
           }}
         />

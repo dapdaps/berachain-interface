@@ -1,4 +1,5 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -9,6 +10,7 @@ import Tooltip from '@/components/tooltip';
 import dexs from '@/configs/swap';
 import SwapModal from '@/sections/swap/SwapModal';
 import { useMemo } from 'react';
+import { beraB } from '@/configs/tokens/bera-bArtio';
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -21,6 +23,19 @@ const splitArray = (list: Record<string, any>[]) => {
   }
   return listAfter;
 };
+
+const MemeTokens = [
+  {
+    ...beraB.honey,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB.red,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  }
+];
 
 const MoreButton = (props: { onClick: () => void; classname?: string }) => {
   const { onClick = () => {}, classname = '' } = props;
@@ -76,6 +91,7 @@ const MarketplaceView = () => {
         }
       });
     });
+    console.log(_tokens);
     return [_protocols, splitArray(_tokens)];
   }, [dexs]);
 
@@ -123,7 +139,7 @@ const MarketplaceView = () => {
                     <div className='basis-1/3' key={'pot' + idx}>
                       <HoneypotCard
                         name={it.symbol}
-                        color={'red'}
+                        color={it.color}
                         icon={it.icon}
                         onSwap={() => onSwap(it)}
                       />
@@ -149,85 +165,104 @@ const MarketplaceView = () => {
             <div className='h-[86px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px]'>
               <div className='w-full h-[91px] relative top-[-50%] overflow-hidden'>
                 <div className='w-full absolute bottom-0 h-[62px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]'>
-                  {new Array(1).fill(0).map((item, index) => (
+                  {MemeTokens.map((item, index) => (
                     <Tooltip
                       key={'tooltip' + index}
                       isShake={true}
                       offset={30}
-                      children={
+                      tooltip={
+                        <div>
+                          <div className="flex items-end gap-x-[3px] mb-[16px]">
+                            <div className="text-[20px] font-CherryBomb leading-none">
+                              {item.symbol}
+                            </div>
+                            <div className="text-[#3D405A] text-[14px] font-Montserrat">
+                              blackcat
+                            </div>
+                          </div>
+                          <div className="flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat">
+                            <div className="grow">Price</div>
+                            <div className="font-[600] flex-shrink-0">
+                              {item.price}
+                            </div>
+                          </div>
+                          <div className="flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat">
+                            <div className="grow">Volume</div>
+                            <div className="font-[600] flex-shrink-0">
+                              {item.volume}
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    >
+                      <motion.div
+                        onHoverStart={() => setHoveredIndex(index)}
+                        onHoverEnd={() => setHoveredIndex(null)}
+                        className="shadow-shadow1 rounded-full"
+                        animate={{
+                          x: [1200, -10, 0],
+                        }}
+                        transition={{
+                          duration: 3.5,
+                          times: [0, 0.85, 1],
+                        }}
+                      >
                         <motion.div
-                          onHoverStart={() => setHoveredIndex(index)}
-                          onHoverEnd={() => setHoveredIndex(null)}
+                          animate={{
+                            rotate: [0, -1090, -1080],
+                          }}
+                          transition={{
+                            duration: 3.5,
+                            times: [0, 0.85, 1],
+                          }}
                         >
                           <motion.div
-                            className='bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] shadow-shadow1 p-0'
+                            className="bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] p-0"
                             animate={(() => getAnimationName(index)) as any}
                             variants={{
                               hover: {
                                 scale: 1.5,
-                                padding: 4
+                                padding: 4,
                               },
                               default: {
                                 scale: 1,
-                                padding: 0
+                                padding: 0,
                               },
                               prev: {
-                                x: -10
+                                // x: -10
                               },
                               next: {
-                                x: 10
+                                // x: 10
                               }
                             }}
                           >
-                            <img
-                              alt=''
-                              src='/images/dapps/honey.png'
+                            <motion.img
+                              alt=""
+                              src={item.icon}
                               style={{
                                 borderRadius: '50%',
                                 objectFit: 'cover'
                               }}
+                              onClick={() => onSwap(item)}
                             />
                           </motion.div>
                         </motion.div>
-                      }
-                      tooltip={
-                        <div>
-                          <div className='flex items-end gap-x-[3px] mb-[16px]'>
-                            <div className='text-[20px] font-CherryBomb leading-none'>
-                              HONEY
-                            </div>
-                            <div className='text-[#3D405A] text-[14px] font-Montserrat'>
-                              blackcat
-                            </div>
-                          </div>
-                          {List.map((it) => (
-                            <div
-                              key={it.key}
-                              className='flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat'
-                            >
-                              <div className='grow'>{it.label}</div>
-                              <div className='font-[600] flex-shrink-0'>
-                                {it.value}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      }
-                    ></Tooltip>
+                      </motion.div>
+                    </Tooltip>
                   ))}
                 </div>
               </div>
             </div>
-            <div className='relative'>
-              <div className='absolute top-[9px] left-[50%] translate-x-[-50%] z-10 font-CherryBomb text-[32px] leading-[0.9] p-[21px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit'>
+            <div className="relative">
+              <div className="absolute top-[9px] left-[50%] translate-x-[-50%] z-10 font-CherryBomb text-[32px] leading-[0.9] p-[21px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit">
                 Meme Tokens
               </div>
               <MoreButton
-                classname='absolute top-[50%] translate-y-[-50%] right-[-12px]'
+                classname="absolute top-[50%] translate-y-[-50%] right-[-12px]"
                 onClick={onFooterMore}
               />
-              <div className='z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]' />
-              <div className='z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black' />
+              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]" />
+              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
             </div>
           </div>
         </div>

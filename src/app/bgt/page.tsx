@@ -1,8 +1,10 @@
 "use client";
 import FlexTable, { Column } from "@/components/flex-table";
+import Loading from "@/components/loading";
 import useCustomAccount from "@/hooks/use-account";
 import { useBGT } from "@/hooks/use-bgt";
 import useToast from "@/hooks/use-toast";
+import useBendReward from "@/sections/Lending/Bend/hooks/useBendReward";
 import useInfraredList from "@/sections/liquidity/hooks/use-infrared-list";
 import { formatValueDecimal } from "@/utils/balance";
 import { asyncFetch } from "@/utils/http";
@@ -85,11 +87,7 @@ export default memo(function BGTPage() {
               <img src="/images/dapps/infrared/bgt.svg" />
             </div>
             <div className='text-[#7EA82B] font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {formatValueDecimal(
-                record?.earned,
-                '',
-                2
-              )}
+              {record?.earned ?? 0}
             </div>
           </div>
         );
@@ -104,10 +102,10 @@ export default memo(function BGTPage() {
         return (
           <div
             className='flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50]'
-            onClick={() => {
-              handleClaim(record)
-            }}>
-            Claim BGT
+            onClick={record.claim}>
+              {
+                record.claiming ? <Loading /> : 'Claim BGT'
+              }
           </div>
         );
       },
@@ -123,7 +121,7 @@ export default memo(function BGTPage() {
   const [sortDataIndex, setSortDataIndex] = useState("")
 
   const [pageData, setPageData] = useState<any>(null)
-  const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)) ?? [], [dataList])
+  // const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)) ?? [], [dataList])
   const queryPageData = async function () {
     const result = await asyncFetch("https://bartio-pol-indexer.berachain-devnet.com/berachain/v1alpha1/beacon/homepage")
     setPageData(result)
@@ -131,6 +129,32 @@ export default memo(function BGTPage() {
   const refresh = function () {
     setUpdater(Date.now())
   }
+
+  const { rewardValue, depositAmount, icon, platform, vaultToken, claim, claiming} = useBendReward({
+    provider, account
+  })
+
+
+
+  const filterList = [
+    {
+      id: vaultToken,
+      images: [
+        icon
+      ],
+      initialData: {
+        pool: {
+          protocol: platform
+        }
+      },
+      depositAmount: depositAmount,
+      earned: rewardValue,
+      claim: claim,
+      claiming: claiming
+    }
+  ];
+
+
 
   const handleClaim = function (data: any) {
 

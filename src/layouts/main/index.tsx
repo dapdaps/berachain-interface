@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import MapModal from '@/sections/home/map-modal';
 import useUser from '@/hooks/use-user';
 import { useAccount } from 'wagmi';
+import Link from 'next/link';
+import Image from 'next/image';
 
 
 const MainLayout = (props: Props) => {
@@ -33,6 +35,14 @@ const MainLayout = (props: Props) => {
     >
       <MainLayoutHeader />
       <div className='grow'>{children}</div>
+      <Link className='z-[4] hover:scale-110 ease-in-out duration-300 absolute left-[16px] bottom-[16px] w-[124px] h-[36px] rounded-full bg-[rgba(217,217,217,0.5)]' href='https://app.dapdap.net?from=berachain' target='_blank'>
+        <Image
+          src="/images/dapdap.svg"
+          alt="dapdap-link"
+          width={124}
+          height={36}
+        />
+      </Link>
       <MapModal />
     </div>
   );

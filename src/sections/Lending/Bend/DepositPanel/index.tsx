@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import IconPlus from "@public/images/modal/plus.svg";
 import IconMinus from "@public/images/modal/minus.svg";
 import ActionModal from "../Action";
@@ -39,6 +39,10 @@ const DepositPanel: React.FC<IProps> = ({
     };
   }, []);
 
+  const filterMarkets = useMemo(() => {
+    return markets.filter((item) => item.symbol !== 'HONEY');
+  }, [markets]);
+
   return (
     <div className='h-[490px]'>
       <NetBase />
@@ -54,7 +58,7 @@ const DepositPanel: React.FC<IProps> = ({
           <div className='w-[219px]'>In Wallet</div>
           <div className='w-[80px]'>Action</div>
         </div>
-        {(markets || []).map((token, index) => (
+        {(filterMarkets || []).map((token, index) => (
           <div
             key={index}
             className='flex items-center px-[26px] py-3 w-[910px] bg-black bg-opacity-[0.06] rounded-[10px] mb-[10px] last:mb-0'

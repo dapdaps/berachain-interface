@@ -97,14 +97,20 @@ export default function V3List({
           sort: false,
           width: '12%',
           render: (item: any, index: number) => {
+            const actions = Big(item.liquidity || 0).eq(0)
+              ? [
+                  { key: 'increase', name: 'Increase' },
+                  { key: 'claim', name: 'Claim Rewards' }
+                ]
+              : [
+                  { key: 'increase', name: 'Increase' },
+                  { key: 'remove', name: 'Remove' },
+                  { key: 'claim', name: 'Claim Rewards' }
+                ];
             return (
               <div>
                 <Dropdown
-                  list={[
-                    { key: 'increase', name: 'Increase' },
-                    { key: 'remove', name: 'Remove' },
-                    { key: 'claim', name: 'Claim Rewards' }
-                  ]}
+                  list={actions}
                   value=''
                   placeholder='Manage'
                   onChange={(val) => {

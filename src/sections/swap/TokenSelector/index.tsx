@@ -145,7 +145,7 @@ export default function CurrencySelect({
             </svg>
           )}
           <input
-            className='text-[16px] bg-transparent'
+            className='text-[16px] bg-transparent flex-1'
             placeholder='Search name or paste address'
             onChange={(ev) => {
               setSearchVal(ev.target.value);

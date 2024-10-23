@@ -180,7 +180,7 @@ export default function useData({
       return;
     }
     setNoPair(!info);
-    if (!info.currentTick) {
+    if (!info?.currentTick) {
       setLoading(false);
       setCurrentPrice('');
       setLowerPrice('');

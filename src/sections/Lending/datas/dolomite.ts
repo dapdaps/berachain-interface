@@ -2898,11 +2898,11 @@ const MARGIN_ABI = [
   }
 ];
 
-const apr2Apy = (apr: string, n: number, isGteZero?: boolean) => {
-  const base = Big(1).plus(Big(apr).div(n));
-  let apy = base.pow(n).minus(1).times(100).minus(0.065);
-  apy = Big(apy).lt(0) ? Big(0) : apy;
-  return apy.toFixed(2) + '%';
+const apr2ApyDaily = (apr: string) => {
+  const daysInYear = 365;
+  const decimalAPR = new Big(apr);
+  const apy = decimalAPR.div(daysInYear).plus(1).pow(daysInYear).minus(1);
+  return apy.times(100).toFixed(2) + '%';
 };
 
 const minimumCollateralizationToLTV = (minCollateralization: string) => {
@@ -3363,10 +3363,10 @@ const DolomiteData = (props: any) => {
           const LiquidationSpread = ethers.utils.formatUnits(res[3][0]?.value?._hex || 0, 18);
 
           let MarketSupplyInterestRateApr = oToken.interestRates.supplyInterestRate;
-          const supplyApy = apr2Apy(MarketSupplyInterestRateApr, 12);
+          const supplyApy = apr2ApyDaily(MarketSupplyInterestRateApr);
 
           let MarketBorrowInterestRateApr = oToken.interestRates.borrowInterestRate;
-          const borrowApy = apr2Apy(MarketBorrowInterestRateApr, 12);
+          const borrowApy = apr2ApyDaily(MarketBorrowInterestRateApr);
 
           const [Market, Interest, MonetaryPrice, InterestRate] = res[0];
 

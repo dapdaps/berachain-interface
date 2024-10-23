@@ -150,7 +150,6 @@ export const useDepositAndWithdraw = ({
             .then((res: ethers.ContractReceipt) => {
               const { status } = res;
               if (status === 1) {
-                console.log("tx succeeded", res);
                 setNeedApprove(false);
               } else {
                 console.log("tx failed", res);
@@ -209,7 +208,6 @@ export const useDepositAndWithdraw = ({
                 transactionHash
               );
               triggerUpdate();
-              console.log("tx succeeded", res);
             } else {
               console.log("tx failed", res);
             }
@@ -274,7 +272,6 @@ export const useDepositAndWithdraw = ({
                 );
                 triggerUpdate();
                 setAmount("");
-                console.log("tx succeeded", res);
               } else {
                 console.log("tx failed", res);
               }
@@ -316,7 +313,6 @@ export const useDepositAndWithdraw = ({
             const { status, transactionHash } = res;
             if (status === 1) {
               formatAddAction(amount, status, transactionHash);
-              console.log("tx succeeded", res);
             } else {
               console.log("tx failed", res);
             }
@@ -357,7 +353,6 @@ export const useDepositAndWithdraw = ({
                 formatAddAction(amount, status, transactionHash);
                 triggerUpdate();
                 setAmount("");
-                console.log("tx succeeded", res);
               } else {
                 console.log("tx failed", res);
               }

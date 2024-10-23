@@ -10,13 +10,14 @@ const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
   if (dex?.toLowerCase() === 'kodiak') return <Kodiak {...rest} ref={ref} />;
 });
 
-export default function AddLiquidityModal({
+export default function IncreaseLiquidityModal({
   token0,
   token1,
   version,
   dex,
   fee,
   open,
+  tokenId,
   onClose
 }: any) {
   const panelRef = useRef<any>();
@@ -38,6 +39,7 @@ export default function AddLiquidityModal({
           defaultFee={fee}
           version={version}
           ref={panelRef}
+          tokenId={tokenId}
           onSuccess={onClose}
         />
       </div>

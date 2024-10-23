@@ -15,7 +15,7 @@ const mapFn = (item: Token) => {
 
 const allTokens: { [key: number]: Token[] } = {
   80084: Object.values(beraB).map(mapFn),
-  1101: Object.values(polygonZkevm).map(mapFn),
+  // 1101: Object.values(polygonZkevm).map(mapFn),
   1: Object.values(ethereum).map(mapFn),
 }
 

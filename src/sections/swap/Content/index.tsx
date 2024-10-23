@@ -110,6 +110,7 @@ export default function Swap({
     }
     if (Number(inputCurrencyAmount || 0) === 0) {
       setErrorTips('Enter an amount');
+      setOutputCurrencyAmount('');
       return;
     }
     if (Big(inputCurrencyAmount).gt(maxInputBalance || 0)) {

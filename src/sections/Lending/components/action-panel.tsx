@@ -50,6 +50,7 @@ const ActionPanel = (props: Props) => {
     isMax,
     setLoading,
     setTxData,
+    setAmount,
     handleAmount,
     handleBalance,
   } = useHandler({ balance: balance.value });
@@ -89,6 +90,7 @@ const ActionPanel = (props: Props) => {
           spender={networkConfig.spenderAddress}
           onSuccess={() => {
             onSuccess?.();
+            setAmount('');
           }}
           isSkipApproved={isSkipApproved}
           isApproveMax={true}

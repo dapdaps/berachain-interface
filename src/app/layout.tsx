@@ -1,5 +1,5 @@
 'use client';
-import type { Metadata } from 'next';
+
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -10,11 +10,6 @@ import { ToastContainer } from 'react-toastify';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 
-// export const metadata: Metadata = {
-//   title: 'Berachain',
-//   description: 'berachain-interface'
-// };
-
 export default function RootLayout({
   children
 }: Readonly<{
@@ -22,6 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
+      <head>
+        <title>Berachain</title>
+        <meta name="description" content="berachain-interface" />
+      </head>
       <body>
         <WagmiProvider>
           <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
@@ -44,7 +43,7 @@ export default function RootLayout({
           color="#ffdc50"
           options={{ showSpinner: false }}
           shallowRouting
-          />
+        />
       </body>
     </html>
   );

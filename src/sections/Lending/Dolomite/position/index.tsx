@@ -239,6 +239,7 @@ const Position = (props: Props) => {
               }}
               onSuccess={() => {
                 onSuccess?.();
+                setAmount('');
               }}
             >
               {currentTab}

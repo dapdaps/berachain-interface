@@ -104,6 +104,8 @@ export default function usePoolsV3({ dex }: any) {
           liquidity: position.liquidity,
           lowerPrice,
           upperPrice,
+          tickLower: position.tickLower,
+          tickUpper: position.tickUpper,
           token0: { ...token0, address: _token0Address },
           token1: { ...token1, address: _token1Address },
           fee: position.fee,

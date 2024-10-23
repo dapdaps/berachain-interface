@@ -23,7 +23,13 @@ export default function Result({
     .div(Big(inputCurrencyAmount || 0).eq(0) ? 1 : inputCurrencyAmount)
     .toFixed(4)}
   ${outputCurrency.symbol}`,
-    [reserve]
+    [
+      reserve,
+      inputCurrency,
+      outputCurrency,
+      inputCurrencyAmount,
+      outputCurrencyAmount
+    ]
   );
 
   return (

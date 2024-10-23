@@ -1,8 +1,9 @@
 "use client"
+
 import Image from '@/components/layz-image';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const Star = () => (
   <motion.svg
@@ -37,7 +38,7 @@ const BGTCoin = ({
   count = 0
 }: Props) => {
 
-  const router = useRouter()
+  const router = useProgressRouter()
 
   const countRef = useRef<number>(-1);
   const [isAnimate, setIsAnimate] = useState(true);

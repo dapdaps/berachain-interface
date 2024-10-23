@@ -22,6 +22,7 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
 
   const onQuoter = useCallback(
     async ({ inputCurrency, outputCurrency, inputCurrencyAmount }: any) => {
+      setTrade(null);
       if (
         !inputCurrency ||
         !outputCurrency ||
@@ -29,7 +30,6 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         !provider ||
         !account
       ) {
-        setTrade(null);
         return;
       }
       const wethAddress = weth[inputCurrency.chainId];

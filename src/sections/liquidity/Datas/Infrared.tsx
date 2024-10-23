@@ -125,6 +125,7 @@ export default function useInfraredData(props: any) {
           initialData,
           type: "Staking",
           vaultAddress,
+          rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
           protocolType: initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals',
         });
       }

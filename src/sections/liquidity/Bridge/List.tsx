@@ -31,8 +31,6 @@ export default function List(props: any) {
   const { dataList, loading } = useInfraredList();
   const [state, updateState] = useMultiState<any>({
     allData: null,
-    // loading: false,
-    // dataList: [],
     filterList: [],
     sortKey: ''
   });
@@ -63,15 +61,17 @@ export default function List(props: any) {
     );
   }
 
+
+
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev, next) => {
-            return Big(next[state?.sortKey])
-              .minus(prev[state?.sortKey])
-              .toFixed();
-          })
+          return Big(next[state?.sortKey])
+            .minus(prev[state?.sortKey])
+            .toFixed();
+        })
         : cloneDataList
     });
   }, [state?.sortKey, dataList]);
@@ -118,9 +118,8 @@ export default function List(props: any) {
         return (
           <img
             style={{ width: 26 }}
-            src={`/images/dapps/infrared/${
-              pool ? (pool?.protocol === 'BEX' ? 'bex' : 'berps') : 'infrared'
-            }.svg`}
+            src={`/images/dapps/infrared/${pool ? (pool?.protocol === 'BEX' ? 'bex' : 'berps') : 'infrared'
+              }.svg`}
           />
         );
       }
@@ -187,7 +186,7 @@ export default function List(props: any) {
               viewBox='0 0 34 34'
               fill='none'
               onClick={() => {
-                onChangeData(data);
+                onChangeData(data, 0);
               }}
             >
               <rect
@@ -210,6 +209,9 @@ export default function List(props: any) {
               height='34'
               viewBox='0 0 34 34'
               fill='none'
+              onClick={() => {
+                Big(data?.usdDepositAmount ?? 0).gt(0) && onChangeData(data, 1);
+              }}
             >
               <g opacity={Big(data?.usdDepositAmount ?? 0).eq(0) ? '0.3' : '1'}>
                 <rect

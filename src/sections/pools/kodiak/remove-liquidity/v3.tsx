@@ -45,9 +45,7 @@ const Remove = ({ token0, token1, fee, tokenId, onSuccess }: any) => {
     ];
   }, [feeInfo, info]);
 
-  return infoLoading ? (
-    <div className='flex h-[100px] items-center justify-center'>Loading...</div>
-  ) : (
+  return (
     <>
       <Tokens type='V3' liquidity={liquidity} token0={token0} token1={token1} />
       <RemovePercent percent={percent} setPercent={setPercent} />
@@ -63,7 +61,7 @@ const Remove = ({ token0, token1, fee, tokenId, onSuccess }: any) => {
       />
       <RemoveButton
         text='Remove Liquidity'
-        loading={loading}
+        loading={loading || infoLoading}
         onClick={onRemove}
         errorTips={errorTips}
       />

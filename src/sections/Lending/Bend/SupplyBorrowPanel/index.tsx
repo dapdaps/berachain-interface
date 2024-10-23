@@ -9,6 +9,8 @@ import Big from 'big.js';
 
 import { ethers } from 'ethers';
 import { rewardToken } from '@/configs/lending/bend';
+import useBendReward from '../hooks/useBendReward';
+import Loading from '@/components/loading';
 
 const SupplyBorrowPanel: React.FC = () => {
   const [openModal, setOpenModal] = useState<any>(null);
@@ -18,6 +20,10 @@ const SupplyBorrowPanel: React.FC = () => {
     userAccountData,
     initData: { markets, config, provider, account }
   } = useMarketStore();
+
+  const { rewardValue, claim, claiming} = useBendReward({
+    provider, account
+  })
 
   const handleAction = (action: any) => {
     setOpenModal({ action });
@@ -42,60 +48,6 @@ const SupplyBorrowPanel: React.FC = () => {
     return `${formatted}%`;
   }
 
-  // prepare for BGT rewards
-  function getAllUserRewards() {
-    const arr = markets
-      ?.filter((item: any) => item.variableDebtTokenAddress)
-      .map((item: any) => [item.aTokenAddress, item.variableDebtTokenAddress])
-      .flat();
-
-    const addrs = [...arr];
-
-    const rewardsProvider = new ethers.Contract(
-      config.incentivesProxy,
-      [
-        {
-          inputs: [
-            { internalType: 'address[]', name: 'assets', type: 'address[]' },
-            { internalType: 'address', name: 'user', type: 'address' }
-          ],
-          name: 'getAllUserRewards',
-          outputs: [
-            {
-              internalType: 'address[]',
-              name: 'rewardsList',
-              type: 'address[]'
-            },
-            {
-              internalType: 'uint256[]',
-              name: 'unclaimedAmounts',
-              type: 'uint256[]'
-            }
-          ],
-          stateMutability: 'view',
-          type: 'function'
-        }
-      ],
-      provider.getSigner()
-    );
-    rewardsProvider
-      .getAllUserRewards(addrs, account)
-      .then((res: any) => {
-        try {
-          const _rewardToken = [...rewardToken];
-          const _amount = res[1].reduce((total: any, cur: any) => {
-            return Big(total).plus(ethers.utils.formatUnits(cur)).toFixed();
-          }, 0);
-          _rewardToken[0].unclaimed = _amount;
-          console.log(_rewardToken, '_rewardToken');
-        } catch (error) {
-          console.log('catch_getAllUserRewards_error', error);
-        }
-      })
-      .catch((err: any) => {
-        console.log('getAllUserRewards_error:', err);
-      });
-  }
 
   return (
     <div className='mb-5' onClick={handleOutsideClick}>
@@ -210,10 +162,10 @@ const SupplyBorrowPanel: React.FC = () => {
                 />
               </div>
               <span className='font-montserrat text-base font-medium leading-4 text-black mr-2'>
-                0 BGT
+                {rewardValue ?? 0} BGT
               </span>
-              <button className='font-montserrat text-base font-semibold leading-4 text-[#7EA82B] underline'>
-                Claim
+              <button className='font-montserrat text-base font-semibold leading-4 text-[#7EA82B] underline' onClick={claim}>
+                {claiming ? <Loading /> : 'Claim'} 
               </button>
             </div>
           </div>

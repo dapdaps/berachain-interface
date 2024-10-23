@@ -20,13 +20,13 @@ const chains: Record<number, Chain | any> = {
     }
   },
   [mainnet.id]: mainnet,
-  [polygonZkEvm.id]: polygonZkEvm
+  // [polygonZkEvm.id]: polygonZkEvm
 };
 
 export const icons: Record<number, string> = {
   80084: '/images/berachain.png',
-  1: '/images/berachain.png',
-  1101: '/images/berachain.png'
+  1: '/images/eth.svg',
+  // 1101: '/images/berachain.png'
 };
 
 export default chains;

@@ -54,9 +54,7 @@ const Remove = ({ token0, token1, onSuccess }: any) => {
     return '';
   }, [percent]);
 
-  return infoLoading ? (
-    <div className='flex h-[100px] items-center justify-center'>Loading...</div>
-  ) : (
+  return (
     <>
       <Tokens type='V2' liquidity={liquidity} token0={token0} token1={token1} />
       <RemovePercent percent={percent} setPercent={setPercent} />
@@ -68,17 +66,15 @@ const Remove = ({ token0, token1, onSuccess }: any) => {
         token1={token1}
         percent={percent}
       />
-      {lpToken && (
-        <RemoveButton
-          text='Remove Liquidity'
-          loading={loading}
-          onClick={onRemove}
-          value={value}
-          token={lpToken}
-          spender={kodiak.contracts[token0.chainId].RouterV2}
-          errorTips={errorTips}
-        />
-      )}
+      <RemoveButton
+        text='Remove Liquidity'
+        loading={loading || infoLoading}
+        onClick={onRemove}
+        value={value}
+        token={lpToken}
+        spender={kodiak.contracts[token0.chainId].RouterV2}
+        errorTips={errorTips}
+      />
     </>
   );
 };
