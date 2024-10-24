@@ -71,7 +71,7 @@ const PartList = [
     ArrowIcon: dAppArrowIcon
   },
   {
-    className: 'origin-top-right absolute left-[-1.3%] bottom-[-4.1%] w-[314px] h-[340px]',
+    className: 'origin-bottom-left absolute left-[6.3%] bottom-[10.8%] w-[314px] h-[340px]',
     clipPath: 'unset',
     src: 'cave.svg',
     maskSrc: 'mask-cave.svg',
