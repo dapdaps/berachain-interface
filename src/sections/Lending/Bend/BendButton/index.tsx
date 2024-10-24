@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import LendingButton from '@/components/button';
+import { useAppKit } from '@reown/appkit/react';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const { address, chainId } = useAccount();
   const { isPending, switchChain } = useSwitchChain();
-  const modal = useWeb3Modal();
+  const modal = useAppKit();
 
   const baseClasses = 'px-4 py-2 rounded-full font-Montserrat text-sm font-medium !leading-[17.07px] text-center';
   

@@ -1,12 +1,11 @@
-import useApprove from '@/hooks/use-approve';
 import { useAccount, useSwitchChain } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Button from '@/components/button';
 import type { Chain, Token } from '@/types';
 import Big from 'big.js';
 import { useEffect, useState } from 'react';
 import useToast from '@/hooks/use-toast';
 import { TokenInfo } from '@/sections/Lending/Bend/hooks/useBend';
+import { useAppKit } from '@reown/appkit/react';
 
 const BendingButton = ({
   chain,
@@ -26,7 +25,7 @@ const BendingButton = ({
 }: Props) => {
   const toast = useToast();
   const { isPending, switchChain } = useSwitchChain();
-  const modal = useWeb3Modal();
+  const modal = useAppKit();
   const { address, chainId } = useAccount();
 
   const [pending, setPending] = useState(false);

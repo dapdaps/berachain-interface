@@ -8,14 +8,14 @@ import { numberFormatter } from '@/utils/number-formatter';
 import Big from 'big.js';
 import Skeleton from 'react-loading-skeleton';
 import Empty from '@/components/empty';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAppKit } from '@reown/appkit/react';
 
 const DashboardWallet = (props: Props) => {
   const { tokens, loading, totalBalance } = props;
 
   const { address } = useAccount();
   const { accessToken, getUserInfo, userInfo } = useUser();
-  const modal = useWeb3Modal();
+  const modal = useAppKit();
 
   const columns: Column[] = [
     {

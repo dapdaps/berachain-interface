@@ -2,8 +2,8 @@ import Loading from '@/components/circle-loading';
 import useApprove from '@/hooks/use-approve';
 import useAccount from '@/hooks/use-account';
 import { useSwitchChain } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useEffect } from 'react';
+import { useAppKit } from '@reown/appkit/react';
 
 const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
@@ -36,7 +36,7 @@ export default function SubmitBtn({
     onSuccess: onRefresh
   });
   const { isPending: switching, switchChain } = useSwitchChain();
-  const { open } = useWeb3Modal();
+  const { open } = useAppKit();
   const { account, chainId } = useAccount();
 
   useEffect(() => {

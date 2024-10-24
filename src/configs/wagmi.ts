@@ -1,30 +1,23 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { cookieStorage, createStorage } from 'wagmi';
-import { Chain } from 'viem';
-import chains from './chains';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import chains from '@/configs/chains';
 
-export const projectId = '773dc7d5f848781b9142ac2ba77847a0'; // process.env.NEXT_PUBLIC_PROJECT_ID
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
 if (!projectId) {
   throw new Error('Project ID is not defined');
 }
 
-export const config: any = defaultWagmiConfig({
-  projectId,
-  chains: Object.values(chains) as [Chain],
-  metadata: {
-    name: '',
-    description: '',
-    url: '',
-    icons: ['/favicon.ico'],
-  },
-  enableInjected: true,
-  enableWalletConnect: true,
-  enableEIP6963: true,
-  enableCoinbase: true,
-  // enableEmail: false,
+export const networks = Object.values(chains);
+
+// Set up the Wagmi Adapter (Config)
+export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
-    storage: cookieStorage,
+    storage: cookieStorage
   }),
   ssr: true,
+  projectId,
+  networks,
 });
+
+export const config = wagmiAdapter.wagmiConfig;
