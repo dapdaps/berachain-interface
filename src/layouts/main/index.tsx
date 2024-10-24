@@ -7,6 +7,7 @@ import useUser from '@/hooks/use-user';
 import { useAccount } from 'wagmi';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 
 const MainLayout = (props: Props) => {
@@ -28,10 +29,9 @@ const MainLayout = (props: Props) => {
     getAccessToken();
   }, [address]);
 
-  
-
   return (
     <div
+      id="layout"
       className={`min-h-screen relative flex flex-col items-stretch justify-start ${className}`}
       style={style}
     >
