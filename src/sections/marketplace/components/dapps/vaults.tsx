@@ -55,7 +55,8 @@ export default memo(function vaults(props) {
     lpAmount: '',
     isLoading: false,
     isTokenApproved: true,
-    isTokenApproving: false
+    isTokenApproving: false,
+    updater: 0
   });
 
   const sourceBalances: any = {};
@@ -67,7 +68,8 @@ export default memo(function vaults(props) {
     isTokenApproved,
     isTokenApproving,
     lpBalance,
-    lpAmount
+    lpAmount,
+    updater
   } = state;
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
@@ -135,6 +137,10 @@ export default memo(function vaults(props) {
       })
       .catch((e: Error) => console.log(e));
   };
+
+  const handleMax = () => {
+    handleTokenChange(balances[symbol]);
+  };
   const handleTokenChange = (amount) => {
     updateState({ inAmount: amount });
     if (amount === '') {
@@ -145,6 +151,11 @@ export default memo(function vaults(props) {
       return;
     }
     checkApproval(amount);
+  };
+  const handleLPChange = (amount: string) => {
+    updateState({
+      lpAmount: amount
+    });
   };
 
   const handleApprove = () => {
@@ -248,11 +259,10 @@ export default memo(function vaults(props) {
           isLoading: false,
           isPostTx: true
         });
-        setTimeout(() => updateState({ isPostTx: false }), 10_000);
-        const { refetch } = props;
-        if (refetch) {
-          refetch();
-        }
+
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -318,25 +328,9 @@ export default memo(function vaults(props) {
         const { status, transactionHash } = receipt;
         console.log('=receipt', receipt);
 
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Withdraw',
-        //   token0,
-        //   token1,
-        //   amount: lpAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
-        setTimeout(() => updateState({ isPostTx: false }), 10_000);
-        const { refetch } = props;
-        if (refetch) {
-          setTimeout(() => {
-            refetch();
-          }, 3000);
-        }
+        setTimeout(() => {
+          onSuccess?.()
+        }, 3000)
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -358,14 +352,27 @@ export default memo(function vaults(props) {
         });
       });
   };
+  const onUpdateLpPercent = (percent: number) => {
+    updateState({
+      lpPercent: percent
+    });
+  };
+  const onSuccess = function () {
+    updateState({
+      updater: Date.now(),
+      isTokenApproved: true,
+      isTokenApproving: false
+    })
+    currentTab === 'Deposit' ? handleTokenChange("") : handleLPChange("")
+  }
   useEffect(() => {
     if (!sender || !vaultAddress) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, vaultAddress]);
+  }, [sender, vaultAddress, updater]);
   return (
     <DappModal
-      title={`Invest ${data?.id}`}
+      title={`Invest ${data?.tokens.join("-")}`}
       type='Valuts'
       visible={vaultsVisible}
       onClose={handleClose}
@@ -433,7 +440,7 @@ export default memo(function vaults(props) {
               <div className='text-black font-Montserrat text-[14px] font-medium'>
                 Deposit
               </div>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
+              <div className='text-black font-Montserrat text-[14px] font-medium' onClick={handleMax}>
                 Balance:{' '}
                 <span className='underline'>
                   {Big(balances[symbol] ?? 0).toFixed(6)}
@@ -449,8 +456,17 @@ export default memo(function vaults(props) {
                 placeholder='0'
               />
               <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                <div className='w-[30px] h-[30px] rounded-full'>
-                  <img src={data?.images[0]} alt={data?.tokens?.join("-")} />
+                <div className='flex items-center'>
+                  <div className='w-[30px] h-[30px] rounded-full'>
+                    <img src={data?.images[0]} alt={data?.tokens[0]} />
+                  </div>
+                  {
+                    data?.images[1] && (
+                      <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
+                        <img src={data?.images[1]} alt={data?.tokens[1]} />
+                      </div>
+                    )
+                  }
                 </div>
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                   {data?.tokens?.join("-")}
@@ -495,7 +511,7 @@ export default memo(function vaults(props) {
                     <CircleLoading size={14} />
                   ) : (
                     <>
-                      {isTokenApproved ? 'Approved' : 'Approve'} {symbol}
+                      {isTokenApproved ? 'Approved' : 'Approve'} {data?.tokens.join("-")}
                     </>
                   )}
                 </button>
@@ -509,23 +525,59 @@ export default memo(function vaults(props) {
               </div>
               <div className='text-black font-Montserrat text-[14px] font-medium'>
                 Balance:{' '}
-                <span className='underline'>
+                <span className='underline' onClick={() => {
+                  const newSliderPercent = Big(lpBalance || 0)
+                    .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+                    .times(100)
+                    .toFixed(0);
+
+                  onUpdateLpPercent(Number(newSliderPercent));
+
+                  handleLPChange(lpBalance);
+                }}>
                   {Big(lpBalance ? lpBalance : 0).toFixed(6)}
                 </span>
               </div>
             </div>
             <div className='relative mt-[9px] mb-[19px]'>
               <input
-                value={inAmount}
+                value={lpAmount}
                 type='number'
-                onChange={(e) => handleTokenChange(e.target.value, id)}
+                onChange={(e) => {
+                  handleLPChange(e.target.value);
+
+                  const value = e.target.value;
+
+                  if (!value) {
+                    onUpdateLpPercent(0);
+                  }
+
+                  if (value && Big(value).gt(0)) {
+                    const newSliderPercent = Big(value || 0)
+                      .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+                      .times(100)
+                      .toFixed(0);
+                    onUpdateLpPercent(Number(newSliderPercent));
+                  }
+                }}
                 className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
                 placeholder='0'
               />
               <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                <div className='w-[30px] h-[30px] rounded-full'></div>
+                <div className='flex items-center'>
+                  <div className='w-[30px] h-[30px] rounded-full'>
+                    <img src={data?.images[0]} alt={data?.tokens[0]} />
+                  </div>
+                  {
+                    data?.images[1] && (
+                      <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
+                        <img src={data?.images[1]} alt={data?.tokens[1]} />
+                      </div>
+                    )
+                  }
+                </div>
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  OOGA
+                  {data?.tokens?.join("-")}
                 </div>
               </div>
             </div>
@@ -534,7 +586,7 @@ export default memo(function vaults(props) {
                 isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
               }
               className={clsx(
-                'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                'w-full h-[60px] flex items-center font-semibold font-Montserrat justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                 {
                   'opacity-50':
                     isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
@@ -552,9 +604,6 @@ export default memo(function vaults(props) {
             </button>
           </div>
         )}
-        {/* <div className='mb-[16px] flex items-center justify-center w-full h-[60px] rounded-[10px] border border-black bg-[#FFDC50]'>
-          <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>Stake</span>
-        </div> */}
         <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
           Manage exist assets on{' '}
           <span className='text-black font-Montserrat underline' onClick={() => {

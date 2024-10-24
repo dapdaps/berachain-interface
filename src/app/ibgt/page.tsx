@@ -578,7 +578,7 @@ export default memo(function IBGTPage(props: any) {
                       disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}
                       className={
                         clsx(
-                          "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
+                          "w-full h-[60px]  font-semibold font-Montserrat flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                           {
                             "opacity-50": isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
                           })

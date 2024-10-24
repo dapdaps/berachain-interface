@@ -8,12 +8,12 @@ import useBendReward from "@/sections/Lending/Bend/hooks/useBendReward";
 import useInfraredList from "@/sections/liquidity/hooks/use-infrared-list";
 import { formatValueDecimal } from "@/utils/balance";
 import { asyncFetch } from "@/utils/http";
-import Big from "big.js";
 import { ethers } from "ethers";
-import _ from "lodash";
-import { memo, useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation";
+import { memo, useEffect, useState } from "react";
 export default memo(function BGTPage() {
 
+  const router = useRouter()
 
   const Columns: Column[] = [
     {
@@ -103,9 +103,9 @@ export default memo(function BGTPage() {
           <div
             className='flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50]'
             onClick={record.claim}>
-              {
-                record.claiming ? <Loading /> : 'Claim BGT'
-              }
+            {
+              record.claiming ? <Loading /> : 'Claim BGT'
+            }
           </div>
         );
       },
@@ -123,14 +123,14 @@ export default memo(function BGTPage() {
   const [pageData, setPageData] = useState<any>(null)
   // const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)) ?? [], [dataList])
   const queryPageData = async function () {
-    const result = await asyncFetch("https://bartio-pol-indexer.berachain-devnet.com/berachain/v1alpha1/beacon/homepage")
+    const result = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/homepage")
     setPageData(result)
   }
   const refresh = function () {
     setUpdater(Date.now())
   }
 
-  const { rewardValue, depositAmount, icon, platform, vaultToken, claim, claiming} = useBendReward({
+  const { rewardValue, depositAmount, icon, platform, vaultToken, claim, claiming } = useBendReward({
     provider, account
   })
 
@@ -194,7 +194,8 @@ export default memo(function BGTPage() {
   }
 
   const handleExplore = function () {
-    window.open("https://bartio.station.berachain.com/")
+    // window.open("https://bartio.station.berachain.com/")
+    router.push("/marketplace/invest")
   }
 
 
