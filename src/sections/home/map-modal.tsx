@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import dAppArrowIcon from '@public/images/map/arrow-dApps.svg';
+import caveArrowIcon from '@public/images/map/arrow-cave.svg';
 import BridgeArrowIcon from '@public/images/map/arrow-bridge.svg';
 import MarketPlaceArrowIcon from '@public/images/map/arrow-marketplace.svg';
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,8 @@ const marketplaceClipPath = 'M146.955 19.7048L14.4841 65.3534C6.41543 68.1339 1 
 const bridgeClipPath = 'M167.651 28.237L58.901 132.098C56.8972 134.012 55.313 136.321 54.2487 138.879L2.43848 263.41C-2.74115 275.86 5.63204 289.763 19.0588 291.007L339.942 320.74C341.802 320.913 343.676 320.824 345.511 320.476L632.279 266.144C639.285 264.817 645.055 259.86 647.422 253.134L684.452 147.922C687.193 140.133 684.866 131.461 678.594 126.09L563.257 27.3329C560.335 24.8308 556.753 23.2246 552.941 22.7068L395.493 1.32007C393.928 1.10744 392.343 1.08102 390.771 1.24137L179.435 22.8038C175.012 23.255 170.866 25.1668 167.651 28.237Z';
 
 const dashboardClipPath = 'M10.1413 181.205L93.257 130.184C95.074 129.068 97.0576 128.251 99.1328 127.762L257.728 90.3888C260.22 89.8017 262.575 88.7419 264.667 87.2668L381.191 5.09615C384.949 2.44656 389.504 1.17239 394.091 1.48814L507.472 9.29335C517.498 9.98353 525.454 18.0064 526.062 28.0376L537.679 219.944C538.175 228.127 533.626 235.784 526.203 239.263L424.386 286.976C420.871 288.623 416.954 289.212 413.11 288.671L247.178 265.307C245.73 265.103 244.265 265.058 242.808 265.174L50.8983 280.397C42.5472 281.06 34.6681 276.448 31.1575 268.841L2.4452 206.631C-1.80147 197.43 1.50482 186.507 10.1413 181.205Z';
+
+const caveClipPath = 'M214 67.5L214.225 70.0986M214.225 70.0986L227.5 223.5L303.5 281.5L308 306L372.5 325.5L343 428L63 408.5L1 30.5L207.5 1L214.225 70.0986Z';
 
 const PartList = [
   {
@@ -66,7 +69,19 @@ const PartList = [
     btnText: 'Dashboard',
     link: '/dashboard',
     ArrowIcon: dAppArrowIcon
-  }
+  },
+  {
+    className: 'origin-top-right absolute left-[-1.3%] bottom-[-4.1%] w-[314px] h-[340px]',
+    clipPath: 'unset',
+    src: 'cave.svg',
+    maskSrc: 'mask-cave.svg',
+    indicatorClass:"absolute left-[2%] top-[25%] right-[unset] top-[unset] z-10",
+    buttonClass: 'rotate-[-10deg] mb-[8px]',
+    arrowClass: 'relative left-[50%]',
+    btnText: 'Bear Cave',
+    link: '/cave',
+    ArrowIcon: caveArrowIcon
+  },
 ]
 
 const MapItem = ({
@@ -208,7 +223,7 @@ const MapModal = () => {
       {
         store.open ? (
           <motion.div
-            className="fixed z-[50] w-full h-full left-0 top-0 bg-[rgba(0,_0,_0,_.5)] backdrop-blur-md"
+            className="cursor-pointer fixed z-[50] w-full h-full left-0 top-0 bg-[rgba(0,_0,_0,_.5)] backdrop-blur-md"
             onClick={(e) => {
               if (modalRef.current.contains(e.target)) {
                 return;
