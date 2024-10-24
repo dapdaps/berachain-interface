@@ -79,6 +79,10 @@ export default function CurrencySelect({
     }
   };
 
+  const handleClear = () => {
+    setSearchVal('');
+  };
+
   const handleClose = () => {
     setSearchVal('');
     onClose();
@@ -145,6 +149,7 @@ export default function CurrencySelect({
             </svg>
           )}
           <input
+            value={searchVal}
             className='text-[16px] bg-transparent flex-1'
             placeholder='Search name or paste address'
             onChange={(ev) => {
@@ -154,7 +159,7 @@ export default function CurrencySelect({
           {searchVal && (
             <div
               onClick={() => {
-                handleSearch();
+                handleClear();
               }}
               className='cursor-pointer'
             >

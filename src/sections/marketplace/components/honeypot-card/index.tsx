@@ -1,6 +1,7 @@
 'use client';
 
 import { balanceFormated } from '@/utils/balance';
+import { useMemo } from 'react';
 
 const HoneypotCard = (props: Props) => {
 
@@ -54,22 +55,24 @@ const HoneypotCard = (props: Props) => {
     </div>
   );
 
-  const list = [
-    {
-      label: 'Price',
-      key: 'price',
-      type: '+',
-      rate:  balanceFormated(Math.random() * 16, 2) +  '%',
-      value: '$' + balanceFormated(Math.random() * 10 + 30, 2)
-    },
-    {
-      label: 'Volume',
-      key: 'volume',
-      type: '+',
-      rate: balanceFormated(Math.random() * 10, 2) +  '%',
-      value: '$' + balanceFormated(Math.random() * 10 + 2, 2) + 'M'
-    },
-  ];
+  const list = useMemo(() => {
+    return [
+      {
+        label: 'Price',
+        key: 'price',
+        type: '+',
+        rate:  balanceFormated(Math.random() * 16, 2) +  '%',
+        value: '$' + balanceFormated(Math.random() * 10 + 30, 2)
+      },
+      {
+        label: 'Volume',
+        key: 'volume',
+        type: '+',
+        rate: balanceFormated(Math.random() * 10, 2) +  '%',
+        value: '$' + balanceFormated(Math.random() * 10 + 2, 2) + 'M'
+      },
+    ];
+  }, []);
 
   return (
     <div className='flex items-end justify-center'>
@@ -90,7 +93,6 @@ const HoneypotCard = (props: Props) => {
                 </div>
               ))
             }
-
           </div>
         </div>
         <button
@@ -98,7 +100,6 @@ const HoneypotCard = (props: Props) => {
           className='absolute bottom-[-12px] left-1/2 translate-x-[-50%] z-[2] hover:scale-[1.1] ease-in-out duration-300 border border-black bg-[#FFDC50] rounded-[10px] px-[24px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] text-[16px]'>Swap</button>
       </div>
     </div>
-
   )
 };
 

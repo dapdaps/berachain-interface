@@ -32,6 +32,10 @@ export default function Token() {
         name: dex.name
       });
     });
+    _dexs.push({
+      key: 'meme',
+      name: 'Meme token'
+    });
     return [_dexs, _tokens];
   }, [dexs]);
 
@@ -39,7 +43,7 @@ export default function Token() {
     () =>
       tokens.filter((token: any) => {
         let flag = true;
-        if (protocol !== 'all' && protocol !== token.protocol) {
+        if (protocol !== 'all' && protocol !== token.protocol && protocol !== 'meme') {
           flag = false;
         }
         if (
@@ -48,8 +52,12 @@ export default function Token() {
             token.name.toLowerCase().includes(searchVal.toLowerCase()) ||
             token.symbol.toLowerCase().includes(searchVal.toLowerCase())
           )
-        )
+        ) {
           flag = false;
+        }
+        if (protocol === 'meme' && !token.isMeme) {
+          flag = false;
+        }
         return flag;
       }),
     [tokens, protocol, searchVal]

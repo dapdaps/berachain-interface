@@ -29,7 +29,7 @@ const Navigation = function () {
 
   return (
     <>
-      <div className="absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]" onClick={onNavigateToMarketplace}>
+      <div className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]" onClick={onNavigateToMarketplace}>
         <div className="flex flex-col gap-[19px] items-center pt-[10px]">
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Marketplace</div>
           <ArrowTopSvg />
@@ -37,7 +37,7 @@ const Navigation = function () {
         <MarketplaceSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
 
-      <div className="absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]" onClick={onNavigateToBridge}>
+      <div className="cursor-pointer absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]" onClick={onNavigateToBridge}>
         <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
         <div className="flex items-center justify-end gap-[27px] pr-[19px]">
           <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
@@ -45,7 +45,7 @@ const Navigation = function () {
         </div>
       </div>
 
-      <div className="absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]" onClick={onNavigateToDashBoard}>
+      <div className="cursor-pointer absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]" onClick={onNavigateToDashBoard}>
         <div className="flex flex-col gap-[19px] items-center pt-[29px]">
           <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Dashboard</div>
@@ -53,7 +53,7 @@ const Navigation = function () {
         <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
 
-      <div className="absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]" onClick={onNavigateToDapp}>
+      <div className="cursor-pointer absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]" onClick={onNavigateToDapp}>
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div className="flex gap-[15px] items-center pl-[25px]">
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">dApps</div>

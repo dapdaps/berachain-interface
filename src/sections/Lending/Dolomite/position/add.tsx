@@ -60,7 +60,7 @@ const PositionAdd = (props: Props) => {
                 if (dataLoading) return;
                 setTokenSelectVisible(true);
               }}
-              className="absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]"
+              className="cursor-pointer absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]"
               style={{
                 opacity: dataLoading ? 0.3 : 1,
               }}
@@ -93,7 +93,7 @@ const PositionAdd = (props: Props) => {
                   <CircleLoading size={12} />
                 ) : (
                   <span
-                    className="underline"
+                    className="underline cursor-pointer"
                     onClick={handleBalance}
                   >
                     {numberFormatter(tokenSelected?.balance, 4, true)}

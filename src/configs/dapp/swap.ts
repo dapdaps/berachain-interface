@@ -13,7 +13,7 @@ export default {
       '--button-color': 'rgb(245, 194, 66)',
       '--button-text-color': 'rgb(78, 60, 39)'
     },
-    icon: '/images/dapps/ooga-booga.png'
+    icon: '/images/dapps/ooga-booga.svg'
   },
   kodiak: {
     type: 'swap',

@@ -51,7 +51,7 @@ const BGTCoin = ({
 
   return (
     <div>
-      <div className='relative'
+      <div className='relative cursor-pointer'
         onClick={() => {
           router.push(type === CoinType.iBGT ? "/ibgt" : '/bgt')
         }}

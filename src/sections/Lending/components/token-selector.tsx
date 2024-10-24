@@ -53,7 +53,7 @@ const TokenSelector = (props: Props) => {
             tokens.map((token: any, idx: number) => (
               <motion.li
                 key={idx}
-                className="flex justify-between items-center p-[11px] rounded-[10px] gap-1"
+                className="cursor-pointer flex justify-between items-center p-[11px] rounded-[10px] gap-1"
                 style={{
                   background: selected.address === token.address ? '#F0EEDF' : '#FFFDEB',
                 }}

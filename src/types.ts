@@ -16,6 +16,7 @@ export interface Token {
   priceKey?: string;
   usd?: string;
   color?: string;
+  isMeme?: boolean;
 }
 
 export interface Chain {

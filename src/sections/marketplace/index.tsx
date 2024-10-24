@@ -31,7 +31,7 @@ const MemeTokens = [
     volume: '$0.9717',
   },
   {
-    ...beraB.red,
+    ...beraB.spepe,
     price: '$0.0000001',
     volume: '$0.9717',
   }
@@ -217,16 +217,14 @@ const MarketplaceView = () => {
                           }}
                         >
                           <motion.div
-                            className="bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] p-0"
+                            className="cursor-pointer bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] p-0"
                             animate={(() => getAnimationName(index)) as any}
                             variants={{
                               hover: {
                                 scale: 1.5,
-                                padding: 4,
                               },
                               default: {
                                 scale: 1,
-                                padding: 0,
                               },
                               prev: {
                                 // x: -10
@@ -238,6 +236,7 @@ const MarketplaceView = () => {
                           >
                             <motion.img
                               alt=""
+                              className="cursor-pointer w-[80px] h-[80px]"
                               src={item.icon}
                               style={{
                                 borderRadius: '50%',

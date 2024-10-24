@@ -30,7 +30,8 @@ const MainLayoutHeader = (props: Props) => {
           <Logo />
           <div
             onClick={() => store.setOpen(true)}
-            className='ml-[-20px] hover:scale-[1.1] ease-in-out duration-300'>
+            className='ml-[-20px] hover:scale-[1.1] ease-in-out duration-300 cursor-pointer'
+          >
             <IconMap />
           </div>
           <button
@@ -39,7 +40,7 @@ const MainLayoutHeader = (props: Props) => {
           >
             <span className="relative z-10">Home</span>
           </button>
-          <div onClick={() => {
+          <div className="cursor-pointer" onClick={() => {
             window.open("https://bartio.faucet.berachain.com")
           }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"

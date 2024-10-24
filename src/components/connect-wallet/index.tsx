@@ -228,7 +228,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                     <div className='text-black text-[16px] font-semibold leading-[1]'>
                       {addressShown}
                     </div>
-                    <div className='click' onClick={handleCopy}>
+                    <div className='click cursor-pointer' onClick={handleCopy}>
                       <svg
                         width='13'
                         height='12'
@@ -280,7 +280,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                     </div>
                   </div>
                   <div
-                    className="pl-[22px] pr-[26px] flex justify-between items-center click mt-[10px] pt-[10px] pb-[10px] transition-all duration-300 hover:bg-[#f7f7f7]"
+                    className="cursor-pointer pl-[22px] pr-[26px] flex justify-between items-center click mt-[10px] pt-[10px] pb-[10px] transition-all duration-300 hover:bg-[#f7f7f7]"
                     onClick={handleDisconnect}
                   >
                     <div className="text-[#a6703d] text-[16px] font-medium leading-[1]">
@@ -319,7 +319,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
         </div>
       ) : (
         <button
-          className={`click rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black shadow-shadow1 text-white ${className}`}
+          className={`click cursor-pointer rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black shadow-shadow1 text-white ${className}`}
           onClick={handleConnect}
         >
           Connect Wallet

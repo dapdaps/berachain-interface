@@ -76,7 +76,7 @@ const DashboardView = () => {
       key: 3,
       label: (
         <DashboardTab icon="icon-records.svg">
-          Execution Records
+          Transaction History
         </DashboardTab>
       ),
       children: (

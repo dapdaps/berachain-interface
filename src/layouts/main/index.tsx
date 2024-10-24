@@ -43,6 +43,7 @@ const MainLayout = (props: Props) => {
           alt="dapdap-link"
           width={124}
           height={36}
+          className="cursor-pointer"
         />
       </Link>
       <MapModal />

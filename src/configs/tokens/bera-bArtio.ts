@@ -29,7 +29,8 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     name: 'HONEY',
     icon: '/images/dapps/honey.png',
-    color: '#d97706'
+    color: '#d97706',
+    isMeme: true
   },
   usdt: {
     chainId: CHAIN_ID,
@@ -101,5 +102,14 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'uniBTC',
     name: 'Ethereum',
     icon: '/assets/tokens/uni-btc.png'
+  },
+  spepe: {
+    chainId: CHAIN_ID,
+    address: '0xBf1AdF7b28a910F930677d5ccd0637DD1b52e4f0',
+    decimals: 18,
+    symbol: 'sPepe',
+    name: 'Sad Pepe',
+    icon: '/assets/tokens/spepe.png',
+    isMeme: true
   }
 };
