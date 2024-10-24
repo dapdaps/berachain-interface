@@ -483,11 +483,11 @@ export default memo(function vaults(props) {
             {!isInSufficient &&
               (isTokenApproved && !isTokenApproving ? (
                 <button
-                  disabled={isLoading || !inAmount}
+                  disabled={isLoading || Number(inAmount) <= 0}
                   className={clsx(
                     'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                     {
-                      'opacity-50': isLoading || !inAmount
+                      'opacity-50': isLoading || Number(inAmount) <= 0
                     }
                   )}
                   onClick={handleDeposit}

@@ -195,7 +195,7 @@ export default memo(function BGTPage() {
 
   const handleExplore = function () {
     // window.open("https://bartio.station.berachain.com/")
-    router.push("/marketplace/invest")
+    router.push("/marketplace/invest?type=vaults")
   }
 
 

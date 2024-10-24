@@ -10,8 +10,10 @@ import Dropdown from '../dropdown';
 import SearchBox from '../searchbox';
 import useDataList from './hooks/useDataList';
 import BendLending from '../dapps/bendLending';
+import { useSearchParams } from 'next/navigation';
 
 export default function Invest() {
+  const searchParams = useSearchParams()
   const {
     // lendingVisible,
     // setLendingVisible,
@@ -151,7 +153,7 @@ export default function Invest() {
     { key: 'vaults', name: 'Vaults' }
   ];
 
-  const [type, setType] = useState('all');
+  const [type, setType] = useState(searchParams.get("type") || 'all');
   const [rateKey, setRateKey] = useState<'Single' | 'LP'>('Single');
   const [searchVal, setSearchVal] = useState('');
   const [sortDataIndex, setSortDataIndex] = useState('');
@@ -168,8 +170,8 @@ export default function Invest() {
       );
     return sortDataIndex
       ? _.cloneDeep(_filterList).sort((prev, next) =>
-          Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
-        )
+        Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
+      )
       : _filterList;
   }, [dataList, sortDataIndex, searchVal, rateKey]);
 

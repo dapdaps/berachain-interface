@@ -12,7 +12,9 @@ import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
 import useCustomAccount from '@/hooks/use-account';
 import { useIBGT } from '@/hooks/use-ibgt';
 import Popover, { PopoverPlacement } from '@/components/popover';
+import { useRouter } from 'next/navigation';
 export default memo(function IBGTPage(props: any) {
+  const router = useRouter()
   const { loading, dataList } = useInfraredList()
   const data = useMemo(() => dataList?.find((d: any) => d.id === "iBGT-HONEY"), [dataList])
   const { data: ibgtData } = useIBGT()
@@ -457,7 +459,7 @@ export default memo(function IBGTPage(props: any) {
 
                   <div className="flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
                     onClick={() => {
-                      window.open("https://bartio.bex.berachain.com/add-liquidity/" + LP_ADDRESS)
+                      router.push("/dex/bex?lp=")
                     }}
                   >
                     <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">Mint iBGT</span>
@@ -472,7 +474,7 @@ export default memo(function IBGTPage(props: any) {
 
                   <div className="flex items-center gap-[14px]">
                     <div className="w-[32px] h-[32px] rounded-full">
-                      <img src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`} />
+                      <img src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"}.svg`} />
                     </div>
                     <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0 {data?.rewardSymbol}</div>
                   </div>
@@ -518,7 +520,7 @@ export default memo(function IBGTPage(props: any) {
                     </div>
                     {
                       isInSufficient && (
-                        <button className="h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
+                        <button className="w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
                           <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">InSufficient Balance</span>
                         </button>
                       )
@@ -526,12 +528,12 @@ export default memo(function IBGTPage(props: any) {
                     {
                       !isInSufficient &&
                       (isTokenApproved && !isTokenApproving ? (
-                        <button disabled={isLoading || !inAmount}
+                        <button disabled={isLoading || Number(inAmount) <= 0}
                           className={
                             clsx(
                               "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                               {
-                                "opacity-50": isLoading || !inAmount
+                                "opacity-50": isLoading || Number(inAmount) <= 0
                               })
                           }
                           onClick={handleDeposit}
