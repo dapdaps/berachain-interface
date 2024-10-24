@@ -85,7 +85,7 @@ export default function useInfraredData(props: any) {
       target: call.address.toLowerCase(),
       callData: itf?.encodeFunctionData(call.name, call.params)
     }));
-    MulticallContract.callStatic
+    MulticallContract?.callStatic
       .tryAggregate(requireSuccess || true, calldata, overrides)
       .then((res) => {
         onSuccess(
@@ -189,14 +189,15 @@ export default function useInfraredData(props: any) {
   }
 
   useEffect(() => {
-    console.log('====sender', sender)
-    if (allData && sender) {
+    if (allData) {
       getDataList();
-      getUsdDepositAmount()
-      getEarned()
+      if (sender && provider) {
+        getUsdDepositAmount()
+        getEarned()
+      }
     }
     return function () {
       console.log('====销毁=====')
     }
-  }, [allData, sender]);
+  }, [allData, sender, provider]);
 }

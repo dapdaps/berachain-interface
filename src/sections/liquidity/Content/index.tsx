@@ -1,6 +1,8 @@
 'use client';
 import Card from '@/components/card';
+import SwitchNetwork from '@/components/switch-network';
 import { DEFAULT_CHAIN_ID } from '@/configs';
+import chains from '@/configs/chains';
 import multicallAddresses from '@/configs/contract/multicall';
 import useAccount from '@/hooks/use-account';
 import { useProvider } from '@/hooks/use-provider';
@@ -82,6 +84,8 @@ export default function Liquidity({ dapp }: Props) {
           }}
         />
       )}
+
+      <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
     </Card>
   );
 }

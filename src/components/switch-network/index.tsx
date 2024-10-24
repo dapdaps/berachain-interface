@@ -1,20 +1,29 @@
 'use client';
 
-import { useAccount, useSwitchChain } from 'wagmi';
-import ReactDOM from 'react-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 import Button from '@/components/button';
 import Loading from '@/components/circle-loading';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import ReactDOM from 'react-dom';
+import { useAccount, useSwitchChain } from 'wagmi';
 
 const SwitchNetwork = (props: Props) => {
   const { targetChain } = props;
 
   const { chainId } = useAccount();
+  const { open } = useWeb3Modal();
   const { isPending, switchChain } = useSwitchChain();
 
-  const handleSwitch = () => {
-    switchChain({ chainId: targetChain.id });
+  const handleOpenOrSwitch = () => {
+    if (chainId) {
+      switchChain({ chainId: targetChain.id });
+    } else {
+      open()
+    }
   };
+
+
+  console.log('====chainId', chainId, '====targetChain.id', targetChain.id)
 
   if (targetChain.id === chainId) return null;
 
@@ -44,10 +53,10 @@ const SwitchNetwork = (props: Props) => {
           </div>
           <Button
             type="primary"
-            onClick={handleSwitch}
+            onClick={handleOpenOrSwitch}
             className="w-full h-[60px] mt-auto flex justify-center items-center"
           >
-            {isPending ? <Loading size={20} /> : 'Switch Network'}
+            {isPending ? <Loading size={20} /> : (chainId ? 'Switch Network' : 'Connect Wallect')}
           </Button>
         </div>
       </motion.div>
