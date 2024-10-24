@@ -3,7 +3,7 @@ import { cookieStorage, createStorage } from 'wagmi';
 import { Chain } from 'viem';
 import chains from './chains';
 
-export const projectId = '773dc7d5f848781b9142ac2ba77847a0'; // process.env.NEXT_PUBLIC_PROJECT_ID
+export const projectId = 'd7ba775b30586e6134cb4a77dd5edfcd'; // process.env.NEXT_PUBLIC_PROJECT_ID
 
 if (!projectId) {
   throw new Error('Project ID is not defined');
