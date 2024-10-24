@@ -75,7 +75,7 @@ const PartList = [
     clipPath: 'unset',
     src: 'cave.svg',
     maskSrc: 'mask-cave.svg',
-    indicatorClass:"absolute left-[2%] top-[25%] right-[unset] top-[unset] z-10",
+    indicatorClass:"absolute left-[2%] top-[25%] z-10",
     buttonClass: 'rotate-[-10deg] mb-[8px]',
     arrowClass: 'relative left-[50%]',
     btnText: 'Bear Cave',
