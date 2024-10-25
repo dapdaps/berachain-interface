@@ -29,8 +29,7 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     name: 'HONEY',
     icon: '/images/dapps/honey.png',
-    color: '#d97706',
-    isMeme: true
+    color: '#d97706'
   },
   usdt: {
     chainId: CHAIN_ID,
@@ -111,5 +110,41 @@ export const beraB: { [key: string]: Token } = {
     name: 'Sad Pepe',
     icon: '/assets/tokens/spepe.png',
     isMeme: true
-  }
+  },
+  yeet: {
+    chainId: CHAIN_ID,
+    address: '0x1740F679325ef3686B2f574e392007A92e4BeD41',
+    decimals: 18,
+    symbol: 'YEET',
+    name: 'YEET',
+    icon: '/assets/tokens/YEET.png',
+    isMeme: true
+  },
+  bebe: {
+    chainId: CHAIN_ID,
+    address: '0xd9591d96D494686729225F7c2B484Cd18B5Bea8b',
+    decimals: 18,
+    symbol: 'BEBE',
+    name: 'BEBE',
+    icon: '/assets/tokens/BEBE.png',
+    isMeme: true
+  },
+  sproto: {
+    chainId: CHAIN_ID,
+    address: '0x46a830DFFdC0eb9BF447CEcDF303F83948303078',
+    decimals: 18,
+    symbol: 'SPROTO',
+    name: 'SPROTO',
+    icon: '/assets/tokens/SPROTO.png',
+    isMeme: true
+  },
+  smonkey: {
+    chainId: CHAIN_ID,
+    address: '0xaAe16A7F9779977444E2b33b75Df1c7E5e3a785d',
+    decimals: 18,
+    symbol: 'SMONKEY',
+    name: 'SMONKEY',
+    icon: '/assets/tokens/SMONKEY.png',
+    isMeme: true
+  },
 };
