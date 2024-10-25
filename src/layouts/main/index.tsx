@@ -1,4 +1,5 @@
 "use client"
+
 import useTokenPrice from '@/hooks/use-token-price';
 import MainLayoutHeader from '@/layouts/main/header';
 import { useEffect } from 'react';
@@ -7,8 +8,7 @@ import useUser from '@/hooks/use-user';
 import { useAccount } from 'wagmi';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-
+import TipsModal from '@/components/tips-modal';
 
 const MainLayout = (props: Props) => {
   const {
@@ -17,11 +17,12 @@ const MainLayout = (props: Props) => {
     style,
   } = props;
 
-  const { initializePrice } = useTokenPrice()
+  const { initializePrice } = useTokenPrice();
 
   useEffect(() => {
     initializePrice()
-  }, [])
+  }, []);
+
   const { address } = useAccount();
   const { getAccessToken } = useUser();
 
@@ -47,6 +48,7 @@ const MainLayout = (props: Props) => {
         />
       </Link>
       <MapModal />
+      <TipsModal />
     </div>
   );
 };
