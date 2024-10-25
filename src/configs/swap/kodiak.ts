@@ -12,7 +12,11 @@ export default {
       beraB['usdt'],
       beraB['usdc'],
       beraB['dai'],
-      beraB['spepe']
+      beraB['spepe'],
+      beraB['yeet'],
+      beraB['bebe'],
+      beraB['sproto'],
+      beraB['smonkey'],
     ]
   }
 };

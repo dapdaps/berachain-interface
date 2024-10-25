@@ -26,15 +26,30 @@ const splitArray = (list: Record<string, any>[]) => {
 
 const MemeTokens = [
   {
-    ...beraB.honey,
+    ...beraB.spepe,
     price: '$0.0000001',
     volume: '$0.9717',
   },
   {
-    ...beraB.spepe,
+    ...beraB.yeet,
     price: '$0.0000001',
     volume: '$0.9717',
-  }
+  },
+  {
+    ...beraB.bebe,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB.sproto,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB.smonkey,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
 ];
 
 const MoreButton = (props: { onClick: () => void; classname?: string }) => {
