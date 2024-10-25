@@ -3,6 +3,7 @@ import { beraB } from '../tokens/bera-bArtio';
 export default {
   name: 'Ooga Booga',
   icon: '/images/dapps/ooga-booga.png',
+  defaultInputCurrency: beraB['bera'],
   tokens: {
     80084: [
       beraB['bera'],
