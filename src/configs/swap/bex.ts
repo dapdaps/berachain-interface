@@ -4,7 +4,6 @@ export default {
   name: 'BEX',
   icon: '/images/dapps/bex.png',
   defaultInputCurrency: beraB['bera'],
-  defaultOutputCurrency: beraB['honey'],
   tokens: {
     80084: [
       beraB['bera'],
