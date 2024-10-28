@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
-import BearCircleSvg from "@public/images/background/bear-circle.svg";
+import Beartown from "@public/images/background/beratown.png";
 import BearSvg from "@public/images/background/bear.svg";
 import BridgeSvg from "@public/images/background/bridge.svg";
 import CloudSvg from "@public/images/background/cloud.svg";
@@ -20,6 +20,7 @@ import LeftTreeSvg from '@public/images/background/tree.svg'
 import HatBearSvg from '@public/images/background/hat-bear.svg'
 
 import { memo } from "react";
+import LazyImage from '@/components/layz-image';
 
 const Clouds = function () {
   return (
@@ -468,21 +469,23 @@ const RightTree = function () {
 const BearTown = function () {
   return (
     <div className="absolute bottom-[389px] left-1/2 translate-x-[-149px] flex flex-col items-center">
-      <BearCircleSvg />
-      {/* @ts-ignore */}
-      <div
-        className="mt-[-42px] text-[90px] text-[#9F9EFF] font-CherryBomb leading-[90%]"
-        // @ts-ignore
-        style={{ "-webkit-text-stroke-width": 6, "-webkit-text-stroke-color": "#000" }}
-      >BERA
-      </div>
-      {/* @ts-ignore */}
-      <div
-        className="mt-[-13px] text-[90px] text-[#EBF479] font-CherryBomb leading-[90%]"
-        // @ts-ignore
-        style={{ "-webkit-text-stroke-width": 6, "-webkit-text-stroke-color": "#000" }}
-      >TOWN
-      </div>
+      <motion.img
+        src="/images/background/beratown.png"
+        width={401}
+        height={290}
+        animate={{
+          opacity: [0, 1],
+          y: [20, 0],
+          scale: [0.7, 1],
+        }}
+        transition={{
+          duration: 0.4,
+          delay: 0.3,
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+        }}
+      />
     </div>
   )
 }
