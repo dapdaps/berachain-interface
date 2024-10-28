@@ -4,6 +4,7 @@ import BearBackground from '@/components/bear-background';
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BridgeSvg from "@public/images/background/bridge.svg";
 import DappsSvg from "@public/images/background/dapps.svg";
+import CaveSvg from "@public/images/cave/cave.svg";
 import DashboardSvg from "@public/images/background/dashboard.svg";
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import { memo } from "react";
@@ -25,6 +26,10 @@ const Navigation = function () {
 
   const onNavigateToDashBoard = () => {
     router.push('/dashboard');
+  }
+
+  const onNavigateToCave = () => {
+    router.push('/cave');
   }
 
   return (
@@ -59,6 +64,12 @@ const Navigation = function () {
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">dApps</div>
           <ArrowTopSvg style={{ transform: 'rotate(270deg)' }} />
         </div>
+      </div>
+
+
+      <div className="cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]" onClick={onNavigateToCave}>
+        <div className='text-[20px] text-center font-CherryBomb'>Bera Cave</div>
+        <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
     </>
   )
