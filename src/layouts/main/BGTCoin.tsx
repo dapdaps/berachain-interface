@@ -35,7 +35,8 @@ const Star = () => (
 
 const BGTCoin = ({
   type = CoinType.BGT,
-  count = 0
+  count = 0,
+  bp
 }: Props) => {
 
   const router = useProgressRouter()
@@ -51,7 +52,9 @@ const BGTCoin = ({
 
   return (
     <div>
-      <div className='relative cursor-pointer'
+      <div
+        data-bp={bp}
+        className='relative cursor-pointer'
         onClick={() => {
           router.push(type === CoinType.iBGT ? "/ibgt" : '/bgt')
         }}
@@ -92,4 +95,5 @@ export enum CoinType {
 export interface Props {
   type: CoinType,
   count: number;
+  bp?: string;
 }

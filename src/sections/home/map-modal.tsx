@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import useMapModalStore from '@/stores/useMapModalStore';
 import ReactDOM from 'react-dom';
 import IconClose from '@public/images/modal/close.svg';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const dAppClipPath = 'M208.33 2.96745L11.5462 105.957C4.52793 109.63 0.338879 117.099 0.864137 125.003L9.08074 248.644C9.84853 260.197 20.2364 268.686 31.7113 267.138L216.435 242.211C217.477 242.071 218.506 241.848 219.512 241.546L391.686 189.845C393.552 189.285 395.49 189 397.438 189H500.561C507.102 189 513.229 185.802 516.969 180.436L537.25 151.337C542.176 144.269 542.023 134.841 536.87 127.938L472.504 41.7046C469.303 37.415 464.515 34.5878 459.212 33.8557L220.339 0.875262C216.216 0.305971 212.018 1.03735 208.33 2.96745Z';
 
@@ -170,6 +171,7 @@ const MapItem = ({
 const MapModal = () => {
 
   const store: any = useMapModalStore();
+  const { handleReport } = useClickTracking();
 
   const modalRef = useRef<any>(null);
   const [visible, setVisible] = useState<boolean>(false);
@@ -181,6 +183,25 @@ const MapModal = () => {
   const onNavigateTo = (link?: string) => {
     if (!link) {
       return;
+    }
+    switch (link) {
+      case '/dapps':
+        handleReport('1001-001-001');
+        break;
+      case '/marketplace':
+        handleReport('1001-001-003');
+        break;
+      case '/bridge':
+        handleReport('1001-001-004');
+        break;
+      case '/dashboard':
+        handleReport('1001-001-005');
+        break;
+      case '/cave':
+        handleReport('1001-001-002');
+        break;
+      default:
+        break;
     }
     store.setOpen(false);
     router.push(link);

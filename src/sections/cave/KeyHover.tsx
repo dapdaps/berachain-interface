@@ -28,7 +28,8 @@ export default function KeyHover() {
     return <div ref={boxRef} 
     onMouseEnter={() => { setShowSelf(true) }} 
     onMouseLeave={() => { setShowSelf(false); setTipShow(false); }}  
-    style={{ opacity: showSelf ? 1: 0, left: 'calc(50% - 170px - 290px)' }} 
+    style={{ opacity: showSelf ? 1: 0, left: 'calc(50% - 170px - 290px)' }}
+    data-bp="1004-004"
     onClick={() => {
         setTipShow(true)
     }} className="absolute cursor-pointer w-[393px] h-[262px] left-[50%] top-[480px] translate-x-[-50%] bg-[#EBF4794D] border-[#EBF479] border-[3px] rounded-[20px]">

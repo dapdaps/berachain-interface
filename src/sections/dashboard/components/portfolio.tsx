@@ -3,13 +3,20 @@ import Category from '@/sections/dashboard/components/category';
 import Value from '@/sections/dashboard/components/value';
 import DashboardPortfolioDetail from '@/sections/dashboard/components/portfolio-detail';
 import Skeleton from 'react-loading-skeleton';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { numberFormatter } from '@/utils/number-formatter';
 import CircleLoading from '@/components/circle-loading';
 import Empty from '@/components/empty';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const DashboardPortfolio = (props: Props) => {
   const { loading, dapps, totalBalance, tvls, tvlsLoading } = props;
+
+  const { handleReport } = useClickTracking();
+
+  useEffect(() => {
+    handleReport('1002-002');
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto">

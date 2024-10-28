@@ -6,6 +6,7 @@ import PageBack from '@/components/back';
 import dynamic from 'next/dynamic';
 import useTokenPrice from '@/hooks/use-token-price';
 import { useEffect } from 'react';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const Dolomite = dynamic((() => import('@/sections/Lending/Dolomite')));
 const Bend = dynamic((() => import('@/sections/Lending/Bend')));
@@ -13,10 +14,23 @@ const Bend = dynamic((() => import('@/sections/Lending/Bend')));
 export default function LendingDAppPage() {
   const { dapp } = useParams();
   const { initializePrice } = useTokenPrice();
+  const { handleReport } = useClickTracking();
 
   useEffect(() => {
+    switch (dapp) {
+      case 'dolomite':
+        handleReport('1003-002');
+        break;
+      case 'bend':
+        handleReport('1003-003');
+        break;
+      default:
+        break;
+    }
+
     initializePrice();
   }, []);
+
   return (
     <BearBackground type='dapp'>
       <div className="p-[25px_35px]">
