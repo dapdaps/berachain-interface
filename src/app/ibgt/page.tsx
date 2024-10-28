@@ -457,10 +457,12 @@ export default memo(function IBGTPage(props: any) {
                     <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0 iBGT</div>
                   </div>
 
-                  <div className="flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
+                  <div
+                    className="cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
                     onClick={() => {
                       router.push("/dex/bex?lp=")
                     }}
+                    data-bp="1001-005-001"
                   >
                     <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">Mint iBGT</span>
                   </div>

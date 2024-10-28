@@ -34,7 +34,11 @@ const Navigation = function () {
 
   return (
     <>
-      <div className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]" onClick={onNavigateToMarketplace}>
+      <div
+        className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]"
+        onClick={onNavigateToMarketplace}
+        data-bp="1001-006"
+      >
         <div className="flex flex-col gap-[19px] items-center pt-[10px]">
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Marketplace</div>
           <ArrowTopSvg />
@@ -42,7 +46,11 @@ const Navigation = function () {
         <MarketplaceSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
 
-      <div className="cursor-pointer absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]" onClick={onNavigateToBridge}>
+      <div
+        className="cursor-pointer absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]"
+        onClick={onNavigateToBridge}
+        data-bp="1001-007"
+      >
         <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
         <div className="flex items-center justify-end gap-[27px] pr-[19px]">
           <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
@@ -50,7 +58,11 @@ const Navigation = function () {
         </div>
       </div>
 
-      <div className="cursor-pointer absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]" onClick={onNavigateToDashBoard}>
+      <div
+        className="cursor-pointer absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]"
+        onClick={onNavigateToDashBoard}
+        data-bp="1001-008"
+      >
         <div className="flex flex-col gap-[19px] items-center pt-[29px]">
           <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Dashboard</div>
@@ -58,7 +70,11 @@ const Navigation = function () {
         <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
 
-      <div className="cursor-pointer absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]" onClick={onNavigateToDapp}>
+      <div
+        className="cursor-pointer absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]"
+        onClick={onNavigateToDapp}
+        data-bp="1001-009"
+      >
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div className="flex gap-[15px] items-center pl-[25px]">
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">dApps</div>
@@ -67,7 +83,11 @@ const Navigation = function () {
       </div>
 
 
-      <div className="cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]" onClick={onNavigateToCave}>
+      <div
+        className="cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]"
+        onClick={onNavigateToCave}
+        data-bp="1001-010"
+      >
         <div className='text-[20px] text-center font-CherryBomb'>Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>

@@ -9,6 +9,7 @@ import Big from 'big.js';
 import Skeleton from 'react-loading-skeleton';
 import Empty from '@/components/empty';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const DashboardWallet = (props: Props) => {
   const { tokens, loading, totalBalance } = props;
@@ -16,6 +17,7 @@ const DashboardWallet = (props: Props) => {
   const { address } = useAccount();
   const { accessToken, getUserInfo, userInfo } = useUser();
   const modal = useWeb3Modal();
+  const { handleReport } = useClickTracking();
 
   const columns: Column[] = [
     {
@@ -65,6 +67,10 @@ const DashboardWallet = (props: Props) => {
     if (!accessToken) return;
     getUserInfo();
   }, [accessToken]);
+
+  useEffect(() => {
+    handleReport('1002-001');
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto">
