@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import IconClose from '@public/images/modal/close.svg';
+import useIsMobile from '@/hooks/use-isMobile';
+
 interface ModalProps {
   open?: boolean;
   onClose?: () => void;
@@ -20,6 +22,7 @@ const Modal: React.FC<ModalProps> = ({
   className,
   closeIconClassName
 }) => {
+  const isMobile = useIsMobile();
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -40,7 +43,7 @@ const Modal: React.FC<ModalProps> = ({
   return ReactDOM.createPortal(
     (
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] ${className}`}
+        className={`fixed inset-0 bg-black bg-opacity-50 flex lg:items-center lg:justify-center z-[100] ${className}`}
         style={style}
         onClick={handleBackdropClick}
       >
@@ -53,7 +56,13 @@ const Modal: React.FC<ModalProps> = ({
               <IconClose />
             </button>
           ) : null}
-          {children}
+          {isMobile ? (
+            <div className='w-screen h-[50vh] absolute bottom-0 left-0 rounded-t-[20px]'>
+              {children}
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </div>
     ) as any,

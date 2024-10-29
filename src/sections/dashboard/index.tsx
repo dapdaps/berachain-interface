@@ -96,14 +96,14 @@ const DashboardView = () => {
     <BearBackground type='dashboard'>
       <PageBack className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]' />
       <PageTitle className='pt-[30px] md:pt-[16px]'>Dashboard</PageTitle>
-      <div className='w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full'>
+      <div className='w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]'>
         <Tabs
           currentTab={currentTab}
           tabs={tabs}
           onChange={(tabKey) => {
             setCurrentTab(tabKey);
           }}
-          bodyInnerClassName='h-[calc(100vh-145px)]'
+          bodyInnerClassName='lg:h-[calc(100vh-300px)] md:h-[calc(100%-132px)]'
         />
       </div>
     </BearBackground>

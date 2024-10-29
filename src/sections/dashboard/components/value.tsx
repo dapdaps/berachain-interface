@@ -5,10 +5,10 @@ const Value = (props: Props) => {
 
   return (
     <div
-      className={`font-CherryBomb text-black text-[22px] leading-[90%] ${className}`}
+      className={`font-CherryBomb text-black text-[22px] leading-[90%] ${className} md:text-[16px]`}
       style={{
         ...style,
-        opacity: disabled ? 0.3 : 1,
+        opacity: disabled ? 0.3 : 1
       }}
     >
       {numberFormatter(children, 2, true, { prefix: '$' })}

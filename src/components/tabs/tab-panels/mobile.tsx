@@ -10,7 +10,7 @@ export default function Mobile({
   return (
     <div
       ref={bodyRef}
-      className={`mt-[10px] relative z-[1] rounded-t-[20px] bg-[#FFFDEB] border border-black min-h-[50px] ${bodyClassName} hidden md:block`}
+      className={`mt-[10px] relative z-[1] rounded-t-[20px] bg-[#FFFDEB] border border-black ${bodyClassName} h-[calc(100%-10px)] hidden md:block`}
     >
       <AnimatePresence mode='wait'>
         {tabs.map((tab: any, idx: number) => {

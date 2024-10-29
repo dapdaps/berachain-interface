@@ -31,10 +31,16 @@ const FlexTable = (props: FlexTableProps) => {
               style={{
                 width: column.width ?? 0,
                 flexGrow: column.width ? 0 : 1,
+                flexShrink: column.width ? 0 : 1,
                 textAlign: column.align ?? 'left',
-                flexShrink: column.width ? 0 : 1
+                justifyContent:
+                  column.align === 'center'
+                    ? 'center'
+                    : column.align === 'right'
+                    ? 'flex-end'
+                    : 'flex-start'
               }}
-              className='flex items-center gap-[5px] flex-shrink-0 text-[14px] text-[#3D405A]'
+              className='flex items-center gap-[5px] text-[14px] text-[#3D405A]'
               onClick={() => {
                 column?.sort &&
                   onChangeSortDataIndex &&

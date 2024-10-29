@@ -22,16 +22,48 @@ interface DApp {
 }
 
 const dapps: DApp[] = [
-  { id: 'infrared', name: 'Infrared', icon: '/images/dapps/infrared.svg', href: '/dapp/infrared' },
+  {
+    id: 'infrared',
+    name: 'Infrared',
+    icon: '/images/dapps/infrared.svg',
+    href: '/dapp/infrared'
+  },
   { id: 'bex', name: 'Bex', icon: '/images/dapps/bex.png', href: '/dapp/bex' },
-  { id: 'bend', name: 'Bend', icon: '/images/dapps/bend.svg', href: '/dapp/bend' },
-  { id: 'kodiak', name: 'Kodiak', icon: '/images/dapps/kodiak.svg', href: '/dapp/kodiak' },
-  { id: 'dolomite', name: 'Dolomite', icon: '/images/dapps/dolomite.svg', href: '/dapp/dolomite' },
-  { id: 'stargate', name: 'Stargate', icon: '/images/dapps/stargate.svg', href: '/dapp/stargate' },
-  { id: 'ooga', name: 'Ooga Booga', icon: '/images/dapps/ooga-booga.svg', href: '/dapp/ooga' },
+  {
+    id: 'bend',
+    name: 'Bend',
+    icon: '/images/dapps/bend.svg',
+    href: '/dapp/bend'
+  },
+  {
+    id: 'kodiak',
+    name: 'Kodiak',
+    icon: '/images/dapps/kodiak.svg',
+    href: '/dapp/kodiak'
+  },
+  {
+    id: 'dolomite',
+    name: 'Dolomite',
+    icon: '/images/dapps/dolomite.svg',
+    href: '/dapp/dolomite'
+  },
+  {
+    id: 'stargate',
+    name: 'Stargate',
+    icon: '/images/dapps/stargate.svg',
+    href: '/dapp/stargate'
+  },
+  {
+    id: 'ooga',
+    name: 'Ooga Booga',
+    icon: '/images/dapps/ooga-booga.svg',
+    href: '/dapp/ooga'
+  }
 ];
 
-const MobileLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
+  children
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDappsOpen, setIsDappsOpen] = useState(false);
 
@@ -39,33 +71,40 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => (
-    <Link href={dapp.href} className="flex flex-col items-center gap-1">
-      <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
-        <img src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" />
+    <Link href={dapp.href} className='flex flex-col items-center gap-1'>
+      <div className='w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center'>
+        <img
+          src={dapp.icon}
+          alt={dapp.name}
+          className='w-[10.769vw] h-[10.769vw]'
+        />
       </div>
-      <span className="font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black">{dapp.name}</span>
+      <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
+        {dapp.name}
+      </span>
     </Link>
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1">
-        {children}
-      </main>
+    <div className='h-screen relative overflow-hidden'>
+      <main className='h-full'>{children}</main>
 
       {/* Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: '100%' }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 bg-[#F6EFC8] z-40 flex flex-col items-center pt-12 pb-24"
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className='fixed inset-0 bg-[#F6EFC8] z-40 flex flex-col items-center pt-12 pb-24'
           >
-            <div className="w-full max-w-md flex justify-center items-center flex-col gap-4">
+            <div className='w-full max-w-md flex justify-center items-center flex-col gap-4'>
               {menuItems.map((item) => (
-                <div key={item.id} className="w-full flex justify-center items-center flex-col relative">
+                <div
+                  key={item.id}
+                  className='w-full flex justify-center items-center flex-col relative'
+                >
                   <MenuButton
                     href={item.href}
                     hasDropdown={item.hasDropdown}
@@ -74,16 +113,16 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                   >
                     {item.title}
                   </MenuButton>
-                  
+
                   <AnimatePresence>
                     {item.hasDropdown && isDappsOpen && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="w-full -mt-6 px-4 py-6 bg-[#D5CDA1] overflow-hidden z-[-1] pt-[13.84vw]"
+                        className='w-full -mt-6 px-4 py-6 bg-[#D5CDA1] overflow-hidden z-[-1] pt-[13.84vw]'
                       >
-                        <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+                        <div className='grid grid-cols-4 gap-x-4 gap-y-6'>
                           {dapps.map((dapp) => (
                             <DAppIcon key={dapp.id} dapp={dapp} />
                           ))}
@@ -99,18 +138,22 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-50">
+      <div className='absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-50'>
         <img
-          src="/images/mobile/town.png"
-          alt="Town"
-          className="w-[15.9vw] h-auto"
+          src='/images/mobile/town.png'
+          alt='Town'
+          className='w-[15.9vw] h-auto'
         />
         <motion.button
           onClick={toggleMenu}
           whileTap={{ scale: 0.95 }}
-          className="w-6 h-[4.6vw]"
+          className='w-6 h-[4.6vw]'
         >
-          {isMenuOpen ? <IconClose className="w-full h-full" /> : <IconMenu className="w-full h-full" />}
+          {isMenuOpen ? (
+            <IconClose className='w-full h-full' />
+          ) : (
+            <IconMenu className='w-full h-full' />
+          )}
         </motion.button>
       </div>
     </div>

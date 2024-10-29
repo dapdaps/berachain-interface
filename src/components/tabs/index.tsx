@@ -53,7 +53,7 @@ const Tabs = (props: TabsProps) => {
   }, [tabs]);
 
   return (
-    <div className={`${className}`} style={style}>
+    <div className={`${!!className ? className : ''} h-full`} style={style}>
       <TabsWrapper>
         {tabs.map((tab, idx) => {
           return (

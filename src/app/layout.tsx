@@ -12,7 +12,7 @@ import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import useIsMobile from '@/hooks/use-isMobile';
 import MobileLayout from '@/layouts/mobile';
 
-let className = ''
+let className = '';
 
 export default function RootLayout({
   children
@@ -24,14 +24,16 @@ export default function RootLayout({
     <html lang='en'>
       <head>
         <title>Berachain</title>
-        <meta name="description" content="berachain-interface" />
+        <meta name='description' content='berachain-interface' />
       </head>
       <body>
         <WagmiProvider>
-          <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-            {
-              isMobile ? <MobileLayout>{children}</MobileLayout> : <MainLayout className={className}>{children}</MainLayout>
-            }
+          <SkeletonTheme baseColor='#7990F4' highlightColor='#FFDC50'>
+            {isMobile ? (
+              <MobileLayout>{children}</MobileLayout>
+            ) : (
+              <MainLayout className={className}>{children}</MainLayout>
+            )}
           </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
@@ -46,8 +48,8 @@ export default function RootLayout({
           closeButton={false}
         />
         <ProgressBar
-          height="4px"
-          color="#ffdc50"
+          height='4px'
+          color='#ffdc50'
           options={{ showSpinner: false }}
           shallowRouting
         />
