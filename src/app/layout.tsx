@@ -9,6 +9,8 @@ import { ToastContainer } from 'react-toastify';
 
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
+import useIsMobile from '@/hooks/use-isMobile';
+import MobileLayout from '@/layouts/mobile';
 
 let className = ''
 
@@ -17,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
+  const isMobile = useIsMobile();
   return (
     <html lang='en'>
       <head>
@@ -27,7 +29,9 @@ export default function RootLayout({
       <body>
         <WagmiProvider>
           <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-            <MainLayout className={className}>{children}</MainLayout>
+            {
+              isMobile ? <MobileLayout>{children}</MobileLayout> : <MainLayout className={className}>{children}</MainLayout>
+            }
           </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer

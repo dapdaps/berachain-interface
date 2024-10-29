@@ -9,6 +9,7 @@ import DashboardSvg from '@public/images/background/dashboard.svg';
 import MarketplaceSvg from '@public/images/background/marketplace.svg';
 import { memo } from 'react';
 import { useProgressRouter } from '@/hooks/use-progress-router';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -30,6 +31,11 @@ const Navigation = function () {
   const onNavigateToCave = () => {
     router.push('/cave');
   };
+
+  const isMobile = useIsMobile()
+
+  console.log(isMobile, 'isMobile');
+  
 
   return (
     <>
