@@ -60,7 +60,7 @@ const DashboardRecords = (props: Props) => {
   ];
 
   useEffect(() => {
-    handleReport('1002-003');
+    handleReport('1011-003');
   }, []);
 
   return (

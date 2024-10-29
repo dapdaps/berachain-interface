@@ -37,7 +37,7 @@ const Navigation = function () {
       <div
         className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]"
         onClick={onNavigateToMarketplace}
-        data-bp="1001-006"
+        data-bp="1010-006"
       >
         <div className="flex flex-col gap-[19px] items-center pt-[10px]">
           <div className="text-[20px] text-black font-CherryBomb leading-[90%]">Marketplace</div>
@@ -49,7 +49,7 @@ const Navigation = function () {
       <div
         className="cursor-pointer absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]"
         onClick={onNavigateToBridge}
-        data-bp="1001-007"
+        data-bp="1010-007"
       >
         <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
         <div className="flex items-center justify-end gap-[27px] pr-[19px]">
@@ -61,7 +61,7 @@ const Navigation = function () {
       <div
         className="cursor-pointer absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]"
         onClick={onNavigateToDashBoard}
-        data-bp="1001-008"
+        data-bp="1010-008"
       >
         <div className="flex flex-col gap-[19px] items-center pt-[29px]">
           <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
@@ -73,7 +73,7 @@ const Navigation = function () {
       <div
         className="cursor-pointer absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]"
         onClick={onNavigateToDapp}
-        data-bp="1001-009"
+        data-bp="1010-009"
       >
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div className="flex gap-[15px] items-center pl-[25px]">
@@ -86,7 +86,7 @@ const Navigation = function () {
       <div
         className="cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]"
         onClick={onNavigateToCave}
-        data-bp="1001-010"
+        data-bp="1010-010"
       >
         <div className='text-[20px] text-center font-CherryBomb'>Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
