@@ -64,9 +64,7 @@ const DashboardView = () => {
     },
     {
       key: 2,
-      label: (
-        <DashboardTab icon='icon-portfolio.svg'>DeFi Portfolio</DashboardTab>
-      ),
+      label: <DashboardTab icon='icon-portfolio.svg'>In Protocol</DashboardTab>,
       children: (
         <DashboardPortfolio
           loading={dappsLoading}
@@ -79,9 +77,7 @@ const DashboardView = () => {
     },
     {
       key: 3,
-      label: (
-        <DashboardTab icon='icon-records.svg'>Transaction History</DashboardTab>
-      ),
+      label: <DashboardTab icon='icon-records.svg'>Records</DashboardTab>,
       children: (
         <DashboardRecords
           loading={recordsLoading}
@@ -100,16 +96,14 @@ const DashboardView = () => {
     <BearBackground type='dashboard'>
       <PageBack className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]' />
       <PageTitle className='pt-[30px] md:pt-[16px]'>Dashboard</PageTitle>
-      <div className='relative w-[882px] mx-auto mt-[30px] z-50'>
+      <div className='w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full'>
         <Tabs
           currentTab={currentTab}
           tabs={tabs}
           onChange={(tabKey) => {
             setCurrentTab(tabKey);
           }}
-          bodyInnerStyle={{
-            height: 'calc(100vh - 300px)'
-          }}
+          bodyInnerClassName='h-[calc(100vh-145px)]'
         />
       </div>
     </BearBackground>

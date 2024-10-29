@@ -24,10 +24,10 @@ const DashboardWallet = (props: Props) => {
       dataIndex: 'token',
       title: 'Token',
       render: (_, record) => (
-        <div className="flex items-center gap-x-[14px]">
+        <div className='flex items-center gap-x-[14px]'>
           <LazyImage
             src={record.logo}
-            className="rounded-full w-[26px] h-[26px] flex-shrink-0"
+            className='rounded-full w-[26px] h-[26px] flex-shrink-0'
             width={26}
             height={26}
             fallbackSrc={DefaultIcon}
@@ -35,32 +35,32 @@ const DashboardWallet = (props: Props) => {
           <div>{record.symbol}</div>
         </div>
       ),
-      width: '37%'
+      width: '40%'
     },
-    {
-      dataIndex: 'price',
-      title: 'Price',
-      width: '24%',
-      render: (_, record) => {
-        return numberFormatter(record.price, 2, true, { prefix: '$' });
-      },
-    },
+    // {
+    //   dataIndex: 'price',
+    //   title: 'Price',
+    //   width: '24%',
+    //   render: (_, record) => {
+    //     return numberFormatter(record.price, 2, true, { prefix: '$' });
+    //   }
+    // },
     {
       dataIndex: 'amount',
       title: 'Amount',
-      width: '24%',
+      width: '30%',
       render: (_, record) => {
         return numberFormatter(record.amount, 2, true);
-      },
+      }
     },
     {
       dataIndex: 'usd',
       title: 'USD Value',
-      width: '15%',
+      width: '30%',
       render: (_, record) => {
         return numberFormatter(record.usd, 2, true, { prefix: '$' });
-      },
-    },
+      }
+    }
   ];
 
   useEffect(() => {
@@ -73,60 +73,60 @@ const DashboardWallet = (props: Props) => {
   }, []);
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="bg-[#FFDC50] py-[18px] pl-[25px] pr-[13px] rounded-[10px] flex items-center gap-x-[18px] mb-[32px]">
-        {
-          !address || !userInfo.avatar ? (
-            <div className="w-[85px] h-[85px] rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
-          ) : (
+    <div className='h-full overflow-y-auto'>
+      <div className='bg-[#FFDC50] py-[18px] pl-[25px] pr-[13px] rounded-[10px] flex items-center gap-[18px] mb-[32px] md:mb-0 md:rounded-t-[20px] md:rounded-b-none md:gap-[6px]'>
+        {!address || !userInfo.avatar ? (
+          <div className='w-[85px] h-[85px] md:w-[46px] md:h-[46px] rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]' />
+        ) : (
+          <div className='w-[85px] h-[85px] shrink-0 md:w-[46px] md:h-[46px]'>
             <LazyImage
               src={userInfo.avatar}
-              width={85}
-              height={85}
-              className="w-[85px] h-[85px] rounded-full flex-shrink-0"
+              className='rounded-full shrink-0 '
             />
-          )
-        }
-        {
-          !address ? (
-            <button
-              className="underline"
-              type="button"
-              onClick={() => {
-                modal.open();
-              }}
-            >
-              Connect Wallet
-            </button>
-          ) : (
-            <>
-              <div className="grow">
-                <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">@{userInfo.username}</div>
-                <div className="text-[14px] text-[#3D405A] font-Montserrat">
-                  {address ? (address.slice(0, 6) + '...' + address.slice(-4)) : ''}
-                </div>
+          </div>
+        )}
+        {!address ? (
+          <button
+            className='underline'
+            type='button'
+            onClick={() => {
+              modal.open();
+            }}
+          >
+            Connect Wallet
+          </button>
+        ) : (
+          <>
+            <div className='grow'>
+              <div className='font-CherryBomb text-black text-[32px] md:text-[20px] font-[400] mb-[6px] leading-none'>
+                @{userInfo.username}
               </div>
-              <div className="flex-shrink-0">
-                <div className="font-CherryBomb text-black text-[32px] font-[400] mb-[6px] leading-none">
-                  {
-                    loading ? (
-                      <Skeleton width={140} height={32} />
-                    ) : numberFormatter(totalBalance, 2, true, { prefix: '$' })
-                  }
-                </div>
-                <div className="text-[14px] text-[#3D405A] font-Montserrat text-center">Total assets value</div>
+              <div className='text-[14px] text-[#3D405A] font-Montserrat'>
+                {address ? address.slice(0, 6) + '...' + address.slice(-4) : ''}
               </div>
-            </>
-          )
-        }
+            </div>
+            <div className='flex-shrink-0'>
+              <div className='font-CherryBomb text-black text-[32px] md:text-[20px] font-[400] mb-[6px] leading-none'>
+                {loading ? (
+                  <Skeleton width={140} height={32} />
+                ) : (
+                  numberFormatter(totalBalance, 2, true, { prefix: '$' })
+                )}
+              </div>
+              <div className='text-[14px] text-[#3D405A] font-Montserrat text-center'>
+                Total assets value
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <FlexTable
         columns={columns}
         list={tokens}
         loading={loading}
         renderEmpty={() => (
-          <div className="mt-[50px] w-full flex justify-center items-center">
-            <Empty desc="No asset found" />
+          <div className='mt-[50px] w-full flex justify-center items-center'>
+            <Empty desc='No asset found' />
           </div>
         )}
       />
