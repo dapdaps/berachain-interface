@@ -60,8 +60,6 @@ export default function Cave() {
             </div>
         </div>
 
-        
-       
         <div style={{ left: 'calc(57% + 120px + 290px)' }} className=" absolute w-[186px] h-[224px] top-[150px] translate-x-[-50%] bg-[url('/images/cave/window.png')] bg-contain bg-no-repeat bg-bottom"></div>
 
         <div style={{ left: 'calc(57% + 120px + 214px)' }} className="w-[159px] h-[214px] translate-x-[-50%] absolute top-[530px] bg-[url('/images/cave/box-mini.png')] bg-contain bg-no-repeat bg-bottom">
@@ -77,7 +75,7 @@ export default function Cave() {
             <img src="/images/cave/neck/neck-2.png" className="w-[71px] absolute left-[14px] top-[32px]"/>
         </div>
 
-        <div className=" absolute w-[976px] h-[488px] bottom-[0px] right-[-150px] bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
+        <div className=" absolute w-[776px] h-[388px] bottom-[0px] right-[-150px] bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
     
         <HatHover />
         <ClothHover />
