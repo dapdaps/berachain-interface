@@ -124,6 +124,24 @@ export default memo(function BGTPage() {
   // const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)) ?? [], [dataList])
   const queryPageData = async function () {
     const result = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/homepage")
+    if (result?.top3EmittingValidators?.validators) {
+      result.top3EmittingValidators.validators.forEach((v: any) => {
+        if (!v.validator?.metadata) return;
+        switch (v.validator.metadata.name) {
+          case 'Infrared':
+            v.validator.metadata.bp = '1001-004-001';
+            break;
+          case 'Kodiak Finance':
+            v.validator.metadata.bp = '1001-004-002';
+            break;
+          case 'The-Honey-Jar':
+            v.validator.metadata.bp = '1001-004-003';
+            break;
+          default:
+            break;
+        }
+      });
+    }
     setPageData(result)
   }
   const refresh = function () {
@@ -247,7 +265,7 @@ export default memo(function BGTPage() {
             <div className="flex flex-col gap-[12px]">
               {
                 pageData?.top3EmittingValidators?.validators?.map((data: any) => (
-                  <div className="flex items-center h-[36px] py-[5px] pr-[18px] pl-[5px] border border-[#373A53] bg-[#FFFDEB] rounded-[18px]">
+                  <div data-bp={data?.validator?.metadata?.bp} className="flex items-center h-[36px] py-[5px] pr-[18px] pl-[5px] border border-[#373A53] bg-[#FFFDEB] rounded-[18px]">
                     <div className="w-[26px] h-[26px] rounded-full overflow-hidden">
                       <img src={data?.validator?.metadata?.logoURI} alt={data?.validator?.metadata?.name} />
                     </div>
@@ -288,7 +306,11 @@ export default memo(function BGTPage() {
 
         <div className="mt-[30px] flex justify-between items-center">
           <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">Your Vaults</div>
-          <div className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white" onClick={handleExplore}>
+          <div
+            className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
+            onClick={handleExplore}
+            data-bp="1001-004-004"
+          >
             <span>Explore Vaults</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
               <path d="M1 1L5.8 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" />

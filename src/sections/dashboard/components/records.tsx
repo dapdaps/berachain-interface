@@ -1,9 +1,13 @@
 import FlexTable, { Column } from '@/components/flex-table';
 import LazyImage from '@/components/layz-image';
 import { DefaultIcon, txTimeFormatter } from '@/sections/dashboard/utils';
+import useClickTracking from '@/hooks/use-click-tracking';
+import { useEffect } from 'react';
 
 const DashboardRecords = (props: Props) => {
   const { loading, records, pageIndex, hasMore, onNext, onPrev } = props;
+
+  const { handleReport } = useClickTracking();
 
   const columns: Column[] = [
     {
@@ -54,6 +58,10 @@ const DashboardRecords = (props: Props) => {
       },
     },
   ];
+
+  useEffect(() => {
+    handleReport('1002-003');
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto">

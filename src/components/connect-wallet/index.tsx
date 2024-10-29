@@ -125,8 +125,9 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   return (
     <>
       {isConnected ? (
-        <div className='flex justify-start items-center gap-x-[20px]'>
+        <div className='flex justify-start items-center gap-x-[20px]' data-bp="456">
           <motion.div
+            data-bp="123"
             className={`relative rounded-[10px] px-[6px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${
               chainDropdownShow ? 'bg-[rgba(0,0,0,0.04)]' : ''
             }`}
