@@ -68,7 +68,7 @@ const Navigation = function () {
 
 
       <div className="cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]" onClick={onNavigateToCave}>
-        <div className='text-[20px] text-center font-CherryBomb'>Bera Cave</div>
+        <div className='text-[20px] text-center font-CherryBomb'>Bear Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
     </>
