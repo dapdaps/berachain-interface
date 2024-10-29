@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter, usePathname } from 'next/navigation';
-import BearBackground from '@/components/bear-background';
+import BearBackground from '@/components/bear-background/laptop';
 import SwitchTabs from '@/components/switch-tabs';
 import PageBack from '@/components/back';
 

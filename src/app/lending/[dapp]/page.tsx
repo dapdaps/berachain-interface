@@ -1,6 +1,6 @@
 'use client';
 
-import BearBackground from '@/components/bear-background';
+import BearBackground from '@/components/bear-background/laptop';
 import { useParams } from 'next/navigation';
 import PageBack from '@/components/back';
 import dynamic from 'next/dynamic';
@@ -8,8 +8,8 @@ import useTokenPrice from '@/hooks/use-token-price';
 import { useEffect } from 'react';
 import useClickTracking from '@/hooks/use-click-tracking';
 
-const Dolomite = dynamic((() => import('@/sections/Lending/Dolomite')));
-const Bend = dynamic((() => import('@/sections/Lending/Bend')));
+const Dolomite = dynamic(() => import('@/sections/Lending/Dolomite'));
+const Bend = dynamic(() => import('@/sections/Lending/Bend'));
 
 export default function LendingDAppPage() {
   const { dapp } = useParams();
@@ -33,19 +33,11 @@ export default function LendingDAppPage() {
 
   return (
     <BearBackground type='dapp'>
-      <div className="p-[25px_35px]">
+      <div className='p-[25px_35px]'>
         <PageBack />
-        <div className="">
-          {
-            dapp === 'dolomite' && (
-              <Dolomite />
-            )
-          }
-          {
-            dapp === 'bend' && (
-              <Bend />
-            )
-          }
+        <div className=''>
+          {dapp === 'dolomite' && <Dolomite />}
+          {dapp === 'bend' && <Bend />}
         </div>
       </div>
     </BearBackground>

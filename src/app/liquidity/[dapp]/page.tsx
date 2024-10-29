@@ -1,6 +1,6 @@
 'use client';
 
-import BearBackground from '@/components/bear-background';
+import BearBackground from '@/components/bear-background/laptop';
 import { useParams } from 'next/navigation';
 import LiquidityView from '@/sections/liquidity';
 import dapps from '@/configs/liquidity';
@@ -25,7 +25,7 @@ export default function LiquidityPage() {
 
   return (
     <BearBackground type='dapp'>
-      <PageBack className="absolute left-[36px] top-[31px]" />
+      <PageBack className='absolute left-[36px] top-[31px]' />
       <LiquidityView
         dapp={dapps[params.dapp as string] || dapps[DEFAULT_LIQUIDITY_DAPP]}
       />
