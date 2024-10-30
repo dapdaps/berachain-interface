@@ -102,7 +102,7 @@ export default function CurrencySelect({
 
   return (
     <Modal open={display} onClose={handleClose}>
-      <div className='w-[520px] p-[20px] bg-[#FFFDEB]'>
+      <div className='w-[520px] p-[20px] bg-[#FFFDEB] md:w-full md:rounded-t-[20px]'>
         <div className='flex items-center gap-[10px] cursor-pointer text-[20px]'>
           <svg
             width='9'
@@ -110,6 +110,7 @@ export default function CurrencySelect({
             viewBox='0 0 9 16'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
+            className='md:hidden'
           >
             <path
               d='M7 2L2.2 8L7 14'

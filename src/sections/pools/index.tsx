@@ -9,9 +9,10 @@ export default function Pools({ dapp }: any) {
   const router = useRouter();
   const pathname = usePathname();
   return (
-    <div className='relative w-[990px] pt-[30px]'>
+    <div className='relative w-[990px] pt-[30px] md:w-full md:pt-[10px]'>
       <Tabs
         currentTab={searchParams.get('tab') || 'list'}
+        isCard={true}
         tabs={[
           {
             key: 'list',

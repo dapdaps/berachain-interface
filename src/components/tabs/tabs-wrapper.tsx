@@ -1,6 +1,8 @@
+import useIsMobile from '@/hooks/use-isMobile';
+
 const Laptop = ({ children }: any) => {
   return (
-    <div className='relative items-stretch translate-y-[1.5px] hidden lg:flex'>
+    <div className='relative items-stretch translate-y-[1.5px] flex'>
       {children}
     </div>
   );
@@ -15,10 +17,10 @@ const Mobile = ({ children }: any) => {
 };
 
 export default function TabsWrapper(props: any) {
-  return (
-    <>
-      <Laptop {...props} />
-      <Mobile {...props} />
-    </>
+  const isMobile = useIsMobile();
+  return isMobile && !props.isCard ? (
+    <Mobile {...props} />
+  ) : (
+    <Laptop {...props} />
   );
 }

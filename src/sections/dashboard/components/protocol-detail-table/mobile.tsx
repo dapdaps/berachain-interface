@@ -113,7 +113,7 @@ const Item = ({ isLending, record }: any) => {
 
 export default function Mobile({ isLending, tableList }: any) {
   return (
-    <div className='h-[calc(100%-44px)] overflow-y-auto flex flex-col pb-[20px]'>
+    <div className='h-[50vh] overflow-y-auto flex flex-col pb-[20px]'>
       {tableList.map((item: any, idx: number) => (
         <div
           key={idx}

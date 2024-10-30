@@ -18,7 +18,7 @@ export default function Laptop({
   return (
     <div
       ref={bodyRef}
-      className={`shadow-shadow1 rounded-[20px] pt-[8.5px] hidden lg:block ${bodyClassName}`}
+      className={`shadow-shadow1 rounded-[20px] pt-[8.5px] md:shadow-none ${bodyClassName}`}
       style={{
         borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
         borderTopRightRadius:
@@ -29,7 +29,7 @@ export default function Laptop({
       }}
     >
       <div
-        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black px-[22px] pt-[24px] min-h-[50px] ${bodyClassName}`}
+        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black px-[22px] pt-[24px] md:px-[12px] min-h-[50px] ${bodyClassName}`}
         style={{
           borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
           borderTopRightRadius:

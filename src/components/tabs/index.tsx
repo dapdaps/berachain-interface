@@ -2,10 +2,8 @@ import Tab from '@/components/tabs/tab';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import TabsWrapper from './tabs-wrapper';
 import TabPanels from './tab-panels';
-
-const tabHeight = 62;
-const tabWidth = 294;
-const tabMarginWidth = 62;
+import useIsMobile from '@/hooks/use-isMobile';
+import config from './config';
 
 const Tabs = (props: TabsProps) => {
   const {
@@ -16,8 +14,12 @@ const Tabs = (props: TabsProps) => {
     bodyClassName,
     bodyStyle,
     bodyInnerClassName,
-    onChange = () => {}
+    onChange = () => {},
+    isCard
   } = props;
+
+  const isMobile = useIsMobile();
+  const screenConfig = config[isMobile ? 'mobile' : 'laptop'];
 
   const bodyRef = useRef<any>(null);
 
@@ -43,7 +45,7 @@ const Tabs = (props: TabsProps) => {
     setPlatform(_platform);
     if (!bodyRef.current) return;
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
-    const tabsWidth = tabWidth * tabs.length;
+    const tabsWidth = screenConfig.tabWidth * tabs.length;
     if (tabsWidth >= contentWidth) {
       setContentBorderTopRightRadius(0);
       return;
@@ -53,15 +55,16 @@ const Tabs = (props: TabsProps) => {
 
   return (
     <div className={`${!!className ? className : ''} h-full`} style={style}>
-      <TabsWrapper>
+      <TabsWrapper isCard={isCard}>
         {tabs.map((tab, idx) => {
           return (
             <Tab
               key={tab.key}
-              width={tabWidth}
-              height={tabHeight}
               active={currentTabIndex === idx}
               onClick={() => handleChange(tab.key, tab, idx)}
+              isCard={isCard}
+              width={screenConfig.tabWidth}
+              height={screenConfig.tabHeight}
             >
               {tab.label}
             </Tab>
@@ -76,11 +79,10 @@ const Tabs = (props: TabsProps) => {
         bodyClassName={bodyClassName}
         bodyStyle={bodyStyle}
         currentTab={currentTab}
-        tabWidth={tabWidth}
-        tabMarginWidth={tabMarginWidth}
-        tabHeight={tabHeight}
         platform={platform}
         bodyInnerClassName={bodyInnerClassName}
+        isCard={isCard}
+        {...screenConfig}
       />
     </div>
   );
@@ -99,6 +101,7 @@ export interface TabsProps {
   bodyStyle?: React.CSSProperties;
   bodyInnerClassName?: string;
   onChange?(key: TabKey, tab: Tab, index: number): void;
+  isCard?: boolean;
 }
 
 export interface Tab {

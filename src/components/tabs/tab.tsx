@@ -1,10 +1,12 @@
+import useIsMobile from '@/hooks/use-isMobile';
+
 const Offset = 20;
 
-const Laptop = (props: Props) => {
+const Laptop = (props: any) => {
   const { children, width, height, onClick } = props;
   return (
     <div
-      className='relative z-[0] hidden lg:block'
+      className='relative z-[0]'
       style={{
         width,
         height,
@@ -40,11 +42,12 @@ const Mobile = ({ children, active, onClick }: any) => {
 };
 
 const Tab = (props: Props) => {
-  return (
-    <>
-      <Laptop {...props} />
-      <Mobile {...props} />
-    </>
+  const isMobile = useIsMobile();
+
+  return isMobile && !props.isCard ? (
+    <Mobile {...props} />
+  ) : (
+    <Laptop {...props} />
   );
 };
 
@@ -52,8 +55,9 @@ export default Tab;
 
 interface Props {
   children: any;
-  width: number;
-  height: number;
   onClick(): void;
   active?: boolean;
+  isCard?: boolean;
+  width: number;
+  height: number;
 }

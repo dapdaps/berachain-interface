@@ -69,7 +69,7 @@ const Modal: React.FC<ModalProps> = ({
                 exit={{
                   y: [0, 100]
                 }}
-                className='w-screen h-[50vh] absolute bottom-0 left-0 rounded-t-[20px]'
+                className='w-screen absolute bottom-0 left-0 rounded-t-[20px]'
               >
                 {children}
               </motion.div>

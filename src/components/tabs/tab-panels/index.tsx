@@ -4,5 +4,10 @@ import useIsMobile from '@/hooks/use-isMobile';
 
 export default function TabPanels(props: any) {
   const isMobile = useIsMobile();
-  return isMobile ? <Mobile {...props} /> : <Laptop {...props} />;
+
+  return isMobile && !props.isCard ? (
+    <Mobile {...props} />
+  ) : (
+    <Laptop {...props} />
+  );
 }

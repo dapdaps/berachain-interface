@@ -1,8 +1,26 @@
 import { useState } from 'react';
 import SlippageSetting from '../SlippageSetting';
+import Modal from '@/components/modal';
+import useIsMobile from '@/hooks/use-isMobile';
+import SlippageSettingContent from '../SlippageSetting/content';
+
+const Mobile = ({ show, setShow }: any) => {
+  return (
+    <Modal
+      open={show}
+      onClose={() => {
+        setShow(false);
+      }}
+    >
+      <SlippageSettingContent show={show} />
+    </Modal>
+  );
+};
 
 export default function Setting() {
+  const isMobile = useIsMobile();
   const [showSetting, setShowSetting] = useState(false);
+
   return (
     <div className='relative'>
       <button
@@ -24,7 +42,11 @@ export default function Setting() {
           />
         </svg>
       </button>
-      <SlippageSetting show={showSetting} setShow={setShowSetting} />
+      {isMobile ? (
+        <Mobile show={showSetting} setShow={setShowSetting} />
+      ) : (
+        <SlippageSetting show={showSetting} setShow={setShowSetting} />
+      )}
     </div>
   );
 }
