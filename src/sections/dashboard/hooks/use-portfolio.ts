@@ -23,9 +23,9 @@ export function usePortfolio(props: Props) {
         const result = await get(`/db3`, {
           url: 'api/balance/dapp/list',
           params: JSON.stringify({
-            address,
-            chain_id: currentChain.id,
-          }),
+            address: '0x8C7f311f5174b636Bc1849e523810b1e9a4B7a1D',
+            chain_id: currentChain.id
+          })
         });
 
         let _totalBalance = Big(0);
@@ -38,7 +38,7 @@ export function usePortfolio(props: Props) {
           totalUsd: '0.00',
           dappList: [],
           logo: chain.icon,
-          name: chain.name,
+          name: chain.name
         }));
         for (const _dapp of data) {
           let dappTotalUsd = Big(0);
@@ -56,22 +56,30 @@ export function usePortfolio(props: Props) {
               if (['Leveraged Farming'].includes(dappType)) {
                 // The first item in the innermost assets is Supply
                 if (i === 0) {
-                  typeAsset.totalUsd = typeAsset.totalUsd.plus(tokenAsset.usd || 0);
+                  typeAsset.totalUsd = typeAsset.totalUsd.plus(
+                    tokenAsset.usd || 0
+                  );
                   dappTotalUsd = dappTotalUsd.plus(tokenAsset.usd || 0);
                 }
                 // while the others are Borrow
                 else {
-                  typeAsset.totalUsd = typeAsset.totalUsd.minus(tokenAsset.usd || 0);
+                  typeAsset.totalUsd = typeAsset.totalUsd.minus(
+                    tokenAsset.usd || 0
+                  );
                   dappTotalUsd = dappTotalUsd.minus(tokenAsset.usd || 0);
                 }
               }
               // other dApp types
               else {
                 if (assetType === 'Borrow') {
-                  typeAsset.totalUsd = typeAsset.totalUsd.minus(tokenAsset.usd || 0);
+                  typeAsset.totalUsd = typeAsset.totalUsd.minus(
+                    tokenAsset.usd || 0
+                  );
                   dappTotalUsd = dappTotalUsd.minus(tokenAsset.usd || 0);
                 } else {
-                  typeAsset.totalUsd = typeAsset.totalUsd.plus(tokenAsset.usd || 0);
+                  typeAsset.totalUsd = typeAsset.totalUsd.plus(
+                    tokenAsset.usd || 0
+                  );
                   dappTotalUsd = dappTotalUsd.plus(tokenAsset.usd || 0);
                 }
               }
@@ -89,17 +97,22 @@ export function usePortfolio(props: Props) {
           dappsList.push(dappItem);
 
           // add dapp to chain
-          const chainIndex = _dappsByChain.findIndex((_chain: any) => _chain.chainId == _dapp.chain_id);
+          const chainIndex = _dappsByChain.findIndex(
+            (_chain: any) => _chain.chainId == _dapp.chain_id
+          );
           if (chainIndex > -1) {
             const chainItem = _dappsByChain[chainIndex];
-            chainItem.totalUsdValue = Big(chainItem.totalUsd).plus(dappTotalUsd);
+            chainItem.totalUsdValue = Big(chainItem.totalUsd).plus(
+              dappTotalUsd
+            );
             chainItem.totalUsd = Big(chainItem.totalUsdValue).toFixed(2);
             chainItem.dappList.push(dappItem);
             _dappsByChain[chainIndex] = chainItem;
           }
         }
         const _dappsByChainSorted = _dappsByChain.sort(
-          (a: any, b: any) => Big(b.totalUsdValue).toNumber() - Big(a.totalUsdValue).toNumber()
+          (a: any, b: any) =>
+            Big(b.totalUsdValue).toNumber() - Big(a.totalUsdValue).toNumber()
         );
 
         setDapps(dappsList);
@@ -114,14 +127,14 @@ export function usePortfolio(props: Props) {
       setDapps([]);
       setDappsByChain([]);
       setTotalBalance(Big(0));
-    },
+    }
   });
 
   return {
     loading,
     dapps,
     dappsByChain,
-    totalBalance,
+    totalBalance
   };
 }
 

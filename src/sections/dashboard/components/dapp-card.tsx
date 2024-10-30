@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Value from '@/sections/dashboard/components/value';
 import Modal from '@/components/modal';
 import DashboardPortfolioDetail from './portfolio-detail';
@@ -28,9 +29,15 @@ const Mobile = ({
   version,
   detailList
 }: any) => {
+  const [showDetail, setShowDetail] = useState(false);
   return (
     <>
-      <div className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden md:flex justify-between'>
+      <div
+        onClick={() => {
+          setShowDetail(true);
+        }}
+        className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden md:flex justify-between'
+      >
         <DappName {...{ icon, name, category }} />
         <div className='flex flex-col items-center gap-[10px]'>
           <Value>{value}</Value>
@@ -39,20 +46,23 @@ const Mobile = ({
           </div>
         </div>
       </div>
-      {showName === 'Bex' && (
-        <Modal open={true} onClose={() => {}}>
-          <DashboardPortfolioDetail
-            dapp={{
-              dappLogo: icon,
-              show_name: showName,
-              totalUsd: value,
-              version,
-              type: category,
-              detailList
-            }}
-          />
-        </Modal>
-      )}
+      <Modal
+        open={showDetail}
+        onClose={() => {
+          setShowDetail(false);
+        }}
+      >
+        <DashboardPortfolioDetail
+          dapp={{
+            dappLogo: icon,
+            show_name: showName,
+            totalUsd: value,
+            version,
+            type: category,
+            detailList
+          }}
+        />
+      </Modal>
     </>
   );
 };

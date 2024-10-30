@@ -44,56 +44,58 @@ const DashboardPortfolio = (props: Props) => {
           />
         </div>
       </>
-      <div className='flex justify-between items-stretch gap-[16px] mt-[29px] md:gap-[6px] md:mt-[20px] md:px-[12px] md:flex-wrap'>
-        {tvls.map((tvl: any, idx: number) => (
-          <Card
-            key={idx}
-            title={tvl.label}
-            value={tvl.usd}
-            amount={tvl.executions}
-            loading={tvlsLoading}
-          />
-        ))}
-      </div>
-      <section className='mt-[43px] md:mt-[30px] md:px-[12px]'>
-        <Title>Your dApps</Title>
-        <div className='grid grid-cols-3 justify-between items-stretch gap-[15px] mt-[18px] flex-wrap md:grid-cols-1 md:gap-[10px]'>
-          {loading
-            ? [...new Array(3)].map((i) => (
-                <Skeleton key={i} width={268} height={84} />
-              ))
-            : dapps.map((dapp: any, idx: number) => (
-                <DappCard
-                  key={idx}
-                  name={`${dapp.show_name}${
-                    dapp.version ? ' ' + dapp.version : ''
-                  }`}
-                  icon={dapp.dappLogo}
-                  category={dapp.type}
-                  value={dapp.totalUsd}
-                  showName={dapp.show_name}
-                  version={dapp.version}
-                  detailList={dapp.detailList}
-                  percent={
-                    Big(totalBalance || 0).eq(0)
-                      ? '0'
-                      : numberFormatter(
-                          Big(dapp.totalUsd)
-                            .div(totalBalance || 1)
-                            .times(100),
-                          0,
-                          true
-                        )
-                  }
-                />
-              ))}
+      <div className='md:h-[calc(100%-80px)] md:overflow-y-auto'>
+        <div className='flex justify-between items-stretch gap-[16px] mt-[29px] md:gap-[6px] md:mt-[20px] md:px-[12px] md:flex-wrap'>
+          {tvls.map((tvl: any, idx: number) => (
+            <Card
+              key={idx}
+              title={tvl.label}
+              value={tvl.usd}
+              amount={tvl.executions}
+              loading={tvlsLoading}
+            />
+          ))}
         </div>
-        {!loading && !dapps.length && (
-          <div className='w-full flex justify-center items-center'>
-            <Empty desc='No asset found' />
+        <section className='mt-[43px] md:mt-[30px] md:px-[12px]'>
+          <Title>Your dApps</Title>
+          <div className='grid grid-cols-3 justify-between items-stretch gap-[15px] mt-[18px] flex-wrap md:grid-cols-1 md:gap-[10px] md:pb-[20px]'>
+            {loading
+              ? [...new Array(3)].map((i) => (
+                  <Skeleton key={i} width={268} height={84} />
+                ))
+              : dapps.map((dapp: any, idx: number) => (
+                  <DappCard
+                    key={idx}
+                    name={`${dapp.show_name}${
+                      dapp.version ? ' ' + dapp.version : ''
+                    }`}
+                    icon={dapp.dappLogo}
+                    category={dapp.type}
+                    value={dapp.totalUsd}
+                    showName={dapp.show_name}
+                    version={dapp.version}
+                    detailList={dapp.detailList}
+                    percent={
+                      Big(totalBalance || 0).eq(0)
+                        ? '0'
+                        : numberFormatter(
+                            Big(dapp.totalUsd)
+                              .div(totalBalance || 1)
+                              .times(100),
+                            0,
+                            true
+                          )
+                    }
+                  />
+                ))}
           </div>
-        )}
-      </section>
+          {!loading && !dapps.length && (
+            <div className='w-full flex justify-center items-center'>
+              <Empty desc='No asset found' />
+            </div>
+          )}
+        </section>
+      </div>
       <section className='mt-[34px] mb-[12px] hidden lg:block'>
         <Title>Details</Title>
         <div className='flex flex-col justify-between items-stretch gap-[15px]'>
