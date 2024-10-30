@@ -4,7 +4,7 @@ import useTipModal from "./useTipModal";
 
 const data = {
     tip: 'Swap',
-    title: 'How to Unlock Hats?',
+    title: 'How to Unlock Clothes?',
     list: [{
         icon: '/images/cave/clothing/cloth-1-1.png',
         content: '$100+ per transaction, complete at least 1 transaction',
