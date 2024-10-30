@@ -55,7 +55,7 @@ const NetBase = () => {
             Funds eligible for deposit
           </div>
           <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-            {
+            ${
               netBaseData.totalWalletInUSD ? Number(netBaseData.totalWalletInUSD).toFixed(2) : '-'
             }
           </div>

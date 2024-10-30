@@ -45,10 +45,12 @@ const Action = forwardRef<HTMLDivElement, IProps>(
     const { config } = useAaveConfig();
     const {
       triggerUpdate,
+      userAccountData
     } = useMarketStore();
+
  
     const isDeposit = action === "deposit" || action === "supply";
-
+    
     const {
       loading,
       approving,
@@ -81,6 +83,9 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       );
     }, [currentBalance, amount]);
 
+    const showTipsInRepay = useMemo(() => action === 'withdraw' && Big(userAccountData.totalDebtBaseUSD).gt(0) && symbol !== 'HONEY', [token, userAccountData, action]);
+
+
     const maxValue = useMemo(() => {
       return calculateMaxValue(currentBalance, symbol, decimals, config);
     }, [currentBalance, symbol, decimals, config]);
@@ -91,7 +96,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
 
     const handleAction = async () => {
       const value = Big(amount).mul(Big(10).pow(decimals)).toFixed(0);
-
+      
       if (isDeposit) {
         if (symbol === config.nativeCurrency.symbol) {
           await depositETH(value);
@@ -112,13 +117,14 @@ const Action = forwardRef<HTMLDivElement, IProps>(
 
     return (
       <div className={`absolute z-50 top-[40px] ${className}`} ref={ref}>
-        <div className="w-[302px] h-[160px] bg-[#FFFDEB] shadow-shadow1 border border-black rounded-[20px] p-5">
+        <div className="w-[302px] h-min-[160px] bg-[#FFFDEB] shadow-shadow1 border border-black rounded-[20px] p-5">
           <h2 className="font-Montserrat text-base font-semibold leading-[14.4px] text-left mb-[18px]">
           {isDeposit ? action === 'supply' ? 'Supply' : 'Deposit' : "Withdraw"}
           </h2>
           <input
             type="number"
             placeholder="Enter amount"
+            disabled={showTipsInRepay}
             value={amount}
             onChange={(e) => changeValue(e.target.value)}
             className="w-full h-[40px] border border-[#373A53] rounded-[12px] px-3
@@ -126,6 +132,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
                      placeholder-black placeholder-opacity-30
                      focus:outline-none focus:ring-2 focus:ring-[#373A53]"
           />
+          { showTipsInRepay && <div className="text-left text-xs text-[#F87272] my-2">Waring: Please be sure to pay your entire honey debt, you will not be able to withdraw your collateral until you repay your honey loan.</div>}
           <div className="flex justify-between items-center mt-3">
             <div className="font-Montserrat text-sm font-normal leading-[17px] text-left">
               {isDeposit ? "Balance: " : "Available: "}
