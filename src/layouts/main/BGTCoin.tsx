@@ -74,7 +74,7 @@ const BGTCoin = ({
         </div>
         <div className="rounded-[26px] bg-[#DAA56B] shadow-[1px_1px_0_0_#77481E] p-[3px]">
           <div
-            className={`${type === CoinType.iBGT ? 'bg-[#000000]' : 'bg-[#A6703D]'} whitespace-nowrap text-[14px] font-[400] items-center rounded-[26px] border border-[#924E00] pl-[30px] pr-[12px] py-[4px] leading-[0.9]`}
+            className={`${type === CoinType.iBGT ? 'bg-[#000000]' : 'bg-[#A6703D]'} font-CherryBomb whitespace-nowrap text-[14px] font-[400] items-center rounded-[26px] border border-[#924E00] pl-[30px] pr-[12px] py-[4px] leading-[0.9]`}
           >
             {count} {type}
           </div>
