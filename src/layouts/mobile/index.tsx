@@ -10,16 +10,16 @@ const menuItems = [
   { id: 1, title: 'Bridge', href: '/bridge' },
   { id: 2, title: 'DApps', hasDropdown: true },
   { id: 3, title: 'Marketplace', href: '/marketplace' },
-  { id: 4, title: 'Vaults', href: '/vaults' },
+  { id: 4, title: 'Vaults', href: '/bgt' },
   { id: 5, title: 'Dashboard', href: '/dashboard' },
-  { id: 6, title: 'Bear Cave', href: '/bear-cave' }
+  { id: 6, title: 'Bear Cave', href: '/cave' }
 ];
 
 interface DApp {
   id: string;
   name: string;
   icon: string;
-  href: string;
+  href?: string;
 }
 
 const dapps: DApp[] = [
@@ -27,38 +27,38 @@ const dapps: DApp[] = [
     id: 'infrared',
     name: 'Infrared',
     icon: '/images/dapps/infrared.svg',
-    href: '/dapp/infrared'
+    href: '/liquidity/infrared'
   },
   { id: 'bex', name: 'Bex', icon: '/images/dapps/bex.png', href: '/dapp/bex' },
   {
     id: 'bend',
     name: 'Bend',
     icon: '/images/dapps/bend.svg',
-    href: '/dapp/bend'
+    href: '/lending/bend'
   },
   {
     id: 'kodiak',
     name: 'Kodiak',
     icon: '/images/dapps/kodiak.svg',
-    href: '/dapp/kodiak'
+    href: '/dex/kodiak'
   },
   {
     id: 'dolomite',
     name: 'Dolomite',
     icon: '/images/dapps/dolomite.svg',
-    href: '/dapp/dolomite'
+    href: '/lending/dolomite'
   },
   {
     id: 'stargate',
     name: 'Stargate',
     icon: '/images/dapps/stargate.svg',
-    href: '/dapp/stargate'
+    // href: '/dapp/stargate'
   },
   {
     id: 'ooga',
     name: 'Ooga Booga',
     icon: '/images/dapps/ooga-booga.svg',
-    href: '/dapp/ooga'
+    // href: '/dapp/ooga'
   }
 ];
 
@@ -71,16 +71,30 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
 
-  const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => (
-    <Link href={dapp.href} className="flex flex-col items-center gap-1">
-      <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
-        <Image src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" width={'42'} height={'42'}/>
+  const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
+    if (dapp.href) {
+      return (
+        <Link href={dapp.href} className="flex flex-col items-center gap-1">
+          <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
+            <Image src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" width={'42'} height={'42'}/>
+          </div>
+          <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
+            {dapp.name}
+          </span>
+        </Link>
+      )
+    }
+    return (
+      <div className="flex flex-col items-center gap-1 blur-[2px]">
+        <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
+          <Image src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" width={'42'} height={'42'}/>
+        </div>
+        <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
+          {dapp.name}
+        </span>
       </div>
-      <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
-        {dapp.name}
-      </span>
-    </Link>
-  );
+    )
+  };
 
   return (
     <div className='h-screen relative overflow-hidden'>
@@ -94,7 +108,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className='fixed inset-0 bg-[#F6EFC8] z-40 flex flex-col items-center pt-12 pb-24'
+            className='fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-12 pb-24 z-[99]'
           >
             <div className='w-full max-w-md flex justify-center items-center flex-col gap-4'>
               {menuItems.map((item) => (
@@ -135,7 +149,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <div className='absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-50'>
+      <div className='absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-[99]'>
         <img
           src='/images/mobile/town.png'
           alt='Town'
