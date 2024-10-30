@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import LazyImage from '@/components/layz-image';
 import Skeleton from 'react-loading-skeleton';
 import { numberFormatter } from '@/utils/number-formatter';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAppKit } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
 import useUser from '@/hooks/use-user';
 
 export default function UserCard({ loading, totalBalance }: any) {
-  const modal = useWeb3Modal();
+  const modal = useAppKit();
   const { address } = useAccount();
   const { accessToken, getUserInfo, userInfo } = useUser();
 

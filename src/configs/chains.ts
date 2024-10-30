@@ -1,26 +1,9 @@
 import { Chain } from 'viem';
-import { mainnet, polygonZkEvm } from 'viem/chains';
+import { mainnet, berachainTestnetbArtio } from '@reown/appkit/networks';
 
 const chains: Record<number, Chain | any> = {
-  80084: {
-    id: 80084,
-    name: 'Berachain bArtio',
-    icon: '/images/berachain.png',
-    nativeCurrency: { name: 'BERA', symbol: 'BERA', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://bartio.rpc.berachain.com/']
-      }
-    },
-    blockExplorers: {
-      default: {
-        name: 'beratrail',
-        url: 'https://bartio.beratrail.io'
-      }
-    }
-  },
+  [berachainTestnetbArtio.id]: berachainTestnetbArtio,
   [mainnet.id]: mainnet,
-  // [polygonZkEvm.id]: polygonZkEvm
 };
 
 export const icons: Record<number, string> = {

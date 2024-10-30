@@ -18,7 +18,7 @@ const Home = () => {
         }}
       >
         <div className="w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]">
-            <div className='flex pl-2 pr-3 h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
+            <div className='flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
                 <ConnectWallet />
             </div>
             <div className="text-white flex items-center gap-x-[17px]">
