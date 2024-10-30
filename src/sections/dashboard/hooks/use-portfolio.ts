@@ -23,7 +23,7 @@ export function usePortfolio(props: Props) {
         const result = await get(`/db3`, {
           url: 'api/balance/dapp/list',
           params: JSON.stringify({
-            address: '0x8C7f311f5174b636Bc1849e523810b1e9a4B7a1D',
+            address,
             chain_id: currentChain.id
           })
         });
