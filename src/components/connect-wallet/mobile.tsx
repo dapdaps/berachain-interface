@@ -1,6 +1,6 @@
 "use client";
 
-import { useWalletInfo, useWeb3Modal } from "@web3modal/wagmi/react";
+import { useWalletInfo, useAppKit } from '@reown/appkit/react';
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useAccount, useBalance, useDisconnect, useSwitchChain } from "wagmi";
 import Image from "next/image";
@@ -30,7 +30,7 @@ const dropdownAnimations = {
 };
 
 const ConnectWallet = ({ className }: { className?: string }) => {
-  const modal = useWeb3Modal();
+  const modal = useAppKit();
 
   const total = useToast();
   const { address, isConnected, chainId, chain } = useAccount();

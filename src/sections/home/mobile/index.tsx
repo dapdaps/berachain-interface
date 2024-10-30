@@ -1,4 +1,4 @@
-import ConnectWallet from '@/components/connect-wallet/mobile';
+import ConnectWallet from '@/components/connect-wallet';
 import BGTCoin, { CoinType } from '@/layouts/main/BGTCoin';
 import { useRouter } from "next/navigation";
 import React from 'react';
