@@ -18,7 +18,7 @@ const DashboardPortfolio = (props: Props) => {
   const { userInfo } = useUser();
 
   useEffect(() => {
-    handleReport('1002-002');
+    handleReport('1011-002');
   }, []);
 
   return (

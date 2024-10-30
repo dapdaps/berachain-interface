@@ -176,6 +176,7 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   getUserAccountData: async () => {
     const { initData: { provider, config, account } } = get();
+    if (!config?.aavePoolV3Address) return
     try {
       const contract = new ethers.Contract(
         config.aavePoolV3Address,
@@ -267,13 +268,6 @@ const useBendStore = create<BendState>((set, get) => ({
             healthFactor: hf
           }
         })
-        console.log({
-          totalCollateralBaseUSD,
-          totalDebtBaseUSD,
-          availableBorrowsBaseUSD,
-          BorrowPowerUsed,
-          healthFactor: hf
-        }, '<====277');
         
         return availableBorrowsBaseUSD
       })
@@ -446,7 +440,7 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   getPoolDataProvider: () => {
     const { initData: { config, multicallAddress, provider, markets } } = get();
-    const underlyingTokens = markets?.map((market: any) => market.underlyingAsset);
+    const underlyingTokens = markets?.filter((item => item.variableDebtTokenAddress)).map((market: any) => market.underlyingAsset);
     const calls = underlyingTokens?.map((addr: any) => ({
       address: config.PoolDataProvider,
       name: 'getReserveData',

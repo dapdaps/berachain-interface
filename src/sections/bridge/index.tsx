@@ -10,6 +10,8 @@ import Confirm from './Confrim';
 import { Chain } from 'viem';
 import { Token } from '@/types';
 import PageBack from '@/components/back';
+import useIsMobile from '@/hooks/use-isMobile';
+import MenuButton from '@/components/mobile/menuButton';
 
 
 export default function Bridge() {
@@ -18,12 +20,17 @@ export default function Bridge() {
   const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
   const [toChain, setToChain] = useState<Chain>(chains[80084])
   const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
+  const isMobile = useIsMobile()
 
   return (
     <>
-      <PageBack className="absolute left-[36px] top-[31px]" />
-      <div className='w-[520px] m-auto relative z-10'>
-        <div className='text-[60px] text-center py-[30px] font-CherryBomb'>Bridge</div>
+      <PageBack className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-12' />
+      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10'>
+        {
+          isMobile ? (<div className='relative left-[25%] mt-7 top-6'>
+            <MenuButton>Bridge</MenuButton>
+          </div>) : (<div className='text-[60px] text-center py-[30px] font-CherryBomb'>Bridge</div>)
+        }
         <Card>
           <TokenAmout
             chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
@@ -32,7 +39,7 @@ export default function Bridge() {
           />
           <div className='h-[8px] flex justify-center items-center'>
             <svg
-              className=' cursor-pointer'
+              className='cursor-pointer'
               width='42'
               height='42'
               viewBox='0 0 42 42'
@@ -62,7 +69,7 @@ export default function Bridge() {
             setToToken(token)
           }}
           />
-          <div className='flex items-center justify-between pt-[17px] pl-[20px] text-[14px] text-[#3D405A]'>
+          <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
             <div>Receive address</div>
             <div className='flex items-center gap-2'>
               <div>0xc25...9210d</div>

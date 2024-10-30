@@ -22,9 +22,6 @@ const SwitchNetwork = (props: Props) => {
     }
   };
 
-
-  console.log('====chainId', chainId, '====targetChain.id', targetChain.id)
-
   if (targetChain.id === chainId) return null;
 
   return ReactDOM.createPortal((

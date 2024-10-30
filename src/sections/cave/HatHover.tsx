@@ -29,7 +29,7 @@ export default function HatHover() {
     onMouseEnter={() => { setShowSelf(true) }} 
     onMouseLeave={() => { setShowSelf(false); setTipShow(false); }}  
     style={{ opacity: showSelf ? 1: 0 }}
-    data-bp="1004-001"
+    data-bp="1013-001"
     onClick={() => {
         setTipShow(true)
     }} className="absolute cursor-pointer w-[563px] h-[100px] left-[50%] top-[270px] translate-x-[-50%] bg-[#EBF4794D] border-[#EBF479] border-[3px] rounded-[20px]">

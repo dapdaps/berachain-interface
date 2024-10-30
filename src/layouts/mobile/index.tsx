@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import IconMenu from '@public/images/mobile/menu.svg';
 import IconClose from '@public/images/mobile/close.svg';
 import MenuButton from '@/components/mobile/menuButton';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+
+
 
 const menuItems = [
   { id: 1, title: 'Bridge', href: '/bridge' },
@@ -96,6 +100,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     )
   };
 
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname, setIsMenuOpen]);
+
   return (
     <div className='h-screen relative overflow-hidden'>
       <main className='h-full'>{children}</main>
@@ -114,7 +124,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               {menuItems.map((item) => (
                 <div
                   key={item.id}
-                  className='w-full flex justify-center items-center flex-col relative'
+                  className='w-full flex justify-center items-center flex-col relative z-0'
                 >
                   <MenuButton
                     href={item.href}

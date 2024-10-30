@@ -14,7 +14,6 @@ interface IProps {
 const DepositPanel: React.FC<IProps> = ({
   markets,
 }) => {
-  
   const [openModal, setOpenModal] = useState<any>(null);
   const actionRef = useRef<any>(null);
 

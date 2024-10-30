@@ -60,7 +60,7 @@ const DashboardWallet = (props: Props) => {
   ];
 
   useEffect(() => {
-    handleReport('1002-001');
+    handleReport('1011-001');
   }, []);
 
   return (

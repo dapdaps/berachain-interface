@@ -16,7 +16,7 @@ export default function LiquidityPage() {
   useEffect(() => {
     switch (params.dapp) {
       case 'infrared':
-        handleReport('1003-001');
+        handleReport('1012-001');
         break;
       default:
         break;
