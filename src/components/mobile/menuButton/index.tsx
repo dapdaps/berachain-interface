@@ -8,7 +8,7 @@ interface CustomButtonProps {
   isActive?: boolean;
   onClick?: () => void;
   className?: string;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const MenuButton: React.FC<CustomButtonProps> = ({
