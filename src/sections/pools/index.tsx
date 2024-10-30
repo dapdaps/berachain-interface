@@ -9,7 +9,7 @@ export default function Pools({ dapp }: any) {
   const router = useRouter();
   const pathname = usePathname();
   return (
-    <div className='relative w-[990px] pt-[30px] md:w-full md:pt-[10px]'>
+    <div className='relative w-[990px] pt-[30px] md:w-full md:h-full md:pt-[10px]'>
       <Tabs
         currentTab={searchParams.get('tab') || 'list'}
         isCard={true}
@@ -30,6 +30,7 @@ export default function Pools({ dapp }: any) {
           params.set('tab', tabKey);
           router.replace(`${pathname}?${params.toString()}`);
         }}
+        bodyClassName='md:px-0 md:h-full'
       />
       <DappIcon
         src={dapp.icon}

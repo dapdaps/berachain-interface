@@ -1,19 +1,30 @@
+import { useState, useMemo } from 'react';
 import List from '@/sections/marketplace/components/list';
 import Dropdown from '@/sections/marketplace/components/dropdown';
-import CircleLoading from '@/components/circle-loading';
-import { StatusColor } from '../status/styles';
 import Big from 'big.js';
-import PoolTable from '../pool-table';
+import Status from './status';
+import PoolTable from '../../pool-table';
+
+const PAGE_SIZE = 9;
 
 export default function V3List({
-  data,
-  maxPage,
-  setPage,
+  pools,
   loading,
   ticksInfo,
   onAction,
   withoutHeader
 }: any) {
+  const [page, setPage] = useState(1);
+
+  const maxPage = useMemo(() => {
+    return Math.ceil(pools.length / PAGE_SIZE) || 1;
+  }, [pools]);
+
+  const data = useMemo(
+    () => pools.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [pools, page]
+  );
+
   return (
     <List
       meta={[
@@ -32,27 +43,9 @@ export default function V3List({
           sort: true,
           width: '30%',
           render: (item: any, index: number) => {
-            let status = '';
-            const currentTick = ticksInfo[item.tokenId]?.tick;
-            if (Big(item.liquidity || 0).eq(0)) {
-              status = StatusColor.removed;
-            } else if (currentTick) {
-              status =
-                currentTick < item.tickLower || currentTick >= item.tickUpper
-                  ? StatusColor.out
-                  : StatusColor.in;
-            }
-
             return (
               <div className='flex items-center gap-[10px]'>
-                {status ? (
-                  <div
-                    className='w-[8px] h-[8px] rounded-[50%]'
-                    style={{ background: status }}
-                  />
-                ) : (
-                  <CircleLoading size={8} />
-                )}
+                <Status ticksInfo={ticksInfo} item={item} />
                 <div className='text-[14px]'>
                   <div className='flex gap-[3px]'>
                     <div className='text-[#979ABE]'>Min:</div>
@@ -75,7 +68,7 @@ export default function V3List({
         },
         {
           title: 'Unclaimed Fees',
-          key: ' fees',
+          key: 'fees',
           sort: false,
           width: '15%',
           render: (item: any, index: number) => {

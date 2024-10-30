@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import SearchBox from '@/sections/marketplace/components/searchbox';
-
 import SwitchTabs from '@/components/switch-tabs';
 import AddLiquidityModal from '../../add-liquidity-modal';
+import Laptop from './laptop';
+import Mobile from './mobile';
+import useIsMobile from '@/hooks/use-isMobile';
 
 export default function Pools({
   pools = [],
@@ -13,11 +15,12 @@ export default function Pools({
   const [searchVal, setSearchVal] = useState('');
   const [selectedReocrd, setSelectedRecord] = useState<any>(null);
   const [page, setPage] = useState(1);
+  const isMobile = useIsMobile();
 
   return (
     <div className='pb-[20px]'>
       <div className='flex justify-between items-center'>
-        <div>
+        <div className='md:px-[12px]'>
           {currentTab && (
             <SwitchTabs
               tabs={[
@@ -43,7 +46,27 @@ export default function Pools({
           <SearchBox value={searchVal} onChange={setSearchVal} />
         </div>
       </div>
-
+      {isMobile ? (
+        <Mobile
+          {...{
+            pools,
+            page,
+            setPage,
+            searchVal,
+            setSelectedRecord
+          }}
+        />
+      ) : (
+        <Laptop
+          {...{
+            pools,
+            page,
+            setPage,
+            searchVal,
+            setSelectedRecord
+          }}
+        />
+      )}
       {!!selectedReocrd && (
         <AddLiquidityModal
           open={!!selectedReocrd}

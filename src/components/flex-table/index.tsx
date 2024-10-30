@@ -18,55 +18,60 @@ const FlexTable = (props: FlexTableProps) => {
       </div>
     ),
     renderTitle,
-    onChangeSortDataIndex
+    onChangeSortDataIndex,
+    showHeader = true
   } = props;
 
   return (
     <div>
       <div className={wrapperClass}>
-        <div className={`flex items-center p-[14px] ${headClass}`}>
-          {columns.map((column: any, columnIdx) => (
-            <div
-              key={column.dataIndex}
-              style={{
-                width: column.width ?? 0,
-                flexGrow: column.width ? 0 : 1,
-                flexShrink: column.width ? 0 : 1,
-                textAlign: column.align ?? 'left',
-                justifyContent:
-                  column.align === 'center'
-                    ? 'center'
-                    : column.align === 'right'
-                    ? 'flex-end'
-                    : 'flex-start'
-              }}
-              className='flex items-center gap-[5px] text-[14px] text-[#3D405A]'
-              onClick={() => {
-                column?.sort &&
-                  onChangeSortDataIndex &&
-                  onChangeSortDataIndex(column?.dataIndex);
-              }}
-            >
-              {renderTitle ? renderTitle(column, columnIdx) : column.title}
-              {column?.sort && (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='13'
-                  height='8'
-                  viewBox='0 0 13 8'
-                  fill='none'
-                >
-                  <path
-                    d='M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z'
-                    fill={
-                      sortDataIndex === column?.dataIndex ? 'black' : '#D1CEB4'
-                    }
-                  />
-                </svg>
-              )}
-            </div>
-          ))}
-        </div>
+        {showHeader && (
+          <div className={`flex items-center p-[14px] ${headClass}`}>
+            {columns.map((column: any, columnIdx) => (
+              <div
+                key={column.dataIndex}
+                style={{
+                  width: column.width ?? 0,
+                  flexGrow: column.width ? 0 : 1,
+                  flexShrink: column.width ? 0 : 1,
+                  textAlign: column.align ?? 'left',
+                  justifyContent:
+                    column.align === 'center'
+                      ? 'center'
+                      : column.align === 'right'
+                      ? 'flex-end'
+                      : 'flex-start'
+                }}
+                className='flex items-center gap-[5px] text-[14px] text-[#3D405A]'
+                onClick={() => {
+                  column?.sort &&
+                    onChangeSortDataIndex &&
+                    onChangeSortDataIndex(column?.dataIndex);
+                }}
+              >
+                {renderTitle ? renderTitle(column, columnIdx) : column.title}
+                {column?.sort && (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='13'
+                    height='8'
+                    viewBox='0 0 13 8'
+                    fill='none'
+                  >
+                    <path
+                      d='M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z'
+                      fill={
+                        sortDataIndex === column?.dataIndex
+                          ? 'black'
+                          : '#D1CEB4'
+                      }
+                    />
+                  </svg>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
         {loading ? (
           <div className='flex items-center justify-center py-[30px] flex-col'>
             <Loading size={24} />
@@ -134,6 +139,7 @@ export type FlexTableProps = {
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;
+  showHeader?: boolean;
   onChangeSortDataIndex?(index: string): void;
   renderTitle?(column: Column, columnIdx: number): any;
 };

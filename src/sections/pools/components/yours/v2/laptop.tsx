@@ -1,14 +1,22 @@
+import { useState, useMemo } from 'react';
 import List from '@/sections/marketplace/components/list';
 import Dropdown from '@/sections/marketplace/components/dropdown';
-import PoolTable from '../pool-table';
+import PoolTable from '../../pool-table';
 
-export default function V2List({
-  data,
-  maxPage,
-  setPage,
-  loading,
-  onAction
-}: any) {
+const PAGE_SIZE = 9;
+
+export default function V2List({ pools, loading, onAction }: any) {
+  const [page, setPage] = useState(1);
+
+  const maxPage = useMemo(() => {
+    return Math.ceil(pools.length / PAGE_SIZE) || 1;
+  }, [pools]);
+
+  const data = useMemo(
+    () => pools.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [pools, page]
+  );
+
   return (
     <List
       meta={[

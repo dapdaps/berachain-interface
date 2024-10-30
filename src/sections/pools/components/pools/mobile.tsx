@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-
-import List from '@/sections/marketplace/components/list';
+import List from '@/components/flex-table';
 import PoolTable from '../pool-table';
+import Empty from '@/components/empty';
 
 const PAGE_SIZE = 9;
 
@@ -42,62 +42,43 @@ export default function Mobile({
     [list, page]
   );
   return (
-    <div className='mt-[20px]'>
+    <div className='mt-[20px] h-full'>
       <List
-        meta={[
-          {
-            title: '#',
-            key: '#',
-            sort: false,
-            width: '5%',
-            render: (item: any, index: number) => {
-              return item.id;
-            }
-          },
+        columns={[
           {
             title: 'Pool',
-            key: 'pool',
-            sort: false,
-            width: '50%',
-            render: (item: any, index: number) => {
-              return <PoolTable item={item} />;
+            dataIndex: 'pool',
+            width: '70%',
+            render: (_: any, record) => {
+              return (
+                <PoolTable
+                  item={record}
+                  onClick={() => {
+                    setSelectedRecord(record);
+                  }}
+                />
+              );
             }
           },
           {
             title: 'TVL',
-            key: 'TVL',
-            sort: true,
-            width: '15%',
-            render: (item: any, index: number) => {
-              return item['tvl'] || '-';
-            }
-          },
-          {
-            title: ' 24h Volume',
-            key: ' 24h Volume',
-            sort: true,
-            width: '15%',
-            render: (item: any, index: number) => {
-              return item['yours'] || '-';
-            }
-          },
-          {
-            title: ' 24h Fees',
-            key: ' 24h Fees',
-            sort: true,
-            width: '15%',
-            render: (item: any, index: number) => {
-              return item['yours'] || '-';
+            dataIndex: 'TVL',
+            width: '30%',
+            align: 'right',
+            render: (_, record) => {
+              return record['tvl'] || '-';
             }
           }
         ]}
         list={data}
-        maxPage={maxPage}
-        onPageChange={setPage}
-        bodyClassName='h-[480px] overflow-y-auto'
-        onItemClick={(item: any) => {
-          setSelectedRecord(item);
-        }}
+        wrapperClass='h-[calc(100%-200px)] overflow-y-auto'
+        bodyClass='py-[14px] h-[58px]'
+        showHeader={false}
+        renderEmpty={() => (
+          <div className='mt-[50px] w-full flex justify-center items-center'>
+            <Empty desc='No Pools.' />
+          </div>
+        )}
       />
     </div>
   );

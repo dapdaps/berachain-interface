@@ -32,7 +32,7 @@ const Laptop = ({ params, router, pathname, children }: any) => {
 
 const Mobile = ({ params, router, pathname, children }: any) => {
   return (
-    <div className='relative pt-[50px]'>
+    <div className='relative pt-[50px] h-full'>
       <div className='absolute top-[20px] right-[10px]'>
         {params.dapp !== 'ooga-booga' && (
           <SwitchTabs
@@ -48,7 +48,7 @@ const Mobile = ({ params, router, pathname, children }: any) => {
           />
         )}
       </div>
-      <div> {children}</div>
+      {children}
     </div>
   );
 };
