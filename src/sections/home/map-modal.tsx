@@ -186,19 +186,19 @@ const MapModal = () => {
     }
     switch (link) {
       case '/dapps':
-        handleReport('1001-001-001');
+        handleReport('1010-001-001');
         break;
       case '/marketplace':
-        handleReport('1001-001-003');
+        handleReport('1010-001-003');
         break;
       case '/bridge':
-        handleReport('1001-001-004');
+        handleReport('1010-001-004');
         break;
       case '/dashboard':
-        handleReport('1001-001-005');
+        handleReport('1010-001-005');
         break;
       case '/cave':
-        handleReport('1001-001-002');
+        handleReport('1010-001-002');
         break;
       default:
         break;

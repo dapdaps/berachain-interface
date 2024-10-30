@@ -19,10 +19,10 @@ export default function LendingDAppPage() {
   useEffect(() => {
     switch (dapp) {
       case 'dolomite':
-        handleReport('1003-002');
+        handleReport('1012-002');
         break;
       case 'bend':
-        handleReport('1003-003');
+        handleReport('1012-003');
         break;
       default:
         break;

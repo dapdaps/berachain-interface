@@ -16,13 +16,13 @@ export default function SwapPage() {
   useEffect(() => {
     switch (urlParams.dapp) {
       case 'kodiak':
-        handleReport('1003-004');
+        handleReport('1012-004');
         break;
       case 'bex':
-        handleReport('1003-005');
+        handleReport('1012-005');
         break;
       case 'ooga-booga':
-        handleReport('1003-006');
+        handleReport('1012-006');
         break;
       default:
         break;

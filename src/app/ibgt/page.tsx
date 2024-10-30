@@ -462,7 +462,7 @@ export default memo(function IBGTPage(props: any) {
                     onClick={() => {
                       router.push("/dex/bex?lp=")
                     }}
-                    data-bp="1001-005-001"
+                    data-bp="1010-005-001"
                   >
                     <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">Mint iBGT</span>
                   </div>

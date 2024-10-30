@@ -129,13 +129,13 @@ export default memo(function BGTPage() {
         if (!v.validator?.metadata) return;
         switch (v.validator.metadata.name) {
           case 'Infrared':
-            v.validator.metadata.bp = '1001-004-001';
+            v.validator.metadata.bp = '1010-004-001';
             break;
           case 'Kodiak Finance':
-            v.validator.metadata.bp = '1001-004-002';
+            v.validator.metadata.bp = '1010-004-002';
             break;
           case 'The-Honey-Jar':
-            v.validator.metadata.bp = '1001-004-003';
+            v.validator.metadata.bp = '1010-004-003';
             break;
           default:
             break;
@@ -309,7 +309,7 @@ export default memo(function BGTPage() {
           <div
             className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
             onClick={handleExplore}
-            data-bp="1001-004-004"
+            data-bp="1010-004-004"
           >
             <span>Explore Vaults</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
