@@ -1,11 +1,8 @@
 import Laptop from './laptop';
 import Mobile from './mobile';
+import useIsMobile from '@/hooks/use-isMobile';
 
 export default function BearBackground(props: any) {
-  return (
-    <>
-      <Laptop {...props} />
-      <Mobile {...props} />
-    </>
-  );
+  const isMobile = useIsMobile();
+  return isMobile ? <Mobile {...props} /> : <Laptop {...props} />;
 }

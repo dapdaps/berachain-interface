@@ -6,13 +6,13 @@ export const Clouds = () => {
     <>
       <motion.div
         initial={{
-          x: 212
+          x: window?.screen?.availWidth
         }}
         animate={{
           x: -window?.screen?.availWidth
         }}
         transition={{
-          duration: 24,
+          duration: 36,
           ease: 'linear',
           repeat: Infinity
         }}
@@ -22,16 +22,16 @@ export const Clouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: 450
+          x: window?.screen?.availWidth
         }}
         animate={{
           x: -window?.screen?.availWidth
         }}
         transition={{
-          duration: 24,
+          duration: 48,
           ease: 'linear',
           repeat: Infinity,
-          delay: 8
+          delay: 10
         }}
         className='absolute top-[13px]'
       >
@@ -39,16 +39,16 @@ export const Clouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: 450
+          x: window?.screen?.availWidth
         }}
         animate={{
           x: -window?.screen?.availWidth
         }}
         transition={{
-          duration: 24,
+          duration: 48,
           ease: 'linear',
           repeat: Infinity,
-          delay: 16
+          delay: 24
         }}
         className='absolute top-[143px]'
       >
