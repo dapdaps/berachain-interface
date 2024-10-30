@@ -44,6 +44,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
     const {
       initData: { provider, chainId, account },
       triggerUpdate,
+      netBaseData
     } = useMarketStore();
     const isBorrow = action === "borrow";
 
@@ -75,7 +76,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       availableBorrows
     } = token;
 
-    const currentBalance = isBorrow ? availableBorrows : balance;
+    const currentBalance = isBorrow ? availableBorrows : netBaseData.yourTotalBorrow;
 
     const isDisabled = useMemo(() => {
       return (
