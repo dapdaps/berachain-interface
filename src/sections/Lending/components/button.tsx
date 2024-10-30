@@ -1,6 +1,6 @@
 import useApprove from '@/hooks/use-approve';
 import { useAccount, useSwitchChain } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAppKit } from '@reown/appkit/react';
 import Button from '@/components/button';
 import type { Chain, Token } from '@/types';
 import Big from 'big.js';
@@ -39,7 +39,7 @@ const LendingButton = ({
     },
   });
   const { isPending, switchChain } = useSwitchChain();
-  const modal = useWeb3Modal();
+  const modal = useAppKit();
   const { address, chainId } = useAccount();
 
   const [pending, setPending] = useState(false);

@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <head>
-        <title>Berachain</title>
+        <title>BeraTown</title>
         <meta name='description' content='berachain-interface' />
       </head>
       <body>

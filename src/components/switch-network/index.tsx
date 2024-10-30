@@ -2,7 +2,7 @@
 
 import Button from '@/components/button';
 import Loading from '@/components/circle-loading';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAppKit } from '@reown/appkit/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactDOM from 'react-dom';
 import { useAccount, useSwitchChain } from 'wagmi';
@@ -11,7 +11,7 @@ const SwitchNetwork = (props: Props) => {
   const { targetChain } = props;
 
   const { chainId } = useAccount();
-  const { open } = useWeb3Modal();
+  const { open } = useAppKit();
   const { isPending, switchChain } = useSwitchChain();
 
   const handleOpenOrSwitch = () => {

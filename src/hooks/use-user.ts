@@ -2,7 +2,7 @@ import { useUserStore } from '@/stores/user';
 import { useCallback } from 'react';
 import { get, post } from '@/utils/http';
 import { useAccount } from 'wagmi';
-import { useWalletInfo } from '@web3modal/wagmi/react';
+import { useWalletInfo } from '@reown/appkit/react';
 import useToast from '@/hooks/use-toast';
 
 export function useUser() {
