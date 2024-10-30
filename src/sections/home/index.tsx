@@ -11,6 +11,8 @@ import { memo } from 'react';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import useIsMobile from '@/hooks/use-isMobile';
 
+import MobileHome from './mobile'
+
 const Navigation = function () {
   const router = useProgressRouter();
 
@@ -31,11 +33,6 @@ const Navigation = function () {
   const onNavigateToCave = () => {
     router.push('/cave');
   };
-
-  const isMobile = useIsMobile()
-
-  console.log(isMobile, 'isMobile');
-  
 
   return (
     <>
@@ -108,6 +105,15 @@ const Navigation = function () {
 };
 
 export default memo(function Home() {
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <MobileHome />
+    );
+  }
+
+
   return (
     <BearBackground type='home'>
       <Navigation />

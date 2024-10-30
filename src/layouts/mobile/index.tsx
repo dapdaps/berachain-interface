@@ -4,6 +4,7 @@ import IconMenu from '@public/images/mobile/menu.svg';
 import IconClose from '@public/images/mobile/close.svg';
 import MenuButton from '@/components/mobile/menuButton';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const menuItems = [
   { id: 1, title: 'Bridge', href: '/bridge' },
@@ -71,13 +72,9 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => (
-    <Link href={dapp.href} className='flex flex-col items-center gap-1'>
-      <div className='w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center'>
-        <img
-          src={dapp.icon}
-          alt={dapp.name}
-          className='w-[10.769vw] h-[10.769vw]'
-        />
+    <Link href={dapp.href} className="flex flex-col items-center gap-1">
+      <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
+        <Image src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" width={'42'} height={'42'}/>
       </div>
       <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
         {dapp.name}
@@ -118,7 +115,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     {item.hasDropdown && isDappsOpen && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                        animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
                         exit={{ opacity: 0, height: 0 }}
                         className='w-full -mt-6 px-4 py-6 bg-[#D5CDA1] overflow-hidden z-[-1] pt-[13.84vw]'
                       >
