@@ -129,13 +129,13 @@ export default memo(function BGTPage() {
         if (!v.validator?.metadata) return;
         switch (v.validator.metadata.name) {
           case 'Infrared':
-            v.validator.metadata.bp = '1001-004-001';
+            v.validator.metadata.bp = '1010-004-001';
             break;
           case 'Kodiak Finance':
-            v.validator.metadata.bp = '1001-004-002';
+            v.validator.metadata.bp = '1010-004-002';
             break;
           case 'The-Honey-Jar':
-            v.validator.metadata.bp = '1001-004-003';
+            v.validator.metadata.bp = '1010-004-003';
             break;
           default:
             break;
@@ -171,45 +171,6 @@ export default memo(function BGTPage() {
       claiming: claiming
     }
   ];
-
-
-
-  const handleClaim = function (data: any) {
-
-    const toastId = toast?.loading({
-      title: `Claim...`
-    });
-
-    const abi = [{
-      "constant": false,
-      "inputs": [],
-      "name": "getReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }]
-    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner())
-    contract
-      .getReward()
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Claim Successfully!'
-        });
-        refresh()
-      })
-      .catch((error: Error) => {
-        console.log('error: ', error);
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Claim Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : (error?.message ?? '')
-        });
-      });
-  }
 
   const handleExplore = function () {
     // window.open("https://bartio.station.berachain.com/")
@@ -307,9 +268,9 @@ export default memo(function BGTPage() {
         <div className="mt-[30px] flex justify-between items-center">
           <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">Your Vaults</div>
           <div
-            className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
+            className="cursor-pointer flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
             onClick={handleExplore}
-            data-bp="1001-004-004"
+            data-bp="1010-004-004"
           >
             <span>Explore Vaults</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">

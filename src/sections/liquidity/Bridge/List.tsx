@@ -185,6 +185,7 @@ export default function List(props: any) {
               height='34'
               viewBox='0 0 34 34'
               fill='none'
+              className='cursor-pointer'
               onClick={() => {
                 onChangeData(data, 0);
               }}
@@ -209,6 +210,7 @@ export default function List(props: any) {
               height='34'
               viewBox='0 0 34 34'
               fill='none'
+              className={Big(data?.usdDepositAmount ?? 0).eq(0) ? 'cursor-not-allowed' : 'cursor-pointer'}
               onClick={() => {
                 Big(data?.usdDepositAmount ?? 0).gt(0) && onChangeData(data, 1);
               }}
@@ -267,7 +269,9 @@ export default function List(props: any) {
             <div
               key={index}
               style={{ width: column.width }}
-              className='flex items-center gap-[5px] pl-[19px]'
+              className={clsx('flex items-center gap-[5px] pl-[19px]', {
+                'cursor-pointer': column?.sort
+              })}
               onClick={() => {
                 column?.sort &&
                   updateState({

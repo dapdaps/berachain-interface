@@ -45,7 +45,7 @@ const MainLayout = (props: Props) => {
         className='z-[4] hover:scale-110 ease-in-out duration-300 absolute left-[16px] bottom-[16px] w-[124px] h-[36px] rounded-full bg-[rgba(217,217,217,0.5)]'
         href='https://app.dapdap.net?from=berachain'
         target='_blank'
-        data-bp="1001-011"
+        data-bp="1010-011"
       >
         <Image
           src="/images/dapdap.svg"

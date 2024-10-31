@@ -5,6 +5,12 @@ import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
 import DappIcon from '@/components/dapp-icon';
 import useBend from './hooks/useBend';
+
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import SwitchNetwork from '@/components/switch-network';
+import chains from '@/configs/chains';
+import useAccount from '@/hooks/use-account';
+
 interface LendingModalProps {
   onClose?: () => void;
 }
@@ -13,9 +19,11 @@ const LendingModal: React.FC<LendingModalProps> = () => {
   const [currentTab, setCurrentTab] = useState<string>('deposit');
   const { markets, init }= useBend()
 
+  const { chainId, provider } = useAccount();
+
   useEffect(() => {
     init()
-  }, []);
+  }, [chainId, provider]);
   
   if (!markets) {
     return null;
@@ -63,6 +71,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
         </div>
       </div>
       </div>
+      <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
     </div>
   );
 };

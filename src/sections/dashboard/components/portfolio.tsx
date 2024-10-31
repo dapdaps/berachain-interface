@@ -15,7 +15,7 @@ const DashboardPortfolio = (props: Props) => {
   const { handleReport } = useClickTracking();
 
   useEffect(() => {
-    handleReport('1002-002');
+    handleReport('1011-002');
   }, []);
 
   return (

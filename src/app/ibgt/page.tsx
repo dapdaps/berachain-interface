@@ -1,6 +1,7 @@
 "use client"
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
+import useAddAction from "@/hooks/use-add-action";
 import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
@@ -14,6 +15,7 @@ import { useIBGT } from '@/hooks/use-ibgt';
 import Popover, { PopoverPlacement } from '@/components/popover';
 import { useRouter } from 'next/navigation';
 export default memo(function IBGTPage(props: any) {
+  const { addAction } = useAddAction("ibgt");
   const router = useRouter()
   const { loading, dataList } = useInfraredList()
   const data = useMemo(() => dataList?.find((d: any) => d.id === "iBGT-HONEY"), [dataList])
@@ -46,7 +48,7 @@ export default memo(function IBGTPage(props: any) {
     lpAmount,
     updater
   } = state;
-  const { token0, token1, decimals, id, LP_ADDRESS } = data ?? {
+  const { tokens, decimals, id, LP_ADDRESS } = data ?? {
 
   };
   const symbol = id;
@@ -203,9 +205,21 @@ export default memo(function IBGTPage(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Deposit',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: inAmount,
+          template: "Infrared",
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Add"
+        });
         updateState({
           isLoading: false,
-          // isPostTx: true
         });
         setTimeout(() => {
           onSuccess?.()
@@ -268,20 +282,19 @@ export default memo(function IBGTPage(props: any) {
           isLoading: false,
         });
         const { status, transactionHash } = receipt;
-        console.log('=receipt', receipt);
-
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Withdraw',
-        //   token0,
-        //   token1,
-        //   amount: lpAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Withdraw',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: lpAmount,
+          template: "Infrared",
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Remove"
+        });
         setTimeout(() => {
           onSuccess?.()
         }, 3000)
@@ -327,6 +340,19 @@ export default memo(function IBGTPage(props: any) {
       .getReward()
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
+        const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Claim',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: data?.earned,
+          template: "Infrared",
+          status: status,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Claim"
+        });
         toast?.dismiss(toastId);
         toast?.success({
           title: 'Claim Successfully!'
@@ -432,7 +458,7 @@ export default memo(function IBGTPage(props: any) {
                   </div>
                 )}
               >
-                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.staked).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
+                <div className="cursor-pointer text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.staked).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
               </Popover>
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
@@ -462,7 +488,7 @@ export default memo(function IBGTPage(props: any) {
                     onClick={() => {
                       router.push("/dex/bex?lp=")
                     }}
-                    data-bp="1001-005-001"
+                    data-bp="1010-005-001"
                   >
                     <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">Mint iBGT</span>
                   </div>
@@ -482,7 +508,7 @@ export default memo(function IBGTPage(props: any) {
                   </div>
                   {
                     Big(data?.earned ?? 0).gt(0) && (
-                      <div className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
+                      <div className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
                         Claim
                       </div>
                     )
@@ -497,7 +523,7 @@ export default memo(function IBGTPage(props: any) {
                   tabs.map((tab, index) => (
                     <div
                       key={index}
-                      className={clsx(["flex items-center justify-center border border-transparent rounded-[10px] flex-1", tIndex === index ? "h-full  !border-black bg-[#FFDC50]" : ""])}
+                      className={clsx(["cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1", tIndex === index ? "h-full  !border-black bg-[#FFDC50]" : ""])}
                       onClick={() => {
                         setTIndex(index)
                       }}
@@ -518,7 +544,7 @@ export default memo(function IBGTPage(props: any) {
                           .times(data?.initialData?.stake_token?.price ?? 0)
                           .toFixed(2) : '-'}
                       </span>
-                      <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={handleMax}>balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
+                      <div className="cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={handleMax}>balance: <span className='underline'>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
                     </div>
                     {
                       isInSufficient && (
@@ -574,9 +600,9 @@ export default memo(function IBGTPage(props: any) {
                           .times(data?.initialData?.stake_token?.price ?? 0)
                           .toFixed(2) : '-'}
                       </span>
-                      <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
+                      <div className="cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
                         handleLPChange(lpBalance);
-                      }}>balance: <span>{lpBalance}</span></div>
+                      }}>balance: <span className='underline'>{lpBalance}</span></div>
                     </div>
                     <button
                       disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}

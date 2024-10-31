@@ -112,13 +112,10 @@ export const useDepositAndWithdraw = ({
           symbol,
         },
         amount: _amount,
-        template: config.name,
+        template: 'Bend',
         add: false,
         status,
-        transactionHash,
-        extra_data: JSON.stringify({
-          sub_type: isDeposit ? "Supply" : "Withdraw",
-        }),
+        transactionHash
       });
     },
     [addAction, symbol, config.name]

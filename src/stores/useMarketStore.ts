@@ -176,6 +176,7 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   getUserAccountData: async () => {
     const { initData: { provider, config, account } } = get();
+    if (!config?.aavePoolV3Address) return
     try {
       const contract = new ethers.Contract(
         config.aavePoolV3Address,
@@ -254,7 +255,7 @@ const useBendStore = create<BendState>((set, get) => ({
           .times(100)
           .toFixed();
 
-        const hf = Big(totalDebtBase).eq(0)
+        const hf = Big(totalDebtBaseUSD).lt(0.001)
           ? formatHealthFactor('∞')
           : formatHealthFactor(ethers.utils.formatUnits(healthFactor));
 
@@ -267,13 +268,6 @@ const useBendStore = create<BendState>((set, get) => ({
             healthFactor: hf
           }
         })
-        console.log({
-          totalCollateralBaseUSD,
-          totalDebtBaseUSD,
-          availableBorrowsBaseUSD,
-          BorrowPowerUsed,
-          healthFactor: hf
-        }, '<====277');
         
         return availableBorrowsBaseUSD
       })
@@ -286,7 +280,6 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   getUserDebts: async () => {
     const { initData: { markets, account, provider, multicallAddress } } = get();
-    
     const variableDebtTokenAddresss = markets?.map((item: any) => item.variableDebtTokenAddress).filter(Boolean);
     const calls = variableDebtTokenAddresss?.map((addr: any) => ({
       address: addr,
@@ -375,39 +368,38 @@ const useBendStore = create<BendState>((set, get) => ({
       '0'
     );
 
-    
-    const supplyBal = markets.reduce(
+    const supplyBal = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (total, cur) => Big(total).plus(cur.underlyingBalanceUSD || 0).toFixed(),
       '0'
     );
-    const debtsBal = markets.reduce(
+
+    const debtsBal = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (total, cur) => Big(total).plus(cur.debtInUSD || 0).toFixed(),
       '0'
     );
-
-    const netWorth = Big(supplyBal).minus(debtsBal).toFixed(2, 0);
+    const netWorth = Big(supplyBal).minus(debtsBal).toFixed(2);
 
     if (Big(netWorth).eq(0)) return;
 
-    const weightedAverageSupplyAPY = markets.reduce(
+    const weightedAverageSupplyAPY = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (total, cur) => Big(total).plus(
         Big(cur.underlyingBalanceUSD || 0)
-          .times(cur.supplyAPY || 0)
-          .div(supplyBal || 1)
+          .times(cur.supplyAPY)
+          .div(supplyBal)
       ).toFixed(),
       '0'
     );
 
-    const yourSupplyRewardAPY = markets.reduce(
+    const yourSupplyRewardAPY = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (total, cur) => Big(total).plus(cur.supplyRewardApy || 0).toFixed(),
       '0'
     );
 
-    const weightedAverageBorrowsAPY = markets.reduce(
+    const weightedAverageBorrowsAPY = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (total, cur) => Big(total).plus(
         Big(cur.debtInUSD || 0)
-          .times(cur.borrowAPY || 1)
-          .div(parseFloat(debtsBal) || 1)
+          .times(cur.borrowAPY)
+          .div(debtsBal)
       ).toFixed(),
       '0'
     );
@@ -422,12 +414,12 @@ const useBendStore = create<BendState>((set, get) => ({
       )
       .toFixed();
 
-    const yourTotalSupply = markets.reduce(
+    const yourTotalSupply = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (prev, curr) => Big(prev).plus(curr.underlyingBalanceUSD || 0).toFixed(),
       '0'
     );
 
-    const yourTotalBorrow = markets.reduce(
+    const yourTotalBorrow = markets?.filter(item => item.symbol === 'HONEY').reduce(
       (prev, curr) => Big(prev).plus(curr.debtInUSD || 0).toFixed(),
       '0'
     );
@@ -446,7 +438,7 @@ const useBendStore = create<BendState>((set, get) => ({
   },
   getPoolDataProvider: () => {
     const { initData: { config, multicallAddress, provider, markets } } = get();
-    const underlyingTokens = markets?.map((market: any) => market.underlyingAsset);
+    const underlyingTokens = markets?.filter((item => item.variableDebtTokenAddress)).map((market: any) => market.underlyingAsset);
     const calls = underlyingTokens?.map((addr: any) => ({
       address: config.PoolDataProvider,
       name: 'getReserveData',
@@ -567,7 +559,6 @@ const useBendStore = create<BendState>((set, get) => ({
           _assetsToSupply[i].utilized = _utilized;
         }
       }
-      console.log(_assetsToSupply, '_assetsToSupply');
       
       set({
         initData: {

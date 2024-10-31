@@ -1,13 +1,14 @@
 // @ts-nocheck
+import CircleLoading from '@/components/circle-loading';
+import useAddAction from "@/hooks/use-add-action";
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
+import { useRouter } from 'next/navigation';
 import { memo, useEffect, useState } from 'react';
-import CircleLoading from '@/components/circle-loading';
 export default memo(function Detail(props: any) {
   const { data, sender, provider, defaultIndex = 0, addresses, onBack } = props;
   const router = useRouter()
@@ -40,7 +41,7 @@ export default memo(function Detail(props: any) {
     updater
   } = state;
 
-  const { decimals, id, LP_ADDRESS } = data;
+  const { decimals, tokens, id, LP_ADDRESS } = data;
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
@@ -54,6 +55,7 @@ export default memo(function Detail(props: any) {
           .div(Big(lpBalance).gt(0) ? lpBalance : 1)
           .toFixed(4)
       );
+  const { addAction } = useAddAction("dapp");
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(
@@ -218,18 +220,19 @@ export default memo(function Detail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Deposit',
-        //   token0,
-        //   token1,
-        //   amount: inAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 1,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Deposit',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: inAmount,
+          template: "Infrared",
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Add"
+        });
         updateState({
           isLoading: false,
           isPostTx: true
@@ -301,18 +304,19 @@ export default memo(function Detail(props: any) {
         });
         const { status, transactionHash } = receipt;
 
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Withdraw',
-        //   token0,
-        //   token1,
-        //   amount: lpAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Withdraw',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: lpAmount,
+          template: "Infrared",
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Remove"
+        });
         setTimeout(() => {
           onSuccess?.()
         }, 3000)
@@ -356,6 +360,19 @@ export default memo(function Detail(props: any) {
       .getReward()
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
+        const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Claim',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: data?.earned,
+          template: "Infrared",
+          status: status,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Claim"
+        });
         toast?.dismiss(toastId);
         toast?.success({
           title: 'Claim Successfully!'
@@ -399,7 +416,7 @@ export default memo(function Detail(props: any) {
   return (
     <div>
       <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
-        <div className='absolute top-[24px] left-[19px]' onClick={onBack}>
+        <div className='cursor-pointer absolute top-[24px] left-[19px]' onClick={onBack}>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='34'
@@ -495,7 +512,7 @@ export default memo(function Detail(props: any) {
               </div>
 
               <div
-                className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
+                className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
                 onClick={() => {
                   router.push("/dex/bex?lp=" + LP_ADDRESS)
                 }}
@@ -529,7 +546,7 @@ export default memo(function Detail(props: any) {
               </div>
               {
                 Big(data?.earned ?? 0).gt(0) && (
-                  <div className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
+                  <div className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
                     Claim
                   </div>
                 )
@@ -544,7 +561,7 @@ export default memo(function Detail(props: any) {
               <div
                 key={index}
                 className={clsx([
-                  'flex items-center justify-center border border-transparent rounded-[10px] flex-1',
+                  'cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1',
                   tIndex === index ? 'h-full  !border-black bg-[#FFDC50]' : ''
                 ])}
                 onClick={() => {
@@ -577,14 +594,14 @@ export default memo(function Detail(props: any) {
                     : '-'}
                 </span>
                 <div
-                  className='text-[#3D405A] font-Montserrat text-[12px] font-medium'
+                  className='text-[#3D405A] font-Montserrat text-[12px] font-medium cursor-pointer'
                   onClick={handleMax}
                 >
-                  balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span>
+                  balance: <span className='underline'>{Big(balances[symbol] ?? 0).toFixed(6)}</span>
                 </div>
               </div>
               {isInSufficient && (
-                <button className='h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
+                <button className='w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
                   <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
                     InSufficient Balance
                   </span>
@@ -662,7 +679,7 @@ export default memo(function Detail(props: any) {
                     : '-'}
                 </span>
                 <div
-                  className='text-[#3D405A] font-Montserrat text-[12px] font-medium'
+                  className='cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium'
                   onClick={() => {
                     const newSliderPercent = Big(lpBalance || 0)
                       .div(Big(lpBalance).gt(0) ? lpBalance : 1)
@@ -674,7 +691,7 @@ export default memo(function Detail(props: any) {
                     handleLPChange(lpBalance);
                   }}
                 >
-                  balance: <span>{lpBalance}</span>
+                  balance: <span className='underline'>{lpBalance}</span>
                 </div>
               </div>
               <button
