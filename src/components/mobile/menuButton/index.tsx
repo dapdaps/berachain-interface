@@ -9,6 +9,7 @@ interface CustomButtonProps {
   onClick?: () => void;
   className?: string;
   children: React.ReactNode;
+  contentClassName?: string;
 }
 
 const MenuButton: React.FC<CustomButtonProps> = ({
@@ -17,7 +18,8 @@ const MenuButton: React.FC<CustomButtonProps> = ({
   hasDropdown,
   isActive,
   onClick,
-  className = ''
+  className = '',
+  contentClassName = ''
 }) => {
   const ButtonContent = () => (
     <div className="relative w-full h-[14.87vw]">
@@ -25,9 +27,9 @@ const MenuButton: React.FC<CustomButtonProps> = ({
         className="absolute top-1 -left-1 w-full h-[12.82vw] rounded border border-black bg-[#866224]"
       />
       <div 
-        className={`absolute top-0 left-0 w-full h-[12.82vw] flex items-center justify-center gap-8 px-6 bg-[#E9B965] rounded border border-black ${className}`}
+        className={`absolute top-0 left-0 w-full h-[12.82vw] flex items-center justify-center gap-8 px-6 bg-[#E9B965] rounded border border-black  text-base ${contentClassName}`}
       >
-        <span className="text-black font-bold text-base leading-none">
+        <span className="text-black font-bold leading-none font-CherryBomb">
           {children}
         </span>
         {hasDropdown && (

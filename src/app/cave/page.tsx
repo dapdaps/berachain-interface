@@ -1,10 +1,14 @@
 'use client';
 
-import BearBackground from '@/components/bear-background/laptop';
+import BearBackground from '@/components/bear-background';
+import useIsMobile from '@/hooks/use-isMobile';
 import Cave from '@/sections/cave';
+import CaveMobile from '@/sections/cave/mobile';
 import { useEffect } from 'react';
 
 export default function Dapps() {
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     const layoutDom = document.getElementById('layout');
     layoutDom?.classList.add('cave-bg');
@@ -16,7 +20,9 @@ export default function Dapps() {
 
   return (
     <BearBackground type='cave'>
-      <Cave />
+      {
+        isMobile ? <CaveMobile /> : <Cave />
+      }
     </BearBackground>
   );
 }
