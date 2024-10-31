@@ -1,13 +1,14 @@
 // @ts-nocheck
+import CircleLoading from '@/components/circle-loading';
+import useAddAction from "@/hooks/use-add-action";
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
+import { useRouter } from 'next/navigation';
 import { memo, useEffect, useState } from 'react';
-import CircleLoading from '@/components/circle-loading';
 export default memo(function Detail(props: any) {
   const { data, sender, provider, defaultIndex = 0, addresses, onBack } = props;
   const router = useRouter()
@@ -40,7 +41,7 @@ export default memo(function Detail(props: any) {
     updater
   } = state;
 
-  const { decimals, id, LP_ADDRESS } = data;
+  const { decimals, tokens, id, LP_ADDRESS } = data;
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
@@ -54,6 +55,7 @@ export default memo(function Detail(props: any) {
           .div(Big(lpBalance).gt(0) ? lpBalance : 1)
           .toFixed(4)
       );
+  const { addAction } = useAddAction("dapp");
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(
@@ -218,18 +220,19 @@ export default memo(function Detail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Deposit',
-        //   token0,
-        //   token1,
-        //   amount: inAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 1,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Deposit',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: inAmount,
+          template: "Infrared",
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Add"
+        });
         updateState({
           isLoading: false,
           isPostTx: true
@@ -301,18 +304,19 @@ export default memo(function Detail(props: any) {
         });
         const { status, transactionHash } = receipt;
 
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Withdraw',
-        //   token0,
-        //   token1,
-        //   amount: lpAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Withdraw',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: lpAmount,
+          template: "Infrared",
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Remove"
+        });
         setTimeout(() => {
           onSuccess?.()
         }, 3000)
@@ -577,10 +581,10 @@ export default memo(function Detail(props: any) {
                     : '-'}
                 </span>
                 <div
-                  className='text-[#3D405A] font-Montserrat text-[12px] font-medium'
+                  className='text-[#3D405A] font-Montserrat text-[12px] font-medium cursor-pointer'
                   onClick={handleMax}
                 >
-                  balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span>
+                  balance: <span className='underline'>{Big(balances[symbol] ?? 0).toFixed(6)}</span>
                 </div>
               </div>
               {isInSufficient && (

@@ -172,45 +172,6 @@ export default memo(function BGTPage() {
     }
   ];
 
-
-
-  const handleClaim = function (data: any) {
-
-    const toastId = toast?.loading({
-      title: `Claim...`
-    });
-
-    const abi = [{
-      "constant": false,
-      "inputs": [],
-      "name": "getReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }]
-    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner())
-    contract
-      .getReward()
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Claim Successfully!'
-        });
-        refresh()
-      })
-      .catch((error: Error) => {
-        console.log('error: ', error);
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Claim Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : (error?.message ?? '')
-        });
-      });
-  }
-
   const handleExplore = function () {
     // window.open("https://bartio.station.berachain.com/")
     router.push("/marketplace/invest?type=vaults")

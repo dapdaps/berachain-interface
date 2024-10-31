@@ -5,6 +5,7 @@ import Button from '@/components/button';
 import { Token } from '@/types';
 import SwitchTabs from '@/components/switch-tabs';
 import Skeleton from 'react-loading-skeleton';
+import useAddAction from '@/hooks/use-add-action';
 
 interface TokenInfo extends Token {
   APR: string;
@@ -49,6 +50,8 @@ const TabPanel: React.FC<TabPanelProps> = ({
   loading,
   CHAIN_ID,
 }) => {
+  const { addAction } = useAddAction("lending");
+
   return (
     <div className="h-[490px] max-h-[calc(100vh_-_300px)] overflow-x-hidden overflow-y-auto">
       <div className="flex mb-10 items-center">
@@ -128,6 +131,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
                       token={token}
                       CHAIN_ID={CHAIN_ID}
                       onSuccess={onSuccess}
+                      addAction={addAction}
                     />
                   )}
                 >
@@ -146,6 +150,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
                       isSkipApproved={true}
                       CHAIN_ID={CHAIN_ID}
                       onSuccess={onSuccess}
+                      addAction={addAction}
                     />
                   )}
                 >
