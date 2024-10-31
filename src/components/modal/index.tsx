@@ -12,6 +12,7 @@ interface ModalProps {
   style?: React.CSSProperties;
   className?: string;
   closeIconClassName?: string;
+  isForceNormal?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -21,7 +22,8 @@ const Modal: React.FC<ModalProps> = ({
   closeIcon,
   style,
   className,
-  closeIconClassName
+  closeIconClassName,
+  isForceNormal
 }) => {
   const isMobile = useIsMobile();
   useEffect(() => {
@@ -58,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({
                 <IconClose />
               </button>
             ) : null}
-            {isMobile ? (
+            {isMobile && !isForceNormal ? (
               <motion.div
                 animate={{
                   y: [100, 0],

@@ -272,7 +272,5 @@ export default BGTMobileView;
 interface Props {
   visible: boolean;
 
-  onClose()
-    :
-    void;
+  onClose(): void;
 }

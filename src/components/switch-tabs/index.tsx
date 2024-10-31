@@ -9,6 +9,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
     cursorStyle,
     tabClassName,
     tabStyle,
+    renderTabStyle = () => ({}),
     className,
     style,
     onChange
@@ -20,9 +21,9 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
     return idx;
   }, [tabs, current]);
 
-  const handleChange = (tab: any) => {
+  const handleChange = (tab: any, idx: number) => {
     if (tab.value === current) return;
-    onChange && onChange(tab.value);
+    onChange && onChange(tab.value, idx);
   };
 
   return (
@@ -52,12 +53,13 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
               width: `${100 / tabs.length}%`,
               opacity: tab.disabled ? 0.3 : 1,
               cursor: tab.disabled ? 'not-allowed' : 'pointer',
-              ...tabStyle
+              ...tabStyle,
+              ...renderTabStyle(tab, idx),
             }}
             onClick={(e) => {
               e.stopPropagation();
               if (tab.disabled) return;
-              handleChange(tab);
+              handleChange(tab, idx);
             }}
           >
             {tab.label}
@@ -80,5 +82,6 @@ interface Props<Value> {
   tabClassName?: string;
   tabStyle?: React.CSSProperties;
 
-  onChange?(current: Value): void;
+  onChange?(current: Value, index: number): void;
+  renderTabStyle?(tab: { value: Value; label: any; disabled?: boolean }, idx: number): React.CSSProperties;
 }

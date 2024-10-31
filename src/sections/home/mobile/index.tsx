@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React from 'react';
 import BGTMobileView from '@/sections/bgt/mobile';
 import { useBgt } from '@/sections/home/hooks/useBgt';
+import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
 
 const Home = () => {
   const router = useRouter();
@@ -74,6 +75,12 @@ const Home = () => {
       </div>
       <BGTMobileView
         visible={bgt.visible && bgt.type === CoinType.BGT}
+        onClose={() => {
+          bgt.handleBgt(false);
+        }}
+      />
+      <IBGTMobileView
+        visible={bgt.visible && bgt.type === CoinType.iBGT}
         onClose={() => {
           bgt.handleBgt(false);
         }}
