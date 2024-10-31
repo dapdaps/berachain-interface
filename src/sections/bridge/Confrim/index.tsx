@@ -10,8 +10,8 @@ export default function Confirm({ show, onClose }: Props) {
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
-        <div className='w-[520px]'>
-          <div className='text-center text-[26px] mt-[30px]'>
+        <div className='lg:w-[520px] md:w-full'>
+          <div className='text-center text-[26px] mt-[30px] md:font-CherryBomb'>
             Bridged Successfully!
           </div>
           <div className='flex items-center justify-between mt-[35px] text-[20px]'>
@@ -103,11 +103,11 @@ export default function Confirm({ show, onClose }: Props) {
               />
             </svg>
           </div>
-          <div className='text-[18px] text-center mt-[10px]'>
+          <div className='text-[18px] text-center mt-[10px] md:font-CherryBomb'>
             You got a helmet！
           </div>
 
-          <div className='flex gap-[16px] mt-[20px]'>
+          <div className='flex gap-[16px] mt-[20px] md:flex-col md:h-[106px]'>
             <div className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>
               View History
             </div>

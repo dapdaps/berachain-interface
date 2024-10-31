@@ -50,7 +50,7 @@ const MenuButton: React.FC<CustomButtonProps> = ({
   return (
     <button 
       onClick={onClick} 
-      className="block w-full max-w-[51.28vw]"
+      className={`block w-full max-w-[51.28vw] ${className}`}
     >
       <ButtonContent />
     </button>
