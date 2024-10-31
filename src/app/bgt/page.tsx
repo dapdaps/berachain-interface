@@ -268,7 +268,7 @@ export default memo(function BGTPage() {
         <div className="mt-[30px] flex justify-between items-center">
           <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">Your Vaults</div>
           <div
-            className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
+            className="cursor-pointer flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
             onClick={handleExplore}
             data-bp="1010-004-004"
           >
