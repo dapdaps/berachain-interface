@@ -129,7 +129,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
           <div className="flex justify-between items-center mt-3">
             <div className="font-Montserrat text-sm font-normal leading-[17px] text-left">
               {isBorrow ? "Borrow Max: " : "Balance: "}
-              <span className="underline" onClick={() => setAmount(maxValue)}>
+              <span className="underline cursor-pointer" onClick={() => setAmount(maxValue)}>
                 {formatDisplayNumber(currentBalance)}
               </span>
             </div>
