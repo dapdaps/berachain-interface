@@ -6,7 +6,7 @@ import IconClose from '@public/images/mobile/close.svg';
 import MenuButton from '@/components/mobile/menuButton';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 
 
@@ -56,7 +56,7 @@ const dapps: DApp[] = [
     id: 'stargate',
     name: 'Stargate',
     icon: '/images/dapps/stargate.svg',
-    // href: '/dapp/stargate'
+    href: '/bridge/stargate'
   },
   {
     id: 'ooga',
@@ -101,6 +101,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -164,6 +165,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           src='/images/mobile/town.png'
           alt='Town'
           className='w-[15.9vw] h-auto'
+          onClick={() => router.push('/')}
         />
         <motion.button
           onClick={toggleMenu}
