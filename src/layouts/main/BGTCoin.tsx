@@ -36,7 +36,8 @@ const Star = () => (
 const BGTCoin = ({
   type = CoinType.BGT,
   count = 0,
-  bp
+  bp,
+  onClick
 }: Props) => {
 
   const router = useProgressRouter()
@@ -56,6 +57,10 @@ const BGTCoin = ({
         data-bp={bp}
         className='relative cursor-pointer'
         onClick={() => {
+          if (onClick) {
+            onClick(type);
+            return;
+          }
           router.push(type === CoinType.iBGT ? "/ibgt" : '/bgt')
         }}
       >
@@ -96,4 +101,5 @@ export interface Props {
   type: CoinType,
   count: number;
   bp?: string;
+  onClick?(type: CoinType): void;
 }
