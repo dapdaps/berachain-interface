@@ -54,8 +54,8 @@ const Input = ({
           }}
           disabled={disabled}
         />
-        <div className='text-[#8e8e8e] text-[14px] md:text-[10px] font-normal mt-[3px] text-center'>
-          {desc}{' '}
+        <div className='text-[#8e8e8e] text-[14px] md:text-[10px] font-normal mt-[3px] text-center md:h-[16px] h-[20px]'>
+          <div className='absolute'>{desc}</div>
         </div>
       </StyledInputLeft>
       <StyledInputButton

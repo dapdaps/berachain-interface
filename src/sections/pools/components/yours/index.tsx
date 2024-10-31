@@ -19,7 +19,7 @@ export default function Yours({
   const [openModal, setOpenModal] = useState('');
 
   return (
-    <div className='pb-[20px]'>
+    <div className='pb-[20px] md:h-full'>
       <div className='flex items-center md:px-[12px]'>
         {currentTab && (
           <SwitchTabs
@@ -35,15 +35,14 @@ export default function Yours({
               padding: 4
             }}
             tabStyle={{
-              fontSize: 14,
-              fontWeight: 'normal'
+              fontSize: 14
             }}
-            className='md:bg-[#DFDCC4] md:border-none md:rounded-[12px]'
+            className='md:bg-[#DFDCC4] md:border-none md:rounded-[12px] md:mb-[10px]'
             cursorClassName='md:rounded-[12px]'
           />
         )}
       </div>
-      <div className='mt-[20px]'>
+      <div>
         {currentTab === 'v3' ? (
           <V3List
             pools={pools}

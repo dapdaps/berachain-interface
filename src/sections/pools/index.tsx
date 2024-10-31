@@ -30,7 +30,8 @@ export default function Pools({ dapp }: any) {
           params.set('tab', tabKey);
           router.replace(`${pathname}?${params.toString()}`);
         }}
-        bodyClassName='md:px-0 md:h-full'
+        bodyClassName='md:px-0 md:h-full md:pt-[10px]'
+        bodyInnerClassName='md:h-full'
       />
       <DappIcon
         src={dapp.icon}

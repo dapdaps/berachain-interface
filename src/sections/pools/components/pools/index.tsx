@@ -10,7 +10,9 @@ export default function Pools({
   pools = [],
   onChangeTab,
   currentTab,
-  dex
+  dex,
+  tabs,
+  loading
 }: any) {
   const [searchVal, setSearchVal] = useState('');
   const [selectedReocrd, setSelectedRecord] = useState<any>(null);
@@ -18,19 +20,16 @@ export default function Pools({
   const isMobile = useIsMobile();
 
   return (
-    <div className='pb-[20px]'>
+    <div className='pb-[20px] md:h-full'>
       <div className='flex justify-between items-center'>
         <div className='md:px-[12px]'>
           {currentTab && (
             <SwitchTabs
-              tabs={[
-                { label: 'V3 Pools', value: 'v3' },
-                { label: 'V2 Pools', value: 'v2' }
-              ]}
+              tabs={tabs}
               current={currentTab}
               onChange={onChangeTab}
               style={{
-                width: 200,
+                width: tabs.length * 100,
                 height: 40,
                 padding: 4
               }}
@@ -53,7 +52,9 @@ export default function Pools({
             page,
             setPage,
             searchVal,
-            setSelectedRecord
+            setSelectedRecord,
+            type: currentTab,
+            loading
           }}
         />
       ) : (
@@ -63,7 +64,9 @@ export default function Pools({
             page,
             setPage,
             searchVal,
-            setSelectedRecord
+            setSelectedRecord,
+            type: currentTab,
+            loading
           }}
         />
       )}
@@ -76,7 +79,7 @@ export default function Pools({
           token0={selectedReocrd.token0}
           token1={selectedReocrd.token1}
           fee={selectedReocrd.fee}
-          version={currentTab}
+          version={selectedReocrd.version}
           dex={dex}
         />
       )}

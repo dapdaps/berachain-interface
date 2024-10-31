@@ -1,48 +1,61 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
+import Big from 'big.js';
 import List from '@/components/flex-table';
 import PoolTable from '../pool-table';
 import Empty from '@/components/empty';
-
-const PAGE_SIZE = 9;
+import Dropdown from '@/components/dropdown';
+import { balanceShortFormated } from '@/utils/balance';
+import { upperFirst, cloneDeep } from 'lodash';
+import clsx from 'clsx';
 
 export default function Mobile({
   pools,
-  page,
-  setPage,
-  searchVal,
-  setSelectedRecord
+  setSelectedRecord,
+  type,
+  loading
 }: any) {
-  const list = useMemo(
-    () =>
-      pools.filter((pool: any) => {
-        let flag = true;
-        if (
-          searchVal &&
-          !(
-            pool.token0.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token0.symbol
-              .toLowerCase()
-              .includes(searchVal.toLowerCase()) ||
-            pool.token1.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token1.symbol.toLowerCase().includes(searchVal.toLowerCase())
-          )
-        )
-          flag = false;
-        return flag;
-      }),
-    [pools, searchVal]
-  );
+  const [sortType, setSortType] = useState(-1);
+  const [data, setData] = useState([]);
+  const [sortItem, setSortItem] = useState<any>();
 
-  const maxPage = useMemo(() => {
-    return Math.ceil(list.length / PAGE_SIZE) || 1;
-  }, [list]);
+  useEffect(() => {
+    if (!pools.length) return;
+    if (!sortItem) {
+      setData(pools);
+      return;
+    }
 
-  const data = useMemo(
-    () => list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [list, page]
-  );
+    setData(
+      cloneDeep(pools).sort((a: any, b: any) =>
+        Big(b[sortItem.key] || 0).gt(a[sortItem.key] || 0)
+          ? sortType
+          : -sortType
+      )
+    );
+  }, [sortItem, sortType, pools]);
+
   return (
-    <div className='mt-[20px] h-full'>
+    <div className={clsx('h-full', type === 'kodiak' && 'mt-[20px]')}>
+      <div className='flex items-center p-[0px_15px_8px] border-b border-b-black/20 justify-between text-[14px] text-[#3D405A]'>
+        <div>{upperFirst(type)}</div>
+        <div className='flex items-center gap-[8px]'>
+          <Dropdown
+            list={[
+              { key: 'tvl', name: 'TVL' },
+              { key: 'volume', name: 'Volume' }
+            ]}
+            title={`Sort by ${sortItem?.name || 'TVL'}`}
+            value='tvl'
+            onChange={(val: any) => {
+              setSortType(-sortType);
+              setSortItem(val);
+            }}
+            className='border-none bg-transparent gap-[3px] px-0'
+            titleClassName='text-[14px] font-normal'
+            dropPanelClassName='top-[30px]'
+          />
+        </div>
+      </div>
       <List
         columns={[
           {
@@ -62,11 +75,13 @@ export default function Mobile({
           },
           {
             title: 'TVL',
-            dataIndex: 'TVL',
+            dataIndex: 'tvl',
             width: '30%',
             align: 'right',
             render: (_, record) => {
-              return record['tvl'] || '-';
+              return record['tvl']
+                ? balanceShortFormated(record['tvl'], 2)
+                : '-';
             }
           }
         ]}
@@ -79,6 +94,7 @@ export default function Mobile({
             <Empty desc='No Pools.' />
           </div>
         )}
+        loading={loading}
       />
     </div>
   );

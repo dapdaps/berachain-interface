@@ -57,7 +57,9 @@ const Input = ({
         />
         {token ? (
           <StyledToken>
-            <StyledIcon src={token?.icon || '/img/default_icon.png'} />
+            <StyledIcon
+              src={token?.icon || '/assets/tokens/default_icon.png'}
+            />
             <StyledSymbol>{token.symbol}</StyledSymbol>
           </StyledToken>
         ) : (

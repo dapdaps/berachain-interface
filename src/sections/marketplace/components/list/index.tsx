@@ -1,6 +1,8 @@
 import CircleLoading from '@/components/circle-loading';
 import Pager from '@/components/pager';
-import { useState } from 'react';
+import Big from 'big.js';
+import { useEffect, useState } from 'react';
+import { cloneDeep } from 'lodash';
 
 interface Meta {
   title: string;
@@ -31,8 +33,22 @@ export default function List({
   loading,
   withoutHeader = false
 }: Props) {
-  const [sortItem, setSortItem] = useState(null);
+  const [sortItem, setSortItem] = useState<any>(null);
   const [sortType, setSortType] = useState(1);
+  const [data, setData] = useState<any>([]);
+
+  useEffect(() => {
+    if (!list.length) return;
+    if (!sortItem) {
+      setData(list);
+      return;
+    }
+    setData(
+      cloneDeep(list).sort((a, b) =>
+        Big(a[sortItem] || 0).gt(b[sortItem] || 0) ? sortType : -sortType
+      )
+    );
+  }, [sortItem, sortType, list]);
 
   return (
     <div>
@@ -48,12 +64,8 @@ export default function List({
                   }}
                   onClick={() => {
                     if (item.sort) {
-                      if (sortItem === item) {
-                        setSortType(sortType ^ 1);
-                      } else {
-                        setSortItem(item);
-                        setSortType(1);
-                      }
+                      setSortType(-sortType);
+                      setSortItem(item.key);
                     }
                   }}
                   className='text-[14px] font-medium pl-[10px] py-[5px] text-center flex gap-[10px] items-center'
@@ -87,7 +99,7 @@ export default function List({
               <CircleLoading size={30} />
             </div>
           ) : (
-            list.map((item: any, index: number) => {
+            data.map((item: any, index: number) => {
               return (
                 <div
                   className='rounded-md flex tr'

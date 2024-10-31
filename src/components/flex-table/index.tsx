@@ -23,8 +23,8 @@ const FlexTable = (props: FlexTableProps) => {
   } = props;
 
   return (
-    <div>
-      <div className={wrapperClass}>
+    <div className={wrapperClass}>
+      <>
         {showHeader && (
           <div className={`flex items-center p-[14px] ${headClass}`}>
             {columns.map((column: any, columnIdx) => (
@@ -111,7 +111,7 @@ const FlexTable = (props: FlexTableProps) => {
               : renderEmpty()}
           </div>
         )}
-      </div>
+      </>
       {!loading && (pagination ?? null)}
     </div>
   );

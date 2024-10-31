@@ -1,3 +1,5 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import CloudSvg from '@public/images/background/cloud.svg';
 

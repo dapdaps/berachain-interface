@@ -15,7 +15,7 @@ export default function SlippageSettingContent({ show }: any) {
   }, [show]);
 
   return (
-    <div className='w-[302px] h-[139px] p-[20px] rounded-[20px] border border-black bg-[#FFFDEB] md:w-full md:rounded-b-none md:h-[150px]'>
+    <div className='w-[302px] h-[139px] p-[20px] rounded-[20px] border border-black bg-[#FFFDEB] md:w-full md:border-none'>
       <div className='text-[16px] font-semibold'>Setting</div>
       <div className='text-[14px] font-medium mt-[6px]'>Max. Slippage</div>
       <div className='flex gap-[8px] mt-[10px] text-[14px] font-normal'>

@@ -35,7 +35,7 @@ export default function BasicModal({
       onClose={onClose}
       closeIconClassName='top-[-10px] right-[-10px]'
     >
-      <div className='px-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black md:w-full md:px-[12px]'>
+      <div className='px-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black md:w-full md:px-[12px] md:rounded-b-none'>
         <div className='pt-[27px] pb-[10px] flex justify-between md:pt-[16px]'>
           <div className='flex items-center gap-[10px]'>
             <div className='text-[20px] font-bold'>{title}</div>
