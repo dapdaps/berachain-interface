@@ -6,7 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import MainLayout from '@/layouts/main';
 import WagmiProvider from '@/context/wagmi';
 import { ToastContainer } from 'react-toastify';
-
+import { Suspense } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import useIsMobile from '@/hooks/use-isMobile';
@@ -29,11 +29,13 @@ export default function RootLayout({
       <body>
         <WagmiProvider>
           <SkeletonTheme baseColor='#7990F4' highlightColor='#FFDC50'>
-            {isMobile ? (
-              <MobileLayout>{children}</MobileLayout>
-            ) : (
-              <MainLayout className={className}>{children}</MainLayout>
-            )}
+            <Suspense>
+              {isMobile ? (
+                <MobileLayout>{children}</MobileLayout>
+              ) : (
+                <MainLayout className={className}>{children}</MainLayout>
+              )}
+            </Suspense>
           </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
