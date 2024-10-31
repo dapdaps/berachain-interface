@@ -80,7 +80,6 @@ export default function useAddAction(source: string) {
           tx_id: data.transactionHash,
           action_network_id: currentChain.name,
           chain_id: chainId,
-          sub_type: data.sub_type
         };
 
         if (data.extra_data?.lending_actions) {
@@ -99,7 +98,6 @@ export default function useAddAction(source: string) {
             data?.token0 + (data?.token1 ? '-' + data.token1 : '')
           } on ${data.template}`,
           action_type: data.type,
-          sub_type: data.action,
           action_tokens: JSON.stringify([
             data?.token0 ?? '',
             data?.token1 ?? ''
@@ -122,7 +120,6 @@ export default function useAddAction(source: string) {
             ? `${data.action} ${data.amount} ${data.token?.symbol} on ${data.template}`
             : '',
           action_type: 'Staking',
-          sub_type: data.action,
           action_tokens: data.token
             ? JSON.stringify([`${data.token.symbol}`])
             : '',
