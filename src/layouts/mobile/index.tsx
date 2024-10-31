@@ -160,7 +160,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <div className='absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-[99]'>
+      <div className='fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-[99]'>
         <img
           src='/images/mobile/town.png'
           alt='Town'
