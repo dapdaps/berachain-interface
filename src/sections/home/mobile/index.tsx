@@ -2,9 +2,17 @@ import ConnectWallet from '@/components/connect-wallet';
 import BGTCoin, { CoinType } from '@/layouts/main/BGTCoin';
 import { useRouter } from "next/navigation";
 import React from 'react';
+import BGTMobileView from '@/sections/bgt/mobile';
+import { useBgt } from '@/sections/home/hooks/useBgt';
 
 const Home = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const bgt = useBgt();
+
+  const handleBGTClick = (type: CoinType) => {
+    bgt.handleBgt(true, type);
+  };
+
   return (
     <div className="relative w-full min-h-screen bg-[#F5F5F5]">
       <div 
@@ -22,8 +30,18 @@ const Home = () => {
                 <ConnectWallet />
             </div>
             <div className="text-white flex items-center gap-x-[17px]">
-                <BGTCoin type={CoinType.BGT} count={0} bp="1001-004" />
-                <BGTCoin type={CoinType.iBGT} count={0} bp="1001-005" />
+                <BGTCoin
+                  type={CoinType.BGT}
+                  count={0}
+                  bp="1001-004"
+                  onClick={handleBGTClick}
+                />
+                <BGTCoin
+                  type={CoinType.iBGT}
+                  count={0}
+                  bp="1001-005"
+                  onClick={handleBGTClick}
+                />
             </div>
         </div>
         
@@ -54,6 +72,12 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <BGTMobileView
+        visible={bgt.visible && bgt.type === CoinType.BGT}
+        onClose={() => {
+          bgt.handleBgt(false);
+        }}
+      />
     </div>
   );
 };

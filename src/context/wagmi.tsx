@@ -41,7 +41,11 @@ const modal = createAppKit({
     socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook', 'farcaster'],
     emailShowWallets: true, // default to true
   },
-  allWallets: 'SHOW'
+  allWallets: 'SHOW',
+  enableInjected: true,
+  enableWalletConnect: true,
+  enableEIP6963: true,
+  enableCoinbase: true,
 })
 
 function ContextProvider({
