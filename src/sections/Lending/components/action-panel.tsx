@@ -23,6 +23,7 @@ const ActionPanel = (props: Props) => {
     inputDisabled,
     CHAIN_ID,
     onSuccess,
+    addAction,
   } = props;
 
   const networkConfig = networks[CHAIN_ID];
@@ -101,6 +102,7 @@ const ActionPanel = (props: Props) => {
           onApprovedSuccess={() => {
             setLoading(true);
           }}
+          addAction={addAction}
         >
           {actionText}
         </LendingButton>
@@ -142,4 +144,5 @@ interface Props {
   isSkipApproved?: boolean;
   CHAIN_ID: number;
   onSuccess?(): void;
+  addAction: any;
 }
