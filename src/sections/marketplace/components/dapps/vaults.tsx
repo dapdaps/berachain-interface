@@ -13,6 +13,7 @@ import DappModal from './modal';
 import useToast from '@/hooks/use-toast';
 import { formatValueDecimal } from '@/utils/balance';
 import { useRouter } from 'next/navigation';
+import useAddAction from "@/hooks/use-add-action";
 const TABS = [
   {
     value: 'Deposit',
@@ -35,11 +36,12 @@ export default memo(function vaults(props) {
   } = useContext(MarketplaceContext);
 
   const toast = useToast();
+  const { addAction } = useAddAction("invest");
   const { account: sender, provider } = useCustomAccount();
   const { data, config } = vaultsData;
 
   const dexConfig = config?.chains[DEFAULT_CHAIN_ID];
-  const { decimals, id, LP_ADDRESS } = data ?? {};
+  const { tokens, decimals, id, LP_ADDRESS } = data ?? {};
   const { addresses } = dexConfig ?? {};
 
   const symbol = id;
@@ -243,18 +245,19 @@ export default memo(function vaults(props) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Deposit',
-        //   token0,
-        //   token1,
-        //   amount: inAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 1,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Deposit',
+          token0: tokens?.[0],
+          token1: tokens?.[1],
+          amount: inAmount,
+          template: "Infrared",
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Add"
+        });
         updateState({
           isLoading: false,
           isPostTx: true
@@ -326,7 +329,19 @@ export default memo(function vaults(props) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
-        console.log('=receipt', receipt);
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Withdraw',
+          token0: tokens?.[0],
+          token1: tokens?.[1],
+          amount: lpAmount,
+          template: "Infrared",
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Remove"
+        });
 
         setTimeout(() => {
           onSuccess?.()
