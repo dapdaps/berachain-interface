@@ -15,7 +15,7 @@ interface IProps {
   className?: string;
 }
 
-const MIN_ETH_GAS_FEE = 0.001;
+const MIN_ETH_GAS_FEE = 0.00001;
 
 const smartFormatNumber = (amount: Big, decimals: number): string => {
   const formatted = amount.toFixed(decimals).replace(/\.?0+$/, "");
@@ -30,12 +30,7 @@ const calculateMaxValue = (
 ): string => {
   if (!balance) return "0";
   const balanceBig = new Big(balance);
-
-  if (symbol === config.nativeCurrency.symbol) {
-    return smartFormatNumber(balanceBig.minus(MIN_ETH_GAS_FEE), decimals);
-  } else {
-    return smartFormatNumber(balanceBig, decimals);
-  }
+  return smartFormatNumber(balanceBig.minus(MIN_ETH_GAS_FEE), decimals);
 };
 
 const Action = forwardRef<HTMLDivElement, IProps>(
@@ -44,6 +39,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
     const {
       initData: { provider, chainId, account },
       triggerUpdate,
+      userAccountData,
       netBaseData
     } = useMarketStore();
     const isBorrow = action === "borrow";
@@ -76,7 +72,7 @@ const Action = forwardRef<HTMLDivElement, IProps>(
       availableBorrows
     } = token;
 
-    const currentBalance = isBorrow ? availableBorrows : netBaseData.yourTotalBorrow;
+    const currentBalance = isBorrow ? userAccountData.availableBorrowsBaseUSD : netBaseData.yourTotalBorrow;
 
     const isDisabled = useMemo(() => {
       return (

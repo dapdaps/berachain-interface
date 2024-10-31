@@ -73,11 +73,11 @@ const useBend = () => {
     if (!chainId || !provider) return
 
     try {
+      await marketStore.getPoolDataProvider();
       await marketStore.getBendSupplyBalance();
       await marketStore.getBendSupply();
       await marketStore.getUserAccountData();
       await marketStore.getUserDebts();
-      await marketStore.getPoolDataProvider();
     } catch (error) {
       console.log('init-error', error);
     }
