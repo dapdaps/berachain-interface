@@ -101,7 +101,7 @@ export const useBorwAndRepay = ({
           symbol,
         },
         amount: _amount,
-        template: config.name,
+        template: 'Bend',
         add: false,
         status,
         transactionHash,
