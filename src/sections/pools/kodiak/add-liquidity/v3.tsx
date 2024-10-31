@@ -80,8 +80,10 @@ export default forwardRef(function Add(
         </div>
       ) : (
         <>
-          <div className='flex items-center justify-between'>
-            <div className='text-[16px] font-semibold'>Set Price Range</div>
+          <div className='flex items-center justify-between md:justify-start'>
+            <div className='text-[16px] font-semibold md:hidden'>
+              Set Price Range
+            </div>
             {token0 && token1 && (
               <TokenSwitcher
                 token0={token0}
@@ -139,7 +141,7 @@ export default forwardRef(function Add(
           )} */}
         </>
       )}
-      <div className='h-[20px]' />
+      <div className='h-[20px] md:h-[10px]' />
       <DepositAmounts
         label='Deposit amounts'
         token0={token0}

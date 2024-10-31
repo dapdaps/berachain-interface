@@ -21,18 +21,6 @@ export const StyledHeaderAction = styled.button`
   border: 1px solid #000;
 `;
 
-export const StyledInput = styled.div`
-  margin-top: 10px;
-  height: 100px;
-  border-radius: 12px;
-  border: 1px solid #373a53;
-  background: #fff;
-  padding: 14px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-`;
-
 export const StyledInputLeft = styled.div`
   flex-grow: 1;
 `;
@@ -58,15 +46,6 @@ export const StyledInputButton = styled.button`
   }
 `;
 
-export const StyledInputLabel = styled.div`
-  color: #979abe;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-align: center;
-`;
-
 export const StyledInputInner = styled.input`
   font-size: 20px;
   font-style: normal;
@@ -77,15 +56,5 @@ export const StyledInputInner = styled.input`
   width: 100%;
   box-sizing: border-box;
   padding-right: 10px;
-  text-align: center;
-`;
-
-export const StyledInputDesc = styled.div`
-  color: #8e8e8e;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  margin-top: 3px;
   text-align: center;
 `;

@@ -4,7 +4,8 @@ import _ from 'lodash';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import getZoomDataByFee from './getZoomDataByFee';
 import { formatPrice } from '@/utils/balance';
-import { StyledContainer, StyledTop } from './styles';
+import { StyledTop } from './styles';
+import useIsMobile from '@/hooks/use-isMobile';
 
 /**
  * params: current, lowerTick, highTick, fee, pairs
@@ -27,8 +28,9 @@ function Chart({
   token0: any;
   token1: any;
 }) {
+  const isMobile = useIsMobile();
   // const { data, loading } = useChartData();
-  const svgWidth = 478;
+  const svgWidth = isMobile ? window.innerWidth - 34 : 478;
   const svgHeight = 204;
   const svgPadding = 20;
   const axisHeight = 24;
@@ -266,8 +268,8 @@ function Chart({
     return movePercent;
   }
   return (
-    <StyledContainer>
-      <StyledTop>
+    <div className='mt-[22px] md:mt-[10px]'>
+      <StyledTop className='mb-[20px] md:mb-[10px]'>
         <div className='between'>
           <div className='flex items-center gap-[4px]'>
             <span className='cp_text'>Current price</span>
@@ -357,9 +359,9 @@ function Chart({
           <linearGradient
             id='paint0_linear_699_9607'
             x1='0'
-            y1='180'
+            y1={contentHeight}
             x2={svgWidth}
-            y2='180'
+            y2={contentHeight}
             gradientUnits='userSpaceOnUse'
           >
             <stop offset='0' stopColor='white' />
@@ -378,13 +380,13 @@ function Chart({
           <g className='leftBar' style={{ cursor: 'ew-resize' }}>
             <svg
               width='22'
-              height='180'
-              viewBox='0 0 22 180'
+              height={contentHeight}
+              viewBox={`0 0 22 ${contentHeight}`}
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
             >
-              <rect width='22' height='180' fill='transparent' />
-              <rect x='7' width='4' height='180' fill='#D9D9D9' />
+              <rect width='22' height={contentHeight} fill='transparent' />
+              <rect x='7' width='4' height={contentHeight} fill='#D9D9D9' />
               <path
                 d='M0 4C0 1.79086 1.79086 0 4 0H11V20H4C1.79086 20 0 18.2091 0 16V4Z'
                 fill='#D9D9D9'
@@ -407,17 +409,17 @@ function Chart({
           <g className='rightBar' style={{ cursor: 'ew-resize' }}>
             <svg
               width='22'
-              height='180'
-              viewBox='0 0 22 180'
+              height={contentHeight}
+              viewBox={`0 0 22 ${contentHeight}`}
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
             >
-              <rect width='22' height='180' fill='transparent' />
+              <rect width='22' height={contentHeight} fill='transparent' />
               <path
                 d='M22 4C22 1.79086 20.2091 0 18 0H11V20H18C20.2091 20 22 18.2091 22 16V4Z'
                 fill='#4B68FF'
               />
-              <rect x='11' width='4' height='180' fill='#4B68FF' />
+              <rect x='11' width='4' height={contentHeight} fill='#4B68FF' />
               <line x1='15.5' y1='5' x2='15.5' y2='14' stroke='white' />
               <line x1='18.5' y1='5' x2='18.5' y2='14' stroke='white' />
             </svg>
@@ -435,7 +437,7 @@ function Chart({
           </g>
         </g>
       </svg>
-    </StyledContainer>
+    </div>
   );
 }
 

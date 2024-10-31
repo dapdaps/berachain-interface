@@ -35,8 +35,8 @@ export default function BasicModal({
       onClose={onClose}
       closeIconClassName='top-[-10px] right-[-10px]'
     >
-      <div className='px-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black'>
-        <div className='pt-[27px] pb-[10px] flex justify-between'>
+      <div className='px-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black md:w-full md:px-[12px]'>
+        <div className='pt-[27px] pb-[10px] flex justify-between md:pt-[16px]'>
           <div className='flex items-center gap-[10px]'>
             <div className='text-[20px] font-bold'>{title}</div>
             {fee && (
@@ -59,7 +59,7 @@ export default function BasicModal({
         </div>
         {pool && children}
         {pool && (
-          <div className='text-center text-[14px] text-[#979ABE] w-full pb-[20px]'>
+          <div className='text-center text-[14px] text-[#979ABE] w-full pb-[20px] md:hidden'>
             Manage exist assets on{' '}
             <a
               href={pool.officalSite}

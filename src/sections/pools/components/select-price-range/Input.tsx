@@ -1,13 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { formatPrice } from '@/utils/balance';
-import {
-  StyledInput,
-  StyledInputButton,
-  StyledInputDesc,
-  StyledInputInner,
-  StyledInputLabel,
-  StyledInputLeft
-} from './styles';
+import { StyledInputButton, StyledInputInner, StyledInputLeft } from './styles';
 
 const Input = ({
   label,
@@ -23,7 +16,7 @@ const Input = ({
     setPrice(['0', '∞'].includes(value) ? value : formatPrice(value));
   }, [value]);
   return (
-    <StyledInput>
+    <div className='mt-[10px] h-[100px] rounded-[12px] border border-[#373a53] bg-white p-[14px] flex items-center md:p-[8px] md:h-[80px]'>
       <StyledInputButton
         disabled={Number(value) === 0 || rangeType === 3}
         onClick={() => {
@@ -46,7 +39,9 @@ const Input = ({
         </svg>
       </StyledInputButton>
       <StyledInputLeft>
-        <StyledInputLabel>{label}</StyledInputLabel>
+        <div className='text-[#979abe] text-[14px] md:text-[12px] font-normal text-center'>
+          {label}
+        </div>
         <StyledInputInner
           placeholder='0'
           value={price || ''}
@@ -59,7 +54,9 @@ const Input = ({
           }}
           disabled={disabled}
         />
-        <StyledInputDesc>{desc} </StyledInputDesc>
+        <div className='text-[#8e8e8e] text-[14px] md:text-[10px] font-normal mt-[3px] text-center'>
+          {desc}{' '}
+        </div>
       </StyledInputLeft>
       <StyledInputButton
         disabled={value === '∞' || rangeType === 3}
@@ -88,7 +85,7 @@ const Input = ({
           />
         </svg>
       </StyledInputButton>
-    </StyledInput>
+    </div>
   );
 };
 
