@@ -74,6 +74,7 @@ export default function useAddAction(source: string) {
           action_type: 'Lending',
           account_id: account,
           template: data.template,
+          sub_type: data.action === 'Deposit' ? 'Supply' : data.action,
           action_switch: data.add ? 1 : 0,
           action_status: data.status === 1 ? 'Success' : 'Failed',
           tx_id: data.transactionHash,
@@ -98,6 +99,7 @@ export default function useAddAction(source: string) {
             data?.token0 + (data?.token1 ? '-' + data.token1 : '')
           } on ${data.template}`,
           action_type: data.type,
+          sub_type: data.action,
           action_tokens: JSON.stringify([
             data?.token0 ?? '',
             data?.token1 ?? ''
@@ -120,6 +122,7 @@ export default function useAddAction(source: string) {
             ? `${data.action} ${data.amount} ${data.token?.symbol} on ${data.template}`
             : '',
           action_type: 'Staking',
+          sub_type: data.action,
           action_tokens: data.token
             ? JSON.stringify([`${data.token.symbol}`])
             : '',
