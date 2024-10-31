@@ -1,6 +1,7 @@
 "use client"
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
+import useAddAction from "@/hooks/use-add-action";
 import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
@@ -14,6 +15,7 @@ import { useIBGT } from '@/hooks/use-ibgt';
 import Popover, { PopoverPlacement } from '@/components/popover';
 import { useRouter } from 'next/navigation';
 export default memo(function IBGTPage(props: any) {
+  const { addAction } = useAddAction("ibgt");
   const router = useRouter()
   const { loading, dataList } = useInfraredList()
   const data = useMemo(() => dataList?.find((d: any) => d.id === "iBGT-HONEY"), [dataList])
@@ -46,7 +48,7 @@ export default memo(function IBGTPage(props: any) {
     lpAmount,
     updater
   } = state;
-  const { token0, token1, decimals, id, LP_ADDRESS } = data ?? {
+  const { tokens, decimals, id, LP_ADDRESS } = data ?? {
 
   };
   const symbol = id;
@@ -203,9 +205,21 @@ export default memo(function IBGTPage(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Deposit',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: inAmount,
+          template: "Infrared",
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Add"
+        });
         updateState({
           isLoading: false,
-          // isPostTx: true
         });
         setTimeout(() => {
           onSuccess?.()
@@ -268,20 +282,19 @@ export default memo(function IBGTPage(props: any) {
           isLoading: false,
         });
         const { status, transactionHash } = receipt;
-        console.log('=receipt', receipt);
-
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Withdraw',
-        //   token0,
-        //   token1,
-        //   amount: lpAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Withdraw',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: lpAmount,
+          template: "Infrared",
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Remove"
+        });
         setTimeout(() => {
           onSuccess?.()
         }, 3000)
