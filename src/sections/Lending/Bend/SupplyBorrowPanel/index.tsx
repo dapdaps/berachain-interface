@@ -18,7 +18,8 @@ const SupplyBorrowPanel: React.FC = () => {
 
   const {
     userAccountData,
-    initData: { markets, config, provider, account }
+    initData: { markets, config, provider, account },
+    netBaseData
   } = useMarketStore();
 
   const { rewardValue, claim, claiming} = useBendReward({
@@ -49,6 +50,21 @@ const SupplyBorrowPanel: React.FC = () => {
   }
 
 
+  const formatNumber = (num: any) => {
+    if (Big(num).eq(0)) {
+      return '0';
+    }
+    if (Big(num).lt(0.01)) {
+      return '<0.01';
+    }
+    return Big(num).toFixed(2);
+  }
+
+  console.log('markets', markets);
+  console.log('userAccountData', userAccountData);
+  console.log('netBaseData', netBaseData);
+  
+
   return (
     <div className='mb-5' onClick={handleOutsideClick}>
       <NetBase />
@@ -72,7 +88,7 @@ const SupplyBorrowPanel: React.FC = () => {
                 Supplied
               </span>
               <span className='font-montserrat text-xl font-semibold leading-5 text-black mt-1'>
-                {Number(honeyInfo?.underlyingBalance || 0).toFixed(2)}
+                {formatNumber(honeyInfo?.underlyingBalance || 0)}
               </span>
             </div>
             <div className='flex flex-col items-center'>
@@ -125,8 +141,8 @@ const SupplyBorrowPanel: React.FC = () => {
               <img src='/images/dapps/honey.png'></img>
             </div>
             <span className='font-montserrat text-lg font-bold leading-[16.2px] text-left'>
-              {Number(userAccountData?.totalDebtBaseUSD || 0).toFixed(2)}/
-              {Number(userAccountData?.availableBorrowsBaseUSD || 0).toFixed(2)}
+              {formatNumber(netBaseData?.yourTotalBorrow || 0)}/
+              {formatNumber(Big(userAccountData?.availableBorrowsBaseUSD || 0).plus(netBaseData?.yourTotalBorrow || 0).toString())}
             </span>
           </div>
           <div className='flex justify-between'>
