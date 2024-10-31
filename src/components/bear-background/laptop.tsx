@@ -1093,7 +1093,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       ) : (
         <></>
       )}
-      <div className='relative z-10'>{children}</div>
+      <div className='relative z-10 h-full'>{children}</div>
     </div>
   );
 });
