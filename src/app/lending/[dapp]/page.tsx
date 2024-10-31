@@ -35,7 +35,7 @@ export default function LendingDAppPage() {
 
   return (
     <BearBackground type='dapp'>
-      <div className='p-[25px_35px]'>
+      <div className='p-[25px_35px] md:p-[20px_0]'>
         {
           !isMobile && (
             <PageBack />

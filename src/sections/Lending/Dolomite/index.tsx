@@ -90,6 +90,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
           className="z-10 top-[-70px] md:left-[50%] md:translate-x-[-50%] md:top-[-40px]"
         />
         <Tabs
+          isCard
           currentTab={currentTab}
           tabs={[
             {
