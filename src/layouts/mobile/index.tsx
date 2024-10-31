@@ -107,10 +107,11 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     setIsMenuOpen(false);
   }, [pathname, setIsMenuOpen]);
 
-  return (
-    <div className='h-screen relative overflow-hidden'>
-      <main className='h-full'>{children}</main>
+  const routes = ['/cave']
 
+  return (
+    <div className={`relative overflow-hidden ${routes.includes(pathname)? 'min-h-screen':'h-screen'}`}>
+      <main className='h-full'>{children}</main>
       {/* Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
