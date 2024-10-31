@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CoinType } from '@/layouts/main/BGTCoin';
 
 export function useBgt() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [type, setType] = useState<CoinType | undefined>(CoinType.BGT);
 
   const handleBgt = (_visible: boolean, _type?: CoinType) => {
