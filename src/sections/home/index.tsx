@@ -88,7 +88,7 @@ const Navigation = function () {
         onClick={onNavigateToCave}
         data-bp="1010-010"
       >
-        <div className='text-[20px] text-center font-CherryBomb'>Bera Cave</div>
+        <div className='text-[20px] text-center font-CherryBomb'>Bear Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
     </>
