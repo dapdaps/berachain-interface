@@ -23,7 +23,7 @@ const Tabs = [
 ];
 
 const Position = (props: Props) => {
-  const { position, CHAIN_ID, onSuccess } = props;
+  const { position, CHAIN_ID, addAction, onSuccess } = props;
 
   const networkConfig = networks[CHAIN_ID];
 
@@ -241,6 +241,7 @@ const Position = (props: Props) => {
                 onSuccess?.();
                 setAmount('');
               }}
+              addAction={addAction}
             >
               {currentTab}
             </LendingButton>
@@ -291,6 +292,7 @@ export default Position;
 interface Props {
   position: any;
   CHAIN_ID: number;
+  addAction: any;
   onSuccess?(): void;
 }
 
