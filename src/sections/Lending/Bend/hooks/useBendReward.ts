@@ -1,4 +1,6 @@
 import { rewardToken } from "@/configs/lending/bend";
+import useAddAction from "@/hooks/use-add-action";
+import useToast from "@/hooks/use-toast";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
@@ -9,7 +11,9 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
   const [claiming, setClaiming] = useState(false);
   const [reward, setReward] = useState<any>();
   const [debtVal, setDebtVal] = useState<any>();
-
+  const toast = useToast();
+  const { addAction } = useAddAction("bgt");
+  
   const getBendRewards = () => {
     const rewardsProvider = new ethers.Contract(
       vaultAddress,
@@ -47,6 +51,9 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
   };
 
   const claim = () => {
+    const toastId = toast?.loading({
+      title: `Claim...`
+    });
     const claimProvider = new ethers.Contract(
       vaultAddress,
       [
@@ -77,16 +84,36 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
       .getReward(account)
       .then((tx: any) => {
         tx.wait().then((res: any) => {
+          const { status, transactionHash } = res;
           onClaimSuccess?.(res);
           getBendRewards();
-        });
+          toast?.success({
+            title: 'Claim Successfully!'
+          });
+
+          addAction?.({
+            type: "Lending",
+            action: "Claim",
+            token: {
+              symbol: "VDHONEY",
+            },
+            amount: reward,
+            template: 'Bend',
+            add: false,
+            status,
+            transactionHash,
+          });
+
+        }).finally(() => {
+          toast?.dismiss(toastId);
+          setClaiming(false);
+        })
       })
       .catch((err: any) => {
         console.log("claimAllRewards_error:", err);
-      })
-      .finally(() => {
+        toast?.dismiss(toastId);
         setClaiming(false);
-      });
+      })
   };
 
   const getVariableDebtBalanceOf = async () => {
