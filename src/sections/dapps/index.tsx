@@ -93,18 +93,18 @@ const List = [
         icon: '/images/dapps/stargate.svg',
         type: 'bridge',
         attachedIcon: '',
-        className: 'mr-[-25px]',
+        className: '',
         disabled: true,
       },
-      {
-        name: 'Owlto',
-        label: 'Owlto',
-        icon: '/images/dapps/owlto.svg',
-        type: 'bridge',
-        attachedIcon:  '',
-        className: 'ml-[-25px]',
-        disabled: true,
-      },
+      // {
+      //   name: 'Owlto',
+      //   label: 'Owlto',
+      //   icon: '/images/dapps/owlto.svg',
+      //   type: 'bridge',
+      //   attachedIcon:  '',
+      //   className: 'ml-[-25px]',
+      //   disabled: true,
+      // },
     ]
   }
 ];
