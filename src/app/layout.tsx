@@ -20,6 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const isMobile = useIsMobile();
+
   return (
     <html lang='en'>
       <head>

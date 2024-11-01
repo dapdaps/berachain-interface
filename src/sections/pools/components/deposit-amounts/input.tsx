@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import { memo, useEffect, useMemo } from 'react';
-
+import Image from 'next/image';
 import Loading from '@/components/circle-loading';
 import useTokenBalance from '@/hooks/use-token-balance';
 import { balanceFormated, valueFormated } from '@/utils/balance';
@@ -56,12 +56,35 @@ const Input = ({
           disabled={disabled}
         />
         {token ? (
-          <StyledToken>
-            <StyledIcon
-              src={token?.icon || '/assets/tokens/default_icon.png'}
-            />
-            <StyledSymbol>{token.symbol}</StyledSymbol>
-          </StyledToken>
+          token.icons ? (
+            <div className='flex items-center relative'>
+              {token.icons[0] && (
+                <Image
+                  className='mr-[-8px] rounded-full'
+                  src={token.icons[0]}
+                  width={30}
+                  height={30}
+                  alt='Token'
+                />
+              )}
+              {token.icons[1] && (
+                <Image
+                  className='rounded-full'
+                  src={token.icons[1]}
+                  width={30}
+                  height={30}
+                  alt='Token'
+                />
+              )}
+            </div>
+          ) : (
+            <StyledToken>
+              <StyledIcon
+                src={token?.icon || '/assets/tokens/default_icon.png'}
+              />
+              <StyledSymbol>{token.symbol}</StyledSymbol>
+            </StyledToken>
+          )
         ) : (
           <StyledEmptyToken onClick={onSelectToken}>
             Select token

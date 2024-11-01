@@ -52,7 +52,7 @@ const StyledItem = styled.div`
     width: 48px;
   }
 `;
-const StyledInputRange = styled.div`
+export const StyledInputRange = styled.div`
   margin-top: 24px;
   input[type='range'] {
     display: block;

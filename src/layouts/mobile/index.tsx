@@ -8,8 +8,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
-
-
 const menuItems = [
   { id: 1, title: 'Bridge', href: '/bridge' },
   { id: 2, title: 'DApps', hasDropdown: true },
@@ -61,7 +59,7 @@ const dapps: DApp[] = [
   {
     id: 'ooga',
     name: 'Ooga Booga',
-    icon: '/images/dapps/ooga-booga.svg',
+    icon: '/images/dapps/ooga-booga.svg'
     // href: '/dapp/ooga'
   }
 ];
@@ -78,26 +76,38 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
       return (
-        <Link href={dapp.href} className="flex flex-col items-center gap-1">
-          <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
-            <Image src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" width={'42'} height={'42'}/>
+        <Link href={dapp.href} className='flex flex-col items-center gap-1'>
+          <div className='w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center'>
+            <Image
+              src={dapp.icon}
+              alt={dapp.name}
+              className='w-[10.769vw] h-[10.769vw]'
+              width={'42'}
+              height={'42'}
+            />
           </div>
           <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
             {dapp.name}
           </span>
         </Link>
-      )
+      );
     }
     return (
-      <div className="flex flex-col items-center gap-1 blur-[2px]">
-        <div className="w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center">
-          <Image src={dapp.icon} alt={dapp.name} className="w-[10.769vw] h-[10.769vw]" width={'42'} height={'42'}/>
+      <div className='flex flex-col items-center gap-1 blur-[2px]'>
+        <div className='w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center'>
+          <Image
+            src={dapp.icon}
+            alt={dapp.name}
+            className='w-[10.769vw] h-[10.769vw]'
+            width={'42'}
+            height={'42'}
+          />
         </div>
         <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
           {dapp.name}
         </span>
       </div>
-    )
+    );
   };
 
   const pathname = usePathname();
@@ -107,10 +117,14 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     setIsMenuOpen(false);
   }, [pathname, setIsMenuOpen]);
 
-  const routes = ['/', '/cave', '/marketplace']
+  const routes = ['/', '/cave', '/marketplace'];
 
   return (
-    <div className={`relative overflow-hidden ${routes.includes(pathname)? 'min-h-screen':'h-screen'}`}>
+    <div
+      className={`relative overflow-hidden ${
+        routes.includes(pathname) ? 'min-h-screen' : 'h-screen'
+      }`}
+    >
       <main className='h-full'>{children}</main>
       {/* Menu Overlay */}
       <AnimatePresence>
@@ -141,7 +155,11 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     {item.hasDropdown && isDappsOpen && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
+                        animate={{
+                          opacity: 1,
+                          height: 'auto',
+                          transition: { duration: 0.3 }
+                        }}
                         exit={{ opacity: 0, height: 0 }}
                         className='w-full -mt-6 px-4 py-6 bg-[#D5CDA1] overflow-hidden z-[-1] pt-[13.84vw]'
                       >

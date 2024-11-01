@@ -14,6 +14,9 @@ const config: Config = {
       Montserrat: ['Montserrat'],
       CherryBomb: ['Cherry Bomb']
     },
+    backgroundImage: {
+      vault: 'linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)'
+    },
     extend: {
       boxShadow: {
         shadow1: '10px 10px 0 0 rgba(0, 0, 0, 0.25);'

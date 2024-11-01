@@ -35,7 +35,7 @@ export default function Dropdown({
         setModalShow(true);
       }}
       className={clsx(
-        `flex relative  justify-between items-center bg-[#fff] gap-8 h-[40px] px-[20px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer`,
+        `flex relative justify-between items-center bg-[#fff] gap-8 h-[40px] md:h-[32px] px-[20px] md:px-[12px] text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer`,
         className
       )}
     >
@@ -50,8 +50,8 @@ export default function Dropdown({
         <path
           d='M13 1L7 5.8L1 0.999999'
           stroke='black'
-          stroke-width='2'
-          stroke-linecap='round'
+          strokeWidth='2'
+          strokeLinecap='round'
         />
       </svg>
       {modalShow && (

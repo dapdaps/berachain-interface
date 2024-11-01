@@ -46,7 +46,6 @@ export default function SubmitBtn({
   if (!account || !chainId) {
     return (
       <BaseButton
-        chain={chain}
         onClick={() => {
           open();
         }}
