@@ -133,7 +133,7 @@ const MemeTokensGrid = ({ MemeTokens, onSwap, onFooterMore }: any) => {
                 onClick={onFooterMore}
               />
               <div className="z-0 shadow-shadow1 w-full lg:h-[44px] md:h-[30px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px] md:font-CherryBomb md:text-[#D5AD67] md:pl-4">
-                Meme tokens
+               { isMobile ? 'Meme tokens': ''}
               </div>
               <div className="hidden lg:block z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
             </div>

@@ -386,6 +386,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
         chainId={chainId}
         handleDisconnect={handleDisconnect}
         handleCopy={handleCopy}
+        userInfo={userInfo}
       />
       <MobileNetworks
         visible={mobileNetworksVisible}

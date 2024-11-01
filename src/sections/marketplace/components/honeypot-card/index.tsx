@@ -122,6 +122,7 @@ const HoneypotCard = (props: Props) => {
           </div>
         </div>
         <button
+          onClick={onSwap}
           className="hidden lg:block absolute lg:bottom-[-12px] md:bottom-[-24px] md:left-[36px] lg:left-1/2 lg:translate-x-[-50%] md:z-[10] lg:z-[2] lg:hover:scale-[1.1] lg:ease-in-out lg:duration-300 border border-black lg:bg-[#FFDC50] md:bg-[#E9B965] rounded-[10px] md:px-[12px] lg:px-[24px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] lg:text-[16px] md:text-sm"
         >
           Swap

@@ -12,7 +12,7 @@ const menuItems = [
   { id: 1, title: 'Bridge', href: '/bridge' },
   { id: 2, title: 'DApps', hasDropdown: true },
   { id: 3, title: 'Marketplace', href: '/marketplace' },
-  { id: 4, title: 'Vaults', href: '/bgt' },
+  { id: 4, title: 'Earn', href: '/earn' },
   { id: 5, title: 'Dashboard', href: '/dashboard' },
   { id: 6, title: 'Bear Cave', href: '/cave' }
 ];
