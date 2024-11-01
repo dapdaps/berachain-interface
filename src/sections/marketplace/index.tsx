@@ -12,6 +12,7 @@ import SwapModal from '@/sections/swap/SwapModal';
 import { useMemo } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
 import useIsMobile from '@/hooks/use-isMobile';
+import MemeTokensGrid from './components/memeTokensGrid.tsx';
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -53,7 +54,7 @@ const MemeTokens = [
   },
 ];
 
-const MoreButton = (props: { onClick: () => void; classname?: string }) => {
+export const MoreButton = (props: { onClick: () => void; classname?: string }) => {
   const { onClick = () => {}, classname = '' } = props;
 
   return (
@@ -132,15 +133,16 @@ const MarketplaceView = () => {
     setSelectedRecord(item);
   };
 
-  console.log(isMobile, 'isMobile');
-  
 
   return (
     <div className='relative'>
-      <PageBack className='absolute left-[40px] top-[31px]' />
-      <PageTitle className='pt-[30px] mb-[75px]'>Marketplace</PageTitle>
-      <div className='relative lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
-        <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] text-[32px] rotate-[-5deg] px-[24px] pt-[18px] pb-[22px] shadow-shadow1 font-CherryBomb top-[-30px] left-[50%] translate-x-[-50%]'>
+      <PageBack className='absolute left-[40px] top-[31px] hidden lg:block'/>
+      <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>Marketplace</PageTitle>
+
+      <img src="/images/mobile/market-header.png" className='w-full h-[30.769vw] absolute top-[-73px] z-[1] hidden md:block' alt="" />
+
+      <div className='relative mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1 md:overflow-hidden'>
+        <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]'>
           Hot Sell Tokens
         </div>
         <div
@@ -173,7 +175,7 @@ const MarketplaceView = () => {
         </div>
         <div className='absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]'></div>
         <MoreButton
-          classname='absolute bottom-[-17px] right-[-12px]'
+          classname='absolute bottom-[-17px] right-[-12px] hidden lg:block'
           onClick={onMore}
         />
       </div>
@@ -181,107 +183,11 @@ const MarketplaceView = () => {
         <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] lg:w-[1200px] md:w-full md:px-3'>
           <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61]' />
           <div className='relative z-10 lg:w-[1196px]'>
-            <div className='h-[86px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px]'>
-              <div className='w-full h-[91px] relative top-[-50%] overflow-hidden'>
-                <div className='w-full absolute bottom-0 lg:h-[62px] md:h-[30px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]'>
-                  {MemeTokens.map((item, index) => (
-                    <Tooltip
-                      key={'tooltip' + index}
-                      isShake={true}
-                      offset={30}
-                      tooltip={
-                        <div>
-                          <div className="flex items-end gap-x-[3px] mb-[16px]">
-                            <div className="text-[20px] font-CherryBomb leading-none">
-                              {item.symbol}
-                            </div>
-                            <div className="text-[#3D405A] text-[14px] font-Montserrat">
-                              blackcat
-                            </div>
-                          </div>
-                          <div className="flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat">
-                            <div className="grow">Price</div>
-                            <div className="font-[600] flex-shrink-0">
-                              {item.price}
-                            </div>
-                          </div>
-                          <div className="flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat">
-                            <div className="grow">Volume</div>
-                            <div className="font-[600] flex-shrink-0">
-                              {item.volume}
-                            </div>
-                          </div>
-                        </div>
-                      }
-                    >
-                      <motion.div
-                        onHoverStart={() => setHoveredIndex(index)}
-                        onHoverEnd={() => setHoveredIndex(null)}
-                        className="shadow-shadow1 rounded-full"
-                        animate={{
-                          x: [1200, -10, 0],
-                        }}
-                        transition={{
-                          duration: 3.5,
-                          times: [0, 0.85, 1],
-                        }}
-                      >
-                        <motion.div
-                          animate={{
-                            rotate: [0, -1090, -1080],
-                          }}
-                          transition={{
-                            duration: 3.5,
-                            times: [0, 0.85, 1],
-                          }}
-                        >
-                          <motion.div
-                            className="cursor-pointer bg-[#ffffff] rounded-[50%] lg:w-[80px] lg:h-[80px] md:w-[50px] md:h-[50px] p-0"
-                            animate={(() => getAnimationName(index)) as any}
-                            variants={{
-                              hover: {
-                                scale: 1.5,
-                              },
-                              default: {
-                                scale: 1,
-                              },
-                              prev: {
-                                // x: -10
-                              },
-                              next: {
-                                // x: 10
-                              }
-                            }}
-                          >
-                            <motion.img
-                              alt=""
-                              className="cursor-pointer lg:w-[80px] lg:h-[80px] md:w-[50px] md:h-[50px]"
-                              src={item.icon}
-                              style={{
-                                borderRadius: '50%',
-                                objectFit: 'cover'
-                              }}
-                              onClick={() => onSwap(item)}
-                            />
-                          </motion.div>
-                        </motion.div>
-                      </motion.div>
-                    </Tooltip>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="absolute top-[9px] left-[50%] translate-x-[-50%] z-10 font-CherryBomb text-[32px] leading-[0.9] p-[21px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit">
-                Meme Tokens
-              </div>
-              <MoreButton
-                classname="absolute top-[50%] translate-y-[-50%] right-[-12px]"
-                onClick={onFooterMore}
-              />
-              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px]" />
-              <div className="z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
-            </div>
+            <MemeTokensGrid 
+              MemeTokens={MemeTokens} 
+              onSwap={onSwap}
+              onFooterMore={onFooterMore}
+            />
           </div>
         </div>
       </div>
