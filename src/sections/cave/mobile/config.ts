@@ -60,7 +60,7 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[42.051vw]",
       popoverStyle: '!top-[59.74vw]',
-       imagePopover: "w-[12.82vw] h-[23.076vw]"
+      imagePopover: "w-[12.82vw] h-[23.076vw]"
     },
     items: [
       {
@@ -111,6 +111,8 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
       container: "absolute flex items-center w-[96.417vw] -top-[12.435vw]",
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[42.051vw]",
+      popoverStyle: '',
+      imagePopover: ""
     },
     items: [
       // 珠宝配置项
@@ -122,6 +124,8 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
       container: "absolute flex items-center w-[96.417vw] -top-[15.435vw]",
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[42.051vw]",
+      popoverStyle: '',
+      imagePopover: ""
     },
     items: [
       // 钥匙配置项
