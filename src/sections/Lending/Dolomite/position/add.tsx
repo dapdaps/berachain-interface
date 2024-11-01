@@ -14,7 +14,7 @@ const DolomiteHandler = dynamic(() => import('@/sections/Lending/handlers/dolomi
 const { basic, networks }: any = DolomiteConfig;
 
 const PositionAdd = (props: Props) => {
-  const { markets, CHAIN_ID, loading: dataLoading, onSuccess } = props;
+  const { markets, CHAIN_ID, loading: dataLoading, addAction, onSuccess } = props;
 
   const networkConfig = networks[CHAIN_ID];
 
@@ -123,6 +123,7 @@ const PositionAdd = (props: Props) => {
               onSuccess?.();
               setAmount('');
             }}
+            addAction={addAction}
           >
             Add Position
           </LendingButton>
@@ -170,5 +171,6 @@ interface Props {
   markets: any;
   CHAIN_ID: number;
   loading?: boolean;
+  addAction: any;
   onSuccess?(): void;
 }
