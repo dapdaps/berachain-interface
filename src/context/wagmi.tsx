@@ -1,6 +1,6 @@
 'use client';
 
-import { wagmiAdapter, projectId, networks } from '@/configs/wagmi'
+import { wagmiAdapter, projectId, networks, metadata } from '@/configs/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
@@ -12,13 +12,7 @@ if (!projectId) {
   throw new Error('Project ID is not defined');
 }
 
-const metadata = {
-  name: 'BeraTown',
-  description: 'Bera bArtio',
-  // origin must match your domain & subdomain
-  url: 'https://berachain.dapdap.net',
-  icons: ['/favicon.ico'],
-};
+
 
 const defaultNetwork = networks.find((it) => it.id === 80084);
 
