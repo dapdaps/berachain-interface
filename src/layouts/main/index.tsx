@@ -42,7 +42,7 @@ const MainLayout = (props: Props) => {
       <MainLayoutHeader />
       <div className='grow'>{children}</div>
       <Link
-        className='z-[4] hover:scale-110 ease-in-out duration-300 absolute left-[16px] bottom-[16px] w-[124px] h-[36px] rounded-full bg-[rgba(217,217,217,0.5)]'
+        className='z-[11] hover:scale-110 ease-in-out duration-300 absolute left-[16px] bottom-[16px] w-[124px] h-[36px] rounded-full bg-[rgba(217,217,217,0.5)]'
         href='https://app.dapdap.net?from=berachain'
         target='_blank'
         data-bp="1010-011"
