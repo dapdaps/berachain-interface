@@ -52,9 +52,11 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
             style={{
               width: `${100 / tabs.length}%`,
               opacity: tab.disabled ? 0.3 : 1,
-              cursor: tab.disabled ? 'not-allowed' : 'pointer',
+              cursor: tab.disabled
+                ? 'not-allowed'
+                : "url('../../public/images/cursor.svg') 12 0, auto",
               ...tabStyle,
-              ...renderTabStyle(tab, idx),
+              ...renderTabStyle(tab, idx)
             }}
             onClick={(e) => {
               e.stopPropagation();
@@ -83,5 +85,8 @@ interface Props<Value> {
   tabStyle?: React.CSSProperties;
 
   onChange?(current: Value, index: number): void;
-  renderTabStyle?(tab: { value: Value; label: any; disabled?: boolean }, idx: number): React.CSSProperties;
+  renderTabStyle?(
+    tab: { value: Value; label: any; disabled?: boolean },
+    idx: number
+  ): React.CSSProperties;
 }

@@ -85,6 +85,7 @@ const Input = ({
                 if (isNaN(Number(balance))) return;
                 setValue(balanceFormated(new Big(balance).toFixed(18), 18));
               }}
+              className='cursor-pointer'
             >
               {!balance ? '-' : balanceFormated(balance, 4)}
             </StyledBalance>

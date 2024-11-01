@@ -44,7 +44,6 @@ const StyledSecondaryText = styled.div`
   line-height: normal;
 `;
 const StyledCloseWrapper = styled.div`
-  cursor: pointer;
   line-height: 22px;
   flex-shrink: 0;
 `;
@@ -120,7 +119,7 @@ export default function Toast({
             </StyledSecondaryText>
           )}
         </StyledDesc>
-        <StyledCloseWrapper onClick={closeToast}>
+        <StyledCloseWrapper onClick={closeToast} className='cursor-pointer'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='12'

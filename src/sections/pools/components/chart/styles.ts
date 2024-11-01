@@ -29,7 +29,7 @@ export const StyledTop = styled.div`
     align-items: center;
     gap: 20px;
     svg {
-      cursor: pointer;
+      cursor: url('../../public/images/cursor.svg') 12 0;
     }
   }
 `;

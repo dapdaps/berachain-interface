@@ -63,6 +63,7 @@ const Input = ({
         onClick={() => {
           onButtonClick('add');
         }}
+        className='cursor-pointer'
       >
         <svg
           width='14'

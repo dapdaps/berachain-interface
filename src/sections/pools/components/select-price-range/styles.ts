@@ -14,7 +14,6 @@ export const StyledHeaderAction = styled.button`
   color: #000;
   font-size: 14px;
   font-weight: 400;
-  cursor: pointer;
   width: 110px;
   height: 32px;
   border-radius: 8px;
@@ -31,7 +30,6 @@ export const StyledInputButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   transition: 0.3s;
   flex-shrink: 0;
   &:not(:disabled):hover {

@@ -45,7 +45,6 @@ const StyledItem = styled.div`
   border-radius: 4px;
   border: 1px solid #373a53;
   font-size: 14px;
-  cursor: pointer;
   &.active {
     background-color: #ffdc50;
   }
@@ -72,7 +71,7 @@ const StyledInputRange = styled.div`
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    cursor: pointer;
+    cursor: url('../../public/images/cursor.svg') 12 0;
   }
 `;
 const PERCENTS = [25, 50, 75, 100];
@@ -90,7 +89,7 @@ const PoolRemoveAmount = ({ percent = 0, setPercent }: any) => {
           {PERCENTS.map((p) => {
             return (
               <StyledItem
-                className={`hvc ${p === percent && 'active'}`}
+                className={`hvc cursor-pointer ${p === percent && 'active'}`}
                 key={p}
                 onClick={() => {
                   setPercent(p);
