@@ -2,7 +2,7 @@ import { cookieStorage, createStorage } from 'wagmi';
 import chains from './chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { walletConnect, coinbaseWallet, injected } from 'wagmi/connectors'
-import { http, WagmiProvider, CreateConnectorFn } from 'wagmi'
+import { CreateConnectorFn } from 'wagmi'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
@@ -22,25 +22,47 @@ export const networks = Object.values(chains);
 
 const connectors: CreateConnectorFn[] = [];
 connectors.push(walletConnect({ projectId, metadata, showQrModal: false })); // showQrModal must be false
-const BeraSig = injected({
-  target: {
-    id: 'BeraSig',
-    icon: '/images/wallets/bera-sig-wallet.avif',
-    name: 'BeraSig',
-    // @ts-ignore
-    provider: window.berasig.ethereum
-  }
-});
 connectors.push(
   coinbaseWallet({
     appName: metadata.name,
     appLogoUrl: metadata.icons[0]
   })
 );
-connectors.push(BeraSig);
 
 // @ts-ignore
-console.log(window.berasig.ethereum);
+if (window.berasig) {
+  // @ts-ignore
+  const berasig = window.berasig.ethereum;
+  const BeraSig = (config: any) => {
+    const Connector = injected({
+      shimDisconnect: false,
+      target: {
+        id: 'BeraSig',
+        icon: '/images/wallets/bera-sig-wallet.avif',
+        name: 'BeraSig Wallet',
+        // @ts-ignore
+        provider: berasig,
+      }
+    })(config);
+    return {
+      ...Connector,
+      disconnect: async () => {
+        await Connector.disconnect();
+        try {
+          // TODO Useless
+          await berasig.request({
+            method: "eth_requestAccounts",
+            params: [{ eth_accounts: {} }]
+          });
+          console.log('disconnect done');
+        } catch (err: any) {
+          console.log('disconnect failed: %o',  err);
+        }
+      },
+    };
+  };
+  connectors.push(BeraSig);
+}
 
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
