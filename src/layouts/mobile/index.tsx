@@ -107,7 +107,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     setIsMenuOpen(false);
   }, [pathname, setIsMenuOpen]);
 
-  const routes = ['/cave']
+  const routes = ['/', '/cave', '/marketplace']
 
   return (
     <div className={`relative overflow-hidden ${routes.includes(pathname)? 'min-h-screen':'h-screen'}`}>

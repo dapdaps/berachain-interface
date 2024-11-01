@@ -11,6 +11,7 @@ import dexs from '@/configs/swap';
 import SwapModal from '@/sections/swap/SwapModal';
 import { useMemo } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -71,7 +72,7 @@ const MarketplaceView = () => {
   const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-
+  const isMobile = useIsMobile()
   const List = [
     {
       key: 'price',
@@ -131,24 +132,27 @@ const MarketplaceView = () => {
     setSelectedRecord(item);
   };
 
+  console.log(isMobile, 'isMobile');
+  
+
   return (
     <div className='relative'>
       <PageBack className='absolute left-[40px] top-[31px]' />
       <PageTitle className='pt-[30px] mb-[75px]'>Marketplace</PageTitle>
-      <div className='relative w-[1200px] mx-auto rounded-[20px] mb-[100px] p-[12px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
+      <div className='relative lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
         <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] text-[32px] rotate-[-5deg] px-[24px] pt-[18px] pb-[22px] shadow-shadow1 font-CherryBomb top-[-30px] left-[50%] translate-x-[-50%]'>
           Hot Sell Tokens
         </div>
         <div
           style={{ boxShadow: 'inset 10px 10px rgba(0,0,0,0.25)' }}
-          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible'
+          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]'
         >
           {tokens.map((item, index) => (
             <div
               key={'pots' + index}
               className='overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]'
             >
-              <div className='pt-[36px] px-[22px] flex flex-nowrap'>
+              <div className='pt-[36px] px-[22px] md:pl-0 flex flex-nowrap'>
                 {item.length > 0 &&
                   item.map((it: any, idx) => (
                     <div className='basis-1/3' key={'pot' + idx}>
@@ -161,8 +165,8 @@ const MarketplaceView = () => {
                     </div>
                   ))}
               </div>
-              {index !== tokens.length - 1 && (
-                <div className='w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] bg-[#D5AD67] shadow-shadow1'></div>
+              {(isMobile || (index !== tokens.length - 1 && !isMobile)) && (
+                <div className='w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1'></div>
               )}
             </div>
           ))}
@@ -174,12 +178,12 @@ const MarketplaceView = () => {
         />
       </div>
       <div className='relative h-[197px] w-full bg-[#7990F4]'>
-        <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] w-[1200px]'>
-          <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] = h-[126px] bg-[#F5BD61]' />
-          <div className='relative z-10 w-[1196px]'>
+        <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] lg:w-[1200px] md:w-full md:px-3'>
+          <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61]' />
+          <div className='relative z-10 lg:w-[1196px]'>
             <div className='h-[86px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px]'>
               <div className='w-full h-[91px] relative top-[-50%] overflow-hidden'>
-                <div className='w-full absolute bottom-0 h-[62px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]'>
+                <div className='w-full absolute bottom-0 lg:h-[62px] md:h-[30px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]'>
                   {MemeTokens.map((item, index) => (
                     <Tooltip
                       key={'tooltip' + index}
@@ -232,7 +236,7 @@ const MarketplaceView = () => {
                           }}
                         >
                           <motion.div
-                            className="cursor-pointer bg-[#ffffff] rounded-[50%] w-[80px] h-[80px] p-0"
+                            className="cursor-pointer bg-[#ffffff] rounded-[50%] lg:w-[80px] lg:h-[80px] md:w-[50px] md:h-[50px] p-0"
                             animate={(() => getAnimationName(index)) as any}
                             variants={{
                               hover: {
@@ -251,7 +255,7 @@ const MarketplaceView = () => {
                           >
                             <motion.img
                               alt=""
-                              className="cursor-pointer w-[80px] h-[80px]"
+                              className="cursor-pointer lg:w-[80px] lg:h-[80px] md:w-[50px] md:h-[50px]"
                               src={item.icon}
                               style={{
                                 borderRadius: '50%',

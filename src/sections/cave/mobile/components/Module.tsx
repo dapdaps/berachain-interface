@@ -9,6 +9,8 @@ export interface ModuleStyles {
   imageWrapper: string;
   image: string;
   popoverContent?: string;
+  popoverStyle: string,
+  imagePopover: string
 }
 
 export interface ModuleItem {
@@ -45,9 +47,9 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
   const PopoverContent = () => {
     const [before, after] = desc.split("$TRANSACTION_COUNT");
     return (
-      <div className="border-[3px] p-[10px] border-[#C7FF6E] rounded-xl w-[166px] h-[217px] bg-black bg-opacity-50 flex flex-col justify-center items-center gap-2">
-        <div className="w-[19.62vw] h-[17.648vw] flex justify-center items-center">
-          <img className="w-fit h-fit" src={popoverIcon || icon} alt={title} />
+      <div className="border-[3px] p-[10px] border-[#C7FF6E] rounded-xl w-[166px] bg-black bg-opacity-50 flex flex-col justify-center items-center gap-2">
+        <div className={`flex justify-center items-center ${styles.imagePopover}`}>
+          <img className="w-full h-full" src={popoverIcon || icon} alt={title} />
         </div>
         <div className="text-[#F7F9EA] font-CherryBomb text-[18px] font-[400] leading-[18px] text-center text-stroke-2">
           {title}
@@ -91,10 +93,7 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
   return (
     <Popover
       placement={PopoverPlacement.Top}
-      contentClassName="backdrop-blur-[10px]"
-      contentStyle={{
-        top: "29.74vw",
-      }}
+      contentClassName={`backdrop-blur-[10px] ${styles.popoverStyle}`}
       content={<PopoverContent />}
     >
       <ImageContent />

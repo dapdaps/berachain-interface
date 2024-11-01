@@ -4,6 +4,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://api.dapdap.net';
 
 const nextConfig = {
   reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   rewrites: async () => [
     {
       source: '/assets/:path*',

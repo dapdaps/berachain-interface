@@ -15,7 +15,7 @@ const HoneypotCard = (props: Props) => {
 
   const Honeypot = () => (
     <div className='relative left-[26px] flex-shrink-0 ml-[-26px] z-[3]'>
-      <div className='absolute top-[42%] left-[32%] w-[42px] h-[42px] rounded-[50%] border border-black'>
+      <div className='absolute lg:top-[42%] lg:left-[32%] md:top-[40%] md:left-[30%] lg:w-[42px] lg:h-[42px] md:w-[28px] md:h-[28px] rounded-[50%] border border-black overflow-hidden'>
         <img
           alt=''
           src={icon}
@@ -23,6 +23,7 @@ const HoneypotCard = (props: Props) => {
         />
       </div>
       <svg
+        className='md:w-[70px] md:h-[64px]'
         width="110"
         height="101"
         viewBox="0 0 110 101"
@@ -75,10 +76,10 @@ const HoneypotCard = (props: Props) => {
   }, []);
 
   return (
-    <div className='flex items-end justify-center'>
+    <div className='flex items-end justify-center md:relative'>
       <Honeypot />
-      <div className='flex-shrink-0 relative pb-[12px] w-[194px]'>
-        <div className='rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1'>
+      <div className='flex-shrink-0 lg:relative lg:pb-[12px] lg:w-[194px]'>
+        <div className='rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1 hidden lg:block'>
           <div className='w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] pl-[8px] pr-[12px]'>
             {/*title*/}
             <div className='text-[20px] text-center font-CherryBomb leading-none mb-[7px]'>{name}</div>
@@ -97,7 +98,7 @@ const HoneypotCard = (props: Props) => {
         </div>
         <button
           onClick={onSwap}
-          className='absolute bottom-[-12px] left-1/2 translate-x-[-50%] z-[2] hover:scale-[1.1] ease-in-out duration-300 border border-black bg-[#FFDC50] rounded-[10px] px-[24px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] text-[16px]'>Swap</button>
+          className='absolute lg:bottom-[-12px] md:bottom-[-24px] md:left-[36px] lg:left-1/2 lg:translate-x-[-50%] md:z-[10] lg:z-[2] hover:scale-[1.1] ease-in-out duration-300 border border-black lg:bg-[#FFDC50] md:bg-[#E9B965] rounded-[10px] md:px-[12px] lg:px-[24px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] lg:text-[16px] md:text-sm'>Swap</button>
       </div>
     </div>
   )
