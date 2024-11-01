@@ -3,9 +3,12 @@ import PositionAdd from '@/sections/Lending/Dolomite/position/add';
 import Skeleton from 'react-loading-skeleton';
 import React from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import useAddAction from '@/hooks/use-add-action';
 
 const PositionList = (props: any) => {
   const { data, loading, ...restProps } = props;
+
+  const { addAction } = useAddAction("lending");
 
   const positionList = data?.positionList || [];
 
@@ -28,10 +31,10 @@ const PositionList = (props: any) => {
             </div>
           </div>
         ) : positionList.map((position: any, idx: number) => (
-          <Position key={idx} position={position} {...restProps} />
+          <Position key={idx} position={position} addAction={addAction} {...restProps} />
         ))
       }
-      <PositionAdd markets={addMarkets} loading={loading} {...restProps} />
+      <PositionAdd markets={addMarkets} loading={loading} addAction={addAction} {...restProps} />
     </div>
   );
 };
