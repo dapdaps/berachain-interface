@@ -14,7 +14,12 @@ const Mobile = ({ show, setShow }: any) => {
     >
       <div className='bg-[#FFFDEB] rounded-t-[20px] pb-[20px] border border-black'>
         <SlippageSettingContent show={show} />
-        <button className='h-[60px] md:h-[46px] w-4/5 md:mx-[auto] duration-500 hover:opacity-70 active:opacity-90 flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] md:text-[16px] font-[600] mt-[16px] cursor-pointer'>
+        <button
+          onClick={() => {
+            setShow(false);
+          }}
+          className='h-[60px] md:h-[46px] w-4/5 md:mx-[auto] duration-500 hover:opacity-70 active:opacity-90 flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] md:text-[16px] font-[600] mt-[16px] cursor-pointer'
+        >
           Save
         </button>
       </div>
