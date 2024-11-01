@@ -81,18 +81,16 @@ const LendingModal: React.FC<LendingModalProps> = () => {
 
   return (
     <div className="mt-[40px]">
-      <div className="relative w-[970px] mx-auto">
+      <div className="relative w-[970px] md:w-full mx-auto">
         <DappIcon
           src="/images/dapps/dolomite.svg"
           alt=""
           name="Dolomite"
           type="Lending"
-          style={{
-            zIndex: 10,
-            top: -70,
-          }}
+          className="z-10 top-[-70px] md:left-[50%] md:translate-x-[-50%] md:top-[-40px]"
         />
         <Tabs
+          isCard
           currentTab={currentTab}
           tabs={[
             {
@@ -132,7 +130,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
             },
           ]}
           onChange={(key) => setCurrentTab(key as string)}
-          className="h-full"
+          className="h-full md:pt-[20px]"
         />
       </div>
       <DolomiteData
