@@ -7,7 +7,6 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
       container: "absolute flex items-center w-[96.417vw] -top-[17.435vw]",
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[19.23vw]",
-      popoverStyle: '!top-[29.74vw]',
       imagePopover: "w-[19.62vw] h-[17.648vw]"
     },
     items: [
@@ -59,7 +58,6 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
       container: "absolute flex items-center w-[96.417vw] top-[9.23vw]",
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[42.051vw]",
-      popoverStyle: '!top-[59.74vw]',
       imagePopover: "w-[12.82vw] h-[23.076vw]"
     },
     items: [
@@ -108,27 +106,103 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
   jewelry: {
     type: "jewelry",
     styles: {
-      container: "absolute flex items-center w-[96.417vw] -top-[12.435vw]",
+      container: "absolute flex items-center w-[96.417vw]",
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[42.051vw]",
-      popoverStyle: '',
-      imagePopover: ""
+      imagePopover: "w-[16.667vw] h-[22.051vw]",
     },
     items: [
-      // 珠宝配置项
+      {
+        id: "jewelry-1",
+        icon: "/images/mobile/cave/jewelry/jewelry-1.png",
+        popoverIcon: "/images/mobile/cave/jewelry/jewelry-1-m.png",
+        title: "Alloy Necklace",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 1,
+      },
+      {
+        id: "jewelry-2",
+        icon: "/images/mobile/cave/jewelry/jewelry-2.png",
+        popoverIcon: "/images/mobile/cave/jewelry/jewelry-2-m.png",
+        title: "Silver Necklace",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 10,
+      },
+      {
+        id: "jewelry-3",
+        icon: "/images/mobile/cave/jewelry/jewelry-3.png",
+        popoverIcon: "/images/mobile/cave/jewelry/jewelry-3-m.png",
+        title: "Golden Necklace",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 100,
+      },
+      {
+        id: "jewelry-4",
+        icon: "/images/mobile/cave/jewelry/jewelry-4.png",
+        popoverIcon: "/images/mobile/cave/jewelry/jewelry-4-m.png",
+        title: "Diamond Necklace",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 1000,
+      },
     ],
   },
   key: {
     type: "key",
     styles: {
-      container: "absolute flex items-center w-[96.417vw] -top-[15.435vw]",
+      container: "absolute flex items-center w-[96.417vw]",
       imageWrapper: "flex-1",
       image: "w-[24.358vw] h-[42.051vw]",
-      popoverStyle: '',
-      imagePopover: ""
+      imagePopover: "w-[16.667vw] h-[22.051vw]",
     },
     items: [
-      // 钥匙配置项
+      {
+        id: "key-1",
+        icon: "/images/mobile/cave/key/key-1.png",
+        popoverIcon: "/images/mobile/cave/key/key-1-m.png",
+        title: "Bicycle",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 1,
+      },
+      {
+        id: "key-2",
+        icon: "/images/mobile/cave/key/key-2.png",
+        popoverIcon: "/images/mobile/cave/key/key-2-m.png",
+        title: "Vehicle",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 10,
+      },
+      {
+        id: "key-3",
+        icon: "/images/mobile/cave/key/key-3.png",
+        popoverIcon: "/images/mobile/cave/key/key-3-m.png",
+        title: "Motocycle",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 100,
+      },
+      {
+        id: "key-4",
+        icon: "/images/mobile/cave/key/key-4.png",
+        popoverIcon: "/images/mobile/cave/key/key-4-m.png",
+        title: "Race Car",
+        desc: "Stake $100+ per transaction, complete at least $TRANSACTION_COUNT transaction.",
+        type: "stake",
+        hasPopover: true,
+        needTransactionNums: 1000,
+      },
     ],
   },
 };

@@ -71,32 +71,7 @@ const Cave = () => {
                 width: "98.461vw",
               }}
             >
-              <div className="flex items-center w-[96.417vw] top-[9.23vw]">
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/jewelry/jewelry-1.png"
-                  />
-                </div>
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/jewelry/jewelry-2.png"
-                  />
-                </div>
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/jewelry/jewelry-3.png"
-                  />
-                </div>
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/jewelry/jewelry-4.png"
-                  />
-                </div>
-              </div>
+              <Module config={ModuleConfigs.jewelry} />
             </div>
 
             {/* Key Modules */}
@@ -111,32 +86,7 @@ const Cave = () => {
                 width: "98.461vw",
               }}
             >
-              <div className="flex items-center w-[96.417vw] top-[9.23vw]">
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/key/key-1.png"
-                  />
-                </div>
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/key/key-2.png"
-                  />
-                </div>
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/key/key-3.png"
-                  />
-                </div>
-                <div className="flex-1">
-                  <img
-                    className="w-[24.358vw] h-[42.051vw]"
-                    src="/images/mobile/cave/key/key-4.png"
-                  />
-                </div>
-              </div>
+              <Module config={ModuleConfigs.key} />
             </div>
           </div>
         </div>

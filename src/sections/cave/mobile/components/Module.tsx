@@ -9,7 +9,6 @@ export interface ModuleStyles {
   imageWrapper: string;
   image: string;
   popoverContent?: string;
-  popoverStyle: string,
   imagePopover: string
 }
 
@@ -92,8 +91,8 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
 
   return (
     <Popover
-      placement={PopoverPlacement.Top}
-      contentClassName={`backdrop-blur-[10px] ${styles.popoverStyle}`}
+      placement={PopoverPlacement.Center}
+      contentClassName={`backdrop-blur-[10px]`}
       content={<PopoverContent />}
     >
       <ImageContent />
