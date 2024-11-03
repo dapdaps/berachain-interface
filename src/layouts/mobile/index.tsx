@@ -7,6 +7,7 @@ import MenuButton from '@/components/mobile/menuButton';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const menuItems = [
   { id: 1, title: 'Bridge', href: '/bridge' },
@@ -72,11 +73,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
+  const router = useProgressRouter()
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
       return (
-        <Link href={dapp.href} className='flex flex-col items-center gap-1'>
+        <div onClick={() => dapp.href && router.push(dapp.href)} className='flex flex-col items-center gap-1'>
           <div className='w-[12.82vw] h-[12.82vw] rounded-[2.56vw] flex items-center justify-center'>
             <Image
               src={dapp.icon}
@@ -89,7 +91,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           <span className='font-CherryBomb text-base font-normal leading-[14.4px] text-center text-black'>
             {dapp.name}
           </span>
-        </Link>
+        </div>
       );
     }
     return (
@@ -111,7 +113,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     setIsMenuOpen(false);

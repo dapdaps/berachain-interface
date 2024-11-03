@@ -47,7 +47,7 @@ const Tabs = (props: TabsProps) => {
     if (!bodyRef.current) return;
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
     const tabsWidth = (maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth) * tabs.length;
-    if (tabsWidth >= contentWidth - 2) {
+    if (tabsWidth >= contentWidth - 2 || maxTabs === 3) {
       setContentBorderTopRightRadius(0);
       return;
     }

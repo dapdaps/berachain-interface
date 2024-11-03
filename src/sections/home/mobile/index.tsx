@@ -5,9 +5,10 @@ import React from 'react';
 import BGTMobileView from '@/sections/bgt/mobile';
 import { useBgt } from '@/sections/home/hooks/useBgt';
 import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
+import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const Home = () => {
-  const router = useRouter();
+  const router = useProgressRouter()
   const bgt = useBgt();
 
   const handleBGTClick = (type: CoinType) => {
