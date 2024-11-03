@@ -9,6 +9,8 @@ import { TabPanelProps, Tabs } from '@/sections/Lending/Dolomite/Panel/types';
 import { motion } from "framer-motion";
 import Big from 'big.js';
 import Drawer from '@/components/drawer';
+import SwapModal from '@/sections/swap/SwapModal';
+import { useSwapToken } from '@/hooks/use-swap-token';
 
 const TabPanelMobile: React.FC<TabPanelProps> = ({
   totalBalance,
@@ -28,6 +30,7 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
   const [visible, setVisible] = useState(false);
   const [token, setToken] = useState<any>();
   const [actionType, setActionType] = useState<any>();
+  const [swapToken, setSwapToken, handleSwap, protocols] = useSwapToken();
 
   const currentIndex = useMemo(() => {
     const idx = Tabs.findIndex((it: any) => it.value === rateKey);
@@ -117,6 +120,7 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
                   <button
                     type="button"
                     className="rounded-[10px] border border-[#373A53] h-[32px] leading-[30px] px-[15px]"
+                    onClick={() => handleSwap(token)}
                   >
                     Get
                   </button>
@@ -205,6 +209,17 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
           />
         </div>
       </Drawer>
+      {swapToken && (
+        <SwapModal
+          defaultOutputCurrency={swapToken}
+          outputCurrencyReadonly={true}
+          show={!!swapToken}
+          protocols={protocols}
+          onClose={() => {
+            setSwapToken(null);
+          }}
+        />
+      )}
     </div>
   );
 };

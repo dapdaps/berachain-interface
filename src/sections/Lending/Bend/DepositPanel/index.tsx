@@ -8,6 +8,8 @@ import NetBase from "../NetBase";
 import Big from "big.js";
 import useIsMobile from '@/hooks/use-isMobile';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import { useSwapToken } from '@/hooks/use-swap-token';
+import SwapModal from '@/sections/swap/SwapModal';
 
 interface IProps {
   markets: TokenInfo[];
@@ -17,6 +19,7 @@ const DepositPanel: React.FC<IProps> = ({
   markets,
 }) => {
   const isMobile = useIsMobile();
+  const [swapToken, setSwapToken, handleSwap, protocols] = useSwapToken();
 
   const filterMarkets = useMemo(() => {
     return markets.filter((item) => item.symbol !== 'HONEY');
@@ -26,7 +29,11 @@ const DepositPanel: React.FC<IProps> = ({
   const [actionType, setActionType] = useState<any>();
   const [actionData, setActionData] = useState<any>();
   const handleAction = (action: string, data: any) => {
-    if (action === 'swap' || !isMobile) return;
+    if (!isMobile) return;
+    if (action === 'swap') {
+      handleSwap({ ...data, address: data.underlyingAsset });
+      return;
+    }
     setActionType(action);
     setActionData(data);
     setActionVisible(true);
@@ -95,6 +102,17 @@ const DepositPanel: React.FC<IProps> = ({
         action={actionType}
         token={actionData}
       />
+      {swapToken && (
+        <SwapModal
+          defaultOutputCurrency={swapToken}
+          outputCurrencyReadonly={true}
+          show={!!swapToken}
+          protocols={protocols}
+          onClose={() => {
+            setSwapToken(null);
+          }}
+        />
+      )}
     </div>
   );
 };
