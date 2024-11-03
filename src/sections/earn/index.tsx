@@ -1,6 +1,7 @@
 import Tabs from "@/components/tabs";
 import { useState } from "react";
 import LiquidityList from "@/sections/marketplace/components/liquidity";
+import EarnLending from '@/sections/earn/lending';
 
 const EarnViews = () => {
   const [currentTab, setCurrentTab] = useState<string>("liquidity");
@@ -26,7 +27,7 @@ const EarnViews = () => {
           {
             key: "lending",
             label: "Lending",
-            children: <div>lending</div>,
+            children: <EarnLending />,
           },
           {
             key: "staking",
