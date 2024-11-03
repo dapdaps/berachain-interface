@@ -117,7 +117,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     setIsMenuOpen(false);
   }, [pathname, setIsMenuOpen]);
 
-  const routes = ['/', '/cave', '/marketplace'];
+  const routes = ['/', '/cave', '/marketplace', '/earn'];
 
   return (
     <div

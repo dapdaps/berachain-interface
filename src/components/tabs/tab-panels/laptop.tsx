@@ -9,12 +9,16 @@ export default function Laptop({
   bodyClassName,
   bodyStyle,
   currentTab,
-  tabWidth,
+  tabWidth: bakedTabWidth,
+  minTabWidth,
   tabMarginWidth,
   tabHeight,
   platform,
-  bodyInnerClassName
+  bodyInnerClassName,
+  maxTabs
 }: any) {
+  const tabWidth = maxTabs === 3 ? minTabWidth : bakedTabWidth;
+  
   return (
     <div
       ref={bodyRef}
@@ -29,7 +33,7 @@ export default function Laptop({
       }}
     >
       <div
-        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black px-[22px] pt-[24px] min-h-[50px] ${bodyClassName}`}
+        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black lg:px-[22px] md:px-[12px] pt-[24px] min-h-[50px] ${bodyClassName}`}
         style={{
           borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
           borderTopRightRadius:
@@ -45,12 +49,13 @@ export default function Laptop({
               return (
                 <>
                   <ActiveTab
+                    maxTabs={maxTabs}
                     key={tab.key}
                     width={
-                      tabWidth +
-                      ([0, tabs.length - 1].includes(idx)
-                        ? tabMarginWidth / 2
-                        : tabMarginWidth)
+                      maxTabs === 3 ? minTabWidth : (tabWidth +
+                        ([0, tabs.length - 1].includes(idx)
+                          ? tabMarginWidth / 2
+                          : tabMarginWidth))
                     }
                     height={tabHeight}
                     marginWidth={tabMarginWidth}

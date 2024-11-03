@@ -33,7 +33,7 @@ const Mobile = ({ children, active, onClick }: any) => {
     <div
       className={`hidden h-[56px] grow rounded-[16px] md:flex ${
         active && 'border border-black bg-[#FFDC50]'
-      }`}
+      } text-[15px] font-[700] leading-[13.5px] text-center font-Montserrat`}
       onClick={onClick}
     >
       {children}

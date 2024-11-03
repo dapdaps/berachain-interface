@@ -15,11 +15,12 @@ const Tabs = (props: TabsProps) => {
     bodyStyle,
     bodyInnerClassName,
     onChange = () => {},
-    isCard
+    isCard,
+    maxTabs = 2
   } = props;
 
   const isMobile = useIsMobile();
-  const screenConfig = config[isMobile ? 'mobile' : 'laptop'];
+  const screenConfig = config[isMobile ? 'mobile' : 'laptop'] as any;
 
   const bodyRef = useRef<any>(null);
 
@@ -45,7 +46,7 @@ const Tabs = (props: TabsProps) => {
     setPlatform(_platform);
     if (!bodyRef.current) return;
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
-    const tabsWidth = screenConfig.tabWidth * tabs.length;
+    const tabsWidth = (maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth) * tabs.length;
     if (tabsWidth >= contentWidth - 2) {
       setContentBorderTopRightRadius(0);
       return;
@@ -63,7 +64,7 @@ const Tabs = (props: TabsProps) => {
               active={currentTabIndex === idx}
               onClick={() => handleChange(tab.key, tab, idx)}
               isCard={isCard}
-              width={screenConfig.tabWidth}
+              width={maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth}
               height={screenConfig.tabHeight}
             >
               {tab.label}
@@ -82,6 +83,7 @@ const Tabs = (props: TabsProps) => {
         platform={platform}
         bodyInnerClassName={bodyInnerClassName}
         isCard={isCard}
+        maxTabs={maxTabs}
         {...screenConfig}
       />
     </div>
@@ -102,6 +104,7 @@ export interface TabsProps {
   bodyInnerClassName?: string;
   onChange?(key: TabKey, tab: Tab, index: number): void;
   isCard?: boolean;
+  maxTabs?: number;
 }
 
 export interface Tab {
