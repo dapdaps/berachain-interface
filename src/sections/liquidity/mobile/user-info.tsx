@@ -20,7 +20,7 @@ const UserInfo = ({ data, className }: any) => {
         <div className='text-[14px]'>Rewards</div>
         <div className='mt-[3px] flex items-center gap-[6px]'>
           <span className='text-[16px] font-semibold'>
-            {formatValueDecimal(data?.earned, '$', 2, true, false)}
+            {formatValueDecimal(data?.earned, '', 2, true, false)}
           </span>
           <span className='text-[12px] font-medium'>
             <Image
