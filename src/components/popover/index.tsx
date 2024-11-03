@@ -20,6 +20,8 @@ const Popover = (props: Props) => {
     trigger = PopoverTrigger.Click,
     contentStyle,
     contentClassName,
+    triggerContainerStyle,
+    triggerContainerClassName,
     } = props;
 
   const triggerRef = useRef<any>();
@@ -38,7 +40,8 @@ const Popover = (props: Props) => {
     <>
       <div
         ref={triggerRef}
-        className=""
+        style={triggerContainerStyle}
+        className={triggerContainerClassName}
         onClick={() => {
           if (trigger === PopoverTrigger.Hover) return;
           setVisible(true);
@@ -190,6 +193,8 @@ interface Props {
   trigger?: PopoverTrigger;
   contentStyle?: React.CSSProperties;
   contentClassName?: string;
+  triggerContainerStyle?: React.CSSProperties;
+  triggerContainerClassName?: string;
   elRef?: HTMLElement;
 }
 

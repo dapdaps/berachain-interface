@@ -1,12 +1,12 @@
 import useIsMobile from '@/hooks/use-isMobile';
-import ActionPanelMobile from '@/sections/Lending/Bend/Action/mobile';
-import ActionPanelLaptop from '@/sections/Lending/Bend/Action/laptop';
+import ActionPanelMobile from './mobile';
+import ActionPanelLaptop from './laptop';
 import { TokenInfo } from '@/sections/Lending/Bend/hooks/useBend';
 import { forwardRef } from 'react';
 import useAaveConfig from '@/stores/useAaveConfigStore';
 import useMarketStore from '@/stores/useMarketStore';
 
-const ActionPanel = forwardRef<HTMLDivElement, IProps>((props: IProps, ref) => {
+const Action = forwardRef<HTMLDivElement, IProps>((props: IProps, ref) => {
   const { token } = props;
 
   const isMobile = useIsMobile();
@@ -22,13 +22,13 @@ const ActionPanel = forwardRef<HTMLDivElement, IProps>((props: IProps, ref) => {
   );
 });
 
-export default ActionPanel;
+export default Action;
 
 export interface IProps {
   isOpen?: boolean;
+  isMobile?: boolean;
   onClose?: () => void;
   action: string;
   token?: TokenInfo;
   className?: string;
-  isMobile?: boolean;
 }

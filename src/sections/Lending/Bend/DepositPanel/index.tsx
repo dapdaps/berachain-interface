@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from 'react';
 import IconPlus from "@public/images/modal/plus.svg";
 import IconMinus from "@public/images/modal/minus.svg";
 import ActionModal from "../Action";
@@ -7,6 +7,7 @@ import { TokenInfo } from "../hooks/useBend";
 import NetBase from "../NetBase";
 import Big from "big.js";
 import useIsMobile from '@/hooks/use-isMobile';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 
 interface IProps {
   markets: TokenInfo[];
@@ -17,36 +18,24 @@ const DepositPanel: React.FC<IProps> = ({
 }) => {
   const isMobile = useIsMobile();
 
-  const [openModal, setOpenModal] = useState<any>(null);
-  const actionRef = useRef<any>(null);
-
-  const handleAction = (token: any, action: any) => {
-    if (action === 'swap') {
-      return;
-    }
-    setOpenModal({ token, action });
-  };
-
-  const closeModal = () => {
-    setOpenModal(null);
-  };
-
-  const handleClickOutside = (e: any) => {
-    if (actionRef.current && !actionRef.current.contains(e.target)) {
-      closeModal();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const filterMarkets = useMemo(() => {
     return markets.filter((item) => item.symbol !== 'HONEY');
   }, [markets]);
+
+  const [actionVisible, setActionVisible] = useState<any>(false);
+  const [actionType, setActionType] = useState<any>();
+  const [actionData, setActionData] = useState<any>();
+  const handleAction = (action: string, data: any) => {
+    if (action === 'swap' || !isMobile) return;
+    setActionType(action);
+    setActionData(data);
+    setActionVisible(true);
+  };
+  const handleActionClose = () => {
+    setActionVisible(false);
+    setActionData(void 0);
+    setActionType(void 0);
+  };
 
   return (
     <div className='h-[490px] md:h-[unset] md:max-h-[calc(100vh_-_200px)] md:pb-[80px] md:overflow-y-auto'>
@@ -68,7 +57,7 @@ const DepositPanel: React.FC<IProps> = ({
             <div className="flex justify-between items-center gap-[10px]">
               <Asset className="" token={token} />
               <div className="flex justify-end items-center gap-[10px]">
-                <Actions handleAction={handleAction} token={token} />
+                <Actions token={token} isMobile={isMobile} onClick={(action: string) => handleAction(action, token)} />
               </div>
             </div>
             <div className="flex justify-between items-center gap-[10px] mt-[15px]">
@@ -97,16 +86,15 @@ const DepositPanel: React.FC<IProps> = ({
             </div>
           </div>
         ) : (
-          <Row
-            key={index}
-            token={token}
-            openModal={openModal}
-            handleAction={handleAction}
-            closeModal={closeModal}
-            actionRef={actionRef}
-          />
+          <Row key={index} token={token} isMobile={isMobile} />
         ))}
       </div>
+      <ActionModal
+        isOpen={actionVisible}
+        onClose={handleActionClose}
+        action={actionType}
+        token={actionData}
+      />
     </div>
   );
 };
@@ -114,42 +102,65 @@ const DepositPanel: React.FC<IProps> = ({
 export default DepositPanel;
 
 const Actions = (props: any) => {
-  const { handleAction, token } = props;
+  const { token, isMobile, onClick } = props;
+
+  const handleClick = (action: string) => {
+    if (!onClick) return;
+    onClick(action);
+  };
+
   return (
     <>
       <button
-        onClick={() => handleAction(token, "swap")}
-        disabled={Big(token.balance || 0).eq(0)}
-        className={`px-[15px] h-8 rounded-[10px] text-[16px] items-center justify-center hidden md:flex ${
-          Big(token.balance || 0).eq(0)
-            ? "border border-black border-opacity-30 text-black text-opacity-30"
-            : "bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]"
-        }`}
+        className={`px-[15px] h-8 rounded-[10px] text-[16px] items-center justify-center hidden md:flex text-black border border-[#373A53]`}
+        onClick={() => handleClick('swap')}
       >
         Get
       </button>
-      <button
-        onClick={() => handleAction(token, "deposit")}
-        disabled={Big(token.balance || 0).eq(0)}
-        className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${
-          Big(token.balance || 0).eq(0)
-            ? "border border-black border-opacity-30 text-black text-opacity-30"
-            : "bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]"
-        }`}
+      <Popover
+        trigger={PopoverTrigger.Click}
+        placement={PopoverPlacement.BottomRight}
+        content={isMobile ? null : (
+          <ActionModal
+            action="deposit"
+            token={token}
+          />
+        )}
       >
-        <IconPlus />
-      </button>
-      <button
-        onClick={() => handleAction(token, "withdraw")}
-        disabled={Big(token.underlyingBalance || 0).eq(0)}
-        className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${
-          Big(token.underlyingBalance || 0).eq(0)
-            ? "border border-black border-opacity-30 text-black text-opacity-30"
-            : "bg-white text-black border border-[#373A53] hover:bg-[#FFDC50]"
-        }`}
+        <button
+          disabled={Big(token.balance || 0).eq(0)}
+          className={`w-8 h-8 rounded-[10px] flex items-center justify-center bg-[#FFDC50] ${
+            Big(token.balance || 0).eq(0)
+              ? 'border border-black text-black opacity-30'
+              : 'text-black border border-[#373A53]'
+          }`}
+          onClick={() => handleClick('deposit')}
+        >
+          <IconPlus />
+        </button>
+      </Popover>
+      <Popover
+        trigger={PopoverTrigger.Click}
+        placement={PopoverPlacement.BottomRight}
+        content={isMobile ? null : (
+          <ActionModal
+            action="withdraw"
+            token={token}
+          />
+        )}
       >
+        <button
+          disabled={Big(token.underlyingBalance || 0).eq(0)}
+          className={`w-8 h-8 rounded-[10px] flex items-center justify-center bg-[#FFDC50] ${
+            Big(token.underlyingBalance || 0).eq(0)
+              ? 'border border-black text-black opacity-30'
+              : 'text-black border border-[#373A53]'
+          }`}
+          onClick={() => handleClick('withdraw')}
+        >
         <IconMinus />
-      </button>
+        </button>
+      </Popover>
     </>
   );
 };
@@ -170,7 +181,7 @@ const Asset = (props: any) => {
 };
 
 const Row = (props: any) => {
-  const { token, openModal, handleAction, closeModal, actionRef } = props;
+  const { token, isMobile } = props;
 
   return (
     <div
@@ -200,16 +211,7 @@ const Row = (props: any) => {
         </div>
       </div>
       <div className='w-[80px] flex justify-end space-x-2 relative'>
-        <Actions handleAction={handleAction} token={token} />
-        {openModal && openModal.token.name === token.name && (
-          <ActionModal
-            isOpen={true}
-            onClose={closeModal}
-            action={openModal.action}
-            token={token}
-            ref={actionRef}
-          />
-        )}
+        <Actions token={token} isMobile={isMobile} />
       </div>
     </div>
   );
