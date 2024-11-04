@@ -310,7 +310,7 @@ const EarnLending = (props: any) => {
                 </div>
               </div>
             </div>
-            <div className="bg-[rgba(0,0,0,0.5)] rounded-[10px] p-[11px_14px_9px] text-white text-[14px] font-[400] flex justify-between items-center gap-[10px]">
+            {/*<div className="bg-[rgba(0,0,0,0.5)] rounded-[10px] p-[11px_14px_9px] text-white text-[14px] font-[400] flex justify-between items-center gap-[10px]">
               <div className="">
                 <div className="">You {tab === 'Supply' ? 'Supplied' : 'Borrowed'}</div>
                 <div className="flex items-center gap-[6px] mt-[3px]">
@@ -361,7 +361,7 @@ const EarnLending = (props: any) => {
                   </button>
                 )
               }
-            </div>
+            </div>*/}
           </div>
         ))
       }
