@@ -6,8 +6,13 @@ import EarnLending from '@/sections/earn/lending';
 import StakingList from "@/sections/marketplace/components/lnvest";
 import { useMarketplaceContext, MarketplaceContext } from '@/sections/marketplace/context';
 import dynamic from "next/dynamic";
+import { useSearchParams } from 'next/navigation';
 const EarnViews = () => {
-  const [currentTab, setCurrentTab] = useState<string>("liquidity");
+  const search = useSearchParams();
+  let defaultTab = search.get('tab');
+  defaultTab = defaultTab && ['liquidity', 'lending', 'staking'].includes(defaultTab) ? defaultTab : '';
+
+  const [currentTab, setCurrentTab] = useState<string>(defaultTab || "liquidity");
   const context = useMarketplaceContext({ chainId: 80084 });
   const Vaults = dynamic(
     () => import('@/sections/marketplace/components/dapps/vaults')
