@@ -1,3 +1,4 @@
+'use client';
 import { cookieStorage, createStorage } from 'wagmi';
 import chains from './chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
