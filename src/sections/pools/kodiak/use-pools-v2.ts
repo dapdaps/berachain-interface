@@ -22,7 +22,7 @@ export default function usePoolsV2(isSimple?: boolean) {
         query: `query MyQuery {\n  user(id: \"${account?.toLowerCase()}\") {\n    liquidityPositions {\n      pair {\n        id\n        reserve0\n        reserve1\n        totalSupply\n        token1 {\n          id\n          name\n          decimals\n          symbol\n        }\n        token0 {\n          id\n          decimals\n          symbol\n          name\n        }\n      }\n    }\n  }\n}`
       });
 
-      const data = response.data.data.user.liquidityPositions;
+      const data = response.data.data?.user?.liquidityPositions ?? null;
 
       if (!data) throw Error('No Pool');
       if (isSimple) {

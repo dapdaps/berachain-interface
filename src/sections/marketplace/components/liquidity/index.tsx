@@ -69,6 +69,8 @@ export default function Liquidity() {
         console.log('=token', token)
 
         const pool = [token?.token0?.symbol, token?.token1?.symbol].join("-")
+
+        console.log('=pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1', pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1)
         if (
           searchVal &&
           !(
