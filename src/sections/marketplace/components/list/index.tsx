@@ -30,7 +30,7 @@ export default function List({
   maxPage,
   onPageChange,
   bodyClassName,
-  onItemClick = () => {},
+  onItemClick = () => { },
   loading,
   withoutHeader = false
 }: Props) {
@@ -39,7 +39,10 @@ export default function List({
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {
-    if (!list.length) return;
+    if (!list.length) {
+      setData([])
+      return;
+    }
     if (!sortItem) {
       setData(list);
       return;
