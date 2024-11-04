@@ -63,16 +63,6 @@ const SupplyBorrowPanel: React.FC = () => {
     return Big(num).toFixed(2);
   }
 
-  const formatNumber = (num: any) => {
-    if (Big(num).eq(0)) {
-      return '0';
-    }
-    if (Big(num).lt(0.01)) {
-      return '<0.01';
-    }
-    return Big(num).toFixed(2);
-  }
-
   console.log('markets', markets);
   console.log('userAccountData', userAccountData);
   console.log('netBaseData', netBaseData);
