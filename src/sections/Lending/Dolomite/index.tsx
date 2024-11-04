@@ -12,6 +12,7 @@ import DappIcon from '@/components/dapp-icon';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import SwitchNetwork from '@/components/switch-network';
 import chains from '@/configs/chains';
+import { useSearchParams } from 'next/navigation';
 
 const { basic, networks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('../datas/dolomite'));
@@ -22,8 +23,11 @@ interface LendingModalProps {
 const LendingModal: React.FC<LendingModalProps> = () => {
   const { address, chainId } = useAccount();
   const { provider } = useProvider();
+  const search = useSearchParams();
+  let defaultTab = search.get('tab');
+  defaultTab = defaultTab && ['supply', 'borrow'].includes(defaultTab) ? defaultTab : '';
 
-  const [currentTab, setCurrentTab] = useState<string>('supply');
+  const [currentTab, setCurrentTab] = useState<string>(defaultTab || 'supply');
   const [rateKey, setRateKey] = useState<'APY'|'APR'>('APY');
   const [loading, setLoading] = useState<boolean>(false);
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
