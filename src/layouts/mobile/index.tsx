@@ -10,12 +10,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const menuItems = [
-  { id: 1, title: 'Bridge', href: '/bridge' },
-  { id: 2, title: 'DApps', hasDropdown: true },
+  { id: 1, title: 'Bear Cave', href: '/cave' },
+  { id: 2, title: 'Bridge', href: '/bridge' },
   { id: 3, title: 'Marketplace', href: '/marketplace' },
   { id: 4, title: 'Earn', href: '/earn' },
-  { id: 5, title: 'Dashboard', href: '/dashboard' },
-  { id: 6, title: 'Bear Cave', href: '/cave' }
+  { id: 5, title: 'DApps', hasDropdown: true },
+  { id: 6, title: 'Dashboard', href: '/dashboard' },
+  { id: 7, title: 'Home', href: '/' },
 ];
 
 interface DApp {
