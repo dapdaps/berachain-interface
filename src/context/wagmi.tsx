@@ -18,7 +18,7 @@ const defaultNetwork = networks.find((it) => it.id === 80084);
 
 const customWallets: any = [];
 // @ts-ignore
-if (!window.berasig) {
+if (typeof window !== 'undefined' && !window.berasig) {
   customWallets.push({
     id: 'BeraSig',
     name: 'BeraSig Wallet',

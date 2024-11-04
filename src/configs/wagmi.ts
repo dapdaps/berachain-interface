@@ -31,7 +31,7 @@ connectors.push(
 );
 
 // @ts-ignore
-if (window.berasig) {
+if (typeof window !== 'undefined' && window.berasig) {
   // @ts-ignore
   const berasig = window.berasig.ethereum;
   const BeraSig = (config: any) => {

@@ -1,16 +1,24 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const Clouds = () => {
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setScreenWidth(window.screen.availWidth);
+    }
+  }, []);
   return (
     <>
       <motion.div
         initial={{
-          x: window?.screen?.availWidth
+          x: screenWidth
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 14,

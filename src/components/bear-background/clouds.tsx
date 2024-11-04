@@ -2,16 +2,24 @@
 
 import { motion } from 'framer-motion';
 import CloudSvg from '@public/images/background/cloud.svg';
+import { useEffect, useState } from 'react';
 
 export const Clouds = () => {
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setScreenWidth(window.screen.availWidth);
+    }
+  }, []);
   return (
     <>
       <motion.div
         initial={{
-          x: window?.screen?.availWidth
+          x: screenWidth
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 36,
@@ -24,10 +32,10 @@ export const Clouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: window?.screen?.availWidth
+          x: screenWidth
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 48,
@@ -41,10 +49,10 @@ export const Clouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: window?.screen?.availWidth
+          x: screenWidth
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 48,
@@ -61,6 +69,13 @@ export const Clouds = () => {
 };
 
 export const DappClouds = () => {
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setScreenWidth(window.screen.availWidth);
+    }
+  }, []);
   return (
     <>
       <motion.div
@@ -68,7 +83,7 @@ export const DappClouds = () => {
           x: 212
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 24,
@@ -81,10 +96,10 @@ export const DappClouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: window?.screen?.availWidth
+          x: screenWidth
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 24,
@@ -98,10 +113,10 @@ export const DappClouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: window?.screen?.availWidth
+          x: screenWidth
         }}
         animate={{
-          x: -window?.screen?.availWidth
+          x: -screenWidth
         }}
         transition={{
           duration: 24,

@@ -1,15 +1,19 @@
 import useTipsStore from '@/stores/useTipsStore';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const TipsModal = () => {
   const store: any = useTipsStore();
+  const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   const onClose = () => {
     store.setOpen(false);
   };
-
+  if (!isClient) return null;
   return ReactDOM.createPortal(
     <AnimatePresence mode='wait'>
       {store.open ? (
