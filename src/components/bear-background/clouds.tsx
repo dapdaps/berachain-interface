@@ -81,7 +81,7 @@ export const DappClouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: 450
+          x: window?.screen?.availWidth
         }}
         animate={{
           x: -window?.screen?.availWidth
@@ -98,7 +98,7 @@ export const DappClouds = () => {
       </motion.div>
       <motion.div
         initial={{
-          x: 450
+          x: window?.screen?.availWidth
         }}
         animate={{
           x: -window?.screen?.availWidth

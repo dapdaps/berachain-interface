@@ -64,46 +64,48 @@ export default function Mobile({
           setSelectedRecord={setSelectedRecord}
         />
       ) : (
-        <List
-          columns={[
-            {
-              title: 'Pool',
-              dataIndex: 'pool',
-              width: '70%',
-              render: (_: any, record) => {
-                return (
-                  <PoolTable
-                    item={record}
-                    onClick={() => {
-                      setSelectedRecord(record);
-                    }}
-                  />
-                );
+        <div className='mt-[10px]'>
+          <List
+            columns={[
+              {
+                title: 'Pool',
+                dataIndex: 'pool',
+                width: '70%',
+                render: (_: any, record) => {
+                  return (
+                    <PoolTable
+                      item={record}
+                      onClick={() => {
+                        setSelectedRecord(record);
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                title: 'TVL',
+                dataIndex: 'tvl',
+                width: '30%',
+                align: 'right',
+                render: (_, record) => {
+                  return record['tvl']
+                    ? balanceShortFormated(record['tvl'], 2)
+                    : '-';
+                }
               }
-            },
-            {
-              title: 'TVL',
-              dataIndex: 'tvl',
-              width: '30%',
-              align: 'right',
-              render: (_, record) => {
-                return record['tvl']
-                  ? balanceShortFormated(record['tvl'], 2)
-                  : '-';
-              }
-            }
-          ]}
-          list={data}
-          wrapperClass='h-[calc(100%-144px)] overflow-y-auto'
-          bodyClass='py-[14px] h-[58px]'
-          showHeader={false}
-          renderEmpty={() => (
-            <div className='mt-[50px] w-full flex justify-center items-center'>
-              <Empty desc='No Pools.' />
-            </div>
-          )}
-          loading={loading}
-        />
+            ]}
+            list={data}
+            wrapperClass='h-[calc(100%-144px)] overflow-y-auto'
+            bodyClass='py-[14px] h-[58px]'
+            showHeader={false}
+            renderEmpty={() => (
+              <div className='mt-[50px] w-full flex justify-center items-center'>
+                <Empty desc='No Pools.' />
+              </div>
+            )}
+            loading={loading}
+          />
+        </div>
       )}
     </div>
   );

@@ -10,7 +10,7 @@ export default function Swap({ dapp }: any) {
         alt={dapp.name}
         name={dapp.name}
         type='swap'
-        style={{ top: -76 }}
+        className='top-[-76px] md:top-[-30px]'
       />
     </div>
   );

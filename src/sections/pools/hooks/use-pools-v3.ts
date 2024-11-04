@@ -142,7 +142,11 @@ export default function usePoolsV3({ dex }: any) {
   }, [provider, account]);
 
   useEffect(() => {
-    if (provider && account) queryPools();
+    if (provider && account) {
+      queryPools();
+    } else {
+      setLoading(false);
+    }
   }, [provider, account]);
 
   return { pools, loading, ticksInfo, queryPools };

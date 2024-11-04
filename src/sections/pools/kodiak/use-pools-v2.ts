@@ -11,7 +11,7 @@ import { TOKENS } from '@/configs';
 
 export default function usePoolsV2(isSimple?: boolean) {
   const [pools, setPools] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { account, provider } = useAccount();
   const queryPools = useCallback(async () => {
     setLoading(true);
@@ -84,7 +84,10 @@ export default function usePoolsV2(isSimple?: boolean) {
   }, [account, provider]);
 
   useEffect(() => {
-    if (!account || !provider) return;
+    if (!account || !provider) {
+      setLoading(false);
+      return;
+    }
     queryPools();
   }, [account, provider]);
 

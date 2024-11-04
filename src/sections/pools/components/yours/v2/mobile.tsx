@@ -5,7 +5,7 @@ import Button from '@/components/button';
 
 export default function Mobile({ pools, loading, onAction }: any) {
   return (
-    <div className='pb-[18px] px-[12px] font-semibold h-full overflow-y-auto'>
+    <div className='pb-[18px] font-semibold h-full overflow-y-auto'>
       {pools.map((item: any, idx: number) => (
         <div
           key={idx}
@@ -41,7 +41,7 @@ export default function Mobile({ pools, loading, onAction }: any) {
         </div>
       ))}
       {loading && (
-        <div className='flex justify-center'>
+        <div className='flex justify-center mt-[100px]'>
           <CircleLoading />
         </div>
       )}

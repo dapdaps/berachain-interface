@@ -1,5 +1,6 @@
 import CircleLoading from '@/components/circle-loading';
 import Pager from '@/components/pager';
+import Empty from '@/components/empty';
 import Big from 'big.js';
 import { useEffect, useState } from 'react';
 import { cloneDeep } from 'lodash';
@@ -126,6 +127,11 @@ export default function List({
                 </div>
               );
             })
+          )}
+          {!loading && !data.length && (
+            <div className='w-full flex justify-center items-center mt-[100px]'>
+              <Empty desc='No Pools' />
+            </div>
           )}
         </div>
       </div>
