@@ -178,7 +178,19 @@ const MapModal = () => {
 
   const router  = useRouter();
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState<number | undefined>(undefined);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth);
+      
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
 
   const onNavigateTo = (link?: string) => {
     if (!link) {
@@ -221,6 +233,10 @@ const MapModal = () => {
     };
   }, [store.open]);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const realWidth = useMemo(() => {
     if (windowWidth * 0.8 >= 1470) {
       return 1470;
@@ -238,6 +254,10 @@ const MapModal = () => {
       store.setOpen(false);
     }, 100);
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return ReactDOM.createPortal((
     <AnimatePresence mode="wait">

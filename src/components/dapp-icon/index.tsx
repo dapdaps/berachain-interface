@@ -1,3 +1,4 @@
+import useIsMobile from '@/hooks/use-isMobile';
 import Image from 'next/image';
 
 type Props = {
@@ -6,11 +7,12 @@ type Props = {
   name: string;
   type: string;
   style?: React.CSSProperties;
+  className?: string;
 };
 
-export default function DappIcon({ src, alt, name, type, style }: Props) {
+const Laptop = ({ src, alt, name, type, style, className }: Props) => {
   return (
-    <div className='absolute top-[40px] left-[-80px]' style={style}>
+    <div className={`absolute top-[40px] left-[-80px] ${className}`} style={style}>
       <div className='w-[120px] h-[120px] border border-black rounded-[30px] bg-[#B2E946] pt-[10px] relative z-[1]'>
         <div className='h-[108px] rounded-[30px] bg-[#9ACA3B] flex flex-col items-center justify-center'>
           <Image
@@ -42,4 +44,24 @@ export default function DappIcon({ src, alt, name, type, style }: Props) {
       </svg>
     </div>
   );
+};
+
+const Mobile = ({ src, alt, name, type, style, className }: Props) => {
+  return (
+    <div className={`flex items-center gap-[12px] absolute top-[-34px] left-[15px] ${className}`} style={style}>
+      <Image
+        src={src || '/images/dapps/default_app.png'}
+        alt={alt ?? ''}
+        width={36}
+        height={36}
+      />
+      <div className='font-CherryBomb text-[20px]'>{name}</div>
+    </div>
+  );
+};
+
+export default function DappIcon(props: Props) {
+  const isMobile = useIsMobile();
+
+  return isMobile ? <Mobile {...props} /> : <Laptop {...props} />;
 }

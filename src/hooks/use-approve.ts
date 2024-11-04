@@ -7,7 +7,8 @@ import type { Token } from '@/types';
 
 import { useAccount } from 'wagmi';
 
-const MAX_APPROVE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+const MAX_APPROVE =
+  '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 export default function useApprove({
   token,
@@ -59,9 +60,13 @@ export default function useApprove({
 
       let approveValue = amount;
       if (isMax) {
-        approveValue = Big(MAX_APPROVE).div(Big(10).pow(token.decimals)).toFixed(token.decimals);
+        approveValue = Big(MAX_APPROVE)
+          .div(Big(10).pow(token.decimals))
+          .toFixed(token.decimals);
       }
-      const needApproved = Big(ethers.utils.formatUnits(allowanceRes.toString(), token.decimals)).lt(approveValue || '0');
+      const needApproved = Big(
+        ethers.utils.formatUnits(allowanceRes.toString(), token.decimals)
+      ).lt(approveValue || '0');
       setApproved(!needApproved);
       setChecking(false);
     } catch (err) {
@@ -95,11 +100,15 @@ export default function useApprove({
       );
       let approveValue = amount;
       if (isMax) {
-        approveValue = Big(MAX_APPROVE).div(Big(10).pow(token.decimals)).toFixed(token.decimals);
+        approveValue = Big(MAX_APPROVE)
+          .div(Big(10).pow(token.decimals))
+          .toFixed(token.decimals);
       }
       const tx = await TokenContract.approve(
         spender,
-        ethers.utils.parseUnits(approveValue, token.decimals)
+        Big(approveValue)
+          .times(10 ** token.decimals)
+          .toFixed(0)
       );
       const res = await tx.wait();
       setApproving(false);
@@ -111,6 +120,7 @@ export default function useApprove({
         });
       }
     } catch (err: any) {
+      console.log('err', err);
       toast.fail({
         title: 'Approve Failed!',
         text: err?.message?.includes('user rejected transaction')

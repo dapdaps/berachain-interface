@@ -104,7 +104,7 @@ const Position = (props: Props) => {
           {/*<Summary label="Net interest" value="0" unit="%" />*/}
         </div>
       </div>
-      <div className="flex justify-between items-stretch gap-[30px] mt-[24px]">
+      <div className="flex md:flex-col justify-between items-stretch gap-[30px] mt-[24px]">
         <div className="bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[20px_24px] flex-1">
           <div className="collateral">
             <div className="text-[18px] font-[700] text-black">Collateral</div>
@@ -188,7 +188,7 @@ const Position = (props: Props) => {
                 onClick={() => {
                   setTokenSelectVisible(true);
                 }}
-                className="cursor-pointer absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]"
+                className="cursor-pointer absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] md:w-[120px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]"
               >
                 <div className="flex items-center gap-[8px]">
                   <img src={tokenSelected?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0" />

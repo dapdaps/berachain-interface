@@ -5,7 +5,7 @@ const CurrencyRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+
   :hover {
     background-color: rgba(151, 154, 190, 0.1);
   }
@@ -51,7 +51,9 @@ export default function CurrencyImportRow({
     <CurrencyRow
       style={{
         opacity: !disabled ? 1 : 0.6,
-        cursor: !disabled ? 'pointer' : 'not-allowed'
+        cursor: !disabled
+          ? "url('../../public/images/cursor.svg') 12 0"
+          : 'not-allowed'
       }}
     >
       <CurrencyLabel>

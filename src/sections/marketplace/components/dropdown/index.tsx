@@ -53,7 +53,7 @@ export default function Dropdown({
         setModalShow(true);
       }}
       style={style}
-      className='flex relative  justify-between items-center bg-[#fff] gap-8 h-[40px] px-[20px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer'
+      className='flex relative  justify-between items-center bg-[#fff] lg:gap-8 md:gap-[14px] h-[40px] lg:px-[20px] md:px-[12px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer'
     >
       <div className='text-nowrap'>{title}</div>
       <div>

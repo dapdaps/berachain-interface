@@ -46,6 +46,7 @@ export default function useInfraredList(updater?: number) {
 
   return {
     loading,
-    dataList
+    dataList,
+    fetchAllData
   };
 }

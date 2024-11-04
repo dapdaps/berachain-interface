@@ -10,7 +10,48 @@ import Confirm from './Confrim';
 import { Chain } from 'viem';
 import { Token } from '@/types';
 import PageBack from '@/components/back';
+import useIsMobile from '@/hooks/use-isMobile';
+import MenuButton from '@/components/mobile/menuButton';
+import { useParams } from 'next/navigation';
 
+const DappHeader: React.FC = () => {
+  const { dapp: dappName } = useParams();
+  const isMobile = useIsMobile();
+
+  const capitalize = (str: string ) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
+
+  if (dappName) {
+    return (
+      <div className="flex gap-2 my-[30px] w-full justify-center items-center">
+        <img 
+          src={`/images/dapps/${dappName}.svg`} 
+          alt={dappName as string} 
+          className="w-9 h-9" 
+        />
+        <span className="font-CherryBomb text-xl text-black">
+          {capitalize(dappName as string)}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
+      {isMobile ? (
+        <div className="relative left-[25%] mt-7 top-5">
+          <MenuButton className="w-[51.282vw]">Bridge</MenuButton>
+        </div>
+      ) : (
+        <div className="text-[60px] text-center py-[30px] font-CherryBomb">
+          Bridge
+        </div>
+      )}
+    </>
+  );
+};
 
 export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
@@ -18,21 +59,21 @@ export default function Bridge() {
   const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
   const [toChain, setToChain] = useState<Chain>(chains[80084])
   const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
+  const isMobile = useIsMobile()
 
   return (
     <>
-      <PageBack className="absolute left-[36px] top-[31px]" />
-      <div className='w-[520px] m-auto relative z-10'>
-        <div className='text-[60px] text-center py-[30px] font-CherryBomb'>Bridge</div>
+      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10'>
+        <DappHeader />
         <Card>
           <TokenAmout
             chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
             setFromToken(token)
           }}
           />
-          <div className='h-[8px] flex justify-center items-center'>
+          <div className='h-[8px] md:h-4 flex justify-center items-center'>
             <svg
-              className=' cursor-pointer'
+              className='cursor-pointer'
               width='42'
               height='42'
               viewBox='0 0 42 42'
@@ -62,7 +103,7 @@ export default function Bridge() {
             setToToken(token)
           }}
           />
-          <div className='flex items-center justify-between pt-[17px] pl-[20px] text-[14px] text-[#3D405A]'>
+          <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
             <div>Receive address</div>
             <div className='flex items-center gap-2'>
               <div>0xc25...9210d</div>

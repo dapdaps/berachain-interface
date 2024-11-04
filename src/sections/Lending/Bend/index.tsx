@@ -33,14 +33,21 @@ const LendingModal: React.FC<LendingModalProps> = () => {
   const tabs = [
     { 
       key: 'deposit', 
-      label: 'Deposit', 
+      label: (<span className="whitespace-nowrap font-[700] text-[13px]">Deposit</span>),
       children: (
         <DepositPanel markets={markets} />
       )
     },
     { 
       key: 'supplyBorrowHoney', 
-      label: 'Supply & Borrow HONEY', 
+      label: (
+        <span
+          className="whitespace-nowrap font-[700] text-[13px] overflow-hidden"
+          style={{ transform: currentTab === 'supplyBorrowHoney' ? 'translateX(-15px)' : '' }}
+        >
+          Supply & Borrow HONEY
+        </span>
+      ),
       children: (
         <SupplyBorrowPanel />
       )
@@ -49,27 +56,25 @@ const LendingModal: React.FC<LendingModalProps> = () => {
 
   return (
     <div className="mt-[40px]">
-      <div className="relative w-[970px] mx-auto">
-      <DappIcon
-        src="/images/dapps/bend.svg"
-        alt=""
-        name="Bend"
-        type="Lending"
-        style={{
-          zIndex: 10,
-          top: -70,
-        }}
-      />
-      <div className="rounded-[20px] w-[970px] h-[490px]">
-        <div className="absolute top-0 left-0 right-0">
-          <Tabs
-            currentTab={currentTab}
-            tabs={tabs}
-            onChange={(key) => setCurrentTab(key as string)}
-            className="h-full"
-          />
+      <div className="relative w-[970px] md:w-full mx-auto">
+        <DappIcon
+          src="/images/dapps/bend.svg"
+          alt=""
+          name="Bend"
+          type="Lending"
+          className="z-10 top-[-70px] md:left-[50%] md:translate-x-[-50%] md:top-[-40px]"
+        />
+        <div className="rounded-[20px] w-[970px] md:w-full h-[490px]">
+          <div className="absolute top-0 left-0 right-0">
+            <Tabs
+              isCard
+              currentTab={currentTab}
+              tabs={tabs}
+              onChange={(key) => setCurrentTab(key as string)}
+              className="h-full"
+            />
+          </div>
         </div>
-      </div>
       </div>
       <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
     </div>

@@ -9,60 +9,56 @@ function truncateToTwoDecimals(numString: string) {
 }
 
 const NetBase = () => {
-  const { userAccountData, netBaseData } = useMarketStore()
+  const { userAccountData, netBaseData } = useMarketStore();
+
+  console.log(userAccountData);
+
+  const list = [
+    { label: 'Total Supplied', labelMobile: 'You Supplied', value: `$${formatDisplayNumber(userAccountData?.totalCollateralBaseUSD || 0)}` },
+    { label: 'Total Borrowed', labelMobile: 'You Borrowed', value: `$${formatDisplayNumber(userAccountData?.totalDebtBaseUSD || 0)}` },
+    { label: 'Net APY', value: `${truncateToTwoDecimals(netBaseData.netAPY)}%` },
+    { label: 'Account Health', value: userAccountData?.healthFactor || '0.00', valueClassName: 'text-[#7EA82B!important]' },
+    { label: 'Borrow up to', value: `$${formatDisplayNumber(userAccountData?.availableBorrowsBaseUSD)}` },
+    { label: 'Funds eligible for deposit', value: `$${netBaseData.totalWalletInUSD ? Number(netBaseData.totalWalletInUSD).toFixed(2) : '-'}` },
+  ];
   
   return (
-    <div className="bg-[#FFE873] rounded-[10px] p-4 flex justify-between items-center">
-      <div className="flex">
-        <div>
-          <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-            Total Supplied
-          </div>
-          <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-            ${formatDisplayNumber(userAccountData?.totalCollateralBaseUSD || 0)}
-          </div>
-        </div>
-        <div className="ml-[80px]">
-          <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px] w-[100px] h-[34px]">
-            Net APY
-          </div>
-          <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-            {truncateToTwoDecimals(netBaseData.netAPY)}%
-          </div>
-        </div>
-        <div className="ml-[80px]">
-          <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-            Account Health
-          </div>
-          <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-[#7EA82B]">
-            {userAccountData?.healthFactor || '0.00'}
-          </div>
-        </div>
+    <div className="bg-[#FFDC50] rounded-[10px] p-4 flex justify-between items-center">
+      <div className="flex md:hidden">
+        <Item item={list[0]} />
+        <Item item={list[2]} className="ml-[80px]" />
+        <Item item={list[3]} className="ml-[80px]" />
       </div>
-      <div className="flex ml-[140px]">
-        <div>
-          <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-            Borrow up to
-          </div>
-          <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-            ${
-              formatDisplayNumber(userAccountData?.availableBorrowsBaseUSD)
-            }
-          </div>
-        </div>
-        <div className="ml-[38px]">
-          <div className="font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px]">
-            Funds eligible for deposit
-          </div>
-          <div className="font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black">
-            ${
-              netBaseData.totalWalletInUSD ? Number(netBaseData.totalWalletInUSD).toFixed(2) : '-'
-            }
-          </div>
-        </div>
+      <div className="flex ml-[140px] md:hidden">
+        <Item item={list[4]} />
+        <Item item={list[5]} className="ml-[38px]" />
+      </div>
+      <div className="hidden md:visible md:grid md:grid-cols-[1fr_1.2fr] gap-y-[16px]">
+        <Item item={list[0]} />
+        <Item item={list[1]} />
+        <Item item={list[2]} />
+        <Item item={list[3]} />
+        <Item item={list[4]} />
+        <Item item={list[5]} />
       </div>
     </div>
   );
 };
 
 export default NetBase;
+
+const Item = (props: any) => {
+  const { style, className, item } = props;
+  const { label, value, valueClassName, labelClassName } = item;
+
+  return (
+    <div style={style} className={className}>
+      <div className={`font-Montserrat text-sm font-medium leading-[17.07px] text-left text-[#3D405A] mb-[12px] whitespace-nowrap ${labelClassName}`}>
+        {label}
+      </div>
+      <div className={`font-Montserrat text-[26px] font-semibold leading-[23.4px] text-left text-black ${valueClassName}`}>
+        {value}
+      </div>
+    </div>
+  );
+};

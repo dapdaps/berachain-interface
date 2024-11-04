@@ -59,7 +59,7 @@ const List = [
   },
   {
     className: 'w-[362px] h-[147px]',
-    dAppClassName: 'absolute left-1/2 -translate-x-1/2 top-[-90px] gap-y-[27px] gap-x-[86px] flex-wrap w-[560px] justify-center',
+    dAppClassName: 'absolute left-1/2 -translate-x-1/2 top-[-90px] gap-y-[27px] lg:gap-x-[86px] md:gap-x-[62px] flex-wrap w-[560px] justify-center',
     sticks: [
       'absolute left-[163px] bottom-[34px]',
       'absolute left-1/2 bottom-[22px]',
@@ -125,7 +125,7 @@ const DAppsView = () => {
     <div className="">
       <PageBack className="absolute left-[36px] top-[31px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
-      <div className='absolute bottom-[233px] left-1/2 -translate-x-1/2'>
+      <div className='absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]'>
         <div className='w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative'>
           <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
           <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]"/>
@@ -166,6 +166,15 @@ const DAppsView = () => {
           </div>
         </div>
       </div>
+      <div className='absolute bottom-0 left-0 right-0 hidden md:visible' style={{
+          backgroundImage: "url('/images/mobile/dapp-bg.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: '75.897vw',
+          zIndex: 0
+      }}></div>
     </div>
   )
 };

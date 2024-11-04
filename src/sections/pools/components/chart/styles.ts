@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledContainer = styled.div`
-  margin-top: 22px;
-`;
 export const StyledTop = styled.div`
-  margin-bottom: 20px;
   .cp_text {
     display: flex;
     font-size: 12px;
@@ -33,7 +29,7 @@ export const StyledTop = styled.div`
     align-items: center;
     gap: 20px;
     svg {
-      cursor: pointer;
+      cursor: url('../../public/images/cursor.svg') 12 0;
     }
   }
 `;

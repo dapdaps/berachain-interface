@@ -34,7 +34,7 @@ const SelectPriceRange = ({
             key={i}
             className={`${
               item.value === percent ? 'bg-[#FFDC50]' : 'bg-transparent'
-            }`}
+            } cursor-pointer`}
             onClick={() => {
               if (!token0 || !token1) return;
               if (item.value === 1) {

@@ -1,11 +1,9 @@
-import ActiveTab from '@/components/tabs/active-tab';
 import Tab from '@/components/tabs/tab';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-
-const tabHeight = 62;
-const tabWidth = 294;
-const tabMarginWidth = 62;
+import TabsWrapper from './tabs-wrapper';
+import TabPanels from './tab-panels';
+import useIsMobile from '@/hooks/use-isMobile';
+import config from './config';
 
 const Tabs = (props: TabsProps) => {
   const {
@@ -15,11 +13,14 @@ const Tabs = (props: TabsProps) => {
     style,
     bodyClassName,
     bodyStyle,
-    bodyInnerStyle,
     bodyInnerClassName,
-    onChange = () => {
-    },
+    onChange = () => {},
+    isCard,
+    maxTabs = 2
   } = props;
+
+  const isMobile = useIsMobile();
+  const screenConfig = config[isMobile ? 'mobile' : 'laptop'] as any;
 
   const bodyRef = useRef<any>(null);
 
@@ -33,7 +34,8 @@ const Tabs = (props: TabsProps) => {
     onChange && onChange(tabKey, tab, index);
   };
 
-  const [contentBorderTopRightRadius, setContentBorderTopRightRadius] = useState(0);
+  const [contentBorderTopRightRadius, setContentBorderTopRightRadius] =
+    useState(0);
   const [platform, setPlatform] = useState('MacOS');
   useEffect(() => {
     const userAgent = navigator.userAgent;
@@ -44,9 +46,8 @@ const Tabs = (props: TabsProps) => {
     setPlatform(_platform);
     if (!bodyRef.current) return;
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
-    const tabsWidth = tabWidth * tabs.length;
-    console.log(contentWidth, tabsWidth);
-    if (tabsWidth >= contentWidth) {
+    const tabsWidth = (maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth) * tabs.length;
+    if (tabsWidth >= contentWidth - 2 || maxTabs === 3) {
       setContentBorderTopRightRadius(0);
       return;
     }
@@ -54,106 +55,37 @@ const Tabs = (props: TabsProps) => {
   }, [tabs]);
 
   return (
-    <div className={`berachain-tabs ${className}`} style={style}>
-      <div className="berachain-tabs-header relative flex items-stretch translate-y-[1.5px]">
-        {
-          tabs.map((tab, idx) => {
-            if (tab.key === currentTab) {
-              return (
-                <div
-                  className=""
-                  style={{
-                    width: tabWidth,
-                    height: tabHeight,
-                  }}
-                />
-              );
-            }
-            return (
-              <Tab
-                key={tab.key}
-                index={idx}
-                width={tabWidth}
-                height={tabHeight}
-                marginWidth={tabMarginWidth}
-                currentTabIndex={currentTabIndex}
-                total={tabs.length}
-                onClick={() => handleChange(tab.key, tab, idx)}
-              >
-                {tab.label}
-              </Tab>
-            );
-          })
-        }
-      </div>
-      <div
-        className="shadow-shadow1 rounded-[20px] pt-[8.5px]"
-        style={{
-          borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
-          borderTopRightRadius: currentTabIndex === tabs.length - 1 ? contentBorderTopRightRadius : 20,
-        }}
-      >
-        <div
-          ref={bodyRef}
-          className={`berachain-tabs-body relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black px-[22px] pt-[24px] min-h-[50px] ${bodyClassName}`}
-          style={{
-            borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
-            borderTopRightRadius: currentTabIndex === tabs.length - 1 ? contentBorderTopRightRadius : 20,
-            ...bodyStyle,
-          }}
-        >
-          <AnimatePresence mode="wait">
-            {
-              tabs.map((tab, idx) => {
-                if (tab.key === currentTab) {
-                  return (
-                    <>
-                      <ActiveTab
-                        key={tab.key}
-                        width={tabWidth + ([0, tabs.length - 1].includes(idx) ? tabMarginWidth / 2 : tabMarginWidth)}
-                        height={tabHeight}
-                        marginWidth={tabMarginWidth}
-                        currentTabIndex={currentTabIndex}
-                        total={tabs.length}
-                        isFirst={idx === 0}
-                        isLast={idx === tabs.length - 1}
-                        style={{
-                          position: 'absolute',
-                          zIndex: 1,
-                          left: idx > 0 ? tabWidth * idx - 1 - tabMarginWidth / 2 : tabWidth * idx - 1,
-                          top: -1,
-                          transform: `translateY(-${tabHeight - (platform === 'MacOS' ? 1.5 : 2)}px)`,
-                        }}
-                      >
-                        {tab.label}
-                      </ActiveTab>
-                      <motion.div
-                        className={bodyInnerClassName}
-                        key={`content-${tab.key}`}
-                        variants={{
-                          active: {
-                            opacity: 1,
-                          },
-                          inactive: {
-                            opacity: 0,
-                          },
-                        }}
-                        initial="inactive"
-                        animate="active"
-                        exit="inactive"
-                        style={bodyInnerStyle}
-                      >
-                        {tab.children}
-                      </motion.div>
-                    </>
-                  );
-                }
-                return null;
-              })
-            }
-          </AnimatePresence>
-        </div>
-      </div>
+    <div className={`${!!className ? className : ''} h-full`} style={style}>
+      <TabsWrapper isCard={isCard}>
+        {tabs.map((tab, idx) => {
+          return (
+            <Tab
+              key={tab.key}
+              active={currentTabIndex === idx}
+              onClick={() => handleChange(tab.key, tab, idx)}
+              isCard={isCard}
+              width={maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth}
+              height={screenConfig.tabHeight}
+            >
+              {tab.label}
+            </Tab>
+          );
+        })}
+      </TabsWrapper>
+      <TabPanels
+        bodyRef={bodyRef}
+        currentTabIndex={currentTabIndex}
+        tabs={tabs}
+        contentBorderTopRightRadius={contentBorderTopRightRadius}
+        bodyClassName={bodyClassName}
+        bodyStyle={bodyStyle}
+        currentTab={currentTab}
+        platform={platform}
+        bodyInnerClassName={bodyInnerClassName}
+        isCard={isCard}
+        maxTabs={maxTabs}
+        {...screenConfig}
+      />
     </div>
   );
 };
@@ -170,9 +102,9 @@ export interface TabsProps {
   bodyClassName?: string;
   bodyStyle?: React.CSSProperties;
   bodyInnerClassName?: string;
-  bodyInnerStyle?: React.CSSProperties;
-
   onChange?(key: TabKey, tab: Tab, index: number): void;
+  isCard?: boolean;
+  maxTabs?: number;
 }
 
 export interface Tab {

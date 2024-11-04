@@ -13,26 +13,31 @@ import { usePortfolio } from '@/sections/dashboard/hooks/use-portfolio';
 import { useTvl } from '@/sections/dashboard/hooks/use-tvl';
 import { useRecords } from '@/sections/dashboard/hooks/use-records';
 
-const DashboardWallet = dynamic(() => import('@/sections/dashboard/components/wallet'));
-const DashboardPortfolio = dynamic(() => import('@/sections/dashboard/components/portfolio'));
-const DashboardRecords = dynamic(() => import('@/sections/dashboard/components/records'));
+const DashboardWallet = dynamic(
+  () => import('@/sections/dashboard/components/wallet')
+);
+const DashboardPortfolio = dynamic(
+  () => import('@/sections/dashboard/components/portfolio')
+);
+const DashboardRecords = dynamic(
+  () => import('@/sections/dashboard/components/records')
+);
 
 const currentChain = chains[80084];
 const networkList = Object.values(chains);
 
 const DashboardView = () => {
-
   const [currentTab, setCurrentTab] = useState<TabKey>(1);
 
   const {
     loading: tokensLoading,
     tokens,
-    totalBalance,
+    totalBalance
   } = useWallet({ currentChain, networkList });
   const {
     loading: dappsLoading,
     dapps,
-    totalBalance: totalBalanceByDapps,
+    totalBalance: totalBalanceByDapps
   } = usePortfolio({ currentChain, networkList });
   const { tvls, loading: tvlsLoading } = useTvl({ currentChain, networkList });
   const {
@@ -42,26 +47,24 @@ const DashboardView = () => {
     pageIndex,
     pageTotal,
     handleNext,
-    handlePrev,
+    handlePrev
   } = useRecords({ currentChain, networkList });
 
   const tabs = [
     {
       key: 1,
-      label: (
-        <DashboardTab icon="icon-in-wallet.svg">
-          In wallet
-        </DashboardTab>
-      ),
-      children: <DashboardWallet tokens={tokens} loading={tokensLoading} totalBalance={totalBalance} />
+      label: <DashboardTab icon='icon-in-wallet.svg'>In wallet</DashboardTab>,
+      children: (
+        <DashboardWallet
+          tokens={tokens}
+          loading={tokensLoading}
+          totalBalance={totalBalance}
+        />
+      )
     },
     {
       key: 2,
-      label: (
-        <DashboardTab icon="icon-portfolio.svg">
-          DeFi Portfolio
-        </DashboardTab>
-      ),
+      label: <DashboardTab icon='icon-portfolio.svg'>In Protocol</DashboardTab>,
       children: (
         <DashboardPortfolio
           loading={dappsLoading}
@@ -74,11 +77,7 @@ const DashboardView = () => {
     },
     {
       key: 3,
-      label: (
-        <DashboardTab icon="icon-records.svg">
-          Transaction History
-        </DashboardTab>
-      ),
+      label: <DashboardTab icon='icon-records.svg'>Records</DashboardTab>,
       children: (
         <DashboardRecords
           loading={recordsLoading}
@@ -90,23 +89,21 @@ const DashboardView = () => {
           onPrev={handlePrev}
         />
       )
-    },
+    }
   ];
 
   return (
     <BearBackground type='dashboard'>
-      <PageBack className="absolute left-[36px] top-[31px]" />
-      <PageTitle className="pt-[30px]">Dashboard</PageTitle>
-      <div className="relative w-[882px] mx-auto mt-[30px] z-50">
+      <PageBack className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]' />
+      <PageTitle className='pt-[30px] md:pt-[16px]'>Dashboard</PageTitle>
+      <div className='w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]'>
         <Tabs
           currentTab={currentTab}
           tabs={tabs}
           onChange={(tabKey) => {
             setCurrentTab(tabKey);
           }}
-          bodyInnerStyle={{
-            height: 'calc(100vh - 300px)',
-          }}
+          bodyInnerClassName='lg:h-[calc(100vh-300px)] md:h-[calc(100%-132px)]'
         />
       </div>
     </BearBackground>

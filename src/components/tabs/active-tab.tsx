@@ -1,5 +1,5 @@
 const ActiveTab = (props: Props) => {
-  const { children, height, width, isLast, isFirst, className, style, marginWidth } = props;
+  const { children, height, width, isLast, isFirst, className, style, marginWidth, maxTabs = 2 } = props;
 
   return (
     <div
@@ -15,7 +15,7 @@ const ActiveTab = (props: Props) => {
           <div
             className="shrink-0 rounded-tl-[20px] border-t border-l border-black bg-[#FFFDEB]"
             style={{
-              width: marginWidth,
+              width: maxTabs === 3 ? marginWidth / 2 : marginWidth,
               height: height,
             }}
           />
@@ -33,7 +33,7 @@ const ActiveTab = (props: Props) => {
         className="bg-[url('/images/tabs/icon-tab-bg.svg')] grow flex justify-center items-center"
         style={{
           height: height,
-          paddingRight: isFirst ? marginWidth / 2 : 0,
+          paddingRight: isFirst && maxTabs < 3 ? marginWidth / 2 : 0,
         }}
       >
         {children}
@@ -74,4 +74,5 @@ interface Props {
   isFirst?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  maxTabs?: number;
 }
