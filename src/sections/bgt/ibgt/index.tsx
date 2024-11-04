@@ -8,6 +8,7 @@ import { useIBGT } from '@/hooks/use-ibgt';
 import Popover, { PopoverPlacement } from '@/components/popover';
 import { useRouter } from 'next/navigation';
 import IbgtHead from '@/sections/bgt/components/ibgt-head';
+
 export default memo(function IBGTPageView(props: any) {
   const router = useRouter();
 

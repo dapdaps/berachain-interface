@@ -7,6 +7,7 @@ import { useMultiState } from '@/hooks/use-multi-state';
 import Big from 'big.js';
 import { useRouter } from 'next/navigation';
 import useClickTracking from '@/hooks/use-click-tracking';
+import useAddAction from "@/hooks/use-add-action";
 
 const IBGT_ADDRESS = "0x46efc86f0d7455f135cc9df501673739d513e982"
 
@@ -51,7 +52,8 @@ export function useIBGT(props: any) {
 
   const router = useRouter();
   const { handleReport } = useClickTracking();
-  const { provider, account } = useCustomAccount()
+  const { provider, account } = useCustomAccount();
+  const { addAction } = useAddAction("ibgt");
   const sender = account;
 
   const [data, setData] = useState<DataType>({
@@ -109,7 +111,7 @@ export function useIBGT(props: any) {
     lpAmount,
     updater
   } = state;
-  const { token0, token1, decimals, id, LP_ADDRESS } = tokenData ?? {};
+  const { tokens, decimals, id, LP_ADDRESS } = tokenData ?? {};
   const symbol = id;
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
@@ -264,6 +266,19 @@ export function useIBGT(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Deposit',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: inAmount,
+          template: "Infrared",
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Add"
+        });
         updateState({
           isLoading: false,
           // isPostTx: true
@@ -329,6 +344,19 @@ export function useIBGT(props: any) {
           isLoading: false,
         });
         const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Withdraw',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: lpAmount,
+          template: "Infrared",
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Remove"
+        });
         console.log('=receipt', receipt);
 
         // addAction?.({
@@ -388,6 +416,19 @@ export function useIBGT(props: any) {
       .getReward()
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
+        const { status, transactionHash } = receipt;
+        addAction?.({
+          type: 'Liquidity',
+          action: 'Claim',
+          token0: tokens[0],
+          token1: tokens[1],
+          amount: tokenData?.earned,
+          template: "Infrared",
+          status: status,
+          transactionHash,
+          chain_id: props.chainId,
+          sub_type: "Claim"
+        });
         toast?.dismiss(toastId);
         toast?.success({
           title: 'Claim Successfully!'
