@@ -13,7 +13,10 @@ import DappModal from './modal';
 import useToast from '@/hooks/use-toast';
 import { formatValueDecimal } from '@/utils/balance';
 import { useRouter } from 'next/navigation';
-import useAddAction from "@/hooks/use-add-action";
+import useAddAction from '@/hooks/use-add-action';
+import Modal from '@/components/modal';
+import Capsule from './capsule';
+
 const TABS = [
   {
     value: 'Deposit',
@@ -27,8 +30,7 @@ const TABS = [
   }
 ];
 export default memo(function vaults(props) {
-
-  const router = useRouter()
+  const router = useRouter();
   const {
     vaultsVisible,
     setVaultsVisible,
@@ -36,7 +38,7 @@ export default memo(function vaults(props) {
   } = useContext(MarketplaceContext);
 
   const toast = useToast();
-  const { addAction } = useAddAction("invest");
+  const { addAction } = useAddAction('invest');
   const { account: sender, provider } = useCustomAccount();
   const { data, config } = vaultsData;
 
@@ -251,12 +253,12 @@ export default memo(function vaults(props) {
           token0: tokens?.[0],
           token1: tokens?.[1],
           amount: inAmount,
-          template: "Infrared",
+          template: 'Infrared',
           status: status,
           add: 1,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Add"
+          sub_type: 'Add'
         });
         updateState({
           isLoading: false,
@@ -264,8 +266,8 @@ export default memo(function vaults(props) {
         });
 
         setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
+          onSuccess?.();
+        }, 3000);
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -335,17 +337,17 @@ export default memo(function vaults(props) {
           token0: tokens?.[0],
           token1: tokens?.[1],
           amount: lpAmount,
-          template: "Infrared",
+          template: 'Infrared',
           status: status,
           add: 0,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Remove"
+          sub_type: 'Remove'
         });
 
         setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
+          onSuccess?.();
+        }, 3000);
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -377,257 +379,270 @@ export default memo(function vaults(props) {
       updater: Date.now(),
       isTokenApproved: true,
       isTokenApproving: false
-    })
-    currentTab === 'Deposit' ? handleTokenChange("") : handleLPChange("")
-  }
+    });
+    currentTab === 'Deposit' ? handleTokenChange('') : handleLPChange('');
+  };
   useEffect(() => {
     if (!sender || !vaultAddress) return;
     updateBalance();
     updateLPBalance();
   }, [sender, vaultAddress, updater]);
   return (
-    <DappModal
-      title={`Invest ${data?.tokens.join("-")}`}
-      type='Valuts'
-      visible={vaultsVisible}
-      onClose={handleClose}
-    >
-      <div className='mt-[40px]'>
-        <SwitchTabs
-          tabs={TABS}
-          current={currentTab}
-          onChange={(current) => {
-            setCurrentTab(current);
-          }}
-        />
-
-        <div className='flex items-center mt-[34px] mb-[33px]'>
-          <div className='flex-1 flex flex-col gap-[14px]'>
-            <div className='text-black font-Montserrat text-[14px] font-medium'>
-              APY
-            </div>
-            <div className='text-black font-Montserrat text-[20px] font-bold'>
-              {Big(data?.apy ?? 0).toFixed(2)}%
-            </div>
-          </div>
-          <div className='flex-1 flex flex-col gap-[14px]'>
-            <div className='text-black font-Montserrat text-[14px] font-medium'>
-              My Vault Deposits
-            </div>
-            <div className='flex items-center gap-[6px]'>
-              <div className='flex items-center'>
-                <div className='w-[26px] h-[26px] rounded-full'>
-                  <img src={data?.images[0]} />
-                </div>
-                {data?.images[1] && (
-                  <div className='ml-[-10px] w-[26px] h-[26px] rounded-full'>
-                    <img src={data?.images[1]} />
-                  </div>
-                )}
-              </div>
-              <div className='text-black font-Montserrat text-[20px] font-bold'>
-                {formatValueDecimal(data?.depositAmount, '', 2, true, false)}
-              </div>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
-                {data?.tokens?.join("-")}
-              </div>
-            </div>
-          </div>
-
-          <div className='flex-1 flex flex-col gap-[14px]'>
-            <div className='text-black font-Montserrat text-[14px] font-medium'>
-              Unclaimed Rewards
-            </div>
-            <div className='flex items-center gap-[6px]'>
-              <div className='w-[26px] h-[26px] rounded-full'>
-                <img src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`} />
-              </div>
-              <div className='text-black font-Montserrat text-[20px] font-bold'>
-                0
-              </div>
-            </div>
-          </div>
+    <Modal open={vaultsVisible} onClose={handleClose}>
+      <div className='px-[20px] pt-[24px] pb-[20px] lg:w-[520px] rounded-[20px] bg-[#FFFDEB] border border-[#000] shadow-shadow1 z-[51]'>
+        <div className='flex items-center gap-[9px] text-black text-[20px] font-[700] leading-[90%]'>
+          <span>{`Invest ${data?.tokens.join('-')}`}</span>
+          <Capsule>Valuts</Capsule>
         </div>
+        <div className='mt-[40px]'>
+          <SwitchTabs
+            tabs={TABS}
+            current={currentTab}
+            onChange={(current) => {
+              setCurrentTab(current);
+            }}
+          />
 
-        {currentTab === 'Deposit' ? (
-          <div>
-            <div className='flex items-center justify-between'>
+          <div className='flex items-center mt-[34px] mb-[33px]'>
+            <div className='flex-1 flex flex-col gap-[14px]'>
               <div className='text-black font-Montserrat text-[14px] font-medium'>
-                Deposit
+                APY
               </div>
-              <div className='text-black font-Montserrat text-[14px] font-medium' onClick={handleMax}>
-                Balance:{' '}
-                <span className='underline'>
-                  {Big(balances[symbol] ?? 0).toFixed(6)}
-                </span>
+              <div className='text-black font-Montserrat text-[20px] font-bold'>
+                {Big(data?.apy ?? 0).toFixed(2)}%
               </div>
             </div>
-            <div className='relative mt-[9px] mb-[19px]'>
-              <input
-                value={inAmount}
-                type='number'
-                onChange={(e) => handleTokenChange(e.target.value, id)}
-                className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
-                placeholder='0'
-              />
-              <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
+            <div className='flex-1 flex flex-col gap-[14px]'>
+              <div className='text-black font-Montserrat text-[14px] font-medium'>
+                My Vault Deposits
+              </div>
+              <div className='flex items-center gap-[6px]'>
                 <div className='flex items-center'>
-                  <div className='w-[30px] h-[30px] rounded-full'>
-                    <img src={data?.images[0]} alt={data?.tokens[0]} />
+                  <div className='w-[26px] h-[26px] rounded-full'>
+                    <img src={data?.images[0]} />
                   </div>
-                  {
-                    data?.images[1] && (
+                  {data?.images[1] && (
+                    <div className='ml-[-10px] w-[26px] h-[26px] rounded-full'>
+                      <img src={data?.images[1]} />
+                    </div>
+                  )}
+                </div>
+                <div className='text-black font-Montserrat text-[20px] font-bold'>
+                  {formatValueDecimal(data?.depositAmount, '', 2, true, false)}
+                </div>
+                <div className='text-black font-Montserrat text-[14px] font-medium'>
+                  {data?.tokens?.join('-')}
+                </div>
+              </div>
+            </div>
+
+            <div className='flex-1 flex flex-col gap-[14px]'>
+              <div className='text-black font-Montserrat text-[14px] font-medium'>
+                Unclaimed Rewards
+              </div>
+              <div className='flex items-center gap-[6px]'>
+                <div className='w-[26px] h-[26px] rounded-full'>
+                  <img
+                    src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
+                  />
+                </div>
+                <div className='text-black font-Montserrat text-[20px] font-bold'>
+                  0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {currentTab === 'Deposit' ? (
+            <div>
+              <div className='flex items-center justify-between'>
+                <div className='text-black font-Montserrat text-[14px] font-medium'>
+                  Deposit
+                </div>
+                <div
+                  className='text-black font-Montserrat text-[14px] font-medium'
+                  onClick={handleMax}
+                >
+                  Balance:{' '}
+                  <span className='underline'>
+                    {Big(balances[symbol] ?? 0).toFixed(6)}
+                  </span>
+                </div>
+              </div>
+              <div className='relative mt-[9px] mb-[19px]'>
+                <input
+                  value={inAmount}
+                  type='number'
+                  onChange={(e) => handleTokenChange(e.target.value, id)}
+                  className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
+                  placeholder='0'
+                />
+                <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
+                  <div className='flex items-center'>
+                    <div className='w-[30px] h-[30px] rounded-full'>
+                      <img src={data?.images[0]} alt={data?.tokens[0]} />
+                    </div>
+                    {data?.images[1] && (
                       <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
-                    )
-                  }
-                </div>
-                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  {data?.tokens?.join("-")}
+                    )}
+                  </div>
+                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                    {data?.tokens?.join('-')}
+                  </div>
                 </div>
               </div>
-            </div>
-            {isInSufficient && (
-              <button className='w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
-                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                  InSufficient Balance
-                </span>
-              </button>
-            )}
-            {!isInSufficient &&
-              (isTokenApproved && !isTokenApproving ? (
-                <button
-                  disabled={isLoading || Number(inAmount) <= 0}
-                  className={clsx(
-                    'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
-                    {
-                      'opacity-50': isLoading || Number(inAmount) <= 0
-                    }
-                  )}
-                  onClick={handleDeposit}
-                >
+              {isInSufficient && (
+                <button className='w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
                   <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                    {isLoading ? <CircleLoading size={14} /> : 'Stake'}
+                    InSufficient Balance
                   </span>
                 </button>
-              ) : (
-                <button
-                  disabled={isTokenApproved || isTokenApproving}
-                  className={clsx(
-                    'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
-                    {
-                      'opacity-50': isTokenApproved || isTokenApproving
-                    }
-                  )}
-                  onClick={() => handleApprove(true)}
-                >
-                  {isTokenApproving ? (
-                    <CircleLoading size={14} />
-                  ) : (
-                    <>
-                      {isTokenApproved ? 'Approved' : 'Approve'} {data?.tokens.join("-")}
-                    </>
-                  )}
-                </button>
-              ))}
-          </div>
-        ) : (
-          <div>
-            <div className='flex items-center justify-between'>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
-                Withdraw
-              </div>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
-                Balance:{' '}
-                <span className='underline' onClick={() => {
-                  const newSliderPercent = Big(lpBalance || 0)
-                    .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-                    .times(100)
-                    .toFixed(0);
-
-                  onUpdateLpPercent(Number(newSliderPercent));
-
-                  handleLPChange(lpBalance);
-                }}>
-                  {Big(lpBalance ? lpBalance : 0).toFixed(6)}
-                </span>
-              </div>
+              )}
+              {!isInSufficient &&
+                (isTokenApproved && !isTokenApproving ? (
+                  <button
+                    disabled={isLoading || Number(inAmount) <= 0}
+                    className={clsx(
+                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      {
+                        'opacity-50': isLoading || Number(inAmount) <= 0
+                      }
+                    )}
+                    onClick={handleDeposit}
+                  >
+                    <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                      {isLoading ? <CircleLoading size={14} /> : 'Stake'}
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    disabled={isTokenApproved || isTokenApproving}
+                    className={clsx(
+                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      {
+                        'opacity-50': isTokenApproved || isTokenApproving
+                      }
+                    )}
+                    onClick={() => handleApprove(true)}
+                  >
+                    {isTokenApproving ? (
+                      <CircleLoading size={14} />
+                    ) : (
+                      <>
+                        {isTokenApproved ? 'Approved' : 'Approve'}{' '}
+                        {data?.tokens.join('-')}
+                      </>
+                    )}
+                  </button>
+                ))}
             </div>
-            <div className='relative mt-[9px] mb-[19px]'>
-              <input
-                value={lpAmount}
-                type='number'
-                onChange={(e) => {
-                  handleLPChange(e.target.value);
+          ) : (
+            <div>
+              <div className='flex items-center justify-between'>
+                <div className='text-black font-Montserrat text-[14px] font-medium'>
+                  Withdraw
+                </div>
+                <div className='text-black font-Montserrat text-[14px] font-medium'>
+                  Balance:{' '}
+                  <span
+                    className='underline'
+                    onClick={() => {
+                      const newSliderPercent = Big(lpBalance || 0)
+                        .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+                        .times(100)
+                        .toFixed(0);
 
-                  const value = e.target.value;
+                      onUpdateLpPercent(Number(newSliderPercent));
 
-                  if (!value) {
-                    onUpdateLpPercent(0);
-                  }
+                      handleLPChange(lpBalance);
+                    }}
+                  >
+                    {Big(lpBalance ? lpBalance : 0).toFixed(6)}
+                  </span>
+                </div>
+              </div>
+              <div className='relative mt-[9px] mb-[19px]'>
+                <input
+                  value={lpAmount}
+                  type='number'
+                  onChange={(e) => {
+                    handleLPChange(e.target.value);
 
-                  if (value && Big(value).gt(0)) {
-                    const newSliderPercent = Big(value || 0)
-                      .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-                      .times(100)
-                      .toFixed(0);
-                    onUpdateLpPercent(Number(newSliderPercent));
-                  }
-                }}
-                className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
-                placeholder='0'
-              />
-              <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                <div className='flex items-center'>
-                  <div className='w-[30px] h-[30px] rounded-full'>
-                    <img src={data?.images[0]} alt={data?.tokens[0]} />
-                  </div>
-                  {
-                    data?.images[1] && (
+                    const value = e.target.value;
+
+                    if (!value) {
+                      onUpdateLpPercent(0);
+                    }
+
+                    if (value && Big(value).gt(0)) {
+                      const newSliderPercent = Big(value || 0)
+                        .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+                        .times(100)
+                        .toFixed(0);
+                      onUpdateLpPercent(Number(newSliderPercent));
+                    }
+                  }}
+                  className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
+                  placeholder='0'
+                />
+                <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
+                  <div className='flex items-center'>
+                    <div className='w-[30px] h-[30px] rounded-full'>
+                      <img src={data?.images[0]} alt={data?.tokens[0]} />
+                    </div>
+                    {data?.images[1] && (
                       <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
-                    )
-                  }
-                </div>
-                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  {data?.tokens?.join("-")}
+                    )}
+                  </div>
+                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                    {data?.tokens?.join('-')}
+                  </div>
                 </div>
               </div>
-            </div>
-            <button
-              disabled={
-                isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
-              }
-              className={clsx(
-                'w-full h-[60px] flex items-center font-semibold font-Montserrat justify-center rounded-[10px] bg-[#FFDC50] border border-black',
-                {
-                  'opacity-50':
-                    isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
+              <button
+                disabled={
+                  isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
                 }
-              )}
-              onClick={handleWithdraw}
+                className={clsx(
+                  'w-full h-[60px] flex items-center font-semibold font-Montserrat justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  {
+                    'opacity-50':
+                      isWithdrawInsufficient ||
+                      isLoading ||
+                      Number(lpAmount) <= 0
+                  }
+                )}
+                onClick={handleWithdraw}
+              >
+                {isLoading ? (
+                  <CircleLoading size={14} />
+                ) : (
+                  <>
+                    {isWithdrawInsufficient
+                      ? 'InSufficient Balance'
+                      : 'Withdraw'}
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+          <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
+            Manage exist assets on{' '}
+            <span
+              className='text-black font-Montserrat underline'
+              onClick={() => {
+                router.push('/liquidity/infrared');
+              }}
             >
-              {isLoading ? (
-                <CircleLoading size={14} />
-              ) : (
-                <>
-                  {isWithdrawInsufficient ? 'InSufficient Balance' : 'Withdraw'}
-                </>
-              )}
-            </button>
+              Infrared
+            </span>
           </div>
-        )}
-        <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
-          Manage exist assets on{' '}
-          <span className='text-black font-Montserrat underline' onClick={() => {
-            router.push("/liquidity/infrared")
-          }}>
-            Infrared
-          </span>
         </div>
       </div>
-    </DappModal>
+    </Modal>
   );
 });

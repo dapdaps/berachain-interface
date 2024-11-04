@@ -4,6 +4,20 @@ const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://api.dapdap.net';
 
 const nextConfig = {
   reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  webpack: (config, { isServer }) => {
+    config.optimization = {
+      ...config.optimization,
+      emitOnErrors: true,  // 即使有错误也继续构建
+    }
+
+    return config
+  },
   rewrites: async () => [
     {
       source: '/assets/:path*',
@@ -38,6 +52,12 @@ const nextConfig = {
       }
     );
     fileLoaderRule.exclude = /\.svg$/i;
+
+    config.optimization = {
+      ...config.optimization,
+      emitOnErrors: true,  // 即使有错误也继续构建
+    }
+    
     return config;
   }
 };

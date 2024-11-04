@@ -2,9 +2,12 @@ import { motion } from 'framer-motion';
 import ReactDOM from 'react-dom';
 import { numberFormatter } from '@/utils/number-formatter';
 import { useRef } from 'react';
+import useIsMobile from '@/hooks/use-isMobile';
+import Drawer from '@/components/drawer';
 
 const TokenSelector = (props: Props) => {
   const { visible, tokens, selected, onSelect, onClose } = props;
+  const isMobile = useIsMobile();
 
   const modalRef = useRef<any>(null);
 
@@ -18,6 +21,26 @@ const TokenSelector = (props: Props) => {
   };
 
   if (!visible) return null;
+
+  if (isMobile) {
+    return (
+      <Drawer
+        visible={visible}
+        onClose={onClose}
+      >
+        <div className="px-[12px] py-[20px]">
+          <div className="text-[20px] text-black font-[400] font-CherryBomb mb-[20px]">
+            Select Token
+          </div>
+          <TokenList
+            tokens={tokens}
+            selected={selected}
+            handleSelect={handleSelect}
+          />
+        </div>
+      </Drawer>
+    );
+  }
 
   return ReactDOM.createPortal((
     <div
@@ -48,34 +71,11 @@ const TokenSelector = (props: Props) => {
           </button>
           <div className="text-[20px] text-black font-[400] font-CherryBomb">Select Token</div>
         </div>
-        <ul className="m-0 p-0 list-none mt-[25px]">
-          {
-            tokens.map((token: any, idx: number) => (
-              <motion.li
-                key={idx}
-                className="cursor-pointer flex justify-between items-center p-[11px] rounded-[10px] gap-1"
-                style={{
-                  background: selected.address === token.address ? '#F0EEDF' : '#FFFDEB',
-                }}
-                onClick={() => handleSelect(token)}
-                whileHover={{
-                  background: '#F0EEDF',
-                }}
-              >
-                <div className="flex items-center gap-[12px]">
-                  <img src={token.icon} alt="" width={30} height={30} />
-                  <div className="leading-[90%]">
-                    <div className="text-[16px] text-black font-[600]">{token.symbol}</div>
-                    <div className="text-[10px] text-black font-[400] mt-[4px]">{token.name}</div>
-                  </div>
-                </div>
-                <div className="text-black text-[16px] font-[600]">
-                  {numberFormatter(token.balance, 2, true)}
-                </div>
-              </motion.li>
-            ))
-          }
-        </ul>
+       <TokenList
+         tokens={tokens}
+         selected={selected}
+         handleSelect={handleSelect}
+       />
       </div>
     </div>
   ), document.body);
@@ -92,3 +92,38 @@ interface Props {
 
   onSelect(token: any): void;
 }
+
+const TokenList = (props: any) => {
+  const { tokens, selected, handleSelect } = props;
+
+  return (
+    <ul className="m-0 p-0 list-none mt-[25px]">
+      {
+        tokens.map((token: any, idx: number) => (
+          <motion.li
+            key={idx}
+            className="cursor-pointer flex justify-between items-center p-[11px] rounded-[10px] gap-1"
+            style={{
+              background: selected.address === token.address ? '#F0EEDF' : '#FFFDEB',
+            }}
+            onClick={() => handleSelect(token)}
+            whileHover={{
+              background: '#F0EEDF',
+            }}
+          >
+            <div className="flex items-center gap-[12px]">
+              <img src={token.icon} alt="" width={30} height={30} />
+              <div className="leading-[90%]">
+                <div className="text-[16px] text-black font-[600]">{token.symbol}</div>
+                <div className="text-[10px] text-black font-[400] mt-[4px]">{token.name}</div>
+              </div>
+            </div>
+            <div className="text-black text-[16px] font-[600]">
+              {numberFormatter(token.balance, 2, true)}
+            </div>
+          </motion.li>
+        ))
+      }
+    </ul>
+  );
+};

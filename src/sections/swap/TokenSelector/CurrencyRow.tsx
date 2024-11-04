@@ -8,7 +8,6 @@ const StyledCurrencyRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
   :hover {
     background-color: rgba(151, 154, 190, 0.1);
   }
@@ -69,7 +68,10 @@ export default function CurrencyRow({
   const isActive = currency.address === selectedTokenAddress;
 
   return (
-    <StyledCurrencyRow className={isActive ? 'active' : ''} onClick={onClick}>
+    <StyledCurrencyRow
+      className={`${isActive ? 'active' : ''} cursor-pointer`}
+      onClick={onClick}
+    >
       <CurrencyLabel>
         <CurrencyIcon
           src={currency.icon || '/images/tokens/default_icon.png'}

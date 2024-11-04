@@ -72,7 +72,6 @@ export const StyledDesc = styled.div`
 
 export const StyledBalance = styled.span`
   text-decoration-line: underline;
-  cursor: pointer;
 
   &:hover {
     opacity: 0.8;

@@ -18,7 +18,6 @@ export const StyledItem = styled.div<{ $active: boolean }>`
   font-size: 12px;
   font-weight: 400;
   line-height: 16px;
-  cursor: pointer;
 
   ${({ $active }) =>
     $active &&

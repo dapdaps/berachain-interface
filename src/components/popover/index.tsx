@@ -20,7 +20,9 @@ const Popover = (props: Props) => {
     trigger = PopoverTrigger.Click,
     contentStyle,
     contentClassName,
-  } = props;
+    triggerContainerStyle,
+    triggerContainerClassName,
+    } = props;
 
   const triggerRef = useRef<any>();
 
@@ -38,7 +40,8 @@ const Popover = (props: Props) => {
     <>
       <div
         ref={triggerRef}
-        className=""
+        style={triggerContainerStyle}
+        className={triggerContainerClassName}
         onClick={() => {
           if (trigger === PopoverTrigger.Hover) return;
           setVisible(true);
@@ -62,6 +65,7 @@ const Popover = (props: Props) => {
             y={y}
             onLoaded={(elTooltip) => {
               const triggerEl = triggerRef.current;
+              
               const { width: triggerW, height: triggerH, x: triggerX, y: triggerY } = triggerEl.getBoundingClientRect();
 
               const { width: w, height: h } = elTooltip.getBoundingClientRect();
@@ -122,6 +126,11 @@ const Popover = (props: Props) => {
                 targetY = triggerY - (h - triggerH);
               }
 
+              if (placement === PopoverPlacement.Center) {
+                targetX = triggerX + offset * 2 + (triggerW - w) / 2;
+                targetY = triggerY + offset + (triggerH - h) / 2;
+              }
+
               // edge
               if (targetX < 0) targetX = 0;
               if (targetX > window.innerWidth - w) targetX = window.innerWidth - w;
@@ -168,6 +177,7 @@ export enum PopoverPlacement {
   BottomRight,
   LeftTop,
   LeftBottom,
+  Center
 }
 
 export enum PopoverTrigger {
@@ -183,6 +193,9 @@ interface Props {
   trigger?: PopoverTrigger;
   contentStyle?: React.CSSProperties;
   contentClassName?: string;
+  triggerContainerStyle?: React.CSSProperties;
+  triggerContainerClassName?: string;
+  elRef?: HTMLElement;
 }
 
 const Card = (props: CardProps) => {

@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
-export default function PoolTable({ item }: any) {
+export default function PoolTable({ item, onClick = () => {} }: any) {
   return (
-    <div className='flex items-center gap-[12px]'>
+    <div className='flex items-center gap-[12px]' onClick={onClick}>
       <div className='flex items-center'>
         <Image
           src={item.token0.icon || '/assets/tokens/default_icon.png'}

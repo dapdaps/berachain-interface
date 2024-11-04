@@ -6,28 +6,37 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import MainLayout from '@/layouts/main';
 import WagmiProvider from '@/context/wagmi';
 import { ToastContainer } from 'react-toastify';
-
+import { Suspense } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
+import useIsMobile from '@/hooks/use-isMobile';
+import MobileLayout from '@/layouts/mobile';
 
-let className = ''
+let className = '';
 
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isMobile = useIsMobile();
 
   return (
     <html lang='en'>
       <head>
-        <title>Berachain</title>
-        <meta name="description" content="berachain-interface" />
+        <title>BeraTown</title>
+        <meta name='description' content='berachain-interface' />
       </head>
       <body>
         <WagmiProvider>
-          <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-            <MainLayout className={className}>{children}</MainLayout>
+          <SkeletonTheme baseColor='#7990F4' highlightColor='#FFDC50'>
+            <Suspense>
+              {isMobile ? (
+                <MobileLayout>{children}</MobileLayout>
+              ) : (
+                <MainLayout className={className}>{children}</MainLayout>
+              )}
+            </Suspense>
           </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
@@ -42,8 +51,8 @@ export default function RootLayout({
           closeButton={false}
         />
         <ProgressBar
-          height="4px"
-          color="#ffdc50"
+          height='4px'
+          color='#ffdc50'
           options={{ showSpinner: false }}
           shallowRouting
         />

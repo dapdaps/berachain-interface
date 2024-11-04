@@ -1,12 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 
 const PageBack = (props: Props) => {
   const { className, style, onBack } = props;
 
-  // const router = useRouter();
   const router = useProgressRouter();
 
   const handleClick = () => {
@@ -18,15 +16,43 @@ const PageBack = (props: Props) => {
   };
 
   return (
-    <button
-      type="button"
-      className={`flex items-center gap-[14px] text-black text-center font-CherryBomb text-[20px] font-[400] ${className}`}
-      style={style}
-      onClick={handleClick}
-    >
-      <img src="/images/icon-back.svg" alt="back" width={27} height={16} className="translate-y-[2px]" />
-      <span>back</span>
-    </button>
+    <>
+      <button
+        type='button'
+        className={`flex items-center gap-[14px] text-black text-center font-CherryBomb text-[20px] font-[400] hidden lg:flex ${className}`}
+        style={style}
+        onClick={handleClick}
+      >
+        <img
+          src='/images/icon-back.svg'
+          alt='back'
+          width={27}
+          height={16}
+          className='translate-y-[2px]'
+        />
+        <span>back</span>
+      </button>
+      <button
+        type='button'
+        className={`w-[40px] h-[32px] rounded-[16px] bg-[#FFF5A9] items-center justify-center border border-black hidden md:flex ${className}`}
+        onClick={handleClick}
+      >
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='9'
+          height='16'
+          viewBox='0 0 9 16'
+          fill='none'
+        >
+          <path
+            d='M7 14L2 8L7 2'
+            stroke='black'
+            strokeWidth='3'
+            strokeLinecap='round'
+          />
+        </svg>
+      </button>
+    </>
   );
 };
 
