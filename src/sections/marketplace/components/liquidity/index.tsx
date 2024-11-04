@@ -20,14 +20,12 @@ const PAGE_SIZE = 9;
 const checkIsExist = ({ record, balance, hasFee }: any) => {
   return (
     balance[
-      `${record.token0.address.toLowerCase()}-${record.token1.address.toLowerCase()}${
-        hasFee ? "-" + record.fee : ""
-      }`
+    `${record.token0.address.toLowerCase()}-${record.token1.address.toLowerCase()}${hasFee ? '-' + record.fee : ''
+    }`
     ] ||
     balance[
-      `${record.token1.address.toLowerCase()}-${record.token0.address.toLowerCase()}${
-        hasFee ? "-" + record.fee : ""
-      }`
+    `${record.token1.address.toLowerCase()}-${record.token0.address.toLowerCase()}${hasFee ? '-' + record.fee : ''
+    }`
     ]
   );
 };
@@ -68,11 +66,13 @@ export default function Liquidity() {
         if (protocol !== "all" && protocol !== token.protocol) {
           flag = false;
         }
+        console.log('=token', token)
+
+        const pool = [token?.token0?.symbol, token?.token1?.symbol].join("-")
         if (
           searchVal &&
           !(
-            token.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            token.symbol.toLowerCase().includes(searchVal.toLowerCase())
+            pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1
           )
         )
           flag = false;
@@ -293,7 +293,7 @@ export default function Liquidity() {
               setModalType("");
               setSelectedRecord(null);
             }}
-            onSuccess={() => {}}
+            onSuccess={() => { }}
           />
           <V3PoolsModal
             open={modalType === "pools"}
