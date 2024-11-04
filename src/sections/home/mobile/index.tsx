@@ -66,7 +66,7 @@ const Home = () => {
           </div>
            <div className='relative w-[73.846vw] h-[47.692vw] -top-[65.64vw] -left-[17.948vw]'>
             <img src="/images/mobile/home/bg-vaults.png" alt="" className='w-full h-full'/>
-            <img src="/images/mobile/home/text-vaults.png" onClick={() => router.push('/bgt')} className='absolute left-[32.307vw] top-[7.692vw] w-[21.538vw] h-[11.794vw]' alt="" />
+            <img src="/images/mobile/home/text-vaults.png" onClick={() => router.push('/earn')} className='absolute left-[32.307vw] top-[7.692vw] w-[21.538vw] h-[11.794vw]' alt="" />
           </div>
           <div className='relative w-[77.435vw] h-[51.794vw] -top-[76.923vw] -right-[33.846vw]'>
             <img src="/images/mobile/home/bg-cave.png" alt="" className='w-full h-full'/>

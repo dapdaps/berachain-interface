@@ -5,12 +5,21 @@ import CloudSvg from '@public/images/background/cloud.svg';
 import { useEffect, useState } from 'react';
 
 export const Clouds = () => {
-  const [screenWidth, setScreenWidth] = useState<number>(0);
+  const [screenWidth, setScreenWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const updateScreenWidth = () => {
       setScreenWidth(window.screen.availWidth);
+    };
+
+    if (typeof window !== 'undefined') {
+      updateScreenWidth(); 
+      window.addEventListener('resize', updateScreenWidth); 
     }
+
+    return () => {
+      window.removeEventListener('resize', updateScreenWidth);
+    };
   }, []);
   return (
     <>
@@ -69,12 +78,21 @@ export const Clouds = () => {
 };
 
 export const DappClouds = () => {
-    const [screenWidth, setScreenWidth] = useState<number>(0);
+  const [screenWidth, setScreenWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const updateScreenWidth = () => {
       setScreenWidth(window.screen.availWidth);
+    };
+
+    if (typeof window !== 'undefined') {
+      updateScreenWidth();
+      window.addEventListener('resize', updateScreenWidth); 
     }
+
+    return () => {
+      window.removeEventListener('resize', updateScreenWidth);
+    };
   }, []);
   return (
     <>
