@@ -238,12 +238,15 @@ const MapModal = () => {
   }, []);
 
   const realWidth = useMemo(() => {
+    // @ts-ignore
     if (windowWidth * 0.8 >= 1470) {
       return 1470;
     }
+    // @ts-ignore
     if (windowWidth <=768) {
       return 768;
     }
+    // @ts-ignore
     return windowWidth * 0.8;
   }, [windowWidth]);
 
