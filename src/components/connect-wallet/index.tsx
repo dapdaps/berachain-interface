@@ -19,6 +19,7 @@ import Skeleton from "react-loading-skeleton";
 import useIsMobile from "@/hooks/use-isMobile";
 import MobileUser from "@/components/connect-wallet/user";
 import MobileNetworks from "@/components/connect-wallet/networks";
+import { useDebounceFn } from 'ahooks';
 
 const dropdownAnimations = {
   active: {
@@ -47,6 +48,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const { walletInfo } = useWalletInfo();
   const { userInfo } = useUser();
 
+  const [connecting, setConnecting] = useState<boolean>(isConnecting);
   const [chainDropdownShow, setChainDropdownShow] = useState<boolean>(false);
   const [mobileUserInfoVisible, setMobileUserInfoVisible] =
     useState<boolean>(false);
@@ -139,12 +141,26 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     setChainDropdownShow(true);
   };
 
+  const { run: closeConnecting, cancel: cancelCloseConnecting } = useDebounceFn(() => {
+    setConnecting(false);
+  }, { wait: 15000 });
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    cancelCloseConnecting();
+    if (!isConnecting) {
+      setConnecting(false);
+      return;
+    }
+    setConnecting(true);
+    closeConnecting();
+  }, [isConnecting]);
 
   const RenderChain = () => (
     <motion.div
@@ -343,7 +359,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
 
   return (
     <>
-      {isConnecting ? (
+      {connecting ? (
         <Skeleton
           width={isMobile ? 102 : 125}
           height={42}
