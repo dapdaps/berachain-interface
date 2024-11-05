@@ -136,7 +136,7 @@ export default function Liquidity() {
                 sort: false,
                 width: "5%",
                 render: (item: any, index: number) => {
-                  return item.id;
+                  return (index + 1) + PAGE_SIZE * (page - 1);
                 },
               },
               {
