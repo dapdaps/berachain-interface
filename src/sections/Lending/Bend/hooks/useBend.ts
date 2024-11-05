@@ -41,7 +41,9 @@ const useBend = () => {
   const prices = usePriceStore(store => store.price);
   const [multicallAddress, setMulticallAddress] = useState('');
   const [markets, setMarkets] = useState<TokenInfo[]>([]);
-  const marketStore = useMarketStore()
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const marketStore = useMarketStore();
 
   useEffect(() => {
     if (chainId === -1 || !chainId) return;
@@ -60,17 +62,24 @@ const useBend = () => {
     marketStore.triggerUpdate()
   }, [network, prices]);
 
-
   useEffect(() => {
     if (!chainId || !provider) return
-    marketStore.setInitData({
-      chainId, account, provider, config, multicallAddress, markets, prices
-    })
-    marketStore.triggerUpdate()
+    try {
+      marketStore.setInitData({
+        chainId, account, provider, config, multicallAddress, markets, prices
+      })
+      marketStore.triggerUpdate()
+    } catch (err) {
+      console.error('Failed to set initial data:', err);
+      setError(err as Error);
+    }
   }, [chainId, provider, config, markets, prices]);
 
   const init = useCallback(async () => {
     if (!chainId || !provider) return
+
+    setIsLoading(true);
+    setError(null);
 
     try {
       await marketStore.getPoolDataProvider();
@@ -79,20 +88,24 @@ const useBend = () => {
       await marketStore.getUserAccountData();
       await marketStore.getUserDebts();
     } catch (error) {
-      console.log('init-error', error);
+      console.error('init-error', error);
+      setError(error as Error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [chainId, markets, provider]);
+  }, [chainId, provider, marketStore]);
 
   useEffect(() => {
     init();
   }, [marketStore.updateCounter, markets, chainId, config]);
-
 
   return {
     init,
     markets: marketStore.initData.markets,
     config,
     userAccountData: marketStore.userAccountData,
+    isLoading,
+    error
   };
 };
 

@@ -377,7 +377,7 @@ const useBendStore = create<BendState>((set, get) => ({
       (total, cur) => Big(total).plus(cur.debtInUSD || 0).toFixed(),
       '0'
     );
-    const netWorth = Big(supplyBal).minus(debtsBal).toFixed(2);
+    const netWorth = Big(supplyBal).minus(debtsBal)
 
     if (Big(netWorth).eq(0)) return;
 
@@ -427,7 +427,7 @@ const useBendStore = create<BendState>((set, get) => ({
     set({
       netBaseData: {
         netAPY,
-        netWorthUSD: netWorth,
+        netWorthUSD: netWorth.toFixed(2),
         yourTotalSupply,
         yourTotalBorrow,
         yourSupplyApy: Big(weightedAverageSupplyAPY).plus(yourSupplyRewardAPY).toFixed(),
