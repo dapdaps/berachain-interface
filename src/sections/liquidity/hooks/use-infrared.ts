@@ -85,12 +85,12 @@ export default function useInfrared({
 
       toast?.dismiss(toastId);
       toast?.success({
-        title: type ? 'Withdraw Successfully!' : 'Deposit Successfully!'
+        title: type ? 'Unstake Successfully!' : 'Stake Successfully!'
       });
     } catch (err: any) {
       toast?.dismiss(toastId);
       toast?.fail({
-        title: type ? 'Withdraw Failed!' : 'Deposit Failed!',
+        title: type ? 'Unstake Failed!' : 'Stake Failed!',
         text: err?.message?.includes('user rejected transaction')
           ? 'User rejected transaction'
           : err?.message ?? ''
