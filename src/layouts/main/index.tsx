@@ -32,6 +32,8 @@ const MainLayout = (props: Props) => {
 
   const isVaults = useMemo(() => pathname === '/vaults', [pathname]);
 
+  const routes = ['/earn']
+
   return (
     <div
       id='layout'
@@ -41,7 +43,7 @@ const MainLayout = (props: Props) => {
       style={style}
       onClick={handleTrack}
     >
-      <MainLayoutHeader />
+      <MainLayoutHeader className={routes.includes(pathname) ? 'bg-transparent !fixed' : '' }/>
       <div className={isVaults ? 'h-full w-full absolute' : 'grow'}>
         {children}
       </div>

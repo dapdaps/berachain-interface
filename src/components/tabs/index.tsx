@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import TabsWrapper from './tabs-wrapper';
 import TabPanels from './tab-panels';
 import useIsMobile from '@/hooks/use-isMobile';
-import config from './config';
+import {useTabConfig} from './config';
 
 const Tabs = (props: TabsProps) => {
   const {
@@ -16,12 +16,11 @@ const Tabs = (props: TabsProps) => {
     bodyInnerClassName,
     onChange = () => {},
     isCard,
-    maxTabs = 2
+    page = 'dashboard',
   } = props;
 
-  const isMobile = useIsMobile();
-  const screenConfig = config[isMobile ? 'mobile' : 'laptop'] as any;
-
+  const tabConfig = useTabConfig(page);
+  
   const bodyRef = useRef<any>(null);
 
   const currentTabIndex = useMemo(() => {
@@ -46,8 +45,10 @@ const Tabs = (props: TabsProps) => {
     setPlatform(_platform);
     if (!bodyRef.current) return;
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
-    const tabsWidth = (maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth) * tabs.length;
-    if (tabsWidth >= contentWidth - 2 || maxTabs === 3) {
+
+    const tabsWidth = tabConfig.tabWidth * tabs.length;
+    
+    if (tabsWidth >= contentWidth - 2 || page === 'earn') {
       setContentBorderTopRightRadius(0);
       return;
     }
@@ -64,8 +65,8 @@ const Tabs = (props: TabsProps) => {
               active={currentTabIndex === idx}
               onClick={() => handleChange(tab.key, tab, idx)}
               isCard={isCard}
-              width={maxTabs === 3 ? screenConfig?.minTabWidth : screenConfig.tabWidth}
-              height={screenConfig.tabHeight}
+              width={tabConfig.tabWidth}
+              height={tabConfig.tabHeight}
             >
               {tab.label}
             </Tab>
@@ -83,8 +84,8 @@ const Tabs = (props: TabsProps) => {
         platform={platform}
         bodyInnerClassName={bodyInnerClassName}
         isCard={isCard}
-        maxTabs={maxTabs}
-        {...screenConfig}
+        page={page}
+        {...tabConfig}
       />
     </div>
   );
@@ -105,6 +106,7 @@ export interface TabsProps {
   onChange?(key: TabKey, tab: Tab, index: number): void;
   isCard?: boolean;
   maxTabs?: number;
+  page?: string;
 }
 
 export interface Tab {

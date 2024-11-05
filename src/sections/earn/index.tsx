@@ -19,14 +19,21 @@ const EarnViews = () => {
   );
   return (
     <MarketplaceContext.Provider value={context}>
-      <div className="w-full min-h-screen bg-[#5B5B5B]">
+      <div className="w-full min-h-screen md:bg-[#5B5B5B]">
         <img
           src="/images/mobile/earn.png"
-          className="w-[342px] h-[92px] mx-auto"
+          className="w-[342px] h-[92px] mx-auto md:block hidden"
           alt=""
         />
+        <img
+            src="/images/background/earn-header.png"
+            alt="earn"
+            className="w-[345px] h-[98px] mb-[12px] hidden lg:block m-auto"
+          />
+         
         <Tabs
           isCard
+          page="earn"
           maxTabs={3}
           currentTab={currentTab}
           onChange={(key) => setCurrentTab(key as string)}

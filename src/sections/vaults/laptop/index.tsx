@@ -10,8 +10,7 @@ export default function Laptop({ dapp }: any) {
       </div>
       <div className='pt-[68px] relative z-[2]'>
         <PageBack
-          className='absolute left-[36px] top-[100px]'
-          isBlack={false}
+          className='absolute left-[36px] top-[100px] text-white'
         />
         <div className='text-center text-[60px] font-CherryBomb text-white mt-[10px]'>
           Vaults

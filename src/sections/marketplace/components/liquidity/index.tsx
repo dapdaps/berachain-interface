@@ -94,31 +94,47 @@ export default function Liquidity() {
 
   const isMobile = useIsMobile();
   const [checked, setChecked] = useState(false);
-
+  
   return (
     <div>
       <div className="flex justify-between items-center">
-        <Dropdown
-          list={protocols}
-          value={protocol}
-          onChange={(val) => {
-            setProtocol(val);
-          }}
-          placeholder=""
-        />
-        {isMobile ? (
-          <div className="flex items-center gap-[8px]">
-            <div>You Added only</div>
-            <CheckBox
-              checked={checked}
-              onClick={() => {
-                setChecked(!checked);
-              }}
-            />
-          </div>
-        ) : (
-          <SearchBox value={searchVal} onChange={setSearchVal} />
-        )}
+        <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left">
+          Liquidity
+        </div>
+        <div className="flex items-center gap-2 md:justify-between">
+          {
+            !isMobile && (<div className="flex items-center gap-2">
+              <div>You Added only</div>
+              <CheckBox
+                checked={checked}
+                onClick={() => {
+                  setChecked(!checked);
+                }}
+              />
+          </div>)
+          }
+          <Dropdown
+            list={protocols}
+            value={protocol}
+            onChange={(val) => {
+              setProtocol(val);
+            }}
+            placeholder=""
+          />
+          {isMobile ? (
+            <div className="flex items-center gap-[8px]">
+              <div>You Added only</div>
+              <CheckBox
+                checked={checked}
+                onClick={() => {
+                  setChecked(!checked);
+                }}
+              />
+            </div>
+          ) : (
+            <SearchBox value={searchVal} onChange={setSearchVal} />
+          )}
+        </div>
       </div>
 
       <div className="mt-[20px]">
