@@ -12,8 +12,6 @@ import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import useIsMobile from '@/hooks/use-isMobile';
 import MobileLayout from '@/layouts/mobile';
 
-let className = '';
-
 export default function RootLayout({
   children
 }: Readonly<{
@@ -25,7 +23,10 @@ export default function RootLayout({
     <html lang='en'>
       <head>
         <title>BeraTown</title>
-        <meta name='description' content='Effortlessly explore & dive into all dApps in the Bera ecosystem from one streamlined hub.' />
+        <meta
+          name='description'
+          content='Effortlessly explore & dive into all dApps in the Bera ecosystem from one streamlined hub.'
+        />
       </head>
       <body>
         <WagmiProvider>
@@ -34,7 +35,7 @@ export default function RootLayout({
               {isMobile ? (
                 <MobileLayout>{children}</MobileLayout>
               ) : (
-                <MainLayout className={className}>{children}</MainLayout>
+                <MainLayout>{children}</MainLayout>
               )}
             </Suspense>
           </SkeletonTheme>

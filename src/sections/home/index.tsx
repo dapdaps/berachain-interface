@@ -7,11 +7,13 @@ import DappsSvg from '@public/images/background/dapps.svg';
 import CaveSvg from '@public/images/cave/cave.svg';
 import DashboardSvg from '@public/images/background/dashboard.svg';
 import MarketplaceSvg from '@public/images/background/marketplace.svg';
+import EarnSvg from '@public/images/background/earn.svg';
+import VaultsSvg from '@public/images/background/vaults.svg';
 import { memo } from 'react';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import useIsMobile from '@/hooks/use-isMobile';
 
-import MobileHome from './mobile'
+import MobileHome from './mobile';
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -34,12 +36,20 @@ const Navigation = function () {
     router.push('/cave');
   };
 
+  const onNavigateToEarn = () => {
+    router.push('/earn');
+  };
+
+  const onNavigateToVaults = () => {
+    router.push('/vaults');
+  };
+
   return (
     <>
       <div
         className='cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]'
         onClick={onNavigateToMarketplace}
-        data-bp="1010-006"
+        data-bp='1010-006'
       >
         <div className='flex flex-col gap-[19px] items-center pt-[10px]'>
           <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
@@ -50,38 +60,67 @@ const Navigation = function () {
         <MarketplaceSvg className='hover:scale-110 transition-transform duration-500' />
       </div>
 
-      <div
-        className='cursor-pointer absolute right-[35px] top-[363px] flex flex-col items-end gap-[16px]'
-        onClick={onNavigateToBridge}
-        data-bp="1010-007"
-      >
-        <BridgeSvg className='hover:scale-110 transition-transform duration-500' />
-        <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
-          <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
-          <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
-            Bridge
+      <div className='absolute right-[35px] top-1/3'>
+        <div
+          className='cursor-pointer flex flex-col items-end gap-[16px]'
+          onClick={onNavigateToBridge}
+          data-bp='1010-007'
+        >
+          <BridgeSvg className='hover:scale-110 transition-transform duration-500' />
+          <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
+            <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
+            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+              Bridge
+            </div>
           </div>
+        </div>
+        <div
+          className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
+          onClick={onNavigateToVaults}
+          data-bp='1010-013'
+        >
+          <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
+            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+              Vaults
+            </div>
+          </div>
+          <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
         </div>
       </div>
+      <div className='absolute left-1/3 bottom-[19px] z-10 flex gap-[100px]'>
+        <div
+          className='cursor-pointer flex items-start gap-[21px] translate-x-[-33px]'
+          onClick={onNavigateToDashBoard}
+          data-bp='1010-008'
+        >
+          <div className='flex flex-col gap-[19px] items-center pt-[29px]'>
+            <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
+            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+              Dashboard
+            </div>
+          </div>
+          <DashboardSvg className='hover:scale-110 transition-transform duration-500' />
+        </div>
 
-      <div
-        className='cursor-pointer absolute left-1/2 bottom-[19px] z-10 flex items-start gap-[21px] translate-x-[-33px]'
-        onClick={onNavigateToDashBoard}
-        data-bp="1010-008"
-      >
-        <div className='flex flex-col gap-[19px] items-center pt-[29px]'>
-          <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
-          <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
-            Dashboard
+        <div
+          className='cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px]'
+          onClick={onNavigateToEarn}
+          data-bp='1010-012'
+        >
+          <EarnSvg className='hover:scale-110 transition-transform duration-500' />
+          <div className='flex flex-col gap-[19px] items-center pt-[29px]'>
+            <ArrowTopSvg style={{ transform: 'rotate(180deg)' }} />
+            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+              Earn
+            </div>
           </div>
         </div>
-        <DashboardSvg className='hover:scale-110 transition-transform duration-500' />
       </div>
 
       <div
         className='cursor-pointer absolute left-[45px] top-[348px] z-10 flex flex-col gap-[8px]'
         onClick={onNavigateToDapp}
-        data-bp="1010-009"
+        data-bp='1010-009'
       >
         <DappsSvg className='hover:scale-110 transition-transform duration-500' />
         <div className='flex gap-[15px] items-center pl-[25px]'>
@@ -95,24 +134,21 @@ const Navigation = function () {
       <div
         className='cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]'
         onClick={onNavigateToCave}
-        data-bp="1010-010"
+        data-bp='1010-010'
       >
         <div className='text-[20px] text-center font-CherryBomb'>Bear Cave</div>
-        <CaveSvg className="hover:scale-110 transition-transform duration-500" />
+        <CaveSvg className='hover:scale-110 transition-transform duration-500' />
       </div>
     </>
   );
 };
 
 export default memo(function Home() {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   if (isMobile) {
-    return (
-      <MobileHome />
-    );
+    return <MobileHome />;
   }
-
 
   return (
     <BearBackground type='home'>
