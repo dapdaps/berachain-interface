@@ -16,6 +16,7 @@ export default function Liquidity({ dapp }: any) {
           alt={dapp?.name}
           name={dapp?.name}
           type='liquidity'
+          className='top-[40px]'
         />
       </div>
     </BearBackground>
