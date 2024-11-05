@@ -76,7 +76,7 @@ export default function useInfrared({
         add: 1,
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
-        sub_type: 'Add'
+        sub_type: type ? 'Remove' : 'Add'
       });
 
       setTimeout(() => {
