@@ -37,7 +37,6 @@ const EarnViews = () => {
           maxTabs={3}
           currentTab={currentTab}
           onChange={(key) => setCurrentTab(key as string)}
-          bodyClassName="pb-[24px]"
           tabs={[
             {
               key: "liquidity",

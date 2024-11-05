@@ -101,7 +101,7 @@ export default function Liquidity() {
         <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left">
           Liquidity
         </div>
-        <div className="flex items-center gap-2 md:justify-between">
+        <div className="md:w-full flex items-center gap-2 md:justify-between">
           {
             !isMobile && (<div className="flex items-center gap-2">
               <div>You Added only</div>
@@ -167,30 +167,10 @@ export default function Liquidity() {
                 },
               },
               {
-                title: "Protocol",
-                key: "Protocol",
-                sort: false,
-                width: "20%",
-                render: (item: any, index: number) => {
-                  return (
-                    <div className="flex items-center gap-[12px]">
-                      <Image
-                        src={item.protocolIcon}
-                        width={30}
-                        height={30}
-                        alt={item.protocol}
-                        className="rounded-[50%]"
-                      />
-                      <div>{item.protocol}</div>
-                    </div>
-                  );
-                },
-              },
-              {
                 title: "TVL",
                 key: "TVL",
                 sort: true,
-                width: "10%",
+                width: "20%",
                 render: (item: any, index: number) => {
                   return (
                     item["tvl"] || balanceFormated(Math.random() * 1400, 2)
@@ -216,6 +196,17 @@ export default function Liquidity() {
                 render: (item: any, index: number) => {
                   return (
                     item["yours"] || balanceFormated(Math.random() * 14, 2)
+                  );
+                },
+              },
+              {
+                title: "Your Position",
+                key: "position",
+                sort: true,
+                width: "15%",
+                render: (item: any, index: number) => {
+                  return (
+                    <div className="flex underline">${item["yours"] || balanceFormated(Math.random() * 14, 2)}</div> 
                   );
                 },
               },

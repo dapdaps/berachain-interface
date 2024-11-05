@@ -37,7 +37,7 @@ export default function Dropdown({
 
   const title = useMemo(() => {
     if (list && value) {
-      const cur = list.find((item) => item.key === value);
+      const cur = list.find((item) => (item.key || item.name) === value);
       if (cur) {
         return cur.name;
       }
@@ -80,16 +80,16 @@ export default function Dropdown({
           {list?.map((item) => {
             return (
               <div
-                key={item.key}
+                key={item.key || item.name}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onChange(item.key);
+                  onChange(item.key || item.name);
                   setModalShow(false);
                 }}
                 className='h-[40px] px-[10px]  hover:bg-[#0000000F] relative flex justify-between items-center text-nowrap'
               >
                 <div>{item.name}</div>
-                {item.key === value && (
+                {(item.key || item.name) === value && (
                   <div className='w-[6px] h-[6px] bg-[#EBF479] absolute top-[18px] right-1 rounded-[6px]'></div>
                 )}
               </div>

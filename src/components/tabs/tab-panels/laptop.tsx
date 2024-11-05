@@ -32,7 +32,7 @@ export default function Laptop({
       }}
     >
       <div
-        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black lg:px-[22px] md:px-[12px] pt-[24px] min-h-[50px] ${bodyClassName}`}
+        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black lg:px-[22px] md:px-[12px] pt-[24px] min-h-[50px] lg:pb-[22px] ${bodyClassName}`}
         style={{
           borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
           borderTopRightRadius:
