@@ -113,6 +113,7 @@ export default function useRemove({
         template: 'Bex',
         status,
         transactionHash,
+        sub_type: 'Remove',
         extra_data: JSON.stringify({
           amount0: amount0 * (percent / 100),
           amount1: amount1 * (percent / 100),
