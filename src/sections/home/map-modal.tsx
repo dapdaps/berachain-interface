@@ -41,7 +41,7 @@ const PartList = [
   {
     clipPath: 'unset',
     className:
-      'origin-top-left absolute top-[8px] left-[484px] w-[478px] h-[235px]',
+      'origin-top-left absolute top-[1%] left-[42%] w-[478px] h-[235px]',
     src: 'earn.svg',
     maskSrc: 'mask-earn.svg',
     indicatorClass: 'absolute right-[164px] top-[12px] z-10',
