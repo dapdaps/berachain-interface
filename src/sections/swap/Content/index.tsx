@@ -128,7 +128,7 @@ export default function Swap({
 
   return (
     <Card>
-      <Header showSetting={showSetting} />
+      <Header showSetting={showSetting} style={{ justifyContent: 'flex-start' }} />
       <TokenAmout
         type='in'
         currency={inputCurrency}
