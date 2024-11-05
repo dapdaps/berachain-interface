@@ -3,6 +3,7 @@ import { numberFormatter } from '@/utils/number-formatter';
 import LazyImage from '@/components/layz-image';
 import { DefaultIcon } from '@/sections/dashboard/utils';
 import Big from 'big.js';
+import { useRouter } from 'next/navigation';
 
 export function calcDebtRatio(borrowAmount: Big.Big, supplyAmount: Big.Big) {
   if (Big(supplyAmount).eq(0)) {
@@ -18,6 +19,7 @@ export function calcDebtRatio(borrowAmount: Big.Big, supplyAmount: Big.Big) {
 }
 
 export default function Laptop({ isLending, tableList }: any) {
+  const router = useRouter();
   const columns: Column[] = [
     {
       title: 'Pool',
@@ -172,6 +174,10 @@ export default function Laptop({ isLending, tableList }: any) {
       loading={false}
       columns={isLending ? LendingColumns : columns}
       list={tableList}
+      onRow={(record) => {
+        if (!record?.path) return;
+        router.push(record.path);
+      }}
     />
   );
 }

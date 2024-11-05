@@ -75,6 +75,7 @@ const DashboardPortfolio = (props: Props) => {
                     showName={dapp.show_name}
                     version={dapp.version}
                     detailList={dapp.detailList}
+                    path={dapp.path}
                     percent={
                       Big(totalBalance || 0).eq(0)
                         ? '0'

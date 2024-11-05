@@ -19,7 +19,8 @@ const FlexTable = (props: FlexTableProps) => {
     ),
     renderTitle,
     onChangeSortDataIndex,
-    showHeader = true
+    showHeader = true,
+    onRow = () => {},
   } = props;
 
   return (
@@ -83,6 +84,7 @@ const FlexTable = (props: FlexTableProps) => {
                   <div
                     className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${bodyClass}`}
                     key={index}
+                    onClick={(e) => onRow(record, index, e)}
                   >
                     {columns.map((column: any) => (
                       <div
@@ -142,4 +144,5 @@ export type FlexTableProps = {
   showHeader?: boolean;
   onChangeSortDataIndex?(index: string): void;
   renderTitle?(column: Column, columnIdx: number): any;
+  onRow?(record: any, index: number, e: any): void;
 };

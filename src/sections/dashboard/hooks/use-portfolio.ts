@@ -5,6 +5,15 @@ import { useAuthQuery } from '@/hooks/use-auth-query';
 import { get } from '@/utils/http';
 import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
 
+const DAppPath: any = {
+  Bend: '/lending/bend',
+  Dolomite: '/lending/dolomite',
+  Infrared: '/liquidity/infrared',
+  Kodiak: '/dex/kodiak',
+  Bex: '/dex/bex',
+  'Ooga Booga': '/dex/ooga-booga',
+};
+
 export function usePortfolio(props: Props) {
   const { currentChain, networkList } = props;
 
@@ -47,6 +56,7 @@ export function usePortfolio(props: Props) {
           for (const typeAsset of _dapp.assets) {
             const assetType = typeAsset.type;
             typeAsset.totalUsd = Big(0);
+            typeAsset.path = DAppPath[_dapp.name];
             if (!typeAsset.assets) continue;
             for (let i = 0; i < typeAsset.assets.length; i++) {
               const tokenAsset = typeAsset.assets[i];
@@ -92,7 +102,7 @@ export function usePortfolio(props: Props) {
             chainLogo: currentChain.icon,
             dappLogo: getDappLogo(_dapp.name),
             detailList: _dapp.assets || [],
-            path: ''
+            path: DAppPath[_dapp.name],
           };
           dappsList.push(dappItem);
 
