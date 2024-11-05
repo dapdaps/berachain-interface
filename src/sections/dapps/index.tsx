@@ -166,7 +166,7 @@ const DAppsView = () => {
           </div>
         </div>
       </div>
-      <div className='absolute bottom-0 left-0 right-0 hidden md:visible' style={{
+      <div className='absolute bottom-0 left-0 right-0 hidden md:block' style={{
           backgroundImage: "url('/images/mobile/dapp-bg.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',

@@ -2,17 +2,6 @@ import Drawer from '@/components/drawer';
 import { icons } from '@/configs/chains';
 import Image from 'next/image';
 
-/**
- * font-family: Montserrat;
-font-size: 18px;
-font-weight: 700;
-line-height: 16.2px;
-text-align: left;
-
-=> text-[18px] font-[700] leading-[16.2px] text-left
- * 
- */
-
 const MobileNetworks = (props: Props) => {
   const { visible, onClose, chains, chainId, handleChainSelect } = props;
 

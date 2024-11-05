@@ -8,6 +8,7 @@ import useBendReward from '@/sections/Lending/Bend/hooks/useBendReward';
 import useToast from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import useClickTracking from '@/hooks/use-click-tracking';
+import useIsMobile from '@/hooks/use-isMobile';
 
 
 const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
@@ -34,6 +35,7 @@ export type DataType = {
   count: number | string
 }
 export function useBGT() {
+  const isMobile = useIsMobile();
   const toast = useToast();
   const router = useRouter()
   const { handleReport } = useClickTracking();
@@ -149,9 +151,13 @@ export function useBGT() {
   }
 
   const handleExplore = function () {
+    handleReport('1010-004-004');
+    if (isMobile) {
+      router.push("/earn?tab=staking")
+      return;
+    }
     // window.open("https://bartio.station.berachain.com/")
     router.push("/marketplace/invest?type=vaults")
-    handleReport('1010-004-004');
   }
 
   const handleValidator = (data: any) => {

@@ -1,3 +1,4 @@
+import useIsMobile from "@/hooks/use-isMobile";
 import { motion } from "framer-motion";
 
 const DApp = ({
@@ -12,6 +13,7 @@ const DApp = ({
     if (disabled) return;
     onClick();
   }
+  const isMobile = useIsMobile();
 
   return (
     <motion.div
@@ -23,20 +25,21 @@ const DApp = ({
       {
         disabled && (
           <motion.div
-            className="absolute justify-center flex items-center cursor-not-allowed z-[2] left-0 top-0 w-full h-full rounded-[30px] bg-[rgba(0,_0,_0,_0.5)]"
-            whileHover={disabled ? 'visible' : 'hidden'}
-            initial="hidden"
-            variants={{
-              visible: {
-                opacity: 1,
-              },
-              hidden: {
-                opacity: 0,
-              },
-            }}
-          >
-            <div className="text-[12px] text-white text-center">Coming soon…</div>
-          </motion.div>
+          className="absolute justify-center flex items-center cursor-not-allowed z-[2] left-0 top-0 w-full h-full rounded-[30px] bg-[rgba(0,_0,_0,_0.5)]"
+          initial={ isMobile ? 'visible' : 'hidden'}
+          animate={isMobile ? 'visible' : undefined}
+          whileHover={isMobile ? undefined : 'visible'}
+          variants={{
+            visible: {
+              opacity: 1,
+            },
+            hidden: {
+              opacity: 0,
+            },
+          }}
+        >
+          <div className="text-[12px] text-white text-center">Coming soon…</div>
+        </motion.div>
         )
       }
       <motion.div

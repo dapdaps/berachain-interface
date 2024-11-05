@@ -71,7 +71,11 @@ const ActionPanelForm = (props: Props) => {
         />
       </div>
       {isMobile && (
-        <AmountSelector token={token} setAmount={setAmount} balance={balance}>
+        <AmountSelector
+          token={token}
+          setAmount={(val: any) => handleAmount({ target: { value: val } })}
+          balance={balance}
+        >
           <Balance balance={balance} handleBalance={handleBalance} />
         </AmountSelector>
       )}
