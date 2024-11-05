@@ -1,11 +1,9 @@
 import lending from './lending';
-import liquidity from './liquidity';
-// import pool from './pool';
-// import staking from './staking';
+import staking from './staking';
 import swap from './swap';
 
 export default {
   ...swap,
   ...lending,
-  ...liquidity
+  ...staking
 } as { [key: string]: any };

@@ -36,10 +36,10 @@ export function useMarketplaceContext(props: Props): Context {
   };
 
   const openInfrared = async (data: any) => {
-    const config = await import('@/configs/liquidity/dapps/infrared');
+    const config = await import('@/configs/staking/dapps/infrared');
     setVaultsData({
       dapp: VaultsDApps.Infrared,
-      dappLink: '/liquidity/infrared',
+      dappLink: '/staking/infrared',
       config: config.default,
       data
       // investToken: beraB['honey'],

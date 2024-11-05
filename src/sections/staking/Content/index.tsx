@@ -38,7 +38,7 @@ const header = [
 ];
 
 export type DefaultIndexType = 0 | 1
-export default function Liquidity({ dapp }: Props) {
+export default function Staking({ dapp }: Props) {
   const dexConfig = dapp?.chains[DEFAULT_CHAIN_ID];
   const { ALL_DATA_URL, BHONEY_ADDRESS, addresses, pairs } = dexConfig;
   const { account: sender, chainId } = useAccount();
