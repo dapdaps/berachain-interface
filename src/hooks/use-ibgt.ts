@@ -1,13 +1,14 @@
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import useCustomAccount from './use-account';
-import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 import useToast from '@/hooks/use-toast';
 import { useMultiState } from '@/hooks/use-multi-state';
 import Big from 'big.js';
 import { useRouter } from 'next/navigation';
 import useClickTracking from '@/hooks/use-click-tracking';
 import useAddAction from "@/hooks/use-add-action";
+import useLpToAmount from '@/hooks/use-lp-to-amount';
 
 const IBGT_ADDRESS = "0x46efc86f0d7455f135cc9df501673739d513e982"
 
@@ -123,6 +124,11 @@ export function useIBGT(props: any) {
           .div(Big(lpBalance).gt(0) ? lpBalance : 1)
           .toFixed(4)
       );
+
+  const {
+    handleGetAmount
+  } = useLpToAmount(data?.LP_ADDRESS)
+
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider?.getSigner());
@@ -266,18 +272,20 @@ export function useIBGT(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        const [amount0, amount1] = handleGetAmount(inAmount)
         addAction?.({
-          type: 'Liquidity',
-          action: 'Deposit',
-          token0: tokens[0],
-          token1: tokens[1],
+          type: 'Staking',
+          action: 'Staking',
+          token: {
+            symbol: tokens.join('-')
+          },
           amount: inAmount,
           template: "Infrared",
           status: status,
           add: 1,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Add"
+          sub_type: "Stake",
         });
         updateState({
           isLoading: false,
@@ -344,33 +352,23 @@ export function useIBGT(props: any) {
           isLoading: false,
         });
         const { status, transactionHash } = receipt;
+        const [amount0, amount1] = handleGetAmount(lpAmount)
         addAction?.({
-          type: 'Liquidity',
-          action: 'Withdraw',
-          token0: tokens[0],
-          token1: tokens[1],
+          type: 'Staking',
+          action: 'UnStake',
+          token: {
+            symbol: tokens.join('-')
+          },
+          symbol: tokens.join("-"),
           amount: lpAmount,
           template: "Infrared",
           status: status,
           add: 0,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Remove"
+          sub_type: "Unstake",
         });
-        console.log('=receipt', receipt);
 
-        // addAction?.({
-        //   type: 'Liquidity',
-        //   action: 'Withdraw',
-        //   token0,
-        //   token1,
-        //   amount: lpAmount,
-        //   template: defaultDex,
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: props.chainId
-        // });
         setTimeout(() => {
           onSuccess?.()
         }, 3000)
@@ -418,11 +416,12 @@ export function useIBGT(props: any) {
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
         addAction?.({
-          type: 'Liquidity',
+          type: 'Staking',
           action: 'Claim',
-          token0: tokens[0],
-          token1: tokens[1],
-          amount: tokenData?.earned,
+          token: {
+            symbol: tokens.join('-')
+          },
+          amount: data?.earned,
           template: "Infrared",
           status: status,
           transactionHash,

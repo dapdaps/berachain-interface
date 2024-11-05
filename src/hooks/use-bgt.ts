@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { ethers } from 'ethers';
 import useCustomAccount from './use-account';
-import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 import { asyncFetch } from '@/utils/http';
 import useBendReward from '@/sections/Lending/Bend/hooks/useBendReward';
 import useToast from '@/hooks/use-toast';

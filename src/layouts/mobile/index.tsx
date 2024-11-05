@@ -31,7 +31,7 @@ const dapps: DApp[] = [
     id: 'infrared',
     name: 'Infrared',
     icon: '/images/dapps/infrared.svg',
-    href: '/liquidity/infrared'
+    href: '/staking/infrared'
   },
   { id: 'bex', name: 'Bex', icon: '/images/dapps/bex.png', href: '/dex/bex' },
   {
