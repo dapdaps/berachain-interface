@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang='en'>
       <head>
         <title>BeraTown</title>
-        <meta name='description' content='berachain-interface' />
+        <meta name='description' content='Effortlessly explore & dive into all dApps in the Bera ecosystem from one streamlined hub.' />
       </head>
       <body>
         <WagmiProvider>

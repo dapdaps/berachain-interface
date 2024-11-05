@@ -1,32 +1,41 @@
 import ConnectWallet from '@/components/connect-wallet';
 import BGTCoin, { CoinType } from '@/layouts/main/BGTCoin';
 import { useRouter } from "next/navigation";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BGTMobileView from '@/sections/bgt/mobile';
 import { useBgt } from '@/sections/home/hooks/useBgt';
 import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
 import { useProgressRouter } from '@/hooks/use-progress-router';
+import clsx from 'clsx'
 
 const Home = () => {
   const router = useProgressRouter()
   const bgt = useBgt();
+  const [viewportHeight, setViewportHeight] = useState('100vh');
+  const [visibleHeight, setVisibleHeight] = useState(844);
 
   const handleBGTClick = (type: CoinType) => {
     bgt.handleBgt(true, type);
   };
 
+
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      setViewportHeight(`${window.innerHeight}px`);
+      setVisibleHeight(window.visualViewport?.height || window.innerHeight);
+    };
+    
+    updateViewportHeight(); 
+    window.addEventListener('resize', updateViewportHeight); 
+    
+    return () => {
+      window.removeEventListener('resize', updateViewportHeight);
+    };
+  }, []);
+
+
   return (
     <div className="relative w-full min-h-screen bg-[#F5F5F5]">
-      <div 
-        className="relative w-full h-screen overflow-hidden"
-        style={{
-          maxHeight: 'calc(844 / 390 * 100vw)',
-          backgroundImage: "url('/images/mobile/beratown-home.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
         <div className="w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]">
             <div className='flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
                 <ConnectWallet />
@@ -46,8 +55,17 @@ const Home = () => {
                 />
             </div>
         </div>
-        
-        <div className="w-full h-full mt-[12.82vw]">
+      <div 
+        className="relative w-full h-screen overflow-hidden"
+        style={{
+          maxHeight: 'calc( 844/390 * 100vh)',
+          backgroundImage: "url('/images/mobile/beratown-home.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >       
+        <div className={clsx('w-full h-full', visibleHeight < 844 ? '0':'mt-[12.82vw]')}>
           <div className='relative w-[46.6666vw] h-[25.128vw] top-[19.487vw] left-[10.256vw]'>
             <img src="/images/mobile/home/bg-bridge.png" alt="" className='w-full h-full'/>
             <img src="/images/mobile/home/text-bridge.png" onClick={() => router.push('/bridge')} className='absolute left-0 -bottom-6 w-[22.564vw] h-[20.512vw]' alt="" />
