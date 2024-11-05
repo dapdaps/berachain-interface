@@ -136,7 +136,7 @@ const MarketplaceView = () => {
 
   return (
     <div className='relative'>
-      <PageBack className='absolute left-[40px] top-[31px] hidden lg:block'/>
+      <PageBack className='absolute left-[40px] top-[31px] hidden lg:flex'/>
       <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>Marketplace</PageTitle>
 
       <img src="/images/mobile/market-header.png" className='w-full h-[30.769vw] absolute top-[-73px] z-[1] hidden md:block' alt="" />
