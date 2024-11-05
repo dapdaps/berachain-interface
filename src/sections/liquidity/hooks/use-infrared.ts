@@ -67,7 +67,7 @@ export default function useInfrared({
 
       addAction?.({
         type: 'Liquidity',
-        action: 'Deposit',
+        action: type ? 'Withdraw' : 'Deposit',
         token0: tokens[0],
         token1: tokens[1],
         amount: amount,
@@ -85,12 +85,12 @@ export default function useInfrared({
 
       toast?.dismiss(toastId);
       toast?.success({
-        title: 'Stake Successfully!'
+        title: type ? 'Withdraw Successfully!' : 'Deposit Successfully!'
       });
     } catch (err: any) {
       toast?.dismiss(toastId);
       toast?.fail({
-        title: 'Stake Failed!',
+        title: type ? 'Withdraw Failed!' : 'Deposit Failed!',
         text: err?.message?.includes('user rejected transaction')
           ? 'User rejected transaction'
           : err?.message ?? ''
