@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useProgressRouter } from '@/hooks/use-progress-router';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const menuItems = [
   { id: 1, title: 'Bear Cave', href: '/cave' },
@@ -75,6 +76,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
+  const { handleReportNoCode } = useClickTracking();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
@@ -121,6 +123,10 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname, setIsMenuOpen]);
+
+  useEffect(() => {
+    handleReportNoCode();
+  }, []);
 
   const routes = ['/', '/cave', '/marketplace', '/earn'];
 

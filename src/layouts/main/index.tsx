@@ -20,8 +20,10 @@ const MainLayout = (props: Props) => {
 
   const { handleTrack } = useClickTracking();
   const { initializePrice } = useTokenPrice();
+  const { handleReportNoCode } = useClickTracking();
 
   useEffect(() => {
+    handleReportNoCode();
     initializePrice()
   }, []);
 
