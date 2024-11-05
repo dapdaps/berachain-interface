@@ -182,7 +182,7 @@ const Balance = (props: any) => {
   return (
     <div className={`font-Montserrat text-sm font-normal leading-[17px] text-left md:text-right ${className}`}>
       {isDeposit ? "Balance: " : "Available: "}
-      <span className="underline" onClick={() => setAmount(maxValue)}>
+      <span className="underline cursor-pointer" onClick={() => setAmount(maxValue)}>
             {formatDisplayNumber(currentBalance)}
           </span>
     </div>

@@ -1,6 +1,8 @@
 import useMarketStore from "@/stores/useMarketStore";
 import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
+import useBend from "../hooks/useBend";
+import Skeleton from 'react-loading-skeleton';
 
 function truncateToTwoDecimals(numString: string) {
   if (!numString) return "0";
@@ -10,9 +12,8 @@ function truncateToTwoDecimals(numString: string) {
 
 const NetBase = () => {
   const { userAccountData, netBaseData } = useMarketStore();
-
-  console.log(userAccountData);
-
+  const { isLoading }= useBend()
+  
   const list = [
     { label: 'Total Supplied', labelMobile: 'You Supplied', value: `$${formatDisplayNumber(userAccountData?.totalCollateralBaseUSD || 0)}` },
     { label: 'Total Borrowed', labelMobile: 'You Borrowed', value: `$${formatDisplayNumber(userAccountData?.totalDebtBaseUSD || 0)}` },
@@ -22,6 +23,33 @@ const NetBase = () => {
     { label: 'Funds eligible for deposit', value: `$${netBaseData.totalWalletInUSD ? Number(netBaseData.totalWalletInUSD).toFixed(2) : '-'}` },
   ];
   
+  if (isLoading) {
+    return (
+      <div className="bg-[#FFDC50] rounded-[10px] p-4 flex justify-between items-center">
+        {/* Mobile Layout Skeleton */}
+        <div className="flex md:hidden">
+          <SkeletonItem />
+          <SkeletonItem className="ml-[80px]" />
+          <SkeletonItem className="ml-[80px]" />
+        </div>
+        <div className="flex ml-[140px] md:hidden">
+          <SkeletonItem />
+          <SkeletonItem className="ml-[38px]" />
+        </div>
+        
+        {/* Desktop Layout Skeleton */}
+        <div className="hidden md:visible md:grid md:grid-cols-[1fr_1.2fr] gap-y-[16px]">
+          <SkeletonItem />
+          <SkeletonItem />
+          <SkeletonItem />
+          <SkeletonItem />
+          <SkeletonItem />
+          <SkeletonItem />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#FFDC50] rounded-[10px] p-4 flex justify-between items-center">
       <div className="flex md:hidden">
@@ -62,3 +90,14 @@ const Item = (props: any) => {
     </div>
   );
 };
+
+const SkeletonItem = ({ className = '' }: { className?: string }) => (
+  <div className={className}>
+    <div className="text-xs text-[#1E1E1E] mb-1">
+      <Skeleton width={80} />
+    </div>
+    <div className="text-base font-medium">
+      <Skeleton width={100} />
+    </div>
+  </div>
+);

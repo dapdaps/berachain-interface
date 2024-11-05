@@ -150,12 +150,14 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
 
 export default ActionForm;
 
-const MIN_ETH_GAS_FEE = 0.00001;
 
 const smartFormatNumber = (amount: Big, decimals: number): string => {
   const formatted = amount.toFixed(decimals).replace(/\.?0+$/, "");
   return formatted.includes(".") ? formatted : formatted + ".0";
 };
+
+
+const MIN_ETH_GAS_FEE = 0
 
 const calculateMaxValue = (
   balance: string,
@@ -174,7 +176,7 @@ const Balance = (props: any) => {
   return (
     <div className={`font-Montserrat text-sm font-normal leading-[17px] text-left ${className}`}>
       {isBorrow ? "Borrow Max: " : "Balance: "}
-      <span className="underline" onClick={() => setAmount(maxValue)}>
+      <span className="underline cursor-pointer" onClick={() => setAmount(maxValue)}>
         {formatDisplayNumber(currentBalance)}
       </span>
     </div>
