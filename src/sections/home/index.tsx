@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import BearBackground from '@/components/bear-background/laptop';
 import ArrowTopSvg from '@public/images/background/arrow-top.svg';
 import BridgeSvg from '@public/images/background/bridge.svg';
@@ -74,17 +75,35 @@ const Navigation = function () {
             </div>
           </div>
         </div>
-        <div
-          className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
-          onClick={onNavigateToVaults}
-          data-bp='1010-013'
-        >
-          <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
-            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
-              Vaults
+        <div className='absolute top-[109px]'>
+          <div
+            className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
+            onClick={onNavigateToVaults}
+            data-bp='1010-013'
+          >
+            <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
+              <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+                Vaults
+              </div>
             </div>
+            <motion.div
+              initial={{
+                rotateZ: 5
+              }}
+              animate={{
+                rotateZ: [-5, 5, -5, 5, -5, 5]
+              }}
+              transition={{
+                duration: 0.4,
+                ease: 'linear',
+                repeat: Infinity,
+                repeatDelay: 3
+              }}
+              className='origin-center'
+            >
+              <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
+            </motion.div>
           </div>
-          <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
         </div>
       </div>
       <div className='absolute left-1/3 bottom-[19px] z-10 flex gap-[100px]'>
