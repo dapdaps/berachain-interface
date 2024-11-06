@@ -9,7 +9,7 @@ import {
 import { usePriceStore } from '@/stores//usePriceStore';
 import Button from '@/sections/pools/components/button/remove-button';
 import Big from 'big.js';
-import useInfrared from '../hooks/use-infrared';
+import useInfrared from '@/sections/staking/hooks/use-infrared';
 import IncreaseLiquidityModal from '@/sections/pools/increase-liquidity-modal';
 import UserInfo from './user-info';
 

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Bg from '../components/pc-bg';
 import PageBack from '@/components/back';

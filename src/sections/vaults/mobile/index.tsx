@@ -7,7 +7,7 @@ import Empty from '@/components/empty';
 import CircleLoading from '@/components/circle-loading';
 import Big from 'big.js';
 import { cloneDeep } from 'lodash';
-import useInfraredList from '../hooks/use-infrared-list';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 import { formatValueDecimal } from '@/utils/balance';
 import HandleModal from './handle-modal';
 import UserInfo from './user-info';

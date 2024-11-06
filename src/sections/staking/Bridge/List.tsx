@@ -88,17 +88,17 @@ export default function List(props: any) {
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center'>
               {data?.images[0] && (
-                <div className='w-[30px] h-[30px]'>
-                  <img
-                    src={data?.images[0]}
-                    style={{ objectPosition: 'left' }}
-                  />
-                </div>
+                <img
+                  className='w-[30px] h-[30px] rounded-full'
+                  src={data?.images[0]}
+                  style={{ objectPosition: 'left' }}
+                />
               )}
               {data?.images[1] && (
-                <div className='w-[30px] h-[30px] ml-[-10px]'>
-                  <img src={data?.images[1]} />
-                </div>
+                <img
+                  src={data?.images[1]}
+                  className='w-[30px] h-[30px] rounded-full ml-[-10px]'
+                />
               )}
             </div>
             <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
@@ -118,9 +118,13 @@ export default function List(props: any) {
         return (
           <img
             style={{ width: 26 }}
-            src={`/images/dapps/infrared/${
-              pool ? (pool?.protocol === 'BEX' ? 'bex' : 'berps') : 'infrared'
-            }.svg`}
+            src={
+              pool?.protocol === 'BEX'
+                ? '/images/dapps/infrared/bex.svg'
+                : pool?.protocol === 'Kodiak Finance'
+                ? '/images/dapps/kodiak.svg'
+                : '/images/dapps/infrared/berps.svg'
+            }
           />
         );
       }
