@@ -18,7 +18,7 @@ import IconAdd from '@public/images/add.svg'
 const PAGE_SIZE = 9;
 
 
-const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction }: any) => {
+const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, addAction, honeyInfo }: any) => {
   const commonColumns = [
     {
       title: "#",
@@ -91,12 +91,36 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction }:
             Get
           </button>
           {item.protocol.name === 'Dolomite' ? (
-            <IconAdd onClick={() => handleAction('Supply', item)} />
+            <Popover
+              trigger={PopoverTrigger.Click}
+              placement={PopoverPlacement.BottomRight}
+              content={(
+                <ActionPanelLaptop
+                  title="Deposit"
+                  actionText="Deposit"
+                  placeholder="0.00"
+                  token={item}
+                  CHAIN_ID={80084}
+                  onSuccess={() => {
+                    // reload data
+                  }}
+                  addAction={addAction}
+                />
+              )}
+              triggerContainerClassName="cursor-pointer"
+            >
+              <IconAdd />
+            </Popover>
           ) : (
             <Popover
               trigger={PopoverTrigger.Click}
               placement={PopoverPlacement.BottomRight}
-              content={<BendActionPanelLaptop action="deposit" token={item} />}
+              content={(
+                <BendActionPanelLaptop
+                  action="deposit"
+                  token={item.protocol.name === 'Bend' && item.symbol === 'HONEY' ? honeyInfo : item}
+                />
+              )}
               triggerContainerClassName="cursor-pointer"
             >
               <IconAdd />
@@ -148,18 +172,47 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction }:
       width: "15%",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button 
-            onClick={() => handleAction('Borrow', item)}
-            className='bg-[#fff] border font-bold border-[#000] p-[7px] disabled:opacity-60 hover:bg-[#FFDC50] rounded-[10px]'
+          <Popover
+            trigger={PopoverTrigger.Click}
+            placement={PopoverPlacement.BottomRight}
+            content={item.protocol.name === 'Dolomite' ? null : (
+              <BendBorrowActionModal
+                isOpen={true}
+                onClose={() => {}}
+                action="borrow"
+                token={item.protocol.name === 'Bend' && item.symbol === 'HONEY' ? honeyInfo : item}
+              />
+            )}
+            triggerContainerClassName="cursor-pointer"
           >
-            Borrow
-          </button>
-          <button 
-            onClick={() => handleAction('Repay', item)}
-            className='border border-[rgba(0,0,0,.5)] font-bold p-[7px] disabled:opacity-60 rounded-[10px]'
+            <button
+              onClick={() => handleAction('Borrow', item)}
+              className="bg-[#fff] border font-bold border-[#000] p-[7px] disabled:opacity-60 hover:bg-[#FFDC50] rounded-[10px]"
+            >
+              Borrow
+            </button>
+          </Popover>
+          <Popover
+            trigger={PopoverTrigger.Click}
+            placement={PopoverPlacement.BottomRight}
+            content={item.protocol.name === 'Dolomite' ? null : (
+              <BendBorrowActionModal
+                isOpen={true}
+                onClose={() => {
+                }}
+                action="repay"
+                token={item.protocol.name === 'Bend' && item.symbol === 'HONEY' ? honeyInfo : item}
+              />
+            )}
+            triggerContainerClassName="cursor-pointer"
           >
-            Repay
-          </button>
+            <button
+              onClick={() => handleAction('Repay', item)}
+              className="border border-[rgba(0,0,0,.5)] font-bold p-[7px] disabled:opacity-60 rounded-[10px]"
+            >
+              Repay
+            </button>
+          </Popover>
         </div>
       ),
     },
@@ -172,16 +225,8 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction }:
 const LaptopList = ({ list, loading, tab: tabType }: any) => {
   const [page, setPage] = useState(1);
 
-  
-  const [actionData, setActionData] = useState<any>(null);
-  const [actionType, setActionType] = useState<any>(null);
-  const [bendVisible, setBendVisible] = useState(false);
-  const [bendBorrowVisible, setBendBorrowVisible] = useState(false);
-  const [dolomiteVisible, setDolomiteVisible] = useState(false);
-  const [dolomiteLoading, setDolomiteLoading] = useState<boolean>(false);
-
   const { addAction } = useAddAction("lending");
-  
+
   const maxPage = useMemo(() => {
     return Math.ceil(list.length / PAGE_SIZE) || 1;
   }, [list]);
@@ -200,36 +245,26 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
       router.push('/lending/dolomite?tab=borrow');
       return;
     }
-    setActionType(type);
-    setActionData(data);
-    setDolomiteVisible(true);
   };
 
-  const handleActionClose = () => {
-    setBendVisible(false);
-    setBendBorrowVisible(false);
-    setDolomiteVisible(false);
-    setActionData(null);
-    setActionType(null);
-  };
-
-  console.log(data, 'data');
-  
-
-  const metaData = getListMeta(tabType, { handleSwap, handleAction });
+  const metaData = getListMeta(tabType, {
+    handleSwap,
+    handleAction,
+    addAction,
+    honeyInfo,
+  });
 
   return (
     <>
       <List
         loading={loading}
-         meta={metaData}
+        meta={metaData}
         list={data}
         maxPage={maxPage}
         onPageChange={setPage}
         bodyClassName="h-[522px] overflow-y-auto mt-[20px]"
       />
-       {/*#region swap*/}
-       {swapToken && (
+      {swapToken && (
         <SwapModal
           defaultOutputCurrency={swapToken}
           outputCurrencyReadonly={true}
@@ -240,32 +275,6 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
           }}
         />
       )}
-      {/*#region Bend Borrow*/}
-      <BendBorrowActionModal
-        isOpen={bendBorrowVisible}
-        onClose={handleActionClose}
-        action={actionType?.toLowerCase()}
-        token={actionData}
-      />
-      {/*#endregion*/}
-      {/*#region Dolomite Deposit*/}
-      {
-        dolomiteVisible && (
-          <ActionPanelLaptop
-          title={actionType}
-          actionText={actionType}
-          placeholder="0.00"
-          token={actionData}
-          CHAIN_ID={80084}
-          onSuccess={() => {
-            // reload data
-            setDolomiteLoading(true);
-          }}
-          addAction={addAction}
-        />
-        )
-      }
-      {/*#endregion*/}
     </>
   );
 };
