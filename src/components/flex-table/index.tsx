@@ -30,7 +30,7 @@ const FlexTable = (props: FlexTableProps) => {
           <div className={`flex items-center p-[14px] ${headClass}`}>
             {columns.map((column: any, columnIdx) => (
               <div
-                key={column.dataIndex}
+                key={column?.dataIndex}
                 style={{
                   width: column.width ?? 0,
                   flexGrow: column.width ? 0 : 1,
