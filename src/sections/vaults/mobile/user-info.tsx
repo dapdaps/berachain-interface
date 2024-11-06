@@ -23,12 +23,22 @@ const UserInfo = ({ data, className }: any) => {
             {formatValueDecimal(data?.earned, '', 2, true, false)}
           </span>
           <span className='text-[12px] font-medium'>
-            <Image
-              src={'/images/dapps/infrared/ibgt.svg'}
-              width={20}
-              height={20}
-              alt='Reward Token'
-            />
+            {data.rewardSymbol === 'iBGT' && (
+              <Image
+                src={'/images/dapps/infrared/ibgt.svg'}
+                width={20}
+                height={20}
+                alt='Reward Token'
+              />
+            )}
+            {data.rewardSymbol === 'HONEY' && (
+              <Image
+                src={'/images/dapps/honey.png'}
+                width={20}
+                height={20}
+                alt='Reward Token'
+              />
+            )}
           </span>
         </div>
       </div>

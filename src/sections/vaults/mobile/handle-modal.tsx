@@ -46,9 +46,9 @@ export default function HandleModal({
           icons: data.images
         }
       : {
-          address: pool.lp_token_address,
+          address: pool?.lp_token_address || data.LP_ADDRESS,
           decimals: 18,
-          symbol: pool.name,
+          symbol: pool?.name || data.tokens[0],
           icons: data.images
         };
   }, [pool, type]);
@@ -65,7 +65,7 @@ export default function HandleModal({
       <Modal open={show} onClose={onClose}>
         <div className='bg-[#FFFDEB] px-[15px] py-[20px] rounded-t-[20px]'>
           <div className='text-[18px] font-bold'>
-            {type ? 'Unstake' : 'Stake'} {pool?.name || 'iBGT'}
+            {type ? 'Unstake' : 'Stake'} {pool?.name || data.tokens[0]}
           </div>
           <UserInfo data={data} className='justify-between mt-[16px]' />
           <Input
@@ -123,7 +123,7 @@ export default function HandleModal({
           </div>
           {!!balance && Big(balance).eq(0) && (
             <div className='mt-[16px] text-center text-[#FD4C67] text-[14px] font-medium'>
-              You don’t have any {pool?.name} LP yet
+              You don’t have any {pool?.name || data.tokens[0]} yet
             </div>
           )}
           {['BEX'].includes(pool?.protocol) && type === 0 && (
@@ -152,15 +152,17 @@ export default function HandleModal({
           )}
         </div>
       </Modal>
-      <IncreaseLiquidityModal
-        open={showMint}
-        onClose={() => {
-          setShowMint(false);
-        }}
-        token0={{ ...pool.underlying_tokens[0], icon: data.images[0] }}
-        token1={{ ...pool.underlying_tokens[1], icon: data.images[1] }}
-        dex={pool?.protocol}
-      />
+      {pool && data.tokens.length === 2 && (
+        <IncreaseLiquidityModal
+          open={showMint}
+          onClose={() => {
+            setShowMint(false);
+          }}
+          token0={{ ...pool?.underlying_tokens[0], icon: data.images[0] }}
+          token1={{ ...pool?.underlying_tokens[1], icon: data.images[1] }}
+          dex={pool?.protocol}
+        />
+      )}
     </>
   );
 }
