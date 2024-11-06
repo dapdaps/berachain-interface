@@ -60,50 +60,47 @@ const Navigation = function () {
         </div>
         <MarketplaceSvg className='hover:scale-110 transition-transform duration-500' />
       </div>
-
-      <div className='absolute right-[35px] top-1/3'>
-        <div
-          className='cursor-pointer flex flex-col items-end gap-[16px]'
-          onClick={onNavigateToBridge}
-          data-bp='1010-007'
-        >
-          <BridgeSvg className='hover:scale-110 transition-transform duration-500' />
-          <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
-            <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
-            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
-              Bridge
-            </div>
+      <div
+        className='absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]'
+        onClick={onNavigateToBridge}
+        data-bp='1010-007'
+      >
+        <BridgeSvg className='hover:scale-110 transition-transform duration-500' />
+        <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
+          <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
+          <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+            Bridge
           </div>
         </div>
-        <div className='absolute top-[150px]'>
-          <div
-            className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
-            onClick={onNavigateToVaults}
-            data-bp='1010-013'
-          >
-            <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
-              <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
-                Vaults
-              </div>
+      </div>
+      <div className='absolute right-[35px] bottom-[180px]'>
+        <div
+          className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
+          onClick={onNavigateToVaults}
+          data-bp='1010-013'
+        >
+          <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
+            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
+              Vaults
             </div>
-            <motion.div
-              initial={{
-                rotateZ: 0
-              }}
-              animate={{
-                rotateZ: [-5, 5, -5, 5, -5, 5]
-              }}
-              transition={{
-                duration: 0.4,
-                ease: 'linear',
-                repeat: Infinity,
-                repeatDelay: 3
-              }}
-              className='origin-center'
-            >
-              <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
-            </motion.div>
           </div>
+          <motion.div
+            initial={{
+              rotateZ: 0
+            }}
+            animate={{
+              rotateZ: [-5, 5, -5, 5, -5, 5]
+            }}
+            transition={{
+              duration: 0.4,
+              ease: 'linear',
+              repeat: Infinity,
+              repeatDelay: 3
+            }}
+            className='origin-center'
+          >
+            <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
+          </motion.div>
         </div>
       </div>
       {/* <div className='absolute left-1/3 bottom-[19px] z-10 flex gap-[100px]'> */}
