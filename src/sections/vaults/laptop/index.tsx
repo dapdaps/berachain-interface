@@ -6,7 +6,7 @@ import Content from '@/sections/staking/Content';
 
 export default function Laptop({ dapp }: any) {
   return (
-    <div className='h-screen bg-vault relative'>
+    <div className='h-screen bg-vault relative h-full overflow-hidden'>
       <div className='absolute w-full flex flex-col items-center'>
         <Bg />
       </div>

@@ -29,6 +29,7 @@ export default function List(props: any) {
   } = props;
 
   const { dataList, loading } = useInfraredList();
+
   const [state, updateState] = useMultiState<any>({
     allData: null,
     filterList: [],
@@ -61,17 +62,15 @@ export default function List(props: any) {
     );
   }
 
-
-
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev, next) => {
-          return Big(next[state?.sortKey])
-            .minus(prev[state?.sortKey])
-            .toFixed();
-        })
+            return Big(next[state?.sortKey])
+              .minus(prev[state?.sortKey])
+              .toFixed();
+          })
         : cloneDataList
     });
   }, [state?.sortKey, dataList]);
@@ -118,8 +117,9 @@ export default function List(props: any) {
         return (
           <img
             style={{ width: 26 }}
-            src={`/images/dapps/infrared/${pool ? (pool?.protocol === 'BEX' ? 'bex' : 'berps') : 'infrared'
-              }.svg`}
+            src={`/images/dapps/infrared/${
+              pool ? (pool?.protocol === 'BEX' ? 'bex' : 'berps') : 'infrared'
+            }.svg`}
           />
         );
       }
@@ -210,7 +210,11 @@ export default function List(props: any) {
               height='34'
               viewBox='0 0 34 34'
               fill='none'
-              className={Big(data?.usdDepositAmount ?? 0).eq(0) ? 'cursor-not-allowed' : 'cursor-pointer'}
+              className={
+                Big(data?.usdDepositAmount ?? 0).eq(0)
+                  ? 'cursor-not-allowed'
+                  : 'cursor-pointer'
+              }
               onClick={() => {
                 Big(data?.usdDepositAmount ?? 0).gt(0) && onChangeData(data, 1);
               }}
@@ -313,13 +317,13 @@ export default function List(props: any) {
           })}
         </div>
       ) : state?.filterList && state?.filterList.length > 0 ? (
-        <div className='flex flex-col gap-[2px]'>
+        <div className='flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll'>
           {state?.filterList.map((data: any, index: number) => {
             return (
               <div
                 key={index}
                 className={clsx(
-                  'flex items-center w-full h-[58px] rounded-[10px]',
+                  'flex items-center w-full h-[58px] rounded-[10px] shrink-0',
                   {
                     'bg-black/[0.06]': index % 2 === 0
                   }
