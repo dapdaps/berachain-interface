@@ -1,6 +1,6 @@
 const ROUTE_CONFIG = {
   infrared: {
-    type: 'liquidity',
+    type: 'staking',
     theme: {
       '--button-color': '#FFF',
       '--button-text-color': '#1E2028'

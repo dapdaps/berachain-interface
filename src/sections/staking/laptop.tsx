@@ -15,8 +15,7 @@ export default function Liquidity({ dapp }: any) {
           src={dapp?.icon}
           alt={dapp?.name}
           name={dapp?.name}
-          type='liquidity'
-          className='top-[40px]'
+          type='staking'
         />
       </div>
     </BearBackground>

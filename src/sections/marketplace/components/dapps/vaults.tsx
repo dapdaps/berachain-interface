@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import useAddAction from '@/hooks/use-add-action';
 import Modal from '@/components/modal';
 import Capsule from './capsule';
+import useLpToAmount from '@/hooks/use-lp-to-amount';
 
 const TABS = [
   {
@@ -79,6 +80,9 @@ export default memo(function vaults(props) {
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
 
+  const {
+    handleGetAmount
+  } = useLpToAmount(data?.LP_ADDRESS)
   const handleClose = () => {
     setVaultsVisible(false);
   };
@@ -247,18 +251,26 @@ export default memo(function vaults(props) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        const [amount0, amount1] = handleGetAmount(inAmount)
         addAction?.({
-          type: 'Liquidity',
-          action: 'Deposit',
-          token0: tokens?.[0],
-          token1: tokens?.[1],
+          type: 'Staking',
+          action: 'Staking',
+          token: {
+            symbol: tokens.join('-')
+          },
           amount: inAmount,
-          template: 'Infrared',
+          template: "Infrared",
           status: status,
           add: 1,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: 'Add'
+          sub_type: "Stake",
+          extra_data: JSON.stringify({
+            token0Symbol: tokens[0],
+            token1Symbol: tokens[1],
+            amount0,
+            amount1
+          })
         });
         updateState({
           isLoading: false,
@@ -331,18 +343,27 @@ export default memo(function vaults(props) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
+        const [amount0, amount1] = handleGetAmount(lpAmount)
         addAction?.({
-          type: 'Liquidity',
-          action: 'Withdraw',
-          token0: tokens?.[0],
-          token1: tokens?.[1],
+          type: 'Staking',
+          action: 'UnStake',
+          token: {
+            symbol: tokens.join('-')
+          },
+          symbol: tokens.join("-"),
           amount: lpAmount,
-          template: 'Infrared',
+          template: "Infrared",
           status: status,
           add: 0,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: 'Remove'
+          sub_type: "Unstake",
+          extra_data: JSON.stringify({
+            token0Symbol: tokens[0],
+            token1Symbol: tokens[1],
+            amount0,
+            amount1
+          })
         });
 
         setTimeout(() => {
@@ -635,7 +656,7 @@ export default memo(function vaults(props) {
             <span
               className='text-black font-Montserrat underline'
               onClick={() => {
-                router.push('/liquidity/infrared');
+                router.push('/staking/infrared');
               }}
             >
               Infrared

@@ -2,7 +2,7 @@
 import { cookieStorage, createStorage } from 'wagmi';
 import chains from './chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
-import { walletConnect, coinbaseWallet, injected } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 import { CreateConnectorFn } from 'wagmi'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -22,13 +22,6 @@ export const metadata = {
 export const networks = Object.values(chains);
 
 const connectors: CreateConnectorFn[] = [];
-connectors.push(walletConnect({ projectId, metadata, showQrModal: false })); // showQrModal must be false
-connectors.push(
-  coinbaseWallet({
-    appName: metadata.name,
-    appLogoUrl: metadata.icons[0]
-  })
-);
 
 // @ts-ignore
 if (typeof window !== 'undefined' && window.berasig) {

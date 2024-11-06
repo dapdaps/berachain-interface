@@ -8,9 +8,9 @@ import CircleLoading from '@/components/circle-loading';
 import Big from 'big.js';
 import { cloneDeep } from 'lodash';
 import { formatValueDecimal } from '@/utils/balance';
-import HandleModal from '@/sections/liquidity/mobile/handle-modal';
-import UserInfo from '@/sections/liquidity/mobile/user-info';
-import useInfraredList from '@/sections/liquidity/hooks/use-infrared-list';
+import HandleModal from '@/sections/staking/mobile/handle-modal';
+import UserInfo from '@/sections/staking/mobile/user-info';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 
 export default function Mobile({ filterList, loading, onClick  }: any) {
   return (
