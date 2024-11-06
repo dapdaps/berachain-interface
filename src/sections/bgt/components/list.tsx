@@ -93,7 +93,7 @@ const VaultsList = () => {
                   ))}
                 {item.activeValidators.length > 3 && (
                   <span className="text-xs">
-                    +{item.activeValidators.length}
+                    +{item.activeValidators.length - 3}
                   </span>
                 )}
               </div>
