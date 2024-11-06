@@ -5,7 +5,7 @@ import Button from '@/components/button';
 
 export default function Mobile({ pools, loading, onAction }: any) {
   return (
-    <div className='pb-[18px] font-semibold h-full overflow-y-auto'>
+    <div className='pb-[18px] font-semibold h-[calc(100%-160px)] overflow-y-auto'>
       {pools.map((item: any, idx: number) => (
         <div
           key={idx}

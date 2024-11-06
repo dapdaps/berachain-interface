@@ -151,13 +151,13 @@ const Item = ({ data, onClick }: any) => {
               )}
               <Image
                 className='absolute right-[-2px] bottom-[0px]'
-                src={`/images/dapps/infrared/${
-                  pool
-                    ? pool?.protocol === 'BEX'
-                      ? 'bex'
-                      : 'berps'
-                    : 'infrared'
-                }.svg`}
+                src={
+                  pool?.protocol === 'BEX'
+                    ? '/images/dapps/infrared/bex.svg'
+                    : pool?.protocol === 'Kodiak Finance'
+                    ? '/images/dapps/kodiak.svg'
+                    : '/images/dapps/infrared/berps.svg'
+                }
                 width={20}
                 height={20}
                 alt='Protocol'

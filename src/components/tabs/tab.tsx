@@ -15,7 +15,7 @@ const Laptop = (props: any) => {
       }}
     >
       <div
-        className='w-full flex justify-center items-center bg-[#E9E3B5] rounded-[20px] border border-black cursor-pointer'
+        className='w-full flex justify-center items-center bg-[#E9E3B5] rounded-[20px] md:text-[15px] md:rounded-[16px] border border-black cursor-pointer'
         style={{
           paddingBottom: Offset * 1.5,
           height: height + Offset

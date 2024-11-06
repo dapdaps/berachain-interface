@@ -152,17 +152,19 @@ export default function HandleModal({
           )}
         </div>
       </Modal>
-      {pool && data.tokens.length === 2 && (
-        <IncreaseLiquidityModal
-          open={showMint}
-          onClose={() => {
-            setShowMint(false);
-          }}
-          token0={{ ...pool?.underlying_tokens[0], icon: data.images[0] }}
-          token1={{ ...pool?.underlying_tokens[1], icon: data.images[1] }}
-          dex={pool?.protocol}
-        />
-      )}
+      {pool &&
+        data.tokens.length === 2 &&
+        pool.underlying_tokens?.length === 2 && (
+          <IncreaseLiquidityModal
+            open={showMint}
+            onClose={() => {
+              setShowMint(false);
+            }}
+            token0={{ ...pool?.underlying_tokens[0], icon: data.images[0] }}
+            token1={{ ...pool?.underlying_tokens[1], icon: data.images[1] }}
+            dex={pool?.protocol}
+          />
+        )}
     </>
   );
 }
