@@ -9,11 +9,7 @@ export default function useCollect({ address }: { address: string }) {
     const [hats, setHats] = useState<GameItem[]>([])
 
     useEffect(() => {
-        if (!address) {
-            return
-        }
-        
-        get(`/api/game/items?game_category=bera&address=${address}`).then(res => {
+        get(`/api/game/items?game_category=bera&address=${address || ''}`).then(res => {
             if (res.code === 0) {
                 setCollection(res.data)
                 const cars: GameItem[] = []
