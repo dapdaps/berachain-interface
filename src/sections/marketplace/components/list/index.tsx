@@ -22,6 +22,7 @@ interface Props {
   bodyClassName?: string;
   loading?: boolean;
   withoutHeader?: boolean;
+  onChangeSort?: (sort: string) => void;
 }
 
 export default function List({
@@ -31,6 +32,7 @@ export default function List({
   onPageChange,
   bodyClassName,
   onItemClick = () => { },
+  onChangeSort,
   loading,
   withoutHeader = false
 }: Props) {

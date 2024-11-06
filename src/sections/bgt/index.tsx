@@ -4,9 +4,11 @@ import FlexTable, { Column } from "@/components/flex-table";
 import Loading from "@/components/loading";
 import { useBGT } from "@/hooks/use-bgt";
 import { formatValueDecimal } from "@/utils/balance";
-import { memo } from "react";
+import { memo, useMemo, useState } from "react";
 import BgtHead from '@/sections/bgt/components/bgt-head';
 import BgtEmpty from '@/sections/bgt/components/bgt-empty';
+
+import VaultsList from "./components/list";
 
 export default memo(function BGTPageView() {
   const Columns: Column[] = [
@@ -188,9 +190,11 @@ export default memo(function BGTPageView() {
 
         </div>
 
-        <div className="mt-[30px] flex justify-between items-center">
-          <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">Your Vaults</div>
-          <div
+        <div className="my-[30px] flex justify-between items-center">
+          <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">
+           All Vaults 
+          </div>
+          {/* <div
             className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
             onClick={handleExplore}
           >
@@ -198,8 +202,10 @@ export default memo(function BGTPageView() {
             <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
               <path d="M1 1L5.8 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" />
             </svg>
-          </div>
+          </div> */}
         </div>
+
+        <VaultsList />
 
         {/* <div className="flex items-center mb-[71px]">
          {
@@ -212,6 +218,10 @@ export default memo(function BGTPageView() {
          ))
          }
          </div> */}
+         
+
+
+{/*          
         <FlexTable
           loading={loading}
           columns={Columns}
@@ -223,7 +233,7 @@ export default memo(function BGTPageView() {
           onChangeSortDataIndex={(index) => {
             setSortDataIndex(sortDataIndex === index ? "" : index)
           }}
-        />
+        /> */}
 
 
 
