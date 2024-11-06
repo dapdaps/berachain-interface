@@ -134,7 +134,7 @@ export default memo(function IBGTPageView(props: any) {
                   tabs.map((tab, index) => (
                     <div
                       key={index}
-                      className={clsx(["flex items-center justify-center border border-transparent rounded-[10px] flex-1", tIndex === index ? "h-full  !border-black bg-[#FFDC50]" : ""])}
+                      className={clsx(["cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1", tIndex === index ? "h-full  !border-black bg-[#FFDC50]" : ""])}
                       onClick={() => {
                         setTIndex(index)
                       }}
@@ -155,7 +155,7 @@ export default memo(function IBGTPageView(props: any) {
                           .times(data?.initialData?.stake_token?.price ?? 0)
                           .toFixed(2) : '-'}
                       </span>
-                      <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={handleMax}>balance: <span>{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
+                      <div className="cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={handleMax}>balance: <span className="underline">{Big(balances[symbol] ?? 0).toFixed(6)}</span></div>
                     </div>
                     {
                       isInSufficient && (
@@ -211,9 +211,9 @@ export default memo(function IBGTPageView(props: any) {
                           .times(data?.initialData?.stake_token?.price ?? 0)
                           .toFixed(2) : '-'}
                       </span>
-                      <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
+                      <div className="cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium" onClick={() => {
                         handleLPChange(lpBalance);
-                      }}>balance: <span>{lpBalance}</span></div>
+                      }}>balance: <span className="underline">{lpBalance}</span></div>
                     </div>
                     <button
                       disabled={isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0}

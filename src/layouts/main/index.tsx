@@ -17,9 +17,11 @@ const MainLayout = (props: Props) => {
 
   const { handleTrack } = useClickTracking();
   const { initializePrice } = useTokenPrice();
+  const { handleReportNoCode } = useClickTracking();
   const pathname = usePathname();
 
   useEffect(() => {
+    handleReportNoCode();
     initializePrice();
   }, []);
 
@@ -32,7 +34,7 @@ const MainLayout = (props: Props) => {
 
   const isVaults = useMemo(() => pathname === '/vaults', [pathname]);
 
-  const routes = ['/earn']
+  const routes = ['/earn'];
 
   return (
     <div
@@ -43,7 +45,9 @@ const MainLayout = (props: Props) => {
       style={style}
       onClick={handleTrack}
     >
-      <MainLayoutHeader className={routes.includes(pathname) ? 'bg-transparent !fixed' : '' }/>
+      <MainLayoutHeader
+        className={routes.includes(pathname) ? 'bg-transparent !fixed' : ''}
+      />
       <div className={isVaults ? 'h-full w-full absolute' : 'grow'}>
         {children}
       </div>

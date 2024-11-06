@@ -1,4 +1,4 @@
-import useInfraredList from "@/sections/liquidity/hooks/use-infrared-list"
+import useInfraredList from "@/sections/staking/hooks/use-infrared-list"
 
 export default function useDataList(updater: number) {
   const { loading, dataList } = useInfraredList(updater)

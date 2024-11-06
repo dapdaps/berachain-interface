@@ -6,6 +6,7 @@ import { useAppKit } from '@reown/appkit/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactDOM from 'react-dom';
 import { useAccount, useSwitchChain } from 'wagmi';
+import { icons } from '@/configs/chains';
 
 const SwitchNetwork = (props: Props) => {
   const { targetChain } = props;
@@ -42,7 +43,7 @@ const SwitchNetwork = (props: Props) => {
       >
         <div className="w-[420px] h-[240px] rounded-[20px] bg-[#FFFDEB] border border-black shadow-shadow1 p-[25px_20px] flex flex-col items-center gap-[30px]">
           <div className="flex justify-center items-center gap-[10px]">
-            <img src={targetChain.icon} alt="" className="w-[30px] h-[30px]" />
+            <img src={targetChain.icon || icons[targetChain.id]} alt="" className="w-[30px] h-[30px]" />
             <div className="text-[20px] font-[600]">{targetChain.name}</div>
           </div>
           <div className="text-[18px] font-[500]">

@@ -1,8 +1,8 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import LiquidityView from '@/sections/liquidity';
-import dapps from '@/configs/liquidity';
+import StakingView from '@/sections/staking';
+import dapps from '@/configs/staking';
 import { DEFAULT_LIQUIDITY_DAPP } from '@/configs';
 import { useEffect } from 'react';
 import useClickTracking from '@/hooks/use-click-tracking';
@@ -22,7 +22,7 @@ export default function LiquidityPage() {
   }, []);
 
   return (
-    <LiquidityView
+    <StakingView
       dapp={dapps[params.dapp as string] || dapps[DEFAULT_LIQUIDITY_DAPP]}
     />
   );

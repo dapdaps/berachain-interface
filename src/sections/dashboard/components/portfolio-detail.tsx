@@ -31,7 +31,8 @@ const DashboardPortfolioDetail = (props: Props) => {
               usd: Big(token.usd || 0),
               supplyAmount: Big(0),
               borrowAmount: Big(0),
-              totalUsd: Big(0)
+              totalUsd: Big(0),
+              path: it.path,
             };
             if (_type === 'Supply') {
               cell.supplyAmount = Big(token.amount || 0);

@@ -26,10 +26,25 @@ export default function useClickTracking() {
   const { account } = useAccount();
   const { run: handleReport } = useDebounceFn(
     (code: string) => {
+      console.log('%cfollowed: %s-%s', 'background:#FFF5A9;color:#000;', account || '[none]', code || '[none]');
       if (!code) return;
       report({
         address: account || '',
         code,
+        url: window.location.href,
+      });
+    },
+    {
+      wait: 500,
+    },
+  );
+
+  const { run: handleReportNoCode } = useDebounceFn(
+    () => {
+      console.log('%cfollowed: %s-%s', 'background:#FFF5A9;color:#000;', account || '[none]', window.location.href || '[none]');
+      report({
+        address: account || '',
+        code: '',
         url: window.location.href,
       });
     },
@@ -48,5 +63,6 @@ export default function useClickTracking() {
   return {
     handleTrack,
     handleReport,
+    handleReportNoCode,
   };
 }

@@ -28,8 +28,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
   if (!markets) {
     return null;
   } 
-  
-  
+
   const tabs = [
     { 
       key: 'deposit', 

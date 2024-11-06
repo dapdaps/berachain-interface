@@ -1,6 +1,7 @@
 // @ts-nocheck
 import CircleLoading from '@/components/circle-loading';
 import useAddAction from "@/hooks/use-add-action";
+import useLpToAmount from '@/hooks/use-lp-to-amount';
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
 import { formatValueDecimal } from '@/utils/balance';
@@ -16,6 +17,10 @@ export default memo(function Detail(props: any) {
   const tabs = ['Stake', 'Unstake'];
 
   const [tIndex, setTIndex] = useState(defaultIndex);
+
+  const {
+    handleGetAmount
+  } = useLpToAmount(data?.LP_ADDRESS)
   const [state, updateState] = useMultiState({
     // isDeposit: tab === "Stake" || !tab,
     balances: [],
@@ -220,18 +225,26 @@ export default memo(function Detail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        const [amount0, amount1] = handleGetAmount(inAmount)
         addAction?.({
-          type: 'Liquidity',
-          action: 'Deposit',
-          token0: tokens[0],
-          token1: tokens[1],
+          type: 'Staking',
+          action: 'Staking',
+          token: {
+            symbol: tokens.join('-')
+          },
           amount: inAmount,
           template: "Infrared",
           status: status,
           add: 1,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Add"
+          sub_type: "Stake",
+          extra_data: JSON.stringify({
+            token0Symbol: tokens[0],
+            token1Symbol: tokens[1],
+            amount0,
+            amount1
+          })
         });
         updateState({
           isLoading: false,
@@ -303,19 +316,27 @@ export default memo(function Detail(props: any) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
-
+        const [amount0, amount1] = handleGetAmount(lpAmount)
         addAction?.({
-          type: 'Liquidity',
-          action: 'Withdraw',
-          token0: tokens[0],
-          token1: tokens[1],
+          type: 'Staking',
+          action: 'UnStake',
+          token: {
+            symbol: tokens.join('-')
+          },
+          symbol: tokens.join("-"),
           amount: lpAmount,
           template: "Infrared",
           status: status,
           add: 0,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Remove"
+          sub_type: "Unstake",
+          extra_data: JSON.stringify({
+            token0Symbol: tokens[0],
+            token1Symbol: tokens[1],
+            amount0,
+            amount1
+          })
         });
         setTimeout(() => {
           onSuccess?.()
@@ -362,10 +383,11 @@ export default memo(function Detail(props: any) {
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
         addAction?.({
-          type: 'Liquidity',
+          type: 'Staking',
           action: 'Claim',
-          token0: tokens[0],
-          token1: tokens[1],
+          token: {
+            symbol: tokens.join('-')
+          },
           amount: data?.earned,
           template: "Infrared",
           status: status,
@@ -413,6 +435,8 @@ export default memo(function Detail(props: any) {
     updateBalance();
     updateLPBalance();
   }, [sender, vaultAddress, updater]);
+
+
   return (
     <div>
       <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
