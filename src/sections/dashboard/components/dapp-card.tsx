@@ -4,10 +4,19 @@ import Modal from '@/components/modal';
 import DashboardPortfolioDetail from './portfolio-detail';
 import DappName from './dapp-name';
 import useIsMobile from '@/hooks/use-isMobile';
+import { useRouter } from 'next/navigation';
 
-const Laptop = ({ icon, name, category, value, percent }: any) => {
+const Laptop = ({ icon, name, category, value, percent, path }: any) => {
+  const router = useRouter();
+
   return (
-    <div className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden lg:block'>
+    <div
+      className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden lg:block'
+      onClick={() => {
+        if (!path) return;
+        router.push(path);
+      }}
+    >
       <DappName {...{ icon, name, category }} />
       <div className='flex justify-between items-center gap-[10px] mt-[10px]'>
         <Value>{value}</Value>

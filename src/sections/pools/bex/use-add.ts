@@ -156,6 +156,7 @@ export default function usdAdd({
         template: 'Bex',
         status,
         transactionHash,
+        sub_type: 'Add',
         extra_data: JSON.stringify({
           amount0: value0,
           amount1: value1,
