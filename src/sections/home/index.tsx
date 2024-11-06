@@ -75,7 +75,7 @@ const Navigation = function () {
             </div>
           </div>
         </div>
-        <div className='absolute top-[109px]'>
+        <div className='absolute top-[150px]'>
           <div
             className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
             onClick={onNavigateToVaults}
@@ -88,7 +88,7 @@ const Navigation = function () {
             </div>
             <motion.div
               initial={{
-                rotateZ: 5
+                rotateZ: 0
               }}
               animate={{
                 rotateZ: [-5, 5, -5, 5, -5, 5]
