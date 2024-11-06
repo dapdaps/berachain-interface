@@ -1,6 +1,6 @@
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import multicallAddresses from '@/configs/contract/multicall';
-import infraredConfig from '@/configs/liquidity/dapps/infrared';
+import infraredConfig from '@/configs/staking/dapps/infrared';
 import useCustomAccount from '@/hooks/use-account';
 import { asyncFetch } from '@/utils/http';
 import { useEffect, useMemo, useState } from 'react';

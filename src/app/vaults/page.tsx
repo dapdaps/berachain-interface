@@ -1,5 +1,5 @@
 'use client';
-import dapps from '@/configs/liquidity';
+import dapps from '@/configs/staking';
 import Vaults from '@/sections/vaults';
 
 export default function Page() {
