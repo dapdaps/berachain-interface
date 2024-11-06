@@ -17,6 +17,14 @@ export default {
       beraB['bebe'],
       beraB['sproto'],
       beraB['smonkey'],
+      beraB['obero'],
+      beraB['croc'],
+      beraB['std'],
+      beraB['tedd'],
+      beraB['0x15p'],
+      beraB['ooga'],
+      beraB['wbtc'],
+      beraB['weth'],
     ]
   }
 };

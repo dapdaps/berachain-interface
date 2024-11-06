@@ -44,7 +44,7 @@ export const beraB: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: '0xd6D83aF58a19Cd14eF3CF6fe848C9A4d21e5727c',
     decimals: 6,
-    symbol: 'USDC',
+    symbol: 'STGUSDC',
     name: 'USD Coin',
     icon: '/assets/tokens/usdc.png',
     color: '#2775CA'
@@ -202,5 +202,53 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'oBERO',
     name: 'Beradrome Call Option',
     icon: '/assets/tokens/obero.png'
-  }
+  },
+  croc: {
+    chainId: CHAIN_ID,
+    address: '0x7237Bd0b21B74fc22d04dc776a06C46202b4dAA1',
+    decimals: 18,
+    symbol: 'croc',
+    name: 'pepewifcroc',
+    icon: '/assets/tokens/croc.png'
+  },
+  std: {
+    chainId: CHAIN_ID,
+    address: '0xB52a6f70D7c438b9362E693111291ac0FA867298',
+    decimals: 18,
+    symbol: 'STD',
+    name: 'Steady Pemby',
+    icon: '/assets/tokens/std.png'
+  },
+  tedd: {
+    chainId: CHAIN_ID,
+    address: '0x11eADe385347cC5849f93a350105b38AfB867078',
+    decimals: 18,
+    symbol: 'TEDD',
+    name: 'TEDD',
+    icon: '/assets/tokens/tedd.png'
+  },
+  ooga: {
+    chainId: CHAIN_ID,
+    address: '0x6173a8C873C7aA8698d2CbEE68A70F54a4061182',
+    decimals: 18,
+    symbol: 'OOGA',
+    name: 'Eat shit Kevin',
+    icon: '/assets/tokens/ooga.png'
+  },
+  '0x15p': {
+    chainId: CHAIN_ID,
+    address: '0x1179e477F4Dd3D3A69D157D71AB9984177720F6c',
+    decimals: 18,
+    symbol: '0X15P',
+    name: 'TOX1C_0X15P',
+    icon: '/assets/tokens/t0x1c_0x15p.png'
+  },
+  paw: {
+    chainId: CHAIN_ID,
+    address: '0xB43fd1dC4f02d81f962E98203b2cc4FD9E342964',
+    decimals: 18,
+    symbol: 'PAW',
+    name: 'Paw Token',
+    icon: '/assets/tokens/paw.webp'
+  },
 };
