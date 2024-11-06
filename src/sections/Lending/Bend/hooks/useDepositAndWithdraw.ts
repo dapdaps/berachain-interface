@@ -111,7 +111,7 @@ export const useDepositAndWithdraw = ({
         token: {
           symbol,
         },
-        amount: _amount,
+        amount: ethers.utils.formatUnits(_amount.toString(), 18),
         template: 'Bend',
         add: false,
         status,
