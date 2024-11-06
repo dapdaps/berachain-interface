@@ -26,6 +26,17 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
+const HotTokens = [
+  beraB.paw,
+  beraB.wbtc,
+  beraB.weth,
+  beraB.honey,
+  beraB.usdc,
+  beraB.bera,
+  beraB.usdt,
+  beraB.dai,
+];
+
 const MemeTokens = [
   {
     ...beraB.spepe,
@@ -52,10 +63,38 @@ const MemeTokens = [
     price: '$0.0000001',
     volume: '$0.9717',
   },
+  {
+    ...beraB.croc,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB.std,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB['0x15p'],
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB.tedd,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
+  {
+    ...beraB.ooga,
+    price: '$0.0000001',
+    volume: '$0.9717',
+  },
 ];
 
 export const MoreButton = (props: { onClick: () => void; classname?: string }) => {
   const { onClick = () => {}, classname = '' } = props;
+
+  // Temporarily hide
+  return null;
 
   return (
     <button
@@ -102,13 +141,12 @@ const MarketplaceView = () => {
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
       item.tokens[80084].forEach((token: any) => {
-        if (!hasTokens[token.symbol]) {
+        if (!hasTokens[token.symbol] && HotTokens.some((it) => it.symbol === token.symbol)) {
           _tokens.push(token);
           hasTokens[token.symbol] = true;
         }
       });
     });
-    console.log(_tokens);
     return [_protocols, splitArray(_tokens)];
   }, [dexs]);
 
@@ -132,7 +170,6 @@ const MarketplaceView = () => {
   const onSwap = (item: any) => {
     setSelectedRecord(item);
   };
-
 
   return (
     <div className='relative'>
