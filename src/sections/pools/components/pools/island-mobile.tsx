@@ -115,7 +115,7 @@ export default function IslandMobile({
         </div>
       )}
       {loading && (
-        <div className='flex items-center h-[200px]'>
+        <div className='flex items-center h-[200px] justify-center'>
           <CircleLoading />
         </div>
       )}

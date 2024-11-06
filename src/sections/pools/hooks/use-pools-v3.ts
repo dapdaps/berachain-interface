@@ -132,7 +132,7 @@ export default function usePoolsV3({ dex }: any) {
           setTicksInfo(res);
         }
       });
-
+      console.log(JSON.stringify(_pools));
       setPools(_pools);
       setLoading(false);
     } catch (err) {

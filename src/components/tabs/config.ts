@@ -5,9 +5,9 @@ export default {
     tabMarginWidth: 62
   },
   mobile: {
-    tabHeight: 62,
-    tabWidth: 194,
-    tabMarginWidth: 62,
-    minTabWidth: 128
+    tabHeight: 50,
+    tabWidth: 155,
+    tabMarginWidth: 50,
+    minTabWidth: 102
   }
 };
