@@ -64,11 +64,12 @@ export default function List(props: any) {
 
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
+
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev, next) => {
-            return Big(next[state?.sortKey])
-              .minus(prev[state?.sortKey])
+            return Big(next[state?.sortKey] || 0)
+              .minus(prev[state?.sortKey] || 0)
               .toFixed();
           })
         : cloneDataList
