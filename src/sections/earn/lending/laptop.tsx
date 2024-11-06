@@ -1,10 +1,16 @@
 import { useState, useMemo } from "react";
 import List from "@/sections/marketplace/components/list";
-import { balanceFormated } from "@/utils/balance";
 import useMarketStore from "@/stores/useMarketStore";
 import { useRouter } from 'next/navigation';
-import Big from "big.js";
 import { useSwapToken } from "@/hooks/use-swap-token";
+import SwapModal from '@/sections/swap/SwapModal';
+import BendActionModal from '@/sections/Lending/Bend/Action';
+import BendBorrowActionModal from '@/sections/Lending/Bend/SupplyBorrowPanel/actionModal';
+import ActionPanelLaptop from "@/sections/Lending/components/action-panel/laptop";
+import useAddAction from "@/hooks/use-add-action";
+import { useAccount } from 'wagmi';
+import { useProvider } from "@/hooks/use-provider";
+
 
 const PAGE_SIZE = 9;
 
@@ -13,12 +19,16 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
 
   const [tab, setTab] = useState('Supply');
 
+  
   const [actionData, setActionData] = useState<any>(null);
   const [actionType, setActionType] = useState<any>(null);
   const [bendVisible, setBendVisible] = useState(false);
   const [bendBorrowVisible, setBendBorrowVisible] = useState(false);
   const [dolomiteVisible, setDolomiteVisible] = useState(false);
+  const [dolomiteLoading, setDolomiteLoading] = useState<boolean>(false);
 
+  const { addAction } = useAddAction("lending");
+  
   const maxPage = useMemo(() => {
     return Math.ceil(list.length / PAGE_SIZE) || 1;
   }, [list]);
@@ -38,29 +48,37 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
       return;
     }
 
-    setActionType(type);
+    // setActionType(type);
 
-    if (data.protocol.name === 'Bend' && data.symbol === 'HONEY') {
-      setActionData(honeyInfo);
-    } else {
-      setActionData(data);
-    }
+    // if (data.protocol.name === 'Bend' && data.symbol === 'HONEY') {
+    //   setActionData(honeyInfo);
+    // } else {
+    //   setActionData(data);
+    // }
 
-    if (data.protocol.name === 'Bend' && ['Borrow', 'Repay'].includes(type)) {
-      setBendBorrowVisible(true);
-      return;
-    }
+    // if (data.protocol.name === 'Bend' && ['Borrow', 'Repay'].includes(type)) {
+    //   setBendBorrowVisible(true);
+    //   return;
+    // }
 
-    switch (data.protocol.name) {
-      case "Bend":
-        setBendVisible(true);
-        break;
-      case "Dolomite":
-        setDolomiteVisible(true);
-        break;
-      default:
-        break;
-    }
+    // switch (data.protocol.name) {
+    //   case "Bend":
+    //     setBendVisible(true);
+    //     break;
+    //   case "Dolomite":
+    //     setDolomiteVisible(true);
+    //     break;
+    //   default:
+    //     break;
+    // }
+  };
+
+  const handleActionClose = () => {
+    setBendVisible(false);
+    setBendBorrowVisible(false);
+    setDolomiteVisible(false);
+    setActionData(null);
+    setActionType(null);
   };
   
   return (
@@ -200,6 +218,53 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
         onPageChange={setPage}
         bodyClassName="h-[522px] overflow-y-auto mt-[20px]"
       />
+       {/*#region swap*/}
+       {swapToken && (
+        <SwapModal
+          defaultOutputCurrency={swapToken}
+          outputCurrencyReadonly={true}
+          show={!!swapToken}
+          protocols={protocols}
+          onClose={() => {
+            setSwapToken(null);
+          }}
+        />
+      )}
+      {/*#endregion*/}
+      {/*#region Bend Deposit*/}
+      <BendActionModal
+        isOpen={bendVisible}
+        onClose={handleActionClose}
+        action={actionType?.toLowerCase()}
+        token={actionData}
+      />
+      {/*#endregion*/}
+      {/*#region Bend Borrow*/}
+      <BendBorrowActionModal
+        isOpen={bendBorrowVisible}
+        onClose={handleActionClose}
+        action={actionType?.toLowerCase()}
+        token={actionData}
+      />
+      {/*#endregion*/}
+      {/*#region Dolomite Deposit*/}
+      {
+        dolomiteVisible && (
+          <ActionPanelLaptop
+          title={actionType}
+          actionText={actionType}
+          placeholder="0.00"
+          token={actionData}
+          CHAIN_ID={80084}
+          onSuccess={() => {
+            // reload data
+            setDolomiteLoading(true);
+          }}
+          addAction={addAction}
+        />
+        )
+      }
+      {/*#endregion*/}
     </>
   );
 };
