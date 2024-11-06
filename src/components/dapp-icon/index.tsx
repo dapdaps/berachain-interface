@@ -12,7 +12,7 @@ type Props = {
 
 const Laptop = ({ src, alt, name, type, style, className }: Props) => {
   return (
-    <div className={`absolute top-[40px] left-[-80px] ${className}`} style={style}>
+    <div className={`absolute left-[-80px] ${className}`} style={style}>
       <div className='w-[120px] h-[120px] border border-black rounded-[30px] bg-[#B2E946] pt-[10px] relative z-[1]'>
         <div className='h-[108px] rounded-[30px] bg-[#9ACA3B] flex flex-col items-center justify-center'>
           <Image
@@ -48,7 +48,10 @@ const Laptop = ({ src, alt, name, type, style, className }: Props) => {
 
 const Mobile = ({ src, alt, name, type, style, className }: Props) => {
   return (
-    <div className={`flex items-center gap-[12px] absolute top-[-34px] left-[15px] ${className}`} style={style}>
+    <div
+      className={`flex items-center gap-[12px] absolute top-[-34px] left-[15px] ${className}`}
+      style={style}
+    >
       <Image
         src={src || '/images/dapps/default_app.png'}
         alt={alt ?? ''}

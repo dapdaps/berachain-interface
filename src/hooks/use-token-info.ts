@@ -10,7 +10,8 @@ export default function useTokenInfo() {
   const queryToken = async ({ address, chainId, callback }: any) => {
     try {
       if (!address) throw 'No address';
-      const rpcUrl = chains[chainId]?.rpcUrls[0];
+      const rpcUrl = chains[chainId]?.rpcUrls?.default.http[0];
+
       if (!rpcUrl) throw 'No rpcUrl';
       setLoading(true);
       const multicallAddress = multicallAddresses[chainId];
@@ -50,6 +51,7 @@ export default function useTokenInfo() {
       });
       callback(result);
     } catch (err) {
+      console.log(53, err);
     } finally {
       setLoading(false);
     }

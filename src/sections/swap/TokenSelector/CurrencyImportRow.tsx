@@ -23,20 +23,18 @@ const CurrencyLabel = styled.div`
 const CurrencySymbol = styled.div`
   font-size: 18px;
   font-weight: 500px;
-  color: var(--agg-text-color, #fff);
 `;
 const CurrencyName = styled.div`
   font-size: 14px;
-  color: var(--agg-text-color, #fff);
   opacity: 0.5;
 `;
 const ImportButton = styled.button`
   border-radius: 6px;
-  background: var(--agg-bg-color, #1b1e27);
+  background: #1b1e27;
   width: 103px;
   height: 36px;
   flex-shrink: 0;
-  color: var(--agg-text-color, #fff);
+  color: #fff;
   font-size: 16px;
   font-weight: 600;
   border: none;

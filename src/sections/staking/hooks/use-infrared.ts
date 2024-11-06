@@ -67,7 +67,7 @@ export default function useInfrared({
 
       addAction?.({
         type: 'Liquidity',
-        action: 'Deposit',
+        action: type ? 'Withdraw' : 'Deposit',
         token0: tokens[0],
         token1: tokens[1],
         amount: amount,
@@ -76,7 +76,7 @@ export default function useInfrared({
         add: 1,
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
-        sub_type: 'Add'
+        sub_type: type ? 'Remove' : 'Add'
       });
 
       setTimeout(() => {
@@ -85,12 +85,12 @@ export default function useInfrared({
 
       toast?.dismiss(toastId);
       toast?.success({
-        title: 'Stake Successfully!'
+        title: type ? 'Unstake Successfully!' : 'Stake Successfully!'
       });
     } catch (err: any) {
       toast?.dismiss(toastId);
       toast?.fail({
-        title: 'Stake Failed!',
+        title: type ? 'Unstake Failed!' : 'Stake Failed!',
         text: err?.message?.includes('user rejected transaction')
           ? 'User rejected transaction'
           : err?.message ?? ''
