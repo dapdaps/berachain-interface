@@ -20,6 +20,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import MobileUser from "@/components/connect-wallet/user";
 import MobileNetworks from "@/components/connect-wallet/networks";
 import { useDebounceFn } from 'ahooks';
+import LazyImage from '@/components/layz-image';
 
 const dropdownAnimations = {
   active: {
@@ -123,16 +124,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     return currChainToken.icon;
   }, [chainId, tokenSymbolShown]);
 
-  const handleClickOutside = (event: any) => {
-    if (
-      chainListRef.current &&
-      !chainListRef.current?.contains(event.target) &&
-      !chainListRef.current.contains(event.target)
-    ) {
-      setChainDropdownShow(false);
-    }
-  };
-
   const handleChainDropdown = () => {
     if (isMobile && isConnected) {
       setMobileNetworksVisible(true);
@@ -146,11 +137,21 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   }, { wait: 15000 });
 
   useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (
+        chainListRef.current &&
+        !chainListRef.current?.contains(event.target) &&
+        !chainListRef.current.contains(event.target)
+      ) {
+        setChainDropdownShow(false);
+      }
+    };
+
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [chainListRef.current]);
 
   useEffect(() => {
     cancelCloseConnecting();
@@ -162,7 +163,119 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     closeConnecting();
   }, [isConnecting]);
 
-  const RenderChain = () => (
+  return (
+    <>
+      {connecting ? (
+        <Skeleton
+          width={isMobile ? 102 : 125}
+          height={42}
+          borderRadius={21}
+          style={{ transform: "translateY(-4px)" }}
+        />
+      ) : isConnected ? (
+        <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3">
+          {isMobile ? (
+            <>
+              <User
+                handleConnect={handleConnect}
+                isMobile={isMobile}
+                address={address}
+                userInfo={userInfo}
+                walletInfo={walletInfo}
+                handleDisconnect={handleDisconnect}
+                handleCopy={handleCopy}
+                tokenLogoShown={tokenLogoShown}
+                chainId={chainId}
+                balanceShown={balanceShown}
+                tokenSymbolShown={tokenSymbolShown}
+                addressShown={addressShown}
+              />
+              <Chain
+                chainDropdownShow={chainDropdownShow}
+                chainListRef={chainListRef}
+                handleChainDropdown={handleChainDropdown}
+                chainId={chainId}
+                chains={chains}
+                handleChainSelect={handleChainSelect}
+              />
+            </>
+          ) : (
+            <>
+              <Chain
+                chainDropdownShow={chainDropdownShow}
+                chainListRef={chainListRef}
+                handleChainDropdown={handleChainDropdown}
+                chainId={chainId}
+                chains={chains}
+                handleChainSelect={handleChainSelect}
+              />
+              <User
+                handleConnect={handleConnect}
+                isMobile={isMobile}
+                address={address}
+                userInfo={userInfo}
+                walletInfo={walletInfo}
+                handleDisconnect={handleDisconnect}
+                handleCopy={handleCopy}
+                tokenLogoShown={tokenLogoShown}
+                chainId={chainId}
+                balanceShown={balanceShown}
+                tokenSymbolShown={tokenSymbolShown}
+                addressShown={addressShown}
+              />
+            </>
+          )}
+        </div>
+      ) : (
+        <button
+          className={`click cursor-pointer rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black lg:shadow-shadow1 text-white ${className}`}
+          onClick={handleConnect}
+        >
+          Connect Wallet
+        </button>
+      )}
+      <MobileUser
+        visible={mobileUserInfoVisible}
+        onClose={() => {
+          setMobileUserInfoVisible(false);
+        }}
+        walletInfo={walletInfo}
+        addressShown={addressShown}
+        address={address}
+        tokenLogoShown={tokenLogoShown}
+        balanceShown={balanceShown}
+        tokenSymbolShown={tokenSymbolShown}
+        chainId={chainId}
+        handleDisconnect={handleDisconnect}
+        handleCopy={handleCopy}
+        userInfo={userInfo}
+      />
+      <MobileNetworks
+        visible={mobileNetworksVisible}
+        onClose={() => {
+          setMobileNetworksVisible(false);
+        }}
+        chains={chains}
+        chainId={chainId}
+        handleChainSelect={handleChainSelect}
+      />
+    </>
+  );
+};
+
+export default memo(ConnectWallet);
+
+const Chain = (props: any) => {
+  const {
+    chainDropdownShow,
+    chainListRef,
+    handleChainDropdown,
+    chainId,
+    chains,
+    handleChainSelect,
+  } = props;
+
+  return (
     <motion.div
       className={`relative rounded-[10px] px-[6px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${
         chainDropdownShow ? "bg-[rgba(0,0,0,0.04)]" : ""
@@ -172,8 +285,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     >
       {chainId && icons[chainId] ? (
         <div className="flex items-center gap-x-[8px]">
-          <Image src={icons[chainId]} alt="" width={26} height={26} />
-          <Image src="/images/icon-arrow.svg" width={11} height={5} alt="" />
+          <LazyImage src={icons[chainId]} alt="" width={26} height={26} />
+          <LazyImage src="/images/icon-arrow.svg" width={11} height={5} alt="" />
         </div>
       ) : (
         <div className="w-[26px] h-[26px] shrink-0 rounded-[8px] bg-[#eceff0]"></div>
@@ -242,8 +355,25 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       {/*#endregion*/}
     </motion.div>
   );
+};
 
-  const RenderUser = () => (
+const User = (props: any) => {
+  const {
+    handleConnect,
+    isMobile,
+    address,
+    userInfo,
+    walletInfo,
+    handleDisconnect,
+    handleCopy,
+    tokenLogoShown,
+    chainId,
+    balanceShown,
+    tokenSymbolShown,
+    addressShown,
+  } = props;
+
+  return (
     <motion.div
       className="relative flex justify-center items-center cursor-pointer transition-all duration-300"
       onClick={handleConnect}
@@ -356,65 +486,4 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       </Popover>
     </motion.div>
   );
-
-  return (
-    <>
-      {connecting ? (
-        <Skeleton
-          width={isMobile ? 102 : 125}
-          height={42}
-          borderRadius={21}
-          style={{ transform: "translateY(-4px)" }}
-        />
-      ) : isConnected ? (
-        <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3">
-          {isMobile ? (
-            <>
-              <RenderUser />
-              <RenderChain />
-            </>
-          ) : (
-            <>
-              <RenderChain />
-              <RenderUser />
-            </>
-          )}
-        </div>
-      ) : (
-        <button
-          className={`click cursor-pointer rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black lg:shadow-shadow1 text-white ${className}`}
-          onClick={handleConnect}
-        >
-          Connect Wallet
-        </button>
-      )}
-      <MobileUser
-        visible={mobileUserInfoVisible}
-        onClose={() => {
-          setMobileUserInfoVisible(false);
-        }}
-        walletInfo={walletInfo}
-        addressShown={addressShown}
-        address={address}
-        tokenLogoShown={tokenLogoShown}
-        balanceShown={balanceShown}
-        tokenSymbolShown={tokenSymbolShown}
-        chainId={chainId}
-        handleDisconnect={handleDisconnect}
-        handleCopy={handleCopy}
-        userInfo={userInfo}
-      />
-      <MobileNetworks
-        visible={mobileNetworksVisible}
-        onClose={() => {
-          setMobileNetworksVisible(false);
-        }}
-        chains={chains}
-        chainId={chainId}
-        handleChainSelect={handleChainSelect}
-      />
-    </>
-  );
-};
-
-export default memo(ConnectWallet);
+}
