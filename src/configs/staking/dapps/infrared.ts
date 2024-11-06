@@ -1,19 +1,24 @@
 import { beraB } from '@/configs/tokens/bera-bArtio';
 
-
 export default {
   name: 'Infrared',
   icon: '/images/dapps/infrared.svg',
   ICON_VAULT_MAP: {
-    'HONEY-WBERA': 'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-wbera.png&w=64&q=75',
-    BHONEY: 'https://www.infrared.finance/_next/static/media/bhoney.7829fa2c.svg',
-    'HONEY-USDC': 'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-usdc.png&w=64&q=75',
-    'HONEY-WETH': 'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-weth.png&w=64&q=75',
-    'HONEY-WBTC': 'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-wbtc.png&w=64&q=75'
+    'HONEY-WBERA':
+      'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-wbera.png&w=64&q=75',
+    BHONEY:
+      'https://www.infrared.finance/_next/static/media/bhoney.7829fa2c.svg',
+    'HONEY-USDC':
+      'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-usdc.png&w=64&q=75',
+    'HONEY-WETH':
+      'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-weth.png&w=64&q=75',
+    'HONEY-WBTC':
+      'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-wbtc.png&w=64&q=75'
   },
   chains: {
     80084: {
-      ALL_DATA_URL: 'https://api.staging.infrared.finance/v2/vaults?offset=0&limit=10',
+      ALL_DATA_URL:
+        'https://api.staging.infrared.finance/v2/vaults?offset=0&limit=10',
       BHONEY_ADDRESS: '0x7d91Bf5851B3A8bCf8C39A69AF2F0F98A4e2202A',
       IBGT_ADDRESS: '0x46eFC86F0D7455F135CC9df501673739d513E982',
       pairs: [
@@ -22,7 +27,10 @@ export default {
           strategy: 'Dynamic',
           strategy2: '',
           tokens: ['HONEY', 'WBERA'],
-          images: ['/images/dapps/infrared/honey.svg', '/images/dapps/infrared/wbera.svg'],
+          images: [
+            '/images/dapps/infrared/honey.svg',
+            '/assets/tokens/wbera.png'
+          ],
           decimals: 18,
           decimals0: 18,
           decimals1: 18,
@@ -44,7 +52,10 @@ export default {
           strategy: 'Dynamic',
           strategy2: '',
           tokens: ['HONEY', 'USDC'],
-          images: ['/images/dapps/infrared/honey.svg', '/images/dapps/infrared/usdc.svg'],
+          images: [
+            '/images/dapps/infrared/honey.svg',
+            '/images/dapps/infrared/usdc.svg'
+          ],
           decimals: 18,
           decimals0: 18,
           decimals1: 6,
@@ -55,7 +66,10 @@ export default {
           strategy: 'Dynamic',
           strategy2: '',
           tokens: ['HONEY', 'WETH'],
-          images: ['/images/dapps/infrared/honey.svg', '/images/dapps/infrared/weth.svg'],
+          images: [
+            '/images/dapps/infrared/honey.svg',
+            '/images/dapps/infrared/weth.svg'
+          ],
           decimals: 18,
           decimals0: 18,
           decimals1: 18,
@@ -66,7 +80,10 @@ export default {
           strategy: 'Dynamic',
           strategy2: '',
           tokens: ['HONEY', 'WBTC'],
-          images: ['/images/dapps/infrared/honey.svg', '/images/dapps/infrared/wbtc.svg'],
+          images: [
+            '/images/dapps/infrared/honey.svg',
+            '/images/dapps/infrared/wbtc.svg'
+          ],
           decimals: 18,
           decimals0: 18,
           decimals1: 8,
@@ -82,7 +99,7 @@ export default {
           decimals0: 18,
           decimals1: 18,
           LP_ADDRESS: '0x46eFC86F0D7455F135CC9df501673739d513E982'
-        },
+        }
       ],
       addresses: {
         HONEY: '0x0e4aaf1351de4c0264c5c7056ef3777b41bd8e03',
@@ -102,4 +119,4 @@ export default {
       }
     }
   }
-}
+};

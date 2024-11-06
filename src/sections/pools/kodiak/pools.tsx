@@ -36,7 +36,7 @@ export default function Pools() {
       onChangeTab={setVersion}
       loading={loading}
       tabs={[
-        { label: 'Islands', value: 'islands' },
+        // { label: 'Islands', value: 'islands' },
         { label: 'V3 Pools', value: 'v3' },
         { label: 'V2 Pools', value: 'v2' }
       ]}

@@ -19,7 +19,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'WBERA',
     decimals: 18,
     name: 'WBERA',
-    icon: '/assets/tokens/wbera.svg',
+    icon: '/assets/tokens/wbera.png',
     color: '#f5f5f4'
   },
   honey: {
@@ -147,4 +147,60 @@ export const beraB: { [key: string]: Token } = {
     icon: '/assets/tokens/SMONKEY.png',
     isMeme: true
   },
+  pumpbtc: {
+    chainId: CHAIN_ID,
+    address: '0xe1f167cde04d5d0f8d096957b3a23a7005618976',
+    decimals: 18,
+    symbol: 'mPumpBTC',
+    name: 'mPumpBTC',
+    icon: '/assets/tokens/pumpbtc.png'
+  },
+  mim: {
+    chainId: CHAIN_ID,
+    address: '0x08b918dd18e087893bb9d711d9e0bbaa7a63ef63',
+    decimals: 18,
+    symbol: 'MIM',
+    name: 'Magic Internet Money',
+    icon: '/assets/tokens/mim.png'
+  },
+  ibgt: {
+    chainId: CHAIN_ID,
+    address: '0x46eFC86F0D7455F135CC9df501673739d513E982',
+    decimals: 18,
+    symbol: 'iBGT',
+    name: 'Infrared BGT',
+    icon: '/assets/tokens/ibgt.png'
+  },
+  dirac: {
+    chainId: CHAIN_ID,
+    address: '0x277aaDBd9ea3dB8Fe9eA40eA6E09F6203724BdaE',
+    decimals: 18,
+    symbol: 'DIRAC',
+    name: 'Dirac Finance',
+    icon: '/assets/tokens/dirac.png'
+  },
+  mead: {
+    chainId: CHAIN_ID,
+    address: '0xf042c01ee84b73c1ba72957bfb54929393b6410d',
+    decimals: 18,
+    symbol: 'MEAD',
+    name: 'Roots Stable',
+    icon: '/assets/tokens/mead.png'
+  },
+  nect: {
+    chainId: CHAIN_ID,
+    address: '0xf5afcf50006944d17226978e594d4d25f4f92b40',
+    decimals: 18,
+    symbol: 'MEAD',
+    name: 'Nectar',
+    icon: '/assets/tokens/nectar.png'
+  },
+  obero: {
+    chainId: CHAIN_ID,
+    address: '0x7629668774f918c00Eb4b03AdF5C4e2E53d45f0b',
+    decimals: 18,
+    symbol: 'oBERO',
+    name: 'Beradrome Call Option',
+    icon: '/assets/tokens/obero.png'
+  }
 };
