@@ -538,7 +538,7 @@ export default memo(function Detail(props: any) {
               <div
                 className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
                 onClick={() => {
-                  router.push("/dex/bex?lp=" + LP_ADDRESS)
+                  router.push("/dex/bex/pools?id=" + id);
                 }}
               >
                 <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>

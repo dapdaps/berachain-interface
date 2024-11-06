@@ -72,7 +72,7 @@ export default memo(function IBGTPageView(props: any) {
                   </div>
                 )}
               >
-                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.staked).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
+                <div className="cursor-pointer text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">{ibgtData?.total ? Big(ibgtData?.staked).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</div>
               </Popover>
               <div className='absolute right-0 top-[37px] bottom-[34px] w-[1px] bg-black/[0.15]' />
             </div>
@@ -97,12 +97,12 @@ export default memo(function IBGTPageView(props: any) {
                     <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0 iBGT</div>
                   </div>
 
-                  <div
+                  {/*<div
                     className="cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
                     onClick={handleMintIBGT}
                   >
                     <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">Mint iBGT</span>
-                  </div>
+                  </div>*/}
                 </div>
               </div>
               <div className="w-full h-[1px] bg-black/[0.15]" />
