@@ -12,7 +12,7 @@ export default function useCollect({ address }: { address: string }) {
         if (!address) {
             return
         }
-
+        
         get(`/api/game/items?game_category=bera&address=${address}`).then(res => {
             if (res.code === 0) {
                 setCollection(res.data)
@@ -23,6 +23,7 @@ export default function useCollect({ address }: { address: string }) {
 
                 res.data?.forEach((item: GameItem) => {
                     // item.pc_item = true
+                    item.checked = false
                     switch(item.category) {
                         case 'hats':
                             hats.push(item)
@@ -53,11 +54,16 @@ export default function useCollect({ address }: { address: string }) {
         clothes,
         necklaces,
         hats,
+        setCars,
+        setClothes,
+        setHats,
+        setNecklaces,
     }
 }
 
-type GameItem = {
+export type GameItem = {
     level: number;
     category: string;
     pc_item: boolean;
+    checked: boolean;
 }
