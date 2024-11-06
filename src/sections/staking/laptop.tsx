@@ -16,6 +16,7 @@ export default function Liquidity({ dapp }: any) {
           alt={dapp?.name}
           name={dapp?.name}
           type='staking'
+          className="z-10 top-[10px]"
         />
       </div>
     </BearBackground>

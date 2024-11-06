@@ -723,7 +723,7 @@ export default memo(function Detail(props: any) {
                   isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
                 }
                 className={clsx(
-                  'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  'w-full h-[60px] font-[600] text-[18px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                   {
                     'opacity-50':
                       isWithdrawInsufficient ||
