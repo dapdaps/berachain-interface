@@ -53,7 +53,7 @@ export default function UserCard({ loading, totalBalance }: any) {
               )}
             </div>
             <div className='text-[14px] text-[#3D405A] font-Montserrat text-center'>
-              Total assets value
+              Total assets
             </div>
           </div>
         </>

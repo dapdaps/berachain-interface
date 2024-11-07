@@ -42,28 +42,26 @@ export default function Yours({
           />
         )}
       </div>
-      <div>
-        {currentTab === 'v3' ? (
-          <V3List
-            pools={pools}
-            loading={loading}
-            ticksInfo={ticksInfo}
-            onAction={(val: string, item: any) => {
-              setSelectedRecord(item);
-              setOpenModal(val);
-            }}
-          />
-        ) : (
-          <V2List
-            pools={pools}
-            loading={loading}
-            onAction={(val: string, item: any) => {
-              setSelectedRecord(item);
-              setOpenModal(val);
-            }}
-          />
-        )}
-      </div>
+      {currentTab === 'v3' ? (
+        <V3List
+          pools={pools}
+          loading={loading}
+          ticksInfo={ticksInfo}
+          onAction={(val: string, item: any) => {
+            setSelectedRecord(item);
+            setOpenModal(val);
+          }}
+        />
+      ) : (
+        <V2List
+          pools={pools}
+          loading={loading}
+          onAction={(val: string, item: any) => {
+            setSelectedRecord(item);
+            setOpenModal(val);
+          }}
+        />
+      )}
       {selectedReocrd && (
         <>
           <IncreaseLiquidityModal

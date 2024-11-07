@@ -39,7 +39,6 @@ const DappHeader: React.FC = () => {
 
   return (
     <>
-      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
       {isMobile ? (
         <div className="relative left-[25%] mt-7 top-5">
           <MenuButton className="w-[51.282vw]">Bridge</MenuButton>
@@ -63,6 +62,7 @@ export default function Bridge() {
 
   return (
     <>
+      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
       <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10'>
         <DappHeader />
         <Card>

@@ -16,7 +16,7 @@ const Input = ({
     setPrice(['0', '∞'].includes(value) ? value : formatPrice(value));
   }, [value]);
   return (
-    <div className='mt-[10px] h-[100px] rounded-[12px] border border-[#373a53] bg-white p-[14px] flex items-center md:p-[8px] md:h-[80px]'>
+    <div className='mt-[10px] h-[100px] relative rounded-[12px] border border-[#373a53] bg-white p-[14px] flex items-center md:p-[8px] md:h-[80px]'>
       <StyledInputButton
         disabled={Number(value) === 0 || rangeType === 3}
         onClick={() => {

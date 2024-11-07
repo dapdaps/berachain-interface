@@ -7,7 +7,7 @@ import Empty from '@/components/empty';
 import CircleLoading from '@/components/circle-loading';
 import Big from 'big.js';
 import { cloneDeep } from 'lodash';
-import useInfraredList from '../hooks/use-infrared-list';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 import { formatValueDecimal } from '@/utils/balance';
 import HandleModal from './handle-modal';
 import UserInfo from './user-info';
@@ -151,13 +151,13 @@ const Item = ({ data, onClick }: any) => {
               )}
               <Image
                 className='absolute right-[-2px] bottom-[0px]'
-                src={`/images/dapps/infrared/${
-                  pool
-                    ? pool?.protocol === 'BEX'
-                      ? 'bex'
-                      : 'berps'
-                    : 'infrared'
-                }.svg`}
+                src={
+                  pool?.protocol === 'BEX'
+                    ? '/images/dapps/infrared/bex.svg'
+                    : pool?.protocol === 'Kodiak Finance'
+                    ? '/images/dapps/kodiak.svg'
+                    : '/images/dapps/infrared/berps.svg'
+                }
                 width={20}
                 height={20}
                 alt='Protocol'

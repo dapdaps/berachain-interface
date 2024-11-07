@@ -42,6 +42,7 @@ export default function Swap({
   const [updater, setUpdater] = useState(0);
   const { importTokens, addImportToken }: any = useImportTokensStore();
   const { account, chainId } = useAccount();
+  const [showDetail, setShowDetail] = useState(true);
 
   const [selectType, setSelectType] = useState<'in' | 'out'>('in');
   const { loading, trade, onQuoter, onSwap } = useTrade({
@@ -128,7 +129,10 @@ export default function Swap({
 
   return (
     <Card>
-      <Header showSetting={showSetting} style={{ justifyContent: 'flex-start' }} />
+      <Header
+        showSetting={showSetting}
+        style={{ justifyContent: 'flex-start' }}
+      />
       <TokenAmout
         type='in'
         currency={inputCurrency}
@@ -185,6 +189,9 @@ export default function Swap({
             inputCurrencyAmount={inputCurrencyAmount}
             outputCurrencyAmount={outputCurrencyAmount}
             priceImpactType={trade?.priceImpactType}
+            onClose={() => {
+              setShowDetail(!showDetail);
+            }}
           />
           <Fees
             priceImpactType={trade?.priceImpactType}
@@ -192,6 +199,7 @@ export default function Swap({
             gasUsd={trade?.gasUsd}
             routerStr={trade?.routerStr}
             outputCurrencyAmount={outputCurrencyAmount}
+            show={showDetail}
           />
         </>
       )}

@@ -12,7 +12,7 @@ const TOKENS: Record<string, any> = Object.values(beraB).reduce(
 
 export default function usePoolsIslands() {
   const [pools, setPools] = useState<any>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const queryPools = async () => {

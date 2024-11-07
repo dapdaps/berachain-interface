@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Modal from '@/components/modal';
 
 export default function Welcome() {
   const [show, setShow] = useState(true);
@@ -8,12 +9,13 @@ export default function Welcome() {
   }
 
   return (
-    <>
-      <div
-        className='fixed inset-0 bg-black bg-opacity-50 hidden md:block'
-        onClick={() => setShow(false)}
-      />
-      <div className='absolute lg:w-[1000px] lg:bottom-[90px] lg:left-[50%] lg:translate-x-[-50%] md:w-full md:left-0 md:right-0 md:bottom-[200px]'>
+    <Modal
+      open={show}
+      onClose={() => {
+        setShow(false);
+      }}
+    >
+      <div className='lg:w-[1000px] md:w-full'>
         <svg
           onClick={() => {
             setShow(false);
@@ -176,6 +178,6 @@ export default function Welcome() {
           </div>
         </div>
       </div>
-    </>
+    </Modal>
   );
 }

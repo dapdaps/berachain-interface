@@ -29,6 +29,7 @@ export default function List(props: any) {
   } = props;
 
   const { dataList, loading } = useInfraredList();
+
   const [state, updateState] = useMultiState<any>({
     allData: null,
     filterList: [],
@@ -61,17 +62,16 @@ export default function List(props: any) {
     );
   }
 
-
-
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
+
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev, next) => {
-          return Big(next[state?.sortKey])
-            .minus(prev[state?.sortKey])
-            .toFixed();
-        })
+            return Big(next[state?.sortKey] || 0)
+              .minus(prev[state?.sortKey] || 0)
+              .toFixed();
+          })
         : cloneDataList
     });
   }, [state?.sortKey, dataList]);
@@ -88,17 +88,17 @@ export default function List(props: any) {
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center'>
               {data?.images[0] && (
-                <div className='w-[30px] h-[30px]'>
-                  <img
-                    src={data?.images[0]}
-                    style={{ objectPosition: 'left' }}
-                  />
-                </div>
+                <img
+                  className='w-[30px] h-[30px] rounded-full'
+                  src={data?.images[0]}
+                  style={{ objectPosition: 'left' }}
+                />
               )}
               {data?.images[1] && (
-                <div className='w-[30px] h-[30px] ml-[-10px]'>
-                  <img src={data?.images[1]} />
-                </div>
+                <img
+                  src={data?.images[1]}
+                  className='w-[30px] h-[30px] rounded-full ml-[-10px]'
+                />
               )}
             </div>
             <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
@@ -118,8 +118,13 @@ export default function List(props: any) {
         return (
           <img
             style={{ width: 26 }}
-            src={`/images/dapps/infrared/${pool ? (pool?.protocol === 'BEX' ? 'bex' : 'berps') : 'infrared'
-              }.svg`}
+            src={
+              pool?.protocol === 'BEX'
+                ? '/images/dapps/infrared/bex.svg'
+                : pool?.protocol === 'Kodiak Finance'
+                ? '/images/dapps/kodiak.svg'
+                : '/images/dapps/infrared/berps.svg'
+            }
           />
         );
       }
@@ -210,7 +215,11 @@ export default function List(props: any) {
               height='34'
               viewBox='0 0 34 34'
               fill='none'
-              className={Big(data?.usdDepositAmount ?? 0).eq(0) ? 'cursor-not-allowed' : 'cursor-pointer'}
+              className={
+                Big(data?.usdDepositAmount ?? 0).eq(0)
+                  ? 'cursor-not-allowed'
+                  : 'cursor-pointer'
+              }
               onClick={() => {
                 Big(data?.usdDepositAmount ?? 0).gt(0) && onChangeData(data, 1);
               }}
@@ -313,13 +322,13 @@ export default function List(props: any) {
           })}
         </div>
       ) : state?.filterList && state?.filterList.length > 0 ? (
-        <div className='flex flex-col gap-[2px]'>
+        <div className='flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll'>
           {state?.filterList.map((data: any, index: number) => {
             return (
               <div
                 key={index}
                 className={clsx(
-                  'flex items-center w-full h-[58px] rounded-[10px]',
+                  'flex items-center w-full h-[58px] rounded-[10px] shrink-0',
                   {
                     'bg-black/[0.06]': index % 2 === 0
                   }

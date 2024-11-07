@@ -4,7 +4,7 @@ import { beraB } from '@/configs/tokens/bera-bArtio';
 import usePoolsIslands from './use-pools-islands';
 
 export default function Pools() {
-  const [version, setVersion] = useState('islands');
+  const [version, setVersion] = useState('v3');
   const { loading, pools: islands } = usePoolsIslands();
   const pools = useMemo(
     () =>
@@ -36,7 +36,7 @@ export default function Pools() {
       onChangeTab={setVersion}
       loading={loading}
       tabs={[
-        { label: 'Islands', value: 'islands' },
+        // { label: 'Islands', value: 'islands' },
         { label: 'V3 Pools', value: 'v3' },
         { label: 'V2 Pools', value: 'v2' }
       ]}
