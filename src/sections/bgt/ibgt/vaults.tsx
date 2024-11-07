@@ -253,7 +253,7 @@ export default function Vaults() {
         })}
       </div>
 
-      {true ? (
+      {loading ? (
         <div className='flex items-center gap-[4px]'>
           {columnList.map((column: any) => {
             return (
