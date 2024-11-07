@@ -1,14 +1,11 @@
 "use client";
 
-import FlexTable, { Column } from "@/components/flex-table";
+import { Column } from "@/components/flex-table";
 import Loading from "@/components/loading";
 import { useBGT } from "@/hooks/use-bgt";
-import { formatValueDecimal } from "@/utils/balance";
-import { memo, useMemo, useState } from "react";
-import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
-import { memo, useEffect } from "react";
 import BgtHead from '@/sections/bgt/components/bgt-head';
-import BgtEmpty from '@/sections/bgt/components/bgt-empty';
+import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
+import { memo } from "react";
 
 import VaultsList from "./components/list";
 
