@@ -9,67 +9,35 @@ import { useProvider } from '@/hooks/use-provider';
 import { useMemo, useState } from 'react';
 import Detail from '../Bridge/Detail';
 import List from '../Bridge/List';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+
 type Props = {
   dapp: any;
 };
 
-const header = [
-  {
-    label: 'Pool'
-  },
-  {
-    label: 'Protocol'
-  },
-  {
-    label: 'TVL',
-    sort: true
-  },
-  {
-    label: 'APY',
-    sort: true
-  },
-  {
-    label: 'Yours',
-    sort: true
-  },
-  {
-    label: 'Action'
-  }
-];
-
-export type DefaultIndexType = 0 | 1
+export type DefaultIndexType = 0 | 1;
 export default function Staking({ dapp }: Props) {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
   const dexConfig = dapp?.chains[DEFAULT_CHAIN_ID];
-  const { ALL_DATA_URL, BHONEY_ADDRESS, addresses, pairs } = dexConfig;
+  const { ALL_DATA_URL, addresses, pairs } = dexConfig;
   const { account: sender, chainId } = useAccount();
   const { provider } = useProvider();
-  const [data, setData] = useState(null);
-  const [defaultIndex, setDefaultIndex] = useState<DefaultIndexType>(0);
+  const router = useRouter();
 
   const multicallAddress = useMemo(
     () => chainId && multicallAddresses[chainId],
     [chainId]
   );
   const onChangeData = function (data: any, index: DefaultIndexType) {
-    setData(data);
-    setDefaultIndex(index)
+    router.push(`/staking/infrared?id=${data.id}&tab=${index}`);
   };
-  const onBack = function () {
-    setData(null);
-  };
+
   return (
     <Card>
-      {data ? (
-        <Detail
-          {...{
-            data,
-            sender,
-            provider,
-            addresses,
-            defaultIndex,
-            onBack
-          }}
-        />
+      {id ? (
+        <Detail />
       ) : (
         <List
           {...{

@@ -41,62 +41,64 @@ export default memo(function validator() {
   const [operationType, setOperationType] = useState<OperationTypeType>("delegate")
   const Tabs: any = [
     { value: "gauges", label: "Gauges" },
-    { value: "Incentives", label: "incentives" },
+    { value: "incentives", label: "Incentives" },
   ];
-  const Columns: Column[] = [
-    {
-      title: "Gauge Vaults",
-      dataIndex: "vaults",
-      align: "left",
-      width: "25%",
-      render: (text: string, record: any) => {
-        return (
-          <div className="flex items-center gap-[16px]">
-            <div className="relative">
-              <div className="w-[30px] h-[30px]">
-                <img src={record?.metadata?.logoURI} alt={record?.metadata?.name} />
-              </div>
-              <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
-                <img src={record?.metadata?.productMetadata?.logoURI} alt={record?.metadata?.productMetadata?.name} />
-              </div>
-            </div>
-            <div className="flex flex-col gap-[5px]">
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.metadata?.name}</div>
-              <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">{record?.metadata?.product}</div>
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      title: "Total Incentive Value",
-      dataIndex: "incentive",
-      align: "left",
-      width: "25%",
-      render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.amountStaked}</div>;
-      },
-    },
-    {
-      title: "BGT per Proposal",
-      dataIndex: "proposal",
-      align: "left",
-      width: "25%",
-      render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.amountStaked} BGT</div>;
-      },
-    },
-    {
-      title: "Incentives",
-      dataIndex: "incentives",
-      align: "left",
-      width: "25%",
-      render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">-</div>;
-      },
-    },
+  const Columns: Column[] = useMemo(() => {
 
-  ];
+    return [
+      {
+        title: "Gauge Vaults",
+        dataIndex: "vaults",
+        align: "left",
+        width: "25%",
+        render: (text: string, record: any) => {
+          return (
+            <div className="flex items-center gap-[16px]">
+              <div className="relative">
+                <div className="w-[30px] h-[30px]">
+                  <img src={record?.metadata?.logoURI} alt={record?.metadata?.name} />
+                </div>
+                <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
+                  <img src={record?.metadata?.productMetadata?.logoURI} alt={record?.metadata?.productMetadata?.name} />
+                </div>
+              </div>
+              <div className="flex flex-col gap-[5px]">
+                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.metadata?.name}</div>
+                <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">{record?.metadata?.product}</div>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        title: currentTab === "gauges" ? "Total Incentive Value" : "Incentive Breakdown",
+        dataIndex: "incentive",
+        align: "left",
+        width: "25%",
+        render: (text: string, record: any) => {
+          return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.amountStaked}</div>;
+        },
+      },
+      {
+        title: currentTab === "gauges" ? "BGT per Proposal" : "Incentive Rate",
+        dataIndex: "proposal",
+        align: "left",
+        width: "25%",
+        render: (text: string, record: any) => {
+          return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.amountStaked} BGT</div>;
+        },
+      },
+      {
+        title: currentTab === "gauges" ? "Incentives" : "Amount Left",
+        dataIndex: "incentives",
+        align: "left",
+        width: "25%",
+        render: (text: string, record: any) => {
+          return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">-</div>;
+        },
+      },
+    ]
+  }, [currentTab]);
 
   const handleClose = () => {
     setVisible(false)
@@ -235,7 +237,7 @@ export default memo(function validator() {
         </div>
 
         <SwitchTabs
-          currentTab={currentTab}
+          current={currentTab}
           tabs={Tabs}
           onChange={(key) => setCurrentTab(key as string)}
           style={{
@@ -253,7 +255,7 @@ export default memo(function validator() {
         <FlexTable
           loading={vaultsLoading}
           columns={Columns}
-          list={vaults}
+          list={currentTab === "gauges" ? vaults : []}
         />
       </div>
       <Delegate

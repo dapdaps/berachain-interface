@@ -1,88 +1,41 @@
-// @ts-nocheck
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import useAccount from '@/hooks/use-account';
-import { useMultiState } from '@/hooks/use-multi-state';
-import { useProvider } from '@/hooks/use-provider';
-import { formatValueDecimal } from '@/utils/balance';
-import { asyncFetch } from '@/utils/http';
-import Big from 'big.js';
 import clsx from 'clsx';
-import { ethers } from 'ethers';
-import dynamic from 'next/dynamic';
-import { useEffect, useMemo } from 'react';
-import type { ColumnType } from '../types';
+import Big from 'big.js';
+import { useEffect } from 'react';
+import { formatValueDecimal } from '@/utils/balance';
+import { useMultiState } from '@/hooks/use-multi-state';
 import Skeleton from 'react-loading-skeleton';
-import useInfraredData from '../Datas/Infrared';
-import _ from 'lodash';
-import useInfraredList from '../hooks/use-infrared-list';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
+import { cloneDeep } from 'lodash';
+import { useRouter } from 'next/navigation';
 
-export default function List(props: any) {
-  const {
-    pairs,
-    sender,
-    chainId,
-    provider,
-    addresses,
-    ALL_DATA_URL,
-    multicallAddress,
-    onChangeData
-  } = props;
+function renderTD(data: any, column: any, index: number) {
+  if (column.type === 'slot') {
+    return column.render(data, index);
+  }
+  return (
+    <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
+      {data[column.key]}
+    </div>
+  );
+}
 
-  const { dataList, loading } = useInfraredList();
-
+export default function Vaults() {
   const [state, updateState] = useMultiState<any>({
     allData: null,
     filterList: [],
     sortKey: ''
   });
 
-  const tvl = useMemo(() => {
-    return formatValueDecimal(
-      dataList?.reduce((prev, cur) => {
-        return prev.plus(
-          Big(
-            ethers.utils.formatUnits(cur?.initialData?.current_staked_amount)
-          ).times(cur?.initialData?.stake_token?.price ?? 0)
-        );
-      }, Big(0)),
-      '$',
-      2,
-      true
-    );
-  }, [dataList]);
+  const { dataList, loading } = useInfraredList();
+  const router = useRouter();
 
-  function renderTD(data: any, column: ColumnType, index: number) {
-    console.log('====1111====')
-    if (column.type === 'slot') {
-      return column.render(data, index);
-    }
-    return (
-      <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-        {data[column.key]}
-      </div>
-    );
-  }
-
-  useEffect(() => {
-    const cloneDataList = _.cloneDeep(dataList);
-    updateState({
-      filterList: state?.sortKey
-        ? cloneDataList.sort((prev, next) => {
-          return Big(next[state?.sortKey] || 0)
-            .minus(prev[state?.sortKey] || 0)
-            .toFixed();
-        })
-        : cloneDataList
-    });
-  }, [state?.sortKey, dataList]);
-
-  const columnList: ColunmListType = [
+  const columnList: any = [
     {
       width: '25%',
       key: 'pool',
       label: 'Pool',
       type: 'slot',
-      render: (data) => {
+      render: (data: any) => {
         const pool = data?.initialData?.pool;
         return (
           <div className='flex items-center gap-[8px]'>
@@ -122,8 +75,8 @@ export default function List(props: any) {
               pool?.protocol === 'BEX'
                 ? '/images/dapps/infrared/bex.svg'
                 : pool?.protocol === 'Kodiak Finance'
-                  ? '/images/dapps/kodiak.svg'
-                  : '/images/dapps/infrared/berps.svg'
+                ? '/images/dapps/kodiak.svg'
+                : '/images/dapps/infrared/berps.svg'
             }
           />
         );
@@ -135,7 +88,7 @@ export default function List(props: any) {
       label: 'TVL',
       type: 'slot',
       sort: true,
-      render: (data) => {
+      render: (data: any) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
             {formatValueDecimal(data.tvl, '$', 2, true)}
@@ -149,7 +102,7 @@ export default function List(props: any) {
       label: 'APY',
       type: 'slot',
       sort: true,
-      render: (data) => {
+      render: (data: any) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
             {Big(data?.apy ?? 0).toFixed(2)}%
@@ -163,7 +116,7 @@ export default function List(props: any) {
       label: 'Yours',
       type: 'slot',
       sort: true,
-      render: (data) => {
+      render: (data: any) => {
         return (
           <div
             className={clsx(
@@ -181,7 +134,7 @@ export default function List(props: any) {
       key: 'action',
       label: 'Action',
       type: 'slot',
-      render: (data) => {
+      render: (data: any) => {
         return (
           <div className='flex gap-[10px]'>
             <svg
@@ -192,7 +145,7 @@ export default function List(props: any) {
               fill='none'
               className='cursor-pointer'
               onClick={() => {
-                onChangeData(data, 0);
+                router.push(`/staking/infrared?id=${data.id}&tab=0`);
               }}
             >
               <rect
@@ -221,7 +174,9 @@ export default function List(props: any) {
                   : 'cursor-pointer'
               }
               onClick={() => {
-                Big(data?.usdDepositAmount ?? 0).gt(0) && onChangeData(data, 1);
+                if (Big(data?.usdDepositAmount ?? 0).gt(0)) {
+                  router.push(`/staking/infrared?id=${data.id}&tab=1`);
+                }
               }}
             >
               <g opacity={Big(data?.usdDepositAmount ?? 0).eq(0) ? '0.3' : '1'}>
@@ -243,38 +198,25 @@ export default function List(props: any) {
     }
   ];
 
-  console.log('====state?.filterList', state?.filterList)
-  return (
-    <div>
-      <div className='pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]'>
-        Vaults
-      </div>
-      <div className='pt-[7px] pb-[12px] pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-        Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) &
-        Boosted Yield.
-      </div>
-      <div className='px-[30px] pb-[23px]'></div>
-      <div className='flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]'>
-        <div className='flex flex-col gap-[12px] w-[20%]'>
-          <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-            TVL
-          </div>
-          <div className='text-black font-Montserrat text-[26px] font-semibold leading-[90%]'>
-            {tvl}
-          </div>
-        </div>
+  useEffect(() => {
+    const cloneDataList = cloneDeep(dataList);
 
-        <div className='flex flex-col gap-[12px] w-[80%]'>
-          <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-            APY up to
-          </div>
-          <div className='text-black font-Montserrat text-[26px] font-semibold leading-[90%]'>
-            500%
-          </div>
-        </div>
-      </div>
-      <div className='flex items-center pt-[23px] pb-[8px]'>
-        {columnList.map((column: ColumnType, index: number) => {
+    updateState({
+      filterList: state?.sortKey
+        ? cloneDataList.sort((prev: any, next: any) => {
+            return Big(next[state?.sortKey] || 0)
+              .minus(prev[state?.sortKey] || 0)
+              .toFixed();
+          })
+        : cloneDataList
+    });
+  }, [state?.sortKey, dataList]);
+
+  return (
+    <>
+      <div className='text-[18px] font-bold mt-[20px]'>Vaults</div>
+      <div className='flex items-center pt-[10px] pb-[8px]'>
+        {columnList.map((column: any, index: number) => {
           return (
             <div
               key={index}
@@ -313,17 +255,17 @@ export default function List(props: any) {
 
       {loading ? (
         <div className='flex items-center gap-[4px]'>
-          {columnList.map((column: ColumnType) => {
+          {columnList.map((column: any) => {
             return (
               <Skeleton
-                width={(928 * parseInt(column?.width)) / 100 - 4}
+                width={(1140 * parseInt(column?.width)) / 100 - 4}
                 height={58}
               />
             );
           })}
         </div>
-      ) : state?.filterList && state?.filterList?.length > 0 ? (
-        <div className='flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll'>
+      ) : state?.filterList && state?.filterList.length > 0 ? (
+        <div className='flex flex-col gap-[2px] max-h-[50vh] overflow-y-scroll'>
           {state?.filterList.map((data: any, index: number) => {
             return (
               <div
@@ -335,7 +277,7 @@ export default function List(props: any) {
                   }
                 )}
               >
-                {columnList.map((column: ColumnType, columnIndex: number) => {
+                {columnList.map((column: any, columnIndex: number) => {
                   return (
                     <div
                       key={index + columnIndex}
@@ -357,6 +299,6 @@ export default function List(props: any) {
           You didn’t add any liquidity yet
         </div>
       )}
-    </div>
+    </>
   );
 }

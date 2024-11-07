@@ -104,7 +104,8 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList
+      dataList: dataList?.filter(data => data?.initialData?.pool?.protocol === 'BEX'),
+      fullDataList: dataList
     });
   }
   function getDataList() {
@@ -117,20 +118,22 @@ export default function useInfraredData(props: any) {
       );
       if (findIndex > -1) {
         const initialData = allData[findIndex];
-
-        dataList.push({
-          ...pair,
-          tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
-            .times(initialData?.stake_token?.price ?? 0)
-            .toFixed(),
-          apy: initialData?.apy_percentage,
-          initialData,
-          type: 'Staking',
-          vaultAddress,
-          rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
-          protocolType:
-            initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
-        });
+        if (initialData?.pool?.protocol === 'BEX' ||
+          pair?.id === 'iBGT-HONEY') {
+          dataList.push({
+            ...pair,
+            tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
+              .times(initialData?.stake_token?.price ?? 0)
+              .toFixed(),
+            apy: initialData?.apy_percentage,
+            initialData,
+            type: 'Staking',
+            vaultAddress,
+            rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
+            protocolType:
+              initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+          });
+        }
       }
     });
     formatedData('dataList');
@@ -169,15 +172,19 @@ export default function useInfraredData(props: any) {
   }
 
   function getEarned() {
-    const calls = []
-    dataList.forEach(data => {
-
+    const calls = [];
+    dataList.forEach((data) => {
       calls.push({
         address: ethers.utils.getAddress(addresses[data?.id]),
         name: 'earned',
-        params: [sender, data?.id === "iBGT-HONEY" ? "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03" : IBGT_ADDRESS]
-      })
-    })
+        params: [
+          sender,
+          data?.id === 'iBGT-HONEY'
+            ? '0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03'
+            : IBGT_ADDRESS
+        ]
+      });
+    });
 
     multicallv2(
       ERC20_ABI,
@@ -190,7 +197,7 @@ export default function useInfraredData(props: any) {
             ethers.utils.formatUnits(result[i][0])
           ).toFixed();
         }
-        formatedData('getEarned')
+        formatedData('getEarned');
       },
       (error) => {
         console.log('=error', error);

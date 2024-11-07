@@ -5,15 +5,18 @@ import useCustomAccount from '@/hooks/use-account';
 import { asyncFetch } from '@/utils/http';
 import { useEffect, useMemo, useState } from 'react';
 import useInfraredData from '../Datas/Infrared';
+import { useIbgtVaults } from '@/stores/ibgt-vaults';
 
 export default function useInfraredList(updater?: number) {
   const { chainId, account: sender, provider } = useCustomAccount();
   const infraredDexConfig = infraredConfig.chains[DEFAULT_CHAIN_ID];
   const { pairs, addresses, ALL_DATA_URL, IBGT_ADDRESS } = infraredDexConfig;
+  const ibgtVaults: any = useIbgtVaults();
 
   const [allData, setAllData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [dataList, setDataList] = useState<any>(null);
+  const [fullDataList, setFullDataList] = useState<any>(null);
   const multicallAddress = useMemo(
     () => chainId && multicallAddresses[chainId],
     [chainId]
@@ -36,7 +39,9 @@ export default function useInfraredList(updater?: number) {
     IBGT_ADDRESS,
     onLoad: (data: any) => {
       setDataList([...data.dataList]);
+      setFullDataList([...data.fullDataList]);
       setLoading(false);
+      ibgtVaults.set({ vaults: [...data.dataList] });
     }
   });
 
@@ -47,6 +52,7 @@ export default function useInfraredList(updater?: number) {
   return {
     loading,
     dataList,
+    fullDataList,
     fetchAllData
   };
 }
