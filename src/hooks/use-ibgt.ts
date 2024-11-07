@@ -82,10 +82,6 @@ export function useIBGT(props: any) {
     }
 
   }
-
-  const { loading, dataList, fullDataList } = useInfraredList()
-  const tokenData = useMemo(() => fullDataList?.find((d: any) => d.id === "iBGT-HONEY"), [fullDataList])
-
   const toast = useToast();
   const tabs = ["Stake", "Unstake"]
   const [tIndex, setTIndex] = useState(0)
@@ -113,6 +109,9 @@ export function useIBGT(props: any) {
     lpAmount,
     updater
   } = state;
+
+  const { loading, dataList, fullDataList } = useInfraredList(updater)
+  const tokenData = useMemo(() => fullDataList?.find((d: any) => d.id === "iBGT-HONEY"), [fullDataList])
   const { tokens, decimals, id, LP_ADDRESS } = tokenData ?? {};
   const symbol = id;
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
@@ -471,7 +470,7 @@ export function useIBGT(props: any) {
 
   useEffect(() => {
     provider && account && queryData()
-  }, [provider, account])
+  }, [provider, account, updater])
 
   return {
     data,
