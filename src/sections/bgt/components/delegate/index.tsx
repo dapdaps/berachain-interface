@@ -59,8 +59,10 @@ export default memo(function Delegate(props: IProps) {
     balance: "",
     inAmount: "",
     rangeIndex: -1,
+    percentage: 0,
     updater: 0,
     isLoading: false,
+    isConfirmAndCancelLoading: false,
     selectVisible: false
   })
   const RangeList = [0.25, 0.5, 0.75, 1]
@@ -78,18 +80,24 @@ export default memo(function Delegate(props: IProps) {
       console.error(error)
     }
   }
+  const getPercentage = (_amount: string) => {
+    return Big(_amount).div(state?.balance ?? 1).times(100).toFixed()
+  }
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, '');
     if (isNaN(Number(amount))) return;
     if (!amount) {
       updateState({
-        inAmount: amount
+        inAmount: amount,
+        percentage: 0,
+        rangeIndex: -1
       });
       return;
     }
 
     updateState({
       inAmount: amount,
+      percentage: getPercentage(amount),
       rangeIndex: -1
     })
   }
@@ -151,15 +159,15 @@ export default memo(function Delegate(props: IProps) {
       updateState({
         isLoading: false,
       });
+      onSuccess()
       toast?.dismiss(toastId);
       toast?.success({
         title: operationType === "delegate" ? 'Queue Boost Successfully!' : 'Unbond Successfully!'
       });
     }).catch((error: any) => {
       updateState({
-        loading: false
+        isLoading: false
       });
-      onSuccess()
       toast?.dismiss(toastId);
       toast?.fail({
         title: operationType === "delegate" ? 'Queue Boost Failed!' : 'Unbond Failed!',
@@ -168,77 +176,46 @@ export default memo(function Delegate(props: IProps) {
     })
   }
 
-  const handleClickConfirm = async (queue: QueueType) => {
+  const handleClickConfirmAndCancel = async (queue: QueueType, type: "confirm" | "cancel") => {
     const toastId = toast?.loading({
-      title: `Confirming...`
+      title: type === "confirm" ? "Confirming..." : "Canceling..."
     });
     updateState({
-      isLoading: true,
-    });
-    const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider?.getSigner())
-    executionContract({
-      contract,
-      method: "activateBoost",
-      params: [queue?.address]
-    }).then((receipt: any) => {
-      const { status, transactionHash } = receipt;
-      updateState({
-        isLoading: false,
-      });
-      onSuccess()
-      toast?.dismiss(toastId);
-      toast?.success({
-        title: 'Confirm Successfully!'
-      });
-    }).catch((error: any) => {
-      updateState({
-        loading: false
-      });
-      toast?.dismiss(toastId);
-      toast?.fail({
-        title: 'Confirm Failed!',
-        text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : ''
-      });
-    })
-  }
-  const handleClickCancel = async (queue: QueueType) => {
-    const toastId = toast?.loading({
-      title: `Canceling...`
-    });
-    updateState({
-      isLoading: true,
+      isConfirmAndCancelLoading: true,
     });
     const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider?.getSigner())
     const wei = ethers.utils.parseUnits(Big(queue?.balance).toFixed(18), 18);
     executionContract({
       contract,
-      method: "cancelBoost",
-      params: [queue?.address, wei]
+      method: type === "confirm" ? "activateBoost" : "cancelBoost",
+      params: type === "confirm" ? [queue?.address] : [queue?.address, wei]
     }).then((receipt: any) => {
       const { status, transactionHash } = receipt;
       updateState({
-        isLoading: false,
+        isConfirmAndCancelLoading: false,
       });
       onSuccess()
       toast?.dismiss(toastId);
       toast?.success({
-        title: 'Cancel Successfully!'
+        title: type === "confirm" ? 'Confirm Successfully!' : 'Cancel Successfully!'
       });
     }).catch((error: any) => {
       updateState({
-        loading: false
+        isConfirmAndCancelLoading: false
       });
       toast?.dismiss(toastId);
       toast?.fail({
-        title: 'Cancel Failed!',
+        title: type === "confirm" ? 'Confirm Failed!' : 'Cancel Failed!',
         text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : ''
       });
     })
   }
 
+
   const onSuccess = () => {
+    onClose()
     updateState({
-      updater: Date.now()
+      updater: Date.now(),
     })
   }
   useEffect(() => {
@@ -250,7 +227,8 @@ export default memo(function Delegate(props: IProps) {
     } else {
       updateState({
         inAmount: "",
-        rangeIndex: -1
+        rangeIndex: -1,
+        percentage: 0
       })
     }
   }, [visible, account, state?.updater])
@@ -291,9 +269,11 @@ export default memo(function Delegate(props: IProps) {
                         index === state?.rangeIndex ? 'bg-[#FFDC50]' : ""]
                     )}
                     onClick={() => {
+                      const amount = Big(state?.balance).times(range).toFixed()
                       updateState({
-                        inAmount: Big(state?.balance).times(range).toFixed(),
-                        rangeIndex: index
+                        inAmount: amount,
+                        percentage: getPercentage(amount),
+                        rangeIndex: index,
                       })
                     }}
                   >{range === 1 ? 'Max' : range * 100 + '%'}</div>
@@ -301,7 +281,7 @@ export default memo(function Delegate(props: IProps) {
               }
             </div>
             <div className='flex items-center w-[216px] h-[8px] rounded-[12px] bg-[#DFDCC4]'>
-              <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: state?.rangeIndex > -1 ? (RangeList[state?.rangeIndex] * 100 + '%') : 0 }}>
+              <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: state?.percentage + '%' }}>
                 <div className='absolute right-[-5px] top-[-5px] w-[18px] h-[18px] rounded-full bg-[#FFDC50] border border-black'></div>
               </div>
             </div>
@@ -339,14 +319,15 @@ export default memo(function Delegate(props: IProps) {
                             "inline-flex h-fit items-center justify-center transition-duration-300 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-30 disabled:pointer-events-none ring-offset-background text-muted-foreground hover:bg-muted px-4 py-2 rounded-md text-lg font-semibold leading-7",
                             queue?.canConfirm ? "" : "opacity-30 !cursor-not-allowed"
                           )}
+                          disabled={!queue?.canConfirm}
                           onClick={() => {
-                            handleClickConfirm(queue)
+                            handleClickConfirmAndCancel(queue, "confirm")
                           }}
                         >Confirm</button>
                         <button
                           className="inline-flex h-fit items-center justify-center transition-duration-300 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-30 disabled:pointer-events-none ring-offset-background text-muted-foreground hover:bg-muted px-4 py-2 rounded-md text-lg font-semibold leading-7"
                           onClick={() => {
-                            handleClickCancel(queue)
+                            handleClickConfirmAndCancel(queue, "cancel")
                           }}
                         >Cancel</button>
                       </div>
@@ -376,7 +357,7 @@ export default memo(function Delegate(props: IProps) {
             }
           </div>
         </div>
-      </Modal>
+      </Modal >
       <Select
         visible={state?.selectVisible}
         onClose={() => {

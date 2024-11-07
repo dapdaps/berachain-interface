@@ -52,6 +52,7 @@ export default function List(props: any) {
   }, [dataList]);
 
   function renderTD(data: any, column: ColumnType, index: number) {
+    console.log('====1111====')
     if (column.type === 'slot') {
       return column.render(data, index);
     }
@@ -83,6 +84,8 @@ export default function List(props: any) {
       type: 'slot',
       render: (data) => {
         const pool = data?.initialData?.pool;
+
+        console.log('1111pppp')
         return (
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center'>
@@ -242,6 +245,7 @@ export default function List(props: any) {
     }
   ];
 
+  console.log('====state?.filterList', state?.filterList)
   return (
     <div>
       <div className='pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]'>
@@ -320,7 +324,7 @@ export default function List(props: any) {
             );
           })}
         </div>
-      ) : state?.filterList && state?.filterList.length > 0 ? (
+      ) : state?.filterList && state?.filterList?.length > 0 ? (
         <div className='flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll'>
           {state?.filterList.map((data: any, index: number) => {
             return (

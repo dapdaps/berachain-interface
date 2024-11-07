@@ -60,10 +60,10 @@ export default memo(function Detail(props: any) {
     !lpAmount || !lpBalance
       ? '-'
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
   const { addAction } = useAddAction('dapp');
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
@@ -664,9 +664,9 @@ export default memo(function Detail(props: any) {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {inAmount
                     ? '$' +
-                      Big(inAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(inAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : '-'}
                 </span>
                 <div
@@ -752,9 +752,9 @@ export default memo(function Detail(props: any) {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {lpAmount
                     ? '$' +
-                      Big(lpAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(lpAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : '-'}
                 </span>
                 <div
@@ -810,6 +810,9 @@ export default memo(function Detail(props: any) {
           open={showAddModal}
           onClose={() => {
             setShowAddModal(null);
+            updateState({
+              updater: Date.now()
+            })
           }}
         />
       )}

@@ -23,6 +23,7 @@ export default memo(function Button(props) {
       </div>
     )
   }
+  console.log('===loading', loading)
   if (loading) {
     return (
       <div className={clsx(BTN_CLASS, '!opacity-50')}>

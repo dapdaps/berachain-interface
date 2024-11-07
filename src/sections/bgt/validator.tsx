@@ -41,7 +41,7 @@ export default memo(function validator() {
   const [operationType, setOperationType] = useState<OperationTypeType>("delegate")
   const Tabs: any = [
     { value: "gauges", label: "Gauges" },
-    { value: "Incentives", label: "incentives" },
+    { value: "incentives", label: "Incentives" },
   ];
   const Columns: Column[] = [
     {
@@ -235,7 +235,7 @@ export default memo(function validator() {
         </div>
 
         <SwitchTabs
-          currentTab={currentTab}
+          current={currentTab}
           tabs={Tabs}
           onChange={(key) => setCurrentTab(key as string)}
           style={{
