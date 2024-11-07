@@ -202,6 +202,7 @@ export default memo(function Select(props: IProps) {
   }
   const getValidators = async () => {
 
+    console.log('====1111====')
     const promiseArray = [
       getUserStaked(),
       getUserQueued(),
@@ -225,23 +226,25 @@ export default memo(function Select(props: IProps) {
           vApy: result?.[4]?.[i]?.vApy,
         })
       }
+      console.log('===result', result)
       setLoading(false)
       setValidators(_validators)
     } catch (error) {
+      console.log('===error', error)
       setLoading(false)
       console.error(error)
     }
   }
   useEffect(() => {
-    if (account) {
+    if (visible && account) {
       getValidators()
     }
-  }, [account])
+  }, [visible, account])
   return (
     <Modal open={visible} onClose={onClose}>
       <div className='px-[32px] pt-[28px] w-[1040px] h-[452px] pb-[69px] overflow-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,_0,_0,_0.25)]'>
         <div className='flex flex-col gap-[8px]'>
-          <div className='text-lg font-semibold leading-7'>Validator select</div>
+          <div className='text-lg font-semibold leading-7'>Validator Select</div>
           <div className='flex'>
             <div className='w-auto flex items-center border bg-[#fff] rounded-[12px] overflow-hidden border-[#373A53] px-[15px] gap-[10px]'>
               <svg

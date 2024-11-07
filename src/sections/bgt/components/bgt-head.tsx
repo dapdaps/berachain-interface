@@ -1,3 +1,5 @@
+import { formatValueDecimal } from "@/utils/balance";
+
 const BgtHead = (props: any) => {
   const { bgtData, style, className } = props;
 
@@ -47,7 +49,7 @@ const BgtHead = (props: any) => {
       </div>
       <div className="min-w-[278px] h-[88px] p-[10px] rounded-[30px] bg-[#DAA56B] shadow-[1px_1px_0px_0px_#77481E]">
         <div className="flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-[#924E00] border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%]">
-          {bgtData?.count} BGT
+          {formatValueDecimal(bgtData?.count, '', 6)} BGT
         </div>
       </div>
     </div>

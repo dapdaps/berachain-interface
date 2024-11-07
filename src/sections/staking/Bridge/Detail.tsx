@@ -47,7 +47,10 @@ export default memo(function Detail(props: any) {
     updater
   } = state;
 
+
   const { decimals, tokens, id, LP_ADDRESS } = data;
+
+  console.log('====data', data)
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
@@ -776,7 +779,7 @@ export default memo(function Detail(props: any) {
               <button
                 disabled={!withdrawable}
                 className={clsx(
-                  'w-full h-[60px] font-[600] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  'w-full h-[60px] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                   {
                     'opacity-50': !withdrawable
                   }
