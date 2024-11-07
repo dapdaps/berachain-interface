@@ -22,7 +22,7 @@ const Cave = () => {
         }}
       >
         <MenuButton className='my-0 mx-auto' contentClassName='text-2xl'>
-          Bear Cave
+          Bera Cave
         </MenuButton>
       </div>
       <div className='bg-[#9C948F] h-[190vw] w-full'>
