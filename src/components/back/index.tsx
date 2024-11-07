@@ -24,12 +24,13 @@ const PageBack = (props: Props) => {
         onClick={handleClick}
       >
         <img
-          src='/images/icon-back.svg'
+          src={ props.icon || '/images/icon-back.svg' }
           alt='back'
           width={27}
           height={16}
           className='translate-y-[2px]'
         />
+
         <span>back</span>
       </button>
       <button
@@ -61,6 +62,6 @@ export default PageBack;
 interface Props {
   className?: string;
   style?: React.CSSProperties;
-
+  icon?: string;
   onBack?(): void;
 }
