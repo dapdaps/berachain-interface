@@ -46,7 +46,7 @@ const Input = ({
   return (
     <StyledInput $error={isError}>
       <StyledInputTokenBox>
-        <div className='shrink'>
+        <div className='grow'>
           <StyledInputInner
             placeholder='0'
             value={value}
