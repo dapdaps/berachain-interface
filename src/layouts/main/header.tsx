@@ -38,7 +38,11 @@ const MainLayoutHeader = (props: Props) => {
   };
 
   useEffect(() => {
-    if (!account || !provider) return;
+    if (!account || !provider) {
+      setIBGTCount('0');
+      setBGTCount('0');
+      return;
+    }
     queryBGTCount();
     const timer = setInterval(() => {
       queryBGTCount();
