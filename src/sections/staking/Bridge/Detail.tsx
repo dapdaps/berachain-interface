@@ -703,7 +703,7 @@ export default memo(function Detail(props: any) {
                   <button
                     disabled={isTokenApproved || isTokenApproving}
                     className={clsx(
-                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black text-[18px] font-semibold',
                       {
                         'opacity-50': isTokenApproved || isTokenApproving
                       }
@@ -773,7 +773,7 @@ export default memo(function Detail(props: any) {
               <button
                 disabled={!withdrawable}
                 className={clsx(
-                  'w-full h-[60px] font-[600] text-[18px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  'w-full h-[60px] font-[600] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                   {
                     'opacity-50': !withdrawable
                   }
