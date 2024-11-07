@@ -4,7 +4,7 @@ import useAddAction from '@/hooks/use-add-action';
 import useLpToAmount from '@/hooks/use-lp-to-amount';
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
-import { formatValueDecimal } from '@/utils/balance';
+import { formatValueDecimal, balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
@@ -672,7 +672,7 @@ export default memo(function Detail(props: any) {
                 >
                   balance:{' '}
                   <span className='underline'>
-                    {Big(balances[symbol] ?? 0).toFixed(6)}
+                    {balanceFormated(balances[symbol] ?? 0, 6)}
                   </span>
                 </div>
               </div>
@@ -703,7 +703,7 @@ export default memo(function Detail(props: any) {
                   <button
                     disabled={isTokenApproved || isTokenApproving}
                     className={clsx(
-                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black text-[18px] font-semibold',
                       {
                         'opacity-50': isTokenApproved || isTokenApproving
                       }
@@ -767,13 +767,16 @@ export default memo(function Detail(props: any) {
                     handleLPChange(lpBalance);
                   }}
                 >
-                  balance: <span className='underline'>{lpBalance}</span>
+                  balance:{' '}
+                  <span className='underline'>
+                    {balanceFormated(lpBalance ?? 0, 6)}
+                  </span>
                 </div>
               </div>
               <button
                 disabled={!withdrawable}
                 className={clsx(
-                  'w-full h-[60px] font-[600] text-[18px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  'w-full h-[60px] font-[600] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                   {
                     'opacity-50': !withdrawable
                   }

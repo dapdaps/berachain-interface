@@ -34,7 +34,7 @@ export default {
           decimals: 18,
           decimals0: 18,
           decimals1: 18,
-          LP_ADDRESS: '0x50f7d4da89f720fbfb35be369f34c6b51e2cada1'
+          LP_ADDRESS: '0xfbe71d98f9d2c658d52a2d72994c717637c3dda1'
         },
         {
           id: 'HONEY-USDC',
@@ -184,7 +184,7 @@ export default {
         VDHONEY: '0xe1d93e7106fd449f782c58463f19e6b87cbabf89',
         BHONEY: '0x7d91bf5851b3a8bcf8c39a69af2f0f98a4e2202a',
         'HONEY-USDC': '0x675547750f4acdf64ed72e9426293f38d8138ca8',
-        'HONEY-WETH': '0xA9480499b1fAeAf225cEb88ADe69de10b7f86c1e',
+        'HONEY-WETH': '0x18800fd6b9fc335cddea49144fdd49bacce96362',
         'HONEY-WBTC': '0x1d7a0f63a723eff12dfb3a6944daab59840d78c8',
         'iBGT-HONEY': '0x31e6458c83c4184a23c761fdaffb61941665e012',
         'HONEY-STGUSDC': '0x1b602728805ca854e0dfdbbba9060345fb26bc20',
