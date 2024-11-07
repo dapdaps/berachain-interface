@@ -37,7 +37,7 @@ export default function Dropdown({
 
   const title = useMemo(() => {
     if (list && value) {
-      const cur = list.find((item) => item.key === value);
+      const cur = list.find((item) => (item.key || item.name) === value);
       if (cur) {
         return cur.name;
       }
@@ -53,7 +53,7 @@ export default function Dropdown({
         setModalShow(true);
       }}
       style={style}
-      className='flex relative  justify-between items-center bg-[#fff] lg:gap-8 md:gap-[14px] h-[40px] lg:px-[20px] md:px-[12px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer'
+      className='flex relative justify-between items-center bg-[#fff] lg:gap-8 md:gap-[14px] h-[40px] lg:px-[20px] md:px-[12px]  text-[14px] font-medium rounded-[12px] border border-[#373A53] cursor-pointer md:w-[140px]'
     >
       <div className='text-nowrap'>{title}</div>
       <div>
@@ -80,16 +80,16 @@ export default function Dropdown({
           {list?.map((item) => {
             return (
               <div
-                key={item.key}
+                key={item.key || item.name}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onChange(item.key);
+                  onChange(item.key || item.name);
                   setModalShow(false);
                 }}
                 className='h-[40px] px-[10px]  hover:bg-[#0000000F] relative flex justify-between items-center text-nowrap'
               >
                 <div>{item.name}</div>
-                {item.key === value && (
+                {(item.key || item.name) === value && (
                   <div className='w-[6px] h-[6px] bg-[#EBF479] absolute top-[18px] right-1 rounded-[6px]'></div>
                 )}
               </div>

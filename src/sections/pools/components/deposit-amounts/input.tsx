@@ -46,18 +46,20 @@ const Input = ({
   return (
     <StyledInput $error={isError}>
       <StyledInputTokenBox>
-        <StyledInputInner
-          placeholder='0'
-          value={value}
-          onChange={(ev) => {
-            if (isNaN(Number(ev.target.value))) return;
-            setValue(ev.target.value);
-          }}
-          disabled={disabled}
-        />
+        <div className='grow'>
+          <StyledInputInner
+            placeholder='0'
+            value={value}
+            onChange={(ev) => {
+              if (isNaN(Number(ev.target.value))) return;
+              setValue(ev.target.value);
+            }}
+            disabled={disabled}
+          />
+        </div>
         {token ? (
           token.icons ? (
-            <div className='flex items-center relative'>
+            <div className='flex items-center relative shrink-0'>
               {token.icons[0] && (
                 <Image
                   className='mr-[-8px] rounded-full'
@@ -78,7 +80,7 @@ const Input = ({
               )}
             </div>
           ) : (
-            <StyledToken>
+            <StyledToken className='shrink-0'>
               <StyledIcon
                 src={token?.icon || '/assets/tokens/default_icon.png'}
               />

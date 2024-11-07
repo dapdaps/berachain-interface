@@ -1,5 +1,16 @@
+import { formatValueDecimal } from "@/utils/balance";
+import useCustomAccount from '@/hooks/use-account';
+import { useMemo } from 'react';
+
 const IbgtHead = (props: any) => {
   const { style, className, ibgtData, innerStyle, innerClassName, valueStyle, valueClassName } = props;
+
+  const { account } = useCustomAccount();
+
+  const count = useMemo(() => {
+    if (!account) return '0';
+    return ibgtData?.count;
+  }, [account, ibgtData]);
 
   return (
     <div className={`relative z-20 mb-[25px] ${className}`} style={style}>
@@ -88,7 +99,7 @@ const IbgtHead = (props: any) => {
           className={`flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-black border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%] ${valueClassName}`}
           style={valueStyle}
         >
-          {ibgtData?.count} iBGT
+          {formatValueDecimal(count, '', 6, false, false)} iBGT
         </div>
       </div>
     </div>

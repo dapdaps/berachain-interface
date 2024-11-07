@@ -1,13 +1,34 @@
-export default {
+import useIsMobile from '@/hooks/use-isMobile';
+
+export const config: any = {
   laptop: {
-    tabHeight: 62,
-    tabWidth: 294,
-    tabMarginWidth: 62
+    dashboard: {
+      tabHeight: 62,
+      tabWidth: 294,
+      tabMarginWidth: 62
+    },
+    earn: {
+      tabHeight: 62,
+      tabWidth: 400,
+      tabMarginWidth: 62
+    }
   },
   mobile: {
-    tabHeight: 62,
-    tabWidth: 194,
-    tabMarginWidth: 62,
-    minTabWidth: 128
+    dashboard: {
+      tabHeight: 62,
+      tabWidth: 194,
+      tabMarginWidth: 62
+    },
+    earn: {
+      tabHeight: 62,
+      tabWidth: 128,
+      tabMarginWidth: 62
+    }
   }
+};
+
+export const useTabConfig = (page: any) => {
+  const isMobile = useIsMobile();
+  const device = isMobile ? 'mobile' : 'laptop';
+  return config[device][page];
 };

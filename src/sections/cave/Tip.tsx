@@ -19,6 +19,13 @@ interface Props {
     }
 }
 
+const textMap: any = {
+    'Bridge': 'Bridging', 
+    'Swap': 'Swapping',
+    'Delegate': 'Delegating',
+    'Lending': 'Lending'
+}
+
 export default function Tips({ location, msg }: Props) {
     const [modalShow, setModalShow] = useState(false)
 
@@ -39,7 +46,7 @@ export default function Tips({ location, msg }: Props) {
     </div>
         <Modal open={modalShow} closeIconClassName="right-[-10px] top-[-10px]" onClose={() => { setModalShow(false) }}>
             <div className=" border-[#000] rounded-[20px] bg-[#FFFDEB] p-[20px]">
-                <div className="text-[20px] font-bold">Select dApp for Swapping</div>
+                <div className="text-[20px] font-bold">Select dApp for {textMap[msg.btnText]}</div>
                 <div className="flex mt-[10px] justify-center">
                     {
                         msg.dapps.map(item => {

@@ -1,4 +1,5 @@
 import Big from 'big.js';
+import { motion, AnimatePresence } from 'framer-motion';
 import Fee from './Fee';
 
 const COLOR: Record<number, string> = {
@@ -12,21 +13,31 @@ export default function Routes({
   priceImpact,
   gasUsd,
   routerStr,
-  outputCurrencyAmount
+  outputCurrencyAmount,
+  show
 }: any) {
   return (
-    <div className='border border-[#373A53] rounded-[12px] mt-[10px] p-[10px]'>
-      <Fee
-        name='Price impact'
-        value={`${priceImpact || '-'}%`}
-        valueClassName={COLOR[priceImpactType || 0]}
-      />
-      <Fee name='Gas fee' value={gasUsd} />
-      <Fee
-        name='Minimum received'
-        value={Big(outputCurrencyAmount || 0).toFixed(8)}
-      />
-      <Fee name='Route' value={routerStr} />
-    </div>
+    <AnimatePresence mode='wait'>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 160 }}
+          exit={{ opacity: 0, height: 0 }}
+          className='border border-[#373A53] rounded-[12px] mt-[10px] p-[10px]'
+        >
+          <Fee
+            name='Price impact'
+            value={`${priceImpact || '-'}%`}
+            valueClassName={COLOR[priceImpactType || 0]}
+          />
+          <Fee name='Gas fee' value={gasUsd} />
+          <Fee
+            name='Minimum received'
+            value={Big(outputCurrencyAmount || 0).toFixed(8)}
+          />
+          <Fee name='Route' value={routerStr} />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

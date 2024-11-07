@@ -1,7 +1,7 @@
 'use client';
 
 import { useProgressRouter } from '@/hooks/use-progress-router';
-
+import IconBack from '@public/images/icon-back.svg';
 const PageBack = (props: Props) => {
   const { className, style, onBack } = props;
 
@@ -19,13 +19,11 @@ const PageBack = (props: Props) => {
     <>
       <button
         type='button'
-        className={`flex items-center gap-[14px] text-black text-center font-CherryBomb text-[20px] font-[400] hidden lg:flex ${className}`}
+        className={`items-center gap-[14px] text-center font-CherryBomb text-[20px] text-black font-[400] hidden lg:flex ${className}`}
         style={style}
         onClick={handleClick}
       >
-        <img
-          src={ props.icon || '/images/icon-back.svg' }
-          alt='back'
+        <IconBack
           width={27}
           height={16}
           className='translate-y-[2px]'
@@ -62,6 +60,6 @@ export default PageBack;
 interface Props {
   className?: string;
   style?: React.CSSProperties;
-  icon?: string;
+  isBlack?: boolean;
   onBack?(): void;
 }

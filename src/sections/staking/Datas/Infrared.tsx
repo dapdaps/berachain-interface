@@ -3,7 +3,6 @@ import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect } from 'react';
 
-
 export default function useInfraredData(props: any) {
   const {
     pairs,
@@ -51,33 +50,34 @@ export default function useInfraredData(props: any) {
   const ERC20_ABI = [
     'function balanceOf(address) view returns (uint256)',
     {
-      "constant": true,
-      "inputs": [
+      constant: true,
+      inputs: [
         {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
+          internalType: 'address',
+          name: 'account',
+          type: 'address'
         },
         {
-          "internalType": "address",
-          "name": "_rewardsToken",
-          "type": "address"
+          internalType: 'address',
+          name: '_rewardsToken',
+          type: 'address'
         }
       ],
-      "name": "earned",
-      "outputs": [
+      name: 'earned',
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: 'view',
+      type: 'function'
     }
-
   ];
-  const MulticallContract = multicallAddress && new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
+  const MulticallContract =
+    multicallAddress &&
+    new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
   const multicallv2 = (abi, calls, options, onSuccess, onError) => {
     const { requireSuccess, ...overrides } = options || {};
     const itf = new ethers.utils.Interface(abi);
@@ -91,7 +91,9 @@ export default function useInfraredData(props: any) {
         onSuccess(
           res.map((call, i) => {
             const [result, data] = call;
-            return result && data !== '0x' ? itf.decodeFunctionResult(calls[i].name, data) : null;
+            return result && data !== '0x'
+              ? itf.decodeFunctionResult(calls[i].name, data)
+              : null;
           })
         );
       })
@@ -107,15 +109,15 @@ export default function useInfraredData(props: any) {
   }
   function getDataList() {
     pairs.forEach((pair) => {
-
-      const vaultAddress = addresses[pair?.id]
+      const vaultAddress = addresses[pair?.id];
       const findIndex = allData?.findIndex(
-        (data) => data?.address.toLocaleLowerCase() === vaultAddress?.toLocaleLowerCase()
+        (data) =>
+          data?.address.toLocaleLowerCase() ===
+          vaultAddress?.toLocaleLowerCase()
       );
       if (findIndex > -1) {
-
-        const initialData = allData[findIndex]
-
+        const initialData = allData[findIndex];
+        if (initialData?.pool?.protocol !== 'BEX') return;
         dataList.push({
           ...pair,
           tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
@@ -123,24 +125,25 @@ export default function useInfraredData(props: any) {
             .toFixed(),
           apy: initialData?.apy_percentage,
           initialData,
-          type: "Staking",
+          type: 'Staking',
           vaultAddress,
           rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
-          protocolType: initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals',
+          protocolType:
+            initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
         });
       }
     });
     formatedData('dataList');
   }
   function getUsdDepositAmount() {
-    const calls = []
-    dataList.forEach(data => {
+    const calls = [];
+    dataList.forEach((data) => {
       calls.push({
         address: ethers.utils.getAddress(addresses[data?.id]),
         name: 'balanceOf',
         params: [sender]
-      })
-    })
+      });
+    });
     multicallv2(
       ERC20_ABI,
       calls,
@@ -148,26 +151,37 @@ export default function useInfraredData(props: any) {
       (result) => {
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
-          dataList[i].depositAmount = Big(ethers.utils.formatUnits(result[i][0])).toFixed()
-          dataList[i].usdDepositAmount = Big(ethers.utils.formatUnits(result[i][0])).times(element?.initialData?.stake_token?.price).toFixed()
+          dataList[i].depositAmount = Big(
+            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
+          ).toFixed();
+          dataList[i].usdDepositAmount = Big(
+            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
+          )
+            .times(element?.initialData?.stake_token?.price ?? 0)
+            .toFixed();
         }
-        formatedData('getUsdDepositAmount')
+        formatedData('getUsdDepositAmount');
       },
       (error) => {
         console.log('=error', error);
       }
-    )
+    );
   }
 
   function getEarned() {
-    const calls = []
-    dataList.forEach(data => {
+    const calls = [];
+    dataList.forEach((data) => {
       calls.push({
         address: ethers.utils.getAddress(addresses[data?.id]),
         name: 'earned',
-        params: [sender, IBGT_ADDRESS]
-      })
-    })
+        params: [
+          sender,
+          data?.id === 'iBGT-HONEY'
+            ? '0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03'
+            : IBGT_ADDRESS
+        ]
+      });
+    });
 
     multicallv2(
       ERC20_ABI,
@@ -176,28 +190,25 @@ export default function useInfraredData(props: any) {
       (result) => {
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
-          dataList[i].earned = Big(ethers.utils.formatUnits(result[i][0])).toFixed()
+          dataList[i].earned = Big(
+            ethers.utils.formatUnits(result[i][0])
+          ).toFixed();
         }
-
-        console.log('====dataList', dataList)
-        formatedData('getEarned')
+        formatedData('getEarned');
       },
       (error) => {
         console.log('=error', error);
       }
-    )
+    );
   }
 
   useEffect(() => {
     if (allData) {
       getDataList();
       if (sender && provider) {
-        getUsdDepositAmount()
-        getEarned()
+        getUsdDepositAmount();
+        getEarned();
       }
-    }
-    return function () {
-      console.log('====销毁=====')
     }
   }, [allData, sender, provider]);
 }

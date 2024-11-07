@@ -48,7 +48,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
         {tabs.map((tab, idx) => (
           <div
             key={idx}
-            className={`h-full text-[18px] md:text-[15px] text-black font-[600] flex justify-center items-center flex-1 cursor-pointer ${tabClassName}`}
+            className={`h-full lg:text-[14px] md:text-[15px] text-black md:font-[600] flex justify-center items-center flex-1 cursor-pointer ${tabClassName}`}
             style={{
               width: `${100 / tabs.length}%`,
               opacity: tab.disabled ? 0.3 : 1,

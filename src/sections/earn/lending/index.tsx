@@ -22,7 +22,11 @@ import useBendReward from '@/sections/Lending/Bend/hooks/useBendReward';
 import Skeleton from 'react-loading-skeleton';
 import BendBorrowActionModal from '@/sections/Lending/Bend/SupplyBorrowPanel/actionModal';
 import useMarketStore from '@/stores/useMarketStore';
-
+import Dropdown from '@/sections/marketplace/components/dropdown';
+import useIsMobile from '@/hooks/use-isMobile';
+import CheckBox from '@/components/check-box';
+import SearchBox from '@/sections/marketplace/components/searchbox';
+import LaptopList from './laptop'
 const { basic: DolomiteBasic, networks: DolomiteNetworks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('@/sections/Lending/datas/dolomite'));
 
@@ -61,6 +65,10 @@ const EarnLending = (props: any) => {
   const [dolomiteLoading, setDolomiteLoading] = useState<boolean>(false);
   const [dolomiteData, setDolomiteData] = useState<any>();
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
+  const [checked, setChecked] = useState(false);
+  const [searchVal, setSearchVal] = useState("");
+
+  const isMobile = useIsMobile();
 
   const tokenList = useMemo(() => {
     const _tokens: any = [];
@@ -164,18 +172,64 @@ const EarnLending = (props: any) => {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center gap-[30px]">
-        <div
-          onClick={() => {
-            setProtocolVisible(true);
-          }}
-          className="h-[32px] flex justify-center items-center gap-[14px] text-black text-[14px] font-[500] px-[12px] border border-[#373A53] bg-white rounded-[10px]"
-        >
-          <div className="whitespace-nowrap">{protocol}</div>
-          <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13 1L7 5.8L1 0.999999" stroke="black" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </div>
+      <div className="flex justify-between items-center md:gap-[30px]">
+        {
+          !isMobile && (
+            <>
+              <div className='flex gap-2 items-center p-4'>
+                <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left">
+                  Lending
+                </div>
+                <SwitchTabs
+                  tabs={[
+                    { label: 'Supply', value: 'Supply' },
+                    { label: 'Borrow', value: 'Borrow' }
+                  ]}
+                  onChange={(val) => {
+                    setTab(val);
+                  }}
+                  current={tab}
+                  className="w-[196px]"
+                  style={{ height: 40, borderRadius: 12 }}
+                  cursorStyle={{ borderRadius: 10 }}
+                />
+              </div>
+              <div className="flex items-center gap-2 md:justify-between">
+                <div className="flex items-center gap-2">
+                    <CheckBox
+                          checked={checked}
+                          onClick={() => {
+                            setChecked(!checked);
+                          }}
+                    />
+                    <div>{tab === 'Supply' ? 'You supplied only' : 'Borrow available only'}</div>
+                </div>
+                    <Dropdown
+                    list={lendingProtocols}
+                    value={protocol}
+                    onChange={(val) => {
+                      setProtocol(val);
+                    }}
+                    placeholder=""
+                  />
+                  <SearchBox value={searchVal} onChange={setSearchVal} />
+              </div>
+            </>
+          )
+        }
+
+        {
+          isMobile && (
+            <Dropdown
+            list={lendingProtocols}
+            value={protocol}
+            onChange={(val) => {
+              setProtocol(val);
+            }}
+            placeholder=""
+          />
+          )
+        }
         <SwitchTabs
           tabs={[
             { label: 'Supply', value: 'Supply' },
@@ -185,7 +239,7 @@ const EarnLending = (props: any) => {
             setTab(val);
           }}
           current={tab}
-          className="w-[196px]"
+          className="w-[196px] hidden md:block"
           style={{ height: 40, borderRadius: 12 }}
           cursorStyle={{ borderRadius: 10 }}
         />
@@ -209,115 +263,120 @@ const EarnLending = (props: any) => {
           </div>
         )
       }
-      <div className="mt-[15px] pb-[80px]">
-        {
-          !dolomiteLoading && tokenList.map((token: any, index: number) => (
-            <div className="flex flex-col items-stretch mb-[12px]" key={index}>
-              <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[18px_14px_14px] text-black text-[16px] font-[600]">
-                <div className="flex justify-between items-center gap-[10px]">
-                  <div className="flex items-center gap-[12px]">
-                    <div className="relative w-[40px] h-[40px]">
-                      <LazyImage src={token.icon} width={40} height={40} className="rounded-full" />
-                      <LazyImage
-                        src={token.protocol.icon}
-                        width={20}
-                        height={20}
-                        containerClassName="rounded-[6px]"
-                        containerStyle={{ position: 'absolute', right: 0, bottom: 0 }}
-                      />
+      {
+        !isMobile ? <LaptopList loading={dolomiteLoading} list={tokenList} tab={tab} /> : (
+          <div className="mt-[15px] pb-[80px]">
+          {
+            !dolomiteLoading && tokenList.map((token: any, index: number) => (
+              <div className="flex flex-col items-stretch mb-[12px]" key={index}>
+                <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[18px_14px_14px] text-black text-[16px] font-[600]">
+                  <div className="flex justify-between items-center gap-[10px]">
+                    <div className="flex items-center gap-[12px]">
+                      <div className="relative w-[40px] h-[40px]">
+                        <LazyImage src={token.icon} width={40} height={40} className="rounded-full" />
+                        <LazyImage
+                          src={token.protocol.icon}
+                          width={20}
+                          height={20}
+                          containerClassName="rounded-[6px]"
+                          containerStyle={{ position: 'absolute', right: 0, bottom: 0 }}
+                        />
+                      </div>
+                      <div className="">
+                        <div className="">{token.symbol}</div>
+                        <div className="text-[14px] font-[500] m-[5px]">{token.protocol.name}</div>
+                      </div>
                     </div>
-                    <div className="">
-                      <div className="">{token.symbol}</div>
-                      <div className="text-[14px] font-[500] m-[5px]">{token.protocol.name}</div>
-                    </div>
-                  </div>
-                  <div className="flex justify-end items-center gap-[10px]">
-                    {
-                      tab === 'Supply' && (
-                        <>
-                          <button
-                            type="button"
-                            className="text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
-                            onClick={() => {
-                              handleSwap(token);
-                            }}
-                          >
-                            Get
-                          </button>
-                          <button
-                            type="button"
-                            className="bg-[#FFDC50] flex justify-center items-center text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] w-[32px] rounded-[10px]"
-                            onClick={() => handleAction('Deposit', token)}
-                            disabled={Big(token.inWallet || 0).lte(0)}
-                            style={{ opacity: Big(token.inWallet || 0).lte(0) ? 0.3 : 1 }}
-                          >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 14 14"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                    <div className="flex justify-end items-center gap-[10px]">
+                      {
+                        tab === 'Supply' && (
+                          <>
+                            <button
+                              type="button"
+                              className="text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
+                              onClick={() => {
+                                handleSwap(token);
+                              }}
                             >
-                              <path
-                                d="M8.02111 8.09214L12.7387 8.09217C13.0934 8.09211 13.381 7.86507 13.3809 7.58523L13.3809 6.55662C13.3809 6.27673 13.0932 6.05045 12.7383 6.05004L8.02104 6.05018L8.02095 1.33277C8.02112 0.977856 7.79426 0.690062 7.51418 0.690237L6.48551 0.690289C6.20591 0.69011 5.97887 0.977726 5.97911 1.33269L5.9792 6.05023L1.26149 6.05032C0.906932 6.05026 0.619081 6.27671 0.619142 6.55666L0.619089 7.58533C0.619091 7.86523 0.906768 8.09221 1.26144 8.09227L5.97921 8.09224L5.97918 12.8093C5.97913 13.1647 6.20581 13.4519 6.48571 13.452L7.51438 13.4519C7.79422 13.4518 8.02108 13.1644 8.02131 12.8097L8.02111 8.09214Z"
-                                fill="black"
-                              />
-                            </svg>
+                              Get
+                            </button>
+                            <button
+                              type="button"
+                              className="bg-[#FFDC50] flex justify-center items-center text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] w-[32px] rounded-[10px]"
+                              onClick={() => handleAction('Deposit', token)}
+                              disabled={Big(token.inWallet || 0).lte(0)}
+                              style={{ opacity: Big(token.inWallet || 0).lte(0) ? 0.3 : 1 }}
+                            >
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M8.02111 8.09214L12.7387 8.09217C13.0934 8.09211 13.381 7.86507 13.3809 7.58523L13.3809 6.55662C13.3809 6.27673 13.0932 6.05045 12.7383 6.05004L8.02104 6.05018L8.02095 1.33277C8.02112 0.977856 7.79426 0.690062 7.51418 0.690237L6.48551 0.690289C6.20591 0.69011 5.97887 0.977726 5.97911 1.33269L5.9792 6.05023L1.26149 6.05032C0.906932 6.05026 0.619081 6.27671 0.619142 6.55666L0.619089 7.58533C0.619091 7.86523 0.906768 8.09221 1.26144 8.09227L5.97921 8.09224L5.97918 12.8093C5.97913 13.1647 6.20581 13.4519 6.48571 13.452L7.51438 13.4519C7.79422 13.4518 8.02108 13.1644 8.02131 12.8097L8.02111 8.09214Z"
+                                  fill="black"
+                                />
+                              </svg>
+                            </button>
+                          </>
+                        )
+                      }
+                      {
+                        tab === 'Borrow' && (
+                          <button
+                            type="button"
+                            className="bg-[#FFDC50] text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
+                            onClick={() => handleAction('Borrow', token)}
+                          >
+                            Borrow
                           </button>
-                        </>
-                      )
-                    }
-                    {
-                      tab === 'Borrow' && (
-                        <button
-                          type="button"
-                          className="bg-[#FFDC50] text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
-                          onClick={() => handleAction('Borrow', token)}
-                        >
-                          Borrow
-                        </button>
-                      )
-                    }
-                  </div>
-                </div>
-                <div className="flex justify-between items-start gap-[10px] mt-[13px]">
-                  <div className="">
-                    <div className="text-[14px] text-[#3D405A] font-[500]">
-                      {tab === 'Supply' ? 'In Wallet' : 'Borrow Capacity'}
-                    </div>
-                    <div className="mt-[5px]">
-                      {tab === 'Supply' ? numberFormatter(token.inWallet, 2, true) : numberFormatter(token.borrowCapacity, 2, true)}
+                        )
+                      }
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-[14px] text-[#3D405A] font-[500]">
-                      {tab} APR
+                  <div className="flex justify-between items-start gap-[10px] mt-[13px]">
+                    <div className="">
+                      <div className="text-[14px] text-[#3D405A] font-[500]">
+                        {tab === 'Supply' ? 'In Wallet' : 'Borrow Capacity'}
+                      </div>
+                      <div className="mt-[5px]">
+                        {tab === 'Supply' ? numberFormatter(token.inWallet, 2, true) : numberFormatter(token.borrowCapacity, 2, true)}
+                      </div>
                     </div>
-                    <div className="mt-[5px]" style={{ color: tab === 'Supply' ? '#0A9D20' : '#F0631D' }}>
-                      {tab === 'Supply' ? token.supplyAPR : token.borrowAPR}
+                    <div className="text-right">
+                      <div className="text-[14px] text-[#3D405A] font-[500]">
+                        {tab} APR
+                      </div>
+                      <div className="mt-[5px]" style={{ color: tab === 'Supply' ? '#0A9D20' : '#F0631D' }}>
+                        {tab === 'Supply' ? token.supplyAPR : token.borrowAPR}
+                      </div>
                     </div>
                   </div>
                 </div>
+                {
+                  tab === 'Supply' && Big(token.youSupplied || 0).gt(0) && (
+                    <Assets tab={tab} token={token} handleAction={handleAction} />
+                  )
+                }
               </div>
-              {
-                tab === 'Supply' && Big(token.youSupplied || 0).gt(0) && (
-                  <Assets tab={tab} token={token} handleAction={handleAction} />
-                )
-              }
-            </div>
-          ))
-        }
-        {
-          dolomiteLoading && (
-            <div className="flex flex-col items-stretch gap-[12px]">
-              <Skeleton width={'100%'} height={146} borderRadius={10} />
-              <Skeleton width={'100%'} height={146} borderRadius={10} />
-              <Skeleton width={'100%'} height={146} borderRadius={10} />
-              <Skeleton width={'100%'} height={146} borderRadius={10} />
-            </div>
-          )
-        }
-      </div>
+            ))
+          }
+          {
+            dolomiteLoading && (
+              <div className="flex flex-col items-stretch gap-[12px]">
+                <Skeleton width={'100%'} height={146} borderRadius={10} />
+                <Skeleton width={'100%'} height={146} borderRadius={10} />
+                <Skeleton width={'100%'} height={146} borderRadius={10} />
+                <Skeleton width={'100%'} height={146} borderRadius={10} />
+              </div>
+            )
+          }
+        </div>
+        )
+      }
+
       <Drawer
         visible={protocolVisible}
         size="40vh"

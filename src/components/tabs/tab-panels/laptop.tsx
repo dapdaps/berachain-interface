@@ -1,4 +1,5 @@
 import ActiveTab from '@/components/tabs/active-tab';
+import useIsMobile from '@/hooks/use-isMobile';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Laptop({
@@ -9,16 +10,14 @@ export default function Laptop({
   bodyClassName,
   bodyStyle,
   currentTab,
-  tabWidth: bakedTabWidth,
-  minTabWidth,
+  tabWidth,
   tabMarginWidth,
   tabHeight,
   platform,
   bodyInnerClassName,
-  maxTabs
+  page,
 }: any) {
-  const tabWidth = maxTabs === 3 ? minTabWidth : bakedTabWidth;
-  
+  const isMobile = useIsMobile()
   return (
     <div
       ref={bodyRef}
@@ -33,7 +32,7 @@ export default function Laptop({
       }}
     >
       <div
-        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black lg:px-[22px] md:px-[12px] pt-[24px] min-h-[50px] ${bodyClassName}`}
+        className={`relative z-[1] rounded-[20px] bg-[#FFFDEB] border border-black lg:px-[22px] md:px-[12px] pt-[24px] min-h-[50px] lg:pb-[22px] ${bodyClassName}`}
         style={{
           borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
           borderTopRightRadius:
@@ -49,10 +48,10 @@ export default function Laptop({
               return (
                 <>
                   <ActiveTab
-                    maxTabs={maxTabs}
+                    page={page}
                     key={tab.key}
                     width={
-                      maxTabs === 3 ? minTabWidth : (tabWidth +
+                      isMobile && page === 'earn' ? tabWidth : (tabWidth +
                         ([0, tabs.length - 1].includes(idx)
                           ? tabMarginWidth / 2
                           : tabMarginWidth))

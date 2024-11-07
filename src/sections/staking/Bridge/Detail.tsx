@@ -1,26 +1,42 @@
 // @ts-nocheck
 import CircleLoading from '@/components/circle-loading';
-import useAddAction from "@/hooks/use-add-action";
+import useAddAction from '@/hooks/use-add-action';
 import useLpToAmount from '@/hooks/use-lp-to-amount';
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
-import { formatValueDecimal } from '@/utils/balance';
+import { useProvider } from '@/hooks/use-provider';
+import useAccount from '@/hooks/use-account';
+import { formatValueDecimal, balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
-import { useRouter } from 'next/navigation';
-import { memo, useEffect, useState } from 'react';
-export default memo(function Detail(props: any) {
-  const { data, sender, provider, defaultIndex = 0, addresses, onBack } = props;
-  const router = useRouter()
+import { memo, useEffect, useMemo, useState } from 'react';
+import config from '@/configs/staking/dapps/infrared';
+import AddLiquidityModal from '@/sections/pools/add-liquidity-modal';
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useIbgtVaults } from '@/stores/ibgt-vaults';
+
+export default memo(function Detail() {
+  const { addresses } = config.chains[DEFAULT_CHAIN_ID];
+  const { provider } = useProvider();
+  const { account: sender } = useAccount();
+  const params = useSearchParams();
+  const ibgtVaults = useIbgtVaults();
+  const id = params.get('id');
+  const defaultIndex = params.get('tab');
+  const pathname = usePathname();
+  const router = useRouter();
+  const data = useMemo(
+    () => ibgtVaults.vaults.find((item) => item.id === id),
+    [id]
+  );
+
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  const [tIndex, setTIndex] = useState(defaultIndex);
-
-  const {
-    handleGetAmount
-  } = useLpToAmount(data?.LP_ADDRESS)
+  const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
   const [state, updateState] = useMultiState({
     // isDeposit: tab === "Stake" || !tab,
     balances: [],
@@ -46,7 +62,8 @@ export default memo(function Detail(props: any) {
     updater
   } = state;
 
-  const { decimals, tokens, id, LP_ADDRESS } = data;
+  const { decimals, tokens, LP_ADDRESS } = data;
+
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
@@ -56,11 +73,11 @@ export default memo(function Detail(props: any) {
     !lpAmount || !lpBalance
       ? '-'
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
-  const { addAction } = useAddAction("dapp");
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
+  const { addAction } = useAddAction('dapp');
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(
@@ -77,7 +94,11 @@ export default memo(function Detail(props: any) {
   };
   const updateBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
+    const contract = new ethers.Contract(
+      LP_ADDRESS,
+      abi,
+      provider?.getSigner()
+    );
     contract
       .balanceOf(sender)
       .then((balanceBig) => {
@@ -104,7 +125,11 @@ export default memo(function Detail(props: any) {
     const abi = [
       'function allowance(address, address) external view returns (uint256)'
     ];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
+    const contract = new ethers.Contract(
+      LP_ADDRESS,
+      abi,
+      provider?.getSigner()
+    );
     updateState({
       isTokenApproved: false
     });
@@ -153,7 +178,11 @@ export default memo(function Detail(props: any) {
     });
     const wei = ethers.utils.parseUnits(amount, decimals);
     const abi = ['function approve(address, uint) public'];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
+    const contract = new ethers.Contract(
+      LP_ADDRESS,
+      abi,
+      provider?.getSigner()
+    );
 
     contract
       .approve(vaultAddress, wei)
@@ -225,7 +254,7 @@ export default memo(function Detail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(inAmount)
+        const [amount0, amount1] = handleGetAmount(inAmount);
         addAction?.({
           type: 'Staking',
           action: 'Staking',
@@ -233,12 +262,12 @@ export default memo(function Detail(props: any) {
             symbol: tokens.join('-')
           },
           amount: inAmount,
-          template: "Infrared",
+          template: 'Infrared',
           status: status,
           add: 1,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Stake",
+          sub_type: 'Stake',
           extra_data: JSON.stringify({
             token0Symbol: tokens[0],
             token1Symbol: tokens[1],
@@ -251,8 +280,8 @@ export default memo(function Detail(props: any) {
           isPostTx: true
         });
         setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
+          onSuccess?.();
+        }, 3000);
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -316,21 +345,21 @@ export default memo(function Detail(props: any) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(lpAmount)
+        const [amount0, amount1] = handleGetAmount(lpAmount);
         addAction?.({
           type: 'Staking',
           action: 'UnStake',
           token: {
             symbol: tokens.join('-')
           },
-          symbol: tokens.join("-"),
+          symbol: tokens.join('-'),
           amount: lpAmount,
-          template: "Infrared",
+          template: 'Infrared',
           status: status,
           add: 0,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Unstake",
+          sub_type: 'Unstake',
           extra_data: JSON.stringify({
             token0Symbol: tokens[0],
             token1Symbol: tokens[1],
@@ -339,8 +368,8 @@ export default memo(function Detail(props: any) {
           })
         });
         setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
+          onSuccess?.();
+        }, 3000);
 
         toast?.dismiss(toastId);
         toast?.success({
@@ -363,20 +392,25 @@ export default memo(function Detail(props: any) {
       });
   };
   const handleClaim = function () {
-
     const toastId = toast?.loading({
       title: `Claim...`
     });
 
-    const abi = [{
-      "constant": false,
-      "inputs": [],
-      "name": "getReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }]
-    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner())
+    const abi = [
+      {
+        constant: false,
+        inputs: [],
+        name: 'getReward',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+      }
+    ];
+    const contract = new ethers.Contract(
+      data?.vaultAddress,
+      abi,
+      provider.getSigner()
+    );
     contract
       .getReward()
       .then((tx: any) => tx.wait())
@@ -389,19 +423,19 @@ export default memo(function Detail(props: any) {
             symbol: tokens.join('-')
           },
           amount: data?.earned,
-          template: "Infrared",
+          template: 'Infrared',
           status: status,
           transactionHash,
           chain_id: props.chainId,
-          sub_type: "Claim"
+          sub_type: 'Claim'
         });
         toast?.dismiss(toastId);
         toast?.success({
           title: 'Claim Successfully!'
         });
         setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
+          onSuccess?.();
+        }, 3000);
       })
       .catch((error: Error) => {
         console.log('error: ', error);
@@ -410,37 +444,59 @@ export default memo(function Detail(props: any) {
           title: 'Claim Failed!',
           text: error?.message?.includes('user rejected transaction')
             ? 'User rejected transaction'
-            : (error?.message ?? '')
+            : error?.message ?? ''
         });
       });
-  }
+  };
   const onUpdateLpPercent = (percent: number) => {
     updateState({
       lpPercent: percent
     });
   };
 
-
   const onSuccess = function () {
     updateState({
       updater: Date.now(),
       isTokenApproved: true,
       isTokenApproving: false
-    })
-    tIndex === 0 ? handleTokenChange("") : handleLPChange("")
-  }
+    });
+    tIndex === 0 ? handleTokenChange('') : handleLPChange('');
+  };
 
   useEffect(() => {
-    if (!sender || !vaultAddress) return;
+    if (!sender || !vaultAddress || !provider) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, vaultAddress, updater]);
+  }, [sender, vaultAddress, updater, provider]);
 
+  const mintData = useMemo(() => {
+    const pool = data.initialData.pool;
+    if (!pool) return;
+    if (!['BEX', 'Kodiak Finance'].includes(pool.protocol)) return null;
+    const protocol = pool.protocol.split(' ')[0];
+
+    if (pool.underlying_tokens?.length !== 2) return;
+    return {
+      protocol,
+      token0: { ...pool.underlying_tokens[0], icon: data.images[0] },
+      token1: { ...pool.underlying_tokens[1], icon: data.images[1] },
+      version: 'v2'
+    };
+  }, [data]);
+
+  const withdrawable = useMemo(() => {
+    return !(isWithdrawInsufficient || isLoading || Number(lpAmount || 0) <= 0);
+  }, [isWithdrawInsufficient, isLoading, lpAmount]);
 
   return (
     <div>
       <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
-        <div className='cursor-pointer absolute top-[24px] left-[19px]' onClick={onBack}>
+        <div
+          className='cursor-pointer absolute top-[24px] left-[19px]'
+          onClick={() => {
+            router.back();
+          }}
+        >
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='34'
@@ -467,19 +523,26 @@ export default memo(function Detail(props: any) {
         </div>
         <div className='mb-[17px] flex items-center gap-[14px]'>
           <div className='flex items-center'>
-            <div className='w-[48px] h-[48px] rounded-full'>
-              <img src={data?.images[0]} />
-            </div>
-            <div className='ml-[-16px] w-[48px] h-[48px] rounded-full'>
-              <img src={data?.images[1]} style={{ objectPosition: 'left' }} />
-            </div>
+            {data?.images[0] && (
+              <img
+                className='w-[48px] h-[48px] rounded-full'
+                src={data?.images[0]}
+              />
+            )}
+            {data?.images[1] && (
+              <img
+                className='ml-[-16px] w-[48px] h-[48px] rounded-full'
+                src={data?.images[1]}
+                style={{ objectPosition: 'left' }}
+              />
+            )}
           </div>
           <div className='text-black font-Montserrat text-[26px] font-semibold leading-[100%]'>
-            {data?.initialData?.pool?.name}
+            {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
           </div>
         </div>
-        <div className='flex items-center'>
-          <div className='flex flex-col gap-[12px] w-[130px]'>
+        <div className='flex items-center gap-[30px]'>
+          <div className='flex flex-col gap-[12px]'>
             <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
               TVL
             </div>
@@ -487,7 +550,7 @@ export default memo(function Detail(props: any) {
               {formatValueDecimal(data?.tvl, '$', 2, true)}
             </div>
           </div>
-          <div className='flex flex-col gap-[12px] w-[130px]'>
+          <div className='flex flex-col gap-[12px]'>
             <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
               APY up to
             </div>
@@ -495,15 +558,15 @@ export default memo(function Detail(props: any) {
               {Big(data?.apy ?? 0).toFixed(2)}%
             </div>
           </div>
-          <div className='flex flex-col gap-[12px] w-[130px]'>
+          <div className='flex flex-col gap-[12px]'>
             <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
               Protocol
             </div>
             <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {data?.initialData?.pool?.protocol}
+              {data?.initialData?.pool?.protocol || '-'}
             </div>
           </div>
-          <div className='flex flex-col gap-[12px] w-[130px]'>
+          <div className='flex flex-col gap-[12px]'>
             <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
               Type
             </div>
@@ -523,28 +586,36 @@ export default memo(function Detail(props: any) {
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-[10px]'>
                 <div className='flex items-center'>
-                  <div className='w-[30px] h-[30px] rounded-full'>
-                    <img src={data?.images[0]} />
-                  </div>
-                  <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
-                    <img src={data?.images[1]} />
-                  </div>
+                  {data?.images[0] && (
+                    <img
+                      src={data?.images[0]}
+                      className='w-[30px] h-[30px] rounded-full'
+                    />
+                  )}
+                  {data?.images[1] && (
+                    <img
+                      src={data?.images[1]}
+                      className='ml-[-10px] w-[30px] h-[30px] rounded-full'
+                    />
+                  )}
                 </div>
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  {data?.initialData?.pool?.name}
+                  {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
                 </div>
               </div>
 
-              <div
-                className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
-                onClick={() => {
-                  router.push("/dex/bex?lp=" + LP_ADDRESS)
-                }}
-              >
-                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                  Mint LP
-                </span>
-              </div>
+              {mintData && (
+                <div
+                  className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
+                  onClick={() => {
+                    setShowAddModal(true);
+                  }}
+                >
+                  <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                    Mint LP
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           <div className='w-full h-[1px] bg-black/[0.15]' />
@@ -553,28 +624,24 @@ export default memo(function Detail(props: any) {
               Rewards
             </div>
             <div className='flex items-center justify-between'>
-
               <div className='flex items-center gap-[14px]'>
                 <div className='w-[32px] h-[32px] rounded-full'>
-                  <img src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`} />
+                  <img
+                    src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
+                  />
                 </div>
                 <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-                  {
-                    formatValueDecimal(
-                      data?.earned,
-                      '',
-                      2
-                    )
-                  } {data?.rewardSymbol}
+                  {formatValueDecimal(data?.earned, '', 2)} {data?.rewardSymbol}
                 </div>
               </div>
-              {
-                Big(data?.earned ?? 0).gt(0) && (
-                  <div className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
-                    Claim
-                  </div>
-                )
-              }
+              {Big(data?.earned ?? 0).gt(0) && (
+                <div
+                  className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]'
+                  onClick={handleClaim}
+                >
+                  Claim
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -586,10 +653,12 @@ export default memo(function Detail(props: any) {
                 key={index}
                 className={clsx([
                   'cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1',
-                  tIndex === index ? 'h-full  !border-black bg-[#FFDC50]' : ''
+                  Number(defaultIndex) === index
+                    ? 'h-full  !border-black bg-[#FFDC50]'
+                    : ''
                 ])}
                 onClick={() => {
-                  setTIndex(index);
+                  router.replace(`${pathname}?id=${id}&tab=${index}`);
                 }}
               >
                 <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
@@ -599,7 +668,7 @@ export default memo(function Detail(props: any) {
             ))}
           </div>
 
-          {tIndex === 0 ? (
+          {Number(defaultIndex) === 0 ? (
             <div>
               <input
                 value={inAmount}
@@ -612,16 +681,19 @@ export default memo(function Detail(props: any) {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {inAmount
                     ? '$' +
-                    Big(inAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2)
+                      Big(inAmount)
+                        .times(data?.initialData?.stake_token?.price ?? 0)
+                        .toFixed(2)
                     : '-'}
                 </span>
                 <div
                   className='text-[#3D405A] font-Montserrat text-[12px] font-medium cursor-pointer'
                   onClick={handleMax}
                 >
-                  balance: <span className='underline'>{Big(balances[symbol] ?? 0).toFixed(6)}</span>
+                  balance:{' '}
+                  <span className='underline'>
+                    {balanceFormated(balances[symbol] ?? 0, 6)}
+                  </span>
                 </div>
               </div>
               {isInSufficient && (
@@ -634,11 +706,11 @@ export default memo(function Detail(props: any) {
               {!isInSufficient &&
                 (isTokenApproved && !isTokenApproving ? (
                   <button
-                    disabled={isLoading || !inAmount}
+                    disabled={isLoading || Number(inAmount || 0) <= 0}
                     className={clsx(
                       'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                       {
-                        'opacity-50': isLoading || !inAmount
+                        'opacity-50': isLoading || Number(inAmount || 0) <= 0
                       }
                     )}
                     onClick={handleDeposit}
@@ -651,7 +723,7 @@ export default memo(function Detail(props: any) {
                   <button
                     disabled={isTokenApproved || isTokenApproving}
                     className={clsx(
-                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black text-[18px] font-semibold',
                       {
                         'opacity-50': isTokenApproved || isTokenApproving
                       }
@@ -697,9 +769,9 @@ export default memo(function Detail(props: any) {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {lpAmount
                     ? '$' +
-                    Big(lpAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2)
+                      Big(lpAmount)
+                        .times(data?.initialData?.stake_token?.price ?? 0)
+                        .toFixed(2)
                     : '-'}
                 </span>
                 <div
@@ -715,20 +787,18 @@ export default memo(function Detail(props: any) {
                     handleLPChange(lpBalance);
                   }}
                 >
-                  balance: <span className='underline'>{lpBalance}</span>
+                  balance:{' '}
+                  <span className='underline'>
+                    {balanceFormated(lpBalance ?? 0, 6)}
+                  </span>
                 </div>
               </div>
               <button
-                disabled={
-                  isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
-                }
+                disabled={!withdrawable}
                 className={clsx(
-                  'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  'w-full h-[60px] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                   {
-                    'opacity-50':
-                      isWithdrawInsufficient ||
-                      isLoading ||
-                      Number(lpAmount) <= 0
+                    'opacity-50': !withdrawable
                   }
                 )}
                 onClick={handleWithdraw}
@@ -747,6 +817,22 @@ export default memo(function Detail(props: any) {
           )}
         </div>
       </div>
+      {mintData && (
+        <AddLiquidityModal
+          token0={mintData.token0}
+          token1={mintData.token1}
+          version={mintData.version}
+          dex={mintData.protocol}
+          fee={mintData.fee}
+          open={showAddModal}
+          onClose={() => {
+            setShowAddModal(null);
+            updateState({
+              updater: Date.now()
+            });
+          }}
+        />
+      )}
     </div>
   );
 });

@@ -12,7 +12,8 @@ export default {
       beraB['usdt'],
       beraB['usdc'],
       beraB['dai'],
-      beraB['yeet']
+      beraB['yeet'],
+      beraB['paw'],
     ]
   }
 };

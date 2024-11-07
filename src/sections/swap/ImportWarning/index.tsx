@@ -9,7 +9,7 @@ export default function ImportWarning({
 }: any) {
   return (
     <Modal open={display} onClose={onClose}>
-      <div className='rounded-[20px] w-[392px] h-[330px] flex flex-col items-center'>
+      <div className='shadow-shadow1 rounded-[20px] bg-[#FFFDEB] pt-[20px] w-[392px] h-[300px] flex flex-col items-center'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           width='40'
@@ -64,7 +64,7 @@ export default function ImportWarning({
               </div>
             </div>
             <button
-              className='rounded-[6px] bg-[#FFDC50] w-[200px]'
+              className='rounded-[6px] mt-[20px] h-[50px] bg-[#FFDC50] w-[200px] border border-black'
               onClick={() => {
                 onImport({ ...currency, isImport: true });
                 onClose?.();

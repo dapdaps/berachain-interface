@@ -25,7 +25,7 @@ export const StyledInputInner = styled.input`
   font-size: 20px;
   font-weight: 500;
   height: 26px;
-  flex-grow: 1;
+  width: 100%;
 `;
 
 export const StyledToken = styled.div`

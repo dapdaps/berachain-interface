@@ -63,7 +63,7 @@ export default function Toast({
     if (!tx || !chainId) return '';
     const currentChain = chains[chainId];
     if (!currentChain) return '';
-    return `${currentChain.block_explorer}/tx/${tx}`;
+    return `${currentChain.blockExplorers.default.url}/tx/${tx}`;
   }, [tx, chainId]);
   return (
     <StyledToast>

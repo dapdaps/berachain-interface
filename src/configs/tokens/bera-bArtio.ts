@@ -19,7 +19,7 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'WBERA',
     decimals: 18,
     name: 'WBERA',
-    icon: '/assets/tokens/wbera.svg',
+    icon: '/assets/tokens/wbera.png',
     color: '#f5f5f4'
   },
   honey: {
@@ -44,7 +44,7 @@ export const beraB: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: '0xd6D83aF58a19Cd14eF3CF6fe848C9A4d21e5727c',
     decimals: 6,
-    symbol: 'USDC',
+    symbol: 'STGUSDC',
     name: 'USD Coin',
     icon: '/assets/tokens/usdc.png',
     color: '#2775CA'
@@ -147,4 +147,108 @@ export const beraB: { [key: string]: Token } = {
     icon: '/assets/tokens/SMONKEY.png',
     isMeme: true
   },
+  pumpbtc: {
+    chainId: CHAIN_ID,
+    address: '0xe1f167cde04d5d0f8d096957b3a23a7005618976',
+    decimals: 18,
+    symbol: 'mPumpBTC',
+    name: 'mPumpBTC',
+    icon: '/assets/tokens/pumpbtc.png'
+  },
+  mim: {
+    chainId: CHAIN_ID,
+    address: '0x08b918dd18e087893bb9d711d9e0bbaa7a63ef63',
+    decimals: 18,
+    symbol: 'MIM',
+    name: 'Magic Internet Money',
+    icon: '/assets/tokens/mim.png'
+  },
+  ibgt: {
+    chainId: CHAIN_ID,
+    address: '0x46eFC86F0D7455F135CC9df501673739d513E982',
+    decimals: 18,
+    symbol: 'iBGT',
+    name: 'Infrared BGT',
+    icon: '/assets/tokens/ibgt.png'
+  },
+  dirac: {
+    chainId: CHAIN_ID,
+    address: '0x277aaDBd9ea3dB8Fe9eA40eA6E09F6203724BdaE',
+    decimals: 18,
+    symbol: 'DIRAC',
+    name: 'Dirac Finance',
+    icon: '/assets/tokens/dirac.png'
+  },
+  mead: {
+    chainId: CHAIN_ID,
+    address: '0xf042c01ee84b73c1ba72957bfb54929393b6410d',
+    decimals: 18,
+    symbol: 'MEAD',
+    name: 'Roots Stable',
+    icon: '/assets/tokens/mead.png'
+  },
+  nect: {
+    chainId: CHAIN_ID,
+    address: '0xf5afcf50006944d17226978e594d4d25f4f92b40',
+    decimals: 18,
+    symbol: 'MEAD',
+    name: 'Nectar',
+    icon: '/assets/tokens/nectar.png'
+  },
+  obero: {
+    chainId: CHAIN_ID,
+    address: '0x7629668774f918c00Eb4b03AdF5C4e2E53d45f0b',
+    decimals: 18,
+    symbol: 'oBERO',
+    name: 'Beradrome Call Option',
+    icon: '/assets/tokens/obero.png'
+  },
+  croc: {
+    chainId: CHAIN_ID,
+    address: '0x7237Bd0b21B74fc22d04dc776a06C46202b4dAA1',
+    decimals: 18,
+    symbol: 'croc',
+    name: 'pepewifcroc',
+    icon: '/assets/tokens/croc.png'
+  },
+  std: {
+    chainId: CHAIN_ID,
+    address: '0xB52a6f70D7c438b9362E693111291ac0FA867298',
+    decimals: 18,
+    symbol: 'STD',
+    name: 'Steady Pemby',
+    icon: '/assets/tokens/std.png'
+  },
+  tedd: {
+    chainId: CHAIN_ID,
+    address: '0x11eADe385347cC5849f93a350105b38AfB867078',
+    decimals: 18,
+    symbol: 'TEDD',
+    name: 'TEDD',
+    icon: '/assets/tokens/tedd.png'
+  },
+  ooga: {
+    chainId: CHAIN_ID,
+    address: '0x6173a8C873C7aA8698d2CbEE68A70F54a4061182',
+    decimals: 18,
+    symbol: 'OOGA',
+    name: 'Eat shit Kevin',
+    icon: '/assets/tokens/ooga.png'
+  },
+  '0x15p': {
+    chainId: CHAIN_ID,
+    address: '0x1179e477F4Dd3D3A69D157D71AB9984177720F6c',
+    decimals: 18,
+    symbol: '0X15P',
+    name: 'TOX1C_0X15P',
+    icon: '/assets/tokens/t0x1c_0x15p.png'
+  },
+  paw: {
+    chainId: CHAIN_ID,
+    address: '0xB43fd1dC4f02d81f962E98203b2cc4FD9E342964',
+    decimals: 18,
+    symbol: 'PAW',
+    name: 'Paw Token',
+    icon: '/assets/tokens/paw.webp'
+  }
 };

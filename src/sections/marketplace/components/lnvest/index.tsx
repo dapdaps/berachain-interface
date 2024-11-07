@@ -141,7 +141,7 @@ export default function Invest() {
               });
             }}
           >
-            Invest
+            Stake
           </div>
         );
       },
@@ -195,35 +195,52 @@ export default function Invest() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-[16px]">
-          <SwitchTabs
-            tabs={Tabs}
-            current={rateKey}
-            onChange={(tab) => {
-              setRateKey(tab);
-            }}
-            style={{
-              width: 196,
-              height: 40,
-              padding: 4,
-            }}
-            tabStyle={{
-              fontWeight: 500,
-              fontSize: 14,
-            }}
-          />
-          {!isMobile && (
-            <Dropdown
-              list={typeList}
-              value={type}
-              onChange={(val) => {
-                setType(val);
+        <div className="flex items-center gap-[16px] lg:justify-between lg:w-full">
+          <div className='flex gap-2 items-center lg:p-4'>
+            <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left mr-[20px]">
+              Staking
+            </div>
+            <SwitchTabs
+              tabs={Tabs}
+              current={rateKey}
+              onChange={(tab) => {
+                setRateKey(tab);
               }}
-              placeholder=""
+              style={{
+                width: 196,
+                height: 40,
+                padding: 4,
+              }}
+              tabStyle={{
+                fontWeight: 500,
+                fontSize: 14,
+              }}
             />
+            </div>
+          {!isMobile && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-[8px]">
+                <CheckBox
+                  checked={checked}
+                  onClick={() => {
+                    setChecked(!checked);
+                  }}
+                />
+                <div>You Added only</div>
+              </div>
+              <Dropdown
+                list={typeList}
+                value={type}
+                onChange={(val) => {
+                  setType(val);
+                }}
+                placeholder=""
+              />
+              <SearchBox value={searchVal} onChange={setSearchVal} />
+            </div>
           )}
         </div>
-        {isMobile ? (
+        {isMobile && (
           <div className="flex items-center gap-[8px]">
             <div>You Added only</div>
             <CheckBox
@@ -233,8 +250,6 @@ export default function Invest() {
               }}
             />
           </div>
-        ) : (
-          <SearchBox value={searchVal} onChange={setSearchVal} />
         )}
       </div>
       {isMobile ? (

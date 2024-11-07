@@ -13,7 +13,8 @@ const CONTRACT_ABI = {
 const basic = {
   name: 'Bend',
   type: 'aave-v3',
-  loaderName: 'AaveV3'
+  loaderName: 'AaveV3',
+  icon: '/images/dapps/bend.svg'
 };
 
 export const rewardToken = [

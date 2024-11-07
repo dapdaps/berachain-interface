@@ -18,9 +18,10 @@
 
 html,
 body {
-  min-height: 100vh;
   margin: 0;
   padding: 0;
+  height: 100%;
+  /*overflow: hidden;*/
 }
 
 :root {
@@ -37,8 +38,8 @@ body {
 
 body {
   color: var(--foreground);
-  background: var(--background);
   font-family: Montserrat;
+  height: 100%;
 }
 
 button,
@@ -107,7 +108,7 @@ input[type='number']::-webkit-inner-spin-button {
 }
 
 .cave-bg {
-  background: url(/images/cave/cave-empty.png) center top no-repeat;
+  background: var(--background) url(/images/cave/cave-empty.png) center top no-repeat;
   background-size: 104% 100%;
   min-height: 890px;
   min-width: 1200px;

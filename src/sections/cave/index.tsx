@@ -153,28 +153,28 @@ const carTips = [{
     content: 'Bicycle, Delegate 1 BGT.',
     img: '/images/cave/key/key-tip-1.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }, {
     name: 'Vehicle',
     content: 'Scooter, Delegate 100 BGT.',
     img: '/images/cave/key/key-tip-2.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }, {
     name: 'Motocycle',
     content: 'Motobike, Delegate 10,000 BGT.',
     img: '/images/cave/key/key-tip-3.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }, {
     name: 'Race Car',
     content: 'Lambo, Delegate 1,000,000 BGT.',
     img: '/images/cave/key/key-tip-4.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }]
 
@@ -225,22 +225,25 @@ export default function Cave() {
     })
 
     const tipClick = useCallback((e: any, item: any) => {
-        e.nativeEvent.stopImmediatePropagation()
-        let y = e.clientY - 30
-        if (y + 220 > window.innerHeight) {
-            y = y - 220
+        if (e.target.classList.contains('cave-tip') || e.target.parentNode.classList.contains('cave-tip')) {
+            console.log(111)
+            e.nativeEvent.stopImmediatePropagation()
+            let y = e.clientY - 30
+            if (y + 220 > window.innerHeight) {
+                y = y - 220
+            }
+    
+            setTipLocation({
+                x: e.clientX,
+                y
+            })
+            setTipMsg(item)
+            setTipShow(true)
         }
-
-        setTipLocation({
-            x: e.clientX,
-            y
-        })
-        setTipMsg(item)
-        setTipShow(true)
+       
     }, [])
 
     const docClick = useCallback((e: any) => {
-        console.log(11)
         if (!e.target.classList.contains('cave-tip') && !e.target.parentNode.classList.contains('cave-tip')) {
             setTipShow(false)
         }
@@ -256,13 +259,13 @@ export default function Cave() {
 
 
     return <div className=" relative w-[100vw] h-[100vh] min-w-[1200px] min-h-[890px]">
-        <PageBack icon='/images/icon-back-white.svg' className="ml-[30px] text-white absolute top-[20px] left-[30px]"/>
+        <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px]"/>
         <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">Bear Cave</div>
         <div className=" flex gap-[65px] justify-center">
-            <img src="/images/cave/bearphoto.png" className="w-[120px]" />
-            <img src="/images/cave/youtube.png" className="w-[120px]" />
+            <img src="/images/cave/bearphoto.png" className="w-[150px]" />
+            <img src="/images/cave/youtube.png" className="w-[150px]" />
         </div>
-        <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[240px] translate-x-[-50%]">
+        <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[270px] translate-x-[-50%]">
             {
                 hats.map(item => {
                     return <div className="flex-1 relative cursor-pointer cave-tip" onClick={(e) => {
@@ -302,7 +305,7 @@ export default function Cave() {
 
         </div>
 
-        <div className="absolute w-[583px] left-[50%] translate-x-[-50%] top-[325px] h-[398px] overflow-hidden">
+        <div className="absolute w-[583px] left-[50%] translate-x-[-50%] top-[355px] h-[398px] overflow-hidden">
             <div className="absolute w-[583px] top-[-80px] h-[398px] bg-[url('/images/cave/sheet.png')] bg-contain bg-no-repeat bg-bottom">
                 <div className="flex px-[30px] pt-[120px]">
                     {
@@ -321,7 +324,9 @@ export default function Cave() {
                                             }
                                         })
 
-                                        setClothes(clothes)
+                                        setClothes([
+                                            ...clothes
+                                        ])
                                     }} />
                                 </div>
                                 }
@@ -365,7 +370,7 @@ export default function Cave() {
                         tipClick(e, carTips[item.level - 1])
                     }}>
                         <img className="h-[78px] cursor-pointer" style={item.pc_item ? carsSize[item.level - 1] : {}} src={`/images/cave/key/key-${item.level}${item.pc_item ? '-' + item.level : ''}.png`} />
-                        { item.pc_item && <div className=" absolute top-[-30px] left-[50%] translate-x-[-50%]">
+                        { item.pc_item && <div className=" absolute top-[-30px] left-[30%] translate-x-[-50%]">
                             <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
                                 cars.forEach(car => {
                                     if (car === item) {

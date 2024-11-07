@@ -26,36 +26,78 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
+const HotTokens = [
+  beraB.paw,
+  beraB.wbtc,
+  beraB.weth,
+  beraB.honey,
+  beraB.usdc,
+  beraB.bera,
+  // beraB.usdt,
+  // beraB.dai
+];
+
 const MemeTokens = [
   {
     ...beraB.spepe,
     price: '$0.0000001',
-    volume: '$0.9717',
+    volume: '$0.9717'
   },
   {
     ...beraB.yeet,
     price: '$0.0000001',
-    volume: '$0.9717',
+    volume: '$0.9717'
   },
   {
     ...beraB.bebe,
     price: '$0.0000001',
-    volume: '$0.9717',
+    volume: '$0.9717'
   },
   {
     ...beraB.sproto,
     price: '$0.0000001',
-    volume: '$0.9717',
+    volume: '$0.9717'
   },
   {
     ...beraB.smonkey,
     price: '$0.0000001',
-    volume: '$0.9717',
+    volume: '$0.9717'
   },
+  {
+    ...beraB.croc,
+    price: '$0.0000001',
+    volume: '$0.9717'
+  },
+  {
+    ...beraB.std,
+    price: '$0.0000001',
+    volume: '$0.9717'
+  },
+  {
+    ...beraB['0x15p'],
+    price: '$0.0000001',
+    volume: '$0.9717'
+  },
+  {
+    ...beraB.tedd,
+    price: '$0.0000001',
+    volume: '$0.9717'
+  },
+  {
+    ...beraB.ooga,
+    price: '$0.0000001',
+    volume: '$0.9717'
+  }
 ];
 
-export const MoreButton = (props: { onClick: () => void; classname?: string }) => {
+export const MoreButton = (props: {
+  onClick: () => void;
+  classname?: string;
+}) => {
   const { onClick = () => {}, classname = '' } = props;
+
+  // Temporarily hide
+  return null;
 
   return (
     <button
@@ -73,7 +115,7 @@ const MarketplaceView = () => {
   const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
   const List = [
     {
       key: 'price',
@@ -102,13 +144,15 @@ const MarketplaceView = () => {
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
       item.tokens[80084].forEach((token: any) => {
-        if (!hasTokens[token.symbol]) {
+        if (
+          !hasTokens[token.symbol] &&
+          HotTokens.some((it) => it.symbol === token.symbol)
+        ) {
           _tokens.push(token);
           hasTokens[token.symbol] = true;
         }
       });
     });
-    console.log(_tokens);
     return [_protocols, splitArray(_tokens)];
   }, [dexs]);
 
@@ -133,21 +177,26 @@ const MarketplaceView = () => {
     setSelectedRecord(item);
   };
 
-
   return (
-    <div className='relative'>
-      <PageBack className='absolute left-[40px] top-[31px] hidden lg:flex'/>
-      <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>Marketplace</PageTitle>
+    <div className='relative md:h-full  md:overflow-y-auto overflow-x-hidden'>
+      <PageBack className='absolute left-[40px] top-[31px]' />
+      <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>
+        Marketplace
+      </PageTitle>
 
-      <img src="/images/mobile/market-header.png" className='w-full h-[30.769vw] absolute top-[-73px] z-[1] hidden md:block' alt="" />
+      <img
+        src='/images/mobile/market-header.png'
+        className='w-full h-[30.769vw] absolute top-[0px] z-[1] hidden md:block'
+        alt=''
+      />
 
-      <div className='relative mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1 md:overflow-hidden'>
+      <div className='relative mt-[100px] md:overflow-hidden lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
         <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]'>
           Hot Sell Tokens
         </div>
         <div
           style={{ boxShadow: 'inset 10px 10px rgba(0,0,0,0.25)' }}
-          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]'
+          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] md:pb-[40px]'
         >
           {tokens.map((item, index) => (
             <div
@@ -183,8 +232,8 @@ const MarketplaceView = () => {
         <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] lg:w-[1200px] md:w-full md:px-3'>
           <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61]' />
           <div className='relative z-10 lg:w-[1196px]'>
-            <MemeTokensGrid 
-              MemeTokens={MemeTokens} 
+            <MemeTokensGrid
+              MemeTokens={MemeTokens}
               onSwap={onSwap}
               onFooterMore={onFooterMore}
             />

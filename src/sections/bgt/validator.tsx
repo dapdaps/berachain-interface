@@ -41,7 +41,7 @@ export default memo(function validator() {
   const [operationType, setOperationType] = useState<OperationTypeType>("delegate")
   const Tabs: any = [
     { value: "gauges", label: "Gauges" },
-    { value: "Incentives", label: "incentives" },
+    { value: "incentives", label: "Incentives" },
   ];
   const Columns: Column[] = [
     {
@@ -50,7 +50,22 @@ export default memo(function validator() {
       align: "left",
       width: "25%",
       render: (text: string, record: any) => {
-        return <div>Gauge</div>;
+        return (
+          <div className="flex items-center gap-[16px]">
+            <div className="relative">
+              <div className="w-[30px] h-[30px]">
+                <img src={record?.metadata?.logoURI} alt={record?.metadata?.name} />
+              </div>
+              <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
+                <img src={record?.metadata?.productMetadata?.logoURI} alt={record?.metadata?.productMetadata?.name} />
+              </div>
+            </div>
+            <div className="flex flex-col gap-[5px]">
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.metadata?.name}</div>
+              <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">{record?.metadata?.product}</div>
+            </div>
+          </div>
+        );
       },
     },
     {
@@ -59,7 +74,7 @@ export default memo(function validator() {
       align: "left",
       width: "25%",
       render: (text: string, record: any) => {
-        return <div>{record?.amountStaked}</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.amountStaked}</div>;
       },
     },
     {
@@ -68,7 +83,7 @@ export default memo(function validator() {
       align: "left",
       width: "25%",
       render: (text: string, record: any) => {
-        return <div>BGT per Proposal</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{record?.amountStaked} BGT</div>;
       },
     },
     {
@@ -77,11 +92,7 @@ export default memo(function validator() {
       align: "left",
       width: "25%",
       render: (text: string, record: any) => {
-        return record?.activeIncentives?.length > 0 ? (
-          <div>No Incentives</div>
-        ) : (
-          <div>Incentives</div>
-        );
+        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">-</div>;
       },
     },
 
@@ -172,21 +183,40 @@ export default memo(function validator() {
           <div className="flex items-center">
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Active Gauges Vaults</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</div>
+              <div className="flex items-center gap-[6px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</span>
+                <div className="w-[30px] h-[30px]">
+                  <img src={vaults?.[0]?.metadata?.logoURI} alt={vaults?.[0]?.metadata?.name} />
+                </div>
+              </div>
             </div>
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Active Incentives</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</div>
+              <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
+              {/* <div className="flex items-center gap-[5px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0</span>
+                <span className="text-[#3D405A] font-Montserrat text-[14px] font-medium">({pageData?.activeIncentives?.length} Incentive)</span>
+              </div> */}
             </div>
           </div>
           <div className="flex items-center">
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Reward Rate</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{Big(pageData?.rewardRate ?? 0).toFixed(2)}</div>
+              <div className="flex items-center gap-[6px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{Big(pageData?.rewardRate ?? 0).toFixed(2)}</span>
+                <div className="w-[20px] h-[20px]">
+                  <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />
+                </div>
+              </div>
             </div>
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Return per BGT</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</div>
+              <div className="flex items-center gap-[6px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
+                <div className="w-[20px] h-[20px]">
+                  <img src="/images/dapps/infrared/honey.svg" alt="honey" />
+                </div>
+              </div>
             </div>
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Lifetime Incentives</div>
@@ -194,13 +224,18 @@ export default memo(function validator() {
             </div>
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Lifetime BGT Directed</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.allTimeData?.allTimeBgtDirected, '', 2, true)}</div>
+              <div className="flex items-center gap-[6px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.allTimeData?.allTimeBgtDirected, '', 2, true)}</span>
+                <div className="w-[20px] h-[20px]">
+                  <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <SwitchTabs
-          currentTab={currentTab}
+          current={currentTab}
           tabs={Tabs}
           onChange={(key) => setCurrentTab(key as string)}
           style={{

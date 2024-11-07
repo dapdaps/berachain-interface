@@ -16,7 +16,7 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
     onPageChange(currentPage);
   }, [currentPage]);
   return (
-    <div className='flex items-center gap-[10px]'>
+    <div className='flex items-center gap-[10px] cursor-pointer'>
       <div
         onClick={() => {
           handlePageChange(currentPage - 1);
@@ -52,7 +52,6 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
               'border-black',
               'text-[14px]',
               'text-black',
-              'cursor-pointer',
               {
                 'bg-[#E9E3B5]': index + 1 === currentPage,
                 border: index + 1 === currentPage
