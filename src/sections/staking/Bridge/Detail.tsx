@@ -4,7 +4,7 @@ import useAddAction from '@/hooks/use-add-action';
 import useLpToAmount from '@/hooks/use-lp-to-amount';
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
-import { formatValueDecimal } from '@/utils/balance';
+import { formatValueDecimal, balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
@@ -672,7 +672,7 @@ export default memo(function Detail(props: any) {
                 >
                   balance:{' '}
                   <span className='underline'>
-                    {Big(balances[symbol] ?? 0).toFixed(6)}
+                    {balanceFormated(balances[symbol] ?? 0, 6)}
                   </span>
                 </div>
               </div>
@@ -767,7 +767,10 @@ export default memo(function Detail(props: any) {
                     handleLPChange(lpBalance);
                   }}
                 >
-                  balance: <span className='underline'>{lpBalance}</span>
+                  balance:{' '}
+                  <span className='underline'>
+                    {balanceFormated(lpBalance ?? 0, 6)}
+                  </span>
                 </div>
               </div>
               <button
