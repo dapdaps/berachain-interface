@@ -2,12 +2,16 @@ import MenuButton from "@/components/mobile/menuButton";
 import Welcome from "../Welcome";
 import Popup from "./popup";
 import Module, { ModuleItem } from "./components/Module";
-import { ModuleConfigs } from "./config";
+import { useGameItems } from "./hooks/useGameItems";
 
 const Cave = () => {
+
   const handleItemClick = (item: ModuleItem) => {
-    console.log('Selected item:', item);
+    console.log("Selected item:", item);
   };
+
+  const {  moduleConfigs, loading} = useGameItems();
+
   return (
     <div className="relative">
       <div
@@ -45,13 +49,14 @@ const Cave = () => {
               alt=""
             />
 
-            <Module 
-                    config={{
-                      ...ModuleConfigs.hat,
-                      onItemClick: handleItemClick
-                    }} 
+            <Module
+              config={{
+                ...moduleConfigs.hats,
+                onItemClick: handleItemClick,
+              }}
             />
-            <Module config={ModuleConfigs.jacket} />
+            
+            <Module config={moduleConfigs.jackets} />
 
             <img
               src="/images/mobile/cave/backStripe.png"
@@ -71,7 +76,7 @@ const Cave = () => {
                 width: "98.461vw",
               }}
             >
-              <Module config={ModuleConfigs.jewelry} />
+              <Module config={moduleConfigs.necklaces} />
             </div>
 
             {/* Key Modules */}
@@ -86,7 +91,7 @@ const Cave = () => {
                 width: "98.461vw",
               }}
             >
-              <Module config={ModuleConfigs.key} />
+              <Module config={moduleConfigs.cars} />
             </div>
           </div>
         </div>
