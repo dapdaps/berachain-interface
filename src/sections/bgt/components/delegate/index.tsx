@@ -83,7 +83,7 @@ export default memo(function Delegate(props: IProps) {
     }
   }
   const getPercentage = (_amount: string) => {
-    return Big(_amount).div(state?.balance ?? 1).times(100).toFixed()
+    return Big(state?.balance).eq(0) ? 0 : Big(_amount).div(state?.balance ?? 1).times(100).toFixed()
   }
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, '');
@@ -223,19 +223,16 @@ export default memo(function Delegate(props: IProps) {
     })
   }
   useEffect(() => {
-    if (visible) {
-      if (account) {
-        getBalance()
-        getDelegationQueue()
-      }
-    } else {
-      updateState({
-        inAmount: "",
-        rangeIndex: -1,
-        percentage: 0
-      })
+    if (visible && account) {
+      getBalance()
+      getDelegationQueue()
     }
-  }, [visible, account, state?.updater])
+    updateState({
+      inAmount: "",
+      rangeIndex: -1,
+      percentage: 0
+    })
+  }, [visible, account, validator?.address, state?.updater])
   return (
     <>
       <Modal open={visible} onClose={onClose}>
@@ -273,7 +270,7 @@ export default memo(function Delegate(props: IProps) {
                         index === state?.rangeIndex ? 'bg-[#FFDC50]' : ""]
                     )}
                     onClick={() => {
-                      const amount = Big(state?.balance).times(range).toFixed()
+                      const amount = Big(state?.balance ?? 0).times(range).toFixed()
                       updateState({
                         inAmount: amount,
                         percentage: getPercentage(amount),

@@ -229,11 +229,9 @@ export default memo(function Select(props: IProps) {
           vApy: result?.[4]?.[i]?.vApy,
         })
       }
-      console.log('===result', result)
       setLoading(false)
       setValidators(_validators)
     } catch (error) {
-      console.log('===error', error)
       setLoading(false)
       console.error(error)
     }
