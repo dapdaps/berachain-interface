@@ -12,6 +12,7 @@ import CheckBox from "./CheckBox";
 import { AnyKindOfDictionary } from "lodash";
 import dapp from "@/configs/dapp";
 import PageBack from "@/components/back";
+import { useCaveWelcome } from "@/stores/useCaveWelcome";
 
 const hatPositions = [{
     width: 102,
@@ -218,8 +219,10 @@ export default function Cave() {
     const [tipLocation, setTipLocation] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
     const [tipMsg, setTipMsg] = useState<any>()
     const [tipShow, setTipShow] = useState<boolean>()
-    const [welcomeShow, setWelcomeShow] = useState(true)
+    // const [welcomeShow, setWelcomeShow] = useState(true)
 
+    const store: any = useCaveWelcome()
+    
     const { cars, hats, clothes, necklaces, setCars, setClothes, setHats, setNecklaces } = useCollect({
         address: account as string
     })
@@ -263,7 +266,7 @@ export default function Cave() {
         <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">
             <div className="  inline-block relative">Bear Cave
                 <img onClick={() => {
-setWelcomeShow(true)
+                    store.set({ welcomeShow: true })
                 }} className="w-[58px] top-[38%] right-[-70px] cursor-pointer absolute" src="/images/cave/ruler.png"/>
             </div>
         </div>
@@ -446,7 +449,7 @@ setWelcomeShow(true)
         
 
         <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} />
-        <Welcome show={welcomeShow} onClose={() => { setWelcomeShow(false) }}/>
+        <Welcome show={store.welcomeShow} onClose={() => { store.set({ welcomeShow: false }) }}/>
         {
             tipShow && <Tips msg={tipMsg} location={tipLocation} />
         }
