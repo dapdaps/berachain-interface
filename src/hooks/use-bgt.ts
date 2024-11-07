@@ -30,6 +30,18 @@ const ABI = [{
   ],
   "stateMutability": "view",
   "type": "function"
+}, {
+  "inputs": [],
+  "name": "totalSupply",
+  "outputs": [
+    {
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
 }]
 export type DataType = {
   count: number | string
@@ -72,6 +84,7 @@ export function useBGT() {
     }
     setPageData(result)
   }
+
   const refresh = function () {
     setUpdater(Date.now())
   }
@@ -102,10 +115,12 @@ export function useBGT() {
     const contract = new ethers.Contract(BGT_ADDRESS, ABI, provider?.getSigner())
     try {
       const balanceOfResult = await contract.balanceOf(account)
+      const totalSupplyResult = await contract.totalSupply()
       setData((prev: DataType) => {
         return {
           ...prev,
-          count: ethers.utils.formatUnits(balanceOfResult)
+          count: ethers.utils.formatUnits(balanceOfResult),
+          totalSupply: ethers.utils.formatUnits(totalSupplyResult)
         }
       })
     } catch (error) {
