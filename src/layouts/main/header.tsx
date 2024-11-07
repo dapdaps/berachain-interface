@@ -38,6 +38,7 @@ const MainLayoutHeader = (props: Props) => {
   };
 
   useEffect(() => {
+    if (!account || !provider) return;
     queryBGTCount();
     const timer = setInterval(() => {
       queryBGTCount();
@@ -45,7 +46,7 @@ const MainLayoutHeader = (props: Props) => {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [account, provider]);
 
   return (
     <header
