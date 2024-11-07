@@ -28,7 +28,6 @@ export default function () {
         params: [account, _validator?.address]
       })
     })
-    console.log('=====11111=====')
     try {
       const blockNumber = await provider.getBlockNumber();
       const response = await multicall({
@@ -38,12 +37,10 @@ export default function () {
         multicallAddress,
         provider
       })
-      console.log('===response', response)
       const _delegationQueue = []
       for (let i = 0; i < response.length; i++) {
         const boostedQueue = response[i];
 
-        console.log('===boostedQueue', boostedQueue)
         if (boostedQueue) {
           const difference = Big(blockNumber).minus(boostedQueue[0])
           const balance = ethers.utils.formatUnits(boostedQueue[1])

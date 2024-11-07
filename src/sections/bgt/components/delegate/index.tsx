@@ -1,4 +1,5 @@
 // @ts-nocheck
+import CircleLoading from '@/components/circle-loading';
 import Modal from '@/components/modal';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import useCustomAccount from '@/hooks/use-account';
@@ -62,7 +63,8 @@ export default memo(function Delegate(props: IProps) {
     percentage: 0,
     updater: 0,
     isLoading: false,
-    isConfirmAndCancelLoading: false,
+    // isConfirmAndCancelLoading: false,
+    confirmAndCancelLoadingPosition: [],
     selectVisible: false
   })
   const RangeList = [0.25, 0.5, 0.75, 1]
@@ -160,6 +162,7 @@ export default memo(function Delegate(props: IProps) {
         isLoading: false,
       });
       onSuccess()
+      onClose()
       toast?.dismiss(toastId);
       toast?.success({
         title: operationType === "delegate" ? 'Queue Boost Successfully!' : 'Unbond Successfully!'
@@ -176,12 +179,13 @@ export default memo(function Delegate(props: IProps) {
     })
   }
 
-  const handleClickConfirmAndCancel = async (queue: QueueType, type: "confirm" | "cancel") => {
+  const handleClickConfirmAndCancel = async (queue: QueueType, position: any) => {
+    const [type, index] = position
     const toastId = toast?.loading({
       title: type === "confirm" ? "Confirming..." : "Canceling..."
     });
     updateState({
-      isConfirmAndCancelLoading: true,
+      confirmAndCancelLoadingPosition: position
     });
     const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider?.getSigner())
     const wei = ethers.utils.parseUnits(Big(queue?.balance).toFixed(18), 18);
@@ -192,16 +196,17 @@ export default memo(function Delegate(props: IProps) {
     }).then((receipt: any) => {
       const { status, transactionHash } = receipt;
       updateState({
-        isConfirmAndCancelLoading: false,
+        confirmAndCancelLoadingPosition: []
       });
       onSuccess()
+      onClose()
       toast?.dismiss(toastId);
       toast?.success({
         title: type === "confirm" ? 'Confirm Successfully!' : 'Cancel Successfully!'
       });
     }).catch((error: any) => {
       updateState({
-        isConfirmAndCancelLoading: false
+        confirmAndCancelLoadingPosition: []
       });
       toast?.dismiss(toastId);
       toast?.fail({
@@ -213,7 +218,6 @@ export default memo(function Delegate(props: IProps) {
 
 
   const onSuccess = () => {
-    onClose()
     updateState({
       updater: Date.now(),
     })
@@ -295,8 +299,13 @@ export default memo(function Delegate(props: IProps) {
           >{operationType === "delegate" ? "Queue Boost" : "Unbond"}</Button>
           <div className='flex flex-col gap-3 mt-[32px]'>
             <div className=' text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>Delegation Queue</div>
+
             {
-              delegationQueue?.length > 0 ? delegationQueue?.map((queue: QueueType, index: number) => (
+              loading ? (
+                <div className='flex justify-center'>
+                  <CircleLoading size={28} />
+                </div>
+              ) : delegationQueue?.length > 0 ? delegationQueue?.map((queue: QueueType, index: number) => (
                 <div className='flex flex-col' key={index}>
                   <div className="w-full rounded-md border border-border p-4">
                     <div className="flex w-full justify-between">
@@ -321,15 +330,17 @@ export default memo(function Delegate(props: IProps) {
                           )}
                           disabled={!queue?.canConfirm}
                           onClick={() => {
-                            handleClickConfirmAndCancel(queue, "confirm")
+                            handleClickConfirmAndCancel(queue, ["confirm", index])
                           }}
-                        >Confirm</button>
+                        >{state?.confirmAndCancelLoadingPosition[0] === 'confirm' && state?.confirmAndCancelLoadingPosition[1] === index
+                          ? <CircleLoading size={14} /> : "Confirm"}</button>
                         <button
                           className="inline-flex h-fit items-center justify-center transition-duration-300 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-30 disabled:pointer-events-none ring-offset-background text-muted-foreground hover:bg-muted px-4 py-2 rounded-md text-lg font-semibold leading-7"
                           onClick={() => {
-                            handleClickConfirmAndCancel(queue, "cancel")
+                            handleClickConfirmAndCancel(queue, ["cancel", index])
                           }}
-                        >Cancel</button>
+                        >{state?.confirmAndCancelLoadingPosition[0] === 'cancel' && state?.confirmAndCancelLoadingPosition[1] === index
+                          ? <CircleLoading size={14} /> : "Cancel"}</button>
                       </div>
                     </div>
                     <div className="mt-6 pl-8 pr-4">
