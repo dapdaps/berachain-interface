@@ -550,12 +550,12 @@ export default memo(function staking(props) {
         {/* <div className='mb-[16px] flex items-center justify-center w-full h-[60px] rounded-[10px] border border-black bg-[#FFDC50]'>
           <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>Stake</span>
         </div> */}
-        <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
+        {/* <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
           Manage exist assets on{' '}
           <span className='text-black font-Montserrat underline'>
             Oogabooga
           </span>
-        </div>
+        </div> */}
       </div>
     </DappModal>
   );
