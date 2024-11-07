@@ -467,6 +467,11 @@ export default memo(function Detail(props: any) {
       version: 'v2'
     };
   }, [data]);
+
+  const withdrawable = useMemo(() => {
+    return !(isWithdrawInsufficient || isLoading || Number(lpAmount || 0) <= 0);
+  }, [isWithdrawInsufficient, isLoading, lpAmount]);
+
   return (
     <div>
       <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
@@ -500,15 +505,22 @@ export default memo(function Detail(props: any) {
         </div>
         <div className='mb-[17px] flex items-center gap-[14px]'>
           <div className='flex items-center'>
-            <div className='w-[48px] h-[48px] rounded-full'>
-              <img src={data?.images[0]} />
-            </div>
-            <div className='ml-[-16px] w-[48px] h-[48px] rounded-full'>
-              <img src={data?.images[1]} style={{ objectPosition: 'left' }} />
-            </div>
+            {data?.images[0] && (
+              <img
+                className='w-[48px] h-[48px] rounded-full'
+                src={data?.images[0]}
+              />
+            )}
+            {data?.images[1] && (
+              <img
+                className='ml-[-16px] w-[48px] h-[48px] rounded-full'
+                src={data?.images[1]}
+                style={{ objectPosition: 'left' }}
+              />
+            )}
           </div>
           <div className='text-black font-Montserrat text-[26px] font-semibold leading-[100%]'>
-            {data?.initialData?.pool?.name}
+            {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
           </div>
         </div>
         <div className='flex items-center gap-[30px]'>
@@ -533,7 +545,7 @@ export default memo(function Detail(props: any) {
               Protocol
             </div>
             <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {data?.initialData?.pool?.protocol}
+              {data?.initialData?.pool?.protocol || '-'}
             </div>
           </div>
           <div className='flex flex-col gap-[12px]'>
@@ -556,15 +568,21 @@ export default memo(function Detail(props: any) {
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-[10px]'>
                 <div className='flex items-center'>
-                  <div className='w-[30px] h-[30px] rounded-full'>
-                    <img src={data?.images[0]} />
-                  </div>
-                  <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
-                    <img src={data?.images[1]} />
-                  </div>
+                  {data?.images[0] && (
+                    <img
+                      src={data?.images[0]}
+                      className='w-[30px] h-[30px] rounded-full'
+                    />
+                  )}
+                  {data?.images[1] && (
+                    <img
+                      src={data?.images[1]}
+                      className='ml-[-10px] w-[30px] h-[30px] rounded-full'
+                    />
+                  )}
                 </div>
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  {data?.initialData?.pool?.name}
+                  {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
                 </div>
               </div>
 
@@ -668,11 +686,11 @@ export default memo(function Detail(props: any) {
               {!isInSufficient &&
                 (isTokenApproved && !isTokenApproving ? (
                   <button
-                    disabled={isLoading || !inAmount}
+                    disabled={isLoading || Number(inAmount || 0) <= 0}
                     className={clsx(
                       'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                       {
-                        'opacity-50': isLoading || !inAmount
+                        'opacity-50': isLoading || Number(inAmount || 0) <= 0
                       }
                     )}
                     onClick={handleDeposit}
@@ -753,16 +771,11 @@ export default memo(function Detail(props: any) {
                 </div>
               </div>
               <button
-                disabled={
-                  isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
-                }
+                disabled={!withdrawable}
                 className={clsx(
                   'w-full h-[60px] font-[600] text-[18px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
                   {
-                    'opacity-50':
-                      isWithdrawInsufficient ||
-                      isLoading ||
-                      Number(lpAmount) <= 0
+                    'opacity-50': !withdrawable
                   }
                 )}
                 onClick={handleWithdraw}
