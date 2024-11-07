@@ -94,7 +94,7 @@ export default memo(function IBGTPageView(props: any) {
                         <img src={`/images/dapps/infrared/ibgt.svg`} />
                       </div>
                     </div>
-                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0 iBGT</div>
+                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.depositAmount ?? 0, '', 2)} iBGT</div>
                   </div>
 
                   <div
@@ -115,11 +115,17 @@ export default memo(function IBGTPageView(props: any) {
                     <div className="w-[32px] h-[32px] rounded-full">
                       <img src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"}.svg`} />
                     </div>
-                    <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0 {data?.rewardSymbol}</div>
+                    <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{
+                      formatValueDecimal(
+                        data?.earned,
+                        '',
+                        2
+                      )
+                    } {data?.rewardSymbol}</div>
                   </div>
                   {
                     Big(data?.earned ?? 0).gt(0) && (
-                      <div className='flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
+                      <div className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]' onClick={handleClaim}>
                         Claim
                       </div>
                     )
@@ -168,14 +174,14 @@ export default memo(function IBGTPageView(props: any) {
                       !isInSufficient &&
                       (isTokenApproved && !isTokenApproving ? (
                         <button disabled={isLoading || Number(inAmount) <= 0}
-                                className={
-                                  clsx(
-                                    "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
-                                    {
-                                      "opacity-50": isLoading || Number(inAmount) <= 0
-                                    })
-                                }
-                                onClick={handleDeposit}
+                          className={
+                            clsx(
+                              "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
+                              {
+                                "opacity-50": isLoading || Number(inAmount) <= 0
+                              })
+                          }
+                          onClick={handleDeposit}
                         >
                           <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">{isLoading ? <CircleLoading size={14} /> : 'Stake'}</span>
                         </button>
@@ -201,10 +207,10 @@ export default memo(function IBGTPageView(props: any) {
                 ) : (
                   <div>
                     <input value={lpAmount} type="number"
-                           onChange={(e) => {
-                             handleLPChange(e.target.value);
-                           }}
-                           className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
+                      onChange={(e) => {
+                        handleLPChange(e.target.value);
+                      }}
+                      className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]" placeholder="0" />
                     <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
                       <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                         {lpAmount ? '$' + Big(lpAmount)

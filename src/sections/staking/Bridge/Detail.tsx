@@ -46,7 +46,10 @@ export default memo(function Detail(props: any) {
     updater
   } = state;
 
+
   const { decimals, tokens, id, LP_ADDRESS } = data;
+
+  console.log('====data', data)
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
@@ -495,14 +498,18 @@ export default memo(function Detail(props: any) {
               {Big(data?.apy ?? 0).toFixed(2)}%
             </div>
           </div>
-          <div className='flex flex-col gap-[12px] w-[130px]'>
-            <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-              Protocol
-            </div>
-            <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {data?.initialData?.pool?.protocol}
-            </div>
-          </div>
+          {
+            data?.initialData?.pool?.protocol && (
+              <div className='flex flex-col gap-[12px] w-[130px]'>
+                <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
+                  Protocol
+                </div>
+                <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
+                  {data?.initialData?.pool?.protocol}
+                </div>
+              </div>
+            )
+          }
           <div className='flex flex-col gap-[12px] w-[130px]'>
             <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
               Type
@@ -531,20 +538,24 @@ export default memo(function Detail(props: any) {
                   </div>
                 </div>
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  {data?.initialData?.pool?.name}
+                  {data?.tokens?.join("-")}
                 </div>
               </div>
 
-              <div
-                className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
-                onClick={() => {
-                  router.push("/dex/bex?lp=" + LP_ADDRESS)
-                }}
-              >
-                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                  Mint LP
-                </span>
-              </div>
+              {
+                data?.initialData?.pool?.protocol === "BEX" && (
+                  <div
+                    className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
+                    onClick={() => {
+                      router.push("/dex/bex?lp=" + LP_ADDRESS)
+                    }}
+                  >
+                    <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                      Mint LP
+                    </span>
+                  </div>
+                )
+              }
             </div>
           </div>
           <div className='w-full h-[1px] bg-black/[0.15]' />

@@ -303,7 +303,7 @@ export default memo(function Delegate(props: IProps) {
             <div className=' text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>Delegation Queue</div>
             {
               delegationQueue?.length > 0 ? delegationQueue?.map((queue: QueueType, index: number) => (
-                <div className='flex flex-col'>
+                <div className='flex flex-col' key={index}>
                   <div className="w-full rounded-md border border-border p-4">
                     <div className="flex w-full justify-between">
                       <div className="font-medium">

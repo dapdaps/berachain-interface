@@ -162,10 +162,11 @@ export default function useInfraredData(props: any) {
   function getEarned() {
     const calls = []
     dataList.forEach(data => {
+
       calls.push({
         address: ethers.utils.getAddress(addresses[data?.id]),
         name: 'earned',
-        params: [sender, IBGT_ADDRESS]
+        params: [sender, data?.id === "iBGT-HONEY" ? "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03" : IBGT_ADDRESS]
       })
     })
 
@@ -178,8 +179,6 @@ export default function useInfraredData(props: any) {
           const element = dataList[i];
           dataList[i].earned = Big(ethers.utils.formatUnits(result[i][0])).toFixed()
         }
-
-        console.log('====dataList', dataList)
         formatedData('getEarned')
       },
       (error) => {
