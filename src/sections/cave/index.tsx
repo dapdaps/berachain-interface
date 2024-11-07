@@ -11,6 +11,7 @@ import Bear from "./Bear";
 import CheckBox from "./CheckBox";
 import { AnyKindOfDictionary } from "lodash";
 import dapp from "@/configs/dapp";
+import PageBack from "@/components/back";
 
 const hatPositions = [{
     width: 102,
@@ -255,8 +256,9 @@ export default function Cave() {
 
 
     return <div className=" relative w-[100vw] h-[100vh] min-w-[1200px] min-h-[890px]">
+        <PageBack icon='/images/icon-back-white.svg' className="ml-[30px] text-white absolute top-[20px] left-[30px]"/>
         <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">Bear Cave</div>
-        <div className=" flex gap-[85px] justify-center">
+        <div className=" flex gap-[65px] justify-center">
             <img src="/images/cave/bearphoto.png" className="w-[120px]" />
             <img src="/images/cave/youtube.png" className="w-[120px]" />
         </div>
