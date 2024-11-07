@@ -7,34 +7,22 @@ const data = {
     title: 'How to Unlock Clothes?',
     list: [{
         icon: '/images/cave/clothing/cloth-1-1.png',
-        content: '$100+ per transaction, complete at least 1 transaction',
+        content: <div><strong>1+</strong> transaction, at least 1 transactions</div>,
     }, {
         icon: '/images/cave/clothing/cloth-2-2.png',
-        content: '$100+ per transaction, complete at least 10 transaction',
+        content: <div><strong>10+</strong> transaction, at least 10 transactions</div>,
     }, {
         icon: '/images/cave/clothing/cloth-3-3.png',
-        content: '$100+ per transaction, complete at least 100 transaction',
+        content: <div><strong>100+</strong> transaction, at least 100 transactions</div>,
     }, {
         icon: '/images/cave/clothing/cloth-4-4.png',
-        content: '$100+ per transaction, complete at least 1000 transaction',
+        content: <div><strong>1000+</strong> transaction, at least 1000 transactions</div>,
     }],
 }
 
 export default function ClothHover() {
-    const boxRef = useRef<any>(null)
-    const { showTip, setTipShow } = useTipModal(boxRef)
-    const [showSelf, setShowSelf] = useState(false)
-
-    return <div ref={boxRef}
-        onMouseEnter={() => { setShowSelf(true) }}
-        onMouseLeave={() => { setShowSelf(false); setTipShow(false); }}
-        style={{ opacity: showSelf ? 1 : 0 }}
-        data-bp="1013-002"
-        onClick={() => {
-            setTipShow(true)
-        }} className="absolute cursor-pointer w-[570px] h-[200px] left-[50%] top-[400px] translate-x-[-50%] bg-[#EBF4794D] border-[#EBF479] border-[3px] rounded-[20px]">
-        {
-            showTip && <TipModal note={
+ 
+    return  <TipModal note={
                 <div className="flex items-start gap-[10px]">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="13" cy="13" r="13" fill="#FFB7BF" />
@@ -44,8 +32,5 @@ export default function ClothHover() {
                         Wrap and stablecoin transactions are not included.
                     </div>
                 </div>
-            } data={data} style={{ left: '50%', transform: 'translateX(-50%)', top: '50%' }} />
-        }
-    </div>
-
+            } data={data} />
 }
