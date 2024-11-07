@@ -11,8 +11,8 @@ import useClickTracking from '@/hooks/use-click-tracking';
 import useIsMobile from '@/hooks/use-isMobile';
 
 
-const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
-const ABI = [{
+export const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
+export const ABI = [{
   "inputs": [
     {
       "internalType": "address",

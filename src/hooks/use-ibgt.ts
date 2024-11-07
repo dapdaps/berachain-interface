@@ -10,9 +10,9 @@ import useClickTracking from '@/hooks/use-click-tracking';
 import useAddAction from "@/hooks/use-add-action";
 import useLpToAmount from '@/hooks/use-lp-to-amount';
 
-const IBGT_ADDRESS = "0x46efc86f0d7455f135cc9df501673739d513e982"
+export const IBGT_ADDRESS = "0x46efc86f0d7455f135cc9df501673739d513e982"
 
-const ABI = [{
+export const ABI = [{
   "inputs": [
     {
       "internalType": "address",
