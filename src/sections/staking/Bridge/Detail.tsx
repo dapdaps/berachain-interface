@@ -4,22 +4,37 @@ import useAddAction from '@/hooks/use-add-action';
 import useLpToAmount from '@/hooks/use-lp-to-amount';
 import { useMultiState } from '@/hooks/use-multi-state';
 import useToast from '@/hooks/use-toast';
+import { useProvider } from '@/hooks/use-provider';
+import useAccount from '@/hooks/use-account';
 import { formatValueDecimal, balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
-import { useRouter } from 'next/navigation';
 import { memo, useEffect, useMemo, useState } from 'react';
+import config from '@/configs/staking/dapps/infrared';
 import AddLiquidityModal from '@/sections/pools/add-liquidity-modal';
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useIbgtVaults } from '@/stores/ibgt-vaults';
 
-export default memo(function Detail(props: any) {
-  const { data, sender, provider, defaultIndex = 0, addresses, onBack } = props;
+export default memo(function Detail() {
+  const { addresses } = config.chains[DEFAULT_CHAIN_ID];
+  const { provider } = useProvider();
+  const { account: sender } = useAccount();
+  const params = useSearchParams();
+  const ibgtVaults = useIbgtVaults();
+  const id = params.get('id');
+  const defaultIndex = params.get('tab');
+  const pathname = usePathname();
   const router = useRouter();
+  const data = useMemo(
+    () => ibgtVaults.vaults.find((item) => item.id === id),
+    [id]
+  );
+
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
   const [showAddModal, setShowAddModal] = useState(false);
-
-  const [tIndex, setTIndex] = useState(defaultIndex);
 
   const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
   const [state, updateState] = useMultiState({
@@ -47,23 +62,14 @@ export default memo(function Detail(props: any) {
     updater
   } = state;
 
+  const { decimals, tokens, LP_ADDRESS } = data;
 
-  const { decimals, tokens, id, LP_ADDRESS } = data;
-
-  console.log('====data', data)
   const symbol = id;
   const vaultAddress = addresses[symbol];
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
-  const balanceLp =
-    !lpAmount || !lpBalance
-      ? '-'
-      : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+
   const { addAction } = useAddAction('dapp');
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
@@ -451,10 +457,10 @@ export default memo(function Detail(props: any) {
   };
 
   useEffect(() => {
-    if (!sender || !vaultAddress) return;
+    if (!sender || !vaultAddress || !provider) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, vaultAddress, updater]);
+  }, [sender, vaultAddress, updater, provider]);
 
   const mintData = useMemo(() => {
     const pool = data.initialData.pool;
@@ -480,7 +486,9 @@ export default memo(function Detail(props: any) {
       <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
         <div
           className='cursor-pointer absolute top-[24px] left-[19px]'
-          onClick={onBack}
+          onClick={() => {
+            router.back();
+          }}
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -638,10 +646,12 @@ export default memo(function Detail(props: any) {
                 key={index}
                 className={clsx([
                   'cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1',
-                  tIndex === index ? 'h-full  !border-black bg-[#FFDC50]' : ''
+                  Number(defaultIndex) === index
+                    ? 'h-full  !border-black bg-[#FFDC50]'
+                    : ''
                 ])}
                 onClick={() => {
-                  setTIndex(index);
+                  router.replace(`${pathname}?id=${id}&tab=${index}`);
                 }}
               >
                 <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
@@ -651,7 +661,7 @@ export default memo(function Detail(props: any) {
             ))}
           </div>
 
-          {tIndex === 0 ? (
+          {Number(defaultIndex) === 0 ? (
             <div>
               <input
                 value={inAmount}

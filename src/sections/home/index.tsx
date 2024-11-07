@@ -73,7 +73,7 @@ const Navigation = function () {
           </div>
         </div>
       </div>
-      <div className='absolute right-[35px] bottom-[180px]'>
+      {/* <div className='absolute right-[35px] bottom-[180px]'>
         <div
           className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
           onClick={onNavigateToVaults}
@@ -102,7 +102,7 @@ const Navigation = function () {
             <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
           </motion.div>
         </div>
-      </div>
+      </div> */}
       {/* <div className='absolute left-1/3 bottom-[19px] z-10 flex gap-[100px]'> */}
       <div className='absolute left-1/2 bottom-[19px] z-10 flex gap-[100px]'>
         <div

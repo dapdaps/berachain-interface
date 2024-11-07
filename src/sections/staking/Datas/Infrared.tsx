@@ -117,7 +117,7 @@ export default function useInfraredData(props: any) {
       );
       if (findIndex > -1) {
         const initialData = allData[findIndex];
-
+        if (initialData?.pool?.protocol !== 'BEX') return;
         dataList.push({
           ...pair,
           tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
@@ -169,15 +169,19 @@ export default function useInfraredData(props: any) {
   }
 
   function getEarned() {
-    const calls = []
-    dataList.forEach(data => {
-
+    const calls = [];
+    dataList.forEach((data) => {
       calls.push({
         address: ethers.utils.getAddress(addresses[data?.id]),
         name: 'earned',
-        params: [sender, data?.id === "iBGT-HONEY" ? "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03" : IBGT_ADDRESS]
-      })
-    })
+        params: [
+          sender,
+          data?.id === 'iBGT-HONEY'
+            ? '0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03'
+            : IBGT_ADDRESS
+        ]
+      });
+    });
 
     multicallv2(
       ERC20_ABI,
@@ -190,7 +194,7 @@ export default function useInfraredData(props: any) {
             ethers.utils.formatUnits(result[i][0])
           ).toFixed();
         }
-        formatedData('getEarned')
+        formatedData('getEarned');
       },
       (error) => {
         console.log('=error', error);
