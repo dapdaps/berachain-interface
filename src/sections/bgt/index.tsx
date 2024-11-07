@@ -1,15 +1,18 @@
 "use client";
 
-import { Column } from "@/components/flex-table";
+import FlexTable, { Column } from "@/components/flex-table";
 import Loading from "@/components/loading";
 import { useBGT } from "@/hooks/use-bgt";
 import BgtHead from '@/sections/bgt/components/bgt-head';
 import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import VaultsList from "./components/list";
+import SwitchTabs from "@/components/switch-tabs";
+import BgtEmpty from "./components/bgt-empty";
 
 export default memo(function BGTPageView() {
+  const [tab, setTab] = useState('all');
   const Columns: Column[] = [
     {
       title: 'Vaults',
@@ -197,53 +200,40 @@ export default memo(function BGTPageView() {
         </div>
 
         <div className="my-[30px] flex justify-between items-center">
-          <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">
-            All Vaults
-          </div>
-          {/* <div
-            className="flex items-center justify-center gap-[10px] w-[164px] h-[40px] rounded-[10px] border border-[#373A53] bg-white"
-            onClick={handleExplore}
-          >
-            <span>Explore Vaults</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-              <path d="M1 1L5.8 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </div> */}
+
+        <SwitchTabs
+            tabs={[
+              { label: 'All Vaults', value: 'all' },
+              { label: 'Your Vaults', value: 'your' },
+            ]}
+            onChange={(val) => {
+              setTab(val);
+            }}
+            current={tab}
+            className="w-[200px]"
+            style={{ height: 40, borderRadius: 12 }}
+            cursorStyle={{ borderRadius: 10 }}
+          />
         </div>
 
-        <VaultsList />
-
-        {/* <div className="flex items-center mb-[71px]">
-         {
-         columnList.map(column => (
-         <div key={column?.key} className="flex items-center gap-[7px]" style={{ width: column.width }}>
-         <span className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
-         {column?.label}
-         </span>
-         </div>
-         ))
-         }
-         </div> */}
-
-
-
-        {/*          
-        <FlexTable
-          loading={loading}
-          columns={Columns}
-          list={filterList}
-          sortDataIndex={sortDataIndex}
-          renderEmpty={() => (
-            <BgtEmpty handleExplore={handleExplore} />
-          )}
-          onChangeSortDataIndex={(index) => {
-            setSortDataIndex(sortDataIndex === index ? "" : index)
-          }}
-        /> */}
-
-
-
-
+        {
+          tab === 'all' ? (
+            <VaultsList />
+          ) : (
+            <FlexTable
+              loading={loading}
+              columns={Columns}
+              list={filterList}
+              sortDataIndex={sortDataIndex}
+              renderEmpty={() => (
+                <BgtEmpty handleExplore={handleExplore} />
+              )}
+              onChangeSortDataIndex={(index) => {
+                setSortDataIndex(sortDataIndex === index ? "" : index)
+              }}
+            />
+          )
+        }
       </div>
     </div>
   )
