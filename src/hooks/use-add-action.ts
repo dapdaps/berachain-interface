@@ -94,9 +94,8 @@ export default function useAddAction(source: string) {
       }
       if (data.type === 'Liquidity') {
         params = {
-          action_title: `${data.action} ${
-            data?.token0 + (data?.token1 ? '-' + data.token1 : '')
-          } on ${data.template}`,
+          action_title: `${data.action} ${data?.token0 + (data?.token1 ? '-' + data.token1 : '')
+            } on ${data.template}`,
           action_type: data.type,
           action_tokens: JSON.stringify([
             data?.token0 ?? '',
@@ -136,11 +135,30 @@ export default function useAddAction(source: string) {
         };
       }
 
+      if (data.type === 'Delegate') {
+        params = {
+          action_title: data.token
+            ? `${data.action} ${data.amount} ${data.name} on ${data.template}`
+            : '',
+          action_type: 'Staking',
+          action_tokens: JSON.stringify([data.name]),
+          action_amount: data.amount,
+          account_id: account,
+          template: data.template,
+          action_switch: data.add ? 1 : 0,
+          action_status: data.status === 1 ? 'Success' : 'Failed',
+          tx_id: data.transactionHash,
+          action_network_id: currentChain?.name || data.action_network_id,
+          chain_id: chainId,
+          extra_data: data.extra_data,
+          sub_type: data.sub_type
+        };
+      }
+
       if (data.type === 'Yield') {
         params = {
-          action_title: `${data.action} ${
-            data?.token0 + (data?.token1 ? '-' + data.token1 : '')
-          } on ${data.template}`,
+          action_title: `${data.action} ${data?.token0 + (data?.token1 ? '-' + data.token1 : '')
+            } on ${data.template}`,
           action_type: data.type,
           action_tokens: JSON.stringify([
             data?.token0 ?? '',
@@ -161,10 +179,9 @@ export default function useAddAction(source: string) {
 
       if (data.template === 'launchpad' || data.template === 'Launchpad') {
         params = {
-          action_title: `Launchpad ${
-            data?.token0.symbol +
+          action_title: `Launchpad ${data?.token0.symbol +
             (data?.token1.symbol ? '-' + data.token1.symbol : '')
-          } on ${data.template}`,
+            } on ${data.template}`,
           action_type: 'Swap',
           action_tokens: JSON.stringify([
             data?.token0.symbol ?? '',
@@ -192,8 +209,7 @@ export default function useAddAction(source: string) {
       }
 
       params.ss = getSignature(
-        `template=${data.template}&action_type=${data.type}&tx_hash=${
-          data.transactionHash
+        `template=${data.template}&action_type=${data.type}&tx_hash=${data.transactionHash
         }&chain_id=${chainId}&time=${Math.ceil(Date.now() / 1000)}`
       );
       params.source = source;
