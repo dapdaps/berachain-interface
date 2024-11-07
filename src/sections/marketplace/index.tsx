@@ -179,7 +179,7 @@ const MarketplaceView = () => {
 
   return (
     <div className='relative md:h-full  md:overflow-y-auto overflow-x-hidden'>
-      <PageBack className='absolute left-[40px] top-[31px] hidden lg:flex md:hidden' />
+      <PageBack className='absolute left-[40px] top-[31px]' />
       <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>
         Marketplace
       </PageTitle>
@@ -190,7 +190,7 @@ const MarketplaceView = () => {
         alt=''
       />
 
-      <div className='relative mt-[100px] overflow-hidden lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
+      <div className='relative mt-[100px] md:overflow-hidden lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
         <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]'>
           Hot Sell Tokens
         </div>

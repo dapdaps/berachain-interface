@@ -20,7 +20,7 @@ export default function RootLayout({
   const isMobile = useIsMobile();
 
   return (
-    <html lang='en'>
+    <html lang='en' className="md:overflow-hidden">
       <head>
         <title>BeraTown</title>
         <meta
@@ -28,7 +28,7 @@ export default function RootLayout({
           content='Effortlessly explore & dive into all dApps in the Bera ecosystem from one streamlined hub.'
         />
       </head>
-      <body>
+      <body className="md:overflow-hidden">
         <WagmiProvider>
           <SkeletonTheme baseColor='#7990F4' highlightColor='#FFDC50'>
             <Suspense>
