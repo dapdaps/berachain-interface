@@ -10,6 +10,7 @@ import Tips from "./Tip";
 import Bear from "./Bear";
 import CheckBox from "./CheckBox";
 import { AnyKindOfDictionary } from "lodash";
+import dapp from "@/configs/dapp";
 
 const hatPositions = [{
     width: 102,
@@ -47,31 +48,74 @@ const carsSize = [{
     marginLeft: -13
 }]
 
+const stakeDapps = [{
+    icon: '/images/dapps/infrared.svg',
+    name: 'Infrared',
+    link: '/staking/infrared'
+}]
+
+const lendDapps = [{
+    icon: '/images/dapps/dolomite.svg',
+    name: 'Dolomite',
+    link: '/lending/dolomite'
+}, {
+    icon: '/images/dapps/bend.svg',
+    name: 'Bend',
+    link: '/lending/bend'
+}]
+
+const swapDapps = [{
+    icon: '/images/dapps/kodiak.svg',
+    name: 'Kodiak',
+    link: '/dex/kodiak'
+}, {
+    icon: '/images/dapps/bex.png',
+    name: 'Bend',
+    link: '/dex/bex'
+}, {
+    icon: '/images/dapps/ooga-booga.svg',
+    name: 'Ooga Booga',
+    link: '/dex/ooga-booga'
+}]
+
+const bridgeDapps = [{
+    icon: '/images/dapps/stargate.svg',
+    name: 'Stargate',
+    link: '/bridge'
+}]
+
+
 const hatTips = [{
     name: 'Baseball Cap',
     content: '$1+ transaction, at least 1 transactions.',
     img: '/images/cave/hat/hat-1-1.png',
     link: '/bridge',
     btnText: 'Bridge',
+    dapps: bridgeDapps,
 }, {
     name: 'Basic Helmet',
     content: '$10+ transaction, at least 10 transactions.',
     img: '/images/cave/hat/hat-2-2.png',
     link: '/bridge',
     btnText: 'Bridge',
+    dapps: bridgeDapps,
 }, {
     name: 'Flying Helmet',
     content: '$100+ transaction, at least 100 transactions.',
     img: '/images/cave/hat/hat-3-3.png',
     link: '/bridge',
     btnText: 'Bridge',
+    dapps: bridgeDapps,
 }, {
     name: 'Motor Helmet',
     content: '$1000+ transaction, at least 1000 transactions.',
     img: '/images/cave/hat/hat-4-4.png',
     link: '/bridge',
     btnText: 'Bridge',
+    dapps: bridgeDapps,
 }]
+
+
 
 const clothTips = [{
     name: 'Hoodie',
@@ -79,24 +123,28 @@ const clothTips = [{
     img: '/images/cave/clothing/cloth-1-1.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: swapDapps,
 }, {
     name: 'Baseball Jacket',
     content: '$10+ transaction, at least 10 transactions.',
     img: '/images/cave/clothing/cloth-2-2.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: swapDapps,
 }, {
     name: 'Vintage Jacket',
     content: '$100+ transaction, at least 100 transactions.',
     img: '/images/cave/clothing/cloth-3-3.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: swapDapps,
 }, {
     name: 'Windcheater',
     content: '$1000+ transaction, at least 1000 transactions.',
     img: '/images/cave/clothing/cloth-4-4.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: swapDapps,
 }]
 
 const carTips = [{
@@ -105,24 +153,28 @@ const carTips = [{
     img: '/images/cave/key/key-tip-1.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: stakeDapps,
 }, {
     name: 'Vehicle',
     content: 'Scooter, Delegate 100 BGT.',
     img: '/images/cave/key/key-tip-2.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: stakeDapps,
 }, {
     name: 'Motocycle',
     content: 'Motobike, Delegate 10,000 BGT.',
     img: '/images/cave/key/key-tip-3.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: stakeDapps,
 }, {
     name: 'Race Car',
     content: 'Lambo, Delegate 1,000,000 BGT.',
     img: '/images/cave/key/key-tip-4.png',
     link: '/swap',
     btnText: 'Swap',
+    dapps: stakeDapps,
 }]
 
 const neckTips = [
@@ -132,6 +184,7 @@ const neckTips = [
         img: '/images/cave/neck/neck-tip-1.png',
         link: '/swap',
         btnText: 'Lending',
+        dapps: lendDapps,
     },
     {
         name: 'Silver Necklace',
@@ -139,6 +192,7 @@ const neckTips = [
         img: '/images/cave/neck/neck-tip-2.png',
         link: '/swap',
         btnText: 'Lending',
+        dapps: lendDapps,
     },
     {
         name: 'Golden Necklace',
@@ -146,6 +200,7 @@ const neckTips = [
         img: '/images/cave/neck/neck-tip-3.png',
         link: '/swap',
         btnText: 'Lending',
+        dapps: lendDapps,
     },
     {
         name: 'Diamond Necklace',
@@ -153,6 +208,7 @@ const neckTips = [
         img: '/images/cave/neck/neck-tip-4.png',
         link: '/swap',
         btnText: 'Lending',
+        dapps: lendDapps,
     }
 ]
 
@@ -168,16 +224,22 @@ export default function Cave() {
     })
 
     const tipClick = useCallback((e: any, item: any) => {
-        e.stopPropagation()
+        e.nativeEvent.stopImmediatePropagation()
+        let y = e.clientY - 30
+        if (y + 220 > window.innerHeight) {
+            y = y - 220
+        }
+
         setTipLocation({
             x: e.clientX,
-            y: e.clientY - 30
+            y
         })
         setTipMsg(item)
         setTipShow(true)
     }, [])
 
     const docClick = useCallback((e: any) => {
+        console.log(11)
         if (!e.target.classList.contains('cave-tip') && !e.target.parentNode.classList.contains('cave-tip')) {
             setTipShow(false)
         }
@@ -192,10 +254,13 @@ export default function Cave() {
     }, [])
 
 
-    return <div className=" relative w-[100vw] h-[100vh]">
+    return <div className=" relative w-[100vw] h-[100vh] min-w-[1200px] min-h-[890px]">
         <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">Bear Cave</div>
-
-        <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[170px] translate-x-[-50%]">
+        <div className=" flex gap-[85px] justify-center">
+            <img src="/images/cave/bearphoto.png" className="w-[120px]" />
+            <img src="/images/cave/youtube.png" className="w-[120px]" />
+        </div>
+        <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[240px] translate-x-[-50%]">
             {
                 hats.map(item => {
                     return <div className="flex-1 relative cursor-pointer cave-tip" onClick={(e) => {
@@ -235,7 +300,7 @@ export default function Cave() {
 
         </div>
 
-        <div className="absolute w-[583px] left-[50%] translate-x-[-50%] top-[255px] h-[398px] overflow-hidden">
+        <div className="absolute w-[583px] left-[50%] translate-x-[-50%] top-[325px] h-[398px] overflow-hidden">
             <div className="absolute w-[583px] top-[-80px] h-[398px] bg-[url('/images/cave/sheet.png')] bg-contain bg-no-repeat bg-bottom">
                 <div className="flex px-[30px] pt-[120px]">
                     {
@@ -358,7 +423,7 @@ export default function Cave() {
             </div>
             }
         </div>
-        <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[10px] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
+        <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
         <div className=" pointer-events-none absolute w-[50%] h-[45%] bottom-[0px] right-[-150px] bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
 
         {/* <HatHover />

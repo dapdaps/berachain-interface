@@ -20,7 +20,7 @@ export default function Bear({
     }, [cars])
 
 
-    return <div className=" absolute bottom-[10%] left-[50%] translate-x-[-50%] w-[395px] h-[359px]">
+    return <div className="pointer-events-none absolute bottom-[10%] left-[50%] translate-x-[-50%] w-[395px] h-[359px]">
         { !hasCars && <img src="/images/cave/bear/bear-empty.png" className="absolute left-0 top-[0px] max-w-[395px]"/> }
         {/* <img src="/images/cave/bear/bear-empty.png" className="w-[395px] h-[359px]"/> */}
 
