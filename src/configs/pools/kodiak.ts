@@ -13,8 +13,7 @@ const tokens = kodiak.tokens;
 export default {
   contracts,
   tokens,
-  officalSite:
-    'https://app.kodiak.finance/#/liquidity/islands?chain=berachain_bartio',
+  officalSite: '/dex/kodiak/pools',
   name: 'Kodiak',
   graph: {
     80084:

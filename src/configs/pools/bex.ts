@@ -15,6 +15,6 @@ export default {
     80084:
       'https://api.goldsky.com/api/public/project_clq1h5ct0g4a201x18tfte5iv/subgraphs/bgt-subgraph/v1000000/gn'
   },
-  officalSite: 'https://bartio.bex.berachain.com/pools',
+  officalSite: '/dex/bex/pools',
   name: 'BEX'
 };
