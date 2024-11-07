@@ -253,12 +253,12 @@ export default function Vaults() {
         })}
       </div>
 
-      {loading ? (
+      {true ? (
         <div className='flex items-center gap-[4px]'>
           {columnList.map((column: any) => {
             return (
               <Skeleton
-                width={(928 * parseInt(column?.width)) / 100 - 4}
+                width={(1140 * parseInt(column?.width)) / 100 - 4}
                 height={58}
               />
             );
