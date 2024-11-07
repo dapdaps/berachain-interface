@@ -42,7 +42,7 @@ export default memo(function Select(props: IProps) {
       align: "left",
       width: "15%",
       render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.userStaked}</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.userStaked ?? 0, '', 2, false, false)} BGT</div>;
       },
     },
     {
@@ -51,7 +51,7 @@ export default memo(function Select(props: IProps) {
       align: "left",
       width: "15%",
       render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.userQueued}</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.userQueued ?? 0, '', 2, false, false)} BGT</div>;
       },
     },
     {
@@ -60,7 +60,7 @@ export default memo(function Select(props: IProps) {
       align: "left",
       width: "15%",
       render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.BGTDelegated ?? 0, '', 2, true)}</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.BGTDelegated ?? 0, '', 2, true, false)} BGT</div>;
       },
     },
     {
@@ -70,7 +70,7 @@ export default memo(function Select(props: IProps) {
       width: "15%",
       render: (text: string, record: any) => {
         return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.commission ?? 0, '', 2)}</div>
+          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.commission ?? 0, '', 2, false, false)} %</div>
         );
       },
     },
@@ -81,7 +81,7 @@ export default memo(function Select(props: IProps) {
       width: "10%",
       render: (text: string, record: any) => {
         return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.vApy ?? 0, '', 2)}</div>
+          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.vApy ?? 0, '', 2, false, false)} %</div>
         );
       },
     },
@@ -94,7 +94,7 @@ export default memo(function Select(props: IProps) {
         return record?.activeIncentives?.length > 0 ? (
           <div>No Incentives</div>
         ) : (
-          <div>Incentives</div>
+          <div>-</div>
         );
       },
     },
@@ -107,6 +107,7 @@ export default memo(function Select(props: IProps) {
   const [loading, setLoading] = useState(false)
   const [value, setValue] = useState("")
   const [validators, setValidators] = useState(null)
+
   const filterValidators = useMemo(() => validators?.filter(validator => validator?.name?.toLocaleLowerCase().indexOf(value?.toLocaleLowerCase()) > -1), [value, loading])
 
 
@@ -217,12 +218,14 @@ export default memo(function Select(props: IProps) {
       setLoading(true)
       const result = await Promise.all(promiseArray)
       for (let i = 0; i < VALIDATORS.length; i++) {
+
+        console.log('==result?.[3]?.[i]', Big(result?.[3]?.[i]?.toString()).div(100))
         _validators.push({
           ...VALIDATORS[i],
           userStaked: result?.[0]?.[i] ? ethers.utils.formatUnits(result?.[0]?.[i]) : 0,
           userQueued: result?.[1]?.[i] ? ethers.utils.formatUnits(result?.[1]?.[i]) : 0,
           BGTDelegated: result?.[2]?.[i] ? ethers.utils.formatUnits(result?.[2]?.[i]) : 0,
-          commission: result?.[3]?.[i] ? ethers.utils.formatUnits(result?.[3]?.[i]) : 0,
+          commission: result?.[3]?.[i] ? Big(result?.[3]?.[i]?.toString()).div(100).toFixed() : 0,
           vApy: result?.[4]?.[i]?.vApy,
         })
       }

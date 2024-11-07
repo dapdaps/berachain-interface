@@ -1,8 +1,9 @@
-import { memo } from "react"
-import Big from "big.js"
-import clsx from "clsx"
+import CircleLoading from '@/components/circle-loading';
+import clsx from "clsx";
+import { memo } from "react";
 export default memo(function Button(props) {
   const {
+    loading,
     inAmount,
     balance,
     operationType,
@@ -19,6 +20,13 @@ export default memo(function Button(props) {
     return (
       <div className={clsx(BTN_CLASS, '!opacity-50')}>
         {props.children}
+      </div>
+    )
+  }
+  if (loading) {
+    return (
+      <div className={clsx(BTN_CLASS, '!opacity-50')}>
+        <CircleLoading size={14} />
       </div>
     )
   }

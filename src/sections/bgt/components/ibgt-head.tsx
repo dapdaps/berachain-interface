@@ -1,3 +1,5 @@
+import { formatValueDecimal } from "@/utils/balance";
+
 const IbgtHead = (props: any) => {
   const { style, className, ibgtData, innerStyle, innerClassName, valueStyle, valueClassName } = props;
 
@@ -88,7 +90,7 @@ const IbgtHead = (props: any) => {
           className={`flex justify-end pl-[95px] pr-[25px] items-center w-full h-full bg-black border border-[#924E00] rounded-[26px] font-CherryBomb text-[32px] text-white leading-[90%] ${valueClassName}`}
           style={valueStyle}
         >
-          {ibgtData?.count} iBGT
+          {formatValueDecimal(ibgtData?.count, '', false)} iBGT
         </div>
       </div>
     </div>

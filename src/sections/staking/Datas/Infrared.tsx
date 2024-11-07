@@ -152,12 +152,12 @@ export default function useInfraredData(props: any) {
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
           dataList[i].depositAmount = Big(
-            ethers.utils.formatUnits(result[i][0])
+            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
           ).toFixed();
           dataList[i].usdDepositAmount = Big(
-            ethers.utils.formatUnits(result[i][0])
+            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
           )
-            .times(element?.initialData?.stake_token?.price)
+            .times(element?.initialData?.stake_token?.price ?? 0)
             .toFixed();
         }
         formatedData('getUsdDepositAmount');

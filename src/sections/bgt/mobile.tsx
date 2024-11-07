@@ -3,7 +3,7 @@ import SwitchTabs from '@/components/switch-tabs';
 import { useState } from 'react';
 import { useBGT } from '@/hooks/use-bgt';
 import BgtHead from '@/sections/bgt/components/bgt-head';
-import { formatValueDecimal } from '@/utils/balance';
+import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
 import { AnimatePresence, motion } from 'framer-motion';
 import Loading from '@/components/loading';
 import BgtEmpty from '@/sections/bgt/components/bgt-empty';
@@ -130,7 +130,7 @@ const BGTMobileView = (props: Props) => {
                   <div className="flex items-center gap-[11px] mt-[11px]">
                     <img src="/images/icon-coin.svg" alt="" className="w-[26px] h-[26px] rounded-full" />
                     <div className="text-black text-[18px] font-[600]">
-                      10,059,127,002.24
+                      {formatThousandsSeparator(formatValueDecimal(bgtData?.totalSupply, '', 2))}
                     </div>
                   </div>
                 </div>
