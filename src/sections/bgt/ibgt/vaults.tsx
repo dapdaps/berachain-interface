@@ -258,7 +258,7 @@ export default function Vaults() {
           {columnList.map((column: any) => {
             return (
               <Skeleton
-                width={(928 * parseInt(column?.width)) / 100 - 4}
+                width={(1140 * parseInt(column?.width)) / 100 - 4}
                 height={58}
               />
             );

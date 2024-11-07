@@ -116,6 +116,8 @@ export function useBGT() {
     try {
       const balanceOfResult = await contract.balanceOf(account)
       const totalSupplyResult = await contract.totalSupply()
+
+      console.log('===totalSupplyResult', totalSupplyResult)
       setData((prev: DataType) => {
         return {
           ...prev,
@@ -124,7 +126,7 @@ export function useBGT() {
         }
       })
     } catch (error) {
-      console.log('===error', error)
+      console.error(error)
     }
   }
 

@@ -16,14 +16,13 @@ export default memo(function Button(props) {
       <div className={clsx(BTN_CLASS, '!opacity-50')}>InSufficient Balance</div>
     )
   }
-  if (Number(inAmount) < 0) {
+  if (Number(inAmount) <= 0) {
     return (
       <div className={clsx(BTN_CLASS, '!opacity-50')}>
         {props.children}
       </div>
     )
   }
-  console.log('===loading', loading)
   if (loading) {
     return (
       <div className={clsx(BTN_CLASS, '!opacity-50')}>

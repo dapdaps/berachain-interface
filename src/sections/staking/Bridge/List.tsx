@@ -84,8 +84,6 @@ export default function List(props: any) {
       type: 'slot',
       render: (data) => {
         const pool = data?.initialData?.pool;
-
-        console.log('1111pppp')
         return (
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center'>

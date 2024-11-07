@@ -103,7 +103,7 @@ const BGTMobileView = (props: Props) => {
                           </div>
                           <div className="flex items-center justify-end gap-[11px]">
                             <div className="text-black text-[14px] font-[500]">
-                              BGT/Year: 9.02M
+                              BGT/Year: -
                             </div>
                             <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M1 11L6 6L1 1" stroke="black" strokeWidth="2" strokeLinecap="round" />
@@ -130,7 +130,7 @@ const BGTMobileView = (props: Props) => {
                   <div className="flex items-center gap-[11px] mt-[11px]">
                     <img src="/images/icon-coin.svg" alt="" className="w-[26px] h-[26px] rounded-full" />
                     <div className="text-black text-[18px] font-[600]">
-                      {formatThousandsSeparator(formatValueDecimal(bgtData?.totalSupply, '', 2))}
+                      {formatThousandsSeparator(formatValueDecimal(bgtData?.totalSupply ?? 0, '', 2))}
                     </div>
                   </div>
                 </div>

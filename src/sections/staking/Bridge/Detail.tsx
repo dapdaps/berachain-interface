@@ -20,7 +20,7 @@ import { useIbgtVaults } from '@/stores/ibgt-vaults';
 export default memo(function Detail() {
   const { addresses } = config.chains[DEFAULT_CHAIN_ID];
   const { provider } = useProvider();
-  const { account: sender } = useAccount();
+  const { account: sender, chainId } = useAccount();
   const params = useSearchParams();
   const ibgtVaults = useIbgtVaults();
   const id = params.get('id');
@@ -62,7 +62,7 @@ export default memo(function Detail() {
     updater
   } = state;
 
-  const { decimals, tokens, LP_ADDRESS } = data;
+  const { decimals, tokens, LP_ADDRESS } = data || {};
 
   const symbol = id;
   const vaultAddress = addresses[symbol];
@@ -194,7 +194,7 @@ export default memo(function Detail() {
         toast?.success({
           title: 'Approve Successfully!',
           tx: receipt.transactionHash,
-          chainId: props.chainId
+          chainId
         });
       })
       .catch((error: Error) => {
@@ -266,7 +266,7 @@ export default memo(function Detail() {
           status: status,
           add: 1,
           transactionHash,
-          chain_id: props.chainId,
+          chain_id: chainId,
           sub_type: 'Stake',
           extra_data: JSON.stringify({
             token0Symbol: tokens[0],
@@ -285,7 +285,9 @@ export default memo(function Detail() {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Stake Successfully!'
+          title: 'Stake Successfully!',
+          tx: transactionHash,
+          chainId
         });
       })
       .catch((error: Error) => {
@@ -358,7 +360,7 @@ export default memo(function Detail() {
           status: status,
           add: 0,
           transactionHash,
-          chain_id: props.chainId,
+          chain_id: chainId,
           sub_type: 'Unstake',
           extra_data: JSON.stringify({
             token0Symbol: tokens[0],
@@ -373,7 +375,9 @@ export default memo(function Detail() {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Unstake Successfully!'
+          title: 'Unstake Successfully!',
+          tx: transactionHash,
+          chainId
         });
       })
       .catch((error: Error) => {
@@ -426,7 +430,7 @@ export default memo(function Detail() {
           template: 'Infrared',
           status: status,
           transactionHash,
-          chain_id: props.chainId,
+          chain_id: chainId,
           sub_type: 'Claim'
         });
         toast?.dismiss(toastId);
@@ -460,7 +464,7 @@ export default memo(function Detail() {
       isTokenApproved: true,
       isTokenApproving: false
     });
-    tIndex === 0 ? handleTokenChange('') : handleLPChange('');
+    Number(defaultIndex) === 0 ? handleTokenChange('') : handleLPChange('');
   };
 
   useEffect(() => {
@@ -470,7 +474,7 @@ export default memo(function Detail() {
   }, [sender, vaultAddress, updater, provider]);
 
   const mintData = useMemo(() => {
-    const pool = data.initialData.pool;
+    const pool = data?.initialData?.pool;
     if (!pool) return;
     if (!['BEX', 'Kodiak Finance'].includes(pool.protocol)) return null;
     const protocol = pool.protocol.split(' ')[0];
