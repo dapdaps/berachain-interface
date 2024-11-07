@@ -259,10 +259,10 @@ export default function Cave() {
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px]"/>
         <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">Bear Cave</div>
         <div className=" flex gap-[65px] justify-center">
-            <img src="/images/cave/bearphoto.png" className="w-[120px]" />
-            <img src="/images/cave/youtube.png" className="w-[120px]" />
+            <img src="/images/cave/bearphoto.png" className="w-[150px]" />
+            <img src="/images/cave/youtube.png" className="w-[150px]" />
         </div>
-        <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[240px] translate-x-[-50%]">
+        <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[270px] translate-x-[-50%]">
             {
                 hats.map(item => {
                     return <div className="flex-1 relative cursor-pointer cave-tip" onClick={(e) => {
@@ -302,7 +302,7 @@ export default function Cave() {
 
         </div>
 
-        <div className="absolute w-[583px] left-[50%] translate-x-[-50%] top-[325px] h-[398px] overflow-hidden">
+        <div className="absolute w-[583px] left-[50%] translate-x-[-50%] top-[355px] h-[398px] overflow-hidden">
             <div className="absolute w-[583px] top-[-80px] h-[398px] bg-[url('/images/cave/sheet.png')] bg-contain bg-no-repeat bg-bottom">
                 <div className="flex px-[30px] pt-[120px]">
                     {
