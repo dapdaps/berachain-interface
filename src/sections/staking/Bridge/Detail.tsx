@@ -285,7 +285,9 @@ export default memo(function Detail() {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Stake Successfully!'
+          title: 'Stake Successfully!',
+          tx: transactionHash,
+          chainId
         });
       })
       .catch((error: Error) => {
@@ -373,7 +375,9 @@ export default memo(function Detail() {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Unstake Successfully!'
+          title: 'Unstake Successfully!',
+          tx: transactionHash,
+          chainId
         });
       })
       .catch((error: Error) => {
