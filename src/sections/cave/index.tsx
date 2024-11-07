@@ -153,28 +153,28 @@ const carTips = [{
     content: 'Bicycle, Delegate 1 BGT.',
     img: '/images/cave/key/key-tip-1.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }, {
     name: 'Vehicle',
     content: 'Scooter, Delegate 100 BGT.',
     img: '/images/cave/key/key-tip-2.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }, {
     name: 'Motocycle',
     content: 'Motobike, Delegate 10,000 BGT.',
     img: '/images/cave/key/key-tip-3.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }, {
     name: 'Race Car',
     content: 'Lambo, Delegate 1,000,000 BGT.',
     img: '/images/cave/key/key-tip-4.png',
     link: '/swap',
-    btnText: 'Swap',
+    btnText: 'Delegate',
     dapps: stakeDapps,
 }]
 

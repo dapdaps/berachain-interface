@@ -20,8 +20,9 @@ interface Props {
 }
 
 const textMap: any = {
-    'Bridge': 'Bridging',
+    'Bridge': 'Bridging', 
     'Swap': 'Swapping',
+    'Delegate': 'Delegating',
     'Lending': 'Lending'
 }
 
