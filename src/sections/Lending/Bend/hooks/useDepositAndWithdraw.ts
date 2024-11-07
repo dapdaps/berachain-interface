@@ -111,7 +111,7 @@ export const useDepositAndWithdraw = ({
         token: {
           symbol,
         },
-        amount: ethers.utils.formatUnits(_amount.toString(), 18),
+        amount: ethers.utils.formatUnits(_amount.toString(), decimals),
         template: 'Bend',
         add: false,
         status,
@@ -148,11 +148,20 @@ export const useDepositAndWithdraw = ({
               const { status } = res;
               if (status === 1) {
                 setNeedApprove(false);
+                toast.success({
+                  title: 'Approve Successful!'
+                });
               } else {
                 console.log("tx failed", res);
               }
             })
             .catch((err: any) => {
+              toast.fail({
+                title: 'Approve Failed!',
+                text: err?.message?.includes('user rejected transaction')
+                  ? 'User rejected transaction'
+                  : ''
+              });
               console.log("handleApprove: --tx.wait on error", err);
             })
             .finally(() => {
@@ -261,19 +270,26 @@ export const useDepositAndWithdraw = ({
               const { status, transactionHash } = res;
               if (status === 1) {
                 formatAddAction(
-                  Big(amount)
-                    .div(Big(10).pow(decimals || 18))
-                    .toFixed(8),
+                  amount,
                   status,
                   transactionHash
                 );
                 triggerUpdate();
                 setAmount("");
+                toast.success({
+                  title: 'Deposit Successful!'
+                });
               } else {
+                toast.fail({
+                  title: 'Deposit Failed!'
+                });
                 console.log("tx failed", res);
               }
             })
             .catch((err: any) => {
+              toast.fail({
+                title: 'Deposit Failed!'
+              });
               console.log("tx.wait on error depositErc20", err);
             })
             .finally(() => {
