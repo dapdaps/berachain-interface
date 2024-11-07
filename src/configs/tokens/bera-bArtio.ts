@@ -44,7 +44,7 @@ export const beraB: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: '0xd6D83aF58a19Cd14eF3CF6fe848C9A4d21e5727c',
     decimals: 6,
-    symbol: 'USDC',
+    symbol: 'STGUSDC',
     name: 'USD Coin',
     icon: '/assets/tokens/usdc.png',
     color: '#2775CA'
