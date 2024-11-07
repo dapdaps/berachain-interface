@@ -138,10 +138,10 @@ export default function useAddAction(source: string) {
       if (data.type === 'Delegate') {
         params = {
           action_title: data.token
-            ? `${data.action} ${data.amount} ${data.name} on ${data.template}`
+            ? `${data.action} ${data.amount} ${data.symbol} on ${data.template}`
             : '',
-          action_type: 'Staking',
-          action_tokens: JSON.stringify([data.name]),
+          action_type: data.type,
+          action_tokens: JSON.stringify([data.symbol]),
           action_amount: data.amount,
           account_id: account,
           template: data.template,

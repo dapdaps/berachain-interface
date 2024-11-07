@@ -28,7 +28,6 @@ export default function () {
         params: [account, _validator?.address]
       })
     })
-    console.log('=====11111=====')
     try {
       const blockNumber = await provider.getBlockNumber();
       const response = await multicall({
@@ -38,24 +37,23 @@ export default function () {
         multicallAddress,
         provider
       })
-      console.log('===blockNumber', blockNumber)
       const _delegationQueue = []
       for (let i = 0; i < response.length; i++) {
         const boostedQueue = response[i];
 
         if (boostedQueue) {
           const difference = Big(blockNumber).minus(boostedQueue[0])
-
-          console.log('=Big(difference).div(8191).times(100).toFixed()', Big(difference).div(8191).times(100).toFixed())
-          _delegationQueue.push({
-            ...VALIDATORS[i],
-            balance: ethers.utils.formatUnits(boostedQueue[1]),
-            // blockNumber,
-            blockNumberLast: boostedQueue[0],
-            canConfirm: Big(difference).gt(8191),
-            remainingBlockNumber: Big(8191).minus(difference).toFixed(),
-            remainingPercentage: Big(difference).div(8191).times(100).toFixed() + '%'
-          })
+          const balance = ethers.utils.formatUnits(boostedQueue[1])
+          if (Big(balance).gt(0)) {
+            _delegationQueue.push({
+              ...VALIDATORS[i],
+              balance,
+              blockNumberLast: boostedQueue[0],
+              canConfirm: Big(difference).gt(8191),
+              remainingBlockNumber: Big(8191).minus(difference).toFixed(),
+              remainingPercentage: Big(difference).div(8191).times(100).toFixed() + '%'
+            })
+          }
         }
       }
       setDelegationQueue(_delegationQueue)

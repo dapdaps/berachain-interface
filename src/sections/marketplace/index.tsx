@@ -33,8 +33,8 @@ const HotTokens = [
   beraB.honey,
   beraB.usdc,
   beraB.bera,
-  beraB.usdt,
-  beraB.dai
+  // beraB.usdt,
+  // beraB.dai
 ];
 
 const MemeTokens = [

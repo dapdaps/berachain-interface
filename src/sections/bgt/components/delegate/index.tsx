@@ -1,4 +1,5 @@
 // @ts-nocheck
+import CircleLoading from '@/components/circle-loading';
 import Modal from '@/components/modal';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import useCustomAccount from '@/hooks/use-account';
@@ -59,7 +60,11 @@ export default memo(function Delegate(props: IProps) {
     balance: "",
     inAmount: "",
     rangeIndex: -1,
+    percentage: 0,
     updater: 0,
+    isLoading: false,
+    // isConfirmAndCancelLoading: false,
+    confirmAndCancelLoadingPosition: [],
     selectVisible: false
   })
   const RangeList = [0.25, 0.5, 0.75, 1]
@@ -77,18 +82,25 @@ export default memo(function Delegate(props: IProps) {
       console.error(error)
     }
   }
+  const getPercentage = (_amount: string) => {
+    return Big(_amount).div(state?.balance ?? 1).times(100).toFixed()
+  }
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, '');
     if (isNaN(Number(amount))) return;
     if (!amount) {
       updateState({
-        inAmount: amount
+        inAmount: amount,
+        percentage: 0,
+        rangeIndex: -1
       });
       return;
     }
 
     updateState({
-      inAmount: amount
+      inAmount: amount,
+      percentage: getPercentage(amount),
+      rangeIndex: -1
     })
   }
   const executionContract = async ({
@@ -136,6 +148,7 @@ export default memo(function Delegate(props: IProps) {
       addAction?.({
         type: 'Delegate',
         action: 'Deposit',
+        symbol: "BGT",
         name: validator?.name,
         amount: state.inAmount,
         template: "BGTStation",
@@ -148,15 +161,16 @@ export default memo(function Delegate(props: IProps) {
       updateState({
         isLoading: false,
       });
+      onSuccess()
+      onClose()
       toast?.dismiss(toastId);
       toast?.success({
         title: operationType === "delegate" ? 'Queue Boost Successfully!' : 'Unbond Successfully!'
       });
     }).catch((error: any) => {
       updateState({
-        loading: false
+        isLoading: false
       });
-      onSuccess()
       toast?.dismiss(toastId);
       toast?.fail({
         title: operationType === "delegate" ? 'Queue Boost Failed!' : 'Unbond Failed!',
@@ -165,76 +179,47 @@ export default memo(function Delegate(props: IProps) {
     })
   }
 
-  const handleClickConfirm = async (queue: QueueType) => {
+  const handleClickConfirmAndCancel = async (queue: QueueType, position: any) => {
+    const [type, index] = position
     const toastId = toast?.loading({
-      title: `Confirming...`
+      title: type === "confirm" ? "Confirming..." : "Canceling..."
     });
     updateState({
-      isLoading: true,
+      confirmAndCancelLoadingPosition: position
     });
     const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider?.getSigner())
+    const wei = ethers.utils.parseUnits(Big(queue?.balance).toFixed(18), 18);
     executionContract({
       contract,
-      method: "activateBoost",
-      params: [queue?.address]
+      method: type === "confirm" ? "activateBoost" : "cancelBoost",
+      params: type === "confirm" ? [queue?.address] : [queue?.address, wei]
     }).then((receipt: any) => {
       const { status, transactionHash } = receipt;
       updateState({
-        isLoading: false,
+        confirmAndCancelLoadingPosition: []
       });
       onSuccess()
+      onClose()
       toast?.dismiss(toastId);
       toast?.success({
-        title: 'Confirm Successfully!'
+        title: type === "confirm" ? 'Confirm Successfully!' : 'Cancel Successfully!'
       });
     }).catch((error: any) => {
       updateState({
-        loading: false
+        confirmAndCancelLoadingPosition: []
       });
       toast?.dismiss(toastId);
       toast?.fail({
-        title: 'Confirm Failed!',
-        text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : ''
-      });
-    })
-  }
-  const handleClickCancel = async (queue: QueueType) => {
-    const toastId = toast?.loading({
-      title: `Canceling...`
-    });
-    updateState({
-      isLoading: true,
-    });
-    const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider?.getSigner())
-    executionContract({
-      contract,
-      method: "cancelBoost",
-      params: [queue?.address]
-    }).then((receipt: any) => {
-      const { status, transactionHash } = receipt;
-      updateState({
-        isLoading: false,
-      });
-      onSuccess()
-      toast?.dismiss(toastId);
-      toast?.success({
-        title: 'Cancel Successfully!'
-      });
-    }).catch((error: any) => {
-      updateState({
-        loading: false
-      });
-      toast?.dismiss(toastId);
-      toast?.fail({
-        title: 'Cancel Failed!',
+        title: type === "confirm" ? 'Confirm Failed!' : 'Cancel Failed!',
         text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : ''
       });
     })
   }
 
+
   const onSuccess = () => {
     updateState({
-      updater: Date.now()
+      updater: Date.now(),
     })
   }
   useEffect(() => {
@@ -245,7 +230,9 @@ export default memo(function Delegate(props: IProps) {
       }
     } else {
       updateState({
-        inAmount: ""
+        inAmount: "",
+        rangeIndex: -1,
+        percentage: 0
       })
     }
   }, [visible, account, state?.updater])
@@ -254,7 +241,7 @@ export default memo(function Delegate(props: IProps) {
       <Modal open={visible} onClose={onClose}>
         <div className='px-[32px] pt-[28px] w-[520px] h-[452px] pb-[69px] overflow-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,_0,_0,_0.25)]'>
           <div className='text-black font-Montserrat text-[20px] font-bold leading-[90%]'>{operationType === "delegate" ? "Delegate" : "Unbond"}</div>
-          <div className='mt-[35px] mb-[12px] w-full h-[72px] flex items-center justify-between rounded-[12px] border border-[#373A53] bg-white'>
+          <div className='mt-[35px] mb-[12px] w-full h-[72px] flex items-center gap-[8px] justify-between rounded-[12px] border border-[#373A53] bg-white'>
             <input value={state?.inAmount} onChange={(event) => handleAmountChange(event?.target?.value)} className='py-[24px] pl-[17px] w-full h-[100%] text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0' />
             <div
               className='cursor-pointer mr-[12px] px-[12px] w-[148px] h-[46px] rounded-[8px] border border-[#373A53] bg-[#FFFDEB] flex items-center'
@@ -274,26 +261,37 @@ export default memo(function Delegate(props: IProps) {
             </div>
           </div>
           <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>balance: {formatValueDecimal(state?.balance, '', 2)} BGT</div>
-          <div className='mt-[12px] mb-[24px] flex items-center gap-[8px]'>
-            {
-              RangeList.map((range: number, index: number) => (
-                <div
-                  key={index}
-                  className={clsx(
-                    ['cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]',
-                      index === state?.rangeIndex ? 'bg-[#FFDC50]' : ""]
-                  )}
-                  onClick={() => {
-                    updateState({
-                      inAmount: Big(state?.balance).times(range).toFixed(),
-                      rangeIndex: index
-                    })
-                  }}
-                >{range === 1 ? 'Max' : range * 100 + '%'}</div>
-              ))
-            }
+          <div className='mt-[12px] mb-[24px] flex items-center gap-[24px]'>
+
+            <div className='flex items-center gap-[8px]'>
+              {
+                RangeList.map((range: number, index: number) => (
+                  <div
+                    key={index}
+                    className={clsx(
+                      ['cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]',
+                        index === state?.rangeIndex ? 'bg-[#FFDC50]' : ""]
+                    )}
+                    onClick={() => {
+                      const amount = Big(state?.balance).times(range).toFixed()
+                      updateState({
+                        inAmount: amount,
+                        percentage: getPercentage(amount),
+                        rangeIndex: index,
+                      })
+                    }}
+                  >{range === 1 ? 'Max' : range * 100 + '%'}</div>
+                ))
+              }
+            </div>
+            <div className='flex items-center w-[216px] h-[8px] rounded-[12px] bg-[#DFDCC4]'>
+              <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: state?.percentage + '%' }}>
+                <div className='absolute right-[-5px] top-[-5px] w-[18px] h-[18px] rounded-full bg-[#FFDC50] border border-black'></div>
+              </div>
+            </div>
           </div>
           <Button
+            loading={state?.isLoading}
             inAmount={state?.inAmount}
             balance={state?.balance}
             operationType={operationType}
@@ -301,8 +299,13 @@ export default memo(function Delegate(props: IProps) {
           >{operationType === "delegate" ? "Queue Boost" : "Unbond"}</Button>
           <div className='flex flex-col gap-3 mt-[32px]'>
             <div className=' text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>Delegation Queue</div>
+
             {
-              delegationQueue?.length > 0 ? delegationQueue?.map((queue: QueueType, index: number) => (
+              loading ? (
+                <div className='flex justify-center'>
+                  <CircleLoading size={28} />
+                </div>
+              ) : delegationQueue?.length > 0 ? delegationQueue?.map((queue: QueueType, index: number) => (
                 <div className='flex flex-col' key={index}>
                   <div className="w-full rounded-md border border-border p-4">
                     <div className="flex w-full justify-between">
@@ -325,16 +328,19 @@ export default memo(function Delegate(props: IProps) {
                             "inline-flex h-fit items-center justify-center transition-duration-300 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-30 disabled:pointer-events-none ring-offset-background text-muted-foreground hover:bg-muted px-4 py-2 rounded-md text-lg font-semibold leading-7",
                             queue?.canConfirm ? "" : "opacity-30 !cursor-not-allowed"
                           )}
+                          disabled={!queue?.canConfirm}
                           onClick={() => {
-                            handleClickConfirm(queue)
+                            handleClickConfirmAndCancel(queue, ["confirm", index])
                           }}
-                        >Confirm</button>
+                        >{state?.confirmAndCancelLoadingPosition[0] === 'confirm' && state?.confirmAndCancelLoadingPosition[1] === index
+                          ? <CircleLoading size={14} /> : "Confirm"}</button>
                         <button
                           className="inline-flex h-fit items-center justify-center transition-duration-300 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-30 disabled:pointer-events-none ring-offset-background text-muted-foreground hover:bg-muted px-4 py-2 rounded-md text-lg font-semibold leading-7"
                           onClick={() => {
-                            handleClickCancel(queue)
+                            handleClickConfirmAndCancel(queue, ["cancel", index])
                           }}
-                        >Cancel</button>
+                        >{state?.confirmAndCancelLoadingPosition[0] === 'cancel' && state?.confirmAndCancelLoadingPosition[1] === index
+                          ? <CircleLoading size={14} /> : "Cancel"}</button>
                       </div>
                     </div>
                     <div className="mt-6 pl-8 pr-4">
@@ -362,7 +368,7 @@ export default memo(function Delegate(props: IProps) {
             }
           </div>
         </div>
-      </Modal>
+      </Modal >
       <Select
         visible={state?.selectVisible}
         onClose={() => {

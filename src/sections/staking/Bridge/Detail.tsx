@@ -69,7 +69,14 @@ export default memo(function Detail() {
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
-
+  const balanceLp =
+    !lpAmount || !lpBalance
+      ? '-'
+      : parseFloat(
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
   const { addAction } = useAddAction('dapp');
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
@@ -820,6 +827,9 @@ export default memo(function Detail() {
           open={showAddModal}
           onClose={() => {
             setShowAddModal(null);
+            updateState({
+              updater: Date.now()
+            });
           }}
         />
       )}
