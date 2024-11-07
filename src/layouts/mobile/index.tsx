@@ -11,7 +11,7 @@ import { useProgressRouter } from '@/hooks/use-progress-router';
 import useClickTracking from '@/hooks/use-click-tracking';
 
 const menuItems = [
-  { id: 1, title: 'Bear Cave', href: '/cave' },
+  { id: 1, title: 'Bera Cave', href: '/cave' },
   { id: 2, title: 'Bridge', href: '/bridge' },
   { id: 3, title: 'Marketplace', href: '/marketplace' },
   { id: 4, title: 'Earn', href: '/earn' },
