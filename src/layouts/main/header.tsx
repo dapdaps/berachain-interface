@@ -6,16 +6,47 @@ import Logo from '@/layouts/main/logo';
 import IconMap from '@public/images/icon-map.svg';
 import useMapModalStore from '@/stores/useMapModalStore';
 import { useProgressRouter } from '@/hooks/use-progress-router';
+import { ethers } from 'ethers';
+import { ABI as IBGT_ABI, IBGT_ADDRESS } from '@/hooks/use-ibgt';
+import useCustomAccount from '@/hooks/use-account';
+import { useEffect, useState } from 'react';
+import { ABI as BGT_ABI, BGT_ADDRESS } from '@/hooks/use-bgt';
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
 
   const store: any = useMapModalStore();
   const router = useProgressRouter();
+  const { provider, account } = useCustomAccount();
+
+  const [iBGTCount, setIBGTCount] = useState<string>();
+  const [BGTCount, setBGTCount] = useState<string>();
 
   const goHome = () => {
     router.replace('/');
   };
+
+  const queryBGTCount = async () => {
+    const iBGTContract = new ethers.Contract(IBGT_ADDRESS, IBGT_ABI, provider?.getSigner());
+    const BGTContract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider?.getSigner())
+    const balanceOfIBGT = await iBGTContract?.balanceOf(account);
+    const balanceOfBGT = await BGTContract.balanceOf(account)
+    const iBGT = ethers.utils.formatUnits(balanceOfIBGT);
+    const BGT = ethers.utils.formatUnits(balanceOfBGT);
+    setIBGTCount(iBGT);
+    setBGTCount(BGT);
+  };
+
+  useEffect(() => {
+    if (!account || !provider) return;
+    queryBGTCount();
+    const timer = setInterval(() => {
+      queryBGTCount();
+    }, 60000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [account, provider]);
 
   return (
     <header
@@ -74,8 +105,8 @@ const MainLayoutHeader = (props: Props) => {
           </div>
         </div>
         <div className='text-white flex items-center gap-x-[17px]'>
-          <BGTCoin type={CoinType.BGT} count={0} bp='1010-004' />
-          <BGTCoin type={CoinType.iBGT} count={0} bp='1010-005' />
+          <BGTCoin type={CoinType.BGT} count={BGTCount} bp='1010-004' />
+          <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp='1010-005' />
           <ConnectWallet />
         </div>
       </div>

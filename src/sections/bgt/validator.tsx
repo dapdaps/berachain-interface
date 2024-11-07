@@ -92,11 +92,7 @@ export default memo(function validator() {
       align: "left",
       width: "25%",
       render: (text: string, record: any) => {
-        return record?.activeIncentives?.length > 0 ? (
-          <div>No Incentives</div>
-        ) : (
-          <div>Incentives</div>
-        );
+        return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">-</div>;
       },
     },
 
@@ -196,7 +192,11 @@ export default memo(function validator() {
             </div>
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Active Incentives</div>
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0</div>
+              <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
+              {/* <div className="flex items-center gap-[5px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0</span>
+                <span className="text-[#3D405A] font-Montserrat text-[14px] font-medium">({pageData?.activeIncentives?.length} Incentive)</span>
+              </div> */}
             </div>
           </div>
           <div className="flex items-center">
@@ -212,7 +212,7 @@ export default memo(function validator() {
             <div className="flex-1 flex flex-col gap-[10px]">
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Return per BGT</div>
               <div className="flex items-center gap-[6px]">
-                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</span>
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
                 <div className="w-[20px] h-[20px]">
                   <img src="/images/dapps/infrared/honey.svg" alt="honey" />
                 </div>

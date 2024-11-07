@@ -64,14 +64,13 @@ export default function List(props: any) {
 
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
-
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev, next) => {
-            return Big(next[state?.sortKey] || 0)
-              .minus(prev[state?.sortKey] || 0)
-              .toFixed();
-          })
+          return Big(next[state?.sortKey] || 0)
+            .minus(prev[state?.sortKey] || 0)
+            .toFixed();
+        })
         : cloneDataList
     });
   }, [state?.sortKey, dataList]);
@@ -122,8 +121,8 @@ export default function List(props: any) {
               pool?.protocol === 'BEX'
                 ? '/images/dapps/infrared/bex.svg'
                 : pool?.protocol === 'Kodiak Finance'
-                ? '/images/dapps/kodiak.svg'
-                : '/images/dapps/infrared/berps.svg'
+                  ? '/images/dapps/kodiak.svg'
+                  : '/images/dapps/infrared/berps.svg'
             }
           />
         );

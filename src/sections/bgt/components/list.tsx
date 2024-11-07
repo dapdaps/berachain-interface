@@ -22,7 +22,7 @@ const VaultsList = () => {
           title: "Vaults",
           key: "vaults",
           sort: false,
-          width: "30%",
+          width: "35%",
           render: (item: any, index: number) => {
             return (
               <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ const VaultsList = () => {
           title: "Total Incentive Value",
           key: "incentiveValue",
           sort: true,
-          width: "20%",
+          width: "35%",
           render: (item: any, index: number) => {
             return (
               "$" +
@@ -74,37 +74,37 @@ const VaultsList = () => {
             return Big(item.bgtInflationCapture).div(100).toFixed(2) + "%";
           },
         },
-        {
-          title: "Validator",
-          key: "Validator",
-          sort: false,
-          width: "15%",
-          render: (item: any, index: number) => {
-            return (
-              <div className="flex gap-1 items-center">
-                {item.activeValidators
-                  .slice(0, 3)
-                  .map((validator: any, index: number) => (
-                    <img
-                      src={validator.logoURI}
-                      className="w-[24px] h-[24px] rounded-full"
-                      alt=""
-                    />
-                  ))}
-                {item.activeValidators.length > 3 && (
-                  <span className="text-xs">
-                    +{item.activeValidators.length - 3}
-                  </span>
-                )}
-              </div>
-            );
-          },
-        },
+        // {
+        //   title: "Validator",
+        //   key: "Validator",
+        //   sort: false,
+        //   width: "15%",
+        //   render: (item: any, index: number) => {
+        //     return (
+        //       <div className="flex gap-1 items-center">
+        //         {item.activeValidators
+        //           .slice(0, 3)
+        //           .map((validator: any, index: number) => (
+        //             <img
+        //               src={validator.logoURI}
+        //               className="w-[24px] h-[24px] rounded-full"
+        //               alt=""
+        //             />
+        //           ))}
+        //         {item.activeValidators.length > 3 && (
+        //           <span className="text-xs">
+        //             +{item.activeValidators.length - 3}
+        //           </span>
+        //         )}
+        //       </div>
+        //     );
+        //   },
+        // },
         {
           title: "Incentives",
           key: "Incentives",
           sort: false,
-          width: "20%",
+          width: "15%",
           render: (item: any, index: number) => {
             return (
               <>
