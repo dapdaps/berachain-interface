@@ -3,6 +3,7 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import useAddAction from "@/hooks/use-add-action";
 import { isValid } from "@/utils/utils";
+import useToast from "@/hooks/use-toast";
 
 interface TokenInfo {
   symbol: string;
@@ -52,6 +53,7 @@ export const useBorwAndRepay = ({
   const [approving, setApproving] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
+  const toast = useToast();
   const update = useCallback(() => {
     if (symbol === config.nativeCurrency.symbol) {
       setNeedApprove(false);
@@ -100,7 +102,7 @@ export const useBorwAndRepay = ({
         token: {
           symbol,
         },
-        amount: ethers.utils.formatUnits(_amount.toString(), 18),
+        amount: ethers.utils.formatUnits(_amount.toString(), decimals),
         template: 'Bend',
         add: false,
         status,
@@ -135,7 +137,13 @@ export const useBorwAndRepay = ({
               const { status } = res;
               if (status === 1) {
                 setNeedApprove(false);
+                toast.success({
+                  title: 'Approve Successfully!'
+                });
               } else {
+                toast.fail({
+                  title: 'Approve Failed!'
+                });
                 console.log("tx failed", res);
               }
             }).finally(() => {
@@ -206,13 +214,19 @@ export const useBorwAndRepay = ({
           const { status, transactionHash } = res;
           if (status === 1) {
             formatAddAction(
-              Big(amount).div(Big(10).pow(decimals)).toFixed(8),
+              amount,
               status,
               transactionHash
             );
             triggerUpdate();
             setAmount("");
+            toast.success({
+              title: 'Borrow Successfully!'
+            });
           } else {
+            toast.fail({
+              title: 'Borrow Failed!'
+            });
             console.log("tx failed", res);
           }
         }).finally(() => {
@@ -249,13 +263,21 @@ export const useBorwAndRepay = ({
           const { status, transactionHash } = res;
           if (status === 1) {
             formatAddAction(
-              Big(amount).div(Big(10).pow(decimals)).toFixed(8),
+              amount,
               status,
               transactionHash
             );
             triggerUpdate();
             setAmount("");
+            toast.success({
+              title: 'Borrow Successfully!'
+            });
+
           } else {
+            toast.fail({
+              title: 'Borrow Failed!'
+            });
+            
             console.log("tx failed", res);
           }
         }).finally(() => {
@@ -314,11 +336,17 @@ export const useBorwAndRepay = ({
               const { status, transactionHash } = res;
               if (status === 1) {
                 formatAddAction(
-                  Big(amount).div(Big(10).pow(decimals)).toFixed(8),
+                  amount,
                   status,
                   transactionHash
                 )
+                toast.success({
+                  title: 'Repay Successfully!'
+                });
               } else {
+                toast.fail({
+                  title: 'Repay Failed!'
+                });
                 console.log("tx failed", res);
               }
             })
@@ -349,13 +377,19 @@ export const useBorwAndRepay = ({
         const { status, transactionHash } = res;
         if (status === 1) {
           formatAddAction(
-            Big(amount).div(Big(10).pow(decimals)).toFixed(8),
+            amount,
             status,
             transactionHash
           );
           triggerUpdate();
           setAmount("");
+          toast.success({
+            title: 'Repay Successfully!'
+          });
         } else {
+          toast.fail({
+            title: 'Repay Failed!'
+          });
           console.log("tx failed", res);
         }
       }).finally(() => {
