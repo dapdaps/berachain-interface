@@ -13,6 +13,7 @@ export default {
       beraB['usdc'],
       beraB['dai'],
       beraB['spepe'],
+      beraB['ibgt'],
       beraB['yeet'],
       beraB['bebe'],
       beraB['sproto'],
@@ -24,7 +25,7 @@ export default {
       beraB['0x15p'],
       beraB['ooga'],
       beraB['wbtc'],
-      beraB['weth'],
+      beraB['weth']
     ]
   }
 };
