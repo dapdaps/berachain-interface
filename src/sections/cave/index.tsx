@@ -264,7 +264,7 @@ export default function Cave() {
     return <div className=" relative w-[100vw] h-[100vh] min-w-[1200px] min-h-[890px]">
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px]"/>
         <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">
-            <div className="  inline-block relative">Bear Cave
+            <div className="  inline-block relative">Bera Cave
                 <img onClick={() => {
                     store.set({ welcomeShow: true })
                 }} className="w-[58px] top-[38%] right-[-70px] cursor-pointer absolute" src="/images/cave/ruler.png"/>
