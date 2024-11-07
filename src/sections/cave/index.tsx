@@ -218,7 +218,7 @@ export default function Cave() {
     const [tipLocation, setTipLocation] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
     const [tipMsg, setTipMsg] = useState<any>()
     const [tipShow, setTipShow] = useState<boolean>()
-    // const [equipments, setEquipment] = useState({})
+    const [welcomeShow, setWelcomeShow] = useState(true)
 
     const { cars, hats, clothes, necklaces, setCars, setClothes, setHats, setNecklaces } = useCollect({
         address: account as string
@@ -260,7 +260,13 @@ export default function Cave() {
 
     return <div className=" relative w-[100vw] h-[100vh] min-w-[1200px] min-h-[890px]">
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px]"/>
-        <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">Bear Cave</div>
+        <div className=" text-[60px] text-center text-[#fff] font-CherryBomb">
+            <div className="  inline-block relative">Bear Cave
+                <img onClick={() => {
+setWelcomeShow(true)
+                }} className="w-[58px] top-[38%] right-[-70px] cursor-pointer absolute" src="/images/cave/ruler.png"/>
+            </div>
+        </div>
         <div className=" flex gap-[65px] justify-center">
             <img src="/images/cave/bearphoto.png" className="w-[150px]" />
             <img src="/images/cave/youtube.png" className="w-[150px]" />
@@ -440,7 +446,7 @@ export default function Cave() {
         
 
         <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} />
-        <Welcome />
+        <Welcome show={welcomeShow} onClose={() => { setWelcomeShow(false) }}/>
         {
             tipShow && <Tips msg={tipMsg} location={tipLocation} />
         }

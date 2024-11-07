@@ -16,6 +16,7 @@ export default function useInfraredList(updater?: number) {
   const [allData, setAllData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [dataList, setDataList] = useState<any>(null);
+  const [fullDataList, setFullDataList] = useState<any>(null);
   const multicallAddress = useMemo(
     () => chainId && multicallAddresses[chainId],
     [chainId]
@@ -38,6 +39,7 @@ export default function useInfraredList(updater?: number) {
     IBGT_ADDRESS,
     onLoad: (data: any) => {
       setDataList([...data.dataList]);
+      setFullDataList([...data.fullDataList]);
       setLoading(false);
       ibgtVaults.set({ vaults: [...data.dataList] });
     }
@@ -50,6 +52,7 @@ export default function useInfraredList(updater?: number) {
   return {
     loading,
     dataList,
+    fullDataList,
     fetchAllData
   };
 }

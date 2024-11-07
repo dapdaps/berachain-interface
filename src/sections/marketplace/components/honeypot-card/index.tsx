@@ -3,10 +3,12 @@
 import Popover, { PopoverPlacement } from "@/components/popover";
 import { balanceFormated } from "@/utils/balance";
 import { useMemo, useRef } from "react";
+import { usePriceStore } from '@/stores/usePriceStore';
 
 
 const HoneypotCard = (props: Props) => {
   const { color, name, icon, data = {}, onSwap = () => {} } = props;
+  const prices = usePriceStore((store) => store.price);
 
   const Honeypot = () => (
     <>
@@ -72,13 +74,26 @@ const HoneypotCard = (props: Props) => {
   );
 
   const list = useMemo(() => {
+    let _price: any = Math.random() * 10 + 30;
+    let _rate: any = Math.random() * 3;
+    if (name === 'STGUSDC') {
+      _price = 1;
+      _rate = Math.random();
+    }
+    if (name === 'BERA') {
+      _price = 500;
+      _rate = Math.random() * 2;
+    }
+    if (['WBTC', 'WETH'].includes(name)) {
+      _price = prices[name];
+    }
     return [
       {
         label: "Price",
         key: "price",
         type: "+",
-        rate: balanceFormated(Math.random() * 16, 2) + "%",
-        value: "$" + balanceFormated(Math.random() * 10 + 30, 2),
+        rate: balanceFormated(_rate, 2) + "%",
+        value: "$" + balanceFormated(_price, 2),
       },
       {
         label: "Volume",
@@ -88,7 +103,7 @@ const HoneypotCard = (props: Props) => {
         value: "$" + balanceFormated(Math.random() * 10 + 2, 2) + "M",
       },
     ];
-  }, []);
+  }, [name, prices]);
 
   return (
     <div className="flex items-end justify-center md:relative">

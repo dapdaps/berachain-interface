@@ -134,7 +134,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
 
   const { run: closeConnecting, cancel: cancelCloseConnecting } = useDebounceFn(() => {
     setConnecting(false);
-  }, { wait: 15000 });
+  }, { wait: 10000 });
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
