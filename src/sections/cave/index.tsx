@@ -13,6 +13,7 @@ import { AnyKindOfDictionary } from "lodash";
 import dapp from "@/configs/dapp";
 import PageBack from "@/components/back";
 import { useCaveWelcome } from "@/stores/useCaveWelcome";
+import { useBearEqu } from "@/stores/useBearEqu";
 
 const hatPositions = [{
     width: 102,
@@ -219,7 +220,7 @@ export default function Cave() {
     const [tipLocation, setTipLocation] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
     const [tipMsg, setTipMsg] = useState<any>()
     const [tipShow, setTipShow] = useState<boolean>()
-    // const [welcomeShow, setWelcomeShow] = useState(true)
+    const setEqu = useBearEqu((store: any) => store.set)
 
     const store: any = useCaveWelcome()
     
@@ -229,7 +230,6 @@ export default function Cave() {
 
     const tipClick = useCallback((e: any, item: any) => {
         if (e.target.classList.contains('cave-tip') || e.target.parentNode.classList.contains('cave-tip')) {
-            console.log(111)
             e.nativeEvent.stopImmediatePropagation()
             let y = e.clientY - 30
             if (y + 220 > window.innerHeight) {
@@ -283,19 +283,13 @@ export default function Cave() {
                         <img className="cursor-pointer" style={hatPositions[item.level - 1]} src={`/images/cave/hat/hat-${item.level}${item.pc_item ? '-' + item.level : ''}.png`} />
                         { item.pc_item && <div className=" absolute bottom-[15px] left-[50%] translate-x-[-50%]">
                             <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
-                                hats.forEach(hat => {
-                                    if (hat === item) {
-                                        hat.checked = isChecked
-                                    } else {
-                                        hat.checked = false
-                                    }
+                                setEqu({
+                                    hat: isChecked ? item.level : 0
                                 })
-
-                                setHats([
-                                    ...hats
-                                ])
                             }} />
                         </div>}
+
+                        {  }
                     </div>
                 })
             }
@@ -325,17 +319,9 @@ export default function Cave() {
                                 <img className="w-[102px] cursor-pointer" style={clothPositions[item.level - 1]} src={`/images/cave/clothing/cloth-${item.level}${item.pc_item ? '-' + item.level : ''}.png`} />
                                 { item.pc_item && <div className=" absolute top-[10px] right-[50px]">
                                     <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
-                                        clothes.forEach(choth => {
-                                            if (choth === item) {
-                                                choth.checked = isChecked
-                                            } else {
-                                                choth.checked = false
-                                            }
+                                        setEqu({
+                                            cloth: isChecked ? item.level : 0
                                         })
-
-                                        setClothes([
-                                            ...clothes
-                                        ])
                                     }} />
                                 </div>
                                 }
@@ -381,17 +367,9 @@ export default function Cave() {
                         <img className="h-[78px] cursor-pointer" style={item.pc_item ? carsSize[item.level - 1] : {}} src={`/images/cave/key/key-${item.level}${item.pc_item ? '-' + item.level : ''}.png`} />
                         { item.pc_item && <div className=" absolute top-[-30px] left-[30%] translate-x-[-50%]">
                             <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
-                                cars.forEach(car => {
-                                    if (car === item) {
-                                        car.checked = isChecked
-                                    } else {
-                                        car.checked = false
-                                    }
+                                setEqu({
+                                    car: isChecked ? item.level : 0
                                 })
-
-                                setCars([
-                                    ...cars
-                                ])
                             }} />
                         </div>}
                     </div>
@@ -407,7 +385,7 @@ export default function Cave() {
         }} className="cave-tip w-[159px] h-[214px] translate-x-[-50%] absolute top-[350px] bg-[url('/images/cave/box-mini.png')] bg-contain bg-no-repeat bg-bottom">
             <img src={`/images/cave/neck/neck-1${necklaces.length && necklaces[0].pc_item ? '-1' : ''}.png`} className="w-[71px] absolute left-[11px] top-[35px] cursor-pointer" />
             { !!necklaces.length && necklaces[0].pc_item && <div className=" absolute bottom-[30px] left-[50%] translate-x-[-50%]">
-                <NeckLaceChecked item={necklaces.length && necklaces[0]} necklaces={necklaces} setNecklaces={setNecklaces}/>
+                <NeckLaceChecked item={necklaces.length && necklaces[0]} setEqu={setEqu}/>
             </div>}
         </div>
         <div style={{ left: 'calc(57% + 120px + 348px)' }} onClick={(e) => {
@@ -415,7 +393,7 @@ export default function Cave() {
         }} className="cave-tip w-[159px] h-[214px] translate-x-[-50%] absolute top-[370px] bg-[url('/images/cave/box-mini.png')] bg-contain bg-no-repeat bg-bottom">
             <img src={`/images/cave/neck/neck-2${necklaces.length && necklaces[1].pc_item ? '-2' : ''}.png`} className="w-[71px] absolute left-[14px] top-[32px] cursor-pointer" />
             {!!necklaces.length && necklaces[1].pc_item && <div className=" absolute bottom-[30px] left-[50%] translate-x-[-50%]">
-                <NeckLaceChecked item={necklaces.length && necklaces[1]} necklaces={necklaces} setNecklaces={setNecklaces}/>
+                <NeckLaceChecked item={necklaces.length && necklaces[1]} setEqu={setEqu}/>
             </div>
             }
         </div>
@@ -425,7 +403,7 @@ export default function Cave() {
         }} className="cave-tip w-[159px] h-[214px] translate-x-[-50%] absolute top-[530px] bg-[url('/images/cave/box-mini.png')] bg-contain bg-no-repeat bg-bottom">
             <img src={`/images/cave/neck/neck-3${necklaces.length && necklaces[2].pc_item ? '-3' : ''}.png`} className="w-[71px] absolute left-[11px] top-[35px] cursor-pointer" />
             {!!necklaces.length && necklaces[2].pc_item && <div className=" absolute bottom-[30px] left-[50%] translate-x-[-50%]">
-                <NeckLaceChecked item={necklaces.length && necklaces[2]} necklaces={necklaces} setNecklaces={setNecklaces}/>
+                <NeckLaceChecked item={necklaces.length && necklaces[2]} setEqu={setEqu}/>
             </div>
             }
         </div>
@@ -435,7 +413,7 @@ export default function Cave() {
             <img src={`/images/cave/neck/neck-4${necklaces.length && necklaces[3].pc_item ? '-4' : ''}.png`} className="w-[71px] absolute left-[10px] top-[32px] cursor-pointer" />
             {
                 !!necklaces.length && necklaces[3].pc_item && <div className=" absolute bottom-[30px] left-[50%] translate-x-[-50%]">
-                <NeckLaceChecked item={necklaces.length && necklaces[3]} necklaces={necklaces} setNecklaces={setNecklaces}/>
+                <NeckLaceChecked item={necklaces.length && necklaces[3]} setEqu={setEqu}/>
             </div>
             }
         </div>
@@ -457,21 +435,13 @@ export default function Cave() {
 }
 
 
-function NeckLaceChecked({item, necklaces, setNecklaces}: any) {
+function NeckLaceChecked({item, setEqu}: any) {
     if (!item) {
         return
     }
     return <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
-        necklaces.forEach((necklace: any) => {
-            if (necklace === item) {
-                necklace.checked = isChecked
-            } else {
-                necklace.checked = false
-            }
+        setEqu({
+            necklace: isChecked ? item.level : 0
         })
-
-        setNecklaces([
-            ...necklaces
-        ])
     }} />
 }
