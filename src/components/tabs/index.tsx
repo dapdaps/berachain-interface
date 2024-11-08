@@ -17,11 +17,10 @@ const Tabs = (props: TabsProps) => {
     onChange = () => {},
     isCard,
     page = 'dashboard',
-    maxTabs = 2
   } = props;
 
   const tabConfig = useTabConfig(page);
-
+  
   const bodyRef = useRef<any>(null);
 
   const currentTabIndex = useMemo(() => {
@@ -48,7 +47,7 @@ const Tabs = (props: TabsProps) => {
     const contentWidth = parseFloat(getComputedStyle(bodyRef.current).width);
 
     const tabsWidth = tabConfig.tabWidth * tabs.length;
-
+    
     if (tabsWidth >= contentWidth - 2 || page === 'earn') {
       setContentBorderTopRightRadius(0);
       return;
