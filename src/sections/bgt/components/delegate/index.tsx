@@ -17,6 +17,7 @@ import { OperationTypeType, ValidatorType } from '../../types';
 import Button from './button';
 import useDelegationQueue, { QueueType } from './hooks/use-delegation-queue';
 import Select from './select';
+import Slider from '@/components/slider';
 const TABS = [
   {
     value: 'Deposit',
@@ -100,7 +101,6 @@ export default memo(function Delegate(props: IProps) {
     updateState({
       inAmount: amount,
       percentage: getPercentage(amount),
-      rangeIndex: -1
     })
   }
   const executionContract = async ({
@@ -281,11 +281,19 @@ export default memo(function Delegate(props: IProps) {
                 ))
               }
             </div>
-            <div className='flex items-center w-[216px] h-[8px] rounded-[12px] bg-[#DFDCC4]'>
-              <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: state?.percentage + '%' }}>
-                <div className='absolute right-[-5px] top-[-5px] w-[18px] h-[18px] rounded-full bg-[#FFDC50] border border-black'></div>
-              </div>
-            </div>
+            <Slider
+              percentage={state?.percentage}
+              onChange={(percentage) => {
+
+                console.log('=percentage', percentage)
+                console.log('=RangeList.findIndex(range => Big(range).eq(percentage))', RangeList.findIndex(range => Big(range).eq(percentage)))
+                updateState({
+                  percentage,
+                  inAmount: Big(state?.balance ? state?.balance : 0).times(Big(percentage).div(100)).toFixed(),
+                  rangeIndex: RangeList.findIndex(range => Big(range).eq(Big(percentage).div(100))),
+                })
+              }}
+            />
           </div>
           <Button
             loading={state?.isLoading}
