@@ -149,7 +149,7 @@ const MapItem = ({
       <motion.div
         style={{ clipPath: `path("${clipPath}")` }}
         className='w-full h-full'
-        whileHover={link ? 'animate' : 'default'} 
+        whileHover={link ? 'animate' : 'default'}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         initial='default'

@@ -188,4 +188,5 @@ interface Props {
   className?: string;
   style?: React.CSSProperties;
   page?: string;
+  maxTabs?: number;
 }

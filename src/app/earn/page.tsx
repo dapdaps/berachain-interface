@@ -15,7 +15,7 @@ export default function Dapps() {
 
   return (
     <BearBackground type='dapps'>
-       <EarnViews />
+      <EarnViews />
     </BearBackground>
   );
 }

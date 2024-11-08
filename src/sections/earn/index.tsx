@@ -30,7 +30,7 @@ const EarnViews = () => {
             alt="earn"
             className="w-[345px] h-[98px] mb-[12px] hidden lg:block m-auto"
           />
-         
+
         <Tabs
           isCard
           page="earn"

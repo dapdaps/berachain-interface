@@ -128,12 +128,16 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     handleReportNoCode();
   }, []);
 
+  const routes: any = [];
+
   return (
     <div
-      className={`relative pb-[65px] overflow-hidden h-full`}
+      className={`relative pb-[65px] overflow-hidden ${
+        routes.includes(pathname) ? 'min-h-screen' : 'h-screen'
+      }`}
       style={{
         paddingBottom: pathname === '/' ? '62px' : 0,
-        backgroundColor: pathname === '/cave' ? '#96d6ff': 'transparent'
+        backgroundColor: !routes.includes(pathname) ? '#96d6ff': 'transparent'
       }}
     >
       <main className='h-full'>{children}</main>

@@ -169,7 +169,7 @@ export default memo(function IBGTPageView(props: any) {
                         }.svg`}
                       />
                     </div>
-                    
+
                     <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
                       {formatValueDecimal(data?.earned, '', 2)}{' '}
                       {data?.rewardSymbol}

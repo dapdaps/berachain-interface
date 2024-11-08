@@ -12,7 +12,7 @@ import useAccount from '@/hooks/use-account';
 const ActionPanelForm = (props: IProps) => {
   const { action, token, isMobile } = props;
 
-  const { chainId } = useAccount()  
+  const { chainId } = useAccount()
 
   const { config } = useAaveConfig();
 

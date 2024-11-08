@@ -63,11 +63,6 @@ const SupplyBorrowPanel: React.FC = () => {
     return Big(num).toFixed(2);
   }
 
-  console.log('markets', markets);
-  console.log('userAccountData', userAccountData);
-  console.log('netBaseData', netBaseData);
-  
-
   return (
     <div className='mb-5 md:max-h-[calc(100vh_-_200px)] md:pb-[80px] md:overflow-y-auto'>
       <NetBase />

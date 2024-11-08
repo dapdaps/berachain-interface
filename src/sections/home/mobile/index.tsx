@@ -41,13 +41,13 @@ const Home = () => {
         <div className='text-white flex items-center gap-x-[17px]'>
           <BGTCoin
             type={CoinType.BGT}
-            count={0}
+            count="0"
             bp='1001-004'
             onClick={handleBGTClick}
           />
           <BGTCoin
             type={CoinType.iBGT}
-            count={0}
+            count="0"
             bp='1001-005'
             onClick={handleBGTClick}
           />

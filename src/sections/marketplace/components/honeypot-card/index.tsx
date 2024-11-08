@@ -96,11 +96,11 @@ const HoneypotCard = (props: Props) => {
         value: "$" + balanceFormated(_price, 2),
       },
       {
-        label: "Volume",
-        key: "volume",
-        type: "+",
-        rate: balanceFormated(Math.random() * 10, 2) + "%",
-        value: "$" + balanceFormated(Math.random() * 10 + 2, 2) + "M",
+        label: 'Volume',
+        key: 'volume',
+        type: '+',
+        rate: balanceFormated(Math.random() * 10, 2) +  '%',
+        value: '$' + balanceFormated(Math.random() * 10 + 2, 2) + 'M'
       },
     ];
   }, [name, prices]);

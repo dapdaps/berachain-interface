@@ -177,6 +177,7 @@ const MarketplaceView = () => {
     setSelectedRecord(item);
   };
 
+
   return (
     <div className='relative md:h-full  md:overflow-y-auto overflow-x-hidden'>
       <PageBack className='absolute left-[40px] top-[31px]' />
@@ -196,7 +197,7 @@ const MarketplaceView = () => {
         </div>
         <div
           style={{ boxShadow: 'inset 10px 10px rgba(0,0,0,0.25)' }}
-          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] md:pb-[40px]'
+          className='rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]'
         >
           {tokens.map((item, index) => (
             <div

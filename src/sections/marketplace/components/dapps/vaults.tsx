@@ -503,7 +503,7 @@ export default memo(function vaults(props) {
                     <div className='w-[30px] h-[30px] rounded-full'>
                       <img src={data?.images[0]} alt={data?.tokens[0]} />
                     </div>
-                    {data?.images[1] && (
+                      {data?.images[1] && (
                       <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
@@ -579,7 +579,7 @@ export default memo(function vaults(props) {
 
                       handleLPChange(lpBalance);
                     }}
-                  >
+                    >
                     {Big(lpBalance ? lpBalance : 0).toFixed(6)}
                   </span>
                 </div>
@@ -618,7 +618,7 @@ export default memo(function vaults(props) {
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
                     )}
-                  </div>
+                    </div>
                   <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                     {data?.tokens?.join('-')}
                   </div>
@@ -658,7 +658,7 @@ export default memo(function vaults(props) {
               onClick={() => {
                 router.push('/staking/infrared');
               }}
-            >
+              >
               Infrared
             </span>
           </div>

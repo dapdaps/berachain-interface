@@ -22,7 +22,7 @@ const NetBase = () => {
     { label: 'Borrow up to', value: `$${formatDisplayNumber(userAccountData?.availableBorrowsBaseUSD)}` },
     { label: 'Funds eligible for deposit', value: `$${netBaseData.totalWalletInUSD ? Number(netBaseData.totalWalletInUSD).toFixed(2) : '-'}` },
   ];
-  
+
   if (isLoading) {
     return (
       <div className="bg-[#FFDC50] rounded-[10px] p-4 flex justify-between items-center">
@@ -36,7 +36,7 @@ const NetBase = () => {
           <SkeletonItem />
           <SkeletonItem className="ml-[38px]" />
         </div>
-        
+
         {/* Desktop Layout Skeleton */}
         <div className="hidden md:visible md:grid md:grid-cols-[1fr_1.2fr] gap-y-[16px]">
           <SkeletonItem />

@@ -25,7 +25,7 @@ export default function Invest() {
     openInfrared,
     setVaultsVisible,
   } = useContext(MarketplaceContext);
-  
+
   const isMobile = useIsMobile();
 
   const Columns: Column[] = [
@@ -184,13 +184,13 @@ export default function Invest() {
 
   const handleMobileAction = (record) => {
     console.log(openInfrared,setVaultsVisible, 'setVaultsVisible-openInfrared');
-    
+
     openInfrared(record).then(() => {
       console.log("====1111====", record);
       setVaultsVisible(true);
     });
   }
-  
+
 
   return (
     <div>

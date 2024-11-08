@@ -20,7 +20,7 @@ const FlexTable = (props: FlexTableProps) => {
     renderTitle,
     onChangeSortDataIndex,
     showHeader = true,
-    onRow = () => {},
+    onRow = () => {}
   } = props;
 
   return (

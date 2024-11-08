@@ -150,7 +150,6 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
 
 export default ActionForm;
 
-
 const smartFormatNumber = (amount: Big, decimals: number): string => {
   const formatted = amount.toFixed(decimals).replace(/\.?0+$/, "");
   return formatted.includes(".") ? formatted : formatted + ".0";

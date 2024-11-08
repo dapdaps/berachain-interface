@@ -94,7 +94,7 @@ export default function Liquidity() {
 
   const isMobile = useIsMobile();
   const [checked, setChecked] = useState(false);
-  
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -206,7 +206,7 @@ export default function Liquidity() {
                 width: "15%",
                 render: (item: any, index: number) => {
                   return (
-                    <div className="flex underline">${item["yours"] || balanceFormated(Math.random() * 14, 2)}</div> 
+                    <div className="flex underline">${item["yours"] || balanceFormated(Math.random() * 14, 2)}</div>
                   );
                 },
               },

@@ -127,7 +127,7 @@ export function useIBGT(props: any) {
 
   const {
     handleGetAmount
-  } = useLpToAmount(data?.LP_ADDRESS)
+  } = useLpToAmount(LP_ADDRESS)
 
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
