@@ -19,6 +19,7 @@ interface TokenInfo {
 
 interface UseAaveActionsProps {
   token: TokenInfo | undefined;
+  chainId?: number;
   isDeposit: boolean;
   config: any;
   triggerUpdate: () => void;
@@ -29,6 +30,7 @@ export const useDepositAndWithdraw = ({
   isDeposit,
   config,
   triggerUpdate,
+  chainId
 }: UseAaveActionsProps) => {
   const { addAction } = useAddAction("lending");
   const { provider, account } = useAccount();
@@ -214,8 +216,16 @@ export const useDepositAndWithdraw = ({
                 transactionHash
               );
               triggerUpdate();
+              toast.success({
+                title: 'Deposit Successful!',
+                tx: transactionHash,
+                chainId
+              });
             } else {
               console.log("tx failed", res);
+              toast.fail({
+                title: 'Deposit Failed!'
+              });
             }
           });
         })
@@ -277,7 +287,9 @@ export const useDepositAndWithdraw = ({
                 triggerUpdate();
                 setAmount("");
                 toast.success({
-                  title: 'Deposit Successful!'
+                  title: 'Deposit Successful!',
+                  tx: transactionHash,
+                  chainId
                 });
               } else {
                 toast.fail({
@@ -326,7 +338,15 @@ export const useDepositAndWithdraw = ({
             const { status, transactionHash } = res;
             if (status === 1) {
               formatAddAction(amount, status, transactionHash);
+              toast.success({
+                title: 'Withdraw Successful!',
+                tx: transactionHash,
+                chainId
+              });
             } else {
+              toast.fail({
+                title: 'Withdraw Failed!'
+              });
               console.log("tx failed", res);
             }
           });
@@ -366,8 +386,16 @@ export const useDepositAndWithdraw = ({
                 formatAddAction(amount, status, transactionHash);
                 triggerUpdate();
                 setAmount("");
+                toast.success({
+                  title: 'Withdraw Successful!',
+                  tx: transactionHash,
+                  chainId
+                });
               } else {
                 console.log("tx failed", res);
+                toast.fail({
+                  title: 'Withdraw Failed!'
+                });
               }
             })
             .finally(() => {

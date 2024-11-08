@@ -110,7 +110,7 @@ export default function Toast({
           {text && <StyledSecondaryText>{text}</StyledSecondaryText>}
           {tx && chainId && (
             <StyledSecondaryText
-              style={{ textDecoration: 'underline' }}
+              style={{ textDecoration: 'underline', cursor: 'pointer' }}
               onClick={() => {
                 window.open(txLink, '_blank');
               }}
