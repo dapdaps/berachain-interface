@@ -284,9 +284,6 @@ export default memo(function Delegate(props: IProps) {
             <Slider
               percentage={state?.percentage}
               onChange={(percentage) => {
-
-                console.log('=percentage', percentage)
-                console.log('=RangeList.findIndex(range => Big(range).eq(percentage))', RangeList.findIndex(range => Big(range).eq(percentage)))
                 updateState({
                   percentage,
                   inAmount: Big(state?.balance ? state?.balance : 0).times(Big(percentage).div(100)).toFixed(),
