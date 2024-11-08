@@ -7,9 +7,12 @@ import useMarketStore from '@/stores/useMarketStore';
 import { useDepositAndWithdraw } from '@/sections/Lending/Bend/hooks/useDepositAndWithdraw';
 import { useMemo } from 'react';
 import AmountSelector from '@/sections/Lending/components/amount-selector';
+import useAccount from '@/hooks/use-account';
 
 const ActionPanelForm = (props: IProps) => {
   const { action, token, isMobile } = props;
+
+  const { chainId } = useAccount()  
 
   const { config } = useAaveConfig();
 
@@ -32,7 +35,7 @@ const ActionPanelForm = (props: IProps) => {
     setAmount,
     amount
   } = useDepositAndWithdraw({
-    token, isDeposit, config, triggerUpdate
+    token, isDeposit, config, triggerUpdate, chainId
   });
 
   const {
