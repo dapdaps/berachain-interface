@@ -204,7 +204,7 @@ const EarnLending = (props: any) => {
                     />
                     <div>{tab === 'Supply' ? 'You supplied only' : 'Borrow available only'}</div>
                 </div>
-                    <Dropdown
+                  <Dropdown
                     list={lendingProtocols}
                     value={protocol}
                     onChange={(val) => {
@@ -244,25 +244,7 @@ const EarnLending = (props: any) => {
           cursorStyle={{ borderRadius: 10 }}
         />
       </div>
-      {
-        tab === 'Borrow' && (
-          <div className="flex items-center justify-end gap-[11px] mt-[18px]">
-            <div className="text-black text-[14px]">Borrow available only</div>
-            <div
-              className="w-[20px] h-[20px] rounded-[6px] bg-white border border-black] flex justify-center items-center p-[2px]"
-              onClick={() => {
-                setBorrowAvailable(!borrowAvailable);
-              }}
-            >
-              {
-                borrowAvailable && (
-                  <div className="w-full h-full rounded-[5px] bg-[#FFDC50]"></div>
-                )
-              }
-            </div>
-          </div>
-        )
-      }
+
       {
         !isMobile ? <LaptopList loading={dolomiteLoading} list={tokenList} tab={tab} /> : (
           <div className="mt-[15px] pb-[80px]">

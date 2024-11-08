@@ -132,7 +132,8 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     <div
       className={`relative pb-[65px] overflow-hidden h-full`}
       style={{
-        paddingBottom: pathname === '/' ? '62px' : 0
+        paddingBottom: pathname === '/' ? '62px' : 0,
+        backgroundColor: pathname === '/cave' ? '#96d6ff': 'transparent'
       }}
     >
       <main className='h-full'>{children}</main>
