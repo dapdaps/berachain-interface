@@ -11,6 +11,7 @@ import useInfraredList from '../hooks/use-infrared-list';
 import { formatValueDecimal } from '@/utils/balance';
 import HandleModal from './handle-modal';
 import UserInfo from './user-info';
+import PageBack from '@/components/back';
 
 export default function Mobile({ dapp }: any) {
   const { dataList, loading, fetchAllData } = useInfraredList();
@@ -36,6 +37,7 @@ export default function Mobile({ dapp }: any) {
 
   return (
     <div className='h-full bg-vault relative pt-[25px]'>
+      <PageBack className="absolute left-[12px] top-[17px] z-[4]" />
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='389'

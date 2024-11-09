@@ -33,6 +33,7 @@ const Laptop = ({ params, router, pathname, children }: any) => {
 const Mobile = ({ params, router, pathname, children }: any) => {
   return (
     <div className='relative pt-[50px] h-full'>
+      <PageBack className="absolute left-[12px] top-[22px]" />
       <div className='absolute top-[20px] right-[10px]'>
         {params.dapp !== 'ooga-booga' && (
           <SwitchTabs

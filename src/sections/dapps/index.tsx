@@ -139,7 +139,7 @@ const DAppsView = () => {
 
   return (
     <div className="md:bg-[#96d6ff] h-full md:mb-[70px]">
-      <PageBack className="absolute left-[36px] top-[31px]" />
+      <PageBack className="absolute left-[12px] top-[17px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
       <div className='absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]'>
           <div className='w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative'>

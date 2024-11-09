@@ -33,7 +33,7 @@ const PageBack = (props: Props) => {
       </button>
       <button
         type='button'
-        className={`w-[40px] h-[32px] rounded-[16px] bg-[#FFF5A9] items-center justify-center border border-black hidden md:flex ${className}`}
+        className={`w-[32px] h-[32px] rounded-[16px] bg-[#FFF5A9] items-center justify-center border border-black hidden md:flex ${className}`}
         onClick={handleClick}
       >
         <svg
