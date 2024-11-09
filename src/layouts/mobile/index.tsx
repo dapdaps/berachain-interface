@@ -132,11 +132,10 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div
-      className={`relative pb-[65px] overflow-hidden ${
+      className={`relative pb-[62px] overflow-hidden ${
         routes.includes(pathname) ? 'min-h-screen' : 'h-screen'
       }`}
       style={{
-        paddingBottom: pathname === '/' ? '62px' : 0,
         backgroundColor: !routes.includes(pathname) ? '#96d6ff': 'transparent'
       }}
     >
@@ -198,7 +197,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <div className='absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-[99]'>
+      <div className='fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-[99]'>
         <div className='flex items-center gap-3'>
           <img
             src='/images/mobile/town.png'

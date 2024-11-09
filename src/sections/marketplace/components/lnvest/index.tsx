@@ -207,13 +207,13 @@ export default function Invest() {
                 setRateKey(tab);
               }}
               style={{
-                width: 196,
+                width: 188,
                 height: 40,
                 padding: 4,
               }}
               tabStyle={{
                 fontWeight: 500,
-                fontSize: 14,
+                fontSize: 12,
               }}
             />
             </div>

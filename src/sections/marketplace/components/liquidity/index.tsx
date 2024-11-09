@@ -96,7 +96,7 @@ export default function Liquidity() {
   const [checked, setChecked] = useState(false);
 
   return (
-    <div>
+    <>
       <div className="flex justify-between items-center">
         <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left">
           Liquidity
@@ -324,6 +324,6 @@ export default function Liquidity() {
           />
         </>
       )}
-    </div>
+    </>
   );
 }

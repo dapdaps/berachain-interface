@@ -1,22 +1,27 @@
-import { ModuleConfigs } from './config';
 import MenuButton from "@/components/mobile/menuButton";
-import Welcome from "../Welcome";
+import Welcome from "./components/Weclome";
 import Popup from "./popup";
 import Module, { ModuleItem } from "./components/Module";
 import { useGameItems } from "./hooks/useGameItems";
+import { useWelcomeStore } from "./hooks/useWelcomeStore";
 
 const Cave = () => {
 
+  const welcomeStore: any = useWelcomeStore()
+  
   const handleItemClick = (item: ModuleItem) => {
     console.log("Selected item:", item);
   };
 
   const {  moduleConfigs, loading} = useGameItems();
 
+console.log(welcomeStore.show, 'welcomeStore.show');
+
+
   return (
-    <div className='relative h-full overflow-y-auto'>
+    <div className='relative h-full'>
       <div
-        className='mt-10'
+        className='mt-10 relative'
         style={{
           backgroundImage: `url('/images/mobile/cave/header.png')`,
           backgroundSize: 'cover',
@@ -29,6 +34,9 @@ const Cave = () => {
         <MenuButton className='my-0 mx-auto' contentClassName='text-2xl'>
           Bera Cave
         </MenuButton>
+        <div className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px]"  onClick={() => {
+                    welcomeStore.set({ show: true })
+                }}>Rules</div>
       </div>
       <div className='bg-[#9C948F] h-[190vw] w-full'>
         <div
@@ -97,7 +105,7 @@ const Cave = () => {
           </div>
         </div>
       </div>
-      <Welcome />
+      <Welcome show={welcomeStore.show} onClose={() => welcomeStore.set({ show: false })}/>
       <Popup />
     </div>
   );
