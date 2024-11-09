@@ -7,10 +7,13 @@ import { useBgt } from '@/sections/home/hooks/useBgt';
 import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import clsx from 'clsx';
+import { useBgtCount } from '@/hooks/use-bgt-count';
 
 const Home = () => {
   const router = useProgressRouter();
   const bgt = useBgt();
+  const { iBGTCount, BGTCount } = useBgtCount();
+
   const [viewportHeight, setViewportHeight] = useState('100vh');
   const [visibleHeight, setVisibleHeight] = useState(844);
 
@@ -41,13 +44,13 @@ const Home = () => {
         <div className='text-white flex items-center gap-x-[17px]'>
           <BGTCoin
             type={CoinType.BGT}
-            count="0"
+            count={BGTCount}
             bp='1001-004'
             onClick={handleBGTClick}
           />
           <BGTCoin
             type={CoinType.iBGT}
-            count="0"
+            count={iBGTCount}
             bp='1001-005'
             onClick={handleBGTClick}
           />
