@@ -41,8 +41,8 @@ const LendingModal: React.FC<LendingModalProps> = () => {
       key: 'supplyBorrowHoney', 
       label: (
         <span
-          className="whitespace-nowrap font-[700] text-[13px] overflow-hidden"
-          style={{ transform: currentTab === 'supplyBorrowHoney' ? 'translateX(-15px)' : '' }}
+          className="whitespace-nowrap font-[700] text-[13px] md:max-w-[110px]"
+          style={{ transform: currentTab === 'supplyBorrowHoney' ? 'translateX(-15px)' : 'translateX(-24px)' }}
         >
           Supply & Borrow HONEY
         </span>
