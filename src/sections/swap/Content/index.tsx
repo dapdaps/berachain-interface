@@ -131,7 +131,7 @@ export default function Swap({
     <Card>
       <Header
         showSetting={showSetting}
-        style={{ justifyContent: 'flex-start' }}
+        style={{ justifyContent: 'space-between' }}
       />
       <TokenAmout
         type='in'
