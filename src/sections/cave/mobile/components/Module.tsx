@@ -53,7 +53,7 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
         <div className="text-[#F7F9EA] font-CherryBomb text-[18px] font-[400] leading-[18px] text-center text-stroke-2">
           {title}
         </div>
-        <div className="w-[38.461vw] text-left text-[12px] font-[400] leading-[14.4px] text-white">
+        <div className="w-[38.461vw] text-left text-[12px] font-[400] leading-[14.4px] text-white px-3">
           {desc}
         </div>
         <div

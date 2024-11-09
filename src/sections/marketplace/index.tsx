@@ -179,19 +179,22 @@ const MarketplaceView = () => {
 
 
   return (
-    <div className='relative md:h-full  md:overflow-y-auto overflow-x-hidden'>
-      <PageBack className='absolute left-[40px] top-[31px]' />
-      <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>
-        Marketplace
-      </PageTitle>
-
+    <div className='relative md:h-full md:overflow-y-auto overflow-x-hidden md:mb-[70px] md:mt-[30px]'>
+      {
+        !isMobile && (<>
+          <PageBack className='absolute left-[40px] top-[31px]' />
+          <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>
+            Marketplace
+          </PageTitle>
+        </>)
+      }
       <img
         src='/images/mobile/market-header.png'
         className='w-full h-[30.769vw] absolute top-[0px] z-[1] hidden md:block'
         alt=''
       />
 
-      <div className='relative mt-[100px] md:overflow-hidden lg:w-[1200px] md:w-full mx-auto rounded-[20px] mb-[100px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
+      <div className='relative mt-[100px] md:overflow-hidden lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1'>
         <div className='absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]'>
           Hot Sell Tokens
         </div>
@@ -229,9 +232,9 @@ const MarketplaceView = () => {
           onClick={onMore}
         />
       </div>
-      <div className='relative h-[197px] w-full bg-[#7990F4]'>
-        <div className='absolute bottom-[80px] left-[50%] translate-x-[-50%] lg:w-[1200px] md:w-full md:px-3'>
-          <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61]' />
+      <div className='relative lg:h-[197px] md:px-4 w-full bg-[#7990F4]'>
+        <div className='lg:absolute lg:bottom-[80px] lg:left-[50%] lg:translate-x-[-50%] lg:w-[1200px] md:w-full md:relative md:top-3'>
+          <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61] hidden lg:block' />
           <div className='relative z-10 lg:w-[1196px]'>
             <MemeTokensGrid
               MemeTokens={MemeTokens}

@@ -26,7 +26,7 @@ const NetBase = () => {
   if (isLoading) {
     return (
       <div className="bg-[#FFDC50] rounded-[10px] p-4 flex justify-between items-center">
-        {/* Mobile Layout Skeleton */}
+        {/* Desktop Layout Skeleton */}
         <div className="flex md:hidden">
           <SkeletonItem />
           <SkeletonItem className="ml-[80px]" />
@@ -37,7 +37,7 @@ const NetBase = () => {
           <SkeletonItem className="ml-[38px]" />
         </div>
 
-        {/* Desktop Layout Skeleton */}
+        {/* Mobile Layout Skeleton */}
         <div className="hidden md:visible md:grid md:grid-cols-[1fr_1.2fr] gap-y-[16px]">
           <SkeletonItem />
           <SkeletonItem />

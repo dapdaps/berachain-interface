@@ -8,6 +8,7 @@ import DApp from '@/sections/dapps/components/DApp';
 import Floor from '@/sections/dapps/components/Floor';
 import dAppsConfig from '@/configs/dapp';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const _dApps: any = {};
 for (const dapp in dAppsConfig) {
@@ -115,66 +116,84 @@ const toFirstUpperCase = (word: string) => {
 
 const DAppsView = () => {
 
+  const [visibleHeight, setVisibleHeight] = useState(844);
+
   const router = useRouter();
 
   const onNavigateTo = (_dApp: any) => {
     router.push(`/${_dApp.type === 'swap' ? 'dex' : _dApp.type}/${_dApp.name}`);
   }
 
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      setVisibleHeight(window.visualViewport?.height || window.innerHeight);
+    };
+
+    updateViewportHeight();
+    window.addEventListener('resize', updateViewportHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateViewportHeight);
+    };
+  }, []);
+
   return (
-    <div className="bg-[#96d6ff] h-full mb-[70px]">
+    <div className="md:bg-[#96d6ff] h-full md:mb-[70px]">
       <PageBack className="absolute left-[36px] top-[31px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
       <div className='absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]'>
-        <div className='w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative'>
-          <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
-          <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]"/>
-          <div className='absolute top-[-68px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-[14px]'>
-            {
-              List.map((item, index) => (
-                <Floor
-                  key={'floor' + index}
-                  className={item.className}
-                  sticks={item.sticks}
-                >
-                  {
-                    item.dApps.length  > 0 && (
-                      <div className={`flex ${item.dAppClassName}`}>
-                      {
-                        item.dApps.map((dApp, idx) => (
-                          <div
-                            key={`treeNode_${idx}`}
-                            className={ 'relative basis-[120px] ' + (dApp.className ?? '')}
-                          >
-                            <DApp
-                              name={dApp.label}
-                              icon={dApp.icon}
-                              type={toFirstUpperCase(dApp.type)}
-                              onClick={() => onNavigateTo(dApp)}
-                              disabled={dApp.disabled}
-                            />
-                            {dApp.attachedIcon ?? null}
-                          </div>
-                        ))
-                      }
-                    </div>
-                    )
-                  }
-                </Floor>
-              ))
-            }
+          <div className='w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative'>
+            <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
+            <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]"/>
+            <div className='absolute top-[-68px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-[14px]'>
+              {
+                List.map((item, index) => (
+                  <Floor
+                    key={'floor' + index}
+                    className={item.className}
+                    sticks={item.sticks}
+                  >
+                    {
+                      item.dApps.length  > 0 && (
+                        <div className={`flex ${item.dAppClassName}`}>
+                        {
+                          item.dApps.map((dApp, idx) => (
+                            <div
+                              key={`treeNode_${idx}`}
+                              className={ 'relative basis-[120px] ' + (dApp.className ?? '')}
+                            >
+                              <DApp
+                                name={dApp.label}
+                                icon={dApp.icon}
+                                type={toFirstUpperCase(dApp.type)}
+                                onClick={() => onNavigateTo(dApp)}
+                                disabled={dApp.disabled}
+                              />
+                              {dApp.attachedIcon ?? null}
+                            </div>
+                          ))
+                        }
+                      </div>
+                      )
+                    }
+                  </Floor>
+                ))
+              }
+            </div>
           </div>
         </div>
+        <div className='absolute bottom-0 left-0 right-0 hidden md:block' style={{
+            backgroundImage: "url('/images/mobile/dapp-bg.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            width: '100%',
+            height: '75.897vw',
+            zIndex: 0
+        }}></div>
+      <div className='md:w-full md:relative md:overflow-y-scroll md:overflow-x-hidden md:h-[680px]'>
+
       </div>
-      <div className='absolute bottom-0 left-0 right-0 hidden md:block' style={{
-          backgroundImage: "url('/images/mobile/dapp-bg.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          width: '100%',
-          height: '75.897vw',
-          zIndex: 0
-      }}></div>
     </div>
   )
 };

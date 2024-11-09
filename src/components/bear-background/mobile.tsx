@@ -80,7 +80,7 @@ const Clouds = () => {
 export default function Mobile({ children, showGrassland = false }: any) {
 
   const pathname = usePathname()
-  const routes = ['/dapps', '/cave']
+  const routes = ['/cave']
 
   return (
     <div className='relative hidden md:block min-w-full h-full'>
