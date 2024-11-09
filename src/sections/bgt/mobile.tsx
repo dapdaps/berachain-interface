@@ -54,7 +54,7 @@ const BGTMobileView = (props: Props) => {
             tab === 'market' ? (
               <motion.div
                 key="market"
-                className=""
+                className="max-h-[calc(100%_-_102px)] overflow-y-auto"
                 variants={{
                   visible: {
                     opacity: 1,
@@ -138,7 +138,7 @@ const BGTMobileView = (props: Props) => {
             ) : (
               <motion.div
                 key="vaults"
-                className=""
+                className="max-h-[calc(100%_-_102px)] overflow-y-auto"
                 variants={{
                   visible: {
                     opacity: 1,

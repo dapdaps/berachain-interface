@@ -44,7 +44,8 @@ export const ABI = [{
   "type": "function"
 }]
 export type DataType = {
-  count: number | string
+  count: number | string;
+  totalSupply?: any;
 }
 export function useBGT() {
   const isMobile = useIsMobile();
