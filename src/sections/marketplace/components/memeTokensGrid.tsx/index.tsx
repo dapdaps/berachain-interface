@@ -13,7 +13,7 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
   return (
     <div className="lg:h-[86px] md:h-[50px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px] md:mt-[-16px]">
       <div className="w-full lg:h-[91px] md:h-[40px] relative top-[-50%] overflow-hidden">
-        <div className="w-full absolute bottom-0 lg:h-[62px] md:h-[30px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap px-[32px] gap-x-[32px]">
+        <div className="w-full absolute bottom-0 lg:h-[62px] md:h-[30px] bg-[#402E10] border border-black rounded-[10px] flex flex-nowrap lg:px-[32px] md:px-[16px] lg:gap-x-[32px] md:gap-x-[16px]">
           {tokens.map((item: any, index: any) => (
             <Tooltip
               key={"tooltip" + (startIndex + index)}
@@ -103,8 +103,8 @@ const MemeTokensGrid = ({ MemeTokens, onSwap, onFooterMore }: any) => {
   const getTokenRows = () => {
     if (isMobile) {
       const rows = [];
-      for (let i = 0; i < MemeTokens.length; i += 4) {
-        rows.push(MemeTokens.slice(i, Math.min(i + 4, MemeTokens.length)));
+      for (let i = 0; i < MemeTokens.length; i += 5) {
+        rows.push(MemeTokens.slice(i, Math.min(i + 5, MemeTokens.length)));
       }
       return rows;
     }
@@ -121,7 +121,7 @@ const MemeTokensGrid = ({ MemeTokens, onSwap, onFooterMore }: any) => {
             tokens={rowTokens}
             onSwap={onSwap}
             setHoveredIndex={setHoveredIndex}
-            startIndex={rowIndex * 4}
+            startIndex={rowIndex * 5}
           />
           {(
             <div className="relative">

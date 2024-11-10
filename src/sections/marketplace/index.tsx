@@ -179,7 +179,9 @@ const MarketplaceView = () => {
 
 
   return (
-    <div className='relative md:h-full md:overflow-y-auto overflow-x-hidden md:mb-[70px] md:mt-[30px]'>
+    <div className='relative md:overflow-y-scroll overflow-x-hidden' style={{
+      height: 'calc(100dvh - 68px)',
+    }}>
       {
         !isMobile && (<>
           <PageBack className='absolute left-[40px] top-[31px]' />
@@ -232,7 +234,7 @@ const MarketplaceView = () => {
           onClick={onMore}
         />
       </div>
-      <div className='relative lg:h-[197px] md:px-4 w-full bg-[#7990F4]'>
+      <div className='relative lg:h-[197px] md:px-4 w-full bg-[#7990F4] md:pb-[40px]'>
         <div className='lg:absolute lg:bottom-[80px] lg:left-[50%] lg:translate-x-[-50%] lg:w-[1200px] md:w-full md:relative md:top-3'>
           <div className='absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61] hidden lg:block' />
           <div className='relative z-10 lg:w-[1196px]'>
