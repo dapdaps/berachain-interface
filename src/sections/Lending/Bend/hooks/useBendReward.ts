@@ -43,6 +43,8 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
     rewardsProvider
       .earned(account)
       .then((res: any) => {
+        console.log(ethers.utils.formatUnits(res.toString(), 18), 'ethers.utils.formatUnits(res.toString(), 18)');
+        
         setReward(ethers.utils.formatUnits(res.toString(), 18));
       })
       .catch((err: any) => {
@@ -160,7 +162,7 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
     icon: '/images/dapps/honey.png',
     platform: 'bend',
     depositAmount: debtVal,
-    rewardValue: parseFloat(reward) < 0.01 ? '<0.01' : parseFloat(reward).toFixed(2)
+    rewardValue: parseFloat(reward) === 0 ? '0' : (parseFloat(reward) < 0.01 ? '<0.01' : parseFloat(reward).toFixed(2))
   };
 };
 

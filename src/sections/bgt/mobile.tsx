@@ -237,7 +237,8 @@ const BGTMobileView = (props: Props) => {
                                   <div className="flex justify-end items-center">
                                     <button
                                       type="button"
-                                      className="text-black text-[14px] font-[500] border border-black h-[36px] px-[17px] rounded-[10px] bg-white"
+                                      disabled={record?.earned <= 0 || record?.claiming}
+                                      className="text-black text-[14px] font-[500] border border-black h-[36px] px-[17px] rounded-[10px] bg-white disabled:opacity-30 disabled:pointer-events-none"
                                       onClick={record.claim}
                                     >
                                       {
