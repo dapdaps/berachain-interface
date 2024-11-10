@@ -9,7 +9,7 @@ const vaultAddress = "0x2E8410239bB4b099EE2d5683e3EF9d6f04E321CC";
 
 const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
   const [claiming, setClaiming] = useState(false);
-  const [reward, setReward] = useState<any>();
+  const [reward, setReward] = useState<any>(0);
   const [debtVal, setDebtVal] = useState<any>();
   const toast = useToast();
   const { addAction } = useAddAction("bgt");
@@ -43,8 +43,6 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
     rewardsProvider
       .earned(account)
       .then((res: any) => {
-        console.log(ethers.utils.formatUnits(res.toString(), 18), 'ethers.utils.formatUnits(res.toString(), 18)');
-        
         setReward(ethers.utils.formatUnits(res.toString(), 18));
       })
       .catch((err: any) => {
