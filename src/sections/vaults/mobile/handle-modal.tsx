@@ -105,7 +105,13 @@ export default function HandleModal({
                 type="range"
                 value={percent * 100}
                 onChange={(ev: any) => {
-                  setPercent(ev.target.value);
+                  setPercent(ev.target.value / 100);
+                  if (balance)
+                    setValue(
+                      Big(balance || 0)
+                        .mul(ev.target.value / 100)
+                        .toString()
+                    );
                 }}
               />
             </StyledInputRange>
