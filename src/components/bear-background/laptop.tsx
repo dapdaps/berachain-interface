@@ -1051,7 +1051,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
     <div
       className='relative hidden lg:block'
       style={{
-        height: 'calc(100dvh - 68px)',
+        height: 'calc(100dvh - 62px)',
         minHeight: 899,
         overflow: 'hidden'
       }}

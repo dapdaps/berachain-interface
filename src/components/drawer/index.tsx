@@ -43,6 +43,8 @@ const Drawer = (props: Props) => {
   useEffect(() => {
     setVisibleInner(visible);
   }, [visible]);
+  
+  if (typeof window === "undefined") return null;
 
 
   return ReactDOM.createPortal((

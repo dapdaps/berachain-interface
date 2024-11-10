@@ -178,16 +178,13 @@ const MarketplaceView = () => {
   };
 
   return (
-    <div
-      className="relative md:overflow-y-scroll overflow-x-hidden"
-      style={{
-        height: "calc(100dvh - 68px)"
-      }}
-    >
-      {!isMobile && (
-        <>
-          <PageBack className="absolute left-[40px] top-[31px]" />
-          <PageTitle className="pt-[30px] mb-[75px] hidden lg:block">
+    <div className='relative md:overflow-y-scroll overflow-x-hidden' style={{
+      height: 'calc(100dvh - 62px)',
+    }}>
+      {
+        !isMobile && (<>
+          <PageBack className='absolute left-[40px] top-[31px]' />
+          <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>
             Marketplace
           </PageTitle>
         </>

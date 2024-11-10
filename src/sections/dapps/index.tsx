@@ -9,6 +9,7 @@ import Floor from "@/sections/dapps/components/Floor";
 import dAppsConfig from "@/configs/dapp";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import clsx from 'clsx'
 
 const _dApps: any = {};
 for (const dapp in dAppsConfig) {
@@ -134,16 +135,17 @@ const DAppsView = () => {
     };
   }, []);
 
+
   return (
     <div
-      className="md:bg-[#96d6ff] h-full md:mb-[70px]"
+      className="md:bg-[#96d6ff] h-full md:mb-[70px] relative"
       style={{
-        height: "calc(100dvh - 68px)"
+        height: "calc(100dvh - 62px)"
       }}
     >
       <PageBack className="absolute left-[12px] top-[17px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
-      <div className="absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]">
+      <div className={clsx('absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '' )}>
         <div className="w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative">
           <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
           <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />
@@ -184,27 +186,14 @@ const DAppsView = () => {
         className="absolute bottom-0 left-0 right-0 hidden md:block"
         style={{
           backgroundImage: "url('/images/mobile/dapp-bg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: "100%",
+          backgroundPosition: "top",
           backgroundRepeat: "no-repeat",
           width: "100%",
-          height: "75.897vw",
+          height: visibleHeight < 750 ? '40.897vw' : "75.897vw",
           zIndex: 0
         }}
       ></div>
-      <div className="md:w-full md:relative md:overflow-y-scroll md:overflow-x-hidden md:h-[680px]"></div>
-      <div
-        className="absolute bottom-0 left-0 right-0 hidden md:block"
-        style={{
-          backgroundImage: "url('/images/mobile/dapp-bg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          width: "100%",
-          height: "75.897vw",
-          zIndex: 0
-        }}
-      />
     </div>
   );
 };
