@@ -160,6 +160,9 @@ export default function HandleModal({
             onClose={() => {
               setShowMint(false);
             }}
+            onSuccess={() => {
+              onSuccess();
+            }}
             token0={{ ...pool?.underlying_tokens[0], icon: data.images[0] }}
             token1={{ ...pool?.underlying_tokens[1], icon: data.images[1] }}
             dex={pool?.protocol}

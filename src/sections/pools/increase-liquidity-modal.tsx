@@ -19,7 +19,8 @@ export default function IncreaseLiquidityModal({
   open,
   tokenId,
   title,
-  onClose
+  onClose,
+  onSuccess
 }: any) {
   const panelRef = useRef<any>();
   return (
@@ -41,7 +42,7 @@ export default function IncreaseLiquidityModal({
           version={version}
           ref={panelRef}
           tokenId={tokenId}
-          onSuccess={onClose}
+          onSuccess={onSuccess}
         />
       </div>
     </BasicModal>

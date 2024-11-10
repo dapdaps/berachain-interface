@@ -20,12 +20,14 @@ const PAGE_SIZE = 9;
 const checkIsExist = ({ record, balance, hasFee }: any) => {
   return (
     balance[
-    `${record.token0.address.toLowerCase()}-${record.token1.address.toLowerCase()}${hasFee ? '-' + record.fee : ''
-    }`
+      `${record.token0.address.toLowerCase()}-${record.token1.address.toLowerCase()}${
+        hasFee ? "-" + record.fee : ""
+      }`
     ] ||
     balance[
-    `${record.token1.address.toLowerCase()}-${record.token0.address.toLowerCase()}${hasFee ? '-' + record.fee : ''
-    }`
+      `${record.token1.address.toLowerCase()}-${record.token0.address.toLowerCase()}${
+        hasFee ? "-" + record.fee : ""
+      }`
     ]
   );
 };
@@ -37,6 +39,7 @@ export default function Liquidity() {
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [modalType, setModalType] = useState("");
   const [selectedTokenId, setSelectedTokenId] = useState("");
+
   const {
     pools,
     loading,
@@ -46,14 +49,14 @@ export default function Liquidity() {
     kodiakV2Balances,
     kodiakV3Loading,
     kodiakV3Balances,
-    kodiakTicksInfo,
+    kodiakTicksInfo
   } = usePools();
   const [protocols] = useMemo(() => {
     let _dexs: any = [{ key: "all", name: "All Protocols" }];
     Object.values(dexs).forEach((dex) => {
       _dexs.push({
         key: dex.name,
-        name: dex.name,
+        name: dex.name
       });
     });
     return [_dexs];
@@ -66,16 +69,17 @@ export default function Liquidity() {
         if (protocol !== "all" && protocol !== token.protocol) {
           flag = false;
         }
-        console.log('=token', token)
+        console.log("=token", token);
 
-        const pool = [token?.token0?.symbol, token?.token1?.symbol].join("-")
+        const pool = [token?.token0?.symbol, token?.token1?.symbol].join("-");
 
-        console.log('=pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1', pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1)
+        console.log(
+          "=pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1",
+          pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > -1
+        );
         if (
           searchVal &&
-          !(
-            pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1
-          )
+          !(pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > -1)
         )
           flag = false;
         return flag;
@@ -102,8 +106,8 @@ export default function Liquidity() {
           Liquidity
         </div>
         <div className="md:w-full flex items-center gap-2 md:justify-between">
-          {
-            !isMobile && (<div className="flex items-center gap-2">
+          {!isMobile && (
+            <div className="flex items-center gap-2">
               <div>You Added only</div>
               <CheckBox
                 checked={checked}
@@ -111,8 +115,8 @@ export default function Liquidity() {
                   setChecked(!checked);
                 }}
               />
-          </div>)
-          }
+            </div>
+          )}
           <Dropdown
             list={protocols}
             value={protocol}
@@ -139,12 +143,15 @@ export default function Liquidity() {
 
       <div className="mt-[20px]">
         {isMobile ? (
-          <MobileList list={data} onClick={(nums: any, item: any) => {
-            if (nums === 0) {
-              setModalType("add");
-              setSelectedRecord(item);
-            }
-          }}/>
+          <MobileList
+            list={data}
+            onClick={(nums: any, item: any) => {
+              if (nums === 0) {
+                setModalType("add");
+                setSelectedRecord(item);
+              }
+            }}
+          />
         ) : (
           <List
             meta={[
@@ -154,8 +161,8 @@ export default function Liquidity() {
                 sort: false,
                 width: "5%",
                 render: (item: any, index: number) => {
-                  return (index + 1) + PAGE_SIZE * (page - 1);
-                },
+                  return index + 1 + PAGE_SIZE * (page - 1);
+                }
               },
               {
                 title: "Pool",
@@ -164,7 +171,7 @@ export default function Liquidity() {
                 width: "25%",
                 render: (item: any, index: number) => {
                   return <PoolTable item={item} />;
-                },
+                }
               },
               {
                 title: "TVL",
@@ -175,7 +182,7 @@ export default function Liquidity() {
                   return (
                     item["tvl"] || balanceFormated(Math.random() * 1400, 2)
                   );
-                },
+                }
               },
               {
                 title: "24h Volume",
@@ -186,7 +193,7 @@ export default function Liquidity() {
                   return (
                     item["yours"] || balanceFormated(Math.random() * 14, 2)
                   );
-                },
+                }
               },
               {
                 title: "24h Fees",
@@ -197,7 +204,7 @@ export default function Liquidity() {
                   return (
                     item["yours"] || balanceFormated(Math.random() * 14, 2)
                   );
-                },
+                }
               },
               {
                 title: "Your Position",
@@ -206,9 +213,11 @@ export default function Liquidity() {
                 width: "15%",
                 render: (item: any, index: number) => {
                   return (
-                    <div className="flex underline">${item["yours"] || balanceFormated(Math.random() * 14, 2)}</div>
+                    <div className="flex underline">
+                      ${item["yours"] || balanceFormated(Math.random() * 14, 2)}
+                    </div>
                   );
-                },
+                }
               },
               {
                 title: "Action",
@@ -220,7 +229,7 @@ export default function Liquidity() {
                   if (item.protocol.toLowerCase() === "bex") {
                     _removeable = checkIsExist({
                       record: item,
-                      balance: bexBalances,
+                      balance: bexBalances
                     });
                   }
                   if (
@@ -229,7 +238,7 @@ export default function Liquidity() {
                   ) {
                     _removeable = checkIsExist({
                       record: item,
-                      balance: kodiakV2Balances,
+                      balance: kodiakV2Balances
                     });
                   }
                   if (
@@ -239,7 +248,7 @@ export default function Liquidity() {
                     _removeable = checkIsExist({
                       record: item,
                       balance: kodiakV3Balances,
-                      hasFee: true,
+                      hasFee: true
                     });
                   }
                   return (
@@ -266,8 +275,8 @@ export default function Liquidity() {
                       removeable={_removeable}
                     />
                   );
-                },
-              },
+                }
+              }
             ]}
             list={data}
             maxPage={maxPage}
@@ -302,7 +311,10 @@ export default function Liquidity() {
               setModalType("");
               setSelectedRecord(null);
             }}
-            onSuccess={() => { }}
+            onSuccess={() => {
+              setModalType("");
+              setSelectedRecord(null);
+            }}
           />
           <V3PoolsModal
             open={modalType === "pools"}
