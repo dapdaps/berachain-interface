@@ -138,7 +138,9 @@ const DAppsView = () => {
   }, []);
 
   return (
-    <div className="md:bg-[#96d6ff] h-full md:mb-[70px]">
+    <div className="md:bg-[#96d6ff] h-full md:mb-[70px]" style={{
+      height: 'calc(100dvh - 68px)',
+    }}>
       <PageBack className="absolute left-[12px] top-[17px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
       <div className='absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]'>
@@ -191,9 +193,6 @@ const DAppsView = () => {
             height: '75.897vw',
             zIndex: 0
         }}></div>
-      <div className='md:w-full md:relative md:overflow-y-scroll md:overflow-x-hidden md:h-[680px]'>
-
-      </div>
     </div>
   )
 };
