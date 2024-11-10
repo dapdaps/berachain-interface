@@ -63,7 +63,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
           type="Lending"
           className="z-10 top-[-70px] md:left-[50%] md:translate-x-[-50%] md:top-[-40px]"
         />
-        <div className="rounded-[20px] w-[970px] md:w-full h-[490px]">
+        <div className="rounded-[20px] lg:w-[970px] md:w-full h-[490px]">
           <div className="absolute top-0 left-0 right-0">
             <Tabs
               isCard

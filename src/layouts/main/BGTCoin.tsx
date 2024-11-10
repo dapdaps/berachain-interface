@@ -1,6 +1,7 @@
 "use client"
 
 import Image from '@/components/layz-image';
+import useIsMobile from '@/hooks/use-isMobile';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import { numberFormatter } from '@/utils/number-formatter';
 
@@ -11,7 +12,7 @@ const BGTCoin = ({
   onClick
 }: Props) => {
   const router = useProgressRouter()
-
+  const isMobile = useIsMobile();
   return (
     <div>
       <div
@@ -37,7 +38,7 @@ const BGTCoin = ({
           <div
             className={`${type === CoinType.iBGT ? 'bg-[#000000]' : 'bg-[#A6703D]'} font-CherryBomb whitespace-nowrap text-[14px] font-[400] items-center rounded-[26px] border border-[#924E00] pl-[30px] pr-[12px] py-[4px] leading-[0.9]`}
           >
-            {numberFormatter(count, 3, true)} {type}
+            {numberFormatter(count, isMobile ? 2: 3, true)} {type}
           </div>
         </div>
       </div>
