@@ -2,58 +2,29 @@ import { useState } from "react";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
-import useLpToAmount from "@/hooks/use-lp-to-amount";
 import { ethers } from "ethers";
-import Big from "big.js";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useInfrared({
   amount,
-  decimals,
   vaultAddress,
   tokens,
-  type,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
   const { provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
-  const { handleGetAmount } = useLpToAmount(vaultAddress);
 
-  const onHandle = async () => {
-    let toastId = toast?.loading({
-      title: type ? "Unstaking..." : `Staking...`
-    });
+  const onClaim = async () => {
+    let toastId = toast?.loading({ title: "Claiming..." });
     setLoading(true);
     try {
-      const wei = ethers.utils.parseUnits(
-        Big(amount).toFixed(decimals),
-        decimals
-      );
       const abi = [
         {
           constant: false,
-          inputs: [
-            {
-              name: "amount",
-              type: "uint256"
-            }
-          ],
-          name: "stake",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function"
-        },
-        {
-          constant: false,
-          inputs: [
-            {
-              name: "_shareAmt",
-              type: "uint256"
-            }
-          ],
-          name: "withdraw",
+          inputs: [],
+          name: "getReward",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function"
@@ -64,29 +35,22 @@ export default function useInfrared({
         abi,
         provider?.getSigner()
       );
-      const tx = await contract[type ? "withdraw" : "stake"](wei);
+      const tx = await contract.getReward();
       const { status, transactionHash } = await tx.wait();
-      const [amount0, amount1] = handleGetAmount(amount);
 
       addAction?.({
         type: "Staking",
-        action: type ? "UnStake" : "Staking",
+        action: "Claim",
         token: {
           symbol: `${tokens[0].symbol}-${tokens[1].symbol}`
         },
-        amount: amount,
+        amount,
         template: "Infrared",
         status: status,
         add: 1,
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
-        sub_type: type ? "UnStake" : "Stake",
-        extra_data: JSON.stringify({
-          token0Symbol: tokens[0].symbol,
-          token1Symbol: tokens[1].symbol,
-          amount0,
-          amount1
-        })
+        sub_type: "Claim"
       });
 
       setTimeout(() => {
@@ -94,13 +58,11 @@ export default function useInfrared({
       }, 3000);
 
       toast?.dismiss(toastId);
-      toast?.success({
-        title: type ? "Unstake Successfully!" : "Stake Successfully!"
-      });
+      toast?.success({ title: "Claimed Successfully!" });
     } catch (err: any) {
       toast?.dismiss(toastId);
       toast?.fail({
-        title: type ? "Unstake Failed!" : "Stake Failed!",
+        title: "Claimed Failed!",
         text: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
           : err?.message ?? ""
@@ -110,5 +72,5 @@ export default function useInfrared({
     }
   };
 
-  return { loading, onHandle };
+  return { loading, onClaim };
 }

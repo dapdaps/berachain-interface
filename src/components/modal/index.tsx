@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import IconClose from '@public/images/modal/close.svg';
-import useIsMobile from '@/hooks/use-isMobile';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
+import IconClose from "@public/images/modal/close.svg";
+import useIsMobile from "@/hooks/use-isMobile";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ModalProps {
   open?: boolean;
@@ -28,30 +28,30 @@ const Modal: React.FC<ModalProps> = ({
   const isMobile = useIsMobile();
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [open]);
 
   if (!open) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
+    if (e.target === e.currentTarget || isMobile) {
       onClose && onClose();
     }
   };
   return ReactDOM.createPortal(
     (
-      <AnimatePresence mode='wait'>
+      <AnimatePresence mode="wait">
         <div
           className={`fixed inset-0 bg-black bg-opacity-50 flex lg:items-center lg:justify-center z-[100] ${className}`}
           style={style}
           onClick={handleBackdropClick}
         >
-          <div className='rounded-lg relative'>
+          <div className="rounded-lg relative w-full">
             {closeIcon || onClose ? (
               <button
                 onClick={onClose}
@@ -71,7 +71,10 @@ const Modal: React.FC<ModalProps> = ({
                 exit={{
                   y: [0, 100]
                 }}
-                className='w-screen absolute bottom-0 left-0 rounded-t-[20px]'
+                className="w-screen absolute bottom-0 left-0 rounded-t-[20px]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
                 {children}
               </motion.div>

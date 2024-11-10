@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
+import { useCallback, useEffect, useRef, useState } from "react";
+import clsx from "clsx";
 
 export default function Dropdown({
   list,
@@ -21,10 +21,10 @@ export default function Dropdown({
   }, []);
 
   useEffect(() => {
-    document.addEventListener('click', docClick, false);
+    document.addEventListener("click", docClick, false);
 
     return () => {
-      document.removeEventListener('click', docClick);
+      document.removeEventListener("click", docClick);
     };
   }, []);
 
@@ -39,25 +39,25 @@ export default function Dropdown({
         className
       )}
     >
-      <div className={clsx('text-nowrap', titleClassName)}>{title}</div>
+      <div className={clsx("text-nowrap", titleClassName)}>{title}</div>
       <svg
-        width='14'
-        height='8'
-        viewBox='0 0 14 8'
-        fill='none'
-        xmlns='http://www.w3.org/2000/svg'
+        width="14"
+        height="8"
+        viewBox="0 0 14 8"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          d='M13 1L7 5.8L1 0.999999'
-          stroke='black'
-          strokeWidth='2'
-          strokeLinecap='round'
+          d="M13 1L7 5.8L1 0.999999"
+          stroke="black"
+          strokeWidth="2"
+          strokeLinecap="round"
         />
       </svg>
       {modalShow && (
         <div
           className={clsx(
-            'absolute w-[100%] z-[10]  overflow-auto bg-[#FFFDEB] rounded-[8px] border border-[#373A53] right-0',
+            "absolute w-[100%] z-[10]  overflow-auto bg-[#FFFDEB] rounded-[8px] border border-[#373A53] right-0",
             dropPanelClassName
           )}
         >
@@ -70,12 +70,12 @@ export default function Dropdown({
                   onChange(item);
                   setModalShow(false);
                 }}
-                className='h-[40px] px-[18px]  hover:bg-[#0000000F] relative flex justify-between items-center text-nowrap'
+                className={clsx(
+                  "h-[40px] px-[18px]  hover:bg-[#0000000F] relative flex justify-between items-center text-nowrap",
+                  item.key === value && "bg-black/10"
+                )}
               >
                 <div>{item.name}</div>
-                {item.key === value && (
-                  <div className='w-[6px] h-[6px] bg-[#EBF479] absolute top-[18px] right-[18px] rounded-[6px]'></div>
-                )}
               </div>
             );
           })}
