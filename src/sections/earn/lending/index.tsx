@@ -170,6 +170,9 @@ const EarnLending = (props: any) => {
     bendInit();
   }, [chainId, provider]);
 
+  console.log(tokenList, 'tokenList');
+  
+
   return (
     <div className="">
       <div className="flex justify-between items-center md:gap-[30px]">
@@ -244,7 +247,6 @@ const EarnLending = (props: any) => {
           cursorStyle={{ borderRadius: 10 }}
         />
       </div>
-
       {
         !isMobile ? <LaptopList loading={dolomiteLoading} list={tokenList} tab={tab} /> : (
           <div className="mt-[15px] pb-[80px]">
@@ -329,10 +331,10 @@ const EarnLending = (props: any) => {
                     </div>
                     <div className="text-right">
                       <div className="text-[14px] text-[#3D405A] font-[500]">
-                        {tab} APR
+                        {tab} {token.symbol === "HONEY" ? 'APY' : 'APR'}
                       </div>
                       <div className="mt-[5px]" style={{ color: tab === 'Supply' ? '#0A9D20' : '#F0631D' }}>
-                        {tab === 'Supply' ? token.supplyAPR : token.borrowAPR}
+                        {tab === 'Supply' ? token.supplyAPR : token.protocol.name ==="Bend" && token.symbol === "HONEY" ? Big(token?.borrowAPY).times(100).toFixed(2) + '%' : token.borrowAPR}
                       </div>
                     </div>
                   </div>
