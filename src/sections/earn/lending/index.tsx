@@ -84,6 +84,7 @@ const EarnLending = (props: any) => {
         .forEach((bend: any) => {
           _tokens.push({
             ...bend,
+            address: bend.underlyingAsset,
             protocol: Lendings.Bend.basic,
             inWallet: bend.balance,
             supplyAPR: Big(bend.supplyAPY || 0).times(100).toFixed(2) + '%',
