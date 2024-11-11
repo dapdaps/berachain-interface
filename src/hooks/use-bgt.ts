@@ -175,8 +175,11 @@ export function useBGT() {
   }
 
   const handleValidator = (data: any) => {
-    router.push("/bgt/validator?address=" + data?.validator?.id);
     handleReport(data?.validator?.metadata?.bp);
+    if (isMobile) {
+      return false;
+    }
+    router.push("/bgt/validator?address=" + data?.validator?.id);
   };
 
   useEffect(() => {

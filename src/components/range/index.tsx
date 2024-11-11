@@ -24,9 +24,9 @@ const StyledInputRange = styled.div`
   }
 `;
 
-export default function Range({ value, onChange, style }: any) {
+export default function Range({ value, onChange, style, className }: any) {
   return (
-    <StyledInputRange style={style}>
+    <StyledInputRange style={style} className={className}>
       <input type="range" value={value} onChange={onChange} />
     </StyledInputRange>
   );

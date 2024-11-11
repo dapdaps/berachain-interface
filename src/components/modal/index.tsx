@@ -13,6 +13,8 @@ interface ModalProps {
   className?: string;
   closeIconClassName?: string;
   isForceNormal?: boolean;
+  innerStyle?: React.CSSProperties;
+  innerClassName?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -23,7 +25,9 @@ const Modal: React.FC<ModalProps> = ({
   style,
   className,
   closeIconClassName,
-  isForceNormal
+  isForceNormal,
+  innerStyle,
+  innerClassName
 }) => {
   const isMobile = useIsMobile();
   useEffect(() => {
@@ -51,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
           style={style}
           onClick={handleBackdropClick}
         >
-          <div className="rounded-lg relative lg:w-full">
+          <div className={`rounded-lg relative lg:w-full ${innerClassName}`} style={innerStyle}>
             {closeIcon || onClose ? (
               <button
                 onClick={onClose}

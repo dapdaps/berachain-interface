@@ -1,7 +1,8 @@
 import { memo, useEffect, useRef, useState } from "react";
 export default memo(function Slider({
   percentage,
-  onChange
+  onChange,
+  className,
 }: IProps) {
 
   const [sliderPercentage, setSliderPercentage] = useState(percentage)
@@ -49,7 +50,7 @@ export default memo(function Slider({
   }, [sliderPercentage, isDragging])
 
   return (
-    <div className='cursor-pointer flex items-center w-[216px] h-[8px] rounded-[12px] bg-[#DFDCC4]' ref={sliderRef} onMouseDown={handleMouseDown}>
+    <div className={`cursor-pointer flex items-center w-[216px] h-[8px] rounded-[12px] bg-[#DFDCC4] ${className}`} ref={sliderRef} onMouseDown={handleMouseDown}>
       <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: sliderPercentage + '%' }}>
         <div
           className='absolute right-[-5px] top-[-5px] w-[18px] h-[18px] rounded-full bg-[#FFDC50] border border-black'
@@ -60,5 +61,6 @@ export default memo(function Slider({
 })
 interface IProps {
   percentage: string;
-  onChange: (percentage: string) => void
+  onChange: (percentage: string) => void;
+  className?: string;
 }
