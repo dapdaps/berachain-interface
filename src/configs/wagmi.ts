@@ -4,6 +4,8 @@ import chains from './chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { injected } from 'wagmi/connectors'
 import { CreateConnectorFn } from 'wagmi'
+import { createWalletClient, custom } from 'viem';
+import { berachainTestnetbArtio } from '@reown/appkit/networks';
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
@@ -59,6 +61,7 @@ if (typeof window !== 'undefined' && window.berasig) {
 }
 
 export const wagmiAdapter = new WagmiAdapter({
+  // @ts-ignore
   storage: createStorage({
     storage: cookieStorage
   }),
@@ -69,3 +72,9 @@ export const wagmiAdapter = new WagmiAdapter({
 });
 
 export const config = wagmiAdapter.wagmiConfig;
+
+export const walletClient = createWalletClient({
+  // @ts-ignore
+  chain: berachainTestnetbArtio,
+  transport: custom(window.ethereum!),
+});

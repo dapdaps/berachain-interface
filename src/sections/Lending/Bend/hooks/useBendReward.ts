@@ -160,7 +160,8 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
     icon: '/images/dapps/honey.png',
     platform: 'bend',
     depositAmount: debtVal,
-    rewardValue: parseFloat(reward) === 0 ? '0' : (parseFloat(reward) < 0.01 ? '<0.01' : parseFloat(reward).toFixed(2))
+    rewardValue: parseFloat(reward) === 0 ? '0' : (parseFloat(reward) < 0.01 ? '<0.01' : parseFloat(reward).toFixed(2)),
+    rewardValueNumber: reward,
   };
 };
 

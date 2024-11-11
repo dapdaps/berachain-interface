@@ -10,6 +10,7 @@ import { memo, useState } from "react";
 import VaultsList from "./components/list";
 import SwitchTabs from "@/components/switch-tabs";
 import BgtEmpty from "./components/bgt-empty";
+import Big from 'big.js';
 
 export default memo(function BGTPageView() {
   const [tab, setTab] = useState('all');
@@ -90,7 +91,7 @@ export default memo(function BGTPageView() {
               <img src="/images/dapps/infrared/bgt.svg" />
             </div>
             <div className='text-[#7EA82B] font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {record?.earned ?? 0}
+              {record?.earnedShown ?? 0}
             </div>
           </div>
         );
@@ -104,7 +105,7 @@ export default memo(function BGTPageView() {
       render: (text: string, record: any) => {
         return (
           <button
-            disabled={record?.earned <= 0 || record?.claiming}
+            disabled={Big(record?.earned || 0).lte(0) || record?.claiming}
             className='flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50] disabled:opacity-30'
             onClick={record.claim}>
             {

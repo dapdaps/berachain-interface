@@ -5,12 +5,12 @@ import IbgtHead from '@/sections/bgt/components/ibgt-head';
 import SwitchTabs from '@/components/switch-tabs';
 import Big from 'big.js';
 import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
-import Popover from '@/components/popover';
 import Modal from '@/components/modal';
 import IbgtForm from '@/sections/bgt/components/ibgt-form';
 import { AnimatePresence } from 'framer-motion';
 import useToast from '@/hooks/use-toast';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import { walletClient } from '@/configs/wagmi';
 
 const IBGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
@@ -56,33 +56,23 @@ const IBGTMobileView = (props: Props) => {
 
   const handleAddWallet = async () => {
     if (!window?.ethereum || window.ethereum === void 0 || window.ethereum === 'undefined') return;
-    const token = {
-      ...beraB.ibgt,
-    };
-    await window.ethereum.request({ method: 'eth_requestAccounts', params: [] });
+    const _toastId = toast.loading({ title: 'Adding...' });
     try {
-      await window.ethereum.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address: token.address,
-            symbol: token.symbol,
-            decimals: token.decimals,
-            image: token.icon,
-          }
-        }
+      await walletClient.watchAsset({
+        type: 'ERC20',
+        options: beraB.ibgt,
       });
+      toast.dismiss(_toastId);
       toast.success({
         title: 'Add successfully!',
       });
-      props.onClose();
     } catch (err: any) {
       let msg = '';
       if (err?.message?.includes('User denied')) {
         msg = 'User denied';
       }
       console.log(err);
+      toast.dismiss(_toastId);
       toast.fail({
         title: 'Add failure!',
         text: msg,
