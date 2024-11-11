@@ -164,6 +164,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     hasDropdown={item.hasDropdown}
                     isActive={item.hasDropdown && isDappsOpen}
                     onClick={item.hasDropdown ? toggleDapps : undefined}
+                    toggle={toggleMenu}
                   >
                     {item.title}
                   </MenuButton>
