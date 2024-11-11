@@ -37,6 +37,10 @@ export default memo(function Detail() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
+
+
+  const [claiming, setClaiming] = useState(false);
+
   const [state, updateState] = useMultiState({
     // isDeposit: tab === "Stake" || !tab,
     balances: [],
@@ -415,6 +419,8 @@ export default memo(function Detail() {
       abi,
       provider.getSigner()
     );
+
+    setClaiming(true)
     contract
       .getReward()
       .then((tx: any) => tx.wait())
@@ -440,9 +446,11 @@ export default memo(function Detail() {
         setTimeout(() => {
           onSuccess?.();
         }, 3000);
+        setClaiming(false)
       })
       .catch((error: Error) => {
         console.log('error: ', error);
+        setClaiming(false)
         toast?.dismiss(toastId);
         toast?.fail({
           title: 'Claim Failed!',
@@ -639,12 +647,13 @@ export default memo(function Detail() {
                 </div>
               </div>
               {Big(data?.earned ?? 0).gt(0) && (
-                <div
-                  className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]'
+                <button
+                  disabled={claiming}
+                  className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%] disabled:opacity-30'
                   onClick={handleClaim}
                 >
-                  Claim
-                </div>
+                  { claiming ? <CircleLoading size={14} className='mr-3'/> : ''} Claim
+                </button>
               )}
             </div>
           </div>
