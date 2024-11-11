@@ -19,6 +19,7 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
       userAccountData,
       netBaseData
     } = useMarketStore();
+
     const isBorrow = action === "borrow";
 
     const {
@@ -69,7 +70,10 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
     };
 
     const handleAction = async () => {
+      
       const value = Big(amount).mul(Big(10).pow(decimals)).toFixed(0);
+      console.log(value, 'value');
+
       if (isBorrow) {
         if (symbol === config.nativeCurrency.symbol) {
           await borrowETH(value);
@@ -128,6 +132,8 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
               onClick={handleApprove}
               disabled={isDisabled}
               loading={approving}
+              amount={amount}
+              maxValue={maxValue}
               className="md:mt-[37px] md:h-[46px] md:leading-[44px] md:rounded-[10px]"
             >
               Approve
@@ -137,6 +143,8 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
               disabled={isDisabled}
               onClick={handleAction}
               loading={loading}
+              amount={amount}
+              maxValue={maxValue}
               className="md:mt-[37px] md:h-[46px] md:leading-[44px] md:rounded-[10px]"
             >
               {isBorrow ? "Borrow" : "Repay"}
@@ -149,7 +157,6 @@ const ActionForm = forwardRef<HTMLDivElement, IProps>(
 );
 
 export default ActionForm;
-
 
 const smartFormatNumber = (amount: Big, decimals: number): string => {
   const formatted = amount.toFixed(decimals).replace(/\.?0+$/, "");

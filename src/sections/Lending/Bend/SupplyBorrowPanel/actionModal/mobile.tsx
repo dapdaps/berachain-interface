@@ -12,7 +12,7 @@ const ActionMobile = forwardRef<HTMLDivElement, IProps>((props: IProps, ref) => 
     <Drawer
       visible={isOpen}
       onClose={onClose}
-      size="50vh"
+      size="500px"
     >
       <div className="py-[23px]">
         <div className="text-[18px] font-[700] text-black px-[24px]">

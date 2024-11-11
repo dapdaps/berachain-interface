@@ -63,13 +63,8 @@ const SupplyBorrowPanel: React.FC = () => {
     return Big(num).toFixed(2);
   }
 
-  console.log('markets', markets);
-  console.log('userAccountData', userAccountData);
-  console.log('netBaseData', netBaseData);
-  
-
   return (
-    <div className='mb-5 md:max-h-[calc(100vh_-_200px)] md:pb-[80px] md:overflow-y-auto'>
+    <div className='mb-5 md:max-h-[calc(100vh_-_262px)] md:pb-[80px] md:overflow-y-auto'>
       <NetBase />
       <div className='flex md:flex-col gap-[26px] mt-10 h-[380px] md:h-[unset]'>
         <div className='bg-black bg-opacity-[0.06] w-1/2 md:w-full rounded-[10px] p-5 md:p-[20px_16px_13px]'>
@@ -189,7 +184,8 @@ const SupplyBorrowPanel: React.FC = () => {
               </span>
             </div>
             <button
-              className="font-montserrat text-base font-semibold leading-4 text-[#7EA82B] underline md:hidden"
+              disabled={Number(rewardValue) <= 0 || claiming}
+              className="font-montserrat text-base font-semibold leading-4 text-[#7EA82B] underline md:hidden disabled:opacity-30"
               onClick={claim}
             >
               {claiming ? <Loading /> : 'Claim'}

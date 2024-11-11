@@ -65,6 +65,9 @@ export default memo(function BGTPageView() {
       width: '20%',
       sort: true,
       render: (text: string, record: any) => {
+        if (parseFloat(record?.depositAmount) === 0) {
+          return '-'
+        }
         return (
           <div className='flex justify-start'>
             <div className='px-[10px] py-[5px] rounded-[12px] border border-[#373A53] bg-white text-black font-Montserrat text-[14px] font-medium leading-[100%]'>
@@ -100,13 +103,14 @@ export default memo(function BGTPageView() {
       width: '20%',
       render: (text: string, record: any) => {
         return (
-          <div
-            className='flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50]'
+          <button
+            disabled={record?.earned <= 0 || record?.claiming}
+            className='flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50] disabled:opacity-30'
             onClick={record.claim}>
             {
               record.claiming ? <Loading /> : 'Claim BGT'
             }
-          </div>
+          </button>
         );
       },
     },

@@ -80,6 +80,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
 
   const handleDisconnect = () => {
     disconnect();
+    setMobileUserInfoVisible(false);
   };
 
   const handleChainSelect = (chainId: number, chain: any) => {

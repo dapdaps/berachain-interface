@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FEES } from '@/configs/pools';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FEES } from "@/configs/pools";
 import {
   priceToUsablePrice,
   priceToUsableTick,
   tickToPrice
-} from '../tick-math';
-import { sortTokens } from '../utils';
-import usePoolInfo from './use-detail-v3';
+} from "../tick-math";
+import { sortTokens } from "../utils";
+import usePoolInfo from "./use-detail-v3";
 
 export default function useData({
   defaultToken0,
@@ -34,12 +34,12 @@ export default function useData({
   const onCleanAll = () => {
     // setToken0(null);
     // setToken1(null);
-    setFee('');
-    onPriceChange('upper', '');
-    onPriceChange('lower', '');
-    setValue0('');
-    setValue1('');
-    setCurrentPrice('');
+    // setFee('');
+    onPriceChange("upper", "");
+    onPriceChange("lower", "");
+    setValue0("");
+    setValue1("");
+    // setCurrentPrice("");
     setNoPair(false);
   };
 
@@ -76,7 +76,7 @@ export default function useData({
 
   const rangeType = useMemo(() => {
     if (!token0 || !token1 || !lowerPrice || !upperPrice) return 0;
-    if (lowerPrice === '0' && upperPrice === '∞') return 3;
+    if (lowerPrice === "0" && upperPrice === "∞") return 3;
     if (!currentPrice || !info) return 0;
     const lowerTick = priceToUsableTick({
       price: lowerPrice,
@@ -103,24 +103,24 @@ export default function useData({
   }, [lowerPrice, upperPrice, currentPrice, info]);
 
   const onPriceChange = useCallback(
-    (type: 'upper' | 'lower', price: any) => {
+    (type: "upper" | "lower", price: any) => {
       if (!price) {
-        type === 'upper' ? setUpperPrice('') : setLowerPrice('');
+        type === "upper" ? setUpperPrice("") : setLowerPrice("");
         return;
       }
-      if (price === '0' || price === '∞') {
-        type === 'upper' ? setUpperPrice(price) : setLowerPrice(price);
+      if (price === "0" || price === "∞") {
+        type === "upper" ? setUpperPrice(price) : setLowerPrice(price);
         return;
       }
       const _price = priceToUsablePrice({ price, token0, token1, fee });
 
-      type === 'upper' ? setUpperPrice(_price) : setLowerPrice(_price);
+      type === "upper" ? setUpperPrice(_price) : setLowerPrice(_price);
     },
     [token0, token1, fee]
   );
 
   const onPointChange = useCallback(
-    (stepType: 'add' | 'minus', type: 'upper' | 'lower') => {
+    (stepType: "add" | "minus", type: "upper" | "lower") => {
       const tickLower = priceToUsableTick({
         price: lowerPrice,
         token0,
@@ -135,19 +135,19 @@ export default function useData({
         fee
       });
 
-      let tick = type === 'lower' ? tickLower : tickUpper;
+      let tick = type === "lower" ? tickLower : tickUpper;
 
       const space = FEES[fee].space;
 
       if (reverse) {
-        stepType === 'add' ? (tick -= space) : (tick += space);
+        stepType === "add" ? (tick -= space) : (tick += space);
       } else {
-        stepType === 'add' ? (tick += space) : (tick -= space);
+        stepType === "add" ? (tick += space) : (tick -= space);
       }
 
       const price = tickToPrice({ tick, token0, token1 });
 
-      type === 'upper' ? setUpperPrice(price) : setLowerPrice(price);
+      type === "upper" ? setUpperPrice(price) : setLowerPrice(price);
     },
     [token0, token1, fee, reverse, lowerPrice, upperPrice]
   );
@@ -171,7 +171,7 @@ export default function useData({
         : [_upperPrice, _lowerPrice];
 
     setLowerPrice(_lp === Infinity ? 0 : _lp);
-    setUpperPrice(_up === Infinity ? '∞' : _up);
+    setUpperPrice(_up === Infinity ? "∞" : _up);
   };
 
   useEffect(() => {
@@ -182,9 +182,9 @@ export default function useData({
     setNoPair(!info);
     if (!info?.currentTick) {
       setLoading(false);
-      setCurrentPrice('');
-      setLowerPrice('');
-      setUpperPrice('');
+      setCurrentPrice("");
+      setLowerPrice("");
+      setUpperPrice("");
       return;
     }
 

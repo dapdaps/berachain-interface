@@ -7,10 +7,16 @@ import { useBgt } from '@/sections/home/hooks/useBgt';
 import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import clsx from 'clsx';
+import { useBgtCount } from '@/hooks/use-bgt-count';
+import useIsMobile from '@/hooks/use-isMobile';
+import Big from 'big.js';
 
 const Home = () => {
   const router = useProgressRouter();
   const bgt = useBgt();
+  const { iBGTCount, BGTCount } = useBgtCount();
+  const isMobile = useIsMobile();
+
   const [viewportHeight, setViewportHeight] = useState('100vh');
   const [visibleHeight, setVisibleHeight] = useState(844);
 
@@ -31,36 +37,39 @@ const Home = () => {
       window.removeEventListener('resize', updateViewportHeight);
     };
   }, []);
-
   return (
-    <div className='relative w-full h-full overflow-hidden bg-[#F5F5F5]'>
+    <div className='relative w-full h-dvh overflow-hidden bg-[#B6DF5D]'>
       <div className='w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]'>
         <div className='flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
           <ConnectWallet />
         </div>
-        <div className='text-white flex items-center gap-x-[17px]'>
+        <div
+          className='text-white flex items-center justify-end gap-x-[10px]'
+          style={isMobile && ((Big(BGTCount || 0).gt(0) && Big(BGTCount || 0).lt(1e2)) || (Big(iBGTCount || 0).gt(0) && Big(iBGTCount || 0).lt(1e2))) ? { scale: 0.85 } : {}}
+        >
           <BGTCoin
             type={CoinType.BGT}
-            count={0}
+            count={BGTCount}
             bp='1001-004'
             onClick={handleBGTClick}
           />
           <BGTCoin
             type={CoinType.iBGT}
-            count={0}
+            count={iBGTCount}
             bp='1001-005'
             onClick={handleBGTClick}
           />
         </div>
       </div>
-      <div className='w-full h-full overflow-y-auto overflow-x-hidden'>
+      <div className='w-full h-dvh overflow-y-scroll overflow-x-hidden'>
         <div
-          className='relative w-full h-[200vw] overflow-hidden'
+          className='relative w-full overflow-hidden'
           style={{
             backgroundImage: "url('/images/mobile/beratown-home.jpg')",
             backgroundSize: '100%',
             backgroundPosition: 'top',
-            backgroundRepeat: 'no-repeat'
+            backgroundRepeat: 'no-repeat',
+            height: visibleHeight + 150 + 'px',
           }}
         >
           <div className='relative w-[182px] h-[25.128vw] top-[19.487vw] left-[10.256vw]'>

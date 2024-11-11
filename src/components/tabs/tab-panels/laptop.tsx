@@ -21,7 +21,7 @@ export default function Laptop({
   return (
     <div
       ref={bodyRef}
-      className={`shadow-shadow1 rounded-[20px] pt-[8.5px] md:shadow-none ${bodyClassName}`}
+      className={`shadow-shadow1 rounded-[20px] lg:pt-[8.5px] md:shadow-none ${bodyClassName}`}
       style={{
         borderTopLeftRadius: currentTabIndex === 0 ? 0 : 20,
         borderTopRightRadius:

@@ -14,7 +14,7 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
   const [trade, setTrade] = useState<any>();
   const { account, provider } = useAccount();
-  const toast = useToast();
+`  const toast = useToast();`
   const { addAction } = useAddAction('dapp');
   const lastestCachedKey = useRef('');
   const cachedTokens = useRef<any>();

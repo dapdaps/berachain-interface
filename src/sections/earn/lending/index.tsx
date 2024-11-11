@@ -84,6 +84,7 @@ const EarnLending = (props: any) => {
         .forEach((bend: any) => {
           _tokens.push({
             ...bend,
+            address: bend.underlyingAsset,
             protocol: Lendings.Bend.basic,
             inWallet: bend.balance,
             supplyAPR: Big(bend.supplyAPY || 0).times(100).toFixed(2) + '%',
@@ -170,6 +171,9 @@ const EarnLending = (props: any) => {
     bendInit();
   }, [chainId, provider]);
 
+  console.log(tokenList, 'tokenList');
+  
+
   return (
     <div className="">
       <div className="flex justify-between items-center md:gap-[30px]">
@@ -204,7 +208,7 @@ const EarnLending = (props: any) => {
                     />
                     <div>{tab === 'Supply' ? 'You supplied only' : 'Borrow available only'}</div>
                 </div>
-                    <Dropdown
+                  <Dropdown
                     list={lendingProtocols}
                     value={protocol}
                     onChange={(val) => {
@@ -244,25 +248,6 @@ const EarnLending = (props: any) => {
           cursorStyle={{ borderRadius: 10 }}
         />
       </div>
-      {
-        tab === 'Borrow' && (
-          <div className="flex items-center justify-end gap-[11px] mt-[18px]">
-            <div className="text-black text-[14px]">Borrow available only</div>
-            <div
-              className="w-[20px] h-[20px] rounded-[6px] bg-white border border-black] flex justify-center items-center p-[2px]"
-              onClick={() => {
-                setBorrowAvailable(!borrowAvailable);
-              }}
-            >
-              {
-                borrowAvailable && (
-                  <div className="w-full h-full rounded-[5px] bg-[#FFDC50]"></div>
-                )
-              }
-            </div>
-          </div>
-        )
-      }
       {
         !isMobile ? <LaptopList loading={dolomiteLoading} list={tokenList} tab={tab} /> : (
           <div className="mt-[15px] pb-[80px]">
@@ -347,10 +332,10 @@ const EarnLending = (props: any) => {
                     </div>
                     <div className="text-right">
                       <div className="text-[14px] text-[#3D405A] font-[500]">
-                        {tab} APR
+                        {tab} {token.symbol === "HONEY" ? 'APY' : 'APR'}
                       </div>
                       <div className="mt-[5px]" style={{ color: tab === 'Supply' ? '#0A9D20' : '#F0631D' }}>
-                        {tab === 'Supply' ? token.supplyAPR : token.borrowAPR}
+                        {tab === 'Supply' ? token.supplyAPR : token.protocol.name ==="Bend" && token.symbol === "HONEY" ? Big(token?.borrowAPY).times(100).toFixed(2) + '%' : token.borrowAPR}
                       </div>
                     </div>
                   </div>

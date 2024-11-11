@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { useParams, useRouter, usePathname } from 'next/navigation';
-import BearBackground from '@/components/bear-background';
-import SwitchTabs from '@/components/switch-tabs';
-import PageBack from '@/components/back';
-import useIsMobile from '@/hooks/use-isMobile';
+import { useParams, useRouter, usePathname } from "next/navigation";
+import BearBackground from "@/components/bear-background";
+import SwitchTabs from "@/components/switch-tabs";
+import PageBack from "@/components/back";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const Laptop = ({ params, router, pathname, children }: any) => {
   return (
-    <div className='pt-[30px] flex flex-col items-center'>
-      <PageBack className='absolute left-[36px] top-[31px]' />
-      {params.dapp === 'ooga-booga' ? (
-        <div className='h-[80px]' />
+    <div className="pt-[30px] flex flex-col items-center">
+      <PageBack className="absolute left-[36px] top-[31px]" />
+      {params.dapp === "ooga-booga" ? (
+        <div className="h-[80px]" />
       ) : (
         <SwitchTabs
           tabs={[
-            { label: 'Swap', value: 'swap' },
-            { label: 'Liquidity', value: 'pools' }
+            { label: "Swap", value: "swap" },
+            { label: "Liquidity", value: "pools" }
           ]}
           onChange={(val) => {
             router.replace(`/dex/${params.dapp}/${val}`);
           }}
-          current={pathname.includes('pools') ? 'pools' : 'swap'}
-          className='w-[400px]'
+          current={pathname.includes("pools") ? "pools" : "swap"}
+          className="w-[400px]"
         />
       )}
       {children}
@@ -32,19 +32,19 @@ const Laptop = ({ params, router, pathname, children }: any) => {
 
 const Mobile = ({ params, router, pathname, children }: any) => {
   return (
-    <div className='relative pt-[50px] h-full'>
-      <div className='absolute top-[20px] right-[10px]'>
-        {params.dapp !== 'ooga-booga' && (
+    <div className="relative pt-[50px] h-full">
+      <PageBack className="absolute left-[12px] top-[22px]" />
+      <div className="absolute top-[20px] right-[10px] w-[200px]">
+        {params.dapp !== "ooga-booga" && (
           <SwitchTabs
             tabs={[
-              { label: 'Swap', value: 'swap' },
-              { label: 'Liquidity', value: 'pools' }
+              { label: "Swap", value: "swap" },
+              { label: "Liquidity", value: "pools" }
             ]}
             onChange={(val) => {
               router.replace(`/dex/${params.dapp}/${val}`);
             }}
-            current={pathname.includes('pools') ? 'pools' : 'swap'}
-            className='w-[200px]'
+            current={pathname.includes("pools") ? "pools" : "swap"}
           />
         )}
       </div>
@@ -64,7 +64,7 @@ export default function DexLayout({
   const isMobile = useIsMobile();
 
   return (
-    <BearBackground type='dapp'>
+    <BearBackground type="dapp">
       {isMobile ? (
         <Mobile {...{ params, router, pathname, children }} />
       ) : (

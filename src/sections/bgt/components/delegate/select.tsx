@@ -11,13 +11,19 @@ import { multicall } from '@/utils/multicall';
 import Big from "big.js";
 import { ethers } from "ethers";
 import { useRouter } from "next/navigation";
-import { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import useIsMobile from '@/hooks/use-isMobile';
+import Empty from '@/components/empty';
+import Back from '@/sections/bgt/validator/components/back';
+import Skeleton from 'react-loading-skeleton';
 const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
-export default memo(function Select(props: IProps) {
+export default memo(function Select(props: any) {
   const {
     visible,
-    onClose
+    onClose,
+    onAddressSelect,
   } = props
+  const isMobile = useIsMobile();
 
   const Columns: Column[] = [
     {
@@ -242,10 +248,17 @@ export default memo(function Select(props: IProps) {
     }
   }, [visible, account])
   return (
-    <Modal open={visible} onClose={onClose}>
-      <div className='px-[32px] pt-[28px] w-[1040px] h-[452px] pb-[69px] overflow-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,_0,_0,_0.25)]'>
+    <Modal open={visible} onClose={onClose} innerStyle={{ width: 'unset' }}>
+      <div className='px-[32px] md:px-[12px] pt-[28px] w-[1040px] md:w-full h-[452px] pb-[69px] overflow-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,_0,_0,_0.25)]'>
         <div className='flex flex-col gap-[8px]'>
-          <div className='text-lg font-semibold leading-7'>Validator Select</div>
+          <div className='flex items-center gap-[16px] text-lg font-semibold leading-7'>
+            {
+              isMobile && (
+                <Back onBack={onClose} />
+              )
+            }
+            Validator Select
+          </div>
           <div className='flex'>
             <div className='w-auto flex items-center border bg-[#fff] rounded-[12px] overflow-hidden border-[#373A53] px-[15px] gap-[10px]'>
               <svg
@@ -282,15 +295,58 @@ export default memo(function Select(props: IProps) {
               />
             </div>
           </div>
-          <FlexTable
-            loading={loading}
-            columns={Columns}
-            list={filterValidators}
-            onRow={(record) => {
-              router.replace('/bgt/validator?address=' + record?.address)
-              onClose()
-            }}
-          />
+          {
+            !isMobile && (
+              <FlexTable
+                loading={loading}
+                columns={Columns}
+                list={filterValidators}
+                onRow={(record) => {
+                  router.replace('/bgt/validator?address=' + record?.address)
+                  onClose()
+                }}
+              />
+            )
+          }
+          {
+            isMobile && (
+              <>
+                {
+                  !loading && (filterValidators?.length > 0 ? filterValidators?.map((d: any, idx: number) => (
+                    <div key={idx} className="w-full flex flex-wrap gap-y-[36px] bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[17px_12px_24px]">
+                      {
+                        Columns.map((c: any, index: number) => (
+                          <div
+                            key={`col-${index}`}
+                            className={`${index % 2 === 0 ? 'w-[60%]' : 'w-[40%]'}`}
+                            onClick={() => {
+                              onAddressSelect(d?.address);
+                              onClose();
+                            }}
+                          >
+                            <div className="text-[#3D405A] font-[500] text-[14px] mb-[5px] whitespace-nowrap">{c.title}</div>
+                            {c.render(d[c.dataIndex], d)}
+                          </div>
+                        ))
+                      }
+                    </div>
+                  )) : (
+                    <div className="py-[30px]">
+                      <Empty desc="No data" />
+                    </div>
+                  ))
+                }
+                {
+                  loading && (
+                    <div className="w-full flex flex-col gap-[30px]">
+                      <Skeleton width="100%" height={300} borderRadius={10} />
+                      <Skeleton width="100%" height={300} borderRadius={10} />
+                    </div>
+                  )
+                }
+              </>
+            )
+          }
         </div>
       </div>
     </Modal>

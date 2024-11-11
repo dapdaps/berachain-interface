@@ -1,8 +1,11 @@
 'use client';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import useTokenBalance from '@/hooks/use-token-balance';
 import { balanceFormated } from '@/utils/balance';
 import Loading from '@/components/circle-loading';
+import Range from '@/components/range';
+import { motion } from 'framer-motion';
+import Big from 'big.js';
 
 export default function TokenAmout({
   type,
@@ -25,6 +28,14 @@ export default function TokenAmout({
     currency?.decimals,
     currency?.chainId
   );
+  const [percent, setPercent] = useState<any>(0);
+  const handleRangeChange = (e: any) => {
+    const formatedBalance = balanceFormated(tokenBalance);
+    if (['-', 'Loading', '0'].includes(formatedBalance)) return;
+    const _percent = e.target.value || 0;
+    setPercent(_percent);
+    onAmountChange?.(Big(tokenBalance).times(Big(_percent).div(100)).toFixed(currency?.decimals).replace(/[.]?0+$/, ''));
+  };
   useEffect(() => {
     if (tokenBalance && onUpdateCurrencyBalance)
       onUpdateCurrencyBalance(tokenBalance);
@@ -92,6 +103,28 @@ export default function TokenAmout({
         </div>
       </div>
 
+      {
+        type === 'in' && (
+          <div className="flex justify-between md:flex-col md:items-stretch md:justify-start items-center gap-[22px] mt-[12px]">
+            <div className="flex items-center gap-[8px]">
+              {
+                BalancePercentList.map((p) => (
+                  <motion.div
+                    key={p.value}
+                    className="cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[14px] font-[400] px-[8px]"
+                    animate={percent == p.value ? { background: '#FFDC50' } : {}}
+                    onClick={() => handleRangeChange({ target: p })}
+                  >
+                    {p.label}
+                  </motion.div>
+                ))
+              }
+            </div>
+            <Range style={{ marginTop: 0, flex: 1 }} value={percent} onChange={handleRangeChange} />
+          </div>
+        )
+      }
+
       <div
         onClick={() => {
           const formatedBalance = balanceFormated(tokenBalance);
@@ -119,3 +152,10 @@ export default function TokenAmout({
     </div>
   );
 }
+
+const BalancePercentList = [
+  { value: 25, label: '25%' },
+  { value: 50, label: '50%' },
+  { value: 75, label: '75%' },
+  { value: 100, label: 'Max' },
+];

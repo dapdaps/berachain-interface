@@ -1,34 +1,30 @@
-import { useState, useMemo, useEffect } from 'react';
-import useTrade from '../useTrade';
-import { useImportTokensStore } from '@/stores/import-tokens';
-import { useDebounceFn } from 'ahooks';
-import useAccount from '@/hooks/use-account';
-import Card from '@/components/card';
-import Header from '../Header';
-import TokenAmout from '../TokenAmount';
-import Fees from '../Fees';
-import SubmitBtn from '../SubmitBtn';
-import ExchangeIcon from './ExchangeIcon';
-import Result from './Result';
-import { uniqBy } from 'lodash';
-import Big from 'big.js';
-import TokenSelector from '../TokenSelector';
-import { DEFAULT_CHAIN_ID } from '@/configs/index';
-import chains from '@/configs/chains';
-
-type Props = {
-  dapp: any;
-  outputCurrencyReadonly?: boolean;
-  showSetting?: boolean;
-};
+import { useState, useMemo, useEffect } from "react";
+import useTrade from "../useTrade";
+import { useImportTokensStore } from "@/stores/import-tokens";
+import { useDebounceFn } from "ahooks";
+import useAccount from "@/hooks/use-account";
+import Card from "@/components/card";
+import Header from "../Header";
+import TokenAmout from "../TokenAmount";
+import Fees from "../Fees";
+import SubmitBtn from "../SubmitBtn";
+import ExchangeIcon from "./ExchangeIcon";
+import Result from "./Result";
+import { uniqBy } from "lodash";
+import Big from "big.js";
+import TokenSelector from "../TokenSelector";
+import { DEFAULT_CHAIN_ID } from "@/configs/index";
+import chains from "@/configs/chains";
 
 export default function Swap({
   dapp,
   outputCurrencyReadonly = false,
-  showSetting = true
-}: Props) {
-  const [inputCurrencyAmount, setInputCurrencyAmount] = useState('');
-  const [outputCurrencyAmount, setOutputCurrencyAmount] = useState('');
+  showSetting = true,
+  from,
+  onSuccess
+}: any) {
+  const [inputCurrencyAmount, setInputCurrencyAmount] = useState("");
+  const [outputCurrencyAmount, setOutputCurrencyAmount] = useState("");
   const [inputCurrency, setInputCurrency] = useState<any>(
     dapp?.defaultInputCurrency
   );
@@ -36,28 +32,29 @@ export default function Swap({
     dapp?.defaultOutputCurrency
   );
   const [displayCurrencySelect, setDisplayCurrencySelect] = useState(false);
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState('');
-  const [maxInputBalance, setMaxInputBalance] = useState('');
-  const [errorTips, setErrorTips] = useState('');
+  const [selectedTokenAddress, setSelectedTokenAddress] = useState("");
+  const [maxInputBalance, setMaxInputBalance] = useState("");
+  const [errorTips, setErrorTips] = useState("");
   const [updater, setUpdater] = useState(0);
   const { importTokens, addImportToken }: any = useImportTokensStore();
   const { account, chainId } = useAccount();
   const [showDetail, setShowDetail] = useState(true);
 
-  const [selectType, setSelectType] = useState<'in' | 'out'>('in');
+  const [selectType, setSelectType] = useState<"in" | "out">("in");
   const { loading, trade, onQuoter, onSwap } = useTrade({
     chainId: DEFAULT_CHAIN_ID,
     template: dapp.name,
     onSuccess: () => {
       setUpdater(Date.now());
       runQuoter();
+      onSuccess?.();
     }
   });
 
   const { run: runQuoter } = useDebounceFn(
     () => {
       onQuoter({ inputCurrency, outputCurrency, inputCurrencyAmount });
-      setOutputCurrencyAmount('');
+      setOutputCurrencyAmount("");
     },
     {
       wait: 500
@@ -73,7 +70,7 @@ export default function Swap({
         ...token,
         address: token.address.toLowerCase()
       })),
-      'address'
+      "address"
     );
   }, [importTokens, dapp]);
 
@@ -81,17 +78,17 @@ export default function Swap({
     let _inputCurrency: any = inputCurrency;
     let _outputCurrency: any = outputCurrency;
 
-    if (selectType === 'in') {
+    if (selectType === "in") {
       _inputCurrency = token;
       if (token.address.toLowerCase() === outputCurrency?.address.toLowerCase())
         _outputCurrency = null;
     }
-    if (selectType === 'out') {
+    if (selectType === "out") {
       _outputCurrency = token;
       if (token.address.toLowerCase() === inputCurrency?.address.toLowerCase())
         _inputCurrency = null;
     }
-    if (!_inputCurrency || !_outputCurrency) setOutputCurrencyAmount('');
+    if (!_inputCurrency || !_outputCurrency) setOutputCurrencyAmount("");
     setInputCurrency(_inputCurrency);
     setOutputCurrency(_outputCurrency);
     setDisplayCurrencySelect(false);
@@ -100,48 +97,49 @@ export default function Swap({
   useEffect(() => {
     setInputCurrency(dapp?.defaultInputCurrency);
     setOutputCurrency(dapp?.defaultOutputCurrency);
-    setInputCurrencyAmount('');
-    setOutputCurrencyAmount('');
+    setInputCurrencyAmount("");
+    setOutputCurrencyAmount("");
   }, [dapp]);
 
   useEffect(() => {
     if (!inputCurrency || !outputCurrency) {
-      setErrorTips('Select a token');
+      setErrorTips("Select a token");
       return;
     }
     if (Number(inputCurrencyAmount || 0) === 0) {
-      setErrorTips('Enter an amount');
-      setOutputCurrencyAmount('');
+      setErrorTips("Enter an amount");
+      setOutputCurrencyAmount("");
       return;
     }
     if (Big(inputCurrencyAmount).gt(maxInputBalance || 0)) {
       setErrorTips(`Insufficient ${inputCurrency?.symbol} Balance`);
     } else {
-      setErrorTips('');
+      setErrorTips("");
     }
 
     runQuoter();
   }, [inputCurrency, outputCurrency, inputCurrencyAmount, maxInputBalance]);
 
   useEffect(() => {
-    setOutputCurrencyAmount(trade?.outputCurrencyAmount || '');
+    setOutputCurrencyAmount(trade?.outputCurrencyAmount || "");
   }, [trade]);
 
   return (
     <Card>
       <Header
         showSetting={showSetting}
-        style={{ justifyContent: 'flex-start' }}
+        style={{ justifyContent: "space-between" }}
+        title={from === "marketplace" ? `GET ${outputCurrency.symbol}` : ""}
       />
       <TokenAmout
-        type='in'
+        type="in"
         currency={inputCurrency}
         amount={inputCurrencyAmount}
         prices={{}}
         account
         onCurrencySelectOpen={() => {
           setDisplayCurrencySelect(true);
-          setSelectType('in');
+          setSelectType("in");
           setSelectedTokenAddress(inputCurrency?.address);
         }}
         onUpdateCurrencyBalance={(balance: any) => {
@@ -161,12 +159,12 @@ export default function Swap({
           ];
           setInputCurrency(_inputCurrency);
           setOutputCurrency(_outputCurrency);
-          setOutputCurrencyAmount('');
+          setOutputCurrencyAmount("");
           if (Big(inputCurrencyAmount || 0).gt(0)) runQuoter();
         }}
       />
       <TokenAmout
-        type='out'
+        type="out"
         currency={outputCurrency}
         amount={outputCurrencyAmount}
         disabled
@@ -176,7 +174,7 @@ export default function Swap({
         onCurrencySelectOpen={() => {
           if (outputCurrencyReadonly) return;
           setDisplayCurrencySelect(true);
-          setSelectType('out');
+          setSelectType("out");
           setSelectedTokenAddress(outputCurrency?.address);
         }}
         updater={`out-${updater}`}
@@ -220,6 +218,13 @@ export default function Swap({
         }}
         updater={`button-${updater}`}
       />
+      {from === "marketplace" && (
+        <div className="text-center  mt-[12px]">
+          <a href="/bridge" className="underline text-[14px] text-[#3D405A]">
+            Bridge Assets to Berachain
+          </a>
+        </div>
+      )}
       <TokenSelector
         display={displayCurrencySelect}
         chainIdNotSupport={chainId !== DEFAULT_CHAIN_ID}

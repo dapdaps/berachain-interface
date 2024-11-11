@@ -25,10 +25,10 @@ const DappHeader: React.FC = () => {
   if (dappName) {
     return (
       <div className="flex gap-2 my-[30px] w-full justify-center items-center">
-        <img 
-          src={`/images/dapps/${dappName}.svg`} 
-          alt={dappName as string} 
-          className="w-9 h-9" 
+        <img
+          src={`/images/dapps/${dappName}.svg`}
+          alt={dappName as string}
+          className="w-9 h-9"
         />
         <span className="font-CherryBomb text-xl text-black">
           {capitalize(dappName as string)}

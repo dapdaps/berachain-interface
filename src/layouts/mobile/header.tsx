@@ -6,6 +6,7 @@ import Logo from '@/layouts/main/logo';
 import IconMap from '@public/images/icon-map.svg';
 import useMapModalStore from '@/stores/useMapModalStore';
 import { useProgressRouter } from '@/hooks/use-progress-router';
+import { useBgtCount } from '@/hooks/use-bgt-count';
 
 const MainLayoutHeader = (props: Props) => {
   const {
@@ -15,6 +16,7 @@ const MainLayoutHeader = (props: Props) => {
 
   const store: any = useMapModalStore();
   const router = useProgressRouter();
+  const { iBGTCount, BGTCount } = useBgtCount();
 
   const goHome = () => {
     router.replace('/');
@@ -27,8 +29,8 @@ const MainLayoutHeader = (props: Props) => {
     >
       <div className="w-full h-full px-[40px] flex justify-between items-center">
         <div className="text-white flex items-center gap-x-[17px]">
-          <BGTCoin type={CoinType.BGT} count={0} bp="1001-004" />
-          <BGTCoin type={CoinType.iBGT} count={0} bp="1001-005" />
+          <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1001-004" />
+          <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1001-005" />
           <ConnectWallet />
         </div>
       </div>

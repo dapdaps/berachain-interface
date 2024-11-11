@@ -43,66 +43,42 @@ const Drawer = (props: Props) => {
   useEffect(() => {
     setVisibleInner(visible);
   }, [visible]);
+  
+  if (typeof window === "undefined") return null;
 
-  if (!visible) {
-    return null;
-  }
 
   return ReactDOM.createPortal((
     <AnimatePresence mode="wait">
-      <motion.div
-        className={`fixed left-0 top-0 w-[100vw] h-[100vh] z-[49] bg-[rgba(0,0,0,.5)] ${overlayClassName}`}
-        style={overlayStyle}
-        onClick={handleMask}
-        variants={{
-          visible: {
-            opacity: 1,
-          },
-          hidden: {
-            opacity: 0,
-            transition: {
-              delay: 0.2,
-            },
-          },
-        }}
-        initial="hidden"
-        exit="hidden"
-        animate={visibleInner ? 'visible' : 'hidden'}
-      >
+      {visible && (
         <motion.div
-          ref={drawerRef}
-          className={`absolute z-[1] bg-[#FFFDEB] ${className}`}
-          style={{
-            ...style,
-            ...DrawerDirectionStyles[direction],
-            ...sizeStyles,
-          }}
-          variants={{
-            visible: {
-              opacity: 1,
-              ...drawerAnimations.visible,
-              transition: {
-                delay: 0.2,
-                type: 'spring',
-                stiffness: 300,
-                damping: 25,
-              },
-            },
-            hidden: {
-              opacity: 0,
-              ...drawerAnimations.hidden,
-            },
-          }}
-          initial="hidden"
-          exit="hidden"
-          animate={visibleInner ? 'visible' : 'hidden'}
+          className={`fixed inset-0 bg-black bg-opacity-50 z-50 ${overlayClassName}`}
+          style={overlayStyle}
+          onClick={handleMask}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          {children}
-        </motion.div>
-      </motion.div>
+          <motion.div
+            ref={drawerRef}
+            className={`fixed bg-white z-50 ${className}`}
+            style={{
+              ...style,
+              ...DrawerDirectionStyles[direction],
+              ...sizeStyles,
+            }}
+            initial={drawerAnimations.hidden}
+            animate={drawerAnimations.visible}
+            exit={drawerAnimations.hidden}
+          >
+            {children}
+          </motion.div>
+        </motion.div>)
+}
     </AnimatePresence>
   ), document.body);
 };
+
+// 
 
 export default Drawer;
 

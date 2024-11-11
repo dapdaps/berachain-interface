@@ -11,11 +11,11 @@ interface Props {
 export default function Bear({
     cars, hats, clothes, necklaces
 }: Props) {
+
     const hasCars = useMemo(() => {
         if (cars) {
             return cars.some(item => item.checked)
         }
-
         return false
     }, [cars])
 

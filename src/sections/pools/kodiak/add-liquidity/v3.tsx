@@ -1,23 +1,22 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
-import Loading from '@/components/circle-loading';
-import AddButton from '../../components/button/increase-button';
-import useIncrease from '../../hooks/use-add-v3';
-import DepositAmounts from '../../components/deposit-amounts/v3';
-import Chart from '../../components/chart';
-import Empty from '../../components/empty';
-import OutRangeHints from '../../components/out-range-hints';
-import PoolNoExsitHints from '../../components/pool-no-exsit-hints';
-import SelectPriceRange from '../../components/select-price-range';
-import StartingPrice from '../../components/starting-price';
-import TokenSwitcher from '../../components/token-switcher';
-import useData from '../../hooks/use-data-v3';
-import kodiak from '@/configs/pools/kodiak';
+import { useState, forwardRef, useImperativeHandle } from "react";
+import Loading from "@/components/circle-loading";
+import AddButton from "../../components/button/increase-button";
+import useIncrease from "../../hooks/use-add-v3";
+import DepositAmounts from "../../components/deposit-amounts/v3";
+import Chart from "../../components/chart";
+import Empty from "../../components/empty";
+import OutRangeHints from "../../components/out-range-hints";
+import PoolNoExsitHints from "../../components/pool-no-exsit-hints";
+import SelectPriceRange from "../../components/select-price-range";
+import TokenSwitcher from "../../components/token-switcher";
+import useData from "../../hooks/use-data-v3";
+import kodiak from "@/configs/pools/kodiak";
 
 export default forwardRef(function Add(
-  { onSuccess, tokenSelectable, defaultToken0, defaultToken1, defaultFee }: any,
+  { onSuccess, defaultToken0, defaultToken1, defaultFee }: any,
   ref
 ) {
-  const [errorTips, setErrorTips] = useState('');
+  const [errorTips, setErrorTips] = useState("");
 
   const {
     token0,
@@ -75,13 +74,13 @@ export default forwardRef(function Add(
   return (
     <>
       {loading ? (
-        <div className='h-[300px] flex justify-center items-center'>
+        <div className="h-[300px] flex justify-center items-center">
           <Loading size={30} />
         </div>
       ) : (
         <>
-          <div className='flex items-center justify-between md:justify-start'>
-            <div className='text-[16px] font-semibold md:hidden'>
+          <div className="flex items-center justify-between md:justify-start">
+            <div className="text-[16px] font-semibold md:hidden">
               Set Price Range
             </div>
             {token0 && token1 && (
@@ -98,7 +97,7 @@ export default forwardRef(function Add(
               currentPrice={currentPrice}
               fee={fee}
               lowerPrice={lowerPrice}
-              highPrice={upperPrice === '∞' ? 2 ** 96 : upperPrice}
+              highPrice={upperPrice === "∞" ? 2 ** 96 : upperPrice}
               token0={token0}
               token1={token1}
               onPriceChange={onPriceChange}
@@ -141,9 +140,9 @@ export default forwardRef(function Add(
           )} */}
         </>
       )}
-      <div className='h-[20px] md:h-[10px]' />
+      <div className="h-[20px] md:h-[10px]" />
       <DepositAmounts
-        label='Deposit amounts'
+        label="Deposit amounts"
         token0={token0}
         token1={token1}
         value0={value0}
@@ -159,7 +158,7 @@ export default forwardRef(function Add(
         }}
       />
       <AddButton
-        text='Add Liquidity'
+        text="Add Liquidity"
         errorTips={errorTips}
         loading={loading || adding}
         onClick={() => {

@@ -4,9 +4,11 @@ import ActionForm from '@/sections/Lending/Bend/SupplyBorrowPanel/actionModal/fo
 
 const ActionLaptop = forwardRef<HTMLDivElement, IProps>(
   (props: IProps, ref) => {
-    const { action, className } = props;
+    const { action, className, isOpen } = props;
 
     const isBorrow = action === "borrow";
+
+    if (!isOpen) return null;
 
     return (
       <div className={`${className}`} ref={ref}>
