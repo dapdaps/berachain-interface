@@ -5,7 +5,7 @@ import { useDebounceFn } from "ahooks";
 import useAccount from "@/hooks/use-account";
 import Card from "@/components/card";
 import Header from "../Header";
-import TokenAmout from "../TokenAmount";
+import TokenAmount from "../TokenAmount";
 import Fees from "../Fees";
 import SubmitBtn from "../SubmitBtn";
 import ExchangeIcon from "./ExchangeIcon";
@@ -129,7 +129,7 @@ export default function Swap({
         style={{ justifyContent: "space-between" }}
         title={from === "marketplace" ? `GET ${outputCurrency.symbol}` : ""}
       />
-      <TokenAmout
+      <TokenAmount
         type="in"
         currency={inputCurrency}
         amount={inputCurrencyAmount}
@@ -161,14 +161,14 @@ export default function Swap({
           if (Big(inputCurrencyAmount || 0).gt(0)) runQuoter();
         }}
       />
-      <TokenAmout
+      <TokenAmount
         type="out"
         currency={outputCurrency}
         amount={outputCurrencyAmount}
         disabled
         prices={{}}
         account
-        outputCurrencyReadonly={outputCurrencyReadonly}
+        readOnly={outputCurrencyReadonly}
         onCurrencySelectOpen={() => {
           if (outputCurrencyReadonly) return;
           setDisplayCurrencySelect(true);
