@@ -20,7 +20,8 @@ export default function Swap({
   dapp,
   outputCurrencyReadonly = false,
   showSetting = true,
-  from
+  from,
+  onSuccess
 }: any) {
   const [inputCurrencyAmount, setInputCurrencyAmount] = useState("");
   const [outputCurrencyAmount, setOutputCurrencyAmount] = useState("");
@@ -46,6 +47,7 @@ export default function Swap({
     onSuccess: () => {
       setUpdater(Date.now());
       runQuoter();
+      onSuccess?.();
     }
   });
 
