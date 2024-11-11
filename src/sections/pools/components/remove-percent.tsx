@@ -1,5 +1,6 @@
 import { memo } from "react";
 import styled from "styled-components";
+import Range from "@/components/range";
 
 const StyledWrap = styled.div`
   border-radius: 12px;
@@ -102,15 +103,12 @@ const PoolRemoveAmount = ({ percent = 0, setPercent }: any) => {
           })}
         </div>
       </StyledQuick>
-      <StyledInputRange>
-        <input
-          type="range"
-          value={percent}
-          onChange={(ev) => {
-            setPercent(ev.target.value);
-          }}
-        />
-      </StyledInputRange>
+      <Range
+        value={percent}
+        onChange={(ev: any) => {
+          setPercent(ev.target.value);
+        }}
+      />
     </StyledWrap>
   );
 };

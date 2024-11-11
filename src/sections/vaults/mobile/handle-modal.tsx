@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/modal";
 import Input from "@/sections/pools/components/deposit-amounts/input";
-import { StyledInputRange } from "@/sections/pools/components/remove-percent";
+import Range from "@/components/range";
 import {
   StyledHeaderAction,
   StyledHeaderActions
@@ -79,10 +79,10 @@ export default function HandleModal({
           />
           <StyledHeaderActions className="mt-[14px]">
             {[
-              { label: "10%", value: 0.1 },
-              { label: "20%", value: 0.2 },
-              { label: "50%", value: 0.5 },
-              { label: "Max", value: 1 }
+              { label: "10%", value: 10 },
+              { label: "20%", value: 20 },
+              { label: "50%", value: 50 },
+              { label: "Max", value: 100 }
             ].map((item, i) => (
               <StyledHeaderAction
                 key={i}
@@ -91,7 +91,11 @@ export default function HandleModal({
                 } cursor-pointer`}
                 onClick={() => {
                   if (!balance) return;
-                  setValue(Big(balance).mul(item.value).toString());
+                  setValue(
+                    Big(balance)
+                      .mul(item.value / 100)
+                      .toString()
+                  );
                   setPercent(item.value);
                 }}
               >
@@ -100,21 +104,18 @@ export default function HandleModal({
             ))}
           </StyledHeaderActions>
           <div className="mt-[30px]">
-            <StyledInputRange>
-              <input
-                type="range"
-                value={percent * 100}
-                onChange={(ev: any) => {
-                  setPercent(ev.target.value / 100);
-                  if (balance)
-                    setValue(
-                      Big(balance || 0)
-                        .mul(ev.target.value / 100)
-                        .toString()
-                    );
-                }}
-              />
-            </StyledInputRange>
+            <Range
+              value={percent}
+              onChange={(ev: any) => {
+                setPercent(ev.target.value);
+                if (balance)
+                  setValue(
+                    Big(balance || 0)
+                      .mul(ev.target.value / 100)
+                      .toString()
+                  );
+              }}
+            />
           </div>
           <div className="mt-[30px]">
             <Button
