@@ -54,7 +54,7 @@ const BGTMobileView = (props: Props) => {
             tab === 'market' ? (
               <motion.div
                 key="market"
-                className="max-h-[calc(100%_-_102px)] overflow-y-auto"
+                className="max-h-[calc(100%_-_170px)] overflow-y-auto pb-[20px]"
                 variants={{
                   visible: {
                     opacity: 1,
@@ -138,7 +138,7 @@ const BGTMobileView = (props: Props) => {
             ) : (
               <motion.div
                 key="vaults"
-                className="max-h-[calc(100%_-_102px)] overflow-y-auto"
+                className="max-h-[calc(100%_-_170px)] overflow-y-auto pb-[20px]"
                 variants={{
                   visible: {
                     opacity: 1,
@@ -154,7 +154,7 @@ const BGTMobileView = (props: Props) => {
                 {
                   filterList?.length > 0 ? (
                     <>
-                      <div className="mt-[20px] px-[12px]">
+                      {/*<div className="mt-[20px] px-[12px]">
                         <button
                           type="button"
                           className="w-full h-[40px] flex justify-center items-center gap-[10px] border border-[#373A53] rounded-[10px] bg-white font-[600] text-[16px] text-black"
@@ -165,7 +165,7 @@ const BGTMobileView = (props: Props) => {
                             <path d="M1 1L5.8 7L1 13" stroke="black" strokeWidth="2" strokeLinecap="round" />
                           </svg>
                         </button>
-                      </div>
+                      </div>*/}
                       <div className="mt-[12px] px-[12px]">
                         {
                           filterList.map((record: any, idx: number) => (

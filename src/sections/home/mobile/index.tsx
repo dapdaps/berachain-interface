@@ -8,11 +8,14 @@ import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import clsx from 'clsx';
 import { useBgtCount } from '@/hooks/use-bgt-count';
+import useIsMobile from '@/hooks/use-isMobile';
+import Big from 'big.js';
 
 const Home = () => {
   const router = useProgressRouter();
   const bgt = useBgt();
   const { iBGTCount, BGTCount } = useBgtCount();
+  const isMobile = useIsMobile();
 
   const [viewportHeight, setViewportHeight] = useState('100vh');
   const [visibleHeight, setVisibleHeight] = useState(844);
@@ -40,7 +43,10 @@ const Home = () => {
         <div className='flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
           <ConnectWallet />
         </div>
-        <div className='text-white flex items-center gap-x-[17px]'>
+        <div
+          className='text-white flex items-center justify-end gap-x-[10px]'
+          style={isMobile && ((Big(BGTCount || 0).gt(0) && Big(BGTCount || 0).lt(1e2)) || (Big(iBGTCount || 0).gt(0) && Big(iBGTCount || 0).lt(1e2))) ? { scale: 0.85 } : {}}
+        >
           <BGTCoin
             type={CoinType.BGT}
             count={BGTCount}
