@@ -55,7 +55,10 @@ const Modal: React.FC<ModalProps> = ({
           style={style}
           onClick={handleBackdropClick}
         >
-          <div className={`rounded-lg relative lg:w-full ${innerClassName}`} style={innerStyle}>
+          <div
+            className={`rounded-lg relative ${innerClassName}`}
+            style={innerStyle}
+          >
             {closeIcon || onClose ? (
               <button
                 onClick={onClose}

@@ -1,4 +1,4 @@
-import useIsMobile from '@/hooks/use-isMobile';
+import useIsMobile from "@/hooks/use-isMobile";
 
 export const config: any = {
   laptop: {
@@ -16,7 +16,7 @@ export const config: any = {
   mobile: {
     dashboard: {
       tabHeight: 62,
-      tabWidth: 194,
+      tabWidth: 180,
       tabMarginWidth: 62
     },
     earn: {
@@ -29,6 +29,6 @@ export const config: any = {
 
 export const useTabConfig = (page: any) => {
   const isMobile = useIsMobile();
-  const device = isMobile ? 'mobile' : 'laptop';
+  const device = isMobile ? "mobile" : "laptop";
   return config[device][page];
 };
