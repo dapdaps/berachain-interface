@@ -154,7 +154,7 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
               <div className="flex justify-between items-center gap-[10px] text-[16px] text-black font-[600]">
                 <div className="">
                   <div className="text-[#3D405A] text-[14px] font-[500]">
-                    Supply APY
+                    Supply {rateKey}
                   </div>
                   <div className="">
                     {token[rateKey]}
@@ -217,6 +217,9 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
           protocols={protocols}
           onClose={() => {
             setSwapToken(null);
+          }}
+          onSuccess={() => {
+            onSuccess?.();
           }}
         />
       )}
