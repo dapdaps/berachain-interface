@@ -48,8 +48,8 @@ export default forwardRef(function Add(
   }, [token0, token1]);
 
   const { loading: adding, onIncrease } = useIncrease({
-    token0,
-    token1,
+    token0: defaultToken0,
+    token1: defaultToken1,
     value0,
     value1,
     fee,
