@@ -10,7 +10,8 @@ import IbgtForm from '@/sections/bgt/components/ibgt-form';
 import { AnimatePresence } from 'framer-motion';
 import useToast from '@/hooks/use-toast';
 import { beraB } from '@/configs/tokens/bera-bArtio';
-import { walletClient } from '@/configs/wagmi';
+import { createWalletClient, custom } from 'viem';
+import { berachainTestnetbArtio } from '@reown/appkit/networks';
 
 const IBGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
@@ -58,6 +59,11 @@ const IBGTMobileView = (props: Props) => {
     if (!window?.ethereum || window.ethereum === void 0 || window.ethereum === 'undefined') return;
     const _toastId = toast.loading({ title: 'Adding...' });
     try {
+      const walletClient = createWalletClient({
+        // @ts-ignore
+        chain: berachainTestnetbArtio,
+        transport: custom(window.ethereum!),
+      });
       await walletClient.watchAsset({
         type: 'ERC20',
         options: beraB.ibgt,
