@@ -9,6 +9,8 @@ import Popover from '@/components/popover';
 import Modal from '@/components/modal';
 import IbgtForm from '@/sections/bgt/components/ibgt-form';
 import { AnimatePresence } from 'framer-motion';
+import useToast from '@/hooks/use-toast';
+import { beraB } from '@/configs/tokens/bera-bArtio';
 
 const IBGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
@@ -33,6 +35,8 @@ const IBGTMobileView = (props: Props) => {
     handleMintIBGT,
   } = useIBGT(props);
 
+  const toast = useToast();
+
   const [tab, setTab] = useState<any>(tabs[0]);
 
   const {
@@ -48,6 +52,42 @@ const IBGTMobileView = (props: Props) => {
   const [totalVisible, setTotalVisible] = useState(false);
   const handleTotal = () => {
     setTotalVisible(!totalVisible);
+  };
+
+  const handleAddWallet = async () => {
+    if (!window?.ethereum || window.ethereum === void 0 || window.ethereum === 'undefined') return;
+    const token = {
+      ...beraB.ibgt,
+    };
+    await window.ethereum.request({ method: 'eth_requestAccounts', params: [] });
+    try {
+      await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: token.address,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            image: token.icon,
+          }
+        }
+      });
+      toast.success({
+        title: 'Add successfully!',
+      });
+      props.onClose();
+    } catch (err: any) {
+      let msg = '';
+      if (err?.message?.includes('User denied')) {
+        msg = 'User denied';
+      }
+      console.log(err);
+      toast.fail({
+        title: 'Add failure!',
+        text: msg,
+      });
+    }
   };
 
   return (
@@ -127,7 +167,7 @@ const IBGTMobileView = (props: Props) => {
                 <div className="">Rewards</div>
                 <div className="flex justify-center items-center gap-[7px]">
                   <img
-                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"}.svg`}
+                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? 'honey'}.svg`}
                     alt=""
                     className="w-[26px] h-[26px] rounded-full"
                   />
@@ -211,6 +251,16 @@ const IBGTMobileView = (props: Props) => {
                 )
               }
             </AnimatePresence>
+          </div>
+          <div className="flex justify-center items-center gap-[5px] py-[20px]" onClick={handleAddWallet}>
+            <span className="text-[#929292] font-[500] text-[14px]">Add iBGT to wallet</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="1" width="16" height="16" rx="8" stroke="#929292" strokeOpacity="0.5" />
+              <path
+                d="M9.51055 9.54607L11.8693 9.54608C12.0467 9.54605 12.1905 9.43253 12.1905 9.29262L12.1905 8.77831C12.1905 8.63836 12.0466 8.52522 11.8692 8.52502L9.51052 8.52509L9.51047 6.16638C9.51056 5.98893 9.39713 5.84503 9.25709 5.84512L8.74276 5.84514C8.60296 5.84506 8.48944 5.98886 8.48956 6.16635L8.4896 8.52511L6.13074 8.52516C5.95347 8.52513 5.80954 8.63835 5.80957 8.77833L5.80954 9.29266C5.80955 9.43261 5.95338 9.5461 6.13072 9.54614L8.48961 9.54612L8.48959 11.9047C8.48956 12.0823 8.60291 12.226 8.74286 12.226L9.25719 12.2259C9.39711 12.2259 9.51054 12.0822 9.51066 11.9048L9.51055 9.54607Z"
+                fill="#929292"
+              />
+            </svg>
           </div>
         </div>
       </Drawer>
