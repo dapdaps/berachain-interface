@@ -60,6 +60,11 @@ export const useBorwAndRepay = ({
       return;
     }
 
+    console.log(amount, '<======amount');
+    console.log(allowanceAmount, '<======allowanceAmount');
+    
+    
+
     if (
       !isValid(amount) ||
       !isValid(allowanceAmount) ||
@@ -85,7 +90,10 @@ export const useBorwAndRepay = ({
         : config.aavePoolV3Address;
   
       const allowanceAmount: ethers.BigNumber = await contract.allowance(account, allowanceAddr);
-  
+
+      console.log(allowanceAmount, 'getAllowanc=allowanceAmount');
+      
+
       setAllowanceAmount(
         Big(allowanceAmount.toString()).div(Big(10).pow(decimals)).toFixed()
       );

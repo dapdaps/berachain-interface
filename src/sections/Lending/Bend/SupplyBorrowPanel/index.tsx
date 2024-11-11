@@ -184,7 +184,8 @@ const SupplyBorrowPanel: React.FC = () => {
               </span>
             </div>
             <button
-              className="font-montserrat text-base font-semibold leading-4 text-[#7EA82B] underline md:hidden"
+              disabled={Number(rewardValue) <= 0 || claiming}
+              className="font-montserrat text-base font-semibold leading-4 text-[#7EA82B] underline md:hidden disabled:opacity-30"
               onClick={claim}
             >
               {claiming ? <Loading /> : 'Claim'}
