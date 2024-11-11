@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Loading from '@/components/loading';
 import BgtEmpty from '@/sections/bgt/components/bgt-empty';
 import BgtValidatorDrawer from '@/sections/bgt/validator/drawer';
+import Big from 'big.js';
 
 const BGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
@@ -248,7 +249,7 @@ const BGTMobileView = (props: Props) => {
                                     <div className="flex justify-end items-center">
                                       <button
                                         type="button"
-                                        disabled={record?.earned <= 0 || record?.claiming}
+                                        disabled={Big(record?.earned || 0).lte(0) || record?.claiming}
                                         className="text-black text-[14px] font-[500] border border-black h-[36px] px-[17px] rounded-[10px] bg-white disabled:opacity-30 disabled:pointer-events-none"
                                         onClick={record.claim}
                                       >
