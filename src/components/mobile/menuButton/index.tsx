@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import IconArrow from '@public/images/mobile/arrow-down.svg';
+import { usePathname } from 'next/navigation';
 
 interface CustomButtonProps {
   href?: string;
@@ -43,12 +44,10 @@ const MenuButton: React.FC<CustomButtonProps> = ({
     </div>
   );
 
-
+  const pathname = usePathname()
 
   if (href) {
-
-
-    if (href === '/') {
+    if (href === pathname) {
       return (<button 
         onClick={toggle} 
         className={`block w-full max-w-[51.28vw] ${className}`}
