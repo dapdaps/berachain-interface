@@ -64,7 +64,7 @@ const SupplyBorrowPanel: React.FC = () => {
   }
 
   return (
-    <div className='mb-5 md:max-h-[calc(100vh_-_200px)] md:pb-[80px] md:overflow-y-auto'>
+    <div className='mb-5 md:max-h-[calc(100vh_-_262px)] md:pb-[80px] md:overflow-y-auto'>
       <NetBase />
       <div className='flex md:flex-col gap-[26px] mt-10 h-[380px] md:h-[unset]'>
         <div className='bg-black bg-opacity-[0.06] w-1/2 md:w-full rounded-[10px] p-5 md:p-[20px_16px_13px]'>
