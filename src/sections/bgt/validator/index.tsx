@@ -114,9 +114,10 @@ const BgtValidator = (props: any) => {
   }, [address]);
 
   useEffect(() => {
-    setAddress(defaultAddress);
     if (id) {
       setAddress(id);
+    } else {
+      setAddress(defaultAddress);
     }
   }, [defaultAddress, id]);
 
