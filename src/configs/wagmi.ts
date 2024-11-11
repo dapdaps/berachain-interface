@@ -76,5 +76,5 @@ export const config = wagmiAdapter.wagmiConfig;
 export const walletClient = createWalletClient({
   // @ts-ignore
   chain: berachainTestnetbArtio,
-  transport: custom(window.ethereum!),
+  transport: custom(window?.ethereum!),
 });
