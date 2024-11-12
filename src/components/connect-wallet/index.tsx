@@ -278,7 +278,7 @@ const Chain = (props: any) => {
 
   return (
     <motion.div
-      className={`relative rounded-[10px] px-[6px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${
+      className={`relative rounded-[10px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${
         chainDropdownShow ? "bg-[rgba(0,0,0,0.04)]" : ""
       }`}
       ref={chainListRef}

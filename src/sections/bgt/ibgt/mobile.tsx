@@ -109,7 +109,7 @@ const IBGTMobileView = (props: Props) => {
         <div className="absolute w-full h-[72px] overflow-hidden top-0">
           <div className="opacity-90 w-full h-[143px] absolute top-[-72px] blur-md rounded-[387px] bg-[radial-gradient(50%_50%_at_50%_50%,_#FFDC50_0%,_rgba(255,_220,_80,_0.00)_100%)]" />
         </div>
-        <div className="max-h-[calc(100%)] overflow-y-auto pb-[80px]">
+        <div className="max-h-[calc(100% - 62px)] overflow-y-auto pb-[80px]">
           <div className="px-[10px] mt-[54px]">
             <div className="bg-[#FFDC50] rounded-[10px] p-[17px_8px_19px_16px] flex justify-between">
               <div className="">
