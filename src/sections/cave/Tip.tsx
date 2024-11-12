@@ -1,6 +1,6 @@
 import Modal from "@/components/modal";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from "react";
 
 interface Props {
@@ -28,6 +28,7 @@ const textMap: any = {
 
 export default function Tips({ location, msg }: Props) {
     const [modalShow, setModalShow] = useState(false)
+    const router = useRouter()
 
     if (!msg) {
         return null
@@ -42,7 +43,13 @@ export default function Tips({ location, msg }: Props) {
         </div>
         <div className="text-[18px] text-[#F7F9EA] font-CherryBomb text-center " style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.name}</div>
         <div className="text-[#fff] text-[12px] px-[10px] mt-[5px]">{msg.content}</div>
-        <div onClick={() => { setModalShow(true) }} className="bg-[#FFF5A9] text-[#F7F9EA] mt-[15px] font-CherryBomb border-[2px] border-[#4B371F] text-center mx-[10px] rounded-[31px] cursor-pointer h-[32px] " ><span style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.btnText}</span></div>
+        <div onClick={() => { 
+            if (msg.btnText === 'Delegate') {
+                router.push('/bgt')
+            } else {
+                setModalShow(true);
+            }
+         }} className="bg-[#FFF5A9] text-[#F7F9EA] mt-[15px] font-CherryBomb border-[2px] border-[#4B371F] text-center mx-[10px] rounded-[31px] cursor-pointer h-[32px] " ><span style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.btnText}</span></div>
     </div>
         <Modal open={modalShow} closeIconClassName="right-[-10px] top-[-10px]" onClose={() => { setModalShow(false) }}>
             <div className=" border-[#000] rounded-[20px] bg-[#FFFDEB] p-[20px]">
