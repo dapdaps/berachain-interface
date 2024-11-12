@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import { useBgtCount } from '@/hooks/use-bgt-count';
 import useIsMobile from '@/hooks/use-isMobile';
 import Big from 'big.js';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const router = useProgressRouter();
@@ -72,84 +73,126 @@ const Home = () => {
             height: visibleHeight + 150 + 'px',
           }}
         >
-          <div className='relative w-[182px] h-[25.128vw] top-[19.487vw] left-[10.256vw]'>
-            <img
+          <motion.div
+            className='relative w-[182px] h-[25.128vw] top-[19.487vw] left-[10.256vw]'
+            whileTap="tap"
+          >
+            <motion.img
               src='/images/mobile/home/bg-bridge.png'
               alt=''
               className='w-full h-full'
+              variants={EntryAnimationBg}
+              transition={EntryAnimation}
             />
-            <img
+            <motion.img
               src='/images/mobile/home/text-bridge.png'
               onClick={() => router.push('/bridge')}
               className='absolute left-0 -bottom-6 w-[22.564vw] h-[20.512vw]'
               alt=''
+              variants={EntryAnimationSignpost}
+              transition={EntryAnimation}
             />
-          </div>
-          <div className='relative w-[65.64vw] h-[47.43vw] top-[10.256vw] left-[40.256vw]'>
-            <img
+          </motion.div>
+          <motion.div
+            className='relative w-[65.64vw] h-[47.43vw] top-[10.256vw] left-[40.256vw]'
+            whileTap="tap"
+          >
+            <motion.img
               src='/images/mobile/home/bg-market.png'
               alt=''
               className='w-full h-full'
+              variants={EntryAnimationBg}
+              transition={EntryAnimation}
             />
-            <img
+            <motion.img
               src='/images/mobile/home/text-market.png'
               onClick={() => router.push('/marketplace')}
               className='absolute right-[9.856vw] bottom-[8.697vw] w-[37.435vw] h-[11.282vw]'
               alt=''
+              variants={EntryAnimationSignpost}
+              transition={EntryAnimation}
             />
-          </div>
-          <div className='relative w-[63.076vw] h-[56.153vw] -top-[12.85vw] -left-[10.256vw]'>
-            <img
+          </motion.div>
+          <motion.div
+            className='relative w-[63.076vw] h-[56.153vw] -top-[12.85vw] -left-[10.256vw]'
+            whileTap="tap"
+          >
+            <motion.img
               src='/images/mobile/home/bg-dapps.png'
               alt=''
               className='w-full h-full'
+              variants={EntryAnimationBg}
+              transition={EntryAnimation}
             />
-            <img
+            <motion.img
               src='/images/mobile/home/text-dapps.png'
               onClick={() => router.push('/dapps')}
               className='absolute left-[21.538vw] top-[6.153vw] w-[20.512vw] h-[8.717vw]'
               alt=''
+              variants={EntryAnimationSignpost}
+              transition={EntryAnimation}
             />
-          </div>
-          <div className='relative w-[77.435vw] h-[54.684vw] -top-[45.641vw] -right-[34.871vw]'>
-            <img
+          </motion.div>
+          <motion.div
+            className='relative w-[77.435vw] h-[54.684vw] -top-[45.641vw] -right-[34.871vw]'
+            whileTap="tap"
+          >
+            <motion.img
               src='/images/mobile/home/bg-dashboard.png'
               alt=''
               className='w-full h-full'
+              variants={EntryAnimationBg}
+              transition={EntryAnimation}
             />
-            <img
+            <motion.img
               src='/images/mobile/home/text-dashboard.png'
               onClick={() => router.push('/dashboard')}
               className='absolute right-[18.974vw] bottom-[10.471vw] w-[30.769vw] h-[9.271vw]'
               alt=''
+              variants={EntryAnimationSignpost}
+              transition={EntryAnimation}
             />
-          </div>
-          <div className='relative w-[73.846vw] h-[47.692vw] -top-[65.64vw] -left-[17.948vw]'>
-            <img
+          </motion.div>
+          <motion.div
+            className='relative w-[73.846vw] h-[47.692vw] -top-[65.64vw] -left-[17.948vw]'
+            whileTap="tap"
+          >
+            <motion.img
               src='/images/mobile/home/bg-vaults.png'
               alt=''
               className='w-full h-full'
+              variants={EntryAnimationBg}
+              transition={EntryAnimation}
             />
-            <img
+            <motion.img
               src='/images/mobile/home/text-vaults.png'
               onClick={() => router.push('/earn')}
               className='absolute left-[32.307vw] top-[7.692vw] w-[21.538vw] h-[11.794vw]'
               alt=''
+              variants={EntryAnimationSignpost}
+              transition={EntryAnimation}
             />
-          </div>
-          <div className='relative w-[77.435vw] h-[51.794vw] -top-[76.923vw] -right-[33.846vw]'>
-            <img
+          </motion.div>
+          <motion.div
+            className='relative w-[77.435vw] h-[51.794vw] -top-[76.923vw] -right-[33.846vw]'
+            whileTap="tap"
+          >
+            <motion.img
               src='/images/mobile/home/bg-cave.png'
               alt=''
               className='w-full h-full'
+              variants={EntryAnimationBg}
+              transition={EntryAnimation}
             />
-            <img
+            <motion.img
               src='/images/mobile/home/text-cave.png'
               onClick={() => router.push('/cave')}
               className='absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw]'
               alt=''
+              variants={EntryAnimationSignpost}
+              transition={EntryAnimation}
             />
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -170,3 +213,21 @@ const Home = () => {
 };
 
 export default Home;
+
+const EntryAnimation = {
+  type: 'spring',
+  stiffness: 200,
+  damping: 10,
+};
+const EntryAnimationBg = {
+  tap: {
+    y: 4,
+    scale: 0.95,
+  },
+};
+const EntryAnimationSignpost = {
+  tap: {
+    y: -8,
+    scale: 1.10,
+  },
+};
