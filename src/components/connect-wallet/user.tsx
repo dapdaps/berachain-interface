@@ -18,7 +18,7 @@ const MobileUser = (props: Props) => {
   } = props;
 
   return (
-    <Drawer visible={visible} onClose={onClose} size="64.615vw">
+    <Drawer visible={visible} onClose={onClose} size="203px" className="bg-[#FFFDEB]">
       <div className="mt-[30px] px-[20px]">
         <div className="flex gap-2 items-center">
           <div className="w-[40px] h-[40px]">
@@ -32,7 +32,7 @@ const MobileUser = (props: Props) => {
               <div className="w-[40px] h-[40px] rounded-[50%] border-[2px] border-[#1F2229] bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
             )}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex-1 flex flex-col gap-2">
             <div className="flex gap-2 items-center">
               <div className="text-black text-[24px] font-semibold leading-[1] font-CherryBomb">
                 {address ? `${address.slice(0, 8)}...${address.slice(-6)}` : ""}

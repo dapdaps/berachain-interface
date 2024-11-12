@@ -2,7 +2,7 @@ import { beraB } from '@/configs/tokens/bera-bArtio';
 
 const basic = {
   name: 'Dolomite',
-  icon: '/assets/dapps/dolomite.png',
+  icon: '/images/dapps/dolomite.svg',
 };
 
 const API_HOST = 'https://subgraphapi.dolomite.io/api/public';
