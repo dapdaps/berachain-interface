@@ -40,13 +40,15 @@ const BGTMobileView = (props: Props) => {
       <Drawer
         visible={visible}
         onClose={onClose}
+        size="80dvh"
+        className='bg-[#FFFDEB]'
       >
         <BgtHead
           bgtData={bgtData}
           style={{ position: 'absolute' }}
           className="scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%]"
         />
-        <div className="h-full overflow-y-auto">
+        <div className="h-full">
           <div className="pt-[50px] px-[12px]">
             <SwitchTabs
               tabs={[
@@ -66,7 +68,7 @@ const BGTMobileView = (props: Props) => {
               tab === 'market' ? (
                 <motion.div
                   key="market"
-                  className="max-h-[calc(100%_-_60px)] overflow-y-auto pb-[20px]"
+                  className="max-h-[calc(100%_-_120px)] overflow-y-auto pb-[20px]"
                   variants={{
                     visible: {
                       opacity: 1,
