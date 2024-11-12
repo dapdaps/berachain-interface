@@ -85,7 +85,7 @@ export const useBorwAndRepay = ({
         : config.aavePoolV3Address;
   
       const allowanceAmount: ethers.BigNumber = await contract.allowance(account, allowanceAddr);
-  
+
       setAllowanceAmount(
         Big(allowanceAmount.toString()).div(Big(10).pow(decimals)).toFixed()
       );

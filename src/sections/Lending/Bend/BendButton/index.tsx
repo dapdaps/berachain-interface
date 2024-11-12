@@ -80,7 +80,6 @@ const Button: React.FC<ButtonProps> = ({
     );
   }
 
-
   if (!amount || Number(amount) === 0) {
     return (
       <button

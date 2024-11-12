@@ -20,7 +20,8 @@ export default function Swap({
   dapp,
   outputCurrencyReadonly = false,
   showSetting = true,
-  from
+  from,
+  onSuccess
 }: any) {
   const [inputCurrencyAmount, setInputCurrencyAmount] = useState("");
   const [outputCurrencyAmount, setOutputCurrencyAmount] = useState("");
@@ -46,6 +47,7 @@ export default function Swap({
     onSuccess: () => {
       setUpdater(Date.now());
       runQuoter();
+      onSuccess?.();
     }
   });
 
@@ -129,100 +131,102 @@ export default function Swap({
         style={{ justifyContent: "space-between" }}
         title={from === "marketplace" ? `GET ${outputCurrency.symbol}` : ""}
       />
-      <TokenAmount
-        type="in"
-        currency={inputCurrency}
-        amount={inputCurrencyAmount}
-        prices={{}}
-        account
-        onCurrencySelectOpen={() => {
-          setDisplayCurrencySelect(true);
-          setSelectType("in");
-          setSelectedTokenAddress(inputCurrency?.address);
-        }}
-        onUpdateCurrencyBalance={(balance: any) => {
-          setMaxInputBalance(balance);
-        }}
-        onAmountChange={(val: any) => {
-          setInputCurrencyAmount(val);
-        }}
-        updater={`in-${updater}`}
-      />
-      <ExchangeIcon
-        onClick={() => {
-          if (loading) return;
-          const [_inputCurrency, _outputCurrency] = [
-            outputCurrency,
-            inputCurrency
-          ];
-          setInputCurrency(_inputCurrency);
-          setOutputCurrency(_outputCurrency);
-          setOutputCurrencyAmount("");
-          if (Big(inputCurrencyAmount || 0).gt(0)) runQuoter();
-        }}
-      />
-      <TokenAmount
-        type="out"
-        currency={outputCurrency}
-        amount={outputCurrencyAmount}
-        disabled
-        prices={{}}
-        account
-        readOnly={outputCurrencyReadonly}
-        onCurrencySelectOpen={() => {
-          if (outputCurrencyReadonly) return;
-          setDisplayCurrencySelect(true);
-          setSelectType("out");
-          setSelectedTokenAddress(outputCurrency?.address);
-        }}
-        updater={`out-${updater}`}
-      />
-      {!!(trade && inputCurrency && outputCurrency) && (
-        <>
-          <Result
-            inputCurrency={inputCurrency}
-            outputCurrency={outputCurrency}
-            inputCurrencyAmount={inputCurrencyAmount}
-            outputCurrencyAmount={outputCurrencyAmount}
-            priceImpactType={trade?.priceImpactType}
-            onClose={() => {
-              setShowDetail(!showDetail);
-            }}
-          />
-          <Fees
-            priceImpactType={trade?.priceImpactType}
-            priceImpact={trade?.priceImpact}
-            gasUsd={trade?.gasUsd}
-            routerStr={trade?.routerStr}
-            outputCurrencyAmount={outputCurrencyAmount}
-            show={showDetail}
-          />
-        </>
-      )}
+      <div className="md:max-h-[calc(100dvh-210px)] md:overflow-y-auto">
+        <TokenAmout
+          type="in"
+          currency={inputCurrency}
+          amount={inputCurrencyAmount}
+          prices={{}}
+          account
+          onCurrencySelectOpen={() => {
+            setDisplayCurrencySelect(true);
+            setSelectType("in");
+            setSelectedTokenAddress(inputCurrency?.address);
+          }}
+          onUpdateCurrencyBalance={(balance: any) => {
+            setMaxInputBalance(balance);
+          }}
+          onAmountChange={(val: any) => {
+            setInputCurrencyAmount(val);
+          }}
+          updater={`in-${updater}`}
+        />
+        <ExchangeIcon
+          onClick={() => {
+            if (loading) return;
+            const [_inputCurrency, _outputCurrency] = [
+              outputCurrency,
+              inputCurrency
+            ];
+            setInputCurrency(_inputCurrency);
+            setOutputCurrency(_outputCurrency);
+            setOutputCurrencyAmount("");
+            if (Big(inputCurrencyAmount || 0).gt(0)) runQuoter();
+          }}
+        />
+        <TokenAmout
+          type="out"
+          currency={outputCurrency}
+          amount={outputCurrencyAmount}
+          disabled
+          prices={{}}
+          account
+          outputCurrencyReadonly={outputCurrencyReadonly}
+          onCurrencySelectOpen={() => {
+            if (outputCurrencyReadonly) return;
+            setDisplayCurrencySelect(true);
+            setSelectType("out");
+            setSelectedTokenAddress(outputCurrency?.address);
+          }}
+          updater={`out-${updater}`}
+        />
+        {!!(trade && inputCurrency && outputCurrency) && (
+          <>
+            <Result
+              inputCurrency={inputCurrency}
+              outputCurrency={outputCurrency}
+              inputCurrencyAmount={inputCurrencyAmount}
+              outputCurrencyAmount={outputCurrencyAmount}
+              priceImpactType={trade?.priceImpactType}
+              onClose={() => {
+                setShowDetail(!showDetail);
+              }}
+            />
+            <Fees
+              priceImpactType={trade?.priceImpactType}
+              priceImpact={trade?.priceImpact}
+              gasUsd={trade?.gasUsd}
+              routerStr={trade?.routerStr}
+              outputCurrencyAmount={outputCurrencyAmount}
+              show={showDetail}
+            />
+          </>
+        )}
 
-      <SubmitBtn
-        chain={{
-          chainId: DEFAULT_CHAIN_ID
-        }}
-        amount={inputCurrencyAmount}
-        spender={trade?.routerAddress}
-        errorTips={errorTips}
-        token={inputCurrency}
-        loading={loading}
-        onClick={onSwap}
-        disabled={trade?.noPair || !trade?.txn}
-        onRefresh={() => {
-          runQuoter();
-        }}
-        updater={`button-${updater}`}
-      />
-      {from === "marketplace" && (
-        <div className="text-center  mt-[12px]">
-          <a href="/bridge" className="underline text-[14px] text-[#3D405A]">
-            Bridge Assets to Berachain
-          </a>
-        </div>
-      )}
+        <SubmitBtn
+          chain={{
+            chainId: DEFAULT_CHAIN_ID
+          }}
+          amount={inputCurrencyAmount}
+          spender={trade?.routerAddress}
+          errorTips={errorTips}
+          token={inputCurrency}
+          loading={loading}
+          onClick={onSwap}
+          disabled={trade?.noPair || !trade?.txn}
+          onRefresh={() => {
+            runQuoter();
+          }}
+          updater={`button-${updater}`}
+        />
+        {from === "marketplace" && (
+          <div className="text-center  mt-[12px]">
+            <a href="/bridge" className="underline text-[14px] text-[#3D405A]">
+              Bridge Assets to Berachain
+            </a>
+          </div>
+        )}
+      </div>
       <TokenSelector
         display={displayCurrencySelect}
         chainIdNotSupport={chainId !== DEFAULT_CHAIN_ID}

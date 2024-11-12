@@ -33,7 +33,7 @@ export default function IncreaseLiquidityModal({
       onClose={onClose}
       onClearAll={panelRef?.current?.onClearAll}
     >
-      <div className="pb-[20px]">
+      <div className="pb-[20px] md:max-h-[80dvh] md:overflow-y-auto">
         <AddLiquidityPanel
           dex={dex}
           defaultToken0={token0}

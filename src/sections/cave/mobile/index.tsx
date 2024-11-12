@@ -19,7 +19,7 @@ console.log(welcomeStore.show, 'welcomeStore.show');
 
 
   return (
-    <div className='relative h-full'>
+    <div className='relative w-full h-dvh overflow-x-hidden overflow-y-scroll'>
       <div
         className='mt-10 relative'
         style={{
@@ -38,9 +38,9 @@ console.log(welcomeStore.show, 'welcomeStore.show');
                     welcomeStore.set({ show: true })
                 }}>Rules</div>
       </div>
-      <div className='bg-[#9C948F] h-[190vw] w-full'>
+      <div className='bg-[#9C948F] h-[240vw] w-full'>
         <div
-          className='absolute bottom-0'
+          className='fixed bottom-0'
           style={{
             backgroundImage: `url('/images/mobile/cave/bottom.png')`,
             backgroundSize: 'cover',

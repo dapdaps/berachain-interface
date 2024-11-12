@@ -47,8 +47,8 @@ const PartList = [
     indicatorClass: 'absolute right-[164px] top-[12px] z-10',
     buttonClass: 'rotate-[2.58deg] mb-[8px]',
     arrowClass: 'relative left-[calc(50%-34px)]',
-    btnText: '',
-    // link: '/earn',
+    btnText: 'Earn',
+    link: '/earn',
     ArrowIcon: dAppArrowIcon
   },
   {

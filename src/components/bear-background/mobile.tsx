@@ -80,15 +80,15 @@ const Clouds = () => {
 export default function Mobile({ children, showGrassland = false }: any) {
 
   const pathname = usePathname()
-  const routes = ['/cave']
+  const routes = ['/cave', '/']
 
   return (
-    <div className='relative hidden md:block min-w-full h-full'>
+    <div className='relative hidden md:block w-full h-full'>
       {/* <Clouds /> */}
       {showGrassland && (
         <div className='bg-[#B6DF5D] h-[75.384vw] w-full absolute bottom-0 border-t border-[#4B371F]' />
       )}
-      <div className={clsx('relative z-10 h-full', routes.includes(pathname) ? 'overflow-y-auto overflow-x-hidden' : '')}>{children}</div>
+      <div className={clsx('relative z-10 h-full', routes.includes(pathname) ? 'h-dvh overflow-y-scroll overflow-x-hidden' : '')}>{children}</div>
     </div>
   );
 }

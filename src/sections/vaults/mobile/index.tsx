@@ -13,6 +13,7 @@ import HandleModal from "./handle-modal";
 import UserInfo from "./user-info";
 import Bg from "../components/mobile-bg";
 import RewardsModal from "./rewards-modal";
+import PageBack from '@/components/back';
 
 export default function Mobile({ dapp }: any) {
   const { dataList, loading, fetchAllData } = useInfraredList();
@@ -40,6 +41,7 @@ export default function Mobile({ dapp }: any) {
   return (
     <div className="h-full bg-vault relative pt-[25px]">
       <Bg className="opacity-30" />
+      <PageBack className="md:absolute md:left-[12px] md:top-[17px] z-[10]" />
       <div className="relative z-[3]">
         <MenuButton className="my-0 mx-auto" contentClassName="text-2xl">
           <div className="flex gap-[12px] text-[24px] items-center">
@@ -86,7 +88,7 @@ export default function Mobile({ dapp }: any) {
           </div>
         </div>
       </div>
-      <div className="relative z-[2] flex flex-col gap-[12px] px-[12px] pb-[12px] mt-[12px] h-[calc(100%-180px)] overflow-y-auto">
+      <div className="relative z-[2] flex flex-col gap-[12px] px-[12px] mt-[12px] h-[calc(100dvh-260px)] overflow-y-auto pb-[50px]">
         {data.map((item: any, idx: number) => (
           <Item
             key={item.id}

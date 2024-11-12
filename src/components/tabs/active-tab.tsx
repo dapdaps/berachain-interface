@@ -1,3 +1,5 @@
+import useIsMobile from "@/hooks/use-isMobile";
+
 const ActiveTab = (props: Props) => {
   const {
     children,
@@ -10,6 +12,8 @@ const ActiveTab = (props: Props) => {
     marginWidth,
     page = "dashboard"
   } = props;
+
+  const isMobile = useIsMobile()
 
   return (
     <div
@@ -47,7 +51,16 @@ const ActiveTab = (props: Props) => {
         {children}
       </div>
       {isLast ? (
-        <svg
+        <>
+          {
+            page === 'earn' && isMobile ? 
+           <div
+            className="shrink-0 rounded-tr-[20px] border-t border-r border-black bg-[#FFFDEB]"
+            style={{
+              width: page === "earn" ? marginWidth / 2 : marginWidth,
+              height: height
+            }}
+          /> :          <svg
           width={marginWidth}
           height={height}
           className="shrink-0"
@@ -107,6 +120,8 @@ const ActiveTab = (props: Props) => {
             </clipPath>
           </defs>
         </svg>
+          }
+        </>
       ) : (
         <svg
           width={marginWidth}

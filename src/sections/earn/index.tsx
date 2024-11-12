@@ -19,7 +19,7 @@ const EarnViews = () => {
   );
   return (
     <MarketplaceContext.Provider value={context}>
-      <div className="w-full h-full md:bg-[#5B5B5B] overflow-y-auto">
+      <div className="w-full lg:h-full md:h-dvh md:bg-[#5B5B5B] md:overflow-y-scroll md:overflow-x-hidden">
         <img
           src="/images/mobile/earn.png"
           className="w-[342px] h-[92px] mx-auto md:block hidden"

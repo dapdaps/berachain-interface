@@ -90,7 +90,7 @@ export function useBGT() {
     setUpdater(Date.now())
   }
 
-  const { rewardValue, depositAmount, icon, platform, vaultToken, claim, claiming } = useBendReward({
+  const { rewardValue, rewardValueNumber, depositAmount, icon, platform, vaultToken, claim, claiming } = useBendReward({
     provider, account
   })
 
@@ -106,7 +106,8 @@ export function useBGT() {
         }
       },
       depositAmount: depositAmount,
-      earned: rewardValue,
+      earned: rewardValueNumber,
+      earnedShown: rewardValue,
       claim: claim,
       claiming: claiming
     }
@@ -176,6 +177,10 @@ export function useBGT() {
 
   const handleValidator = (data: any) => {
     handleReport(data?.validator?.metadata?.bp);
+    if (isMobile) {
+      return false;
+    }
+    router.push("/bgt/validator?address=" + data?.validator?.id);
   };
 
   useEffect(() => {
