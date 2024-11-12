@@ -140,7 +140,7 @@ const DAppsView = () => {
     <div
       className="md:bg-[#96d6ff] h-full md:mb-[70px] relative"
       style={{
-        height: "calc(100dvh - 62px)"
+        height: "calc(100dvh)"
       }}
     >
       <PageBack className="absolute left-[12px] top-[17px]" />
