@@ -93,19 +93,17 @@ const MemeTokens = [
 export const MoreButton = (props: {
   onClick: () => void;
   classname?: string;
+  text?: string;
 }) => {
-  const { onClick = () => {}, classname = "" } = props;
-
-  // Temporarily hide
-  return null;
+  const { onClick = () => {}, classname = '', text = 'more' } = props;
 
   return (
     <button
       onClick={onClick}
-      className={`pt-[8px] rounded-[16px] border border-black font-CherryBomb text-[20px] font-[400]  bg-[#FFAFDF] shadow-shadow1 ${classname}`}
+      className={`lg:pt-[8px] md:pt-[4px] rounded-[16px] border border-black font-CherryBomb text-[20px] md:text-[16px] font-[400]  bg-[#FFAFDF] shadow-shadow1 ${classname}`}
     >
-      <div className="rounded-[16px] bg-[#FF80CC] px-[16px] pt-[7px] pb-[15px] leading-none">
-        more
+      <div className='lg:rounded-[16px] md:rounded-[16px] bg-[#FF80CC] md:px-[12px] lg:px-[16px] pt-[7px] pb-[15px] leading-none'>
+        {text}
       </div>
     </button>
   );
@@ -116,6 +114,10 @@ const MarketplaceView = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const isMobile = useIsMobile();
+
+  const TOKENS_PER_PAGE = 9;
+  const [displayCount, setDisplayCount] = useState(TOKENS_PER_PAGE);
+
   const List = [
     {
       key: "price",
@@ -129,32 +131,41 @@ const MarketplaceView = () => {
     }
   ];
 
-  const onMore = () => {
-    router.push("/marketplace/tokens");
-  };
+  // const onMore = () => {
+  //   router.push('/marketplace/tokens');
+  // };
 
   const onFooterMore = () => {
     router.push("/marketplace/tokens");
   };
 
-  const [protocols, tokens] = useMemo(() => {
+  const [protocols, allTokens, totalTokens] = useMemo(() => {
     const _tokens: any[] = [];
     const hasTokens: any = {};
     const _protocols: string[] = [];
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
       item.tokens[80084].forEach((token: any) => {
-        if (
-          !hasTokens[token.symbol] &&
-          HotTokens.some((it) => it.symbol === token.symbol)
-        ) {
+        if (!hasTokens[token.symbol]) {
           _tokens.push(token);
           hasTokens[token.symbol] = true;
         }
       });
     });
-    return [_protocols, splitArray(_tokens)];
+    return [_protocols, splitArray(_tokens), _tokens.length];
   }, [dexs]);
+
+
+    const visibleTokens = useMemo(() => {
+      const groupsToShow = Math.ceil(displayCount / 3);
+      return allTokens.slice(0, groupsToShow);
+    }, [allTokens, displayCount]);
+  
+    const onMore = () => {
+      setDisplayCount(prev => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
+    };
+  
+    const showMoreButton = displayCount < totalTokens;
 
   const getAnimationName = (idx: number) => {
     if (hoveredIndex === null) {
@@ -178,9 +189,7 @@ const MarketplaceView = () => {
   };
 
   return (
-    <div className='relative md:overflow-y-scroll overflow-x-hidden' style={{
-      height: 'calc(100dvh - 62px)',
-    }}>
+    <div className='relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]'>
       {
         !isMobile && (<>
           <PageBack className='absolute left-[40px] top-[31px]' />
@@ -195,7 +204,7 @@ const MarketplaceView = () => {
         alt=""
       />
 
-      <div className="relative mt-[100px] md:overflow-hidden lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
+      <div className="relative mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
         <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
           Hot Sell Tokens
         </div>
@@ -203,7 +212,7 @@ const MarketplaceView = () => {
           style={{ boxShadow: "inset 10px 10px rgba(0,0,0,0.25)" }}
           className="rounded-[20px] border-[2px] border-black bg-[#695d5d] overflow-visible md:pb-[40px]"
         >
-          {tokens.map((item, index) => (
+          {visibleTokens.map((item, index) => (
             <div
               key={"pots" + index}
               className="overflow-hidden pb-[10px] last:overflow-visible last:pb-[0] last:mb-[-2px]"
@@ -221,20 +230,22 @@ const MarketplaceView = () => {
                     </div>
                   ))}
               </div>
-              {(isMobile || (index !== tokens.length - 1 && !isMobile)) && (
+              {(isMobile || (index !== visibleTokens.length - 1 && !isMobile)) && (
                 <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
               )}
             </div>
           ))}
         </div>
-        <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div>
+        <div className='absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]'></div>
+        {showMoreButton && (
         <MoreButton
-          classname="absolute bottom-[-17px] right-[-12px] hidden lg:block"
+          classname='absolute bottom-[-17px] lg:right-[-12px] md:right-[0]'
           onClick={onMore}
         />
+      )}
       </div>
-      <div className="relative lg:h-[197px] md:px-4 w-full bg-[#7990F4] md:pb-[40px]">
-        <div className="lg:absolute lg:bottom-[80px] lg:left-[50%] lg:translate-x-[-50%] lg:w-[1200px] md:w-full md:relative md:top-3">
+      <div className="relative md:px-4 w-full bg-[#7990F4] pb-[40px]">
+        <div className="lg:mx-auto lg:w-[1200px] md:w-full md:relative md:top-3">
           <div className="absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61] hidden lg:block" />
           <div className="relative z-10 lg:w-[1196px]">
             <MemeTokensGrid
