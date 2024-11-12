@@ -27,6 +27,8 @@ export default function RootLayout({
           name='description'
           content='Effortlessly explore & dive into all dApps in the Bera ecosystem from one streamlined hub.'
         />
+        <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/images/favicon.ico" />
       </head>
       <body className="md:overflow-hidden">
         <WagmiProvider>
