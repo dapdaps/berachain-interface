@@ -13,6 +13,8 @@ interface ButtonProps {
   variant?: 'primary' | 'secondary';
   requiredChainId?: number;
   style?: React.CSSProperties;
+  amount?: string;
+  maxValue?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -25,6 +27,8 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   requiredChainId,
   style,
+  amount,
+  maxValue
 }) => {
   const { address, chainId } = useAccount();
   const { isPending, switchChain } = useSwitchChain();
@@ -72,6 +76,32 @@ const Button: React.FC<ButtonProps> = ({
         style={style}
       >
         Switch Network
+      </button>
+    );
+  }
+
+  if (!amount || Number(amount) === 0) {
+    return (
+      <button
+        type={type}
+        className={buttonClasses}
+        disabled={loading || disabled}
+        style={style}
+      >
+        Enter An Amount
+      </button>
+    );
+  }
+
+  if (maxValue && Number(amount) > Number(maxValue)) {
+    return (
+      <button
+        type={type}
+        className={buttonClasses}
+        disabled={loading || disabled}
+        style={style}
+      >
+        Insufficient Balance
       </button>
     );
   }

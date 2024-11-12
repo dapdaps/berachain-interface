@@ -44,7 +44,8 @@ export const ABI = [{
   "type": "function"
 }]
 export type DataType = {
-  count: number | string
+  count: number | string;
+  totalSupply?: any;
 }
 export function useBGT() {
   const isMobile = useIsMobile();
@@ -89,7 +90,7 @@ export function useBGT() {
     setUpdater(Date.now())
   }
 
-  const { rewardValue, depositAmount, icon, platform, vaultToken, claim, claiming } = useBendReward({
+  const { rewardValue, rewardValueNumber, depositAmount, icon, platform, vaultToken, claim, claiming } = useBendReward({
     provider, account
   })
 
@@ -105,7 +106,8 @@ export function useBGT() {
         }
       },
       depositAmount: depositAmount,
-      earned: rewardValue,
+      earned: rewardValueNumber,
+      earnedShown: rewardValue,
       claim: claim,
       claiming: claiming
     }
@@ -168,18 +170,17 @@ export function useBGT() {
   }
 
   const handleExplore = function () {
-    handleReport('1010-004-004');
-    if (isMobile) {
-      router.push("/earn?tab=staking")
-      return;
-    }
     // window.open("https://bartio.station.berachain.com/")
     router.push("/marketplace/invest?type=vaults")
+    handleReport('1010-004-004');
   }
 
   const handleValidator = (data: any) => {
-    router.push("/bgt/validator?address=" + data?.validator?.id)
     handleReport(data?.validator?.metadata?.bp);
+    if (isMobile) {
+      return false;
+    }
+    router.push("/bgt/validator?address=" + data?.validator?.id);
   };
 
   useEffect(() => {

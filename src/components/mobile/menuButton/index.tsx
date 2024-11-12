@@ -1,12 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import IconArrow from '@public/images/mobile/arrow-down.svg';
+import { usePathname } from 'next/navigation';
 
 interface CustomButtonProps {
   href?: string;
   hasDropdown?: boolean;
   isActive?: boolean;
   onClick?: () => void;
+  toggle?: () => void;
   className?: string;
   children: React.ReactNode;
   contentClassName?: string;
@@ -18,6 +20,7 @@ const MenuButton: React.FC<CustomButtonProps> = ({
   hasDropdown,
   isActive,
   onClick,
+  toggle,
   className = '',
   contentClassName = ''
 }) => {
@@ -41,7 +44,18 @@ const MenuButton: React.FC<CustomButtonProps> = ({
     </div>
   );
 
+  const pathname = usePathname()
+
   if (href) {
+    if (href === pathname) {
+      return (<button 
+        onClick={toggle} 
+        className={`block w-full max-w-[51.28vw] ${className}`}
+      >
+        <ButtonContent />
+      </button>)
+    }
+
     return (
       <Link href={href} className="block w-full max-w-[51.28vw]">
         <ButtonContent />

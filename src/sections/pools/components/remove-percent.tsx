@@ -1,5 +1,6 @@
-import { memo } from 'react';
-import styled from 'styled-components';
+import { memo } from "react";
+import styled from "styled-components";
+import Range from "@/components/range";
 
 const StyledWrap = styled.div`
   border-radius: 12px;
@@ -54,24 +55,25 @@ const StyledItem = styled.div`
 `;
 export const StyledInputRange = styled.div`
   margin-top: 24px;
-  input[type='range'] {
+  input[type="range"] {
     display: block;
     width: 100%;
     appearance: none;
     -webkit-appearance: none;
-    background: #000;
-    height: 2px;
-    border-radius: 5px;
+    background: #dfdcc4;
+    height: 8px;
+    border-radius: 16px;
     margin: 0 auto;
     outline: none;
   }
-  input[type='range']::-webkit-slider-thumb {
+  input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    background-color: #000;
-    width: 20px;
-    height: 20px;
+    background-color: #ffdc50;
+    border: 1px solid #000;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    cursor: url('../../public/images/cursor.svg') 12 0;
+    cursor: url("../../public/images/cursor.svg") 12 0;
   }
 `;
 const PERCENTS = [25, 50, 75, 100];
@@ -83,33 +85,30 @@ const PoolRemoveAmount = ({ percent = 0, setPercent }: any) => {
         <span className="title">Remove</span>
       </div> */}
 
-      <StyledQuick className='vchb'>
-        <span className='v'>{percent}%</span>
-        <div className='hvc gap-8'>
+      <StyledQuick className="vchb">
+        <span className="v">{percent}%</span>
+        <div className="hvc gap-8">
           {PERCENTS.map((p) => {
             return (
               <StyledItem
-                className={`hvc cursor-pointer ${p === percent && 'active'}`}
+                className={`hvc cursor-pointer ${p === percent && "active"}`}
                 key={p}
                 onClick={() => {
                   setPercent(p);
                 }}
               >
-                {p === 100 ? 'Max' : p + '%'}
+                {p === 100 ? "Max" : p + "%"}
               </StyledItem>
             );
           })}
         </div>
       </StyledQuick>
-      <StyledInputRange>
-        <input
-          type='range'
-          value={percent}
-          onChange={(ev) => {
-            setPercent(ev.target.value);
-          }}
-        />
-      </StyledInputRange>
+      <Range
+        value={percent}
+        onChange={(ev: any) => {
+          setPercent(ev.target.value);
+        }}
+      />
     </StyledWrap>
   );
 };

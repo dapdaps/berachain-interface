@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 
 const Laptop = ({ icon, name, category, value, percent, path }: any) => {
   const router = useRouter();
-
   return (
     <div
       className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden lg:block'

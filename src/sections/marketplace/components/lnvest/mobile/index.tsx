@@ -8,8 +8,8 @@ import CircleLoading from '@/components/circle-loading';
 import Big from 'big.js';
 import { cloneDeep } from 'lodash';
 import { formatValueDecimal } from '@/utils/balance';
-import HandleModal from '@/sections/staking/mobile/handle-modal';
-import UserInfo from '@/sections/staking/mobile/user-info';
+import HandleModal from '@/sections/vaults/mobile/handle-modal';
+import UserInfo from '@/sections/vaults/mobile/user-info';
 import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 
 export default function Mobile({ filterList, loading, onClick  }: any) {

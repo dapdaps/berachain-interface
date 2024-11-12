@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import SwitchTabs from '@/components/switch-tabs';
-import V3List from './v3';
-import V2List from './v2';
-import IncreaseLiquidityModal from '../../increase-liquidity-modal';
-import RemoveLiquidityModal from '../../remove-liquidity-modal';
-import CollectFees from '../../collect-fees';
+import { useState } from "react";
+import SwitchTabs from "@/components/switch-tabs";
+import V3List from "./v3";
+import V2List from "./v2";
+import IncreaseLiquidityModal from "../../increase-liquidity-modal";
+import RemoveLiquidityModal from "../../remove-liquidity-modal";
+import CollectFees from "../../collect-fees";
 
 export default function Yours({
   pools = [],
@@ -16,16 +16,16 @@ export default function Yours({
   dex
 }: any) {
   const [selectedReocrd, setSelectedRecord] = useState<any>(null);
-  const [openModal, setOpenModal] = useState('');
+  const [openModal, setOpenModal] = useState("");
 
   return (
-    <div className='pb-[20px] md:h-full'>
-      <div className='flex items-center md:px-[12px]'>
+    <div className="pb-[20px] md:h-full">
+      <div className="flex items-center md:px-[12px]">
         {currentTab && (
           <SwitchTabs
             tabs={[
-              { label: 'V3 Pools', value: 'v3' },
-              { label: 'V2 Pools', value: 'v2' }
+              { label: "V3 Pools", value: "v3" },
+              { label: "V2 Pools", value: "v2" }
             ]}
             current={currentTab}
             onChange={onChangeTab}
@@ -37,12 +37,12 @@ export default function Yours({
             tabStyle={{
               fontSize: 14
             }}
-            className='md:bg-[#DFDCC4] md:border-none md:rounded-[12px] md:mb-[10px]'
-            cursorClassName='md:rounded-[12px]'
+            className="md:bg-[#DFDCC4] md:border-none md:rounded-[12px] md:mb-[10px]"
+            cursorClassName="md:rounded-[12px]"
           />
         )}
       </div>
-      {currentTab === 'v3' ? (
+      {currentTab === "v3" ? (
         <V3List
           pools={pools}
           loading={loading}
@@ -65,32 +65,32 @@ export default function Yours({
       {selectedReocrd && (
         <>
           <IncreaseLiquidityModal
-            version={currentTab || 'v2'}
+            version={currentTab || "v2"}
             fee={selectedReocrd.fee}
             tokenId={selectedReocrd.tokenId}
             token0={selectedReocrd.token0}
             token1={selectedReocrd.token1}
-            open={openModal === 'increase'}
+            open={openModal === "increase"}
             onClose={() => {
-              setOpenModal('');
+              setOpenModal("");
               setSelectedRecord(null);
-              onSuccess();
             }}
             dex={dex}
+            onSuccess={onSuccess}
           />
           <RemoveLiquidityModal
-            version={currentTab || 'v2'}
+            version={currentTab || "v2"}
             fee={selectedReocrd.fee}
             tokenId={selectedReocrd.tokenId}
             token0={selectedReocrd.token0}
             token1={selectedReocrd.token1}
-            open={openModal === 'remove'}
+            open={openModal === "remove"}
             onClose={() => {
-              setOpenModal('');
+              setOpenModal("");
               setSelectedRecord(null);
-              onSuccess();
             }}
             dex={dex}
+            onSuccess={onSuccess}
           />
           <CollectFees
             fee={selectedReocrd.fee}
@@ -99,9 +99,9 @@ export default function Yours({
             token1={selectedReocrd.token1}
             version={currentTab}
             dex={dex}
-            open={openModal === 'claim'}
+            open={openModal === "claim"}
             onClose={() => {
-              setOpenModal('');
+              setOpenModal("");
               setSelectedRecord(null);
             }}
           />

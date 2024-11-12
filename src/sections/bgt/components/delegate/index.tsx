@@ -10,7 +10,7 @@ import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
-import { memo, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { BGT_ABI } from '../../abi';
 import { BGT_ADDRESS } from '../../config';
 import { OperationTypeType, ValidatorType } from '../../types';
@@ -18,6 +18,9 @@ import Button from './button';
 import useDelegationQueue, { QueueType } from './hooks/use-delegation-queue';
 import Select from './select';
 import Slider from '@/components/slider';
+import Range from '@/components/range';
+import Back from '@/sections/bgt/validator/components/back';
+import useIsMobile from '@/hooks/use-isMobile';
 const TABS = [
   {
     value: 'Deposit',
@@ -35,19 +38,22 @@ interface IProps {
   visible: boolean;
   validator: ValidatorType;
   operationType: OperationTypeType;
-  onClose: VoidFunction
+  onClose: VoidFunction;
+  onAddressSelect?(value: any): any;
 }
 export default memo(function Delegate(props: IProps) {
   const {
     visible,
     validator,
     operationType,
-    onClose
+    onClose,
+    onAddressSelect,
   } = props
 
   const {
     provider, account
-  } = useCustomAccount()
+  } = useCustomAccount();
+  const isMobile = useIsMobile();
 
   const toast = useToast()
   const { addAction } = useAddAction("bgt");
@@ -235,9 +241,16 @@ export default memo(function Delegate(props: IProps) {
   }, [visible, account, validator?.address, state?.updater])
   return (
     <>
-      <Modal open={visible} onClose={onClose}>
-        <div className='px-[32px] pt-[28px] w-[520px] h-[452px] pb-[69px] overflow-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,_0,_0,_0.25)]'>
-          <div className='text-black font-Montserrat text-[20px] font-bold leading-[90%]'>{operationType === "delegate" ? "Delegate" : "Unbond"}</div>
+      <Modal open={visible} onClose={onClose} innerStyle={{ width: 'unset' }}>
+        <div className='px-[32px] md:px-[12px] pt-[28px] w-[520px] md:w-full h-[452px] pb-[69px] overflow-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,_0,_0,_0.25)]'>
+          <div className='flex items-center gap-[16px] text-black font-Montserrat text-[20px] font-bold leading-[90%]'>
+            {
+              isMobile && (
+                <Back onBack={onClose} />
+              )
+            }
+            {operationType === "delegate" ? "Delegate" : "Unbond"}
+          </div>
           <div className='mt-[35px] mb-[12px] w-full h-[72px] flex items-center gap-[8px] justify-between rounded-[12px] border border-[#373A53] bg-white'>
             <input value={state?.inAmount} onChange={(event) => handleAmountChange(event?.target?.value)} className='py-[24px] pl-[17px] w-full h-[100%] text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0' />
             <div
@@ -258,8 +271,7 @@ export default memo(function Delegate(props: IProps) {
             </div>
           </div>
           <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>balance: {formatValueDecimal(state?.balance, '', 2)} BGT</div>
-          <div className='mt-[12px] mb-[24px] flex items-center gap-[24px]'>
-
+          <div className='mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]'>
             <div className='flex items-center gap-[8px]'>
               {
                 RangeList.map((range: number, index: number) => (
@@ -281,14 +293,19 @@ export default memo(function Delegate(props: IProps) {
                 ))
               }
             </div>
-            <Slider
-              percentage={state?.percentage}
-              onChange={(percentage) => {
+            <Range
+              value={state?.percentage}
+              onChange={(e) => {
+                const percentage = e.target.value;
                 updateState({
                   percentage,
                   inAmount: Big(state?.balance ? state?.balance : 0).times(Big(percentage).div(100)).toFixed(),
                   rangeIndex: RangeList.findIndex(range => Big(range).eq(Big(percentage).div(100))),
                 })
+              }}
+              style={{
+                marginTop: 0,
+                flex: 1,
               }}
             />
           </div>
@@ -378,6 +395,7 @@ export default memo(function Delegate(props: IProps) {
             selectVisible: false
           })
         }}
+        onAddressSelect={onAddressSelect}
       />
     </>
   );

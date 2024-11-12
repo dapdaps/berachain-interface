@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import useToast from '@/hooks/use-toast';
-import useCustomAccount from '@/hooks/use-account';
-import useAddAction from '@/hooks/use-add-action';
-import { ethers } from 'ethers';
-import Big from 'big.js';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useState } from "react";
+import useToast from "@/hooks/use-toast";
+import useCustomAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import useLpToAmount from "@/hooks/use-lp-to-amount";
+import { ethers } from "ethers";
+import Big from "big.js";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useInfrared({
   amount,
@@ -17,11 +18,12 @@ export default function useInfrared({
   const [loading, setLoading] = useState(false);
   const { provider } = useCustomAccount();
   const toast = useToast();
-  const { addAction } = useAddAction('dapp');
+  const { addAction } = useAddAction("dapp");
+  const { handleGetAmount } = useLpToAmount(vaultAddress);
 
   const onHandle = async () => {
     let toastId = toast?.loading({
-      title: type ? 'Unstaking...' : `Staking...`
+      title: type ? "Unstaking..." : `Staking...`
     });
     setLoading(true);
     try {
@@ -34,27 +36,27 @@ export default function useInfrared({
           constant: false,
           inputs: [
             {
-              name: 'amount',
-              type: 'uint256'
+              name: "amount",
+              type: "uint256"
             }
           ],
-          name: 'stake',
+          name: "stake",
           outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function'
+          stateMutability: "nonpayable",
+          type: "function"
         },
         {
           constant: false,
           inputs: [
             {
-              name: '_shareAmt',
-              type: 'uint256'
+              name: "_shareAmt",
+              type: "uint256"
             }
           ],
-          name: 'withdraw',
+          name: "withdraw",
           outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function'
+          stateMutability: "nonpayable",
+          type: "function"
         }
       ];
       const contract = new ethers.Contract(
@@ -62,21 +64,29 @@ export default function useInfrared({
         abi,
         provider?.getSigner()
       );
-      const tx = await contract[type ? 'withdraw' : 'stake'](wei);
+      const tx = await contract[type ? "withdraw" : "stake"](wei);
       const { status, transactionHash } = await tx.wait();
+      const [amount0, amount1] = handleGetAmount(amount);
 
       addAction?.({
-        type: 'Liquidity',
-        action: type ? 'Withdraw' : 'Deposit',
-        token0: tokens[0],
-        token1: tokens[1],
+        type: "Staking",
+        action: type ? "UnStake" : "Staking",
+        token: {
+          symbol: `${tokens[0].symbol}-${tokens[1].symbol}`
+        },
         amount: amount,
-        template: 'Infrared',
+        template: "Infrared",
         status: status,
         add: 1,
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
-        sub_type: type ? 'Remove' : 'Add'
+        sub_type: type ? "UnStake" : "Stake",
+        extra_data: JSON.stringify({
+          token0Symbol: tokens[0].symbol,
+          token1Symbol: tokens[1].symbol,
+          amount0,
+          amount1
+        })
       });
 
       setTimeout(() => {
@@ -85,15 +95,15 @@ export default function useInfrared({
 
       toast?.dismiss(toastId);
       toast?.success({
-        title: type ? 'Unstake Successfully!' : 'Stake Successfully!'
+        title: type ? "Unstake Successfully!" : "Stake Successfully!"
       });
     } catch (err: any) {
       toast?.dismiss(toastId);
       toast?.fail({
-        title: type ? 'Unstake Failed!' : 'Stake Failed!',
-        text: err?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
-          : err?.message ?? ''
+        title: type ? "Unstake Failed!" : "Stake Failed!",
+        text: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
+          : err?.message ?? ""
       });
     } finally {
       setLoading(false);

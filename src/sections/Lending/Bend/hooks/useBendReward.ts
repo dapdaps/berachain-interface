@@ -9,7 +9,7 @@ const vaultAddress = "0x2E8410239bB4b099EE2d5683e3EF9d6f04E321CC";
 
 const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
   const [claiming, setClaiming] = useState(false);
-  const [reward, setReward] = useState<any>();
+  const [reward, setReward] = useState<any>(0);
   const [debtVal, setDebtVal] = useState<any>();
   const toast = useToast();
   const { addAction } = useAddAction("bgt");
@@ -160,7 +160,8 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
     icon: '/images/dapps/honey.png',
     platform: 'bend',
     depositAmount: debtVal,
-    rewardValue: parseFloat(reward) < 0.01 ? '<0.01' : parseFloat(reward).toFixed(2)
+    rewardValue: parseFloat(reward) === 0 ? '0' : (parseFloat(reward) < 0.01 ? '<0.01' : parseFloat(reward).toFixed(2)),
+    rewardValueNumber: reward,
   };
 };
 

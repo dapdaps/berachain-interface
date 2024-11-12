@@ -1,8 +1,8 @@
 import React, { createContext, useContext } from "react";
 import Popover, { PopoverPlacement } from "@/components/popover";
 
-export type ModuleType = "hat" | "jacket" | "jewelry" | "key";
-export type ActionType = "bridge" | "swap" | "stake";
+export type ModuleType = "hats" | "jackets" | "necklaces" | "cars";
+export type ActionType = "bridge" | "swap" | "delegate" | "lend";
 
 export interface ModuleStyles {
   container: string;
@@ -20,7 +20,7 @@ export interface ModuleItem {
   desc: string;
   type: ActionType;
   hasPopover?: boolean;
-  needTransactionNums: number;
+  needTransactionNums?: number;
 }
 
 export interface ModuleConfig {
@@ -53,10 +53,8 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
         <div className="text-[#F7F9EA] font-CherryBomb text-[18px] font-[400] leading-[18px] text-center text-stroke-2">
           {title}
         </div>
-        <div className="w-[38.461vw] text-left text-[12px] font-[400] leading-[14.4px] text-white">
-          {before}
-          <span className="font-[700]">{needTransactionNums}</span>
-          {after}
+        <div className="w-[38.461vw] text-left text-[12px] font-[400] leading-[14.4px] text-white px-3">
+          {desc}
         </div>
         <div
           onClick={() =>

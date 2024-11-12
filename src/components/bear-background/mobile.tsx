@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-
+import { use, useEffect, useState } from 'react';
+import clsx from 'clsx'
+import { usePathname } from 'next/navigation';
 const Clouds = () => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
 
@@ -77,13 +78,17 @@ const Clouds = () => {
 };
 
 export default function Mobile({ children, showGrassland = false }: any) {
+
+  const pathname = usePathname()
+  const routes = ['/cave', '/']
+
   return (
-    <div className='relative hidden md:block min-w-full h-full'>
+    <div className='relative hidden md:block w-full h-full'>
       {/* <Clouds /> */}
       {showGrassland && (
         <div className='bg-[#B6DF5D] h-[75.384vw] w-full absolute bottom-0 border-t border-[#4B371F]' />
       )}
-      <div className='relative z-10 h-full'>{children}</div>
+      <div className={clsx('relative z-10 h-full', routes.includes(pathname) ? 'h-dvh overflow-y-scroll overflow-x-hidden' : '')}>{children}</div>
     </div>
   );
 }

@@ -1,17 +1,27 @@
-import MenuButton from '@/components/mobile/menuButton';
-import Welcome from '../Welcome';
-import Popup from './popup';
-import Module, { ModuleItem } from './components/Module';
-import { ModuleConfigs } from './config';
+import MenuButton from "@/components/mobile/menuButton";
+import Welcome from "./components/Weclome";
+import Popup from "./popup";
+import Module, { ModuleItem } from "./components/Module";
+import { useGameItems } from "./hooks/useGameItems";
+import { useWelcomeStore } from "./hooks/useWelcomeStore";
 
 const Cave = () => {
+
+  const welcomeStore: any = useWelcomeStore()
+  
   const handleItemClick = (item: ModuleItem) => {
-    console.log('Selected item:', item);
+    console.log("Selected item:", item);
   };
+
+  const {  moduleConfigs, loading} = useGameItems();
+
+console.log(welcomeStore.show, 'welcomeStore.show');
+
+
   return (
-    <div className='relative h-full overflow-y-auto'>
+    <div className='relative w-full h-dvh overflow-x-hidden overflow-y-scroll'>
       <div
-        className='mt-10'
+        className='mt-10 relative'
         style={{
           backgroundImage: `url('/images/mobile/cave/header.png')`,
           backgroundSize: 'cover',
@@ -24,10 +34,13 @@ const Cave = () => {
         <MenuButton className='my-0 mx-auto' contentClassName='text-2xl'>
           Bera Cave
         </MenuButton>
+        <div className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px]"  onClick={() => {
+                    welcomeStore.set({ show: true })
+                }}>Rules</div>
       </div>
-      <div className='bg-[#9C948F] h-[190vw] w-full'>
+      <div className='bg-[#9C948F] h-[240vw] w-full'>
         <div
-          className='absolute bottom-0'
+          className='fixed bottom-0'
           style={{
             backgroundImage: `url('/images/mobile/cave/bottom.png')`,
             backgroundSize: 'cover',
@@ -47,11 +60,12 @@ const Cave = () => {
 
             <Module
               config={{
-                ...ModuleConfigs.hat,
-                onItemClick: handleItemClick
+                ...moduleConfigs.hats,
+                onItemClick: handleItemClick,
               }}
             />
-            <Module config={ModuleConfigs.jacket} />
+            
+            <Module config={moduleConfigs.jackets} />
 
             <img
               src='/images/mobile/cave/backStripe.png'
@@ -71,7 +85,7 @@ const Cave = () => {
                 width: '98.461vw'
               }}
             >
-              <Module config={ModuleConfigs.jewelry} />
+              <Module config={moduleConfigs.necklaces} />
             </div>
 
             {/* Key Modules */}
@@ -86,12 +100,12 @@ const Cave = () => {
                 width: '98.461vw'
               }}
             >
-              <Module config={ModuleConfigs.key} />
+              <Module config={moduleConfigs.cars} />
             </div>
           </div>
         </div>
       </div>
-      <Welcome />
+      <Welcome show={welcomeStore.show} onClose={() => welcomeStore.set({ show: false })}/>
       <Popup />
     </div>
   );

@@ -1,17 +1,8 @@
-import Modal from '@/components/modal';
-import Content from '../Content';
-import { dexs } from '@/configs/swap';
-import { useMemo } from 'react';
-import { DEFAULT_CHAIN_ID } from '@/configs';
-
-type Props = {
-  outputCurrencyReadonly?: boolean;
-  defaultInputCurrency?: any;
-  defaultOutputCurrency?: any;
-  protocols?: any;
-  show: boolean;
-  onClose: () => void;
-};
+import Modal from "@/components/modal";
+import Content from "../Content";
+import { dexs } from "@/configs/swap";
+import { useMemo } from "react";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function SwapModal({
   defaultInputCurrency,
@@ -19,8 +10,9 @@ export default function SwapModal({
   outputCurrencyReadonly = false,
   protocols,
   show,
-  onClose
-}: Props) {
+  onClose,
+  ...rest
+}: any) {
   const [templates, tokens] = useMemo(() => {
     let _templates: string[] = [];
     let _tokens: any[] = [];
@@ -36,7 +28,7 @@ export default function SwapModal({
   }, [dexs, protocols]);
 
   return (
-    <Modal open={show} onClose={onClose}>
+    <Modal open={show} onClose={onClose} closeIconClassName="md:hidden">
       <Content
         dapp={{
           name: templates,
@@ -45,7 +37,8 @@ export default function SwapModal({
           defaultOutputCurrency
         }}
         outputCurrencyReadonly={outputCurrencyReadonly}
-        showSetting={false}
+        showSetting={true}
+        {...rest}
       />
     </Modal>
   );

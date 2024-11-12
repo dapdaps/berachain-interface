@@ -12,7 +12,7 @@ import useAccount from '@/hooks/use-account';
 const ActionPanelForm = (props: IProps) => {
   const { action, token, isMobile } = props;
 
-  const { chainId } = useAccount()  
+  const { chainId } = useAccount()
 
   const { config } = useAaveConfig();
 
@@ -131,6 +131,8 @@ const ActionPanelForm = (props: IProps) => {
           <Button
             loading={approving}
             disabled={isDisabled}
+            amount={amount}
+            maxValue={maxValue}
             onClick={() => {
               const value = Big(amount).mul(Big(10).pow(decimals)).toFixed(0);
               handleApprove(value)
@@ -144,6 +146,8 @@ const ActionPanelForm = (props: IProps) => {
             loading={loading}
             disabled={isDisabled}
             onClick={handleAction}
+            amount={amount}
+            maxValue={maxValue}
             className="md:mt-[37px] md:h-[46px] md:leading-[44px] md:rounded-[10px]"
           >
             {isDeposit ? action === 'supply' ? 'Supply' : 'Deposit' : "Withdraw"}

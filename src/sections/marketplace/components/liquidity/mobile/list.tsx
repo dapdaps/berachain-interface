@@ -167,7 +167,7 @@ const MobileList = ({ list, onClick }: any) => {
   };
 
   return (
-    <div className="w-full h-[100vh]">
+    <div className="w-full h-auto">
       {list.map((item: any, index: number) => {
         return <Item key={index} item={item} onClick={onClick} />;
       })}

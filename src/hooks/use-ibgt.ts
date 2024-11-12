@@ -127,7 +127,7 @@ export function useIBGT(props: any) {
 
   const {
     handleGetAmount
-  } = useLpToAmount(data?.LP_ADDRESS)
+  } = useLpToAmount(LP_ADDRESS)
 
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
@@ -267,54 +267,61 @@ export function useIBGT(props: any) {
       }
     ];
     const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider.getSigner());
-    contract
-      .stake(wei)
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(inAmount)
-        addAction?.({
-          type: 'Staking',
-          action: 'Staking',
-          token: {
-            symbol: tokens.join('-')
-          },
-          amount: inAmount,
-          template: "Infrared",
-          status: status,
-          add: 1,
-          transactionHash,
-          chain_id: props.chainId,
-          sub_type: "Stake",
-        });
-        updateState({
-          isLoading: false,
-          // isPostTx: true
-        });
-        setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
+    const createTx = (gas: any) => {
+      contract
+        .stake(wei, { gasLimit: gas })
+        .then((tx: any) => tx.wait())
+        .then((receipt: any) => {
+          const { status, transactionHash } = receipt;
+          const [amount0, amount1] = handleGetAmount(inAmount)
+          addAction?.({
+            type: 'Staking',
+            action: 'Staking',
+            token: {
+              symbol: tokens.join('-')
+            },
+            amount: inAmount,
+            template: "Infrared",
+            status: status,
+            add: 1,
+            transactionHash,
+            chain_id: props.chainId,
+            sub_type: "Stake",
+          });
+          updateState({
+            isLoading: false,
+            // isPostTx: true
+          });
+          setTimeout(() => {
+            onSuccess?.()
+          }, 3000)
 
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Deposit Successfully!'
+          toast?.dismiss(toastId);
+          toast?.success({
+            title: 'Deposit Successfully!'
+          });
+        })
+        .catch((error: Error) => {
+          console.log('error: ', error);
+          updateState({
+            isError: true,
+            isLoading: false,
+            loadingMsg: error?.message
+          });
+          toast?.dismiss(toastId);
+          toast?.fail({
+            title: 'Deposit Failed!',
+            text: error?.message?.includes('user rejected transaction')
+              ? 'User rejected transaction'
+              : (error?.message ?? '')
+          });
         });
-      })
-      .catch((error: Error) => {
-        console.log('error: ', error);
-        updateState({
-          isError: true,
-          isLoading: false,
-          loadingMsg: error?.message
-        });
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Deposit Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : (error?.message ?? '')
-        });
-      });
+    };
+    contract.estimateGas.stake(wei).then((res: any) => {
+      createTx(res);
+    }).catch((err: any) => {
+      createTx(4000000);
+    });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -344,54 +351,63 @@ export function useIBGT(props: any) {
     ];
 
     const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider.getSigner());
+    const createTx = (gas: any) => {
+      contract
+        .withdraw(lpWeiAmount, { gasLimit: gas })
+        .then((tx: any) => tx.wait())
+        .then((receipt: any) => {
+          updateState({
+            isLoading: false,
+          });
+          const { status, transactionHash } = receipt;
+          const [amount0, amount1] = handleGetAmount(lpAmount)
+          addAction?.({
+            type: 'Staking',
+            action: 'UnStake',
+            token: {
+              symbol: tokens.join('-')
+            },
+            symbol: tokens.join("-"),
+            amount: lpAmount,
+            template: "Infrared",
+            status: status,
+            add: 0,
+            transactionHash,
+            chain_id: props.chainId,
+            sub_type: "Unstake",
+          });
+
+          setTimeout(() => {
+            onSuccess?.()
+          }, 3000)
+
+          toast?.dismiss(toastId);
+          toast?.success({
+            title: 'Withdraw Successfully!'
+          });
+        })
+        .catch((error: Error) => {
+          console.log('===error', error)
+          updateState({
+            isError: true,
+            isLoading: false,
+            loadingMsg: error?.message
+          });
+          toast?.dismiss(toastId);
+          toast?.fail({
+            title: 'Withdraw Failed!',
+            text: error?.message?.includes('user rejected transaction')
+              ? 'User rejected transaction'
+              : (error?.message ?? '')
+          });
+        });
+    };
     contract
-      .withdraw(lpWeiAmount)
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        updateState({
-          isLoading: false,
-        });
-        const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(lpAmount)
-        addAction?.({
-          type: 'Staking',
-          action: 'UnStake',
-          token: {
-            symbol: tokens.join('-')
-          },
-          symbol: tokens.join("-"),
-          amount: lpAmount,
-          template: "Infrared",
-          status: status,
-          add: 0,
-          transactionHash,
-          chain_id: props.chainId,
-          sub_type: "Unstake",
-        });
-
-        setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
-
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Withdraw Successfully!'
-        });
-      })
-      .catch((error: Error) => {
-        console.log('===error', error)
-        updateState({
-          isError: true,
-          isLoading: false,
-          loadingMsg: error?.message
-        });
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Withdraw Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : (error?.message ?? '')
-        });
+      .estimateGas
+      .withdraw(lpWeiAmount).then((res: any) => {
+        createTx(res);
+      }).catch((err: any) => {
+        createTx(4000000);
       });
   };
 
@@ -411,42 +427,51 @@ export function useIBGT(props: any) {
     }]
     console.log('===tokenData', tokenData)
     const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider.getSigner())
+    const createTx = (gas: any) => {
+      contract
+        .getReward({ gasLimit: gas })
+        .then((tx: any) => tx.wait())
+        .then((receipt: any) => {
+          const { status, transactionHash } = receipt;
+          addAction?.({
+            type: 'Staking',
+            action: 'Claim',
+            token: {
+              symbol: tokenData?.rewardSymbol
+            },
+            amount: tokenData?.earned,
+            template: "Infrared",
+            status: status,
+            transactionHash,
+            chain_id: props.chainId,
+            sub_type: "Claim"
+          });
+          toast?.dismiss(toastId);
+          toast?.success({
+            title: 'Claim Successfully!'
+          });
+          setTimeout(() => {
+            onSuccess?.()
+          }, 3000)
+        })
+        .catch((error: Error) => {
+          console.log('error: ', error);
+          toast?.dismiss(toastId);
+          toast?.fail({
+            title: 'Claim Failed!',
+            text: error?.message?.includes('user rejected transaction')
+              ? 'User rejected transaction'
+              : (error?.message ?? '')
+          });
+        });
+    };
     contract
-      .getReward()
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        const { status, transactionHash } = receipt;
-        addAction?.({
-          type: 'Staking',
-          action: 'Claim',
-          token: {
-            symbol: tokenData?.rewardSymbol
-          },
-          amount: tokenData?.earned,
-          template: "Infrared",
-          status: status,
-          transactionHash,
-          chain_id: props.chainId,
-          sub_type: "Claim"
-        });
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Claim Successfully!'
-        });
-        setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
-      })
-      .catch((error: Error) => {
-        console.log('error: ', error);
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Claim Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : (error?.message ?? '')
-        });
-      });
+      .estimateGas
+      .getReward().then((res: any) => {
+      createTx(res);
+    }).catch((err: any) => {
+      createTx(4000000);
+    });
   }
   const onSuccess = function () {
     updateState({

@@ -13,8 +13,8 @@ export const Clouds = () => {
     };
 
     if (typeof window !== 'undefined') {
-      updateScreenWidth(); 
-      window.addEventListener('resize', updateScreenWidth); 
+      updateScreenWidth();
+      window.addEventListener('resize', updateScreenWidth);
     }
 
     return () => {
@@ -87,7 +87,7 @@ export const DappClouds = () => {
 
     if (typeof window !== 'undefined') {
       updateScreenWidth();
-      window.addEventListener('resize', updateScreenWidth); 
+      window.addEventListener('resize', updateScreenWidth);
     }
 
     return () => {

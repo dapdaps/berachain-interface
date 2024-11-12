@@ -59,6 +59,7 @@ if (typeof window !== 'undefined' && window.berasig) {
 }
 
 export const wagmiAdapter = new WagmiAdapter({
+  // @ts-ignore
   storage: createStorage({
     storage: cookieStorage
   }),

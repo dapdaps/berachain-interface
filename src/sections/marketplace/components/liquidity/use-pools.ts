@@ -1,10 +1,10 @@
-import { useEffect, useState, useMemo } from 'react';
-import { beraB } from '@/configs/tokens/bera-bArtio';
-import kodiak from '@/configs/pools/kodiak';
-import { wrapNativeToken } from '@/sections/pools/utils';
-import { default as useBexPools } from '@/sections/pools/bex/use-pools';
-import { default as useKodiakV2Pools } from '@/sections/pools/kodiak/use-pools-v2';
-import { default as usePoolsV3 } from '@/sections/pools/hooks/use-pools-v3';
+import { useEffect, useState, useMemo } from "react";
+import { beraB } from "@/configs/tokens/bera-bArtio";
+import kodiak from "@/configs/pools/kodiak";
+import { wrapNativeToken } from "@/sections/pools/utils";
+import { default as useBexPools } from "@/sections/pools/bex/use-pools";
+import { default as useKodiakV2Pools } from "@/sections/pools/kodiak/use-pools-v2";
+import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
 
 export default function usePools() {
   const [pools, setPools] = useState<any>([]);
@@ -21,26 +21,26 @@ export default function usePools() {
   const query = async () => {
     setPools([
       {
-        token0: wrapNativeToken(beraB['bera']),
-        token1: beraB['honey'],
-        protocolIcon: '/images/dapps/bex.png',
-        protocol: 'BEX',
+        token0: wrapNativeToken(beraB["bera"]),
+        token1: beraB["honey"],
+        protocolIcon: "/images/dapps/bex.png",
+        protocol: "BEX",
         id: 1
       },
       {
-        token0: wrapNativeToken(beraB['bera']),
-        token1: beraB['honey'],
-        protocolIcon: '/images/dapps/kodiak.svg',
-        protocol: 'Kodiak',
-        version: 'v2',
+        token0: wrapNativeToken(beraB["bera"]),
+        token1: beraB["honey"],
+        protocolIcon: "/images/dapps/kodiak.svg",
+        protocol: "Kodiak",
+        version: "v2",
         id: 2
       },
       {
-        token0: wrapNativeToken(beraB['bera']),
-        token1: beraB['honey'],
-        protocolIcon: '/images/dapps/kodiak.svg',
-        protocol: 'Kodiak',
-        version: 'v3',
+        token0: wrapNativeToken(beraB["bera"]),
+        token1: beraB["honey"],
+        protocolIcon: "/images/dapps/kodiak.svg",
+        protocol: "Kodiak",
+        version: "v3",
         fee: 3000,
         id: 3
       }
@@ -66,9 +66,9 @@ export default function usePools() {
     kodiakV3Pools.forEach((pool: any) => {
       const key =
         pool.token0.address.toLowerCase() +
-        '-' +
+        "-" +
         pool.token1.address.toLowerCase() +
-        '-' +
+        "-" +
         pool.fee;
       if (_pools[key]) {
         _pools[key].push(pool);
