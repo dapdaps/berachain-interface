@@ -70,7 +70,7 @@ const Home = () => {
             backgroundSize: '100%',
             backgroundPosition: 'top',
             backgroundRepeat: 'no-repeat',
-            height: visibleHeight + 150 + 'px',
+            height: visibleHeight + 130 + 'px',
           }}
         >
           <motion.div

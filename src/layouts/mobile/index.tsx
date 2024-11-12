@@ -148,7 +148,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className='fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-12 pb-24 z-[99]'
+            className='fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-12 pb-24 z-[50]'
             style={{
               overflowY: isDappsOpen ? 'scroll' : 'auto'
             }}
@@ -198,7 +198,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <div className='fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 bg-[#F6EFC8] z-[99]'>
+      <div className='fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]'>
         <div className='flex items-center gap-3'>
           <img
             src='/images/mobile/town.png'
@@ -270,7 +270,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           <motion.button
             onClick={toggleMenu}
             whileTap={{ scale: 0.95 }}
-            className='w-6 h-[4.6vw]'
+            className='bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px]'
           >
             {isMenuOpen ? (
               <IconClose className='w-full h-full' />
