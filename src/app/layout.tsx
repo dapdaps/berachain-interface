@@ -6,11 +6,13 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import MainLayout from '@/layouts/main';
 import WagmiProvider from '@/context/wagmi';
 import { ToastContainer } from 'react-toastify';
-import { Suspense } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import useIsMobile from '@/hooks/use-isMobile';
 import MobileLayout from '@/layouts/mobile';
+import { useTapSoundStore } from '@/stores/tap-sound';
+import TapSound from '@/components/tap-sound';
 
 export default function RootLayout({
   children
@@ -18,6 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const isMobile = useIsMobile();
+
+  const tapRef = useRef<any>(null);
+  const tapSound = useTapSoundStore();
+
+  useEffect(() => {
+    tapSound.set({
+      play: () => {
+        tapRef.current?.play?.();
+      },
+    });
+  }, []);
 
   return (
     <html lang='en' className="md:overflow-hidden">
@@ -59,6 +72,7 @@ export default function RootLayout({
           options={{ showSpinner: false }}
           shallowRouting
         />
+        <TapSound ref={tapRef} />
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import useClickTracking from '@/hooks/use-click-tracking';
+import { useTapSoundStore } from '@/stores/tap-sound';
 
 const menuItems = [
   { id: 1, title: 'Bera Cave', href: '/cave' },
@@ -73,10 +74,14 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDappsOpen, setIsDappsOpen] = useState(false);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    tapSound.play?.();
+  };
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
   const { handleReportNoCode } = useClickTracking();
+  const tapSound = useTapSoundStore();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
@@ -129,6 +134,11 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const routes: any = [];
+
+  const handleHome = () => {
+    router.push('/');
+    tapSound.play?.();
+  };
 
   return (
     <div
@@ -200,11 +210,20 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       {/* Bottom Navigation */}
       <div className='fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]'>
         <div className='flex items-center gap-3'>
-          <img
+          <motion.img
             src='/images/mobile/town.png'
             alt='Town'
             className='w-[15.9vw] h-auto'
-            onClick={() => router.push('/')}
+            onClick={handleHome}
+            transition={{
+              type: 'spring',
+              stiffness: 200,
+              damping: 10,
+            }}
+            whileTap={{
+              y: 8,
+              scale: 0.95,
+            }}
           />
           {isMenuOpen && (
             <>
@@ -269,7 +288,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           )}
           <motion.button
             onClick={toggleMenu}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.95, y: 8 }}
+            transition={{
+              type: 'spring',
+              stiffness: 200,
+              damping: 10,
+            }}
             className='bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center'
           >
             {isMenuOpen ? (
