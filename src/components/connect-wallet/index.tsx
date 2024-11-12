@@ -174,7 +174,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           style={{ transform: "translateY(-4px)" }}
         />
       ) : isConnected ? (
-        <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3">
+        <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3 w-[105px]">
           {isMobile ? (
             <>
               <User

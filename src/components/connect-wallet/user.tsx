@@ -18,7 +18,7 @@ const MobileUser = (props: Props) => {
   } = props;
 
   return (
-    <Drawer visible={visible} onClose={onClose} size="64.615vw">
+    <Drawer visible={visible} onClose={onClose} size="203px" className="bg-[#FFFDEB]">
       <div className="mt-[30px] px-[20px]">
         <div className="flex gap-2 items-center">
           <div className="w-[40px] h-[40px]">
