@@ -1,22 +1,22 @@
-import Big from 'big.js';
-import { useCallback, useRef, useState } from 'react';
-import weth from '@/configs/contract/weth';
-import useAccount from '@/hooks/use-account';
-import useAddAction from '@/hooks/use-add-action';
-import useToast from '@/hooks/use-toast';
-import { useSettingsStore } from '@/stores/settings';
-import checkGas from './checkGas';
-import formatTrade from './formatTrade';
-import getWrapOrUnwrapTx from './getWrapOrUnwrapTx';
+import Big from "big.js";
+import { useCallback, useRef, useState } from "react";
+import weth from "@/configs/contract/weth";
+import useAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import useToast from "@/hooks/use-toast";
+import { useSettingsStore } from "@/stores/settings";
+import checkGas from "./checkGas";
+import formatTrade from "./formatTrade";
+import getWrapOrUnwrapTx from "./getWrapOrUnwrapTx";
 
 export default function useTrade({ chainId, template, onSuccess }: any) {
   const slippage: any = useSettingsStore((store: any) => store.slippage);
   const [loading, setLoading] = useState(false);
   const [trade, setTrade] = useState<any>();
   const { account, provider } = useAccount();
-`  const toast = useToast();`
-  const { addAction } = useAddAction('dapp');
-  const lastestCachedKey = useRef('');
+  const toast = useToast();
+  const { addAction } = useAddAction("dapp");
+  const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
   const prices = {};
 
@@ -92,16 +92,16 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
           account
         };
 
-        if (typeof template === 'string') {
+        if (typeof template === "string") {
           params.template = template;
         } else {
           params.templates = template;
         }
 
-        const response = await fetch('/dapdap/quoter', {
-          method: 'POST',
+        const response = await fetch("/dapdap/quoter", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             params: JSON.stringify(params)
@@ -110,7 +110,7 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         const result = await response.json();
         const data = result.data;
         if (!data) {
-          throw new Error('No Data.');
+          throw new Error("No Data.");
         }
         setLoading(false);
         if (
@@ -118,7 +118,7 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
           lastestCachedKey.current
         )
           return;
-        if (typeof template === 'string') {
+        if (typeof template === "string") {
           const _trade = {
             ...formatTrade({
               market: { ...data, template },
@@ -166,11 +166,11 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
     const signer = provider.getSigner(account);
     const wethAddress = weth[trade.inputCurrency.chainId];
     setLoading(true);
-    let toastId = toast.loading({ title: 'Confirming...' });
+    let toastId = toast.loading({ title: "Confirming..." });
     try {
       const tx = await signer.sendTransaction(trade.txn);
       toast.dismiss(toastId);
-      toastId = toast.loading({ title: 'Pending...', tx: tx.hash, chainId });
+      toastId = toast.loading({ title: "Pending...", tx: tx.hash, chainId });
       const { status, transactionHash } = await tx.wait();
       setLoading(false);
       toast.dismiss(toastId);
@@ -186,13 +186,13 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         toast.fail({ title: `Swap faily!` });
       }
       addAction({
-        type: 'Swap',
+        type: "Swap",
         inputCurrencyAmount: trade.inputCurrencyAmount,
         inputCurrency: trade.inputCurrency,
         outputCurrencyAmount: trade.outputCurrencyAmount,
         outputCurrency: trade.outputCurrency,
         template:
-          wethAddress === trade.routerAddress ? 'Wrap and Unwrap' : trade.name,
+          wethAddress === trade.routerAddress ? "Wrap and Unwrap" : trade.name,
         status,
         transactionHash,
         add: 0,
@@ -202,8 +202,8 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
     } catch (err: any) {
       toast.dismiss(toastId);
       toast.fail({
-        title: err?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
+        title: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
           : `Swap faily!`
       });
       console.log(err);
