@@ -145,7 +145,7 @@ const DAppsView = () => {
     >
       <PageBack className="absolute left-[12px] top-[17px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
-      <div className={clsx('absolute bottom-[233px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '' )}>
+      <div className={clsx('absolute bottom-[143px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '' )}>
         <div className="w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative">
           <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
           <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />

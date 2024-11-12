@@ -94,17 +94,13 @@ const IbgtForm = (props: any) => {
       <button
         type="button"
         className="mt-[16px] w-full bg-[#FFDC50] h-[46px] border-black border flex justify-center items-center gap-[5px] text-black text-[18px] font-[600] rounded-[10px]"
-        onClick={onSubmit}
+        onClick={handleClick}
         disabled={btnDisabled}
         style={{
           opacity: btnDisabled ? 0.3 : 1,
         }}
       >
-        {
-          isInSufficient ? 'InSufficient Balance' : (
-            loading ? <CircleLoading size={14} /> : btnText
-          )
-        }
+        {renderBtn()}
       </button>
     </motion.div>
   );
