@@ -1,6 +1,7 @@
 import CircleLoading from '@/components/circle-loading';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
+import InputNumber from '@/components/input-number';
 
 const IbgtForm = (props: any) => {
   const {
@@ -73,12 +74,11 @@ const IbgtForm = (props: any) => {
     >
       <div className="mt-[16px]">
         <div className="relative border border-[#373A53] bg-white rounded-[12px] p-[16px_10px_6px_14px]">
-          <input
+          <InputNumber
             className="w-full text-[26px] font-[700] h-[24px]"
-            type="number"
             value={amount}
             placeholder="0"
-            onChange={(e) => onChange(e.target.value)}
+            onNumberChange={onChange}
           />
           <div className="flex justify-between items-center text-[12px] text-[#3D405A] font-[500] mt-[12px]">
             <div className="">
