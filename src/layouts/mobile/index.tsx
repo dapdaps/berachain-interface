@@ -270,12 +270,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           <motion.button
             onClick={toggleMenu}
             whileTap={{ scale: 0.95 }}
-            className='bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px]'
+            className='bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center'
           >
             {isMenuOpen ? (
-              <IconClose className='w-full h-full' />
+              <IconClose />
             ) : (
-              <IconMenu className='w-full h-full' />
+              <IconMenu />
             )}
           </motion.button>
         </div>
