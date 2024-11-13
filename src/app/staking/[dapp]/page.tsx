@@ -21,7 +21,7 @@ export default function LiquidityPage() {
       default:
         break;
     }
-  }, []);
+  }, [isMobile]);
 
   return (
     <StakingView

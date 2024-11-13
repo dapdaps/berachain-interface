@@ -94,7 +94,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/bridge');
                 tapSound.play?.();
-                handleReport('1015-002-002');
+                handleReport('1015-003');
               }}
               className='absolute left-0 -bottom-6 w-[22.564vw] h-[20.512vw]'
               alt=''
@@ -118,7 +118,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/marketplace');
                 tapSound.play?.();
-                handleReport('1015-002-003');
+                handleReport('1015-004');
               }}
               className='absolute right-[9.856vw] bottom-[8.697vw] w-[37.435vw] h-[11.282vw]'
               alt=''
@@ -142,7 +142,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/dapps');
                 tapSound.play?.();
-                handleReport('1015-002-005');
+                handleReport('1015-005');
               }}
               className='absolute left-[21.538vw] top-[6.153vw] w-[20.512vw] h-[8.717vw]'
               alt=''
@@ -166,7 +166,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/dashboard');
                 tapSound.play?.();
-                handleReport('1015-002-006');
+                handleReport('1015-006');
               }}
               className='absolute right-[18.974vw] bottom-[10.471vw] w-[30.769vw] h-[9.271vw]'
               alt=''
@@ -190,7 +190,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/earn');
                 tapSound.play?.();
-                handleReport('1015-002-004');
+                handleReport('1015-007');
               }}
               className='absolute left-[32.307vw] top-[7.692vw] w-[21.538vw] h-[11.794vw]'
               alt=''
@@ -214,7 +214,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/cave');
                 tapSound.play?.();
-                handleReport('1015-002-001');
+                handleReport('1015-008');
               }}
               className='absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw]'
               alt=''

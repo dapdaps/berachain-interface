@@ -29,7 +29,7 @@ export default function SwapPage() {
       default:
         break;
     }
-  }, []);
+  }, [isMobile]);
 
   return <SwapView dapp={dapp} />;
 }
