@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import Tooltip from "@/components/tooltip";
 import { MoreButton } from "../..";
@@ -97,30 +97,31 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
 const MemeTokensGrid = ({ MemeTokens, onSwap }: any) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const isMobile = useIsMobile();
+  const [displayCount, setDisplayCount] = useState(10);
   
-
   const TOKENS_PER_ROW = isMobile ? 5 : 10;
-
   
-  const [displayCount, setDisplayCount] = useState(TOKENS_PER_ROW);
-  
-
-  const visibleTokenRows = useMemo(() => {
-    const tokens = MemeTokens.slice(0, displayCount);
-    const rows = [];
-    for (let i = 0; i < tokens.length; i += TOKENS_PER_ROW) {
-      rows.push(tokens.slice(i, Math.min(i + TOKENS_PER_ROW, tokens.length)));
-    }
-    return rows;
-  }, [MemeTokens, displayCount, TOKENS_PER_ROW]);
+  useEffect(() => {
+    setDisplayCount(isMobile ? 5 : 10);
+  }, [isMobile]);
   
 
-  const onFooterMore = () => {
-    setDisplayCount(prev => Math.min(prev + TOKENS_PER_ROW, MemeTokens.length));
-  };
-  
+const visibleTokenRows = useMemo(() => {
+  const tokens = MemeTokens.slice(0, displayCount);
+  const rows = [];
+  for (let i = 0; i < tokens.length; i += TOKENS_PER_ROW) {
+    rows.push(tokens.slice(i, Math.min(i + TOKENS_PER_ROW, tokens.length)));
+  }
+  return rows;
+}, [MemeTokens, displayCount, TOKENS_PER_ROW]);
 
-  const showMoreButton = displayCount < MemeTokens.length;
+
+const onFooterMore = () => {
+  setDisplayCount(prev => Math.min(prev + TOKENS_PER_ROW, MemeTokens.length));
+};
+
+
+const showMoreButton = displayCount < MemeTokens.length;
 
   return (
     <>
