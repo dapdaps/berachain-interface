@@ -63,7 +63,7 @@ const DashboardWallet = (props: Props) => {
 
   useEffect(() => {
     handleReport(isMobile ? '1018-001' : '1011-001');
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className='h-full overflow-y-auto'>

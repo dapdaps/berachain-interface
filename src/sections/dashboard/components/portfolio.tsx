@@ -21,7 +21,7 @@ const DashboardPortfolio = (props: Props) => {
 
   useEffect(() => {
     handleReport(isMobile ? '1018-002' : '1011-002');
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className='h-full overflow-y-auto md:overflow-y-hidden'>

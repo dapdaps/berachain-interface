@@ -11,7 +11,7 @@ const DashboardRecords = (props: Props) => {
 
   useEffect(() => {
     handleReport(isMobile ? '1018-003' : '1002-003');
-  }, []);
+  }, [isMobile]);
 
   return isMobile ? <Mobile {...props} /> : <Laptop {...props} />;
 };

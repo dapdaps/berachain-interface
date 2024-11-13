@@ -179,10 +179,11 @@ export function useBGT() {
   }
 
   const handleValidator = (data: any) => {
-    handleReport(data?.validator?.metadata?.bp);
     if (isMobile) {
+      handleReport(data?.validator?.metadata?.bpMobile);
       return false;
     }
+    handleReport(data?.validator?.metadata?.bp);
     router.push("/bgt/validator?address=" + data?.validator?.id);
   };
 
