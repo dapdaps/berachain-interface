@@ -1,66 +1,96 @@
 import Image from "next/image";
+import { balanceFormated } from "@/utils/balance";
+import Big from "big.js";
 
-const SimpleTotal = () => {
+const SimpleTotal = ({ data }: any) => {
   return (
     <div className="flex items-center justify-between text-[16px]">
       <div className="font-semibold">My Deposits</div>
-      <div className="font-bold">$96.82</div>
+      <div className="font-bold">${balanceFormated(data.totalUsd, 2)}</div>
     </div>
   );
 };
 
-const Total = () => {
+const Total = ({ data, symbol }: any) => {
   return (
     <div className="flex items-center justify-between">
       <div>
         <div className="font-semibold text-[16px]">My Deposits</div>
-        <div className="font-bold text-[16px] mt-[8px]">$96.82</div>
-        <div className="font-medium text-[12px] mt-[4px]">0.46 KODIAK-1</div>
+        <div className="font-bold text-[16px] mt-[8px]">
+          $
+          {balanceFormated(
+            Big(data.balanceUsd).add(data.locked.amountUsd).toString(),
+            2
+          )}
+        </div>
+        <div className="font-medium text-[12px] mt-[4px]">
+          {balanceFormated(
+            Big(data.balance).add(data.locked.amount).toString(),
+            2
+          )}{" "}
+          {data.symbol}
+        </div>
       </div>
       <div>
         <div className="font-semibold text-[16px]">Available</div>
-        <div className="font-bold text-[16px] mt-[8px]">$96.82</div>
-        <div className="font-medium text-[12px] mt-[4px]">0.46 KODIAK-1</div>
+        <div className="font-bold text-[16px] mt-[8px]">
+          ${balanceFormated(data.balanceUsd, 2)}{" "}
+        </div>
+        <div className="font-medium text-[12px] mt-[4px]">
+          {balanceFormated(data.balance, 2)} {symbol}
+        </div>
       </div>
       <div>
         <div className="font-semibold text-[16px]">Locked</div>
-        <div className="font-bold text-[16px] mt-[8px]">$96.82</div>
-        <div className="font-medium text-[12px] mt-[3px]">0.46 KODIAK-1</div>
+        <div className="font-bold text-[16px] mt-[8px]">
+          ${balanceFormated(data.locked.amountUsd, 2)}
+        </div>
+        <div className="font-medium text-[12px] mt-[3px]">
+          {balanceFormated(data.locked.amount, 2)} {symbol}
+        </div>
       </div>
     </div>
   );
 };
 
-export default function Mydeposit() {
+export default function Mydeposit({ info = {}, token0, token1, symbol }: any) {
   return (
     <div className="rounded-[10px] bg-black/5 px-[16px] py-[20px] w-[440px]">
-      {/* <SimpleTotal /> */}
-      <Total />
+      {info.locked ? (
+        <Total data={info} symbol={symbol} />
+      ) : (
+        <SimpleTotal data={info} />
+      )}
+
       <div className="flex items-center justify-between mt-[18px]">
         <div className="flex items-center gap-[9px]">
           <Image
-            src={"/assets/tokens/bera.svg"}
-            alt={"Bear Token"}
+            src={token0.icon}
+            alt={token0.name}
             width={26}
             height={26}
             className="rounded-full"
           />
-          <div className="font-semibold text-[14px]">iBGT</div>
+          <div className="font-semibold text-[14px]">{token0.symbol}</div>
         </div>
-        <div className="font-semibold text-[14px]">iBGT</div>
+        <div className="font-semibold text-[14px]">
+          {balanceFormated(info.token0Amount, 4)}
+        </div>
       </div>
       <div className="flex items-center justify-between mt-[10px]">
         <div className="flex items-center gap-[9px]">
           <Image
-            src={"/assets/tokens/bera.svg"}
-            alt={"Bear Token"}
+            src={token1.icon}
+            alt={token1.name}
             width={26}
             height={26}
             className="rounded-full"
           />
-          <div className="font-semibold text-[14px]">iBGT</div>
+          <div className="font-semibold text-[14px]">{token1.symbol}</div>
         </div>
-        <div className="font-semibold text-[14px]">iBGT</div>
+        <div className="font-semibold text-[14px]">
+          {balanceFormated(info.token1Amount, 4)}
+        </div>
       </div>
     </div>
   );

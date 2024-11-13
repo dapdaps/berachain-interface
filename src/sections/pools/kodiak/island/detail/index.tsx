@@ -1,16 +1,32 @@
 import Laptop from "./laptop";
 import Mobile from "./mobile";
-import DepositOnly from "./modals/deposit-only";
-import WithStaking from "./modals/with-staking";
 import useIsMobile from "@/hooks/use-isMobile";
+import useUserInfo from "../hooks/use-user-info";
 
 export default function Detail(props: any) {
+  const { id, farmAddress, pool, token0, token1, price } = props.data;
   const isMobile = useIsMobile();
+  const { loading, info, queryInfo } = useUserInfo({
+    islandContract: id,
+    farmContract: farmAddress,
+    token0,
+    token1,
+    pool,
+    price
+  });
+  console.log("info", info);
   return (
     <>
-      {isMobile ? <Mobile {...props} /> : <Laptop {...props} />}
-      {/* <DepositOnly /> */}
-      <WithStaking />
+      {isMobile ? (
+        <Mobile {...props} info={info} loading={loading} />
+      ) : (
+        <Laptop
+          {...props}
+          info={info}
+          loading={loading}
+          onSuccess={queryInfo}
+        />
+      )}
     </>
   );
 }

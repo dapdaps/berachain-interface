@@ -1,58 +1,142 @@
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import SwitchTabs from "@/components/switch-tabs";
 import Button from "@/components/button";
-import { useState } from "react";
+import Loading from "@/components/loading";
+import DepositOnly from "../action-modal/deposit-modal";
+import SwitchNetworkButton from "@/sections/pools/components/button/switch-network";
+import ConnectWalletButton from "@/sections/pools/components/button/connect-wallet";
+import { useState, useMemo } from "react";
+import useDepositAmount from "../../hooks/use-deposit-amount";
+import { useDebounceFn } from "ahooks";
+import { balanceFormated } from "@/utils/balance";
+import Big from "big.js";
+import useCustomAccount from "@/hooks/use-account";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function Deposit() {
-  const [type, setType] = useState("");
+export default function Deposit({ data, info, onSuccess }: any) {
+  const [type, setType] = useState("deposit");
+  const [amount0, setAmount0] = useState("");
+  const [amount1, setAmount1] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [balance0, setBalance0] = useState("");
+  const [balance1, setBalance1] = useState("");
+  const [receives, setReceives] = useState<any>();
+  const { account, chainId } = useCustomAccount();
+  const { querying, queryAmounts } = useDepositAmount({
+    islandContract: data.id,
+    token0: data.token0,
+    token1: data.token1
+  });
+
+  const errorTips = useMemo(() => {
+    if (!amount0 || !amount1) return "Enter an amount";
+    if (Big(balance0 || 0).lt(amount0) || Big(balance1 || 0).lt(amount1))
+      return "Insufficient Balance";
+    return "";
+  }, [amount0, amount1, balance0, balance1]);
+
+  const { run: runQuoter } = useDebounceFn(
+    () => {
+      queryAmounts({
+        amount0,
+        amount1,
+        cb(amounts: any) {
+          setAmount0(amounts.amount0);
+          setAmount1(amounts.amount1);
+          setReceives({
+            received: amounts.received,
+            miniReceived: amounts.miniReceived
+          });
+        }
+      });
+    },
+    {
+      wait: 500
+    }
+  );
+
   return (
     <>
       <Input
-        value=""
+        value={amount0}
         readOnly
-        token={{
-          isNative: true,
-          decimals: 18,
-          chainId: 18,
-          symbol: "BERA",
-          icon: "/assets/tokens/bera.svg"
-        }}
+        token={data.token0}
         className="mt-[16px]"
-        onLoad={() => {}}
+        setValue={(val: any) => {
+          setAmount0(val);
+          setAmount1("");
+          runQuoter();
+        }}
+        onLoad={setBalance0}
       />
       <Input
-        value=""
+        value={amount1}
         readOnly
-        token={{
-          isNative: true,
-          decimals: 18,
-          chainId: 18,
-          symbol: "BERA",
-          icon: "/assets/tokens/bera.svg"
-        }}
+        token={data.token1}
         className="mt-[16px]"
-        onLoad={() => {}}
+        setValue={(val: any) => {
+          setAmount1(val);
+          setAmount0("");
+          runQuoter();
+        }}
+        onLoad={setBalance1}
       />
       <div className="rounded-[12px] border-[#373A53] border p-[14px] mt-[10px] text-[14px] text-[#3D405A] font-medium">
         <div className="flex justify-between items-start">
           <div>Estimated Received</div>
-          <div className="text-right">
-            <div>0.21342 KODIAK-1</div>
-            <div>($1.91)</div>
-          </div>
+          {querying ? (
+            <Loading />
+          ) : (
+            <div className="text-right">
+              <div>
+                {receives?.received
+                  ? balanceFormated(receives.received, 5)
+                  : "-"}{" "}
+                {data.symbol}
+              </div>
+              <div>
+                (${" "}
+                {receives?.received && data.price
+                  ? balanceFormated(
+                      Big(receives.received).mul(data.price).toString(),
+                      5
+                    )
+                  : "-"}{" "}
+                )
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex justify-between items-start mt-[12px]">
           <div>Minimum Received</div>
-          <div className="text-right">
-            <div>0.21342 KODIAK-1</div>
-            <div>($1.91)</div>
-          </div>
+          {querying ? (
+            <Loading />
+          ) : (
+            <div className="text-right">
+              <div>
+                {receives?.miniReceived
+                  ? balanceFormated(receives.miniReceived, 5)
+                  : "-"}{" "}
+                {data.symbol}
+              </div>
+              {receives?.miniReceived && data.price && (
+                <div>
+                  (${" "}
+                  {balanceFormated(
+                    Big(receives.miniReceived).mul(data.price).toString(),
+                    5
+                  )}
+                  )
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <SwitchTabs
         tabs={[
           { label: "Deposit only", value: "deposit" },
-          { label: "With staking", value: "staing" }
+          { label: "With staking", value: "staking" }
         ]}
         current={type}
         onChange={setType}
@@ -64,9 +148,43 @@ export default function Deposit() {
           background: "#DFDCC4"
         }}
       />
-      <Button type="primary" className="w-full h-[46px] mt-[16px]">
-        Supply
-      </Button>
+      {account ? (
+        chainId !== DEFAULT_CHAIN_ID ? (
+          <SwitchNetworkButton className="!h-[46px]" />
+        ) : (
+          <Button
+            disabled={!!errorTips}
+            type="primary"
+            className="w-full h-[46px] mt-[16px]"
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            {errorTips || "Supply"}
+          </Button>
+        )
+      ) : (
+        <ConnectWalletButton className="!h-[46px]" />
+      )}
+
+      {showModal && (
+        <DepositOnly
+          data={data}
+          info={info}
+          amount0={amount0}
+          amount1={amount1}
+          open={showModal}
+          received={receives?.received}
+          type={type}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          onSuccess={() => {
+            setShowModal(false);
+            onSuccess();
+          }}
+        />
+      )}
     </>
   );
 }
