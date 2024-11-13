@@ -6,8 +6,8 @@ const MobileNetworks = (props: Props) => {
   const { visible, onClose, chains, chainId, handleChainSelect } = props;
 
   return (
-    <Drawer visible={visible} onClose={onClose} size="68.923vw">
-      <div className='bg-[#FFFDEB] mt-5 px-4'>
+    <Drawer visible={visible} onClose={onClose} size="222px" className='bg-[#FFFDEB]'>
+      <div className='mt-5 px-4'>
         <div className='px-4 text-[18px] font-[700] leading-[16.2px] text-left mb-3'>Networks</div>
         {chains.map((_chain: any) => (
           <div

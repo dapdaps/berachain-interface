@@ -4,6 +4,7 @@ import Image from '@/components/layz-image';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import { numberFormatter } from '@/utils/number-formatter';
+import { motion } from 'framer-motion';
 
 const BGTCoin = ({
   type = CoinType.BGT,
@@ -14,7 +15,7 @@ const BGTCoin = ({
   const router = useProgressRouter()
   const isMobile = useIsMobile();
   return (
-    <div>
+    <motion.div whileTap={{ y: -8, scale: 1.05 }} transition={{ type: 'spring', stiffness: 200, damping: 10 }}>
       <div
         data-bp={bp}
         className='relative cursor-pointer'
@@ -43,7 +44,7 @@ const BGTCoin = ({
         </div>
       </div>
 
-    </div>
+    </motion.div>
   );
 };
 
