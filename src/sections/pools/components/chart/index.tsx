@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import * as d3 from 'd3';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import getZoomDataByFee from './getZoomDataByFee';
 import { formatPrice } from '@/utils/balance';
@@ -72,7 +72,8 @@ function Chart({
       setZoom(transform);
     }) as any;
   const _debounceUpdatePrice = useCallback(
-    _.debounce((price, type) => {
+    // @ts-ignore 
+    debounce((price, type) => {
       onPriceChange && onPriceChange(type, price);
     }, 500),
     []

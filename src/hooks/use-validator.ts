@@ -5,7 +5,7 @@ export default function () {
 
   const [loading, setLoading] = useState(false)
   const [pageData, setPageData] = useState(null)
-  const getPageData = async (address) => {
+  const getPageData = async (address: any) => {
     setLoading(true)
     try {
       const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/validators/" + address)
