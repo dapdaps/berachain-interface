@@ -103,13 +103,13 @@ const Item = ({ record, setSelectedRecord }: any) => {
 };
 
 export default function IslandMobile({
-  data,
+  pools,
   loading,
   setSelectedRecord
 }: any) {
   return (
     <div className="px-[12px] pb-[20px] pt-[16px] flex flex-col gap-[12px] h-[calc(100%-144px)] overflow-y-auto">
-      {data.length === 0 && !loading && (
+      {pools.length === 0 && !loading && (
         <div className="mt-[50px] w-full flex justify-center items-center">
           <Empty desc="No Pools." />
         </div>
@@ -119,7 +119,7 @@ export default function IslandMobile({
           <CircleLoading />
         </div>
       )}
-      {data.map((item: any, idx: number) => (
+      {pools.map((item: any, idx: number) => (
         <Item key={idx} record={item} setSelectedRecord={setSelectedRecord} />
       ))}
     </div>

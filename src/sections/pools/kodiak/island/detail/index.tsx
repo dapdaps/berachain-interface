@@ -14,7 +14,7 @@ export default function Detail(props: any) {
     pool,
     price
   });
-  console.log("info", info);
+
   return (
     <>
       {isMobile ? (

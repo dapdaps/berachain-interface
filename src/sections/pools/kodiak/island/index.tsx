@@ -6,9 +6,6 @@ import usePoolsIslands from "../use-pools-islands";
 export default function Island({ page, setPage, searchVal, setIsPlain }: any) {
   const { loading, pools: islands } = usePoolsIslands();
   const [record, setRecord] = useState<any>();
-  useEffect(() => {
-    setRecord(islands?.[10]);
-  }, [islands]);
 
   useEffect(() => {
     setIsPlain(!!record);
