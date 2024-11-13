@@ -234,7 +234,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 className='z-[4] hover:scale-110 ease-in-out duration-300 w-[98px] h-[28px] rounded-full bg-[rgba(217,217,217,0.5)]'
                 href='https://app.dapdap.net?from=berachain'
                 target='_blank'
-                data-bp='1010-011'
+                data-bp="1015-002-008"
               >
                 <Image
                   src='/images/dapdap.svg'
@@ -249,6 +249,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 src='/images/mobile/mirror.png'
                 className='w-[29px] h-[29px]'
                 alt=''
+                data-bp="1015-002-009"
               />
             </>
           )}
@@ -260,7 +261,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               onClick={() => {
                 window.open('https://bartio.faucet.berachain.com');
               }}
-              data-bp='1010-003'
+              data-bp='1015-002-010'
             >
               <svg
                 width='16'
