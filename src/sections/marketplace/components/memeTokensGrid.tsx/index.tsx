@@ -101,9 +101,8 @@ const MemeTokensGrid = ({ MemeTokens, onSwap }: any) => {
 
   const TOKENS_PER_ROW = isMobile ? 5 : 10;
 
-  const INITIAL_DISPLAY_COUNT = 5;
   
-  const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
+  const [displayCount, setDisplayCount] = useState(TOKENS_PER_ROW);
   
 
   const visibleTokenRows = useMemo(() => {
