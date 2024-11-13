@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import Tooltip from "@/components/tooltip";
 import { MoreButton } from "../..";
@@ -65,9 +65,7 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
                 >
                   <motion.div
                     className="cursor-pointer bg-[#ffffff] rounded-[50%] lg:w-[80px] lg:h-[80px] md:w-[50px] md:h-[50px] p-0 md:top-[-8px] md:relative"
-                    animate={
-                      (() => getAnimationName(startIndex + index)) as any
-                    }
+                    animate={getAnimationName(startIndex + index)}
                     variants={{
                       hover: { scale: 1.5 },
                       default: { scale: 1 },
@@ -96,48 +94,60 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
   );
 };
 
-const MemeTokensGrid = ({ MemeTokens, onSwap, onFooterMore }: any) => {
+const MemeTokensGrid = ({ MemeTokens, onSwap }: any) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const isMobile = useIsMobile();
+  const [displayCount, setDisplayCount] = useState(10);
+  
+  const TOKENS_PER_ROW = isMobile ? 5 : 10;
+  
+  useEffect(() => {
+    setDisplayCount(isMobile ? 5 : 10);
+  }, [isMobile]);
+  
 
-  const getTokenRows = () => {
-    if (isMobile) {
-      const rows = [];
-      for (let i = 0; i < MemeTokens.length; i += 5) {
-        rows.push(MemeTokens.slice(i, Math.min(i + 5, MemeTokens.length)));
-      }
-      return rows;
-    }
-    return [MemeTokens];
-  };
+const visibleTokenRows = useMemo(() => {
+  const tokens = MemeTokens.slice(0, displayCount);
+  const rows = [];
+  for (let i = 0; i < tokens.length; i += TOKENS_PER_ROW) {
+    rows.push(tokens.slice(i, Math.min(i + TOKENS_PER_ROW, tokens.length)));
+  }
+  return rows;
+}, [MemeTokens, displayCount, TOKENS_PER_ROW]);
 
-  const tokenRows = getTokenRows();
+
+const onFooterMore = () => {
+  setDisplayCount(prev => Math.min(prev + TOKENS_PER_ROW, MemeTokens.length));
+};
+
+
+const showMoreButton = displayCount < MemeTokens.length;
 
   return (
     <>
-      {tokenRows.map((rowTokens, rowIndex) => (
+      {visibleTokenRows.map((rowTokens, rowIndex) => (
         <React.Fragment key={rowIndex}>
           <TokenRow
             tokens={rowTokens}
             onSwap={onSwap}
             setHoveredIndex={setHoveredIndex}
-            startIndex={rowIndex * 5}
+            startIndex={rowIndex * TOKENS_PER_ROW}
           />
           {(
             <div className="relative">
-              {
-                rowIndex === tokenRows.length - 1 && (
-                  <div className="absolute top-[9px] lg:left-[50%] md:right-0 lg:translate-x-[-50%] z-10 font-CherryBomb lg:text-[32px] md:text-[18px] leading-[0.9] lg:p-[21px] md:p-[12px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit">
-                    Meme Tokens
-                  </div>
-                )
-              }
-              <MoreButton
-                classname="absolute top-[50%] translate-y-[-50%] right-[-12px] hidden lg:block"
-                onClick={onFooterMore}
-              />
+              {rowIndex === visibleTokenRows.length - 1 && (
+                <div className="absolute top-[9px] lg:left-[50%] lg:right-0 md:left-0 lg:translate-x-[-50%] z-10 font-CherryBomb lg:text-[32px] md:text-[18px] leading-[0.9] lg:p-[21px] md:p-[12px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit">
+                  Meme Tokens
+                </div>
+              )}
+              {rowIndex === visibleTokenRows.length - 1 && showMoreButton && (
+                <MoreButton
+                  classname="absolute top-[50%] translate-y-[-50%] right-[-12px]"
+                  onClick={onFooterMore}
+                />
+              )}
               <div className="z-0 lg:shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px] md:font-CherryBomb md:text-[#D5AD67] md:pl-4 md:text-[18px] md:pt-1">
-               { isMobile ? 'Meme tokens': ''}
+                {isMobile ? 'Meme tokens' : ''}
               </div>
               <div className="hidden lg:block z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
             </div>
@@ -147,4 +157,5 @@ const MemeTokensGrid = ({ MemeTokens, onSwap, onFooterMore }: any) => {
     </>
   );
 };
+
 export default MemeTokensGrid;
