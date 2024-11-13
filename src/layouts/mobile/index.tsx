@@ -12,13 +12,13 @@ import useClickTracking from '@/hooks/use-click-tracking';
 import { useTapSoundStore } from '@/stores/tap-sound';
 
 const menuItems = [
-  { id: 1, title: 'Bera Cave', href: '/cave' },
-  { id: 2, title: 'Bridge', href: '/bridge' },
-  { id: 3, title: 'Marketplace', href: '/marketplace' },
-  { id: 4, title: 'Earn', href: '/earn' },
-  { id: 5, title: 'DApps', hasDropdown: true },
-  { id: 6, title: 'Dashboard', href: '/dashboard' },
-  { id: 7, title: 'Home', href: '/' }
+  { id: 1, title: 'Bera Cave', href: '/cave', dataBp: '1015-008' },
+  { id: 2, title: 'Bridge', href: '/bridge', dataBp: '1015-003' },
+  { id: 3, title: 'Marketplace', href: '/marketplace', dataBp: '1015-004' },
+  { id: 4, title: 'Earn', href: '/earn', dataBp: '1015-007' },
+  { id: 5, title: 'DApps', hasDropdown: true, dataBp: '1015-005' },
+  { id: 6, title: 'Dashboard', href: '/dashboard', dataBp: '1015-006' },
+  { id: 7, title: 'Home', href: '/', dataBp: '1015-002-007' }
 ];
 
 interface DApp {
@@ -80,7 +80,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   };
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
-  const { handleReportNoCode } = useClickTracking();
+  const { handleReportNoCode, handleTrack } = useClickTracking();
   const tapSound = useTapSoundStore();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
@@ -148,6 +148,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       style={{
         backgroundColor: !routes.includes(pathname) ? '#96d6ff': 'transparent'
       }}
+      onClick={handleTrack}
     >
       <main className='h-full'>{children}</main>
       {/* Menu Overlay */}
@@ -175,6 +176,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     isActive={item.hasDropdown && isDappsOpen}
                     onClick={item.hasDropdown ? toggleDapps : undefined}
                     toggle={toggleMenu}
+                    dataBp={item.dataBp}
                   >
                     {item.title}
                   </MenuButton>
@@ -224,6 +226,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               y: 8,
               scale: 0.95,
             }}
+            data-bp="1015-001"
           />
           {isMenuOpen && (
             <>
@@ -295,6 +298,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               damping: 10,
             }}
             className='bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center'
+            data-bp="1015-002"
           >
             {isMenuOpen ? (
               <IconClose />

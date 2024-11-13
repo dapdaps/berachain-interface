@@ -8,10 +8,11 @@ interface CustomButtonProps {
   hasDropdown?: boolean;
   isActive?: boolean;
   onClick?: () => void;
-  toggle?: () => void;
+  toggle?: (isSkipTrack?: boolean) => void;
   className?: string;
   children: React.ReactNode;
   contentClassName?: string;
+  dataBp?: string;
 }
 
 const MenuButton: React.FC<CustomButtonProps> = ({
@@ -22,7 +23,8 @@ const MenuButton: React.FC<CustomButtonProps> = ({
   onClick,
   toggle,
   className = '',
-  contentClassName = ''
+  contentClassName = '',
+  dataBp,
 }) => {
   const ButtonContent = () => (
     <div className="relative w-full h-[14.87vw]">
@@ -49,15 +51,16 @@ const MenuButton: React.FC<CustomButtonProps> = ({
   if (href) {
     if (href === pathname) {
       return (<button 
-        onClick={toggle} 
+        onClick={() => toggle?.(true)}
         className={`block w-full max-w-[51.28vw] ${className}`}
+        data-bp={dataBp}
       >
         <ButtonContent />
       </button>)
     }
 
     return (
-      <Link href={href} className="block w-full max-w-[51.28vw]">
+      <Link href={href} className="block w-full max-w-[51.28vw]" data-bp={dataBp}>
         <ButtonContent />
       </Link>
     );
@@ -67,6 +70,7 @@ const MenuButton: React.FC<CustomButtonProps> = ({
     <button 
       onClick={onClick} 
       className={`block w-full max-w-[51.28vw] ${className}`}
+      data-bp={dataBp}
     >
       <ButtonContent />
     </button>

@@ -12,6 +12,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 import Big from 'big.js';
 import { motion } from 'framer-motion';
 import { useTapSoundStore } from '@/stores/tap-sound';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const Home = () => {
   const router = useProgressRouter();
@@ -19,6 +20,7 @@ const Home = () => {
   const { iBGTCount, BGTCount } = useBgtCount();
   const isMobile = useIsMobile();
   const tapSound = useTapSoundStore();
+  const { handleReport } = useClickTracking();
 
   const [viewportHeight, setViewportHeight] = useState('100vh');
   const [visibleHeight, setVisibleHeight] = useState(844);
@@ -54,13 +56,13 @@ const Home = () => {
           <BGTCoin
             type={CoinType.BGT}
             count={BGTCount}
-            bp='1001-004'
+            bp='1015-009'
             onClick={handleBGTClick}
           />
           <BGTCoin
             type={CoinType.iBGT}
             count={iBGTCount}
-            bp='1001-005'
+            bp='1015-010'
             onClick={handleBGTClick}
           />
         </div>
@@ -92,6 +94,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/bridge');
                 tapSound.play?.();
+                handleReport('1015-002-002');
               }}
               className='absolute left-0 -bottom-6 w-[22.564vw] h-[20.512vw]'
               alt=''
@@ -115,6 +118,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/marketplace');
                 tapSound.play?.();
+                handleReport('1015-002-003');
               }}
               className='absolute right-[9.856vw] bottom-[8.697vw] w-[37.435vw] h-[11.282vw]'
               alt=''
@@ -138,6 +142,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/dapps');
                 tapSound.play?.();
+                handleReport('1015-002-005');
               }}
               className='absolute left-[21.538vw] top-[6.153vw] w-[20.512vw] h-[8.717vw]'
               alt=''
@@ -161,6 +166,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/dashboard');
                 tapSound.play?.();
+                handleReport('1015-002-006');
               }}
               className='absolute right-[18.974vw] bottom-[10.471vw] w-[30.769vw] h-[9.271vw]'
               alt=''
@@ -184,6 +190,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/earn');
                 tapSound.play?.();
+                handleReport('1015-002-004');
               }}
               className='absolute left-[32.307vw] top-[7.692vw] w-[21.538vw] h-[11.794vw]'
               alt=''
@@ -207,6 +214,7 @@ const Home = () => {
               onClick={() => {
                 router.push('/cave');
                 tapSound.play?.();
+                handleReport('1015-002-001');
               }}
               className='absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw]'
               alt=''

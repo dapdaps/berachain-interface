@@ -71,12 +71,15 @@ export function useBGT() {
         switch (v.validator.metadata.name) {
           case 'Infrared':
             v.validator.metadata.bp = '1010-004-001';
+            v.validator.metadata.bpMobile = '1016-003';
             break;
           case 'Kodiak Finance':
             v.validator.metadata.bp = '1010-004-002';
+            v.validator.metadata.bpMobile = '1016-004';
             break;
           case 'The-Honey-Jar':
             v.validator.metadata.bp = '1010-004-003';
+            v.validator.metadata.bpMobile = '1016-005';
             break;
           default:
             break;

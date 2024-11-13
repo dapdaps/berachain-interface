@@ -7,11 +7,13 @@ import Big from 'big.js';
 import Empty from '@/components/empty';
 import useClickTracking from '@/hooks/use-click-tracking';
 import UserCard from './user-card';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const DashboardWallet = (props: Props) => {
   const { tokens, loading, totalBalance } = props;
 
   const { handleReport } = useClickTracking();
+  const isMobile = useIsMobile();
 
   const columns: Column[] = [
     {
@@ -60,7 +62,7 @@ const DashboardWallet = (props: Props) => {
   ];
 
   useEffect(() => {
-    handleReport('1011-001');
+    handleReport(isMobile ? '1018-001' : '1011-001');
   }, []);
 
   return (

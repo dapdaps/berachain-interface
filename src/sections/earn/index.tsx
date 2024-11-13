@@ -40,17 +40,17 @@ const EarnViews = () => {
           tabs={[
             {
               key: "liquidity",
-              label: "Liquidity",
+              label: <div>Liquidity</div>,
               children: <LiquidityList />,
             },
             {
               key: "lending",
-              label: "Lending",
+              label: <div>Lending</div>,
               children: <EarnLending />,
             },
             {
               key: "staking",
-              label: "Staking",
+              label: <div>Staking</div>,
               children: <StakingList />,
             },
           ]}
