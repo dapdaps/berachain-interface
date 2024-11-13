@@ -41,7 +41,6 @@ export default memo(function Detail() {
 
   const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
 
-
   const [claiming, setClaiming] = useState(false);
 
   const [state, updateState] = useMultiState({
@@ -70,9 +69,12 @@ export default memo(function Detail() {
   } = state;
 
   const { decimals, tokens, LP_ADDRESS } = data || {};
+  const isBERPS = data?.initialData?.pool?.protocol === 'BERPS';
 
-  const symbol = id;
+  const symbol = isBERPS ? data?.depositToken.symbol : id;
+  const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
   const vaultAddress = addresses[symbol];
+  const approveSpender = isBERPS ? data?.withdrawToken?.address : vaultAddress;
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
@@ -87,8 +89,12 @@ export default memo(function Detail() {
   const { addAction } = useAddAction('dapp');
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
+    let _contractAddr = vaultAddress;
+    if (isBERPS) {
+      _contractAddr = data?.withdrawToken?.address;
+    }
     const contract = new ethers.Contract(
-      vaultAddress,
+      _contractAddr,
       abi,
       provider?.getSigner()
     );
@@ -102,7 +108,7 @@ export default memo(function Detail() {
   const updateBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
     const contract = new ethers.Contract(
-      LP_ADDRESS,
+      contractAddr,
       abi,
       provider?.getSigner()
     );
@@ -133,7 +139,7 @@ export default memo(function Detail() {
       'function allowance(address, address) external view returns (uint256)'
     ];
     const contract = new ethers.Contract(
-      LP_ADDRESS,
+      contractAddr,
       abi,
       provider?.getSigner()
     );
@@ -141,7 +147,7 @@ export default memo(function Detail() {
       isTokenApproved: false
     });
     contract
-      .allowance(sender, vaultAddress)
+      .allowance(isBERPS ? approveSpender : sender, vaultAddress)
       .then((allowance: any) => {
         const approved = !new Big(allowance.toString()).lt(wei);
         updateState({
@@ -186,13 +192,13 @@ export default memo(function Detail() {
     const wei = ethers.utils.parseUnits(amount, decimals);
     const abi = ['function approve(address, uint) public'];
     const contract = new ethers.Contract(
-      LP_ADDRESS,
+      contractAddr,
       abi,
       provider?.getSigner()
     );
 
     contract
-      .approve(vaultAddress, wei)
+      .approve(approveSpender, wei)
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const payload = { isTokenApproved: true, isTokenApproving: false };
@@ -503,15 +509,13 @@ export default memo(function Detail() {
     return !(isWithdrawInsufficient || isLoading || Number(lpAmount || 0) <= 0);
   }, [isWithdrawInsufficient, isLoading, lpAmount]);
 
-  console.log(data);
-
   return (
     <div>
       <DetailSummary data={data} />
 
       <div className='flex items-stretch gap-[30px]'>
         {
-          data?.initialData?.pool?.protocol === 'BERPS' ? (
+          isBERPS ? (
             <DetailBerps
               data={data}
               mintData={mintData}
@@ -529,7 +533,7 @@ export default memo(function Detail() {
             />
           )
         }
-        <div className='flex-1 pt-[24px] pb-[20px] px-[20px] h-[300px]'>
+        <div className='flex-1 pt-[24px] pb-[20px] px-[20px] min-h-[300px]'>
           <div className='mb-[17px] flex items-center h-[56px] rounded-[12px] border border-[#373A53] bg-white p-[5px]'>
             {tabs.map((tab, index) => (
               <div
@@ -579,9 +583,33 @@ export default memo(function Detail() {
                   </span>
                 </div>
               </div>
+              {
+                isBERPS && (
+                  <div className="mb-[20px] border border-[#373A53] rounded-[12px] p-[12px_12px_8px]">
+                    <div className="flex gap-[5px] items-center">
+                      <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M8.13398 0.5C8.51888 -0.166667 9.48112 -0.166667 9.86602 0.5L17.6603 14C18.0452 14.6667 17.564 15.5 16.7942 15.5H1.20577C0.435971 15.5 -0.0451542 14.6667 0.339746 14L8.13398 0.5Z"
+                          fill="#FFDC50"
+                        />
+                        <path
+                          d="M7.996 11.084L7.624 5.6H9.856L9.484 11.084H7.996ZM8.74 14.096C8.404 14.096 8.128 13.988 7.912 13.772C7.696 13.556 7.588 13.3 7.588 13.004C7.588 12.7 7.696 12.448 7.912 12.248C8.128 12.04 8.404 11.936 8.74 11.936C9.084 11.936 9.36 12.04 9.568 12.248C9.784 12.448 9.892 12.7 9.892 13.004C9.892 13.3 9.784 13.556 9.568 13.772C9.36 13.988 9.084 14.096 8.74 14.096Z"
+                          fill="#101115"
+                        />
+                      </svg>
+                      <div className="text-[14px] font-bold">
+                        Please read before you stake
+                      </div>
+                    </div>
+                    <div className="text-[14px] font-normal mt-[5px]">
+                      There is a 1-3 Epoch wait period to withdraw your Honey from the Vault.
+                    </div>
+                  </div>
+                )
+              }
               {isInSufficient && (
-                <button className='w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
-                  <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                <button className="w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
+                  <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
                     InSufficient Balance
                   </span>
                 </button>

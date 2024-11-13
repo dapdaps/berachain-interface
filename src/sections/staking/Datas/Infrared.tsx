@@ -122,9 +122,8 @@ export default function useInfraredData(props: any) {
       fullDataList: dataList
     });
   }
-  function getBerpsData(pair) {
+  function getBerpsData(pair, _data) {
     return new Promise(async (resolve) => {
-      const _data = {};
       const depositTokenContract = new ethers.Contract(pair.depositToken.address, ERC20_ABI, provider?.getSigner());
       const withdrawTokenContract = new ethers.Contract(pair.LP_ADDRESS, ERC20_ABI, provider?.getSigner());
       try {
@@ -135,6 +134,10 @@ export default function useInfraredData(props: any) {
         _data.tvl = Big(tvl).times(price ?? 0).toFixed();
         _data.withdrawTokenPrice = price;
         _data.apy = '2830';
+        _data.initialData.stake_token = {
+          ...pair.depositToken,
+          price,
+        };
       } catch (err: any) {
         console.log('BERPS protocol failed: %o',err);
       }
@@ -165,8 +168,7 @@ export default function useInfraredData(props: any) {
             protocolType: initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
           };
           if (initialData?.pool?.protocol === 'BERPS' && pair.depositToken) {
-            const berpsData = await getBerpsData(pair);
-            Object.assign(_data, berpsData);
+            await getBerpsData(pair, _data);
           }
           dataList.push(_data);
         }
