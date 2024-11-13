@@ -75,6 +75,8 @@ export default memo(function Detail() {
   const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
   const vaultAddress = addresses[symbol];
   const approveSpender = isBERPS ? data?.withdrawToken?.address : vaultAddress;
+  const stakeMethod = isBERPS ? 'deposit' : 'stake';
+  const unStakeMethod = isBERPS ? 'makeWithdrawRequest' : 'withdraw';
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
@@ -147,7 +149,7 @@ export default memo(function Detail() {
       isTokenApproved: false
     });
     contract
-      .allowance(isBERPS ? approveSpender : sender, vaultAddress)
+      .allowance(sender, approveSpender)
       .then((allowance: any) => {
         const approved = !new Big(allowance.toString()).lt(wei);
         updateState({
@@ -242,82 +244,78 @@ export default memo(function Detail() {
       Big(inAmount).toFixed(decimals),
       decimals
     );
-    const abi = [
-      {
-        constant: false,
-        inputs: [
-          {
-            name: 'amount',
-            type: 'uint256'
-          }
-        ],
-        name: 'stake',
-        outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
-      }
-    ];
     const contract = new ethers.Contract(
-      vaultAddress,
-      abi,
+      approveSpender,
+      stakeAbi,
       provider?.getSigner()
     );
-    contract
-      .stake(wei)
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(inAmount);
-        addAction?.({
-          type: 'Staking',
-          action: 'Staking',
-          token: {
-            symbol: tokens.join('-')
-          },
-          amount: inAmount,
-          template: 'Infrared',
-          status: status,
-          add: 1,
-          transactionHash,
-          chain_id: chainId,
-          sub_type: 'Stake',
-          extra_data: JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
-            amount0,
-            amount1
-          })
-        });
-        updateState({
-          isLoading: false,
-          isPostTx: true
-        });
-        setTimeout(() => {
-          onSuccess?.();
-        }, 3000);
+    const params = [wei];
+    if (isBERPS) {
+      params.push(sender);
+    }
+    const createTx = (gasLimit: any) => {
+      contract[stakeMethod](...params, { gasLimit })
+        .then((tx: any) => tx.wait())
+        .then((receipt: any) => {
+          const { status, transactionHash } = receipt;
+          const [amount0, amount1] = handleGetAmount(inAmount);
+          addAction?.({
+            type: 'Staking',
+            action: 'Staking',
+            token: {
+              symbol: tokens.join('-')
+            },
+            amount: inAmount,
+            template: 'Infrared',
+            status: status,
+            add: 1,
+            transactionHash,
+            chain_id: chainId,
+            sub_type: 'Stake',
+            extra_data: JSON.stringify({
+              token0Symbol: tokens[0],
+              token1Symbol: tokens[1],
+              amount0,
+              amount1
+            })
+          });
+          updateState({
+            isLoading: false,
+            isPostTx: true
+          });
+          setTimeout(() => {
+            onSuccess?.();
+          }, 3000);
 
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Stake Successfully!',
-          tx: transactionHash,
-          chainId
+          toast?.dismiss(toastId);
+          toast?.success({
+            title: 'Stake Successfully!',
+            tx: transactionHash,
+            chainId
+          });
+        })
+        .catch((error: Error) => {
+          console.log('error: ', error);
+          updateState({
+            isError: true,
+            isLoading: false,
+            loadingMsg: error?.message
+          });
+          toast?.dismiss(toastId);
+          toast?.fail({
+            title: 'Stake Failed!',
+            text: error?.message?.includes('user rejected transaction')
+              ? 'User rejected transaction'
+              : error?.message ?? ''
+          });
         });
-      })
-      .catch((error: Error) => {
-        console.log('error: ', error);
-        updateState({
-          isError: true,
-          isLoading: false,
-          loadingMsg: error?.message
-        });
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Stake Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : error?.message ?? ''
-        });
-      });
+    };
+    contract.estimateGas[stakeMethod](...params).then((res: any) => {
+      createTx(res);
+    }).catch((err: any) => {
+      console.log('estimateGas failed: %o', err);
+      createTx(4000000);
+    });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -330,83 +328,75 @@ export default memo(function Detail() {
     });
 
     const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
-    const abi = [
-      {
-        constant: false,
-        inputs: [
-          {
-            name: '_shareAmt',
-            type: 'uint256'
-          }
-        ],
-        name: 'withdraw',
-        outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
-      }
-    ];
 
     const contract = new ethers.Contract(
-      vaultAddress,
-      abi,
+      approveSpender,
+      withdrawAbi,
       provider?.getSigner()
     );
-    contract
-      .withdraw(lpWeiAmount)
-      .then((tx: any) => tx.wait())
-      .then((receipt: any) => {
-        updateState({
-          isLoading: false,
-          isPostTx: true
-        });
-        const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(lpAmount);
-        addAction?.({
-          type: 'Staking',
-          action: 'UnStake',
-          token: {
-            symbol: tokens.join('-')
-          },
-          symbol: tokens.join('-'),
-          amount: lpAmount,
-          template: 'Infrared',
-          status: status,
-          add: 0,
-          transactionHash,
-          chain_id: chainId,
-          sub_type: 'Unstake',
-          extra_data: JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
-            amount0,
-            amount1
-          })
-        });
-        setTimeout(() => {
-          onSuccess?.();
-        }, 3000);
+    const createTx = (gasLimit: any) => {
+      contract[unStakeMethod](lpWeiAmount, { gasLimit })
+        .then((tx: any) => tx.wait())
+        .then((receipt: any) => {
+          updateState({
+            isLoading: false,
+            isPostTx: true
+          });
+          const { status, transactionHash } = receipt;
+          const [amount0, amount1] = handleGetAmount(lpAmount);
+          addAction?.({
+            type: 'Staking',
+            action: 'UnStake',
+            token: {
+              symbol: tokens.join('-')
+            },
+            symbol: tokens.join('-'),
+            amount: lpAmount,
+            template: 'Infrared',
+            status: status,
+            add: 0,
+            transactionHash,
+            chain_id: chainId,
+            sub_type: 'Unstake',
+            extra_data: JSON.stringify({
+              token0Symbol: tokens[0],
+              token1Symbol: tokens[1],
+              amount0,
+              amount1
+            })
+          });
+          setTimeout(() => {
+            onSuccess?.();
+          }, 3000);
 
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Unstake Successfully!',
-          tx: transactionHash,
-          chainId
+          toast?.dismiss(toastId);
+          toast?.success({
+            title: 'Unstake Successfully!',
+            tx: transactionHash,
+            chainId
+          });
+        })
+        .catch((error: Error) => {
+          updateState({
+            isError: true,
+            isLoading: false,
+            loadingMsg: error?.message
+          });
+          toast?.dismiss(toastId);
+          toast?.fail({
+            title: 'Unstake Failed!',
+            text: error?.message?.includes('user rejected transaction')
+              ? 'User rejected transaction'
+              : error?.message ?? ''
+          });
         });
-      })
-      .catch((error: Error) => {
-        updateState({
-          isError: true,
-          isLoading: false,
-          loadingMsg: error?.message
-        });
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Unstake Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : error?.message ?? ''
-        });
-      });
+    };
+    contract.estimateGas[unStakeMethod](lpWeiAmount).then((res: any) => {
+      createTx(res);
+    }).catch((err: any) => {
+      console.log('estimateGas failed: %o', err);
+      createTx(4000000);
+    });
   };
   const handleClaim = function () {
     const toastId = toast?.loading({
@@ -748,3 +738,102 @@ export default memo(function Detail() {
     </div>
   );
 });
+
+const stakeAbi = [
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'amount',
+        type: 'uint256'
+      }
+    ],
+    name: 'stake',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'assets',
+        type: 'uint256'
+      },
+      {
+        name: 'receiver',
+        type: 'address'
+      }
+    ],
+    name: 'deposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  }
+];
+const withdrawAbi = [
+  {
+    constant: false,
+    inputs: [
+      {
+        name: '_shareAmt',
+        type: 'uint256'
+      }
+    ],
+    name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'shares',
+        type: 'uint256'
+      }
+    ],
+    name: 'makeWithdrawRequest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'shares',
+        type: 'uint256'
+      },
+      {
+        name: 'receiver',
+        type: 'address'
+      },
+      {
+        name: 'owner',
+        type: 'address'
+      }
+    ],
+    name: 'redeem',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'shares',
+        type: 'uint256'
+      },
+      {
+        name: 'unlockEpoch',
+        type: 'uint256'
+      },
+    ],
+    name: 'cancelWithdrawRequest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  }
+];
