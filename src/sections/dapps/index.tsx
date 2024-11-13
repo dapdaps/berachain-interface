@@ -138,7 +138,7 @@ const DAppsView = () => {
 
   return (
     <div
-      className="md:bg-[#96d6ff] h-full md:mb-[70px] relative md:h-[calc(100dvh)]">
+      className="h-full md:mb-[70px] relative md:h-[calc(100dvh)]">
       <PageBack className="absolute left-[12px] top-[17px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
       <div className={clsx('absolute lg:bottom-[230px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '' )}>
