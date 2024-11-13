@@ -16,6 +16,9 @@ import AddLiquidityModal from '@/sections/pools/add-liquidity-modal';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useIbgtVaults } from '@/stores/ibgt-vaults';
+import DetailSummary from '@/sections/staking/Bridge/Detail/Summary';
+import DetailBex from '@/sections/staking/Bridge/Detail/Bex';
+import DetailBerps from '@/sections/staking/Bridge/Detail/Berps';
 
 export default memo(function Detail() {
   const { addresses } = config.chains[DEFAULT_CHAIN_ID];
@@ -77,10 +80,10 @@ export default memo(function Detail() {
     !lpAmount || !lpBalance
       ? '-'
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
   const { addAction } = useAddAction('dapp');
   const updateLPBalance = () => {
     const abi = ['function balanceOf(address) view returns (uint256)'];
@@ -500,165 +503,32 @@ export default memo(function Detail() {
     return !(isWithdrawInsufficient || isLoading || Number(lpAmount || 0) <= 0);
   }, [isWithdrawInsufficient, isLoading, lpAmount]);
 
+  console.log(data);
+
   return (
     <div>
-      <div className='relative mb-[24px] pt-[16px] pl-[73px] h-[146px] rounded-[10px] bg-[#FFDC50]'>
-        <div
-          className='cursor-pointer absolute top-[24px] left-[19px]'
-          onClick={() => {
-            router.back();
-          }}
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='34'
-            height='34'
-            viewBox='0 0 34 34'
-            fill='none'
-          >
-            <rect
-              x='0.5'
-              y='0.5'
-              width='33'
-              height='33'
-              rx='10.5'
-              fill='white'
-              stroke='#373A53'
+      <DetailSummary data={data} />
+
+      <div className='flex items-stretch gap-[30px]'>
+        {
+          data?.initialData?.pool?.protocol === 'BERPS' ? (
+            <DetailBerps
+              data={data}
+              mintData={mintData}
+              setShowAddModal={setShowAddModal}
+              claiming={claiming}
+              handleClaim={handleClaim}
             />
-            <path
-              d='M20 11L15.2 17L20 23'
-              stroke='black'
-              strokeWidth='3'
-              strokeLinecap='round'
+          ) : (
+            <DetailBex
+              data={data}
+              mintData={mintData}
+              setShowAddModal={setShowAddModal}
+              claiming={claiming}
+              handleClaim={handleClaim}
             />
-          </svg>
-        </div>
-        <div className='mb-[17px] flex items-center gap-[14px]'>
-          <div className='flex items-center'>
-            {data?.images[0] && (
-              <img
-                className='w-[48px] h-[48px] rounded-full'
-                src={data?.images[0]}
-              />
-            )}
-            {data?.images[1] && (
-              <img
-                className='ml-[-16px] w-[48px] h-[48px] rounded-full'
-                src={data?.images[1]}
-                style={{ objectPosition: 'left' }}
-              />
-            )}
-          </div>
-          <div className='text-black font-Montserrat text-[26px] font-semibold leading-[100%]'>
-            {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
-          </div>
-        </div>
-        <div className='flex items-center gap-[30px]'>
-          <div className='flex flex-col gap-[12px]'>
-            <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-              TVL
-            </div>
-            <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {formatValueDecimal(data?.tvl, '$', 2, true)}
-            </div>
-          </div>
-          <div className='flex flex-col gap-[12px]'>
-            <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-              APY up to
-            </div>
-            <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {Big(data?.apy ?? 0).toFixed(2)}%
-            </div>
-          </div>
-          <div className='flex flex-col gap-[12px]'>
-            <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-              Protocol
-            </div>
-            <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {data?.initialData?.pool?.protocol || '-'}
-            </div>
-          </div>
-          <div className='flex flex-col gap-[12px]'>
-            <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-              Type
-            </div>
-            <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-              {data?.protocolType}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className='flex items-center gap-[30px]'>
-        <div className='flex-1 pr-[24px] pl-[13px] h-[300px] bg-black/[0.06]'>
-          <div className='pt-[21px] pr-[2px] pb-[46px] pl-[17px]'>
-            <div className='mb-[21px] text-black font-Montserrat text-[18px] font-bold leading-[90%]'>
-              Your Position
-            </div>
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-[10px]'>
-                <div className='flex items-center'>
-                  {data?.images[0] && (
-                    <img
-                      src={data?.images[0]}
-                      className='w-[30px] h-[30px] rounded-full'
-                    />
-                  )}
-                  {data?.images[1] && (
-                    <img
-                      src={data?.images[1]}
-                      className='ml-[-10px] w-[30px] h-[30px] rounded-full'
-                    />
-                  )}
-                </div>
-                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                  {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
-                </div>
-              </div>
-
-              {mintData && (
-                <div
-                  className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
-                  onClick={() => {
-                    setShowAddModal(true);
-                  }}
-                >
-                  <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                    Mint LP
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className='w-full h-[1px] bg-black/[0.15]' />
-          <div className='pt-[19px] pl-[17px]'>
-            <div className='mb-[27px] text-black font-Montserrat text-[18px] font-bold leading-[90%]'>
-              Rewards
-            </div>
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-[14px]'>
-                <div className='w-[32px] h-[32px] rounded-full'>
-                  <img
-                    src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
-                  />
-                </div>
-                <div className='text-black font-Montserrat text-[20px] font-semibold leading-[90%]'>
-                  {formatValueDecimal(data?.earned, '', 2)} {data?.rewardSymbol}
-                </div>
-              </div>
-              {Big(data?.earned ?? 0).gt(0) && (
-                <button
-                  disabled={claiming}
-                  className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%] disabled:opacity-30'
-                  onClick={handleClaim}
-                >
-                  { claiming ? <CircleLoading size={14} className='mr-3'/> : ''} Claim
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
+          )
+        }
         <div className='flex-1 pt-[24px] pb-[20px] px-[20px] h-[300px]'>
           <div className='mb-[17px] flex items-center h-[56px] rounded-[12px] border border-[#373A53] bg-white p-[5px]'>
             {tabs.map((tab, index) => (
@@ -694,9 +564,9 @@ export default memo(function Detail() {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {inAmount
                     ? '$' +
-                      Big(inAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(inAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : '-'}
                 </span>
                 <div
@@ -782,9 +652,9 @@ export default memo(function Detail() {
                 <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
                   {lpAmount
                     ? '$' +
-                      Big(lpAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(lpAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : '-'}
                 </span>
                 <div
@@ -830,6 +700,7 @@ export default memo(function Detail() {
           )}
         </div>
       </div>
+
       {mintData && (
         <AddLiquidityModal
           token0={mintData.token0}

@@ -28,8 +28,16 @@ export const beraB: { [key: string]: Token } = {
     symbol: 'HONEY',
     decimals: 18,
     name: 'HONEY',
-    icon: '/images/dapps/honey.png',
+    icon: '/assets/tokens/honey.svg',
     color: '#d97706'
+  },
+  bhoney: {
+    address: '0x1306D3c36eC7E38dd2c128fBe3097C2C2449af64',
+    chainId: CHAIN_ID,
+    symbol: 'bHONEY',
+    decimals: 18,
+    name: 'bHONEY',
+    icon: '/images/dapps/honey.png',
   },
   usdt: {
     chainId: CHAIN_ID,

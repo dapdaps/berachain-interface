@@ -2,6 +2,7 @@
 import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect } from 'react';
+import { cloneDeep } from 'lodash';
 
 export default function useInfraredData(props: any) {
   const {
@@ -73,7 +74,20 @@ export default function useInfraredData(props: any) {
       ],
       stateMutability: 'view',
       type: 'function'
-    }
+    },
+    {
+      "inputs": [],
+      "name": "shareToAssetsPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
   ];
   const MulticallContract =
     multicallAddress &&
@@ -104,12 +118,31 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => data?.initialData?.pool?.protocol === 'BEX'),
+      dataList: dataList?.filter(data => ['BEX', 'BERPS'].includes(data?.initialData?.pool?.protocol)),
       fullDataList: dataList
     });
   }
-  function getDataList() {
-    pairs.forEach((pair) => {
+  function getBerpsData(pair) {
+    return new Promise(async (resolve) => {
+      const _data = {};
+      const depositTokenContract = new ethers.Contract(pair.depositToken.address, ERC20_ABI, provider?.getSigner());
+      const withdrawTokenContract = new ethers.Contract(pair.LP_ADDRESS, ERC20_ABI, provider?.getSigner());
+      try {
+        let price = await withdrawTokenContract.shareToAssetsPrice();
+        price = ethers.utils.formatUnits(price, 36 - pair.depositToken.decimals);
+        let tvl = await depositTokenContract.balanceOf(pair.LP_ADDRESS);
+        tvl = ethers.utils.formatUnits(tvl, pair.depositToken.decimals);
+        _data.tvl = Big(tvl).times(price ?? 0).toFixed();
+        _data.withdrawTokenPrice = price;
+        _data.apy = '2830';
+      } catch (err: any) {
+        console.log('BERPS protocol failed: %o',err);
+      }
+      resolve(_data);
+    });
+  }
+  async function getDataList() {
+    for (const pair of pairs) {
       const vaultAddress = addresses[pair?.id];
       const findIndex = allData?.findIndex(
         (data) =>
@@ -118,9 +151,8 @@ export default function useInfraredData(props: any) {
       );
       if (findIndex > -1) {
         const initialData = allData[findIndex];
-        if (initialData?.pool?.protocol === 'BEX' ||
-          pair?.id === 'iBGT-HONEY') {
-          dataList.push({
+        if (['BERPS', 'BEX'].includes(initialData?.pool?.protocol) || pair?.id === 'iBGT-HONEY') {
+          const _data = {
             ...pair,
             tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
               .times(initialData?.stake_token?.price ?? 0)
@@ -130,19 +162,27 @@ export default function useInfraredData(props: any) {
             type: 'Staking',
             vaultAddress,
             rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
-            protocolType:
-              initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
-          });
+            protocolType: initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+          };
+          if (initialData?.pool?.protocol === 'BERPS' && pair.depositToken) {
+            const berpsData = await getBerpsData(pair);
+            Object.assign(_data, berpsData);
+          }
+          dataList.push(_data);
         }
       }
-    });
+    }
     formatedData('dataList');
   }
   function getUsdDepositAmount() {
     const calls = [];
     dataList.forEach((data) => {
+      let _address = ethers.utils.getAddress(addresses[data?.id]);
+      if (data?.initialData?.pool?.protocol === 'BERPS') {
+        _address = ethers.utils.getAddress(data?.LP_ADDRESS);
+      }
       calls.push({
-        address: ethers.utils.getAddress(addresses[data?.id]),
+        address: _address,
         name: 'balanceOf',
         params: [sender]
       });
@@ -207,11 +247,12 @@ export default function useInfraredData(props: any) {
 
   useEffect(() => {
     if (allData) {
-      getDataList();
-      if (sender && provider) {
-        getUsdDepositAmount();
-        getEarned();
-      }
+      getDataList().then(() => {
+        if (sender && provider) {
+          getUsdDepositAmount();
+          getEarned();
+        }
+      });
     }
   }, [allData, sender, provider]);
 }

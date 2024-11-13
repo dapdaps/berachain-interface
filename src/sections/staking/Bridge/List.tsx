@@ -52,7 +52,6 @@ export default function List(props: any) {
   }, [dataList]);
 
   function renderTD(data: any, column: ColumnType, index: number) {
-    console.log('====1111====')
     if (column.type === 'slot') {
       return column.render(data, index);
     }
@@ -86,7 +85,7 @@ export default function List(props: any) {
         const pool = data?.initialData?.pool;
         return (
           <div className='flex items-center gap-[8px]'>
-            <div className='flex items-center'>
+            <div className='flex items-center min-w-[50px]'>
               {data?.images[0] && (
                 <img
                   className='w-[30px] h-[30px] rounded-full'
@@ -243,7 +242,6 @@ export default function List(props: any) {
     }
   ];
 
-  console.log('====state?.filterList', state?.filterList)
   return (
     <div>
       <div className='pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]'>
