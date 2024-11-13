@@ -11,14 +11,14 @@ export default memo(function Slider({
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = (event: any) => {
     if (!isDragging) return;
-    const slider = sliderRef.current;
+    const slider: any = sliderRef.current;
     const rect = slider.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const width = rect.width;
 
-    let newPercentage = Math.round((x / width) * 100);
+    let newPercentage: any = Math.round((x / width) * 100);
     newPercentage = Math.max(0, Math.min(100, newPercentage));
     setSliderPercentage(newPercentage);
   };

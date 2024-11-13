@@ -5,13 +5,13 @@ import { useProvider } from "./use-provider"
 import { useEffect, useState } from "react"
 import Big from "big.js"
 
-export default function useLpToAmount(address) {
+export default function useLpToAmount(address: any) {
   const {
     provider
   } = useProvider()
 
-  const [pool, setPool] = useState(null)
-  const [totalSupply, setTotalSupply] = useState()
+  const [pool, setPool] = useState<any>(null)
+  const [totalSupply, setTotalSupply] = useState<any>()
   const handleGetPool = async function () {
     const result = await asyncFetch("https://api.goldsky.com/api/public/project_clq1h5ct0g4a201x18tfte5iv/subgraphs/bgt-subgraph/v1000000/gn", {
       method: "POST",
@@ -39,7 +39,7 @@ export default function useLpToAmount(address) {
       console.log('error: ', error);
     }
   }
-  const handleGetAmount = (amount) => {
+  const handleGetAmount = (amount: any) => {
     if (totalSupply && pool) {
       const amount0 = Big(amount).div(totalSupply).times(pool?.baseAmount).toFixed()
       const amount1 = Big(amount).div(totalSupply).times(pool?.quoteAmount).toFixed()

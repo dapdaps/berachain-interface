@@ -13,7 +13,7 @@ import { useEffect, useMemo } from 'react';
 import type { ColumnType } from '../types';
 import Skeleton from 'react-loading-skeleton';
 import useInfraredData from '../Datas/Infrared';
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import useInfraredList from '../hooks/use-infrared-list';
 
 export default function List(props: any) {
@@ -63,7 +63,7 @@ export default function List(props: any) {
   }
 
   useEffect(() => {
-    const cloneDataList = _.cloneDeep(dataList);
+    const cloneDataList = cloneDeep(dataList);
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev, next) => {

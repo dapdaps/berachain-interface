@@ -4,8 +4,9 @@ import SwitchTabs from "@/components/switch-tabs";
 import { MarketplaceContext } from "@/sections/marketplace/context";
 import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
-import _ from "lodash";
 import { useMemo, useState, useContext, useCallback, useEffect } from 'react';
+import { cloneDeep } from "lodash";
+import { useMemo, useState, useContext, useCallback } from "react";
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
 import useDataList from "./hooks/useDataList";
@@ -177,7 +178,7 @@ export default function Invest() {
           : data?.tokens?.length === 2
       );
     return sortDataIndex
-      ? _.cloneDeep(_filterList).sort((prev, next) =>
+      ? cloneDeep(_filterList).sort((prev, next) =>
           Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
         )
       : _filterList;
