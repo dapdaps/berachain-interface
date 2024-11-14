@@ -63,16 +63,7 @@ export default function useApprove({
         token.decimals
       );
 
-      let approveValue = amount;
-      if (isMax) {
-        approveValue = Big(MAX_APPROVE)
-          .div(Big(10).pow(token.decimals))
-          .minus(10)
-          .toFixed(0);
-      }
-      const needApproved = Big(Big(_allowance).toFixed(0)).lt(
-        approveValue || "0"
-      );
+      const needApproved = Big(Big(_allowance).toFixed(0)).lt(amount || "0");
 
       setAllowance(_allowance);
       setApproved(!needApproved);
