@@ -59,7 +59,9 @@ export default {
           decimals: 18,
           decimals0: 18,
           decimals1: 18,
-          LP_ADDRESS: '0x1306d3c36ec7e38dd2c128fbe3097c2c2449af64'
+          LP_ADDRESS: '0x1306d3c36ec7e38dd2c128fbe3097c2c2449af64',
+          depositToken: beraB.honey,
+          withdrawToken: beraB.bhoney,
         },
         {
           id: 'HONEY-STGUSDC',

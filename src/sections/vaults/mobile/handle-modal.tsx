@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import Modal from "@/components/modal";
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import Range from "@/components/range";
@@ -12,6 +12,9 @@ import Big from "big.js";
 import useInfrared from "@/sections/staking/hooks/use-infrared";
 import IncreaseLiquidityModal from "@/sections/pools/increase-liquidity-modal";
 import UserInfo from "./user-info";
+import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
+import BaseButton from '@/sections/pools/components/button/base-button';
+import WithdrawQueueDrawer from '@/sections/staking/Bridge/Detail/Berps/Drawer';
 
 export default function HandleModal({
   show,
@@ -20,25 +23,47 @@ export default function HandleModal({
   type,
   onSuccess
 }: any) {
+
   const pool = data?.initialData?.pool;
+  const isBERPS = pool?.protocol === 'BERPS';
+  const vaultAddress = isBERPS ? data?.withdrawToken?.address : data.vaultAddress;
+  const approveSpender = type ? "" : vaultAddress;
+  const symbol = useMemo(() => {
+    if (isBERPS) {
+      if (type) {
+        return data?.withdrawToken?.symbol;
+      }
+      return data?.depositToken?.symbol;
+    }
+    return pool?.name || data.tokens[0];
+  }, [isBERPS, type, pool, data]);
+
   const [value, setValue] = useState("");
   const [percent, setPercent] = useState(0);
   const prices = usePriceStore((store) => store.price);
   const [balance, setBalance] = useState("");
   const [showMint, setShowMint] = useState(false);
+  const [withdrawalQueueVisible, setWithdrawalQueueVisible] = useState(false);
   const { loading, onHandle } = useInfrared({
     amount: value,
     decimals: 18,
-    vaultAddress: data.vaultAddress,
+    vaultAddress: vaultAddress,
     tokens: data.tokens,
     type,
     onSuccess() {
       onClose();
       onSuccess();
-    }
+    },
+    isBERPS
   });
 
   const token = useMemo(() => {
+    if (isBERPS) {
+      if (type) {
+        return data?.withdrawToken;
+      }
+      return data?.depositToken;
+    }
     return type
       ? {
           address: data.vaultAddress,
@@ -51,7 +76,7 @@ export default function HandleModal({
           symbol: pool?.name || data.tokens[0],
           icons: data.images
         };
-  }, [pool, type]);
+  }, [pool, type, isBERPS]);
 
   useEffect(() => {
     if (!show) {
@@ -65,14 +90,14 @@ export default function HandleModal({
       <Modal open={show} onClose={onClose} closeIconClassName="md:hidden">
         <div className="bg-[#FFFDEB] px-[15px] py-[20px] rounded-t-[20px]">
           <div className="text-[18px] font-bold">
-            {type ? "Unstake" : "Stake"} {pool?.name || data.tokens[0]}
+            {type ? "Unstake" : "Stake"} {symbol}
           </div>
           <UserInfo data={data} className="justify-between mt-[16px]" />
           <Input
             value={value}
             setValue={setValue}
             token={token}
-            prices={prices}
+            prices={{ ...prices, bHONEY: data?.withdrawTokenPrice }}
             onLoad={(val: string) => {
               setBalance(val);
             }}
@@ -117,6 +142,11 @@ export default function HandleModal({
               }}
             />
           </div>
+          {
+            isBERPS && !type && (
+              <StakePrompt className="mt-[20px]" />
+            )
+          }
           <div className="mt-[30px]">
             <Button
               text={type ? "Unstake" : "Stake"}
@@ -125,8 +155,19 @@ export default function HandleModal({
               onClick={onHandle}
               value={value}
               token={token}
-              spender={type ? "" : data.vaultAddress}
+              spender={approveSpender}
             />
+            {
+              isBERPS && !!type && (
+                <BaseButton
+                  onClick={() => {
+                    setWithdrawalQueueVisible(true);
+                  }}
+                >
+                  Withdrawal Queue
+                </BaseButton>
+              )
+            }
           </div>
           {!!balance && Big(balance).eq(0) && (
             <div className="mt-[16px] text-center text-[#FD4C67] text-[14px] font-medium">
@@ -176,6 +217,13 @@ export default function HandleModal({
             title={`Mint ${pool?.underlying_tokens[0]?.symbol}-${pool?.underlying_tokens[1]?.symbol}`}
           />
         )}
+      <WithdrawQueueDrawer
+        visible={withdrawalQueueVisible}
+        onClose={() => {
+          setWithdrawalQueueVisible(false);
+        }}
+        data={data}
+      />
     </>
   );
 }
