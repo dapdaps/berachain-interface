@@ -2,6 +2,7 @@ import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import { useSettingsStore } from "@/stores/settings";
+import useAddAction from "@/hooks/use-add-action";
 import Big from "big.js";
 import { Contract } from "ethers";
 import routerAbi from "../abi/router";
@@ -18,6 +19,7 @@ export default function useWithdraw({
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const slippage = useSettingsStore((store: any) => store.slippage);
+  const { addAction } = useAddAction("dapp");
 
   const onWithdraw = async () => {
     let toastId = toast.loading({ title: "Confirming..." });
@@ -55,6 +57,22 @@ export default function useWithdraw({
       } else {
         toast.fail({ title: "Withdraw faily!" });
       }
+      addAction({
+        type: "Liquidity",
+        action: "Remove Liquidity",
+        token0: data.token0.symbol,
+        token1: data.token1.symbol,
+        template: "Kodiak",
+        status,
+        transactionHash,
+        sub_type: "Remove",
+        extra_data: JSON.stringify({
+          amount0,
+          amount1,
+          action: "Remove Liquidity",
+          type: "univ3"
+        })
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

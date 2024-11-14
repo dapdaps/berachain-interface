@@ -102,13 +102,9 @@ const Item = ({ record, setSelectedRecord }: any) => {
   );
 };
 
-export default function IslandMobile({
-  pools,
-  loading,
-  setSelectedRecord
-}: any) {
+export default function IslandMobile({ pools, loading, onSelect }: any) {
   return (
-    <div className="px-[12px] pb-[20px] pt-[16px] flex flex-col gap-[12px] h-[calc(100%-144px)] overflow-y-auto">
+    <div className="px-[12px] pb-[20px] pt-[16px] flex flex-col gap-[12px] h-[calc(100%-80px)] overflow-y-auto">
       {pools.length === 0 && !loading && (
         <div className="mt-[50px] w-full flex justify-center items-center">
           <Empty desc="No Pools." />
@@ -120,7 +116,7 @@ export default function IslandMobile({
         </div>
       )}
       {pools.map((item: any, idx: number) => (
-        <Item key={idx} record={item} setSelectedRecord={setSelectedRecord} />
+        <Item key={idx} record={item} setSelectedRecord={onSelect} />
       ))}
     </div>
   );

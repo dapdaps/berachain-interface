@@ -3,7 +3,7 @@ import Image from "next/image";
 import Button from "@/components/button";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
-import useClaim from "../../hooks/use-claim";
+import useClaim from "../hooks/use-claim";
 
 export default function Earn({
   earned,
@@ -11,12 +11,12 @@ export default function Earn({
   farmContract,
   onSuccess
 }: any) {
-  const { loading, onClaim } = useClaim({ farmContract, onSuccess });
+  const { loading, onClaim } = useClaim({ earned, farmContract, onSuccess });
   return (
     <div
       className={clsx(
         "rounded-[10px] w-[440px] min-h-[86px] bg-black/5 relative px-[16px] mt-[20px] py-[18px]",
-        "backdrop-blur-sm"
+        "md:w-full md:mt-[12px] md:rounded-[20px] md:bg-[#FFFDEB] md:border md:border-black md:p-[10px]"
       )}
     >
       {Big(earned || 0).eq(0) && (

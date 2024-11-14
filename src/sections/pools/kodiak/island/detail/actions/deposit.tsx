@@ -140,13 +140,9 @@ export default function Deposit({ data, info, onSuccess }: any) {
         ]}
         current={type}
         onChange={setType}
-        className="mt-[14px]"
-        tabClassName="font-semibold"
-        style={{
-          height: 40,
-          padding: "3px 4px",
-          background: "#DFDCC4"
-        }}
+        className="mt-[14px] !h-[40px] !p-[3px_4px] !bg-[#DFDCC4] md:!border-none md:!bg-transparent md:!p-0"
+        cursorClassName="md:!rounded-[10px]"
+        tabClassName="font-semibold md:font-medium"
       />
       {account ? (
         chainId !== DEFAULT_CHAIN_ID ? (

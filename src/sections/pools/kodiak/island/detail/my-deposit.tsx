@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
+import clsx from "clsx";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const SimpleTotal = ({ data }: any) => {
   return (
@@ -54,9 +56,15 @@ const Total = ({ data, symbol }: any) => {
 };
 
 export default function Mydeposit({ info = {}, token0, token1, symbol }: any) {
+  const isMobile = useIsMobile();
   return (
-    <div className="rounded-[10px] bg-black/5 px-[16px] py-[20px] w-[440px]">
-      {info.locked ? (
+    <div
+      className={clsx(
+        "rounded-[10px] bg-black/5 px-[16px] py-[20px] w-[440px]",
+        "md:w-full md:mt-[12px] md:rounded-[20px] md:bg-[#FFFDEB] md:border md:border-black md:p-[10px]"
+      )}
+    >
+      {info.locked && !isMobile ? (
         <Total data={info} symbol={symbol} />
       ) : (
         <SimpleTotal data={info} />

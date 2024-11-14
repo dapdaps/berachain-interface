@@ -1,14 +1,22 @@
 import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
+import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import farmAbi from "../abi/farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function useUnstake({ farmContract, kekIds, onSuccess }: any) {
+export default function useUnstake({
+  farmContract,
+  kekIds,
+  token,
+  amount,
+  onSuccess
+}: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
+  const { addAction } = useAddAction("dapp");
 
   const onUnstake = async () => {
     let toastId = toast.loading({ title: "Confirming..." });
@@ -31,6 +39,16 @@ export default function useUnstake({ farmContract, kekIds, onSuccess }: any) {
       } else {
         toast.fail({ title: "Unstake faily!" });
       }
+      addAction?.({
+        type: "Staking",
+        action: "Unstake",
+        token,
+        amount,
+        template: "Kodiak",
+        add: false,
+        status,
+        transactionHash
+      });
     } catch (err: any) {
       console.log(35, err);
       toast.dismiss(toastId);

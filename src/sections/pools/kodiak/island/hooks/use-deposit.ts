@@ -2,6 +2,7 @@ import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import { useSettingsStore } from "@/stores/settings";
+import useAddAction from "@/hooks/use-add-action";
 import Big from "big.js";
 import { Contract } from "ethers";
 import routerAbi from "../abi/router";
@@ -20,9 +21,11 @@ export default function useDeposit({
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const slippage = useSettingsStore((store: any) => store.slippage);
+  const { addAction } = useAddAction("dapp");
 
   const onDeposit = async () => {
     let toastId = toast.loading({ title: "Confirming..." });
+    const _slippage = slippage < 1 ? 1 : slippage;
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
@@ -41,11 +44,11 @@ export default function useDeposit({
         data.id,
         _amount0.toFixed(0),
         _amount1.toFixed(0),
-        _amount0.mul(1 - slippage / 100).toFixed(0),
-        _amount1.mul(1 - slippage / 100).toFixed(0),
+        _amount0.mul(1 - _slippage / 100).toFixed(0),
+        _amount1.mul(1 - _slippage / 100).toFixed(0),
         Big(received)
           .mul(1e18)
-          .mul(1 - slippage / 100)
+          .mul(1 - _slippage / 100)
           .toFixed(0),
         account,
         {
@@ -81,6 +84,22 @@ export default function useDeposit({
       } else {
         toast.fail({ title: "Deposit faily!" });
       }
+      addAction({
+        type: "Liquidity",
+        action: "Add Liquidity",
+        token0: data.token0.symbol,
+        token1: data.token1.symbol,
+        template: "Kodiak",
+        status,
+        transactionHash,
+        sub_type: "Add",
+        extra_data: JSON.stringify({
+          amount0: amount0,
+          amount1: amount1,
+          action: "Add Liquidity",
+          type: "univ3"
+        })
+      });
     } catch (err: any) {
       console.log(err);
       toast.dismiss(toastId);

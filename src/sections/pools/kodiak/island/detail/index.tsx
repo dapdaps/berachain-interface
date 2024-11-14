@@ -18,7 +18,12 @@ export default function Detail(props: any) {
   return (
     <>
       {isMobile ? (
-        <Mobile {...props} info={info} loading={loading} />
+        <Mobile
+          {...props}
+          info={info}
+          loading={loading}
+          onSuccess={queryInfo}
+        />
       ) : (
         <Laptop
           {...props}

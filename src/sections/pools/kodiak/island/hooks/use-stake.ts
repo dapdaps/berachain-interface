@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
+import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import farmAbi from "../abi/farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
@@ -10,11 +11,13 @@ export default function useStake({
   farmContract,
   amount,
   days,
+  token,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
+  const { addAction } = useAddAction("dapp");
 
   const onStake = async () => {
     let toastId = toast.loading({ title: "Confirming..." });
@@ -39,6 +42,16 @@ export default function useStake({
       } else {
         toast.fail({ title: "Stake faily!" });
       }
+      addAction?.({
+        type: "Staking",
+        action: "Stake",
+        token,
+        amount,
+        template: "Kodiak",
+        add: false,
+        status,
+        transactionHash
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

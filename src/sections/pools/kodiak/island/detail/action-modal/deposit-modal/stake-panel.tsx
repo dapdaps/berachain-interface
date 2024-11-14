@@ -8,6 +8,7 @@ export default function StakePanel({ data, amount, lockData, onSuccess }: any) {
     farmContract: data.farmAddress,
     amount,
     days: lockData.days,
+    token: { symbol: data.symbol },
     onSuccess
   });
   return (

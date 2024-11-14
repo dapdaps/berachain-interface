@@ -1,14 +1,16 @@
 import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
+import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import farmAbi from "../abi/farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function useClaim({ farmContract, onSuccess }: any) {
+export default function useClaim({ earned, farmContract, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
+  const { addAction } = useAddAction("dapp");
 
   const onClaim = async () => {
     let toastId = toast.loading({ title: "Confirming..." });
@@ -31,6 +33,19 @@ export default function useClaim({ farmContract, onSuccess }: any) {
       } else {
         toast.fail({ title: "Claim faily!" });
       }
+      addAction?.({
+        type: "Staking",
+        action: "Claim",
+        token: {
+          symbol: "KDK"
+        },
+        amount: earned,
+        template: "Kodiak",
+        status: status,
+        transactionHash,
+        chain_id: DEFAULT_CHAIN_ID,
+        sub_type: "Claim"
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

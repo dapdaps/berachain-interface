@@ -1,7 +1,7 @@
 import Header from "./header";
-import Mydeposit from "./my-deposit";
-import Earn from "./earn";
-import Actions from "./actions";
+import Mydeposit from "../my-deposit";
+import Earn from "../earn";
+import Actions from "../actions";
 import Loading from "@/components/loading";
 
 export default function Laptop({
