@@ -3,6 +3,9 @@ import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect } from 'react';
 import { cloneDeep } from 'lodash';
+import { multicall } from '@/utils/multicall';
+import { addHours } from 'date-fns';
+import { get } from '@/utils/http';
 
 export default function useInfraredData(props: any) {
   const {
@@ -88,6 +91,115 @@ export default function useInfraredData(props: any) {
       "stateMutability": "view",
       "type": "function"
     },
+    {
+      "inputs": [],
+      "name": "currentEpoch",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentEpochStart",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "marketCap",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "completeBalanceOfAssets",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "completeBalanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "totalSharesBeingWithdrawn",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "shares",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
   ];
   const MulticallContract =
     multicallAddress &&
@@ -124,15 +236,99 @@ export default function useInfraredData(props: any) {
   }
   function getBerpsData(pair, _data) {
     return new Promise(async (resolve) => {
-      const depositTokenContract = new ethers.Contract(pair.depositToken.address, ERC20_ABI, provider?.getSigner());
-      const withdrawTokenContract = new ethers.Contract(pair.LP_ADDRESS, ERC20_ABI, provider?.getSigner());
       try {
-        let price = await withdrawTokenContract.shareToAssetsPrice();
-        price = ethers.utils.formatUnits(price, 36 - pair.depositToken.decimals);
-        let tvl = await depositTokenContract.balanceOf(pair.LP_ADDRESS);
-        tvl = ethers.utils.formatUnits(tvl, pair.depositToken.decimals);
+        const res = await multicall({
+          abi: ERC20_ABI,
+          options: {},
+          calls: [
+            {
+              address: pair.LP_ADDRESS,
+              name: 'shareToAssetsPrice',
+              params: []
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'currentEpoch',
+              params: []
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'currentEpochStart',
+              params: []
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'marketCap',
+              params: []
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'totalSupply',
+              params: []
+            },
+            {
+              address: pair.depositToken.address,
+              name: 'balanceOf',
+              params: [pair.LP_ADDRESS]
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'completeBalanceOfAssets',
+              params: [sender]
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'completeBalanceOf',
+              params: [sender]
+            },
+            {
+              address: pair.LP_ADDRESS,
+              name: 'totalSharesBeingWithdrawn',
+              params: [sender]
+            },
+          ],
+          multicallAddress,
+          provider
+        });
+        let [
+          [price],
+          [currentEpoch],
+          [currentEpochStart],
+          [marketCap],
+          [totalSupply],
+          [tvl],
+          [completeBalanceOfAssets],
+          [completeBalanceOf],
+          [totalSharesBeingWithdrawn],
+        ] = res;
+        price = ethers.utils.formatUnits(price, 36 - pair.withdrawToken.decimals);
+        tvl = ethers.utils.formatUnits(tvl, pair.withdrawToken.decimals);
+        currentEpoch = ethers.utils.formatUnits(currentEpoch, 0);
+        currentEpochStart = ethers.utils.formatUnits(currentEpochStart, 0);
+        currentEpochStart = Big(currentEpochStart).times(1000).toNumber();
+        marketCap = ethers.utils.formatUnits(marketCap, pair.withdrawToken.decimals);
+        totalSupply = ethers.utils.formatUnits(totalSupply, pair.withdrawToken.decimals);
+        completeBalanceOfAssets = ethers.utils.formatUnits(completeBalanceOfAssets, pair.withdrawToken.decimals);
+        completeBalanceOf = ethers.utils.formatUnits(completeBalanceOf, pair.withdrawToken.decimals);
+        totalSharesBeingWithdrawn = ethers.utils.formatUnits(totalSharesBeingWithdrawn, pair.withdrawToken.decimals);
+
+        const vaultEarnings = await get(`https://bartio-berps.berachain.com/vaultearnings/${sender}`);
+        let { earnings } = vaultEarnings || {};
+        earnings = ethers.utils.formatUnits(earnings, pair.withdrawToken.decimals);
+
         _data.tvl = Big(tvl).times(price ?? 0).toFixed();
         _data.withdrawTokenPrice = price;
+        _data.currentEpoch = currentEpoch;
+        _data.currentEpochStart = new Date(currentEpochStart);
+        _data.currentEpochEnd = addHours(new Date(currentEpochStart), 12);
+        _data.marketCap = marketCap;
+        _data.collateralizationRatio = Big(marketCap).div(tvl).times(100).toFixed(2, Big.roundDown) + '%';
+        _data.totalSupply = totalSupply;
+        _data.completeBalanceOfAssets = completeBalanceOfAssets;
+        _data.completeBalanceOf = completeBalanceOf;
+        _data.totalSharesBeingWithdrawn = totalSharesBeingWithdrawn;
+        _data.earnings = earnings;
+        _data.estimatedEarnings = Big(earnings).plus(completeBalanceOfAssets).abs().toString();
         _data.apy = '2830';
         _data.initialData.stake_token = {
           ...pair.depositToken,

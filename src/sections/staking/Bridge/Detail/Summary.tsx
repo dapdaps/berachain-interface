@@ -2,6 +2,7 @@ import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import { useRouter } from 'next/navigation';
 import { numberFormatter } from '@/utils/number-formatter';
+import { format } from 'date-fns';
 
 const DetailSummary = (props: any) => {
   const { data } = props;
@@ -65,13 +66,13 @@ const DetailSummary = (props: any) => {
         </div>
         {
           protocol === 'BERPS' && (
-            <div className="flex items-center gap-[26px] pr-[52px]">
+            <div className="flex items-center gap-[26px]">
               <div className="flex flex-col gap-[12px]">
                 <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
                   Start
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] whitespace-nowrap">
-                  11/12/24, 2:02PM
+                  {format(data?.currentEpochStart, 'MM/dd/yyyy, h:mmaa')}
                 </div>
               </div>
               <div className="flex flex-col gap-[12px]">
@@ -79,7 +80,7 @@ const DetailSummary = (props: any) => {
                   End
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] whitespace-nowrap">
-                  11/13/24, 2:02AM
+                  {format(data?.currentEpochEnd, 'MM/dd/yyyy, h:mmaa')}
                 </div>
               </div>
             </div>
@@ -127,15 +128,15 @@ const DetailSummary = (props: any) => {
                   Collateralization Ratio
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-                  {numberFormatter(data?.withdrawTokenPrice, 2, true, { prefix: '$' })}
+                  {data?.collateralizationRatio}
                 </div>
               </div>
               <div className="flex flex-col gap-[12px]">
                 <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
-                  Supply
+                  {data?.withdrawToken?.symbol} Supply
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-                  {numberFormatter(data?.withdrawTokenPrice, 2, true, { prefix: '$' })}
+                  {numberFormatter(data?.totalSupply, 2, true, { isShort: true })}
                 </div>
               </div>
               <div className="flex flex-col gap-[12px]">
@@ -143,7 +144,7 @@ const DetailSummary = (props: any) => {
                   Epoch
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] whitespace-nowrap">
-                  311
+                  {data?.currentEpoch}
                 </div>
               </div>
             </>

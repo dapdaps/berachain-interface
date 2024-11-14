@@ -10,7 +10,7 @@ import { formatValueDecimal, balanceFormated } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import config from '@/configs/staking/dapps/infrared';
 import AddLiquidityModal from '@/sections/pools/add-liquidity-modal';
 import { DEFAULT_CHAIN_ID } from '@/configs';
@@ -38,6 +38,7 @@ export default memo(function Detail() {
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
   const [showAddModal, setShowAddModal] = useState(false);
+  const detailBerpsRef = useRef<any>();
 
   const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
 
@@ -375,6 +376,9 @@ export default memo(function Detail() {
             tx: transactionHash,
             chainId
           });
+          if (isBERPS) {
+            detailBerpsRef.current?.getList?.();
+          }
         })
         .catch((error: Error) => {
           updateState({
@@ -507,11 +511,13 @@ export default memo(function Detail() {
         {
           isBERPS ? (
             <DetailBerps
+              ref={detailBerpsRef}
               data={data}
-              mintData={mintData}
-              setShowAddModal={setShowAddModal}
-              claiming={claiming}
-              handleClaim={handleClaim}
+              account={sender}
+              provider={provider}
+              addAction={addAction}
+              chainId={chainId}
+              toast={toast}
             />
           ) : (
             <DetailBex
@@ -739,7 +745,7 @@ export default memo(function Detail() {
   );
 });
 
-const stakeAbi = [
+export const stakeAbi = [
   {
     constant: false,
     inputs: [
@@ -771,7 +777,7 @@ const stakeAbi = [
     type: 'function'
   }
 ];
-const withdrawAbi = [
+export const withdrawAbi = [
   {
     constant: false,
     inputs: [
