@@ -21,7 +21,7 @@ export default function useCollect({ address }: { address: string }) {
         
         get(`/api/game/items?game_category=bera&address=${address || '1'}`).then(res => {
             if (res.code === 0) {
-                // setCollection(res.data)
+                setCollection(res.data)
                 const cars: GameItem[] = []
                 const clothes: GameItem[] = []
                 const necklaces: GameItem[] = []
@@ -29,7 +29,7 @@ export default function useCollect({ address }: { address: string }) {
 
                 res.data?.forEach((item: GameItem) => {
                     // item.pc_item = true
-                    item.checked = false
+                    // item.checked = false
                     switch(item.category) {
                         case 'hats':
                             hats.push(item)
@@ -94,7 +94,7 @@ export default function useCollect({ address }: { address: string }) {
 
     useEffect(() => {
         if (collection?.necklaces) {
-            initEqu(collection.necklaces, setClothes, necklace)
+            initEqu(collection.necklaces, setNecklaces, necklace)
         }
     }, [necklace, collection])
     
