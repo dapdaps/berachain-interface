@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import List from "@/sections/marketplace/components/list";
-import PoolTable from "../pool-table";
+import PoolTable from "../../../components/pool-table";
+import { balanceShortFormated } from "@/utils/balance";
 
 const PAGE_SIZE = 9;
 
@@ -9,7 +10,7 @@ export default function Laptop({
   page,
   setPage,
   searchVal,
-  setSelectedRecord,
+  onSelect,
   loading
 }: any) {
   const list = useMemo(
@@ -65,27 +66,18 @@ export default function Laptop({
       title: "TVL",
       key: "tvl",
       sort: true,
-      width: "15%",
+      width: "25%",
       render: (item: any, index: number) => {
-        return item["tvl"] || "-";
+        return item["tvl"] ? balanceShortFormated(item["tvl"], 2) : "-";
       }
     },
     {
-      title: " 24h Volume",
-      key: " 24h Volume",
+      title: "Volume",
+      key: "volume",
       sort: true,
-      width: "15%",
+      width: "20%",
       render: (item: any, index: number) => {
-        return item["yours"] || "-";
-      }
-    },
-    {
-      title: " 24h Fees",
-      key: " 24h Fees",
-      sort: true,
-      width: "15%",
-      render: (item: any, index: number) => {
-        return item["yours"] || "-";
+        return item["volume"] ? balanceShortFormated(item["volume"], 2) : "-";
       }
     }
   ];
@@ -99,7 +91,7 @@ export default function Laptop({
         onPageChange={setPage}
         bodyClassName="h-[480px] overflow-y-auto"
         onItemClick={(item: any) => {
-          setSelectedRecord(item);
+          onSelect(item);
         }}
         loading={loading}
       />
