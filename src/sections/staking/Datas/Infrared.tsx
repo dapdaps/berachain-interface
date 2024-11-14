@@ -104,7 +104,7 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => data?.initialData?.pool?.protocol === 'BEX'),
+      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance'].includes(data?.initialData?.pool?.protocol) || data?.id === "iBGT-HONEY"),
       fullDataList: dataList
     });
   }
@@ -118,22 +118,19 @@ export default function useInfraredData(props: any) {
       );
       if (findIndex > -1) {
         const initialData = allData[findIndex];
-        if (initialData?.pool?.protocol === 'BEX' ||
-          pair?.id === 'iBGT-HONEY') {
-          dataList.push({
-            ...pair,
-            tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
-              .times(initialData?.stake_token?.price ?? 0)
-              .toFixed(),
-            apy: initialData?.apy_percentage,
-            initialData,
-            type: 'Staking',
-            vaultAddress,
-            rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
-            protocolType:
-              initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
-          });
-        }
+        dataList.push({
+          ...pair,
+          tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
+            .times(initialData?.stake_token?.price ?? 0)
+            .toFixed(),
+          apy: initialData?.apy_percentage,
+          initialData,
+          type: 'Staking',
+          vaultAddress,
+          rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
+          protocolType:
+            initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+        });
       }
     });
     formatedData('dataList');
