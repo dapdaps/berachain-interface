@@ -95,7 +95,8 @@ export const BGT_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -112,7 +113,8 @@ export const BGT_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -135,7 +137,8 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -153,7 +156,8 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -176,4 +180,40 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  }]
+  }
+]
+
+export const ERC20_ABI = [
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '_owner',
+        type: 'address'
+      }
+    ],
+    name: 'balanceOf',
+    outputs: [
+      {
+        name: 'balance',
+        type: 'uint256'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "result",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

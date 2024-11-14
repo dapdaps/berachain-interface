@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import clsx from "clsx";
+import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 function SwitchTabs<Value = any>(props: Props<Value>) {
   const {
@@ -28,10 +29,13 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
 
   return (
     <div
-      className={`relative h-[56px] md:h-[36px] rounded-[12px] md:rounded-[20px] border border-[#373A53] bg-white p-[5px_4px] md:p-[3px] ${className}`}
+      className={clsx(
+        "relative h-[56px] md:h-[36px] rounded-[12px] md:rounded-[20px] border border-[#373A53] bg-white p-[5px_4px] md:p-[3px]",
+        className
+      )}
       style={style}
     >
-      <div className='w-full h-full relative z-[0]'>
+      <div className="w-full h-full relative z-[0]">
         <motion.div
           className={`rounded-[10px] md:rounded-[16px] h-full bg-[#FFDC50] absolute flex-1 border border-black ${cursorClassName}`}
           style={{
@@ -44,16 +48,16 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
           }}
         />
       </div>
-      <div className='w-full h-full z-[1] flex items-stretch justify-between absolute top-0 left-0'>
+      <div className="w-full h-full z-[1] flex items-stretch justify-between absolute top-0 left-0">
         {tabs.map((tab, idx) => (
           <div
             key={idx}
-            className={`h-full lg:text-[14px] md:text-[15px] md:text-[15px] text-black md:font-[600] flex justify-center items-center flex-1 cursor-pointer ${tabClassName}`}
+            className={`h-full font-bold lg:text-[14px] md:text-[15px] md:text-[15px] text-black md:font-[600] flex justify-center items-center flex-1 cursor-pointer ${tabClassName}`}
             style={{
               width: `${100 / tabs.length}%`,
               opacity: tab.disabled ? 0.3 : 1,
               cursor: tab.disabled
-                ? 'not-allowed'
+                ? "not-allowed"
                 : "url('../../public/images/cursor.svg') 12 0, auto",
               ...tabStyle,
               ...renderTabStyle(tab, idx)

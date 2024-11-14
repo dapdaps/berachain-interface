@@ -7,7 +7,6 @@ import Dropdown from "@/components/dropdown";
 import { balanceShortFormated } from "@/utils/balance";
 import { upperFirst, cloneDeep } from "lodash";
 import clsx from "clsx";
-import IslandMobile from "./island-mobile";
 
 export default function Mobile({
   pools,
@@ -57,56 +56,48 @@ export default function Mobile({
           />
         </div>
       </div>
-      {type === "islands" ? (
-        <IslandMobile
-          data={data}
-          loading={loading}
-          setSelectedRecord={setSelectedRecord}
-        />
-      ) : (
-        <div className="mt-[10px]">
-          <List
-            columns={[
-              {
-                title: "Pool",
-                dataIndex: "pool",
-                width: "70%",
-                render: (_: any, record) => {
-                  return (
-                    <PoolTable
-                      item={record}
-                      onClick={() => {
-                        setSelectedRecord(record);
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                title: "TVL",
-                dataIndex: "tvl",
-                width: "30%",
-                align: "right",
-                render: (_, record) => {
-                  return record["tvl"]
-                    ? balanceShortFormated(record["tvl"], 2)
-                    : "-";
-                }
+      <div className="mt-[10px]">
+        <List
+          columns={[
+            {
+              title: "Pool",
+              dataIndex: "pool",
+              width: "70%",
+              render: (_: any, record) => {
+                return (
+                  <PoolTable
+                    item={record}
+                    onClick={() => {
+                      setSelectedRecord(record);
+                    }}
+                  />
+                );
               }
-            ]}
-            list={data}
-            wrapperClass="h-[calc(100%-90px)] overflow-y-auto"
-            bodyClass="py-[14px] h-[58px]"
-            showHeader={false}
-            renderEmpty={() => (
-              <div className="mt-[50px] w-full flex justify-center items-center">
-                <Empty desc="No Pools." />
-              </div>
-            )}
-            loading={loading}
-          />
-        </div>
-      )}
+            },
+            {
+              title: "TVL",
+              dataIndex: "tvl",
+              width: "30%",
+              align: "right",
+              render: (_, record) => {
+                return record["tvl"]
+                  ? balanceShortFormated(record["tvl"], 2)
+                  : "-";
+              }
+            }
+          ]}
+          list={data}
+          wrapperClass="h-[calc(100%-144px)] overflow-y-auto"
+          bodyClass="py-[14px] h-[58px]"
+          showHeader={false}
+          renderEmpty={() => (
+            <div className="mt-[50px] w-full flex justify-center items-center">
+              <Empty desc="No Pools." />
+            </div>
+          )}
+          loading={loading}
+        />
+      </div>
     </div>
   );
 }

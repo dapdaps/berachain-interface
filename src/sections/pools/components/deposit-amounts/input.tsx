@@ -1,9 +1,9 @@
-import Big from 'big.js';
-import { memo, useEffect, useMemo } from 'react';
-import Image from 'next/image';
-import Loading from '@/components/circle-loading';
-import useTokenBalance from '@/hooks/use-token-balance';
-import { balanceFormated, valueFormated } from '@/utils/balance';
+import Big from "big.js";
+import { memo, useEffect, useMemo } from "react";
+import Image from "next/image";
+import Loading from "@/components/circle-loading";
+import useTokenBalance from "@/hooks/use-token-balance";
+import { balanceFormated, valueFormated } from "@/utils/balance";
 
 import {
   StyledBalance,
@@ -15,7 +15,7 @@ import {
   StyledInputTokenBox,
   StyledSymbol,
   StyledToken
-} from './styles';
+} from "./styles";
 
 const Input = ({
   value,
@@ -24,15 +24,16 @@ const Input = ({
   prices,
   disabled,
   onLoad,
-  onSelectToken
+  onSelectToken,
+  className
 }: any) => {
   const { tokenBalance: balance, isLoading } = useTokenBalance(
-    token?.isNative ? 'native' : token?.address,
+    token?.isNative ? "native" : token?.address,
     token?.decimals
   );
 
   const isError = useMemo(() => {
-    if (!value || !token || value === 'NaN') return false;
+    if (!value || !token || value === "NaN") return false;
 
     if (!balance) return false;
 
@@ -44,11 +45,11 @@ const Input = ({
   }, [balance]);
 
   return (
-    <StyledInput $error={isError}>
+    <StyledInput $error={isError} className={className}>
       <StyledInputTokenBox>
-        <div className='grow'>
+        <div className="grow">
           <StyledInputInner
-            placeholder='0'
+            placeholder="0"
             value={value}
             onChange={(ev) => {
               if (isNaN(Number(ev.target.value))) return;
@@ -59,30 +60,30 @@ const Input = ({
         </div>
         {token ? (
           token.icons ? (
-            <div className='flex items-center relative shrink-0'>
+            <div className="flex items-center relative shrink-0">
               {token.icons[0] && (
                 <Image
-                  className='mr-[-8px] rounded-full'
+                  className="mr-[-8px] rounded-full"
                   src={token.icons[0]}
                   width={30}
                   height={30}
-                  alt='Token'
+                  alt="Token"
                 />
               )}
               {token.icons[1] && (
                 <Image
-                  className='rounded-full'
+                  className="rounded-full"
                   src={token.icons[1]}
                   width={30}
                   height={30}
-                  alt='Token'
+                  alt="Token"
                 />
               )}
             </div>
           ) : (
-            <StyledToken className='shrink-0'>
+            <StyledToken className="shrink-0">
               <StyledIcon
-                src={token?.icon || '/assets/tokens/default_icon.png'}
+                src={token?.icon || "/assets/tokens/default_icon.png"}
               />
               <StyledSymbol>{token.symbol}</StyledSymbol>
             </StyledToken>
@@ -96,11 +97,11 @@ const Input = ({
       <StyledDesc>
         <div>
           $
-          {!isNaN(Number(value))
+          {!isNaN(Number(value)) && prices
             ? valueFormated(value, prices[token?.priceKey || token?.symbol])
-            : '-'}
+            : "-"}
         </div>
-        <div className='flex items-center gap-[4px]'>
+        <div className="flex items-center gap-[4px]">
           <div>Balance: </div>
           {isLoading ? (
             <Loading size={16} />
@@ -110,9 +111,9 @@ const Input = ({
                 if (isNaN(Number(balance))) return;
                 setValue(balanceFormated(new Big(balance).toFixed(18), 18));
               }}
-              className='cursor-pointer'
+              className="cursor-pointer"
             >
-              {!balance ? '-' : balanceFormated(balance, 4)}
+              {!balance ? "-" : balanceFormated(balance, 4)}
             </StyledBalance>
           )}
         </div>
