@@ -22,7 +22,7 @@ const BGTMobileView = (props: Props) => {
     sortDataIndex,
     setSortDataIndex,
     pageData,
-    filterList,
+    // filterList,
     handleClaim,
     handleExplore,
     handleValidator,
