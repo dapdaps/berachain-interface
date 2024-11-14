@@ -42,7 +42,7 @@ export default function useUserInfo({
       const earnedRes = await FarmContract.earned(account);
       let locked = null;
       let total = Big(balanceRes.toString());
-      let withdrawLp = Big(balanceUsd.toString());
+      let withdrawLp = Big(0);
       if (stakedRes && stakedRes.length) {
         let totalAmount = Big(0);
         const items: any = [];
@@ -70,7 +70,7 @@ export default function useUserInfo({
             amount0,
             amount1
           });
-          if (unlocked) withdrawLp.add(item.liquidity.toString());
+          if (unlocked) withdrawLp = withdrawLp.add(item.liquidity.toString());
         });
         total = total.add(totalAmount);
         const amount = totalAmount.div(1e18).toString();
@@ -91,6 +91,14 @@ export default function useUserInfo({
 
       const { amount0: withdrawAmount0, amount1: withdrawAmount1 } =
         getTokenAmountsV2({
+          liquidity: withdrawLp.add(balanceRes.toString()).toString(),
+          totalSupply: totalSupply.toString(),
+          reserve0: reverses[0].toString(),
+          reserve1: reverses[1].toString()
+        });
+
+      const { amount0: balanceAmount0, amount1: balanceAmount1 } =
+        getTokenAmountsV2({
           liquidity: balanceRes.toString(),
           totalSupply: totalSupply.toString(),
           reserve0: reverses[0].toString(),
@@ -100,6 +108,8 @@ export default function useUserInfo({
       setInfo({
         token0Amount: amount0,
         token1Amount: amount1,
+        balanceAmount0: balanceAmount0,
+        balanceAmount1: balanceAmount1,
         total: total.toString(),
         balanceUsd,
         balance,
@@ -109,9 +119,11 @@ export default function useUserInfo({
           .div(1e18)
           .toString(),
         withdraw: {
+          amount: withdrawLp.toString(),
           amount0: withdrawAmount0,
           amount1: withdrawAmount1
-        }
+        },
+        totalSupply: totalSupply.toString()
       });
     } catch (err) {
       console.log(err);

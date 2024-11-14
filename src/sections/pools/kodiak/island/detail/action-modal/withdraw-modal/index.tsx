@@ -4,12 +4,14 @@ import Button from "@/components/button";
 import ModalLoading from "../loading";
 import AllowancePanel from "../allowance-panel";
 import WithdrawPanel from "./withdraw-panel";
+import SelectPanel from "./select-panel";
 import { useEffect, useMemo, useState } from "react";
 import useApprove from "@/hooks/use-approve";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function WithdrawModal({
   data,
+  info,
   amount,
   amount0,
   amount1,
@@ -18,6 +20,7 @@ export default function WithdrawModal({
   onSuccess
 }: any) {
   const [step, setStep] = useState(1);
+  const [withdrawData, setWithdrawData] = useState<any>({});
 
   const token = useMemo(
     () => ({
@@ -46,7 +49,7 @@ export default function WithdrawModal({
 
   return (
     <Basic title={"Withdraw from Island"} open={open} onClose={onClose}>
-      <Steps num={2} active={step} className="mt-[20px]" />
+      <Steps num={3} active={step} className="mt-[20px]" />
       {checking ? (
         <ModalLoading title="Checking Allowance" />
       ) : !approved ? (
@@ -64,11 +67,23 @@ export default function WithdrawModal({
       ) : (
         <>
           {step === 2 && (
-            <WithdrawPanel
-              data={data}
+            <SelectPanel
+              amount={amount}
               amount0={amount0}
               amount1={amount1}
-              amount={amount}
+              info={info}
+              data={data}
+              onSuccess={(data: any) => {
+                setStep(3);
+                setWithdrawData(data);
+              }}
+            />
+          )}
+          {step === 3 && (
+            <WithdrawPanel
+              data={data}
+              totalSupply={info.totalSupply}
+              amounts={withdrawData}
               onSuccess={onSuccess}
             />
           )}
