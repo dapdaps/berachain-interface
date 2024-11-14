@@ -31,7 +31,7 @@ export default memo(function Button(props: IProps) {
     isApproved: true,
     isApproving: false,
   })
-  const BTN_CLASS = "cursor-pointer flex items-center justify-center h-[60px] rounded-[10px] border border-black bg-[#FFDC50]"
+  const BTN_CLASS = "cursor-pointer flex items-center justify-center h-[60px] rounded-[10px] border border-black bg-[#FFDC50]  text-black font-Montserrat text-[18px] font-semibold leading-[90%]"
 
   const isInSufficient = Number(amount) > Number(balance);
 
@@ -87,7 +87,7 @@ export default memo(function Button(props: IProps) {
       .approve(vaultAddress, wei)
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
-        const payload = { isTokenApproved: true, isApproving: false };
+        const payload = { isApproved: true, isApproving: false };
         updateState({ ...payload, isLoading: false });
         toast?.dismiss(toastId);
         toast?.success({
