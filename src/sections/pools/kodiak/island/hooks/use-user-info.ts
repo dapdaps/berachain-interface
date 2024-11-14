@@ -42,6 +42,7 @@ export default function useUserInfo({
       const earnedRes = await FarmContract.earned(account);
       let locked = null;
       let total = Big(balanceRes.toString());
+      let withdrawLp = Big(balanceUsd.toString());
       if (stakedRes && stakedRes.length) {
         let totalAmount = Big(0);
         const items: any = [];
@@ -69,6 +70,7 @@ export default function useUserInfo({
             amount0,
             amount1
           });
+          if (unlocked) withdrawLp.add(item.liquidity.toString());
         });
         total = total.add(totalAmount);
         const amount = totalAmount.div(1e18).toString();

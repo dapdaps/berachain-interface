@@ -47,7 +47,8 @@ export default function useUnstake({
         template: "Kodiak",
         add: false,
         status,
-        transactionHash
+        transactionHash,
+        sub_type: "Unstake"
       });
     } catch (err: any) {
       console.log(35, err);
