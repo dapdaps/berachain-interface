@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://api.dapdap.net';
+const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://test-api.beratown.app';
 
 const nextConfig = {
   reactStrictMode: false,
@@ -25,7 +25,7 @@ const nextConfig = {
     },
     {
       source: '/dapdap/:path*',
-      destination: BASE_URL + '/:path*'
+      destination: 'https://test-api.dapdap.net/:path*' // TODO: wait mainnet
     },
     {
       source: '/api.dolomite.io/:path*',

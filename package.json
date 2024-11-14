@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_API=https://test-api.dapdap.net next dev --port 3003",
+    "dev": "NEXT_PUBLIC_API=https://test-api.beratown.app next dev --port 3003",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -12,13 +12,13 @@ import useClickTracking from '@/hooks/use-click-tracking';
 import { useTapSoundStore } from '@/stores/tap-sound';
 
 const menuItems = [
-  { id: 1, title: 'Bera Cave', href: '/cave' },
-  { id: 2, title: 'Bridge', href: '/bridge' },
-  { id: 3, title: 'Marketplace', href: '/marketplace' },
-  { id: 4, title: 'Earn', href: '/earn' },
-  { id: 5, title: 'DApps', hasDropdown: true },
-  { id: 6, title: 'Dashboard', href: '/dashboard' },
-  { id: 7, title: 'Home', href: '/' }
+  { id: 1, title: 'Bera Cave', href: '/cave', dataBp: '1015-002-001' },
+  { id: 2, title: 'Bridge', href: '/bridge', dataBp: '1015-002-002' },
+  { id: 3, title: 'Marketplace', href: '/marketplace', dataBp: '1015-002-003' },
+  { id: 4, title: 'Earn', href: '/earn', dataBp: '1015-002-004' },
+  { id: 5, title: 'DApps', hasDropdown: true, dataBp: '1015-002-005' },
+  { id: 6, title: 'Dashboard', href: '/dashboard', dataBp: '1015-002-006' },
+  { id: 7, title: 'Home', href: '/', dataBp: '1015-002-007' }
 ];
 
 interface DApp {
@@ -80,7 +80,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   };
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
-  const { handleReportNoCode } = useClickTracking();
+  const { handleReportNoCode, handleTrack } = useClickTracking();
   const tapSound = useTapSoundStore();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
@@ -148,6 +148,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       style={{
         backgroundColor: !routes.includes(pathname) ? '#96d6ff': 'transparent'
       }}
+      onClick={handleTrack}
     >
       <main className='h-full'>{children}</main>
       {/* Menu Overlay */}
@@ -175,6 +176,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     isActive={item.hasDropdown && isDappsOpen}
                     onClick={item.hasDropdown ? toggleDapps : undefined}
                     toggle={toggleMenu}
+                    dataBp={item.dataBp}
                   >
                     {item.title}
                   </MenuButton>
@@ -224,6 +226,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               y: 8,
               scale: 0.95,
             }}
+            data-bp="1015-001"
           />
           {isMenuOpen && (
             <>
@@ -231,7 +234,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 className='z-[4] hover:scale-110 ease-in-out duration-300 w-[98px] h-[28px] rounded-full bg-[rgba(217,217,217,0.5)]'
                 href='https://app.dapdap.net?from=berachain'
                 target='_blank'
-                data-bp='1010-011'
+                data-bp="1015-002-008"
               >
                 <Image
                   src='/images/dapdap.svg'
@@ -246,6 +249,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 src='/images/mobile/mirror.png'
                 className='w-[29px] h-[29px]'
                 alt=''
+                data-bp="1015-002-009"
               />
             </>
           )}
@@ -257,7 +261,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               onClick={() => {
                 window.open('https://bartio.faucet.berachain.com');
               }}
-              data-bp='1010-003'
+              data-bp='1015-002-010'
             >
               <svg
                 width='16'
@@ -295,6 +299,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               damping: 10,
             }}
             className='bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center'
+            data-bp="1015-002"
           >
             {isMenuOpen ? (
               <IconClose />

@@ -27,6 +27,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 import CheckBox from '@/components/check-box';
 import SearchBox from '@/sections/marketplace/components/searchbox';
 import LaptopList from './laptop'
+import useClickTracking from '@/hooks/use-click-tracking';
 const { basic: DolomiteBasic, networks: DolomiteNetworks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('@/sections/Lending/datas/dolomite'));
 
@@ -44,6 +45,7 @@ const EarnLending = (props: any) => {
     account: address,
   });
   const { initData: bendInitData } = useMarketStore();
+  const { handleReport } = useClickTracking();
   const honeyInfo = bendInitData.markets.find((market) => market.symbol === 'HONEY');
 
   const lendingProtocols = useMemo(() => {
@@ -171,8 +173,9 @@ const EarnLending = (props: any) => {
     bendInit();
   }, [chainId, provider]);
 
-  console.log(tokenList, 'tokenList');
-  
+  useEffect(() => {
+    isMobile && handleReport('1019-002');
+  }, [isMobile]);
 
   return (
     <div className="">

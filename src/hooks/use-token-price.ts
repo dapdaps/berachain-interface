@@ -5,13 +5,13 @@ import * as http from '@/utils/http';
 
 const DELAY = 1000 * 60 * 5;
 export default function () {
-  const setPriceStore = usePriceStore((store) => store.set);
+  const setPriceStore = usePriceStore((store: any) => store.set);
   const [pending, setPending] = useState(false);
   const initializePrice = useCallback(async () => {
     if (pending) return;
     setPending(true);
     try {
-      const res = await http.get('/get-token-price-by-dapdap');
+      const res = await http.get('https://test-api.dapdap.net/get-token-price-by-dapdap');
       setPriceStore({
         price: res.data || {},
       });

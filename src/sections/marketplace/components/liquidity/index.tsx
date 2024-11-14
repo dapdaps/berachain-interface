@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from 'react';
 import Image from "next/image";
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
@@ -14,6 +14,7 @@ import usePools from "./use-pools";
 import useIsMobile from "@/hooks/use-isMobile";
 import CheckBox from "@/components/check-box";
 import MobileList from "./mobile/list";
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const PAGE_SIZE = 9;
 
@@ -51,6 +52,7 @@ export default function Liquidity() {
     kodiakV3Balances,
     kodiakTicksInfo
   } = usePools();
+  const { handleReport } = useClickTracking();
   const [protocols] = useMemo(() => {
     let _dexs: any = [{ key: "all", name: "All Protocols" }];
     Object.values(dexs).forEach((dex) => {
@@ -98,6 +100,10 @@ export default function Liquidity() {
 
   const isMobile = useIsMobile();
   const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    isMobile && handleReport('1019-001');
+  }, [isMobile]);
 
   return (
     <>
