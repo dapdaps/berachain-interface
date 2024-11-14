@@ -50,7 +50,8 @@ export default function useStake({
         template: "Kodiak",
         add: false,
         status,
-        transactionHash
+        transactionHash,
+        sub_type: "Stake"
       });
     } catch (err: any) {
       toast.dismiss(toastId);

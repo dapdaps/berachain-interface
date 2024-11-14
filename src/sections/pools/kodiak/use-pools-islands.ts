@@ -97,6 +97,7 @@ export default function usePoolsIslands() {
                 tick: item.pool.tick
               },
               symbol: item.symbol,
+              icon: "/assets/tokens/kodiak.png",
               price: item.outputTokenPriceUSD,
               router: config.stakingRouter
             };

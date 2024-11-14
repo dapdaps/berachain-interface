@@ -1,13 +1,24 @@
 import Button from "@/components/button";
 import { balanceFormated } from "@/utils/balance";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import useUnstake from "../../hooks/use-unstake";
 import Big from "big.js";
+import { remove, uniq } from "lodash";
+import clsx from "clsx";
 
-const Item = ({ token0, token1, item }: any) => {
+const Item = ({ token0, token1, item, active, onClick }: any) => {
   return (
-    <div className="rounded-[12px] border border-[#373A53] bg-white p-[14px] mt-[16px] text-[16px] md:text-[14px]">
+    <div
+      className={clsx(
+        "rounded-[12px] border border-[#373A53] bg-white p-[14px] mt-[16px] text-[16px] md:text-[14px]",
+        active && "border-[#FFDC50]",
+        item.unlocked && "cursor-pointer"
+      )}
+      onClick={() => {
+        if (item.unlocked) onClick(item.kek_id);
+      }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-[5px]">
           <div className="flex items-center">
@@ -79,7 +90,7 @@ const Item = ({ token0, token1, item }: any) => {
 };
 
 export default function Unstake({ data, info, onSuccess }: any) {
-  const [kekIds, amount] = useMemo(() => {
+  const [amount] = useMemo(() => {
     let _amount = Big(0);
     const ids = info.locked.items
       .filter((item: any) => {
@@ -87,8 +98,10 @@ export default function Unstake({ data, info, onSuccess }: any) {
         return item.unlocked;
       })
       .map((item: any) => item.kek_id);
-    return [ids, _amount.div(1e18).toString()];
+    return [_amount.div(1e18).toString()];
   }, [info]);
+  const [kekIds, setKekIds] = useState<any>([]);
+
   const { loading, onUnstake } = useUnstake({
     farmContract: data.farmAddress,
     kekIds,
@@ -96,6 +109,17 @@ export default function Unstake({ data, info, onSuccess }: any) {
     amount,
     onSuccess
   });
+
+  const onSelect = (id) => {
+    if (kekIds.includes(id)) {
+      remove(kekIds, (i) => i === id);
+    } else {
+      kekIds.push(id);
+    }
+    console.log(kekIds);
+    setKekIds(uniq(kekIds));
+  };
+
   return (
     <>
       {info.locked.items.map((item: any) => (
@@ -104,6 +128,8 @@ export default function Unstake({ data, info, onSuccess }: any) {
           token0={data.token0}
           token1={data.token1}
           item={item}
+          onClick={onSelect}
+          active={kekIds.includes(item.kek_id)}
         />
       ))}
       <Button

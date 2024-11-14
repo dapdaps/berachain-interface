@@ -15,7 +15,7 @@ export default function Stake({ data, info, onSuccess }: any) {
       symbol: data.symbol,
       chainId: DEFAULT_CHAIN_ID,
       decimals: 18,
-      icon: ""
+      icon: data.icon
     }),
     [data]
   );
@@ -43,7 +43,7 @@ export default function Stake({ data, info, onSuccess }: any) {
           setShowModal(true);
         }}
       >
-        {errorTips || "Withdraw"}
+        {errorTips || "Stake"}
       </Button>
       {showModal && (
         <StakeModal

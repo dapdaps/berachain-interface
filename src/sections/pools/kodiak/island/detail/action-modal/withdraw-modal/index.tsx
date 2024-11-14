@@ -25,7 +25,7 @@ export default function WithdrawModal({
       symbol: data.symbol,
       chainId: DEFAULT_CHAIN_ID,
       decimals: 18,
-      icon: ""
+      icon: data.icon
     }),
     [data]
   );
