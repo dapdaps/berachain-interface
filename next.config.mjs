@@ -25,7 +25,7 @@ const nextConfig = {
     },
     {
       source: '/dapdap/:path*',
-      destination: 'https://test-api.dapdap.net' + '/:path*' // TODO: wait mainnet
+      destination: 'https://test-api.dapdap.net/:path*' // TODO: wait mainnet
     },
     {
       source: '/api.dolomite.io/:path*',
