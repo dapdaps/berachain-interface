@@ -1,24 +1,35 @@
-import LazyImage from '@/components/layz-image';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import FlexTable from '@/components/flex-table';
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { numberFormatter } from '@/utils/number-formatter';
 import { get } from '@/utils/http';
 import { ethers } from 'ethers';
+import useCustomAccount from '@/hooks/use-account';
+import LazyImage from '@/components/layz-image';
+import { numberFormatter } from '@/utils/number-formatter';
 import Big from 'big.js';
-import { withdrawAbi } from '@/sections/staking/Bridge/Detail/index';
 import Loading from '@/components/loading';
+import { withdrawAbi } from '@/sections/staking/Bridge/Detail';
+import useToast from '@/hooks/use-toast';
+import useAddAction from '@/hooks/use-add-action';
+import { useProvider } from '@/hooks/use-provider';
+import useIsMobile from '@/hooks/use-isMobile';
+import Empty from '@/components/empty';
+import Skeleton from 'react-loading-skeleton';
 
-const DetailBerps = forwardRef<any, any>((props, ref) => {
-  const { data, account, provider, addAction, chainId, toast } = props;
+const WithdrawQueue = forwardRef<any, any>((props, ref) => {
+  const { data, className } = props;
 
-  const { depositToken, withdrawToken } = data;
+  const isMobile = useIsMobile();
+  const { account, chainId } = useCustomAccount();
+  const toast = useToast();
+  const { addAction } = useAddAction('dapp');
+  const { provider } = useProvider();
+
   const contract = new ethers.Contract(data?.LP_ADDRESS, withdrawAbi, provider?.getSigner());
 
   const [loading, setLoading] = useState(false);
+  const [list, setList] = useState([]);
   const [withdrawPending, setWithdrawPending] = useState<any>({});
   const [withdrawCancelPending, setWithdrawCancelPending] = useState<any>({});
-  const [list, setList] = useState([]);
 
   const getList = async () => {
     setLoading(true);
@@ -55,7 +66,7 @@ const DetailBerps = forwardRef<any, any>((props, ref) => {
             token: data?.withdrawToken,
             symbol: data?.withdrawToken?.symbol,
             amount: record.amount,
-            template: data?.initialData?.pool?.protocol,
+            template: "Infrared",
             status: status,
             transactionHash,
             chain_id: chainId,
@@ -67,17 +78,17 @@ const DetailBerps = forwardRef<any, any>((props, ref) => {
             chainId
           });
         }).catch((err: any) => {
-          console.log('Withdraw failed: %o', err);
-          toast?.fail({
-            title: 'Withdraw Failed!',
-            text: err?.message?.includes('user rejected transaction')
-              ? 'User rejected transaction'
-              : err?.message ?? ''
-          });
-        }).finally(() => {
-          toast?.dismiss(toastId);
-          setWithdrawPending({ ...withdrawPending, [record.unlockEpoch]: false });
+        console.log('Withdraw failed: %o', err);
+        toast?.fail({
+          title: 'Withdraw Failed!',
+          text: err?.message?.includes('user rejected transaction')
+            ? 'User rejected transaction'
+            : err?.message ?? ''
         });
+      }).finally(() => {
+        toast?.dismiss(toastId);
+        setWithdrawPending({ ...withdrawPending, [record.unlockEpoch]: false });
+      });
     };
     contract.estimateGas.redeem(...params).then((res: any) => {
       createTx(res);
@@ -138,6 +149,16 @@ const DetailBerps = forwardRef<any, any>((props, ref) => {
     });
   };
 
+  const refs = {
+    getList,
+  };
+  useImperativeHandle(ref, () => refs);
+
+  useEffect(() => {
+    if (!account) return;
+    getList();
+  }, [account]);
+
   const columns = [
     {
       title: "Amount",
@@ -192,109 +213,81 @@ const DetailBerps = forwardRef<any, any>((props, ref) => {
                   (<div className="px-[10px] flex justify-center items-center"><Loading size={12} /></div>) :
                   'Cancel'
               }
-              </button>
+            </button>
           </div>
         );
       },
     },
   ];
 
-  useEffect(() => {
-    if (!account) return;
-    getList();
-  }, [account]);
-
-  const refs = {
-    getList,
-  };
-  useImperativeHandle(ref, () => refs);
-
   return (
-    <div className="flex-1 pr-[24px] pl-[13px] py-[24px] rounded-[10px] bg-black/[0.06]">
-      <div className="grid grid-cols-2 gap-[15px]">
-        <Item
-          label={`Total ${depositToken?.symbol} Value`}
-          value={(
-            <>
-              <LazyImage src={depositToken?.icon} width={20} height={20} />
-              <span>
-                {numberFormatter(data?.completeBalanceOfAssets, 2, true)}
-              </span>
-            </>
-          )}
-        />
-        <Item
-          label="Est. Earnings"
-          value={(
-            <>
-              <LazyImage src={depositToken?.icon} width={20} height={20} />
-              <span>
-                {numberFormatter(data?.estimatedEarnings, 2, true)}
-              </span>
-            </>
-          )}
-          tooltip={`Estimated earnings = ${withdrawToken?.symbol} balance (including cooldown amount) market value + total ${depositToken?.symbol} withdrawn - total ${depositToken?.symbol} deposited`}
-        />
-        <Item
-          label={`${withdrawToken?.symbol} Balance`}
-          value={(
-            <>
-              <LazyImage src={withdrawToken?.icon} width={20} height={20} />
-              <span>
-                {numberFormatter(data?.completeBalanceOf, 2, true)}
-              </span>
-            </>
-          )}
-          tooltip={`Total ${withdrawToken?.symbol} including the amount in cooldown`}
-        />
-        <Item
-          label="Cooldown"
-          value={(
-            <>
-              <LazyImage src={withdrawToken?.icon} width={20} height={20} />
-              <span>
-                {data?.totalSharesBeingWithdrawn}
-              </span>
-            </>
-          )}
-          tooltip={`This amount of ${withdrawToken?.symbol} is non-transferable until the withdrawal is processed. You won't be able to transfer it during this time.`}
-        />
+    <div className={`mt-[20px] ${className}`}>
+      <div className="font-Montserrat text-[20px] font-semibold leading-[90%]">
+        Withdrawal Queue
       </div>
-      <div className="mt-[20px]">
-        <div className="font-Montserrat text-[20px] font-semibold leading-[90%]">
-          Withdrawal Queue
-        </div>
-        <FlexTable
-          loading={loading}
-          columns={columns}
-          list={list}
-        />
-      </div>
+      {
+        isMobile ? (
+          <div className="h-[calc(100%_-_48px)] overflow-y-auto">
+            {
+              !loading ? (
+                list.length > 0 ?
+                  list.map((record: any, idx: number) => (
+                    <div key={`row-${idx}`} className="flex flex-col items-stretch gap-[10px] bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[10px_15px] mt-[10px]">
+                      <div className="flex justify-between">
+                        <div className="w-1/2 flex flex-col gap-[8px]">
+                          <div className="text-[#3D405A] text-[14px] font-[500]">Amount</div>
+                          <div className="text-black text-[16px] font-[600]">{record.amount}</div>
+                        </div>
+                        <div className="w-1/2 flex flex-col gap-[8px]">
+                          <div className="text-[#3D405A] text-[14px] font-[500]">Unlock Epoch</div>
+                          <div className="text-black text-[16px] font-[600]">{record.unlockEpoch}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-[8px]">
+                        <button
+                          type="button"
+                          className="border text-[16px] font-[600] border-black flex-1 flex justify-center items-center gap-[8px] rounded-[10px] h-[46px] bg-[#FFDC50] px-[8px] disabled:opacity-30 disabled:cursor-not-allowed"
+                          disabled={Big(data?.currentEpoch).lt(record.unlockEpoch) || withdrawPending[record.unlockEpoch]}
+                          onClick={() => handleWithdraw(record)}
+                        >
+                          {withdrawPending[record.unlockEpoch] && <Loading size={16} />}
+                          Withdraw
+                        </button>
+                        <button
+                          type="button"
+                          className="border text-[16px] font-[600] border-black flex-1 flex justify-center items-center gap-[8px] rounded-[10px] h-[46px] bg-[#FFF] px-[8px] disabled:opacity-30 disabled:cursor-not-allowed"
+                          onClick={() => handleWithdrawCancel(record)}
+                          disabled={withdrawCancelPending[record.unlockEpoch]}
+                        >
+                          {withdrawCancelPending[record.unlockEpoch] && <Loading size={16} />}
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )) :
+                  (
+                    <div className="pt-[50px]">
+                      <Empty desc="No data" />
+                    </div>
+                  )
+              ) : (
+                <div className="flex flex-col items-stretch gap-[10px] pt-[10px]">
+                  <Skeleton width="1005" height={129} borderRadius={10} />
+                  <Skeleton width="1005" height={129} borderRadius={10} />
+                </div>
+              )
+            }
+          </div>
+        ) : (
+          <FlexTable
+            loading={loading}
+            columns={columns}
+            list={list}
+          />
+        )
+      }
     </div>
   );
 });
 
-export default DetailBerps;
-
-const Item = (props: any) => {
-  const { label, value, tooltip } = props;
-
-  return (
-    <div className="rounded-[10px] bg-[#FFDC50] py-[15px] px-[20px]">
-      <Popover
-        content={tooltip ? (
-          <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[300px]">{tooltip}</div>
-        ) : void 0}
-        trigger={PopoverTrigger.Hover}
-        placement={PopoverPlacement.TopLeft}
-      >
-        <div className={`text-[#3D405A] font-Montserrat text-[14px] font-medium ${tooltip ? 'underline decoration-dashed cursor-pointer' : ''}`}>
-          {label}
-        </div>
-      </Popover>
-      <div className="flex items-center gap-[10px] mt-[5px] text-black font-Montserrat text-[20px] font-semibold leading-[90%] whitespace-nowrap">
-        {value}
-      </div>
-    </div>
-  );
-};
+export default WithdrawQueue;

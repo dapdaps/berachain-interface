@@ -13,10 +13,11 @@ export default function useInfrared({
   vaultAddress,
   tokens,
   type,
-  onSuccess
+  onSuccess,
+  isBERPS
 }: any) {
   const [loading, setLoading] = useState(false);
-  const { provider } = useCustomAccount();
+  const { account, provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const { handleGetAmount } = useLpToAmount(vaultAddress);
@@ -49,6 +50,23 @@ export default function useInfrared({
           constant: false,
           inputs: [
             {
+              name: 'assets',
+              type: 'uint256'
+            },
+            {
+              name: 'receiver',
+              type: 'address'
+            }
+          ],
+          name: 'deposit',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function'
+        },
+        {
+          constant: false,
+          inputs: [
+            {
               name: "_shareAmt",
               type: "uint256"
             }
@@ -57,6 +75,57 @@ export default function useInfrared({
           outputs: [],
           stateMutability: "nonpayable",
           type: "function"
+        },
+        {
+          constant: false,
+          inputs: [
+            {
+              name: 'shares',
+              type: 'uint256'
+            }
+          ],
+          name: 'makeWithdrawRequest',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function'
+        },
+        {
+          constant: false,
+          inputs: [
+            {
+              name: 'shares',
+              type: 'uint256'
+            },
+            {
+              name: 'receiver',
+              type: 'address'
+            },
+            {
+              name: 'owner',
+              type: 'address'
+            }
+          ],
+          name: 'redeem',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function'
+        },
+        {
+          constant: false,
+          inputs: [
+            {
+              name: 'shares',
+              type: 'uint256'
+            },
+            {
+              name: 'unlockEpoch',
+              type: 'uint256'
+            },
+          ],
+          name: 'cancelWithdrawRequest',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function'
         }
       ];
       const contract = new ethers.Contract(
@@ -64,7 +133,13 @@ export default function useInfrared({
         abi,
         provider?.getSigner()
       );
-      const tx = await contract[type ? "withdraw" : "stake"](wei);
+      const stakeMethod = isBERPS ? 'deposit' : 'stake';
+      const unStakeMethod = isBERPS ? 'makeWithdrawRequest' : 'withdraw';
+      const params: any = [wei];
+      if (isBERPS && !type) {
+        params.push(account);
+      }
+      const tx = await contract[type ? unStakeMethod : stakeMethod](...params);
       const { status, transactionHash } = await tx.wait();
       const [amount0, amount1] = handleGetAmount(amount);
 
@@ -72,7 +147,7 @@ export default function useInfrared({
         type: "Staking",
         action: type ? "UnStake" : "Staking",
         token: {
-          symbol: `${tokens[0].symbol}-${tokens[1].symbol}`
+          symbol: `${tokens[0]}${tokens[1] ? '-' + tokens[1] : ''}`
         },
         amount: amount,
         template: "Infrared",
@@ -82,8 +157,8 @@ export default function useInfrared({
         chain_id: DEFAULT_CHAIN_ID,
         sub_type: type ? "UnStake" : "Stake",
         extra_data: JSON.stringify({
-          token0Symbol: tokens[0].symbol,
-          token1Symbol: tokens[1].symbol,
+          token0Symbol: tokens[0],
+          token1Symbol: tokens[1],
           amount0,
           amount1
         })
