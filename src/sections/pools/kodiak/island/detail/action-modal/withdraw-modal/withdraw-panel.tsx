@@ -6,15 +6,14 @@ import useWithdraw from "../../../hooks/use-withdraw";
 
 export default function WithdrawPanel({
   data,
-  amount,
-  amount0,
-  amount1,
+  amounts,
+  totalSupply,
   onSuccess
 }: any) {
+  const { amount0, amount1, amount } = amounts;
   const { loading, onWithdraw } = useWithdraw({
     data,
-    amount0,
-    amount1,
+    totalSupply,
     amount,
     onSuccess
   });

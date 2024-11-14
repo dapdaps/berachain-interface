@@ -128,6 +128,7 @@ export default function Withdraw({ data, info, onSuccess }: any) {
       {showModal && (
         <WithdrawModal
           data={data}
+          info={info}
           amount={amount}
           amount0={amount0}
           amount1={amount1}

@@ -11,6 +11,10 @@ export default function Island({ page, setPage, searchVal, setIsPlain }: any) {
     setIsPlain(!!record);
   }, [record]);
 
+  useEffect(() => {
+    setRecord(islands?.[10]);
+  }, [islands]);
+
   return record ? (
     <Detail
       data={record}
