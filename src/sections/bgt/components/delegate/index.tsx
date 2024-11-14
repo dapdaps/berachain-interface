@@ -74,7 +74,7 @@ export default memo(function Delegate(props: IProps) {
     confirmAndCancelLoadingPosition: [],
     selectVisible: false
   })
-  const RangeList = [0.25, 0.5, 0.75, 1]
+  const RangeList = [25, 50, 75, 100]
 
   const getBalance = async () => {
     const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider)
@@ -271,36 +271,16 @@ export default memo(function Delegate(props: IProps) {
             </div>
           </div>
           <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>balance: {formatValueDecimal(state?.balance, '', 2)} BGT</div>
-          <div className='mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]'>
-            <div className='flex items-center gap-[8px]'>
-              {
-                RangeList.map((range: number, index: number) => (
-                  <div
-                    key={index}
-                    className={clsx(
-                      ['cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]',
-                        index === state?.rangeIndex ? 'bg-[#FFDC50]' : ""]
-                    )}
-                    onClick={() => {
-                      const amount = Big(state?.balance ?? 0).times(range).toFixed()
-                      updateState({
-                        inAmount: amount,
-                        percentage: getPercentage(amount),
-                        rangeIndex: index,
-                      })
-                    }}
-                  >{range === 1 ? 'Max' : range * 100 + '%'}</div>
-                ))
-              }
-            </div>
-            <Range
-              value={state?.percentage}
-              onChange={(e) => {
-                const percentage = e.target.value;
+          <div className='mt-[12px] mb-[24px]'>
+            <Slider
+              ranges={RangeList}
+              rangeIndex={state?.rangeIndex}
+              percentage={state?.percentage}
+              onChange={(percentage) => {
                 updateState({
                   percentage,
                   inAmount: Big(state?.balance ? state?.balance : 0).times(Big(percentage).div(100)).toFixed(),
-                  rangeIndex: RangeList.findIndex(range => Big(range).eq(Big(percentage).div(100))),
+                  rangeIndex: RangeList.findIndex(range => Big(range).eq(Big(percentage))),
                 })
               }}
               style={{

@@ -1,8 +1,10 @@
+import clsx from "clsx";
 import { memo, useEffect, useRef, useState } from "react";
 export default memo(function Slider({
   percentage,
-  onChange,
-  className,
+  ranges,
+  rangeIndex,
+  onChange
 }: IProps) {
 
   const [sliderPercentage, setSliderPercentage] = useState(percentage)
@@ -50,17 +52,42 @@ export default memo(function Slider({
   }, [sliderPercentage, isDragging])
 
   return (
-    <div className={`cursor-pointer flex items-center w-[216px] h-[8px] rounded-[12px] bg-[#DFDCC4] ${className}`} ref={sliderRef} onMouseDown={handleMouseDown}>
-      <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: sliderPercentage + '%' }}>
-        <div
-          className='absolute right-[-5px] top-[-5px] w-[18px] h-[18px] rounded-full bg-[#FFDC50] border border-black'
-        />
+    <div className='flex items-center gap-[24px]'>
+      {
+        ranges?.length > 0 && (
+          <div className='flex items-center gap-[8px]'>
+            {
+              ranges.map((range: number, index: number) => (
+                <div
+                  key={index}
+                  className={clsx(
+                    ['cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]',
+                      index === rangeIndex ? 'bg-[#FFDC50]' : ""]
+                  )}
+                  onClick={() => {
+                    onChange && onChange(range)
+                  }}
+                >{range === 100 ? 'Max' : range + '%'}</div>
+              ))
+            }
+          </div>
+        )
+      }
+
+      <div className='cursor-pointer flex items-center flex-1 h-[8px] rounded-[12px] bg-[#DFDCC4]' ref={sliderRef} onMouseDown={handleMouseDown}>
+        <div className='relative bg-[#FFDC50] h-full rounded-[12px]' style={{ width: sliderPercentage + '%' }}>
+          <div
+            className='absolute right-[-5px] top-[-5px] w-[18px] h-[18px] rounded-full bg-[#FFDC50] border border-black'
+          />
+        </div>
       </div>
     </div>
+
   )
 })
 interface IProps {
   percentage: string;
-  onChange: (percentage: string) => void;
-  className?: string;
+  ranges?: number[];
+  rangeIndex?: number;
+  onChange: (percentage: string) => void
 }
