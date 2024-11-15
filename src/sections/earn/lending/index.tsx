@@ -84,6 +84,13 @@ const EarnLending = (props: any) => {
           return true;
         })
         .forEach((bend: any) => {
+          if (checked && tab === 'Supply') {
+            if (Big(bend.underlyingBalance || 0).lte(0)) return;
+          }
+          if (checked && tab === 'Borrow') {
+            if (Big(bend.debt || 0).lte(0)) return;
+          }
+
           _tokens.push({
             ...bend,
             address: bend.underlyingAsset,
@@ -96,11 +103,18 @@ const EarnLending = (props: any) => {
             youBorrowed: bend.debt,
             BGTRewards: bend.symbol === 'HONEY' ? bendRewardValue : '0.00',
           });
-        });
+        })
     }
     // Dolomite data
     if (dolomiteData) {
       Object.values(dolomiteData.markets).forEach((dolomite: any) => {
+        if (checked && tab === 'Supply') {
+          if (Big(dolomite.yourLends || 0).lte(0)) return;
+        }
+        if (checked && tab === 'Borrow') {
+          if (Big(dolomite.yourBorrow || 0).lte(0)) return;
+        }
+
         _tokens.push({
           ...dolomite,
           protocol: Lendings.Dolomite.basic,
@@ -115,8 +129,12 @@ const EarnLending = (props: any) => {
       });
     }
     if (protocol === lendingProtocols[0]?.name) return _tokens;
+
     return _tokens.filter((t: any) => t.protocol.name === protocol);
-  }, [protocol, dolomiteData, tab]);
+  }, [protocol, dolomiteData, tab, checked]);
+
+console.log(tokenList, 'tokenList');
+
 
   const handleAction = (type: any, data: any) => {
     if (data.protocol.name === 'Dolomite' && ['Borrow', 'Repay'].includes(type)) {
