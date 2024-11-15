@@ -77,7 +77,7 @@ const Navigation = function () {
         onClick={onNavigateToVaults}
         className="absolute right-[35px] bottom-[180px] hover:scale-110 transition-transform duration-500"
       />
-      <div className="absolute left-1/3 bottom-[19px] z-10 flex gap-[100px]">
+      <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
         <div
           className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToDashBoard}
