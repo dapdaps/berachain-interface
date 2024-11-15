@@ -14,6 +14,7 @@ import { useProvider } from "@/hooks/use-provider";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import ActionPanelForm from "@/sections/Lending/Bend/Action/form";
 import IconAdd from '@public/images/add.svg'
+import { numberFormatter } from "@/utils/number-formatter";
 
 const PAGE_SIZE = 9;
 
@@ -60,8 +61,8 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
       key: "balance",
       sort: true,
       width: "15%",
-      render: (item: any) => '$' + Number(item.inWallet).toFixed(2),
-    },
+      render: (item: any) => '$' + numberFormatter(item.inWallet, 2, true)
+    }, 
     {
       title: "You Supplied",
       key: "your_supply",
@@ -71,7 +72,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
         <div className="flex items-center gap-1">
           <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
           <div className="underline">
-            {item.protocol.name === 'Bend' ? Number(item.youSupplied).toFixed(2) : Number(item.yourLends).toFixed(2)}
+            {item.protocol.name === 'Bend' ? numberFormatter(item.youSupplied || 0, 2, true) : numberFormatter(item.yourLends || 0, 2, true)}
           </div>
         </div>
       ),
@@ -144,7 +145,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
       key: "borrow_capacity",
       sort: true,
       width: "15%",
-      render: (item: any) => '$' + Number(item.borrowCapacity).toFixed(2),
+      render: (item: any) => '$' + numberFormatter(item.borrowCapacity || 0, 2, true),
     },
     {
       title: "You Borrowed",
@@ -154,7 +155,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
       render: (item: any) => (
         <div className="flex items-center gap-1">
           <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
-          <div className="underline">{Number(item.youBorrowed).toFixed(2)}</div>
+          <div className="underline">{numberFormatter(item.youBorrowed || 0, 2, true)}</div>
         </div>
       ),
     },
@@ -163,7 +164,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
       key: "rewards",
       sort: true,
       width: "10%",
-      render: (item: any) => item.rewards || 0.0,
+      render: (item: any) => numberFormatter(item.rewards || 0, 2, true) || 0.0,
     },
     {
       title: "Action",
