@@ -4,7 +4,7 @@ import clsx from "clsx";
 import Big from 'big.js';
 
 const UserInfo = ({ data, className, onClaim }: any) => {
-  const isBERPS = data?.initialData?.pool?.protocol === 'BERPS';
+  const isBERPS = data?.name === 'Berps';
 
   return (
     <div className={clsx("flex items-center gap-[30px]", className)}>

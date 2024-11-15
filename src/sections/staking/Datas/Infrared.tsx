@@ -1,13 +1,11 @@
 // @ts-nocheck
 import Big from 'big.js';
 import { ethers } from 'ethers';
-import { useEffect } from 'react';
-import { multicall } from '@/utils/multicall';
-import { addHours } from 'date-fns';
-import { get } from '@/utils/http';
+import { useEffect, useState } from 'react';
 
 export default function useInfraredData(props: any) {
   const {
+    name,
     pairs,
     sender,
     provider,
@@ -18,6 +16,8 @@ export default function useInfraredData(props: any) {
     IBGT_ADDRESS
   } = props;
   const dataList = [];
+
+  const [reloadCount, setReloadCount] = useState(0);
 
   const MULTICALL_ABI = [
     {
@@ -200,9 +200,8 @@ export default function useInfraredData(props: any) {
       "type": "function"
     },
   ];
-  const MulticallContract =
-    multicallAddress &&
-    new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
+
+  const MulticallContract = multicallAddress && new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
   const multicallv2 = (abi, calls, options, onSuccess, onError) => {
     const { requireSuccess, ...overrides } = options || {};
     const itf = new ethers.utils.Interface(abi);
@@ -233,118 +232,6 @@ export default function useInfraredData(props: any) {
       fullDataList: dataList
     });
   }
-  function getBerpsData(pair, _data) {
-    return new Promise(async (resolve) => {
-      try {
-        const res = await multicall({
-          abi: ERC20_ABI,
-          options: {},
-          calls: [
-            {
-              address: pair.LP_ADDRESS,
-              name: 'shareToAssetsPrice',
-              params: []
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'currentEpoch',
-              params: []
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'currentEpochStart',
-              params: []
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'marketCap',
-              params: []
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'totalSupply',
-              params: []
-            },
-            {
-              address: pair.depositToken.address,
-              name: 'balanceOf',
-              params: [pair.LP_ADDRESS]
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'completeBalanceOfAssets',
-              params: [sender]
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'completeBalanceOf',
-              params: [sender]
-            },
-            {
-              address: pair.LP_ADDRESS,
-              name: 'totalSharesBeingWithdrawn',
-              params: [sender]
-            },
-          ],
-          multicallAddress,
-          provider
-        });
-
-        let [
-          [price],
-          [currentEpoch],
-          [currentEpochStart],
-          [marketCap],
-          [totalSupply],
-          [tvl],
-          completeBalanceOfAssets,
-          completeBalanceOf,
-          totalSharesBeingWithdrawn,
-        ] = res;
-
-        completeBalanceOfAssets = completeBalanceOfAssets ? completeBalanceOfAssets[0] : '0';
-        completeBalanceOf = completeBalanceOf ? completeBalanceOf[0] : '0';
-        totalSharesBeingWithdrawn = totalSharesBeingWithdrawn ? totalSharesBeingWithdrawn[0] : '0';
-
-        price = ethers.utils.formatUnits(price, 36 - pair.withdrawToken.decimals);
-        tvl = ethers.utils.formatUnits(tvl, pair.withdrawToken.decimals);
-        currentEpoch = ethers.utils.formatUnits(currentEpoch, 0);
-        currentEpochStart = ethers.utils.formatUnits(currentEpochStart, 0);
-        currentEpochStart = Big(currentEpochStart).times(1000).toNumber();
-        marketCap = ethers.utils.formatUnits(marketCap, pair.withdrawToken.decimals);
-        totalSupply = ethers.utils.formatUnits(totalSupply, pair.withdrawToken.decimals);
-        completeBalanceOfAssets = ethers.utils.formatUnits(completeBalanceOfAssets, pair.withdrawToken.decimals);
-        completeBalanceOf = ethers.utils.formatUnits(completeBalanceOf, pair.withdrawToken.decimals);
-        totalSharesBeingWithdrawn = ethers.utils.formatUnits(totalSharesBeingWithdrawn, pair.withdrawToken.decimals);
-
-        const vaultEarnings = await get(`https://bartio-berps.berachain.com/vaultearnings/${sender}`);
-        let { earnings } = vaultEarnings || {};
-        earnings = ethers.utils.formatUnits(earnings, pair.withdrawToken.decimals);
-
-        _data.tvl = Big(tvl).times(price ?? 0).toFixed();
-        _data.withdrawTokenPrice = price;
-        _data.currentEpoch = currentEpoch;
-        _data.currentEpochStart = new Date(currentEpochStart);
-        _data.currentEpochEnd = addHours(new Date(currentEpochStart), 12);
-        _data.marketCap = marketCap;
-        _data.collateralizationRatio = Big(marketCap).div(tvl).times(100).toFixed(2, Big.roundDown) + '%';
-        _data.totalSupply = totalSupply;
-        _data.completeBalanceOfAssets = completeBalanceOfAssets;
-        _data.completeBalanceOf = completeBalanceOf;
-        _data.totalSharesBeingWithdrawn = totalSharesBeingWithdrawn;
-        _data.earnings = earnings;
-        _data.estimatedEarnings = Big(earnings).plus(completeBalanceOfAssets).abs().toString();
-        _data.apy = '2830';
-        _data.initialData.stake_token = {
-          ...pair.depositToken,
-          price,
-        };
-      } catch (err: any) {
-        console.log('BERPS protocol failed: %o',err);
-      }
-      resolve(_data);
-    });
-  }
   async function getDataList() {
     for (const pair of pairs) {
       const vaultAddress = addresses[pair?.id];
@@ -357,6 +244,7 @@ export default function useInfraredData(props: any) {
         const initialData = allData[findIndex];
         const _data = {
           ...pair,
+          name,
           tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
             .times(initialData?.stake_token?.price ?? 0)
             .toFixed(),
@@ -368,9 +256,6 @@ export default function useInfraredData(props: any) {
           protocolType:
             initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
         };
-        if (initialData?.pool?.protocol === 'BERPS' && pair.depositToken) {
-          await getBerpsData(pair, _data);
-        }
         dataList.push(_data);
       }
     }
@@ -379,10 +264,7 @@ export default function useInfraredData(props: any) {
   function getUsdDepositAmount() {
     const calls = [];
     dataList.forEach((data) => {
-      let _address = ethers.utils.getAddress(addresses[data?.id]);
-      if (data?.initialData?.pool?.protocol === 'BERPS') {
-        _address = ethers.utils.getAddress(data?.LP_ADDRESS);
-      }
+      const _address = ethers.utils.getAddress(addresses[data?.id]);
       calls.push({
         address: _address,
         name: 'balanceOf',
@@ -456,5 +338,11 @@ export default function useInfraredData(props: any) {
         }
       });
     }
-  }, [allData, sender, provider]);
+  }, [allData, sender, provider, reloadCount]);
+
+  return {
+    reload: () => {
+      setReloadCount(reloadCount + 1);
+    },
+  };
 }

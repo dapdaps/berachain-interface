@@ -9,15 +9,17 @@ import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo } from 'react';
-import type { ColumnType } from '../types';
+import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
+import type { ColumnType, ColunmListType } from '../types';
 import Skeleton from 'react-loading-skeleton';
 import useInfraredData from '../Datas/Infrared';
 import { cloneDeep } from 'lodash';
 import useInfraredList from '../hooks/use-infrared-list';
+import { useBerps } from '@/sections/staking/hooks/use-berps';
 
-export default function List(props: any) {
+const List = forwardRef<any, any>((props, ref) => {
   const {
+    name,
     pairs,
     sender,
     chainId,
@@ -25,10 +27,22 @@ export default function List(props: any) {
     addresses,
     ALL_DATA_URL,
     multicallAddress,
+    description,
     onChangeData
   } = props;
 
-  const { dataList, loading } = useInfraredList();
+  const { dataList: infraredData, loading: infraredLoading, fetchAllData: infraredReload } = useInfraredList();
+  const { dataList: berpsData, loading: berpsLoading, reload: berpsReload  } = useBerps(props);
+  const [dataList, loading, reload] = useMemo(() => {
+    if (name === 'Berps') return [berpsData, berpsLoading, berpsReload];
+    return [infraredData, infraredLoading, infraredReload];
+  }, [
+    infraredData,
+    infraredLoading,
+    berpsData,
+    berpsLoading,
+    name,
+  ]);
 
   const [state, updateState] = useMultiState<any>({
     allData: null,
@@ -49,6 +63,16 @@ export default function List(props: any) {
       2,
       true
     );
+  }, [dataList]);
+  const maxApy = useMemo(() => {
+    let apy = 0;
+    if (!dataList) return apy;
+    dataList.forEach((it: any) => {
+      if (Big(it.apy || 0).gt(apy)) {
+        apy = it.apy;
+      }
+    });
+    return apy;
   }, [dataList]);
 
   function renderTD(data: any, column: ColumnType, index: number) {
@@ -74,6 +98,13 @@ export default function List(props: any) {
         : cloneDataList
     });
   }, [state?.sortKey, dataList]);
+
+  const refs = {
+    reload: () => {
+      reload();
+    },
+  };
+  useImperativeHandle(ref, () => refs);
 
   const columnList: ColunmListType = [
     {
@@ -248,8 +279,7 @@ export default function List(props: any) {
         Vaults
       </div>
       <div className='pt-[7px] pb-[12px] pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-        Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) &
-        Boosted Yield.
+        {description}
       </div>
       <div className='px-[30px] pb-[23px]'></div>
       <div className='flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]'>
@@ -267,7 +297,7 @@ export default function List(props: any) {
             APY up to
           </div>
           <div className='text-black font-Montserrat text-[26px] font-semibold leading-[90%]'>
-            500%
+            {maxApy}%
           </div>
         </div>
       </div>
@@ -357,4 +387,6 @@ export default function List(props: any) {
       )}
     </div>
   );
-}
+});
+
+export default List;

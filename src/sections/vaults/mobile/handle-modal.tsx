@@ -25,7 +25,7 @@ export default function HandleModal({
 }: any) {
 
   const pool = data?.initialData?.pool;
-  const isBERPS = pool?.protocol === 'BERPS';
+  const isBERPS = data?.name === 'Berps';
   const vaultAddress = isBERPS ? data?.withdrawToken?.address : data.vaultAddress;
   const approveSpender = type ? "" : vaultAddress;
   const symbol = useMemo(() => {

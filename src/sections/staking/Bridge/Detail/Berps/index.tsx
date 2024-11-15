@@ -7,7 +7,7 @@ import WithdrawQueue from '@/sections/staking/Bridge/Detail/Berps/Queue';
 const DetailBerps = forwardRef<any, any>((props, ref) => {
   const { data } = props;
 
-  const { depositToken, withdrawToken } = data;
+  const { depositToken, withdrawToken } = data || {};
 
   return (
     <div className="flex-1 pr-[24px] pl-[13px] py-[24px] rounded-[10px] bg-black/[0.06]">

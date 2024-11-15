@@ -65,14 +65,14 @@ const DetailSummary = (props: any) => {
           </div>
         </div>
         {
-          protocol === 'BERPS' && (
+          data?.name === 'Berps' && (
             <div className="flex items-center gap-[26px]">
               <div className="flex flex-col gap-[12px]">
                 <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
                   Start
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] whitespace-nowrap">
-                  {format(data?.currentEpochStart, 'MM/dd/yyyy, h:mmaa')}
+                  {data?.currentEpochStart && format(data?.currentEpochStart, 'MM/dd/yyyy, h:mmaa')}
                 </div>
               </div>
               <div className="flex flex-col gap-[12px]">
@@ -80,7 +80,7 @@ const DetailSummary = (props: any) => {
                   End
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] whitespace-nowrap">
-                  {format(data?.currentEpochEnd, 'MM/dd/yyyy, h:mmaa')}
+                  {data?.currentEpochEnd && format(data?.currentEpochEnd, 'MM/dd/yyyy, h:mmaa')}
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@ const DetailSummary = (props: any) => {
           </div>
         </div>
         {
-          protocol === 'BERPS' ? (
+          data?.name === 'Berps' ? (
             <>
               <div className="flex flex-col gap-[12px]">
                 <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
