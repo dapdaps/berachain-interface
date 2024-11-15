@@ -5,6 +5,7 @@ import ModalLoading from "../loading";
 import AllowancePanel from "../allowance-panel";
 import WithdrawPanel from "./withdraw-panel";
 import SelectPanel from "./select-panel";
+import UnstakePanel from "./unstake-panel";
 import { useEffect, useMemo, useState } from "react";
 import useApprove from "@/hooks/use-approve";
 import { DEFAULT_CHAIN_ID } from "@/configs";
@@ -15,6 +16,7 @@ export default function WithdrawModal({
   amount,
   amount0,
   amount1,
+  percent,
   open,
   onClose,
   onSuccess
@@ -48,8 +50,17 @@ export default function WithdrawModal({
   }, [approved]);
 
   return (
-    <Basic title={"Withdraw from Island"} open={open} onClose={onClose}>
-      <Steps num={3} active={step} className="mt-[20px]" />
+    <Basic
+      title={"Withdraw from Island"}
+      open={open}
+      onClose={() => {
+        onClose();
+        if (step === 3 && withdrawData.selectedItems.length) {
+          onSuccess();
+        }
+      }}
+    >
+      <Steps num={4} active={step} className="mt-[20px]" />
       {checking ? (
         <ModalLoading title="Checking Allowance" />
       ) : !approved ? (
@@ -73,18 +84,29 @@ export default function WithdrawModal({
               amount1={amount1}
               info={info}
               data={data}
+              percent={percent}
               onSuccess={(data: any) => {
-                setStep(3);
                 setWithdrawData(data);
+                setStep(data.selectedItems.length ? 3 : 4);
               }}
             />
           )}
           {step === 3 && (
+            <UnstakePanel
+              data={data}
+              info={info}
+              onSuccess={() => {
+                setStep(4);
+              }}
+              selectedItems={withdrawData.selectedItems}
+            />
+          )}
+          {step === 4 && (
             <WithdrawPanel
               data={data}
-              totalSupply={info.totalSupply}
               amounts={withdrawData}
               onSuccess={onSuccess}
+              onError={() => {}}
             />
           )}
         </>

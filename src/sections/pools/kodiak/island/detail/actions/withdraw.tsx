@@ -132,6 +132,7 @@ export default function Withdraw({ data, info, onSuccess }: any) {
           amount={amount}
           amount0={amount0}
           amount1={amount1}
+          percent={percent}
           open={showModal}
           onClose={() => {
             setShowModal(false);
