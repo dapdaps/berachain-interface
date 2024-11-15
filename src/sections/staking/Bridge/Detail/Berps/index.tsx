@@ -53,7 +53,7 @@ const DetailBerps = forwardRef<any, any>((props, ref) => {
             <>
               <LazyImage src={withdrawToken?.icon} width={20} height={20} />
               <span>
-                {data?.totalSharesBeingWithdrawn}
+                {numberFormatter(data?.totalSharesBeingWithdrawn, 2, true)}
               </span>
             </>
           )}
