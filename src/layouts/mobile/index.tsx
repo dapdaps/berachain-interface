@@ -19,13 +19,6 @@ const menuItems = [
   { id: 5, title: "DApps", hasDropdown: true },
   { id: 6, title: "Dashboard", href: "/dashboard" },
   { id: 7, title: "Home", href: "/" }
-  { id: 1, title: 'Bera Cave', href: '/cave', dataBp: '1015-002-001' },
-  { id: 2, title: 'Bridge', href: '/bridge', dataBp: '1015-002-002' },
-  { id: 3, title: 'Marketplace', href: '/marketplace', dataBp: '1015-002-003' },
-  { id: 4, title: 'Earn', href: '/earn', dataBp: '1015-002-004' },
-  { id: 5, title: 'DApps', hasDropdown: true, dataBp: '1015-002-005' },
-  { id: 6, title: 'Dashboard', href: '/dashboard', dataBp: '1015-002-006' },
-  { id: 7, title: 'Home', href: '/', dataBp: '1015-002-007' }
 ];
 
 interface DApp {
@@ -183,7 +176,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     isActive={item.hasDropdown && isDappsOpen}
                     onClick={item.hasDropdown ? toggleDapps : undefined}
                     toggle={toggleMenu}
-                    dataBp={item.dataBp}
                   >
                     {item.title}
                   </MenuButton>
@@ -256,10 +248,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 src="/images/mobile/mirror.png"
                 className="w-[29px] h-[29px]"
                 alt=""
-                onClick={() => window.open("https://dapdap.mirror.xyz")}
-                src="/images/mobile/mirror.png"
-                className="w-[29px] h-[29px]"
-                alt=""
                 data-bp="1015-002-009"
               />
             </>
@@ -272,7 +260,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               onClick={() => {
                 window.open("https://bartio.faucet.berachain.com");
               }}
-              data-bp="1010-003"
               data-bp="1015-002-010"
             >
               <svg
@@ -310,7 +297,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               stiffness: 200,
               damping: 10
             }}
-            className="bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center"
             className="bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center"
             data-bp="1015-002"
           >
