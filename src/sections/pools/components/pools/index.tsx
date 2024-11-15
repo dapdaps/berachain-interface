@@ -20,7 +20,7 @@ export default function Pools({
   const [isPlain, setIsPlain] = useState(false);
   const isMobile = useIsMobile();
   const TabContent = useMemo(
-    () => tabs.find((tab: any) => tab.value === currentTab)?.content,
+    () => tabs?.find((tab: any) => tab.value === currentTab)?.content,
     [tabs, currentTab]
   );
 
