@@ -6,7 +6,6 @@ import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import { useMemo, useState, useContext, useCallback, useEffect } from 'react';
 import { cloneDeep } from "lodash";
-import { useMemo, useState, useContext, useCallback } from "react";
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
 import useDataList from "./hooks/useDataList";
