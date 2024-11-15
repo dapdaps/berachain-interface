@@ -65,7 +65,9 @@ export default function SelectPanel({
 
   const errorTips = useMemo(
     () =>
-      percent === 100 && kekIds.length === 0 ? "Insufficient liquidity" : "",
+      (percent === 100 || Big(info.balance).eq(0)) && kekIds.length === 0
+        ? "Insufficient liquidity"
+        : "",
     [percent, kekIds]
   );
 
@@ -140,7 +142,7 @@ export default function SelectPanel({
         }}
         disabled={!!errorTips}
       >
-        {errorTips || "Confirm Unstake"}
+        {errorTips || (kekIds.length ? "Confirm Unstake" : "Withdraw")}
       </Button>
     </>
   );

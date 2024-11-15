@@ -25,7 +25,6 @@ export default function Withdraw({ data, info, onSuccess }: any) {
   }, [info, percent]);
 
   const errorTips = useMemo(() => {
-    if (Big(info?.balance || 0).eq(0)) return "Insufficient Balance";
     if (percent === 0) return "Select a percentage";
     return "";
   }, [percent, info]);
