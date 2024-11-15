@@ -32,6 +32,8 @@ export default function useDeposit({
       const RouterContract = new Contract(data.router, routerAbi, signer);
       const _amount0 = Big(amount0).mul(10 ** data.token0.decimals);
       const _amount1 = Big(amount1).mul(10 ** data.token1.decimals);
+      const IslandContract = new Contract(data.id, islandAbi, provider);
+
       const nativeToken = data.token0.isNative
         ? data.token0
         : data.token1.isNative
@@ -71,7 +73,6 @@ export default function useDeposit({
           chainId: DEFAULT_CHAIN_ID
         });
         if (type === "staking") {
-          const IslandContract = new Contract(data.id, islandAbi, provider);
           const balanceRes = await IslandContract.balanceOf(account);
           onSuccess(
             Big(balanceRes.toString() || 0)
