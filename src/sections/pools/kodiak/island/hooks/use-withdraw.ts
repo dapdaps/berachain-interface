@@ -32,7 +32,9 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
         liquidity,
         totalSupply: totalSupply.toString(),
         reserve0: reverses[0].toString(),
-        reserve1: reverses[1].toString()
+        reserve1: reverses[1].toString(),
+        token0: data.token0,
+        token1: data.token1
       });
       const _amount0 = Big(amount0).mul(10 ** data.token0.decimals);
       const _amount1 = Big(amount1).mul(10 ** data.token1.decimals);

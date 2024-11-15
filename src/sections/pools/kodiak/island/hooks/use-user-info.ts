@@ -14,6 +14,8 @@ const rewardToken = {
 export default function useUserInfo({
   islandContract,
   farmContract,
+  token0,
+  token1,
   price
 }: any) {
   const [info, setInfo] = useState<any>({
@@ -29,10 +31,13 @@ export default function useUserInfo({
       const balanceRes = await IslandContract.balanceOf(account);
       const reverses = await IslandContract.getUnderlyingBalances();
       const totalSupply = await IslandContract.totalSupply();
+      const reserve0 = reverses[0].toString();
+      const reserve1 = reverses[1].toString();
 
       const balance = Big(balanceRes.toString() || 0)
         .div(1e18)
         .toString();
+
       const balanceUsd = Big(balance || 0)
         .mul(price || 0)
         .toString();
@@ -55,8 +60,10 @@ export default function useUserInfo({
           const { amount0, amount1 } = getTokenAmountsV2({
             liquidity: item.liquidity.toString(),
             totalSupply: totalSupply.toString(),
-            reserve0: reverses[0].toString(),
-            reserve1: reverses[1].toString()
+            reserve0,
+            reserve1,
+            token0,
+            token1
           });
           items.push({
             multiplier: Big(item.lock_multiplier.toString())
@@ -85,24 +92,29 @@ export default function useUserInfo({
       const { amount0, amount1 } = getTokenAmountsV2({
         liquidity: total.toString(),
         totalSupply: totalSupply.toString(),
-        reserve0: reverses[0].toString(),
-        reserve1: reverses[1].toString()
+        reserve0,
+        reserve1,
+        token0,
+        token1
       });
-
       const { amount0: withdrawAmount0, amount1: withdrawAmount1 } =
         getTokenAmountsV2({
           liquidity: withdrawLp.add(balanceRes.toString()).toString(),
           totalSupply: totalSupply.toString(),
-          reserve0: reverses[0].toString(),
-          reserve1: reverses[1].toString()
+          reserve0,
+          reserve1,
+          token0,
+          token1
         });
 
       const { amount0: balanceAmount0, amount1: balanceAmount1 } =
         getTokenAmountsV2({
           liquidity: balanceRes.toString(),
           totalSupply: totalSupply.toString(),
-          reserve0: reverses[0].toString(),
-          reserve1: reverses[1].toString()
+          reserve0,
+          reserve1,
+          token0,
+          token1
         });
 
       setInfo({
