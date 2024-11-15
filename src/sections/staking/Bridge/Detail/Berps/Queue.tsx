@@ -24,8 +24,6 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
   const { addAction } = useAddAction('dapp');
   const { provider } = useProvider();
 
-  const contract = new ethers.Contract(data?.LP_ADDRESS, withdrawAbi, provider?.getSigner());
-
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [withdrawPending, setWithdrawPending] = useState<any>({});
@@ -48,6 +46,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
   };
 
   const handleWithdraw = (record: any) => {
+    const contract = new ethers.Contract(data?.LP_ADDRESS, withdrawAbi, provider?.getSigner());
     if (withdrawPending[record.unlockEpoch]) return;
     const toastId = toast?.loading({
       title: `Withdrawing...`
@@ -99,6 +98,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
   };
 
   const handleWithdrawCancel = (record: any) => {
+    const contract = new ethers.Contract(data?.LP_ADDRESS, withdrawAbi, provider?.getSigner());
     if (withdrawCancelPending[record.unlockEpoch]) return;
     const toastId = toast?.loading({
       title: `Canceling...`

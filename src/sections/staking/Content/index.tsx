@@ -6,7 +6,7 @@ import chains from '@/configs/chains';
 import multicallAddresses from '@/configs/contract/multicall';
 import useAccount from '@/hooks/use-account';
 import { useProvider } from '@/hooks/use-provider';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Detail from '../Bridge/Detail';
 import List from '../Bridge/List';
 import { useSearchParams } from 'next/navigation';
@@ -21,26 +21,40 @@ export default function Staking({ dapp }: Props) {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const dexConfig = dapp?.chains[DEFAULT_CHAIN_ID];
-  const { ALL_DATA_URL, addresses, pairs } = dexConfig;
+  const { ALL_DATA_URL, addresses, pairs, description } = dexConfig;
   const { account: sender, chainId } = useAccount();
   const { provider } = useProvider();
   const router = useRouter();
+
+  const listRef = useRef<any>();
 
   const multicallAddress = useMemo(
     () => chainId && multicallAddresses[chainId],
     [chainId]
   );
   const onChangeData = function (data: any, index: DefaultIndexType) {
+    if (dapp?.name === 'Berps') {
+      router.push(`/staking/berps?id=${data.id}&tab=${index}`);
+      return;
+    }
     router.push(`/staking/infrared?id=${data.id}&tab=${index}`);
   };
 
   return (
     <Card>
       {id ? (
-        <Detail />
+        <Detail
+          name={dapp.name}
+          onSuccess={() => {
+            listRef.current?.reload?.();
+          }}
+        />
       ) : (
         <List
+          ref={listRef}
           {...{
+            name: dapp.name,
+            description,
             pairs,
             sender,
             chainId,

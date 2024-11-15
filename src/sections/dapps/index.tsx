@@ -23,7 +23,7 @@ for (const dapp in dAppsConfig) {
 const List = [
   {
     className: "w-[174px] h-[112px]",
-    dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-66px]",
+    dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
     sticks: [
       "absolute left-[20px] bottom-[48px]",
       "absolute right-[12px] top-1/2 -translate-y-1/2",
@@ -32,6 +32,10 @@ const List = [
     dApps: [
       {
         ..._dApps["infrared"],
+        attachedIcon: ""
+      },
+      {
+        ..._dApps["berps"],
         attachedIcon: ""
       }
     ]

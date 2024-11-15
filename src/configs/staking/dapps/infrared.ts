@@ -17,6 +17,7 @@ export default {
   },
   chains: {
     80084: {
+      description: 'Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) & Boosted Yield.',
       ALL_DATA_URL:
         'https://api.staging.infrared.finance/v2/vaults?offset=0&limit=9999',
       BHONEY_ADDRESS: '0x7d91Bf5851B3A8bCf8C39A69AF2F0F98A4e2202A',
@@ -59,9 +60,7 @@ export default {
           decimals: 18,
           decimals0: 18,
           decimals1: 18,
-          LP_ADDRESS: '0x1306d3c36ec7e38dd2c128fbe3097c2c2449af64',
-          depositToken: beraB.honey,
-          withdrawToken: beraB.bhoney,
+          LP_ADDRESS: '0x1306d3c36ec7e38dd2c128fbe3097c2c2449af64'
         },
         {
           id: 'HONEY-STGUSDC',

@@ -21,7 +21,8 @@ import DetailBex from '@/sections/staking/Bridge/Detail/Bex';
 import DetailBerps from '@/sections/staking/Bridge/Detail/Berps';
 import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
 
-export default memo(function Detail() {
+export default memo(function Detail(props: any) {
+  const { name } = props;
   const { addresses } = config.chains[DEFAULT_CHAIN_ID];
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
@@ -31,10 +32,12 @@ export default memo(function Detail() {
   const defaultIndex = params.get('tab');
   const pathname = usePathname();
   const router = useRouter();
-  const data = useMemo(
-    () => ibgtVaults.vaults.find((item) => item.id === id),
-    [id]
-  );
+  const data = useMemo(() => {
+    if (name === 'Berps') {
+      return ibgtVaults.berpsVaults.find((item) => item.id === id);
+    }
+    return ibgtVaults.vaults.find((item) => item.id === id);
+  }, [id, name]);
 
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
@@ -71,7 +74,7 @@ export default memo(function Detail() {
   } = state;
 
   const { decimals, tokens, LP_ADDRESS } = data || {};
-  const isBERPS = data?.initialData?.pool?.protocol === 'BERPS';
+  const isBERPS = name === 'Berps';
 
   const symbol = isBERPS ? data?.depositToken.symbol : id;
   const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
@@ -477,6 +480,7 @@ export default memo(function Detail() {
       isTokenApproving: false
     });
     Number(defaultIndex) === 0 ? handleTokenChange('') : handleLPChange('');
+    props.onSuccess?.();
   };
 
   useEffect(() => {
