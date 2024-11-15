@@ -290,6 +290,7 @@ export default function useInfraredData(props: any) {
           multicallAddress,
           provider
         });
+
         let [
           [price],
           [currentEpoch],
@@ -297,10 +298,15 @@ export default function useInfraredData(props: any) {
           [marketCap],
           [totalSupply],
           [tvl],
-          [completeBalanceOfAssets],
-          [completeBalanceOf],
-          [totalSharesBeingWithdrawn],
+          completeBalanceOfAssets,
+          completeBalanceOf,
+          totalSharesBeingWithdrawn,
         ] = res;
+
+        completeBalanceOfAssets = completeBalanceOfAssets ? completeBalanceOfAssets[0] : '0';
+        completeBalanceOf = completeBalanceOf ? completeBalanceOf[0] : '0';
+        totalSharesBeingWithdrawn = totalSharesBeingWithdrawn ? totalSharesBeingWithdrawn[0] : '0';
+
         price = ethers.utils.formatUnits(price, 36 - pair.withdrawToken.decimals);
         tvl = ethers.utils.formatUnits(tvl, pair.withdrawToken.decimals);
         currentEpoch = ethers.utils.formatUnits(currentEpoch, 0);
