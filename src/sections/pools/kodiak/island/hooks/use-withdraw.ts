@@ -10,12 +10,7 @@ import islandAbi from "../abi/island";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { getTokenAmountsV2 } from "../../../helpers";
 
-export default function useWithdraw({
-  data,
-  amount,
-  totalSupply,
-  onSuccess
-}: any) {
+export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -31,12 +26,11 @@ export default function useWithdraw({
       const IslandContract = new Contract(data.id, islandAbi, provider);
       const RouterContract = new Contract(data.router, routerAbi, signer);
       const reverses = await IslandContract.getUnderlyingBalances();
-      const liquidity = Big(amount)
-        .mul(10 ** data.token1.decimals)
-        .toFixed(0);
+      const totalSupply = await IslandContract.totalSupply();
+      const liquidity = Big(amount).mul(1e18).toFixed(0);
       const { amount0, amount1 } = getTokenAmountsV2({
         liquidity,
-        totalSupply: totalSupply,
+        totalSupply: totalSupply.toString(),
         reserve0: reverses[0].toString(),
         reserve1: reverses[1].toString()
       });
@@ -86,6 +80,7 @@ export default function useWithdraw({
       });
     } catch (err: any) {
       console.log(err);
+      onError();
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

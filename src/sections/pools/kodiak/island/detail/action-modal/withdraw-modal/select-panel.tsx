@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { remove, uniq } from "lodash";
 import Big from "big.js";
 import Button from "@/components/button";
-import useUnstake from "../../../hooks/use-unstake";
 
 export default function SelectPanel({
   amount,
@@ -12,36 +11,39 @@ export default function SelectPanel({
   amount1,
   info,
   data,
+  percent,
   onSuccess
 }: any) {
-  const [unstakedAmount, setUnstakedAmount] = useState("");
   const [kekIds, setKekIds] = useState<any>([]);
   const [stakedAmounts, setStakedAmounts] = useState<any>({});
-  const { loading, onUnstake } = useUnstake({
-    farmContract: data.farmAddress,
-    kekIds,
-    token: { symbol: data.symbol },
-    amount: unstakedAmount,
-    onSuccess: () => {
-      onSuccess({
-        amount: Big(amount).add(unstakedAmount).toString(),
-        amount0: Big(amount0).add(stakedAmounts.amount0).toString(),
-        amount1: Big(amount0).add(stakedAmounts.amount1).toString()
-      });
-    }
-  });
 
   const list = useMemo(() => {
     const _list = info.locked?.items.filter((item: any) => {
       return item.unlocked;
     });
+    if (!_list) return [];
+    let a0 = Big(0);
+    let a1 = Big(0);
+    let _amount = Big(0);
+    const _ids = _list.map((item: any) => {
+      a0 = a0.add(item.amount0);
+      a1 = a1.add(item.amount1);
+      _amount = _amount.add(item.liquidity);
+      return item.kek_id;
+    });
+    setStakedAmounts({
+      amount0: a0.toString(),
+      amount1: a1.toString(),
+      amount: _amount.div(1e18).toString()
+    });
+    setKekIds(_ids);
     return _list || [];
   }, [info]);
   const onSelect = (item: any) => {
     const id = item.kek_id;
     let a0 = Big(stakedAmounts.amount0 || 0);
     let a1 = Big(stakedAmounts.amount1 || 0);
-    let _amount = Big(amount || 0);
+    let _amount = Big(stakedAmounts.amount || 0);
     if (kekIds.includes(id)) {
       remove(kekIds, (i) => i === id);
       a0 = a0.minus(item.amount0);
@@ -55,18 +57,16 @@ export default function SelectPanel({
     }
     setStakedAmounts({
       amount0: a0.toString(),
-      amount1: a1.toString()
+      amount1: a1.toString(),
+      amount: _amount.div(1e18).toString()
     });
     setKekIds(uniq(kekIds));
-    setUnstakedAmount(_amount.div(1e18).toString());
   };
 
   const errorTips = useMemo(
     () =>
-      Big(info.balance).eq(0) && kekIds.length === 0
-        ? "Insufficient liquidity"
-        : "",
-    [info, kekIds]
+      percent === 100 && kekIds.length === 0 ? "Insufficient liquidity" : "",
+    [percent, kekIds]
   );
 
   return (
@@ -102,21 +102,45 @@ export default function SelectPanel({
             {data.token1.symbol}
           </div>
         </div>
+        {percent !== 100 && (
+          <div className="flex items-center justify-between mt-[6px]">
+            <div className="text-[14px] font-medium	text-[#3D405A]">
+              Extra withdrawal
+            </div>
+            <div className="text-[14px] font-medium">
+              {balanceFormated(
+                balanceFormated((stakedAmounts.amount0 * percent) / 100, 4),
+                4
+              )}
+              {data.token0.symbol}/
+              {balanceFormated((stakedAmounts.amount1 * percent) / 100, 4)}
+              {data.token1.symbol}
+            </div>
+          </div>
+        )}
       </div>
       <Button
         type="primary"
         className="w-full h-[46px] mt-[16px]"
         onClick={() => {
-          if (kekIds.length === 0) {
-            onSuccess({ amount, amount0, amount1 });
-          } else {
-            onUnstake();
-          }
+          onSuccess({
+            amount: Big(amount)
+              .add(stakedAmounts.amount || 0)
+              .toString(),
+            amount0: Big(amount0)
+              .add(stakedAmounts.amount0 || 0)
+              .toString(),
+            amount1: Big(amount1)
+              .add(stakedAmounts.amount1 || 0)
+              .toString(),
+            selectedItems: kekIds.map((id: string) =>
+              info.locked.items.find((item: any) => item.kek_id === id)
+            )
+          });
         }}
-        loading={loading}
         disabled={!!errorTips}
       >
-        {errorTips || "Unstake"}
+        {errorTips || "Confirm Unstake"}
       </Button>
     </>
   );

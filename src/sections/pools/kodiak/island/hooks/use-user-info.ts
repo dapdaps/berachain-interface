@@ -122,8 +122,7 @@ export default function useUserInfo({
           amount: withdrawLp.toString(),
           amount0: withdrawAmount0,
           amount1: withdrawAmount1
-        },
-        totalSupply: totalSupply.toString()
+        }
       });
     } catch (err) {
       console.log(err);
