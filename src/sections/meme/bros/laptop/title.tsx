@@ -134,6 +134,32 @@ export default function Title() {
           </defs>
         </svg>
         <svg
+          width="67"
+          height="23"
+          viewBox="0 0 67 23"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute right-0 top-0 cursor-pointer hover:opacity-80"
+        >
+          <rect
+            x="0.5"
+            y="0.5"
+            width="66"
+            height="22"
+            rx="4.5"
+            fill="#F7FF00"
+            stroke="black"
+          />
+          <circle cx="4.5" cy="4.5" r="1.5" fill="black" />
+          <circle cx="62.5" cy="4.5" r="1.5" fill="black" />
+          <circle cx="4.5" cy="18.5" r="1.5" fill="black" />
+          <circle cx="62.5" cy="18.5" r="1.5" fill="black" />
+          <path
+            d="M13.5 16V14.25H17V16H13.5ZM8.25 16V9H10V10.75H15.25V12.5H13.5V14.25H11.75V12.5H10V16H8.25ZM15.25 10.75V9H17V10.75H15.25ZM10 9V7.25H15.25V9H10ZM20.5 16V14.25H25.75V16H20.5ZM18.75 14.25V7.25H20.5V14.25H18.75ZM25.75 14.25V7.25H27.5V14.25H25.75ZM31 16V14.25H38V16H31ZM29.25 14.25V7.25H31V14.25H29.25ZM41.5 16V14.25H48.5V16H41.5ZM39.75 14.25V9H41.5V10.75H46.75V12.5H41.5V14.25H39.75ZM41.5 9V7.25H48.5V9H41.5ZM50.25 16V14.25H57.25V16H50.25ZM57.25 14.25V12.5H59V14.25H57.25ZM52 12.5V10.75H57.25V12.5H52ZM50.25 10.75V9H52V10.75H50.25ZM52 9V7.25H59V9H52Z"
+            fill="black"
+          />
+        </svg>
+        <svg
           width="265"
           height="87"
           viewBox="0 0 265 87"
