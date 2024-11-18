@@ -1,235 +1,53 @@
 import CircleLoading from '@/components/circle-loading';
-import Slider from '@/components/slider';
+// import Slider from '@/components/slider';
 import SwitchTabs from '@/components/switch-tabs';
-import useCustomAccount from '@/hooks/use-account';
-import useAddAction from "@/hooks/use-add-action";
-import { useBGT, ABI, VAULT_ADDRESS_ABI } from "@/hooks/use-bgt";
-import useExecutionContract from '@/hooks/use-execution-contract';
-import useGauge from '@/hooks/use-gauge';
-import { useMultiState } from '@/hooks/use-multi-state';
-import useToast from '@/hooks/use-toast';
+import { VAULT_ADDRESS_ABI } from "@/hooks/use-bgt";
 import BgtHead from '@/sections/bgt/components/bgt-head';
-import { usePriceStore } from '@/stores/usePriceStore';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
-import { ethers } from 'ethers';
+import { memo } from "react";
+import Button from "../components/gauge/button";
 import { useRouter } from 'next/navigation';
-import { memo, useEffect, useState } from "react";
-// import { ERC20_ABI, VAULT_ADDRESS_ABI } from './abi';
-import Button from "./components/gauge/button";
-const TABS = [
-  {
-    value: 'deposit',
-    label: 'Deposit',
-    disabled: false
-  },
-  {
-    value: 'withdraw',
-    label: 'Withdraw',
-    disabled: false
-  }
-];
-const RangeList = [25, 50, 75, 100]
-const rewardSymbol = "BGT"
-const template = "Gauge"
+import Back from './back';
+import Range from '@/components/range';
 
-export default memo(function gauge() {
-  const toast = useToast()
-  const { addAction } = useAddAction("gauge");
-  const router = useRouter()
-  const [currentTab, setCurrentTab] = useState<"deposit" | "withdraw">(TABS[0].value);
-  const decimals = 18
-  const { account, provider, chainId } = useCustomAccount()
-  const [state, updateState] = useMultiState({
-    stakeAddress: "",
-    vaultAddress: "",
-    balance: "",
-    depositAmount: "",
-    earned: "",
-    totalSupply: "",
-    inAmount: "",
-    isApproved: true,
-    isApproving: false,
-    updater: 0,
-    rangeIndex: -1,
-    percentage: 0,
-    claimLoading: false
-  })
-
+export default memo(function gauge(props: any) {
   const {
-    data: bgtData,
-  } = useBGT();
-
-  const { data: gaugeData } = useGauge()
-  const { executionContract } = useExecutionContract()
-  const prices: any = usePriceStore(store => store.price);
-
-  const getBalance = async (stakingTokenAddress, vaultAddress) => {
-    const contract = new ethers.Contract(currentTab === "deposit" ? stakingTokenAddress : vaultAddress, ABI, provider)
-    const response = await contract.balanceOf(account)
-    updateState({
-      balance: ethers.utils.formatUnits(response),
-    })
-  }
-  const getDepositAmount = async (vaultAddress) => {
-    const contract = new ethers.Contract(vaultAddress, ABI, provider)
-    const response = await contract.balanceOf(account)
-    updateState({
-      depositAmount: ethers.utils.formatUnits(response)
-    })
-  }
-  const getEarned = async (vaultAddress) => {
-    const contract = new ethers.Contract(vaultAddress, VAULT_ADDRESS_ABI, provider)
-    const response = await contract.earned(account)
-    updateState({
-      earned: ethers.utils.formatUnits(response)
-    })
-  }
-
-  const getTotalsupply = async (vaultAddress) => {
-    const contract = new ethers.Contract(vaultAddress, ABI, provider)
-    const response = await contract.totalSupply()
-
-    console.log('===totalSupply111', ethers.utils.formatUnits(response))
-    updateState({
-      totalSupply: ethers.utils.formatUnits(response)
-    })
-  }
-
-  const getContractData = () => {
-    const {
-      stakingTokenAddress,
-      vaultAddress
-    } = gaugeData
-    updateState({
-      stakeAddress: stakingTokenAddress,
-      vaultAddress
-    })
-
-    try {
-      getBalance(stakingTokenAddress, vaultAddress)
-      getEarned(vaultAddress)
-      getDepositAmount(vaultAddress)
-      getTotalsupply(vaultAddress)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const ellipsAddress = (address?: string) => {
-    if (!address || !ethers.utils.isAddress(address)) return '-';
-    return address.slice(0, 6) + '...' + address.slice(-4);
-  }
-
-  const handleClaim = () => {
-    const toastId = toast?.loading({
-      title: `Claim...`
-    });
-    updateState({
-      claimLoading: true
-    })
-    const contract = new ethers.Contract(state?.vaultAddress, VAULT_ADDRESS_ABI, provider?.getSigner())
-    contract
-      .getReward(account)
-      .then(tx => tx.wait())
-      .then((receipt: any) => {
-        const { status, transactionHash } = receipt;
-
-        addAction?.({
-          type: 'Staking',
-          action: 'Claim',
-          token: {
-            symbol: rewardSymbol
-          },
-          amount: state?.earned,
-          template,
-          status: status,
-          transactionHash,
-          chain_id: chainId,
-          sub_type: "Claim"
-        });
-        toast?.dismiss(toastId);
-        toast?.success({
-          title: 'Claim Successfully!'
-        });
-        updateState({
-          claimLoading: false
-        })
-        setTimeout(() => {
-          onSuccess?.()
-        }, 3000)
-      }).catch((error: Error) => {
-        console.log('error: ', error);
-        updateState({
-          claimLoading: false
-        })
-        toast?.dismiss(toastId);
-        toast?.fail({
-          title: 'Claim Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : (error?.message ?? '')
-        });
-      });
-  }
-
-  const getPercentage = (_amount: string) => {
-    return Big(state?.balance).eq(0) ? 0 : Big(_amount).div(state?.balance ?? 1).times(100).toFixed()
-  }
-
-  const handleAmountChange = (_amount: string) => {
-    const amount = _amount.replace(/\s+/g, '');
-    if (isNaN(Number(amount))) return;
-    if (!amount) {
-      updateState({
-        inAmount: amount,
-        percentage: 0,
-        rangeIndex: -1
-      });
-      return;
-    }
-
-    updateState({
-      inAmount: amount,
-      percentage: getPercentage(amount),
-    })
-  };
-  const handleMax = () => {
-    handleAmountChange(state?.balance)
-  }
-
-  const onSuccess = () => {
-    updateState({
-      inAmount: "",
-      updater: Date.now(),
-    })
-  }
-
-  useEffect(() => {
-    if (account && provider && gaugeData && currentTab) {
-      getContractData()
-    }
-  }, [account, provider, gaugeData, currentTab, state?.updater])
-
-  useEffect(() => {
-    updateState({
-      inAmount: "",
-      rangeIndex: -1,
-      percentage: 0
-    })
-  }, [currentTab])
+    ABI,
+    VAULT_ADDRESS_ABI,
+    TABS,
+    RangeList,
+    rewardSymbol,
+    getPercentage,
+    template,
+    decimals,
+    state,
+    prices,
+    updateState,
+    bgtData,
+    gaugeData,
+    currentTab,
+    setCurrentTab,
+    ellipsAddress,
+    handleClaim,
+    handleAmountChange,
+    handleMax,
+    onSuccess,
+    addAction
+  } = props
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
       <div className="w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <div className="mb-[30px] flex items-center justify-between pl-[19px] pr-[23px] h-[75px] rounded-[20px] bg-[#FFDC50]">
           <div className="flex items-center">
-            <svg onClick={() => {
+            {/* <svg onClick={() => {
               router.back()
             }} className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">
               <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
               <path d="M20 11L15.2 17L20 23" stroke="black" stroke-width="3" stroke-linecap="round" />
-            </svg>
+            </svg> */}
+            <Back />
             <div className="ml-[32px] mr-[14px] w-[42px] h-[42px] rounded-full overflow-hidden">
               <img src={gaugeData?.metadata?.logoURI || "/images/bgt-logo.svg"} alt={gaugeData?.metadata?.name} />
             </div>
@@ -314,7 +132,7 @@ export default memo(function gauge() {
                   </div>
 
                   <div className='my-[16px]'>
-                    <Slider
+                    <Range
                       ranges={RangeList}
                       rangeIndex={state?.rangeIndex}
                       percentage={state?.percentage}

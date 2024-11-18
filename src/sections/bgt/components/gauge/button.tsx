@@ -7,24 +7,31 @@ import Big from 'big.js';
 import useToast from '@/hooks/use-toast';
 import useCustomAccount from '@/hooks/use-account';
 import useExecutionContract from '@/hooks/use-execution-contract';
+import useLpToAmount from '@/hooks/use-lp-to-amount';
 export default memo(function Button(props: IProps) {
-  const { account, provider, chainId } = useCustomAccount()
-  const toast = useToast()
-  const { executionContract } = useExecutionContract()
-
   const {
     abi,
     type,
+    product,
     method,
     symbol,
     amount,
+    template,
     decimals,
     balance,
     address,
     vaultAddress,
 
-    onSuccess
+    onSuccess,
+    addAction
   } = props
+
+  const { account, provider, chainId } = useCustomAccount()
+  const toast = useToast()
+  const { executionContract } = useExecutionContract()
+  const { handleGetAmount } = useLpToAmount(address, product)
+
+
 
   const [state, updateState] = useMultiState({
     isLoading: false,
@@ -131,6 +138,10 @@ export default memo(function Button(props: IProps) {
       abi,
       provider?.getSigner()
     );
+    const [amount0, amount1] = handleGetAmount(amount);
+
+    console.log('====amount0', amount0)
+    console.log('====amount1', amount1)
     if (type === "deposit") {
       executionContract({
         contract,
@@ -138,27 +149,31 @@ export default memo(function Button(props: IProps) {
         params: [wei]
       }).then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        // const [amount0, amount1] = handleGetAmount(inAmount);
-        // addAction?.({
-        //   type: 'Staking',
-        //   action: 'Staking',
-        //   token: {
-        //     symbol: tokens.join('-')
-        //   },
-        //   amount: inAmount,
-        //   template: 'Infrared',
-        //   status: status,
-        //   add: 1,
-        //   transactionHash,
-        //   chain_id: chainId,
-        //   sub_type: 'Stake',
-        //   extra_data: JSON.stringify({
-        //     token0Symbol: tokens[0],
-        //     token1Symbol: tokens[1],
-        //     amount0,
-        //     amount1
-        //   })
-        // });
+        const tokens = symbol?.split("-")
+        const addParams = {
+          type: 'Staking',
+          action: 'Staking',
+          token: {
+            symbol
+          },
+          amount,
+          template,
+          status: status,
+          add: 1,
+          transactionHash,
+          chain_id: chainId,
+          sub_type: 'Stake',
+        }
+        if (tokens?.length > 1 && ["BEX", "Kodiak"].includes(product)) {
+          const [amount0, amount1] = handleGetAmount(amount);
+          addParams["extra_data"] = JSON.stringify({
+            token0Symbol: tokens[0],
+            token1Symbol: tokens[1],
+            amount0,
+            amount1
+          })
+        }
+        addAction?.(addParams);
         updateState({
           isLoading: false
         });
@@ -196,28 +211,27 @@ export default memo(function Button(props: IProps) {
           isLoading: false,
         });
         const { status, transactionHash } = receipt;
-        // const [amount0, amount1] = handleGetAmount(lpAmount);
-        // addAction?.({
-        //   type: 'Staking',
-        //   action: 'UnStake',
-        //   token: {
-        //     symbol: tokens.join('-')
-        //   },
-        //   symbol: tokens.join('-'),
-        //   amount: lpAmount,
-        //   template: 'Infrared',
-        //   status: status,
-        //   add: 0,
-        //   transactionHash,
-        //   chain_id: chainId,
-        //   sub_type: 'Unstake',
-        //   extra_data: JSON.stringify({
-        //     token0Symbol: tokens[0],
-        //     token1Symbol: tokens[1],
-        //     amount0,
-        //     amount1
-        //   })
-        // });
+        const [amount0, amount1] = handleGetAmount(amount);
+        addAction?.({
+          type: 'Staking',
+          action: 'UnStake',
+          token: {
+            symbol
+          },
+          amount,
+          template,
+          status: status,
+          add: 0,
+          transactionHash,
+          chain_id: chainId,
+          sub_type: 'Unstake',
+          extra_data: JSON.stringify({
+            token0Symbol: tokens[0],
+            token1Symbol: tokens[1],
+            amount0,
+            amount1
+          })
+        });
         setTimeout(() => {
           onSuccess?.();
         }, 3000);
@@ -306,12 +320,15 @@ export default memo(function Button(props: IProps) {
 interface IProps {
   abi: any;
   type: "deposit" | "withdraw";
+  product: string;
   method: string;
   symbol: string;
   amount: string;
+  template: string;
   decimals: number;
   balance: string;
   address: string;
   vaultAddress?: string;
-  onSuccess?: VoidFunction
+  onSuccess?: VoidFunction;
+  addAction?: any
 }
