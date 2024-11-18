@@ -9,6 +9,7 @@ import ApprovePanel from "./approve-panel";
 import StakePanel from "./stake-panel";
 import { useEffect, useMemo, useState } from "react";
 import useApprove from "@/hooks/use-approve";
+import Big from "big.js";
 
 export default function DepositModal({
   data,
@@ -22,7 +23,6 @@ export default function DepositModal({
   onSuccess
 }: any) {
   const [step, setStep] = useState(1);
-  const [liquidity, setLiquidity] = useState("0");
   const [lockData, setLockData] = useState();
   const {
     approved: token0Approved,
@@ -161,16 +161,15 @@ export default function DepositModal({
               amount1={amount1}
               received={received}
               type="staking"
-              onSuccess={(lp: string) => {
+              onSuccess={() => {
                 setStep(5);
-                setLiquidity(lp);
               }}
             />
           )}
           {type === "staking" && step === 5 && (
             <ApprovePanel
               data={data}
-              amount={liquidity}
+              amount={Big(received).mul(1e18).toString()}
               onSuccess={() => {
                 setStep(6);
               }}
@@ -179,7 +178,7 @@ export default function DepositModal({
           {type === "staking" && step === 6 && (
             <StakePanel
               data={data}
-              amount={liquidity}
+              amount={Big(received).mul(1e18).toString()}
               lockData={lockData}
               onSuccess={onSuccess}
             />

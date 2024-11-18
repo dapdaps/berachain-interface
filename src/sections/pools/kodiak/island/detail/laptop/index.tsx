@@ -27,12 +27,14 @@ export default function Laptop({
               token1={data.token1}
               symbol={data.symbol}
             />
-            <Earn
-              earned={info?.earned}
-              rewardToken={info?.rewardToken}
-              onSuccess={onSuccess}
-              farmContract={data.farmAddress}
-            />
+            {data.farmAddress && (
+              <Earn
+                earned={info?.earned}
+                rewardToken={info?.rewardToken}
+                onSuccess={onSuccess}
+                farmContract={data.farmAddress}
+              />
+            )}
           </div>
           <Actions data={data} info={info} onSuccess={onSuccess} />
         </div>

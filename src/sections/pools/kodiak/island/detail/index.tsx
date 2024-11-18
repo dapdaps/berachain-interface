@@ -6,6 +6,7 @@ import useUserInfo from "../hooks/use-user-info";
 export default function Detail(props: any) {
   const { id, farmAddress, pool, token0, token1, price } = props.data;
   const isMobile = useIsMobile();
+
   const { loading, info, queryInfo } = useUserInfo({
     islandContract: id,
     farmContract: farmAddress,

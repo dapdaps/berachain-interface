@@ -65,7 +65,8 @@ export default function SelectPanel({
 
   const errorTips = useMemo(
     () =>
-      (percent === 100 || Big(info.balance).eq(0)) && kekIds.length === 0
+      (percent === 100 && kekIds.length !== list.length) ||
+      (Big(info.balance).eq(0) && kekIds.length === 0)
         ? "Insufficient liquidity"
         : "",
     [percent, kekIds]
