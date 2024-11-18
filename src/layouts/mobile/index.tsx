@@ -9,7 +9,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useClickTracking from "@/hooks/use-click-tracking";
-import { useTapSoundStore } from "@/stores/tap-sound";
 
 const menuItems = [
   { id: 1, title: "Bera Cave", href: "/cave" },
@@ -18,7 +17,7 @@ const menuItems = [
   { id: 4, title: "Earn", href: "/earn" },
   { id: 5, title: "DApps", hasDropdown: true },
   { id: 6, title: "Dashboard", href: "/dashboard" },
-  { id: 7, title: "Home", href: "/" }
+  { id: 7, title: "Maps", href: "/" }
 ];
 
 interface DApp {
@@ -76,12 +75,10 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    tapSound.play?.();
   };
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
   const { handleReportNoCode, handleTrack } = useClickTracking();
-  const tapSound = useTapSoundStore();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
@@ -137,7 +134,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   const handleHome = () => {
     router.push("/");
-    tapSound.play?.();
   };
 
   return (
