@@ -8,16 +8,16 @@ import Big from "big.js";
 import clsx from "clsx";
 
 export default function Actions(props: any) {
-  const { info } = props;
+  const { info, data } = props;
   const [currentTab, setCurrentTab] = useState("deposit");
 
   const tabs = useMemo(() => {
     const _tabs = [{ label: "Deposit", value: "deposit" }];
     if (Big(info.total || 0).gt(0))
       _tabs.push({ label: "Withdraw", value: "withdraw" });
-    if (Big(info.balance || 0).gt(0))
+    if (Big(info.balance || 0).gt(0) && data.farmAddress)
       _tabs.push({ label: "Stake", value: "stake" });
-    if (Big(info.locked?.amount || 0).gt(0))
+    if (Big(info.locked?.amount || 0).gt(0) && data.farmAddress)
       _tabs.push({ label: "Unstake", value: "unstake" });
     return _tabs;
   }, [info]);

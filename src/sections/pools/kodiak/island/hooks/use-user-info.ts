@@ -42,53 +42,60 @@ export default function useUserInfo({
         .mul(price || 0)
         .toString();
 
-      const FarmContract = new Contract(farmContract, farmAbi, provider);
-      const stakedRes = await FarmContract.lockedStakesOf(account);
-      const earnedRes = await FarmContract.earned(account);
       let locked = null;
       let total = Big(balanceRes.toString());
       let withdrawLp = Big(0);
-      if (stakedRes && stakedRes.length) {
-        let totalAmount = Big(0);
-        const items: any = [];
+      let earnedRes = [];
 
-        stakedRes.forEach((item: any) => {
-          totalAmount = totalAmount.add(item.liquidity.toString());
-          const unlocked = Big(item.ending_timestamp.toString()).lt(
-            Date.now() / 1000
-          );
-          const { amount0, amount1 } = getTokenAmountsV2({
-            liquidity: item.liquidity.toString(),
-            totalSupply: totalSupply.toString(),
-            reserve0,
-            reserve1,
-            token0,
-            token1
+      if (farmContract) {
+        const FarmContract = new Contract(farmContract, farmAbi, provider);
+        const stakedRes = await FarmContract.lockedStakesOf(account);
+        earnedRes = await FarmContract.earned(account);
+
+        if (stakedRes && stakedRes.length) {
+          let totalAmount = Big(0);
+          const items: any = [];
+
+          stakedRes.forEach((item: any) => {
+            totalAmount = totalAmount.add(item.liquidity.toString());
+            const unlocked = Big(item.ending_timestamp.toString()).lt(
+              Date.now() / 1000
+            );
+            const { amount0, amount1 } = getTokenAmountsV2({
+              liquidity: item.liquidity.toString(),
+              totalSupply: totalSupply.toString(),
+              reserve0,
+              reserve1,
+              token0,
+              token1
+            });
+            items.push({
+              multiplier: Big(item.lock_multiplier.toString())
+                .div(1e18)
+                .toFixed(2),
+              ending_timestamp: item.ending_timestamp.toString(),
+              start_timestamp: item.start_timestamp.toString(),
+              kek_id: item.kek_id,
+              unlocked,
+              liquidity: item.liquidity.toString(),
+              amount0,
+              amount1
+            });
+            if (unlocked)
+              withdrawLp = withdrawLp.add(item.liquidity.toString());
           });
-          items.push({
-            multiplier: Big(item.lock_multiplier.toString())
-              .div(1e18)
-              .toFixed(2),
-            ending_timestamp: item.ending_timestamp.toString(),
-            start_timestamp: item.start_timestamp.toString(),
-            kek_id: item.kek_id,
-            unlocked,
-            liquidity: item.liquidity.toString(),
-            amount0,
-            amount1
-          });
-          if (unlocked) withdrawLp = withdrawLp.add(item.liquidity.toString());
-        });
-        total = total.add(totalAmount);
-        const amount = totalAmount.div(1e18).toString();
-        locked = {
-          amount,
-          amountUsd: Big(amount || 0)
-            .mul(price || 0)
-            .toString(),
-          items
-        };
+          total = total.add(totalAmount);
+          const amount = totalAmount.div(1e18).toString();
+          locked = {
+            amount,
+            amountUsd: Big(amount || 0)
+              .mul(price || 0)
+              .toString(),
+            items
+          };
+        }
       }
+
       const { amount0, amount1 } = getTokenAmountsV2({
         liquidity: total.toString(),
         totalSupply: totalSupply.toString(),
@@ -97,6 +104,7 @@ export default function useUserInfo({
         token0,
         token1
       });
+
       const { amount0: withdrawAmount0, amount1: withdrawAmount1 } =
         getTokenAmountsV2({
           liquidity: withdrawLp.add(balanceRes.toString()).toString(),
