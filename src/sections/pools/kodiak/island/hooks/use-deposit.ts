@@ -6,7 +6,6 @@ import useAddAction from "@/hooks/use-add-action";
 import Big from "big.js";
 import { Contract } from "ethers";
 import routerAbi from "../abi/router";
-import islandAbi from "../abi/island";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useDeposit({
@@ -32,7 +31,6 @@ export default function useDeposit({
       const RouterContract = new Contract(data.router, routerAbi, signer);
       const _amount0 = Big(amount0).mul(10 ** data.token0.decimals);
       const _amount1 = Big(amount1).mul(10 ** data.token1.decimals);
-      const IslandContract = new Contract(data.id, islandAbi, provider);
 
       const nativeToken = data.token0.isNative
         ? data.token0
@@ -73,12 +71,7 @@ export default function useDeposit({
           chainId: DEFAULT_CHAIN_ID
         });
         if (type === "staking") {
-          const balanceRes = await IslandContract.balanceOf(account);
-          onSuccess(
-            Big(balanceRes.toString() || 0)
-              .div(1e18)
-              .toString()
-          );
+          onSuccess();
         } else {
           onSuccess();
         }
