@@ -14,8 +14,6 @@ export default function WithdrawModal({
   data,
   info,
   amount,
-  amount0,
-  amount1,
   percent,
   open,
   onClose,
@@ -80,8 +78,8 @@ export default function WithdrawModal({
           {step === 2 && (
             <SelectPanel
               amount={amount}
-              amount0={amount0}
-              amount1={amount1}
+              amount0={info.balanceAmount0}
+              amount1={info.balanceAmount1}
               info={info}
               data={data}
               percent={percent}
