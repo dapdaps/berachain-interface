@@ -32,6 +32,11 @@ export default function BgtGaugeMobile(props: any) {
     onBack,
   } = props
 
+  const handleSuccess = () => {
+    onSuccess?.()
+    onBack?.()
+  }
+
   return (
     <div className="relative px-[12px] pt-[19px] pb-[80px] bg-[#FFFDEB] h-full overflow-y-auto">
       <Back onBack={onBack} />
@@ -90,7 +95,7 @@ export default function BgtGaugeMobile(props: any) {
 
               abi={VAULT_ADDRESS_ABI}
               method="stake"
-              onSuccess={onSuccess}
+              onSuccess={handleSuccess}
               addAction={addAction}
             >
               Deposit
@@ -167,7 +172,7 @@ export default function BgtGaugeMobile(props: any) {
 
               abi={VAULT_ADDRESS_ABI}
               method="withdraw"
-              onSuccess={onSuccess}
+              onSuccess={handleSuccess}
               addAction={addAction}
             >
               Withdraw

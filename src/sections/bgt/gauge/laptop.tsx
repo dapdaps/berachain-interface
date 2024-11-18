@@ -10,6 +10,7 @@ import Button from "../components/gauge/button";
 import { useRouter } from 'next/navigation';
 import Back from './back';
 import Range from '@/components/range';
+import clsx from 'clsx';
 
 export default memo(function gauge(props: any) {
   const {
@@ -131,17 +132,47 @@ export default memo(function gauge(props: any) {
                     </div>
                   </div>
 
-                  <div className='my-[16px]'>
+                  <div className='w-full my-[16px] flex md:flex-col items-center md:items-stretch gap-[24px]'>
+                    <div className="flex items-center gap-[8px]">
+                      {RangeList.map((range: number, index: number) => (
+                        <div
+                          key={index}
+                          className={clsx([
+                            "cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]",
+                            index === state?.rangeIndex ? "bg-[#FFDC50]" : ""
+                          ])}
+                          onClick={() => {
+                            const amount = Big(state?.balance ?? 0)
+                              .times(range)
+                              .toFixed();
+                            updateState({
+                              inAmount: amount,
+                              percentage: getPercentage(amount),
+                              rangeIndex: index
+                            });
+                          }}
+                        >
+                          {range === 1 ? "Max" : range * 100 + "%"}
+                        </div>
+                      ))}
+                    </div>
                     <Range
-                      ranges={RangeList}
-                      rangeIndex={state?.rangeIndex}
-                      percentage={state?.percentage}
-                      onChange={(percentage) => {
+                      value={state?.percentage}
+                      onChange={(e) => {
+                        const percentage = e.target.value;
                         updateState({
                           percentage,
-                          inAmount: Big(state?.balance ? state?.balance : 0).times(Big(percentage).div(100)).toFixed(),
-                          rangeIndex: RangeList.findIndex(range => Big(range).eq(Big(percentage))),
-                        })
+                          inAmount: Big(state?.balance ? state?.balance : 0)
+                            .times(Big(percentage).div(100))
+                            .toFixed(),
+                          rangeIndex: RangeList.findIndex((range) =>
+                            Big(range).eq(Big(percentage).div(100))
+                          )
+                        });
+                      }}
+                      style={{
+                        marginTop: 0,
+                        flex: 1
                       }}
                     />
                   </div>
