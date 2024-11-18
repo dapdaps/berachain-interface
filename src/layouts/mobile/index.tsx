@@ -138,7 +138,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div
-      className={`relative pb-[62px] overflow-hidden ${
+      className={`relative overflow-hidden ${
         routes.includes(pathname) ? 'min-h-screen' : 'h-screen'
       }`}
       style={{
