@@ -35,7 +35,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
     const { withdraw_requests = [] } = res || {};
     const _list = withdraw_requests.map((it: any) => ({
       ...it,
-      amount: ethers.utils.formatUnits(it.shares, data?.withdrawToken?.decimals),
+      amount: ethers.utils.formatUnits(it.shares || '0', data?.withdrawToken?.decimals),
       symbol: data?.withdrawToken?.symbol,
       icon: data?.withdrawToken?.icon,
       unlockEpoch: it.unlock_epoch,
@@ -193,7 +193,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
             <button
               type="button"
               className="border text-[12px] font-normal border-black flex justify-center items-center rounded-[36px] h-[36px] bg-[#FFDC50] px-[8px] disabled:opacity-30 disabled:cursor-not-allowed"
-              disabled={Big(data?.currentEpoch).lt(record.unlockEpoch) || withdrawPending[record.unlockEpoch]}
+              disabled={Big(data?.currentEpoch || 0).lt(record.unlockEpoch) || withdrawPending[record.unlockEpoch]}
               onClick={() => handleWithdraw(record)}
             >
               {
@@ -247,7 +247,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
                         <button
                           type="button"
                           className="border text-[16px] font-[600] border-black flex-1 flex justify-center items-center gap-[8px] rounded-[10px] h-[46px] bg-[#FFDC50] px-[8px] disabled:opacity-30 disabled:cursor-not-allowed"
-                          disabled={Big(data?.currentEpoch).lt(record.unlockEpoch) || withdrawPending[record.unlockEpoch]}
+                          disabled={Big(data?.currentEpoch || 0).lt(record.unlockEpoch) || withdrawPending[record.unlockEpoch]}
                           onClick={() => handleWithdraw(record)}
                         >
                           {withdrawPending[record.unlockEpoch] && <Loading size={16} />}
