@@ -211,8 +211,8 @@ export default memo(function Button(props: IProps) {
           isLoading: false,
         });
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(amount);
-        addAction?.({
+        const tokens = symbol?.split("-")
+        const addParams = {
           type: 'Staking',
           action: 'UnStake',
           token: {
@@ -225,13 +225,18 @@ export default memo(function Button(props: IProps) {
           transactionHash,
           chain_id: chainId,
           sub_type: 'Unstake',
-          extra_data: JSON.stringify({
+        }
+
+        if (tokens?.length > 1 && ["BEX", "Kodiak"].includes(product)) {
+          const [amount0, amount1] = handleGetAmount(amount);
+          addParams["extra_data"] = JSON.stringify({
             token0Symbol: tokens[0],
             token1Symbol: tokens[1],
             amount0,
             amount1
           })
-        });
+        }
+        addAction?.(addParams);
         setTimeout(() => {
           onSuccess?.();
         }, 3000);
