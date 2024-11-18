@@ -4,11 +4,10 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 
-export default function useGauge() {
-
-
+export default function useGauge(id: string) {
   const params = useSearchParams()
-  const address = params.get("address")
+  const defaultAddress = params.get("address")
+  const [address, setAddress] = useState(defaultAddress);
   const [data, setData] = useState()
 
   const queryData = async function () {
@@ -17,8 +16,17 @@ export default function useGauge() {
     setData(response?.vault)
   }
   useEffect(() => {
+    console.log('====address', address)
     queryData()
   }, [address])
+
+  useEffect(() => {
+    if (defaultAddress) {
+      setAddress(defaultAddress)
+    } else {
+      setAddress(id)
+    }
+  }, [defaultAddress, id])
 
   return {
     data

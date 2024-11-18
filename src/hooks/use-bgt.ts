@@ -133,6 +133,8 @@ export function useBGT(tab?: string) {
 
   const [updater, setUpdater] = useState(0)
   const { loading, dataList } = useInfraredList(updater)
+
+  const [isLoading, setIsLoading] = useState(false)
   const [sortDataIndex, setSortDataIndex] = useState("")
   const [myVaults, setMyVaults] = useState<any>(null)
 
@@ -252,49 +254,56 @@ export function useBGT(tab?: string) {
   };
 
   const queryYourVaults = async () => {
-    const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/" + account + "/vaults")
-    const vaults = response?.userVaults
-    const depositedAmountCalls = []
-    const bgtRewardsCalls = []
-    vaults.forEach(valut => {
-      depositedAmountCalls.push({
-        address: valut?.vaultAddress,
-        name: 'balanceOf',
-        params: [account]
-      })
-      bgtRewardsCalls.push({
-        address: valut?.vaultAddress,
-        name: 'earned',
-        params: [account]
-      })
-    })
-    const depositedAmountResult = await multicall({
-      abi: ABI,
-      options: {},
-      calls: depositedAmountCalls,
-      multicallAddress,
-      provider
-    })
-    const bgtRewardsResult = await multicall({
-      abi: VAULT_ADDRESS_ABI,
-      options: {},
-      calls: bgtRewardsCalls,
-      multicallAddress,
-      provider
-    })
-
-    const _yourVaults = []
-    for (let i = 0; i < vaults.length; i++) {
-      if (depositedAmountResult[i]) {
-        _yourVaults.push({
-          ...vaults[i],
-          depositedAmount: ethers.utils.formatUnits(depositedAmountResult?.[i][0] ?? 0),
-          earned: bgtRewardsResult[i] ? ethers.utils.formatUnits(bgtRewardsResult?.[i][0] ?? 0) : 0,
-          claim: handleClaim
+    try {
+      setIsLoading(true)
+      const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/" + account + "/vaults")
+      const vaults = response?.userVaults
+      const depositedAmountCalls = []
+      const bgtRewardsCalls = []
+      vaults.forEach(valut => {
+        depositedAmountCalls.push({
+          address: valut?.vaultAddress,
+          name: 'balanceOf',
+          params: [account]
         })
+        bgtRewardsCalls.push({
+          address: valut?.vaultAddress,
+          name: 'earned',
+          params: [account]
+        })
+      })
+      const depositedAmountResult = await multicall({
+        abi: ABI,
+        options: {},
+        calls: depositedAmountCalls,
+        multicallAddress,
+        provider
+      })
+      const bgtRewardsResult = await multicall({
+        abi: VAULT_ADDRESS_ABI,
+        options: {},
+        calls: bgtRewardsCalls,
+        multicallAddress,
+        provider
+      })
+
+      const _yourVaults = []
+      for (let i = 0; i < vaults.length; i++) {
+        if (depositedAmountResult[i]) {
+          _yourVaults.push({
+            ...vaults[i],
+            depositedAmount: ethers.utils.formatUnits(depositedAmountResult?.[i][0] ?? 0),
+            earned: bgtRewardsResult[i] ? ethers.utils.formatUnits(bgtRewardsResult?.[i][0] ?? 0) : 0,
+            claim: handleClaim
+          })
+        }
       }
+      setIsLoading(false)
+      setYourVaults(_yourVaults)
+    } catch (error) {
+      console.error(error)
+      setIsLoading(false)
     }
-    setYourVaults(_yourVaults)
   }
 
   useEffect(() => {
@@ -307,8 +316,6 @@ export function useBGT(tab?: string) {
     }
   }, [tab, account, updater])
 
-
-
   useEffect(() => {
     provider && account && queryData()
   }, [provider, account])
@@ -317,6 +324,7 @@ export function useBGT(tab?: string) {
     data,
     queryData,
     loading,
+    isLoading,
     dataList,
     filterList,
     sortDataIndex,

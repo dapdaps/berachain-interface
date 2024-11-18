@@ -16,7 +16,7 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
     onPageChange(currentPage);
   }, [currentPage]);
   return (
-    <div className='flex items-center gap-[10px] cursor-pointer'>
+    <div className='flex items-center gap-[10px]'>
       <div
         onClick={() => {
           handlePageChange(currentPage - 1);
@@ -44,6 +44,7 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
           <div
             className={clsx(
               'flex',
+              'cursor-pointer',
               'items-center',
               'justify-center',
               'w-[32px]',
