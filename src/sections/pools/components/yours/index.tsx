@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SwitchTabs from "@/components/switch-tabs";
 import V3List from "./v3";
 import V2List from "./v2";
@@ -13,36 +13,48 @@ export default function Yours({
   loading,
   ticksInfo,
   onSuccess,
-  dex
+  dex,
+  tabs
 }: any) {
   const [selectedReocrd, setSelectedRecord] = useState<any>(null);
   const [openModal, setOpenModal] = useState("");
+  const [isPlain, setIsPlain] = useState(false);
+  const TabContent = useMemo(
+    () => tabs?.find((tab: any) => tab.value === currentTab)?.content,
+    [tabs, currentTab]
+  );
 
   return (
     <div className="pb-[20px] md:h-full">
-      <div className="flex items-center md:px-[12px]">
-        {currentTab && (
-          <SwitchTabs
-            tabs={[
-              { label: "V3 Pools", value: "v3" },
-              { label: "V2 Pools", value: "v2" }
-            ]}
-            current={currentTab}
-            onChange={onChangeTab}
-            style={{
-              width: 200,
-              height: 40,
-              padding: 4
-            }}
-            tabStyle={{
-              fontSize: 14
-            }}
-            className="md:bg-[#DFDCC4] md:border-none md:rounded-[12px] md:mb-[10px]"
-            cursorClassName="md:rounded-[12px]"
-          />
-        )}
-      </div>
-      {currentTab === "v3" ? (
+      {!isPlain && (
+        <div className="flex items-center md:px-[12px]">
+          {currentTab && (
+            <SwitchTabs
+              tabs={
+                tabs || [
+                  { label: "V3 Pools", value: "v3" },
+                  { label: "V2 Pools", value: "v2" }
+                ]
+              }
+              current={currentTab}
+              onChange={onChangeTab}
+              style={{
+                width: tabs.length * 100,
+                height: 40,
+                padding: 4
+              }}
+              tabStyle={{
+                fontSize: 14
+              }}
+              className="md:bg-[#DFDCC4] md:border-none md:rounded-[12px]"
+              cursorClassName="md:rounded-[12px]"
+            />
+          )}
+        </div>
+      )}
+      {TabContent ? (
+        <TabContent setIsPlain={setIsPlain} />
+      ) : currentTab === "v3" ? (
         <V3List
           pools={pools}
           loading={loading}

@@ -1,13 +1,13 @@
-import { Contract } from 'ethers';
-import { useCallback, useEffect, useState } from 'react';
-import useAccount from '@/hooks/use-account';
-import { multicall, multicallAddresses } from '@/utils/multicall';
-import positionAbi from '../abi/position';
-import { tickToPrice } from '../tick-math';
-import { balanceFormated } from '@/utils/balance';
-import weth from '@/configs/contract/weth';
-import getPoolsInfo from '../query/getPoolsInfo';
-import { DEFAULT_CHAIN_ID, TOKENS } from '@/configs';
+import { Contract } from "ethers";
+import { useCallback, useEffect, useState } from "react";
+import useAccount from "@/hooks/use-account";
+import { multicall, multicallAddresses } from "@/utils/multicall";
+import positionAbi from "../abi/position";
+import { tickToPrice } from "../tick-math";
+import { balanceFormated } from "@/utils/balance";
+import weth from "@/configs/contract/weth";
+import getPoolsInfo from "../query/getPoolsInfo";
+import { DEFAULT_CHAIN_ID, TOKENS } from "@/configs";
 
 export default function usePoolsV3({ dex }: any) {
   const { provider, account } = useAccount();
@@ -35,7 +35,7 @@ export default function usePoolsV3({ dex }: any) {
 
       const tokenIdCalls = new Array(balance).fill(1).map((num, i) => ({
         address: PositionManager,
-        name: 'tokenOfOwnerByIndex',
+        name: "tokenOfOwnerByIndex",
         params: [account, i]
       }));
 
@@ -51,7 +51,7 @@ export default function usePoolsV3({ dex }: any) {
 
       const positionsCalls = tokenIds.map((tokenId: any) => ({
         address: PositionManager,
-        name: 'positions',
+        name: "positions",
         params: [tokenId[0].toString()]
       }));
 
@@ -70,16 +70,16 @@ export default function usePoolsV3({ dex }: any) {
         const _token0Address = position.token0.toLowerCase();
         const _token1Address = position.token1.toLowerCase();
         const token0 =
-          TOKENS[_token0Address === _weth ? 'native' : _token0Address];
+          TOKENS[_token0Address === _weth ? "native" : _token0Address];
         const token1 =
-          TOKENS[_token1Address === _weth ? 'native' : _token1Address];
+          TOKENS[_token1Address === _weth ? "native" : _token1Address];
 
         if (!token0 || !token1) return;
-        let lowerPrice: string | number = '';
-        let upperPrice: string | number = '';
+        let lowerPrice: string | number = "";
+        let upperPrice: string | number = "";
         if (position.tickLower < -887000 && position.tickUpper > 887000) {
-          lowerPrice = '0';
-          upperPrice = '∞';
+          lowerPrice = "0";
+          upperPrice = "∞";
         } else {
           lowerPrice = balanceFormated(
             tickToPrice({
@@ -132,11 +132,10 @@ export default function usePoolsV3({ dex }: any) {
           setTicksInfo(res);
         }
       });
-      console.log(JSON.stringify(_pools));
       setPools(_pools);
       setLoading(false);
     } catch (err) {
-      console.log('Query Your Positions failure: %o', err);
+      console.log("Query Your Positions failure: %o", err);
       setLoading(false);
     }
   }, [provider, account]);
