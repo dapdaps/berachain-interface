@@ -6,7 +6,9 @@ const FlexTable = (props: FlexTableProps) => {
   const {
     wrapperClass = '',
     headClass = '',
+    headColClass = '',
     bodyClass = '',
+    bodyColClass = '',
     loading,
     list,
     columns,
@@ -43,7 +45,7 @@ const FlexTable = (props: FlexTableProps) => {
                       ? 'flex-end'
                       : 'flex-start'
                 }}
-                className='flex items-center gap-[5px] text-[14px] text-[#3D405A]'
+                className={`flex items-center gap-[5px] text-[14px] text-[#3D405A] ${headColClass}`}
                 onClick={() => {
                   column?.sort &&
                     onChangeSortDataIndex &&
@@ -97,7 +99,7 @@ const FlexTable = (props: FlexTableProps) => {
                         }}
                         className={`font-[600] first:pl-[13px] last:pr-[13px] ${
                           column.ellipsis ? 'truncate' : ''
-                        }`}
+                        } ${bodyColClass}`}
                       >
                         {typeof column.render === 'function'
                           ? column.render(
@@ -137,7 +139,9 @@ export type FlexTableProps = {
   loading?: boolean;
   wrapperClass?: string;
   headClass?: string;
+  headColClass?: string;
   bodyClass?: string;
+  bodyColClass?: string;
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;
