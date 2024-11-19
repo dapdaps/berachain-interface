@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export default function Item({ className, children }: any) {
+export default function Label({ className, children }: any) {
   return (
     <div className={clsx("relative", className)}>
       <div className="relative w-full h-full z-[2] flex flex-col justify-center rounded-[5px] border border-black bg-[#FFCC00]">

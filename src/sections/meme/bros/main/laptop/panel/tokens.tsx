@@ -2,10 +2,10 @@ import LazyImage from "@/components/layz-image";
 import { TOKENS } from "../config";
 import { useMemo } from "react";
 import Button from "@/components/button";
-import Item from "../item";
-import RankMark from "../../rank-mark";
+import RankMark from "../../../rank-mark";
 import Popover, { PopoverPlacement } from "@/components/popover";
 import RewardsPanel from "./rewards-panel";
+import RoundLabel from "../../../components/round-label";
 
 const Token = ({ token, i }: any) => {
   return (
@@ -149,14 +149,7 @@ export default function Tokens() {
   return (
     <div className="w-[1232px] mx-[auto]">
       <div className="flex justify-between items-center">
-        <Item className="w-[272px] h-[67px]">
-          <div className="text-[26px] font-SquaredPixel pl-[32px] mt-[-4px]">
-            Round 1
-          </div>
-          <div className="text-[18px] font-SquaredPixel mt-[-8px] pl-[32px]">
-            NoV.20-dec.3, 2024
-          </div>
-        </Item>
+        <RoundLabel title="Round 1" subTitle="NoV.20-dec.3, 2024" />
         <div className="flex items-center gap-[16px]">
           <button className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold">
             History

@@ -1,5 +1,5 @@
-import Laptop from "./main/laptop";
-import Mobile from "./main/mobile";
+import Laptop from "./laptop";
+import Mobile from "./mobile";
 import useIsMobile from "@/hooks/use-isMobile";
 
 export default function Meme(props: any) {

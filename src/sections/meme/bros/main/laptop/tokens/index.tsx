@@ -1,6 +1,6 @@
 import LazyImage from "@/components/layz-image";
-import GoldCoinThrow from "../gold-coin-throw";
-import RankMark from "../../rank-mark";
+import GoldCoinThrow from "../../../components/gold-coin-throw";
+import RankMark from "../../../rank-mark";
 import { TOKENS } from "../config";
 import { useEffect, useMemo, useState } from "react";
 

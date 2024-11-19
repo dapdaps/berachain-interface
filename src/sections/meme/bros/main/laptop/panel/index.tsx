@@ -1,4 +1,4 @@
-import Materials from "./materials";
+import Materials from "../../../components/materials";
 import Tokens from "./tokens";
 
 export default function Panel() {

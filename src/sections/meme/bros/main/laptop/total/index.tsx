@@ -1,4 +1,4 @@
-import Item from "../item";
+import Item from "../../../components/label";
 
 const TotalItem = ({ title, subTitle }: any) => {
   return (
