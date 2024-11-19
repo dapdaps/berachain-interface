@@ -65,7 +65,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
             token: data?.withdrawToken,
             symbol: data?.withdrawToken?.symbol,
             amount: record.amount,
-            template: "Infrared",
+            template: "Berps",
             status: status,
             transactionHash,
             chain_id: chainId,
