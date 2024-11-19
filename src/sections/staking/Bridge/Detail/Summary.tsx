@@ -117,7 +117,7 @@ const DetailSummary = (props: any) => {
             width={100}
             height={18}
             className=""
-            value={formatValueDecimal(data?.tvl, '$', 2, true)}
+            value={formatValueDecimal(data?.tvl, isBerps ? '' : '$', 2, true)}
           />
         </div>
         <div className="flex flex-col gap-[12px]">

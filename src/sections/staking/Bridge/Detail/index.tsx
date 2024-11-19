@@ -41,6 +41,7 @@ export default memo(function Detail(props: any) {
 
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
+  const BerpsTab = { Stake: 'Deposit', Unstake: 'Withdraw' };
   const [showAddModal, setShowAddModal] = useState(false);
   const detailBerpsRef = useRef<any>();
 
@@ -271,7 +272,7 @@ export default memo(function Detail(props: any) {
               symbol: tokens.join('-')
             },
             amount: inAmount,
-            template: 'Infrared',
+            template: name || 'Infrared',
             status: status,
             add: 1,
             transactionHash,
@@ -357,7 +358,7 @@ export default memo(function Detail(props: any) {
             },
             symbol: tokens.join('-'),
             amount: lpAmount,
-            template: 'Infrared',
+            template: name || 'Infrared',
             status: status,
             add: 0,
             transactionHash,
@@ -440,7 +441,7 @@ export default memo(function Detail(props: any) {
             symbol: tokens.join('-')
           },
           amount: data?.earned,
-          template: 'Infrared',
+          template: name || 'Infrared',
           status: status,
           transactionHash,
           chain_id: chainId,
@@ -546,7 +547,7 @@ export default memo(function Detail(props: any) {
                 }}
               >
                 <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                  {tab}
+                  {isBERPS ? BerpsTab[tab] : tab}
                 </span>
               </div>
             ))}
@@ -605,7 +606,7 @@ export default memo(function Detail(props: any) {
                     onClick={handleDeposit}
                   >
                     <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                      {isLoading ? <CircleLoading size={14} /> : 'Stake'}
+                      {isLoading ? <CircleLoading size={14} /> : isBERPS ? 'Deposit' : 'Stake'}
                     </span>
                   </button>
                 ) : (

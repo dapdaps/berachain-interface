@@ -236,7 +236,7 @@ export default function useBerpsData(props: any) {
         marketCap = ethers.utils.formatUnits(marketCap, pair.withdrawToken.decimals);
         const totalSupplyValue = ethers.utils.formatUnits(totalSupply, pair.withdrawToken.decimals);
 
-        _data.tvl = Big(tvlValue).times(price ?? 0).toFixed();
+        _data.tvl = tvlValue;
         _data.withdrawTokenPrice = price;
         _data.currentEpoch = currentEpoch;
         _data.currentEpochStart = new Date(currentEpochStart);
