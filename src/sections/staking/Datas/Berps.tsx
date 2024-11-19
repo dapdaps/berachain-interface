@@ -24,7 +24,25 @@ export default function useBerpsData(props: any) {
   const dataList: any = [];
 
   const ERC20_ABI = [
-    'function balanceOf(address) view returns (uint256)',
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "result",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
     {
       constant: true,
       inputs: [
@@ -172,6 +190,19 @@ export default function useBerpsData(props: any) {
       "stateMutability": "view",
       "type": "function"
     },
+    {
+      "inputs": [],
+      "name": "tvl",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
   ];
 
   const formatedData = () => {
@@ -214,6 +245,11 @@ export default function useBerpsData(props: any) {
               name: 'balanceOf',
               params: [pair.withdrawToken.address]
             },
+            {
+              address: pair.withdrawToken.address,
+              name: 'tvl',
+              params: []
+            },
           ],
           multicallAddress,
           provider
@@ -226,10 +262,12 @@ export default function useBerpsData(props: any) {
           [marketCap],
           [totalSupply],
           [tvl],
+          [bHoneyTvl],
         ] = res;
 
         price = ethers.utils.formatUnits(price, 36 - pair.withdrawToken.decimals);
         const tvlValue = ethers.utils.formatUnits(tvl, pair.withdrawToken.decimals);
+        bHoneyTvl = ethers.utils.formatUnits(bHoneyTvl, pair.withdrawToken.decimals);
         currentEpoch = ethers.utils.formatUnits(currentEpoch, 0);
         currentEpochStart = ethers.utils.formatUnits(currentEpochStart, 0);
         currentEpochStart = Big(currentEpochStart).times(1000).toNumber();
@@ -242,7 +280,7 @@ export default function useBerpsData(props: any) {
         _data.currentEpochStart = new Date(currentEpochStart);
         _data.currentEpochEnd = addHours(new Date(currentEpochStart), 12);
         _data.marketCap = marketCap;
-        _data.collateralizationRatio = Big(marketCap).div(tvlValue).times(100).toFixed(2, Big.roundDown) + '%';
+        _data.collateralizationRatio = Big(marketCap).div(bHoneyTvl).times(100).toFixed(2, Big.roundDown) + '%';
         _data.totalSupply = totalSupplyValue;
         _data.initialData.current_staked_amount = tvl;
         _data.apy = '2260';
