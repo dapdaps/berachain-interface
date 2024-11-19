@@ -5,7 +5,7 @@ import { MarketplaceContext } from "@/sections/marketplace/context";
 import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import _ from "lodash";
-import { useMemo, useState, useContext, useCallback } from "react";
+import { useMemo, useState, useContext, useCallback, useEffect } from 'react';
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
 import useDataList from "./hooks/useDataList";
@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import useIsMobile from "@/hooks/use-isMobile";
 import CheckBox from "@/components/check-box";
 import Mobile from "./mobile";
+import useClickTracking from '@/hooks/use-click-tracking';
 
 export default function Invest() {
   const searchParams = useSearchParams();
@@ -25,6 +26,7 @@ export default function Invest() {
     openInfrared,
     setVaultsVisible,
   } = useContext(MarketplaceContext);
+  const { handleReport } = useClickTracking();
 
   const isMobile = useIsMobile();
 
@@ -191,6 +193,9 @@ export default function Invest() {
     });
   }
 
+  useEffect(() => {
+    isMobile && handleReport('1019-003');
+  }, [isMobile]);
 
   return (
     <div>

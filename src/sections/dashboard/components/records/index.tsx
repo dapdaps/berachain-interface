@@ -10,8 +10,8 @@ const DashboardRecords = (props: Props) => {
   const { handleReport } = useClickTracking();
 
   useEffect(() => {
-    handleReport('1002-003');
-  }, []);
+    handleReport(isMobile ? '1018-003' : '1002-003');
+  }, [isMobile]);
 
   return isMobile ? <Mobile {...props} /> : <Laptop {...props} />;
 };

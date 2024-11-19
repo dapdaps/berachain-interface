@@ -34,9 +34,12 @@ console.log(welcomeStore.show, 'welcomeStore.show');
         <MenuButton className='my-0 mx-auto' contentClassName='text-2xl'>
           Bera Cave
         </MenuButton>
-        <div className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px]"  onClick={() => {
+        <div
+          className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px]"  onClick={() => {
                     welcomeStore.set({ show: true })
-                }}>Rules</div>
+                }}
+          data-bp="1020-001"
+        >Rules</div>
       </div>
       <div className='bg-[#9C948F] h-[240vw] w-full'>
         <div

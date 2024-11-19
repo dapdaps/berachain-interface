@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import useTokenPrice from '@/hooks/use-token-price';
 import { useEffect } from 'react';
 import useClickTracking from '@/hooks/use-click-tracking';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const Dolomite = dynamic(() => import('@/sections/Lending/Dolomite'));
 const Bend = dynamic(() => import('@/sections/Lending/Bend'));
@@ -15,21 +16,22 @@ export default function LendingDAppPage() {
   const { dapp } = useParams();
   const { initializePrice } = useTokenPrice();
   const { handleReport } = useClickTracking();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     switch (dapp) {
       case 'dolomite':
-        handleReport('1012-002');
+        handleReport(isMobile ? '1017-002' : '1012-002');
         break;
       case 'bend':
-        handleReport('1012-003');
+        handleReport(isMobile ? '1017-003' : '1012-003');
         break;
       default:
         break;
     }
 
     initializePrice();
-  }, []);
+  }, [isMobile]);
 
   return (
     <BearBackground type='dapp'>

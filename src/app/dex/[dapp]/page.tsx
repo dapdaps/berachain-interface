@@ -6,28 +6,30 @@ import dapps from '@/configs/swap';
 import { DEFAULT_SWAP_DAPP } from '@/configs';
 import useClickTracking from '@/hooks/use-click-tracking';
 import { useEffect } from 'react';
+import useIsMobile from '@/hooks/use-isMobile';
 
 export default function SwapPage() {
   const urlParams = useParams();
   const { handleReport } = useClickTracking();
+  const isMobile = useIsMobile();
 
   const dapp = dapps[urlParams.dapp as string] || dapps[DEFAULT_SWAP_DAPP];
 
   useEffect(() => {
     switch (urlParams.dapp) {
       case 'kodiak':
-        handleReport('1012-004');
+        handleReport(isMobile ? '1017-004' : '1012-004');
         break;
       case 'bex':
-        handleReport('1012-005');
+        handleReport(isMobile ? '1017-005' : '1012-005');
         break;
       case 'ooga-booga':
-        handleReport('1012-006');
+        handleReport(isMobile ? '1017-006' : '1012-006');
         break;
       default:
         break;
     }
-  }, []);
+  }, [isMobile]);
 
   return <SwapView dapp={dapp} />;
 }

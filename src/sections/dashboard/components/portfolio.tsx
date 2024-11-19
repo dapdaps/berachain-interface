@@ -10,16 +10,18 @@ import useClickTracking from '@/hooks/use-click-tracking';
 import UserCard from './user-card';
 import useUser from '@/hooks/use-user';
 import DappCard from './dapp-card';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const DashboardPortfolio = (props: Props) => {
   const { loading, dapps, totalBalance, tvls, tvlsLoading } = props;
 
   const { handleReport } = useClickTracking();
   const { userInfo } = useUser();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    handleReport('1011-002');
-  }, []);
+    handleReport(isMobile ? '1018-002' : '1011-002');
+  }, [isMobile]);
 
   return (
     <div className='h-full overflow-y-auto md:overflow-y-hidden'>
