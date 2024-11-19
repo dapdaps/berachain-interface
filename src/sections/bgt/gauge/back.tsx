@@ -15,7 +15,7 @@ const Back = (props: any) => {
     </div>
   ) : (
     <div
-      className="cursor-pointer absolute top-[45px] left-[50px]"
+      className="cursor-pointer"
       onClick={() => {
         router.back();
       }}
