@@ -90,7 +90,8 @@ export default function SelectPanel({
       _i0 = _ir0;
       _i1 = _ir1;
     }
-
+    _i0 = _i0.lt(0) ? Big(0) : _i0;
+    _i1 = _i1.lt(0) ? Big(0) : _i1;
     const _e0 = Big(stakedAmounts.amount0 || 0)
       .add(_i0)
       .minus(amount0);
