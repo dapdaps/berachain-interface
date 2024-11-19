@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import useClickTracking from '@/hooks/use-click-tracking';
-import { useTapSoundStore } from '@/stores/tap-sound';
 
 const menuItems = [
   { id: 1, title: 'Bera Cave', href: '/cave', dataBp: '1015-002-001' },
@@ -18,7 +17,7 @@ const menuItems = [
   { id: 4, title: 'Earn', href: '/earn', dataBp: '1015-002-004' },
   { id: 5, title: 'DApps', hasDropdown: true, dataBp: '1015-002-005' },
   { id: 6, title: 'Dashboard', href: '/dashboard', dataBp: '1015-002-006' },
-  { id: 7, title: 'Home', href: '/', dataBp: '1015-002-007' }
+  { id: 7, title: 'Maps', href: '/', dataBp: '1015-002-007' }
 ];
 
 interface DApp {
@@ -76,12 +75,10 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    tapSound.play?.();
   };
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
   const { handleReportNoCode, handleTrack } = useClickTracking();
-  const tapSound = useTapSoundStore();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
@@ -137,12 +134,11 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   const handleHome = () => {
     router.push('/');
-    tapSound.play?.();
   };
 
   return (
     <div
-      className={`relative pb-[62px] overflow-hidden ${
+      className={`relative overflow-hidden ${
         routes.includes(pathname) ? 'min-h-screen' : 'h-screen'
       }`}
       style={{

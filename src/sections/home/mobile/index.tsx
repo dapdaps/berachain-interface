@@ -44,7 +44,7 @@ const Home = () => {
     };
   }, []);
   return (
-    <div className='relative w-full h-dvh overflow-hidden bg-[#B6DF5D]'>
+    <div className='relative w-full h-full overflow-hidden bg-[#B6DF5D]'>
       <div className='w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]'>
         <div className='flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
           <ConnectWallet />
@@ -67,19 +67,20 @@ const Home = () => {
           />
         </div>
       </div>
-      <div className='w-full h-dvh overflow-y-scroll overflow-x-hidden'>
+      <div className='w-full h-full overflow-y-scroll overflow-x-hidden'>
         <div
-          className='relative w-full overflow-hidden'
+          className='relative w-full overflow-hidden pb-[60px]'
           style={{
             backgroundImage: "url('/images/mobile/beratown-home.jpg')",
-            backgroundSize: '100%',
+            backgroundSize: 'cover',
             backgroundPosition: 'top',
             backgroundRepeat: 'no-repeat',
-            height: visibleHeight + 130 + 'px',
+            height: 'calc(201vw + 64px)',
+            minHeight: '100dvh',
           }}
         >
           <motion.div
-            className='relative w-[182px] h-[25.128vw] top-[19.487vw] left-[10.256vw]'
+            className='w-[182px] h-[25.128vw] translate-y-[19.487vw] translate-x-[10.256vw]'
             whileTap="tap"
           >
             <motion.img
@@ -103,7 +104,7 @@ const Home = () => {
             />
           </motion.div>
           <motion.div
-            className='relative w-[65.64vw] h-[47.43vw] top-[10.256vw] left-[40.256vw]'
+            className='w-[65.64vw] h-[47.43vw] translate-y-[10.256vw] translate-x-[40.256vw]'
             whileTap="tap"
           >
             <motion.img
@@ -127,7 +128,7 @@ const Home = () => {
             />
           </motion.div>
           <motion.div
-            className='relative w-[63.076vw] h-[56.153vw] -top-[12.85vw] -left-[10.256vw]'
+            className='w-[63.076vw] h-[56.153vw] -translate-y-[12.85vw] -translate-x-[10.256vw]'
             whileTap="tap"
           >
             <motion.img
@@ -152,7 +153,7 @@ const Home = () => {
             />
           </motion.div>
           <motion.div
-            className='relative w-[77.435vw] h-[54.684vw] -top-[45.641vw] -right-[34.871vw]'
+            className='w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw]'
             whileTap="tap"
           >
             <motion.img
@@ -177,7 +178,7 @@ const Home = () => {
             />
           </motion.div>
           <motion.div
-            className='relative w-[73.846vw] h-[47.692vw] -top-[65.64vw] -left-[17.948vw]'
+            className='w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw]'
             whileTap="tap"
           >
             <motion.img
@@ -202,7 +203,7 @@ const Home = () => {
             />
           </motion.div>
           <motion.div
-            className='relative w-[77.435vw] h-[51.794vw] -top-[76.923vw] -right-[33.846vw]'
+            className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]'
             whileTap="tap"
           >
             <motion.img
