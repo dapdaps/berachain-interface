@@ -8,7 +8,8 @@ const FlexTable = (props: FlexTableProps) => {
     headClass = '',
     headColClass = '',
     bodyClass = '',
-    bodyColClass = '',
+    rowClass = '',
+    colClass = '',
     loading,
     list,
     columns,
@@ -80,11 +81,11 @@ const FlexTable = (props: FlexTableProps) => {
             <Loading size={24} />
           </div>
         ) : (
-          <div>
+          <div className={bodyClass}>
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                   <div
-                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${bodyClass}`}
+                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${rowClass}`}
                     key={index}
                     onClick={(e) => onRow(record, index, e)}
                   >
@@ -99,7 +100,7 @@ const FlexTable = (props: FlexTableProps) => {
                         }}
                         className={`font-[600] first:pl-[13px] last:pr-[13px] ${
                           column.ellipsis ? 'truncate' : ''
-                        } ${bodyColClass}`}
+                        } ${colClass}`}
                       >
                         {typeof column.render === 'function'
                           ? column.render(
@@ -141,7 +142,8 @@ export type FlexTableProps = {
   headClass?: string;
   headColClass?: string;
   bodyClass?: string;
-  bodyColClass?: string;
+  rowClass?: string;
+  colClass?: string;
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;

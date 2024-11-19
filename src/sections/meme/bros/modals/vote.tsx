@@ -3,6 +3,8 @@ import RoundLabel from '@/sections/meme/bros/components/round-label';
 import FlexTable from '@/components/flex-table';
 import LazyImage from '@/components/layz-image';
 import { numberFormatter } from '@/utils/number-formatter';
+import Pager from '@/components/pager';
+import Popover, { PopoverPlacement } from '@/components/popover';
 
 export default function Vote() {
 
@@ -61,12 +63,50 @@ export default function Vote() {
             <div className="">
               {numberFormatter(record.supporters, 0, true)}
             </div>
-            <button
-              type="button"
-              className="h-[28px] leading-[26px] px-[10px] border border-black rounded-[10px] bg-[#FFDC50] text-center text-black text-[14px] font-[600]"
+            <Popover
+              contentClassName="z-[200]"
+              placement={PopoverPlacement.Right}
+              content={!record.voted ? (
+                <div className="border border-black rounded-[20px] bg-[#FFFDEB] shadow-shadow1 p-[12px_10px_15px_13px] text-[14px] text-black font-[400] leading-[120%]">
+                  <div className="max-w-[212px]">
+                    Each round can only vote for one MEME token once, after voting can not be changed.
+                  </div>
+                  <div className="mt-[9px] flex justify-center items-center">
+                    <button
+                      type="button"
+                      className="h-[28px] leading-[26px] px-[10px] border border-black disabled:cursor-[default!important] rounded-[10px] bg-[#FFDC50] flex justify-center items-center gap-[5px] text-center text-black text-[14px] font-[600]"
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              ) : null}
             >
-              Vote
-            </button>
+              <button
+                type="button"
+                className="h-[28px] leading-[26px] px-[10px] border border-black disabled:cursor-[default!important] rounded-[10px] bg-[#FFDC50] flex justify-center items-center gap-[5px] text-center text-black text-[14px] font-[600]"
+                style={record.voted ? {
+                  background: '#7CB424',
+                  borderColor: '#7CB424',
+                  color: '#FFF',
+                  borderRadius: 14,
+                } : {}}
+                disabled={record.voted}
+              >
+                {
+                  record.voted ?
+                    (
+                      <>
+                        <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 3.5L4.5 7L10.5 1" stroke="white" strokeWidth="2" />
+                        </svg>
+                        <div>You Voted</div>
+                      </>
+                    ) :
+                    'Vote'
+                }
+              </button>
+            </Popover>
           </div>
         );
       }
@@ -77,10 +117,14 @@ export default function Vote() {
     icon: '/images/eth.svg',
     incentives: Math.floor(Math.random() * Math.pow(10, Math.ceil(Math.random() * 10))),
     supporters: Math.floor(Math.random() * Math.pow(10, Math.ceil(Math.random() * 10))),
+    voted: idx % 5 === 0,
   }));
 
   return (
-    <Basic open={true} onClose={() => {}} className="w-[916px]">
+    <Basic
+      open={true} onClose={() => {
+    }} className="w-[916px]"
+    >
       <div className="flex items-center gap-[12px] text-[20px] font-bold mt-[16px] px-[13px]">
         <span>Vote for the next round</span>
       </div>
@@ -103,8 +147,14 @@ export default function Vote() {
           list={list}
           headClass="py-[12px] border-b border-b-[rgba(0,0,0,0.2)]"
           headColClass="text-[#3D405A] font-[500]"
-          bodyClass="odd:bg-[unset] py-[12px]"
-          bodyColClass="text-[#3D405A] text-[14px] font-[600]"
+          bodyClass="border-b border-b-[rgba(0,0,0,0.2)] max-h-[calc(100dvh_-_350px)] overflow-y-auto"
+          rowClass="odd:bg-[unset] py-[12px] hover:bg-[rgba(0,0,0,0.06)]"
+          colClass="text-[#3D405A] text-[14px] font-[600]"
+          pagination={(
+            <div className="pt-[12px] flex justify-end items-center">
+              <Pager maxPage={10} onPageChange={() => {}} />
+            </div>
+          )}
         />
       </div>
     </Basic>
