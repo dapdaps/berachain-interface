@@ -20,7 +20,10 @@ export default function ClaimRewards() {
         <div className="grow border-b border-dashed border-[#160705]/10" />
         <div className="shrink-0">0.01</div>
       </div>
-      <Button type="primary" className="w-full h-[60px] mt-[16px]">
+      <Button
+        type="primary"
+        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+      >
         Claim
       </Button>
     </Basic>

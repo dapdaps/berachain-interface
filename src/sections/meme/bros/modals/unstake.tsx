@@ -16,7 +16,10 @@ export default function Unstake() {
           onUpdateCurrencyBalance={() => {}}
         />
       </div>
-      <Button type="primary" className="w-full h-[60px] mt-[16px]">
+      <Button
+        type="primary"
+        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+      >
         Unstake
       </Button>
       <div className="flex items-center gap-[6px] text-[14px] py-[18px]">

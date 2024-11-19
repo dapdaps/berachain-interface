@@ -21,7 +21,10 @@ export default function AddIncentives() {
             onCurrencySelectOpen={() => {}}
           />
         </div>
-        <Button type="primary" className="w-full h-[60px] mt-[16px]">
+        <Button
+          type="primary"
+          className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+        >
           Add
         </Button>
       </Basic>

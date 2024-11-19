@@ -3,7 +3,6 @@ import Tokens from "./tokens";
 import Panel from "./panel";
 import Total from "./total";
 import WithdrawalPanel from "../../components/withdrawal-panel";
-import StakeModal from "../../modals/stake";
 
 export default function Laptop() {
   return (
@@ -13,7 +12,6 @@ export default function Laptop() {
       <Tokens />
       <Panel />
       <WithdrawalPanel />
-      <StakeModal />
     </div>
   );
 }
