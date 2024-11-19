@@ -1,10 +1,11 @@
 // @ts-nocheck
 import Big from 'big.js';
 import { ethers } from 'ethers';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function useInfraredData(props: any) {
   const {
+    name,
     pairs,
     sender,
     provider,
@@ -15,6 +16,8 @@ export default function useInfraredData(props: any) {
     IBGT_ADDRESS
   } = props;
   const dataList = [];
+
+  const [reloadCount, setReloadCount] = useState(0);
 
   const MULTICALL_ABI = [
     {
@@ -73,11 +76,132 @@ export default function useInfraredData(props: any) {
       ],
       stateMutability: 'view',
       type: 'function'
-    }
+    },
+    {
+      "inputs": [],
+      "name": "shareToAssetsPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentEpoch",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentEpochStart",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "marketCap",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "completeBalanceOfAssets",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "completeBalanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "totalSharesBeingWithdrawn",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "shares",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
   ];
-  const MulticallContract =
-    multicallAddress &&
-    new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
+
+  const MulticallContract = multicallAddress && new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
   const multicallv2 = (abi, calls, options, onSuccess, onError) => {
     const { requireSuccess, ...overrides } = options || {};
     const itf = new ethers.utils.Interface(abi);
@@ -104,12 +228,12 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance'].includes(data?.initialData?.pool?.protocol) || data?.id === "iBGT-HONEY"),
+      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance', 'BERPS'].includes(data?.initialData?.pool?.protocol) || data?.id === "iBGT-HONEY"),
       fullDataList: dataList
     });
   }
-  function getDataList() {
-    pairs.forEach((pair) => {
+  async function getDataList() {
+    for (const pair of pairs) {
       const vaultAddress = addresses[pair?.id];
       const findIndex = allData?.findIndex(
         (data) =>
@@ -118,8 +242,9 @@ export default function useInfraredData(props: any) {
       );
       if (findIndex > -1) {
         const initialData = allData[findIndex];
-        dataList.push({
+        const _data = {
           ...pair,
+          name,
           tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
             .times(initialData?.stake_token?.price ?? 0)
             .toFixed(),
@@ -130,16 +255,18 @@ export default function useInfraredData(props: any) {
           rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
           protocolType:
             initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
-        });
+        };
+        dataList.push(_data);
       }
-    });
+    }
     formatedData('dataList');
   }
   function getUsdDepositAmount() {
     const calls = [];
     dataList.forEach((data) => {
+      const _address = ethers.utils.getAddress(addresses[data?.id]);
       calls.push({
-        address: ethers.utils.getAddress(addresses[data?.id]),
+        address: _address,
         name: 'balanceOf',
         params: [sender]
       });
@@ -204,11 +331,18 @@ export default function useInfraredData(props: any) {
 
   useEffect(() => {
     if (allData) {
-      getDataList();
-      if (sender && provider) {
-        getUsdDepositAmount();
-        getEarned();
-      }
+      getDataList().then(() => {
+        if (sender && provider) {
+          getUsdDepositAmount();
+          getEarned();
+        }
+      });
     }
-  }, [allData, sender, provider]);
+  }, [allData, sender, provider, reloadCount]);
+
+  return {
+    reload: () => {
+      setReloadCount(reloadCount + 1);
+    },
+  };
 }

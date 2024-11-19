@@ -34,6 +34,12 @@ const dapps: DApp[] = [
     icon: "/images/dapps/infrared.svg",
     href: "/staking/infrared"
   },
+  {
+    id: "berps",
+    name: "Berps",
+    icon: "/images/dapps/infrared/berps.svg",
+    href: "/staking/berps"
+  },
   { id: "bex", name: "Bex", icon: "/images/dapps/bex.png", href: "/dex/bex" },
   {
     id: "bend",
@@ -134,7 +140,6 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   const handleHome = () => {
     router.push("/");
-    tapSound.play?.();
   };
 
   return (

@@ -71,7 +71,7 @@ export default function useLpToAmount(address, product = "BEX") {
     }
   }
   const handleGetAmount = (amount) => {
-    if (totalSupply && Big(reserve0).gt(0) && Big(reserve1).gt(0)) {
+    if (totalSupply && Big(reserve0 || 0).gt(0) && Big(reserve1 || 0).gt(0)) {
       const amount0 = Big(amount).div(totalSupply).times(reserve0).toFixed()
       const amount1 = Big(amount).div(totalSupply).times(reserve1).toFixed()
       return [amount0, amount1]

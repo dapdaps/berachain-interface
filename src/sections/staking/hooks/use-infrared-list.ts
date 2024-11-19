@@ -17,6 +17,7 @@ export default function useInfraredList(updater?: number) {
   const [loading, setLoading] = useState<boolean>(false);
   const [dataList, setDataList] = useState<any>(null);
   const [fullDataList, setFullDataList] = useState<any>(null);
+
   const multicallAddress = useMemo(
     () => chainId && multicallAddresses[chainId],
     [chainId]
@@ -29,7 +30,8 @@ export default function useInfraredList(updater?: number) {
     });
   }
 
-  useInfraredData({
+  const { reload } = useInfraredData({
+    name: infraredConfig.name,
     pairs,
     sender,
     provider,
@@ -53,6 +55,7 @@ export default function useInfraredList(updater?: number) {
     loading,
     dataList,
     fullDataList,
-    fetchAllData
+    fetchAllData,
+    reload,
   };
 }
