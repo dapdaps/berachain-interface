@@ -1,21 +1,13 @@
 // @ts-nocheck
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import useAccount from '@/hooks/use-account';
 import { useMultiState } from '@/hooks/use-multi-state';
-import { useProvider } from '@/hooks/use-provider';
 import { formatValueDecimal } from '@/utils/balance';
-import { asyncFetch } from '@/utils/http';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
-import dynamic from 'next/dynamic';
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
 import type { ColumnType, ColunmListType } from '../types';
 import Skeleton from 'react-loading-skeleton';
-import useInfraredData from '../Datas/Infrared';
 import { cloneDeep } from 'lodash';
-import useInfraredList from '../hooks/use-infrared-list';
-import { useBerps } from '@/sections/staking/hooks/use-berps';
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -28,21 +20,11 @@ const List = forwardRef<any, any>((props, ref) => {
     ALL_DATA_URL,
     multicallAddress,
     description,
-    onChangeData
+    onChangeData,
+    dataList,
+    loading,
+    reload,
   } = props;
-
-  const { dataList: infraredData, loading: infraredLoading, fetchAllData: infraredReload } = useInfraredList();
-  const { dataList: berpsData, loading: berpsLoading, reload: berpsReload  } = useBerps(props);
-  const [dataList, loading, reload] = useMemo(() => {
-    if (name === 'Berps') return [berpsData, berpsLoading, berpsReload];
-    return [infraredData, infraredLoading, infraredReload];
-  }, [
-    infraredData,
-    infraredLoading,
-    berpsData,
-    berpsLoading,
-    name,
-  ]);
 
   const [state, updateState] = useMultiState<any>({
     allData: null,
