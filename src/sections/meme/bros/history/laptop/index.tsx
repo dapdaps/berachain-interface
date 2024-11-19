@@ -15,7 +15,7 @@ export default function Laptop() {
       >
         History
       </div>
-      <div className="w-[1000px] mx-auto relative z-[10] pb-[20px]">
+      <div className="w-[1000px] mx-auto relative z-[10] pb-[20px] min-h-[100px]">
         <Round />
         <Round />
         <Round />
