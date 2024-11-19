@@ -67,7 +67,11 @@ export const useVaultList = (initialParams?: VaultListParams) => {
         `https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/vaults?${queryParams}`
       );
 
-      setData(response.vaults || []);
+      if (params.add) {
+        setData([...data, ...(response.vaults || [])])
+      } else {
+        setData(response.vaults || []);
+      }
       setMaxPage(Math.ceil(response.total / pageSize) || 0);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch data'));
@@ -93,7 +97,7 @@ export const useVaultList = (initialParams?: VaultListParams) => {
   };
 
   const setFilter = (filterByProduct: string) => {
-    updateParams({ filterByProduct, page: 1 }); 
+    updateParams({ filterByProduct, page: 1 });
   };
 
   return {
