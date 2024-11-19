@@ -22,7 +22,7 @@ import DetailBerps from '@/sections/staking/Bridge/Detail/Berps';
 import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
 
 export default memo(function Detail(props: any) {
-  const { name } = props;
+  const { name, loading } = props;
   const { addresses } = config.chains[DEFAULT_CHAIN_ID];
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
@@ -37,7 +37,7 @@ export default memo(function Detail(props: any) {
       return ibgtVaults.berpsVaults.find((item) => item.id === id);
     }
     return ibgtVaults.vaults.find((item) => item.id === id);
-  }, [id, name]);
+  }, [id, name, ibgtVaults]);
 
   const toast = useToast();
   const tabs = ['Stake', 'Unstake'];
@@ -510,7 +510,7 @@ export default memo(function Detail(props: any) {
 
   return (
     <div>
-      <DetailSummary data={data} />
+      <DetailSummary data={data} loading={loading} />
 
       <div className='flex items-stretch gap-[30px]'>
         {
@@ -518,6 +518,7 @@ export default memo(function Detail(props: any) {
             <DetailBerps
               ref={detailBerpsRef}
               data={data}
+              loading={loading}
             />
           ) : (
             <DetailBex

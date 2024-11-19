@@ -123,7 +123,11 @@ const DAppsView = () => {
   const router = useRouter();
 
   const onNavigateTo = (_dApp: any) => {
-    router.push(`/${_dApp.type === "swap" ? "dex" : _dApp.type}/${_dApp.name}`);
+    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${_dApp.name}`;
+    if (_dApp.name === 'berps') {
+      dAppPath += `?id=BHONEY&tab=0`;
+    }
+    router.push(dAppPath);
   };
 
   useEffect(() => {
