@@ -55,7 +55,7 @@ export default function Laptop({ onClick }: any) {
           {
             title: "Amount",
             key: "amount",
-            sort: true,
+            sort: false,
             width: "22%",
             render: (item: any, index: number) => {
               return (
