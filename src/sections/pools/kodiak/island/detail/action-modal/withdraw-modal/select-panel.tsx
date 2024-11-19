@@ -80,7 +80,7 @@ export default function SelectPanel({
     const _ir1 = Big(amount1).minus(stakedAmounts.amount1 || 0);
 
     const _r0 = _ir0.minus(info.balanceAmount0);
-    const _r1 = _ir0.minus(info.balanceAmount1);
+    const _r1 = _ir1.minus(info.balanceAmount1);
 
     if (_ir0.gt(info.balanceAmount0) || _ir1.gt(info.balanceAmount1)) {
       _errorTips = "Insufficient Liquidity";

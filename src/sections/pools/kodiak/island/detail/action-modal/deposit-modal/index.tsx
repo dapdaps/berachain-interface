@@ -178,7 +178,7 @@ export default function DepositModal({
           {type === "staking" && step === 6 && (
             <StakePanel
               data={data}
-              amount={Big(received).mul(1e18).toString()}
+              amount={received}
               lockData={lockData}
               onSuccess={onSuccess}
             />
