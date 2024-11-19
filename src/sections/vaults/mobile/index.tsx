@@ -165,6 +165,7 @@ export default function Mobile({ dapp }: any) {
 
 const Item = ({ data, onClick, onClaim }: any) => {
   const pool = data?.initialData?.pool;
+  const isBerps = data?.name === 'Berps';
   return (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
@@ -253,7 +254,7 @@ const Item = ({ data, onClick, onClaim }: any) => {
           </div>
         </div>
       </div>
-      {Big(data?.usdDepositAmount || 0).gt(0) && (
+      {(Big(data?.usdDepositAmount || 0).gt(0) || isBerps) && (
         <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
           <UserInfo
             data={data}

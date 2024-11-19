@@ -5,7 +5,7 @@ import SwitchNetworkButton from './switch-network';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import BaseButton from './base-button';
 
-const ActionButton = ({ onClick, text, value, token, spender }: any) => {
+const ActionButton = ({ onClick, text, value, token, spender, disabled }: any) => {
   const {
     approve: handleTokenApprove,
     approved: valueApproved,
@@ -27,14 +27,14 @@ const ActionButton = ({ onClick, text, value, token, spender }: any) => {
       <BaseButton
         onClick={handleTokenApprove}
         loading={valueApproving}
-        disabled={valueApproving}
+        disabled={valueApproving || disabled}
       >
         Approve {token.symbol}
       </BaseButton>
     );
   }
 
-  return <BaseButton onClick={onClick}>{text}</BaseButton>;
+  return <BaseButton onClick={onClick} disabled={disabled}>{text}</BaseButton>;
 };
 
 const RemoveButton = (props: any) => {
