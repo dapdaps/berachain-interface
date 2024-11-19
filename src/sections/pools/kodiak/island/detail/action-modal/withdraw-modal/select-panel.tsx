@@ -6,12 +6,10 @@ import Big from "big.js";
 import Button from "@/components/button";
 
 export default function SelectPanel({
-  amount,
   amount0 = 0,
   amount1 = 0,
   info,
   data,
-  percent,
   onSuccess
 }: any) {
   const [kekIds, setKekIds] = useState<any>([]);
@@ -25,12 +23,14 @@ export default function SelectPanel({
     let a0 = Big(0);
     let a1 = Big(0);
     let _amount = Big(0);
+
     const _ids = _list.map((item: any) => {
       a0 = a0.add(item.amount0);
       a1 = a1.add(item.amount1);
       _amount = _amount.add(item.liquidity);
       return item.kek_id;
     });
+
     setStakedAmounts({
       amount0: a0.toString(),
       amount1: a1.toString(),
@@ -44,16 +44,17 @@ export default function SelectPanel({
     let a0 = Big(stakedAmounts.amount0 || 0);
     let a1 = Big(stakedAmounts.amount1 || 0);
     let _amount = Big(stakedAmounts.amount || 0);
+    const liquidity = Big(item.liquidity).div(1e18);
     if (kekIds.includes(id)) {
       remove(kekIds, (i) => i === id);
       a0 = a0.minus(item.amount0);
       a1 = a1.minus(item.amount1);
-      _amount = _amount.minus(item.liquidity);
+      _amount = _amount.minus(liquidity);
     } else {
       kekIds.push(id);
       a0 = a0.add(item.amount0);
       a1 = a1.add(item.amount1);
-      _amount = _amount.add(item.liquidity);
+      _amount = _amount.add(liquidity);
     }
     setStakedAmounts({
       amount0: a0.toString(),
@@ -172,14 +173,18 @@ export default function SelectPanel({
         type="primary"
         className="w-full h-[46px] mt-[16px]"
         onClick={() => {
+          const _a = Big(info.balance)
+            .mul(islandAmount0)
+            .div(info.balanceAmount0);
+
           onSuccess({
-            amount: Big(amount)
-              .add(stakedAmounts.amount || 0)
+            amount: Big(stakedAmounts.amount || 0)
+              .add(_a)
               .toString(),
-            amount0: Big(amount0)
+            amount0: Big(islandAmount0)
               .add(stakedAmounts.amount0 || 0)
               .toString(),
-            amount1: Big(amount1)
+            amount1: Big(islandAmount1)
               .add(stakedAmounts.amount1 || 0)
               .toString(),
             selectedItems: kekIds.map((id: string) =>
