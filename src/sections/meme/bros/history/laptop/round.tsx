@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Button from "@/components/button";
+import Popover, { PopoverPlacement } from "@/components/popover";
 import RoundLabel from "../../components/round-label";
+import TokensPanel from "./tokens-panel";
 
 export default function Round() {
   return (
@@ -11,18 +13,21 @@ export default function Round() {
         className="!absolute top-[-34px] left-[24px]"
       />
       <div className="border-b border-black/20 pt-[50px] pl-[20px] pb-[20px] flex items-center">
-        <div className="flex items-center w-1/4">
-          {[1, 2, 3, 4].map((item, i) => (
-            <Image
-              key={item}
-              src="/assets/tokens/bera.svg"
-              width={40}
-              height={40}
-              alt="Reward Token"
-              className={i !== 0 ? "ml-[-15px]" : ""}
-            />
-          ))}
-        </div>
+        <Popover content={<TokensPanel />} placement={PopoverPlacement.TopLeft}>
+          <div className="flex items-center w-1/4">
+            {[1, 2, 3, 4].map((item, i) => (
+              <Image
+                key={item}
+                src="/assets/tokens/bera.svg"
+                width={40}
+                height={40}
+                alt="Reward Token"
+                className={i !== 0 ? "ml-[-15px]" : ""}
+              />
+            ))}
+          </div>
+        </Popover>
+
         <div className="w-1/4">
           <div className="text-[#3D405A] font-medium">Total Dapped</div>
           <div className="font-semibold	mt-[2px]">1</div>
