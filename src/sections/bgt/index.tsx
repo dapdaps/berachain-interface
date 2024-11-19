@@ -5,12 +5,13 @@ import Loading from "@/components/loading";
 import { useBGT } from "@/hooks/use-bgt";
 import BgtHead from '@/sections/bgt/components/bgt-head';
 import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import VaultsList from "./components/list";
 import SwitchTabs from "@/components/switch-tabs";
 import BgtEmpty from "./components/bgt-empty";
 import Big from 'big.js';
+import { asyncFetch } from "@/utils/http";
 
 export default memo(function BGTPageView() {
   const [tab, setTab] = useState('all');
@@ -19,60 +20,39 @@ export default memo(function BGTPageView() {
       title: 'Vaults',
       dataIndex: 'Vaults',
       align: 'left',
-      width: '25%',
+      width: '30%',
       render: (text: string, record: any) => {
-        return (
-          <div className='flex items-center gap-[10px]'>
-            <div className='flex items-center'>
-              {record?.images[0] && (
-                <div className='w-[30px] h-[30px] rounded-full'>
-                  <img src={record?.images[0]} />
-                </div>
-              )}
-              {record?.images[1] && (
-                <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
-                  <img src={record?.images[1]} />
-                </div>
-              )}
-            </div>
-            <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>{record?.id}</div>
-          </div>
-        );
-      },
-    },
-    {
-      title: 'Protocol',
-      dataIndex: 'protocol',
-      align: 'left',
-      width: '15%',
-      render: (text: string, record: any) => {
-        const pool = record?.initialData?.pool
-        return (
-          <div className="flex items-center gap-[6px]">
 
-            <img
-              style={{ width: 20 }}
-              src={`/images/dapps/infrared/${(pool?.protocol ?? "infrared").toLocaleLowerCase()}.svg`}
-            />
-            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">{pool?.protocol ?? "infrared"}</div>
+        return (
+          <div className='flex items-center gap-[16px]'>
+            <div className='relative'>
+              <div className='w-[30px] h-[30px] rounded-full'>
+                <img src={record?.logoURI} />
+              </div>
+              <div className="absolute right-[-6px] bottom-[-2px] w-[16px]">
+                <img src={record?.productMetadata?.logoURI} />
+              </div>
+            </div>
+            <div className="flex flex-col gap-[5px]">
+              <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{record?.name}</div>
+              <div className='text-black font-Montserrat text-[12px] font-medium leading-[90%]'>{record?.productMetadata?.name}</div>
+            </div>
           </div>
         );
       },
     },
+
     {
       title: 'Amount Deposited',
-      dataIndex: 'type',
+      dataIndex: 'depositedAmount',
       align: 'left',
-      width: '20%',
+      width: '30%',
       sort: true,
       render: (text: string, record: any) => {
-        if (parseFloat(record?.depositAmount) === 0) {
-          return '-'
-        }
         return (
           <div className='flex justify-start'>
             <div className='px-[10px] py-[5px] rounded-[12px] border border-[#373A53] bg-white text-black font-Montserrat text-[14px] font-medium leading-[100%]'>
-              {formatValueDecimal(record?.depositAmount, "", 2)}
+              {formatValueDecimal(record?.depositedAmount, "", 2)}
             </div>
           </div>
         );
@@ -91,7 +71,7 @@ export default memo(function BGTPageView() {
               <img src="/images/dapps/infrared/bgt.svg" />
             </div>
             <div className='text-[#7EA82B] font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {record?.earnedShown ?? 0}
+              {formatValueDecimal(record?.earned ?? 0, "", 2)}
             </div>
           </div>
         );
@@ -102,12 +82,12 @@ export default memo(function BGTPageView() {
       dataIndex: 'action',
       align: 'left',
       width: '20%',
-      render: (text: string, record: any) => {
+      render: (text: string, record: any, index) => {
         return (
           <button
             disabled={Big(record?.earned || 0).lte(0) || record?.claiming}
             className='flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50] disabled:opacity-30'
-            onClick={record.claim}>
+            onClick={() => record?.claim?.(record, index)}>
             {
               record.claiming ? <Loading /> : 'Claim BGT'
             }
@@ -124,10 +104,12 @@ export default memo(function BGTPageView() {
     setSortDataIndex,
     pageData,
     filterList,
+
     handleClaim,
     handleExplore,
     handleValidator,
-  } = useBGT();
+  } = useBGT(tab);
+
 
 
   return (

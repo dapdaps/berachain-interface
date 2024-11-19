@@ -18,6 +18,9 @@ export default function LiquidityPage() {
       case 'infrared':
         handleReport(isMobile ? '1017-001' : '1012-001');
         break;
+      case 'berps':
+        // handleReport(isMobile ? '1017-001' : '1012-001');
+        break;
       default:
         break;
     }

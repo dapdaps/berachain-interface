@@ -95,7 +95,8 @@ export const BGT_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -112,7 +113,8 @@ export const BGT_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -135,7 +137,8 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -153,7 +156,8 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  }, {
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -176,4 +180,5 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  }]
+  }
+]

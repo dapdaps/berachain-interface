@@ -6,7 +6,6 @@ export default memo(function Button(props) {
     loading,
     inAmount,
     balance,
-    operationType,
     onClick
   } = props
   const BTN_CLASS = "w-full h-[60px] flex items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]"

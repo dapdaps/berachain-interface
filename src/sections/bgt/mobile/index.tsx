@@ -1,24 +1,38 @@
 import Drawer from '@/components/drawer';
 import SwitchTabs from '@/components/switch-tabs';
-import { useState } from 'react';
 import { useBGT } from '@/hooks/use-bgt';
 import BgtHead from '@/sections/bgt/components/bgt-head';
-import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
-import { AnimatePresence, motion } from 'framer-motion';
-import Loading from '@/components/loading';
-import BgtEmpty from '@/sections/bgt/components/bgt-empty';
-import BgtValidatorDrawer from '@/sections/bgt/validator/drawer';
-import Big from 'big.js';
+import BgtGaugeDrawer from '@/sections/bgt/gauge/drawer';
 import Market from '@/sections/bgt/mobile/market';
-import Vaults from '@/sections/bgt/mobile/vaults';
+import BgtValidatorDrawer from '@/sections/bgt/validator/drawer';
+import { AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+// import Vaults from '@/sections/bgt/mobile/vaults';
+import { useVaultList } from "@/sections/bgt/hooks/useList";
+import AllVaults from "@/sections/bgt/mobile/vaults/all";
+import YourVaults from "@/sections/bgt/mobile/vaults/your";
+import { useDebounceFn } from 'ahooks';
 
+const TABS = [
+  {
+    value: 'deposit',
+    label: 'Deposit',
+    disabled: false
+  },
+  {
+    value: 'withdraw',
+    label: 'Withdraw',
+    disabled: false
+  }
+];
 const BGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
+  const [tab, setTab] = useState('all');
 
-  const [tab, setTab] = useState('market');
   const {
     data: bgtData,
-    loading,
+    // loading,
+    isLoading: isBGTLoading,
     sortDataIndex,
     setSortDataIndex,
     pageData,
@@ -26,9 +40,24 @@ const BGTMobileView = (props: Props) => {
     handleClaim,
     handleExplore,
     handleValidator,
-  } = useBGT();
+  } = useBGT(tab);
+
+  const {
+    data: vaults,
+    params,
+    loading: isLoading,
+    maxPage,
+    setPage,
+    setSortBy,
+  } = useVaultList({
+    sortBy: "activeIncentivesInHoney",
+    sortOrder: "desc",
+    add: true
+  });
 
   const [infraredVisible, setInfraredVisible] = useState(false);
+  const [gaugeVisible, setGaugeVisible] = useState(false)
+  const [gaugeId, setGaugeId] = useState(null)
   const [infraredData, setInfraredData] = useState<any>();
 
   const onTop3 = (data: any) => {
@@ -36,6 +65,23 @@ const BGTMobileView = (props: Props) => {
     setInfraredData(data);
     setInfraredVisible(true);
   };
+
+
+  const { run: scroll } = useDebounceFn(
+    (ev) => {
+      const el = ev.target;
+      const hasMore = params.page < maxPage
+      if (el.scrollHeight - el.scrollTop < el.clientHeight * 2 && hasMore) {
+        setPage(params.page++)
+      }
+    },
+    { wait: 500 }
+  );
+
+  const handleDeposit = (record: any) => {
+    setGaugeVisible(true)
+    setGaugeId(record?.id)
+  }
 
   return (
     <>
@@ -50,32 +96,40 @@ const BGTMobileView = (props: Props) => {
           style={{ position: 'absolute' }}
           className="scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%]"
         />
-        <div className="h-full">
-          <div className="pt-[50px] px-[12px]">
+        <div className="pt-[50px] h-full overflow-auto" onScroll={scroll}>
+          <Market
+            pageData={pageData}
+            onTop3={onTop3}
+            bgtData={bgtData}
+          />
+          <div className='px-[12px]'>
             <SwitchTabs
               tabs={[
-                { label: 'BGT Market', value: 'market' },
-                { label: 'Your Vaults', value: 'vaults' }
+                { label: 'All Vaults', value: 'all' },
+                { label: 'Your Vaults', value: 'your' },
               ]}
               onChange={(val) => {
                 setTab(val);
               }}
               current={tab}
-              className="md:h-[52px] rounded-[12px] bg-[#DFDCC4!important] border-0"
-              cursorClassName="rounded-[10px]"
+              style={{ height: 40, borderRadius: 12 }}
+              cursorStyle={{ borderRadius: 10 }}
             />
           </div>
+
+
           <AnimatePresence mode="wait">
             {
-              tab === 'market' ? (
-                <Market
-                  pageData={pageData}
-                  onTop3={onTop3}
-                  bgtData={bgtData}
+              tab === 'all' ? (
+                <AllVaults
+                  data={vaults}
+                  isLoading={isLoading}
+                  onDeposit={handleDeposit}
                 />
               ) : (
-                <Vaults
+                <YourVaults
                   filterList={filterList}
+                  isLoading={isBGTLoading}
                   handleExplore={handleExplore}
                 />
               )
@@ -92,6 +146,18 @@ const BGTMobileView = (props: Props) => {
         }}
         onBack={() => {
           setInfraredVisible(false);
+        }}
+      />
+
+      <BgtGaugeDrawer
+        visible={gaugeVisible}
+        bgtData={bgtData}
+        id={gaugeId}
+        onClose={() => {
+          setGaugeVisible(false);
+        }}
+        onBack={() => {
+          setGaugeVisible(false);
         }}
       />
     </>

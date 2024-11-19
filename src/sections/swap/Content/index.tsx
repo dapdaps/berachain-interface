@@ -5,7 +5,7 @@ import { useDebounceFn } from "ahooks";
 import useAccount from "@/hooks/use-account";
 import Card from "@/components/card";
 import Header from "../Header";
-import TokenAmout from "../TokenAmount";
+import TokenAmount from "../TokenAmount";
 import Fees from "../Fees";
 import SubmitBtn from "../SubmitBtn";
 import ExchangeIcon from "./ExchangeIcon";
@@ -132,7 +132,7 @@ export default function Swap({
         title={from === "marketplace" ? `GET ${outputCurrency.symbol}` : ""}
       />
       <div className="md:max-h-[calc(100dvh-210px)] md:overflow-y-auto">
-        <TokenAmout
+        <TokenAmount
           type="in"
           currency={inputCurrency}
           amount={inputCurrencyAmount}
@@ -164,7 +164,7 @@ export default function Swap({
             if (Big(inputCurrencyAmount || 0).gt(0)) runQuoter();
           }}
         />
-        <TokenAmout
+        <TokenAmount
           type="out"
           currency={outputCurrency}
           amount={outputCurrencyAmount}

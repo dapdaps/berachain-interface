@@ -1,14 +1,14 @@
-import Big from 'big.js';
-import { Contract, ethers } from 'ethers';
-import { useEffect, useState } from 'react';
-import useToast from '@/hooks/use-toast';
+import Big from "big.js";
+import { Contract, ethers } from "ethers";
+import { useEffect, useState } from "react";
+import useToast from "@/hooks/use-toast";
 
-import type { Token } from '@/types';
+import type { Token } from "@/types";
 
-import { useAccount } from 'wagmi';
+import { useAccount } from "wagmi";
 
 const MAX_APPROVE =
-  '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+  "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
 export default function useApprove({
   token,
@@ -29,6 +29,7 @@ export default function useApprove({
   const [approved, setApproved] = useState(false);
   const [approving, setApproving] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [allowance, setAllowance] = useState<any>(0);
   const { address, connector } = useAccount();
   const toast = useToast();
 
@@ -36,7 +37,7 @@ export default function useApprove({
     if (!token?.address || !amount || !spender) return;
     try {
       const walletProvider: any = await connector?.getProvider();
-      const provider = new ethers.providers.Web3Provider(walletProvider, 'any');
+      const provider = new ethers.providers.Web3Provider(walletProvider, "any");
       const signer = provider.getSigner(address);
 
       setChecking(true);
@@ -45,32 +46,29 @@ export default function useApprove({
         [
           {
             inputs: [
-              { internalType: 'address', name: '', type: 'address' },
-              { internalType: 'address', name: '', type: 'address' }
+              { internalType: "address", name: "", type: "address" },
+              { internalType: "address", name: "", type: "address" }
             ],
-            name: 'allowance',
-            outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-            stateMutability: 'view',
-            type: 'function'
+            name: "allowance",
+            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+            stateMutability: "view",
+            type: "function"
           }
         ],
         signer
       );
       const allowanceRes = await TokenContract.allowance(address, spender);
+      const _allowance = ethers.utils.formatUnits(
+        allowanceRes.toString(),
+        token.decimals
+      );
 
-      let approveValue = amount;
-      if (isMax) {
-        approveValue = Big(MAX_APPROVE)
-          .div(Big(10).pow(token.decimals))
-          .toFixed(token.decimals);
-      }
-      const needApproved = Big(
-        ethers.utils.formatUnits(allowanceRes.toString(), token.decimals)
-      ).lt(approveValue || '0');
+      const needApproved = Big(_allowance).lt(amount || "0");
+      setAllowance(_allowance);
       setApproved(!needApproved);
       setChecking(false);
     } catch (err) {
-      console.log('check approved failed: %o', err);
+      console.log("check approved failed: %o", err);
       setChecking(false);
     }
   };
@@ -80,20 +78,20 @@ export default function useApprove({
     setApproving(true);
     try {
       const walletProvider: any = await connector?.getProvider();
-      const provider = new ethers.providers.Web3Provider(walletProvider, 'any');
+      const provider = new ethers.providers.Web3Provider(walletProvider, "any");
       const signer = provider.getSigner(address);
       const TokenContract = new Contract(
         token.address,
         [
           {
             inputs: [
-              { internalType: 'address', name: 'spender', type: 'address' },
-              { internalType: 'uint256', name: 'value', type: 'uint256' }
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" }
             ],
-            name: 'approve',
-            outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-            stateMutability: 'nonpayable',
-            type: 'function'
+            name: "approve",
+            outputs: [{ internalType: "bool", name: "", type: "bool" }],
+            stateMutability: "nonpayable",
+            type: "function"
           }
         ],
         signer
@@ -116,16 +114,16 @@ export default function useApprove({
         setApproved(true);
         onSuccess?.();
         toast.success({
-          title: 'Approve Successfully!'
+          title: "Approve Successfully!"
         });
       }
     } catch (err: any) {
-      console.log('err', err);
+      console.log("err", err);
       toast.fail({
-        title: 'Approve Failed!',
-        text: err?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
-          : ''
+        title: "Approve Failed!",
+        text: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
+          : ""
       });
       setApproving(false);
     }
@@ -139,5 +137,5 @@ export default function useApprove({
     if (token && amount && spender) checkApproved();
   }, [token, amount, spender, isSkip]);
 
-  return { approved, approve, approving, checking, checkApproved };
+  return { approved, approve, approving, checking, allowance, checkApproved };
 }

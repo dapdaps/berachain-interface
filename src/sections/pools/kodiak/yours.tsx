@@ -3,9 +3,10 @@ import Com from "../components/yours";
 import kodiak from "@/configs/pools/kodiak";
 import usePoolsV2 from "./use-pools-v2";
 import usePoolsV3 from "../hooks/use-pools-v3";
+import Island from "./island/yours";
 
 export default function Yours() {
-  const [version, setVersion] = useState("v3");
+  const [version, setVersion] = useState("islands");
   const {
     pools: v2Pools,
     loading: v2Loading,
@@ -36,6 +37,11 @@ export default function Yours() {
           version === "v3" ? queryV2Pools() : queryV3Pools();
         }, 2000);
       }}
+      tabs={[
+        { label: "Islands", value: "islands", content: Island },
+        { label: "V3 Pools", value: "v3" },
+        { label: "V2 Pools", value: "v2" }
+      ]}
     />
   );
 }
