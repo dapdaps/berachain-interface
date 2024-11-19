@@ -1,5 +1,4 @@
 import Modal from "@/components/modal";
-import Image from "next/image";
 import TokenAmout from "@/sections/swap/TokenAmount";
 import Button from "@/components/button";
 
