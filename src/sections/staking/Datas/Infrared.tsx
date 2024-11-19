@@ -104,7 +104,7 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance'].includes(data?.initialData?.pool?.protocol) || data?.id === "iBGT-HONEY"),
+      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance'].includes(data?.initialData?.pool?.protocol)),
       fullDataList: dataList
     });
   }
