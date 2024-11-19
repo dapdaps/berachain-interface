@@ -13,6 +13,8 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 export default function WithdrawModal({
   data,
   info,
+  amount0,
+  amount1,
   amount,
   percent,
   open,
@@ -78,8 +80,8 @@ export default function WithdrawModal({
           {step === 2 && (
             <SelectPanel
               amount={amount}
-              amount0={info.balanceAmount0}
-              amount1={info.balanceAmount1}
+              amount0={amount0}
+              amount1={amount1}
               info={info}
               data={data}
               percent={percent}

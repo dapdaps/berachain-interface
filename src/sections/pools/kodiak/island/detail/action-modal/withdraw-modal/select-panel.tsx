@@ -7,8 +7,8 @@ import Button from "@/components/button";
 
 export default function SelectPanel({
   amount,
-  amount0,
-  amount1,
+  amount0 = 0,
+  amount1 = 0,
   info,
   data,
   percent,
@@ -63,14 +63,51 @@ export default function SelectPanel({
     setKekIds(uniq(kekIds));
   };
 
-  const errorTips = useMemo(
-    () =>
-      (percent === 100 && kekIds.length !== list.length) ||
-      (Big(info.balance).eq(0) && kekIds.length === 0)
-        ? "Insufficient liquidity"
-        : "",
-    [percent, kekIds]
-  );
+  const {
+    extraAmount0,
+    extraAmount1,
+    remainingAmount0,
+    remainingAmount1,
+    islandAmount0,
+    islandAmount1,
+    errorTips
+  } = useMemo(() => {
+    let _i0 = Big(0);
+    let _i1 = Big(0);
+    let _errorTips = "";
+
+    const _ir0 = Big(amount0).minus(stakedAmounts.amount0 || 0);
+    const _ir1 = Big(amount1).minus(stakedAmounts.amount1 || 0);
+
+    const _r0 = _ir0.minus(info.balanceAmount0);
+    const _r1 = _ir0.minus(info.balanceAmount1);
+
+    if (_ir0.gt(info.balanceAmount0) || _ir1.gt(info.balanceAmount1)) {
+      _errorTips = "Insufficient Liquidity";
+      _i0 = Big(info.balanceAmount0);
+      _i1 = Big(info.balanceAmount1);
+    } else {
+      _i0 = _ir0;
+      _i1 = _ir1;
+    }
+
+    const _e0 = Big(stakedAmounts.amount0 || 0)
+      .add(_i0)
+      .minus(amount0);
+    const _e1 = Big(stakedAmounts.amount1 || 0)
+      .add(_i1)
+      .minus(amount1);
+
+    return {
+      extraAmount0: _e0.gt(0) ? _e0.toString() : 0,
+      extraAmount1: _e1.gt(0) ? _e1.toString() : 0,
+      remainingAmount0: _r0.gt(0) ? _r0.toString() : 0,
+      remainingAmount1: _r1.gt(0) ? _r1.toString() : 0,
+      islandAmount0: _i0.toString(),
+      islandAmount1: _i1.toString(),
+      errorTips: _errorTips
+    };
+  }, [amount0, amount1, info, stakedAmounts]);
 
   return (
     <>
@@ -100,23 +137,31 @@ export default function SelectPanel({
             Withdraw from Island
           </div>
           <div className="text-[14px] font-medium">
-            {balanceFormated(amount0, 4)}
-            {data.token0.symbol}/{balanceFormated(amount1, 4)}
+            {balanceFormated(islandAmount0, 4)}
+            {data.token0.symbol}/{balanceFormated(islandAmount1, 4)}
             {data.token1.symbol}
           </div>
         </div>
-        {percent !== 100 && (
+        {!!(extraAmount0 && extraAmount1) && (
           <div className="flex items-center justify-between mt-[6px]">
             <div className="text-[14px] font-medium	text-[#3D405A]">
               Extra withdrawal
             </div>
             <div className="text-[14px] font-medium">
-              {balanceFormated(
-                balanceFormated((stakedAmounts.amount0 * percent) / 100, 4),
-                4
-              )}
-              {data.token0.symbol}/
-              {balanceFormated((stakedAmounts.amount1 * percent) / 100, 4)}
+              {balanceFormated(balanceFormated(extraAmount0, 4), 4)}
+              {data.token0.symbol}/{balanceFormated(extraAmount1, 4)}
+              {data.token1.symbol}
+            </div>
+          </div>
+        )}
+        {!!(remainingAmount0 && remainingAmount1) && (
+          <div className="flex items-center justify-between mt-[6px]">
+            <div className="text-[14px] font-medium	text-[#3D405A]">
+              Remaining
+            </div>
+            <div className="text-[14px] font-medium">
+              {balanceFormated(balanceFormated(remainingAmount0, 4), 4)}
+              {data.token0.symbol}/{balanceFormated(remainingAmount1, 4)}
               {data.token1.symbol}
             </div>
           </div>
