@@ -169,7 +169,7 @@ export default function DepositModal({
           {type === "staking" && step === 5 && (
             <ApprovePanel
               data={data}
-              amount={Big(received).mul(1e18).toString()}
+              amount={received}
               onSuccess={() => {
                 setStep(6);
               }}
