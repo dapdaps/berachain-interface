@@ -30,7 +30,7 @@ const Total = ({ data, symbol }: any) => {
             Big(data.balance).add(data.locked.amount).toString(),
             2
           )}{" "}
-          {data.symbol}
+          {symbol}
         </div>
       </div>
       <div>

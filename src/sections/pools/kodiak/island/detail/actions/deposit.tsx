@@ -133,17 +133,19 @@ export default function Deposit({ data, info, onSuccess }: any) {
           )}
         </div>
       </div>
-      <SwitchTabs
-        tabs={[
-          { label: "Deposit only", value: "deposit" },
-          { label: "With staking", value: "staking" }
-        ]}
-        current={type}
-        onChange={setType}
-        className="mt-[14px] !h-[40px] !p-[3px_4px] !bg-[#DFDCC4] md:!border-none md:!bg-transparent md:!p-0"
-        cursorClassName="md:!rounded-[10px]"
-        tabClassName="font-semibold md:font-medium"
-      />
+      {!!data.farmAddress && (
+        <SwitchTabs
+          tabs={[
+            { label: "Deposit only", value: "deposit" },
+            { label: "With staking", value: "staking" }
+          ]}
+          current={type}
+          onChange={setType}
+          className="mt-[14px] !h-[40px] !p-[3px_4px] !bg-[#DFDCC4] md:!border-none md:!bg-transparent md:!p-0"
+          cursorClassName="md:!rounded-[10px]"
+          tabClassName="font-semibold md:font-medium"
+        />
+      )}
       {account ? (
         chainId !== DEFAULT_CHAIN_ID ? (
           <SwitchNetworkButton className="!h-[46px]" />

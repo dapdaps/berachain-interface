@@ -7,7 +7,7 @@ import useUnstake from "../../../hooks/use-unstake";
 
 export default function UnstakePanel({
   data,
-  selectedItems,
+  selectedItems = [],
   info,
   onSuccess
 }: any) {
