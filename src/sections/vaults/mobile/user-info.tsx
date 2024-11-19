@@ -9,7 +9,7 @@ const UserInfo = ({ data, className, onClaim }: any) => {
   return (
     <div className={clsx("flex items-center gap-[30px]", className)}>
       <div>
-        <div className="text-[14px]">You Staked</div>
+        <div className="text-[14px]">You {isBERPS ? 'Deposited' : 'Staked'}</div>
         <div className="mt-[3px] flex items-center gap-[3px]">
           <span className="text-[16px] font-semibold">
             {formatValueDecimal(data?.usdDepositAmount, "$", 2, true, false)}

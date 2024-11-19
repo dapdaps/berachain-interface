@@ -16,6 +16,11 @@ import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
 import BaseButton from '@/sections/pools/components/button/base-button';
 import WithdrawQueueDrawer from '@/sections/staking/Bridge/Detail/Berps/Drawer';
 
+const BerpsTypeName = {
+  Stake: 'Deposit',
+  Unstake: 'Withdraw',
+};
+
 export default function HandleModal({
   show,
   onClose,
@@ -90,7 +95,11 @@ export default function HandleModal({
       <Modal open={show} onClose={onClose} closeIconClassName="md:hidden">
         <div className="bg-[#FFFDEB] px-[15px] py-[20px] rounded-t-[20px]">
           <div className="text-[18px] font-bold">
-            {type ? "Unstake" : "Stake"} {symbol}
+            {
+              type ?
+                isBERPS ? BerpsTypeName['Unstake'] : "Unstake" :
+                isBERPS ? BerpsTypeName['Stake'] : "Stake"
+            } {symbol}
           </div>
           <UserInfo data={data} className="justify-between mt-[16px]" />
           <Input
@@ -149,13 +158,18 @@ export default function HandleModal({
           }
           <div className="mt-[30px]">
             <Button
-              text={type ? "Unstake" : "Stake"}
+              text={(
+                type ?
+                  isBERPS ? BerpsTypeName['Unstake'] : "Unstake" :
+                  isBERPS ? BerpsTypeName['Stake'] : "Stake"
+              )}
               errorTips=""
               loading={loading}
               onClick={onHandle}
               value={value}
               token={token}
               spender={approveSpender}
+              disabled={type && Big(balance || 0).lte(0) && isBERPS}
             />
             {
               isBERPS && !!type && (
@@ -169,7 +183,7 @@ export default function HandleModal({
               )
             }
           </div>
-          {!!balance && Big(balance).eq(0) && (
+          {!!balance && Big(balance).eq(0) && !isBERPS && (
             <div className="mt-[16px] text-center text-[#FD4C67] text-[14px] font-medium">
               You don’t have any {pool?.name || data.tokens[0]} yet
             </div>
