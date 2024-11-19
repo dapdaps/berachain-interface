@@ -42,13 +42,12 @@ export default memo(function gauge(props: any) {
       <div className="w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <div className="mb-[30px] flex items-center justify-between pl-[19px] pr-[23px] h-[75px] rounded-[20px] bg-[#FFDC50]">
           <div className="flex items-center">
-            {/* <svg onClick={() => {
+            <svg onClick={() => {
               router.back()
             }} className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">
               <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
               <path d="M20 11L15.2 17L20 23" stroke="black" stroke-width="3" stroke-linecap="round" />
-            </svg> */}
-            <Back />
+            </svg>
             <div className="ml-[32px] mr-[14px] w-[42px] h-[42px] rounded-full overflow-hidden">
               <img src={gaugeData?.metadata?.logoURI || "/images/bgt-logo.svg"} alt={gaugeData?.metadata?.name} />
             </div>
