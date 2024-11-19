@@ -26,8 +26,10 @@ export default function Withdraw({ data, info, onSuccess }: any) {
 
   const errorTips = useMemo(() => {
     if (percent === 0) return "Select a percentage";
+    if (Big(amount0).eq(0) || Big(amount1).eq(0))
+      return "Insufficient Liquidity";
     return "";
-  }, [percent, info]);
+  }, [percent, info, amount0, amount1]);
 
   return (
     <>
