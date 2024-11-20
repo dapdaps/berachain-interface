@@ -85,7 +85,7 @@ const FlexTable = (props: FlexTableProps) => {
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                   <div
-                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${rowClass}`}
+                    className={`odd:bg-[rgba(0,0,0,0.06)] px-[13px] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${rowClass}`}
                     key={index}
                     onClick={(e) => onRow(record, index, e)}
                   >
@@ -98,7 +98,7 @@ const FlexTable = (props: FlexTableProps) => {
                           textAlign: column.align ?? 'left',
                           flexShrink: column.width ? 0 : 1
                         }}
-                        className={`font-[600] first:pl-[13px] last:pr-[13px] ${
+                        className={`font-[600] ${
                           column.ellipsis ? 'truncate' : ''
                         } ${colClass}`}
                       >
