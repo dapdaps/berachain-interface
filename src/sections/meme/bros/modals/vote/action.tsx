@@ -22,7 +22,7 @@ const VoteAction = (props: any) => {
         onClose={onClose}
         size="60dvh"
       >
-        <div className="bg-[#FFFDEB] px-[22px] pt-[16px] pb-[20px] rounded-tl-[20px] rounded-tr-[2px] h-full overflow-y-auto">
+        <div className="bg-[#FFFDEB] px-[22px] pt-[16px] pb-[20px] rounded-tl-[20px] rounded-tr-[20px] h-full overflow-y-auto">
           <div className="flex justify-center items-center gap-[9px]">
             <LazyImage src={record?.icon} width={50} height={50} />
             <span className="font-CherryBomb text-black text-[20px] font-[600]">

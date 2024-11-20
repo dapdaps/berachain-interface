@@ -31,7 +31,7 @@ const VoteConfirm = (props: any) => {
       onClose={onClose}
       size="30dvh"
     >
-      <div className="bg-[#FFFDEB] px-[22px] pt-[16px] pb-[20px] rounded-tl-[20px] rounded-tr-[2px] h-full overflow-y-auto text-[16px] text-black font-[400] leading-[120%]">
+      <div className="bg-[#FFFDEB] px-[22px] pt-[16px] pb-[20px] rounded-tl-[20px] rounded-tr-[20px] h-full overflow-y-auto text-[16px] text-black font-[400] leading-[120%]">
         <Confirm {...props} />
       </div>
     </Drawer>
