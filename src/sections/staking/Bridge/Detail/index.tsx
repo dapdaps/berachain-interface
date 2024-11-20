@@ -493,6 +493,8 @@ export default memo(function Detail(props: any) {
   const mintData = useMemo(() => {
     const pool = data?.initialData?.pool;
     if (!pool) return;
+
+    console.log('====pool', pool)
     if (!['BEX', 'Kodiak Finance'].includes(pool.protocol)) return null;
     const protocol = pool.protocol.split(' ')[0];
 

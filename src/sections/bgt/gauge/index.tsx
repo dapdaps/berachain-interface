@@ -27,7 +27,7 @@ const TABS = [
 ];
 const RangeList = [0.25, 0.5, 0.75, 1]
 const rewardSymbol = "BGT"
-const template = "Gauge"
+const template = "BGTStation"
 const decimals = 18
 
 const BgtGauge = (props: any) => {
