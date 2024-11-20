@@ -20,22 +20,31 @@ export function useRecords(props: Props) {
   const [loading, setLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
+  const [lastPageStart, setLastPageStart] = useState<any>({});
 
   const getRecords = async (params: any = {}) => {
     const _pageIndex = params.pageIndex || pageIndex;
+    const _direction = params.direction || 'next';
+
+    const _params: any = {
+      address,
+      limit: 20,
+      start_time: _pageIndex === 1 ? '' : records.slice(-1)[0].tx_time,
+      chain_id: currentChain.id,
+      dapp: ''
+    };
+    if (_direction === 'prev') {
+      _params.start_time =  _pageIndex === 1 ? '' : lastPageStart[_pageIndex];
+    }
+
+    console.log('_pageIndex: %o, _params: %o', _pageIndex, _params);
 
     try {
       setLoading(true);
       setRecords([]);
       const result = await get(`/db3`, {
         url: 'api/transaction/list',
-        params: JSON.stringify({
-          address,
-          limit: 20,
-          start_time: _pageIndex === 1 ? '' : records.slice(-1)[0].tx_time,
-          chain_id: currentChain.id,
-          dapp: ''
-        })
+        params: JSON.stringify(_params)
       });
 
       const _list = result.data.list
@@ -71,16 +80,17 @@ export function useRecords(props: Props) {
 
   const handleNext = () => {
     if (!hasMore || loading) return;
+    setLastPageStart({ ...lastPageStart, [pageIndex]: records[0].tx_time });
     const _pageIndex = pageIndex + 1;
     setPageIndex(_pageIndex);
-    getRecords({ pageIndex: _pageIndex });
+    getRecords({ pageIndex: _pageIndex, direction: 'next' });
   };
 
   const handlePrev = () => {
     if (pageIndex === 1 || loading) return;
     const _pageIndex = pageIndex - 1;
     setPageIndex(_pageIndex);
-    getRecords({ pageIndex: _pageIndex });
+    getRecords({ pageIndex: _pageIndex, direction: 'prev' });
   };
 
   useEffect(() => {
