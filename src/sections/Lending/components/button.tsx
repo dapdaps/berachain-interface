@@ -59,6 +59,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
+        className="whitespace-nowrap"
       >
         Enter An Amount
       </Button>
@@ -75,6 +76,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
+        className="whitespace-nowrap"
       >
         Connect wallet
       </Button>
@@ -93,6 +95,7 @@ const LendingButton = ({
         loading={isPending || loading}
         disabled={loading || disabled}
         style={style}
+        className="whitespace-nowrap"
       >
         Switch Network
       </Button>
@@ -106,6 +109,7 @@ const LendingButton = ({
         style={style}
         disabled={loading || disabled}
         loading={loading}
+        className="whitespace-nowrap"
       >
         Not enough gas
       </Button>
@@ -120,6 +124,7 @@ const LendingButton = ({
         onClick={approve}
         disabled={checking || approving || loading || disabled}
         style={style}
+        className="whitespace-nowrap"
       >
         Approve {token?.symbol}
       </Button>
@@ -224,6 +229,7 @@ const LendingButton = ({
       loading={checking || approving || loading || pending}
       disabled={checking || approving || loading || disabled || pending}
       style={style}
+      className="whitespace-nowrap"
     >
       {children}
     </Button>
