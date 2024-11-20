@@ -39,7 +39,7 @@ export function useRecords(props: Props) {
       });
 
       const _list = result.data.list
-        ?.filter((record: any) => record.token_in && record)
+        // ?.filter((record: any) => record.token_in && record)
         .map((record: any) => {
           return {
             key: record.id,

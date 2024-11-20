@@ -9,7 +9,12 @@ const DetailBex = (props: any) => {
     setShowAddModal,
     claiming,
     handleClaim,
+    isInfraredBerps,
   } = props;
+
+  const handleMint = () => {
+    setShowAddModal(true);
+  };
 
   return (
     <div className='flex-1 pr-[24px] pl-[13px] h-[300px] bg-black/[0.06]'>
@@ -38,16 +43,14 @@ const DetailBex = (props: any) => {
             </div>
           </div>
 
-          {mintData && (
+          {(mintData || isInfraredBerps) && (
             <div
               className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
-              onClick={() => {
-                setShowAddModal(true);
-              }}
+              onClick={handleMint}
             >
-                  <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                    Mint LP
-                  </span>
+              <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                Mint LP
+              </span>
             </div>
           )}
         </div>
