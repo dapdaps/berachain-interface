@@ -18,9 +18,9 @@ const ArrowIcon = (
   </svg>
 );
 
-export default function StakeModal() {
+export default function StakeModal({ open, onClose }: any) {
   return (
-    <Basic open={true} onClose={() => {}} className="w-[520px]">
+    <Basic open={open} onClose={onClose} className="w-[520px]">
       <div className="flex gap-[18px]">
         <Image
           src="/assets/tokens/bera.svg"
@@ -78,7 +78,7 @@ export default function StakeModal() {
       </div>
       <Button
         type="primary"
-        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
       >
         👊 Dap sPepe up!
       </Button>

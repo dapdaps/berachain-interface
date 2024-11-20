@@ -4,10 +4,10 @@ import Button from "@/components/button";
 import CurrencySelect from "@/sections/swap/TokenSelector";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function AddIncentives() {
+export default function AddIncentives({ open, onClose }: any) {
   return (
     <>
-      <Basic open={true} onClose={() => {}} className="w-[520px]">
+      <Basic open={open} onClose={onClose} className="w-[520px]">
         <div className="flex text-[20px] font-bold">Add Incentives</div>
         <div className="mt-[20px]">
           <TokenAmout
@@ -23,7 +23,7 @@ export default function AddIncentives() {
         </div>
         <Button
           type="primary"
-          className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+          className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
         >
           Add
         </Button>

@@ -2,9 +2,9 @@ import Basic from "./basic";
 import Image from "next/image";
 import Button from "@/components/button";
 
-export default function ClaimRewards() {
+export default function ClaimRewards({ open, onClose }: any) {
   return (
-    <Basic open={true} onClose={() => {}} className="w-[520px]">
+    <Basic open={open} onClose={onClose}>
       <div className="text-[20px] font-bold">Claim Rewards</div>
       <div className="mt-[19px] flex items-center text-[16px] font-semibold gap-[10px]">
         <div className="flex items-center shrink-0 gap-[10px]">
@@ -22,7 +22,7 @@ export default function ClaimRewards() {
       </div>
       <Button
         type="primary"
-        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
       >
         Claim
       </Button>

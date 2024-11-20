@@ -2,10 +2,12 @@ import Basic from "./basic";
 import TokenAmout from "@/sections/swap/TokenAmount";
 import Button from "@/components/button";
 
-export default function Unstake() {
+export default function Unstake({ open, onClose }: any) {
   return (
-    <Basic open={true} onClose={() => {}} className="w-[520px]">
-      <div className="flex text-[20px] font-bold pt-[25px]">Unstake sPepe</div>
+    <Basic open={open} onClose={onClose} className="w-[520px]">
+      <div className="flex text-[20px] font-bold pt-[25px] md:pt-0">
+        Unstake sPepe
+      </div>
       <div className="mt-[20px]">
         <TokenAmout
           currency={{}}
@@ -18,7 +20,7 @@ export default function Unstake() {
       </div>
       <Button
         type="primary"
-        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
       >
         Unstake
       </Button>

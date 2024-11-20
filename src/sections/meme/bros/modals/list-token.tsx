@@ -4,10 +4,10 @@ import Button from "@/components/button";
 import CurrencySelect from "@/sections/swap/TokenSelector";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function ListToken() {
+export default function ListToken({ open, onClose }: any) {
   return (
     <>
-      <Basic open={true} onClose={() => {}} className="w-[520px]">
+      <Basic open={open} onClose={onClose} className="w-[520px]">
         <div className="flex items-center gap-[12px] text-[20px] font-bold">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -15,6 +15,7 @@ export default function ListToken() {
             height="16"
             viewBox="0 0 9 16"
             fill="none"
+            className="md:hidden"
           >
             <path
               d="M6.7998 2L1.9998 8L6.7998 14"
@@ -25,7 +26,7 @@ export default function ListToken() {
           </svg>
           <span>List A Meme Token</span>
         </div>
-        <div className="text-[14px] font-semibold pb-[14px] pt-[30px]">
+        <div className="text-[14px] font-semibold pb-[14px] pt-[10px]">
           Token Address
         </div>
         <div className="rounded-[12px] border border-[#373A53] bg-white flex items-center px-[14px] h-[50px]">
@@ -51,7 +52,7 @@ export default function ListToken() {
             </svg>
           </button>
         </div>
-        <div className="mt-[20px]">
+        <div className="mt-[10px]">
           <div className="text-[14px] font-semibold pb-[14px]">
             Add Incentives
           </div>
@@ -68,7 +69,7 @@ export default function ListToken() {
         </div>
         <Button
           type="primary"
-          className="w-full h-[60px] mt-[16px] text-[18px] font-semibold"
+          className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
         >
           List a meme
         </Button>
