@@ -20,7 +20,7 @@ export default function Materials() {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 232 100"
         fill="none"
-        className="absolute top-[-100px] left-[350px] md:w-[120px] md:h-[52px] md:left-[50vw] md:top-[-52px]"
+        className="absolute top-[-100px] left-[350px] w-[232px] h-[100px] md:w-[120px] md:h-[52px] md:left-[50vw] md:top-[-52px]"
       >
         <path
           d="M138 9L227.5 98.5H4L91 11.5C94.3333 8.33333 103.8 2 115 2C126.2 2 135 6.66667 138 9Z"

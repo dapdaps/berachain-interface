@@ -1,12 +1,14 @@
 import Label from "../../components/label";
+import { useRouter } from "next-nprogress-bar";
 
-const Button = ({ children }: any) => {
+const Button = ({ children, onClick }: any) => {
   return (
     <Label
       className="w-[50px] h-[50px] text-[10px] font-semibold mt-[10px]"
       contentClassName="!rounded-[10px]  flex flex-col items-center justify-center"
       shadowClassName="!rounded-[10px]"
       hasPoints={false}
+      onClick={onClick}
     >
       {children}
     </Label>
@@ -14,13 +16,22 @@ const Button = ({ children }: any) => {
 };
 
 export default function Actions() {
+  const router = useRouter();
   return (
     <div className="fixed right-[18px] bottom-[70px] z-[10]">
-      <Button>
+      <Button
+        onClick={() => {
+          router.push("/meme/bros/history");
+        }}
+      >
         {historyIcon}
         <span>History</span>
       </Button>
-      <Button>
+      <Button
+        onClick={() => {
+          router.push("/meme/bros/vote");
+        }}
+      >
         {voteIcon}
         <span>Vote</span>
       </Button>

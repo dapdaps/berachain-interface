@@ -1,18 +1,12 @@
-import RoundLabel from '@/sections/meme/bros/components/round-label';
-import VoteTable from '@/sections/meme/bros/modals/vote/table';
-import Basic from '@/sections/meme/bros/modals/basic';
-import VoteListMeme from '@/sections/meme/bros/modals/vote/list-meme';
+import RoundLabel from "@/sections/meme/bros/components/round-label";
+import VoteTable from "@/sections/meme/bros/modals/vote/table";
+import Basic from "@/sections/meme/bros/modals/basic";
+import VoteListMeme from "@/sections/meme/bros/modals/vote/list-meme";
 
-const VoteLaptop = (props: any) => {
-  const {} = props;
-
+const VoteLaptop = ({ open, onClose }: any) => {
+  console.log("open", open);
   return (
-    <Basic
-      open={true}
-      onClose={() => {
-      }}
-      className="w-[916px]"
-    >
+    <Basic open={open} onClose={onClose} className="w-[916px]">
       <div className="flex items-center gap-[12px] text-[20px] font-bold mt-[16px] px-[13px]">
         <span>Vote for the next round</span>
       </div>

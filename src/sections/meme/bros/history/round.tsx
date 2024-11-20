@@ -5,12 +5,10 @@ import RoundLabel from "../components/round-label";
 import TokensPanel from "./laptop/tokens-panel";
 import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
-import MemeRank from "../modals/meme-rank";
-import { useState } from "react";
 
 export default function Round() {
   const isMobile = useIsMobile();
-  const [showRank, setShowRank] = useState(false);
+
   return (
     <>
       <div
@@ -26,9 +24,7 @@ export default function Round() {
         />
         <div
           className="hidden border-b border-black/20 w-full justify-center pb-[14px] pt-[44px] md:flex cursor-pointer"
-          onClick={() => {
-            setShowRank(true);
-          }}
+          onClick={() => {}}
         >
           {[1, 2, 3, 4].map((item, i) => (
             <Image
@@ -48,23 +44,25 @@ export default function Round() {
           )}
         >
           {!isMobile && (
-            <Popover
-              content={<TokensPanel />}
-              placement={PopoverPlacement.TopLeft}
-            >
-              <div className="flex items-center w-1/4">
-                {[1, 2, 3, 4].map((item, i) => (
-                  <Image
-                    key={item}
-                    src="/assets/tokens/bera.svg"
-                    width={40}
-                    height={40}
-                    alt="Reward Token"
-                    className={i !== 0 ? "ml-[-15px]" : ""}
-                  />
-                ))}
-              </div>
-            </Popover>
+            <div className="w-1/4">
+              <Popover
+                content={<TokensPanel />}
+                placement={PopoverPlacement.TopLeft}
+              >
+                <div className="flex items-center">
+                  {[1, 2, 3, 4].map((item, i) => (
+                    <Image
+                      key={item}
+                      src="/assets/tokens/bera.svg"
+                      width={40}
+                      height={40}
+                      alt="Reward Token"
+                      className={i !== 0 ? "ml-[-15px]" : ""}
+                    />
+                  ))}
+                </div>
+              </Popover>
+            </div>
           )}
 
           <div className="w-1/4 md:w-1/2 md:pl-[20px]">
@@ -123,7 +121,11 @@ export default function Round() {
                 alt="Incentive Token"
                 className="rounded-full"
               />
-              <Button className="h-[28px] ml-[12px] md:hidden" type="primary">
+              <Button
+                className="h-[28px] ml-[12px] md:hidden"
+                type="primary"
+                onClick={() => {}}
+              >
                 Unstake!
               </Button>
             </div>
@@ -149,9 +151,9 @@ export default function Round() {
                 className="rounded-full ml-[-8px]"
               />
               <Button
-                disabled
                 className="h-[28px] ml-[12px] md:hidden"
                 type="primary"
+                onClick={() => {}}
               >
                 Claimed
               </Button>
@@ -159,20 +161,15 @@ export default function Round() {
           </div>
         </div>
         <div className="items-center gap-[14px] px-[14px] mb-[12px] hidden md:flex">
-          <Button className="h-[40px] w-1/2" type="primary">
+          <Button className="h-[40px] w-1/2" type="primary" onClick={() => {}}>
             Unstake!
           </Button>
-          <Button disabled className="h-[40px] w-1/2" type="primary">
+          <Button className="h-[40px] w-1/2" type="primary" onClick={() => {}}>
             Claimed
           </Button>
         </div>
       </div>
-      <MemeRank
-        open={showRank}
-        onClose={() => {
-          setShowRank(false);
-        }}
-      />
+      <></>
     </>
   );
 }

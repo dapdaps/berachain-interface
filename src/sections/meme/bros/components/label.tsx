@@ -5,10 +5,11 @@ export default function Label({
   hasPoints = true,
   children,
   contentClassName,
-  shadowClassName
+  shadowClassName,
+  onClick = () => {}
 }: any) {
   return (
-    <div className={clsx("relative", className)}>
+    <div className={clsx("relative", className)} onClick={onClick}>
       <div
         className={clsx(
           "relative w-full h-full z-[2] flex flex-col justify-center rounded-[5px] border border-black bg-[#FFCC00]",

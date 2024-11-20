@@ -1,6 +1,7 @@
 import LazyImage from "@/components/layz-image";
 import { TOKENS } from "../laptop/config";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next-nprogress-bar";
 import Button from "@/components/button";
 import RankMark from "../../rank-mark";
 import Popover, { PopoverPlacement } from "@/components/popover";
@@ -8,7 +9,9 @@ import RewardsPanel from "./rewards-panel";
 import RoundLabel from "../../components/round-label";
 import clsx from "clsx";
 
-const Token = ({ token, i }: any) => {
+import useIsMobile from "@/hooks/use-isMobile";
+
+const Token = ({ token, i, onClick }: any) => {
   return (
     <div
       className={clsx(
@@ -77,7 +80,14 @@ const Token = ({ token, i }: any) => {
                 </div>
               </Popover>
 
-              <button className="font-medium underline ml-[12px]">Claim</button>
+              <button
+                className="font-medium underline ml-[12px]"
+                onClick={() => {
+                  onClick(4);
+                }}
+              >
+                Incentives
+              </button>
             </div>
           </div>
           <div className="w-1/3 md:w-1/2 md:mt-[6px]">
@@ -112,7 +122,14 @@ const Token = ({ token, i }: any) => {
                 height={16}
                 containerClassName="rounded-full ml-[-8px]"
               />
-              <button className="font-medium underline ml-[12px]">Claim</button>
+              <button
+                className="font-medium underline ml-[12px]"
+                onClick={() => {
+                  onClick(3);
+                }}
+              >
+                Claim
+              </button>
             </div>
           </div>
           <div className="w-1/3 mt-[6px] md:w-1/2">
@@ -129,10 +146,21 @@ const Token = ({ token, i }: any) => {
           </div>
         </div>
         <div className="flex flex-col gap-[15px] md:flex-row md:mt-[12px]">
-          <Button className="h-[40px] w-[172px]" type="primary">
+          <Button
+            className="h-[40px] w-[172px]"
+            type="primary"
+            onClick={() => {
+              onClick(1);
+            }}
+          >
             Dap me up!
           </Button>
-          <Button className="h-[40px] w-[172px] !bg-transparent">
+          <Button
+            className="h-[40px] w-[172px] !bg-transparent"
+            onClick={() => {
+              onClick(2);
+            }}
+          >
             Unstake
           </Button>
         </div>
@@ -141,35 +169,63 @@ const Token = ({ token, i }: any) => {
   );
 };
 
-export default function Tokens() {
+export default function Tokens({ onOpenModal }: any) {
   const tokens = useMemo(() => Object.values(TOKENS), [TOKENS]);
+  const router = useRouter();
+  const isMobile = useIsMobile();
+
+  const handleVote = useCallback(() => {
+    if (isMobile) {
+      router.push("/meme/bros/vote");
+    } else {
+      onOpenModal(5);
+    }
+  }, [isMobile]);
+
   return (
-    <div className="w-[1232px] mx-[auto] md:px-[14px] md:w-full">
-      <div className="flex justify-between items-center md:absolute md:top-[-25px] md:justify-start md:gap-[8px]">
-        <RoundLabel title="Round 1" subTitle="NoV.20-dec.3, 2024" />
-        <div className="flex items-center gap-[16px] md:hidden">
-          <button className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold">
-            History
-          </button>
-          <button className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold leading-[16px]">
-            Vote for the next round
-          </button>
+    <>
+      <div className="w-[1232px] mx-[auto] md:px-[14px] md:w-full">
+        <div className="flex justify-between items-center md:absolute md:top-[-25px] md:justify-start md:gap-[8px]">
+          <RoundLabel title="Round 1" subTitle="NoV.20-dec.3, 2024" />
+          <div className="flex items-center gap-[16px] md:hidden">
+            <button
+              className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold"
+              onClick={() => {
+                router.push("/meme/bros/history");
+              }}
+            >
+              History
+            </button>
+            <button
+              className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold leading-[16px]"
+              onClick={handleVote}
+            >
+              Vote for the next round
+            </button>
+          </div>
+          <div className="rounded-[10px] w-[64px] h-[72px] border border-black bg-[#FFFDEB] p-[3px] hidden md:block">
+            <Button
+              type="primary"
+              className="w-[58px] h-[32px] !text-[12px] !px-0"
+            >
+              Hotest
+            </Button>
+            <Button className="border-0 w-[58px] h-[32px] !text-[12px] !px-0">
+              Fastest
+            </Button>
+          </div>
         </div>
-        <div className="rounded-[10px] w-[64px] h-[72px] border border-black bg-[#FFFDEB] p-[3px] hidden md:block">
-          <Button
-            type="primary"
-            className="w-[58px] h-[32px] !text-[12px] !px-0"
-          >
-            Hotest
-          </Button>
-          <Button className="border-0 w-[58px] h-[32px] !text-[12px] !px-0">
-            Fastest
-          </Button>
-        </div>
+        {Object.values(tokens).map((token, i) => (
+          <Token
+            key={token.address}
+            token={token}
+            i={i}
+            onClick={(type: any) => {
+              onOpenModal(type, token);
+            }}
+          />
+        ))}
       </div>
-      {Object.values(tokens).map((token, i) => (
-        <Token key={token.address} token={token} i={i} />
-      ))}
-    </div>
+    </>
   );
 }

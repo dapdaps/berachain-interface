@@ -1,9 +1,4 @@
-import RulesModal from "../modals/rules";
-import { useState } from "react";
-
 export default function Title() {
-  const [showRules, setShowRules] = useState(false);
-
   return (
     <>
       <div className="flex justify-center">
@@ -145,9 +140,7 @@ export default function Title() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="w-[67px] h-[23px] absolute right-0 md:right-[-64px] top-0 cursor-pointer hover:opacity-80"
-            onClick={() => {
-              setShowRules(true);
-            }}
+            onClick={() => {}}
           >
             <rect
               x="0.5"
@@ -233,12 +226,6 @@ export default function Title() {
           </svg>
         </div>
       </div>
-      <RulesModal
-        open={showRules}
-        onClose={() => {
-          setShowRules(false);
-        }}
-      />
     </>
   );
 }

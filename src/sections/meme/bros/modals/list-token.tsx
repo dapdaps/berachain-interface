@@ -9,21 +9,6 @@ export default function ListToken({ open, onClose }: any) {
     <>
       <Basic open={open} onClose={onClose} className="w-[520px]">
         <div className="flex items-center gap-[12px] text-[20px] font-bold">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="9"
-            height="16"
-            viewBox="0 0 9 16"
-            fill="none"
-            className="md:hidden"
-          >
-            <path
-              d="M6.7998 2L1.9998 8L6.7998 14"
-              stroke="black"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          </svg>
           <span>List A Meme Token</span>
         </div>
         <div className="text-[14px] font-semibold pb-[14px] pt-[10px]">
