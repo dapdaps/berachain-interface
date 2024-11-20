@@ -106,14 +106,16 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
                   </button>
                 </Popover>
               ) : (
-                <div className="absolute flex justify-center items-center gap-[5px] h-[17px] rounded-[9px] px-[5px] bg-[#7CB424] whitespace-nowrap top-0 right-0">
-                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 3.08333L3.94737 6L9 1" stroke="white" strokeWidth="2" />
-                  </svg>
-                  <span className="text-[12px] text-white font-[600] leading-[90%]">
+                record.voted && (
+                  <div className="absolute flex justify-center items-center gap-[5px] h-[17px] rounded-[9px] px-[5px] bg-[#7CB424] whitespace-nowrap top-[-17px] right-[-12px]">
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 3.08333L3.94737 6L9 1" stroke="white" strokeWidth="2" />
+                    </svg>
+                    <span className="text-[12px] text-white font-[600] leading-[90%]">
                     You Voted
                   </span>
-                </div>
+                  </div>
+                )
               )
             }
           </div>
