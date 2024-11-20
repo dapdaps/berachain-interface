@@ -41,7 +41,7 @@ export default memo(function gauge(props: any) {
       <BgtHead bgtData={bgtData} />
       <div className="w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <div className="mb-[30px] flex items-center justify-between pl-[19px] pr-[23px] h-[75px] rounded-[20px] bg-[#FFDC50]">
-          <div className="flex items-center">
+          <div className="flex items-center relative">
             {/* <svg onClick={() => {
               router.back()
             }} className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">

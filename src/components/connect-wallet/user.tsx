@@ -17,6 +17,12 @@ const MobileUser = (props: Props) => {
     userInfo,
   } = props;
 
+  let walletName = walletInfo?.name || '';
+  if (walletName) {
+    walletName = walletName.replace(/^io\./, '');
+    walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);
+  }
+
   return (
     <Drawer visible={visible} onClose={onClose} size="203px" className="bg-[#FFFDEB]">
       <div className="mt-[30px] px-[20px]">
@@ -45,7 +51,7 @@ const MobileUser = (props: Props) => {
               </div>
             </div>
             <div className="text-[#3D405A] text-[16px] font-normal text-nowrap leading-[1] overflow-hidden overflow-ellipsis">
-              Connected with {walletInfo?.name}
+              Connected with {walletName}
             </div>
           </div>
         </div>
