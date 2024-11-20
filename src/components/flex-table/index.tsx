@@ -6,7 +6,10 @@ const FlexTable = (props: FlexTableProps) => {
   const {
     wrapperClass = '',
     headClass = '',
+    headColClass = '',
     bodyClass = '',
+    rowClass = '',
+    colClass = '',
     loading,
     list,
     columns,
@@ -43,7 +46,7 @@ const FlexTable = (props: FlexTableProps) => {
                       ? 'flex-end'
                       : 'flex-start'
                 }}
-                className='flex items-center gap-[5px] text-[14px] text-[#3D405A]'
+                className={`flex items-center gap-[5px] text-[14px] text-[#3D405A] ${headColClass}`}
                 onClick={() => {
                   column?.sort &&
                     onChangeSortDataIndex &&
@@ -78,11 +81,11 @@ const FlexTable = (props: FlexTableProps) => {
             <Loading size={24} />
           </div>
         ) : (
-          <div>
+          <div className={bodyClass}>
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                   <div
-                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${bodyClass}`}
+                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${rowClass}`}
                     key={index}
                     onClick={(e) => onRow(record, index, e)}
                   >
@@ -97,7 +100,7 @@ const FlexTable = (props: FlexTableProps) => {
                         }}
                         className={`font-[600] first:pl-[13px] last:pr-[13px] ${
                           column.ellipsis ? 'truncate' : ''
-                        }`}
+                        } ${colClass}`}
                       >
                         {typeof column.render === 'function'
                           ? column.render(
@@ -137,7 +140,10 @@ export type FlexTableProps = {
   loading?: boolean;
   wrapperClass?: string;
   headClass?: string;
+  headColClass?: string;
   bodyClass?: string;
+  rowClass?: string;
+  colClass?: string;
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;

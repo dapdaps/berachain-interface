@@ -152,6 +152,7 @@ const Popover = (props: Props) => {
             closeDelay={closeDelay}
             closeCancel={closeCancel}
             trigger={trigger}
+            triggerRef={triggerRef}
           >
             {content}
           </Card>,
@@ -212,6 +213,7 @@ const Card = (props: CardProps) => {
     closeDelay,
     closeCancel,
     trigger,
+    triggerRef,
   } = props;
 
   const cardRef = useRef<any>(null);
@@ -221,7 +223,7 @@ const Card = (props: CardProps) => {
     onLoaded(cardRef.current);
 
     const handleClose = (e: any) => {
-      if (cardRef.current.contains(e.target)) return;
+      if (cardRef.current.contains(e.target) || triggerRef.current?.contains(e.target)) return;
       onClose();
     };
     document.addEventListener('click', handleClose);
@@ -282,6 +284,7 @@ interface CardProps {
   closeDelay: () => void;
   closeCancel: () => void;
   trigger: PopoverTrigger;
+  triggerRef: any;
 
   onLoaded(cardRef: any): void;
   onClose(): void;
