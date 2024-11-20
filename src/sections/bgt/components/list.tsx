@@ -3,7 +3,9 @@ import { addThousandSeparator } from "@/utils/number-formatter";
 import Big from "big.js";
 
 import { useVaultList } from "../hooks/useList";
+import { useRouter } from "next/navigation";
 const VaultsList = () => {
+  const router = useRouter()
   const {
     data,
     loading: isLoading,
@@ -22,7 +24,7 @@ const VaultsList = () => {
           title: "Vaults",
           key: "vaults",
           sort: false,
-          width: "35%",
+          width: "20%",
           render: (item: any, index: number) => {
             return (
               <div className="flex items-center gap-2">
@@ -74,32 +76,6 @@ const VaultsList = () => {
             return Big(item.bgtInflationCapture).div(100).toFixed(2) + "%";
           },
         },
-        // {
-        //   title: "Validator",
-        //   key: "Validator",
-        //   sort: false,
-        //   width: "15%",
-        //   render: (item: any, index: number) => {
-        //     return (
-        //       <div className="flex gap-1 items-center">
-        //         {item.activeValidators
-        //           .slice(0, 3)
-        //           .map((validator: any, index: number) => (
-        //             <img
-        //               src={validator.logoURI}
-        //               className="w-[24px] h-[24px] rounded-full"
-        //               alt=""
-        //             />
-        //           ))}
-        //         {item.activeValidators.length > 3 && (
-        //           <span className="text-xs">
-        //             +{item.activeValidators.length - 3}
-        //           </span>
-        //         )}
-        //       </div>
-        //     );
-        //   },
-        // },
         {
           title: "Incentives",
           key: "Incentives",
@@ -114,6 +90,29 @@ const VaultsList = () => {
                   </div>
                 ))}
               </>
+            );
+          },
+        },
+
+        {
+          title: "Deposit Receipt Token",
+          key: "action",
+          sort: false,
+          width: "15%",
+          render: (item: any, index: number) => {
+            return (
+              <div className="cursor-pointer underline text-[16px] font-Montserrat"
+                onClick={() => {
+                  router.push("/bgt/gauge?address=" + item.id)
+                }}
+              >
+                {/* {item.activeIncentives.map((v: any) => (
+                  <div className="w-fit rounded-lg border p-1">
+                    <span className="text-[10px]">{v.token.symbol}</span>
+                  </div>
+                ))} */}
+                Deposit
+              </div>
             );
           },
         },

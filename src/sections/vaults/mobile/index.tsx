@@ -14,9 +14,33 @@ import UserInfo from "./user-info";
 import Bg from "../components/mobile-bg";
 import RewardsModal from "./rewards-modal";
 import PageBack from '@/components/back';
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useBerps } from '@/sections/staking/hooks/use-berps';
+import multicallAddresses from '@/configs/contract/multicall';
+import useCustomAccount from '@/hooks/use-account';
 
 export default function Mobile({ dapp }: any) {
-  const { dataList, loading, fetchAllData } = useInfraredList();
+  const { chainId, provider, account } = useCustomAccount();
+
+  const { dataList: infraredData, loading: infraredLoading, fetchAllData: infraredReload } = useInfraredList();
+  const { dataList: berpsData, loading: berpsLoading, reload: berpsReload  } = useBerps({
+    name: dapp?.name,
+    pairs: dapp?.chains?.[DEFAULT_CHAIN_ID]?.pairs,
+    sender: account,
+    provider: provider,
+    addresses: dapp?.chains?.[DEFAULT_CHAIN_ID]?.addresses,
+    multicallAddress: multicallAddresses[chainId as any]
+  });
+  const [dataList, loading, reload] = useMemo(() => {
+    if (dapp?.name === 'Berps') return [berpsData, berpsLoading, berpsReload];
+    return [infraredData, infraredLoading, infraredReload];
+  }, [
+    infraredData,
+    infraredLoading,
+    berpsData,
+    berpsLoading,
+    dapp?.name,
+  ]);
   const [sortType, setSortType] = useState(-1);
   const [sortItem, setSortItem] = useState<any>("tvl");
   const [hasStaked, setHasStaked] = useState(false);
@@ -55,8 +79,7 @@ export default function Mobile({ dapp }: any) {
           </div>
         </MenuButton>
         <div className="mt-[12px] text-[14px] font-medium px-[12px] text-center">
-          Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) &
-          boosted yield.
+          {dapp?.chains?.[DEFAULT_CHAIN_ID]?.description}
         </div>
         <div className="px-[12px] pt-[20px] flex justify-between items-center text-[14px] font-medium">
           <div className="flex items-center gap-[8px]">
@@ -120,7 +143,7 @@ export default function Mobile({ dapp }: any) {
             setSelectedRecord(null);
           }}
           onSuccess={() => {
-            fetchAllData();
+            reload();
           }}
         />
       )}
@@ -132,7 +155,7 @@ export default function Mobile({ dapp }: any) {
           }}
           data={earned}
           onSuccess={() => {
-            fetchAllData();
+            reload();
           }}
         />
       )}
@@ -142,6 +165,7 @@ export default function Mobile({ dapp }: any) {
 
 const Item = ({ data, onClick, onClaim }: any) => {
   const pool = data?.initialData?.pool;
+  const isBerps = data?.name === 'Berps';
   return (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
@@ -230,7 +254,7 @@ const Item = ({ data, onClick, onClaim }: any) => {
           </div>
         </div>
       </div>
-      {Big(data?.usdDepositAmount || 0).gt(0) && (
+      {(Big(data?.usdDepositAmount || 0).gt(0) || isBerps) && (
         <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
           <UserInfo
             data={data}

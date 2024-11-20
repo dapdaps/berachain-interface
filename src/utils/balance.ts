@@ -1,52 +1,55 @@
-import Big from 'big.js';
+import Big from "big.js";
 
 export function balanceFormated(balance?: string | number, digits = 4) {
-  if (!balance) return '0';
+  if (!balance) return "0";
   const _balance = new Big(balance);
-  if (_balance.eq(0)) return '0';
-  if (_balance.lt(1 / 10 ** digits)) return `<${1 / 10 ** digits}`;
-  return _balance.toFixed(digits).replace(/\.?0+$/, '');
+  if (_balance.eq(0)) return "0";
+  if (_balance.lt(1 / 10 ** digits))
+    return `<${Big(1)
+      .div(10 ** digits)
+      .toFixed(digits)}`;
+  return _balance.toFixed(digits).replace(/\.?0+$/, "");
 }
 
 export function balanceFormatedFloor(balance?: string | number, digits = 4) {
-  if (!balance) return '0';
+  if (!balance) return "0";
   const _balance = new Big(balance);
-  if (_balance.eq(0)) return '0';
+  if (_balance.eq(0)) return "0";
   if (_balance.lt(1 / 10 ** digits)) return `<${1 / 10 ** digits}`;
   return _balance.toFixed(digits, 0);
 }
 
 export function valueFormated(balance?: string, price?: string, digits = 2) {
-  if (!balance || !price) return '0';
+  if (!balance || !price) return "0";
   const _balance = new Big(balance);
   const _price = new Big(price);
-  if (_balance.eq(0) || _price.eq(0)) return '0';
+  if (_balance.eq(0) || _price.eq(0)) return "0";
   const total = _balance.mul(_price);
   if (total.lt(1 / 10 ** digits)) return `<${1 / 10 ** digits}`;
-  return total.toFixed(digits).replace(/\.?0+$/, '');
+  return total.toFixed(digits).replace(/\.?0+$/, "");
 }
 
 export function balanceShortFormated(balance?: string | number, digits = 1) {
-  if (!balance) return '0';
+  if (!balance) return "0";
   const _balance = new Big(balance);
-  if (_balance.eq(0)) return '0';
+  if (_balance.eq(0)) return "0";
   if (_balance.lt(1 / 10 ** digits)) return `<${1 / 10 ** digits}`;
   if (_balance.lt(1e3)) return _balance.toFixed(digits);
-  if (_balance.lt(1e6)) return _balance.div(1e3).toFixed(digits) + 'K';
-  return _balance.div(1e6).toFixed(digits) + 'M';
+  if (_balance.lt(1e6)) return _balance.div(1e3).toFixed(digits) + "K";
+  return _balance.div(1e6).toFixed(digits) + "M";
 }
 
 export function percentFormated(
   value: string | number,
   needMul = false
 ): string {
-  return (Number(value) * (needMul ? 100 : 1)).toFixed(2) + '%';
+  return (Number(value) * (needMul ? 100 : 1)).toFixed(2) + "%";
 }
 
 const addressReg = /(\w{6})(.*)(\w{4})/;
 export function addressFormated(address: string) {
   if (!address) {
-    return '';
+    return "";
   }
   return address.replace(
     addressReg,
@@ -57,12 +60,12 @@ export function addressFormated(address: string) {
 }
 
 export function timeDurationFormated(time: number) {
-  return Math.floor((Date.now() - time) / 1000 / 60) + ' min ago';
+  return Math.floor((Date.now() - time) / 1000 / 60) + " min ago";
 }
 
 export function errorFormated(error: any) {
-  if (error.toString().indexOf('user rejected transaction') > -1) {
-    return 'user rejected transaction';
+  if (error.toString().indexOf("user rejected transaction") > -1) {
+    return "user rejected transaction";
   }
 
   return error.title || error.message;
@@ -72,17 +75,17 @@ export function getFullNum(value: any) {
   try {
     let x = value;
     if (Math.abs(x) < 1.0) {
-      const e = parseInt(x.toString().split('e-')[1]);
+      const e = parseInt(x.toString().split("e-")[1]);
       if (e) {
         x *= Math.pow(10, e - 1);
-        x = '0.' + new Array(e).join('0') + x.toString().substring(2);
+        x = "0." + new Array(e).join("0") + x.toString().substring(2);
       }
     } else {
-      let e = parseInt(x.toString().split('+')[1]);
+      let e = parseInt(x.toString().split("+")[1]);
       if (e > 20) {
         e -= 20;
         x /= Math.pow(10, e);
-        x += new Array(e + 1).join('0');
+        x += new Array(e + 1).join("0");
       }
     }
     return x;
@@ -92,7 +95,7 @@ export function getFullNum(value: any) {
 }
 
 export function formatPrice(price: number) {
-  if (!price || isNaN(price)) return '';
+  if (!price || isNaN(price)) return "";
   let digits = 0;
   if (Big(price).gt(10000)) digits = 1;
   if (Big(price).gt(100) && Big(price).lt(9999)) digits = 2;
@@ -103,36 +106,41 @@ export function formatPrice(price: number) {
 }
 
 export const simplifyNumber = function (number: number, decimal: number) {
-  if (typeof Number(number) !== 'number') return 0;
+  if (typeof Number(number) !== "number") return 0;
   if (isNaN(Number(number))) return 0;
   if (number >= 1e3 && number < 1e6) {
-    return Big(number / 1e3).toFixed(decimal) + 'k';
+    return Big(number / 1e3).toFixed(decimal) + "k";
   } else if (number >= 1e6 && number < 1e9) {
-    return Big(number / 1e6).toFixed(decimal) + 'm';
+    return Big(number / 1e6).toFixed(decimal) + "m";
   } else if (number >= 1e9) {
-    return Big(number / 1e9).toFixed(decimal) + 'b';
+    return Big(number / 1e9).toFixed(decimal) + "b";
   } else {
     return Big(number).toFixed(decimal);
   }
 };
-export function formatThousandsSeparator(n: number | string, precision?: number): string {
-  if (isNaN(Number(n))) return '';
-  const strSplit = n.toString().split('.');
-  const integer = strSplit[0].split('');
+export function formatThousandsSeparator(
+  n: number | string,
+  precision?: number
+): string {
+  if (isNaN(Number(n))) return "";
+  const strSplit = n.toString().split(".");
+  const integer = strSplit[0].split("");
   integer.reverse();
   const decimal = strSplit[1];
   const newInteger = [];
   for (let i = 0; i < integer.length; i++) {
     if (i % 3 === 0 && i !== 0) {
-      newInteger.push(',');
+      newInteger.push(",");
     }
     newInteger.push(integer[i]);
   }
   newInteger.reverse();
-  let s = newInteger.join('');
+  let s = newInteger.join("");
   if (decimal) {
-    if (typeof precision === 'number') {
-      const fixedDecimal = Big(`0.${decimal}`).toFixed(precision, 0).replace(/^\d/, '');
+    if (typeof precision === "number") {
+      const fixedDecimal = Big(`0.${decimal}`)
+        .toFixed(precision, 0)
+        .replace(/^\d/, "");
       return s + fixedDecimal;
     }
     s += `.${decimal}`;
@@ -141,15 +149,15 @@ export function formatThousandsSeparator(n: number | string, precision?: number)
 }
 export const formatValueDecimal = function (
   value: any,
-  unit = '',
+  unit = "",
   decimal = 0,
   simplify = false,
   showLine = true
 ) {
   const target = Big(1).div(Math.pow(10, decimal));
-  if (isNaN(value) || value === '' || Big(value ?? 0).eq(0)) {
+  if (isNaN(value) || value === "" || Big(value ?? 0).eq(0)) {
     if (showLine) {
-      return '-';
+      return "-";
     } else {
       return unit + Big(0).toFixed(decimal);
     }

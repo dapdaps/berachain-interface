@@ -5,6 +5,7 @@ export const useIbgtVaults = create(
   persist(
     (set, get: any) => ({
       vaults: [],
+      berpsVaults: [],
       set: (params: any) => set(() => ({ ...params }))
     }),
     {

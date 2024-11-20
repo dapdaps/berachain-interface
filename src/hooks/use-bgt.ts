@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { ethers } from 'ethers';
-import useCustomAccount from './use-account';
-import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
-import { asyncFetch } from '@/utils/http';
-import useBendReward from '@/sections/Lending/Bend/hooks/useBendReward';
-import useToast from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+import multicallAddresses from '@/configs/contract/multicall';
 import useClickTracking from '@/hooks/use-click-tracking';
 import useIsMobile from '@/hooks/use-isMobile';
+import useToast from '@/hooks/use-toast';
+import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
+import { asyncFetch } from '@/utils/http';
+import { multicall } from '@/utils/multicall';
+import Big from 'big.js';
+import { ethers } from 'ethers';
+import _ from 'lodash';
+import { useRouter } from 'next/navigation';
+import useCustomAccount from './use-account';
 
 
 export const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
@@ -43,26 +46,109 @@ export const ABI = [{
   "stateMutability": "view",
   "type": "function"
 }]
+export const VAULT_ADDRESS_ABI = [
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "stake",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [
+      {
+        "name": "_shareAmt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "inputs": [
+      {
+        "name": "game",
+        "type": "address"
+      }
+    ],
+    "name": "getReward",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "type": "function",
+    "name": "earned",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  }
+]
 export type DataType = {
   count: number | string;
   totalSupply?: any;
 }
-export function useBGT() {
+export function useBGT(tab?: string) {
   const isMobile = useIsMobile();
   const toast = useToast();
   const router = useRouter()
   const { handleReport } = useClickTracking();
-  const { provider, account } = useCustomAccount()
+  const { provider, account, chainId } = useCustomAccount()
   const [data, setData] = useState<DataType>({
     count: 0,
-
   })
+  const [yourVaults, setYourVaults] = useState([])
+
   const [updater, setUpdater] = useState(0)
   const { loading, dataList } = useInfraredList(updater)
+
+  const [isLoading, setIsLoading] = useState(false)
   const [sortDataIndex, setSortDataIndex] = useState("")
+  const [myVaults, setMyVaults] = useState<any>(null)
 
   const [pageData, setPageData] = useState<any>(null)
-  // const filterList = useMemo(() => dataList?.filter((data: any) => Big(data?.earned ?? 0).gt(0)) ?? [], [dataList])
+
+  const multicallAddress = multicallAddresses[chainId];
+
+  const filterList = useMemo(() => {
+    return sortDataIndex
+      ? _.cloneDeep(yourVaults).sort((prev, next) =>
+        Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
+      )
+      : yourVaults
+  })
   const queryPageData = async function () {
     const result = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/homepage")
     if (result?.top3EmittingValidators?.validators) {
@@ -93,29 +179,6 @@ export function useBGT() {
     setUpdater(Date.now())
   }
 
-  const { rewardValue, rewardValueNumber, depositAmount, icon, platform, vaultToken, claim, claiming } = useBendReward({
-    provider, account
-  })
-
-  const filterList = [
-    {
-      id: vaultToken,
-      images: [
-        icon
-      ],
-      initialData: {
-        pool: {
-          protocol: platform
-        }
-      },
-      depositAmount: depositAmount,
-      earned: rewardValueNumber,
-      earnedShown: rewardValue,
-      claim: claim,
-      claiming: claiming
-    }
-  ];
-
   const queryData = async function () {
     const contract = new ethers.Contract(BGT_ADDRESS, ABI, provider?.getSigner())
     try {
@@ -135,34 +198,38 @@ export function useBGT() {
     }
   }
 
-  const handleClaim = function (data: any) {
+  const setClaiming = function (index, claiming) {
+    setYourVaults(prev => {
+      const curr = _.cloneDeep(prev)
+      curr[index].claiming = claiming
+      return curr
+    })
+  }
+  const handleClaim = function (data: any, index: number) {
 
+    console.log('---data', data)
     const toastId = toast?.loading({
       title: `Claim...`
     });
 
-    const abi = [{
-      "constant": false,
-      "inputs": [],
-      "name": "getReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }]
-    const contract = new ethers.Contract(data?.vaultAddress, abi, provider.getSigner())
+    setClaiming(index, true)
+
+    const contract = new ethers.Contract(data?.vaultAddress, VAULT_ADDRESS_ABI, provider.getSigner())
     contract
-      .getReward()
+      .getReward(account)
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         toast?.dismiss(toastId);
         toast?.success({
           title: 'Claim Successfully!'
         });
+        setClaiming(index, false)
         refresh()
       })
       .catch((error: Error) => {
         console.log('error: ', error);
         toast?.dismiss(toastId);
+        setClaiming(index, false)
         toast?.fail({
           title: 'Claim Failed!',
           text: error?.message?.includes('user rejected transaction')
@@ -173,7 +240,6 @@ export function useBGT() {
   }
 
   const handleExplore = function () {
-    // window.open("https://bartio.station.berachain.com/")
     router.push("/marketplace/invest?type=vaults")
     handleReport('1010-004-004');
   }
@@ -187,9 +253,68 @@ export function useBGT() {
     router.push("/bgt/validator?address=" + data?.validator?.id);
   };
 
+  const queryYourVaults = async () => {
+    try {
+      setIsLoading(true)
+      const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/" + account + "/vaults")
+      const vaults = response?.userVaults
+      const depositedAmountCalls = []
+      const bgtRewardsCalls = []
+      vaults.forEach(valut => {
+        depositedAmountCalls.push({
+          address: valut?.vaultAddress,
+          name: 'balanceOf',
+          params: [account]
+        })
+        bgtRewardsCalls.push({
+          address: valut?.vaultAddress,
+          name: 'earned',
+          params: [account]
+        })
+      })
+      const depositedAmountResult = await multicall({
+        abi: ABI,
+        options: {},
+        calls: depositedAmountCalls,
+        multicallAddress,
+        provider
+      })
+      const bgtRewardsResult = await multicall({
+        abi: VAULT_ADDRESS_ABI,
+        options: {},
+        calls: bgtRewardsCalls,
+        multicallAddress,
+        provider
+      })
+
+      const _yourVaults = []
+      for (let i = 0; i < vaults.length; i++) {
+        if (depositedAmountResult[i]) {
+          _yourVaults.push({
+            ...vaults[i],
+            depositedAmount: ethers.utils.formatUnits(depositedAmountResult?.[i][0] ?? 0),
+            earned: bgtRewardsResult[i] ? ethers.utils.formatUnits(bgtRewardsResult?.[i][0] ?? 0) : 0,
+            claim: handleClaim
+          })
+        }
+      }
+      setIsLoading(false)
+      setYourVaults(_yourVaults)
+    } catch (error) {
+      console.error(error)
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     queryPageData()
   }, [])
+
+  useEffect(() => {
+    if (tab === "your" && account) {
+      queryYourVaults()
+    }
+  }, [tab, account, updater])
 
   useEffect(() => {
     provider && account && queryData()
@@ -199,15 +324,17 @@ export function useBGT() {
     data,
     queryData,
     loading,
+    isLoading,
     dataList,
+    filterList,
     sortDataIndex,
     setSortDataIndex,
     pageData,
     queryPageData,
-    filterList,
     handleClaim,
     handleExplore,
     handleValidator,
+
   }
 }
 

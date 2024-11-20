@@ -1,0 +1,1 @@
+export const VAULTS_URL = "https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/vaults/"

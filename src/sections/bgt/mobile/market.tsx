@@ -14,7 +14,7 @@ const Market = (props: any) => {
   return (
     <motion.div
       key="market"
-      className="max-h-[calc(100%_-_120px)] overflow-y-auto pb-[20px]"
+      className="pb-[20px]"
       variants={{
         visible: {
           opacity: 1,
@@ -27,7 +27,7 @@ const Market = (props: any) => {
       exit="hidden"
       animate="visible"
     >
-      <div className="flex justify-between items-start gap-[63px] mt-[21px] px-[20px]">
+      <div className="flex justify-between items-start gap-[63px] px-[20px]">
         <div className="">
           <label htmlFor="" className="text-[#3D405A] text-[14px] font-[500]">Active Reward Vaults</label>
           <div className="text-black text-[22px] font-[600] mt-[12px]">{pageData?.vaultCount}</div>

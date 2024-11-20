@@ -17,6 +17,7 @@ export default {
   },
   chains: {
     80084: {
+      description: 'Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) & Boosted Yield.',
       ALL_DATA_URL:
         'https://api.staging.infrared.finance/v2/vaults?offset=0&limit=9999',
       BHONEY_ADDRESS: '0x7d91Bf5851B3A8bCf8C39A69AF2F0F98A4e2202A',
