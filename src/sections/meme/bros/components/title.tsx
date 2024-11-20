@@ -7,14 +7,13 @@ export default function Title() {
   return (
     <>
       <div className="flex justify-center">
-        <div className="relative w-[394px] h-[120px]">
+        <div className="relative w-[394px] h-[120px] md:w-[222px] md:h-[68px]">
           {/* title */}
           <svg
-            width="393"
-            height="120"
             viewBox="0 0 393 120"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-full"
           >
             <g clipPath="url(#clip0_25840_21)">
               <path
@@ -142,12 +141,10 @@ export default function Title() {
           </svg>
           {/* rules */}
           <svg
-            width="67"
-            height="23"
             viewBox="0 0 67 23"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="absolute right-0 top-0 cursor-pointer hover:opacity-80"
+            className="w-[67px] h-[23px] absolute right-0 md:right-[-64px] top-0 cursor-pointer hover:opacity-80"
             onClick={() => {
               setShowRules(true);
             }}
@@ -172,12 +169,10 @@ export default function Title() {
           </svg>
           {/* cloud left */}
           <svg
-            width="265"
-            height="87"
             viewBox="0 0 265 87"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="!absolute left-[-480px] bottom-[-52px]"
+            className="!absolute left-[-480px] bottom-[-52px] w-[265px] h-[87px] md:w-[157px] md:h-[50px] md:left-[-170px]"
           >
             <path
               d="M8.5 46.5H2V58H8V62H12.5V67.5H15.5V73.5H27V77.5H30V81H36.5V84.5H48V81H62.5V85.5H78V81H100.5V74H108V77.5H113V81H122V84H131.5V81H145.5V85H161V80.5H190.5V84.5H201V80.5H213.5V85H230.5V82H253V76H259V72.5H263.5V64.5H259.5V61H255V57.5H258.5H262.5V42.5H257V45H252.5V35.5H249V32H242V36H234.5V26.5V21H229.5V14.5H223.5V18.5H221.5V11.5H217.5V8.5H213.5V5H201V7H196.5V9.5H191.5V13.5H187.5V22H183.5V27.5H179V32H166.5V21.5H161.5V14.5H154.5V19H152V12H148.5V8.5H146V4.5H131.5V7.5H127V10.5H122.5V16.5H121V24H116V28H111.5V34.75H98V32.5H91.5V37H86V28H82.5V22.5H78.5V16.5H71V11H67.5V7H63V2H47.5V7H43V14H37V24H30.5V28H26V32.5H14V39H8.5V46.5Z"
@@ -206,12 +201,10 @@ export default function Title() {
           </svg>
           {/* cloud right */}
           <svg
-            width="265"
-            height="87"
             viewBox="0 0 265 87"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="!absolute !right-[-530px] bottom-[-100px]"
+            className="!absolute !right-[-530px] bottom-[-100px] w-[265px] h-[87px] md:w-[157px] md:h-[50px] md:!right-[-150px] md:bottom-[-40px]"
           >
             <path
               d="M8.5 46.5H2V58H8V62H12.5V67.5H15.5V73.5H27V77.5H30V81H36.5V84.5H48V81H62.5V85.5H78V81H100.5V74H108V77.5H113V81H122V84H131.5V81H145.5V85H161V80.5H190.5V84.5H201V80.5H213.5V85H230.5V82H253V76H259V72.5H263.5V64.5H259.5V61H255V57.5H258.5H262.5V42.5H257V45H252.5V35.5H249V32H242V36H234.5V26.5V21H229.5V14.5H223.5V18.5H221.5V11.5H217.5V8.5H213.5V5H201V7H196.5V9.5H191.5V13.5H187.5V22H183.5V27.5H179V32H166.5V21.5H161.5V14.5H154.5V19H152V12H148.5V8.5H146V4.5H131.5V7.5H127V10.5H122.5V16.5H121V24H116V28H111.5V34.75H98V32.5H91.5V37H86V28H82.5V22.5H78.5V16.5H71V11H67.5V7H63V2H47.5V7H43V14H37V24H30.5V28H26V32.5H14V39H8.5V46.5Z"

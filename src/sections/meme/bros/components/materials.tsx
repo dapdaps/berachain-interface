@@ -1,13 +1,12 @@
 export default function Materials() {
   return (
     <>
+      {/* left mountain*/}
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="190"
-        height="100"
         viewBox="0 0 190 100"
         fill="none"
-        className="absolute top-[-100px] left-[-30px]"
+        className="absolute top-[-100px] left-[-30px] w-[190px] h-[100px] md:w-[120px] md:h-[52px] md:left-0 md:top-[-52px]"
       >
         <path
           d="M96 9L185.5 98.5H-38L49 11.5C52.3333 8.33333 61.8 2 73 2C84.2 2 93 6.66667 96 9Z"
@@ -16,13 +15,12 @@ export default function Materials() {
           strokeWidth="3"
         />
       </svg>
+      {/* left mountain */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="232"
-        height="100"
         viewBox="0 0 232 100"
         fill="none"
-        className="absolute top-[-100px] left-[350px]"
+        className="absolute top-[-100px] left-[350px] md:w-[120px] md:h-[52px] md:left-[50vw] md:top-[-52px]"
       >
         <path
           d="M138 9L227.5 98.5H4L91 11.5C94.3333 8.33333 103.8 2 115 2C126.2 2 135 6.66667 138 9Z"
@@ -33,13 +31,12 @@ export default function Materials() {
         <path d="M133 46V60" stroke="black" strokeWidth="3" />
         <path d="M120 56V70" stroke="black" strokeWidth="3" />
       </svg>
+      {/* tree */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="265"
-        height="87"
         viewBox="0 0 265 87"
         fill="none"
-        className="absolute top-[-60px] left-[550px]"
+        className="absolute top-[-60px] left-[550px] w-[265px] h-[87px] md:w-[142px] md:h-[45px] md:left-[80vw] md:top-[-34px]"
       >
         <path
           d="M8.5 46.5H2V58H8V62H12.5V67.5H15.5V73.5H27V77.5H30V81H36.5V84.5H48V81H62.5V85.5H78V81H100.5V74H108V77.5H113V81H122V84H131.5V81H145.5V85H161V80.5H190.5V84.5H201V80.5H213.5V85H230.5V82H253V76H259V72.5H263.5V64.5H259.5V61H255V57.5H258.5H262.5V42.5H257V45H252.5V35.5H249V32H242V36H234.5V26.5V21H229.5V14.5H223.5V18.5H221.5V11.5H217.5V8.5H213.5V5H201V7H196.5V9.5H191.5V13.5H187.5V22H183.5V27.5H179V32H166.5V21.5H161.5V14.5H154.5V19H152V12H148.5V8.5H146V4.5H131.5V7.5H127V10.5H122.5V16.5H121V24H116V28H111.5V34.75H98V32.5H91.5V37H86V28H82.5V22.5H78.5V16.5H71V11H67.5V7H63V2H47.5V7H43V14H37V24H30.5V28H26V32.5H14V39H8.5V46.5Z"
@@ -57,7 +54,7 @@ export default function Materials() {
         height="87"
         viewBox="0 0 265 87"
         fill="none"
-        className="absolute top-[-60px] right-[20px]"
+        className="absolute top-[-60px] right-[20px] md:hidden"
       >
         <path
           d="M8.5 46.5H2V58H8V62H12.5V67.5H15.5V73.5H27V77.5H30V81H36.5V84.5H48V81H62.5V85.5H78V81H100.5V74H108V77.5H113V81H122V84H131.5V81H145.5V85H161V80.5H190.5V84.5H201V80.5H213.5V85H230.5V82H253V76H259V72.5H263.5V64.5H259.5V61H255V57.5H258.5H262.5V42.5H257V45H252.5V35.5H249V32H242V36H234.5V26.5V21H229.5V14.5H223.5V18.5H221.5V11.5H217.5V8.5H213.5V5H201V7H196.5V9.5H191.5V13.5H187.5V22H183.5V27.5H179V32H166.5V21.5H161.5V14.5H154.5V19H152V12H148.5V8.5H146V4.5H131.5V7.5H127V10.5H122.5V16.5H121V24H116V28H111.5V34.75H98V32.5H91.5V37H86V28H82.5V22.5H78.5V16.5H71V11H67.5V7H63V2H47.5V7H43V14H37V24H30.5V28H26V32.5H14V39H8.5V46.5Z"

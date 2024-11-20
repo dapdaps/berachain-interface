@@ -6,8 +6,6 @@ export default function Coin({ x, y, rotate, duration, i }: any) {
   return (
     <motion.svg
       xmlns="http://www.w3.org/2000/svg"
-      width="55"
-      height="56"
       viewBox="0 0 55 56"
       fill="none"
       ref={eleRef}
@@ -30,7 +28,7 @@ export default function Coin({ x, y, rotate, duration, i }: any) {
           duration: 0.1
         }
       }}
-      className="absolute duration-300"
+      className="absolute duration-300 w-[55px] h-[56px] md:w-[25px] md:h-[24px]"
     >
       <path
         fillRule="evenodd"

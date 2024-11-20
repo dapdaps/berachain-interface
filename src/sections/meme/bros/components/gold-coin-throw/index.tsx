@@ -1,51 +1,55 @@
-import Coin from "../coin";
+import Coin from "./coin";
 import { motion } from "framer-motion";
+import useIsMobile from "@/hooks/use-isMobile";
 
 export default function GoldCoinThrow() {
+  const isMobile = useIsMobile();
   return (
     <div className="relative">
       <Coin
-        x={[0, -20, -60]}
-        y={[0, -10, -20, -60]}
+        x={isMobile ? [0, -10, -30] : [0, -20, -60]}
+        y={isMobile ? [0, -5, -10, -30] : [0, -10, -20, -60]}
         rotate={[0, 180, 360]}
         duration={0.1}
         i={1}
       />
+      {!isMobile && (
+        <Coin
+          x={[0, -50, -100]}
+          y={[0, -40, -80, -160]}
+          rotate={[0, 180, 350]}
+          duration={0.2}
+          i={2}
+        />
+      )}
       <Coin
-        x={[0, -50, -100]}
-        y={[0, -40, -80, -160]}
-        rotate={[0, 180, 350]}
-        duration={0.2}
-        i={2}
-      />
-      <Coin
-        x={[0, 50, 100]}
-        y={[0, -10, -20, -60]}
+        x={isMobile ? [0, 25, 50] : [0, 50, 100]}
+        y={isMobile ? [0, -5, -10, -30] : [0, -10, -20, -60]}
         rotate={[0, 180, 440]}
         duration={0.1}
         i={3}
       />
       <Coin
-        x={[0, 20, 60]}
-        y={[0, -50, -100, -200]}
+        x={isMobile ? [0, 10, 30] : [0, 20, 60]}
+        y={isMobile ? [0, -25, -50, -100] : [0, -50, -100, -200]}
         rotate={[0, 180, 420]}
         duration={0.2}
         i={4}
       />
-      <Coin
-        x={[0, 80, 160]}
-        y={[0, -35, -70, -140]}
-        rotate={[0, 180, 440]}
-        duration={0.1}
-        i={5}
-      />
+      {!isMobile && (
+        <Coin
+          x={[0, 80, 160]}
+          y={[0, -35, -70, -140]}
+          rotate={[0, 180, 440]}
+          duration={0.1}
+          i={5}
+        />
+      )}
       <motion.svg
         xmlns="http://www.w3.org/2000/svg"
-        width="68"
-        height="79"
         viewBox="0 0 68 79"
         fill="none"
-        className="absolute left-[8px] top-[0px]"
+        className="absolute left-[8px] top-[0px] w-[68px] h-[79px] md:w-[36px] md:h-[42px]"
         initial={{
           y: 50
         }}
