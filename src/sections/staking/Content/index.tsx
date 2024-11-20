@@ -73,7 +73,7 @@ export default function Staking({ dapp }: Props) {
     <Card>
       {id ? (
         <Detail
-          name={dapp.name}
+          dapp={dapp}
           onSuccess={() => {
             listRef.current?.reload?.();
           }}

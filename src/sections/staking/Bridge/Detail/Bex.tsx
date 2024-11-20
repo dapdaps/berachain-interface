@@ -1,7 +1,6 @@
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import CircleLoading from '@/components/circle-loading';
-import { useRouter } from 'next/navigation';
 
 const DetailBex = (props: any) => {
   const {
@@ -10,12 +9,12 @@ const DetailBex = (props: any) => {
     setShowAddModal,
     claiming,
     handleClaim,
+    isInfraredBerps,
   } = props;
 
-  const router = useRouter()
-
-  console.log('====data', data)
-
+  const handleMint = () => {
+    setShowAddModal(true);
+  };
 
   return (
     <div className='flex-1 pr-[24px] pl-[13px] h-[300px] bg-black/[0.06]'>
@@ -39,39 +38,21 @@ const DetailBex = (props: any) => {
                 />
               )}
             </div>
-
             <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-              {formatValueDecimal(data?.depositAmount ?? 0, '', 2)} {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
+              {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
             </div>
           </div>
 
-          {
-            data?.id === "BHONEY" ? (
-              <div
-                className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
-                onClick={() => {
-                  router.push("/staking/berps?id=BHONEY")
-                }}
-              >
-                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                  Mint
-                </span>
-              </div>
-            ) : (mintData && (
-              <div
-                className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
-                onClick={() => {
-                  setShowAddModal(true);
-                }}
-              >
-                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                  Mint LP
-                </span>
-              </div>
-            ))
-          }
-
-
+          {(mintData || isInfraredBerps) && (
+            <div
+              className='cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]'
+              onClick={handleMint}
+            >
+              <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                Mint LP
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <div className='w-full h-[1px] bg-black/[0.15]' />
