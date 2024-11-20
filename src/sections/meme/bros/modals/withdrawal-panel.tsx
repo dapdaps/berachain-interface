@@ -7,7 +7,7 @@ export default function Withdrawal({ open, onClose }: any) {
     <Basic
       open={open}
       onClose={onClose}
-      className="w-[520px] text-[14px] font-medium"
+      className="w-full text-[14px] font-medium"
     >
       <Header />
       <List />

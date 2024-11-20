@@ -1,6 +1,6 @@
 import Title from "../../components/title";
 import Materials from "../../components/materials";
-import Round from "./round";
+import Round from "../round";
 import WithdrawalPanel from "../../components/withdrawal-panel";
 
 export default function Laptop() {
