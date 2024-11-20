@@ -59,14 +59,6 @@ const Modal: React.FC<ModalProps> = ({
             className={`rounded-lg relative ${innerClassName}`}
             style={innerStyle}
           >
-            {closeIcon || onClose ? (
-              <button
-                onClick={onClose}
-                className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
-              >
-                <IconClose />
-              </button>
-            ) : null}
             {isMobile && !isForceNormal ? (
               <motion.div
                 animate={{
@@ -83,10 +75,38 @@ const Modal: React.FC<ModalProps> = ({
                   e.stopPropagation();
                 }}
               >
+                {closeIcon || onClose ? (
+                  <button
+                    onClick={onClose}
+                    className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
+                  >
+                    <IconClose />
+                  </button>
+                ) : null}
                 {children}
               </motion.div>
             ) : (
-              children
+              <motion.div
+                initial={{
+                  y: 30
+                }}
+                animate={{
+                  y: 0
+                }}
+                exit={{
+                  y: 30
+                }}
+              >
+                {closeIcon || onClose ? (
+                  <button
+                    onClick={onClose}
+                    className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
+                  >
+                    <IconClose />
+                  </button>
+                ) : null}
+                {children}
+              </motion.div>
             )}
           </div>
         </div>
