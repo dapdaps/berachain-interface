@@ -2,8 +2,9 @@ import Title from "../../components/title";
 import PageBack from "@/components/back";
 import Total from "../total";
 import Panel from "../panel";
-import Tokens from "../tokens";
+import Tokens from "./tokens";
 import Actions from "./actions";
+import Withdrawal from "./withdrawal";
 
 export default function Mobile() {
   return (
@@ -11,6 +12,7 @@ export default function Mobile() {
       <div className="absolute left-[18px] top-[18px]">
         <PageBack />
       </div>
+      <Withdrawal />
       <Title />
       <Total />
       <Tokens />

@@ -9,7 +9,7 @@ export default function Header({ expand, onExpand }: any) {
           1
         </div>
       </div>
-      <button onClick={onExpand}>
+      <button onClick={onExpand} className="md:hidden">
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"

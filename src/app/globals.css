@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "swiper/css";
+@import "swiper/css/autoplay";
 
 @font-face {
   font-family: "Montserrat";
