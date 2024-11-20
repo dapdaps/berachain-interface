@@ -55,7 +55,8 @@ const modal = createAppKit({
   enableWalletConnect: true,
   enableEIP6963: true,
   enableCoinbase: true,
-})
+  allowUnsupportedChain: true,
+});
 
 function ContextProvider({
   children,

@@ -2,8 +2,14 @@ import { Chain } from 'viem';
 import { mainnet, berachainTestnetbArtio } from '@reown/appkit/networks';
 
 const chains: Record<number, Chain | any> = {
-  [berachainTestnetbArtio.id]: berachainTestnetbArtio,
-  [mainnet.id]: mainnet,
+  [berachainTestnetbArtio.id]: {
+    ...berachainTestnetbArtio,
+    isWalletSupport: true,
+  },
+  [mainnet.id]: {
+    ...mainnet,
+    isWalletSupport: false,
+  },
 };
 
 export const icons: Record<number, string> = {
