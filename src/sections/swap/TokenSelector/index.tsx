@@ -104,30 +104,20 @@ export default function CurrencySelect({
     <Modal open={display} onClose={handleClose}>
       <div className='w-[520px] p-[20px] bg-[#FFFDEB] md:w-full md:rounded-t-[20px]'>
         <div className='flex items-center gap-[10px] cursor-pointer text-[20px]'>
-          <svg
-            width='9'
-            height='16'
-            viewBox='0 0 9 16'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-            className='md:hidden'
-          >
-            <path
-              d='M7 2L2.2 8L7 14'
-              stroke='black'
-              stroke-width='3'
-              strokeLinecap='round'
-            />
-          </svg>
+          <button
+            type="button"
+            className="w-[16px] h-[16px] rotate-90 bg-[url('/images/icon-arrow.svg')] bg-no-repeat bg-center"
+            onClick={handleClose}
+          />
           <div>Select Token</div>
         </div>
-        <div className='h-[52px] p-[18px] gap-[10px] mt-[25px] flex items-center rounded-[8px] border border-black bg-white'>
+        <div className="h-[52px] p-[18px] gap-[10px] mt-[25px] flex items-center rounded-[8px] border border-black bg-white">
           {!searchVal && (
             <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='21'
-              height='15'
-              viewBox='0 0 21 15'
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="15"
+              viewBox="0 0 21 15"
               fill='none'
               className='cursor-pointer'
             >

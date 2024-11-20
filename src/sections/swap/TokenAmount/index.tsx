@@ -51,7 +51,7 @@ export default function TokenAmout({
         <div
           className={`${
             outputCurrencyReadonly ? '' : 'border bg-[#FFFDEB]'
-          } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px]`}
+          } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px] cursor-pointer`}
           onClick={() => {
             onCurrencySelectOpen();
           }}
