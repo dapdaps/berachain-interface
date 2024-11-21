@@ -15,6 +15,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import CheckBox from "@/components/check-box";
 import MobileList from "./mobile/list";
 import useClickTracking from '@/hooks/use-click-tracking';
+import { numberFormatter } from '@/utils/number-formatter';
 
 const PAGE_SIZE = 9;
 
@@ -181,46 +182,46 @@ export default function Liquidity() {
               },
               {
                 title: "TVL",
-                key: "TVL",
+                key: "tvl",
                 sort: true,
                 width: "20%",
                 render: (item: any, index: number) => {
                   return (
-                    item["tvl"] || balanceFormated(Math.random() * 1400, 2)
+                    numberFormatter(item["tvl"], 2, true, { isShort: true })
                   );
                 }
               },
               {
                 title: "24h Volume",
-                key: "24h_volume",
+                key: "volume_24h",
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
                   return (
-                    item["yours"] || balanceFormated(Math.random() * 14, 2)
+                    numberFormatter(item["volume_24h"], 2, true, { isShort: true })
                   );
                 }
               },
               {
                 title: "24h Fees",
-                key: "24h_fees",
+                key: "fees_24h",
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
                   return (
-                    item["yours"] || balanceFormated(Math.random() * 14, 2)
+                    numberFormatter(item["fees_24h"], 2, true, { isShort: true })
                   );
                 }
               },
               {
                 title: "Your Position",
-                key: "position",
+                key: "yours",
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
                   return (
                     <div className="flex underline">
-                      ${item["yours"] || balanceFormated(Math.random() * 14, 2)}
+                      {numberFormatter(item["yours"], 2, true, { prefix: '$', isShort: true })}
                     </div>
                   );
                 }

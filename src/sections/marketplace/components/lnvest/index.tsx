@@ -165,9 +165,11 @@ export default function Invest() {
   const [rateKey, setRateKey] = useState<"Single" | "LP">("Single");
   const [searchVal, setSearchVal] = useState("");
   const [sortDataIndex, setSortDataIndex] = useState("");
+  const [sortDataDirection, setSortDataDirection] = useState(1);
   const [updater, setUpdater] = useState(0);
   const [checked, setChecked] = useState(false);
   const { loading, dataList } = useDataList(updater);
+
   const filterList = useMemo(() => {
     const _filterList = dataList
       .filter((data) => (searchVal ? data?.id.indexOf(searchVal) > -1 : true))
@@ -177,9 +179,9 @@ export default function Invest() {
           : data?.tokens?.length === 2
       );
     return sortDataIndex
-      ? _.cloneDeep(_filterList).sort((prev, next) =>
-          Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
-        )
+      ? _.cloneDeep(_filterList).sort((prev, next) => {
+        return Big(next[sortDataIndex] || 0).gt(prev[sortDataIndex] || 0) ? sortDataDirection : -sortDataDirection;
+      })
       : _filterList;
   }, [dataList, sortDataIndex, searchVal, rateKey]);
 
@@ -265,8 +267,12 @@ export default function Invest() {
           columns={Columns}
           list={filterList}
           sortDataIndex={sortDataIndex}
+          sortDataDirection={sortDataDirection}
           onChangeSortDataIndex={(index) => {
-            setSortDataIndex(sortDataIndex === index ? "" : index);
+            setSortDataIndex(index);
+            if (index === sortDataIndex) {
+              setSortDataDirection(-sortDataDirection);
+            }
           }}
         />
       )}

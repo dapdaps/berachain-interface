@@ -4,6 +4,7 @@ import Empty from '@/components/empty';
 import Big from 'big.js';
 import { useEffect, useState } from 'react';
 import { cloneDeep } from 'lodash';
+import { motion } from 'framer-motion';
 
 interface Meta {
   title: string;
@@ -78,21 +79,22 @@ export default function List({
                 >
                   <span> {item.title}</span>
                   {item.sort ? (
-                    <svg
+                    <motion.svg
                       width='12'
                       height='8'
                       viewBox='0 0 12 8'
                       fill='none'
                       xmlns='http://www.w3.org/2000/svg'
-                      className={
-                        sortItem === item && sortType === 0 ? 'rotate-180' : ''
-                      }
+                      className="cursor-pointer"
+                      animate={{
+                        rotate: sortItem === item.key && sortType === 1 ? 180 : 0,
+                      }}
                     >
                       <path
                         d='M4.8364 7.5C5.35356 8.16667 6.64644 8.16667 7.1636 7.5L11.818 1.5C12.3351 0.833334 11.6887 4.76837e-07 10.6544 4.76837e-07H1.34561C0.311302 4.76837e-07 -0.335141 0.833334 0.182014 1.5L4.8364 7.5Z'
                         fill={sortItem === item ? '#000000' : '#D1CEB4'}
                       />
-                    </svg>
+                    </motion.svg>
                   ) : null}
                 </div>
               );
