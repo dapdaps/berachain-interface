@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 
-export default function Header({ expand, onExpand }: any) {
+export default function Header({ expand, onExpand, num }: any) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-[7px]">
         <div className="text-[16px] font-bold">Withdrawal</div>
         <div className="px-[9px] py-[2px] border border-black bg-[#FFDC50] rounded-[10px] text-[12px] font-semibold">
-          1
+          {num}
         </div>
       </div>
       <button onClick={onExpand} className="md:hidden">

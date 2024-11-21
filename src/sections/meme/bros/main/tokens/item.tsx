@@ -1,8 +1,9 @@
 import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
-import LazyImage from "@/components/layz-image";
 import GoldCoinThrow from "../../components/gold-coin-throw";
 import RankMark from "../../rank-mark";
+import Image from "next/image";
+import { balanceShortFormated } from "@/utils/balance";
 
 const position = [90, 45, 10, 120, 100, 110];
 
@@ -19,15 +20,16 @@ export default function Item({ token, i, show, onClick }: any) {
       }}
     >
       <div className="relative">
-        <LazyImage
+        <Image
           src={token.icon}
           width={isMobile ? 60 : 100}
           height={isMobile ? 60 : 100}
-          containerClassName="rounded-full ml-[-3px]"
+          className="rounded-full ml-[-3px]"
+          alt={token.symbol}
         />
-        {i < 3 && (
+        {token.rank && (
           <RankMark
-            rank={-i + 3}
+            rank={token.rank}
             className="left-[10px] top-[10px] md:left-[6px] md:top-[6px]"
           />
         )}
@@ -42,7 +44,7 @@ export default function Item({ token, i, show, onClick }: any) {
           {token.symbol}
         </div>
         <div className="md:hidden mt-[10px] ml-[2px] w-[89px] rounded-[16px] border border-black bg-[#FFDC50] text-center leading-[32px] text-[18px] font-bold">
-          28.2%
+          ${balanceShortFormated(token.stakedAmountUSD, 2)}
         </div>
       </div>
       {show && <GoldCoinThrow />}

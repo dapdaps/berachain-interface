@@ -3,7 +3,7 @@ import Header from "./header";
 import { useState } from "react";
 import List from "./list";
 
-export default function WithdrawalPanel() {
+export default function WithdrawalPanel({ list, onSuccess }: any) {
   const [expand, setExpand] = useState(false);
   return (
     <motion.div
@@ -17,8 +17,9 @@ export default function WithdrawalPanel() {
         onExpand={() => {
           setExpand(!expand);
         }}
+        num={list.length}
       />
-      <List />
+      <List list={list} onSuccess={onSuccess} />
     </motion.div>
   );
 }

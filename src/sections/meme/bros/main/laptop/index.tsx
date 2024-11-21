@@ -4,14 +4,36 @@ import Panel from "../panel";
 import Total from "../total";
 import WithdrawalPanel from "../../components/withdrawal-panel";
 
-export default function Laptop({ onOpenModal }: any) {
+export default function Laptop({
+  onOpenModal,
+  tokens,
+  totalStaked,
+  withdrawList,
+  userData,
+  balancesLoading,
+  balances,
+  onRefreshTokens,
+  onRefreshWithdrawData
+}: any) {
   return (
     <div className="w-full overflow-x-hidden relative">
       <Title onOpenModal={onOpenModal} />
-      <Total />
-      <Tokens />
-      <Panel onOpenModal={onOpenModal} />
-      <WithdrawalPanel />
+      <Total totalStaked={totalStaked} />
+      <Tokens tokens={tokens} />
+      <Panel
+        onOpenModal={onOpenModal}
+        tokens={tokens}
+        onSuccess={onRefreshTokens}
+        userData={userData}
+        balances={balances}
+        balancesLoading={balancesLoading}
+      />
+      {!!withdrawList?.length && (
+        <WithdrawalPanel
+          list={withdrawList}
+          onSuccess={onRefreshWithdrawData}
+        />
+      )}
     </div>
   );
 }

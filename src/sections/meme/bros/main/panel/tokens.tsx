@@ -1,6 +1,5 @@
-import LazyImage from "@/components/layz-image";
-import { TOKENS } from "../laptop/config";
-import { useCallback, useMemo, useState } from "react";
+import Image from "next/image";
+import { useCallback } from "react";
 import { useRouter } from "next-nprogress-bar";
 import Button from "@/components/button";
 import RankMark from "../../rank-mark";
@@ -8,10 +7,18 @@ import Popover, { PopoverPlacement } from "@/components/popover";
 import RewardsPanel from "./rewards-panel";
 import RoundLabel from "../../components/round-label";
 import clsx from "clsx";
-
 import useIsMobile from "@/hooks/use-isMobile";
+import { balanceShortFormated, balanceFormated } from "@/utils/balance";
+import Loading from "@/components/loading";
 
-const Token = ({ token, i, onClick }: any) => {
+const Token = ({
+  token,
+  i,
+  onClick,
+  userInfo,
+  balance,
+  balancesLoading
+}: any) => {
   return (
     <div
       className={clsx(
@@ -21,24 +28,32 @@ const Token = ({ token, i, onClick }: any) => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-[15px]">
           <div className="relative">
-            <LazyImage
+            <Image
               src={token.icon}
               width={42}
               height={42}
-              containerClassName="rounded-full border-[3px] border-black"
+              className="rounded-full border-[3px] border-black"
+              alt={token.symbol}
             />
 
-            {i < 3 && (
-              <RankMark rank={i + 1} className="left-[4px] top-[8px]" />
+            {token.rank && (
+              <RankMark rank={token.rank} className="left-[4px] top-[8px]" />
             )}
           </div>
           <div>
             <div className="text-[20px] font-CherryBomb">{token.symbol}</div>
-            <div className="text-[14px] underline font-medium">Get</div>
+            <div
+              className="text-[14px] underline font-medium"
+              onClick={() => {
+                onClick(8, token);
+              }}
+            >
+              Get
+            </div>
           </div>
         </div>
         <div className="rounded-[16px] flex items-center gap-[3px] p-[8px]">
-          <span>APY</span>
+          <span>APR</span>
           <span className="text-[14px] font-bold">45.24%</span>
         </div>
       </div>
@@ -47,12 +62,13 @@ const Token = ({ token, i, onClick }: any) => {
           <div className="w-1/3 md:w-1/2">
             <div className="text-[#3D405A] font-medium">Total Dapped</div>
             <div className="font-semibold	mt-[2px] flex items-center gap-[3px]">
-              <span>1</span>
-              <LazyImage
+              <span>{balanceShortFormated(token.stakedAmountUSD, 2)}</span>
+              <Image
                 src={token.icon}
                 width={16}
                 height={16}
-                containerClassName="rounded-full"
+                className="rounded-full"
+                alt={token.symbol}
               />
             </div>
           </div>
@@ -65,17 +81,19 @@ const Token = ({ token, i, onClick }: any) => {
                 placement={PopoverPlacement.TopLeft}
               >
                 <div className="flex items-center gap-[3px] cursor-pointer">
-                  <LazyImage
+                  <Image
                     src={token.icon}
                     width={16}
                     height={16}
-                    containerClassName="rounded-full"
+                    className="rounded-full"
+                    alt={token.symbol}
                   />
-                  <LazyImage
+                  <Image
                     src={token.icon}
                     width={16}
                     height={16}
-                    containerClassName="rounded-full ml-[-8px]"
+                    className="rounded-full ml-[-8px]"
+                    alt={token.symbol}
                   />
                 </div>
               </Popover>
@@ -97,12 +115,17 @@ const Token = ({ token, i, onClick }: any) => {
           <div className="w-1/3 mt-[6px] md:w-1/2">
             <div className="text-[#3D405A] font-medium">You Dapped</div>
             <div className="font-semibold	mt-[2px] flex items-center gap-[3px]">
-              <span>1</span>
-              <LazyImage
+              <span>
+                {userInfo?.stakedAmountUSD
+                  ? balanceShortFormated(userInfo?.stakedAmountUSD, 2)
+                  : "-"}
+              </span>
+              <Image
                 src={token.icon}
                 width={16}
                 height={16}
-                containerClassName="rounded-full"
+                className="rounded-full"
+                alt={token.symbol}
               />
             </div>
           </div>
@@ -110,17 +133,19 @@ const Token = ({ token, i, onClick }: any) => {
             <div className="text-[#3D405A] font-medium">Your Rewards</div>
             <div className="font-semibold	mt-[2px] flex items-center gap-[3px]">
               <span>1</span>
-              <LazyImage
+              <Image
                 src={token.icon}
                 width={16}
                 height={16}
-                containerClassName="rounded-full"
+                className="rounded-full"
+                alt={token.symbol}
               />
-              <LazyImage
+              <Image
                 src={token.icon}
                 width={16}
                 height={16}
-                containerClassName="rounded-full ml-[-8px]"
+                className="rounded-full ml-[-8px]"
+                alt={token.symbol}
               />
               <button
                 className="font-medium underline ml-[12px]"
@@ -135,12 +160,19 @@ const Token = ({ token, i, onClick }: any) => {
           <div className="w-1/3 mt-[6px] md:w-1/2">
             <div className="text-[#3D405A] font-medium">In Wallet</div>
             <div className="font-semibold	mt-[2px] flex items-center gap-[3px]">
-              <span>1</span>
-              <LazyImage
+              {balancesLoading ? (
+                <Loading />
+              ) : balance ? (
+                balanceFormated(balance, 2)
+              ) : (
+                "-"
+              )}
+              <Image
                 src={token.icon}
                 width={16}
                 height={16}
-                containerClassName="rounded-full"
+                className="rounded-full"
+                alt={token.symbol}
               />
             </div>
           </div>
@@ -169,8 +201,13 @@ const Token = ({ token, i, onClick }: any) => {
   );
 };
 
-export default function Tokens({ onOpenModal }: any) {
-  const tokens = useMemo(() => Object.values(TOKENS), [TOKENS]);
+export default function Tokens({
+  onOpenModal,
+  tokens,
+  userData,
+  balances,
+  balancesLoading
+}: any) {
   const router = useRouter();
   const isMobile = useIsMobile();
 
@@ -215,7 +252,7 @@ export default function Tokens({ onOpenModal }: any) {
             </Button>
           </div>
         </div>
-        {Object.values(tokens).map((token, i) => (
+        {tokens?.map((token: any, i: number) => (
           <Token
             key={token.address}
             token={token}
@@ -223,6 +260,9 @@ export default function Tokens({ onOpenModal }: any) {
             onClick={(type: any) => {
               onOpenModal(type, token);
             }}
+            userInfo={userData?.[token.address]}
+            balance={balances?.[token.address]}
+            balancesLoading={balancesLoading}
           />
         ))}
       </div>

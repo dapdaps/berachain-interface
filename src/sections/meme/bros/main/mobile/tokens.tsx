@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { TOKENS } from "../laptop/config";
+import { TOKENS } from "../../config";
 import { useMemo, useState } from "react";
 import Item from "../tokens/item";
 
