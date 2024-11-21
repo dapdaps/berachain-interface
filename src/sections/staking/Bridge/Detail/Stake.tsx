@@ -3,6 +3,7 @@ import { balanceFormated } from '@/utils/balance';
 import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
 import clsx from 'clsx';
 import CircleLoading from '@/components/circle-loading';
+import InputNumber from '@/components/input-number';
 
 const Stake = (props: any) => {
   const {
@@ -24,9 +25,8 @@ const Stake = (props: any) => {
 
   return (
     <div>
-      <input
+      <InputNumber
         value={inAmount}
-        type='number'
         onChange={(e) => handleTokenChange(e.target.value, id)}
         className='w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
         placeholder='0'

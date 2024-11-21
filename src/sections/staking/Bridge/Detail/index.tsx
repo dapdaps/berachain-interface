@@ -12,6 +12,7 @@ import DetailBerps from '@/sections/staking/Bridge/Detail/Berps';
 import { useDetail } from '@/sections/staking/Bridge/Detail/hooks';
 import Stake from './Stake';
 import BerpsDeposit from '@/sections/staking/Bridge/Detail/Berps/Deposit';
+import InputNumber from '@/components/input-number';
 
 export default memo(function Detail(props: any) {
   const { dapp, loading } = props;
@@ -139,9 +140,8 @@ export default memo(function Detail(props: any) {
             />
           ) : (
             <div>
-              <input
+              <InputNumber
                 value={lpAmount}
-                type='number'
                 onChange={(e) => {
                   handleLPChange(e.target.value);
 
