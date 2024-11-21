@@ -15,6 +15,7 @@ export default memo(function Button(props: IProps) {
     product,
     method,
     symbol,
+    tokens,
     amount,
     template,
     decimals,
@@ -25,13 +26,10 @@ export default memo(function Button(props: IProps) {
     onSuccess,
     addAction
   } = props
-
   const { account, provider, chainId } = useCustomAccount()
   const toast = useToast()
   const { executionContract } = useExecutionContract()
   const { handleGetAmount } = useLpToAmount(address, product)
-
-
 
   const [state, updateState] = useMultiState({
     isLoading: false,
@@ -42,11 +40,7 @@ export default memo(function Button(props: IProps) {
 
   const isInSufficient = Number(amount) > Number(balance);
 
-
-
   const checkApproval = (_amount) => {
-
-    console.log('===_amount', _amount)
     const wei: any = ethers.utils.parseUnits(
       Big(_amount).toFixed(decimals),
       decimals
@@ -119,8 +113,6 @@ export default memo(function Button(props: IProps) {
         });
       });
   };
-
-
   const handleDepositOrWithdraw = async function () {
     const toastId = toast?.loading({
       title: type === "deposit" ? "Depositing..." : "Withdrawing..."
@@ -138,10 +130,6 @@ export default memo(function Button(props: IProps) {
       abi,
       provider?.getSigner()
     );
-    const [amount0, amount1] = handleGetAmount(amount);
-
-    console.log('====amount0', amount0)
-    console.log('====amount1', amount1)
     if (type === "deposit") {
       executionContract({
         contract,
@@ -149,7 +137,6 @@ export default memo(function Button(props: IProps) {
         params: [wei]
       }).then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        const tokens = symbol?.split("-")
         const addParams = {
           type: 'Staking',
           action: 'Staking',
@@ -164,11 +151,13 @@ export default memo(function Button(props: IProps) {
           chain_id: chainId,
           sub_type: 'Stake',
         }
-        if (tokens?.length > 1 && ["BEX", "Kodiak"].includes(product)) {
-          const [amount0, amount1] = handleGetAmount(amount);
+        const [amount0, amount1] = handleGetAmount(amount);
+
+
+        if (tokens?.length > 1 && amount0 && amount1) {
           addParams["extra_data"] = JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
+            token0Symbol: tokens?.[0]?.symbol,
+            token1Symbol: tokens?.[1]?.symbol,
             amount0,
             amount1
           })
