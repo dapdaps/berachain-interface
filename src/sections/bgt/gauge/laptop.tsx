@@ -37,8 +37,6 @@ export default memo(function gauge(props: any) {
     addAction
   } = props
 
-  console.log('===state?.depositAmount', state?.depositAmount)
-  console.log('===state?.depositAmount', state?.depositAmount)
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
@@ -106,6 +104,7 @@ export default memo(function gauge(props: any) {
                     type={currentTab}
                     product={gaugeData?.metadata?.product}
                     symbol={gaugeData?.metadata?.name}
+                    tokens={state?.tokens}
                     amount={state?.inAmount}
                     template={template}
                     decimals={18}

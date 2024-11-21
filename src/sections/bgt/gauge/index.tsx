@@ -1,6 +1,6 @@
 import useCustomAccount from '@/hooks/use-account';
 import useAddAction from '@/hooks/use-add-action';
-import { ABI, useBGT, VAULT_ADDRESS_ABI } from '@/hooks/use-bgt';
+import { ABI, useBGT, VAULT_ADDRESS_ABI, ERC20_ABI } from '@/hooks/use-bgt';
 import useGauge from '@/hooks/use-gauge';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useMultiState } from '@/hooks/use-multi-state';
@@ -11,6 +11,8 @@ import { usePriceStore } from '@/stores/usePriceStore';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import Big from 'big.js';
+import multicallAddresses from '@/configs/contract/multicall';
+import { multicall } from '@/utils/multicall';
 
 
 const TABS = [
@@ -40,6 +42,8 @@ const BgtGauge = (props: any) => {
   const { addAction } = useAddAction("gauge");
   const [currentTab, setCurrentTab] = useState<"deposit" | "withdraw">(TABS[0].value);
   const { account, provider, chainId } = useCustomAccount()
+
+  const multicallAddress = multicallAddresses[chainId];
   const [state, updateState] = useMultiState({
     stakeAddress: "",
     vaultAddress: "",
@@ -53,7 +57,8 @@ const BgtGauge = (props: any) => {
     updater: 0,
     rangeIndex: -1,
     percentage: 0,
-    claimLoading: false
+    claimLoading: false,
+    tokens: null
   })
   const prices: any = usePriceStore(store => store.price);
   const getBalance = async (stakingTokenAddress, vaultAddress) => {
@@ -86,6 +91,56 @@ const BgtGauge = (props: any) => {
       totalSupply: ethers.utils.formatUnits(response)
     })
   }
+  const getTokens = async (stakingTokenAddress) => {
+    // const contract = new ethers.Contract(stakingTokenAddress, ABI, provider)
+
+    try {
+
+      const addressCalls = [{
+        address: stakingTokenAddress,
+        name: "token0",
+      }, {
+        address: stakingTokenAddress,
+        name: "token1",
+      }]
+      const addressResponse = await multicall({
+        abi: ABI,
+        options: {},
+        calls: addressCalls,
+        multicallAddress,
+        provider
+      })
+      const symbolCalls = []
+      for (let i = 0; i < addressResponse.length; i++) {
+        const tokenAddress = addressResponse?.[i]?.[0];
+        symbolCalls.push({
+          address: tokenAddress,
+          name: "symbol",
+        })
+      }
+      const symbolResponse = await multicall({
+        abi: ERC20_ABI,
+        options: {},
+        calls: symbolCalls,
+        multicallAddress,
+        provider
+      })
+      const _tokens = []
+      for (let i = 0; i < addressResponse.length; i++) {
+        const tokenAddress = addressResponse?.[i]?.[0];
+        const tokenSymbol = symbolResponse?.[i]?.[0]
+        _tokens.push({
+          symbol: tokenSymbol,
+          address: tokenAddress
+        })
+      }
+      updateState({
+        tokens: _tokens
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
   const getContractData = () => {
     const {
       stakingTokenAddress,
@@ -101,6 +156,7 @@ const BgtGauge = (props: any) => {
       getEarned(vaultAddress)
       getDepositAmount(vaultAddress)
       getTotalsupply(vaultAddress)
+      getTokens(stakingTokenAddress)
     } catch (error) {
       console.error(error)
     }
@@ -188,6 +244,7 @@ const BgtGauge = (props: any) => {
     handleAmountChange(state?.balance)
   }
 
+
   const onSuccess = () => {
     updateState({
       inAmount: "",
@@ -234,7 +291,8 @@ const BgtGauge = (props: any) => {
             handleAmountChange,
             handleMax,
             onSuccess,
-            addAction
+            addAction,
+            
           }}
         />
       ) : (
