@@ -195,6 +195,7 @@ const BgtGauge = (props: any) => {
     })
   }
   useEffect(() => {
+    console.log('====gaugeData', gaugeData)
     if (account && provider && gaugeData && currentTab) {
       getContractData()
     }
