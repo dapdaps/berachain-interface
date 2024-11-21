@@ -163,7 +163,6 @@ export default function BgtGaugeMobile(props: any) {
               type={currentTab}
               product={gaugeData?.metadata?.product}
               symbol={gaugeData?.metadata?.name}
-              tokens={state?.tokens}
               amount={state?.inAmount}
               template={template}
               decimals={decimals}
