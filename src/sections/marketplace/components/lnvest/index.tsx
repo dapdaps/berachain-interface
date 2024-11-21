@@ -5,150 +5,260 @@ import { MarketplaceContext } from "@/sections/marketplace/context";
 import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import _ from "lodash";
-import { useMemo, useState, useContext, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useContext, useCallback, useEffect } from 'react';
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
 import useDataList from "./hooks/useDataList";
-import BendLending from "../dapps/bendLending";
 import { useSearchParams } from "next/navigation";
 import useIsMobile from "@/hooks/use-isMobile";
 import CheckBox from "@/components/check-box";
 import Mobile from "./mobile";
 import useClickTracking from '@/hooks/use-click-tracking';
+import { numberFormatter } from '@/utils/number-formatter';
+import LazyImage from '@/components/layz-image';
+import Button from '@/components/button';
 
-export default function Invest() {
+export default function Invest(props: any) {
+  const { source } = props;
+
   const searchParams = useSearchParams();
 
   const {
-    // lendingVisible,
-    // setLendingVisible,
-    // lendingData,
     openInfrared,
     setVaultsVisible,
+    setVaultsType,
   } = useContext(MarketplaceContext);
   const { handleReport } = useClickTracking();
 
   const isMobile = useIsMobile();
 
-  const Columns: Column[] = [
-    {
-      title: "#",
-      dataIndex: "sequence",
-      align: "left",
-      width: "5%",
-      render: (text: string, record: any, index: number) => {
-        return <div>{index + 1}</div>;
+  const handleInfrared = (record: any, type: any) => {
+    openInfrared(record).then(() => {
+      setVaultsType(type);
+      setVaultsVisible(true);
+    });
+  };
+
+  const Columns = useMemo<Column[]>(() => {
+    const isEarn = source === 'earn';
+    const _columns = [
+      {
+        title: "#",
+        dataIndex: "sequence",
+        align: "left",
+        width: "5%",
+        render: (text: string, record: any, index: number) => {
+          return <div>{index + 1}</div>;
+        },
       },
-    },
-    {
-      title: "Investment",
-      dataIndex: "investment",
-      align: "left",
-      width: "25%",
-      render: (text: string, record: any) => {
-        return (
-          <div className="flex items-center gap-[10px]">
-            <div className="flex items-center">
-              {record?.images[0] && (
-                <div className="w-[30px] h-[30px] rounded-full">
-                  <img src={record?.images[0]} />
-                </div>
-              )}
-              {record?.images[1] && (
-                <div className="ml-[-10px] w-[30px] h-[30px] rounded-full">
-                  <img src={record?.images[1]} />
-                </div>
-              )}
+      {
+        title: isEarn ? "Pool" : "Investment",
+        dataIndex: "investment",
+        align: "left",
+        width: "25%",
+        render: (text: string, record: any) => {
+          const pool = record?.initialData?.pool;
+          return (
+            <div
+              className="flex items-center gap-[10px]"
+              style={isEarn ? { gap: 20 } : {}}
+            >
+              <div className="relative flex items-center">
+                {record?.images[0] && (
+                  <div className="w-[30px] h-[30px] rounded-full">
+                    <img src={record?.images[0]} />
+                  </div>
+                )}
+                {record?.images[1] && (
+                  <div className="ml-[-10px] w-[30px] h-[30px] rounded-full">
+                    <img src={record?.images[1]} />
+                  </div>
+                )}
+                {
+                  isEarn && (
+                    <img
+                      src={`/images/dapps/infrared/${(pool?.protocol ?? 'infrared').toLocaleLowerCase()}.svg`}
+                      alt=""
+                      className="w-[16px] h-[16px] rounded-[4px] absolute right-[-2px] bottom-[-2px]"
+                    />
+                  )
+                }
+              </div>
+              <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+                <div>{record?.tokens?.join('-')}</div>
+                {
+                  isEarn && (
+                    <div className="text-[12px] font-[500] mt-[3px]">
+                      {pool?.protocol || record.name}
+                    </div>
+                  )
+                }
+              </div>
             </div>
+          );
+        },
+      },
+      {
+        title: 'Protocol',
+        dataIndex: "protocol",
+        align: "left",
+        width: "15%",
+        render: (text: string, record: any) => {
+          const pool = record?.initialData?.pool;
+          return (
+            <img
+              style={{ width: 20 }}
+              src={`/images/dapps/infrared/${(
+                pool?.protocol ?? "infrared"
+              ).toLocaleLowerCase()}.svg`}
+            />
+          );
+        },
+      },
+      {
+        title: "Type",
+        dataIndex: "type",
+        align: "left",
+        width: "15%",
+        render: (text: string, record: any) => {
+          return (
+            <div className="flex justify-start">
+              <div className="px-[10px] py-[5px] rounded-[12px] border border-[#373A53] bg-white text-black font-Montserrat text-[14px] font-medium leading-[100%]">
+                {record?.type}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        title: "TVL",
+        dataIndex: "tvl",
+        align: "left",
+        width: "15%",
+        sort: true,
+        render: (text: string, record: any) => {
+          return (
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {record?.tokens?.join("-")}
+              {formatValueDecimal(record?.tvl, "$", 2, true)}
             </div>
-          </div>
-        );
+          );
+        },
       },
-    },
-    {
-      title: "Protocol",
-      dataIndex: "protocol",
-      align: "left",
-      width: "15%",
-      render: (text: string, record: any) => {
-        const pool = record?.initialData?.pool;
-        return (
-          <img
-            style={{ width: 20 }}
-            src={`/images/dapps/infrared/${(
-              pool?.protocol ?? "infrared"
-            ).toLocaleLowerCase()}.svg`}
-          />
-        );
-      },
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      align: "left",
-      width: "15%",
-      render: (text: string, record: any) => {
-        return (
-          <div className="flex justify-start">
-            <div className="px-[10px] py-[5px] rounded-[12px] border border-[#373A53] bg-white text-black font-Montserrat text-[14px] font-medium leading-[100%]">
-              {record?.type}
+      {
+        title: "APR",
+        dataIndex: "apy",
+        align: "left",
+        width: "15%",
+        sort: true,
+        render: (text: string, record: any) => {
+          return (
+            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+              {Big(record?.apy ?? 0).toFixed(2)}%
             </div>
-          </div>
-        );
+          );
+        },
       },
-    },
-    {
-      title: "TVL",
-      dataIndex: "tvl",
-      align: "left",
-      width: "15%",
-      sort: true,
-      render: (text: string, record: any) => {
-        return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-            {formatValueDecimal(record?.tvl, "$", 2, true)}
-          </div>
-        );
+      {
+        title: "Action",
+        dataIndex: "action",
+        align: "left",
+        width: "10%",
+        render: (text: string, record: any) => {
+          if (isEarn) {
+            return (
+              <div className="flex items-center gap-2">
+                <Button style={{ width: 32 }} onClick={() => handleInfrared(record, 'Deposit')}>
+                  +
+                </Button>
+                <Button style={{ width: 32 }} onClick={() => handleInfrared(record, 'Withdraw')}>
+                  -
+                </Button>
+              </div>
+            );
+          }
+          return (
+            <div
+              className="flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50]"
+              onClick={() => handleInfrared(record, 'Deposit')}
+            >
+              Stake
+            </div>
+          );
+        },
       },
-    },
-    {
-      title: "APR",
-      dataIndex: "apy",
-      align: "left",
-      width: "15%",
-      sort: true,
-      render: (text: string, record: any) => {
-        return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-            {Big(record?.apy ?? 0).toFixed(2)}%
-          </div>
-        );
-      },
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      align: "left",
-      width: "10%",
-      render: (text: string, record: any) => {
-        return (
-          <div
-            className="flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50]"
-            onClick={() => {
-              openInfrared(record).then(() => {
-                console.log("====1111====");
-                setVaultsVisible(true);
-              });
-            }}
-          >
-            Stake
-          </div>
-        );
-      },
-    },
-  ];
+    ];
+    if (isEarn) {
+      _columns.splice(2, 1);
+      _columns.splice(3, 1);
+      _columns.splice(4, 0, {
+        title: 'You Staked',
+        dataIndex: 'depositAmount',
+        align: 'left',
+        width: '15%',
+        sort: true,
+        render: (text: string, record: any) => {
+          const isValid = Big(record.depositAmount || 0).gt(0);
+          return (
+            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
+              {
+                isValid && (
+                  <div className="flex items-center">
+                    <LazyImage src={record.images[0]} alt="" width={20} height={20} className="rounded-full" />
+                    {
+                      record.images[1] && (
+                        <LazyImage
+                          src={record.images[1]}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className="rounded-full ml-[-10px] "
+                        />
+                      )
+                    }
+                  </div>
+                )
+              }
+              <div
+                className="underline decoration-solid"
+                style={isValid ? {} : { opacity: 0.3, textDecoration: 'none' }}
+              >
+                {numberFormatter(record.depositAmount, 2, true, { isShort: true })}
+              </div>
+            </div>
+          );
+        },
+      });
+      _columns.splice(5, 0, {
+        title: 'Rewards',
+        dataIndex: 'earned',
+        align: 'left',
+        width: '15%',
+        render: (text: string, record: any) => {
+          const isValid = Big(record.earned || 0).gt(0);
+          return (
+            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
+              <div className="flex items-center">
+                <LazyImage
+                  src={record?.initialData?.reward_tokens?.[0]?.icon}
+                  alt=""
+                  width={20}
+                  height={20}
+                  className="rounded-full"
+                />
+              </div>
+              <div
+                className=""
+                style={isValid ? {} : { opacity: 0.3 }}
+              >
+                {numberFormatter(record.earned, 2, true, { isShort: true })}
+              </div>
+            </div>
+          );
+        },
+      });
+    }
+    return _columns;
+  }, [openInfrared, source]);
   const Tabs: any = [
     { value: "Single", label: "Single Token" },
     { value: "LP", label: "LP" },

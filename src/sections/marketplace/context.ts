@@ -21,6 +21,7 @@ export function useMarketplaceContext(props: Props): Context {
 
   const [vaultsVisible, setVaultsVisible] = useState(false);
   const [vaultsData, setVaultsData] = useState<any>({});
+  const [vaultsType, setVaultsType] = useState<'Deposit' | 'Withdraw'>('Deposit');
 
   const openDolomite = async () => {
     const dolomiteConfig = await import('@/configs/lending/dolomite');
@@ -74,7 +75,9 @@ export function useMarketplaceContext(props: Props): Context {
     vaultsData,
     setVaultsVisible,
     setVaultsData,
-    openInfrared
+    openInfrared,
+    vaultsType,
+    setVaultsType,
   };
 }
 
@@ -96,9 +99,11 @@ interface Context {
   setStakingData: Dispatch<SetStateAction<any>>;
 
   vaultsVisible: boolean;
+  vaultsType: 'Deposit' | 'Withdraw';
   vaultsData: any;
   setVaultsVisible: Dispatch<SetStateAction<boolean>>;
   setVaultsData: Dispatch<SetStateAction<any>>;
+  setVaultsType: Dispatch<SetStateAction<'Deposit' | 'Withdraw'>>;
   openInfrared(data: any): void;
 }
 
