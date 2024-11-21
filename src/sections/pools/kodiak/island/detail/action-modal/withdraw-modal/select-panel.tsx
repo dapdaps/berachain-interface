@@ -173,9 +173,9 @@ export default function SelectPanel({
         type="primary"
         className="w-full h-[46px] mt-[16px]"
         onClick={() => {
-          const _a = Big(info.balance)
-            .mul(islandAmount0)
-            .div(info.balanceAmount0);
+          const _a = Big(info.balanceAmount0 || 0).gt(0)
+            ? Big(info.balance).mul(islandAmount0).div(info.balanceAmount0)
+            : 0;
 
           onSuccess({
             amount: Big(stakedAmounts.amount || 0)
