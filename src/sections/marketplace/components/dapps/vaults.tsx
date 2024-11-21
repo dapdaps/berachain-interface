@@ -34,6 +34,7 @@ export default memo(function vaults(props) {
   const router = useRouter();
   const {
     vaultsVisible,
+    vaultsType,
     setVaultsVisible,
     vaultsData = {}
   } = useContext(MarketplaceContext);
@@ -51,7 +52,7 @@ export default memo(function vaults(props) {
 
   const vaultAddress = addresses ? addresses[symbol] : '';
 
-  const [currentTab, setCurrentTab] = useState(TABS[0].value);
+  const [currentTab, setCurrentTab] = useState(vaultsType || TABS[0].value);
   const [state, updateState] = useMultiState({
     balances: [],
     lpBalance: '',
