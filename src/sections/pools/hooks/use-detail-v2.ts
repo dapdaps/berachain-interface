@@ -1,13 +1,13 @@
-import Big from 'big.js';
-import { Contract } from 'ethers';
-import { useEffect, useState } from 'react';
-import useAccount from '@/hooks/use-account';
-import { multicall, multicallAddresses } from '@/utils/multicall';
-import factoryAbi from '../abi/factory-v2';
-import poolAbi from '../abi/pool-v2';
-import { wrapNativeToken, sortTokens } from '../utils';
-import { getTokenAmountsV2 } from '../helpers';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import Big from "big.js";
+import { Contract } from "ethers";
+import { useEffect, useState } from "react";
+import useAccount from "@/hooks/use-account";
+import { multicall, multicallAddresses } from "@/utils/multicall";
+import factoryAbi from "../abi/factory-v2";
+import poolAbi from "../abi/pool-v2";
+import { wrapNativeToken, sortTokens } from "../utils";
+import { getTokenAmountsV2 } from "../helpers";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function usePoolInfoV2({ token0, token1, dex }: any) {
   const [info, setInfo] = useState<any>({});
@@ -35,7 +35,7 @@ export default function usePoolInfoV2({ token0, token1, dex }: any) {
 
       if (
         !poolAddress ||
-        poolAddress === '0x0000000000000000000000000000000000000000'
+        poolAddress === "0x0000000000000000000000000000000000000000"
       ) {
         setInfo(null);
         setLoading(false);
@@ -45,16 +45,16 @@ export default function usePoolInfoV2({ token0, token1, dex }: any) {
       const calls = [
         {
           address: poolAddress,
-          name: 'balanceOf',
+          name: "balanceOf",
           params: [account]
         },
         {
           address: poolAddress,
-          name: 'totalSupply'
+          name: "totalSupply"
         },
         {
           address: poolAddress,
-          name: 'getReserves'
+          name: "getReserves"
         }
       ];
 
@@ -69,10 +69,12 @@ export default function usePoolInfoV2({ token0, token1, dex }: any) {
       });
 
       const { amount0, amount1 } = getTokenAmountsV2({
-        liquidity: liquidity ? liquidity[0].toString() : '0',
-        totalSupply: totalSupply?.[0].toString() || '0',
+        liquidity: liquidity ? liquidity[0].toString() : "0",
+        totalSupply: totalSupply?.[0].toString() || "0",
         reserve0: reserves[0],
-        reserve1: reserves[1]
+        reserve1: reserves[1],
+        token0,
+        token1
       });
 
       setInfo({
@@ -90,7 +92,7 @@ export default function usePoolInfoV2({ token0, token1, dex }: any) {
         poolAddress,
         amount0,
         amount1,
-        liquidity: liquidity ? liquidity[0].toString() : '0'
+        liquidity: liquidity ? liquidity[0].toString() : "0"
       });
 
       setLoading(false);
