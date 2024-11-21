@@ -8,6 +8,7 @@ import useToast from '@/hooks/use-toast';
 import useCustomAccount from '@/hooks/use-account';
 import useExecutionContract from '@/hooks/use-execution-contract';
 import useLpToAmount from '@/hooks/use-lp-to-amount';
+import { VAULT_MAPPING } from '@/sections/bgt/config/gauge';
 export default memo(function Button(props: IProps) {
   const {
     abi,
@@ -15,7 +16,6 @@ export default memo(function Button(props: IProps) {
     product,
     method,
     symbol,
-    tokens,
     amount,
     template,
     decimals,
@@ -26,6 +26,7 @@ export default memo(function Button(props: IProps) {
     onSuccess,
     addAction
   } = props
+
   const { account, provider, chainId } = useCustomAccount()
   const toast = useToast()
   const { executionContract } = useExecutionContract()
@@ -131,7 +132,7 @@ export default memo(function Button(props: IProps) {
       provider?.getSigner()
     );
     const [amount0, amount1] = handleGetAmount(amount);
-    console.log('====tokens', tokens)
+    const vault = VAULT_MAPPING[vaultAddress]
     if (type === "deposit") {
       executionContract({
         contract,
@@ -153,11 +154,10 @@ export default memo(function Button(props: IProps) {
           chain_id: chainId,
           sub_type: 'Stake',
         }
-
-        if (tokens?.length > 1 && amount0 && amount1) {
+        if (vault && amount0 && amount1) {
           addParams["extra_data"] = JSON.stringify({
-            token0Symbol: tokens?.[0]?.symbol,
-            token1Symbol: tokens?.[1]?.symbol,
+            token0Symbol: vault.symbol0,
+            token1Symbol: vault.symbol1,
             amount0,
             amount1
           })
@@ -216,10 +216,10 @@ export default memo(function Button(props: IProps) {
           sub_type: 'Unstake',
         }
 
-        if (tokens?.length > 1 && amount0 && amount1) {
+        if (vault && amount0 && amount1) {
           addParams["extra_data"] = JSON.stringify({
-            token0Symbol: tokens?.[0]?.symbol,
-            token1Symbol: tokens?.[1]?.symbol,
+            token0Symbol: vault.symbol0,
+            token1Symbol: vault.symbol1,
             amount0,
             amount1
           })

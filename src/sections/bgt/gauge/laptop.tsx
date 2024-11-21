@@ -104,7 +104,6 @@ export default memo(function gauge(props: any) {
                     type={currentTab}
                     product={gaugeData?.metadata?.product}
                     symbol={gaugeData?.metadata?.name}
-                    tokens={state?.tokens}
                     amount={state?.inAmount}
                     template={template}
                     decimals={18}
