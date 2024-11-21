@@ -52,6 +52,8 @@ const DappHeader: React.FC = () => {
   );
 };
 
+const ComingSoon = true;
+
 export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
   const [fromChain, setFromChain] = useState<Chain>(chains[1])
@@ -68,8 +70,9 @@ export default function Bridge() {
         <Card>
           <TokenAmout
             chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
-            setFromToken(token)
-          }}
+              setFromToken(token)
+            }}
+            comingSoon={ComingSoon}
           />
           <div className='h-[8px] md:h-4 flex justify-center items-center'>
             <svg
@@ -102,6 +105,7 @@ export default function Bridge() {
             chain={toChain} token={toToken} disabledInput={true} onTokenChange={(token: Token) => {
             setToToken(token)
           }}
+            comingSoon={ComingSoon}
           />
           <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
             <div>Receive address</div>
@@ -126,7 +130,7 @@ export default function Bridge() {
 
           <Routes />
 
-          <SubmitBtn />
+          <SubmitBtn comingSoon={ComingSoon} />
         </Card>
 
         <Confirm
