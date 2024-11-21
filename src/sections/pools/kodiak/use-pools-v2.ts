@@ -56,7 +56,7 @@ export default function usePoolsV2(isSimple?: boolean) {
       setPools(
         data.map(({ pair }: any, i: number) => {
           const { amount0, amount1 } = getTokenAmountsV2({
-            liquidity: balanceResult[i][0].toString(),
+            liquidity: balanceResult?.[i]?.[0]?.toString?.() || '0',
             totalSupply: Big(pair.totalSupply).mul(1e18).toString(),
             reserve0: Big(pair.reserve0)
               .mul(10 ** pair.token0.decimals)
