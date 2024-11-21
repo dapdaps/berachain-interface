@@ -7,6 +7,7 @@ import UnstakeModal from "./modals/unstake";
 import ClaimRewardsModal from "./modals/claim-rewards";
 import IncentivesModal from "./modals/incentives";
 import VoteModal from "./modals/vote/laptop";
+import RulesModal from "./modals/rules";
 import { useState } from "react";
 
 export default function Meme(props: any) {
@@ -21,7 +22,11 @@ export default function Meme(props: any) {
 
   return (
     <>
-      {isMobile ? <Mobile {...props} /> : <Laptop {...props} />}
+      {isMobile ? (
+        <Mobile {...props} onOpenModal={onOpenModal} />
+      ) : (
+        <Laptop {...props} onOpenModal={onOpenModal} />
+      )}
       {modalData && (
         <>
           <StakeModal
@@ -42,26 +47,33 @@ export default function Meme(props: any) {
               setModalType(0);
             }}
           />
-          <IncentivesModal
-            open={modalType === 4}
-            onClose={() => {
-              setModalType(0);
-            }}
-          />
+
           <WithdrawalModal
-            open={modalType === 5}
-            onClose={() => {
-              setModalType(0);
-            }}
-          />
-          <VoteModal
-            open={modalType === 6}
+            open={modalType === 4}
             onClose={() => {
               setModalType(0);
             }}
           />
         </>
       )}
+      <IncentivesModal
+        open={modalType === 5}
+        onClose={() => {
+          setModalType(0);
+        }}
+      />
+      <VoteModal
+        open={modalType === 6}
+        onClose={() => {
+          setModalType(0);
+        }}
+      />
+      <RulesModal
+        open={modalType === 7}
+        onClose={() => {
+          setModalType(0);
+        }}
+      />
     </>
   );
 }

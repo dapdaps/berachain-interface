@@ -1,4 +1,4 @@
-export default function Title() {
+export default function Title({ onOpenModal }: any) {
   return (
     <>
       <div className="flex justify-center">
@@ -140,7 +140,9 @@ export default function Title() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="w-[67px] h-[23px] absolute right-0 md:right-[-64px] top-0 cursor-pointer hover:opacity-80"
-            onClick={() => {}}
+            onClick={() => {
+              onOpenModal(7);
+            }}
           >
             <rect
               x="0.5"

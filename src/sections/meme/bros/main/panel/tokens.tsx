@@ -83,7 +83,7 @@ const Token = ({ token, i, onClick }: any) => {
               <button
                 className="font-medium underline ml-[12px]"
                 onClick={() => {
-                  onClick(4);
+                  onClick(5);
                 }}
               >
                 Incentives
@@ -178,7 +178,7 @@ export default function Tokens({ onOpenModal }: any) {
     if (isMobile) {
       router.push("/meme/bros/vote");
     } else {
-      onOpenModal(5);
+      onOpenModal(6);
     }
   }, [isMobile]);
 

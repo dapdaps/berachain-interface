@@ -4,13 +4,13 @@ import Panel from "../panel";
 import Total from "../total";
 import WithdrawalPanel from "../../components/withdrawal-panel";
 
-export default function Laptop() {
+export default function Laptop({ onOpenModal }: any) {
   return (
     <div className="w-full overflow-x-hidden relative">
-      <Title />
+      <Title onOpenModal={onOpenModal} />
       <Total />
       <Tokens />
-      <Panel />
+      <Panel onOpenModal={onOpenModal} />
       <WithdrawalPanel />
     </div>
   );
