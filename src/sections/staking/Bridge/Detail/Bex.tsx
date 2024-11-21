@@ -34,7 +34,7 @@ const DetailBex = (props: any) => {
               )}
             </div>
             <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-              {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
+              {formatValueDecimal(data?.depositAmount ?? 0, '', 2)} {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
             </div>
           </div>
 
