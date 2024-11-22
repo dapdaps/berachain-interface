@@ -39,7 +39,7 @@ export const VAULT_MAPPING = {
   },
 
   // HONEY-WBERA
-  "0x8288Ab28D6196cA4E89269B8644A146E493E23B3": {
+  "0xAD57d7d39a487C04a44D3522b910421888Fb9C6d": {
     symbol0: "HONEY",
     symbol1: "WBERA"
   },
@@ -49,7 +49,7 @@ export const VAULT_MAPPING = {
     symbol1: "WETH"
   },
   // HONEY-USDC
-  "0xe5519D97eA854291c35a494b28929fA7abEf12e8": {
+  "0xe3b9B72ba027FD6c514C0e5BA075Ac9c77C23Afa": {
     symbol0: "HONEY",
     symbol1: "USDC"
   },
