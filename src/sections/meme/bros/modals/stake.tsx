@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import useStake from "../hooks/use-stake";
 import { formatThousandsSeparator, balanceFormated } from "@/utils/balance";
 import clsx from "clsx";
+import { formatDistance } from "date-fns";
 
 const ArrowIcon = (
   <svg
@@ -171,7 +172,8 @@ export default function StakeModal({
           !
         </div>
         <div className="font-medium">
-          The unstaked assets will available to be withdrawn in 10 days.
+          The unstaked assets will available to be withdrawn{" "}
+          {formatDistance(Date.now(), Date.now() + data.delayTime)}.
         </div>
       </div>
     </Basic>

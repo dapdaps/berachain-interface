@@ -1,34 +1,39 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { TOKENS } from "../../config";
+import Loading from "@/components/loading";
 import { useMemo, useState } from "react";
 import Item from "../tokens/item";
 
-export default function Tokens() {
-  const tokens = useMemo(() => Object.values(TOKENS), [TOKENS]);
+export default function Tokens({ tokens, loading }: any) {
   const [selectToken, setSelectToken] = useState<number>();
   return (
     <div className="pt-[30px]">
-      <Swiper
-        width={375}
-        height={260}
-        slidesPerView={4}
-        spaceBetween={38}
-        speed={500}
-        loop={true}
-      >
-        {Object.values(tokens).map((token, i) => (
-          <SwiperSlide key={token.address} style={{ height: 260 }}>
-            <Item
-              token={token}
-              i={i}
-              show={i === selectToken}
-              onClick={() => {
-                setSelectToken(i);
-              }}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {loading ? (
+        <div className="flex justify-center w-full">
+          <Loading size={40} />
+        </div>
+      ) : (
+        <Swiper
+          width={375}
+          height={260}
+          slidesPerView={4}
+          spaceBetween={38}
+          speed={500}
+          loop={true}
+        >
+          {tokens.map((token: any, i: number) => (
+            <SwiperSlide key={token.address} style={{ height: 260 }}>
+              <Item
+                token={token}
+                i={i}
+                show={i === selectToken}
+                onClick={() => {
+                  setSelectToken(i);
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 }

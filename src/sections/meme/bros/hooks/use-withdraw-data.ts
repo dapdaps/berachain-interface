@@ -30,28 +30,32 @@ export default function useWithdrawData(tokens: any) {
       const _list: any = [];
 
       res.forEach((item: any, i: number) => {
-        if (item.withdrawn) return;
+        const record = item[0][0];
+        if (record[2]) return;
+
+        const _unlockTimestamp = Number(record[1].toString());
         _list.push({
-          amount: Big(item.amount).div(1e18).toString(),
+          amount: Big(record[0].toString()).div(1e18).toString(),
           withdrawable:
-            !item.withdrawn &&
-            Math.floor(Date.now() / 1000) > item.unlockTimestamp,
-          unlockTimestamp: item.unlockTimestamp * 1000,
+            !record[2] && Math.floor(Date.now() / 1000) > _unlockTimestamp,
+          unlockTimestamp: _unlockTimestamp * 1000,
+          idx: i,
           ...tokens[i]
         });
       });
-
+      console.log("_list", _list);
       setList(_list);
     } catch (err) {
+      console.log(err);
       setList(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [account, provider, tokens]);
 
   useEffect(() => {
-    if (account && tokens?.length) onQuery();
-  }, [account, tokens]);
+    if (account && provider && tokens?.length) onQuery();
+  }, [account, provider, tokens]);
 
   return { loading, list, onQuery };
 }

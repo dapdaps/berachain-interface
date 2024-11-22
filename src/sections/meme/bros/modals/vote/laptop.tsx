@@ -15,7 +15,7 @@ const VoteLaptop = ({ open, onClose }: any) => {
           subTitle="Dec.18, 2024 - Jan.01, 2025"
           className="w-[342px]"
         />
-        <VoteListMeme />
+        {/* <VoteListMeme /> */}
       </div>
       <div className="mt-[5px]">
         <VoteTable />

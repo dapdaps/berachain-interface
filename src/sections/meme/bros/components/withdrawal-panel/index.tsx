@@ -5,6 +5,7 @@ import List from "./list";
 
 export default function WithdrawalPanel({ list, onSuccess }: any) {
   const [expand, setExpand] = useState(false);
+
   return (
     <motion.div
       animate={{

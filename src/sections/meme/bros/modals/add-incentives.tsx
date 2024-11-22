@@ -3,21 +3,29 @@ import TokenAmout from "@/sections/swap/TokenAmount";
 import Button from "@/components/button";
 import CurrencySelect from "@/sections/swap/TokenSelector";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { useState } from "react";
 
-export default function AddIncentives({ open, onClose }: any) {
+export default function AddIncentives({ data, open, onClose }: any) {
+  const prices = usePriceStore((store: any) => store.price);
+  const [amount, setAmount] = useState("");
+  const [balance, setBalance] = useState("");
   return (
     <>
       <Basic open={open} onClose={onClose} className="w-[520px]">
         <div className="flex text-[20px] font-bold">Add Incentives</div>
         <div className="mt-[20px]">
           <TokenAmout
-            currency={{}}
-            prices={{}}
+            currency={data}
+            prices={prices}
             type="in"
-            amount=""
-            updater={1}
-            onAmountChange={() => {}}
-            onUpdateCurrencyBalance={() => {}}
+            amount={amount}
+            onUpdateCurrencyBalance={(balance: any) => {
+              setBalance(balance);
+            }}
+            onAmountChange={(val: any) => {
+              setAmount(val);
+            }}
             onCurrencySelectOpen={() => {}}
           />
         </div>

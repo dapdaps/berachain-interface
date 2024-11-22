@@ -24,7 +24,7 @@ export default function Laptop() {
         <Materials />
         <div className="relative z-[5] w-full h-[240px] bg-[url(/images/meme/ground.png)] bg-contain" />
       </div>
-      <WithdrawalPanel />
+      {/* <WithdrawalPanel /> */}
     </div>
   );
 }

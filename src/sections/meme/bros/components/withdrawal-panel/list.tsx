@@ -3,10 +3,10 @@ import { formatDistance } from "date-fns";
 import useWithdraw from "../../hooks/use-withdraw";
 import Button from "@/components/button";
 
-const Item = ({ item, i, onSuccess }: any) => {
+const Item = ({ item, onSuccess }: any) => {
   const { loading, onWithdraw } = useWithdraw({
     token: item,
-    idx: i,
+    idx: item.idx,
     onSuccess
   });
   return (
@@ -29,8 +29,9 @@ const Item = ({ item, i, onSuccess }: any) => {
         onClick={onWithdraw}
         disabled={!item.withdrawable}
         loading={loading}
+        isOnlyLoading={true}
         type="primary"
-        className="shrink-0 w-[105px] h-[36px] rounded-[10px] border border-black bg-[#FFDC50] font-semibold"
+        className="shrink-0 w-[105px] h-[36px] rounded-[10px] border border-black bg-[#FFDC50] font-semibold flex justify-center items-center"
       >
         Withdraw
       </Button>

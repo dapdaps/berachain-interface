@@ -9,6 +9,7 @@ import IncentivesModal from "./modals/incentives";
 import VoteModal from "./modals/vote/laptop";
 import RulesModal from "./modals/rules";
 import SwapModal from "@/sections/swap/SwapModal";
+import AddIncentives from "./modals/add-incentives";
 import { useState } from "react";
 import useTokens from "./hooks/use-tokens";
 import useWithdrawData from "./hooks/use-withdraw-data";
@@ -38,6 +39,8 @@ export default function Meme(props: any) {
   const onOpenModal = (type: any, data: any) => {
     if (type === 8) {
       setInnerModalType(1);
+    } else if (type === 9) {
+      setInnerModalType(2);
     } else {
       setModalType(type);
     }
@@ -112,11 +115,15 @@ export default function Meme(props: any) {
 
           <WithdrawalModal
             open={modalType === 4}
+            list={withdrawList}
+            onSuccess={() => {
+              onRefreshWithdrawData();
+              queryBalance();
+            }}
             onClose={() => {
               setModalType(0);
             }}
           />
-
           <SwapModal
             defaultOutputCurrency={modalData}
             outputCurrencyReadonly={true}
@@ -125,14 +132,24 @@ export default function Meme(props: any) {
               setInnerModalType(0);
             }}
           />
+          <IncentivesModal
+            open={modalType === 5}
+            data={modalData}
+            onOpenModal={onOpenModal}
+            onClose={() => {
+              setModalType(0);
+            }}
+          />
+          <AddIncentives
+            open={innerModalType === 2}
+            data={modalData}
+            onClose={() => {
+              setInnerModalType(0);
+            }}
+          />
         </>
       )}
-      <IncentivesModal
-        open={modalType === 5}
-        onClose={() => {
-          setModalType(0);
-        }}
-      />
+
       <VoteModal
         open={modalType === 6}
         onClose={() => {

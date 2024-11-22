@@ -101,7 +101,7 @@ const Token = ({
               <button
                 className="font-medium underline ml-[12px]"
                 onClick={() => {
-                  onClick(5);
+                  onClick(5, token);
                 }}
               >
                 Incentives

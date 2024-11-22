@@ -3,6 +3,7 @@ import Materials from "../../components/materials";
 import Round from "../round";
 
 export default function Mobile() {
+  console.log(666);
   return (
     <div className="h-full w-full overflow-x-hidden relative pt-[18px]">
       <div className="absolute left-[18px] top-[18px]">

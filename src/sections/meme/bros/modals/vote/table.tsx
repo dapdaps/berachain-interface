@@ -53,14 +53,6 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
                 isShort: true
               })}
             </div>
-            {!isMobile && (
-              <button
-                type="button"
-                className="h-[28px] mr-[10px] shrink-0 leading-[26px] px-[10px] border border-black rounded-[10px] bg-[#FFDC50] text-center text-black text-[14px] font-[600]"
-              >
-                Add incentives
-              </button>
-            )}
           </div>
         );
       }

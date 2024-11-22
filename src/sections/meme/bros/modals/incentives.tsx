@@ -2,12 +2,18 @@ import Basic from "./basic";
 import Button from "@/components/button";
 import Image from "next/image";
 
-export default function Incentives({ open, onClose }: any) {
+export default function Incentives({ open, data, onClose, onOpenModal }: any) {
   return (
     <Basic open={open} onClose={onClose} className="w-[916px]">
       <div className="flex text-[20px] font-bold justify-between pr-[40px] md:pr-0">
         <div>Incentives</div>
-        <Button type="primary" className="h-[36px]">
+        <Button
+          type="primary"
+          className="h-[36px]"
+          onClick={() => {
+            onOpenModal(9, data);
+          }}
+        >
           Add Incentives
         </Button>
       </div>
