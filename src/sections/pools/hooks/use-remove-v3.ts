@@ -121,6 +121,8 @@ export default function useRemove({
         extra_data: JSON.stringify({
           amount0: amount0 * (percent / 100),
           amount1: amount1 * (percent / 100),
+          token0Symbol: detail.token0.symbol,
+          token1Symbol: detail.token1.symbol,
           action: "Remove Liquidity",
           type: "univ3"
         })

@@ -77,7 +77,9 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
           amount0,
           amount1,
           action: "Remove Liquidity",
-          type: "univ3"
+          type: "univ3",
+          token0Symbol: data.token0.symbol,
+          token1Symbol: data.token1.symbol
         })
       });
     } catch (err: any) {
