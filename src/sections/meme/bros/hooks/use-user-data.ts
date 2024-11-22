@@ -21,6 +21,7 @@ export default function useUserData(tokens: any) {
         name: "userStakes",
         params: [account]
       }));
+
       const stakedRes = await multicall({
         abi: stakeAbi,
         options: {},
@@ -32,6 +33,8 @@ export default function useUserData(tokens: any) {
       const _data: any = {};
 
       tokens.forEach((token: any, i: number) => {
+        console.log(stakedRes[i]);
+        if (!stakedRes[i]) return;
         const _amount = Big(stakedRes[i][0].toString()).div(1e18).toString();
         const _amountUSD = _amount;
         _data[token.address] = {
@@ -41,15 +44,16 @@ export default function useUserData(tokens: any) {
       });
       setUserData(_data);
     } catch (err) {
+      console.log("user data error", err);
       setUserData(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [tokens]);
 
   useEffect(() => {
-    if (account) onQuery();
-  }, [account]);
+    if (account && provider && tokens.length) onQuery();
+  }, [account, provider, tokens]);
 
   return { loading, userData, onQuery };
 }

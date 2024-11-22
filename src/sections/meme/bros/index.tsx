@@ -19,6 +19,7 @@ export default function Meme(props: any) {
   const isMobile = useIsMobile();
   const [modalType, setModalType] = useState(0);
   const [modalData, setModalData] = useState<any>();
+  const [innerModalType, setInnerModalType] = useState(0);
   const { loading, totalStaked, tokens, onQuery } = useTokens();
   const { list: withdrawList, onQuery: onRefreshWithdrawData } =
     useWithdrawData(tokens);
@@ -35,8 +36,12 @@ export default function Meme(props: any) {
   } = useTokensBalance(tokens);
 
   const onOpenModal = (type: any, data: any) => {
+    if (type === 8) {
+      setInnerModalType(1);
+    } else {
+      setModalType(type);
+    }
     setModalData(data);
-    setModalType(type);
   };
 
   const params = {
@@ -70,8 +75,18 @@ export default function Meme(props: any) {
         <>
           <StakeModal
             open={modalType === 1}
+            data={modalData}
+            totalStaked={totalStaked}
+            userData={userData}
+            onOpenModal={onOpenModal}
             onClose={() => {
               setModalType(0);
+            }}
+            onSuccess={() => {
+              setModalType(0);
+              onQuery();
+              onRefreshUserData();
+              queryBalance();
             }}
           />
           <UnstakeModal
@@ -97,9 +112,9 @@ export default function Meme(props: any) {
           <SwapModal
             defaultOutputCurrency={modalData}
             outputCurrencyReadonly={true}
-            show={modalType === 8}
+            show={innerModalType === 1}
             onClose={() => {
-              setModalType(0);
+              setInnerModalType(0);
             }}
           />
         </>

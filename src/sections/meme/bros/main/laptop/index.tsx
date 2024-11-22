@@ -5,6 +5,7 @@ import Total from "../total";
 import WithdrawalPanel from "../../components/withdrawal-panel";
 
 export default function Laptop({
+  loading,
   onOpenModal,
   tokens,
   totalStaked,
@@ -19,7 +20,7 @@ export default function Laptop({
     <div className="w-full overflow-x-hidden relative">
       <Title onOpenModal={onOpenModal} />
       <Total totalStaked={totalStaked} />
-      <Tokens tokens={tokens} />
+      <Tokens tokens={tokens} loading={loading} />
       <Panel
         onOpenModal={onOpenModal}
         tokens={tokens}

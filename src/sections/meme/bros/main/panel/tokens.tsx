@@ -182,7 +182,7 @@ const Token = ({
             className="h-[40px] w-[172px]"
             type="primary"
             onClick={() => {
-              onClick(1);
+              onClick(1, token);
             }}
           >
             Dap me up!
@@ -190,7 +190,7 @@ const Token = ({
           <Button
             className="h-[40px] w-[172px] !bg-transparent"
             onClick={() => {
-              onClick(2);
+              onClick(2, token);
             }}
           >
             Unstake

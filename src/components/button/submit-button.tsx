@@ -4,6 +4,7 @@ import useAccount from "@/hooks/use-account";
 import { useSwitchChain } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
 import { useEffect } from "react";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
@@ -18,7 +19,6 @@ const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
 };
 
 export default function SubmitBtn({
-  chain,
   spender,
   token,
   amount,
@@ -27,7 +27,8 @@ export default function SubmitBtn({
   disabled,
   onClick,
   onRefresh,
-  updater
+  updater,
+  children
 }: any) {
   const { approve, approved, approving, checking, checkApproved } = useApprove({
     amount,
@@ -55,12 +56,12 @@ export default function SubmitBtn({
     );
   }
 
-  if (chainId !== chain.chainId) {
+  if (chainId !== DEFAULT_CHAIN_ID) {
     return (
       <BaseButton
         onClick={() => {
           switchChain({
-            chainId: chain.chainId
+            chainId: DEFAULT_CHAIN_ID
           });
         }}
         loading={switching}
@@ -78,7 +79,8 @@ export default function SubmitBtn({
     return <BaseButton disabled>{errorTips}</BaseButton>;
   }
 
-  if (!spender) return <BaseButton disabled>Insufficient Liquidity</BaseButton>;
+  if (!spender && amount)
+    return <BaseButton disabled>Insufficient Liquidity</BaseButton>;
 
   if (!approved) {
     return <BaseButton onClick={approve}>Approve {token?.symbol}</BaseButton>;
@@ -86,7 +88,7 @@ export default function SubmitBtn({
 
   return (
     <BaseButton onClick={onClick} disabled={disabled}>
-      Swap
+      {children}
     </BaseButton>
   );
 }

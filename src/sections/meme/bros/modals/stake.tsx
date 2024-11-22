@@ -1,7 +1,13 @@
 import Basic from "./basic";
 import Image from "next/image";
 import TokenAmout from "@/sections/swap/TokenAmount";
-import Button from "@/components/button";
+import Button from "@/components/button/submit-button";
+import Big from "big.js";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { useMemo, useState } from "react";
+import useStake from "../hooks/use-stake";
+import { formatThousandsSeparator, balanceFormated } from "@/utils/balance";
+import clsx from "clsx";
 
 const ArrowIcon = (
   <svg
@@ -18,31 +24,88 @@ const ArrowIcon = (
   </svg>
 );
 
-export default function StakeModal({ open, onClose }: any) {
+export default function StakeModal({
+  open,
+  data,
+  userData,
+  totalStaked,
+  onClose,
+  onOpenModal,
+  onSuccess
+}: any) {
+  const prices = usePriceStore((store: any) => store.price);
+  const [amount, setAmount] = useState("");
+  const [balance, setBalance] = useState("");
+  const { loading, onStake } = useStake({
+    token: data,
+    amount,
+    onSuccess
+  });
+
+  const errorTips = useMemo(() => {
+    if (Number(amount || 0) === 0) return "Enter an amount";
+    if (Big(amount).gt(balance || 0)) {
+      return "Insufficient Balance";
+    }
+    return "";
+  }, [amount, balance]);
+
+  const [originAmount, targetAmount] = useMemo(() => {
+    const _oa = userData[data.address]?.stakedAmount || 0;
+    const _ta = Big(_oa)
+      .add(amount || 0)
+      .toString();
+    return [formatThousandsSeparator(_oa, 2), formatThousandsSeparator(_ta, 2)];
+  }, [userData, amount]);
+
+  const [originWeight, targetWeight] = useMemo(() => {
+    const _ow = totalStaked
+      ? Big(originAmount).div(totalStaked).mul(100).toString()
+      : 0;
+    const _tw = totalStaked
+      ? Big(targetAmount)
+          .div(Big(totalStaked).add(amount || 0))
+          .mul(100)
+          .toString()
+      : 0;
+    return [balanceFormated(_ow, 4), balanceFormated(_tw, 4)];
+  }, [totalStaked, originAmount, targetAmount, amount]);
+
   return (
     <Basic open={open} onClose={onClose} className="w-[520px]">
       <div className="flex gap-[18px]">
         <Image
-          src="/assets/tokens/bera.svg"
+          src={data.icon}
           width={60}
           height={60}
-          alt="Reward Token"
+          alt={data.symbol}
           className="border border-[3px] border-black rounded-full"
         />
         <div>
-          <div className="text-[20px] font-bold">sPepe</div>
-          <button className="text-[14px] underline">Get sPepe</button>
+          <div className="text-[20px] font-bold">{data.symbol}</div>
+          <button
+            className="text-[14px] underline"
+            onClick={() => {
+              onOpenModal(8, data);
+            }}
+          >
+            Get {data.symbol}
+          </button>
         </div>
       </div>
       <div className="mt-[20px]">
         <TokenAmout
           type="in"
-          currency={{}}
-          prices={{}}
-          amount=""
+          currency={data}
+          prices={prices}
+          amount={amount}
           outputCurrencyReadonly={true}
-          updater={1}
-          onUpdateCurrencyBalance={() => {}}
+          onUpdateCurrencyBalance={(balance: any) => {
+            setBalance(balance);
+          }}
+          onAmountChange={(val: any) => {
+            setAmount(val);
+          }}
         />
       </div>
       <div className="flex flex-col gap-[12px] mt-[20px] rounded-[12px] border border-[#373A53] p-[12px] text-[14px] font-medium">
@@ -50,23 +113,39 @@ export default function StakeModal({ open, onClose }: any) {
           <div>Your Dapped</div>
           <div className="flex items-center gap-[8px]">
             <Image
-              src="/assets/tokens/bera.svg"
+              src={data.icon}
               width={16}
               height={16}
-              alt="Reward Token"
+              alt={data.symbol}
               className="rounded-full"
             />
-            <span className="line-through">0</span>
-            {ArrowIcon}
-            <span>50,000</span>
+            <span
+              className={clsx(originAmount !== targetAmount && "line-through")}
+            >
+              {originAmount}
+            </span>
+            {originAmount !== targetAmount && (
+              <>
+                {ArrowIcon}
+                <span>{targetAmount}</span>
+              </>
+            )}
           </div>
         </div>
         <div className="flex justify-between items-center">
           <div>Gauge Weight</div>
           <div className="flex items-center gap-[8px]">
-            <span className="line-through">0%</span>
-            {ArrowIcon}
-            <span>50,000%</span>
+            <span
+              className={clsx(originWeight !== targetWeight && "line-through")}
+            >
+              {originWeight}%
+            </span>
+            {originWeight !== targetWeight && (
+              <>
+                {ArrowIcon}
+                <span>{targetWeight}%</span>
+              </>
+            )}
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -77,8 +156,13 @@ export default function StakeModal({ open, onClose }: any) {
         </div>
       </div>
       <Button
-        type="primary"
-        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
+        spender={data.stakeAddress}
+        token={data}
+        amount={amount}
+        loading={loading}
+        errorTips={errorTips}
+        disabled={!!errorTips}
+        onClick={onStake}
       >
         👊 Dap sPepe up!
       </Button>

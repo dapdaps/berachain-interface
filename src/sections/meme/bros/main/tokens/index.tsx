@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
+import Loading from "@/components/loading";
 import Item from "./item";
 
-export default function Tokens({ tokens }: any) {
+export default function Tokens({ tokens, loading }: any) {
   const [selectToken, setSelectToken] = useState<number>();
   const list = useMemo(() => {
     if (!tokens || tokens.length === 0) return [];
@@ -30,6 +31,11 @@ export default function Tokens({ tokens }: any) {
           }}
         />
       ))}
+      {loading && (
+        <div className="flex justify-center w-full">
+          <Loading size={40} />
+        </div>
+      )}
     </div>
   );
 }
