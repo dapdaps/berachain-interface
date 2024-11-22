@@ -1,15 +1,15 @@
-import Big from 'big.js';
-import { Contract } from 'ethers';
-import { useState } from 'react';
+import Big from "big.js";
+import { Contract } from "ethers";
+import { useState } from "react";
 
-import useAccount from '@/hooks/use-account';
-import useAddAction from '@/hooks/use-add-action';
-import useToast from '@/hooks/use-toast';
-import { useSettingsStore } from '@/stores/settings';
-import { wrapNativeToken, sortTokens } from '../utils';
+import useAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import useToast from "@/hooks/use-toast";
+import { useSettingsStore } from "@/stores/settings";
+import { wrapNativeToken, sortTokens } from "../utils";
 
-import routerAbi from '../abi/router-v2';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import routerAbi from "../abi/router-v2";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useAddV2({
   token0,
@@ -24,12 +24,12 @@ export default function useAddV2({
   const toast = useToast();
   const slippage = useSettingsStore((store: any) => store.slippage);
 
-  const { addAction } = useAddAction('dapp');
+  const { addAction } = useAddAction("dapp");
 
   const onIncrease = async () => {
     setLoading(true);
 
-    let toastId = toast.loading({ title: 'Confirming...' });
+    let toastId = toast.loading({ title: "Confirming..." });
 
     try {
       const [_token0, _token1] = sortTokens(
@@ -40,7 +40,7 @@ export default function useAddV2({
         ? token0
         : token1.isNative
         ? token1
-        : '';
+        : "";
       const isReverse =
         _token0.address !== token0.address &&
         _token1.address !== token1.address;
@@ -62,7 +62,7 @@ export default function useAddV2({
 
       const signer = provider.getSigner(account);
 
-      const method = hasNativeToken ? 'addLiquidityETH' : 'addLiquidity';
+      const method = hasNativeToken ? "addLiquidityETH" : "addLiquidity";
 
       const params = hasNativeToken
         ? [
@@ -90,7 +90,7 @@ export default function useAddV2({
         signer
       );
 
-      let value = '0';
+      let value = "0";
 
       if (hasNativeToken) {
         value = _token0.isNative ? _amount0 : _amount1;
@@ -103,47 +103,49 @@ export default function useAddV2({
           value
         });
       } catch (err: any) {
-        console.log('estimateGas err', err);
-        if (err?.code === 'UNPREDICTABLE_GAS_LIMIT') {
+        console.log("estimateGas err", err);
+        if (err?.code === "UNPREDICTABLE_GAS_LIMIT") {
           estimateGas = new Big(3000000);
         }
       }
-      console.log('estimateGas', estimateGas.toString());
+      console.log("estimateGas", estimateGas.toString());
       const tx = await RouterContract[method](...params, {
         value,
         gasLimit: new Big(estimateGas).mul(120).div(100).toFixed(0)
       });
 
       toast.dismiss(toastId);
-      toastId = toast.loading({ title: 'Pending...' });
+      toastId = toast.loading({ title: "Pending..." });
 
       const { status, transactionHash } = await tx.wait();
 
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: 'Add successfully!',
+          title: "Add successfully!",
           tx: transactionHash,
           chainId
         });
         onSuccess();
       } else {
-        toast.fail({ title: 'Add faily!' });
+        toast.fail({ title: "Add faily!" });
       }
       addAction({
-        type: 'Liquidity',
-        action: 'Add Liquidity',
+        type: "Liquidity",
+        action: "Add Liquidity",
         token0: token0.symbol,
         token1: token1.symbol,
         template: dex.name,
         status,
         transactionHash,
-        sub_type: 'Add',
+        sub_type: "Add",
         extra_data: JSON.stringify({
           amount0: value0,
           amount1: value1,
-          action: 'Add Liquidity',
-          type: 'univ3'
+          token0Symbol: token0.symbol,
+          token1Symbol: token1.symbol,
+          action: "Add Liquidity",
+          type: "univ3"
         })
       });
       setLoading(false);
@@ -152,8 +154,8 @@ export default function useAddV2({
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
-        title: err?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
+        title: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
           : `Add faily!`
       });
     }

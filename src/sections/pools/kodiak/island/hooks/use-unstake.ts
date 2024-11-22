@@ -55,8 +55,8 @@ export default function useUnstake({
         extra_data: JSON.stringify({
           amount0: amount0,
           amount1: amount1,
-          token0: data.token0.symbol,
-          token1: data.token1.symbol
+          token0Symbol: data.token0.symbol,
+          token1Symbol: data.token1.symbol
         })
       });
     } catch (err: any) {

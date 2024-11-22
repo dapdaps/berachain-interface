@@ -1,13 +1,13 @@
-import Big from 'big.js';
-import { Contract, utils } from 'ethers';
-import { useState } from 'react';
-import useAccount from '@/hooks/use-account';
-import useAddAction from '@/hooks/use-add-action';
-import useToast from '@/hooks/use-toast';
-import { useSettingsStore } from '@/stores/settings';
-import abi from './abi';
-import bex from '@/configs/pools/bex';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import Big from "big.js";
+import { Contract, utils } from "ethers";
+import { useState } from "react";
+import useAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import useToast from "@/hooks/use-toast";
+import { useSettingsStore } from "@/stores/settings";
+import abi from "./abi";
+import bex from "@/configs/pools/bex";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useRemove({
   detail,
@@ -21,13 +21,13 @@ export default function useRemove({
   const { account, chainId, provider } = useAccount();
   const toast = useToast();
   const slippage = useSettingsStore((store: any) => store.slippage);
-  const { addAction } = useAddAction('dapp');
+  const { addAction } = useAddAction("dapp");
   const contracts = bex.contracts[DEFAULT_CHAIN_ID];
 
   const onRemove = async () => {
     if (!contracts) return;
     setLoading(true);
-    let toastId = toast.loading({ title: 'Confirming...' });
+    let toastId = toast.loading({ title: "Confirming..." });
     try {
       const { liquidity } = detail;
       const { token0, token1, poolIdx, lpAddress } = info;
@@ -52,21 +52,21 @@ export default function useRemove({
         provider.getSigner(account)
       );
 
-      const method = 'userCmd';
+      const method = "userCmd";
 
       const cmd = utils.defaultAbiCoder.encode(
         [
-          'uint8',
-          'address',
-          'address',
-          'uint256',
-          'int24',
-          'int24',
-          'uint128',
-          'uint128',
-          'uint128',
-          'uint8',
-          'address'
+          "uint8",
+          "address",
+          "address",
+          "uint256",
+          "int24",
+          "int24",
+          "uint128",
+          "uint128",
+          "uint128",
+          "uint8",
+          "address"
         ],
         [
           4,
@@ -90,55 +90,57 @@ export default function useRemove({
       try {
         estimateGas = await RouterContract.estimateGas[method](...params);
       } catch (err: any) {
-        console.log('estimateGas err', err);
-        if (err?.code === 'UNPREDICTABLE_GAS_LIMIT') {
+        console.log("estimateGas err", err);
+        if (err?.code === "UNPREDICTABLE_GAS_LIMIT") {
           estimateGas = new Big(3000000);
         }
       }
-      console.log('estimateGas', estimateGas.toString());
+      console.log("estimateGas", estimateGas.toString());
       const tx = await RouterContract[method](...params, {
         gasLimit: new Big(estimateGas).mul(120).div(100).toFixed(0)
       });
 
       toast.dismiss(toastId);
-      toastId = toast.loading({ title: 'Pending...' });
+      toastId = toast.loading({ title: "Pending..." });
 
       const { status, transactionHash } = await tx.wait();
       setLoading(false);
       addAction({
-        type: 'Liquidity',
-        action: 'Remove Liquidity',
+        type: "Liquidity",
+        action: "Remove Liquidity",
         token0: token0.symbol,
         token1: token1.symbol,
-        template: 'Bex',
+        template: "Bex",
         status,
         transactionHash,
-        sub_type: 'Remove',
+        sub_type: "Remove",
         extra_data: JSON.stringify({
           amount0: amount0 * (percent / 100),
           amount1: amount1 * (percent / 100),
-          action: 'Remove Liquidity',
-          type: 'univ3'
+          token0Symbol: token0.symbol,
+          token1Symbol: token1.symbol,
+          action: "Remove Liquidity",
+          type: "univ3"
         })
       });
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: 'Remove successfully!',
+          title: "Remove successfully!",
           tx: transactionHash,
           chainId
         });
         onSuccess();
       } else {
-        toast.fail({ title: 'Remove faily!' });
+        toast.fail({ title: "Remove faily!" });
       }
     } catch (err: any) {
-      console.log('err', err);
+      console.log("err", err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
-        title: err?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
+        title: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
           : `Remove faily!`
       });
     }
