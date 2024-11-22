@@ -15,6 +15,19 @@ import useCustomAccount from './use-account';
 
 
 export const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
+export const ERC20_ABI = [{
+  "inputs": [],
+  "name": "symbol",
+  "outputs": [
+    {
+      "internalType": "string",
+      "name": "",
+      "type": "string"
+    }
+  ],
+  "stateMutability": "pure",
+  "type": "function"
+}]
 export const ABI = [{
   "inputs": [
     {
@@ -41,6 +54,30 @@ export const ABI = [{
       "internalType": "uint256",
       "name": "",
       "type": "uint256"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "inputs": [],
+  "name": "token0",
+  "outputs": [
+    {
+      "internalType": "contract IERC20",
+      "name": "",
+      "type": "address"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "inputs": [],
+  "name": "token1",
+  "outputs": [
+    {
+      "internalType": "contract IERC20",
+      "name": "",
+      "type": "address"
     }
   ],
   "stateMutability": "view",

@@ -18,12 +18,11 @@ export default function () {
         console.error(error)
       }
       try {
-        gas ? Big(gas.toString()).mul(1.2).toFixed(0) : 4000000;
+        gas ? Big(gas.toString()).div(1.02).toFixed(0) : 4000000;
         const unsignedTx = await contract.populateTransaction[method](...params, {
           ...options,
           gasLimit: gas
         })
-        console.log('unsignedTx', unsignedTx)
         const tx = await provider.getSigner().sendTransaction(unsignedTx)
         return tx.wait()
       } catch (error) {

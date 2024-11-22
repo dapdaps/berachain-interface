@@ -8,6 +8,7 @@ import useToast from '@/hooks/use-toast';
 import useCustomAccount from '@/hooks/use-account';
 import useExecutionContract from '@/hooks/use-execution-contract';
 import useLpToAmount from '@/hooks/use-lp-to-amount';
+import { VAULT_MAPPING } from '@/sections/bgt/config/gauge';
 export default memo(function Button(props: IProps) {
   const {
     abi,
@@ -31,8 +32,6 @@ export default memo(function Button(props: IProps) {
   const { executionContract } = useExecutionContract()
   const { handleGetAmount } = useLpToAmount(address, product)
 
-
-
   const [state, updateState] = useMultiState({
     isLoading: false,
     isApproved: true,
@@ -42,11 +41,7 @@ export default memo(function Button(props: IProps) {
 
   const isInSufficient = Number(amount) > Number(balance);
 
-
-
   const checkApproval = (_amount) => {
-
-    console.log('===_amount', _amount)
     const wei: any = ethers.utils.parseUnits(
       Big(_amount).toFixed(decimals),
       decimals
@@ -119,8 +114,6 @@ export default memo(function Button(props: IProps) {
         });
       });
   };
-
-
   const handleDepositOrWithdraw = async function () {
     const toastId = toast?.loading({
       title: type === "deposit" ? "Depositing..." : "Withdrawing..."
@@ -139,9 +132,7 @@ export default memo(function Button(props: IProps) {
       provider?.getSigner()
     );
     const [amount0, amount1] = handleGetAmount(amount);
-
-    console.log('====amount0', amount0)
-    console.log('====amount1', amount1)
+    const vault = VAULT_MAPPING[vaultAddress]
     if (type === "deposit") {
       executionContract({
         contract,
@@ -149,7 +140,6 @@ export default memo(function Button(props: IProps) {
         params: [wei]
       }).then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        const tokens = symbol?.split("-")
         const addParams = {
           type: 'Staking',
           action: 'Staking',
@@ -164,11 +154,10 @@ export default memo(function Button(props: IProps) {
           chain_id: chainId,
           sub_type: 'Stake',
         }
-        if (tokens?.length > 1 && ["BEX", "Kodiak"].includes(product)) {
-          const [amount0, amount1] = handleGetAmount(amount);
+        if (vault && amount0 && amount1) {
           addParams["extra_data"] = JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
+            token0Symbol: vault.symbol0,
+            token1Symbol: vault.symbol1,
             amount0,
             amount1
           })
@@ -227,11 +216,10 @@ export default memo(function Button(props: IProps) {
           sub_type: 'Unstake',
         }
 
-        if (tokens?.length > 1 && ["BEX", "Kodiak"].includes(product)) {
-          const [amount0, amount1] = handleGetAmount(amount);
+        if (vault && amount0 && amount1) {
           addParams["extra_data"] = JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
+            token0Symbol: vault.symbol0,
+            token1Symbol: vault.symbol1,
             amount0,
             amount1
           })
