@@ -58,11 +58,23 @@ export default function useLpToAmount(address, product = "BEX") {
   }
 
   const handleGetTokensReserve = async () => {
-    if (product === "BEX") {
+    console.log('=====address', address)
+
+    console.log('===product', product)
+    if (product === "BEX" || [
+      "0x7a560f7336D75787F5DD12ea7082fa611c3F5dDB", // ZERU
+      "0x7d350B479d56ee8879c1361f478Fb2D6bF3b778b", // OTHER HONEY-BLAU-LP
+      "0xe00611C55ec88266F294D8E7A0bF6E29E5f3C981", // OTHER HONEY-iBGT-LP
+      "0xd4B946c741eA1a826a463b227ac50Dc137487135", // OTHER SNF-LP
+      "0x28B1f674038f5185291FE1ac017752eC72c26690" // OTHER UNI-V2
+
+    ].includes(address)) {
       const pool = await handleGetPool()
       setReserve0(pool?.baseAmount)
       setReserve1(pool?.quoteAmount)
-    } else if (product === "Kodiak") {
+    } else if (product === "Kodiak" || [
+      "0x1Afe9c399B40A65C783049E732d7Ad5D37e68F78"
+    ].includes(address)) {
       const balances = await handleGetUnderlyingBalances()
       setReserve0(ethers.utils.formatUnits(balances[0]))
       setReserve1(ethers.utils.formatUnits(balances[1]))

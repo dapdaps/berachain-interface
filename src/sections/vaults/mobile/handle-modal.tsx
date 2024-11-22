@@ -15,6 +15,7 @@ import UserInfo from "./user-info";
 import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
 import BaseButton from '@/sections/pools/components/button/base-button';
 import WithdrawQueueDrawer from '@/sections/staking/Bridge/Detail/Berps/Drawer';
+import BerpsDeposit from '@/sections/staking/Bridge/Detail/Berps/Deposit';
 
 const BerpsTypeName = {
   Stake: 'Deposit',
@@ -31,6 +32,7 @@ export default function HandleModal({
 
   const pool = data?.initialData?.pool;
   const isBERPS = data?.name === 'Berps';
+  const isInfraredBerps = data?.name === 'Infrared' && data?.initialData?.pool?.protocol === 'BERPS' && data?.initialData?.pool?.name === 'BHONEY';
   const vaultAddress = isBERPS ? data?.withdrawToken?.address : data.vaultAddress;
   const approveSpender = type ? "" : vaultAddress;
   const symbol = useMemo(() => {
@@ -48,6 +50,7 @@ export default function HandleModal({
   const prices = usePriceStore((store) => store.price);
   const [balance, setBalance] = useState("");
   const [showMint, setShowMint] = useState(false);
+  const [showBerpsMint, setShowBerpsMint] = useState(false);
   const [withdrawalQueueVisible, setWithdrawalQueueVisible] = useState(false);
   const { loading, onHandle } = useInfrared({
     amount: value,
@@ -188,9 +191,13 @@ export default function HandleModal({
               You don’t have any {pool?.name || data.tokens[0]} yet
             </div>
           )}
-          {["BEX"].includes(pool?.protocol) && type === 0 && (
+          {((["BEX"].includes(pool?.protocol) && type === 0) || isInfraredBerps) && (
             <div
               onClick={() => {
+                if (isInfraredBerps) {
+                  setShowBerpsMint(true);
+                  return;
+                }
                 setShowMint(true);
               }}
               className="flex items-center justify-center gap-[8px] mt-[16px] text-center text-[18px] font-semibold"
@@ -231,6 +238,12 @@ export default function HandleModal({
             title={`Mint ${pool?.underlying_tokens[0]?.symbol}-${pool?.underlying_tokens[1]?.symbol}`}
           />
         )}
+      <BerpsDeposit
+        visible={showBerpsMint}
+        onClose={() => {
+          setShowBerpsMint(false);
+        }}
+      />
       <WithdrawQueueDrawer
         visible={withdrawalQueueVisible}
         onClose={() => {

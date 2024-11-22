@@ -2,6 +2,7 @@
 import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
+import { beraB } from '@/configs/tokens/bera-bArtio';
 
 export default function useInfraredData(props: any) {
   const {
@@ -242,6 +243,11 @@ export default function useInfraredData(props: any) {
       );
       if (findIndex > -1) {
         const initialData = allData[findIndex];
+        initialData?.reward_tokens?.forEach((it: any) => {
+          const curr = Object.values(beraB).find((_it) => _it.address.toLowerCase() === it.address.toLowerCase());
+          if (!curr) return;
+          it.icon = curr.icon;
+        });
         const _data = {
           ...pair,
           name,

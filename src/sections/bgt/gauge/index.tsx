@@ -1,3 +1,4 @@
+import multicallAddresses from '@/configs/contract/multicall';
 import useCustomAccount from '@/hooks/use-account';
 import useAddAction from '@/hooks/use-add-action';
 import { ABI, useBGT, VAULT_ADDRESS_ABI } from '@/hooks/use-bgt';
@@ -8,9 +9,9 @@ import useToast from '@/hooks/use-toast';
 import BgtGaugeLaptop from '@/sections/bgt/gauge/laptop';
 import BgtGaugeMobile from '@/sections/bgt/gauge/mobile';
 import { usePriceStore } from '@/stores/usePriceStore';
+import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import Big from 'big.js';
 
 
 const TABS = [
@@ -27,7 +28,7 @@ const TABS = [
 ];
 const RangeList = [0.25, 0.5, 0.75, 1]
 const rewardSymbol = "BGT"
-const template = "Gauge"
+const template = "BGTStation"
 const decimals = 18
 
 const BgtGauge = (props: any) => {
@@ -40,6 +41,8 @@ const BgtGauge = (props: any) => {
   const { addAction } = useAddAction("gauge");
   const [currentTab, setCurrentTab] = useState<"deposit" | "withdraw">(TABS[0].value);
   const { account, provider, chainId } = useCustomAccount()
+
+  const multicallAddress = multicallAddresses[chainId];
   const [state, updateState] = useMultiState({
     stakeAddress: "",
     vaultAddress: "",
@@ -53,7 +56,7 @@ const BgtGauge = (props: any) => {
     updater: 0,
     rangeIndex: -1,
     percentage: 0,
-    claimLoading: false
+    claimLoading: false,
   })
   const prices: any = usePriceStore(store => store.price);
   const getBalance = async (stakingTokenAddress, vaultAddress) => {
@@ -188,6 +191,7 @@ const BgtGauge = (props: any) => {
     handleAmountChange(state?.balance)
   }
 
+
   const onSuccess = () => {
     updateState({
       inAmount: "",
@@ -195,6 +199,7 @@ const BgtGauge = (props: any) => {
     })
   }
   useEffect(() => {
+    console.log('====gaugeData', gaugeData)
     if (account && provider && gaugeData && currentTab) {
       getContractData()
     }
@@ -233,7 +238,8 @@ const BgtGauge = (props: any) => {
             handleAmountChange,
             handleMax,
             onSuccess,
-            addAction
+            addAction,
+            
           }}
         />
       ) : (

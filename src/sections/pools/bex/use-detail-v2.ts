@@ -38,8 +38,8 @@ export default function usePoolV2Detail(info: any) {
       });
 
       const { amount0, amount1 } = getTokenAmountsV2({
-        liquidity: result[0][0].toString(),
-        totalSupply: result[1][0].toString(),
+        liquidity: result?.[0]?.[0]?.toString?.() || '0',
+        totalSupply: result?.[1]?.[0]?.toString?.() || '0',
         reserve0: Big(info.reserve0)
           .mul(10 ** info.token0.decimals)
           .toString(),
@@ -54,7 +54,7 @@ export default function usePoolV2Detail(info: any) {
         amount0,
         amount1,
         chainId: DEFAULT_CHAIN_ID,
-        liquidity: result[0][0].toString()
+        liquidity: result?.[0]?.[0]?.toString?.() || '0'
       });
       setLoading(false);
     } catch (err) {
