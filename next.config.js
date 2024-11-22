@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
-const createBundleStatsPlugin  = require('next-plugin-bundle-stats');
+const createBundleStatsPlugin = require("next-plugin-bundle-stats");
 
-const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://api.dapdap.net';
+const BASE_URL = process.env.NEXT_PUBLIC_API || "https://api.dapdap.net";
 
 const nextConfig = {
   reactStrictMode: false,
@@ -12,27 +12,27 @@ const nextConfig = {
     ignoreDuringBuilds: true
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true
   },
   rewrites: async () => [
     {
-      source: '/assets/:path*',
-      destination: 'https://asset.dapdap.net/:path*'
+      source: "/assets/:path*",
+      destination: "https://asset.dapdap.net/:path*"
     },
     {
-      source: '/dapdap/:path*',
-      destination: BASE_URL + '/:path*'
+      source: "/dapdap/:path*",
+      destination: BASE_URL + "/:path*"
     },
     {
-      source: '/api.dolomite.io/:path*',
-      destination: 'https://api.dolomite.io/:path*'
+      source: "/api.dolomite.io/:path*",
+      destination: "https://api.dolomite.io/:path*"
     }
   ],
   webpack: (config, { dev }) => {
-    config.resolve.alias.stream = 'stream-browserify';
+    config.resolve.alias.stream = "stream-browserify";
 
     const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.('.svg')
+      rule.test?.test?.(".svg")
     );
     config.module.rules.push(
       {
@@ -44,67 +44,80 @@ const nextConfig = {
         test: /\.svg$/i,
         issuer: fileLoaderRule.issuer,
         resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
-        use: ['@svgr/webpack']
+        use: ["@svgr/webpack"]
       }
     );
     fileLoaderRule.exclude = /\.svg$/i;
-    
+
     config.optimization = {
       ...config.optimization,
-      moduleIds: 'deterministic',
+      moduleIds: "deterministic",
       splitChunks: {
-        chunks: 'all',
+        chunks: "all",
         cacheGroups: {
           vendors: {
             test: /[\\/]node_modules[\\/]/,
             priority: -10,
-            reuseExistingChunk: true,
+            reuseExistingChunk: true
           },
           default: {
             minChunks: 2,
             priority: -20,
-            reuseExistingChunk: true,
-          },
-        },
-      },
-    }
+            reuseExistingChunk: true
+          }
+        }
+      }
+    };
 
-    config.optimization.emitOnErrors= true
+    config.optimization.emitOnErrors = true;
 
     if (!dev) {
       config.optimization.minimizer = [
         new TerserPlugin({
           terserOptions: {
             compress: {
-              drop_console: true,    
-              drop_debugger: true,    
-              pure_funcs: ['console.warn'] 
+              drop_console: true,
+              drop_debugger: true,
+              pure_funcs: ["console.warn"]
             },
             mangle: {
-              safari10: true, 
+              safari10: true
             },
             format: {
-              comments: false, 
+              comments: false
             },
-            ecma: 2015,    
+            ecma: 2015
           },
-          parallel: true,
-        }),
-      ]
+          parallel: true
+        })
+      ];
     }
     return config;
   },
   experimental: {
-    optimizePackageImports: ['d3', 'ahooks', 'clsx', 'lodash', 'react', 'react-dom', 'framer-motion', 'wagmi', 'viem', 'zustand', 'react-loading-skeleton', 'date-fns', 'ethers'],
-  },
+    optimizePackageImports: [
+      "d3",
+      "ahooks",
+      "clsx",
+      "lodash",
+      "react",
+      "react-dom",
+      "framer-motion",
+      "wagmi",
+      "viem",
+      "zustand",
+      "react-loading-skeleton",
+      "date-fns",
+      "ethers"
+    ]
+  }
 };
 
 const withBundleStatsPlugin =
-  process.env.ANALYZE_STATS === 'true'
+  process.env.ANALYZE_STATS === "true"
     ? createBundleStatsPlugin({
-        outDir: './analyze'
+        outDir: "./analyze"
       })
     : (conf) => conf;
-
 
 module.exports = withBundleStatsPlugin(nextConfig);
