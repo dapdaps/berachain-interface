@@ -42,7 +42,10 @@ export default function IncreaseLiquidityModal({
           version={version}
           ref={panelRef}
           tokenId={tokenId}
-          onSuccess={onSuccess}
+          onSuccess={() => {
+            onSuccess();
+            onClose();
+          }}
         />
       </div>
     </BasicModal>

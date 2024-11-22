@@ -91,7 +91,9 @@ export default function useDeposit({
           amount0: amount0,
           amount1: amount1,
           action: "Add Liquidity",
-          type: "univ3"
+          type: "univ3",
+          token0Symbol: data.token0.symbol,
+          token1Symbol: data.token1.symbol
         })
       });
     } catch (err: any) {

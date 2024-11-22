@@ -11,6 +11,9 @@ export default function useUnstake({
   kekIds,
   token,
   amount,
+  amount0,
+  amount1,
+  data,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
@@ -48,7 +51,13 @@ export default function useUnstake({
         add: false,
         status,
         transactionHash,
-        sub_type: "Unstake"
+        sub_type: "Unstake",
+        extra_data: JSON.stringify({
+          amount0: amount0,
+          amount1: amount1,
+          token0Symbol: data.token0.symbol,
+          token1Symbol: data.token1.symbol
+        })
       });
     } catch (err: any) {
       console.log(35, err);

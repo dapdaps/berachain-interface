@@ -1,14 +1,14 @@
-import Big from 'big.js';
-import { utils } from 'ethers';
-import { useState } from 'react';
-import { MAX_TICK, MIN_TICK } from '@/configs/pools';
-import useAccount from '@/hooks/use-account';
-import useAddAction from '@/hooks/use-add-action';
-import useToast from '@/hooks/use-toast';
-import { useSettingsStore } from '@/stores/settings';
-import { wrapNativeToken, sortTokens } from '../utils';
-import positionAbi from '../abi/position';
-import { nearestUsableTick, priceToUsableTick } from '../tick-math';
+import Big from "big.js";
+import { utils } from "ethers";
+import { useState } from "react";
+import { MAX_TICK, MIN_TICK } from "@/configs/pools";
+import useAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import useToast from "@/hooks/use-toast";
+import { useSettingsStore } from "@/stores/settings";
+import { wrapNativeToken, sortTokens } from "../utils";
+import positionAbi from "../abi/position";
+import { nearestUsableTick, priceToUsableTick } from "../tick-math";
 
 export default function useIncrease({
   token0,
@@ -30,12 +30,12 @@ export default function useIncrease({
   const toast = useToast();
   const slippage = useSettingsStore((store: any) => store.slippage);
 
-  const { addAction } = useAddAction('dapp');
+  const { addAction } = useAddAction("dapp");
 
   const onIncrease = async () => {
     setLoading(true);
     const { PositionManager } = dex.contracts[token0.chainId];
-    let toastId = toast.loading({ title: 'Confirming...' });
+    let toastId = toast.loading({ title: "Confirming..." });
 
     try {
       const [_token0, _token1] = sortTokens(
@@ -46,7 +46,7 @@ export default function useIncrease({
         ? token0
         : token1.isNative
         ? token1
-        : '';
+        : "";
       const Interface = new utils.Interface(positionAbi);
       const calldatas: string[] = [];
       const isReverse =
@@ -80,7 +80,7 @@ export default function useIncrease({
         const params = [_token0.address, _token1.address, fee, _sqrtPriceX96];
         calldatas.push(
           Interface.encodeFunctionData(
-            'createAndInitializePoolIfNecessary',
+            "createAndInitializePoolIfNecessary",
             params
           )
         );
@@ -88,7 +88,7 @@ export default function useIncrease({
 
       if (!tokenId) {
         const tickLower =
-          lowerPrice === '0'
+          lowerPrice === "0"
             ? nearestUsableTick({
                 tick: MIN_TICK,
                 fee,
@@ -102,7 +102,7 @@ export default function useIncrease({
                 tickSpacing: info.tickSpacing
               });
         const tickUpper =
-          upperPrice === '∞'
+          upperPrice === "∞"
             ? nearestUsableTick({
                 tick: MAX_TICK,
                 fee,
@@ -133,10 +133,10 @@ export default function useIncrease({
           fee
         };
 
-        calldatas.push(Interface.encodeFunctionData('mint', [mintParams]));
+        calldatas.push(Interface.encodeFunctionData("mint", [mintParams]));
       } else {
         calldatas.push(
-          Interface.encodeFunctionData('increaseLiquidity', [
+          Interface.encodeFunctionData("increaseLiquidity", [
             {
               tokenId: tokenId,
               amount0Desired: _amount0,
@@ -149,18 +149,18 @@ export default function useIncrease({
         );
       }
 
-      let value = '0';
+      let value = "0";
 
       if (hasNativeToken) {
         value = _token0.isNative ? _amount0 : _amount1;
-        calldatas.push(Interface.encodeFunctionData('refundETH'));
+        calldatas.push(Interface.encodeFunctionData("refundETH"));
       }
       const txn: any = {
         to: PositionManager,
         data:
           calldatas.length === 1
             ? calldatas[0]
-            : Interface.encodeFunctionData('multicall', [calldatas]),
+            : Interface.encodeFunctionData("multicall", [calldatas]),
         value
       };
 
@@ -171,12 +171,12 @@ export default function useIncrease({
       try {
         estimateGas = await signer.estimateGas(txn);
       } catch (err: any) {
-        console.log('estimateGas err', err);
-        if (err?.code === 'UNPREDICTABLE_GAS_LIMIT') {
+        console.log("estimateGas err", err);
+        if (err?.code === "UNPREDICTABLE_GAS_LIMIT") {
           estimateGas = new Big(3000000);
         }
       }
-      console.log('estimateGas', estimateGas.toString());
+      console.log("estimateGas", estimateGas.toString());
       const gasPrice = await provider.getGasPrice();
       const newTxn = {
         ...txn,
@@ -187,35 +187,37 @@ export default function useIncrease({
       const tx = await signer.sendTransaction(newTxn);
 
       toast.dismiss(toastId);
-      toastId = toast.loading({ title: 'Pending...' });
+      toastId = toast.loading({ title: "Pending..." });
 
       const { status, transactionHash } = await tx.wait();
 
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: 'Add successfully!',
+          title: "Add successfully!",
           tx: transactionHash,
           chainId
         });
         onSuccess();
       } else {
-        toast.fail({ title: 'Add faily!' });
+        toast.fail({ title: "Add faily!" });
       }
       addAction({
-        type: 'Liquidity',
-        action: 'Add Liquidity',
+        type: "Liquidity",
+        action: "Add Liquidity",
         token0: token0.symbol,
         token1: token1.symbol,
         template: dex.name,
         status,
         transactionHash,
-        sub_type: 'Add',
+        sub_type: "Add",
         extra_data: JSON.stringify({
           amount0: value0,
           amount1: value1,
-          action: 'Add Liquidity',
-          type: 'univ3'
+          token0Symbol: token0.symbol,
+          token1Symbol: token1.symbol,
+          action: "Add Liquidity",
+          type: "univ3"
         })
       });
       setLoading(false);
@@ -224,8 +226,8 @@ export default function useIncrease({
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
-        title: err?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
+        title: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
           : `Add faily!`
       });
     }

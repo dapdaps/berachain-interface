@@ -37,7 +37,10 @@ export default function RemoveLiquidityModal({
           fee={fee}
           version={version}
           tokenId={tokenId}
-          onSuccess={onSuccess}
+          onSuccess={() => {
+            onSuccess();
+            onClose();
+          }}
         />
       </div>
     </BasicModal>

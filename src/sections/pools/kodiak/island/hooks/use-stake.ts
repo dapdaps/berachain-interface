@@ -4,14 +4,17 @@ import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import farmAbi from "../abi/farm";
+import islandAbi from "../abi/island";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
+import { getTokenAmountsV2 } from "../../../helpers";
 
 export default function useStake({
   farmContract,
   amount,
   days,
   token,
+  data,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
@@ -25,8 +28,19 @@ export default function useStake({
       setLoading(true);
       const signer = provider.getSigner(account);
       const FarmContract = new Contract(farmContract, farmAbi, signer);
+      const IslandContract = new Contract(data.id, islandAbi, provider);
+      const reverses = await IslandContract.getUnderlyingBalances();
+      const totalSupply = await IslandContract.totalSupply();
       const secs = days * 86400;
       const liquidity = Big(amount).mul(1e18).toFixed(0);
+      const { amount0, amount1 } = getTokenAmountsV2({
+        liquidity,
+        totalSupply: totalSupply.toString(),
+        reserve0: reverses[0].toString(),
+        reserve1: reverses[1].toString(),
+        token0: data.token0,
+        token1: data.token1
+      });
       const tx = await FarmContract.stakeLocked(liquidity, secs);
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
@@ -51,7 +65,13 @@ export default function useStake({
         add: false,
         status,
         transactionHash,
-        sub_type: "Stake"
+        sub_type: "Stake",
+        extra_data: JSON.stringify({
+          amount0: amount0,
+          amount1: amount1,
+          token0Symbol: data.token0.symbol,
+          token1Symbol: data.token1.symbol
+        })
       });
     } catch (err: any) {
       toast.dismiss(toastId);
