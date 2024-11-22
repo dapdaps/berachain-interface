@@ -68,39 +68,42 @@ export default function usePools(isSimple?: boolean) {
         provider
       });
 
-      setPools(
-        data.map(({ pool }: any, i: number) => {
-          const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
-          const token0 = {
-            ...TOKENS[pool.base === _weth ? "native" : pool.base],
-            address: pool.base
-          };
-          const token1 = {
-            ...TOKENS[pool.quote === _weth ? "native" : pool.quote],
-            address: pool.quote
-          };
-          const { amount0, amount1 } = getTokenAmountsV2({
-            liquidity: balanceResult[i][0].toString(),
-            totalSupply: supplyResult[i][0].toString(),
-            reserve0: Big(pool.baseAmount)
-              .mul(10 ** pool.baseInfo.decimals)
-              .toString(),
-            reserve1: Big(pool.quoteAmount)
-              .mul(10 ** pool.quoteInfo.decimals)
-              .toString(),
-            token0,
-            token1
-          });
+      const _pools: any = [];
 
-          return {
-            token0,
-            token1,
-            fee: pool.template.feeRate,
-            amount0,
-            amount1
-          };
-        })
-      );
+      data.forEach(({ pool }: any, i: number) => {
+        if (!balanceResult[i] || !supplyResult[i]) return;
+        const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
+        const token0 = {
+          ...TOKENS[pool.base === _weth ? "native" : pool.base],
+          address: pool.base
+        };
+        const token1 = {
+          ...TOKENS[pool.quote === _weth ? "native" : pool.quote],
+          address: pool.quote
+        };
+        const { amount0, amount1 } = getTokenAmountsV2({
+          liquidity: balanceResult[i][0].toString(),
+          totalSupply: supplyResult[i][0].toString(),
+          reserve0: Big(pool.baseAmount)
+            .mul(10 ** pool.baseInfo.decimals)
+            .toString(),
+          reserve1: Big(pool.quoteAmount)
+            .mul(10 ** pool.quoteInfo.decimals)
+            .toString(),
+          token0,
+          token1
+        });
+
+        _pools.push({
+          token0,
+          token1,
+          fee: pool.template.feeRate,
+          amount0,
+          amount1
+        });
+      });
+
+      setPools(_pools);
       setLoading(false);
     } catch (err) {
       console.log(err);
