@@ -72,11 +72,13 @@ export default function Vaults() {
           <img
             style={{ width: 26 }}
             src={
-              pool?.protocol === 'BEX'
-                ? '/images/dapps/infrared/bex.svg'
-                : pool?.protocol === 'Kodiak Finance'
-                ? '/images/dapps/kodiak.svg'
-                : '/images/dapps/infrared/berps.svg'
+              !pool && "iBGT-HONEY" ? '/images/dapps/infrared/infrared.svg' : (
+                pool?.protocol === 'BEX'
+                  ? '/images/dapps/infrared/bex.svg'
+                  : pool?.protocol === 'Kodiak Finance'
+                    ? '/images/dapps/kodiak.svg'
+                    : '/images/dapps/infrared/berps.svg'
+              )
             }
           />
         );
