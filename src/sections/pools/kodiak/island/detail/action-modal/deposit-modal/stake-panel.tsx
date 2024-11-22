@@ -6,6 +6,7 @@ import useStake from "../../../hooks/use-stake";
 export default function StakePanel({ data, amount, lockData, onSuccess }: any) {
   const { loading, onStake } = useStake({
     farmContract: data.farmAddress,
+    data,
     amount,
     days: lockData.days,
     token: { symbol: data.symbol },
