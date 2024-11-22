@@ -79,9 +79,6 @@ export default function SubmitBtn({
     return <BaseButton disabled>{errorTips}</BaseButton>;
   }
 
-  if (!spender && amount)
-    return <BaseButton disabled>Insufficient Liquidity</BaseButton>;
-
   if (!approved) {
     return <BaseButton onClick={approve}>Approve {token?.symbol}</BaseButton>;
   }

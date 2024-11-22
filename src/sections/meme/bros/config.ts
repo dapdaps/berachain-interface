@@ -6,9 +6,9 @@ export const TOKENS = {
     decimals: 18,
     name: "HONEY",
     icon: "/assets/tokens/honey.svg",
-    stakeAddress: "0xa37457f8C9F0288aFd14287cD0844dA764Ab9a7C"
+    stakeAddress: "0xC83eCe3270dE9490800163FeAB829A29288cd567"
   }
 };
 
 export const RewardContractAddress =
-  "0x13cc33E4c7812383b30D13348FcB8DEC613d9a00";
+  "0xE18cD980597d02f76351a7AACA5fF291D66184d4";

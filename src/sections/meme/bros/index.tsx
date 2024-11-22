@@ -91,8 +91,16 @@ export default function Meme(props: any) {
           />
           <UnstakeModal
             open={modalType === 2}
+            data={modalData}
+            userData={userData}
             onClose={() => {
               setModalType(0);
+            }}
+            onSuccess={() => {
+              setModalType(0);
+              onQuery();
+              onRefreshUserData();
+              queryBalance();
             }}
           />
           <ClaimRewardsModal

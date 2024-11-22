@@ -189,6 +189,7 @@ const Token = ({
           </Button>
           <Button
             className="h-[40px] w-[172px] !bg-transparent"
+            disabled={!userInfo?.stakedAmountUSD}
             onClick={() => {
               onClick(2, token);
             }}

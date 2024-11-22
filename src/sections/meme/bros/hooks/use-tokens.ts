@@ -29,16 +29,30 @@ export default function useTokens() {
         multicallAddress,
         provider
       });
+      const delayCalls = Object.values(TOKENS).map((token: any) => ({
+        address: token.stakeAddress,
+        name: "unstakeDelayDays"
+      }));
+      const delayRes = await multicall({
+        abi: stakeAbi,
+        options: {},
+        calls: delayCalls,
+        multicallAddress,
+        provider
+      });
+
       const _tokens: any = [];
       let _total = Big(0);
 
       Object.values(TOKENS).forEach((token: any, i: number) => {
         const _amount = Big(stakedRes[i][0].toString()).div(1e18).toString();
+        const _time = delayRes[i] ? delayRes[i][0]?.toString() : 0;
         const _amountUSD = _amount;
         _tokens.push({
           ...token,
           stakedAmount: _amount,
-          stakedAmountUSD: _amountUSD
+          stakedAmountUSD: _amountUSD,
+          delayTime: _time * 1000
         });
         _total = _total.add(_amountUSD);
       });

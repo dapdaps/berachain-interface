@@ -1,26 +1,60 @@
 import Basic from "./basic";
 import TokenAmout from "@/sections/swap/TokenAmount";
-import Button from "@/components/button";
+import Button from "@/components/button/submit-button";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { useMemo, useState } from "react";
+import useUnstake from "../hooks/use-unstake";
+import Big from "big.js";
+import { formatDistance } from "date-fns";
 
-export default function Unstake({ open, onClose }: any) {
+export default function Unstake({
+  data,
+  userData,
+  open,
+  onClose,
+  onSuccess
+}: any) {
+  const prices = usePriceStore((store: any) => store.price);
+  const [amount, setAmount] = useState("");
+  const { loading, onUnstake } = useUnstake({ token: data, amount, onSuccess });
+
+  const balance = useMemo(
+    () => userData[data.address]?.stakedAmount || 0,
+    [userData]
+  );
+
+  const errorTips = useMemo(() => {
+    if (Number(amount || 0) === 0) return "Enter an amount";
+    if (Big(amount).gt(balance || 0)) {
+      return "Insufficient Balance";
+    }
+    return "";
+  }, [amount, balance]);
+
   return (
     <Basic open={open} onClose={onClose} className="w-[520px]">
-      <div className="flex text-[20px] font-bold pt-[25px] md:pt-0">
-        Unstake sPepe
+      <div className="flex text-[20px] font-bold pt-[10px] md:pt-0">
+        Unstake {data.symbol}
       </div>
       <div className="mt-[20px]">
         <TokenAmout
-          currency={{}}
-          prices={{}}
-          amount=""
+          currency={data}
+          prices={prices}
+          amount={amount}
+          defaultBalance={balance}
           outputCurrencyReadonly={true}
-          updater={1}
-          onUpdateCurrencyBalance={() => {}}
+          onAmountChange={(val: any) => {
+            setAmount(val);
+          }}
         />
       </div>
       <Button
-        type="primary"
-        className="w-full h-[60px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
+        token={data}
+        amount={amount}
+        loading={loading}
+        errorTips={errorTips}
+        disabled={!!errorTips}
+        onClick={onUnstake}
       >
         Unstake
       </Button>
@@ -29,7 +63,8 @@ export default function Unstake({ open, onClose }: any) {
           !
         </div>
         <div className="font-medium">
-          The unstaked assets will available to be withdrawn in 10 days.
+          The unstaked assets will available to be withdrawn{" "}
+          {formatDistance(Date.now(), Date.now() + data.delayTime)}.
         </div>
       </div>
     </Basic>

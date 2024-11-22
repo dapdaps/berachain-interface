@@ -33,7 +33,6 @@ export default function useUserData(tokens: any) {
       const _data: any = {};
 
       tokens.forEach((token: any, i: number) => {
-        console.log(stakedRes[i]);
         if (!stakedRes[i]) return;
         const _amount = Big(stakedRes[i][0].toString()).div(1e18).toString();
         const _amountUSD = _amount;

@@ -130,7 +130,7 @@ export default function useApprove({
   };
 
   useEffect(() => {
-    if (token?.isNative || isSkip) {
+    if (token?.isNative || isSkip || !spender) {
       setApproved(true);
       return;
     }
