@@ -5,6 +5,7 @@ import Big from "big.js";
 import Status from "./status";
 import PoolTable from "../../pool-table";
 import { balanceFormated } from "@/utils/balance";
+import UnclaimedFees from "./unclaimed-fees";
 
 const PAGE_SIZE = 9;
 
@@ -13,7 +14,8 @@ export default function V3List({
   loading,
   ticksInfo,
   onAction,
-  withoutHeader
+  withoutHeader,
+  dex
 }: any) {
   const [page, setPage] = useState(1);
 
@@ -73,7 +75,7 @@ export default function V3List({
           sort: false,
           width: "15%",
           render: (item: any, index: number) => {
-            return item["fees"] || "-";
+            return <UnclaimedFees pool={item} dex={dex} />;
           }
         },
         {

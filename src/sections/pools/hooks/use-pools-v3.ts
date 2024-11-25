@@ -155,6 +155,8 @@ export default function usePoolsV3({ dex }: any) {
           token1: { ...token1, address: _token1Address },
           fee: position.fee,
           id: tokenIds[i].toString(),
+          price0,
+          price1,
           position:
             price0 && price1
               ? Big(amount0)

@@ -4,8 +4,15 @@ import CircleLoading from "@/components/circle-loading";
 import PoolTable from "../../pool-table";
 import Status from "./status";
 import Button from "@/components/button";
+import UnclaimedFees from "./unclaimed-fees";
 
-export default function Mobile({ pools, loading, ticksInfo, onAction }: any) {
+export default function Mobile({
+  pools,
+  loading,
+  ticksInfo,
+  dex,
+  onAction
+}: any) {
   return (
     <div className="pb-[18px] px-[12px] font-semibold h-[calc(100%-90px)] overflow-y-auto">
       {pools.map((item: any, idx: number) => (
@@ -33,7 +40,9 @@ export default function Mobile({ pools, loading, ticksInfo, onAction }: any) {
           </div>
           <div className="flex justify-between items-center mt-[20px]">
             <div className="text-[14px] text-[#3D405A]">Unclaimed Fees</div>
-            <div className="text-[16px]">-</div>
+            <div className="text-[16px]">
+              <UnclaimedFees pool={item} dex={dex} />
+            </div>
           </div>
           <div className="flex gap-[8px] mt-[16px] justify-end">
             <Button
