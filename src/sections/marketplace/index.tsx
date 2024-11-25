@@ -147,7 +147,14 @@ const MarketplaceView = () => {
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
       item.tokens[80084].forEach((token: any) => {
-        if (token.isNative) return;
+        if (
+          // hide BERA
+          token.isNative ||
+          // do not display Meme tokens in the Hot section, ensuring there is no overlap with the sections below.
+          MemeTokens.some((meme) => meme.address.toLowerCase() === token.address.toLowerCase())
+        ) {
+          return;
+        }
         if (!hasTokens[token.symbol]) {
           _tokens.push(token);
           hasTokens[token.symbol] = true;
