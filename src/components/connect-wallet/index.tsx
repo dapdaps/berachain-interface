@@ -374,6 +374,12 @@ const User = (props: any) => {
     addressShown,
   } = props;
 
+  let walletName = walletInfo?.name || '';
+  if (walletName) {
+    walletName = walletName.replace(/^io\./, '');
+    walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);
+  }
+
   return (
     <motion.div
       className="relative flex justify-center items-center cursor-pointer transition-all duration-300"
@@ -389,7 +395,7 @@ const User = (props: any) => {
           isMobile ? null : (
             <div className="w-[266px] pt-[24px] pb-[14px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]">
               <div className="pl-[22px] pr-[26px] text-[#6F6F6F] text-[16px] font-normal text-nowrap leading-[1] overflow-hidden overflow-ellipsis">
-                Connected with {walletInfo?.name}
+                Connected with {walletName}
               </div>
               <div className="pl-[22px] pr-[26px] flex justify-between items-center mt-[13px]">
                 <div className="text-black text-[16px] font-semibold leading-[1]">

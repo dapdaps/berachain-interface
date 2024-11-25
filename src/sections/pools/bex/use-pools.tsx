@@ -71,55 +71,60 @@ export default function usePools(isSimple?: boolean) {
         provider
       });
 
-      setPools(
-        data.map(({ pool }: any, i: number) => {
-          const b = balanceResult[i][0].toString();
-          const t = supplyResult[i][0].toString();
-          const { amount0, amount1 } = getTokenAmountsV2({
-            liquidity: b,
-            totalSupply: t,
-            reserve0: Big(pool.baseAmount)
-              .mul(10 ** pool.baseInfo.decimals)
-              .toString(),
-            reserve1: Big(pool.quoteAmount)
-              .mul(10 ** pool.quoteInfo.decimals)
-              .toString()
-          });
-          const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
-          const token0 = {
-            ...TOKENS[pool.base === _weth ? "native" : pool.base],
-            address: pool.base
-          };
-          const token1 = {
-            ...TOKENS[pool.quote === _weth ? "native" : pool.quote],
-            address: pool.quote
-          };
+      const _pools: any = [];
 
-          const price0 = prices[token0.symbol || token0.priceKey];
-          const price1 = prices[token1.symbol || token1.priceKey];
+      data.forEach(({ pool }: any, i: number) => {
+        if (!balanceResult[i] || !supplyResult[i]) return;
+        const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
+        const b = balanceResult[i][0].toString();
+        const t = supplyResult[i][0].toString();
+        const token0 = {
+          ...TOKENS[pool.base === _weth ? "native" : pool.base],
+          address: pool.base
+        };
+        const token1 = {
+          ...TOKENS[pool.quote === _weth ? "native" : pool.quote],
+          address: pool.quote
+        };
+        const { amount0, amount1 } = getTokenAmountsV2({
+          liquidity: b,
+          totalSupply: t,
+          reserve0: Big(pool.baseAmount)
+            .mul(10 ** pool.baseInfo.decimals)
+            .toString(),
+          reserve1: Big(pool.quoteAmount)
+            .mul(10 ** pool.quoteInfo.decimals)
+            .toString(),
+          token0,
+          token1
+        });
 
-          const shares = Big(b).div(t).mul(100).toString();
+        const price0 = prices[token0.symbol || token0.priceKey];
+        const price1 = prices[token1.symbol || token1.priceKey];
 
-          return {
-            token0,
-            token1,
-            fee: pool.template.feeRate,
-            amount0,
-            amount1,
-            shares: balanceFormated(shares, 2),
-            deposit:
-              price0 && price1
-                ? balanceFormated(
-                    Big(amount0)
-                      .mul(price0)
-                      .add(Big(amount1).mul(price1))
-                      .toString(),
-                    2
-                  )
-                : 0
-          };
-        })
-      );
+        const shares = Big(b).div(t).mul(100).toString();
+
+        _pools.push({
+          token0,
+          token1,
+          fee: pool.template.feeRate,
+          amount0,
+          amount1,
+          shares: balanceFormated(shares, 2),
+          deposit:
+            price0 && price1
+              ? balanceFormated(
+                  Big(amount0)
+                    .mul(price0)
+                    .add(Big(amount1).mul(price1))
+                    .toString(),
+                  2
+                )
+              : 0
+        });
+      });
+
+      setPools(_pools);
       setLoading(false);
     } catch (err) {
       console.log(err);

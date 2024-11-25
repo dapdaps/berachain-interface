@@ -11,19 +11,26 @@ export default function UnstakePanel({
   info,
   onSuccess
 }: any) {
-  const [kekIds, amount] = useMemo(() => {
+  const [kekIds, amount, amount0, amount1] = useMemo(() => {
     let _a = Big(0);
+    let _a0 = Big(0);
+    let _a1 = Big(0);
     const _ids = selectedItems.map((item: any) => {
       _a = _a.add(item.liquidity);
+      _a0 = _a0.add(item.amount0);
+      _a1 = _a1.add(item.amount1);
       return item.kek_id;
     });
-    return [_ids, _a.div(1e18).toString()];
+    return [_ids, _a.div(1e18).toString(), _a0.toString(), _a1.toString()];
   }, [selectedItems]);
   const { loading, onUnstake } = useUnstake({
     farmContract: data.farmAddress,
     kekIds,
     token: { symbol: data.symbol },
     amount,
+    amount0,
+    amount1,
+    data,
     onSuccess
   });
 

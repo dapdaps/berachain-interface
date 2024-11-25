@@ -36,6 +36,7 @@ export default memo(function gauge(props: any) {
     onSuccess,
     addAction
   } = props
+
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
@@ -207,7 +208,8 @@ export default memo(function gauge(props: any) {
                 <div className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">{gaugeData?.metadata?.name}</div>
                 <div className="flex items-center gap-[11px]">
                   <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{formatValueDecimal(state?.depositAmount, '', 2, false, false)}</span>
-                  <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">{formatValueDecimal(Big(state?.depositAmount ? state?.depositAmount : 0).div(state?.totalSupply ? state?.totalSupply : 1).times(100).toFixed(), '', 2, false, false)}%</span>
+
+                  <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">{formatValueDecimal((Number(state?.depositAmount) === 0 || Number(state?.totalSupply) === 0) ? 0 : Big(state?.depositAmount ?? 0).div(state?.totalSupply ?? 1).times(100).toFixed(), '', 2, false, false)}%</span>
                 </div>
               </div>
             </div>

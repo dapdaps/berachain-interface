@@ -51,7 +51,7 @@ const EarnViews = () => {
             {
               key: "staking",
               label: <div>Staking</div>,
-              children: <StakingList />,
+              children: <StakingList source="earn" />,
             },
           ]}
         />

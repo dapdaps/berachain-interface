@@ -1,6 +1,7 @@
 import Loading from '@/components/loading';
 import React from 'react';
 import Empty from '@/components/empty';
+import { motion } from 'framer-motion';
 
 const FlexTable = (props: FlexTableProps) => {
   const {
@@ -15,6 +16,7 @@ const FlexTable = (props: FlexTableProps) => {
     columns,
     pagination,
     sortDataIndex,
+    sortDataDirection,
     renderEmpty = () => (
       <div className='mt-[50px] w-full flex justify-center items-center'>
         <Empty desc='No data' />
@@ -55,22 +57,22 @@ const FlexTable = (props: FlexTableProps) => {
               >
                 {renderTitle ? renderTitle(column, columnIdx) : column.title}
                 {column?.sort && (
-                  <svg
+                  <motion.svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='13'
                     height='8'
                     viewBox='0 0 13 8'
                     fill='none'
+                    className="cursor-pointer"
+                    animate={{
+                      rotate: (sortDataIndex === column?.dataIndex && sortDataDirection === 1) ? 0 : 180,
+                    }}
                   >
                     <path
                       d='M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z'
-                      fill={
-                        sortDataIndex === column?.dataIndex
-                          ? 'black'
-                          : '#D1CEB4'
-                      }
+                      fill="#D1CEB4"
                     />
-                  </svg>
+                  </motion.svg>
                 )}
               </div>
             ))}
@@ -147,6 +149,7 @@ export type FlexTableProps = {
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;
+  sortDataDirection?: 1 | -1;
   showHeader?: boolean;
   onChangeSortDataIndex?(index: string): void;
   renderTitle?(column: Column, columnIdx: number): any;

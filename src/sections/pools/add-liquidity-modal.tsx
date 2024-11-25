@@ -53,7 +53,9 @@ export default function AddLiquidityModal({
           defaultFee={fee}
           version={version}
           ref={panelRef}
-          onSuccess={onClose}
+          onSuccess={() => {
+            onClose();
+          }}
         />
       </div>
     </BasicModal>

@@ -19,7 +19,7 @@ export const metadata = {
   icons: ['/favicon.ico'],
 };
 
-export const networks = Object.values(chains);
+export const networks = Object.values(chains).filter((c) => c.isWalletSupport);
 
 const connectors: CreateConnectorFn[] = [];
 
@@ -66,6 +66,7 @@ export const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   projectId,
   networks,
+  // @ts-ignore
   connectors,
 });
 
