@@ -113,6 +113,7 @@ const MarketplaceView = () => {
   const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>(beraB.bera);
   const isMobile = useIsMobile();
 
   const TOKENS_PER_PAGE = 9;
@@ -146,6 +147,7 @@ const MarketplaceView = () => {
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
       item.tokens[80084].forEach((token: any) => {
+        if (token.isNative) return;
         if (!hasTokens[token.symbol]) {
           _tokens.push(token);
           hasTokens[token.symbol] = true;
@@ -185,6 +187,11 @@ const MarketplaceView = () => {
   };
 
   const onSwap = (item: any) => {
+    let _defaultInput = beraB.bera;
+    if (item.address.toLowerCase() === beraB.bera.address.toLowerCase()) {
+      _defaultInput = beraB.honey;
+    }
+    setDefaultInputCurrency(_defaultInput);
     setSelectedRecord(item);
   };
 
@@ -245,7 +252,7 @@ const MarketplaceView = () => {
       )}
       </div>
       <div className="relative md:px-4 w-full bg-[#7990F4] pb-[40px]">
-        <div className="lg:mx-auto lg:w-[1200px] md:w-full md:relative md:top-3">
+        <div className="lg:mx-auto lg:w-[1200px] md:w-full relative md:top-3 pb-[40px]">
           <div className="absolute bottom-[-31px] left-[50%] translate-x-[-50%] z-0 rounded-[12px] border border-black w-[1172px] h-[126px] bg-[#F5BD61] hidden lg:block" />
           <div className="relative z-10 lg:w-[1196px]">
             <MemeTokensGrid
@@ -259,6 +266,7 @@ const MarketplaceView = () => {
       {selectedRecord && (
         <SwapModal
           defaultOutputCurrency={selectedRecord}
+          defaultInputCurrency={defaultInputCurrency}
           outputCurrencyReadonly={true}
           show={!!selectedRecord}
           protocols={protocols}
