@@ -9,12 +9,13 @@ const VoteLaptop = ({ open, onClose }: any) => {
       <div className="flex items-center gap-[12px] text-[20px] font-bold mt-[16px] px-[13px]">
         <span>Vote for the next round</span>
       </div>
-      <div className="flex justify-between items-center mt-[10px] pl-[13px] pr-[5px]">
+      <div className="flex items-center mt-[10px] pl-[13px] pr-[5px] gap-[24px]">
         <RoundLabel
           title="Round 4"
           subTitle="Dec.18, 2024 - Jan.01, 2025"
           className="w-[342px]"
         />
+        <span className="text-[16px] font-semibold">Voting has ended.</span>
         {/* <VoteListMeme /> */}
       </div>
       <div className="mt-[5px]">

@@ -10,6 +10,7 @@ import VoteModal from "./modals/vote/laptop";
 import RulesModal from "./modals/rules";
 import SwapModal from "@/sections/swap/SwapModal";
 import AddIncentives from "./modals/add-incentives";
+import EndTips from "./modals/end-tips";
 import { useState } from "react";
 import useTokens from "./hooks/use-tokens";
 import useWithdrawData from "./hooks/use-withdraw-data";
@@ -158,6 +159,12 @@ export default function Meme(props: any) {
       />
       <RulesModal
         open={modalType === 7}
+        onClose={() => {
+          setModalType(0);
+        }}
+      />
+      <EndTips
+        open={modalType === 10}
         onClose={() => {
           setModalType(0);
         }}

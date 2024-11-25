@@ -223,8 +223,12 @@ export default function Tokens({
   return (
     <>
       <div className="w-[1232px] mx-[auto] md:px-[14px] md:w-full">
-        <div className="flex justify-between items-center md:absolute md:top-[-25px] md:justify-start md:gap-[8px]">
-          <RoundLabel title="Round 1" subTitle="NoV.20-dec.3, 2024" />
+        <div className="flex justify-between items-center md:absolute md:top-[-25px] md:justify-start md:gap-[8px] md:w-[calc(100%-28px)]">
+          <RoundLabel
+            title="Round 1"
+            subTitle="NoV.20-dec.3, 2024"
+            className="md:w-full"
+          />
           <div className="flex items-center gap-[16px] md:hidden">
             <button
               className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold"
@@ -241,7 +245,7 @@ export default function Tokens({
               Vote for the next round
             </button>
           </div>
-          <div className="rounded-[10px] w-[64px] h-[72px] border border-black bg-[#FFFDEB] p-[3px] hidden md:block">
+          {/* <div className="rounded-[10px] w-[64px] h-[72px] border border-black bg-[#FFFDEB] p-[3px] hidden md:block">
             <Button
               type="primary"
               className="w-[58px] h-[32px] !text-[12px] !px-0"
@@ -251,7 +255,7 @@ export default function Tokens({
             <Button className="border-0 w-[58px] h-[32px] !text-[12px] !px-0">
               Fastest
             </Button>
-          </div>
+          </div> */}
         </div>
         {tokens?.map((token: any, i: number) => (
           <Token

@@ -33,6 +33,8 @@ const VoteMobile = (props: any) => {
         <RoundLabel
           title="Round 1"
           subTitle="Dec.18, 2024 - Jan.01, 2025"
+          titleClassName="!pl-[16px]"
+          subTitleClassName="!pl-[16px]"
           className="!absolute top-[-34px] left-[13px] w-[calc(100%-26px)] whitespace-nowrap"
         />
         <div className="px-[12px]">

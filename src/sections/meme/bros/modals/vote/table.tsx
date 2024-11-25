@@ -9,6 +9,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Big from "big.js";
 import VoteConfirm from "@/sections/meme/bros/modals/vote/confirm";
+import clsx from "clsx";
 
 const VoteTable = forwardRef<any, any>((props, ref) => {
   const { onRow } = props;
@@ -28,7 +29,12 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
       width: "31%",
       render: (text: any, record: any) => {
         return (
-          <div className="text-[#3D405A] text-[14px] font-[600] flex items-center gap-[5px]">
+          <div
+            className={clsx(
+              "text-[#3D405A] text-[14px] font-[600] flex items-center gap-[5px]",
+              "md:relative"
+            )}
+          >
             <LazyImage
               src={record.icon}
               width={26}
@@ -36,6 +42,14 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
               className="rounded-full"
             />
             <div>{record.name}</div>
+            <div
+              className={clsx(
+                "w-[65px] h-[26px] rounded-[44px] text-center bg-[#7CB424] whitespace-nowrap text-[14px] text-white font-[600] leading-[26px] italic",
+                "md:absolute md:left-0 md:top-[-10px] md:h-[16px] md:text-[12px] md:leading-[16px]"
+              )}
+            >
+              listed
+            </div>
           </div>
         );
       }
@@ -113,13 +127,19 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
                 </button>
               </Popover>
             ) : (
-              <div className="absolute flex justify-center items-center gap-[5px] h-[17px] rounded-[9px] px-[5px] bg-[#7CB424] whitespace-nowrap top-0 right-0">
+              <div
+                className={clsx(
+                  "absolute flex justify-center items-center gap-[5px] h-[17px] rounded-[9px] px-[5px] bg-[#7CB424] whitespace-nowrap top-0 right-0",
+                  "md:left-0 md:top-[-14px] md:gap-[2px] md:text-[12px]"
+                )}
+              >
                 <svg
                   width="10"
                   height="8"
                   viewBox="0 0 10 8"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="shrink-0"
                 >
                   <path
                     d="M1 3.08333L3.94737 6L9 1"

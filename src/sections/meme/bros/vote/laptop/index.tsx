@@ -21,7 +21,7 @@ export default function Laptop() {
         />
         <div className="flex pt-[30px] items-center justify-between px-[30px] gap-[12px] text-[20px] font-bold pb-[16px]">
           <span>Vote for the next round</span>
-          <VoteListMeme />
+          {/* <VoteListMeme /> */}
         </div>
         <VoteTable
           ref={tableRef}

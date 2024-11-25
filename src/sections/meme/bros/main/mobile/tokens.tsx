@@ -8,7 +8,7 @@ export default function Tokens({ tokens, loading }: any) {
   return (
     <div className="pt-[30px]">
       {loading ? (
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center w-full h-[260px]">
           <Loading size={40} />
         </div>
       ) : (
@@ -16,9 +16,10 @@ export default function Tokens({ tokens, loading }: any) {
           width={375}
           height={260}
           slidesPerView={4}
-          spaceBetween={38}
+          spaceBetween={30}
           speed={500}
           loop={true}
+          className="px-[20px]"
         >
           {tokens.map((token: any, i: number) => (
             <SwiperSlide key={token.address} style={{ height: 260 }}>
