@@ -452,9 +452,9 @@ export default memo(function vaults(props) {
                 <div className='text-black font-Montserrat text-[20px] font-bold'>
                   {formatValueDecimal(data?.depositAmount, '', 2, true, false)}
                 </div>
-                <div className='text-black font-Montserrat text-[14px] font-medium'>
+                {/* <div className='text-black font-Montserrat text-[14px] font-medium'>
                   {data?.tokens?.join('-')}
-                </div>
+                </div> */}
               </div>
             </div>
 
