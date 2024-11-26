@@ -18,7 +18,8 @@ export default function AddLiquidityModal({
   dex,
   fee,
   open,
-  onClose
+  onClose,
+  ...rest
 }: any) {
   const panelRef = useRef<any>();
   const [hasClearAll, setHasClearAll] = useState<any>();
@@ -56,6 +57,7 @@ export default function AddLiquidityModal({
           onSuccess={() => {
             onClose();
           }}
+          {...rest}
         />
       </div>
     </BasicModal>
