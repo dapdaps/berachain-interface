@@ -103,7 +103,7 @@ const Navigation = function () {
           </motion.div>
         </div>
       </div> */}
-      <div className='absolute left-1/3 bottom-[19px] z-10 flex gap-[100px]'>
+      <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
         <div
           className='cursor-pointer flex items-start gap-[21px] translate-x-[-33px]'
           onClick={onNavigateToDashBoard}

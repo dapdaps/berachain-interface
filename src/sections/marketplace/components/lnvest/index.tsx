@@ -4,8 +4,8 @@ import SwitchTabs from "@/components/switch-tabs";
 import { MarketplaceContext } from "@/sections/marketplace/context";
 import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
-import _ from "lodash";
 import React, { useMemo, useState, useContext, useCallback, useEffect } from 'react';
+import { cloneDeep } from "lodash";
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
 import useDataList from "./hooks/useDataList";
@@ -281,26 +281,26 @@ export default function Invest(props: any) {
   const { loading, dataList } = useDataList(updater);
 
   const filterList = useMemo(() => {
-    const _filterList = dataList
+    let _filterList = dataList
       .filter((data) => (searchVal ? data?.id.indexOf(searchVal) > -1 : true))
       .filter((data) =>
         rateKey === "Single"
           ? data?.tokens?.length === 1
           : data?.tokens?.length === 2
       );
+    if (checked) {
+      _filterList =  _filterList.filter((data) => Big(data?.depositAmount || 0).gt(0));
+    }
     return sortDataIndex
-      ? _.cloneDeep(_filterList).sort((prev, next) => {
+      ? cloneDeep(_filterList).sort((prev, next) => {
         return Big(next[sortDataIndex] || 0).gt(prev[sortDataIndex] || 0) ? sortDataDirection : -sortDataDirection;
       })
       : _filterList;
-  }, [dataList, sortDataIndex, searchVal, rateKey]);
+  }, [dataList, sortDataIndex, searchVal, rateKey, checked]);
 
 
   const handleMobileAction = (record) => {
-    console.log(openInfrared,setVaultsVisible, 'setVaultsVisible-openInfrared');
-
     openInfrared(record).then(() => {
-      console.log("====1111====", record);
       setVaultsVisible(true);
     });
   }
