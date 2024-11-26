@@ -9,7 +9,6 @@ import ApprovePanel from "./approve-panel";
 import StakePanel from "./stake-panel";
 import { useEffect, useMemo, useState } from "react";
 import useApprove from "@/hooks/use-approve";
-import Big from "big.js";
 
 export default function DepositModal({
   data,

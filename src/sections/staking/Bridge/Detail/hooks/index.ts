@@ -1,15 +1,16 @@
-import { useMultiState } from '@/hooks/use-multi-state';
-import config from '@/configs/staking/dapps/infrared';
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import Big from 'big.js';
-import { ethers } from 'ethers';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { stakeAbi, withdrawAbi } from '@/sections/staking/Bridge/Detail';
-import { useProvider } from '@/hooks/use-provider';
-import useAccount from '@/hooks/use-account';
-import useToast from '@/hooks/use-toast';
-import useLpToAmount from '@/hooks/use-lp-to-amount';
-import useAddAction from '@/hooks/use-add-action';
+import { useMultiState } from "@/hooks/use-multi-state";
+import config from "@/configs/staking/dapps/infrared";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import Big from "big.js";
+import { ethers } from "ethers";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { stakeAbi, withdrawAbi } from "@/sections/staking/Bridge/Detail";
+import kodiak from "@/configs/pools/kodiak";
+import { useProvider } from "@/hooks/use-provider";
+import useAccount from "@/hooks/use-account";
+import useToast from "@/hooks/use-toast";
+import useLpToAmount from "@/hooks/use-lp-to-amount";
+import useAddAction from "@/hooks/use-add-action";
 
 export function useDetail(props: any) {
   const { id, name, data, defaultIndex } = props;
@@ -18,7 +19,7 @@ export function useDetail(props: any) {
   const { account: sender, chainId } = useAccount();
   const toast = useToast();
   const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
-  const { addAction } = useAddAction('dapp');
+  const { addAction } = useAddAction("dapp");
 
   const detailBerpsRef = useRef<any>();
   const [claiming, setClaiming] = useState(false);
@@ -27,8 +28,11 @@ export function useDetail(props: any) {
 
   const { addresses } = config.chains[DEFAULT_CHAIN_ID];
 
-  const isBERPS = name === 'Berps';
-  const isInfraredBerps = name === 'Infrared' && data?.initialData?.pool?.protocol === 'BERPS' && data?.initialData?.pool?.name === 'BHONEY';
+  const isBERPS = name === "Berps";
+  const isInfraredBerps =
+    name === "Infrared" &&
+    data?.initialData?.pool?.protocol === "BERPS" &&
+    data?.initialData?.pool?.name === "BHONEY";
 
   const symbol = isBERPS ? data?.depositToken?.symbol : id;
   const { decimals, tokens, LP_ADDRESS } = data || {};
@@ -36,8 +40,8 @@ export function useDetail(props: any) {
   const [state, updateState] = useMultiState<any>({
     // isDeposit: tab === "Stake" || !tab,
     balances: [],
-    lpBalance: '',
-    inAmount: '',
+    lpBalance: "",
+    inAmount: "",
     // lpAmount: '',
     isLoading: false,
     isTokenApproved: true,
@@ -61,22 +65,22 @@ export function useDetail(props: any) {
   const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
   const vaultAddress = (addresses as any)[symbol];
   const approveSpender = isBERPS ? data?.withdrawToken?.address : vaultAddress;
-  const stakeMethod = isBERPS ? 'deposit' : 'stake';
-  const unStakeMethod = isBERPS ? 'makeWithdrawRequest' : 'withdraw';
+  const stakeMethod = isBERPS ? "deposit" : "stake";
+  const unStakeMethod = isBERPS ? "makeWithdrawRequest" : "withdraw";
 
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
   const balanceLp =
     !lpAmount || !lpBalance
-      ? '-'
+      ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
   const updateLPBalance = () => {
-    const abi = ['function balanceOf(address) view returns (uint256)'];
+    const abi = ["function balanceOf(address) view returns (uint256)"];
     let _contractAddr = vaultAddress;
     if (isBERPS) {
       _contractAddr = data?.withdrawToken?.address;
@@ -94,7 +98,7 @@ export function useDetail(props: any) {
     });
   };
   const updateBalance = () => {
-    const abi = ['function balanceOf(address) view returns (uint256)'];
+    const abi = ["function balanceOf(address) view returns (uint256)"];
     const contract = new ethers.Contract(
       contractAddr,
       abi,
@@ -112,7 +116,7 @@ export function useDetail(props: any) {
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         setTimeout(() => {
           updateBalance();
         }, 1500);
@@ -124,7 +128,7 @@ export function useDetail(props: any) {
       decimals
     );
     const abi = [
-      'function allowance(address, address) external view returns (uint256)'
+      "function allowance(address, address) external view returns (uint256)"
     ];
     const contract = new ethers.Contract(
       contractAddr,
@@ -151,9 +155,9 @@ export function useDetail(props: any) {
 
   const handleTokenChange = (amount: any) => {
     updateState({ inAmount: amount });
-    if (amount === '') {
+    if (amount === "") {
       updateState({
-        inAmount: '',
+        inAmount: "",
         isTokenApproved: true
       });
       return;
@@ -178,7 +182,7 @@ export function useDetail(props: any) {
       loadingMsg: `Approving ${symbol}...`
     });
     const wei = ethers.utils.parseUnits(amount, decimals);
-    const abi = ['function approve(address, uint) public'];
+    const abi = ["function approve(address, uint) public"];
     const contract = new ethers.Contract(
       contractAddr,
       abi,
@@ -190,16 +194,16 @@ export function useDetail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const payload = { isTokenApproved: true, isTokenApproving: false };
-        updateState({ ...payload, isLoading: false, loadingMsg: '' });
+        updateState({ ...payload, isLoading: false, loadingMsg: "" });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successfully!',
+          title: "Approve Successfully!",
           tx: receipt.transactionHash,
           chainId
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         updateState({
           isError: true,
           isLoading: false,
@@ -208,9 +212,9 @@ export function useDetail(props: any) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Approve Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
+          title: "Approve Failed!",
+          text: error?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
             : null
         });
       });
@@ -224,7 +228,7 @@ export function useDetail(props: any) {
       toastId,
       isLoading: true,
       isError: false,
-      loadingMsg: 'Staking...'
+      loadingMsg: "Staking..."
     });
     const wei = ethers.utils.parseUnits(
       Big(inAmount).toFixed(decimals),
@@ -246,18 +250,18 @@ export function useDetail(props: any) {
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(inAmount);
           addAction?.({
-            type: 'Staking',
-            action: 'Staking',
+            type: "Staking",
+            action: "Staking",
             token: {
-              symbol: tokens.join('-')
+              symbol: tokens.join("-")
             },
             amount: inAmount,
-            template: name || 'Infrared',
+            template: name || "Infrared",
             status: status,
             add: 1,
             transactionHash,
             chain_id: chainId,
-            sub_type: 'Stake',
+            sub_type: "Stake",
             extra_data: JSON.stringify({
               token0Symbol: tokens[0],
               token1Symbol: tokens[1],
@@ -275,13 +279,13 @@ export function useDetail(props: any) {
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Stake Successfully!',
+            title: "Stake Successfully!",
             tx: transactionHash,
             chainId
           });
         })
         .catch((error: Error) => {
-          console.log('error: ', error);
+          console.log("error: ", error);
           updateState({
             isError: true,
             isLoading: false,
@@ -289,19 +293,21 @@ export function useDetail(props: any) {
           });
           toast?.dismiss(toastId);
           toast?.fail({
-            title: 'Stake Failed!',
-            text: error?.message?.includes('user rejected transaction')
-              ? 'User rejected transaction'
-              : error?.message ?? ''
+            title: "Stake Failed!",
+            text: error?.message?.includes("user rejected transaction")
+              ? "User rejected transaction"
+              : error?.message ?? ""
           });
         });
     };
-    contract.estimateGas[stakeMethod](...params).then((res: any) => {
-      createTx(res);
-    }).catch((err: any) => {
-      console.log('estimateGas failed: %o', err);
-      createTx(4000000);
-    });
+    contract.estimateGas[stakeMethod](...params)
+      .then((res: any) => {
+        createTx(res);
+      })
+      .catch((err: any) => {
+        console.log("estimateGas failed: %o", err);
+        createTx(4000000);
+      });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -310,7 +316,7 @@ export function useDetail(props: any) {
     updateState({
       isLoading: true,
       isError: false,
-      loadingMsg: 'Unstaking...'
+      loadingMsg: "Unstaking..."
     });
 
     const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
@@ -331,19 +337,19 @@ export function useDetail(props: any) {
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(lpAmount);
           addAction?.({
-            type: 'Staking',
-            action: 'UnStake',
+            type: "Staking",
+            action: "UnStake",
             token: {
-              symbol: tokens.join('-')
+              symbol: tokens.join("-")
             },
-            symbol: tokens.join('-'),
+            symbol: tokens.join("-"),
             amount: lpAmount,
-            template: name || 'Infrared',
+            template: name || "Infrared",
             status: status,
             add: 0,
             transactionHash,
             chain_id: chainId,
-            sub_type: 'Unstake',
+            sub_type: "Unstake",
             extra_data: JSON.stringify({
               token0Symbol: tokens[0],
               token1Symbol: tokens[1],
@@ -357,7 +363,7 @@ export function useDetail(props: any) {
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Unstake Successfully!',
+            title: "Unstake Successfully!",
             tx: transactionHash,
             chainId
           });
@@ -373,19 +379,21 @@ export function useDetail(props: any) {
           });
           toast?.dismiss(toastId);
           toast?.fail({
-            title: 'Unstake Failed!',
-            text: error?.message?.includes('user rejected transaction')
-              ? 'User rejected transaction'
-              : error?.message ?? ''
+            title: "Unstake Failed!",
+            text: error?.message?.includes("user rejected transaction")
+              ? "User rejected transaction"
+              : error?.message ?? ""
           });
         });
     };
-    contract.estimateGas[unStakeMethod](lpWeiAmount).then((res: any) => {
-      createTx(res);
-    }).catch((err: any) => {
-      console.log('estimateGas failed: %o', err);
-      createTx(4000000);
-    });
+    contract.estimateGas[unStakeMethod](lpWeiAmount)
+      .then((res: any) => {
+        createTx(res);
+      })
+      .catch((err: any) => {
+        console.log("estimateGas failed: %o", err);
+        createTx(4000000);
+      });
   };
   const handleClaim = function () {
     const toastId = toast?.loading({
@@ -396,10 +404,10 @@ export function useDetail(props: any) {
       {
         constant: false,
         inputs: [],
-        name: 'getReward',
+        name: "getReward",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
+        stateMutability: "nonpayable",
+        type: "function"
       }
     ];
     const contract = new ethers.Contract(
@@ -408,43 +416,43 @@ export function useDetail(props: any) {
       provider.getSigner()
     );
 
-    setClaiming(true)
+    setClaiming(true);
     contract
       .getReward()
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
         addAction?.({
-          type: 'Staking',
-          action: 'Claim',
+          type: "Staking",
+          action: "Claim",
           token: {
-            symbol: tokens.join('-')
+            symbol: tokens.join("-")
           },
           amount: data?.earned,
-          template: name || 'Infrared',
+          template: name || "Infrared",
           status: status,
           transactionHash,
           chain_id: chainId,
-          sub_type: 'Claim'
+          sub_type: "Claim"
         });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Claim Successfully!'
+          title: "Claim Successfully!"
         });
         setTimeout(() => {
           onSuccess?.();
         }, 3000);
-        setClaiming(false)
+        setClaiming(false);
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
-        setClaiming(false)
+        console.log("error: ", error);
+        setClaiming(false);
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Claim Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : error?.message ?? ''
+          title: "Claim Failed!",
+          text: error?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
+            : error?.message ?? ""
         });
       });
   };
@@ -460,7 +468,7 @@ export function useDetail(props: any) {
       isTokenApproved: true,
       isTokenApproving: false
     });
-    Number(defaultIndex) === 0 ? handleTokenChange('') : handleLPChange('');
+    Number(defaultIndex) === 0 ? handleTokenChange("") : handleLPChange("");
     props.onSuccess?.();
   };
 
@@ -475,16 +483,29 @@ export function useDetail(props: any) {
   const mintData = useMemo<any>(() => {
     const pool = data?.initialData?.pool;
     if (!pool) return;
-    if (!['BEX', 'Kodiak Finance'].includes(pool.protocol)) return null;
-    const protocol = pool.protocol.split(' ')[0];
+    if (!["BEX", "Kodiak Finance"].includes(pool.protocol)) return null;
+    const protocol = pool.protocol.split(" ")[0];
 
-    if (pool.underlying_tokens?.length !== 2) return;
-    return {
-      protocol,
-      token0: { ...pool.underlying_tokens[0], icon: data.images[0] },
-      token1: { ...pool.underlying_tokens[1], icon: data.images[1] },
-      version: 'v2'
-    };
+    if (pool.underlying_tokens?.length === 2)
+      return {
+        protocol,
+        token0: { ...pool.underlying_tokens[0], icon: data.images[0] },
+        token1: { ...pool.underlying_tokens[1], icon: data.images[1] },
+        version: "v2"
+      };
+    const islandItem = (kodiak.islands as any)[
+      data?.initialData?.stake_token?.address
+    ];
+    if (data?.initialData?.pool?.protocol === "Kodiak Finance" && islandItem) {
+      return {
+        token0: islandItem.token0,
+        token1: islandItem.token1,
+        version: "island",
+        protocol: "kodiak",
+        stakingToken: data?.initialData?.stake_token
+      };
+    }
+    return null;
   }, [data]);
 
   const withdrawable = useMemo(() => {
@@ -531,6 +552,6 @@ export function useDetail(props: any) {
     detailBerpsRef,
     claiming,
     isBerpsDepositVisible,
-    setIsBerpsDepositVisible,
+    setIsBerpsDepositVisible
   };
 }
