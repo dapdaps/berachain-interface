@@ -73,7 +73,11 @@ export default function TokenAmout({
               <div className="relative">
                 <img
                   className="w-[26px] h-[26px]"
-                  src={currency.icon || "/assets/tokens/default_icon.png"}
+                  src={
+                    currency.icon ||
+                    currency.logo ||
+                    "/assets/tokens/default_icon.png"
+                  }
                 />
               </div>
               <div>

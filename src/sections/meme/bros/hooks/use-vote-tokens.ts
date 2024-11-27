@@ -25,6 +25,7 @@ export default function useVoteTokens(round: number) {
     } catch (err) {
       console.log(err);
       setPage(1);
+      setTotalPage(1);
       setTokens([]);
     } finally {
       setLoading(false);

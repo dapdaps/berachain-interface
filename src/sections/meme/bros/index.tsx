@@ -22,7 +22,9 @@ export default function Bros() {
       {(currentRound?.status === "un_start" || urlParams.sub === "vote") && (
         <Vote />
       )}
-      {!urlParams.sub && currentRound?.status !== "un_start" && <Main />}
+      {!urlParams.sub &&
+        !!currentRound &&
+        currentRound.status !== "un_start" && <Main />}
     </MemeContext.Provider>
   );
 }

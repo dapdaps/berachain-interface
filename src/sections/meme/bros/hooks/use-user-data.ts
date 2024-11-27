@@ -4,11 +4,13 @@ import { multicall, multicallAddresses } from "@/utils/multicall";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import stakeAbi from "../abi/stake";
 import Big from "big.js";
+import { usePriceStore } from "@/stores/usePriceStore";
 
 export default function useUserData(tokens: any) {
   const [userData, setUserData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
+  const prices: any = usePriceStore((store) => store.price);
 
   const onQuery = useCallback(async () => {
     try {
@@ -17,7 +19,7 @@ export default function useUserData(tokens: any) {
       const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 
       const stakedCalls = tokens.map((token: any) => ({
-        address: token.stakeAddress,
+        address: token.stake_address,
         name: "userStakes",
         params: [account]
       }));
@@ -35,8 +37,11 @@ export default function useUserData(tokens: any) {
       tokens.forEach((token: any, i: number) => {
         if (!stakedRes[i]) return;
         const _amount = Big(stakedRes[i][0].toString()).div(1e18).toString();
-        const _amountUSD = _amount;
-        _data[token.address] = {
+        const price =
+          prices[token.token.symbol] || prices[token.token.priceKey];
+
+        const _amountUSD = price ? Big(price).mul(_amount).toString() : 0;
+        _data[token.token.address] = {
           stakedAmount: Big(stakedRes[i].toString()).div(1e18).toString(),
           stakedAmountUSD: _amountUSD
         };

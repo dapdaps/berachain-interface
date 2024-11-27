@@ -1,9 +1,12 @@
+import { Swiper, SwiperSlide } from "swiper/react";
 import { useMemo, useState } from "react";
+import useIsMobile from "@/hooks/use-isMobile";
 import Loading from "@/components/loading";
 import Item from "./item";
 
 export default function Tokens({ tokens, loading }: any) {
   const [selectToken, setSelectToken] = useState<number>();
+  const isMobile = useIsMobile();
   const list = useMemo(() => {
     if (!tokens || tokens.length === 0) return [];
     const [t1, t2, t3, ...rest] = tokens;
@@ -19,22 +22,37 @@ export default function Tokens({ tokens, loading }: any) {
   }, [tokens]);
 
   return (
-    <div className="mt-[86px] w-[1070px] mx-[auto] flex justify-between h-[200px] md:w-[560px] md:mt-[40px] md:pl-[18px]">
-      {list.map((token: any, i: number) => (
-        <Item
-          key={token.address}
-          token={token}
-          i={i}
-          show={i === selectToken}
-          onClick={() => {
-            setSelectToken(i);
-          }}
-        />
-      ))}
-      {loading && (
-        <div className="flex justify-center w-full">
+    <div className="pt-[40px] md:pt-[10px]">
+      {loading ? (
+        <div className="flex justify-center w-full h-[260px]">
           <Loading size={40} />
         </div>
+      ) : (
+        <Swiper
+          width={isMobile ? 375 : 1308}
+          height={isMobile ? 300 : 400}
+          slidesPerView={isMobile ? 4 : 6}
+          spaceBetween={isMobile ? 30 : 60}
+          speed={500}
+          loop={isMobile ? list.length > 4 : list.length > 6}
+          className="px-[20px]"
+        >
+          {list.map((token: any, i: number) => (
+            <SwiperSlide
+              key={token.address}
+              style={{ height: isMobile ? 300 : 400 }}
+            >
+              <Item
+                token={token}
+                i={i}
+                show={i === selectToken}
+                onClick={() => {
+                  setSelectToken(i);
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       )}
     </div>
   );

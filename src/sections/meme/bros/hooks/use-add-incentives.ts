@@ -6,9 +6,13 @@ import Big from "big.js";
 import { Contract } from "ethers";
 import rewardAbi from "../abi/reward";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import { RewardContractAddress } from "../config";
-
-export default function useAddIncentives({ token, amount, onSuccess }: any) {
+export default function useAddIncentives({
+  token,
+  data,
+  rewardAddress,
+  amount,
+  onSuccess
+}: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -19,18 +23,17 @@ export default function useAddIncentives({ token, amount, onSuccess }: any) {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const RewardContract = new Contract(
-        RewardContractAddress,
-        rewardAbi,
-        signer
-      );
+      const RewardContract = new Contract(rewardAddress, rewardAbi, signer);
       const _amount = Big(amount)
         .mul(10 ** token.decimals)
         .toFixed(0);
       const tx = await RewardContract.deposit(
-        token.stakeAddress,
+        data.stake_address,
         token.address,
-        _amount
+        _amount,
+        {
+          value: token.isNative ? _amount : 0
+        }
       );
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
@@ -47,14 +50,17 @@ export default function useAddIncentives({ token, amount, onSuccess }: any) {
       } else {
         toast.fail({ title: "Add incentives faily!" });
       }
-      // addAction({
-      //   type: "Liquidity",
-      //   action: "Add Liquidity",
-      //   template: "Kodiak",
-      //   status,
-      //   transactionHash,
-      //   sub_type: "Add"
-      // });
+      addAction({
+        type: "Staking",
+        action: "Stake",
+        amount: amount,
+        token: token.token,
+        template: "supermemebros",
+        status,
+        transactionHash,
+        chain_id: DEFAULT_CHAIN_ID,
+        sub_type: "deposit_reward"
+      });
     } catch (err: any) {
       console.log(err);
       toast.dismiss(toastId);

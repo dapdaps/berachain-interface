@@ -9,7 +9,7 @@ export default function Panel({
   balancesLoading
 }: any) {
   return (
-    <div className="relative mt-[220px] md:mt-[80px]">
+    <div className="relative mt-[140px] md:mt-[60px]">
       <Materials />
       <div className="relative z-[5] py-[45px] w-full bg-[url(/images/meme/ground.png)] bg-contain min-h-[300px]">
         <Tokens

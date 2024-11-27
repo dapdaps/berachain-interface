@@ -2,7 +2,7 @@ import Title from "../../components/title";
 import PageBack from "@/components/back";
 import Total from "../total";
 import Panel from "../panel";
-import Tokens from "./tokens";
+import Tokens from "../tokens";
 import Actions from "./actions";
 import Withdrawal from "./withdrawal";
 

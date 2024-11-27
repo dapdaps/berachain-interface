@@ -1,11 +1,17 @@
 import Coin from "./coin";
 import { motion } from "framer-motion";
 import useIsMobile from "@/hooks/use-isMobile";
+import clsx from "clsx";
 
 export default function GoldCoinThrow() {
   const isMobile = useIsMobile();
   return (
-    <div className="relative">
+    <div
+      className={clsx(
+        "absolute w-[68px] h-[80px] left-[34px] bottom-[-80px]",
+        "md:w-[36px] md:h-[42px] md:left-[4px] md:bottom-[-42px]"
+      )}
+    >
       <Coin
         x={isMobile ? [0, -10, -30] : [0, -20, -60]}
         y={isMobile ? [0, -5, -10, -30] : [0, -10, -20, -60]}
@@ -51,7 +57,7 @@ export default function GoldCoinThrow() {
         fill="none"
         className="absolute left-[8px] top-[0px] w-[68px] h-[79px] md:w-[36px] md:h-[42px]"
         initial={{
-          y: 50
+          y: isMobile ? 30 : 50
         }}
         animate={{
           y: 0

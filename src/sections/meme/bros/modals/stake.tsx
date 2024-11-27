@@ -29,7 +29,6 @@ export default function StakeModal({
   open,
   data,
   userData,
-  totalStaked,
   onClose,
   onOpenModal,
   onSuccess
@@ -60,44 +59,46 @@ export default function StakeModal({
   }, [userData, amount]);
 
   const [originWeight, targetWeight] = useMemo(() => {
-    const _ow = totalStaked
-      ? Big(originAmount).div(totalStaked).mul(100).toString()
+    const _ow = Big(data?.total_dapped || 0).gt(0)
+      ? Big(originAmount).div(data.total_dapped).mul(100).toString()
       : 0;
-    const _tw = totalStaked
+    const _tw = Big(data?.total_dapped || 0).gt(0)
       ? Big(targetAmount)
-          .div(Big(totalStaked).add(amount || 0))
+          .div(Big(data.total_dapped).add(amount || 0))
           .mul(100)
           .toString()
+      : targetAmount
+      ? 100
       : 0;
     return [balanceFormated(_ow, 4), balanceFormated(_tw, 4)];
-  }, [totalStaked, originAmount, targetAmount, amount]);
+  }, [data, originAmount, targetAmount, amount]);
 
   return (
     <Basic open={open} onClose={onClose} className="w-[520px]">
       <div className="flex gap-[18px]">
         <Image
-          src={data.icon}
+          src={data.token.logo}
           width={60}
           height={60}
-          alt={data.symbol}
+          alt={data.token.symbol}
           className="border border-[3px] border-black rounded-full"
         />
         <div>
-          <div className="text-[20px] font-bold">{data.symbol}</div>
+          <div className="text-[20px] font-bold">{data.token.symbol}</div>
           <button
             className="text-[14px] underline"
             onClick={() => {
               onOpenModal(8, data);
             }}
           >
-            Get {data.symbol}
+            Get {data.token.symbol}
           </button>
         </div>
       </div>
       <div className="mt-[20px]">
         <TokenAmout
           type="in"
-          currency={data}
+          currency={data.token}
           prices={prices}
           amount={amount}
           outputCurrencyReadonly={true}
@@ -141,7 +142,7 @@ export default function StakeModal({
             >
               {originWeight}%
             </span>
-            {originWeight !== targetWeight && (
+            {originAmount !== targetAmount && (
               <>
                 {ArrowIcon}
                 <span>{targetWeight}%</span>
@@ -151,21 +152,19 @@ export default function StakeModal({
         </div>
         <div className="flex justify-between items-center">
           <div>Staking APR</div>
-          <div className="flex items-center gap-[8px]">
-            <span className="line-through">-</span>
-          </div>
+          <div className="flex items-center gap-[8px]">{data.apy || "-"}</div>
         </div>
       </div>
       <Button
-        spender={data.stakeAddress}
-        token={data}
+        spender={data.stake_address}
+        token={data.token}
         amount={amount}
         loading={loading}
         errorTips={errorTips}
         disabled={!!errorTips}
         onClick={onStake}
       >
-        👊 Dap sPepe up!
+        👊 Dap {data.token.symbol} up!
       </Button>
       <div className="flex items-center gap-[6px] text-[14px] py-[18px]">
         <div className="font-CherryBomb w-[20px] h-[20px] rounded-full bg-[#FFB7BF] text-center">

@@ -13,7 +13,6 @@ import useVoteTokens from "../../hooks/use-vote-tokens";
 import useData from "../../hooks/use-data";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { useMemo } from "react";
-import { BGT_ADDRESS } from "@/configs";
 import Big from "big.js";
 
 const VoteTable = forwardRef<any, any>((props, ref) => {
@@ -23,10 +22,13 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
     currentRound?.round
   );
   const isMobile = useIsMobile();
-  const { tokenBalance } = useTokenBalance(BGT_ADDRESS, 18);
+  const { tokenBalance } = useTokenBalance(currentRound?.condition_token, 18);
 
   const votable = useMemo(
-    () => Big(tokenBalance || 0).gte(0.1),
+    () =>
+      Big(tokenBalance || 0)
+        .mul(1e18)
+        .gte(currentRound?.condition_amount),
     [tokenBalance]
   );
 

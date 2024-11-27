@@ -5,15 +5,17 @@ import RankMark from "../../rank-mark";
 import Image from "next/image";
 import { balanceShortFormated } from "@/utils/balance";
 
-const position = [90, 45, 10, 120, 100, 110];
-
+const position = [140, 95, 60, 170, 150, 160];
 export default function Item({ token, i, show, onClick }: any) {
   const isMobile = useIsMobile();
+  const positionI = i % position.length;
   return (
     <div
-      className="cursor-pointer relative origin-bottom duration-100"
+      className="cursor-pointer relative origin-bottom duration-100 flex flex-col items-center"
       style={{
-        transform: `translateY(${show ? position[i] - 40 : position[i]}px)`
+        transform: `translateY(${
+          show ? position[positionI] - 40 : position[positionI]
+        }px)`
       }}
       onClick={(ev) => {
         onClick(i);
@@ -21,11 +23,11 @@ export default function Item({ token, i, show, onClick }: any) {
     >
       <div className="relative">
         <Image
-          src={token.icon}
+          src={token.token.logo}
           width={isMobile ? 60 : 100}
           height={isMobile ? 60 : 100}
           className="rounded-full ml-[-3px]"
-          alt={token.symbol}
+          alt={token.token.symbol}
         />
         {token.rank && (
           <RankMark

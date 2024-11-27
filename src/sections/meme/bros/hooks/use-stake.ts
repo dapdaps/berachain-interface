@@ -18,11 +18,15 @@ export default function useStake({ token, amount, onSuccess }: any) {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const StakeContract = new Contract(token.stakeAddress, stakeAbi, signer);
+      const StakeContract = new Contract(token.stake_address, stakeAbi, signer);
       const _amount = Big(amount)
-        .mul(10 ** token.decimals)
+        .mul(10 ** token.token.decimals)
         .toFixed(0);
-      const tx = await StakeContract.stake(_amount);
+      const estimateGas = await StakeContract.estimateGas.stake(_amount);
+
+      const tx = await StakeContract.stake(_amount, {
+        gasLimit: Big(estimateGas.toString()).mul(1.2).toFixed(0)
+      });
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
@@ -37,19 +41,17 @@ export default function useStake({ token, amount, onSuccess }: any) {
       } else {
         toast.fail({ title: "Stake faily!" });
       }
-      // addAction?.({
-      //   type: "Staking",
-      //   action: "Claim",
-      //   token: {
-      //     symbol: "KDK"
-      //   },
-      //   amount: earned,
-      //   template: "Kodiak",
-      //   status: status,
-      //   transactionHash,
-      //   chain_id: DEFAULT_CHAIN_ID,
-      //   sub_type: "Claim"
-      // });
+      addAction?.({
+        type: "Staking",
+        action: "Stake",
+        token: token.token,
+        amount: amount,
+        template: "supermemebros",
+        status: status,
+        transactionHash,
+        chain_id: DEFAULT_CHAIN_ID,
+        sub_type: "Stake"
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

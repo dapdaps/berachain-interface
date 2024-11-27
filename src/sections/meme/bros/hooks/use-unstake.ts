@@ -18,9 +18,9 @@ export default function useUnstake({ token, amount, onSuccess }: any) {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const StakeContract = new Contract(token.stakeAddress, stakeAbi, signer);
+      const StakeContract = new Contract(token.stake_address, stakeAbi, signer);
       const _amount = Big(amount)
-        .mul(10 ** token.decimals)
+        .mul(10 ** token.token.decimals)
         .toFixed(0);
       const tx = await StakeContract.unstake(_amount);
       toast.dismiss(toastId);
@@ -37,19 +37,17 @@ export default function useUnstake({ token, amount, onSuccess }: any) {
       } else {
         toast.fail({ title: "Unstake faily!" });
       }
-      // addAction?.({
-      //   type: "Staking",
-      //   action: "Claim",
-      //   token: {
-      //     symbol: "KDK"
-      //   },
-      //   amount: earned,
-      //   template: "Kodiak",
-      //   status: status,
-      //   transactionHash,
-      //   chain_id: DEFAULT_CHAIN_ID,
-      //   sub_type: "Claim"
-      // });
+      addAction?.({
+        type: "Staking",
+        action: "Stake",
+        token: token.token,
+        amount: amount,
+        template: "supermemebros",
+        status: status,
+        transactionHash,
+        chain_id: DEFAULT_CHAIN_ID,
+        sub_type: "Unstake"
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

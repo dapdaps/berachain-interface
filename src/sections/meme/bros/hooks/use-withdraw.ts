@@ -17,7 +17,7 @@ export default function useWithdraw({ token, idx, onSuccess }: any) {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const StakeContract = new Contract(token.stakeAddress, stakeAbi, signer);
+      const StakeContract = new Contract(token.stake_address, stakeAbi, signer);
 
       const tx = await StakeContract.withdraw(idx);
       toast.dismiss(toastId);
@@ -34,19 +34,17 @@ export default function useWithdraw({ token, idx, onSuccess }: any) {
       } else {
         toast.fail({ title: "Withdraw faily!" });
       }
-      // addAction?.({
-      //   type: "Staking",
-      //   action: "Claim",
-      //   token: {
-      //     symbol: "KDK"
-      //   },
-      //   amount: earned,
-      //   template: "Kodiak",
-      //   status: status,
-      //   transactionHash,
-      //   chain_id: DEFAULT_CHAIN_ID,
-      //   sub_type: "Claim"
-      // });
+      addAction?.({
+        type: "Staking",
+        action: "UnStake",
+        token: token.token,
+        amount: token.amount,
+        template: "supermemebros",
+        status: status,
+        transactionHash,
+        chain_id: DEFAULT_CHAIN_ID,
+        sub_type: "Withdraw"
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

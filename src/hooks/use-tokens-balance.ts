@@ -1,10 +1,10 @@
-import { providers, utils } from "ethers";
+import { utils } from "ethers";
 import { flatten } from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import chains from "@/configs/chains";
 import multicallAddresses from "@/configs/contract/multicall";
 import useAccount from "@/hooks/use-account";
 import { multicall } from "@/utils/multicall";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useTokensBalance(tokens: any) {
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ export default function useTokensBalance(tokens: any) {
 
   const queryBalance = useCallback(async () => {
     if (!account || !tokens.length || !provider) return;
-    const chainId = tokens[0].chainId;
+    const chainId = tokens[0].chainId || DEFAULT_CHAIN_ID;
     try {
       setLoading(true);
       let hasNative = false;
@@ -26,7 +26,6 @@ export default function useTokensBalance(tokens: any) {
         name: "balanceOf",
         params: [account]
       }));
-
       const multicallAddress = multicallAddresses[chainId];
       const requests = [];
       if (hasNative) requests.push(provider.getBalance(account));
@@ -73,6 +72,7 @@ export default function useTokensBalance(tokens: any) {
           token.decimals
         );
       }
+
       setBalances(_balance);
       setLoading(false);
     } catch (err) {
@@ -83,7 +83,7 @@ export default function useTokensBalance(tokens: any) {
 
   useEffect(() => {
     queryBalance();
-  }, [tokens, account, provider]);
+  }, [account, provider, tokens]);
 
   return { loading, balances, queryBalance };
 }

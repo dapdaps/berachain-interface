@@ -5,14 +5,9 @@ import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import rewardAbi from "../abi/reward";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import { RewardContractAddress } from "../config";
+import { get } from "@/utils/http";
 
-export default function useClaim({
-  tokens,
-  amounts,
-  signature,
-  onSuccess
-}: any) {
+export default function useClaim({ data, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -24,10 +19,14 @@ export default function useClaim({
       setLoading(true);
       const signer = provider.getSigner(account);
       const RewardContract = new Contract(
-        RewardContractAddress,
+        data.reward_contract,
         rewardAbi,
         signer
       );
+      const response = await get(
+        `/api/meme/claimSign?round=${data.round}&account=${account}&nonce=0`
+      );
+      const { tokens, amounts, signature } = response.data;
       const tx = await RewardContract.claim(
         account,
         tokens,
@@ -48,19 +47,16 @@ export default function useClaim({
       } else {
         toast.fail({ title: "Claim faily!" });
       }
-      // addAction?.({
-      //   type: "Staking",
-      //   action: "Claim",
-      //   token: {
-      //     symbol: "KDK"
-      //   },
-      //   amount: earned,
-      //   template: "Kodiak",
-      //   status: status,
-      //   transactionHash,
-      //   chain_id: DEFAULT_CHAIN_ID,
-      //   sub_type: "Claim"
-      // });
+      addAction?.({
+        type: "Staking",
+        action: "Claim",
+        template: "supermemebros",
+        status: status,
+        transactionHash,
+        chain_id: DEFAULT_CHAIN_ID,
+        sub_type: "Claim",
+        extra_data: {}
+      });
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);

@@ -15,7 +15,7 @@ export default function useWithdrawData(tokens: any) {
       setLoading(true);
 
       const calls = tokens.map((token: any) => ({
-        address: token.stakeAddress,
+        address: token.stake_address,
         name: "getUnstakeEntries",
         params: [account]
       }));
@@ -31,7 +31,8 @@ export default function useWithdrawData(tokens: any) {
 
       res.forEach((item: any, i: number) => {
         const record = item[0][0];
-        if (record[2]) return;
+
+        if (!record || record?.[2]) return;
 
         const _unlockTimestamp = Number(record[1].toString());
         _list.push({
@@ -43,7 +44,6 @@ export default function useWithdrawData(tokens: any) {
           ...tokens[i]
         });
       });
-      console.log("_list", _list);
       setList(_list);
     } catch (err) {
       console.log(err);

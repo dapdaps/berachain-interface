@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 export default function Timer() {
   const { currentRound } = useData();
-  const { secondsRemaining } = useCountdown(currentRound.end_time);
+  const { secondsRemaining } = useCountdown(currentRound?.end_time || 0);
   const [timer, isEnded] = useMemo(() => {
     const d = Math.floor(secondsRemaining / 86400);
     const h = Math.floor((secondsRemaining - d * 86400) / 3600);

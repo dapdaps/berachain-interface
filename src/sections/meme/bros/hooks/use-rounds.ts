@@ -33,7 +33,7 @@ export default function useRounds() {
       if (!current && _history.length) current = _history[0];
       if (!current && result.data.length === 1) current = result.data[0];
       setHistoryRounds(_history);
-      setCurrentRound(current);
+      setCurrentRound({ ...current, status: "ongoing" });
       setNextRound(next);
     } catch (err) {
       console.log(err);

@@ -3,41 +3,53 @@ import Button from "@/components/button";
 import Image from "next/image";
 import Loading from "@/components/loading";
 import Empty from "@/components/empty";
-import AddIncentives from "./add-incentives";
 import Pager from "@/components/pager";
+import Dropdown from "@/components/dropdown";
 import useIncentives from "../hooks/use-incentives";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatThousandsSeparator } from "@/utils/balance";
 import { format } from "date-fns";
 import { ellipsAccount } from "@/utils/account";
 
-export default function Incentives({ open, data, rewardTokens, onClose }: any) {
+export default function Ranking({ open, tokens, onClose }: any) {
+  const [queryToken, setQueryToken] = useState("");
   const { loading, list, totalPage, page, onChangePage } = useIncentives();
-  const [showAddModal, setShowAddModal] = useState(false);
-
   useEffect(() => {
     if (open) onChangePage(1);
   }, [open]);
+
+  const filterTokens = useMemo(
+    () =>
+      tokens.map((token: any) => ({
+        key: token.token.address,
+        name: (
+          <div className="flex gap-[5px] items-center">
+            <img
+              src={token.token.logo}
+              className="w-[20px] h-[20px] rounded-full"
+            />
+            <div className="text-[14px] font-semibold">
+              {token.token.symbol}
+            </div>
+          </div>
+        )
+      })),
+    [tokens]
+  );
 
   return (
     <>
       <Basic open={open} onClose={onClose} className="w-[916px]">
         <div className="flex text-[20px] font-bold justify-between pr-[40px] md:pr-0">
-          <div>Incentives</div>
-          <Button
-            type="primary"
-            className="h-[36px]"
-            onClick={() => {
-              setShowAddModal(true);
+          <div>Dapper Ranking</div>
+          <Dropdown
+            title="All Meme"
+            list={filterTokens}
+            value={queryToken}
+            onChange={(item: any) => {
+              setQueryToken(item.key);
             }}
-          >
-            Add Incentives
-          </Button>
-        </div>
-        <div className="mb-[16px] pt-[28px] flex items-center font-medium text-[#3D405A] text-[14px] border-b border-black/20 pb-[10px]">
-          <div className="w-[324px] md:w-[180px]">Providers</div>
-          <div className="w-[360px] md:grow">Incentive Breakdown</div>
-          <div className="md:w-[66px] md:shrink-0">Time</div>
+          />
         </div>
         <div className="text-[#3D405A] font-semibold text-[14px] max-h-[50dvh] overflow-y-auto">
           {loading && (
@@ -90,18 +102,6 @@ export default function Incentives({ open, data, rewardTokens, onClose }: any) {
           />
         </div>
       </Basic>
-      <AddIncentives
-        open={showAddModal}
-        rewardTokens={rewardTokens}
-        data={data}
-        onSuccess={() => {
-          setShowAddModal(false);
-          onChangePage(1);
-        }}
-        onClose={() => {
-          setShowAddModal(false);
-        }}
-      />
     </>
   );
 }

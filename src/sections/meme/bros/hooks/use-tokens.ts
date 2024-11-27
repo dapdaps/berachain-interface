@@ -1,36 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
+import useData from "./use-data";
+import { get } from "@/utils/http";
 import { multicall, multicallAddresses } from "@/utils/multicall";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import stakeAbi from "../abi/stake";
-import Big from "big.js";
-import { TOKENS } from "../config";
-
 export default function useTokens() {
   const [tokens, setTokens] = useState<any>([]);
-  const [totalStaked, setTotalStaked] = useState("");
+  const [rewardTokens, setRewardTokens] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const { provider } = useCustomAccount();
+  const { currentRound } = useData();
 
   const onQuery = useCallback(async () => {
     try {
       setLoading(true);
-
+      const response = await get(`/api/meme?round=${currentRound.round}`);
       const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
-
-      const stakedCalls = Object.values(TOKENS).map((token: any) => ({
-        address: token.stakeAddress,
-        name: "totalStakedAmount"
-      }));
-      const stakedRes = await multicall({
-        abi: stakeAbi,
-        options: {},
-        calls: stakedCalls,
-        multicallAddress,
-        provider
-      });
-      const delayCalls = Object.values(TOKENS).map((token: any) => ({
-        address: token.stakeAddress,
+      const delayCalls = response.data.tokens.map((token: any) => ({
+        address: token.stake_address,
         name: "unstakeDelayDays"
       }));
       const delayRes = await multicall({
@@ -41,39 +29,35 @@ export default function useTokens() {
         provider
       });
 
-      const _tokens: any = [];
-      let _total = Big(0);
-
-      Object.values(TOKENS).forEach((token: any, i: number) => {
-        const _amount = Big(stakedRes[i][0].toString()).div(1e18).toString();
-        const _time = delayRes[i] ? delayRes[i][0]?.toString() : 0;
-        const _amountUSD = _amount;
-        _tokens.push({
-          ...token,
-          stakedAmount: _amount,
-          stakedAmountUSD: _amountUSD,
-          delayTime: _time * 1000
-        });
-        _total = _total.add(_amountUSD);
-      });
-
       setTokens(
-        _tokens.sort((a: any, b: any) =>
-          Big(a.stakedAmount).gt(b.stakedAmount) ? -1 : 1
-        )
+        response.data.tokens.map((token: any, i: number) => {
+          const _time = delayRes[i] ? delayRes[i][0]?.toString() : 0;
+          return {
+            delayTime: _time * 1000,
+            ...token
+          };
+        })
       );
-      setTotalStaked(_total.toString());
+      setRewardTokens(
+        response.data.reward_tokens.map((token: any) => {
+          return {
+            ...token,
+            isNative:
+              token.address === "0x0000000000000000000000000000000000000000"
+          };
+        })
+      );
     } catch (err) {
       console.log(err);
-      setTokens(Object.values(TOKENS));
+      setTokens([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentRound, provider]);
 
   useEffect(() => {
-    if (provider) onQuery();
-  }, [provider]);
+    if (provider && currentRound) onQuery();
+  }, [provider, currentRound]);
 
-  return { loading, totalStaked, tokens, onQuery };
+  return { loading, tokens, rewardTokens, onQuery };
 }

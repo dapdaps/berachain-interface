@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import Loading from "@/components/loading";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Item from "../tokens/item";
 
 export default function Tokens({ tokens, loading }: any) {
