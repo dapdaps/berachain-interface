@@ -42,10 +42,23 @@ export function useMarketplaceContext(props: Props): Context {
       dapp: VaultsDApps.Infrared,
       dappLink: '/staking/infrared',
       config: config.default,
+      platform: "infrared",
       data
-      // investToken: beraB['honey'],
     });
   };
+
+  const openAquaBera = async (data: any, type: number) => {
+    const config = await import('@/configs/staking/dapps/aquabera');
+
+    setVaultsData({
+      dapp: VaultsDApps.AquaBera,
+      dappLink: '/staking/infrared',
+      config: config.default,
+      type,
+      platform: "aquabera",
+      data
+    });
+  }
 
   // FIXME Test code for Dolomite
   useEffect(() => {
@@ -78,6 +91,7 @@ export function useMarketplaceContext(props: Props): Context {
     openInfrared,
     vaultsType,
     setVaultsType,
+    openAquaBera
   };
 }
 
@@ -105,6 +119,10 @@ interface Context {
   setVaultsData: Dispatch<SetStateAction<any>>;
   setVaultsType: Dispatch<SetStateAction<'Deposit' | 'Withdraw'>>;
   openInfrared(data: any): void;
+  openAquaBera(data: any): void;
+
+  // open
+
 }
 
 const initialState: any = {
@@ -119,7 +137,8 @@ const initialState: any = {
   stakingData: {},
   setStakingVisible: () => { },
   setStakingData: () => { },
-  openInfrared: (data: any) => { }
+  openInfrared: (data: any) => { },
+  openAquaBera: (data: any) => { }
 };
 
 export const MarketplaceContext = createContext<Context>(initialState);
@@ -133,5 +152,7 @@ export enum StakingDApps {
   Infrared = 'Infrared'
 }
 export enum VaultsDApps {
-  Infrared = 'Infrared'
+  Infrared = 'Infrared',
+  AquaBera = 'AquaBera'
+
 }

@@ -72,7 +72,6 @@ const List = [
     ],
     dApps: [
       {
-        className: "justify-start",
         ..._dApps["kodiak"],
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
@@ -90,6 +89,12 @@ const List = [
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
       },
+      {
+        ..._dApps["aquabera"],
+        attachedIcon: (
+          <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
+        )
+      },
       // TODO add bridge config
       {
         name: "Stargate",
@@ -99,7 +104,7 @@ const List = [
         attachedIcon: "",
         className: "",
         disabled: true
-      }
+      },
       // {
       //   name: 'Owlto',
       //   label: 'Owlto',
@@ -110,7 +115,7 @@ const List = [
       //   disabled: true,
       // },
     ]
-  }
+  },
 ];
 
 const toFirstUpperCase = (word: string) => {
@@ -149,7 +154,7 @@ const DAppsView = () => {
       className="h-full md:mb-[70px] relative md:h-[calc(100dvh)]">
       <PageBack className="absolute left-[12px] top-[17px]" />
       <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
-      <div className={clsx('absolute lg:bottom-[230px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '' )}>
+      <div className={clsx('absolute lg:bottom-[230px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '')}>
         <div className="w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative">
           <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
           <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />

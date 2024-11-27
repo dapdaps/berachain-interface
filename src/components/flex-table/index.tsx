@@ -14,6 +14,7 @@ const FlexTable = (props: FlexTableProps) => {
     pagination,
     sortDataIndex,
     sortDataDirection,
+    checkedIndex,
     renderEmpty = () => (
       <div className='mt-[50px] w-full flex justify-center items-center'>
         <Empty desc='No data' />
@@ -22,7 +23,8 @@ const FlexTable = (props: FlexTableProps) => {
     renderTitle,
     onChangeSortDataIndex,
     showHeader = true,
-    onRow = () => {}
+    renderPaired,
+    onRow = () => { }
   } = props;
 
   return (
@@ -42,8 +44,8 @@ const FlexTable = (props: FlexTableProps) => {
                     column.align === 'center'
                       ? 'center'
                       : column.align === 'right'
-                      ? 'flex-end'
-                      : 'flex-start'
+                        ? 'flex-end'
+                        : 'flex-start'
                 }}
                 className='flex items-center gap-[5px] text-[14px] text-[#3D405A]'
                 onClick={() => {
@@ -83,11 +85,12 @@ const FlexTable = (props: FlexTableProps) => {
           <div>
             {list?.length > 0
               ? list.map((record: any, index: number) => (
-                  <div
-                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${bodyClass}`}
-                    key={index}
-                    onClick={(e) => onRow(record, index, e)}
-                  >
+                <div
+                  key={index}
+                  className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex flex-col ${bodyClass}`}
+                  onClick={(e) => onRow(record, index, e)}
+                >
+                  <div className='flex items-center'>
                     {columns.map((column: any) => (
                       <div
                         key={column.dataIndex + column.title}
@@ -97,21 +100,24 @@ const FlexTable = (props: FlexTableProps) => {
                           textAlign: column.align ?? 'left',
                           flexShrink: column.width ? 0 : 1
                         }}
-                        className={`font-[600] first:pl-[13px] last:pr-[13px] ${
-                          column.ellipsis ? 'truncate' : ''
-                        }`}
+                        className={`font-[600] first:pl-[13px] last:pr-[13px] ${column.ellipsis ? 'truncate' : ''
+                          }`}
                       >
                         {typeof column.render === 'function'
                           ? column.render(
-                              JSON.stringify(record[column.dataIndex]),
-                              record,
-                              index
-                            )
+                            JSON.stringify(record[column.dataIndex]),
+                            record,
+                            index
+                          )
                           : record[column.dataIndex]}
                       </div>
                     ))}
                   </div>
-                ))
+                  {
+                    checkedIndex === index && renderPaired && renderPaired(record)
+                  }
+                </div>
+              ))
               : renderEmpty()}
           </div>
         )}
@@ -144,8 +150,10 @@ export type FlexTableProps = {
   renderEmpty?(): any;
   sortDataIndex?: string;
   sortDataDirection?: 1 | -1;
+  checkedIndex?: number;
   showHeader?: boolean;
   onChangeSortDataIndex?(index: string): void;
   renderTitle?(column: Column, columnIdx: number): any;
+  renderPaired?(record: any): any;
   onRow?(record: any, index: number, e: any): void;
 };
