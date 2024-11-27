@@ -330,19 +330,19 @@ export default function useInfraredData(props: any) {
   }
 
   useEffect(() => {
-    if (allData) {
-      getDataList().then(() => {
-        if (sender && provider) {
-          getUsdDepositAmount();
-          getEarned();
-        }
-      });
-    }
+    if (name !== 'Infrared' || !allData) return;
+    getDataList().then(() => {
+      if (sender && provider) {
+        getUsdDepositAmount();
+        getEarned();
+      }
+    });
   }, [allData, sender, provider, reloadCount]);
 
   return {
     reload: () => {
       setReloadCount(reloadCount + 1);
     },
+    getDataList
   };
 }
