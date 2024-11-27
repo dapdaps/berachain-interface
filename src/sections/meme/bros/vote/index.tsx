@@ -1,23 +1,24 @@
 import Laptop from "./laptop";
 import Mobile from "./mobile";
+import RulesModal from "../modals/rules";
 import useIsMobile from "@/hooks/use-isMobile";
-import ListToken from "../modals/list-token";
 import { useState } from "react";
 
 export default function Meme(props: any) {
   const isMobile = useIsMobile();
   const [modalType, setModalType] = useState(0);
-  const [modalData, setModalData] = useState<any>();
-
-  const onOpenModal = (type: any, data: any) => {
-    setModalData(data);
-    setModalType(type);
+  const params = {
+    onOpenModal: setModalType
   };
   return (
     <>
-      {isMobile ? <Mobile {...props} /> : <Laptop {...props} />}
-      <ListToken
-        open={modalType === 1}
+      {isMobile ? (
+        <Mobile {...props} {...params} />
+      ) : (
+        <Laptop {...props} {...params} />
+      )}
+      <RulesModal
+        open={modalType === 7}
         onClose={() => {
           setModalType(0);
         }}

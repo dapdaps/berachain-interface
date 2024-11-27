@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import RoundLabel from "../../components/round-label";
 import useCountdown from "@/hooks/use-count-down";
+import useData from "../../hooks/use-data";
 import clsx from "clsx";
 
 export default function Timer() {
-  const { secondsRemaining } = useCountdown(
-    Math.ceil(new Date("2024-12-10").getTime() / 1000)
-  );
+  const { currentRound } = useData();
+  const { secondsRemaining } = useCountdown(currentRound.end_time);
   const [timer, isEnded] = useMemo(() => {
     const d = Math.floor(secondsRemaining / 86400);
     const h = Math.floor((secondsRemaining - d * 86400) / 3600);

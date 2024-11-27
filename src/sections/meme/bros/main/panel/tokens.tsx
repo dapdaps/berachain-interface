@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next-nprogress-bar";
 import Button from "@/components/button";
 import RankMark from "../../rank-mark";
@@ -8,8 +8,10 @@ import RewardsPanel from "./rewards-panel";
 import RoundLabel from "../../components/round-label";
 import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
+import useData from "../../hooks/use-data";
 import { balanceShortFormated, balanceFormated } from "@/utils/balance";
 import Loading from "@/components/loading";
+import { format } from "date-fns";
 
 const Token = ({
   token,
@@ -147,14 +149,6 @@ const Token = ({
                 className="rounded-full ml-[-8px]"
                 alt={token.symbol}
               />
-              <button
-                className="font-medium underline ml-[12px]"
-                onClick={() => {
-                  onClick(3);
-                }}
-              >
-                Claim
-              </button>
             </div>
           </div>
           <div className="w-1/3 mt-[6px] md:w-1/2">
@@ -211,6 +205,7 @@ export default function Tokens({
 }: any) {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const { currentRound, historyRounds, nextRound } = useData();
 
   const handleVote = useCallback(() => {
     if (isMobile) {
@@ -220,30 +215,38 @@ export default function Tokens({
     }
   }, [isMobile]);
 
+  const [title, subTitle] = useMemo(() => {
+    const _st = `${format(
+      currentRound.start_time * 1000,
+      "MMM.dd, yyyy"
+    )} - ${format(currentRound.end_time * 1000, "MMM.dd, yyyy")}`;
+    return [`Round ${currentRound.round}`, _st];
+  }, [currentRound]);
+
   return (
     <>
       <div className="w-[1232px] mx-[auto] md:px-[14px] md:w-full">
         <div className="flex justify-between items-center md:absolute md:top-[-25px] md:justify-start md:gap-[8px] md:w-[calc(100%-28px)]">
-          <RoundLabel
-            title="Round 1"
-            subTitle="NoV.20-dec.3, 2024"
-            className="md:w-full"
-          />
+          <RoundLabel title={title} subTitle={subTitle} className="md:w-full" />
           <div className="flex items-center gap-[16px] md:hidden">
-            <button
-              className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold"
-              onClick={() => {
-                router.push("/meme/bros/history");
-              }}
-            >
-              History
-            </button>
-            <button
-              className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold leading-[16px]"
-              onClick={handleVote}
-            >
-              Vote for the next round
-            </button>
+            {!!historyRounds.length && (
+              <button
+                className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold"
+                onClick={() => {
+                  router.push("/meme/bros/history");
+                }}
+              >
+                History
+              </button>
+            )}
+            {nextRound?.vote_status === "ongoing" && (
+              <button
+                className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold leading-[16px]"
+                onClick={handleVote}
+              >
+                Vote for the next round
+              </button>
+            )}
           </div>
           {/* <div className="rounded-[10px] w-[64px] h-[72px] border border-black bg-[#FFFDEB] p-[3px] hidden md:block">
             <Button
