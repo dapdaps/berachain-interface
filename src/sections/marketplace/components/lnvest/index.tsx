@@ -7,9 +7,11 @@ import SwitchTabs from "@/components/switch-tabs";
 import useClickTracking from '@/hooks/use-click-tracking';
 import useIsMobile from "@/hooks/use-isMobile";
 import { MarketplaceContext } from "@/sections/marketplace/context";
+import { PairedList } from "@/sections/staking/Bridge/List/AquaBera";
 import { formatValueDecimal } from "@/utils/balance";
 import { numberFormatter } from '@/utils/number-formatter';
 import Big from "big.js";
+import clsx from 'clsx';
 import { cloneDeep } from "lodash";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -25,17 +27,16 @@ export default function Invest(props: any) {
   const searchParams = useSearchParams();
 
   const {
+    openAquaBera,
     openInfrared,
     setVaultsVisible,
-    setVaultsType,
   } = useContext(MarketplaceContext);
   const { handleReport } = useClickTracking();
 
   const isMobile = useIsMobile();
 
   const handleInfrared = (record: any, type: any) => {
-    openInfrared(record).then(() => {
-      setVaultsType(type);
+    openInfrared(record, type).then(() => {
       setVaultsVisible(true);
     });
   };
@@ -120,7 +121,7 @@ export default function Invest(props: any) {
         dataIndex: "investment",
         align: "left",
         width: "25%",
-        render: (text: string, record: any) => {
+        render: (text: string, record: any,) => {
           const pool = record?.initialData?.pool;
           return (
             <div
@@ -229,32 +230,37 @@ export default function Invest(props: any) {
         dataIndex: "action",
         align: "left",
         width: "10%",
-        render: (text: string, record: any) => {
+        render: (text: string, record: any, index: number, checkedIndex: number) => {
+          if (record?.platform === 'aquabera') {
+            return (
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
+                className={clsx("cursor-pointer", checkedIndex === index ? "rotate-180" : "rotate-0")}
+                onClick={() => {
+                  // console.log('===checkedIndex', checkedIndex)
+                  // console.log('===index', index)
+                  setCheckedIndex((checkedIndex === -1 || checkedIndex !== index) ? index : -1)
+                }}>
+                <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
+                <path d="M11 15L17 20L23 15" stroke="black" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            )
+          }
           if (isEarn) {
             return (
               <div className="flex items-center gap-2">
-                <Button style={{ width: 32 }} onClick={() => handleInfrared(record, 'Deposit')}>
+                <Button style={{ width: 32 }} onClick={() => handleInfrared(record, 0)}>
                   +
                 </Button>
-                <Button style={{ width: 32 }} onClick={() => handleInfrared(record, 'Withdraw')}>
+                <Button style={{ width: 32 }} onClick={() => handleInfrared(record, 1)}>
                   -
                 </Button>
               </div>
             );
           }
-          return record?.platform === 'aquabera' ? (
-            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
-              className={clsx("cursor-pointer", checkedIndex === -1 ? "rotate-0" : "rotate-180")}
-              onClick={() => {
-                setCheckedIndex((checkedIndex === -1 || checkedIndex !== index) ? index : -1)
-              }}>
-              <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
-              <path d="M11 15L17 20L23 15" stroke="black" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          ) : (
+          return (
             <div
               className="flex items-center justify-center w-[90px] h-[32px] border border-[#373A53] rounded-[10px] text-black font-Montserrat text-[14px] font-medium leading-[100%] bg-white hover:bg-[#FFDC50]"
-              onClick={() => handleInfrared(record, 'Deposit')}
+              onClick={() => handleInfrared(record, 0)}
             >
               Stake
             </div>

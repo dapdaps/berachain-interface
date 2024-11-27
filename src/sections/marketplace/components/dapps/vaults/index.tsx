@@ -11,14 +11,11 @@ export default memo(function Vaults() {
     vaultsData = {}
   } = useContext(MarketplaceContext);
 
-  const { data, config, platform, type } = vaultsData;
-
-  console.log('===platform', platform)
-  console.log('===type', type)
-
+  const { data, config, platform, type, vaultsType } = vaultsData;
   return platform === "infrared" ? (
     <InfraredModal
       data={data}
+      type={type}
       config={config}
       visible={vaultsVisible}
       setVisible={setVaultsVisible}

@@ -32,6 +32,7 @@ const TABS = [
 export default memo(function Bex(props) {
   const {
     data,
+    type,
     config,
     visible,
     setVisible
@@ -56,7 +57,7 @@ export default memo(function Bex(props) {
 
   const vaultAddress = addresses ? addresses[symbol] : '';
 
-  const [currentTab, setCurrentTab] = useState(vaultsType || TABS[0].value);
+  const [currentTab, setCurrentTab] = useState(type === 0 ? "Deposit" : "Withdraw");
   const [state, updateState] = useMultiState({
     balances: [],
     lpBalance: '',

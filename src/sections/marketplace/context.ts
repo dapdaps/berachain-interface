@@ -21,7 +21,7 @@ export function useMarketplaceContext(props: Props): Context {
 
   const [vaultsVisible, setVaultsVisible] = useState(false);
   const [vaultsData, setVaultsData] = useState<any>({});
-  const [vaultsType, setVaultsType] = useState<'Deposit' | 'Withdraw'>('Deposit');
+  // const [vaultsType, setVaultsType] = useState<'Deposit' | 'Withdraw'>('Deposit');
 
   const openDolomite = async () => {
     const dolomiteConfig = await import('@/configs/lending/dolomite');
@@ -36,14 +36,15 @@ export function useMarketplaceContext(props: Props): Context {
     });
   };
 
-  const openInfrared = async (data: any) => {
+  const openInfrared = async (data: any, type: number) => {
     const config = await import('@/configs/staking/dapps/infrared');
     setVaultsData({
       dapp: VaultsDApps.Infrared,
       dappLink: '/staking/infrared',
       config: config.default,
+      type,
       platform: "infrared",
-      data
+      data,
     });
   };
 
@@ -89,8 +90,8 @@ export function useMarketplaceContext(props: Props): Context {
     setVaultsVisible,
     setVaultsData,
     openInfrared,
-    vaultsType,
-    setVaultsType,
+    // vaultsType,
+    // setVaultsType,
     openAquaBera
   };
 }
@@ -113,11 +114,11 @@ interface Context {
   setStakingData: Dispatch<SetStateAction<any>>;
 
   vaultsVisible: boolean;
-  vaultsType: 'Deposit' | 'Withdraw';
+  // vaultsType: 'Deposit' | 'Withdraw';
   vaultsData: any;
   setVaultsVisible: Dispatch<SetStateAction<boolean>>;
   setVaultsData: Dispatch<SetStateAction<any>>;
-  setVaultsType: Dispatch<SetStateAction<'Deposit' | 'Withdraw'>>;
+  // setVaultsType: Dispatch<SetStateAction<'Deposit' | 'Withdraw'>>;
   openInfrared(data: any): void;
   openAquaBera(data: any): void;
 

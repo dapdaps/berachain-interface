@@ -107,7 +107,8 @@ const FlexTable = (props: FlexTableProps) => {
                           ? column.render(
                             JSON.stringify(record[column.dataIndex]),
                             record,
-                            index
+                            index,
+                            checkedIndex
                           )
                           : record[column.dataIndex]}
                       </div>
