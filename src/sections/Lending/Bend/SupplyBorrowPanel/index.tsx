@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 
 import NetBase from '../NetBase';
 import useMarketStore from '@/stores/useMarketStore';
-import ActionModal from './actionModal/index';
-import DepositAction from '../Action';
+import ActionModal from '../Action';
 import Big from 'big.js';
 import useBendReward from '../hooks/useBendReward';
 import Loading from '@/components/loading';
@@ -33,11 +32,7 @@ const SupplyBorrowPanel: React.FC = () => {
     if (action === 'swap' || !isMobile) return;
     setActionType(action);
     setActionData(honeyInfo);
-    if (['borrow', 'repay'].includes(action)) {
-      setActionVisibleBorrow(true);
-    } else {
-      setActionVisible(true);
-    }
+    setActionVisible(true);
   };
   const handleActionClose = () => {
     setActionVisible(false);
@@ -102,7 +97,7 @@ const SupplyBorrowPanel: React.FC = () => {
               trigger={PopoverTrigger.Click}
               placement={PopoverPlacement.TopLeft}
               content={isMobile ? null : (
-                <DepositAction action="supply" token={honeyInfo} />
+                <ActionModal action="supply" token={honeyInfo} />
               )}
               triggerContainerClassName="flex-1"
             >
@@ -118,7 +113,7 @@ const SupplyBorrowPanel: React.FC = () => {
               trigger={PopoverTrigger.Click}
               placement={PopoverPlacement.TopLeft}
               content={isMobile ? null : (
-                <DepositAction action="withdraw" token={honeyInfo} />
+                <ActionModal action="withdraw" token={honeyInfo} />
               )}
               triggerContainerClassName="flex-1"
             >
@@ -202,7 +197,7 @@ const SupplyBorrowPanel: React.FC = () => {
           <div className="flex space-x-[14px] mt-5 relative md:justify-between">
             <Popover
               trigger={PopoverTrigger.Click}
-              placement={PopoverPlacement.TopRight}
+              placement={PopoverPlacement.TopLeft}
               content={isMobile ? null : (
                 <ActionModal action="borrow" token={honeyInfo} />
               )}
@@ -218,7 +213,7 @@ const SupplyBorrowPanel: React.FC = () => {
             </Popover>
             <Popover
               trigger={PopoverTrigger.Click}
-              placement={PopoverPlacement.TopRight}
+              placement={PopoverPlacement.TopLeft}
               content={isMobile ? null : (
                 <ActionModal action="repay" token={honeyInfo} />
               )}
@@ -237,14 +232,8 @@ const SupplyBorrowPanel: React.FC = () => {
           </div>
         </div>
       </div>
-      <DepositAction
-        isOpen={actionVisible}
-        onClose={handleActionClose}
-        action={actionType}
-        token={actionData}
-      />
       <ActionModal
-        isOpen={actionVisibleBorrow}
+        isOpen={actionVisible}
         onClose={handleActionClose}
         action={actionType}
         token={actionData}
