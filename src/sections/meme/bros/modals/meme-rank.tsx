@@ -1,19 +1,85 @@
 import Basic from "./basic";
 import FlexTable from "@/components/flex-table";
 import Empty from "@/components/empty";
-import Image from "next/image";
+import Pager from "@/components/pager";
+import Dropdown from "@/components/dropdown";
+import { useEffect, useMemo, useState } from "react";
+import useRank from "../hooks/use-rank";
+import RankMark from "../components/rank-mark";
+import Popover, { PopoverPlacement } from "@/components/popover";
+import TokensPopover from "../components/tokens-popover";
+import { balanceShortFormated } from "@/utils/balance";
+import { ellipsAccount } from "@/utils/account";
 
-export default function MemeRank({ open, onClose }: any) {
+export default function MemeRank({ open, tokens, onClose }: any) {
+  const [queryTokenAddress, setQueryTokenAddress] = useState<any>();
+  const [filterTokens, cachedTokens] = useMemo(
+    () => [
+      tokens?.map((token: any) => ({
+        key: token.token.address,
+        name: (
+          <div className="flex gap-[5px] items-center">
+            <img
+              src={token.token.logo}
+              className="w-[20px] h-[20px] rounded-full"
+            />
+            <div className="text-[14px] font-semibold">
+              {token.token.symbol}
+            </div>
+          </div>
+        )
+      })),
+      tokens.reduce(
+        (acc: any, curr: any) => ({ ...acc, [curr.token.address]: curr.token }),
+        {}
+      )
+    ],
+    [tokens]
+  );
+  const { loading, list, totalPage, page, onChangePage } =
+    useRank(queryTokenAddress);
+  useEffect(() => {
+    if (open) {
+      onChangePage(1);
+      setQueryTokenAddress("");
+    }
+  }, [open]);
+
+  const queryToken = useMemo(
+    () => cachedTokens[queryTokenAddress],
+    [queryTokenAddress, tokens]
+  );
   return (
     <Basic
       open={open}
       onClose={onClose}
-      className="w-full text-[14px] font-medium"
+      className="w-[706px] text-[14px] font-medium"
     >
-      <div className="text-[20px] font-bold">Meme Rank</div>
-      <div className="text-[14px] font-semibold leading-none">Round 3</div>
-      <div className="text-[14px] font-semibold leading-none">
-        Dec.18, 2024 - Jan.01, 2025
+      <div className="flex text-[20px] font-bold justify-between pr-[40px] md:pr-0">
+        <div>Dapper Ranking</div>
+        <Dropdown
+          title={
+            queryToken ? (
+              <div className="flex gap-[5px] items-center">
+                <img
+                  src={queryToken.logo}
+                  className="w-[20px] h-[20px] rounded-full"
+                />
+                <div className="text-[14px] font-semibold">
+                  {queryToken.symbol}
+                </div>
+              </div>
+            ) : (
+              "All"
+            )
+          }
+          list={filterTokens}
+          value={queryTokenAddress}
+          onChange={(item: any) => {
+            setQueryTokenAddress(item.key);
+          }}
+          dropPanelClassName="!w-fit"
+        />
       </div>
       <div className="mt-[16px]">
         <FlexTable
@@ -23,42 +89,60 @@ export default function MemeRank({ open, onClose }: any) {
               dataIndex: "index",
               title: "Index",
               render: (_, record) => {
-                return <div className="text-[14px] font-semibold">1</div>;
+                return <RankMark rank={record.rank as number} />;
               },
               width: "10%"
             },
             {
-              dataIndex: "token",
-              title: "Token",
+              dataIndex: "address",
+              title: "Address",
               render: (_, record) => (
-                <div className="flex items-center gap-[6px]">
-                  <Image
-                    src="/assets/tokens/bera.svg"
-                    className="rounded-full flex-shrink-0"
-                    width={26}
-                    height={26}
-                    alt="Token"
-                  />
-                  <div className="text-[14px] font-semibold">sPepe</div>
+                <div className="text-[16px] font-semibold">
+                  {ellipsAccount(record.address, 12)}
                 </div>
               ),
-              width: "45%"
+              width: "50%"
             },
             {
               dataIndex: "amount",
               title: "Amount",
               align: "right",
               render: (_, record) => (
-                <div className="text-[14px]">
-                  <div className="font-semibold">123,454.765</div>
-                  <div className="font-medium">$1.23K</div>
+                <div className="flex justify-end gap-[20px]">
+                  <div className="text-[16px] font-semibold">
+                    ${balanceShortFormated(record.dapped_usd, 2)}
+                  </div>
+                  {!!record.dapped_tokens?.length && (
+                    <Popover
+                      content={
+                        <TokensPopover
+                          tokens={record.dapped_tokens.map((token: any) => ({
+                            ...token,
+                            ...cachedTokens[token.address]
+                          }))}
+                        />
+                      }
+                      placement={PopoverPlacement.TopLeft}
+                    >
+                      <div className="flex shrink-0">
+                        {record.dapped_tokens.map((token: any, i: number) => (
+                          <img
+                            src={cachedTokens[token.address]?.logo}
+                            className={`w-[26px] h-[26px] rounded-full shrink-0 ${
+                              i > 0 && "ml-[8px]"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </Popover>
+                  )}
                 </div>
               ),
-              width: "45%"
+              width: "30%"
             }
           ]}
-          list={[{}, {}]}
-          loading={false}
+          list={list}
+          loading={loading}
           renderEmpty={() => (
             <div className="mt-[50px] w-full flex justify-center items-center">
               <Empty desc="No asset found" />
@@ -66,6 +150,14 @@ export default function MemeRank({ open, onClose }: any) {
           )}
           showHeader={false}
         />
+        <div className="pt-[12px] flex justify-end items-center pr-[12px]">
+          <Pager
+            maxPage={totalPage}
+            onPageChange={(p: number) => {
+              if (p !== page) onChangePage(p);
+            }}
+          />
+        </div>
       </div>
     </Basic>
   );

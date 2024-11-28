@@ -20,7 +20,9 @@ export default function Bros() {
     <MemeContext.Provider value={{ historyRounds, currentRound, nextRound }}>
       {urlParams.sub === "history" && <History />}
       {(currentRound?.status === "un_start" || urlParams.sub === "vote") && (
-        <Vote />
+        <Vote
+          round={currentRound?.status === "un_start" ? currentRound : nextRound}
+        />
       )}
       {!urlParams.sub &&
         !!currentRound &&

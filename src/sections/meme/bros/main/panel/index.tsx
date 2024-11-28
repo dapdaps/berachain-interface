@@ -4,6 +4,7 @@ import Tokens from "./tokens";
 export default function Panel({
   onOpenModal,
   tokens,
+  rewardTokens,
   userData,
   balances,
   balancesLoading
@@ -15,6 +16,7 @@ export default function Panel({
         <Tokens
           onOpenModal={onOpenModal}
           tokens={tokens}
+          rewardTokens={rewardTokens}
           userData={userData}
           balancesLoading={balancesLoading}
           balances={balances}

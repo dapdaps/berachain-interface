@@ -9,6 +9,7 @@ import Token from "./token";
 export default function Tokens({
   onOpenModal,
   tokens,
+  rewardTokens,
   userData,
   balances,
   balancesLoading
@@ -16,12 +17,25 @@ export default function Tokens({
   const router = useRouter();
   const isMobile = useIsMobile();
   const { currentRound, historyRounds, nextRound } = useData();
+  const cachedRewardTokens = useMemo(
+    () =>
+      rewardTokens?.length
+        ? rewardTokens?.reduce(
+            (acc: any, curr: any) => ({
+              ...acc,
+              [curr.address]: curr
+            }),
+            {}
+          )
+        : {},
+    [rewardTokens]
+  );
 
   const handleVote = useCallback(() => {
     if (isMobile) {
       router.push("/meme/bros/vote");
     } else {
-      onOpenModal(6);
+      onOpenModal(6, nextRound);
     }
   }, [isMobile]);
 
@@ -85,6 +99,7 @@ export default function Tokens({
             userInfo={userData?.[token.token.address]}
             balance={balances?.[token.token.address]}
             balancesLoading={balancesLoading}
+            cachedTokens={cachedRewardTokens}
           />
         ))}
       </div>

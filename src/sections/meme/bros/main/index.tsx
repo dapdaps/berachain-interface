@@ -9,9 +9,10 @@ import IncentivesModal from "../modals/incentives";
 import VoteModal from "../modals/vote/laptop";
 import RulesModal from "../modals/rules";
 import SwapModal from "@/sections/swap/SwapModal";
+import MemeRank from "../modals/meme-rank";
 import EndTips from "../modals/end-tips";
 import { useMemo, useState } from "react";
-import useTokens from "../hooks/use-tokens";
+import useRound from "../hooks/use-round";
 import useWithdrawData from "../hooks/use-withdraw-data";
 import useUserData from "../hooks/use-user-data";
 import useTokensBalance from "@/hooks/use-tokens-balance";
@@ -21,7 +22,7 @@ export default function Meme(props: any) {
   const [modalType, setModalType] = useState(0);
   const [modalData, setModalData] = useState<any>();
   const [innerModalType, setInnerModalType] = useState(0);
-  const { loading, tokens, rewardTokens, onQuery } = useTokens();
+  const { loading, tokens, rewardTokens, info, onQuery } = useRound();
   const { list: withdrawList, onQuery: onRefreshWithdrawData } =
     useWithdrawData(tokens);
   const {
@@ -58,6 +59,8 @@ export default function Meme(props: any) {
     userData,
     balancesLoading,
     balances,
+    info,
+    rewardTokens,
     onRefreshTokens: () => {
       onQuery();
       onRefreshUserData();
@@ -147,6 +150,7 @@ export default function Meme(props: any) {
 
       <VoteModal
         open={modalType === 6}
+        data={modalData}
         onClose={() => {
           setModalType(0);
         }}
@@ -159,6 +163,13 @@ export default function Meme(props: any) {
       />
       <EndTips
         open={modalType === 10}
+        onClose={() => {
+          setModalType(0);
+        }}
+      />
+      <MemeRank
+        open={modalType === 11}
+        tokens={tokens}
         onClose={() => {
           setModalType(0);
         }}

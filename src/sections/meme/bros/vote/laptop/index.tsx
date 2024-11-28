@@ -5,25 +5,23 @@ import RoundLabel from "@/sections/meme/bros/components/round-label";
 import { useMemo, useRef } from "react";
 import useVote from "../../hooks/use-vote";
 import useVoteData from "../../hooks/use-vote-data";
-import useData from "../../hooks/use-data";
 import { format } from "date-fns";
 import numberOrder from "@/utils/number-order";
 
-export default function Laptop({ onOpenModal }: any) {
+export default function Laptop({ round, onOpenModal }: any) {
   const tableRef = useRef<any>();
-  const { currentRound } = useData();
-  const { loading, voteAddress, onQuery } = useVoteData(currentRound?.round);
-  const { loading: voting, onVote } = useVote(currentRound?.round, () => {
+  const { loading, voteAddress, onQuery } = useVoteData(round?.round);
+  const { loading: voting, onVote } = useVote(round?.round, () => {
     onQuery();
   });
 
   const [title, subTitle] = useMemo(() => {
-    const _st = `${format(
-      currentRound.start_time * 1000,
+    const _st = `${format(round.start_time * 1000, "MMM.dd, yyyy")} - ${format(
+      round.end_time * 1000,
       "MMM.dd, yyyy"
-    )} - ${format(currentRound.end_time * 1000, "MMM.dd, yyyy")}`;
-    return [`Round ${currentRound.round}`, _st];
-  }, [currentRound]);
+    )}`;
+    return [`Round ${round.round}`, _st];
+  }, [round]);
 
   return (
     <div className="relative w-full overflow-x-hidden relative">
@@ -35,7 +33,7 @@ export default function Laptop({ onOpenModal }: any) {
           className="!absolute top-[-53px] whitespace-nowrap left-[50%] translate-x-[-50%] w-[342px]"
         />
         <div className="flex pt-[30px] items-center px-[30px] gap-[12px] text-[20px] font-bold pb-[4px]">
-          <span>Vote for the {numberOrder(currentRound.round)} round</span>
+          <span>Vote for the {numberOrder(round.round)} round</span>
 
           {/* <VoteListMeme /> */}
         </div>

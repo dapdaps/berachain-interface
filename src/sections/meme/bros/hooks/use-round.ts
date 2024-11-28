@@ -5,9 +5,12 @@ import { get } from "@/utils/http";
 import { multicall, multicallAddresses } from "@/utils/multicall";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import stakeAbi from "../abi/stake";
-export default function useTokens() {
+import Big from "big.js";
+
+export default function useRound() {
   const [tokens, setTokens] = useState<any>([]);
   const [rewardTokens, setRewardTokens] = useState<any>([]);
+  const [info, setInfo] = useState<any>();
   const [loading, setLoading] = useState(false);
   const { provider } = useCustomAccount();
   const { currentRound } = useData();
@@ -28,16 +31,22 @@ export default function useTokens() {
         multicallAddress,
         provider
       });
-
-      setTokens(
-        response.data.tokens.map((token: any, i: number) => {
-          const _time = delayRes[i] ? delayRes[i][0]?.toString() : 0;
-          return {
-            delayTime: _time * 1000,
-            ...token
-          };
-        })
+      let totalRewards = Big(0);
+      let totalDapped = Big(0);
+      const _tokens = response.data.tokens.map((token: any, i: number) => {
+        const _time = delayRes[i] ? delayRes[i][0]?.toString() : 0;
+        totalDapped = totalDapped.add(token.total_dapped_usd);
+        totalRewards = totalRewards.add(token.total_reward_usd);
+        return {
+          delayTime: _time * 1000,
+          ...token
+        };
+      });
+      _tokens.sort((a: any, b: any) =>
+        Big(b.total_dapped_usd).gt(a.total_dapped_usd) ? 1 : -1
       );
+      setTokens(_tokens);
+
       setRewardTokens(
         response.data.reward_tokens.map((token: any) => {
           return {
@@ -47,6 +56,10 @@ export default function useTokens() {
           };
         })
       );
+      setInfo({
+        totalRewards: totalRewards.toString(),
+        totalDapped: totalDapped.toString()
+      });
     } catch (err) {
       console.log(err);
       setTokens([]);
@@ -59,5 +72,5 @@ export default function useTokens() {
     if (provider && currentRound) onQuery();
   }, [provider, currentRound]);
 
-  return { loading, tokens, rewardTokens, onQuery };
+  return { loading, tokens, rewardTokens, info, onQuery };
 }

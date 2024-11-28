@@ -8,7 +8,7 @@ import Popover, {
 import clsx from "clsx";
 import { balanceShortFormated, balanceFormated } from "@/utils/balance";
 import Loading from "@/components/loading";
-import RewardsPanel from "./rewards-panel";
+import TokensPopover from "../../components/tokens-popover";
 import useData from "../../hooks/use-data";
 import { useMemo } from "react";
 import Big from "big.js";
@@ -18,17 +18,28 @@ export default function Token({
   onClick,
   userInfo,
   balance,
-  balancesLoading
+  balancesLoading,
+  cachedTokens = {}
 }: any) {
   const { currentRound } = useData();
-  const userReward = useMemo(() => {
-    return Big(token?.total_dapped_usd || 0).gt(0)
-      ? Big(token?.total_reward_usd)
-          .mul(userInfo?.stakedAmountUSD || 0)
-          .div(token.total_dapped_usd)
-          .toString()
-      : "";
+  const [userReward, userRewards] = useMemo(() => {
+    if (Big(token?.total_dapped_usd || 0).eq(0)) return ["", []];
+
+    const p = Big(userInfo?.stakedAmountUSD || 0).div(token?.total_dapped_usd);
+    const ur = p.mul(token.total_reward_usd).toString();
+
+    const urs = token.reward_tokens.map((item: any) => {
+      return {
+        ...item,
+        amount: p.mul(item.amount).toString(),
+        usd: p.mul(item.usd).toString(),
+        ...cachedTokens[item.address]
+      };
+    });
+
+    return [ur, urs];
   }, [userInfo, token]);
+
   return (
     <div
       className={clsx(
@@ -37,7 +48,7 @@ export default function Token({
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-[15px]">
-          <div className="relative">
+          <div className="relative shrink-0 w-[46px] h-[46px]">
             <Image
               src={token.token.logo}
               width={42}
@@ -94,27 +105,28 @@ export default function Token({
               <span>
                 ${balanceShortFormated(token.total_reward_usd || 0, 2)}
               </span>
-              {/* <Popover
-                content={<RewardsPanel />}
+              <Popover
+                content={
+                  <TokensPopover
+                    tokens={token.reward_tokens.map((token: any) => ({
+                      ...token,
+                      ...cachedTokens[token.address]
+                    }))}
+                  />
+                }
                 placement={PopoverPlacement.TopLeft}
               >
                 <div className="flex items-center gap-[3px] cursor-pointer">
-                  <Image
-                    src={token.icon}
-                    width={16}
-                    height={16}
-                    className="rounded-full"
-                    alt={token.symbol}
-                  />
-                  <Image
-                    src={token.icon}
-                    width={16}
-                    height={16}
-                    className="rounded-full ml-[-8px]"
-                    alt={token.symbol}
-                  />
+                  {token.reward_tokens.map((token: any, i: number) => (
+                    <img
+                      src={cachedTokens[token.address]?.logo}
+                      className={`w-[26px] h-[26px] rounded-full shrink-0 ${
+                        i > 0 && "ml-[8px]"
+                      }`}
+                    />
+                  ))}
                 </div>
-              </Popover> */}
+              </Popover>
 
               <button
                 className="font-medium underline ml-[12px]"
@@ -170,20 +182,21 @@ export default function Token({
                 <span>
                   {userReward ? "$" + balanceFormated(userReward, 2) : "-"}
                 </span>
-                {/* <Image
-                src={token.icon}
-                width={16}
-                height={16}
-                className="rounded-full"
-                alt={token.symbol}
-              />
-              <Image
-                src={token.icon}
-                width={16}
-                height={16}
-                className="rounded-full ml-[-8px]"
-                alt={token.symbol}
-              /> */}
+                <Popover
+                  content={<TokensPopover tokens={userRewards} />}
+                  placement={PopoverPlacement.TopLeft}
+                >
+                  <div className="flex items-center gap-[3px] cursor-pointer">
+                    {token.reward_tokens.map((token: any, i: number) => (
+                      <img
+                        src={cachedTokens[token.address]?.logo}
+                        className={`w-[26px] h-[26px] rounded-full shrink-0 ${
+                          i > 0 && "ml-[8px]"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </Popover>
               </div>
             </Popover>
           </div>

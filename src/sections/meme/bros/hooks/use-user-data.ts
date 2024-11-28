@@ -53,7 +53,7 @@ export default function useUserData(tokens: any) {
     } finally {
       setLoading(false);
     }
-  }, [tokens]);
+  }, [tokens, account, provider]);
 
   useEffect(() => {
     if (account && provider && tokens.length) onQuery();
