@@ -6,7 +6,7 @@ import useAddAction from '@/hooks/use-add-action';
 import useExecutionContract from '@/hooks/use-execution-contract';
 import useToast from '@/hooks/use-toast';
 import TokenSelector from '@/sections/bridge/TokenSelector';
-import { ERC20_ABI, ICHI_ABI } from '@/sections/staking/Datas/AquaBera';
+import { ERC20_ABI, ICHI_ABI, ETHVaultWithSlippage_ABI, ICHIVaultDepositGuard_ABI } from '@/sections/staking/Datas/AquaBera';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
@@ -15,78 +15,7 @@ import _ from 'lodash';
 import { memo, useEffect, useState } from 'react';
 import Button from '../Button';
 
-const ETHVaultWithSlippage_ABI = [
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "minimumProceeds",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      }
-    ],
-    "name": "depositETH",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "shares",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  }
-]
-const ICHIVaultDepositGuard_ABI = [
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "vault",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "vaultDeployer",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minimumProceeds",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      }
-    ],
-    "name": "forwardDepositToICHIVault",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "vaultTokens",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-]
+
 
 const template = "AquaBera"
 export default memo(function index(props) {
@@ -123,6 +52,7 @@ export default memo(function index(props) {
   const [pairedTokens, setPairedTokens] = useState(null)
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
   const [values, setValues] = useState(null)
+  const [depositMaxAmout, setDepositMaxAmount] = useState(0)
 
   const handleMax = () => {
     handleAmountChange(balance)
@@ -184,13 +114,17 @@ export default memo(function index(props) {
     const response = await contract.owner()
     setOwner(response)
   }
+  const getMaxDepositAmount = async () => {
+    const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider)
+    const response = await contract.deposit0Max()
+    setDepositMaxAmount(ethers.utils.formatUnits(response))
+  }
   const handleSuccess = () => {
     onSuccess?.()
     setUpdater(Date.now())
   }
 
   const handleDepositOrWithdraw = (updateState: any) => {
-
     const abi = isDeposit ? (isBera ? ETHVaultWithSlippage_ABI : ICHIVaultDepositGuard_ABI) : ICHI_ABI
     const method = isDeposit ? (isBera ? "depositETH" : "forwardDepositToICHIVault") : "withdraw"
 
@@ -330,8 +264,10 @@ export default memo(function index(props) {
   useEffect(() => {
     if (show && ichiAddress) {
       getOwner()
+      getMaxDepositAmount()
     }
   }, [show, ichiAddress])
+
 
   useEffect(() => {
     if (config) {
@@ -520,9 +456,10 @@ export default memo(function index(props) {
               }}
             />
           </div>
-
           {
-            !isDeposit && (
+            isDeposit ? (
+              <div className='mt-[-16px] mb-[8px] flex justify-center text-red-600 font-Montserrat text-[14px] font-bold'>Max {token0?.symbol} Deposit {depositMaxAmout}</div>
+            ) : (
               <div className='mt-[-16px] mb-[8px] flex justify-end'>
                 <div className='flex flex-col gap-[2px]'>
                   <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[0] ?? 0).times(percentage).div(100).toFixed(), '', 2)} {token0?.symbol}</div>
@@ -537,7 +474,7 @@ export default memo(function index(props) {
                 {...{
                   type: "deposit",
                   symbol: token0?.symbol,
-                  amount: inAmount,
+                  amount: Big(inAmount ? inAmount : 0).gt(depositMaxAmout ? depositMaxAmout : 0) ? -1 : inAmount,
                   template,
                   decimals: token0?.decimals,
                   balance,
