@@ -276,54 +276,60 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
       </div>
       {
         data?.pairedTokens
-          ?.filter((pairedToken: any) => Big(pairedToken?.yourValue).gt(0))
-          ?.map((pairedToken: any) => (
-            <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
-              {/* <UserInfo
-                data={data}
-                onClaim={() => {
-                  onClaim(data);
-                }}
-              /> */}
-              <div className='flex items-center'>
-                <div>
-                  <div className="text-[14px]">You Value</div>
-                  <div className="mt-[3px] flex items-center gap-[3px]">
-                    <span className="text-[16px] font-semibold">
-                      {formatValueDecimal(pairedToken?.yourValue, "", 2, true, false)}
-                    </span>
-                    <span className="text-[12px] font-medium">
-                      {data?.symbol}-{pairedToken?.symbol}
-                    </span>
+          ?.filter((pairedToken: any) => Big(pairedToken?.yourValue ?? 0).gt(0))
+          ?.map((pairedToken: any) => {
+            const values = pairedToken?.values ?? []
+            return (
+              <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
+
+                <div className='flex items-center'>
+                  <div>
+                    <div className="text-[14px]">You Value</div>
+                    <div className="mt-[3px] flex items-center gap-[3px]">
+                      <span className="text-[16px] font-semibold">
+                        {formatValueDecimal(values?.[0], "", 2, true, false)}
+                      </span>
+                      <span className="text-[12px] font-medium">
+                        {data?.symbol}
+                      </span>
+                    </div>
+                    <div className="mt-[3px] flex items-center gap-[3px]">
+                      <span className="text-[16px] font-semibold">
+                        {formatValueDecimal(values?.[1], "", 2, true, false)}
+                      </span>
+                      <span className="text-[12px] font-medium">
+                        {pairedToken?.symbol}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <button
-                onClick={() => {
-                  onClick(1);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="34"
-                  height="34"
-                  viewBox="0 0 34 34"
-                  fill="none"
+                <button
+                  onClick={() => {
+                    onClick(1);
+                  }}
                 >
-                  <rect
-                    opacity="0.5"
-                    x="1"
-                    y="1"
-                    width="32"
-                    height="32"
-                    rx="10"
-                    stroke="white"
-                  />
-                  <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
-                </svg>
-              </button>
-            </div>
-          ))
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="34"
+                    height="34"
+                    viewBox="0 0 34 34"
+                    fill="none"
+                  >
+                    <rect
+                      opacity="0.5"
+                      x="1"
+                      y="1"
+                      width="32"
+                      height="32"
+                      rx="10"
+                      stroke="white"
+                    />
+                    <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
+                  </svg>
+                </button>
+              </div>
+            )
+          })
       }
     </div>
   ) : (
@@ -419,7 +425,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           <>
             {
               data?.pairedTokens
-                ?.filter((pairedToken: any) => Big(pairedToken?.yourValue).gt(0))
+                ?.filter((pairedToken: any) => Big(pairedToken?.yourValue ?? 0).gt(0))
                 ?.map((pairedToken: any) => (
                   <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
                     {/* <UserInfo
