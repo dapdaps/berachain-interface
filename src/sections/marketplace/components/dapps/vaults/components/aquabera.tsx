@@ -25,7 +25,7 @@ const TABS = [
   }
 ];
 
-const template = ""
+const template = "AquaBera"
 export default memo(function aquabera(props: any) {
   const {
     data,
@@ -37,10 +37,9 @@ export default memo(function aquabera(props: any) {
 
   const { account, provider, chainId } = useCustomAccount()
   const toast = useToast()
-  const { addAction } = useAddAction("invest")
+  const { addAction } = useAddAction("dapp")
   const { executionContract } = useExecutionContract()
-
-  // const [currentTab, setCurrentTab] = useState(TABS[0].value);
+  const RangeList = [0.25, 0.5, 0.75, 1];
   const [isDeposit, setIsDeposit] = useState<boolean>(false)
   const [isBera, setIsBera] = useState<boolean>(false)
   const [apr, setApr] = useState("")
@@ -49,38 +48,48 @@ export default memo(function aquabera(props: any) {
   const [ichiAddress, setIchiAddress] = useState("")
   const [vaultAddress, setVaultAddress] = useState("")
 
+  const [rangeIndex, setRangeIndex] = useState(-1)
+  const [percentage, setPercentage] = useState(0)
+
   const [inAmount, setInAmount] = useState("")
   const [balance, setBalance] = useState("")
+  const [shares, setShares] = useState("")
   const [updater, setUpdater] = useState(0)
   const [owner, setOwner] = useState("")
   const [pairedTokens, setPairedTokens] = useState(null)
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
 
-  const handleClose = () => {
-    setVisible(false)
-  };
   const handleMax = () => {
-    setInAmount(balance)
+    handleAmountChange(balance)
   }
+  const getPercentage = (_amount: string) => {
+    return Big(balance).eq(0)
+      ? 0
+      : Big(_amount)
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
+  };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
     if (isNaN(Number(amount))) return;
     if (!amount) {
       setInAmount(amount)
+      setPercentage(0)
+      setRangeIndex(-1)
       return;
     }
+    console.log('=getPercentage(amount)', getPercentage(amount))
     setInAmount(amount)
+    setPercentage(getPercentage(amount))
   }
   const getBalance = async () => {
     if (isDeposit) {
 
       if (isBera) {
-
         const response = await provider.getBalance(account);
-        console.log('===response', response)
         setBalance(ethers.utils.formatUnits(response))
       } else {
-
         const contract = new ethers.Contract(token0?.address, ERC20_ABI, provider)
         const response = await contract.balanceOf(account)
         setBalance(ethers.utils.formatUnits(response))
@@ -91,11 +100,12 @@ export default memo(function aquabera(props: any) {
       const getTotalAmountsResult = await contract.getTotalAmounts()
       const totalSupplyResult = await contract.totalSupply()
 
-
       const shares = ethers.utils.formatUnits(balanceOfResult)
       const totalSupply = ethers.utils.formatUnits(totalSupplyResult)
       const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[0])
       const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[1])
+      console.log('=balanceOfResult', balanceOfResult.toString())
+      setShares(shares)
       setBalance(Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed())
     }
   }
@@ -110,6 +120,7 @@ export default memo(function aquabera(props: any) {
   }
 
   const handleDepositOrWithdraw = (updateState: any) => {
+
     const abi = isDeposit ? (isBera ? ETHVaultWithSlippage_ABI : ICHIVaultDepositGuard_ABI) : ICHI_ABI
     const method = isDeposit ? (isBera ? "depositETH" : "forwardDepositToICHIVault") : "withdraw"
 
@@ -119,10 +130,7 @@ export default memo(function aquabera(props: any) {
     updateState({
       isLoading: true,
     });
-    const wei = ethers.utils.parseUnits(
-      Big(inAmount).toFixed(token0?.decimals),
-      token0?.decimals
-    );
+
 
     const contract = new ethers.Contract(
       isDeposit ? vaultAddress : ichiAddress,
@@ -130,7 +138,10 @@ export default memo(function aquabera(props: any) {
       provider?.getSigner()
     );
     if (isDeposit) {
-
+      const wei = ethers.utils.parseUnits(
+        Big(inAmount).toFixed(token0?.decimals),
+        token0?.decimals
+      );
       executionContract({
         contract,
         method,
@@ -180,6 +191,10 @@ export default memo(function aquabera(props: any) {
         });
 
     } else {
+      const wei = ethers.utils.parseUnits(
+        Big(shares).times(percentage).div(100).toFixed(18),
+        18
+      );
       executionContract({
         contract,
         method,
@@ -206,6 +221,7 @@ export default memo(function aquabera(props: any) {
         addAction?.(addParams);
         setTimeout(() => {
           handleSuccess?.();
+          onSuccess?.()
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -236,11 +252,15 @@ export default memo(function aquabera(props: any) {
     setToken1(token)
   }
 
+  const handleClose = () => {
+    setVisible(false)
+  };
+  
   useEffect(() => {
-    if (visible && account && token0) {
+    if (visible && account && token0 && ichiAddress) {
       getBalance()
     }
-  }, [account, token0, visible, updater, isBera, isDeposit])
+  }, [account, token0, visible, updater, isBera, ichiAddress])
 
   useEffect(() => {
     if (visible && ichiAddress) {
@@ -260,6 +280,7 @@ export default memo(function aquabera(props: any) {
   }, [token1])
 
   useEffect(() => {
+    // console.log('====data', data)
     if (visible) {
       if (data?.pairedTokens) {
         const _pairedTokens = data?.pairedTokens
@@ -280,6 +301,8 @@ export default memo(function aquabera(props: any) {
       setToken0(null)
       setToken1(null)
       setIsDeposit(true)
+      setRangeIndex(-1)
+      setPercentage(0)
     }
   }, [visible, type, data])
   return (

@@ -6,11 +6,12 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 import chains from '@/configs/chains';
 import multicallAddresses from '@/configs/contract/multicall';
 import useAccount from '@/hooks/use-account';
+import useMergeDataList from '@/hooks/use-merge-data-list';
 import { useProvider } from '@/hooks/use-provider';
 import useAquaBera from '@/sections/staking/hooks/use-aquabera';
 import { useBerps } from '@/sections/staking/hooks/use-berps';
 import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
-import Big from 'big.js';
+import { usePriceStore } from '@/stores/usePriceStore';
 import _ from 'lodash';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
@@ -27,6 +28,7 @@ export default function Staking({ dapp }: Props) {
   const isVaults = _.isArray(dapp)
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
+  const prices = usePriceStore(store => store.price);
 
   const dexConfig = isVaults ? null : dapp?.chains[DEFAULT_CHAIN_ID];
 
@@ -95,45 +97,22 @@ export default function Staking({ dapp }: Props) {
   };
 
   const { dataList: infraredData, loading: infraredLoading, fetchAllData: infraredReload, } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
-  const { dataList: aquabearData, loading: aquabearLoading, reload: aquabearReload } = useAquaBera(isVaults ? "AquaBera" : dapp?.name)
+  const { dataList: aquaBeraData, loading: aquabearLoading, reload: aquabearReload } = useAquaBera(isVaults ? "AquaBera" : dapp?.name)
   const { dataList: berpsData, loading: berpsLoading, reload: berpsReload } = useBerps(listProps);
 
+  const { getMergeDataList } = useMergeDataList()
   const [dataList, loading, reload] = useMemo(() => {
     if (isVaults) {
-      const _dataList = []
-      infraredData?.forEach((_data: any) => {
-        _dataList.push({
-          ..._data,
-          pool: {
-            name: _data?.initialData?.pool?.name || 'iBGT',
-            protocol: _data?.initialData?.pool?.protocol
-          },
-          platform: "infrared"
-        })
-      })
-      aquabearData?.forEach((_data: any) => {
-        const _depositAmount = _data?.pairedTokens?.reduce((acc, curr) => Big(acc).plus(curr?.yourValue).toFixed(), Big(0))
-        _dataList.push({
-          ..._data,
-          images: [_data?.icon],
-          tokens: [_data?.symbol],
-          apy: _data?.maxApr,
-          depositAmount: _depositAmount,
-          usdDepositAmount: _depositAmount,
-          platform: "aquabera",
-          pool: {
-            name: _data?.symbol,
-            protocol: 'BEX'
-          },
-        })
-      })
-      return [_dataList, infraredLoading || aquabearLoading, () => {
+      return [getMergeDataList({
+        infrared: infraredData,
+        aquaBera: aquaBeraData
+      }), infraredLoading || aquabearLoading, () => {
         infraredReload()
         aquabearReload()
       }]
     } else {
       if (dapp.name === 'Berps') return [berpsData, berpsLoading, berpsReload]
-      if (dapp.name === 'AquaBera') return [aquabearData, aquabearLoading, aquabearReload]
+      if (dapp.name === 'AquaBera') return [aquaBeraData, aquabearLoading, aquabearReload]
       return [infraredData, infraredLoading, infraredReload];
     }
   }, [
@@ -141,7 +120,7 @@ export default function Staking({ dapp }: Props) {
     infraredLoading,
     berpsData,
     berpsLoading,
-    aquabearData,
+    aquaBeraData,
     aquabearLoading,
     isVaults,
     dapp.name,
@@ -181,6 +160,7 @@ export default function Staking({ dapp }: Props) {
         }}
         onSuccess={() => {
           reload()
+          setCheckedRecord(null)
         }}
       />
     </Card>

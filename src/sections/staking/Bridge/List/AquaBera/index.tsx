@@ -76,9 +76,6 @@ export default memo(function AquaBera(props: any) {
 
   const searchParams = useSearchParams();
 
-
-  console.log('===address', searchParams.get("address"))
-
   const [state, updateState] = useMultiState<any>({
     filterList: [],
     checkedIndex: -1
@@ -180,9 +177,22 @@ export default memo(function AquaBera(props: any) {
     label: 'Your Value',
     type: 'slot',
     headClass: 'pl-0',
-    render: (data) => {
-      return (
-        <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.yourValue, '', 2)}</div>
+    render: (data, index, parentData) => {
+      return (Big(data?.values?.[0]).eq(0) && Big(data?.values?.[1]).eq(0)) ? (
+        <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">-</div>
+      ) : (
+        <div className="flex flex-col gap-[4px]">
+          {
+            Big(data?.values?.[0]).gt(0) && (
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.values?.[0], '', 2)} {parentData?.symbol}</div>
+            )
+          }
+          {
+            Big(data?.values?.[1]).gt(0) && (
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.values?.[1], '', 2)} {data?.symbol}</div>
+            )
+          }
+        </div>
       );
     }
   }, {

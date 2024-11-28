@@ -122,7 +122,7 @@ export default function Invest(props: any) {
         align: "left",
         width: "25%",
         render: (text: string, record: any,) => {
-          const pool = record?.initialData?.pool;
+          const pool = record?.pool;
           return (
             <div
               className="flex items-center gap-[10px]"
@@ -169,13 +169,15 @@ export default function Invest(props: any) {
         align: "left",
         width: "15%",
         render: (text: string, record: any) => {
-          const pool = record?.initialData?.pool;
+          const pool = record?.pool;
           return (
             <img
               style={{ width: 20 }}
-              src={`/images/dapps/infrared/${(
-                pool?.protocol ?? "infrared"
-              ).toLocaleLowerCase()}.svg`}
+              src={pool?.protocol === 'BEX'
+                ? '/images/dapps/infrared/bex.svg'
+                : pool?.protocol === 'Kodiak Finance'
+                  ? '/images/dapps/kodiak.svg'
+                  : '/images/dapps/infrared/berps.svg'}
             />
           );
         },
@@ -236,8 +238,6 @@ export default function Invest(props: any) {
               <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
                 className={clsx("cursor-pointer", checkedIndex === index ? "rotate-180" : "rotate-0")}
                 onClick={() => {
-                  // console.log('===checkedIndex', checkedIndex)
-                  // console.log('===index', index)
                   setCheckedIndex((checkedIndex === -1 || checkedIndex !== index) ? index : -1)
                 }}>
                 <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
@@ -318,15 +318,19 @@ export default function Invest(props: any) {
           const isValid = Big(record.earned || 0).gt(0);
           return (
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
-              <div className="flex items-center">
-                <LazyImage
-                  src={record?.initialData?.reward_tokens?.[0]?.icon}
-                  alt=""
-                  width={20}
-                  height={20}
-                  className="rounded-full"
-                />
-              </div>
+              {
+                record?.initialData?.reward_tokens?.[0]?.icon && (
+                  <div className="flex items-center">
+                    <LazyImage
+                      src={record?.initialData?.reward_tokens?.[0]?.icon}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="rounded-full"
+                    />
+                  </div>
+                )
+              }
               <div
                 className=""
                 style={isValid ? {} : { opacity: 0.3 }}
@@ -377,9 +381,22 @@ export default function Invest(props: any) {
     label: 'Your Value',
     type: 'slot',
     class: '!p-0',
-    render: (data) => {
-      return (
-        <div className="ml-[-19px] text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.yourValue, '', 2)}</div>
+    render: (data, index, parentData) => {
+      return (Big(data?.values?.[0]).eq(0) && Big(data?.values?.[1]).eq(0)) ? (
+        <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">-</div>
+      ) : (
+        <div className="flex flex-col gap-[4px]">
+          {
+            Big(data?.values?.[0]).gt(0) && (
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.values?.[0], '', 2)} {parentData?.symbol}</div>
+            )
+          }
+          {
+            Big(data?.values?.[1]).gt(0) && (
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.values?.[1], '', 2)} {data?.symbol}</div>
+            )
+          }
+        </div>
       );
     }
   }, , {

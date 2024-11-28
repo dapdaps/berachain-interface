@@ -8,6 +8,7 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 import multicallAddresses from '@/configs/contract/multicall';
 import aquaberaConfig from '@/configs/staking/dapps/aquabera';
 import useCustomAccount from '@/hooks/use-account';
+import useMergeDataList from "@/hooks/use-merge-data-list";
 import StakingModal from '@/sections/staking/Bridge/Modal';
 import useAquaBera from '@/sections/staking/hooks/use-aquabera';
 import { useBerps } from '@/sections/staking/hooks/use-berps';
@@ -30,8 +31,8 @@ export default function Mobile({ dapp }: any) {
   const dexConfig = useMemo(() => aquaberaConfig.chains[chainId], [chainId]);
 
   const { dataList: infraredData, loading: infraredLoading, fetchAllData: infraredReload } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
-  const { dataList: aquabearData, loading: aquabearLoading, reload: aquabearReload } = useAquaBera(isVaults ? "AquaBera" : dapp?.name)
-
+  const { dataList: aquaBeraData, loading: aquabearLoading, reload: aquabearReload } = useAquaBera(isVaults ? "AquaBera" : dapp?.name)
+  const { getMergeDataList } = useMergeDataList()
 
   const { dataList: berpsData, loading: berpsLoading, reload: berpsReload } = useBerps({
     name: dapp?.name,
@@ -43,40 +44,16 @@ export default function Mobile({ dapp }: any) {
   });
   const [dataList, loading, reload] = useMemo(() => {
     if (isVaults) {
-      const _dataList = []
-      infraredData?.forEach((_data: any) => {
-        _dataList.push({
-          ..._data,
-          pool: {
-            name: _data?.initialData?.pool?.name || 'iBGT',
-            protocol: _data?.initialData?.pool?.protocol
-          },
-          platform: "infrared"
-        })
-      })
-      aquabearData?.forEach((_data: any) => {
-        const _depositAmount = _data?.pairedTokens?.reduce((acc, curr) => Big(acc).plus(curr?.yourValue).toFixed(), Big(0))
-        _dataList.push({
-          ..._data,
-          images: [_data?.icon],
-          tokens: [_data?.symbol],
-          apy: _data?.maxApr,
-          depositAmount: _depositAmount,
-          usdDepositAmount: _depositAmount,
-          platform: "aquabera",
-          pool: {
-            name: _data?.symbol,
-            protocol: 'BEX'
-          },
-        })
-      })
-      return [_dataList, infraredLoading || aquabearLoading, () => {
+      return [getMergeDataList({
+        infrared: infraredData,
+        aquaBera: aquaBeraData
+      }), infraredLoading || aquabearLoading, () => {
         infraredReload()
         aquabearReload()
       }]
     } else {
       if (dapp?.name === 'Berps') return [berpsData, berpsLoading, berpsReload];
-      if (dapp?.name === 'AquaBera') return [aquabearData, aquabearLoading, aquabearReload]
+      if (dapp?.name === 'AquaBera') return [aquaBeraData, aquabearLoading, aquabearReload]
       return [infraredData, infraredLoading, infraredReload];
     }
   }, [
@@ -84,7 +61,7 @@ export default function Mobile({ dapp }: any) {
     infraredLoading,
     berpsData,
     berpsLoading,
-    aquabearData,
+    aquaBeraData,
     aquabearLoading,
     isVaults,
     dapp.name,
@@ -197,6 +174,7 @@ export default function Mobile({ dapp }: any) {
             }}
             onSuccess={() => {
               reload();
+              setSelectedRecord(null)
             }}
           />
         ) : (

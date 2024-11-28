@@ -1,34 +1,29 @@
-import useAquaBera from "@/sections/staking/hooks/use-aquabera"
-import useInfraredList from "@/sections/staking/hooks/use-infrared-list"
-import { useMemo } from "react"
-
+import useMergeDataList from "@/hooks/use-merge-data-list";
+import useAquaBera from "@/sections/staking/hooks/use-aquabera";
+import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
+import { usePriceStore } from '@/stores/usePriceStore';
+import { useMemo } from "react";
 export default function useDataList(updater: number) {
-  const { loading: infraredLoading, dataList: infraredDataList } = useInfraredList(updater)
 
-  const { loading: aquaBeraLoading, dataList: aquaBeraDataList } = useAquaBera()
+  const prices = usePriceStore(store => store.price);
+  const { loading: infraredLoading, dataList: infraredData } = useInfraredList(updater)
+
+  const { loading: aquaBeraLoading, dataList: aquaBeraData } = useAquaBera()
+  const { getMergeDataList } = useMergeDataList()
 
   const [loading, dataList] = useMemo(() => {
     return [
       infraredLoading || aquaBeraLoading,
-      [...(infraredDataList ? infraredDataList : []),
-      ...(aquaBeraDataList ? aquaBeraDataList : [])
-        .map(aquaBeraData => {
-          console.log('===aquaBeraData', aquaBeraData)
-          return {
-            ...aquaBeraData,
-            type: "Staking",
-            platform: 'aquabera',
-            // apr: `${aquaBeraData?.minApr}-${aquaBeraData?.maxApr}`,
-            images: [aquaBeraData.icon],
-            tokens: [aquaBeraData.symbol]
-          }
-        })]
+      getMergeDataList({
+        infrared: infraredData,
+        aquaBera: aquaBeraData
+      })
     ]
   }, [
     infraredLoading,
-    infraredDataList,
+    infraredData,
     aquaBeraLoading,
-    aquaBeraDataList
+    aquaBeraData
   ])
   return {
     loading,

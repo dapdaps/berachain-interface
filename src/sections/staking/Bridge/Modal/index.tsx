@@ -1,19 +1,19 @@
 
 import Modal from '@/components/modal';
+import Range from "@/components/range";
 import useCustomAccount from '@/hooks/use-account';
 import useAddAction from '@/hooks/use-add-action';
 import useExecutionContract from '@/hooks/use-execution-contract';
 import useToast from '@/hooks/use-toast';
+import TokenSelector from '@/sections/bridge/TokenSelector';
 import { ERC20_ABI, ICHI_ABI } from '@/sections/staking/Datas/AquaBera';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
-import { ethers } from 'ethers';
-import { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react';
-import Button from '../Button';
-import _ from 'lodash';
 import clsx from 'clsx';
-import TokenSelector from '@/sections/bridge/TokenSelector';
-
+import { ethers } from 'ethers';
+import _ from 'lodash';
+import { memo, useEffect, useState } from 'react';
+import Button from '../Button';
 
 const ETHVaultWithSlippage_ABI = [
   {
@@ -88,7 +88,7 @@ const ICHIVaultDepositGuard_ABI = [
   }
 ]
 
-const template = ""
+const template = "AquaBera"
 export default memo(function index(props) {
 
   const {
@@ -103,7 +103,7 @@ export default memo(function index(props) {
   const toast = useToast()
   const { addAction } = useAddAction("dapp")
   const { executionContract } = useExecutionContract()
-
+  const RangeList = [0.25, 0.5, 0.75, 1];
   const [isDeposit, setIsDeposit] = useState<boolean>(false)
   const [isBera, setIsBera] = useState<boolean>(false)
   const [apr, setApr] = useState("")
@@ -112,35 +112,48 @@ export default memo(function index(props) {
   const [ichiAddress, setIchiAddress] = useState("")
   const [vaultAddress, setVaultAddress] = useState("")
 
+  const [rangeIndex, setRangeIndex] = useState(-1)
+  const [percentage, setPercentage] = useState(0)
+
   const [inAmount, setInAmount] = useState("")
   const [balance, setBalance] = useState("")
+  const [shares, setShares] = useState("")
   const [updater, setUpdater] = useState(0)
   const [owner, setOwner] = useState("")
   const [pairedTokens, setPairedTokens] = useState(null)
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
 
   const handleMax = () => {
-    setInAmount(balance)
+    handleAmountChange(balance)
   }
+  const getPercentage = (_amount: string) => {
+    return Big(balance).eq(0)
+      ? 0
+      : Big(_amount)
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
+  };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
     if (isNaN(Number(amount))) return;
     if (!amount) {
       setInAmount(amount)
+      setPercentage(0)
+      setRangeIndex(-1)
       return;
     }
+    console.log('=getPercentage(amount)', getPercentage(amount))
     setInAmount(amount)
+    setPercentage(getPercentage(amount))
   }
   const getBalance = async () => {
     if (isDeposit) {
 
       if (isBera) {
-
         const response = await provider.getBalance(account);
-        console.log('===response', response)
         setBalance(ethers.utils.formatUnits(response))
       } else {
-
         const contract = new ethers.Contract(token0?.address, ERC20_ABI, provider)
         const response = await contract.balanceOf(account)
         setBalance(ethers.utils.formatUnits(response))
@@ -151,11 +164,12 @@ export default memo(function index(props) {
       const getTotalAmountsResult = await contract.getTotalAmounts()
       const totalSupplyResult = await contract.totalSupply()
 
-
       const shares = ethers.utils.formatUnits(balanceOfResult)
       const totalSupply = ethers.utils.formatUnits(totalSupplyResult)
       const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[0])
       const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[1])
+      console.log('=balanceOfResult', balanceOfResult.toString())
+      setShares(shares)
       setBalance(Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed())
     }
   }
@@ -170,6 +184,7 @@ export default memo(function index(props) {
   }
 
   const handleDepositOrWithdraw = (updateState: any) => {
+
     const abi = isDeposit ? (isBera ? ETHVaultWithSlippage_ABI : ICHIVaultDepositGuard_ABI) : ICHI_ABI
     const method = isDeposit ? (isBera ? "depositETH" : "forwardDepositToICHIVault") : "withdraw"
 
@@ -179,10 +194,7 @@ export default memo(function index(props) {
     updateState({
       isLoading: true,
     });
-    const wei = ethers.utils.parseUnits(
-      Big(inAmount).toFixed(token0?.decimals),
-      token0?.decimals
-    );
+
 
     const contract = new ethers.Contract(
       isDeposit ? vaultAddress : ichiAddress,
@@ -190,7 +202,10 @@ export default memo(function index(props) {
       provider?.getSigner()
     );
     if (isDeposit) {
-
+      const wei = ethers.utils.parseUnits(
+        Big(inAmount).toFixed(token0?.decimals),
+        token0?.decimals
+      );
       executionContract({
         contract,
         method,
@@ -240,6 +255,10 @@ export default memo(function index(props) {
         });
 
     } else {
+      const wei = ethers.utils.parseUnits(
+        Big(shares).times(percentage).div(100).toFixed(18),
+        18
+      );
       executionContract({
         contract,
         method,
@@ -266,6 +285,7 @@ export default memo(function index(props) {
         addAction?.(addParams);
         setTimeout(() => {
           handleSuccess?.();
+          onSuccess?.()
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -297,10 +317,10 @@ export default memo(function index(props) {
   }
 
   useEffect(() => {
-    if (show && account && token0) {
+    if (show && account && token0 && ichiAddress) {
       getBalance()
     }
-  }, [account, token0, show, updater, isBera])
+  }, [account, token0, show, updater, isBera, ichiAddress])
 
   useEffect(() => {
     if (show && ichiAddress) {
@@ -341,13 +361,15 @@ export default memo(function index(props) {
       setToken0(null)
       setToken1(null)
       setIsDeposit(true)
+      setRangeIndex(-1)
+      setPercentage(0)
     }
   }, [show, type, data])
   return (
     <>
 
       <Modal open={show} onClose={onClose}>
-        <div className='w-[496px] md:w-full h-[412px] pt-[23px] px-[20px] pb-[20px] border border-[#000000] rounded-[20px] md:rounded-b-none bg-[#FFFDEB] shadow-[10px_10px_0px_0px_#00000040]'>
+        <div className='w-[496px] md:w-full pt-[23px] px-[20px] pb-[20px] border border-[#000000] rounded-[20px] md:rounded-b-none bg-[#FFFDEB] shadow-[10px_10px_0px_0px_#00000040]'>
           <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%] mb-[25px]'>{isDeposit ? "Deposit" : "Withdraw"}</div>
 
           <div className='flex items-center gap-[16px]'>
@@ -428,6 +450,47 @@ export default memo(function index(props) {
             <div className="flex justify-end pr-[20px]">
               <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className='underline cursor-pointer' onClick={handleMax}>{formatValueDecimal(balance, '', 2)}</span></div>
             </div>
+          </div>
+          <div className="mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]">
+            <div className="flex items-center gap-[8px]">
+              {RangeList.map((range: number, index: number) => (
+                <div
+                  key={index}
+                  className={clsx([
+                    "cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]",
+                    index === rangeIndex ? "bg-[#FFDC50]" : ""
+                  ])}
+                  onClick={() => {
+                    const amount = Big(balance ?? 0)
+                      .times(range)
+                      .toFixed();
+                    setRangeIndex(index)
+                    setInAmount(amount)
+                    setPercentage(getPercentage(amount))
+
+                  }}
+                >
+                  {range === 1 ? "Max" : range * 100 + "%"}
+                </div>
+              ))}
+            </div>
+            <Range
+              value={percentage}
+              onChange={(e) => {
+                const percentage = e.target.value;
+                setRangeIndex(RangeList.findIndex((range) =>
+                  Big(range).eq(Big(percentage).div(100))
+                ))
+                setInAmount(Big(balance ? balance : 0)
+                  .times(Big(percentage).div(100))
+                  .toFixed())
+                setPercentage(percentage)
+              }}
+              style={{
+                marginTop: 0,
+                flex: 1
+              }}
+            />
           </div>
           {
             isDeposit ? (

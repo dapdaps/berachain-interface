@@ -121,6 +121,24 @@ export const ICHI_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalAmounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "total0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "total1",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ]
 export default function useAquaBeraData(props: any) {
@@ -172,7 +190,7 @@ export default function useAquaBeraData(props: any) {
       _data.minApr = sortAprPairedTokens?.[sortAprPairedTokens?.length - 1]?.apr
     }
   }
-  const getBalance = async (_dataList) => {
+  const getBalance = async (_dataList: any) => {
     const calls = [
 
     ]
@@ -243,14 +261,14 @@ export default function useAquaBeraData(props: any) {
 
       for (let i = 0; i < _data?.pairedTokens?.length; i++) {
         const pairedToken = _data?.pairedTokens[i];
-
         const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
         const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
         const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
         const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
         _data.pairedTokens[i] = {
           ..._data.pairedTokens[i],
-          yourValue: Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed()
+          values: [Big(amt0).times(shares).div(totalSupply).toFixed(), Big(amt1).times(shares).div(totalSupply).toFixed()],
+          yourValue: Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed(),
         }
       }
 
@@ -258,9 +276,45 @@ export default function useAquaBeraData(props: any) {
       console.error(error)
     }
   }
+  const getTvl = async (_data: any) => {
+    const calls = [
+
+    ]
+    _data?.pairedTokens?.forEach(pairedToken => {
+      calls.push({
+        address: pairedToken?.ichiAddress,
+        name: 'getTotalAmounts',
+      })
+    })
+    try {
+      const result = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: calls,
+        multicallAddress,
+        provider
+      })
+
+      for (let i = 0; i < _data?.pairedTokens?.length; i++) {
+        const pairedToken = _data?.pairedTokens[i];
+        const [amount0, amount1] = result?.[i]
+        _data.pairedTokens[i] = {
+          ..._data.pairedTokens[i],
+          tvl: Big(amount0).times(prices?.[_data?.symbol] ?? 0).plus(Big(amount1).times(prices?.[pairedToken?.symbol] ?? 0)).toFixed()
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
   const handleGetYourValue = async (_dataList: any) => {
     for (let i = 0; i < _dataList.length; i++) {
       await getYourValue(_dataList[i])
+    }
+  }
+  const handleGetTvl = async (_dataList: any) => {
+    for (let i = 0; i < _dataList.length; i++) {
+      await getTvl(_dataList[i])
     }
   }
   const getDataList = async () => {
@@ -273,6 +327,7 @@ export default function useAquaBeraData(props: any) {
     await get7DayApr(dataList)
     await getBalance(dataList)
     await handleGetYourValue(dataList)
+    await handleGetTvl(dataList)
     formatedData();
   };
   useEffect(() => {

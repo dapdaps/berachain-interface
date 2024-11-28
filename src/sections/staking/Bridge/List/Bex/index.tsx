@@ -1,11 +1,11 @@
 // @ts-nocheck
 import Dropdown from "@/components/dropdown";
-import Popover, { PopoverPlacement } from "@/components/popover";
 import { useMultiState } from '@/hooks/use-multi-state';
 import type { ColumnType, ColunmListType } from '@/sections/staking/types';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
+import { ethers } from "ethers";
 import { cloneDeep } from 'lodash';
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -37,10 +37,9 @@ const List = forwardRef<any, any>((props, ref) => {
     return formatValueDecimal(
       dataList?.reduce((prev, cur) => {
         return prev.plus(
-          0
-          // Big(
-          //   ethers.utils.formatUnits(cur?.initialData?.current_staked_amount)
-          // ).times(cur?.initialData?.stake_token?.price ?? 0)
+          cur?.platform === 'aquabera' ? Big(cur?.tvl ?? 0) : Big(
+            ethers.utils.formatUnits(cur?.initialData?.current_staked_amount)
+          ).times(cur?.initialData?.stake_token?.price ?? 0)
         );
       }, Big(0)),
       '$',
@@ -159,12 +158,14 @@ const List = forwardRef<any, any>((props, ref) => {
       type: 'slot',
       render: (data: any) => {
         return (
-          <img
-            style={{ width: 26 }}
-            src={
-              data?.platform === 'infrared' ? '/images/dapps/infrared/infrared.svg' : '/images/dapps/infrared/aquabera.svg'
-            }
-          />
+          <div className="px-[21px]">
+            <img
+              style={{ width: 26 }}
+              src={
+                data?.platform === 'infrared' ? '/images/dapps/infrared/infrared.svg' : '/images/dapps/infrared/aquabera.svg'
+              }
+            />
+          </div>
         );
       }
     },
@@ -191,7 +192,9 @@ const List = forwardRef<any, any>((props, ref) => {
       render: (data) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {Big(data?.apy ?? 0).toFixed(2)}%
+            {
+              data?.platform === 'aquabera' ? (Big(data?.minApr).eq(data?.maxApr) ? `${Big(data?.maxApr ?? 0).toFixed(2)}%` : `${Big(data?.minApr ?? 0).toFixed(2)}%-${Big(data?.maxApr ?? 0).toFixed(2)}%`) : `${Big(data?.apy ?? 0).toFixed(2)}%`
+            }
           </div>
         );
       }
