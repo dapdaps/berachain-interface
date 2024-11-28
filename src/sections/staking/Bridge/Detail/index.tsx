@@ -1,37 +1,37 @@
-import CircleLoading from '@/components/circle-loading';
-import { balanceFormated } from '@/utils/balance';
-import Big from 'big.js';
-import clsx from 'clsx';
-import { memo, useMemo } from 'react';
-import AddLiquidityModal from '@/sections/pools/add-liquidity-modal';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useIbgtVaults } from '@/stores/ibgt-vaults';
-import DetailSummary from '@/sections/staking/Bridge/Detail/Summary';
-import DetailBex from '@/sections/staking/Bridge/Detail/Bex';
-import DetailBerps from '@/sections/staking/Bridge/Detail/Berps';
-import { useDetail } from '@/sections/staking/Bridge/Detail/hooks';
-import Stake from './Stake';
-import BerpsDeposit from '@/sections/staking/Bridge/Detail/Berps/Deposit';
-import InputNumber from '@/components/input-number';
+import CircleLoading from "@/components/circle-loading";
+import { balanceFormated } from "@/utils/balance";
+import Big from "big.js";
+import clsx from "clsx";
+import { memo, useMemo } from "react";
+import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useIbgtVaults } from "@/stores/ibgt-vaults";
+import DetailSummary from "@/sections/staking/Bridge/Detail/Summary";
+import DetailBex from "@/sections/staking/Bridge/Detail/Bex";
+import DetailBerps from "@/sections/staking/Bridge/Detail/Berps";
+import { useDetail } from "@/sections/staking/Bridge/Detail/hooks";
+import Stake from "./Stake";
+import BerpsDeposit from "@/sections/staking/Bridge/Detail/Berps/Deposit";
+import InputNumber from "@/components/input-number";
 
 export default memo(function Detail(props: any) {
   const { dapp, loading } = props;
   const name = dapp?.name;
   const params = useSearchParams();
   const ibgtVaults: any = useIbgtVaults();
-  const id = params.get('id');
-  const defaultIndex = params.get('tab');
+  const id = params.get("id");
+  const defaultIndex = params.get("tab");
   const pathname = usePathname();
   const router = useRouter();
   const data = useMemo(() => {
-    if (name === 'Berps') {
+    if (name === "Berps") {
       return ibgtVaults.berpsVaults.find((item: any) => item.id === id);
     }
     return ibgtVaults.vaults.find((item: any) => item.id === id);
   }, [id, name, ibgtVaults]);
 
-  const tabs: any = ['Stake', 'Unstake'];
-  const BerpsTab: any = { Stake: 'Deposit', Unstake: 'Withdraw' };
+  const tabs: any = ["Stake", "Unstake"];
+  const BerpsTab: any = { Stake: "Deposit", Unstake: "Withdraw" };
 
   const {
     state,
@@ -56,12 +56,12 @@ export default memo(function Detail(props: any) {
     setShowAddModal,
     detailBerpsRef,
     claiming,
-    isBerpsDepositVisible,
+    isBerpsDepositVisible
   } = useDetail({
     id,
     name,
     data,
-    defaultIndex,
+    defaultIndex
   });
 
   const {
@@ -80,41 +80,35 @@ export default memo(function Detail(props: any) {
     <div>
       <DetailSummary data={data} loading={loading} />
 
-      <div className='flex items-stretch gap-[30px]'>
-        {
-          isBERPS ? (
-            <DetailBerps
-              ref={detailBerpsRef}
-              data={data}
-              loading={loading}
-            />
-          ) : (
-            <DetailBex
-              data={data}
-              mintData={mintData}
-              setShowAddModal={handleMintLP}
-              claiming={claiming}
-              handleClaim={handleClaim}
-              isInfraredBerps={isInfraredBerps}
-            />
-          )
-        }
-        <div className='flex-1 pt-[24px] pb-[20px] px-[20px] min-h-[300px]'>
-          <div className='mb-[17px] flex items-center h-[56px] rounded-[12px] border border-[#373A53] bg-white p-[5px]'>
+      <div className="flex items-stretch gap-[30px]">
+        {isBERPS ? (
+          <DetailBerps ref={detailBerpsRef} data={data} loading={loading} />
+        ) : (
+          <DetailBex
+            data={data}
+            mintData={mintData}
+            setShowAddModal={handleMintLP}
+            claiming={claiming}
+            handleClaim={handleClaim}
+            isInfraredBerps={isInfraredBerps}
+          />
+        )}
+        <div className="flex-1 pt-[24px] pb-[20px] px-[20px] min-h-[300px]">
+          <div className="mb-[17px] flex items-center h-[56px] rounded-[12px] border border-[#373A53] bg-white p-[5px]">
             {tabs.map((tab: any, index: number) => (
               <div
                 key={index}
                 className={clsx([
-                  'cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1',
+                  "cursor-pointer flex items-center justify-center border border-transparent rounded-[10px] flex-1",
                   Number(defaultIndex) === index
-                    ? 'h-full  !border-black bg-[#FFDC50]'
-                    : ''
+                    ? "h-full  !border-black bg-[#FFDC50]"
+                    : ""
                 ])}
                 onClick={() => {
                   router.replace(`${pathname}?id=${id}&tab=${index}`);
                 }}
               >
-                <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
                   {isBERPS ? BerpsTab[tab] : tab}
                 </span>
               </div>
@@ -159,20 +153,20 @@ export default memo(function Detail(props: any) {
                     onUpdateLpPercent(Number(newSliderPercent));
                   }
                 }}
-                className='w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
-                placeholder='0'
+                className="w-full h-[72px] pl-[20px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]"
+                placeholder="0"
               />
-              <div className='flex justify-between px-[10px] pt-[12px] pb-[24px]'>
-                <span className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>
+              <div className="flex justify-between px-[10px] pt-[12px] pb-[24px]">
+                <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {lpAmount
-                    ? '$' +
-                    Big(lpAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2)
-                    : '-'}
+                    ? "$" +
+                      Big(lpAmount)
+                        .times(data?.initialData?.stake_token?.price ?? 0)
+                        .toFixed(2)
+                    : "-"}
                 </span>
                 <div
-                  className='cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium'
+                  className="cursor-pointer text-[#3D405A] font-Montserrat text-[12px] font-medium"
                   onClick={() => {
                     const newSliderPercent = Big(lpBalance || 0)
                       .div(Big(lpBalance).gt(0) ? lpBalance : 1)
@@ -184,8 +178,8 @@ export default memo(function Detail(props: any) {
                     handleLPChange(lpBalance);
                   }}
                 >
-                  balance:{' '}
-                  <span className='underline'>
+                  balance:{" "}
+                  <span className="underline">
                     {balanceFormated(lpBalance ?? 0, 6)}
                   </span>
                 </div>
@@ -193,9 +187,9 @@ export default memo(function Detail(props: any) {
               <button
                 disabled={!withdrawable}
                 className={clsx(
-                  'w-full h-[60px] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  "w-full h-[60px] text-[18px] font-semibold flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                   {
-                    'opacity-50': !withdrawable
+                    "opacity-50": !withdrawable
                   }
                 )}
                 onClick={handleWithdraw}
@@ -205,8 +199,8 @@ export default memo(function Detail(props: any) {
                 ) : (
                   <>
                     {isWithdrawInsufficient
-                      ? 'InSufficient Balance'
-                      : 'Withdraw'}
+                      ? "InSufficient Balance"
+                      : "Withdraw"}
                   </>
                 )}
               </button>
@@ -221,6 +215,7 @@ export default memo(function Detail(props: any) {
           token1={mintData.token1}
           version={mintData.version}
           dex={mintData.protocol}
+          stakingToken={mintData.stakingToken}
           fee={mintData.fee}
           open={showAddModal}
           onClose={() => {
@@ -246,31 +241,31 @@ export const stakeAbi = [
     constant: false,
     inputs: [
       {
-        name: 'amount',
-        type: 'uint256'
+        name: "amount",
+        type: "uint256"
       }
     ],
-    name: 'stake',
+    name: "stake",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        name: 'assets',
-        type: 'uint256'
+        name: "assets",
+        type: "uint256"
       },
       {
-        name: 'receiver',
-        type: 'address'
+        name: "receiver",
+        type: "address"
       }
     ],
-    name: 'deposit',
+    name: "deposit",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   }
 ];
 export const withdrawAbi = [
@@ -278,66 +273,64 @@ export const withdrawAbi = [
     constant: false,
     inputs: [
       {
-        name: '_shareAmt',
-        type: 'uint256'
+        name: "_shareAmt",
+        type: "uint256"
       }
     ],
-    name: 'withdraw',
+    name: "withdraw",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        name: 'shares',
-        type: 'uint256'
+        name: "shares",
+        type: "uint256"
       }
     ],
-    name: 'makeWithdrawRequest',
+    name: "makeWithdrawRequest",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        name: 'shares',
-        type: 'uint256'
+        name: "shares",
+        type: "uint256"
       },
       {
-        name: 'receiver',
-        type: 'address'
+        name: "receiver",
+        type: "address"
       },
       {
-        name: 'owner',
-        type: 'address'
+        name: "owner",
+        type: "address"
       }
     ],
-    name: 'redeem',
+    name: "redeem",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        name: 'shares',
-        type: 'uint256'
+        name: "shares",
+        type: "uint256"
       },
       {
-        name: 'unlockEpoch',
-        type: 'uint256'
-      },
+        name: "unlockEpoch",
+        type: "uint256"
+      }
     ],
-    name: 'cancelWithdrawRequest',
+    name: "cancelWithdrawRequest",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   }
 ];
-
-
