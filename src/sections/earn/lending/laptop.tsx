@@ -12,7 +12,7 @@ import useAddAction from "@/hooks/use-add-action";
 import { useAccount } from 'wagmi';
 import { useProvider } from "@/hooks/use-provider";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
-import ActionPanelForm from "@/sections/Lending/Bend/Action/form";
+import ActionPanelForm from "@/sections/Lending/Bend/Action/_bake_form";
 import IconAdd from '@public/images/add.svg'
 import { numberFormatter } from '@/utils/number-formatter';
 
