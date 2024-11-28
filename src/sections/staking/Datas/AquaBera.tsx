@@ -153,7 +153,8 @@ export default function useAquaBeraData(props: any) {
   const prices = usePriceStore(store => store.price);
   const [reloadCount, setReloadCount] = useState(0);
   const dataList: any = [];
-  const formatedData = () => {
+  const formatedData = (type) => {
+    console.log('====type', type)
     onLoad({ dataList });
   };
 
@@ -267,7 +268,7 @@ export default function useAquaBeraData(props: any) {
         const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
         _data.pairedTokens[i] = {
           ..._data.pairedTokens[i],
-          values: [Big(amt0).times(shares).div(totalSupply).toFixed(), Big(amt1).times(shares).div(totalSupply).toFixed()],
+          values: [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()],
           yourValue: Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed(),
         }
       }
@@ -311,11 +312,13 @@ export default function useAquaBeraData(props: any) {
     for (let i = 0; i < _dataList.length; i++) {
       await getYourValue(_dataList[i])
     }
+    formatedData("handleGetYourValue")
   }
   const handleGetTvl = async (_dataList: any) => {
     for (let i = 0; i < _dataList.length; i++) {
-      await getTvl(_dataList[i])
+      getTvl(_dataList[i])
     }
+    formatedData()
   }
   const getDataList = async () => {
     for (const pair of pairs) {
@@ -326,8 +329,8 @@ export default function useAquaBeraData(props: any) {
     }
     await get7DayApr(dataList)
     await getBalance(dataList)
-    await handleGetYourValue(dataList)
-    await handleGetTvl(dataList)
+    handleGetYourValue(dataList)
+    handleGetTvl(dataList)
     formatedData();
   };
   useEffect(() => {
@@ -338,7 +341,6 @@ export default function useAquaBeraData(props: any) {
   return {
     reload: () => {
       setReloadCount(reloadCount + 1);
-    },
-    getDataList
+    }
   };
 }

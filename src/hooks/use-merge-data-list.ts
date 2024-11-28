@@ -21,10 +21,10 @@ export default function useMergeDataList() {
       })
     })
     aquaBera?.forEach((_data: any) => {
-      const _depositAmount = _data?.pairedTokens?.reduce((acc, curr) => Big(acc).plus(curr?.yourValue).toFixed(), Big(0))
+      const _depositAmount = _data?.pairedTokens?.reduce((acc, curr) => Big(acc).plus(curr?.yourValue ?? 0).toFixed(), Big(0))
       const _usdDepositAmount = _data?.pairedTokens?.reduce((acc, curr) => {
-        const [amount0, amount1] = curr?.values
-        const _usd = Big(Big(amount0).times(prices?.[_data?.symbol] ?? 0).plus(Big(amount1).times(prices?.[curr?.symbol] ?? 0))).div(prices["USDC"]).toFixed()
+        const [amount0, amount1] = curr?.values ?? []
+        const _usd = Big(Big(amount0 ?? 0).times(prices?.[_data?.symbol] ?? 0).plus(Big(amount1 ?? 0).times(prices?.[curr?.symbol] ?? 0))).div(prices["USDC"]).toFixed()
         return Big(acc).plus(_usd).toFixed()
       }, Big(0))
       _dataList.push({

@@ -382,7 +382,7 @@ export default function Invest(props: any) {
     type: 'slot',
     class: '!p-0',
     render: (data, index, parentData) => {
-      return (Big(data?.values?.[0]).eq(0) && Big(data?.values?.[1]).eq(0)) ? (
+      return (Big(data?.values?.[0] ?? 0).eq(0) && Big(data?.values?.[1] ?? 0).eq(0)) ? (
         <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">-</div>
       ) : (
         <div className="flex flex-col gap-[4px]">

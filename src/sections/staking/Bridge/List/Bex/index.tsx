@@ -80,7 +80,7 @@ const List = forwardRef<any, any>((props, ref) => {
       })
       : cloneDataList)
     const [key, value] = state?.filterKey.split("|")
-    const _filterList = key ? _sortList.filter(_data => value === 'all' || _data[key] === value) : _sortList
+    const _filterList = key ? _sortList?.filter(_data => value === 'all' || _data[key] === value) : _sortList
     updateState({
       filterList: _filterList
     });
@@ -147,7 +147,7 @@ const List = forwardRef<any, any>((props, ref) => {
             src={
               pool?.protocol === 'BEX'
                 ? '/images/dapps/infrared/bex.svg'
-                : pool?.protocol === 'Kodiak Finance'
+                : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
                   ? '/images/dapps/kodiak.svg'
                   : '/images/dapps/infrared/berps.svg'
             }
@@ -300,7 +300,7 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Pool',
       type: 'slot',
       render: (data) => {
-        const pool = data?.initialData?.pool;
+        const pool = data?.pool;
         return (
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center min-w-[50px]'>
@@ -331,7 +331,8 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Protocol',
       type: 'slot',
       render: (data: any) => {
-        const pool = data?.initialData?.pool;
+        const pool = data?.pool;
+        console.log('===pool', pool)
         return (
           <img
             style={{ width: 26 }}
@@ -339,7 +340,7 @@ const List = forwardRef<any, any>((props, ref) => {
               !pool && "iBGT-HONEY" ? '/images/dapps/infrared/infrared.svg' : (
                 pool?.protocol === 'BEX'
                   ? '/images/dapps/infrared/bex.svg'
-                  : pool?.protocol === 'Kodiak Finance'
+                  : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
                     ? '/images/dapps/kodiak.svg'
                     : '/images/dapps/infrared/berps.svg'
               )

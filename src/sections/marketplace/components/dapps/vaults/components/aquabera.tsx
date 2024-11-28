@@ -63,6 +63,7 @@ export default memo(function aquabera(props: any) {
     handleAmountChange(balance)
   }
   const getPercentage = (_amount: string) => {
+    _amount = Big(_amount).gt(balance) ? balance : _amount
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
@@ -79,9 +80,12 @@ export default memo(function aquabera(props: any) {
       setRangeIndex(-1)
       return;
     }
-    console.log('=getPercentage(amount)', getPercentage(amount))
+    const _percentage = getPercentage(amount)
     setInAmount(amount)
-    setPercentage(getPercentage(amount))
+    setPercentage(_percentage)
+    setRangeIndex(RangeList.findIndex((range) =>
+      Big(range).eq(Big(_percentage).div(100))
+    ))
   }
   const getBalance = async () => {
     if (isDeposit) {

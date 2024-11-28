@@ -4,13 +4,13 @@ import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
 import _ from "lodash";
-import { useParams, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { memo, useEffect } from "react";
 import Skeleton from 'react-loading-skeleton';
 
-function renderTD(data: any, column: ColumnType, index: number, parentData: any) {
+function renderTD(data: any, column: ColumnType, index: number, parentData: any, checkedIndex: number) {
   if (column.type === 'slot') {
-    return column.render(data, index, parentData);
+    return column.render(data, index, parentData, checkedIndex);
   }
   return (
     <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
@@ -65,8 +65,6 @@ export const PairedList = (props: any) => {
   )
 }
 export default memo(function AquaBera(props: any) {
-
-
   const {
     onChangeData,
     dataList,
@@ -125,14 +123,15 @@ export default memo(function AquaBera(props: any) {
       label: 'Action',
       align: 'right',
       type: 'slot',
-      render: (data, index) => {
+      render: (data, index, _, checkedIndex) => {
         return (
           <div className='flex justify-end pr-[26px]'>
             <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
-              className={clsx("cursor-pointer", state?.checkedIndex === -1 ? "rotate-0" : "rotate-180")}
+              className={clsx("cursor-pointer", checkedIndex !== index ? "rotate-0" : "rotate-180")}
               onClick={() => {
+                console.log('=====checkedIndex', checkedIndex)
                 updateState({
-                  checkedIndex: (state?.checkedIndex === -1 || state?.checkedIndex !== index) ? index : -1
+                  checkedIndex: (checkedIndex === -1 || checkedIndex !== index) ? index : -1
                 })
               }}>
               <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
@@ -178,7 +177,7 @@ export default memo(function AquaBera(props: any) {
     type: 'slot',
     headClass: 'pl-0',
     render: (data, index, parentData) => {
-      return (Big(data?.values?.[0]).eq(0) && Big(data?.values?.[1]).eq(0)) ? (
+      return (Big(data?.values?.[0] ?? 0).eq(0) && Big(data?.values?.[1] ?? 0).eq(0)) ? (
         <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">-</div>
       ) : (
         <div className="flex flex-col gap-[4px]">
@@ -268,18 +267,20 @@ export default memo(function AquaBera(props: any) {
     }
   },]
 
+
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
-
-    console.log('===cloneDataList', cloneDataList)
     const idx = cloneDataList?.findIndex((data: any) => data.address === searchParams.get("address"))
+    if (state?.checkedIndex === -1 && idx > -1) {
+      updateState({
+        checkedIndex: idx
+      })
+    }
     updateState({
       filterList: cloneDataList,
-      checkedIndex: idx
     });
-  }, [dataList, searchParams.get("address")]);
+  }, [dataList, searchParams.get("address"), state?.checkedIndex]);
 
-  console.log('===loading', loading)
   return (
     <div className="flex flex-col">
       <div className="text-black font-Montserrat text-[26px] font-bold leading-[90%]">Vaults</div>
@@ -328,7 +329,7 @@ export default memo(function AquaBera(props: any) {
                         })}
                         style={{ width: column.width }}
                       >
-                        {renderTD(data, column, index)}
+                        {renderTD(data, column, index, null, state?.checkedIndex)}
                       </div>
                     );
                   })}
