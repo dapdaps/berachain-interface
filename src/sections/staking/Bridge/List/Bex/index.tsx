@@ -45,6 +45,7 @@ const List = forwardRef<any, any>((props, ref) => {
       '$',
       2,
       true
+      
     );
   }, [dataList]);
   const maxApy = useMemo(() => {
