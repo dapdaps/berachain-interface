@@ -36,9 +36,10 @@ export default function useMergeDataList() {
         depositAmount: _depositAmount,
         usdDepositAmount: _usdDepositAmount,
         platform: "aquabera",
+        poolName: _data?.symbol,
         pool: {
           name: _data?.symbol,
-          protocol: 'Kodiak Finance'
+          protocol: 'aquabera'
         },
       })
     })

@@ -153,7 +153,7 @@ export default function Invest(props: any) {
                 <div>{record?.tokens?.join('-')}</div>
                 {
                   isEarn && (
-                    <div className="text-[12px] font-[500] mt-[3px]">
+                    <div className="text-[12px] font-[500] mt-[3px] capitalize">
                       {pool?.protocol || record.name}
                     </div>
                   )

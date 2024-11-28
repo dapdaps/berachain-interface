@@ -210,7 +210,7 @@ export default memo(function aquabera(props: any) {
           token: {
             symbol: token0?.symbol
           },
-          amount,
+          amount: inAmount,
           template,
           status: status,
           add: 0,
@@ -255,7 +255,7 @@ export default memo(function aquabera(props: any) {
   const handleClose = () => {
     setVisible(false)
   };
-  
+
   useEffect(() => {
     if (visible && account && token0 && ichiAddress) {
       getBalance()
