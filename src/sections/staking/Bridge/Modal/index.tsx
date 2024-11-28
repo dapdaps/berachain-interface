@@ -180,6 +180,7 @@ export default memo(function index(props) {
     setOwner(response)
   }
   const handleSuccess = () => {
+    onSuccess?.()
     setUpdater(Date.now())
   }
 
@@ -274,7 +275,7 @@ export default memo(function index(props) {
           token: {
             symbol: token0?.symbol
           },
-          amount,
+          amount: inAmount,
           template,
           status: status,
           add: 0,
@@ -285,7 +286,6 @@ export default memo(function index(props) {
         addAction?.(addParams);
         setTimeout(() => {
           handleSuccess?.();
-          onSuccess?.()
         }, 3000);
 
         toast?.dismiss(toastId);

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Dropdown from "@/components/dropdown";
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import { useMultiState } from '@/hooks/use-multi-state';
 import type { ColumnType, ColunmListType } from '@/sections/staking/types';
 import { formatValueDecimal } from '@/utils/balance';
@@ -101,25 +102,34 @@ const List = forwardRef<any, any>((props, ref) => {
       render: (data) => {
         const pool = data?.pool;
         return (
+
           <div className='flex items-center gap-[8px]'>
-            <div className='flex items-center min-w-[50px]'>
-              {data?.images[0] && (
-                <img
-                  className='w-[30px] h-[30px] rounded-full'
-                  src={data?.images[0]}
-                  style={{ objectPosition: 'left' }}
-                />
+            <Popover
+              trigger={PopoverTrigger.Hover}
+              placement={PopoverPlacement.Bottom}
+              content={(
+                <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
+                  {pool?.name}
+                </div>
               )}
-              {data?.images[1] && (
-                <img
-                  src={data?.images[1]}
-                  className='w-[30px] h-[30px] rounded-full ml-[-10px]'
-                />
-              )}
-            </div>
-            <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {data?.poolName}
-            </div>
+              contentClassName="px-[20px] py-[10px] rounded-[8px] border border-black bg-[#FFFDEB]"
+            >
+              <div className='flex items-center min-w-[50px] cursor-pointer'>
+                {data?.images[0] && (
+                  <img
+                    className='w-[30px] h-[30px] rounded-full'
+                    src={data?.images[0]}
+                    style={{ objectPosition: 'left' }}
+                  />
+                )}
+                {data?.images[1] && (
+                  <img
+                    src={data?.images[1]}
+                    className='w-[30px] h-[30px] rounded-full ml-[-10px]'
+                  />
+                )}
+              </div>
+            </Popover>
           </div>
         );
       }
