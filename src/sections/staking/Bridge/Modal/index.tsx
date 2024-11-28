@@ -122,11 +122,13 @@ export default memo(function index(props) {
   const [owner, setOwner] = useState("")
   const [pairedTokens, setPairedTokens] = useState(null)
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
+  const [values, setValues] = useState(null)
 
   const handleMax = () => {
     handleAmountChange(balance)
   }
   const getPercentage = (_amount: string) => {
+    _amount = Big(_amount).gt(balance) ? balance : _amount
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
@@ -143,9 +145,12 @@ export default memo(function index(props) {
       setRangeIndex(-1)
       return;
     }
-    console.log('=getPercentage(amount)', getPercentage(amount))
+    const _percentage = getPercentage(amount)
     setInAmount(amount)
-    setPercentage(getPercentage(amount))
+    setPercentage(_percentage)
+    setRangeIndex(RangeList.findIndex((range) =>
+      Big(range).eq(Big(_percentage).div(100))
+    ))
   }
   const getBalance = async () => {
     if (isDeposit) {
@@ -312,9 +317,9 @@ export default memo(function index(props) {
   }
 
   const onTokenChange = (token: any) => {
-    console.log('===token', token)
     setToken1(token)
   }
+
 
   useEffect(() => {
     if (show && account && token0 && ichiAddress) {
@@ -335,8 +340,10 @@ export default memo(function index(props) {
   }, [isBera, config])
 
   useEffect(() => {
+    // console.log('====token1', token1)
     setApr(token1?.apr)
     setIchiAddress(token1?.ichiAddress)
+    setValues(token1?.values)
   }, [token1])
 
   useEffect(() => {
@@ -347,6 +354,7 @@ export default memo(function index(props) {
         const _token1 = _pairedTokens?.[0]
         const token = _.cloneDeep(data)
         delete token.pairedTokens
+
         setToken0(token)
         setToken1(_token1)
         setPairedTokens(_pairedTokens)
@@ -409,48 +417,68 @@ export default memo(function index(props) {
             <div className='text-[#7EA82B] font-Montserrat text-[16px] font-semibold leading-[90%]'>{formatValueDecimal(apr, '', 2, false, false)}%</div>
           </div>
           <div className='flex items-center justify-between'>
-            <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>Deposit Amounts</div>
+            <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{isDeposit ? "Deposit Amounts" : "Withdrawing"}</div>
+
             {
-              token0?.symbol === "WBERA" && (
-                <div className='flex items-center gap-[10px]'>
-                  <div
-                    className={clsx('py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer', isBera ? 'bg-[#FFDC50]' : '')}
-                    onClick={() => setIsBera(true)}
-                  >
-                    BERA
+              isDeposit ? (
+                <>
+                  {
+                    token0?.symbol === "WBERA" && (
+                      <div className='flex items-center gap-[10px]'>
+                        <div
+                          className={clsx('py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer', isBera ? 'bg-[#FFDC50]' : '')}
+                          onClick={() => setIsBera(true)}
+                        >
+                          BERA
+                        </div>
+                        <div
+                          className={clsx('py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer', !isBera ? 'bg-[#FFDC50]' : '')}
+                          onClick={() => setIsBera(false)}
+                        >
+                          WBERA
+                        </div>
+                      </div>
+                    )
+                  }
+                </>
+              ) : (
+                <div className='flex items-center gap-[9px]'>
+                  <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                    <img src={token0?.icon} alt={token0?.symbol} />
                   </div>
-                  <div
-                    className={clsx('py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer', !isBera ? 'bg-[#FFDC50]' : '')}
-                    onClick={() => setIsBera(false)}
-                  >
-                    WBERA
-                  </div>
+                  <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
                 </div>
               )
             }
+
           </div>
 
-          <div className="mt-[12px] mb-[20px] flex flex-col gap-[9px] h-[90px] rounded-[12px] border border-[#373A53] bg-white">
-            <div className="pt-[18px] pl-[13px] pr-[20px] flex items-center justify-between">
-              <div className='flex-1'>
-                <input
-                  type='number'
-                  className='w-full text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0'
-                  value={inAmount}
-                  onChange={(event) => handleAmountChange(event?.target?.value)}
-                />
-              </div>
-              <div className='flex items-center gap-[9px]'>
-                <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                  <img src={token0?.icon} alt={token0?.symbol} />
+          {
+            isDeposit && (
+              <div className="mt-[12px] mb-[20px] flex flex-col gap-[9px] h-[90px] rounded-[12px] border border-[#373A53] bg-white">
+                <div className="pt-[18px] pl-[13px] pr-[20px] flex items-center justify-between">
+                  <div className='flex-1'>
+                    <input
+                      type='number'
+                      className='w-full text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0'
+                      value={inAmount}
+                      onChange={(event) => handleAmountChange(event?.target?.value)}
+                    />
+                  </div>
+                  <div className='flex items-center gap-[9px]'>
+                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                      <img src={token0?.icon} alt={token0?.symbol} />
+                    </div>
+                    <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
+                  </div>
                 </div>
-                <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
+                <div className="flex justify-end pr-[20px]">
+                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className='underline cursor-pointer' onClick={handleMax}>{formatValueDecimal(balance, '', 2)}</span></div>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end pr-[20px]">
-              <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className='underline cursor-pointer' onClick={handleMax}>{formatValueDecimal(balance, '', 2)}</span></div>
-            </div>
-          </div>
+            )
+          }
+
           <div className="mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]">
             <div className="flex items-center gap-[8px]">
               {RangeList.map((range: number, index: number) => (
@@ -492,6 +520,17 @@ export default memo(function index(props) {
               }}
             />
           </div>
+
+          {
+            !isDeposit && (
+              <div className='mt-[-16px] mb-[8px] flex justify-end'>
+                <div className='flex flex-col gap-[2px]'>
+                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[0] ?? 0).times(percentage).div(100).toFixed(), '', 2)} {token0?.symbol}</div>
+                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[1] ?? 0).times(percentage).div(100).toFixed(), '', 2)} {token1?.symbol}</div>
+                </div>
+              </div>
+            )
+          }
           {
             isDeposit ? (
               <Button
