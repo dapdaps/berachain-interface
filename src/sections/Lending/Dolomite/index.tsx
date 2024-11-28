@@ -8,16 +8,14 @@ import { useProvider } from '@/hooks/use-provider';
 import { useMultiState } from '@/hooks/use-multi-state';
 import { numberFormatter } from '@/utils/number-formatter';
 import PositionList from '@/sections/Lending/Dolomite/position/list';
-import DappIcon from '@/components/dapp-icon';
 import { DEFAULT_CHAIN_ID } from '@/configs';
-import SwitchNetwork from '@/components/switch-network';
-import chains from '@/configs/chains';
 import { useSearchParams } from 'next/navigation';
 
 const { basic, networks }: any = DolomiteConfig;
 const DolomiteData = dynamic(() => import('../datas/dolomite'));
 
 interface LendingModalProps {
+  dapp?: any;
 }
 
 const LendingModal: React.FC<LendingModalProps> = () => {
@@ -84,59 +82,50 @@ const LendingModal: React.FC<LendingModalProps> = () => {
   }, [data]);
 
   return (
-    <div className="mt-[40px]">
-      <div className="relative w-[970px] md:w-full mx-auto">
-        <DappIcon
-          src="/images/dapps/dolomite.svg"
-          alt=""
-          name="Dolomite"
-          type="Lending"
-          className="z-10 top-[-70px] md:left-[50%] md:translate-x-[-50%] md:top-[-40px]"
-        />
-        <Tabs
-          isCard
-          currentTab={currentTab}
-          tabs={[
-            {
-              key: 'supply',
-              label: 'Balances',
-              children: (
-                <Panel
-                  loading={loading}
-                  totalBalanceLabel="Your balance"
-                  totalBalance={state.yourBalance}
-                  totalRateLabel="Earning"
-                  totalRate={state[`earning${rateKey}`]}
-                  rateName={`Earning ${rateKey}`}
-                  tokens={state.supplyTokens}
-                  rateKey={rateKey}
-                  setRateKey={setRateKey}
-                  CHAIN_ID={DEFAULT_CHAIN_ID}
-                  onSuccess={() => {
-                    setLoading(true);
-                  }}
-                />
-              )
-            },
-            {
-              key: 'borrow',
-              label: 'Borrow',
-              children: (
-                <PositionList
-                  loading={loading}
-                  data={data}
-                  CHAIN_ID={DEFAULT_CHAIN_ID}
-                  onSuccess={() => {
-                    setLoading(true);
-                  }}
-                />
-              )
-            },
-          ]}
-          onChange={(key) => setCurrentTab(key as string)}
-          className="h-full md:pt-[20px]"
-        />
-      </div>
+    <>
+      <Tabs
+        isCard
+        currentTab={currentTab}
+        tabs={[
+          {
+            key: 'supply',
+            label: 'Balances',
+            children: (
+              <Panel
+                loading={loading}
+                totalBalanceLabel="Your balance"
+                totalBalance={state.yourBalance}
+                totalRateLabel="Earning"
+                totalRate={state[`earning${rateKey}`]}
+                rateName={`Earning ${rateKey}`}
+                tokens={state.supplyTokens}
+                rateKey={rateKey}
+                setRateKey={setRateKey}
+                CHAIN_ID={DEFAULT_CHAIN_ID}
+                onSuccess={() => {
+                  setLoading(true);
+                }}
+              />
+            )
+          },
+          {
+            key: 'borrow',
+            label: 'Borrow',
+            children: (
+              <PositionList
+                loading={loading}
+                data={data}
+                CHAIN_ID={DEFAULT_CHAIN_ID}
+                onSuccess={() => {
+                  setLoading(true);
+                }}
+              />
+            )
+          },
+        ]}
+        onChange={(key) => setCurrentTab(key as string)}
+        className="h-full md:pt-[20px]"
+      />
       <DolomiteData
         {...networks[DEFAULT_CHAIN_ID + '']}
         {...basic}
@@ -150,8 +139,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
           setLoading(false);
         }}
       />
-      <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
-    </div>
+    </>
   );
 };
 

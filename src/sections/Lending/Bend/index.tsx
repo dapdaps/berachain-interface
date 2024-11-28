@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Modal from '@/components/modal';
 import Tabs from '@/components/tabs';
 import DepositPanel from './DepositPanel';
 import SupplyBorrowPanel from './SupplyBorrowPanel';
-import DappIcon from '@/components/dapp-icon';
 import useBend from './hooks/useBend';
 
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import SwitchNetwork from '@/components/switch-network';
-import chains from '@/configs/chains';
 import useAccount from '@/hooks/use-account';
 
 interface LendingModalProps {
+  dapp?: any;
   onClose?: () => void;
 }
 
@@ -54,28 +50,16 @@ const LendingModal: React.FC<LendingModalProps> = () => {
   ];
 
   return (
-    <div className="mt-[40px]">
-      <div className="relative w-[970px] md:w-full mx-auto">
-        <DappIcon
-          src="/images/dapps/bend.svg"
-          alt=""
-          name="Bend"
-          type="Lending"
-          className="z-10 top-[-70px] md:left-[50%] md:translate-x-[-50%] md:top-[-40px]"
+    <div className="rounded-[20px] lg:w-[970px] md:w-full h-[490px]">
+      <div className="absolute top-0 left-0 right-0">
+        <Tabs
+          isCard
+          currentTab={currentTab}
+          tabs={tabs}
+          onChange={(key) => setCurrentTab(key as string)}
+          className="h-full"
         />
-        <div className="rounded-[20px] lg:w-[970px] md:w-full h-[490px]">
-          <div className="absolute top-0 left-0 right-0">
-            <Tabs
-              isCard
-              currentTab={currentTab}
-              tabs={tabs}
-              onChange={(key) => setCurrentTab(key as string)}
-              className="h-full"
-            />
-          </div>
-        </div>
       </div>
-      <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
     </div>
   );
 };
