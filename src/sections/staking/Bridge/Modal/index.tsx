@@ -116,9 +116,17 @@ export default memo(function index(props) {
   }
   const getMaxDepositAmount = async () => {
     const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider)
-    const response0 = await contract.deposit0Max()
-    const response1 = await contract.deposit1Max()
-    setDepositMaxAmount(Math.min(ethers.utils.formatUnits(response0), ethers.utils.formatUnits(response1)))
+    const address0 = await contract.token0()
+    const address1 = await contract.token1()
+    console.log('===address0', address0)
+    console.log('===address1', address1)
+    if (token0?.address?.toLocaleLowerCase() === address0?.toLocaleLowerCase()) {
+      const response0 = await contract.deposit0Max()
+      setDepositMaxAmount(ethers.utils.formatUnits(response0, token0?.decimals))
+    } else {
+      const response1 = await contract.deposit1Max()
+      setDepositMaxAmount(ethers.utils.formatUnits(response1, token0?.decimals))
+    }
   }
   const handleSuccess = () => {
     onSuccess?.()

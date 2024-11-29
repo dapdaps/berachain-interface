@@ -1,10 +1,20 @@
-import { memo } from "react"
-import BexList from "./Bex"
-import AquaBeraList from "./AquaBera"
-export default memo(function List(props: any) {
+import { forwardRef, memo } from "react";
+import AquaBeraList from "./AquaBera";
+import BexList from "./Bex";
+export default memo(forwardRef<any, any>(function List(props: any, ref: any) {
   return props?.name === "AquaBera" ? (
-    <AquaBeraList {...props} />
+    <AquaBeraList
+      {...{
+        ...props,
+        ref
+      }}
+    />
   ) : (
-    <BexList {...props} />
+    <BexList
+      {...{
+        ...props,
+        ref
+      }}
+    />
   )
-})
+}))

@@ -5,7 +5,7 @@ import Big from "big.js";
 import clsx from "clsx";
 import _ from "lodash";
 import { useSearchParams } from 'next/navigation';
-import { memo, useEffect } from "react";
+import { forwardRef, memo, useEffect, useImperativeHandle } from "react";
 import Skeleton from 'react-loading-skeleton';
 
 function renderTD(data: any, column: ColumnType, index: number, parentData: any, checkedIndex: number) {
@@ -64,7 +64,7 @@ export const PairedList = (props: any) => {
     </div>
   )
 }
-export default memo(function AquaBera(props: any) {
+export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
   const {
     onChangeData,
     dataList,
@@ -270,17 +270,23 @@ export default memo(function AquaBera(props: any) {
   useEffect(() => {
     const cloneDataList = _.cloneDeep(dataList);
     const idx = cloneDataList?.findIndex((data: any) => data.address === searchParams.get("address"))
-    if (state?.checkedIndex === -1 && idx > -1) {
+    if (idx > -1) {
       updateState({
         checkedIndex: idx
       })
-      return
     }
     updateState({
       filterList: cloneDataList,
     });
-  }, [dataList, searchParams.get("address"), state?.checkedIndex]);
+  }, [dataList, searchParams.get("address")]);
 
+  useImperativeHandle(ref, () => ({
+    changeCheckedIndex: (index) => {
+      updateState({
+        checkedIndex: index
+      })
+    }
+  }));
   return (
     <div className="flex flex-col">
       <div className="text-black font-Montserrat text-[26px] font-bold leading-[90%]">Vaults</div>
@@ -351,4 +357,4 @@ export default memo(function AquaBera(props: any) {
       }
     </div >
   )
-})
+}))
