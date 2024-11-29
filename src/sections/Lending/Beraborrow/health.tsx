@@ -1,7 +1,7 @@
-const Health = (props: any) => {
-  const { children } = props;
+import Big from 'big.js';
 
-  const risk = Status.LowRisk;
+const Health = (props: any) => {
+  const { children, risk } = props;
 
   return (
     <div
@@ -40,8 +40,20 @@ const Health = (props: any) => {
 
 export default Health;
 
-export const Status = {
+export const Status: any = {
   HighRisk: { color: '239,68,68', name: 'Risky' },
-  MidRisk: { color: '234,179,8', name: 'Normal' },
+  MidRisk: { color: '234,179,8', name: 'Cautious' },
   LowRisk: { color: '34,197,94', name: 'Good' },
+};
+
+export const getStatus = (market: any, ratio?: string) => {
+  const { CCR, TCR } = market;
+  const _ratio = ratio || 0;
+  if (Big(_ratio).lt(CCR)) {
+    return Status.HighRisk;
+  }
+  if (Big(_ratio).lt(TCR)) {
+    return Status.MidRisk;
+  }
+  return Status.LowRisk;
 };

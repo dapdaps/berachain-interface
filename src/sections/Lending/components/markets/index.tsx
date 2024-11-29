@@ -25,6 +25,7 @@ export interface Props {
     skeletonWidth?: number;
     style?(market: any, index: number): any;
     render?(text: any, market: any, index: number): any;
+    actionDisabled?(market: any, index: number): { deposit?: boolean; withdraw?: boolean; };
   }[];
   markets: any;
   onSuccess?: any;

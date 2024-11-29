@@ -75,6 +75,7 @@ const MarketsLaptop = (props: Props) => {
                   );
                 }
                 if (col.type === 'action') {
+                  const disabled = col.actionDisabled?.(market, index);
                   return (
                     <div className="flex space-x-[10px]" key={idx}>
                       <Popover
@@ -84,6 +85,7 @@ const MarketsLaptop = (props: Props) => {
                         <Button
                           style={{ width: 32 }}
                           onClick={() => onDeposit?.(market, index)}
+                          disabled={disabled?.deposit}
                         >
                           +
                         </Button>
@@ -95,6 +97,7 @@ const MarketsLaptop = (props: Props) => {
                         <Button
                           style={{ width: 32 }}
                           onClick={() => onWithdraw?.(market, index)}
+                          disabled={disabled?.withdraw}
                         >
                           -
                         </Button>

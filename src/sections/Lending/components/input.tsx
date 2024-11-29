@@ -5,8 +5,10 @@ import InputNumber from '@/components/input-number';
 import Big from 'big.js';
 
 const CurrencyInput = forwardRef<any, any>((props, ref) => {
-  const { amount, onAmount, onBalance, tokens, token, onToken, className } = props;
+  const { amount, onAmount, onBalance, tokens, token, onToken, className, balanceText = 'Balance' } = props;
   const isTokenSelectable = typeof onToken === 'function';
+
+  console.log(token);
 
   const [tokenSelectVisible, setTokenSelectVisible] = useState(false);
 
@@ -26,8 +28,26 @@ const CurrencyInput = forwardRef<any, any>((props, ref) => {
           className={`${isTokenSelectable ? 'cursor-pointer' : ''} absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] md:w-[120px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]`}
         >
           <div className="flex items-center gap-[8px]">
-            <img src={token?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0" />
-            <div className="leading-none">
+            {
+              !!token?.underlyingTokens ? (
+                <div className="flex items-center">
+                  {
+                    token?.underlyingTokens.map((t: any, idx: number) => (
+                      <img
+                        key={idx}
+                        src={t?.icon}
+                        alt=""
+                        className="w-[26px] h-[26px] rounded-full border-0"
+                        style={{ marginLeft: idx > 0 ? -15 : 0 }}
+                      />
+                    ))
+                  }
+                </div>
+              ) : (
+                <img src={token?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0" />
+              )
+            }
+            <div className="leading-none whitespace-nowrap">
               <div className="text-[16px] font-[600] text-black">{token?.symbol}</div>
               <div className="text-[12px] text-[#3D405A] font-[500] mt-[3px]">{token?.name}</div>
             </div>
@@ -59,7 +79,7 @@ const CurrencyInput = forwardRef<any, any>((props, ref) => {
           )
         }
         <div className="text-[#3D405A] text-[12px] font-[500]">
-          balance:&nbsp;
+          {balanceText}:&nbsp;
           <span
             className="underline cursor-pointer"
             onClick={onBalance}

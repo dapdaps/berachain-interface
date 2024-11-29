@@ -1,24 +1,56 @@
 import Button from '@/components/button';
-import Health from '@/sections/Lending/Beraborrow/health';
+import Health, { Status } from '@/sections/Lending/Beraborrow/health';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Big from 'big.js';
+import { ActionText } from '@/sections/Lending/Beraborrow/form';
 
 const Info = (props: any) => {
-  const { market = {} } = props;
+  const { market = {}, riskyRatio, newValue, type, onClose, loading } = props;
+
+  const rangeRef = useRef<any>(null);
+  const [riskPosition, setRiskPosition] = useState(0);
+
+  const calcRiskPosition = () => {
+    if (!rangeRef.current) return 0;
+    const width = parseFloat(getComputedStyle(rangeRef.current).width);
+    if (!riskyRatio || !market.collateralRatio) return width / 2;
+    let p: any = Big(100).div(Big(riskyRatio).times(2)).times(market.collateralRatio).toNumber();
+    p = Math.max(0, Math.min(100, p));
+    return Big(p).div(100).times(width).toNumber();
+  };
+
+  useEffect(() => {
+    const _risk = calcRiskPosition();
+    setRiskPosition(_risk);
+  }, [market]);
 
   return (
     <div className="bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[20px_24px] flex-1 flex flex-col items-stretch gap-[5px]">
       <Item label="Vault APY" value={market.apyShown} />
       <Item label="Interest Rate" value={market.interestRateShown} />
-      <Item label={`${market.symbol} value`} value={market.balanceUsdShown} newValue="" />
-      <Item label={`${market.symbol} amount`} value={market.balanceShown} newValue="" />
-      <Item label="NECT borrowed" value={market.borrowedShown} newValue="" />
-      <Item label="Liquidation Price" value={market.liquidationPriceShown} newValue="" />
+      <Item label={`${market.collToken.symbol} value`} value={market.balanceUsdShown} newValue={newValue?.balanceUsdShown} />
+      <Item label={`${market.collToken.symbol} amount`} value={market.balanceShown} newValue={newValue?.balanceShown} />
+      <Item label="NECT borrowed" value={market.borrowedShown} newValue={newValue?.borrowedShown} />
+      {
+        market.balance && Big(market.balance).gt(0) && (
+          <Item label="Liquidation Price" value={market.liquidationPriceShown} newValue={newValue?.liquidationPriceShown} />
+        )
+      }
       <Item label="Current Price" value={market.priceShown} />
-      <Item label="Collateral Ratio" value="197% - Good" note="The ratio of your collateral's value to your NECT debt. It's vital to maintain this ratio above the minimum threshold to avoid liquidations." />
+      <Item
+        label="Collateral Ratio"
+        empty={!market.collateralRatio || Big(market.collateralRatio).lte(0)}
+        value={market.collateralRatioShown + ' - ' + Status[market.collateralRatioRisk].name}
+        note="The ratio of your collateral's value to your NECT debt. It's vital to maintain this ratio above the minimum threshold to avoid liquidations."
+        risk={Status[market.collateralRatioRisk]}
+      />
       <Item
         label="MCR"
-        value={market.MCR}
+        value={(
+          <div style={{ color: `rgb(${Status.HighRisk.color})` }}>{market.MCR}%</div>
+        )}
         note={(
           <div className="">
             <div className="text-[16px] font-[500]">
@@ -32,7 +64,9 @@ const Info = (props: any) => {
       />
       <Item
         label="CCR"
-        value={market.CCR}
+        value={(
+          <div style={{ color: `rgb(${Status.MidRisk.color})` }}>{market.CCR}%</div>
+        )}
         note={(
           <div className="">
             <div className="text-[16px] font-[500]">
@@ -46,7 +80,9 @@ const Info = (props: any) => {
       />
       <Item
         label="TCR"
-        value="-"
+        value={(
+          <div style={{ color: `rgb(${Status.LowRisk.color})` }}>{market.TCR}%</div>
+        )}
         note={(
           <div className="">
             <div className="text-[16px] font-[500]">
@@ -58,30 +94,43 @@ const Info = (props: any) => {
           </div>
         )}
       />
-      <div
-        className="w-full h-[10px] rounded-[4px] relative bg-gradient-to-r from-green-500 to-red-500 my-[10px]"
+      {/*<div
+        ref={rangeRef}
+        className="w-full h-[10px] rounded-[4px] relative bg-gradient-to-r from-red-500 to-green-500 my-[10px]"
         style={{ backgroundImage: 'linear-gradient(to right,var(--tw-gradient-stops))' }}
       >
-        <div className="absolute z-[1] left-0 top-[-5px] w-[8px] rounded-[4px] h-[20px] bg-[#FFDC50]"></div>
-        <div className="text-green-500 text-[12px] font-[400] absolute left-0 bottom-[-24px]">Low Risk</div>
-        <div className="text-red-500 text-[12px] font-[400] absolute right-0 bottom-[-24px]">High Risk</div>
-      </div>
-      <div className="w-full mt-[20px]">
-        <Button
-          type="default"
-          className="w-full h-[60px]"
-        >
-          Close Position
-        </Button>
-      </div>
+        <motion.div
+          className="absolute z-[1] left-0 top-[-5px] w-[8px] rounded-[4px] h-[20px] bg-[#FFDC50]"
+          animate={{
+            x: riskPosition
+          }}
+        />
+        <div className="text-green-500 text-[12px] font-[400] absolute right-0 bottom-[-24px]">Low Risk</div>
+        <div className="text-red-500 text-[12px] font-[400] absolute left-0 bottom-[-24px]">High Risk</div>
+      </div>*/}
+      {
+        type === ActionText.Repay && market.status === 'open' && (
+          <div className="w-full mt-[20px]">
+            <Button
+              type="default"
+              className="w-full h-[60px]"
+              onClick={onClose}
+              loading={loading}
+              disabled={loading}
+            >
+              Close Position
+            </Button>
+          </div>
+        )
+      }
     </div>
   );
 };
 
 export default Info;
 
-function Item(props: any) {
-  const { label, value, newValue, note } = props;
+export function Item(props: any) {
+  const { label, value, newValue, note, risk, empty } = props;
 
   const isCollateralRatio = label === 'Collateral Ratio';
 
@@ -108,9 +157,11 @@ function Item(props: any) {
       </div>
       {
         isCollateralRatio && (
-          <Health>
-            {value}
-          </Health>
+          empty ? '-' : (
+            <Health risk={risk}>
+              {value}
+            </Health>
+          )
         )
       }
       {

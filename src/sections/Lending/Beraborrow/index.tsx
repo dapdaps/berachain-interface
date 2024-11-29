@@ -3,12 +3,11 @@ import Tabs from '@/components/tabs';
 import dynamic from 'next/dynamic';
 import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
-import { useMultiState } from '@/hooks/use-multi-state';
-import { numberFormatter } from '@/utils/number-formatter';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import Markets from '@/sections/Lending/components/markets';
-import BorrowModal from '@/sections/Lending/Beraborrow/form';
+import BorrowModal, { ActionText } from '@/sections/Lending/Beraborrow/form';
 import { usePriceStore } from '@/stores/usePriceStore';
+import Big from 'big.js';
 
 const BeraborrowData = dynamic(() => import('../datas/beraborrow'));
 
@@ -21,7 +20,8 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
 
   const { config } = dapp || {};
   const { basic, networks } = config || {};
-  const { markets, collVaultRouter, borrowToken } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
+  const network = networks?.[DEFAULT_CHAIN_ID + ''] || {};
+  const { markets, borrowToken, ...rest } = network;
 
   const { address, chainId } = useAccount();
   const { provider } = useProvider();
@@ -33,6 +33,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
   const [data, setData] = useState<any>();
   const [currentMarket, setCurrentMarket] = useState<any>();
+  const [currentType, setCurrentType] = useState<ActionText>();
 
   useEffect(() => {
     if (!chainId) {
@@ -80,7 +81,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                               ))
                             }
                             {
-                              token.vault === collVaultRouter && (
+                              token.vault === 'collVaultRouter' && (
                                 <img src="/images/lending/vaulted.svg" alt="" width={20} height={20} className="absolute z-[1] right-[-10px] top-[-10px]" />
                               )
                             }
@@ -92,7 +93,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                   },
                   {
                     title: 'APY',
-                    dataIndex: 'apy',
+                    dataIndex: 'apyShown',
                     skeletonWidth: 165,
                   },
                   {
@@ -110,15 +111,26 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                     dataIndex: 'action',
                     type: 'action',
                     skeletonWidth: 82,
+                    actionDisabled: (record) => {
+                      return {
+                        deposit: false,
+                        withdraw: !record.balance || Big(record.balance).lte(0),
+                      };
+                    },
                   },
                 ]}
                 markets={data?.markets || []}
                 onSuccess={() => {}}
                 onDeposit={(token: any) => {
+                  setCurrentType(ActionText.Borrow);
                   setCurrentMarket(token);
                   setVisible(true);
                 }}
-                onWithdraw={() => {}}
+                onWithdraw={(token: any) => {
+                  setCurrentType(ActionText.Repay);
+                  setCurrentMarket(token);
+                  setVisible(true);
+                }}
               />
             )
           },
@@ -141,10 +153,19 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
         }}
       />
       <BorrowModal
+        type={currentType}
         visible={visible}
         onClose={() => setVisible(false)}
         market={currentMarket}
         borrowToken={borrowToken}
+        basic={basic}
+        networks={networks}
+        network={network}
+        onSuccess={() => {
+          setLoading(true);
+          setVisible(false);
+        }}
+        {...rest}
       />
     </>
   );

@@ -114,3 +114,7 @@ export const numberFormatter = (
     decimal: secondPart.replace(/[.]?0*$/, '')
   };
 };
+
+export const numberRemoveEndZero = (value: string) => {
+  return value.replace(/\.?0+$/, '');
+};
