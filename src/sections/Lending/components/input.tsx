@@ -5,10 +5,8 @@ import InputNumber from '@/components/input-number';
 import Big from 'big.js';
 
 const CurrencyInput = forwardRef<any, any>((props, ref) => {
-  const { amount, onAmount, onBalance, tokens, token, onToken, className, balanceText = 'Balance' } = props;
+  const { amount, onAmount, onBalance, tokens, token, onToken, className, balanceText = 'Balance', tokenSelectorStyle } = props;
   const isTokenSelectable = typeof onToken === 'function';
-
-  console.log(token);
 
   const [tokenSelectVisible, setTokenSelectVisible] = useState(false);
 
@@ -26,25 +24,26 @@ const CurrencyInput = forwardRef<any, any>((props, ref) => {
             setTokenSelectVisible(true);
           }}
           className={`${isTokenSelectable ? 'cursor-pointer' : ''} absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] md:w-[120px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]`}
+          style={tokenSelectorStyle}
         >
           <div className="flex items-center gap-[8px]">
             {
               !!token?.underlyingTokens ? (
-                <div className="flex items-center">
+                <div className="flex items-center shrink-0">
                   {
                     token?.underlyingTokens.map((t: any, idx: number) => (
                       <img
                         key={idx}
                         src={t?.icon}
                         alt=""
-                        className="w-[26px] h-[26px] rounded-full border-0"
+                        className="w-[26px] h-[26px] rounded-full border-0 shrink-0"
                         style={{ marginLeft: idx > 0 ? -15 : 0 }}
                       />
                     ))
                   }
                 </div>
               ) : (
-                <img src={token?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0" />
+                <img src={token?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0 shrink-0" />
               )
             }
             <div className="leading-none whitespace-nowrap">

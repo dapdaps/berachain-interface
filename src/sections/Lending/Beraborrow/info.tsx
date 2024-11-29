@@ -7,7 +7,7 @@ import Big from 'big.js';
 import { ActionText } from '@/sections/Lending/Beraborrow/form';
 
 const Info = (props: any) => {
-  const { market = {}, riskyRatio, newValue, type, onClose, loading } = props;
+  const { market = {}, riskyRatio, newValue, type, onClose, loading, style } = props;
 
   const rangeRef = useRef<any>(null);
   const [riskPosition, setRiskPosition] = useState(0);
@@ -27,7 +27,7 @@ const Info = (props: any) => {
   }, [market]);
 
   return (
-    <div className="bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[20px_24px] flex-1 flex flex-col items-stretch gap-[5px]">
+    <div style={style} className="bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[20px_24px] flex-1 flex flex-col items-stretch gap-[5px]">
       <Item label="Vault APY" value={market.apyShown} />
       <Item label="Interest Rate" value={market.interestRateShown} />
       <Item label={`${market.collToken.symbol} value`} value={market.balanceUsdShown} newValue={newValue?.balanceUsdShown} />

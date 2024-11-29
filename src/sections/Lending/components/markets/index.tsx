@@ -32,6 +32,7 @@ export interface Props {
   isSwap?: boolean;
   depositPanel?: any;
   withdrawPanel?: any;
+  className?: string;
   onDeposit?(market: any, index: number): void;
   onWithdraw?(market: any, index: number): void;
 }

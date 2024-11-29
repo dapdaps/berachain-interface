@@ -16,6 +16,8 @@ import LendingButton from '@/sections/Lending/components/button';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import useAddAction from '@/hooks/use-add-action';
 import ClosePositionModal from '@/sections/Lending/Beraborrow/close';
+import { useDebounceFn } from 'ahooks';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const BeraborrowHandler = dynamic(() => import('@/sections/Lending/handlers/beraborrow'));
 
@@ -30,6 +32,7 @@ export const Form = (props: any) => {
     basic,
     network,
     onSuccess,
+    isMobile,
   } = props;
 
   const { address, chainId } = useAccount();
@@ -201,9 +204,13 @@ export const Form = (props: any) => {
     setClosePosition(true);
   };
 
+  const { run: getTxData } = useDebounceFn(() => {
+    setLoading(true);
+  }, { wait: 300 });
+
   useEffect(() => {
     if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0))) return;
-    setLoading(true);
+    getTxData();
   }, [amount, borrowAmount]);
 
   useEffect(() => {
@@ -211,13 +218,20 @@ export const Form = (props: any) => {
   }, [type]);
 
   return (
-    <div className="px-[12px] py-[20px] flex justify-between items-stretch gap-4">
+    <div
+      className="px-[12px] py-[20px] flex justify-between items-stretch gap-4"
+      style={isMobile ? { flexDirection: 'column', maxHeight: '80dvh', overflow: 'auto' } : {}}
+    >
       <Info
         {...props}
         onClose={handleClosePosition}
         loading={loading}
+        style={isMobile ? { width: '100%', order: 2 } : {}}
       />
-      <div className="w-[450px] shrink-0 flex flex-col items-stretch gap-[10px]">
+      <div
+        className="w-[450px] shrink-0 flex flex-col items-stretch gap-[10px]"
+        style={isMobile ? { width: '100%', order: 1 } : {}}
+      >
         <div className="text-black text-[16px] font-[600]">
           {CollateralAction[type]} Collateral
         </div>
@@ -233,6 +247,9 @@ export const Form = (props: any) => {
             handleAmount(collateralBalance);
           }}
           tokens={[]}
+          tokenSelectorStyle={{
+            width: isMobile ? "auto" : 176,
+          }}
         />
         <div className="text-black text-[16px] font-[600]">
           {borrowTokenLabel}
@@ -343,17 +360,22 @@ export const Form = (props: any) => {
 const BorrowModal = (props: any) => {
   const { visible, onClose, type } = props;
 
+  const isMobile = useIsMobile();
+
   return (
     <Modal
       open={visible}
       onClose={onClose}
-      isMaskClose={false}
+      isMaskClose={isMobile}
     >
-      <div className="bg-[#FFFDEB] rounded-[20px] border border-black shadow-shadow1 w-[900px]">
+      <div
+        className="bg-[#FFFDEB] rounded-[20px] border border-black shadow-shadow1"
+        style={{ width: isMobile ? '100%' : 900 }}
+      >
         <div className="text-black font-[700] text-[18px] px-[12px] pt-[20px]">
           {type === ActionText.Repay ? 'Manage' : type}
         </div>
-        <Form {...props} />
+        <Form {...props} isMobile={isMobile} />
       </div>
     </Modal>
   );

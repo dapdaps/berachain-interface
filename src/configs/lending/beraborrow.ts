@@ -132,7 +132,7 @@ const networks = {
         collVault: '0xcc4db6de3c5a131757e9f00309f3ef5c443d1a8e',
         denManager: '0xa327715040e6d2051d7fdd4e42d4a8873cf9e2a7',
         approveSpender: '0xb35a972df0616924f85b99d7248880925eb82d52',
-        collIndex: '2',
+        collIndex: '3',
         // Ratio must be at least 120%
         MCR: 110,
         CCR: 150,
@@ -147,7 +147,7 @@ const networks = {
         vault: 'collVaultRouter',
         collVault: '0xcc4db6de3c5a131757e9f00309f3ef5c443d1a8e',
         denManager: '0xa327715040e6d2051d7fdd4e42d4a8873cf9e2a7',
-        collIndex: '2',
+        collIndex: '3',
         MCR: 110,
         CCR: 150,
         TCR: 149,

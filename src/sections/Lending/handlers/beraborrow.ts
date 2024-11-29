@@ -744,14 +744,6 @@ const BeraborrowHandler = (props: any) => {
 
     if (!method) return;
 
-    console.log('contractAddress: %o', contractAddress);
-    console.log('borrowAmount: %o', borrowAmount);
-    console.log('parsedAmount: %o', parsedAmount);
-    console.log('parsedBorrowAmount: %o', parsedBorrowAmount);
-    console.log('isOpened: %o', isOpened);
-    console.log('isRepay: %o', isRepay);
-    console.log('method: %o', method);
-
     const option = {
       value: (['Borrow'].includes(actionText) && market.isNative) ? parsedAmount : void 0,
     };

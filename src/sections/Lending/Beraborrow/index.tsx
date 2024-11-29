@@ -60,6 +60,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
               <Markets
                 loading={loading}
                 laptopGridCols="grid-cols-[3fr_2fr_2fr_2fr_1fr]"
+                className="max-h-[70dvh] overflow-y-auto"
                 columns={[
                   {
                     title: 'Token',
@@ -92,14 +93,30 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                     },
                   },
                   {
-                    title: 'APY',
+                    title: 'Borrowed',
                     dataIndex: 'apyShown',
                     skeletonWidth: 165,
+                    render: (text: any, record: any, idx: number) => {
+                      return (
+                        <div className="flex items-center gap-[5px]">
+                          <div className="">{record.borrowedShown}</div>
+                          <div className="text-[0.8em]">{record.borrowToken.symbol}</div>
+                        </div>
+                      );
+                    },
                   },
                   {
                     title: 'Balance',
                     dataIndex: 'balanceShown',
                     skeletonWidth: 165,
+                    render: (text: any, record: any, idx: number) => {
+                      return (
+                        <div className="flex items-center gap-[5px]">
+                          <div className="">{record.balanceShown}</div>
+                          <div className="text-[0.8em]">{record.collToken.symbol}</div>
+                        </div>
+                      );
+                    },
                   },
                   {
                     title: 'In Wallet',

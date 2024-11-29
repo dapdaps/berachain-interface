@@ -3,15 +3,16 @@ import SwapModal from '@/sections/swap/SwapModal';
 import React, { useMemo, useState } from 'react';
 import { useSwapToken } from '@/hooks/use-swap-token';
 import { Props } from '@/sections/Lending/components/markets/index';
+import { className } from 'postcss-selector-parser';
 
 const MarketsMobile = (props: Props) => {
-  const { loading, loadingLength = 4, columns, markets, onSuccess, isSwap = true, onDeposit, onWithdraw } = props;
+  const { loading, className, loadingLength = 4, columns, markets, onSuccess, isSwap = true, onDeposit, onWithdraw } = props;
 
   const [swapToken, setSwapToken, handleSwap, protocols] = useSwapToken();
 
   return (
     <>
-      <div className="mt-[20px] flex flex-col gap-[12px]">
+      <div className={`mt-[20px] flex flex-col gap-[12px] ${className}`}>
         {
           loading && [...new Array(loadingLength)].map((_, i) => (
             <Skeleton key={i} width={'100%'} height={138} borderRadius={10} />

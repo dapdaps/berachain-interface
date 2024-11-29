@@ -26,7 +26,20 @@ const ERC20_ABI = [
     payable: false,
     stateMutability: 'view',
     type: 'function'
-  }
+  },
+  {
+    type: "function",
+    name: "fetchPrice",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
 ];
 
 const BeraborrowData = (props: any) => {
@@ -84,31 +97,31 @@ const BeraborrowData = (props: any) => {
 
     const getPrices = () => {
       return new Promise((resolve) => {
-        axios
-          .post(graphApi, priceParams(markets))
-          .then((pricesRes) => {
-            const { tokens = [] } = pricesRes?.data?.data || {};
-            const result = markets.map((m: any) => {
-              const obj: any = {
-                id: m.id,
-                address: m.address,
-                isNative: m.isNative,
-                symbol: m.symbol,
-                decimals: m.decimals,
-                price: prices[m.symbol] || '0',
-              };
-              const curr = tokens.find((d: any) => {
-                return d.id.toLowerCase() === obj.address.toLowerCase();
+        const result: any = [];
+        const calls = markets.map((token: any) => ({
+          address: token.denManager,
+          name: 'fetchPrice',
+          params: []
+        }));
+        multicall({
+          abi: ERC20_ABI,
+          calls,
+          options: {},
+          multicallAddress,
+          provider: provider
+        })
+          .then((res: any) => {
+            for (let i = 0; i < res.length; i++) {
+              result.push({
+                id: markets[i].id,
+                price: utils.formatUnits(res[i]?.[0]?._hex || '0', 36 - markets[i].decimals),
               });
-              if (!curr) return obj;
-              obj.price = utils.formatUnits(curr.price.price, 36 - obj.decimals);
-              return obj;
-            });
+            }
             resolve(result);
           })
           .catch((err: any) => {
-            resolve({});
-            console.log('getPrices failure: %o', err);
+            console.log('getPrices error', err);
+            resolve(result);
           });
       });
     };
@@ -230,7 +243,7 @@ const BeraborrowData = (props: any) => {
         if (Big(currBorrow?.collateral || 0).gt(0)) {
           liquidationPrice = Big(currBorrow?.debt || 0).times(Big(parseFloat(market.MCR)).div(100)).div(currBorrow?.collateral);
         }
-        const balanceUsd = Big(currBorrow?.collateral || 0).times(currDenManager?.price || 0);
+        const balanceUsd = Big(currBorrow?.collateral || 0).times(currPrice?.price || 0);
         let collateralRatio = Big(0);
         if (Big(currBorrow?.debt || 0).gt(0)) {
           collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
@@ -252,8 +265,8 @@ const BeraborrowData = (props: any) => {
           borrowedShown: numberFormatter(currBorrow?.debt, 2, true),
           walletBalance: currWalletBalance,
           walletBalanceShown: numberFormatter(currWalletBalance, 2, true),
-          price: currDenManager?.price,
-          priceShown: numberFormatter(currDenManager?.price, 2, true, { prefix: '$' }),
+          price: currPrice?.price,
+          priceShown: numberFormatter(currPrice?.price, 2, true, { prefix: '$' }),
           interestRate: currDenManager?.interestRate,
           interestRateShown: currDenManager?.interestRate + '%',
           apy: '100',
