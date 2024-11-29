@@ -9,11 +9,14 @@ import poolV2 from "../abi/pool-v2";
 import { getTokenAmountsV2 } from "../helpers";
 import { TOKENS } from "@/configs";
 import weth from "@/configs/contract/weth";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { balanceFormated } from "@/utils/balance";
 
 export default function usePools(isSimple?: boolean) {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const { account, provider } = useAccount();
+  const prices = usePriceStore((store: any) => store.price);
 
   const queryPools = useCallback(async () => {
     setLoading(true);
@@ -73,6 +76,8 @@ export default function usePools(isSimple?: boolean) {
       data.forEach(({ pool }: any, i: number) => {
         if (!balanceResult[i] || !supplyResult[i]) return;
         const _weth = weth[DEFAULT_CHAIN_ID].toLowerCase();
+        const b = balanceResult[i][0].toString();
+        const t = supplyResult[i][0].toString();
         const token0 = {
           ...TOKENS[pool.base === _weth ? "native" : pool.base],
           address: pool.base
@@ -82,8 +87,8 @@ export default function usePools(isSimple?: boolean) {
           address: pool.quote
         };
         const { amount0, amount1 } = getTokenAmountsV2({
-          liquidity: balanceResult[i][0].toString(),
-          totalSupply: supplyResult[i][0].toString(),
+          liquidity: b,
+          totalSupply: t,
           reserve0: Big(pool.baseAmount)
             .mul(10 ** pool.baseInfo.decimals)
             .toString(),
@@ -94,12 +99,28 @@ export default function usePools(isSimple?: boolean) {
           token1
         });
 
+        const price0 = prices[token0.symbol || token0.priceKey];
+        const price1 = prices[token1.symbol || token1.priceKey];
+
+        const shares = Big(b).div(t).mul(100).toString();
+
         _pools.push({
           token0,
           token1,
           fee: pool.template.feeRate,
           amount0,
-          amount1
+          amount1,
+          shares: balanceFormated(shares, 2),
+          deposit:
+            price0 && price1
+              ? balanceFormated(
+                  Big(amount0)
+                    .mul(price0)
+                    .add(Big(amount1).mul(price1))
+                    .toString(),
+                  2
+                )
+              : 0
         });
       });
 

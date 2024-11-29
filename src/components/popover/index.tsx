@@ -1,7 +1,7 @@
-import { createPortal } from 'react-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useDebounceFn } from 'ahooks';
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useDebounceFn } from "ahooks";
 
 // Placement:
 //            TopLeft         Top         TopRight
@@ -21,8 +21,8 @@ const Popover = (props: Props) => {
     contentStyle,
     contentClassName,
     triggerContainerStyle,
-    triggerContainerClassName,
-    } = props;
+    triggerContainerClassName
+  } = props;
 
   const triggerRef = useRef<any>();
 
@@ -31,10 +31,13 @@ const Popover = (props: Props) => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
 
-  const { run: closeDelay, cancel: closeCancel } = useDebounceFn(() => {
-    setVisible(false);
-    setRealVisible(false);
-  }, { wait: 300 });
+  const { run: closeDelay, cancel: closeCancel } = useDebounceFn(
+    () => {
+      setVisible(false);
+      setRealVisible(false);
+    },
+    { wait: 300 }
+  );
 
   return (
     <>
@@ -58,15 +61,20 @@ const Popover = (props: Props) => {
       >
         {children}
       </div>
-      {
-        visible && createPortal(
+      {visible &&
+        createPortal(
           <Card
             x={x}
             y={y}
             onLoaded={(elTooltip) => {
               const triggerEl = triggerRef.current;
-              
-              const { width: triggerW, height: triggerH, x: triggerX, y: triggerY } = triggerEl.getBoundingClientRect();
+
+              const {
+                width: triggerW,
+                height: triggerH,
+                x: triggerX,
+                y: triggerY
+              } = triggerEl.getBoundingClientRect();
 
               const { width: w, height: h } = elTooltip.getBoundingClientRect();
 
@@ -133,9 +141,11 @@ const Popover = (props: Props) => {
 
               // edge
               if (targetX < 0) targetX = 0;
-              if (targetX > window.innerWidth - w) targetX = window.innerWidth - w;
+              if (targetX > window.innerWidth - w)
+                targetX = window.innerWidth - w;
               if (targetY < 0) targetY = 0;
-              if (targetY > window.innerHeight - h) targetY = window.innerHeight - h;
+              if (targetY > window.innerHeight - h)
+                targetY = window.innerHeight - h;
 
               setX(targetX);
               setY(targetY);
@@ -152,12 +162,12 @@ const Popover = (props: Props) => {
             closeDelay={closeDelay}
             closeCancel={closeCancel}
             trigger={trigger}
+            triggerRef={triggerRef}
           >
             {content}
           </Card>,
           document.body
-        )
-      }
+        )}
     </>
   );
 };
@@ -181,8 +191,8 @@ export enum PopoverPlacement {
 }
 
 export enum PopoverTrigger {
-  Click = 'click',
-  Hover = 'hover',
+  Click = "click",
+  Hover = "hover"
 }
 
 interface Props {
@@ -212,6 +222,7 @@ const Card = (props: CardProps) => {
     closeDelay,
     closeCancel,
     trigger,
+    triggerRef
   } = props;
 
   const cardRef = useRef<any>(null);
@@ -221,36 +232,45 @@ const Card = (props: CardProps) => {
     onLoaded(cardRef.current);
 
     const handleClose = (e: any) => {
-      if (cardRef.current.contains(e.target)) return;
+      if (
+        cardRef.current.contains(e.target) ||
+        triggerRef.current?.contains(e.target)
+      )
+        return;
       onClose();
     };
-    document.addEventListener('click', handleClose);
+    document.addEventListener("click", handleClose);
     return () => {
-      document.removeEventListener('click', handleClose);
+      document.removeEventListener("click", handleClose);
     };
   }, []);
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        className={`fixed z-10 left-0 top-0 ${className}`}
+        className={`fixed z-[100] left-0 top-0 ${className}`}
         ref={cardRef}
         style={{
           left: x,
           top: y,
-          visibility: visible ? 'visible' : 'hidden',
-          ...style,
+          visibility: visible ? "visible" : "hidden",
+          ...style
         }}
         animate={{
           opacity: 1,
           x: 0,
-          transition: { type: 'spring', stiffness: 200, damping: 15, duration: 1 }
+          transition: {
+            type: "spring",
+            stiffness: 200,
+            damping: 15,
+            duration: 1
+          }
         }}
         exit={{
-          opacity: 0,
+          opacity: 0
         }}
         initial={{
-          opacity: 0,
+          opacity: 0
         }}
         onMouseEnter={() => {
           if (trigger === PopoverTrigger.Click) return;
@@ -282,6 +302,7 @@ interface CardProps {
   closeDelay: () => void;
   closeCancel: () => void;
   trigger: PopoverTrigger;
+  triggerRef: any;
 
   onLoaded(cardRef: any): void;
   onClose(): void;

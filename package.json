@@ -31,6 +31,7 @@
     "react-loading-skeleton": "^3.5.0",
     "react-toastify": "^10.0.5",
     "terser-webpack-plugin": "^5.3.10",
+    "swiper": "^11.1.15",
     "viem": "^2.21.37",
     "wagmi": "^2.12.25",
     "zustand": "^5.0.0-rc.2"

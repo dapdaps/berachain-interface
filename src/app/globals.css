@@ -1,17 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "swiper/css";
+@import "swiper/css/autoplay";
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('./fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
 
 @font-face {
-  font-family: 'Cherry Bomb';
-  src: url('./fonts/CherryBombOne-Regular.ttf') format('truetype');
+  font-family: "Cherry Bomb";
+  src: url("/fonts/CherryBombOne-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+}
+
+@font-face {
+  font-family: "Pixel";
+  src: url("/fonts/5squared-pixel.ttf") format("truetype");
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
@@ -45,7 +54,7 @@ body {
 button,
 a,
 .cursor-pointer {
-  cursor: url('../../public/images/cursor.svg') 12 0, auto;
+  cursor: url("../../public/images/cursor.svg") 12 0, auto;
 }
 
 @layer utilities {
@@ -78,7 +87,7 @@ body::-webkit-scrollbar-thumb,
 div::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border-radius: 6px;
-  cursor: url('../../public/images/cursor.svg') 12 0, auto;
+  cursor: url("../../public/images/cursor.svg") 12 0, auto;
 }
 body::-webkit-scrollbar-thumb:hover,
 div::-webkit-scrollbar-thumb:hover {
@@ -91,8 +100,8 @@ input {
 input:disabled {
   background-color: transparent;
 }
-input[type='number']::-webkit-outer-spin-button,
-input[type='number']::-webkit-inner-spin-button {
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
@@ -108,11 +117,17 @@ input[type='number']::-webkit-inner-spin-button {
 }
 
 .cave-bg {
-  background: var(--background) url(/images/cave/cave-empty.png) center top no-repeat;
+  background: var(--background) url(/images/cave/cave-empty.png) center top
+    no-repeat;
   background-size: 104% 100%;
   min-height: 890px;
   min-width: 1200px;
   .bear-header {
     background: none;
   }
+}
+
+.swiper-wrapper {
+  display: flex;
+  justify-content: center;
 }

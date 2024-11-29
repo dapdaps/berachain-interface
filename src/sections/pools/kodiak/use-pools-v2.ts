@@ -8,11 +8,15 @@ import poolV2 from "../abi/pool-v2";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { getTokenAmountsV2 } from "../helpers";
 import { TOKENS } from "@/configs";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { balanceFormated } from "@/utils/balance";
 
 export default function usePoolsV2(isSimple?: boolean) {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const { account, provider } = useAccount();
+  const prices = usePriceStore((store: any) => store.price);
+
   const queryPools = useCallback(async () => {
     setLoading(true);
 
@@ -57,24 +61,47 @@ export default function usePoolsV2(isSimple?: boolean) {
 
       data.forEach(({ pair }: any, i: number) => {
         if (!balanceResult[i]) return;
+        const t = Big(pair.totalSupply || 0)
+          .mul(1e18)
+          .toString();
+        const b = balanceResult[i][0].toString();
+        const token0 = TOKENS[pair.token0.id] || pair.token0;
+        const token1 = TOKENS[pair.token1.id] || pair.token1;
+        const price0 = prices[token0.symbol || token0.priceKey];
+        const price1 = prices[token1.symbol || token1.priceKey];
         const { amount0, amount1 } = getTokenAmountsV2({
-          liquidity: balanceResult[i][0].toString(),
-          totalSupply: Big(pair.totalSupply).mul(1e18).toString(),
+          liquidity: b,
+          totalSupply: t,
           reserve0: Big(pair.reserve0)
             .mul(10 ** pair.token0.decimals)
             .toString(),
           reserve1: Big(pair.reserve1)
             .mul(10 ** pair.token1.decimals)
             .toString(),
-          token0: pair.token0,
-          token1: pair.token1
+          token0: token0,
+          token1: token1
         });
 
+        const deposit =
+          price0 && price1 && amount0 && amount1
+            ? balanceFormated(
+                Big(price0)
+                  .mul(amount0)
+                  .add(Big(price1).mul(amount1))
+                  .toString(),
+                2
+              )
+            : "";
+
+        const shares = Big(b).div(t).mul(100).toFixed(2);
+
         _pools.push({
-          token0: TOKENS[pair.token0.id] || pair.token0,
-          token1: TOKENS[pair.token1.id] || pair.token1,
+          token0,
+          token1,
           amount0,
           amount1,
+          deposit,
+          shares,
           id: `${pair.token0}-${pair.token1}`
         });
       });
