@@ -125,6 +125,8 @@ export default function Staking({ dapp }: Props) {
     isVaults,
     dapp.name,
   ]);
+
+
   return (
     <Card>
       {id ? (
@@ -144,7 +146,6 @@ export default function Staking({ dapp }: Props) {
           reload={reload}
         />
       )}
-
       <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
 
 
@@ -161,6 +162,7 @@ export default function Staking({ dapp }: Props) {
         onSuccess={() => {
           reload()
           setCheckedRecord(null)
+          listRef?.current?.changeCheckedIndex(-1)
         }}
       />
     </Card>

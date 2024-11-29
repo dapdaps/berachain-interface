@@ -130,7 +130,7 @@ export default memo(function aquabera(props: any) {
     const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider)
     const response0 = await contract.deposit0Max()
     const response1 = await contract.deposit1Max()
-    setDepositMaxAmount(Math.min(ethers.utils.formatUnits(response0), ethers.utils.formatUnits(response1)))
+    setDepositMaxAmount(Math.min(ethers.utils.formatUnits(response0, token0?.decimals), ethers.utils.formatUnits(response1, token1?.decimals)))
   }
   const handleSuccess = () => {
     // onSuccess?.()

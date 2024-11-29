@@ -333,7 +333,6 @@ const List = forwardRef<any, any>((props, ref) => {
       type: 'slot',
       render: (data: any) => {
         const pool = data?.pool;
-        console.log('===pool', pool)
         return (
           <img
             style={{ width: 26 }}

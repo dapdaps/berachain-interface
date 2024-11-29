@@ -170,12 +170,13 @@ export default function Invest(props: any) {
         width: "15%",
         render: (text: string, record: any) => {
           const pool = record?.pool;
+          console.log('===pool', pool)
           return (
             <img
               style={{ width: 20 }}
               src={pool?.protocol === 'BEX'
                 ? '/images/dapps/infrared/bex.svg'
-                : pool?.protocol === 'Kodiak Finance'
+                : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
                   ? '/images/dapps/kodiak.svg'
                   : '/images/dapps/infrared/berps.svg'}
             />
