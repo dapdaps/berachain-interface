@@ -116,8 +116,9 @@ export default memo(function index(props) {
   }
   const getMaxDepositAmount = async () => {
     const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider)
-    const response = await contract.deposit0Max()
-    setDepositMaxAmount(ethers.utils.formatUnits(response))
+    const response0 = await contract.deposit0Max()
+    const response1 = await contract.deposit1Max()
+    setDepositMaxAmount(Math.min(ethers.utils.formatUnits(response0), ethers.utils.formatUnits(response1)))
   }
   const handleSuccess = () => {
     onSuccess?.()
@@ -276,14 +277,12 @@ export default memo(function index(props) {
   }, [isBera, config])
 
   useEffect(() => {
-    // console.log('====token1', token1)
     setApr(token1?.apr)
     setIchiAddress(token1?.ichiAddress)
     setValues(token1?.values)
   }, [token1])
 
   useEffect(() => {
-    // console.log('====data', data)
     if (show) {
       if (data?.pairedTokens) {
         const _pairedTokens = data?.pairedTokens
@@ -462,8 +461,8 @@ export default memo(function index(props) {
             ) : (
               <div className='mt-[-16px] mb-[8px] flex justify-end'>
                 <div className='flex flex-col gap-[2px]'>
-                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[0] ?? 0).times(percentage).div(100).toFixed(), '', 2)} {token0?.symbol}</div>
-                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[1] ?? 0).times(percentage).div(100).toFixed(), '', 2)} {token1?.symbol}</div>
+                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[0] ?? 0).times(percentage).div(100).toFixed(), '', 2, false, false)} {token0?.symbol}</div>
+                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[1] ?? 0).times(percentage).div(100).toFixed(), '', 2, false, false)} {token1?.symbol}</div>
                 </div>
               </div>
             )

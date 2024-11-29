@@ -129,7 +129,6 @@ export default memo(function AquaBera(props: any) {
             <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
               className={clsx("cursor-pointer", checkedIndex !== index ? "rotate-0" : "rotate-180")}
               onClick={() => {
-                console.log('=====checkedIndex', checkedIndex)
                 updateState({
                   checkedIndex: (checkedIndex === -1 || checkedIndex !== index) ? index : -1
                 })
@@ -275,6 +274,7 @@ export default memo(function AquaBera(props: any) {
       updateState({
         checkedIndex: idx
       })
+      return
     }
     updateState({
       filterList: cloneDataList,

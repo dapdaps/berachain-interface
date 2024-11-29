@@ -17,7 +17,7 @@ export default function useAquaBera(name?: string) {
     [chainId]
   );
 
-  const { reload, getYourValue } = useAquaBeraData({
+  const { reload } = useAquaBeraData({
     name: name || dappConfig?.name,
     pairs: dexConfig?.pairs,
     sender,
@@ -28,10 +28,14 @@ export default function useAquaBera(name?: string) {
       setLoading(false);
     }
   });
+  const handleReload = () => {
+    setLoading(true);
+    reload()
+  }
 
   return {
     dataList,
     loading,
-    reload,
+    reload: handleReload,
   }
 }

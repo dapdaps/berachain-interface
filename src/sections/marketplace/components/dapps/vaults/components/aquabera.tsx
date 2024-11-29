@@ -1,4 +1,5 @@
 import Modal from '@/components/modal';
+import Range from "@/components/range";
 import SwitchTabs from '@/components/switch-tabs';
 import useCustomAccount from '@/hooks/use-account';
 import useAddAction from '@/hooks/use-add-action';
@@ -9,6 +10,7 @@ import Button from '@/sections/staking/Bridge/Button';
 import { ERC20_ABI, ICHI_ABI } from '@/sections/staking/Datas/AquaBera';
 import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
+import clsx from 'clsx';
 import { ethers } from 'ethers';
 import _ from 'lodash';
 import { memo, useEffect, useState } from "react";
@@ -31,7 +33,7 @@ export default memo(function aquabera(props: any) {
     data,
     type,
     config,
-    visible,
+    visible: show,
     setVisible
   } = props
 
@@ -58,7 +60,13 @@ export default memo(function aquabera(props: any) {
   const [owner, setOwner] = useState("")
   const [pairedTokens, setPairedTokens] = useState(null)
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
+  const [values, setValues] = useState(null)
+  const [depositMaxAmout, setDepositMaxAmount] = useState(0)
 
+
+  const handleClose = () => {
+    setVisible(false)
+  };
   const handleMax = () => {
     handleAmountChange(balance)
   }
@@ -108,7 +116,6 @@ export default memo(function aquabera(props: any) {
       const totalSupply = ethers.utils.formatUnits(totalSupplyResult)
       const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[0])
       const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[1])
-      console.log('=balanceOfResult', balanceOfResult.toString())
       setShares(shares)
       setBalance(Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed())
     }
@@ -119,12 +126,18 @@ export default memo(function aquabera(props: any) {
     const response = await contract.owner()
     setOwner(response)
   }
+  const getMaxDepositAmount = async () => {
+    const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider)
+    const response0 = await contract.deposit0Max()
+    const response1 = await contract.deposit1Max()
+    setDepositMaxAmount(Math.min(ethers.utils.formatUnits(response0), ethers.utils.formatUnits(response1)))
+  }
   const handleSuccess = () => {
+    // onSuccess?.()
     setUpdater(Date.now())
   }
 
   const handleDepositOrWithdraw = (updateState: any) => {
-
     const abi = isDeposit ? (isBera ? ETHVaultWithSlippage_ABI : ICHIVaultDepositGuard_ABI) : ICHI_ABI
     const method = isDeposit ? (isBera ? "depositETH" : "forwardDepositToICHIVault") : "withdraw"
 
@@ -225,7 +238,6 @@ export default memo(function aquabera(props: any) {
         addAction?.(addParams);
         setTimeout(() => {
           handleSuccess?.();
-          onSuccess?.()
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -252,25 +264,23 @@ export default memo(function aquabera(props: any) {
   }
 
   const onTokenChange = (token: any) => {
-    console.log('===token', token)
     setToken1(token)
   }
 
-  const handleClose = () => {
-    setVisible(false)
-  };
 
   useEffect(() => {
-    if (visible && account && token0 && ichiAddress) {
+    if (show && account && token0 && ichiAddress) {
       getBalance()
     }
-  }, [account, token0, visible, updater, isBera, ichiAddress])
+  }, [account, token0, show, updater, isBera, ichiAddress])
 
   useEffect(() => {
-    if (visible && ichiAddress) {
+    if (show && ichiAddress) {
       getOwner()
+      getMaxDepositAmount()
     }
-  }, [visible, ichiAddress])
+  }, [show, ichiAddress])
+
 
   useEffect(() => {
     if (config) {
@@ -281,16 +291,17 @@ export default memo(function aquabera(props: any) {
   useEffect(() => {
     setApr(token1?.apr)
     setIchiAddress(token1?.ichiAddress)
+    setValues(token1?.values)
   }, [token1])
 
   useEffect(() => {
-    // console.log('====data', data)
-    if (visible) {
+    if (show) {
       if (data?.pairedTokens) {
         const _pairedTokens = data?.pairedTokens
         const _token1 = _pairedTokens?.[0]
         const token = _.cloneDeep(data)
         delete token.pairedTokens
+
         setToken0(token)
         setToken1(_token1)
         setPairedTokens(_pairedTokens)
@@ -308,9 +319,9 @@ export default memo(function aquabera(props: any) {
       setRangeIndex(-1)
       setPercentage(0)
     }
-  }, [visible, type, data])
+  }, [show, type, data])
   return (
-    <Modal open={visible} onClose={handleClose}>
+    <Modal open={show} onClose={handleClose}>
       <div className='px-[20px] pt-[24px] pb-[20px] lg:w-[520px] rounded-[20px] bg-[#FFFDEB] border border-[#000] shadow-shadow1 z-[51]'>
         <div className='flex items-center gap-[9px] text-black text-[20px] font-[700] leading-[90%]'>
           <span>{`Invest ${token0?.symbol}`}</span>
@@ -357,40 +368,101 @@ export default memo(function aquabera(props: any) {
 
           </div>
 
+
           <div className='flex items-center justify-between'>
             <div className='text-black font-Montserrat text-[14px] font-medium'>
-              {isDeposit ? "Deposit" : "Withdraw"}
+              {isDeposit ? "Deposit" : "Withdrawing"}
             </div>
-            <div
-              className='text-black font-Montserrat text-[14px] font-medium'
-              onClick={handleMax}
-            >
-              Balance:{' '}
-              <span className='underline'>
-                {formatValueDecimal(balance, '', 2)}
-              </span>
-            </div>
+            {
+              isDeposit && (
+                <div
+                  className='text-black font-Montserrat text-[14px] font-medium'
+                  onClick={handleMax}
+                >
+                  Balance:{' '}
+                  <span className='underline'>
+                    {formatValueDecimal(balance, '', 2)}
+                  </span>
+                </div>
+              )
+            }
           </div>
 
-          <div className='relative mt-[9px] mb-[19px]'>
-            <input
-              value={inAmount}
-              type='number'
-              onChange={(e) => handleAmountChange(e.target.value)}
-              className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
-              placeholder='0'
-            />
-            <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-              <div className='flex items-center'>
-                <div className='w-[30px] h-[30px] rounded-full'>
-                  <img src={token0?.icon} alt={token0?.symbol} />
+          {
+            isDeposit && (
+              <div className="mt-[12px] mb-[20px] flex flex-col gap-[9px] h-[72px] rounded-[12px] border border-[#373A53] bg-white">
+                <div className="pt-[18px] pl-[13px] pr-[20px] flex items-center justify-between">
+                  <div className='flex-1'>
+                    <input
+                      type='number'
+                      className='w-full text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0'
+                      value={inAmount}
+                      onChange={(event) => handleAmountChange(event?.target?.value)}
+                    />
+                  </div>
+                  <div className='flex items-center gap-[9px]'>
+                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                      <img src={token0?.icon} alt={token0?.symbol} />
+                    </div>
+                    <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
+                  </div>
                 </div>
               </div>
-              <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                {token0?.symbol}
-              </div>
+            )
+          }
+          <div className="mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]">
+            <div className="flex items-center gap-[8px]">
+              {RangeList.map((range: number, index: number) => (
+                <div
+                  key={index}
+                  className={clsx([
+                    "cursor-pointer w-[48px] h-[22px] flex items-center justify-center rounded-[6px] border border-[#373A53] text-black font-Montserrat text-[14px]",
+                    index === rangeIndex ? "bg-[#FFDC50]" : ""
+                  ])}
+                  onClick={() => {
+                    const amount = Big(balance ?? 0)
+                      .times(range)
+                      .toFixed();
+                    setRangeIndex(index)
+                    setInAmount(amount)
+                    setPercentage(getPercentage(amount))
+
+                  }}
+                >
+                  {range === 1 ? "Max" : range * 100 + "%"}
+                </div>
+              ))}
             </div>
+            <Range
+              value={percentage}
+              onChange={(e) => {
+                const percentage = e.target.value;
+                setRangeIndex(RangeList.findIndex((range) =>
+                  Big(range).eq(Big(percentage).div(100))
+                ))
+                setInAmount(Big(balance ? balance : 0)
+                  .times(Big(percentage).div(100))
+                  .toFixed())
+                setPercentage(percentage)
+              }}
+              style={{
+                marginTop: 0,
+                flex: 1
+              }}
+            />
           </div>
+          {
+            isDeposit ? (
+              <div className='mt-[-16px] mb-[8px] flex justify-center text-red-600 font-Montserrat text-[14px] font-bold'>Max {token0?.symbol} Deposit {depositMaxAmout}</div>
+            ) : (
+              <div className='mt-[-16px] mb-[8px] flex justify-end'>
+                <div className='flex flex-col gap-[2px]'>
+                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[0] ?? 0).times(percentage).div(100).toFixed(), '', 2, false, false)} {token0?.symbol}</div>
+                  <div className='text-[#3D405A] font-Montserrat text-[12px] font-medium'>{formatValueDecimal(Big(values?.[1] ?? 0).times(percentage).div(100).toFixed(), '', 2, false, false)} {token1?.symbol}</div>
+                </div>
+              </div>
+            )
+          }
           {
             isDeposit ? (
               <Button

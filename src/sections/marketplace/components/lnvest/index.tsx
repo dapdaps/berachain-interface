@@ -279,7 +279,9 @@ export default function Invest(props: any) {
         sort: true,
         render: (text: string, record: any) => {
           const isValid = Big(record.depositAmount || 0).gt(0);
-          return (
+          return record?.platform === "aquabera" ? (
+            <div className='decoration-solid'>{formatValueDecimal(record?.usdDepositAmount, "$", 2)}</div>
+          ) : (
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
               {
                 isValid && (
@@ -383,9 +385,9 @@ export default function Invest(props: any) {
     class: '!p-0',
     render: (data, index, parentData) => {
       return (Big(data?.values?.[0] ?? 0).eq(0) && Big(data?.values?.[1] ?? 0).eq(0)) ? (
-        <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">-</div>
+        <div className="ml-[-19px] text-black font-Montserrat text-[16px] font-semibold leading-[100%]">-</div>
       ) : (
-        <div className="flex flex-col gap-[4px]">
+        <div className="ml-[-19px] flex flex-col gap-[4px]">
           {
             Big(data?.values?.[0]).gt(0) && (
               <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{formatValueDecimal(data?.values?.[0], '', 2)} {parentData?.symbol}</div>
