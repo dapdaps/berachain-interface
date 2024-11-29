@@ -149,7 +149,7 @@ export const Form = (props: any) => {
     }
     if (type === ActionText.Repay && Big(borrowAmount || 0).gt(borrowBalance || 0)) {
       result.valid = false;
-      result.text = `Insufficient ${market.borrowToken.symbol} Balance`;
+      result.text = `Insufficient ${market.symbol} Balance`;
       return result;
     }
     if (Big(ratio || 0).lt(market.MCR)) {

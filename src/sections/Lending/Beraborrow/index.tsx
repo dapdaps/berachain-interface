@@ -45,7 +45,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
 
   useEffect(() => {
     setLoading(isChainSupported);
-  }, [isChainSupported, currentTab]);
+  }, [isChainSupported, currentTab, address]);
 
   return (
     <>
