@@ -59,7 +59,7 @@ export const BerachainTestnetbArtio = {
 export const SupportedChainMap: Record<number, SupportedChain> = {
   // [ethereumSepolia.id]: EthereumSepolia,
   [berachainTestnetbArtio.id]: BerachainTestnetbArtio,
-  // [ethereumMainnet.id]: EthereumMainnet,
+  [ethereumMainnet.id]: EthereumMainnet,
   // [arbitrumSepolia.id]: ArbitrumSepolia,
   // [arbitrumOne.id]: ArbitrumOne,
   // [baseSepolia.id]: BaseSepolia,

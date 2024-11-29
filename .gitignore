@@ -43,4 +43,6 @@ pnpm-lock.json
 .clj-kondo
 .lsp
 
+.webpack-cache
+
 git.sh

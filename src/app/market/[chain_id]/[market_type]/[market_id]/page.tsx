@@ -9,7 +9,7 @@ const Page = () => {
     <MarketManagerStoreProvider>
       <div
         className={cn(
-          "flex h-full w-full flex-col items-center bg-[#FBFBF8] p-12",
+          "flex w-full flex-col items-center p-12 h-[calc(100vh_-_68px)]",
           "px-3 py-3 md:px-12"
         )}
       >

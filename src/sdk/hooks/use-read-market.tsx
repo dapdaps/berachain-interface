@@ -27,7 +27,7 @@ export const useReadMarket = ({
   chain_id,
   market_type,
   market_id,
-  enabled = true,
+  enabled = false,
 }: {
   chain_id: number;
   market_type: TypedRoycoMarketType;
@@ -122,8 +122,6 @@ export const useReadMarket = ({
     contracts: enabled ? contractsToRead : [],
     enabled,
   });
-
-  console.log("propsReadContracts", propsReadContracts);
 
   if (
     enabled &&

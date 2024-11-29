@@ -8,7 +8,7 @@ const chains: Record<number, Chain | any> = {
   },
   [mainnet.id]: {
     ...mainnet,
-    isWalletSupport: false,
+    isWalletSupport: true,
   },
 };
 

@@ -20,7 +20,6 @@ export const useActiveMarket = () => {
   const chain_id = params.chain_id;
   const market_type = params.market_type;
   const market_id = params.market_id;
-
   /**
    * @notice Enriched Market
    */

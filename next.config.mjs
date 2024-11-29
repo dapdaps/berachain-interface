@@ -32,7 +32,7 @@ const nextConfig = {
       destination: 'https://api.dolomite.io/:path*'
     }
   ],
-  webpack: (config) => {
+  webpack: (config, context) => {
     config.resolve.alias.stream = 'stream-browserify';
 
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -49,6 +49,10 @@ const nextConfig = {
         issuer: fileLoaderRule.issuer,
         resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
         use: ['@svgr/webpack']
+      },
+      {
+        test: /\.(map|d\.ts)$/,
+        use: 'null-loader',
       }
     );
     fileLoaderRule.exclude = /\.svg$/i;
@@ -57,7 +61,15 @@ const nextConfig = {
       ...config.optimization,
       emitOnErrors: true,  // 即使有错误也继续构建
     }
-    
+
+    if (config.plugins) {
+      config.plugins.push(
+        new context.webpack.IgnorePlugin({
+          resourceRegExp: /^(lokijs|pino-pretty|encoding)$/,
+        })
+      );
+    }
+
     return config;
   }
 };

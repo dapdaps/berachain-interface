@@ -55,7 +55,7 @@ export const MarketActionForm = React.forwardRef<
 
   const { currentMarketData, marketMetadata } = useActiveMarket();
 
-  const { switchChain } = useSwitchChain();
+  const { chains, switchChain } = useSwitchChain();
 
   const marketActionForm = useForm<z.infer<typeof MarketActionFormSchema>>({
     resolver: zodResolver(MarketActionFormSchema as any),

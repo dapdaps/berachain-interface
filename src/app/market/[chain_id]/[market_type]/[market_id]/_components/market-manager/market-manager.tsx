@@ -100,7 +100,7 @@ export const MarketManager = React.forwardRef<
             />
 
             <div className="flex h-4">
-              <span className={cn("leading-5")}>Explore</span>
+              <span className={cn("leading-5 text-[24px] font-Montserrat font-bold")}>Explore</span>
             </div>
           </div>
 
@@ -170,10 +170,10 @@ export const MarketManager = React.forwardRef<
           key={`market-manager:${viewType}`}
           className={cn(
             "flex items-center rounded-2xl border border-divider bg-white",
-            "w-full overflow-hidden md:h-[70rem] md:overflow-y-scroll",
+            "w-full overflow-hidden lg:h-[50rem] md:overflow-y-scroll",
             MAX_SCREEN_WIDTH,
             viewType === MarketViewType.advanced.id &&
-              "h-fit flex-col md:h-[70rem] md:flex-row md:divide-x",
+              "flex-col lg:h-[50rem] md:flex-row md:divide-x",
             viewType === MarketViewType.simple.id && "h-fit max-w-lg flex-col",
             "flex-0"
           )}

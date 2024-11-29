@@ -162,17 +162,7 @@ export const getEnrichedMarketsQueryOptions = (
       custom_token_data: custom_token_data,
     });
 
-    console.log({
-      chain_id: chain_id,
-      market_type: market_type,
-      market_id: market_id,
-      page_index: page_index,
-      filters: filterClauses,
-      sorting: sortingClauses,
-      search_key: search_key,
-      is_verified: is_verified,
-      custom_token_data: custom_token_data,
-    }, 'queryFn<=====get_enriched_markets');
+    console.log(result, 'queryFn<=====get_enriched_markets');
 
     if (!!result.data && !!result.data.data && result.data.data.length > 0) {
       const rows = result.data.data;
