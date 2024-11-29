@@ -1,11 +1,10 @@
 import Title from "../../components/title";
 import Materials from "../../components/materials";
 import VoteTable from "@/sections/meme/bros/modals/vote/table";
-import RoundLabel from "@/sections/meme/bros/components/round-label";
-import { useMemo, useRef } from "react";
+import RoundLabel from "@/sections/meme/bros/components/card-label";
+import { useRef } from "react";
 import useVote from "../../hooks/use-vote";
 import useVoteData from "../../hooks/use-vote-data";
-import { format } from "date-fns";
 import numberOrder from "@/utils/number-order";
 
 export default function Laptop({ round, onOpenModal }: any) {
@@ -15,21 +14,12 @@ export default function Laptop({ round, onOpenModal }: any) {
     onQuery();
   });
 
-  const [title, subTitle] = useMemo(() => {
-    const _st = `${format(round.start_time * 1000, "MMM.dd, yyyy")} - ${format(
-      round.end_time * 1000,
-      "MMM.dd, yyyy"
-    )}`;
-    return [`Round ${round.round}`, _st];
-  }, [round]);
-
   return (
     <div className="relative w-full overflow-x-hidden relative">
       <Title onOpenModal={onOpenModal} />
       <div className="w-[916px] mt-[80px]  mx-auto relative z-[10] pb-[20px] min-h-[100px] bg-[#FFFDEB] border border-black rounded-[20px]">
         <RoundLabel
-          title={title}
-          subTitle={subTitle}
+          round={round}
           className="!absolute top-[-53px] whitespace-nowrap left-[50%] translate-x-[-50%] w-[342px]"
         />
         <div className="flex pt-[30px] items-center px-[30px] gap-[12px] text-[20px] font-bold pb-[4px]">
@@ -47,6 +37,7 @@ export default function Laptop({ round, onOpenModal }: any) {
           voteAddress={voteAddress}
           voting={voting}
           onVote={onVote}
+          round={round}
         />
       </div>
 

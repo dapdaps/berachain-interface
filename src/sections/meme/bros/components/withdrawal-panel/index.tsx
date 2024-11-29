@@ -8,6 +8,9 @@ export default function WithdrawalPanel({ list, onSuccess }: any) {
 
   return (
     <motion.div
+      initial={{
+        y: "100%"
+      }}
       animate={{
         y: expand ? 0 : "calc(100% - 60px)"
       }}

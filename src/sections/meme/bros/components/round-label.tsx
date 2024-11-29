@@ -1,44 +1,16 @@
-import clsx from "clsx";
-import Label from "./label";
+import CardLabel from "./card-label";
+import { useMemo } from "react";
+import { format } from "date-fns";
 
-export default function RoundLabel({
-  title,
-  subTitle,
-  className,
-  titleClassName,
-  subTitleClassName,
-  ...rest
-}: any) {
-  return (
-    <Label
-      className={clsx("w-[272px] h-[67px] text-white", className)}
-      {...rest}
-    >
-      <div
-        className={clsx(
-          "text-[26px] font-SquaredPixel pl-[32px] mt-[-4px] md:text-[20px]",
-          titleClassName
-        )}
-        style={{
-          textShadow: "2px 0px #000, -2px 0px #000, 0px -2px #000, 0px 2px #000"
-        }}
-      >
-        {title}
-      </div>
-      {!!subTitle && (
-        <div
-          className={clsx(
-            "text-[18px] font-SquaredPixel mt-[-8px] pl-[32px]",
-            subTitleClassName
-          )}
-          style={{
-            textShadow:
-              "2px 0px #000, -2px 0px #000, 0px -2px #000, 0px 2px #000"
-          }}
-        >
-          {subTitle}
-        </div>
-      )}
-    </Label>
-  );
+export default function RoundLabel({ round, ...rest }: any) {
+  const [title, subTitle] = useMemo(() => {
+    if (!round) return ["", ""];
+    const _st = `${format(round.start_time * 1000, "MMM.dd, yyyy")} - ${format(
+      round.end_time * 1000,
+      "MMM.dd, yyyy"
+    )}`;
+    return [`Round ${round.round}`, _st];
+  }, [round]);
+
+  return <CardLabel title={title} subTitle={subTitle} {...rest} />;
 }

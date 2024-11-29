@@ -10,9 +10,11 @@ import Popover, { PopoverPlacement } from "@/components/popover";
 import TokensPopover from "../components/tokens-popover";
 import { balanceShortFormated } from "@/utils/balance";
 import { ellipsAccount } from "@/utils/account";
+import useIsMobile from "@/hooks/use-isMobile";
 
-export default function MemeRank({ open, tokens, onClose }: any) {
+export default function MemeRank({ open, tokens = [], onClose }: any) {
   const [queryTokenAddress, setQueryTokenAddress] = useState<any>();
+  const isMobile = useIsMobile();
   const [filterTokens, cachedTokens] = useMemo(
     () => [
       tokens?.map((token: any) => ({
@@ -29,7 +31,7 @@ export default function MemeRank({ open, tokens, onClose }: any) {
           </div>
         )
       })),
-      tokens.reduce(
+      tokens?.reduce(
         (acc: any, curr: any) => ({ ...acc, [curr.token.address]: curr.token }),
         {}
       )
@@ -101,7 +103,7 @@ export default function MemeRank({ open, tokens, onClose }: any) {
                   {ellipsAccount(record.address, 12)}
                 </div>
               ),
-              width: "50%"
+              width: "60%"
             },
             {
               dataIndex: "amount",
@@ -149,15 +151,25 @@ export default function MemeRank({ open, tokens, onClose }: any) {
             </div>
           )}
           showHeader={false}
+          bodyClass="md:max-h-[60dvh] md:overflow-y-auto"
+          onScrollBottom={
+            totalPage === page
+              ? null
+              : () => {
+                  onChangePage(page + 1);
+                }
+          }
         />
-        <div className="pt-[12px] flex justify-end items-center pr-[12px]">
-          <Pager
-            maxPage={totalPage}
-            onPageChange={(p: number) => {
-              if (p !== page) onChangePage(p);
-            }}
-          />
-        </div>
+        {!isMobile && (
+          <div className="pt-[12px] flex justify-end items-center pr-[12px]">
+            <Pager
+              maxPage={totalPage}
+              onPageChange={(p: number) => {
+                if (p !== page) onChangePage(p);
+              }}
+            />
+          </div>
+        )}
       </div>
     </Basic>
   );

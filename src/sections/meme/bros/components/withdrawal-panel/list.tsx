@@ -13,7 +13,7 @@ const Item = ({ item, onSuccess }: any) => {
     <div className="mt-[20px] flex items-start">
       <div className="text-[16px]">
         <span className="font-bold mr-[5px]">
-          {balanceShortFormated(item.amount, 2)} {item.symbol}
+          {balanceShortFormated(item.amount, 2)} {item.token.symbol}
         </span>
         <span>
           is available to be withdrawal{" "}

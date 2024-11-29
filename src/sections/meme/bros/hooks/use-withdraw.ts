@@ -19,7 +19,10 @@ export default function useWithdraw({ token, idx, onSuccess }: any) {
       const signer = provider.getSigner(account);
       const StakeContract = new Contract(token.stake_address, stakeAbi, signer);
 
+      const estimateGas = await StakeContract.estimateGas.withdraw(idx);
+      console.log("estimateGas", estimateGas.toString());
       const tx = await StakeContract.withdraw(idx);
+
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();

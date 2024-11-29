@@ -49,6 +49,7 @@ export default function useUnstake({ token, amount, onSuccess }: any) {
         sub_type: "Unstake"
       });
     } catch (err: any) {
+      console.log("err", err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

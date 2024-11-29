@@ -27,19 +27,19 @@ export default function useHistoryWithdrawData(rounds: any) {
     });
 
     res.forEach((item: any, i: number) => {
-      const record = item[0][0];
+      if (item.length === 0) return;
+      item[0].forEach((record: any) => {
+        if (!record || record?.[2]) return;
 
-      if (!record || record?.[2]) return;
-
-      const _unlockTimestamp = Number(record[1].toString());
-      list.push({
-        amount: Big(record[0].toString()).div(1e18).toString(),
-        withdrawable:
-          !record[2] && Math.floor(Date.now() / 1000) > _unlockTimestamp,
-        unlockTimestamp: _unlockTimestamp * 1000,
-        idx: i,
-        ...round,
-        token: round.tokens[i]
+        const _unlockTimestamp = Number(record[1].toString());
+        list.push({
+          amount: Big(record[0].toString()).div(1e18).toString(),
+          withdrawable:
+            !record[2] && Math.floor(Date.now() / 1000) > _unlockTimestamp,
+          unlockTimestamp: _unlockTimestamp * 1000,
+          idx: i,
+          ...round.tokens[i]
+        });
       });
     });
   };

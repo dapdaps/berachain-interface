@@ -14,6 +14,8 @@ export default function Laptop({
   userData,
   balancesLoading,
   balances,
+  fetchingClaim,
+  claimData,
   onRefreshTokens,
   onRefreshWithdrawData
 }: any) {
@@ -30,6 +32,8 @@ export default function Laptop({
         userData={userData}
         balances={balances}
         balancesLoading={balancesLoading}
+        fetchingClaim={fetchingClaim}
+        claimData={claimData}
       />
       {!!withdrawList?.length && (
         <WithdrawalPanel

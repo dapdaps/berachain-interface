@@ -21,9 +21,10 @@ export default function useRounds() {
       result.data.forEach((round: any) => {
         if (round.status === "ended") _history.push(round);
         if (round.status === "ongoing") current = round;
+
         if (
           round.status === "un_start" &&
-          round.start_time < next?.start_time
+          (!next?.start_time || round.start_time < next?.start_time)
         ) {
           next = round;
         }
@@ -33,7 +34,7 @@ export default function useRounds() {
       if (!current && _history.length) current = _history[0];
       if (!current && result.data.length === 1) current = result.data[0];
       setHistoryRounds(_history);
-      setCurrentRound({ ...current, status: "ongoing" });
+      setCurrentRound(current);
       setNextRound(next);
     } catch (err) {
       console.log(err);

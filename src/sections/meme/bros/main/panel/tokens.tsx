@@ -3,7 +3,6 @@ import { useRouter } from "next-nprogress-bar";
 import RoundLabel from "../../components/round-label";
 import useIsMobile from "@/hooks/use-isMobile";
 import useData from "../../hooks/use-data";
-import { format } from "date-fns";
 import Token from "./token";
 
 export default function Tokens({
@@ -12,11 +11,13 @@ export default function Tokens({
   rewardTokens,
   userData,
   balances,
-  balancesLoading
+  balancesLoading,
+  claimData
 }: any) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { currentRound, historyRounds, nextRound } = useData();
+
   const cachedRewardTokens = useMemo(
     () =>
       rewardTokens?.length
@@ -39,23 +40,11 @@ export default function Tokens({
     }
   }, [isMobile]);
 
-  const [title, subTitle] = useMemo(() => {
-    const _st = `${format(
-      currentRound.start_time * 1000,
-      "MMM.dd, yyyy"
-    )} - ${format(currentRound.end_time * 1000, "MMM.dd, yyyy")}`;
-    return [`Round ${currentRound.round}`, _st];
-  }, [currentRound]);
-
   return (
     <>
       <div className="w-[1232px] mx-[auto] md:px-[14px] md:w-full">
         <div className="flex justify-between items-center md:absolute md:top-[-25px] md:justify-start md:gap-[8px] md:w-[calc(100%-28px)]">
-          <RoundLabel
-            title={title}
-            subTitle={subTitle}
-            className="w-[350px] md:w-full"
-          />
+          <RoundLabel round={currentRound} className="w-[350px] md:w-full" />
           <div className="flex items-center gap-[16px] md:hidden">
             {!!historyRounds.length && (
               <button
@@ -100,6 +89,7 @@ export default function Tokens({
             balance={balances?.[token.token.address]}
             balancesLoading={balancesLoading}
             cachedTokens={cachedRewardTokens}
+            claimData={claimData}
           />
         ))}
       </div>

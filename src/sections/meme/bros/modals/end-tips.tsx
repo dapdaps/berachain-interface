@@ -1,40 +1,61 @@
 import Basic from "./basic";
 import Button from "@/components/button";
-import RoundLabel from "../components/round-label";
+import { useRouter } from "next-nprogress-bar";
+import { useCallback, memo } from "react";
+import useIsMobile from "@/hooks/use-isMobile";
+import useData from "../hooks/use-data";
+import CardLabel from "../components/card-label";
 
-export default function EndTips({ open, onClose }: any) {
+export default memo(function EndTips({ open, onClose, onOpenModal }: any) {
+  const router = useRouter();
+  const isMobile = useIsMobile();
+  const { currentRound, nextRound } = useData();
+  const handleVote = useCallback(() => {
+    if (isMobile) {
+      router.push("/meme/bros/vote");
+    } else {
+      onOpenModal(6, nextRound);
+    }
+  }, [isMobile]);
+
   return (
     <Basic open={open} onClose={onClose}>
       <div className="flex flex-col items-center justify-center">
-        <RoundLabel
-          title="Round 1 Ended"
+        <CardLabel
+          title={`Round ${currentRound.round} Ended`}
           contentClassName="!bg-[#FF7C3B]"
           shadowClassName="!bg-[#924016]"
         />
         <div className="text-[20px] font-semibold mt-[16px]">
-          Super meme bros. Round 1 has ended!
+          Super meme bros. Round {currentRound.round} has ended!
         </div>
         <div className="text-[16px] font-semibold mt-[16px] text-center">
-          You staked <span className="font-bold">12.23M</span> sPepe, earned
-          <span className="font-bold">$23.5</span> valued rewards. View history
-          to claim and unstake.
+          View history to claim and unstake.
         </div>
         <Button
           type="primary"
           className="w-[215px] h-[50px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
+          onClick={() => {
+            router.push("/meme/bros/history");
+          }}
         >
           View History
         </Button>
-        <div className="text-[16px] font-semibold mt-[26px]">
-          Super meme bros. Round 2 starts now.
-        </div>
-        <Button
-          type="primary"
-          className="w-[215px] h-[50px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
-        >
-          I see
-        </Button>
+        {nextRound?.vote_status === "ongoing" && (
+          <>
+            <div className="text-[16px] font-semibold mt-[26px]">
+              Get ready for the next round voting.
+            </div>
+            <Button
+              type="primary"
+              className="w-[215px] h-[50px] mt-[16px] text-[18px] font-semibold md:h-[46px]"
+              onClick={handleVote}
+            >
+              Vote
+            </Button>
+          </>
+        )}
       </div>
     </Basic>
   );
-}
+});

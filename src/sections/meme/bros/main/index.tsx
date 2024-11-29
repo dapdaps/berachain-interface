@@ -11,11 +11,12 @@ import RulesModal from "../modals/rules";
 import SwapModal from "@/sections/swap/SwapModal";
 import MemeRank from "../modals/meme-rank";
 import EndTips from "../modals/end-tips";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useRound from "../hooks/use-round";
 import useWithdrawData from "../hooks/use-withdraw-data";
 import useUserData from "../hooks/use-user-data";
 import useTokensBalance from "@/hooks/use-tokens-balance";
+import useClaimData from "../hooks/use-claim-data";
 
 export default function Meme(props: any) {
   const isMobile = useIsMobile();
@@ -30,6 +31,13 @@ export default function Meme(props: any) {
     userData,
     onQuery: onRefreshUserData
   } = useUserData(tokens);
+
+  const rounds = useMemo(() => [props.round], [props.round]);
+  const {
+    loading: fetchingClaim,
+    data: claimData,
+    onQuery: onQueryClaim
+  } = useClaimData(rounds);
 
   const balancesTokens = useMemo(
     () => tokens?.map((token: any) => token.token),
@@ -48,6 +56,7 @@ export default function Meme(props: any) {
     } else {
       setModalType(type);
     }
+
     setModalData(data);
   };
 
@@ -61,6 +70,8 @@ export default function Meme(props: any) {
     balances,
     info,
     rewardTokens,
+    fetchingClaim,
+    claimData,
     onRefreshTokens: () => {
       onQuery();
       onRefreshUserData();
@@ -72,6 +83,15 @@ export default function Meme(props: any) {
     }
   };
 
+  useEffect(() => {
+    if (
+      props.round.status === "ended" ||
+      props.round.end_time < Date.now() / 1000
+    ) {
+      setModalType(10);
+    }
+  }, [props.round]);
+
   return (
     <>
       {isMobile ? (
@@ -79,101 +99,120 @@ export default function Meme(props: any) {
       ) : (
         <Laptop {...props} {...params} />
       )}
-      {modalData && (
-        <>
-          <StakeModal
-            open={modalType === 1}
-            data={modalData}
-            userData={userData}
-            onOpenModal={onOpenModal}
-            onClose={() => {
-              setModalType(0);
-            }}
-            onSuccess={() => {
-              setModalType(0);
-              onQuery();
-              onRefreshUserData();
-              queryBalance();
-            }}
-          />
-          <UnstakeModal
-            open={modalType === 2}
-            data={modalData}
-            userData={userData}
-            onClose={() => {
-              setModalType(0);
-            }}
-            onSuccess={() => {
-              setModalType(0);
-              onQuery();
-              onRefreshUserData();
-              queryBalance();
-            }}
-          />
-          <ClaimRewardsModal
-            open={modalType === 3}
-            onClose={() => {
-              setModalType(0);
-            }}
-          />
-
-          <WithdrawalModal
-            open={modalType === 4}
-            list={withdrawList}
-            onSuccess={() => {
-              onRefreshWithdrawData();
-              queryBalance();
-            }}
-            onClose={() => {
-              setModalType(0);
-            }}
-          />
-          <SwapModal
-            defaultOutputCurrency={modalData}
-            outputCurrencyReadonly={true}
-            show={innerModalType === 1}
-            onClose={() => {
-              setInnerModalType(0);
-            }}
-          />
-          <IncentivesModal
-            open={modalType === 5}
-            data={modalData}
-            rewardTokens={rewardTokens}
-            onOpenModal={onOpenModal}
-            onClose={() => {
-              setModalType(0);
-            }}
-          />
-        </>
+      {!!modalData && modalType === 1 && (
+        <StakeModal
+          open={modalType === 1}
+          data={modalData}
+          userData={userData}
+          onOpenModal={onOpenModal}
+          onClose={() => {
+            setModalType(0);
+          }}
+          onSuccess={() => {
+            setModalType(0);
+            onQuery();
+            onRefreshUserData();
+            queryBalance();
+          }}
+        />
+      )}
+      {!!modalData && modalType === 2 && (
+        <UnstakeModal
+          open={modalType === 2}
+          data={modalData}
+          userData={userData}
+          onClose={() => {
+            setModalType(0);
+          }}
+          onSuccess={() => {
+            setModalType(0);
+            onQuery();
+            onRefreshUserData();
+            queryBalance();
+          }}
+        />
+      )}
+      {modalType === 3 && (
+        <ClaimRewardsModal
+          open={modalType === 3}
+          data={{ ...props.round, rewardTokens }}
+          onClose={() => {
+            setModalType(0);
+          }}
+          onSuccess={() => {
+            setModalType(0);
+            onQueryClaim();
+          }}
+        />
+      )}
+      {modalType === 4 && (
+        <WithdrawalModal
+          open={modalType === 4}
+          list={withdrawList}
+          onSuccess={() => {
+            onRefreshWithdrawData();
+            queryBalance();
+          }}
+          onClose={() => {
+            setModalType(0);
+          }}
+        />
+      )}
+      {!!modalData && innerModalType === 1 && (
+        <SwapModal
+          defaultOutputCurrency={modalData}
+          outputCurrencyReadonly={true}
+          show={innerModalType === 1}
+          onClose={() => {
+            setInnerModalType(0);
+          }}
+        />
+      )}
+      {!!modalData && modalType === 5 && (
+        <IncentivesModal
+          open={modalType === 5}
+          data={modalData}
+          rewardTokens={rewardTokens}
+          onOpenModal={onOpenModal}
+          onClose={() => {
+            setModalType(0);
+          }}
+        />
+      )}
+      {!!modalData && modalType === 6 && (
+        <VoteModal
+          open={modalType === 6}
+          data={modalData}
+          onClose={() => {
+            setModalType(0);
+          }}
+        />
       )}
 
-      <VoteModal
-        open={modalType === 6}
-        data={modalData}
-        onClose={() => {
-          setModalType(0);
-        }}
-      />
       <RulesModal
         open={modalType === 7}
         onClose={() => {
           setModalType(0);
         }}
       />
-      <EndTips
-        open={modalType === 10}
-        onClose={() => {
-          setModalType(0);
-        }}
-      />
-      <MemeRank
-        open={modalType === 11}
-        tokens={tokens}
-        onClose={() => {
-          setModalType(0);
-        }}
-      />
+      {modalType === 10 && (
+        <EndTips
+          open={modalType === 10}
+          onOpenModal={onOpenModal}
+          onClose={() => {
+            setModalType(0);
+          }}
+        />
+      )}
+      {modalType === 11 && (
+        <MemeRank
+          open={modalType === 11}
+          tokens={tokens}
+          onClose={() => {
+            setModalType(0);
+          }}
+        />
+      )}
     </>
   );
 }

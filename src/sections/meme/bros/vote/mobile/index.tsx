@@ -1,43 +1,32 @@
 "use client";
 
 import VoteTable from "@/sections/meme/bros/modals/vote/table";
-import RoundLabel from "@/sections/meme/bros/components/round-label";
-import { useRef, useState, useMemo } from "react";
+import RoundLabel from "@/sections/meme/bros/components/card-label";
+import { useRef, useState } from "react";
 import VoteAction from "@/sections/meme/bros/modals/vote/action";
 import PageBack from "@/components/back";
 import Materials from "../../components/materials";
 import Title from "../../components/title";
-import useData from "../../hooks/use-data";
 import useVote from "../../hooks/use-vote";
 import useVoteData from "../../hooks/use-vote-data";
-import { format } from "date-fns";
 import numberOrder from "@/utils/number-order";
 
-const VoteMobile = ({ onOpenModal }: any) => {
-  const { currentRound } = useData();
+const VoteMobile = ({ onOpenModal, round }: any) => {
   const tableRef = useRef<any>();
   const [visible, setVisible] = useState(false);
   const [record, setRecord] = useState<any>();
-  const { loading, voteAddress, onQuery } = useVoteData(currentRound?.round);
-  const { loading: voting, onVote } = useVote(currentRound?.round, () => {
+  const { loading, voteAddress, onQuery } = useVoteData(round?.round);
+  const { loading: voting, onVote } = useVote(round?.round, () => {
     onQuery();
   });
 
-  const [title, subTitle] = useMemo(() => {
-    const _st = `${format(
-      currentRound.start_time * 1000,
-      "MMM.dd, yyyy"
-    )} - ${format(currentRound.end_time * 1000, "MMM.dd, yyyy")}`;
-    return [`Round ${currentRound.round}`, _st];
-  }, [currentRound]);
-
   return (
     <div className="h-full w-full overflow-x-hidden relative pt-[18px]">
-      {currentRound.round === 1 ? (
+      {round.round === 1 ? (
         <Title onOpenModal={onOpenModal} />
       ) : (
         <div className="text-[24px] font-CherryBomb text-center">
-          Vote for the {numberOrder(currentRound.round)} round
+          Vote for the {numberOrder(round.round)} round
         </div>
       )}
       <div className="absolute left-[18px] top-[20px]">
@@ -46,8 +35,7 @@ const VoteMobile = ({ onOpenModal }: any) => {
 
       <div className="relative z-[10] border border-black rounded-[20px] bg-[#FFFDEB] shadow-shadow1 mt-[60px] pt-[50px] pb-[20px] mx-[14px]">
         <RoundLabel
-          title={title}
-          subTitle={subTitle}
+          round={round}
           titleClassName="!pl-[16px]"
           subTitleClassName="!pl-[16px]"
           className="!absolute top-[-34px] left-[13px] w-[calc(100%-26px)] whitespace-nowrap"
@@ -61,6 +49,7 @@ const VoteMobile = ({ onOpenModal }: any) => {
             setRecord(_record);
             setVisible(true);
           }}
+          round={round}
         />
       </div>
       <div className="fixed w-full z-[1] bottom-0 left-0">

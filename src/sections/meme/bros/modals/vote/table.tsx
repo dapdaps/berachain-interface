@@ -10,25 +10,23 @@ import VoteConfirm from "@/sections/meme/bros/modals/vote/confirm";
 import Loading from "@/components/loading";
 import clsx from "clsx";
 import useVoteTokens from "../../hooks/use-vote-tokens";
-import useData from "../../hooks/use-data";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { useMemo } from "react";
 import Big from "big.js";
 
 const VoteTable = forwardRef<any, any>((props, ref) => {
-  const { onRow, voteAddress, voting, onVote } = props;
-  const { currentRound } = useData();
+  const { onRow, voteAddress, voting, onVote, round } = props;
   const { loading, tokens, totalPage, page, onChangePage } = useVoteTokens(
-    currentRound?.round
+    round.round
   );
   const isMobile = useIsMobile();
-  const { tokenBalance } = useTokenBalance(currentRound?.condition_token, 18);
+  const { tokenBalance } = useTokenBalance(round?.condition_token, 18);
 
   const votable = useMemo(
     () =>
       Big(tokenBalance || 0)
         .mul(1e18)
-        .gte(currentRound?.condition_amount),
+        .gte(round?.condition_amount),
     [tokenBalance]
   );
 
@@ -179,8 +177,8 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
   useImperativeHandle(ref, () => refs);
 
   useEffect(() => {
-    if (currentRound?.round) onChangePage(1);
-  }, [currentRound]);
+    if (round?.round) onChangePage(1);
+  }, [round]);
 
   return (
     <>

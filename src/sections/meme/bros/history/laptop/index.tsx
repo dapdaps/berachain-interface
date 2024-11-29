@@ -1,12 +1,22 @@
 import Title from "../../components/title";
 import Materials from "../../components/materials";
+import Loading from "@/components/loading";
 import Round from "../round";
 import WithdrawalPanel from "../../components/withdrawal-panel";
 
-export default function Laptop() {
+export default function Laptop({
+  loading,
+  rounds,
+  fetchingUserStakingData,
+  userStakeData,
+  claimData,
+  withdrawList,
+  onRefreshWithdrawData,
+  onOpenModal
+}: any) {
   return (
     <div className="relative w-full overflow-x-hidden relative">
-      <Title />
+      <Title onOpenModal={onOpenModal} />
       <div
         className="text-[36px] font-SquaredPixel text-center text-white"
         style={{
@@ -16,15 +26,33 @@ export default function Laptop() {
         History
       </div>
       <div className="w-[1000px] mx-auto relative z-[10] pb-[20px] min-h-[100px]">
-        <Round />
-        <Round />
-        <Round />
+        {loading ? (
+          <div className="pt-[50px] flex items-center justify-center">
+            <Loading size={40} />
+          </div>
+        ) : (
+          rounds.map((round: any) => (
+            <Round
+              key={round.round}
+              round={round}
+              fetchingUserStakingData={fetchingUserStakingData}
+              userStakeData={userStakeData[round.round]}
+              claimData={claimData?.[round.round]}
+              onOpenModal={onOpenModal}
+            />
+          ))
+        )}
       </div>
       <div className="fixed w-full z-[1] bottom-0 left-0">
         <Materials />
         <div className="relative z-[5] w-full h-[240px] bg-[url(/images/meme/ground.png)] bg-contain" />
       </div>
-      {/* <WithdrawalPanel /> */}
+      {!!withdrawList?.length && (
+        <WithdrawalPanel
+          list={withdrawList}
+          onSuccess={onRefreshWithdrawData}
+        />
+      )}
     </div>
   );
 }

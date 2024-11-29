@@ -1,5 +1,6 @@
 import Label from "../../components/label";
 import { useRouter } from "next-nprogress-bar";
+import useData from "../../hooks/use-data";
 
 const Button = ({ children, onClick }: any) => {
   return (
@@ -17,24 +18,29 @@ const Button = ({ children, onClick }: any) => {
 
 export default function Actions() {
   const router = useRouter();
+  const { historyRounds, nextRound } = useData();
   return (
     <div className="fixed right-[18px] bottom-[70px] z-[10]">
-      <Button
-        onClick={() => {
-          router.push("/meme/bros/history");
-        }}
-      >
-        {historyIcon}
-        <span>History</span>
-      </Button>
-      <Button
-        onClick={() => {
-          router.push("/meme/bros/vote");
-        }}
-      >
-        {voteIcon}
-        <span>Vote</span>
-      </Button>
+      {!!historyRounds.length && (
+        <Button
+          onClick={() => {
+            router.push("/meme/bros/history");
+          }}
+        >
+          {historyIcon}
+          <span>History</span>
+        </Button>
+      )}
+      {nextRound?.vote_status === "ongoing" && (
+        <Button
+          onClick={() => {
+            router.push("/meme/bros/vote");
+          }}
+        >
+          {voteIcon}
+          <span>Vote</span>
+        </Button>
+      )}
     </div>
   );
 }

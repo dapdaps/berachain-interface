@@ -38,7 +38,7 @@ export default function useRound() {
         totalDapped = totalDapped.add(token.total_dapped_usd);
         totalRewards = totalRewards.add(token.total_reward_usd);
         return {
-          delayTime: _time * 1000,
+          delayTime: _time * 86400 * 1000,
           ...token
         };
       });

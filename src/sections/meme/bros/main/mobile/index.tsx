@@ -8,13 +8,16 @@ import Withdrawal from "./withdrawal";
 
 export default function Mobile({
   loading,
+  info,
   onOpenModal,
   tokens,
-  totalStaked,
+  rewardTokens,
   withdrawList,
   userData,
   balancesLoading,
   balances,
+  fetchingClaim,
+  claimData,
   onRefreshTokens
 }: any) {
   return (
@@ -22,17 +25,22 @@ export default function Mobile({
       <div className="absolute left-[18px] top-[18px]">
         <PageBack />
       </div>
-      {!!withdrawList?.length && <Withdrawal num={withdrawList.length} />}
+      {!!withdrawList?.length && (
+        <Withdrawal num={withdrawList.length} onOpenModal={onOpenModal} />
+      )}
       <Title onOpenModal={onOpenModal} />
-      <Total totalStaked={totalStaked} />
+      <Total onOpenModal={onOpenModal} info={info} />
       <Tokens tokens={tokens} loading={loading} />
       <Panel
         onOpenModal={onOpenModal}
         tokens={tokens}
+        rewardTokens={rewardTokens}
         onSuccess={onRefreshTokens}
         userData={userData}
         balances={balances}
         balancesLoading={balancesLoading}
+        fetchingClaim={fetchingClaim}
+        claimData={claimData}
       />
       <Actions />
     </div>

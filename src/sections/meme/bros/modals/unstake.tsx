@@ -16,10 +16,14 @@ export default function Unstake({
 }: any) {
   const prices = usePriceStore((store: any) => store.price);
   const [amount, setAmount] = useState("");
-  const { loading, onUnstake } = useUnstake({ token: data, amount, onSuccess });
+  const { loading, onUnstake } = useUnstake({
+    token: data,
+    amount,
+    onSuccess
+  });
 
   const balance = useMemo(
-    () => userData[data.address]?.stakedAmount || 0,
+    () => userData[data.token.address]?.stakedAmount || 0,
     [userData]
   );
 
@@ -30,15 +34,14 @@ export default function Unstake({
     }
     return "";
   }, [amount, balance]);
-
   return (
     <Basic open={open} onClose={onClose} className="w-[520px]">
       <div className="flex text-[20px] font-bold pt-[10px] md:pt-0">
-        Unstake {data.symbol}
+        Unstake {data.token.symbol}
       </div>
       <div className="mt-[20px]">
         <TokenAmout
-          currency={data}
+          currency={data.token}
           prices={prices}
           amount={amount}
           defaultBalance={balance}
@@ -49,7 +52,7 @@ export default function Unstake({
         />
       </div>
       <Button
-        token={data}
+        token={data.token}
         amount={amount}
         loading={loading}
         errorTips={errorTips}
@@ -59,7 +62,7 @@ export default function Unstake({
         Unstake
       </Button>
       <div className="flex items-center gap-[6px] text-[14px] py-[18px]">
-        <div className="font-CherryBomb w-[20px] h-[20px] rounded-full bg-[#FFB7BF] text-center">
+        <div className="font-CherryBomb w-[20px] h-[20px] rounded-full bg-[#FFB7BF] text-center shrink-0">
           !
         </div>
         <div className="font-medium">

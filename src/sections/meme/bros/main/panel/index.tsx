@@ -7,7 +7,8 @@ export default function Panel({
   rewardTokens,
   userData,
   balances,
-  balancesLoading
+  balancesLoading,
+  claimData
 }: any) {
   return (
     <div className="relative mt-[140px] md:mt-[60px]">
@@ -20,6 +21,7 @@ export default function Panel({
           userData={userData}
           balancesLoading={balancesLoading}
           balances={balances}
+          claimData={claimData}
         />
       </div>
     </div>

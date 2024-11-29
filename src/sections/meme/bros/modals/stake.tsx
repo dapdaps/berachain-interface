@@ -167,7 +167,7 @@ export default function StakeModal({
         👊 Dap {data.token.symbol} up!
       </Button>
       <div className="flex items-center gap-[6px] text-[14px] py-[18px]">
-        <div className="font-CherryBomb w-[20px] h-[20px] rounded-full bg-[#FFB7BF] text-center">
+        <div className="font-CherryBomb w-[20px] h-[20px] rounded-full bg-[#FFB7BF] text-center shrink-0">
           !
         </div>
         <div className="font-medium">

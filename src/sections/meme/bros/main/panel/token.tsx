@@ -11,6 +11,7 @@ import Loading from "@/components/loading";
 import TokensPopover from "../../components/tokens-popover";
 import useData from "../../hooks/use-data";
 import { useMemo } from "react";
+import useIsMobile from "@/hooks/use-isMobile";
 import Big from "big.js";
 
 export default function Token({
@@ -19,9 +20,11 @@ export default function Token({
   userInfo,
   balance,
   balancesLoading,
-  cachedTokens = {}
+  cachedTokens = {},
+  claimData
 }: any) {
   const { currentRound } = useData();
+  const isMobile = useIsMobile();
   const [userReward, userRewards] = useMemo(() => {
     if (Big(token?.total_dapped_usd || 0).eq(0)) return ["", []];
 
@@ -40,6 +43,8 @@ export default function Token({
     return [ur, urs];
   }, [userInfo, token]);
 
+  const claimable = !!(currentRound.claim_reward_time < Date.now() / 1000);
+
   return (
     <div
       className={clsx(
@@ -48,12 +53,12 @@ export default function Token({
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-[15px]">
-          <div className="relative shrink-0 w-[46px] h-[46px]">
+          <div className="relative shrink-0 w-[42px] h-[42px] rounded-full  border-[3px] border-black">
             <Image
               src={token.token.logo}
               width={42}
               height={42}
-              className="rounded-full border-[3px] border-black"
+              className="rounded-full"
               alt={token.token.symbol}
             />
 
@@ -90,13 +95,15 @@ export default function Token({
               <span>
                 ${balanceShortFormated(token.total_dapped_usd || 0, 2)}
               </span>
-              <Image
-                src={token.token.logo}
-                width={16}
-                height={16}
-                className="rounded-full"
-                alt={token.token.symbol}
-              />
+              {!isMobile && (
+                <Image
+                  src={token.token.logo}
+                  width={16}
+                  height={16}
+                  className="rounded-full"
+                  alt={token.token.symbol}
+                />
+              )}
             </div>
           </div>
           <div className="w-1/3 md:w-1/2">
@@ -105,28 +112,30 @@ export default function Token({
               <span>
                 ${balanceShortFormated(token.total_reward_usd || 0, 2)}
               </span>
-              <Popover
-                content={
-                  <TokensPopover
-                    tokens={token.reward_tokens.map((token: any) => ({
-                      ...token,
-                      ...cachedTokens[token.address]
-                    }))}
-                  />
-                }
-                placement={PopoverPlacement.TopLeft}
-              >
-                <div className="flex items-center gap-[3px] cursor-pointer">
-                  {token.reward_tokens.map((token: any, i: number) => (
-                    <img
-                      src={cachedTokens[token.address]?.logo}
-                      className={`w-[26px] h-[26px] rounded-full shrink-0 ${
-                        i > 0 && "ml-[8px]"
-                      }`}
+              {!isMobile && (
+                <Popover
+                  content={
+                    <TokensPopover
+                      tokens={token.reward_tokens.map((token: any) => ({
+                        ...token,
+                        ...cachedTokens[token.address]
+                      }))}
                     />
-                  ))}
-                </div>
-              </Popover>
+                  }
+                  placement={PopoverPlacement.TopLeft}
+                >
+                  <div className="flex items-center gap-[3px] cursor-pointer">
+                    {token.reward_tokens.map((token: any, i: number) => (
+                      <img
+                        src={cachedTokens[token.address]?.logo}
+                        className={`w-[26px] h-[26px] rounded-full shrink-0 ${
+                          i > 0 && "ml-[8px]"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </Popover>
+              )}
 
               <button
                 className="font-medium underline ml-[12px]"
@@ -158,22 +167,26 @@ export default function Token({
                     : "-"}
                 </span>
               )}
-              <Image
-                src={token.icon}
-                width={16}
-                height={16}
-                className="rounded-full"
-                alt={token.symbol}
-              />
+              {!isMobile && (
+                <Image
+                  src={token.icon}
+                  width={16}
+                  height={16}
+                  className="rounded-full"
+                  alt={token.symbol}
+                />
+              )}
             </div>
           </div>
           <div className="w-1/3 mt-[6px] md:w-1/2">
             <div className="text-[#3D405A] font-medium">Your Rewards</div>
             <Popover
               content={
-                <div className="w-[236px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 px-[14px] py-[16px]">
-                  Rewards will unlock after this round ends.
-                </div>
+                claimable ? null : (
+                  <div className="w-[236px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 px-[14px] py-[16px]">
+                    Rewards will unlock after this round ends.
+                  </div>
+                )
               }
               placement={PopoverPlacement.TopLeft}
               trigger={PopoverTrigger.Hover}
@@ -182,21 +195,36 @@ export default function Token({
                 <span>
                   {userReward ? "$" + balanceFormated(userReward, 2) : "-"}
                 </span>
-                <Popover
-                  content={<TokensPopover tokens={userRewards} />}
-                  placement={PopoverPlacement.TopLeft}
-                >
-                  <div className="flex items-center gap-[3px] cursor-pointer">
-                    {token.reward_tokens.map((token: any, i: number) => (
-                      <img
-                        src={cachedTokens[token.address]?.logo}
-                        className={`w-[26px] h-[26px] rounded-full shrink-0 ${
-                          i > 0 && "ml-[8px]"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </Popover>
+                {!isMobile && (
+                  <Popover
+                    content={<TokensPopover tokens={userRewards} />}
+                    placement={PopoverPlacement.TopLeft}
+                  >
+                    <div className="flex items-center gap-[3px] cursor-pointer">
+                      {token.reward_tokens.map((token: any, i: number) => (
+                        <img
+                          src={cachedTokens[token.address]?.logo}
+                          className={`w-[26px] h-[26px] rounded-full shrink-0 ${
+                            i > 0 && "ml-[8px]"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </Popover>
+                )}
+                {claimable && userReward && claimData && (
+                  <button
+                    className="font-medium underline ml-[12px]"
+                    disabled={Number(claimData[currentRound.round]) === 1}
+                    onClick={() => {
+                      onClick(3);
+                    }}
+                  >
+                    {Number(claimData[currentRound.round]) === 1
+                      ? "Claimed"
+                      : "Claim"}
+                  </button>
+                )}
               </div>
             </Popover>
           </div>
@@ -210,13 +238,15 @@ export default function Token({
               ) : (
                 "-"
               )}
-              <Image
-                src={token.icon}
-                width={16}
-                height={16}
-                className="rounded-full"
-                alt={token.symbol}
-              />
+              {!isMobile && (
+                <Image
+                  src={token.icon}
+                  width={16}
+                  height={16}
+                  className="rounded-full"
+                  alt={token.symbol}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -224,6 +254,7 @@ export default function Token({
           <Button
             className="h-[40px] w-[172px]"
             type="primary"
+            disabled={currentRound.status !== "ongoing"}
             onClick={() => {
               onClick(1, token);
             }}
@@ -233,7 +264,7 @@ export default function Token({
           <Button
             className="h-[40px] w-[172px] !bg-transparent"
             disabled={
-              !userInfo?.stakedAmountUSD || currentRound.status !== "ended"
+              !userInfo?.stakedAmount || currentRound.status !== "ended"
             }
             onClick={() => {
               onClick(2, token);
