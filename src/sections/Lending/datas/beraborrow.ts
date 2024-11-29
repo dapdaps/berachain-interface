@@ -144,7 +144,7 @@ const BeraborrowData = (props: any) => {
                 debt: '0',
                 status: '',
               };
-              const curr = user.dens.find((d: any) => {
+              const curr = user?.dens?.find((d: any) => {
                 return d.denManager?.collateral?.id.toLowerCase() === obj.collVault.toLowerCase();
               });
               if (!curr) return obj;

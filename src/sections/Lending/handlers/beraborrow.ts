@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { useEffect } from 'react';
 
 const ABI: any = {
@@ -591,9 +591,9 @@ const BeraborrowHandler = (props: any) => {
           // _debtAmount
           parsedBorrowAmount,
           // _upperHint
-          account,
+          config.upperHint,
           // _lowerHint
-          account
+          config.lowerHint
         ];
         if (isOpened) {
           method = 'adjustDenNative';
@@ -609,9 +609,9 @@ const BeraborrowHandler = (props: any) => {
             // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
             !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
             // _upperHint
-            account,
+            config.upperHint,
             // _lowerHint
-            account,
+            config.lowerHint,
             // unwrap
             true
           ];
@@ -640,9 +640,9 @@ const BeraborrowHandler = (props: any) => {
           // _debtAmount
           parsedBorrowAmount,
           // _upperHint
-          account,
+          config.upperHint,
           // _lowerHint
-          account
+          config.lowerHint
         ];
         if (isOpened) {
           method = 'adjustDen';
@@ -662,9 +662,9 @@ const BeraborrowHandler = (props: any) => {
             // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
             !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
             // _upperHint
-            account,
+            config.upperHint,
             // _lowerHint
-            account
+            config.lowerHint
           ];
         }
         if (isClose) {
@@ -691,9 +691,9 @@ const BeraborrowHandler = (props: any) => {
           // _collAssetToDeposit
           parsedAmount,
           // _upperHint
-          account,
+          config.upperHint,
           // _lowerHint
-          account,
+          config.lowerHint,
           // _minSharesMinted
           '0',
           // _collIndex
@@ -712,8 +712,8 @@ const BeraborrowHandler = (props: any) => {
               _collWithdrawal: isRepay ? parsedAmount : '0',
               _debtChange: parsedBorrowAmount,
               _isDebtIncrease: !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
-              _upperHint: account,
-              _lowerHint: account,
+              _upperHint: config.upperHint,
+              _lowerHint: config.lowerHint,
               unwrap: true,
               _minSharesMinted: '0',
               _minAssetsWithdrawn: '0',
@@ -749,7 +749,7 @@ const BeraborrowHandler = (props: any) => {
     };
 
     const createTx = (gas?: any) => {
-      const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : 4000000;
+      const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : '4000000';
       contract.populateTransaction[method](...params, {
         ...option,
         gasLimit: _gas,
