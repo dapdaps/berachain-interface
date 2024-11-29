@@ -5,7 +5,7 @@ import InputNumber from '@/components/input-number';
 import Big from 'big.js';
 
 const CurrencyInput = forwardRef<any, any>((props, ref) => {
-  const { amount, onAmount, onBalance, tokens, token, onToken, className, balanceText = 'Balance', tokenSelectorStyle } = props;
+  const { amount, onAmount, onBalance, tokens, token, onToken, className, balanceText = 'Balance', tokenSelectorStyle, renderValue } = props;
   const isTokenSelectable = typeof onToken === 'function';
 
   const [tokenSelectVisible, setTokenSelectVisible] = useState(false);
@@ -71,7 +71,14 @@ const CurrencyInput = forwardRef<any, any>((props, ref) => {
         style={{ justifyContent: token?.price ? 'space-between' : 'flex-end' }}
       >
         {
-          !!token?.price && (
+          typeof renderValue === 'function' && (
+            <div className="text-[#3D405A] text-[12px] font-[500]">
+              {renderValue(amount || '0')}
+            </div>
+          )
+        }
+        {
+          !!token?.price && typeof renderValue !== 'function' && (
             <div className="text-[#3D405A] text-[12px] font-[500]">
               {numberFormatter(Big(amount || 0).times(token?.price || 0), 2, true, { prefix: '$' })}
             </div>

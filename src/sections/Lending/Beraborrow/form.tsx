@@ -6,9 +6,8 @@ import Health, { getStatus } from '@/sections/Lending/Beraborrow/health';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
 import InputNumber from '@/components/input-number';
-import Button from '@/components/button';
 import Big from 'big.js';
-import { numberRemoveEndZero } from '@/utils/number-formatter';
+import { numberFormatter, numberRemoveEndZero } from '@/utils/number-formatter';
 import dynamic from 'next/dynamic';
 import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
@@ -18,6 +17,17 @@ import useAddAction from '@/hooks/use-add-action';
 import ClosePositionModal from '@/sections/Lending/Beraborrow/close';
 import { useDebounceFn } from 'ahooks';
 import useIsMobile from '@/hooks/use-isMobile';
+import { ethers, utils } from 'ethers';
+
+const BASE_COLLATERAL_VAULT_ABI = [
+  {
+    type: "function",
+    name: "previewDeposit",
+    inputs: [{ name: "assets", type: "uint256", internalType: "uint256" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+];
 
 const BeraborrowHandler = dynamic(() => import('@/sections/Lending/handlers/beraborrow'));
 
@@ -43,6 +53,7 @@ export const Form = (props: any) => {
   const [closePosition, setClosePosition] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>();
   const [borrowAmount, setBorrowAmount] = useState<string>();
+  const [previewAmount, setPreviewAmount] = useState<string>();
   const [ratio, setRatio] = useState<string>();
   const [txData, setTxData] = useState<any>();
   const [actionText, setActionText] = useState<ActionText>();
@@ -206,7 +217,23 @@ export const Form = (props: any) => {
 
   const { run: getTxData } = useDebounceFn(() => {
     setLoading(true);
-  }, { wait: 300 });
+  }, { wait: 500 });
+
+  const { run: getPreviewDeposit } = useDebounceFn(async (assets: string) => {
+    const contract = new ethers.Contract(market.collVault, BASE_COLLATERAL_VAULT_ABI, provider);
+    const params = [utils.parseUnits(assets, market.decimals)];
+    const res = await contract.previewDeposit(...params);
+    const previewAmount = utils.formatUnits(res?._hex || '0', market.decimals);
+    setPreviewAmount(previewAmount);
+  }, { wait: 500 });
+
+  useEffect(() => {
+    if (!amount || Big(amount).lte(0)) {
+      setPreviewAmount('0');
+      return;
+    }
+    getPreviewDeposit(amount);
+  }, [amount]);
 
   useEffect(() => {
     if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0))) return;
@@ -249,6 +276,9 @@ export const Form = (props: any) => {
           tokens={[]}
           tokenSelectorStyle={{
             width: isMobile ? "auto" : 176,
+          }}
+          renderValue={(_amount: string) => {
+            return numberFormatter(Big(previewAmount || 0).times(market.price).toFixed(2, Big.roundDown), 2, true, { prefix: '$' });
           }}
         />
         <div className="text-black text-[16px] font-[600]">
