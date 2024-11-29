@@ -26,6 +26,8 @@ const LendingButton = ({
   config,
   addAction,
   isApproveMax,
+  toastLoadingMsg,
+  invalidText,
 }: Props) => {
   const toast = useToast();
   const { approve, approved, approving, checking } = useApprove({
@@ -51,6 +53,20 @@ const LendingButton = ({
       setIsGasEnough(!Big(rawBalance.toString()).lt(gas.toString()));
     });
   }, [address, gas, children]);
+
+  if (invalidText) {
+    return (
+      <Button
+        type={type}
+        style={style}
+        disabled={loading || disabled}
+        loading={loading}
+        className="whitespace-nowrap"
+      >
+        {invalidText}
+      </Button>
+    );
+  }
 
   if (!amount || Big(amount).eq(0)) {
     return (
@@ -134,7 +150,7 @@ const LendingButton = ({
   const handleSubmit = () => {
     if (pending) return;
     const toastId = toast?.loading({
-      title: `Submitting ${token?.symbol} ${children.toLowerCase()} request...`
+      title: toastLoadingMsg || `Submitting ${token?.symbol} ${children.toLowerCase()} request...`
     });
     setPending(true);
     provider
@@ -257,4 +273,6 @@ interface Props {
   config: any;
   addAction?: any;
   isApproveMax?: boolean;
+  toastLoadingMsg?: any;
+  invalidText?: any;
 }

@@ -1,6 +1,6 @@
 import { numberFormatter } from '@/utils/number-formatter';
 import SwitchTabs from '@/components/switch-tabs';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Empty from '@/components/empty';
 import LendingButton from '@/sections/Lending/components/button';
 import TokenSelector from '@/sections/Lending/components/token-selector';
@@ -10,6 +10,7 @@ import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
 import dynamic from 'next/dynamic';
 import { useHandler } from '@/sections/Lending/hooks/use-handler';
+import CurrencyInput from '@/sections/Lending/components/input';
 
 const DolomiteHandler = dynamic(() => import('@/sections/Lending/handlers/dolomite'));
 
@@ -32,7 +33,6 @@ const Position = (props: Props) => {
 
   const [currentTab, setCurrentTab] = useState(Tabs[0].value);
   const [tokens, setTokens] = useState<any>([]);
-  const [tokenSelectVisible, setTokenSelectVisible] = useState<any>(false);
   const [tokenSelected, setTokenSelected] = useState<any>();
 
   const {
@@ -183,43 +183,14 @@ const Position = (props: Props) => {
             onChange={handleCurrentTab}
           />
           <div className="mt-[17px]">
-            <div className="relative w-full h-[72px] leading-[70px]">
-              <div
-                onClick={() => {
-                  setTokenSelectVisible(true);
-                }}
-                className="cursor-pointer absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] md:w-[120px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]"
-              >
-                <div className="flex items-center gap-[8px]">
-                  <img src={tokenSelected?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0" />
-                  <div className="leading-none">
-                    <div className="text-[16px] font-[600] text-black">{tokenSelected?.symbol}</div>
-                    <div className="text-[12px] text-[#3D405A] font-[500] mt-[3px]">{tokenSelected?.name}</div>
-                  </div>
-                </div>
-                <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1L6 5L11 1" stroke="black" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                className="w-full h-full border border-[#373A53] bg-white rounded-[12px] text-[26px] font-[700] pl-[20px] pr-[200px]"
-                placeholder="0"
-                value={amount}
-                onChange={handleAmount}
-              />
-            </div>
-            <div className="flex justify-end items-center py-[12px]">
-              <div className="text-[#3D405A] text-[12px] font-[500]">
-                balance:&nbsp;
-                <span
-                  className="underline cursor-pointer"
-                  onClick={handleBalance}
-                >
-                  {numberFormatter(tokenSelected?.balance, 4, true)}
-                </span>
-              </div>
-            </div>
+            <CurrencyInput
+              token={tokenSelected}
+              onToken={setTokenSelected}
+              amount={amount}
+              onAmount={(val: string) => handleAmount({ target: { value: val } })}
+              onBalance={handleBalance}
+              tokens={tokens}
+            />
             <LendingButton
               type="primary"
               disabled={disabled}
@@ -248,18 +219,6 @@ const Position = (props: Props) => {
           </div>
         </div>
       </div>
-      <TokenSelector
-        visible={tokenSelectVisible}
-        selected={tokenSelected}
-        tokens={tokens}
-        onClose={() => {
-          setTokenSelectVisible(false);
-        }}
-        onSelect={(token: any) => {
-          setTokenSelected(token);
-          setAmount('');
-        }}
-      />
       <DolomiteHandler
         data={{
           config: {
