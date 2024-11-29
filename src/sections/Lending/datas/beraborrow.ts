@@ -42,6 +42,41 @@ const ERC20_ABI = [
   },
 ];
 
+const DEN_ABI = [
+  {
+    type: "function",
+    name: "getTotalActiveCollateral",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getTotalActiveDebt",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+];
+
+const calcTCR = (collateral: any, debt: any, price: any) => {
+  if (!collateral || Big(collateral).lte(0)) return 0;
+  if (!debt || Big(debt).lte(0)) return 0;
+  return Big(collateral).times(price).div(debt).times(100).toFixed(0);
+};
+
 const BeraborrowData = (props: any) => {
   const {
     onLoad,
@@ -216,6 +251,50 @@ const BeraborrowData = (props: any) => {
       });
     };
 
+    const getTCR = () => {
+      return new Promise((resolve) => {
+        const result: any = [];
+        const calls: any = [];
+        markets.forEach((token: any) => {
+          calls.push({
+            address: token.denManager,
+            name: 'getTotalActiveCollateral',
+            params: []
+          });
+          calls.push({
+            address: token.denManager,
+            name: 'getTotalActiveDebt',
+            params: []
+          });
+        });
+        multicall({
+          abi: DEN_ABI,
+          calls,
+          options: {},
+          multicallAddress,
+          provider: provider
+        })
+          .then((res: any) => {
+            markets.forEach((token: any, index: number) => {
+              let totalCollateral = res?.[index * 2]?.[0] ?? '0';
+              let totalDebt = res?.[index * 2 + 1]?.[0] ?? '0';
+              totalCollateral = utils.formatUnits(totalCollateral, 18);
+              totalDebt = utils.formatUnits(totalDebt, 18);
+              result.push({
+                id: token.id,
+                totalCollateral: totalCollateral,
+                totalDebt: totalDebt,
+              });
+            });
+            resolve(result);
+          })
+          .catch((err: any) => {
+            console.log('getPrices error', err);
+            resolve(result);
+          });
+      });
+    };
+
     const getCTokensData = async () => {
       const [
         DenManagers,
@@ -223,12 +302,14 @@ const BeraborrowData = (props: any) => {
         Borrows,
         WalletBalance,
         BorrowWalletBalance,
+        TCRs,
       ]: any = await Promise.all([
         getDenManagers(),
         getPrices(),
         getBorrows(),
         getWalletBalance(),
         getBorrowWalletBalance(),
+        getTCR(),
       ]);
       const result = markets.map((market: any) => {
         let _address = market.address.toLowerCase();
@@ -238,6 +319,7 @@ const BeraborrowData = (props: any) => {
         const currBorrow = Borrows.find((b: any) => b.id === market.id);
         const currPrice = Prices.find((b: any) => b.id === market.id);
         const currDenManager = DenManagers.find((b: any) => b.id === market.id);
+        const currTCR = TCRs.find((b: any) => b.id === market.id);
         const currWalletBalance = WalletBalance[_address];
         let liquidationPrice = Big(0);
         if (Big(currBorrow?.collateral || 0).gt(0)) {
@@ -248,9 +330,11 @@ const BeraborrowData = (props: any) => {
         if (Big(currBorrow?.debt || 0).gt(0)) {
           collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
         }
+        const TCR = calcTCR(currTCR?.totalCollateral, currTCR?.totalDebt, currPrice?.price);
         return {
           ...market,
           riskyRatio,
+          TCR,
           borrowToken: {
             ...borrowToken,
             walletBalance: BorrowWalletBalance,
