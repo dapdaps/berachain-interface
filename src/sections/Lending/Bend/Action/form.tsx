@@ -184,9 +184,9 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
           <AmountSelector
             token={token}
             setAmount={hook.setAmount}
-            currentAmount={hook.amount}
             onChange={(value: string) => hook.setAmount(value)}
             balance={{ value: currentBalance }}
+            currentAmount={hook.amount}
           >
             <Balance
               action={action}
