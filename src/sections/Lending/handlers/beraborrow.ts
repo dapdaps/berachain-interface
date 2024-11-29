@@ -594,9 +594,9 @@ const BeraborrowHandler = (props: any) => {
           // _debtAmount
           parsedBorrowAmount,
           // _upperHint
-          config.upperHint,
+          account,
           // _lowerHint
-          config.lowerHint
+          account,
         ];
         if (isOpened) {
           method = 'adjustDenNative';
@@ -612,9 +612,9 @@ const BeraborrowHandler = (props: any) => {
             // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
             !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
             // _upperHint
-            config.upperHint,
+            account,
             // _lowerHint
-            config.lowerHint,
+            account,
             // unwrap
             true
           ];
@@ -643,9 +643,9 @@ const BeraborrowHandler = (props: any) => {
           // _debtAmount
           parsedBorrowAmount,
           // _upperHint
-          config.upperHint,
+          account,
           // _lowerHint
-          config.lowerHint
+          account,
         ];
         if (isOpened) {
           method = 'adjustDen';
@@ -665,9 +665,9 @@ const BeraborrowHandler = (props: any) => {
             // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
             !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
             // _upperHint
-            config.upperHint,
+            account,
             // _lowerHint
-            config.lowerHint
+            account,
           ];
         }
         if (isClose) {
@@ -694,9 +694,9 @@ const BeraborrowHandler = (props: any) => {
           // _collAssetToDeposit
           parsedAmount,
           // _upperHint
-          config.upperHint,
+          account,
           // _lowerHint
-          config.lowerHint,
+          account,
           // _minSharesMinted
           '0',
           // _collIndex
@@ -744,8 +744,6 @@ const BeraborrowHandler = (props: any) => {
       default:
         break;
     }
-
-    console.log(method);
 
     if (!method) return;
 

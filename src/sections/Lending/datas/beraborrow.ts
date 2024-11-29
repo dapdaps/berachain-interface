@@ -133,11 +133,14 @@ const BeraborrowData = (props: any) => {
     const getPrices = () => {
       return new Promise((resolve) => {
         const result: any = [];
-        const calls = markets.map((token: any) => ({
-          address: token.denManager,
-          name: 'fetchPrice',
-          params: []
-        }));
+        const calls: any = [];
+        markets.forEach((token: any) => {
+          calls.push({
+            address: token.denManager,
+            name: 'fetchPrice',
+            params: []
+          });
+        });
         multicall({
           abi: ERC20_ABI,
           calls,
@@ -146,12 +149,14 @@ const BeraborrowData = (props: any) => {
           provider: provider
         })
           .then((res: any) => {
-            for (let i = 0; i < res.length; i++) {
+            markets.forEach((token: any, index: number) => {
+              let denManagerPrice = res?.[index]?.[0] ?? '0';
+              denManagerPrice = utils.formatUnits(denManagerPrice, 36 - token.decimals);
               result.push({
-                id: markets[i].id,
-                price: utils.formatUnits(res[i]?.[0]?._hex || '0', 36 - markets[i].decimals),
+                id: token.id,
+                price: denManagerPrice,
               });
-            }
+            });
             resolve(result);
           })
           .catch((err: any) => {

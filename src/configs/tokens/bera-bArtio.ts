@@ -39,6 +39,14 @@ export const beraB: { [key: string]: Token } = {
     name: "Honey bToken",
     icon: "/images/dapps/honey.png"
   },
+  bbhoney: {
+    address: "0xCc4Db6dE3c5a131757e9f00309F3ef5c443D1a8e",
+    chainId: CHAIN_ID,
+    symbol: "BBbHONEY",
+    decimals: 18,
+    name: "Beraborrow bHONEY",
+    icon: "/images/dapps/honey.png"
+  },
   usdt: {
     chainId: CHAIN_ID,
     address: "0x05D0dD5135E3eF3aDE32a9eF9Cb06e8D37A6795D",
@@ -267,5 +275,21 @@ export const beraB: { [key: string]: Token } = {
     symbol: "PAW",
     name: "Paw Token",
     icon: "/assets/tokens/paw.webp"
-  }
+  },
+  'bbhoney-usdc': {
+    address: "0x3a1bfc7871766f5ec089c54bb117cdd0c5f13710",
+    chainId: CHAIN_ID,
+    symbol: "BBkHONEY-USDC",
+    decimals: 18,
+    name: "Beraborrow HONEY-USDC Kodiak Island",
+    icon: "/images/dapps/honey.png"
+  },
+  bigbt: {
+    address: "0x512f5b7cca328110e805924c6b64c439a715b567",
+    chainId: CHAIN_ID,
+    symbol: "BBiBGT",
+    decimals: 18,
+    name: "Beraborrow iBGT",
+    icon: "/assets/tokens/ibgt.png"
+  },
 };
