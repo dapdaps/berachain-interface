@@ -1,7 +1,7 @@
 import Modal from '@/components/modal';
 import { Item } from '@/sections/Lending/Beraborrow/info';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActionText } from '@/sections/Lending/Beraborrow/form';
 import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
@@ -24,12 +24,26 @@ export const ClosePosition = (props: any) => {
     liquidationReserve,
   } = props;
 
+  const balance = market?.borrowToken?.walletBalance || 0;
+
   const { address, chainId } = useAccount();
   const { provider } = useProvider();
   const { addAction } = useAddAction("lending");
 
   const [loading, setLoading] = useState(false);
   const [txData, setTxData] = useState<any>();
+  const buttonValid = useMemo(() => {
+    const result = {
+      valid: true,
+      text: 'Confirm',
+    };
+    if (Big(market?.borrowed || 0).gt(balance)) {
+      result.valid = false;
+      result.text = `Insufficient ${market?.borrowToken?.symbol} Balance`;
+      return result;
+    }
+    return result;
+  }, [market]);
 
   useEffect(() => {
     setLoading(true);
@@ -50,9 +64,10 @@ export const ClosePosition = (props: any) => {
       </div>
       <LendingButton
         type="primary"
-        disabled={loading}
+        disabled={loading || !buttonValid.valid}
         loading={loading}
         style={{ height: 60, width: '100%', marginTop: 10 }}
+        invalidText={buttonValid.valid ? void 0 : buttonValid.text}
         amount={market?.balance || ''}
         token={market}
         chain={{ chainId: DEFAULT_CHAIN_ID }}

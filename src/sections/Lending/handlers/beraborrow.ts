@@ -576,6 +576,9 @@ const BeraborrowHandler = (props: any) => {
     let contract = new ethers.Contract(contractAddress, abi, provider.getSigner());
     if (isClose) {
       contract = new ethers.Contract(config.borrowerOperations, ABI.borrowerOperations, provider.getSigner());
+      if (market.vault === 'collVaultRouter') {
+        contract = new ethers.Contract(config.collVaultRouter, ABI.collVaultRouter, provider.getSigner());
+      }
     }
 
     let method = '';
@@ -741,6 +744,8 @@ const BeraborrowHandler = (props: any) => {
       default:
         break;
     }
+
+    console.log(method);
 
     if (!method) return;
 
