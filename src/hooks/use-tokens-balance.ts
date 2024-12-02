@@ -16,19 +16,20 @@ export default function useTokensBalance(tokens: any) {
     const chainId = tokens[0].chainId || DEFAULT_CHAIN_ID;
     try {
       setLoading(true);
-      let hasNative = false;
+      let nativeToken: any = null;
       const tokensAddress = tokens.filter((token: any) => {
-        if (token.address === "native") hasNative = true;
-        return token.address !== "native";
+        if (token.address === "native" || token.isNative) nativeToken = token;
+        return !(token.address === "native" || token.isNative);
       });
       const calls = tokensAddress.map((token: any) => ({
         address: token.address,
         name: "balanceOf",
         params: [account]
       }));
+
       const multicallAddress = multicallAddresses[chainId];
       const requests = [];
-      if (hasNative) requests.push(provider.getBalance(account));
+
       const splits = Math.ceil(calls.length / 20);
       for (let i = 0; i < splits; i++) {
         requests.push(
@@ -62,10 +63,13 @@ export default function useTokensBalance(tokens: any) {
 
       const results = flatten(res);
 
+      if (nativeToken) {
+        const nativeBalance = await provider.getBalance(account);
+        _balance[nativeToken.address] = utils.formatUnits(nativeBalance, 18);
+      }
+
       for (let i = 0; i < results.length; i++) {
-        if (hasNative) {
-          _balance.native = utils.formatUnits(results[i], 18);
-        }
+        if (!results[i]) continue;
         const token = tokensAddress[i];
         _balance[token.address] = utils.formatUnits(
           results[i]?.[0] || 0,

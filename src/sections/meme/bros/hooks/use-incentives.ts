@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { get } from "@/utils/http";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function useIncentives() {
+export default function useIncentives(contract: string) {
   const [list, setList] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -19,10 +19,10 @@ export default function useIncentives() {
             start_time: p === 1 ? "" : list.slice(-1)[0].tx_time,
             chain_id: DEFAULT_CHAIN_ID,
             dapp: "supermemebros",
-            sub_type: "deposit_reward"
+            sub_type: "deposit_reward",
+            contract
           })
         });
-        console.log(result);
         setList(result.data.list);
         if (result.data.has_more) {
           setTotalPage(p + 1);
@@ -36,7 +36,7 @@ export default function useIncentives() {
         setLoading(false);
       }
     },
-    [list]
+    [list, contract]
   );
 
   const onChangePage = (p: number) => {

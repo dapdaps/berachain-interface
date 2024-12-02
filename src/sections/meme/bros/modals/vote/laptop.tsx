@@ -24,7 +24,7 @@ const VoteLaptop = ({ open, data, onClose }: any) => {
       </div>
       <div className="flex items-center mt-[10px] pl-[13px] pr-[5px] gap-[24px]">
         <RoundLabel
-          round={data.round}
+          round={data}
           className="md:!absolute md:top-[-53px] whitespace-nowrap md:left-[50%] md:translate-x-[-50%] w-[342px]"
         />
         {data.status === "ended" && (

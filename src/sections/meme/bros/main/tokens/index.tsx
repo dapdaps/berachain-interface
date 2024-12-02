@@ -1,12 +1,15 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import useIsMobile from "@/hooks/use-isMobile";
 import Loading from "@/components/loading";
 import Item from "./item";
+import TapSound from "@/components/tap-sound";
 
 export default function Tokens({ tokens, loading }: any) {
   const [selectToken, setSelectToken] = useState<number>();
   const isMobile = useIsMobile();
+  const tapRef = useRef<any>(null);
+
   const list = useMemo(() => {
     if (!tokens || tokens.length === 0) return [];
     const [t1, t2, t3, ...rest] = tokens;
@@ -48,12 +51,14 @@ export default function Tokens({ tokens, loading }: any) {
                 show={i === selectToken}
                 onClick={() => {
                   setSelectToken(i);
+                  tapRef.current?.play?.();
                 }}
               />
             </SwiperSlide>
           ))}
         </Swiper>
       )}
+      <TapSound ref={tapRef} src="/audios/meme-jump.mp3" />
     </div>
   );
 }

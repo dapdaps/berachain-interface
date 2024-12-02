@@ -15,7 +15,7 @@ export default function useVoteData(round?: number) {
         `/api/meme/vote?round=${round}&account=${account}`
       );
 
-      setVoteAddress(result.data.token_address);
+      setVoteAddress(result.data?.token_address);
     } catch (err) {
       console.log(err);
       setVoteAddress(null);
