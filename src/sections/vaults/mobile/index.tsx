@@ -359,11 +359,13 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               <Image
                 className="absolute right-[-2px] bottom-[0px]"
                 src={
-                  pool?.protocol === "BEX"
-                    ? "/images/dapps/infrared/bex.svg"
-                    : pool?.protocol === "Kodiak Finance"
-                      ? "/images/dapps/kodiak.svg"
-                      : "/images/dapps/infrared/berps.svg"
+                  pool?.protocol === 'BEX'
+                    ? '/images/dapps/infrared/bex.svg'
+                    : pool?.protocol === 'aquabera'
+                      ? '/images/dapps/infrared/aquabera.svg' :
+                      (pool?.protocol === 'Kodiak Finance')
+                        ? '/images/dapps/kodiak.svg'
+                        : '/images/dapps/infrared/berps.svg'
                 }
                 width={20}
                 height={20}

@@ -42,6 +42,7 @@ export default function Mobile({ filterList, loading, onClick }: any) {
 
 const Item = ({ data, onClick }: any) => {
   const pool = data?.pool;
+  console.log('===pool', pool)
   return (
     <div>
       <div className='bg-black/[0.06] rounded-[10px] backdrop-blur-sm p-[14px]'>
@@ -70,9 +71,11 @@ const Item = ({ data, onClick }: any) => {
                 className='absolute right-[-2px] bottom-[0px]'
                 src={pool?.protocol === 'BEX'
                   ? '/images/dapps/infrared/bex.svg'
-                  : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
-                    ? '/images/dapps/kodiak.svg'
-                    : '/images/dapps/infrared/berps.svg'}
+                  : pool?.protocol === 'aquabera'
+                    ? '/images/dapps/infrared/aquabera.svg' :
+                    (pool?.protocol === 'Kodiak Finance')
+                      ? '/images/dapps/kodiak.svg'
+                      : '/images/dapps/infrared/berps.svg'}
                 width={20}
                 height={20}
                 alt='Protocol'
@@ -82,7 +85,7 @@ const Item = ({ data, onClick }: any) => {
               <div className='text-[16px] font-semibold'>
                 {pool?.name || 'iBGT'}
               </div>
-              <div className='text-[14px] mt-[4px]'>{pool?.protocol}</div>
+              <div className='text-[14px] mt-[4px] capitalize'>{pool?.protocol}</div>
             </div>
           </div>
           <button

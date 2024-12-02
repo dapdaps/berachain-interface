@@ -176,9 +176,11 @@ export default function Invest(props: any) {
               style={{ width: 20 }}
               src={pool?.protocol === 'BEX'
                 ? '/images/dapps/infrared/bex.svg'
-                : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
-                  ? '/images/dapps/kodiak.svg'
-                  : '/images/dapps/infrared/berps.svg'}
+                : pool?.protocol === 'aquabera'
+                  ? '/images/dapps/infrared/aquabera.svg' :
+                  (pool?.protocol === 'Kodiak Finance')
+                    ? '/images/dapps/kodiak.svg'
+                    : '/images/dapps/infrared/berps.svg'}
             />
           );
         },
