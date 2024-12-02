@@ -43,7 +43,7 @@ export default {
           ...beraB["kdk"],
           ichiAddress: "0x6d501e865D112A051B42f8845E8b09Aa41765424"
         }, {
-          ...beraB["ooga"],
+          ...beraB["ooga_booga"],
           ichiAddress: "0x8b9ea50619e46E9C72289393AFc11f5256b78E63"
         }, {
           ...beraB["yeet"],
