@@ -557,6 +557,146 @@ const ABI: any = {
   ],
 };
 
+const DEN_MANAGER_ABI = [
+  {
+    type: "function",
+    name: "getDenOwnersCount",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "totalStakes",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+];
+
+const HINT_ABI = [
+  {
+    type: "function",
+    name: "getRedemptionHints",
+    inputs: [
+      {
+        name: "denManager",
+        type: "address",
+        internalType: "contract IDenManager",
+      },
+      {
+        name: "_debtAmount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "_price",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "_maxIterations",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "firstRedemptionHint",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "partialRedemptionHintNICR",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "truncatedDebtAmount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getApproxHint",
+    inputs: [
+      {
+        name: "denManager",
+        type: "address",
+        internalType: "contract IDenManager",
+      },
+      {
+        name: "_CR",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "_numTrials",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "_inputRandomSeed",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "hintAddress",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "diff",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "latestRandomSeed",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+];
+
+const COLL_VAULT_ABI = [
+  {
+    type: "function",
+    name: "maxRedeem",
+    inputs: [{ name: "owner", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+];
+
+export const randomBigInt = () => BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+function* generateTrials(totalNumberOfTrials: number) {
+  while (totalNumberOfTrials) {
+    const numberOfTrials = Math.min(totalNumberOfTrials, 2500);
+    yield numberOfTrials;
+
+    totalNumberOfTrials -= numberOfTrials;
+  }
+}
+
 const BeraborrowHandler = (props: any) => {
   const { update, config, market, actionText, account, borrowAmount, amount, onLoad, provider, chainId } = props;
 
@@ -775,9 +915,51 @@ const BeraborrowHandler = (props: any) => {
         createTx(gas);
       })
       .catch((err: any) => {
-        console.log('%s estimateGas failure: %o', method, err);
+        // console.log('%s estimateGas failure: %o', method, err);
         createTx();
       });
+
+
+    const denContract = new ethers.Contract(market.denManager, DEN_MANAGER_ABI, provider);
+    denContract.getDenOwnersCount().then(async (numberOfDens: any) => {
+      console.log('numberOfDens: %o', numberOfDens.toString());
+      const totalNumberOfTrials = Math.ceil(15 * Math.sqrt(Number(numberOfDens.toString())));
+      console.log('totalNumberOfTrials: %o', totalNumberOfTrials);
+      const [firstTrials, ...restOfTrials] = generateTrials(totalNumberOfTrials) as any;
+      console.log('firstTrials: %o', firstTrials);
+      try {
+        const collVaultContract = new ethers.Contract(market.collVault, COLL_VAULT_ABI, provider);
+        const redeemMaxIterations = await collVaultContract.maxRedeem(account);
+        console.log('redeemMaxIterations: %o', redeemMaxIterations);
+      } catch (e) {}
+      const hintContract = new ethers.Contract(config.multiCollateralHintHelpers, HINT_ABI, provider);
+      // const redemptionHintRes = await hintContract.getRedemptionHints(market.denManager, amount, market.price, redeemMaxIterations);
+      let NICR = Big(0);
+      if (amount && Big(amount).gt(0) && borrowAmount && Big(borrowAmount).gt(0)) {
+        NICR = Big(amount || 0).mul(1e20).div(borrowAmount);
+      }
+      const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any, address?: any, overrides?: any) => {
+        const approxHintParams = [dmAddr, nominalCollateralRatio, BigInt(numberOfTrials), latestRandomSeed];
+        console.log('approxHintParams: %o', approxHintParams);
+        return new Promise((resolve) => {
+          hintContract.getApproxHint(...approxHintParams).then((hintRes: any) => {
+            console.log('hintRes: %o', hintRes);
+            resolve(hintRes);
+          }).catch((err: any) => {
+            console.log('hintRes err: %o', err);
+            resolve({});
+          });
+        });
+      };
+      const { results } = await restOfTrials.reduce(
+        (p: any, numberOfTrials: any) => p.then((state: any) => {
+          _collectApproxHint(state.latestRandomSeed, state.results, numberOfTrials, market.denManager, NICR.toString());
+        }),
+        _collectApproxHint(randomBigInt(), [], firstTrials, market.denManager, NICR.toString())
+      );
+      console.log('results: %o', results);
+
+    });
   }, [update]);
 
   return null;
