@@ -22,7 +22,7 @@ export default function Tokens({ tokens, loading }: any) {
   }, [tokens]);
 
   return (
-    <div className="pt-[40px] md:pt-[10px]">
+    <div className="pt-[40px] md:pt-[10px] min-h-[400px] md:min-h-[300px]">
       {loading ? (
         <div className="flex justify-center w-full h-[260px]">
           <Loading size={40} />
