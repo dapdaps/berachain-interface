@@ -90,7 +90,7 @@ export const Form = (props: any) => {
   }, [type, market, market?.borrowToken]);
 
   const calcNECTBorrowed = (collateralAmount: any, _riskyRatio: string) => {
-    const collateralValue = Big(collateralAmount || 0).times(market.price);
+    const collateralValue = Big(collateralAmount || 0).times(market.price || 0);
     // NECT borrowed = collateral value / (Ratio / 100)
     let NECTBorrowed = Big(collateralValue).div(Big(_riskyRatio).div(100));
     // - Liquidation reserve
