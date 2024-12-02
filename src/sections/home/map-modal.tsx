@@ -6,11 +6,14 @@ import dAppArrowIcon from '@public/images/map/arrow-dApps.svg';
 import caveArrowIcon from '@public/images/map/arrow-cave.svg';
 import BridgeArrowIcon from '@public/images/map/arrow-bridge.svg';
 import MarketPlaceArrowIcon from '@public/images/map/arrow-marketplace.svg';
+import beramasArrowIcon from '@public/images/map/arrow-beramas.svg';
 import { useRouter } from 'next/navigation';
 import useMapModalStore from '@/stores/useMapModalStore';
 import ReactDOM from 'react-dom';
 import IconClose from '@public/images/modal/close.svg';
 import useClickTracking from '@/hooks/use-click-tracking';
+import { useChristmas } from '@/hooks/use-christmas';
+import { SceneStatus } from '@/configs/scene';
 
 const dAppClipPath =
   'M208.33 2.96745L11.5462 105.957C4.52793 109.63 0.338879 117.099 0.864137 125.003L9.08074 248.644C9.84853 260.197 20.2364 268.686 31.7113 267.138L216.435 242.211C217.477 242.071 218.506 241.848 219.512 241.546L391.686 189.845C393.552 189.285 395.49 189 397.438 189H500.561C507.102 189 513.229 185.802 516.969 180.436L537.25 151.337C542.176 144.269 542.023 134.841 536.87 127.938L472.504 41.7046C469.303 37.415 464.515 34.5878 459.212 33.8557L220.339 0.875262C216.216 0.305971 212.018 1.03735 208.33 2.96745Z';
@@ -191,6 +194,7 @@ const MapItem = ({
 const MapModal = () => {
   const store: any = useMapModalStore();
   const { handleReport } = useClickTracking();
+  const christmas = useChristmas();
 
   const modalRef = useRef<any>(null);
   const [visible, setVisible] = useState<boolean>(false);
@@ -199,6 +203,30 @@ const MapModal = () => {
 
   const [windowWidth, setWindowWidth] = useState<number | undefined>(undefined);
   const [isClient, setIsClient] = useState(false);
+
+  const entries = useMemo(() => {
+    if (christmas?.status !== SceneStatus.Ongoing) {
+      return PartList;
+    }
+    return [...PartList, {
+      className: 'origin-bottom-left absolute left-[6.3%] bottom-[10.8%] w-[314px] h-[340px]',
+      clipPath: 'unset',
+      src: 'beramas.svg',
+      maskSrc: 'mask-beramas.svg',
+      indicatorClass: 'absolute left-[2%] top-[25%] z-10',
+      buttonClass: 'rotate-[-10deg] mb-[8px]',
+      arrowClass: 'relative left-[50%]',
+      btnText: 'Bera Cave',
+      link: christmas.path,
+      ArrowIcon: beramasArrowIcon
+    }];
+  }, [PartList, christmas]);
+  const bg = useMemo(() => {
+    if (christmas?.status !== SceneStatus.Ongoing) {
+      return '/images/map/background.svg';
+    }
+    return '/images/map/background-beramas.svg';
+  }, [christmas]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -314,7 +342,7 @@ const MapModal = () => {
             <AnimatePresence mode='wait'>
               {visible ? (
                 <motion.div
-                  className='relative w-[80vw] min-w-[768px] max-w-[1470px] bg-[url(/images/map/background.svg)] bg-no-repeat bg-center bg-contain overflow-hidden origin-top mt-[20px]'
+                  className='relative w-[80vw] min-w-[768px] max-w-[1470px] bg-no-repeat bg-center bg-contain overflow-hidden origin-top mt-[20px]'
                   initial='closed'
                   animate='open'
                   exit='closed'
@@ -332,7 +360,8 @@ const MapModal = () => {
                     }
                   }}
                   style={{
-                    height: (realWidth ?? 1470) * 0.53
+                    height: (realWidth ?? 1470) * 0.53,
+                    backgroundImage: `url("${bg}")`,
                   }}
                 >
                   <div
@@ -341,7 +370,7 @@ const MapModal = () => {
                   >
                     <IconClose />
                   </div>
-                  {PartList.map((item) => (
+                  {entries.map((item) => (
                     <MapItem
                       key={item.src}
                       onNavigateTo={() => onNavigateTo(item.link)}
