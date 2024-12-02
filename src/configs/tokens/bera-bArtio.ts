@@ -308,22 +308,13 @@ export const beraB: { [key: string]: Token } = {
     name: 'Kodiak token',
     icon: '/assets/tokens/kdk.svg'
   },
-  ooga: {
+  ooga_booga: {
     chainId: CHAIN_ID,
     address: '0x55812Bd8683EC95374E42ECfbbc5fb965B3D009a',
     decimals: 18,
     symbol: 'OOGA',
     name: 'Ooga Booga Token',
     icon: '/assets/tokens/ooga_second.png'
-  },
-
-  yeet: {
-    chainId: CHAIN_ID,
-    address: '0x1740F679325ef3686B2f574e392007A92e4BeD41',
-    decimals: 18,
-    symbol: 'YEET',
-    name: '$YEET',
-    icon: '/assets/tokens/yeet_second.png'
   },
   sip: {
     chainId: CHAIN_ID,
