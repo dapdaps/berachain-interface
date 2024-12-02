@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSwapToken } from "@/hooks/use-swap-token";
 import SwapModal from '@/sections/swap/SwapModal';
 import ActionPanelLaptop from "@/sections/Lending/components/action-panel/laptop";
+import ActionModal from "@/sections/Lending/Bend/Action";
 import BendActionPanelLaptop from '@/sections/Lending/Bend/Action/laptop';
 import useAddAction from "@/hooks/use-add-action";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
@@ -172,7 +173,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
             trigger={PopoverTrigger.Click}
             placement={PopoverPlacement.BottomRight}
             content={item.protocol.name === 'Dolomite' ? null : (
-              <BendBorrowActionModal
+              <ActionModal
                 isOpen={true}
                 onClose={() => {}}
                 action="borrow"
@@ -192,7 +193,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
             trigger={PopoverTrigger.Click}
             placement={PopoverPlacement.BottomRight}
             content={item.protocol.name === 'Dolomite' ? null : (
-              <BendBorrowActionModal
+              <ActionModal
                 isOpen={true}
                 onClose={() => {
                 }}
