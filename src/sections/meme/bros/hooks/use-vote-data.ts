@@ -3,7 +3,7 @@ import { get } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 
 export default function useVoteData(round?: number) {
-  const [voteAddress, setVoteAddress] = useState<any>([]);
+  const [voteAddress, setVoteAddress] = useState<any>();
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
 
