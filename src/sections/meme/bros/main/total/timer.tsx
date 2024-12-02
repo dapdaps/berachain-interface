@@ -8,7 +8,8 @@ export default function Timer() {
   const { currentRound } = useData();
   const { secondsRemaining } = useCountdown(currentRound?.end_time || 0);
   const [timer, isEnded] = useMemo(() => {
-    if (secondsRemaining === 0) return ["Round 1 Ended", true];
+    if (secondsRemaining === 0)
+      return [`Round ${currentRound?.round} Ended`, true];
     const d = Math.floor(secondsRemaining / 86400);
     const h = Math.floor((secondsRemaining - d * 86400) / 3600);
     const m = Math.floor((secondsRemaining - d * 86400 - h * 3600) / 60);
