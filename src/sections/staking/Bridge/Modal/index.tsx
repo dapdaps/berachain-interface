@@ -118,8 +118,6 @@ export default memo(function index(props) {
     const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider)
     const address0 = await contract.token0()
     const address1 = await contract.token1()
-    console.log('===address0', address0)
-    console.log('===address1', address1)
     if (token0?.address?.toLocaleLowerCase() === address0?.toLocaleLowerCase()) {
       const response0 = await contract.deposit0Max()
       setDepositMaxAmount(ethers.utils.formatUnits(response0, token0?.decimals))
@@ -136,15 +134,12 @@ export default memo(function index(props) {
   const handleDepositOrWithdraw = (updateState: any) => {
     const abi = isDeposit ? (isBera ? ETHVaultWithSlippage_ABI : ICHIVaultDepositGuard_ABI) : ICHI_ABI
     const method = isDeposit ? (isBera ? "depositETH" : "forwardDepositToICHIVault") : "withdraw"
-
     const toastId = toast?.loading({
       title: isDeposit ? "Depositing..." : "Withdrawing..."
     });
     updateState({
       isLoading: true,
     });
-
-
     const contract = new ethers.Contract(
       isDeposit ? vaultAddress : ichiAddress,
       abi,
@@ -292,12 +287,12 @@ export default memo(function index(props) {
 
   useEffect(() => {
     if (show) {
+      console.log('===data', data)
       if (data?.pairedTokens) {
         const _pairedTokens = data?.pairedTokens
         const _token1 = _pairedTokens?.[0]
         const token = _.cloneDeep(data)
         delete token.pairedTokens
-
         setToken0(token)
         setToken1(_token1)
         setPairedTokens(_pairedTokens)
