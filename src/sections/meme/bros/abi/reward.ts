@@ -465,6 +465,19 @@ export default [
     type: "function"
   },
   {
+    inputs: [],
+    name: "getWhitelistedTokens",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -540,6 +553,24 @@ export default [
     type: "function"
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address"
+      },
+      {
+        internalType: "bool",
+        name: "status",
+        type: "bool"
+      }
+    ],
+    name: "setTokenWhitelist",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
     inputs: [],
     name: "signer",
     outputs: [
@@ -547,6 +578,25 @@ export default [
         internalType: "address",
         name: "",
         type: "address"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address"
+      }
+    ],
+    name: "tokenWhitelist",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool"
       }
     ],
     stateMutability: "view",
@@ -671,6 +721,25 @@ export default [
         internalType: "bool",
         name: "",
         type: "bool"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    name: "whitelistedTokens",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address"
       }
     ],
     stateMutability: "view",
