@@ -3,6 +3,7 @@ import Materials from "../../components/materials";
 import Loading from "@/components/loading";
 import Round from "../round";
 import WithdrawalPanel from "../../components/withdrawal-panel";
+import PageBack from "@/components/back";
 
 export default function Laptop({
   loading,
@@ -16,6 +17,9 @@ export default function Laptop({
 }: any) {
   return (
     <div className="relative w-full overflow-x-hidden relative">
+      <div className="absolute left-[18px] top-[18px]">
+        <PageBack />
+      </div>
       <Title onOpenModal={onOpenModal} />
       <div
         className="text-[36px] font-SquaredPixel text-center text-white"

@@ -75,7 +75,7 @@ export default function Token({
               {token.token.symbol}
             </div>
             <div
-              className="text-[14px] underline font-medium"
+              className="text-[14px] underline font-medium cursor-pointer"
               onClick={() => {
                 onClick(8, token);
               }}
@@ -216,7 +216,7 @@ export default function Token({
                     </div>
                   </Popover>
                 )}
-                {claimable && userReward && claimData && (
+                {claimable && Big(userReward || 0).gt(0) && claimData && (
                   <button
                     className="font-medium underline ml-[12px]"
                     disabled={Number(claimData[currentRound.round]) === 1}

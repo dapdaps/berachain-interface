@@ -206,7 +206,7 @@ export default function Round({
               <span>
                 {fetchingUserStakingData ? (
                   <Loading />
-                ) : userStakeData ? (
+                ) : Big(userStakeData?.totalUsd || 0).gt(0) ? (
                   `$${balanceShortFormated(userStakeData.totalUsd, 2)}`
                 ) : (
                   "-"

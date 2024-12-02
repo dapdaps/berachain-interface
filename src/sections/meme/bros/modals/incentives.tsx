@@ -10,10 +10,14 @@ import { useEffect, useState } from "react";
 import { formatThousandsSeparator } from "@/utils/balance";
 import { format } from "date-fns";
 import { ellipsAccount } from "@/utils/account";
+import useData from "../hooks/use-data";
 
 export default function Incentives({ open, data, rewardTokens, onClose }: any) {
-  const { loading, list, totalPage, page, onChangePage } = useIncentives();
+  const { loading, list, totalPage, page, onChangePage } = useIncentives(
+    data.stake_address
+  );
   const [showAddModal, setShowAddModal] = useState(false);
+  const { currentRound } = useData();
 
   useEffect(() => {
     if (open) onChangePage(1);
@@ -24,15 +28,17 @@ export default function Incentives({ open, data, rewardTokens, onClose }: any) {
       <Basic open={open} onClose={onClose} className="w-[916px]">
         <div className="flex text-[20px] font-bold justify-between pr-[40px] md:pr-0">
           <div>Incentives</div>
-          <Button
-            type="primary"
-            className="h-[36px]"
-            onClick={() => {
-              setShowAddModal(true);
-            }}
-          >
-            Add Incentives
-          </Button>
+          {currentRound.status === "ended" && (
+            <Button
+              type="primary"
+              className="h-[36px]"
+              onClick={() => {
+                setShowAddModal(true);
+              }}
+            >
+              Add Incentives
+            </Button>
+          )}
         </div>
         <div className="mb-[16px] pt-[28px] flex items-center font-medium text-[#3D405A] text-[14px] border-b border-black/20 pb-[10px]">
           <div className="w-[324px] md:w-[180px]">Providers</div>

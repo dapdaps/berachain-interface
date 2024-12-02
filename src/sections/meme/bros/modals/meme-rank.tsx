@@ -80,7 +80,8 @@ export default function MemeRank({ open, tokens = [], onClose }: any) {
           onChange={(item: any) => {
             setQueryTokenAddress(item.key);
           }}
-          dropPanelClassName="!w-fit"
+          className="w-fit"
+          dropPanelClassName="!w-[200px]"
         />
       </div>
       <div className="mt-[16px]">
@@ -160,7 +161,7 @@ export default function MemeRank({ open, tokens = [], onClose }: any) {
                 }
           }
         />
-        {!isMobile && (
+        {!isMobile && !!list.length && (
           <div className="pt-[12px] flex justify-end items-center pr-[12px]">
             <Pager
               maxPage={totalPage}

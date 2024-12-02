@@ -9,6 +9,7 @@ const position = [140, 95, 60, 170, 150, 160];
 export default function Item({ token, i, show, onClick }: any) {
   const isMobile = useIsMobile();
   const positionI = i % position.length;
+
   return (
     <div
       className="cursor-pointer relative origin-bottom duration-100 flex flex-col items-center"
