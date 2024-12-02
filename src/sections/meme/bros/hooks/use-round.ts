@@ -45,7 +45,9 @@ export default function useRound() {
       _tokens.sort((a: any, b: any) =>
         Big(b.total_dapped_usd).gt(a.total_dapped_usd) ? 1 : -1
       );
-      setTokens(_tokens);
+      setTokens(
+        _tokens.map((token: any, i: number) => ({ ...token, rank: i + 1 }))
+      );
 
       setRewardTokens(
         response.data.reward_tokens.map((token: any) => {

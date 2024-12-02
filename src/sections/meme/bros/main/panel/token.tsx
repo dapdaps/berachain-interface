@@ -63,7 +63,11 @@ export default function Token({
             />
 
             {token.rank && (
-              <RankMark rank={token.rank} className="left-[4px] top-[8px]" />
+              <RankMark
+                rank={token.rank}
+                className="left-[-2px] top-[4px]"
+                iconClassName="!w-[29px] !h-[29px]"
+              />
             )}
           </div>
           <div>
@@ -169,11 +173,11 @@ export default function Token({
               )}
               {!isMobile && (
                 <Image
-                  src={token.icon}
+                  src={token.token.logo}
                   width={16}
                   height={16}
                   className="rounded-full"
-                  alt={token.symbol}
+                  alt={token.token.symbol}
                 />
               )}
             </div>
@@ -240,11 +244,11 @@ export default function Token({
               )}
               {!isMobile && (
                 <Image
-                  src={token.icon}
+                  src={token.token.logo}
                   width={16}
                   height={16}
                   className="rounded-full"
-                  alt={token.symbol}
+                  alt={token.token.symbol}
                 />
               )}
             </div>

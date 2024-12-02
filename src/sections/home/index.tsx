@@ -9,6 +9,7 @@ import DashboardSvg from "@public/images/background/dashboard.svg";
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import EarnSvg from "@public/images/background/earn.svg";
 import VaultsEnterance from "./vaults-enterance";
+import MemeEnterance from "@/sections/meme/bros/enterance";
 import { memo } from "react";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useIsMobile from "@/hooks/use-isMobile";
@@ -129,6 +130,7 @@ const Navigation = function () {
         <div className="text-[20px] text-center font-CherryBomb">Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
+      <MemeEnterance />
     </>
   );
 };
