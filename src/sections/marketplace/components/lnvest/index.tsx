@@ -85,16 +85,16 @@ export default function Invest(props: any) {
   }, [dataList, sortDataIndex, searchVal, rateKey, checked]);
 
 
-  const handleMobileAction = (record) => {
+  const handleMobileAction = (record, type) => {
     console.log(openInfrared, setVaultsVisible, 'setVaultsVisible-openInfrared');
 
     if (record?.platform === 'aquabera') {
-      openAquaBera(record).then(() => {
+      openAquaBera(record, type).then(() => {
         setVaultsVisible(true);
       });
 
     } else {
-      openInfrared(record).then(() => {
+      openInfrared(record, type).then(() => {
         setVaultsVisible(true);
       });
     }
@@ -170,7 +170,6 @@ export default function Invest(props: any) {
         width: "15%",
         render: (text: string, record: any) => {
           const pool = record?.pool;
-          console.log('===pool', pool)
           return (
             <img
               style={{ width: 20 }}

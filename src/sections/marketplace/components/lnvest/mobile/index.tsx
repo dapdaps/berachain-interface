@@ -21,7 +21,7 @@ export default function Mobile({ filterList, loading, onClick }: any) {
             key={item.id}
             data={item}
             onClick={(type: 0 | 1) => {
-              onClick(item);
+              onClick(item, type);
             }}
           />
         ))}
