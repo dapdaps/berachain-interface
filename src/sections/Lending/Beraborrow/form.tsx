@@ -57,6 +57,7 @@ export const Form = (props: any) => {
   const [ratio, setRatio] = useState<string>();
   const [txData, setTxData] = useState<any>();
   const [actionText, setActionText] = useState<ActionText>();
+  const [calcPreviewAmountQueue, setCalcPreviewAmountQueue] = useState<any>([]);
 
   const calcTotalAmount = (_amount?: string) => {
     if (type === ActionText.Borrow) {
@@ -66,14 +67,14 @@ export const Form = (props: any) => {
   };
   const calcTotalBorrowAmount = (_borrowAmount?: string) => {
     if (type === ActionText.Borrow) {
-      return numberRemoveEndZero(Big(market.borrowed || 0).plus(_borrowAmount || 0).toFixed(market?.borrowToken.decimals, Big.roundDown));
+      return numberRemoveEndZero(Big(market.borrowed || 0).plus(Big(_borrowAmount || 0).plus(Big(_borrowAmount || 0).times(borrowingFee))).toFixed(market?.borrowToken.decimals, Big.roundDown));
     }
     return numberRemoveEndZero(Big(market.borrowed || 0).minus(_borrowAmount || 0).toFixed(market?.borrowToken.decimals, Big.roundDown));
   };
 
   const totalAmount = useMemo(() => {
-    return calcTotalAmount(amount);
-  }, [amount, market, type]);
+    return calcTotalAmount(previewAmount);
+  }, [previewAmount, market, type]);
   const totalBorrowAmount = useMemo(() => {
     return calcTotalBorrowAmount(borrowAmount);
   }, [borrowAmount, market, type]);
@@ -98,20 +99,6 @@ export const Form = (props: any) => {
     let result = NECTBorrowed.minus(market.borrowed || 0).toFixed(5, Big.roundDown);
     if (Big(result).lte(0)) return '0';
     return result;
-  };
-
-  const calcRatio = (_amount?: string, _borrowAmount?: string) => {
-    const collateralValue = Big(_amount || 0).times(market.price);
-    if (!_borrowAmount || Big(_borrowAmount).lte(0)) {
-      const _ratio = numberRemoveEndZero(Big(collateralValue).div(1).times(100).toFixed(2));
-      setRatio(_ratio);
-      return;
-    }
-    let _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(_borrowAmount).plus(liquidationReserve).plus(Big(_borrowAmount).times(borrowingFee))).times(100).toFixed(2));
-    if (type === ActionText.Repay) {
-      _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(_borrowAmount)).times(100).toFixed(2));
-    }
-    setRatio(_ratio);
   };
 
   const borrowLimit = useMemo(() => {
@@ -186,18 +173,37 @@ export const Form = (props: any) => {
     return `Submitting ${market?.collToken?.symbol} withdraw request...`;
   }, [type, buttonValid]);
 
-  const handleAmount = (val: string) => {
+  const { run: setCalcPreviewAmountQueueDelay } = useDebounceFn((val?: string) => {
+    setCalcPreviewAmountQueue([...calcPreviewAmountQueue, {
+      amount: val || '0',
+      isCalcRatio: true,
+      market,
+      provider,
+      liquidationReserve,
+      type,
+      borrowingFee,
+    }]);
+  }, { wait: 500 });
+
+  const handleAmount = async (val: string) => {
     setAmount(val);
     // calc Ratio
-    const _amount = calcTotalAmount(val);
-    calcRatio(_amount, totalBorrowAmount);
+    setCalcPreviewAmountQueueDelay(val);
   };
 
   const handleBorrowAmount = (val: string) => {
     setBorrowAmount(val);
     // calc Ratio
     const _borrowAmount = calcTotalBorrowAmount(val);
-    calcRatio(totalAmount, _borrowAmount);
+    const _ratio = calcRatio({
+      _amount: totalAmount,
+      _borrowAmount: _borrowAmount,
+      market,
+      liquidationReserve,
+      type,
+      borrowingFee,
+    });
+    setRatio(_ratio);
   };
 
   const handleRatio = (val: string) => {
@@ -219,22 +225,6 @@ export const Form = (props: any) => {
     setLoading(true);
   }, { wait: 500 });
 
-  const { run: getPreviewDeposit } = useDebounceFn(async (assets: string) => {
-    const contract = new ethers.Contract(market.collVault, BASE_COLLATERAL_VAULT_ABI, provider);
-    const params = [utils.parseUnits(assets, market.decimals)];
-    const res = await contract.previewDeposit(...params);
-    const previewAmount = utils.formatUnits(res?._hex || '0', market.decimals);
-    setPreviewAmount(previewAmount);
-  }, { wait: 500 });
-
-  useEffect(() => {
-    if (!amount || Big(amount).lte(0)) {
-      setPreviewAmount('0');
-      return;
-    }
-    getPreviewDeposit(amount);
-  }, [amount]);
-
   useEffect(() => {
     if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0))) return;
     getTxData();
@@ -243,6 +233,24 @@ export const Form = (props: any) => {
   useEffect(() => {
     setActionText(type);
   }, [type]);
+
+  useEffect(() => {
+    if (!calcPreviewAmountQueue.length) return;
+    const curr = calcPreviewAmountQueue[0];
+    getPreviewDeposit(curr).then((_preview: any) => {
+      if (curr.isCalcRatio) {
+        const _amount = calcTotalAmount(_preview);
+        const _ratio = calcRatio({
+          _amount: _amount,
+          _borrowAmount: totalBorrowAmount,
+          ...curr,
+        });
+        setRatio(_ratio);
+      }
+      setPreviewAmount(_preview);
+      setCalcPreviewAmountQueue(calcPreviewAmountQueue.slice(1));
+    });
+  }, [calcPreviewAmountQueue]);
 
   return (
     <div
@@ -265,7 +273,7 @@ export const Form = (props: any) => {
         <CurrencyInput
           className=""
           token={{
-            ...(type === ActionText.Repay ? market.collToken : market),
+            ...(type === ActionText.Repay ? { ...market.collToken, price: market.price } : market),
             balance: collateralBalance,
           }}
           amount={amount}
@@ -278,7 +286,7 @@ export const Form = (props: any) => {
             width: isMobile ? "auto" : 176,
           }}
           renderValue={(_amount: string) => {
-            return numberFormatter(Big(previewAmount || 0).times(market.price).toFixed(2, Big.roundDown), 2, true, { prefix: '$' });
+            return numberFormatter(Big(previewAmount || 0).times(market.price || 1).toFixed(2, Big.roundDown), 2, true, { prefix: '$' });
           }}
         />
         <div className="text-black text-[16px] font-[600]">
@@ -348,6 +356,7 @@ export const Form = (props: any) => {
               onSuccess?.();
               setAmount('');
               setBorrowAmount('');
+              setPreviewAmount('0');
             }}
             addAction={addAction}
           >
@@ -422,4 +431,41 @@ export enum ActionText {
 export const CollateralAction: any = {
   [ActionText.Borrow]: 'Deposit',
   [ActionText.Repay]: 'Withdraw',
+};
+
+const getPreviewDeposit = ({ amount, market, provider }: { amount: string; market: any; provider: any; }) => {
+  return new Promise((resolve) => {
+    if (!amount || Big(amount).lte(0)) {
+      resolve('0');
+      return;
+    }
+    const contract = new ethers.Contract(market.collVault, BASE_COLLATERAL_VAULT_ABI, provider);
+    const params = [utils.parseUnits(amount, market.decimals)];
+    contract.previewDeposit(...params).then((res: any) => {
+      const _previewAmount = utils.formatUnits(res?._hex || '0', market.decimals);
+      resolve(_previewAmount);
+    }).catch((err: any) => {
+      console.log('getPreviewDeposit failed: %o', err);
+      resolve(amount);
+    }).finally(() => {
+      console.log('getPreviewDeposit amount: %o', amount);
+    });
+  });
+};
+
+const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: any; liquidationReserve: number; type: ActionText; borrowingFee: number; }) => {
+  const { _amount, _borrowAmount, market, type, liquidationReserve, borrowingFee } = props;
+  const collateralValue = Big(_amount || 0).times(market.price);
+  if (!_borrowAmount || Big(_borrowAmount).lte(0)) {
+    return numberRemoveEndZero(Big(collateralValue).div(1).times(100).toFixed(2));
+  }
+  const borrowValue = Big(_borrowAmount).times(market.borrowToken.price);
+  let _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(borrowValue).plus(liquidationReserve).plus(Big(borrowValue).times(borrowingFee))).times(100).toFixed(2));
+  if (market.status === 'open') {
+    _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(borrowValue)).times(100).toFixed(2));
+  }
+  if (type === ActionText.Repay) {
+    _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(_borrowAmount)).times(100).toFixed(2));
+  }
+  return _ratio;
 };

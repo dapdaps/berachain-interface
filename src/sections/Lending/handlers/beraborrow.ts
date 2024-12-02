@@ -1,6 +1,8 @@
 import Big from 'big.js';
 import { ethers, utils } from 'ethers';
 import { useEffect } from 'react';
+import { multicall } from '@/utils/multicall';
+import multicallAddresses from '@/configs/contract/multicall';
 
 const ABI: any = {
   beraWrapper: [
@@ -584,6 +586,19 @@ const DEN_MANAGER_ABI = [
     ],
     stateMutability: "view",
   },
+  {
+    type: "function",
+    name: "sortedDens",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "contract ISortedDens",
+      },
+    ],
+    stateMutability: "view",
+  },
 ];
 
 const HINT_ABI = [
@@ -677,12 +692,43 @@ const HINT_ABI = [
   },
 ];
 
-const COLL_VAULT_ABI = [
+const SORTED_DENS_ABI = [
   {
     type: "function",
-    name: "maxRedeem",
-    inputs: [{ name: "owner", type: "address", internalType: "address" }],
-    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    name: "getPrev",
+    inputs: [
+      {
+        name: "_id",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getNext",
+    inputs: [
+      {
+        name: "_id",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "address",
+      },
+    ],
     stateMutability: "view",
   },
 ];
@@ -704,6 +750,7 @@ const BeraborrowHandler = (props: any) => {
 
     if (!update) return;
 
+    const multicallAddress = multicallAddresses[chainId];
     const contractAddress = config[market.vault];
     const abi = ABI[market.vault];
     const parsedAmount = ethers.utils.parseUnits(amount || '0', market.decimals);
@@ -713,6 +760,267 @@ const BeraborrowHandler = (props: any) => {
     const isRepay = actionText === 'Repay';
     const isBorrow = actionText === 'Borrow';
 
+    const getHint = () => {
+      return new Promise((resolve) => {
+        multicall({
+          abi: DEN_MANAGER_ABI,
+          calls: [
+            {
+              address: market.denManager,
+              name: 'getDenOwnersCount',
+              params: []
+            },
+            {
+              address: market.denManager,
+              name: 'sortedDens',
+              params: []
+            },
+          ],
+          options: {},
+          multicallAddress,
+          provider: provider
+        }).then(async (denManagerRes: any) => {
+          const [[numberOfDens], [sortedDensAddress]] = denManagerRes || [];
+          const totalNumberOfTrials = Math.ceil(15 * Math.sqrt(Number(numberOfDens.toString())));
+          const [firstTrials, ...restOfTrials] = generateTrials(totalNumberOfTrials) as any;
+          const hintContract = new ethers.Contract(config.multiCollateralHintHelpers, HINT_ABI, provider);
+          let NICR = Big(0);
+          if (amount && Big(amount).gt(0) && borrowAmount && Big(borrowAmount).gt(0)) {
+            NICR = Big(amount || 0).mul(1e20).div(borrowAmount);
+          }
+          const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any, address?: any, overrides?: any) => {
+            const approxHintParams = [
+              dmAddr,
+              ethers.BigNumber.from(nominalCollateralRatio),
+              ethers.BigNumber.from(numberOfTrials),
+              ethers.BigNumber.from(latestRandomSeed)
+            ];
+            return new Promise((resolve) => {
+              hintContract.getApproxHint(...approxHintParams).then((hintRes: any) => {
+                resolve({
+                  latestRandomSeed: hintRes.latestRandomSeed,
+                  results: [...results, { hintAddress: hintRes.hintAddress, diff: hintRes.diff }],
+                });
+              }).catch((err: any) => {
+                console.log('hintRes err: %o', err);
+                resolve({});
+              });
+            });
+          };
+          const { results } = await restOfTrials.reduce(
+            (p: any, numberOfTrials: any) => p.then((state: any) => {
+              _collectApproxHint(state.latestRandomSeed, state.results, numberOfTrials, market.denManager, NICR.toFixed(0));
+            }),
+            _collectApproxHint(randomBigInt(), [], firstTrials, market.denManager, NICR.toFixed(0))
+          );
+          const { hintAddress } = results.reduce((a: any, b: any) => (a.diff < b.diff ? a : b));
+          multicall({
+            abi: SORTED_DENS_ABI,
+            calls: [
+              {
+                address: sortedDensAddress,
+                name: 'getPrev',
+                params: [hintAddress]
+              },
+              {
+                address: sortedDensAddress,
+                name: 'getNext',
+                params: [hintAddress]
+              },
+            ],
+            options: {},
+            multicallAddress,
+            provider: provider
+          }).then((sortedDensRes: any) => {
+            const lowerHint = sortedDensRes?.[0]?.[0] ?? account;
+            const upperHint = sortedDensRes?.[1]?.[1] ?? account;
+            console.log('lowerHint: %o', lowerHint);
+            console.log('upperHint: %o', upperHint);
+            resolve({ lowerHint, upperHint });
+          }).catch((sortedDensErr: any) => {
+            console.log('sortedDensErr: %o', sortedDensErr);
+            resolve({ lowerHint: account, upperHint: account });
+          });
+        }).catch((err: any) => {
+          console.log('get DenManager failed: %o', err);
+          resolve({ lowerHint: account, upperHint: account });
+        });
+      });
+    };
+
+    const getParams = () => {
+      return new Promise(async (resolve) => {
+        let method = '';
+        let params: any = [];
+        switch (market.vault) {
+          case 'beraWrapper':
+            method = 'openDenNative';
+            params = [
+              // account
+              account,
+              // _maxFeePercentage
+              '10000000000000000',
+              // _debtAmount
+              parsedBorrowAmount,
+              // _upperHint
+              account,
+              // _lowerHint
+              account,
+            ];
+            if (isOpened) {
+              method = 'adjustDenNative';
+              params = [
+                // account
+                account,
+                // _maxFeePercentage
+                '10000000000000000',
+                // _collWithdrawal
+                isRepay ? parsedAmount : '0',
+                // _debtChange
+                parsedBorrowAmount,
+                // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
+                !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
+                // _upperHint
+                account,
+                // _lowerHint
+                account,
+                // unwrap
+                true
+              ];
+            }
+            if (isClose) {
+              method = 'closeDen';
+              params = [
+                // denManager
+                market.denManager,
+                // account
+                account
+              ];
+            }
+            break;
+          case 'borrowerOperations':
+            method = 'openDen';
+            params = [
+              // denManager
+              market.denManager,
+              // account
+              account,
+              // _maxFeePercentage
+              '10000000000000000',
+              // _collateralAmount
+              parsedAmount,
+              // _debtAmount
+              parsedBorrowAmount,
+              // _upperHint
+              account,
+              // _lowerHint
+              account,
+            ];
+            if (isOpened) {
+              method = 'adjustDen';
+              params = [
+                // denManager
+                market.denManager,
+                // account
+                account,
+                // _maxFeePercentage
+                '10000000000000000',
+                // _collDeposit
+                isBorrow ? parsedAmount : '0',
+                // _collWithdrawal
+                isRepay ? parsedAmount : '0',
+                // _debtChange
+                parsedBorrowAmount,
+                // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
+                !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
+                // _upperHint
+                account,
+                // _lowerHint
+                account,
+              ];
+            }
+            if (isClose) {
+              method = 'closeDen';
+              params = [
+                // denManager
+                market.denManager,
+                // account
+                account
+              ];
+            }
+            break;
+          case 'collVaultRouter':
+            method = 'openDenVault';
+            params = [
+              // denManager
+              market.denManager,
+              // collVault
+              market.collVault,
+              // _maxFeePercentage
+              '10000000000000000',
+              // _debtAmount
+              parsedBorrowAmount,
+              // _collAssetToDeposit
+              parsedAmount,
+              // _upperHint
+              account,
+              // _lowerHint
+              account,
+              // _minSharesMinted
+              '0',
+              // _collIndex
+              market.collIndex,
+              // _preDeposit
+              '0x'
+            ];
+            if (isOpened) {
+              method = 'adjustDenVault';
+              const hint: any = await getHint();
+              params = [
+                {
+                  denManager: market.denManager,
+                  collVault: market.collVault,
+                  _maxFeePercentage: '10000000000000000',
+                  _collAssetToDeposit: isBorrow ? parsedAmount : '0',
+                  _collWithdrawal: isRepay ? parsedAmount : '0',
+                  _debtChange: parsedBorrowAmount,
+                  _isDebtIncrease: !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
+                  _upperHint: hint.upperHint,
+                  _lowerHint: hint.lowerHint,
+                  unwrap: true,
+                  _minSharesMinted: '0',
+                  _minAssetsWithdrawn: '0',
+                  _collIndex: market.collIndex,
+                  _preDeposit: '0x',
+                }
+              ];
+            }
+            if (isClose) {
+              method = 'closeDenVault';
+              params = [
+                // denManager
+                market.denManager,
+                // collVault
+                market.collVault,
+                // minAssetsWithdrawn
+                '10000000000000000',
+                // collIndex
+                market.collIndex,
+                // unwrap
+                true
+              ];
+            }
+            break;
+          default:
+            break;
+        }
+        resolve({
+          method,
+          params,
+        });
+      });
+    };
+
     let contract = new ethers.Contract(contractAddress, abi, provider.getSigner());
     if (isClose) {
       contract = new ethers.Contract(config.borrowerOperations, ABI.borrowerOperations, provider.getSigner());
@@ -721,244 +1029,40 @@ const BeraborrowHandler = (props: any) => {
       }
     }
 
-    let method = '';
-    let params: any = [];
-    switch (market.vault) {
-      case 'beraWrapper':
-        method = 'openDenNative';
-        params = [
-          // account
-          account,
-          // _maxFeePercentage
-          '10000000000000000',
-          // _debtAmount
-          parsedBorrowAmount,
-          // _upperHint
-          account,
-          // _lowerHint
-          account,
-        ];
-        if (isOpened) {
-          method = 'adjustDenNative';
-          params = [
-            // account
-            account,
-            // _maxFeePercentage
-            '10000000000000000',
-            // _collWithdrawal
-            isRepay ? parsedAmount : '0',
-            // _debtChange
-            parsedBorrowAmount,
-            // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
-            !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
-            // _upperHint
-            account,
-            // _lowerHint
-            account,
-            // unwrap
-            true
-          ];
-        }
-        if (isClose) {
-          method = 'closeDen';
-          params = [
-            // denManager
-            market.denManager,
-            // account
-            account
-          ];
-        }
-        break;
-      case 'borrowerOperations':
-        method = 'openDen';
-        params = [
-          // denManager
-          market.denManager,
-          // account
-          account,
-          // _maxFeePercentage
-          '10000000000000000',
-          // _collateralAmount
-          parsedAmount,
-          // _debtAmount
-          parsedBorrowAmount,
-          // _upperHint
-          account,
-          // _lowerHint
-          account,
-        ];
-        if (isOpened) {
-          method = 'adjustDen';
-          params = [
-            // denManager
-            market.denManager,
-            // account
-            account,
-            // _maxFeePercentage
-            '10000000000000000',
-            // _collDeposit
-            isBorrow ? parsedAmount : '0',
-            // _collWithdrawal
-            isRepay ? parsedAmount : '0',
-            // _debtChange
-            parsedBorrowAmount,
-            // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
-            !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
-            // _upperHint
-            account,
-            // _lowerHint
-            account,
-          ];
-        }
-        if (isClose) {
-          method = 'closeDen';
-          params = [
-            // denManager
-            market.denManager,
-            // account
-            account
-          ];
-        }
-        break;
-      case 'collVaultRouter':
-        method = 'openDenVault';
-        params = [
-          // denManager
-          market.denManager,
-          // collVault
-          market.collVault,
-          // _maxFeePercentage
-          '10000000000000000',
-          // _debtAmount
-          parsedBorrowAmount,
-          // _collAssetToDeposit
-          parsedAmount,
-          // _upperHint
-          account,
-          // _lowerHint
-          account,
-          // _minSharesMinted
-          '0',
-          // _collIndex
-          market.collIndex,
-          // _preDeposit
-          '0x'
-        ];
-        if (isOpened) {
-          method = 'adjustDenVault';
-          params = [
-            {
-              denManager: market.denManager,
-              collVault: market.collVault,
-              _maxFeePercentage: '10000000000000000',
-              _collAssetToDeposit: isBorrow ? parsedAmount : '0',
-              _collWithdrawal: isRepay ? parsedAmount : '0',
-              _debtChange: parsedBorrowAmount,
-              _isDebtIncrease: !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
-              _upperHint: config.upperHint,
-              _lowerHint: config.lowerHint,
-              unwrap: true,
-              _minSharesMinted: '0',
-              _minAssetsWithdrawn: '0',
-              _collIndex: market.collIndex,
-              _preDeposit: '0x',
-            }
-          ];
-        }
-        if (isClose) {
-          method = 'closeDenVault';
-          params = [
-            // denManager
-            market.denManager,
-            // collVault
-            market.collVault,
-            // minAssetsWithdrawn
-            '10000000000000000',
-            // collIndex
-            market.collIndex,
-            // unwrap
-            true
-          ];
-        }
-        break;
-      default:
-        break;
-    }
+    getParams().then(({ method, params }: any) => {
+      if (!method) return;
 
-    if (!method) return;
+      const option = {
+        value: (['Borrow'].includes(actionText) && market.isNative) ? parsedAmount : void 0,
+      };
 
-    const option = {
-      value: (['Borrow'].includes(actionText) && market.isNative) ? parsedAmount : void 0,
-    };
-
-    const createTx = (gas?: any) => {
-      const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : '4000000';
-      contract.populateTransaction[method](...params, {
-        ...option,
-        gasLimit: _gas,
-      })
-        .then((res: any) => {
-          onLoad({
-            gas: _gas,
-            unsignedTx: res,
-            isError: false
+      const createTx = (gas?: any) => {
+        const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : '4000000';
+        contract.populateTransaction[method](...params, {
+          ...option,
+          gasLimit: _gas,
+        })
+          .then((res: any) => {
+            onLoad({
+              gas: _gas,
+              unsignedTx: res,
+              isError: false
+            });
+          })
+          .catch((err: any) => {
+            console.log('%s populateTransaction failure: %o', method, err);
+            onLoad({});
           });
+      };
+
+      contract.estimateGas[method](...params, option)
+        .then((gas: any) => {
+          createTx(gas);
         })
         .catch((err: any) => {
-          console.log('%s populateTransaction failure: %o', method, err);
-          onLoad({});
+          // console.log('%s estimateGas failure: %o', method, err);
+          createTx();
         });
-    };
-
-    contract.estimateGas[method](...params, option)
-      .then((gas: any) => {
-        createTx(gas);
-      })
-      .catch((err: any) => {
-        // console.log('%s estimateGas failure: %o', method, err);
-        createTx();
-      });
-
-
-    const denContract = new ethers.Contract(market.denManager, DEN_MANAGER_ABI, provider);
-    denContract.getDenOwnersCount().then(async (numberOfDens: any) => {
-      console.log('numberOfDens: %o', numberOfDens.toString());
-      const totalNumberOfTrials = Math.ceil(15 * Math.sqrt(Number(numberOfDens.toString())));
-      console.log('totalNumberOfTrials: %o', totalNumberOfTrials);
-      const [firstTrials, ...restOfTrials] = generateTrials(totalNumberOfTrials) as any;
-      console.log('firstTrials: %o', firstTrials);
-      try {
-        const collVaultContract = new ethers.Contract(market.collVault, COLL_VAULT_ABI, provider);
-        const redeemMaxIterations = await collVaultContract.maxRedeem(account);
-        console.log('redeemMaxIterations: %o', redeemMaxIterations);
-      } catch (e) {}
-      const hintContract = new ethers.Contract(config.multiCollateralHintHelpers, HINT_ABI, provider);
-      // const redemptionHintRes = await hintContract.getRedemptionHints(market.denManager, amount, market.price, redeemMaxIterations);
-      let NICR = Big(0);
-      if (amount && Big(amount).gt(0) && borrowAmount && Big(borrowAmount).gt(0)) {
-        NICR = Big(amount || 0).mul(1e20).div(borrowAmount);
-      }
-      const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any, address?: any, overrides?: any) => {
-        const approxHintParams = [dmAddr, nominalCollateralRatio, BigInt(numberOfTrials), latestRandomSeed];
-        console.log('approxHintParams: %o', approxHintParams);
-        return new Promise((resolve) => {
-          hintContract.getApproxHint(...approxHintParams).then((hintRes: any) => {
-            console.log('hintRes: %o', hintRes);
-            resolve(hintRes);
-          }).catch((err: any) => {
-            console.log('hintRes err: %o', err);
-            resolve({});
-          });
-        });
-      };
-      const { results } = await restOfTrials.reduce(
-        (p: any, numberOfTrials: any) => p.then((state: any) => {
-          _collectApproxHint(state.latestRandomSeed, state.results, numberOfTrials, market.denManager, NICR.toString());
-        }),
-        _collectApproxHint(randomBigInt(), [], firstTrials, market.denManager, NICR.toString())
-      );
-      console.log('results: %o', results);
-
     });
   }, [update]);
 
