@@ -12,6 +12,7 @@ export default memo(function Vaults() {
   } = useContext(MarketplaceContext);
 
   const { data, config, platform, type, vaultsType } = vaultsData;
+
   return platform === "infrared" ? (
     <InfraredModal
       data={data}

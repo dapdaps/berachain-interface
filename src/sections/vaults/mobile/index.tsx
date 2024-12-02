@@ -93,15 +93,30 @@ export default function Mobile({ dapp }: any) {
       <PageBack className="md:absolute md:left-[12px] md:top-[17px] z-[10]" />
       <div className="relative z-[3]">
         <MenuButton className="my-0 mx-auto" contentClassName="text-2xl">
-          <div className="flex gap-[12px] text-[24px] items-center">
-            <Image
-              src="/images/dapps/infrared.svg"
-              width={33}
-              height={33}
-              alt="Icon"
-            />
-            <div>Vaults</div>
-          </div>
+          {
+            isVaults ? (
+              <div className="flex gap-[12px] text-[24px] items-center">
+                <Image
+                  src="/images/dapps/infrared.svg"
+                  width={33}
+                  height={33}
+                  alt="Icon"
+                />
+                <div>Vaults</div>
+              </div>
+            ) : (
+              <div className="flex gap-[12px] text-[24px] items-center">
+                <Image
+                  src={dapp?.icon}
+                  width={33}
+                  height={33}
+                  alt="Icon"
+                />
+                <div>{dapp?.name}</div>
+              </div>
+            )
+          }
+
         </MenuButton>
         <div className="mt-[12px] text-[14px] font-medium px-[12px] text-center">
           {dapp?.chains?.[DEFAULT_CHAIN_ID]?.description}
@@ -143,8 +158,20 @@ export default function Mobile({ dapp }: any) {
             data={item}
             dapp={dapp}
             isVaults={isVaults}
-            onClick={(type: 0 | 1) => {
-              setSelectedRecord(item);
+            onClick={(type: 0 | 1, pairToken: any) => {
+
+              console.log('===type', type)
+              if (type === 0) {
+                setSelectedRecord(item);
+              } else {
+                const token = _.cloneDeep(item)
+                delete token.pairedTokens
+                setSelectedRecord({
+                  token0: token,
+                  token1: pairToken,
+                  platform: "aquabera"
+                })
+              }
               setType(type);
             }}
             onClaim={setEarned}
@@ -305,7 +332,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                 </div>
                 <button
                   onClick={() => {
-                    onClick(1);
+                    onClick(1, pairedToken);
                   }}
                 >
                   <svg
@@ -359,11 +386,13 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               <Image
                 className="absolute right-[-2px] bottom-[0px]"
                 src={
-                  pool?.protocol === "BEX"
-                    ? "/images/dapps/infrared/bex.svg"
-                    : pool?.protocol === "Kodiak Finance"
-                      ? "/images/dapps/kodiak.svg"
-                      : "/images/dapps/infrared/berps.svg"
+                  pool?.protocol === 'BEX'
+                    ? '/images/dapps/infrared/bex.svg'
+                    : pool?.protocol === 'aquabera'
+                      ? '/images/dapps/infrared/aquabera.svg' :
+                      (pool?.protocol === 'Kodiak Finance')
+                        ? '/images/dapps/kodiak.svg'
+                        : '/images/dapps/infrared/berps.svg'
                 }
                 width={20}
                 height={20}
@@ -453,7 +482,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                       </div>
                       <button
                         onClick={() => {
-                          onClick(1);
+                          onClick(1, pairedToken);
                         }}
                       >
                         <svg
