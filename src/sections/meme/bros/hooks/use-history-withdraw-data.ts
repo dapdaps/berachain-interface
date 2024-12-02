@@ -28,7 +28,7 @@ export default function useHistoryWithdrawData(rounds: any) {
 
     res.forEach((item: any, i: number) => {
       if (item.length === 0) return;
-      item[0].forEach((record: any) => {
+      item[0].forEach((record: any, j: number) => {
         if (!record || record?.[2]) return;
 
         const _unlockTimestamp = Number(record[1].toString());
@@ -37,7 +37,7 @@ export default function useHistoryWithdrawData(rounds: any) {
           withdrawable:
             !record[2] && Math.floor(Date.now() / 1000) > _unlockTimestamp,
           unlockTimestamp: _unlockTimestamp * 1000,
-          idx: i,
+          idx: j,
           ...round.tokens[i]
         });
       });

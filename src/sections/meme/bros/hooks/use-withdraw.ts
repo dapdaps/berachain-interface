@@ -48,7 +48,9 @@ export default function useWithdraw({ token, idx, onSuccess }: any) {
         chain_id: DEFAULT_CHAIN_ID,
         sub_type: "Withdraw"
       });
+      setLoading(false);
     } catch (err: any) {
+      console.log("err", err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
