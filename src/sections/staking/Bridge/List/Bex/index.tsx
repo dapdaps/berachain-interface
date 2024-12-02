@@ -144,13 +144,13 @@ const List = forwardRef<any, any>((props, ref) => {
         return (
           <img
             style={{ width: 26 }}
-            src={
-              pool?.protocol === 'BEX'
-                ? '/images/dapps/infrared/bex.svg'
-                : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
+            src={pool?.protocol === 'BEX'
+              ? '/images/dapps/infrared/bex.svg'
+              : pool?.protocol === 'aquabera'
+                ? '/images/dapps/infrared/aquabera.svg' :
+                (pool?.protocol === 'Kodiak Finance')
                   ? '/images/dapps/kodiak.svg'
-                  : '/images/dapps/infrared/berps.svg'
-            }
+                  : '/images/dapps/infrared/berps.svg'}
           />
         );
       }
@@ -339,9 +339,11 @@ const List = forwardRef<any, any>((props, ref) => {
               !pool && "iBGT-HONEY" ? '/images/dapps/infrared/infrared.svg' : (
                 pool?.protocol === 'BEX'
                   ? '/images/dapps/infrared/bex.svg'
-                  : (pool?.protocol === 'Kodiak Finance' || pool?.protocol === 'aquabera')
-                    ? '/images/dapps/kodiak.svg'
-                    : '/images/dapps/infrared/berps.svg'
+                  : pool?.protocol === 'aquabera'
+                    ? '/images/dapps/infrared/aquabera.svg' :
+                    (pool?.protocol === 'Kodiak Finance')
+                      ? '/images/dapps/kodiak.svg'
+                      : '/images/dapps/infrared/berps.svg'
               )
             }
           />
