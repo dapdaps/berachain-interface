@@ -20,7 +20,7 @@ export default function useIncentives(contract: string) {
             chain_id: DEFAULT_CHAIN_ID,
             dapp: "supermemebros",
             sub_type: "deposit_reward",
-            contract
+            meme_stake_contract: contract
           })
         });
         setList(result.data.list);

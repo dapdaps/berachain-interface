@@ -82,7 +82,7 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
                 isShort: isMobile
               })}
             </div>
-            {!isMobile && voteAddress === null && votable && (
+            {!isMobile && !voteAddress && votable && (
               <Popover
                 contentClassName="z-[200]"
                 placement={PopoverPlacement.Right}
@@ -187,8 +187,8 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
         list={tokens}
         headClass="py-[12px] px-[10px] border-b border-b-[rgba(0,0,0,0.2)] md:border-b-[0]"
         headColClass="text-[#3D405A] font-[500]"
-        bodyClass="border-b border-b-[rgba(0,0,0,0.2)] md:border-b-[0] max-h-[calc(100dvh_-_350px)] md:max-h-[unset] overflow-y-auto"
-        rowClass="odd:bg-[unset] md:odd:bg-[rgba(0,0,0,0.06)] md:rounded-[10px!important] py-[12px] px-[10px!imprtant] hover:bg-[rgba(0,0,0,0.06)]"
+        bodyClass="md:border-b-[0] max-h-[calc(100dvh_-_350px)] md:max-h-[unset] overflow-y-auto"
+        rowClass="odd:bg-[unset] md:odd:bg-[rgba(0,0,0,0.06)] md:rounded-[10px!important] py-[12px] px-[10px!imprtant] !bg-transparent hover:!bg-[rgba(0,0,0,0.06)]"
         colClass="text-[#3D405A] text-[14px] font-[600]"
         loading={loading}
         onRow={voteAddress || !votable ? () => {} : onRow}

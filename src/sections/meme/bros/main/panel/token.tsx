@@ -197,7 +197,9 @@ export default function Token({
             >
               <div className="font-semibold	mt-[2px] flex items-center gap-[3px]">
                 <span>
-                  {userReward ? "$" + balanceFormated(userReward, 2) : "-"}
+                  {Big(userReward || 0).gt(0)
+                    ? "$" + balanceFormated(userReward, 2)
+                    : "-"}
                 </span>
                 {!isMobile && (
                   <Popover
