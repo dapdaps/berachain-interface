@@ -26,12 +26,14 @@ export default function Round({
     totalDappedUsd,
     totalRewardsUsd,
     userRewardUsd,
-    voteToken
+    voteToken,
+    userAddIncentive
   ] = useMemo(() => {
     let td_u = Big(0);
     let tw_u = Big(0);
     let vt: any = null;
     let user_rewards_u = Big(0);
+    let user_incentive_u = Big(0);
     const rts = round.reward_tokens?.reduce(
       (acc: any, curr: any) => ({
         ...acc,
@@ -77,7 +79,14 @@ export default function Round({
         .add(user_rewards_u);
     });
 
-    return [_tokens, td_u, tw_u, user_rewards_u, vt];
+    round.user_incentive.forEach((item: any) => {
+      const price = _reward_price[item.token_address];
+      user_incentive_u = Big(item.amount)
+        .mul(price || 0)
+        .add(user_incentive_u);
+    });
+
+    return [_tokens, td_u, tw_u, user_rewards_u, vt, user_incentive_u];
   }, [round]);
 
   const claimable = !!(round.claim_reward_time < Date.now() / 1000);
@@ -184,7 +193,9 @@ export default function Round({
               Incentive Added
             </div>
             <div className="font-semibold	mt-[2px] flex items-center gap-[3px]">
-              -
+              {userAddIncentive.gt(0)
+                ? `$${balanceShortFormated(userAddIncentive.toString(), 2)}`
+                : "-"}
             </div>
           </div>
           <div className="w-1/4 md:w-1/2 md:pt-[12px]">
