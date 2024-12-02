@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import TipsModal from '@/components/tips-modal';
 import useClickTracking from '@/hooks/use-click-tracking';
+import { useChristmas } from '@/hooks/use-christmas';
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -19,6 +20,7 @@ const MainLayout = (props: Props) => {
   const { initializePrice } = useTokenPrice();
   const { handleReportNoCode } = useClickTracking();
   const pathname = usePathname();
+  const { isChristmas } = useChristmas();
 
   useEffect(() => {
     handleReportNoCode();
@@ -34,14 +36,22 @@ const MainLayout = (props: Props) => {
 
   const isVaults = useMemo(() => pathname === '/vaults', [pathname]);
 
+  const bg = useMemo(() => {
+    if (isVaults) {
+      return 'bg-transparent h-full';
+    }
+    if (isChristmas) {
+      return 'bg-christmas';
+    }
+    return 'bg-[var(--background)]';
+  }, [isVaults, isChristmas]);
+
   const routes = ['/earn'];
 
   return (
     <div
       id='layout'
-      className={`min-h-screen relative flex flex-col items-stretch justify-start ${
-        isVaults ? 'bg-transparent h-full' : 'bg-[var(--background)]'
-      }`}
+      className={`min-h-screen relative flex flex-col items-stretch justify-start ${bg}`}
       style={style}
       onClick={handleTrack}
     >
@@ -51,7 +61,7 @@ const MainLayout = (props: Props) => {
       <div className={isVaults ? 'h-full w-full absolute' : 'grow'}>
         {children}
       </div>
-      <div className='absolute left-[16px] bottom-[16px] z-[11] flex items-center gap-[10px]'>
+      <div className='absolute left-[16px] bottom-[16px] z-[13] flex items-center gap-[10px]'>
         <Link
           className='hover:scale-110 ease-in-out duration-300 w-[124px] h-[36px] rounded-full bg-[rgba(217,217,217,0.5)]'
           href='https://app.dapdap.net?from=berachain'

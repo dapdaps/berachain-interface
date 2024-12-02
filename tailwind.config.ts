@@ -15,7 +15,9 @@ const config: Config = {
       CherryBomb: ['Cherry Bomb']
     },
     backgroundImage: {
-      vault: 'linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)'
+      vault: 'linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)',
+      christmas: 'linear-gradient(180deg, #000 0%, #455972 100%)',
+      snow: 'radial-gradient(3px 3px at 100px 50px, #fff, transparent), radial-gradient(4px 4px at 200px 150px, #fff, transparent), radial-gradient(5px 5px at 300px 80px, #fff, transparent), radial-gradient(6px 6px at 400px 130px, #fff, transparent), radial-gradient(3px 3px at 540px 480px, #fff, transparent), radial-gradient(4px 4px at 50px 230px, #fff, transparent), radial-gradient(5px 5px at 120px 680px, #fff, transparent), radial-gradient(6px 6px at 223px 430px, #fff, transparent), radial-gradient(3px 3px at 700px 300px, #fff, transparent), radial-gradient(4px 4px at 760px 550px, #fff, transparent), radial-gradient(5px 5px at 550px 280px, #fff, transparent), radial-gradient(6px 6px at 650px 630px, #fff, transparent)',
     },
     extend: {
       boxShadow: {
@@ -25,7 +27,56 @@ const config: Config = {
     screens: {
       md: { max: '768px' },
       lg: { min: '769px' }
-    }
+    },
+    animation: {
+      'snow-down': 'snowDown 10s linear infinite',
+      'slide-to-left': 'slide2Left 10s linear infinite',
+      'rotate': 'rotate 2s linear infinite',
+      'shake': 'shake 0.7s linear infinite',
+    },
+    keyframes: {
+      snowDown: {
+        '0%': {
+          transform: 'translateY(0)',
+        },
+        '100%': {
+          transform: 'translateY(800px)',
+        },
+      },
+      slide2Left: {
+        '0%': {
+          transform: 'translateX(0)',
+        },
+        '100%': {
+          transform: 'translateX(-33.3333%)',
+        },
+      },
+      rotate: {
+        '0%': {
+          transform: 'rotate(0)',
+        },
+        '100%': {
+          transform: 'rotate(360deg)',
+        },
+      },
+      shake: {
+        '0%': {
+          transform: 'translateX(0) rotate(0deg)',
+        },
+        '25%': {
+          transform: 'translateX(-5px) rotate(-5deg)',
+        },
+        '50%': {
+          transform: 'translateX(5px) rotate(5deg)',
+        },
+        '75%': {
+          transform: 'translateX(-5px) rotate(-5deg)',
+        },
+        '100%': {
+          transform: 'translateX(0) rotate(0deg)',
+        },
+      },
+    },
   },
   plugins: []
 };
