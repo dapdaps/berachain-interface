@@ -204,7 +204,7 @@ const MapModal = () => {
   const [isClient, setIsClient] = useState(false);
 
   const entries = useMemo(() => {
-    if (christmas?.isChristmas) {
+    if (!christmas?.isChristmas) {
       return PartList;
     }
     return [...PartList, {
