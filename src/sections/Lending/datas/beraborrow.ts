@@ -130,6 +130,24 @@ const BeraborrowData = (props: any) => {
       });
     };
 
+    const getNectPrice = () => {
+      return new Promise((resolve) => {
+        axios
+          .post(graphApi, priceParams([borrowToken]))
+          .then((priceRes) => {
+            const { tokens } = priceRes?.data?.data || {};
+            const nextPrice = tokens?.[0]?.price?.price;
+            // resolve(utils.formatUnits(nextPrice, 36 - borrowToken.decimals));
+            console.log('NectPrice is %o', utils.formatUnits(nextPrice, 36 - borrowToken.decimals));
+            resolve('1');
+          })
+          .catch((err: any) => {
+            resolve('1');
+            console.log('getNectPrice failure: %o', err);
+          });
+      });
+    };
+
     const getPrices = () => {
       return new Promise((resolve) => {
         const result: any = [];
@@ -308,6 +326,7 @@ const BeraborrowData = (props: any) => {
         WalletBalance,
         BorrowWalletBalance,
         TCRs,
+        NECTPrice,
       ]: any = await Promise.all([
         getDenManagers(),
         getPrices(),
@@ -315,7 +334,9 @@ const BeraborrowData = (props: any) => {
         getWalletBalance(),
         getBorrowWalletBalance(),
         getTCR(),
+        getNectPrice(),
       ]);
+      let borrowTokenRes: any = borrowToken;
       const result = markets.map((market: any) => {
         let _address = market.address.toLowerCase();
         // if (market.isNative && wrappedToken) {
@@ -336,15 +357,20 @@ const BeraborrowData = (props: any) => {
           collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
         }
         const TCR = calcTCR(currTCR?.totalCollateral, currTCR?.totalDebt, currPrice?.price);
+
+        borrowTokenRes = {
+          ...borrowToken,
+          price: NECTPrice,
+          priceShow: numberFormatter(NECTPrice, 2, true),
+          walletBalance: BorrowWalletBalance,
+          walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
+        };
+
         return {
           ...market,
           riskyRatio,
           TCR,
-          borrowToken: {
-            ...borrowToken,
-            walletBalance: BorrowWalletBalance,
-            walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
-          },
+          borrowToken: borrowTokenRes,
           status: currBorrow?.status,
           balance: currBorrow?.collateral,
           balanceUsd: balanceUsd.toFixed(2),
@@ -368,6 +394,7 @@ const BeraborrowData = (props: any) => {
         };
       });
       onLoad({
+        borrowToken: borrowTokenRes,
         markets: result,
       });
     };
