@@ -1,26 +1,58 @@
 import { motion } from 'framer-motion';
 import Big from 'big.js';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 
 const AmountSelector = (props: any) => {
   const {
     token,
     setAmount,
     balance,
+    currentAmount,
     children,
   } = props;
 
   const sliderRef = useRef(null);
-  const [selected, setSelected] = useState<any>();
-
-  const [dragValue, setDragValue] = useState<any>(0);
-  const [dragStart, setDragStart] = useState<any>(0);
-  const [dragPercent, setDragPercent] = useState<any>(0);
+  const [selected, setSelected] = useState<number | undefined>();
+  const [dragValue, setDragValue] = useState<number>(0);
+  const [dragPercent, setDragPercent] = useState<number>(0);
+  const [dragStart, setDragStart] = useState<number>(0);
 
   const sliderWidth = useMemo(() => {
     if (!sliderRef.current) return 0;
     return parseFloat(getComputedStyle(sliderRef.current).width);
   }, [sliderRef.current]);
+
+  const calculatePercentage = (amount: string | number, balanceValue: string | number) => {
+    const currentAmountBig = Big(amount || 0);
+    const balanceBig = Big(balanceValue || 0);
+    
+    return balanceBig.gt(0) 
+      ? currentAmountBig.div(balanceBig).times(100).toNumber() 
+      : 0;
+  };
+
+  const findMatchingPercentButton = (percentage: number) => {
+    const matchedPercent = PERCENT_THRESHOLDS.find(preset => 
+      Math.abs(preset.value * 100 - percentage) <= preset.tolerance * 100
+    );
+    
+    return matchedPercent ? matchedPercent.value : undefined;
+  };
+
+  useEffect(() => {
+    if (!balance.value || Big(balance.value).lte(0)) return;
+
+    const percentageUsed = calculatePercentage(currentAmount, balance.value);
+    const clampedPercentage = Math.max(0, Math.min(100, percentageUsed));
+    
+    const newDragValue = Big(sliderWidth).minus(22).times(clampedPercentage).div(100).toNumber();
+    
+    setDragValue(newDragValue);
+    setDragPercent(clampedPercentage);
+    
+    const matchedPreset = findMatchingPercentButton(clampedPercentage);
+    setSelected(matchedPreset);
+  }, [currentAmount, balance.value, sliderWidth]);
 
   const setPercentAmount = (_percent: number) => {
     const _amount = Big(balance.value).times(Big(_percent).div(100)).toFixed(token.decimals);
@@ -67,7 +99,7 @@ const AmountSelector = (props: any) => {
       </div>
       <div className="mt-[14px] flex justify-between items-center gap-[8px]">
         {
-          BalancePercentList.map((percent) => (
+          PERCENT_THRESHOLDS.map((percent) => (
             <motion.div
               className="flex-1 border border-[#373A53] rounded-[8px] h-[32px] leading-[30px] text-center text-black text-[14px] font-[400]"
               key={percent.value}
@@ -109,9 +141,9 @@ const AmountSelector = (props: any) => {
 
 export default AmountSelector;
 
-const BalancePercentList = [
-  { value: 0.25, label: '25%' },
-  { value: 0.5, label: '50%' },
-  { value: 0.75, label: '75%' },
-  { value: 1, label: 'Max' },
+const PERCENT_THRESHOLDS = [
+  { value: 0.25, label: '25%', tolerance: 0.05 },
+  { value: 0.5, label: '50%', tolerance: 0.05 },
+  { value: 0.75, label: '75%',tolerance: 0.05  },
+  { value: 1, label: 'Max', tolerance: 0.05 },
 ];
