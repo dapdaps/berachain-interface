@@ -6,8 +6,14 @@ import ScarfIcon from "./icon-scarf";
 import SleighIcon from "./icon-sleigh";
 import SnowBoardIcon from "./icon-snowboard";
 import SantaCoatIcon from "./icon-santa-coat";
-import TokenHints from "./hints-token";
-import Hints from "./hints";
+import TokenHints from "../box-modal/hints-token";
+import Hints from "../box-modal/hints";
+import ElfHatShadowIcon from "./icon-elf-hat-shadow";
+import SantaHatShadowIcon from "./icon-santa-hat-shadow";
+import SantaCoatShadowIcon from "./icon-santa-coat-shadow";
+import ScarfShadowIcon from "./icon-scarf-shadow";
+import SnowboardShadowIcon from "./icon-snowboard-shadow";
+import SleighShadowIcon from "./icon-sleigh-shadow";
 
 export default {
   token: {
@@ -18,6 +24,7 @@ export default {
   },
   "elf-hat": {
     icon: ElfHatIcon,
+    shadowIcon: ElfHatShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-86px] left-[96px]",
     name: "Elf’s Hat",
@@ -25,6 +32,7 @@ export default {
   },
   "santa-hat": {
     icon: SantaHatIcon,
+    shadowIcon: SantaHatShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-76px] left-[106px]",
     name: "Santa Hat",
@@ -32,6 +40,7 @@ export default {
   },
   "elf-jacket": {
     icon: ElfJacketIcon,
+    shadowIcon: ElfHatShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-100px] left-[130px]",
     name: "Elf’s Jacket",
@@ -39,6 +48,7 @@ export default {
   },
   "santa-coat": {
     icon: SantaCoatIcon,
+    shadowIcon: SantaCoatShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-100px] left-[130px]",
     name: "Santa Coat",
@@ -46,6 +56,7 @@ export default {
   },
   scarf: {
     icon: ScarfIcon,
+    shadowIcon: ScarfShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-86px] left-[106px]",
     name: "Scarf",
@@ -53,6 +64,7 @@ export default {
   },
   snowboard: {
     icon: SnowBoardIcon,
+    shadowIcon: SnowboardShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-56px] left-[56px]",
     name: "Snowboard",
@@ -60,6 +72,7 @@ export default {
   },
   sleigh: {
     icon: SleighIcon,
+    shadowIcon: SleighShadowIcon,
     renderHints: (props?: any) => <Hints {...props} />,
     positionClassName: "top-[-100px] left-[80px]",
     name: "Sleigh",

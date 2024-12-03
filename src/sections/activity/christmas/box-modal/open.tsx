@@ -1,6 +1,6 @@
 import OpenBox from "./open-box";
 import Button from "@/components/button";
-import config from "./config";
+import config from "../present-icons/config";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 import clsx from "clsx";

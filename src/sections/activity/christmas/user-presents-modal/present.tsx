@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import config from "../box-modal/config";
+import config from "../present-icons/config";
 export default function Present({ gift }: any) {
   const { icon: Icon, name, smallSizePositionClassName } = config[gift];
   return (

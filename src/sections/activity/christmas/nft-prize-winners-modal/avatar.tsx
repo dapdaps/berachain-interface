@@ -1,4 +1,4 @@
-export default function Avatar() {
+export default function Avatar({}: any) {
   return (
     <div className="relative w-[40px] h-[40px]">
       <img src="" className="w-full h-full rounded-[10px]" />
