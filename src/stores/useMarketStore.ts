@@ -238,7 +238,6 @@ const useBendStore = create<BendState>((set, get) => ({
           ltv,
           healthFactor
         ] = res;
-        console.log(res, 'getUserAccountData: res');
         
         const totalDebtBaseUSD = ethers.utils.formatUnits(totalDebtBase.toString(), 8);
 

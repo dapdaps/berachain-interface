@@ -208,7 +208,7 @@ export const beraB: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0xf5afcf50006944d17226978e594d4d25f4f92b40",
     decimals: 18,
-    symbol: "MEAD",
+    symbol: "NECT",
     name: "Nectar",
     icon: "/assets/tokens/nectar.png"
   },
