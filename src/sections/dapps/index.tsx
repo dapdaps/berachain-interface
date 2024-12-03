@@ -97,9 +97,6 @@ const List = [
       },
       {
         ..._dApps["aquabera"],
-        attachedIcon: (
-          <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
-        )
       },
       // TODO add bridge config
       {
