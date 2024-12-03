@@ -1,13 +1,15 @@
 import Top from "@/sections/activity/christmas/sections/top";
-import UserPresentsModal from "./user-presents-modal";
-// import BoxModal from "./box-modal";
+import Summary from "@/sections/activity/christmas/sections/summary";
+import GiftBox from "@/sections/activity/christmas/sections/gift-box";
+import Quest from "@/sections/activity/christmas/sections/quest";
 
 export default function Christmas() {
   return (
     <div className="">
       <Top />
-      <UserPresentsModal />
-      {/* <BoxModal /> */}
+      <Summary />
+      <GiftBox />
+      <Quest />
     </div>
   );
 }
