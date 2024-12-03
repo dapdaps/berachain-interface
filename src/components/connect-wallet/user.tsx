@@ -17,11 +17,7 @@ const MobileUser = (props: Props) => {
     userInfo,
   } = props;
 
-  let walletName = walletInfo?.name || '';
-  if (walletName) {
-    walletName = walletName.replace(/^io\./, '');
-    walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);
-  }
+  const walletName = walletInfo?.name || '';
 
   return (
     <Drawer visible={visible} onClose={onClose} size="203px" className="bg-[#FFFDEB]">
