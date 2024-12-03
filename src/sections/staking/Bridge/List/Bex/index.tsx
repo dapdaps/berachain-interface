@@ -300,7 +300,7 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Pool',
       type: 'slot',
       render: (data) => {
-        const pool = data?.pool;
+        const pool = data?.initialData?.pool;
         return (
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center min-w-[50px]'>
@@ -331,7 +331,7 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Protocol',
       type: 'slot',
       render: (data: any) => {
-        const pool = data?.pool;
+        const pool = data?.initialData?.pool;
         return (
           <img
             style={{ width: 26 }}
