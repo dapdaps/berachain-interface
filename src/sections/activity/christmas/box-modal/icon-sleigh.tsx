@@ -1,21 +1,13 @@
-import { motion } from "framer-motion";
-
-export default function SleighIcon({}: any) {
+import clsx from "clsx";
+export default function SleighIcon({ className }: any) {
   return (
-    <motion.svg
+    <svg
       xmlns="http://www.w3.org/2000/svg"
       width="228"
       height="147"
       viewBox="0 0 228 147"
       fill="none"
-      className="absolute top-[-100px] left-[80px] z-[1]"
-      initial={{
-        y: 120
-      }}
-      animate={{
-        y: 0,
-        zIndex: 3
-      }}
+      className={clsx(className)}
     >
       <mask
         id="path-1-outside-1_26889_41012"
@@ -243,6 +235,6 @@ export default function SleighIcon({}: any) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </motion.svg>
+    </svg>
   );
 }

@@ -1,21 +1,13 @@
-import { motion } from "framer-motion";
-
-export default function SnowBoardIcon({}: any) {
+import clsx from "clsx";
+export default function SnowBoardIcon({ className }: any) {
   return (
-    <motion.svg
+    <svg
       xmlns="http://www.w3.org/2000/svg"
       width="256"
       height="72"
       viewBox="0 0 256 72"
       fill="none"
-      className="absolute top-[-56px] left-[56px] z-[1]"
-      initial={{
-        y: 120
-      }}
-      animate={{
-        y: 0,
-        zIndex: 3
-      }}
+      className={clsx(className)}
     >
       <mask
         id="path-1-outside-1_26889_40958"
@@ -106,6 +98,6 @@ export default function SnowBoardIcon({}: any) {
         stroke="black"
         strokeLinecap="round"
       />
-    </motion.svg>
+    </svg>
   );
 }

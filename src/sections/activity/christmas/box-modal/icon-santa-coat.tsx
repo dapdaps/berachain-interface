@@ -1,21 +1,14 @@
-import { motion } from "framer-motion";
+import clsx from "clsx";
 
-export default function SantaCoatIcon({}: any) {
+export default function SantaCoatIcon({ className }: any) {
   return (
-    <motion.svg
+    <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="113"
-      height="158"
+      width="104"
+      height="149"
       viewBox="0 0 113 158"
       fill="none"
-      className="absolute top-[-100px] left-[130px] z-[1]"
-      initial={{
-        y: 120
-      }}
-      animate={{
-        y: 0,
-        zIndex: 3
-      }}
+      className={clsx(className)}
     >
       <mask
         id="path-1-outside-1_26889_40917"
@@ -85,6 +78,6 @@ export default function SantaCoatIcon({}: any) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </motion.svg>
+    </svg>
   );
 }

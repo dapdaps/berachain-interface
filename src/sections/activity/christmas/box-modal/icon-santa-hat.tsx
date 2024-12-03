@@ -1,21 +1,14 @@
-import { motion } from "framer-motion";
+import clsx from "clsx";
 
-export default function SantaHatIcon({}: any) {
+export default function SantaHatIcon({ className }: any) {
   return (
-    <motion.svg
+    <svg
       xmlns="http://www.w3.org/2000/svg"
       width="155"
       height="114"
       viewBox="0 0 155 114"
       fill="none"
-      className="absolute top-[-76px] left-[106px] z-[1]"
-      initial={{
-        y: 120
-      }}
-      animate={{
-        y: 0,
-        zIndex: 3
-      }}
+      className={clsx(className)}
     >
       <mask
         id="path-1-outside-1_26889_40949"
@@ -62,6 +55,6 @@ export default function SantaHatIcon({}: any) {
         fill="white"
         stroke="black"
       />
-    </motion.svg>
+    </svg>
   );
 }

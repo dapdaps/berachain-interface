@@ -1,21 +1,14 @@
-import { motion } from "framer-motion";
+import clsx from "clsx";
 
-export default function SnowIcon({}: any) {
+export default function SnowIcon({ className }: any) {
   return (
-    <motion.svg
+    <svg
       xmlns="http://www.w3.org/2000/svg"
       width="169"
       height="172"
       viewBox="0 0 169 172"
       fill="none"
-      className="absolute top-[-106px] left-[106px] z-[1]"
-      initial={{
-        y: 120
-      }}
-      animate={{
-        y: 0,
-        zIndex: 3
-      }}
+      className={clsx(className)}
     >
       <circle cx="87.5859" cy="90.7485" r="65" fill="#5F45E1" stroke="black" />
       <path
@@ -95,6 +88,6 @@ export default function SnowIcon({}: any) {
           <stop offset="1" stopColor="#B1FAFF" />
         </linearGradient>
       </defs>
-    </motion.svg>
+    </svg>
   );
 }

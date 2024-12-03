@@ -1,21 +1,14 @@
-import { motion } from "framer-motion";
+import clsx from "clsx";
 
-export default function ElfJacketIcon({}: any) {
+export default function ElfJacketIcon({ className }: any) {
   return (
-    <motion.svg
+    <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="112"
-      height="157"
+      width="103"
+      height="148"
       viewBox="0 0 112 157"
       fill="none"
-      className="absolute top-[-100px] left-[130px] z-[1]"
-      initial={{
-        y: 120
-      }}
-      animate={{
-        y: 0,
-        zIndex: 3
-      }}
+      className={clsx(className)}
     >
       <mask
         id="path-1-outside-1_26889_40989"
@@ -114,6 +107,6 @@ export default function ElfJacketIcon({}: any) {
         stroke="black"
         strokeLinejoin="round"
       />
-    </motion.svg>
+    </svg>
   );
 }
