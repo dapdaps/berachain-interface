@@ -3,6 +3,7 @@ import { ethers, utils } from 'ethers';
 import { useEffect } from 'react';
 import { multicall } from '@/utils/multicall';
 import multicallAddresses from '@/configs/contract/multicall';
+import { beraB } from '@/configs/tokens/bera-bArtio';
 
 const ABI: any = {
   beraWrapper: [
@@ -733,6 +734,17 @@ const SORTED_DENS_ABI = [
   },
 ];
 
+const innerAbi: any = [
+  { name: "honeyAmountToDeposit", type: "uint" },
+  { name: "borrower", type: "address" },
+  { name: "collVaultRouter", type: "address" },
+];
+
+const outerAbi: any = [
+  { name: "", type: "bytes" },
+  { name: "bHoneyHook", type: "address" },
+];
+
 export const randomBigInt = () => BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 function* generateTrials(totalNumberOfTrials: number) {
   while (totalNumberOfTrials) {
@@ -743,8 +755,23 @@ function* generateTrials(totalNumberOfTrials: number) {
   }
 }
 
+function encodePreDeposit(honeyAmount: any, borrower: any, collVaultRouter: any, bHoneyHook: any) {
+  const innerEncoded = ethers.utils.defaultAbiCoder.encode(innerAbi, [
+    honeyAmount,
+    borrower,
+    collVaultRouter,
+  ]);
+
+  const outerEncoded = ethers.utils.defaultAbiCoder.encode(outerAbi, [
+    innerEncoded,
+    bHoneyHook,
+  ]);
+
+  return outerEncoded;
+}
+
 const BeraborrowHandler = (props: any) => {
-  const { update, config, market, actionText, account, borrowAmount, amount, onLoad, provider, chainId } = props;
+  const { update, config, market, actionText, account, borrowAmount, amount, onLoad, provider, chainId, totalAmount, totalBorrowAmount } = props;
 
   useEffect(() => {
 
@@ -756,7 +783,7 @@ const BeraborrowHandler = (props: any) => {
     const parsedAmount = ethers.utils.parseUnits(amount || '0', market.decimals);
     console.log('amount: %o, market.decimals: %o, parsedAmount: %o', amount, market.decimals, parsedAmount);
     const parsedBorrowAmount = ethers.utils.parseUnits(borrowAmount || '0', config.borrowToken.decimals);
-    console.log('amount: %o, config.borrowToken.decimals: %o, parsedBorrowAmount: %o', borrowAmount, config.borrowToken.decimals, parsedBorrowAmount);
+    console.log('borrowAmount: %o, config.borrowToken.decimals: %o, parsedBorrowAmount: %o', borrowAmount, config.borrowToken.decimals, parsedBorrowAmount);
     const isOpened = market.status === 'open';
     const isClose = actionText === 'Close';
     const isRepay = actionText === 'Repay';
@@ -786,9 +813,9 @@ const BeraborrowHandler = (props: any) => {
           const totalNumberOfTrials = Math.ceil(15 * Math.sqrt(Number(numberOfDens.toString())));
           const [firstTrials, ...restOfTrials] = generateTrials(totalNumberOfTrials) as any;
           const hintContract = new ethers.Contract(config.multiCollateralHintHelpers, HINT_ABI, provider);
-          let NICR = Big(0);
-          if (amount && Big(amount).gt(0) && borrowAmount && Big(borrowAmount).gt(0)) {
-            NICR = Big(amount || 0).mul(1e20).div(borrowAmount);
+          let NICR: any = Big(0);
+          if (totalAmount && Big(totalAmount).gt(0) && totalBorrowAmount && Big(totalBorrowAmount).gt(0)) {
+            NICR = Big(totalAmount || 0).mul(1e20).div(totalBorrowAmount);
           }
           const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any, address?: any, overrides?: any) => {
             const approxHintParams = [
@@ -849,6 +876,24 @@ const BeraborrowHandler = (props: any) => {
           resolve({ lowerHint: account, upperHint: account });
         });
       });
+    };
+
+    const getPreDeposit = () => {
+      if (market.address !== beraB['honey'].address) {
+        return '0x';
+      }
+
+      const honeyAmountToDeposit = ethers.BigNumber.from(parsedAmount); // 10 HONEY
+      const borrowerAddress = account;
+      const collVaultRouterAddress = '0xd257D6b56b2eE48A4B83e12F06b53195Dc4514D7';
+      const bHoneyHookAddress = '0xb35A972df0616924f85b99D7248880925EB82D52';
+
+      return encodePreDeposit(
+        honeyAmountToDeposit,
+        borrowerAddress,
+        collVaultRouterAddress,
+        bHoneyHookAddress
+      );
     };
 
     const getParams = () => {
@@ -954,6 +999,7 @@ const BeraborrowHandler = (props: any) => {
             break;
           case 'collVaultRouter':
             const hint: any = await getHint();
+            let _preDeposit: any = getPreDeposit();
             method = 'openDenVault';
             params = [
               // denManager
@@ -975,7 +1021,7 @@ const BeraborrowHandler = (props: any) => {
               // _collIndex
               market.collIndex,
               // _preDeposit
-              '0x'
+              _preDeposit
             ];
             if (isOpened) {
               method = 'adjustDenVault';
@@ -994,7 +1040,7 @@ const BeraborrowHandler = (props: any) => {
                   _minSharesMinted: '0',
                   _minAssetsWithdrawn: '0',
                   _collIndex: market.collIndex,
-                  _preDeposit: '0x',
+                  _preDeposit: _preDeposit,
                 }
               ];
             }
