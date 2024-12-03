@@ -33,6 +33,8 @@ const config: Config = {
       'slide-to-left': 'slide2Left 10s linear infinite',
       'rotate': 'rotate 2s linear infinite',
       'shake': 'shake 0.7s linear infinite',
+      'blink': 'blink 4s ease-in-out infinite',
+      'float-y': 'floatY 4s ease-in-out infinite',
     },
     keyframes: {
       snowDown: {
@@ -74,6 +76,43 @@ const config: Config = {
         },
         '100%': {
           transform: 'translateX(0) rotate(0deg)',
+        },
+      },
+      blink: {
+        '0%': {
+          opacity: '1',
+          transform: 'scale(1)',
+        },
+        '12%': {
+          opacity: '1',
+          transform: 'scale(0.95)',
+        },
+        '25%': {
+          opacity: '1',
+          transform: 'scale(1)',
+        },
+        '50%': {
+          opacity: '0',
+          transform: 'scale(0.95)',
+        },
+        '75%': {
+          opacity: '1',
+          transform: 'scale(0.98)',
+        },
+        '100%': {
+          opacity: '1',
+          transform: 'scale(1)',
+        },
+      },
+      floatY: {
+        '0%': {
+          transform: 'translateY(0)',
+        },
+        '50%': {
+          transform: 'translateY(10px)',
+        },
+        '100%': {
+          transform: 'translateY(0)',
         },
       },
     },

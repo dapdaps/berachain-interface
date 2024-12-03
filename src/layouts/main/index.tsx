@@ -43,10 +43,13 @@ const MainLayout = (props: Props) => {
     if (isChristmas && pathname === '/') {
       return 'bg-christmas';
     }
+    if (pathname === '/activity/christmas') {
+      return 'bg-christmas';
+    }
     return 'bg-[var(--background)]';
   }, [isVaults, isChristmas, pathname]);
 
-  const routes = ['/earn'];
+  const routes = ['/earn', '/activity/christmas'];
 
   return (
     <div
