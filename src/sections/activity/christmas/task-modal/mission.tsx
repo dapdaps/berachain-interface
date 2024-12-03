@@ -1,6 +1,6 @@
 import Button from "./button";
 import PresentIcon from "./present-icon";
-import CheckedButton from "./checked-button";
+import CheckButton from "../components/check-button";
 
 export default function Mission({ mission }: any) {
   return (
