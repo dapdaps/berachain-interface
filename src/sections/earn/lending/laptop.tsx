@@ -10,7 +10,7 @@ import BendActionPanelLaptop from '@/sections/Lending/Bend/Action/laptop';
 import useAddAction from "@/hooks/use-add-action";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import IconAdd from '@public/images/add.svg'
-import { numberFormatter } from '@/utils/number-formatter';
+import { numberFormatter } from "@/utils/number-formatter";
 
 const PAGE_SIZE = 9;
 

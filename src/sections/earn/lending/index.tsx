@@ -137,9 +137,6 @@ const EarnLending = (props: any) => {
     return _tokens.filter((t: any) => t.protocol.name === protocol);
   }, [protocol, dolomiteData, tab, checked]);
 
-console.log(tokenList, 'tokenList');
-
-
   const handleAction = (type: any, data: any) => {
     if (data.protocol.name === 'Dolomite' && ['Borrow', 'Repay'].includes(type)) {
       router.push('/lending/dolomite?tab=borrow');

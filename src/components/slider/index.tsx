@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { memo, useEffect, useRef, useState } from "react";
 export default memo(function Slider({
   percentage,

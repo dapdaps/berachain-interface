@@ -1,22 +1,21 @@
 // @ts-nocheck
 import CircleLoading from '@/components/circle-loading';
+import Modal from '@/components/modal';
 import SwitchTabs from '@/components/switch-tabs';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import useCustomAccount from '@/hooks/use-account';
+import useAddAction from '@/hooks/use-add-action';
+import useLpToAmount from '@/hooks/use-lp-to-amount';
 import { useMultiState } from '@/hooks/use-multi-state';
+import useToast from '@/hooks/use-toast';
+import Capsule from '@/sections/marketplace/components/dapps/capsule';
 import { MarketplaceContext } from '@/sections/marketplace/context';
+import { formatValueDecimal } from '@/utils/balance';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
-import { memo, useContext, useEffect, useState } from 'react';
-import DappModal from './modal';
-import useToast from '@/hooks/use-toast';
-import { formatValueDecimal } from '@/utils/balance';
 import { useRouter } from 'next/navigation';
-import useAddAction from '@/hooks/use-add-action';
-import Modal from '@/components/modal';
-import Capsule from './capsule';
-import useLpToAmount from '@/hooks/use-lp-to-amount';
+import { memo, useContext, useEffect, useState } from 'react';
 
 const TABS = [
   {
@@ -30,19 +29,25 @@ const TABS = [
     disabled: false
   }
 ];
-export default memo(function vaults(props) {
-  const router = useRouter();
+export default memo(function Bex(props) {
   const {
-    vaultsVisible,
-    vaultsType,
-    setVaultsVisible,
-    vaultsData = {}
-  } = useContext(MarketplaceContext);
+    data,
+    type,
+    config,
+    visible,
+    setVisible
+  } = props
+  const router = useRouter();
+  // const {
+  //   vaultsVisible,
+  //   setVaultsVisible,
+  //   vaultsData = {}
+  // } = useContext(MarketplaceContext);
 
   const toast = useToast();
   const { addAction } = useAddAction('invest');
   const { account: sender, provider } = useCustomAccount();
-  const { data, config } = vaultsData;
+  // const { data, config } = vaultsData;
 
   const dexConfig = config?.chains[DEFAULT_CHAIN_ID];
   const { tokens, decimals, id, LP_ADDRESS } = data ?? {};
@@ -52,7 +57,7 @@ export default memo(function vaults(props) {
 
   const vaultAddress = addresses ? addresses[symbol] : '';
 
-  const [currentTab, setCurrentTab] = useState(vaultsType || TABS[0].value);
+  const [currentTab, setCurrentTab] = useState(type === 0 ? "Deposit" : "Withdraw");
   const [state, updateState] = useMultiState({
     balances: [],
     lpBalance: '',
@@ -85,7 +90,7 @@ export default memo(function vaults(props) {
     handleGetAmount
   } = useLpToAmount(data?.LP_ADDRESS)
   const handleClose = () => {
-    setVaultsVisible(false);
+    setVisible(false)
   };
 
   const updateLPBalance = () => {
@@ -410,7 +415,7 @@ export default memo(function vaults(props) {
     updateLPBalance();
   }, [sender, vaultAddress, updater]);
   return (
-    <Modal open={vaultsVisible} onClose={handleClose}>
+    <Modal open={visible} onClose={handleClose}>
       <div className='px-[20px] pt-[24px] pb-[20px] lg:w-[520px] rounded-[20px] bg-[#FFFDEB] border border-[#000] shadow-shadow1 z-[51]'>
         <div className='flex items-center gap-[9px] text-black text-[20px] font-[700] leading-[90%]'>
           <span>{`Invest ${data?.tokens.join('-')}`}</span>
@@ -504,7 +509,7 @@ export default memo(function vaults(props) {
                     <div className='w-[30px] h-[30px] rounded-full'>
                       <img src={data?.images[0]} alt={data?.tokens[0]} />
                     </div>
-                      {data?.images[1] && (
+                    {data?.images[1] && (
                       <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
@@ -580,7 +585,7 @@ export default memo(function vaults(props) {
 
                       handleLPChange(lpBalance);
                     }}
-                    >
+                  >
                     {Big(lpBalance ? lpBalance : 0).toFixed(6)}
                   </span>
                 </div>
@@ -619,7 +624,7 @@ export default memo(function vaults(props) {
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
                     )}
-                    </div>
+                  </div>
                   <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                     {data?.tokens?.join('-')}
                   </div>
@@ -659,7 +664,7 @@ export default memo(function vaults(props) {
               onClick={() => {
                 router.push('/staking/infrared');
               }}
-              >
+            >
               Infrared
             </span>
           </div>
