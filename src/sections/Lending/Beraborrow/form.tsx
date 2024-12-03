@@ -55,6 +55,7 @@ export const Form = (props: any) => {
   const [borrowAmount, setBorrowAmount] = useState<string>();
   const [previewAmount, setPreviewAmount] = useState<string>();
   const [ratio, setRatio] = useState<string>();
+  const [ratioValue, setRatioValue] = useState<any>();
   const [txData, setTxData] = useState<any>();
   const [actionText, setActionText] = useState<ActionText>();
   const [calcPreviewAmountQueue, setCalcPreviewAmountQueue] = useState<any>([]);
@@ -75,6 +76,9 @@ export const Form = (props: any) => {
   const totalAmount = useMemo(() => {
     return calcTotalAmount(previewAmount);
   }, [previewAmount, market, type]);
+  const totalCollAmount = useMemo(() => {
+    return calcTotalAmount(amount);
+  }, [amount, market, type]);
   const totalBorrowAmount = useMemo(() => {
     return calcTotalBorrowAmount(borrowAmount);
   }, [borrowAmount, market, type]);
@@ -203,11 +207,13 @@ export const Form = (props: any) => {
       type,
       borrowingFee,
     });
-    setRatio(_ratio);
+    setRatio(_ratio.ratio);
+    setRatioValue(_ratio.ratioValue);
   };
 
   const handleRatio = (val: string) => {
     setRatio(val);
+    setRatioValue(val);
     // calc BorrowAmount
     if (!val || Big(val).lte(0)) {
       setBorrowAmount('');
@@ -228,12 +234,12 @@ export const Form = (props: any) => {
   useEffect(() => {
     cancelGetTxData();
     setLoading(false);
-    if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0))) {
+    if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0)) && (!ratioValue || Big(ratioValue).lte(0))) {
       return;
     }
 
     getTxData();
-  }, [amount, borrowAmount]);
+  }, [amount, borrowAmount, ratioValue]);
 
   useEffect(() => {
     setActionText(type);
@@ -250,7 +256,8 @@ export const Form = (props: any) => {
           _borrowAmount: totalBorrowAmount,
           ...curr,
         });
-        setRatio(_ratio);
+        setRatio(_ratio.ratio);
+        setRatioValue(_ratio.ratioValue);
       }
       setPreviewAmount(_preview);
       setCalcPreviewAmountQueue(calcPreviewAmountQueue.slice(1));
@@ -383,6 +390,9 @@ export const Form = (props: any) => {
         account={address}
         amount={amount}
         borrowAmount={borrowAmount}
+        totalAmount={totalAmount}
+        totalBorrowAmount={totalBorrowAmount}
+        ratio={ratioValue}
         onLoad={(txData: any) => {
           console.log('%chandler DATA onLoad: %o', 'background: #6439FF; color:#fff;', txData);
           setTxData(txData);
@@ -462,15 +472,20 @@ const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: an
   const { _amount, _borrowAmount, market, type, liquidationReserve, borrowingFee } = props;
   const collateralValue = Big(_amount || 0).times(market.price);
   if (!_borrowAmount || Big(_borrowAmount).lte(0)) {
-    return numberRemoveEndZero(Big(collateralValue).div(1).times(100).toFixed(2));
+    const _ratioVal = Big(collateralValue).div(1).times(100);
+    return {
+      ratio: numberRemoveEndZero(_ratioVal.toFixed(2)),
+      ratioValue: _ratioVal,
+    };
   }
   const borrowValue = Big(_borrowAmount).times(market.borrowToken.price);
-  let _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(borrowValue).plus(liquidationReserve).plus(Big(borrowValue).times(borrowingFee))).times(100).toFixed(2));
+  let _ratioVal = Big(collateralValue).div(Big(borrowValue).plus(liquidationReserve).plus(Big(borrowValue).times(borrowingFee))).times(100);
   if (market.status === 'open') {
-    _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(borrowValue)).times(100).toFixed(2));
+    _ratioVal = Big(collateralValue).div(Big(borrowValue)).times(100);
   }
   if (type === ActionText.Repay) {
-    _ratio = numberRemoveEndZero(Big(collateralValue).div(Big(_borrowAmount)).times(100).toFixed(2));
+    _ratioVal = Big(collateralValue).div(Big(_borrowAmount)).times(100);
   }
-  return _ratio;
+  const _ratio = numberRemoveEndZero(_ratioVal.toFixed(2));
+  return { ratio: _ratio, ratioValue: _ratioVal };
 };
