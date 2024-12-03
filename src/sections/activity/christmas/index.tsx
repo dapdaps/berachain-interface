@@ -1,10 +1,9 @@
-import BoxModal from "./box-modal";
+import Top from "@/sections/activity/christmas/sections/top";
 
 export default function Christmas() {
   return (
-    <>
-      <div>Christmas</div>
-      <BoxModal />
-    </>
+    <div className="">
+      <Top />
+    </div>
   );
 }
