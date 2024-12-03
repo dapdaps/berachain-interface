@@ -2,7 +2,7 @@ import { SceneStatus } from '@/configs/scene';
 import { useState } from 'react';
 
 export const SCENE_LIST: Scene[] = [
-  { id: 1, name: 'Beramas Wonderland', description: '', path: '/beramas-wonderland', status: SceneStatus.Ongoing },
+  { id: 1, name: 'Beramas Wonderland', description: '', path: '/activity/christmas', status: SceneStatus.Ongoing },
 ];
 
 export function useSceneValue(): SceneValues {
