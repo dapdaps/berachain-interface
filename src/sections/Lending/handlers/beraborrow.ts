@@ -754,7 +754,9 @@ const BeraborrowHandler = (props: any) => {
     const contractAddress = config[market.vault];
     const abi = ABI[market.vault];
     const parsedAmount = ethers.utils.parseUnits(amount || '0', market.decimals);
+    console.log('amount: %o, market.decimals: %o, parsedAmount: %o', amount, market.decimals, parsedAmount);
     const parsedBorrowAmount = ethers.utils.parseUnits(borrowAmount || '0', config.borrowToken.decimals);
+    console.log('amount: %o, config.borrowToken.decimals: %o, parsedBorrowAmount: %o', borrowAmount, config.borrowToken.decimals, parsedBorrowAmount);
     const isOpened = market.status === 'open';
     const isClose = actionText === 'Close';
     const isRepay = actionText === 'Repay';
@@ -833,7 +835,8 @@ const BeraborrowHandler = (props: any) => {
             provider: provider
           }).then((sortedDensRes: any) => {
             const lowerHint = sortedDensRes?.[0]?.[0] ?? account;
-            const upperHint = sortedDensRes?.[1]?.[1] ?? account;
+            const upperHint = sortedDensRes?.[1]?.[0] ?? account;
+            console.log('sortedDensRes: %o', sortedDensRes);
             console.log('lowerHint: %o', lowerHint);
             console.log('upperHint: %o', upperHint);
             resolve({ lowerHint, upperHint });
@@ -950,6 +953,7 @@ const BeraborrowHandler = (props: any) => {
             }
             break;
           case 'collVaultRouter':
+            const hint: any = await getHint();
             method = 'openDenVault';
             params = [
               // denManager
@@ -975,7 +979,6 @@ const BeraborrowHandler = (props: any) => {
             ];
             if (isOpened) {
               method = 'adjustDenVault';
-              const hint: any = await getHint();
               params = [
                 {
                   denManager: market.denManager,

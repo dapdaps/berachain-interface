@@ -221,12 +221,17 @@ export const Form = (props: any) => {
     setClosePosition(true);
   };
 
-  const { run: getTxData } = useDebounceFn(() => {
+  const { run: getTxData, cancel: cancelGetTxData } = useDebounceFn(() => {
     setLoading(true);
   }, { wait: 500 });
 
   useEffect(() => {
-    if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0))) return;
+    cancelGetTxData();
+    setLoading(false);
+    if ((!borrowAmount || Big(borrowAmount).lte(0)) && (!amount || Big(amount).lte(0))) {
+      return;
+    }
+
     getTxData();
   }, [amount, borrowAmount]);
 
