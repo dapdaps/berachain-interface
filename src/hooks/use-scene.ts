@@ -5,7 +5,7 @@ export const SCENE_LIST: Scene[] = [
   { id: 1, name: 'Beramas Wonderland', description: '', path: '/activity/christmas', status: SceneStatus.Ongoing },
 ];
 
-export function useSceneValue(): SceneValues {
+export function useSceneValue(): ISceneContext {
   const [list] = useState<Scene[]>(SCENE_LIST);
   const [current] = useState<Scene>(SCENE_LIST[0]);
 
@@ -15,20 +15,14 @@ export function useSceneValue(): SceneValues {
   };
 }
 
-interface SceneValues {
+export interface ISceneContext {
   list: Scene[];
   current?: Scene;
 }
 
-export interface ISceneContext {
-  scene: SceneValues;
-}
-
 export const sceneDefault = {
-  scene: {
-    list: SCENE_LIST,
-    current: SCENE_LIST[0],
-  },
+  list: SCENE_LIST,
+  current: SCENE_LIST[0],
 };
 
 export interface Scene {

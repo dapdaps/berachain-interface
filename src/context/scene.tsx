@@ -9,7 +9,7 @@ function SceneContextProvider({ children }: { children: ReactNode; }) {
   const sceneValue = useSceneValue();
 
   return (
-    <SceneContext.Provider value={{ scene: sceneValue }} >
+    <SceneContext.Provider value={{ ...sceneValue }} >
       {children}
     </SceneContext.Provider>
   );
