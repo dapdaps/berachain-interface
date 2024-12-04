@@ -243,15 +243,16 @@ export default function Round({
               {userRewardUsd.gt(0)
                 ? `$${balanceShortFormated(userRewardUsd.toString(), 2)}`
                 : "-"}
-              {round.reward_tokens.map((token: any, i: number) => (
-                <Image
-                  src={token.logo}
-                  width={16}
-                  height={16}
-                  alt={token.symbol}
-                  className={clsx("rounded-full", i > 0 && " ml-[-8px]")}
-                />
-              ))}
+              {userRewardUsd.gt(0) &&
+                round.reward_tokens.map((token: any, i: number) => (
+                  <Image
+                    src={token.logo}
+                    width={16}
+                    height={16}
+                    alt={token.symbol}
+                    className={clsx("rounded-full", i > 0 && " ml-[-8px]")}
+                  />
+                ))}
               {claimable && userRewardUsd.gt(0) && (
                 <Button
                   className="h-[28px] ml-[12px] md:hidden"

@@ -43,7 +43,9 @@ export default function Token({
     return [ur, urs];
   }, [userInfo, token]);
 
-  const claimable = !!(currentRound.claim_reward_time < Date.now() / 1000);
+  const claimable =
+    currentRound.claim_reward_time &&
+    !!(currentRound.claim_reward_time < Date.now() / 1000);
 
   return (
     <div
@@ -77,7 +79,7 @@ export default function Token({
             <div
               className="text-[14px] underline font-medium cursor-pointer"
               onClick={() => {
-                onClick(8, token);
+                onClick(8);
               }}
             >
               Get
@@ -133,7 +135,7 @@ export default function Token({
                       <img
                         src={cachedTokens[token.address]?.logo}
                         className={`w-[26px] h-[26px] rounded-full shrink-0 ${
-                          i > 0 && "ml-[8px]"
+                          i > 0 && "ml-[-8px]"
                         }`}
                       />
                     ))}
@@ -171,22 +173,23 @@ export default function Token({
                     : "-"}
                 </span>
               )}
-              {!isMobile && (
-                <Image
-                  src={token.token.logo}
-                  width={16}
-                  height={16}
-                  className="rounded-full"
-                  alt={token.token.symbol}
-                />
-              )}
+              {!isMobile &&
+                (userInfo?.stakedAmountUSD || userInfo?.stakedAmount) && (
+                  <Image
+                    src={token.token.logo}
+                    width={16}
+                    height={16}
+                    className="rounded-full"
+                    alt={token.token.symbol}
+                  />
+                )}
             </div>
           </div>
           <div className="w-1/3 mt-[6px] md:w-1/2">
             <div className="text-[#3D405A] font-medium">Your Rewards</div>
             <Popover
               content={
-                claimable ? null : (
+                !(claimable && Big(userReward || 0).gt(0)) ? null : (
                   <div className="w-[236px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 px-[14px] py-[16px]">
                     Rewards will unlock after this round ends.
                   </div>
@@ -201,7 +204,7 @@ export default function Token({
                     ? "$" + balanceFormated(userReward, 2)
                     : "-"}
                 </span>
-                {!isMobile && (
+                {!isMobile && Big(userReward || 0).gt(0) && (
                   <Popover
                     content={<TokensPopover tokens={userRewards} />}
                     placement={PopoverPlacement.TopLeft}
@@ -244,7 +247,7 @@ export default function Token({
               ) : (
                 "-"
               )}
-              {!isMobile && (
+              {!isMobile && balance && (
                 <Image
                   src={token.token.logo}
                   width={16}

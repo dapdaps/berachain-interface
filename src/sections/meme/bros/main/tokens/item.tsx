@@ -47,7 +47,7 @@ export default function Item({ token, i, show, onClick }: any) {
           {token.symbol}
         </div>
         <div className="md:hidden mt-[10px] ml-[2px] w-[89px] rounded-[16px] border border-black bg-[#FFDC50] text-center leading-[32px] text-[18px] font-bold">
-          ${balanceShortFormated(token.stakedAmountUSD, 2)}
+          ${balanceShortFormated(token.total_dapped_usd, 2)}
         </div>
       </div>
       {show && <GoldCoinThrow />}

@@ -160,7 +160,7 @@ export default function Meme(props: any) {
       )}
       {!!modalData && innerModalType === 1 && (
         <SwapModal
-          defaultOutputCurrency={modalData}
+          defaultOutputCurrency={modalData.token}
           outputCurrencyReadonly={true}
           show={innerModalType === 1}
           onClose={() => {

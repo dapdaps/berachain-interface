@@ -54,7 +54,7 @@ export default function useAddIncentives({
         type: "Staking",
         action: "Stake",
         amount: amount,
-        token: token.token,
+        token: token,
         template: "supermemebros",
         status,
         transactionHash,
