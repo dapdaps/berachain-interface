@@ -362,7 +362,7 @@ export const Form = (props: any) => {
             gas={txData?.gas}
             config={{ ...basic, ...network }}
             onApprovedSuccess={() => {
-              setLoading(true);
+              getTxData();
             }}
             onSuccess={() => {
               onSuccess?.();
@@ -391,6 +391,7 @@ export const Form = (props: any) => {
         amount={amount}
         borrowAmount={borrowAmount}
         totalAmount={totalAmount}
+        totalCollAmount={totalCollAmount}
         totalBorrowAmount={totalBorrowAmount}
         ratio={ratioValue}
         onLoad={(txData: any) => {
