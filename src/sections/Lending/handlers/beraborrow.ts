@@ -771,7 +771,21 @@ function encodePreDeposit(honeyAmount: any, borrower: any, collVaultRouter: any,
 }
 
 const BeraborrowHandler = (props: any) => {
-  const { update, config, market, actionText, account, borrowAmount, amount, onLoad, provider, chainId, totalAmount, totalBorrowAmount } = props;
+  const {
+    update,
+    config,
+    market,
+    actionText,
+    account,
+    borrowAmount,
+    amount,
+    onLoad,
+    provider,
+    chainId,
+    totalAmount,
+    totalBorrowAmount,
+    totalCollAmount,
+  } = props;
 
   useEffect(() => {
 
@@ -815,14 +829,23 @@ const BeraborrowHandler = (props: any) => {
           const hintContract = new ethers.Contract(config.multiCollateralHintHelpers, HINT_ABI, provider);
           let NICR: any = Big(0);
           if (totalAmount && Big(totalAmount).gt(0) && totalBorrowAmount && Big(totalBorrowAmount).gt(0)) {
-            NICR = Big(totalAmount || 0).mul(1e20).div(totalBorrowAmount);
+            let debtValue = Big(totalBorrowAmount).toFixed(2);
+            if (market.status !== 'open') {
+              debtValue = Big(totalBorrowAmount).plus(config.liquidationReserve || 0).toFixed(2);
+            }
+            NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
           }
-          const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any, address?: any, overrides?: any) => {
+          console.log('%ctotalBorrowAmount: %o', 'background:#808000;color:#fff;', totalBorrowAmount.toString());
+          console.log('%cNICR: %o', 'background:#808000;color:#fff;', NICR.toFixed(0));
+          const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any) => {
             const approxHintParams = [
               dmAddr,
               ethers.BigNumber.from(nominalCollateralRatio),
+              // ethers.BigNumber.from('149220641726481938471'),
               ethers.BigNumber.from(numberOfTrials),
-              ethers.BigNumber.from(latestRandomSeed)
+              // ethers.BigNumber.from('2500'),
+              ethers.BigNumber.from(latestRandomSeed),
+              // ethers.BigNumber.from('7563636496275551'),
             ];
             return new Promise((resolve) => {
               hintContract.getApproxHint(...approxHintParams).then((hintRes: any) => {
@@ -1013,9 +1036,9 @@ const BeraborrowHandler = (props: any) => {
               // _collAssetToDeposit
               parsedAmount,
               // _upperHint
-              account,
+              hint.upperHint,
               // _lowerHint
-              account,
+              hint.lowerHint,
               // _minSharesMinted
               '0',
               // _collIndex
