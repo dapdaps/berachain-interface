@@ -165,10 +165,17 @@ export const Form = (props: any) => {
       result.text = `Minimum Debt of ${minimumDebt} required`;
       return result;
     }
-    if (type === ActionText.Repay && Big(borrowAmount || 0).gt(borrowBalance || 0)) {
-      result.valid = false;
-      result.text = `Insufficient ${market.symbol} Balance`;
-      return result;
+    if (type === ActionText.Repay) {
+      if (Big(borrowAmount || 0).gt(borrowBalance || 0)) {
+        result.valid = false;
+        result.text = `Insufficient ${market.borrowToken.symbol} Balance`;
+        return result;
+      }
+      if (Big(totalBorrowAmount || 0).lt(minimumDebt)) {
+        result.valid = false;
+        result.text = `Minimum Debt of ${minimumDebt} required`;
+        return result;
+      }
     }
     if (Big(ratio || 0).lt(market.MCR)) {
       result.valid = false;
