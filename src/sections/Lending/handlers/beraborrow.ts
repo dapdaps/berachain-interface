@@ -905,7 +905,10 @@ const BeraborrowHandler = (props: any) => {
     };
 
     const getPreDeposit = () => {
-      if (market.address !== beraB['honey'].address) {
+      if (![beraB['honey'].address, beraB['bhoney'].address].includes(market.address)) {
+        return '0x';
+      }
+      if (beraB['bhoney'].address === market.address && market.status !== 'open') {
         return '0x';
       }
 
@@ -926,6 +929,7 @@ const BeraborrowHandler = (props: any) => {
       return new Promise(async (resolve) => {
         let method = '';
         let params: any = [];
+        const hint: any = await getHint();
         switch (market.vault) {
           case 'beraWrapper':
             method = 'openDenNative';
@@ -937,9 +941,9 @@ const BeraborrowHandler = (props: any) => {
               // _debtAmount
               parsedBorrowAmount,
               // _upperHint
-              account,
+              hint.upperHint,
               // _lowerHint
-              account,
+              hint.lowerHint,
             ];
             if (isOpened) {
               method = 'adjustDenNative';
@@ -955,9 +959,9 @@ const BeraborrowHandler = (props: any) => {
                 // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
                 !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
                 // _upperHint
-                account,
+                hint.upperHint,
                 // _lowerHint
-                account,
+                hint.lowerHint,
                 // unwrap
                 true
               ];
@@ -986,9 +990,9 @@ const BeraborrowHandler = (props: any) => {
               // _debtAmount
               parsedBorrowAmount,
               // _upperHint
-              account,
+              hint.upperHint,
               // _lowerHint
-              account,
+              hint.lowerHint,
             ];
             if (isOpened) {
               method = 'adjustDen';
@@ -1008,9 +1012,9 @@ const BeraborrowHandler = (props: any) => {
                 // _isDebtIncrease: repay=false, borrow=true, add Collateral without borrow=false
                 !(isRepay || !borrowAmount || Big(borrowAmount).lte(0)),
                 // _upperHint
-                account,
+                hint.upperHint,
                 // _lowerHint
-                account,
+                hint.lowerHint,
               ];
             }
             if (isClose) {
@@ -1024,7 +1028,6 @@ const BeraborrowHandler = (props: any) => {
             }
             break;
           case 'collVaultRouter':
-            const hint: any = await getHint();
             let _preDeposit: any = getPreDeposit();
             method = 'openDenVault';
             params = [
