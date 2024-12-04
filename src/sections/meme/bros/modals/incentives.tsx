@@ -28,7 +28,7 @@ export default function Incentives({ open, data, rewardTokens, onClose }: any) {
       <Basic open={open} onClose={onClose} className="w-[916px]">
         <div className="flex text-[20px] font-bold justify-between pr-[40px] md:pr-0">
           <div>Incentives</div>
-          {currentRound.status === "ended" && (
+          {currentRound.status === "ongoing" && (
             <Button
               type="primary"
               className="h-[36px]"
