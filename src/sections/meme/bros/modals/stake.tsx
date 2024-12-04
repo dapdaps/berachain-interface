@@ -115,10 +115,10 @@ export default function StakeModal({
           <div>Your Dapped</div>
           <div className="flex items-center gap-[8px]">
             <Image
-              src={data.icon}
+              src={data.token.logo}
               width={16}
               height={16}
-              alt={data.symbol}
+              alt={data.token.symbol}
               className="rounded-full"
             />
             <span
@@ -171,7 +171,7 @@ export default function StakeModal({
           !
         </div>
         <div className="font-medium">
-          The unstaked assets will available to be withdrawn{" "}
+          The unstaked assets will available to be withdrawn in{" "}
           {formatDistance(Date.now(), Date.now() + data.delayTime)}.
         </div>
       </div>

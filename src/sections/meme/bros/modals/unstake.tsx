@@ -66,7 +66,7 @@ export default function Unstake({
           !
         </div>
         <div className="font-medium">
-          The unstaked assets will available to be withdrawn{" "}
+          The unstaked assets will available to be withdrawn in{" "}
           {formatDistance(Date.now(), Date.now() + data.delayTime)}.
         </div>
       </div>
