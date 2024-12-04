@@ -69,7 +69,11 @@ export const Form = (props: any) => {
   };
   const calcTotalBorrowAmount = (_borrowAmount?: string) => {
     if (type === ActionText.Borrow) {
-      return numberRemoveEndZero(Big(market.borrowed || 0).plus(Big(_borrowAmount || 0).plus(Big(_borrowAmount || 0).times(borrowingFee))).toFixed(market?.borrowToken.decimals, Big.roundDown));
+      let _debtValue = Big(market.borrowed || 0).plus(Big(_borrowAmount || 0).plus(Big(_borrowAmount || 0).times(borrowingFee)));
+      if (market.status !== 'open') {
+        _debtValue = Big(_debtValue).plus(liquidationReserve);
+      }
+      return numberRemoveEndZero(_debtValue.toFixed(market?.borrowToken.decimals, Big.roundDown));
     }
     return numberRemoveEndZero(Big(market.borrowed || 0).minus(_borrowAmount || 0).toFixed(market?.borrowToken.decimals, Big.roundDown));
   };
@@ -298,6 +302,7 @@ export const Form = (props: any) => {
           balanceShown: numberFormatter(totalAmount, 2, true),
           borrowedShown: numberFormatter(totalBorrowAmount, 2, true),
           liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$', round: Big.roundDown }),
+          liquidationPrice: liquidationPriceNew,
         } : {}}
       />
       <div
@@ -507,7 +512,7 @@ const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: an
     };
   }
   const borrowValue = Big(_borrowAmount).times(market.borrowToken.price);
-  let _ratioVal = Big(collateralValue).div(Big(borrowValue).plus(liquidationReserve).plus(Big(borrowValue).times(borrowingFee))).times(100);
+  let _ratioVal = Big(collateralValue).div(Big(borrowValue)).times(100);
   if (market.status === 'open') {
     _ratioVal = Big(collateralValue).div(Big(borrowValue)).times(100);
   }

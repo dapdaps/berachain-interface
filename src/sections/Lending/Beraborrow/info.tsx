@@ -34,7 +34,7 @@ const Info = (props: any) => {
       <Item label={`${market.collToken.symbol} amount`} value={market.balanceShown} newValue={newValue?.balanceShown} />
       <Item label="NECT borrowed" value={market.borrowedShown} newValue={newValue?.borrowedShown} />
       {
-        market.balance && Big(market.balance).gt(0) && (
+        (market.balance && Big(market.balance).gt(0) || (newValue?.liquidationPrice && Big(newValue?.liquidationPrice || 0).gt(0))) && (
           <Item label="Liquidation Price" value={market.liquidationPriceShown} newValue={newValue?.liquidationPriceShown} />
         )
       }

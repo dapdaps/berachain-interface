@@ -831,10 +831,7 @@ const BeraborrowHandler = (props: any) => {
           const hintContract = new ethers.Contract(config.multiCollateralHintHelpers, HINT_ABI, provider);
           let NICR: any = Big(0);
           if (totalAmount && Big(totalAmount).gt(0) && totalBorrowAmount && Big(totalBorrowAmount).gt(0)) {
-            let debtValue = Big(totalBorrowAmount).toFixed(2);
-            if (market.status !== 'open') {
-              debtValue = Big(totalBorrowAmount).plus(config.liquidationReserve || 0).toFixed(2);
-            }
+            const debtValue = Big(totalBorrowAmount).toFixed(2);
             console.log('%ccollValue: %o', 'background:#808000;color:#fff;', totalAmount);
             console.log('%cdebtValue: %o', 'background:#808000;color:#fff;', debtValue);
             NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
