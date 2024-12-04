@@ -24,10 +24,11 @@ const VoteTable = forwardRef<any, any>((props, ref) => {
 
   const votable = useMemo(
     () =>
+      round.vote_status === "ongoing" &&
       Big(tokenBalance || 0)
         .mul(1e18)
         .gte(round?.condition_amount),
-    [tokenBalance]
+    [round, tokenBalance]
   );
 
   const columns: any = [

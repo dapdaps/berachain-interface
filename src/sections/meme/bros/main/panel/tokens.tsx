@@ -56,7 +56,7 @@ export default function Tokens({
                 History
               </button>
             )}
-            {nextRound?.vote_status === "ongoing" && (
+            {nextRound && (
               <button
                 className="w-[137px] h-[48px] border border-black bg-[#FFDC50] rounded-[10px] font-semibold leading-[16px]"
                 onClick={handleVote}
