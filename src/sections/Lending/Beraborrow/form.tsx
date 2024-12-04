@@ -43,6 +43,7 @@ export const Form = (props: any) => {
     network,
     onSuccess,
     isMobile,
+    onClose,
   } = props;
 
   const { address, chainId } = useAccount();
@@ -242,6 +243,13 @@ export const Form = (props: any) => {
     setLoading(true);
   }, { wait: 500 });
 
+  const { run: reloadList } = useDebounceFn(() => {
+    onSuccess?.();
+    setAmount('');
+    setBorrowAmount('');
+    setPreviewAmount('0');
+  }, { wait: 1000 });
+
   useEffect(() => {
     cancelGetTxData();
     setLoading(false);
@@ -387,10 +395,7 @@ export const Form = (props: any) => {
               getTxData();
             }}
             onSuccess={() => {
-              onSuccess?.();
-              setAmount('');
-              setBorrowAmount('');
-              setPreviewAmount('0');
+              reloadList();
             }}
             addAction={addAction}
           >
