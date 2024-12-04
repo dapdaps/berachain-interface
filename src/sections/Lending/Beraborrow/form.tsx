@@ -289,7 +289,7 @@ export const Form = (props: any) => {
           balanceUsdShown: numberFormatter(Big(totalAmount).times(market.price || 1), 2, true, { prefix: '$' }),
           balanceShown: numberFormatter(totalAmount, 2, true),
           borrowedShown: numberFormatter(totalBorrowAmount, 2, true),
-          liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$' }),
+          liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$', round: Big.roundDown }),
         } : {}}
       />
       <div

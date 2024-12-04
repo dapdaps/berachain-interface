@@ -29,7 +29,8 @@ export const numberFormatter = (
     prefix = '',
     isLTIntegerZero,
     isZeroPrecision,
-    isShort
+    isShort,
+    round = Big.roundHalfUp,
   } = options || {};
 
   const isValid = () => {
@@ -45,14 +46,14 @@ export const numberFormatter = (
   if (!value || !isValid() || Big(value).eq(0)) {
     if (isSimple) {
       if (isZeroPrecision) {
-        return `${prefix}${Big(0).toFixed(precision)}`;
+        return `${prefix}${Big(0).toFixed(precision, round)}`;
       }
       return `${prefix}0`;
     }
     if (isZeroPrecision) {
       return {
         integer: `${prefix}0`,
-        decimal: Big(0).toFixed(precision).replace(/^\d/, '')
+        decimal: Big(0).toFixed(precision, round).replace(/^\d/, '')
       };
     }
     return {
@@ -63,21 +64,21 @@ export const numberFormatter = (
 
   if (Big(value).lt(Big(10).pow(-precision))) {
     if (isSimple) {
-      return `< ${prefix}${Big(10).pow(-precision).toFixed(precision)}`;
+      return `< ${prefix}${Big(10).pow(-precision).toFixed(precision, round)}`;
     }
     if (isLTIntegerZero) {
       return {
         integer: `< ${prefix}0`,
-        decimal: Big(10).pow(-precision).toFixed(precision).replace(/^\d/, '')
+        decimal: Big(10).pow(-precision).toFixed(precision, round).replace(/^\d/, '')
       };
     }
     return {
       integer: '',
-      decimal: `< ${prefix}${Big(10).pow(-precision).toFixed(precision)}`
+      decimal: `< ${prefix}${Big(10).pow(-precision).toFixed(precision, round)}`
     };
   }
 
-  const finalValue = addThousandSeparator(Big(value).toFixed(precision));
+  const finalValue = addThousandSeparator(Big(value).toFixed(precision, round));
   const firstPart = finalValue.split('.')[0];
   let secondPart = finalValue.split('.')[1] || '';
   if (secondPart) {
