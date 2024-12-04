@@ -795,13 +795,15 @@ const BeraborrowHandler = (props: any) => {
     const contractAddress = config[market.vault];
     const abi = ABI[market.vault];
     const parsedAmount = ethers.utils.parseUnits(amount || '0', market.decimals);
-    console.log('amount: %o, market.decimals: %o, parsedAmount: %o', amount, market.decimals, parsedAmount);
+    console.log('%camount: %o, market.decimals: %o, parsedAmount: %o', 'background:#808000;color:#fff;', amount, market.decimals, parsedAmount);
     const parsedBorrowAmount = ethers.utils.parseUnits(borrowAmount || '0', config.borrowToken.decimals);
-    console.log('borrowAmount: %o, config.borrowToken.decimals: %o, parsedBorrowAmount: %o', borrowAmount, config.borrowToken.decimals, parsedBorrowAmount);
+    console.log('%cborrowAmount: %o, config.borrowToken.decimals: %o, parsedBorrowAmount: %o', 'background:#808000;color:#fff;', borrowAmount, config.borrowToken.decimals, parsedBorrowAmount);
     const isOpened = market.status === 'open';
     const isClose = actionText === 'Close';
     const isRepay = actionText === 'Repay';
     const isBorrow = actionText === 'Borrow';
+
+    console.log('%cactionText: %o', 'background:#808000;color:#fff;', actionText);
 
     const getHint = () => {
       return new Promise((resolve) => {
@@ -833,9 +835,10 @@ const BeraborrowHandler = (props: any) => {
             if (market.status !== 'open') {
               debtValue = Big(totalBorrowAmount).plus(config.liquidationReserve || 0).toFixed(2);
             }
+            console.log('%ccollValue: %o', 'background:#808000;color:#fff;', totalAmount);
+            console.log('%cdebtValue: %o', 'background:#808000;color:#fff;', debtValue);
             NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
           }
-          console.log('%ctotalBorrowAmount: %o', 'background:#808000;color:#fff;', totalBorrowAmount.toString());
           console.log('%cNICR: %o', 'background:#808000;color:#fff;', NICR.toFixed(0));
           const _collectApproxHint = (latestRandomSeed: any, results: any, numberOfTrials: any, dmAddr: any, nominalCollateralRatio: any) => {
             const approxHintParams = [

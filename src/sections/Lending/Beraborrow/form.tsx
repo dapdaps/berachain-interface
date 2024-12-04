@@ -74,8 +74,11 @@ export const Form = (props: any) => {
   };
 
   const totalAmount = useMemo(() => {
+    if (type === ActionText.Repay) {
+      return calcTotalAmount(amount);
+    }
     return calcTotalAmount(previewAmount);
-  }, [previewAmount, market, type]);
+  }, [previewAmount, amount, market, type]);
   const totalCollAmount = useMemo(() => {
     return calcTotalAmount(amount);
   }, [amount, market, type]);
@@ -127,6 +130,14 @@ export const Form = (props: any) => {
     }
     return market?.borrowToken?.walletBalance;
   }, [type, borrowLimit]);
+
+  const liquidationPriceNew = useMemo(() => {
+    let liquidationPrice = Big(0);
+    if (totalAmount && Big(totalAmount || 0).gt(0)) {
+      liquidationPrice = Big(totalBorrowAmount || 0).times(Big(parseFloat(market.MCR)).div(100)).div(totalAmount);
+    }
+    return liquidationPrice;
+  }, [market, totalAmount, totalBorrowAmount]);
 
   const buttonValid = useMemo(() => {
     let text: any = type;
@@ -274,6 +285,12 @@ export const Form = (props: any) => {
         onClose={handleClosePosition}
         loading={loading}
         style={isMobile ? { width: '100%', order: 2 } : {}}
+        newValue={((amount && Big(amount).gt(0)) || (borrowAmount && Big(borrowAmount).gt(0))) ? {
+          balanceUsdShown: numberFormatter(Big(totalAmount).times(market.price || 1), 2, true, { prefix: '$' }),
+          balanceShown: numberFormatter(totalAmount, 2, true),
+          borrowedShown: numberFormatter(totalBorrowAmount, 2, true),
+          liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$' }),
+        } : {}}
       />
       <div
         className="w-[450px] shrink-0 flex flex-col items-stretch gap-[10px]"
@@ -314,6 +331,10 @@ export const Form = (props: any) => {
           amount={borrowAmount}
           onAmount={handleBorrowAmount}
           onBalance={() => {
+            if (type === ActionText.Repay) {
+              handleBorrowAmount('0' + numberFormatter(totalBorrowAmount, 8, false).decimal);
+              return;
+            }
             handleBorrowAmount(borrowLimit);
           }}
           tokens={[]}
@@ -356,6 +377,7 @@ export const Form = (props: any) => {
             token={market}
             toastLoadingMsg={toastLoadingMsg}
             chain={{ chainId: DEFAULT_CHAIN_ID }}
+            isSkipApproved={type !== ActionText.Borrow}
             spender={market.approveSpender || network[market.vault]}
             provider={provider}
             unsignedTx={txData?.unsignedTx}
