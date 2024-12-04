@@ -1,4 +1,5 @@
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import kodiak from '@/configs/swap/kodiak';
 
 const basic = {
   name: 'Beraborrow',
@@ -169,6 +170,7 @@ const networks = {
         collVaultToken: beraB['bbhoney-usdc'],
         denManager: '0x27db694ef869b0e531b6fe6be8a79fd7c22aa53d',
         collIndex: '4',
+        linkDapp: kodiak,
         MCR: 110,
         CCR: 150,
         TCR: 235,
