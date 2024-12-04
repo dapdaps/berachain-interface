@@ -5,7 +5,7 @@ import Quest from "@/sections/activity/christmas/sections/quest";
 
 export default function Christmas() {
   return (
-    <div className="pb-[60px]">
+    <div className="">
       <Top />
       <Summary />
       <GiftBox />
