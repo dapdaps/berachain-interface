@@ -214,7 +214,7 @@ export default function Token({
                         <img
                           src={cachedTokens[token.address]?.logo}
                           className={`w-[26px] h-[26px] rounded-full shrink-0 ${
-                            i > 0 && "ml-[8px]"
+                            i > 0 && "ml-[-8px]"
                           }`}
                         />
                       ))}
