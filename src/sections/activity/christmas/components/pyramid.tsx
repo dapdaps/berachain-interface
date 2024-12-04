@@ -12,7 +12,7 @@ const Pyramid = (props: any) => {
         }}
       >
         {
-          list.map((row: any, index: number) => (
+          list.reverse().map((row: any, index: number) => (
             <div
               key={`row-${index}`}
               className="flex justify-center items-center mb-[-100px]"
@@ -78,5 +78,36 @@ export const createPyramid = (list: any) => {
       }
     }
   }
-  return arr.sort((a: any, b: any) => b.length - a.length);
+  const sorted = arr.sort((a: any, b: any) => b.length - a.length);
+  const rows = sorted.map((_arr: any) => _arr.slice(0, 1));
+  let lastRowNum = 1;
+  let count = 1;
+  let totals = list.length;
+  while(totals > 0) {
+    totals -= 1;
+    if (count > lastRowNum) {
+      lastRowNum += 1;
+      count = 2;
+      continue;
+    }
+    count += 1;
+  }
+
+  let lastCount = 1;
+  let lastRowCount = lastRowNum;
+  for (let i = 0; i < list.length; i++) {
+    const it: any = list[i];
+    let lastRow = rows.length - lastCount;
+    if (lastRow < 0) continue;
+    if (rows.some((row: any) => row.some((_it: any) => it.id === _it.id))) {
+      continue;
+    }
+    rows[lastRow].push(it);
+    if (rows[lastRow].length >= lastRowCount) {
+      lastCount += 1;
+      lastRowCount -= 1;
+    }
+  }
+  console.log('total: %o, result: %o', list.length, rows);
+  return rows;
 };
