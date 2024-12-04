@@ -86,6 +86,11 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                                 <img src="/images/lending/vaulted.svg" alt="" width={20} height={20} className="absolute z-[1] right-[-10px] top-[-10px]" />
                               )
                             }
+                            {
+                              token.linkDapp?.icon && (
+                                <img src={token.linkDapp?.icon} alt="" width={20} height={20} className="absolute z-[1] left-[0px] top-[-10px] rounded-full" />
+                              )
+                            }
                           </div>
                           <div className="font-[600] text-[16px]">{token.symbol}</div>
                         </div>
