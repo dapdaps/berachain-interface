@@ -2,8 +2,15 @@ import IconReload from '@public/images/home/christmas/icon-reload.svg';
 import BoxTitle from '@/sections/activity/christmas/components/box-title';
 import Button from '@/sections/activity/christmas/components/button';
 import SocialTask from '@/sections/activity/christmas/components/social-task';
+import Pyramid, { createPyramid } from '@/sections/activity/christmas/components/pyramid';
 
 const GiftBox = () => {
+  const list = [...new Array(21)].map((_, i) => ({
+    id: i + 1,
+    status: i % 5 === 0 ? 'opened' : 'un_open',
+  }));
+  const sortedList = createPyramid(list);
+
   return (
     <div className="">
       <div className="flex justify-center items-center gap-[249px] mt-[20px]">
@@ -57,7 +64,8 @@ const GiftBox = () => {
           </Button>
         </BoxTitle>
       </div>
-      <div className="relative min-h-[700px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
+      <div className="relative h-[800px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
+        <Pyramid list={sortedList} />
         <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center">
           <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center">
             Follow <span className="underline decoration-solid">BeraTown</span> on X
