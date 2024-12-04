@@ -864,7 +864,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       style={{
         height: 'calc(100dvh - 62px)',
         minHeight: 899,
-        overflow: 'hidden'
+        overflow: type === "cave" ? "visible" : 'hidden'
       }}
     >
       {type === 'home' ? (

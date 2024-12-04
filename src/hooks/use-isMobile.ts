@@ -5,7 +5,8 @@ const useIsMobile = () => {
 
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.navigator.userAgent.includes('Mobile'));
+      // setIsMobile(window.navigator.userAgent.includes('Mobile'));
+      setIsMobile(false);
     };
 
     checkIsMobile();
