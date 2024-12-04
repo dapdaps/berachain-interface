@@ -22,9 +22,15 @@ export const numberFormatter = (
     // should zeros be added at the end
     isZeroPrecision?: boolean;
     isShort?: boolean;
+    round?: Big.RoundingMode;
   }
 ): any => {
-  const { prefix = '', isLTIntegerZero, isZeroPrecision, isShort } = options || {};
+  const {
+    prefix = '',
+    isLTIntegerZero,
+    isZeroPrecision,
+    isShort
+  } = options || {};
 
   const isValid = () => {
     try {
