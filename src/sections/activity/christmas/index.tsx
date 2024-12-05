@@ -7,8 +7,9 @@ import Quest from "@/sections/activity/christmas/sections/quest";
 export default function Christmas() {
   return (
     <div className="">
-      <Top />
-      <NFTProgress />
+      <Top>
+        <NFTProgress />
+      </Top>
       <Summary />
       <GiftBox />
       <Quest />

@@ -1,11 +1,12 @@
-import Swiper from '@/sections/activity/christmas/components/swiper';
-import ProgressBar from '@/sections/activity/christmas/components/progress-bar';
-import Prompt from '@/sections/activity/christmas/components/prompt';
 import { useEffect, useRef, useState } from 'react';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import Card from '@/components/card';
 
 const NFTProgress = () => {
   const swiperRef = useRef<any>(null);
   const [current, setCurrent] = useState(1);
+
+  const value = 12;
 
   useEffect(() => {
     const autoPlay = () => {
@@ -22,47 +23,57 @@ const NFTProgress = () => {
   }, [current, swiperRef.current]);
 
   return (
-    <div className="w-[611px] mx-auto bg-[linear-gradient(90deg,_#026E6E_0%,_#014B58_100%)] rounded-[8px] p-[11px_15px_15px] shadow-[0px_4px_4px_0px_rgba(0,_0,_0,_0.25)]">
-      <div className="flex justify-between">
-        <div className="flex justify-between flex-1 gap-1 pr-[14px] border-r border-r-[#FFF5A9]">
-          <div className="text-[#FFF5A9] text-[16px] font-[500]">
-            <div className="">
-              Chance to win NFT
-            </div>
-            <div className="mt-[px] font-CherryBomb text-[26px]">
-              12%
-            </div>
-          </div>
-          <button
-            type="button"
-            className="border border-[#FFF5A9] rounded-[6px] flex justify-center items-center h-[20px] px-[10px] text-[#FFF5A9] text-[12px] font-[500]"
+    <div className="flex justify-center mt-[110px]">
+      <div className="relative w-[693px] h-[24px] rounded-[12px] bg-black border border-[#FFDC50] p-[3px]">
+        <div
+          className="relative z-[2] w-[10%] h-full rounded-[9px] bg-[#FFDC50]"
+        >
+          <Popover
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.TopRight}
+            offset={0}
+            content={(
+              <div className="w-[200px] translate-x-[55px] h-[110px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
+                <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[14px]">
+                  <div className="font-CherryBomb font-[400] leading-[150%] text-[30px]">{value}%</div>
+                  <div className="font-[500] text-[14px] leading-normal">Chance to win NFTs</div>
+                </div>
+              </div>
+            )}
+            triggerContainerClassName="absolute z-[1] right-[-46px] top-[0] translate-y-[-23px]"
           >
-            Check
-          </button>
+            <img
+              src="/images/activity/christmas/icon-progress-cursor.svg"
+              alt=""
+              className="w-[62px] h-[46px] cursor-pointer"
+            />
+          </Popover>
         </div>
-        <div ref={swiperRef} className="flex-1 pl-[33px] overflow-hidden">
-          <Swiper
-            current={current}
-            list={[
-              { id: 1 },
-              { id: 2 },
-            ]}
-            renderItem={(item: any) => {
-              return (
-                <>
-                  <div className="text-[#FFF5A9] text-[16px] font-[500]">
-                    1{item.id} d 23 : 12 : 03 till Xmas Eve
-                  </div>
-                  <ProgressBar />
-                </>
-              );
-            }}
+        <img
+          src="/images/activity/christmas/icon-progress-mid.svg"
+          alt=""
+          className="w-[69px] h-[133px] absolute z-[1] left-1/2 top-0 -translate-x-1/2 -translate-y-[88px]"
+        />
+        <img
+          src="/images/activity/christmas/icon-progress-complete.svg"
+          alt=""
+          className="w-[119px] h-[121px] absolute z-[1] right-[-60px] top-0 -translate-y-[56px]"
+        />
+        <Popover
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.TopRight}
+          content={(
+            <Card className="w-[308px] rounded-[12px] p-[10px]">
+              Chance to open a grand prize of an NFT will be increase closers to Xmas day (Dec 24th) and New year eve (Dec 31th)
+            </Card>
+          )}
+          triggerContainerClassName="absolute right-[-66px] top-[4px] z-[1]"
+        >
+          <div
+            className="cursor-pointer text-[#FFF5A9] w-[15px] h-[15px] rounded-full bg-[url('/images/activity/christmas/icon-prompt.svg')] bg-center bg-no-repeat bg-cover"
           />
-        </div>
+        </Popover>
       </div>
-      <Prompt className="mt-[18px]">
-        Chance to open a grand prize of an NFT will be increase closers to Xmas day (Dec 24th) and New year eve (Dec 31th)
-      </Prompt>
     </div>
   );
 };

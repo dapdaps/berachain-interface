@@ -22,7 +22,7 @@ const Popover = (props: Props) => {
     contentClassName,
     triggerContainerStyle,
     triggerContainerClassName,
-    } = props;
+  } = props;
 
   const triggerRef = useRef<any>();
 

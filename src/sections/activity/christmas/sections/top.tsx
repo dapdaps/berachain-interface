@@ -1,6 +1,8 @@
 import Moon from '@/sections/activity/christmas/components/moon';
 
-const Top = () => {
+const Top = (props: any) => {
+  const { children } = props;
+
   return (
     <div className="relative">
       <div className="w-full absolute left-0 top-[-260px] h-[334px] flex justify-center items-center">
@@ -54,6 +56,7 @@ const Top = () => {
             />
           </div>
         </div>
+        {children}
       </div>
     </div>
   );
