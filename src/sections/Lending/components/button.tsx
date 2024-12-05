@@ -29,7 +29,13 @@ const LendingButton = ({
   toastLoadingMsg,
   invalidText,
   addActionText,
+  addActionToken,
+  isSkipAmountEmptyCheck,
 }: Props) => {
+  console.log('addActionText: %o', addActionText);
+  console.log('addActionToken: %o', addActionToken);
+  console.log('amount: %o', amount);
+
   const toast = useToast();
   const { approve, approved, approving, checking } = useApprove({
     amount,
@@ -69,7 +75,7 @@ const LendingButton = ({
     );
   }
 
-  if (!amount || Big(amount).eq(0)) {
+  if (!isSkipAmountEmptyCheck && (!amount || Big(amount).eq(0))) {
     return (
       <Button
         type={type}
@@ -165,7 +171,7 @@ const LendingButton = ({
           addAction?.({
             type: 'Lending',
             action: addActionText || children,
-            token: token,
+            token: addActionToken || token,
             amount,
             template: config.name,
             add: false,
@@ -277,4 +283,6 @@ interface Props {
   toastLoadingMsg?: any;
   invalidText?: any;
   addActionText?: string;
+  addActionToken?: Token;
+  isSkipAmountEmptyCheck?: boolean;
 }

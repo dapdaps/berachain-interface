@@ -28,7 +28,7 @@ const Info = (props: any) => {
 
   return (
     <div style={style} className="bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[20px_24px] flex-1 flex flex-col items-stretch gap-[5px]">
-      <Item label="Vault APY" value={market.apyShown} />
+      {/*<Item label="Vault APY" value={market.apyShown} />*/}
       <Item label="Interest Rate" value={market.interestRateShown} />
       <Item label={`${market.collToken.symbol} value`} value={market.balanceUsdShown} newValue={newValue?.balanceUsdShown} />
       <Item label={`${market.collToken.symbol} amount`} value={market.balanceShown} newValue={newValue?.balanceShown} />
