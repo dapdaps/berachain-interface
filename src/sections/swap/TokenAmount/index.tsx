@@ -61,9 +61,8 @@ export default function TokenAmout({
     handleRangeChange?.({ target: { value: percent } }, false);
   };
   useEffect(() => {
-    if (tokenBalance && onUpdateCurrencyBalance)
-      onUpdateCurrencyBalance(tokenBalance);
-  }, [tokenBalance]);
+    if (balance && onUpdateCurrencyBalance) onUpdateCurrencyBalance(balance);
+  }, [balance]);
 
   useEffect(() => {
     update();
@@ -153,15 +152,7 @@ export default function TokenAmout({
         </div>
       )}
 
-      <div
-        onClick={() => {
-          const formatedBalance = balanceFormated(tokenBalance);
-          if (["-", "Loading", "0"].includes(formatedBalance)) return;
-          onAmountChange?.(tokenBalance);
-          setRange(tokenBalance);
-        }}
-        className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]"
-      >
+      <div className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]">
         <div className="flex items-center gap-[4px]">
           balance:{" "}
           {isLoading ? (
@@ -169,6 +160,11 @@ export default function TokenAmout({
           ) : (
             <span
               className="cursor-pointer"
+              onClick={() => {
+                const formatedBalance = balanceFormated(balance);
+                if (!["-", "Loading", "0"].includes(formatedBalance))
+                  onAmountChange?.(balance);
+              }}
               style={{
                 textDecoration: disabled ? "none" : "underline"
               }}
