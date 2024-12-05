@@ -89,7 +89,8 @@ export default function Round({
     return [_tokens, td_u, tw_u, user_rewards_u, vt, user_incentive_u];
   }, [round]);
 
-  const claimable = !!(round.claim_reward_time < Date.now() / 1000);
+  const claimable =
+    round.claim_reward_time && !!(round.claim_reward_time < Date.now() / 1000);
   return (
     <>
       <div

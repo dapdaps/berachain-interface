@@ -168,6 +168,7 @@ export default function TokenAmout({
             <Loading />
           ) : (
             <span
+              className="cursor-pointer"
               style={{
                 textDecoration: disabled ? "none" : "underline"
               }}
