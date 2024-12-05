@@ -220,6 +220,14 @@ export const beraB: { [key: string]: Token } = {
     name: "Nectar",
     icon: "/assets/tokens/nectar.png"
   },
+  snect: {
+    chainId: CHAIN_ID,
+    address: "0x3a7f6f2F27f7794a7820a32313F4a68e36580864",
+    decimals: 18,
+    symbol: "sNECT",
+    name: "Liquid Stability Pool",
+    icon: "/assets/tokens/nectar.png"
+  },
   obero: {
     chainId: CHAIN_ID,
     address: "0x7629668774f918c00Eb4b03AdF5C4e2E53d45f0b",
