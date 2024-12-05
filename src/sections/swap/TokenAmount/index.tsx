@@ -36,17 +36,29 @@ export default function TokenAmout({
   );
 
   const [percent, setPercent] = useState<any>(0);
-  const handleRangeChange = (e: any) => {
+  const handleRangeChange = (e: any, isAmountChange = true) => {
     const formatedBalance = balanceFormated(balance);
     if (["-", "Loading", "0"].includes(formatedBalance)) return;
     const _percent = e.target.value || 0;
     setPercent(_percent);
-    onAmountChange?.(
-      Big(balance)
-        .times(Big(_percent).div(100))
-        .toFixed(currency?.decimals)
-        .replace(/[.]?0+$/, "")
-    );
+    isAmountChange &&
+      onAmountChange?.(
+        Big(balance)
+          .times(Big(_percent).div(100))
+          .toFixed(currency?.decimals)
+          .replace(/[.]?0+$/, "")
+      );
+  };
+  const setRange = (val: string) => {
+    if (type !== "in") return;
+    const formatedBalance = balanceFormated(balance);
+    if (["-", "Loading", "0"].includes(formatedBalance)) return;
+    let percent: any = Big(val || 0)
+      .div(formatedBalance)
+      .times(100)
+      .toFixed(2);
+    percent = Math.min(Math.max(+percent, 0), 100);
+    handleRangeChange?.({ target: { value: percent } }, false);
   };
   useEffect(() => {
     if (balance && onUpdateCurrencyBalance) onUpdateCurrencyBalance(balance);
@@ -109,7 +121,9 @@ export default function TokenAmout({
             value={amount}
             onChange={(ev) => {
               if (isNaN(Number(ev.target.value))) return;
-              onAmountChange?.(ev.target.value.replace(/\s+/g, ""));
+              const val = ev.target.value.replace(/\s+/g, "");
+              onAmountChange?.(val);
+              setRange(val);
             }}
             placeholder="0"
           />
@@ -138,7 +152,15 @@ export default function TokenAmout({
         </div>
       )}
 
-      <div className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]">
+      <div
+        onClick={() => {
+          const formatedBalance = balanceFormated(balance);
+          if (["-", "Loading", "0"].includes(formatedBalance)) return;
+          onAmountChange?.(balance);
+          setRange(balance);
+        }}
+        className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]"
+      >
         <div className="flex items-center gap-[4px]">
           balance:{" "}
           {isLoading ? (

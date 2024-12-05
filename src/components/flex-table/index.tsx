@@ -18,6 +18,7 @@ const FlexTable = (props: FlexTableProps) => {
     pagination,
     sortDataIndex,
     sortDataDirection,
+    checkedIndex,
     renderEmpty = () => (
       <div className="mt-[50px] w-full flex justify-center items-center">
         <Empty desc="No data" />
@@ -26,6 +27,7 @@ const FlexTable = (props: FlexTableProps) => {
     renderTitle,
     onChangeSortDataIndex,
     showHeader = true,
+    renderPaired,
     onRow = () => {},
     onScrollBottom
   } = props;
@@ -93,32 +95,38 @@ const FlexTable = (props: FlexTableProps) => {
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                   <div
-                    className={`odd:bg-[rgba(0,0,0,0.06)] px-[13px] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex items-center ${rowClass}`}
                     key={index}
+                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex flex-col ${rowClass}`}
                     onClick={(e) => onRow(record, index, e)}
                   >
-                    {columns.map((column: any) => (
-                      <div
-                        key={column.dataIndex + column.title}
-                        style={{
-                          width: column.width ?? 0,
-                          flexGrow: column.width ? 0 : 1,
-                          textAlign: column.align ?? "left",
-                          flexShrink: column.width ? 0 : 1
-                        }}
-                        className={`font-[600] ${
-                          column.ellipsis ? "truncate" : ""
-                        } ${colClass}`}
-                      >
-                        {typeof column.render === "function"
-                          ? column.render(
-                              JSON.stringify(record[column.dataIndex]),
-                              record,
-                              index
-                            )
-                          : record[column.dataIndex]}
-                      </div>
-                    ))}
+                    <div className="flex items-center">
+                      {columns.map((column: any) => (
+                        <div
+                          key={column.dataIndex + column.title}
+                          style={{
+                            width: column.width ?? 0,
+                            flexGrow: column.width ? 0 : 1,
+                            textAlign: column.align ?? "left",
+                            flexShrink: column.width ? 0 : 1
+                          }}
+                          className={`font-[600] first:pl-[13px] last:pr-[13px] ${
+                            column.ellipsis ? "truncate" : ""
+                          }`}
+                        >
+                          {typeof column.render === "function"
+                            ? column.render(
+                                JSON.stringify(record[column.dataIndex]),
+                                record,
+                                index,
+                                checkedIndex
+                              )
+                            : record[column.dataIndex]}
+                        </div>
+                      ))}
+                    </div>
+                    {checkedIndex === index &&
+                      renderPaired &&
+                      renderPaired(record)}
                   </div>
                 ))
               : renderEmpty()}
@@ -156,9 +164,11 @@ export type FlexTableProps = {
   renderEmpty?(): any;
   sortDataIndex?: string;
   sortDataDirection?: 1 | -1;
+  checkedIndex?: number;
   showHeader?: boolean;
   onChangeSortDataIndex?(index: string): void;
   renderTitle?(column: Column, columnIdx: number): any;
+  renderPaired?(record: any): any;
   onRow?(record: any, index: number, e: any): void;
   onScrollBottom?: any;
 };

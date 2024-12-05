@@ -12,7 +12,7 @@ import HandleModal from '@/sections/vaults/mobile/handle-modal';
 import UserInfo from '@/sections/vaults/mobile/user-info';
 import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 
-export default function Mobile({ filterList, loading, onClick  }: any) {
+export default function Mobile({ filterList, loading, onClick }: any) {
   return (
     <div className='min-h-screen relative'>
       <div className='relative z-[2] flex flex-col gap-[12px] pb-[12px] mt-[12px] h-[calc(100%-244px)] overflow-y-auto'>
@@ -21,7 +21,7 @@ export default function Mobile({ filterList, loading, onClick  }: any) {
             key={item.id}
             data={item}
             onClick={(type: 0 | 1) => {
-                onClick(item);
+              onClick(item, type);
             }}
           />
         ))}
@@ -41,7 +41,8 @@ export default function Mobile({ filterList, loading, onClick  }: any) {
 }
 
 const Item = ({ data, onClick }: any) => {
-  const pool = data?.initialData?.pool;
+  const pool = data?.pool;
+  console.log('===pool', pool)
   return (
     <div>
       <div className='bg-black/[0.06] rounded-[10px] backdrop-blur-sm p-[14px]'>
@@ -68,13 +69,13 @@ const Item = ({ data, onClick }: any) => {
               )}
               <Image
                 className='absolute right-[-2px] bottom-[0px]'
-                src={`/images/dapps/infrared/${
-                  pool
-                    ? pool?.protocol === 'BEX'
-                      ? 'bex'
-                      : 'berps'
-                    : 'infrared'
-                }.svg`}
+                src={pool?.protocol === 'BEX'
+                  ? '/images/dapps/infrared/bex.svg'
+                  : pool?.protocol === 'aquabera'
+                    ? '/images/dapps/infrared/aquabera.svg' :
+                    (pool?.protocol === 'Kodiak Finance')
+                      ? '/images/dapps/kodiak.svg'
+                      : '/images/dapps/infrared/berps.svg'}
                 width={20}
                 height={20}
                 alt='Protocol'
@@ -84,7 +85,7 @@ const Item = ({ data, onClick }: any) => {
               <div className='text-[16px] font-semibold'>
                 {pool?.name || 'iBGT'}
               </div>
-              <div className='text-[14px] mt-[4px]'>{pool?.protocol}</div>
+              <div className='text-[14px] mt-[4px] capitalize'>{pool?.protocol}</div>
             </div>
           </div>
           <button

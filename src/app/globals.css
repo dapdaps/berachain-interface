@@ -54,7 +54,7 @@ body {
 button,
 a,
 .cursor-pointer {
-  cursor: url("../../public/images/cursor.svg") 12 0, auto !important;
+  cursor: url("../../public/images/cursor.svg") 12 0, auto;
 }
 
 @layer utilities {

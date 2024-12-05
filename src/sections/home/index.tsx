@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import BearBackground from "@/components/bear-background/laptop";
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BridgeSvg from "@public/images/background/bridge.svg";
@@ -9,7 +8,7 @@ import CaveSvg from "@public/images/cave/cave.svg";
 import DashboardSvg from "@public/images/background/dashboard.svg";
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import EarnSvg from "@public/images/background/earn.svg";
-import VaultsSvg from "@public/images/background/vaults.svg";
+import VaultsEnterance from "./vaults-enterance";
 import MemeEnterance from "@/sections/meme/bros/enterance";
 import { memo } from "react";
 import { useProgressRouter } from "@/hooks/use-progress-router";
@@ -74,36 +73,11 @@ const Navigation = function () {
           </div>
         </div>
       </div>
-      {/* <div className='absolute right-[35px] bottom-[180px]'>
-        <div
-          className='cursor-pointer flex flex-col items-end gap-[16px] mt-[130px]'
-          onClick={onNavigateToVaults}
-          data-bp='1010-013'
-        >
-          <div className='flex items-center justify-end gap-[27px] pr-[19px]'>
-            <div className='text-[20px] text-black font-CherryBomb leading-[90%]'>
-              Vaults
-            </div>
-          </div>
-          <motion.div
-            initial={{
-              rotateZ: 0
-            }}
-            animate={{
-              rotateZ: [-5, 5, -5, 5, -5, 5]
-            }}
-            transition={{
-              duration: 0.4,
-              ease: 'linear',
-              repeat: Infinity,
-              repeatDelay: 3
-            }}
-            className='origin-center'
-          >
-            <VaultsSvg className='hover:scale-110 transition-transform duration-500' />
-          </motion.div>
-        </div>
-      </div> */}
+      <VaultsEnterance
+        imgSrc="/images/background/vaults.svg"
+        onClick={onNavigateToVaults}
+        className="absolute right-[35px] bottom-[180px] hover:scale-110 transition-transform duration-500"
+      />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
         <div
           className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"

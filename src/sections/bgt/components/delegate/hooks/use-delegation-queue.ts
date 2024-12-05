@@ -3,6 +3,7 @@ import multicallAddresses from '@/configs/contract/multicall';
 import useCustomAccount from '@/hooks/use-account';
 import { BGT_ABI } from '@/sections/bgt/abi';
 import { BGT_ADDRESS, VALIDATORS } from '@/sections/bgt/config';
+import { ValidatorType } from '@/sections/bgt/types';
 import { multicall } from '@/utils/multicall';
 import Big from 'big.js';
 import { ethers } from 'ethers';
@@ -20,7 +21,7 @@ export default function () {
 
   const getDelegationQueue = async () => {
     setLoading(true)
-    const calls = []
+    const calls: any = []
     VALIDATORS.forEach(_validator => {
       calls.push({
         address: BGT_ADDRESS,

@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import useInfraredData from '../Datas/Infrared';
 import { useIbgtVaults } from '@/stores/ibgt-vaults';
 
-export default function useInfraredList(updater?: number) {
+export default function useInfraredList(updater?: number, name?: string) {
   const { chainId, account: sender, provider } = useCustomAccount();
   const infraredDexConfig = infraredConfig.chains[DEFAULT_CHAIN_ID];
   const { pairs, addresses, ALL_DATA_URL, IBGT_ADDRESS } = infraredDexConfig;
@@ -31,7 +31,7 @@ export default function useInfraredList(updater?: number) {
   }
 
   const { reload } = useInfraredData({
-    name: infraredConfig.name,
+    name: name || infraredConfig.name,
     pairs,
     sender,
     provider,

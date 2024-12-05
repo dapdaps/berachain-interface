@@ -78,12 +78,13 @@ export default memo(function Delegate(props: IProps) {
     }
   };
   const getPercentage = (_amount: string) => {
+    _amount = Big(_amount).gt(state?.balance) ? state?.balance : _amount
     return Big(state?.balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(state?.balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(state?.balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -96,11 +97,15 @@ export default memo(function Delegate(props: IProps) {
       });
       return;
     }
-
+    const percentage = getPercentage(amount)
+    const rangeIndex = RangeList.findIndex((range) =>
+      Big(range).eq(Big(percentage).div(100))
+    )
     updateState({
       inAmount: amount,
-      percentage: getPercentage(amount)
-    });
+      percentage,
+      rangeIndex
+    })
   };
   const executionContract = async ({
     contract,
@@ -408,7 +413,7 @@ export default memo(function Delegate(props: IProps) {
                         >
                           {state?.confirmAndCancelLoadingPosition[0] ===
                             "confirm" &&
-                          state?.confirmAndCancelLoadingPosition[1] ===
+                            state?.confirmAndCancelLoadingPosition[1] ===
                             index ? (
                             <CircleLoading size={14} />
                           ) : (
@@ -426,7 +431,7 @@ export default memo(function Delegate(props: IProps) {
                         >
                           {state?.confirmAndCancelLoadingPosition[0] ===
                             "cancel" &&
-                          state?.confirmAndCancelLoadingPosition[1] ===
+                            state?.confirmAndCancelLoadingPosition[1] ===
                             index ? (
                             <CircleLoading size={14} />
                           ) : (

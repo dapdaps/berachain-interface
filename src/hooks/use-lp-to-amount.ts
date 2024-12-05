@@ -72,7 +72,7 @@ export default function useLpToAmount(address, product = "BEX") {
       const pool = await handleGetPool()
       setReserve0(pool?.baseAmount)
       setReserve1(pool?.quoteAmount)
-    } else if (product === "Kodiak" || [
+    } else if (product.indexOf("Kodiak") > -1 || [
       "0x1Afe9c399B40A65C783049E732d7Ad5D37e68F78"
     ].includes(address)) {
       const balances = await handleGetUnderlyingBalances()

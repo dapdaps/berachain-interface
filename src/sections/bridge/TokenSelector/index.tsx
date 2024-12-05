@@ -67,7 +67,7 @@ export default function TokenSelector({ show, onClose, tokenList, token, onToken
 
           <div className='h-[400px] overflow-auto mt-[5px]'>
             {
-              tokenList.map((item: Token) => {
+              tokenList?.map((item: Token) => {
                 return <div key={item.symbol} onClick={() => {
                   onTokenSelect(item)
                   onClose()
