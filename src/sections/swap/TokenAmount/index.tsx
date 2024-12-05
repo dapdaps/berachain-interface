@@ -37,13 +37,13 @@ export default function TokenAmout({
 
   const [percent, setPercent] = useState<any>(0);
   const handleRangeChange = (e: any, isAmountChange = true) => {
-    const formatedBalance = balanceFormated(tokenBalance);
+    const formatedBalance = balanceFormated(balance);
     if (["-", "Loading", "0"].includes(formatedBalance)) return;
     const _percent = e.target.value || 0;
     setPercent(_percent);
     isAmountChange &&
       onAmountChange?.(
-        Big(tokenBalance)
+        Big(balance)
           .times(Big(_percent).div(100))
           .toFixed(currency?.decimals)
           .replace(/[.]?0+$/, "")
@@ -51,7 +51,7 @@ export default function TokenAmout({
   };
   const setRange = (val: string) => {
     if (type !== "in") return;
-    const formatedBalance = balanceFormated(tokenBalance);
+    const formatedBalance = balanceFormated(balance);
     if (["-", "Loading", "0"].includes(formatedBalance)) return;
     let percent: any = Big(val || 0)
       .div(formatedBalance)
