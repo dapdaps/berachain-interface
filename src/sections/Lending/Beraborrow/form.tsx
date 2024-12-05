@@ -146,24 +146,38 @@ export const Form = (props: any) => {
 
   const buttonValid = useMemo(() => {
     let text: any = type;
+    let _actions: any = [];
     if (type === ActionText.Repay) {
       text = [];
       if (amount && Big(amount).gt(0)) {
         text.push('Withdraw');
+        _actions.push('Withdraw');
       }
       if (borrowAmount && Big(borrowAmount).gt(0)) {
         text.push('Repay');
+        _actions.push('Repay');
       }
       text = text.join(' & ');
+    }
+    if (type === ActionText.Borrow) {
+      if (amount && Big(amount).gt(0)) {
+        _actions.push('Deposit');
+      }
+      if (borrowAmount && Big(borrowAmount).gt(0)) {
+        _actions.push('Borrow');
+      }
     }
     const result = {
       valid: true,
       text: text,
+      actions: _actions,
     };
-    if (type === ActionText.Borrow && Big(totalBorrowAmount || 0).lt(minimumDebt)) {
-      result.valid = false;
-      result.text = `Minimum Debt of ${minimumDebt} required`;
-      return result;
+    if (type === ActionText.Borrow) {
+      if (Big(totalBorrowAmount || 0).lt(minimumDebt)) {
+        result.valid = false;
+        result.text = `Minimum Debt of ${minimumDebt} required`;
+        return result;
+      }
     }
     if (type === ActionText.Repay) {
       if (Big(borrowAmount || 0).gt(borrowBalance || 0)) {
@@ -352,7 +366,8 @@ export const Form = (props: any) => {
           onAmount={handleBorrowAmount}
           onBalance={() => {
             if (type === ActionText.Repay) {
-              handleBorrowAmount('0' + numberFormatter(totalBorrowAmount, 8, false).decimal);
+              let _maxRepay = Big(totalBorrowAmount || 0).minus(minimumDebt).minus(liquidationReserve);
+              handleBorrowAmount(numberRemoveEndZero(_maxRepay.toFixed(8)));
               return;
             }
             handleBorrowAmount(borrowLimit);
@@ -410,6 +425,7 @@ export const Form = (props: any) => {
               reloadList();
             }}
             addAction={addAction}
+            addActionText={buttonValid.actions[0]}
           >
             {buttonValid.text}
           </LendingButton>

@@ -28,6 +28,7 @@ const LendingButton = ({
   isApproveMax,
   toastLoadingMsg,
   invalidText,
+  addActionText,
 }: Props) => {
   const toast = useToast();
   const { approve, approved, approving, checking } = useApprove({
@@ -163,7 +164,7 @@ const LendingButton = ({
           setPending(false);
           addAction?.({
             type: 'Lending',
-            action: children,
+            action: addActionText || children,
             token: token,
             amount,
             template: config.name,
@@ -275,4 +276,5 @@ interface Props {
   isApproveMax?: boolean;
   toastLoadingMsg?: any;
   invalidText?: any;
+  addActionText?: string;
 }
