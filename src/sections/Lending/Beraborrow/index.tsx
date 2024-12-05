@@ -35,6 +35,13 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
   const [currentMarket, setCurrentMarket] = useState<any>();
   const [currentType, setCurrentType] = useState<ActionText>();
 
+  const actionDisabled = (record: any) => {
+    return {
+      deposit: false,
+      withdraw: !record.balance || Big(record.balance).lte(0),
+    };
+  }
+
   useEffect(() => {
     if (!chainId) {
       return;
@@ -133,12 +140,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                     dataIndex: 'action',
                     type: 'action',
                     skeletonWidth: 82,
-                    actionDisabled: (record) => {
-                      return {
-                        deposit: false,
-                        withdraw: !record.balance || Big(record.balance).lte(0),
-                      };
-                    },
+                    actionDisabled,
                   },
                 ]}
                 markets={data?.markets || []}
@@ -153,6 +155,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                   setCurrentMarket(token);
                   setVisible(true);
                 }}
+                actionDisabled={actionDisabled}
               />
             )
           },
