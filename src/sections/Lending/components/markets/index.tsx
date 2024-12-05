@@ -35,4 +35,6 @@ export interface Props {
   className?: string;
   onDeposit?(market: any, index: number): void;
   onWithdraw?(market: any, index: number): void;
+  // for mobile
+  actionDisabled?(market: any, index: number): { deposit?: boolean; withdraw?: boolean; };
 }
