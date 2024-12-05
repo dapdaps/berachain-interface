@@ -39,7 +39,7 @@ export default function useUnstake({ token, amount, onSuccess }: any) {
       }
       addAction?.({
         type: "Staking",
-        action: "Stake",
+        action: "Unstake",
         token: token.token,
         amount: amount,
         template: "supermemebros",
