@@ -48,6 +48,13 @@ export default function TokenAmout({
           .toFixed(currency?.decimals)
           .replace(/[.]?0+$/, "")
       );
+    isAmountChange &&
+      onAmountChange?.(
+        Big(balance)
+          .times(Big(_percent).div(100))
+          .toFixed(currency?.decimals)
+          .replace(/[.]?0+$/, "")
+      );
   };
   const setRange = (val: string) => {
     if (type !== "in") return;

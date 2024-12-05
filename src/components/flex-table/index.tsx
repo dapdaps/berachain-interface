@@ -96,7 +96,7 @@ const FlexTable = (props: FlexTableProps) => {
               ? list.map((record: any, index: number) => (
                   <div
                     key={index}
-                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex flex-col ${bodyClass}`}
+                    className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex flex-col ${rowClass}`}
                     onClick={(e) => onRow(record, index, e)}
                   >
                     <div className="flex items-center">

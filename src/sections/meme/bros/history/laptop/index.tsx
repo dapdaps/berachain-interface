@@ -40,7 +40,7 @@ export default function Laptop({
               key={round.round}
               round={round}
               fetchingUserStakingData={fetchingUserStakingData}
-              userStakeData={userStakeData[round.round]}
+              userStakeData={userStakeData?.[round.round]}
               claimData={claimData?.[round.round]}
               onOpenModal={onOpenModal}
             />
