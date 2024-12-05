@@ -916,12 +916,12 @@ const BeraborrowHandler = (props: any) => {
     };
 
     const getPreDeposit = () => {
-      if (![beraB['honey'].address, beraB['bhoney'].address].includes(market.address)) {
+      if (![beraB['honey'].address].includes(market.address)) {
         return '0x';
       }
-      if (beraB['bhoney'].address === market.address && market.status !== 'open') {
-        return '0x';
-      }
+      // if (beraB['bhoney'].address === market.address && market.status !== 'open') {
+      //   return '0x';
+      // }
 
       const honeyAmountToDeposit = ethers.BigNumber.from(parsedAmount); // 10 HONEY
       const borrowerAddress = account;
