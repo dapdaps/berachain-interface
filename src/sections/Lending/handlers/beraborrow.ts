@@ -734,6 +734,19 @@ const SORTED_DENS_ABI = [
   },
 ];
 
+const EARN_ABI = [
+  {
+    "type": "function",
+    "name": "deposit",
+    "inputs": [
+      { "name": "", "type": "uint256", "internalType": "uint256" },
+      { "name": "", "type": "address", "internalType": "address" },
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+];
+
 const innerAbi: any = [
   { name: "honeyAmountToDeposit", type: "uint" },
   { name: "borrower", type: "address" },
@@ -785,6 +798,7 @@ const BeraborrowHandler = (props: any) => {
     totalAmount,
     totalBorrowAmount,
     totalCollAmount,
+    actionType,
   } = props;
 
   useEffect(() => {
@@ -1096,15 +1110,7 @@ const BeraborrowHandler = (props: any) => {
       });
     };
 
-    let contract = new ethers.Contract(contractAddress, abi, provider.getSigner());
-    if (isClose) {
-      contract = new ethers.Contract(config.borrowerOperations, ABI.borrowerOperations, provider.getSigner());
-      if (market.vault === 'collVaultRouter') {
-        contract = new ethers.Contract(config.collVaultRouter, ABI.collVaultRouter, provider.getSigner());
-      }
-    }
-
-    getParams().then(({ method, params }: any) => {
+    const creatTransaction = (contract: any, method: string, params: any) => {
       if (!method) return;
 
       const option = {
@@ -1138,6 +1144,35 @@ const BeraborrowHandler = (props: any) => {
           // console.log('%s estimateGas failure: %o', method, err);
           createTx();
         });
+    };
+
+    if (actionType === 'Earn') {
+      let method = '';
+      let params: any = [];
+      let contract = new ethers.Contract(market.earnToken.address, EARN_ABI, provider.getSigner());
+      if (actionText === 'Deposit') {
+        method = 'deposit';
+        params = [
+          // amount
+          parsedAmount,
+          // account
+          account
+        ];
+      }
+      creatTransaction(contract, method, params);
+      return;
+    }
+
+    let contract = new ethers.Contract(contractAddress, abi, provider.getSigner());
+    if (isClose) {
+      contract = new ethers.Contract(config.borrowerOperations, ABI.borrowerOperations, provider.getSigner());
+      if (market.vault === 'collVaultRouter') {
+        contract = new ethers.Contract(config.collVaultRouter, ABI.collVaultRouter, provider.getSigner());
+      }
+    }
+
+    getParams().then(({ method, params }: any) => {
+      creatTransaction(contract, method, params);
     });
   }, [update]);
 

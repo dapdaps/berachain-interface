@@ -110,7 +110,7 @@ const BeraborrowData = (props: any) => {
                 id: m.id,
                 collVault: m.collVault,
                 symbol: m.symbol,
-                price: prices[m.symbol] || '0',
+                price: prices?.[m.symbol] || '0',
                 interestRate: '0',
               };
               const curr = denManagers.find((d: any) => {
@@ -124,7 +124,7 @@ const BeraborrowData = (props: any) => {
             resolve(result);
           })
           .catch((err: any) => {
-            resolve({});
+            resolve([]);
             console.log('getDenManagers failure: %o', err);
           });
       });
@@ -139,11 +139,11 @@ const BeraborrowData = (props: any) => {
             const nextPrice = tokens?.[0]?.price?.price;
             // resolve(utils.formatUnits(nextPrice, 36 - borrowToken.decimals));
             console.log('NectPrice is %o', utils.formatUnits(nextPrice, 36 - borrowToken.decimals));
-            resolve('1');
+            resolve({ price: '1', realPrice: utils.formatUnits(nextPrice, 36 - borrowToken.decimals) });
           })
           .catch((err: any) => {
-            resolve('1');
-            console.log('getNectPrice failure: %o', err);
+            resolve({ price: '1', realPrice: '1' });
+            console.log('get Nect Price failure: %o', err);
           });
       });
     };
@@ -318,6 +318,36 @@ const BeraborrowData = (props: any) => {
       });
     };
 
+    const getNectData = () => {
+      const result: any = {};
+      return new Promise((resolve) => {
+        const calls = [
+          {
+            address: borrowToken.earnToken.address,
+            name: 'balanceOf',
+            params: [account],
+          }
+        ];
+        multicall({
+          abi: ERC20_ABI,
+          calls,
+          options: {},
+          multicallAddress,
+          provider: provider
+        })
+          .then((res: any) => {
+            let balance = res?.[0]?.[0] ?? '0';
+            balance = utils.formatUnits(balance || '0', borrowToken.decimals);
+            result.balance = balance;
+            resolve(result);
+          })
+          .catch((err: any) => {
+            console.log('getNectData error', err);
+            resolve(result);
+          });
+      });
+    };
+
     const getCTokensData = async () => {
       const [
         DenManagers,
@@ -327,6 +357,7 @@ const BeraborrowData = (props: any) => {
         BorrowWalletBalance,
         TCRs,
         NECTPrice,
+        NECTData,
       ]: any = await Promise.all([
         getDenManagers(),
         getPrices(),
@@ -335,6 +366,7 @@ const BeraborrowData = (props: any) => {
         getBorrowWalletBalance(),
         getTCR(),
         getNectPrice(),
+        getNectData(),
       ]);
       let borrowTokenRes: any = borrowToken;
       const result = markets.map((market: any) => {
@@ -344,7 +376,7 @@ const BeraborrowData = (props: any) => {
         // }
         const currBorrow = Borrows.find((b: any) => b.id === market.id);
         const currPrice = Prices.find((b: any) => b.id === market.id);
-        const currDenManager = DenManagers.find((b: any) => b.id === market.id);
+        const currDenManager = DenManagers?.find((b: any) => b.id === market.id);
         const currTCR = TCRs.find((b: any) => b.id === market.id);
         const currWalletBalance = WalletBalance[_address];
         let liquidationPrice = Big(0);
@@ -360,10 +392,14 @@ const BeraborrowData = (props: any) => {
 
         borrowTokenRes = {
           ...borrowToken,
-          price: NECTPrice,
-          priceShow: numberFormatter(NECTPrice, 2, true),
+          price: NECTPrice.price,
+          priceShow: numberFormatter(NECTPrice.price, 2, true),
+          realPrice: NECTPrice.realPrice,
+          realPriceShow: numberFormatter(NECTPrice.realPrice, 2, true),
           walletBalance: BorrowWalletBalance,
           walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
+          balance: NECTData?.balance || '0',
+          balanceShown: numberFormatter(NECTData?.balance, 2, true),
         };
 
         return {

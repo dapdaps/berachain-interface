@@ -1,8 +1,7 @@
 import Lendings from '@/configs/lending';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SwitchTabs from '@/components/switch-tabs';
 import LazyImage from '@/components/layz-image';
-import { beraB } from '@/configs/tokens/bera-bArtio';
 import Drawer from '@/components/drawer';
 import { useSwapToken } from '@/hooks/use-swap-token';
 import SwapModal from '@/sections/swap/SwapModal';
@@ -11,6 +10,7 @@ import DolomiteActionPanelMobile from '@/sections/Lending/components/action-pane
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import dynamic from 'next/dynamic';
 import DolomiteConfig from '@/configs/lending/dolomite';
+import BeraborrowConfig from '@/configs/lending/beraborrow';
 import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
 import { numberFormatter } from '@/utils/number-formatter';
@@ -28,11 +28,17 @@ import CheckBox from '@/components/check-box';
 import SearchBox from '@/sections/marketplace/components/searchbox';
 import LaptopList from './laptop'
 import useClickTracking from '@/hooks/use-click-tracking';
+import Pool from '@/sections/Lending/Beraborrow/pool';
+
 const { basic: DolomiteBasic, networks: DolomiteNetworks }: any = DolomiteConfig;
+const { basic: BeraborrowBasic, networks: BeraborrowNetworks }: any = BeraborrowConfig;
 const DolomiteData = dynamic(() => import('@/sections/Lending/datas/dolomite'));
+const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
 const EarnLending = (props: any) => {
   const {} = props;
+
+  const laptopListRef = useRef<any>();
 
   const { address, chainId } = useAccount();
   const [swapToken, setSwapToken, handleSwap, protocols] = useSwapToken();
@@ -64,8 +70,11 @@ const EarnLending = (props: any) => {
   const [bendVisible, setBendVisible] = useState(false);
   const [bendBorrowVisible, setBendBorrowVisible] = useState(false);
   const [dolomiteVisible, setDolomiteVisible] = useState(false);
+  const [beraborrowVisible, setBeraborrowVisible] = useState(false);
   const [dolomiteLoading, setDolomiteLoading] = useState<boolean>(false);
   const [dolomiteData, setDolomiteData] = useState<any>();
+  const [beraborrowLoading, setBeraborrowLoading] = useState<boolean>(false);
+  const [beraborrowData, setBeraborrowData] = useState<any>();
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
   const [checked, setChecked] = useState(false);
   const [searchVal, setSearchVal] = useState("");
@@ -132,17 +141,36 @@ const EarnLending = (props: any) => {
         });
       });
     }
+    // Beraborrow data
+    if (beraborrowData?.borrowToken) {
+      const { borrowToken: nectToken, markets: beraborrowMarkets } = beraborrowData;
+      _tokens.push({
+        ...nectToken,
+        protocol: Lendings.Beraborrow.basic,
+        inWallet: Big(nectToken.walletBalance || 0).times(nectToken.realPrice),
+        supplyAPR: '8.11%',
+        supply_apr: '8.11',
+        borrowAPR: '0.00%',
+        borrow_apr: '0',
+        borrowCapacity: '0.00',
+        youSupplied: nectToken.balance,
+        youBorrowed: beraborrowMarkets?.reduce((a: any, b: any) => Big(a.borrowed || 0).plus(b.borrowed || 0)),
+        BGTRewards: '0.00',
+      });
+    }
+
     if (protocol === lendingProtocols[0]?.name) return _tokens;
 
     return _tokens.filter((t: any) => t.protocol.name === protocol);
-  }, [protocol, dolomiteData, tab, checked]);
-
-console.log(tokenList, 'tokenList');
-
+  }, [protocol, dolomiteData, beraborrowData, tab, checked]);
 
   const handleAction = (type: any, data: any) => {
     if (data.protocol.name === 'Dolomite' && ['Borrow', 'Repay'].includes(type)) {
       router.push('/lending/dolomite?tab=borrow');
+      return;
+    }
+    if (data.protocol.name === 'Beraborrow' && ['Borrow', 'Repay'].includes(type)) {
+      router.push('/lending/beraborrow');
       return;
     }
 
@@ -159,12 +187,19 @@ console.log(tokenList, 'tokenList');
       return;
     }
 
+    if (data.protocol.name === 'Beraborrow') {
+      setActionData(data);
+    }
+
     switch (data.protocol.name) {
       case "Bend":
         setBendVisible(true);
         break;
       case "Dolomite":
         setDolomiteVisible(true);
+        break;
+      case "Beraborrow":
+        setBeraborrowVisible(true);
         break;
       default:
         break;
@@ -175,6 +210,7 @@ console.log(tokenList, 'tokenList');
     setBendVisible(false);
     setBendBorrowVisible(false);
     setDolomiteVisible(false);
+    setBeraborrowVisible(false);
     setActionData(null);
     setActionType(null);
   };
@@ -189,7 +225,8 @@ console.log(tokenList, 'tokenList');
 
   useEffect(() => {
     setDolomiteLoading(isChainSupported);
-  }, [isChainSupported]);
+    setBeraborrowLoading(isChainSupported);
+  }, [isChainSupported, address]);
 
   useEffect(() => {
     bendInit();
@@ -216,6 +253,7 @@ console.log(tokenList, 'tokenList');
                   ]}
                   onChange={(val) => {
                     setTab(val);
+                    laptopListRef.current?.setPage(1);
                   }}
                   current={tab}
                   className="w-[196px]"
@@ -250,13 +288,13 @@ console.log(tokenList, 'tokenList');
         {
           isMobile && (
             <Dropdown
-            list={lendingProtocols}
-            value={protocol}
-            onChange={(val) => {
-              setProtocol(val);
-            }}
-            placeholder=""
-          />
+              list={lendingProtocols}
+              value={protocol}
+              onChange={(val) => {
+                setProtocol(val);
+              }}
+              placeholder=""
+            />
           )
         }
         <SwitchTabs
@@ -274,116 +312,138 @@ console.log(tokenList, 'tokenList');
         />
       </div>
       {
-        !isMobile ? <LaptopList loading={dolomiteLoading} list={tokenList} tab={tab} /> : (
+        !isMobile ? (
+          <LaptopList
+            ref={laptopListRef}
+            loading={dolomiteLoading}
+            list={tokenList}
+            tab={tab}
+            onSuccess={(type: any) => {
+              switch (type) {
+                case 'Dolomite':
+                  setDolomiteLoading(true);
+                  break;
+                case 'Bend':
+                  bendInit();
+                  break;
+                case 'Beraborrow':
+                  setBeraborrowLoading(true);
+                  break;
+                default:
+                  break;
+              }
+            }}
+          />
+        ) : (
           <div className="mt-[15px] pb-[80px]">
-          {
-            !dolomiteLoading && tokenList.map((token: any, index: number) => (
-              <div className="flex flex-col items-stretch mb-[12px]" key={index}>
-                <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[18px_14px_14px] text-black text-[16px] font-[600]">
-                  <div className="flex justify-between items-center gap-[10px]">
-                    <div className="flex items-center gap-[12px]">
-                      <div className="relative w-[40px] h-[40px]">
-                        <LazyImage src={token.icon} width={40} height={40} className="rounded-full" />
-                        <LazyImage
-                          src={token.protocol.icon}
-                          width={20}
-                          height={20}
-                          containerClassName="rounded-[6px]"
-                          containerStyle={{ position: 'absolute', right: 0, bottom: 0 }}
-                        />
+            {
+              !dolomiteLoading && tokenList.map((token: any, index: number) => (
+                <div className="flex flex-col items-stretch mb-[12px]" key={index}>
+                  <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[18px_14px_14px] text-black text-[16px] font-[600]">
+                    <div className="flex justify-between items-center gap-[10px]">
+                      <div className="flex items-center gap-[12px]">
+                        <div className="relative w-[40px] h-[40px]">
+                          <LazyImage src={token.icon} width={40} height={40} className="rounded-full" />
+                          <LazyImage
+                            src={token.protocol.icon}
+                            width={20}
+                            height={20}
+                            containerClassName="rounded-[6px]"
+                            containerStyle={{ position: 'absolute', right: 0, bottom: 0 }}
+                          />
+                        </div>
+                        <div className="">
+                          <div className="">{token.symbol}</div>
+                          <div className="text-[14px] font-[500] m-[5px]">{token.protocol.name}</div>
+                        </div>
                       </div>
-                      <div className="">
-                        <div className="">{token.symbol}</div>
-                        <div className="text-[14px] font-[500] m-[5px]">{token.protocol.name}</div>
-                      </div>
-                    </div>
-                    <div className="flex justify-end items-center gap-[10px]">
-                      {
-                        tab === 'Supply' && (
-                          <>
-                            <button
-                              type="button"
-                              className="text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
-                              onClick={() => {
-                                handleSwap(token);
-                              }}
-                            >
-                              Get
-                            </button>
-                            <button
-                              type="button"
-                              className="bg-[#FFDC50] flex justify-center items-center text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] w-[32px] rounded-[10px]"
-                              onClick={() => handleAction('Deposit', token)}
-                              disabled={Big(token.inWallet || 0).lte(0)}
-                              style={{ opacity: Big(token.inWallet || 0).lte(0) ? 0.3 : 1 }}
-                            >
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 14 14"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                      <div className="flex justify-end items-center gap-[10px]">
+                        {
+                          tab === 'Supply' && (
+                            <>
+                              <button
+                                type="button"
+                                className="text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
+                                onClick={() => {
+                                  handleSwap(token);
+                                }}
                               >
-                                <path
-                                  d="M8.02111 8.09214L12.7387 8.09217C13.0934 8.09211 13.381 7.86507 13.3809 7.58523L13.3809 6.55662C13.3809 6.27673 13.0932 6.05045 12.7383 6.05004L8.02104 6.05018L8.02095 1.33277C8.02112 0.977856 7.79426 0.690062 7.51418 0.690237L6.48551 0.690289C6.20591 0.69011 5.97887 0.977726 5.97911 1.33269L5.9792 6.05023L1.26149 6.05032C0.906932 6.05026 0.619081 6.27671 0.619142 6.55666L0.619089 7.58533C0.619091 7.86523 0.906768 8.09221 1.26144 8.09227L5.97921 8.09224L5.97918 12.8093C5.97913 13.1647 6.20581 13.4519 6.48571 13.452L7.51438 13.4519C7.79422 13.4518 8.02108 13.1644 8.02131 12.8097L8.02111 8.09214Z"
-                                  fill="black"
-                                />
-                              </svg>
+                                Get
+                              </button>
+                              <button
+                                type="button"
+                                className="bg-[#FFDC50] flex justify-center items-center text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] w-[32px] rounded-[10px]"
+                                onClick={() => handleAction('Deposit', token)}
+                                disabled={Big(token.inWallet || 0).lte(0)}
+                                style={{ opacity: Big(token.inWallet || 0).lte(0) ? 0.3 : 1 }}
+                              >
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M8.02111 8.09214L12.7387 8.09217C13.0934 8.09211 13.381 7.86507 13.3809 7.58523L13.3809 6.55662C13.3809 6.27673 13.0932 6.05045 12.7383 6.05004L8.02104 6.05018L8.02095 1.33277C8.02112 0.977856 7.79426 0.690062 7.51418 0.690237L6.48551 0.690289C6.20591 0.69011 5.97887 0.977726 5.97911 1.33269L5.9792 6.05023L1.26149 6.05032C0.906932 6.05026 0.619081 6.27671 0.619142 6.55666L0.619089 7.58533C0.619091 7.86523 0.906768 8.09221 1.26144 8.09227L5.97921 8.09224L5.97918 12.8093C5.97913 13.1647 6.20581 13.4519 6.48571 13.452L7.51438 13.4519C7.79422 13.4518 8.02108 13.1644 8.02131 12.8097L8.02111 8.09214Z"
+                                    fill="black"
+                                  />
+                                </svg>
+                              </button>
+                            </>
+                          )
+                        }
+                        {
+                          tab === 'Borrow' && (
+                            <button
+                              type="button"
+                              className="bg-[#FFDC50] text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
+                              onClick={() => handleAction('Borrow', token)}
+                            >
+                              Borrow
                             </button>
-                          </>
-                        )
-                      }
-                      {
-                        tab === 'Borrow' && (
-                          <button
-                            type="button"
-                            className="bg-[#FFDC50] text-black text-[16px] font-[600] border border-[#373A53] text-center leading-[30px] h-[32px] px-[15px] rounded-[10px]"
-                            onClick={() => handleAction('Borrow', token)}
-                          >
-                            Borrow
-                          </button>
-                        )
-                      }
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-start gap-[10px] mt-[13px]">
-                    <div className="">
-                      <div className="text-[14px] text-[#3D405A] font-[500]">
-                        {tab === 'Supply' ? 'In Wallet' : 'Borrow Capacity'}
-                      </div>
-                      <div className="mt-[5px]">
-                        {tab === 'Supply' ? numberFormatter(token.inWallet, 2, true) : numberFormatter(token.borrowCapacity, 2, true)}
+                          )
+                        }
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-[14px] text-[#3D405A] font-[500]">
-                        {tab} {token.symbol === "HONEY" ? 'APY' : 'APR'}
+                    <div className="flex justify-between items-start gap-[10px] mt-[13px]">
+                      <div className="">
+                        <div className="text-[14px] text-[#3D405A] font-[500]">
+                          {tab === 'Supply' ? 'In Wallet' : 'Borrow Capacity'}
+                        </div>
+                        <div className="mt-[5px]">
+                          {tab === 'Supply' ? numberFormatter(token.inWallet, 2, true) : numberFormatter(token.borrowCapacity, 2, true)}
+                        </div>
                       </div>
-                      <div className="mt-[5px]" style={{ color: tab === 'Supply' ? '#0A9D20' : '#F0631D' }}>
-                        {tab === 'Supply' ? token.supplyAPR : token.protocol.name ==="Bend" && token.symbol === "HONEY" ? Big(token?.borrowAPY).times(100).toFixed(2) + '%' : token.borrowAPR}
+                      <div className="text-right">
+                        <div className="text-[14px] text-[#3D405A] font-[500]">
+                          {tab} {token.symbol === "HONEY" ? 'APY' : 'APR'}
+                        </div>
+                        <div className="mt-[5px]" style={{ color: tab === 'Supply' ? '#0A9D20' : '#F0631D' }}>
+                          {tab === 'Supply' ? token.supplyAPR : token.protocol.name ==="Bend" && token.symbol === "HONEY" ? Big(token?.borrowAPY).times(100).toFixed(2) + '%' : token.borrowAPR}
+                        </div>
                       </div>
                     </div>
                   </div>
+                  {
+                    tab === 'Supply' && Big(token.youSupplied || 0).gt(0) && (
+                      <Assets tab={tab} token={token} handleAction={handleAction} />
+                    )
+                  }
                 </div>
-                {
-                  tab === 'Supply' && Big(token.youSupplied || 0).gt(0) && (
-                    <Assets tab={tab} token={token} handleAction={handleAction} />
-                  )
-                }
-              </div>
-            ))
-          }
-          {
-            dolomiteLoading && (
-              <div className="flex flex-col items-stretch gap-[12px]">
-                <Skeleton width={'100%'} height={146} borderRadius={10} />
-                <Skeleton width={'100%'} height={146} borderRadius={10} />
-                <Skeleton width={'100%'} height={146} borderRadius={10} />
-                <Skeleton width={'100%'} height={146} borderRadius={10} />
-              </div>
-            )
-          }
-        </div>
+              ))
+            }
+            {
+              dolomiteLoading && (
+                <div className="flex flex-col items-stretch gap-[12px]">
+                  <Skeleton width={'100%'} height={146} borderRadius={10} />
+                  <Skeleton width={'100%'} height={146} borderRadius={10} />
+                  <Skeleton width={'100%'} height={146} borderRadius={10} />
+                  <Skeleton width={'100%'} height={146} borderRadius={10} />
+                </div>
+              )
+            }
+          </div>
         )
       }
 
@@ -474,6 +534,32 @@ console.log(tokenList, 'tokenList');
         </div>
       </Drawer>
       {/*#endregion*/}
+      {/*#region Beraborrow Deposit*/}
+      <Drawer
+        visible={beraborrowVisible}
+        onClose={handleActionClose}
+        size="60dvh"
+      >
+        <div className="py-[23px]">
+          <div className="text-[18px] font-[700] text-black px-[24px]">
+            {actionType} {actionData?.symbol}
+          </div>
+          <Pool
+            className="!bg-transparent !border-0 !shadow-none !rounded-none !w-full !h-min-unset"
+            title={actionType}
+            actionText={actionType}
+            placeholder="0.00"
+            token={actionData}
+            CHAIN_ID={80084}
+            onSuccess={() => {
+              // reload data
+              setDolomiteLoading(true);
+            }}
+            addAction={addAction}
+          />
+        </div>
+      </Drawer>
+      {/*#endregion*/}
       {/*#region Dolomite data loader*/}
       <DolomiteData
         {...DolomiteNetworks[DEFAULT_CHAIN_ID + '']}
@@ -486,6 +572,21 @@ console.log(tokenList, 'tokenList');
           console.log('%cDolomite data res: %o', 'background:#FFDC50;color:#FFF;', res);
           setDolomiteData(res);
           setDolomiteLoading(false);
+        }}
+      />
+      {/*#endregion*/}
+      {/*#region Beraborrow data loader*/}
+      <BeraborrowData
+        {...BeraborrowNetworks[DEFAULT_CHAIN_ID + '']}
+        {...BeraborrowBasic}
+        chainId={chainId}
+        update={beraborrowLoading}
+        account={address}
+        provider={provider}
+        onLoad={(res: any) => {
+          console.log('%cBeraborrow data res: %o', 'background:#FFDC50;color:#FFF;', res);
+          setBeraborrowData(res);
+          setBeraborrowLoading(false);
         }}
       />
       {/*#endregion*/}

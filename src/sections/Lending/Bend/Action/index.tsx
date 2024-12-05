@@ -31,4 +31,5 @@ export interface IProps {
   token?: TokenInfo;
   className?: string;
   isMobile?: boolean;
+  onSuccess?(): void;
 }

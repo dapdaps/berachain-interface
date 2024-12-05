@@ -15,6 +15,7 @@ const networks = {
     borrowToken: {
       ...beraB['nect'],
       symbol: 'NECT',
+      earnToken: beraB['snect'],
     },
     // lt 160 = Risky, otherwise is Good
     riskyRatio: 160,

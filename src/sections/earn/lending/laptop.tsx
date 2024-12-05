@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 import List from "@/sections/marketplace/components/list";
 import useMarketStore from "@/stores/useMarketStore";
 import { useRouter } from 'next/navigation';
@@ -15,11 +15,12 @@ import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover"
 import ActionPanelForm from "@/sections/Lending/Bend/Action/form";
 import IconAdd from '@public/images/add.svg'
 import { numberFormatter } from '@/utils/number-formatter';
+import Pool from '@/sections/Lending/Beraborrow/pool';
 
 const PAGE_SIZE = 9;
 
 
-const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, addAction, honeyInfo }: any) => {
+const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, addAction, honeyInfo, onSuccess }: any) => {
   const commonColumns = [
     {
       title: "#",
@@ -91,7 +92,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
           >
             Get
           </button>
-          {item.protocol.name === 'Dolomite' ? (
+          {item.protocol.name === 'Dolomite' && (
             <Popover
               trigger={PopoverTrigger.Click}
               placement={PopoverPlacement.BottomRight}
@@ -104,6 +105,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
                   CHAIN_ID={80084}
                   onSuccess={() => {
                     // reload data
+                    onSuccess(item.protocol.name);
                   }}
                   addAction={addAction}
                 />
@@ -112,14 +114,45 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
             >
               <IconAdd />
             </Popover>
-          ) : (
+          )}
+          {
+            item.protocol.name === 'Bend' && (
+              <Popover
+                trigger={PopoverTrigger.Click}
+                placement={PopoverPlacement.BottomRight}
+                content={(
+                  <BendActionPanelLaptop
+                    action="deposit"
+                    token={item.protocol.name === 'Bend' && item.symbol === 'HONEY' ? honeyInfo : item}
+                    onSuccess={() => {
+                      // reload data
+                      onSuccess(item.protocol.name);
+                    }}
+                  />
+                )}
+                triggerContainerClassName="cursor-pointer"
+              >
+                <IconAdd />
+              </Popover>
+            )
+          }
+          {item.protocol.name === 'Beraborrow' && (
             <Popover
               trigger={PopoverTrigger.Click}
               placement={PopoverPlacement.BottomRight}
               content={(
-                <BendActionPanelLaptop
-                  action="deposit"
-                  token={item.protocol.name === 'Bend' && item.symbol === 'HONEY' ? honeyInfo : item}
+                <Pool
+                  title="Deposit"
+                  actionText="Deposit"
+                  isSkipApproved
+                  placeholder="0.00"
+                  token={item}
+                  CHAIN_ID={80084}
+                  onSuccess={() => {
+                    // reload data
+                    onSuccess(item.protocol.name);
+                  }}
+                  addAction={addAction}
                 />
               )}
               triggerContainerClassName="cursor-pointer"
@@ -176,7 +209,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
           <Popover
             trigger={PopoverTrigger.Click}
             placement={PopoverPlacement.BottomRight}
-            content={item.protocol.name === 'Dolomite' ? null : (
+            content={['Dolomite', 'Beraborrow'].includes(item.protocol.name) ? null : (
               <BendBorrowActionModal
                 isOpen={true}
                 onClose={() => {}}
@@ -196,7 +229,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
           <Popover
             trigger={PopoverTrigger.Click}
             placement={PopoverPlacement.BottomRight}
-            content={item.protocol.name === 'Dolomite' ? null : (
+            content={['Dolomite', 'Beraborrow'].includes(item.protocol.name) ? null : (
               <BendBorrowActionModal
                 isOpen={true}
                 onClose={() => {
@@ -223,7 +256,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
 };
 
 
-const LaptopList = ({ list, loading, tab: tabType }: any) => {
+const LaptopList = forwardRef(({ list, loading, tab: tabType, onSuccess }: any, ref: any) => {
   const [page, setPage] = useState(1);
 
   const { addAction } = useAddAction("lending");
@@ -246,6 +279,10 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
       router.push('/lending/dolomite?tab=borrow');
       return;
     }
+    if (data.protocol.name === 'Beraborrow' && ['Borrow', 'Repay'].includes(type)) {
+      router.push('/lending/beraborrow');
+      return;
+    }
   };
 
   const metaData = getListMeta(tabType, {
@@ -253,7 +290,13 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
     handleAction,
     addAction,
     honeyInfo,
+    onSuccess,
   });
+
+  const refs = {
+    setPage,
+  };
+  useImperativeHandle(ref, () => refs);
 
   return (
     <>
@@ -278,6 +321,6 @@ const LaptopList = ({ list, loading, tab: tabType }: any) => {
       )}
     </>
   );
-};
+});
 
 export default LaptopList;

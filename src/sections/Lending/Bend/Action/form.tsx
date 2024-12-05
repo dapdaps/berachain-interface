@@ -10,7 +10,7 @@ import AmountSelector from '@/sections/Lending/components/amount-selector';
 import useAccount from '@/hooks/use-account';
 
 const ActionPanelForm = (props: IProps) => {
-  const { action, token, isMobile } = props;
+  const { action, token, isMobile, onSuccess } = props;
 
   const { chainId } = useAccount()
 
@@ -81,6 +81,7 @@ const ActionPanelForm = (props: IProps) => {
         await withdrawErc20(value);
       }
     }
+    onSuccess?.();
   }
 
   return (
