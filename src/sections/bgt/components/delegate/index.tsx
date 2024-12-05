@@ -165,7 +165,7 @@ export default memo(function Delegate(props: IProps) {
           chain_id: DEFAULT_CHAIN_ID,
           add: operationType === "delegate" ? 1 : 0,
           sub_type: operationType === "delegate" ? "Stake" : "Unstake",
-          extra_data: JSON.stringify({ "validator": validator?.address })
+          extra_data: JSON.stringify({ "validator": validator?.address?.toLocaleLowerCase() })
         });
         updateState({
           isLoading: false
