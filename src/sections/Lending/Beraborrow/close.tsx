@@ -82,6 +82,7 @@ export const ClosePosition = (props: any) => {
           onSuccess?.();
         }}
         addAction={addAction}
+        addActionText="Close"
       >
         Confirm
       </LendingButton>
