@@ -148,7 +148,7 @@ const EarnLending = (props: any) => {
         ...nectToken,
         protocol: Lendings.Beraborrow.basic,
         inWallet: Big(nectToken.walletBalance || 0).times(nectToken.realPrice),
-        supplyAPR: '8.11%',
+        supplyAPR: nectToken.apy,
         supply_apr: '8.11',
         borrowAPR: '0.00%',
         borrow_apr: '0',

@@ -71,10 +71,97 @@ const DEN_ABI = [
   },
 ];
 
+const APY_ABI = [
+  { type: "function", name: "totalSupply", inputs: [], outputs: [{ name: "", type: "uint256", internalType: "uint256" }], stateMutability: "view" },
+  { type: "function", name: "totalAssets", inputs: [], outputs: [{ name: "amountInAsset", type: "uint256", internalType: "uint256" }], stateMutability: "view" },
+];
+
 const calcTCR = (collateral: any, debt: any, price: any) => {
   if (!collateral || Big(collateral).lte(0)) return 0;
   if (!debt || Big(debt).lte(0)) return 0;
   return Big(collateral).times(price).div(debt).times(100).toFixed(0);
+};
+
+const SCALING_FACTOR = Big(1000000000000000000);
+
+/**
+ * Get APY.
+ * r = T / t * ln(Q'/Q)
+ * r: APY
+ * T: 1 year
+ * t: 1 week
+ * Q: Initial share price
+ * Q`: Current share price
+ * @param currentBlockNumber CurrentBlock Number
+ * @param startBlock The deployment block of the vault
+ * @param contractAddress the vault address
+ * @param averageBlockTime average block times
+ * @param multicallAddress multicall address
+ * @returns returns apy percentage with 18 decimals so SCALING_FACTOR 100%
+ */
+const getAPY = async (
+  currentBlockNumber: number,
+  startBlock: number,
+  contractAddress: any,
+  averageBlockTime = 2,
+  multicallAddress: string,
+  multicall: any,
+  provider: any,
+) => {
+  const BLOCKS_IN_WEEK = (7 * 24 * 60 * 60) / averageBlockTime;
+  // const blockNumberOneWeekAgo = currentBlockNumber - BigInt(BLOCKS_IN_WEEK) < BigInt(startBlock) ? BigInt(startBlock) : currentBlockNumber - BigInt(BLOCKS_IN_WEEK);
+  const blockNumberOneWeekAgo = Big(currentBlockNumber).minus(Big(BLOCKS_IN_WEEK).lt(startBlock) ? startBlock : Big(currentBlockNumber).minus(BLOCKS_IN_WEEK)).toNumber();
+
+  const calls = [
+    {
+      address: contractAddress,
+      name: 'totalSupply',
+      params: [],
+    },
+    {
+      address: contractAddress,
+      name: 'totalAssets',
+      params: [],
+    },
+  ];
+
+  let [blockOneWeekAgo, [[currentTotalSupply], [currentTVL]], [[oneWeekAgoTotalSupply], [oneWeekAgoTVL]]] = await Promise.all([
+    provider.getBlock(blockNumberOneWeekAgo),
+    multicall({
+      abi: APY_ABI,
+      calls: calls,
+      options: {},
+      multicallAddress,
+      provider: provider
+    }),
+    multicall({
+      abi: APY_ABI,
+      calls: calls,
+      options: {
+        blockTag: blockNumberOneWeekAgo,
+      },
+      multicallAddress,
+      provider: provider
+    }),
+  ]);
+
+  currentTotalSupply = utils.formatUnits(currentTotalSupply, 18);
+  currentTVL = utils.formatUnits(currentTVL, 18);
+  oneWeekAgoTotalSupply = utils.formatUnits(oneWeekAgoTotalSupply, 18);
+  oneWeekAgoTVL = utils.formatUnits(oneWeekAgoTVL, 18);
+
+  // const realOneWeekAgo = Date.now() / 1000 - Number(blockOneWeekAgo.timestamp);
+  const realOneWeekAgo = Date.now() / 1000 - Number(blockOneWeekAgo.timestamp);
+  // const sharePriceOneWeekAgo = oneWeekAgoTotalSupply == 0n ? 0n : (oneWeekAgoTVL * SCALING_FACTOR) / oneWeekAgoTotalSupply;
+  const sharePriceOneWeekAgo = Big(oneWeekAgoTotalSupply).eq(0) ? Big(0) : Big(Big(oneWeekAgoTVL).times(SCALING_FACTOR)).div(oneWeekAgoTotalSupply);
+  // const sharePriceNow = currentTotalSupply == 0n ? 0n : (currentTVL * SCALING_FACTOR) / currentTotalSupply;
+  const sharePriceNow = Big(currentTotalSupply).eq(0) ? Big(0) : Big(Big(currentTVL).times(SCALING_FACTOR)).div(currentTotalSupply);
+  const SECONDS_IN_YEAR = Big(31536000);
+  // const apy = sharePriceOneWeekAgo == 0n ? 0 : (SECONDS_IN_YEAR / realOneWeekAgo) * Math.log(Number(sharePriceNow) / Number(sharePriceOneWeekAgo));
+  const apy = Big(sharePriceOneWeekAgo).eq(0) ? 0 : Big(Big(SECONDS_IN_YEAR).div(realOneWeekAgo)).times(Math.log(Big(sharePriceNow).div(sharePriceOneWeekAgo).toNumber()));
+
+  // return BigInt((apy * Number(SCALING_FACTOR)).toFixed(0));
+  return Big(apy).times(SCALING_FACTOR).toFixed(0);
 };
 
 const BeraborrowData = (props: any) => {
@@ -335,10 +422,23 @@ const BeraborrowData = (props: any) => {
           multicallAddress,
           provider: provider
         })
-          .then((res: any) => {
+          .then(async (res: any) => {
             let balance = res?.[0]?.[0] ?? '0';
             balance = utils.formatUnits(balance || '0', borrowToken.decimals);
             result.balance = balance;
+
+            const currentBlockNumber = await provider.getBlock();
+            const apy = await getAPY(
+              currentBlockNumber.number,
+              2867937,
+              '0x3a7f6f2F27f7794a7820a32313F4a68e36580864',
+              2,
+              multicallAddress,
+              multicall,
+              provider,
+            );
+            result.apy = Big(apy).div(Math.pow(10, 18)).toFixed(2) + '%';
+
             resolve(result);
           })
           .catch((err: any) => {
@@ -400,6 +500,7 @@ const BeraborrowData = (props: any) => {
           walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
           balance: NECTData?.balance || '0',
           balanceShown: numberFormatter(NECTData?.balance, 2, true),
+          apy: NECTData?.apy || '0.00%',
         };
 
         return {
