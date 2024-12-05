@@ -16,7 +16,7 @@ const BoxTitle = (props: any) => {
                 <div className="">{total}</div>
               </>
             ) : (
-              <div className="text-[36px]">15</div>
+              <div className="text-[36px]">{value}</div>
             )
           }
         </div>

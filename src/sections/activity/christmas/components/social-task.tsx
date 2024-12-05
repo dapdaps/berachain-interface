@@ -1,7 +1,7 @@
 import IconReload from '@public/images/home/christmas/icon-reload.svg';
 
 const SocialTask = (props: any) => {
-  const { children, complete, onClick, className } = props;
+  const { children, complete, onClick, className, checking, disabled } = props;
 
   return (
     <button
@@ -13,7 +13,6 @@ const SocialTask = (props: any) => {
         complete ? (
           <button
             type="button"
-            onClick={onClick}
             className="border-0 bg-transparent"
           >
             <img src="/images/activity/christmas/icon-complete.svg" alt="" />
@@ -21,9 +20,11 @@ const SocialTask = (props: any) => {
         ) : (
           <button
             type="button"
-            className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain"
+            className="translate-y-[2.8px] disabled:opacity-30 translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain"
+            disabled={disabled}
+            onClick={onClick}
           >
-            <IconReload className="animate-rotate origin-[12px_12px]" />
+            <IconReload className={`${checking ? 'animate-rotate' : ''} origin-[12px_12px]`} />
           </button>
         )
       }

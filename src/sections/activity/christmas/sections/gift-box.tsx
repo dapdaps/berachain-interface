@@ -3,13 +3,60 @@ import BoxTitle from '@/sections/activity/christmas/components/box-title';
 import Button from '@/sections/activity/christmas/components/button';
 import SocialTask from '@/sections/activity/christmas/components/social-task';
 import Pyramid, { createPyramid } from '@/sections/activity/christmas/components/pyramid';
+import { useContext, useMemo } from 'react';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 const GiftBox = () => {
+  const {
+    followXQuest,
+    handleQuest,
+    getQuestVisited,
+    handleQuestCheck,
+    questVisited,
+    questList,
+    userInfo,
+    userInfoLoading,
+    getUserInfo,
+    currentTimestamp,
+  } = useContext(ChristmasContext);
   const list = [...new Array(21)].map((_, i) => ({
     id: i + 1,
     status: i % 5 === 0 ? 'opened' : 'un_open',
   }));
   const sortedList = createPyramid(list);
+
+  const todayQuest = useMemo(() => {
+    if (!questList || !currentTimestamp || !questList.length) return void 0;
+    return questList.find((it) => it.timestamp === currentTimestamp);
+  }, [currentTimestamp, questList]);
+
+  const followXVisited = useMemo(() => {
+    return getQuestVisited?.(followXQuest?.id);
+  }, [questVisited, followXQuest]);
+
+  const todayQuestVisited = useMemo(() => {
+    return getQuestVisited?.(todayQuest?.id);
+  }, [questVisited, todayQuest]);
+
+  const handleFollowX = () => {
+    handleQuest?.(followXQuest);
+  };
+
+  const handleFollowXCheck = () => {
+    handleQuestCheck?.(followXQuest);
+  };
+
+  const handleReloadYourBox = () => {
+    getUserInfo?.();
+  };
+
+  const handleTodayQuest = () => {
+    handleQuest?.(todayQuest);
+  };
+
+  const handleTodayQuestCheck = () => {
+    handleQuestCheck?.(todayQuest);
+  };
 
   return (
     <div className="">
@@ -21,13 +68,14 @@ const GiftBox = () => {
               <button
                 type="button"
                 className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain"
+                onClick={handleReloadYourBox}
               >
-                <IconReload className="animate-rotate origin-[12px_12px]" />
+                <IconReload className={`${userInfoLoading ? 'animate-rotate origin-[12px_12px]' : ''}`} />
               </button>
             </>
           )}
-          value={15}
-          total={30}
+          value={userInfo?.used_box || 0}
+          total={userInfo?.total_box || 0}
           valueClassName="translate-x-[-20px]"
         >
           <div className="flex items-center gap-[18px]">
@@ -53,7 +101,7 @@ const GiftBox = () => {
         </BoxTitle>
         <BoxTitle
           label="Your $Snowflake"
-          value="6,023"
+          value="0"
         >
           <Button
             onClick={() => {
@@ -67,12 +115,21 @@ const GiftBox = () => {
       <div className="relative h-[800px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
         <Pyramid list={sortedList} />
         <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center">
-          <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center">
+          <div
+            className="text-[16px] cursor-pointer text-black font-CherryBomb leading-[90%] font-[400] text-center"
+            onClick={handleFollowX}
+          >
             Follow <span className="underline decoration-solid">BeraTown</span> on X
           </div>
-          <SocialTask className="mt-[7px]">
+          <SocialTask
+            className="mt-[7px]"
+            onClick={handleFollowXCheck}
+            complete={followXQuest?.completed}
+            checking={followXQuest?.checking}
+            disabled={!followXVisited}
+          >
             <div className="">
-              1/1 box
+              {followXQuest?.total_box}/{followXQuest?.box} box
             </div>
           </SocialTask>
         </div>
@@ -82,13 +139,22 @@ const GiftBox = () => {
               <div className="opacity-50">
                 Quest of <br /> the day
               </div>
-              <div className="underline decoration-solid mt-[15px]">
-                Retweet
+              <div
+                className="underline decoration-solid mt-[15px] cursor-pointer"
+                onClick={handleTodayQuest}
+              >
+                {todayQuest?.name}
               </div>
             </div>
-            <SocialTask className="">
+            <SocialTask
+              className=""
+              onClick={handleTodayQuestCheck}
+              complete={todayQuest?.completed}
+              checking={todayQuest?.checking}
+              disabled={!todayQuestVisited}
+            >
               <div className="">
-                3 / 6 boxes
+                {todayQuest?.total_box} / {todayQuest?.box} boxes
               </div>
             </SocialTask>
           </div>
