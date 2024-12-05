@@ -51,6 +51,7 @@ export const Form = (props: any) => {
   const { addAction } = useAddAction("lending");
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [inputLoading, setInputLoading] = useState<boolean>(false);
   const [closePosition, setClosePosition] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>();
   const [borrowAmount, setBorrowAmount] = useState<string>();
@@ -147,30 +148,42 @@ export const Form = (props: any) => {
   const buttonValid = useMemo(() => {
     let text: any = type;
     let _actions: any = [];
+    let _actionTokens: any = [];
+    let _actionAmounts: any = [];
     if (type === ActionText.Repay) {
       text = [];
       if (amount && Big(amount).gt(0)) {
         text.push('Withdraw');
         _actions.push('Withdraw');
+        _actionTokens.push(market.collToken);
+        _actionAmounts.push(amount);
       }
       if (borrowAmount && Big(borrowAmount).gt(0)) {
         text.push('Repay');
         _actions.push('Repay');
+        _actionTokens.push(market.borrowToken);
+        _actionAmounts.push(borrowAmount);
       }
       text = text.join(' & ');
     }
     if (type === ActionText.Borrow) {
       if (amount && Big(amount).gt(0)) {
         _actions.push('Deposit');
+        _actionTokens.push(market);
+        _actionAmounts.push(amount);
       }
       if (borrowAmount && Big(borrowAmount).gt(0)) {
         _actions.push('Borrow');
+        _actionTokens.push(market.borrowToken);
+        _actionAmounts.push(borrowAmount);
       }
     }
     const result = {
       valid: true,
       text: text,
       actions: _actions,
+      actionTokens: _actionTokens,
+      actionAmounts: _actionAmounts,
     };
     if (type === ActionText.Borrow) {
       if (Big(totalBorrowAmount || 0).lt(minimumDebt)) {
@@ -227,12 +240,14 @@ export const Form = (props: any) => {
   }, { wait: 500 });
 
   const handleAmount = async (val: string) => {
+    setInputLoading(true);
     setAmount(val);
     // calc Ratio
     setCalcPreviewAmountQueueDelay(val);
   };
 
   const handleBorrowAmount = (val: string) => {
+    setInputLoading(true);
     setBorrowAmount(val);
     // calc Ratio
     const _borrowAmount = calcTotalBorrowAmount(val);
@@ -266,7 +281,7 @@ export const Form = (props: any) => {
 
   const { run: getTxData, cancel: cancelGetTxData } = useDebounceFn(() => {
     setLoading(true);
-  }, { wait: 500 });
+  }, { wait: 1000 });
 
   const { run: reloadList } = useDebounceFn(() => {
     onSuccess?.();
@@ -406,13 +421,14 @@ export const Form = (props: any) => {
             type="primary"
             disabled={!buttonValid.valid || loading}
             invalidText={buttonValid.valid ? void 0 : buttonValid.text}
-            loading={loading}
+            loading={loading || inputLoading}
             style={{ height: 60, width: '100%' }}
-            amount={amount || borrowAmount || ''}
+            amount={buttonValid.actionAmounts[0] || ''}
             token={market}
             toastLoadingMsg={toastLoadingMsg}
             chain={{ chainId: DEFAULT_CHAIN_ID }}
-            isSkipApproved={type !== ActionText.Borrow}
+            isSkipApproved={type !== ActionText.Borrow || (market.status === 'open' && Big(amount || 0).lte(0))}
+            isSkipAmountEmptyCheck={market.status === 'open' && (Big(amount || 0).gt(0) || Big(borrowAmount || 0).gt(0))}
             spender={market.approveSpender || network[market.vault]}
             provider={provider}
             unsignedTx={txData?.unsignedTx}
@@ -426,6 +442,7 @@ export const Form = (props: any) => {
             }}
             addAction={addAction}
             addActionText={buttonValid.actions[0]}
+            addActionToken={buttonValid.actionTokens[0]}
           >
             {buttonValid.text}
           </LendingButton>
@@ -453,6 +470,7 @@ export const Form = (props: any) => {
           console.log('%chandler DATA onLoad: %o', 'background: #6439FF; color:#fff;', txData);
           setTxData(txData);
           setLoading(false);
+          setInputLoading(false);
         }}
       />
 
