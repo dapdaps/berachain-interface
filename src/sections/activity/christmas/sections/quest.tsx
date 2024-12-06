@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import ProjectCard from '@/sections/activity/christmas/components/project-card';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import Button from '@/sections/activity/christmas/components/button';
+import Skeleton from 'react-loading-skeleton';
 
 const TABS = [
   { key: 1, title: 'Interact with dApps' },
@@ -16,6 +17,7 @@ const Quest = () => {
     dAppSwapAndLiquidityQuest,
     dAppLendingQuest,
     handleQuestCheck,
+    questLoading,
   } = useContext(ChristmasContext);
 
   const [currentTab, setCurrentTab] = useState(TABS[0]);
@@ -78,13 +80,23 @@ const Quest = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
                       {
-                        dAppSwapAndLiquidityQuest?.map((it) => (
+                        !questLoading && dAppSwapAndLiquidityQuest?.map((it) => (
                           <DappCard
                             key={it.id}
                             {...it}
                             {...it.dappInfo}
                             onCheck={() => handleQuestCheck?.(it)}
                             actions={it.actions}
+                          />
+                        ))
+                      }
+                      {
+                        questLoading && [...new Array(2)].map((_, idx) => (
+                          <Skeleton
+                            key={idx}
+                            width={400}
+                            height={260}
+                            borderRadius={20}
                           />
                         ))
                       }
@@ -107,12 +119,22 @@ const Quest = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
                       {
-                        dAppLendingQuest?.map((it) => (
+                        !questLoading && dAppLendingQuest?.map((it) => (
                           <DappCard
                             key={it.id}
                             {...it}
                             {...it.dappInfo}
                             onCheck={() => handleQuestCheck?.(it)}
+                          />
+                        ))
+                      }
+                      {
+                        questLoading && [...new Array(3)].map((_, idx) => (
+                          <Skeleton
+                            key={idx}
+                            width={400}
+                            height={260}
+                            borderRadius={20}
                           />
                         ))
                       }
@@ -124,12 +146,22 @@ const Quest = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
                       {
-                        dAppVaultsQuest?.map((it) => (
+                        !questLoading && dAppVaultsQuest?.map((it) => (
                           <DappCard
                             key={it.id}
                             {...it}
                             {...it.dappInfo}
                             onCheck={() => handleQuestCheck?.(it)}
+                          />
+                        ))
+                      }
+                      {
+                        questLoading && [...new Array(3)].map((_, idx) => (
+                          <Skeleton
+                            key={idx}
+                            width={400}
+                            height={260}
+                            borderRadius={20}
                           />
                         ))
                       }

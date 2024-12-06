@@ -14,6 +14,13 @@ const DAPP_ACTIONS: any = {
   Staking: 'Deposit',
   Delegate: 'Deposit',
 };
+const DAPP_CATEGORY: any = {
+  Swap: 'Dex',
+  Liquidity: 'Dex',
+  Lending: 'Lending',
+  Staking: 'Vaults',
+  Delegate: 'Vaults',
+};
 
 export function useQuest(): IQuest {
   const {
@@ -71,12 +78,26 @@ export function useQuest(): IQuest {
         it.checkIds = [it.id as number];
         it.dappInfo = {
           name: it.name as string,
-          category: it.action_type === 'Swap' ? 'Dex' : (it.action_type as string),
+          category: it.action_type ? DAPP_CATEGORY[it.action_type] : (it.action_type as string),
         };
         it.actions = [
           { text: it.action_type ? DAPP_ACTIONS[it.action_type] : 'Trade', box: it.box },
         ];
-        const currDApp = dAppsInfo.find((_it) => _it.name.toLowerCase() === it.name?.toLowerCase?.());
+        let currDApp = dAppsInfo.find((_it) => _it.name.toLowerCase() === it.name?.toLowerCase?.());
+        if (it.name === 'Marketplace') {
+          currDApp = {
+            name: it.name,
+            icon: '/images/dapps/marketplace.svg',
+            path: '/marketplace',
+          };
+        }
+        if (it.name === 'Top Validators') {
+          currDApp = {
+            name: it.name,
+            icon: '/images/dapps/bgt.svg',
+            path: '/bgt',
+          };
+        }
         if (currDApp) {
           it.dappInfo = {
             ...it.dappInfo,
