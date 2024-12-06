@@ -1,10 +1,19 @@
-import IconReload from '@public/images/home/christmas/icon-reload.svg';
-import BoxTitle from '@/sections/activity/christmas/components/box-title';
-import Button from '@/sections/activity/christmas/components/button';
-import SocialTask from '@/sections/activity/christmas/components/social-task';
-import Pyramid, { createPyramid } from '@/sections/activity/christmas/components/pyramid';
-import { useContext, useMemo } from 'react';
-import { ChristmasContext } from '@/sections/activity/christmas/context';
+import IconReload from "@public/images/home/christmas/icon-reload.svg";
+import BoxTitle from "@/sections/activity/christmas/components/box-title";
+import Button from "@/sections/activity/christmas/components/button";
+import BasicButton from "../task-modal/button";
+import SocialTask from "@/sections/activity/christmas/components/social-task";
+import Pyramid, {
+  createPyramid
+} from "@/sections/activity/christmas/components/pyramid";
+import { useContext, useMemo, useState } from "react";
+import { ChristmasContext } from "@/sections/activity/christmas/context";
+import OpenModal from "../box-modal/open-modal";
+import OpenMultiModal from "../box-modal/open-multi-modal";
+import UserPresentsModal from "../user-presents-modal";
+import SwapModal from "@/sections/swap/SwapModal";
+import useOpenBox from "../hooks/use-open-box";
+import { protocols, SnowToken } from "../config";
 
 const GiftBox = () => {
   const {
@@ -17,12 +26,26 @@ const GiftBox = () => {
     userInfo,
     userInfoLoading,
     getUserInfo,
-    currentTimestamp,
+    currentTimestamp
   } = useContext(ChristmasContext);
-  const list = [...new Array(21)].map((_, i) => ({
-    id: i + 1,
-    status: i % 5 === 0 ? 'opened' : 'un_open',
-  }));
+
+  const remainBox = useMemo(
+    () => (userInfo?.total_box || 0) - (userInfo?.used_box || 0),
+    [userInfo]
+  );
+  const [openType, setOpenType] = useState(0);
+  const [openData, setOpenData] = useState<any>();
+  const [showSwapModal, setShowSwapModal] = useState(false);
+  const { loading: opening, onOpen } = useOpenBox((args: any) => {
+    setOpenData(args);
+    getUserInfo?.();
+  });
+  const list = [...new Array(remainBox || 0)]
+    .slice(0, 21)
+    .map((_, i) => ({
+      id: i + 1,
+      status: "un_open"
+    }));
   const sortedList = createPyramid(list);
 
   const todayQuest = useMemo(() => {
@@ -62,7 +85,7 @@ const GiftBox = () => {
     <div className="">
       <div className="flex justify-center items-center gap-[249px] mt-[20px]">
         <BoxTitle
-          label={(
+          label={
             <>
               <div className="">Your Box</div>
               <button
@@ -70,41 +93,50 @@ const GiftBox = () => {
                 className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain"
                 onClick={handleReloadYourBox}
               >
-                <IconReload className={`${userInfoLoading ? 'animate-rotate origin-[12px_12px]' : ''}`} />
+                <IconReload
+                  className={`${
+                    userInfoLoading ? "animate-rotate origin-[12px_12px]" : ""
+                  }`}
+                />
               </button>
             </>
-          )}
+          }
           value={userInfo?.used_box || 0}
           total={userInfo?.total_box || 0}
           valueClassName="translate-x-[-20px]"
         >
           <div className="flex items-center gap-[18px]">
-            <Button
-              type="black"
+            <BasicButton
+              className="!bg-black border-[#FFDC50] !text-[#FFDC50]"
+              loading={userInfoLoading}
               onClick={() => {
+                getUserInfo?.();
+                setOpenType(3);
               }}
             >
               Check My Gift
-            </Button>
-            <Button
+            </BasicButton>
+            <BasicButton
               onClick={() => {
+                setOpenType(2);
+                onOpen(true);
               }}
+              loading={openType === 2 && opening}
+              className="relative"
             >
-              <div>Open them all</div>
+              <div>Open 10 Boxes</div>
               <img
                 src="/images/activity/christmas/star-your-box.svg"
                 alt=""
                 className="absolute left-[108px] top-[-40px] animate-blink w-[47px] h-[59px]"
               />
-            </Button>
+            </BasicButton>
           </div>
         </BoxTitle>
-        <BoxTitle
-          label="Your $Snowflake"
-          value="0"
-        >
+        <BoxTitle label="Your $Snowflake" value={userInfo?.total_token || 0}>
           <Button
             onClick={() => {
+              setShowSwapModal(true);
             }}
             addon="arrow"
           >
@@ -113,13 +145,20 @@ const GiftBox = () => {
         </BoxTitle>
       </div>
       <div className="relative h-[800px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
-        <Pyramid list={sortedList} />
+        <Pyramid
+          list={sortedList}
+          onBoxClick={() => {
+            onOpen(false);
+            setOpenType(1);
+          }}
+        />
         <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center">
           <div
             className="text-[16px] cursor-pointer text-black font-CherryBomb leading-[90%] font-[400] text-center"
             onClick={handleFollowX}
           >
-            Follow <span className="underline decoration-solid">BeraTown</span> on X
+            Follow <span className="underline decoration-solid">BeraTown</span>{" "}
+            on X
           </div>
           <SocialTask
             className="mt-[7px]"
@@ -160,6 +199,52 @@ const GiftBox = () => {
           </div>
         </div>
       </div>
+      {!!openData && openType === 1 && (
+        <OpenModal
+          open={openType === 1}
+          onClose={() => {
+            setOpenType(0);
+            setOpenData(null);
+          }}
+          remainBox={remainBox}
+          onOpen={onOpen}
+          data={openData}
+          loading={opening}
+        />
+      )}
+      {!!openData && openType === 2 && (
+        <OpenMultiModal
+          open={openType === 2}
+          onClose={() => {
+            setOpenType(0);
+            setOpenData(null);
+          }}
+          data={openData}
+          loading={opening}
+          onOpenSwapModal={() => {
+            setShowSwapModal(true);
+          }}
+        />
+      )}
+      {userInfo && openType === 3 && (
+        <UserPresentsModal
+          open={openType === 3}
+          onClose={() => {
+            setOpenType(0);
+          }}
+          data={userInfo}
+        />
+      )}
+      {showSwapModal && (
+        <SwapModal
+          show={showSwapModal}
+          defaultInputCurrency={SnowToken}
+          protocols={protocols}
+          onClose={() => {
+            setShowSwapModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

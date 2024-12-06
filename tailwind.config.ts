@@ -13,6 +13,7 @@ const config: Config = {
     fontFamily: {
       Montserrat: ["Montserrat"],
       CherryBomb: ["Cherry Bomb"],
+      Fuzzy: ["Fuzzy"],
       SquaredPixel: ["Pixel"]
     },
     backgroundImage: {

@@ -5,7 +5,7 @@ import Welcome from "./Welcome"
 import ClothHover from "./ClothHover"
 import KeyHover from "./KeyHover"
 import NeckHover from "./NeckHover"
-import useCollect from "./useCollect"
+import useCollect, { hat_categories, cloth_cateogries } from "./useCollect"
 import Tips from "./Tip";
 import Bear from "./Bear";
 import CheckBox from "./CheckBox";
@@ -220,6 +220,7 @@ const neckTips = [
 
 const sockTips = [
     {
+        category: 'elf_hat',
         name: 'Elf’s Hat',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/elf_hat.png',
@@ -228,6 +229,7 @@ const sockTips = [
         dapps: stakeDapps,
     },
     {
+        category: 'santa_hat',
         name: 'Santa Hat',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/santa_hat.png',
@@ -236,6 +238,7 @@ const sockTips = [
         dapps: stakeDapps,
     },
     {
+        category: 'elf_jacket',
         name: 'Elf’s Jacket',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/elf_jacket.png',
@@ -244,14 +247,16 @@ const sockTips = [
         dapps: stakeDapps,
     },
     {
+        category: 'santa_coat',
         name: 'Santa Coat',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/santa_hat.png',
+        img: '/images/cave/christmas/santa_coat.png',
         link: '/swap',
         btnText: 'Join',
         dapps: stakeDapps,
     },
     {
+        category: 'scarf',
         name: 'Scarf',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/scarf.png',
@@ -261,8 +266,9 @@ const sockTips = [
     },
 
 ]
-const giftTips = [
+const giftBoxTips = [
     {
+        category: 'sleigh',
         name: 'Sleigh',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/sleigh.png',
@@ -271,6 +277,7 @@ const giftTips = [
         dapps: stakeDapps,
     },
     {
+        category: 'snowboard',
         name: 'Snowboard',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/snowboard.png',
@@ -291,8 +298,9 @@ export default function Cave() {
     const store: any = useCaveWelcome()
 
     const [nftVisible, setNftVisible] = useState(false)
+    const [nft, setNft] = useState(null)
 
-    const { cars, hats, clothes, necklaces, setCars, setClothes, setHats, setNecklaces } = useCollect({
+    const { cars, hats, clothes, necklaces, items, nfts, setCars, setClothes, setHats, setNecklaces } = useCollect({
         address: account as string
     })
 
@@ -329,7 +337,6 @@ export default function Cave() {
     }, [])
 
 
-    console.log('==isChristmas', isChristmas)
     return <div className="relative w-[100vw] h-full min-w-[1200px] min-h-[890px]">
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px]" />
 
@@ -348,7 +355,7 @@ export default function Cave() {
                         </div>
 
                         {
-                            sockTips.map((item, index) => {
+                            items.slice(0, -2).map((item, index) => {
                                 const Positions = [{
                                     left: 67,
                                     top: 122
@@ -365,8 +372,8 @@ export default function Cave() {
                                     left: 406,
                                     top: 75
                                 },]
+                                console.log('====items', items)
                                 return (
-
                                     <div
                                         style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
                                         className={clsx("absolute w-[72px] cursor-pointer cave-tip")}
@@ -375,14 +382,26 @@ export default function Cave() {
                                         }}
                                     >
                                         <div className={clsx("absolute left-[38px] w-[4px] bg-black", index === 2 ? 'h-[48px] top-[-43px]' : 'h-[26px] top-[-18px]')} />
-                                        <img src="/images/cave/christmas/sock.svg" alt="sock" />
+                                        <img src={`/images/cave/christmas/sock${item.pc_item ? '_has' : ''}.svg`} alt="sock" />
+
+
+                                        {item.pc_item && <div className="absolute left-[26px] top-[-2px]">
+                                            <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
+                                                const isHat = hat_categories.indexOf(item.category) > -1
+                                                const isCloth = cloth_cateogries.indexOf(item.category) > -1
+                                                console.log('====isHat', [isHat ? "hat" : (isCloth ? "cloth" : "necklace")])
+                                                setEqu({
+                                                    [isHat ? "hat" : (isCloth ? "cloth" : "necklace")]: isChecked ? item.category : 0
+                                                })
+                                            }} />
+                                        </div>}
                                     </div>
                                 )
                             })
                         }
 
                         {
-                            giftTips.map((item, index) => {
+                            items.slice(-2).map((item, index) => {
                                 const Positions = [{
                                     left: 12,
                                     top: 301
@@ -395,10 +414,17 @@ export default function Cave() {
                                         style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
                                         className={clsx("absolute cursor-pointer cave-tip", index === 0 ? "w-[125px]" : "w-[108px]")}
                                         onClick={(e) => {
-                                            tipClick(e, giftTips[index])
+                                            tipClick(e, giftBoxTips[index])
                                         }}
                                     >
-                                        <img src={index === 0 ? "/images/cave/christmas/gift_box_1.png" : "/images/cave/christmas/gift_box_2.png"} alt="gift" />
+                                        <img src={index === 0 ? `/images/cave/christmas/gift_box_1${item.pc_item ? '_has' : ''}.png` : `/images/cave/christmas/gift_box_2${item.pc_item ? '_has' : ''}.png`} alt="giftBox" />
+                                        {item.pc_item && <div className="absolute bottom-[15px] left-[50%] translate-x-[-50%]">
+                                            <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
+                                                setEqu({
+                                                    car: isChecked ? item.category : 0
+                                                })
+                                            }} />
+                                        </div>}
                                     </div>
                                 )
                             })
@@ -576,7 +602,7 @@ export default function Cave() {
             </div>
             <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
             <div className=" pointer-events-none absolute w-[50%] h-[45%] bottom-[0px] right-[-150px] bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
-            <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} />
+            <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} items={items} />
             <Welcome show={store.welcomeShow} onClose={() => { store.set({ welcomeShow: false }) }} />
             {
                 tipShow && <Tips msg={tipMsg} location={tipLocation} />
@@ -584,6 +610,7 @@ export default function Cave() {
 
             <NftModal
                 visible={nftVisible}
+                nfts={nfts}
                 onClose={() => {
                     setNftVisible(false)
                 }}

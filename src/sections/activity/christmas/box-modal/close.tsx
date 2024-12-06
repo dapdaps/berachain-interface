@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import CloseBox from "./close-box";
 import { motion } from "framer-motion";
 
-export default function CloseStatus({ onOpen }: any) {
+export default function CloseStatus({ box, loading, onOpen, onClose }: any) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -14,19 +14,22 @@ export default function CloseStatus({ onOpen }: any) {
         Merry Christmas!
       </div>
       <div className="text-[14px] font-medium mt-[6px]">
-        You got <span className="font-bold">1</span> gift box from BeraTown
+        You got <span className="font-bold">{box}</span> gift box from BeraTown
       </div>
       <div className="flex items-center gap-[12px] mt-[18px]">
         <Button
           type="primary"
-          className="w-[140px] h-[50px] text-[18px] font-semibold"
+          className="w-[140px] h-[50px] text-[18px] font-semibold flex justify-center items-center"
           onClick={onOpen}
+          loading={loading}
+          isOnlyLoading
         >
           Open it
         </Button>
         <Button
           type="primary"
           className="w-[140px] h-[50px] text-[18px] font-semibold"
+          onClick={onClose}
         >
           Later
         </Button>
