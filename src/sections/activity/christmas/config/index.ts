@@ -381,3 +381,7 @@ export const DAppQuests: any = {
     ],
   },
 };
+
+export const SnowToken = [{}];
+
+export const protocols = ["Kodiak"];
