@@ -1,10 +1,18 @@
+import { useContext } from 'react';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
+import { numberFormatter } from '@/utils/number-formatter';
+
 const Summary = () => {
+  const {
+    info,
+  } = useContext(ChristmasContext);
+
   const summaries = [
-    { id: 1, label: 'Total prize value', value: '$1.25M', underline: true },
-    { id: 2, label: 'Total participants', value: '25,668' },
-    { id: 3, label: 'Total boxes earned', value: '25,668' },
-    { id: 4, label: 'Total $snowflake earned', value: '25,668' },
-    { id: 5, label: 'Total yap generated', value: '25,668' },
+    { id: 1, label: 'Total prize value', value: numberFormatter(1250000, 2, true, { isShort: true, prefix: '$' }), underline: true },
+    { id: 2, label: 'Total participants', value: numberFormatter(info?.total_users, 0, true) },
+    { id: 3, label: 'Total boxes earned', value: numberFormatter(info?.total_box, 0, true) },
+    { id: 4, label: 'Total $snowflake earned', value: numberFormatter(info?.total_token, 0, true) },
+    { id: 5, label: 'Total yap generated', value: numberFormatter(info?.total_yap, 0, true) },
   ];
 
   return (

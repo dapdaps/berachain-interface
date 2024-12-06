@@ -19,9 +19,9 @@ const GiftBox = () => {
     getUserInfo,
     currentTimestamp,
   } = useContext(ChristmasContext);
-  const list = [...new Array(21)].map((_, i) => ({
+  const list = [...new Array(userInfo?.total_box || 0)].map((_, i) => ({
     id: i + 1,
-    status: i % 5 === 0 ? 'opened' : 'un_open',
+    status: 'un_open',
   }));
   const sortedList = createPyramid(list);
 
@@ -82,6 +82,7 @@ const GiftBox = () => {
             <Button
               type="black"
               onClick={() => {
+                getUserInfo?.();
               }}
             >
               Check My Gift
@@ -90,7 +91,7 @@ const GiftBox = () => {
               onClick={() => {
               }}
             >
-              <div>Open them all</div>
+              <div>Open 10 Boxes</div>
               <img
                 src="/images/activity/christmas/star-your-box.svg"
                 alt=""
@@ -101,7 +102,7 @@ const GiftBox = () => {
         </BoxTitle>
         <BoxTitle
           label="Your $Snowflake"
-          value="0"
+          value={userInfo?.total_token || 0}
         >
           <Button
             onClick={() => {

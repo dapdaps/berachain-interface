@@ -106,6 +106,9 @@ const Quest = () => {
                             type="primary"
                             addon="arrow"
                             className="!absolute !right-0 !bottom-0"
+                            onClick={() => {
+                              window?.open('https://citadel-one.medium.com/a-deep-dive-into-berachains-proof-of-liquidity-d87cc627ee4a');
+                            }}
                           >
                             Open
                           </Button>
