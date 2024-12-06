@@ -49,7 +49,7 @@ const QuestView = () => {
       <div className="mt-[10px] text-[18px]">
         Interact with popular dApps in Berachain on DapDap, or explore hot projects to win Xmas gift boxes.
       </div>
-      <div className="w-[1232px] mx-auto pt-[59px]">
+      <div className="w-[1232px] mx-auto pt-[59px]" id="beratownActivityChristmasQuestTabs">
         <div className="flex justify-center items-center gap-[156px]">
           {
             TABS.map((tab: any) => (

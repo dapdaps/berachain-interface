@@ -40,7 +40,7 @@ const GiftBox = () => {
     setOpenData(args);
     getUserInfo?.();
   });
-  const list = [...new Array(userInfo?.total_box || 0)]
+  const list = [...new Array(remainBox || 0)]
     .slice(0, 21)
     .map((_, i) => ({
       id: i + 1,
