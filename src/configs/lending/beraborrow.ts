@@ -4,6 +4,7 @@ import kodiak from '@/configs/swap/kodiak';
 const basic = {
   name: 'Beraborrow',
   icon: '/images/dapps/beraborrow.png',
+  path: '/lending/beraborrow',
 };
 
 const networks = {
