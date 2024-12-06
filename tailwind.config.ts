@@ -12,7 +12,8 @@ const config: Config = {
   theme: {
     fontFamily: {
       Montserrat: ["Montserrat"],
-      CherryBomb: ["Cherry Bomb"]
+      CherryBomb: ["Cherry Bomb"],
+      Fuzzy: ["Fuzzy"]
     },
     backgroundImage: {
       vault: "linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)",

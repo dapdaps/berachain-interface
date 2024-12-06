@@ -1,7 +1,7 @@
 import BasicButton from "@/components/button";
 import clsx from "clsx";
 
-export default function Button({ children, className, style, onClick }: any) {
+export default function Button({ children, className, ...rest }: any) {
   return (
     <BasicButton
       type="primary"
@@ -10,8 +10,7 @@ export default function Button({ children, className, style, onClick }: any) {
         "flex justify-center items-center gap-[6px] w-[168px] h-[46px] shadow-shadow2 text-[16px] font-semibold",
         className
       )}
-      style={style}
-      onClick={onClick}
+      {...rest}
     >
       {children}
     </BasicButton>

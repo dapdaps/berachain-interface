@@ -9,13 +9,13 @@ import checkGas from "./checkGas";
 import formatTrade from "./formatTrade";
 import getWrapOrUnwrapTx from "./getWrapOrUnwrapTx";
 
-export default function useTrade({ chainId, template, onSuccess }: any) {
+export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const slippage: any = useSettingsStore((store: any) => store.slippage);
   const [loading, setLoading] = useState(false);
   const [trade, setTrade] = useState<any>();
   const { account, provider } = useAccount();
   const toast = useToast();
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction(from || "dapp");
   const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
   const prices = {};
@@ -95,7 +95,9 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         if (typeof template === "string") {
           params.template = template;
         } else {
-          params.templates = template;
+          params.templates = template.filter(
+            (item: string) => item !== "Ooga Booga"
+          );
         }
 
         const response = await fetch("https://test-api.dapdap.net/quoter", {

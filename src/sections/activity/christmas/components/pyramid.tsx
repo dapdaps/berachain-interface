@@ -1,62 +1,59 @@
-import Button from '@/sections/activity/christmas/components/button';
+import Button from "@/sections/activity/christmas/components/button";
 
 const Pyramid = (props: any) => {
-  const { list } = props;
+  const { list, onBoxClick } = props;
 
   return (
     <div className="flex justify-center items-center w-full h-full">
       <div
         className="flex flex-col items-center absolute left-1/2 -translate-x-1/2"
         style={{
-          transform: `translateX(-50%) translateY(${(203 - 110) * (Math.max(0, list.length - 1))}px)`
+          transform: `translateX(-50%) translateY(${
+            (203 - 110) * Math.max(0, list.length - 1)
+          }px)`
         }}
       >
-        {
-          list.reverse().map((row: any, index: number) => (
-            <div
-              key={`row-${index}`}
-              className="flex justify-center items-center mb-[-100px]"
-              style={{
-                transform: `translateY(-${100 * index}%)`
-              }}
-            >
-              {
-                row.map((item: any, idx: number) => {
-                  const disabled = item.status === 'opened';
-                  return (
-                    <div
-                      key={`col-${idx}`}
-                      className="flex justify-center items-center w-[155px] h-[203px] ml-[-10px] bg-[url('/images/activity/christmas/gift-box.svg')] bg-no-repeat bg-center bg-contain"
-                    >
-                      <Button
-                        key={`col-btn-${idx}`}
-                        className="!px-[20px] translate-y-[20px]"
-                        disabled={disabled}
-                        motionProps={{
-                          variants: {
-                            'visible': {
-                              opacity: 1,
-                            },
-                            'hidden': {
-                              opacity: 0,
-                            },
-                          },
-                          initial: 'hidden',
-                          animate: disabled ? 'visible' : 'hidden',
-                          whileHover: 'visible',
-                        }}
-                      >
-                        {
-                          disabled ? 'Opened' : 'Open it'
+        {list.reverse().map((row: any, index: number) => (
+          <div
+            key={`row-${index}`}
+            className="flex justify-center items-center mb-[-100px]"
+            style={{
+              transform: `translateY(-${100 * index}%)`
+            }}
+          >
+            {row.map((item: any, idx: number) => {
+              const disabled = item.status === "opened";
+              return (
+                <div
+                  key={`col-${idx}`}
+                  className="flex justify-center items-center w-[155px] h-[203px] ml-[-10px] bg-[url('/images/activity/christmas/gift-box.svg')] bg-no-repeat bg-center bg-contain"
+                >
+                  <Button
+                    key={`col-btn-${idx}`}
+                    className="!px-[20px] translate-y-[20px]"
+                    disabled={disabled}
+                    motionProps={{
+                      variants: {
+                        visible: {
+                          opacity: 1
+                        },
+                        hidden: {
+                          opacity: 0
                         }
-                      </Button>
-                    </div>
-                  );
-                })
-              }
-            </div>
-          ))
-        }
+                      },
+                      initial: "hidden",
+                      animate: disabled ? "visible" : "hidden",
+                      whileHover: "visible"
+                    }}
+                    onClick={onBoxClick}
+                  >
+                    {disabled ? "Opened" : "Open it"}
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -83,7 +80,7 @@ export const createPyramid = (list: any) => {
   let lastRowNum = 1;
   let count = 1;
   let totals = list.length;
-  while(totals > 0) {
+  while (totals > 0) {
     totals -= 1;
     if (count > lastRowNum) {
       lastRowNum += 1;
@@ -108,6 +105,6 @@ export const createPyramid = (list: any) => {
       lastRowCount -= 1;
     }
   }
-  console.log('total: %o, result: %o', list.length, rows);
+  console.log("total: %o, result: %o", list.length, rows);
   return rows;
 };

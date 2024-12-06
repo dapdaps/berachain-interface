@@ -1,6 +1,13 @@
-export default function Bg({ children }: any) {
+import clsx from "clsx";
+
+export default function Bg({ children, className }: any) {
   return (
-    <div className="relative w-[340px] rounded-[24px] border border-black bg-[#B5956E] shadow-shadow1">
+    <div
+      className={clsx(
+        "relative w-[340px] rounded-[24px] border border-black bg-[#B5956E] shadow-shadow1",
+        className
+      )}
+    >
       <div className="relative z-[2] pb-[28px]">{children}</div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +15,7 @@ export default function Bg({ children }: any) {
         height="342"
         viewBox="0 0 338 342"
         fill="none"
-        className="absolute z-[1] top-0 opacity-50"
+        className="absolute z-[1] top-0 opacity-50 w-full h-[90%]"
       >
         <path
           fillRule="evenodd"

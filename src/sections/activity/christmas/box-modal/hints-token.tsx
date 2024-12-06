@@ -8,8 +8,14 @@ export default function TokenHints({ amount }: any) {
         Trade now or hold? Up to you 😏 You got{" "}
       </div>
       <div className="w-[233px] flex justify-around">
-        <button className="text-[16px] font-bold underline">Bex</button>
-        <button className="text-[16px] font-bold underline">Kodiak</button>
+        {/* <button className="text-[16px] font-bold underline">Bex</button> */}
+        <a
+          href="/dex/kodiak"
+          target="_blank"
+          className="text-[16px] font-bold underline"
+        >
+          Kodiak
+        </a>
       </div>
     </>
   );
