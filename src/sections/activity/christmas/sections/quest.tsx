@@ -5,25 +5,39 @@ import ProjectCard from '@/sections/activity/christmas/components/project-card';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import Button from '@/sections/activity/christmas/components/button';
 import Skeleton from 'react-loading-skeleton';
+import TaskModal from '@/sections/activity/christmas/task-modal';
+import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
 
 const TABS = [
-  { key: 1, title: 'Interact with dApps' },
-  { key: 2, title: 'Explore Projects' },
+  { key: 1, title: 'Get Familiar With DeFi And POL' },
+  { key: 2, title: 'Explore The Ecosystem' },
 ];
 
-const Quest = () => {
+const QuestView = () => {
   const {
     dAppVaultsQuest,
     dAppSwapAndLiquidityQuest,
     dAppLendingQuest,
     handleQuestCheck,
     questLoading,
+    ecosystemQuest,
   } = useContext(ChristmasContext);
 
   const [currentTab, setCurrentTab] = useState(TABS[0]);
+  const [ecosystemQuestVisible, setEcosystemQuestVisible] = useState(false);
+  const [ecosystemQuestData, setEcosystemQuestData] = useState<Partial<Quest>>();
 
   const handleTab = (tab: any) => {
     setCurrentTab(tab);
+  };
+
+  const handleEcosystemQuest = (quest: Partial<Quest>) => {
+    setEcosystemQuestData(quest);
+    setEcosystemQuestVisible(true);
+  };
+
+  const handleEcosystemQuestCheck = (quest: Partial<Quest>) => {
+    handleQuestCheck?.(quest);
   };
 
   return (
@@ -185,16 +199,16 @@ const Quest = () => {
                 >
                   <section className="">
                     <div className="grid grid-cols-5 gap-x-[16px] gap-y-[36px] mt-[15px]">
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
-                      <ProjectCard />
+                      {
+                        ecosystemQuest?.map((it) => (
+                          <ProjectCard
+                            key={it.id}
+                            {...it}
+                            onOpen={() => handleEcosystemQuest(it)}
+                            onReload={() => handleEcosystemQuestCheck(it)}
+                          />
+                        ))
+                      }
                     </div>
                   </section>
                 </motion.div>
@@ -203,8 +217,16 @@ const Quest = () => {
           </AnimatePresence>
         </div>
       </div>
+      <TaskModal
+        visible={ecosystemQuestVisible}
+        {...ecosystemQuestData}
+        onClose={() => {
+          setEcosystemQuestVisible(false);
+          setEcosystemQuestData(void 0);
+        }}
+      />
     </div>
   );
 };
 
-export default Quest;
+export default QuestView;

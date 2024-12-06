@@ -6,6 +6,7 @@ import { useAuthCheck } from '@/hooks/use-auth-check';
 import Big from 'big.js';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import { dAppsInfo } from '@/configs/dapp';
+import { EcosystemQuests } from '@/sections/activity/christmas/config';
 
 const DAPP_ACTIONS: any = {
   Swap: 'Trade',
@@ -41,22 +42,26 @@ export function useQuest(): IQuest {
     return questList.find((it) => it.category === QuestCategory.Social && it.name?.toLowerCase() === 'follow beratown on x');
   }, [questList]);
 
-  const findSpecifiedTypeQuest = (category: QuestCategory, actionType: string[]) => {
+  const findSpecifiedTypeQuest = (categories: QuestCategory[], actionType?: string[]) => {
     return questList.filter((it) => {
-      return it.category === category && it.action_type && actionType.includes(it.action_type);
+      return categories.includes(it.category as QuestCategory) && (actionType ? it.action_type && actionType?.includes(it.action_type) : true);
     });
   };
 
   const dAppSwapAndLiquidityQuest = useMemo(() => {
-    return findSpecifiedTypeQuest(QuestCategory.DApp, ['Swap', 'Liquidity']);
+    return findSpecifiedTypeQuest([QuestCategory.DApp], ['Swap', 'Liquidity']);
   }, [questList]);
 
   const dAppLendingQuest = useMemo(() => {
-    return findSpecifiedTypeQuest(QuestCategory.DApp, ['Lending']);
+    return findSpecifiedTypeQuest([QuestCategory.DApp], ['Lending']);
   }, [questList]);
 
   const dAppVaultsQuest = useMemo(() => {
-    return findSpecifiedTypeQuest(QuestCategory.DApp, ['Staking', 'Delegate']);
+    return findSpecifiedTypeQuest([QuestCategory.DApp], ['Staking', 'Delegate']);
+  }, [questList]);
+
+  const ecosystemQuest = useMemo(() => {
+    return findSpecifiedTypeQuest([QuestCategory.TokenBalance, QuestCategory.Learn, QuestCategory.View, QuestCategory.Wallet]);
   }, [questList]);
 
   const getQuestVisited = (id?: number) => {
@@ -73,7 +78,10 @@ export function useQuest(): IQuest {
     const _questList: Partial<Quest>[] = res.data || [];
     const _latestQuestList: Partial<Quest>[] = [];
     _questList.forEach((it) => {
+      const questIdx = _latestQuestList.findIndex((_it) => _it.name === it.name);
+
       it.completed = Big(it.total_box || 0).gte(it.box || 1);
+
       if (it.category === QuestCategory.DApp) {
         it.checkIds = [it.id as number];
         it.dappInfo = {
@@ -108,7 +116,6 @@ export function useQuest(): IQuest {
             it.actions[0].path = currDApp.path + '/pools';
           }
         }
-        const questIdx = _latestQuestList.findIndex((_it) => _it.name === it.name);
         // ⚠️ merge data for the same DApp that may have multiple tasks
         if (questIdx > -1) {
           _latestQuestList[questIdx].box = (_latestQuestList[questIdx].box || 0) + (it.box || 0);
@@ -122,7 +129,35 @@ export function useQuest(): IQuest {
         _latestQuestList.push(it);
         return;
       }
+
+      if (it.name && EcosystemQuests[it.name]) {
+        it.missions = [it];
+        it.ecosystemInfo = EcosystemQuests[it.name];
+        it.socials = EcosystemQuests[it.name].socials;
+        it.description = EcosystemQuests[it.name].missions?.[it.category as string]?.text;
+        it.missionAction = EcosystemQuests[it.name].missions?.[it.category as string]?.action;
+
+        if (it.name === 'Beraji') {
+          it.description = EcosystemQuests[it.name].missions?.wallet1?.text;
+          it.missionAction = EcosystemQuests[it.name].missions?.wallet1?.action;
+        }
+      }
+      // ⚠️ merge data for the same name that may have multiple tasks
+      if (questIdx > -1) {
+        _latestQuestList[questIdx].missions?.push(it);
+        _latestQuestList[questIdx].missions?.sort?.((a, b) => (a.id as number) - (b.id as number))
+        return;
+      }
+
       _latestQuestList.push(it);
+    });
+    _latestQuestList.forEach((it) => {
+      if (it.name === 'Beraji') {
+        it.missions?.forEach?.((_it, idx) => {
+          _it.description = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.text;
+          _it.missionAction = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.action;
+        });
+      }
     });
     setQuestList(_latestQuestList);
     setLoading(false);
@@ -228,6 +263,7 @@ export function useQuest(): IQuest {
     dAppSwapAndLiquidityQuest,
     dAppLendingQuest,
     dAppVaultsQuest,
+    ecosystemQuest,
   };
 }
 
@@ -239,6 +275,7 @@ export interface IQuest {
   dAppSwapAndLiquidityQuest: Partial<Quest>[];
   dAppLendingQuest: Partial<Quest>[];
   dAppVaultsQuest: Partial<Quest>[];
+  ecosystemQuest: Partial<Quest>[];
   getQuestVisited(id?: number): boolean;
   handleQuestCheck(quest?: Partial<Quest>): void;
   handleQuest(quest?: Partial<Quest>): void;
@@ -271,10 +308,15 @@ export interface Quest {
   total_box: number;
   url: string | null;
 
+  description?: string;
+  missionAction?: string;
   completed?: boolean;
   checking?: boolean;
   total_completed_times?: number;
   dappInfo?: { name: string; icon?: number; category: string; path?: string; };
   checkIds?: number[];
   actions?: { text: string; box?: number; path?: string; }[];
+  ecosystemInfo?: { categories?: string[]; icon?: string; banner?: string; description?: string; };
+  missions?: Partial<Quest>[];
+  socials?: { label?: string; link?: string; }[];
 }
