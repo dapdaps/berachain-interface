@@ -167,9 +167,9 @@ export function Item(props: any) {
       {
         !isCollateralRatio && (
           <div className="flex items-center gap-[5px]">
-            <div className={`${!!newValue ? 'text-[#3D405A]' : ''}`}>{value}</div>
+            <div className={`${!!newValue && newValue !== '0' ? 'text-[#3D405A]' : ''}`}>{value}</div>
             {
-              !!newValue && (
+              !!newValue && newValue !== '0' && (
                 <>
                   <img src="/images/icon-arrow.svg" alt="" className="w-[10px] -rotate-90" />
                   <div className="">{newValue}</div>

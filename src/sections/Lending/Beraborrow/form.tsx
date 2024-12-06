@@ -71,7 +71,7 @@ export const Form = (props: any) => {
   const calcTotalBorrowAmount = (_borrowAmount?: string) => {
     if (type === ActionText.Borrow) {
       let _debtValue = Big(market.borrowed || 0).plus(Big(_borrowAmount || 0).plus(Big(_borrowAmount || 0).times(borrowingFee)));
-      if (market.status !== 'open') {
+      if (market.status !== 'open' && Big(_debtValue).gt(0)) {
         _debtValue = Big(_debtValue).plus(liquidationReserve);
       }
       return numberRemoveEndZero(_debtValue.toFixed(market?.borrowToken.decimals, Big.roundDown));
