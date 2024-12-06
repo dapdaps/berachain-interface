@@ -3,6 +3,7 @@ import { beraB } from '@/configs/tokens/bera-bArtio';
 export default {
   name: 'Berps',
   icon: '/images/dapps/infrared/berps.svg',
+  path: '/staking/berps?id=BHONEY',
   chains: {
     80084: {
       description: 'Deposit HONEY in exchange for bHONEY, stakers receive fees from each trade placed on the platform. bHONEY Accumulates these fees in real-time.',

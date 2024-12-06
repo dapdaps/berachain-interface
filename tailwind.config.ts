@@ -16,7 +16,7 @@ const config: Config = {
     },
     backgroundImage: {
       vault: "linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)",
-      christmas: "linear-gradient(180deg, #000 0%, #455972 100%)",
+      christmas: "linear-gradient(180deg, #000 0%, #455972 30%)",
       snow: "radial-gradient(3px 3px at 100px 50px, #fff, transparent), radial-gradient(4px 4px at 200px 150px, #fff, transparent), radial-gradient(5px 5px at 300px 80px, #fff, transparent), radial-gradient(6px 6px at 400px 130px, #fff, transparent), radial-gradient(3px 3px at 540px 480px, #fff, transparent), radial-gradient(4px 4px at 50px 230px, #fff, transparent), radial-gradient(5px 5px at 120px 680px, #fff, transparent), radial-gradient(6px 6px at 223px 430px, #fff, transparent), radial-gradient(3px 3px at 700px 300px, #fff, transparent), radial-gradient(4px 4px at 760px 550px, #fff, transparent), radial-gradient(5px 5px at 550px 280px, #fff, transparent), radial-gradient(6px 6px at 650px 630px, #fff, transparent)"
     },
     extend: {

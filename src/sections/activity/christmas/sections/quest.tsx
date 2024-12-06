@@ -1,7 +1,9 @@
-import DappCard from '@/sections/activity/christmas/components/dapp-card';
+import DappCard, { DappCardWrapper } from '@/sections/activity/christmas/components/dapp-card';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import ProjectCard from '@/sections/activity/christmas/components/project-card';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
+import Button from '@/sections/activity/christmas/components/button';
 
 const TABS = [
   { key: 1, title: 'Interact with dApps' },
@@ -9,6 +11,13 @@ const TABS = [
 ];
 
 const Quest = () => {
+  const {
+    dAppVaultsQuest,
+    dAppSwapAndLiquidityQuest,
+    dAppLendingQuest,
+    handleQuestCheck,
+  } = useContext(ChristmasContext);
+
   const [currentTab, setCurrentTab] = useState(TABS[0]);
 
   const handleTab = (tab: any) => {
@@ -68,10 +77,28 @@ const Quest = () => {
                       Trade $ Liquidity
                     </div>
                     <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
-                      <DappCard />
-                      <DappCard />
-                      <DappCard />
-                      <DappCard />
+                      {
+                        dAppSwapAndLiquidityQuest?.map((it) => (
+                          <DappCard
+                            key={it.id}
+                            {...it}
+                            {...it.dappInfo}
+                            onCheck={() => handleQuestCheck?.(it)}
+                            actions={it.actions}
+                          />
+                        ))
+                      }
+                      <DappCardWrapper>
+                        <div className="w-full h-full relative bg-[url('/images/activity/christmas/what-is-pol.svg')] bg-no-repeat bg-center bg-contain">
+                          <Button
+                            type="primary"
+                            addon="arrow"
+                            className="!absolute !right-0 !bottom-0"
+                          >
+                            Open
+                          </Button>
+                        </div>
+                      </DappCardWrapper>
                     </div>
                   </section>
                   <section className="mt-[56px]">
@@ -79,9 +106,16 @@ const Quest = () => {
                       Lending
                     </div>
                     <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
-                      <DappCard />
-                      <DappCard />
-                      <DappCard />
+                      {
+                        dAppLendingQuest?.map((it) => (
+                          <DappCard
+                            key={it.id}
+                            {...it}
+                            {...it.dappInfo}
+                            onCheck={() => handleQuestCheck?.(it)}
+                          />
+                        ))
+                      }
                     </div>
                   </section>
                   <section className="mt-[56px]">
@@ -89,9 +123,16 @@ const Quest = () => {
                       Vaults
                     </div>
                     <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
-                      <DappCard />
-                      <DappCard />
-                      <DappCard />
+                      {
+                        dAppVaultsQuest?.map((it) => (
+                          <DappCard
+                            key={it.id}
+                            {...it}
+                            {...it.dappInfo}
+                            onCheck={() => handleQuestCheck?.(it)}
+                          />
+                        ))
+                      }
                     </div>
                   </section>
                 </motion.div>

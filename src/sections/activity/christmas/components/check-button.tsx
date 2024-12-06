@@ -1,6 +1,6 @@
 import Refresh from "@/components/icons/refresh";
 import clsx from "clsx";
-export default function CheckButton({ checked, number, className }: any) {
+export default function CheckButton({ checked, number, className, checking, onClick }: any) {
   return (
     <div
       className={clsx(
@@ -9,7 +9,7 @@ export default function CheckButton({ checked, number, className }: any) {
         className
       )}
     >
-      <div className="text-[14px] font-semibold ml-[16px] mt-[4px]">
+      <div className="text-[14px] font-semibold h-full flex-1 flex items-center pl-[11px]">
         {number} boxes
       </div>
       {checked ? (
@@ -19,7 +19,7 @@ export default function CheckButton({ checked, number, className }: any) {
           height="26"
           viewBox="0 0 26 26"
           fill="none"
-          className="absolute right-[3px] top-[3px]"
+          className="absolute right-[3px] top-[3px] shrink-0"
         >
           <g filter="url(#filter0_d_27056_6271)">
             <circle cx="11.5" cy="11.5" r="10.5" fill="#69E371" />
@@ -69,8 +69,11 @@ export default function CheckButton({ checked, number, className }: any) {
           </defs>
         </svg>
       ) : (
-        <div className="w-[22px] h-[22px] border border-black rounded-full bg-[#FFDC50] flex items-center justify-center absolute right-[4px] top-[4px]">
-          <Refresh refreshing={false} />
+        <div
+          className="shrink-0 w-[22px] h-[22px] border border-black rounded-full bg-[#FFDC50] flex items-center justify-center absolute right-[4px] top-[4px] drop-shadow-[3px_3px_0px_rgba(0,_0,_0,_0.25)]"
+          onClick={onClick}
+        >
+          <Refresh refreshing={checking} />
         </div>
       )}
     </div>

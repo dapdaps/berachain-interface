@@ -1,11 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import useCustomAccount from '@/hooks/use-account';
 import { get } from '@/utils/http';
 import { useQuestStore } from '@/sections/activity/christmas/stores/use-quest-store';
 import { useAuthCheck } from '@/hooks/use-auth-check';
 import Big from 'big.js';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
+import { dAppsInfo } from '@/configs/dapp';
+
+const DAPP_ACTIONS: any = {
+  Swap: 'Trade',
+  Liquidity: 'Deposit',
+  Lending: 'Lend',
+  Staking: 'Deposit',
+  Delegate: 'Deposit',
+};
 
 export function useQuest(): IQuest {
+  const {
+    getUserInfo,
+  } = useContext(ChristmasContext);
+
   const { account, provider } = useCustomAccount();
   const { onAuthCheck } = useAuthCheck();
   const questVisited = useQuestStore((store) => store.visited);
@@ -20,6 +34,24 @@ export function useQuest(): IQuest {
     return questList.find((it) => it.category === QuestCategory.Social && it.name?.toLowerCase() === 'follow beratown on x');
   }, [questList]);
 
+  const findSpecifiedTypeQuest = (category: QuestCategory, actionType: string[]) => {
+    return questList.filter((it) => {
+      return it.category === category && it.action_type && actionType.includes(it.action_type);
+    });
+  };
+
+  const dAppSwapAndLiquidityQuest = useMemo(() => {
+    return findSpecifiedTypeQuest(QuestCategory.DApp, ['Swap', 'Liquidity']);
+  }, [questList]);
+
+  const dAppLendingQuest = useMemo(() => {
+    return findSpecifiedTypeQuest(QuestCategory.DApp, ['Lending']);
+  }, [questList]);
+
+  const dAppVaultsQuest = useMemo(() => {
+    return findSpecifiedTypeQuest(QuestCategory.DApp, ['Staking', 'Delegate']);
+  }, [questList]);
+
   const getQuestVisited = (id?: number) => {
     return _getQuestVisited({ id, account });
   };
@@ -32,10 +64,43 @@ export function useQuest(): IQuest {
       return;
     }
     const _questList: Partial<Quest>[] = res.data || [];
+    const _latestQuestList: Partial<Quest>[] = [];
     _questList.forEach((it) => {
       it.completed = Big(it.total_box || 0).gte(it.box || 1);
+      if (it.category === QuestCategory.DApp) {
+        it.checkIds = [it.id as number];
+        it.dappInfo = {
+          name: it.name as string,
+          category: it.action_type === 'Swap' ? 'Dex' : (it.action_type as string),
+        };
+        it.actions = [
+          { text: it.action_type ? DAPP_ACTIONS[it.action_type] : 'Trade', box: it.box },
+        ];
+        const currDApp = dAppsInfo.find((_it) => _it.name.toLowerCase() === it.name?.toLowerCase?.());
+        if (currDApp) {
+          it.dappInfo = {
+            ...it.dappInfo,
+            ...currDApp,
+          };
+          it.actions[0].path = currDApp.path;
+        }
+        const questIdx = _latestQuestList.findIndex((_it) => _it.name === it.name);
+        // ⚠️ merge data for the same DApp that may have multiple tasks
+        if (questIdx > -1) {
+          _latestQuestList[questIdx].box = (_latestQuestList[questIdx].box || 0) + (it.box || 0);
+          _latestQuestList[questIdx].total_box = (_latestQuestList[questIdx].total_box || 0) + (it.total_box || 0);
+          _latestQuestList[questIdx].checkIds?.push(it.id as number);
+          if (!_latestQuestList[questIdx].actions?.some((_ac) => _ac.text === it.actions?.[0]?.text)) {
+            _latestQuestList[questIdx].actions?.push(it.actions[0]);
+          }
+          return;
+        }
+        _latestQuestList.push(it);
+        return;
+      }
+      _latestQuestList.push(it);
     });
-    setQuestList(_questList);
+    setQuestList(_latestQuestList);
     setLoading(false);
   };
 
@@ -52,23 +117,45 @@ export function useQuest(): IQuest {
   const handleQuestCheck = async (quest: Partial<Quest>) => {
     if (!quest || quest?.checking || !quest?.id) return;
     handleQuestUpdate(quest, { checking: true });
-    const params = {
-      id: quest.id,
-      account,
+    const requestCheck = (_id: number) => {
+      const params = {
+        id: _id,
+        account,
+      };
+      return get('/api/mas/quest/check', params);
     };
-    const res = await get('/api/mas/quest/check', params);
-    if (res.code !== 0) {
-      handleQuestUpdate(quest, { checking: false });
-      return;
+
+    let totalBox = 0;
+    let totalCompletedTimes = 0;
+
+    // ⚠️ merge data for the same DApp that may have multiple tasks
+    if (quest.checkIds?.length) {
+      const checks = quest.checkIds.map((_id) => requestCheck(_id));
+      const res = await Promise.all(checks);
+      res.forEach((_res) => {
+        const { total_box, total_completed_times } = _res.data || {};
+        totalBox += (total_box || 0);
+        totalCompletedTimes += (total_completed_times || 0);
+      });
+    } else {
+      const res = await requestCheck(quest.id);
+      if (res.code !== 0) {
+        handleQuestUpdate(quest, { checking: false });
+        return;
+      }
+      const { total_box, total_completed_times } = res.data || {};
+      totalBox = (total_box || 0);
+      totalCompletedTimes = (total_completed_times || 0);
     }
-    const { total_box, total_completed_times } = res.data || {};
-    const completed = Big(total_completed_times || 0).gte(quest.times || 1);
+
+    const completed = Big(totalBox || 0).gte(quest.box || 1);
     handleQuestUpdate(quest, {
-      total_box,
+      total_box: totalBox,
       completed,
-      total_completed_times,
+      total_completed_times: totalCompletedTimes,
       checking: false,
     });
+    getUserInfo?.();
   };
 
   const handleSocialQuest = (quest: Partial<Quest>) => {
@@ -114,6 +201,9 @@ export function useQuest(): IQuest {
     handleQuest,
     getQuestVisited,
     questVisited,
+    dAppSwapAndLiquidityQuest,
+    dAppLendingQuest,
+    dAppVaultsQuest,
   };
 }
 
@@ -122,6 +212,9 @@ export interface IQuest {
   questList: Partial<Quest>[];
   followXQuest?: Partial<Quest>;
   questVisited?: Record<number, boolean>;
+  dAppSwapAndLiquidityQuest: Partial<Quest>[];
+  dAppLendingQuest: Partial<Quest>[];
+  dAppVaultsQuest: Partial<Quest>[];
   getQuestVisited(id?: number): boolean;
   handleQuestCheck(quest?: Partial<Quest>): void;
   handleQuest(quest?: Partial<Quest>): void;
@@ -157,4 +250,7 @@ export interface Quest {
   completed?: boolean;
   checking?: boolean;
   total_completed_times?: number;
+  dappInfo?: { name: string; icon?: number; category: string; path?: string; };
+  checkIds?: number[];
+  actions?: { text: string; box?: number; path?: string; }[];
 }
