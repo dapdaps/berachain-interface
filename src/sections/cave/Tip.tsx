@@ -20,7 +20,7 @@ interface Props {
 }
 
 const textMap: any = {
-    'Bridge': 'Bridging', 
+    'Bridge': 'Bridging',
     'Swap': 'Swapping',
     'Delegate': 'Delegating',
     'Lending': 'Lending'
@@ -42,14 +42,14 @@ export default function Tips({ location, msg }: Props) {
             <img src={msg?.img} className="max-w-[100%] max-h-[100%]" />
         </div>
         <div className="text-[18px] text-[#F7F9EA] font-CherryBomb text-center " style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.name}</div>
-        <div className="text-[#fff] text-[12px] px-[10px] mt-[5px]">{msg.content}</div>
-        <div onClick={() => { 
+        <div className="text-[#fff] font-Montserrat text-[12px] px-[10px] mt-[5px] leading-[120%]">{msg.content}</div>
+        <div onClick={() => {
             if (msg.btnText === 'Delegate') {
                 router.push('/bgt')
             } else {
                 setModalShow(true);
             }
-         }} className="bg-[#FFF5A9] text-[#F7F9EA] mt-[15px] font-CherryBomb border-[2px] border-[#4B371F] text-center mx-[10px] rounded-[31px] cursor-pointer h-[32px] " ><span style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.btnText}</span></div>
+        }} className="bg-[#FFF5A9] text-[#F7F9EA] mt-[15px] font-CherryBomb border-[2px] border-[#4B371F] text-center mx-[10px] rounded-[31px] cursor-pointer h-[32px] " ><span style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.btnText}</span></div>
     </div>
         <Modal open={modalShow} closeIconClassName="right-[-10px] top-[-10px]" onClose={() => { setModalShow(false) }}>
             <div className=" border-[#000] rounded-[20px] bg-[#FFFDEB] p-[20px]">

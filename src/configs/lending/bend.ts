@@ -14,7 +14,8 @@ const basic = {
   name: 'Bend',
   type: 'aave-v3',
   loaderName: 'AaveV3',
-  icon: '/images/dapps/bend.svg'
+  icon: '/images/dapps/bend.svg',
+  path: '/lending/bend',
 };
 
 export const rewardToken = [

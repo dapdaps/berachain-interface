@@ -13,6 +13,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 import MobileLayout from '@/layouts/mobile';
 import { useTapSoundStore } from '@/stores/tap-sound';
 import TapSound from '@/components/tap-sound';
+import SceneContextProvider from '@/context/scene';
 
 export default function RootLayout({
   children
@@ -46,13 +47,15 @@ export default function RootLayout({
       <body className="md:overflow-hidden">
         <WagmiProvider>
           <SkeletonTheme baseColor='#7990F4' highlightColor='#FFDC50'>
-            <Suspense>
-              {isMobile ? (
-                <MobileLayout>{children}</MobileLayout>
-              ) : (
-                <MainLayout>{children}</MainLayout>
-              )}
-            </Suspense>
+            <SceneContextProvider>
+              <Suspense>
+                {isMobile ? (
+                  <MobileLayout>{children}</MobileLayout>
+                ) : (
+                  <MainLayout>{children}</MainLayout>
+                )}
+              </Suspense>
+            </SceneContextProvider>
           </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
