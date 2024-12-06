@@ -83,6 +83,9 @@ export function useQuest(): IQuest {
             ...currDApp,
           };
           it.actions[0].path = currDApp.path;
+          if (it.action_type === 'Liquidity') {
+            it.actions[0].path = currDApp.path + '/pools';
+          }
         }
         const questIdx = _latestQuestList.findIndex((_it) => _it.name === it.name);
         // ⚠️ merge data for the same DApp that may have multiple tasks
