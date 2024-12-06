@@ -200,12 +200,22 @@ const QuestView = () => {
                   <section className="">
                     <div className="grid grid-cols-5 gap-x-[16px] gap-y-[36px] mt-[15px]">
                       {
-                        ecosystemQuest?.map((it) => (
+                        !questLoading && ecosystemQuest?.map((it) => (
                           <ProjectCard
                             key={it.id}
                             {...it}
                             onOpen={() => handleEcosystemQuest(it)}
                             onReload={() => handleEcosystemQuestCheck(it)}
+                          />
+                        ))
+                      }
+                      {
+                        questLoading && [...new Array(10)].map((_, idx) => (
+                          <Skeleton
+                            key={idx}
+                            width={230}
+                            height={358}
+                            borderRadius={20}
                           />
                         ))
                       }
