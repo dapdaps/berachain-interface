@@ -10,6 +10,7 @@ import { useContext, useMemo, useState } from "react";
 import { ChristmasContext } from "@/sections/activity/christmas/context";
 import OpenModal from "../box-modal/open-modal";
 import OpenMultiModal from "../box-modal/open-multi-modal";
+import UserPresentsModal from "../user-presents-modal";
 import useOpenBox from "../hooks/use-open-box";
 
 const GiftBox = () => {
@@ -102,14 +103,16 @@ const GiftBox = () => {
           valueClassName="translate-x-[-20px]"
         >
           <div className="flex items-center gap-[18px]">
-            <Button
-              type="black"
+            <BasicButton
+              className="!bg-black border-[#FFDC50] !text-[#FFDC50]"
+              loading={userInfoLoading}
               onClick={() => {
                 getUserInfo?.();
+                setOpenType(3);
               }}
             >
               Check My Gift
-            </Button>
+            </BasicButton>
             <BasicButton
               onClick={() => {
                 setOpenType(2);
@@ -210,6 +213,15 @@ const GiftBox = () => {
           }}
           data={openData}
           loading={opening}
+        />
+      )}
+      {userInfo && openType === 3 && (
+        <UserPresentsModal
+          open={openType === 3}
+          onClose={() => {
+            setOpenType(0);
+          }}
+          data={userInfo}
         />
       )}
     </div>
