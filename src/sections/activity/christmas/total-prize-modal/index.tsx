@@ -3,11 +3,11 @@ import SnowIcon from "../present-icons/icon-snow";
 import Nft from "./nft";
 import config from "../present-icons/config";
 
-export default function TotalPrizeModal() {
+export default function TotalPrizeModal({ open, onClose }: any) {
   return (
     <Modal
-      open={true}
-      onClose={() => {}}
+      open={open}
+      onClose={onClose}
       closeIconClassName="right-[-14px] top-[-8px]"
     >
       <div className="w-[594px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[20px]">

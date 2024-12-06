@@ -5,7 +5,13 @@ import { useMemo, useState } from "react";
 import { NftIcon, ItemIcon, TokenIcon } from "./icons";
 import OpenModalYap from "./open-modal-yap";
 
-export default function BoxModal({ open: show, onClose, data, loading }: any) {
+export default function BoxModal({
+  open: show,
+  onClose,
+  onOpenSwapModal,
+  data,
+  loading
+}: any) {
   const [showYaps, setShowYaps] = useState(false);
   const [imgs, names, yaps, hasNft, hasItem, hasToken] = useMemo(() => {
     const _imgs: any = [];
@@ -75,9 +81,12 @@ export default function BoxModal({ open: show, onClose, data, loading }: any) {
               )}
               {hasToken && (
                 <div>
-                  <a href="/dex/kodiak" className="underline font-bold">
+                  <button
+                    onClick={onOpenSwapModal}
+                    className="underline font-bold"
+                  >
                     Trade $Snowflake now
-                  </a>{" "}
+                  </button>{" "}
                   or hold? Up to you 😏
                 </div>
               )}

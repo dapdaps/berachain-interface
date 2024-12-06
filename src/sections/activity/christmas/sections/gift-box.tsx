@@ -11,7 +11,9 @@ import { ChristmasContext } from "@/sections/activity/christmas/context";
 import OpenModal from "../box-modal/open-modal";
 import OpenMultiModal from "../box-modal/open-multi-modal";
 import UserPresentsModal from "../user-presents-modal";
+import SwapModal from "@/sections/swap/SwapModal";
 import useOpenBox from "../hooks/use-open-box";
+import { protocols, SnowToken } from "../config";
 
 const GiftBox = () => {
   const {
@@ -33,6 +35,7 @@ const GiftBox = () => {
   );
   const [openType, setOpenType] = useState(0);
   const [openData, setOpenData] = useState<any>();
+  const [showSwapModal, setShowSwapModal] = useState(false);
   const { loading: opening, onOpen } = useOpenBox((args: any) => {
     setOpenData(args);
     getUserInfo?.();
@@ -131,7 +134,12 @@ const GiftBox = () => {
           </div>
         </BoxTitle>
         <BoxTitle label="Your $Snowflake" value={userInfo?.total_token || 0}>
-          <Button onClick={() => {}} addon="arrow">
+          <Button
+            onClick={() => {
+              setShowSwapModal(true);
+            }}
+            addon="arrow"
+          >
             Trade now
           </Button>
         </BoxTitle>
@@ -213,6 +221,9 @@ const GiftBox = () => {
           }}
           data={openData}
           loading={opening}
+          onOpenSwapModal={() => {
+            setShowSwapModal(true);
+          }}
         />
       )}
       {userInfo && openType === 3 && (
@@ -222,6 +233,16 @@ const GiftBox = () => {
             setOpenType(0);
           }}
           data={userInfo}
+        />
+      )}
+      {showSwapModal && (
+        <SwapModal
+          show={showSwapModal}
+          defaultInputCurrency={SnowToken}
+          protocols={protocols}
+          onClose={() => {
+            setShowSwapModal(false);
+          }}
         />
       )}
     </div>
