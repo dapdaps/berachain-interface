@@ -3,7 +3,7 @@ import Button from "./button";
 import { useRouter } from 'next/navigation';
 
 export default function DappCard(props: any) {
-  const { name, icon, category, total_box, onCheck, checking, actions } = props;
+  const { total_box, onCheck, checking, actions, dappInfo } = props;
 
   const router = useRouter();
 
@@ -12,10 +12,10 @@ export default function DappCard(props: any) {
       <div>
         <div className="flex justify-between items-start">
           <div className="flex flex-1 gap-[10px]">
-            <img src={icon} className="w-[80px] h-[80px] rounded-[10px] shrink-0" />
+            <img src={dappInfo?.icon} className="w-[80px] h-[80px] rounded-[10px] shrink-0" />
             <div className="flex flex-1 w-0 flex-col gap-[4px] text-black text-left whitespace-nowrap">
-              <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%]">{name}</div>
-              <div className="text-[14px] font-medium">DeFi, {category}</div>
+              <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%]">{dappInfo?.name}</div>
+              <div className="text-[14px] font-medium">DeFi, {dappInfo?.category}</div>
             </div>
           </div>
           <CheckButton
@@ -27,9 +27,13 @@ export default function DappCard(props: any) {
           />
         </div>
         <ul className="mt-[20px] text-left text-black leading-[150%]">
-          <li className="text-[14px] font-medium list-disc">
-            Every swap (hot tokens / memecoins) will get 1 Christmas Gift Box.
-          </li>
+          {
+            dappInfo?.missions?.map?.((m: string, idx: number) => (
+              <li className="text-[14px] font-medium list-disc" key={idx}>
+                {m}
+              </li>
+            ))
+          }
         </ul>
       </div>
       <div className="flex gap-[16px]">

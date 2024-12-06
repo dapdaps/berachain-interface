@@ -5,7 +5,7 @@ import { useQuestStore } from '@/sections/activity/christmas/stores/use-quest-st
 import { useAuthCheck } from '@/hooks/use-auth-check';
 import Big from 'big.js';
 import { dAppsInfo } from '@/configs/dapp';
-import { EcosystemQuests } from '@/sections/activity/christmas/config';
+import { DAppQuests, EcosystemQuests } from '@/sections/activity/christmas/config';
 import { cloneDeep } from 'lodash';
 import { useBase } from '@/sections/activity/christmas/hooks/use-base';
 
@@ -97,6 +97,7 @@ export function useQuest(): IQuest {
         it.dappInfo = {
           name: it.name as string,
           category: it.action_type ? DAPP_CATEGORY[it.action_type] : (it.action_type as string),
+          missions: DAppQuests[it.name as string]?.missions,
         };
         it.actions = [
           { text: it.action_type ? DAPP_ACTIONS[it.action_type] : 'Trade', box: it.box },
@@ -399,7 +400,7 @@ export interface Quest {
   completed?: boolean;
   checking?: boolean;
   total_completed_times?: number;
-  dappInfo?: { name: string; icon?: number; category: string; path?: string; };
+  dappInfo?: { name: string; icon?: number; category: string; path?: string; missions?: string[]; };
   actions?: { text: string; box?: number; path?: string; }[];
   ecosystemInfo?: { categories?: string[]; icon?: string; banner?: string; description?: string; };
   missions?: Partial<Quest>[];

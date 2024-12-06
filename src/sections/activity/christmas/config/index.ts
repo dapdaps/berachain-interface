@@ -322,3 +322,66 @@ export const EcosystemQuests: any = {
   //   description: '-',
   // },
 };
+
+export const DAppQuests: any = {
+  'Marketplace': {
+    missions: [
+      '1 Gift Box for each swap to hot tokens/memecoins',
+    ],
+  },
+  'Kodiak': {
+    missions: [
+      '1 Gift Box for each swap',
+      '2 Gift Boxes for each LP deposit',
+    ],
+  },
+  'Bex': {
+    missions: [
+      '1 Gift Box for each swap',
+      '2 Gift Boxes for each LP deposit',
+    ],
+  },
+  'Ooga Booga': {
+    missions: [
+      '1 Gift Box for each swap',
+    ],
+  },
+  'Bend': {
+    missions: [
+      '2 Gift Boxes for each tokens deposit',
+      '2 Gift Boxes for each tokens borrowing',
+    ],
+  },
+  'Beraborrow': {
+    missions: [
+      '2 Gift Boxes for each tokens deposit',
+      '2 Gift Boxes for each tokens borrowing',
+    ],
+  },
+  'Dolomite': {
+    missions: [
+      '2 Gift Boxes for each tokens deposit',
+      '2 Gift Boxes for each tokens borrowing',
+    ],
+  },
+  'Infrared': {
+    missions: [
+      '1 Gift Box for staking iBGT to the iBGT vault',
+      '2 Gift Box for staking assets to any vault',
+    ],
+  },
+  'Berps': {
+    missions: [
+      '2 Gift Boxes for depositing $HONEY to the vault',
+    ],
+  },
+  'Top Validators': {
+    missions: [
+      '3 boxes for each 5 BGT delegated to the THJ validator or the Beradrome x THJ validator',
+    ],
+  },
+};
+
+export const SnowToken = [{}];
+
+export const protocols = ["Kodiak"];
