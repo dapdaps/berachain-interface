@@ -54,9 +54,10 @@ export default function OpenStatus({ data, remainBox, loading, onClick }: any) {
       {type === "nft" && <NftHints nft={item} />}
       <Button
         type="primary"
-        className="w-[233px] h-[50px] text-[18px] font-semibold mt-[10px]"
+        className="w-[233px] h-[50px] text-[18px] font-semibold mt-[10px] flex justify-center items-center"
         onClick={onClick}
         loading={loading}
+        isOnlyLoading
       >
         {remainBox > 0 ? "Open the next box" : "OK"}
       </Button>

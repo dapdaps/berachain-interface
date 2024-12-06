@@ -1,6 +1,7 @@
 import Modal from "@/components/modal";
 import Bg from "./bg";
 import OpenStatus from "./open";
+import OpenModalYap from "./open-modal-yap";
 
 export default function BoxModal({
   open: show,
@@ -10,7 +11,9 @@ export default function BoxModal({
   data,
   loading
 }: any) {
-  return (
+  return !!data?.yap ? (
+    <OpenModalYap open={show} onClose={onClose} texts={[data.yap]} />
+  ) : (
     <Modal
       open={show}
       onClose={onClose}
