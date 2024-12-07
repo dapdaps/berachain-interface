@@ -2,11 +2,12 @@ import Modal from "@/components/modal";
 import SnowIcon from "../present-icons/icon-snow";
 import Nft from "./nft";
 import config from "../present-icons/config";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
+import Skeleton from 'react-loading-skeleton';
 
-export default function TotalPrizeModal({ open, nfts, onClose }: any) {
+export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
   const [showNfts, setShowNfts] = useState(false);
   const nftList = useMemo(() => {
     if (!nfts || nfts.length === 0) return [];
@@ -19,6 +20,7 @@ export default function TotalPrizeModal({ open, nfts, onClose }: any) {
     });
     return Object.entries(catched).map(([key, value]: any) => ({
       name: key,
+      logo: value[0]?.logo,
       nfts: value
     }));
   }, [nfts]);
@@ -45,18 +47,26 @@ export default function TotalPrizeModal({ open, nfts, onClose }: any) {
                   setShowNfts(true);
                 }}
                 className="w-[71px] !h-[28px]"
+                disabled={loading}
               >
                 Check
               </BasicButton>
             </div>
             <div className="flex flex-wrap pb-[20px]">
-              {nftList.map((nft: any) => (
+              {loading ? (
+                [...new Array(13)].map((_, idx) => (
+                  <div key={idx} className="w-1/3 flex items-center gap-[22px] mt-[15px]">
+                    <Skeleton width={40} height={40} borderRadius={10} />
+                    <Skeleton width={60} height={21} borderRadius={10} />
+                  </div>
+                ))
+              ) : nftList.map((nft: any) => (
                 <Nft key={nft.name} nft={nft} />
               ))}
             </div>
           </div>
           <div className="border-t border-[#949494]">
-            <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
+          <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
             <div className="flex flex-wrap items-center gap-[36px] pt-[14px]">
               {Object.values(config)
                 .filter((token: any) => token.shadowIcon)
