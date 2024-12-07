@@ -112,13 +112,13 @@ export default memo(function Select(props: any) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [value, setValue] = useState("")
-  const [validators, setValidators] = useState(null)
+  const [validators, setValidators] = useState<any>(null)
 
-  const filterValidators = useMemo(() => validators?.filter(validator => validator?.name?.toLocaleLowerCase().indexOf(value?.toLocaleLowerCase()) > -1), [value, loading])
+  const filterValidators = useMemo(() => validators?.filter((validator: any) => validator?.name?.toLocaleLowerCase().indexOf(value?.toLocaleLowerCase()) > -1), [value, loading])
 
 
   const getUserStaked = async () => {
-    const calls = []
+    const calls: any = []
     VALIDATORS.forEach(validator => {
       calls.push({
         address: BGT_ADDRESS,
@@ -132,10 +132,10 @@ export default memo(function Select(props: any) {
       calls,
       multicallAddress,
       provider
-    })).map(res => res?.[0] ?? null)
+    })).map((res:any) => res?.[0] ?? null)
   }
   const getUserQueued = async () => {
-    const calls = []
+    const calls: any = []
     VALIDATORS.forEach(validator => {
       calls.push({
         address: BGT_ADDRESS,
@@ -149,10 +149,10 @@ export default memo(function Select(props: any) {
       calls,
       multicallAddress,
       provider
-    })).map(res => res?.[1] ?? null)
+    })).map((res: any) => res?.[1] ?? null)
   }
   const getBGTDelegated = async () => {
-    const calls = []
+    const calls: any = []
     VALIDATORS.forEach(validator => {
       calls.push({
         address: BGT_ADDRESS,
@@ -166,10 +166,10 @@ export default memo(function Select(props: any) {
       calls,
       multicallAddress,
       provider
-    })).map(res => res?.[0] ?? null)
+    })).map((res: any) => res?.[0] ?? null)
   }
   const getCommission = async () => {
-    const calls = []
+    const calls: any = []
     VALIDATORS.forEach(validator => {
       calls.push({
         address: BGT_ADDRESS,
@@ -183,17 +183,17 @@ export default memo(function Select(props: any) {
       calls,
       multicallAddress,
       provider
-    })).map(res => res?.[1] ?? null)
+    })).map((res: any) => res?.[1] ?? null)
   }
   const getVApyAndIncentives = async () => {
 
     const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/validators?sortBy=votingpower&sortOrder=desc&page=1&pageSize=206&query=")
 
-    const vApyAndIncentives = []
+    const vApyAndIncentives: any = []
     const validators = response?.validators
 
     VALIDATORS.forEach(validator => {
-      const idx = validators.findIndex(_validator => _validator?.id === validator?.address)
+      const idx = validators.findIndex((_validator: any) => _validator?.id === validator?.address)
       if (idx > -1) {
         vApyAndIncentives.push({
           vApy: Big(validators[idx]?.apy).div(100).toFixed(),

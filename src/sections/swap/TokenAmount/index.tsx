@@ -29,12 +29,20 @@ export default function TokenAmout({
     currency?.chainId
   );
   const [percent, setPercent] = useState<any>(0);
-  const handleRangeChange = (e: any) => {
+  const handleRangeChange = (e: any, isAmountChange = true) => {
     const formatedBalance = balanceFormated(tokenBalance);
     if (['-', 'Loading', '0'].includes(formatedBalance)) return;
     const _percent = e.target.value || 0;
     setPercent(_percent);
-    onAmountChange?.(Big(tokenBalance).times(Big(_percent).div(100)).toFixed(currency?.decimals).replace(/[.]?0+$/, ''));
+    isAmountChange && onAmountChange?.(Big(tokenBalance).times(Big(_percent).div(100)).toFixed(currency?.decimals).replace(/[.]?0+$/, ''));
+  };
+  const setRange = (val: string) => {
+    if (type !== 'in') return;
+    const formatedBalance = balanceFormated(tokenBalance);
+    if (['-', 'Loading', '0'].includes(formatedBalance)) return;
+    let percent: any = Big(val || 0).div(formatedBalance).times(100).toFixed(2);
+    percent = Math.min(Math.max(+percent, 0), 100);
+    handleRangeChange?.({ target: { value: percent } }, false);
   };
   useEffect(() => {
     if (tokenBalance && onUpdateCurrencyBalance)
@@ -96,7 +104,9 @@ export default function TokenAmout({
             value={amount}
             onChange={(ev) => {
               if (isNaN(Number(ev.target.value))) return;
-              onAmountChange?.(ev.target.value.replace(/\s+/g, ''));
+              const val = ev.target.value.replace(/\s+/g, '');
+              onAmountChange?.(val);
+              setRange(val);
             }}
             placeholder='0'
           />
@@ -128,8 +138,9 @@ export default function TokenAmout({
       <div
         onClick={() => {
           const formatedBalance = balanceFormated(tokenBalance);
-          if (!['-', 'Loading', '0'].includes(formatedBalance))
-            onAmountChange?.(tokenBalance);
+          if (['-', 'Loading', '0'].includes(formatedBalance)) return;
+          onAmountChange?.(tokenBalance);
+          setRange(tokenBalance);
         }}
         className='flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]'
       >

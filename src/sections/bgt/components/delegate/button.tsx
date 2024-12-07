@@ -1,7 +1,7 @@
 import CircleLoading from '@/components/circle-loading';
 import clsx from "clsx";
 import { memo } from "react";
-export default memo(function Button(props) {
+export default memo(function Button(props: any) {
   const {
     loading,
     inAmount,

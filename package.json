@@ -6,12 +6,13 @@
     "dev": "NEXT_PUBLIC_API=https://test-api.beratown.app next dev --port 3003",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:stats": "ANALYZE_STATS=true next build"
   },
   "dependencies": {
-    "@reown/appkit": "^1.2.0",
-    "@reown/appkit-adapter-wagmi": "^1.2.0",
-    "@reown/appkit-siwe": "^1.5.1",
+    "@reown/appkit": "^1.5.2",
+    "@reown/appkit-adapter-wagmi": "^1.5.2",
+    "@reown/appkit-siwe": "^1.5.2",
     "@tanstack/react-query": "^5.59.16",
     "ahooks": "^3.8.1",
     "axios": "^1.7.7",
@@ -29,6 +30,7 @@
     "react-dom": "^18",
     "react-loading-skeleton": "^3.5.0",
     "react-toastify": "^10.0.5",
+    "terser-webpack-plugin": "^5.3.10",
     "viem": "^2.21.37",
     "wagmi": "^2.12.25",
     "zustand": "^5.0.0-rc.2"
@@ -44,6 +46,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
+    "next-plugin-bundle-stats": "^4.16.0",
     "pino-pretty": "^11.3.0",
     "postcss": "^8",
     "styled-components": "^6.1.13",
