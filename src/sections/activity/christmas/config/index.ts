@@ -382,6 +382,48 @@ export const DAppQuests: any = {
   },
 };
 
+export const NFTs: any = {
+  'Beraboyz': {
+    icon: '/images/activity/christmas/nft/beraboyz.svg',
+  },
+  'yeetards': {
+    icon: '/images/activity/christmas/nft/yeetards.svg',
+  },
+  'cubhub': {
+    icon: '/images/activity/christmas/nft/cubhub.svg',
+  },
+  'Bruuvvprint': {
+    icon: '/images/activity/christmas/nft/bruuvvprint.svg',
+  },
+  'HoneyGenesis': {
+    icon: '/images/activity/christmas/nft/honey-genesis.svg',
+  },
+  'Tour de Berance': {
+    icon: '/images/activity/christmas/nft/smoke-and-mirrors.svg',
+  },
+  'Smoke and Mirrors': {
+    icon: '/images/activity/christmas/nft/smoke-and-mirrors.svg',
+  },
+  'Beramonium': {
+    icon: '/images/activity/christmas/nft/beramonium.svg',
+  },
+  'Hungry Bera': {
+    icon: '/images/activity/christmas/nft/hungrybera.svg',
+  },
+  'Big fat bera': {
+    icon: '/images/activity/christmas/nft/big-fat-beras.svg',
+  },
+  'Beradeluna': {
+    icon: '/images/activity/christmas/nft/beradeluna-beradelic.svg',
+  },
+  'Beradelic': {
+    icon: '/images/activity/christmas/nft/beradeluna-beradelic.svg',
+  },
+  'SumerMoney': {
+    icon: '/images/activity/christmas/nft/sex-toy-from-eden.svg',
+  },
+};
+
 export const SnowToken = [{}];
 
 export const protocols = ["Kodiak"];

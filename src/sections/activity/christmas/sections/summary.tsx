@@ -4,7 +4,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import TotalPrizeModal from "../total-prize-modal";
 
 const Summary = () => {
-  const { info, nftList } = useContext(ChristmasContext);
+  const { info, nftList, nftLoading } = useContext(ChristmasContext);
   const [showModal, setShowModal] = useState(false);
 
   const summaries = [
@@ -64,6 +64,7 @@ const Summary = () => {
           setShowModal(false);
         }}
         nfts={nftList}
+        loading={nftLoading}
       />
     </div>
   );

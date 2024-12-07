@@ -1,6 +1,7 @@
 import useCustomAccount from '@/hooks/use-account';
 import { useEffect, useState } from 'react';
 import { get } from '@/utils/http';
+import { NFTs } from '@/sections/activity/christmas/config';
 
 export function useNft(): INft {
   const { account, provider } = useCustomAccount();
@@ -15,7 +16,10 @@ export function useNft(): INft {
       setLoading(false);
       return;
     }
-    const _nftList = res.data || [];
+    const _nftList: Partial<NFT>[] = res.data || [];
+    _nftList.forEach((it) => {
+      it.logo = NFTs[it.name as string]?.icon;
+    });
     setNftList(_nftList);
     setLoading(false);
   };
