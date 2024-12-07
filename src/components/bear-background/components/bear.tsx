@@ -10,7 +10,7 @@ function Bear(props: any) {
       }
       {
         isChristmas && (
-          <img src="/images/background/bear.gif" alt="" />
+          <img src="/images/background/bear-christmas.gif" alt="" />
         )
       }
     </div>
