@@ -17,7 +17,7 @@ export function useWalletName() {
     if (!walletIcon) {
       walletIcon = walletInfo?.icon || '';
     }
-    if (walletName === 'BeraSig Wallet') {
+    if (/^BeraSig/.test(walletName)) {
       walletName = 'Berasig';
     }
     return { name: walletName, icon: walletIcon };
