@@ -83,7 +83,7 @@ const Navigation = function () {
           }`}
         >
           <ArrowTopSvg style={{ transform: "rotate(90deg)" }} />
-          <div className="text-[20px] font-CherryBomb leading-[90%]">
+          <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
             Bridge
           </div>
         </div>
@@ -91,7 +91,7 @@ const Navigation = function () {
       <VaultsEnterance
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
-        className="absolute right-[35px] bottom-[300px] hover:scale-110 transition-transform duration-500"
+        className="absolute right-[35px] bottom-[180px] hover:scale-110 transition-transform duration-500"
       />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
         <div
