@@ -25,7 +25,7 @@ const BeraBgHomeChristmas = () => {
       </div>
       <BeraTown isChristmas style={{ bottom: 420, zIndex: 11 }} />
       <Bear
-        className="absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-168px] z-10"
+        className="absolute w-[360px] left-1/2 bottom-[182px] translate-x-[-168px] z-10"
         isChristmas={true}
       />
     </>

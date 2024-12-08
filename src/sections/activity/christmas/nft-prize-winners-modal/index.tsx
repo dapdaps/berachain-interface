@@ -21,7 +21,7 @@ export default function NftPrizeWinnersModal({
           {nfts.map((item: any) => (
             <div className="mt-[30px]">
               <div className="flex items-center gap-[26px]">
-                <Avatar src={""} amount={item.nfts.length} />
+                <Avatar logo={item.logo} amount={item.nfts.length} />
                 <div className="text-[18px] font-bold">{item.name}</div>
               </div>
               <div className="flex flex-wrap gap-[10px] mt-[16px]">

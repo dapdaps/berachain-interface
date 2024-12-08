@@ -4,7 +4,7 @@ import { post } from "@/utils/http";
 export default function useOpenBox(onSuccess: any) {
   const [loading, setLoading] = useState(false);
 
-  const onOpen = useCallback(async (all: boolean) => {
+  const onOpen = async (all: boolean) => {
     try {
       setLoading(true);
       const response = await post(
@@ -12,8 +12,8 @@ export default function useOpenBox(onSuccess: any) {
         all
           ? {}
           : {
-              all
-            }
+            all
+          }
       );
       if (response.code === 0) {
         onSuccess(response.data);
@@ -22,7 +22,7 @@ export default function useOpenBox(onSuccess: any) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   return { loading, onOpen };
 }
