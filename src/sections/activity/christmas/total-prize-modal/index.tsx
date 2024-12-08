@@ -5,7 +5,7 @@ import config from "../present-icons/config";
 import React, { useMemo, useState } from "react";
 import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from "react-loading-skeleton";
 
 export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
   const [showNfts, setShowNfts] = useState(false);
@@ -20,7 +20,7 @@ export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
     });
     return Object.entries(catched).map(([key, value]: any) => ({
       name: key,
-      logo: value[0]?.logo,
+      logo: value[0]?.classLogo,
       nfts: value
     }));
   }, [nfts]);
@@ -41,7 +41,7 @@ export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
           </div>
           <div className="border-t border-[#949494]">
             <div className="flex justify-between items-center text-[16px] font-bold pt-[8px]">
-              <div>NFT Prize</div>
+              <div>Rare Prize</div>
               <BasicButton
                 onClick={() => {
                   setShowNfts(true);
@@ -53,20 +53,21 @@ export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
               </BasicButton>
             </div>
             <div className="flex flex-wrap pb-[20px]">
-              {loading ? (
-                [...new Array(13)].map((_, idx) => (
-                  <div key={idx} className="w-1/3 flex items-center gap-[22px] mt-[15px]">
-                    <Skeleton width={40} height={40} borderRadius={10} />
-                    <Skeleton width={60} height={21} borderRadius={10} />
-                  </div>
-                ))
-              ) : nftList.map((nft: any) => (
-                <Nft key={nft.name} nft={nft} />
-              ))}
+              {loading
+                ? [...new Array(13)].map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="w-1/3 flex items-center gap-[22px] mt-[15px]"
+                    >
+                      <Skeleton width={40} height={40} borderRadius={10} />
+                      <Skeleton width={60} height={21} borderRadius={10} />
+                    </div>
+                  ))
+                : nftList.map((nft: any) => <Nft key={nft.name} nft={nft} />)}
             </div>
           </div>
           <div className="border-t border-[#949494]">
-          <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
+            <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
             <div className="flex flex-wrap items-center gap-[36px] pt-[14px]">
               {Object.values(config)
                 .filter((token: any) => token.shadowIcon)

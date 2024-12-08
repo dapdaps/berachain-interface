@@ -1,7 +1,7 @@
-import useCustomAccount from '@/hooks/use-account';
-import { useEffect, useState } from 'react';
-import { get } from '@/utils/http';
-import { NFTs } from '@/sections/activity/christmas/config';
+import useCustomAccount from "@/hooks/use-account";
+import { useEffect, useState } from "react";
+import { get } from "@/utils/http";
+import { NFTs } from "@/sections/activity/christmas/config";
 
 export function useNft(): INft {
   const { account, provider } = useCustomAccount();
@@ -11,14 +11,14 @@ export function useNft(): INft {
 
   const getNftList = async () => {
     setLoading(true);
-    const res = await get('/api/mas/reward/nfts');
+    const res = await get("/api/mas/reward/nfts");
     if (res.code !== 0) {
       setLoading(false);
       return;
     }
     const _nftList: Partial<NFT>[] = res.data || [];
     _nftList.forEach((it) => {
-      it.logo = NFTs[it.name as string]?.icon;
+      it.classLogo = NFTs[it.name as string]?.icon;
     });
     setNftList(_nftList);
     setLoading(false);
@@ -30,7 +30,7 @@ export function useNft(): INft {
 
   return {
     nftLoading: loading,
-    nftList,
+    nftList
   };
 }
 
@@ -44,4 +44,5 @@ export interface NFT {
   name: string;
   token_id: string;
   logo: string;
+  classLogo: string;
 }
