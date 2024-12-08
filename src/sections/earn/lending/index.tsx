@@ -154,7 +154,7 @@ const EarnLending = (props: any) => {
         borrow_apr: '0',
         borrowCapacity: '0.00',
         youSupplied: nectToken.balance,
-        youBorrowed: beraborrowMarkets?.reduce((a: any, b: any) => Big(a.borrowed || 0).plus(b.borrowed || 0)),
+        youBorrowed: beraborrowMarkets?.map((it: any) => it.borrowed || 0)?.reduce((a: any, b: any) => Big(a).plus(b), 0),
         BGTRewards: '0.00',
       });
     }
