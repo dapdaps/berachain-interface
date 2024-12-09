@@ -5,9 +5,15 @@ import Button from "./button";
 import Present from "./present";
 import { useRouter } from "next-nprogress-bar";
 import { formatThousandsSeparator } from "@/utils/balance";
+import { useContext } from 'react';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 export default function UserPresentsModal({ open, data, onClose }: any) {
   const router = useRouter();
+  const {
+    setShowSwapModal,
+  } = useContext(ChristmasContext);
+
   return (
     <Modal
       open={open}
@@ -61,7 +67,11 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
               </span>{" "}
               $Snowflake
             </div>
-            <Button>
+            <Button
+              onClick={() => {
+                setShowSwapModal?.(true);
+              }}
+            >
               <div className="pl-[24px]">Trade Now</div>
             </Button>
           </div>

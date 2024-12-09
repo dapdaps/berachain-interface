@@ -6,7 +6,7 @@ const NFTProgress = () => {
   const swiperRef = useRef<any>(null);
   const [current, setCurrent] = useState(1);
 
-  const value = 12;
+  const value = 6;
 
   useEffect(() => {
     const autoPlay = () => {
@@ -26,7 +26,8 @@ const NFTProgress = () => {
     <div className="flex justify-center mt-[110px]">
       <div className="relative w-[693px] h-[24px] rounded-[12px] bg-black border border-[#FFDC50] p-[3px]">
         <div
-          className="relative z-[2] w-[10%] h-full rounded-[9px] bg-[#FFDC50]"
+          className="relative z-[2] h-full rounded-[9px] bg-[#FFDC50]"
+          style={{ width: `${value}%` }}
         >
           <Popover
             trigger={PopoverTrigger.Hover}
