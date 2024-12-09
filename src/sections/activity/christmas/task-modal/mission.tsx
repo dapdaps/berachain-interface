@@ -5,6 +5,8 @@ import { useContext, useMemo, useState } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import { useWalletName } from '@/hooks/use-wallet-name';
 import useCustomAccount from '@/hooks/use-account';
+import { useAppKit } from '@reown/appkit/react';
+import BerasigPrompt from '@/sections/activity/christmas/task-modal/berasig-prompt';
 
 export default function Mission({ mission }: Props) {
   const {
@@ -15,12 +17,14 @@ export default function Mission({ mission }: Props) {
   } = useContext(ChristmasContext);
   const { name: walletName } = useWalletName();
   const { account } = useCustomAccount();
+  const modal = useAppKit();
 
   const missionVisited = useMemo(() => {
     return getQuestVisited?.(mission?.id);
   }, [questVisited, mission, account]);
 
   const [visitedBerasigDownload, setVisitedBerasigDownload] = useState(false);
+  const [berasigVisible, setBerasigVisible] = useState(false);
 
   const actionText = useMemo(() => {
     if (mission.name === 'Beraji') {
@@ -29,12 +33,14 @@ export default function Mission({ mission }: Props) {
       }
       // @ts-ignore
       if (!window?.berasig) {
-        return 'Download Berasig';
+        return 'Download BeraSig';
       }
       if (walletName !== 'Berasig') {
-        return mission.missionAction;
+        return 'Connect BeraSig';
       }
-      return 'Open';
+      if (missionVisited) {
+        return 'Check';
+      }
     }
     return mission.missionAction;
   }, [mission, walletName, visitedBerasigDownload]);
@@ -51,8 +57,18 @@ export default function Mission({ mission }: Props) {
         setVisitedBerasigDownload(true);
         return;
       }
-      // @ts-ignore
-      window.berasig.ethereum.request({method: 'eth_requestAccounts'});
+      if (walletName !== 'Berasig') {
+        // @ts-ignore
+        // window.berasig.ethereum.request({ method: 'eth_requestAccounts' });
+        modal.open({ view: 'Connect' });
+        return;
+      }
+      if (!missionVisited) {
+        setBerasigVisible(true);
+        setQuestVisited?.({ id: mission.id, visited: true });
+        return;
+      }
+      handleQuestMissionCheck?.(mission);
       return;
     }
     if (mission.url) {
@@ -88,6 +104,12 @@ export default function Mission({ mission }: Props) {
           </Button>
         )
       }
+      <BerasigPrompt
+        visible={berasigVisible}
+        onClose={() => {
+          setBerasigVisible(false);
+        }}
+      />
     </div>
   );
 }

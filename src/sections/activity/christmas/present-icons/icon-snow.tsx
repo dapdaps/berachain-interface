@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export default function SnowIcon({ className }: any) {
+export default function SnowIcon({ className, style }: any) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +9,7 @@ export default function SnowIcon({ className }: any) {
       viewBox="0 0 169 172"
       fill="none"
       className={clsx(className)}
+      style={style}
     >
       <circle cx="87.5859" cy="90.7485" r="65" fill="#5F45E1" stroke="black" />
       <path

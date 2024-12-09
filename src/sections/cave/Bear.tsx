@@ -14,13 +14,19 @@ export default function Bear({
 }: Props) {
     const { isChristmas } = useChristmas();
     const hasCars = useMemo(() => {
+        if (items[5].checked || items[6].checked) {
+            return true
+        }
         if (cars) {
             return cars.some(item => item.checked)
         }
-        return false
-    }, [cars])
+        console.log('=items[5].checked', items[5].checked)
+        console.log('=items[6].checked', items[6].checked)
 
-    console.log('====items', items)
+        return false
+    }, [cars, items])
+
+    console.log('====hasCars', hasCars)
 
     return <div className=" scale-75 pointer-events-none absolute bottom-[5%] left-[50%] translate-x-[-50%] w-[395px] h-[359px] z-10">
         {!hasCars && <img src="/images/cave/bear/bear-empty.png" className="absolute left-0 top-[0px] max-w-[395px]" />}
@@ -37,30 +43,30 @@ export default function Bear({
         {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[120px] left-[230px] top-[-25px]" />}
 
 
-        {!!clothes.length && clothes[0].checked && <img src="/images/cave/bear/cloth/cloth-1.png" className=" absolute w-[226px] left-[89px] top-[26px]" />}
-        {!!clothes.length && clothes[1].checked && <img src="/images/cave/bear/cloth/cloth-2.png" className=" absolute w-[235px] left-[87px] top-[45px]" />}
-        {!!clothes.length && clothes[2].checked && <img src="/images/cave/bear/cloth/cloth-3.png" className=" absolute w-[235px] left-[85px] top-[43px]" />}
-        {!!clothes.length && clothes[3].checked && <img src="/images/cave/bear/cloth/cloth-4.png" className=" absolute w-[235px] left-[85px] top-[44px]" />}
+        {!!clothes.length && clothes[0].checked && <img src="/images/cave/bear/cloth/cloth-1.png" className=" absolute w-[226px] left-[89px] top-[26px] z-20" />}
+        {!!clothes.length && clothes[1].checked && <img src="/images/cave/bear/cloth/cloth-2.png" className=" absolute w-[235px] left-[87px] top-[45px] z-20" />}
+        {!!clothes.length && clothes[2].checked && <img src="/images/cave/bear/cloth/cloth-3.png" className=" absolute w-[235px] left-[85px] top-[43px] z-20" />}
+        {!!clothes.length && clothes[3].checked && <img src="/images/cave/bear/cloth/cloth-4.png" className=" absolute w-[235px] left-[85px] top-[44px] z-20" />}
 
 
 
-        {!!necklaces.length && necklaces[0].checked && <img src="/images/cave/bear/necklace/neck-1.png" className="absolute w-[110px] left-[205px] top-[16px]" />}
-        {!!necklaces.length && necklaces[1].checked && <img src="/images/cave/bear/necklace/neck-2.png" className="absolute w-[120px] left-[205px] top-[16px]" />}
-        {!!necklaces.length && necklaces[2].checked && <img src="/images/cave/bear/necklace/neck-3.png" className="absolute w-[110px] left-[205px] top-[16px]" />}
-        {!!necklaces.length && necklaces[3].checked && <img src="/images/cave/bear/necklace/neck-4.png" className="absolute w-[110px] left-[205px] top-[38px]" />}
+        {!!necklaces.length && necklaces[0].checked && <img src="/images/cave/bear/necklace/neck-1.png" className="absolute w-[110px] left-[205px] top-[16px] z-20" />}
+        {!!necklaces.length && necklaces[1].checked && <img src="/images/cave/bear/necklace/neck-2.png" className="absolute w-[120px] left-[205px] top-[16px] z-20" />}
+        {!!necklaces.length && necklaces[2].checked && <img src="/images/cave/bear/necklace/neck-3.png" className="absolute w-[110px] left-[205px] top-[16px] z-20" />}
+        {!!necklaces.length && necklaces[3].checked && <img src="/images/cave/bear/necklace/neck-4.png" className="absolute w-[110px] left-[205px] top-[38px] z-20" />}
 
 
         {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-1.png" className="absolute left-[-170px] bottom-0 max-w-[757px]" />}
-
-        <div className='absolute w-full h-full left-[102px] top-[25px] scale-[1.15]'>
-            {
-                hasCars && (
-                    <div className='absolute left-0 top-0'>
+        {
+            hasCars && (
+                <div className='absolute w-full h-full left-[102px] top-[25px] scale-[1.15]'>
+                    <div className='absolute left-0 top-0 z-0'>
                         <img src="/images/cave/christmas/bear/bear.svg" alt="bear" />
                     </div>
-                )
-            }
-
+                </div>
+            )
+        }
+        <div className='absolute w-full h-full left-[102px] top-[25px] scale-[1.15] z-20'>
             {
                 !!items.length && items[1].checked && (
                     <div className='absolute left-[102px] top-[-42px] z-[1]'>
@@ -77,7 +83,7 @@ export default function Bear({
             }
             {
                 !!items.length && items[5].checked && (
-                    <div className="absolute left-[-108px] top-[30px] z-[1]">
+                    <div className="absolute left-[-108px] top-[30px] z-20">
                         <img src="/images/cave/christmas/bear/sleigh.svg" alt="sleigh" />
                     </div>
                 )

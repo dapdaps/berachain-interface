@@ -7,7 +7,6 @@ import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
 import Skeleton from "react-loading-skeleton";
 import useRewards from "../hooks/use-rewards";
-import clsx from "clsx";
 
 export default function TotalPrizeModal({ open, onClose }: any) {
   const { loading, rares, items } = useRewards();
@@ -25,9 +24,9 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       }
       if (nft.category === "rare") {
         _rare.push({
-          name: nft.name,
+          name: "$" + nft.amount + " " + nft.name,
           logo: nft.logo,
-          nfts: { length: nft.amount }
+          nfts: { length: nft.max_amount / nft.amount }
         });
       }
     });
