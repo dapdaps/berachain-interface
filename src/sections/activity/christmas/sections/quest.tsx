@@ -42,7 +42,7 @@ const QuestView = () => {
 
   return (
     <div className="relative pt-[11.82vw] pb-[6.45vw] text-[#FFF5A9] font-[400] leading-[100%] text-center bg-[linear-gradient(180deg,_#38485C_0%,_#000_100%)]">
-      <div className="absolute left-0 -top-[9.67vw] w-full h-[20.42vw] bg-[url('/images/activity/christmas/bg-quest-top.svg')] bg-no-repeat bg-[length:100%_auto] bg-center">
+      <div className="pointer-events-none absolute left-0 -top-[9.67vw] w-full h-[20.42vw] bg-[url('/images/activity/christmas/bg-quest-top.svg')] bg-no-repeat bg-[length:100%_auto] bg-center">
         <div className="absolute left-0 bottom-0 w-full h-full bg-[url('/images/activity/christmas/bg-quest-top-lights.svg')] bg-no-repeat bg-[length:100%_auto] bg-bottom" />
       </div>
       <div className="text-[42px] leading-[150%] font-CherryBomb">

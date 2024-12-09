@@ -1,14 +1,17 @@
 import styled from "styled-components";
 
-import Loading from "@/components/circle-loading";
-import { balanceFormated } from "@/utils/balance";
+import Loading from '@/components/circle-loading';
+import { balanceFormated } from '@/utils/balance';
+import useToast from '@/hooks/use-toast';
 
 const StyledCurrencyRow = styled.div`
   padding: 14px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  :hover {
+  border-radius: 10px;
+
+  &:hover {
     background-color: rgba(151, 154, 190, 0.1);
   }
 
@@ -67,6 +70,15 @@ export default function CurrencyRow({
 }: any) {
   const isActive = currency.address === selectedTokenAddress;
 
+  const toast = useToast();
+
+  const handleCopyAddress = (currency: any) => {
+    window?.navigator?.clipboard?.writeText?.(currency.address as string);
+    toast.success({
+      title: `Copied ${currency.symbol} address ${currency.address}`,
+    });
+  };
+
   return (
     <StyledCurrencyRow
       className={`${isActive ? "active" : ""} cursor-pointer`}
@@ -80,7 +92,26 @@ export default function CurrencyRow({
         />
         <div>
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
-          <div className="text-[10px]">{currency.name}</div>
+          <div className='text-[10px] flex items-center gap-[12px]'>
+            <div className="">{currency.name}</div>
+            {
+              currency.address !== 'native' && (
+                <div className="text-[#3D405A] flex items-center gap-[10px] pointer-events-auto opacity-100">
+                  <div className="">
+                    {currency.address ? `${currency.address.slice(0, 6)}...${currency.address.slice(-4)}` : ''}
+                  </div>
+                  <button
+                    type='button'
+                    className="w-[14px] h-[14px] bg-[url('/images/icon-copy.svg')] bg-no-repeat bg-center bg-contain"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyAddress(currency);
+                    }}
+                  />
+                </div>
+              )
+            }
+          </div>
         </div>
       </CurrencyLabel>
       <CurrencyAmount>

@@ -207,7 +207,7 @@ export const EcosystemQuests: any = {
     ]
   },
   Puffpaw: {
-    categories: ["GameFi", "RWA", "DePin"],
+    categories: ["VAPE2EARN", "RWA", "DePin"],
     icon: "/images/activity/christmas/quest/logos/puffpaw.svg",
     banner: "/images/activity/christmas/quest/banners/Puffpaw.jpg",
     description: "Vape 2 quit smoking and earn",
