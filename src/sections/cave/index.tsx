@@ -18,6 +18,7 @@ import { useChristmas } from '@/hooks/use-christmas';
 import clsx from "clsx";
 import Popover, { PopoverPlacement } from "@/components/popover";
 import NftModal from "./NftModal";
+import { useCaveNft } from "@/stores/useCaveNft";
 const hatPositions = [{
     width: 102,
 
@@ -291,9 +292,9 @@ export default function Cave() {
     const setEqu = useBearEqu((store: any) => store.set)
 
     const store: any = useCaveWelcome()
+    const storeNft: any = useCaveNft()
 
     const [nftVisible, setNftVisible] = useState(false)
-    const [checkedNft, setCheckedNft] = useState(null)
 
     const { cars, hats, clothes, necklaces, items, nfts, setCars, setClothes, setHats, setNecklaces, setNfts } = useCollect({
         address: account as string
@@ -339,7 +340,7 @@ export default function Cave() {
             isChristmas && (
                 <div className="absolute top-[-68px] left-0 w-full bottom-0">
                     <div className="absolute left-0 top-0 w-full h-[310px]">
-                        <img src="/images/cave/christmas/ribbons.svg" alt="ribbons" />
+                        <img className="w-full" src="/images/cave/christmas/ribbons.svg" alt="ribbons" />
                     </div>
                     <div style={{ left: 'calc(50% - (772px - 255px))' }} className="absolute translate-x-[-50%] bottom-[28px] z-10">
                         <div className="w-[510px]">
@@ -444,7 +445,7 @@ export default function Cave() {
                         </svg>
                     </div>
                     <div className="absolute top-[54px] left-[28px] right-[28px] bottom-[32px] z-[1]">
-                        <img src={checkedNft?.logo} alt="" />
+                        <img src={storeNft?.nft?.logo} alt="" />
                     </div>
 
                     <div
@@ -456,7 +457,7 @@ export default function Cave() {
                         Change
                     </div>
                     <div className="z-[4] flex items-center justify-center absolute left-[13px] bottom-[6px] w-[123px] h-[26px] rounded-[8px] border border-[#B18249] bg-[linear-gradient(90deg,_#CDB34D_0%,_#675A27_100%)] text-[#FFEAA5] font-CherryBomb text-[14px]  text-stroke-1">
-                        {checkedNft?.name}
+                        {storeNft?.nft?.name}
                     </div>
                 </div>
                 <img src="/images/cave/youtube.png" className="w-[150px]" />
@@ -532,7 +533,7 @@ export default function Cave() {
                 </div>
             </div>
 
-            <div style={{ left: isChristmas ? 'calc(50% - (772px - 45px - 174.5px)' : 'calc(50% - 170px - 290px)' }} className={clsx("w-[349px] h-[230px] translate-x-[-50%] absolute bg-[url('/images/cave/box.png')] bg-contain bg-no-repeat bg-bottom", isChristmas ? "top-[258px]" : "top-[500px]")}>
+            <div style={{ left: isChristmas ? 'calc(50% - (772px - 45px - 174.5px)' : 'calc(50% - 170px - 290px)' }} className={clsx("w-[349px] h-[230px] translate-x-[-50%] absolute bg-[url('/images/cave/box.png')] bg-contain bg-no-repeat bg-bottom", isChristmas ? "bottom-[432px]" : "top-[500px]")}>
                 {
                     cars.map(item => {
                         return <div className="absolute cave-tip" style={carPositions[item.level - 1]} onClick={(e) => {
@@ -602,8 +603,7 @@ export default function Cave() {
             <NftModal
                 visible={nftVisible}
                 nfts={nfts}
-                setCheckedNft={setCheckedNft}
-                checkedNft={checkedNft}
+                store={storeNft}
                 onClose={() => {
                     setNftVisible(false)
                 }}

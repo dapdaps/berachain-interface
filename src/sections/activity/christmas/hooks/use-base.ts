@@ -11,7 +11,8 @@ export function useBase(): IBase {
   const [userLoading, setUserLoading] = useState(false);
   const [info, setInfo] = useState<Partial<Mas>>({});
   const [userInfo, setUserInfo] = useState<Partial<UserMas>>({});
-  const [currentTimestamp, setCurrentTimestamp] = useState<number>();
+  const [currentDailyTimestamp, setCurrentDailyTimestamp] = useState<number>();
+  const [currentUTCTimestamp, setCurrentUTCTimestamp] = useState<number>();
   const [showSwapModal, setShowSwapModal] = useState(false);
 
   const getInfo = async () => {
@@ -38,13 +39,13 @@ export function useBase(): IBase {
 
   const getCurrentTimestamp = async () => {
     const res = await get(`/api/timestamp`);
-    let currUTCTimestamp = getUTCTimestamp();
+    let currUTCTimestamp = new Date().getTime();
     if (res.code === 0 && res.data?.timestamp) {
-      // currUTCTimestamp = getUTCTimestamp(res.data?.timestamp * 1000);
       currUTCTimestamp = res.data?.timestamp * 1000;
     }
+    setCurrentUTCTimestamp(getUTCTimestamp(currUTCTimestamp));
     const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currUTCTimestamp, 8), 0), 0);
-    setCurrentTimestamp(currUTCDay.getTime() / 1000);
+    setCurrentDailyTimestamp(currUTCDay.getTime() / 1000);
   };
 
   useEffect(() => {
@@ -60,7 +61,8 @@ export function useBase(): IBase {
     info,
     userInfo,
     getUserInfo,
-    currentTimestamp,
+    currentUTCTimestamp,
+    currentDailyTimestamp,
     showSwapModal,
     setShowSwapModal,
   };
@@ -71,7 +73,8 @@ export interface IBase {
   userInfoLoading: boolean;
   info: Partial<Mas>;
   userInfo: Partial<UserMas>;
-  currentTimestamp?: number;
+  currentUTCTimestamp?: number;
+  currentDailyTimestamp?: number;
   showSwapModal: boolean;
   setShowSwapModal: Dispatch<SetStateAction<boolean>>;
   getUserInfo(): void;
