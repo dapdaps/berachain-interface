@@ -38,8 +38,8 @@ const Christmas = () => {
         {showSwapModal && (
           <SwapModal
             show={showSwapModal}
-            defaultInputCurrency={beraB["bera"]}
-            defaultOutputCurrency={SnowToken}
+            defaultInputCurrency={SnowToken}
+            defaultOutputCurrency={beraB["bera"]}
             protocols={protocols}
             onClose={() => {
               setShowSwapModal?.(false);

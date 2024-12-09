@@ -36,7 +36,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
           nfts: {
             length: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
               ? nft.max_amount / nft.amount
-              : nft.amount
+              : nft.max_amount
           },
           whitelist: nft.whitelist
         });
