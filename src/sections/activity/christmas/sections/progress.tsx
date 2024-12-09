@@ -1,12 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
+import { getUTCTimestamp } from '@/utils/date';
+import Big from 'big.js';
+
+const START_TIME = new Date('2024-12-10 00:00:00');
+const MAS_TIME = new Date('2024-12-25 00:00:00');
+const END_TIME = new Date('2025-01-01 00:00:00');
+
+const TIME_DIFF = getUTCTimestamp(END_TIME) - getUTCTimestamp(START_TIME);
 
 const NFTProgress = () => {
+  const {
+    currentUTCTimestamp,
+  } = useContext(ChristmasContext);
+
+  let value = Big(currentUTCTimestamp || 0).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(0);
+  if (Big(value).lt(0)) value = '0';
+  if (Big(value).gt(100)) value = '100';
+
   const swiperRef = useRef<any>(null);
   const [current, setCurrent] = useState(1);
-
-  const value = 6;
 
   useEffect(() => {
     const autoPlay = () => {
@@ -53,7 +68,7 @@ const NFTProgress = () => {
         <img
           src="/images/activity/christmas/icon-progress-mid.svg"
           alt=""
-          className="w-[69px] h-[133px] absolute z-[1] left-1/2 top-0 -translate-x-1/2 -translate-y-[88px]"
+          className="w-[69px] h-[133px] absolute z-[1] left-[calc(68%_-_35px)] top-0 -translate-y-[88px]"
         />
         <img
           src="/images/activity/christmas/icon-progress-complete.svg"

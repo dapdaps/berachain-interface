@@ -116,7 +116,7 @@ export function useQuest(): IQuest {
         if (it.name === 'Top Validators') {
           currDApp = {
             name: it.name,
-            icon: '/images/dapps/bgt.svg',
+            icon: '/images/activity/christmas/icon-bgt.svg',
             path: '/bgt',
           };
         }
@@ -147,11 +147,11 @@ export function useQuest(): IQuest {
       if (it.name && EcosystemQuests[it.name]) {
         it.ecosystemInfo = EcosystemQuests[it.name];
         it.socials = EcosystemQuests[it.name].socials;
-        it.description = EcosystemQuests[it.name].missions?.[it.category as string]?.text;
+        it.description = EcosystemQuests[it.name].missions?.[it.category as string]?.text?.(it.box);
         it.missionAction = EcosystemQuests[it.name].missions?.[it.category as string]?.action;
 
         if (it.name === 'Beraji') {
-          it.description = EcosystemQuests[it.name].missions?.wallet1?.text;
+          it.description = EcosystemQuests[it.name].missions?.wallet1?.text?.(it.box);
           it.missionAction = EcosystemQuests[it.name].missions?.wallet1?.action;
         }
 
@@ -167,7 +167,7 @@ export function useQuest(): IQuest {
     _latestQuestList.sort((a, b) => (a.id as number) - (b.id as number)).forEach((it) => {
       if (it.name === 'Beraji') {
         it.missions?.forEach?.((_it, idx) => {
-          _it.description = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.text;
+          _it.description = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.text?.(it.box);
           _it.missionAction = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.action;
         });
       }

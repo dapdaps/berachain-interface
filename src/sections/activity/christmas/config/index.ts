@@ -7,17 +7,19 @@ export const EcosystemQuests: any = {
       "Berachain cult venture studio BUIDLing honeycomb (largest bera NFT), Henlo ( grade cultcoin) & da largest cult validator",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
     },
     socials: [
-      { label: "Website", link: "https://twitter.com/0xhoneyjar" },
-      { label: "Discord", link: "https://discord.com/invite/thehoneyjar" }
+      { label: "Website", link: "https://www.0xhoneyjar.xyz/" },
+      { label: "X", link: "https://twitter.com/0xhoneyjar" },
+      { label: "Discord", link: "https://discord.com/invite/thehoneyjar" },
+      { label: "Docs", link: "https://0xhoneyjar.mirror.xyz/" },
     ]
   },
   Henlo: {
@@ -28,14 +30,20 @@ export const EcosystemQuests: any = {
       "dumb memecoin built by 0xhoneyjar the biggest cult org in the berachain ecosystem. crypto is hard, henlo is easy",
     missions: {
       view: {
-        text: "Go to the website and get 1 gift boxes.",
+        text: (amount: number) => `Go to the website and get ${amount} gift boxes.`,
         action: "Go"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://www.henlo.com/" },
+      { label: "X", link: "https://twitter.com/henlo" },
+      // { label: "Discord", link: "" },
+      { label: "Docs", link: "https://cult.henlo.com/" },
+    ]
   },
   Kingdomly: {
     categories: ["NFT", "Launchpad"],
@@ -45,14 +53,20 @@ export const EcosystemQuests: any = {
       "An all in one NFT Dapp, launch, mint, trade (coming thoon) on Kingdomly",
     missions: {
       token_balance: {
-        text: "Mint NFTs and get 2 gift boxes.",
+        text: (amount: number) => `Mint NFTs and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://www.kingdomly.app/" },
+      { label: "X", link: "https://twitter.com/KingdomlyApp" },
+      { label: "Discord", link: "https://discord.com/invite/GpQFyde3Sv" },
+      { label: "Docs", link: "https://docs.kingdomly.app/kingdomly-developer-docs" },
+    ]
   },
   Ramen: {
     categories: ["Launchpad", "NFT"],
@@ -62,14 +76,20 @@ export const EcosystemQuests: any = {
       "Token launchpad powering liquidity for next-gen protocols on Berachain.",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://ramen.finance/" },
+      { label: "X", link: "https://twitter.com/ramen_finance" },
+      { label: "Discord", link: "discord.gg/ramenfinance" },
+      { label: "Docs", link: "https://docs.ramen.finance/ramen-finance" },
+    ]
   },
   "Big Fat Bera (Beraborrow NFTs)": {
     categories: ["NFT"],
@@ -79,14 +99,20 @@ export const EcosystemQuests: any = {
       "Big Fat Beras by Beraborrow. A 6,900 collection of the biggest and fattest Beras. Ooga Matata.",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://opensea.io/collection/big-fat-beras-beraborrow" },
+      { label: "X", link: "https://x.com/bigfatberas" },
+      { label: "Discord", link: "https://discord.com/invite/beraborrowofficial" },
+      { label: "Docs", link: "https://opensea.io/collection/big-fat-beras-beraborrow" },
+    ]
   },
   Beraji: {
     categories: ["NFT", "Wallet"],
@@ -96,18 +122,24 @@ export const EcosystemQuests: any = {
       "A proof-of-engagement ecosystem blending gamification to drive meaningful on-chain actions on berachain.",
     missions: {
       wallet1: {
-        text: "Claim $BERA from the faucet in BeraSig Wallet and get 2 gift boxes.",
+        text: (amount: number) => `Claim $BERA from the faucet in BeraSig Wallet and get ${amount} gift boxes.`,
         action: "Claim"
       },
       wallet2: {
-        text: "Swap $BERA to STGUSDC in BeraSig Wallet and get 2 gift boxes.",
+        text: (amount: number) => `Swap $BERA to STGUSDC in BeraSig Wallet and get ${amount} gift boxes.`,
         action: "Swap"
       },
       wallet3: {
-        text: "Mint $Honey in BeraSig Wallet and get 2 gift boxes.",
+        text: (amount: number) => `Mint $Honey in BeraSig Wallet and get ${amount} gift boxes.`,
         action: "Mint"
       }
-    }
+    },
+    socials: [
+      // { label: "Website", link: "" },
+      { label: "X", link: "https://twitter.com/Berajibears" },
+      { label: "Discord", link: "https://discord.com/invite/berajibears" },
+      // { label: "Docs", link: "" },
+    ]
   },
   Yeet: {
     categories: ["BetFi", "GameFi"],
@@ -116,14 +148,20 @@ export const EcosystemQuests: any = {
     description: "The bremiere bonzi of berachain",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://www.yeetit.xyz/" },
+      { label: "X", link: "https://twitter.com/eatsleepyeet" },
+      { label: "Discord", link: "discord.gg/yeetards" },
+      { label: "Docs", link: "https://www.cia.gov/report-information/" },
+    ]
   },
   Honeypot: {
     categories: ["DeFi", "Dex", "Launchpad"],
@@ -133,14 +171,20 @@ export const EcosystemQuests: any = {
       "PoL Accelerator that unites a fair launchpad & a secure DEX on Berachain",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://honeypotfinance.xyz/" },
+      { label: "X", link: "https://twitter.com/honeypotfinance" },
+      { label: "Discord", link: "discord.gg/honeypotfi" },
+      { label: "Docs", link: "https://docs.honeypotfinance.xyz/" },
+    ]
   },
   "Eden labs": {
     categories: ["Sexualfi"],
@@ -149,10 +193,16 @@ export const EcosystemQuests: any = {
     description: "The first sexual products on blockchain",
     missions: {
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "eden.sexualfi.com" },
+      { label: "X", link: "https://x.com/EdenWeb3_Global" },
+      { label: "Discord", link: "https://discord.com/invite/edenweb3" },
+      { label: "Docs", link: "eden.sexualfi.com" },
+    ]
   },
   Puffpaw: {
     categories: ["GameFi", "RWA", "DePin"],
@@ -161,14 +211,20 @@ export const EcosystemQuests: any = {
     description: "Vape 2 quit smoking and earn",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://puffpass.puffpaw.xyz" },
+      { label: "X", link: "https://twitter.com/puffpaw_xyz" },
+      { label: "Discord", link: "https://discord.com/invite/puffpaw" },
+      { label: "Docs", link: "https://mirror.xyz/puffpaw.eth" },
+    ]
   },
   memeswap: {
     categories: ["DeFi", "Dex"],
@@ -177,14 +233,20 @@ export const EcosystemQuests: any = {
     description: "All your memes are belong to us. Much liquidity. Such yield.",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://memeswap.fi/" },
+      { label: "X", link: "https://twitter.com/memeswapfi" },
+      { label: "Discord", link: "discord.gg/gxTzq3WYa8" },
+      { label: "Docs", link: "https://docs.memeswap.fi/" },
+    ]
   },
   Beradrome: {
     categories: ["Marketplace", "DeFi"],
@@ -193,14 +255,20 @@ export const EcosystemQuests: any = {
     description: "Native liquidity marketplace on berachain",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://bartio.beradrome.com/" },
+      { label: "X", link: "https://twitter.com/beradrome" },
+      { label: "Discord", link: "discord.beradrome.com" },
+      { label: "Docs", link: "https://docs.beradrome.com/" },
+    ]
   },
   Beraboyz: {
     categories: ["NFT", "Memecoin"],
@@ -209,14 +277,20 @@ export const EcosystemQuests: any = {
     description: "First n Only NFT on berachain",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://app.berascout.com/" },
+      { label: "X", link: "https://twitter.com/BeraBoyzGG" },
+      { label: "Discord", link: "https://discord.com/invite/zaQKp2bTGB" },
+      { label: "Docs", link: "https://opensea.io/collection/beraboyz-4" },
+    ]
   },
   cubhub: {
     categories: ["NFT", "GameFi"],
@@ -226,14 +300,20 @@ export const EcosystemQuests: any = {
       "Poke The Bear, Get The Claws. An Augmented Reality Based Project On berachain",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://www.cubhubx.com/" },
+      { label: "X", link: "https://twitter.com/CubhubX" },
+      { label: "Discord", link: "https://discord.gg/djmu7n9fak" },
+      { label: "Docs", link: "https://cubhubnft-whitepaper.gitbook.io/official-cubhub-whitepaper" },
+    ]
   },
   Bakeland: {
     categories: ["GameFi"],
@@ -242,14 +322,20 @@ export const EcosystemQuests: any = {
     description: "turning crypto into a P2E metaRPG",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://bakeland.xyz" },
+      { label: "X", link: "https://x.com/bakelandxyz" },
+      { label: "Discord", link: "https://discord.gg/PNheR6h5vB" },
+      { label: "Docs", link: "https://bakeland.xyz" },
+    ]
   },
   Beramonium: {
     categories: ["GameFi", "NFT"],
@@ -259,14 +345,20 @@ export const EcosystemQuests: any = {
       "Building the first & biggest idle RPG on berachain. Get your Beras & join the game!",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://gemhunters.beramonium.io/welcome" },
+      { label: "X", link: "https://x.com/Beramonium" },
+      { label: "Discord", link: "https://discord.com/invite/beramonium" },
+      { label: "Docs", link: "https://beramonium-chronicles.gitbook.io/gemhunters" },
+    ]
   },
   Beraplug: {
     categories: ["Memecoin"],
@@ -276,14 +368,20 @@ export const EcosystemQuests: any = {
       "wtf is $plug —» left curve: butt plug shitcoin —» mid curve: migrates honey comb from jeets to chads —» right curve: (3,3) reinforcement protocol",
     missions: {
       token_balance: {
-        text: "Verify if you are a holder of NFT and get 2 gift boxes.",
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://www.plug.sucks/" },
+      { label: "X", link: "https://x.com/beraplug" },
+      { label: "Discord", link: "https://discord.com/invite/3NcBevpJev" },
+      { label: "Docs", link: "https://docs.plug.sucks/" },
+    ]
   },
   Bullas: {
     categories: ["GameFi"],
@@ -292,14 +390,20 @@ export const EcosystemQuests: any = {
     description: "Bullas on berachain, Backed by 0xhoneyjar",
     missions: {
       view: {
-        text: "Go to the website and get 2 gift boxes.",
+        text: (amount: number) => `Go to the website and get ${amount} gift boxes.`,
         action: "Go"
       },
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://www.bullas.xyz/" },
+      { label: "X", link: "https://x.com/TheBullas_" },
+      { label: "Discord", link: "https://discord.com/invite/bullas" },
+      { label: "Docs", link: "https://bullas.gitbook.io/docs.bullish.com" },
+    ]
   },
   Berahome: {
     categories: ["Community"],
@@ -309,10 +413,16 @@ export const EcosystemQuests: any = {
       "小熊之家致力于为中文加密用户播报berachain的前沿资讯及生态项目解读",
     missions: {
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "https://berahome.org/" },
+      { label: "X", link: "https://x.com/0xBeraHome" },
+      { label: "Discord", link: "https://discord.com/invite/DfnZwHK4FD" },
+      { label: "Docs", link: "https://link3.to/berahome" },
+    ]
   },
   Beraland: {
     categories: ["Community", "Infrastructure"],
@@ -321,10 +431,16 @@ export const EcosystemQuests: any = {
     description: "The community hub and validator for all things Bera.",
     missions: {
       learn: {
-        text: "Learn about us and get 1 gift box.",
+        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
       }
-    }
+    },
+    socials: [
+      { label: "Website", link: "app.beraland.xyz" },
+      { label: "X", link: "https://x.com/Bera_Land" },
+      { label: "Discord", link: "https://discord.gg/beraland" },
+      { label: "Docs", link: "https://app.beraland.xyz/dl/Ecosystem" },
+    ]
   }
   // 'BeraTown': {
   //   categories: ['Social'],

@@ -24,7 +24,7 @@ const GiftBox = () => {
     userInfo,
     userInfoLoading,
     getUserInfo,
-    currentTimestamp,
+    currentDailyTimestamp,
     setShowSwapModal,
   } = useContext(ChristmasContext);
 
@@ -47,9 +47,9 @@ const GiftBox = () => {
   const sortedList = createPyramid(list);
 
   const todayQuest = useMemo(() => {
-    if (!questList || !currentTimestamp || !questList.length) return void 0;
-    return questList.find((it) => it.timestamp === currentTimestamp);
-  }, [currentTimestamp, questList]);
+    if (!questList || !currentDailyTimestamp || !questList.length) return void 0;
+    return questList.find((it) => it.timestamp === currentDailyTimestamp);
+  }, [currentDailyTimestamp, questList]);
 
   const followXVisited = useMemo(() => {
     return getQuestVisited?.(followXQuest?.id);
@@ -142,7 +142,7 @@ const GiftBox = () => {
           </Button>
         </BoxTitle>
       </div>
-      <div className="relative h-[800px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
+      <div className="relative h-[43vw] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
         <Pyramid
           list={sortedList}
           onBoxClick={() => {
