@@ -12,7 +12,7 @@ import clsx from "clsx";
 import { ethers } from "ethers";
 import React, { memo, useEffect } from "react";
 import { BGT_ABI } from "../../abi";
-import { BGT_ADDRESS } from "../../config";
+import { BGT_ADDRESS, VALIDATORS } from "../../config";
 import { OperationTypeType, ValidatorType } from "../../types";
 import Button from "./button";
 import useDelegationQueue, { QueueType } from "./hooks/use-delegation-queue";
@@ -164,7 +164,8 @@ export default memo(function Delegate(props: IProps) {
           transactionHash,
           chain_id: DEFAULT_CHAIN_ID,
           add: operationType === "delegate" ? 1 : 0,
-          sub_type: operationType === "delegate" ? "Stake" : "Unstake"
+          sub_type: operationType === "delegate" ? "Stake" : "Unstake",
+          extra_data: JSON.stringify({ "validator": validator?.address?.toLocaleLowerCase() })
         });
         updateState({
           isLoading: false

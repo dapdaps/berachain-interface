@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-
+import styled from "styled-components";
 import Loading from '@/components/circle-loading';
 import { balanceFormated } from '@/utils/balance';
 import useToast from '@/hooks/use-toast';
@@ -24,17 +23,17 @@ const StyledCurrencyRow = styled.div`
 
 const checkIcon = (
   <svg
-    width='16'
-    height='12'
-    viewBox='0 0 16 12'
-    fill='none'
-    xmlns='http://www.w3.org/2000/svg'
+    width="16"
+    height="12"
+    viewBox="0 0 16 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d='M1 5L6 10L15 1'
-      stroke='currentColor'
-      stroke-width='2'
-      strokeLinecap='round'
+      d="M1 5L6 10L15 1"
+      stroke="currentColor"
+      stroke-width="2"
+      strokeLinecap="round"
     />
   </svg>
 );
@@ -81,12 +80,14 @@ export default function CurrencyRow({
 
   return (
     <StyledCurrencyRow
-      className={`${isActive ? 'active' : ''} cursor-pointer`}
+      className={`${isActive ? "active" : ""} cursor-pointer`}
       onClick={onClick}
     >
       <CurrencyLabel>
         <CurrencyIcon
-          src={currency.icon || '/images/tokens/default_icon.png'}
+          src={
+            currency.icon || currency.logo || "/images/tokens/default_icon.png"
+          }
         />
         <div>
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>

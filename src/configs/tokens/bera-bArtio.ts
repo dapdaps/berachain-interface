@@ -39,6 +39,14 @@ export const beraB: { [key: string]: Token } = {
     name: "Honey bToken",
     icon: "/images/dapps/honey.png"
   },
+  bbhoney: {
+    address: "0xCc4Db6dE3c5a131757e9f00309F3ef5c443D1a8e",
+    chainId: CHAIN_ID,
+    symbol: "BBbHONEY",
+    decimals: 18,
+    name: "Beraborrow bHONEY",
+    icon: "/images/dapps/honey.png"
+  },
   usdt: {
     chainId: CHAIN_ID,
     address: "0x05D0dD5135E3eF3aDE32a9eF9Cb06e8D37A6795D",
@@ -212,6 +220,14 @@ export const beraB: { [key: string]: Token } = {
     name: "Nectar",
     icon: "/assets/tokens/nectar.png"
   },
+  snect: {
+    chainId: CHAIN_ID,
+    address: "0x3a7f6f2F27f7794a7820a32313F4a68e36580864",
+    decimals: 18,
+    symbol: "sNECT",
+    name: "Liquid Stability Pool",
+    icon: "/assets/tokens/nectar.png"
+  },
   obero: {
     chainId: CHAIN_ID,
     address: "0x7629668774f918c00Eb4b03AdF5C4e2E53d45f0b",
@@ -297,8 +313,8 @@ export const beraB: { [key: string]: Token } = {
   gold: {
     chainId: CHAIN_ID,
     address: "0x343499E6315f7d3473a12aaf660Ac02b5739C382",
-    symbol: "GOLD",
     decimals: 18,
+    symbol: "GOLD",
     icon: "/assets/tokens/gold_second.svg"
   },
   kdk: {
@@ -324,6 +340,22 @@ export const beraB: { [key: string]: Token } = {
     symbol: "SIP",
     name: "SIP",
     icon: "/assets/tokens/sip.svg"
+  },
+  "bbhoney-usdc": {
+    address: "0x3a1bfc7871766f5ec089c54bb117cdd0c5f13710",
+    chainId: CHAIN_ID,
+    symbol: "BBkHONEY-USDC",
+    decimals: 18,
+    name: "Beraborrow HONEY-USDC Kodiak Island",
+    icon: "/images/dapps/honey.png"
+  },
+  bigbt: {
+    address: "0x512f5b7cca328110e805924c6b64c439a715b567",
+    chainId: CHAIN_ID,
+    symbol: "BBiBGT",
+    decimals: 18,
+    name: "Beraborrow iBGT",
+    icon: "/assets/tokens/ibgt.png"
   },
   sfc: {
     chainId: CHAIN_ID,

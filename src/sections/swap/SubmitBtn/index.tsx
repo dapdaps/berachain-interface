@@ -1,16 +1,16 @@
-import Loading from '@/components/circle-loading';
-import useApprove from '@/hooks/use-approve';
-import useAccount from '@/hooks/use-account';
-import { useSwitchChain } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
-import { useEffect } from 'react';
+import Loading from "@/components/circle-loading";
+import useApprove from "@/hooks/use-approve";
+import useAccount from "@/hooks/use-account";
+import { useSwitchChain } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
+import { useEffect } from "react";
 
 const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className='h-[60px] md:h-[46px] w-full duration-500 hover:opacity-70 active:opacity-90 flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] md:text-[16px] font-[600] mt-[16px] cursor-pointer'
+      className="h-[60px] md:h-[46px] w-full duration-500 hover:opacity-70 active:opacity-90 flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] md:text-[16px] font-[600] mt-[16px] cursor-pointer"
     >
       {loading ? <Loading /> : children}
     </button>

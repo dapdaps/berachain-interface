@@ -42,7 +42,7 @@ const List = [
   },
   {
     className: "w-[230px] h-[132px]",
-    dAppClassName: "absolute top-[-77px] gap-x-[140px] -left-1/3",
+    dAppClassName: "absolute top-[-77px] gap-x-[14px] -left-1/3",
     sticks: [
       "absolute left-[46px] bottom-[44px]",
       "absolute left-[34px] bottom-[32px]"
@@ -52,6 +52,12 @@ const List = [
         ..._dApps["dolomite"],
         attachedIcon: (
           <TrunkSmall className="absolute left-[44%] bottom-[-24%]" />
+        )
+      },
+      {
+        ..._dApps["beraborrow"],
+        attachedIcon: (
+          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
         )
       },
       {

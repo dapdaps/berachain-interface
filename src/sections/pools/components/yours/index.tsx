@@ -59,6 +59,7 @@ export default function Yours({
           pools={pools}
           loading={loading}
           ticksInfo={ticksInfo}
+          dex={dex}
           onAction={(val: string, item: any) => {
             setSelectedRecord(item);
             setOpenModal(val);
@@ -68,6 +69,7 @@ export default function Yours({
         <V2List
           pools={pools}
           loading={loading}
+          dex={dex}
           onAction={(val: string, item: any) => {
             setSelectedRecord(item);
             setOpenModal(val);

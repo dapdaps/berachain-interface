@@ -14,6 +14,22 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "assets.db3.net",
+        port: "",
+        pathname: "/**"
+      },
+      {
+        protocol: "https",
+        hostname: "assets.db3.app",
+        port: "",
+        pathname: "/**"
+      }
+    ]
+  },
   rewrites: async () => [
     {
       source: "/assets/:path*",

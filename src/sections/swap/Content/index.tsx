@@ -15,6 +15,7 @@ import Big from "big.js";
 import TokenSelector from "../TokenSelector";
 import { DEFAULT_CHAIN_ID } from "@/configs/index";
 import chains from "@/configs/chains";
+import { usePriceStore } from "@/stores/usePriceStore";
 
 export default function Swap({
   dapp,
@@ -39,6 +40,7 @@ export default function Swap({
   const { importTokens, addImportToken }: any = useImportTokensStore();
   const { account, chainId } = useAccount();
   const [showDetail, setShowDetail] = useState(true);
+  const prices = usePriceStore((store: any) => store.price);
 
   const [selectType, setSelectType] = useState<"in" | "out">("in");
   const { loading, trade, onQuoter, onSwap } = useTrade({
@@ -137,7 +139,7 @@ export default function Swap({
           type="in"
           currency={inputCurrency}
           amount={inputCurrencyAmount}
-          prices={{}}
+          prices={prices}
           account
           onCurrencySelectOpen={() => {
             setDisplayCurrencySelect(true);
@@ -170,7 +172,7 @@ export default function Swap({
           currency={outputCurrency}
           amount={outputCurrencyAmount}
           disabled
-          prices={{}}
+          prices={prices}
           account
           outputCurrencyReadonly={outputCurrencyReadonly}
           onCurrencySelectOpen={() => {

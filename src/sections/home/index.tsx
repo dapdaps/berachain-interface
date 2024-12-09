@@ -9,11 +9,13 @@ import DashboardSvg from "@public/images/background/dashboard.svg";
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import EarnSvg from "@public/images/background/earn.svg";
 import VaultsEnterance from "./vaults-enterance";
+import MemeEnterance from "@/sections/meme/bros/enterance";
 import { memo } from "react";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useIsMobile from "@/hooks/use-isMobile";
-import MobileHome from "./mobile";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
+
+import MobileHome from "./mobile";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
 
@@ -159,7 +161,7 @@ const Navigation = function () {
         <div className="text-[20px] text-center font-CherryBomb">Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
-
+      <MemeEnterance />
       <ChristmasEnterance path={christmasPath} />
     </>
   );

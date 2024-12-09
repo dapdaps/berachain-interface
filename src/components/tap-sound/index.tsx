@@ -33,7 +33,7 @@ const TapSound = forwardRef((props: any, ref) => {
       style={{
         width: 0,
         height: 0,
-        position: "absolute",
+        position: 'absolute',
         zIndex: -9999,
         visibility: "hidden",
         opacity: 0
