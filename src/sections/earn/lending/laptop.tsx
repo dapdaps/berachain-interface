@@ -4,17 +4,13 @@ import useMarketStore from "@/stores/useMarketStore";
 import { useRouter } from 'next/navigation';
 import { useSwapToken } from "@/hooks/use-swap-token";
 import SwapModal from '@/sections/swap/SwapModal';
-import BendActionModal from '@/sections/Lending/Bend/Action';
-import BendBorrowActionModal from '@/sections/Lending/Bend/SupplyBorrowPanel/actionModal';
 import ActionPanelLaptop from "@/sections/Lending/components/action-panel/laptop";
+import ActionModal from "@/sections/Lending/Bend/Action";
 import BendActionPanelLaptop from '@/sections/Lending/Bend/Action/laptop';
 import useAddAction from "@/hooks/use-add-action";
-import { useAccount } from 'wagmi';
-import { useProvider } from "@/hooks/use-provider";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
-import ActionPanelForm from "@/sections/Lending/Bend/Action/form";
 import IconAdd from '@public/images/add.svg'
-import { numberFormatter } from '@/utils/number-formatter';
+import { numberFormatter } from "@/utils/number-formatter";
 import Pool from '@/sections/Lending/Beraborrow/pool';
 
 const PAGE_SIZE = 9;
@@ -210,7 +206,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
             trigger={PopoverTrigger.Click}
             placement={PopoverPlacement.BottomRight}
             content={['Dolomite', 'Beraborrow'].includes(item.protocol.name) ? null : (
-              <BendBorrowActionModal
+              <ActionModal
                 isOpen={true}
                 onClose={() => {}}
                 action="borrow"
@@ -230,7 +226,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
             trigger={PopoverTrigger.Click}
             placement={PopoverPlacement.BottomRight}
             content={['Dolomite', 'Beraborrow'].includes(item.protocol.name) ? null : (
-              <BendBorrowActionModal
+              <ActionModal
                 isOpen={true}
                 onClose={() => {
                 }}

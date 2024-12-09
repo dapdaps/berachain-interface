@@ -18,7 +18,7 @@ export function useDetail(props: any) {
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
   const toast = useToast();
-  const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
+  const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS, data?.initialData?.pool?.protocol);
   const { addAction } = useAddAction("dapp");
 
   const detailBerpsRef = useRef<any>();
@@ -74,10 +74,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -249,11 +249,12 @@ export function useDetail(props: any) {
         .then((receipt: any) => {
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(inAmount);
+          const _symbol = tokens.join("-")
           addAction?.({
             type: "Staking",
             action: "Staking",
             token: {
-              symbol: tokens.join("-")
+              symbol: _symbol === "YEET-BERA" ? "KODIAK-3" : tokens.join("-")
             },
             amount: inAmount,
             template: name || "Infrared",
@@ -340,9 +341,8 @@ export function useDetail(props: any) {
             type: "Staking",
             action: "UnStake",
             token: {
-              symbol: tokens.join("-")
+              symbol: _symbol === "YEET-BERA" ? "KODIAK-3" : tokens.join("-")
             },
-            symbol: tokens.join("-"),
             amount: lpAmount,
             template: name || "Infrared",
             status: status,

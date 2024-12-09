@@ -7,13 +7,13 @@ import useAaveConfig from '@/stores/useAaveConfigStore';
 import useMarketStore from '@/stores/useMarketStore';
 
 const ActionPanel = forwardRef<HTMLDivElement, IProps>((props: IProps, ref) => {
-  const { token } = props;
+  const { token, isOpen } = props;
 
   const isMobile = useIsMobile();
   const { config } = useAaveConfig();
   const { userAccountData } = useMarketStore();
 
-  if (!config || !token || !userAccountData) return null;
+  if (!config || !token || !userAccountData || !isOpen) return null;
 
   return isMobile ? (
     <ActionPanelMobile {...props} ref={ref} />
@@ -27,7 +27,7 @@ export default ActionPanel;
 export interface IProps {
   isOpen?: boolean;
   onClose?: () => void;
-  action: string;
+  action: any;
   token?: TokenInfo;
   className?: string;
   isMobile?: boolean;
