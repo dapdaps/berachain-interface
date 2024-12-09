@@ -25,7 +25,7 @@ const GiftBox = () => {
     userInfoLoading,
     getUserInfo,
     currentDailyTimestamp,
-    setShowSwapModal,
+    setShowSwapModal
   } = useContext(ChristmasContext);
 
   const remainBox = useMemo(
@@ -38,16 +38,15 @@ const GiftBox = () => {
     setOpenData(args);
     getUserInfo?.();
   });
-  const list = [...new Array(remainBox || 0)]
-    .slice(0, 21)
-    .map((_, i) => ({
-      id: i + 1,
-      status: "un_open"
-    }));
+  const list = [...new Array(remainBox || 0)].slice(0, 21).map((_, i) => ({
+    id: i + 1,
+    status: "un_open"
+  }));
   const sortedList = createPyramid(list);
 
   const todayQuest = useMemo(() => {
-    if (!questList || !currentDailyTimestamp || !questList.length) return void 0;
+    if (!questList || !currentDailyTimestamp || !questList.length)
+      return void 0;
     return questList.find((it) => it.timestamp === currentDailyTimestamp);
   }, [currentDailyTimestamp, questList]);
 
@@ -170,7 +169,7 @@ const GiftBox = () => {
             </div>
           </SocialTask>
         </div>
-        <div className="absolute right-[19px] bottom-[311px] w-[334px] h-[333px] bg-[url('/images/activity/christmas/bg-gift-retweet.svg')] bg-no-repeat bg-cover bg-center">
+        <div className="absolute right-[19px] bottom-[252px] w-[334px] h-[333px] bg-[url('/images/activity/christmas/bg-gift-retweet.svg')] bg-no-repeat bg-cover bg-center">
           <div className="absolute flex flex-col items-center gap-[13px] right-[15px] bottom-[-12px]">
             <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center">
               <div className="opacity-50">
