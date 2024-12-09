@@ -15,22 +15,22 @@ const Summary = ({ onOpenRewards }: any) => {
     {
       id: 2,
       label: "Total participants",
-      value: numberFormatter(info?.total_users, 0, true)
+      value: numberFormatter(info?.total_users, 2, true, { isShort: true })
     },
     {
       id: 3,
       label: "Total boxes earned",
-      value: numberFormatter(info?.total_box, 0, true)
+      value: numberFormatter(info?.total_box, 2, true, { isShort: true })
     },
     {
       id: 4,
       label: "Total $snowflake earned",
-      value: numberFormatter(info?.total_token, 0, true)
+      value: numberFormatter(info?.total_token, 2, true, { isShort: true })
     },
     {
       id: 5,
       label: "Total yap generated",
-      value: numberFormatter(info?.total_yap, 0, true)
+      value: numberFormatter(info?.total_yap, 2, true, { isShort: true })
     }
   ];
 
@@ -66,7 +66,7 @@ const Item = (props: any) => {
   const { label, value, underline, onClick } = props;
 
   return (
-    <div className="relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] after:bg-[#755C3D] after:right-0 after:top-[8px] flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap">
+    <div className="relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] after:bg-[#755C3D] after:right-0 after:top-[8px] last:after:hidden flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap">
       <div className="font-[500] text-[18px] leading-normal">{label}</div>
       <div
         className={`text-[30px] font-CherryBomb leading-[150%] font-[400] ${

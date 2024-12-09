@@ -1,10 +1,11 @@
 import BasicButton from "@/components/button";
 
-export default function Button({ children }: any) {
+export default function Button({ children, ...restProps }: any) {
   return (
     <BasicButton
       type="primary"
       className="flex justify-between items-center w-[168px] h-[36px] shadow-shadow2 text-[16px] font-semibold"
+      {...restProps}
     >
       {children}
       <svg
