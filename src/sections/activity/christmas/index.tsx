@@ -1,21 +1,10 @@
-import Top from "@/sections/activity/christmas/sections/top";
-import NFTProgress from "@/sections/activity/christmas/sections/progress";
-import Summary from "@/sections/activity/christmas/sections/summary";
-import GiftBox from "@/sections/activity/christmas/sections/gift-box";
-import Quest from "@/sections/activity/christmas/sections/quest";
-import SceneContextProvider from "@/sections/activity/christmas/context";
+import SceneContextProvider from '@/sections/activity/christmas/context';
+import Index from '@/sections/activity/christmas/christmas';
 
-export default function Christmas() {
+export default function ChristmasView() {
   return (
     <SceneContextProvider>
-      <div className="">
-        <Top>
-          <NFTProgress />
-        </Top>
-        <Summary />
-        <GiftBox />
-        <Quest />
-      </div>
+      <Index />
     </SceneContextProvider>
   );
 }

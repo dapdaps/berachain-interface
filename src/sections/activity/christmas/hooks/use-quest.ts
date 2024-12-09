@@ -8,6 +8,9 @@ import { dAppsInfo } from '@/configs/dapp';
 import { DAppQuests, EcosystemQuests } from '@/sections/activity/christmas/config';
 import { cloneDeep } from 'lodash';
 import { useBase } from '@/sections/activity/christmas/hooks/use-base';
+import { Contract, providers, utils } from 'ethers';
+import { TOKEN_ABI } from '@/hooks/use-token-balance';
+import { ChristmasActivityChains } from '@/configs/chains';
 
 const DAPP_ACTIONS: any = {
   Swap: 'Trade',
@@ -177,12 +180,32 @@ export function useQuest(): IQuest {
     setLoading(false);
   };
 
-  const requestCheck = (_id: number) => {
+  const requestCheck = (_quest: Partial<Quest>) => {
     const params = {
-      id: _id,
+      id: _quest.id,
       account,
     };
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      // NFT
+      if (_quest.token) {
+        const rpcUrl = ChristmasActivityChains[_quest.chain_id as number].rpcUrls.default.http[0];
+        const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
+        const _provider = rpcProvider;
+        const contract = new Contract(_quest.token, TOKEN_ABI, _provider);
+        try {
+          const rawBalance = await contract.balanceOf(account);
+          const balance = utils.formatUnits(rawBalance, 18);
+          console.log('NFT balance: %o', balance);
+          if (Big(balance || 0).lte(0)) {
+            resolve({ code: 0, data: {} });
+            return;
+          }
+        } catch (err: any) {
+          console.log('rawBalance failed: %o', err);
+          resolve({ code: 0, data: {} });
+          return;
+        }
+      }
       get('/api/mas/quest/check', params).then((res) => {
         resolve(res);
       }).catch((err) => {
@@ -222,7 +245,7 @@ export function useQuest(): IQuest {
         }
         return true;
       });
-      const checks = checkList.map((it) => requestCheck(it.id as number));
+      const checks = checkList.map((it) => requestCheck(it));
       const res = await Promise.all(checks);
       res.forEach((_res: any) => {
         const { total_box, total_completed_times } = _res.data || {};
@@ -235,7 +258,7 @@ export function useQuest(): IQuest {
         totalCompletedTimes += (total_completed_times || 0);
       });
     } else {
-      const res: any = await requestCheck(quest.id);
+      const res: any = await requestCheck(quest);
       if (res.code !== 0) {
         handleQuestUpdate(quest, { checking: false });
         return;
@@ -282,7 +305,7 @@ export function useQuest(): IQuest {
     let totalBox = 0;
     let totalCompletedTimes = 0;
 
-    const res: any = await requestCheck(mission.id);
+    const res: any = await requestCheck(mission);
     if (res.code !== 0) {
       handleQuestMissionUpdate(mission, { checking: false });
       return;

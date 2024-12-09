@@ -28,7 +28,7 @@ export const EcosystemQuests: any = {
       "dumb memecoin built by 0xhoneyjar the biggest cult org in the berachain ecosystem. crypto is hard, henlo is easy",
     missions: {
       view: {
-        text: "Go to the website and get 2 gift boxes.",
+        text: "Go to the website and get 1 gift boxes.",
         action: "Go"
       },
       learn: {

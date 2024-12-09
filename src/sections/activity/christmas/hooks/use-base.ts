@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import { getUTCTimestamp } from '@/utils/date';
@@ -12,6 +12,7 @@ export function useBase(): IBase {
   const [info, setInfo] = useState<Partial<Mas>>({});
   const [userInfo, setUserInfo] = useState<Partial<UserMas>>({});
   const [currentTimestamp, setCurrentTimestamp] = useState<number>();
+  const [showSwapModal, setShowSwapModal] = useState(false);
 
   const getInfo = async () => {
     setLoading(true);
@@ -60,6 +61,8 @@ export function useBase(): IBase {
     userInfo,
     getUserInfo,
     currentTimestamp,
+    showSwapModal,
+    setShowSwapModal,
   };
 }
 
@@ -69,6 +72,8 @@ export interface IBase {
   info: Partial<Mas>;
   userInfo: Partial<UserMas>;
   currentTimestamp?: number;
+  showSwapModal: boolean;
+  setShowSwapModal: Dispatch<SetStateAction<boolean>>;
   getUserInfo(): void;
 }
 
