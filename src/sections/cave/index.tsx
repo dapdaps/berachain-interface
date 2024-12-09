@@ -242,27 +242,24 @@ const sockTips = [
         name: 'Elf’s Jacket',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/elf_jacket.png',
-        link: '/swap',
+        link: '/activity/christmas',
         btnText: 'Join',
-        dapps: stakeDapps,
     },
     {
         category: 'santa_coat',
         name: 'Santa Coat',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/santa_coat.png',
-        link: '/swap',
+        link: '/activity/christmas',
         btnText: 'Join',
-        dapps: stakeDapps,
     },
     {
         category: 'scarf',
         name: 'Scarf',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/scarf.png',
-        link: '/swap',
+        link: '/activity/christmas',
         btnText: 'Join',
-        dapps: stakeDapps,
     },
 
 ]
@@ -272,18 +269,16 @@ const giftBoxTips = [
         name: 'Sleigh',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/sleigh.png',
-        link: '/swap',
+        link: '/activity/christmas',
         btnText: 'Join',
-        dapps: stakeDapps,
     },
     {
         category: 'snowboard',
         name: 'Snowboard',
         content: 'Join BeraTown Xmas campaign to get a random gift box.',
         img: '/images/cave/christmas/snowboard.png',
-        link: '/swap',
+        link: '/activity/christmas',
         btnText: 'Join',
-        dapps: stakeDapps,
     },
 ]
 
@@ -298,9 +293,9 @@ export default function Cave() {
     const store: any = useCaveWelcome()
 
     const [nftVisible, setNftVisible] = useState(false)
-    const [nft, setNft] = useState(null)
+    const [checkedNft, setCheckedNft] = useState(null)
 
-    const { cars, hats, clothes, necklaces, items, nfts, setCars, setClothes, setHats, setNecklaces } = useCollect({
+    const { cars, hats, clothes, necklaces, items, nfts, setCars, setClothes, setHats, setNecklaces, setNfts } = useCollect({
         address: account as string
     })
 
@@ -372,7 +367,6 @@ export default function Cave() {
                                     left: 406,
                                     top: 75
                                 },]
-                                console.log('====items', items)
                                 return (
                                     <div
                                         style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
@@ -385,11 +379,10 @@ export default function Cave() {
                                         <img src={`/images/cave/christmas/sock${item.pc_item ? '_has' : ''}.svg`} alt="sock" />
 
 
-                                        {item.pc_item && <div className="absolute left-[26px] top-[-2px]">
+                                        {item.pc_item && <div className="absolute left-[26px] top-[-2px] z-10">
                                             <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
                                                 const isHat = hat_categories.indexOf(item.category) > -1
                                                 const isCloth = cloth_cateogries.indexOf(item.category) > -1
-                                                console.log('====isHat', [isHat ? "hat" : (isCloth ? "cloth" : "necklace")])
                                                 setEqu({
                                                     [isHat ? "hat" : (isCloth ? "cloth" : "necklace")]: isChecked ? item.category : 0
                                                 })
@@ -443,7 +436,6 @@ export default function Cave() {
                 </div>
             </div>
             <div className=" flex gap-[65px] justify-center">
-                {/* <img src="/images/cave/bearphoto.png" className="w-[150px]" /> */}
                 <div className="relative w-[159px] h-[184px]">
                     <img className="relative z-[3]" src="/images/cave/christmas/photo_frame.svg" alt="photo_frame" />
                     <div className="absolute left-[18px] top-[42px] z-[2]">
@@ -452,20 +444,19 @@ export default function Cave() {
                         </svg>
                     </div>
                     <div className="absolute top-[54px] left-[28px] right-[28px] bottom-[32px] z-[1]">
-
+                        <img src={checkedNft?.logo} alt="" />
                     </div>
 
                     <div
                         className="absolute left-[38px] top-[86px] flex items-center justify-center w-[81px] h-[36px] rounded-[18px] border-[2px] border-[#4B371F] bg-[#FFDC50] cursor-pointer text-black font-CherryBomb text-[18px] z-[5]"
                         onClick={() => {
-                            // console.log('111111')
                             setNftVisible(true)
                         }}
                     >
                         Change
                     </div>
                     <div className="z-[4] flex items-center justify-center absolute left-[13px] bottom-[6px] w-[123px] h-[26px] rounded-[8px] border border-[#B18249] bg-[linear-gradient(90deg,_#CDB34D_0%,_#675A27_100%)] text-[#FFEAA5] font-CherryBomb text-[14px]  text-stroke-1">
-                        Beraboyz #1978
+                        {checkedNft?.name}
                     </div>
                 </div>
                 <img src="/images/cave/youtube.png" className="w-[150px]" />
@@ -611,14 +602,12 @@ export default function Cave() {
             <NftModal
                 visible={nftVisible}
                 nfts={nfts}
+                setCheckedNft={setCheckedNft}
+                checkedNft={checkedNft}
                 onClose={() => {
                     setNftVisible(false)
                 }}
             />
-
-
-
-
         </div>
     </div>
 }

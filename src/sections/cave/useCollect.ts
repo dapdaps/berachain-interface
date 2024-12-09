@@ -107,7 +107,6 @@ export default function useCollect({ address }: { address: string }) {
                 })
 
 
-                console.log('====secondResponse.data', secondResponse.data)
                 setCars(cars)
                 setClothes(clothes)
                 setNecklaces(necklaces)
@@ -115,7 +114,7 @@ export default function useCollect({ address }: { address: string }) {
 
                 setItems(_items)
                 setNfts(_nfts)
-                setUpdater(Date.now())
+                // setUpdater(Date.now())
                 setCollection({
                     cars,
                     clothes,
@@ -127,7 +126,7 @@ export default function useCollect({ address }: { address: string }) {
             }
         })
 
-    }, [address])
+    }, [address, updater])
 
     const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace") => {
         if (type) {
