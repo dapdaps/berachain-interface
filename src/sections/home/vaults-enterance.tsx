@@ -12,9 +12,7 @@ export default function VaultsEnterance({ className, onClick, imgSrc }: any) {
       data-bp="1010-013"
     >
       <div className="flex items-center justify-end gap-[27px] pr-[19px] md:hidden">
-        <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
-          Vaults
-        </div>
+        <div className="text-[20px] font-CherryBomb leading-[90%]">Vaults</div>
       </div>
       <motion.img
         src={imgSrc}
