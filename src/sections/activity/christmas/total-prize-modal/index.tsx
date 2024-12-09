@@ -2,18 +2,14 @@ import Modal from "@/components/modal";
 import SnowIcon from "../present-icons/icon-snow";
 import Nft from "./nft";
 import config from "../present-icons/config";
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
 import Skeleton from "react-loading-skeleton";
 import useRewards from "../hooks/use-rewards";
-import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 export default function TotalPrizeModal({ open, onClose }: any) {
   const { loading, rares, items } = useRewards();
-  const {
-    userInfo,
-  } = useContext(ChristmasContext);
 
   const [showNfts, setShowNfts] = useState(false);
   const [nftList, nftAndRare] = useMemo(() => {
@@ -98,8 +94,8 @@ export default function TotalPrizeModal({ open, onClose }: any) {
             <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
             <div className="flex flex-wrap items-center justify-between pt-[14px]">
               {items.map((token: any, i: number) => {
-                const { w, h, shadowIcon: ShadowIcon } = config[token.category];
-                return userInfo?.items?.some?.((it) => it.id === token.id) ? (
+                const { w, h } = config[token.category];
+                return (
                   <img
                     key={i}
                     className="shrink-0"
@@ -109,7 +105,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
                     }}
                     src={token.logo}
                   />
-                ) : <ShadowIcon />;
+                );
               })}
             </div>
           </div>

@@ -1,12 +1,12 @@
 import Modal from "@/components/modal";
 import OpenBox from "./open-box";
-import Nft from "../nft-prize-winners-modal/nft";
 import Button from "./button";
 import Present from "./present";
 import { useRouter } from "next-nprogress-bar";
 import { formatThousandsSeparator } from "@/utils/balance";
 import { useContext } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
+import Rare from '@/sections/activity/christmas/nft-prize-winners-modal/rare';
 
 export default function UserPresentsModal({ open, data, onClose }: any) {
   const router = useRouter();
@@ -30,12 +30,11 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
         <div className="px-[38px]">
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
             <div className="text-[16px] font-bold">
-              You got <span className="text-[26px]">{data.nfts.length}</span>{" "}
-              NFTs
+              You got <span className="text-[26px]">{data.rares.length}</span>{" "}rare prize
             </div>
             <div className="flex gap-[16px] flex-wrap mt-[12px]">
-              {data.nfts.map((nft: any) => (
-                <Nft key={nft.token_id} nft={nft} />
+              {data.rares.map((rare: any, idx: number) => (
+                <Rare key={idx} rare={rare} />
               ))}
             </div>
           </div>
