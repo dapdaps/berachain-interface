@@ -2,11 +2,9 @@ import Card from "@/components/card";
 import Modal from "@/components/modal";
 import { memo } from "react";
 import CheckBox from "./CheckBox";
-import _ from "lodash";
 export default memo(function NftModal({
   nfts,
-  setCheckedNft,
-  checkedNft,
+  store,
   visible,
   onClose
 }: any) {
@@ -22,12 +20,10 @@ export default memo(function NftModal({
                 <div className="relative w-[134px] h-[154px] rounded-[10px] bg-black/[0.06]">
 
                   <div className="absolute right-0 top-0">
-                    <CheckBox checked={nft.token_id === checkedNft?.token_id} onCheckChange={(isChecked) => {
-                      if (isChecked) {
-                        setCheckedNft(nft)
-                      } else {
-                        setCheckedNft(null)
-                      }
+                    <CheckBox checked={nft.token_id === store?.nft?.token_id} onCheckChange={(isChecked) => {
+                      store.set({
+                        nft: isChecked ? nft : null
+                      })
                     }} />
                   </div>
                   <div className="px-[12px] mt-[12px] mb-[7px] h-[110px] rounded-[10px] overflow-hidden">
