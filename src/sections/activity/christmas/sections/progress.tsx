@@ -52,7 +52,7 @@ const NFTProgress = () => {
               <div className="w-[200px] translate-x-[55px] h-[110px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
                 <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[14px]">
                   <div className="font-CherryBomb font-[400] leading-[150%] text-[30px]">{value}%</div>
-                  <div className="font-[500] text-[14px] leading-normal">Chance to win NFTs</div>
+                  <div className="font-[500] text-[14px] leading-normal">Chane To Win Rare Prize</div>
                 </div>
               </div>
             )}
