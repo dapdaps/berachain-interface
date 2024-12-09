@@ -1,18 +1,39 @@
-import { useContext } from 'react';
-import { ChristmasContext } from '@/sections/activity/christmas/context';
-import { numberFormatter } from '@/utils/number-formatter';
+import { useContext, useState } from "react";
+import { ChristmasContext } from "@/sections/activity/christmas/context";
+import { numberFormatter } from "@/utils/number-formatter";
+import TotalPrizeModal from "../total-prize-modal";
 
 const Summary = () => {
-  const {
-    info,
-  } = useContext(ChristmasContext);
+  const { info, nftList, nftLoading } = useContext(ChristmasContext);
+  const [showModal, setShowModal] = useState(false);
 
   const summaries = [
-    { id: 1, label: 'Total prize value', value: numberFormatter(1250000, 2, true, { isShort: true, prefix: '$' }), underline: true },
-    { id: 2, label: 'Total participants', value: numberFormatter(info?.total_users, 0, true) },
-    { id: 3, label: 'Total boxes earned', value: numberFormatter(info?.total_box, 0, true) },
-    { id: 4, label: 'Total $snowflake earned', value: numberFormatter(info?.total_token, 0, true) },
-    { id: 5, label: 'Total yap generated', value: numberFormatter(info?.total_yap, 0, true) },
+    {
+      id: 1,
+      label: "Total prize value",
+      value: numberFormatter(1250000, 2, true, { isShort: true, prefix: "$" }),
+      underline: true
+    },
+    {
+      id: 2,
+      label: "Total participants",
+      value: numberFormatter(info?.total_users, 0, true)
+    },
+    {
+      id: 3,
+      label: "Total boxes earned",
+      value: numberFormatter(info?.total_box, 0, true)
+    },
+    {
+      id: 4,
+      label: "Total $snowflake earned",
+      value: numberFormatter(info?.total_token, 0, true)
+    },
+    {
+      id: 5,
+      label: "Total yap generated",
+      value: numberFormatter(info?.total_yap, 0, true)
+    }
   ];
 
   return (
@@ -24,18 +45,27 @@ const Summary = () => {
           className="absolute top-0 left-0 w-full -translate-y-[40%] -translate-x-[2%] scale-[1.07]"
         />
         <div className="w-full flex justify-between items-start">
-          {
-            summaries.map((item: any, index: number) => (
-              <Item
-                key={index}
-                label={item.label}
-                value={item.value}
-                underline={item.underline}
-              />
-            ))
-          }
+          {summaries.map((item: any, index: number) => (
+            <Item
+              key={index}
+              label={item.label}
+              value={item.value}
+              underline={item.underline}
+              onClick={() => {
+                if (item.id === 1) setShowModal(true);
+              }}
+            />
+          ))}
         </div>
       </div>
+      <TotalPrizeModal
+        open={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+        nfts={nftList}
+        loading={nftLoading}
+      />
     </div>
   );
 };
@@ -43,14 +73,19 @@ const Summary = () => {
 export default Summary;
 
 const Item = (props: any) => {
-  const { label, value, underline } = props;
+  const { label, value, underline, onClick } = props;
 
   return (
     <div className="relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] after:bg-[#755C3D] after:right-0 after:top-[8px] flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap">
-      <div className="font-[500] text-[18px] leading-normal">
-        {label}
-      </div>
-      <div className={`text-[30px] font-CherryBomb leading-[150%] font-[400] ${underline ? 'underline decoration-dashed underline-offset-8 cursor-pointer' : ''}`}>
+      <div className="font-[500] text-[18px] leading-normal">{label}</div>
+      <div
+        className={`text-[30px] font-CherryBomb leading-[150%] font-[400] ${
+          underline
+            ? "underline decoration-dashed underline-offset-8 cursor-pointer"
+            : ""
+        }`}
+        onClick={onClick}
+      >
         {value}
       </div>
     </div>

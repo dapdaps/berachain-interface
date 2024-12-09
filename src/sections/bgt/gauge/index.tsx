@@ -167,6 +167,7 @@ const BgtGauge = (props: any) => {
   }
 
   const getPercentage = (_amount: string) => {
+    _amount = Big(_amount).gt(state?.balance) ? state?.balance : _amount
     return Big(state?.balance).eq(0) ? 0 : Big(_amount).div(state?.balance ?? 1).times(100).toFixed()
   }
 
@@ -181,10 +182,14 @@ const BgtGauge = (props: any) => {
       });
       return;
     }
-
+    const percentage = getPercentage(amount)
+    const rangeIndex = RangeList.findIndex((range) =>
+      Big(range).eq(Big(percentage).div(100))
+    )
     updateState({
       inAmount: amount,
-      percentage: getPercentage(amount),
+      percentage,
+      rangeIndex
     })
   };
   const handleMax = () => {
@@ -239,7 +244,7 @@ const BgtGauge = (props: any) => {
             handleMax,
             onSuccess,
             addAction,
-            
+
           }}
         />
       ) : (

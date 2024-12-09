@@ -16,6 +16,13 @@
   font-stretch: 75% 125%;
 }
 
+@font-face {
+  font-family: "Fuzzy";
+  src: url("./fonts/FuzzyBubbles-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+}
+
 html,
 body {
   margin: 0;
@@ -45,9 +52,7 @@ body {
 button,
 a,
 .cursor-pointer {
-  cursor:
-    url("../../public/images/cursor.svg") 12 0,
-    auto !important;
+  cursor: url("../../public/images/cursor.svg") 12 0, auto !important;
 }
 
 @layer utilities {
@@ -84,9 +89,7 @@ body::-webkit-scrollbar-thumb,
 div::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border-radius: 6px;
-  cursor:
-    url("../../public/images/cursor.svg") 12 0,
-    auto;
+  cursor: url("../../public/images/cursor.svg") 12 0, auto;
 }
 body::-webkit-scrollbar-thumb:hover,
 div::-webkit-scrollbar-thumb:hover {
@@ -116,7 +119,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .cave-bg {
-  background: var(--background) url(/images/cave/cave-empty.png) center top no-repeat;
+  background: var(--background) url(/images/cave/cave-empty.png) center top
+    no-repeat;
   background-size: 104% 100%;
   min-height: 890px;
   min-width: 1200px;

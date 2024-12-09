@@ -8,6 +8,9 @@ export type ColumnType = {
   label: string;
   type: string;
   sort?: boolean;
+  isFilter?: boolean;
+  list?: any;
+  align?: string;
   render: (data: any, index: number) => JSX.Element;
 };
 export type ColunmListType = ColumnType[];

@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 import useBend from '@/sections/Lending/Bend/hooks/useBend';
 import useBendReward from '@/sections/Lending/Bend/hooks/useBendReward';
 import Skeleton from 'react-loading-skeleton';
-import BendBorrowActionModal from '@/sections/Lending/Bend/SupplyBorrowPanel/actionModal';
+import ActionModal from '@/sections/Lending/Bend/Action/index';
 import useMarketStore from '@/stores/useMarketStore';
 import Dropdown from '@/sections/marketplace/components/dropdown';
 import useIsMobile from '@/hooks/use-isMobile';
@@ -136,9 +136,6 @@ const EarnLending = (props: any) => {
 
     return _tokens.filter((t: any) => t.protocol.name === protocol);
   }, [protocol, dolomiteData, tab, checked]);
-
-console.log(tokenList, 'tokenList');
-
 
   const handleAction = (type: any, data: any) => {
     if (data.protocol.name === 'Dolomite' && ['Borrow', 'Repay'].includes(type)) {
@@ -442,7 +439,7 @@ console.log(tokenList, 'tokenList');
       />
       {/*#endregion*/}
       {/*#region Bend Borrow*/}
-      <BendBorrowActionModal
+      <ActionModal
         isOpen={bendBorrowVisible}
         onClose={handleActionClose}
         action={actionType?.toLowerCase()}
