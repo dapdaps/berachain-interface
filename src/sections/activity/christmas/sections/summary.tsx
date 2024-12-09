@@ -1,11 +1,9 @@
 import { useContext, useState } from "react";
 import { ChristmasContext } from "@/sections/activity/christmas/context";
 import { numberFormatter } from "@/utils/number-formatter";
-import TotalPrizeModal from "../total-prize-modal";
 
-const Summary = () => {
-  const { info, nftList, nftLoading } = useContext(ChristmasContext);
-  const [showModal, setShowModal] = useState(false);
+const Summary = ({ onOpenRewards }: any) => {
+  const { info } = useContext(ChristmasContext);
 
   const summaries = [
     {
@@ -52,20 +50,12 @@ const Summary = () => {
               value={item.value}
               underline={item.underline}
               onClick={() => {
-                if (item.id === 1) setShowModal(true);
+                if (item.id === 1) onOpenRewards();
               }}
             />
           ))}
         </div>
       </div>
-      <TotalPrizeModal
-        open={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        nfts={nftList}
-        loading={nftLoading}
-      />
     </div>
   );
 };

@@ -6,9 +6,11 @@ export default function Nft({ nft }: any) {
       <Avatar logo={nft.logo} amount={nft.nfts.length} />
       <div className="font-semibold">
         <div className="text-[14px]">{nft.name}</div>
-        {/* <div className="text-[10px] px-[6px] py-[3px] bg-[#D39924] rounded-[6px] text-white">
-          Whitelist
-        </div> */}
+        {nft.whitelist && (
+          <div className="w-[59px] text-[10px] px-[6px] py-[3px] bg-[#D39924] rounded-[6px] text-white">
+            Whitelist
+          </div>
+        )}
       </div>
     </div>
   );

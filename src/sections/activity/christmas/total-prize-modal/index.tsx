@@ -24,9 +24,16 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       }
       if (nft.category === "rare") {
         _rare.push({
-          name: "$" + nft.amount + " " + nft.name,
+          name: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
+            ? "$" + nft.amount + " " + nft.name
+            : nft.name,
           logo: nft.logo,
-          nfts: { length: nft.max_amount / nft.amount }
+          nfts: {
+            length: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
+              ? nft.max_amount / nft.amount
+              : nft.amount
+          },
+          whitelist: nft.whitelist
         });
       }
     });
