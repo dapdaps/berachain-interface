@@ -26,7 +26,7 @@ const textMap: any = {
     'Lending': 'Lending'
 }
 
-export default function Tips({ location, msg }: Props) {
+export default function Tips({ location, msg, link }: Props) {
     const [modalShow, setModalShow] = useState(false)
     const router = useRouter()
 
@@ -46,6 +46,8 @@ export default function Tips({ location, msg }: Props) {
         <div onClick={() => {
             if (msg.btnText === 'Delegate') {
                 router.push('/bgt')
+            } else if (msg.btnText === 'Join') {
+                router.push("/activity/christmas")
             } else {
                 setModalShow(true);
             }
@@ -56,7 +58,7 @@ export default function Tips({ location, msg }: Props) {
                 <div className="text-[20px] font-bold">Select dApp for {textMap[msg.btnText]}</div>
                 <div className="flex mt-[10px] justify-center">
                     {
-                        msg.dapps.map(item => {
+                        msg.dapps?.map(item => {
                             return <Link href={item.link} key={item.name}><div onClick={() => {
                             }} className="rounded-[10px] w-[134px] h-[134px] cursor-pointer flex items-center justify-center flex-col hover:bg-[#0000000F]" key={item.name}>
                                 <img src={item.icon} className="w-[42px] h-[42px]" />

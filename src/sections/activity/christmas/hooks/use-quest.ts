@@ -203,6 +203,7 @@ export function useQuest(): IQuest {
 
   const handleQuestCheck = async (quest: Partial<Quest>) => {
     if (!quest || quest?.checking || !quest?.id) return;
+    await onAuthCheck();
     handleQuestUpdate(quest, { checking: true });
 
     let totalBox = 0;
@@ -213,8 +214,8 @@ export function useQuest(): IQuest {
       const checkList = quest.missions.filter((it) => {
         // ecosystem quests
         if ([QuestCategory.TokenBalance, QuestCategory.Learn, QuestCategory.View, QuestCategory.Wallet].includes(it.category as QuestCategory)) {
-          if (it.name === 'Beraji') return true;
-          if (it.url) {
+          // if (it.name === 'Beraji') return true;
+          if (it.url || it.name === 'Beraji') {
             return getQuestVisited(it.id);
           }
           return true;
@@ -276,6 +277,7 @@ export function useQuest(): IQuest {
 
   const handleQuestMissionCheck = async (mission: Partial<Quest>) => {
     if (!mission || mission?.checking || !mission?.id) return;
+    await onAuthCheck();
     handleQuestMissionUpdate(mission, { checking: true });
     let totalBox = 0;
     let totalCompletedTimes = 0;
