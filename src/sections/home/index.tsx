@@ -17,6 +17,7 @@ import ChristmasEnterance from "@/sections/activity/christmas/enterance";
 
 import MobileHome from "./mobile";
 import { useChristmas } from "@/hooks/use-christmas";
+import clsx from "clsx";
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -72,7 +73,10 @@ const Navigation = function () {
         <MarketplaceSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
       <div
-        className="absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]"
+        className={clsx(
+          "absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]",
+          isChristmas ? "top-1/4" : "top-1/3"
+        )}
         onClick={onNavigateToBridge}
         data-bp="1010-007"
       >
@@ -83,7 +87,12 @@ const Navigation = function () {
           }`}
         >
           <ArrowTopSvg style={{ transform: "rotate(90deg)" }} />
-          <div className="text-[20px] font-CherryBomb leading-[90%]">
+          <div
+            className={clsx(
+              "text-[20px] font-CherryBomb leading-[90%]",
+              isChristmas ? "text-white" : "text-black"
+            )}
+          >
             Bridge
           </div>
         </div>
@@ -91,7 +100,12 @@ const Navigation = function () {
       <VaultsEnterance
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
-        className="absolute right-[35px] bottom-[300px] hover:scale-110 transition-transform duration-500"
+        className={clsx(
+          "absolute right-[35px] hover:scale-110 transition-transform duration-500",
+          isChristmas
+            ? "text-white top-[calc(25%+50px)]"
+            : "text-black] top-[calc(33.333%+50px)]"
+        )}
       />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
         <div
