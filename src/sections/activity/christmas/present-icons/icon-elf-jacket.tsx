@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export default function ElfJacketIcon({ className }: any) {
+export default function ElfJacketIcon({ className, style }: any) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +9,7 @@ export default function ElfJacketIcon({ className }: any) {
       viewBox="0 0 112 157"
       fill="none"
       className={clsx(className)}
+      style={style}
     >
       <mask
         id="path-1-outside-1_26889_40989"

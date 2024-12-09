@@ -7,7 +7,7 @@ export default function Present({ gift }: any) {
       <div className="w-[100px] h-[100px] rounded-[10px] mt-[15px] flex justify-center items-center">
         <Icon
           className={clsx("origin-center")}
-          style={{ width: w, height: h }}
+          style={{ width: w / 1.2, height: h / 1.2 }}
         />
       </div>
       <div className="text-[14px] font-semibold mt-[8px]">{name}</div>

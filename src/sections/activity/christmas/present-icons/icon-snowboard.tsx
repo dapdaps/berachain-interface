@@ -1,5 +1,5 @@
 import clsx from "clsx";
-export default function SnowBoardIcon({ className }: any) {
+export default function SnowBoardIcon({ className, style }: any) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,6 +8,7 @@ export default function SnowBoardIcon({ className }: any) {
       viewBox="0 0 256 72"
       fill="none"
       className={clsx(className)}
+      style={style}
     >
       <mask
         id="path-1-outside-1_26889_40958"
