@@ -1,6 +1,7 @@
 import { useChristmas } from '@/hooks/use-christmas';
 import { useMemo } from 'react';
 import type { GameItem } from './useCollect';
+import clsx from 'clsx';
 interface Props {
     cars: GameItem[];
     hats: GameItem[];
@@ -66,7 +67,7 @@ export default function Bear({
                 </div>
             )
         }
-        <div className='absolute w-full h-full left-[102px] top-[25px] scale-[1.15] z-20'>
+        <div className={clsx('absolute w-full h-full left-[102px] top-[25px] scale-[1.15]', items[5].checked ? 'z-20' : 'z-10')}>
             {
                 !!items.length && items[1].checked && (
                     <div className='absolute left-[102px] top-[-42px] z-[1]'>

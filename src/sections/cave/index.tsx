@@ -333,7 +333,7 @@ export default function Cave() {
 
 
     return <div className="relative w-[100vw] h-full min-w-[1200px] min-h-[890px]">
-        <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px]" />
+        <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px] z-10" />
 
         {
             isChristmas && (
@@ -411,7 +411,7 @@ export default function Cave() {
                                         }}
                                     >
                                         <img src={index === 0 ? `/images/cave/christmas/gift_box_1${item.pc_item ? '_has' : ''}.png` : `/images/cave/christmas/gift_box_2${item.pc_item ? '_has' : ''}.png`} alt="giftBox" />
-                                        {item.pc_item && <div className="absolute bottom-[15px] left-[50%] translate-x-[-50%]">
+                                        {item.pc_item && <div className={clsx("absolute", index === 0 ? "right-[14px] top-[40px]" : "right-[-5px] top-[20px]")}>
                                             <CheckBox checked={item.checked} onCheckChange={(isChecked) => {
                                                 setEqu({
                                                     car: isChecked ? item.category : 0
