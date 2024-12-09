@@ -26,7 +26,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       if (nft.category === "rare") {
         _rare.push({
           name: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
-            ? "$" + nft.amount + " " + nft.name
+            ? nft.amount + " " + nft.name
             : nft.name,
           logo: nft.logo,
           nfts: {

@@ -72,41 +72,41 @@ const Navigation = function () {
       </div>
       <div
         className={clsx(
-          "absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]",
-          isChristmas ? "top-1/4" : "top-1/3"
+          'absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]',
+          isChristmas ? 'top-1/4' : 'top-1/3'
         )}
         onClick={onNavigateToBridge}
         data-bp="1010-007"
       >
-        <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
         <div
-          className={`flex items-center justify-end gap-[27px] pr-[19px] ${
-            isChristmas ? "text-white" : "text-black"
+          className={`flex items-center justify-end gap-[12px] pr-[10px] ${
+            isChristmas ? 'text-white' : 'text-black'
           }`}
         >
-          <ArrowTopSvg style={{ transform: "rotate(90deg)" }} />
+          <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
           <div
             className={clsx(
-              "text-[20px] font-CherryBomb leading-[90%]",
-              isChristmas ? "text-white" : "text-black"
+              'text-[20px] font-CherryBomb leading-[90%]',
+              isChristmas ? 'text-white' : 'text-black'
             )}
           >
             Bridge
           </div>
         </div>
+        <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
       <VaultsEnterance
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
         className={clsx(
-          "absolute right-[35px] hover:scale-110 transition-transform duration-500",
+          'absolute right-[35px] hover:scale-110 transition-transform duration-500',
           isChristmas
-            ? "text-white top-[calc(25%+50px)]"
-            : "text-black] top-[calc(33.333%+50px)]"
+            ? 'text-white top-[calc(25%+50px)]'
+            : 'text-black] top-[calc(33.333%+50px)]'
         )}
       />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
-        <div
+      <div
           className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToDashBoard}
           data-bp="1010-008"
