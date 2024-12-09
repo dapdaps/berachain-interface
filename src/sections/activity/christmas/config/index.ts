@@ -96,16 +96,16 @@ export const EcosystemQuests: any = {
       "A proof-of-engagement ecosystem blending gamification to drive meaningful on-chain actions on berachain.",
     missions: {
       wallet1: {
-        text: "Faucet Bera (in-app)",
-        action: "Connect"
+        text: "Claim $BERA from the faucet in BeraSig Wallet and get 2 gift boxes.",
+        action: "Claim"
       },
       wallet2: {
-        text: "Swap Bera -> STGUSDC (in-app)",
-        action: "Connect"
+        text: "Swap $BERA to STGUSDC in BeraSig Wallet and get 2 gift boxes.",
+        action: "Swap"
       },
       wallet3: {
-        text: "Mint Honey (in-app)",
-        action: "Connect"
+        text: "Mint $Honey in BeraSig Wallet and get 2 gift boxes.",
+        action: "Mint"
       }
     }
   },

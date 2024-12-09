@@ -1,5 +1,7 @@
 import CheckButton from "../check-button";
 import Button from "../../task-modal/button";
+import useCustomAccount from '@/hooks/use-account';
+import { useAppKit } from '@reown/appkit/react';
 
 export default function ProjectCard(props: any) {
   const {
@@ -12,6 +14,9 @@ export default function ProjectCard(props: any) {
     onReload,
     checking,
   } = props;
+
+  const { account } = useCustomAccount();
+  const modal = useAppKit();
 
   return (
     <div className="relative text-black flex flex-col items-center w-[230px] h-[358px] p-[20px] pb-[26px] rounded-[20px] border border-black bg-[#B5956E] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset]">
@@ -29,7 +34,18 @@ export default function ProjectCard(props: any) {
       <div className="text-center text-[14px] font-medium">
         {ecosystemInfo?.categories?.join(', ')}
       </div>
-      <Button className="w-full mt-auto" onClick={onOpen}>Check</Button>
+      <Button
+        className="w-full mt-auto"
+        onClick={() => {
+          if (!account) {
+            modal.open({ view: 'Connect' });
+            return;
+          }
+          onOpen();
+        }}
+      >
+        Check
+      </Button>
     </div>
   );
 }
