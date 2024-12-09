@@ -1,3 +1,5 @@
+import { beraB } from "@/configs/tokens/bera-bArtio";
+
 export const EcosystemQuests: any = {
   "The Honey Jar": {
     categories: ["Community"],
@@ -423,6 +425,6 @@ export const NFTs: any = {
   }
 };
 
-export const SnowToken = [{}];
+export const SnowToken = beraB["sfc"];
 
 export const protocols = ["Kodiak"];
