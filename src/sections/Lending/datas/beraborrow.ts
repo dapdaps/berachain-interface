@@ -79,7 +79,7 @@ const APY_ABI = [
 const calcTCR = (collateral: any, debt: any, price: any) => {
   if (!collateral || Big(collateral).lte(0)) return 0;
   if (!debt || Big(debt).lte(0)) return 0;
-  return Big(collateral).times(price).div(debt).times(100).toFixed(0);
+  return Big(collateral).times(price || 1).div(debt).times(100).toFixed(0);
 };
 
 const SCALING_FACTOR = Big(1000000000000000000);
