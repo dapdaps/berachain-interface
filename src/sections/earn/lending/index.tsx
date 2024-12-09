@@ -29,6 +29,7 @@ import SearchBox from '@/sections/marketplace/components/searchbox';
 import LaptopList from './laptop'
 import useClickTracking from '@/hooks/use-click-tracking';
 import Pool from '@/sections/Lending/Beraborrow/pool';
+import { useDebounceFn } from 'ahooks';
 
 const { basic: DolomiteBasic, networks: DolomiteNetworks }: any = DolomiteConfig;
 const { basic: BeraborrowBasic, networks: BeraborrowNetworks }: any = BeraborrowConfig;
@@ -223,13 +224,23 @@ const EarnLending = (props: any) => {
     setIsChainSupported(!!currChain);
   }, [chainId]);
 
-  useEffect(() => {
+  const { run: loadDolomiteData } = useDebounceFn(() => {
     setDolomiteLoading(isChainSupported);
+  }, { wait: 1500 });
+  const { run: loadBeraborrowData } = useDebounceFn(() => {
     setBeraborrowLoading(isChainSupported);
+  }, { wait: 1000 });
+  const { run: loadBendData } = useDebounceFn(() => {
+    bendInit();
+  }, { wait: 500 });
+
+  useEffect(() => {
+    loadDolomiteData();
+    loadBeraborrowData();
   }, [isChainSupported, address]);
 
   useEffect(() => {
-    bendInit();
+    loadBendData();
   }, [chainId, provider]);
 
   useEffect(() => {
@@ -409,10 +420,14 @@ const EarnLending = (props: any) => {
                     <div className="flex justify-between items-start gap-[10px] mt-[13px]">
                       <div className="">
                         <div className="text-[14px] text-[#3D405A] font-[500]">
-                          {tab === 'Supply' ? 'In Wallet' : 'Borrow Capacity'}
+                          {tab === 'Supply' ? 'In Wallet' : (token.protocol.name === 'Bend' ? 'Borrow Capacity' : 'You Borrowed')}
                         </div>
                         <div className="mt-[5px]">
-                          {tab === 'Supply' ? numberFormatter(token.inWallet, 2, true) : numberFormatter(token.borrowCapacity, 2, true)}
+                          {
+                            tab === 'Supply' ?
+                              numberFormatter(token.inWallet, 2, true) :
+                              numberFormatter(token.protocol.name === 'Bend' ? token.borrowCapacity : token.youBorrowed, 2, true)
+                          }
                         </div>
                       </div>
                       <div className="text-right">
