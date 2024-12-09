@@ -10,7 +10,7 @@ export default function Nft({ nft }: any) {
           nft.owned && "opacity-50"
         )}
       />
-      <div className="text-[14px] font-semibold mt-[8px]">
+      <div className="text-[12px] font-semibold mt-[8px]">
         {nft.name} #{nft.token_id}
       </div>
       {nft.owned && (

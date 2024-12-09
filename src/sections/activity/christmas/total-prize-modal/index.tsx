@@ -6,24 +6,38 @@ import React, { useMemo, useState } from "react";
 import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
 import Skeleton from "react-loading-skeleton";
+import useRewards from "../hooks/use-rewards";
+import clsx from "clsx";
 
-export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
+export default function TotalPrizeModal({ open, onClose }: any) {
+  const { loading, rares, items } = useRewards();
   const [showNfts, setShowNfts] = useState(false);
-  const nftList = useMemo(() => {
-    if (!nfts || nfts.length === 0) return [];
+  const [nftList, nftAndRare] = useMemo(() => {
+    if (!rares || rares.length === 0) return [[], []];
     const catched: any = {};
-    nfts.forEach((nft: any) => {
-      if (!catched[nft.name]) {
-        catched[nft.name] = [];
+    const _rare: any = [];
+    rares.forEach((nft: any) => {
+      if (nft.category === "nft") {
+        if (!catched[nft.name]) {
+          catched[nft.name] = [];
+        }
+        catched[nft.name].push(nft);
       }
-      catched[nft.name].push(nft);
+      if (nft.category === "rare") {
+        _rare.push({
+          name: nft.name,
+          logo: nft.logo,
+          nfts: { length: nft.amount }
+        });
+      }
     });
-    return Object.entries(catched).map(([key, value]: any) => ({
+    const _nftList = Object.entries(catched).map(([key, value]: any) => ({
       name: key,
       logo: value[0]?.classLogo,
       nfts: value
     }));
-  }, [nfts]);
+    return [_nftList, [..._nftList, ..._rare]];
+  }, [rares]);
   return (
     <>
       <Modal
@@ -54,7 +68,7 @@ export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
             </div>
             <div className="flex flex-wrap pb-[20px]">
               {loading
-                ? [...new Array(13)].map((_, idx) => (
+                ? [...new Array(12)].map((_, idx) => (
                     <div
                       key={idx}
                       className="w-1/3 flex items-center gap-[22px] mt-[15px]"
@@ -63,17 +77,28 @@ export default function TotalPrizeModal({ open, nfts, onClose, loading }: any) {
                       <Skeleton width={60} height={21} borderRadius={10} />
                     </div>
                   ))
-                : nftList.map((nft: any) => <Nft key={nft.name} nft={nft} />)}
+                : nftAndRare.map((nft: any) => (
+                    <Nft key={nft.name} nft={nft} />
+                  ))}
             </div>
           </div>
           <div className="border-t border-[#949494]">
             <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
-            <div className="flex flex-wrap items-center gap-[36px] pt-[14px]">
-              {Object.values(config)
-                .filter((token: any) => token.shadowIcon)
-                .map((token: any, i: number) => (
-                  <token.shadowIcon />
-                ))}
+            <div className="flex flex-wrap items-center justify-between pt-[14px]">
+              {items.map((token: any, i: number) => {
+                const { w, h } = config[token.category];
+                return (
+                  <img
+                    key={i}
+                    className="shrink-0"
+                    style={{
+                      width: w / 2,
+                      height: h / 2
+                    }}
+                    src={token.logo}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
