@@ -214,12 +214,26 @@ export function useQuest(): IQuest {
     });
   };
 
-  const handleQuestUpdate = (quest: Partial<Quest>, values: Partial<Quest>) => {
+  const handleQuestUpdate = (quest: Partial<Quest> | Partial<Quest>[], values: Partial<Quest> | Partial<Quest>[]) => {
     const _questList = questList.slice();
-    const curr: any = _questList.find((it) => it.id === quest?.id);
-    if (!curr) return;
-    for (const key in values) {
-      curr[key] = values[key as keyof Partial<Quest>];
+    if (Array.isArray(quest)) {
+      _questList.forEach((curr: any) => {
+        for (let i = 0; i < quest.length; i++) {
+          const _it = quest[i];
+          if (curr.id === _it.id) {
+            for (const key in (values as Partial<Quest>[])[i]) {
+              curr[key] = (values as Partial<Quest>[])[i][key as keyof Partial<Quest>];
+            }
+            break;
+          }
+        }
+      });
+    } else {
+      const curr: any = _questList.find((it) => it.id === quest?.id);
+      if (!curr) return;
+      for (const key in values) {
+        curr[key] = (values as Partial<Quest>)[key as keyof Partial<Quest>];
+      }
     }
     setQuestList(_questList);
   };
@@ -349,6 +363,9 @@ export function useQuest(): IQuest {
       case QuestCategory.Social:
         handleSocialQuest(quest);
         break;
+      case QuestCategory.Daily:
+        handleSocialQuest(quest);
+        break;
       default:
         break;
     }
@@ -373,6 +390,8 @@ export function useQuest(): IQuest {
     ecosystemQuest,
     handleQuestMissionCheck,
     setQuestVisited,
+    requestCheck,
+    handleQuestUpdate,
   };
 }
 
@@ -389,7 +408,9 @@ export interface IQuest {
   handleQuestCheck(quest?: Partial<Quest>): void;
   handleQuestMissionCheck(mission?: Partial<Quest>): void;
   handleQuest(quest?: Partial<Quest>): void;
+  requestCheck(quest?: Partial<Quest>): void;
   setQuestVisited(params: { id?: number | string, visited?: boolean; }): void;
+  handleQuestUpdate(quest: Partial<Quest> | Partial<Quest>[], values: Partial<Quest> | Partial<Quest>[]): void;
 }
 
 export enum QuestCategory {
@@ -399,6 +420,7 @@ export enum QuestCategory {
   View = 'view',
   Wallet = 'wallet',
   Social = 'social',
+  Daily = 'daily',
 }
 
 export interface Quest {

@@ -12,6 +12,11 @@ import OpenModal from "../box-modal/open-modal";
 import OpenMultiModal from "../box-modal/open-multi-modal";
 import UserPresentsModal from "../user-presents-modal";
 import useOpenBox from "../hooks/use-open-box";
+import { getUTCTimestamp } from '@/utils/date';
+import DailyQuest from '@/sections/activity/christmas/components/daily-quest';
+import Big from 'big.js';
+import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
+import { box } from 'consola/utils';
 
 const GiftBox = () => {
   const {
@@ -21,11 +26,14 @@ const GiftBox = () => {
     handleQuestCheck,
     questVisited,
     questList,
+    questLoading,
     userInfo,
     userInfoLoading,
     getUserInfo,
     currentDailyTimestamp,
-    setShowSwapModal
+    setShowSwapModal,
+    requestCheck,
+    handleQuestUpdate,
   } = useContext(ChristmasContext);
 
   const remainBox = useMemo(
@@ -33,6 +41,8 @@ const GiftBox = () => {
     [userInfo]
   );
   const [openType, setOpenType] = useState(0);
+  const [dailyVisible, setDailyVisible] = useState(false);
+  const [dailyChecking, setDailyChecking] = useState(false);
   const [openData, setOpenData] = useState<any>();
   const { loading: opening, onOpen } = useOpenBox((args: any) => {
     setOpenData(args);
@@ -44,19 +54,26 @@ const GiftBox = () => {
   }));
   const sortedList = createPyramid(list);
 
-  const todayQuest = useMemo(() => {
-    if (!questList || !currentDailyTimestamp || !questList.length)
-      return void 0;
-    return questList.find((it) => it.timestamp === currentDailyTimestamp);
+  const dailyQuest = useMemo(() => {
+    if (!questList || !currentDailyTimestamp || !questList.length) return [];
+    return questList.filter((it) => {
+      return getUTCTimestamp((it.timestamp || 0) * 1000) === currentDailyTimestamp;
+    }) || [];
   }, [currentDailyTimestamp, questList]);
+  const dailyQuestCounts = useMemo(() => {
+    if (!dailyQuest || !dailyQuest.length) return { total_box: 0, box: 0, completed: false };
+    const total_box = dailyQuest.map((it) => it.total_box || 0).reduce((a, b) => a + b);
+    const box = dailyQuest.map((it) => it.box || 0).reduce((a, b) => a + b);
+    return {
+      total_box,
+      box,
+      completed: Big(total_box).gte(box),
+    };
+  }, [dailyQuest]);
 
   const followXVisited = useMemo(() => {
     return getQuestVisited?.(followXQuest?.id);
   }, [questVisited, followXQuest]);
-
-  const todayQuestVisited = useMemo(() => {
-    return getQuestVisited?.(todayQuest?.id);
-  }, [questVisited, todayQuest]);
 
   const handleFollowX = () => {
     handleQuest?.(followXQuest);
@@ -70,12 +87,21 @@ const GiftBox = () => {
     getUserInfo?.();
   };
 
-  const handleTodayQuest = () => {
-    handleQuest?.(todayQuest);
-  };
-
-  const handleTodayQuestCheck = () => {
-    handleQuestCheck?.(todayQuest);
+  const handleDailyQuestCheck = async () => {
+    if (dailyChecking) return;
+    setDailyChecking(true);
+    const checks = dailyQuest.map((it) => requestCheck?.(it));
+    const res: any = await Promise.all(checks);
+    const values = res.map((_res: any, idx: number) => {
+      const { total_box } = _res.data || {};
+      return {
+        total_box: total_box,
+        completed: Big(total_box).gte(dailyQuest[idx].box || 0),
+      };
+    });
+    handleQuestUpdate?.(dailyQuest, values);
+    getUserInfo?.();
+    setDailyChecking(false);
   };
 
   return (
@@ -175,22 +201,26 @@ const GiftBox = () => {
               <div className="opacity-50">
                 Quest of <br /> the day
               </div>
-              <div
-                className="underline decoration-solid mt-[15px] cursor-pointer"
-                onClick={handleTodayQuest}
+              <button
+                type="button"
+                className="underline decoration-solid mt-[15px] cursor-pointer disabled:opacity-50 !disabled:cursor-not-allowed"
+                onClick={() => {
+                  setDailyVisible(true);
+                }}
+                disabled={questLoading || !dailyQuest.length}
               >
-                {todayQuest?.name}
-              </div>
+                Check
+              </button>
             </div>
             <SocialTask
               className=""
-              onClick={handleTodayQuestCheck}
-              complete={todayQuest?.completed}
-              checking={todayQuest?.checking}
-              disabled={!todayQuestVisited}
+              onClick={handleDailyQuestCheck}
+              complete={dailyQuestCounts.completed}
+              checking={dailyChecking}
+              disabled={dailyChecking || questLoading || !dailyQuest.length}
             >
               <div className="">
-                {todayQuest?.total_box} / {todayQuest?.box} boxes
+                {dailyQuestCounts.total_box} / {dailyQuestCounts.box} boxes
               </div>
             </SocialTask>
           </div>
@@ -232,6 +262,13 @@ const GiftBox = () => {
           data={userInfo}
         />
       )}
+      <DailyQuest
+        visible={dailyVisible}
+        onClose={() => {
+          setDailyVisible(false);
+        }}
+        list={dailyQuest}
+      />
     </div>
   );
 };

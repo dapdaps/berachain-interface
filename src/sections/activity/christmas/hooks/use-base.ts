@@ -44,8 +44,8 @@ export function useBase(): IBase {
       currUTCTimestamp = res.data?.timestamp * 1000;
     }
     setCurrentUTCTimestamp(getUTCTimestamp(currUTCTimestamp));
-    const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currUTCTimestamp, 8), 0), 0);
-    setCurrentDailyTimestamp(currUTCDay.getTime() / 1000);
+    const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currUTCTimestamp, 0), 0), 0);
+    setCurrentDailyTimestamp(currUTCDay.getTime());
   };
 
   useEffect(() => {
