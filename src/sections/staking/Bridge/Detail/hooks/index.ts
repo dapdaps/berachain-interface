@@ -337,6 +337,7 @@ export function useDetail(props: any) {
           });
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(lpAmount);
+          const _symbol = tokens.join("-")
           addAction?.({
             type: "Staking",
             action: "UnStake",
