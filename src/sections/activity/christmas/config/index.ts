@@ -38,7 +38,11 @@ export const EcosystemQuests: any = {
       learn: {
         text: (amount: number) => `Learn about us and get ${amount} gift box.`,
         action: "Learn"
-      }
+      },
+      address: {
+        text: (amount: number) => `Verify if you’re a crew member and get ${amount} gift box.`,
+        action: "Verify"
+      },
     },
     socials: [
       { label: "Website", link: "https://www.henlo.com/" },
@@ -544,3 +548,138 @@ export const NFTs: any = {
 export const SnowToken = beraB["sfc"];
 
 export const protocols = ["Kodiak"];
+
+export const WinningOdds: Record<string, {dailyAllocation: number; cumulativeAllocation: number; dailyRareRewardProbability: string; display: string;}> = {
+  '2024-12-10': {
+    dailyAllocation: 3,
+    cumulativeAllocation: 3,
+    dailyRareRewardProbability: '1%',
+    display: '2%',
+  },
+  '2024-12-11': {
+    dailyAllocation: 4,
+    cumulativeAllocation: 7,
+    dailyRareRewardProbability: '1.2%',
+    display: '2.5%',
+  },
+  '2024-12-12': {
+    dailyAllocation: 5,
+    cumulativeAllocation: 12,
+    dailyRareRewardProbability: '1.5%',
+    display: '3%',
+  },
+  '2024-12-13': {
+    dailyAllocation: 6,
+    cumulativeAllocation: 18,
+    dailyRareRewardProbability: '1.8%',
+    display: '3.5%',
+  },
+  '2024-12-14': {
+    dailyAllocation: 7,
+    cumulativeAllocation: 25,
+    dailyRareRewardProbability: '2.2%',
+    display: '4%',
+  },
+  '2024-12-15': {
+    dailyAllocation: 8,
+    cumulativeAllocation: 33,
+    dailyRareRewardProbability: '2.5%',
+    display: '4.5%',
+  },
+  '2024-12-16': {
+    dailyAllocation: 9,
+    cumulativeAllocation: 42,
+    dailyRareRewardProbability: '2.8%',
+    display: '5%',
+  },
+  '2024-12-17': {
+    dailyAllocation: 10,
+    cumulativeAllocation: 52,
+    dailyRareRewardProbability: '3.1%',
+    display: '5.5%',
+  },
+  '2024-12-18': {
+    dailyAllocation: 11,
+    cumulativeAllocation: 63,
+    dailyRareRewardProbability: '3.4%',
+    display: '6%',
+  },
+  '2024-12-19': {
+    dailyAllocation: 12,
+    cumulativeAllocation: 75,
+    dailyRareRewardProbability: '3.7%',
+    display: '6.5%',
+  },
+  '2024-12-20': {
+    dailyAllocation: 13,
+    cumulativeAllocation: 88,
+    dailyRareRewardProbability: '4%',
+    display: '7%',
+  },
+  '2024-12-21': {
+    dailyAllocation: 14,
+    cumulativeAllocation: 102,
+    dailyRareRewardProbability: '4.3%',
+    display: '7.5%',
+  },
+  '2024-12-22': {
+    dailyAllocation: 15,
+    cumulativeAllocation: 117,
+    dailyRareRewardProbability: '4.6%',
+    display: '8%',
+  },
+  '2024-12-23': {
+    dailyAllocation: 16,
+    cumulativeAllocation: 133,
+    dailyRareRewardProbability: '4.9%',
+    display: '8.5%',
+  },
+  '2024-12-24': {
+    dailyAllocation: 37,
+    cumulativeAllocation: 170,
+    dailyRareRewardProbability: '12%',
+    display: '20%',
+  },
+  '2024-12-25': {
+    dailyAllocation: 17,
+    cumulativeAllocation: 187,
+    dailyRareRewardProbability: '5.2%',
+    display: '9%',
+  },
+  '2024-12-26': {
+    dailyAllocation: 18,
+    cumulativeAllocation: 205,
+    dailyRareRewardProbability: '5.5%',
+    display: '9.5%',
+  },
+  '2024-12-27': {
+    dailyAllocation: 19,
+    cumulativeAllocation: 224,
+    dailyRareRewardProbability: '5.8%',
+    display: '10%',
+  },
+  '2024-12-28': {
+    dailyAllocation: 20,
+    cumulativeAllocation: 244,
+    dailyRareRewardProbability: '6.2%',
+    display: '10.5%',
+  },
+  '2024-12-29': {
+    dailyAllocation: 21,
+    cumulativeAllocation: 265,
+    dailyRareRewardProbability: '6.5%',
+    display: '11%',
+  },
+  '2024-12-30': {
+    dailyAllocation: 22,
+    cumulativeAllocation: 287,
+    dailyRareRewardProbability: '6.8%',
+    display: '11.5%',
+  },
+  '2024-12-31': {
+    dailyAllocation: 38,
+    cumulativeAllocation: 325,
+    dailyRareRewardProbability: '12%',
+    display: '20%',
+  },
+};
