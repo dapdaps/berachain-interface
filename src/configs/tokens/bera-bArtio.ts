@@ -280,68 +280,68 @@ export const beraB: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0xB43fd1dC4f02d81f962E98203b2cc4FD9E342964",
     decimals: 18,
-    symbol: 'PAW',
-    name: 'Paw Token',
-    icon: '/assets/tokens/paw.webp'
+    symbol: "PAW",
+    name: "Paw Token",
+    icon: "/assets/tokens/paw.webp"
   },
   arbera: {
     chainId: CHAIN_ID,
-    address: '0x8e337e095F31071F24bF408241629adb29Bb6ee2',
+    address: "0x8e337e095F31071F24bF408241629adb29Bb6ee2",
     decimals: 18,
-    symbol: 'ARBERA',
-    name: 'Arbera',
-    icon: '/assets/tokens/arbera.svg'
+    symbol: "ARBERA",
+    name: "Arbera",
+    icon: "/assets/tokens/arbera.svg"
   },
   pollen: {
     chainId: CHAIN_ID,
-    address: '0xa591eef221369321De76d958dC023936Fb39B26A',
+    address: "0xa591eef221369321De76d958dC023936Fb39B26A",
     decimals: 18,
-    symbol: 'POLLEN',
-    name: 'Pollen Governance',
-    icon: '/assets/tokens/pollen.png'
+    symbol: "POLLEN",
+    name: "Pollen Governance",
+    icon: "/assets/tokens/pollen.png"
   },
 
   ivxusdc: {
     chainId: CHAIN_ID,
-    address: '0xD1a90f79539f5895cdf2688f5505e0cf7E33Ac4c',
+    address: "0xD1a90f79539f5895cdf2688f5505e0cf7E33Ac4c",
     decimals: 6,
-    symbol: 'USDC',
-    name: 'IVX USDC',
-    icon: '/assets/tokens/usdc.png'
+    symbol: "USDC",
+    name: "IVX USDC",
+    icon: "/assets/tokens/usdc.png"
   },
 
   gold: {
     chainId: CHAIN_ID,
     decimals: 18,
-    address: '0x343499E6315f7d3473a12aaf660Ac02b5739C382',
-    symbol: 'GOLD',
-    icon: '/assets/tokens/gold_second.svg'
+    address: "0x343499E6315f7d3473a12aaf660Ac02b5739C382",
+    symbol: "GOLD",
+    icon: "/assets/tokens/gold_second.svg"
   },
   kdk: {
     chainId: CHAIN_ID,
-    address: '0xfd27998fa0eaB1A6372Db14Afd4bF7c4a58C5364',
+    address: "0xfd27998fa0eaB1A6372Db14Afd4bF7c4a58C5364",
     decimals: 18,
-    symbol: 'KDK',
-    name: 'Kodiak token',
-    icon: '/assets/tokens/kdk.svg'
+    symbol: "KDK",
+    name: "Kodiak token",
+    icon: "/assets/tokens/kdk.svg"
   },
   ooga_booga: {
     chainId: CHAIN_ID,
-    address: '0x55812Bd8683EC95374E42ECfbbc5fb965B3D009a',
+    address: "0x55812Bd8683EC95374E42ECfbbc5fb965B3D009a",
     decimals: 18,
-    symbol: 'OOGA',
-    name: 'Ooga Booga Token',
-    icon: '/assets/tokens/ooga_second.png'
+    symbol: "OOGA",
+    name: "Ooga Booga Token",
+    icon: "/assets/tokens/ooga_second.png"
   },
   sip: {
     chainId: CHAIN_ID,
-    address: '0x407A4ce492F0DC98302e4351F2119410BD54aeE5',
+    address: "0x407A4ce492F0DC98302e4351F2119410BD54aeE5",
     decimals: 18,
-    symbol: 'SIP',
-    name: 'SIP',
-    icon: '/assets/tokens/sip.svg'
+    symbol: "SIP",
+    name: "SIP",
+    icon: "/assets/tokens/sip.svg"
   },
-  'bbhoney-usdc': {
+  "bbhoney-usdc": {
     address: "0x3a1bfc7871766f5ec089c54bb117cdd0c5f13710",
     chainId: CHAIN_ID,
     symbol: "BBkHONEY-USDC",
@@ -357,4 +357,12 @@ export const beraB: { [key: string]: Token } = {
     name: "Beraborrow iBGT",
     icon: "/assets/tokens/ibgt.png"
   },
+  sfc: {
+    chainId: CHAIN_ID,
+    decimals: 18,
+    address: "0x2b0Bc44a2786124bdAeed546021a491Db8a20A94",
+    symbol: "SFC",
+    name: "Snowflake",
+    icon: "/images/activity/christmas/sfc.png"
+  }
 };

@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useState, useEffect } from "react";
 import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
 import useMarketStore from "@/stores/useMarketStore";
@@ -6,10 +6,10 @@ import useAaveConfig from "@/stores/useAaveConfigStore";
 import { useBorwAndRepay } from "../hooks/useBorwAndRepay";
 import { useDepositAndWithdraw } from "../hooks/useDepositAndWithdraw";
 import Button from "../BendButton";
-import AmountSelector from '@/sections/Lending/components/amount-selector';
+import AmountSelector from "@/sections/Lending/components/amount-selector";
 
 interface IProps {
-  action: "borrow" | "repay" | "supply" | "deposit" | "withdraw" & any;
+  action: "borrow" | "repay" | "supply" | "deposit" | ("withdraw" & any);
   token?: any;
   isMobile?: boolean;
   onSuccess?(): void;
@@ -47,16 +47,24 @@ const Balance = (props: any) => {
 
   const getBalanceLabel = () => {
     switch (action) {
-      case 'borrow': return 'Borrow Max: ';
-      case 'withdraw': return 'Available: ';
-      default: return 'Balance: ';
+      case "borrow":
+        return "Borrow Max: ";
+      case "withdraw":
+        return "Available: ";
+      default:
+        return "Balance: ";
     }
   };
 
   return (
-    <div className={`font-Montserrat text-sm font-normal leading-[17px] text-left md:text-right ${className}`}>
+    <div
+      className={`font-Montserrat text-sm font-normal leading-[17px] text-left md:text-right ${className}`}
+    >
       {getBalanceLabel()}
-      <span className="underline cursor-pointer" onClick={() => setAmount(maxValue)}>
+      <span
+        className="underline cursor-pointer"
+        onClick={() => setAmount(maxValue)}
+      >
         {formatDisplayNumber(currentBalance)}
       </span>
     </div>
@@ -67,7 +75,12 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
   (props: IProps, ref) => {
     const { action, token, isMobile, onSuccess } = props;
     const { config } = useAaveConfig();
-    const { triggerUpdate, userAccountData, netBaseData, initData: { provider, chainId, account } } = useMarketStore();
+    const {
+      triggerUpdate,
+      userAccountData,
+      netBaseData,
+      initData: { provider, chainId, account }
+    } = useMarketStore();
 
     const isBorrowOrRepay = ["borrow", "repay"].includes(action);
 
@@ -78,7 +91,7 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
       chainId,
       account,
       config,
-      triggerUpdate,
+      triggerUpdate
     });
 
     const depositWithdrawHook = useDepositAndWithdraw({
@@ -86,27 +99,27 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
       isDeposit: ["deposit", "supply"].includes(action),
       config,
       triggerUpdate,
-      chainId,
+      chainId
     });
 
     const hook: any = isBorrowOrRepay ? borrowRepayHook : depositWithdrawHook;
 
-    const {
-      symbol,
-      balance,
-      decimals,
-      availableBorrows,
-      underlyingBalance
-    } = token as any;
+    const { symbol, balance, decimals, availableBorrows, underlyingBalance } =
+      token as any;
 
     const currentBalance = (() => {
       switch (action) {
-        case 'borrow': return userAccountData.availableBorrowsBaseUSD;
-        case 'repay': return netBaseData.yourTotalBorrow;
-        case 'deposit':
-        case 'supply': return balance;
-        case 'withdraw': return underlyingBalance;
-        default: return '0';
+        case "borrow":
+          return userAccountData.availableBorrowsBaseUSD;
+        case "repay":
+          return netBaseData.yourTotalBorrow;
+        case "deposit":
+        case "supply":
+          return balance;
+        case "withdraw":
+          return underlyingBalance;
+        default:
+          return "0";
       }
     })();
 
@@ -122,42 +135,58 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
       return calculateMaxValue(currentBalance, symbol, decimals, config);
     }, [currentBalance, symbol, decimals, config]);
 
+    const [inputValue, setInputValue] = useState<string>(hook.amount || "");
+
+    useEffect(() => {
+      setInputValue(hook.amount || "");
+    }, [hook.amount]);
+
     const handleAction = async () => {
       const value = Big(hook.amount).mul(Big(10).pow(decimals)).toFixed(0);
 
       if (isBorrowOrRepay) {
-        if (action === 'borrow') {
-          symbol === config.nativeCurrency.symbol ? await hook.borrowETH(value) : await hook.borrowERC20(value);
+        if (action === "borrow") {
+          symbol === config.nativeCurrency.symbol
+            ? await hook.borrowETH(value)
+            : await hook.borrowERC20(value);
         } else {
-          symbol === config.nativeCurrency.symbol ? await hook.repayETH(value) : await hook.repayERC20(value);
+          symbol === config.nativeCurrency.symbol
+            ? await hook.repayETH(value)
+            : await hook.repayERC20(value);
         }
       } else {
-        if (action === 'deposit' || action === 'supply') {
-          symbol === config.nativeCurrency.symbol ? await hook.depositETH(value) : await hook.depositErc20(value);
+        if (action === "deposit" || action === "supply") {
+          symbol === config.nativeCurrency.symbol
+            ? await hook.depositETH(value)
+            : await hook.depositErc20(value);
         } else {
-          symbol === config.nativeCurrency.symbol ? await hook.withdrawETH(value) : await hook.withdrawErc20(value);
+          symbol === config.nativeCurrency.symbol
+            ? await hook.withdrawETH(value)
+            : await hook.withdrawErc20(value);
         }
       }
       onSuccess?.();
     };
 
-    const showTipsInRepay = useMemo(() =>
-      action === 'withdraw' &&
-      Big(userAccountData.totalDebtBaseUSD).gt(0) &&
-      symbol !== 'HONEY',
-    [token, userAccountData, action]);
-
+    const showTipsInRepay = useMemo(
+      () =>
+        action === "withdraw" &&
+        Big(userAccountData.totalDebtBaseUSD).gt(0) &&
+        symbol !== "HONEY",
+      [token, userAccountData, action]
+    );
 
     return (
       <>
         <input
-          type="number"
           placeholder="Enter amount"
           disabled={showTipsInRepay}
-          value={hook.amount}
+          value={inputValue}
           onChange={(e) => {
-            if (e.target.value === '') {
-              hook.setAmount('');
+            const value = e.target.value;
+            setInputValue(value);
+            if (value === "") {
+              hook.setAmount("");
               return;
             }
 
@@ -168,7 +197,7 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
 
             const finalValue = Math.min(inputValue, balance);
 
-            hook.setAmount(finalValue.toString())
+            hook.setAmount(finalValue.toString());
           }}
           className="w-full h-[40px] border border-[#373A53] rounded-[12px] px-3
                      font-Montserrat text-base font-semibold leading-[19.5px] text-left
@@ -178,7 +207,8 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
 
         {showTipsInRepay && (
           <div className="text-left text-xs text-[#F87272] my-2">
-            Warning: Please be sure to pay your entire honey debt, you will not be able to withdraw your collateral until you repay your honey loan.
+            Warning: Please be sure to pay your entire honey debt, you will not
+            be able to withdraw your collateral until you repay your honey loan.
           </div>
         )}
 
@@ -215,7 +245,9 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
               amount={hook.amount}
               maxValue={maxValue}
               onClick={() => {
-                const value = Big(hook.amount).mul(Big(10).pow(decimals)).toFixed(0);
+                const value = Big(hook.amount)
+                  .mul(Big(10).pow(decimals))
+                  .toFixed(0);
                 hook.handleApprove(value);
               }}
               className="md:mt-[37px] md:h-[46px] md:leading-[44px] md:rounded-[10px]"

@@ -22,7 +22,7 @@ const Popover = (props: Props) => {
     contentClassName,
     triggerContainerStyle,
     triggerContainerClassName,
-    } = props;
+  } = props;
 
   const triggerRef = useRef<any>();
 
@@ -233,7 +233,7 @@ const Card = (props: CardProps) => {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        className={`fixed z-10 left-0 top-0 ${className}`}
+        className={`fixed z-[12] left-0 top-0 ${className}`}
         ref={cardRef}
         style={{
           left: x,
