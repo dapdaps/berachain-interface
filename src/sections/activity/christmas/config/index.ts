@@ -438,7 +438,7 @@ export const EcosystemQuests: any = {
       }
     },
     socials: [
-      { label: "Website", link: "app.beraland.xyz" },
+      { label: "Website", link: "https://app.beraland.xyz" },
       { label: "X", link: "https://x.com/Bera_Land" },
       { label: "Discord", link: "https://discord.gg/beraland" },
       { label: "Docs", link: "https://app.beraland.xyz/dl/Ecosystem" },
