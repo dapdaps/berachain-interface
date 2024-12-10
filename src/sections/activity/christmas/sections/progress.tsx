@@ -16,7 +16,7 @@ const NFTProgress = () => {
     currentUTCTimestamp,
   } = useContext(ChristmasContext);
 
-  let value = Big(currentUTCTimestamp || 0).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(0);
+  let value = Big(currentUTCTimestamp || 0).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(1);
   if (Big(value).lt(0)) value = '0';
   if (Big(value).gt(100)) value = '100';
 
@@ -49,10 +49,10 @@ const NFTProgress = () => {
             placement={PopoverPlacement.TopRight}
             offset={0}
             content={(
-              <div className="w-[200px] translate-x-[55px] h-[110px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
-                <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[14px]">
+              <div className="w-[240px] translate-x-[80px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
+                <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
                   <div className="font-CherryBomb font-[400] leading-[150%] text-[30px]">{value}%</div>
-                  <div className="font-[500] text-[14px] leading-normal">Chance to win NFTs</div>
+                  <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
                 </div>
               </div>
             )}
@@ -65,16 +65,48 @@ const NFTProgress = () => {
             />
           </Popover>
         </div>
-        <img
-          src="/images/activity/christmas/icon-progress-mid.svg"
-          alt=""
-          className="w-[69px] h-[133px] absolute z-[1] left-[calc(68%_-_35px)] top-0 -translate-y-[88px]"
-        />
-        <img
-          src="/images/activity/christmas/icon-progress-complete.svg"
-          alt=""
-          className="w-[119px] h-[121px] absolute z-[1] right-[-60px] top-0 -translate-y-[56px]"
-        />
+        <Popover
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.TopRight}
+          offset={0}
+          content={(
+            <div className="w-[240px] translate-x-[80px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
+              <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Merry Beramas!</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{20}%</div>
+                <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
+              </div>
+            </div>
+          )}
+          triggerContainerClassName="absolute z-[1] left-[calc(68%_-_35px)] top-0 -translate-y-[88px]"
+        >
+          <img
+            src="/images/activity/christmas/icon-progress-mid.svg"
+            alt=""
+            className="w-[69px] h-[133px] cursor-pointer"
+          />
+        </Popover>
+        <Popover
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.TopRight}
+          offset={0}
+          content={(
+            <div className="w-[240px] translate-x-[70px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
+              <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Happy New Year!</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{20}%</div>
+                <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
+              </div>
+            </div>
+          )}
+          triggerContainerClassName="absolute z-[1] right-[-60px] top-0 -translate-y-[56px]"
+        >
+          <img
+            src="/images/activity/christmas/icon-progress-complete.svg"
+            alt=""
+            className="w-[119px] h-[121px] cursor-pointer"
+          />
+        </Popover>
         <Popover
           trigger={PopoverTrigger.Hover}
           placement={PopoverPlacement.TopRight}

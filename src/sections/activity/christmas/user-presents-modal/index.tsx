@@ -7,6 +7,7 @@ import { formatThousandsSeparator } from "@/utils/balance";
 import { useContext } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import Rare from '@/sections/activity/christmas/nft-prize-winners-modal/rare';
+import Nft from '@/sections/activity/christmas/nft-prize-winners-modal/nft';
 
 export default function UserPresentsModal({ open, data, onClose }: any) {
   const router = useRouter();
@@ -27,13 +28,16 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
         <div className="text-[20px] font-bold py-[12px] text-center">
           You already opened {data.used_box - data.total_yap} presents
         </div>
-        <div className="px-[38px]">
+        <div className="px-[38px] max-h-[70dvh] overflow-y-auto pb-[20px]">
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
             <div className="text-[16px] font-bold">
-              You got <span className="text-[26px]">{data.rares.length}</span>{" "}rare prize
+              You got <span className="text-[26px]">{(data?.nfts?.length || 0) + (data?.rares?.length || 0)}</span>{" "}rare prize
             </div>
             <div className="flex gap-[16px] flex-wrap mt-[12px]">
-              {data.rares.map((rare: any, idx: number) => (
+              {data.nfts?.map?.((nft: any) => (
+                <Nft key={nft.token_id} nft={nft} />
+              ))}
+              {data.rares?.map?.((rare: any, idx: number) => (
                 <Rare key={idx} rare={rare} />
               ))}
             </div>
@@ -41,7 +45,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
             <div className="flex justify-between items-center">
               <div className="text-[16px] font-bold">
-                You got <span className="text-[26px]">{data.items.length}</span>{" "}
+                You got <span className="text-[26px]">{data.items?.length}</span>{" "}
                 BeraCave outfits
               </div>
               <Button
@@ -53,7 +57,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
               </Button>
             </div>
             <div className="flex gap-[16px] flex-nowrap mt-[12px] overflow-y-auto">
-              {data.items.map((item: any) => (
+              {data.items?.map?.((item: any) => (
                 <Present key={item.id} gift={item.category} />
               ))}
             </div>

@@ -219,7 +219,8 @@ export default function useAddAction(source: string) {
       params.wallet = walletName;
       console.log('useAddAction params:', params);
 
-      axios.post('/api/action/add', params);
+      const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://dev-api.beratown.app';
+      axios.post(`${BASE_URL}/api/action/add`, params);
     },
     [chainId, account]
   );

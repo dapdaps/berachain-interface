@@ -8,7 +8,7 @@ export default function RulesModal({
   return (
     <Modal open={open} onClose={onClose}>
       <div className="relative">
-        <div className="w-[830px] h-[80dvh] overflow-y-auto bg-[#B5956E] rounded-[20px] px-[50px] py-[30px] text-[20px]">
+        <div className="lg:w-[830px] h-[80dvh] overflow-y-auto bg-[#B5956E] rounded-[20px] lg:px-[50px] md:px-[20px] py-[30px] text-[20px]">
           <div className="font-bold">Bera’s Wonderland rule</div>
           <div className="font-bold mt-[10px]"> Henlo ho ho! </div>
           <div>
@@ -63,12 +63,12 @@ export default function RulesModal({
         <img
           src="/images/activity/christmas/bg-summary.svg"
           alt=""
-          className="absolute top-[-30px] left-[-45px] w-[900px] max-w-[900px]"
+          className="absolute top-[-30px] left-[-45px] lg:w-[900px] max-w-[900px]"
         />
         <img
           src="/images/activity/christmas/bg-summary.svg"
           alt=""
-          className="absolute bottom-[-34px] left-[-45px] w-[900px] max-w-[900px]"
+          className="md:hidden absolute bottom-[-34px] left-[-45px] lg:w-[900px] max-w-[900px]"
           style={{
             transform: "rotateX(180deg)"
           }}

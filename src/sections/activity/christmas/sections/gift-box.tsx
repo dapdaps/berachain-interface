@@ -15,8 +15,9 @@ import useOpenBox from "../hooks/use-open-box";
 import { getUTCTimestamp } from '@/utils/date';
 import DailyQuest from '@/sections/activity/christmas/components/daily-quest';
 import Big from 'big.js';
-import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
-import { box } from 'consola/utils';
+import { useAppKit } from '@reown/appkit/react';
+import useCustomAccount from '@/hooks/use-account';
+import { numberFormatter } from '@/utils/number-formatter';
 
 const GiftBox = () => {
   const {
@@ -28,6 +29,7 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    userRemainBox,
     userInfoLoading,
     getUserInfo,
     currentDailyTimestamp,
@@ -35,11 +37,9 @@ const GiftBox = () => {
     requestCheck,
     handleQuestUpdate,
   } = useContext(ChristmasContext);
+  const { open } = useAppKit();
+  const { account } = useCustomAccount();
 
-  const remainBox = useMemo(
-    () => (userInfo?.total_box || 0) - (userInfo?.used_box || 0),
-    [userInfo]
-  );
   const [openType, setOpenType] = useState(0);
   const [dailyVisible, setDailyVisible] = useState(false);
   const [dailyChecking, setDailyChecking] = useState(false);
@@ -48,7 +48,7 @@ const GiftBox = () => {
     setOpenData(args);
     getUserInfo?.();
   });
-  const list = [...new Array(remainBox || 0)].slice(0, 21).map((_, i) => ({
+  const list = [...new Array(userRemainBox || 0)].slice(0, 21).map((_, i) => ({
     id: i + 1,
     status: "un_open"
   }));
@@ -133,6 +133,10 @@ const GiftBox = () => {
               className="!bg-black border-[#FFDC50] !text-[#FFDC50]"
               loading={userInfoLoading}
               onClick={() => {
+                if (!account) {
+                  open({ view: 'Connect' });
+                  return;
+                }
                 getUserInfo?.();
                 setOpenType(3);
               }}
@@ -141,6 +145,10 @@ const GiftBox = () => {
             </BasicButton>
             <BasicButton
               onClick={() => {
+                if (!account) {
+                  open({ view: 'Connect' });
+                  return;
+                }
                 setOpenType(2);
                 onOpen(true);
               }}
@@ -156,7 +164,7 @@ const GiftBox = () => {
             </BasicButton>
           </div>
         </BoxTitle>
-        <BoxTitle label="Your $Snowflake" value={userInfo?.total_token || 0}>
+        <BoxTitle label="Your $Snowflake" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
           <Button
             onClick={() => {
               setShowSwapModal?.(true);
@@ -167,7 +175,7 @@ const GiftBox = () => {
           </Button>
         </BoxTitle>
       </div>
-      <div className="relative h-[43vw] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
+      <div className="relative h-[43vw] min-h-[800px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
         <Pyramid
           list={sortedList}
           onBoxClick={() => {
@@ -180,7 +188,7 @@ const GiftBox = () => {
             className="text-[16px] cursor-pointer text-black font-CherryBomb leading-[90%] font-[400] text-center"
             onClick={handleFollowX}
           >
-            Follow <span className="underline decoration-solid">BeraTown</span>{" "}
+            Follow <span className="underline decoration-solid">BeraTown</span>{' '}
             on X
           </div>
           <SocialTask
@@ -225,6 +233,36 @@ const GiftBox = () => {
             </SocialTask>
           </div>
         </div>
+        <img
+          src="/images/activity/christmas/star-gift-box-1.svg"
+          alt=""
+          className="absolute right-[38vw] top-[60px] animate-blink"
+          style={{ animationDelay: '1', animationDuration: '8s' }}
+        />
+        <img
+          src="/images/activity/christmas/star-gift-box-2.svg"
+          alt=""
+          className="absolute left-[32vw] top-[123px] animate-blink"
+          style={{ animationDelay: '0', animationDuration: '4s' }}
+        />
+        <img
+          src="/images/activity/christmas/star-gift-box-3.svg"
+          alt=""
+          className="absolute right-[24vw] top-[250px] animate-blink"
+          style={{ animationDelay: '2', animationDuration: '12s' }}
+        />
+        <img
+          src="/images/activity/christmas/star-gift-box-4.svg"
+          alt=""
+          className="absolute right-[31vw] top-[260px] animate-blink"
+          style={{ animationDelay: '4', animationDuration: '6s' }}
+        />
+        <img
+          src="/images/activity/christmas/star-gift-box-5.svg"
+          alt=""
+          className="absolute left-[23vw] top-[500px] animate-blink"
+          style={{ animationDelay: '1', animationDuration: '5s' }}
+        />
       </div>
       {!!openData && openType === 1 && (
         <OpenModal
@@ -233,7 +271,7 @@ const GiftBox = () => {
             setOpenType(0);
             setOpenData(null);
           }}
-          remainBox={remainBox}
+          remainBox={userRemainBox}
           onOpen={onOpen}
           data={openData}
           loading={opening}

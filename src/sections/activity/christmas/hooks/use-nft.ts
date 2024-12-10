@@ -2,8 +2,9 @@ import useCustomAccount from "@/hooks/use-account";
 import { useEffect, useState } from "react";
 import { get } from "@/utils/http";
 import { NFTs } from "@/sections/activity/christmas/config";
+import { IBase } from '@/sections/activity/christmas/hooks/use-base';
 
-export function useNft(): INft {
+export function useNft(props: { base: IBase; }): INft {
   const { account, provider } = useCustomAccount();
 
   const [loading, setLoading] = useState(false);
@@ -45,4 +46,5 @@ export interface NFT {
   token_id: string;
   logo: string;
   classLogo: string;
+  owned?: string;
 }

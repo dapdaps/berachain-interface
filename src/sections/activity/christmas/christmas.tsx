@@ -19,7 +19,7 @@ const Christmas = () => {
 
   return (
     <div className="relative overflow-hidden">
-      <ChristmasSnow className="!z-[0]" />
+      <ChristmasSnow className="!z-[0] max-h-[110vw]" />
       <div className="relative z-[1]">
         <Top
           onOpenRules={() => {

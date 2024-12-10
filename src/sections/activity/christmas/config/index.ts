@@ -89,7 +89,7 @@ export const EcosystemQuests: any = {
     socials: [
       { label: "Website", link: "https://ramen.finance/" },
       { label: "X", link: "https://twitter.com/ramen_finance" },
-      { label: "Discord", link: "discord.gg/ramenfinance" },
+      { label: "Discord", link: "https://discord.gg/ramenfinance" },
       { label: "Docs", link: "https://docs.ramen.finance/ramen-finance" },
     ]
   },
@@ -161,7 +161,7 @@ export const EcosystemQuests: any = {
     socials: [
       { label: "Website", link: "https://www.yeetit.xyz/" },
       { label: "X", link: "https://twitter.com/eatsleepyeet" },
-      { label: "Discord", link: "discord.gg/yeetards" },
+      { label: "Discord", link: "https://discord.gg/yeetards" },
       { label: "Docs", link: "https://www.cia.gov/report-information/" },
     ]
   },
@@ -184,7 +184,7 @@ export const EcosystemQuests: any = {
     socials: [
       { label: "Website", link: "https://honeypotfinance.xyz/" },
       { label: "X", link: "https://twitter.com/honeypotfinance" },
-      { label: "Discord", link: "discord.gg/honeypotfi" },
+      { label: "Discord", link: "https://discord.gg/honeypotfi" },
       { label: "Docs", link: "https://docs.honeypotfinance.xyz/" },
     ]
   },
@@ -200,14 +200,14 @@ export const EcosystemQuests: any = {
       }
     },
     socials: [
-      { label: "Website", link: "eden.sexualfi.com" },
+      { label: "Website", link: "https://eden.sexualfi.com" },
       { label: "X", link: "https://x.com/EdenWeb3_Global" },
       { label: "Discord", link: "https://discord.com/invite/edenweb3" },
-      { label: "Docs", link: "eden.sexualfi.com" },
+      { label: "Docs", link: "https://eden.sexualfi.com" },
     ]
   },
   Puffpaw: {
-    categories: ["GameFi", "RWA", "DePin"],
+    categories: ["VAPE2EARN", "RWA", "DePin"],
     icon: "/images/activity/christmas/quest/logos/puffpaw.svg",
     banner: "/images/activity/christmas/quest/banners/Puffpaw.jpg",
     description: "Vape 2 quit smoking and earn",
@@ -246,7 +246,7 @@ export const EcosystemQuests: any = {
     socials: [
       { label: "Website", link: "https://memeswap.fi/" },
       { label: "X", link: "https://twitter.com/memeswapfi" },
-      { label: "Discord", link: "discord.gg/gxTzq3WYa8" },
+      { label: "Discord", link: "https://discord.gg/gxTzq3WYa8" },
       { label: "Docs", link: "https://docs.memeswap.fi/" },
     ]
   },
@@ -268,7 +268,7 @@ export const EcosystemQuests: any = {
     socials: [
       { label: "Website", link: "https://bartio.beradrome.com/" },
       { label: "X", link: "https://twitter.com/beradrome" },
-      { label: "Discord", link: "discord.beradrome.com" },
+      { label: "Discord", link: "https://discord.beradrome.com" },
       { label: "Docs", link: "https://docs.beradrome.com/" },
     ]
   },
@@ -320,7 +320,7 @@ export const EcosystemQuests: any = {
   Bakeland: {
     categories: ["GameFi"],
     icon: "/images/activity/christmas/quest/logos/bakeland.svg",
-    banner: "/images/activity/christmas/quest/banners/Bakeland.jpg",
+    banner: "/images/activity/christmas/quest/banners/Bakeland.png",
     description: "turning crypto into a P2E metaRPG",
     missions: {
       token_balance: {
@@ -438,7 +438,7 @@ export const EcosystemQuests: any = {
       }
     },
     socials: [
-      { label: "Website", link: "app.beraland.xyz" },
+      { label: "Website", link: "https://app.beraland.xyz" },
       { label: "X", link: "https://x.com/Bera_Land" },
       { label: "Discord", link: "https://discord.gg/beraland" },
       { label: "Docs", link: "https://app.beraland.xyz/dl/Ecosystem" },

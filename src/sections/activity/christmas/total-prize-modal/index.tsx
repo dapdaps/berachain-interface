@@ -2,14 +2,18 @@ import Modal from "@/components/modal";
 import SnowIcon from "../present-icons/icon-snow";
 import Nft from "./nft";
 import config from "../present-icons/config";
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
 import Skeleton from "react-loading-skeleton";
 import useRewards from "../hooks/use-rewards";
+import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 export default function TotalPrizeModal({ open, onClose }: any) {
   const { loading, rares, items } = useRewards();
+  const {
+    nftList: nftTotalList,
+  } = useContext(ChristmasContext);
 
   const [showNfts, setShowNfts] = useState(false);
   const [nftList, nftAndRare] = useMemo(() => {
@@ -18,6 +22,8 @@ export default function TotalPrizeModal({ open, onClose }: any) {
     const _rare: any = [];
     rares.forEach((nft: any) => {
       if (nft.category === "nft") {
+        const curr = nftTotalList?.find((__it) => __it.id === nft.id);
+        nft.owned = curr?.owned;
         if (!catched[nft.name]) {
           catched[nft.name] = [];
         }
@@ -26,7 +32,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       if (nft.category === "rare") {
         _rare.push({
           name: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
-            ? "$" + nft.amount + " " + nft.name
+            ? nft.amount + " " + nft.name
             : nft.name,
           logo: nft.logo,
           nfts: {
@@ -44,7 +50,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       nfts: value
     }));
     return [_nftList, [..._nftList, ..._rare]];
-  }, [rares]);
+  }, [rares, nftTotalList]);
 
   return (
     <>
@@ -53,7 +59,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
         onClose={onClose}
         closeIconClassName="right-[-14px] top-[-8px]"
       >
-        <div className="w-[594px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[20px]">
+        <div className="lg:w-[594px] md:h-[60dvh] md:overflow-x-hidden md:overflow-y-auto lg:rounded-[20px] md:rounded-t-[20px] lg:border border-black bg-[#FFFDEB] lg:shadow-shadow1 p-[20px]">
           <div className="flex justify-between items-center text-[16px] font-bold pb-[14px]">
             <div>$Snowflake</div>
             <div className="flex items-center gap-[4px]">
@@ -90,25 +96,29 @@ export default function TotalPrizeModal({ open, onClose }: any) {
                   ))}
             </div>
           </div>
-          <div className="border-t border-[#949494]">
-            <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
-            <div className="flex flex-wrap items-center justify-between pt-[14px]">
-              {items.map((token: any, i: number) => {
-                const { w, h } = config[token.category];
-                return (
-                  <img
-                    key={i}
-                    className="shrink-0"
-                    style={{
-                      width: w / 2,
-                      height: h / 2
-                    }}
-                    src={token.logo}
-                  />
-                );
-              })}
+          {
+            items.length > 0 && (
+              <div className="border-t border-[#949494]">
+              <div className="pt-[8px] text-[16px] font-bold">BeraCave Prize</div>
+              <div className="flex flex-wrap items-center lg:justify-between pt-[14px] md:gap-[40px]">
+                {items.map((token: any, i: number) => {
+                  const { w, h } = config[token.category];
+                  return (
+                    <img
+                      key={i}
+                      className="shrink-0"
+                      style={{
+                        width: w / 2,
+                        height: h / 2
+                      }}
+                      src={token.logo}
+                    />
+                  );
+                })}
+              </div>
             </div>
-          </div>
+            )
+          }
         </div>
       </Modal>
       <NftPrizeWinnersModal
