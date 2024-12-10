@@ -320,7 +320,7 @@ export const EcosystemQuests: any = {
   Bakeland: {
     categories: ["GameFi"],
     icon: "/images/activity/christmas/quest/logos/bakeland.svg",
-    banner: "/images/activity/christmas/quest/banners/Bakeland.jpg",
+    banner: "/images/activity/christmas/quest/banners/Bakeland.png",
     description: "turning crypto into a P2E metaRPG",
     missions: {
       token_balance: {
