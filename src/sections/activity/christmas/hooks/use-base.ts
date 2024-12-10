@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import { getUTCTimestamp } from '@/utils/date';
@@ -14,6 +14,11 @@ export function useBase(): IBase {
   const [currentDailyTimestamp, setCurrentDailyTimestamp] = useState<number>();
   const [currentUTCTimestamp, setCurrentUTCTimestamp] = useState<number>();
   const [showSwapModal, setShowSwapModal] = useState(false);
+
+  const userRemainBox = useMemo(
+    () => (userInfo?.total_box || 0) - (userInfo?.used_box || 0),
+    [userInfo]
+  );
 
   const getInfo = async () => {
     setLoading(true);
@@ -33,7 +38,7 @@ export function useBase(): IBase {
       setUserLoading(false);
       return;
     }
-    setUserInfo(res.data || {});
+    setUserInfo({ key: +new Date(), ...res.data });
     setUserLoading(false);
   };
 
@@ -65,6 +70,7 @@ export function useBase(): IBase {
     currentDailyTimestamp,
     showSwapModal,
     setShowSwapModal,
+    userRemainBox,
   };
 }
 
@@ -77,6 +83,7 @@ export interface IBase {
   currentDailyTimestamp?: number;
   showSwapModal: boolean;
   setShowSwapModal: Dispatch<SetStateAction<boolean>>;
+  userRemainBox: number;
   getUserInfo(): void;
 }
 

@@ -7,7 +7,7 @@ import Big from 'big.js';
 import { dAppsInfo } from '@/configs/dapp';
 import { DAppQuests, EcosystemQuests } from '@/sections/activity/christmas/config';
 import { cloneDeep } from 'lodash';
-import { useBase } from '@/sections/activity/christmas/hooks/use-base';
+import { IBase } from '@/sections/activity/christmas/hooks/use-base';
 import { Contract, providers, utils } from 'ethers';
 import { TOKEN_ABI } from '@/hooks/use-token-balance';
 import { ChristmasActivityChains } from '@/configs/chains';
@@ -27,8 +27,8 @@ const DAPP_CATEGORY: any = {
   Delegate: 'Vaults',
 };
 
-export function useQuest(): IQuest {
-  const { getUserInfo } = useBase();
+export function useQuest(props: { base: IBase; }): IQuest {
+  const { getUserInfo } = props.base;
 
   const timerRef = useRef<any>();
   const { account, provider } = useCustomAccount();
@@ -341,7 +341,7 @@ export function useQuest(): IQuest {
   const handleSocialQuest = (quest: Partial<Quest>) => {
     if (quest.url) {
       window?.open(quest.url);
-      setQuestVisited({ id: quest.id, visited: true });
+      setQuestVisited({ id: quest.id, visited: true, account });
       return;
     }
   };
@@ -409,7 +409,7 @@ export interface IQuest {
   handleQuestMissionCheck(mission?: Partial<Quest>): void;
   handleQuest(quest?: Partial<Quest>): void;
   requestCheck(quest?: Partial<Quest>): void;
-  setQuestVisited(params: { id?: number | string, visited?: boolean; }): void;
+  setQuestVisited(params: { id?: number | string, visited?: boolean; account?: string; }): void;
   handleQuestUpdate(quest: Partial<Quest> | Partial<Quest>[], values: Partial<Quest> | Partial<Quest>[]): void;
 }
 

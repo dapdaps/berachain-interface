@@ -21,9 +21,9 @@ export default function TaskModal(props: Props) {
       closeIconClassName="right-[-14px] top-[-8px]"
     >
       <div className="w-[800px] rounded-[24px] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
-        <img
-          src={ecosystemInfo?.banner}
-          className="w-full h-[160px] rounded-x-[22px]"
+        <div
+          className="w-full h-[160px] rounded-x-[22px] bg-center bg-no-repeat bg-cover"
+          style={{ backgroundImage: `url("${ecosystemInfo?.banner}")` }}
         />
         <div className="px-[30px]">
           <div className="flex justify-between">

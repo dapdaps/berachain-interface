@@ -2,14 +2,18 @@ import Modal from "@/components/modal";
 import SnowIcon from "../present-icons/icon-snow";
 import Nft from "./nft";
 import config from "../present-icons/config";
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import BasicButton from "../task-modal/button";
 import NftPrizeWinnersModal from "../nft-prize-winners-modal";
 import Skeleton from "react-loading-skeleton";
 import useRewards from "../hooks/use-rewards";
+import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 export default function TotalPrizeModal({ open, onClose }: any) {
   const { loading, rares, items } = useRewards();
+  const {
+    nftList: nftTotalList,
+  } = useContext(ChristmasContext);
 
   const [showNfts, setShowNfts] = useState(false);
   const [nftList, nftAndRare] = useMemo(() => {
@@ -18,6 +22,8 @@ export default function TotalPrizeModal({ open, onClose }: any) {
     const _rare: any = [];
     rares.forEach((nft: any) => {
       if (nft.category === "nft") {
+        const curr = nftTotalList?.find((__it) => __it.id === nft.id);
+        nft.owned = curr?.owned;
         if (!catched[nft.name]) {
           catched[nft.name] = [];
         }
@@ -44,7 +50,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       nfts: value
     }));
     return [_nftList, [..._nftList, ..._rare]];
-  }, [rares]);
+  }, [rares, nftTotalList]);
 
   return (
     <>

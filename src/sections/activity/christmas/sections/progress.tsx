@@ -74,7 +74,7 @@ const NFTProgress = () => {
               <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Merry Beramas!</div>
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{15}%</div>
-                <div className="font-[500] text-[14px] leading-normal">Chance To Win NFTs</div>
+                <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
               </div>
             </div>
           )}
@@ -95,7 +95,7 @@ const NFTProgress = () => {
               <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Happy New Year!</div>
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{25}%</div>
-                <div className="font-[500] text-[14px] leading-normal">Chance To Win NFTs</div>
+                <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
               </div>
             </div>
           )}
