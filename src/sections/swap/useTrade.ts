@@ -193,8 +193,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
         inputCurrency: trade.inputCurrency,
         outputCurrencyAmount: trade.outputCurrencyAmount,
         outputCurrency: trade.outputCurrency,
-        template:
-          wethAddress === trade.routerAddress ? "Wrap and Unwrap" : trade.name,
+        template: trade.name,
         status,
         transactionHash,
         add: 0,
