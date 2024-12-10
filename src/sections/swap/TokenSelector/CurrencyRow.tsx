@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-import Loading from '@/components/circle-loading';
-import { balanceFormated } from '@/utils/balance';
-import useToast from '@/hooks/use-toast';
+import Loading from "@/components/circle-loading";
+import { balanceFormated } from "@/utils/balance";
+import useToast from "@/hooks/use-toast";
 
 const StyledCurrencyRow = styled.div`
   padding: 14px 20px;

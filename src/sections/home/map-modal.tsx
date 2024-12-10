@@ -215,7 +215,7 @@ const MapModal = () => {
       indicatorClass: 'absolute left-[2%] bottom-[-32.5%] z-10',
       buttonClass: 'rotate-[-10deg] mb-[8px]',
       arrowClass: 'relative left-[50%] translate-x-[50px] translate-y-[-150px]',
-      btnText: 'Beramas Wonderland',
+      btnText: 'Bera\'s Wonderland',
       link: christmas.path,
       ArrowIcon: beramasArrowIcon
     }];
