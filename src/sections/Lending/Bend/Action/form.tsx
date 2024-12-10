@@ -165,8 +165,7 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
               hook.setAmount('');
               return;
             }
-            const numericValue = Number(value);
-            hook.setAmount(numericValue.toString());
+            hook.setAmount(value);
           }}
           className="w-full h-[40px] border border-[#373A53] rounded-[12px] px-3
                      font-Montserrat text-base font-semibold leading-[19.5px] text-left
