@@ -124,7 +124,7 @@ const GiftBox = () => {
               </button>
             </>
           }
-          value={userInfo?.used_box || 0}
+          value={userRemainBox || 0}
           total={userInfo?.total_box || 0}
           valueClassName="translate-x-[-20px]"
         >

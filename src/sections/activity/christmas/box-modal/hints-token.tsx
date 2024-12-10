@@ -5,7 +5,7 @@ export default function TokenHints({ amount }: any) {
         You got a <span className="font-bold">{amount} $Snowflake</span>
       </div>
       <div className="text-[14px] font-medium">
-        Trade now or hold? Up to you 😏 You got{" "}
+        Trade now or hold? Up to you 😏
       </div>
       <div className="w-[233px] flex justify-around">
         {/* <button className="text-[16px] font-bold underline">Bex</button> */}
