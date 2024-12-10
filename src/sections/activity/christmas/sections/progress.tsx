@@ -16,7 +16,7 @@ const NFTProgress = () => {
     currentUTCTimestamp,
   } = useContext(ChristmasContext);
 
-  let value = Big(currentUTCTimestamp || 0).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(0);
+  let value = Big(currentUTCTimestamp || 0).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(1);
   if (Big(value).lt(0)) value = '0';
   if (Big(value).gt(100)) value = '100';
 
@@ -73,7 +73,7 @@ const NFTProgress = () => {
             <div className="w-[240px] translate-x-[80px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
               <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Merry Beramas!</div>
-                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{15}%</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{20}%</div>
                 <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
               </div>
             </div>
@@ -94,7 +94,7 @@ const NFTProgress = () => {
             <div className="w-[240px] translate-x-[70px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
               <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Happy New Year!</div>
-                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{25}%</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{20}%</div>
                 <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
               </div>
             </div>
