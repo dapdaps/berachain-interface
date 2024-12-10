@@ -9,7 +9,7 @@ const Summary = ({ onOpenRewards }: any) => {
     {
       id: 1,
       label: "Total prize value",
-      value: numberFormatter(1250000, 2, true, { isShort: true, prefix: "$" }),
+      value: "$15,000+",
       underline: true
     },
     {
