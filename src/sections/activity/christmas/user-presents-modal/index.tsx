@@ -28,7 +28,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
         <div className="text-[20px] font-bold py-[12px] text-center">
           You already opened {data.used_box - data.total_yap} presents
         </div>
-        <div className="px-[38px]">
+        <div className="px-[38px] max-h-[70dvh] overflow-y-auto pb-[20px]">
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
             <div className="text-[16px] font-bold">
               You got <span className="text-[26px]">{(data?.nfts?.length || 0) + (data?.rares?.length || 0)}</span>{" "}rare prize

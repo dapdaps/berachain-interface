@@ -52,9 +52,9 @@ export default function BoxModal({
         closeIconClassName="right-[-14px] top-[-8px]"
       >
         <Bg className="w-[600px]">
-          <div className="flex flex-col items-center pt-[30px]">
+          <div className="flex flex-col items-center p-[30px_20px_0] w-full">
             {imgs.length > 0 && (
-              <div className="flex justify-center gap-[6px]">
+              <div className={`flex gap-[6px] flex-nowrap overflow-x-auto w-full ${imgs?.length > 5 ? 'justify-start' : 'justify-center'}`}>
                 {imgs.map((img: any, i: number) => (
                   <>
                     {img.type === "nft" && <NftIcon src={img.logo} key={i} />}
