@@ -14,6 +14,8 @@ import Big from "big.js";
 import { motion } from "framer-motion";
 import { useTapSoundStore } from "@/stores/tap-sound";
 import useClickTracking from "@/hooks/use-click-tracking";
+import { useChristmas } from "@/hooks/use-christmas";
+import ChristmasEnterance from "@/sections/activity/christmas/enterance";
 
 const Home = () => {
   const router = useProgressRouter();
@@ -25,6 +27,8 @@ const Home = () => {
 
   const [viewportHeight, setViewportHeight] = useState("100vh");
   const [visibleHeight, setVisibleHeight] = useState(844);
+
+  const { isChristmas, path: christmasPath } = useChristmas();
 
   const handleBGTClick = (type: CoinType) => {
     bgt.handleBgt(true, type);
@@ -262,6 +266,8 @@ const Home = () => {
           bgt.handleBgt(false);
         }}
       />
+
+    <ChristmasEnterance path={christmasPath} />
     </div>
   );
 };

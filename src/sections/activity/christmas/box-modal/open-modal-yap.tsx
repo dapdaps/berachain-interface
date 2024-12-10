@@ -4,7 +4,7 @@ import Button from "@/components/button";
 import IconBack from "@public/images/icon-back.svg";
 import { useState, useMemo } from "react";
 
-export default function BoxModal({ open: show, onClose, texts = [] }: any) {
+export default function BoxModal({ open: show, onClose, texts = [], isMobile }: any) {
   const [currentI, setCurrentI] = useState(0);
 
   const text = useMemo(() => {
@@ -16,6 +16,8 @@ export default function BoxModal({ open: show, onClose, texts = [] }: any) {
     <Modal
       open={show}
       onClose={onClose}
+      isForceNormal={isMobile}
+      className={isMobile ? "flex justify-center items-center" : ""}
       closeIconClassName="right-[-14px] top-[-8px]"
     >
       <Bg className="w-[482px] relative">
