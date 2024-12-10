@@ -12,6 +12,7 @@ interface IProps {
   action: "borrow" | "repay" | "supply" | "deposit" | "withdraw" & any;
   token?: any;
   isMobile?: boolean;
+  onSuccess?(): void;
 }
 
 const capitalizeFirstLetter = (string: string) => {

@@ -280,9 +280,9 @@ export const beraB: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0xB43fd1dC4f02d81f962E98203b2cc4FD9E342964",
     decimals: 18,
-    symbol: "PAW",
-    name: "Paw Token",
-    icon: "/assets/tokens/paw.webp"
+    symbol: 'PAW',
+    name: 'Paw Token',
+    icon: '/assets/tokens/paw.webp'
   },
   arbera: {
     chainId: CHAIN_ID,
