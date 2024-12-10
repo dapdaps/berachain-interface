@@ -45,7 +45,7 @@ export const useQuestStore = create(
           state.homePromptVisible = visible;
           return state;
         });
-      },
+      }
     }),
     {
       name: '_activity_christmas_quest',

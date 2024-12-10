@@ -20,7 +20,7 @@ export default function NftHints({ nft }: any) {
           {nft.amount ?? ''} {nft.name} {!nft.whitelist && !isToken ? `#${nft.token_id}` : ''}
         </span>
       </div>
-      <div className="text-[14px] font-medium">
+      <div className="text-[14px] font-medium text-center">
         {text}
       </div>
     </>

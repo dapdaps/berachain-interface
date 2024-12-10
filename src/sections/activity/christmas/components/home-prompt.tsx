@@ -2,18 +2,23 @@ import { useQuestStore } from '@/sections/activity/christmas/stores/use-quest-st
 import Modal from '@/components/modal';
 import Button from '@/sections/activity/christmas/components/button';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const HomePrompt = () => {
-  const visible = useQuestStore((store) => store.homePromptVisible);
-  const setVisible = useQuestStore((store) => store.setHomePromptVisible);
+  const _visible = useQuestStore((store) => store.homePromptVisible);
+  const _setVisible = useQuestStore((store) => store.setHomePromptVisible);
   const router = useRouter();
+
+  const [visible, setVisible] = useState(_visible);
+  const handleClose = () => {
+    setVisible(false);
+    _setVisible(false);
+  };
 
   return (
     <Modal
       open={visible}
-      onClose={() => {
-        setVisible(false);
-      }}
+      onClose={handleClose}
     >
       <div className="w-[680px] rounded-[10px] text-center bg-[#B5956E] border border-[#333648] shadow-[0px_0px_4px_0px_rgba(0,_0,_0,_0.25)]">
         <img
@@ -33,7 +38,7 @@ const HomePrompt = () => {
             className="px-[68px]"
             onClick={() => {
               router.push('/activity/christmas');
-              setVisible(false);
+              handleClose();
             }}
           >
             Show me how!
@@ -42,7 +47,7 @@ const HomePrompt = () => {
             type="primary"
             className="px-[68px] bg-[#FFFDEB]"
             onClick={() => {
-              setVisible(false);
+              handleClose();
             }}
           >
             Explore it later
