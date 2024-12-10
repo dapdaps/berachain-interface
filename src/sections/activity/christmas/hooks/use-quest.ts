@@ -215,7 +215,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
     };
     return new Promise(async (resolve) => {
       // NFT
-      if (_quest.token) {
+      if (_quest.token && _quest.category === QuestCategory.TokenBalance) {
         const { success } = await checkNftMissionValid(_quest);
         if (!success) {
           resolve({ code: 0, data: {} });

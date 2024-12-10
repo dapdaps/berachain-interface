@@ -6,7 +6,7 @@ const Pyramid = (props: any) => {
   return (
     <div className="flex justify-center items-center w-full h-full">
       <div
-        className="flex flex-col items-center absolute left-1/2 -translate-x-1/2"
+        className="flex flex-col items-start absolute left-1/2 -translate-x-1/2"
         style={{
           transform: `translateX(-50%) translateY(${
             (203 - 110) * Math.max(0, list.length - 1)
@@ -18,7 +18,8 @@ const Pyramid = (props: any) => {
             key={`row-${index}`}
             className="flex justify-center items-center mb-[-100px]"
             style={{
-              transform: `translateY(-${100 * index}%)`
+              transform: `translateY(-${100 * index}%)`,
+              paddingLeft: 78 * index,
             }}
           >
             {row.map((item: any, idx: number) => {
@@ -94,6 +95,7 @@ export const createPyramid = (list: any) => {
   }
   const sorted = arr.sort((a: any, b: any) => b.length - a.length);
   const rows = sorted.map((_arr: any) => _arr.slice(0, 1));
+
   let lastRowNum = 1;
   let count = 1;
   let totals = list.length;
@@ -117,10 +119,37 @@ export const createPyramid = (list: any) => {
       continue;
     }
     rows[lastRow].push(it);
+    if (list.length === 11) {
+      if (lastRow === 2 && rows[lastRow].length >= 3) {
+        lastCount += 1;
+        lastRowCount -= 1;
+        continue;
+      }
+    }
+    if (list.length === 16) {
+      if (lastRow === 3 && rows[lastRow].length >= 4) {
+        lastCount += 1;
+        lastRowCount -= 1;
+        continue;
+      }
+      if (lastRow === 2 && rows[lastRow].length >= 3) {
+        lastCount += 1;
+        lastRowCount -= 1;
+        continue;
+      }
+    }
+    if (list.length === 17) {
+      if (lastRow === 2 && rows[lastRow].length >= 3) {
+        lastCount += 1;
+        lastRowCount -= 1;
+        continue;
+      }
+    }
     if (rows[lastRow].length >= lastRowCount) {
       lastCount += 1;
       lastRowCount -= 1;
     }
   }
+
   return rows;
 };
