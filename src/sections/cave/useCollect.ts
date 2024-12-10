@@ -126,7 +126,8 @@ export default function useCollect({ address }: { address: string }) {
             }
         })
 
-    }, [address, updater])
+    }, [address])
+    
 
     const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace") => {
         if (type) {

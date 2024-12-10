@@ -451,7 +451,7 @@ export default function Cave() {
                     <div
                         className="absolute left-[38px] top-[86px] flex items-center justify-center w-[81px] h-[36px] rounded-[18px] border-[2px] border-[#4B371F] bg-[#FFDC50] cursor-pointer text-black font-CherryBomb text-[18px] z-[5]"
                         onClick={() => {
-                            setNftVisible(true)
+                            nfts?.length > 0 && setNftVisible(true)
                         }}
                     >
                         Change
