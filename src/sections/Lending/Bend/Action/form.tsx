@@ -12,6 +12,7 @@ interface IProps {
   action: "borrow" | "repay" | "supply" | "deposit" | "withdraw" & any;
   token?: any;
   isMobile?: boolean;
+  onSuccess?(): void;
 }
 
 const capitalizeFirstLetter = (string: string) => {
@@ -64,7 +65,7 @@ const Balance = (props: any) => {
 
 const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
   (props: IProps, ref) => {
-    const { action, token, isMobile } = props;
+    const { action, token, isMobile, onSuccess } = props;
     const { config } = useAaveConfig();
     const { triggerUpdate, userAccountData, netBaseData, initData: { provider, chainId, account } } = useMarketStore();
 
@@ -137,12 +138,13 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
           symbol === config.nativeCurrency.symbol ? await hook.withdrawETH(value) : await hook.withdrawErc20(value);
         }
       }
+      onSuccess?.();
     };
 
-    const showTipsInRepay = useMemo(() => 
-      action === 'withdraw' && 
-      Big(userAccountData.totalDebtBaseUSD).gt(0) && 
-      symbol !== 'HONEY', 
+    const showTipsInRepay = useMemo(() =>
+      action === 'withdraw' &&
+      Big(userAccountData.totalDebtBaseUSD).gt(0) &&
+      symbol !== 'HONEY',
     [token, userAccountData, action]);
 
 
@@ -160,12 +162,12 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
             }
 
             if (!/^\d*\.?\d*$/.test(e.target.value)) return;
-    
+
             const inputValue = Number(e.target.value);
             const balance = Number(currentBalance);
-            
+
             const finalValue = Math.min(inputValue, balance);
-            
+
             hook.setAmount(finalValue.toString())
           }}
           className="w-full h-[40px] border border-[#373A53] rounded-[12px] px-3
