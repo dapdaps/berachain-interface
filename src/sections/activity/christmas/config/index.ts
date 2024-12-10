@@ -13,7 +13,7 @@ export const EcosystemQuests: any = {
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -32,15 +32,15 @@ export const EcosystemQuests: any = {
       "dumb memecoin built by 0xhoneyjar the biggest cult org in the berachain ecosystem. crypto is hard, henlo is easy",
     missions: {
       view: {
-        text: (amount: number) => `Go to the website and get ${amount} gift boxes.`,
+        text: (amount: number) => `Go to the website and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Go"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       },
       address: {
-        text: (amount: number) => `Verify if you’re a crew member and get ${amount} gift box.`,
+        text: (amount: number) => `Verify if you’re a crew member and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
     },
@@ -59,11 +59,11 @@ export const EcosystemQuests: any = {
       "An all in one NFT Dapp, launch, mint, trade (coming thoon) on Kingdomly",
     missions: {
       token_balance: {
-        text: (amount: number) => `Mint NFTs and get ${amount} gift boxes.`,
+        text: (amount: number) => `Mint NFTs and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -82,11 +82,11 @@ export const EcosystemQuests: any = {
       "Token launchpad powering liquidity for next-gen protocols on Berachain.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -105,11 +105,11 @@ export const EcosystemQuests: any = {
       "Big Fat Beras by Beraborrow. A 6,900 collection of the biggest and fattest Beras. Ooga Matata.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -128,15 +128,15 @@ export const EcosystemQuests: any = {
       "A proof-of-engagement ecosystem blending gamification to drive meaningful on-chain actions on berachain.",
     missions: {
       wallet1: {
-        text: (amount: number) => `Claim $BERA from the faucet in BeraSig Wallet and get ${amount} gift boxes.`,
+        text: (amount: number) => `Claim $BERA from the faucet in BeraSig Wallet and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Claim"
       },
       wallet2: {
-        text: (amount: number) => `Swap $BERA to STGUSDC in BeraSig Wallet and get ${amount} gift boxes.`,
+        text: (amount: number) => `Swap $BERA to STGUSDC in BeraSig Wallet and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Swap"
       },
       wallet3: {
-        text: (amount: number) => `Mint $Honey in BeraSig Wallet and get ${amount} gift boxes.`,
+        text: (amount: number) => `Mint $Honey in BeraSig Wallet and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Mint"
       }
     },
@@ -154,11 +154,11 @@ export const EcosystemQuests: any = {
     description: "The bremiere bonzi of berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -177,11 +177,11 @@ export const EcosystemQuests: any = {
       "PoL Accelerator that unites a fair launchpad & a secure DEX on Berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -199,7 +199,7 @@ export const EcosystemQuests: any = {
     description: "The first sexual products on blockchain",
     missions: {
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -217,11 +217,11 @@ export const EcosystemQuests: any = {
     description: "Vape 2 quit smoking and earn",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -239,11 +239,11 @@ export const EcosystemQuests: any = {
     description: "All your memes are belong to us. Much liquidity. Such yield.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -261,11 +261,11 @@ export const EcosystemQuests: any = {
     description: "Native liquidity marketplace on berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -283,11 +283,11 @@ export const EcosystemQuests: any = {
     description: "First n Only NFT on berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "learn"
       }
     },
@@ -306,11 +306,11 @@ export const EcosystemQuests: any = {
       "Poke The Bear, Get The Claws. An Augmented Reality Based Project On berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -328,11 +328,11 @@ export const EcosystemQuests: any = {
     description: "turning crypto into a P2E metaRPG",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -351,11 +351,11 @@ export const EcosystemQuests: any = {
       "Building the first & biggest idle RPG on berachain. Get your Beras & join the game!",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -374,11 +374,11 @@ export const EcosystemQuests: any = {
       "wtf is $plug —» left curve: butt plug shitcoin —» mid curve: migrates honey comb from jeets to chads —» right curve: (3,3) reinforcement protocol",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -396,11 +396,11 @@ export const EcosystemQuests: any = {
     description: "Bullas on berachain, Backed by 0xhoneyjar",
     missions: {
       view: {
-        text: (amount: number) => `Go to the website and get ${amount} gift boxes.`,
+        text: (amount: number) => `Go to the website and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Go"
       },
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -419,7 +419,7 @@ export const EcosystemQuests: any = {
       "小熊之家致力于为中文加密用户播报berachain的前沿资讯及生态项目解读",
     missions: {
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
@@ -437,7 +437,7 @@ export const EcosystemQuests: any = {
     description: "The community hub and validator for all things Bera.",
     missions: {
       learn: {
-        text: (amount: number) => `Learn about us and get ${amount} gift box.`,
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       }
     },
