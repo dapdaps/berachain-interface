@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useState, useEffect } from "react";
 import { formatDisplayNumber } from "@/utils/formatMoney";
 import Big from "big.js";
 import useMarketStore from "@/stores/useMarketStore";
@@ -121,6 +121,12 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
       return calculateMaxValue(currentBalance, symbol, decimals, config);
     }, [currentBalance, symbol, decimals, config]);
 
+    const [inputValue, setInputValue] = useState<string>(hook.amount || '');
+
+    useEffect(() => {
+      setInputValue(hook.amount || '');
+    }, [hook.amount]);
+
     const handleAction = async () => {
       const value = Big(hook.amount).mul(Big(10).pow(decimals)).toFixed(0);
 
@@ -149,24 +155,18 @@ const ActionPanelForm = forwardRef<HTMLDivElement, IProps>(
     return (
       <>
         <input
-          type="number"
           placeholder="Enter amount"
           disabled={showTipsInRepay}
-          value={hook.amount}
+          value={inputValue}
           onChange={(e) => {
-            if (e.target.value === '') {
+            const value = e.target.value;
+            setInputValue(value);
+            if (value === '') {
               hook.setAmount('');
               return;
             }
-
-            if (!/^\d*\.?\d*$/.test(e.target.value)) return;
-    
-            const inputValue = Number(e.target.value);
-            const balance = Number(currentBalance);
-            
-            const finalValue = Math.min(inputValue, balance);
-            
-            hook.setAmount(finalValue.toString())
+            const numericValue = Number(value);
+            hook.setAmount(numericValue.toString());
           }}
           className="w-full h-[40px] border border-[#373A53] rounded-[12px] px-3
                      font-Montserrat text-base font-semibold leading-[19.5px] text-left
