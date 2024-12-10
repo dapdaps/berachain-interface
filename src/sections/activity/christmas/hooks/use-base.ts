@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
-import { getUTCTimestamp } from '@/utils/date';
 import * as dateFns from 'date-fns';
 
 export function useBase(): IBase {
@@ -11,8 +10,8 @@ export function useBase(): IBase {
   const [userLoading, setUserLoading] = useState(false);
   const [info, setInfo] = useState<Partial<Mas>>({});
   const [userInfo, setUserInfo] = useState<Partial<UserMas>>({});
+  const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
   const [currentDailyTimestamp, setCurrentDailyTimestamp] = useState<number>();
-  const [currentUTCTimestamp, setCurrentUTCTimestamp] = useState<number>();
   const [showSwapModal, setShowSwapModal] = useState(false);
 
   const userRemainBox = useMemo(
@@ -44,12 +43,13 @@ export function useBase(): IBase {
 
   const getCurrentTimestamp = async () => {
     const res = await get(`/api/timestamp`);
-    let currUTCTimestamp = new Date().getTime();
+    let currTimestamp = new Date().getTime();
     if (res.code === 0 && res.data?.timestamp) {
-      currUTCTimestamp = res.data?.timestamp * 1000;
+      currTimestamp = res.data?.timestamp * 1000;
+      // currTimestamp = new Date('2024-12-24 08:00:00').getTime();
     }
-    setCurrentUTCTimestamp(getUTCTimestamp(currUTCTimestamp));
-    const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currUTCTimestamp, 0), 0), 0);
+    setCurrentDateTime(new Date(currTimestamp));
+    const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currTimestamp, 0), 0), 0);
     setCurrentDailyTimestamp(currUTCDay.getTime());
   };
 
@@ -66,7 +66,7 @@ export function useBase(): IBase {
     info,
     userInfo,
     getUserInfo,
-    currentUTCTimestamp,
+    currentDateTime,
     currentDailyTimestamp,
     showSwapModal,
     setShowSwapModal,
@@ -79,8 +79,8 @@ export interface IBase {
   userInfoLoading: boolean;
   info: Partial<Mas>;
   userInfo: Partial<UserMas>;
-  currentUTCTimestamp?: number;
   currentDailyTimestamp?: number;
+  currentDateTime?: Date;
   showSwapModal: boolean;
   setShowSwapModal: Dispatch<SetStateAction<boolean>>;
   userRemainBox: number;

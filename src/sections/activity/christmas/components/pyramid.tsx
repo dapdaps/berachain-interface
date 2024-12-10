@@ -122,6 +122,5 @@ export const createPyramid = (list: any) => {
       lastRowCount -= 1;
     }
   }
-  console.log("total: %o, result: %o", list.length, rows);
   return rows;
 };
