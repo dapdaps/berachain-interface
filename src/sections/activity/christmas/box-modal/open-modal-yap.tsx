@@ -20,7 +20,7 @@ export default function BoxModal({ open: show, onClose, texts = [] }: any) {
     >
       <Bg className="w-[482px] relative">
         <div className="relative w-[405px] h-[494px] mt-[-100px] ml-[37px] bg-cover bg-no-repeat bg-[url(/images/activity/christmas/yap-letter.png)]">
-          <div className="absolute bottom-[192px] left-[62px] leading-[1.75] w-[274px] h-[94px] text-[15px] font-Fuzzy rotate-2">
+          <div className="absolute bottom-[182px] left-[62px] leading-[1.75] w-[274px] text-[15px] font-Fuzzy rotate-2 line-clamp-4 break-all h-[104px]">
             {text}
           </div>
         </div>
@@ -46,6 +46,7 @@ export default function BoxModal({ open: show, onClose, texts = [] }: any) {
                 )}`,
                 "_blank"
               );
+              onClose?.();
             }}
           >
             Yap on X

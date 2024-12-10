@@ -25,6 +25,12 @@ export default function BoxModal({
       _imgs.push({ type: "nft", logo: item.logo });
       _names += item.name + (item.token_id || "");
     });
+    data.rares.forEach((item: any) => {
+      _imgs.push({ type: "nft", logo: item.logo });
+      _names += ["USDT", "USDC", "iBGT", "SUGAR"].includes(item.name)
+        ? item.amount + " " + item.name
+        : item.name;
+    });
     if (data.snowflake_amount) {
       _imgs.push({ type: "token", amount: data.snowflake_amount });
       _names += data.snowflake_amount + " " + "$Snowflake";
@@ -112,6 +118,7 @@ export default function BoxModal({
         open={showYaps}
         onClose={() => {
           setShowYaps(false);
+          onClose();
         }}
         texts={yaps}
       />

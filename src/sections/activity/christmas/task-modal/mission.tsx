@@ -46,6 +46,10 @@ export default function Mission({ mission }: Props) {
   }, [mission, walletName, visitedBerasigDownload]);
 
   const handleMission = () => {
+    if (!account) {
+      modal.open({ view: 'Connect' });
+      return;
+    }
     if (mission.name === 'Beraji') {
       if (visitedBerasigDownload) {
         window?.history?.go(0);
@@ -65,7 +69,7 @@ export default function Mission({ mission }: Props) {
       }
       if (!missionVisited) {
         setBerasigVisible(true);
-        setQuestVisited?.({ id: mission.id, visited: true });
+        setQuestVisited?.({ id: mission.id, visited: true, account });
         return;
       }
       handleQuestMissionCheck?.(mission);
@@ -73,7 +77,7 @@ export default function Mission({ mission }: Props) {
     }
     if (mission.url) {
       window?.open(mission.url);
-      setQuestVisited?.({ id: mission.id, visited: true });
+      setQuestVisited?.({ id: mission.id, visited: true, account });
       handleQuestMissionCheck?.(mission);
       return;
     }

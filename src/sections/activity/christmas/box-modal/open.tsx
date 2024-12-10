@@ -15,8 +15,9 @@ export default function OpenStatus({ data, remainBox, loading, onClick }: any) {
     if (data.item) return ["item", data.item];
     if (data.nft) return ["nft", data.nft];
     if (data.rare) return ["nft", data.rare];
-    if (data.snowflake_amount)
+    if (data.snowflake_amount) {
       return ["token", { amount: data.snowflake_amount }];
+    }
     return ["yap", { text: data.yap }];
   }, [data]);
   return (
@@ -43,7 +44,10 @@ export default function OpenStatus({ data, remainBox, loading, onClick }: any) {
           ) : type === "nft" ? (
             <NftIcon src={item.logo} />
           ) : (
-            <img src={item.logo} />
+            <div
+              className="w-full h-full bg-center bg-no-repeat bg-contain"
+              style={{ backgroundImage: `url("${item.logo}")` }}
+            />
           )}
         </motion.div>
       )}
