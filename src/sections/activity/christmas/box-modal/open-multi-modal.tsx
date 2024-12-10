@@ -87,7 +87,7 @@ export default function BoxModal({
         <Bg className="w-[600px]">
           <div className="flex flex-col items-center p-[30px_20px_0] w-full">
             {imgs.length > 0 && (
-              <div className={`flex gap-[12px] flex-wrap w-full justify-start`}>
+              <div className={`flex gap-[12px] flex-wrap w-full ${imgs?.length > 5 ? 'justify-start' : 'justify-center'}`}>
                 {imgs.map((img: any, i: number) => (
                   <>
                     {img.type === "nft" && <NftIcon src={img.logo} key={i} />}
