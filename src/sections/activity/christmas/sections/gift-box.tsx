@@ -15,10 +15,9 @@ import useOpenBox from "../hooks/use-open-box";
 import { getUTCTimestamp } from '@/utils/date';
 import DailyQuest from '@/sections/activity/christmas/components/daily-quest';
 import Big from 'big.js';
-import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
-import { box } from 'consola/utils';
 import { useAppKit } from '@reown/appkit/react';
 import useCustomAccount from '@/hooks/use-account';
+import { numberFormatter } from '@/utils/number-formatter';
 
 const GiftBox = () => {
   const {
@@ -30,6 +29,7 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    userRemainBox,
     userInfoLoading,
     getUserInfo,
     currentDailyTimestamp,
@@ -40,10 +40,6 @@ const GiftBox = () => {
   const { open } = useAppKit();
   const { account } = useCustomAccount();
 
-  const remainBox = useMemo(
-    () => (userInfo?.total_box || 0) - (userInfo?.used_box || 0),
-    [userInfo]
-  );
   const [openType, setOpenType] = useState(0);
   const [dailyVisible, setDailyVisible] = useState(false);
   const [dailyChecking, setDailyChecking] = useState(false);
@@ -52,7 +48,7 @@ const GiftBox = () => {
     setOpenData(args);
     getUserInfo?.();
   });
-  const list = [...new Array(remainBox || 0)].slice(0, 21).map((_, i) => ({
+  const list = [...new Array(userRemainBox || 0)].slice(0, 21).map((_, i) => ({
     id: i + 1,
     status: "un_open"
   }));
@@ -168,7 +164,7 @@ const GiftBox = () => {
             </BasicButton>
           </div>
         </BoxTitle>
-        <BoxTitle label="Your $Snowflake" value={userInfo?.total_token || 0}>
+        <BoxTitle label="Your $Snowflake" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
           <Button
             onClick={() => {
               setShowSwapModal?.(true);
@@ -275,7 +271,7 @@ const GiftBox = () => {
             setOpenType(0);
             setOpenData(null);
           }}
-          remainBox={remainBox}
+          remainBox={userRemainBox}
           onOpen={onOpen}
           data={openData}
           loading={opening}

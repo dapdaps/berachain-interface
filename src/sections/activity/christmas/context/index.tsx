@@ -12,8 +12,8 @@ export const ChristmasContext = createContext<Partial<IChristmasContext>>({});
 
 function SceneContextProvider({ children }: { children: ReactNode; }) {
   const base = useBase();
-  const quest = useQuest();
-  const nft = useNft();
+  const quest = useQuest({ base });
+  const nft = useNft({ base });
 
   return (
     <ChristmasContext.Provider value={{ ...quest, ...base, ...nft }} >

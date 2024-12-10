@@ -1,9 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import { getUTCTimestamp } from '@/utils/date';
 import Big from 'big.js';
+import * as dateFns from 'date-fns';
+import { WinningOdds } from '@/sections/activity/christmas/config';
 
 const START_TIME = new Date('2024-12-10 00:00:00');
 const MAS_TIME = new Date('2024-12-25 00:00:00');
@@ -13,12 +15,22 @@ const TIME_DIFF = getUTCTimestamp(END_TIME) - getUTCTimestamp(START_TIME);
 
 const NFTProgress = () => {
   const {
-    currentUTCTimestamp,
+    currentDateTime,
   } = useContext(ChristmasContext);
 
-  let value = Big(currentUTCTimestamp || 0).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(0);
-  if (Big(value).lt(0)) value = '0';
-  if (Big(value).gt(100)) value = '100';
+  const today = useMemo<any>(() => {
+    if (!currentDateTime) return {};
+    let str = dateFns.format(currentDateTime, 'yyyy-MM-dd');
+    return WinningOdds[str] || {};
+  }, [currentDateTime]);
+
+  const progress = useMemo(() => {
+    if (!currentDateTime) return '0';
+    let _progress = Big(new Date(currentDateTime).getTime()).minus(getUTCTimestamp(START_TIME)).div(TIME_DIFF).times(100).toFixed(1);
+    if (Big(_progress).lt(0)) _progress = '0';
+    if (Big(_progress).gt(100)) _progress = '100';
+    return _progress;
+  }, [currentDateTime]);
 
   const swiperRef = useRef<any>(null);
   const [current, setCurrent] = useState(1);
@@ -42,7 +54,7 @@ const NFTProgress = () => {
       <div className="relative w-[693px] h-[24px] rounded-[12px] bg-black border border-[#FFDC50] p-[3px]">
         <div
           className="relative z-[2] h-full rounded-[9px] bg-[#FFDC50]"
-          style={{ width: `${value}%` }}
+          style={{ width: `${progress}%` }}
         >
           <Popover
             trigger={PopoverTrigger.Hover}
@@ -51,7 +63,7 @@ const NFTProgress = () => {
             content={(
               <div className="w-[240px] translate-x-[80px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
                 <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
-                  <div className="font-CherryBomb font-[400] leading-[150%] text-[30px]">{value}%</div>
+                  <div className="font-CherryBomb font-[400] leading-[150%] text-[30px]">{today?.display ?? ''}</div>
                   <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
                 </div>
               </div>
@@ -72,9 +84,9 @@ const NFTProgress = () => {
           content={(
             <div className="w-[240px] translate-x-[80px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
               <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
-                <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Merry Beramas!</div>
-                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{15}%</div>
-                <div className="font-[500] text-[14px] leading-normal">Chance To Win NFTs</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Merry Xmas!</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{WinningOdds['2024-12-24']?.display}</div>
+                <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
               </div>
             </div>
           )}
@@ -94,8 +106,8 @@ const NFTProgress = () => {
             <div className="w-[240px] translate-x-[70px] h-[140px] bg-[url('/images/activity/christmas/bg-progress-cursor.svg')] bg-center bg-no-repeat bg-contain">
               <div className="flex flex-col items-center text-black rotate-[-4.499deg] pt-[20px]">
                 <div className="font-CherryBomb font-[400] leading-[150%] text-[16px]">Happy New Year!</div>
-                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{25}%</div>
-                <div className="font-[500] text-[14px] leading-normal">Chance To Win NFTs</div>
+                <div className="font-CherryBomb font-[400] leading-[150%] text-[20px]">{WinningOdds['2024-12-31']?.display}</div>
+                <div className="font-[500] text-[14px] leading-normal">Chance To Win Rare Prize</div>
               </div>
             </div>
           )}

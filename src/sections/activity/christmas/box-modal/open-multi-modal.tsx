@@ -15,23 +15,29 @@ export default function BoxModal({
   const [showYaps, setShowYaps] = useState(false);
   const [imgs, names, yaps, hasNft, hasItem, hasToken] = useMemo(() => {
     const _imgs: any = [];
-    let _names = "";
+    let _names = [];
 
     data.items.forEach((item: any) => {
       _imgs.push({ type: "item", logo: item.logo });
-      _names += item.name;
+      _names.push(item.name);
     });
     data.nfts.forEach((item: any) => {
       _imgs.push({ type: "nft", logo: item.logo });
-      _names += item.name + (item.token_id || "");
+      _names.push(item.name + (item.token_id || ""));
+    });
+    data.rares.forEach((item: any) => {
+      _imgs.push({ type: "nft", logo: item.logo });
+      _names.push(["USDT", "USDC", "iBGT", "SUGAR"].includes(item.name)
+        ? item.amount + " " + item.name
+        : item.name);
     });
     if (data.snowflake_amount) {
       _imgs.push({ type: "token", amount: data.snowflake_amount });
-      _names += data.snowflake_amount + " " + "$Snowflake";
+      _names.push(data.snowflake_amount + " " + "$Snowflake");
     }
     return [
       _imgs,
-      _names,
+      _names.join(', '),
       data.yaps,
       data.nfts.length > 0,
       data.items.length > 0,
@@ -46,9 +52,9 @@ export default function BoxModal({
         closeIconClassName="right-[-14px] top-[-8px]"
       >
         <Bg className="w-[600px]">
-          <div className="flex flex-col items-center pt-[30px]">
+          <div className="flex flex-col items-center p-[30px_20px_0] w-full">
             {imgs.length > 0 && (
-              <div className="flex justify-center gap-[6px]">
+              <div className={`flex gap-[6px] flex-nowrap overflow-x-auto w-full ${imgs?.length > 5 ? 'justify-start' : 'justify-center'}`}>
                 {imgs.map((img: any, i: number) => (
                   <>
                     {img.type === "nft" && <NftIcon src={img.logo} key={i} />}
@@ -112,6 +118,7 @@ export default function BoxModal({
         open={showYaps}
         onClose={() => {
           setShowYaps(false);
+          onClose();
         }}
         texts={yaps}
       />

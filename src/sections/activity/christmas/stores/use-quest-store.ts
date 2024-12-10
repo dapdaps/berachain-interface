@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface QuestStore {
   visited: Record<number | string, boolean>;
-  setVisited(params: { id?: number | string; visited?: boolean; }): void;
+  setVisited(params: { id?: number | string; visited?: boolean; account?: string; }): void;
   setUpdate(): void;
   getVisited(params: { id?: number | string; account?: string; }): boolean;
 }
@@ -13,16 +13,16 @@ export const useQuestStore = create(
     (set, get: any) => ({
       visited: {},
       setVisited: (params) => {
-        if (!params.id) return;
+        if (!params.id || !params.account) return;
         const _visited = {
           ...get().visited,
-          [params.id]: params.visited ?? true,
+          [`${params.account}-${params.id}`]: params.visited ?? true,
         };
         set((state) => state.visited = _visited);
       },
       getVisited: (params) => {
         if (!params.id || !params.account) return false;
-        return get().visited[params.id] ?? false;
+        return get().visited[`${params.account}-${params.id}`] ?? false;
       },
       setUpdate: () => {
         const _visited = {

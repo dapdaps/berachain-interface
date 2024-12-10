@@ -1,7 +1,7 @@
 import Button from "./button";
 import PresentIcon from "./present-icon";
 import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import { useWalletName } from '@/hooks/use-wallet-name';
 import useCustomAccount from '@/hooks/use-account';
@@ -14,10 +14,13 @@ export default function Mission({ mission }: Props) {
     questVisited,
     getQuestVisited,
     setQuestVisited,
+    checkNftMissionValid,
   } = useContext(ChristmasContext);
   const { name: walletName } = useWalletName();
   const { account } = useCustomAccount();
   const modal = useAppKit();
+
+  const [nftMissionValid, setNftMissionValid] = useState(false);
 
   const missionVisited = useMemo(() => {
     return getQuestVisited?.(mission?.id);
@@ -46,6 +49,10 @@ export default function Mission({ mission }: Props) {
   }, [mission, walletName, visitedBerasigDownload]);
 
   const handleMission = () => {
+    if (!account) {
+      modal.open({ view: 'Connect' });
+      return;
+    }
     if (mission.name === 'Beraji') {
       if (visitedBerasigDownload) {
         window?.history?.go(0);
@@ -65,7 +72,7 @@ export default function Mission({ mission }: Props) {
       }
       if (!missionVisited) {
         setBerasigVisible(true);
-        setQuestVisited?.({ id: mission.id, visited: true });
+        setQuestVisited?.({ id: mission.id, visited: true, account });
         return;
       }
       handleQuestMissionCheck?.(mission);
@@ -73,12 +80,26 @@ export default function Mission({ mission }: Props) {
     }
     if (mission.url) {
       window?.open(mission.url);
-      setQuestVisited?.({ id: mission.id, visited: true });
+      setQuestVisited?.({ id: mission.id, visited: true, account });
       handleQuestMissionCheck?.(mission);
       return;
     }
     handleQuestMissionCheck?.(mission);
   };
+
+  useEffect(() => {
+    if (!account) {
+      setNftMissionValid(true);
+      return;
+    }
+    if (!mission.token) {
+      setNftMissionValid(true);
+      return;
+    }
+    checkNftMissionValid?.(mission).then(({ success }) => {
+      setNftMissionValid(success);
+    });
+  }, [mission, account]);
 
   return (
     <div className="mt-[10px] bg-black/5 rounded-[10px] h-[78px] px-[16px] flex justify-between items-center">
@@ -93,9 +114,10 @@ export default function Mission({ mission }: Props) {
           </div>
         ) : (
           <Button
-            disabled={mission?.checking}
+            disabled={mission?.checking || !nftMissionValid}
             onClick={handleMission}
             className="whitespace-nowrap !disabled:opacity-50"
+            loading={mission?.checking}
           >
             <span>{actionText}</span>
             {new Array(mission.box).fill(1).map((i: any) => (
