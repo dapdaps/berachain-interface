@@ -15,29 +15,29 @@ export default function BoxModal({
   const [showYaps, setShowYaps] = useState(false);
   const [imgs, names, yaps, hasNft, hasItem, hasToken] = useMemo(() => {
     const _imgs: any = [];
-    let _names = "";
+    let _names = [];
 
     data.items.forEach((item: any) => {
       _imgs.push({ type: "item", logo: item.logo });
-      _names += item.name;
+      _names.push(item.name);
     });
     data.nfts.forEach((item: any) => {
       _imgs.push({ type: "nft", logo: item.logo });
-      _names += item.name + (item.token_id || "");
+      _names.push(item.name + (item.token_id || ""));
     });
     data.rares.forEach((item: any) => {
       _imgs.push({ type: "nft", logo: item.logo });
-      _names += ["USDT", "USDC", "iBGT", "SUGAR"].includes(item.name)
+      _names.push(["USDT", "USDC", "iBGT", "SUGAR"].includes(item.name)
         ? item.amount + " " + item.name
-        : item.name;
+        : item.name);
     });
     if (data.snowflake_amount) {
       _imgs.push({ type: "token", amount: data.snowflake_amount });
-      _names += data.snowflake_amount + " " + "$Snowflake";
+      _names.push(data.snowflake_amount + " " + "$Snowflake");
     }
     return [
       _imgs,
-      _names,
+      _names.join(', '),
       data.yaps,
       data.nfts.length > 0,
       data.items.length > 0,
