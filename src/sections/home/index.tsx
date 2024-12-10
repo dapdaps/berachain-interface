@@ -18,6 +18,7 @@ import ChristmasEnterance from "@/sections/activity/christmas/enterance";
 import MobileHome from "./mobile";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
+import HomePrompt from '@/sections/activity/christmas/components/home-prompt';
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -177,6 +178,7 @@ export default memo(function Home() {
   return (
     <BearBackground type="home">
       <Navigation />
+      <HomePrompt />
     </BearBackground>
   );
 });
