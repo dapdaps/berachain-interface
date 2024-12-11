@@ -10,7 +10,7 @@ export default function ChristmasView() {
         steps={[
           {
             selector: () => {
-              return document.getElementById("tour-id-1");
+              return document.querySelector('[data-tour-ids*="1"]');
             },
             title: "🎁 Gift Boxes",
             content:
@@ -35,7 +35,7 @@ export default function ChristmasView() {
           },
           {
             selector: () => {
-              return document.getElementById("tour-id-4");
+              return document.querySelector('[data-tour-ids*="4"]');
             },
             title: "🧐 So how to get Gift boxes?",
             content: 'Follow the next steps so you won’t fall thru...',
