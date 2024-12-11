@@ -70,7 +70,7 @@ const IBGTMobileView = (props: Props) => {
       });
       toast.dismiss(_toastId);
       toast.success({
-        title: 'Add successfully!',
+        title: 'Add Successful!',
       });
     } catch (err: any) {
       let msg = '';

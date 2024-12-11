@@ -114,7 +114,7 @@ export default function useApprove({
         setApproved(true);
         onSuccess?.();
         toast.success({
-          title: "Approve Successfully!"
+          title: "Approve Successful!"
         });
       }
     } catch (err: any) {
