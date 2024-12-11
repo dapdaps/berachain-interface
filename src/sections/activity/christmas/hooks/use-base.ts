@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import * as dateFns from 'date-fns';
+import { getUTCTimestamp } from '@/utils/date';
 
 export function useBase(): IBase {
   const { account, provider } = useCustomAccount();
@@ -11,6 +12,7 @@ export function useBase(): IBase {
   const [info, setInfo] = useState<Partial<Mas>>({});
   const [userInfo, setUserInfo] = useState<Partial<UserMas>>({});
   const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
+  const [currentUTCZeroTimestamp, setCurrentUTCZeroTimestamp] = useState<number>();
   const [currentDailyTimestamp, setCurrentDailyTimestamp] = useState<number>();
   const [showSwapModal, setShowSwapModal] = useState(false);
 
@@ -51,6 +53,8 @@ export function useBase(): IBase {
     setCurrentDateTime(new Date(currTimestamp));
     const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currTimestamp, 0), 0), 0);
     setCurrentDailyTimestamp(currUTCDay.getTime());
+    const utc = getUTCTimestamp(currTimestamp);
+    setCurrentUTCZeroTimestamp(dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(utc, 0), 0), 0).getTime());
   };
 
   useEffect(() => {
@@ -68,6 +72,7 @@ export function useBase(): IBase {
     getUserInfo,
     currentDateTime,
     currentDailyTimestamp,
+    currentUTCZeroTimestamp,
     showSwapModal,
     setShowSwapModal,
     userRemainBox,
@@ -80,6 +85,7 @@ export interface IBase {
   info: Partial<Mas>;
   userInfo: Partial<UserMas>;
   currentDailyTimestamp?: number;
+  currentUTCZeroTimestamp?: number;
   currentDateTime?: Date;
   showSwapModal: boolean;
   setShowSwapModal: Dispatch<SetStateAction<boolean>>;
