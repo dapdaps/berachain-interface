@@ -259,7 +259,7 @@ export function useBGT(tab?: string) {
       .then((receipt: any) => {
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Claim Successfully!'
+          title: 'Claim Successful!'
         });
         setClaiming(index, false)
         refresh()

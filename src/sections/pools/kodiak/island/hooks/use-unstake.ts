@@ -34,13 +34,13 @@ export default function useUnstake({
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Unstake successfully!",
+          title: "Unstake successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
         onSuccess();
       } else {
-        toast.fail({ title: "Unstake faily!" });
+        toast.fail({ title: "Unstake failed!" });
       }
       addAction?.({
         type: "Staking",
@@ -66,7 +66,7 @@ export default function useUnstake({
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Unstake faily!`
+          : `Unstake failed!`
       });
     }
   };

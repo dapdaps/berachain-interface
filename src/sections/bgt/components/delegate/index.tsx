@@ -175,8 +175,8 @@ export default memo(function Delegate(props: IProps) {
         toast?.success({
           title:
             operationType === "delegate"
-              ? "Queue Boost Successfully!"
-              : "Unbond Successfully!"
+              ? "Queue Boost Successful!"
+              : "Unbond Successful!"
         });
       })
       .catch((error: any) => {
@@ -229,8 +229,8 @@ export default memo(function Delegate(props: IProps) {
         toast?.success({
           title:
             type === "confirm"
-              ? "Confirm Successfully!"
-              : "Cancel Successfully!"
+              ? "Confirm Successful!"
+              : "Cancel Successful!"
         });
       })
       .catch((error: any) => {
