@@ -26,7 +26,8 @@ export default function BoxModal({
     isOnlyRares,
     isOnlySnowflake,
     isOnlyYaps,
-    title
+    title,
+    hasWhitelist
   ] = useMemo(() => {
     const _imgs: any = [];
     let _names = [];
@@ -48,7 +49,7 @@ export default function BoxModal({
     });
     data.nfts.forEach((item: any) => {
       _imgs.push({ type: "nft", logo: item.logo });
-      _names.push(1 + " " + item.name + (item.token_id || ""));
+      _names.push(1 + " " + item.name + (item.token_id ? "#" + item.token_id : ""));
     });
     data.rares.forEach((item: any) => {
       _imgs.push({ type: "nft", logo: item.logo });
@@ -76,7 +77,8 @@ export default function BoxModal({
       onlyRares,
       onlySnowflake,
       onlyYaps,
-      title
+      title,
+      data.nfts.some((it: any) => it.whitelist) || data.rares.some((it: any) => it.whitelist)
     ];
   }, [data]);
 
@@ -116,7 +118,14 @@ export default function BoxModal({
                 You got a <span className="font-bold">{imgs.length > 0 ? names : `yap`}</span>
               </div>
               {hasNft && (
-                <div>The NFT will send to your wallet in few days.</div>
+                <div>
+                  <div>The NFT will send to your wallet in few days.</div>
+                  {
+                    hasWhitelist && (
+                      <div>Please send DM to <a href="https://x.com/0xberatown" rel="nofollow" target="_blank" className="underline decoration-solid">@0xberatown</a> on X to claim.</div>
+                    )
+                  }
+                </div>
               )}
               {hasItem && (
                 <div>

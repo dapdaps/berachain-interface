@@ -45,6 +45,7 @@ const Summary = ({ onOpenRewards }: any) => {
         <div className="w-full flex justify-between items-start">
           {summaries.map((item: any, index: number) => (
             <Item
+              id={index}
               key={index}
               label={item.label}
               value={item.value}
@@ -63,10 +64,10 @@ const Summary = ({ onOpenRewards }: any) => {
 export default Summary;
 
 const Item = (props: any) => {
-  const { label, value, underline, onClick } = props;
+  const { label, value, underline, onClick, id } = props;
 
   return (
-    <div className="relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] after:bg-[#755C3D] after:right-0 after:top-[8px] last:after:hidden flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap">
+    <div id={id === 0 ? 'tour-id-2':''} className="relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] after:bg-[#755C3D] after:right-0 after:top-[8px] last:after:hidden flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap">
       <div className="font-[500] text-[18px] leading-normal">{label}</div>
       <div
         className={`text-[30px] font-CherryBomb leading-[150%] font-[400] ${

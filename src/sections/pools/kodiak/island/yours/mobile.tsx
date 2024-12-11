@@ -101,7 +101,7 @@ const Item = ({ record, onClick }: any) => {
         }}
         className="w-full mt-[16px] h-[40px] font-semibold bg-[#FFDC50] border border-black rounded-[10px]"
       >
-        Mange
+        Manage
       </button>
     </div>
   );
