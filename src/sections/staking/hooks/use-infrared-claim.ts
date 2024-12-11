@@ -58,7 +58,7 @@ export default function useInfrared({
       }, 3000);
 
       toast?.dismiss(toastId);
-      toast?.success({ title: "Claimed Successfully!" });
+      toast?.success({ title: "Claimed Successful!" });
     } catch (err: any) {
       toast?.dismiss(toastId);
       toast?.fail({

@@ -25,13 +25,13 @@ export default function useClaim({ earned, farmContract, onSuccess }: any) {
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Claim successfully!",
+          title: "Claim successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
         onSuccess();
       } else {
-        toast.fail({ title: "Claim faily!" });
+        toast.fail({ title: "Claim failed!" });
       }
       addAction?.({
         type: "Staking",
@@ -52,7 +52,7 @@ export default function useClaim({ earned, farmContract, onSuccess }: any) {
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Claim faily!`
+          : `Claim failed!`
       });
     }
   };

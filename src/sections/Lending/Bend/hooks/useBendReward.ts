@@ -88,7 +88,7 @@ const useBendReward = ({ provider, account, onClaimSuccess }: any) => {
           onClaimSuccess?.(res);
           getBendRewards();
           toast?.success({
-            title: 'Claim Successfully!'
+            title: 'Claim Successful!'
           });
 
           addAction?.({

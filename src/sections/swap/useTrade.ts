@@ -179,13 +179,13 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
 
       if (status === 1) {
         toast.success({
-          title: `Swap successfully!`,
+          title: `Swap Successful!`,
           tx: transactionHash,
           chainId
         });
         onSuccess?.();
       } else {
-        toast.fail({ title: `Swap faily!` });
+        toast.fail({ title: `Swap failed!` });
       }
       addAction({
         type: "Swap",
@@ -206,7 +206,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Swap faily!`
+          : `Swap failed!`
       });
       console.log(err);
       setLoading(false);

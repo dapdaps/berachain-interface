@@ -189,7 +189,7 @@ export default memo(function aquabera(props: any) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Deposit Successfully!',
+          title: 'Deposit successful!',
           tx: transactionHash,
           chainId
         });
@@ -242,7 +242,7 @@ export default memo(function aquabera(props: any) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Withdraw Successfully!',
+          title: 'Withdraw Successful!',
           tx: transactionHash,
           chainId
         });

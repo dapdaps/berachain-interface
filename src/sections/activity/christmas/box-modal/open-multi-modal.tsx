@@ -1,7 +1,7 @@
 import Modal from "@/components/modal";
 import Bg from "./bg";
 import Button from "@/components/button";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { NftIcon, ItemIcon, TokenIcon } from "./icons";
 import OpenModalYap from "./open-modal-yap";
 import Big from 'big.js';
@@ -25,6 +25,7 @@ export default function BoxModal({
     isOnlyNFTs,
     isOnlyRares,
     isOnlySnowflake,
+    isOnlyYaps,
     title
   ] = useMemo(() => {
     const _imgs: any = [];
@@ -39,6 +40,7 @@ export default function BoxModal({
     const onlyNFTs = !isNoNFTs && isNoItem && isNoRares && isNoSnowflake;
     const onlyRares = !isNoRares && isNoItem && isNoNFTs && isNoSnowflake;
     const onlySnowflake = !isNoSnowflake && isNoItem && isNoNFTs && isNoRares;
+    const onlyYaps = isNoSnowflake && isNoItem && isNoNFTs && isNoRares;
 
     data.items.forEach((item: any) => {
       _imgs.push({ type: "item", logo: item.logo });
@@ -54,7 +56,7 @@ export default function BoxModal({
     });
     if (data.snowflake_amount) {
       _imgs.push({ type: "token", amount: data.snowflake_amount });
-      _names.push(data.snowflake_amount + " " + "$Snowflake");
+      _names.push(data.snowflake_amount + " " + "$SNOWFLAKE");
     }
 
     let title = 'Good Luck!';
@@ -66,16 +68,23 @@ export default function BoxModal({
       _imgs,
       _names.join(', '),
       data.yaps,
-      data.nfts.length > 0,
+      data.nfts.length > 0 || data.rares.length > 0,
       data.items.length > 0,
       data.snowflake_amount > 0,
       onlyItem,
       onlyNFTs,
       onlyRares,
       onlySnowflake,
+      onlyYaps,
       title
     ];
   }, [data]);
+
+  useEffect(() => {
+    if (isOnlyYaps && !showYaps) {
+      setShowYaps(true);
+    }
+  }, [isOnlyYaps]);
 
   return (
     <>
@@ -104,7 +113,7 @@ export default function BoxModal({
             </div>
             <div className="text-[14px] font-medium mt-[6px]">
               <div>
-                You got a <span className="font-bold">{names}</span>
+                You got a <span className="font-bold">{imgs.length > 0 ? names : `yap`}</span>
               </div>
               {hasNft && (
                 <div>The NFT will send to your wallet in few days.</div>
@@ -124,7 +133,7 @@ export default function BoxModal({
                     onClick={onOpenSwapModal}
                     className="underline font-bold"
                   >
-                    Trade $Snowflake now
+                    Trade $SNOWFLAKE now
                   </button>{" "}
                   or hold? Up to you 😏
                 </div>

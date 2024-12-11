@@ -220,7 +220,7 @@ export function useIBGT(props: any) {
         updateState({ ...payload, isLoading: false, loadingMsg: '' });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successfully!',
+          title: 'Approve Successful!',
           tx: receipt.transactionHash,
           chainId: props.chainId
         });
@@ -298,7 +298,7 @@ export function useIBGT(props: any) {
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Deposit Successfully!'
+            title: 'Deposit successful!'
           });
         })
         .catch((error: Error) => {
@@ -383,7 +383,7 @@ export function useIBGT(props: any) {
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Withdraw Successfully!'
+            title: 'Withdraw Successful!'
           });
         })
         .catch((error: Error) => {
@@ -448,7 +448,7 @@ export function useIBGT(props: any) {
           });
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Claim Successfully!'
+            title: 'Claim Successful!'
           });
           setTimeout(() => {
             onSuccess?.()

@@ -74,7 +74,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
               <span className="text-[26px]">
                 {formatThousandsSeparator(data.total_token || 0)}
               </span>{" "}
-              $Snowflake
+              $SNOWFLAKE
             </div>
             <Button
               onClick={() => {

@@ -122,13 +122,13 @@ export default function useAddV2({
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Add successfully!",
+          title: "Add successful!",
           tx: transactionHash,
           chainId
         });
         onSuccess();
       } else {
-        toast.fail({ title: "Add faily!" });
+        toast.fail({ title: "Add failed!" });
       }
       addAction({
         type: "Liquidity",
@@ -156,7 +156,7 @@ export default function useAddV2({
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Add faily!`
+          : `Add failed!`
       });
     }
   };

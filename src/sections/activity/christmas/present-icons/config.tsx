@@ -16,7 +16,7 @@ import SleighShadowIcon from "./icon-sleigh-shadow";
 export default {
   token: {
     icon: SnowIcon,
-    name: "$Snowflake"
+    name: "$SNOWFLAKE"
   },
   elf_hat: {
     icon: ElfHatIcon,

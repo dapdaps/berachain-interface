@@ -170,7 +170,7 @@ export default function useInfrared({
 
       toast?.dismiss(toastId);
       toast?.success({
-        title: type ? "Unstake Successfully!" : "Stake Successfully!"
+        title: type ? "Unstake Successful!" : "Stake Successful!"
       });
     } catch (err: any) {
       toast?.dismiss(toastId);

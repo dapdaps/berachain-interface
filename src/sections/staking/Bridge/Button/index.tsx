@@ -84,7 +84,7 @@ export default memo(function Button(props: IProps) {
         updateState({ ...payload, isLoading: false });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successfully!',
+          title: 'Approve Successful!',
           tx: receipt.transactionHash,
           chainId
         });
