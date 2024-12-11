@@ -57,6 +57,7 @@ const QuestView = () => {
             TABS.map((tab: any) => (
               <div
                 key={tab.key}
+                id={tab.key === 1 ? 'tour-id-6' : 'tour-id-7'}
                 className={`relative text-[#BBB] text-[26px] font-[700] leading-[150%] py-[18px] ${currentTab.key === tab.key ? 'cursor-default !text-[#FFF5A9]' : 'cursor-pointer'}`}
                 onClick={() => handleTab(tab)}
               >
