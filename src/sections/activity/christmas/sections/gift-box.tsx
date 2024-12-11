@@ -164,7 +164,7 @@ const GiftBox = () => {
             </BasicButton>
           </div>
         </BoxTitle>
-        <BoxTitle label="Your $Snowflake" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
+        <BoxTitle label="Your $SNOWFLAKE" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
           <Button
             onClick={() => {
               setShowSwapModal?.(true);

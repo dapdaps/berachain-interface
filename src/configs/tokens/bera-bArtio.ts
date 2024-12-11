@@ -312,8 +312,8 @@ export const beraB: { [key: string]: Token } = {
 
   gold: {
     chainId: CHAIN_ID,
-    address: "0x343499E6315f7d3473a12aaf660Ac02b5739C382",
     decimals: 18,
+    address: "0x343499E6315f7d3473a12aaf660Ac02b5739C382",
     symbol: "GOLD",
     icon: "/assets/tokens/gold_second.svg"
   },
