@@ -9,6 +9,7 @@ const DailyQuest = (props: any) => {
   const {
     handleQuest,
     handleQuestCheck,
+    isMobile
   } = useContext(ChristmasContext);
 
   return (
@@ -16,9 +17,10 @@ const DailyQuest = (props: any) => {
       open={visible}
       onClose={onClose}
       closeIconClassName="right-[-14px] top-[-8px]"
+      isShowCloseIcon={!isMobile}
     >
       <Card
-        className="w-[595px] font-CherryBomb leading-[150%] text-[16px] font-[700] text-black"
+        className="w-[595px] md:w-full font-CherryBomb leading-[150%] text-[16px] font-[700] text-black"
       >
         <div className="text-[20px] font-[400] leading-[90%]">
           Quest of the day

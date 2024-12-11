@@ -13,6 +13,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
   const router = useRouter();
   const {
     setShowSwapModal,
+    isMobile,
   } = useContext(ChristmasContext);
 
   return (
@@ -20,20 +21,21 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
       open={open}
       onClose={onClose}
       closeIconClassName="right-[-14px] top-[-8px]"
+      isShowCloseIcon={!isMobile}
     >
-      <div className="w-[850px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
+      <div className="w-[850px] md:w-full md:h-[80dvh] md:overflow-y-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
         <div className="mt-[12px] text-center">
           <OpenBox className="mx-[auto]" />
         </div>
         <div className="text-[20px] font-bold py-[12px] text-center">
           You already opened {data.used_box - data.total_yap} presents
         </div>
-        <div className="px-[38px] max-h-[70dvh] overflow-y-auto pb-[20px]">
+        <div className="px-[38px] max-h-[70dvh] md:max-h-[unset] overflow-y-auto pb-[20px]">
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
             <div className="text-[16px] font-bold">
               You got <span className="text-[26px]">{(data?.nfts?.length || 0) + (data?.rares?.length || 0)}</span>{" "}rare prize
             </div>
-            <div className="flex gap-[16px] flex-wrap mt-[12px]">
+            <div className="flex gap-[16px] flex-wrap mt-[12px] md:grid md:grid-cols-2">
               {data.nfts?.map?.((nft: any) => (
                 <Nft key={nft.token_id} nft={nft} />
               ))}
@@ -43,26 +45,43 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
             </div>
           </div>
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center md:flex-col">
               <div className="text-[16px] font-bold">
                 You got <span className="text-[26px]">{data.items?.length}</span>{" "}
                 BeraCave outfits
               </div>
-              <Button
-                onClick={() => {
-                  router.push("/cave");
-                }}
-              >
-                Go to BeraCave
-              </Button>
+              {
+                !isMobile && (
+                  <Button
+                    onClick={() => {
+                      router.push("/cave");
+                    }}
+                  >
+                    Go to BeraCave
+                  </Button>
+                )
+              }
             </div>
-            <div className="flex gap-[16px] flex-nowrap mt-[12px] overflow-y-auto">
+            <div className="flex gap-[16px] flex-nowrap mt-[12px] overflow-y-auto md:grid md:grid-cols-2">
               {data.items?.map?.((item: any) => (
                 <Present key={item.id} gift={item.category} />
               ))}
             </div>
+            {
+              isMobile && (
+                <div className="flex justify-center mt-[15px]">
+                  <Button
+                    onClick={() => {
+                      router.push("/cave");
+                    }}
+                  >
+                    Go to BeraCave
+                  </Button>
+                </div>
+              )
+            }
           </div>
-          <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] flex justify-between items-center">
+          <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] flex justify-between items-center md:flex-col">
             <div className="text-[16px] font-bold">
               You got{" "}
               <span className="text-[26px]">
@@ -70,13 +89,15 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
               </span>{" "}
               $Snowflake
             </div>
-            <Button
-              onClick={() => {
-                setShowSwapModal?.(true);
-              }}
-            >
-              <div className="pl-[24px]">Trade Now</div>
-            </Button>
+            <div className="md:flex md:justify-center md:mt-[15px]">
+              <Button
+                onClick={() => {
+                  setShowSwapModal?.(true);
+                }}
+              >
+                <div className="pl-[24px]">Trade Now</div>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

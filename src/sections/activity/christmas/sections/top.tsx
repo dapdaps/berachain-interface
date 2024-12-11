@@ -1,7 +1,11 @@
 import Moon from "@/sections/activity/christmas/components/moon";
+import { useContext } from 'react';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 const Top = (props: any) => {
   const { children, onOpenRules } = props;
+
+  const { isMobile } = useContext(ChristmasContext);
 
   return (
     <div className="relative">
@@ -37,33 +41,33 @@ const Top = (props: any) => {
               style={{ animationDelay: "0", animationDuration: "8s" }}
             />
             <img
-              src="/images/activity/christmas/star-left-top.svg"
+              src={`/images/activity/christmas/star-left-top${isMobile ? '-mobile' : ''}.svg`}
               alt=""
-              className="absolute -left-[110px] -top-[40px] md:left-[-60px] md:top-[-70px] animate-blink"
+              className="absolute -left-[110px] -top-[40px] md:left-[-20px] md:top-[-70px] animate-blink"
               style={{ animationDelay: "0", animationDuration: "7s" }}
             />
             <img
-              src="/images/activity/christmas/star-left-bot.svg"
+              src={`/images/activity/christmas/star-left-bot${isMobile ? '-mobile' : ''}.svg`}
               alt=""
-              className="absolute -left-[20px] bottom-[55px] md:left-0 animate-blink"
+              className="absolute -left-[20px] bottom-[55px] md:left-[20px] animate-blink"
               style={{ animationDelay: '2s', animationDuration: '3s' }}
             />
             <img
-              src="/images/activity/christmas/star-center-top.svg"
+              src={`/images/activity/christmas/star-center-top${isMobile ? '-mobile' : ''}.svg`}
               alt=""
-              className="absolute left-[160px] bottom-[155px] md:left-[100px] md:top-[-20px] animate-blink"
+              className="absolute left-[160px] bottom-[155px] md:left-[120px] md:top-[-10px] animate-blink"
               style={{ animationDelay: '0', animationDuration: "10s" }}
             />
             <img
-              src="/images/activity/christmas/star-right-top.svg"
+              src={`/images/activity/christmas/star-right-top${isMobile ? '-mobile' : ''}.svg`}
               alt=""
-              className="absolute right-[80px] bottom-[120px] md:top-0 animate-blink"
+              className="absolute right-[82px] bottom-[115px] md:top-0 animate-blink"
               style={{ animationDelay: "1s", animationDuration: "8s" }}
             />
             <img
-              src="/images/activity/christmas/star-right-bot.svg"
+              src={`/images/activity/christmas/star-right-bot${isMobile ? '-mobile' : ''}.svg`}
               alt=""
-              className="absolute -right-[70px] bottom-[10px] md:right-[-15px] md:top-[10px] animate-blink"
+              className="absolute -right-[70px] bottom-[10px] md:right-[-5px] md:top-[40px] animate-blink"
               style={{ animationDelay: "5s", animationDuration: "5s" }}
             />
           </div>

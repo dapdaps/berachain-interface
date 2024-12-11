@@ -12,21 +12,21 @@ export default function DappCard(props: any) {
       <div>
         <div className="flex justify-between items-start">
           <div className="flex flex-1 gap-[10px]">
-            <img src={dappInfo?.icon} className="w-[80px] h-[80px] rounded-[10px] shrink-0" />
+            <img src={dappInfo?.icon} className="w-[80px] h-[80px] md:w-[50px] md:h-[50px] rounded-[10px] shrink-0" />
             <div className="flex flex-1 w-0 flex-col gap-[4px] text-black text-left whitespace-nowrap">
-              <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%]">{dappInfo?.name}</div>
-              <div className="text-[14px] font-medium">DeFi, {dappInfo?.category}</div>
+              <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%] md:text-[16px]">{dappInfo?.name}</div>
+              <div className="text-[14px] font-medium md:text-[12px]">DeFi, {dappInfo?.category}</div>
             </div>
           </div>
           <CheckButton
             number={total_box}
             checked={false}
-            className="!bg-[#DCBC95] border-black text-black items-center shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] shrink-0"
+            className="!bg-[#DCBC95] border-black text-black items-center shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] shrink-0 md:text-[12px] md:w-[96px]"
             onClick={onCheck}
             checking={checking}
           />
         </div>
-        <ul className="mt-[20px] text-left text-black leading-[150%]">
+        <ul className="mt-[20px] text-left text-black leading-[150%] md:pl-[13px]">
           {
             dappInfo?.missions?.map?.((m: string, idx: number) => (
               <li className="text-[14px] font-medium list-disc" key={idx}>
@@ -36,7 +36,7 @@ export default function DappCard(props: any) {
           }
         </ul>
       </div>
-      <div className="flex gap-[16px]">
+      <div className="flex gap-[16px] md:gap-[10px] md:mt-[10px]">
         {
           actions?.map?.((action: any, idx: number) => (
             <Button
@@ -63,7 +63,7 @@ export const DappCardWrapper = (props: any) => {
   const { children, className } = props;
 
   return (
-    <div className={`w-[400px] h-[260px] flex flex-col justify-between p-[20px] rounded-[20px] border border-black bg-[#B5956E] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] ${className}`}>
+    <div className={`w-[400px] md:w-full h-[260px] md:h-[unset] flex flex-col justify-between p-[20px] md:p-[10px_13px_17px_13px] rounded-[20px] border border-black bg-[#B5956E] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] ${className}`}>
       {children}
     </div>
   );

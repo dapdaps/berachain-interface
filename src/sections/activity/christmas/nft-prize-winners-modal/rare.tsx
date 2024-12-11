@@ -3,7 +3,7 @@ import { numberFormatter } from '@/utils/number-formatter';
 
 export default function Rare({ rare }: any) {
   return (
-    <div className="w-[150px] h-[154px] rounded-[10px] bg-black/5 flex flex-col items-center relative shrink-0">
+    <div className="w-[150px] h-[154px] md:w-full rounded-[10px] bg-black/5 flex flex-col items-center relative shrink-0">
       <img
         src={rare.logo}
         className={clsx(
