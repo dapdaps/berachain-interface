@@ -1,7 +1,7 @@
 import Modal from "@/components/modal";
 import Bg from "./bg";
 import Button from "@/components/button";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { NftIcon, ItemIcon, TokenIcon } from "./icons";
 import OpenModalYap from "./open-modal-yap";
 import Big from 'big.js';
@@ -25,6 +25,7 @@ export default function BoxModal({
     isOnlyNFTs,
     isOnlyRares,
     isOnlySnowflake,
+    isOnlyYaps,
     title
   ] = useMemo(() => {
     const _imgs: any = [];
@@ -39,6 +40,7 @@ export default function BoxModal({
     const onlyNFTs = !isNoNFTs && isNoItem && isNoRares && isNoSnowflake;
     const onlyRares = !isNoRares && isNoItem && isNoNFTs && isNoSnowflake;
     const onlySnowflake = !isNoSnowflake && isNoItem && isNoNFTs && isNoRares;
+    const onlyYaps = isNoSnowflake && isNoItem && isNoNFTs && isNoRares;
 
     data.items.forEach((item: any) => {
       _imgs.push({ type: "item", logo: item.logo });
@@ -73,9 +75,16 @@ export default function BoxModal({
       onlyNFTs,
       onlyRares,
       onlySnowflake,
+      onlyYaps,
       title
     ];
   }, [data]);
+
+  useEffect(() => {
+    if (isOnlyYaps && !showYaps) {
+      setShowYaps(true);
+    }
+  }, [isOnlyYaps]);
 
   return (
     <>
