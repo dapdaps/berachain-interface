@@ -24,7 +24,7 @@ const Summary = ({ onOpenRewards }: any) => {
     },
     {
       id: 4,
-      label: "Total $snowflake earned",
+      label: "Total $SNOWFLAKE earned",
       value: numberFormatter(info?.total_token, 2, true, { isShort: true })
     },
     {

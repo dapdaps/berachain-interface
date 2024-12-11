@@ -2,7 +2,7 @@ export default function TokenHints({ amount }: any) {
   return (
     <>
       <div className="text-[14px] font-medium mt-[6px]">
-        You got a <span className="font-bold">{amount} $Snowflake</span>
+        You got a <span className="font-bold">{amount} $SNOWFLAKE</span>
       </div>
       <div className="text-[14px] font-medium">
         Trade now or hold? Up to you 😏

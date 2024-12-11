@@ -66,7 +66,7 @@ export default function useDeposit({
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Deposit successfully!",
+          title: "Deposit successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
@@ -76,7 +76,7 @@ export default function useDeposit({
           onSuccess();
         }
       } else {
-        toast.fail({ title: "Deposit faily!" });
+        toast.fail({ title: "Deposit failed!" });
       }
       addAction({
         type: "Liquidity",
@@ -103,7 +103,7 @@ export default function useDeposit({
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Deposit faily!`
+          : `Deposit failed!`
       });
     }
   };

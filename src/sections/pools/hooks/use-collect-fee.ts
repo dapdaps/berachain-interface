@@ -39,13 +39,13 @@ export default function useCollectFee({ tokenId, dex, onSuccess }: any) {
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: 'Collect fees successfully!',
+          title: 'Collect fees successful!',
           tx: transactionHash,
           chainId
         });
         onSuccess();
       } else {
-        toast.fail({ title: 'Collect fees faily!' });
+        toast.fail({ title: 'Collect fees failed!' });
       }
     } catch (err: any) {
       toast.dismiss(toastId);
@@ -53,7 +53,7 @@ export default function useCollectFee({ tokenId, dex, onSuccess }: any) {
       toast.fail({
         title: err?.message?.includes('user rejected transaction')
           ? 'User rejected transaction'
-          : `Collect fees faily!`
+          : `Collect fees failed!`
       });
     }
   }, [chainId, provider]);
