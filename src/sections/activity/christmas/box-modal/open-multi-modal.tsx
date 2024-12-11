@@ -122,7 +122,7 @@ export default function BoxModal({
                   <div>The NFT will send to your wallet in few days.</div>
                   {
                     hasWhitelist && (
-                      <div>Please send DM to <a href="https://x.com/0xberatown" rel="nofollow" target="_blank">@0xberatown</a> on X to claim.</div>
+                      <div>Please send DM to <a href="https://x.com/0xberatown" rel="nofollow" target="_blank" className="underline decoration-solid">@0xberatown</a> on X to claim.</div>
                     )
                   }
                 </div>
