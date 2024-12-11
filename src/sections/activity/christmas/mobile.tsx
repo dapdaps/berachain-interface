@@ -18,7 +18,7 @@ const ChristmasMobile = () => {
   const [showTotalPrizeModal, setShowTotalPrizeModal] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative bg-[linear-gradient(180deg,_#000_0%,_#455972_35dvh)] h-full overflow-y-auto">
       <MobileHeader />
       <Top
         onOpenRules={() => {

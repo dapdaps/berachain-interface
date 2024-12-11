@@ -1,7 +1,6 @@
 import IconReload from "@public/images/home/christmas/icon-reload.svg";
 import BoxTitle from "@/sections/activity/christmas/components/box-title";
 import Button from "@/sections/activity/christmas/components/button";
-import BasicButton from "../task-modal/button";
 import SocialTask from "@/sections/activity/christmas/components/social-task";
 import Pyramid, {
   createPyramid
@@ -106,7 +105,7 @@ const GiftBox = () => {
 
   return (
     <div className="">
-      <div className="flex justify-center items-center gap-[249px] mt-[20px]">
+      <div className="flex justify-center items-center gap-[249px] mt-[20px] md:gap-[12px] md:items-start">
         <BoxTitle
           label={
             <>
@@ -127,10 +126,12 @@ const GiftBox = () => {
           value={userInfo?.used_box || 0}
           total={userInfo?.total_box || 0}
           valueClassName="translate-x-[-20px]"
+          className="md:flex-1 md:w-0"
+          childrenClassName="md:w-full md:pl-[10px]"
         >
-          <div className="flex items-center gap-[18px]">
-            <BasicButton
-              className="!bg-black border-[#FFDC50] !text-[#FFDC50]"
+          <div className="flex items-center gap-[18px] md:flex-col-reverse md:w-full">
+            <Button
+              className="!bg-black border-[#FFDC50] !text-[#FFDC50] whitespace-nowrap md:w-full md:!bg-transparent md:underline md:decoration-solid md:border-0 md:shadow-none md:h-[30px] md:leading-[30px]"
               loading={userInfoLoading}
               onClick={() => {
                 if (!account) {
@@ -142,8 +143,8 @@ const GiftBox = () => {
               }}
             >
               Check My Gift
-            </BasicButton>
-            <BasicButton
+            </Button>
+            <Button
               onClick={() => {
                 if (!account) {
                   open({ view: 'Connect' });
@@ -153,7 +154,7 @@ const GiftBox = () => {
                 onOpen(true);
               }}
               loading={openType === 2 && opening}
-              className="relative"
+              className="relative whitespace-nowrap md:w-full"
             >
               <div>Open 10 Boxes</div>
               <img
@@ -161,15 +162,21 @@ const GiftBox = () => {
                 alt=""
                 className="absolute left-[108px] top-[-40px] animate-blink w-[47px] h-[59px]"
               />
-            </BasicButton>
+            </Button>
           </div>
         </BoxTitle>
-        <BoxTitle label="Your $Snowflake" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
+        <BoxTitle
+          label="Your $Snowflake" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}
+          valueClassName="md:mt-[9px]"
+          className="md:flex-1 md:w-0"
+          childrenClassName="md:w-full md:pr-[10px]"
+        >
           <Button
             onClick={() => {
               setShowSwapModal?.(true);
             }}
             addon="arrow"
+            className="whitespace-nowrap md:w-full md:px-[0]"
           >
             Trade now
           </Button>

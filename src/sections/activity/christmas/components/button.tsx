@@ -2,6 +2,7 @@ import ArrowHandled from '@public/images/icon-arrow-handled.svg';
 import GiftBox from '@public/images/activity/christmas/icon-gift-box.svg';
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import CircleLoading from '@/components/circle-loading';
 
 const Button = (props: Props) => {
   const {
@@ -13,6 +14,7 @@ const Button = (props: Props) => {
     onClick,
     motionProps,
     disabled,
+    loading,
   } = props;
 
   const TypeStyle = useMemo(() => {
@@ -42,7 +44,7 @@ const Button = (props: Props) => {
       onClick={onClick}
       {...motionProps}
     >
-      {children}
+      {loading ? (<CircleLoading size={14} />) : children}
       {
         addon === 'arrow' && (
           <ArrowHandled />
@@ -67,6 +69,7 @@ interface Props {
   children: any;
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
   style?: React.CSSProperties;
   type?: ButtonType;
   addon?: ButtonAddon;
