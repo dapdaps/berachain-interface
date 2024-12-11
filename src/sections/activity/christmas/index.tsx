@@ -38,7 +38,7 @@ export default function ChristmasView() {
               return document.getElementById("tour-id-4");
             },
             title: "🧐 So how to get Gift boxes?",
-            content: 'The tree will be decorated with all the gifts you have received. The more gifts you receive, the more beautiful the tree will be!',
+            content: 'Follow the next steps so you won’t fall thru...',
             placement: MaskPlacement.BottomRight,
           },
           {
@@ -54,11 +54,26 @@ export default function ChristmasView() {
               return document.getElementById("tour-id-6");
             },
             title: "👾 DeFi is fun again and POL is not hard!",
-            content: "This is your perfect chance to spam transactions hoping for a fat airdrop from Berachain...Or simply having fun & learn about the ecosystem, about how Proof-of-liquidity works or how the DeFi Legos work.Swap, add LP, lend, stake, delegate etc... You got rewarded for every steps you make!",
+            content: <div className="text-left">
+              <div>This is your perfect chance to spam transactions hoping for a fat airdrop from Berachain...</div>
+              <div className="mt-4">Or simply having fun & learn about the ecosystem, about how Proof-of-liquidity works or how the DeFi Legos work.</div>
+              <div className="mt-4">Swap, add LP, lend, stake, delegate etc... You got rewarded for every steps you make!</div>
+            </div>,
+            placement: MaskPlacement.BottomRight
+          },
+          {
+            selector: () => {
+              return document.getElementById("tour-id-7");
+            },
+            title: "🤝 Berachain eco is fun!",
+            content: <div className="text-left">
+              <div>There are a lot of other exciting things happening within the Berachain ecosystem, this is da perfect chance to get to know em’ all and get rewarded at the same time!</div>
+              <div className="mt-4">Or if you’re an OG users/ degen & holding some collectibles, the Bera Claus might have a surprise for your 👀</div>
+            </div>,
             placement: MaskPlacement.BottomRight
           }
         ]}
-      />;
+      />
       <Index />
     </SceneContextProvider>
   );

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef } from "react";
+import React, { FC, useEffect, useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Mask } from "./Mask";
 import { MaskPlacement } from "./getStyleRect";
@@ -51,10 +51,17 @@ const GuidingTour: FC<IGuidingTourProps> = (props) => {
     setCurrentStep(currentStep - 1);
   };
 
+  const handleTourEnd = useCallback(async () => {
+    setIsResetting(true);
+    await onStepsEnd?.();
+    setDone(true);
+    setHasShownTour(true);
+    setContentSize({ width: 0, height: 0 });
+  }, [onStepsEnd, setHasShownTour]);
+
   const forward = async () => {
     if (currentStep === steps.length - 1) {
-      await onStepsEnd?.();
-      setDone(true);
+      await handleTourEnd();
       return;
     }
 
@@ -64,13 +71,9 @@ const GuidingTour: FC<IGuidingTourProps> = (props) => {
   };
 
   const cancel = async () => {
-    setIsResetting(true); 
-    await onStepsEnd?.();
-    setDone(true);
+    await handleTourEnd();
     setCurrentStep(0);
-    setContentSize({ width: 0, height: 0 });
     setIsMaskMoving(false);
-    setHasShownTour(true);
   };
 
   useEffect(() => {
