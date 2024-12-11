@@ -212,7 +212,7 @@ const GiftBox = () => {
             </div>
           </SocialTask>
         </div>
-        <div className="absolute right-[19px] bottom-[252px] w-[334px] h-[333px] bg-[url('/images/activity/christmas/bg-gift-retweet.svg')] bg-no-repeat bg-cover bg-center">
+        <div id="tour-id-5" className="absolute right-[19px] bottom-[252px] w-[334px] h-[333px] bg-[url('/images/activity/christmas/bg-gift-retweet.svg')] bg-no-repeat bg-cover bg-center">
           <div className="absolute flex flex-col items-center gap-[13px] right-[15px] bottom-[-12px]">
             <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center">
               <div className="opacity-50">

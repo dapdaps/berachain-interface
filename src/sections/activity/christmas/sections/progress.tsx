@@ -51,7 +51,7 @@ const NFTProgress = () => {
 
   return (
     <div className="flex justify-center mt-[110px]">
-      <div className="relative w-[693px] h-[24px] rounded-[12px] bg-black border border-[#FFDC50] p-[3px]">
+      <div id="tour-id-3" className="relative w-[693px] h-[24px] rounded-[12px] bg-black border border-[#FFDC50] p-[3px]">
         <div
           className="relative z-[2] h-full rounded-[9px] bg-[#FFDC50]"
           style={{ width: `${progress}%` }}
