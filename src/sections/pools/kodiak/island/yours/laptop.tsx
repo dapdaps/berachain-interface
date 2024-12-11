@@ -173,7 +173,7 @@ export default function Laptop({ onClick }: any) {
                   }}
                   className="w-[96px] h-[32px] bg-[#FFDC50] border border-black rounded-[10px]"
                 >
-                  Mange
+                  Manage
                 </button>
               );
             }

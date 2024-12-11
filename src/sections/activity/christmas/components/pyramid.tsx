@@ -1,7 +1,7 @@
 import Button from "@/sections/activity/christmas/components/button";
 
 const Pyramid = (props: any) => {
-  const { list, onBoxClick } = props;
+  const { list, onBoxClick, opening } = props;
 
   return (
     <div className="flex justify-center items-center w-full h-full">
@@ -47,6 +47,7 @@ const Pyramid = (props: any) => {
                       whileHover: "visible"
                     }}
                     onClick={onBoxClick}
+                    loading={opening}
                   >
                     {disabled ? "Opened" : "Open it"}
                   </Button>

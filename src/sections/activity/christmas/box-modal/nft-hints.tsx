@@ -4,7 +4,7 @@ export default function NftHints({ nft }: any) {
   const isToken = ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name);
   const text = useMemo(() => {
     if (nft.whitelist) {
-      return "Please send DM to @0xberatown on X to claim.";
+      return <span>Please send DM to <a href="https://x.com/0xberatown" rel="nofollow" target="_blank">@0xberatown</a> on X to claim.</span>;
     }
     if (isToken) {
       return "The rewards will be distributed after the campaign ends.";

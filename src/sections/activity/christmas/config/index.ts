@@ -447,6 +447,28 @@ export const EcosystemQuests: any = {
       { label: "Discord", link: "https://discord.gg/beraland" },
       { label: "Docs", link: "https://app.beraland.xyz/dl/Ecosystem" },
     ]
+  },
+  Bedrock: {
+    categories: ["DeFi", "Depin", "Liquidity"],
+    icon: "/images/activity/christmas/quest/logos/bedrock.png",
+    banner: "/images/activity/christmas/quest/banners/Bedrock.png",
+    description: "A liquid restaking pioneer built on babylonlabs_io, eigenlayer & DePin.",
+    missions: {
+      token_balance: {
+        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Verify"
+      },
+      learn: {
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Learn"
+      }
+    },
+    socials: [
+      { label: "Website", link: "https://www.bedrock.technology/" },
+      { label: "X", link: "https://x.com/Bedrock_DeFi" },
+      { label: "Discord", link: "https://discord.com/invite/ctXrm6wfeg" },
+      { label: "Docs", link: "https://docs.bedrock.technology/" },
+    ]
   }
   // 'BeraTown': {
   //   categories: ['Social'],
