@@ -1,5 +1,8 @@
+import Skeleton from 'react-loading-skeleton';
+import React from 'react';
+
 const BoxTitle = (props: any) => {
-  const { children, label, value, total, className, style, valueClassName } = props;
+  const { children, label, value, total, className, style, valueClassName, loading } = props;
 
   return (
     <div style={style} className={className}>
@@ -16,7 +19,11 @@ const BoxTitle = (props: any) => {
                 <div className="">{total}</div>
               </>
             ) : (
-              <div className="text-[36px]">{value}</div>
+              loading ? (
+                <Skeleton width={60} height={26} borderRadius={10} />
+              ) : (
+                <div className="text-[36px]">{value}</div>
+              )
             )
           }
         </div>

@@ -29,10 +29,13 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    snowflakeBalance,
+    snowflakeBalanceLoading,
     userRemainBox,
     userInfoLoading,
     getUserInfo,
     currentDailyTimestamp,
+    currentUTCZeroTimestamp,
     setShowSwapModal,
     requestCheck,
     handleQuestUpdate,
@@ -55,11 +58,11 @@ const GiftBox = () => {
   const sortedList = createPyramid(list);
 
   const dailyQuest = useMemo(() => {
-    if (!questList || !currentDailyTimestamp || !questList.length) return [];
+    if (!questList || !currentUTCZeroTimestamp || !questList.length) return [];
     return questList.filter((it) => {
-      return getUTCTimestamp((it.timestamp || 0) * 1000) === currentDailyTimestamp;
+      return getUTCTimestamp((it.timestamp || 0) * 1000) === currentUTCZeroTimestamp;
     }) || [];
-  }, [currentDailyTimestamp, questList]);
+  }, [currentUTCZeroTimestamp, questList]);
   const dailyQuestCounts = useMemo(() => {
     if (!dailyQuest || !dailyQuest.length) return { total_box: 0, box: 0, completed: false };
     const total_box = dailyQuest.map((it) => it.total_box || 0).reduce((a, b) => a + b);
@@ -164,7 +167,12 @@ const GiftBox = () => {
             </BasicButton>
           </div>
         </BoxTitle>
-        <BoxTitle label="Your $SNOWFLAKE" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
+        <BoxTitle
+          label="Your $SNOWFLAKE"
+          value={numberFormatter(snowflakeBalance, 2, true, { isShort: true })}
+          loading={snowflakeBalanceLoading}
+          className="flex flex-col items-center"
+        >
           <Button
             onClick={() => {
               setShowSwapModal?.(true);
