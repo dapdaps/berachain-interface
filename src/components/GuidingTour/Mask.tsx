@@ -1,5 +1,6 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { MaskPlacement, getPositionStyle, getMaskBoundRect } from './getStyleRect';
+import { useScrollIntoView } from '@/hooks/useScrollIntoView';
 
 interface MaskProps {
   element: HTMLElement;
@@ -10,7 +11,7 @@ interface MaskProps {
   placement?: MaskPlacement;
   contentWidth?: number;
   contentHeight?: number;
-  reset?: boolean; // 新增属性用于重置样式
+  reset?: boolean; 
 }
 
 export const Mask: React.FC<MaskProps> = (props) => {
@@ -28,6 +29,11 @@ export const Mask: React.FC<MaskProps> = (props) => {
 
   const [style, setStyle] = useState<CSSProperties>({});
   const [maskId] = useState(() => `mask-${Math.random().toString(36).substr(2, 9)}`);
+  
+  const { scrollElementIntoView } = useScrollIntoView({
+    checkInterval: 50,
+    maxAttempts: 20
+  });
 
   useEffect(() => {
     onAnimationStart?.();
@@ -41,36 +47,47 @@ export const Mask: React.FC<MaskProps> = (props) => {
   }, [element]);
 
   useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      const style = getMaskBoundRect(element, container || document.documentElement);
-      setStyle(style);
-    });
-    observer.observe(container || document.documentElement);
-  }, []);
-
-  useEffect(() => {
     if (reset) {
       setStyle({});
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
       return;
     }
 
     if (!element) {
       return;
     }
-    
-    element.scrollIntoView({
-      block: 'center',
-      inline: 'center'
-    });
 
-    const style = getMaskBoundRect(element, container || document.documentElement);
-    setStyle(style);
+    let mounted = true;
+
+    const updatePosition = async () => {
+      await scrollElementIntoView(element, (element) => {
+        if (mounted) {
+          const style = getMaskBoundRect(element, container || document.documentElement);
+          setStyle(style);
+        }
+      });
+    };
+
+    updatePosition();
+
+    const handleResize = () => {
+      if (mounted) {
+        updatePosition();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
+      mounted = false;
+      window.removeEventListener('resize', handleResize);
       setStyle({});
     };
-    
-  }, [element, container, reset]);
+  }, [element, container, reset, scrollElementIntoView]);
 
   const getContent = () => {
     if (!renderMaskContent) {
