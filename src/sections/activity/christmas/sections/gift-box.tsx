@@ -190,6 +190,7 @@ const GiftBox = () => {
             onOpen(false);
             setOpenType(1);
           }}
+          opening={opening}
         />
         <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center">
           <div

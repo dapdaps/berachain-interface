@@ -22,7 +22,7 @@ const HomePrompt = () => {
     >
       <div className="w-[680px] rounded-[10px] text-center bg-[#B5956E] border border-[#333648] shadow-[0px_0px_4px_0px_rgba(0,_0,_0,_0.25)]">
         <img
-          src="/images/activity/christmas/home-prompt-banner.svg"
+          src="/images/activity/christmas/home-prompt-banner.png"
           alt=""
           className="w-full h-[408px] rounded-[10px]"
         />
