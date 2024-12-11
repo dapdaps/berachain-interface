@@ -29,6 +29,8 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    snowflakeBalance,
+    snowflakeBalanceLoading,
     userRemainBox,
     userInfoLoading,
     getUserInfo,
@@ -165,7 +167,12 @@ const GiftBox = () => {
             </BasicButton>
           </div>
         </BoxTitle>
-        <BoxTitle label="Your $SNOWFLAKE" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}>
+        <BoxTitle
+          label="Your $SNOWFLAKE"
+          value={numberFormatter(snowflakeBalance, 2, true, { isShort: true })}
+          loading={snowflakeBalanceLoading}
+          className="flex flex-col items-center"
+        >
           <Button
             onClick={() => {
               setShowSwapModal?.(true);
