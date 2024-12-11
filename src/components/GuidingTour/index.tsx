@@ -24,7 +24,7 @@ export interface GuidingTourStepConfig {
 }
 
 const GuidingTour: FC<IGuidingTourProps> = (props) => {
-  const { step = 0, steps, onStepsEnd, getContainer, forceShow =true } = props;
+  const { step = 0, steps, onStepsEnd, getContainer } = props;
   const { hasShownTour, setHasShownTour } = useGuidingTour();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -155,7 +155,7 @@ const GuidingTour: FC<IGuidingTourProps> = (props) => {
     setRenderTick(1);
   }, []);
 
-  if ((!forceShow && hasShownTour) || !currentSelectedElement || done) {
+  if ((!props?.forceShow && hasShownTour) || !currentSelectedElement || done) {
     return null;
   }
 
