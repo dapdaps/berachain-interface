@@ -45,7 +45,7 @@ const Summary = ({ onOpenRewards }: any) => {
         <div className="w-full flex justify-between items-start">
           {summaries.map((item: any, index: number) => (
             <Item
-              id={item.index}
+              id={index}
               key={index}
               label={item.label}
               value={item.value}

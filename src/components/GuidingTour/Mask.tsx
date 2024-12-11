@@ -10,6 +10,7 @@ interface MaskProps {
   placement?: MaskPlacement;
   contentWidth?: number;
   contentHeight?: number;
+  reset?: boolean; // 新增属性用于重置样式
 }
 
 export const Mask: React.FC<MaskProps> = (props) => {
@@ -22,6 +23,7 @@ export const Mask: React.FC<MaskProps> = (props) => {
     placement = MaskPlacement.BottomRight,
     contentWidth = 200,
     contentHeight = 100,
+    reset = false,
   } = props;
 
   const [style, setStyle] = useState<CSSProperties>({});
@@ -47,9 +49,19 @@ export const Mask: React.FC<MaskProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    if (reset) {
+      setStyle({});
+      return;
+    }
+
     if (!element) {
       return;
     }
+    
+    element.scrollIntoView({
+      block: 'center',
+      inline: 'center'
+    });
 
     const style = getMaskBoundRect(element, container || document.documentElement);
     setStyle(style);
@@ -58,7 +70,7 @@ export const Mask: React.FC<MaskProps> = (props) => {
       setStyle({});
     };
     
-  }, [element, container]);
+  }, [element, container, reset]);
 
   const getContent = () => {
     if (!renderMaskContent) {

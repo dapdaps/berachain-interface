@@ -26,7 +26,7 @@ const Popover = (props: Props) => {
 
   const triggerRef = useRef<any>();
 
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [realVisible, setRealVisible] = useState(false);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);

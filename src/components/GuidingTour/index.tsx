@@ -3,11 +3,14 @@ import { createPortal } from "react-dom";
 import { Mask } from "./Mask";
 import { MaskPlacement } from "./getStyleRect";
 import IconRight from '@public/images/icon-right.svg'
+import { useGuidingTour } from '@/stores/useGuidingTour';
+
 export interface IGuidingTourProps {
   steps: GuidingTourStepConfig[];
   step?: number;
   getContainer?: () => HTMLElement;
   onStepsEnd?: () => void;
+  forceShow?: boolean; 
 }
 
 export interface GuidingTourStepConfig {
@@ -21,7 +24,8 @@ export interface GuidingTourStepConfig {
 }
 
 const GuidingTour: FC<IGuidingTourProps> = (props) => {
-  const { step = 0, steps, onStepsEnd, getContainer } = props;
+  const { step = 0, steps, onStepsEnd, getContainer, forceShow =true } = props;
+  const { hasShownTour, setHasShownTour } = useGuidingTour();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
   const currentSelectedElement = steps[currentStep]?.selector();
@@ -31,6 +35,7 @@ const GuidingTour: FC<IGuidingTourProps> = (props) => {
   const [, setRenderTick] = useState<number>(0);
   const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const getCurrentStep = () => {
     return steps[currentStep];
@@ -59,11 +64,13 @@ const GuidingTour: FC<IGuidingTourProps> = (props) => {
   };
 
   const cancel = async () => {
+    setIsResetting(true); 
     await onStepsEnd?.();
     setDone(true);
     setCurrentStep(0);
     setContentSize({ width: 0, height: 0 });
     setIsMaskMoving(false);
+    setHasShownTour(true);
   };
 
   useEffect(() => {
@@ -145,12 +152,13 @@ const GuidingTour: FC<IGuidingTourProps> = (props) => {
     setRenderTick(1);
   }, []);
 
-  if (!currentSelectedElement || done) {
+  if ((!forceShow && hasShownTour) || !currentSelectedElement || done) {
     return null;
   }
 
   const mask = (
     <Mask
+      reset={isResetting}
       onAnimationStart={() => {
         setIsMaskMoving(true);
       }}

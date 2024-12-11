@@ -55,6 +55,7 @@ const Pyramid = (props: any) => {
             })}
           </div>
         )) : (
+          <div id="tour-id-4">
           <div id="tour-id-1" className="flex flex-col justify-center items-center text-center text-[#FFDC50] text-[18px] font-[600] leading-normal gap-[11px] w-[210px] h-[263px] bg-[url('/images/activity/christmas/icon-gift-box-empty.svg')] bg-no-repeat bg-contain bg-center translate-y-1/4">
             <div className="mt-[55px]">
               You don’t have any gift box.
@@ -70,6 +71,7 @@ const Pyramid = (props: any) => {
                 target?.scrollIntoView?.({ behavior: 'smooth' });
               }}
             />
+          </div>
           </div>
         )}
       </div>
