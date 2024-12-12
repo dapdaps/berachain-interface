@@ -9,7 +9,7 @@ export const EcosystemQuests: any = {
       "Berachain cult venture studio BUIDLing honeycomb (largest bera NFT), Henlo ( grade cultcoin) & da largest cult validator",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift boxes.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift boxes.`,
         action: "Verify"
       },
       learn: {
@@ -59,7 +59,7 @@ export const EcosystemQuests: any = {
       "An all in one NFT Dapp, launch, mint, trade (coming thoon) on Kingdomly",
     missions: {
       token_balance: {
-        text: (amount: number) => `Mint NFTs and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -82,7 +82,7 @@ export const EcosystemQuests: any = {
       "Token launchpad powering liquidity for next-gen protocols on Berachain.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -105,7 +105,7 @@ export const EcosystemQuests: any = {
       "Big Fat Beras by Beraborrow. A 6,900 collection of the biggest and fattest Beras. Ooga Matata.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -154,7 +154,7 @@ export const EcosystemQuests: any = {
     description: "The bremiere bonzi of berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -177,7 +177,7 @@ export const EcosystemQuests: any = {
       "PoL Accelerator that unites a fair launchpad & a secure DEX on Berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -217,7 +217,7 @@ export const EcosystemQuests: any = {
     description: "Vape 2 quit smoking and earn",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -239,7 +239,7 @@ export const EcosystemQuests: any = {
     description: "All your memes are belong to us. Much liquidity. Such yield.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -261,7 +261,7 @@ export const EcosystemQuests: any = {
     description: "Native liquidity marketplace on berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -283,7 +283,7 @@ export const EcosystemQuests: any = {
     description: "First n Only NFT on berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -306,7 +306,7 @@ export const EcosystemQuests: any = {
       "Poke The Bear, Get The Claws. An Augmented Reality Based Project On berachain",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -328,7 +328,7 @@ export const EcosystemQuests: any = {
     description: "turning crypto into a P2E metaRPG",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -351,7 +351,7 @@ export const EcosystemQuests: any = {
       "Building the first & biggest idle RPG on berachain. Get your Beras & join the game!",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -374,7 +374,7 @@ export const EcosystemQuests: any = {
       "wtf is $plug —» left curve: butt plug shitcoin —» mid curve: migrates honey comb from jeets to chads —» right curve: (3,3) reinforcement protocol",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -455,7 +455,7 @@ export const EcosystemQuests: any = {
     description: "A liquid restaking pioneer built on babylonlabs_io, eigenlayer & DePin.",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you are a holder of NFT and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Verify"
       },
       learn: {
@@ -483,44 +483,44 @@ export const DAppQuests: any = {
     missions: ["1 Gift Box for each swap to hot tokens/memecoins"]
   },
   Kodiak: {
-    missions: ["1 Gift Box for each swap", "2 Gift Boxes for each LP deposit"]
+    missions: ["1 Gift Box for each swap", "2 Gift Boxes per LP transaction"]
   },
   Bex: {
-    missions: ["1 Gift Box for each swap", "2 Gift Boxes for each LP deposit"]
+    missions: ["1 Gift Box for each swap", "2 Gift Boxes per LP transaction"]
   },
   "Ooga Booga": {
     missions: ["1 Gift Box for each swap"]
   },
   Bend: {
     missions: [
-      "2 Gift Boxes for each tokens deposit",
-      "2 Gift Boxes for each tokens borrowing"
+      "2 Gift Boxes per deposit transaction",
+      "2 Gift Boxes per borrow transaction"
     ]
   },
   Beraborrow: {
     missions: [
-      "2 Gift Boxes for each tokens deposit",
-      "2 Gift Boxes for each tokens borrowing"
+      "2 Gift Boxes per deposit transaction",
+      "2 Gift Boxes per borrow transaction"
     ]
   },
   Dolomite: {
     missions: [
-      "2 Gift Boxes for each tokens deposit",
-      "2 Gift Boxes for each tokens borrowing"
+      "2 Gift Boxes per deposit transaction",
+      "2 Gift Boxes per borrow transaction"
     ]
   },
   Infrared: {
     missions: [
-      "1 Gift Box for staking iBGT to the iBGT vault",
-      "2 Gift Box for staking assets to any vault"
+      "1 Gift Box per stake transaction to the iBGT vault",
+      "2 Gift Box per stake transaction to any vault"
     ]
   },
   Berps: {
-    missions: ["2 Gift Boxes for depositing $HONEY to the vault"]
+    missions: ["2 Gift Boxes per deposit transaction to the $HONEY vault"]
   },
   "Top Validators": {
     missions: [
-      "3 boxes for each 5 BGT delegated to the THJ validator or the Beradrome x THJ validator"
+      "3 Gift Boxes per BGT delegate transaction to THJ or THJ x Beradrome validators"
     ]
   }
 };
