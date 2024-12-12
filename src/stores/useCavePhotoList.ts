@@ -2,14 +2,14 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 
-export const useCaveNft = create(
+export const useCavePhotoList = create(
   persist(
     (set, get: any) => ({
-      nft: null,
+      photoList: [null, null],
       set: (params: any) => set(() => ({ ...params }))
     }),
     {
-      name: '_caveNft',
+      name: '_cavePhotoList',
       version: 0.1,
       storage: createJSONStorage(() => localStorage)
     }
