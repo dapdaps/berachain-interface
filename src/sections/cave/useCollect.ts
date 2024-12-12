@@ -8,6 +8,68 @@ export const cloth_cateogries = ["elf_jacket", "santa_coat"]
 export const car_cateogries = ["sleigh", "snowboard"]
 export const necklace_categories = ["scarf"]
 
+export const sockTips = [
+    {
+        category: 'elf_hat',
+        name: 'Elf’s Hat',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/elf_hat.png',
+        link: '/swap',
+        btnText: 'Join',
+    },
+    {
+        category: 'santa_hat',
+        name: 'Santa Hat',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/santa_hat.png',
+        link: '/swap',
+        btnText: 'Join',
+    },
+    {
+        category: 'elf_jacket',
+        name: 'Elf’s Jacket',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/elf_jacket.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+    {
+        category: 'santa_coat',
+        name: 'Santa Coat',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/santa_coat.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+    {
+        category: 'scarf',
+        name: 'Scarf',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/scarf.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+
+]
+export const giftBoxTips = [
+    {
+        category: 'sleigh',
+        name: 'Sleigh',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/sleigh.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+    {
+        category: 'snowboard',
+        name: 'Snowboard',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/snowboard.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+]
+
 export default function useCollect({ address }: { address: string }) {
     const [collection, setCollection] = useState<any>()
     const [cars, setCars] = useState<GameItem[]>([])

@@ -1,24 +1,17 @@
-import { useCallback, useEffect, useState } from "react"
-import { useAccount, Config, useConnectorClient } from 'wagmi';
-import HatHover from "./HatHover"
-import Welcome from "./Welcome"
-import ClothHover from "./ClothHover"
-import KeyHover from "./KeyHover"
-import NeckHover from "./NeckHover"
-import useCollect, { hat_categories, cloth_cateogries } from "./useCollect"
-import Tips from "./Tip";
+import PageBack from "@/components/back";
+import { useChristmas } from '@/hooks/use-christmas';
+import useCollect, { cloth_cateogries, giftBoxTips, hat_categories, sockTips } from "@/sections/cave/useCollect";
+import { useBearEqu } from "@/stores/useBearEqu";
+import { useCavePhotoList } from "@/stores/useCavePhotoList";
+import { useCaveWelcome } from "@/stores/useCaveWelcome";
+import clsx from "clsx";
+import { useCallback, useEffect, useState } from "react";
+import { useAccount } from 'wagmi';
 import Bear from "./Bear";
 import CheckBox from "./CheckBox";
-import { AnyKindOfDictionary } from "lodash";
-import dapp from "@/configs/dapp";
-import PageBack from "@/components/back";
-import { useCaveWelcome } from "@/stores/useCaveWelcome";
-import { useBearEqu } from "@/stores/useBearEqu";
-import { useChristmas } from '@/hooks/use-christmas';
-import clsx from "clsx";
-import Popover, { PopoverPlacement } from "@/components/popover";
 import NftModal from "./NftModal";
-import { useCavePhotoList } from "@/stores/useCavePhotoList";
+import Tips from "./Tip";
+import Welcome from "./Welcome";
 const hatPositions = [{
     width: 102,
 
@@ -219,69 +212,7 @@ const neckTips = [
     }
 ]
 
-const sockTips = [
-    {
-        category: 'elf_hat',
-        name: 'Elf’s Hat',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/elf_hat.png',
-        link: '/swap',
-        btnText: 'Join',
-        dapps: stakeDapps,
-    },
-    {
-        category: 'santa_hat',
-        name: 'Santa Hat',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/santa_hat.png',
-        link: '/swap',
-        btnText: 'Join',
-        dapps: stakeDapps,
-    },
-    {
-        category: 'elf_jacket',
-        name: 'Elf’s Jacket',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/elf_jacket.png',
-        link: '/activity/christmas',
-        btnText: 'Join',
-    },
-    {
-        category: 'santa_coat',
-        name: 'Santa Coat',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/santa_coat.png',
-        link: '/activity/christmas',
-        btnText: 'Join',
-    },
-    {
-        category: 'scarf',
-        name: 'Scarf',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/scarf.png',
-        link: '/activity/christmas',
-        btnText: 'Join',
-    },
 
-]
-const giftBoxTips = [
-    {
-        category: 'sleigh',
-        name: 'Sleigh',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/sleigh.png',
-        link: '/activity/christmas',
-        btnText: 'Join',
-    },
-    {
-        category: 'snowboard',
-        name: 'Snowboard',
-        content: 'Join BeraTown Xmas campaign to get a random gift box.',
-        img: '/images/cave/christmas/snowboard.png',
-        link: '/activity/christmas',
-        btnText: 'Join',
-    },
-]
 
 export default function Cave() {
     const { isChristmas } = useChristmas();
