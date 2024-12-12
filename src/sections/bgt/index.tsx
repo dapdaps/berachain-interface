@@ -12,6 +12,7 @@ import SwitchTabs from "@/components/switch-tabs";
 import BgtEmpty from "./components/bgt-empty";
 import Big from 'big.js';
 import { asyncFetch } from "@/utils/http";
+import PageBack from '@/components/back';
 
 export default memo(function BGTPageView() {
   const [tab, setTab] = useState('all');
@@ -115,7 +116,7 @@ export default memo(function BGTPageView() {
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
-
+      <PageBack className="absolute left-[36px] md:left-[15px] z-[12]" />
       <div className="w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <div className="flex items-center h-[223px] rounded-[20px] bg-[#FFDC50]">
           <div className="h-full flex flex-col flex-1 py-[34px] pl-[30px] relative justify-between">
