@@ -333,7 +333,7 @@ export default function Cave() {
     }, [])
 
 
-    return <div className="relative w-screen h-full min-w-[1200px] min-h-[890px] overflow-x-hidden overflow-y-scroll">
+    return <div className="relative w-screen h-full min-w-[1200px] min-h-[890px]">
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px] z-10" />
 
 
