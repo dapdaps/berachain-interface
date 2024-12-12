@@ -13,6 +13,7 @@ import { useGameItems } from "./hooks/useGameItems";
 import { useMasUser } from "./hooks/useMasUser";
 import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
+import useIsMobile from "@/hooks/use-isMobile";
 
 
 const TipsPopover = ({
@@ -45,6 +46,7 @@ const Cave = () => {
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
   const storePhotoList: any = useCavePhotoList()
+  const isMobile = useIsMobile()
 
   const handleItemClick = (item: ModuleItem) => {
     console.log("Selected item:", item);
@@ -170,7 +172,11 @@ const Cave = () => {
         <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
             storePhotoList?.photoList?.map((photo, index) => (
-              <div className="relative w-[159px] h-[184px] group z-20">
+              <div className="relative w-[159px] h-[184px] group z-20"
+                onClick={() => {
+                  isMobile && nfts?.length > 0 && setCheckPhotoIndex(index)
+                }}
+              >
                 <img className="relative z-[3]" src="/images/cave/christmas/photo_frame.svg" alt="photo_frame" />
                 <div className="absolute left-[18px] top-[42px] z-[2]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="118" height="114" viewBox="0 0 118 114" fill="none">
@@ -179,7 +185,7 @@ const Cave = () => {
                 </div>
 
                 <div
-                  className="absolute left-[38px] top-[86px] flex items-center justify-center w-[81px] h-[36px] rounded-[18px] border-[2px] border-[#4B371F] bg-[#FFDC50] cursor-pointer text-black font-CherryBomb text-[18px] z-[5] opacity-0 md:opacity-100 group-hover:opacity-100"
+                  className="absolute left-[38px] top-[86px] flex items-center justify-center w-[81px] h-[36px] rounded-[18px] border-[2px] border-[#4B371F] bg-[#FFDC50] cursor-pointer text-black font-CherryBomb text-[18px] z-[5] md:hidden opacity-0 group-hover:opacity-100"
                   onClick={() => {
                     nfts?.length > 0 && setCheckPhotoIndex(index)
                   }}
