@@ -41,7 +41,7 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
 
       const tx = await RouterContract[
         data.token0.isNative || data.token1.isNative
-          ? "removeLiquidityETH"
+          ? "removeLiquidityNative"
           : "removeLiquidity"
       ](
         data.id,

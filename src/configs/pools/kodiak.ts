@@ -20,7 +20,7 @@ export default {
     80084:
       "https://api.goldsky.com/api/public/project_clpx84oel0al201r78jsl0r3i/subgraphs/kodiak-v2-berachain-bartio/latest/gn"
   },
-  stakingRouter: "0x4d41822c1804fff5c038e4905cfd1044121e0e85",
+  stakingRouter: "0x5E51894694297524581353bc1813073C512852bf",
   islands: {
     "0xb67d60fc02e0870eddca24d4fa8ea516c890152b": {
       name: "uniBTC-WBTC",
