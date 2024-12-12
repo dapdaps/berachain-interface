@@ -215,41 +215,45 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
         <div className="flex items-center gap-3">
           <div className="relative">
 
-            <motion.div
-              className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
-              onClick={() => {
-                router.push("/activity/christmas")
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 200,
-                damping: 10
-              }}
-              whileTap={{
-                y: 8,
-                scale: 0.95
-              }}
-            >
-              <img className="w-full" src="/images/mobile/henlo.png" alt="Henlo" />
-            </motion.div>
+            {
+              ['/'].includes(pathname) && (
+                <motion.div
+                  className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
+                  onClick={() => {
+                    router.push('/activity/christmas');
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 200,
+                    damping: 10
+                  }}
+                  whileTap={{
+                    y: 8,
+                    scale: 0.95
+                  }}
+                >
+                  <img className="w-full" src="/images/mobile/henlo.png" alt="Henlo" />
+                </motion.div>
+              )
+            }
 
             {/* <motion.img
-              src="/images/mobile/henlo.png"
-              alt="Henlo"
-              className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw]"
-              onClick={() => {
-                router.push("/activity/christmas")
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 200,
-                damping: 10
-              }}
-              whileTap={{
-                y: 8,
-                scale: 0.95
-              }}
-            /> */}
+             src="/images/mobile/henlo.png"
+             alt="Henlo"
+             className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw]"
+             onClick={() => {
+             router.push("/activity/christmas")
+             }}
+             transition={{
+             type: "spring",
+             stiffness: 200,
+             damping: 10
+             }}
+             whileTap={{
+             y: 8,
+             scale: 0.95
+             }}
+             /> */}
 
             <motion.img
               src="/images/mobile/town.png"
