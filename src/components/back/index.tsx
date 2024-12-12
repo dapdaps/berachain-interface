@@ -19,7 +19,7 @@ const PageBack = (props: Props) => {
     <>
       <button
         type='button'
-        className={`flex items-center gap-[14px] text-center font-CherryBomb text-[20px] text-black font-[400] hidden lg:flex ${className}`}
+        className={`flex items-center gap-[14px] text-center font-CherryBomb text-[20px] text-black font-[400] lg:flex ${className}`}
         style={style}
         onClick={handleClick}
       >
