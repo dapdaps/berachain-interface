@@ -3,12 +3,14 @@ import Index from "@/sections/activity/christmas/christmas";
 import GuidingTour from "@/components/GuidingTour";
 import { MaskPlacement } from "@/components/GuidingTour/getStyleRect";
 import { useContext } from "react";
+import IndexMobile from "@/sections/activity/christmas/mobile";
+import useIsMobile from '@/hooks/use-isMobile';
 
 const ChristmasContent = () => {
   const { userInfoLoading, userInfo } = useContext(ChristmasContext);
 
-  const shouldShowGuide = !userInfoLoading && 
-    userInfo && 
+  const shouldShowGuide = !userInfoLoading &&
+    userInfo &&
     (!userInfo.total_box || userInfo.total_box === 0);
 
   return (
@@ -89,9 +91,17 @@ const ChristmasContent = () => {
 };
 
 export default function ChristmasView() {
+  const isMobile = useIsMobile();
+
   return (
     <SceneContextProvider>
-      <ChristmasContent />
+      {
+        isMobile ? (
+          <IndexMobile />
+        ) : (
+          <ChristmasContent />
+        )
+      }
     </SceneContextProvider>
   );
 }

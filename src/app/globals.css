@@ -75,6 +75,14 @@ a,
   .text-stroke-2 {
     -webkit-text-stroke: 2px #4b371f;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE 和 Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari 和 Opera */
+  }
 }
 
 .route-wrapper {

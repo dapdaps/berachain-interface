@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { NftIcon, ItemIcon, TokenIcon } from "./icons";
 import OpenModalYap from "./open-modal-yap";
 import Big from 'big.js';
+import useIsMobile from "@/hooks/use-isMobile";
 
 export default function BoxModal({
   open: show,
@@ -13,6 +14,7 @@ export default function BoxModal({
   data,
   loading
 }: any) {
+  const isMobile = useIsMobile()
   const [showYaps, setShowYaps] = useState(false);
   const [
     imgs,
@@ -93,9 +95,11 @@ export default function BoxModal({
       <Modal
         open={show}
         onClose={onClose}
+        isForceNormal={isMobile}
+        className={isMobile ? "flex justify-center items-center" : ""}
         closeIconClassName="right-[-14px] top-[-8px]"
       >
-        <Bg className="w-[600px]">
+        <Bg className="lg:w-[600px]">
           <div className="flex flex-col items-center p-[30px_20px_0] w-full">
             {imgs.length > 0 && (
               <div className={`flex gap-[12px] flex-wrap w-full ${imgs?.length > 5 ? 'justify-start' : 'justify-center'}`}>

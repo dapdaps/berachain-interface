@@ -1,10 +1,10 @@
 import Button from "@/sections/activity/christmas/components/button";
 
 const Pyramid = (props: any) => {
-  const { list, onBoxClick, opening } = props;
+  const { list, onBoxClick, opening, isMobile } = props;
 
   return (
-    <div className="flex justify-center items-center w-full h-full">
+    <div className="relative flex justify-center items-center w-full h-full md:scale-[0.4] md:translate-y-[-100px]">
       <div
         className="flex flex-col items-start absolute left-1/2 -translate-x-1/2"
         style={{
@@ -29,36 +29,40 @@ const Pyramid = (props: any) => {
                   key={`col-${idx}`}
                   className="flex justify-center items-center w-[155px] h-[203px] ml-[-10px] bg-[url('/images/activity/christmas/gift-box.svg')] bg-no-repeat bg-center bg-contain"
                 >
-                  <Button
-                    key={`col-btn-${idx}`}
-                    className="!px-[20px] translate-y-[20px]"
-                    disabled={disabled}
-                    motionProps={{
-                      variants: {
-                        visible: {
-                          opacity: 1
-                        },
-                        hidden: {
-                          opacity: 0
-                        }
-                      },
-                      initial: "hidden",
-                      animate: disabled ? "visible" : "hidden",
-                      whileHover: "visible"
-                    }}
-                    onClick={onBoxClick}
-                    loading={opening}
-                  >
-                    {disabled ? "Opened" : "Open it"}
-                  </Button>
+                  {
+                    !isMobile && (
+                      <Button
+                        key={`col-btn-${idx}`}
+                        className="!px-[20px] translate-y-[20px]"
+                        disabled={disabled}
+                        motionProps={{
+                          variants: {
+                            visible: {
+                              opacity: 1
+                            },
+                            hidden: {
+                              opacity: 0
+                            }
+                          },
+                          initial: "hidden",
+                          animate: disabled ? "visible" : "hidden",
+                          whileHover: "visible"
+                        }}
+                        onClick={onBoxClick}
+                        loading={opening}
+                      >
+                        {disabled ? "Opened" : "Open it"}
+                      </Button>
+                    )
+                  }
                 </div>
               );
             })}
           </div>
         )) : (
-          <div 
+          <div
             data-tour-ids="1,4"
-            className="flex flex-col justify-center items-center text-center text-[#FFDC50] text-[18px] font-[600] leading-normal gap-[11px] w-[210px] h-[263px] bg-[url('/images/activity/christmas/icon-gift-box-empty.svg')] bg-no-repeat bg-contain bg-center translate-y-1/4"
+            className="flex flex-col justify-center items-center text-center text-[#FFDC50] text-[18px] font-[600] leading-normal gap-[11px] w-[210px] h-[263px] bg-[url('/images/activity/christmas/icon-gift-box-empty.svg')] bg-no-repeat bg-contain bg-center translate-y-1/4 md:scale-[2]"
           >
             <div className="mt-[55px]">
               You don’t have any gift box.
@@ -77,6 +81,16 @@ const Pyramid = (props: any) => {
           </div>
         )}
       </div>
+      {
+        isMobile && list.length > 0 && list[0]?.length > 0 && (
+          <Button
+            className="absolute left-0 top-0 !w-[332px] !h-[125px] text-[45px]"
+            onClick={onBoxClick}
+          >
+            Open it
+          </Button>
+        )
+      }
     </div>
   );
 };

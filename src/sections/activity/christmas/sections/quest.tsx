@@ -21,6 +21,7 @@ const QuestView = () => {
     handleQuestCheck,
     questLoading,
     ecosystemQuest,
+    isMobile,
   } = useContext(ChristmasContext);
 
   const [currentTab, setCurrentTab] = useState(TABS[0]);
@@ -45,20 +46,24 @@ const QuestView = () => {
       <div className="pointer-events-none absolute left-0 -top-[9.67vw] w-full h-[20.42vw] bg-[url('/images/activity/christmas/bg-quest-top.svg')] bg-no-repeat bg-[length:100%_auto] bg-center">
         <div className="absolute left-0 bottom-0 w-full h-full bg-[url('/images/activity/christmas/bg-quest-top-lights.svg')] bg-no-repeat bg-[length:100%_auto] bg-bottom" />
       </div>
-      <div className="text-[42px] leading-[150%] font-CherryBomb">
+      <div className="text-[42px] leading-[150%] font-CherryBomb md:text-[26px]">
         How To Get Gift Box?
       </div>
-      <div className="mt-[10px] text-[18px]">
-        Interact with popular dApps in Berachain on DapDap, or explore hot projects to win Xmas gift boxes.
+      <div className="mt-[10px] text-[18px] md:text-[16px] md:leading-[150%]">
+        {
+          isMobile ?
+            'Have fun, get familiar with POL & DeFi on Berachain, and explore deeper into the ecosystem to win Beramas gift boxes!' :
+            'Interact with popular dApps in Berachain on DapDap, or explore hot projects to win Xmas gift boxes.'
+        }
       </div>
-      <div className="w-[1232px] mx-auto pt-[59px]" id="beratownActivityChristmasQuestTabs">
-        <div className="flex justify-center items-center gap-[156px]">
+      <div className="w-[1232px] mx-auto pt-[59px] md:w-full" id="beratownActivityChristmasQuestTabs">
+        <div className="flex justify-center items-center gap-[156px] md:gap-[34px] md:px-[32px]">
           {
             TABS.map((tab: any) => (
               <div
                 key={tab.key}
                 id={tab.key === 1 ? 'tour-id-6' : 'tour-id-7'}
-                className={`relative text-[#BBB] text-[26px] font-[700] leading-[150%] py-[18px] ${currentTab.key === tab.key ? 'cursor-default !text-[#FFF5A9]' : 'cursor-pointer'}`}
+                className={`relative text-[#BBB] text-[26px] font-[700] leading-[150%] py-[18px] md:text-[16px] md:py-[9px] ${currentTab.key === tab.key ? 'cursor-default !text-[#FFF5A9]' : 'cursor-pointer'}`}
                 onClick={() => handleTab(tab)}
               >
                 {tab.title}
@@ -85,17 +90,17 @@ const QuestView = () => {
               currentTab.key === TABS[0].key && (
                 <motion.div
                   key={TABS[0].key}
-                  className="pt-[40px]"
+                  className="pt-[40px] md:pb-[80px] md:px-[32px]"
                   animate={{
                     opacity: 1,
                     y: [-10, 0],
                   }}
                 >
                   <section className="">
-                    <div className="text-[#FFF5A9] text-[20px] font-[700] leading-[150%] text-left pl-[19px]">
+                    <div className="text-[#FFF5A9] text-[20px] font-[700] leading-[150%] text-left pl-[19px] md:text-[14px] md:pl-[0]">
                       Trade $ Liquidity
                     </div>
-                    <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
+                    <div className="grid grid-cols-3 gap-[16px] mt-[15px] md:grid-cols-1">
                       {
                         !questLoading && dAppSwapAndLiquidityQuest?.map((it) => (
                           <DappCard
@@ -110,13 +115,13 @@ const QuestView = () => {
                         questLoading && [...new Array(2)].map((_, idx) => (
                           <Skeleton
                             key={idx}
-                            width={400}
-                            height={260}
+                            width={isMobile ? '100%' : 400}
+                            height={isMobile ? 200 : 260}
                             borderRadius={20}
                           />
                         ))
                       }
-                      <DappCardWrapper>
+                      <DappCardWrapper className="md:!h-[200px]">
                         <div className="w-full h-full relative bg-[url('/images/activity/christmas/what-is-pol.svg')] bg-no-repeat bg-center bg-contain">
                           <Button
                             type="primary"
@@ -133,10 +138,10 @@ const QuestView = () => {
                     </div>
                   </section>
                   <section className="mt-[56px]">
-                    <div className="text-[#FFF5A9] text-[20px] font-[700] leading-[150%] text-left pl-[19px]">
+                    <div className="text-[#FFF5A9] text-[20px] font-[700] leading-[150%] text-left pl-[19px] md:text-[14px]">
                       Lending
                     </div>
-                    <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
+                    <div className="grid grid-cols-3 gap-[16px] mt-[15px] md:grid-cols-1 md:gap-[10px]">
                       {
                         !questLoading && dAppLendingQuest?.map((it) => (
                           <DappCard
@@ -151,8 +156,8 @@ const QuestView = () => {
                         questLoading && [...new Array(3)].map((_, idx) => (
                           <Skeleton
                             key={idx}
-                            width={400}
-                            height={260}
+                            width={isMobile ? '100%' : 400}
+                            height={isMobile ? 200 : 260}
                             borderRadius={20}
                           />
                         ))
@@ -160,10 +165,10 @@ const QuestView = () => {
                     </div>
                   </section>
                   <section className="mt-[56px]">
-                    <div className="text-[#FFF5A9] text-[20px] font-[700] leading-[150%] pl-[19px] text-left">
-                      Vaults
+                    <div className="text-[#FFF5A9] text-[20px] font-[700] leading-[150%] pl-[19px] text-left md:text-[14px]">
+                      {isMobile ? 'Proof Of Liquidity' : 'Vaults'}
                     </div>
-                    <div className="grid grid-cols-3 gap-[16px] mt-[15px]">
+                    <div className="grid grid-cols-3 gap-[16px] mt-[15px] md:grid-cols-1 md:gap-[10px]">
                       {
                         !questLoading && dAppVaultsQuest?.map((it) => (
                           <DappCard
@@ -178,8 +183,8 @@ const QuestView = () => {
                         questLoading && [...new Array(3)].map((_, idx) => (
                           <Skeleton
                             key={idx}
-                            width={400}
-                            height={260}
+                            width={isMobile ? '100%' : 400}
+                            height={isMobile ? 200 : 260}
                             borderRadius={20}
                           />
                         ))
@@ -193,14 +198,14 @@ const QuestView = () => {
               currentTab.key === TABS[1].key && (
                 <motion.div
                   key={TABS[1].key}
-                  className="pt-[46px]"
+                  className="pt-[46px] md:px-[25px]"
                   animate={{
                     opacity: 1,
                     y: [-10, 0],
                   }}
                 >
                   <section className="">
-                    <div className="grid grid-cols-5 gap-x-[16px] gap-y-[36px] mt-[15px]">
+                    <div className="grid grid-cols-5 gap-x-[16px] gap-y-[36px] mt-[15px] md:grid-cols-2 md:gap-y-[26px]">
                       {
                         !questLoading && ecosystemQuest?.map((it) => (
                           <ProjectCard
@@ -215,8 +220,8 @@ const QuestView = () => {
                         questLoading && [...new Array(10)].map((_, idx) => (
                           <Skeleton
                             key={idx}
-                            width={230}
-                            height={358}
+                            width={isMobile ? '100%' : 230}
+                            height={isMobile ? 260 : 358}
                             borderRadius={20}
                           />
                         ))

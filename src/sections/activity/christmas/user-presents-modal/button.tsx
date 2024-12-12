@@ -4,7 +4,7 @@ export default function Button({ children, ...restProps }: any) {
   return (
     <BasicButton
       type="primary"
-      className="flex justify-between items-center w-[168px] h-[36px] shadow-shadow2 text-[16px] font-semibold"
+      className="flex justify-between items-center w-[168px] h-[36px] shadow-shadow2 text-[16px] font-semibold whitespace-nowrap"
       {...restProps}
     >
       {children}

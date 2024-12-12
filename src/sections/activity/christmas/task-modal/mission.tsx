@@ -102,8 +102,8 @@ export default function Mission({ mission }: Props) {
   }, [mission, account]);
 
   return (
-    <div className="mt-[10px] bg-black/5 rounded-[10px] h-[78px] px-[16px] flex justify-between items-center">
-      <div className="text-[16px] font-medium">{mission.description}</div>
+    <div className="mt-[10px] bg-black/5 rounded-[10px] h-[78px] px-[16px] flex justify-between items-center md:flex-col md:h-[unset] md:p-[18px_14px_21px] md:gap-[10px]">
+      <div className="text-[16px] font-medium md:text-[14px]">{mission.description}</div>
       {
         mission.completed ? (
           <div className="w-[110px] h-[33px] flex justify-center items-center gap-[6px] bg-[#FFFDEB] border border-black rounded-[17px] px-[6px]">

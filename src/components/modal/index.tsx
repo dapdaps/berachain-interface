@@ -16,6 +16,7 @@ interface ModalProps {
   innerStyle?: React.CSSProperties;
   innerClassName?: string;
   isMaskClose?: boolean;
+  isShowCloseIcon?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -30,6 +31,7 @@ const Modal: React.FC<ModalProps> = ({
   innerStyle,
   innerClassName,
   isMaskClose = true,
+  isShowCloseIcon = true
 }) => {
   const isMobile = useIsMobile();
   useEffect(() => {
@@ -62,6 +64,14 @@ const Modal: React.FC<ModalProps> = ({
             className={`rounded-lg relative ${innerClassName}`}
             style={innerStyle}
           >
+            {isShowCloseIcon && (closeIcon || onClose) ? (
+              <button
+                onClick={onClose}
+                className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
+              >
+                <IconClose />
+              </button>
+            ) : null}
             {isMobile && !isForceNormal ? (
               <motion.div
                 animate={{
@@ -78,14 +88,6 @@ const Modal: React.FC<ModalProps> = ({
                   e.stopPropagation();
                 }}
               >
-                {closeIcon || onClose ? (
-                  <button
-                    onClick={onClose}
-                    className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
-                  >
-                    <IconClose />
-                  </button>
-                ) : null}
                 {children}
               </motion.div>
             ) : (

@@ -1,6 +1,8 @@
 import LinkButton from '@/sections/activity/christmas/task-modal/link-button';
 import Mission from '@/sections/activity/christmas/task-modal/mission';
 import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 const Detail = (props: Props) => {
   const {
@@ -11,20 +13,51 @@ const Detail = (props: Props) => {
     name,
   } = props;
 
+  const {
+    isMobile,
+  } = useContext(ChristmasContext);
+
+  const contentRef = useRef<any>();
+  const [fixedY, setFixedY] = useState<number>(0);
+
+  const handleContentScroll = (e: any) => {
+    if (!isMobile) return;
+    let scrollTop = e?.target?.scrollTop ?? 0;
+    scrollTop = Math.max(Math.min(62.5, scrollTop), 0);
+    setFixedY(scrollTop);
+  };
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+    handleContentScroll({ target: contentRef.current });
+  }, [contentRef]);
+
   return (
-    <div className="w-[800px] rounded-[24px] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
+    <div className="w-[800px] md:w-full md:h-[80dvh] rounded-[24px] md:rounded-b-[0] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
       <div
-        className="w-full h-[160px] rounded-x-[22px] bg-center bg-no-repeat bg-cover"
+        className="relative w-full h-[160px] md:h-[125px] rounded-x-[22px] md:rounded-t-[20px] bg-center bg-no-repeat bg-cover"
         style={{ backgroundImage: `url("${ecosystemInfo?.banner}")` }}
-      />
-      <div className="px-[30px]">
-        <div className="flex justify-between">
+      >
+        <img
+          src={ecosystemInfo?.icon}
+          className="absolute left-[22px] bottom-[-49px] w-[95px] h-[95px] rounded-[10px] invisible md:visible"
+          style={{
+            transform: `translateY(-${fixedY}px)`,
+          }}
+        />
+      </div>
+      <div
+        ref={contentRef}
+        className="px-[30px] md:px-[22px] md:h-[calc(100%_-_125px)] md:overflow-y-auto md:pb-[40px]"
+        onScroll={handleContentScroll}
+      >
+        <div className="flex justify-between md:flex-col">
           <div className="flex gap-[17px]">
             <img
               src={ecosystemInfo?.icon}
-              className="w-[120px] h-[120px] rounded-[10px] mt-[-50px]"
+              className="w-[120px] h-[120px] md:w-[95px] md:h-[95px] rounded-[10px] mt-[-50px]"
             />
-            <div className="mt-[14px]">
+            <div className="mt-[14px] md:mt-[0]">
               <div className="text-[20px] font-bold">{name}</div>
               <div className="text-[14px] font-medium">
                 {ecosystemInfo?.categories?.join(', ')}
