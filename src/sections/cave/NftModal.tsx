@@ -24,7 +24,7 @@ export default memo(function NftModal({
                 const photoList = store.photoList
                 const otherIndex = checkedIndex === 0 ? 1 : 0
                 return (
-                  <div className="relative h-[154px] rounded-[10px] bg-black/[0.06] w-[134px] md:w-[150px]">
+                  <div className="relative h-[154px] rounded-[10px] bg-black/[0.06] w-[134px] md:w-[calc(50% - 10px)]">
                     <div className="absolute right-0 top-0">
                       <CheckBox disabled={nft.token_id === photoList?.[otherIndex]?.token_id} checked={nft.token_id === photoList?.[checkedIndex]?.token_id} onCheckChange={(isChecked) => {
                         photoList[checkedIndex] = nft

@@ -62,7 +62,7 @@ const Cave = () => {
     <div className="relative w-full min-h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       {
         isChristmas && (
-          <div className="absolute top-0 left-0 right-0 bottom-0">
+          <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
             <div className="absolute left-[-400px] top-[40px] w-[996px] z-10">
               <img src="/images/cave/christmas/ribbons.svg" alt="ribbons" />
             </div>
@@ -144,8 +144,9 @@ const Cave = () => {
           </div>
         )
       }
+
       <div
-        className='mt-10 relative'
+        className='mt-10 relative z-10'
         style={{
           backgroundImage: `url('/images/mobile/cave/header.png')`,
           backgroundSize: 'cover',
@@ -159,17 +160,17 @@ const Cave = () => {
           Bera Cave
         </MenuButton>
         <div
-          className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px]" onClick={() => {
+          className="font-CherryBomb text-[16px] font-[400] underline leading-[14] absolute right-[40px] top-[-104px] h-[20px] z-20" onClick={() => {
             welcomeStore.set({ show: true })
           }}
           data-bp="1020-001"
         >Rules</div>
       </div>
       <div className='bg-[#9C948F] h-[330vw] w-full'>
-        <div className=" flex gap-[30px] justify-center mb-[50px]">
+        <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
             storePhotoList?.photoList?.map((photo, index) => (
-              <div className="relative w-[159px] h-[184px] group">
+              <div className="relative w-[159px] h-[184px] group z-20">
                 <img className="relative z-[3]" src="/images/cave/christmas/photo_frame.svg" alt="photo_frame" />
                 <div className="absolute left-[18px] top-[42px] z-[2]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="118" height="114" viewBox="0 0 118 114" fill="none">
@@ -178,7 +179,7 @@ const Cave = () => {
                 </div>
 
                 <div
-                  className="absolute left-[38px] top-[86px] flex items-center justify-center w-[81px] h-[36px] rounded-[18px] border-[2px] border-[#4B371F] bg-[#FFDC50] cursor-pointer text-black font-CherryBomb text-[18px] z-[5] opacity-0 group-hover:opacity-100"
+                  className="absolute left-[38px] top-[86px] flex items-center justify-center w-[81px] h-[36px] rounded-[18px] border-[2px] border-[#4B371F] bg-[#FFDC50] cursor-pointer text-black font-CherryBomb text-[18px] z-[5] opacity-0 md:opacity-100 group-hover:opacity-100"
                   onClick={() => {
                     nfts?.length > 0 && setCheckPhotoIndex(index)
                   }}
@@ -210,7 +211,7 @@ const Cave = () => {
           }
         </div>
         <div
-          className='fixed bottom-0'
+          className='fixed bottom-0 z-[5]'
           style={{
             backgroundImage: `url('/images/mobile/cave/bottom.png')`,
             backgroundSize: 'cover',
@@ -220,7 +221,14 @@ const Cave = () => {
             width: '100vw'
           }}
         />
-        <div className='flex flex-col justify-center items-center'>
+        {
+          !isChristmas && (
+            <div className="fixed w-[15.641vw] bottom-[50px] left-[8.974%] z-10">
+              <img className="w-full" src="/images/cave/leaves.png" alt="" />
+            </div>
+          )
+        }
+        <div className='relative flex flex-col justify-center items-center z-20'>
           <div className='w-full flex flex-col items-center justify-center mt-[10.512vw] relative'>
             <img
               src='/images/mobile/cave/backStripe.png'
