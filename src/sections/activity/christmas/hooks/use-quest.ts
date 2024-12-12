@@ -101,6 +101,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
           name: it.name as string,
           category: it.action_type ? DAPP_CATEGORY[it.action_type] : (it.action_type as string),
           missions: DAppQuests[it.name as string]?.missions,
+          limit: DAppQuests[it.name as string]?.limit?.text?.(Big(it.box || 0).times(it.times || 0)),
         };
         it.actions = [
           { text: it.action_type ? DAPP_ACTIONS[it.action_type] : 'Trade', box: it.box },
@@ -466,7 +467,14 @@ export interface Quest {
   completed?: boolean;
   checking?: boolean;
   total_completed_times?: number;
-  dappInfo?: { name: string; icon?: number; category: string; path?: string; missions?: string[]; };
+  dappInfo?: {
+    name: string;
+    icon?: number;
+    category: string;
+    path?: string;
+    missions?: string[];
+    limit?: { text: string; value: number; };
+  };
   actions?: { text: string; box?: number; path?: string; }[];
   ecosystemInfo?: { categories?: string[]; icon?: string; banner?: string; description?: string; };
   missions?: Partial<Quest>[];

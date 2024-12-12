@@ -1,30 +1,46 @@
 import CheckButton from "../check-button";
 import Button from "./button";
 import { useRouter } from 'next/navigation';
+import useIsMobile from '@/hooks/use-isMobile';
+import Big from 'big.js';
 
 export default function DappCard(props: any) {
-  const { total_box, onCheck, checking, actions, dappInfo } = props;
+  const { total_box, box, times, onCheck, checking, actions, dappInfo } = props;
 
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   return (
     <DappCardWrapper>
       <div>
         <div className="flex justify-between items-start">
           <div className="flex flex-1 gap-[10px]">
-            <img src={dappInfo?.icon} className="w-[80px] h-[80px] md:w-[50px] md:h-[50px] rounded-[10px] shrink-0" />
-            <div className="flex flex-1 w-0 flex-col gap-[4px] text-black text-left whitespace-nowrap">
-              <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%] md:text-[16px]">{dappInfo?.name}</div>
-              <div className="text-[14px] font-medium md:text-[12px]">DeFi, {dappInfo?.category}</div>
+            <img src={dappInfo?.icon} className="w-[80px] h-[80px] rounded-[10px] shrink-0" />
+            <div className="flex flex-1 w-0 flex-col gap-[15px] text-black text-left whitespace-nowrap">
+              <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%] flex justify-between items-center">
+                <div className="">{dappInfo?.name}</div>
+                <CheckButton
+                  number={total_box}
+                  checked={false}
+                  className="!bg-[#DCBC95] border-black text-black items-center shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] shrink-0"
+                  onClick={onCheck}
+                  checking={checking}
+                />
+              </div>
+              <div className="text-[14px] font-medium flex justify-between items-center">
+                <div className="">
+                  DeFi, {dappInfo?.category}
+                </div>
+                {
+                  !isMobile && (
+                    <div className="bg-[rgba(0,_0,_0,_0.17)] rounded-[16px] text-black text-[14px] font-[500] leading-[120%] px-[10px] h-[30px] flex justify-center items-center">
+                      {dappInfo?.limit}
+                    </div>
+                  )
+                }
+              </div>
             </div>
           </div>
-          <CheckButton
-            number={total_box}
-            checked={false}
-            className="!bg-[#DCBC95] border-black text-black items-center shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] shrink-0 md:text-[12px] md:w-[96px]"
-            onClick={onCheck}
-            checking={checking}
-          />
         </div>
         <ul className="mt-[20px] text-left text-black leading-[150%] md:pl-[13px]">
           {
@@ -44,6 +60,7 @@ export default function DappCard(props: any) {
               action={action.text}
               reward={action.box}
               className="w-full"
+              disabled={Big(total_box || 0).gte(Big(box || 0).times(times || 0))}
               style={{
                 width: `${100 / actions.length}%`,
               }}
