@@ -39,7 +39,7 @@ export default function useDeposit({
         : null;
 
       const tx = await RouterContract[
-        nativeToken ? "addLiquidityETH" : "addLiquidity"
+        nativeToken ? "addLiquidityNative" : "addLiquidity"
       ](
         data.id,
         _amount0.toFixed(0),

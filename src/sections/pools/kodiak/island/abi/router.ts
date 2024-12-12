@@ -2,8 +2,8 @@ export default [
   {
     inputs: [
       {
-        internalType: "contract IKodiakVaultV1",
-        name: "pool",
+        internalType: "contract IKodiakIsland",
+        name: "island",
         type: "address"
       },
       {
@@ -61,8 +61,8 @@ export default [
   {
     inputs: [
       {
-        internalType: "contract IKodiakVaultV1",
-        name: "pool",
+        internalType: "contract IKodiakIsland",
+        name: "island",
         type: "address"
       },
       {
@@ -110,8 +110,8 @@ export default [
   {
     inputs: [
       {
-        internalType: "contract IKodiakVaultV1",
-        name: "pool",
+        internalType: "contract IKodiakIsland",
+        name: "island",
         type: "address"
       },
       {
@@ -145,7 +145,7 @@ export default [
         type: "address"
       }
     ],
-    name: "addLiquidityETH",
+    name: "addLiquidityNative",
     outputs: [
       {
         internalType: "uint256",
@@ -169,8 +169,8 @@ export default [
   {
     inputs: [
       {
-        internalType: "contract IKodiakVaultV1",
-        name: "pool",
+        internalType: "contract IKodiakIsland",
+        name: "island",
         type: "address"
       },
       {
@@ -194,7 +194,7 @@ export default [
         type: "address"
       }
     ],
-    name: "removeLiquidityETH",
+    name: "removeLiquidityNative",
     outputs: [
       {
         internalType: "uint256",
