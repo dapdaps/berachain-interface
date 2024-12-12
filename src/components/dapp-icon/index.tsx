@@ -22,7 +22,9 @@ const Laptop = ({ src, alt, name, type, style, className }: Props) => {
             height={43}
           />
           <div className='font-CherryBomb text-[20px]'>{name}</div>
-          <div className='text-[12px] text-[#527213]'>{type}</div>
+          <div className='text-[12px] text-[#527213]'>
+            {type?.slice(0, 1)?.toUpperCase?.() + type?.slice(1)}
+          </div>
         </div>
       </div>
       <svg

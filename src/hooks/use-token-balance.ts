@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import useAccount from '@/hooks/use-account';
 import chains from '@/configs/chains';
 
-const TOKEN_ABI = [
+export const TOKEN_ABI = [
   {
     constant: true,
     inputs: [

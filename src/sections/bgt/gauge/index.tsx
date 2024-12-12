@@ -143,7 +143,7 @@ const BgtGauge = (props: any) => {
         });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Claim Successfully!'
+          title: 'Claim Successful!'
         });
         updateState({
           claimLoading: false

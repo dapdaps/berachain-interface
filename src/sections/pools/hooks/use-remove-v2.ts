@@ -95,13 +95,13 @@ export default function useRemove({
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Remove successfully!",
+          title: "Remove successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
         onSuccess();
       } else {
-        toast.fail({ title: "Remove faily!" });
+        toast.fail({ title: "Remove failed!" });
       }
     } catch (err: any) {
       console.log("err", err);
@@ -110,7 +110,7 @@ export default function useRemove({
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Remove faily!`
+          : `Remove failed!`
       });
     }
   }, [detail, percent]);
