@@ -120,7 +120,7 @@ const QuestView = () => {
                           />
                         ))
                       }
-                      <DappCardWrapper className="md:h-[200px]">
+                      <DappCardWrapper className="md:!h-[200px]">
                         <div className="w-full h-full relative bg-[url('/images/activity/christmas/what-is-pol.svg')] bg-no-repeat bg-center bg-contain">
                           <Button
                             type="primary"

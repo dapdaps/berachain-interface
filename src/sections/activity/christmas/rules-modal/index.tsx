@@ -8,7 +8,7 @@ export default function RulesModal({
   return (
     <Modal open={open} onClose={onClose}>
       <div className="relative">
-        <div className="lg:w-[830px] h-[80dvh] overflow-y-auto bg-[#B5956E] rounded-[20px] lg:px-[50px] md:px-[20px] py-[30px] text-[20px]">
+        <div className="lg:w-[830px] h-[80dvh] overflow-y-auto bg-[#B5956E] rounded-[20px] md:rounded-b-[0] lg:px-[50px] md:px-[20px] py-[30px] text-[20px]">
           <div className="font-bold">Bera’s Wonderland rule</div>
           <div className="font-bold mt-[10px]"> Henlo ho ho! </div>
           <div>

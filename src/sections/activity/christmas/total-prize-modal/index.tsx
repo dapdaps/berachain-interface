@@ -80,12 +80,12 @@ export default function TotalPrizeModal({ open, onClose }: any) {
                 Check
               </BasicButton>
             </div>
-            <div className="flex flex-wrap pb-[20px]">
+            <div className="flex flex-wrap pb-[20px] md:grid md:grid-cols-2 md:gap-x-[10px] md:gap-y-[15px]">
               {loading
                 ? [...new Array(12)].map((_, idx) => (
                     <div
                       key={idx}
-                      className="w-1/3 flex items-center gap-[22px] mt-[15px]"
+                      className="w-1/3 flex items-center gap-[22px] mt-[15px] md:flex-col"
                     >
                       <Skeleton width={40} height={40} borderRadius={10} />
                       <Skeleton width={60} height={21} borderRadius={10} />

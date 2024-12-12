@@ -20,17 +20,17 @@ export default function TaskModal(props: Props) {
       onClose={onClose}
       closeIconClassName="right-[-14px] top-[-8px]"
     >
-      <div className="w-[800px] rounded-[24px] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
+      <div className="w-[800px] md:w-full md:h-[80dvh] md:overflow-y-auto rounded-[24px] md:rounded-b-[0] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
         <div
-          className="w-full h-[160px] rounded-x-[22px] bg-center bg-no-repeat bg-cover"
+          className="w-full h-[160px] md:h-[125px] rounded-x-[22px] md:rounded-t-[20px] bg-center bg-no-repeat bg-cover"
           style={{ backgroundImage: `url("${ecosystemInfo?.banner}")` }}
         />
         <div className="px-[30px]">
-          <div className="flex justify-between">
+          <div className="flex justify-between md:flex-col md:gap-[16px]">
             <div className="flex gap-[17px]">
               <img
                 src={ecosystemInfo?.icon}
-                className="w-[120px] h-[120px] rounded-[10px] mt-[-50px]"
+                className="w-[120px] h-[120px] md:w-[95px] md:h-[95px] rounded-[10px] mt-[-50px]"
               />
               <div className="mt-[14px]">
                 <div className="text-[20px] font-bold">{name}</div>
@@ -39,7 +39,7 @@ export default function TaskModal(props: Props) {
                 </div>
               </div>
             </div>
-            <div className="flex gap-[6px] mt-[14px]">
+            <div className="flex gap-[6px] mt-[14px] md:flex-wrap md:mt-[0]">
               {socials?.map((it, idx) => (
                 <LinkButton key={idx} href={it.link} target="_blank">
                   {it.label}
