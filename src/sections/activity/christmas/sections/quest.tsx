@@ -147,7 +147,6 @@ const QuestView = () => {
                           <DappCard
                             key={it.id}
                             {...it}
-                            {...it.dappInfo}
                             onCheck={() => handleQuestCheck?.(it)}
                           />
                         ))
@@ -174,7 +173,6 @@ const QuestView = () => {
                           <DappCard
                             key={it.id}
                             {...it}
-                            {...it.dappInfo}
                             onCheck={() => handleQuestCheck?.(it)}
                           />
                         ))

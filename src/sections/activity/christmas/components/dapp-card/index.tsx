@@ -3,12 +3,23 @@ import Button from "./button";
 import { useRouter } from 'next/navigation';
 import useIsMobile from '@/hooks/use-isMobile';
 import Big from 'big.js';
+import { useMemo } from 'react';
 
 export default function DappCard(props: any) {
-  const { total_box, box, times, onCheck, checking, actions, dappInfo } = props;
+  const { total_box, onCheck, checking, actions, dappInfo, missions } = props;
 
   const router = useRouter();
   const isMobile = useIsMobile();
+
+  const [limitTotal] = useMemo(() => {
+    let _total = Big(0);
+    missions?.forEach?.((mission: any) => {
+      _total = Big(_total).plus(Big(mission.times || 0).times(mission.box || 0));
+    });
+    return [
+      _total.toString(),
+    ];
+  }, [missions]);
 
   return (
     <DappCardWrapper>
@@ -34,7 +45,7 @@ export default function DappCard(props: any) {
                 {
                   !isMobile && (
                     <div className="bg-[rgba(0,_0,_0,_0.17)] rounded-[16px] text-black text-[14px] font-[500] leading-[120%] px-[10px] h-[30px] flex justify-center items-center">
-                      {dappInfo?.limit}
+                      {dappInfo?.limit?.text?.(limitTotal)}
                     </div>
                   )
                 }
@@ -60,7 +71,7 @@ export default function DappCard(props: any) {
               action={action.text}
               reward={action.box}
               className="w-full"
-              disabled={Big(total_box || 0).gte(Big(box || 0).times(times || 0))}
+              disabled={Big(action.total_box || 0).gte(Big(action.box || 0).times(action.times || 0))}
               style={{
                 width: `${100 / actions.length}%`,
               }}
