@@ -480,48 +480,58 @@ export const EcosystemQuests: any = {
 
 export const DAppQuests: any = {
   Marketplace: {
-    missions: ["1 Gift Box for each swap to hot tokens/memecoins"]
+    missions: ["1 Gift Box for each swap to hot tokens/memecoins"],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   Kodiak: {
-    missions: ["1 Gift Box for each swap", "2 Gift Boxes per LP transaction"]
+    missions: ["1 Gift Box for each swap", "2 Gift Boxes per LP transaction"],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   Bex: {
-    missions: ["1 Gift Box for each swap", "2 Gift Boxes per LP transaction"]
+    missions: ["1 Gift Box for each swap", "2 Gift Boxes per LP transaction"],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   "Ooga Booga": {
-    missions: ["1 Gift Box for each swap"]
+    missions: ["1 Gift Box for each swap"],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   Bend: {
     missions: [
       "2 Gift Boxes per deposit transaction",
       "2 Gift Boxes per borrow transaction"
-    ]
+    ],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   Beraborrow: {
     missions: [
       "2 Gift Boxes per deposit transaction",
       "2 Gift Boxes per borrow transaction"
-    ]
+    ],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   Dolomite: {
     missions: [
       "2 Gift Boxes per deposit transaction",
       "2 Gift Boxes per borrow transaction"
-    ]
+    ],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   Infrared: {
     missions: [
       "1 Gift Box per stake transaction to the iBGT vault",
       "2 Gift Box per stake transaction to any vault"
-    ]
+    ],
+    limit: { text: (total: number) => `Max ${total} Boxes` }
   },
   Berps: {
-    missions: ["2 Gift Boxes per deposit transaction to the $HONEY vault"]
+    missions: ["2 Gift Boxes per deposit transaction to the $HONEY vault"],
+    limit: { text: (total: number) => `${total} limited total` }
   },
   "Top Validators": {
     missions: [
       "3 Gift Boxes per BGT delegate transaction to THJ or THJ x Beradrome validators"
-    ]
+    ],
+    limit: { text: (total: number) => `${total} limited total` }
   }
 };
 
