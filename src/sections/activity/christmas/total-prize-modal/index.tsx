@@ -61,9 +61,9 @@ export default function TotalPrizeModal({ open, onClose }: any) {
       >
         <div className="lg:w-[594px] md:h-[60dvh] md:overflow-x-hidden md:overflow-y-auto lg:rounded-[20px] md:rounded-t-[20px] lg:border border-black bg-[#FFFDEB] lg:shadow-shadow1 p-[20px]">
           <div className="flex justify-between items-center text-[16px] font-bold pb-[14px]">
-            <div>$Snowflake</div>
+            <div>$SNOWFLAKE</div>
             <div className="flex items-center gap-[4px]">
-              <div>~1.25M</div>
+              <div>~100M+</div>
               <SnowIcon className="w-[28px] h-[28px]" />
             </div>
           </div>

@@ -12,6 +12,7 @@ import { ethers } from 'ethers';
 import _ from 'lodash';
 import { useRouter } from 'next/navigation';
 import useCustomAccount from './use-account';
+import { numberFormatter } from '@/utils/number-formatter';
 
 
 export const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
@@ -258,7 +259,7 @@ export function useBGT(tab?: string) {
       .then((receipt: any) => {
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Claim Successfully!'
+          title: 'Claim Successful!'
         });
         setClaiming(index, false)
         refresh()
@@ -331,6 +332,7 @@ export function useBGT(tab?: string) {
             ...vaults[i],
             depositedAmount: ethers.utils.formatUnits(depositedAmountResult?.[i][0] ?? 0),
             earned: bgtRewardsResult[i] ? ethers.utils.formatUnits(bgtRewardsResult?.[i][0] ?? 0) : 0,
+            earnedShown: numberFormatter(bgtRewardsResult[i] ? ethers.utils.formatUnits(bgtRewardsResult?.[i][0] ?? 0) : 0, 6, true),
             claim: handleClaim
           })
         }

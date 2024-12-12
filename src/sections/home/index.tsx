@@ -16,6 +16,8 @@ import MobileHome from "./mobile";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
+import HomePrompt from '@/sections/activity/christmas/components/home-prompt';
+
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -57,6 +59,7 @@ const Navigation = function () {
         className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]"
         onClick={onNavigateToMarketplace}
         data-bp="1010-006"
+        id="btn-group1"
       >
         <div
           className={`flex flex-col gap-[19px] items-center pt-[10px] ${
@@ -77,6 +80,7 @@ const Navigation = function () {
         )}
         onClick={onNavigateToBridge}
         data-bp="1010-007"
+        id="btn-group2"
       >
         <div
           className={`flex items-center justify-end gap-[12px] pr-[10px] ${
@@ -175,6 +179,7 @@ export default memo(function Home() {
   return (
     <BearBackground type="home">
       <Navigation />
+      <HomePrompt />
     </BearBackground>
   );
 });

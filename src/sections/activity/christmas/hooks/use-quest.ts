@@ -180,6 +180,34 @@ export function useQuest(props: { base: IBase; }): IQuest {
     setLoading(false);
   };
 
+  const checkNftMissionValid: (_quest: Partial<Quest>) => Promise<{ success: boolean; balance: string; }> = (_quest) => {
+    return new Promise(async (resolve) => {
+      if (!_quest.token) {
+        resolve({ success: false, balance: '0' });
+        return;
+      }
+      // NFT
+      const rpcUrl = ChristmasActivityChains[_quest.chain_id as number].rpcUrls.default.http[0];
+      const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
+      const _provider = rpcProvider;
+      const contract = new Contract(_quest.token, TOKEN_ABI, _provider);
+      try {
+        const rawBalance = await contract.balanceOf(account);
+        const balance = utils.formatUnits(rawBalance, 18);
+        console.log('NFT balance: %o', balance);
+        if (Big(balance || 0).lte(0)) {
+          resolve({ success: false, balance: '0' });
+          return;
+        }
+        resolve({ success: true, balance: balance });
+      } catch (err: any) {
+        console.log('rawBalance failed: %o', err);
+        resolve({ success: false, balance: '0' });
+        return;
+      }
+    });
+  };
+
   const requestCheck = (_quest: Partial<Quest>) => {
     const params = {
       id: _quest.id,
@@ -187,21 +215,9 @@ export function useQuest(props: { base: IBase; }): IQuest {
     };
     return new Promise(async (resolve) => {
       // NFT
-      if (_quest.token) {
-        const rpcUrl = ChristmasActivityChains[_quest.chain_id as number].rpcUrls.default.http[0];
-        const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
-        const _provider = rpcProvider;
-        const contract = new Contract(_quest.token, TOKEN_ABI, _provider);
-        try {
-          const rawBalance = await contract.balanceOf(account);
-          const balance = utils.formatUnits(rawBalance, 18);
-          console.log('NFT balance: %o', balance);
-          if (Big(balance || 0).lte(0)) {
-            resolve({ code: 0, data: {} });
-            return;
-          }
-        } catch (err: any) {
-          console.log('rawBalance failed: %o', err);
+      if (_quest.token && _quest.category === QuestCategory.TokenBalance) {
+        const { success } = await checkNftMissionValid(_quest);
+        if (!success) {
           resolve({ code: 0, data: {} });
           return;
         }
@@ -392,6 +408,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
     setQuestVisited,
     requestCheck,
     handleQuestUpdate,
+    checkNftMissionValid,
   };
 }
 
@@ -411,6 +428,7 @@ export interface IQuest {
   requestCheck(quest?: Partial<Quest>): void;
   setQuestVisited(params: { id?: number | string, visited?: boolean; account?: string; }): void;
   handleQuestUpdate(quest: Partial<Quest> | Partial<Quest>[], values: Partial<Quest> | Partial<Quest>[]): void;
+  checkNftMissionValid(quest: Partial<Quest>): Promise<{ success: boolean; balance: string; }>;
 }
 
 export enum QuestCategory {
@@ -421,6 +439,7 @@ export enum QuestCategory {
   Wallet = 'wallet',
   Social = 'social',
   Daily = 'daily',
+  Address = 'address',
 }
 
 export interface Quest {

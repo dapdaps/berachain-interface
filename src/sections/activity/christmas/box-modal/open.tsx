@@ -20,6 +20,12 @@ export default function OpenStatus({ data, remainBox, loading, onClick }: any) {
     }
     return ["yap", { text: data.yap }];
   }, [data]);
+
+  const title = useMemo(() => {
+    if (type === "item") return "Lucky you!";
+    return "Good Luck!";
+  }, [type]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -52,7 +58,7 @@ export default function OpenStatus({ data, remainBox, loading, onClick }: any) {
         </motion.div>
       )}
       <OpenBox className="mt-[-133px] relative z-[2]" />
-      <div className="text-[26px] font-CherryBomb mt-[14px]">Good Luck!</div>
+      <div className="text-[26px] font-CherryBomb mt-[14px]">{title}</div>
       {type === "token" && <TokenHints amount={item.amount} />}
       {type === "item" && <Hints name={item.name} />}
       {type === "nft" && <NftHints nft={item} />}

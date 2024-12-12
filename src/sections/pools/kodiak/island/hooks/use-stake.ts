@@ -48,13 +48,13 @@ export default function useStake({
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Stake successfully!",
+          title: "Stake successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
         onSuccess();
       } else {
-        toast.fail({ title: "Stake faily!" });
+        toast.fail({ title: "Stake failed!" });
       }
       addAction?.({
         type: "Staking",
@@ -79,7 +79,7 @@ export default function useStake({
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Stake faily!`
+          : `Stake failed!`
       });
     }
   };

@@ -21,8 +21,6 @@ export default function Bear({
         if (cars) {
             return cars.some(item => item.checked)
         }
-        console.log('=items[5].checked', items[5].checked)
-        console.log('=items[6].checked', items[6].checked)
 
         return false
     }, [cars, items])
@@ -59,7 +57,7 @@ export default function Bear({
 
         {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-1.png" className="absolute left-[-170px] bottom-0 max-w-[757px]" />}
         {
-            hasCars && (
+            (items[5].checked || items[6].checked) && (
                 <div className='absolute w-full h-full left-[102px] top-[25px] scale-[1.15]'>
                     <div className='absolute left-0 top-0 z-0'>
                         <img src="/images/cave/christmas/bear/bear.svg" alt="bear" />

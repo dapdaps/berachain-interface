@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
-import { getUTCTimestamp } from '@/utils/date';
 import * as dateFns from 'date-fns';
+import { getUTCTimestamp } from '@/utils/date';
+import useTokenBalance from '@/hooks/use-token-balance';
+import { beraB } from '@/configs/tokens/bera-bArtio';
 
 export function useBase(): IBase {
   const { account, provider } = useCustomAccount();
@@ -11,9 +13,15 @@ export function useBase(): IBase {
   const [userLoading, setUserLoading] = useState(false);
   const [info, setInfo] = useState<Partial<Mas>>({});
   const [userInfo, setUserInfo] = useState<Partial<UserMas>>({});
+  const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
+  const [currentUTCZeroTimestamp, setCurrentUTCZeroTimestamp] = useState<number>();
   const [currentDailyTimestamp, setCurrentDailyTimestamp] = useState<number>();
-  const [currentUTCTimestamp, setCurrentUTCTimestamp] = useState<number>();
   const [showSwapModal, setShowSwapModal] = useState(false);
+
+  const {
+    tokenBalance: snowflakeBalance,
+    isLoading: snowflakeBalanceLoading
+  } = useTokenBalance(beraB['sfc'].address, beraB['sfc'].decimals);
 
   const userRemainBox = useMemo(
     () => (userInfo?.total_box || 0) - (userInfo?.used_box || 0),
@@ -44,13 +52,16 @@ export function useBase(): IBase {
 
   const getCurrentTimestamp = async () => {
     const res = await get(`/api/timestamp`);
-    let currUTCTimestamp = new Date().getTime();
+    let currTimestamp = new Date().getTime();
     if (res.code === 0 && res.data?.timestamp) {
-      currUTCTimestamp = res.data?.timestamp * 1000;
+      currTimestamp = res.data?.timestamp * 1000;
+      // currTimestamp = new Date('2024-12-24 08:00:00').getTime();
     }
-    setCurrentUTCTimestamp(getUTCTimestamp(currUTCTimestamp));
-    const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currUTCTimestamp, 0), 0), 0);
+    setCurrentDateTime(new Date(currTimestamp));
+    const currUTCDay = dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(currTimestamp, 0), 0), 0);
     setCurrentDailyTimestamp(currUTCDay.getTime());
+    const utc = getUTCTimestamp(currTimestamp);
+    setCurrentUTCZeroTimestamp(dateFns.setSeconds(dateFns.setMinutes(dateFns.setHours(utc, 0), 0), 0).getTime());
   };
 
   useEffect(() => {
@@ -66,24 +77,30 @@ export function useBase(): IBase {
     info,
     userInfo,
     getUserInfo,
-    currentUTCTimestamp,
+    currentDateTime,
     currentDailyTimestamp,
+    currentUTCZeroTimestamp,
     showSwapModal,
     setShowSwapModal,
     userRemainBox,
+    snowflakeBalance,
+    snowflakeBalanceLoading,
   };
 }
 
 export interface IBase {
   infoLoading: boolean;
   userInfoLoading: boolean;
+  snowflakeBalanceLoading: boolean;
   info: Partial<Mas>;
   userInfo: Partial<UserMas>;
-  currentUTCTimestamp?: number;
   currentDailyTimestamp?: number;
+  currentUTCZeroTimestamp?: number;
+  currentDateTime?: Date;
   showSwapModal: boolean;
   setShowSwapModal: Dispatch<SetStateAction<boolean>>;
   userRemainBox: number;
+  snowflakeBalance: string;
   getUserInfo(): void;
 }
 

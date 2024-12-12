@@ -15,6 +15,7 @@ interface ModalProps {
   isForceNormal?: boolean;
   innerStyle?: React.CSSProperties;
   innerClassName?: string;
+  isMaskClose?: boolean;
   isShowCloseIcon?: boolean;
 }
 
@@ -29,6 +30,7 @@ const Modal: React.FC<ModalProps> = ({
   isForceNormal,
   innerStyle,
   innerClassName,
+  isMaskClose = true,
   isShowCloseIcon = true
 }) => {
   const isMobile = useIsMobile();
@@ -45,6 +47,7 @@ const Modal: React.FC<ModalProps> = ({
   if (!open) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isMaskClose) return;
     if (e.target === e.currentTarget || isMobile) {
       onClose && onClose();
     }

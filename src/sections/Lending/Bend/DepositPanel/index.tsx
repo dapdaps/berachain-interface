@@ -64,7 +64,7 @@ const DepositPanel: React.FC<IProps> = ({
             <div className="flex justify-between items-center gap-[10px]">
               <Asset className="" token={token} />
               <div className="flex justify-end items-center gap-[10px]">
-                <Actions token={token} isMobile={isMobile} onClick={(action: string) => handleAction(action, token)} />
+                <MobileActions token={token} onClick={(action: string) => handleAction(action, token)} />
               </div>
             </div>
             <div className="flex justify-between items-center gap-[10px] mt-[15px]">
@@ -93,7 +93,7 @@ const DepositPanel: React.FC<IProps> = ({
             </div>
           </div>
         ) : (
-          <Row key={index} token={token} isMobile={isMobile} />
+          <Row key={index} token={token} />
         ))}
       </div>
       <ActionModal
@@ -120,7 +120,7 @@ const DepositPanel: React.FC<IProps> = ({
 export default DepositPanel;
 
 const Actions = (props: any) => {
-  const { token, isMobile, onClick } = props;
+  const { token, onClick } = props;
 
   const handleClick = (action: string) => {
     if (!onClick) return;
@@ -138,12 +138,7 @@ const Actions = (props: any) => {
       <Popover
         trigger={PopoverTrigger.Click}
         placement={PopoverPlacement.BottomRight}
-        content={isMobile ? null : (
-          <ActionModal
-            action="deposit"
-            token={token}
-          />
-        )}
+        content={<ActionModal action="deposit" token={token} />}
       >
         <button
           disabled={Big(token.balance || 0).eq(0)}
@@ -160,12 +155,7 @@ const Actions = (props: any) => {
       <Popover
         trigger={PopoverTrigger.Click}
         placement={PopoverPlacement.BottomRight}
-        content={isMobile ? null : (
-          <ActionModal
-            action="withdraw"
-            token={token}
-          />
-        )}
+        content={<ActionModal action="withdraw" token={token} />}
       >
         <button
           disabled={Big(token.underlyingBalance || 0).eq(0)}
@@ -179,6 +169,41 @@ const Actions = (props: any) => {
         <IconMinus />
         </button>
       </Popover>
+    </>
+  );
+};
+
+const MobileActions = (props: any) => {
+  const { token, onClick } = props;
+
+  const handleClick = (action: string) => {
+    if (!onClick) return;
+    onClick(action);
+  };
+
+  return (
+    <>
+      <button
+        className={`w-8 h-8 rounded-[10px] flex items-center justify-center bg-[#FFDC50] ${
+          Big(token.balance || 0).eq(0)
+            ? 'border border-black text-black opacity-30'
+            : 'text-black border border-[#373A53]'
+        }`}
+        onClick={() => handleClick('deposit')}
+      >
+        <IconPlus />
+      </button>
+      <button
+        disabled={Big(token.underlyingBalance || 0).eq(0)}
+        className={`w-8 h-8 rounded-[10px] flex items-center justify-center bg-[#FFDC50] ${
+          Big(token.underlyingBalance || 0).eq(0)
+            ? 'border border-black text-black opacity-30'
+            : 'text-black border border-[#373A53]'
+        }`}
+        onClick={() => handleClick('withdraw')}
+      >
+        <IconMinus />
+      </button>
     </>
   );
 };

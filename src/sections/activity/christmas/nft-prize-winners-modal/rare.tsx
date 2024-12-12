@@ -11,7 +11,7 @@ export default function Rare({ rare }: any) {
           !rare.amount && "opacity-50"
         )}
       />
-      <div className="text-[12px] font-semibold mt-[8px]">
+      <div className="text-[12px] font-semibold mt-[8px] text-center">
         {rare.name}
       </div>
       {rare.amount && (

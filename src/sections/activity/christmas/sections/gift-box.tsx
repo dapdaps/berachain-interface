@@ -28,10 +28,13 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    snowflakeBalance,
+    snowflakeBalanceLoading,
     userRemainBox,
     userInfoLoading,
     getUserInfo,
     currentDailyTimestamp,
+    currentUTCZeroTimestamp,
     setShowSwapModal,
     requestCheck,
     handleQuestUpdate,
@@ -56,11 +59,11 @@ const GiftBox = () => {
   const sortedList = createPyramid(list);
 
   const dailyQuest = useMemo(() => {
-    if (!questList || !currentDailyTimestamp || !questList.length) return [];
+    if (!questList || !currentUTCZeroTimestamp || !questList.length) return [];
     return questList.filter((it) => {
-      return getUTCTimestamp((it.timestamp || 0) * 1000) === currentDailyTimestamp;
+      return getUTCTimestamp((it.timestamp || 0) * 1000) === currentUTCZeroTimestamp;
     }) || [];
-  }, [currentDailyTimestamp, questList]);
+  }, [currentUTCZeroTimestamp, questList]);
   const dailyQuestCounts = useMemo(() => {
     if (!dailyQuest || !dailyQuest.length) return { total_box: 0, box: 0, completed: false };
     const total_box = dailyQuest.map((it) => it.total_box || 0).reduce((a, b) => a + b);
@@ -125,7 +128,7 @@ const GiftBox = () => {
               </button>
             </>
           }
-          value={userInfo?.used_box || 0}
+          value={userRemainBox || 0}
           total={userInfo?.total_box || 0}
           valueClassName="translate-x-[-20px]"
           className="md:flex-1 md:w-0"
@@ -168,9 +171,11 @@ const GiftBox = () => {
           </div>
         </BoxTitle>
         <BoxTitle
-          label="Your $Snowflake" value={numberFormatter(userInfo?.total_token, 2, true, { isShort: true })}
+          label="Your $SNOWFLAKE"
+          value={numberFormatter(snowflakeBalance, 2, true, { isShort: true })}
+          loading={snowflakeBalanceLoading}
           valueClassName="md:mt-[9px]"
-          className="md:flex-1 md:w-0"
+          className="flex flex-col items-center md:flex-1 md:w-0"
           childrenClassName="md:w-full md:pr-[10px]"
         >
           <Button
@@ -192,6 +197,7 @@ const GiftBox = () => {
             setOpenType(1);
           }}
           isMobile={isMobile}
+          opening={opening}
         />
         <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center md:scale-[0.71] md:left-0 md:bottom-0 md:origin-left">
           <div
@@ -213,7 +219,7 @@ const GiftBox = () => {
             </div>
           </SocialTask>
         </div>
-        <div className={`absolute right-[19px] bottom-[252px] w-[334px] md:w-[245px] h-[333px] md:h-[168px] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-retweet-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-retweet.svg')]"} bg-no-repeat bg-cover bg-center md:right-0 md:bottom-[38px]`}>
+        <div id="tour-id-5" className={`absolute right-[19px] bottom-[252px] w-[334px] md:w-[245px] h-[333px] md:h-[168px] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-retweet-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-retweet.svg')]"} bg-no-repeat bg-cover bg-center md:right-0 md:bottom-[38px]`}>
           <div className="absolute flex flex-col items-center gap-[13px] right-[15px] bottom-[-12px] md:right-0">
             <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center md:text-[14px] md:translate-y-[5px]">
               <div className="opacity-50">

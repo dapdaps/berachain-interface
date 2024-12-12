@@ -9,7 +9,7 @@ const Summary = ({ onOpenRewards }: any) => {
     {
       id: 1,
       label: "Total prize value",
-      value: numberFormatter(1250000, 2, true, { isShort: true, prefix: "$" }),
+      value: "$15,000+",
       underline: true
     },
     {
@@ -24,7 +24,7 @@ const Summary = ({ onOpenRewards }: any) => {
     },
     {
       id: 4,
-      label: "Total $snowflake earned",
+      label: "Total $SNOWFLAKE earned",
       value: numberFormatter(info?.total_token, 2, true, { isShort: true })
     },
     {
@@ -57,6 +57,7 @@ const Summary = ({ onOpenRewards }: any) => {
             }
             return (
               <Item
+                id={index}
                 key={index}
                 label={item.label}
                 value={item.value}
@@ -77,10 +78,10 @@ const Summary = ({ onOpenRewards }: any) => {
 export default Summary;
 
 const Item = (props: any) => {
-  const { label, value, underline, onClick, index, className } = props;
+  const { label, value, underline, onClick, id, index, className } = props;
 
   return (
-    <div className={`relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] md:after:h-[30px] after:bg-[#755C3D] after:right-0 after:top-[8px] md:after:top-[20px] last:after:hidden flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap md:border-b md:border-b-[#755C3D] md:px-[19px] md:pb-[6px] md:justify-between ${className}`}>
+    <div id={id === 0 ? 'tour-id-2':''} className={`relative after:content-[''] after:block after:absolute after:w-[1px] after:h-[62px] md:after:h-[30px] after:bg-[#755C3D] after:right-0 after:top-[8px] md:after:top-[20px] last:after:hidden flex-1 flex flex-col items-center gap-[9px] text-black whitespace-nowrap md:border-b md:border-b-[#755C3D] md:px-[19px] md:pb-[6px] md:justify-between ${className}`}>
       <div className="font-[500] text-[18px] leading-normal md:text-[14px]">{label}</div>
       <div
         className={`text-[30px] font-CherryBomb leading-[150%] font-[400] md:text-[20px] ${

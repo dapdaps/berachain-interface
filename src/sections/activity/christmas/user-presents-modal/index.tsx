@@ -23,7 +23,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
       closeIconClassName="right-[-14px] top-[-8px]"
       isShowCloseIcon={!isMobile}
     >
-      <div className="w-[850px] md:w-full md:h-[80dvh] md:overflow-y-auto rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
+      <div className="w-[880px] rounded-[20px] md:w-full md:h-[80dvh] md:overflow-y-auto border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
         <div className="mt-[12px] text-center">
           <OpenBox className="mx-[auto]" />
         </div>
@@ -35,13 +35,19 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
             <div className="text-[16px] font-bold">
               You got <span className="text-[26px]">{(data?.nfts?.length || 0) + (data?.rares?.length || 0)}</span>{" "}rare prize
             </div>
-            <div className="flex gap-[16px] flex-wrap mt-[12px] md:grid md:grid-cols-2">
-              {data.nfts?.map?.((nft: any) => (
-                <Nft key={nft.token_id} nft={nft} />
-              ))}
-              {data.rares?.map?.((rare: any, idx: number) => (
-                <Rare key={idx} rare={rare} />
-              ))}
+            <div className="flex gap-[12px] flex-wrap mt-[12px] md:grid md:grid-cols-2 md:gap-[16px]">
+              {
+                [...(data.nfts || []), ...(data.rares || [])].map((it: any, idx: number) => {
+                  if (idx < data.nfts?.length) {
+                    return (
+                      <Nft key={it.token_id} nft={it} />
+                    );
+                  }
+                  return (
+                    <Rare key={idx} rare={it} />
+                  );
+                })
+              }
             </div>
           </div>
           <div className="border-t border-t-[#A5A5A5]/30 pt-[14px] pb-[20px]">
@@ -87,7 +93,7 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
               <span className="text-[26px]">
                 {formatThousandsSeparator(data.total_token || 0)}
               </span>{" "}
-              $Snowflake
+              $SNOWFLAKE
             </div>
             <div className="md:flex md:justify-center md:mt-[15px]">
               <Button

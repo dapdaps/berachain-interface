@@ -2,6 +2,7 @@ import CheckButton from "../check-button";
 import Button from "../../task-modal/button";
 import useCustomAccount from '@/hooks/use-account';
 import { useAppKit } from '@reown/appkit/react';
+import Big from 'big.js';
 
 export default function ProjectCard(props: any) {
   const {
@@ -13,6 +14,7 @@ export default function ProjectCard(props: any) {
     onOpen,
     onReload,
     checking,
+    completed,
   } = props;
 
   const { account } = useCustomAccount();
@@ -22,7 +24,7 @@ export default function ProjectCard(props: any) {
     <div className="relative text-black flex flex-col items-center w-[230px] h-[358px] p-[20px] pb-[26px] rounded-[20px] border border-black bg-[#B5956E] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] md:w-full md:p-[28px_15px_15px] md:h-[unset]">
       <CheckButton
         number={`${total_box} / ${box}`}
-        checked={false}
+        checked={Big(total_box || 0).gte(box || 1)}
         className="!bg-[#DCBC95] border-black text-black !absolute top-[-18px] left-[50px] w-[126px] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] md:left-1/2 md:-translate-x-1/2"
         onClick={onReload}
         checking={checking}
