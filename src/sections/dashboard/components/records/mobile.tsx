@@ -38,17 +38,17 @@ export default function Mobile({
           <div className='flex justify-between items-center'>
             <div className='flex items-center gap-[12px]'>
               <LazyImage
-                src=''
+                src={record.dapp_logo}
                 width={30}
                 height={30}
                 fallbackSrc={DefaultIcon}
               />
               <div className='text-[16px]'>{record.dapp_name}</div>
             </div>
-            <div className='text-[14px]'>Bridge</div>
+            <div className='text-[14px]'>{record.action}</div>
           </div>
           <div className='flex justify-end gap-[6px]'>
-            {record.assets.map((token: any, idx: number) => (
+            {record.assets?.map?.((token: any, idx: number) => (
               <div
                 className={`w-[26px] h-[26px] rounded-[50%] shrink-0 ${
                   idx && 'ml-[-10px]'
@@ -67,7 +67,9 @@ export default function Mobile({
                 />
               </div>
             ))}
-            <div className='text-[14px]'>+1 WETH/stgUSDC</div>
+            <div className='text-[14px] text-right'>
+              {record.executed}
+            </div>
           </div>
           <div className='flex items-center justify-between text-[14px]'>
             <div>{txTimeFormatter(record.tx_time)}</div>
