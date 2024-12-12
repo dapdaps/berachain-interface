@@ -70,7 +70,7 @@ export default function ChristmasView() {
               <div>There are a lot of other exciting things happening within the Berachain ecosystem, this is da perfect chance to get to know em’ all and get rewarded at the same time!</div>
               <div className="mt-4">Or if you’re an OG users/ degen & holding some collectibles, the Bera Claus might have a surprise for your 👀</div>
             </div>,
-            placement: MaskPlacement.BottomRight
+            placement: MaskPlacement.Bottom
           }
         ]}
       />
