@@ -1,7 +1,7 @@
 import LinkButton from '@/sections/activity/christmas/task-modal/link-button';
 import Mission from '@/sections/activity/christmas/task-modal/mission';
 import { Quest } from '@/sections/activity/christmas/hooks/use-quest';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 
 const Detail = (props: Props) => {
@@ -17,21 +17,6 @@ const Detail = (props: Props) => {
     isMobile,
   } = useContext(ChristmasContext);
 
-  const contentRef = useRef<any>();
-  const [fixedY, setFixedY] = useState<number>(0);
-
-  const handleContentScroll = (e: any) => {
-    if (!isMobile) return;
-    let scrollTop = e?.target?.scrollTop ?? 0;
-    scrollTop = Math.max(Math.min(62.5, scrollTop), 0);
-    setFixedY(scrollTop);
-  };
-
-  useEffect(() => {
-    if (!contentRef.current) return;
-    handleContentScroll({ target: contentRef.current });
-  }, [contentRef]);
-
   return (
     <div className="w-[800px] md:w-full md:h-[80dvh] rounded-[24px] md:rounded-b-[0] border border-black bg-[#FFFDEB] shadow-shadow1 pb-[20px]">
       <div
@@ -41,16 +26,9 @@ const Detail = (props: Props) => {
         <img
           src={ecosystemInfo?.icon}
           className="absolute left-[22px] bottom-[-49px] w-[95px] h-[95px] rounded-[10px] invisible md:visible"
-          style={{
-            transform: `translateY(-${fixedY}px)`,
-          }}
         />
       </div>
-      <div
-        ref={contentRef}
-        className="px-[30px] md:px-[22px] md:h-[calc(100%_-_125px)] md:overflow-y-auto md:pb-[40px]"
-        onScroll={handleContentScroll}
-      >
+      <div className="px-[30px] md:px-[22px] md:h-[calc(100%_-_125px)]">
         <div className="flex justify-between md:flex-col">
           <div className="flex gap-[17px]">
             <img
@@ -64,21 +42,38 @@ const Detail = (props: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex gap-[6px] mt-[14px]">
-            {socials?.map((it, idx) => (
-              <LinkButton key={idx} href={it.link} target="_blank">
-                {it.label}
-              </LinkButton>
-            ))}
+          {
+            !isMobile && (
+              <div className="flex gap-[6px] mt-[14px]">
+                {socials?.map((it, idx) => (
+                  <LinkButton key={idx} href={it.link} target="_blank">
+                    {it.label}
+                  </LinkButton>
+                ))}
+              </div>
+            )
+          }
+        </div>
+        <div className="md:h-[calc(100%_-_51px)] md:overflow-y-auto md:pb-[40px]">
+          {
+            isMobile && (
+              <div className="flex gap-[6px] mt-[14px]">
+                {socials?.map((it, idx) => (
+                  <LinkButton key={idx} href={it.link} target="_blank">
+                    {it.label}
+                  </LinkButton>
+                ))}
+              </div>
+            )
+          }
+          <div className="text-[14px] font-medium mt-[14px]">
+            {ecosystemInfo?.description}
           </div>
+          <div className="mt-[18px] text-[16px] font-bold">Missions</div>
+          {missions?.map((mission: any, i: number) => (
+            <Mission key={i} mission={mission} />
+          ))}
         </div>
-        <div className="text-[14px] font-medium mt-[14px]">
-          {ecosystemInfo?.description}
-        </div>
-        <div className="mt-[18px] text-[16px] font-bold">Missions</div>
-        {missions?.map((mission: any, i: number) => (
-          <Mission key={i} mission={mission} />
-        ))}
       </div>
     </div>
   );
