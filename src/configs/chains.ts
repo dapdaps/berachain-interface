@@ -5,7 +5,7 @@ const chains: Record<number, Chain | any> = {
   [berachainTestnetbArtio.id]: {
     ...berachainTestnetbArtio,
     rpcUrls: {
-      default: { http: ['https://bera-testnet.nodeinfra.com', 'https://bartio.rpc.berachain.com'] },
+      default: { http: ['https://bartio.drpc.org', 'https://bartio.rpc.berachain.com'] },
     },
     isWalletSupport: true,
   },
@@ -33,7 +33,7 @@ export const ChristmasActivityChains: Record<number, Chain | any> = {
   [berachainTestnetbArtio.id]: {
     ...berachainTestnetbArtio,
     rpcUrls: {
-      default: { http: ['https://bera-testnet.nodeinfra.com', 'https://bartio.rpc.berachain.com'] },
+      default: { http: ['https://bartio.drpc.org', 'https://bartio.rpc.berachain.com'] },
     },
   },
 };
