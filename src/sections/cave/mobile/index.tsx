@@ -113,7 +113,6 @@ const Cave = () => {
                   )
                 })
               }
-
               {
                 items.slice(-2).map((item, index) => {
                   const Positions = [{
@@ -146,7 +145,6 @@ const Cave = () => {
           </div>
         )
       }
-
       <div
         className='mt-10 relative z-10'
         style={{
@@ -157,7 +155,9 @@ const Cave = () => {
           height: '30.384vw',
           width: '100vw'
         }}
-      >
+      />
+
+      <div className="absolute top-10 left-0 right-0">
         <MenuButton className='relative my-0 mx-auto z-20' contentClassName='text-2xl'>
           Bera Cave
         </MenuButton>
@@ -168,7 +168,7 @@ const Cave = () => {
           data-bp="1020-001"
         >Rules</div>
       </div>
-      <div className='bg-[#9C948F] h-[330vw] w-full'>
+      <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[240vw]')}>
         <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
             storePhotoList?.photoList?.map((photo, index) => (
