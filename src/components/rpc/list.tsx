@@ -11,19 +11,27 @@ import {
 import { renderPing, renderPingConfig } from "@/utils/rpc";
 import { useRpc } from "@/hooks/use-rpc";
 import { useRpcStore } from "@/stores/rpc";
+import useToast from "@/hooks/use-toast";
 import { RPC_LIST } from "@/configs/rpc";
 
 const RpcList = (props: Props) => {
   const list = Object.values(RPC_LIST);
   const keys = Object.keys(RPC_LIST) as any[];
   const rpcStore = useRpcStore();
+  const total = useToast();
   const { pingList, getPingList } = useRpc();
 
   const handleSelected = (rpc: any) => {
     if (rpc === rpcStore.selected) return;
     rpcStore.setSelected(rpc);
     rpcStore.setVisible(false);
-    window.history.go(0);
+    navigator.clipboard.writeText(RPC_LIST[rpc].url as string);
+    total.success({
+      title: `Copied rpc ${RPC_LIST[rpc].simpleName}`
+    });
+    setTimeout(() => {
+      window.history.go(0);
+    }, 1000);
   };
 
   useEffect(() => {
