@@ -9,7 +9,7 @@ const Top = (props: any) => {
 
   return (
     <div className="relative">
-      <div className="w-full absolute left-0 top-[-260px] h-[334px] md:h-[115px] flex justify-center items-center md:top-[-30px]">
+      <div className="w-full absolute left-0 top-[-260px] h-[334px] md:h-[115px] flex justify-center items-center md:top-[-30px] pointer-events-none">
         <Moon />
       </div>
       <div className="pt-[90px] md:pt-[117px] w-full h-[418px] md:h-[300px] bg-[url('/images/activity/christmas/bg-cloud.svg')] bg-no-repeat bg-cover bg-top md:bg-contain">

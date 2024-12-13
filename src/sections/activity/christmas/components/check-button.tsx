@@ -1,6 +1,6 @@
 import Refresh from "@/components/icons/refresh";
 import clsx from "clsx";
-export default function CheckButton({ checked, number, className, checking, onClick }: any) {
+export default function CheckButton({ checked, number, className, checking, onClick, numberClassName }: any) {
   return (
     <div
       className={clsx(
@@ -9,7 +9,7 @@ export default function CheckButton({ checked, number, className, checking, onCl
         className
       )}
     >
-      <div className="text-[14px] font-semibold h-full flex-1 flex items-center pl-[11px]">
+      <div className={`text-[14px] font-semibold h-full flex-1 flex items-center pl-[11px] ${numberClassName}`}>
         {number} boxes
       </div>
       {checked ? (

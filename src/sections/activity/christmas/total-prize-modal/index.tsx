@@ -9,7 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import useRewards from "../hooks/use-rewards";
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 
-export default function TotalPrizeModal({ open, onClose }: any) {
+export default function TotalPrizeModal({ open, onClose, isMobile }: any) {
   const { loading, rares, items } = useRewards();
   const {
     nftList: nftTotalList,
@@ -58,6 +58,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
         open={open}
         onClose={onClose}
         closeIconClassName="right-[-14px] top-[-8px]"
+        isShowCloseIcon={!isMobile}
       >
         <div className="lg:w-[594px] md:h-[60dvh] md:overflow-x-hidden md:overflow-y-auto lg:rounded-[20px] md:rounded-t-[20px] lg:border border-black bg-[#FFFDEB] lg:shadow-shadow1 p-[20px]">
           <div className="flex justify-between items-center text-[16px] font-bold pb-[14px]">
@@ -127,6 +128,7 @@ export default function TotalPrizeModal({ open, onClose }: any) {
           setShowNfts(false);
         }}
         nfts={nftList}
+        isMobile={isMobile}
       />
     </>
   );

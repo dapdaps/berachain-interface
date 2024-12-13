@@ -84,8 +84,9 @@ const Pyramid = (props: any) => {
       {
         isMobile && list.length > 0 && list[0]?.length > 0 && (
           <Button
-            className="absolute left-0 top-0 !w-[332px] !h-[125px] text-[45px]"
+            className="absolute left-0 top-0 !scale-[2.5]"
             onClick={onBoxClick}
+            loading={opening}
           >
             Open it
           </Button>
