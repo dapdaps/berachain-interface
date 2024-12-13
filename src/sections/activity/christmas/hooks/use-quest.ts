@@ -101,9 +101,14 @@ export function useQuest(props: { base: IBase; }): IQuest {
           name: it.name as string,
           category: it.action_type ? DAPP_CATEGORY[it.action_type] : (it.action_type as string),
           missions: DAppQuests[it.name as string]?.missions,
+          limit: DAppQuests[it.name as string]?.limit,
         };
+        let actionText = it.action_type ? DAPP_ACTIONS[it.action_type] : 'Trade';
+        if (it.action_type === 'Lending') {
+          actionText = it.sub_type;
+        }
         it.actions = [
-          { text: it.action_type ? DAPP_ACTIONS[it.action_type] : 'Trade', box: it.box },
+          { text: actionText, box: it.box, times: it.times, total_box: it.total_box },
         ];
         let currDApp = dAppsInfo.find((_it) => _it.name.toLowerCase() === it.name?.toLowerCase?.());
         if (it.name === 'Marketplace') {
@@ -466,8 +471,15 @@ export interface Quest {
   completed?: boolean;
   checking?: boolean;
   total_completed_times?: number;
-  dappInfo?: { name: string; icon?: number; category: string; path?: string; missions?: string[]; };
-  actions?: { text: string; box?: number; path?: string; }[];
+  dappInfo?: {
+    name: string;
+    icon?: number;
+    category: string;
+    path?: string;
+    missions?: string[];
+    limit?: { text: (total: number) => string; };
+  };
+  actions?: { text: string; box?: number; path?: string; times?: number; total_box?: number; }[];
   ecosystemInfo?: { categories?: string[]; icon?: string; banner?: string; description?: string; };
   missions?: Partial<Quest>[];
   socials?: { label?: string; link?: string; }[];

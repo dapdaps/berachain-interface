@@ -9,6 +9,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useClickTracking from "@/hooks/use-click-tracking";
+import { useAccount } from 'wagmi';
+import useUser from '@/hooks/use-user';
 
 const menuItems = [
   { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -127,6 +129,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const pathname = usePathname();
+  const { address } = useAccount();
+  const { getAccessToken } = useUser();
+
+  useEffect(() => {
+    getAccessToken();
+  }, [address]);
 
   useEffect(() => {
     setIsMenuOpen(false);
