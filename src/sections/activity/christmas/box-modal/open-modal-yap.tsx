@@ -18,12 +18,12 @@ export default function BoxModal({ open: show, onClose, texts = [], isMobile }: 
       onClose={onClose}
       isForceNormal={isMobile}
       className={isMobile ? "flex justify-center items-center" : ""}
-      closeIconClassName="right-[-14px] top-[-8px] md:right-[10px] md:top-[10px]"
+      closeIconClassName="right-[-14px] top-[-8px] md:right-[0]"
       innerClassName="md:w-full"
     >
-      <Bg className="lg:w-[482px] relative md:w-full">
-        <div className="relative w-[405px] h-[494px] md:w-full mt-[-100px] ml-[37px] md:ml-[unset] bg-cover bg-no-repeat bg-[url(/images/activity/christmas/yap-letter.png)]">
-          <div title={text} className="absolute bottom-[182px] left-[62px] leading-[1.75] w-[274px] text-[15px] font-Fuzzy rotate-2 line-clamp-4 break-all h-[104px]">
+      <Bg className="lg:w-[482px] relative md:mx-auto">
+        <div className={`relative w-[405px] h-[494px] md:w-[333px] md:h-[407px] mt-[-100px] md:mt-[-70px] ml-[37px] md:ml-[unset] bg-cover bg-no-repeat ${isMobile ? 'bg-[url(/images/activity/christmas/yap-letter-mobile.png)]' : 'bg-[url(/images/activity/christmas/yap-letter.png)]'}`}>
+          <div title={text} className="absolute bottom-[182px] md:bottom-[122px] left-[62px] leading-[1.75] w-[274px] text-[15px] font-Fuzzy rotate-2 line-clamp-4 break-all h-[104px]">
             {text}
           </div>
         </div>

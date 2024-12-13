@@ -239,6 +239,7 @@ const QuestView = () => {
           setEcosystemQuestVisible(false);
           setEcosystemQuestData(void 0);
         }}
+        isMobile={isMobile}
       />
     </div>
   );

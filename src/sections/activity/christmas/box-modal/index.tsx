@@ -44,6 +44,7 @@ export default function BoxModal({
       open={show}
       onClose={handleClose}
       isForceNormal={isMobile}
+      isMaskClose={!isMobile}
       className={isMobile ? "flex justify-center items-center" : ""}
       closeIconClassName="right-[-14px] top-[-8px]"
     >
