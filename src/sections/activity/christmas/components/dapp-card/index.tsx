@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import useIsMobile from '@/hooks/use-isMobile';
 import Big from 'big.js';
 import { useMemo } from 'react';
+import { numberFormatter } from '@/utils/number-formatter';
 
 export default function DappCard(props: any) {
   const { total_box, onCheck, checking, actions, dappInfo, missions } = props;
@@ -29,11 +30,14 @@ export default function DappCard(props: any) {
             <img src={dappInfo?.icon} className="w-[80px] h-[80px] md:w-[50px] md:h-[50px] rounded-[10px] shrink-0" />
             <div className="flex flex-1 w-0 flex-col gap-[4px] text-black text-left whitespace-nowrap">
               <div className="text-[20px] font-bold text-ellipsis overflow-hidden leading-[120%] flex justify-between items-center">
-                <div className="">{dappInfo?.name}</div>
+                <div className="md:text-[16px] md:overflow-hidden">
+                  {dappInfo?.name}
+                </div>
                 <CheckButton
-                  number={total_box}
+                  number={numberFormatter(total_box, 1, true, { isShort: true })}
                   checked={false}
-                  className="!bg-[#DCBC95] border-black text-black items-center shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] shrink-0"
+                  className="!bg-[#DCBC95] border-black text-black items-center shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] shrink-0 !w-[102px] !h-[35px]"
+                  numberClassName="!pl-[10px] !text-[12px]"
                   onClick={onCheck}
                   checking={checking}
                 />

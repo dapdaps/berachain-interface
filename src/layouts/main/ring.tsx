@@ -3,7 +3,9 @@ import Ring from "@/components/icons/ring";
 import { useEffect, useState } from "react";
 import { useInteractiveSound } from "@/hooks/use-interactive-sound";
 
-export default function RingButton() {
+export default function RingButton(props: any) {
+  const { className } = props;
+
   const [open, setOpen] = useState(false);
   const { playSound, pauseSound, isPlaying } = useInteractiveSound(
     "/audios/christmas.mp3",
@@ -20,6 +22,7 @@ export default function RingButton() {
 
   return (
     <button
+      className={className}
       onClick={() => {
         open ? pauseSound() : playSound();
       }}

@@ -11,6 +11,7 @@ import React, { useContext, useState } from "react";
 import RulesModal from "./rules-modal";
 import TotalPrizeModal from "./total-prize-modal";
 import MobileHeader from '@/sections/home/mobile/header';
+import RingButton from '@/layouts/main/ring';
 
 const ChristmasMobile = () => {
   const { showSwapModal, setShowSwapModal } = useContext(ChristmasContext);
@@ -20,6 +21,7 @@ const ChristmasMobile = () => {
   return (
     <div className="relative bg-[linear-gradient(180deg,_#000_0%,_#455972_35dvh)] h-full overflow-y-auto">
       <MobileHeader />
+      <RingButton className="absolute top-[57px] right-[16px] scale-[0.667] z-[1]" />
       <Top
         onOpenRules={() => {
           setShowRulesModal(true);
@@ -59,6 +61,7 @@ const ChristmasMobile = () => {
         onClose={() => {
           setShowTotalPrizeModal(false);
         }}
+        isMobile={true}
       />
     </div>
   );
