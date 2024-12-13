@@ -59,7 +59,7 @@ export const EcosystemQuests: any = {
       "An all in one NFT Dapp, launch, mint, trade (coming thoon) on Kingdomly",
     missions: {
       token_balance: {
-        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} ${amount > 1 ? 'boxes' : 'box'}.`,
+        text: (amount: number) => <>Mint <a rel="nofollow" target="_blank" href="https://www.kingdomly.app/bera-claus-on-the-sleigh?group=0" className="underline decoration-solid">this PoP NFT</a> on Kingdomly and get {amount} gift {amount > 1 ? 'boxes' : 'box'}.</>,
         action: "Verify"
       },
       learn: {
