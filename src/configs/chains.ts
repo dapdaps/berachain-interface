@@ -1,9 +1,12 @@
 import { Chain } from 'viem';
-import { mainnet, berachainTestnetbArtio, arbitrum,  } from '@reown/appkit/networks';
+import { mainnet, berachainTestnetbArtio, arbitrum, } from '@reown/appkit/networks';
 
 const chains: Record<number, Chain | any> = {
   [berachainTestnetbArtio.id]: {
     ...berachainTestnetbArtio,
+    rpcUrls: {
+      default: { http: ['https://bera-testnet.nodeinfra.com', 'https://bartio.rpc.berachain.com'] },
+    },
     isWalletSupport: true,
   },
   [mainnet.id]: {
@@ -29,5 +32,8 @@ export const ChristmasActivityChains: Record<number, Chain | any> = {
   },
   [berachainTestnetbArtio.id]: {
     ...berachainTestnetbArtio,
+    rpcUrls: {
+      default: { http: ['https://bera-testnet.nodeinfra.com', 'https://bartio.rpc.berachain.com'] },
+    },
   },
 };
