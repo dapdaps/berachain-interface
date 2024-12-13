@@ -1,7 +1,6 @@
 import IconReload from "@public/images/home/christmas/icon-reload.svg";
 import BoxTitle from "@/sections/activity/christmas/components/box-title";
 import Button from "@/sections/activity/christmas/components/button";
-import BasicButton from "../task-modal/button";
 import SocialTask from "@/sections/activity/christmas/components/social-task";
 import Pyramid, {
   createPyramid
@@ -39,6 +38,7 @@ const GiftBox = () => {
     setShowSwapModal,
     requestCheck,
     handleQuestUpdate,
+    isMobile
   } = useContext(ChristmasContext);
   const { open } = useAppKit();
   const { account } = useCustomAccount();
@@ -52,6 +52,7 @@ const GiftBox = () => {
     getUserInfo?.();
   });
   const list = [...new Array(userRemainBox || 0)].slice(0, 21).map((_, i) => ({
+  // const list = [...new Array(21)].slice(0, 21).map((_, i) => ({
     id: i + 1,
     status: "un_open"
   }));
@@ -109,7 +110,7 @@ const GiftBox = () => {
 
   return (
     <div className="">
-      <div className="flex justify-center items-center gap-[249px] mt-[20px]">
+      <div className="flex justify-center items-center gap-[249px] mt-[20px] md:gap-[12px] md:items-start">
         <BoxTitle
           label={
             <>
@@ -130,10 +131,12 @@ const GiftBox = () => {
           value={userRemainBox || 0}
           total={userInfo?.total_box || 0}
           valueClassName="translate-x-[-20px]"
+          className="md:flex-1 md:w-0"
+          childrenClassName="md:w-full md:pl-[10px]"
         >
-          <div className="flex items-center gap-[18px]">
-            <BasicButton
-              className="!bg-black border-[#FFDC50] !text-[#FFDC50]"
+          <div className="flex items-center gap-[18px] md:flex-col-reverse md:w-full">
+            <Button
+              className="!bg-black border-[#FFDC50] !text-[#FFDC50] whitespace-nowrap md:w-full md:!bg-transparent md:underline md:decoration-solid md:border-0 md:shadow-none md:h-[30px] md:leading-[30px]"
               loading={userInfoLoading}
               onClick={() => {
                 if (!account) {
@@ -145,8 +148,8 @@ const GiftBox = () => {
               }}
             >
               Check My Gift
-            </BasicButton>
-            <BasicButton
+            </Button>
+            <Button
               onClick={() => {
                 if (!account) {
                   open({ view: 'Connect' });
@@ -156,7 +159,7 @@ const GiftBox = () => {
                 onOpen(true);
               }}
               loading={openType === 2 && opening}
-              className="relative"
+              className="relative whitespace-nowrap md:w-full"
             >
               <div>Open 10 Boxes</div>
               <img
@@ -164,35 +167,39 @@ const GiftBox = () => {
                 alt=""
                 className="absolute left-[108px] top-[-40px] animate-blink w-[47px] h-[59px]"
               />
-            </BasicButton>
+            </Button>
           </div>
         </BoxTitle>
         <BoxTitle
           label="Your $SNOWFLAKE"
           value={numberFormatter(snowflakeBalance, 2, true, { isShort: true })}
           loading={snowflakeBalanceLoading}
-          className="flex flex-col items-center"
+          valueClassName="md:mt-[9px]"
+          className="flex flex-col items-center md:flex-1 md:w-0"
+          childrenClassName="md:w-full md:pr-[10px]"
         >
           <Button
             onClick={() => {
               setShowSwapModal?.(true);
             }}
             addon="arrow"
+            className="whitespace-nowrap md:w-full md:px-[0]"
           >
             Trade now
           </Button>
         </BoxTitle>
       </div>
-      <div className="relative h-[43vw] min-h-[800px] bg-[url('/images/activity/christmas/bg-gift-box.svg')] bg-no-repeat bg-cover bg-bottom">
+      <div className={`relative h-[43vw] min-h-[800px] md:min-h-[135dvw] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-box-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-box.svg')]"} bg-no-repeat bg-cover bg-bottom`}>
         <Pyramid
           list={sortedList}
           onBoxClick={() => {
             onOpen(false);
             setOpenType(1);
           }}
+          isMobile={isMobile}
           opening={opening}
         />
-        <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center">
+        <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center md:scale-[0.71] md:left-0 md:bottom-0 md:origin-left">
           <div
             className="text-[16px] cursor-pointer text-black font-CherryBomb leading-[90%] font-[400] text-center"
             onClick={handleFollowX}
@@ -212,15 +219,15 @@ const GiftBox = () => {
             </div>
           </SocialTask>
         </div>
-        <div id="tour-id-5" className="absolute right-[19px] bottom-[252px] w-[334px] h-[333px] bg-[url('/images/activity/christmas/bg-gift-retweet.svg')] bg-no-repeat bg-cover bg-center">
-          <div className="absolute flex flex-col items-center gap-[13px] right-[15px] bottom-[-12px]">
-            <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center">
+        <div id="tour-id-5" className={`absolute right-[19px] bottom-[252px] w-[334px] md:w-[245px] h-[333px] md:h-[168px] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-retweet-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-retweet.svg')]"} bg-no-repeat bg-cover bg-center md:right-0 md:bottom-[38px]`}>
+          <div className="absolute flex flex-col items-center gap-[13px] right-[15px] bottom-[-12px] md:right-0">
+            <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center md:text-[14px] md:translate-y-[5px]">
               <div className="opacity-50">
                 Quest of <br /> the day
               </div>
               <button
                 type="button"
-                className="underline decoration-solid mt-[15px] cursor-pointer disabled:opacity-50 !disabled:cursor-not-allowed"
+                className="underline decoration-solid mt-[15px] cursor-pointer disabled:opacity-50 !disabled:cursor-not-allowed md:mt-[0]"
                 onClick={() => {
                   setDailyVisible(true);
                 }}
@@ -230,7 +237,7 @@ const GiftBox = () => {
               </button>
             </div>
             <SocialTask
-              className=""
+              className="md:pl-[4px]"
               onClick={handleDailyQuestCheck}
               complete={dailyQuestCounts.completed}
               checking={dailyChecking}
@@ -243,33 +250,33 @@ const GiftBox = () => {
           </div>
         </div>
         <img
-          src="/images/activity/christmas/star-gift-box-1.svg"
+          src={`/images/activity/christmas/star-gift-box-1${isMobile ? '-mobile' : ''}.svg`}
           alt=""
-          className="absolute right-[38vw] top-[60px] animate-blink"
+          className="absolute right-[38vw] top-[60px] animate-blink md:right-[unset] md:left-[4.8dvw] md:top-[-5.3dvw]"
           style={{ animationDelay: '1', animationDuration: '8s' }}
         />
         <img
-          src="/images/activity/christmas/star-gift-box-2.svg"
+          src={`/images/activity/christmas/star-gift-box-2${isMobile ? '-mobile' : ''}.svg`}
           alt=""
-          className="absolute left-[32vw] top-[123px] animate-blink"
+          className="absolute left-[32vw] top-[123px] animate-blink md:left-[34.7dvw] md:top-[5.3dvw]"
           style={{ animationDelay: '0', animationDuration: '4s' }}
         />
         <img
-          src="/images/activity/christmas/star-gift-box-3.svg"
+          src={`/images/activity/christmas/star-gift-box-3${isMobile ? '-mobile' : ''}.svg`}
           alt=""
-          className="absolute right-[24vw] top-[250px] animate-blink"
+          className="absolute right-[24vw] top-[250px] animate-blink md:top-[8dvw] md:right-[29.3dvw]"
           style={{ animationDelay: '2', animationDuration: '12s' }}
         />
         <img
-          src="/images/activity/christmas/star-gift-box-4.svg"
+          src={`/images/activity/christmas/star-gift-box-4${isMobile ? '-mobile' : ''}.svg`}
           alt=""
-          className="absolute right-[31vw] top-[260px] animate-blink"
+          className="absolute right-[31vw] top-[260px] animate-blink md:top-[-2.7dvw] md:right-[14.7dvw]"
           style={{ animationDelay: '4', animationDuration: '6s' }}
         />
         <img
-          src="/images/activity/christmas/star-gift-box-5.svg"
+          src={`/images/activity/christmas/star-gift-box-5${isMobile ? '-mobile' : ''}.svg`}
           alt=""
-          className="absolute left-[23vw] top-[500px] animate-blink"
+          className="absolute left-[23vw] top-[500px] animate-blink md:top-[18.7dvw] md:left-[21.3dvw]"
           style={{ animationDelay: '1', animationDuration: '5s' }}
         />
       </div>

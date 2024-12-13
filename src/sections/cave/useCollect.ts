@@ -1,12 +1,73 @@
-import { useBearEqu } from '@/stores/useBearEqu'
-import { get } from '@/utils/http'
-import { useCallback, useEffect, useState } from 'react'
-
+import { useBearEqu } from '@/stores/useBearEqu';
+import { get } from '@/utils/http';
+import { useCallback, useEffect, useState } from 'react';
 
 export const hat_categories = ["elf_hat", "santa_hat"]
 export const cloth_cateogries = ["elf_jacket", "santa_coat"]
 export const car_cateogries = ["sleigh", "snowboard"]
 export const necklace_categories = ["scarf"]
+
+export const sockTips = [
+    {
+        category: 'elf_hat',
+        name: 'Elf’s Hat',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/elf_hat.png',
+        link: '/swap',
+        btnText: 'Join',
+    },
+    {
+        category: 'santa_hat',
+        name: 'Santa Hat',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/santa_hat.png',
+        link: '/swap',
+        btnText: 'Join',
+    },
+    {
+        category: 'elf_jacket',
+        name: 'Elf’s Jacket',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/elf_jacket.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+    {
+        category: 'santa_coat',
+        name: 'Santa Coat',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/santa_coat.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+    {
+        category: 'scarf',
+        name: 'Scarf',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/scarf.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+
+]
+export const giftBoxTips = [
+    {
+        category: 'sleigh',
+        name: 'Sleigh',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/sleigh.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+    {
+        category: 'snowboard',
+        name: 'Snowboard',
+        content: 'Join BeraTown Xmas campaign to get a random gift box.',
+        img: '/images/cave/christmas/snowboard.png',
+        link: '/activity/christmas',
+        btnText: 'Join',
+    },
+]
 
 export default function useCollect({ address }: { address: string }) {
     const [collection, setCollection] = useState<any>()
@@ -47,16 +108,13 @@ export default function useCollect({ address }: { address: string }) {
         },
     ])
     const [nfts, setNfts] = useState<GameItem[]>([])
-    const [updater, setUpdater] = useState(-1)
 
     const hat = useBearEqu((store: any) => store.hat)
     const cloth = useBearEqu((store: any) => store.cloth)
     const car = useBearEqu((store: any) => store.car)
     const necklace = useBearEqu((store: any) => store.necklace)
     useEffect(() => {
-        // if (!address) {
-        //     return
-        // }
+
         const promiseArray = [
             get(`/api/game/items?game_category=bera&address=${address || '1'}`),
             get(`/api/mas/user/${address || '1'}`)
@@ -64,16 +122,11 @@ export default function useCollect({ address }: { address: string }) {
         Promise.all(promiseArray).then((result: any) => {
 
             const [firstResponse, secondResponse] = result
-
-
             if (firstResponse.code === 0 || secondResponse.code === 0) {
-
                 const cars: GameItem[] = []
                 const clothes: GameItem[] = []
                 const necklaces: GameItem[] = []
                 const hats: GameItem[] = []
-
-
 
                 firstResponse.data?.forEach((item: GameItem) => {
                     switch (item.category) {
@@ -114,7 +167,6 @@ export default function useCollect({ address }: { address: string }) {
 
                 setItems(_items)
                 setNfts(_nfts)
-                // setUpdater(Date.now())
                 setCollection({
                     cars,
                     clothes,
@@ -127,11 +179,10 @@ export default function useCollect({ address }: { address: string }) {
         })
 
     }, [address])
-    
+
 
     const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace") => {
         if (type) {
-
             const TypeMapping = {
                 hat: hat_categories,
                 cloth: cloth_cateogries,
@@ -141,7 +192,7 @@ export default function useCollect({ address }: { address: string }) {
             const cateogries = TypeMapping[type] || necklace_categories
             cateogries.forEach(category => {
                 const idx = list.findIndex(item => item.category === category)
-                list[idx].checked = list[idx].category === itemNo
+                list[idx].checked = address ? list[idx].category === itemNo : false
             })
         } else {
             list.forEach((hatItem: GameItem) => {
@@ -155,7 +206,7 @@ export default function useCollect({ address }: { address: string }) {
         setList([
             ...list
         ])
-    }, [])
+    }, [address])
 
     useEffect(() => {
         if (collection?.hats) {
@@ -164,7 +215,7 @@ export default function useCollect({ address }: { address: string }) {
         if (collection?.items) {
             initEqu(collection.items, setItems, hat, "hat")
         }
-    }, [hat, collection, updater])
+    }, [hat, collection, address])
 
     useEffect(() => {
         if (collection?.clothes) {
@@ -173,7 +224,7 @@ export default function useCollect({ address }: { address: string }) {
         if (collection?.items) {
             initEqu(collection.items, setItems, cloth, "cloth")
         }
-    }, [cloth, collection, updater])
+    }, [cloth, collection, address])
 
     useEffect(() => {
         if (collection?.cars) {
@@ -182,7 +233,7 @@ export default function useCollect({ address }: { address: string }) {
         if (collection?.items) {
             initEqu(collection.items, setItems, car, "car")
         }
-    }, [car, collection, updater])
+    }, [car, collection, address])
 
 
     useEffect(() => {
@@ -192,7 +243,7 @@ export default function useCollect({ address }: { address: string }) {
         if (collection?.items) {
             initEqu(collection.items, setItems, necklace, "necklace")
         }
-    }, [necklace, collection, updater])
+    }, [necklace, collection, address])
 
 
     // useEffect(() => {

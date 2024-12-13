@@ -5,6 +5,7 @@ import OpenStatus from "./open";
 import { useState } from "react";
 import useOpenBox from "../hooks/use-open-box";
 import OpenModalYap from "./open-modal-yap";
+import useIsMobile from "@/hooks/use-isMobile";
 
 export default function BoxModal({
   open: show,
@@ -19,23 +20,40 @@ export default function BoxModal({
     onSuccess();
     setData(args);
   });
+  const isMobile = useIsMobile();
+
+  const handleBoxOpen = () => {
+    onOpen(false);
+  };
+
+  const handleClose = () => {
+    setData(void 0);
+    setOpen(false);
+    onClose?.();
+  };
 
   return data?.yap ? (
-    <OpenModalYap open={show} onClose={onClose} texts={[data.yap]} />
+    <OpenModalYap
+      isMobile={isMobile}
+      open={show}
+      onClose={handleClose}
+      texts={[data.yap]}
+    />
   ) : (
     <Modal
       open={show}
-      onClose={onClose}
+      onClose={handleClose}
+      isForceNormal={isMobile}
+      isMaskClose={!isMobile}
+      className={isMobile ? "flex justify-center items-center" : ""}
       closeIconClassName="right-[-14px] top-[-8px]"
     >
       <Bg>
         {!open ? (
           <CloseStatus
             box={remainBox}
-            onOpen={() => {
-              onOpen(false);
-            }}
-            onClose={onClose}
+            onOpen={handleBoxOpen}
+            onClose={handleClose}
             loading={loading}
           />
         ) : (
@@ -45,9 +63,9 @@ export default function BoxModal({
             loading={loading}
             onClick={() => {
               if (remainBox > 0) {
-                onOpen(false);
+                handleBoxOpen();
               } else {
-                onClose();
+                handleClose();
               }
             }}
           />

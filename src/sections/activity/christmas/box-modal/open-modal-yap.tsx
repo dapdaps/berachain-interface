@@ -4,7 +4,7 @@ import Button from "@/components/button";
 import IconBack from "@public/images/icon-back.svg";
 import { useState, useMemo } from "react";
 
-export default function BoxModal({ open: show, onClose, texts = [] }: any) {
+export default function BoxModal({ open: show, onClose, texts = [], isMobile }: any) {
   const [currentI, setCurrentI] = useState(0);
 
   const text = useMemo(() => {
@@ -16,11 +16,14 @@ export default function BoxModal({ open: show, onClose, texts = [] }: any) {
     <Modal
       open={show}
       onClose={onClose}
-      closeIconClassName="right-[-14px] top-[-8px]"
+      isForceNormal={isMobile}
+      className={isMobile ? "flex justify-center items-center" : ""}
+      closeIconClassName="right-[-14px] top-[-8px] md:right-[0]"
+      innerClassName="md:w-full"
     >
-      <Bg className="w-[482px] relative">
-        <div className="relative w-[405px] h-[494px] mt-[-100px] ml-[37px] bg-cover bg-no-repeat bg-[url(/images/activity/christmas/yap-letter.png)]">
-          <div title={text} className="absolute bottom-[182px] left-[62px] leading-[1.75] w-[274px] text-[15px] font-Fuzzy rotate-2 line-clamp-4 break-all h-[104px]">
+      <Bg className="lg:w-[482px] relative md:mx-auto">
+        <div className={`relative w-[405px] h-[494px] md:w-[333px] md:h-[407px] mt-[-100px] md:mt-[-70px] ml-[37px] md:ml-[unset] bg-cover bg-no-repeat ${isMobile ? 'bg-[url(/images/activity/christmas/yap-letter-mobile.png)]' : 'bg-[url(/images/activity/christmas/yap-letter.png)]'}`}>
+          <div title={text} className="absolute bottom-[182px] md:bottom-[122px] left-[62px] leading-[1.75] w-[274px] text-[15px] font-Fuzzy rotate-2 line-clamp-4 break-all h-[104px]">
             {text}
           </div>
         </div>

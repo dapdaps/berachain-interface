@@ -4,22 +4,35 @@ import Popover, { PopoverPlacement } from "@/components/popover";
 import { balanceFormated } from "@/utils/balance";
 import { useMemo, useRef } from "react";
 import { usePriceStore } from '@/stores/usePriceStore';
+import useIsMobile from '@/hooks/use-isMobile';
 
 
 const HoneypotCard = (props: Props) => {
   const { color, name, icon, data = {}, onSwap = () => {} } = props;
   const prices = usePriceStore((store) => store.price);
+  const isMobile = useIsMobile();
 
-  const Honeypot = () => (
+  const Honeypot = (props: any) => (
     <>
       <Popover
         placement={PopoverPlacement.Center}
-        content={<div className="w-[118px] h-[118px] rounded-[18px] p-[10px] bg-[#FFE5B8] border border-[#000] flex flex-col justify-center items-center gap-[7px] shadow-shadow1">
-          <div className="text-[18px] font-[400] leading-[18px] text-center font-CherryBomb text-[#F7F9EA] text-stroke-2">{name}</div>
-          <div className="text-[12px] font-[400] leading-[14.4px] text-left font-Montserrat">Volume</div>
-          <div className="flex gap-1"><div className="text-[14px] font-[600] leading-[12.6px] font-Montserrat">$1.27M</div><div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">+2.3%</div></div>
-          <div onClick={onSwap} className="border-[2px] border-[#4B371F] w-[98px] leading-[32px] h-[32px] rounded-[30px] bg-[#FFF5A9] text-center font-[700] text-[14px] font-Montserrat">Get</div>
-        </div>}
+        content={isMobile ? (
+          <div className="w-[118px] h-[118px] rounded-[18px] p-[10px] bg-[#FFE5B8] border border-[#000] flex flex-col justify-center items-center gap-[7px] shadow-shadow1">
+            <div className="text-[18px] font-[400] leading-[18px] text-center font-CherryBomb text-[#F7F9EA] text-stroke-2">{name}</div>
+            <div className="text-[12px] font-[400] leading-[14.4px] text-left font-Montserrat">Volume</div>
+            <div className="flex gap-1">
+              <div className="text-[14px] font-[600] leading-[12.6px] font-Montserrat">{props.volume?.value}</div>
+              <div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">
+                {props.volume?.type}{props.volume?.rate}
+              </div>
+            </div>
+            <div
+              onClick={onSwap}
+              className="border-[2px] border-[#4B371F] w-[98px] leading-[32px] h-[32px] rounded-[30px] bg-[#FFF5A9] text-center font-[700] text-[14px] font-Montserrat"
+            >Get
+            </div>
+          </div>
+        ) : null}
       >
         <div className="relative left-[26px] flex-shrink-0 ml-[-26px] z-[3] md:flex md:justify-center md:w-[100px]">
           <div className="absolute lg:top-[42%] lg:left-[32%] md:top-[40%] md:left-[36%] lg:w-[42px] lg:h-[42px] md:w-[28px] md:h-[28px] rounded-[50%] border border-black overflow-hidden">
@@ -107,7 +120,7 @@ const HoneypotCard = (props: Props) => {
 
   return (
     <div className="flex items-end justify-center md:relative">
-      <Honeypot />
+      <Honeypot volume={list?.[1]} />
       <div className="flex-shrink-0 lg:relative lg:pb-[12px] lg:w-[194px]">
         <div className="rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1 hidden lg:block">
           <div className="w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] pl-[8px] pr-[12px]">
