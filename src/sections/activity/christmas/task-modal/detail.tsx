@@ -25,7 +25,7 @@ const Detail = (props: Props) => {
       >
         <img
           src={ecosystemInfo?.icon}
-          className="absolute left-[22px] bottom-[-49px] w-[95px] h-[95px] rounded-[10px] invisible md:visible"
+          className="absolute left-[30px] bottom-[-70px] w-[120px] h-[120px] md:w-[95px] md:h-[95px] md:left-[22px] md:bottom-[-49px] rounded-[10px]"
         />
       </div>
       <div className="px-[30px] md:px-[22px] md:h-[calc(100%_-_125px)]">
