@@ -12,7 +12,7 @@ const HoneypotCard = (props: Props) => {
   const prices = usePriceStore((store) => store.price);
   const isMobile = useIsMobile();
 
-  const Honeypot = () => (
+  const Honeypot = (props: any) => (
     <>
       <Popover
         placement={PopoverPlacement.Center}
@@ -21,8 +21,10 @@ const HoneypotCard = (props: Props) => {
             <div className="text-[18px] font-[400] leading-[18px] text-center font-CherryBomb text-[#F7F9EA] text-stroke-2">{name}</div>
             <div className="text-[12px] font-[400] leading-[14.4px] text-left font-Montserrat">Volume</div>
             <div className="flex gap-1">
-              <div className="text-[14px] font-[600] leading-[12.6px] font-Montserrat">$1.27M</div>
-              <div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">+2.3%</div>
+              <div className="text-[14px] font-[600] leading-[12.6px] font-Montserrat">{props.volume?.value}</div>
+              <div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">
+                {props.volume?.type}{props.volume?.rate}
+              </div>
             </div>
             <div
               onClick={onSwap}
@@ -118,7 +120,7 @@ const HoneypotCard = (props: Props) => {
 
   return (
     <div className="flex items-end justify-center md:relative">
-      <Honeypot />
+      <Honeypot volume={list?.[1]} />
       <div className="flex-shrink-0 lg:relative lg:pb-[12px] lg:w-[194px]">
         <div className="rounded-[18px] border border-black pl-[8px] bg-[#B99C69] shadow-shadow1 hidden lg:block">
           <div className="w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] pl-[8px] pr-[12px]">
