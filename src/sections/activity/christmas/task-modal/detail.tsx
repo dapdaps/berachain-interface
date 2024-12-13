@@ -83,5 +83,6 @@ export default Detail;
 
 export interface Props extends Partial<Quest> {
   visible?: boolean;
+  isMobile?: boolean;
   onClose?(): void;
 }

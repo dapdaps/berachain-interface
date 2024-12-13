@@ -5,6 +5,7 @@ export default function TaskModal(props: Props) {
   const {
     visible,
     onClose,
+    isMobile
   } = props;
 
   return (
@@ -12,6 +13,7 @@ export default function TaskModal(props: Props) {
       open={visible}
       onClose={onClose}
       closeIconClassName="right-[-14px] top-[-8px]"
+      isShowCloseIcon={!isMobile}
     >
       <Detail {...props} />
     </Modal>

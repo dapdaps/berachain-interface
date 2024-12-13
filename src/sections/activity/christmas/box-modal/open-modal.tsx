@@ -14,12 +14,15 @@ export default function BoxModal({
 }: any) {
   const isMobile = useIsMobile()
   return !!data?.yap ? (
-    <OpenModalYap open={show} onClose={onClose} texts={[data.yap]} />
+    <OpenModalYap open={show} onClose={onClose} texts={[data.yap]} isMobile={isMobile} />
   ) : (
     <Modal
       open={show}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+      }}
       isForceNormal={isMobile}
+      isMaskClose={!isMobile}
       className={isMobile ? "flex justify-center items-center" : ""}
       closeIconClassName="right-[-14px] top-[-8px]"
     >
