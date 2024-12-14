@@ -1,13 +1,17 @@
 import { providers } from "ethers";
 import { RPC_STATUS, RPC_TIMEOUT } from "@/configs/rpc";
 
-export async function getRpcPing(url: string): Promise<number> {
+export async function getRpcPing(url: string, init?: boolean): Promise<number> {
   const start = new Date().getTime();
   const provider = new providers.JsonRpcProvider(url);
+
   const timeoutPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject(-1);
-    }, RPC_TIMEOUT);
+    setTimeout(
+      () => {
+        reject(-1);
+      },
+      init ? RPC_TIMEOUT * 2 : RPC_TIMEOUT
+    );
   });
   return new Promise((resolve) => {
     Promise.race([provider.getNetwork(), timeoutPromise])
@@ -15,7 +19,7 @@ export async function getRpcPing(url: string): Promise<number> {
         const end = new Date().getTime();
         resolve(end - start);
       })
-      .catch(() => {
+      .catch((err) => {
         resolve(-1);
       });
   });

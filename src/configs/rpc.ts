@@ -19,7 +19,7 @@ export enum RpcStatus {
   Stop = "STOP"
 }
 
-export const RPC_TIMEOUT = 8000;
+export const RPC_TIMEOUT = 10000;
 
 export const RPC_STATUS: Record<
   RpcStatus,

@@ -41,7 +41,7 @@ export function useRpc() {
   };
 
   const getCurrentPing = async () => {
-    const _ping = await getRpcPing(RPC_LIST[rpcStore.selected]?.url);
+    const _ping = await getRpcPing(RPC_LIST[rpcStore.selected]?.url, true);
     rpcStore.setPing({ [rpcStore.selected]: _ping });
     if (_ping < 0) {
       rpcStore.setAlert(true);
