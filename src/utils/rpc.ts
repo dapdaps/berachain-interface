@@ -6,15 +6,14 @@ export async function getRpcPing(url: string, init?: boolean): Promise<number> {
   const provider = new providers.JsonRpcProvider(url);
 
   const timeoutPromise = new Promise((resolve, reject) => {
-    setTimeout(
-      () => {
-        reject(-1);
-      },
-      init ? RPC_TIMEOUT * 2 : RPC_TIMEOUT
-    );
+    setTimeout(() => {
+      reject(-1);
+    }, RPC_TIMEOUT);
   });
   return new Promise((resolve) => {
-    Promise.race([provider.getNetwork(), timeoutPromise])
+    Promise.race(
+      init ? [provider.getNetwork()] : [provider.getNetwork(), timeoutPromise]
+    )
       .then(() => {
         const end = new Date().getTime();
         resolve(end - start);
