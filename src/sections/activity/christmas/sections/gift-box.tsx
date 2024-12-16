@@ -5,7 +5,7 @@ import SocialTask from "@/sections/activity/christmas/components/social-task";
 import Pyramid, {
   createPyramid
 } from "@/sections/activity/christmas/components/pyramid";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ChristmasContext } from "@/sections/activity/christmas/context";
 import OpenModal from "../box-modal/open-modal";
 import OpenMultiModal from "../box-modal/open-multi-modal";
@@ -17,6 +17,8 @@ import Big from 'big.js';
 import { useAppKit } from '@reown/appkit/react';
 import useCustomAccount from '@/hooks/use-account';
 import { numberFormatter } from '@/utils/number-formatter';
+import * as dateFns from 'date-fns';
+import { motion } from "framer-motion";
 
 const GiftBox = () => {
   const {
@@ -33,7 +35,8 @@ const GiftBox = () => {
     userRemainBox,
     userInfoLoading,
     getUserInfo,
-    currentDailyTimestamp,
+    currentDateTime,
+    currentUTCString,
     currentUTCZeroTimestamp,
     setShowSwapModal,
     requestCheck,
@@ -57,6 +60,9 @@ const GiftBox = () => {
     status: "un_open"
   }));
   const sortedList = createPyramid(list);
+  const [currentDailyAnimation, setCurrentDailyAnimation] = useState<any>('show');
+  const currentDailyTimer = useRef<any>();
+  const currentDailyTimerTrigger = useRef<any>();
 
   const dailyQuest = useMemo(() => {
     if (!questList || !currentUTCZeroTimestamp || !questList.length) return [];
@@ -107,6 +113,13 @@ const GiftBox = () => {
     getUserInfo?.();
     setDailyChecking(false);
   };
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(currentDailyTimer.current);
+      clearTimeout(currentDailyTimerTrigger.current);
+    };
+  }, []);
 
   return (
     <div className="">
@@ -189,7 +202,7 @@ const GiftBox = () => {
           </Button>
         </BoxTitle>
       </div>
-      <div className={`relative h-[43vw] min-h-[800px] md:min-h-[135dvw] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-box-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-box.svg')]"} bg-no-repeat bg-cover bg-bottom`}>
+      <div className={`relative h-[43vw] min-h-[800px] md:min-h-[150dvw] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-box-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-box.svg')]"} bg-no-repeat bg-cover bg-bottom`}>
         <Pyramid
           list={sortedList}
           onBoxClick={() => {
@@ -219,25 +232,25 @@ const GiftBox = () => {
             </div>
           </SocialTask>
         </div>
-        <div id="tour-id-5" className={`absolute right-[19px] bottom-[252px] w-[334px] md:w-[245px] h-[333px] md:h-[168px] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-retweet-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-retweet.svg')]"} bg-no-repeat bg-cover bg-center md:right-0 md:bottom-[38px]`}>
-          <div className="absolute flex flex-col items-center gap-[13px] right-[15px] bottom-[-12px] md:right-0">
-            <div className="text-[16px] text-black font-CherryBomb leading-[90%] font-[400] text-center md:text-[14px] md:translate-y-[5px]">
-              <div className="opacity-50">
-                Quest of <br /> the day
+        <div id="tour-id-5" className={`absolute right-[19px] bottom-[360px] w-[428px] md:w-[243px] h-[289px] md:h-[168px] ${isMobile ? "bg-[url('/images/activity/christmas/bg-gift-retweet-mobile.svg')]" : "bg-[url('/images/activity/christmas/bg-gift-retweet.svg')]"} bg-no-repeat bg-cover bg-center md:right-0 md:bottom-[38px]`}>
+          <div className="absolute flex flex-col items-center gap-[13px] right-[57px] bottom-[44px] md:right-[20px] md:bottom-[25px] md:gap-[10px]">
+            <div className="text-[18px] text-black font-CherryBomb leading-[90%] font-[400] text-center md:text-[14px] md:translate-y-[5px]">
+              <div className="">
+                Quest of
               </div>
               <button
                 type="button"
-                className="underline decoration-solid mt-[15px] cursor-pointer disabled:opacity-50 !disabled:cursor-not-allowed md:mt-[0]"
+                className="underline decoration-solid mt-[4px] text-[22px] leading-[90%] font-CherryBomb cursor-pointer disabled:opacity-50 !disabled:cursor-not-allowed md:mt-[0] md:text-[18px]"
                 onClick={() => {
                   setDailyVisible(true);
                 }}
                 disabled={questLoading || !dailyQuest.length}
               >
-                Check
+                {currentUTCString ? dateFns.format(new Date(currentUTCString), 'MM.dd') : '-.-'}
               </button>
             </div>
             <SocialTask
-              className="md:pl-[4px]"
+              className="md:scale-[0.72]"
               onClick={handleDailyQuestCheck}
               complete={dailyQuestCounts.completed}
               checking={dailyChecking}
@@ -248,6 +261,55 @@ const GiftBox = () => {
               </div>
             </SocialTask>
           </div>
+          <motion.div
+            className="absolute w-[136px] h-[107px] left-[50px] top-[-40px] flex flex-col-reverse items-end md:items-start md:left-[100px] md:top-[-45px]"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.6,
+                },
+              },
+            }}
+            initial="hidden"
+            animate={currentDailyAnimation}
+            onAnimationComplete={() => {
+              if (currentDailyAnimation === 'show') {
+                currentDailyTimer.current = setTimeout(() => {
+                  setCurrentDailyAnimation('hidden');
+                  currentDailyTimerTrigger.current = setTimeout(() => {
+                    setCurrentDailyAnimation('show');
+                  }, 1000);
+                }, 3000);
+              }
+            }}
+          >
+            <motion.img
+              src="/images/activity/christmas/bg-gift-retweet-pop-1.svg"
+              alt=""
+              className="w-[27px] h-[16px]"
+              style={{
+                x: isMobile ? 10 : -10,
+              }}
+              variants={bubbleVariants}
+            />
+            <motion.img
+              src="/images/activity/christmas/bg-gift-retweet-pop-2.svg"
+              alt=""
+              className="w-[48px] h-[25px]"
+              style={{
+                x: isMobile ? 20 : -20,
+              }}
+              variants={bubbleVariants}
+            />
+            <motion.div
+              className="font-CherryBomb text-black text-[18px] text-center pt-[7px] font-[400] leading-[120%] w-[142px] h-[72px] bg-[url('/images/activity/christmas/bg-gift-retweet-pop-3.svg')] bg-no-repeat bg-center bg-contain"
+              variants={bubbleVariants}
+            >
+              Who’s a <br /> good bera?
+            </motion.div>
+          </motion.div>
         </div>
         <img
           src={`/images/activity/christmas/star-gift-box-1${isMobile ? '-mobile' : ''}.svg`}
@@ -328,3 +390,8 @@ const GiftBox = () => {
 };
 
 export default GiftBox;
+
+const bubbleVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 },
+};

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { getSignature } from '@/utils/signature';
 import chains from '@/configs/chains';
-import axios from 'axios';
 import useAccount from './use-account';
 import { useWalletName } from '@/hooks/use-wallet-name';
+import { post } from '@/utils/http';
 
 export default function useAddAction(source: string) {
   const { account, chainId } = useAccount();
@@ -217,10 +217,8 @@ export default function useAddAction(source: string) {
       );
       params.source = source;
       params.wallet = walletName;
-      console.log('useAddAction params:', params);
 
-      const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://dev-api.beratown.app';
-      axios.post(`${BASE_URL}/api/action/add`, params);
+      post('/api/action/add', params);
     },
     [chainId, account]
   );

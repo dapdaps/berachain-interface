@@ -529,7 +529,7 @@ export const DAppQuests: any = {
   },
   "Top Validators": {
     missions: [
-      "3 Gift Boxes per BGT delegate transaction to THJ or THJ x Beradrome validators"
+      "3 Gift Boxes per BGT delegate transaction to THJ or THJ x Beradrome validators (minimum 5 BGT)"
     ],
     limit: { text: (total: number) => `${total} limited total` }
   }
