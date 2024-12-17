@@ -31,12 +31,12 @@ export default function TotalPrizeModal({ open, onClose, isMobile }: any) {
       }
       if (nft.category === "rare") {
         _rare.push({
-          name: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
+          name: ["USDT", "USDC", "iBGT", "SUGAR", "AZT"].includes(nft.name)
             ? nft.amount + " " + nft.name
             : nft.name,
           logo: nft.logo,
           nfts: {
-            length: ["USDT", "USDC", "iBGT", "SUGAR"].includes(nft.name)
+            length: ["USDT", "USDC", "iBGT", "SUGAR", "AZT"].includes(nft.name)
               ? nft.max_amount / nft.amount
               : nft.max_amount
           },
