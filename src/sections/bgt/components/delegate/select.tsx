@@ -303,7 +303,8 @@ export default memo(function Select(props: any) {
                 list={filterValidators}
                 bodyClass="cursor-pointer"
                 onRow={(record) => {
-                  router.replace('/bgt/validator?address=' + record?.address)
+                  // router.replace('/bgt/validator?address=' + record?.address)
+                  onAddressSelect(record?.address);
                   onClose()
                 }}
               />
