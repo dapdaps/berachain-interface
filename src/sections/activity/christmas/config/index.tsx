@@ -618,6 +618,9 @@ export const NFTs: any = {
   },
   SumerMoney: {
     icon: "/images/activity/christmas/nft/sumer-money.png"
+  },
+  "AZEx Bear": {
+    icon: "/images/activity/christmas/nft/AZEx Bear NFT.png"
   }
 };
 
