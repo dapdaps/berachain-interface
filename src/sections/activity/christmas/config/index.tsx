@@ -469,6 +469,50 @@ export const EcosystemQuests: any = {
       { label: "Discord", link: "https://discord.com/invite/ctXrm6wfeg" },
       { label: "Docs", link: "https://docs.bedrock.technology/" },
     ]
+  },
+  AZEx: {
+    categories: ["DEX", "Yield", "Perp"],
+    icon: "/images/activity/christmas/quest/logos/AZEx.png",
+    banner: "/images/activity/christmas/quest/banners/AZEx_banner.png",
+    description: "Your A-to-Z DeFi hub, masterfully harnessing berachain’s core to amplify yield strategies.",
+    missions: {
+      token_balance: {
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Verify"
+      },
+      learn: {
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Learn"
+      }
+    },
+    socials: [
+      { label: "Website", link: "https://testnet.azex.io/" },
+      { label: "X", link: "https://x.com/azex_io" },
+      { label: "Discord", link: "https://discord.com/invite/azex" },
+      { label: "Docs", link: "https://docs.azex.io/" },
+    ]
+  },
+  Webera: {
+    categories: ["Yield", "Vault"],
+    icon: "/images/activity/christmas/quest/logos/Webera.png",
+    banner: "/images/activity/christmas/quest/banners/Webera_banner.png",
+    description: "AI-Powered Yield Abstraction Layer for Berachain.",
+    missions: {
+      token_balance: {
+        text: (amount: number) => `Verify if you're an NFTs holder and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Verify"
+      },
+      learn: {
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Learn"
+      }
+    },
+    socials: [
+      { label: "Website", link: "https://www.webera.finance/" },
+      { label: "X", link: "https://x.com/WeberaFinance" },
+      { label: "Discord", link: "https://discord.com/invite/weberafinance" },
+      { label: "Docs", link: "https://docs.webera.finance/" },
+    ]
   }
   // 'BeraTown': {
   //   categories: ['Social'],
@@ -574,6 +618,9 @@ export const NFTs: any = {
   },
   SumerMoney: {
     icon: "/images/activity/christmas/nft/sumer-money.png"
+  },
+  "AZEx Bear": {
+    icon: "/images/activity/christmas/nft/AZEx Bear NFT.png"
   }
 };
 
