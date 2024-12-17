@@ -13,9 +13,13 @@ import BgtEmpty from "./components/bgt-empty";
 import Big from 'big.js';
 import { asyncFetch } from "@/utils/http";
 import PageBack from '@/components/back';
+import Select from "@/sections/bgt/components/delegate/select";
+import { useRouter } from "next/navigation";
 
 export default memo(function BGTPageView() {
+  const router = useRouter()
   const [tab, setTab] = useState('all');
+  const [selectVisible, setSelectVisible] = useState(false)
   const Columns: Column[] = [
     {
       title: 'Vaults',
@@ -133,7 +137,12 @@ export default memo(function BGTPageView() {
           </div>
 
           <div className="h-full flex flex-col items-start flex-1 py-[34px] pl-[30px] relative">
-            <div className="mb-[10px] text-[#3D405A] ">Top 3 Validators</div>
+            <div className="w-[320px] flex items-center justify-between mb-[10px] ">
+              <div className="text-[#3D405A]">Top 3 Validators</div>
+              <div className="text-[#3D405A] cursor-pointer underline" onClick={() => {
+                setSelectVisible(true)
+              }}>More</div>
+            </div>
             <div className="flex flex-col gap-[12px]">
               {
                 pageData?.top3EmittingValidators?.validators?.map((data: any) => (
@@ -222,6 +231,16 @@ export default memo(function BGTPageView() {
             />
           )
         }
+
+        <Select
+          visible={selectVisible}
+          onClose={() => {
+            setSelectVisible(false)
+          }}
+          onAddressSelect={(address) => {
+            router.push("/bgt/validator?address=" + address);
+          }}
+        />
       </div>
     </div>
   )
