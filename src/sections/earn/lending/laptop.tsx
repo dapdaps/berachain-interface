@@ -12,6 +12,7 @@ import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover"
 import IconAdd from '@public/images/add.svg'
 import { numberFormatter } from "@/utils/number-formatter";
 import Pool from '@/sections/Lending/Beraborrow/pool';
+import { BERACHAIN_ID } from '@/configs';
 
 const PAGE_SIZE = 9;
 
@@ -98,7 +99,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
                   actionText="Deposit"
                   placeholder="0.00"
                   token={item}
-                  CHAIN_ID={80084}
+                  CHAIN_ID={BERACHAIN_ID}
                   onSuccess={() => {
                     // reload data
                     onSuccess(item.protocol.name);
@@ -143,7 +144,7 @@ const getListMeta = (tabType: 'Supply' | 'Borrow', { handleSwap, handleAction, a
                   isSkipApproved
                   placeholder="0.00"
                   token={item}
-                  CHAIN_ID={80084}
+                  CHAIN_ID={BERACHAIN_ID}
                   onSuccess={() => {
                     // reload data
                     onSuccess(item.protocol.name);

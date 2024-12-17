@@ -8,6 +8,7 @@ import {
   MarketplaceContext,
   useMarketplaceContext
 } from '@/sections/marketplace/context';
+import { BERACHAIN_ID } from '@/configs';
 
 const Staking = dynamic(
   () => import('@/sections/marketplace/components/dapps/staking')
@@ -20,7 +21,7 @@ const Vaults = dynamic(
 );
 
 export default function Invest() {
-  const context = useMarketplaceContext({ chainId: 80084 });
+  const context = useMarketplaceContext({ chainId: BERACHAIN_ID });
   return (
     <MarketplaceContext.Provider value={context}>
       <List>

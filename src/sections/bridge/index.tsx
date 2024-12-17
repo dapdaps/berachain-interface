@@ -13,6 +13,7 @@ import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
 import { useParams } from 'next/navigation';
+import { BERACHAIN_ID } from '@/configs';
 
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
@@ -58,8 +59,8 @@ export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
   const [fromChain, setFromChain] = useState<Chain>(chains[1])
   const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
-  const [toChain, setToChain] = useState<Chain>(chains[80084])
-  const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
+  const [toChain, setToChain] = useState<Chain>(chains[BERACHAIN_ID])
+  const [toToken, setToToken] = useState<Token>(allTokens[chains[BERACHAIN_ID].id][0])
   const isMobile = useIsMobile()
 
   return (

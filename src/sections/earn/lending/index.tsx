@@ -7,7 +7,7 @@ import { useSwapToken } from '@/hooks/use-swap-token';
 import SwapModal from '@/sections/swap/SwapModal';
 import BendActionModal from '@/sections/Lending/Bend/Action';
 import DolomiteActionPanelMobile from '@/sections/Lending/components/action-panel/mobile';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import { BERACHAIN_ID, DEFAULT_CHAIN_ID } from '@/configs';
 import dynamic from 'next/dynamic';
 import DolomiteConfig from '@/configs/lending/dolomite';
 import BeraborrowConfig from '@/configs/lending/beraborrow';
@@ -539,7 +539,7 @@ const EarnLending = (props: any) => {
             actionText={actionType}
             placeholder="0.00"
             token={actionData}
-            CHAIN_ID={80084}
+            CHAIN_ID={BERACHAIN_ID}
             onSuccess={() => {
               // reload data
               setDolomiteLoading(true);
@@ -565,7 +565,7 @@ const EarnLending = (props: any) => {
             actionText={actionType}
             placeholder="0.00"
             token={actionData}
-            CHAIN_ID={80084}
+            CHAIN_ID={BERACHAIN_ID}
             onSuccess={() => {
               // reload data
               setDolomiteLoading(true);

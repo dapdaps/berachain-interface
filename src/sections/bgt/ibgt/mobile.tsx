@@ -56,12 +56,14 @@ const IBGTMobileView = (props: Props) => {
   };
 
   const handleAddWallet = async () => {
+    // @ts-ignore
     if (!window?.ethereum || window.ethereum === void 0 || window.ethereum === 'undefined') return;
     const _toastId = toast.loading({ title: 'Adding...' });
     try {
       const walletClient = createWalletClient({
         // @ts-ignore
         chain: berachainTestnetbArtio,
+        // @ts-ignore
         transport: custom(window.ethereum!),
       });
       await walletClient.watchAsset({

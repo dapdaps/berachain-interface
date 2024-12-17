@@ -2,6 +2,7 @@ import { Contract, providers, utils } from 'ethers';
 import { useEffect, useState } from 'react';
 import useAccount from '@/hooks/use-account';
 import chains from '@/configs/chains';
+import { BERACHAIN_ID } from '@/configs';
 
 export const TOKEN_ABI = [
   {
@@ -28,7 +29,7 @@ export const TOKEN_ABI = [
 export default function useTokenBalance(
   address: string | 'native',
   decimals: number,
-  chainId: number = 80084
+  chainId: number = BERACHAIN_ID
 ) {
   // console.info('use-token-bal:', address, decimals, chainId);
   const { account, provider, chainId: walletChainId } = useAccount();

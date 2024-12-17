@@ -1,6 +1,7 @@
 import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect } from 'react';
+import { BERACHAIN_ID } from '@/configs';
 
 const DEPOSIT_ABI = [
   {
@@ -870,7 +871,7 @@ const generateAccountNumber = () => {
   return timestamp + randomDigits;
 };
 
-const BERA_CHAIN = 80084;
+const BERA_CHAIN = BERACHAIN_ID;
 
 const DolomiteHandler = (props: any) => {
   const { update, data, amount, account, onLoad, provider, chainId } = props;

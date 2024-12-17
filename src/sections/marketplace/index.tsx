@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { beraB } from "@/configs/tokens/bera-bArtio";
 import useIsMobile from "@/hooks/use-isMobile";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
+import { BERACHAIN_ID } from '@/configs';
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -146,7 +147,7 @@ const MarketplaceView = () => {
     const _protocols: string[] = [];
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
-      item.tokens[80084].forEach((token: any) => {
+      item.tokens[BERACHAIN_ID].forEach((token: any) => {
         if (
           // hide BERA
           token.isNative ||

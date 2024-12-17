@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
+import { BERACHAIN_ID } from '@/configs';
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,7 @@ if (!projectId) {
 
 
 
-const defaultNetwork = networks.find((it) => it.id === 80084);
+const defaultNetwork = networks.find((it) => it.id === BERACHAIN_ID);
 
 const customWallets: any = [];
 // @ts-ignore

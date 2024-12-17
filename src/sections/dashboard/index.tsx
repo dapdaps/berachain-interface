@@ -12,6 +12,7 @@ import { useWallet } from '@/sections/dashboard/hooks/use-wallet';
 import { usePortfolio } from '@/sections/dashboard/hooks/use-portfolio';
 import { useTvl } from '@/sections/dashboard/hooks/use-tvl';
 import { useRecords } from '@/sections/dashboard/hooks/use-records';
+import { BERACHAIN_ID } from '@/configs';
 
 const DashboardWallet = dynamic(
   () => import('@/sections/dashboard/components/wallet')
@@ -23,7 +24,7 @@ const DashboardRecords = dynamic(
   () => import('@/sections/dashboard/components/records')
 );
 
-const currentChain = chains[80084];
+const currentChain = chains[BERACHAIN_ID];
 const networkList = Object.values(chains);
 
 const DashboardView = () => {

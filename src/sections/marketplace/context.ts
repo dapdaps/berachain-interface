@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
 import useBend from '../Lending/Bend/hooks/useBend';
+import { BERACHAIN_ID } from '@/configs';
 
 
 export function useMarketplaceContext(props: Props): Context {
@@ -127,7 +128,7 @@ interface Context {
 }
 
 const initialState: any = {
-  chainId: 80084,
+  chainId: BERACHAIN_ID,
   lendingVisible: false,
   lendingData: {},
   setLendingVisible: () => { },
