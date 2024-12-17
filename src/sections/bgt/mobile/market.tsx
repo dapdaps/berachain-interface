@@ -1,12 +1,12 @@
+import useClickTracking from '@/hooks/use-click-tracking';
+import Select from "@/sections/bgt/components/delegate/select";
 import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
 import { motion } from 'framer-motion';
-import useClickTracking from '@/hooks/use-click-tracking';
-import { useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
 const Market = (props: any) => {
   const { pageData, onTop3, bgtData } = props;
   const { handleReport } = useClickTracking();
-
+  const [selectVisible, setSelectVisible] = useState(false)
   useEffect(() => {
     handleReport('1016-001');
   }, []);
@@ -40,8 +40,14 @@ const Market = (props: any) => {
         </div>
       </div>
       <div className="px-[20px] mt-[33px]">
-        <div className="text-[#3D405A] font-[500] text-[14px]">
-          Top 3 Validators
+        <div className='flex items-center justify-between'>
+
+          <div className="text-[#3D405A] font-[500] text-[14px]">
+            Top 3 Validators
+          </div>
+          <div className="text-[#3D405A] text-[14px] underline" onClick={() => {
+            setSelectVisible(true)
+          }}>More</div>
         </div>
         <div className="mt-[10px]">
           {
@@ -95,6 +101,16 @@ const Market = (props: any) => {
           </div>
         </div>
       </div>
+
+      <Select
+        visible={selectVisible}
+        onClose={() => {
+          setSelectVisible(false)
+        }}
+        onDataChange={(data) => {
+          onTop3(data)
+        }}
+      />
     </motion.div>
   );
 };
