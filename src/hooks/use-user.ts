@@ -2,12 +2,12 @@ import { useUserStore } from '@/stores/user';
 import { useCallback } from 'react';
 import { get, post } from '@/utils/http';
 import { useAccount } from 'wagmi';
-import { useWalletInfo } from '@reown/appkit/react';
 import useToast from '@/hooks/use-toast';
+import { useWalletName } from '@/hooks/use-wallet-name';
 
 export function useUser() {
   const { address } = useAccount();
-  const { walletInfo } = useWalletInfo();
+  const { name: walletName } = useWalletName();
   const toast = useToast();
 
   const accessToken = useUserStore((store: any) => store.accessToken?.access_token);
@@ -49,15 +49,19 @@ export function useUser() {
     const checkedRes = await checkAccount({
       address,
     });
+    let _walletName = walletName ?? '';
+    const isBitget = _walletName.toLowerCase().includes('bitget');
+    const isCoin98 = _walletName.toLowerCase().includes('coin98');
+    const isOkx = _walletName.toLowerCase().includes('okx');
+    if (isBitget) {
+      _walletName = 'bitget';
+    }
     if (!checkedRes.isActivated) {
-      const wallet = walletInfo?.name ?? '';
-      const isBitget = wallet.toLowerCase().includes('bitget');
-      const isCoin98 = wallet.toLowerCase().includes('coin98');
-      const isOkx = wallet.toLowerCase().includes('okx');
       const activateRes = await activateAccount({
         address,
         code: '',
         source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
+        wallet: _walletName.toLowerCase(),
       });
       if (!activateRes.isSuccess) {
         toast.fail({
@@ -69,6 +73,7 @@ export function useUser() {
 
     const res = await post('/api/auth/access-token', {
       address,
+      wallet: _walletName.toLowerCase(),
     });
     setUserInfo({
       accessToken: res,
