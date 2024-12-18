@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from "react";
 
-const TapSound = forwardRef<Refs, Props>((props, ref) => {
-  const {} = props;
+const TapSound = forwardRef((props: any, ref) => {
+  const { src = "/audios/cartoon-click.mp3", config } = props;
 
   const soundRef = useRef<any>(null);
 
@@ -14,33 +14,33 @@ const TapSound = forwardRef<Refs, Props>((props, ref) => {
     }
   };
 
+  const pauseSound = () => {
+    if (soundRef.current) {
+      soundRef.current.pause();
+    }
+  };
+
   const refs = {
     play: playSound,
+    pause: pauseSound
   };
   useImperativeHandle(ref, () => refs);
 
   return (
     <audio
       ref={soundRef}
-      src="/audios/cartoon-click.mp3"
+      src={src}
       style={{
         width: 0,
         height: 0,
-        position: 'absolute',
+        position: "absolute",
         zIndex: -9999,
-        display: 'none',
-        visibility: 'hidden',
-        opacity: 0,
+        visibility: "hidden",
+        opacity: 0
       }}
+      {...config}
     />
   );
 });
 
 export default TapSound;
-
-interface Props {
-}
-
-interface Refs {
-  play(): void;
-}

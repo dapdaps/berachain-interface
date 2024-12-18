@@ -54,7 +54,11 @@ const BgtValidator = (props: any) => {
             <div className="flex items-center gap-[16px]">
               <div className="relative">
                 <div className="w-[30px] h-[30px]">
-                  <img src={record?.metadata?.logoURI} alt={record?.metadata?.name} />
+                  {
+                    record?.metadata?.logoURI && (
+                      <img src={record?.metadata?.logoURI} alt={record?.metadata?.name} />
+                    )
+                  }
                 </div>
                 <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
                   <img src={record?.metadata?.productMetadata?.logoURI} alt={record?.metadata?.productMetadata?.name} />

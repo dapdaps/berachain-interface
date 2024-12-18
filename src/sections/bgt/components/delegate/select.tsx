@@ -132,7 +132,7 @@ export default memo(function Select(props: any) {
       calls,
       multicallAddress,
       provider
-    })).map((res:any) => res?.[0] ?? null)
+    })).map((res: any) => res?.[0] ?? null)
   }
   const getUserQueued = async () => {
     const calls: any = []
@@ -301,8 +301,10 @@ export default memo(function Select(props: any) {
                 loading={loading}
                 columns={Columns}
                 list={filterValidators}
+                bodyClass="cursor-pointer"
                 onRow={(record) => {
-                  router.replace('/bgt/validator?address=' + record?.address)
+                  // router.replace('/bgt/validator?address=' + record?.address)
+                  onAddressSelect(record?.address);
                   onClose()
                 }}
               />

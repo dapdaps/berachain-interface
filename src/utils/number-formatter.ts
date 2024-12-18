@@ -22,9 +22,16 @@ export const numberFormatter = (
     // should zeros be added at the end
     isZeroPrecision?: boolean;
     isShort?: boolean;
+    round?: Big.RoundingMode;
   }
 ): any => {
-  const { prefix = '', isLTIntegerZero, isZeroPrecision, isShort } = options || {};
+  const {
+    prefix = '',
+    isLTIntegerZero,
+    isZeroPrecision,
+    isShort,
+    round = Big.roundHalfUp,
+  } = options || {};
 
   const isValid = () => {
     try {
@@ -39,14 +46,14 @@ export const numberFormatter = (
   if (!value || !isValid() || Big(value).eq(0)) {
     if (isSimple) {
       if (isZeroPrecision) {
-        return `${prefix}${Big(0).toFixed(precision)}`;
+        return `${prefix}${Big(0).toFixed(precision, round)}`;
       }
       return `${prefix}0`;
     }
     if (isZeroPrecision) {
       return {
         integer: `${prefix}0`,
-        decimal: Big(0).toFixed(precision).replace(/^\d/, '')
+        decimal: Big(0).toFixed(precision, round).replace(/^\d/, '')
       };
     }
     return {
@@ -57,21 +64,21 @@ export const numberFormatter = (
 
   if (Big(value).lt(Big(10).pow(-precision))) {
     if (isSimple) {
-      return `< ${prefix}${Big(10).pow(-precision).toFixed(precision)}`;
+      return `< ${prefix}${Big(10).pow(-precision).toFixed(precision, round)}`;
     }
     if (isLTIntegerZero) {
       return {
         integer: `< ${prefix}0`,
-        decimal: Big(10).pow(-precision).toFixed(precision).replace(/^\d/, '')
+        decimal: Big(10).pow(-precision).toFixed(precision, round).replace(/^\d/, '')
       };
     }
     return {
       integer: '',
-      decimal: `< ${prefix}${Big(10).pow(-precision).toFixed(precision)}`
+      decimal: `< ${prefix}${Big(10).pow(-precision).toFixed(precision, round)}`
     };
   }
 
-  const finalValue = addThousandSeparator(Big(value).toFixed(precision));
+  const finalValue = addThousandSeparator(Big(value).toFixed(precision, round));
   const firstPart = finalValue.split('.')[0];
   let secondPart = finalValue.split('.')[1] || '';
   if (secondPart) {
@@ -113,4 +120,8 @@ export const numberFormatter = (
     integer: `${prefix}${firstPart}`,
     decimal: secondPart.replace(/[.]?0*$/, '')
   };
+};
+
+export const numberRemoveEndZero = (value: string) => {
+  return value.replace(/\.?0+$/, '');
 };

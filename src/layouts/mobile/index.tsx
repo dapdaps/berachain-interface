@@ -9,6 +9,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useClickTracking from "@/hooks/use-click-tracking";
+import { useAccount } from 'wagmi';
+import useUser from '@/hooks/use-user';
 
 const menuItems = [
   { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -127,6 +129,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const pathname = usePathname();
+  const { address } = useAccount();
+  const { getAccessToken } = useUser();
+
+  useEffect(() => {
+    getAccessToken();
+  }, [address]);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -144,9 +152,8 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div
-      className={`relative overflow-hidden ${
-        routes.includes(pathname) ? "min-h-full" : "h-full"
-      }`}
+      className={`relative overflow-hidden ${routes.includes(pathname) ? "min-h-full" : "h-full"
+        }`}
       style={{
         backgroundColor: !routes.includes(pathname) ? "#96d6ff" : "transparent"
       }}
@@ -214,22 +221,65 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]">
         <div className="flex items-center gap-3">
-          <motion.img
-            src="/images/mobile/town.png"
-            alt="Town"
-            className="w-[15.9vw] h-auto"
-            onClick={handleHome}
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 10
-            }}
-            whileTap={{
-              y: 8,
-              scale: 0.95
-            }}
-            data-bp="1015-001"
-          />
+          <div className="relative">
+
+            {
+              ['/'].includes(pathname) && (
+                <motion.div
+                  className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
+                  onClick={() => {
+                    router.push('/activity/christmas');
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 200,
+                    damping: 10
+                  }}
+                  whileTap={{
+                    y: 8,
+                    scale: 0.95
+                  }}
+                >
+                  <img className="w-full" src="/images/mobile/henlo.png" alt="Henlo" />
+                </motion.div>
+              )
+            }
+
+            {/* <motion.img
+             src="/images/mobile/henlo.png"
+             alt="Henlo"
+             className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw]"
+             onClick={() => {
+             router.push("/activity/christmas")
+             }}
+             transition={{
+             type: "spring",
+             stiffness: 200,
+             damping: 10
+             }}
+             whileTap={{
+             y: 8,
+             scale: 0.95
+             }}
+             /> */}
+
+            <motion.img
+              src="/images/mobile/town.png"
+              alt="Town"
+              className="relative w-[15.9vw] h-auto z-[2]"
+              onClick={handleHome}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 10
+              }}
+              whileTap={{
+                y: 8,
+                scale: 0.95
+              }}
+              data-bp="1015-001"
+            />
+          </div>
           {isMenuOpen && (
             <>
               <Link

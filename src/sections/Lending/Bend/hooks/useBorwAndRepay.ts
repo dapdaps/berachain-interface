@@ -138,7 +138,7 @@ export const useBorwAndRepay = ({
               if (status === 1) {
                 setNeedApprove(false);
                 toast.success({
-                  title: 'Approve Successfully!'
+                  title: 'Approve Successful!'
                 });
               } else {
                 toast.fail({
@@ -221,7 +221,7 @@ export const useBorwAndRepay = ({
             triggerUpdate();
             setAmount("");
             toast.success({
-              title: 'Borrow Successfully!',
+              title: 'Borrow Successful!',
               tx: transactionHash,
               chainId
             });
@@ -272,7 +272,7 @@ export const useBorwAndRepay = ({
             triggerUpdate();
             setAmount("");
             toast.success({
-              title: 'Borrow Successfully!',
+              title: 'Borrow Successful!',
               tx: transactionHash,
               chainId
             });
@@ -345,7 +345,7 @@ export const useBorwAndRepay = ({
                   transactionHash
                 )
                 toast.success({
-                  title: 'Repay Successfully!',
+                  title: 'Repay Successful!',
                   tx: transactionHash,
                   chainId
                 });
@@ -390,7 +390,7 @@ export const useBorwAndRepay = ({
           triggerUpdate();
           setAmount("");
           toast.success({
-            title: 'Repay Successfully!',
+            title: 'Repay Successful!',
             tx: transactionHash,
             chainId
           });

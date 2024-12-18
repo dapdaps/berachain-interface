@@ -197,7 +197,7 @@ export function useDetail(props: any) {
         updateState({ ...payload, isLoading: false, loadingMsg: "" });
         toast?.dismiss(toastId);
         toast?.success({
-          title: "Approve Successfully!",
+          title: "Approve Successful!",
           tx: receipt.transactionHash,
           chainId
         });
@@ -280,7 +280,7 @@ export function useDetail(props: any) {
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: "Stake Successfully!",
+            title: "Stake Successful!",
             tx: transactionHash,
             chainId
           });
@@ -337,6 +337,7 @@ export function useDetail(props: any) {
           });
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(lpAmount);
+          const _symbol = tokens.join("-")
           addAction?.({
             type: "Staking",
             action: "UnStake",
@@ -363,7 +364,7 @@ export function useDetail(props: any) {
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: "Unstake Successfully!",
+            title: "Unstake Successful!",
             tx: transactionHash,
             chainId
           });
@@ -437,7 +438,7 @@ export function useDetail(props: any) {
         });
         toast?.dismiss(toastId);
         toast?.success({
-          title: "Claim Successfully!"
+          title: "Claim Successful!"
         });
         setTimeout(() => {
           onSuccess?.();

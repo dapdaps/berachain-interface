@@ -33,7 +33,7 @@ if (typeof window !== 'undefined' && window.berasig) {
       target: {
         id: 'BeraSig',
         icon: '/images/wallets/bera-sig-wallet.avif',
-        name: 'BeraSig Wallet',
+        name: 'BeraSig Wallet (Recommend)',
         // @ts-ignore
         provider: berasig,
       }

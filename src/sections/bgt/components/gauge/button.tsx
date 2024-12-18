@@ -93,7 +93,7 @@ export default memo(function Button(props: IProps) {
         updateState({ ...payload, isLoading: false });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successfully!',
+          title: 'Approve Successful!',
           tx: receipt.transactionHash,
           chainId
         });
@@ -172,7 +172,7 @@ export default memo(function Button(props: IProps) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Deposit Successfully!',
+          title: 'Deposit successful!',
           tx: transactionHash,
           chainId
         });
@@ -231,7 +231,7 @@ export default memo(function Button(props: IProps) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Withdraw Successfully!',
+          title: 'Withdraw Successful!',
           tx: transactionHash,
           chainId
         });

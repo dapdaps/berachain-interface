@@ -12,9 +12,14 @@ import SwitchTabs from "@/components/switch-tabs";
 import BgtEmpty from "./components/bgt-empty";
 import Big from 'big.js';
 import { asyncFetch } from "@/utils/http";
+import PageBack from '@/components/back';
+import Select from "@/sections/bgt/components/delegate/select";
+import { useRouter } from "next/navigation";
 
 export default memo(function BGTPageView() {
+  const router = useRouter()
   const [tab, setTab] = useState('all');
+  const [selectVisible, setSelectVisible] = useState(false)
   const Columns: Column[] = [
     {
       title: 'Vaults',
@@ -115,7 +120,7 @@ export default memo(function BGTPageView() {
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
-
+      <PageBack className="absolute left-[36px] md:left-[15px] z-[12]" />
       <div className="w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <div className="flex items-center h-[223px] rounded-[20px] bg-[#FFDC50]">
           <div className="h-full flex flex-col flex-1 py-[34px] pl-[30px] relative justify-between">
@@ -132,7 +137,12 @@ export default memo(function BGTPageView() {
           </div>
 
           <div className="h-full flex flex-col items-start flex-1 py-[34px] pl-[30px] relative">
-            <div className="mb-[10px] text-[#3D405A] ">Top 3 Validators</div>
+            <div className="w-[320px] flex items-center justify-between mb-[10px] ">
+              <div className="text-[#3D405A]">Top 3 Validators</div>
+              <div className="text-[#3D405A] cursor-pointer underline" onClick={() => {
+                setSelectVisible(true)
+              }}>More</div>
+            </div>
             <div className="flex flex-col gap-[12px]">
               {
                 pageData?.top3EmittingValidators?.validators?.map((data: any) => (
@@ -221,6 +231,16 @@ export default memo(function BGTPageView() {
             />
           )
         }
+
+        <Select
+          visible={selectVisible}
+          onClose={() => {
+            setSelectVisible(false)
+          }}
+          onAddressSelect={(address) => {
+            router.push("/bgt/validator?address=" + address);
+          }}
+        />
       </div>
     </div>
   )

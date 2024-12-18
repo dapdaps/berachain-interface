@@ -41,7 +41,7 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
 
       const tx = await RouterContract[
         data.token0.isNative || data.token1.isNative
-          ? "removeLiquidityETH"
+          ? "removeLiquidityNative"
           : "removeLiquidity"
       ](
         data.id,
@@ -56,13 +56,13 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
-          title: "Withdraw successfully!",
+          title: "Withdraw successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
         onSuccess();
       } else {
-        toast.fail({ title: "Withdraw faily!" });
+        toast.fail({ title: "Withdraw failed!" });
       }
       addAction({
         type: "Liquidity",
@@ -90,7 +90,7 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Withdraw faily!`
+          : `Withdraw failed!`
       });
     }
   };

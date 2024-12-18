@@ -26,7 +26,16 @@ const LendingButton = ({
   config,
   addAction,
   isApproveMax,
+  toastLoadingMsg,
+  invalidText,
+  addActionText,
+  addActionToken,
+  isSkipAmountEmptyCheck,
 }: Props) => {
+  console.log('addActionText: %o', addActionText);
+  console.log('addActionToken: %o', addActionToken);
+  console.log('amount: %o', amount);
+
   const toast = useToast();
   const { approve, approved, approving, checking } = useApprove({
     amount,
@@ -52,7 +61,21 @@ const LendingButton = ({
     });
   }, [address, gas, children]);
 
-  if (!amount || Big(amount).eq(0)) {
+  if (invalidText) {
+    return (
+      <Button
+        type={type}
+        style={style}
+        disabled={loading || disabled}
+        loading={loading}
+        className="whitespace-nowrap"
+      >
+        {invalidText}
+      </Button>
+    );
+  }
+
+  if (!isSkipAmountEmptyCheck && (!amount || Big(amount).eq(0))) {
     return (
       <Button
         type={type}
@@ -134,7 +157,7 @@ const LendingButton = ({
   const handleSubmit = () => {
     if (pending) return;
     const toastId = toast?.loading({
-      title: `Submitting ${token?.symbol} ${children.toLowerCase()} request...`
+      title: toastLoadingMsg || `Submitting ${token?.symbol} ${children.toLowerCase()} request...`
     });
     setPending(true);
     provider
@@ -147,8 +170,8 @@ const LendingButton = ({
           setPending(false);
           addAction?.({
             type: 'Lending',
-            action: children,
-            token: token,
+            action: addActionText || children,
+            token: addActionToken || token,
             amount,
             template: config.name,
             add: false,
@@ -257,4 +280,9 @@ interface Props {
   config: any;
   addAction?: any;
   isApproveMax?: boolean;
+  toastLoadingMsg?: any;
+  invalidText?: any;
+  addActionText?: string;
+  addActionToken?: Token;
+  isSkipAmountEmptyCheck?: boolean;
 }

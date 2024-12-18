@@ -9,7 +9,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 const Laptop = ({ params, router, pathname, children }: any) => {
   return (
     <div className="pt-[30px] flex flex-col items-center">
-      <PageBack className="absolute left-[36px] top-[31px]" />
+      <PageBack className="absolute left-[36px] top-[31px]" showBackText={false} />
       {params.dapp === "ooga-booga" ? (
         <div className="h-[80px]" />
       ) : (
@@ -33,7 +33,7 @@ const Laptop = ({ params, router, pathname, children }: any) => {
 const Mobile = ({ params, router, pathname, children }: any) => {
   return (
     <div className="relative pt-[50px] h-full">
-      <PageBack className="absolute left-[12px] top-[22px]" />
+      <PageBack className="absolute left-[12px] top-[22px]"  showBackText={false}  />
       <div className="absolute top-[20px] right-[10px] w-[200px]">
         {params.dapp !== "ooga-booga" && (
           <SwitchTabs

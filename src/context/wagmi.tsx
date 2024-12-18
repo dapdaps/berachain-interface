@@ -21,7 +21,7 @@ const customWallets: any = [];
 if (typeof window !== 'undefined' && !window.berasig) {
   customWallets.push({
     id: 'BeraSig',
-    name: 'BeraSig Wallet',
+    name: 'BeraSig Wallet (Recommend)',
     homepage: 'https://docs.beraji.com/wallet-integration',
     image_url: '/images/wallets/bera-sig-wallet.avif',
   });

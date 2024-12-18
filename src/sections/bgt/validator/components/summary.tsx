@@ -11,9 +11,13 @@ const Summary = (props: any) => {
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Active Gauges Vaults</div>
           <div className="flex items-center gap-[6px]">
             <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</span>
-            <div className="w-[30px] h-[30px]">
-              <img src={vaults?.[0]?.metadata?.logoURI} alt={vaults?.[0]?.metadata?.name} />
-            </div>
+            {
+              vaults?.[0]?.metadata?.logoURI && (
+                <div className="w-[30px] h-[30px]">
+                  <img src={vaults?.[0]?.metadata?.logoURI} alt={vaults?.[0]?.metadata?.name} />
+                </div>
+              )
+            }
           </div>
         </div>
         <div className="flex-1 flex flex-col gap-[10px]">

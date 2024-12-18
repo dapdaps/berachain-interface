@@ -12,7 +12,7 @@ export default function Confirm({ show, onClose }: Props) {
       <Card>
         <div className='lg:w-[520px] md:w-full'>
           <div className='text-center text-[26px] mt-[30px] md:font-CherryBomb'>
-            Bridged Successfully!
+            Bridged Successful!
           </div>
           <div className='flex items-center justify-between mt-[35px] text-[20px]'>
             <div className='flex-1 text-right pr-[40px]'>

@@ -22,16 +22,18 @@ export default function useDepositAmount({
         ? [
             Big(amount0)
               .mul(10 ** token0.decimals)
-              .toString(),
+              .toFixed(0),
             "1157920892373161954235709850086879078532"
           ]
         : [
             "1157920892373161954235709850086879078532",
             Big(amount1)
               .mul(10 ** token1.decimals)
-              .toString()
+              .toFixed(0)
           ];
+
       const amountsRes = await IslandContract.getMintAmounts(...params);
+
       const _amount0 =
         amount0 ||
         Big(amountsRes[0].toString())

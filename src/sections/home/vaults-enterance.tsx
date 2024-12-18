@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { motion } from "framer-motion";
+import ArrowTopSvg from '@public/images/background/arrow-top.svg';
 
 export default function VaultsEnterance({ className, onClick, imgSrc }: any) {
   return (
@@ -11,10 +12,9 @@ export default function VaultsEnterance({ className, onClick, imgSrc }: any) {
       onClick={onClick}
       data-bp="1010-013"
     >
-      <div className="flex items-center justify-end gap-[27px] pr-[19px] md:hidden">
-        <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
-          Vaults
-        </div>
+      <div className="flex items-center justify-end gap-[12px] pr-[10px] md:hidden">
+        <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
+        <div className="text-[20px] font-CherryBomb leading-[90%]">Vaults</div>
       </div>
       <motion.img
         src={imgSrc}

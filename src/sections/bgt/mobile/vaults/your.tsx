@@ -92,7 +92,7 @@ const YourVaults = (props: any) => {
                             type="button"
                             disabled={Big(record?.earned || 0).lte(0) || record?.claiming}
                             className="text-black text-[14px] font-[500] border border-black h-[36px] px-[17px] rounded-[10px] bg-white disabled:opacity-30 disabled:pointer-events-none"
-                            onClick={record.claim}
+                            onClick={() => record.claim?.(record, idx)}
                           >
                             {
                               record.claiming ? <Loading /> : 'Claim BGT'

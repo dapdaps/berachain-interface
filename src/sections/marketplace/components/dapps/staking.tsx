@@ -164,7 +164,7 @@ export default memo(function staking(props) {
         updateState({ ...payload, isLoading: false, loadingMsg: '' });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successfully!',
+          title: 'Approve Successful!',
           tx: receipt.transactionHash,
           chainId: props.chainId
         });
@@ -250,7 +250,7 @@ export default memo(function staking(props) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Stake Successfully!'
+          title: 'Stake Successful!'
         });
       })
       .catch((error: Error) => {
@@ -334,7 +334,7 @@ export default memo(function staking(props) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Unstake Successfully!'
+          title: 'Unstake Successful!'
         });
       })
       .catch((error: Error) => {

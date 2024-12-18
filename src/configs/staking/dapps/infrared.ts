@@ -3,6 +3,7 @@ import { beraB } from '@/configs/tokens/bera-bArtio';
 export default {
   name: 'Infrared',
   icon: '/images/dapps/infrared.svg',
+  path: '/staking/infrared',
   ICON_VAULT_MAP: {
     'HONEY-WBERA':
       'https://www.infrared.finance/_next/image?url=%2Fassets%2Ficons%2Fhoney-wbera.png&w=64&q=75',

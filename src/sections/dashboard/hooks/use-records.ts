@@ -8,12 +8,14 @@ import {
 } from '@/sections/dashboard/utils';
 import useUser from '@/hooks/use-user';
 import { upperFirst } from 'lodash';
+import useIsMobile from '@/hooks/use-isMobile';
 
 export function useRecords(props: Props) {
   const { currentChain } = props;
 
   const { address } = useAccount();
   const { accessToken, accessTokenLoading } = useUser();
+  const isMobile = useIsMobile();
 
   const [hasMore, setHasMore] = useState(false);
   const [records, setRecords] = useState<any>([]);
@@ -54,7 +56,7 @@ export function useRecords(props: Props) {
             key: record.id,
             ...record,
             id: record.id,
-            executed: formatExecution(record),
+            executed: formatExecution(record, isMobile),
             action: upperFirst(record.type),
             gas: gasFormatter(record),
             dapp_logo: getDappLogo(record.dapp),

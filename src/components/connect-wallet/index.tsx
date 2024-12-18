@@ -1,6 +1,6 @@
 "use client";
 
-import { useWalletInfo, useAppKit } from "@reown/appkit/react";
+import { useAppKit } from "@reown/appkit/react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useAccount, useBalance, useDisconnect, useSwitchChain } from "wagmi";
 import Image from "next/image";
@@ -21,6 +21,7 @@ import MobileUser from "@/components/connect-wallet/user";
 import MobileNetworks from "@/components/connect-wallet/networks";
 import { useDebounceFn } from 'ahooks';
 import LazyImage from '@/components/layz-image';
+import { useWalletName } from '@/hooks/use-wallet-name';
 
 const dropdownAnimations = {
   active: {
@@ -46,8 +47,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const balance = useBalance({
     address,
   });
-  const { walletInfo } = useWalletInfo();
   const { userInfo } = useUser();
+  const walletInfo = useWalletName();
 
   const [connecting, setConnecting] = useState<boolean>(isConnecting);
   const [chainDropdownShow, setChainDropdownShow] = useState<boolean>(false);
@@ -374,11 +375,7 @@ const User = (props: any) => {
     addressShown,
   } = props;
 
-  let walletName = walletInfo?.name || '';
-  if (walletName) {
-    walletName = walletName.replace(/^io\./, '');
-    walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);
-  }
+  const walletName = walletInfo?.name || '';
 
   return (
     <motion.div

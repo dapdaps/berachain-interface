@@ -9,13 +9,13 @@ import checkGas from "./checkGas";
 import formatTrade from "./formatTrade";
 import getWrapOrUnwrapTx from "./getWrapOrUnwrapTx";
 
-export default function useTrade({ chainId, template, onSuccess }: any) {
+export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const slippage: any = useSettingsStore((store: any) => store.slippage);
   const [loading, setLoading] = useState(false);
   const [trade, setTrade] = useState<any>();
   const { account, provider } = useAccount();
   const toast = useToast();
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction(from || "dapp");
   const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
   const prices = {};
@@ -95,7 +95,9 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
         if (typeof template === "string") {
           params.template = template;
         } else {
-          params.templates = template;
+          params.templates = template.filter(
+            (item: string) => item !== "Ooga Booga"
+          );
         }
 
         const response = await fetch("https://test-api.dapdap.net/quoter", {
@@ -177,13 +179,13 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
 
       if (status === 1) {
         toast.success({
-          title: `Swap successfully!`,
+          title: `Swap Successful!`,
           tx: transactionHash,
           chainId
         });
         onSuccess?.();
       } else {
-        toast.fail({ title: `Swap faily!` });
+        toast.fail({ title: `Swap failed!` });
       }
       addAction({
         type: "Swap",
@@ -204,7 +206,7 @@ export default function useTrade({ chainId, template, onSuccess }: any) {
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Swap faily!`
+          : `Swap failed!`
       });
       console.log(err);
       setLoading(false);

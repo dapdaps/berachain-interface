@@ -54,7 +54,7 @@ export const executionTokenWay = (record: any) => {
   };
 };
 
-export const formatExecution = (record: any) => {
+export const formatExecution = (record: any, isMobile?: boolean) => {
   if (!record) return '';
 
   const { tokenKey: key, method } = executionTokenWay(record);
@@ -94,8 +94,12 @@ export const formatExecution = (record: any) => {
 
   return (
     <div className="flex items-center flex-wrap gap-[6px] break-all text-[14px]">
-      <span>{upperFirst(method)}</span>
-      {amount}
+      {
+        !isMobile && (
+          <span>{upperFirst(method)}</span>
+        )
+      }
+      {amount || '-'}
     </div>
   );
 };

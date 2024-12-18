@@ -1,3 +1,5 @@
+import Config from '@/configs/lending';
+
 const ROUTE_CONFIG = {
   dolomite: {
     type: 'lending',
@@ -21,7 +23,8 @@ const ROUTE_CONFIG = {
       '--replay-color': '#FFFFFF',
       '--claim-color': '#FFFFFF'
     },
-    icon: '/images/dapps/dolomite.svg'
+    icon: '/images/dapps/dolomite.svg',
+    config: Config.Dolomite,
   },
   bend: {
     type: 'lending',
@@ -46,7 +49,34 @@ const ROUTE_CONFIG = {
       '--replay-color': '#EAEBEF',
       '--claim-color': '#EAEBEF'
     },
-    icon: '/images/dapps/bend.svg'
+    icon: '/images/dapps/bend.svg',
+    config: Config.Bend,
+  },
+  beraborrow: {
+    type: 'lending',
+    theme: {
+      '--button-color': '#EAEBEF',
+      '--button-disabled-color': 'rgba(234, 235, 239, .7)',
+      '--switch-color': '#45499F',
+      '--button-text-color': 'black',
+      '--supply-color': '#EAEBEF',
+      '--yours-table-title': 'black',
+      '--borrow-color': '#EAEBEF',
+      '--withdraw-bg-color': '#EAEBEF',
+      '--withdraw-border-color': '#EAEBEF',
+      '--withdraw-bg-hover-color': '#EAEBEF',
+      '--repay-bg-color': '#EAEBEF',
+      '--repay-border-color': '#EAEBEF',
+      '--repay-bg-hover-color': '#EAEBEF',
+      '--claim-bg-hover-color': '#EAEBEF',
+      '--claim-bg-color': '#EAEBEF',
+      '--claim-border-color': '#EAEBEF',
+      '--withdraw-color': '#EAEBEF',
+      '--replay-color': '#EAEBEF',
+      '--claim-color': '#EAEBEF'
+    },
+    icon: '/images/dapps/beraborrow.png',
+    config: Config.Beraborrow,
   }
 };
 

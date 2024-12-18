@@ -3,7 +3,7 @@
 import { useProgressRouter } from '@/hooks/use-progress-router';
 import IconBack from '@public/images/icon-back.svg';
 const PageBack = (props: Props) => {
-  const { className, style, onBack } = props;
+  const { className, style, onBack, showBackText = true } = props;
 
   const router = useProgressRouter();
 
@@ -19,7 +19,7 @@ const PageBack = (props: Props) => {
     <>
       <button
         type='button'
-        className={`flex items-center gap-[14px] text-center font-CherryBomb text-[20px] text-black font-[400] hidden lg:flex ${className}`}
+        className={`flex items-center gap-[14px] text-center font-CherryBomb text-[20px] text-black font-[400] lg:flex ${className}`}
         style={style}
         onClick={handleClick}
       >
@@ -28,8 +28,9 @@ const PageBack = (props: Props) => {
           height={16}
           className='translate-y-[2px]'
         />
-
-        <span>back</span>
+        {
+          showBackText && <span>back</span>
+        }
       </button>
       <button
         type='button'
@@ -62,4 +63,5 @@ interface Props {
   style?: React.CSSProperties;
   isBlack?: boolean;
   onBack?(): void;
+  showBackText?: boolean;
 }
