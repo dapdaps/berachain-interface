@@ -1,9 +1,10 @@
 'use client';
-import { cookieStorage, createStorage } from 'wagmi';
+import { cookieStorage, createStorage, http } from 'wagmi';
 import chains from './chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { injected } from 'wagmi/connectors'
 import { CreateConnectorFn } from 'wagmi'
+import { berachainTestnetbArtio } from '@reown/appkit/networks';
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
@@ -68,6 +69,9 @@ export const wagmiAdapter = new WagmiAdapter({
   networks,
   // @ts-ignore
   connectors,
+  transports: {
+    [berachainTestnetbArtio.id]: http('https://bartio.rpc.berachain.com')
+  }
 });
 
 export const config = wagmiAdapter.wagmiConfig;
