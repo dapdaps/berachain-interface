@@ -1,5 +1,5 @@
 'use client';
-import { cookieStorage, createStorage, http } from 'wagmi';
+import { cookieStorage, createStorage, fallback, http } from 'wagmi';
 import chains from './chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { injected } from 'wagmi/connectors'
@@ -70,7 +70,11 @@ export const wagmiAdapter = new WagmiAdapter({
   // @ts-ignore
   connectors,
   transports: {
-    [berachainTestnetbArtio.id]: http('https://bartio.rpc.berachain.com')
+    [berachainTestnetbArtio.id]: fallback([
+      http('https://bartio.rpc.berachain.com'),
+      http('https://bartio.drpc.org'),
+      http(`https://rpc.walletconnect.org/v1/?chainId=eip155%3A80084&projectId=${projectId}`),
+    ])
   }
 });
 
