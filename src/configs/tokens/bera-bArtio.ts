@@ -331,6 +331,6 @@ export const beraB: { [key: string]: Token } = {
     decimals: 18,
     symbol: "LBGT",
     name: "Liquid BGT",
-    icon: "/assets/tokens/sip.svg"
+    icon: "/assets/tokens/lbgt.png"
   }
 };

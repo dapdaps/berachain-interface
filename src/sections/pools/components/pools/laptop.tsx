@@ -16,18 +16,21 @@ export default function Laptop({
     () =>
       pools.filter((pool: any) => {
         let flag = true;
-        if (
-          searchVal &&
-          !(
-            pool.token0.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token0.symbol
-              .toLowerCase()
-              .includes(searchVal.toLowerCase()) ||
-            pool.token1.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token1.symbol.toLowerCase().includes(searchVal.toLowerCase())
-          )
-        )
-          flag = false;
+        const tokens = pool.tokens || [pool.token0, pool.token1];
+        tokens.some((token: any) => {
+          if (
+            searchVal &&
+            !(
+              token.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+              token.symbol.toLowerCase().includes(searchVal.toLowerCase())
+            )
+          ) {
+            flag = false;
+            return true;
+          }
+          return false;
+        });
+
         return flag;
       }),
     [pools, searchVal]
