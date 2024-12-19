@@ -7,6 +7,8 @@ const MoveBg = (props: any) => {
     peoples,
   } = props;
 
+
+  console.log('===screen.availWidth', screen.availWidth)
   return (
     <>
       <div
@@ -27,14 +29,36 @@ const MoveBg = (props: any) => {
         }}
       />
 
-      <div
+      <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left"
+        style={{
+          left: -(width + screen.availWidth),
+          animationDuration: '20s',
+          width: (width + screen.availWidth) * 3,
+        }}
+      >
+        {
+          new Array(3).fill(null).map((_, index) => {
+            return (
+              <div style={{
+                width: width + screen.availWidth
+              }}>
+                <div className="w-[1541px]" key={index}>
+                  <img src={peoples} />
+                </div>
+              </div>
+            )
+          })
+        }
+      </div >
+      {/* <div
         className="absolute z-10 left-0 bottom-[197px] h-[250px] bg-repeat-x bg-left animate-slide-to-left bg-contain"
         style={{
-          left: -width / 2,
+          left: -(width * repeat) / 2,
+          animationDuration: '20s',
           width: width * repeat,
           backgroundImage: `url("${peoples}")`,
         }}
-      />
+      /> */}
     </>
   );
 };
