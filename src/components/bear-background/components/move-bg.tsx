@@ -4,6 +4,7 @@ const MoveBg = (props: any) => {
     repeat = 3,
     foreground,
     background,
+    peoples,
   } = props;
 
   return (
@@ -23,6 +24,15 @@ const MoveBg = (props: any) => {
           left: -width / 2,
           width: width * repeat,
           backgroundImage: `url("${foreground}")`,
+        }}
+      />
+
+      <div
+        className="absolute z-10 left-0 bottom-[197px] h-[250px] bg-repeat-x bg-left animate-slide-to-left bg-contain"
+        style={{
+          left: -width / 2,
+          width: width * repeat,
+          backgroundImage: `url("${peoples}")`,
         }}
       />
     </>
