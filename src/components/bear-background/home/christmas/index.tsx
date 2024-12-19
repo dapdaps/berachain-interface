@@ -9,7 +9,7 @@ const BeraBgHomeChristmas = () => {
     <>
       <MoveBg
         width={1544}
-        repeat={4}
+        repeat={3}
         foreground="/images/background/christmas/ground.svg"
         background="/images/background/christmas/trees.svg"
         peoples="/images/background/christmas/peoples.png"
