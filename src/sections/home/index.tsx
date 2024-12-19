@@ -146,7 +146,7 @@ const Navigation = function () {
       >
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div
-          className={`flex gap-[15px] items-center pl-[25px] ${
+          className={`flex gap-[15px] items-center pl-[15px] ${
             isChristmas ? "text-white" : "text-black"
           }`}
         >
