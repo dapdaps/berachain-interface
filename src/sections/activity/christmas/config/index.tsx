@@ -513,6 +513,28 @@ export const EcosystemQuests: any = {
       { label: "Discord", link: "https://discord.com/invite/weberafinance" },
       { label: "Docs", link: "https://docs.webera.finance/" },
     ]
+  },
+  Moby: {
+    categories: ["DeFi", "Option", "Vault"],
+    icon: "/images/activity/christmas/quest/logos/Moby.png",
+    banner: "/images/activity/christmas/quest/banners/Moby banner.png",
+    description: "Seamless options trading with maximized liquidity. Boost your Yield Farming game with Bera Options Vaults (BOV). It is easy, fast, and rewarding.",
+    missions: {
+      view: {
+        text: (amount: number) => `Go to the website and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Go"
+      },
+      learn: {
+        text: (amount: number) => `Learn about Bera Options Vaults(BOV) and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Learn"
+      }
+    },
+    socials: [
+      { label: "Website", link: "https://moby.trade/" },
+      { label: "X", link: "https://x.com/Moby_trade" },
+      { label: "Discord", link: "https://discord.com/invite/neJMg9P4Ps" },
+      { label: "Docs", link: "https://medium.com/moby-trade/moby-and-infrared-partner-to-elevate-liquidity-on-berachain-4b58e2f1030b" },
+    ]
   }
   // 'BeraTown': {
   //   categories: ['Social'],
