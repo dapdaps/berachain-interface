@@ -14,6 +14,18 @@ const LogoAnimation = {
     damping: 20
   },
 };
+const ChristmasLogoAnimation = {
+  animate: {
+    opacity: [0, 1, 1, 0],
+    y: [20, 0],
+    scale: [0.7, 1]
+  },
+  transition: {
+    opacity: { duration: 3, delay: 0.3, times: [0, 0.5, 0.8, 1] },
+    y: { duration: 0.4, type: "spring", stiffness: 300, damping: 20 },
+    scale: { duration: 0.4, type: "spring", stiffness: 300, damping: 20 },
+  },
+};
 
 function BeraTown(props: any) {
   const { isChristmas, className, style } = props;
@@ -36,7 +48,7 @@ function BeraTown(props: any) {
             src='/images/background/christmas/beratown.png'
             width={347}
             height={218}
-            {...LogoAnimation}
+            {...ChristmasLogoAnimation}
           />
         )
       }
