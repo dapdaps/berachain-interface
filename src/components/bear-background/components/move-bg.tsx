@@ -1,15 +1,20 @@
+import { useMemo } from "react";
+
 const MoveBg = (props: any) => {
   const {
     width,
     repeat = 3,
     foreground,
     background,
+    peoples,
   } = props;
 
+
+  const ScreenWidth = useMemo(() => window.screen.availWidth, [])
   return (
     <>
       <div
-        className="absolute z-[9] left-0 bottom-[200px] h-[235px] bg-repeat-x bg-left animate-slide-to-left"
+        className="absolute z-[9] left-0 bottom-[200px] h-[235px] bg-repeat-x bg-left animate-slide-to-left will-change-transform"
         style={{
           left: -width / 2,
           width: width * repeat,
@@ -18,13 +23,39 @@ const MoveBg = (props: any) => {
         }}
       />
       <div
-        className="absolute z-10 left-0 bottom-0 h-[249px] bg-repeat-x bg-left animate-slide-to-left"
+        className="absolute z-10 left-0 bottom-0 h-[249px] bg-repeat-x bg-left animate-slide-to-left will-change-transform"
         style={{
           left: -width / 2,
           width: width * repeat,
           backgroundImage: `url("${foreground}")`,
         }}
       />
+
+      <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left will-change-transform"
+        style={{
+          left: -(2 * width + ScreenWidth),
+          animationDuration: '40s',
+          width: (width + ScreenWidth) * repeat,
+          animationDelay: '3s'
+        }}
+      >
+        {
+          new Array(repeat).fill(null).map((_, index) => {
+            return (
+              <div
+                key={index}
+                style={{
+                  width: width + ScreenWidth
+                }}
+              >
+                <div className="w-[1541px]" key={index}>
+                  <img src={peoples} />
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
     </>
   );
 };
