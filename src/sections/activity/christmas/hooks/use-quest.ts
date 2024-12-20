@@ -223,14 +223,14 @@ export function useQuest(props: { base: IBase; }): IQuest {
       if (_quest.token && _quest.category === QuestCategory.TokenBalance) {
         const { success } = await checkNftMissionValid(_quest);
         if (!success) {
-          resolve({ code: 0, data: {} });
+          resolve({ code: 1, data: {}, id: _quest.id });
           return;
         }
       }
       get('/api/mas/quest/check', params).then((res) => {
-        resolve(res);
+        resolve({ ...res, id: _quest.id });
       }).catch((err) => {
-        resolve({ code: 0, data: {} });
+        resolve({ code: 1, data: {}, id: _quest.id });
       });
     });
   };
@@ -282,12 +282,17 @@ export function useQuest(props: { base: IBase; }): IQuest {
       });
       const checks = checkList.map((it) => requestCheck(it));
       const res = await Promise.all(checks);
+      const checkFailedList: (number|undefined)[] = [];
       res.forEach((_res: any) => {
+        if (_res.code !== 0) {
+          checkFailedList.push(_res.id);
+          return;
+        }
         const { total_box, total_completed_times } = _res.data || {};
         totalBox += (total_box || 0);
         totalCompletedTimes += (total_completed_times || 0);
       });
-      quest.missions.filter((it) => !checkList.some((_it) => _it.id === it.id)).forEach((it) => {
+      quest.missions.filter((it) => !checkList.some((_it) => _it.id === it.id && !checkFailedList.includes(_it.id))).forEach((it) => {
         const { total_box, total_completed_times } = it;
         totalBox += (total_box || 0);
         totalCompletedTimes += (total_completed_times || 0);
