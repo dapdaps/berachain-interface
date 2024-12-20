@@ -23,7 +23,7 @@ const MoveBg = (props: any) => {
         }}
       />
       <div
-        className="absolute z-10 left-0 bottom-0 h-[249px] bg-repeat-x bg-left animate-slide-to-left"
+        className="absolute z-10 left-0 bottom-0 h-[249px] bg-repeat-x bg-left animate-slide-to-left will-change-transform"
         style={{
           left: -width / 2,
           width: width * repeat,
@@ -31,7 +31,7 @@ const MoveBg = (props: any) => {
         }}
       />
 
-      <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left"
+      <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left will-change-transform"
         style={{
           left: -(width + ScreenWidth),
           animationDuration: '40s',
