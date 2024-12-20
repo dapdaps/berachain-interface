@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 const MoveBg = (props: any) => {
   const {
     width,
@@ -8,6 +10,7 @@ const MoveBg = (props: any) => {
   } = props;
 
 
+  const ScreenWidth = useMemo(() => window.screen.availWidth, [])
   return (
     <>
       <div
@@ -30,17 +33,20 @@ const MoveBg = (props: any) => {
 
       <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left"
         style={{
-          left: -(width + window.screen.availWidth),
+          left: -(width + ScreenWidth),
           animationDuration: '40s',
-          width: (width + window.screen.availWidth) * repeat,
+          width: (width + ScreenWidth) * repeat,
         }}
       >
         {
           new Array(repeat).fill(null).map((_, index) => {
             return (
-              <div style={{
-                width: width + window.screen.availWidth
-              }}>
+              <div
+                key={index}
+                style={{
+                  width: width + ScreenWidth
+                }}
+              >
                 <div className="w-[1541px]" key={index}>
                   <img src={peoples} />
                 </div>

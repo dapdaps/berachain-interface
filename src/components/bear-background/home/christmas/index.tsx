@@ -5,6 +5,7 @@ import Snow from '@/components/bear-background/home/christmas/snow';
 
 const BeraBgHomeChristmas = () => {
 
+  console.log('=====重新渲染=====')
   return (
     <>
       <MoveBg
