@@ -100,7 +100,17 @@ const GiftBox = () => {
   const handleDailyQuestCheck = async () => {
     if (dailyChecking) return;
     setDailyChecking(true);
-    const checks = dailyQuest.map((it) => requestCheck?.(it));
+    const checks = dailyQuest.map((it) => {
+      if (getQuestVisited?.(it.id)) {
+        return requestCheck?.(it);
+      }
+      return new Promise((resolve) => {
+        const _timer = setTimeout(() => {
+          clearTimeout(_timer);
+          resolve({ data: { total_box: 0 } });
+        }, 600);
+      });
+    });
     const res: any = await Promise.all(checks);
     const values = res.map((_res: any, idx: number) => {
       const { total_box } = _res.data || {};
