@@ -19,7 +19,7 @@ const MoveBg = (props: any) => {
           left: -width / 2,
           width: width * repeat,
           backgroundImage: `url("${background}")`,
-          animationDuration: '20s',
+          animationDuration: '40s',
         }}
       />
       <div
@@ -28,13 +28,14 @@ const MoveBg = (props: any) => {
           left: -width / 2,
           width: width * repeat,
           backgroundImage: `url("${foreground}")`,
+          animationDuration: '20s',
         }}
       />
 
       <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left will-change-transform"
         style={{
           left: -(2 * width + ScreenWidth),
-          animationDuration: '40s',
+          animationDuration: '80s',
           width: (width + ScreenWidth) * repeat,
           animationDelay: '3s'
         }}
