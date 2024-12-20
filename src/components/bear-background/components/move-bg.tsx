@@ -28,7 +28,7 @@ const MoveBg = (props: any) => {
         }}
       />
 
-      {/* <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left"
+      <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left"
         style={{
           left: -(width + window.screen.availWidth),
           animationDuration: '40s',
@@ -48,7 +48,7 @@ const MoveBg = (props: any) => {
             )
           })
         }
-      </div> */}
+      </div>
     </>
   );
 };
