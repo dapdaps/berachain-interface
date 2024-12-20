@@ -33,7 +33,7 @@ function BeraTown(props: any) {
       {
         isChristmas && (
           <motion.img
-            src='/images/background/christmas/beratown.svg'
+            src='/images/background/christmas/beratown.png'
             width={347}
             height={218}
             {...LogoAnimation}

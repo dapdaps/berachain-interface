@@ -50,10 +50,10 @@ const config: Config = {
       },
       slide2Left: {
         "0%": {
-          transform: "translate3d(0, 0, 0)"
+          transform: "translateX(0)"
         },
         "100%": {
-          transform: "translate3d(-33.3333%, 0,0)"
+          transform: "translateX(-33.3333%)"
         }
       },
       rotate: {
