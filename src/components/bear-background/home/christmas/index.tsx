@@ -1,6 +1,6 @@
 import Bear from '@/components/bear-background/components/bear';
-import MoveBg from '@/components/bear-background/components/move-bg';
 import BeraTown from '@/components/bear-background/components/bera-town';
+import MoveBg from '@/components/bear-background/components/move-bg';
 import Snow from '@/components/bear-background/home/christmas/snow';
 
 const BeraBgHomeChristmas = () => {
@@ -8,7 +8,7 @@ const BeraBgHomeChristmas = () => {
     <>
       <MoveBg
         width={1544}
-        repeat={3}
+        repeat={6}
         foreground="/images/background/christmas/ground.svg"
         background="/images/background/christmas/trees.svg"
         peoples="/images/background/christmas/peoples.png"
