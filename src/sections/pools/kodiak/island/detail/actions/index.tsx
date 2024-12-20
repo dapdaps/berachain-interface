@@ -15,10 +15,10 @@ export default function Actions(props: any) {
     const _tabs = [{ label: "Deposit", value: "deposit" }];
     if (Big(info.total || 0).gt(0))
       _tabs.push({ label: "Withdraw", value: "withdraw" });
-    if (Big(info.balance || 0).gt(0) && data.farmAddress)
-      _tabs.push({ label: "Stake", value: "stake" });
-    if (Big(info.locked?.amount || 0).gt(0) && data.farmAddress)
-      _tabs.push({ label: "Unstake", value: "unstake" });
+    // if (Big(info.balance || 0).gt(0) && data.farmAddress)
+    //   _tabs.push({ label: "Stake", value: "stake" });
+    // if (Big(info.locked?.amount || 0).gt(0) && data.farmAddress)
+    //   _tabs.push({ label: "Unstake", value: "unstake" });
     return _tabs;
   }, [info]);
 
