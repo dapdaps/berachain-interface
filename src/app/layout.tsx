@@ -15,9 +15,11 @@ import { useTapSoundStore } from "@/stores/tap-sound";
 import TapSound from "@/components/tap-sound";
 import Rpc from "@/components/rpc";
 import SceneContextProvider from "@/context/scene";
+import { RoycoProvider } from "@/sdk";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -46,26 +48,34 @@ export default function RootLayout({
         <link rel="icon" href="/images/favicon.ico" />
       </head>
       <body className="md:overflow-hidden">
-        <WagmiProvider>
-          <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-            <SceneContextProvider>
-              <Suspense>
-                {isMobile ? (
-                  <MobileLayout>{children}</MobileLayout>
-                ) : (
-                  <MainLayout>{children}</MainLayout>
-                )}
-                <Rpc />
-              </Suspense>
-            </SceneContextProvider>
-          </SkeletonTheme>
-        </WagmiProvider>
+        <RoycoProvider
+          originUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}
+          originKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}
+          originId={process.env.NEXT_PUBLIC_ROYCO_ORIGIN_ID!}
+        >
+          <TooltipProvider delayDuration={0}>
+            <WagmiProvider>
+              <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
+                <SceneContextProvider>
+                  <Suspense>
+                    {isMobile ? (
+                      <MobileLayout>{children}</MobileLayout>
+                    ) : (
+                      <MainLayout>{children}</MainLayout>
+                    )}
+                    <Rpc />
+                  </Suspense>
+                </SceneContextProvider>
+              </SkeletonTheme>
+            </WagmiProvider>
+          </TooltipProvider>
+        </RoycoProvider>
         <ToastContainer
           position="top-right"
           autoClose={5000}
           hideProgressBar={true}
-          theme="light"
           toastStyle={{ backgroundColor: "transparent", boxShadow: "none" }}
+          theme="light"
           newestOnTop
           rtl={false}
           pauseOnFocusLoss
