@@ -175,6 +175,24 @@ export function useQuest(props: { base: IBase; }): IQuest {
           _it.description = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.text?.(it.box);
           _it.missionAction = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.action;
         });
+      } else {
+        if (it.name && EcosystemQuests[it.name]) {
+          const questCategories: any = [];
+          it.missions?.forEach?.((_it, idx) => {
+            const questCategoryExisted = questCategories.findIndex((_q: any) => _q.key === _it.category);
+            if (questCategoryExisted < 0) {
+              questCategories.push({ key: _it.category, times: 1 });
+              return;
+            }
+            const _questCategory = {
+              ...questCategories[questCategoryExisted],
+              times: questCategories[questCategoryExisted].times + 1
+            };
+            questCategories[questCategoryExisted] = _questCategory;
+            _it.description = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.text?.(_it.box);
+            _it.missionAction = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.action;
+          });
+        }
       }
       if (it.missions) {
         it.box = it.missions.map((it) => it.box || 0).reduce((a, b) => Big(a).plus(b).toNumber());
