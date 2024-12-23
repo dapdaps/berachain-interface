@@ -96,8 +96,6 @@ const constructMarketFilterClauses = (
   return filterClauses;
 };
 
-type NativeYieldFn = NonNullable<SupportedMarket["native_yield"]>;
-
 export type EnrichedMarketDataType =
   Database["public"]["CompositeTypes"]["enriched_markets_data_type"] & {
     incentive_tokens_data: Array<
