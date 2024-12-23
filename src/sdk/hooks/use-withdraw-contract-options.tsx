@@ -1,7 +1,9 @@
-import { SupportedToken } from "../constants";
-import { ContractMap } from "../contracts";
-import { RoycoMarketType } from "../market";
-import { TransactionOptionsType } from "../types";
+import type { SupportedToken } from "@/sdk/constants";
+import type { TransactionOptionsType } from "@/sdk/types";
+
+import { ContractMap } from "@/sdk/contracts";
+import { RoycoMarketType } from "@/sdk/market";
+import type { Address } from "viem";
 
 export const getRecipeInputTokenWithdrawalTransactionOptions = ({
   chain_id,
@@ -33,7 +35,7 @@ export const getRecipeInputTokenWithdrawalTransactionOptions = ({
     chainId: chain_id,
     id: "withdraw_input_token",
     label: "Withdraw Input Token",
-    address,
+    address: address as Address,
     abi,
     functionName: "executeWithdrawalScript",
     marketType: RoycoMarketType.recipe.id,
@@ -78,7 +80,7 @@ export const getRecipeIncentiveTokenWithdrawalTransactionOptions = ({
     chainId: chain_id,
     id: "withdraw_incentive_token",
     label: "Withdraw Incentive",
-    address,
+    address: address as Address,
     abi,
     functionName: "claim",
     marketType: RoycoMarketType.recipe.id,
@@ -110,6 +112,7 @@ export const getVaultInputTokenWithdrawalTransactionOptions = ({
           raw_amount: string;
           token_amount: number;
           token_amount_usd: number;
+          shares: string;
         };
       }
     | undefined
@@ -126,6 +129,51 @@ export const getVaultInputTokenWithdrawalTransactionOptions = ({
     chainId: chain_id,
     id: "withdraw_input_token",
     label: "Withdraw Input Token",
+    address,
+    abi,
+    functionName: "redeem",
+    marketType: RoycoMarketType.vault.id,
+    args: [position?.token_data.shares, account, account],
+    txStatus: "idle",
+    txHash: null,
+    tokensIn: position ? [position.token_data] : [],
+  };
+
+  return txOptions;
+};
+
+export const getVaultInputTokenWithdrawalByAssetTransactionOptions = ({
+  account,
+  market_id,
+  chain_id,
+  position,
+}: {
+  account: string;
+  market_id: string;
+  chain_id: number;
+  position:
+    | {
+        token_data: SupportedToken & {
+          raw_amount: string;
+          token_amount: number;
+          token_amount_usd: number;
+          shares: string;
+        };
+      }
+    | undefined
+    | null;
+}) => {
+  // Get contract address and ABI
+  const address = market_id;
+  const abi =
+    ContractMap[chain_id as keyof typeof ContractMap]["WrappedVault"].abi;
+
+  // Get transaction options
+  const txOptions: TransactionOptionsType = {
+    contractId: "WrappedVault",
+    chainId: chain_id,
+    id: "withdraw_partial_input_token",
+    label: "Withdraw Partial Input Token",
     address,
     abi,
     functionName: "withdraw",

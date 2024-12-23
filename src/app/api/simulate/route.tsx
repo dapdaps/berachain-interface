@@ -16,20 +16,11 @@ import { ContractMap } from "@/sdk/contracts";
 import { encodeFunctionData, createPublicClient, Chain } from "viem";
 import { RPC_API_KEYS } from "@/components/constants";
 import { BigNumber } from "ethers";
+import { getSupportedChain } from "@/sdk/utils";
 
-export const dynamic = true;
-
-export const config = createConfig({
-  chains: [mainnet, sepolia],
-  transports: {
-    [sepolia.id]: http(RPC_API_KEYS[sepolia.id]),
-    [mainnet.id]: http(RPC_API_KEYS[mainnet.id]),
-    [arbitrumSepolia.id]: http(RPC_API_KEYS[arbitrumSepolia.id]),
-    [arbitrum.id]: http(RPC_API_KEYS[arbitrum.id]),
-    [baseSepolia.id]: http(RPC_API_KEYS[baseSepolia.id]),
-    [base.id]: http(RPC_API_KEYS[base.id]),
-  },
-});
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+export const fetchCache = "force-no-store";
 
 export const simulateTransaction = async ({
   chainId,
@@ -42,7 +33,8 @@ export const simulateTransaction = async ({
 }) => {
   try {
     // Get latest block number for the current chain
-    const chain: Chain = getChain(chainId);
+    const chain = getSupportedChain(chainId);
+    if (!chain) throw new Error("Chain not found");
     const client = createPublicClient({
       chain,
       transport: http(RPC_API_KEYS[chainId]),

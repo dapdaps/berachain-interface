@@ -1,5 +1,11 @@
-import { type TypedRoycoClient } from "@/sdk/client";
-import { type SortingState } from "@tanstack/react-table";
+import type { TypedRoycoClient } from "@/sdk/client";
+import type { UseQueryOptions } from "@tanstack/react-query";
+
+/**
+ * @TODO Fix the type for SortingState not being recognized
+ */
+// @ts-ignore
+import type { SortingState } from "@tanstack/react-table";
 
 export const contractsPerPage = 10;
 
@@ -96,8 +102,8 @@ export const searchContractsQueryOptions = (
   ],
   filters: ContractFilter[] = [],
   searchKey?: string,
-  pageIndex: number = 0
-) => ({
+  pageIndex: number = 0,
+)  => ({
   queryKey: [
     "search-contracts",
     `searchKey=${searchKey}`,
@@ -119,9 +125,8 @@ export const searchContractsQueryOptions = (
 
     return data;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   staleTime: 1000 * 60 * 5, // 5 mins
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

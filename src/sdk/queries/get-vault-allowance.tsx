@@ -1,14 +1,19 @@
-import { erc4626Abi, type Address } from "viem";
-import { createPublicClient, http, erc20Abi } from "viem";
+import type { Address } from "viem";
+import type { TypedRpcApiKeys } from "@/sdk/client";
+import type { UseQueryOptions } from "@tanstack/react-query";
+
+import { createPublicClient, http, erc4626Abi } from "viem";
 import { getChain } from "@/sdk/utils";
-import { NULL_ADDRESS } from "../constants";
-import { RPC_API_KEYS } from "@/components/constants";
+import { NULL_ADDRESS } from "@/sdk/constants";
+
 export const getVaultAllowance = async ({
+  RPC_API_KEYS,
   chain_id,
   account,
   spender,
   vault_address,
 }: {
+  RPC_API_KEYS: TypedRpcApiKeys;
   chain_id: number;
   account: string;
   spender: string;
@@ -41,11 +46,12 @@ export const getVaultAllowance = async ({
 };
 
 export const getVaultAllowanceQueryOptions = (
+  RPC_API_KEYS: TypedRpcApiKeys,
   chain_id: number,
   account: string,
   vault_address: string,
-  spender: string
-) => ({
+  spender: string,
+)  => ({
   queryKey: [
     "vault-allowance",
     `chain-id=${chain_id}`,
@@ -55,6 +61,7 @@ export const getVaultAllowanceQueryOptions = (
   queryFn: async () => {
     try {
       const result = await getVaultAllowance({
+        RPC_API_KEYS,
         chain_id,
         account,
         spender,
@@ -66,8 +73,8 @@ export const getVaultAllowanceQueryOptions = (
 
       // Handle invalid asset address
       const assetAddress =
-        assetResult.status === "success"
-          ? (assetResult.result as string).toLowerCase()
+        assetResult?.status === "success"
+          ? assetResult.result?.toString().toLowerCase()
           : NULL_ADDRESS; // NULL address
 
       // Create token_id by concatenating chain_id and asset address
@@ -75,8 +82,8 @@ export const getVaultAllowanceQueryOptions = (
 
       // Handle invalid allowance
       const raw_amount =
-        allowanceResult.status === "success"
-          ? (allowanceResult.result?.toString() ?? "0")
+        allowanceResult?.status === "success"
+          ? allowanceResult.result?.toString() ?? "0"
           : "0";
 
       return {
@@ -90,9 +97,8 @@ export const getVaultAllowanceQueryOptions = (
       };
     }
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

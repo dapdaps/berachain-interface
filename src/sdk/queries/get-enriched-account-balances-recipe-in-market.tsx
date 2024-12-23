@@ -1,12 +1,14 @@
-import { type TypedRoycoClient } from "@/sdk/client";
-import { getSupportedToken, SupportedToken } from "../constants";
-import { BigNumber } from "ethers";
-import { CustomTokenData, Database } from "../types";
+import type { TypedRoycoClient } from "@/sdk/client";
+import type { SupportedToken } from "@/sdk/constants";
+import type { CustomTokenData } from "@/sdk/types";
+import type { UseQueryOptions } from "@tanstack/react-query";
+
+import { getSupportedToken } from "@/sdk/constants";
 import {
   parseRawAmount,
   parseRawAmountToTokenAmount,
   parseTokenAmountToTokenAmountUsd,
-} from "../utils";
+} from "@/sdk/utils";
 
 export type EnrichedAccountBalanceRecipeInMarketDataType = {
   input_token_data_ap: SupportedToken & {
@@ -46,7 +48,7 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
   chain_id: number,
   market_id: string,
   account_address: string,
-  custom_token_data?: CustomTokenData
+  custom_token_data?: CustomTokenData,
 ) => ({
   queryKey: [
     "enriched-account-balance-recipe",
@@ -55,7 +57,7 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
     account_address,
     ...(custom_token_data || []).map(
       (token) =>
-        `${token.token_id}-${token.price}-${token.fdv}-${token.total_supply}`
+        `${token.token_id}-${token.price}-${token.fdv}-${token.total_supply}`,
     ),
   ],
   queryFn: async () => {
@@ -66,28 +68,32 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
         in_market_id: market_id,
         in_account_address: account_address,
         custom_token_data,
-      }
+      },
     );
 
     if (result.data && result.data.length > 0) {
       const rows = result.data;
       const row = rows[0];
 
+      if (!row) {
+        return null;
+      }
+
       const incentives_ap_data = row.incentives_ids_ap.map(
         (incentiveId, incentiveIndex) => {
           const token_info: SupportedToken = getSupportedToken(incentiveId);
           const raw_amount: string = parseRawAmount(
-            row.incentives_amount_ap[incentiveIndex]
+            row.incentives_amount_ap[incentiveIndex],
           );
 
           const token_amount: number = parseRawAmountToTokenAmount(
             row.incentives_amount_ap[incentiveIndex],
-            token_info.decimals
+            token_info.decimals,
           );
 
           const token_amount_usd = parseTokenAmountToTokenAmountUsd(
-            token_amount,
-            row.incentives_price_values_ap[incentiveIndex]
+            token_amount || 0,
+            row.incentives_price_values_ap[incentiveIndex] ?? 0,
           );
 
           return {
@@ -96,24 +102,24 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
             token_amount,
             token_amount_usd,
           };
-        }
+        },
       );
 
       const incentives_ip_data = row.incentives_ids_ip.map(
         (incentiveId, incentiveIndex) => {
           const token_info: SupportedToken = getSupportedToken(incentiveId);
           const raw_amount: string = parseRawAmount(
-            row.incentives_amount_ip[incentiveIndex]
+            row.incentives_amount_ip[incentiveIndex],
           );
 
           const token_amount: number = parseRawAmountToTokenAmount(
             row.incentives_amount_ip[incentiveIndex],
-            token_info.decimals
+            token_info.decimals,
           );
 
           const token_amount_usd = parseTokenAmountToTokenAmountUsd(
-            token_amount,
-            row.incentives_price_values_ip[incentiveIndex]
+            token_amount || 0,
+            row.incentives_price_values_ip[incentiveIndex] ?? 0,
           );
 
           return {
@@ -122,11 +128,11 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
             token_amount,
             token_amount_usd,
           };
-        }
+        },
       );
 
       const input_token_info: SupportedToken = getSupportedToken(
-        row.input_token_id
+        row.input_token_id,
       );
 
       const input_token_data_ap = {
@@ -134,14 +140,14 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
         raw_amount: row.quantity_ap,
         token_amount: parseRawAmountToTokenAmount(
           row.quantity_ap,
-          input_token_info.decimals
+          input_token_info.decimals,
         ),
         token_amount_usd: parseTokenAmountToTokenAmountUsd(
           parseRawAmountToTokenAmount(
             row.quantity_ap,
-            input_token_info.decimals
+            input_token_info.decimals,
           ),
-          row.input_token_price
+          row.input_token_price,
         ),
       };
 
@@ -150,14 +156,14 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
         raw_amount: row.quantity_ip,
         token_amount: parseRawAmountToTokenAmount(
           row.quantity_ip,
-          input_token_info.decimals
+          input_token_info.decimals,
         ),
         token_amount_usd: parseTokenAmountToTokenAmountUsd(
           parseRawAmountToTokenAmount(
             row.quantity_ip,
-            input_token_info.decimals
+            input_token_info.decimals,
           ),
-          row.input_token_price
+          row.input_token_price,
         ),
       };
 
@@ -182,9 +188,8 @@ export const getEnrichedAccountBalancesRecipeInMarketQueryOptions = (
 
     return null;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });
