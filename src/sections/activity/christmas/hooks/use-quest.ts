@@ -190,6 +190,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
             };
             questCategories[questCategoryExisted] = _questCategory;
             _it.description = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.text?.(_it.box);
+            _it.missionAction = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.action;
           });
         }
       }

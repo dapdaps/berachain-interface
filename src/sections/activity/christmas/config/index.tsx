@@ -574,7 +574,7 @@ export const EcosystemQuests: any = {
       },
       view2: {
         text: (amount: number) => `Try out TG bot and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
-        action: "Go"
+        action: "Try"
       }
     },
     socials: [
