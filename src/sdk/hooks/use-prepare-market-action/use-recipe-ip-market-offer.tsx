@@ -9,7 +9,6 @@ import { BigNumber, ethers } from "ethers";
 import { RoycoMarketType, RoycoMarketUserType } from "@/sdk/market";
 import {
   isSolidityIntValid,
-  parseRawAmount,
   parseRawAmountToTokenAmount,
   parseRawAmountToTokenAmountUsd,
   parseTokenAmountToTokenAmountUsd,
@@ -31,7 +30,7 @@ import type {
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
 
-export const isRecipeIPMarketOfferValid = ({
+export const isVaultIPMarketOfferValid = ({
   quantity,
   enabled,
 }: {
@@ -73,7 +72,7 @@ export const isRecipeIPMarketOfferValid = ({
   }
 };
 
-export const calculateRecipeIPMarketOfferTokenData = ({
+export const calculateVaultIPMarketOfferTokenData = ({
   baseMarket,
   enrichedMarket,
   propsMarketOffers,
@@ -187,14 +186,12 @@ export const calculateRecipeIPMarketOfferTokenData = ({
       // Get annual change ratio
       let annual_change_ratio = 0;
 
-      const lockup_time = Number(enrichedMarket.lockup_time ?? "0");
-      const quantity_value_usd = input_token_data.token_amount_usd;
-      const incentive_value_usd = incentive_token_amount_usd;
+      let rate_usd = incentive_token_amount_usd;
+      let locked_quantity_usd = enrichedMarket.locked_quantity_usd ?? 0;
 
-      if (quantity_value_usd > 0 && !isNaN(lockup_time) && lockup_time > 0) {
+      if (locked_quantity_usd > 0) {
         annual_change_ratio =
-          (incentive_value_usd / quantity_value_usd) *
-          ((365 * 24 * 60 * 60) / lockup_time);
+          (rate_usd / locked_quantity_usd) * (365 * 24 * 60 * 60);
       }
 
       // Get incentive token data
@@ -217,44 +214,40 @@ export const calculateRecipeIPMarketOfferTokenData = ({
   };
 };
 
-export const getRecipeIPMarketOfferTransactionOptions = ({
+export const getVaultIPMarketOfferTransactionOptions = ({
   chain_id,
   offers,
   fill_amounts,
-  frontend_fee_recipient,
 }: {
   chain_id: number;
   offers: Array<{
     offerID: string;
-    targetMarketHash: string;
+    targetVault: string;
     ap: string;
     fundingVault: string;
-    quantity: string;
     expiry: string;
     incentivesRequested: string[];
-    incentiveAmountsRequested: string[];
+    incentivesRatesRequested: string[];
   }>;
   fill_amounts: string[];
-  frontend_fee_recipient: string;
 }) => {
   // Get contract address and ABI
   const address =
-    ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-      .address;
+    ContractMap[chain_id as keyof typeof ContractMap]["VaultMarketHub"].address;
   const abi =
-    ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"].abi;
+    ContractMap[chain_id as keyof typeof ContractMap]["VaultMarketHub"].abi;
 
   // Get transaction options
   const txOptions: TransactionOptionsType = {
-    contractId: "RecipeMarketHub",
+    contractId: "VaultMarketHub",
     chainId: chain_id,
     id: "fill_ap_offers",
     label: "Fill AP Offers",
     address: address as Address,
     abi,
-    functionName: "fillAPOffers",
-    marketType: RoycoMarketType.recipe.id,
-    args: [offers, fill_amounts, frontend_fee_recipient],
+    functionName: "allocateOffers",
+    marketType: RoycoMarketType.vault.id,
+    args: [offers, fill_amounts],
     txStatus: "idle",
     txHash: null,
   };
@@ -262,7 +255,7 @@ export const getRecipeIPMarketOfferTransactionOptions = ({
   return txOptions;
 };
 
-export const useRecipeIPMarketOffer = ({
+export const useVaultIPMarketOffer = ({
   account,
   chain_id,
   market_id,
@@ -270,7 +263,6 @@ export const useRecipeIPMarketOffer = ({
   custom_token_data,
   frontend_fee_recipient,
   offer_validation_url,
-  incentive_asset_ids,
   enabled,
 }: {
   account: string | undefined;
@@ -285,7 +277,6 @@ export const useRecipeIPMarketOffer = ({
   }>;
   frontend_fee_recipient?: string;
   offer_validation_url: string;
-  incentive_asset_ids?: string[];
   enabled?: boolean;
 }) => {
   let preContractOptions: TransactionOptionsType[] = [];
@@ -301,12 +292,12 @@ export const useRecipeIPMarketOffer = ({
   } = useDefaultMarketData({
     chain_id,
     market_id,
-    market_type: RoycoMarketType.recipe.id,
+    market_type: RoycoMarketType.vault.id,
     enabled,
   });
 
   // Check if market action is valid
-  const isValid = isRecipeIPMarketOfferValid({
+  const isValid = isVaultIPMarketOfferValid({
     quantity,
     enabled,
   });
@@ -314,11 +305,12 @@ export const useRecipeIPMarketOffer = ({
   // Get market offers
   const propsMarketOffers = useMarketOffers({
     chain_id,
-    market_type: RoycoMarketType.recipe.value,
+    market_type: RoycoMarketType.vault.value,
     market_id,
     offer_side: RoycoMarketUserType.ap.value,
     quantity: quantity ?? "0",
-    incentive_ids: incentive_asset_ids,
+    incentive_ids: enrichedMarket?.base_incentive_ids ?? undefined,
+    incentive_amounts: enrichedMarket?.base_incentive_rates ?? undefined,
     enabled: isValid.status,
   });
 
@@ -358,7 +350,7 @@ export const useRecipeIPMarketOffer = ({
 
   // Get incentive data
   const { incentiveData, inputTokenData } =
-    calculateRecipeIPMarketOfferTokenData({
+    calculateVaultIPMarketOfferTokenData({
       baseMarket,
       enrichedMarket,
       propsMarketOffers,
@@ -372,10 +364,7 @@ export const useRecipeIPMarketOffer = ({
     !!baseMarket &&
     !!enrichedMarket &&
     !!incentiveData &&
-    !!inputTokenData &&
-    // Only proceed if validation is complete and returned empty array (all offers valid)
-    !propsMarketOffersValidator.isLoading &&
-    propsMarketOffersValidator.data?.length === 0
+    !!inputTokenData
   ) {
     // Get incentive data with fees
     const incentiveDataWithFees = incentiveData.map((incentive, index) => {
@@ -418,26 +407,23 @@ export const useRecipeIPMarketOffer = ({
 
     // Get offer transaction options
     const offerTxOptions: TransactionOptionsType =
-      getRecipeIPMarketOfferTransactionOptions({
+      getVaultIPMarketOfferTransactionOptions({
         chain_id,
         offers:
           propsMarketOffers.data?.map((offer) => ({
             offerID: offer.offer_id,
-            targetMarketHash: offer.market_id,
+            targetVault: offer.market_id,
             ap: offer.creator,
             fundingVault: offer.funding_vault,
-            quantity: offer.quantity,
             expiry: offer.expiry,
             incentivesRequested: offer.token_ids.map((token_id) => {
               const token_address = token_id.split("-")[1] ?? NULL_ADDRESS;
               return token_address;
             }),
-            incentiveAmountsRequested: offer.token_amounts,
+            incentivesRatesRequested: offer.token_amounts,
           })) ?? [],
         fill_amounts:
           propsMarketOffers.data?.map((offer) => offer.fill_quantity) ?? [],
-        frontend_fee_recipient:
-          frontend_fee_recipient ?? baseMarket.protocol_fee_recipient,
       });
 
     // Set offer transaction options
@@ -445,7 +431,6 @@ export const useRecipeIPMarketOffer = ({
       {
         ...offerTxOptions,
         tokensIn: [inputTokenData],
-        tokensOut: incentiveDataWithFees,
       },
     ];
 
@@ -481,27 +466,17 @@ export const useRecipeIPMarketOffer = ({
 
   if (!propsTokenAllowance.isLoading) {
     // Refine transaction options
-    writeContractOptions = refineTransactionOptions({
-      propsTokenAllowance,
-      preContractOptions,
-      postContractOptions,
-    });
+    writeContractOptions = [...postContractOptions];
   }
 
   // Check if loading
   const isLoading =
     isLoadingDefaultMarketData ||
     propsMarketOffers.isLoading ||
-    propsTokenAllowance.isLoading ||
-    propsTokenQuotes.isLoading ||
-    propsMarketOffersValidator.isLoading;
+    propsTokenQuotes.isLoading;
 
   // Check if ready
-  const isReady =
-    writeContractOptions.length > 0 &&
-    // Only proceed if validation is complete and returned empty array (all offers valid)
-    !propsMarketOffersValidator.isLoading &&
-    propsMarketOffersValidator.data?.length === 0;
+  const isReady = writeContractOptions.length > 0;
 
   // Check if offer can be performed completely or partially
   if (isReady) {
@@ -518,7 +493,9 @@ export const useRecipeIPMarketOffer = ({
       canBePerformedCompletely = false;
       canBePerformedPartially = false;
     } else if (
-      BigNumber.from(fillAvailable).eq(BigNumber.from(fillRequested))
+      BigNumber.from(inputTokenData?.raw_amount ?? 0).eq(
+        BigNumber.from(quantity ?? 0),
+      )
     ) {
       canBePerformedCompletely = true;
       canBePerformedPartially = true;
