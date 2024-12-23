@@ -1,8 +1,8 @@
-import { SupportedToken } from "../constants";
-import { ContractMap } from "../contracts";
-import { RoycoMarketType } from "../market";
-import { EnrichedPositionsRecipeDataType } from "../queries";
-import { TransactionOptionsType } from "../types";
+import { ContractMap } from "@/sdk/contracts";
+import { RoycoMarketType } from "@/sdk/market";
+import type { EnrichedPositionsRecipeDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { Address } from "viem";
 
 export const getRecipeForfeitTransactionOptions = ({
   position,
@@ -25,11 +25,11 @@ export const getRecipeForfeitTransactionOptions = ({
     chainId: position.chain_id ?? 0,
     id: "forfeit",
     label: "Forfeit Position",
-    address,
+    address: address as Address,
     abi,
     functionName: "forfeit",
     marketType: RoycoMarketType.recipe.id,
-    args: [position.weiroll_wallet, false], // @note: by default, we are not executing the withdrawal script upon forfeiting
+    args: [position.weiroll_wallet, true], // @note: by default, we are executing the withdrawal script upon forfeiting
     txStatus: "idle",
     txHash: null,
   };

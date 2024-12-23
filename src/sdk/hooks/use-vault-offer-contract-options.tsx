@@ -1,14 +1,15 @@
-import { SupportedToken } from "../constants";
-import { ContractMap } from "../contracts";
-import { RoycoMarketType } from "../market";
-import { EnrichedOfferDataType } from "../queries";
-import { TransactionOptionsType } from "../types";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { EnrichedOfferDataType } from "@/sdk/queries";
+
+import { ContractMap } from "@/sdk/contracts";
+import { RoycoMarketType } from "@/sdk/market";
+import type { Address } from "viem";
 
 export const getVaultCancelAPOfferTransactionOptions = ({
   offer,
 }: {
   offer: EnrichedOfferDataType;
-}) => {
+})  => {
   // Get contract address and ABI
   const address =
     ContractMap[offer.chain_id as keyof typeof ContractMap]["VaultMarketHub"]
@@ -23,7 +24,7 @@ export const getVaultCancelAPOfferTransactionOptions = ({
     chainId: offer.chain_id ?? 0,
     id: "cancel_ap_offer",
     label: "Cancel AP Offer",
-    address,
+    address: address as Address,
     abi,
     functionName: "cancelOffer",
     marketType: RoycoMarketType.vault.id,

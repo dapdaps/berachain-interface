@@ -1,6 +1,8 @@
-import { RoycoMarketType, TypedRoycoMarketType } from "@/sdk/market";
-import { ReadMarketDataType, useReadMarket } from "../use-read-market";
-import { useEnrichedMarkets } from "../use-enriched-markets";
+import type { TypedRoycoMarketType } from "@/sdk/market";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { RoycoMarketType } from "@/sdk/market";
+import { useReadMarket, useEnrichedMarkets } from "@/sdk/hooks";
 
 export const useDefaultMarketData = ({
   chain_id,

@@ -1,10 +1,11 @@
-import { TypedRoycoMarketType } from "../../market";
-import { getSupportedToken } from "../../constants";
-import { BigNumber, ethers } from "ethers";
+import type { TypedRoycoMarketType } from "@/sdk/market";
+import type { TransactionOptionsType } from "@/sdk/types";
+
 import { erc20Abi, erc4626Abi } from "viem";
-import { TransactionOptionsType } from "../../types";
-import { useTokenAllowance } from "../use-token-allowance";
-import { useVaultAllowance } from "../use-vault-allowance";
+import { BigNumber, ethers } from "ethers";
+
+import { useTokenAllowance, useVaultAllowance } from "@/sdk/hooks";
+import { getSupportedToken } from "@/sdk/constants";
 
 export const getApprovalContractOptions = ({
   market_type,
@@ -99,11 +100,11 @@ export const refineVaultTransactionOptions = ({
     const refinedPreContractOptions = preContractOptions.map(
       (option, optionIndex) => {
         const allowanceRequired: BigNumber = BigNumber.from(
-          option.requiredApprovalAmount ?? "0"
+          option.requiredApprovalAmount ?? "0",
         );
 
         const allowanceGiven: BigNumber = BigNumber.from(
-          propsVaultAllowance.data.raw_amount ?? "0"
+          propsVaultAllowance.data.raw_amount ?? "0",
         );
 
         if (allowanceGiven.gte(allowanceRequired)) {
@@ -114,7 +115,7 @@ export const refineVaultTransactionOptions = ({
         } else {
           return option;
         }
-      }
+      },
     );
 
     // Set write contract options
@@ -142,10 +143,10 @@ export const refineTransactionOptions = ({
     const refinedPreContractOptions = preContractOptions.map(
       (option, optionIndex) => {
         const allowanceRequired: BigNumber = BigNumber.from(
-          option.requiredApprovalAmount ?? "0"
+          option.requiredApprovalAmount ?? "0",
         );
         const allowanceGiven: BigNumber = BigNumber.from(
-          propsTokenAllowance.data[optionIndex]?.result ?? "0"
+          propsTokenAllowance.data[optionIndex]?.result ?? "0",
         );
 
         if (allowanceGiven.gte(allowanceRequired)) {
@@ -156,7 +157,7 @@ export const refineTransactionOptions = ({
         } else {
           return option;
         }
-      }
+      },
     );
 
     // Set write contract options

@@ -1,22 +1,27 @@
-import { RoycoMarketType, RoycoMarketUserType } from "@/sdk/market";
-import { isSolidityAddressValid, isSolidityIntValid } from "@/sdk/utils";
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
 import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { useMarketOffers } from "../use-market-offers";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
+import { RoycoMarketType } from "@/sdk/market";
+import { isSolidityAddressValid, isSolidityIntValid } from "@/sdk/utils";
+import {
+  useTokenAllowance,
+  getTokenQuote,
+  useTokenQuotes,
+  useReadVaultPreview,
+  useAccountBalance,
+} from "@/sdk/hooks";
 import { NULL_ADDRESS } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { TransactionOptionsType } from "@/sdk/types";
+
 import { getApprovalContractOptions, refineTransactionOptions } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
-import {
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
-import { useReadVaultPreview } from "../use-read-vault-preview";
 
 export const isVaultAPLimitOfferValid = ({
   quantity,
@@ -81,7 +86,7 @@ export const isVaultAPLimitOfferValid = ({
 
     // Check token IDs for validity
     for (let i = 0; i < token_ids.length; i++) {
-      const token_address = token_ids[i].split("-")[1];
+      const token_address = token_ids[i]?.split("-")[1];
 
       if (!isSolidityAddressValid("address", token_address)) {
         throw new Error("Incentive address is invalid");
@@ -190,12 +195,12 @@ export const calculateVaultAPLimitOfferTokenData = ({
     ...input_token_quote,
     raw_amount: quantity || "0",
     token_amount: parseFloat(
-      ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals)
+      ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals),
     ),
     token_amount_usd:
       input_token_quote.price *
       parseFloat(
-        ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals)
+        ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals),
       ),
   };
 
@@ -217,8 +222,8 @@ export const calculateVaultAPLimitOfferTokenData = ({
         const incentive_token_amount = parseFloat(
           ethers.utils.formatUnits(
             incentive_token_raw_amount || "0",
-            incentive_token_quote.decimals
-          )
+            incentive_token_quote.decimals,
+          ),
         );
 
         // Get incentive token amount in USD
@@ -250,7 +255,7 @@ export const calculateVaultAPLimitOfferTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -295,12 +300,14 @@ export const getVaultAPLimitOfferTransactionOptions = ({
       amount,
     };
   });
-
   // Sort the tokens based on the address in ascending order
-  sortedTokens.sort((a, b) => (a.address > b.address ? 1 : -1));
+  sortedTokens.sort((a, b) => {
+    if (!a.address || !b.address) return 0;
+    return a.address > b.address ? 1 : -1;
+  });
 
   // Extract the sorted addresses and amounts
-  const sortedTokenAddresses = sortedTokens.map((token) => token.address);
+  const sortedTokenAddresses = sortedTokens.map((token) => token.address!);
   const sortedTokenAmounts = sortedTokens.map((token) => token.amount);
 
   // Get transaction options
@@ -309,7 +316,7 @@ export const getVaultAPLimitOfferTransactionOptions = ({
     chainId: chain_id,
     id: "create_ap_offer",
     label: "Create AP Offer",
-    address,
+    address: address as Address,
     abi,
     functionName: "createAPOffer",
     marketType: RoycoMarketType.vault.id,
@@ -394,7 +401,7 @@ export const useVaultAPLimitOffer = ({
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
-      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])])
+      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])]),
     ),
     custom_token_data,
     enabled: isValid.status,
@@ -411,7 +418,7 @@ export const useVaultAPLimitOffer = ({
       tokenIds: token_ids ?? [],
       tokenRates: token_rates ?? [],
       enabled: isValid.status,
-    }
+    },
   );
 
   // Create transaction options
@@ -448,9 +455,9 @@ export const useVaultAPLimitOffer = ({
         market_type: RoycoMarketType.vault.id,
         token_ids: [inputTokenData.id],
         required_approval_amounts: [inputTokenData.raw_amount],
-        spender:
-          ContractMap[chain_id as keyof typeof ContractMap]["VaultMarketHub"]
-            .address,
+        spender: ContractMap[chain_id as keyof typeof ContractMap][
+          "VaultMarketHub"
+        ].address as Address,
       });
 
     // Set approval transaction options
@@ -461,13 +468,21 @@ export const useVaultAPLimitOffer = ({
   const propsTokenAllowance = useTokenAllowance({
     chain_id: chain_id,
     account: account ? (account as Address) : NULL_ADDRESS,
-    spender:
-      ContractMap[chain_id as keyof typeof ContractMap]["VaultMarketHub"]
-        .address,
+    spender: ContractMap[chain_id as keyof typeof ContractMap]["VaultMarketHub"]
+      .address as Address,
     tokens: preContractOptions.map((option) => {
       return option.address as Address;
     }),
     enabled: isValid.status,
+  });
+
+  // Get token balance
+  const propsTokenBalance = useAccountBalance({
+    chain_id,
+    account: account ? account : NULL_ADDRESS,
+    tokens: inputTokenData?.contract_address
+      ? [inputTokenData?.contract_address]
+      : [],
   });
 
   if (!propsTokenAllowance.isLoading) {
@@ -484,15 +499,19 @@ export const useVaultAPLimitOffer = ({
     isLoadingDefaultMarketData ||
     propsReadVaultPreview.isLoading ||
     propsTokenAllowance.isLoading ||
-    propsTokenQuotes.isLoading;
+    propsTokenQuotes.isLoading ||
+    propsTokenBalance.isLoading;
 
   // Check if ready
   const isReady = writeContractOptions.length > 0;
 
   // Check if offer can be performed completely or partially
-  if (isReady) {
-    canBePerformedCompletely = true;
-    canBePerformedPartially = true;
+  if (isReady && inputTokenData) {
+    const hasBalance = BigNumber.from(
+      propsTokenBalance.data?.[0]?.raw_amount || "0",
+    ).gte(BigNumber.from(inputTokenData.raw_amount));
+    canBePerformedCompletely = hasBalance;
+    canBePerformedPartially = hasBalance;
   }
 
   return {

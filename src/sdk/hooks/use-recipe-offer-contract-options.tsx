@@ -1,8 +1,8 @@
-import { SupportedToken } from "../constants";
-import { ContractMap } from "../contracts";
-import { RoycoMarketType } from "../market";
-import { EnrichedOfferDataType } from "../queries";
-import { TransactionOptionsType } from "../types";
+import { ContractMap } from "@/sdk/contracts";
+import { RoycoMarketType } from "@/sdk/market";
+import type { EnrichedOfferDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { Address } from "viem";
 
 export const getRecipeCancelAPOfferTransactionOptions = ({
   offer,
@@ -23,7 +23,7 @@ export const getRecipeCancelAPOfferTransactionOptions = ({
     chainId: offer.chain_id ?? 0,
     id: "cancel_ap_offer",
     label: "Cancel AP Offer",
-    address,
+    address: address as Address,
     abi,
     functionName: "cancelAPOffer",
     marketType: RoycoMarketType.recipe.id,
@@ -68,7 +68,7 @@ export const getRecipeCancelIPOfferTransactionOptions = ({
     chainId: offer.chain_id ?? 0,
     id: "cancel_ip_offer",
     label: "Cancel IP Offer",
-    address,
+    address: address as Address,
     abi,
     functionName: "cancelIPOffer",
     marketType: RoycoMarketType.recipe.id,

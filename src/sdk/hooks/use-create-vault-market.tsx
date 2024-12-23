@@ -1,5 +1,5 @@
-import { ContractMap } from "../contracts";
-import { isSolidityAddressValid } from "../utils";
+import { ContractMap } from "@/sdk/contracts";
+import { isSolidityAddressValid } from "@/sdk/utils";
 
 export const useCreateVaultMarket = ({
   chainId = 0,
@@ -13,7 +13,7 @@ export const useCreateVaultMarket = ({
   vaultAddress: string | undefined | null;
   vaultOwner: string | undefined | null;
   vaultName: string;
-}) => {
+})  => {
   // Check is market is ready to be created
   let isReady = false;
 
@@ -33,6 +33,10 @@ export const useCreateVaultMarket = ({
   if (WrappedVaultFactory && isVaultAddressValid && isVaultOwnerValid) {
     isReady = true;
 
+    /**
+     * @TODO Strictly type this
+     */
+    // @ts-ignore
     writeContractOptions = {
       address: WrappedVaultFactory.address,
       abi: WrappedVaultFactory.abi,

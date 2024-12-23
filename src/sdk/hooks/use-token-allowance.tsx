@@ -1,6 +1,8 @@
+import type { Address } from "viem";
+
 import { useQuery } from "@tanstack/react-query";
 import { getAccountAllowanceQueryOptions } from "@/sdk/queries";
-import { type Address } from "viem";
+import { useRpcApiKeys } from "@/sdk/client";
 
 export const useTokenAllowance = ({
   chain_id,
@@ -15,10 +17,16 @@ export const useTokenAllowance = ({
   tokens: Address[];
   enabled?: boolean;
 }) => {
-  const props = useQuery({
-    ...getAccountAllowanceQueryOptions(chain_id, account, spender, tokens),
+  const RPC_API_KEYS = useRpcApiKeys();
+
+  return useQuery({
+    ...getAccountAllowanceQueryOptions(
+      RPC_API_KEYS ?? {},
+      chain_id,
+      account,
+      spender,
+      tokens,
+    ),
     enabled,
   });
-
-  return props;
 };

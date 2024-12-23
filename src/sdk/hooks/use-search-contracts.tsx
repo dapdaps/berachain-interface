@@ -1,9 +1,15 @@
+/**
+ * @TODO Find a way to fix the error of type not being found
+ */
+// @ts-ignore
+import type { SortingState } from "@tanstack/react-table";
+
 import { useQuery } from "@tanstack/react-query";
 import {
   type ContractFilter,
   searchContractsQueryOptions,
+  type TypedContract,
 } from "@/sdk/queries";
-import { type SortingState } from "@tanstack/react-table";
 import { useRoycoClient, type RoycoClient } from "@/sdk/client";
 
 export const useSearchContracts = ({
@@ -16,7 +22,7 @@ export const useSearchContracts = ({
   filters: ContractFilter[];
   searchKey?: string;
   pageIndex?: number;
-}) => {
+})  => {
   let data = [];
   let count = 0;
   let totalPages = 0;
@@ -24,7 +30,7 @@ export const useSearchContracts = ({
   const client: RoycoClient = useRoycoClient();
 
   const props = useQuery(
-    searchContractsQueryOptions(client, sorting, filters, searchKey, pageIndex)
+    searchContractsQueryOptions(client, sorting, filters, searchKey, pageIndex),
   );
 
   if (
@@ -34,6 +40,7 @@ export const useSearchContracts = ({
     !!props.data &&
     !!props.data.data
   ) {
+    // @ts-ignore
     data = props.data.data;
   } else if (props.data === null) {
     data = [];

@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  getTokenQuotesQueryOptions,
-  getHighestOffersRecipeQueryOptions,
   getEnrichedOffersQueryOptions,
-} from "../queries";
-import { RoycoClient, useRoycoClient } from "../client";
-import { getSupportedToken, SupportedToken } from "../constants";
-import { BaseQueryFilter, BaseSortingFilter, CustomTokenData } from "../types";
+  type EnrichedOfferDataType,
+} from "@/sdk/queries";
+import { type RoycoClient, useRoycoClient } from "@/sdk/client";
+import type {
+  BaseQueryFilter,
+  BaseSortingFilter,
+  CustomTokenData,
+} from "@/sdk/types";
 
 export const useEnrichedOffers = ({
   chain_id,
@@ -17,7 +19,7 @@ export const useEnrichedOffers = ({
   page_index = 0,
   filters = [],
   sorting = [],
-  custom_token_data = undefined,
+  custom_token_data,
   enabled = true,
 }: {
   chain_id: number;
@@ -44,7 +46,7 @@ export const useEnrichedOffers = ({
       page_index,
       filters,
       sorting,
-      custom_token_data
+      custom_token_data,
     ),
     enabled,
   });

@@ -1,21 +1,24 @@
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { CustomTokenData, TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { BigNumber } from "ethers";
 import { RoycoMarketType } from "@/sdk/market";
 import {
   isSolidityAddressValid,
   parseRawAmountToTokenAmount,
   parseTokenAmountToTokenAmountUsd,
 } from "@/sdk/utils";
-import { BigNumber } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
+import { getTokenQuote, useTokenQuotes } from "@/sdk/hooks";
 import { getSupportedToken } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { CustomTokenData, TransactionOptionsType } from "@/sdk/types";
-import {
+
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
 
 export const isVaultIPRefundIncentivesValid = ({
   baseMarket,
@@ -51,7 +54,7 @@ export const isVaultIPRefundIncentivesValid = ({
 
     // Check token IDs for validity
     for (let i = 0; i < token_ids.length; i++) {
-      const token_address = token_ids[i].split("-")[1];
+      const token_address = token_ids[i]?.split("-")[1];
 
       if (!isSolidityAddressValid("address", token_address)) {
         throw new Error("Incentive address is invalid");
@@ -63,7 +66,7 @@ export const isVaultIPRefundIncentivesValid = ({
      */
     for (let i = 0; i < token_ids.length; i++) {
       const token_id = token_ids[i];
-      const reward = token_id.split("-")[1];
+      const reward = token_id?.split("-")[1];
 
       const existing_reward_index =
         enrichedMarket.base_incentive_ids?.findIndex((id) => id === token_id) ??
@@ -79,7 +82,7 @@ export const isVaultIPRefundIncentivesValid = ({
       };
 
       const blockTimestamp = BigNumber.from(
-        Math.floor(Date.now() / 1000).toString()
+        Math.floor(Date.now() / 1000).toString(),
       );
 
       if (blockTimestamp.gte(rewardsInterval.start)) {
@@ -159,18 +162,18 @@ export const calculateVaultIPRefundIncentivesTokenData = ({
 
         // Get incentive token raw amount
         const incentive_token_raw_amount =
-          action_incentive_token_amounts[existing_incentive_index];
+          action_incentive_token_amounts[existing_incentive_index] ?? "0";
 
         // Get incentive token amount
         const incentive_token_amount = parseRawAmountToTokenAmount(
           incentive_token_raw_amount,
-          incentive_token_quote.decimals
+          incentive_token_quote.decimals,
         );
 
         // Get incentive token amount in USD
         const incentive_token_amount_usd = parseTokenAmountToTokenAmountUsd(
           incentive_token_amount,
-          incentive_token_quote.price
+          incentive_token_quote.price,
         );
 
         // Get per input token
@@ -190,7 +193,7 @@ export const calculateVaultIPRefundIncentivesTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -220,7 +223,7 @@ export const getVaultIPRefundIncentivesTransactionOptions = ({
   // Refund Rewards
   for (let i = 0; i < token_ids.length; i++) {
     const token_id = token_ids[i];
-    const token_address = token_id.split("-")[1];
+    const token_address = token_id?.split("-")[1];
     const token_data = getSupportedToken(token_id);
 
     const existing_reward_index =
@@ -229,23 +232,23 @@ export const getVaultIPRefundIncentivesTransactionOptions = ({
 
     if (token_data.type !== "point" && existing_reward_index !== -1) {
       const rewardsOwed = BigNumber.from(
-        enrichedMarket?.base_incentive_rates?.[existing_reward_index] ?? "0"
+        enrichedMarket?.base_incentive_rates?.[existing_reward_index] ?? "0",
       )
         .mul(
           BigNumber.from(
-            enrichedMarket?.base_end_timestamps?.[existing_reward_index] ?? "0"
+            enrichedMarket?.base_end_timestamps?.[existing_reward_index] ?? "0",
           ).sub(
             BigNumber.from(
               enrichedMarket?.base_start_timestamps?.[existing_reward_index] ??
-                "0"
-            )
-          )
+                "0",
+            ),
+          ),
         )
         .sub(BigNumber.from(1));
 
       const rewardsOwedInToken = parseRawAmountToTokenAmount(
         rewardsOwed.toString(),
-        token_data.decimals
+        token_data.decimals,
       );
 
       const newTxOptions: TransactionOptionsType = {
@@ -320,7 +323,7 @@ export const useVaultIPRefundIncentives = ({
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
-      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])])
+      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])]),
     ),
     custom_token_data,
     enabled: isValid.status,
