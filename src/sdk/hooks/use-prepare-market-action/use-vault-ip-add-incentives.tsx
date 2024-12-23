@@ -1,25 +1,25 @@
-import { RoycoMarketType, RoycoMarketUserType } from "@/sdk/market";
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { BigNumber } from "ethers";
+import { RoycoMarketType } from "@/sdk/market";
 import {
   isSolidityAddressValid,
   isSolidityIntValid,
   parseRawAmountToTokenAmount,
 } from "@/sdk/utils";
-import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { useMarketOffers } from "../use-market-offers";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
+import { useTokenAllowance, getTokenQuote, useTokenQuotes } from "@/sdk/hooks";
 import { getSupportedToken, NULL_ADDRESS } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { TransactionOptionsType } from "@/sdk/types";
+
 import { getApprovalContractOptions, refineTransactionOptions } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
-import {
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
 
 export const isVaultIPAddIncentivesValid = ({
   baseMarket,
@@ -61,7 +61,7 @@ export const isVaultIPAddIncentivesValid = ({
 
     // Check token IDs for validity
     for (let i = 0; i < token_ids.length; i++) {
-      const token_address = token_ids[i].split("-")[1];
+      const token_address = token_ids[i]?.split("-")[1];
 
       if (!isSolidityAddressValid("address", token_address)) {
         throw new Error("Incentive address is invalid");
@@ -94,12 +94,12 @@ export const isVaultIPAddIncentivesValid = ({
      */
     for (let i = 0; i < token_ids.length; i++) {
       const token_id = token_ids[i];
-      const reward = token_id.split("-")[1];
+      const reward = token_id?.split("-")[1];
 
       const start = BigNumber.from(start_timestamps?.[i] ?? "0");
       const end = BigNumber.from(end_timestamps?.[i] ?? "0");
       const blockTimestamp = BigNumber.from(
-        Math.floor(Date.now() / 1000).toString()
+        Math.floor(Date.now() / 1000).toString(),
       );
       const totalRewards = BigNumber.from(token_amounts[i]);
 
@@ -134,13 +134,13 @@ export const isVaultIPAddIncentivesValid = ({
       ) {
         rewardsInterval = {
           start: BigNumber.from(
-            enrichedMarket.base_start_timestamps[existing_reward_index] ?? "0"
+            enrichedMarket.base_start_timestamps[existing_reward_index] ?? "0",
           ),
           end: BigNumber.from(
-            enrichedMarket.base_end_timestamps[existing_reward_index] ?? "0"
+            enrichedMarket.base_end_timestamps[existing_reward_index] ?? "0",
           ),
           rate: BigNumber.from(
-            enrichedMarket.base_incentive_rates?.[existing_reward_index] ?? "0"
+            enrichedMarket.base_incentive_rates?.[existing_reward_index] ?? "0",
           ),
         };
       }
@@ -189,7 +189,7 @@ export const isVaultIPAddIncentivesValid = ({
 
         if (rewardsToken === enrichedMarket.input_token_id) {
           throw new Error(
-            "Incentive token cannot be the same as the input token"
+            "Incentive token cannot be the same as the input token",
           );
         }
 
@@ -250,7 +250,7 @@ export const calculateVaultIPAddIncentivesTokenData = ({
   const action_incentive_token_amounts: string[] = tokenAmounts.map(
     (amount) => {
       return BigNumber.from(amount).toString();
-    }
+    },
   );
 
   // Get input token quote
@@ -282,19 +282,19 @@ export const calculateVaultIPAddIncentivesTokenData = ({
           action_incentive_token_amounts[index];
 
         const protocol_fee = BigNumber.from(
-          incentive_token_raw_amount_with_fees
+          incentive_token_raw_amount_with_fees,
         )
           .mul(baseMarket.protocol_fee)
           .div(BigNumber.from(10).pow(18));
 
         const frontend_fee = BigNumber.from(
-          incentive_token_raw_amount_with_fees
+          incentive_token_raw_amount_with_fees,
         )
           .mul(baseMarket.frontend_fee)
           .div(BigNumber.from(10).pow(18));
 
         const incentive_token_raw_amount = BigNumber.from(
-          incentive_token_raw_amount_with_fees
+          incentive_token_raw_amount_with_fees,
         )
           .sub(protocol_fee)
           .sub(frontend_fee)
@@ -303,7 +303,7 @@ export const calculateVaultIPAddIncentivesTokenData = ({
         // Get incentive token amount
         const incentive_token_amount = parseRawAmountToTokenAmount(
           incentive_token_raw_amount ?? "0",
-          incentive_token_quote.decimals
+          incentive_token_quote.decimals,
         );
 
         // Get incentive token amount in USD
@@ -330,12 +330,12 @@ export const calculateVaultIPAddIncentivesTokenData = ({
         let annual_change_ratio = 0;
 
         const start_timestamp: BigNumber = BigNumber.from(
-          startTimestamps[index]
+          startTimestamps[index],
         );
         const end_timestamp: BigNumber = BigNumber.from(endTimestamps[index]);
 
         const scaled_incentive_token_rate = BigNumber.from(
-          action_incentive_token_amounts[index]
+          action_incentive_token_amounts[index],
         )
           .mul(BigNumber.from(10).pow(18))
           .mul(365 * 24 * 60 * 60)
@@ -343,7 +343,7 @@ export const calculateVaultIPAddIncentivesTokenData = ({
 
         const token_rate = parseRawAmountToTokenAmount(
           scaled_incentive_token_rate.toString() ?? "0",
-          incentive_token_quote.decimals + 18
+          incentive_token_quote.decimals + 18,
         );
 
         const rate_in_usd = token_rate * incentive_token_quote.price;
@@ -377,7 +377,7 @@ export const calculateVaultIPAddIncentivesTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -419,13 +419,13 @@ export const getVaultIPAddIncentivesTransactionOptions = ({
   // Loop through the token IDs
   for (let i = 0; i < token_ids.length; i++) {
     const token_id = token_ids[i];
-    const token_address = token_id.split("-")[1];
+    const token_address = token_id?.split("-")[1];
     const token_amount = token_amounts[i];
     const token_data = getSupportedToken(token_id);
 
     const existing_token_ids = enrichedMarket?.base_incentive_ids ?? [];
 
-    if (existing_token_ids.includes(token_id)) {
+    if (existing_token_ids.includes(token_id ?? "")) {
       continue;
     } else {
       const newTxOptions: TransactionOptionsType = {
@@ -452,7 +452,7 @@ export const getVaultIPAddIncentivesTransactionOptions = ({
   // Set New Rewards
   for (let i = 0; i < token_ids.length; i++) {
     const token_id = token_ids[i];
-    const token_address = token_id.split("-")[1];
+    const token_address = token_id?.split("-")[1];
     const token_data = getSupportedToken(token_id);
 
     // const existing_token_ids = enrichedMarket?.base_incentive_ids ?? [];
@@ -484,10 +484,10 @@ export const getVaultIPAddIncentivesTransactionOptions = ({
       tokensOut: [
         {
           ...token_data,
-          raw_amount: token_amounts[i],
+          raw_amount: token_amounts[i] ?? "0",
           token_amount: parseRawAmountToTokenAmount(
             token_amounts[i] ?? "0",
-            token_data.decimals
+            token_data.decimals,
           ),
         },
       ],
@@ -561,7 +561,7 @@ export const useVaultIPAddIncentives = ({
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
-      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])])
+      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])]),
     ),
     custom_token_data,
     enabled: isValid.status,
@@ -618,9 +618,6 @@ export const useVaultIPAddIncentives = ({
     // Set approval transaction options
     preContractOptions = approvalTxOptions;
   }
-
-  // console.log("preContractOptions", preContractOptions);
-  // console.log("postContractOptions", postContractOptions);
 
   // Get token allowance
   const propsTokenAllowance = useTokenAllowance({

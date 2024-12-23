@@ -1,21 +1,26 @@
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { BigNumber, ethers } from "ethers";
 import { RoycoMarketType } from "@/sdk/market";
 import { isSolidityAddressValid, isSolidityIntValid } from "@/sdk/utils";
-import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
+import {
+  useTokenAllowance,
+  getTokenQuote,
+  useTokenQuotes,
+  useReadVaultPreview,
+} from "@/sdk/hooks";
 import { NULL_ADDRESS } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { TransactionOptionsType } from "@/sdk/types";
+
 import { getApprovalContractOptions, refineTransactionOptions } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
-import {
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
-import { useReadVaultPreview } from "../use-read-vault-preview";
 
 export const isVaultAPMarketOfferValid = ({
   quantity,
@@ -118,12 +123,12 @@ export const calculateVaultAPMarketOfferTokenData = ({
     ...input_token_quote,
     raw_amount: quantity || "0",
     token_amount: parseFloat(
-      ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals)
+      ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals),
     ),
     token_amount_usd:
       input_token_quote.price *
       parseFloat(
-        ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals)
+        ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals),
       ),
   };
 
@@ -139,14 +144,14 @@ export const calculateVaultAPMarketOfferTokenData = ({
 
         // Get incentive token raw amount
         const incentive_token_raw_amount =
-          action_incentive_token_amounts[index];
+          action_incentive_token_amounts[index] ?? "0";
 
         // Get incentive token amount
         const incentive_token_amount = parseFloat(
           ethers.utils.formatUnits(
             incentive_token_raw_amount,
-            incentive_token_quote.decimals
-          )
+            incentive_token_quote.decimals,
+          ),
         );
 
         // Get incentive token amount in USD
@@ -168,7 +173,7 @@ export const calculateVaultAPMarketOfferTokenData = ({
         } else {
           annual_change_ratio =
             (incentive_token_amount_usd / input_token_data.token_amount_usd) *
-            ((365 * 24 * 60 * 60) / parseInt(time_left));
+            ((365 * 24 * 60 * 60) / parseInt(time_left ?? "0"));
         }
 
         // Get incentive token data
@@ -182,7 +187,7 @@ export const calculateVaultAPMarketOfferTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -278,13 +283,15 @@ export const useVaultAPMarketOffer = ({
     enabled: isValid.status,
   });
 
+  console.log("propsReadVaultPreview", propsReadVaultPreview.data);
+
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
       new Set([
         enrichedMarket?.input_token_id ?? "",
         ...propsReadVaultPreview.incentive_token_ids,
-      ])
+      ]),
     ),
     custom_token_data,
     enabled: isValid.status,

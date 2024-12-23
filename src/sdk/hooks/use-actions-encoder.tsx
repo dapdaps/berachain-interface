@@ -1,14 +1,14 @@
 import {
   encodeActions,
-  encodeActionsReturnType,
-  MarketActions,
-} from "../market";
+  type encodeActionsReturnType,
+  type MarketActions,
+} from "@/sdk/market";
 
 export const useActionsEncoder = ({
   marketActions,
 }: {
   marketActions: MarketActions | undefined | null;
-}) => {
+})  => {
   let data: encodeActionsReturnType["script"] | null = null;
 
   if (!!marketActions) {

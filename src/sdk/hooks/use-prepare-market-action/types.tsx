@@ -1,4 +1,4 @@
-import { SupportedToken } from "@/sdk/constants";
+import type { SupportedToken } from "@/sdk/constants";
 
 export type TypedMarketActionIncentiveDataElement = SupportedToken & {
   raw_amount: string;

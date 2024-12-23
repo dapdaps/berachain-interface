@@ -1,3 +1,9 @@
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { BigNumber, ethers } from "ethers";
 import { RoycoMarketType } from "@/sdk/market";
 import {
   isSolidityAddressValid,
@@ -5,27 +11,27 @@ import {
   parseRawAmountToTokenAmount,
   parseTokenAmountToTokenAmountUsd,
 } from "@/sdk/utils";
-import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
 import { NULL_ADDRESS } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { TransactionOptionsType } from "@/sdk/types";
+import {
+  useTokenAllowance,
+  useVaultAllowance,
+  getTokenQuote,
+  useTokenQuotes,
+  useAccountBalance,
+} from "@/sdk/hooks";
+
 import {
   getApprovalContractOptions,
   getVaultApprovalContractOptions,
   refineTransactionOptions,
   refineVaultTransactionOptions,
 } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
-import {
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
-import { useVaultAllowance } from "../use-vault-allowance";
 
 export const isRecipeAPLimitOfferValid = ({
   quantity,
@@ -85,7 +91,7 @@ export const isRecipeAPLimitOfferValid = ({
 
     // Check token IDs for validity
     for (let i = 0; i < token_ids.length; i++) {
-      const token_address = token_ids[i].split("-")[1];
+      const token_address = token_ids[i]?.split("-")[1];
 
       if (!isSolidityAddressValid("address", token_address)) {
         throw new Error("Incentive address is invalid");
@@ -192,11 +198,11 @@ export const calculateRecipeAPLimitOfferTokenData = ({
     raw_amount: quantity === "" ? "0" : (quantity ?? "0"),
     token_amount: parseRawAmountToTokenAmount(
       quantity ?? "0",
-      input_token_quote.decimals
+      input_token_quote.decimals,
     ),
     token_amount_usd: parseTokenAmountToTokenAmountUsd(
       parseRawAmountToTokenAmount(quantity ?? "0", input_token_quote.decimals),
-      input_token_quote.price
+      input_token_quote.price,
     ),
   };
 
@@ -210,15 +216,15 @@ export const calculateRecipeAPLimitOfferTokenData = ({
           token_quotes: propsTokenQuotes,
         });
 
-        // Get incentive token raw amount
-        const incentive_token_raw_amount = tokenAmounts[index];
+        // Get incentive token raw amount with default "0"
+        const incentive_token_raw_amount = tokenAmounts[index] ?? "0";
 
         // Get incentive token amount
         const incentive_token_amount = parseFloat(
           ethers.utils.formatUnits(
             incentive_token_raw_amount || "0",
-            incentive_token_quote.decimals
-          )
+            incentive_token_quote.decimals,
+          ),
         );
 
         // Get incentive token amount in USD
@@ -253,7 +259,7 @@ export const calculateRecipeAPLimitOfferTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -298,7 +304,7 @@ export const getRecipeAPLimitOfferTransactionOptions = ({
   });
 
   // Sort the tokens based on the address in ascending order
-  sortedTokens.sort((a, b) => (a.address > b.address ? 1 : -1));
+  sortedTokens.sort((a, b) => ((a.address ?? "") > (b.address ?? "") ? 1 : -1));
 
   // Extract the sorted addresses and amounts
   const sortedTokenAddresses = sortedTokens.map((token) => token.address);
@@ -310,7 +316,7 @@ export const getRecipeAPLimitOfferTransactionOptions = ({
     chainId: chain_id,
     id: "create_ap_offer",
     label: "Create AP Offer",
-    address: address,
+    address: address as Address,
     abi: abi,
     functionName: "createAPOffer",
     marketType: RoycoMarketType.recipe.id,
@@ -387,7 +393,7 @@ export const useRecipeAPLimitOffer = ({
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
-      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])])
+      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])]),
     ),
     custom_token_data,
     enabled: isValid.status,
@@ -438,9 +444,9 @@ export const useRecipeAPLimitOffer = ({
         market_type: RoycoMarketType.recipe.id,
         token_ids: [inputTokenData.id],
         required_approval_amounts: [inputTokenData.raw_amount],
-        spender:
-          ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-            .address,
+        spender: ContractMap[chain_id as keyof typeof ContractMap][
+          "RecipeMarketHub"
+        ].address as Address,
       });
 
     // Get vault approval transaction options
@@ -450,9 +456,9 @@ export const useRecipeAPLimitOffer = ({
         token_ids: [inputTokenData.id],
         required_approval_amounts: [inputTokenData.raw_amount],
         funding_vault: funding_vault ?? NULL_ADDRESS,
-        spender:
-          ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-            .address,
+        spender: ContractMap[chain_id as keyof typeof ContractMap][
+          "RecipeMarketHub"
+        ].address as Address,
       });
 
     // Set pre contract options
@@ -467,9 +473,9 @@ export const useRecipeAPLimitOffer = ({
   const propsTokenAllowance = useTokenAllowance({
     chain_id: chain_id,
     account: account ? (account as Address) : NULL_ADDRESS,
-    spender:
-      ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-        .address,
+    spender: ContractMap[chain_id as keyof typeof ContractMap][
+      "RecipeMarketHub"
+    ].address as Address,
     tokens: preContractOptions.map((option) => {
       return option.address as Address;
     }),
@@ -481,10 +487,19 @@ export const useRecipeAPLimitOffer = ({
     chain_id,
     account: account ?? "",
     vault_address: funding_vault ?? "",
-    spender:
-      ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-        .address,
+    spender: ContractMap[chain_id as keyof typeof ContractMap][
+      "RecipeMarketHub"
+    ].address as Address,
     enabled: isValid.status,
+  });
+
+  // Get token balance
+  const propsTokenBalance = useAccountBalance({
+    chain_id,
+    account: account ? account : NULL_ADDRESS,
+    tokens: inputTokenData?.contract_address
+      ? [inputTokenData?.contract_address]
+      : [],
   });
 
   if (!propsTokenAllowance.isLoading && !propsVaultAllowance.isLoading) {
@@ -510,15 +525,19 @@ export const useRecipeAPLimitOffer = ({
     isLoadingDefaultMarketData ||
     propsTokenAllowance.isLoading ||
     propsVaultAllowance.isLoading ||
-    propsTokenQuotes.isLoading;
+    propsTokenQuotes.isLoading ||
+    propsTokenBalance.isLoading;
 
   // Check if ready
   const isReady = writeContractOptions.length > 0;
 
   // Check if offer can be performed completely or partially
-  if (isReady) {
-    canBePerformedCompletely = true;
-    canBePerformedPartially = true;
+  if (isReady && inputTokenData) {
+    const hasBalance = BigNumber.from(
+      propsTokenBalance.data?.[0]?.raw_amount || "0",
+    ).gte(BigNumber.from(inputTokenData.raw_amount));
+    canBePerformedCompletely = hasBalance;
+    canBePerformedPartially = hasBalance;
   }
 
   return {

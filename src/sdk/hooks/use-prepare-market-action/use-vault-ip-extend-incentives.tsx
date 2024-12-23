@@ -1,25 +1,25 @@
-import { RoycoMarketType, RoycoMarketUserType } from "@/sdk/market";
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { CustomTokenData, TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { BigNumber } from "ethers";
+import { RoycoMarketType } from "@/sdk/market";
 import {
   isSolidityAddressValid,
   isSolidityIntValid,
   parseRawAmountToTokenAmount,
 } from "@/sdk/utils";
-import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { useMarketOffers } from "../use-market-offers";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
+import { useTokenAllowance, getTokenQuote, useTokenQuotes } from "@/sdk/hooks";
 import { getSupportedToken, NULL_ADDRESS } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { CustomTokenData, TransactionOptionsType } from "@/sdk/types";
+
 import { getApprovalContractOptions, refineTransactionOptions } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
-import {
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
 
 export const isVaultIPExtendIncentivesValid = ({
   baseMarket,
@@ -59,7 +59,7 @@ export const isVaultIPExtendIncentivesValid = ({
 
     // Check token IDs for validity
     for (let i = 0; i < token_ids.length; i++) {
-      const token_address = token_ids[i].split("-")[1];
+      const token_address = token_ids[i]?.split("-")[1];
 
       if (!isSolidityAddressValid("address", token_address)) {
         throw new Error("Incentive address is invalid");
@@ -92,7 +92,7 @@ export const isVaultIPExtendIncentivesValid = ({
      */
     for (let i = 0; i < token_ids.length; i++) {
       const token_id = token_ids[i];
-      const reward = token_id.split("-")[1];
+      const reward = token_id?.split("-")[1];
 
       const existing_reward_index =
         enrichedMarket.base_incentive_ids?.findIndex((id) => id === token_id) ??
@@ -104,13 +104,13 @@ export const isVaultIPExtendIncentivesValid = ({
 
       const rewardsInterval = {
         start: BigNumber.from(
-          enrichedMarket?.base_start_timestamps?.[existing_reward_index] ?? "0"
+          enrichedMarket?.base_start_timestamps?.[existing_reward_index] ?? "0",
         ),
         end: BigNumber.from(
-          enrichedMarket?.base_end_timestamps?.[existing_reward_index] ?? "0"
+          enrichedMarket?.base_end_timestamps?.[existing_reward_index] ?? "0",
         ),
         rate: BigNumber.from(
-          enrichedMarket?.base_incentive_rates?.[existing_reward_index] ?? "0"
+          enrichedMarket?.base_incentive_rates?.[existing_reward_index] ?? "0",
         ),
       };
 
@@ -119,12 +119,12 @@ export const isVaultIPExtendIncentivesValid = ({
 
       if (newEnd.lte(rewardsInterval.end)) {
         throw new Error(
-          "New end time must be greater than the existing end time"
+          "New end time must be greater than the existing end time",
         );
       }
 
       const blockTimestamp = BigNumber.from(
-        Math.floor(Date.now() / 1000).toString()
+        Math.floor(Date.now() / 1000).toString(),
       );
 
       if (blockTimestamp.gte(newEnd)) {
@@ -154,7 +154,7 @@ export const isVaultIPExtendIncentivesValid = ({
       }
 
       const remainingRewards = BigNumber.from(
-        enrichedMarket.base_incentive_rates?.[existing_reward_index] ?? "0"
+        enrichedMarket.base_incentive_rates?.[existing_reward_index] ?? "0",
       ).mul(rewardsInterval.end.sub(newStart));
 
       const rate = rewardsAfterFee
@@ -163,7 +163,7 @@ export const isVaultIPExtendIncentivesValid = ({
 
       if (rate.lt(rewardsInterval.rate)) {
         throw new Error(
-          "New incentive rate must be greater than the existing rate"
+          "New incentive rate must be greater than the existing rate",
         );
       }
     }
@@ -219,7 +219,7 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
   const action_incentive_token_amounts: string[] = tokenAmounts.map(
     (amount) => {
       return BigNumber.from(amount).toString();
-    }
+    },
   );
 
   // Get input token quote
@@ -251,19 +251,19 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
           action_incentive_token_amounts[index];
 
         const protocol_fee = BigNumber.from(
-          incentive_token_raw_amount_with_fees
+          incentive_token_raw_amount_with_fees,
         )
           .mul(baseMarket.protocol_fee)
           .div(BigNumber.from(10).pow(18));
 
         const frontend_fee = BigNumber.from(
-          incentive_token_raw_amount_with_fees
+          incentive_token_raw_amount_with_fees,
         )
           .mul(baseMarket.frontend_fee)
           .div(BigNumber.from(10).pow(18));
 
         const incentive_token_raw_amount = BigNumber.from(
-          incentive_token_raw_amount_with_fees
+          incentive_token_raw_amount_with_fees,
         )
           .sub(protocol_fee)
           .sub(frontend_fee)
@@ -272,7 +272,7 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
         // Get incentive token amount
         const incentive_token_amount = parseRawAmountToTokenAmount(
           incentive_token_raw_amount ?? "0",
-          incentive_token_quote.decimals
+          incentive_token_quote.decimals,
         );
 
         // Get incentive token amount in USD
@@ -300,19 +300,20 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
 
         const existing_reward_index =
           enrichedMarket.base_incentive_ids?.findIndex(
-            (id) => id === incentive_token_id
+            (id) => id === incentive_token_id,
           ) ?? -1;
 
         const rewardsInterval = {
           start: BigNumber.from(
             enrichedMarket?.base_start_timestamps?.[existing_reward_index] ??
-              "0"
+              "0",
           ),
           end: BigNumber.from(
-            enrichedMarket?.base_end_timestamps?.[existing_reward_index] ?? "0"
+            enrichedMarket?.base_end_timestamps?.[existing_reward_index] ?? "0",
           ),
           rate: BigNumber.from(
-            enrichedMarket?.base_incentive_rates?.[existing_reward_index] ?? "0"
+            enrichedMarket?.base_incentive_rates?.[existing_reward_index] ??
+              "0",
           ),
         };
 
@@ -320,7 +321,7 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
         const rewardsAdded = BigNumber.from(tokenAmounts[index]);
 
         const blockTimestamp = BigNumber.from(
-          Math.floor(Date.now() / 1000).toString()
+          Math.floor(Date.now() / 1000).toString(),
         );
 
         const frontendFeeTaken: BigNumber = rewardsAdded
@@ -340,7 +341,7 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
           : rewardsInterval.start;
 
         const remainingRewards = BigNumber.from(
-          enrichedMarket.base_incentive_rates?.[existing_reward_index] ?? "0"
+          enrichedMarket.base_incentive_rates?.[existing_reward_index] ?? "0",
         ).mul(rewardsInterval.end.sub(newStart));
 
         const scaled_rate: BigNumber = rewardsAfterFee
@@ -349,7 +350,7 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
 
         const token_rate = parseRawAmountToTokenAmount(
           scaled_rate.toString() ?? "0",
-          incentive_token_quote.decimals + 18
+          incentive_token_quote.decimals + 18,
         );
 
         const rate_in_usd = token_rate * incentive_token_quote.price;
@@ -383,7 +384,7 @@ export const calculateVaultIPExtendIncentivesTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -421,7 +422,7 @@ export const getVaultIPExtendIncentivesTransactionOptions = ({
   // Extend Rewards
   for (let i = 0; i < token_ids.length; i++) {
     const token_id = token_ids[i];
-    const token_address = token_id.split("-")[1];
+    const token_address = token_id?.split("-")[1];
     const token_data = getSupportedToken(token_id);
 
     const newTxOptions: TransactionOptionsType = {
@@ -504,7 +505,7 @@ export const useVaultIPExtendIncentives = ({
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
-      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])])
+      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])]),
     ),
     custom_token_data,
     enabled: isValid.status,

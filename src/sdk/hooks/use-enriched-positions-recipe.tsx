@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { RoycoClient, useRoycoClient } from "../client";
-import { getEnrichedPositionsRecipeQueryOptions } from "../queries/get-enriched-positions-recipe";
-import { BaseQueryFilter, BaseSortingFilter, CustomTokenData } from "../types";
+import { type RoycoClient, useRoycoClient } from "@/sdk/client";
+import { getEnrichedPositionsRecipeQueryOptions } from "@/sdk/queries";
+import type {
+  BaseQueryFilter,
+  BaseSortingFilter,
+  CustomTokenData,
+} from "@/sdk/types";
 
 export const useEnrichedPositionsRecipe = ({
   account_address,
@@ -14,8 +18,8 @@ export const useEnrichedPositionsRecipe = ({
   enabled = true,
 }: {
   account_address: string;
-  chain_id: number;
-  market_id: string;
+  chain_id?: number;
+  market_id?: string;
   custom_token_data?: CustomTokenData;
   page_index?: number;
   filters?: Array<BaseQueryFilter>;
@@ -33,7 +37,7 @@ export const useEnrichedPositionsRecipe = ({
       custom_token_data,
       page_index,
       filters,
-      sorting
+      sorting,
     ),
     enabled,
   });

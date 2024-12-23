@@ -1,7 +1,7 @@
-import { MarketActions } from "../market";
-import { useActionsEncoder } from "./use-actions-encoder";
-import { NULL_ADDRESS, REWARD_STYLE } from "../constants";
-import { ContractMap } from "../contracts";
+import type { MarketActions } from "@/sdk/market";
+import { useActionsEncoder } from "@/sdk/hooks";
+import { NULL_ADDRESS, REWARD_STYLE } from "@/sdk/constants";
+import { ContractMap } from "@/sdk/contracts";
 
 export const useCreateRecipeMarket = ({
   chainId = 0,
@@ -19,7 +19,7 @@ export const useCreateRecipeMarket = ({
   enterMarketActions: MarketActions;
   exitMarketActions: MarketActions;
   rewardStyle: REWARD_STYLE;
-}) => {
+})  => {
   // Check is market is ready to be created
   let isReady = false;
 
@@ -39,6 +39,10 @@ export const useCreateRecipeMarket = ({
   if (recipeContract && enterMarket.data && exitMarket.data) {
     isReady = true;
 
+    /**
+     * @TODO Strictly type this
+     */
+    // @ts-ignore
     writeContractOptions = {
       address: recipeContract.address,
       abi: recipeContract.abi,

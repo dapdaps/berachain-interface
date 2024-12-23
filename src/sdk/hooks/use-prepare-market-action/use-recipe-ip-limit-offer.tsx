@@ -1,20 +1,21 @@
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import { BigNumber, ethers } from "ethers";
 import { RoycoMarketType } from "@/sdk/market";
 import { isSolidityAddressValid, isSolidityIntValid } from "@/sdk/utils";
-import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
+import { useTokenAllowance, getTokenQuote, useTokenQuotes } from "@/sdk/hooks";
 import { NULL_ADDRESS } from "@/sdk/constants";
 import { ContractMap } from "@/sdk/contracts";
-import { TransactionOptionsType } from "@/sdk/types";
+
 import { getApprovalContractOptions, refineTransactionOptions } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
-import {
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
 
 export const isRecipeIPLimitOfferValid = ({
   quantity,
@@ -62,7 +63,7 @@ export const isRecipeIPLimitOfferValid = ({
 
     // Check token IDs for validity
     for (let i = 0; i < token_ids.length; i++) {
-      const token_address = token_ids[i].split("-")[1];
+      const token_address = token_ids[i]?.split("-")[1];
 
       if (!isSolidityAddressValid("address", token_address)) {
         throw new Error("Incentive address is invalid");
@@ -168,12 +169,12 @@ export const calculateRecipeIPLimitOfferTokenData = ({
     ...input_token_quote,
     raw_amount: quantity ?? "0",
     token_amount: parseFloat(
-      ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals)
+      ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals),
     ),
     token_amount_usd:
       input_token_quote.price *
       parseFloat(
-        ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals)
+        ethers.utils.formatUnits(quantity || "0", input_token_quote.decimals),
       ),
   };
 
@@ -188,7 +189,7 @@ export const calculateRecipeIPLimitOfferTokenData = ({
         });
 
         const base_incentive_token_raw_amount: BigNumber = BigNumber.from(
-          tokenAmounts[index]
+          tokenAmounts[index],
         );
 
         // Get protocol fee
@@ -212,8 +213,8 @@ export const calculateRecipeIPLimitOfferTokenData = ({
         const incentive_token_amount = parseFloat(
           ethers.utils.formatUnits(
             incentive_token_raw_amount || "0",
-            incentive_token_quote.decimals
-          )
+            incentive_token_quote.decimals,
+          ),
         );
 
         // Get incentive token amount in USD
@@ -248,7 +249,7 @@ export const calculateRecipeIPLimitOfferTokenData = ({
         };
 
         return incentive_token_data;
-      }
+      },
     );
   }
 
@@ -289,9 +290,11 @@ export const getRecipeIPLimitOfferTransactionOptions = ({
       amount: token_amounts[index],
     };
   });
-
   // Sort the tokens based on the address in ascending order
-  sortedTokens.sort((a, b) => (a.address > b.address ? 1 : -1));
+  sortedTokens.sort((a, b) => {
+    if (!a.address || !b.address) return 0;
+    return a.address > b.address ? 1 : -1;
+  });
 
   // Extract the sorted addresses and amounts
   const sortedTokenAddresses = sortedTokens.map((token) => token.address);
@@ -303,7 +306,7 @@ export const getRecipeIPLimitOfferTransactionOptions = ({
     chainId: chain_id,
     id: "create_ip_offer",
     label: "Create IP Offer",
-    address: address,
+    address: address as Address,
     abi: abi,
     functionName: "createIPOffer",
     marketType: RoycoMarketType.recipe.id,
@@ -376,7 +379,7 @@ export const useRecipeIPLimitOffer = ({
   // Get token quotes
   const propsTokenQuotes = useTokenQuotes({
     token_ids: Array.from(
-      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])])
+      new Set([enrichedMarket?.input_token_id ?? "", ...(token_ids ?? [])]),
     ),
     custom_token_data,
     enabled: isValid.status,
@@ -411,12 +414,12 @@ export const useRecipeIPLimitOffer = ({
 
       // Get base raw amount without fees
       const raw_amount = BigNumber.from(
-        token_amounts?.[index] ?? "0"
+        token_amounts?.[index] ?? "0",
       ).toString();
 
       // Get token amount
       const token_amount: number = parseFloat(
-        ethers.utils.formatUnits(raw_amount || "0", incentive.decimals)
+        ethers.utils.formatUnits(raw_amount || "0", incentive.decimals),
       );
 
       // Get token amount in USD
@@ -455,9 +458,9 @@ export const useRecipeIPLimitOffer = ({
         market_type: RoycoMarketType.recipe.id,
         token_ids: token_ids ?? [],
         required_approval_amounts: token_amounts ?? [],
-        spender:
-          ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-            .address,
+        spender: ContractMap[chain_id as keyof typeof ContractMap][
+          "RecipeMarketHub"
+        ].address as Address,
       });
 
     // Set approval transaction options
@@ -468,9 +471,9 @@ export const useRecipeIPLimitOffer = ({
   const propsTokenAllowance = useTokenAllowance({
     chain_id: chain_id,
     account: account ? (account as Address) : NULL_ADDRESS,
-    spender:
-      ContractMap[chain_id as keyof typeof ContractMap]["RecipeMarketHub"]
-        .address,
+    spender: ContractMap[chain_id as keyof typeof ContractMap][
+      "RecipeMarketHub"
+    ].address as Address,
     tokens: preContractOptions.map((option) => {
       return option.address as Address;
     }),

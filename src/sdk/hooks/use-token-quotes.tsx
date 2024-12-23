@@ -1,8 +1,9 @@
+import type { RoycoClient } from "@/sdk/client";
+
 import { useQuery } from "@tanstack/react-query";
-import { getTokenQuotesQueryOptions } from "../queries";
-import { RoycoClient, useRoycoClient } from "../client";
-import { getSupportedToken, SupportedToken } from "../constants";
-import { useCustomTokenQuotes } from "./use-custom-token-quotes";
+import { getTokenQuotesQueryOptions } from "@/sdk/queries";
+import { useRoycoClient } from "@/sdk/client";
+import { getSupportedToken } from "@/sdk/constants";
 
 export const useTokenQuotes = ({
   token_ids,
@@ -17,7 +18,7 @@ export const useTokenQuotes = ({
     total_supply?: string;
   }>;
   enabled?: boolean;
-}) => {
+})  => {
   const client: RoycoClient = useRoycoClient();
 
   return useQuery({
@@ -42,7 +43,7 @@ export const getTokenQuote = ({
   const available_token_quotes = token_quotes.data ?? [];
 
   const available_token_quote = available_token_quotes.find(
-    (quote) => quote.token_id === token_id
+    (quote) => quote.token_id === token_id,
   );
 
   let token_quote = available_token_quote;

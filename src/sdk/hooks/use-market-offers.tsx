@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMarketOffersQueryOptions } from "../queries";
-import { RoycoClient, useRoycoClient } from "../client";
-import { CustomTokenData } from "../types";
+import { getMarketOffersQueryOptions } from "@/sdk/queries";
+import { type RoycoClient, useRoycoClient } from "@/sdk/client";
+import type { CustomTokenData } from "@/sdk/types";
 
 export const useMarketOffers = ({
   chain_id,
@@ -23,7 +23,7 @@ export const useMarketOffers = ({
   custom_token_data?: CustomTokenData;
   incentive_ids?: string[];
   incentive_amounts?: string[];
-}) => {
+})  => {
   const client: RoycoClient = useRoycoClient();
 
   return useQuery({
@@ -38,7 +38,7 @@ export const useMarketOffers = ({
       incentive_ids && incentive_ids.length > 0 ? incentive_ids : undefined,
       incentive_amounts && incentive_amounts.length > 0
         ? incentive_amounts
-        : undefined
+        : undefined,
     ),
     enabled,
   });

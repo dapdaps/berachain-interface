@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   decodeActions,
-  decodeActionsReturnType,
-  TypedAbiElement,
-} from "../market";
-import { getContractsQueryOptions } from "../queries";
-import { RoycoClient, useRoycoClient } from "../client";
+  type decodeActionsReturnType,
+  type TypedAbiElement,
+} from "@/sdk/market";
+import { getContractsQueryOptions } from "@/sdk/queries";
+import { type RoycoClient, useRoycoClient } from "@/sdk/client";
 
 export const useActionsDecoder = ({
   chain_id,
@@ -70,10 +70,10 @@ export const useActionsDecoder = ({
           }
           return acc;
         },
-        {} as Record<string, { contract_name: string }>
+        {} as Record<string, { contract_name: string }>,
       );
 
-    let newAbis: any = [];
+    let newAbis: Array<TypedAbiElement> = [];
     let newContractMap: Record<
       string,
       {
@@ -84,9 +84,11 @@ export const useActionsDecoder = ({
     if (!!abis) {
       newAbis = [...newAbis, ...abis];
     }
-
     if (!!fetchedAbis) {
-      newAbis = [...newAbis, ...fetchedAbis];
+      /**
+       * @TODO Fix this, currently it's a bit of a hack
+       */
+      newAbis = [...newAbis, ...(fetchedAbis as unknown as TypedAbiElement[])];
     }
 
     if (!!contract_map) {

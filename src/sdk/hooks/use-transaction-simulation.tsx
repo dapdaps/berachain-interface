@@ -1,6 +1,7 @@
+import type { TransactionOptionsType } from "@/sdk/types";
+
 import { getTransactionSimulationQueryOptions } from "@/sdk/queries";
 import { useQuery } from "@tanstack/react-query";
-import { TransactionOptionsType } from "../types";
 
 export const useTransactionSimulation = ({
   chainId,
@@ -14,7 +15,7 @@ export const useTransactionSimulation = ({
   simulationUrl: string;
   account: string;
   enabled?: boolean;
-}) => {
+})  => {
   return useQuery({
     ...getTransactionSimulationQueryOptions({
       chainId,

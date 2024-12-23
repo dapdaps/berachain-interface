@@ -76,10 +76,10 @@ export const Plume = {
 
 export const SupportedChainMap: Record<number, SupportedChain> = {
   [ethereumSepolia.id]: EthereumSepolia,
-  [ethereumMainnet.id]: EthereumMainnet,
-  [arbitrumOne.id]: ArbitrumOne,
-  [base.id]: Base,
-  [plume.id]: Plume,
+  // [ethereumMainnet.id]: EthereumMainnet,
+  // [arbitrumOne.id]: ArbitrumOne,
+  // [base.id]: Base,
+  // [plume.id]: Plume,
 };
 
 export const SupportedChainlist = Object.values(SupportedChainMap);

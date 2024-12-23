@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getEnrichedAccountBalancesRecipeInMarketQueryOptions } from "../queries";
-import { RoycoClient, useRoycoClient } from "../client";
-import { CustomTokenData } from "../types";
+import { getEnrichedAccountBalancesRecipeInMarketQueryOptions } from "@/sdk/queries";
+import { type RoycoClient, useRoycoClient } from "@/sdk/client";
+import type { CustomTokenData } from "@/sdk/types";
 
 export const useEnrichedAccountBalancesRecipeInMarket = ({
   chain_id,
@@ -15,7 +15,7 @@ export const useEnrichedAccountBalancesRecipeInMarket = ({
   account_address: string;
   custom_token_data?: CustomTokenData;
   enabled?: boolean;
-}) => {
+})  => {
   const client: RoycoClient = useRoycoClient();
 
   return useQuery({
@@ -24,7 +24,7 @@ export const useEnrichedAccountBalancesRecipeInMarket = ({
       chain_id,
       market_id,
       account_address,
-      custom_token_data
+      custom_token_data,
     ),
     enabled,
   });

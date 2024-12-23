@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { isERC4626VaultAddressValid } from "@/sdk/utils";
+import { type TypedRpcApiKeys, useRpcApiKeys } from "@/sdk/client";
 
 export const useErc4626VaultChecker = ({
   chain_id,
@@ -8,6 +9,8 @@ export const useErc4626VaultChecker = ({
   chain_id: number;
   contract_address: string | null | undefined;
 }) => {
+  const RPC_API_KEYS: TypedRpcApiKeys | undefined = useRpcApiKeys();
+
   return useQuery({
     queryKey: [
       "contracts",
@@ -20,8 +23,9 @@ export const useErc4626VaultChecker = ({
           return false;
         } else {
           const res = await isERC4626VaultAddressValid(
+            RPC_API_KEYS ?? {},
             chain_id,
-            contract_address
+            contract_address,
           );
 
           return res;

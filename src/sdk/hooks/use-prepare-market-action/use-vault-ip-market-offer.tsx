@@ -1,3 +1,11 @@
+import type { Address } from "viem";
+import type { EnrichedMarketDataType } from "@/sdk/queries";
+import type { TransactionOptionsType } from "@/sdk/types";
+import type { ReadMarketDataType } from "@/sdk/hooks";
+
+import React from "react";
+
+import { BigNumber } from "ethers";
 import { RoycoMarketType, RoycoMarketUserType } from "@/sdk/market";
 import {
   isSolidityIntValid,
@@ -5,24 +13,20 @@ import {
   parseRawAmountToTokenAmountUsd,
   parseTokenAmountToTokenAmountUsd,
 } from "@/sdk/utils";
-import { BigNumber, ethers } from "ethers";
-import { EnrichedMarketDataType } from "@/sdk/queries";
-import { useMarketOffers } from "../use-market-offers";
-import { getTokenQuote, useTokenQuotes } from "../use-token-quotes";
-import { NULL_ADDRESS } from "@/sdk/constants";
-import { ContractMap } from "@/sdk/contracts";
-import { TransactionOptionsType } from "@/sdk/types";
-import { getApprovalContractOptions, refineTransactionOptions } from "./utils";
-import { useTokenAllowance } from "../use-token-allowance";
-import { Address } from "abitype";
 import {
+  getTokenQuote,
+  useTokenQuotes,
+  useMarketOffers,
+  useMarketOffersValidator,
+} from "@/sdk/hooks";
+import { ContractMap } from "@/sdk/contracts";
+
+import type {
   TypedMarketActionIncentiveDataElement,
   TypedMarketActionInputTokenData,
 } from "./types";
 import { useDefaultMarketData } from "./use-default-market-data";
-import { ReadMarketDataType } from "../use-read-market";
-import { useMarketOffersValidator } from "../use-market-offers-validator";
-import React from "react";
+import { NULL_ADDRESS } from "@/sdk/constants";
 
 export const isVaultIPMarketOfferValid = ({
   quantity,
@@ -91,7 +95,7 @@ export const calculateVaultIPMarketOfferTokenData = ({
     propsMarketOffers.data
       ?.reduce(
         (acc, offer) => acc.add(BigNumber.from(offer.fill_quantity)),
-        BigNumber.from(0)
+        BigNumber.from(0),
       )
       ?.toString() ?? "0";
 
@@ -106,7 +110,7 @@ export const calculateVaultIPMarketOfferTokenData = ({
       (acc, offer) => {
         offer.token_ids.forEach((token_id, index) => {
           const base_amount: BigNumber = BigNumber.from(
-            offer.token_amounts[index].toString()
+            offer.token_amounts[index]?.toString() ?? "0",
           );
 
           const actual_amount: BigNumber = base_amount
@@ -121,7 +125,7 @@ export const calculateVaultIPMarketOfferTokenData = ({
         });
         return acc;
       },
-      {} as Record<string, BigNumber>
+      {} as Record<string, BigNumber>,
     ) ?? {};
 
   // Get the unique token IDs
@@ -139,12 +143,12 @@ export const calculateVaultIPMarketOfferTokenData = ({
     raw_amount: total_quantity_filled ?? "0",
     token_amount: parseRawAmountToTokenAmount(
       total_quantity_filled ?? "0",
-      input_token_quote.decimals
+      input_token_quote.decimals,
     ),
     token_amount_usd: parseRawAmountToTokenAmountUsd(
       total_quantity_filled ?? "0",
       input_token_quote.decimals,
-      input_token_quote.price
+      input_token_quote.price,
     ),
   };
 
@@ -164,13 +168,13 @@ export const calculateVaultIPMarketOfferTokenData = ({
       // Get incentive token amount
       const incentive_token_amount = parseRawAmountToTokenAmount(
         incentive_token_raw_amount ?? "0",
-        incentive_token_quote.decimals
+        incentive_token_quote.decimals,
       );
 
       // Get incentive token amount in USD
       const incentive_token_amount_usd = parseTokenAmountToTokenAmountUsd(
         incentive_token_amount,
-        incentive_token_quote.price
+        incentive_token_quote.price,
       );
 
       // Get per input token
@@ -237,7 +241,7 @@ export const getVaultIPMarketOfferTransactionOptions = ({
     chainId: chain_id,
     id: "allocate_ap_offers",
     label: "Allocate AP Offers",
-    address,
+    address: address as Address,
     abi,
     functionName: "allocateOffers",
     marketType: RoycoMarketType.vault.id,
@@ -332,7 +336,7 @@ export const useVaultIPMarketOffer = ({
       new Set([
         enrichedMarket?.input_token_id ?? "",
         ...(propsMarketOffers.data?.flatMap((offer) => offer.token_ids) ?? []),
-      ])
+      ]),
     ),
     custom_token_data,
     enabled:
@@ -372,7 +376,7 @@ export const useVaultIPMarketOffer = ({
             fundingVault: offer.funding_vault,
             expiry: offer.expiry,
             incentivesRequested: offer.token_ids.map((token_id) => {
-              const token_address = token_id.split("-")[1];
+              const token_address = token_id.split("-")[1] ?? NULL_ADDRESS;
               return token_address;
             }),
             incentivesRatesRequested: offer.token_amounts,
@@ -411,7 +415,7 @@ export const useVaultIPMarketOffer = ({
       canBePerformedPartially = false;
     } else if (
       BigNumber.from(inputTokenData?.raw_amount ?? 0).eq(
-        BigNumber.from(quantity ?? 0)
+        BigNumber.from(quantity ?? 0),
       )
     ) {
       canBePerformedCompletely = true;

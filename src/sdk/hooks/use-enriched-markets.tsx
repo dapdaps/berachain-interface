@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  EnrichedMarketDataType,
+  type EnrichedMarketDataType,
   getEnrichedMarketsQueryOptions,
-  MarketFilter,
-} from "../queries";
-import { RoycoClient, useRoycoClient } from "../client";
-import { BaseSortingFilter, CustomTokenData } from "../types";
+  type MarketFilter,
+} from "@/sdk/queries";
+import { type RoycoClient, useRoycoClient, useRpcApiKeys } from "@/sdk/client";
+import type { BaseSortingFilter, CustomTokenData } from "@/sdk/types";
 
 export const useEnrichedMarkets = ({
   chain_id,
@@ -33,9 +33,12 @@ export const useEnrichedMarkets = ({
 }) => {
   const client: RoycoClient = useRoycoClient();
 
+  const RPC_API_KEYS = useRpcApiKeys();
+
   const props = useQuery({
     ...getEnrichedMarketsQueryOptions(
       client,
+      RPC_API_KEYS ?? {},
       chain_id,
       market_type,
       market_id,
@@ -44,7 +47,7 @@ export const useEnrichedMarkets = ({
       sorting,
       search_key,
       is_verified,
-      custom_token_data
+      custom_token_data,
     ),
     enabled,
   });
