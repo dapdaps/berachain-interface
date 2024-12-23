@@ -100,7 +100,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
           );
         }
 
-        const response = await fetch("https://test-api.dapdap.net/quoter", {
+        const response = await fetch("https://api.dapdap.net/quoter", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
