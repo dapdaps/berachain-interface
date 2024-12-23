@@ -1,5 +1,6 @@
-import { type TypedRoycoClient } from "@/sdk/client";
-import { CustomTokenData } from "../types";
+import type { TypedRoycoClient } from "@/sdk/client";
+import type { CustomTokenData } from "@/sdk/types";
+import type { UseQueryOptions } from "@tanstack/react-query";
 
 export const getMarketOffersQueryOptions = (
   client: TypedRoycoClient,
@@ -10,8 +11,8 @@ export const getMarketOffersQueryOptions = (
   quantity: string,
   custom_token_data?: CustomTokenData,
   incentive_ids?: string[],
-  incentive_amounts?: string[]
-) => ({
+  incentive_amounts?: string[],
+)  => ({
   queryKey: [
     "get-market-offers",
     chain_id,
@@ -21,7 +22,7 @@ export const getMarketOffersQueryOptions = (
     quantity,
     ...(custom_token_data || []).map(
       (token) =>
-        `${token.token_id}-${token.price}-${token.fdv}-${token.total_supply}`
+        `${token.token_id}-${token.price}-${token.fdv}-${token.total_supply}`,
     ),
     incentive_ids?.join(","),
     incentive_amounts?.join(","),
@@ -40,9 +41,8 @@ export const getMarketOffersQueryOptions = (
 
     return result.data;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

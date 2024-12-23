@@ -1,3 +1,5 @@
+import type { UseQueryOptions } from "@tanstack/react-query";
+
 import { createHash } from "crypto";
 
 export const getMarketOffersValidatorQueryOptions = ({
@@ -6,7 +8,7 @@ export const getMarketOffersValidatorQueryOptions = ({
 }: {
   offer_ids: string[];
   offerValidationUrl: string;
-}) => ({
+})  => ({
   queryKey: [
     "simulate",
     createHash("sha256")

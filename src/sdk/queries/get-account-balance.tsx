@@ -1,14 +1,17 @@
-import { type Address } from "viem";
-import { createPublicClient, http, erc20Abi, erc4626Abi } from "viem";
+import type { Address } from "viem";
+import type { TypedRpcApiKeys } from "@/sdk/client";
+import type { UseQueryOptions } from "@tanstack/react-query";
+
+import { createPublicClient, http, erc20Abi } from "viem";
 import { getChain } from "@/sdk/utils";
-import { RoycoMarketFundingType } from "../market";
-import { RPC_API_KEYS } from "@/components/constants";
 
 export const getAccountBalance = async ({
+  RPC_API_KEYS,
   chain_id,
   account,
   tokens,
 }: {
+  RPC_API_KEYS: TypedRpcApiKeys;
   chain_id: number;
   account: string;
   tokens: string[];
@@ -33,10 +36,11 @@ export const getAccountBalance = async ({
 };
 
 export const getAccountBalanceQueryOptions = (
+  RPC_API_KEYS: TypedRpcApiKeys,
   chain_id: number,
   account: string,
-  tokens: string[]
-) => ({
+  tokens: string[],
+)  => ({
   queryKey: [
     "token-balance",
     `chain-id=${chain_id}`,
@@ -44,13 +48,17 @@ export const getAccountBalanceQueryOptions = (
     `tokens=${tokens.join(":")}`,
   ],
   queryFn: async () => {
-    const result = await getAccountBalance({ chain_id, account, tokens });
+    const result = await getAccountBalance({
+      RPC_API_KEYS,
+      chain_id,
+      account,
+      tokens,
+    });
 
     return result;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

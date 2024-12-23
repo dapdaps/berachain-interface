@@ -1,12 +1,12 @@
 import {
-  Address,
+  type Address,
   createPublicClient,
   erc4626Abi,
   getContract,
   http,
   isAddress,
 } from "viem";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
 import {
   Abi as ZodAbi,
@@ -18,7 +18,7 @@ import {
   SolidityArray as ZodSolidityArray,
 } from "abitype/zod";
 import { getChain } from "./get-chain-all";
-import { RPC_API_KEYS } from "@/components/constants";
+import type { TypedRpcApiKeys } from "@/sdk/client";
 
 export const isAbiValid = (value: string) => {
   try {
@@ -55,7 +55,7 @@ export const isSolidityAddressType = (type: string) => {
 
 export const isSolidityAddressValid = (
   type: string,
-  value: string | undefined | null
+  value: string | undefined | null,
 ) => {
   if (!value) return false;
   return isAddress(value);
@@ -73,7 +73,7 @@ export const isSolidityAddressArrayType = (type: string) => {
 
 export const isSolidityAddressArrayValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -133,7 +133,7 @@ export const isSolidityIntArrayType = (type: string) => {
 
 export const isSolidityIntArrayValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -175,7 +175,7 @@ export const isSolidityBoolType = (type: string) => {
 
 export const isSolidityBoolValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -204,7 +204,7 @@ export const isSolidityBoolArrayType = (type: string) => {
 
 export const isSolidityBoolArrayValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -256,7 +256,7 @@ export const isSolidityStringType = (type: string): boolean => {
 export const isSolidityStringValid = (
   type: string,
   value: string | undefined,
-  noTrim: boolean = false
+  noTrim: boolean = false,
 ): boolean => {
   try {
     if (!value) return false;
@@ -285,7 +285,7 @@ export const isSolidityStringArrayType = (type: string) => {
 
 export const isSolidityStringArrayValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -299,7 +299,7 @@ export const isSolidityStringArrayValid = (
 export const refineSolidityString = (
   type: string,
   value: string,
-  noTrim: boolean = false
+  noTrim: boolean = false,
 ) => {
   const refinedValue = noTrim === false ? value.trim() : value;
   return refinedValue;
@@ -326,7 +326,7 @@ export const isSolidityBytesType = (type: string) => {
 
 export const isSolidityBytesValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -349,7 +349,7 @@ export const isSolidityBytesArrayType = (type: string) => {
 
 export const isSolidityBytesArrayValid = (
   type: string,
-  value: string | undefined
+  value: string | undefined,
 ) => {
   try {
     if (!value) return false;
@@ -370,7 +370,7 @@ export const refineSolidityBytes = (type: string, value: string): string => {
 
 export const refineSolidityBytesArray = (
   type: string,
-  value: string
+  value: string,
 ): string[] => {
   const baseType = type.replace("[]", "");
   const values = value.split(",");
@@ -448,8 +448,9 @@ export const refineSolidityBytesArray = (
 // };
 
 export const isERC4626VaultAddressValid = async (
+  RPC_API_KEYS: TypedRpcApiKeys,
   chain_id: number,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   try {
     if (!address) return false;
@@ -474,13 +475,14 @@ export const isERC4626VaultAddressValid = async (
     const results = await Promise.all(
       readOnlyMethods.map(async (method) => {
         try {
-          const result = await contract.read[method]();
+          const result =
+            await contract.read[method as keyof typeof contract.read]();
           return { method, result };
         } catch (error) {
           // console.log(`Error calling ${method}:`, error);
           return { method, error };
         }
-      })
+      }),
     );
 
     // Check if any of the methods resulted in an error

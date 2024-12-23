@@ -4,7 +4,6 @@ import {
   mainnet as ethereumMainnet,
   arbitrum as arbitrumOne,
   base,
-  corn,
 } from "viem/chains";
 import { type Chain } from "viem/chains";
 
@@ -35,14 +34,6 @@ export const Base = {
   ...base,
   image: "https://icons.llamao.fi/icons/chains/rsz_base.jpg",
   symbol: "BASE",
-};
-
-export const Corn = {
-  ...corn,
-  name: "Corn",
-  image:
-    "https://pbs.twimg.com/profile_images/1838599679321182208/igqD6b-Q_400x400.jpg",
-  symbol: "CORN",
 };
 
 const plume = defineChain({
@@ -88,7 +79,6 @@ export const SupportedChainMap: Record<number, SupportedChain> = {
   [ethereumMainnet.id]: EthereumMainnet,
   [arbitrumOne.id]: ArbitrumOne,
   [base.id]: Base,
-  [corn.id]: Corn,
   [plume.id]: Plume,
 };
 

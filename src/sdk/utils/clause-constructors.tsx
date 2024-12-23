@@ -1,7 +1,7 @@
-import { BaseQueryFilter, BaseSortingFilter } from "../types";
+import type { BaseQueryFilter, BaseSortingFilter } from "../types";
 
 export const constructBaseQueryFilterClauses = (
-  filters: Array<BaseQueryFilter> | undefined
+  filters: Array<BaseQueryFilter> | undefined,
 ): string | undefined => {
   if (!filters) {
     return undefined;
@@ -31,7 +31,7 @@ export const constructBaseQueryFilterClauses = (
 };
 
 export const constructBaseSortingFilterClauses = (
-  sorting: Array<BaseSortingFilter> | undefined
+  sorting: Array<BaseSortingFilter> | undefined,
 ): string | undefined => {
   if (!sorting) {
     return undefined;

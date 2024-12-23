@@ -1,12 +1,13 @@
-import { type TypedRoycoClient } from "@/sdk/client";
+import type { TypedRoycoClient } from "@/sdk/client";
+import type { UseQueryOptions } from "@tanstack/react-query";
 
-import { getSupportedToken } from "../constants";
+import { getSupportedToken } from "@/sdk/constants";
 
 export const getHighestOffersRecipeQueryOptions = (
   client: TypedRoycoClient,
   chain_id: number,
-  market_id: string
-) => ({
+  market_id: string,
+)  => ({
   queryKey: ["highest-offers-recipe", chain_id, market_id],
   queryFn: async () => {
     const result = await client.rpc("get_highest_offers_recipe", {
@@ -30,7 +31,7 @@ export const getHighestOffersRecipeQueryOptions = (
               ...token_info,
               amount,
             };
-          }
+          },
         );
 
         const ratio = row.quantity_remaining / row.quantity;
@@ -60,11 +61,10 @@ export const getHighestOffersRecipeQueryOptions = (
 
     return null;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   // refetchInterval: 1000 * 60 * 1, // 1 min
   // refetchInterval: 1000 * 10 * 1, // 10 seconds
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

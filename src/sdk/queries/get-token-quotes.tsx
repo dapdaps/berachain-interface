@@ -1,5 +1,7 @@
-import { type TypedRoycoClient } from "@/sdk/client";
-import { getSupportedToken } from "../constants";
+import type { TypedRoycoClient } from "@/sdk/client";
+import type { UseQueryOptions } from "@tanstack/react-query";
+
+import { getSupportedToken } from "@/sdk/constants";
 
 export type TypedTokenQuote = {
   token_id: string;
@@ -16,15 +18,15 @@ export const getTokenQuotesQueryOptions = (
     price?: string;
     fdv?: string;
     total_supply?: string;
-  }>
-) => ({
+  }>,
+)  => ({
   queryKey: [
     "tokens-quote",
     token_ids.map((id) => `${id}`).join(":"),
     custom_token_data
       ?.map(
         (token) =>
-          `${token.token_id}:${token.price}:${token.fdv}:${token.total_supply}`
+          `${token.token_id}:${token.price}:${token.fdv}:${token.total_supply}`,
       )
       .join(":"),
   ],
@@ -40,7 +42,7 @@ export const getTokenQuotesQueryOptions = (
       const new_rows = token_ids.map((token_id) => {
         const token_data = getSupportedToken(token_id);
         let quote_data = rows.find(
-          (r) => r.token_id.toLowerCase() === token_id
+          (r) => r.token_id.toLowerCase() === token_id,
         );
 
         if (!quote_data) {
@@ -63,9 +65,8 @@ export const getTokenQuotesQueryOptions = (
 
     return null;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

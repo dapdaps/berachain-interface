@@ -1,7 +1,7 @@
+import type { UseQueryOptions } from "@tanstack/react-query";
+
 import { BigNumber, ethers } from "ethers";
-import { getSupportedToken } from "../constants";
-import { TransactionOptionsType } from "../types";
-import { createHash } from "crypto";
+import { getSupportedToken } from "@/sdk/constants";
 
 export type TransactionSimulationWriteContractOptionsElementType = {
   contractId: string;
@@ -22,7 +22,7 @@ export const getTransactionSimulationQueryOptions = ({
   writeContractOptions: TransactionSimulationWriteContractOptionsElementType[];
   simulationUrl: string;
   account: string;
-}) => ({
+})  => ({
   queryKey: ["simulate", JSON.stringify(writeContractOptions)],
   queryFn: async () => {
     if (!writeContractOptions || !account || !chainId) {
@@ -69,32 +69,30 @@ export const getTransactionSimulationQueryOptions = ({
     }>;
 
     const asset_changes = data
-      .map((d) => {
-        if (!!d.asset_changes) {
-          return d.asset_changes;
-        }
-      })
-      .filter((d) => !!d)
+      .map((d) => d?.asset_changes)
+      .filter((d): d is NonNullable<typeof d> => !!d)
       .flat();
 
-    const tokens_out = asset_changes.filter(
-      (d) =>
-        !!d.from &&
+    const tokens_out = asset_changes.filter((d) => {
+      if (!d?.from || !d?.to) return false;
+      return (
         d.from.toLowerCase() === account?.toLowerCase() &&
-        !!d.to &&
         d.to.toLowerCase() !== account?.toLowerCase()
-    );
+      );
+    });
 
-    const tokens_in = asset_changes.filter(
-      (d) =>
-        !!d.to &&
+    const tokens_in = asset_changes.filter((d) => {
+      if (!d?.from || !d?.to) return false;
+      return (
         d.to.toLowerCase() === account?.toLowerCase() &&
-        !!d.from &&
         d.from.toLowerCase() !== account?.toLowerCase()
-    );
+      );
+    });
 
     const tokens_in_data = tokens_in.reduce(
       (acc: { [key: string]: any }, d) => {
+        if (!d?.token_info?.contract_address) return acc;
+
         const token_id = `${chainId}-${d.token_info.contract_address.toLowerCase()}`;
         const existingToken = acc[token_id];
 
@@ -110,7 +108,7 @@ export const getTransactionSimulationQueryOptions = ({
           existingToken.raw_amount = newRawAmount;
           existingToken.token_amount = ethers.utils.formatUnits(
             newRawAmount,
-            token_data.decimals
+            token_data.decimals,
           );
           existingToken.token_amount_usd += d.dollar_value ?? 0;
         } else {
@@ -120,7 +118,7 @@ export const getTransactionSimulationQueryOptions = ({
             raw_amount: currentRawAmount.toString(),
             token_amount: ethers.utils.formatUnits(
               currentRawAmount,
-              token_data.decimals
+              token_data.decimals,
             ),
             token_amount_usd: d.dollar_value ?? 0,
             type: "in",
@@ -129,11 +127,13 @@ export const getTransactionSimulationQueryOptions = ({
 
         return acc;
       },
-      {}
+      {},
     );
 
     const tokens_out_data = tokens_out.reduce(
       (acc: { [key: string]: any }, d) => {
+        if (!d?.token_info?.contract_address) return acc;
+
         const token_id = `${chainId}-${d.token_info.contract_address.toLowerCase()}`;
         const existingToken = acc[token_id];
 
@@ -149,7 +149,7 @@ export const getTransactionSimulationQueryOptions = ({
           existingToken.raw_amount = newRawAmount;
           existingToken.token_amount = ethers.utils.formatUnits(
             newRawAmount,
-            token_data.decimals
+            token_data.decimals,
           );
           existingToken.token_amount_usd += d.dollar_value ?? 0;
         } else {
@@ -159,7 +159,7 @@ export const getTransactionSimulationQueryOptions = ({
             raw_amount: currentRawAmount.toString(),
             token_amount: ethers.utils.formatUnits(
               currentRawAmount,
-              token_data.decimals
+              token_data.decimals,
             ),
             token_amount_usd: d.dollar_value ?? 0,
             type: "out",
@@ -168,7 +168,7 @@ export const getTransactionSimulationQueryOptions = ({
 
         return acc;
       },
-      {}
+      {},
     );
 
     const combined_token_data = [

@@ -1,14 +1,18 @@
-import { type Address } from "viem";
+import type { Address } from "viem";
+import type { TypedRpcApiKeys } from "@/sdk/client";
+import type { UseQueryOptions } from "@tanstack/react-query";
+
 import { createPublicClient, http, erc20Abi } from "viem";
 import { getChain } from "@/sdk/utils";
-import { RPC_API_KEYS } from "@/components/constants";
 
 export const getAccountAllowance = async ({
+  RPC_API_KEYS,
   chain_id,
   account,
   spender,
   tokens,
 }: {
+  RPC_API_KEYS: TypedRpcApiKeys;
   chain_id: number;
   account: Address;
   spender: Address;
@@ -37,10 +41,11 @@ export const getAccountAllowance = async ({
 };
 
 export const getAccountAllowanceQueryOptions = (
+  RPC_API_KEYS: TypedRpcApiKeys,
   chain_id: number,
   account: Address,
   spender: Address,
-  tokens: Address[]
+  tokens: Address[],
 ) => ({
   queryKey: [
     "token-allowance",
@@ -50,6 +55,7 @@ export const getAccountAllowanceQueryOptions = (
   ],
   queryFn: async () => {
     const result = await getAccountAllowance({
+      RPC_API_KEYS,
       chain_id,
       account,
       spender,
@@ -58,9 +64,8 @@ export const getAccountAllowanceQueryOptions = (
 
     return result;
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });

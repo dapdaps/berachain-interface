@@ -1,13 +1,13 @@
 import { type TypedRoycoClient } from "@/sdk/client";
-import { getSupportedChain } from "../utils";
-import { CustomTokenData } from "../types";
+import { getSupportedChain } from "@/sdk/utils";
+import type { CustomTokenData } from "@/sdk/types";
+import type { UseQueryOptions } from "@tanstack/react-query";
 
 export const getEnrichedRoycoStatsQueryOptions = (
   client: TypedRoycoClient,
   custom_token_data?: CustomTokenData,
-  testnet: boolean = false
 ) => ({
-  queryKey: ["get-enriched-royco-stats", `testnet=${testnet}`],
+  queryKey: ["get-enriched-royco-stats"],
   queryFn: async () => {
     const result = await client.rpc("get_enriched_royco_stats", {
       custom_token_data,
@@ -27,17 +27,13 @@ export const getEnrichedRoycoStatsQueryOptions = (
         if (item.chain_id !== null) {
           const chain = getSupportedChain(item.chain_id);
 
-          if (testnet === true) {
-            total_volume += item.total_volume ?? 0;
-            total_tvl += item.total_tvl ?? 0;
-            total_incentives += item.total_incentives ?? 0;
-          } else {
-            if (chain?.testnet !== true) {
-              total_volume += item.total_volume ?? 0;
-              total_tvl += item.total_tvl ?? 0;
-              total_incentives += item.total_incentives ?? 0;
-            }
+          if (chain?.testnet === true) {
+            continue;
           }
+
+          total_volume += item.total_volume ?? 0;
+          total_tvl += item.total_tvl ?? 0;
+          total_incentives += item.total_incentives ?? 0;
         }
       }
     }
@@ -48,10 +44,9 @@ export const getEnrichedRoycoStatsQueryOptions = (
       total_incentives,
     };
   },
-  keepPreviousData: true,
+
   placeholderData: (previousData: any) => previousData,
   staleTime: 1000 * 60 * 1, // 1 min
   refetchInterval: 1000 * 60 * 1, // 1 min
   refetchOnWindowFocus: false,
-  refreshInBackground: true,
 });
