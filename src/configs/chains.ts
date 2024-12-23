@@ -1,5 +1,5 @@
 import { Chain } from 'viem';
-import { mainnet, berachainTestnetbArtio, arbitrum, } from '@reown/appkit/networks';
+import { mainnet, berachainTestnetbArtio, arbitrum, sepolia } from '@reown/appkit/networks';
 
 const chains: Record<number, Chain | any> = {
   [berachainTestnetbArtio.id]: {
@@ -9,15 +9,20 @@ const chains: Record<number, Chain | any> = {
     },
     isWalletSupport: true,
   },
+  [sepolia.id]: {
+    ...sepolia,
+    isWalletSupport: true,
+  },
   [mainnet.id]: {
     ...mainnet,
-    isWalletSupport: false,
+    isWalletSupport: true,
   },
 };
 
 export const icons: Record<number, string> = {
   80084: '/images/berachain.png',
   1: '/images/eth.svg',
+  11_155_111: '/images/eth.svg',
   // 1101: '/images/berachain.png'
 };
 
