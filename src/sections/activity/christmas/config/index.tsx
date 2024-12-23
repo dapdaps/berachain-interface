@@ -542,15 +542,15 @@ export const EcosystemQuests: any = {
     banner: "/images/activity/christmas/quest/banners/Tierra banner.png",
     description: "where Bailoo helps you make DeFi simple, fun, and social.",
     missions: {
-      learn: {
+      view: {
         text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       },
-      view: {
+      view2: {
         text: (amount: number) => `Go to X & Follow us.`,
         action: "Go"
       },
-      view2: {
+      view3: {
         text: (amount: number) => `Go to Discord.`,
         action: "Go"
       }
@@ -568,11 +568,11 @@ export const EcosystemQuests: any = {
     banner: "/images/activity/christmas/quest/banners/Bearcage banner.png",
     description: "The All-in-One Meme Factory on Berachain",
     missions: {
-      learn: {
+      view: {
         text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Learn"
       },
-      view: {
+      view2: {
         text: (amount: number) => `Try out TG bot and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
         action: "Go"
       }
