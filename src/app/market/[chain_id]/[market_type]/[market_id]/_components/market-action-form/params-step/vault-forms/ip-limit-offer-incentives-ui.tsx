@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import cn from 'clsx';
 import { FormInputLabel } from "@/components/composables";
 import { SlideUpWrapper } from "@/components/animation";
@@ -14,8 +14,13 @@ import { AlertIndicator, TokenDisplayer } from "@/components/common";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { MarketActionFormSchema } from "../../market-action-form-schema";
-import { parseTokenAmountToRawAmount } from "@/sdk/utils";
+import {
+  parseRawAmountToTokenAmount,
+  parseTokenAmountToRawAmount,
+} from "royco/utils";
 import { MarketVaultIncentiveAction, useMarketManager } from "@/stores";
+import { useActiveMarket } from "../../../hooks";
+import { BigNumber } from "ethers";
 
 export const IPLimitOfferIncentivesUI = React.forwardRef<
   HTMLDivElement,
@@ -24,6 +29,8 @@ export const IPLimitOfferIncentivesUI = React.forwardRef<
   }
 >(({ className, marketActionForm, ...props }, ref) => {
   const { vaultIncentiveActionType } = useMarketManager();
+
+  const { currentMarketData } = useActiveMarket();
 
   return (
     <div ref={ref} className={cn("", className)} {...props}>
@@ -40,6 +47,70 @@ export const IPLimitOfferIncentivesUI = React.forwardRef<
         />
 
         <IncentiveTokenSelector
+          {...(vaultIncentiveActionType === MarketVaultIncentiveAction.add.id
+            ? {
+                not_token_ids:
+                  (currentMarketData?.base_incentive_ids ?? []).filter(
+                    (base_incentive_id, index) => {
+                      const base_start_timestamp = BigNumber.from(
+                        currentMarketData?.base_start_timestamps?.[index] ?? "0"
+                      );
+
+                      const base_end_timestamp = BigNumber.from(
+                        currentMarketData?.base_end_timestamps?.[index] ?? "0"
+                      );
+
+                      const current_timestamp = BigNumber.from(
+                        Math.floor(new Date().getTime() / 1000).toString()
+                      );
+
+                      return (
+                        !base_start_timestamp.eq(0) &&
+                        current_timestamp.lt(base_end_timestamp)
+                      );
+                    }
+                  ) ?? [],
+              }
+            : vaultIncentiveActionType === MarketVaultIncentiveAction.extend.id
+              ? {
+                  token_ids: (
+                    currentMarketData?.base_incentive_ids ?? []
+                  ).filter((base_incentive_id, index) => {
+                    const base_incentive_amount = BigNumber.from(
+                      currentMarketData?.base_incentive_amounts?.[index] ?? "0"
+                    );
+
+                    const base_start_timestamp = BigNumber.from(
+                      currentMarketData?.base_start_timestamps?.[index] ?? "0"
+                    );
+
+                    const base_end_timestamp = BigNumber.from(
+                      currentMarketData?.base_end_timestamps?.[index] ?? "0"
+                    );
+
+                    const current_timestamp = BigNumber.from(
+                      Math.floor(new Date().getTime() / 1000).toString()
+                    );
+
+                    return current_timestamp.lt(base_end_timestamp);
+                  }),
+                }
+              : vaultIncentiveActionType ===
+                  MarketVaultIncentiveAction.refund.id
+                ? {
+                    token_ids: (
+                      currentMarketData?.base_incentive_ids ?? []
+                    ).filter((base_incentive_id, index) => {
+                      const current_timestamp = BigNumber.from(
+                        Math.floor(new Date().getTime() / 1000).toString()
+                      );
+                      const start_timestamp = BigNumber.from(
+                        currentMarketData?.base_start_timestamps?.[index] ?? "0"
+                      );
+                      return current_timestamp.lt(start_timestamp);
+                    }),
+                  }
+                : {})}
           selected_token_ids={marketActionForm
             .watch("incentive_tokens")
             .map((token) => token.id)}
@@ -54,7 +125,11 @@ export const IPLimitOfferIncentivesUI = React.forwardRef<
             } else {
               marketActionForm.setValue("incentive_tokens", [
                 ...incentiveTokens,
-                token,
+                {
+                  ...token,
+                  start_timestamp: new Date(),
+                  end_timestamp: new Date(),
+                },
               ]);
             }
           }}
@@ -85,7 +160,31 @@ export const IPLimitOfferIncentivesUI = React.forwardRef<
                    */}
                   <div className="flex w-full flex-row items-center gap-1">
                     <InputAmountSelector
-                      currentValue={token.amount ?? ""}
+                      disabled={
+                        vaultIncentiveActionType ===
+                        MarketVaultIncentiveAction.refund.id
+                      }
+                      currentValue={
+                        vaultIncentiveActionType ===
+                        MarketVaultIncentiveAction.refund.id
+                          ? (() => {
+                              const tokenIndex =
+                                currentMarketData?.base_incentive_ids?.findIndex(
+                                  (id) => id === token.id
+                                );
+                              if (tokenIndex === undefined || tokenIndex === -1)
+                                return "0";
+                              return (
+                                parseRawAmountToTokenAmount(
+                                  currentMarketData?.base_incentive_amounts?.[
+                                    tokenIndex
+                                  ] ?? "0",
+                                  token.decimals
+                                ).toString() ?? "0"
+                              );
+                            })()
+                          : (token.amount ?? "")
+                      }
                       setCurrentValue={(value) => {
                         /**
                          * Set the amount of the token
@@ -164,11 +263,30 @@ export const IPLimitOfferIncentivesUI = React.forwardRef<
                             "incentive_tokens",
                             marketActionForm
                               .watch("incentive_tokens")
-                              .map((t) =>
-                                t.id === token.id
-                                  ? { ...t, start_timestamp: date }
-                                  : t
-                              )
+                              .map((t) => {
+                                if (t.id === token.id) {
+                                  const startTimestamp =
+                                    date?.getTime() ??
+                                    t.start_timestamp?.getTime() ??
+                                    new Date().getTime();
+
+                                  const endTimestamp =
+                                    t.end_timestamp?.getTime() ??
+                                    new Date().getTime();
+
+                                  if (startTimestamp > endTimestamp) {
+                                    return {
+                                      ...t,
+                                      start_timestamp: date,
+                                      end_timestamp: date,
+                                    };
+                                  }
+
+                                  return { ...t, start_timestamp: date };
+                                } else {
+                                  return t;
+                                }
+                              })
                           );
                         }}
                       />
@@ -198,11 +316,29 @@ export const IPLimitOfferIncentivesUI = React.forwardRef<
                             "incentive_tokens",
                             marketActionForm
                               .watch("incentive_tokens")
-                              .map((t) =>
-                                t.id === token.id
-                                  ? { ...t, end_timestamp: date }
-                                  : t
-                              )
+                              .map((t) => {
+                                if (t.id === token.id) {
+                                  const startTimestamp =
+                                    t.start_timestamp?.getTime() ??
+                                    new Date().getTime();
+                                  const endTimestamp =
+                                    date?.getTime() ??
+                                    t.end_timestamp?.getTime() ??
+                                    new Date().getTime();
+
+                                  if (startTimestamp > endTimestamp) {
+                                    return {
+                                      ...t,
+                                      start_timestamp: date,
+                                      end_timestamp: date,
+                                    };
+                                  }
+
+                                  return { ...t, end_timestamp: date };
+                                } else {
+                                  return t;
+                                }
+                              })
                           );
                         }}
                       />

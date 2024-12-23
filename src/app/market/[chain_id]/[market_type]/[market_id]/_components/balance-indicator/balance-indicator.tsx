@@ -17,8 +17,7 @@ import {
   PrimaryLabel,
   TertiaryLabel,
 } from "../composables";
-import { MarketType, MarketUserType } from "@/stores/market-manager-props";
-import { useMarketManager } from "@/stores/use-market-manager";
+import { MarketType, MarketUserType, useMarketManager } from "@/stores";
 import { SpringNumber } from "@/components/composables";
 import { AlertIndicator, InfoCard, TokenDisplayer } from "@/components/common";
 
@@ -145,7 +144,7 @@ export const BalanceIndicator = React.forwardRef<
             numberFormatOptions={{
               style: "currency",
               currency: "USD",
-              notation: "compact",
+              notation: "standard",
               useGrouping: true,
               minimumFractionDigits: 2,
               maximumFractionDigits: 8,
@@ -196,7 +195,7 @@ export const BalanceIndicator = React.forwardRef<
                   }
                   numberFormatOptions={{
                     style: "decimal",
-                    notation: "compact",
+                    notation: "standard",
                     useGrouping: true,
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 8,
@@ -265,7 +264,7 @@ export const BalanceIndicator = React.forwardRef<
                         currentValue={incentive.token_amount}
                         numberFormatOptions={{
                           style: "decimal",
-                          notation: "compact",
+                          notation: "standard",
                           useGrouping: true,
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 8,

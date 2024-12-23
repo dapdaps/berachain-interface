@@ -8,21 +8,25 @@ import {
   TertiaryLabel,
 } from "../composables";
 import { useActiveMarket } from "../hooks";
-import { useMarketManager } from "@/stores/use-market-manager";
+import { useMarketManager } from "@/stores";
 import { AlertIndicator, InfoCard, TokenDisplayer } from "@/components/common";
 import { SpringNumber } from "@/components/composables";
 import { format } from "date-fns";
-import { RoycoMarketType } from "@/sdk/market";
+import { RoycoMarketType } from "royco/market";
+import { BigNumber } from "ethers";
+import { SupportedToken } from "royco/constants";
 
 const InfoKeyElementClone = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
     token_data: any;
+    symbolClassName?: string;
   }
->(({ className, token_data, ...props }, ref) => {
+>(({ className, token_data, symbolClassName, ...props }, ref) => {
   return (
     <TokenDisplayer
       className={cn("", className)}
+      symbolClassName={cn("", symbolClassName)}
       tokens={[token_data]}
       size={4}
       symbols={true}
@@ -53,49 +57,92 @@ const InfoValueElementClone = React.forwardRef<
     return (
       <Fragment>
         <SecondaryLabel className={cn("text-black", className)}>
-          {token_data.annual_change_ratio === Math.pow(10, 18)
-            ? `N/D`
-            : Intl.NumberFormat("en-US", {
-                style: "percent",
-                notation: "compact",
-                useGrouping: true,
-                minimumFractionDigits: 0, // Ensures at least 2 decimal places
-                maximumFractionDigits: 8, // Limits to exactly 2 decimal places
-              }).format(token_data.annual_change_ratio)}{" "}
+          {Intl.NumberFormat("en-US", {
+            style: "percent",
+            notation: "standard",
+            useGrouping: true,
+            minimumFractionDigits: 0, // Ensures at least 2 decimal places
+            maximumFractionDigits:
+              token_data.annual_change_ratio > 0.0001 ? 2 : 8, // Limits to exactly 2 decimal places
+          }).format(token_data.annual_change_ratio)}{" "}
         </SecondaryLabel>
 
-        <TertiaryLabel className={cn("", className)}>
-          {Intl.NumberFormat("en-US", {
-            notation: "compact",
-            useGrouping: true,
-            minimumFractionDigits: 0, // Ensures at least 2 decimal places
-            maximumFractionDigits: 8, // Limits to exactly 2 decimal places
-          }).format(token_data.per_input_token)}{" "}
-          {token_data.symbol} per{" "}
-          {currentMarketData.input_token_data.symbol.toUpperCase()}
-        </TertiaryLabel>
+        {!!token_data.per_input_token && (
+          <TertiaryLabel className={cn("", className)}>
+            {(() => {
+              const value = token_data.per_input_token;
 
-        <TertiaryLabel className={cn("", className)}>
-          @{" "}
-          {Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            notation: "compact",
-            useGrouping: true,
-            minimumFractionDigits: 0, // Ensures at least 2 decimal places
-            maximumFractionDigits: 8, // Limits to exactly 2 decimal places
-          }).format(token_data.fdv)}{" "}
-          FDV
-        </TertiaryLabel>
+              const decimals =
+                value < 1 ? Math.ceil(Math.abs(Math.log10(value))) : 0;
+
+              if (decimals > 1) {
+                const multiplier = Math.pow(10, decimals);
+                return (
+                  <>
+                    {Intl.NumberFormat("en-US", {
+                      notation: "standard",
+                      useGrouping: true,
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    }).format(value * multiplier)}{" "}
+                    {token_data.symbol} per {multiplier}{" "}
+                    {currentMarketData.input_token_data.symbol.toUpperCase()}
+                  </>
+                );
+              }
+
+              return (
+                <>
+                  {Intl.NumberFormat("en-US", {
+                    notation: "standard",
+                    useGrouping: true,
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  }).format(value)}{" "}
+                  {token_data.symbol} per{" "}
+                  {currentMarketData.input_token_data.symbol.toUpperCase()}
+                </>
+              );
+            })()}
+          </TertiaryLabel>
+        )}
+
+        {!!token_data.fdv && (
+          <TertiaryLabel className={cn("", className)}>
+            @{" "}
+            {Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              notation: "standard",
+              useGrouping: true,
+              minimumFractionDigits: 0, // Ensures at least 2 decimal places
+              maximumFractionDigits: 8, // Limits to exactly 2 decimal places
+            }).format(token_data.fdv)}{" "}
+            FDV
+          </TertiaryLabel>
+        )}
       </Fragment>
     );
   }
 );
 
+type DetailAPRData = {
+  id: string;
+  name: string;
+  description: string;
+  value: number;
+  token_data?: SupportedToken;
+};
+
 export const IncentiveInfo = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & {
+    detailAPRData?: {
+      data: DetailAPRData[];
+      netAPR: number;
+    };
+  }
+>(({ className, detailAPRData, ...props }, ref) => {
   const {
     marketMetadata,
     currentMarketData,
@@ -111,23 +158,17 @@ export const IncentiveInfo = React.forwardRef<
       ? !!currentHighestOffers && currentHighestOffers.ip_offers.length > 0
         ? currentHighestOffers.ip_offers[0].tokens_data
         : []
-      : currentMarketData?.incentive_tokens_data;
+      : currentMarketData?.incentive_tokens_data.filter(
+          (incentive_token_data) => {
+            return BigNumber.from(incentive_token_data.raw_amount ?? "0").gt(0);
+          }
+        );
 
-  const previousIncentives =
-    marketMetadata.market_type === RoycoMarketType.recipe.id
-      ? !!previousHighestOffers && previousHighestOffers.ip_offers.length > 0
-        ? previousHighestOffers.ip_offers[0].tokens_data
-        : []
-      : previousMarketData?.incentive_tokens_data;
+  const currentNativeIncentives =
+    currentMarketData.native_yield?.native_annual_change_ratios;
 
-  const currentNetAPR = currentIncentives?.reduce(
-    (acc, curr) => acc + (curr.annual_change_ratio || 0),
-    0
-  );
-  const previousNetAPR = previousIncentives?.reduce(
-    (acc, curr) => acc + (curr.annual_change_ratio || 0),
-    0
-  );
+  const currentNetAPR = currentMarketData?.annual_change_ratio ?? 0;
+  const previousNetAPR = previousMarketData?.annual_change_ratio ?? 0;
 
   if (!!currentMarketData && !!marketMetadata) {
     return (
@@ -140,7 +181,7 @@ export const IncentiveInfo = React.forwardRef<
         )}
         {...props}
       >
-        <TertiaryLabel>CURRENT INCENTIVE RATE</TertiaryLabel>
+        <TertiaryLabel>Incentives Offered via Royco</TertiaryLabel>
 
         {!currentIncentives ||
           (currentIncentives.length === 0 && (
@@ -149,7 +190,7 @@ export const IncentiveInfo = React.forwardRef<
               className="pb-3 pt-7"
               contentClassName={cn("text-sm")}
             >
-              No incentives offered
+              No add. incentives offered
             </AlertIndicator>
           ))}
 
@@ -188,6 +229,7 @@ export const IncentiveInfo = React.forwardRef<
                      */}
                     <InfoKeyElementClone
                       className="mb-1"
+                      symbolClassName="text-black font-normal"
                       token_data={token_data}
                     />
 
@@ -216,9 +258,154 @@ export const IncentiveInfo = React.forwardRef<
           </InfoCard>
         )}
 
+        {currentNativeIncentives && currentNativeIncentives.length !== 0 && (
+          <InfoCard
+            className={cn(
+              "flex h-fit max-h-32 flex-col gap-3 overflow-y-scroll py-2 pt-0",
+              BASE_MARGIN_TOP.MD
+            )}
+          >
+            <TertiaryLabel className={cn("", className)}>
+              Underlying Incentives
+            </TertiaryLabel>
+
+            {currentNativeIncentives.map((token_data, token_data_index) => {
+              const BASE_KEY = `market:native-incentive-info:${incentiveType}:${token_data.id}`;
+
+              return (
+                <InfoCard.Row key={BASE_KEY} className={INFO_ROW_CLASSES}>
+                  <InfoCard.Row.Key className="relative h-fit w-fit">
+                    {/* <AnimatePresence mode="popLayout">
+                      <FallMotion
+                        customKey={`${BASE_KEY}:${token_data.id}:token`}
+                        height="1rem"
+                        containerClassName="w-full absolute inset-0"
+                      >
+                        <InfoKeyElementClone token_data={token_data} />
+                      </FallMotion>
+                    </AnimatePresence> */}
+
+                    {/**
+                     * @notice Invisible
+                     */}
+                    <InfoKeyElementClone
+                      className="mb-1"
+                      symbolClassName="text-black font-normal"
+                      token_data={token_data}
+                    />
+
+                    <TertiaryLabel className={cn("", className)}>
+                      {token_data.label}
+                    </TertiaryLabel>
+                  </InfoCard.Row.Key>
+
+                  <InfoCard.Row.Value className="relative flex h-fit w-fit flex-col items-end gap-0">
+                    {/**
+                     * @notice Invisible
+                     */}
+                    <InfoValueElementClone
+                      className=""
+                      token_data={token_data}
+                      currentMarketData={currentMarketData}
+                      previousMarketData={previousMarketData}
+                      incentiveType={incentiveType}
+                    />
+                  </InfoCard.Row.Value>
+                </InfoCard.Row>
+              );
+            })}
+          </InfoCard>
+        )}
+
+        {/* {detailAPRData && detailAPRData.data.length > 0 && (
+          <InfoCard
+            className={cn("flex h-fit flex-col gap-3 overflow-y-scroll py-2")}
+          >
+            <TertiaryLabel>Underlying Incentives</TertiaryLabel>
+
+            {detailAPRData.data.map((item) => {
+              return (
+                <InfoCard.Row
+                  key={item.id}
+                  className={cn(INFO_ROW_CLASSES, "grid grid-cols-2")}
+                >
+                  <InfoCard.Row.Key className="relative h-fit w-fit">
+                    <div className="flex flex-row items-center">
+                      <TokenDisplayer
+                        tokens={[item.token_data as any]}
+                        size={4}
+                        symbols={false}
+                      />
+                      <SecondaryLabel className={cn("text-black", className)}>
+                        <span className="font-normal">{item.name}</span>
+                      </SecondaryLabel>
+                    </div>
+                    <TertiaryLabel className="ml-5">
+                      {item.description}
+                    </TertiaryLabel>
+                  </InfoCard.Row.Key>
+
+                  <InfoCard.Row.Value className="relative flex h-fit w-full flex-col items-end gap-0">
+                    <SecondaryLabel className={cn("text-black", className)}>
+                      {item.value === Math.pow(10, 18)
+                        ? `N/D`
+                        : Intl.NumberFormat("en-US", {
+                            style: "percent",
+                            notation: "standard",
+                            useGrouping: true,
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: item.value > 0.0001 ? 2 : 8,
+                          }).format(item.value)}{" "}
+                    </SecondaryLabel>
+                  </InfoCard.Row.Value>
+                </InfoCard.Row>
+              );
+            })}
+          </InfoCard>
+        )} */}
+
+        {!!currentMarketData.native_annual_change_ratio && (
+          <div
+            className={cn(
+              "flex w-full flex-row items-center justify-between",
+              BASE_MARGIN_TOP.SM
+            )}
+          >
+            <SecondaryLabel className="text-black">Native Yield</SecondaryLabel>
+
+            <SecondaryLabel className="text-black">
+              {(currentMarketData.native_annual_change_ratio ?? 0) >=
+              Math.pow(10, 18) ? (
+                `0`
+              ) : (
+                <SpringNumber
+                  previousValue={
+                    previousMarketData?.native_annual_change_ratio ?? 0
+                  }
+                  currentValue={
+                    currentMarketData.native_annual_change_ratio ?? 0
+                  }
+                  numberFormatOptions={{
+                    style: "percent",
+                    notation: "standard",
+                    useGrouping: true,
+                    minimumFractionDigits: 0, // Ensures at least 2 decimal places
+                    maximumFractionDigits:
+                      (currentMarketData.native_annual_change_ratio ?? 0) >
+                      0.0001
+                        ? 2
+                        : 8,
+                  }}
+                  defaultColor="text-black"
+                />
+              )}
+            </SecondaryLabel>
+          </div>
+        )}
+
         <div
           className={cn(
-            "flex w-full flex-row items-center justify-between",
+            " flex w-full flex-row items-center justify-between border-t border-divider pt-4",
             BASE_MARGIN_TOP.SM
           )}
         >
@@ -233,10 +420,10 @@ export const IncentiveInfo = React.forwardRef<
                 currentValue={currentNetAPR ?? 0}
                 numberFormatOptions={{
                   style: "percent",
-                  notation: "compact",
+                  notation: "standard",
                   useGrouping: true,
                   minimumFractionDigits: 0, // Ensures at least 2 decimal places
-                  maximumFractionDigits: 8, // Limits to exactly 2 decimal places
+                  maximumFractionDigits: (currentNetAPR ?? 0) > 0.0001 ? 2 : 8,
                 }}
                 defaultColor="text-success"
               />

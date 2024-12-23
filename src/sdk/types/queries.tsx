@@ -18,3 +18,7 @@ export type CustomTokenDataElementType = {
 };
 
 export type CustomTokenData = CustomTokenDataElementType[];
+
+export type RPC_API_KEYS_OBJECT_TYPE = {
+  [key: number]: string;
+};

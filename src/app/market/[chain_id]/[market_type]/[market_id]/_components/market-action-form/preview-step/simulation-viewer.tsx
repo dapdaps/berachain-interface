@@ -15,7 +15,7 @@ import { useAccount } from "wagmi";
 import { useActiveMarket } from "../../hooks";
 import { Address } from "abitype";
 import { AlertIndicator, TokenDisplayer } from "@/components/common";
-import { LoadingSpinner } from "@/components/composables";
+import Loading from "@/components/loading";
 import { MarketActionFormSchema } from "../market-action-form-schema";
 import { SlideUpWrapper } from "@/components/animation";
 
@@ -59,7 +59,7 @@ export const SimulationViewer = React.forwardRef<
         <div className="flex h-fit w-full flex-row gap-2">
           {isLoading && (
             <div className="flex h-20 w-full items-center justify-center">
-              <LoadingSpinner className="h-5 w-5" />
+              <Loading size={20} />
             </div>
           )}
 
@@ -84,7 +84,7 @@ export const SimulationViewer = React.forwardRef<
                       "en-US",
                       {
                         style: "decimal",
-                        notation: "compact",
+                        notation: "standard",
                         useGrouping: true,
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 8,
@@ -98,7 +98,7 @@ export const SimulationViewer = React.forwardRef<
                     {Intl.NumberFormat("en-US", {
                       style: "currency",
                       currency: "USD",
-                      notation: "compact",
+                      notation: "standard",
                       useGrouping: true,
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 8,

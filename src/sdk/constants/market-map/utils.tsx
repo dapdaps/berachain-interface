@@ -1,17 +1,28 @@
-import { MarketMap, RoycoMarketMapDataType } from "./market-map";
+import type { Account, Chain, Client, Transport } from "viem";
+import { createPublicClient } from "viem";
+import type { RoycoClient } from "@/sdk/client";
+import type { SupportedToken } from "@/sdk/constants";
 
-export const isVerifiedMarket = (
-  marketId: string | undefined | null
-): boolean => {
-  if (!marketId) return false;
-
-  return !!MarketMap[marketId];
+export type SupportedMarket = {
+  id: string;
+  name: string;
+  description: string;
+  is_verified: boolean;
+  native_yield?: ({
+    roycoClient,
+    chainClient,
+  }: {
+    roycoClient: RoycoClient;
+    chainClient: ReturnType<typeof createPublicClient>;
+  }) => Promise<{
+    native_annual_change_ratio: number;
+    native_annual_change_ratios: Array<
+      SupportedToken & {
+        label: string;
+        annual_change_ratio: number;
+      }
+    >;
+  }>;
 };
 
-export const getVerifiedMarket = (
-  marketId: string | undefined | null
-): RoycoMarketMapDataType | undefined => {
-  if (!marketId) return undefined;
-
-  return MarketMap[marketId];
-};
+export const defineMarket = (market: SupportedMarket): SupportedMarket => market;

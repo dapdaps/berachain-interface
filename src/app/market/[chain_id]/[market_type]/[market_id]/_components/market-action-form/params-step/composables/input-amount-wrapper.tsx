@@ -1,10 +1,12 @@
+"use client";
+
 import { AnimatePresence } from "framer-motion";
 import {
   isSolidityAddressValid,
   parseRawAmount,
   parseRawAmountToTokenAmount,
   parseTokenAmountToRawAmount,
-} from "@/sdk/utils";
+} from "royco/utils";
 import { UseFormReturn } from "react-hook-form";
 import { SpringNumber, LoadingSpinner } from "@/components/composables";
 import { FormInputLabel } from "../../../composables";
@@ -23,9 +25,9 @@ import { motion } from "framer-motion";
 import { TokenDisplayer } from "@/components/common";
 import React from "react";
 import { TertiaryLabel } from "../../../composables";
-import { RoycoMarketFundingType, RoycoMarketUserType } from "@/sdk/market";
+import { RoycoMarketFundingType, RoycoMarketUserType } from "royco/market";
 import { useAccountBalance, useVaultBalance } from "@/sdk/hooks";
-import { NULL_ADDRESS } from "@/sdk/constants";
+import { NULL_ADDRESS } from "royco/constants";
 import { useAccount } from "wagmi";
 import { BigNumber } from "ethers";
 import { WarningAlert } from "./warning-alert";
@@ -39,7 +41,7 @@ export const InputAmountWrapper = React.forwardRef<
 >(({ className, marketActionForm, delay, ...props }, ref) => {
   const { address } = useAccount();
   const { currentMarketData, marketMetadata } = useActiveMarket();
-  const { offerType, userType, fundingType } = useMarketManager();
+  const { offerType, userType, viewType, fundingType } = useMarketManager();
 
   const { isLoading: isLoadingWallet, data: dataWallet } = useAccountBalance({
     chain_id: marketMetadata.chain_id,
@@ -105,44 +107,49 @@ export const InputAmountWrapper = React.forwardRef<
   return (
     <SlideUpWrapper
       layout="position"
-      layoutId={`motion:market:amount-selector:${userType}`}
+      layoutId={`motion:market:amount-selector:${userType}:${viewType}`}
       delay={delay ?? 0}
     >
       {/**
        * Balance indicator based on the funding type: wallet or vault
        */}
-      <FormInputLabel size="sm" label="Amount">
-        <TertiaryLabel>
-          Balance:{" "}
-          {isLoading ? (
-            <LoadingSpinner className="ml-1 h-4 w-4" />
-          ) : balance ? (
-            <SpringNumber
-              className="ml-1"
-              defaultColor="text-tertiary"
-              previousValue={parseRawAmountToTokenAmount(
-                balance,
-                currentMarketData?.input_token_data.decimals ?? 0
-              )}
-              currentValue={parseRawAmountToTokenAmount(
-                balance,
-                currentMarketData?.input_token_data.decimals ?? 0
-              )}
-              numberFormatOptions={{
-                style: "decimal",
-                notation: "compact",
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 8,
-                useGrouping: true,
-              }}
-            />
-          ) : (
-            0
-          )}
-          <span className="ml-1">
-            {currentMarketData?.input_token_data.symbol.toUpperCase()}
-          </span>
-        </TertiaryLabel>
+      <FormInputLabel
+        size="sm"
+        label={userType === MarketUserType.ip.id ? "Desired Result" : "Amount"}
+      >
+        {userType === MarketUserType.ap.id && (
+          <TertiaryLabel>
+            Balance:{" "}
+            {isLoading ? (
+              <LoadingSpinner className="ml-1 h-4 w-4" />
+            ) : balance ? (
+              <SpringNumber
+                className="ml-1"
+                defaultColor="text-tertiary"
+                previousValue={parseRawAmountToTokenAmount(
+                  balance,
+                  currentMarketData?.input_token_data.decimals ?? 0
+                )}
+                currentValue={parseRawAmountToTokenAmount(
+                  balance,
+                  currentMarketData?.input_token_data.decimals ?? 0
+                )}
+                numberFormatOptions={{
+                  style: "decimal",
+                  notation: "standard",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 8,
+                  useGrouping: true,
+                }}
+              />
+            ) : (
+              0
+            )}
+            <span className="ml-1">
+              {currentMarketData?.input_token_data.symbol.toUpperCase()}
+            </span>
+          </TertiaryLabel>
+        )}
       </FormInputLabel>
 
       {/**
@@ -183,6 +190,10 @@ export const InputAmountWrapper = React.forwardRef<
           //   offerType === MarketOfferType.limit.id
           // )
           //   return null;
+
+          if (userType === MarketUserType.ip.id) {
+            return null;
+          }
 
           return (
             <div
@@ -249,7 +260,7 @@ export const InputAmountWrapper = React.forwardRef<
           <div>
             {userType === MarketUserType.ap.id
               ? Intl.NumberFormat("en-US", {
-                  notation: "compact",
+                  notation: "standard",
                   useGrouping: true,
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 8,
@@ -260,7 +271,7 @@ export const InputAmountWrapper = React.forwardRef<
                   )
                 )
               : Intl.NumberFormat("en-US", {
-                  notation: "compact",
+                  notation: "standard",
                   useGrouping: true,
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 8,
@@ -271,7 +282,7 @@ export const InputAmountWrapper = React.forwardRef<
                   )
                 )}{" "}
             {currentMarketData?.input_token_data.symbol.toUpperCase()} Fillable
-            for Current Rate
+            in Total
           </div>
         </TertiaryLabel>
       ) : null}

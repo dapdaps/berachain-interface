@@ -1,11 +1,13 @@
 "use client";
 
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useMarketManager } from "@/stores/use-market-manager";
 import {
   MarketSteps,
+  MarketType,
   MarketUserType,
   MarketViewType,
+  TypedMarketViewType,
 } from "@/stores/market-manager-props";
 import cn from 'clsx';
 import { MarketActionForm } from "../market-action-form";
@@ -13,18 +15,17 @@ import { useActiveMarket } from "../hooks";
 import { LoadingSpinner } from "@/components/composables";
 import { Switch } from "@/components/ui/switch";
 import { MarketInfo } from "../market-info";
-import { IncentiveInfo } from "../incentive-info";
 import { AlertIndicator } from "@/components/common";
-import { OfferList } from "../offer-list";
 import { SlideUpWrapper } from "@/components/animation";
 import { BASE_PADDING_LEFT, BASE_PADDING_RIGHT } from "../composables";
 import { ChevronLeftIcon } from "lucide-react";
-import { OfferListVisualizer } from "../offer-list-visualizer";
 import { BalanceIndicator } from "../balance-indicator";
 import { motion } from "framer-motion";
 import { StatsTables } from "../stats-tables/stats-tables";
 import { WarningBox } from "@/components/composables";
 import { MAX_SCREEN_WIDTH } from "@/components/constants";
+import { useAccount } from "wagmi";
+import { OfferVisualizer } from "../offer-list-visualizer/offer-visualizer";
 
 export const MarketManager = React.forwardRef<
   HTMLDivElement,
@@ -45,8 +46,42 @@ export const MarketManager = React.forwardRef<
     currentMarketData,
     previousMarketData,
     marketMetadata,
-  } = useActiveMarket()
-  
+  } = useActiveMarket();
+
+  const { address: walletAddress } = useAccount();
+  const [connectWalletAddress, setConnectWalletAddress] = useState<
+    `0x${string}` | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateViewType =
+        (localStorage.getItem(
+          "royco_market_view_type"
+        ) as TypedMarketViewType) || MarketViewType.simple.id;
+      setViewType(updateViewType);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!!currentMarketData && walletAddress !== connectWalletAddress) {
+      setConnectWalletAddress(walletAddress);
+    }
+  }, [walletAddress, currentMarketData]);
+
+  useEffect(() => {
+    if (
+      !!currentMarketData &&
+      !!currentMarketData.owner &&
+      !!connectWalletAddress &&
+      currentMarketData.market_type === MarketType.vault.value &&
+      connectWalletAddress.toLowerCase() ===
+        currentMarketData.owner.toLowerCase()
+    ) {
+      setUserType(MarketUserType.ip.id);
+    }
+  }, [connectWalletAddress]);
+
   if (isLoading) {
     return <LoadingSpinner className="h-5 w-5" />;
   } else if (!currentMarketData) {
@@ -74,7 +109,8 @@ export const MarketManager = React.forwardRef<
                 viewType === MarketViewType.simple.id && "mb-10",
                 viewType === MarketViewType.advanced.id && "mb-10"
               )}
-              text="THIS MARKET MAY LEAD TO LOSS OF FUNDS. IT IS UNVERIFIED."
+              title="THIS MARKET MAY LEAD TO LOSS OF FUNDS. IT IS UNVERIFIED."
+              text="This market may be malicious or not function as expected, it has not yet been verified."
             />
           </SlideUpWrapper>
         )}
@@ -86,9 +122,7 @@ export const MarketManager = React.forwardRef<
           )}
         >
           <div
-            onClick={() =>
-              window.open("/explore", "_self", "noopener noreferrer")
-            }
+            onClick={() => window.open("/", "_self", "noopener noreferrer")}
             className={cn(
               "flex cursor-pointer flex-row items-center gap-0 font-gt text-sm font-light text-secondary",
               "transition-all duration-200 ease-in-out hover:opacity-80"
@@ -96,11 +130,11 @@ export const MarketManager = React.forwardRef<
           >
             <ChevronLeftIcon
               strokeWidth={1.5}
-              className="h-6 w-6 text-secondary"
+              className="-ml-2 h-6 w-6 text-secondary"
             />
 
-            <div className="flex h-4">
-              <span className={cn("leading-5 text-[24px] font-Montserrat font-bold")}>Explore</span>
+            <div className="flex h-4 items-center">
+              <span className={cn("leading-5")}>Explore</span>
             </div>
           </div>
 
@@ -170,11 +204,12 @@ export const MarketManager = React.forwardRef<
           key={`market-manager:${viewType}`}
           className={cn(
             "flex items-center rounded-2xl border border-divider bg-white",
-            "w-full overflow-hidden lg:h-[50rem] md:overflow-y-scroll",
+            "w-full overflow-hidden md:overflow-y-scroll",
             MAX_SCREEN_WIDTH,
             viewType === MarketViewType.advanced.id &&
-              "flex-col lg:h-[50rem] md:flex-row md:divide-x",
-            viewType === MarketViewType.simple.id && "h-fit max-w-lg flex-col",
+              "h-fit flex-col md:h-[70rem] md:flex-row md:divide-x",
+            viewType === MarketViewType.simple.id &&
+              "h-fit max-w-lg flex-col md:min-h-[800px]",
             "flex-0"
           )}
         >
@@ -236,10 +271,6 @@ export const MarketManager = React.forwardRef<
                     )}
                   >
                     <MarketInfo />
-
-                    <IncentiveInfo />
-
-                    <OfferList />
                   </div>
 
                   {/**
@@ -254,7 +285,7 @@ export const MarketManager = React.forwardRef<
                       MAX_SCREEN_WIDTH
                     )}
                   >
-                    <OfferListVisualizer className="h-1/2 w-full" />
+                    <OfferVisualizer className="w-full" />
 
                     <StatsTables className="flex h-[18rem] w-full flex-col overflow-hidden xl:h-1/2" />
                   </div>
@@ -282,12 +313,12 @@ export const MarketManager = React.forwardRef<
                   className={cn(
                     "border-t border-divider md:border-t-0",
                     "divide-y divide-divider ",
-                    "h-full w-full",
+                    "w-full",
                     "hidden shrink-0 grow flex-col md:flex xl:hidden",
                     MAX_SCREEN_WIDTH
                   )}
                 >
-                  <OfferListVisualizer className="w-full flex-1" />
+                  <OfferVisualizer className="w-full flex-1" />
 
                   <StatsTables className="flex w-full flex-col overflow-hidden" />
                 </div>

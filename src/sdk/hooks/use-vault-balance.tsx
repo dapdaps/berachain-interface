@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getVaultBalanceQueryOptions } from "@/sdk/queries";
+import { useRpcApiKeys } from "@/sdk/client";
 
 export const useVaultBalance = ({
   chain_id,
@@ -10,7 +11,14 @@ export const useVaultBalance = ({
   account: string;
   vault_address: string;
 }) => {
+  const RPC_API_KEYS = useRpcApiKeys();
+
   return useQuery(
-    getVaultBalanceQueryOptions(chain_id, account, vault_address)
+    getVaultBalanceQueryOptions(
+      RPC_API_KEYS ?? {},
+      chain_id,
+      account,
+      vault_address,
+    ),
   );
 };

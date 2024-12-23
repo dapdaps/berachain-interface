@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import cn from 'clsx';
 import { z } from "zod";
 import { SlideUpWrapper } from "@/components/animation";
@@ -9,8 +9,12 @@ import { UseFormReturn } from "react-hook-form";
 import { AlertIndicator, TokenDisplayer } from "@/components/common";
 import { InputAmountSelector } from "./input-amount-selector";
 import { DeleteTokenButton } from "./delete-token-button";
-import { parseTokenAmountToRawAmount } from "@/sdk/utils";
+import { parseTokenAmountToRawAmount } from "royco/utils";
 import { useMarketManager } from "@/stores";
+import { RoycoMarketType } from "royco/market";
+import { useActiveMarket } from "../../../hooks";
+import { useMarketFormDetails } from "../../use-market-form-details";
+import { WarningAlert } from "./warning-alert";
 
 export const IncentivesAmountSelector = React.forwardRef<
   HTMLDivElement,
@@ -25,6 +29,36 @@ export const IncentivesAmountSelector = React.forwardRef<
     ref
   ) => {
     const { userType } = useMarketManager();
+
+    const { marketMetadata, currentHighestOffers } = useActiveMarket();
+    const currentIncentives =
+      marketMetadata.market_type === RoycoMarketType.recipe.id &&
+      !!currentHighestOffers &&
+      currentHighestOffers.ip_offers.length > 0
+        ? currentHighestOffers.ip_offers[0].tokens_data
+        : [];
+
+    const { incentiveData } = useMarketFormDetails(marketActionForm);
+
+    const hasLowerAPR = useMemo(() => {
+      return marketActionForm.watch("incentive_tokens").some((token) => {
+        const currentIncentive = currentIncentives.find(
+          (i) => i.id === token.id
+        );
+        const incentive = incentiveData.find((i) => i.token_id === token.id);
+
+        if (currentIncentive && incentive) {
+          return (
+            incentive.annual_change_ratio < currentIncentive.annual_change_ratio
+          );
+        }
+        return false;
+      });
+    }, [
+      marketActionForm.watch("incentive_tokens"),
+      currentIncentives,
+      incentiveData,
+    ]);
 
     return (
       <div ref={ref} className={cn("", className)} {...props}>
@@ -49,20 +83,43 @@ export const IncentivesAmountSelector = React.forwardRef<
                 marketActionForm.watch("incentive_tokens");
 
               if (incentiveTokens.some((t) => t.id === token.id)) {
-                marketActionForm.setValue(
-                  "incentive_tokens",
-                  incentiveTokens.filter((t) => t.id !== token.id)
-                );
+                marketActionForm.setValue("incentive_tokens", []);
               } else {
-                marketActionForm.setValue("incentive_tokens", [
-                  ...incentiveTokens,
-                  token,
-                ]);
+                marketActionForm.setValue("incentive_tokens", [token]);
               }
             }}
+            // onSelect={(token) => {
+            //   const incentiveTokens =
+            //     marketActionForm.watch("incentive_tokens");
+
+            //   if (incentiveTokens.some((t) => t.id === token.id)) {
+            //     marketActionForm.setValue(
+            //       "incentive_tokens",
+            //       incentiveTokens.filter((t) => t.id !== token.id)
+            //     );
+            //   } else {
+            //     marketActionForm.setValue("incentive_tokens", [
+            //       ...incentiveTokens,
+            //       token,
+            //     ]);
+            //   }
+            // }}
             className="mt-2"
           />
         </SlideUpWrapper>
+
+        {hasLowerAPR && (
+          <SlideUpWrapper
+            layout="position"
+            layoutId="motion:market:warning-alert:withdraw"
+            className="mt-3"
+            delay={0.4}
+          >
+            <WarningAlert>
+              WARNING: Your offered APR is below market rate
+            </WarningAlert>
+          </SlideUpWrapper>
+        )}
 
         <SlideUpWrapper
           layout="position"

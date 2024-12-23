@@ -9,7 +9,6 @@ const chains: Record<number, Chain | any> = {
     },
     isWalletSupport: true,
   },
-  // 需要支持eth测试链
   [sepolia.id]: {
     ...sepolia,
     isWalletSupport: true,

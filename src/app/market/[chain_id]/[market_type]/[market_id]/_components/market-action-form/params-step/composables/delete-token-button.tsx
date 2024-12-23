@@ -11,7 +11,7 @@ export const DeleteTokenButton = React.forwardRef<
       onClick={props.onClick}
       ref={ref}
       className={cn(
-        "flex h-8 w-8 shrink-0 cursor-pointer flex-col place-content-center items-center rounded-lg bg-error text-white transition-all duration-200 ease-in-out hover:opacity-80",
+        "flex h-8 w-8 shrink-0 cursor-pointer flex-col place-content-center items-center rounded-lg bg-[#eb3c27] text-white transition-all duration-200 ease-in-out hover:opacity-80",
         className
       )}
       {...props}

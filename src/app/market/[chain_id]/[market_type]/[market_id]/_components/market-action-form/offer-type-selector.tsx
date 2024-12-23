@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import cn from 'clsx';
 import { FormInputLabel } from "@/components/composables";
-import { MarketOfferType } from "@/stores";
+import { MarketOfferType, MarketUserType, MarketType } from "@/stores";
 import { useMarketManager } from "@/stores";
 import {
   Select,
@@ -10,13 +10,53 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { FallMotion } from "@/components/animation";
-import { TypedRoycoMarketOfferType } from "@/sdk/market";
+import { TypedRoycoMarketOfferType } from "royco/market";
+import { useActiveMarket } from "../hooks";
+import { useAccount } from "wagmi";
 
 export const OfferTypeSelector = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { offerType, setOfferType } = useMarketManager();
+  const { offerType, setOfferType, userType } = useMarketManager();
+
+  const { currentMarketData, marketMetadata } = useActiveMarket();
+  const { address: walletAddress } = useAccount();
+
+  const isWalletVaultIP = useMemo(() => {
+    return (
+      (currentMarketData &&
+        currentMarketData.market_type === MarketType.vault.value &&
+        walletAddress &&
+        currentMarketData.owner &&
+        walletAddress.toLowerCase() ===
+          currentMarketData.owner.toLowerCase()) ??
+      false
+    );
+  }, [currentMarketData, walletAddress]);
+
+  const isMarketVault = useMemo(() => {
+    return (
+      (currentMarketData &&
+        currentMarketData.market_type === MarketType.vault.value) ??
+      false
+    );
+  }, [currentMarketData]);
+
+  useEffect(() => {
+    if (
+      // isMarketVault &&
+      // !isWalletVaultIP &&
+
+      marketMetadata.market_type === MarketType.vault.id &&
+      userType === MarketUserType.ip.id &&
+      walletAddress !== currentMarketData.owner &&
+      offerType === MarketOfferType.limit.id
+    ) {
+      setOfferType(MarketOfferType.market.id);
+    }
+  }, [isWalletVaultIP]);
+
   return (
     <div ref={ref} className={cn("", className)} {...props}>
       <FormInputLabel
@@ -30,6 +70,17 @@ export const OfferTypeSelector = React.forwardRef<
           return open;
         }}
         onValueChange={(e) => {
+          // if (
+          //   // isMarketVault &&
+          //   // !isWalletVaultIP &&
+          //   marketMetadata.market_type === MarketType.vault.id &&
+          //   userType === MarketUserType.ip.id &&
+          //   walletAddress !== currentMarketData.owner &&
+          //   e === MarketOfferType.limit.id
+          // ) {
+          //   return;
+          // }
+
           setOfferType(e as TypedRoycoMarketOfferType);
         }}
         value={offerType}
@@ -47,7 +98,10 @@ export const OfferTypeSelector = React.forwardRef<
               contentClassName="text-left"
             >
               {MarketOfferType[offerType]
-                ? MarketOfferType[offerType].label
+                ? userType === MarketUserType.ip.id &&
+                  offerType === MarketOfferType.market.id
+                  ? "Fill AP Offers"
+                  : MarketOfferType[offerType].label
                 : "Select Offer Type"}
             </FallMotion>
           </div>
@@ -55,8 +109,41 @@ export const OfferTypeSelector = React.forwardRef<
 
         <SelectContent className="w-full">
           {Object.values(MarketOfferType).map((option) => (
-            <SelectItem className="text-sm" key={option.id} value={option.id}>
-              {option.label}
+            <SelectItem
+              disabled={(() => {
+                if (marketMetadata.market_type === MarketType.vault.id) {
+                  if (userType === MarketUserType.ip.id) {
+                    if (option.id === MarketOfferType.limit.id) {
+                      if (
+                        walletAddress?.toLowerCase() !==
+                        currentMarketData.owner?.toLowerCase()
+                      ) {
+                        return true;
+                      }
+                    }
+                  } else {
+                    // user type is AP
+                    if (option.id === MarketOfferType.limit.id) {
+                      if (
+                        !!currentMarketData &&
+                        currentMarketData.base_incentive_ids &&
+                        currentMarketData.base_incentive_ids.length < 1
+                      ) {
+                        return true;
+                      }
+                    }
+                  }
+                }
+                return false;
+              })()}
+              className="text-sm"
+              key={option.id}
+              value={option.id}
+            >
+              {userType === MarketUserType.ip.id &&
+              option.id === MarketOfferType.market.id
+                ? "Fill AP Offers"
+                : option.label}
             </SelectItem>
           ))}
         </SelectContent>

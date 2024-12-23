@@ -6,13 +6,12 @@ import {
   MarketWithdrawType,
   useMarketManager,
 } from "@/stores";
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { SelectWithdrawType } from "./select-withdraw-type";
 import {
   getRecipeIncentiveTokenWithdrawalTransactionOptions,
   getVaultIncentiveTokenWithdrawalTransactionOptions,
   getRecipeInputTokenWithdrawalTransactionOptions,
-  getVaultInputTokenWithdrawalTransactionOptions,
   useEnrichedPositionsRecipe,
   useEnrichedPositionsVault,
 } from "@/sdk/hooks";
@@ -20,10 +19,11 @@ import { useActiveMarket } from "../../hooks";
 import { useAccount } from "wagmi";
 import { AlertIndicator, TokenDisplayer } from "@/components/common";
 import { Button } from "@/components/ui/button";
-import { PrimaryLabel, SecondaryLabel } from "../../composables";
+import { SecondaryLabel } from "../../composables";
 import { SlideUpWrapper } from "@/components/animation";
-import { RoycoMarketUserType } from "@/sdk/market";
+import { RoycoMarketUserType } from "royco/market";
 import { BigNumber } from "ethers";
+import { VaultWithdrawModal } from "./vault-withdraw-modal";
 
 export const WithdrawIncentiveTokenRow = React.forwardRef<
   HTMLDivElement,
@@ -45,7 +45,7 @@ export const WithdrawIncentiveTokenRow = React.forwardRef<
         <SecondaryLabel>
           {Intl.NumberFormat("en-US", {
             style: "decimal",
-            notation: "compact",
+            notation: "standard",
             useGrouping: true,
             minimumFractionDigits: 2,
             maximumFractionDigits: 8,
@@ -75,11 +75,11 @@ export const WithdrawInputTokenRow = React.forwardRef<
 >(({ className, token, ...props }, ref) => {
   return (
     <div ref={ref} className={cn("flex w-full flex-row", className)} {...props}>
-      <div className="flex flex-row items-center space-x-2">
+      <div className="flex flex-row items-center space-x-2 whitespace-nowrap break-normal">
         <SecondaryLabel className="h-4">
           {Intl.NumberFormat("en-US", {
             style: "decimal",
-            notation: "compact",
+            notation: "standard",
             useGrouping: true,
             minimumFractionDigits: 2,
             maximumFractionDigits: 8,
@@ -111,7 +111,7 @@ export const WithdrawSection = React.forwardRef<
 
   const {
     isLoading: isLoadingPositionsRecipe,
-    data: postionsRecipe,
+    data: positionsRecipe,
     isError,
     error,
   } = useEnrichedPositionsRecipe({
@@ -127,35 +127,85 @@ export const WithdrawSection = React.forwardRef<
             : "can_claim",
         value: true,
       },
+      {
+        id: "offer_side",
+        value: 0,
+      },
     ],
   });
 
-  const { isLoading: isLoadingPositionsVault, data: positionsVault } =
-    useEnrichedPositionsVault({
-      chain_id: marketMetadata.chain_id,
-      market_id: marketMetadata.market_id,
-      account_address: (address?.toLowerCase() as string) ?? "",
-    });
+  const {
+    isLoading: isLoadingPositionsVault,
+    data: positionsVault,
+    isError: isErrorPositionsVault,
+    error: errorPositionsVault,
+  } = useEnrichedPositionsVault({
+    chain_id: marketMetadata.chain_id,
+    market_id: marketMetadata.market_id,
+    account_address: (address?.toLowerCase() as string) ?? "",
+    page_index: withdrawSectionPage,
+    filters: [
+      {
+        id: "offer_side",
+        value: RoycoMarketUserType.ap.value,
+      },
+    ],
+  });
+
+  // const { isLoading: isLoadingPositionsVault, data: positionsVault } =
+  //   useEnrichedPositionsVault({
+  //     chain_id: marketMetadata.chain_id,
+  //     market_id: marketMetadata.market_id,
+  //     account_address: (address?.toLowerCase() as string) ?? "",
+  //   });
 
   const totalCount =
     marketMetadata.market_type === MarketType.recipe.id
-      ? !!postionsRecipe && "count" in postionsRecipe
-        ? (postionsRecipe.count ?? 0)
+      ? !!positionsRecipe && "count" in positionsRecipe
+        ? (positionsRecipe.count ?? 0)
         : 0
-      : !!positionsVault
-        ? positionsVault.length
+      : !!positionsVault && "count" in positionsVault
+        ? (positionsVault.count ?? 0)
         : 0;
 
   const positions =
     marketMetadata.market_type === MarketType.recipe.id
-      ? Array.isArray(postionsRecipe?.data)
-        ? postionsRecipe.data
+      ? Array.isArray(positionsRecipe?.data)
+        ? positionsRecipe.data
         : []
-      : positionsVault?.filter(
-          (position) => position.offer_side === RoycoMarketUserType.ap.value
-        );
+      : Array.isArray(positionsVault?.data)
+        ? positionsVault.data.filter((position) => {
+            if (!!position) {
+              if (withdrawType === MarketWithdrawType.input_token.id) {
+                // Check if the raw input token amount is greater than 0
+                if (BigNumber.from(position.input_token_data.shares).gt(0)) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else {
+                // Check if value of at least one token is greater than 0
+                if (
+                  position.tokens_data.some((token) =>
+                    BigNumber.from(token.raw_amount).gt(0)
+                  )
+                ) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            }
+            return false;
+          })
+        : [];
 
-  console.log("positions", positions);
+  const isLoading = isLoadingPositionsRecipe || isLoadingPositionsVault;
+
+  // state for vault withdraw modal
+  const [isVaultWithdrawModalOpen, setIsVaultWithdrawModalOpen] =
+    useState(false);
+  const [selectedVaultPosition, setSelectedVaultPosition] = useState<any>(null);
 
   return (
     <div
@@ -168,8 +218,8 @@ export const WithdrawSection = React.forwardRef<
           <SelectWithdrawType />
 
           <div className="mt-5 flex w-full grow flex-col">
-            <div className="flex grow flex-col place-content-start items-center gap-2">
-              {(isLoadingPositionsRecipe || isLoadingPositionsVault) && (
+            <div className="flex grow flex-col place-content-start items-center gap-3">
+              {isConnected && isLoading && (
                 <LoadingSpinner className="h-5 w-5" />
               )}
 
@@ -179,31 +229,35 @@ export const WithdrawSection = React.forwardRef<
                 </div>
               )}
 
-              {!!positions && positions.length === 0 && (
-                <div className="h-full w-full place-content-center items-start">
-                  <AlertIndicator>
-                    No withdrawable positions found
-                  </AlertIndicator>
-                </div>
-              )}
+              {!isLoading &&
+                isConnected &&
+                !!positions &&
+                positions.length === 0 && (
+                  <div className="h-full w-full place-content-center items-start">
+                    <AlertIndicator>
+                      No withdrawable positions found
+                    </AlertIndicator>
+                  </div>
+                )}
 
               {!!positions &&
+                !isLoading &&
                 totalCount > 0 &&
                 positions.map((position, positionIndex) => {
                   return (
                     <SlideUpWrapper
-                      delay={positionIndex * 0.1}
+                      delay={0.1 + positionIndex * 0.1}
                       className="w-full"
                       key={`withdraw-position:${positionIndex}-${withdrawType}`}
                     >
                       <div className="flex w-full flex-row items-center justify-between gap-2 rounded-2xl border border-divider p-3">
-                        <div className="flex w-full grow flex-col items-start space-y-1">
-                          <SecondaryLabel className="text-black">
+                        <div className="hide-scrollbar flex w-full grow flex-col items-start space-y-1 overflow-x-scroll">
+                          <SecondaryLabel className="whitespace-nowrap break-normal text-black">
                             Value:{" "}
                             {Intl.NumberFormat("en-US", {
                               style: "currency",
                               currency: "USD",
-                              notation: "compact",
+                              notation: "standard",
                               useGrouping: true,
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 8,
@@ -219,7 +273,7 @@ export const WithdrawSection = React.forwardRef<
                             )}
                           </SecondaryLabel>
 
-                          <div className="flex w-full grow flex-col space-y-1">
+                          <div className="flex w-full grow flex-col space-y-3">
                             {withdrawType ===
                             MarketWithdrawType.input_token.id ? (
                               <WithdrawInputTokenRow
@@ -326,21 +380,8 @@ export const WithdrawSection = React.forwardRef<
 
                                     setTransactions([contractOptions]);
                                   } else {
-                                    const contractOptions =
-                                      getVaultInputTokenWithdrawalTransactionOptions(
-                                        {
-                                          chain_id: marketMetadata.chain_id,
-                                          market_id: marketMetadata.market_id,
-                                          account:
-                                            address?.toLowerCase() as string,
-                                          position: {
-                                            token_data:
-                                              position.input_token_data,
-                                          },
-                                        }
-                                      );
-
-                                    setTransactions([contractOptions]);
+                                    setSelectedVaultPosition(position);
+                                    setIsVaultWithdrawModalOpen(true);
                                   }
                                 }
                               }}
@@ -363,6 +404,18 @@ export const WithdrawSection = React.forwardRef<
             <AlertIndicator>Only AP can withdraw</AlertIndicator>
           </div>
         </Fragment>
+      )}
+
+      {selectedVaultPosition && (
+        <VaultWithdrawModal
+          isOpen={isVaultWithdrawModalOpen}
+          onOpenChange={setIsVaultWithdrawModalOpen}
+          position={{
+            token_data: selectedVaultPosition.input_token_data,
+          }}
+          marketId={marketMetadata.market_id}
+          chainId={marketMetadata.chain_id}
+        />
       )}
     </div>
   );

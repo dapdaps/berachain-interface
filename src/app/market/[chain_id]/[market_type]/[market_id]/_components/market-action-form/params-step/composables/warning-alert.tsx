@@ -9,7 +9,7 @@ export const WarningAlert = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex w-full flex-col rounded-lg bg-error p-2 text-center text-sm font-light text-white",
+        "flex w-full flex-col rounded-lg bg-[#eb3c27] p-2 text-center text-sm font-light text-white",
         className
       )}
       {...props}

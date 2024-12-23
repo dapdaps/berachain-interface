@@ -13,9 +13,11 @@ import { z } from "zod";
 import { SlideUpWrapper } from "@/components/animation";
 import {
   FundingVaultSelector,
+  IncentiveAssetsSelector,
   IncentivesAmountSelector,
   InputAmountWrapper,
   InputExpirySelector,
+  IPQuantityIndicator,
 } from "../composables";
 
 export const RecipeForms = React.forwardRef<
@@ -30,7 +32,7 @@ export const RecipeForms = React.forwardRef<
 
   return (
     <div ref={ref} className={cn("contents", className)} {...props}>
-      <div className="h-12 grow overflow-x-hidden overflow-y-scroll pb-2">
+      <div className="grow overflow-x-hidden overflow-y-scroll pb-2">
         {/**
          * Funding Vault Selector
          */}
@@ -80,20 +82,36 @@ export const RecipeForms = React.forwardRef<
             />
           )}
 
+        {/**
+         * Incentive Assets Selector
+         */}
+        {userType === MarketUserType.ip.id &&
+          offerType === MarketOfferType.market.id && (
+            <IncentiveAssetsSelector
+              marketActionForm={marketActionForm}
+              delayTitle={0.4}
+              delayContent={0.5}
+            />
+          )}
+
         {userType === MarketUserType.ip.id &&
           offerType === MarketOfferType.limit.id && (
             <IncentivesAmountSelector
               marketActionForm={marketActionForm}
-              delayTitle={0.3}
-              delayContent={0.4}
+              delayTitle={0.5}
+              delayContent={0.5}
             />
           )}
 
         {offerType === MarketOfferType.limit.id && (
           <InputExpirySelector
-            delay={0.5}
+            delay={0.6}
             marketActionForm={marketActionForm}
           />
+        )}
+
+        {userType === MarketUserType.ip.id && (
+          <IPQuantityIndicator marketActionForm={marketActionForm} />
         )}
       </div>
     </div>

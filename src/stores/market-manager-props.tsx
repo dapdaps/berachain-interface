@@ -121,16 +121,17 @@ export const MarketIncentiveType = {
 
 /**
  * @info Market Vault Incentive Action
+ * @note Currently, increase and extend are in the same action
  */
 export const MarketVaultIncentiveAction = {
   [RoycoMarketVaultIncentiveAction.add.id]: {
     ...RoycoMarketVaultIncentiveAction.add,
     label: "Add Incentives",
   },
-  [RoycoMarketVaultIncentiveAction.increase.id]: {
-    ...RoycoMarketVaultIncentiveAction.increase,
-    label: "Increase Incentives",
-  },
+  // [RoycoMarketVaultIncentiveAction.increase.id]: {
+  //   ...RoycoMarketVaultIncentiveAction.increase,
+  //   label: "Increase Incentives",
+  // },
   [RoycoMarketVaultIncentiveAction.extend.id]: {
     ...RoycoMarketVaultIncentiveAction.extend,
     label: "Extend Incentives",
@@ -230,7 +231,7 @@ export const MarketSteps: Record<
   },
   preview: {
     id: "preview",
-    label: "PREVIEW",
+    label: "REVIEW",
     description: "Select the action you want to perform.",
   },
   transaction: {
@@ -252,6 +253,21 @@ export const MarketStatsView: Record<
   },
   offers: {
     id: "offers",
+  },
+};
+
+export type MarketOfferVisualizerViewType = "chart" | "book";
+export const MarketOfferVisualizerView: Record<
+  MarketOfferVisualizerViewType,
+  {
+    id: MarketOfferVisualizerViewType;
+  }
+> = {
+  chart: {
+    id: "chart",
+  },
+  book: {
+    id: "book",
   },
 };
 
@@ -280,7 +296,7 @@ export const MarketFundingType = {
   },
   [RoycoMarketFundingType.vault.id]: {
     ...RoycoMarketFundingType.vault,
-    label: "ERC-4626 Vault",
+    label: "Royco Verified Vault",
   },
 };
 
@@ -320,6 +336,11 @@ export type MarketManagerState = {
   statsView: MarketStatsViewType;
   setStatsView: (statsView: MarketStatsViewType) => void;
 
+  offerVisualizerView: MarketOfferVisualizerViewType;
+  setOfferVisualizerView: (
+    offerVisualizerView: MarketOfferVisualizerViewType
+  ) => void;
+
   offerTablePage: number;
   setOfferTablePage: (offerTablePage: number) => void;
 
@@ -346,10 +367,7 @@ export type MarketManagerState = {
 
 export const createMarketManagerStore = () => {
   return create<MarketManagerState>((set) => ({
-    viewType:
-      (typeof window !== "undefined" && localStorage.getItem("royco_market_view_type") as TypedMarketViewType) ||
-      MarketViewType.simple.id,
-    // viewType: MarketViewType.advanced.id,
+    viewType: MarketViewType.simple.id as TypedMarketViewType,
     setViewType: (viewType: TypedMarketViewType) => set({ viewType }),
 
     incentiveType: MarketIncentiveType.ap.id,
@@ -377,6 +395,11 @@ export const createMarketManagerStore = () => {
 
     statsView: MarketStatsView.positions.id,
     setStatsView: (statsView: MarketStatsViewType) => set({ statsView }),
+
+    offerVisualizerView: MarketOfferVisualizerView.chart.id,
+    setOfferVisualizerView: (
+      offerVisualizerView: MarketOfferVisualizerViewType
+    ) => set({ offerVisualizerView }),
 
     offerTablePage: 0,
     setOfferTablePage: (offerTablePage: number) => set({ offerTablePage }),

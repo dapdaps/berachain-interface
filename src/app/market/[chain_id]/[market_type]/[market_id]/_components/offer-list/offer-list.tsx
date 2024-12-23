@@ -11,9 +11,11 @@ import {
 } from "../composables";
 
 import { SpringNumber } from "@/components/composables";
-import { AlertIndicator } from "@/components/common";
+import { AlertIndicator, TokenDisplayer } from "@/components/common";
 import { FallMotion } from "@/components/animation";
-import { RoycoMarketType } from "@/sdk/market";
+import { RoycoMarketType } from "royco/market";
+import { EnrichedOfferDataType } from "royco/queries";
+import { parseRawAmountToTokenAmount } from "royco/utils";
 
 export const CentralBar = React.forwardRef<
   HTMLDivElement,
@@ -40,31 +42,44 @@ export const CentralBar = React.forwardRef<
          * For Vault, this needs to be calculated
          */}
         {Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-          notation: "compact",
+          // style: "currency",
+          // currency: "USD",
+          notation: "standard",
+          useGrouping: true,
           minimumFractionDigits: 2,
           maximumFractionDigits: 8,
-          useGrouping: true,
         }).format(
           marketMetadata.market_type === RoycoMarketType.recipe.id
-            ? (currentMarketData?.quantity_ap_usd ?? 0) +
-                (currentMarketData?.quantity_ip_usd ?? 0)
-            : (currentMarketData?.quantity_ap_usd ?? 0)
+            ? parseRawAmountToTokenAmount(
+                currentMarketData?.quantity_ap ?? "",
+                currentMarketData?.input_token_data.decimals ?? 0
+              ) +
+                parseRawAmountToTokenAmount(
+                  currentMarketData?.quantity_ip ?? "",
+                  currentMarketData?.input_token_data.decimals ?? 0
+                )
+            : parseRawAmountToTokenAmount(
+                currentMarketData?.quantity_ap ?? "",
+                currentMarketData?.input_token_data.decimals ?? 0
+              )
+          // marketMetadata.market_type === RoycoMarketType.recipe.id
+          //   ? (currentMarketData?.quantity_ap_usd ?? 0) +
+          //       (currentMarketData?.quantity_ip_usd ?? 0)
+          //   : (currentMarketData?.quantity_ap_usd ?? 0)
         )}
       </SecondaryLabel>
 
-      <SecondaryLabel className="font-medium text-black">MARKET</SecondaryLabel>
+      <SecondaryLabel className="font-medium text-black">
+        OPEN INTEREST
+      </SecondaryLabel>
     </div>
   );
 });
 
-const OfferListRow = React.forwardRef<
+export const OfferListRow = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
     type: "ap" | "ip";
-    indexKey: string;
-    customKey: string;
     keyInfo: {
       previousValue: number;
       currentValue: number;
@@ -73,63 +88,103 @@ const OfferListRow = React.forwardRef<
       previousValue: number;
       currentValue: number;
     };
-    delay?: number;
+    offer?: EnrichedOfferDataType;
   }
->(
-  (
-    {
-      className,
-      delay,
-      indexKey,
-      type,
-      customKey,
-      keyInfo,
-      valueInfo,
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <FallMotion
-        delay={delay}
-        key={indexKey}
-        ref={ref}
-        customKey={customKey}
-        height="1rem"
-        className={cn("w-full", className)}
-        contentClassName="flex flex-row items-center justify-between w-full h-4 text-sm"
-        {...props}
-      >
-        <SecondaryLabel>
-          <SpringNumber
-            defaultColor={type === "ap" ? "text-success" : "text-error"}
-            previousValue={keyInfo.previousValue}
-            currentValue={keyInfo.currentValue}
-            numberFormatOptions={{
-              style: "currency",
-              notation: "compact",
-              useGrouping: true,
-              currency: "USD",
-            }}
-          />
-        </SecondaryLabel>
-        <SecondaryLabel>
+>(({ className, type, keyInfo, valueInfo, offer }, ref) => {
+  return (
+    <div
+      className={cn(
+        "grid w-full grid-cols-2 items-center divide-x divide-divider text-sm text-black",
+        className
+      )}
+    >
+      {type === "ip" && (
+        <SecondaryLabel className="hide-scrollbar shrink-0 overflow-x-scroll whitespace-nowrap break-normal py-1 pr-1">
           <SpringNumber
             previousValue={valueInfo.previousValue}
             currentValue={valueInfo.currentValue}
             numberFormatOptions={{
-              style: "percent",
-              notation: "compact",
+              notation: "standard",
               useGrouping: true,
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+              maximumFractionDigits: 8,
             }}
           />
+
+          {!!offer && (
+            <div className="ml-1 flex items-center gap-1">
+              <SecondaryLabel>{offer?.tokens_data[0]?.symbol}</SecondaryLabel>
+
+              <TokenDisplayer
+                size={4}
+                tokens={offer?.tokens_data[0] ? [offer?.tokens_data[0]] : []}
+                symbols={false}
+              />
+            </div>
+          )}
         </SecondaryLabel>
-      </FallMotion>
-    );
-  }
-);
+      )}
+
+      <SecondaryLabel
+        className={cn(
+          "hide-scrollbar shrink-0 overflow-x-scroll whitespace-nowrap break-normal py-1",
+          type === "ip" && "pl-1",
+          type === "ap" && "pr-1"
+        )}
+      >
+        <SpringNumber
+          previousValue={keyInfo.previousValue}
+          currentValue={keyInfo.currentValue}
+          numberFormatOptions={{
+            notation: "standard",
+            useGrouping: true,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 8,
+          }}
+        />
+
+        {!!offer && (
+          <div className="ml-1 flex items-center gap-1">
+            <SecondaryLabel>{offer?.input_token_data?.symbol}</SecondaryLabel>
+
+            <TokenDisplayer
+              size={4}
+              tokens={offer?.input_token_data ? [offer?.input_token_data] : []}
+              symbols={false}
+            />
+          </div>
+        )}
+      </SecondaryLabel>
+
+      {type === "ap" && (
+        <SecondaryLabel className="hide-scrollbar shrink-0 overflow-x-scroll whitespace-nowrap break-normal py-1 pl-1">
+          <SpringNumber
+            previousValue={valueInfo.previousValue}
+            currentValue={valueInfo.currentValue}
+            numberFormatOptions={{
+              notation: "standard",
+              useGrouping: true,
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 8,
+            }}
+          />
+
+          {!!offer && (
+            <div className="ml-1 flex items-center gap-1">
+              <SecondaryLabel>{offer?.tokens_data[0]?.symbol}</SecondaryLabel>
+
+              <TokenDisplayer
+                size={4}
+                tokens={offer?.tokens_data[0] ? [offer?.tokens_data[0]] : []}
+                symbols={false}
+              />
+            </div>
+          )}
+        </SecondaryLabel>
+      )}
+    </div>
+  );
+});
 
 export const OfferList = React.forwardRef<
   HTMLDivElement,
@@ -166,7 +221,8 @@ export const OfferList = React.forwardRef<
         )}
       >
         <TertiaryLabel className="text-tertiary">SIZE</TertiaryLabel>
-        <TertiaryLabel className="text-tertiary">APR</TertiaryLabel>
+        {/* <TertiaryLabel className="text-tertiary">APR</TertiaryLabel> */}
+        <TertiaryLabel className="text-tertiary">INCENTIVES</TertiaryLabel>
       </div>
 
       {/**
@@ -194,20 +250,38 @@ export const OfferList = React.forwardRef<
                   !!previousHighestOffers &&
                   offerIndex < previousHighestOffers.ip_offers.length
                     ? (previousHighestOffers?.ip_offers[offerIndex]
-                        .quantity_value_usd ?? 0)
+                        .input_token_data.token_amount ?? 0)
                     : 0,
 
-                currentValue: offer.quantity_value_usd as number,
+                currentValue: offer.input_token_data.token_amount as number,
               };
+
+              // const valueInfo = {
+              //   previousValue:
+              //     !!previousHighestOffers &&
+              //     offerIndex < previousHighestOffers.ip_offers.length
+              //       ? (previousHighestOffers?.ip_offers[offerIndex]
+              //           .annual_change_ratio ?? 0)
+              //       : 0,
+              //   currentValue: offer.annual_change_ratio as number,
+              // };
 
               const valueInfo = {
                 previousValue:
                   !!previousHighestOffers &&
                   offerIndex < previousHighestOffers.ip_offers.length
-                    ? (previousHighestOffers?.ip_offers[offerIndex]
-                        .annual_change_ratio ?? 0)
+                    ? previousHighestOffers?.ip_offers[offerIndex]
+                        .tokens_data &&
+                      previousHighestOffers?.ip_offers[offerIndex].tokens_data
+                        .length > 0
+                      ? previousHighestOffers?.ip_offers[offerIndex]
+                          .tokens_data[0].token_amount
+                      : 0
                     : 0,
-                currentValue: offer.annual_change_ratio as number,
+                currentValue:
+                  offer.tokens_data && offer.tokens_data.length > 0
+                    ? offer.tokens_data[0].token_amount
+                    : 0,
               };
 
               return (
@@ -218,6 +292,7 @@ export const OfferList = React.forwardRef<
                   indexKey={INDEX_KEY}
                   keyInfo={keyInfo}
                   valueInfo={valueInfo}
+                  offer={offer}
                 />
               );
             })
@@ -254,20 +329,37 @@ export const OfferList = React.forwardRef<
                 !!previousHighestOffers &&
                 offerIndex < previousHighestOffers.ap_offers.length
                   ? (previousHighestOffers?.ap_offers[offerIndex]
-                      .quantity_value_usd ?? 0)
+                      .input_token_data.token_amount ?? 0)
                   : 0,
 
-              currentValue: offer.quantity_value_usd as number,
+              currentValue: offer.input_token_data.token_amount as number,
             };
+
+            // const valueInfo = {
+            //   previousValue:
+            //     !!previousHighestOffers &&
+            //     offerIndex < previousHighestOffers.ap_offers.length
+            //       ? (previousHighestOffers?.ap_offers[offerIndex]
+            //           .annual_change_ratio ?? 0)
+            //       : 0,
+            //   currentValue: offer.annual_change_ratio as number,
+            // };
 
             const valueInfo = {
               previousValue:
                 !!previousHighestOffers &&
                 offerIndex < previousHighestOffers.ap_offers.length
-                  ? (previousHighestOffers?.ap_offers[offerIndex]
-                      .change_ratio ?? 0)
+                  ? previousHighestOffers?.ap_offers[offerIndex].tokens_data &&
+                    previousHighestOffers?.ap_offers[offerIndex].tokens_data
+                      .length > 0
+                    ? previousHighestOffers?.ap_offers[offerIndex]
+                        .tokens_data[0].token_amount
+                    : 0
                   : 0,
-              currentValue: offer.annual_change_ratio as number,
+              currentValue:
+                offer.tokens_data && offer.tokens_data.length > 0
+                  ? offer.tokens_data[0].token_amount
+                  : 0,
             };
 
             return (
@@ -277,6 +369,7 @@ export const OfferList = React.forwardRef<
                 indexKey={INDEX_KEY}
                 keyInfo={keyInfo}
                 valueInfo={valueInfo}
+                offer={offer}
               />
             );
           })

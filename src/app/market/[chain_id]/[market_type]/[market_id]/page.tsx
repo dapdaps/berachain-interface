@@ -1,15 +1,17 @@
+"use client";
+
 import "./local.css";
 import cn from 'clsx';
 import { MarketManager } from "./_components";
 import { MarketManagerStoreProvider } from "@/stores/use-market-manager";
-import { TransactionModal } from "@/components/composables";
+import { TransactionModal } from "@/components/transaction-modal";
 
 const Page = () => {
   return (
     <MarketManagerStoreProvider>
       <div
         className={cn(
-          "flex w-full flex-col items-center p-12",
+          "flex min-h-screen w-full flex-col items-center bg-[#FBFBF8] p-12",
           "px-3 py-3 md:px-12"
         )}
       >

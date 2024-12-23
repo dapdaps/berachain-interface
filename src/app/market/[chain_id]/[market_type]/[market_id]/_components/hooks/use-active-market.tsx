@@ -12,14 +12,15 @@ import { useEffect } from "react";
 import { isEqual } from "lodash";
 import { produce } from "immer";
 
-import { MarketType } from "@/stores/market-manager-props";
-import { EnrichedMarketDataType } from "@/sdk/queries";
+import { MarketType } from "@/stores";
+import { EnrichedMarketDataType } from "royco/queries";
 
 export const useActiveMarket = () => {
   const params = useParams();
   const chain_id = params.chain_id;
   const market_type = params.market_type;
   const market_id = params.market_id;
+
   /**
    * @notice Enriched Market
    */
@@ -149,11 +150,10 @@ export const useActiveMarket = () => {
   // console.log("Current Market Data:", placeholderDatas[1]);
   // console.log("Previous Market Data:", placeholderDatas[0]);
 
-
   const isLoading =
     propsEnrichedMarket.isLoading ||
     propsHighestOffers.isLoading ||
-    propsReadMarket.isLoading ||
+    // propsReadMarket.isLoading ||
     propsActionsDecoderEnterMarket.isLoading ||
     propsActionsDecoderExitMarket.isLoading;
 
@@ -181,13 +181,14 @@ export const useActiveMarket = () => {
         ? // @ts-ignore
           (placeholderDatasEnrichedMarket[0][0] as EnrichedMarketDataType)
         : undefined,
-    currentMarketData:
-      !!placeholderDatasEnrichedMarket[1] &&
-      // @ts-ignore
-      placeholderDatasEnrichedMarket[1].length > 0
-        ? // @ts-ignore
-          (placeholderDatasEnrichedMarket[1][0] as EnrichedMarketDataType)
-        : undefined,
+    currentMarketData: propsEnrichedMarket.data?.[0] as EnrichedMarketDataType,
+    // currentMarketData:
+    //   !!placeholderDatasEnrichedMarket[1] &&
+    //   // @ts-ignore
+    //   placeholderDatasEnrichedMarket[1].length > 0
+    //     ? // @ts-ignore
+    //       (placeholderDatasEnrichedMarket[1][0] as EnrichedMarketDataType)
+    //     : undefined,
     propsHighestOffers,
     previousHighestOffers: placeholderDatasHighestOffers[0],
     currentHighestOffers: placeholderDatasHighestOffers[1],

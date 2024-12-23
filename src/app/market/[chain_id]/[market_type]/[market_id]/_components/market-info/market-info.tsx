@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   BASE_MARGIN_TOP,
   BASE_PADDING,
@@ -9,32 +9,27 @@ import {
   TertiaryLabel,
 } from "../composables";
 import { useActiveMarket } from "../hooks";
-import {
-  ActionFlow,
-  HorizontalTabs,
-  LoadingSpinner,
-  SpringNumber,
-} from "@/components/composables";
-import { useMarketManager  } from "@/stores/use-market-manager";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { MarketType, MarketRewardStyle, MarketScriptType } from "@/stores/market-manager-props";
-import {
-  BadgeLink,
-  InfoCard,
-  InfoTip,
-  TokenDisplayer,
-} from "@/components/common";
-import { getExplorerUrl, getSupportedChain, shortAddress } from "@/sdk/utils";
+import { ActionFlow, SpringNumber } from "@/components/composables";
+import { MarketRewardStyle, MarketViewType, useMarketManager } from "@/stores";
+
+import { MarketType } from "@/stores";
+import { InfoCard, InfoTip } from "@/components/common";
+import { getExplorerUrl, getSupportedChain, shortAddress } from "royco/utils";
 import { formatDuration } from "date-fns";
-import { secondsToDuration } from "@/components/market-builder-form";
+import { secondsToDuration } from "@/utils/date";
 import { ChevronDown, ExternalLinkIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { capitalize } from "lodash";
+import { isEqual } from "lodash";
+import {
+  useEnrichedAccountBalancesRecipeInMarket,
+  useEnrichedAccountBalancesVaultInMarket,
+} from "@/sdk/hooks";
+import { useAccount } from "wagmi";
+import { produce } from "immer";
+import { CopyWrapper } from "@/components/composables/copy-wrapper";
+import { IncentiveInfo } from "../incentive-info";
+
 
 const INFO_TIP_PROPS = {
   size: "sm" as "sm",
@@ -49,7 +44,6 @@ export const MarketInfo = React.forwardRef<
   const {
     isLoading,
     marketMetadata,
-    propsEnrichedMarket,
     currentMarketData,
     previousMarketData,
     propsReadMarket,
@@ -57,9 +51,79 @@ export const MarketInfo = React.forwardRef<
     propsActionsDecoderExitMarket,
   } = useActiveMarket();
 
-  const { scriptType, setScriptType, viewType } = useMarketManager();
+  const { viewType } = useMarketManager();
 
   const [showTransactionDetails, setShowTransactionDetails] = useState(false);
+
+  const { address } = useAccount();
+
+  const {
+    isLoading: isLoadingRecipe,
+    isRefetching: isRefetchingRecipe,
+    data: dataRecipe,
+  } = useEnrichedAccountBalancesRecipeInMarket({
+    chain_id: marketMetadata.chain_id,
+    market_id: marketMetadata.market_id,
+    account_address: address ? address.toLowerCase() : "",
+    custom_token_data: undefined,
+  });
+
+  const {
+    isLoading: isLoadingVault,
+    isRefetching: isRefetchingVault,
+    data: dataVault,
+  } = useEnrichedAccountBalancesVaultInMarket({
+    chain_id: marketMetadata.chain_id,
+    market_id: marketMetadata.market_id,
+    account_address: address ? address.toLowerCase() : "",
+    custom_token_data: undefined,
+  });
+
+  const [placeholderData, setPlaceholderData] = React.useState<
+    Array<typeof dataRecipe | typeof dataVault | undefined>
+  >([undefined, undefined]);
+
+  /**
+   * @effect Update placeholder data for recipe
+   */
+  useEffect(() => {
+    if (
+      marketMetadata.market_type === MarketType.recipe.id &&
+      isLoadingRecipe === false &&
+      isRefetchingRecipe === false &&
+      !isEqual(dataRecipe, placeholderData[1])
+    ) {
+      setPlaceholderData((prevDatas) => {
+        return produce(prevDatas, (draft) => {
+          if (!isEqual(draft[1], dataRecipe)) {
+            draft[0] = draft[1] as typeof dataRecipe;
+            draft[1] = dataRecipe as typeof dataRecipe;
+          }
+        });
+      });
+    }
+  }, [isLoadingRecipe, isRefetchingRecipe, dataRecipe]);
+
+  /**
+   * @effect Update placeholder data for vault
+   */
+  useEffect(() => {
+    if (
+      marketMetadata.market_type === MarketType.vault.id &&
+      isLoadingVault === false &&
+      isRefetchingVault === false &&
+      !isEqual(dataVault, placeholderData[1])
+    ) {
+      setPlaceholderData((prevDatas) => {
+        return produce(prevDatas, (draft) => {
+          if (!isEqual(draft[1], dataVault)) {
+            draft[0] = draft[1] as typeof dataVault;
+            draft[1] = dataVault as typeof dataVault;
+          }
+        });
+      });
+    }
+  }, [isLoadingVault, isRefetchingVault, dataVault]);
 
   if (
     !isLoading &&
@@ -77,7 +141,13 @@ export const MarketInfo = React.forwardRef<
         )}
         {...props}
       >
+        {/**
+         * Market Header
+         */}
         <div className={cn(BASE_PADDING, "flex flex-col pb-4")}>
+          {/**
+           * Market Title and Description
+           */}
           <div className="flex justify-between">
             <TertiaryLabel>MARKET</TertiaryLabel>
             <img
@@ -92,80 +162,20 @@ export const MarketInfo = React.forwardRef<
             isVerified={currentMarketData.is_verified ? true : false}
           >
             {currentMarketData.name && currentMarketData.name.trim() !== ""
-              ? currentMarketData.name
-                  .trim()
-                  .split(" ")
-                  .map((word) => capitalize(word))
-                  .join(" ")
+              ? currentMarketData.name.trim()
               : "Unknown Market"}
           </PrimaryLabel>
-        </div>
 
-        <div className={cn(BASE_PADDING)}>
-          {/**
-           * Annual Incentive Percent
-           */}
-
-          <div className="hide-scrollbar flex gap-x-8 overflow-x-scroll">
-            <div>
-              <PrimaryLabel className={cn("text-3xl font-light")}>
-                {(currentMarketData.annual_change_ratio ?? 0) >=
-                Math.pow(10, 18) ? (
-                  `0`
-                ) : (
-                  <SpringNumber
-                    previousValue={
-                      previousMarketData &&
-                      previousMarketData.annual_change_ratio
-                        ? previousMarketData.annual_change_ratio
-                        : 0
-                    }
-                    currentValue={currentMarketData.annual_change_ratio ?? 0}
-                    numberFormatOptions={{
-                      style: "percent",
-                      notation: "compact",
-                      useGrouping: true,
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }}
-                  />
-                )}
-              </PrimaryLabel>
-              <TertiaryLabel className={cn(BASE_MARGIN_TOP.SM)}>
-                Annual Percentage Rate
-              </TertiaryLabel>
-            </div>
-
-            {marketMetadata.market_type === MarketType.recipe.id && (
-              <div>
-                <PrimaryLabel className={cn("text-3xl font-light capitalize")}>
-                  {formatDuration(
-                    Object.entries(
-                      secondsToDuration(currentMarketData.lockup_time)
-                    )
-                      .filter(([_, value]) => value > 0) // Filter out zero values
-                      .slice(0, 2) // Take the first two non-zero units
-                      .reduce(
-                        (acc, [unit, value]) => ({ ...acc, [unit]: value }),
-                        {}
-                      )
-                  )}
-                  {currentMarketData.lockup_time === "0" && "No Lockup"}
-                </PrimaryLabel>
-                <TertiaryLabel className={cn(BASE_MARGIN_TOP.SM)}>
-                  Lockup
-                </TertiaryLabel>
-              </div>
-            )}
-          </div>
-
-          <SecondaryLabel className={cn(BASE_MARGIN_TOP.XL)}>
+          <SecondaryLabel className={cn(BASE_MARGIN_TOP.XS, "break-normal")}>
             {currentMarketData.description ?? "No description available"}
           </SecondaryLabel>
 
+          {/**
+           * Show/Hide Market Details
+           */}
           <button onClick={() => setShowTransactionDetails((prev) => !prev)}>
-            <SecondaryLabel className={cn(BASE_MARGIN_TOP.SM)}>
-              <span>Transaction details</span>
+            <TertiaryLabel className={cn(BASE_MARGIN_TOP.SM, "text-sm")}>
+              <span>Market details</span>
               <motion.div
                 animate={{ rotate: showTransactionDetails ? 180 : 0 }}
                 transition={{ duration: 0.3 }}
@@ -173,56 +183,12 @@ export const MarketInfo = React.forwardRef<
               >
                 <ChevronDown className="h-5 " />
               </motion.div>
-            </SecondaryLabel>
+            </TertiaryLabel>
           </button>
 
           {/**
-           * Currently hidden
+           * Market Details
            */}
-          {/* {marketMetadata.market_type === MarketType.recipe.id && (
-            <HoverCard openDelay={0} closeDelay={500}>
-              <HoverCardTrigger className={cn("flex w-32")}>
-                <SecondaryLabel
-                  className={cn(BASE_MARGIN_TOP.MD, BASE_UNDERLINE.MD, "w-fit")}
-                >
-                  Recipe Details
-                </SecondaryLabel>
-              </HoverCardTrigger>
-
-              <HoverCardContent
-                sideOffset={10}
-                side="right"
-                align="start"
-                className="w-80 p-2"
-              >
-                <HorizontalTabs
-                  size="sm"
-                  key="market:script-type:container"
-                  baseId="market:script-type"
-                  tabs={Object.values(MarketScriptType)}
-                  activeTab={scriptType}
-                  setter={setScriptType}
-                />
-
-                {propsActionsDecoderEnterMarket.isLoading ? (
-                  <div className="flex h-16 w-full flex-col place-content-center items-center">
-                    <LoadingSpinner className="h-5 w-5" />
-                  </div>
-                ) : (
-                  <ActionFlow
-                    className={cn(BASE_MARGIN_TOP.SM)}
-                    size="sm"
-                    actions={
-                      scriptType === MarketScriptType.enter_actions.id
-                        ? propsActionsDecoderEnterMarket.data ?? []
-                        : propsActionsDecoderExitMarket.data ?? []
-                    }
-                  />
-                )}
-              </HoverCardContent>
-            </HoverCard>
-          )} */}
-
           <AnimatePresence>
             {showTransactionDetails && (
               <motion.div
@@ -274,110 +240,26 @@ export const MarketInfo = React.forwardRef<
                   )}
 
                   {/**
-                   * @info Chain
-                   */}
-                  {/* <InfoCard.Row className={INFO_ROW_CLASSES}>
-                    <InfoCard.Row.Key>Chain</InfoCard.Row.Key>
-                    <InfoCard.Row.Value>
-                      {getSupportedChain(marketMetadata.chain_id)?.name ??
-                        "Unknown"}
-
-                      <InfoTip {...INFO_TIP_PROPS}>
-                        Chain Id: {marketMetadata.chain_id}
-                      </InfoTip>
-                    </InfoCard.Row.Value>
-                  </InfoCard.Row> */}
-
-                  {/**
-                   * @info Market Type
-                   */}
-                  {/* <InfoCard.Row className={INFO_ROW_CLASSES}>
-                    <InfoCard.Row.Key>Market Type</InfoCard.Row.Key>
-                    <InfoCard.Row.Value>
-                      {marketMetadata.market_type === MarketType.recipe.id
-                        ? "Recipe"
-                        : "Vault"}
-
-                      <InfoTip {...INFO_TIP_PROPS}>
-                        {MarketType[marketMetadata.market_type].description}
-                      </InfoTip>
-                    </InfoCard.Row.Value>
-                  </InfoCard.Row> */}
-
-                  {/**
                    * @info Market Id
                    */}
                   <InfoCard.Row className={INFO_ROW_CLASSES}>
                     <InfoCard.Row.Key>Market ID</InfoCard.Row.Key>
                     <InfoCard.Row.Value>
-                      {`${marketMetadata.chain_id}_${marketMetadata.market_type === "recipe" ? "0" : "1"}_${shortAddress(
-                        currentMarketData.market_id ?? ""
-                      )}`}
+                      <CopyWrapper
+                        iconPosition={"left"}
+                        text={currentMarketData.market_id ?? ""}
+                      >
+                        {`${shortAddress(currentMarketData.market_id ?? "")}`}
+                      </CopyWrapper>
 
                       <InfoTip {...INFO_TIP_PROPS}>
                         Market id is constructed as concatenation of chain id,
-                        market type and market index. For recipe, market index
-                        is sequential number and for vaults, it is the address
-                        of wrapped vault.
+                        market type and market index. For recipes, market id is
+                        hash of the market and for vaults, it is the address of
+                        wrapped vault.
                       </InfoTip>
                     </InfoCard.Row.Value>
                   </InfoCard.Row>
-
-                  {/**
-                   * @info Instructions
-                   */}
-                  {
-                    // marketMetadata.market_type === MarketType.recipe.id && (
-                    //   <InfoCard.Row className={INFO_ROW_CLASSES}>
-                    //     <InfoCard.Row.Key>Instructions</InfoCard.Row.Key>
-                    //     <InfoCard.Row.Value>
-                    //       <HoverCard openDelay={0} closeDelay={500}>
-                    //         <HoverCardTrigger
-                    //           className={cn("flex cursor-pointer")}
-                    //         >
-                    //           Recipe Details
-                    //         </HoverCardTrigger>
-                    //         <HoverCardContent
-                    //           sideOffset={5}
-                    //           alignOffset={-5}
-                    //           side="right"
-                    //           align="start"
-                    //           className="w-96 p-2"
-                    //         >
-                    //           <HorizontalTabs
-                    //             size="sm"
-                    //             key="market:script-type:container"
-                    //             baseId="market:script-type"
-                    //             tabs={Object.values(MarketScriptType)}
-                    //             activeTab={scriptType}
-                    //             setter={setScriptType}
-                    //           />
-                    //           {propsActionsDecoderEnterMarket.isLoading ? (
-                    //             <div className="flex h-16 w-full flex-col place-content-center items-center">
-                    //               <LoadingSpinner className="h-5 w-5" />
-                    //             </div>
-                    //           ) : (
-                    //             <ActionFlow
-                    //               className={cn(BASE_MARGIN_TOP.SM)}
-                    //               size="sm"
-                    //               actions={
-                    //                 scriptType ===
-                    //                 MarketScriptType.enter_actions.id
-                    //                   ? (propsActionsDecoderEnterMarket.data ??
-                    //                     [])
-                    //                   : (propsActionsDecoderExitMarket.data ?? [])
-                    //               }
-                    //             />
-                    //           )}
-                    //         </HoverCardContent>
-                    //       </HoverCard>
-                    //       <InfoTip {...INFO_TIP_PROPS}>
-                    //         Details of the market recipe
-                    //       </InfoTip>
-                    //     </InfoCard.Row.Value>
-                    //   </InfoCard.Row>
-                    // )
-                  }
 
                   {/**
                    * @info Reward Style
@@ -413,50 +295,26 @@ export const MarketInfo = React.forwardRef<
                   )}
 
                   {/**
-                   * @info Input Token
-                   */}
-                  {/* <InfoCard.Row className={INFO_ROW_CLASSES}>
-                    <InfoCard.Row.Key>Accepts</InfoCard.Row.Key>
-                    <InfoCard.Row.Value>
-                      <TokenDisplayer
-                        size={4}
-                        hover
-                        bounce
-                        tokens={[currentMarketData.input_token_data]}
-                        symbols={true}
-                      />
-                      <InfoTip {...INFO_TIP_PROPS}>
-                        Token that can be deposited in the market
-                      </InfoTip>
-                    </InfoCard.Row.Value>
-                  </InfoCard.Row> */}
-
-                  {/**
                    * @info Incentives
                    */}
                   {
                     <InfoCard.Row className={INFO_ROW_CLASSES}>
-                      <InfoCard.Row.Key>Total Incentives</InfoCard.Row.Key>
+                      <InfoCard.Row.Key>Incentives Remaining</InfoCard.Row.Key>
                       <InfoCard.Row.Value>
-                        {/* <TokenDisplayer
-                    size={4}
-                    hover
-                    bounce
-                    tokens={currentMarketData.incentive_tokens_data}
-                    symbols={false}
-                    className="-mr-1"
-                  /> */}
-
                         {Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: "USD",
-                          notation: "compact",
+                          notation: "standard",
                           useGrouping: true,
                         }).format(
                           currentMarketData.total_incentive_amounts_usd ?? 0
                         )}
 
-                        <InfoTip {...INFO_TIP_PROPS}>Incentives</InfoTip>
+                        <InfoTip {...INFO_TIP_PROPS}>
+                          {marketMetadata.market_type === MarketType.recipe.id
+                            ? "Remaining incentives in all IP offers"
+                            : "Remaining incentives in a present or future campaign"}
+                        </InfoTip>
                       </InfoCard.Row.Value>
                     </InfoCard.Row>
                   }
@@ -471,11 +329,13 @@ export const MarketInfo = React.forwardRef<
                         {Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: "USD",
-                          notation: "compact",
+                          notation: "standard",
                           useGrouping: true,
                         }).format(currentMarketData.locked_quantity_usd ?? 0)}
                         <InfoTip {...INFO_TIP_PROPS}>
-                          Total Value Locked
+                          {marketMetadata.market_type === MarketType.recipe.id
+                            ? "Value of all input tokens locked inside weiroll wallets"
+                            : "Value of all input tokens deposited in underlying vault through Royco"}
                         </InfoTip>
                       </InfoCard.Row.Value>
                     </InfoCard.Row>
@@ -556,35 +416,6 @@ export const MarketInfo = React.forwardRef<
                   )}
 
                   <InfoCard.Row className={INFO_ROW_CLASSES}>
-                    <InfoCard.Row.Key>Market Deployer</InfoCard.Row.Key>
-
-                    <InfoCard.Row.Value>
-                      <Link
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={getExplorerUrl({
-                          chainId: marketMetadata.chain_id,
-                          type: "address",
-                          value: currentMarketData.creator ?? "",
-                        })}
-                        className="flex items-center gap-1"
-                      >
-                        {
-                          // @ts-ignore
-                          currentMarketData.creator.slice(0, 6) +
-                            "..." +
-                            // @ts-ignore
-                            currentMarketData.creator.slice(-4)
-                        }
-                        <ExternalLinkIcon
-                          strokeWidth={1.5}
-                          className={cn("h-5 w-5 p-[0.1rem] text-secondary")}
-                        />
-                      </Link>
-                    </InfoCard.Row.Value>
-                  </InfoCard.Row>
-
-                  <InfoCard.Row className={INFO_ROW_CLASSES}>
                     <InfoCard.Row.Key>Input Token</InfoCard.Row.Key>
 
                     <InfoCard.Row.Value>
@@ -620,37 +451,6 @@ export const MarketInfo = React.forwardRef<
                       </Link>
                     </InfoCard.Row.Value>
                   </InfoCard.Row>
-
-                  {/**
-                   * @info Lockup Time
-                   */}
-                  {
-                    // marketMetadata.market_type === MarketType.recipe.id && (
-                    // <InfoCard.Row className={INFO_ROW_CLASSES}>
-                    //   <InfoCard.Row.Key>Lockup Time</InfoCard.Row.Key>
-                    //   <InfoCard.Row.Value className="capitalize">
-                    //     {formatDuration(
-                    //       Object.entries(
-                    //         secondsToDuration(currentMarketData.lockup_time)
-                    //       )
-                    //         .filter(([_, value]) => value > 0) // Filter out zero values
-                    //         .slice(0, 2) // Take the first two non-zero units
-                    //         .reduce(
-                    //           (acc, [unit, value]) => ({
-                    //             ...acc,
-                    //             [unit]: value,
-                    //           }),
-                    //           {}
-                    //         )
-                    //     )}
-                    //     {currentMarketData.lockup_time === "0" && "0 seconds"}
-                    //     <InfoTip {...INFO_TIP_PROPS}>
-                    //       Time duration for which assets must be deposited for
-                    //     </InfoTip>
-                    //   </InfoCard.Row.Value>
-                    // </InfoCard.Row>
-                    // )
-                  }
                 </InfoCard>
 
                 {/* <div className="mt-3 flex flex-row flex-wrap items-center gap-2">
@@ -716,6 +516,184 @@ export const MarketInfo = React.forwardRef<
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        {/**
+         * Annual Incentive Percent
+         */}
+        <div className={cn(BASE_PADDING)}>
+          <TertiaryLabel>INCENTIVES</TertiaryLabel>
+
+          <div
+            className={cn(
+              "flex gap-4",
+              BASE_MARGIN_TOP.MD,
+              marketMetadata.market_type === MarketType.recipe.id &&
+                currentMarketData.lockup_time !== "0"
+                ? "flex-col"
+                : "flex-row",
+              viewType === MarketViewType.advanced.id &&
+                marketMetadata.market_type === MarketType.recipe.id &&
+                currentMarketData.lockup_time !== "0"
+                ? "md:flex-col"
+                : "md:flex-row"
+            )}
+          >
+            {/**
+             * Market Balance
+             */}
+            {placeholderData[1] && placeholderData[1].balance_usd_ap > 0 && (
+              <div className="hide-scrollbar flex flex-1 overflow-x-scroll">
+                <div className="hide-scrollbar flex-1 flex-col overflow-x-scroll rounded-xl border bg-z2 p-3">
+                  <SecondaryLabel>Balance</SecondaryLabel>
+                  <PrimaryLabel
+                    className={cn(BASE_MARGIN_TOP.SM, "text-3xl font-light")}
+                  >
+                    <SpringNumber
+                      previousValue={
+                        placeholderData[0]
+                          ? placeholderData[0].balance_usd_ap
+                          : 0
+                      }
+                      currentValue={
+                        placeholderData[1]
+                          ? placeholderData[1].balance_usd_ap
+                          : 0
+                      }
+                      numberFormatOptions={{
+                        style: "currency",
+                        currency: "USD",
+                        notation: "compact",
+                        useGrouping: true,
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }}
+                    />
+                  </PrimaryLabel>
+                </div>
+              </div>
+            )}
+
+            <div className="hide-scrollbar flex flex-1 overflow-x-scroll rounded-xl border bg-z2">
+              {/**
+               * Market APR
+               */}
+              <div className="hide-scrollbar flex-1 overflow-x-scroll p-3">
+                <SecondaryLabel>APR</SecondaryLabel>
+                <PrimaryLabel
+                  className={cn(BASE_MARGIN_TOP.SM, "text-3xl font-light")}
+                >
+                  <SpringNumber
+                    previousValue={
+                      previousMarketData &&
+                      previousMarketData.annual_change_ratio
+                        ? previousMarketData.annual_change_ratio
+                        : 0
+                    }
+                    currentValue={currentMarketData.annual_change_ratio ?? 0}
+                    numberFormatOptions={{
+                      style: "percent",
+                      notation: "compact",
+                      useGrouping: true,
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }}
+                  />
+                </PrimaryLabel>
+              </div>
+
+              {/**
+               * Market Lockup Time
+               */}
+              {marketMetadata.market_type === MarketType.recipe.id &&
+                currentMarketData.lockup_time !== "0" && (
+                  <div className="hide-scrollbar flex-1 overflow-x-scroll border-l p-3">
+                    <SecondaryLabel>
+                      {currentMarketData.reward_style ===
+                      MarketRewardStyle.forfeitable.value ? (
+                        <div className="flex items-center gap-1">
+                          Forfeitable
+                          <InfoTip {...INFO_TIP_PROPS} className="break-normal">
+                            Rewards paid out after time period. Exit allowed at
+                            anytime, but ALL rewards will be forfeited for early
+                            exit.
+                          </InfoTip>
+                        </div>
+                      ) : (
+                        "Lockup"
+                      )}
+                    </SecondaryLabel>
+                    <PrimaryLabel
+                      className={cn(
+                        BASE_MARGIN_TOP.SM,
+                        "text-3xl font-light capitalize"
+                      )}
+                    >
+                      {formatDuration(
+                        Object.entries(
+                          secondsToDuration(currentMarketData.lockup_time)
+                        )
+                          .filter(([_, value]) => value > 0) // Filter out zero values
+                          .slice(0, 2) // Take the first two non-zero units
+                          .reduce(
+                            (acc, [unit, value]) => ({ ...acc, [unit]: value }),
+                            {}
+                          )
+                      )}
+                    </PrimaryLabel>
+                  </div>
+                )}
+            </div>
+          </div>
+
+          <IncentiveInfo className="px-0" />
+
+          {/**
+           * Currently hidden
+           */}
+          {/* {marketMetadata.market_type === MarketType.recipe.id && (
+            <HoverCard openDelay={0} closeDelay={500}>
+              <HoverCardTrigger className={cn("flex w-32")}>
+                <SecondaryLabel
+                  className={cn(BASE_MARGIN_TOP.MD, BASE_UNDERLINE.MD, "w-fit")}
+                >
+                  Recipe Details
+                </SecondaryLabel>
+              </HoverCardTrigger>
+
+              <HoverCardContent
+                sideOffset={10}
+                side="right"
+                align="start"
+                className="w-80 p-2"
+              >
+                <HorizontalTabs
+                  size="sm"
+                  key="market:script-type:container"
+                  baseId="market:script-type"
+                  tabs={Object.values(MarketScriptType)}
+                  activeTab={scriptType}
+                  setter={setScriptType}
+                />
+
+                {propsActionsDecoderEnterMarket.isLoading ? (
+                  <div className="flex h-16 w-full flex-col place-content-center items-center">
+                    <LoadingSpinner className="h-5 w-5" />
+                  </div>
+                ) : (
+                  <ActionFlow
+                    className={cn(BASE_MARGIN_TOP.SM)}
+                    size="sm"
+                    actions={
+                      scriptType === MarketScriptType.enter_actions.id
+                        ? propsActionsDecoderEnterMarket.data ?? []
+                        : propsActionsDecoderExitMarket.data ?? []
+                    }
+                  />
+                )}
+              </HoverCardContent>
+            </HoverCard>
+          )} */}
         </div>
       </div>
     );

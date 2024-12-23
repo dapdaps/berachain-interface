@@ -9,3 +9,5 @@ export * from "./incentives-amount-selector";
 export * from "./action-type-selector";
 export * from "./incentives-rate-selector";
 export * from "./input-expiry-selector";
+export * from "./incentive-assets-selector";
+export * from "./ip-quantity-indicator";

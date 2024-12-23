@@ -21,6 +21,7 @@ export const MarketActionFormSchema = z.object({
       decimals: z.number(),
       amount: z.string().optional(),
       raw_amount: z.string().optional(),
+      price: z.number().optional(),
 
       start_timestamp: z.date().optional(),
       end_timestamp: z.date().optional(),
@@ -33,6 +34,20 @@ export const MarketActionFormSchema = z.object({
       annual_incentive_rate: z.string().optional(),
     })
   ),
+
+  incentive_assets: z
+    .array(
+      z.object({
+        id: z.string(),
+        chain_id: z.number(),
+        contract_address: z.string(),
+        name: z.string(),
+        symbol: z.string(),
+        image: z.string(),
+        decimals: z.number(),
+      })
+    )
+    .optional(),
 
   expiry: z.date().optional(),
   no_expiry: z.boolean().default(false),

@@ -1,7 +1,7 @@
 import React from "react";
 import cn from 'clsx';
-import { parseFormattedValueToText } from "@/sdk/utils";
-import { parseTextToFormattedValue } from "@/sdk/utils";
+import { parseFormattedValueToText } from "royco/utils";
+import { parseTextToFormattedValue } from "royco/utils";
 import { Input } from "@/components/ui/input";
 
 export const InputAmountSelector = React.forwardRef<
@@ -12,16 +12,25 @@ export const InputAmountSelector = React.forwardRef<
     containerClassName?: string;
     Prefix?: React.FC;
     Suffix?: React.FC;
+    disabled?: boolean;
   }
 >(
   (
-    { className, currentValue, setCurrentValue, containerClassName, ...props },
+    {
+      className,
+      currentValue,
+      setCurrentValue,
+      containerClassName,
+      disabled,
+      ...props
+    },
     ref
   ) => {
     return (
       <Input
         ref={ref}
         type="text"
+        disabled={disabled}
         containerClassName={cn(
           "h-9 text-sm bg-white rounded-lg grow",
           containerClassName

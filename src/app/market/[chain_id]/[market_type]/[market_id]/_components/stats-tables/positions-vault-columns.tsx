@@ -3,12 +3,12 @@ import { TokenDisplayer } from "@/components/common";
 import React from "react";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { EnrichedOfferDataType } from "@/sdk/queries";
+import { EnrichedOfferDataType } from "royco/queries";
 
 import { BASE_UNDERLINE, SecondaryLabel } from "../composables";
 import { formatDistanceToNow } from "date-fns";
 import { MarketUserType, RewardStyleMap } from "@/stores";
-import { RoycoMarketOfferType, RoycoMarketUserType } from "@/sdk/market";
+import { RoycoMarketOfferType, RoycoMarketUserType } from "royco/market";
 
 /**
  * @description Column definitions for the table
@@ -58,15 +58,54 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
   //     );
   //   },
   // },
+  // {
+  //   accessorKey: "annual_change_ratio",
+  //   enableResizing: false,
+  //   enableSorting: false,
+  //   header: "APR",
+  //   meta: {
+  //     className: "min-w-24",
+  //   },
+  //   cell: (props: any) => {
+  //     return (
+  //       <div
+  //         className={cn(
+  //           "flex flex-col items-start gap-[0.2rem] font-gt text-sm font-300"
+  //         )}
+  //       >
+  //         <SecondaryLabel className="text-black">
+  //           {Intl.NumberFormat("en-US", {
+  //             style: "percent",
+  //             notation: "compact",
+  //             useGrouping: true,
+  //             minimumFractionDigits: 2,
+  //             maximumFractionDigits: 2,
+  //           }).format(props.row.original.annual_change_ratio)}
+  //         </SecondaryLabel>
+  //       </div>
+  //     );
+  //   },
+  // },
+
   {
-    accessorKey: "annual_change_ratio",
+    accessorKey: "market_value",
     enableResizing: false,
     enableSorting: false,
-    header: "APR",
+    header: "Market Value",
     meta: {
-      className: "min-w-24",
+      className: "min-w-32",
     },
     cell: (props: any) => {
+      const input_token_value =
+        props.row.original.input_token_data.token_amount_usd;
+
+      const tokens_value = props.row.original.tokens_data.reduce(
+        (acc: number, token: any) => acc + token.token_amount_usd,
+        0
+      );
+
+      const market_value = input_token_value + tokens_value;
+
       return (
         <div
           className={cn(
@@ -75,85 +114,14 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
         >
           <SecondaryLabel className="text-black">
             {Intl.NumberFormat("en-US", {
-              style: "percent",
-              notation: "compact",
+              style: "currency",
+              currency: "USD",
+              notation: "standard",
               useGrouping: true,
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(props.row.original.annual_change_ratio)}
+              maximumFractionDigits: 8,
+            }).format(market_value)}
           </SecondaryLabel>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "reward_style",
-    enableResizing: false,
-    enableSorting: false,
-    header: "Incentive Payout",
-    meta: {
-      className: "min-w-32",
-    },
-    cell: (props: any) => {
-      return (
-        <div
-          className={cn(
-            "flex flex-col items-start gap-[0.2rem] font-gt text-sm font-300"
-          )}
-        >
-          <SecondaryLabel className="text-black">Streaming</SecondaryLabel>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "tokens_data",
-    enableResizing: false,
-    enableSorting: false,
-    header: "Incentives",
-    meta: {
-      className: "min-w-36",
-    },
-    cell: (props: any) => {
-      return (
-        <div
-          className={cn(
-            "flex flex-col gap-[0.2rem] pr-3 font-gt text-sm font-300"
-          )}
-        >
-          {props.row.original.tokens_data.length === 0 && (
-            <div className="flex items-center space-x-2">None</div>
-          )}
-
-          {props.row.original.tokens_data.map(
-            (
-              // @ts-ignore
-              token,
-              // @ts-ignore
-              tokenIndex
-            ) => {
-              return (
-                <div
-                  key={`${props.row.original.id}:incentives:${token.id}`}
-                  className="flex items-center space-x-2"
-                >
-                  <div className="h-4">
-                    <span className="leading-5">
-                      {Intl.NumberFormat("en-US", {
-                        style: "decimal",
-                        notation: "compact",
-                        useGrouping: true,
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 8,
-                      }).format(token.token_amount)}
-                    </span>
-                  </div>
-
-                  <TokenDisplayer size={4} tokens={[token]} symbols={true} />
-                </div>
-              );
-            }
-          )}
         </div>
       );
     },
@@ -162,7 +130,7 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
     accessorKey: "input_token_data",
     enableResizing: false,
     enableSorting: false,
-    header: "Cost",
+    header: "Supplied Balance",
     meta: {
       className: "min-w-32",
     },
@@ -177,7 +145,7 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
             {Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
-              notation: "compact",
+              notation: "standard",
               useGrouping: true,
               minimumFractionDigits: 2,
               maximumFractionDigits: 8,
@@ -188,7 +156,7 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
             <SecondaryLabel className="text-tertiary">
               {Intl.NumberFormat("en-US", {
                 style: "decimal",
-                notation: "compact",
+                notation: "standard",
                 useGrouping: true,
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 8,
@@ -200,6 +168,78 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
       );
     },
   },
+  // {
+  //   accessorKey: "tokens_data",
+  //   enableResizing: false,
+  //   enableSorting: false,
+  //   header: "Incentives",
+  //   meta: {
+  //     className: "min-w-36",
+  //   },
+  //   cell: (props: any) => {
+  //     return (
+  //       <div
+  //         className={cn(
+  //           "flex flex-col gap-[0.2rem] pr-3 font-gt text-sm font-300"
+  //         )}
+  //       >
+  //         {props.row.original.tokens_data.length === 0 && (
+  //           <div className="flex items-center space-x-2">None</div>
+  //         )}
+
+  //         {props.row.original.tokens_data.map(
+  //           (
+  //             // @ts-ignore
+  //             token,
+  //             // @ts-ignore
+  //             tokenIndex
+  //           ) => {
+  //             return (
+  //               <div
+  //                 key={`${props.row.original.id}:incentives:${token.id}`}
+  //                 className="flex items-center space-x-2"
+  //               >
+  //                 <div className="h-4">
+  //                   <span className="leading-5">
+  //                     {Intl.NumberFormat("en-US", {
+  //                       style: "decimal",
+  //                       notation: "standard",
+  //                       useGrouping: true,
+  //                       minimumFractionDigits: 2,
+  //                       maximumFractionDigits: 8,
+  //                     }).format(token.token_amount)}
+  //                   </span>
+  //                 </div>
+
+  //                 <TokenDisplayer size={4} tokens={[token]} symbols={true} />
+  //               </div>
+  //             );
+  //           }
+  //         )}
+  //       </div>
+  //     );
+  //   },
+  // },
+  // {
+  //   accessorKey: "reward_style",
+  //   enableResizing: false,
+  //   enableSorting: false,
+  //   header: "Incentive Payout",
+  //   meta: {
+  //     className: "min-w-32",
+  //   },
+  //   cell: (props: any) => {
+  //     return (
+  //       <div
+  //         className={cn(
+  //           "flex flex-col items-start gap-[0.2rem] font-gt text-sm font-300"
+  //         )}
+  //       >
+  //         <SecondaryLabel className="text-black">Streaming</SecondaryLabel>
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "unclaimed_incentives",
     enableResizing: false,
@@ -237,7 +277,7 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
               {Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-                notation: "compact",
+                notation: "standard",
                 useGrouping: true,
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 8,
@@ -255,7 +295,7 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
                       <SecondaryLabel className="text-tertiary">
                         {Intl.NumberFormat("en-US", {
                           style: "decimal",
-                          notation: "compact",
+                          notation: "standard",
                           useGrouping: true,
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 8,
@@ -270,45 +310,6 @@ export const positionsVaultColumns: ColumnDef<EnrichedOfferDataType> = [
           </div>
         );
       }
-    },
-  },
-  {
-    accessorKey: "market_value",
-    enableResizing: false,
-    enableSorting: false,
-    header: "Market Value",
-    meta: {
-      className: "min-w-32",
-    },
-    cell: (props: any) => {
-      const input_token_value =
-        props.row.original.input_token_data.token_amount_usd;
-
-      const tokens_value = props.row.original.tokens_data.reduce(
-        (acc: number, token: any) => acc + token.token_amount_usd,
-        0
-      );
-
-      const market_value = input_token_value + tokens_value;
-
-      return (
-        <div
-          className={cn(
-            "flex flex-col items-start gap-[0.2rem] font-gt text-sm font-300"
-          )}
-        >
-          <SecondaryLabel className="text-black">
-            {Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-              notation: "compact",
-              useGrouping: true,
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 8,
-            }).format(market_value)}
-          </SecondaryLabel>
-        </div>
-      );
     },
   },
 ];

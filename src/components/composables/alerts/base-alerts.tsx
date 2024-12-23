@@ -20,7 +20,7 @@ export const ErrorAlert = React.forwardRef<
         transition={{ duration: 0.2, ease: "easeInOut" }}
         // ref={ref}
         className={cn(
-          "flex w-fit max-w-lg items-center gap-2 rounded-xl border border-divider bg-error bg-opacity-80 px-3 py-2 text-black drop-shadow-sm backdrop-blur-md",
+          "flex w-fit max-w-lg items-center gap-2 rounded-xl border border-divider bg-[#eb3c27] bg-opacity-80 px-3 py-2 text-black drop-shadow-sm backdrop-blur-md",
           className
         )}
         // {...props}

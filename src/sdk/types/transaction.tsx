@@ -1,5 +1,5 @@
-import { SupportedToken } from "../constants";
-import { TypedRoycoMarketType } from "../market";
+import type { SupportedToken } from "@/sdk/constants";
+import type { TypedRoycoMarketType } from "@/sdk/market";
 
 export type TransactionOptionsType = {
   contractId: string;

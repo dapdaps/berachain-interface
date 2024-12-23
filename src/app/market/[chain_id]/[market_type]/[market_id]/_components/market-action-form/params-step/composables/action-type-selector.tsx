@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import cn from 'clsx';
 import { FormInputLabel } from "@/components/composables";
 import { MarketOfferType, MarketVaultIncentiveAction } from "@/stores";
@@ -10,7 +10,9 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { FallMotion } from "@/components/animation";
-import { TypedRoycoMarketVaultIncentiveAction } from "@/sdk/market";
+import { TypedRoycoMarketVaultIncentiveAction } from "royco/market";
+import { useActiveMarket } from "../../../hooks";
+import { BigNumber } from "ethers";
 
 export const ActionTypeSelector = React.forwardRef<
   HTMLDivElement,
@@ -18,6 +20,43 @@ export const ActionTypeSelector = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const { vaultIncentiveActionType, setVaultIncentiveActionType } =
     useMarketManager();
+
+  const { currentMarketData } = useActiveMarket();
+
+  let availableActionTypes = [MarketVaultIncentiveAction.add];
+
+  if (
+    currentMarketData?.base_incentive_ids &&
+    currentMarketData.base_incentive_ids.length > 0
+  ) {
+    let availableIncentivesThatCanBeRefunded =
+      currentMarketData.base_incentive_ids.filter((incentive_id, index) => {
+        const currentTimestamp = BigNumber.from(Math.floor(Date.now() / 1000));
+        const startTimestamp = BigNumber.from(
+          currentMarketData.base_start_timestamps![index] ?? "0"
+        );
+
+        if (currentTimestamp.lt(startTimestamp)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+    if (availableIncentivesThatCanBeRefunded.length > 0) {
+      availableActionTypes = [
+        MarketVaultIncentiveAction.add,
+        MarketVaultIncentiveAction.extend,
+        MarketVaultIncentiveAction.refund,
+      ];
+    } else {
+      availableActionTypes = [
+        MarketVaultIncentiveAction.add,
+        MarketVaultIncentiveAction.extend,
+      ];
+    }
+  }
+
   return (
     <div ref={ref} className={cn("", className)} {...props}>
       <FormInputLabel
@@ -57,7 +96,7 @@ export const ActionTypeSelector = React.forwardRef<
         </SelectTrigger>
 
         <SelectContent className="w-full">
-          {Object.values(MarketVaultIncentiveAction).map((option) => (
+          {availableActionTypes.map((option) => (
             <SelectItem className="text-sm" key={option.id} value={option.id}>
               {option.label}
             </SelectItem>

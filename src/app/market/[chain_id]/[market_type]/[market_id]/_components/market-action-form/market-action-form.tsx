@@ -13,25 +13,35 @@ import {
 import { useActiveMarket } from "../hooks";
 import { MarketActionType, MarketOfferType, MarketType } from "@/stores";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BaseFundingVault, useTokenQuotes } from "@/sdk/hooks";
+import { useTokenQuotes } from "@/sdk/hooks";
 import {
+  BASE_MARGIN_TOP,
+  BASE_PADDING_BOTTOM,
+  BASE_PADDING_LEFT,
+  BASE_PADDING_RIGHT,
+  BASE_PADDING_TOP,
   BASE_UNDERLINE,
   SecondaryLabel,
   TertiaryLabel,
 } from "../composables";
 import { Button } from "@/components/ui/button";
 import { ErrorAlert, HorizontalTabs } from "@/components/composables";
-import toast from "react-hot-toast";
 import { useAccount, useSwitchChain } from "wagmi";
+
 import { ParamsStep } from "./params-step";
 import { PreviewStep } from "./preview-step";
 import { ChevronLeftIcon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { WithdrawSection } from "./withdraw-section"; // @todo fix it
+import { AlertIndicator } from "@/components/common";
 import { useMarketFormDetails } from "./use-market-form-details";
+import { RoycoMarketVaultIncentiveAction } from "royco/market";
 import { SlideUpWrapper } from "@/components/animation";
 import { OfferTypeSelector } from "./offer-type-selector";
+import { NULL_ADDRESS } from "royco/constants";
 import { MarketActionFormSchema } from "./market-action-form-schema";
 import { useAppKit } from '@reown/appkit/react';
+import useToast from '@/hooks/use-toast';
 
 export const MarketActionForm = React.forwardRef<
   HTMLDivElement,
@@ -49,16 +59,19 @@ export const MarketActionForm = React.forwardRef<
     viewType,
     offerType,
     setOfferType,
+    setViewType,
+    vaultIncentiveActionType,
   } = useMarketManager();
-  const { address, isConnected, chainId } = useAccount();
-  const modal = useAppKit();
 
   const { currentMarketData, marketMetadata } = useActiveMarket();
 
-  const { chains, switchChain } = useSwitchChain();
+  const { address, isConnected, chainId } = useAccount();
+  const modal = useAppKit();
+  const { switchChain } = useSwitchChain();
+  const toast = useToast()
 
   const marketActionForm = useForm<z.infer<typeof MarketActionFormSchema>>({
-    resolver: zodResolver(MarketActionFormSchema as any),
+    resolver: zodResolver(MarketActionFormSchema),
     defaultValues: {
       funding_vault: "" as string,
       incentive_tokens: [],
@@ -87,10 +100,7 @@ export const MarketActionForm = React.forwardRef<
     try {
       if (!isConnected) {
         modal.open();
-      } else if (
-        // @ts-ignore
-        chainId !== marketMetadata.chain_id
-      ) {
+      } else if (chainId !== marketMetadata.chain_id) {
         try {
           await switchChain({
             chainId: marketMetadata.chain_id,
@@ -100,7 +110,10 @@ export const MarketActionForm = React.forwardRef<
         if (isValid.status) {
           onSubmit(marketActionForm.getValues());
         } else {
-          toast.custom(<ErrorAlert message={isValid.message} />);
+          toast.fail({
+            title: 'Validation Error',
+            text: isValid.message
+          });
         }
       } else if (
         marketStep === MarketSteps.preview.id &&
@@ -109,17 +122,17 @@ export const MarketActionForm = React.forwardRef<
         setTransactions(writeContractOptions);
       }
     } catch (error) {
-      toast.custom(<ErrorAlert message="Error submitting offer" />);
+      toast.fail({
+        title:  'Submission Error',
+        text: 'Error submitting offer'
+      });
     }
   };
 
   const nextLabel = () => {
     if (!address) {
       return "Connect wallet";
-    } else if (
-      // @ts-ignore
-      chainId !== marketMetadata.chain_id
-    ) {
+    } else if (chainId !== marketMetadata.chain_id) {
       return "Switch chain";
     } else if (marketStep === MarketSteps.params.id) {
       return "Supply Now";
@@ -138,6 +151,7 @@ export const MarketActionForm = React.forwardRef<
 
   useEffect(() => {
     if (viewType === MarketViewType.simple.id) {
+      setOfferType(MarketOfferType.market.id);
       setUserType(MarketUserType.ap.id);
     }
   }, [viewType]);
@@ -151,13 +165,29 @@ export const MarketActionForm = React.forwardRef<
     }
   }, [userType]);
 
+  const resetCurrentIncentivesArray = () => {
+    marketActionForm.setValue("incentive_tokens", []);
+  };
+
+  useEffect(() => {
+    resetCurrentIncentivesArray();
+  }, [vaultIncentiveActionType]);
+
+  useEffect(() => {
+    marketActionForm.reset({
+      funding_vault: "" as string,
+      incentive_tokens: [],
+      no_expiry: true,
+    });
+  }, [userType, offerType]);
+
   if (!!currentMarketData) {
     return (
       <div
         key={`market-action-form:container:${marketStep}:${viewType}`}
         ref={ref}
         className={cn(
-          "flex w-full shrink-0 grow flex-col",
+          "flex w-full shrink-0 flex-col",
           "overflow-hidden",
           className
         )}
@@ -257,7 +287,7 @@ export const MarketActionForm = React.forwardRef<
           userType === MarketUserType.ap.id && (
             <SlideUpWrapper
               layout="position"
-              layoutId="motion:market:action-type"
+              layoutId={`motion:market:action-type:${viewType}`}
               className={cn("mt-5 flex flex-col px-5")}
             >
               <HorizontalTabs
@@ -272,8 +302,9 @@ export const MarketActionForm = React.forwardRef<
             </SlideUpWrapper>
           )}
 
-        {/* {marketStep === MarketSteps.params.id &&
-          actionType === MarketActionType.supply.id && (
+        {marketStep === MarketSteps.params.id &&
+          actionType === MarketActionType.supply.id &&
+          viewType === MarketViewType.advanced.id && (
             <SlideUpWrapper
               layout="position"
               layoutId="motion:market:offer-type-selector"
@@ -281,7 +312,7 @@ export const MarketActionForm = React.forwardRef<
             >
               <OfferTypeSelector />
             </SlideUpWrapper>
-          )} */}
+          )}
 
         {/**
          * Withdraw Section (Input Token / Incentives)
@@ -319,7 +350,14 @@ export const MarketActionForm = React.forwardRef<
          * Action Button
          */}
         {actionType === MarketActionType.supply.id && (
-          <SlideUpWrapper className={cn("mt-5 shrink-0 px-5 pb-5")}>
+          // <AnimatePresence mode="popLayout">
+          //   <motion.div
+          //     className={cn("mt-5 shrink-0 px-5 pb-5")}
+          //     initial={{ opacity: 0 }}
+          //     animate={{ opacity: 1 }}
+          //     transition={{ duration: 0.5, ease: "easeInOut" }}
+          //   >
+          <div className={cn("mt-5 shrink-0 px-5 pb-5")}>
             <Button
               disabled={
                 marketStep === MarketSteps.preview.id &&
@@ -336,7 +374,67 @@ export const MarketActionForm = React.forwardRef<
             >
               {nextLabel()}
             </Button>
-          </SlideUpWrapper>
+
+            {offerType === MarketOfferType.market.id &&
+              userType === MarketUserType.ap.id &&
+              !(
+                marketMetadata.market_type === MarketType.vault.id &&
+                !!currentMarketData &&
+                !!currentMarketData.base_incentive_ids &&
+                currentMarketData.base_incentive_ids.length < 1
+              ) && (
+                <Button
+                  disabled={
+                    offerType === MarketOfferType.limit.id ||
+                    userType === MarketUserType.ip.id ||
+                    (marketMetadata.market_type === MarketType.vault.id &&
+                      !!currentMarketData &&
+                      !!currentMarketData.base_incentive_ids &&
+                      currentMarketData.base_incentive_ids.length < 1)
+                  }
+                  onClick={async () => {
+                    setOfferType(MarketOfferType.limit.id);
+
+                    if (typeof window !== "undefined") {
+                      localStorage.setItem(
+                        "royco_market_view_type",
+                        MarketViewType.advanced.id
+                      );
+                    }
+
+                    setViewType(MarketViewType.advanced.id);
+                  }}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                  className={cn(
+                    BASE_MARGIN_TOP.SM,
+                    "w-full shrink-0 place-content-center"
+                  )}
+                >
+                  Bid for More Incentives
+                </Button>
+              )}
+
+            {userType === MarketUserType.ip.id &&
+              marketStep === MarketSteps.preview.id && (
+                <p className="mt-5 text-center text-sm text-tertiary">
+                  Royco takes a fee only when an offer is filled. See more on
+                  fee breakdown{" "}
+                  <a
+                    href="https://docs.royco.org/for-incentive-providers/fees-on-royco"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary"
+                  >
+                    here
+                  </a>
+                </p>
+              )}
+          </div>
+
+          //   </motion.div>
+          // </AnimatePresence>
         )}
       </div>
     );

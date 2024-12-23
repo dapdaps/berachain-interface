@@ -12,7 +12,7 @@ export const WarningBox = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex flex-col rounded-xl bg-error p-5 font-gt text-sm font-300 text-white",
+        "flex flex-col rounded-xl bg-[#eb3c27] p-5 font-gt text-sm font-300 text-white",
         className
       )}
     >

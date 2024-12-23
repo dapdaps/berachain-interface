@@ -3,8 +3,7 @@
 import React, { Fragment } from "react";
 import cn from 'clsx';
 import { AnimatePresence, motion } from "framer-motion";
-import { MarketIncentiveType } from "@/stores/market-manager-props";
-import { useMarketManager } from "@/stores/use-market-manager";
+import { MarketIncentiveType, useMarketManager } from "@/stores";
 
 const Tabs = Object.values(MarketIncentiveType);
 

@@ -18,7 +18,7 @@ import { useVaultAPMarketOffer } from "./use-vault-ap-market-offer";
 import { useVaultAPLimitOffer } from "./use-vault-ap-limit-offer";
 import { useVaultIPMarketOffer } from "./use-vault-ip-market-offer";
 import { useVaultIPAddIncentives } from "./use-vault-ip-add-incentives";
-import { MarketVaultIncentiveAction } from "@/stores/market-manager-props";
+import { MarketVaultIncentiveAction } from "@/stores";
 import { useVaultIPExtendIncentives } from "./use-vault-ip-extend-incentives";
 import { useVaultIPRefundIncentives } from "./use-vault-ip-refund-incentives";
 
@@ -78,6 +78,7 @@ export const usePrepareMarketAction = ({
   vault_incentive_action,
   offer_validation_url,
   frontend_fee_recipient,
+  incentive_asset_ids,
 }: {
   chain_id: number;
   market_id: string;
@@ -102,9 +103,9 @@ export const usePrepareMarketAction = ({
   vault_incentive_action?: TypedRoycoMarketVaultIncentiveAction;
   offer_validation_url: string;
   frontend_fee_recipient?: string;
+  incentive_asset_ids?: string[];
 }) => {
   const action_type = `${market_type}-${user_type}-${offer_type}`;
-
   const propsRecipeAPMarketOffer = useRecipeAPMarketOffer({
     chain_id,
     market_id,
@@ -124,6 +125,7 @@ export const usePrepareMarketAction = ({
     quantity,
     custom_token_data,
     offer_validation_url,
+    incentive_asset_ids,
     enabled: action_type === PrepareMarketActionType.RecipeIPMarketOffer,
   });
 
@@ -169,6 +171,7 @@ export const usePrepareMarketAction = ({
     quantity,
     custom_token_data,
     frontend_fee_recipient,
+    offer_validation_url,
     enabled: action_type === PrepareMarketActionType.VaultIPMarketOffer,
   });
 
@@ -209,8 +212,7 @@ export const usePrepareMarketAction = ({
     custom_token_data,
     enabled:
       action_type === PrepareMarketActionType.VaultIPLimitOffer &&
-      (vault_incentive_action === MarketVaultIncentiveAction.increase.id ||
-        vault_incentive_action === MarketVaultIncentiveAction.extend.id),
+      vault_incentive_action === MarketVaultIncentiveAction.extend.id,
   });
 
   const propsVaultIPRefundIncentives = useVaultIPRefundIncentives({
@@ -258,8 +260,7 @@ export const usePrepareMarketAction = ({
 
       if (
         !!vault_incentive_action &&
-        (vault_incentive_action === MarketVaultIncentiveAction.increase.id ||
-          vault_incentive_action === MarketVaultIncentiveAction.extend.id)
+        vault_incentive_action === MarketVaultIncentiveAction.extend.id
       ) {
         return propsVaultIPExtendIncentives;
       }

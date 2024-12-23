@@ -1,7 +1,7 @@
 import React from "react";
 import cn from 'clsx';
-import { isSolidityAddressValid, parseFormattedValueToText } from "@/sdk/utils";
-import { parseTextToFormattedValue } from "@/sdk/utils";
+import { isSolidityAddressValid, parseFormattedValueToText } from "royco/utils";
+import { parseTextToFormattedValue } from "royco/utils";
 import { Input } from "@/components/ui/input";
 import { useErc4626VaultChecker } from "@/sdk/hooks";
 import { useActiveMarket } from "../../../hooks";
@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { BadgeCheckIcon } from "lucide-react";
+
 export const InputVaultSelector = React.forwardRef<
   HTMLInputElement,
   React.HTMLAttributes<HTMLDivElement> & {

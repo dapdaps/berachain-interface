@@ -2,7 +2,7 @@ import cn from 'clsx';
 import { TokenDisplayer } from "@/components/common";
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { EnrichedOfferDataType } from "@/sdk/queries";
+import { EnrichedOfferDataType } from "royco/queries";
 import { SecondaryLabel } from "../composables";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -12,17 +12,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { getExplorerUrl } from "@/sdk/utils";
+import { getExplorerUrl } from "royco/utils";
 import { MarketType, MarketUserType, useMarketManager } from "@/stores";
-import { TransactionOptionsType } from "@/sdk/types";
+import { TransactionOptionsType } from "royco/types";
 import { useActiveMarket } from "../hooks";
-import { ContractMap } from "@/sdk/contracts";
 import { BigNumber } from "ethers";
 import {
   getRecipeCancelAPOfferTransactionOptions,
   getRecipeCancelIPOfferTransactionOptions,
 } from "@/sdk/hooks";
-import { getVaultCancelAPOfferTransactionOptions } from "@/sdk/hooks/use-vault-offer-contract-options";
+import { getVaultCancelAPOfferTransactionOptions } from "@/sdk/hooks";
+import { RoycoMarketType } from "royco/market";
 
 /**
  * @description Column definitions for the table
@@ -98,15 +98,33 @@ export const offerColumns: ColumnDef<EnrichedOfferDataType> = [
                     <span className="leading-5">
                       {Intl.NumberFormat("en-US", {
                         style: "decimal",
-                        notation: "compact",
+                        notation: "standard",
                         useGrouping: true,
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 8,
-                      }).format(token.token_amount)}
+                      }).format(
+                        props.row.original.market_type ===
+                          MarketType.recipe.value
+                          ? token.token_amount
+                          : token.rate_per_year
+                      )}
                     </span>
                   </div>
 
-                  <TokenDisplayer size={4} tokens={[token]} symbols={true} />
+                  <TokenDisplayer
+                    size={4}
+                    tokens={[
+                      {
+                        ...token,
+                        symbol:
+                          props.row.original.market_type ===
+                          MarketType.recipe.value
+                            ? token.symbol
+                            : `${token.symbol}/year`,
+                      },
+                    ]}
+                    symbols={true}
+                  />
                 </div>
               );
             }
@@ -134,7 +152,7 @@ export const offerColumns: ColumnDef<EnrichedOfferDataType> = [
             {Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
-              notation: "compact",
+              notation: "standard",
               useGrouping: true,
               minimumFractionDigits: 2,
               maximumFractionDigits: 8,
@@ -144,7 +162,7 @@ export const offerColumns: ColumnDef<EnrichedOfferDataType> = [
           <SecondaryLabel className="text-tertiary">
             {Intl.NumberFormat("en-US", {
               style: "decimal",
-              notation: "compact",
+              notation: "standard",
               useGrouping: true,
               minimumFractionDigits: 2,
               maximumFractionDigits: 8,
