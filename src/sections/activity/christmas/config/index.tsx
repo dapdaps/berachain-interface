@@ -691,7 +691,13 @@ export const NFTs: any = {
   },
   "AZEx Bear": {
     icon: "/images/activity/christmas/nft/AZEx Bear NFT.png"
-  }
+  },
+  "WeBera Finance": {
+    icon: "/images/activity/christmas/nft/Jungle Party.png"
+  },
+  "Rockbera": {
+    icon: "/images/activity/christmas/nft/ROCKBERA NFT.png"
+  },
 };
 
 export const SnowToken = beraB["sfc"];
