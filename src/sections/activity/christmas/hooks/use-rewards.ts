@@ -16,6 +16,9 @@ export default function useRewards() {
       }
       const _list = res.data.rares || [];
       _list.forEach((it: any) => {
+        if (it.name === 'Jungle Party') {
+          it.name = 'WeBera Finance';
+        }
         it.classLogo = NFTs[it.name as string]?.icon;
       });
       setRares(_list);
