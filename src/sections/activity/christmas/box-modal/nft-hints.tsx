@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 export default function NftHints({ nft }: any) {
-  const isToken = ["USDT", "USDC", "iBGT", "SUGAR", "AZT"].includes(nft.name);
+  const isToken = ["USDT", "USDC", "iBGT", "SUGAR", "AZT", "BRA"].includes(nft.name);
   const text = useMemo(() => {
     if (nft.whitelist) {
       return <span>Please send DM to <a href="https://x.com/0xberatown" rel="nofollow" target="_blank" className="underline decoration-solid">@0xberatown</a> on X to claim.</span>;
