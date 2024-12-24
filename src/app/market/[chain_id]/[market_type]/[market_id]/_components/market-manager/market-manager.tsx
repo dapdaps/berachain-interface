@@ -225,7 +225,8 @@ export const MarketManager = React.forwardRef<
                 )}
               />
 
-              <div
+              {/* TODO： 因为当前 royco 还不稳定，所以暂时不支持高级模式 */}
+              {/* <div
                 className={cn(
                   "flex-0",
                   "flex w-full shrink-0 flex-row items-center justify-between border-t border-divider",
@@ -254,20 +255,20 @@ export const MarketManager = React.forwardRef<
                     setViewType(updateViewType);
                   }}
                 />
-              </div>
+              </div> */}
             </Fragment>
           ) : (
             // <MarketForm />
             <Fragment>
-              <div className="h-full w-full divide-y md:flex md:flex-col">
-                <div className="flex h-full w-full flex-col divide-x md:flex-row">
+              <div className="h-full w-full divide-y flex flex-col">
+                <div className="flex h-full w-full flex-col divide-x flex-row">
                   {/**
                    * @info Left section
                    */}
                   <div
                     className={cn(
                       "flex h-full shrink-0 flex-col divide-y divide-divider",
-                      "w-full md:w-[50%] xl:w-[25%]"
+                      "w-[50%] xl:w-[25%]"
                     )}
                   >
                     <MarketInfo />
@@ -297,7 +298,7 @@ export const MarketManager = React.forwardRef<
                     className={cn(
                       "border-t border-divider md:border-t-0",
                       "flex h-full shrink-0 flex-col divide-y divide-divider",
-                      "w-full md:w-[50%] xl:w-[25%]"
+                      "w-[50%] xl:w-[25%]"
                     )}
                   >
                     <BalanceIndicator />
@@ -314,7 +315,7 @@ export const MarketManager = React.forwardRef<
                     "border-t border-divider md:border-t-0",
                     "divide-y divide-divider ",
                     "w-full",
-                    "hidden shrink-0 grow flex-col md:flex xl:hidden",
+                    "shrink-0 grow flex-col flex",
                     MAX_SCREEN_WIDTH
                   )}
                 >
