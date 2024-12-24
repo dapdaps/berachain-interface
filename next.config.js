@@ -26,6 +26,10 @@ const nextConfig = {
     {
       source: "/api.dolomite.io/:path*",
       destination: "https://api.dolomite.io/:path*"
+    },
+    {
+      source: "/api.kingdomly/:path*",
+      destination: "https://www.kingdomly.app/:path*"
     }
   ],
   webpack: (config, { dev }) => {

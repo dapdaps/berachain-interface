@@ -46,6 +46,9 @@ const MainLayout = (props: Props) => {
     if (pathname === '/activity/christmas') {
       return 'bg-christmas';
     }
+    if (pathname === '/kingdomly') {
+      return 'bg-[#121b1c]'
+    }
     return 'bg-[var(--background)]';
   }, [isVaults, isChristmas, pathname]);
 

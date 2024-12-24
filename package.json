@@ -29,6 +29,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-loading-skeleton": "^3.5.0",
+    "react-parallax-tilt": "^1.7.268",
     "react-toastify": "^10.0.5",
     "terser-webpack-plugin": "^5.3.10",
     "viem": "^2.21.37",
