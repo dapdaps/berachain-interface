@@ -11,7 +11,7 @@ const MoveBg = (props: any) => {
 
 
   const ScreenWidth = useMemo(() => window.screen.availWidth, [])
-  const Peoples_Width = 1958
+  const Peoples_Width = 2286
   return (
     <>
       <div
@@ -36,7 +36,7 @@ const MoveBg = (props: any) => {
       <div className="flex items-center absolute z-10 left-0 bottom-[197px] h-[250px] animate-slide-to-left will-change-transform"
         style={{
           left: -(2 * Peoples_Width + ScreenWidth),
-          animationDuration: '100s',
+          animationDuration: '120s',
           width: (Peoples_Width + ScreenWidth) * repeat,
           animationDelay: '3s'
         }}
