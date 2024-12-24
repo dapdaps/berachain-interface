@@ -165,7 +165,7 @@ export const getEnrichedMarketsQueryOptions = (
   queryFn: async () => {
     // const filterClauses = constructMarketFilterClauses(filters);
      // TODO: 目前仅针对Royco提供的单个测试数据"
-    const filterClauses = "(input_token_id = '11155111-0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590'::text) AND (incentive_ids @> ARRAY['11155111-0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590']::text[]) AND (chain_id = 11155111)"
+    const filterClauses = "(input_token_id = '11155111-0xd34398848d35b2bd2ca373c809dc4d8e0523b00f'::text) AND (incentive_ids @> ARRAY['11155111-0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590']::text[]) AND (chain_id = 11155111)"
     const sortingClauses = constructBaseSortingFilterClauses(sorting);
     const result = await client.rpc("get_enriched_markets", {
       chain_id: chain_id,
