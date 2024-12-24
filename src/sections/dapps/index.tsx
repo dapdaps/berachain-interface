@@ -21,100 +21,6 @@ for (const dapp in dAppsConfig) {
   };
 }
 
-const ALL_LIST = [
-  {
-    className: "w-[174px] h-[112px]",
-    dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
-    sticks: [
-      "absolute left-[20px] bottom-[48px]",
-      "absolute right-[12px] top-1/2 -translate-y-1/2",
-      "absolute left-[34px] bottom-[36px]"
-    ],
-    dApps: [
-      {
-        ..._dApps["infrared"],
-        attachedIcon: ""
-      },
-      {
-        ..._dApps["berps"],
-        attachedIcon: ""
-      }
-    ]
-  },
-  {
-    className: "w-[230px] h-[132px]",
-    dAppClassName: "absolute top-[-77px] gap-x-[140px] -left-1/3",
-    sticks: [
-      "absolute left-[46px] bottom-[44px]",
-      "absolute left-[34px] bottom-[32px]"
-    ],
-    dApps: [
-      {
-        ..._dApps["dolomite"],
-        attachedIcon: (
-          <TrunkSmall className="absolute left-[44%] bottom-[-24%]" />
-        )
-      },
-      {
-        ..._dApps["bend"],
-        attachedIcon: (
-          <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
-        )
-      }
-    ]
-  },
-  {
-    className: "w-[362px] h-[147px]",
-    dAppClassName:
-      "absolute left-1/2 -translate-x-1/2 top-[-90px] gap-y-[27px] lg:gap-x-[86px] md:gap-x-[62px] flex-wrap w-[560px] justify-center",
-    sticks: [
-      "absolute left-[163px] bottom-[34px]",
-      "absolute left-1/2 bottom-[22px]"
-    ],
-    dApps: [
-      {
-        ..._dApps["kodiak"],
-        attachedIcon: (
-          <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
-        )
-      },
-      {
-        ..._dApps["bex"],
-        attachedIcon: (
-          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        )
-      },
-      {
-        ..._dApps["ooga-booga"],
-        attachedIcon: (
-          <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
-        )
-      },
-      {
-        ..._dApps["aquabera"],
-      },
-      // TODO add bridge config
-      {
-        name: "Stargate",
-        label: "Stargate",
-        icon: "/images/dapps/stargate.svg",
-        type: "bridge",
-        attachedIcon: "",
-        className: "",
-        disabled: true
-      },
-      // {
-      //   name: 'Owlto',
-      //   label: 'Owlto',
-      //   icon: '/images/dapps/owlto.svg',
-      //   type: 'bridge',
-      //   attachedIcon:  '',
-      //   className: 'ml-[-25px]',
-      //   disabled: true,
-      // },
-    ]
-  },
-];
 const FIRST_LIST = [
   {
     className: "w-[174px] h-[112px]",
@@ -145,12 +51,6 @@ const FIRST_LIST = [
           <TrunkSmall className="absolute left-[44%] bottom-[-24%]" />
         )
       },
-      // {
-      //   ..._dApps["beraborrow"],
-      //   attachedIcon: (
-      //     <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-      //   )
-      // },
       {
         ..._dApps["bend"],
         attachedIcon: (
@@ -226,18 +126,11 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
-        name: "Beraborrow",
-        label: "Beraborrow",
-        // icon: "/images/dapps/stargate.svg",
-        type: "Lending",
-        attachedIcon: "",
-        className: "",
-        disabled: true,
+        ..._dApps["beraborrow"],
         attachedIcon: (
-          <TrunkSmall className="absolute left-[44%] bottom-[-24%]" />
+          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
         )
       },
-
       {
         ..._dApps["aquabera"],
         attachedIcon: (
