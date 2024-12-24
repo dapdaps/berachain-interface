@@ -887,7 +887,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           <Clouds />
           <Flowers />
           <Ground />
-          <HatBear className='absolute w-[360px] left-[86px] bottom-[32px]' />
+          <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
         </>
       ) : type === 'dapp' ? (
         <>
