@@ -838,3 +838,5 @@ export const WinningOdds: Record<string, {dailyAllocation: number; cumulativeAll
     display: '20%',
   },
 };
+
+export const TgPreviewLink = "/tg-preview";

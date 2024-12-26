@@ -19,6 +19,7 @@ import useCustomAccount from '@/hooks/use-account';
 import { numberFormatter } from '@/utils/number-formatter';
 import * as dateFns from 'date-fns';
 import { motion } from "framer-motion";
+import { TgPreviewLink } from '@/sections/activity/christmas/config';
 
 const GiftBox = () => {
   const {
@@ -54,11 +55,18 @@ const GiftBox = () => {
     setOpenData(args);
     getUserInfo?.();
   });
-  const list = [...new Array(userRemainBox || 0)].slice(0, 21).map((_, i) => ({
+  const list: any = [...new Array(userRemainBox || 0)].slice(0, isMobile ? 21 : 20).map((_, i) => ({
   // const list = [...new Array(21)].slice(0, 21).map((_, i) => ({
     id: i + 1,
     status: "un_open"
   }));
+  if (!isMobile && list.length > 0) {
+    list.push({
+      id: list.length + 1,
+      status: "un_open",
+      link: TgPreviewLink,
+    });
+  }
   const sortedList = createPyramid(list);
   const [currentDailyAnimation, setCurrentDailyAnimation] = useState<any>('show');
   const currentDailyTimer = useRef<any>();

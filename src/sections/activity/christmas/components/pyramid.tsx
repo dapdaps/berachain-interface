@@ -1,7 +1,11 @@
 import Button from "@/sections/activity/christmas/components/button";
+import { useRouter } from 'next/navigation';
+import { TgPreviewLink } from '@/sections/activity/christmas/config';
 
 const Pyramid = (props: any) => {
   const { list, onBoxClick, opening, isMobile } = props;
+
+  const router = useRouter();
 
   return (
     <div className="relative flex justify-center items-center w-full h-full md:scale-[0.4] md:translate-y-[-100px]">
@@ -27,7 +31,7 @@ const Pyramid = (props: any) => {
               return (
                 <div
                   key={`col-${idx}`}
-                  className="flex justify-center items-center w-[155px] h-[203px] ml-[-10px] bg-[url('/images/activity/christmas/gift-box.svg')] bg-no-repeat bg-center bg-contain"
+                  className={`flex justify-center items-center w-[155px] h-[203px] ml-[-10px] ${item.link ? "bg-[url('/images/activity/christmas/gift-box-special.svg')]" : "bg-[url('/images/activity/christmas/gift-box.svg')]"} bg-no-repeat bg-center bg-contain`}
                 >
                   {
                     !isMobile && (
@@ -48,7 +52,13 @@ const Pyramid = (props: any) => {
                           animate: disabled ? "visible" : "hidden",
                           whileHover: "visible"
                         }}
-                        onClick={onBoxClick}
+                        onClick={() => {
+                          if (item.link) {
+                            router.push(item.link);
+                            return;
+                          }
+                          onBoxClick?.();
+                        }}
                         loading={opening}
                       >
                         {disabled ? "Opened" : "Open it"}
@@ -60,24 +70,53 @@ const Pyramid = (props: any) => {
             })}
           </div>
         )) : (
-          <div
-            data-tour-ids="1,4"
-            className="flex flex-col justify-center items-center text-center text-[#FFDC50] text-[18px] font-[600] leading-normal gap-[11px] w-[210px] h-[263px] bg-[url('/images/activity/christmas/icon-gift-box-empty.svg')] bg-no-repeat bg-contain bg-center translate-y-1/4 md:scale-[2]"
-          >
-            <div className="mt-[55px]">
-              You don’t have any gift box.
+          <div className="flex items-end gap-[20px]">
+            <div
+              data-tour-ids="1,4"
+              className="flex flex-col justify-center items-center text-center text-[#FFDC50] text-[18px] font-[600] leading-normal gap-[11px] w-[210px] h-[263px] bg-[url('/images/activity/christmas/icon-gift-box-empty.svg')] bg-no-repeat bg-contain bg-center translate-y-1/4 md:scale-[2]"
+            >
+              <div className="mt-[55px]">
+                You don’t have any gift box.
+              </div>
+              <div className="mt-[12px]">
+                How to get?
+              </div>
+              <button
+                type="button"
+                className="animate-float-y w-[38px] h-[31px] bg-[url('/images/activity/christmas/icon-scroll-down.svg')] bg-no-repeat bg-contain bg-center"
+                onClick={() => {
+                  const target = document?.getElementById?.('beratownActivityChristmasQuestTabs');
+                  target?.scrollIntoView?.({ behavior: 'smooth' });
+                }}
+              />
             </div>
-            <div className="mt-[12px]">
-              How to get?
-            </div>
-            <button
-              type="button"
-              className="animate-float-y w-[38px] h-[31px] bg-[url('/images/activity/christmas/icon-scroll-down.svg')] bg-no-repeat bg-contain bg-center"
-              onClick={() => {
-                const target = document?.getElementById?.('beratownActivityChristmasQuestTabs');
-                target?.scrollIntoView?.({ behavior: 'smooth' });
-              }}
-            />
+            {
+              !isMobile && (
+                <div className="w-[155px] h-[203px] flex justify-center items-end bg-[url('/images/activity/christmas/gift-box-special.svg')] bg-no-repeat bg-contain bg-center translate-y-[60px]">
+                  <Button
+                    className="!px-[20px] translate-y-[-60px]"
+                    motionProps={{
+                      variants: {
+                        visible: {
+                          opacity: 1
+                        },
+                        hidden: {
+                          opacity: 0
+                        }
+                      },
+                      initial: "hidden",
+                      animate: "hidden",
+                      whileHover: "visible"
+                    }}
+                    onClick={() => {
+                      router.push(TgPreviewLink);
+                    }}
+                  >
+                    Open it
+                  </Button>
+                </div>
+              )
+            }
           </div>
         )}
       </div>
