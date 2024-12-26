@@ -228,7 +228,7 @@ export const columns: ColumnDef<EnrichedMarketDataType> = [
     cell: (props: any) => {
       return (
         <div
-          key={`${props.view}:market:${props.row.original.id}:market-type`}
+          key={`${props.view}:market:${props.row.original.id}:${props.row.original.reward_style}:market-type`}
           className={cn(
             props.view === "list" && props.column.columnDef.meta.className,
             "flex h-fit capitalize",
@@ -244,10 +244,17 @@ export const columns: ColumnDef<EnrichedMarketDataType> = [
             )}
           >
             <span className="leading-5">
-              {/* TODO: 这里需要和 Royco 项目方确认 */}
-              {props.row.original.market_type === 0 ? "Recipe" : "Vault"} 
+              {props.row.original.market_type === 0
+                ? props.row.original.reward_style === 0
+                  ? "Immediate"
+                  : props.row.original.reward_style === 1
+                    ? "Post-Lockup"
+                    : "Forfeitable"
+                : "Streamed"}
             </span>
           </div>
+
+          {/* {props.row.original.market_type === 0 ? "Recipe" : "Vault"} */}
         </div>
       );
     },
