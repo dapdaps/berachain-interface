@@ -389,6 +389,7 @@ const GiftBox = () => {
             setOpenType(0);
           }}
           data={userInfo}
+          loading={userInfoLoading}
         />
       )}
       <DailyQuest

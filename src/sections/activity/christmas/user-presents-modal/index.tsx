@@ -4,12 +4,13 @@ import Button from "./button";
 import Present from "./present";
 import { useRouter } from "next-nprogress-bar";
 import { formatThousandsSeparator } from "@/utils/balance";
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import Rare from '@/sections/activity/christmas/nft-prize-winners-modal/rare';
 import Nft from '@/sections/activity/christmas/nft-prize-winners-modal/nft';
+import Skeleton from 'react-loading-skeleton';
 
-export default function UserPresentsModal({ open, data, onClose }: any) {
+export default function UserPresentsModal({ open, data, onClose, loading }: any) {
   const router = useRouter();
   const {
     setShowSwapModal,
@@ -37,7 +38,12 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
             </div>
             <div className="flex gap-[12px] flex-wrap mt-[12px] md:grid md:grid-cols-2 md:gap-[16px]">
               {
-                [...(data.nfts || []), ...(data.rares || [])].map((it: any, idx: number) => {
+                loading ? (
+                  <>
+                    <Skeleton width={isMobile ? '100%' : 150} height={154} borderRadius={10} />
+                    <Skeleton width={isMobile ? '100%' : 150} height={154} borderRadius={10} />
+                  </>
+                ) : [...(data.nfts || []), ...(data.rares || [])].map((it: any, idx: number) => {
                   if (idx < data.nfts?.length) {
                     return (
                       <Nft key={it.token_id} nft={it} />
@@ -69,9 +75,16 @@ export default function UserPresentsModal({ open, data, onClose }: any) {
               }
             </div>
             <div className="flex gap-[16px] flex-nowrap mt-[12px] overflow-y-auto md:grid md:grid-cols-2">
-              {data.items?.map?.((item: any) => (
-                <Present key={item.id} gift={item.category} />
-              ))}
+              {
+                loading ? (
+                  <>
+                    <Skeleton width={isMobile ? '100%' : 150} height={154} borderRadius={10} />
+                    <Skeleton width={isMobile ? '100%' : 150} height={154} borderRadius={10} />
+                  </>
+                ) : data.items?.map?.((item: any) => (
+                  <Present key={item.id} gift={item.category} />
+                ))
+              }
             </div>
             {
               isMobile && (
