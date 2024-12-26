@@ -33,7 +33,7 @@ const FIRST_LIST = [
     dApps: [
       {
         ..._dApps["infrared"],
-        attachedIcon: ""
+        attachedIcon: "",
       },
     ]
   },
