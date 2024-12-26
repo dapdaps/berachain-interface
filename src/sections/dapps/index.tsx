@@ -150,6 +150,7 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
+        icon: "/images/dapps/royco.svg",
         name: "Royco",
         label: "Royco",
         type: "Vaults",
@@ -161,6 +162,7 @@ const SECOND_LIST = [
         )
       },
       {
+        icon: "/images/dapps/kingdomly.svg",
         name: "Kingdomly",
         label: "Kingdomly",
         type: "NFT",
@@ -172,6 +174,7 @@ const SECOND_LIST = [
         )
       },
       {
+        icon: "/images/dapps/ramen.svg",
         name: "Ramen",
         label: "Ramen",
         type: "Launchpad",
@@ -183,6 +186,7 @@ const SECOND_LIST = [
         )
       },
       {
+        icon: "/images/dapps/steer.svg",
         name: "Steer",
         label: "Steer",
         type: "Vaults",

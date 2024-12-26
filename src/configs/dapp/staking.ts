@@ -1,6 +1,6 @@
 const ROUTE_CONFIG = {
   infrared: {
-    type: 'staking',
+    type: 'vaults',
     theme: {
       '--button-color': '#FFF',
       '--button-text-color': '#1E2028'
@@ -8,7 +8,7 @@ const ROUTE_CONFIG = {
     icon: 'images/dapps/infrared.svg'
   },
   berps: {
-    type: 'staking',
+    type: 'vaults',
     theme: {
       '--button-color': '#FFF',
       '--button-text-color': '#1E2028'
@@ -16,7 +16,7 @@ const ROUTE_CONFIG = {
     icon: '/images/dapps/infrared/berps.svg'
   },
   aquabera: {
-    type: 'staking',
+    type: 'vaults',
     theme: {
       '--button-color': '#FFF',
       '--button-text-color': '#1E2028'
