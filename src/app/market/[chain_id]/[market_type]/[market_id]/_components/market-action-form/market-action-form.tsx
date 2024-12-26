@@ -375,7 +375,7 @@ export const MarketActionForm = React.forwardRef<
               {nextLabel()}
             </Button>
 
-            {offerType === MarketOfferType.market.id &&
+            {/* {offerType === MarketOfferType.market.id &&
               userType === MarketUserType.ap.id &&
               !(
                 marketMetadata.market_type === MarketType.vault.id &&
@@ -414,7 +414,7 @@ export const MarketActionForm = React.forwardRef<
                 >
                   Bid for More Incentives
                 </Button>
-              )}
+              )} */}
 
             {userType === MarketUserType.ip.id &&
               marketStep === MarketSteps.preview.id && (
