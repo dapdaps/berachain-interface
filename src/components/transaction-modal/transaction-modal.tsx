@@ -179,7 +179,10 @@ export const TransactionModal = React.forwardRef<
       }
 
       if (isTxConfirmed && txHash) {
-          addAction?.({
+            const amount = currentTransaction.tokensIn?.[0].token_amount.toString();
+            const formattedAmount = Number(amount).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
+
+            addAction?.({
             type: "Staking",
             action: 'Staking',
             status: currentTransaction.txStatus, 
@@ -188,8 +191,8 @@ export const TransactionModal = React.forwardRef<
             template: "Royco",
             token: currentTransaction.tokensIn?.[0],
             chain_id: currentTransaction.chainId,
-            amount: currentTransaction.tokensIn?.[0].token_amount.toString(),
-          });
+            amount: formattedAmount,
+            });
       }
 
       if (!isEqual(newTransactions, transactions)) {
