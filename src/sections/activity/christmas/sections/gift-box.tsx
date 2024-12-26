@@ -30,6 +30,7 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    userBox,
     snowflakeBalance,
     snowflakeBalanceLoading,
     userRemainBox,
@@ -154,7 +155,7 @@ const GiftBox = () => {
             </>
           }
           value={userRemainBox || 0}
-          total={userInfo?.total_box || 0}
+          total={userBox?.total_box || 0}
           valueClassName="translate-x-[-20px]"
           className="md:flex-1 md:w-0"
           childrenClassName="md:w-full md:pl-[10px]"
