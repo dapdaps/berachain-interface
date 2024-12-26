@@ -7,3 +7,4 @@ export * from "./utils";
 export * from "./form";
 export * from "./warning-box";
 export * from "./copy-wrapper";
+export * from "./token-editor";

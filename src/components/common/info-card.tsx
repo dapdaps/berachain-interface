@@ -66,7 +66,7 @@ const InfoCardRow = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex flex-row items-center justify-between font-gt text-base font-light",
+      "flex flex-row items-start justify-between font-gt text-base font-light",
       className
     )}
     {...props}
