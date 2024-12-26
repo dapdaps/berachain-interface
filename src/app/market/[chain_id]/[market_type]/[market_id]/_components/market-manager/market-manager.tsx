@@ -26,11 +26,16 @@ import { WarningBox } from "@/components/composables";
 import { MAX_SCREEN_WIDTH } from "@/components/constants";
 import { useAccount } from "wagmi";
 import { OfferVisualizer } from "../offer-list-visualizer/offer-visualizer";
+import { useRouter } from "next/navigation";
+
 
 export const MarketManager = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
+
+  const router = useRouter();
+
   const {
     viewType,
     setViewType,
@@ -121,13 +126,13 @@ export const MarketManager = React.forwardRef<
             viewType === MarketViewType.advanced.id && MAX_SCREEN_WIDTH
           )}
         >
-          <div
-            onClick={() => window.open("/", "_self", "noopener noreferrer")}
+            <div
+            onClick={() => router.back()}
             className={cn(
               "flex cursor-pointer flex-row items-center gap-0 font-gt text-sm font-light text-secondary",
               "transition-all duration-200 ease-in-out hover:opacity-80"
             )}
-          >
+            >
             <ChevronLeftIcon
               strokeWidth={1.5}
               className="-ml-2 h-6 w-6 text-secondary"
@@ -136,7 +141,7 @@ export const MarketManager = React.forwardRef<
             <div className="flex h-4 items-center">
               <span className={cn("leading-5")}>Explore</span>
             </div>
-          </div>
+            </div>
 
           <div
             className={cn(
