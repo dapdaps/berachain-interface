@@ -181,6 +181,7 @@ export const TransactionModal = React.forwardRef<
       if (isTxConfirmed && txHash) {
           addAction?.({
             type: "Staking",
+            action: 'Staking',
             status: currentTransaction.txStatus, 
             sub_type: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? "Supply" : "Withdraw",
             transactionHash: txHash,
@@ -188,12 +189,6 @@ export const TransactionModal = React.forwardRef<
             token: currentTransaction.tokensIn?.[0],
             chain_id: currentTransaction.chainId,
             amount: currentTransaction.tokensIn?.[0].token_amount.toString(),
-            extra_data: JSON.stringify({
-              amount0: currentTransaction.tokensIn?.[0].token_amount.toString(),
-              amount1: currentTransaction.tokensOut?.[0].token_amount.toString(),
-              token0Symbol:currentTransaction.tokensIn?.[0].symbol,
-              token1Symbol: currentTransaction.tokensOut?.[0].symbol
-            })
           });
       }
 
