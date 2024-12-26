@@ -80,7 +80,6 @@ export function useBase(): IBase {
     getInfo();
     getCurrentTimestamp();
     if (!account) return;
-    getUserInfo();
     getUserBox();
   }, [account]);
 

@@ -9,11 +9,11 @@ import useCustomAccount from '@/hooks/use-account';
 import useClickTracking from '@/hooks/use-click-tracking';
 
 const ChristmasContent = () => {
-  const { userInfoLoading, userInfo } = useContext(ChristmasContext);
+  const { userInfoLoading, userBox } = useContext(ChristmasContext);
 
   const shouldShowGuide = !userInfoLoading &&
-    userInfo &&
-    (!userInfo.total_box || userInfo.total_box === 0);
+    userBox &&
+    (!userBox.total_box || userBox.total_box === 0);
 
   return (
     <>
