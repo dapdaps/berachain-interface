@@ -1,42 +1,46 @@
-import { mockNFTs } from './mock/nft';
-import { NFTCard } from './components/NFTCard';
-import Link from 'next/link';
-import { usePartnerCollections } from './hooks/usePartnerCollections';
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import DappIcon from "@/components/dapp-icon";
+import Tabs from "@/components/tabs";
+import Mint from './mint'
 
-const Kingdomly = () => {
-    const { collections, isLoading, error } = usePartnerCollections();
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
-    console.log(collections, 'collections')
-
-    return (
-        <div className="min-w-[1200px] p-6">
-            <div className="flex flex-row justify-between items-center w-full">
-                <h2 className="text-white text-2xl font-Montserrat font-semibold">
-                    PARTNER COLLECTIONS
-                </h2>
-                <Link 
-                    className="flex justify-center items-center font-semibold text-center text-xs md:text-sm lg:text-base text-white py-2.5 px-4 gap-4 bg-tertiary-white-4 hover:bg-tertiary-white-6 rounded-lg cursor-pointer"
-                    href="/partner-collections"
-                >
-                    View all
-                </Link>
-            </div>
-            
-            <div className="lg:grid xl:hidden grid-cols-4 gap-4 mt-4">
-                {collections.map(collection => (
-                    <NFTCard key={collection.contract_address} item={collection} />
-                ))}
-            </div>
-        </div>
-    );
+export default function Pools({ dapp }: any) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  return (
+    <div className="relative w-[990px] pt-[30px] md:w-full md:h-full md:pt-[10px] mt-[80px]">
+      <Tabs
+        currentTab={searchParams.get("tab") || "mint"}
+        isCard={true}
+        tabs={[
+          {
+            key: "mint",
+            label: <div className="text-[18px] font-bold">Mint</div>,
+            children: <Mint />,
+          },
+          {
+            key: "marketplace",
+            label: <div className="text-[18px] font-bold">Marketplace</div>,
+            children: <></>,
+            post: 'Thoon',
+            disabled: true
+          }
+        ]}
+        onChange={(tabKey: any) => {
+          const params = new URLSearchParams(searchParams);
+          params.set("tab", tabKey);
+          router.replace(`${pathname}?${params.toString()}`);
+        }}
+        bodyClassName="md:px-0 md:h-full md:pt-[10px] md:!rounded-b-none md:!border-b-0 md:!border-x-0"
+        bodyInnerClassName="md:h-full"
+      />
+      <DappIcon
+        src='/images/dapps/kingdomly.png'
+        alt='kingdomly'
+        name='kingdomly'
+        type="NFT Marketplace"
+        className="top-[-76px] md:top-[-30px]  md:left-[56px]"
+      />
+    </div>
+  );
 }
-
-export default Kingdomly;

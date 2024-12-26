@@ -1,7 +1,8 @@
 export enum Status {
   LIVE = 'live',
   SOLD_OUT = 'sold_out',
-  PAUSED = 'paused'
+  PAUSED = 'paused',
+  UPCOMING = 'upcoming'
 }
 
 interface Chain {
@@ -35,4 +36,7 @@ export interface NFTCollection {
 
 export interface NFTCollectionWithStatus extends NFTCollection {
   status: Status;
+  totalSupplyByContract?: string;
+  maxSupplyByContract?: string;
+  displayPrice: number;
 }

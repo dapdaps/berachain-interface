@@ -3,7 +3,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 const Offset = 20;
 
 const Laptop = (props: any) => {
-  const { children, width, height, onClick } = props;
+  const { children, width, height, onClick, disabled = false, post } = props;
   return (
     <div
       className='relative z-[0]'
@@ -20,21 +20,24 @@ const Laptop = (props: any) => {
           paddingBottom: Offset * 1.5,
           height: height + Offset
         }}
-        onClick={onClick}
+        onClick={!disabled && onClick}
       >
         {children}
+        {
+          post && (<span className='bg-[#FFDC50] font-bold rounded-[10px] text-black py-[2px] px-[4px] font-Montserrat text-[10px] mb-[10px]'>{post}</span>)
+        }
       </div>
     </div>
   );
 };
 
-const Mobile = ({ children, active, onClick }: any) => {
+const Mobile = ({ children, active, onClick, disabled }: any) => {
   return (
     <div
       className={`hidden h-[56px] grow rounded-[16px] md:flex ${
         active && 'border border-black bg-[#FFDC50]'
       } text-[15px] font-[700] leading-[13.5px] text-center font-Montserrat`}
-      onClick={onClick}
+      onClick={!disabled && onClick}
     >
       {children}
     </div>
@@ -60,4 +63,6 @@ interface Props {
   isCard?: boolean;
   width: number;
   height: number;
+  disabled?: boolean;
+  post?: string;
 }
