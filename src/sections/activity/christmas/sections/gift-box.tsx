@@ -35,6 +35,8 @@ const GiftBox = () => {
     userRemainBox,
     userInfoLoading,
     getUserInfo,
+    getUserBox,
+    userBoxLoading,
     currentDateTime,
     currentUTCString,
     currentUTCZeroTimestamp,
@@ -52,7 +54,7 @@ const GiftBox = () => {
   const [openData, setOpenData] = useState<any>();
   const { loading: opening, onOpen } = useOpenBox((args: any) => {
     setOpenData(args);
-    getUserInfo?.();
+    getUserBox?.();
   });
   const list = [...new Array(userRemainBox || 0)].slice(0, 21).map((_, i) => ({
   // const list = [...new Array(21)].slice(0, 21).map((_, i) => ({
@@ -94,7 +96,7 @@ const GiftBox = () => {
   };
 
   const handleReloadYourBox = () => {
-    getUserInfo?.();
+    getUserBox?.();
   };
 
   const handleDailyQuestCheck = async () => {
@@ -120,7 +122,7 @@ const GiftBox = () => {
       };
     });
     handleQuestUpdate?.(dailyQuest, values);
-    getUserInfo?.();
+    getUserBox?.();
     setDailyChecking(false);
   };
 
@@ -145,7 +147,7 @@ const GiftBox = () => {
               >
                 <IconReload
                   className={`${
-                    userInfoLoading ? "animate-rotate origin-[12px_12px]" : ""
+                    userBoxLoading ? "animate-rotate origin-[12px_12px]" : ""
                   }`}
                 />
               </button>

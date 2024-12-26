@@ -11,6 +11,7 @@ import { IBase } from '@/sections/activity/christmas/hooks/use-base';
 import { Contract, providers, utils } from 'ethers';
 import { TOKEN_ABI } from '@/hooks/use-token-balance';
 import { ChristmasActivityChains } from '@/configs/chains';
+import { useDebounceFn } from 'ahooks';
 
 const DAPP_ACTIONS: any = {
   Swap: 'Trade',
@@ -28,7 +29,7 @@ const DAPP_CATEGORY: any = {
 };
 
 export function useQuest(props: { base: IBase; }): IQuest {
-  const { getUserInfo } = props.base;
+  const { getUserBox } = props.base;
 
   const timerRef = useRef<any>();
   const { account, provider } = useCustomAccount();
@@ -38,7 +39,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
   const setQuestVisited = useQuestStore((store) => store.setVisited);
   const setVisitedUpdate = useQuestStore((store) => store.setUpdate);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [questList, setQuestList] = useState<Partial<Quest>[]>([]);
 
   const followXQuest = useMemo(() => {
@@ -203,6 +204,10 @@ export function useQuest(props: { base: IBase; }): IQuest {
     setLoading(false);
   };
 
+  const { run: getQuestListDelay } = useDebounceFn(getQuestList, {
+    wait: questList?.length ? 600 : 3000
+  });
+
   const checkNftMissionValid: (_quest: Partial<Quest>) => Promise<{ success: boolean; balance: string; }> = (_quest) => {
     return new Promise(async (resolve) => {
       if (!_quest.token) {
@@ -332,7 +337,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
       completed,
       total_completed_times: totalCompletedTimes,
     });
-    getUserInfo?.();
+    getUserBox?.();
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -379,7 +384,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
       total_completed_times: totalCompletedTimes,
       checking: false,
     });
-    getUserInfo?.();
+    getUserBox?.();
   };
 
   const handleSocialQuest = (quest: Partial<Quest>) => {
@@ -416,7 +421,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
   };
 
   useEffect(() => {
-    getQuestList();
+    getQuestListDelay();
     setVisitedUpdate();
   }, [account]);
 

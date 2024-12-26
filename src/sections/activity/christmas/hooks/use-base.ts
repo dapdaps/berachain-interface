@@ -17,6 +17,8 @@ export function useBase(): IBase {
   const [currentUTCZeroTimestamp, setCurrentUTCZeroTimestamp] = useState<number>();
   const [currentUTCString, setCurrentUTCString] = useState<string>();
   const [showSwapModal, setShowSwapModal] = useState(false);
+  const [userBox, setUserBox] = useState<UserBox>({});
+  const [userBoxLoading, setUserBoxLoading] = useState<boolean>(false);
 
   const {
     tokenBalance: snowflakeBalance,
@@ -24,8 +26,8 @@ export function useBase(): IBase {
   } = useTokenBalance(beraB['sfc'].address, beraB['sfc'].decimals);
 
   const userRemainBox = useMemo(
-    () => (userInfo?.total_box || 0) - (userInfo?.used_box || 0),
-    [userInfo]
+    () => (userBox?.total_box || 0) - (userBox?.used_box || 0),
+    [userBox]
   );
 
   const getInfo = async () => {
@@ -50,6 +52,17 @@ export function useBase(): IBase {
     setUserLoading(false);
   };
 
+  const getUserBox = async () => {
+    setUserBoxLoading(true);
+    const res = await get(`/api/mas/user/box?account=${account}`);
+    if (res.code !== 0) {
+      setUserBoxLoading(false);
+      return;
+    }
+    setUserBox({ key: +new Date(), ...res.data });
+    setUserBoxLoading(false);
+  };
+
   const getCurrentTimestamp = async () => {
     const res = await get(`/api/timestamp`);
     let currTimestamp = new Date().getTime();
@@ -68,6 +81,7 @@ export function useBase(): IBase {
     getCurrentTimestamp();
     if (!account) return;
     getUserInfo();
+    getUserBox();
   }, [account]);
 
   return {
@@ -84,6 +98,9 @@ export function useBase(): IBase {
     userRemainBox,
     snowflakeBalance,
     snowflakeBalanceLoading,
+    userBox,
+    userBoxLoading,
+    getUserBox,
   };
 }
 
@@ -100,7 +117,10 @@ export interface IBase {
   setShowSwapModal: Dispatch<SetStateAction<boolean>>;
   userRemainBox: number;
   snowflakeBalance: string;
+  userBox: Partial<UserBox>;
+  userBoxLoading: boolean;
   getUserInfo(): void;
+  getUserBox(): Promise<void>;
 }
 
 export interface Mas {
@@ -123,4 +143,9 @@ export interface UserMas {
   total_token: number;
   total_yap: number;
   used_box: number;
+}
+
+export interface UserBox {
+  total_box?: number;
+  used_box?: number;
 }
