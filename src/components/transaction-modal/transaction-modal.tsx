@@ -36,7 +36,7 @@ export const TransactionModal = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >((props, ref) => {
 
-  const { addAction } = useAddAction('vaults');
+  const { addAction } = useAddAction('dapp');
   const { address, isConnected, chainId } = useAccount();
   const modal = useAppKit();
   const { switchChain } = useSwitchChain();
@@ -183,15 +183,15 @@ export const TransactionModal = React.forwardRef<
             const formattedAmount = Number(amount).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
 
             addAction?.({
-            type: "Staking",
-            action: 'Staking',
-            status: currentTransaction.txStatus, 
-            sub_type: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? "Supply" : "Withdraw",
-            transactionHash: txHash,
-            template: "Royco",
-            token: currentTransaction.tokensIn?.[0],
-            chain_id: currentTransaction.chainId,
-            amount: formattedAmount,
+              type: "Staking",
+              action: 'Staking',
+              status: currentTransaction.txStatus, 
+              sub_type: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? "Supply" : "Withdraw",
+              transactionHash: txHash,
+              template: "Royco",
+              token: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? currentTransaction.tokensOut?.[0] : currentTransaction.tokensIn?.[0],
+              chain_id: currentTransaction.chainId,
+              amount: formattedAmount,
             });
       }
 
