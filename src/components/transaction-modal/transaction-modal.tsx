@@ -19,22 +19,24 @@ import {
   useWriteContract,
 } from "wagmi";
 import Loading from "../loading";
-import { isEqual } from "lodash";
+import { chain, isEqual } from "lodash";
 import { TransactionRow } from "./transaction-row";
 import { TransactionOptionsType } from "@/sdk/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { TransactionConfirmationModal } from "./transaction-confirmation-modal";
 import confetti from "canvas-confetti";
-import { TypedRoycoTransactionType } from "royco/market";
+import { RoycoTransactionType, TypedRoycoTransactionType } from "royco/market";
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount, useSwitchChain } from "wagmi";
 import useToast from '@/hooks/use-toast';
+import useAddAction from "@/hooks/use-add-action";
 
 export const TransactionModal = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >((props, ref) => {
 
+  const { addAction } = useAddAction('vaults');
   const { address, isConnected, chainId } = useAccount();
   const modal = useAppKit();
   const { switchChain } = useSwitchChain();
@@ -174,6 +176,25 @@ export const TransactionModal = React.forwardRef<
           txStatus: confirmationStatus,
           txHash: txHash,
         };
+      }
+
+      if (isTxConfirmed && txHash) {
+          addAction?.({
+            type: "Staking",
+            status: currentTransaction.txStatus, 
+            sub_type: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? "Supply" : "Withdraw",
+            transactionHash: txHash,
+            template: "Royco",
+            token: currentTransaction.tokensIn?.[0],
+            chain_id: currentTransaction.chainId,
+            amount: currentTransaction.tokensIn?.[0].token_amount.toString(),
+            extra_data: JSON.stringify({
+              amount0: currentTransaction.tokensIn?.[0].token_amount.toString(),
+              amount1: currentTransaction.tokensOut?.[0].token_amount.toString(),
+              token0Symbol:currentTransaction.tokensIn?.[0].symbol,
+              token1Symbol: currentTransaction.tokensOut?.[0].symbol
+            })
+          });
       }
 
       if (!isEqual(newTransactions, transactions)) {
@@ -410,6 +431,7 @@ export const TransactionModal = React.forwardRef<
             onOpenModal={(open) => setIsConfirmationModalOpen(open)}
             onConfirm={() => {
               try {
+                console.log("currentTransaction>>>>>", currentTransaction);
                 if (!!currentTransaction) {
                   setIsTransactionTimeout(true);
                   resetTx();
