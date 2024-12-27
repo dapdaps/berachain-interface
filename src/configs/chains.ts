@@ -13,10 +13,10 @@ const chains: Record<number, Chain | any> = {
     ...sepolia,
     isWalletSupport: true,
   },
-  [mainnet.id]: {
-    ...mainnet,
-    isWalletSupport: true,
-  },
+  // [mainnet.id]: {
+  //   ...mainnet,
+  //   isWalletSupport: true,
+  // },
 };
 
 export const icons: Record<number, string> = {

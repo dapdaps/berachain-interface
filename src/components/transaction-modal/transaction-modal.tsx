@@ -179,20 +179,22 @@ export const TransactionModal = React.forwardRef<
       }
 
       if (isTxConfirmed && txHash) {
-            const amount = currentTransaction.tokensIn?.[0].token_amount.toString();
-            const formattedAmount = Number(amount).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
+        const isSupply = currentTransaction.id === RoycoTransactionType.fill_ip_offers.id;
+        const token = isSupply ? currentTransaction.tokensOut?.[0] : currentTransaction.tokensIn?.[0];
+        const amount = token?.token_amount.toString();
+        const formattedAmount = Number(amount).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
 
-            addAction?.({
-              type: "Staking",
-              action: 'Staking',
-              status: currentTransaction.txStatus, 
-              sub_type: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? "Supply" : "Withdraw",
-              transactionHash: txHash,
-              template: "Royco",
-              token: currentTransaction.id === RoycoTransactionType.fill_ip_offers.id ? currentTransaction.tokensOut?.[0] : currentTransaction.tokensIn?.[0],
-              chain_id: currentTransaction.chainId,
-              amount: formattedAmount,
-            });
+        addAction?.({
+          type: "Staking",
+          action: 'Staking',
+          status: currentTransaction.txStatus, 
+          sub_type: isSupply ? "Supply" : "Withdraw",
+          transactionHash: txHash,
+          template: "Royco",
+          token: token,
+          chain_id: currentTransaction.chainId,
+          amount: formattedAmount,
+        });
       }
 
       if (!isEqual(newTransactions, transactions)) {
