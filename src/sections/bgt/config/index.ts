@@ -17,9 +17,13 @@ export const VALIDATORS: ValidatorType[] = [{
   icon: "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/beralandlogo.png",
   address: "0x35c1e9C7803b47aF738f37Beada3C7c35Eed73d4"
 }, {
-  name: "beradrome-x-thj",
+  name: "Beradrome",
   icon: "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/beradrome.jpg",
   address: "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
+}, {
+  name: "TTT 🇻🇳",
+  icon: "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/TTT.png",
+  address: "0xB791098b00AD377B220f91d7878d19e441388eD8"
 }]
 
 export const BGT_ADDRESS = "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"

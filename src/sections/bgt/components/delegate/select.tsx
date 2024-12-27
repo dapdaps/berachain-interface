@@ -21,6 +21,7 @@ export default memo(function Select(props: any) {
   const {
     visible,
     onClose,
+    onDataChange,
     onAddressSelect,
   } = props
   const isMobile = useIsMobile();
@@ -132,7 +133,7 @@ export default memo(function Select(props: any) {
       calls,
       multicallAddress,
       provider
-    })).map((res:any) => res?.[0] ?? null)
+    })).map((res: any) => res?.[0] ?? null)
   }
   const getUserQueued = async () => {
     const calls: any = []
@@ -196,6 +197,7 @@ export default memo(function Select(props: any) {
       const idx = validators.findIndex((_validator: any) => _validator?.id === validator?.address)
       if (idx > -1) {
         vApyAndIncentives.push({
+          ...validators[idx],
           vApy: Big(validators[idx]?.apy).div(100).toFixed(),
           // incentives:
         })
@@ -228,6 +230,7 @@ export default memo(function Select(props: any) {
         console.log('==result?.[3]?.[i]', Big(result?.[3]?.[i]?.toString()).div(100))
         _validators.push({
           ...VALIDATORS[i],
+          validator: result?.[4]?.[i],
           userStaked: result?.[0]?.[i] ? ethers.utils.formatUnits(result?.[0]?.[i]) : 0,
           userQueued: result?.[1]?.[i] ? ethers.utils.formatUnits(result?.[1]?.[i]) : 0,
           BGTDelegated: result?.[2]?.[i] ? ethers.utils.formatUnits(result?.[2]?.[i]) : 0,
@@ -301,9 +304,11 @@ export default memo(function Select(props: any) {
                 loading={loading}
                 columns={Columns}
                 list={filterValidators}
+                bodyClass="cursor-pointer"
                 onRow={(record) => {
-                  router.replace('/bgt/validator?address=' + record?.address)
-                  onClose()
+                  // router.replace('/bgt/validator?address=' + record?.address)
+                  onAddressSelect && onAddressSelect(record?.address);
+                  onClose && onClose()
                 }}
               />
             )
@@ -320,8 +325,9 @@ export default memo(function Select(props: any) {
                             key={`col-${index}`}
                             className={`${index % 2 === 0 ? 'w-[60%]' : 'w-[40%]'}`}
                             onClick={() => {
-                              onAddressSelect(d?.address);
-                              onClose();
+                              onAddressSelect && onAddressSelect(d?.address);
+                              onDataChange && onDataChange(d)
+                              onClose && onClose();
                             }}
                           >
                             <div className="text-[#3D405A] font-[500] text-[14px] mb-[5px] whitespace-nowrap">{c.title}</div>

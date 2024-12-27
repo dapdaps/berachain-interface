@@ -93,7 +93,7 @@ const BGTMobileView = (props: Props) => {
       >
         <BgtHead
           bgtData={bgtData}
-          style={{ position: 'absolute' }}
+          style={{ position: 'absolute', zIndex: 2 }}
           className="scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%]"
         />
         <div className="pt-[50px] h-full overflow-auto" onScroll={scroll}>

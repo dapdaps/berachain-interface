@@ -95,8 +95,6 @@ const useBendStore = create<BendState>((set, get) => ({
           markets: updatedMarkets
         }
       })
-      console.log(updatedMarkets, 'getBendSupplyBalance: updatedMarkets');
-      
       return updatedMarkets;
     } catch (err) {
       console.error('getBendSupplyBalance error:', err);

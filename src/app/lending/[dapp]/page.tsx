@@ -8,15 +8,16 @@ import useTokenPrice from '@/hooks/use-token-price';
 import { useEffect } from 'react';
 import useClickTracking from '@/hooks/use-click-tracking';
 import useIsMobile from '@/hooks/use-isMobile';
+import DAppConfig from '@/configs/dapp';
 
-const Dolomite = dynamic(() => import('@/sections/Lending/Dolomite'));
-const Bend = dynamic(() => import('@/sections/Lending/Bend'));
+const LendingView = dynamic(() => import('@/sections/Lending'));
 
 export default function LendingDAppPage() {
   const { dapp } = useParams();
   const { initializePrice } = useTokenPrice();
   const { handleReport } = useClickTracking();
   const isMobile = useIsMobile();
+  const dApp = DAppConfig[dapp as string];
 
   useEffect(() => {
     switch (dapp) {
@@ -38,8 +39,7 @@ export default function LendingDAppPage() {
       <div className='p-[25px_35px] md:p-[20px_0]'>
         <PageBack className="md:absolute md:left-[12px] md:top-[17px]" />
         <div className=''>
-          {dapp === 'dolomite' && <Dolomite />}
-          {dapp === 'bend' && <Bend />}
+          <LendingView dapp={dApp} />
         </div>
       </div>
     </BearBackground>

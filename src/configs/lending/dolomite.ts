@@ -3,6 +3,7 @@ import { beraB } from '@/configs/tokens/bera-bArtio';
 const basic = {
   name: 'Dolomite',
   icon: '/images/dapps/dolomite.svg',
+  path: '/lending/dolomite',
 };
 
 const API_HOST = 'https://subgraphapi.dolomite.io/api/public';
@@ -84,11 +85,12 @@ const networks = {
         ...beraB['unibtc'],
         underlyingToken: beraB['unibtc']
       },
-      [beraB['eth'].address]: {
-        ...beraB['eth'],
-        marketId: '0',
-        underlyingToken: beraB['eth']
-      }
+      // reached supply cap
+      // [beraB['eth'].address]: {
+      //   ...beraB['eth'],
+      //   marketId: '0',
+      //   underlyingToken: beraB['eth'],
+      // }
     }
   }
 };

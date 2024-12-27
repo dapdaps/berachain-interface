@@ -19,6 +19,13 @@
 }
 
 @font-face {
+  font-family: "Fuzzy";
+  src: url("/fonts/FuzzyBubbles-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+}
+
+@font-face {
   font-family: "Pixel";
   src: url("/fonts/5squared-pixel.ttf") format("truetype");
   font-weight: 100 900;
@@ -61,8 +68,20 @@ a,
   .text-balance {
     text-wrap: balance;
   }
+  .text-stroke-1 {
+    -webkit-text-stroke-width: 1;
+    -webkit-text-stroke-color: #000;
+  }
   .text-stroke-2 {
     -webkit-text-stroke: 2px #4b371f;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE 和 Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari 和 Opera */
   }
 }
 

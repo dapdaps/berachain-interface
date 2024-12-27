@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import useAccount from '@/hooks/use-account';
 import chains from '@/configs/chains';
 
-const TOKEN_ABI = [
+export const TOKEN_ABI = [
   {
     constant: true,
     inputs: [
@@ -43,6 +43,7 @@ export default function useTokenBalance(
     // console.log('walletChainId:', walletChainId, chainId)
 
     const rpcUrl = chains[chainId as number].rpcUrls.default.http[0];
+    console.log('===chains', chains)
     const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
 
     const _provider = rpcProvider;

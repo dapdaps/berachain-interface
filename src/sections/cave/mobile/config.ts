@@ -66,33 +66,33 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
         type: "swap",
         hasPopover: true,
       },
-        {
-            id: "jackets-2",
-            icon: "/images/mobile/cave/jackets/jackets-2.png",
-            popoverIcon: "/images/mobile/cave/jackets/jackets-2-m.png",
-            title: "Baseball Jacket",
-            desc: "$10+ transaction, at least 10 transactions",
-            type: "swap",
-            hasPopover: true,
-        },
-        {
-            id: "jackets-3",
-            icon: "/images/mobile/cave/jackets/jackets-3.png",
-            popoverIcon: "/images/mobile/cave/jackets/jackets-3-m.png",
-            title: "Vintage Jacket",
-            desc: "$100+ transaction, at least 100 transactions",
-            type: "swap",
-            hasPopover: true,
-        },
-        {
-            id: "jackets-4",
-            icon: "/images/mobile/cave/jackets/jackets-4.png",
-            popoverIcon: "/images/mobile/cave/jackets/jackets-4-m.png",
-            title: "Windcheater",
-            desc: "$1000+ transaction, at least 1000 transactions",
-            type: "swap",
-            hasPopover: true,
-        },
+      {
+        id: "jackets-2",
+        icon: "/images/mobile/cave/jackets/jackets-2.png",
+        popoverIcon: "/images/mobile/cave/jackets/jackets-2-m.png",
+        title: "Baseball Jacket",
+        desc: "$10+ transaction, at least 10 transactions",
+        type: "swap",
+        hasPopover: true,
+      },
+      {
+        id: "jackets-3",
+        icon: "/images/mobile/cave/jackets/jackets-3.png",
+        popoverIcon: "/images/mobile/cave/jackets/jackets-3-m.png",
+        title: "Vintage Jacket",
+        desc: "$100+ transaction, at least 100 transactions",
+        type: "swap",
+        hasPopover: true,
+      },
+      {
+        id: "jackets-4",
+        icon: "/images/mobile/cave/jackets/jackets-4.png",
+        popoverIcon: "/images/mobile/cave/jackets/jackets-4-m.png",
+        title: "Windcheater",
+        desc: "$1000+ transaction, at least 1000 transactions",
+        type: "swap",
+        hasPopover: true,
+      },
     ],
   },
   necklaces: {
@@ -190,3 +190,36 @@ export const ModuleConfigs: Record<ModuleType, ModuleConfig> = {
     ],
   },
 };
+
+
+export const ItemsConfigs = [
+  {
+    category: 'elf_hat',
+    name: 'Elf’s Hat',
+  },
+  {
+    category: 'santa_hat',
+    name: 'Santa Hat',
+  },
+  {
+    category: 'elf_jacket',
+    name: 'Elf’s Jacket',
+  },
+  {
+    category: 'santa_coat',
+    name: 'Santa Coat',
+  },
+  {
+    category: 'scarf',
+    name: 'Scarf',
+
+  },
+  {
+    category: 'sleigh',
+    name: 'Sleigh',
+  },
+  {
+    category: 'snowboard',
+    name: 'Snowboard',
+  },
+]

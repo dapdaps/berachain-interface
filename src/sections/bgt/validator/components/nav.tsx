@@ -13,7 +13,7 @@ const Nav = (props: any) => {
             <img src={pageData?.metadata?.logoURI} alt={pageData?.metadata?.name} />
           </div>
           <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-            {pageData?.metadata?.name}
+            {pageData?.metadata?.name === 'beradrome-x-thj' ? 'Beradrome' : pageData?.metadata?.name}
           </div>
         </div>
         <div className="flex items-center justify-between mt-[24px] md:flex-wrap md:gap-y-[31px]">
