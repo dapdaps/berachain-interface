@@ -67,15 +67,16 @@ export const useExplore = create<ExploreState>((set) => ({
      * @context
      * ...(process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "BERACHAIN" ? [ ... ] : []),
      */
-    ...(process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET"
-      ? [
-          {
-            id: "chain_id",
-            value: sepolia.id,
-            condition: "NOT",
-          },
-        ]
-      : []),
+    // TODO: Remove this when we go live
+    // ...(process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET"
+    //   ? [
+    //       {
+    //         id: "chain_id",
+    //         value: sepolia.id,
+    //         condition: "NOT",
+    //       },
+    //     ]
+    //   : []),
     // @note: we have a filter in .env, we want testnet to have all chains
     // ...SupportedChainlist.filter((chain) => !chain.testnet).map((chain) => ({
     //   id: "chain_id",

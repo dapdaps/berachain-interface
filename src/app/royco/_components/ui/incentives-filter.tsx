@@ -10,21 +10,20 @@ import { AlertIndicator } from "@/components/common";
 import { getSupportedChain } from "@/sdk/utils";
 
 export const IncentivesFilter = () => {
-  const { data, isLoading, isError } = useDistinctIncentives({
-    output: "array",
-  });
+  const { data, isLoading, isError } = useDistinctIncentives();
 
   const tokens = !!data
     ? (data as TypedArrayDistinctIncentive[]).filter((token) => {
-        if (process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET") {
-          return !token.ids.every((id) => {
-            const [chain_id] = id.split("-");
-            const chain = getSupportedChain(parseInt(chain_id));
-            return chain?.testnet === true;
-          });
-        } else {
+      // TODO: Royco when mainnet- Remove this check
+        // if (process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET") {
+        //   return !token.ids.every((id) => {
+        //     const [chain_id] = id.split("-");
+        //     const chain = getSupportedChain(parseInt(chain_id));
+        //     return chain?.testnet === true;
+        //   });
+        // } else {
           return true;
-        }
+        // }
       })
     : [];
 

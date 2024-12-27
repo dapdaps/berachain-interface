@@ -1,32 +1,40 @@
-import { Fragment } from "react";
+"use client";
+
+import { Fragment, useMemo } from "react";
 
 import cn from 'clsx';
 import { LoadingSpinner } from "@/components/composables";
 import { type TypedArrayDistinctAsset, useDistinctAssets } from "@/sdk/hooks";
 
 import { FilterWrapper } from "../composables";
-import { sepolia } from "viem/chains";
 import { AlertIndicator } from "@/components/common";
-import { getSupportedChain } from "@/sdk/utils";
+import { getSupportedChain } from "royco/utils";
+
+const excludedToken = ["1-0x4f8e1426a9d10bddc11d26042ad270f16ccb95f2"];
 
 export const AssetsFilter = () => {
-  const { data, isLoading, isError, isRefetching } = useDistinctAssets({
-    output: "array",
-  });
+  const { data, isLoading, isError, isRefetching } = useDistinctAssets();
 
   const tokens = !!data
     ? (data as TypedArrayDistinctAsset[]).filter((token) => {
-        if (process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET") {
-          return !token.ids.every((id) => {
-            const [chain_id, token_address] = id.split("-");
-            const chain = getSupportedChain(parseInt(chain_id));
-            return chain?.testnet === true;
-          });
-        } else {
+      // TODO: Royco when mainnet- Remove this check
+        // if (process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET") {
+        //   return !token.ids.every((id) => {
+        //     const [chain_id, token_address] = id.split("-");
+        //     const chain = getSupportedChain(parseInt(chain_id));
+        //     return chain?.testnet === true;
+        //   });
+        // } else {
           return true;
-        }
+        // }
       })
     : [];
+
+  const filteredTokens = useMemo(() => {
+    return tokens.filter((token: any) => {
+      return !excludedToken.includes(token.id);
+    });
+  }, [tokens]);
 
   if (isLoading)
     return (
@@ -42,7 +50,7 @@ export const AssetsFilter = () => {
   if (data) {
     return (
       <Fragment>
-        {tokens.map((token, index) => {
+        {filteredTokens.map((token, index) => {
           if (token) {
             return (
               <div key={`filter-wrapper:assets:${token.symbol}`}>
