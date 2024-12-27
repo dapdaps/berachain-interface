@@ -15,6 +15,7 @@ export default function ProjectCard(props: any) {
     onReload,
     checking,
     completed,
+    disabled,
   } = props;
 
   const { account } = useCustomAccount();
@@ -28,6 +29,7 @@ export default function ProjectCard(props: any) {
         className="!bg-[#DCBC95] border-black text-black !absolute top-[-18px] left-[50px] w-[126px] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] md:left-1/2 md:-translate-x-1/2"
         onClick={onReload}
         checking={checking}
+        disabled={disabled}
       />
       <img src={ecosystemInfo?.icon} className="w-[180px] h-[180px] rounded-[10px] md:w-[127px] md:h-[127px]" />
       <div className="w-full text-center text-[20px] font-bold mt-[16px] whitespace-nowrap overflow-hidden text-ellipsis leading-[120%] md:text-[14px]">
