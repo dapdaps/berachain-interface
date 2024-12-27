@@ -7,14 +7,17 @@ import IconReload from "@public/images/home/christmas/icon-reload.svg";
 import Big from 'big.js';
 import clsx from "clsx";
 import { useRouter } from "next-nprogress-bar";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from 'react';
 import BoxModal from "./box-modal";
 import useHomepageData from "./hooks/use-homepage-data";
+import { SceneContext } from '@/context/scene';
+
 export default function Enterance({ path }: any) {
   const router = useRouter();
   const { loading, data, onQuery } = useHomepageData();
   const [openModal, setOpenModal] = useState(false);
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
+  const { currentSceneInfoValid, currentSceneInfoLoading, currentRemainingDatetime } = useContext(SceneContext);
 
   const remainBox = useMemo(
     () => (data?.total_box || 0) - (data?.used_box || 0),
@@ -22,13 +25,13 @@ export default function Enterance({ path }: any) {
   );
 
   const handleOpen = (e: any) => {
-    if (Big(remainBox || 0).lte(0)) return;
+    if (Big(remainBox || 0).lte(0) || !currentSceneInfoValid) return;
     e.stopPropagation();
     setOpenModal(true);
   };
 
   useEffect(() => {
-    if (remainBox > 0) {
+    if (remainBox > 0 && currentSceneInfoValid) {
       setOpenModal(true);
     }
   }, [remainBox]);
@@ -45,6 +48,16 @@ export default function Enterance({ path }: any) {
           >
             <div className="relative z-[1]">
               <BearSnow />
+              <div className="absolute right-[50px] bottom-[60px] w-[160px] py-[10px] rounded-[20px] border text-center border-black bg-[#FFFDEB] shadow-shadow1 flex flex-col items-center text-[14px] font-[400] font-CherryBomb leading-[90%] gap-[7px]">
+                {
+                  !currentSceneInfoValid && !currentSceneInfoLoading ? 'Campaign Ended' : (
+                    <>
+                      <div>Bera Wonderland <br /> will close in</div>
+                      <div className="text-[18px]">{currentRemainingDatetime || '--:--:--'}</div>
+                    </>
+                  )
+                }
+              </div>
             </div>
             <div className="absolute left-[0px] bottom-[36px] z-[2] w-[139px] h-[58px] rounded-[29px]">
               <Popover
@@ -54,12 +67,16 @@ export default function Enterance({ path }: any) {
                 contentClassName="!z-[12]"
                 content={Big(remainBox || 0).gt(0) && (
                   <Card className="w-[173px] !p-[8px_4px_10px_16px]">
-                    You’ve got {remainBox} Unopened boxes, {data?.total_box} boxes in total. Click to open.
+                    {
+                      currentSceneInfoValid ?
+                        `You’ve got ${remainBox} Unopened boxes, ${data?.total_box} boxes in total. Click to open.` :
+                        `Campaign Ended`
+                    }
                   </Card>
                 )}
               >
                 <div
-                  className="absolute left-[27px] bottom-[23px] z-[1] animate-shake"
+                  className={`absolute left-[27px] bottom-[23px] z-[1] ${currentSceneInfoValid ? 'animate-shake' : ''}`}
                   onClick={handleOpen}
                 >
                   <GiftBox />
@@ -80,7 +97,8 @@ export default function Enterance({ path }: any) {
                         ev.stopPropagation();
                         onQuery();
                       }}
-                      className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain"
+                      className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain disabled:opacity-30 disabled:!cursor-not-allowed"
+                      disabled={!currentSceneInfoValid}
                     >
                       <IconReload
                         className={clsx(

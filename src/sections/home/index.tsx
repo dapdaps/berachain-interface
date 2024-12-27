@@ -165,7 +165,11 @@ const Navigation = function () {
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
       <MemeEnterance />
-      <ChristmasEnterance path={christmasPath} />
+      {
+        isChristmas && (
+          <ChristmasEnterance path={christmasPath} />
+        )
+      }
     </>
   );
 };

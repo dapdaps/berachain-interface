@@ -343,7 +343,11 @@ const Home = () => {
           )
         }
       </div>
-      <ChristmasEnterance path={christmasPath} />
+      {
+        isChristmas && (
+          <ChristmasEnterance path={christmasPath} />
+        )
+      }
     </div>
   );
 };
