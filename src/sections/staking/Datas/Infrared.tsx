@@ -229,7 +229,7 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance', 'BERPS'].includes(data?.initialData?.pool?.protocol) || data?.id === "iBGT-HONEY"),
+      dataList: dataList?.filter(data => ['BEX', 'bex', 'kodiak', 'beraborrow', 'Kodiak Finance', 'BERPS'].includes(data?.initialData?.protocol?.id) || data?.id === "iBGT-HONEY"),
       fullDataList: dataList
     });
   }
@@ -251,10 +251,8 @@ export default function useInfraredData(props: any) {
         const _data = {
           ...pair,
           name,
-          tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
-            .times(initialData?.stake_token?.price ?? 0)
-            .toFixed(),
-          apy: initialData?.apy_percentage,
+          tvl: Big(initialData?.tvl).toFixed(),
+          apy: initialData?.apr,
           initialData,
           type: 'Staking',
           vaultAddress,

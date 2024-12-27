@@ -26,7 +26,7 @@ export default function useInfraredList(updater?: number, name?: string) {
   function fetchAllData() {
     setLoading(true);
     asyncFetch(ALL_DATA_URL).then((res) => {
-      setAllData(res?.data);
+      setAllData(res?.vaults);
     });
   }
 
