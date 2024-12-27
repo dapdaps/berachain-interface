@@ -97,7 +97,9 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
               { label: "Live", value: "live" },
               { label: "Upcoming", value: "upcoming" },
               { label: "Testing", value: "tes" },
+              { label: "Live", value: "live1" },
             ]}
+            isScroll
             onChange={setTab}
             current={tab}
             className="w-full mx-auto"
