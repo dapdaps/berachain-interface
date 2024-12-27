@@ -75,7 +75,7 @@ export default function CurrencyRow({
   const handleCopyAddress = (currency: any) => {
     window?.navigator?.clipboard?.writeText?.(currency.address as string);
     toast.success({
-      title: `Copied ${currency.symbol} address ${currency.address}`,
+      title: `Copied ${currency.symbol} address ${currency.address}`
     });
   };
 
@@ -92,25 +92,28 @@ export default function CurrencyRow({
         />
         <div>
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
-          <div className='text-[10px] flex items-center gap-[12px]'>
+          <div className="text-[10px] flex items-center gap-[12px]">
             <div className="">{currency.name}</div>
-            {
-              currency.address !== 'native' && (
-                <div className="text-[#3D405A] flex items-center gap-[10px] pointer-events-auto opacity-100">
-                  <div className="">
-                    {currency.address ? `${currency.address.slice(0, 6)}...${currency.address.slice(-4)}` : ''}
-                  </div>
-                  <button
-                    type='button'
-                    className="w-[14px] h-[14px] bg-[url('/images/icon-copy.svg')] bg-no-repeat bg-center bg-contain"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopyAddress(currency);
-                    }}
-                  />
+            {currency.address !== "native" && (
+              <div className="text-[#3D405A] flex items-center gap-[10px] pointer-events-auto opacity-100">
+                <div className="">
+                  {currency.address
+                    ? `${currency.address.slice(
+                        0,
+                        6
+                      )}...${currency.address.slice(-4)}`
+                    : ""}
                 </div>
-              )
-            }
+                <button
+                  type="button"
+                  className="w-[14px] h-[14px] bg-[url('/images/icon-copy.svg')] bg-no-repeat bg-center bg-contain"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyAddress(currency);
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </CurrencyLabel>

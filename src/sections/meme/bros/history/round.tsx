@@ -63,6 +63,13 @@ export default function Round({
         vt = token.token;
       }
 
+      token.user_reward.forEach((item: any) => {
+        const r_price = _reward_price[item.token_address];
+        user_rewards_u = Big(item.amount)
+          .mul(r_price || 0)
+          .add(user_rewards_u);
+      });
+
       _tokens.push({
         address: token.token.address,
         logo: token.token.logo,
@@ -70,13 +77,6 @@ export default function Round({
         amount: token.total_dapped,
         usd: price ? td.mul(price || 0).toString() : "-"
       });
-    });
-
-    round.user_reward.forEach((item: any) => {
-      const price = _reward_price[item.token_address];
-      user_rewards_u = Big(item.amount)
-        .mul(price || 0)
-        .add(user_rewards_u);
     });
 
     round.user_incentive.forEach((item: any) => {
@@ -106,7 +106,7 @@ export default function Round({
         <div className="hidden border-b border-black/20 w-full justify-center pb-[14px] pt-[44px] md:flex cursor-pointer">
           {round.tokens.map((token: any, i: number) => (
             <Image
-              key={token.token_address}
+              key={token.token_address + i}
               src={token.token.logo}
               width={40}
               height={40}
@@ -217,6 +217,7 @@ export default function Round({
                 userStakeData?.tokens.length > 0 &&
                 userStakeData.tokens.map((token: any, i: number) => (
                   <Image
+                    key={i}
                     src={token.token.logo}
                     width={16}
                     height={16}
@@ -247,6 +248,7 @@ export default function Round({
               {userRewardUsd.gt(0) &&
                 round.reward_tokens.map((token: any, i: number) => (
                   <Image
+                    key={i}
                     src={token.logo}
                     width={16}
                     height={16}

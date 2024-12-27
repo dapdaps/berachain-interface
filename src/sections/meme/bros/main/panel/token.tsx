@@ -18,6 +18,7 @@ export default function Token({
   token,
   onClick,
   userInfo,
+  rewardPrices,
   balance,
   balancesLoading,
   cachedTokens = {},
@@ -25,22 +26,22 @@ export default function Token({
 }: any) {
   const { currentRound } = useData();
   const isMobile = useIsMobile();
+
   const [userReward, userRewards] = useMemo(() => {
-    if (Big(token?.total_dapped_usd || 0).eq(0)) return ["", []];
+    if (Big(token?.total_dapped_usd || 0).eq(0) || !userInfo) return ["", []];
 
-    const p = Big(userInfo?.stakedAmountUSD || 0).div(token?.total_dapped_usd);
-    const ur = p.mul(token.total_reward_usd).toString();
+    let user_rewards_u = Big(0);
+    let user_rewards = Big(0);
 
-    const urs = token.reward_tokens.map((item: any) => {
-      return {
-        ...item,
-        amount: p.mul(item.amount).toString(),
-        usd: p.mul(item.usd).toString(),
-        ...cachedTokens[item.address]
-      };
+    token.user_reward.forEach((item: any) => {
+      const r_price = rewardPrices[item.address];
+      user_rewards = Big(item.amount).add(user_rewards);
+      user_rewards_u = Big(item.amount)
+        .mul(r_price || 0)
+        .add(user_rewards_u);
     });
 
-    return [ur, urs];
+    return [user_rewards.toString(), user_rewards_u.toString()];
   }, [userInfo, token]);
 
   const claimable =
@@ -133,6 +134,7 @@ export default function Token({
                   <div className="flex items-center gap-[3px] cursor-pointer">
                     {token.reward_tokens.map((token: any, i: number) => (
                       <img
+                        key={i}
                         src={cachedTokens[token.address]?.logo}
                         className={`w-[26px] h-[26px] rounded-full shrink-0 ${
                           i > 0 && "ml-[-8px]"
@@ -212,6 +214,7 @@ export default function Token({
                     <div className="flex items-center gap-[3px] cursor-pointer">
                       {token.reward_tokens.map((token: any, i: number) => (
                         <img
+                          key={i}
                           src={cachedTokens[token.address]?.logo}
                           className={`w-[26px] h-[26px] rounded-full shrink-0 ${
                             i > 0 && "ml-[-8px]"

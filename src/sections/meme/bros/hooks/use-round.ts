@@ -12,13 +12,15 @@ export default function useRound() {
   const [rewardTokens, setRewardTokens] = useState<any>([]);
   const [info, setInfo] = useState<any>();
   const [loading, setLoading] = useState(false);
-  const { provider } = useCustomAccount();
+  const { provider, account } = useCustomAccount();
   const { currentRound } = useData();
 
   const onQuery = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await get(`/api/meme?round=${currentRound.round}`);
+      const response = await get(
+        `/api/meme?round=${currentRound.round}&account=${account}`
+      );
       const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
       const delayCalls = response.data.tokens.map((token: any) => ({
         address: token.stake_address,

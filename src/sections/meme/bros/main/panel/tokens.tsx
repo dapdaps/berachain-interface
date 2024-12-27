@@ -3,6 +3,7 @@ import { useRouter } from "next-nprogress-bar";
 import RoundLabel from "../../components/round-label";
 import useIsMobile from "@/hooks/use-isMobile";
 import useData from "../../hooks/use-data";
+import { usePriceStore } from "@/stores/usePriceStore";
 import Token from "./token";
 
 export default function Tokens({
@@ -17,6 +18,7 @@ export default function Tokens({
   const router = useRouter();
   const isMobile = useIsMobile();
   const { currentRound, historyRounds, nextRound } = useData();
+  const prices: any = usePriceStore((store) => store.price);
 
   const cachedRewardTokens = useMemo(
     () =>
@@ -39,6 +41,17 @@ export default function Tokens({
       onOpenModal(6, nextRound);
     }
   }, [isMobile]);
+
+  const rewardPrices = useMemo(() => {
+    const lp = rewardTokens.map((item: any) => {
+      const r_p = prices[item.symbol] || prices[item.priceKey];
+      return [item.address, r_p];
+    });
+    return lp.reduce(
+      (acc: any, item: any) => ({ ...acc, [item[0]]: item[1] }),
+      {}
+    );
+  }, [rewardTokens]);
 
   return (
     <>
@@ -79,7 +92,7 @@ export default function Tokens({
         </div>
         {tokens?.map((token: any, i: number) => (
           <Token
-            key={token.token.address}
+            key={token.token.address + i}
             token={token}
             i={i}
             onClick={(type: any) => {
@@ -90,6 +103,7 @@ export default function Tokens({
             balancesLoading={balancesLoading}
             cachedTokens={cachedRewardTokens}
             claimData={claimData}
+            rewardPrices={rewardPrices}
           />
         ))}
       </div>

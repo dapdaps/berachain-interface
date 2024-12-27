@@ -3,10 +3,23 @@ const BgtEmpty = (props: any) => {
 
   return (
     <div className={`flex flex-col items-center ${className}`} style={style}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="65" height="47" viewBox="0 0 65 47" fill="none">
-        <ellipse cx="29.5" cy="41.5" rx="29.5" ry="5.5" fill="black" fill-opacity="0.5" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="65"
+        height="47"
+        viewBox="0 0 65 47"
+        fill="none"
+      >
+        <ellipse
+          cx="29.5"
+          cy="41.5"
+          rx="29.5"
+          ry="5.5"
+          fill="black"
+          fill-opacity="0.5"
+        />
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           clip-rule="evenodd"
           d="M11.0722 11.8919C9.31048 11.4734 8 9.88976 8 8V5C8 2.79086 9.79086 1 12 1H36C38.2091 1 40 2.79086 40 5V8C40 9.88976 38.6895 11.4734 36.9277 11.8919C42.2285 13.8855 46 19.0023 46 25V31C46 36.5228 41.5228 41 36 41H12C6.47715 41 2 36.5228 2 31V25C2 19.0023 5.7715 13.8855 11.0722 11.8919Z"
           fill="#FFFDEB"
@@ -15,7 +28,13 @@ const BgtEmpty = (props: any) => {
           d="M11.0722 11.8919L11.2483 12.3599L12.7804 11.7836L11.1878 11.4054L11.0722 11.8919ZM36.9277 11.8919L36.8122 11.4054L35.2196 11.7836L36.7517 12.3599L36.9277 11.8919ZM7.5 8C7.5 10.1266 8.97471 11.9076 10.9567 12.3783L11.1878 11.4054C9.64625 11.0393 8.5 9.65289 8.5 8H7.5ZM7.5 5V8H8.5V5H7.5ZM12 0.5C9.51472 0.5 7.5 2.51472 7.5 5H8.5C8.5 3.067 10.067 1.5 12 1.5V0.5ZM36 0.5H12V1.5H36V0.5ZM40.5 5C40.5 2.51472 38.4853 0.5 36 0.5V1.5C37.933 1.5 39.5 3.067 39.5 5H40.5ZM40.5 8V5H39.5V8H40.5ZM37.0433 12.3783C39.0253 11.9076 40.5 10.1266 40.5 8H39.5C39.5 9.65289 38.3538 11.0393 36.8122 11.4054L37.0433 12.3783ZM36.7517 12.3599C41.864 14.2826 45.5 19.2173 45.5 25H46.5C46.5 18.7873 42.593 13.4884 37.1038 11.4239L36.7517 12.3599ZM45.5 25V31H46.5V25H45.5ZM45.5 31C45.5 36.2467 41.2467 40.5 36 40.5V41.5C41.799 41.5 46.5 36.799 46.5 31H45.5ZM36 40.5H12V41.5H36V40.5ZM12 40.5C6.7533 40.5 2.5 36.2467 2.5 31H1.5C1.5 36.799 6.20101 41.5 12 41.5V40.5ZM2.5 31V25H1.5V31H2.5ZM2.5 25C2.5 19.2173 6.13604 14.2826 11.2483 12.3599L10.8962 11.4239C5.40696 13.4884 1.5 18.7873 1.5 25H2.5Z"
           fill="black"
         />
-        <path d="M15 12H33" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2" />
+        <path
+          d="M15 12H33"
+          stroke="black"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-dasharray="2 2"
+        />
         <path
           d="M12 39C13.1667 38 17.3 36 24.5 36C31.7 36 36.8333 38.3333 37.5 39"
           stroke="black"
@@ -34,12 +53,16 @@ const BgtEmpty = (props: any) => {
           stroke="black"
         />
       </svg>
-      <div className="mt-[8px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">No active vaults yet</div>
+      <div className="mt-[8px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">
+        No active vaults yet
+      </div>
       <div
         className="flex items-center justify-center w-[242px] h-[48px] rounded-[10px] border border-black bg-[#FFDC50]"
         onClick={handleExplore}
       >
-        <span className="text-[#3D405A] font-Montserrat text-[16px] font-semibold">Explore Vaults</span>
+        <span className="text-[#3D405A] font-Montserrat text-[16px] font-semibold">
+          Explore Vaults
+        </span>
       </div>
     </div>
   );

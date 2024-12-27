@@ -31,7 +31,7 @@ const config: Config = {
         peach: "#FFF8F3",
         solitude: "#E5F0FF",
         lily: "#E5F7FF",
-  
+
         focus: "#EFEFF0",
         primary: "#2A2A27",
         secondary: "#606055",
@@ -46,9 +46,9 @@ const config: Config = {
         warning: "#EC8814",
         error: "#EB3C27",
         placeholder: "rgba(96, 96, 85, 0.5)",
-  
-        _primary: "#011A16",
-      },
+
+        _primary: "#011A16"
+      }
     },
     screens: {
       md: { max: "768px" },
@@ -143,6 +143,6 @@ const config: Config = {
       }
     }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate")]
 };
 export default config;

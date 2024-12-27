@@ -19,6 +19,13 @@
 }
 
 @font-face {
+  font-family: "Fuzzy";
+  src: url("/fonts/FuzzyBubbles-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+}
+
+@font-face {
   font-family: "Pixel";
   src: url("/fonts/5squared-pixel.ttf") format("truetype");
   font-weight: 100 900;
@@ -77,11 +84,17 @@ a,
   }
 
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE 和 Edge */
-    scrollbar-width: none;     /* Firefox */
+    -ms-overflow-style: none; /* IE 和 Edge */
+    scrollbar-width: none; /* Firefox */
   }
   .scrollbar-hide::-webkit-scrollbar {
-    display: none;             /* Chrome, Safari 和 Opera */
+    display: none; /* Chrome, Safari 和 Opera */
+  }
+}
+
+@layer components {
+  .heading-2 {
+    @apply font-Montserrat text-4xl font-light md:text-5xl;
   }
 }
 
@@ -165,7 +178,6 @@ input[type="number"]::-webkit-inner-spin-button {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-
 
 .spinner-path {
   animation: cycleOpacity var(--animation-duration) linear infinite;
