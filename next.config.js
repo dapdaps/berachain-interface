@@ -26,6 +26,10 @@ const nextConfig = {
     {
       source: "/api.dolomite.io/:path*",
       destination: "https://api.dolomite.io/:path*"
+    },
+    {
+      source: "/api.infrared.finance/:path*",
+      destination: "https://api.infrared.finance/:path*"
     }
   ],
   webpack: (config, { dev }) => {
@@ -116,8 +120,8 @@ const nextConfig = {
 const withBundleStatsPlugin =
   process.env.ANALYZE_STATS === "true"
     ? createBundleStatsPlugin({
-        outDir: "./analyze"
-      })
+      outDir: "./analyze"
+    })
     : (conf) => conf;
 
 module.exports = withBundleStatsPlugin(nextConfig);
