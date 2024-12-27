@@ -38,9 +38,7 @@ const List = forwardRef<any, any>((props, ref) => {
     return formatValueDecimal(
       dataList?.reduce((prev, cur) => {
         return prev.plus(
-          cur?.platform === 'aquabera' ? Big(cur?.tvl ?? 0) : Big(
-            ethers.utils.formatUnits(cur?.initialData?.current_staked_amount)
-          ).times(cur?.initialData?.stake_token?.price ?? 0)
+          Big(cur?.tvl ?? 0)
         );
       }, Big(0)),
       '$',
