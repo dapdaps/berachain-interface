@@ -42,7 +42,7 @@ export default function Tokens({ tokens, loading }: any) {
         >
           {list.map((token: any, i: number) => (
             <SwiperSlide
-              key={token.address}
+              key={token.token_address}
               style={{ height: isMobile ? 300 : 400 }}
             >
               <Item
