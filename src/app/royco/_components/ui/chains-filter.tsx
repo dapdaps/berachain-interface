@@ -1,6 +1,8 @@
+"use client";
+
 import { Fragment } from "react";
 
-import cn from 'clsx';
+import cn from "clsx";
 
 import { useBaseChains } from "@/sdk/hooks";
 
@@ -12,9 +14,11 @@ export const ChainsFilter = () => {
   return (
     <Fragment>
       {data.map((chain) => {
-        const shouldHide =
-          process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET" &&
-          chain?.testnet === true;
+        // TODO: Royco when mainnet- Remove this check
+        // const shouldHide =
+        //   process.env.NEXT_PUBLIC_FRONTEND_TYPE !== "TESTNET" &&
+        //   chain?.testnet === true;
+        const shouldHide = false;
 
         return (
           <div
