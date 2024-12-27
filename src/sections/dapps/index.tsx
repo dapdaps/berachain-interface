@@ -154,9 +154,7 @@ const SECOND_LIST = [
         name: "Royco",
         label: "Royco",
         type: "Vaults",
-        attachedIcon: "",
         className: "",
-        disabled: true,
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
         )
@@ -166,7 +164,6 @@ const SECOND_LIST = [
         name: "Kingdomly",
         label: "Kingdomly",
         type: "NFT",
-        attachedIcon: "",
         className: "",
         disabled: true,
         attachedIcon: (
@@ -178,7 +175,6 @@ const SECOND_LIST = [
         name: "Ramen",
         label: "Ramen",
         type: "Launchpad",
-        attachedIcon: "",
         className: "",
         disabled: true,
         attachedIcon: (
@@ -213,6 +209,10 @@ const DAppsView = () => {
     if (_dApp.name === 'berps') {
       dAppPath += `?id=BHONEY&tab=0`;
     }
+    if (_dApp.name === 'Royco') {
+      dAppPath = `/${_dApp.name.toLowerCase()}`;
+    };
+
     router.push(dAppPath);
   };
 
