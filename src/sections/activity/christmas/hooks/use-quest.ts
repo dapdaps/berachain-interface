@@ -175,6 +175,24 @@ export function useQuest(props: { base: IBase; }): IQuest {
           _it.description = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.text?.(it.box);
           _it.missionAction = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.action;
         });
+      } else {
+        if (it.name && EcosystemQuests[it.name]) {
+          const questCategories: any = [];
+          it.missions?.forEach?.((_it, idx) => {
+            const questCategoryExisted = questCategories.findIndex((_q: any) => _q.key === _it.category);
+            if (questCategoryExisted < 0) {
+              questCategories.push({ key: _it.category, times: 1 });
+              return;
+            }
+            const _questCategory = {
+              ...questCategories[questCategoryExisted],
+              times: questCategories[questCategoryExisted].times + 1
+            };
+            questCategories[questCategoryExisted] = _questCategory;
+            _it.description = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.text?.(_it.box);
+            _it.missionAction = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.action;
+          });
+        }
       }
       if (it.missions) {
         it.box = it.missions.map((it) => it.box || 0).reduce((a, b) => Big(a).plus(b).toNumber());
@@ -223,14 +241,14 @@ export function useQuest(props: { base: IBase; }): IQuest {
       if (_quest.token && _quest.category === QuestCategory.TokenBalance) {
         const { success } = await checkNftMissionValid(_quest);
         if (!success) {
-          resolve({ code: 0, data: {} });
+          resolve({ code: 1, data: {}, id: _quest.id });
           return;
         }
       }
       get('/api/mas/quest/check', params).then((res) => {
-        resolve(res);
+        resolve({ ...res, id: _quest.id });
       }).catch((err) => {
-        resolve({ code: 0, data: {} });
+        resolve({ code: 1, data: {}, id: _quest.id });
       });
     });
   };
@@ -282,12 +300,17 @@ export function useQuest(props: { base: IBase; }): IQuest {
       });
       const checks = checkList.map((it) => requestCheck(it));
       const res = await Promise.all(checks);
+      const checkFailedList: (number|undefined)[] = [];
       res.forEach((_res: any) => {
+        if (_res.code !== 0) {
+          checkFailedList.push(_res.id);
+          return;
+        }
         const { total_box, total_completed_times } = _res.data || {};
         totalBox += (total_box || 0);
         totalCompletedTimes += (total_completed_times || 0);
       });
-      quest.missions.filter((it) => !checkList.some((_it) => _it.id === it.id)).forEach((it) => {
+      quest.missions.filter((it) => !checkList.some((_it) => _it.id === it.id && !checkFailedList.includes(_it.id))).forEach((it) => {
         const { total_box, total_completed_times } = it;
         totalBox += (total_box || 0);
         totalCompletedTimes += (total_completed_times || 0);

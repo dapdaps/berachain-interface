@@ -42,7 +42,7 @@ const dapps: DApp[] = [
     icon: "/images/dapps/infrared/berps.svg",
     href: "/staking/berps"
   },
-  { id: "bex", name: "Bex", icon: "/images/dapps/bex.png", href: "/dex/bex" },
+  { id: "bex", name: "Bex", icon: "/images/dapps/bex.svg", href: "/dex/bex" },
   {
     id: "bend",
     name: "Bend",

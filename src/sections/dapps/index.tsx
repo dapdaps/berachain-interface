@@ -10,6 +10,7 @@ import dAppsConfig from "@/configs/dapp";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import clsx from 'clsx'
+import useIsMobile from "@/hooks/use-isMobile";
 
 const _dApps: any = {};
 for (const dapp in dAppsConfig) {
@@ -20,7 +21,7 @@ for (const dapp in dAppsConfig) {
   };
 }
 
-const List = [
+const FIRST_LIST = [
   {
     className: "w-[174px] h-[112px]",
     dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
@@ -32,17 +33,13 @@ const List = [
     dApps: [
       {
         ..._dApps["infrared"],
-        attachedIcon: ""
+        attachedIcon: "",
       },
-      {
-        ..._dApps["berps"],
-        attachedIcon: ""
-      }
     ]
   },
   {
     className: "w-[230px] h-[132px]",
-    dAppClassName: "absolute top-[-77px] gap-x-[14px] -left-1/3",
+    dAppClassName: "absolute w-[388px] top-[-77px] justify-between -left-1/3",
     sticks: [
       "absolute left-[46px] bottom-[44px]",
       "absolute left-[34px] bottom-[32px]"
@@ -52,12 +49,6 @@ const List = [
         ..._dApps["dolomite"],
         attachedIcon: (
           <TrunkSmall className="absolute left-[44%] bottom-[-24%]" />
-        )
-      },
-      {
-        ..._dApps["beraborrow"],
-        attachedIcon: (
-          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
         )
       },
       {
@@ -95,10 +86,9 @@ const List = [
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
       },
-      {
-        ..._dApps["aquabera"],
-      },
-      // TODO add bridge config
+      // {
+      //   ..._dApps["aquabera"],
+      // },
       {
         name: "Stargate",
         label: "Stargate",
@@ -108,18 +98,105 @@ const List = [
         className: "",
         disabled: true
       },
-      // {
-      //   name: 'Owlto',
-      //   label: 'Owlto',
-      //   icon: '/images/dapps/owlto.svg',
-      //   type: 'bridge',
-      //   attachedIcon:  '',
-      //   className: 'ml-[-25px]',
-      //   disabled: true,
-      // },
     ]
   },
 ];
+const SECOND_LIST = [
+  {
+    className: "w-[174px] h-[112px]",
+    dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
+    sticks: [
+      "absolute left-[20px] bottom-[48px]",
+      "absolute right-[12px] top-1/2 -translate-y-1/2",
+      "absolute left-[34px] bottom-[36px]"
+    ],
+    dApps: [
+      {
+        ..._dApps["berps"],
+        attachedIcon: ""
+      }
+    ]
+  },
+  {
+    className: "w-[230px] h-[132px]",
+    dAppClassName: "absolute w-[388px] top-[-77px] justify-between -left-1/3",
+    sticks: [
+      "absolute left-[46px] bottom-[44px]",
+      "absolute left-[34px] bottom-[32px]"
+    ],
+    dApps: [
+      {
+        ..._dApps["beraborrow"],
+        attachedIcon: (
+          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
+        )
+      },
+      {
+        ..._dApps["aquabera"],
+        attachedIcon: (
+          <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
+        )
+      },
+
+    ]
+  },
+  {
+    className: "w-[362px] h-[147px]",
+    dAppClassName:
+      "absolute left-1/2 -translate-x-1/2 top-[-90px] gap-y-[27px] lg:gap-x-[86px] md:gap-x-[62px] flex-wrap w-[560px] justify-center",
+    sticks: [
+      "absolute left-[163px] bottom-[34px]",
+      "absolute left-1/2 bottom-[22px]"
+    ],
+    dApps: [
+      {
+        icon: "/images/dapps/royco.svg",
+        name: "Royco",
+        label: "Royco",
+        type: "Vaults",
+        attachedIcon: "",
+        className: "",
+        disabled: true,
+        attachedIcon: (
+          <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
+        )
+      },
+      {
+        icon: "/images/dapps/kingdomly.svg",
+        name: "Kingdomly",
+        label: "Kingdomly",
+        type: "NFT",
+        attachedIcon: "",
+        className: "",
+        disabled: true,
+        attachedIcon: (
+          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
+        )
+      },
+      {
+        icon: "/images/dapps/ramen.svg",
+        name: "Ramen",
+        label: "Ramen",
+        type: "Launchpad",
+        attachedIcon: "",
+        className: "",
+        disabled: true,
+        attachedIcon: (
+          <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
+        )
+      },
+      {
+        icon: "/images/dapps/steer.svg",
+        name: "Steer",
+        label: "Steer",
+        type: "Vaults",
+        attachedIcon: "",
+        className: "",
+        disabled: true
+      },
+    ]
+  },
+]
 
 const toFirstUpperCase = (word: string) => {
   return word.replace(/\b\w/g, (char) => char.toUpperCase());
@@ -127,6 +204,7 @@ const toFirstUpperCase = (word: string) => {
 
 const DAppsView = () => {
   const [visibleHeight, setVisibleHeight] = useState(844);
+  const isMobile = useIsMobile()
 
   const router = useRouter();
 
@@ -154,59 +232,98 @@ const DAppsView = () => {
 
   return (
     <div
-      className="h-full md:mb-[70px] relative md:h-[calc(100dvh)]">
-      <PageBack className="absolute left-[12px] top-[17px]" />
-      <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
-      <div className={clsx('absolute lg:bottom-[230px] md:bottom-[200px] left-1/2 -translate-x-1/2 md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '')}>
-        <div className="w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative">
-          <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
-          <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />
-          <div className="absolute top-[-68px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-[14px]">
-            {List.map((item, index) => (
-              <Floor
-                key={"floor" + index}
-                className={item.className}
-                sticks={item.sticks}
-              >
-                {item.dApps.length > 0 && (
-                  <div className={`flex ${item.dAppClassName}`}>
-                    {item.dApps.map((dApp, idx) => (
-                      <div
-                        key={`treeNode_${idx}`}
-                        className={
-                          "relative basis-[120px] " + (dApp.className ?? "")
-                        }
-                      >
-                        <DApp
-                          name={dApp.label}
-                          icon={dApp.icon}
-                          type={toFirstUpperCase(dApp.type)}
-                          onClick={() => onNavigateTo(dApp)}
-                          disabled={dApp.disabled}
-                        />
-                        {dApp.attachedIcon ?? null}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Floor>
-            ))}
+      className="h-full md:mb-[70px] relative md:h-[100dvh] overflow-y-auto scrollbar-hide">
+      <div className="h-full md:h-[150dvh] relative">
+        <PageBack className="absolute left-[12px] top-[17px]" />
+        <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
+        <div className={clsx('absolute lg:bottom-[230px] md:bottom-[618px]  left-1/2  -translate-x-1/2 lg:-translate-x-[300%] md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '')}>
+          <div className="w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative">
+            <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
+            <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />
+            <div className="absolute top-[-68px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-[14px]">
+              {FIRST_LIST.map((item, index) => (
+                <Floor
+                  key={"floor" + index}
+                  className={item.className}
+                  sticks={item.sticks}
+                >
+                  {item.dApps.length > 0 && (
+                    <div className={`flex ${item.dAppClassName}`}>
+                      {item.dApps.map((dApp, idx) => (
+                        <div
+                          key={`treeNode_${idx}`}
+                          className={
+                            "relative basis-[120px] " + (dApp.className ?? "")
+                          }
+                        >
+                          <DApp
+                            name={dApp.label}
+                            icon={dApp.icon}
+                            type={toFirstUpperCase(dApp.type)}
+                            onClick={() => onNavigateTo(dApp)}
+                            disabled={dApp.disabled}
+                          />
+                          {dApp.attachedIcon ?? null}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Floor>
+              ))}
+            </div>
           </div>
         </div>
+        <div className={clsx('absolute lg:bottom-[230px] md:bottom-[200px]  left-1/2  -translate-x-1/2 lg:translate-x-[300%] md:scale-[0.76] md:z-[1]', visibleHeight < 750 ? 'md:bottom-[70px] md:scale-[0.74]' : '')}>
+          <div className="w-[95px] h-[415px] bg-[#906925] border-black border-[2px] relative">
+            <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
+            <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />
+            <div className="absolute top-[-68px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-[14px]">
+              {SECOND_LIST.map((item, index) => (
+                <Floor
+                  key={"floor" + index}
+                  className={item.className}
+                  sticks={item.sticks}
+                >
+                  {item.dApps.length > 0 && (
+                    <div className={`flex ${item.dAppClassName}`}>
+                      {item.dApps.map((dApp, idx) => (
+                        <div
+                          key={`treeNode_${idx}`}
+                          className={
+                            "relative basis-[120px] " + (dApp.className ?? "")
+                          }
+                        >
+                          <DApp
+                            name={dApp.label}
+                            icon={dApp.icon}
+                            type={toFirstUpperCase(dApp.type)}
+                            onClick={() => onNavigateTo(dApp)}
+                            disabled={dApp.disabled}
+                          />
+                          {dApp.attachedIcon ?? null}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Floor>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div
+          className="absolute bottom-0 left-0 right-0 hidden md:block"
+          style={{
+            backgroundImage: "url('/images/mobile/dapp-bg.png')",
+            backgroundSize: "100%",
+            backgroundPosition: "top",
+            backgroundRepeat: "no-repeat",
+            width: "100%",
+            height: visibleHeight < 750 ? '40.897vw' : "75.897vw",
+            zIndex: 0
+          }}
+        ></div>
       </div>
-      <div
-        className="absolute bottom-0 left-0 right-0 hidden md:block"
-        style={{
-          backgroundImage: "url('/images/mobile/dapp-bg.png')",
-          backgroundSize: "100%",
-          backgroundPosition: "top",
-          backgroundRepeat: "no-repeat",
-          width: "100%",
-          height: visibleHeight < 750 ? '40.897vw' : "75.897vw",
-          zIndex: 0
-        }}
-      ></div>
-    </div>
+    </div >
   );
 };
 

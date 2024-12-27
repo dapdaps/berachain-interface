@@ -2,9 +2,11 @@ import SceneContextProvider, { ChristmasContext } from "@/sections/activity/chri
 import Index from "@/sections/activity/christmas/christmas";
 import GuidingTour from "@/components/GuidingTour";
 import { MaskPlacement } from "@/components/GuidingTour/getStyleRect";
-import { useContext } from "react";
+import { useContext, useEffect } from 'react';
 import IndexMobile from "@/sections/activity/christmas/mobile";
 import useIsMobile from '@/hooks/use-isMobile';
+import useCustomAccount from '@/hooks/use-account';
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const ChristmasContent = () => {
   const { userInfoLoading, userInfo } = useContext(ChristmasContext);
@@ -92,6 +94,13 @@ const ChristmasContent = () => {
 
 export default function ChristmasView() {
   const isMobile = useIsMobile();
+  const { account } = useCustomAccount();
+  const { handleReport } = useClickTracking();
+
+  useEffect(() => {
+    if (!account) return;
+    handleReport('1010-018');
+  }, [account]);
 
   return (
     <SceneContextProvider>

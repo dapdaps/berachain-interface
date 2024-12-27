@@ -133,7 +133,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
           )}
         </div>
       </div>
-      {!!data.farmAddress && (
+      {/* {!!data.farmAddress && (
         <SwitchTabs
           tabs={[
             { label: "Deposit only", value: "deposit" },
@@ -145,7 +145,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
           cursorClassName="md:!rounded-[10px]"
           tabClassName="font-semibold md:font-medium"
         />
-      )}
+      )} */}
       {account ? (
         chainId !== DEFAULT_CHAIN_ID ? (
           <SwitchNetworkButton className="!h-[46px]" />
