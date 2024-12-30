@@ -12,10 +12,10 @@ import RulesModal from "./rules-modal";
 import TotalPrizeModal from "./total-prize-modal";
 import MobileHeader from '@/sections/home/mobile/header';
 import RingButton from '@/layouts/main/ring';
-import { useChristmas } from '@/hooks/use-christmas';
+import { SceneContext } from '@/context/scene';
 
 const ChristmasMobile = () => {
-  const { isChristmas } = useChristmas();
+  const { currentSceneInfoValid } = useContext(SceneContext);
 
   const { showSwapModal, setShowSwapModal } = useContext(ChristmasContext);
   const [showRulesModal, setShowRulesModal] = useState(false);
@@ -24,7 +24,7 @@ const ChristmasMobile = () => {
   return (
     <div className="relative bg-[linear-gradient(180deg,_#000_0%,_#455972_35dvh)] h-full overflow-y-auto">
       <MobileHeader />
-      {isChristmas && (
+      {currentSceneInfoValid && (
         <RingButton className="absolute top-[57px] right-[16px] scale-[0.667] z-[1]" />
       )}
       <Top
