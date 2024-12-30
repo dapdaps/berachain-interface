@@ -1,5 +1,6 @@
 import MenuButton from "@/components/mobile/menuButton";
 import Popover, { PopoverPlacement } from "@/components/popover";
+import { SceneContext } from '@/context/scene';
 import useCustomAccount from "@/hooks/use-account";
 import { useChristmas } from '@/hooks/use-christmas';
 import useIsMobile from "@/hooks/use-isMobile";
@@ -7,10 +8,8 @@ import NftModal from "@/sections/cave/NftModal";
 import useCollect, { giftBoxTips, sockTips } from "@/sections/cave/useCollect";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
-import { useContext, useState } from 'react';
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
 import ImportEquipments from "../ImportEquipments";
 import Module, { ModuleItem } from "./components/Module";
 import Welcome from "./components/Weclome";
@@ -18,8 +17,6 @@ import { useGameItems } from "./hooks/useGameItems";
 import { useMasUser } from "./hooks/useMasUser";
 import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
-import useIsMobile from "@/hooks/use-isMobile";
-import { SceneContext } from '@/context/scene';
 
 
 const TipsPopover = ({
