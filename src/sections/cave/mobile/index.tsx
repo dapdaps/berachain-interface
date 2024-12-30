@@ -1,19 +1,21 @@
 import MenuButton from "@/components/mobile/menuButton";
 import Popover, { PopoverPlacement } from "@/components/popover";
+import useCustomAccount from "@/hooks/use-account";
 import { useChristmas } from '@/hooks/use-christmas';
+import useIsMobile from "@/hooks/use-isMobile";
 import NftModal from "@/sections/cave/NftModal";
-import { sockTips, giftBoxTips } from "@/sections/cave/useCollect";
+import useCollect, { giftBoxTips, sockTips } from "@/sections/cave/useCollect";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import ImportEquipments from "../ImportEquipments";
 import Module, { ModuleItem } from "./components/Module";
 import Welcome from "./components/Weclome";
 import { useGameItems } from "./hooks/useGameItems";
 import { useMasUser } from "./hooks/useMasUser";
 import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
-import useIsMobile from "@/hooks/use-isMobile";
 
 
 const TipsPopover = ({
@@ -43,22 +45,30 @@ const TipsPopover = ({
   )
 }
 const Cave = () => {
+
+  const { account } = useCustomAccount
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
   const storePhotoList: any = useCavePhotoList()
   const isMobile = useIsMobile()
+  const searchParams = useSearchParams()
+
+  const [openImportEquipments, setOpenImportEquipments] = useState(false)
 
   const handleItemClick = (item: ModuleItem) => {
     console.log("Selected item:", item);
   };
 
+  const { cars, hats, clothes, necklaces } = useCollect({
+    address: account as string
+  })
   const { moduleConfigs, loading } = useGameItems();
   const { nfts, items, loading: masUserLoading } = useMasUser()
   const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
 
-
-  console.log(welcomeStore.show, 'welcomeStore.show');
-
+  useEffect(() => {
+    if (searchParams.get("tg_user_id")) setOpenImportEquipments(true)
+  }, [searchParams.get("tg_user_id")])
 
   return (
     <div className="relative w-full min-h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
@@ -299,6 +309,16 @@ const Cave = () => {
         checkedIndex={checkPhotoIndex}
         onClose={() => {
           setCheckPhotoIndex(-1)
+        }}
+      />
+      <ImportEquipments
+        open={openImportEquipments}
+        setOpen={setOpenImportEquipments}
+        equimentsMapping={{
+          cars,
+          hats,
+          clothes,
+          necklaces
         }}
       />
     </div>
