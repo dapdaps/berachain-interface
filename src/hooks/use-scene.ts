@@ -40,7 +40,6 @@ export function useSceneValue(): ISceneContext {
   const [currentUTCString, setCurrentUTCString] = useState<string>();
   const [currentSceneInfoLoading, setCurrentSceneInfoLoading] = useState<boolean>(true);
   const [currentRemainingDatetime, setCurrentRemainingDatetime] = useState<string>();
-  const [autoRequested, setAutoRequest] = useState(false);
 
   const currentSceneInfoValid = useMemo(() => {
     if (!currentSceneInfo) return false;
@@ -102,7 +101,7 @@ export function useSceneValue(): ISceneContext {
       if (dateFns.isBefore(new Date(times.currentUTCString), new Date(startUTCTime))) {
         res.data.status = SceneStatus.UnStart;
       }
-      if (dateFns.isAfter(new Date(times.currentUTCString), new Date(endUTCTime))) {
+      if (dateFns.isAfter(new Date(times.currentUTCString), new Date(endUTCTime)) || dateFns.isEqual(new Date(times.currentUTCString), new Date(endUTCTime))) {
         res.data.status = SceneStatus.Ended;
       }
       setCurrentSceneInfo(res.data);
@@ -141,17 +140,17 @@ export function useSceneValue(): ISceneContext {
     let _currentTime = new Date(currentUTCString);
     const calc = () => {
       try {
+        // console.log('_currentTime: %o', dateFns.format(_currentTime, 'yyyy-MM-dd hh:mm:ss'));
+        // console.log('endUTCTime: %o', currentSceneInfo.endUTCTime);
         const diff = getRemainingDatetime(_currentTime, new Date(currentSceneInfo.endUTCTime));
+        // console.log('diff: %o', diff);
         setCurrentRemainingDatetime(diff);
       } catch (err: any) {
         console.log(err);
         setCurrentRemainingDatetime('');
       }
 
-      // ⚠️ when the frontend calculates to the end of the event
-      // trigger the API request
-      if (dateFns.isEqual(_currentTime, new Date(currentSceneInfo.endUTCTime)) && !autoRequested) {
-        setAutoRequest(true);
+      if (dateFns.isEqual(_currentTime, new Date(currentSceneInfo.endUTCTime))) {
         getCurrentTimestamp().then((times) => {
           getCurrentSceneInfo(times);
         });
@@ -169,7 +168,7 @@ export function useSceneValue(): ISceneContext {
     return () => {
       clearInterval(pollingTimer.current);
     };
-  }, [currentUTCString, currentSceneInfo, autoRequested]);
+  }, [currentUTCString, currentSceneInfo]);
 
   return {
     currentSceneInfoLoading,
