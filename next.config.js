@@ -5,6 +5,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const createBundleStatsPlugin = require("next-plugin-bundle-stats");
 
 const BASE_URL = process.env.NEXT_PUBLIC_API || "https://api.dapdap.net";
+const GAME_BASE_URL = process.env.NEXT_GAME_API || "https://dev-api-game.beratown.app";
 
 const nextConfig = {
   reactStrictMode: false,
@@ -46,6 +47,10 @@ const nextConfig = {
     {
       source: "/api.infrared.finance/:path*",
       destination: "https://api.infrared.finance/:path*"
+    },
+    {
+      source: "/dapdap.game/:path*",
+      destination: GAME_BASE_URL + "/:path*"
     }
   ],
   webpack: (config, { dev }) => {

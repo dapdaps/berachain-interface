@@ -1,18 +1,20 @@
 import PageBack from "@/components/back";
+import { SceneContext } from '@/context/scene';
 import { useChristmas } from '@/hooks/use-christmas';
 import useCollect, { cloth_cateogries, giftBoxTips, hat_categories, sockTips } from "@/sections/cave/useCollect";
 import { useBearEqu } from "@/stores/useBearEqu";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import { useCaveWelcome } from "@/stores/useCaveWelcome";
 import clsx from "clsx";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import Bear from "./Bear";
 import CheckBox from "./CheckBox";
+import ImportEquipments from "./ImportEquipments";
 import NftModal from "./NftModal";
 import Tips from "./Tip";
 import Welcome from "./Welcome";
-import { SceneContext } from '@/context/scene';
 const hatPositions = [{
     width: 102,
 
@@ -222,6 +224,7 @@ export default function Cave() {
     const [tipLocation, setTipLocation] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
     const [tipMsg, setTipMsg] = useState<any>()
     const [tipShow, setTipShow] = useState<boolean>()
+    const [openImportEquipments, setOpenImportEquipments] = useState(false)
     const setEqu = useBearEqu((store: any) => store.set)
 
     const tipDisabled = useMemo(() => {
@@ -232,6 +235,7 @@ export default function Cave() {
 
     const store: any = useCaveWelcome()
     const storePhotoList: any = useCavePhotoList()
+    const searchParams = useSearchParams()
 
     const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
 
@@ -272,11 +276,13 @@ export default function Cave() {
         }
     }, [])
 
+    useEffect(() => {
+        if (searchParams.get("tg_user_id")) setOpenImportEquipments(true)
+    }, [searchParams.get("tg_user_id")])
+
 
     return <div className="relative w-screen h-full min-w-[1200px] min-h-[890px]">
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px] z-10" />
-
-
         {
           isChristmas && (
                 <div className="absolute top-[-68px] left-0 w-full bottom-0">
@@ -548,6 +554,17 @@ export default function Cave() {
                 checkedIndex={checkPhotoIndex}
                 onClose={() => {
                     setCheckPhotoIndex(-1)
+                }}
+            />
+
+            <ImportEquipments
+                open={openImportEquipments}
+                setOpen={setOpenImportEquipments}
+                equimentsMapping={{
+                    cars,
+                    hats,
+                    clothes,
+                    necklaces
                 }}
             />
         </div >
