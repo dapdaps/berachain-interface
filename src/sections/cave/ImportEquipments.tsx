@@ -1,16 +1,13 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import Card from "@/components/card";
-import Modal from "@/components/modal";
-import Big from "big.js";
-import { useSearchParams } from "next/navigation";
-import { post } from "@/utils/http";
-import useCustomAccount from "@/hooks/use-account";
 import Loading from "@/components/loading";
+import Modal from "@/components/modal";
+import useCustomAccount from "@/hooks/use-account";
+import Big from "big.js";
 import clsx from "clsx";
+import { useSearchParams } from "next/navigation";
 export default memo(function ImportEquipments({
-  open,
-  setOpen,
   equimentsMapping
 }: any) {
   const {
@@ -18,6 +15,7 @@ export default memo(function ImportEquipments({
   } = useCustomAccount()
   const searchParams = useSearchParams()
 
+  const [open, setOpen] = useState(false)
   const [bindLoading, setBindLoading] = useState(false)
 
   const findHighestLevelEquiment = (equiments) => {
@@ -55,6 +53,9 @@ export default memo(function ImportEquipments({
       setBindLoading(false)
     }
   }
+  useEffect(() => {
+    if (searchParams.get("tg_user_id")) setOpen(true)
+  }, [searchParams.get("tg_user_id")])
 
   return (
     <Modal open={open} onClose={() => {
