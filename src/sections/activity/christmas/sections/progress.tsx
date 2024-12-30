@@ -21,7 +21,7 @@ const NFTProgress = () => {
   const today = useMemo<any>(() => {
     if (!currentDateTime) return {};
     let str = dateFns.format(currentDateTime, 'yyyy-MM-dd');
-    return WinningOdds[str] || {};
+    return WinningOdds[str] || { display: 'Ended' };
   }, [currentDateTime]);
 
   const progress = useMemo(() => {

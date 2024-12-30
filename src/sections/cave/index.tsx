@@ -5,13 +5,14 @@ import { useBearEqu } from "@/stores/useBearEqu";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import { useCaveWelcome } from "@/stores/useCaveWelcome";
 import clsx from "clsx";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import Bear from "./Bear";
 import CheckBox from "./CheckBox";
 import NftModal from "./NftModal";
 import Tips from "./Tip";
 import Welcome from "./Welcome";
+import { SceneContext } from '@/context/scene';
 const hatPositions = [{
     width: 102,
 
@@ -215,12 +216,19 @@ const neckTips = [
 
 
 export default function Cave() {
+    const { currentSceneInfoValid } = useContext(SceneContext);
     const { isChristmas } = useChristmas();
     const { address: account } = useAccount()
     const [tipLocation, setTipLocation] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
     const [tipMsg, setTipMsg] = useState<any>()
     const [tipShow, setTipShow] = useState<boolean>()
     const setEqu = useBearEqu((store: any) => store.set)
+
+    const tipDisabled = useMemo(() => {
+        if (!tipMsg || currentSceneInfoValid) return false;
+        if (tipMsg.btnText === 'Campaign Ended') return true;
+        return false;
+    }, [currentSceneInfoValid, tipMsg]);
 
     const store: any = useCaveWelcome()
     const storePhotoList: any = useCavePhotoList()
@@ -232,6 +240,7 @@ export default function Cave() {
     })
 
     const tipClick = useCallback((e: any, item: any) => {
+        console.log('tipClick', item);
         if (e.target.classList.contains('cave-tip') || e.target.parentNode.classList.contains('cave-tip')) {
             e.nativeEvent.stopImmediatePropagation()
             let y = e.clientY - 30
@@ -269,7 +278,7 @@ export default function Cave() {
 
 
         {
-            isChristmas && (
+          isChristmas && (
                 <div className="absolute top-[-68px] left-0 w-full bottom-0">
                     <div className="absolute left-0 top-0 w-full h-[310px]">
                         <img className="w-full" src="/images/cave/christmas/ribbons.svg" alt="ribbons" />
@@ -305,7 +314,7 @@ export default function Cave() {
                                         style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
                                         className={clsx("absolute w-[72px] cursor-pointer cave-tip")}
                                         onClick={(e) => {
-                                            tipClick(e, sockTips[index])
+                                            tipClick(e, currentSceneInfoValid ? sockTips[index] : {...sockTips[index], btnText: 'Campaign Ended'})
                                         }}
                                     >
                                         <div className={clsx("absolute left-[38px] w-[4px] bg-black", index === 2 ? 'h-[48px] top-[-43px]' : 'h-[26px] top-[-18px]')} />
@@ -340,7 +349,7 @@ export default function Cave() {
                                         style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
                                         className={clsx("absolute cursor-pointer cave-tip", index === 0 ? "w-[125px]" : "w-[108px]")}
                                         onClick={(e) => {
-                                            tipClick(e, giftBoxTips[index])
+                                            tipClick(e, currentSceneInfoValid ? giftBoxTips[index] : { ...giftBoxTips[index], btnText: 'Campaign Ended' })
                                         }}
                                     >
                                         <img src={index === 0 ? `/images/cave/christmas/gift_box_1${item.pc_item ? '_has' : ''}.png` : `/images/cave/christmas/gift_box_2${item.pc_item ? '_has' : ''}.png`} alt="giftBox" />
@@ -378,7 +387,7 @@ export default function Cave() {
             </div>
             <div className="flex gap-[65px] justify-center">
                 {
-                    storePhotoList?.photoList?.map((photo, index) => (
+                    storePhotoList?.photoList?.map((photo: any, index: number) => (
                         <div className="relative w-[159px] h-[184px] group">
                             <img className="relative z-[3]" src="/images/cave/christmas/photo_frame.svg" alt="photo_frame" />
                             <div className="absolute left-[18px] top-[42px] z-[2]">
@@ -529,7 +538,7 @@ export default function Cave() {
             <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} items={items} />
             <Welcome show={store.welcomeShow} onClose={() => { store.set({ welcomeShow: false }) }} />
             {
-                tipShow && <Tips msg={tipMsg} location={tipLocation} />
+                tipShow && <Tips msg={tipMsg} location={tipLocation} disabled={tipDisabled} />
             }
 
             <NftModal

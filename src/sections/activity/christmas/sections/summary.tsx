@@ -35,7 +35,7 @@ const Summary = ({ onOpenRewards }: any) => {
   ];
 
   return (
-    <div className="w-full px-[100px] md:px-[10px] mt-[100px] md:mt-[55px]">
+    <div className="w-full px-[100px] md:px-[10px] mt-[100px]">
       <div className="w-full relative bg-[#B5956E] p-[37px_43px_33px_59px] border border-black rounded-[20px] shadow-[-20px_26px_60px_0px_rgba(0,_0,_0,_0.20)_inset] md:px-[7px] md:pt-[22px] md:pb-[10px]">
         <img
           src="/images/activity/christmas/bg-summary.svg"

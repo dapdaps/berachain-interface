@@ -7,13 +7,15 @@ import IndexMobile from "@/sections/activity/christmas/mobile";
 import useIsMobile from '@/hooks/use-isMobile';
 import useCustomAccount from '@/hooks/use-account';
 import useClickTracking from '@/hooks/use-click-tracking';
+import { SceneStatus } from '@/configs/scene';
 
 const ChristmasContent = () => {
-  const { userInfoLoading, userBox } = useContext(ChristmasContext);
+  const { userInfoLoading, userBox, info } = useContext(ChristmasContext);
 
   const shouldShowGuide = !userInfoLoading &&
     userBox &&
-    (!userBox.total_box || userBox.total_box === 0);
+    (!userBox.total_box || userBox.total_box === 0) &&
+    info?.status === SceneStatus.Ongoing;
 
   return (
     <>

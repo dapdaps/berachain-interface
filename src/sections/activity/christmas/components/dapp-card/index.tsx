@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { numberFormatter } from '@/utils/number-formatter';
 
 export default function DappCard(props: any) {
-  const { total_box, onCheck, checking, actions, dappInfo, missions } = props;
+  const { total_box, onCheck, checking, actions, dappInfo, missions, disabled } = props;
 
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -40,6 +40,7 @@ export default function DappCard(props: any) {
                   numberClassName="!pl-[10px] !text-[12px]"
                   onClick={onCheck}
                   checking={checking}
+                  disabled={disabled}
                 />
               </div>
               <div className="text-[14px] font-medium flex justify-between items-center">
