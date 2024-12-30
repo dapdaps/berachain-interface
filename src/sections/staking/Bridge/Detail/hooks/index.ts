@@ -31,7 +31,7 @@ export function useDetail(props: any) {
   const isBERPS = name === "Berps";
   const isInfraredBerps =
     name === "Infrared" &&
-    data?.initialData?.pool?.protocol === "BERPS" &&
+    data?.initialData?.pool?.protocol?.id === "berps" &&
     data?.initialData?.pool?.name === "BHONEY";
 
   const symbol = isBERPS ? data?.depositToken?.symbol : id;
