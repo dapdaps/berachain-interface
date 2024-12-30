@@ -64,6 +64,7 @@ export default memo(function Detail(props: any) {
     defaultIndex
   });
 
+  console.log('====mintData', mintData)
   const {
     // isDeposit,
     balances,

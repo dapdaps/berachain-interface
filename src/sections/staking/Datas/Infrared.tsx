@@ -229,7 +229,7 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => ['BEX', 'bex', 'kodiak', 'beraborrow', 'Kodiak Finance', 'BERPS'].includes(data?.initialData?.protocol?.id) || data?.id === "iBGT-HONEY"),
+      dataList: dataList?.filter(data => ['bex', 'kodiak', 'beraborrow', 'berps', 'honeypot'].includes(data?.initialData?.protocol?.id) || data?.id === "iBGT-HONEY"),
       fullDataList: dataList
     });
   }
@@ -252,7 +252,7 @@ export default function useInfraredData(props: any) {
           ...pair,
           name,
           tvl: Big(initialData?.tvl).toFixed(),
-          apy: initialData?.apr,
+          apy: Big(initialData?.apr).times(100).toFixed(),
           initialData,
           type: 'Staking',
           vaultAddress,
@@ -263,6 +263,8 @@ export default function useInfraredData(props: any) {
         dataList.push(_data);
       }
     }
+
+    console.log('====dataList====', dataList)
     formatedData('dataList');
   }
   function getUsdDepositAmount() {

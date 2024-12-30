@@ -101,17 +101,17 @@ export default {
           decimals1: 18,
           LP_ADDRESS: '0xd28d852cbcc68dcec922f6d5c7a8185dbaa104b7'
         },
-        {
-          id: 'WBERA-tHPOT',
-          strategy: 'Dynamic',
-          strategy2: '',
-          tokens: ['WBERA', 'tHPOT'],
-          images: ['/assets/tokens/wbera.png', '/assets/tokens/thpot.svg'],
-          decimals: 18,
-          decimals0: 18,
-          decimals1: 18,
-          LP_ADDRESS: '0x28fec64eabc1e4af7f5cd33d2bd20b01d5e8f203'
-        },
+        // {
+        //   id: 'WBERA-tHPOT',
+        //   strategy: 'Dynamic',
+        //   strategy2: '',
+        //   tokens: ['WBERA', 'tHPOT'],
+        //   images: ['/assets/tokens/wbera.png', '/assets/tokens/thpot.svg'],
+        //   decimals: 18,
+        //   decimals0: 18,
+        //   decimals1: 18,
+        //   LP_ADDRESS: '0x28fec64eabc1e4af7f5cd33d2bd20b01d5e8f203'
+        // },
         {
           id: 'HONEY-WBTC',
           strategy: 'Dynamic',
@@ -162,17 +162,17 @@ export default {
           decimals1: 18,
           LP_ADDRESS: '0x7fd165b73775884a38aa8f2b384a53a3ca7400e6'
         },
-        {
-          id: 'sNECT',
-          strategy: 'Dynamic',
-          strategy2: '',
-          tokens: ['sNECT'],
-          images: ['/assets/tokens/nectar.png'],
-          decimals: 18,
-          decimals0: 18,
-          decimals1: 18,
-          LP_ADDRESS: '0x3a7f6f2f27f7794a7820a32313f4a68e36580864'
-        }
+        // {
+        //   id: 'sNECT',
+        //   strategy: 'Dynamic',
+        //   strategy2: '',
+        //   tokens: ['sNECT'],
+        //   images: ['/assets/tokens/nectar.png'],
+        //   decimals: 18,
+        //   decimals0: 18,
+        //   decimals1: 18,
+        //   LP_ADDRESS: '0x3a7f6f2f27f7794a7820a32313f4a68e36580864'
+        // }
       ],
       addresses: {
         HONEY: '0x0e4aaf1351de4c0264c5c7056ef3777b41bd8e03',
