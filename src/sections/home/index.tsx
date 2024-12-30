@@ -10,7 +10,7 @@ import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import EarnSvg from "@public/images/background/earn.svg";
 import VaultsEnterance from "./vaults-enterance";
 import MemeEnterance from "@/sections/meme/bros/enterance";
-import { memo } from "react";
+import { memo, useContext } from "react";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useIsMobile from "@/hooks/use-isMobile";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
@@ -19,6 +19,8 @@ import MobileHome from "./mobile";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
 import HomePrompt from "@/sections/activity/christmas/components/home-prompt";
+import { SceneContext } from '@/context/scene';
+
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -176,6 +178,7 @@ const Navigation = function () {
 
 export default memo(function Home() {
   const isMobile = useIsMobile();
+  const { currentSceneInfoValid } = useContext(SceneContext);
 
   if (isMobile) {
     return <MobileHome />;
@@ -184,7 +187,11 @@ export default memo(function Home() {
   return (
     <BearBackground type="home">
       <Navigation />
-      <HomePrompt />
+      {
+        currentSceneInfoValid && (
+          <HomePrompt />
+        )
+      }
     </BearBackground>
   );
 });
