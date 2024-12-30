@@ -8,7 +8,8 @@ import RingButton from "./ring";
 import useMapModalStore from "@/stores/useMapModalStore";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import { useBgtCount } from "@/hooks/use-bgt-count";
-import { useChristmas } from '@/hooks/use-christmas';
+import { useContext } from 'react';
+import { SceneContext } from '@/context/scene';
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -16,7 +17,7 @@ const MainLayoutHeader = (props: Props) => {
   const store: any = useMapModalStore();
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
-  const { isChristmas } = useChristmas();
+  const { currentSceneInfoValid } = useContext(SceneContext);
 
   const goHome = () => {
     router.replace("/");
@@ -79,7 +80,7 @@ const MainLayoutHeader = (props: Props) => {
           </div>
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
-          {isChristmas && <RingButton />}
+          {currentSceneInfoValid && <RingButton />}
           <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" />
           <ConnectWallet />
