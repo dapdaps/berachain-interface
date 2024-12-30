@@ -235,7 +235,7 @@ export default function Mobile({ dapp }: any) {
   );
 }
 const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
-  const pool = isVaults ? data?.pool : data?.initialData?.pool;
+  const protocol = data?.initialData?.protocol
   const isBerps = dapp?.name === 'Berps';
   const isAquaBera = dapp?.name === 'AquaBera'
   // console.log('=name', dapp?.name)
@@ -386,13 +386,15 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               <Image
                 className="absolute right-[-2px] bottom-[0px]"
                 src={
-                  pool?.protocol === 'BEX'
-                    ? '/images/dapps/infrared/bex.svg'
-                    : pool?.protocol === 'aquabera'
-                      ? '/images/dapps/infrared/aquabera.svg' :
-                      (pool?.protocol === 'Kodiak Finance')
-                        ? '/images/dapps/kodiak.svg'
-                        : '/images/dapps/infrared/berps.svg'
+                  data?.platform === 'infrared' ? (
+                    protocol?.id === "bex" ?
+                      '/images/dapps/infrared/bex.svg' :
+                      protocol?.id === "kodiak" ?
+                        '/images/dapps/kodiak.svg' :
+                        protocol?.id === "berps" ?
+                          '/images/dapps/infrared/berps.svg' :
+                          '/images/dapps/infrared/infrared.svg'
+                  ) : '/images/dapps/infrared/aquabera.svg'
                 }
                 width={20}
                 height={20}
@@ -401,9 +403,9 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
             </div>
             <div>
               <div className="text-[16px] font-semibold">
-                {pool?.name || "iBGT"}
+                {data?.platform === "infrared" ? data?.initialData?.name : data?.pool?.name}
               </div>
-              <div className="text-[14px] mt-[4px]">{pool?.protocol}</div>
+              <div className="text-[14px] mt-[4px]">{protocol?.name}</div>
             </div>
           </div>
           <button
