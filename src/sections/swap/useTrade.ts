@@ -8,6 +8,7 @@ import { useSettingsStore } from "@/stores/settings";
 import checkGas from "./checkGas";
 import formatTrade from "./formatTrade";
 import getWrapOrUnwrapTx from "./getWrapOrUnwrapTx";
+import quoter from "@/sdk/smart-router";
 
 export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const slippage: any = useSettingsStore((store: any) => store.slippage);
@@ -19,7 +20,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
   const prices = {};
-
+  console.log("provider", provider);
   const onQuoter = useCallback(
     async ({ inputCurrency, outputCurrency, inputCurrencyAmount }: any) => {
       setTrade(null);
@@ -100,17 +101,8 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
           );
         }
 
-        const response = await fetch("https://api.dapdap.net/quoter", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            params: JSON.stringify(params)
-          })
-        });
-        const result = await response.json();
-        const data = result.data;
+        const data = await quoter(params);
+
         if (!data) {
           throw new Error("No Data.");
         }
