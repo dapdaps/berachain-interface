@@ -18,11 +18,9 @@ export const SCENE_LIST: Scene[] = [
       if (!start_time || !end_time) return {};
       start_time = start_time * 1000;
       end_time = end_time * 1000;
-      const start_time_utc = getUTCTimestamp(start_time);
-      const end_time_utc = getUTCTimestamp(end_time);
       return {
-        startUTCTime: getUTCDatetime(start_time_utc),
-        endUTCTime: getUTCDatetime(end_time_utc),
+        startUTCTime: getUTCDatetime(start_time),
+        endUTCTime: getUTCDatetime(end_time),
       };
     },
   },

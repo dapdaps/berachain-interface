@@ -11,13 +11,14 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import BoxModal from "./box-modal";
 import useHomepageData from "./hooks/use-homepage-data";
 import { SceneContext } from '@/context/scene';
+import Countdown from '@/sections/activity/christmas/components/countdown';
 
 export default function Enterance({ path }: any) {
   const router = useRouter();
   const { loading, data, onQuery } = useHomepageData();
   const [openModal, setOpenModal] = useState(false);
   const isMobile = useIsMobile();
-  const { currentSceneInfoValid, currentSceneInfoLoading, currentRemainingDatetime } = useContext(SceneContext);
+  const { currentSceneInfoValid } = useContext(SceneContext);
 
   const remainBox = useMemo(
     () => (data?.total_box || 0) - (data?.used_box || 0),
@@ -48,16 +49,7 @@ export default function Enterance({ path }: any) {
           >
             <div className="relative z-[1]">
               <BearSnow />
-              <div className="absolute right-[50px] bottom-[60px] w-[160px] py-[10px] rounded-[20px] border text-center border-black bg-[#FFFDEB] shadow-shadow1 flex flex-col items-center text-[14px] font-[400] font-CherryBomb leading-[90%] gap-[7px]">
-                {
-                  !currentSceneInfoValid && !currentSceneInfoLoading ? 'Campaign Ended' : (
-                    <>
-                      <div>Bera Wonderland <br /> will close in</div>
-                      <div className="text-[18px]">{currentRemainingDatetime || '--:--:--'}</div>
-                    </>
-                  )
-                }
-              </div>
+              <Countdown />
             </div>
             <div className="absolute left-[0px] bottom-[36px] z-[2] w-[139px] h-[58px] rounded-[29px]">
               <Popover

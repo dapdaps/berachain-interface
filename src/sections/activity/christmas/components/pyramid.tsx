@@ -45,7 +45,7 @@ const Pyramid = (props: any) => {
                             }
                           },
                           initial: "hidden",
-                          animate: _disabled ? "visible" : "hidden",
+                          animate: "hidden",
                           whileHover: "visible"
                         }}
                         onClick={onBoxClick}
