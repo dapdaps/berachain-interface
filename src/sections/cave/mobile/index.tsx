@@ -9,7 +9,7 @@ import useCollect, { giftBoxTips, sockTips } from "@/sections/cave/useCollect";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import clsx from "clsx";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useContext, useState } from 'react';
+import { useContext, useState } from "react";
 import ImportEquipments from "../ImportEquipments";
 import Module, { ModuleItem } from "./components/Module";
 import Welcome from "./components/Weclome";
@@ -48,9 +48,9 @@ const TipsPopover = ({
   )
 }
 const Cave = () => {
-  const { currentSceneInfoValid } = useContext(SceneContext);
 
   const { account } = useCustomAccount
+  const { currentSceneInfoValid } = useContext(SceneContext);
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
   const storePhotoList: any = useCavePhotoList()

@@ -1,6 +1,7 @@
 "use client";
 
 import BearBackground from "@/components/bear-background/laptop";
+import { SceneContext } from '@/context/scene';
 import { useChristmas } from "@/hooks/use-christmas";
 import useIsMobile from "@/hooks/use-isMobile";
 import { useProgressRouter } from "@/hooks/use-progress-router";
@@ -16,7 +17,6 @@ import EarnSvg from "@public/images/background/earn.svg";
 import { memo, useContext } from "react";
 import VaultsEnterance from "./vaults-enterance";
 
-import { SceneContext } from '@/context/scene';
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import CaveSvg from "@public/images/cave/cave.svg";
 import clsx from "clsx";
@@ -187,6 +187,11 @@ const Navigation = function () {
         </div>
         <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">Beraciaga</div>
       </div>
+      {
+        isChristmas && (
+          <ChristmasEnterance path={christmasPath} />
+        )
+      }
     </>
   );
 };
@@ -204,6 +209,7 @@ export default memo(function Home() {
   return (
     <BearBackground type="home">
       <Navigation />
+      <BeraciagaModal />
       {
         currentSceneInfoValid && (
           <HomePrompt />
