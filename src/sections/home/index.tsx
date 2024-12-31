@@ -215,7 +215,6 @@ export default memo(function Home() {
           <HomePrompt />
         )
       }
-      <BeraciagaModal />
     </BearBackground>
   );
 });
