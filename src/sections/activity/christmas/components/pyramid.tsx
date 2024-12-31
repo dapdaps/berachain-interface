@@ -1,7 +1,7 @@
 import Button from "@/sections/activity/christmas/components/button";
 
 const Pyramid = (props: any) => {
-  const { list, onBoxClick, opening, isMobile } = props;
+  const { list, onBoxClick, opening, isMobile, disabled } = props;
 
   return (
     <div className="relative flex justify-center items-center w-full h-full md:scale-[0.4] md:translate-y-[-100px]">
@@ -23,7 +23,7 @@ const Pyramid = (props: any) => {
             }}
           >
             {row.map((item: any, idx: number) => {
-              const disabled = item.status === "opened";
+              const _disabled = item.status === "opened" || disabled;
               return (
                 <div
                   key={`col-${idx}`}
@@ -34,7 +34,7 @@ const Pyramid = (props: any) => {
                       <Button
                         key={`col-btn-${idx}`}
                         className="!px-[20px] translate-y-[20px]"
-                        disabled={disabled}
+                        disabled={_disabled}
                         motionProps={{
                           variants: {
                             visible: {
@@ -45,13 +45,13 @@ const Pyramid = (props: any) => {
                             }
                           },
                           initial: "hidden",
-                          animate: disabled ? "visible" : "hidden",
+                          animate: "hidden",
                           whileHover: "visible"
                         }}
                         onClick={onBoxClick}
                         loading={opening}
                       >
-                        {disabled ? "Opened" : "Open it"}
+                        {_disabled ? "Expired" : "Open it"}
                       </Button>
                     )
                   }
@@ -87,8 +87,9 @@ const Pyramid = (props: any) => {
             className="absolute left-0 top-0 !scale-[2.5]"
             onClick={onBoxClick}
             loading={opening}
+            disabled={disabled}
           >
-            Open it
+            {disabled ? 'Expired' : 'Open it'}
           </Button>
         )
       }

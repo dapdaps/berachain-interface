@@ -20,7 +20,7 @@ const SocialTask = (props: any) => {
         ) : (
           <button
             type="button"
-            className={`translate-y-[2.8px] disabled:opacity-30 translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain ${reloadButtonClassName}`}
+            className={`translate-y-[2.8px] disabled:opacity-30 disabled:!cursor-not-allowed translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain ${reloadButtonClassName}`}
             disabled={disabled}
             onClick={onClick}
           >

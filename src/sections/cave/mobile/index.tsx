@@ -1,5 +1,6 @@
 import MenuButton from "@/components/mobile/menuButton";
 import Popover, { PopoverPlacement } from "@/components/popover";
+import { SceneContext } from '@/context/scene';
 import useCustomAccount from "@/hooks/use-account";
 import { useChristmas } from '@/hooks/use-christmas';
 import useIsMobile from "@/hooks/use-isMobile";
@@ -8,7 +9,7 @@ import useCollect, { giftBoxTips, sockTips } from "@/sections/cave/useCollect";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import clsx from "clsx";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ImportEquipments from "../ImportEquipments";
 import Module, { ModuleItem } from "./components/Module";
 import Welcome from "./components/Weclome";
@@ -19,7 +20,8 @@ import Popup from "./popup";
 
 
 const TipsPopover = ({
-  tips
+  tips,
+  currentSceneInfoValid
 }: any) => {
   const router = useRouter()
   return (
@@ -35,6 +37,7 @@ const TipsPopover = ({
       </div>
       <div
         onClick={() => {
+          if (!currentSceneInfoValid) return;
           router.push("/activity/christmas")
         }}
         className="w-full h-8 border-[2px] bg-[#FFF5A9] rounded-[30px] border-[#4B371F] font-CherryBomb text-[18px] font-[400] text-center text-stroke-2 text-white"
@@ -47,6 +50,7 @@ const TipsPopover = ({
 const Cave = () => {
 
   const { account } = useCustomAccount
+  const { currentSceneInfoValid } = useContext(SceneContext);
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
   const storePhotoList: any = useCavePhotoList()
@@ -97,7 +101,7 @@ const Cave = () => {
                     left: 322,
                     top: 63
                   },]
-                  const tips = sockTips[index]
+                  const tips = currentSceneInfoValid ? sockTips[index] : {...sockTips[index], btnText: 'Campaign Ended'}
                   return (
                     <div
                       style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
@@ -107,7 +111,7 @@ const Cave = () => {
                         placement={PopoverPlacement.Top}
                         contentClassName="backdrop-blur-[10px]"
                         content={(
-                          <TipsPopover tips={tips} />
+                          <TipsPopover tips={tips} currentSceneInfoValid={currentSceneInfoValid} />
                         )}
                       >
                         <div className={clsx("absolute left-[28px] w-[4px] bg-black rounded-[2px]", index === 2 ? 'h-[38px] top-[-32px]' : 'h-[20px] top-[-16px]')} />
@@ -126,7 +130,7 @@ const Cave = () => {
                     left: 272,
                     top: 243
                   },]
-                  const tips = giftBoxTips[index]
+                  const tips = currentSceneInfoValid ? giftBoxTips[index] : { ...giftBoxTips[index], btnText: 'Campaign Ended' }
                   return (
                     <div
                       style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
@@ -136,7 +140,7 @@ const Cave = () => {
                         placement={PopoverPlacement.Top}
                         contentClassName="backdrop-blur-[10px]"
                         content={(
-                          <TipsPopover tips={tips} />
+                          <TipsPopover tips={tips} currentSceneInfoValid={currentSceneInfoValid} />
                         )}
                       >
                         <img src={index === 0 ? `/images/cave/christmas/gift_box_1${item.pc_item ? '_has' : ''}.png` : `/images/cave/christmas/gift_box_2${item.pc_item ? '_has' : ''}.png`} alt="giftBox" />
