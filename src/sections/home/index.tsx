@@ -1,30 +1,33 @@
 "use client";
 
 import BearBackground from "@/components/bear-background/laptop";
+import { useChristmas } from "@/hooks/use-christmas";
+import useIsMobile from "@/hooks/use-isMobile";
+import { useProgressRouter } from "@/hooks/use-progress-router";
+import HomePrompt from '@/sections/activity/christmas/components/home-prompt';
+import ChristmasEnterance from "@/sections/activity/christmas/enterance";
+import MemeEnterance from "@/sections/meme/bros/enterance";
+import { useBeraciaga } from "@/stores/beraciaga";
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BridgeSvg from "@public/images/background/bridge.svg";
 import DappsSvg from "@public/images/background/dapps.svg";
-import CaveSvg from "@public/images/cave/cave.svg";
 import DashboardSvg from "@public/images/background/dashboard.svg";
-import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import EarnSvg from "@public/images/background/earn.svg";
-import VaultsEnterance from "./vaults-enterance";
-import MemeEnterance from "@/sections/meme/bros/enterance";
 import { memo, useContext } from "react";
-import { useProgressRouter } from "@/hooks/use-progress-router";
-import useIsMobile from "@/hooks/use-isMobile";
-import ChristmasEnterance from "@/sections/activity/christmas/enterance";
+import VaultsEnterance from "./vaults-enterance";
 
-import MobileHome from "./mobile";
-import { useChristmas } from "@/hooks/use-christmas";
-import clsx from "clsx";
-import HomePrompt from "@/sections/activity/christmas/components/home-prompt";
 import { SceneContext } from '@/context/scene';
+import MarketplaceSvg from "@public/images/background/marketplace.svg";
+import CaveSvg from "@public/images/cave/cave.svg";
+import clsx from "clsx";
+import BeraciagaModal from "./beraciaga-modal";
+import MobileHome from "./mobile";
 
 
 const Navigation = function () {
   const router = useProgressRouter();
   const { isChristmas, path: christmasPath } = useChristmas();
+  const beraciagaStore = useBeraciaga(store => store)
 
   const onNavigateToBridge = () => {
     router.push("/bridge");
@@ -65,9 +68,8 @@ const Navigation = function () {
         id="btn-group1"
       >
         <div
-          className={`flex flex-col gap-[19px] items-center pt-[10px] ${
-            isChristmas ? "text-white" : "text-black"
-          }`}
+          className={`flex flex-col gap-[19px] items-center pt-[10px] ${isChristmas ? "text-white" : "text-black"
+            }`}
         >
           <div className={`text-[20px] font-CherryBomb leading-[90%]`}>
             Marketplace
@@ -86,9 +88,8 @@ const Navigation = function () {
         id="btn-group2"
       >
         <div
-          className={`flex items-center justify-end gap-[12px] pr-[10px] ${
-            isChristmas ? "text-white" : "text-black"
-          }`}
+          className={`flex items-center justify-end gap-[12px] pr-[10px] ${isChristmas ? 'text-white' : 'text-black'
+            }`}
         >
           <ArrowTopSvg style={{ transform: "rotate(90deg)" }} />
           <div
@@ -149,9 +150,8 @@ const Navigation = function () {
       >
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div
-          className={`flex gap-[15px] items-center pl-[15px] ${
-            isChristmas ? "text-white" : "text-black"
-          }`}
+          className={`flex gap-[15px] items-center pl-[15px] ${isChristmas ? "text-white" : "text-black"
+            }`}
         >
           <div className="text-[20px] font-CherryBomb leading-[90%]">dApps</div>
           <ArrowTopSvg style={{ transform: "rotate(270deg)" }} />
@@ -172,13 +172,30 @@ const Navigation = function () {
           <ChristmasEnterance path={christmasPath} />
         )
       }
+      <div
+        className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
+        onClick={() => {
+          beraciagaStore.set({
+            openModal: true
+          })
+        }}
+      >
+        <div className="relative w-[96px] h-[114px] hover:scale-110 transition-transform duration-500">
+          <div className="absolute w-[219px] -left-[36px] -bottom-[83px] pointer-events-none">
+            <img src="/images/beraciaga/beraciaga_nav.png" alt="beraciaga_nav" />
+          </div>
+        </div>
+        <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">Beraciaga</div>
+      </div>
     </>
   );
 };
 
 export default memo(function Home() {
+
   const isMobile = useIsMobile();
   const { currentSceneInfoValid } = useContext(SceneContext);
+
 
   if (isMobile) {
     return <MobileHome />;
@@ -192,6 +209,7 @@ export default memo(function Home() {
           <HomePrompt />
         )
       }
+      <BeraciagaModal />
     </BearBackground>
   );
 });

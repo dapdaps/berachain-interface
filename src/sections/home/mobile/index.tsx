@@ -5,7 +5,7 @@ import MobileHeader from '@/sections/home/mobile/header';
 import { useTapSoundStore } from "@/stores/tap-sound";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import VaultsEnterance from "../vaults-enterance";
 
 const Home = () => {
@@ -14,8 +14,10 @@ const Home = () => {
 
   const [viewportHeight, setViewportHeight] = useState("100vh");
   const [visibleHeight, setVisibleHeight] = useState(844);
+  const [showBeraciage, setShowBeraciage] = useState(false)
 
   const { isChristmas, path: christmasPath } = useChristmas();
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     const updateViewportHeight = () => {
@@ -30,141 +32,184 @@ const Home = () => {
       window.removeEventListener("resize", updateViewportHeight);
     };
   }, []);
+
+
+  // useEffect(() => {
+
+  //   if (showBeraciage) {
+
+  //     console.log('===scrollRef?.current', scrollRef?.current)
+  //     // scrollRef?.current?.scrollTop = "10"
+  //   }
+  // }, [showBeraciage])
   return (
     <div className={clsx('relative w-full h-full overflow-hidden', isChristmas ? "bg-[linear-gradient(180deg,_#181C34_0%,_15%,_#FFFFFF_75%,_#C4B9AA_100%)]" : "bg-[#B6DF5D]")}>
       <MobileHeader />
 
 
-      <div className='w-full h-full overflow-y-scroll overflow-x-hidden'>
+      <div className='w-full h-full overflow-y-scroll overflow-x-hidden scrollbar-hide' ref={scrollRef}>
         {
           isChristmas ? (
-            <div
-              className='relative w-full overflow-hidden pb-[60px] pt-[50px]'
-              style={{
-                backgroundImage: "url('/images/mobile/beratown-home-christmas.jpg')",
-                backgroundSize: 'contain',
-                backgroundPosition: '0 50px',
-                backgroundRepeat: 'no-repeat',
-                height: 'calc(201vw + 64px)',
-                minHeight: '100dvh',
-              }}
-            >
-              <VaultsEnterance
-                imgSrc="/images/background/vaults-m.svg"
-                onClick={() => {
-                  router.push("/vaults");
-                  tapSound.play?.();
-                }}
-                className="absolute z-[20] right-[0px] top-[-80px] hover:scale-110 transition-transform duration-500"
-              />
-              <motion.div
-                className='w-[46.923vw] translate-y-[5.487vw] translate-x-[9.256vw]'
-                whileTap="tap"
-                data-bp="1015-003"
-                onClick={() => {
-                  router.push('/bridge');
-                  tapSound.play?.();
+            <div className="w-full h-[100dvh] overflow-hidden">
+              <div
+                className='relative w-[114.359vw] overflow-hidden pb-[60px] pt-[120px] transition-all duration-500'
+                style={{
+                  backgroundImage: "url('/images/mobile/beratown-home-christmas.jpg')",
+                  backgroundSize: 'contain',
+                  backgroundPosition: '-9.63vw 102px',
+                  backgroundRepeat: 'no-repeat',
+                  height: 'calc(120px + 212.564vw)',
+                  minHeight: '100dvh',
+                  top: showBeraciage ? 0 : "-35vw",
                 }}
               >
-                <motion.img
-                  src="/images/mobile/home/christmas/bridge.png"
-                  className="w-full"
-                  variants={EntryAnimationBg}
-                  transition={EntryAnimation}
+                <VaultsEnterance
+                  imgSrc="/images/background/vaults-m.svg"
+                  onClick={() => {
+                    router.push("/vaults");
+                    tapSound.play?.();
+                  }}
+                  className="absolute z-[20] right-[calc(15vw)] top-[-80px] hover:scale-110 transition-transform duration-500"
                 />
 
-              </motion.div>
-
-              <motion.div
-                className='w-[59.744vw] -translate-y-[8.744vw] translate-x-[42.256vw]'
-                whileTap="tap"
-                onClick={() => {
-                  router.push('/marketplace');
-                  tapSound.play?.();
-                }}
-                data-bp="1015-004"
-              >
-                <motion.img
-                  src="/images/mobile/home/christmas/market.png"
-                  className="w-full"
+                <motion.div
+                  className={clsx("transform relative z-10 w-[9.487vw] translate-y-[24vw] translate-x-[30vw]", showBeraciage ? "rotate-180" : "rotate-0")}
                   variants={EntryAnimationBg}
                   transition={EntryAnimation}
-                />
-              </motion.div>
+                  onClick={() => {
+                    setShowBeraciage(!showBeraciage)
+                  }}
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/arrow.svg"
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+                </motion.div>
+                <motion.div
+                  className='w-[51.538vw] -translate-y-[25.513vw] translate-x-[2.156vw]'
+                  whileTap="tap"
+                  data-bp="1015-003"
+                  onClick={() => {
+                    window.open(process.env.NEXT_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
+                  }}
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/beraciaga.png"
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+
+                </motion.div>
+
+                <motion.div
+                  className='w-[46.923vw] -translate-y-[20.913vw] translate-x-[9.256vw]'
+                  whileTap="tap"
+                  data-bp="1015-003"
+                  onClick={() => {
+                    router.push('/bridge');
+                    tapSound.play?.();
+                  }}
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/bridge.png"
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+
+                </motion.div>
+
+                <motion.div
+                  className='w-[59.744vw] -translate-y-[35.744vw] translate-x-[42.256vw]'
+                  whileTap="tap"
+                  onClick={() => {
+                    router.push('/marketplace');
+                    tapSound.play?.();
+                  }}
+                  data-bp="1015-004"
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/market.png"
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+                </motion.div>
 
 
-              <motion.div
-                className='w-[53.59vw] -translate-y-[34.05vw] translate-x-[0.156vw]'
-                whileTap="tap"
-                data-bp="1015-005"
-                onClick={() => {
-                  router.push('/dapps');
-                  tapSound.play?.();
-                }}
-              >
-                <motion.img
-                  src="/images/mobile/home/christmas/dapps.png"
-                  alt=""
-                  className="w-full"
-                  variants={EntryAnimationBg}
-                  transition={EntryAnimation}
-                />
-              </motion.div>
+                <motion.div
+                  className='w-[53.59vw] -translate-y-[61.05vw] translate-x-[0.156vw]'
+                  whileTap="tap"
+                  data-bp="1015-005"
+                  onClick={() => {
+                    router.push('/dapps');
+                    tapSound.play?.();
+                  }}
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/dapps.png"
+                    alt=""
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+                </motion.div>
+                <motion.div
+                  className='w-[65.128vw] -translate-y-[94.241vw] translate-x-[34.9vw]'
+                  whileTap="tap"
+                  onClick={() => {
+                    router.push('/dashboard');
+                    tapSound.play?.();
+                  }}
+                  data-bp="1015-006"
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/dashboard.png"
+                    alt=""
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+                </motion.div>
 
-
-
-              <motion.div
-                className='w-[65.128vw] -translate-y-[67.241vw] translate-x-[34.9vw]'
-                whileTap="tap"
-                onClick={() => {
-                  router.push('/dashboard');
-                  tapSound.play?.();
-                }}
-                data-bp="1015-006"
-              >
-                <motion.img
-                  src="/images/mobile/home/christmas/dashboard.png"
-                  alt=""
-                  className="w-full"
-                  variants={EntryAnimationBg}
-                  transition={EntryAnimation}
-                />
-              </motion.div>
-
-              <motion.div
-                className='w-[55.461vw] -translate-y-[87.641vw] translate-x-[0.152vw]'
-                whileTap="tap"
-                onClick={() => {
-                  router.push('/earn');
-                  tapSound.play?.();
-                }}
-                data-bp="1015-007"
-              >
-                <motion.img
-                  src="/images/mobile/home/christmas/vaults.png"
-                  alt=""
-                  className="w-full"
-                  variants={EntryAnimationBg}
-                  transition={EntryAnimation}
-                />
-              </motion.div>
-              <motion.div
-                className='w-[62.308vw] -translate-y-[108.923vw] translate-x-[37.5vw]'
-                whileTap="tap"
-                onClick={() => {
-                  router.push('/cave');
-                  tapSound.play?.();
-                }}
-                data-bp="1015-008"
-              >
-                <motion.img
-                  src="/images/mobile/home/christmas/cave.png"
-                  alt=""
-                  className="w-full"
-                  variants={EntryAnimationBg}
-                  transition={EntryAnimation}
-                />
-              </motion.div>
+                <motion.div
+                  className='w-[55.461vw] -translate-y-[115.641vw] translate-x-[0.152vw]'
+                  whileTap="tap"
+                  onClick={() => {
+                    router.push('/earn');
+                    tapSound.play?.();
+                  }}
+                  data-bp="1015-007"
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/vaults.png"
+                    alt=""
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+                </motion.div>
+                <motion.div
+                  className='w-[62.308vw] -translate-y-[130.923vw] translate-x-[37.5vw]'
+                  whileTap="tap"
+                  onClick={() => {
+                    router.push('/cave');
+                    tapSound.play?.();
+                  }}
+                  data-bp="1015-008"
+                >
+                  <motion.img
+                    src="/images/mobile/home/christmas/cave.png"
+                    alt=""
+                    className="w-full"
+                    variants={EntryAnimationBg}
+                    transition={EntryAnimation}
+                  />
+                </motion.div>
+              </div>
             </div>
           ) : (
             <div
