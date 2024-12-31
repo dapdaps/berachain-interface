@@ -52,11 +52,12 @@ export default memo(function ImportEquipments({
       })
       const result = await response.json();
       setBindLoading(false)
-      if (code === 200) {
-        setOpen(false)
+      if (result?.code === 200) {
+        setOpenModal(false)
         window.open(process.env.NEXT_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
       }
     } catch (error) {
+      console.error(error)
       setBindLoading(false)
     }
   }
