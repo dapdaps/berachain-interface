@@ -1,12 +1,12 @@
-import { memo, useEffect, useMemo, useState } from "react";
-
 import Card from "@/components/card";
 import Loading from "@/components/loading";
 import Modal from "@/components/modal";
 import useCustomAccount from "@/hooks/use-account";
+import { useUserStore } from '@/stores/user';
 import Big from "big.js";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
+import { memo, useEffect, useMemo, useState } from "react";
 export default memo(function ImportEquipments({
   equimentsMapping
 }: any) {
@@ -41,8 +41,13 @@ export default memo(function ImportEquipments({
     try {
       const response = await fetch('/dapdap.game/api/user/bind', {
         method: "POST",
-        tg_user_id: searchParams.get('tg_user_id'),
-        address: account,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          tg_user_id: searchParams.get('tg_user_id'),
+          address: account,
+        })
       })
       const result = await response.json();
       setBindLoading(false)
@@ -53,8 +58,23 @@ export default memo(function ImportEquipments({
       setBindLoading(false)
     }
   }
+  const handleGetUserBind = async (tg_user_id) => {
+    try {
+      const response = await fetch('/dapdap.game/api/user/bind?tg_user_id=' + tg_user_id)
+      const result = await response.json()
+      if (result?.data?.address) {
+        setOpen(false)
+      } else {
+        setOpen(true)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
   useEffect(() => {
-    if (searchParams.get("tg_user_id")) setOpen(true)
+    if (searchParams.get("tg_user_id")) {
+      handleGetUserBind(searchParams.get("tg_user_id"))
+    }
   }, [searchParams.get("tg_user_id")])
 
   return (
