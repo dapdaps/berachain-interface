@@ -2,7 +2,7 @@ import Card from "@/components/card";
 import Loading from "@/components/loading";
 import Modal from "@/components/modal";
 import useCustomAccount from "@/hooks/use-account";
-import { useUserStore } from '@/stores/user';
+import { useAppKit } from '@reown/appkit/react';
 import Big from "big.js";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
@@ -13,9 +13,10 @@ export default memo(function ImportEquipments({
   const {
     account
   } = useCustomAccount()
+  const { open } = useAppKit();
   const searchParams = useSearchParams()
 
-  const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   const [bindLoading, setBindLoading] = useState(false)
 
   const findHighestLevelEquiment = (equiments) => {
@@ -53,6 +54,7 @@ export default memo(function ImportEquipments({
       setBindLoading(false)
       if (code === 200) {
         setOpen(false)
+        window.open(process.env.NEXT_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
       }
     } catch (error) {
       setBindLoading(false)
@@ -63,9 +65,9 @@ export default memo(function ImportEquipments({
       const response = await fetch('/dapdap.game/api/user/bind?tg_user_id=' + tg_user_id)
       const result = await response.json()
       if (result?.data?.address) {
-        setOpen(false)
+        setOpenModal(false)
       } else {
-        setOpen(true)
+        setOpenModal(true)
       }
     } catch (error) {
       console.error(error)
@@ -78,9 +80,12 @@ export default memo(function ImportEquipments({
   }, [searchParams.get("tg_user_id")])
 
   return (
-    <Modal open={open} onClose={() => {
-      setOpen(false)
-    }}>
+    <Modal
+      open={openModal}
+      onClose={() => {
+        setOpenModal(false)
+      }}
+    >
       <Card className="!px-0 !py-0">
         <div className={clsx("w-[590px] md:w-full px-[54px] md:px-0 pt-[31px] pb-[27px]", equiments?.length > 0 ? "h-[590px]" : "h-[429px]")}>
 
@@ -158,18 +163,32 @@ export default memo(function ImportEquipments({
                 <div className="-mx-[54px] text-center text-black font-Montserrat text-[16px] font-medium leading-[100%]">Current items will boost up your Beraciaga mining speed by {multiple.toFixed()}%</div>
               </div>
             ) : (
-              <div className="-mx-[54px] mb-[52px] text-center text-black font-Montserrat text-[16px] font-medium leading-[100%]">Looks like you haven't got any Beracave's item :(<br />Wallahi grab 'em now to boost up your mining speed in Beraciaga!</div>
+              <div className="-mx-[54px] md:-mx-0 px-0 md:px-[8px] mb-[52px] text-center text-black font-Montserrat text-[16px] font-medium leading-[100%]">Looks like you haven't got any Beracave's item :(<br />Wallahi grab 'em now to boost up your mining speed in Beraciaga!</div>
             )
           }
-          <div className={clsx("cursor-pointer flex items-center justify-center mx-auto w-[292px] h-[52px] rounded-[16px] border border-black bg-[#FFD335] text-black font-Montserrat text-[16px] font-bold", bindLoading ? "opacity-50" : "opacity-100")} onClick={handleBind}>
-            {
-              bindLoading ? (
-                <Loading />
-              ) : (
-                <>Bind {shortAccount}</>
-              )
-            }
-          </div>
+          {
+            account ? (
+              <div className={clsx("cursor-pointer flex items-center justify-center mx-auto w-[292px] h-[52px] rounded-[16px] border border-black bg-[#FFD335] text-black font-Montserrat text-[16px] font-bold", bindLoading ? "opacity-50" : "opacity-100")} onClick={handleBind}>
+                {
+                  bindLoading ? (
+                    <Loading />
+                  ) : (
+                    <>Bind {shortAccount}</>
+                  )
+                }
+              </div>
+            ) : (
+              <div
+                className="cursor-pointer flex items-center justify-center mx-auto w-[292px] h-[52px] rounded-[16px] border border-black bg-[#FFD335] text-black font-Montserrat text-[16px] font-bold"
+                onClick={() => {
+                  open()
+                }}
+              >
+                Connect Wallet
+              </div>
+            )
+          }
+
         </div>
       </Card>
     </Modal>
