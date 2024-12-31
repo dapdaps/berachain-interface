@@ -149,7 +149,7 @@ export default memo(function ImportEquipments({
 
                           <div className="absolute bottom-[10px] left-1/2 -translate-x-1/2 flex items-center justify-center gap-[5px] w-[67px] h-[30px] bg-[url('/images/beraciaga/button_bg.svg')] bg-center bg-no-repeat backdrop-blur-[5px]">
                             <div className="w-[14px]">
-                              <img src="/images/beraciaga/lightning.svg" alt="lightning" />
+                              <img src="/images/beraciaga/lightning.png" alt="lightning" />
                             </div>
                             <div className="text-black font-Montserrat text-[12px] font-bold leading-[100%]">+{equiment?.bonus_percentage}%</div>
 
