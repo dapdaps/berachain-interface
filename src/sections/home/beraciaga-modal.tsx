@@ -32,6 +32,7 @@ export default memo(function BeraciagaModal() {
         </div>
         <div
           className="cursor-pointer mx-auto mt-[46px] flex items-center justify-center w-[394px] h-[40px] rounded-[10px] bg-[#EBF479] text-black font-Montserrat text-[16px] font-semibold"
+          data-bp="1010-019"
           onClick={() => {
             window.open(process.env.NEXT_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
           }}
