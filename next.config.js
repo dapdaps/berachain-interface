@@ -5,6 +5,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const createBundleStatsPlugin = require("next-plugin-bundle-stats");
 
 const BASE_URL = process.env.NEXT_PUBLIC_API || "https://api.dapdap.net";
+const GAME_BASE_URL = process.env.NEXT_GAME_API_DOMAIN || "https://dev-api-game.beratown.app";
 
 const nextConfig = {
   reactStrictMode: false,
@@ -26,6 +27,10 @@ const nextConfig = {
     {
       source: "/api.dolomite.io/:path*",
       destination: "https://api.dolomite.io/:path*"
+    },
+    {
+      source: "/dapdap.game/:path*",
+      destination: GAME_BASE_URL + "/:path*"
     }
   ],
   webpack: (config, { dev }) => {
@@ -116,8 +121,8 @@ const nextConfig = {
 const withBundleStatsPlugin =
   process.env.ANALYZE_STATS === "true"
     ? createBundleStatsPlugin({
-        outDir: "./analyze"
-      })
+      outDir: "./analyze"
+    })
     : (conf) => conf;
 
 module.exports = withBundleStatsPlugin(nextConfig);

@@ -1,28 +1,31 @@
 "use client";
 
 import BearBackground from "@/components/bear-background/laptop";
+import { SceneContext } from '@/context/scene';
+import { useChristmas } from "@/hooks/use-christmas";
+import useIsMobile from "@/hooks/use-isMobile";
+import { useProgressRouter } from "@/hooks/use-progress-router";
+import HomePrompt from '@/sections/activity/christmas/components/home-prompt';
+import ChristmasEnterance from "@/sections/activity/christmas/enterance";
+import { useBeraciaga } from "@/stores/beraciaga";
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
 import BridgeSvg from "@public/images/background/bridge.svg";
 import DappsSvg from "@public/images/background/dapps.svg";
-import CaveSvg from "@public/images/cave/cave.svg";
 import DashboardSvg from "@public/images/background/dashboard.svg";
-import MarketplaceSvg from "@public/images/background/marketplace.svg";
 import EarnSvg from "@public/images/background/earn.svg";
-import VaultsEnterance from "./vaults-enterance";
-import { memo, useContext } from 'react';
-import { useProgressRouter } from "@/hooks/use-progress-router";
-import useIsMobile from "@/hooks/use-isMobile";
-import MobileHome from "./mobile";
-import ChristmasEnterance from "@/sections/activity/christmas/enterance";
-import { useChristmas } from "@/hooks/use-christmas";
+import MarketplaceSvg from "@public/images/background/marketplace.svg";
+import CaveSvg from "@public/images/cave/cave.svg";
 import clsx from "clsx";
-import HomePrompt from '@/sections/activity/christmas/components/home-prompt';
-import { SceneContext } from '@/context/scene';
+import { memo, useContext } from "react";
+import BeraciagaModal from "./beraciaga-modal";
+import MobileHome from "./mobile";
+import VaultsEnterance from "./vaults-enterance";
 
 
 const Navigation = function () {
   const router = useProgressRouter();
   const { isChristmas, path: christmasPath } = useChristmas();
+  const beraciagaStore = useBeraciaga(store => store)
 
   const onNavigateToBridge = () => {
     router.push("/bridge");
@@ -63,9 +66,8 @@ const Navigation = function () {
         id="btn-group1"
       >
         <div
-          className={`flex flex-col gap-[19px] items-center pt-[10px] ${
-            isChristmas ? "text-white" : "text-black"
-          }`}
+          className={`flex flex-col gap-[19px] items-center pt-[10px] ${isChristmas ? "text-white" : "text-black"
+            }`}
         >
           <div className={`text-[20px] font-CherryBomb leading-[90%]`}>
             Marketplace
@@ -84,9 +86,8 @@ const Navigation = function () {
         id="btn-group2"
       >
         <div
-          className={`flex items-center justify-end gap-[12px] pr-[10px] ${
-            isChristmas ? 'text-white' : 'text-black'
-          }`}
+          className={`flex items-center justify-end gap-[12px] pr-[10px] ${isChristmas ? 'text-white' : 'text-black'
+            }`}
         >
           <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
           <div
@@ -111,7 +112,7 @@ const Navigation = function () {
         )}
       />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
-      <div
+        <div
           className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToDashBoard}
           data-bp="1010-008"
@@ -147,9 +148,8 @@ const Navigation = function () {
       >
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div
-          className={`flex gap-[15px] items-center pl-[15px] ${
-            isChristmas ? "text-white" : "text-black"
-          }`}
+          className={`flex gap-[15px] items-center pl-[15px] ${isChristmas ? "text-white" : "text-black"
+            }`}
         >
           <div className="text-[20px] font-CherryBomb leading-[90%]">dApps</div>
           <ArrowTopSvg style={{ transform: "rotate(270deg)" }} />
@@ -164,7 +164,21 @@ const Navigation = function () {
         <div className="text-[20px] text-center font-CherryBomb">Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
-
+      <div
+        className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
+        onClick={() => {
+          beraciagaStore.set({
+            openModal: true
+          })
+        }}
+      >
+        <div className="relative w-[96px] h-[114px] hover:scale-110 transition-transform duration-500">
+          <div className="absolute w-[219px] -left-[36px] -bottom-[83px] pointer-events-none">
+            <img src="/images/beraciaga/beraciaga_nav.png" alt="beraciaga_nav" />
+          </div>
+        </div>
+        <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">Beraciaga</div>
+      </div>
       {
         isChristmas && (
           <ChristmasEnterance path={christmasPath} />
@@ -175,8 +189,10 @@ const Navigation = function () {
 };
 
 export default memo(function Home() {
+
   const isMobile = useIsMobile();
   const { currentSceneInfoValid } = useContext(SceneContext);
+
 
   if (isMobile) {
     return <MobileHome />;
@@ -185,6 +201,7 @@ export default memo(function Home() {
   return (
     <BearBackground type="home">
       <Navigation />
+      <BeraciagaModal />
       {
         currentSceneInfoValid && (
           <HomePrompt />

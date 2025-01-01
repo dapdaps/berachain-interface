@@ -69,7 +69,9 @@ const Modal: React.FC<ModalProps> = ({
                 onClick={onClose}
                 className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
               >
-                <IconClose />
+                {
+                  closeIcon ? closeIcon : <IconClose />
+                }
               </button>
             ) : null}
             {isMobile && !isForceNormal ? (
