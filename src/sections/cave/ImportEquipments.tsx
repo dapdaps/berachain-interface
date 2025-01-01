@@ -76,6 +76,8 @@ export default memo(function ImportEquipments({
     }
   }
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_TG_ADDRESS, 'process.env.NEXT_PUBLIC_TG_ADDRESS')
+    console.log(process.env.NEXT_PUBLIC_GAME_API_DOMAIN, 'process.env.NEXT_PUBLIC_GAME_API_DOMAIN')
     if (searchParams.get("tg_user_id")) {
       handleGetUserBind(searchParams.get("tg_user_id"))
     }
