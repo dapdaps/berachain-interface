@@ -54,7 +54,7 @@ export default memo(function ImportEquipments({
       setBindLoading(false)
       if (result?.code === 200) {
         setOpenModal(false)
-        // window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
+        // window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/beraciaga")
         window.open("https://t.me/beraciaga_official_bot/beraciaga")
       }
     } catch (error) {
