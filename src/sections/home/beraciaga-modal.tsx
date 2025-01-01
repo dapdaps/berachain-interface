@@ -35,7 +35,8 @@ export default memo(function BeraciagaModal() {
           className="cursor-pointer mx-auto mt-[30px] flex items-center justify-center w-[394px] h-[40px] rounded-[10px] bg-[#EBF479] text-black font-Montserrat text-[16px] font-semibold"
           data-bp="1010-019"
           onClick={() => {
-            window.open(process.env.NEXT_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
+            // window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/Beraciaga")
+            window.open("https://t.me/beraciaga_official_bot/beraciaga")
           }}
         >Sign up to Beraciaga TG Mini app!</div>
       </div>
