@@ -50,7 +50,7 @@ const nextConfig = {
     },
     {
       source: "/dapdap.game/:path*",
-      destination: GAME_BASE_URL + "/:path*"
+      destination: `${GAME_BASE_URL}/:path*`
     }
   ],
   webpack: (config, { dev }) => {
