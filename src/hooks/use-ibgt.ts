@@ -113,6 +113,7 @@ export function useIBGT(props: any) {
   const { loading, dataList, fullDataList } = useInfraredList(updater)
   const tokenData = useMemo(() => fullDataList?.find((d: any) => d.id === "iBGT-HONEY"), [fullDataList])
   const { tokens, decimals, id, LP_ADDRESS } = tokenData ?? {};
+  console.log('====tokenData', tokenData)
   const symbol = id;
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);

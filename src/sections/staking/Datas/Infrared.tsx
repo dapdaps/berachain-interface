@@ -3,7 +3,9 @@ import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import { asyncFetch } from '@/utils/http';
 
+const IBGT_VAULT_ADDRESS = "0x31e6458c83c4184a23c761fdaffb61941665e012"
 export default function useInfraredData(props: any) {
   const {
     name,
@@ -14,7 +16,8 @@ export default function useInfraredData(props: any) {
     allData,
     onLoad,
     multicallAddress,
-    IBGT_ADDRESS
+    IBGT_ADDRESS,
+    OLD_ALL_DATA_URL
   } = props;
   const dataList = [];
 
@@ -229,9 +232,32 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => ['bex', 'kodiak', 'beraborrow', 'berps', 'honeypot'].includes(data?.initialData?.protocol?.id) || data?.id === "iBGT-HONEY"),
+      dataList: dataList?.filter(data => ['bex', 'kodiak', 'beraborrow', 'berps', 'honeypot'].includes(data?.initialData?.protocol?.id) || data?.id !== "iBGT-HONEY"),
       fullDataList: dataList
     });
+  }
+  async function getIbgtData() {
+    try {
+      const result = await asyncFetch(OLD_ALL_DATA_URL)
+
+      const data = result?.data?.find(token => token?.address === IBGT_VAULT_ADDRESS) ?? {}
+      const pair = pairs?.find(pair => addresses[pair?.id] === IBGT_VAULT_ADDRESS) ?? {}
+      return {
+        ...pair,
+        tvl: Big(ethers.utils.formatUnits(data?.current_staked_amount))
+          .times(data?.stake_token?.price ?? 0)
+          .toFixed(),
+        apy: data?.apy_percentage,
+        vaultAddress: OLD_ALL_DATA_URL,
+        initialData: data,
+        type: 'Staking',
+        rewardSymbol: data?.reward_tokens?.[0]?.symbol,
+        protocolType:
+          data?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
   async function getDataList() {
     for (const pair of pairs) {
@@ -263,8 +289,11 @@ export default function useInfraredData(props: any) {
         dataList.push(_data);
       }
     }
-
-    console.log('====dataList====', dataList)
+    const ibgtData = await getIbgtData()
+    dataList.push({
+      ...ibgtData
+    })
+    console.log('====dataList', dataList)
     formatedData('dataList');
   }
   function getUsdDepositAmount() {
