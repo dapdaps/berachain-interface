@@ -54,8 +54,7 @@ export default memo(function ImportEquipments({
       setBindLoading(false)
       if (result?.code === 200) {
         setOpenModal(false)
-        // window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/beraciaga")
-        window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/beraciaga")
+        window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
       }
     } catch (error) {
       console.error(error)
@@ -77,8 +76,10 @@ export default memo(function ImportEquipments({
   }
   useEffect(() => {
     console.log(process.env.NEXT_PUBLIC_TG_ADDRESS, 'process.env.NEXT_PUBLIC_TG_ADDRESS')
-    if (searchParams.get("tg_user_id")) {
-      handleGetUserBind(searchParams.get("tg_user_id"))
+    console.log(process.env.NEXT_PUBLIC_GAME_API_DOMAIN, 'process.env.NEXT_PUBLIC_GAME_API_DOMAIN')
+    const tgId = searchParams.get("tg_user_id")
+    if (tgId) {
+      handleGetUserBind(tgId)
     }
   }, [searchParams.get("tg_user_id")])
 
