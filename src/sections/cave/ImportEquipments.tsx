@@ -19,7 +19,7 @@ export default memo(function ImportEquipments({
   const [openModal, setOpenModal] = useState(false)
   const [bindLoading, setBindLoading] = useState(false)
 
-  const findHighestLevelEquiment = (equiments) => {
+  const findHighestLevelEquiment = (equiments: any[]) => {
     const lastIndex = equiments.findLastIndex(equiment => equiment?.pc_item)
     return lastIndex > -1 ? equiments[lastIndex] : null
   }
@@ -75,8 +75,6 @@ export default memo(function ImportEquipments({
     }
   }
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_TG_ADDRESS, 'process.env.NEXT_PUBLIC_TG_ADDRESS')
-    console.log(process.env.NEXT_PUBLIC_GAME_API_DOMAIN, 'process.env.NEXT_PUBLIC_GAME_API_DOMAIN')
     const tgId = searchParams.get("tg_user_id")
     if (tgId) {
       handleGetUserBind(tgId)
