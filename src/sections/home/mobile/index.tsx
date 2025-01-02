@@ -98,8 +98,7 @@ const Home = () => {
                 whileTap="tap"
                 data-bp="1015-011"
                 onClick={() => {
-                  // window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/Beraciaga")
-                  window.open("https://t.me/beraciaga_official_bot/beraciaga")
+                  window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/Beraciaga")
                 }}
               >
                 <motion.img
