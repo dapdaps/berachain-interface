@@ -27,17 +27,18 @@ export default memo(function BeraciagaModal() {
         </div>
 
         <div className="flex flex-col mt-[30px] pl-[32px] gap-[14px]">
-          <div className="text-white font-Montserrat text-[24px] font-bold">Your Adventure Gear Awaits!</div>
-          <div className="text-[#979ABE] font-Montserrat text-[16px] leading-[150%]">Dear player! Join our mini app now and stay tuned to ensure you can use<br /> your exclusive gear right away when the game starts, embarking on your<br /> adventure!</div>
+          <div className="text-white font-Montserrat text-[24px] font-bold">New shop is coming thoon to town in Q5!</div>
+          <div className="text-[#979ABE] font-Montserrat text-[16px] leading-[150%]">Henlo and be ready for the epic launch ofthe Beraciaga shop, coming thoon to<br />your nearest town in O5!</div>
+          <div className="text-[#979ABE] font-Montserrat text-[16px] leading-[150%]">Sign up with your Beratown account and claim early benefits now!</div>
         </div>
         <div
-          className="cursor-pointer mx-auto mt-[46px] flex items-center justify-center w-[394px] h-[40px] rounded-[10px] bg-[#EBF479] text-black font-Montserrat text-[16px] font-semibold"
+          className="cursor-pointer mx-auto mt-[30px] flex items-center justify-center w-[394px] h-[40px] rounded-[10px] bg-[#EBF479] text-black font-Montserrat text-[16px] font-semibold"
           data-bp="1010-019"
           onClick={() => {
             // window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/Beraciaga")
             window.open("https://t.me/beraciaga_official_bot/beraciaga")
           }}
-        >Join us and gear up for adventure!</div>
+        >Sign up to Beraciaga TG Mini app!</div>
       </div>
     </Modal>
   )

@@ -79,7 +79,20 @@ export function useSceneValue(): ISceneContext {
       return;
     }
     try {
-      const res = await get(current.api);
+      // const res = await get(current.api);
+      const res: any = {
+        code: 0,
+        msg: "success",
+        data: {
+          "id": 1,
+          "total_box": 5484,
+          "total_users": 40,
+          "total_yap": 393,
+          "total_token": "3246421",
+          "start_time": 1733702400,
+          "end_time": 1735546500
+        }
+      };
       if (res.code !== 0) {
         setCurrentSceneInfoLoading(false);
         return;
@@ -112,25 +125,25 @@ export function useSceneValue(): ISceneContext {
   }, []);
 
   useEffect(() => {
-    const loadingTimeout = setTimeout(() => {
-      clearTimeout(loadingTimeout);
-      setCurrentSceneInfoLoading(false);
-    }, 600);
+    // const loadingTimeout = setTimeout(() => {
+    //   clearTimeout(loadingTimeout);
+    //   setCurrentSceneInfoLoading(false);
+    // }, 600);
 
     getCurrentTimestamp().then((times) => {
       getCurrentSceneInfo(times);
     });
-    const timer = setInterval(() => {
-      getCurrentTimestamp().then((times) => {
-        getCurrentSceneInfo(times);
-      });
-    // pooling: 1 hour/time
-    }, 3600000);
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(loadingTimeout);
-    };
+    // const timer = setInterval(() => {
+    //   getCurrentTimestamp().then((times) => {
+    //     getCurrentSceneInfo(times);
+    //   });
+    // // pooling: 1 hour/time
+    // }, 3600000);
+    //
+    // return () => {
+    //   clearInterval(timer);
+    //   clearTimeout(loadingTimeout);
+    // };
   }, []);
 
   useEffect(() => {
@@ -160,14 +173,14 @@ export function useSceneValue(): ISceneContext {
       }
     };
     calc();
-    pollingTimer.current = setInterval(() => {
-      _currentTime = dateFns.addSeconds(_currentTime, 1);
-      calc();
-    }, 1000);
-
-    return () => {
-      clearInterval(pollingTimer.current);
-    };
+    // pollingTimer.current = setInterval(() => {
+    //   _currentTime = dateFns.addSeconds(_currentTime, 1);
+    //   calc();
+    // }, 1000);
+    //
+    // return () => {
+    //   clearInterval(pollingTimer.current);
+    // };
   }, [currentUTCString, currentSceneInfo]);
 
   return {
