@@ -54,16 +54,16 @@ export default memo(function ImportEquipments({
       setBindLoading(false)
       if (result?.code === 200) {
         setOpenModal(false)
-        window.open(process.env.NEXT_TG_ADDRESS || "https://t.me/beraciaga_official_bot/Beraciaga")
+        window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
       }
     } catch (error) {
       console.error(error)
       setBindLoading(false)
     }
   }
-  const handleGetUserBind = async (tg_user_id) => {
+  const handleGetUserBind = async (tg_user_id: string) => {
     try {
-      const response = await fetch('/dapdap.game/api/user/bind?tg_user_id=' + tg_user_id)
+      const response = await fetch(`/dapdap.game/api/user/bind?tg_user_id=${tg_user_id}`)
       const result = await response.json()
       if (result?.data?.address) {
         setOpenModal(false)
@@ -75,8 +75,11 @@ export default memo(function ImportEquipments({
     }
   }
   useEffect(() => {
-    if (searchParams.get("tg_user_id")) {
-      handleGetUserBind(searchParams.get("tg_user_id"))
+    console.log(process.env.NEXT_PUBLIC_TG_ADDRESS, 'process.env.NEXT_PUBLIC_TG_ADDRESS')
+    console.log(process.env.NEXT_PUBLIC_GAME_API_DOMAIN, 'process.env.NEXT_PUBLIC_GAME_API_DOMAIN')
+    const tgId = searchParams.get("tg_user_id")
+    if (tgId) {
+      handleGetUserBind(tgId)
     }
   }, [searchParams.get("tg_user_id")])
 

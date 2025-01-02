@@ -112,25 +112,25 @@ export function useSceneValue(): ISceneContext {
   }, []);
 
   useEffect(() => {
-    const loadingTimeout = setTimeout(() => {
-      clearTimeout(loadingTimeout);
-      setCurrentSceneInfoLoading(false);
-    }, 600);
+    // const loadingTimeout = setTimeout(() => {
+    //   clearTimeout(loadingTimeout);
+    //   setCurrentSceneInfoLoading(false);
+    // }, 600);
 
     getCurrentTimestamp().then((times) => {
       getCurrentSceneInfo(times);
     });
-    const timer = setInterval(() => {
-      getCurrentTimestamp().then((times) => {
-        getCurrentSceneInfo(times);
-      });
-    // pooling: 1 hour/time
-    }, 3600000);
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(loadingTimeout);
-    };
+    // const timer = setInterval(() => {
+    //   getCurrentTimestamp().then((times) => {
+    //     getCurrentSceneInfo(times);
+    //   });
+    // // pooling: 1 hour/time
+    // }, 3600000);
+    //
+    // return () => {
+    //   clearInterval(timer);
+    //   clearTimeout(loadingTimeout);
+    // };
   }, []);
 
   useEffect(() => {
@@ -160,14 +160,14 @@ export function useSceneValue(): ISceneContext {
       }
     };
     calc();
-    pollingTimer.current = setInterval(() => {
-      _currentTime = dateFns.addSeconds(_currentTime, 1);
-      calc();
-    }, 1000);
-
-    return () => {
-      clearInterval(pollingTimer.current);
-    };
+    // pollingTimer.current = setInterval(() => {
+    //   _currentTime = dateFns.addSeconds(_currentTime, 1);
+    //   calc();
+    // }, 1000);
+    //
+    // return () => {
+    //   clearInterval(pollingTimer.current);
+    // };
   }, [currentUTCString, currentSceneInfo]);
 
   return {

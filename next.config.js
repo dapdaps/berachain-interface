@@ -5,7 +5,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const createBundleStatsPlugin = require("next-plugin-bundle-stats");
 
 const BASE_URL = process.env.NEXT_PUBLIC_API || "https://api.dapdap.net";
-const GAME_BASE_URL = process.env.NEXT_GAME_API_DOMAIN || "https://dev-api-game.beratown.app";
+const GAME_BASE_URL = process.env.NEXT_PUBLIC_GAME_API_DOMAIN || "https://dev-api-game.beratown.app";
 
 const nextConfig = {
   reactStrictMode: false,
@@ -50,7 +50,7 @@ const nextConfig = {
     },
     {
       source: "/dapdap.game/:path*",
-      destination: GAME_BASE_URL + "/:path*"
+      destination: `${GAME_BASE_URL}/:path*`
     }
   ],
   webpack: (config, { dev }) => {
@@ -96,27 +96,27 @@ const nextConfig = {
 
     config.optimization.emitOnErrors = true;
 
-    if (!dev) {
-      config.optimization.minimizer = [
-        new TerserPlugin({
-          terserOptions: {
-            compress: {
-              drop_console: true,
-              drop_debugger: true,
-              pure_funcs: ["console.warn"]
-            },
-            mangle: {
-              safari10: true
-            },
-            format: {
-              comments: false
-            },
-            ecma: 2015
-          },
-          parallel: true
-        })
-      ];
-    }
+    // if (!dev) {
+    //   config.optimization.minimizer = [
+    //     new TerserPlugin({
+    //       terserOptions: {
+    //         compress: {
+    //           drop_console: true,
+    //           drop_debugger: true,
+    //           pure_funcs: ["console.warn"]
+    //         },
+    //         mangle: {
+    //           safari10: true
+    //         },
+    //         format: {
+    //           comments: false
+    //         },
+    //         ecma: 2015
+    //       },
+    //       parallel: true
+    //     })
+    //   ];
+    // }
     return config;
   },
   experimental: {
