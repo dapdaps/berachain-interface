@@ -1,6 +1,11 @@
 import Refresh from "@/components/icons/refresh";
 import clsx from "clsx";
-export default function CheckButton({ checked, number, className, checking, onClick, numberClassName }: any) {
+export default function CheckButton({ checked, number, className, checking, onClick, numberClassName, disabled }: any) {
+  const handleClick = () => {
+    if (disabled) return;
+    onClick?.();
+  };
+
   return (
     <div
       className={clsx(
@@ -70,8 +75,8 @@ export default function CheckButton({ checked, number, className, checking, onCl
         </svg>
       ) : (
         <div
-          className="shrink-0 w-[22px] h-[22px] border border-black rounded-full bg-[#FFDC50] flex items-center justify-center absolute right-[4px] top-[4px] drop-shadow-[3px_3px_0px_rgba(0,_0,_0,_0.25)]"
-          onClick={onClick}
+          className={`shrink-0 w-[22px] h-[22px] border border-black rounded-full bg-[#FFDC50] flex items-center justify-center absolute right-[4px] top-[4px] drop-shadow-[3px_3px_0px_rgba(0,_0,_0,_0.25)] ${disabled ? 'opacity-70' : ''} ${disabled ? '!cursor-not-allowed' : ''}`}
+          onClick={handleClick}
         >
           <Refresh refreshing={checking} />
         </div>

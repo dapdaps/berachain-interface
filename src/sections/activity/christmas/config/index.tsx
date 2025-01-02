@@ -698,6 +698,9 @@ export const NFTs: any = {
   "Rockbera": {
     icon: "/images/activity/christmas/nft/ROCKBERA NFT.png"
   },
+  "BeraBonds": {
+    icon: "/images/activity/christmas/nft/BeraBonds.png"
+  },
 };
 
 export const SnowToken = beraB["sfc"];

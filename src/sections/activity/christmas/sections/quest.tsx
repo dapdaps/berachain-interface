@@ -22,6 +22,7 @@ const QuestView = () => {
     questLoading,
     ecosystemQuest,
     isMobile,
+    activityInvalid,
   } = useContext(ChristmasContext);
 
   const [currentTab, setCurrentTab] = useState(TABS[0]);
@@ -108,6 +109,7 @@ const QuestView = () => {
                             {...it}
                             onCheck={() => handleQuestCheck?.(it)}
                             actions={it.actions}
+                            disabled={activityInvalid}
                           />
                         ))
                       }
@@ -148,6 +150,7 @@ const QuestView = () => {
                             key={it.id}
                             {...it}
                             onCheck={() => handleQuestCheck?.(it)}
+                            disabled={activityInvalid}
                           />
                         ))
                       }
@@ -174,6 +177,7 @@ const QuestView = () => {
                             key={it.id}
                             {...it}
                             onCheck={() => handleQuestCheck?.(it)}
+                            disabled={activityInvalid}
                           />
                         ))
                       }
@@ -211,6 +215,7 @@ const QuestView = () => {
                             {...it}
                             onOpen={() => handleEcosystemQuest(it)}
                             onReload={() => handleEcosystemQuestCheck(it)}
+                            disabled={activityInvalid}
                           />
                         ))
                       }

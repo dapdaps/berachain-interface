@@ -11,6 +11,7 @@ import { useProgressRouter } from "@/hooks/use-progress-router";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { useAccount } from 'wagmi';
 import useUser from '@/hooks/use-user';
+import { useChristmas } from '@/hooks/use-christmas';
 
 const menuItems = [
   { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -87,6 +88,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   const toggleDapps = () => setIsDappsOpen(!isDappsOpen);
   const router = useProgressRouter();
   const { handleReportNoCode, handleTrack } = useClickTracking();
+  const { isChristmas } = useChristmas();
 
   const DAppIcon: React.FC<{ dapp: DApp }> = ({ dapp }) => {
     if (dapp.href) {
@@ -224,7 +226,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           <div className="relative">
 
             {
-              ['/'].includes(pathname) && (
+              ['/'].includes(pathname) && isChristmas && (
                 <motion.div
                   className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
                   onClick={() => {

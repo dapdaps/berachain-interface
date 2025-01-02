@@ -5,7 +5,7 @@ import MobileHeader from '@/sections/home/mobile/header';
 import { useTapSoundStore } from "@/stores/tap-sound";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import VaultsEnterance from "../vaults-enterance";
 
 const Home = () => {
@@ -14,8 +14,11 @@ const Home = () => {
 
   const [viewportHeight, setViewportHeight] = useState("100vh");
   const [visibleHeight, setVisibleHeight] = useState(844);
+  const [showBeraciage, setShowBeraciage] = useState(false)
 
   const { isChristmas, path: christmasPath } = useChristmas();
+  const scrollRef = useRef(null)
+  const screen_width = window.screen.width
 
   useEffect(() => {
     const updateViewportHeight = () => {
@@ -26,26 +29,40 @@ const Home = () => {
     updateViewportHeight();
     window.addEventListener("resize", updateViewportHeight);
 
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0.35 * screen_width
+    }
     return () => {
       window.removeEventListener("resize", updateViewportHeight);
     };
   }, []);
+
+
   return (
     <div className={clsx('relative w-full h-full overflow-hidden', isChristmas ? "bg-[linear-gradient(180deg,_#181C34_0%,_15%,_#FFFFFF_75%,_#C4B9AA_100%)]" : "bg-[#B6DF5D]")}>
       <MobileHeader />
 
 
-      <div className='w-full h-full overflow-y-scroll overflow-x-hidden'>
+      <div className='w-full h-full overflow-y-scroll overflow-x-hidden scrollbar-hide'
+        ref={scrollRef}
+        onScroll={(event) => {
+          const scrollTop = event.target.scrollTop
+          if (scrollTop === 0) {
+            setShowBeraciage(true)
+          } else {
+            setShowBeraciage(false)
+          }
+        }}>
         {
           isChristmas ? (
             <div
-              className='relative w-full overflow-hidden pb-[60px] pt-[50px]'
+              className='relative w-[114.359vw] overflow-hidden pb-[60px] pt-[120px] transition-all duration-500'
               style={{
                 backgroundImage: "url('/images/mobile/beratown-home-christmas.jpg')",
                 backgroundSize: 'contain',
-                backgroundPosition: '0 50px',
+                backgroundPosition: '-9.63vw 102px',
                 backgroundRepeat: 'no-repeat',
-                height: 'calc(201vw + 64px)',
+                height: 'calc(120px + 212.564vw)',
                 minHeight: '100dvh',
               }}
             >
@@ -55,10 +72,46 @@ const Home = () => {
                   router.push("/vaults");
                   tapSound.play?.();
                 }}
-                className="absolute z-[20] right-[0px] top-[-80px] hover:scale-110 transition-transform duration-500"
+                className="absolute z-[20] right-[calc(15vw)] top-[-80px] hover:scale-110 transition-transform duration-500"
               />
+
+
+
               <motion.div
-                className='w-[46.923vw] translate-y-[5.487vw] translate-x-[9.256vw]'
+                className={clsx("transform relative z-10 w-[9.487vw] translate-y-[24vw] translate-x-[30vw]", showBeraciage ? "opacity-0" : "opacity-100")}
+                variants={EntryAnimationBg}
+                transition={EntryAnimation}
+                onClick={() => {
+                  scrollRef.current.scrollTop = 0
+                }}
+              >
+                <motion.img
+                  src="/images/mobile/home/christmas/arrow.svg"
+                  className="w-full"
+                  variants={EntryAnimationBg}
+                  transition={EntryAnimation}
+                />
+              </motion.div>
+
+              <motion.div
+                className='w-[51.538vw] -translate-y-[25.513vw] translate-x-[2.156vw]'
+                whileTap="tap"
+                data-bp="1015-011"
+                onClick={() => {
+                  window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/beraciaga_official_bot/Beraciaga")
+                }}
+              >
+                <motion.img
+                  src="/images/mobile/home/christmas/beraciaga.png"
+                  className="w-full"
+                  variants={EntryAnimationBg}
+                  transition={EntryAnimation}
+                />
+
+              </motion.div>
+
+              <motion.div
+                className='w-[46.923vw] -translate-y-[20.913vw] translate-x-[9.256vw]'
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {
@@ -76,7 +129,7 @@ const Home = () => {
               </motion.div>
 
               <motion.div
-                className='w-[59.744vw] -translate-y-[8.744vw] translate-x-[42.256vw]'
+                className='w-[59.744vw] -translate-y-[35.744vw] translate-x-[42.256vw]'
                 whileTap="tap"
                 onClick={() => {
                   router.push('/marketplace');
@@ -94,7 +147,7 @@ const Home = () => {
 
 
               <motion.div
-                className='w-[53.59vw] -translate-y-[34.05vw] translate-x-[0.156vw]'
+                className='w-[53.59vw] -translate-y-[61.05vw] translate-x-[0.156vw]'
                 whileTap="tap"
                 data-bp="1015-005"
                 onClick={() => {
@@ -110,11 +163,8 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
               </motion.div>
-
-
-
               <motion.div
-                className='w-[65.128vw] -translate-y-[67.241vw] translate-x-[34.9vw]'
+                className='w-[65.128vw] -translate-y-[94.241vw] translate-x-[34.9vw]'
                 whileTap="tap"
                 onClick={() => {
                   router.push('/dashboard');
@@ -132,7 +182,7 @@ const Home = () => {
               </motion.div>
 
               <motion.div
-                className='w-[55.461vw] -translate-y-[87.641vw] translate-x-[0.152vw]'
+                className='w-[55.461vw] -translate-y-[115.641vw] translate-x-[0.152vw]'
                 whileTap="tap"
                 onClick={() => {
                   router.push('/earn');
@@ -149,7 +199,7 @@ const Home = () => {
                 />
               </motion.div>
               <motion.div
-                className='w-[62.308vw] -translate-y-[108.923vw] translate-x-[37.5vw]'
+                className='w-[62.308vw] -translate-y-[130.923vw] translate-x-[37.5vw]'
                 whileTap="tap"
                 onClick={() => {
                   router.push('/cave');
@@ -343,8 +393,12 @@ const Home = () => {
           )
         }
       </div>
-      <ChristmasEnterance path={christmasPath} />
-    </div>
+      {
+        isChristmas && (
+          <ChristmasEnterance path={christmasPath} />
+        )
+      }
+    </div >
   );
 };
 
