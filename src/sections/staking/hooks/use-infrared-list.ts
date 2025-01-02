@@ -10,7 +10,7 @@ import { useIbgtVaults } from '@/stores/ibgt-vaults';
 export default function useInfraredList(updater?: number, name?: string) {
   const { chainId, account: sender, provider } = useCustomAccount();
   const infraredDexConfig = infraredConfig.chains[DEFAULT_CHAIN_ID];
-  const { pairs, addresses, ALL_DATA_URL, IBGT_ADDRESS, OLD_ALL_DATA_URL } = infraredDexConfig;
+  const { pairs, addresses, ALL_DATA_URL, IBGT_ADDRESS } = infraredDexConfig;
   const ibgtVaults: any = useIbgtVaults();
 
   const [allData, setAllData] = useState<any>(null);
@@ -39,7 +39,6 @@ export default function useInfraredList(updater?: number, name?: string) {
     allData,
     multicallAddress,
     IBGT_ADDRESS,
-    OLD_ALL_DATA_URL,
     onLoad: (data: any) => {
       setDataList([...data.dataList]);
       setFullDataList([...data.fullDataList]);
