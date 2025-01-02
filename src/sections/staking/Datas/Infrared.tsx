@@ -17,7 +17,6 @@ export default function useInfraredData(props: any) {
     onLoad,
     multicallAddress,
     IBGT_ADDRESS,
-    OLD_ALL_DATA_URL
   } = props;
   const dataList = [];
 
@@ -238,22 +237,19 @@ export default function useInfraredData(props: any) {
   }
   async function getIbgtData() {
     try {
-      const result = await asyncFetch(OLD_ALL_DATA_URL)
-
-      const data = result?.data?.find(token => token?.address === IBGT_VAULT_ADDRESS) ?? {}
+      const result = await asyncFetch("/api.infrared.finance/vault/infrared-ibgt")
+      const data = result?.vault
       const pair = pairs?.find(pair => addresses[pair?.id] === IBGT_VAULT_ADDRESS) ?? {}
       return {
         ...pair,
-        tvl: Big(ethers.utils.formatUnits(data?.current_staked_amount))
-          .times(data?.stake_token?.price ?? 0)
-          .toFixed(),
-        apy: data?.apy_percentage,
-        vaultAddress: OLD_ALL_DATA_URL,
+        tvl: Big(data?.tvl).toFixed(),
+        apy: Big(data?.apr).times(100).toFixed(),
+        vaultAddress: IBGT_VAULT_ADDRESS,
         initialData: data,
         type: 'Staking',
         rewardSymbol: data?.reward_tokens?.[0]?.symbol,
         protocolType:
-          data?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+          data?.protocol?.id === 'bex' ? 'AMM' : 'Perpetuals'
       }
     } catch (error) {
       console.error(error)
@@ -284,16 +280,13 @@ export default function useInfraredData(props: any) {
           vaultAddress,
           rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
           protocolType:
-            initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+            initialData?.protocol?.id === 'bex' ? 'AMM' : 'Perpetuals'
         };
         dataList.push(_data);
       }
     }
     const ibgtData = await getIbgtData()
-    dataList.push({
-      ...ibgtData
-    })
-    console.log('====dataList', dataList)
+    dataList.push(ibgtData)
     formatedData('dataList');
   }
   function getUsdDepositAmount() {
