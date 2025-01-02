@@ -29,6 +29,10 @@ const nextConfig = {
       destination: "https://api.dolomite.io/:path*"
     },
     {
+      source: "/api.infrared.finance/:path*",
+      destination: "https://api.infrared.finance/:path*"
+    },
+    {
       source: "/dapdap.game/:path*",
       destination: `${GAME_BASE_URL}/:path*`
     }

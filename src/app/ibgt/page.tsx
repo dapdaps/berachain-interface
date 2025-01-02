@@ -2,7 +2,11 @@
 
 import { memo } from 'react';
 import IBGTPageView from '@/sections/bgt/ibgt';
+import useCustomAccount from '@/hooks/use-account';
 
 export default memo(function IBGTPage() {
-  return <IBGTPageView />;
+  const {
+    chainId
+  } = useCustomAccount()
+  return <IBGTPageView chainId={chainId} />;
 });
