@@ -79,20 +79,7 @@ export function useSceneValue(): ISceneContext {
       return;
     }
     try {
-      // const res = await get(current.api);
-      const res: any = {
-        code: 0,
-        msg: "success",
-        data: {
-          "id": 1,
-          "total_box": 5484,
-          "total_users": 40,
-          "total_yap": 393,
-          "total_token": "3246421",
-          "start_time": 1733702400,
-          "end_time": 1735546500
-        }
-      };
+      const res = await get(current.api);
       if (res.code !== 0) {
         setCurrentSceneInfoLoading(false);
         return;
