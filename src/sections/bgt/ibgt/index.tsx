@@ -144,7 +144,7 @@ export default memo(function IBGTPageView(props: any) {
                       </div>
                     </div>
                     <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
-                      {formatValueDecimal(data?.depositAmount ?? 0, '', 2)} iBGT
+                      {formatValueDecimal(data?.depositAmount ?? 0, '', 2, false, false)} iBGT
                     </div>
                   </div>
 

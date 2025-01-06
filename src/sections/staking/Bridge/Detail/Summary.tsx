@@ -73,7 +73,7 @@ const DetailSummary = (props: any) => {
             )}
           </div>
           <div className="text-black font-Montserrat text-[26px] font-semibold leading-[100%]">
-            {data?.initialData?.pool?.name || data?.tokens?.[0] || 'iBGT'}
+            {data?.initialData?.name || data?.tokens?.[0] || 'iBGT'}
           </div>
         </div>
         {
@@ -141,7 +141,7 @@ const DetailSummary = (props: any) => {
             width={60}
             height={18}
             className=""
-            value={data?.initialData?.pool?.protocol || '-'}
+            value={data?.initialData?.protocol?.name || '-'}
           />
         </div>
         {

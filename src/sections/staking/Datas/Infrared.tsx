@@ -249,7 +249,7 @@ export default function useInfraredData(props: any) {
         type: 'Staking',
         rewardSymbol: data?.reward_tokens?.[0]?.symbol,
         protocolType:
-          data?.protocol?.id === 'bex' ? 'AMM' : 'Perpetuals'
+          ['bex', 'kodiak'].includes(data?.protocol?.id) ? 'AMM' : 'Perpetuals'
       }
     } catch (error) {
       console.error(error)
@@ -280,7 +280,7 @@ export default function useInfraredData(props: any) {
           vaultAddress,
           rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
           protocolType:
-            initialData?.protocol?.id === 'bex' ? 'AMM' : 'Perpetuals'
+            ['bex', 'kodiak'].includes(initialData?.protocol?.id) ? 'AMM' : 'Perpetuals'
         };
         dataList.push(_data);
       }
