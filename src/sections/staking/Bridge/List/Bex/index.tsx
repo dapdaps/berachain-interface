@@ -192,7 +192,7 @@ const List = forwardRef<any, any>((props, ref) => {
       render: (data) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {formatValueDecimal(data.tvl, '$', 2, true)}
+            {formatValueDecimal(data?.tvl, '$', 2, true)}
           </div>
         );
       }
@@ -360,7 +360,7 @@ const List = forwardRef<any, any>((props, ref) => {
       render: (data) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {formatValueDecimal(data.tvl, '$', 2, true)}
+            {formatValueDecimal(data?.tvl, '$', 2, true)}
           </div>
         );
       }

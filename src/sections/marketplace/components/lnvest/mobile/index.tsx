@@ -120,7 +120,7 @@ const Item = ({ data, onClick }: any) => {
           <div>
             <div className='font-medium	text-[14px]'>TVL</div>
             <div className='font-semibold	text-[16px] mt-[8px]'>
-              {formatValueDecimal(data.tvl, '$', 2, true)}
+              {formatValueDecimal(data?.tvl, '$', 2, true)}
             </div>
           </div>
           <div className='text-right'>
