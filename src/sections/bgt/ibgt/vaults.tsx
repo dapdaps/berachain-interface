@@ -93,7 +93,7 @@ export default function Vaults() {
       render: (data: any) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {formatValueDecimal(data.tvl, '$', 2, true)}
+            {formatValueDecimal(data?.tvl, '$', 2, true)}
           </div>
         );
       }
