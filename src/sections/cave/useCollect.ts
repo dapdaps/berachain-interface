@@ -116,8 +116,8 @@ export default function useCollect({ address }: { address: string }) {
     useEffect(() => {
 
         const promiseArray = [
-            get(`/api/game/items?game_category=bera&address=${address || '1'}`),
-            get(`/api/mas/user/${address || '1'}`)
+            get(`/api/game/items?game_category=bera&address=${address || ''}`),
+            get(`/api/mas/user/${address || ''}`)
         ]
         Promise.all(promiseArray).then((result: any) => {
 
