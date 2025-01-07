@@ -20,6 +20,7 @@ for (const dapp in dAppsConfig) {
     label: dapp.replace("-", " ").replace(/\b\w/g, (char) => char.toUpperCase())
   };
 }
+console.log('====_dApps', _dApps)
 
 const FIRST_LIST = [
   {
@@ -150,15 +151,12 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
-        icon: "/images/dapps/royco.svg",
-        name: "Royco",
-        label: "Royco",
-        type: "Vaults",
-        className: "",
+        ..._dApps["bedrock"],
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
         )
       },
+
       {
         icon: "/images/dapps/kingdomly.svg",
         name: "Kingdomly",
@@ -182,13 +180,11 @@ const SECOND_LIST = [
         )
       },
       {
-        icon: "/images/dapps/steer.svg",
-        name: "Steer",
-        label: "Steer",
+        icon: "/images/dapps/royco.svg",
+        name: "Royco",
+        label: "Royco",
         type: "Vaults",
-        attachedIcon: "",
         className: "",
-        disabled: true
       },
     ]
   },

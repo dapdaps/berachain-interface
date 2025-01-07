@@ -23,6 +23,14 @@ const ROUTE_CONFIG = {
     },
     icon: '/images/dapps/infrared/aquabera.svg'
   },
+  bedrock: {
+    type: 'staking',
+    theme: {
+      '--button-color': '#FFF',
+      '--button-text-color': '#1E2028'
+    },
+    icon: '/images/dapps/bedrock.svg'
+  },
 };
 
 export default ROUTE_CONFIG;
