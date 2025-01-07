@@ -15,6 +15,7 @@ import ImportEquipments from "./ImportEquipments";
 import NftModal from "./NftModal";
 import Tips from "./Tip";
 import Welcome from "./Welcome";
+import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 const hatPositions = [{
     width: 102,
 
@@ -561,6 +562,10 @@ export default function Cave() {
                 }}
             />
         </div >
+        <TransferItemsModal
+          visible={false}
+          onClose={() => {}}
+        />
     </div >
 }
 
