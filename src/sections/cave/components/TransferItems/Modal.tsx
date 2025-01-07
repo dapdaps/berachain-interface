@@ -1,14 +1,22 @@
 import Modal from '@/components/modal';
 import Index from './index';
+import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 
 const TransferItemsModal = (props: any) => {
-  const { visible, onClose } = props;
+  const {
+    transferItemsVisible,
+    setTransferItemsVisible,
+    setTransferItem,
+  } = useTransferItemsStore();
 
   return (
     <Modal
       className=""
-      open={visible}
-      onClose={onClose}
+      open={transferItemsVisible}
+      onClose={() => {
+        setTransferItemsVisible(false);
+        setTransferItem(void 0);
+      }}
     >
       <Index {...props} />
     </Modal>
