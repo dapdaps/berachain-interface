@@ -8,11 +8,11 @@ import { ethers } from "ethers";
 import { memo, useEffect } from "react";
 export default memo(function Button(props: IProps) {
   const {
-    abi,
+    // abi,
     type,
     symbol,
     amount,
-    template,
+    // template,
     decimals,
     balance,
     address,
@@ -166,11 +166,11 @@ export default memo(function Button(props: IProps) {
 
 })
 interface IProps {
-  abi: any;
+  // abi: any;
   type: "deposit" | "withdraw";
   symbol: string;
   amount: string;
-  template: string;
+  // template?: string;
   decimals: number;
   balance: string;
   address: string;
