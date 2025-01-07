@@ -2,6 +2,7 @@ import Modal from "@/components/modal";
 import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from "react";
+import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 
 interface Props {
   location: { x: number, y: number },
@@ -16,9 +17,11 @@ interface Props {
       icon: string,
       name: string,
       link: string
-    }>
+    }>;
+    isChristmas?: boolean;
   }
   disabled?: boolean;
+  transferItem?: any;
 }
 
 const textMap: any = {
@@ -28,13 +31,16 @@ const textMap: any = {
   'Lending': 'Lending'
 }
 
-export default function Tips({ location, msg, link, disabled }: Props) {
+export default function Tips({ location, msg, transferItem, disabled }: Props) {
   const [modalShow, setModalShow] = useState(false)
   const router = useRouter()
+  const { setTransferItemsVisible } = useTransferItemsStore();
 
   if (!msg) {
     return null
   }
+
+  const isTransfer = !msg.isChristmas && transferItem?.pc_item && !transferItem.transfer_to;
 
   return (
     <>
@@ -44,7 +50,7 @@ export default function Tips({ location, msg, link, disabled }: Props) {
           top: location.y,
         }}
         onClick={(e) => { e.nativeEvent.stopImmediatePropagation(); }}
-        className=" absolute w-[166px] h-[237px] rounded-[13px] z-20 border-[3px] border-[#C7FF6E] bg-[#00000080] backdrop-blur-[10px]"
+        className={`absolute w-[166px] ${isTransfer ? 'h-[237px]' : 'h-[220px]'} rounded-[13px] z-20 border-[3px] border-[#C7FF6E] bg-[#00000080] backdrop-blur-[10px]`}
       >
         <div className="flex items-center justify-center w-[75px] h-[75px] text-center m-auto mt-[5px]">
           <img src={msg?.img} className="max-w-[100%] max-h-[100%]" />
@@ -68,20 +74,29 @@ export default function Tips({ location, msg, link, disabled }: Props) {
             {msg.btnText}
           </span>
         </div>
-        <button
-          type="button"
-          className="w-full underline decoration-solid whitespace-nowrap text-[12px] text-center text-white font-[400] mt-[11px]"
-        >
-          Transfer to <strong className="font-[700]">Beraciaga</strong>
-        </button>
+        {
+          isTransfer && (
+            <button
+              type="button"
+              className="w-full underline decoration-solid whitespace-nowrap text-[12px] text-center text-white font-[400] mt-[11px]"
+              onClick={() => {
+                setTransferItemsVisible(true);
+              }}
+            >
+              Transfer to <strong className="font-[700]">Beraciaga</strong>
+            </button>
+          )
+        }
       </div>
       <Modal
         open={modalShow}
         closeIconClassName="right-[-10px] top-[-10px]"
-        onClose={() => { setModalShow(false) }}
+        onClose={() => {
+          setModalShow(false);
+        }}
       >
         <div className=" border-[#000] rounded-[20px] bg-[#FFFDEB] p-[20px]">
-          <div className="text-[20px] font-bold">Select dApp for {textMap[msg.btnText]}</div>
+        <div className="text-[20px] font-bold">Select dApp for {textMap[msg.btnText]}</div>
           <div className="flex mt-[10px] justify-center">
             {
               msg.dapps?.map(item => {

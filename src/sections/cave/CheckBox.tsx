@@ -1,11 +1,12 @@
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
+import { formatLongText } from '@/utils/utils';
 
 interface Props {
   className?: string;
   checked?: boolean;
   disabled?: boolean;
-  isTransfer?: boolean;
+  item?: any;
   onCheckChange?: (v: boolean) => void;
 }
 
@@ -14,7 +15,7 @@ export default function CheckBox({
   checked,
   disabled,
   onCheckChange,
-  isTransfer,
+  item,
 }: Props) {
 
   return <>
@@ -26,11 +27,11 @@ export default function CheckBox({
           </svg>
         </div>
       ) : (
-        isTransfer ? (
+        !!item?.transfer_to ? (
           <Popover
             content={(
               <Card className="w-[192px] text-center text-black text-[14px] font-[400] !p-[10px_15px] !rounded-[20px]">
-                This item is already<br /> transfer to Beraciaga<br /> account: <strong className="font-[700]">0x97...deFd</strong>
+                This item is already<br /> transfer to Beraciaga<br /> account: <strong className="font-[700]">{formatLongText(item.transfer_to, 4, 4)}</strong>
               </Card>
             )}
             placement={PopoverPlacement.Right}
