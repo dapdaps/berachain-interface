@@ -151,30 +151,30 @@ const TransferItems = (props: any) => {
   }, []);
 
   return (
-    <Card className="!rounded-[20px] w-[702px] pt-[20px] !px-0 pb-[33px]">
-      <div className="text-black text-[32px] font-CherryBomb text-center font-[400] leading-[90%]">
+    <Card className="w-[702px] lg:!rounded-[20px] md:w-full md:!rounded-t-[20px] md:!rounded-b-0 pt-[20px] !px-0 pb-[33px]">
+      <div className="text-black text-[32px] md:text-[28px] font-CherryBomb text-center font-[400] leading-[90%]">
         Transfer Boost Items
       </div>
-      <div className="max-h-[calc(100dvh_-_200px)] overflow-x-hidden overflow-y-auto px-[32px]">
-        <div className="mt-[20px] flex justify-between items-start gap-[15px]">
+      <div className="max-h-[calc(100dvh_-_200px)] md:max-h-[calc(100dvh_-_300px)] overflow-x-hidden overflow-y-auto px-[32px]">
+        <div className="mt-[20px] flex justify-between items-start gap-[15px] md:flex-col">
           <div className="flex: 1">
-            <div className="text-[#000] font-[Montserrat] text-[18px] font-bold leading-[100%]">
+            <div className="text-[#000] font-[Montserrat] text-[18px] font-bold leading-[100%] md:text-[16px] md:items-stretch">
               Choose Boost Items
             </div>
-            <div className="mt-[5px] text-[#000] font-[Montserrat] text-[16px] font-medium leading-[150%]">
+            <div className="mt-[5px] text-[#000] font-[Montserrat] text-[16px] font-medium leading-[150%] md:text-[14px]">
               Choose items below to Beraciaga (the TG game) for boost mining. <br />The highest level in the each category will boost in Beraciaga.
             </div>
           </div>
           <button
             type="button"
-            className="shrink-0 disabled:opacity-30 disabled:!cursor-not-allowed text-[#3672F4] text-center font-[Montserrat] text-[14px] font-semibold leading-[100%] underline decoration-solid decoration-skip-ink-[none] underline-offset-[auto] underline-position-[from-font]"
+            className="shrink-0 disabled:opacity-30 disabled:!cursor-not-allowed text-[#3672F4] md:ml-auto text-center font-[Montserrat] text-[14px] font-semibold leading-[100%] underline decoration-solid decoration-skip-ink-[none] underline-offset-[auto] underline-position-[from-font]"
             disabled={addressValidLoading}
             onClick={handleSelectedAll}
           >
             {selectedAll ? 'Uncheck All' : 'Check All'}
           </button>
         </div>
-        <div className="grid grid-cols-4 gap-x-[6px] gap-y-[5px] mt-[12px]">
+        <div className="grid grid-cols-4 md:grid-cols-2 gap-x-[6px] gap-y-[5px] mt-[12px]">
           {
             transferItems?.map((it, idx) => (
               <TransferItem
@@ -228,7 +228,7 @@ const TransferItems = (props: any) => {
           </div>
         </div>
         <div className="mt-[25px] relative w-full h-[128px] bg-[url('/images/cave/transfer-slogan.svg')] bg-no-repeat bg-center bg-contain">
-          <div className="absolute bottom-0 left-[45%] -translate-y-1/2 w-[56px] h-[56px] bg-[url('/images/cave/transfer-flash-bg.svg')] bg-no-repeat bg-center bg-cover border-[2px] border-[#709d28] bg-[#c7ff6d] rounded-full flex justify-center items-center text-[#6376FF] text-center text-stroke-[1px] text-stroke-[#E1FF0A] font-[Montserrat] text-[20px] italic font-extrabold leading-[100%]">
+          <div className="absolute bottom-0 left-[45%] md:left-[38.5%] -translate-y-1/2 w-[56px] h-[56px] bg-[url('/images/cave/transfer-flash-bg.svg')] bg-no-repeat bg-center bg-cover border-[2px] border-[#709d28] bg-[#c7ff6d] rounded-full flex justify-center items-center text-[#6376FF] text-center text-stroke-[1px] text-stroke-[#E1FF0A] font-[Montserrat] text-[20px] italic font-extrabold leading-[100%]">
             {speed}x
           </div>
         </div>
