@@ -10,11 +10,13 @@ import Big from 'big.js';
 import { numberRemoveEndZero } from '@/utils/number-formatter';
 import { post } from '@/utils/http';
 import useToast from '@/hooks/use-toast';
+import { utils } from 'ethers';
 
 const ADDR_VALID_REASON_0 = (username: string) => `TG account has bounded: @${username}`;
 const ADDR_VALID_REASON_1 = 'No TG account was detected.';
 const ADDR_VALID_REASON_2 = 'Unable to transfer boost items to yourself.';
 const ADDR_VALID_REASON_3 = 'Failed to query binding information.';
+const ADDR_VALID_REASON_4 = 'Invalid address.';
 
 const TransferItems = (props: any) => {
   const { onAfterTransfer } = props;
@@ -68,8 +70,8 @@ const TransferItems = (props: any) => {
       setAddressValid(false);
       return;
     }
-    if (!/^0x/.test(addr)) {
-      setAddressValidReason(ADDR_VALID_REASON_1);
+    if (!/^0x/.test(addr) || !utils.isAddress(addr)) {
+      setAddressValidReason(ADDR_VALID_REASON_4);
       setAddressValidLoading(false);
       setAddressValid(false);
       return;
@@ -96,7 +98,7 @@ const TransferItems = (props: any) => {
       setAddressValidLoading(false);
       return;
     }
-    setAddressValid(false);
+    setAddressValid(true);
     setAddressValidLoading(false);
     setAddressValidReason(ADDR_VALID_REASON_1);
   };
@@ -217,7 +219,7 @@ const TransferItems = (props: any) => {
         </div>
         <div className="flex justify-start items-center gap-[5px] mt-[10px]">
           {
-            !!addressValidReason && (addressValid ? (
+            !!addressValidReason && (addressValid && addressValidReason !== ADDR_VALID_REASON_1 ? (
               <img src="/images/cave/icon-form-checked.svg" alt="" className="w-[24px] h-[24px] shrink-0" />
             ) : (
               <img src="/images/cave/icon-form-warning.svg" alt="" className="w-[24px] h-[24px] shrink-0" />
