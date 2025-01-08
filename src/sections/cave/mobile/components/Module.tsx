@@ -34,20 +34,22 @@ export interface ModuleConfig {
   onItemClick?: (item: ModuleItem) => void;
 }
 
-const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
-  icon,
-  popoverIcon,
-  title,
-  desc,
-  type,
-  needTransactionNums,
-  hasPopover = true,
-  styles,
-  ...rest
-}) => {
+const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
+  const {
+    icon,
+    popoverIcon,
+    title,
+    desc,
+    type,
+    needTransactionNums,
+    hasPopover = true,
+    styles,
+    ...rest
+  } = props;
+
   const transferredRef = useRef<any>(null);
   const { onItemClick } = useModuleContext();
-  const { setTransferItemsVisible } = useTransferItemsStore();
+  const { setTransferItemsVisible, setTransferSelectedItems, setTransferItem } = useTransferItemsStore();
   const isTransfer = rest?.pc_item && !rest.transfer_to;
 
   const PopoverContent = () => {
@@ -87,6 +89,8 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
               className="w-full underline decoration-solid whitespace-nowrap text-[12px] text-center text-white font-[400]"
               onClick={() => {
                 setTransferItemsVisible(true);
+                setTransferSelectedItems([{ ...props, id: props.itemId }]);
+                setTransferItem({ ...props, id: props.itemId });
               }}
             >
               Transfer to <strong className="font-[700]">Beraciaga</strong>
