@@ -71,8 +71,10 @@ export const useGameItems = () => {
 
             return {
               ...item,
+              itemId: item.id,
               ...ModuleConfigs[moduleType].items[index],
               icon,
+              img: icon,
               popoverIcon,
             };
           }),
