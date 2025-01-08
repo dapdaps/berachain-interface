@@ -62,7 +62,7 @@ const Cave = () => {
     console.log("Selected item:", item);
   };
 
-  const { cars, hats, clothes, necklaces } = useCollect({
+  const { cars, hats, clothes, necklaces, getItems } = useCollect({
     address: account as string
   })
   const { moduleConfigs, loading, fetchGameItems } = useGameItems();
@@ -318,7 +318,13 @@ const Cave = () => {
           necklaces
         }}
       />
-      <TransferItemsModal onAfterTransfer={fetchGameItems} isMobile />
+      <TransferItemsModal
+        onAfterTransfer={() => {
+          fetchGameItems();
+          getItems();
+        }}
+        isMobile
+      />
     </div>
   );
 };
