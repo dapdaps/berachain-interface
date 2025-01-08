@@ -17,6 +17,7 @@ import { useGameItems } from "./hooks/useGameItems";
 import { useMasUser } from "./hooks/useMasUser";
 import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
+import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 
 
 const TipsPopover = ({
@@ -49,7 +50,7 @@ const TipsPopover = ({
 }
 const Cave = () => {
 
-  const { account } = useCustomAccount
+  const { account } = useCustomAccount()
   const { currentSceneInfoValid } = useContext(SceneContext);
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
@@ -64,10 +65,10 @@ const Cave = () => {
   const { cars, hats, clothes, necklaces } = useCollect({
     address: account as string
   })
-  const { moduleConfigs, loading } = useGameItems();
+  const { moduleConfigs, loading, fetchGameItems } = useGameItems();
   const { nfts, items, loading: masUserLoading } = useMasUser()
   const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
-  
+
   return (
     <div className="relative w-full min-h-dvh overflow-x-hidden overflow-y-scroll scrollbar-hide">
       {
@@ -84,7 +85,7 @@ const Cave = () => {
                 <img src="/images/cave/christmas/ribbons_2.svg" alt="ribbons_2" />
               </div>
               {
-                items.slice(0, -2).map((item, index) => {
+                items.slice(0, -2).map((item: any, index: any) => {
                   const Positions = [{
                     left: 54,
                     top: 96
@@ -122,7 +123,7 @@ const Cave = () => {
                 })
               }
               {
-                items.slice(-2).map((item, index) => {
+                items.slice(-2).map((item: any, index: any) => {
                   const Positions = [{
                     left: 182,
                     top: 227
@@ -179,7 +180,7 @@ const Cave = () => {
       <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[240vw]')}>
         <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
-            storePhotoList?.photoList?.map((photo, index) => (
+            storePhotoList?.photoList?.map((photo: any, index: any) => (
               <div className="relative w-[159px] h-[184px] group z-20"
                 onClick={() => {
                   isMobile && nfts?.length > 0 && setCheckPhotoIndex(index)
@@ -317,6 +318,7 @@ const Cave = () => {
           necklaces
         }}
       />
+      <TransferItemsModal onAfterTransfer={fetchGameItems} isMobile />
     </div>
   );
 };
