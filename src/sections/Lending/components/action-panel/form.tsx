@@ -110,8 +110,9 @@ const ActionPanelForm = (props: Props) => {
           token={token}
           setAmount={(val: any) => handleAmount({ target: { value: val } })}
           balance={balance}
+          disabled={isLimitDeposit}
         >
-          <Balance balance={balance} handleBalance={handleBalance} />
+          <Balance balance={balance} handleBalance={handleBalance} disabled={isLimitDeposit} />
         </AmountSelector>
       )}
       <div className='flex justify-between items-center mt-[13px]'>
@@ -212,7 +213,10 @@ const Balance = (props: any) => {
       <a
         href='javascript: void(0);'
         className={`underline decoration-solid whitespace-nowrap ${disabled ? 'opacity-30 !cursor-not-allowed' : 'opacity-100'}`}
-        onClick={handleBalance}
+        onClick={() => {
+          if (disabled) return;
+          handleBalance();
+        }}
       >
         {balance.shown}
       </a>
