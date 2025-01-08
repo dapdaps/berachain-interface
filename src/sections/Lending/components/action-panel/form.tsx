@@ -74,7 +74,7 @@ const ActionPanelForm = (props: Props) => {
   }, [placeholder, isLimit, isLimitDeposit]);
   const isLimitOver = useMemo(() => {
     if (isLimit && !isLimitDeposit && Big(amount || 0).gt(0)) {
-      return Big(amount).plus(amount).gt(1);
+      return Big(token.balance || 0).plus(amount).gt(1);
     }
     return false;
   }, [amount, token, isLimit, isLimitDeposit]);
