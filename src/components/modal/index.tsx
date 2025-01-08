@@ -21,15 +21,16 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = (props) => {
   const {
-    open,
+    children,
+    ...restProps
   } = props;
 
-  if (!open) return null;
+  if (!props.open) return null;
 
   return ReactDOM.createPortal(
     (
-      <ModalContent {...props}>
-        {props.children}
+      <ModalContent {...restProps}>
+        {children}
       </ModalContent>
     ) as any,
     document.body
