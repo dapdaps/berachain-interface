@@ -8,6 +8,7 @@ import DolomiteConfig from '@/configs/lending/dolomite';
 import { numberFormatter } from '@/utils/number-formatter';
 import { useHandler } from '@/sections/Lending/hooks/use-handler';
 import AmountSelector from '@/sections/Lending/components/amount-selector';
+import Big from 'big.js';
 
 const DolomiteHandler = dynamic(
   () => import('@/sections/Lending/handlers/dolomite')
@@ -25,7 +26,8 @@ const ActionPanelForm = (props: Props) => {
     inputDisabled,
     CHAIN_ID,
     onSuccess,
-    addAction
+    addAction,
+    isLimit,
   } = props;
 
   const networkConfig = networks[CHAIN_ID];
@@ -58,17 +60,50 @@ const ActionPanelForm = (props: Props) => {
     handleBalance
   } = useHandler({ balance: balance.value });
 
+  const isLimitDeposit = useMemo(() => {
+    return !!(isLimit && Big(token.balance || 0).gt(1));
+  }, [isLimit, token]);
+  const placeholderShown = useMemo(() => {
+    if (isLimit) {
+      if (isLimitDeposit) {
+        return 'Deposit exceeds the limit';
+      }
+      return `Deposit limit: 1 ${token.symbol}`;
+    }
+    return placeholder;
+  }, [placeholder, isLimit, isLimitDeposit]);
+  const isLimitOver = useMemo(() => {
+    if (isLimit && !isLimitDeposit && Big(amount || 0).gt(0)) {
+      return Big(amount).plus(amount).gt(1);
+    }
+    return false;
+  }, [amount, token, isLimit, isLimitDeposit]);
+
   return (
     <>
       <div className='mt-[17px]'>
-        <input
-          value={amount}
-          type='text'
-          placeholder={placeholder}
-          disabled={inputDisabled}
-          className='w-full h-[40px] md:h-[56px] md:text-[20px] outline-[#FFDC50] leading-[38px] rounded-[12px] border border-[#373A53] bg-white text-[16px] font-[600] px-[10px]'
-          onChange={handleAmount}
-        />
+        <div className="relative">
+          <input
+            value={amount}
+            type="text"
+            placeholder={placeholderShown}
+            disabled={inputDisabled || isLimitDeposit}
+            className={`w-full h-[40px] ${isLimitDeposit ? 'pl-[35px]' : ''} ${isLimitOver ? 'border-[#f00]' : ''} disabled:cursor-not-allowed md:h-[56px] md:text-[20px] outline-[#FFDC50] leading-[38px] rounded-[12px] border border-[#373A53] bg-white text-[16px] font-[600] px-[10px]`}
+            onChange={handleAmount}
+          />
+          {
+            isLimitDeposit && (
+              <img src="/images/icon-tips.svg" alt="" className="w-[20px] h-[20px] absolute left-[10px] top-1/2 -translate-y-1/2" />
+            )
+          }
+        </div>
+        {
+          isLimit && (
+            <div className="text-[12px] break-all mt-[10px]">
+              Deposit limit <strong>1 {token.symbol}</strong>, as testnet economics often lead to excessive borrowing, making withdrawals difficult. This won’t be an issue on Berachain’s mainnet.
+            </div>
+          )
+        }
       </div>
       {isMobile && (
         <AmountSelector
@@ -81,11 +116,20 @@ const ActionPanelForm = (props: Props) => {
       )}
       <div className='flex justify-between items-center mt-[13px]'>
         {!isMobile && (
-          <Balance balance={balance} handleBalance={handleBalance} />
+          <Balance
+            disabled={isLimitDeposit}
+            balance={balance}
+            handleBalance={() => {
+              if (isLimitDeposit) {
+                return;
+              }
+              handleBalance();
+            }}
+          />
         )}
         <LendingButton
           type='primary'
-          disabled={disabled}
+          disabled={disabled || isLimitDeposit || isLimitOver}
           loading={loading}
           style={
             isMobile
@@ -160,14 +204,14 @@ const BalancePercentList = [
 ];
 
 const Balance = (props: any) => {
-  const { handleBalance, balance } = props;
+  const { handleBalance, balance, disabled } = props;
 
   return (
     <div className='text-[14px] font-[400] text-black'>
       Balance:&nbsp;
       <a
         href='javascript: void(0);'
-        className='underline decoration-solid whitespace-nowrap'
+        className={`underline decoration-solid whitespace-nowrap ${disabled ? 'opacity-30 !cursor-not-allowed' : 'opacity-100'}`}
         onClick={handleBalance}
       >
         {balance.shown}

@@ -26,4 +26,5 @@ export interface Props {
   CHAIN_ID: number;
   onSuccess?(): void;
   addAction: any;
+  isLimit?: boolean;
 }
