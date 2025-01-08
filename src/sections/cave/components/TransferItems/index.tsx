@@ -229,11 +229,7 @@ const TransferItems = (props: any) => {
             {addressValidReason}
           </div>
         </div>
-        <div className="mt-[25px] relative w-full h-[128px] bg-[url('/images/cave/transfer-slogan.svg')] bg-no-repeat bg-center bg-contain">
-          <div className="absolute bottom-0 left-[45%] md:left-[38.5%] -translate-y-1/2 w-[56px] h-[56px] bg-[url('/images/cave/transfer-flash-bg.svg')] bg-no-repeat bg-center bg-cover border-[2px] border-[#709d28] bg-[#c7ff6d] rounded-full flex justify-center items-center text-[#6376FF] text-center text-stroke-[1px] text-stroke-[#E1FF0A] font-[Montserrat] text-[20px] italic font-extrabold leading-[100%]">
-            {speed}x
-          </div>
-        </div>
+        <div className="mt-[25px] relative w-full h-[128px] bg-[url('/images/cave/transfer-slogan.png')] bg-no-repeat bg-center bg-contain"></div>
       </div>
       <div className="mt-[15px] flex justify-center">
         <button
