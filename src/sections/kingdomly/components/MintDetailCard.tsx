@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { CHAIN_RPC_URLS } from "../hooks/usePartnerCollections";
 import { Contract, ethers, providers } from "ethers";
 import NFTAbi from '../abis/NFT.json';
+import Big from "big.js";
+import { useCountDown } from "@/hooks/use-count-down";
+import Button from './Button'
+import { checkMintStatus } from "../hooks/checkMintStatus";
+import clsx from "clsx";
+import { useMint } from '../hooks/useMint';
+import Skeleton from "react-loading-skeleton";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -12,18 +19,37 @@ interface MintDetailCardProps {
 const MintDetailCard: React.FC<MintDetailCardProps> = ({
   item
 }) => {
-  const [tab, setTab] = useState("live");
+  const [currentGroupId, setCurrentGroupId] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
   const [detail, setDetail] = useState<NFTCollectionWithStatus | null>(null);
+  const [fees, setFees] = useState({ feeAmount: '', totalCostWithFee: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const [mintGroups, setMintGroups] = useState(item.mint_group_data || []);
+  const [isMinting, setIsMinting] = useState(false);
+  const [isMintStatusLoading, setIsMintStatusLoading] = useState(false);
 
-  const LIMIT_PER_WALLET = 5;
-  const MINT_PRICE = 0.015;
-  const GAS_FEE = 0.001332;
+  const { handleMint } = useMint();
+
+
+  const currentGroup = mintGroups.find(group => group.id === currentGroupId) || mintGroups[0];
+
+  const symbol = item.chain.native_currency;
+
+  const mintGroupTabs = mintGroups.map(group => ({
+    label: group.name,
+    value: group.id.toString(),
+    status: group.status
+  }));
+
+  const handleTabChange = (value: string) => {
+    setCurrentGroupId(Number(value));
+    setQuantity(1);
+  };
 
   useEffect(() => {
     fetchContractData();
   }, []);
-
 
   const fetchContractData = async () => {
     try {
@@ -42,16 +68,15 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
       const [maxMintPerWallet, mintPrice] = await Promise.all([
         contract.maxMintPerWallet(0),
         contract.mintPrice(0),
-        // contract.quoteBatchMint(1)
       ]);
 
       const setter = {
         ...item,
         maxMintPerWallet: maxMintPerWallet.toString(),
-        mintPrice: ethers.utils.formatUnits(mintPrice, 'ether')
+        mintPrice: ethers.utils.formatUnits(mintPrice, 'ether'),
       };
 
-      console.log('setter', setter);
+      setDetail(setter);
 
     } catch (err) {
       console.error(`Error fetching data for contract ${item.contract_address}:`, err);
@@ -62,13 +87,13 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
     const value = e.target.value.replace(/[^0-9]/g, "");
     const numValue = parseInt(value) || 0;
 
-    if (numValue <= LIMIT_PER_WALLET) {
+    if (numValue <= currentGroup.max_mint_per_wallet) {
       setQuantity(numValue);
     }
   };
 
   const handleIncrement = () => {
-    if (quantity < LIMIT_PER_WALLET) {
+    if (quantity < currentGroup.max_mint_per_wallet) {
       setQuantity(quantity + 1);
     }
   };
@@ -79,8 +104,116 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
     }
   };
 
-  const calculateSubtotal = () => {
-    return (quantity * MINT_PRICE + GAS_FEE).toFixed(6);
+  useEffect(() => {
+    let isMounted = true;
+
+    const calculateFees = async () => {
+      setIsLoading(true);
+      const chainId = item.chain.chain_id;
+      const rpcUrl = CHAIN_RPC_URLS[chainId];
+      
+      if (!rpcUrl) {
+        console.error(`No RPC URL found for chain ID ${chainId}`);
+        return;
+      }
+
+      try {
+        const provider = new providers.JsonRpcProvider(rpcUrl);
+        const contract = new Contract(item.contract_address, NFTAbi, provider);
+        const amount = Big(1).mul(quantity).toFixed();
+
+        const [feeAmount, totalCostWithFee] = await contract.quoteBatchMint(currentGroupId, amount);
+
+        if (isMounted) {
+          setFees({
+            feeAmount: ethers.utils.formatEther(feeAmount),
+            totalCostWithFee: ethers.utils.formatEther(totalCostWithFee)
+          });
+        }
+      } catch (error) {
+        if (isMounted) {
+          setFees({ feeAmount: '', totalCostWithFee: '' });
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    calculateFees();
+    return () => { isMounted = false };
+  }, [item.chain.chain_id, item.contract_address, quantity, currentGroupId]);
+
+  useEffect(() => {
+    const updateMintStatuses = async () => {
+      if (!item.mint_group_data) return;
+      setIsMintStatusLoading(true);
+
+      try {
+        const updatedGroups = await Promise.all(
+          item.mint_group_data.map(async (group) => {
+            const status = await checkMintStatus(
+              item.contract_address,
+              item.chain.chain_id,
+              group.id,
+              group.allocation
+            );
+            return {
+              ...group,
+              status
+            };
+          })
+        );
+        setMintGroups(updatedGroups);
+      } catch (error) {
+        console.error('Error updating mint statuses:', error);
+      } finally {
+        setIsMintStatusLoading(false);
+      }
+
+    };
+
+    updateMintStatuses();
+  }, [item.contract_address, item.chain.chain_id, item.mint_group_data]);
+
+  const renderMintGroupTag = (tab: any) => {
+    if (!tab.status || ['closed', 'paused'].includes(tab.status)) return null;
+
+    const statusMap: {
+      [key: string]: string;
+    } = {
+      'live': 'Live',
+      'sold_out': 'Sold Out',
+      // 'paused': 'Paused',
+      // 'upcoming': 'Upcoming'
+    }
+    
+    return (
+      <div className='absolute font-[400] right-2 top-0 p-[3px_5px] font-Montserrat text-[10px] leading-[1] rounded-[16px]bg-[#FFDC50] border border-black'>
+        {statusMap[tab.status]}
+      </div>
+    );
+  };
+
+  const onMint = async () => {
+    if (!fees.totalCostWithFee) return;
+    
+    setIsMinting(true);
+    try {
+      await handleMint(
+        item,
+        currentGroupId,
+        quantity,
+        fees.totalCostWithFee
+      );
+      await fetchContractData();
+    } catch (error) {
+      console.error('Mint failed:', error);
+      alert(error instanceof Error ? error.message : 'Mint failed');
+    } finally {
+      setIsMinting(false);
+    }
   };
 
   return (
@@ -93,48 +226,44 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
         />
         <div className="p-5 bg-black bg-opacity-[0.06] rounded-[10px] shrink-0 flex-1">
           <SwitchTabs
-            tabs={[
-              { label: "Live", value: "live" },
-              { label: "Upcoming", value: "upcoming" },
-              { label: "Testing", value: "tes" },
-              { label: "Live", value: "live1" },
-            ]}
+            tabs={mintGroupTabs}
             isScroll
-            onChange={setTab}
-            current={tab}
+            onChange={handleTabChange}
+            current={currentGroupId.toString()}
             className="w-full mx-auto"
             style={{ height: 56, borderRadius: 12 }}
             cursorStyle={{ borderRadius: 10 }}
+            renderTag={renderMintGroupTag}
           />
           
           <div className="text-[14px] font-Montserrat mt-3 mb-[30px]">
-            This is a public mint, anyone can mint and join the BeraVote
-            Senate. Join the greatest governance revolution and community in
-            crypto!
+            {currentGroup?.mint_group_description || ""}
           </div>
           
           <div className="w-full">
             <div className="grid grid-cols-3 gap-8 mb-5">
               <div className="w-full">
                 <div className="text-[14px] mb-2">Limit per wallet</div>
-                <div className="text-base font-bold">{LIMIT_PER_WALLET}</div>
+                <div className="text-base font-bold">{currentGroup.max_mint_per_wallet}</div>
               </div>
               <div className="w-full">
                 <div className="text-[14px] mb-2">Max supply</div>
-                <div className="text-base font-bold">1000</div>
+                <div className="text-base font-bold">{currentGroup.allocation}</div>
               </div>
               <div className="w-full">
                 <div className="text-[14px] mb-2">Mint Price:</div>
-                <div className="text-base font-bold">{MINT_PRICE}ETH</div>
+                <div className="text-base font-bold">
+                  {parseFloat(currentGroup.price.toString()) === 0 ? 'FREE MINT' : `${currentGroup.price} ${symbol}`}
+                </div>
               </div>
             </div>
 
-            {/* Quantity selector */}
             <div className="relative mb-4">
               <div className="flex items-center justify-between p-2 rounded-xl border border-[#373A53] bg-white">
                 <button
                   onClick={handleDecrement}
                   className="w-[32px] h-[32px] flex items-center justify-center"
+                  disabled={quantity === 1}
                 >
                   <svg
                     width="34"
@@ -172,6 +301,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
 
                 <button
                   onClick={handleIncrement}
+                  disabled={quantity === currentGroup.max_mint_per_wallet}
                   className="w-[32px] h-[32px] flex items-center justify-center"
                 >
                   <svg
@@ -202,17 +332,27 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
             <div className="space-y-4 font-Montserrat">
               <div className="flex justify-between items-center">
                 <div className="text-[14px]">Estimated fees</div>
-                <div className="text-base font-bold">{GAS_FEE} ETH</div>
+                <div className="text-base font-bold">{parseFloat(fees.feeAmount || '0').toFixed(6)} ETH</div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="text-[14px]">Subtotal</div>
-                <div className="text-base font-bold">{calculateSubtotal()} ETH</div>
+                <div className="text-base font-bold">{parseFloat(fees.totalCostWithFee || '0').toFixed(6)} ETH</div>
               </div>
             </div>
 
-            <button className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] text-center leading-[46px] mt-[18px] rounded-[10px]">
-              Mint now
-            </button>
+
+            {
+              isMintStatusLoading ? (
+                <Skeleton height={46} />
+              ) : (
+                <Button 
+                  status={currentGroup.status}
+                  timestamp={item.mint_live_timestamp}
+                  onClick={onMint}
+                  loading={isMinting}
+                />
+              )
+            }
           </div>
         </div>
       </div>

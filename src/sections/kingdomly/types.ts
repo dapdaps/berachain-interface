@@ -5,6 +5,8 @@ export enum Status {
   UPCOMING = 'upcoming'
 }
 
+export type MintStatus = 'closed' | 'upcoming' | 'live' | 'sold_out' | 'paused'
+
 interface Chain {
   chain_id: number;
   chain_name: string;
@@ -12,12 +14,15 @@ interface Chain {
 }
 
 interface MintGroupData {
+  id: number;
   name: string;
   price: number;
   allocation: number;
   max_mint_per_wallet: number;
   mint_group_description: string;
   mint_group_description_RTE: string;
+  status: MintStatus;
+  priority?: number;
 }
 
 export interface NFTCollection {
@@ -35,7 +40,7 @@ export interface NFTCollection {
 }
 
 export interface NFTCollectionWithStatus extends NFTCollection {
-  status: Status;
+  status: MintStatus;
   totalSupplyByContract?: string;
   maxSupplyByContract?: string;
   displayPrice: number;

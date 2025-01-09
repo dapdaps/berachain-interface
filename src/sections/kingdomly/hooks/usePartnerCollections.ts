@@ -6,7 +6,7 @@ import NFTAbi from '../abis/NFT.json';
 
 export const CHAIN_RPC_URLS: { [key: number]: string } = {
   42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum One
-  80084: 'https://bartio.rpc.berachain.com', // Berachain
+  80084: 'https://bartio.drpc.org', // Berachain
 };
 
 export const usePartnerCollections = () => {
@@ -66,6 +66,8 @@ export const usePartnerCollections = () => {
           }))
         ];
 
+        collections = collections.filter(collection => collection.chain.chain_id === 80084);
+
         collections = await Promise.all(
           collections.map(collection => fetchContractData(collection))
         );
@@ -78,6 +80,7 @@ export const usePartnerCollections = () => {
             displayPrice
           };
         });
+
 
         setCollections(collections);
         setError(null);

@@ -14,7 +14,8 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
     className,
     style,
     onChange,
-    isScroll = false
+    isScroll = false,
+    renderTag
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,7 +28,6 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
     return idx < 0 ? 0 : idx;
   }, [tabs, current]);
 
-  // 处理tab切换
   const handleChange = (tab: any, idx: number) => {
     if (tab.value === current) return;
     onChange?.(tab.value, idx);
@@ -86,7 +86,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
       )}
       style={style}
     >
-      <div className="absolute inset-0 p-[5px_4px] md:p-[3px]">
+      <div className="absolute inset-0 p-[4px_5px] md:p-[3px]">
         <div 
           ref={tabsContainerRef}
           className={clsx(
@@ -119,21 +119,21 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
 
             {/* Tabs */}
             {tabs.map((tab, idx) => (
-              <div
+                <div
                 key={idx}
                 ref={el => {
                   tabRefs.current[idx] = el;
                 }}
                 className={clsx(
                   "h-full font-bold lg:text-[14px] md:text-[15px] text-black md:font-[600] flex justify-center items-center cursor-pointer px-4 relative z-10",
-                  isScroll ? "flex-shrink-0" : "flex-1",
+                  isScroll ? "flex-shrink-0 px-[31px] py-[18px] lg:text-[16px]" : "flex-1",
                   tabClassName
                 )}
                 style={{
                   opacity: tab.disabled ? 0.3 : 1,
                   cursor: tab.disabled
-                    ? "not-allowed"
-                    : "url('../../public/images/cursor.svg') 12 0, auto",
+                  ? "not-allowed"
+                  : "url('../../public/images/cursor.svg') 12 0, auto",
                   ...tabStyle,
                   ...renderTabStyle(tab, idx)
                 }}
@@ -142,9 +142,10 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
                   if (tab.disabled) return;
                   handleChange(tab, idx);
                 }}
-              >
+                >
+                {renderTag && renderTag(tab)}
                 {tab.label}
-              </div>
+                </div>
             ))}
           </div>
         </div>
@@ -155,8 +156,15 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
 
 export default SwitchTabs;
 
+interface ITab {
+  value: any;
+  label: any;
+  disabled?: boolean;
+  [key: string]: any;
+}
+
 interface Props<Value> {
-  tabs: { value: Value; label: any; disabled?: boolean }[];
+  tabs: ITab[];
   current?: Value;
   className?: string;
   style?: React.CSSProperties;
@@ -165,6 +173,7 @@ interface Props<Value> {
   tabClassName?: string;
   tabStyle?: React.CSSProperties;
   isScroll?: boolean;
+  renderTag?: (tab: ITab) => React.ReactNode;
 
   onChange?(current: Value, index: number): void;
   renderTabStyle?(

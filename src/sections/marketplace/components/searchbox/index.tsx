@@ -1,4 +1,4 @@
-export default function SearchBox({ value, onChange }: any) {
+export default function SearchBox({ value, onChange, placeholder = 'search token' }: any) {
   return (
     <div>
       <div className='flex items-center border bg-[#fff] rounded-[12px] overflow-hidden border-[#373A53] px-[15px] gap-[10px]'>
@@ -29,7 +29,7 @@ export default function SearchBox({ value, onChange }: any) {
 
         <input
           className='flex-1 h-[40px] bg-inherit outline-none w-[300px]'
-          placeholder='search token'
+          placeholder={placeholder}
           value={value || ''}
           onChange={(ev: any) => {
             onChange(ev.target.value);
