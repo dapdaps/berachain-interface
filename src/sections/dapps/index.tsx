@@ -129,7 +129,7 @@ const SECOND_LIST = [
       {
         ..._dApps["beraborrow"],
         attachedIcon: (
-          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
+          <TrunkSmall className="absolute left-[44%] bottom-[-28%]" />
         )
       },
       {
