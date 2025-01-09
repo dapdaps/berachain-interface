@@ -186,6 +186,7 @@ const SECOND_LIST = [
         name: "Royco",
         label: "Royco",
         type: "Vaults",
+        disabled: true,
         className: "",
       },
     ]
