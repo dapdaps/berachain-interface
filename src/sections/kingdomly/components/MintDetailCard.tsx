@@ -164,12 +164,17 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     } = {
       live: "Live",
       sold_out: "Sold Out",
-      // 'paused': 'Paused',
-      // 'upcoming': 'Upcoming'
+    };
+
+    const getTagStyle = (status: string) => {
+      if (status === 'live') {
+        return "bg-[#FFDC50] border border-black";
+      }
+      return "bg-[#DFDCC4]";
     };
 
     return (
-      <div className="absolute font-[400] right-2 top-0 p-[3px_5px] font-Montserrat text-[10px] leading-[1] rounded-[16px] bg-[#FFDC50] border border-black">
+      <div className={`absolute font-[400] right-2 top-0 p-[3px_5px] font-Montserrat text-[10px] leading-[1] rounded-[16px] ${getTagStyle(tab.status)}`}>
         {statusMap[tab.status]}
       </div>
     );
