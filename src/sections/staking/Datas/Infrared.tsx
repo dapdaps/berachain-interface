@@ -3,7 +3,9 @@ import Big from 'big.js';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { beraB } from '@/configs/tokens/bera-bArtio';
+import { asyncFetch } from '@/utils/http';
 
+const IBGT_VAULT_ADDRESS = "0x31e6458c83c4184a23c761fdaffb61941665e012"
 export default function useInfraredData(props: any) {
   const {
     name,
@@ -14,7 +16,7 @@ export default function useInfraredData(props: any) {
     allData,
     onLoad,
     multicallAddress,
-    IBGT_ADDRESS
+    IBGT_ADDRESS,
   } = props;
   const dataList = [];
 
@@ -229,9 +231,29 @@ export default function useInfraredData(props: any) {
 
   function formatedData() {
     onLoad({
-      dataList: dataList?.filter(data => ['BEX', 'Kodiak Finance', 'BERPS'].includes(data?.initialData?.pool?.protocol) || data?.id === "iBGT-HONEY"),
+      dataList: dataList?.filter(data => ['bex', 'kodiak', 'beraborrow', 'berps', 'honeypot'].includes(data?.initialData?.protocol?.id) || data?.id !== "iBGT-HONEY"),
       fullDataList: dataList
     });
+  }
+  async function getIbgtData() {
+    try {
+      const result = await asyncFetch("/api.infrared.finance/vault/infrared-ibgt")
+      const data = result?.vault
+      const pair = pairs?.find(pair => addresses[pair?.id] === IBGT_VAULT_ADDRESS) ?? {}
+      return {
+        ...pair,
+        tvl: Big(data?.tvl).toFixed(),
+        apy: Big(data?.apr).times(100).toFixed(),
+        vaultAddress: IBGT_VAULT_ADDRESS,
+        initialData: data,
+        type: 'Staking',
+        rewardSymbol: data?.reward_tokens?.[0]?.symbol,
+        protocolType:
+          ['bex', 'kodiak'].includes(data?.protocol?.id) ? 'AMM' : 'Perpetuals'
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
   async function getDataList() {
     for (const pair of pairs) {
@@ -251,20 +273,20 @@ export default function useInfraredData(props: any) {
         const _data = {
           ...pair,
           name,
-          tvl: Big(ethers.utils.formatUnits(initialData?.current_staked_amount))
-            .times(initialData?.stake_token?.price ?? 0)
-            .toFixed(),
-          apy: initialData?.apy_percentage,
+          tvl: Big(initialData?.tvl).toFixed(),
+          apy: Big(initialData?.apr).times(100).toFixed(),
           initialData,
           type: 'Staking',
           vaultAddress,
           rewardSymbol: initialData?.reward_tokens?.[0]?.symbol,
           protocolType:
-            initialData?.pool?.protocol === 'BEX' ? 'AMM' : 'Perpetuals'
+            ['bex', 'kodiak'].includes(initialData?.protocol?.id) ? 'AMM' : 'Perpetuals'
         };
         dataList.push(_data);
       }
     }
+    const ibgtData = await getIbgtData()
+    dataList.push(ibgtData)
     formatedData('dataList');
   }
   function getUsdDepositAmount() {

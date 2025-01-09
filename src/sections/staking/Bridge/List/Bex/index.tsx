@@ -38,9 +38,7 @@ const List = forwardRef<any, any>((props, ref) => {
     return formatValueDecimal(
       dataList?.reduce((prev, cur) => {
         return prev.plus(
-          cur?.platform === 'aquabera' ? Big(cur?.tvl ?? 0) : Big(
-            ethers.utils.formatUnits(cur?.initialData?.current_staked_amount)
-          ).times(cur?.initialData?.stake_token?.price ?? 0)
+          Big(cur?.tvl ?? 0)
         );
       }, Big(0)),
       '$',
@@ -109,7 +107,7 @@ const List = forwardRef<any, any>((props, ref) => {
               placement={PopoverPlacement.Bottom}
               content={(
                 <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-                  {pool?.name}
+                  {data?.platform === "infrared" ? data?.initialData?.name : pool?.name}
                 </div>
               )}
               contentClassName="px-[20px] py-[10px] rounded-[8px] border border-black bg-[#FFFDEB]"
@@ -140,17 +138,22 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Protocol',
       type: 'slot',
       render: (data: any) => {
-        const pool = data?.pool;
+        const protocol = data?.initialData?.protocol
         return (
           <img
             style={{ width: 26 }}
-            src={pool?.protocol === 'BEX'
-              ? '/images/dapps/infrared/bex.svg'
-              : pool?.protocol === 'aquabera'
-                ? '/images/dapps/infrared/aquabera.svg' :
-                (pool?.protocol === 'Kodiak Finance')
-                  ? '/images/dapps/kodiak.svg'
-                  : '/images/dapps/infrared/berps.svg'}
+            src={
+              data?.platform === 'infrared' ? (
+                protocol?.id === "bex" ?
+                  '/images/dapps/infrared/bex.svg' :
+                  protocol?.id === "kodiak" ?
+                    '/images/dapps/kodiak.svg' :
+                    protocol?.id === "berps" ?
+                      '/images/dapps/infrared/berps.svg' :
+                      '/images/dapps/infrared/infrared.svg'
+              ) : '/images/dapps/infrared/aquabera.svg'
+
+            }
           />
         );
       }
@@ -188,7 +191,7 @@ const List = forwardRef<any, any>((props, ref) => {
       render: (data) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {formatValueDecimal(data.tvl, '$', 2, true)}
+            {formatValueDecimal(data?.tvl, '$', 2, true)}
           </div>
         );
       }
@@ -300,7 +303,6 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Pool',
       type: 'slot',
       render: (data) => {
-        const pool = data?.initialData?.pool;
         return (
           <div className='flex items-center gap-[8px]'>
             <div className='flex items-center min-w-[50px]'>
@@ -319,7 +321,7 @@ const List = forwardRef<any, any>((props, ref) => {
               )}
             </div>
             <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {pool?.name || 'iBGT'}
+              {data?.initialData?.name || 'iBGT'}
             </div>
           </div>
         );
@@ -331,20 +333,18 @@ const List = forwardRef<any, any>((props, ref) => {
       label: 'Protocol',
       type: 'slot',
       render: (data: any) => {
-        const pool = data?.initialData?.pool;
+        const protocol = data?.initialData?.protocol
         return (
           <img
             style={{ width: 26 }}
             src={
-              !pool && "iBGT-HONEY" ? '/images/dapps/infrared/infrared.svg' : (
-                pool?.protocol === 'BEX'
-                  ? '/images/dapps/infrared/bex.svg'
-                  : pool?.protocol === 'aquabera'
-                    ? '/images/dapps/infrared/aquabera.svg' :
-                    (pool?.protocol === 'Kodiak Finance')
-                      ? '/images/dapps/kodiak.svg'
-                      : '/images/dapps/infrared/berps.svg'
-              )
+              protocol?.id === "bex" ?
+                '/images/dapps/infrared/bex.svg' :
+                protocol?.id === "kodiak" ?
+                  '/images/dapps/kodiak.svg' :
+                  protocol?.id === "berps" ?
+                    '/images/dapps/infrared/berps.svg' :
+                    '/images/dapps/infrared/infrared.svg'
             }
           />
         );
@@ -359,7 +359,7 @@ const List = forwardRef<any, any>((props, ref) => {
       render: (data) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {formatValueDecimal(data.tvl, '$', 2, true)}
+            {formatValueDecimal(data?.tvl, '$', 2, true)}
           </div>
         );
       }

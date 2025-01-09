@@ -85,11 +85,12 @@ const networks = {
         ...beraB['unibtc'],
         underlyingToken: beraB['unibtc']
       },
-      [beraB['eth'].address]: {
-        ...beraB['eth'],
-        marketId: '0',
-        underlyingToken: beraB['eth']
-      }
+      // reached supply cap
+      // [beraB['eth'].address]: {
+      //   ...beraB['eth'],
+      //   marketId: '0',
+      //   underlyingToken: beraB['eth'],
+      // }
     }
   }
 };

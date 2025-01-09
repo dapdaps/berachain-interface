@@ -535,6 +535,54 @@ export const EcosystemQuests: any = {
       { label: "Discord", link: "https://discord.com/invite/neJMg9P4Ps" },
       { label: "Docs", link: "https://medium.com/moby-trade/moby-and-infrared-partner-to-elevate-liquidity-on-berachain-4b58e2f1030b" },
     ]
+  },
+  Tierra: {
+    categories: ["AI", "SocialFi"],
+    icon: "/images/activity/christmas/quest/logos/Tierra.png",
+    banner: "/images/activity/christmas/quest/banners/Tierra banner.png",
+    description: "where Bailoo helps you make DeFi simple, fun, and social.",
+    missions: {
+      view: {
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Learn"
+      },
+      view2: {
+        text: (amount: number) => `Go to X & Follow us.`,
+        action: "Go"
+      },
+      view3: {
+        text: (amount: number) => `Go to Discord.`,
+        action: "Go"
+      }
+    },
+    socials: [
+      { label: "Website", link: "https://tierraproject.io/" },
+      { label: "X", link: "https://x.com/tierra_io" },
+      { label: "Discord", link: "https://discord.com/invite/MMUNtFcRqD" },
+      { label: "Docs", link: "https://x.com/tierra_io/status/1866939482655645989" },
+    ]
+  },
+  Bearcage: {
+    categories: ["Meme", "AI"],
+    icon: "/images/activity/christmas/quest/logos/Bearcage.png",
+    banner: "/images/activity/christmas/quest/banners/Bearcage banner.png",
+    description: "The All-in-One Meme Factory on Berachain",
+    missions: {
+      view: {
+        text: (amount: number) => `Learn about us and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Learn"
+      },
+      view2: {
+        text: (amount: number) => `Try out TG bot and get ${amount} gift ${amount > 1 ? 'boxes' : 'box'}.`,
+        action: "Try"
+      }
+    },
+    socials: [
+      { label: "Website", link: "https://bearcage.xyz/" },
+      { label: "X", link: "https://x.com/Bearcage_xyz" },
+      { label: "Discord", link: "https://discord.com/invite/bearcage" },
+      { label: "Docs", link: "https://bearcage.gitbook.io/overall" },
+    ]
   }
   // 'BeraTown': {
   //   categories: ['Social'],
@@ -643,7 +691,16 @@ export const NFTs: any = {
   },
   "AZEx Bear": {
     icon: "/images/activity/christmas/nft/AZEx Bear NFT.png"
-  }
+  },
+  "WeBera Finance": {
+    icon: "/images/activity/christmas/nft/Jungle Party.png"
+  },
+  "Rockbera": {
+    icon: "/images/activity/christmas/nft/ROCKBERA NFT.png"
+  },
+  "BeraBonds": {
+    icon: "/images/activity/christmas/nft/BeraBonds.png"
+  },
 };
 
 export const SnowToken = beraB["sfc"];

@@ -55,7 +55,7 @@ export default function Vaults() {
               )}
             </div>
             <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-              {pool?.name || 'iBGT'}
+              {data?.initialData?.name || 'iBGT'}
             </div>
           </div>
         );
@@ -67,18 +67,18 @@ export default function Vaults() {
       label: 'Protocol',
       type: 'slot',
       render: (data: any) => {
-        const pool = data?.initialData?.pool;
+        const protocol = data?.initialData?.protocol
         return (
           <img
             style={{ width: 26 }}
             src={
-              !pool && "iBGT-HONEY" ? '/images/dapps/infrared/infrared.svg' : (
-                pool?.protocol === 'BEX'
-                  ? '/images/dapps/infrared/bex.svg'
-                  : pool?.protocol === 'Kodiak Finance'
-                    ? '/images/dapps/kodiak.svg'
-                    : '/images/dapps/infrared/berps.svg'
-              )
+              protocol?.id === "bex" ?
+                '/images/dapps/infrared/bex.svg' :
+                protocol?.id === "kodiak" ?
+                  '/images/dapps/kodiak.svg' :
+                  protocol?.id === "berps" ?
+                    '/images/dapps/infrared/berps.svg' :
+                    '/images/dapps/infrared/infrared.svg'
             }
           />
         );
@@ -93,7 +93,7 @@ export default function Vaults() {
       render: (data: any) => {
         return (
           <div className='text-black font-Montserrat text-[16px] font-medium leading-[100%]'>
-            {formatValueDecimal(data.tvl, '$', 2, true)}
+            {formatValueDecimal(data?.tvl, '$', 2, true)}
           </div>
         );
       }
@@ -206,10 +206,10 @@ export default function Vaults() {
     updateState({
       filterList: state?.sortKey
         ? cloneDataList.sort((prev: any, next: any) => {
-            return Big(next[state?.sortKey] || 0)
-              .minus(prev[state?.sortKey] || 0)
-              .toFixed();
-          })
+          return Big(next[state?.sortKey] || 0)
+            .minus(prev[state?.sortKey] || 0)
+            .toFixed();
+        })
         : cloneDataList
     });
   }, [state?.sortKey, dataList]);

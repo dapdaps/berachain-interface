@@ -17,6 +17,7 @@ interface Props {
             link: string
         }>
     }
+    disabled?: boolean;
 }
 
 const textMap: any = {
@@ -26,7 +27,7 @@ const textMap: any = {
     'Lending': 'Lending'
 }
 
-export default function Tips({ location, msg, link }: Props) {
+export default function Tips({ location, msg, link, disabled }: Props) {
     const [modalShow, setModalShow] = useState(false)
     const router = useRouter()
 
@@ -44,6 +45,7 @@ export default function Tips({ location, msg, link }: Props) {
         <div className="text-[18px] text-[#F7F9EA] font-CherryBomb text-center " style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.name}</div>
         <div className="text-[#fff] font-Montserrat text-[12px] px-[10px] mt-[5px] leading-[120%]">{msg.content}</div>
         <div onClick={() => {
+            if (disabled) return;
             if (msg.btnText === 'Delegate') {
                 router.push('/bgt')
             } else if (msg.btnText === 'Join') {

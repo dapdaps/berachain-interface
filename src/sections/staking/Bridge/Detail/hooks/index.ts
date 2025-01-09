@@ -31,7 +31,7 @@ export function useDetail(props: any) {
   const isBERPS = name === "Berps";
   const isInfraredBerps =
     name === "Infrared" &&
-    data?.initialData?.pool?.protocol === "BERPS" &&
+    data?.initialData?.pool?.protocol?.id === "berps" &&
     data?.initialData?.pool?.name === "BHONEY";
 
   const symbol = isBERPS ? data?.depositToken?.symbol : id;
@@ -482,22 +482,22 @@ export function useDetail(props: any) {
   };
 
   const mintData = useMemo<any>(() => {
-    const pool = data?.initialData?.pool;
-    if (!pool) return;
-    if (!["BEX", "Kodiak Finance"].includes(pool.protocol)) return null;
-    const protocol = pool.protocol.split(" ")[0];
-
-    if (pool.underlying_tokens?.length === 2)
+    const protocol = data?.initialData?.protocol;
+    if (!protocol) return;
+    if (!["bex", "kodiak"].includes(protocol?.id)) return null;
+    // const protocol = pool.protocol.split(" ")[0];
+    const underlying_tokens = data?.initialData?.underlying_tokens
+    if (underlying_tokens?.length === 2)
       return {
-        protocol,
-        token0: { ...pool.underlying_tokens[0], icon: data.images[0] },
-        token1: { ...pool.underlying_tokens[1], icon: data.images[1] },
+        protocol: protocol?.id,
+        token0: { ...underlying_tokens[0], icon: data.images[0] },
+        token1: { ...underlying_tokens[1], icon: data.images[1] },
         version: "v2"
       };
     const islandItem = (kodiak.islands as any)[
       data?.initialData?.stake_token?.address
     ];
-    if (data?.initialData?.pool?.protocol === "Kodiak Finance" && islandItem) {
+    if (protocol?.id === "kodiak" && islandItem) {
       return {
         token0: islandItem.token0,
         token1: islandItem.token1,

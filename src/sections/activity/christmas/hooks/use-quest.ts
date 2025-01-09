@@ -11,6 +11,7 @@ import { IBase } from '@/sections/activity/christmas/hooks/use-base';
 import { Contract, providers, utils } from 'ethers';
 import { TOKEN_ABI } from '@/hooks/use-token-balance';
 import { ChristmasActivityChains } from '@/configs/chains';
+import { useDebounceFn } from 'ahooks';
 
 const DAPP_ACTIONS: any = {
   Swap: 'Trade',
@@ -28,7 +29,7 @@ const DAPP_CATEGORY: any = {
 };
 
 export function useQuest(props: { base: IBase; }): IQuest {
-  const { getUserInfo } = props.base;
+  const { getUserBox } = props.base;
 
   const timerRef = useRef<any>();
   const { account, provider } = useCustomAccount();
@@ -38,7 +39,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
   const setQuestVisited = useQuestStore((store) => store.setVisited);
   const setVisitedUpdate = useQuestStore((store) => store.setUpdate);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [questList, setQuestList] = useState<Partial<Quest>[]>([]);
 
   const followXQuest = useMemo(() => {
@@ -175,6 +176,24 @@ export function useQuest(props: { base: IBase; }): IQuest {
           _it.description = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.text?.(it.box);
           _it.missionAction = EcosystemQuests[it.name as string].missions?.['wallet' + (idx + 1)]?.action;
         });
+      } else {
+        if (it.name && EcosystemQuests[it.name]) {
+          const questCategories: any = [];
+          it.missions?.forEach?.((_it, idx) => {
+            const questCategoryExisted = questCategories.findIndex((_q: any) => _q.key === _it.category);
+            if (questCategoryExisted < 0) {
+              questCategories.push({ key: _it.category, times: 1 });
+              return;
+            }
+            const _questCategory = {
+              ...questCategories[questCategoryExisted],
+              times: questCategories[questCategoryExisted].times + 1
+            };
+            questCategories[questCategoryExisted] = _questCategory;
+            _it.description = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.text?.(_it.box);
+            _it.missionAction = EcosystemQuests[it.name as string].missions?.[`${_questCategory.key}${_questCategory.times}`]?.action;
+          });
+        }
       }
       if (it.missions) {
         it.box = it.missions.map((it) => it.box || 0).reduce((a, b) => Big(a).plus(b).toNumber());
@@ -184,6 +203,10 @@ export function useQuest(props: { base: IBase; }): IQuest {
     setQuestList(_latestQuestList);
     setLoading(false);
   };
+
+  const { run: getQuestListDelay } = useDebounceFn(getQuestList, {
+    wait: questList?.length ? 600 : 3000
+  });
 
   const checkNftMissionValid: (_quest: Partial<Quest>) => Promise<{ success: boolean; balance: string; }> = (_quest) => {
     return new Promise(async (resolve) => {
@@ -314,7 +337,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
       completed,
       total_completed_times: totalCompletedTimes,
     });
-    getUserInfo?.();
+    getUserBox?.();
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -361,7 +384,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
       total_completed_times: totalCompletedTimes,
       checking: false,
     });
-    getUserInfo?.();
+    getUserBox?.();
   };
 
   const handleSocialQuest = (quest: Partial<Quest>) => {
@@ -398,7 +421,7 @@ export function useQuest(props: { base: IBase; }): IQuest {
   };
 
   useEffect(() => {
-    getQuestList();
+    getQuestListDelay();
     setVisitedUpdate();
   }, [account]);
 

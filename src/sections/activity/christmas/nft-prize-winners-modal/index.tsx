@@ -24,7 +24,9 @@ export default function NftPrizeWinnersModal({
             <div className="mt-[30px]">
               <div className="flex items-center gap-[26px]">
                 <Avatar logo={item.logo} amount={item.nfts.length} />
-                <div className="text-[18px] font-bold">{item.name}</div>
+                <div className="text-[18px] font-bold">
+                  {item.name === 'WeBera Finance' ? 'Jungle Party' : item.name}
+                </div>
               </div>
               <div className="flex flex-wrap gap-[10px] mt-[16px] md:grid md:grid-cols-2">
                 {item.nfts.map((nft: any) => (

@@ -1,18 +1,21 @@
 import Moon from "@/sections/activity/christmas/components/moon";
 import { useContext } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
+import Countdown from '@/sections/activity/christmas/components/countdown';
+import { SceneContext } from '@/context/scene';
 
 const Top = (props: any) => {
   const { children, onOpenRules } = props;
 
   const { isMobile } = useContext(ChristmasContext);
 
+
   return (
     <div className="relative">
       <div className="w-full absolute left-0 top-[-260px] h-[334px] md:h-[115px] flex justify-center items-center md:top-[-30px] pointer-events-none">
         <Moon />
       </div>
-      <div className="pt-[90px] md:pt-[117px] w-full h-[418px] md:h-[300px] bg-[url('/images/activity/christmas/bg-cloud.svg')] bg-no-repeat bg-cover bg-top md:bg-contain">
+      <div className="pt-[90px] md:pt-[117px] w-full h-[475px] md:h-[300px] bg-[url('/images/activity/christmas/bg-cloud.svg')] bg-no-repeat bg-cover bg-top md:bg-contain">
         <div className="flex flex-col items-center gap-[0px]">
           <div className="relative w-[617px] h-[210px] md:w-full md:h-auto md:scale-[0.75]">
             <button
@@ -71,6 +74,7 @@ const Top = (props: any) => {
               style={{ animationDelay: "5s", animationDuration: "5s" }}
             />
           </div>
+          <Countdown className="w-[357px] md:w-[90dvw] md:mx-auto text-[16px] md:text-[14px] !static" countdownClassName="text-[26px] md:text-[18px]" />
         </div>
         {children}
       </div>

@@ -15,6 +15,7 @@ export default function Mission({ mission }: Props) {
     getQuestVisited,
     setQuestVisited,
     checkNftMissionValid,
+    activityInvalid,
   } = useContext(ChristmasContext);
   const { name: walletName } = useWalletName();
   const { account } = useCustomAccount();
@@ -114,9 +115,9 @@ export default function Mission({ mission }: Props) {
           </div>
         ) : (
           <Button
-            disabled={mission?.checking || !nftMissionValid}
+            disabled={mission?.checking || !nftMissionValid || activityInvalid}
             onClick={handleMission}
-            className="whitespace-nowrap !disabled:opacity-50"
+            className="whitespace-nowrap disabled:!opacity-50 disabled:!cursor-not-allowed"
             loading={mission?.checking}
           >
             <span>{actionText}</span>

@@ -38,10 +38,15 @@ const DetailBex = (props: any) => {
                 />
               )}
             </div>
-            <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
-              {formatValueDecimal(data?.depositAmount ?? 0, "", 2)}{" "}
-              {data?.initialData?.pool?.name || data?.tokens?.[0] || "iBGT"}
+            <div className="flex flex-col gap-[4px]">
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+                {data?.initialData?.name || data?.tokens?.[0] || "iBGT"}
+              </div>
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+                {formatValueDecimal(data?.depositAmount ?? 0, "", 2, false, false)}
+              </div>
             </div>
+
           </div>
 
           {(mintData || isInfraredBerps) && (

@@ -1,38 +1,10 @@
 import clsx from "clsx";
-import styled from "styled-components";
-
-const StyledInputRange = styled.div<{ $position: string }>`
-  margin-top: 24px;
-  input[type="range"] {
-    display: block;
-    width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    background: #dfdcc4;
-    height: 8px;
-    border-radius: 16px;
-    margin: 0 auto;
-    outline: none;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    background-color: #ffdc50;
-    border: 1px solid #000;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    position: relative;
-    z-index: 5;
-  }
-`;
-
+import "./index.css";
 export default function Range({ value, onChange, style, className }: any) {
   return (
-    <StyledInputRange
-      $position={value === 100 ? "0" : value === 0 ? "16" : "-16"}
+    <div
       style={style}
-      className={clsx("relative", className)}
+      className={clsx("range relative", className)}
     >
       <input
         type="range"
@@ -46,6 +18,6 @@ export default function Range({ value, onChange, style, className }: any) {
         )}
         style={{ width: value + "%" }}
       />
-    </StyledInputRange>
+    </div>
   );
 }

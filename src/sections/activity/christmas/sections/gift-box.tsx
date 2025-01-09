@@ -30,18 +30,22 @@ const GiftBox = () => {
     questList,
     questLoading,
     userInfo,
+    userBox,
     snowflakeBalance,
     snowflakeBalanceLoading,
     userRemainBox,
     userInfoLoading,
     getUserInfo,
+    getUserBox,
+    userBoxLoading,
     currentDateTime,
     currentUTCString,
     currentUTCZeroTimestamp,
     setShowSwapModal,
     requestCheck,
     handleQuestUpdate,
-    isMobile
+    isMobile,
+    activityInvalid
   } = useContext(ChristmasContext);
   const { open } = useAppKit();
   const { account } = useCustomAccount();
@@ -52,7 +56,7 @@ const GiftBox = () => {
   const [openData, setOpenData] = useState<any>();
   const { loading: opening, onOpen } = useOpenBox((args: any) => {
     setOpenData(args);
-    getUserInfo?.();
+    getUserBox?.();
   });
   const list = [...new Array(userRemainBox || 0)].slice(0, 21).map((_, i) => ({
   // const list = [...new Array(21)].slice(0, 21).map((_, i) => ({
@@ -94,7 +98,7 @@ const GiftBox = () => {
   };
 
   const handleReloadYourBox = () => {
-    getUserInfo?.();
+    getUserBox?.();
   };
 
   const handleDailyQuestCheck = async () => {
@@ -120,7 +124,7 @@ const GiftBox = () => {
       };
     });
     handleQuestUpdate?.(dailyQuest, values);
-    getUserInfo?.();
+    getUserBox?.();
     setDailyChecking(false);
   };
 
@@ -140,19 +144,20 @@ const GiftBox = () => {
               <div className="">Your Box</div>
               <button
                 type="button"
-                className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain"
+                className="translate-y-[2.8px] translate-x-[4.2px] w-[26px] h-[26px] bg-[url('/images/home/christmas/icon-reload-bg.svg')] bg-center bg-contain disabled:opacity-30 disabled:!cursor-not-allowed"
                 onClick={handleReloadYourBox}
+                disabled={activityInvalid}
               >
                 <IconReload
                   className={`${
-                    userInfoLoading ? "animate-rotate origin-[12px_12px]" : ""
+                    userBoxLoading ? "animate-rotate origin-[12px_12px]" : ""
                   }`}
                 />
               </button>
             </>
           }
           value={userRemainBox || 0}
-          total={userInfo?.total_box || 0}
+          total={userBox?.total_box || 0}
           valueClassName="translate-x-[-20px]"
           className="md:flex-1 md:w-0"
           childrenClassName="md:w-full md:pl-[10px]"
@@ -183,6 +188,7 @@ const GiftBox = () => {
               }}
               loading={openType === 2 && opening}
               className="relative whitespace-nowrap md:w-full"
+              disabled={activityInvalid}
             >
               <div>Open 10 Boxes</div>
               <img
@@ -221,6 +227,7 @@ const GiftBox = () => {
           }}
           isMobile={isMobile}
           opening={opening}
+          disabled={activityInvalid}
         />
         <div className="absolute flex flex-col items-center px-[24px] pt-[34px] left-[40px] bottom-[296px] w-[175px] h-[172px] bg-[url('/images/activity/christmas/bg-gift-follow.svg')] bg-no-repeat bg-cover bg-center md:scale-[0.71] md:left-0 md:bottom-0 md:origin-left">
           <div
@@ -235,7 +242,7 @@ const GiftBox = () => {
             onClick={handleFollowXCheck}
             complete={followXQuest?.completed}
             checking={followXQuest?.checking}
-            disabled={!followXVisited}
+            disabled={!followXVisited || activityInvalid}
           >
             <div className="">
               {followXQuest?.total_box}/{followXQuest?.box} box
@@ -250,11 +257,11 @@ const GiftBox = () => {
               </div>
               <button
                 type="button"
-                className="underline decoration-solid mt-[4px] text-[22px] leading-[90%] font-CherryBomb cursor-pointer disabled:opacity-50 !disabled:cursor-not-allowed md:mt-[0] md:text-[18px]"
+                className="underline decoration-solid mt-[4px] text-[22px] leading-[90%] font-CherryBomb cursor-pointer disabled:opacity-50 disabled:!cursor-not-allowed md:mt-[0] md:text-[18px]"
                 onClick={() => {
                   setDailyVisible(true);
                 }}
-                disabled={questLoading || !dailyQuest.length}
+                disabled={questLoading || !dailyQuest.length || activityInvalid}
               >
                 {currentUTCString ? dateFns.format(new Date(currentUTCString), 'MM.dd') : '-.-'}
               </button>
@@ -264,7 +271,7 @@ const GiftBox = () => {
               onClick={handleDailyQuestCheck}
               complete={dailyQuestCounts.completed}
               checking={dailyChecking}
-              disabled={dailyChecking || questLoading || !dailyQuest.length}
+              disabled={dailyChecking || questLoading || !dailyQuest.length || activityInvalid}
             >
               <div className="">
                 {dailyQuestCounts.total_box} / {dailyQuestCounts.box} boxes
@@ -386,6 +393,7 @@ const GiftBox = () => {
             setOpenType(0);
           }}
           data={userInfo}
+          loading={userInfoLoading}
         />
       )}
       <DailyQuest
