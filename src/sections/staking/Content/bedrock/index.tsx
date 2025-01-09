@@ -13,14 +13,13 @@ export default memo(function Bedrock({ dapp }: any) {
   const [isSwitched, setIsSwitched] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('stake');
   const dexConfig = dapp?.chains?.[DEFAULT_CHAIN_ID]
-  const { balance, inAmount, handleAmountChange, handleDeposit, handleCopy } = useBedrock(dexConfig)
+  const { balance, inAmount, handleAmountChange, handleMax, handleDeposit, handleCopy } = useBedrock(dexConfig)
 
   const {
     STAKE_ADDRESS,
     sourceToken,
     targetToken,
   } = dexConfig
-  console.log('====prices', prices)
   return (
     <Tabs
       isCard
@@ -47,9 +46,16 @@ export default memo(function Bedrock({ dapp }: any) {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium opacity-30">{formatValueDecimal(Big(inAmount ? inAmount : 0).times(prices?.[sourceToken?.symbol] ?? 0).toFixed(), '$', 4)}</div>
-                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className="underline">{formatValueDecimal(balance, '', 4)}</span></div>
+                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className="underline cursor-pointer" onClick={handleMax}>{formatValueDecimal(balance, '', 4)}</span></div>
                 </div>
               </div>
+
+              {
+                inAmount && Big(inAmount).gt(0) && Big(inAmount).lt(0.0001) && (
+                  <div className="mt-[8px] text-red-600 font-Montserrat text-[12px] font-medium">We do recommend a deposit of at least 0.0001 WBTC to make your transaction worthwhile.</div>
+                )
+              }
+
               <div className="mt-[16px] mb-[22px] flex items-center gap-[17px]">
                 <div className="flex flex-col gap-[15px] flex-1 h-[89px] rounded-[10px] bg-black/[0.06] pt-[25px] px-[20px] md:px-[10px]">
                   <div className="text-[#6F6F6F] font-Montserrat text-[16px] font-semibold leading-[90%]">You will receive</div>
@@ -66,6 +72,7 @@ export default memo(function Bedrock({ dapp }: any) {
                   type: "deposit",
                   symbol: sourceToken?.symbol,
                   amount: inAmount,
+                  minAmount: "0.0001",
                   decimals: sourceToken?.decimals,
                   balance,
                   address: sourceToken?.address,
@@ -92,14 +99,14 @@ export default memo(function Bedrock({ dapp }: any) {
                 <div className="flex items-center justify-between">
                   <div className="text-[#6F6F6F] font-Montserrat text-[16px] font-semibold leading-[90%]">Token Contract</div>
                   <div className="flex items-center gap-[8px]">
-                    <span className="text-black font-Montserrat text-[16px] font-bold leading-[90%]">{STAKE_ADDRESS
-                      ? STAKE_ADDRESS.slice(0, 6) +
+                    <span className="text-black font-Montserrat text-[16px] font-bold leading-[90%]">{targetToken?.address
+                      ? targetToken?.address?.slice(0, 6) +
                       '...' +
-                      STAKE_ADDRESS.slice(-6)
+                      targetToken?.address?.slice(-6)
                       : ''}</span>
                     <svg
                       onClick={() => {
-                        handleCopy(STAKE_ADDRESS)
+                        handleCopy(targetToken?.address)
                       }}
                       className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <rect x="6" y="6" width="9" height="9" rx="2" stroke="#24ABFF" stroke-width="2" />
