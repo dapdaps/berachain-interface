@@ -129,7 +129,7 @@ const SECOND_LIST = [
       {
         ..._dApps["beraborrow"],
         attachedIcon: (
-          <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
+          <TrunkSmall className="absolute left-[44%] bottom-[-28%]" />
         )
       },
       {
@@ -184,6 +184,7 @@ const SECOND_LIST = [
         name: "Royco",
         label: "Royco",
         type: "Vaults",
+        disabled: true,
         className: "",
       },
     ]
@@ -205,9 +206,9 @@ const DAppsView = () => {
     if (_dApp.name === 'berps') {
       dAppPath += `?id=BHONEY&tab=0`;
     }
-    if (_dApp.name === 'Royco') {
-      dAppPath = `/${_dApp.name.toLowerCase()}`;
-    };
+    // if (_dApp.name === 'Royco') {
+    //   dAppPath = `/${_dApp.name.toLowerCase()}`;
+    // };
 
     router.push(dAppPath);
   };
