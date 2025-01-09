@@ -11,18 +11,6 @@ interface EligibilityGroup {
   quota: number;
 }
 
-// {
-//     "name": "Henlo Baddies",
-//     "slug": "henlo-baddies",
-//     "eligible_mint_groups": [
-//         {
-//             "id": 1,
-//             "name": "Baddies Crew",
-//             "quota": 1
-//         }
-//     ]
-// }
-
 interface EligibilityResponse {
   name: string;
   slug: string;
@@ -65,7 +53,6 @@ export const useMint = () => {
     collection: NFTCollectionWithStatus,
     currentGroupId: number,
     amount: number,
-    totalCostWithFee: string
   ) => {
     if (!provider || !account) return;
 
@@ -124,9 +111,10 @@ export const useMint = () => {
         }
       }
 
-      // 执行 mint
+      const [feeAmount, totalCostWithFee] = await contract.quoteBatchMint(currentGroupId, amount);
+
       const tx = await contract.batchMint(amount, currentGroupId, {
-        value: ethers.utils.parseEther(totalCostWithFee),
+        value: totalCostWithFee.toString(),
       });
       
       return await tx.wait();

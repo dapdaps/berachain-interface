@@ -16,18 +16,16 @@ const shortenAddress = (address: string) => {
 
 const NextStep: React.FC<NextStepProps> = ({ item, onBack }) => {
 
-
   const mintedPercent = useMemo(() => {
     return Big(item.totalSupplyByContract || 0).div(item.maxSupplyByContract || 0).mul(100).toFixed(2);
   }, [item])
 
   return (
-    <div className="w-full">
-      <div className="px-[20px] py-[24px] flex gap-[15px] bg-[#FFDC50] rounded-[10px] mb-[14px]">
+    <div className="w-full md:h-[60dvh] md:overflow-y-auto">
+      <div className="px-[20px] py-[24px] flex md:flex-col lg:flex-row gap-[15px] bg-[#FFDC50] rounded-[10px] mb-[14px]">
         <svg
           onClick={onBack}
-          width="34"
-          height="34"
+          className="md:w-[24px] md:h-[24px] lg:w-[34px] lg:h-[34px] shrink-0"
           viewBox="0 0 34 34"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -49,17 +47,17 @@ const NextStep: React.FC<NextStepProps> = ({ item, onBack }) => {
           />
         </svg>
         <div className="flex flex-col w-full">
-          <div className="font-Montserrat font-bold text-[20px] mb-[15px]">
+          <div className="font-Montserrat font-bold md:text-[16px] lg:text-[20px] mb-[15px]">
             {item.collection_name}
           </div>
-          <div className="w-full flex justify-between">
-            <div className="w-[534px] font-Montserrat text-[14px] text-left mb-[20px]">
+          <div className="w-full flex md:flex-col lg:flex-row lg:justify-between md:gap-[15px]">
+            <div className="lg:w-[534px] md:w-full font-Montserrat text-[14px] text-left mb-[20px]">
               <span>
               {item.description}
               </span>
               {/* <span className="font-bold">Show More</span> */}
             </div>
-            <div className="self-end mb-[20px]">
+            <div className="md:self-start lg:self-end mb-[20px]">
               <div>Chain</div>
               <img
                 src="/images/dapps/berachain.png"
@@ -68,8 +66,8 @@ const NextStep: React.FC<NextStepProps> = ({ item, onBack }) => {
               />
             </div>
           </div>
-          <div className="flex justify-between w-full">
-            <div className="w-[528px]">
+          <div className="flex md:flex-col lg:flex-row justify-between w-full md:gap-[15px]">
+            <div className="lg:w-[528px] md:w-full">
               <div className="flex justify-between mb-[15px] font-Montserrat text-black font-[600]">
                 <span>{mintedPercent}% Minted</span>
                 <span>{item.totalSupplyByContract}/{item.maxSupplyByContract}</span>
@@ -89,7 +87,7 @@ const NextStep: React.FC<NextStepProps> = ({ item, onBack }) => {
             </div>
             <div className="text-right font-Montserrat text-black leading-[24px]">
               <div className="font-[14px]">Contract Address</div>
-              <Link className="font-[600] underline text-[18px]" href={`https://bartio.beratrail.io/address/${item.contract_address}`} target="_blank">
+              <Link className="font-[600] md:text-[14px] lg:text-[18px] underline" href={`https://bartio.beratrail.io/address/${item.contract_address}`} target="_blank">
                 {shortenAddress(item.contract_address)}
               </Link>
             </div>

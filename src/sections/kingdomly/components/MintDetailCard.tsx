@@ -11,6 +11,7 @@ import { checkMintStatus } from "../hooks/checkMintStatus";
 import clsx from "clsx";
 import { useMint } from '../hooks/useMint';
 import Skeleton from "react-loading-skeleton";
+import useToast from "@/hooks/use-toast";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -30,6 +31,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
   const [isMintStatusLoading, setIsMintStatusLoading] = useState(false);
 
   const { handleMint } = useMint();
+  const toast = useToast();
 
 
   const currentGroup = mintGroups.find(group => group.id === currentGroupId) || mintGroups[0];
@@ -190,7 +192,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
     }
     
     return (
-      <div className='absolute font-[400] right-2 top-0 p-[3px_5px] font-Montserrat text-[10px] leading-[1] rounded-[16px]bg-[#FFDC50] border border-black'>
+      <div className='absolute font-[400] right-2 top-0 p-[3px_5px] font-Montserrat text-[10px] leading-[1] rounded-[16px] bg-[#FFDC50] border border-black'>
         {statusMap[tab.status]}
       </div>
     );
@@ -200,28 +202,29 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
     if (!fees.totalCostWithFee) return;
     
     setIsMinting(true);
+    toast.loading('Minting...');
     try {
       await handleMint(
         item,
         currentGroupId,
         quantity,
-        fees.totalCostWithFee
       );
       await fetchContractData();
+      toast.success('Your transaction has been confirmed sire!');
     } catch (error) {
       console.error('Mint failed:', error);
-      alert(error instanceof Error ? error.message : 'Mint failed');
     } finally {
+      toast.dismiss();
       setIsMinting(false);
     }
   };
 
   return (
     <div className="mt-[14px]">
-      <div className="flex w-full justify-between gap-5">
+      <div className="flex md:flex-col lg:flex-row w-full justify-between gap-5">
         <img
           src={item.profile_image}
-          className="w-[300px] h-[300px] object-cover rounded-[10px] aspect-square"
+          className="md:w-full lg:w-[300px] md:h-[300px] object-cover rounded-[10px] aspect-square"
           alt=""
         />
         <div className="p-5 bg-black bg-opacity-[0.06] rounded-[10px] shrink-0 flex-1">
@@ -230,18 +233,18 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
             isScroll
             onChange={handleTabChange}
             current={currentGroupId.toString()}
-            className="w-full mx-auto"
-            style={{ height: 56, borderRadius: 12 }}
+            className="w-full mx-auto md:h-[40px] lg:h-[56px]"
+            style={{ borderRadius: 12 }}
             cursorStyle={{ borderRadius: 10 }}
             renderTag={renderMintGroupTag}
           />
           
-          <div className="text-[14px] font-Montserrat mt-3 mb-[30px]">
+          <div className="text-[14px] font-Montserrat mt-3 mb-[30px] md:mb-[20px]">
             {currentGroup?.mint_group_description || ""}
           </div>
           
           <div className="w-full">
-            <div className="grid grid-cols-3 gap-8 mb-5">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8 mb-5">
               <div className="w-full">
                 <div className="text-[14px] mb-2">Limit per wallet</div>
                 <div className="text-base font-bold">{currentGroup.max_mint_per_wallet}</div>
@@ -250,7 +253,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
                 <div className="text-[14px] mb-2">Max supply</div>
                 <div className="text-base font-bold">{currentGroup.allocation}</div>
               </div>
-              <div className="w-full">
+              <div className="w-full md:col-span-2 lg:col-span-1">
                 <div className="text-[14px] mb-2">Mint Price:</div>
                 <div className="text-base font-bold">
                   {parseFloat(currentGroup.price.toString()) === 0 ? 'FREE MINT' : `${currentGroup.price} ${symbol}`}
@@ -329,14 +332,14 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
               </div>
             </div>
 
-            <div className="space-y-4 font-Montserrat">
+            <div className="space-y-4 font-Montserrat md:mb-[20px]">
               <div className="flex justify-between items-center">
                 <div className="text-[14px]">Estimated fees</div>
-                <div className="text-base font-bold">{parseFloat(fees.feeAmount || '0').toFixed(6)} ETH</div>
+                <div className="text-base font-bold">{parseFloat(fees.feeAmount || '0').toFixed(6)} {item.chain.native_currency}</div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="text-[14px]">Subtotal</div>
-                <div className="text-base font-bold">{parseFloat(fees.totalCostWithFee || '0').toFixed(6)} ETH</div>
+                <div className="text-base font-bold">{parseFloat(fees.totalCostWithFee || '0').toFixed(6)} {item.chain.native_currency}</div>
               </div>
             </div>
 
@@ -350,6 +353,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({
                   timestamp={item.mint_live_timestamp}
                   onClick={onMint}
                   loading={isMinting}
+                  className="md:w-full"
                 />
               )
             }

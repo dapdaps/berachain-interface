@@ -17,7 +17,7 @@
           },
           { "internalType": "uint256", "name": "maxSupply", "type": "uint256" }
         ],
-        "internalType": "struct GrandConquest_BeraMas_PTSD_Bear_Collection.BaseVariables",
+        "internalType": "struct _Genesis_Stars.BaseVariables",
         "name": "_baseVariables",
         "type": "tuple"
       },
@@ -50,8 +50,7 @@
         "internalType": "contract KingdomlyFeeContract",
         "name": "_kingdomlyFeeContract",
         "type": "address"
-      },
-      { "internalType": "bytes32", "name": "_mintRoot", "type": "bytes32" }
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -137,7 +136,6 @@
     "type": "error"
   },
   { "inputs": [], "name": "InvalidKingdomlyFeeContract", "type": "error" },
-  { "inputs": [], "name": "InvalidMintCode", "type": "error" },
   {
     "inputs": [
       { "internalType": "string", "name": "reason", "type": "string" }
@@ -145,7 +143,6 @@
     "name": "InvalidOperation",
     "type": "error"
   },
-  { "inputs": [], "name": "MintCodeAlreadyUsed", "type": "error" },
   { "inputs": [], "name": "MintERC2309QuantityExceedsLimit", "type": "error" },
   {
     "inputs": [
@@ -558,9 +555,7 @@
   {
     "inputs": [
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "mintId", "type": "uint256" },
-      { "internalType": "bytes32[]", "name": "proof", "type": "bytes32[]" },
-      { "internalType": "bytes32", "name": "mintCode", "type": "bytes32" }
+      { "internalType": "uint256", "name": "mintId", "type": "uint256" }
     ],
     "name": "batchMint",
     "outputs": [
@@ -630,13 +625,6 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-    "name": "claimedMintCode",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "contractMintLive",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -654,9 +642,7 @@
     "inputs": [
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "internalType": "uint256", "name": "mintId", "type": "uint256" },
-      { "internalType": "address", "name": "vault", "type": "address" },
-      { "internalType": "bytes32[]", "name": "proof", "type": "bytes32[]" },
-      { "internalType": "bytes32", "name": "mintCode", "type": "bytes32" }
+      { "internalType": "address", "name": "vault", "type": "address" }
     ],
     "name": "delegatedMint",
     "outputs": [
@@ -777,13 +763,6 @@
     ],
     "name": "mintQuotas",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "mintRoot",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "view",
     "type": "function"
   },
