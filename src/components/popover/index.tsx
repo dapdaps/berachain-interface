@@ -22,6 +22,7 @@ const Popover = (props: Props) => {
     contentClassName,
     triggerContainerStyle,
     triggerContainerClassName,
+    onClickBefore,
   } = props;
 
   const triggerRef = useRef<any>();
@@ -42,8 +43,12 @@ const Popover = (props: Props) => {
         ref={triggerRef}
         style={triggerContainerStyle}
         className={triggerContainerClassName}
-        onClick={() => {
+        onClick={async (e) => {
           if (trigger === PopoverTrigger.Hover) return;
+          if (onClickBefore) {
+            const isContinue = await onClickBefore(e);
+            if (!isContinue) return;
+          }
           setVisible(true);
         }}
         onMouseEnter={() => {
@@ -196,6 +201,8 @@ interface Props {
   triggerContainerStyle?: React.CSSProperties;
   triggerContainerClassName?: string;
   elRef?: HTMLElement;
+
+  onClickBefore?(e: any): Promise<boolean> | boolean;
 }
 
 const Card = (props: CardProps) => {

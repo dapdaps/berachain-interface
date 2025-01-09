@@ -862,7 +862,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
     <div
       className='relative hidden lg:block'
       style={{
-        height: 'calc(100dvh - 62px)',
+        height: 'calc(100dvh - 68px)',
         minHeight: 899,
         overflow: type === "cave" ? "visible" : 'hidden'
       }}
@@ -887,7 +887,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           <Clouds />
           <Flowers />
           <Ground />
-          <HatBear className='absolute w-[360px] left-[86px] bottom-[32px]' />
+          <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
         </>
       ) : type === 'dapp' ? (
         <>

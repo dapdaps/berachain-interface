@@ -4,10 +4,12 @@ import ActionPanelLaptop from './laptop';
 const ActionPanel = (props: Props) => {
   const { isMobile, ...restProps } = props;
 
+  const isLimit = ['BERA', 'WBERA'].includes(props.token.symbol) && props.actionText === 'Deposit';
+
   return isMobile ? (
-    <ActionPanelMobile {...restProps} />
+    <ActionPanelMobile {...restProps} isLimit={isLimit} />
   ) : (
-    <ActionPanelLaptop {...restProps} />
+    <ActionPanelLaptop {...restProps} isLimit={isLimit} />
   );
 };
 
@@ -26,4 +28,5 @@ export interface Props {
   CHAIN_ID: number;
   onSuccess?(): void;
   addAction: any;
+  isLimit?: boolean;
 }

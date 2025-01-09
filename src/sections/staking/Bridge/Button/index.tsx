@@ -8,11 +8,12 @@ import { ethers } from "ethers";
 import { memo, useEffect } from "react";
 export default memo(function Button(props: IProps) {
   const {
-    abi,
+    // abi,
     type,
     symbol,
     amount,
-    template,
+    minAmount,
+    // template,
     decimals,
     balance,
     address,
@@ -123,7 +124,7 @@ export default memo(function Button(props: IProps) {
     )
   }
 
-  if (Number(amount) <= 0) {
+  if (Number(amount) <= 0 || minAmount && Big(amount).lt(minAmount)) {
     return (
       <div className={clsx(BTN_CLASS, 'opacity-60 !cursor-not-allowed')}>{props?.children}</div>
     )
@@ -166,11 +167,12 @@ export default memo(function Button(props: IProps) {
 
 })
 interface IProps {
-  abi: any;
+  // abi: any;
   type: "deposit" | "withdraw";
   symbol: string;
   amount: string;
-  template: string;
+  // template?: string;
+  minAmount?: string;
   decimals: number;
   balance: string;
   address: string;

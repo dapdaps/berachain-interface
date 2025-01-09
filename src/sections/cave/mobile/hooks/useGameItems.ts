@@ -40,57 +40,61 @@ export const useGameItems = () => {
   const { address }  = useAccount();
   const toast = useToast();
 
+  const fetchGameItems = async () => {
+    try {
+      setLoading(true);
+      const response = await get(`/api/game/items?game_category=bera&address=${address}`);
+      if (response.code !== 0 ) return
+
+      const groupedByCategory = response.data.reduce((acc: Record<string, GameItem[]>, item: GameItem) => {
+        if (!acc[item.category]) {
+          acc[item.category] = [];
+        }
+        acc[item.category].push(item);
+        return acc;
+      }, {});
+
+      const newConfigs: Record<ModuleType, ModuleConfig> = { ...ModuleConfigs };
+
+      Object.entries(groupedByCategory).forEach(([category, items]: any) => {
+        const moduleType = categoryToModuleType[category] as ModuleType;
+
+        newConfigs[moduleType] = {
+          ...ModuleConfigs[moduleType],
+          items: items.map((item: any, index: any) => {
+
+            const { icon, popoverIcon } = generateImageUrls(
+              item.category,
+              item.level,
+              item.pc_item
+            );
+
+            return {
+              ...item,
+              itemId: item.id,
+              ...ModuleConfigs[moduleType].items[index],
+              icon,
+              img: icon,
+              popoverIcon,
+            };
+          }),
+        };
+      });
+
+      setModuleConfigs(newConfigs);
+      setError(null);
+    } catch (err) {
+      toast.fail('Failed to fetch game items');
+      setError(new Error('Failed to fetch game items'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!address) {
       return ;
     }
-    const fetchGameItems = async () => {
-      try {
-        setLoading(true);
-        const response = await get(`/api/game/items?game_category=bera&address=${address}`);
-        if (response.code !== 0 ) return
-
-        const groupedByCategory = response.data.reduce((acc: Record<string, GameItem[]>, item: GameItem) => {
-          if (!acc[item.category]) {
-            acc[item.category] = [];
-          }
-          acc[item.category].push(item);
-          return acc;
-        }, {});
-
-        const newConfigs: Record<ModuleType, ModuleConfig> = { ...ModuleConfigs };
-
-        Object.entries(groupedByCategory).forEach(([category, items]: any) => {
-          const moduleType = categoryToModuleType[category] as ModuleType;
-          
-          newConfigs[moduleType] = {
-            ...ModuleConfigs[moduleType],
-            items: items.map((item: any, index: any) => {
-              
-              const { icon, popoverIcon } = generateImageUrls(
-                item.category,
-                item.level,
-                item.pc_item
-              );
-              
-              return {
-                ...ModuleConfigs[moduleType].items[index],
-                icon,
-                popoverIcon,
-              };
-            }),
-          };
-        });
-
-        setModuleConfigs(newConfigs);
-        setError(null);
-      } catch (err) {
-        toast.fail('Failed to fetch game items');
-        setError(new Error('Failed to fetch game items'));
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchGameItems();
   }, [address]);
@@ -99,5 +103,6 @@ export const useGameItems = () => {
     moduleConfigs,
     loading,
     error,
+    fetchGameItems,
   };
 };
