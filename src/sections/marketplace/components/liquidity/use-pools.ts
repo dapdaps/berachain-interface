@@ -24,7 +24,7 @@ export default function usePools() {
       {
         token0: wrapNativeToken(beraB["bera"]),
         token1: beraB["honey"],
-        protocolIcon: "/images/dapps/bex.png",
+        protocolIcon: "/images/dapps/bex.svg",
         protocol: "BEX",
         id: 1,
         tvl: random(1000, 1000000, true),

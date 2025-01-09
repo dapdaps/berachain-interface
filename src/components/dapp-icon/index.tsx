@@ -23,7 +23,7 @@ const Laptop = ({ src, alt, name, type, style, className }: Props) => {
           />
           <div className='font-CherryBomb text-[20px]'>{name}</div>
           <div className='text-[12px] text-[#527213]'>
-            {type?.slice(0, 1)?.toUpperCase?.() + type?.slice(1)}
+            {type === "Staking" ? "Vaults" : type?.slice(0, 1)?.toUpperCase?.() + type?.slice(1)}
           </div>
         </div>
       </div>
