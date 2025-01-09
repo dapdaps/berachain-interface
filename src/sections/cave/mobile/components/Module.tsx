@@ -1,5 +1,8 @@
-import React, { createContext, useContext } from "react";
-import Popover, { PopoverPlacement } from "@/components/popover";
+import React, { createContext, useContext, useRef } from 'react';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
+import Card from '@/components/card';
+import { formatLongText } from '@/utils/utils';
 
 export type ModuleType = "hats" | "jackets" | "necklaces" | "cars";
 export type ActionType = "bridge" | "swap" | "delegate" | "lend";
@@ -21,6 +24,7 @@ export interface ModuleItem {
   type: ActionType;
   hasPopover?: boolean;
   needTransactionNums?: number;
+  [k: string]: any;
 }
 
 export interface ModuleConfig {
@@ -30,18 +34,23 @@ export interface ModuleConfig {
   onItemClick?: (item: ModuleItem) => void;
 }
 
-const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
-  icon,
-  popoverIcon,
-  title,
-  desc,
-  type,
-  needTransactionNums,
-  hasPopover = true,
-  styles,
-  ...rest
-}) => {
+const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
+  const {
+    icon,
+    popoverIcon,
+    title,
+    desc,
+    type,
+    needTransactionNums,
+    hasPopover = true,
+    styles,
+    ...rest
+  } = props;
+
+  const transferredRef = useRef<any>(null);
   const { onItemClick } = useModuleContext();
+  const { setTransferItemsVisible, setTransferSelectedItems, setTransferItem } = useTransferItemsStore();
+  const isTransfer = rest?.pc_item && !rest.transfer_to;
 
   const PopoverContent = () => {
     const [before, after] = desc.split("$TRANSACTION_COUNT");
@@ -73,13 +82,45 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
         >
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </div>
+        {
+          isTransfer && (
+            <button
+              type="button"
+              className="w-full underline decoration-solid whitespace-nowrap text-[12px] text-center text-white font-[400]"
+              onClick={() => {
+                setTransferItemsVisible(true);
+                setTransferSelectedItems([{ ...props, id: props.itemId }]);
+                setTransferItem({ ...props, id: props.itemId });
+              }}
+            >
+              Transfer to <strong className="font-[700]">Beraciaga</strong>
+            </button>
+          )
+        }
       </div>
     );
   };
 
   const ImageContent = () => (
-    <div className="flex-1">
+    <div className="flex-1 relative">
       <img className={styles.image} src={icon} alt={title} />
+      <div className="absolute top-0 right-0">
+        {
+          !!rest?.transfer_to && (
+            <Popover
+              content={(
+                <Card className="w-[192px] text-center text-black text-[14px] font-[400] !p-[10px_15px] !rounded-[20px]">
+                  This item is already<br /> transfer to Beraciaga<br /> account: <strong className="font-[700]">{formatLongText(rest.transfer_to, 4, 4)}</strong>
+                </Card>
+              )}
+              placement={PopoverPlacement.Center}
+              trigger={PopoverTrigger.Hover}
+            >
+              <div ref={transferredRef} className="w-[24px] h-[24px] rounded-[24px] border border-[#FFF5A9] cursor-pointer backdrop-blur-[10px] bg-[url('/images/cave/icon-beraciaga.svg')] bg-no-repeat bg-center bg-cover" />
+            </Popover>
+          )
+        }
+      </div>
     </div>
   );
 
@@ -92,6 +133,9 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = ({
       placement={PopoverPlacement.Center}
       contentClassName={`backdrop-blur-[10px]`}
       content={<PopoverContent />}
+      onClickBefore={(e) => {
+        return !transferredRef.current?.contains(e.target);
+      }}
     >
       <ImageContent />
     </Popover>

@@ -19,21 +19,51 @@ interface ModalProps {
   isShowCloseIcon?: boolean;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  open,
-  onClose,
-  children,
-  closeIcon,
-  style,
-  className,
-  closeIconClassName,
-  isForceNormal,
-  innerStyle,
-  innerClassName,
-  isMaskClose = true,
-  isShowCloseIcon = true
-}) => {
+const Modal: React.FC<ModalProps> = (props) => {
+  const {
+    children,
+    ...restProps
+  } = props;
+
+  if (!props.open) return null;
+
+  return ReactDOM.createPortal(
+    (
+      <ModalContent {...restProps}>
+        {children}
+      </ModalContent>
+    ) as any,
+    document.body
+  ) as unknown as React.ReactPortal;
+};
+
+export default Modal;
+
+export const ModalContent = (props: ModalProps) => {
+  const {
+    open,
+    onClose,
+    children,
+    closeIcon,
+    style,
+    className,
+    closeIconClassName,
+    isForceNormal,
+    innerStyle,
+    innerClassName,
+    isMaskClose = true,
+    isShowCloseIcon = true
+  } = props;
+
   const isMobile = useIsMobile();
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isMaskClose) return;
+    if (e.target === e.currentTarget || isMobile) {
+      onClose && onClose();
+    }
+  };
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -44,63 +74,50 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [open]);
 
-  if (!open) return null;
-
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isMaskClose) return;
-    if (e.target === e.currentTarget || isMobile) {
-      onClose && onClose();
-    }
-  };
-  return ReactDOM.createPortal(
-    (
-      <AnimatePresence mode="wait">
+  return (
+    <AnimatePresence mode="wait">
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 flex lg:items-center lg:justify-center z-[100] ${className}`}
+        style={style}
+        onClick={handleBackdropClick}
+      >
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 flex lg:items-center lg:justify-center z-[100] ${className}`}
-          style={style}
-          onClick={handleBackdropClick}
+          className={`rounded-lg relative ${innerClassName}`}
+          style={innerStyle}
         >
-          <div
-            className={`rounded-lg relative ${innerClassName}`}
-            style={innerStyle}
-          >
-            {isShowCloseIcon && (closeIcon || onClose) ? (
-              <button
-                onClick={onClose}
-                className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
-              >
-                {
-                  closeIcon ? closeIcon : <IconClose />
+          {isShowCloseIcon && (closeIcon || onClose) ? (
+            <button
+              onClick={onClose}
+              className={`absolute top-5 right-5 cursor-pointer z-[100] ${closeIconClassName}`}
+            >
+              {
+                closeIcon ? closeIcon : <IconClose />
+              }
+            </button>
+          ) : null}
+          {isMobile && !isForceNormal ? (
+            <motion.div
+              animate={{
+                y: [100, 0],
+                transition: {
+                  duration: 0.3
                 }
-              </button>
-            ) : null}
-            {isMobile && !isForceNormal ? (
-              <motion.div
-                animate={{
-                  y: [100, 0],
-                  transition: {
-                    duration: 0.3
-                  }
-                }}
-                exit={{
-                  y: [0, 100]
-                }}
-                className="w-screen absolute bottom-0 left-0 rounded-t-[20px]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                {children}
-              </motion.div>
-            ) : (
-              children
-            )}
-          </div>
+              }}
+              exit={{
+                y: [0, 100]
+              }}
+              className="w-screen absolute bottom-0 left-0 rounded-t-[20px]"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              {children}
+            </motion.div>
+          ) : (
+            children
+          )}
         </div>
-      </AnimatePresence>
-    ) as any,
-    document.body
-  ) as unknown as React.ReactPortal;
+      </div>
+    </AnimatePresence>
+  );
 };
-
-export default Modal;

@@ -6,7 +6,7 @@ const Button = (props: Props) => {
 
   return (
     <motion.button
-      className={`h-[32px] px-[10.5px] leading-[30px] border border-[#373A53] rounded-[10px] text-center text-[16px] font-[500] text-black disabled:opacity-30 disabled:cursor-not-allowed ${loading ? 'opacity-30' : ''} ${className}`}
+      className={`h-[32px] px-[10.5px] leading-[30px] border border-[#373A53] rounded-[10px] text-center text-[16px] font-[500] text-black disabled:!opacity-30 disabled:!cursor-not-allowed ${loading ? 'opacity-30' : ''} ${className}`}
       style={{
         background: type === 'primary' ? '#FFDC50' : '#ffffff',
         ...style,

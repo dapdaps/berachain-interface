@@ -7,6 +7,7 @@ import Big from "big.js";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
 import { memo, useEffect, useMemo, useState } from "react";
+import useToast from '@/hooks/use-toast';
 export default memo(function ImportEquipments({
   equimentsMapping
 }: any) {
@@ -15,6 +16,7 @@ export default memo(function ImportEquipments({
   } = useCustomAccount()
   const { open } = useAppKit();
   const searchParams = useSearchParams()
+  const toast = useToast();
 
   const [openModal, setOpenModal] = useState(false)
   const [bindLoading, setBindLoading] = useState(false)
@@ -38,6 +40,7 @@ export default memo(function ImportEquipments({
   }, [account]);
 
   const handleBind = async () => {
+    toast.dismiss();
     setBindLoading(true)
     try {
       const response = await fetch('/dapdap.game/api/user/bind', {
@@ -55,10 +58,17 @@ export default memo(function ImportEquipments({
       if (result?.code === 200) {
         setOpenModal(false)
         window.open(process.env.NEXT_PUBLIC_TG_ADDRESS || "https://t.me/berachain_game_test_bot/beraciaga")
+        return;
       }
-    } catch (error) {
+      toast.fail({
+        title: result?.message,
+      });
+    } catch (error: any) {
       console.error(error)
       setBindLoading(false)
+      toast.fail({
+        title: error?.message ?? 'Bind failed!',
+      });
     }
   }
   const handleGetUserBind = async (tg_user_id: string) => {
