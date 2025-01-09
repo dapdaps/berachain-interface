@@ -397,8 +397,8 @@ const DAppsView = () => {
 
   return (
     <div
-      className="h-full md:mb-[70px] relative md:h-[100dvh] overflow-y-auto scrollbar-hide">
-      <div className="h-full md:h-[155dvh] relative">
+      className="w-full h-full md:mb-[70px] relative md:h-[100dvh] overflow-x-hidden overflow-y-auto scrollbar-hide">
+      <div className="h-full md:h-[280vw] relative">
         <PageBack className="absolute left-[12px] top-[17px]" />
         <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
         {
