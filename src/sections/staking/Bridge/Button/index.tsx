@@ -12,6 +12,7 @@ export default memo(function Button(props: IProps) {
     type,
     symbol,
     amount,
+    minAmount,
     // template,
     decimals,
     balance,
@@ -123,7 +124,7 @@ export default memo(function Button(props: IProps) {
     )
   }
 
-  if (Number(amount) <= 0) {
+  if (Number(amount) <= 0 || minAmount && Big(amount).lt(minAmount)) {
     return (
       <div className={clsx(BTN_CLASS, 'opacity-60 !cursor-not-allowed')}>{props?.children}</div>
     )
@@ -171,6 +172,7 @@ interface IProps {
   symbol: string;
   amount: string;
   // template?: string;
+  minAmount?: string;
   decimals: number;
   balance: string;
   address: string;

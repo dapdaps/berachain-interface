@@ -70,6 +70,9 @@ export default function useBedrock(dexConfig) {
       console.log(error)
     }
   }
+  function handleMax() {
+    setInAmount(balance)
+  }
   function handleAmountChange(amount) {
     setInAmount(amount)
   }
@@ -175,6 +178,7 @@ export default function useBedrock(dexConfig) {
   return {
     balance,
     inAmount,
+    handleMax,
     handleAmountChange,
     handleDeposit,
     handleCopy
