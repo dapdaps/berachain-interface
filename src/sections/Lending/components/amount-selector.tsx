@@ -9,6 +9,7 @@ const AmountSelector = (props: any) => {
     balance,
     currentAmount,
     children,
+    disabled,
   } = props;
 
   const sliderRef = useRef(null);
@@ -60,6 +61,7 @@ const AmountSelector = (props: any) => {
   };
 
   const handleSlider = (event: any, info: any) => {
+    if (disabled) return;
     if (!balance.value || Big(balance.value).lte(0)) return;
     const newValue = Math.max(0, Math.min(sliderWidth - 22, dragStart + info.offset.x));
     setDragValue(newValue);
@@ -69,11 +71,13 @@ const AmountSelector = (props: any) => {
   };
 
   const handleDragStart = (event: any, info: any) => {
+    if (disabled) return;
     setSelected(void 0);
     setDragStart(dragValue);
   };
 
   const handleDragEnd = (event: any, info: any) => {
+    if (disabled) return;
     if (!balance.value || Big(balance.value).lte(0)) return;
     const val = Math.max(0, Math.min(sliderWidth - 22, dragStart + info.offset.x));
     setDragValue(val);
@@ -83,6 +87,7 @@ const AmountSelector = (props: any) => {
   };
 
   const handleSelected = (_selected: any) => {
+    if (disabled) return;
     if (!balance.value || Big(balance.value).lte(0)) return;
     setSelected(_selected.value);
     const val = Big(sliderWidth).minus(22).times(_selected.value).toNumber();
@@ -101,7 +106,7 @@ const AmountSelector = (props: any) => {
         {
           PERCENT_THRESHOLDS.map((percent) => (
             <motion.div
-              className="flex-1 border border-[#373A53] rounded-[8px] h-[32px] leading-[30px] text-center text-black text-[14px] font-[400]"
+              className={`${disabled ? 'opacity-30' : ''} flex-1 border border-[#373A53] rounded-[8px] h-[32px] leading-[30px] text-center text-black text-[14px] font-[400]`}
               key={percent.value}
               variants={{
                 active: {
@@ -109,7 +114,10 @@ const AmountSelector = (props: any) => {
                 },
               }}
               animate={selected === percent.value ? 'active' : ''}
-              onClick={() => handleSelected(percent)}
+              onClick={() => {
+                if (disabled) return;
+                handleSelected(percent);
+              }}
             >
               {percent.label}
             </motion.div>
@@ -120,7 +128,7 @@ const AmountSelector = (props: any) => {
         <div ref={sliderRef} className="relative h-[8px] rounded-[12px] bg-[#DFDCC4] flex-1">
           <motion.div
             className="absolute left-0 top-[-8px] w-[22px] h-[22px] rounded-full bg-[#FFDC50] border border-black"
-            drag="x"
+            drag={disabled ? void 0 : 'x'}
             dragConstraints={sliderRef}
             dragMomentum={false}
             onDrag={handleSlider}

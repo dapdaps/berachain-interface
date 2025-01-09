@@ -131,7 +131,7 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
       <Drawer
         visible={visible}
         onClose={handleClose}
-        size="50vh"
+        size="65vh"
       >
         <div className="py-[23px]">
           <div className="text-[18px] font-[700] text-black px-[24px]">
