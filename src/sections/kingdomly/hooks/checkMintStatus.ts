@@ -7,7 +7,6 @@ export const checkMintStatus = async (
   contractAddress: string,
   chainId: number,
   mintId: number,
-  allocation: number
 ): Promise<MintStatus> => {
   try {
     const rpcUrl = CHAIN_RPC_URLS[chainId];
@@ -35,7 +34,7 @@ export const checkMintStatus = async (
     if (!isActive) return 'paused';
 
     
-    if (totalSupply.toNumber() >= allocation) return 'sold_out';
+    if (totalSupply.toNumber() >= maxSupply.toNumber()) return 'sold_out';
 
     return 'live';
   } catch (error) {

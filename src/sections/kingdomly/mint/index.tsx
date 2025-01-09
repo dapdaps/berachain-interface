@@ -1,6 +1,6 @@
 import SwitchTabs from "@/components/switch-tabs";
 import SearchBox from "@/sections/marketplace/components/searchbox";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import List from "@/sections/marketplace/components/list";
 import NextStep from "./NextStep";
 import { usePartnerCollections } from "../hooks/usePartnerCollections";
@@ -8,6 +8,7 @@ import { NFTCollectionWithStatus, Status } from "../types";
 import Big from "big.js";
 import { useCountDown } from "@/hooks/use-count-down";
 import useIsMobile from "@/hooks/use-isMobile";
+import { useDebounce } from 'ahooks';
 
 const CountdownCell = ({ timestamp }: { timestamp: number }) => {
   const countdown = useCountDown({
@@ -74,14 +75,22 @@ const MobileCard = ({
 const Mint = () => {
   const [tab, setTab] = useState("live");
   const [value, setValue] = useState("");
+  const debouncedValue = useDebounce(value, { wait: 300 }); 
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const { collections } = usePartnerCollections();
+  const { collections, isLoading } = usePartnerCollections();
   const isMobile = useIsMobile();
 
-  const filteredCollections = collections.filter(
-    (item: NFTCollectionWithStatus) =>
-      item.status === (tab === "live" ? Status.LIVE : Status.UPCOMING)
-  );
+  const filteredCollections = useMemo(() => {
+    return collections
+      .filter(
+        (item: NFTCollectionWithStatus) =>
+          item.status === (tab === "live" ? Status.LIVE : Status.UPCOMING)
+      )
+      .filter((item: NFTCollectionWithStatus) => 
+        debouncedValue === "" || 
+        item.collection_name.toLowerCase().includes(debouncedValue.toLowerCase())
+      );
+  }, [collections, tab, debouncedValue]);
 
   const getMetaConfig = () => {
     const baseConfig = [
