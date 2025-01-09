@@ -162,7 +162,6 @@ const SECOND_LIST = [
         name: "Kingdomly",
         label: "Kingdomly",
         type: "NFT",
-        attachedIcon: "",
         className: "",
         disabled: true,
         attachedIcon: (
@@ -174,7 +173,6 @@ const SECOND_LIST = [
         name: "Ramen",
         label: "Ramen",
         type: "Launchpad",
-        attachedIcon: "",
         className: "",
         disabled: true,
         attachedIcon: (
