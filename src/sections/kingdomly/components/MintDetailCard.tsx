@@ -3,7 +3,7 @@ import { NFTCollectionWithStatus } from "../types";
 import { useEffect, useState } from "react";
 import { CHAIN_RPC_URLS } from "../hooks/usePartnerCollections";
 import { Contract, ethers, providers } from "ethers";
-import NFTAbi from "../abis/NFT.json";
+import NFTAbi from "../abis/mint.json";
 import Big from "big.js";
 import Button from "./Button";
 import { checkMintStatus } from "../hooks/checkMintStatus";
