@@ -11,6 +11,7 @@ import { useMint } from "../hooks/useMint";
 import Skeleton from "react-loading-skeleton";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -35,6 +36,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
 
   const { handleMint } = useMint();
   const toast = useToast();
+  const { addAction } = useAddAction("nft");
 
   const currentGroup =
     mintGroups.find((group) => group.id === currentGroupId) || mintGroups[0];
@@ -56,13 +58,13 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
     const numValue = parseInt(value) || 0;
 
-    if (numValue <= currentGroup.max_mint_per_wallet) {
+    if (numValue <= mintInfo.limitPerWallet) {
       setQuantity(numValue);
     }
   };
 
   const handleIncrement = () => {
-    if (quantity < currentGroup.max_mint_per_wallet) {
+    if (quantity < mintInfo.limitPerWallet) {
       setQuantity(quantity + 1);
     }
   };
@@ -187,9 +189,21 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
       title: "Minting...",
     });
     try {
-      await handleMint(item, currentGroupId, quantity);
+      const tx = await handleMint(item, currentGroupId, quantity);
+      if (!tx) return
       toast.success("Your transaction has been confirmed sire!");
-      setTimeout(() => setUpdater(updater + 1), 1500);
+      setTimeout(() => setUpdater(updater + 1), 900);
+      addAction?.({
+        type: "NFT",
+        template: "kingdomly",
+        action: "mint",
+        sub_type: "mint",
+        name: item.collection_name,
+        price: mintInfo.totalCostWithFee,
+        status: 1,
+        transactionHash: tx.hash,
+        add: true
+      });
     } catch (error) {
       console.error("Mint failed:", error);
     } finally {
@@ -296,7 +310,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
 
                 <button
                   onClick={handleIncrement}
-                  disabled={quantity === currentGroup.max_mint_per_wallet}
+                  disabled={quantity === mintInfo.limitPerWallet}
                   className="w-[32px] h-[32px] flex items-center justify-center"
                 >
                   <svg
