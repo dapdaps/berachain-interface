@@ -320,7 +320,6 @@ const ALL_LIST = [
         label: "Kingdomly",
         type: "NFT",
         className: "",
-        disabled: true,
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
