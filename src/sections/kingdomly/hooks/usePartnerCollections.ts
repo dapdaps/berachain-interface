@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useListStore } from '../stores/useListStore';
 import { NFTCollection, NFTCollectionWithStatus, Status } from '../types';
 import { Contract, providers } from 'ethers';
-import NFTAbi from '../abis/NFT.json';
+import NFTAbi from '../abis/mint.json';
 
 export const CHAIN_RPC_URLS: { [key: number]: string } = {
   42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum One
