@@ -6,7 +6,7 @@ import NextStep from "./NextStep";
 import { usePartnerCollections } from "../hooks/usePartnerCollections";
 import { NFTCollectionWithStatus, Status } from "../types";
 import Big from "big.js";
-import { useCountDown } from "@/hooks/use-count-down";
+import { useCountDown } from "../hooks/use-count-down";
 import useIsMobile from "@/hooks/use-isMobile";
 import { useDebounce } from 'ahooks';
 

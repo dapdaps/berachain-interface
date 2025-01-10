@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useCountDown } from '@/hooks/use-count-down';
+import { useCountDown } from '../hooks/use-count-down';
 import { MintStatus } from '../types';
 import { useAccount } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
