@@ -65,25 +65,73 @@ export const useMint = () => {
 
       const isPublicMint = currentGroup.name.toLowerCase().includes('public') ||
                           currentGroup.mint_group_description?.toLowerCase().includes('public');
-
-      // 获取当前余额
+                          
+      const max_mint_per_wallet = await contract.mintGroupMints(currentGroupId);      
       const balance = await contract.balanceOf(account);
-      
+      const eligibilityResult = await checkEligibility(collection.slug, account);
+      console.log('eligibilityResult', eligibilityResult);
+
       if (isPublicMint) {
         // Public mint 逻辑
-        // 1. 获取其他组的配额总和
-        const otherGroupsQuota = await calculateOtherGroupsQuota(collection, account);
-        // 2. 实际的 public mint 数量 = 总余额 - 其他组配额
-        const publicMintCount = balance.sub(otherGroupsQuota);
-        // 3. 检查是否超过限制
-        if (publicMintCount.add(amount) > currentGroup.max_mint_per_wallet) {
-          toast.fail({
-            title: "Sorry sire, you have exceeded the maximum mint per wallet for public sale.",
+        if (!eligibilityResult?.eligible_mint_groups || eligibilityResult.eligible_mint_groups.length === 0) {
+          if (balance.add(amount) > max_mint_per_wallet) {
+            toast.fail({
+              title: `Sorry sire, you can only mint up to ${max_mint_per_wallet} NFTs in public sale.`,
+            });
+            return null;
+          }
+        } else {
+          let otherGroupsBalance = 0;
+          
+          if (!eligibilityResult?.eligible_mint_groups) {
+            console.warn('No eligible groups found');
+            return null;
+          }
+          
+          // 使用Promise.all并行获取所有组的mintQuotas
+          const quotaPromises = eligibilityResult.eligible_mint_groups
+            .filter(group => !group.name.toLowerCase().includes('public'))
+            .map(async group => {
+              const mintQuota = await contract.mintQuotas(group.id, account);
+              console.log(`Group ${group.id} mintQuota:`, mintQuota.toString());
+              return {
+                groupId: group.id,
+                quota: mintQuota
+              };
+            });
+            
+          const quotaResults = await Promise.all(quotaPromises);
+          
+          // 计算其他组已mint的总数
+          for (const {groupId, quota} of quotaResults) {
+            if (quota.gt(0)) {
+              const groupMaxMint = await contract.maxMintPerWallet(groupId);
+              const groupBalance = groupMaxMint.sub(quota);
+              console.log(`Group ${groupId}: max=${groupMaxMint}, quota=${quota}, balance=${groupBalance}`);
+              otherGroupsBalance += Number(groupBalance.toString());
+            }
+          }
+          
+          // 转换余额并计算
+          const balanceNumber = Number(balance.toString());
+          const publicMintCount = balanceNumber - otherGroupsBalance;
+          
+          console.log('Final calculation:', {
+            balance: balanceNumber,
+            otherGroupsBalance,
+            publicMintCount,
+            maxAllowed: max_mint_per_wallet
           });
-          return null;
+          
+          if (publicMintCount + amount > max_mint_per_wallet) {
+            toast.fail({
+              title: `Sorry sire, you can only mint up to ${max_mint_per_wallet} NFTs in public sale.`,
+            });
+            return null;
+          }
         }
       } else {
-        const eligibilityResult = await checkEligibility(collection.slug, account);
+        // 其他组的 mint 逻辑
         if (!eligibilityResult) {
           toast.fail({
             title: "Sorry sire, the address is not allowlisted. Please ask the owner if you believe this is an error.",
@@ -91,21 +139,30 @@ export const useMint = () => {
           return null;
         }
 
-        // 找到当前组的配额
-        const currentGroupQuota = eligibilityResult.eligible_mint_groups.find(
+        const eligibleGroup = eligibilityResult.eligible_mint_groups.find(
           group => group.id === currentGroupId
-        )?.quota || 0;
+        );
 
-        if (!currentGroupQuota) {
+        if (!eligibleGroup) {
+          toast.fail({
+            title: "Sorry sire, you don't have access to this group.",
+          });
+          return null;
+        }
+
+        // 从合约获取实际的quota
+        const currentQuota = await contract.mintQuotas(currentGroupId, account);
+        
+        if (currentQuota.eq(0)) {
           toast.fail({
             title: "Sorry sire, you don't have quota for this group.",
           });
           return null;
         }
 
-        if (amount > currentGroupQuota) {
+        if (amount > Number(currentQuota.toString())) {
           toast.fail({
-            title: `Sorry sire, you can only mint up to ${currentGroupQuota} NFTs in this group.`,
+            title: `Sorry sire, you can only mint up to ${currentQuota.toString()} NFTs in this group.`,
           });
           return null;
         }
@@ -122,24 +179,6 @@ export const useMint = () => {
       console.error("Mint error:", error);
       throw error;
     }
-  };
-
-  const calculateOtherGroupsQuota = async (
-    collection: NFTCollectionWithStatus,
-    address: string
-  ): Promise<ethers.BigNumber> => {
-    let totalQuota = ethers.BigNumber.from(0);
-
-    const eligibilityResult = await checkEligibility(collection.slug, address);
-    if (eligibilityResult?.eligible_mint_groups) {
-      for (const group of eligibilityResult.eligible_mint_groups) {
-        if (!group.name.toLowerCase().includes('public')) {
-          totalQuota = totalQuota.add(group.quota);
-        }
-      }
-    }
-
-    return totalQuota;
   };
 
   return { handleMint };
