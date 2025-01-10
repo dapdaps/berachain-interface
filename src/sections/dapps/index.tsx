@@ -378,6 +378,9 @@ const DAppsView = () => {
     if (_dApp.name === 'berps') {
       dAppPath += `?id=BHONEY&tab=0`;
     }
+    if (_dApp.name === 'Kingdomly') {
+      dAppPath = `/${_dApp.name.toLowerCase()}`;
+    };
     router.push(dAppPath);
   };
 
