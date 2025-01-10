@@ -5,6 +5,7 @@ import Big from 'big.js';
 import { useEffect, useState } from 'react';
 import { cloneDeep } from 'lodash';
 import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
 interface Meta {
   title: string;
@@ -24,6 +25,8 @@ interface Props {
   loading?: boolean;
   withoutHeader?: boolean;
   onChangeSort?: (sort: string) => void;
+  itemClassName?: string;
+  itemContainerClassName?: string;
 }
 
 export default function List({
@@ -35,6 +38,8 @@ export default function List({
   onItemClick = () => { },
   onChangeSort,
   loading,
+  itemClassName,
+  itemContainerClassName,
   withoutHeader = false
 }: Props) {
   const [sortItem, setSortItem] = useState<any>(null);
@@ -110,7 +115,7 @@ export default function List({
             data.map((item: any, index: number) => {
               return (
                 <div
-                  className='rounded-md flex tr'
+                  className={clsx('flex', itemContainerClassName ? itemContainerClassName : 'tr rounded-md')}
                   key={item.id}
                   onClick={() => {
                     onItemClick(item);
@@ -120,7 +125,7 @@ export default function List({
                     return (
                       <div
                         key={item.key}
-                        className='text-left h-[58px] pl-[10px] flex items-center td'
+                        className={clsx('text-left h-[58px] pl-[10px] flex items-center td', itemClassName)}
                         style={{
                           width: metaItem.width
                         }}

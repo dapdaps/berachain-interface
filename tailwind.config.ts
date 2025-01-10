@@ -60,7 +60,8 @@ const config: Config = {
       rotate: "rotate 2s linear infinite",
       shake: "shake 0.7s linear infinite",
       blink: "blink 4s ease-in-out infinite",
-      "float-y": "floatY 4s ease-in-out infinite"
+      "float-y": "floatY 4s ease-in-out infinite",
+      "ping": "ping 1s cubic-bezier(0,0,.2,1) infinite"
     },
     keyframes: {
       snowDown: {
@@ -140,7 +141,13 @@ const config: Config = {
         "100%": {
           transform: "translateY(0)"
         }
-      }
+      },
+      ping: {
+        "75%,to": {
+            transform: "scale(2)",
+            opacity: "0"
+        }
+    }
     }
   },
   plugins: [require("tailwindcss-animate")]
