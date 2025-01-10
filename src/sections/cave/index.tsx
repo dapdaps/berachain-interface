@@ -699,11 +699,10 @@ export default function Cave() {
 
         <div
             onClick={() => {
-                console.log('====transferItems', transferItems)
                 setTransferItemsVisible(true)
                 setTransferSelectedItems(transferItems)
             }}
-            className="pb-[5px] absolute right-[18px] bottom-[58px] w-[129px] rounded-[10px] border border-[#709D27] bg-[#7DB425] backdrop-blur-[5px]">
+            className="pb-[5px] absolute right-[18px] bottom-[78px] w-[129px] rounded-[10px] border border-[#709D27] bg-[#7DB425] backdrop-blur-[5px]">
             <div className="active:translate-y-[5px] relative cursor-pointer h-[40px] rounded-[10px] border border-[#709D27] bg-[#C7FF6E] backdrop-blur-[5px]">
                 <div className="p-[5px_0_0_12px] w-[92px] text-[#F7F9EA] font-CherryBomb text-[14px] text-stroke-1-4b371f leading-[100%]">Transfer Boost Items</div>
                 <div className="absolute top-[6px] right-[7px] w-[26px]">
