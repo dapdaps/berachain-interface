@@ -18,6 +18,8 @@ import { useMasUser } from "./hooks/useMasUser";
 import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
 import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
+import TransferButton from "./components/TransferButton";
+
 
 
 const TipsPopover = ({
@@ -55,6 +57,7 @@ const Cave = () => {
   const { isChristmas } = useChristmas();
   const welcomeStore: any = useWelcomeStore()
   const storePhotoList: any = useCavePhotoList()
+
   const isMobile = useIsMobile()
   const searchParams = useSearchParams()
 
@@ -102,7 +105,7 @@ const Cave = () => {
                     left: 322,
                     top: 63
                   },]
-                  const tips = currentSceneInfoValid ? sockTips[index] : {...sockTips[index], btnText: 'Campaign Ended'}
+                  const tips = currentSceneInfoValid ? sockTips[index] : { ...sockTips[index], btnText: 'Campaign Ended' }
                   return (
                     <div
                       style={{ left: Positions[index]?.left, top: Positions[index]?.top }}
@@ -297,7 +300,10 @@ const Cave = () => {
             </div>
           </div>
         </div>
+
       </div>
+
+      <TransferButton />
       <Welcome show={welcomeStore.show} onClose={() => welcomeStore.set({ show: false })} />
       <Popup />
 

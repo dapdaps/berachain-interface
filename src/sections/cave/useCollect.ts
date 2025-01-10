@@ -180,6 +180,7 @@ export default function useCollect({ address }: { address: string }) {
             _transferItems.push(item);
           }
         });
+        console.log('====_transferItems.filter((it) => !it.transfer_to)', _transferItems.filter((it) => !it.transfer_to))
         setTransferItems(_transferItems.filter((it) => !it.transfer_to));
 
         const _items = items?.map(item => {
