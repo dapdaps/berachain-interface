@@ -211,6 +211,23 @@ export default function useAddAction(source: string) {
         };
       }
 
+      if (data.type === 'NFT') {
+        params = {
+          action_title: `${data.action} ${data.name} NFT on ${data.template}`,
+          action_type: 'NFT',
+          action_tokens: data.name,
+          action_amount: data.price.toString(),
+          account_id: account,
+          template: data.template,
+          action_status: data.status === 1 ? 'Success' : 'Failed',
+          tx_id: data.transactionHash,
+          action_network_id: currentChain.name,
+          chain_id: chainId,
+          action_switch: data.add ? 1 : 0,
+          sub_type: data.action  // 'mint' | 'list' | 'delist' | 'transfer' | 'burn'
+        };
+      }
+
       params.ss = getSignature(
         `template=${data.template}&action_type=${data.type}&tx_hash=${data.transactionHash
         }&chain_id=${chainId}&time=${Math.ceil(Date.now() / 1000)}`

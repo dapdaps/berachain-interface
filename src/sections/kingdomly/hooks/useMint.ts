@@ -80,7 +80,7 @@ export const useMint = () => {
           toast.fail({
             title: "Sorry sire, you have exceeded the maximum mint per wallet for public sale.",
           });
-          return;
+          return null;
         }
       } else {
         const eligibilityResult = await checkEligibility(collection.slug, account);
@@ -88,7 +88,7 @@ export const useMint = () => {
           toast.fail({
             title: "Sorry sire, the address is not allowlisted. Please ask the owner if you believe this is an error.",
           });
-          return;
+          return null;
         }
 
         // 找到当前组的配额
@@ -100,14 +100,14 @@ export const useMint = () => {
           toast.fail({
             title: "Sorry sire, you don't have quota for this group.",
           });
-          return;
+          return null;
         }
 
         if (amount > currentGroupQuota) {
           toast.fail({
             title: `Sorry sire, you can only mint up to ${currentGroupQuota} NFTs in this group.`,
           });
-          return;
+          return null;
         }
       }
 
