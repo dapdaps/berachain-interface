@@ -125,7 +125,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
                   tabRefs.current[idx] = el;
                 }}
                 className={clsx(
-                  "h-full font-bold lg:text-[14px] md:text-[15px] text-black md:font-[600] flex justify-center items-center cursor-pointer px-4 relative z-10",
+                  "h-full font-bold lg:text-[14px] md:text-[15px] text-black md:font-[600] flex justify-center items-center cursor-pointer relative z-10",
                   isScroll ? "flex-shrink-0 px-[31px] py-[18px] lg:text-[16px]" : "flex-1",
                   tabClassName
                 )}

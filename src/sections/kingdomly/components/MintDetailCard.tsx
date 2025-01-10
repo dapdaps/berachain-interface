@@ -12,6 +12,7 @@ import Skeleton from "react-loading-skeleton";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
+import { title } from "process";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -185,13 +186,19 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   const onMint = async () => {
     if (!account || !mintInfo.totalCostWithFee) return;
     setIsMinting(true);
-    toast.loading({
+    let toastId = toast.loading({
       title: "Minting...",
     });
     try {
       const tx = await handleMint(item, currentGroupId, quantity);
       if (!tx) return
-      toast.success("Your transaction has been confirmed sire!");
+
+      console.log("Mint tx:", tx);
+
+      toast.success({
+        title: "Your transaction has been confirmed sire!",
+        tx: tx.transactionHash
+      });
       setTimeout(() => setUpdater(updater + 1), 900);
       addAction?.({
         type: "NFT",
@@ -199,15 +206,15 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
         action: "mint",
         sub_type: "mint",
         name: item.collection_name,
-        price: mintInfo.totalCostWithFee,
+        price: quantity,
         status: 1,
-        transactionHash: tx.hash,
+        transactionHash: tx.transactionHash,
         add: true
       });
     } catch (error) {
       console.error("Mint failed:", error);
     } finally {
-      toast.dismiss();
+      toast.dismiss(toastId);
       setIsMinting(false);
     }
   };
