@@ -9,6 +9,7 @@ import Big from "big.js";
 import { useCountDown } from "../hooks/use-count-down";
 import useIsMobile from "@/hooks/use-isMobile";
 import { useDebounce } from 'ahooks';
+import Skeleton from "react-loading-skeleton";
 
 const CountdownCell = ({ timestamp }: { timestamp: number }) => {
   const countdown = useCountDown({
@@ -71,6 +72,22 @@ const MobileCard = ({
     </div>
   );
 };
+
+const MobileSkeletonCard = () => (
+  <div className="bg-[#000000] bg-opacity-[0.06] rounded-[10px] p-[15px] mb-[10px] shadow-sm">
+    <div className="flex items-center gap-[10px]">
+      <Skeleton width={60} height={60} borderRadius={8} />
+      <div className="flex-1">
+        <Skeleton width={120} height={16} className="mb-[5px]" />
+        <Skeleton width={80} height={12} />
+      </div>
+    </div>
+    <div className="flex items-center justify-between mt-[10px] pt-[10px] border-t">
+      <Skeleton width={60} height={14} />
+      <Skeleton width={80} height={28} borderRadius={8} />
+    </div>
+  </div>
+);
 
 const Mint = () => {
   const [tab, setTab] = useState("live");
@@ -232,17 +249,23 @@ const Mint = () => {
       <div className="w-full mt-[20px] md:h-[280px] overflow-y-auto">
         {isMobile ? (
           <div className="flex flex-col gap-[10px] pb-[20px]">
-            {filteredCollections.concat(filteredCollections).map((item: NFTCollectionWithStatus, index: number) => (
-              <MobileCard 
-                key={index} 
-                item={item} 
-                onSelect={setSelectedItem}
-              />
-            ))}
+            {isLoading ? (
+              Array(5).fill(0).map((_, index) => (
+                <MobileSkeletonCard key={index} />
+              ))
+            ) : (
+              filteredCollections.map((item: NFTCollectionWithStatus, index: number) => (
+                <MobileCard 
+                  key={index} 
+                  item={item} 
+                  onSelect={setSelectedItem}
+                />
+              ))
+            )}
           </div>
         ) : (
           <List
-            loading={false}
+            loading={isLoading}
             meta={getMetaConfig()}
             list={filteredCollections}
             bodyClassName="h-[500px] overflow-y-auto mt-[20px]"
