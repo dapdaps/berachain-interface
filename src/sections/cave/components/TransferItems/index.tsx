@@ -108,6 +108,7 @@ const TransferItems = (props: any) => {
       setTransferSelectedItems([]);
       return;
     }
+    console.log('=====transferItems', transferItems)
     setTransferSelectedItems(transferItems);
   };
 
