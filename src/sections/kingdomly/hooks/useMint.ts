@@ -1,5 +1,5 @@
 import { Contract, ethers, providers } from "ethers";
-import NFTAbi from "../abis/NFT.json";
+import NFTAbi from "../abis/mint.json";
 import { CHAIN_RPC_URLS } from "./usePartnerCollections";
 import { NFTCollectionWithStatus } from "../types";
 import useCustomAccount from "@/hooks/use-account";
