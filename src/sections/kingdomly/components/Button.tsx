@@ -27,6 +27,18 @@ const Button: FC<MintButtonProps> = ({
     format: ' DDd HHh mmm sss'
   });
 
+  if (!address) {
+    return (
+      <button 
+        className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
+        onClick={() => modal.open()}
+      >
+        Connect Wallet
+      </button>
+    );
+  }
+
+
   if (status === 'upcoming') {
     return (
       <button 
@@ -51,16 +63,6 @@ const Button: FC<MintButtonProps> = ({
 
 
 
-  if (!address) {
-    return (
-      <button 
-        className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
-        onClick={() => modal.open()}
-      >
-        Connect Wallet
-      </button>
-    );
-  }
 
   switch (status) {
     case 'live':

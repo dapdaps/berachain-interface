@@ -66,7 +66,8 @@ export const useMint = () => {
       const isPublicMint = currentGroup.name.toLowerCase().includes('public') ||
                           currentGroup.mint_group_description?.toLowerCase().includes('public');
                           
-      const max_mint_per_wallet = await contract.mintGroupMints(currentGroupId);      
+      const max_mint_per_wallet = await contract.maxMintPerWallet(currentGroupId);   
+      
       const balance = await contract.balanceOf(account);
       const eligibilityResult = await checkEligibility(collection.slug, account);
       console.log('eligibilityResult', eligibilityResult);
@@ -120,7 +121,8 @@ export const useMint = () => {
             balance: balanceNumber,
             otherGroupsBalance,
             publicMintCount,
-            maxAllowed: max_mint_per_wallet
+            maxAllowed: max_mint_per_wallet.toString(),
+            amount
           });
           
           if (publicMintCount + amount > max_mint_per_wallet) {

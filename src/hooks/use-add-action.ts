@@ -215,7 +215,7 @@ export default function useAddAction(source: string) {
         params = {
           action_title: `${data.action} ${data.name} NFT on ${data.template}`,
           action_type: 'NFT',
-          action_tokens: data.name,
+          action_tokens: JSON.stringify([`${data.name}`]),
           action_amount: data.price.toString(),
           account_id: account,
           template: data.template,
