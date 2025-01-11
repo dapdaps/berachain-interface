@@ -29,6 +29,10 @@ const nextConfig = {
       destination: "https://api.dolomite.io/:path*"
     },
     {
+      source: "/api.kingdomly/:path*",
+      destination: "https://www.kingdomly.app/:path*"
+    },
+    {
       source: "/api.infrared.finance/:path*",
       destination: "https://api.infrared.finance/:path*"
     },
@@ -54,6 +58,10 @@ const nextConfig = {
         issuer: fileLoaderRule.issuer,
         resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
         use: ["@svgr/webpack"]
+      },
+      {
+        test: /\.json$/,
+        type: 'json'
       }
     );
     fileLoaderRule.exclude = /\.svg$/i;
@@ -79,28 +87,27 @@ const nextConfig = {
     };
 
     config.optimization.emitOnErrors = true;
-
-    // if (!dev) {
-    //   config.optimization.minimizer = [
-    //     new TerserPlugin({
-    //       terserOptions: {
-    //         compress: {
-    //           drop_console: true,
-    //           drop_debugger: true,
-    //           pure_funcs: ["console.warn"]
-    //         },
-    //         mangle: {
-    //           safari10: true
-    //         },
-    //         format: {
-    //           comments: false
-    //         },
-    //         ecma: 2015
-    //       },
-    //       parallel: true
-    //     })
-    //   ];
-    // }
+    if (process.env.NEXT_PUBLIC_API === 'https://dev-api.beratown.app') {
+      config.optimization.minimizer = [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              drop_console: true,
+              drop_debugger: true,
+              pure_funcs: ["console.warn"]
+            },
+            mangle: {
+              safari10: true
+            },
+            format: {
+              comments: false
+            },
+            ecma: 2015
+          },
+          parallel: true
+        })
+      ];
+    }
     return config;
   },
   experimental: {

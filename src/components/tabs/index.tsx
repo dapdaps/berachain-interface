@@ -67,6 +67,8 @@ const Tabs = (props: TabsProps) => {
               isCard={isCard}
               width={tabConfig.tabWidth}
               height={tabConfig.tabHeight}
+              disabled={tab.disabled}
+              post={tab.post}
             >
               {tab.label}
             </Tab>
@@ -114,4 +116,5 @@ export interface Tab {
   label: any;
   children: any;
   disabled?: boolean;
+  post?: string;
 }

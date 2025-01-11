@@ -163,7 +163,6 @@ const SECOND_LIST = [
         label: "Kingdomly",
         type: "NFT",
         className: "",
-        disabled: true,
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
         )
@@ -320,7 +319,6 @@ const ALL_LIST = [
         label: "Kingdomly",
         type: "NFT",
         className: "",
-        disabled: true,
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
@@ -378,6 +376,9 @@ const DAppsView = () => {
     if (_dApp.name === 'berps') {
       dAppPath += `?id=BHONEY&tab=0`;
     }
+    if (_dApp.name === 'Kingdomly') {
+      dAppPath = `/${_dApp.name.toLowerCase()}`;
+    };
     router.push(dAppPath);
   };
 
