@@ -1,14 +1,16 @@
 import Modal from '@/components/modal';
 import Range from "@/components/range";
 import SwitchTabs from '@/components/switch-tabs';
+import { DEFAULT_CHAIN_ID } from '@/configs';
 import useCustomAccount from '@/hooks/use-account';
 import useAddAction from '@/hooks/use-add-action';
 import useExecutionContract from '@/hooks/use-execution-contract';
 import useToast from '@/hooks/use-toast';
 import Capsule from '@/sections/marketplace/components/dapps/capsule';
 import Button from '@/sections/staking/Bridge/Button';
-import { ERC20_ABI, ICHI_ABI } from '@/sections/staking/Datas/AquaBera';
+import { ERC20_ABI, ETHVaultWithSlippage_ABI, ICHI_ABI, ICHIVaultDepositGuard_ABI } from '@/sections/staking/Datas/AquaBera';
 import { formatValueDecimal } from '@/utils/balance';
+
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
@@ -283,8 +285,10 @@ export default memo(function aquabera(props: any) {
 
 
   useEffect(() => {
+    console.log('====config', config)
     if (config) {
-      setVaultAddress(isBera ? config?.ETHVaultWithSlippage : config?.ICHIVaultDepositGuard)
+      const chain = config?.chains?.[DEFAULT_CHAIN_ID]
+      setVaultAddress(isBera ? chain?.ETHVaultWithSlippage : chain.ICHIVaultDepositGuard)
     }
   }, [isBera, config])
 
