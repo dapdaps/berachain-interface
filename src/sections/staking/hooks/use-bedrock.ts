@@ -178,6 +178,7 @@ export default function useBedrock(dexConfig) {
   return {
     balance,
     inAmount,
+    getBalance,
     handleMax,
     handleAmountChange,
     handleDeposit,

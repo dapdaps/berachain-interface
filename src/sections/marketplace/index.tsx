@@ -167,6 +167,7 @@ const MarketplaceView = () => {
 
     const visibleTokens = useMemo(() => {
       const groupsToShow = Math.ceil(displayCount / 3);
+      console.log('====allTokens', allTokens)
       return allTokens.slice(0, groupsToShow);
     }, [allTokens, displayCount]);
   
