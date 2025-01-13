@@ -515,9 +515,9 @@ export default memo(function Bex(props) {
                       </div>
                     )}
                   </div>
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                  {/* <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                     {data?.tokens?.join('-')}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {isInSufficient && (
@@ -625,9 +625,9 @@ export default memo(function Bex(props) {
                       </div>
                     )}
                   </div>
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                  {/* <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                     {data?.tokens?.join('-')}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <button
