@@ -64,7 +64,7 @@ const MainLayout = (props: Props) => {
       <div className={isVaults ? "h-full w-full absolute" : "grow"}>
         {children}
       </div>
-      <div className="absolute left-[16px] bottom-[16px] z-[13] flex items-center gap-[6px]">
+      <div className='fixed left-[16px] bottom-[16px] z-[13] flex items-center gap-[6px]'>
         <Link
           className="hover:scale-110 ease-in-out duration-300 w-[90px] h-[26px] rounded-full bg-white/50 flex items-center justify-center cursor-pointer"
           href="https://app.dapdap.net?from=berachain"
