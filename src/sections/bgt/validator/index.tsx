@@ -23,7 +23,7 @@ const BgtValidator = (props: any) => {
   const {
     loading: vaultsLoading,
     vaults,
-    getValuts
+    getVaults
   } = useValidatorVaults();
   const {
     loading: validatorLoading,
@@ -113,7 +113,7 @@ const BgtValidator = (props: any) => {
   useEffect(() => {
     if (address) {
       getPageData(address);
-      getValuts(address);
+      getVaults(address);
     }
   }, [address]);
 
