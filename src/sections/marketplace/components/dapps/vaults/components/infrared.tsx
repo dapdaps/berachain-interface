@@ -419,7 +419,7 @@ export default memo(function Bex(props) {
       <div className='px-[20px] pt-[24px] pb-[20px] lg:w-[520px] rounded-[20px] bg-[#FFFDEB] border border-[#000] shadow-shadow1 z-[51]'>
         <div className='flex items-center gap-[9px] text-black text-[20px] font-[700] leading-[90%]'>
           <span>{`Invest ${data?.tokens.join('-')}`}</span>
-          <Capsule>Valuts</Capsule>
+          <Capsule>Vaults</Capsule>
         </div>
         <div className='mt-[40px]'>
           <SwitchTabs
@@ -515,9 +515,9 @@ export default memo(function Bex(props) {
                       </div>
                     )}
                   </div>
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                  {/* <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                     {data?.tokens?.join('-')}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {isInSufficient && (
@@ -625,9 +625,9 @@ export default memo(function Bex(props) {
                       </div>
                     )}
                   </div>
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                  {/* <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                     {data?.tokens?.join('-')}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <button

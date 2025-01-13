@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function () {
   const [loading, setLoading] = useState(false)
   const [vaults, setVaults] = useState<null | any[]>(null)
-  const getValuts = async (address: any) => {
+  const getVaults = async (address: any) => {
     setLoading(true)
     try {
       const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/vaults?validatorId=" + address)
@@ -19,6 +19,6 @@ export default function () {
   return {
     loading,
     vaults,
-    getValuts,
+    getVaults,
   }
 }
