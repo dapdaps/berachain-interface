@@ -10,11 +10,11 @@ import Capsule from '@/sections/marketplace/components/dapps/capsule';
 import Button from '@/sections/staking/Bridge/Button';
 import { ERC20_ABI, ETHVaultWithSlippage_ABI, ICHI_ABI, ICHIVaultDepositGuard_ABI } from '@/sections/staking/Datas/AquaBera';
 import { formatValueDecimal } from '@/utils/balance';
-
 import Big from 'big.js';
 import clsx from 'clsx';
 import { ethers } from 'ethers';
 import _ from 'lodash';
+import { useRouter } from 'next/navigation';
 import { memo, useEffect, useState } from "react";
 const TABS = [
   {
@@ -41,6 +41,7 @@ export default memo(function aquabera(props: any) {
 
   const { account, provider, chainId } = useCustomAccount()
   const toast = useToast()
+  const router = useRouter();
   const { addAction } = useAddAction("dapp")
   const { executionContract } = useExecutionContract()
   const RangeList = [0.25, 0.5, 0.75, 1];
@@ -505,7 +506,7 @@ export default memo(function aquabera(props: any) {
           <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
             Manage exist assets on{' '}
             <span
-              className='text-black font-Montserrat underline'
+              className='text-black font-Montserrat underline cursor-pointer'
               onClick={() => {
                 router.push('/staking/aquabera');
               }}
