@@ -132,7 +132,7 @@ export default memo(function Bedrock({ dapp }: any) {
                     <div className="w-[36px]">
                       <img src={sourceToken.icon} alt={sourceToken.name} />
                     </div>
-                    <div className="text-black font-Montserrat text-[16px] font-bold leading-[90%]">{sourceToken.name}</div>
+                    <div className="text-black font-Montserrat text-[16px] font-bold leading-[90%]">Get WBTC</div>
                     <div className="absolute top-1/2 -translate-y-1/2 right-[20px] w-[12px]">
                       <img src="/images/icon-right-2.svg" alt="icon-right" />
                     </div>
