@@ -121,7 +121,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
             status: status,
             transactionHash,
             chain_id: chainId,
-            sub_type: 'Withdraw'
+            sub_type: 'CancelWithdraw'
           });
           toast?.success({
             title: 'Cancel Withdraw Successful!',
