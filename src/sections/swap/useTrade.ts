@@ -20,7 +20,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const lastestCachedKey = useRef("");
   const cachedTokens = useRef<any>();
   const prices = {};
-  console.log("provider", provider);
+
   const onQuoter = useCallback(
     async ({ inputCurrency, outputCurrency, inputCurrencyAmount }: any) => {
       setTrade(null);
@@ -100,7 +100,6 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
             (item: string) => item !== "Ooga Booga"
           );
         }
-
         const data = await quoter(params);
 
         if (!data) {
