@@ -227,6 +227,10 @@ export const Form = (props: any) => {
     return `Submitting ${market?.collToken?.symbol} withdraw request...`;
   }, [type, buttonValid]);
 
+  const firstToken = useMemo(() => {
+    return type === ActionText.Repay ? { ...market.collToken, price: market.price } : market;
+  }, [type, market]);
+
   const { run: setCalcPreviewAmountQueueDelay } = useDebounceFn((val?: string) => {
     setCalcPreviewAmountQueue([...calcPreviewAmountQueue, {
       amount: val || '0',
@@ -351,7 +355,7 @@ export const Form = (props: any) => {
         <CurrencyInput
           className=""
           token={{
-            ...(type === ActionText.Repay ? { ...market.collToken, price: market.price } : market),
+            ...firstToken,
             balance: collateralBalance,
           }}
           amount={amount}
@@ -398,7 +402,7 @@ export const Form = (props: any) => {
               contentStyle={{ zIndex: 200 }}
               content={(
                 <Card className="w-[300px] text-[14px]">
-                  The ratio of your bHONEY's value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {market.MCR}% to avoid liquidations
+                  The ratio of your {firstToken?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {market.MCR}% to avoid liquidations
                 </Card>
               )}
             >
