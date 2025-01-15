@@ -37,7 +37,7 @@ export const ClosePosition = (props: any) => {
       valid: true,
       text: 'Confirm',
     };
-    if (Big(market?.borrowed || 0).gt(balance)) {
+    if (Big(market?.borrowed || 0).minus(liquidationReserve).gt(balance)) {
       result.valid = false;
       result.text = `Insufficient ${market?.borrowToken?.symbol} Balance`;
       return result;
