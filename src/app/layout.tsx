@@ -80,13 +80,13 @@ export default function RootLayout({
         />
         <TapSound ref={tapRef} />
       </body>
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-GJ585WTB02"></Script>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-SZ82B6ZN43"></Script>
       <Script id="ga-config">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-GJ585WTB02');`}
+          gtag('config', 'G-SZ82B6ZN43');`}
       </Script>
     </html>
   );
