@@ -1,20 +1,21 @@
 "use client";
 
-import "./globals.css";
-import "react-toastify/dist/ReactToastify.css";
-import "react-loading-skeleton/dist/skeleton.css";
-import MainLayout from "@/layouts/main";
+import Rpc from "@/components/rpc";
+import TapSound from "@/components/tap-sound";
+import SceneContextProvider from "@/context/scene";
 import WagmiProvider from "@/context/wagmi";
-import { ToastContainer } from "react-toastify";
-import React, { Suspense, useEffect, useRef } from "react";
-import { SkeletonTheme } from "react-loading-skeleton";
-import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import useIsMobile from "@/hooks/use-isMobile";
+import MainLayout from "@/layouts/main";
 import MobileLayout from "@/layouts/mobile";
 import { useTapSoundStore } from "@/stores/tap-sound";
-import TapSound from "@/components/tap-sound";
-import Rpc from "@/components/rpc";
-import SceneContextProvider from "@/context/scene";
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import Script from 'next/script';
+import React, { Suspense, useEffect, useRef } from "react";
+import { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./globals.css";
 
 export default function RootLayout({
   children
@@ -79,6 +80,14 @@ export default function RootLayout({
         />
         <TapSound ref={tapRef} />
       </body>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-GJ585WTB02"></Script>
+      <Script id="ga-config">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-GJ585WTB02');`}
+      </Script>
     </html>
   );
 }
