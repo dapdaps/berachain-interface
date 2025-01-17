@@ -12,9 +12,10 @@ const Laptop = ({ searchParams, router, pathname, children }: any) => {
   };
 
   return (
-    <div className="pt-[30px] flex flex-col items-center">
+    // <div className="pt-[30px] flex flex-col items-center">
+    <div className="pt-[30px]">
       <PageBack className="absolute left-[36px] top-[31px]" showBackText={false} />
-      <SwitchTabs
+      {/* <SwitchTabs
         tabs={[
           { label: "Swap", value: "swap" },
           { label: "Deposit", value: "deposit" },
@@ -23,7 +24,7 @@ const Laptop = ({ searchParams, router, pathname, children }: any) => {
         onChange={handleTabChange}
         current={searchParams.get("tab") || "swap"}
         className="w-[400px]"
-      />
+      /> */}
       {children}
     </div>
   );
@@ -37,7 +38,7 @@ const Mobile = ({ searchParams, router, pathname, children }: any) => {
   return (
     <div className="relative pt-[50px] h-full">
       <PageBack className="absolute left-[12px] top-[22px]" showBackText={false} />
-      <div className="absolute top-[20px] right-[10px] w-[200px]">
+      {/* <div className="absolute top-[20px] right-[10px] w-[200px]">
         <SwitchTabs
           tabs={[
             { label: "Swap", value: "swap" },
@@ -47,7 +48,7 @@ const Mobile = ({ searchParams, router, pathname, children }: any) => {
           onChange={handleTabChange}
           current={searchParams.get("tab") || "swap"}
         />
-      </div>
+      </div> */}
       {children}
     </div>
   );
@@ -65,7 +66,7 @@ export default function DexLayout({
   const isMobile = useIsMobile();
 
   return (
-    <BearBackground type="dapp">
+    <BearBackground type="dapps">
       {isMobile ? (
         <Mobile {...{ searchParams, router, pathname, children }} />
       ) : (

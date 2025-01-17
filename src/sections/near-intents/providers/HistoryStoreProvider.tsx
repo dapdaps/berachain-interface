@@ -7,7 +7,7 @@ import {
   type HistoryStore,
   createHistoryStore,
   initHistoryStore,
-} from "@src/stores/historyStore"
+} from "../stores/historyStore"
 
 export const HistoryStoreContext = createContext<StoreApi<HistoryStore> | null>(
   null

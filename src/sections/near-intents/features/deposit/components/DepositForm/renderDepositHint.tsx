@@ -22,10 +22,10 @@ export function renderDepositHint(
   token: BaseTokenInfo
 ) {
   return (
-    <div className="flex flex-col gap-4">
-      <Callout.Root className="bg-warning px-3 py-2 text-warning-foreground">
+    <div className="flex flex-col gap-2">
+      <Callout.Root className="bg-[#FFDC50] bg-opacity-30 px-2 py-2.5 text-center font-Montserrat h-[62px] rounded-xl">
         <Callout.Text className="text-xs">
-          <span className="font-bold">
+          <span className="font-semibold">
             {/* biome-ignore lint/nursery/useConsistentCurlyBraces: <explanation> */}
             Only deposit {token.symbol} from the {networkSelectToLabel[network]}{" "}
             network.
@@ -39,12 +39,12 @@ export function renderDepositHint(
       </Callout.Root>
 
       {minDepositAmount != null && (
-        <div className="flex flex-col gap-3.5 font-medium text-gray-11 text-xs">
+        <div className="flex mt-2 flex-col gap-3.5 font-Montserrat font-semibold text-xs">
           <div className="flex justify-between">
             <div>Minimum deposit</div>
             <div className="text-label">
               {/* biome-ignore lint/nursery/useConsistentCurlyBraces: space is needed here */}
-              {formatTokenValue(minDepositAmount, token.decimals)}{" "}
+              {formatTokenValue(1, token.decimals)}{" "}
               {token.symbol}
             </div>
           </div>

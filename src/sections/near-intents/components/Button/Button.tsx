@@ -72,7 +72,6 @@ const CustomButton = <T extends FieldValues>({
 
   return (
     <Button
-      variant={buttonVariantStyle}
       className={buttonStyle}
       color={buttonColorStyle}
       disabled={disabled || isLoading}

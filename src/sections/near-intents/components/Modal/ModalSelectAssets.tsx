@@ -118,21 +118,21 @@ export const ModalSelectAssets = () => {
 
   return (
     <ModalDialog>
-      <div className="flex flex-col min-h-[680px] md:max-h-[680px] h-full">
-        <div className="z-20 h-auto flex-none p-5 border-b border-gray-100 dark:border-black-950 sticky top-0 bg-white dark:bg-black-800 z-10">
+      <div className="flex flex-col max-h-[608px] h-full">
+        <div className="h-auto flex-none p-5 border-bz-10">
           <SearchBar
             query={searchValue}
             setQuery={setSearchValue}
             handleOverrideCancel={onCloseModal}
           />
         </div>
-        <div className="z-10 flex-1 overflow-y-auto border-b border-gray-100 px-2.5 dark:border-black-950">
+        <div className="z-10 flex-1 overflow-y-auto px-2.5">
           {assetList.length ? (
             <AssetList
               assets={
                 deferredQuery ? assetList.filter(filterPattern) : assetList
               }
-              title={deferredQuery ? "Search results" : "Popular tokens"}
+              // title={deferredQuery ? "Search results" : "Popular tokens"}
               className="h-full"
               handleSelectToken={handleSelectToken}
               accountId={(payload as ModalSelectAssetsPayload)?.accountId}

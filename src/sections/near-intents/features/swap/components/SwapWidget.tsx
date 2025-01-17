@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import { WidgetRoot } from "../../../components/WidgetRoot"
 import { SwapWidgetProvider } from "../../../providers/SwapWidgetProvider"
 import { useTokensStore } from "../../../providers/TokensStoreProvider"
 import type { SwapWidgetProps } from "../../../types/swap"
@@ -21,7 +20,6 @@ export const SwapWidget = ({
   initialTokenOut,
 }: SwapWidgetProps) => {
   return (
-    <WidgetRoot>
       <SwapWidgetProvider>
         <TokenListUpdater tokenList={tokenList} />
         <SwapFormProvider>
@@ -47,7 +45,6 @@ export const SwapWidget = ({
           </SwapUIMachineProvider>
         </SwapFormProvider>
       </SwapWidgetProvider>
-    </WidgetRoot>
   )
 }
 

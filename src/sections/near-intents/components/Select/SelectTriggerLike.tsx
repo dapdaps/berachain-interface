@@ -32,7 +32,7 @@ function SelectTriggerLike(
       {...props}
       type="button"
       className={clsx(
-        "inline-flex h-12 items-center gap-2.5 rounded-lg bg-gray-3 px-4 text-gray-12 hover:bg-gray-4",
+        "inline-flex h-12 items-center gap-2.5 rounded-[12px] bg-white px-4 text-gray-12 border border-[#373A53]",
         className
       )}
     >

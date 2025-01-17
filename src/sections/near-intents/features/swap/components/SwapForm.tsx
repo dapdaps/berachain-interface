@@ -174,8 +174,10 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     <Flex
       direction="column"
       gap="2"
-      className="widget-container rounded-2xl bg-gray-1 p-5 shadow"
+      className="bg-[#FFFDEB] rounded-[30px] p-5 border border-black shadow-shadow1"
     >
+      <div className="font-CherryBomb w-full text-center text-[26px] mb-3">Swap</div>
+      <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
       <Form<SwapFormValues>
         handleSubmit={handleSubmit(onSubmit)}
         register={register}
@@ -186,7 +188,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenIn")
           }}
-          className="border border-gray-200/50 rounded-t-xl"
+          className="border border-[#373A53] rounded-t-xl"
           required
           errors={errors}
           usdAmount={usdAmountIn ? `~${formatUsdAmount(usdAmountIn)}` : null}
@@ -194,7 +196,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         />
 
         <div className="relative w-full">
-          <ButtonSwitch onClick={switchTokens} />
+          <ButtonSwitch className="w-[34px] h-[34px] bg-[#BC9549] rounded-md font-bold" onClick={switchTokens} />
         </div>
 
         <FieldComboInput<SwapFormValues>
@@ -203,7 +205,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenOut")
           }}
-          className="border border-gray-200/50 rounded-b-xl mb-5"
+          className="border border-[#373A53] border-t-[0] rounded-b-xl mb-5"
           errors={errors}
           disabled={true}
           isLoading={snapshot.matches({ editing: "waiting_quote" })}

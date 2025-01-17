@@ -25,7 +25,7 @@ export const SelectAssets = ({ selected, handleSelect }: Props) => {
     <button
       type="button"
       onClick={handleAssetsSelect}
-      className="max-w-[148px] md:max-w-[210px] bg-white shadow-select-token rounded-full flex justify-between items-center p-1 gap-2.5 dark:bg-black-800 dark:shadow-select-token-dark"
+      className="w-[176px] h-[46px] border border-[#373A53] bg-[#FFFDEB] rounded-full flex justify-between items-center py-2 pl-[8px] pr-[10px] gap-2.5"
     >
       {selected?.icon ? (
         <AssetComboIcon
@@ -41,7 +41,7 @@ export const SelectAssets = ({ selected, handleSelect }: Props) => {
       ) : (
         <EmptyIcon />
       )}
-      <span className="text-sm uppercase truncate">
+      <span className="font-Montserrat leading-[14px] font-[600] uppercase truncate">
         {selected?.symbol || "select token"}
       </span>
       <CaretDownIcon width={25} height={25} />

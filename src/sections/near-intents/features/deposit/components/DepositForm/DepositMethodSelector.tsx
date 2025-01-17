@@ -13,17 +13,16 @@ export function DepositMethodSelector({
 }: DepositMethodSelectorProps) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="font-bold text-label text-sm">Choose deposit method</div>
-
+      <div className="font-Montserrat font-semibold text-sm text-[#8A8A8A]">Choose deposit method</div>
       <div className="flex items-stretch gap-2">
         <button
           type="button"
           onClick={() => onSelectDepositOption("passive")}
           className={clsx(
-            "flex h-12 flex-1 items-center justify-center rounded-md font-bold text-sm",
+            "flex h-12 flex-1 items-center justify-center rounded-xl font-semibold font-Montserrat border border-black",
             selectedDepositOption === "passive"
-              ? "bg-accent-2 text-accent-a11 ring-2 ring-accent-a8 ring-inset dark:bg-accent-a2 dark:text-accent-10"
-              : "bg-transparent text-gray-11 ring-1 ring-border"
+              ? "bg-[#FFDC50] ring-inset"
+              : "bg-white"
           )}
         >
           Exchange
@@ -33,10 +32,10 @@ export function DepositMethodSelector({
           type="button"
           onClick={() => onSelectDepositOption("active")}
           className={clsx(
-            "flex h-12 flex-1 items-center justify-center rounded-md font-bold text-sm",
+            "flex h-12 flex-1 items-center justify-center rounded-xl font-semibold font-Montserrat border border-black",
             selectedDepositOption === "active"
-              ? "bg-accent-2 text-accent-a11 ring-2 ring-accent-a8 ring-inset dark:bg-accent-a2 dark:text-accent-10"
-              : "bg-transparent text-gray-11 ring-1 ring-border"
+              ? "bg-[#FFDC50]"
+              : "bg-white"
           )}
         >
           Wallet

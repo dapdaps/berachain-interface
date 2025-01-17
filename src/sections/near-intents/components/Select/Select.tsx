@@ -1,9 +1,7 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 import * as RadixSelect from "@radix-ui/react-select"
 import { Theme } from "@radix-ui/themes"
-import type { ReactNode } from "react"
-import { useContext } from "react"
-import { WidgetContext } from "../WidgetRoot"
+import { useMemo, type ReactNode } from "react"
 
 type Props<T extends string> = {
   name: string
@@ -11,7 +9,8 @@ type Props<T extends string> = {
     [key in T extends string ? T : never]: {
       label: string
       icon: ReactNode
-      value: string
+      value: string // 确保 value 是字符串类型
+      key?: string
     }
   }
   placeholder: { label: string; icon: ReactNode }
@@ -19,7 +18,13 @@ type Props<T extends string> = {
   disabled?: boolean
   value?: string
   hint?: ReactNode
+  portalContainer?: HTMLElement
   onChange?: (value: string) => void
+  selectedOption?: {
+    label: string;
+    icon: ReactNode;
+    value: string;
+  } | null;
 }
 
 export function Select<T extends string>({
@@ -31,8 +36,10 @@ export function Select<T extends string>({
   value,
   hint,
   onChange,
+  portalContainer,
+  selectedOption,
 }: Props<T>) {
-  const { portalContainer } = useContext(WidgetContext)
+
   return (
     <RadixSelect.Root
       onValueChange={onChange}
@@ -41,7 +48,7 @@ export function Select<T extends string>({
       disabled={disabled}
     >
       <RadixSelect.Trigger
-        className="h-12 gap-3 rounded-lg bg-gray-3 px-4 text-gray-12 leading-6 ring-accent-9 ring-inset transition-all duration-100 ease-in-out hover:bg-gray-4 data-[state=open]:bg-gray-4 data-[state=open]:ring-2"
+        className="h-[50px] gap-3 border border-[#373A53] p-2.5 rounded-lg bg-gray-3 text-gray-12 leading-6 ring-accent-9 ring-inset transition-all duration-100 ease-in-out hover:bg-gray-4 data-[state=open]:bg-gray-4 data-[state=open]:ring-2 outline-none focus:outline-none"
         aria-label={label ?? "Not specified"}
         disabled={disabled}
       >
@@ -54,8 +61,15 @@ export function Select<T extends string>({
           </div>
 
           <div className="flex flex-1 items-center justify-between [[data-placeholder]_&]:hidden">
-            <div className="font-bold text-sm">
-              <RadixSelect.Value />
+            <div className="flex items-center gap-2 font-bold text-sm">
+              {selectedOption ? (
+                <div className="flex items-center gap-2">
+                  {selectedOption.icon}
+                  {selectedOption.label}
+                </div>
+              ) : (
+                <RadixSelect.Value />
+              )}
             </div>
             {hint != null ? hint : null}
           </div>
@@ -69,13 +83,15 @@ export function Select<T extends string>({
       </RadixSelect.Trigger>
 
       <RadixSelect.Portal container={portalContainer}>
-        <Theme asChild>
-          <RadixSelect.Content
-            className="box-border max-h-[var(--radix-select-content-available-height)] w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-md border border-border bg-gray-1 shadow-2xl"
-            position="popper"
-            side="bottom"
-            sideOffset={8}
-          >
+        <RadixSelect.Content
+          className="box-border max-h-[400px] w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)] overflow-y-scroll rounded-md border border-border z-[9999] bg-[#FFFDEB]"
+          position="popper"
+          side="bottom"
+          align="start"
+          sideOffset={4}
+          alignOffset={0}
+          avoidCollisions={false}
+        >
             <RadixSelect.Viewport className="flex flex-col gap-1 p-2">
               {Object.keys(options).map((key: string) => (
                 <SelectItem
@@ -93,8 +109,7 @@ export function Select<T extends string>({
                 </SelectItem>
               ))}
             </RadixSelect.Viewport>
-          </RadixSelect.Content>
-        </Theme>
+        </RadixSelect.Content>
       </RadixSelect.Portal>
     </RadixSelect.Root>
   )

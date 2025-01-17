@@ -17,6 +17,7 @@ import {
   type BlockMultiBalancesProps,
 } from "../Block/BlockMultiBalances"
 import { SelectAssets } from "../SelectAssets"
+import IconDeposit from '@public/images/near-intents/icons/deposit-icon.svg'
 
 interface Props<T extends FieldValues>
   extends Omit<BlockMultiBalancesProps, "decimals" | "balance"> {
@@ -102,13 +103,14 @@ export const FieldComboInput = <T extends FieldValues>({
   return (
     <div
       className={clsx(
-        "relative flex flex-col px-5 pt-5 pb-6 w-full bg-gray-50 dark:bg-black-900 dark:border-black-950",
+        "relative flex flex-col px-5 pt-5 pb-6 w-full bg-white",
         className
       )}
     >
       <div className="w-full flex justify-between items-center gap-2 h-15">
-        {isLoading && <Skeleton className="w-full" height="40px" />}
-
+        {selected && (
+          <SelectAssets selected={selected} handleSelect={handleSelect} />
+        )}
         <input
           type="text"
           inputMode="decimal"
@@ -119,7 +121,7 @@ export const FieldComboInput = <T extends FieldValues>({
           disabled={disabled}
           autoComplete="off"
           className={clsx(
-            "bg-gray-50 w-full text-3xl font-medium placeholder-black border-transparent focus:border-transparent focus:ring-0 dark:bg-black-900 dark:placeholder-white px-0",
+            "w-full text-3xl font-medium placeholder-black border-transparent focus:border-transparent focus:ring-0 px-0 text-right",
             disabled &&
               "text-black-200 pointer-events-none placeholder-black-200",
             {
@@ -127,14 +129,35 @@ export const FieldComboInput = <T extends FieldValues>({
             }
           )}
         />
-
-        {selected && (
-          <SelectAssets selected={selected} handleSelect={handleSelect} />
-        )}
+        {isLoading && <Skeleton className="w-full" height="40px" />}
       </div>
 
-      <div className="flex justify-between items-center gap-2 mt-1 min-h-5 w-full max-w-[calc(100vw-106px)]">
-        {fieldError ? (
+      <div className="flex justify-between mt-[10px] items-center min-h-5 w-full max-w-[calc(100vw-106px)]">
+        <div className="flex items-center gap-2">
+          <BlockMultiBalances
+            balance={balance ?? BigInt(0)}
+            decimals={selected?.decimals ?? 0}
+            handleClick={handleSetMaxValue}
+            disabled={disabled}
+          />
+          {
+            fieldName === 'amountIn' && (
+              <div className="flex items-center gap-1 rounded-[6px] p-[5px] bg-[#FFDC50] border border-black">
+          <IconDeposit />
+          <span className="text-[10px] font-Montserrat font-[500]">Deposit</span>
+         </div>
+            )
+          }
+        </div>
+          {
+            usdAmount ? (
+              <span className="text-xs sm:text-sm font-medium text-gray-400 whitespace-nowrap overflow-hidden">
+                {usdAmount}
+              </span>
+            ) : null
+          }
+         
+        {/* {fieldError ? (
           <span className="text-xs sm:text-sm font-medium text-red-400  whitespace-nowrap overflow-hidden">
             {(fieldError as FieldError).message}
           </span>
@@ -145,13 +168,13 @@ export const FieldComboInput = <T extends FieldValues>({
         ) : null}
         {balance != null && (
           <BlockMultiBalances
-            balance={balance}
+            balance={balance ?? BigInt(0)}
             decimals={selected?.decimals ?? 0}
             handleClick={handleSetMaxValue}
             disabled={disabled}
             className="ml-auto"
           />
-        )}
+        )} */}
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { Button, type ButtonProps, Flex, Text } from "@radix-ui/themes"
 import type { ButtonHTMLAttributes, ReactNode } from "react"
+import clsx from 'clsx'
 
 interface ButtonCustomProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
@@ -48,19 +49,18 @@ export const ButtonCustom = ({
       break
   }
 
+  console.log('size', size)
+
   return (
     <Flex align="center" gap="2" asChild>
       <Button
-        color={radixButtonColor}
-        variant={radixButtonVariant}
-        size={radixButtonSize}
         disabled={disabled || isLoading}
         className={
-          {
+          clsx({
             sm: "h-8",
             base: "h-10",
             lg: "h-14",
-          }[size]
+          }[size], 'bg-[#FFDC50] rounded-[10px] border border-black font-Montserrat font-[600]', fullWidth ? 'w-full' : '', ':disabled:bg-[#FFDC50] opacity-30 cursor-not-allowed')
         }
         {...rest}
       >

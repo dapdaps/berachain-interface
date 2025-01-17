@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import { WidgetRoot } from "../../../components/WidgetRoot"
 import { DepositWidgetProvider } from "../../../providers/DepositWidgetProvider"
 import { useTokensStore } from "../../../providers/TokensStoreProvider"
 import type { DepositWidgetProps } from "../../../types/deposit"
@@ -17,7 +16,6 @@ export const DepositWidget = ({
   sendTransactionSolana,
 }: DepositWidgetProps) => {
   return (
-    <WidgetRoot>
       <DepositWidgetProvider>
         <TokenListUpdater tokenList={tokenList} />
         <DepositFormProvider>
@@ -36,7 +34,6 @@ export const DepositWidget = ({
           </DepositUIMachineProvider>
         </DepositFormProvider>
       </DepositWidgetProvider>
-    </WidgetRoot>
   )
 }
 

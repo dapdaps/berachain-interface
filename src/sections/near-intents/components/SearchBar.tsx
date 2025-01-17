@@ -14,22 +14,22 @@ export const SearchBar = ({
   placeholder = "Search name or paste address",
 }: Props) => {
   return (
-    <div className="flex justify-between items-center gap-4">
+    <div className="flex mt-3 justify-between items-center gap-2 border-b border-black">
       <MagnifyingGlassIcon width={18} height={18} />
       <input
-        className="flex-1 border-transparent focus:border-transparent focus:ring-0 dark:bg-black-800 dark:text-white"
+        className="flex-1 border-transparent focus:border-transparent focus:ring-0 bg-[#FFFDEB]"
         placeholder={placeholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <button
+      {/* <button
         type="button"
         onClick={() => {
           handleOverrideCancel ? handleOverrideCancel() : setQuery("")
         }}
       >
         <Cross1Icon width={14} height={14} />
-      </button>
+      </button> */}
     </div>
   )
 }

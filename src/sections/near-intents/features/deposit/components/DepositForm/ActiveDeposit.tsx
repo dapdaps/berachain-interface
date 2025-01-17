@@ -1,5 +1,5 @@
 import { InfoCircledIcon } from "@radix-ui/react-icons"
-import { Text, useThemeContext } from "@radix-ui/themes"
+import { Text } from "@radix-ui/themes"
 import clsx from "clsx"
 import { useId } from "react"
 import { useFormContext } from "react-hook-form"
@@ -87,8 +87,8 @@ export function ActiveDeposit({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-3">
-        <label htmlFor={inputId} className="font-bold text-label text-sm">
-          Enter amount
+        <label htmlFor={inputId} className="font-Montserrat font-semibold text-sm text-[#8A8A8A]">
+          Amount
         </label>
 
         <TokenAmountInputCard
@@ -119,7 +119,9 @@ export function ActiveDeposit({
         />
       </div>
 
-      <DepositWarning depositWarning={depositOutput || preparationOutput} />
+      {/* <DepositWarning depositWarning={depositOutput || preparationOutput} /> */}
+
+      {renderDepositHint(network, minDepositAmount, token)}
 
       <ButtonCustom
         size="lg"
@@ -140,7 +142,6 @@ export function ActiveDeposit({
         )}
       </ButtonCustom>
 
-      {renderDepositHint(network, minDepositAmount, token)}
 
       <DepositResult
         chainName={reverseAssetNetworkAdapter[network]}
@@ -159,7 +160,6 @@ function Balance({
   token: BaseTokenInfo
   onClick: () => void
 }) {
-  const { accentColor } = useThemeContext()
 
   return (
     <div className="flex items-center gap-1">
@@ -168,13 +168,14 @@ function Balance({
         decimals={token.decimals}
         handleClick={onClick}
         disabled={balance === 0n}
+        balanceStyleType="secondary"
         className={clsx("!static", balance == null && "invisible")}
       />
 
       {token.address === "wrap.near" && (
         <TooltipInfo
           icon={
-            <Text asChild color={accentColor}>
+            <Text asChild>
               <InfoCircledIcon />
             </Text>
           }

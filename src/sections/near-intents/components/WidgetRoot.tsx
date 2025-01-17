@@ -1,6 +1,7 @@
 import { type ReactNode, createContext, useState } from "react"
 import { createPortal } from "react-dom"
 import root from "react-shadow"
+import "./styles/main.css"
 
 export const WidgetContext = createContext<{
   portalContainer: null | HTMLElement

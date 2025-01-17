@@ -9,6 +9,10 @@ export enum ModalType {
   MODAL_CONNECT_NETWORKS = "modalConnectNetworks",
   MODAL_STORE_NETWORK = "modalStoreNetwork",
   MODAL_SELECT_WALLET = "modalSelectWallet",
+  // deposit
+  MODAL_REVIEW_DEPOSIT = "modalReviewDeposit",
+  // withdraw
+  MODAL_REVIEW_WITHDRAW = "modalReviewWithdraw",
 }
 
 export type ModalState = {

@@ -1,3 +1,4 @@
+import useToast from "@/hooks/use-toast"
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
 import { IconButton, Slot } from "@radix-ui/themes"
 import { type ReactNode, useEffect, useRef, useState } from "react"
@@ -31,7 +32,7 @@ export function Copy({
 }: { children: (copied: boolean) => ReactNode; text: string }) {
   const [copied, setCopied] = useState(false)
   const abortCtrlRef = useRef<AbortController | null>(null)
-
+  const toast = useToast()
   useEffect(() => {
     return () => {
       abortCtrlRef.current?.abort()
@@ -45,6 +46,9 @@ export function Copy({
         abortCtrlRef.current = new AbortController()
 
         await navigator.clipboard.writeText(text)
+        toast.success({
+          title: "Copied to clipboard"
+        })
 
         let timerId: ReturnType<typeof setTimeout>
         if (!copied) {

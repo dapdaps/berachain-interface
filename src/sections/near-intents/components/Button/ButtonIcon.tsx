@@ -21,12 +21,12 @@ export const ButtonIcon = ({
     <button
       type="button"
       className={clsx(
-        "flex justify-center items-center w-[40px] h-[40px] rounded-md overflow-hidden bg-white dark:bg-black",
+        "flex justify-center items-center w-[40px] h-[40px] rounded-md overflow-hidden bg-white",
         className && className
       )}
       onClick={onClick && onClick}
     >
-      <div className="flex w-full h-full justify-center items-center bg-white-200 dark:bg-black-800">
+      <div className="flex w-full h-full justify-center items-center bg-white-200">
         {icon && (
           <img
             src={icon}
