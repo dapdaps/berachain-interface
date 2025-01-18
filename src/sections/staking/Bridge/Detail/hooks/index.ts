@@ -485,15 +485,6 @@ export function useDetail(props: any) {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
     if (!["bex", "kodiak"].includes(protocol?.id)) return null;
-    // const protocol = pool.protocol.split(" ")[0];
-    const underlying_tokens = data?.initialData?.underlying_tokens
-    if (underlying_tokens?.length === 2)
-      return {
-        protocol: protocol?.id,
-        token0: { ...underlying_tokens[0], icon: data.images[0] },
-        token1: { ...underlying_tokens[1], icon: data.images[1] },
-        version: "v2"
-      };
     const islandItem = (kodiak.islands as any)[
       data?.initialData?.stake_token?.address
     ];
@@ -506,6 +497,14 @@ export function useDetail(props: any) {
         stakingToken: data?.initialData?.stake_token
       };
     }
+    const underlying_tokens = data?.initialData?.underlying_tokens
+    if (underlying_tokens?.length === 2)
+      return {
+        protocol: protocol?.id,
+        token0: { ...underlying_tokens[0], icon: data.images[0] },
+        token1: { ...underlying_tokens[1], icon: data.images[1] },
+        version: "v2"
+      };
     return null;
   }, [data]);
 
