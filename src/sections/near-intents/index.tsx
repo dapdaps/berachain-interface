@@ -12,7 +12,6 @@ import { ModalType } from "./stores/modalStore";
 const NearIntents = () => {
   const { updateTokens } = useTokensStore((state) => state);
   const tokenList = useTokenList(LIST_TOKENS);
-
   const { setModalType } = useModalStore(
     (state) => state
   )

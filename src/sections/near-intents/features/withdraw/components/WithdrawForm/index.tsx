@@ -277,11 +277,14 @@ export const WithdrawForm = ({
   )
 
   return (
-    <div className="widget-container">
+    <div className="pb-5">
+      <div className="font-CherryBomb text-[26px] text-center mb-4 mt-5">
+        Withdraw
+      </div>
       <Flex
         direction="column"
         gap="2"
-        className="rounded-2xl bg-gray-1 p-5 shadow"
+        className="rounded-2xl bg-gray-1 px-5 h-full"
       >
         <Form<WithdrawFormNearValues>
           handleSubmit={handleSubmit(() => {
@@ -305,13 +308,17 @@ export const WithdrawForm = ({
           register={register}
         >
           <Flex direction="column" gap="5">
+            <div className="font-semibold font-Montserrat text-sm text-[#8A8A8A] mb-2.5">
+            Amount
+            </div>
             <FieldComboInput<WithdrawFormNearValues>
               fieldName="amountIn"
+              usedType="withdraw"
               selected={token}
               handleSelect={() => {
                 handleSelect()
               }}
-              className="border border-gray-200/50 rounded-xl"
+              className="border border-[#010102] rounded-xl bg-white !p-2.5"
               required
               min={
                 minWithdrawalAmount != null
@@ -350,8 +357,8 @@ export const WithdrawForm = ({
             />
 
             <Flex direction="column" gap="2">
-              <Box px="2" asChild>
-                <Text size="1" weight="bold">
+              <Box px="2" asChild className="mt-5 mb-2.5">
+                <Text className="font-semibold font-Montserrat text-sm text-[#8A8A8A]">
                   Recipient
                 </Text>
               </Box>
@@ -374,43 +381,33 @@ export const WithdrawForm = ({
                         label: "Select network",
                         icon: <EmptyIcon />,
                       }}
-                      hint={
-                        <Select.Hint>
-                          {Object.keys(blockchainSelectItems).length === 1
-                            ? "This network only"
-                            : "Network"}
-                        </Select.Hint>
-                      }
                     />
                   )
                 }}
               />
 
-              <Flex direction="column" gap="1">
+              <Flex direction="column" gap="1" className="mt-2.5">
                 <Flex gap="2" align="center">
                   <Box asChild flexGrow="1">
                     <TextField.Root
-                      size="3"
+                      className="w-full h-[50px] border border-[#373A53] rounded-xl py-[18px] text-[14px] px-4 placeholder-[#8A8A8A] text-black font-Montserrat font-[600]"
                       {...register("recipient", {
                         validate: {
                           pattern: (value, formValues) => {
                             if (
                               !validateAddress(value, formValues.blockchain)
                             ) {
-                              return "Invalid address for the selected blockchain"
+                              return "* Invalid address for the selected blockchain"
                             }
                           },
                         },
                       })}
                       placeholder="Enter wallet address"
                     >
-                      <TextField.Slot>
-                        <PersonIcon height="16" width="16" />
-                      </TextField.Slot>
                     </TextField.Root>
                   </Box>
 
-                  {isChainTypeSatisfiesChainName &&
+                  {/* {isChainTypeSatisfiesChainName &&
                     userAddress != null &&
                     recipient !== userAddress && (
                       <IconButton
@@ -427,7 +424,7 @@ export const WithdrawForm = ({
                       >
                         <MagicWandIcon />
                       </IconButton>
-                    )}
+                    )} */}
                 </Flex>
 
                 {errors.recipient && (
@@ -475,12 +472,12 @@ export const WithdrawForm = ({
               )}
             </Flex>
 
-            <Flex justify="between" px="2">
-              <Text size="1" weight="medium" color="gray">
+            <Flex justify="between" px="2" className="mt-5 mb-4">
+              <Text className="font-semibold font-Montserrat text-sm text-black">
                 Received amount
               </Text>
 
-              <Text size="1" weight="bold">
+              <Text className="font-semibold font-Montserrat text-sm text-black">
                 {state.matches({ editing: "preparation" }) ? (
                   <Skeleton>100.000000</Skeleton>
                 ) : totalAmountReceived == null ? (
@@ -517,7 +514,7 @@ const allBlockchains = [
     label: "Near",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/near_dark.svg"
+        chainIcon="/images/near-intents/icons/network/near_dark.svg"
         chainName="Near"
       />
     ),
@@ -527,7 +524,7 @@ const allBlockchains = [
     label: "Ethereum",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/ethereum.svg"
+        chainIcon="/images/near-intents/icons/network/ethereum.svg"
         chainName="Ethereum"
       />
     ),
@@ -537,7 +534,7 @@ const allBlockchains = [
     label: "Base",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/base.svg"
+        chainIcon="/images/near-intents/icons/network/base.svg"
         chainName="Base"
       />
     ),
@@ -547,7 +544,7 @@ const allBlockchains = [
     label: "Arbitrum",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/arbitrum.svg"
+        chainIcon="/images/near-intents/icons/network/arbitrum.svg"
         chainName="Arbitrum"
       />
     ),
@@ -557,7 +554,7 @@ const allBlockchains = [
     label: "Bitcoin",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/btc.svg"
+        chainIcon="/images/near-intents/icons/network/btc.svg"
         chainName="Bitcoin"
       />
     ),
@@ -567,7 +564,7 @@ const allBlockchains = [
     label: "Solana",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/solana.svg"
+        chainIcon="/images/near-intents/icons/network/solana.svg"
         chainName="Solana"
       />
     ),
@@ -577,7 +574,7 @@ const allBlockchains = [
     label: "Dogecoin",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/dogecoin.svg"
+        chainIcon="/images/near-intents/icons/network/dogecoin.svg"
         chainName="Dogecoin"
       />
     ),
@@ -587,7 +584,7 @@ const allBlockchains = [
     label: "TurboChain",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/turbochain.png"
+        chainIcon="/images/near-intents/icons/network/turbochain.png"
         chainName="TurboChain"
       />
     ),
@@ -597,7 +594,7 @@ const allBlockchains = [
     label: "Aurora",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/aurora.svg"
+        chainIcon="/images/near-intents/icons/network/aurora.svg"
         chainName="Aurora"
       />
     ),
@@ -607,7 +604,7 @@ const allBlockchains = [
     label: "XRP Ledger",
     icon: (
       <NetworkIcon
-        chainIcon="/static/icons/network/xrpledger.svg"
+        chainIcon="/images/near-intents/icons/network/xrpledger.svg"
         chainName="XRP Ledger"
       />
     ),
@@ -634,7 +631,7 @@ function renderMinWithdrawalAmount(
   return (
     minWithdrawalAmount != null &&
     minWithdrawalAmount > 1n && (
-      <Callout.Root size="1" color="gray" variant="surface">
+    <Callout.Root size="1" color="gray" variant="surface" className="my-2.5 gap-1 p-2 rounded-xl">
         <Callout.Icon>
           <InfoCircledIcon />
         </Callout.Icon>

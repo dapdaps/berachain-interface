@@ -32,7 +32,7 @@ export const ModalDialog = ({
       open={open}
       onClose={handleClose}
       isMaskClose={true}
-      className="z-[100]"
+      className="z-[60]"
       closeIconClassName="right-[-14px] top-[-8px]"
     >
       <div className="bg-[#FFFDEB] border border-black shadow-shadow1 w-[364px] rounded-[30px]" ref={divRef}>

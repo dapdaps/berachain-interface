@@ -2,6 +2,7 @@ import { ReloadIcon } from "@radix-ui/react-icons"
 import { Button, type ButtonProps, Flex, Text } from "@radix-ui/themes"
 import type { ButtonHTMLAttributes, ReactNode } from "react"
 import clsx from 'clsx'
+import Loading from "@/components/loading"
 
 interface ButtonCustomProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
@@ -21,38 +22,8 @@ export const ButtonCustom = ({
   isLoading = false,
   ...rest
 }: ButtonCustomProps) => {
-  let radixButtonVariant: ButtonProps["variant"]
-  let radixButtonColor: ButtonProps["color"]
-  switch (variant) {
-    case "primary":
-      radixButtonVariant = undefined
-      break
-    case "secondary":
-      radixButtonVariant = "outline"
-      radixButtonColor = "gray"
-      break
-    case "base":
-      radixButtonVariant = "solid"
-      radixButtonColor = "gray"
-      break
-  }
-
-  let radixButtonSize: ButtonProps["size"] | undefined
-  switch (size) {
-    case "sm":
-      radixButtonSize = "1"
-      break
-    case "base":
-      break
-    case "lg":
-      radixButtonSize = "4"
-      break
-  }
-
-  console.log('size', size)
-
+  
   return (
-    <Flex align="center" gap="2" asChild>
       <Button
         disabled={disabled || isLoading}
         className={
@@ -60,13 +31,14 @@ export const ButtonCustom = ({
             sm: "h-8",
             base: "h-10",
             lg: "h-14",
-          }[size], 'bg-[#FFDC50] rounded-[10px] border border-black font-Montserrat font-[600]', fullWidth ? 'w-full' : '', ':disabled:bg-[#FFDC50] opacity-30 cursor-not-allowed')
+          }[size], 'bg-[#FFDC50] rounded-[10px] font-Montserrat font-[600] flex items-center gap-2 justify-center !border !border-black', fullWidth ? 'w-full' : '', {
+            "opacity-30 cursor-not-allowed bg-[#FFDC50]": disabled || isLoading,
+          })
         }
-        {...rest}
+        style={{ border: '1px solid #000' }}
       >
-        {isLoading ? <ReloadIcon className="size-5 animate-spin" /> : null}
+        {isLoading ? <Loading size={18}/> : null}
         <Text weight="bold">{children}</Text>
       </Button>
-    </Flex>
   )
 }

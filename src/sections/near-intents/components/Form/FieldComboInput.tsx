@@ -1,6 +1,6 @@
-import { Skeleton } from "@radix-ui/themes"
-import clsx from "clsx"
-import { useRef } from "react"
+import { Skeleton } from "@radix-ui/themes";
+import clsx from "clsx";
+import { useRef } from "react";
 import type {
   FieldError,
   FieldErrors,
@@ -8,36 +8,39 @@ import type {
   Path,
   RegisterOptions,
   UseFormRegister,
-} from "react-hook-form"
-import { formatUnits } from "viem"
-import useMergedRef from "../../hooks/useMergedRef"
-import type { BaseTokenInfo, UnifiedTokenInfo } from "../../types/base"
+} from "react-hook-form";
+import { formatUnits } from "viem";
+import useMergedRef from "../../hooks/useMergedRef";
+import type { BaseTokenInfo, UnifiedTokenInfo } from "../../types/base";
 import {
   BlockMultiBalances,
   type BlockMultiBalancesProps,
-} from "../Block/BlockMultiBalances"
-import { SelectAssets } from "../SelectAssets"
-import IconDeposit from '@public/images/near-intents/icons/deposit-icon.svg'
+} from "../Block/BlockMultiBalances";
+import { SelectAssets } from "../SelectAssets";
+import IconDeposit from "@public/images/near-intents/icons/deposit-icon.svg";
+import { ModalType } from "../../stores/modalStore";
+import { useModalStore } from "../../providers/ModalStoreProvider";
 
 interface Props<T extends FieldValues>
   extends Omit<BlockMultiBalancesProps, "decimals" | "balance"> {
-  fieldName: Path<T>
-  register?: UseFormRegister<T>
-  required?: boolean
-  min?: RegisterOptions["min"]
-  max?: RegisterOptions["max"]
-  placeholder?: string
-  balance?: bigint
-  selected?: BaseTokenInfo | UnifiedTokenInfo
-  handleSelect?: () => void
-  className?: string
-  errors?: FieldErrors
-  usdAmount?: string | null
-  disabled?: boolean
-  isLoading?: boolean
+  fieldName: Path<T>;
+  register?: UseFormRegister<T>;
+  required?: boolean;
+  min?: RegisterOptions["min"];
+  max?: RegisterOptions["max"];
+  placeholder?: string;
+  balance?: bigint;
+  selected?: BaseTokenInfo | UnifiedTokenInfo;
+  handleSelect?: () => void;
+  className?: string;
+  errors?: FieldErrors;
+  usdAmount?: string | null;
+  disabled?: boolean;
+  isLoading?: boolean;
+  usedType?: "swap" | "withdraw" | "deposit";
 }
 
-export const FieldComboInputRegistryName = "FieldComboInput"
+export const FieldComboInputRegistryName = "FieldComboInput";
 
 export const FieldComboInput = <T extends FieldValues>({
   fieldName,
@@ -54,38 +57,41 @@ export const FieldComboInput = <T extends FieldValues>({
   usdAmount,
   disabled,
   isLoading,
+  usedType = "swap",
 }: Props<T>) => {
   if (!register) {
-    return null
+    return null;
   }
-
-  const inputRef = useRef<HTMLInputElement>(null)
+  const { setModalType } = useModalStore(
+    (state) => state
+  )
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const setInputValue = (
     value: string | ((previousValue: string) => string)
   ) => {
     if (inputRef.current) {
-      const lastValue = inputRef.current.value
+      const lastValue = inputRef.current.value;
 
       inputRef.current.value =
-        typeof value === "function" ? value(lastValue) : value
+        typeof value === "function" ? value(lastValue) : value;
 
       // @ts-expect-error React hack for emitting change event
-      const tracker = inputRef.current._valueTracker
+      const tracker = inputRef.current._valueTracker;
       if (tracker) {
-        tracker.setValue(lastValue)
+        tracker.setValue(lastValue);
       }
 
-      const event = new Event("change", { bubbles: true })
-      inputRef.current.dispatchEvent(event)
+      const event = new Event("change", { bubbles: true });
+      inputRef.current.dispatchEvent(event);
     }
-  }
+  };
 
   const handleSetMaxValue = () => {
     if (!disabled && balance != null && selected && inputRef.current) {
-      setInputValue(formatUnits(balance, selected.decimals))
+      setInputValue(formatUnits(balance, selected.decimals));
     }
-  }
+  };
 
   // react-hook-form specific props
   const reactHookFormRegisterProps = register(fieldName, {
@@ -96,10 +102,10 @@ export const FieldComboInput = <T extends FieldValues>({
       message: "Please enter a valid number",
     },
     required: required ? "This field is required" : false,
-  })
+  });
 
-  const allInputRefs = useMergedRef(inputRef, reactHookFormRegisterProps.ref)
-  const fieldError = errors?.[fieldName]
+  const allInputRefs = useMergedRef(inputRef, reactHookFormRegisterProps.ref);
+  const fieldError = errors?.[fieldName];
   return (
     <div
       className={clsx(
@@ -140,23 +146,21 @@ export const FieldComboInput = <T extends FieldValues>({
             handleClick={handleSetMaxValue}
             disabled={disabled}
           />
-          {
-            fieldName === 'amountIn' && (
-              <div className="flex items-center gap-1 rounded-[6px] p-[5px] bg-[#FFDC50] border border-black">
-          <IconDeposit />
-          <span className="text-[10px] font-Montserrat font-[500]">Deposit</span>
-         </div>
-            )
-          }
-        </div>
-          {
-            usdAmount ? (
-              <span className="text-xs sm:text-sm font-medium text-gray-400 whitespace-nowrap overflow-hidden">
-                {usdAmount}
+          {fieldName === "amountIn" && usedType === "swap" && (
+            <div className="flex items-center gap-1 rounded-[6px] p-[5px] bg-[#FFDC50] border border-black cursor-pointer hover:opacity-60" onClick={() => setModalType(ModalType.MODAL_REVIEW_DEPOSIT)}>
+              <IconDeposit />
+              <span className="text-[10px] font-Montserrat font-[500]">
+                Deposit
               </span>
-            ) : null
-          }
-         
+            </div>
+          )}
+        </div>
+        {usdAmount ? (
+          <span className="text-xs sm:text-sm font-medium text-gray-400 whitespace-nowrap overflow-hidden">
+            {usdAmount}
+          </span>
+        ) : null}
+
         {/* {fieldError ? (
           <span className="text-xs sm:text-sm font-medium text-red-400  whitespace-nowrap overflow-hidden">
             {(fieldError as FieldError).message}
@@ -177,7 +181,7 @@ export const FieldComboInput = <T extends FieldValues>({
         )} */}
       </div>
     </div>
-  )
-}
+  );
+};
 
-FieldComboInput.displayName = FieldComboInputRegistryName
+FieldComboInput.displayName = FieldComboInputRegistryName;

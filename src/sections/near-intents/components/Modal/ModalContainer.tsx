@@ -4,6 +4,7 @@ import { ModalType } from "../../stores/modalStore"
 
 import { ModalSelectAssets } from "./ModalSelectAssets"
 import ModalReviewDeposit from "./ModalReviewDeposit"
+import ModalReviewWithdraw from "./ModalReviewWithdraw"
 
 
 export const ModalContainer = () => {
@@ -14,6 +15,8 @@ export const ModalContainer = () => {
       return <ModalSelectAssets />
     case ModalType.MODAL_REVIEW_DEPOSIT:
       return <ModalReviewDeposit />
+    case ModalType.MODAL_REVIEW_WITHDRAW:
+      return <ModalReviewWithdraw />
     default:
       return null
   }

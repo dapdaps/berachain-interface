@@ -10,7 +10,7 @@ import {
 import { AssetComboIcon } from "../../../../components/Asset/AssetComboIcon";
 import { EmptyIcon } from "../../../../components/EmptyIcon";
 import { Form } from "../../../../components/Form";
-import type { ModalSelectAssetsPayload } from "../../../../components/Modal/ModalSelectAssets";
+import type { ModalSelectAssetsPayload, SelectItemToken } from "../../../../components/Modal/ModalSelectAssets";
 import { NetworkIcon } from "../../../../components/Network/NetworkIcon";
 import { Select } from "../../../../components/Select/Select";
 import { SelectTriggerLike } from "../../../../components/Select/SelectTriggerLike";
@@ -31,6 +31,8 @@ import { PassiveDeposit } from "./PassiveDeposit";
 import { useTokensStore } from "@/sections/near-intents/providers/TokensStoreProvider";
 import { computeTotalBalance } from "@/sections/near-intents/utils/tokenUtils";
 import { WidgetRoot } from "@/sections/near-intents/components/WidgetRoot";
+import { ConnectWalletButton } from "@/sections/near-intents/components/Button/ConnectWalletButton";
+import { useConnectWallet } from "../../../../hooks/useConnectWallet";
 
 export type DepositFormValues = {
   network: BlockchainEnum | null;
@@ -46,6 +48,8 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
 
   const [assetList, setAssetList] = useState<SelectItemToken[]>([]);
   const { data: tokenList, isLoading } = useTokensStore((state) => state);
+
+  const { state: walletState } = useConnectWallet();
 
   useEffect(() => {
     if (!tokenList.size && !isLoading) {
@@ -247,7 +251,6 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
             )}
           />
 
-          {token && (
             <>
               <div className="mt-5 font-semibold font-Montserrat text-sm text-[#8A8A8A]">
                 Network
@@ -255,23 +258,27 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
               <Controller
                 name="network"
                 control={control}
-                render={({ field }) => (
-                  <Select
-                    options={chainOptions}
-                    placeholder={{
-                      label: "Select network",
-                      icon: <EmptyIcon />,
-                    }}
-                    value={
-                      getDefaultBlockchainOptionValue(token) || network || ""
-                    }
-                    onChange={field.onChange}
-                    name={field.name}
-                  />
-                )}
+                render={({ field }) => {
+                  if (!token) {
+                    return <div className="h-[50px] border border-[#373A53] rounded-xl flex items-center p-2.5 font-Montserrat text-[14px] font-[500] bg-white">No assets selected</div>;
+                  }
+                  return (
+                    <Select
+                      options={chainOptions}
+                      placeholder={{
+                        label: "Select network",
+                        icon: <EmptyIcon />,
+                      }}
+                      value={
+                        getDefaultBlockchainOptionValue(token!) || network || ""
+                      }
+                      onChange={field.onChange}
+                      name={field.name}
+                    />
+                  )
+                }}
               />
             </>
-          )}
         </div>
 
         {currentDepositOption != null && (
@@ -306,22 +313,28 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
           </>
         )}
 
-        {userAddress ? null : (
-          <Callout.Root size="1" color="yellow">
+        {/* {userAddress ? null : (
+          <Callout.Root size="1" color="yellow" className="p-2.5 gap-2 items-center rounded-xl">
             <Callout.Icon>
               <ExclamationTriangleIcon />
             </Callout.Icon>
-            <Callout.Text>Please connect your wallet to continue</Callout.Text>
+            <Callout.Text className="text-sm">Please connect your wallet to continue</Callout.Text>
           </Callout.Root>
-        )}
+        )} */}
 
-        {userAddress && network && !isActiveDeposit && !isPassiveDeposit && (
-          <NotSupportedDepositRoute />
-        )}
+      {network && 
+       (!walletState.network?.includes(network) || walletState.network === undefined) && 
+       !isActiveDeposit && 
+       !isPassiveDeposit && (
+        <ConnectWalletButton 
+          network={network}
+        />
+      )}
       </Form>
     </div>
   );
 };
+
 
 function getBlockchainsOptions(): Record<
   BlockchainEnum,
@@ -453,8 +466,9 @@ function filterBlockchainsOptions(
 }
 
 function getDefaultBlockchainOptionValue(
-  token: SwappableToken
+  token?: SwappableToken
 ): BlockchainEnum | null {
+  if (!token) return null;
   if (isBaseToken(token)) {
     const key = assetNetworkAdapter[token.chainName];
     return key

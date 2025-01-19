@@ -143,10 +143,10 @@ export function ActiveDeposit({
       </ButtonCustom>
 
 
-      <DepositResult
+      {/* <DepositResult
         chainName={reverseAssetNetworkAdapter[network]}
         depositResult={depositOutput}
-      />
+      /> */}
     </div>
   )
 }

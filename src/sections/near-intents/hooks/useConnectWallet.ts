@@ -22,6 +22,7 @@ import {
 } from "wagmi"
 import { useEVMWalletActions } from "./useEVMWalletActions"
 import { useNearWalletActions } from "./useNearWalletActions"
+import { useAppKit } from "@reown/appkit/react"
 
 export enum ChainType {
   Near = "near",
@@ -60,7 +61,7 @@ const defaultState: State = {
 
 export const useConnectWallet = (): ConnectWalletAction => {
   let state: State = defaultState
-
+  const modal = useAppKit();
   /**
    * NEAR:
    * Down below are Near Wallet handlers and actions
@@ -69,6 +70,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
   const nearWalletConnect = useNearWalletActions()
 
   const handleSignInViaNearWalletSelector = async (): Promise<void> => {
+    console.log("Sign in via Near Wallet Selector", nearWallet.modal)
     nearWallet.modal.show()
   }
   const handleSignOutViaNearWalletSelector = async () => {
@@ -90,15 +92,9 @@ export const useConnectWallet = (): ConnectWalletAction => {
   const evmWalletConnections = useConnections()
   const { sendTransactions } = useEVMWalletActions()
 
-  const handleSignInViaWagmi = async ({
-    connector,
-  }: {
-    connector: Connector
-  }): Promise<void> => {
-    if (!connector) {
-      throw new Error("Invalid connector")
-    }
-    await evmWalletConnect.connectAsync({ connector })
+  const handleSignInViaWagmi = async (): Promise<void> => {
+    await modal.open()
+    // await evmWalletConnect.connectAsync({ connector })
   }
   const handleSignOutViaWagmi = async () => {
     for (const { connector } of evmWalletConnections) {
@@ -113,6 +109,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
   const { setVisible } = useWalletModal()
   const solanaWallet = useSolanaWallet()
   const solanaConnection = useSolanaConnection()
+
   const handleSignInViaSolanaSelector = async () => {
     setVisible(true)
   }
@@ -170,10 +167,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
     }): Promise<void> {
       const strategies = {
         [ChainType.Near]: () => handleSignInViaNearWalletSelector(),
-        [ChainType.EVM]: () =>
-          params.connector
-            ? handleSignInViaWagmi({ connector: params.connector })
-            : undefined,
+        [ChainType.EVM]: () => handleSignInViaWagmi(),
         [ChainType.Solana]: () => handleSignInViaSolanaSelector(),
       }
       return strategies[params.id]()

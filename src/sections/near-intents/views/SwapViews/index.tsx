@@ -38,7 +38,6 @@ export default function Swap() {
         }}
         signMessage={async (params) => {
           const chainType = state.chainType
-
           switch (chainType) {
             case ChainType.EVM: {
               const signatureData = await signMessageAsyncWagmi({
@@ -85,7 +84,7 @@ export default function Swap() {
         }}
         onSuccessSwap={() => {}}
         onNavigateDeposit={() => {
-          router.push("/deposit")
+          // router.push("/deposit")
         }}
         userChainType={state.chainType ?? null}
       />

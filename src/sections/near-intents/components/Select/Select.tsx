@@ -48,7 +48,7 @@ export function Select<T extends string>({
       disabled={disabled}
     >
       <RadixSelect.Trigger
-        className="h-[50px] gap-3 border border-[#373A53] p-2.5 rounded-lg bg-gray-3 text-gray-12 leading-6 ring-accent-9 ring-inset transition-all duration-100 ease-in-out hover:bg-gray-4 data-[state=open]:bg-gray-4 data-[state=open]:ring-2 outline-none focus:outline-none"
+        className="h-[50px] bg-white gap-3 border border-[#373A53] p-2.5 rounded-lg bg-gray-3 text-gray-12 leading-6 ring-accent-9 ring-inset transition-all duration-100 ease-in-out hover:bg-gray-4 data-[state=open]:bg-gray-4 data-[state=open]:ring-2 outline-none focus:outline-none"
         aria-label={label ?? "Not specified"}
         disabled={disabled}
       >
@@ -84,7 +84,7 @@ export function Select<T extends string>({
 
       <RadixSelect.Portal container={portalContainer}>
         <RadixSelect.Content
-          className="box-border max-h-[400px] w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)] overflow-y-scroll rounded-md border border-border z-[9999] bg-[#FFFDEB]"
+          className="border border-[#373A53] max-h-[400px] w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)] overflow-y-scroll rounded-md z-[9999] bg-[#FFFDEB]"
           position="popper"
           side="bottom"
           align="start"
@@ -100,9 +100,9 @@ export function Select<T extends string>({
                 >
                   <div className="flex w-full items-center justify-between gap-2">
                     {options[key as keyof typeof options]?.icon && (
-                      <div className="flex-shrink-0">
+                      <>
                         {options[key as keyof typeof options].icon}
-                      </div>
+                      </>
                     )}
                     <div>{options[key as keyof typeof options].label}</div>
                   </div>
@@ -123,7 +123,7 @@ interface SelectItemProps {
 function SelectItem({ value, children }: SelectItemProps) {
   return (
     <RadixSelect.Item
-      className="relative flex w-full select-none items-center justify-between gap-3 self-stretch rounded-md p-2 font-bold text-gray-12 text-sm data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-3 data-[state=checked]:bg-gray-3 data-[disabled]:text-gray-8 data-[highlighted]:outline-none"
+      className="relative flex w-full select-none items-center justify-between gap-3 self-stretch rounded-md p-2 font-bold text-gray-12 text-sm data-[disabled]:pointer-events-none data-[highlighted]:bg-black data-[highlighted]:bg-opacity-5 data-[state=checked]:bg-black data-[state=checked]:bg-opacity-5 data-[disabled]:text-[#57534e] data-[highlighted]:outline-none hover:cursor-pointer"
       value={value}
     >
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>

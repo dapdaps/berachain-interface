@@ -29,6 +29,7 @@ import type { intentStatusMachine } from "../../machines/intentStatusMachine"
 import type { Context } from "../../machines/swapUIMachine"
 import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
+import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
 
 export type SwapFormValues = {
   amountIn: string
@@ -47,7 +48,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     getValues,
     formState: { errors },
   } = useFormContext<SwapFormValues>()
-
+  const { state } = useConnectWallet()
   const swapUIActorRef = SwapUIMachineContext.useActorRef()
   const snapshot = SwapUIMachineContext.useSelector((snapshot) => snapshot)
   const intentCreationResult = snapshot.context.intentCreationResult
@@ -214,18 +215,18 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         />
 
         <Flex align="stretch" direction="column">
-          {showDepositButton ? (
+          {!state.address ? (
             <ButtonCustom
               type="button"
               size="lg"
               fullWidth
               onClick={() => {
-                onNavigateDeposit()
+                setModalType(ModalType.MODAL_CONNECT_NETWORKS)
               }}
             >
-              Go to Deposit
+              Connect Wallet
             </ButtonCustom>
-          ) : (
+          ) :  (
             <ButtonCustom
               type="submit"
               size="lg"
@@ -245,9 +246,9 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
 
       {renderIntentCreationResult(intentCreationResult)}
 
-      <Box>
+      {/* <Box>
         <Intents intentRefs={snapshot.context.intentRefs} />
-      </Box>
+      </Box> */}
     </Flex>
   )
 }
@@ -339,7 +340,7 @@ export function renderIntentCreationResult(
   }
 
   return (
-    <Callout.Root size="1" color="red">
+    <Callout.Root size="1" color="red" className="mt-2 rounded-xl gap-1 p-4">
       <Callout.Icon>
         <ExclamationTriangleIcon />
       </Callout.Icon>

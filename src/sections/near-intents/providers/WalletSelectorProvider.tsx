@@ -41,14 +41,13 @@ interface WalletSelectorContextValue {
   selectedWalletId: string | null
 }
 
-const NEAR_ENV = process.env.NEAR_ENV ?? "testnet"
+const NEAR_ENV = process.env.NEAR_ENV ?? "mainnet"
 // 简化 RPC 配置，使用单一节点
 const NEAR_NODE_URL =
   NEAR_ENV === "mainnet"
     ? "https://rpc.mainnet.near.org"
     : "https://rpc.testnet.near.org"
 
-const WALLET_CONNECT_PROJECT_ID = process.env.walletConnectProjectId ?? ""
 
 export const WalletSelectorContext =
   createContext<WalletSelectorContextValue | null>(null)
@@ -63,11 +62,6 @@ export const WalletSelectorProvider: React.FC<{
 
   const init = useCallback(async () => {
     try {
-      // 使用单一 JsonRpcProvider
-      const provider = new providers.JsonRpcProvider({
-        url: NEAR_NODE_URL,
-      })
-
       const _selector = await setupWalletSelector({
         network: {
           networkId: NEAR_ENV,
@@ -80,18 +74,15 @@ export const WalletSelectorProvider: React.FC<{
             NEAR_ENV === "mainnet"
               ? "https://nearblocks.io"
               : "https://testnet.nearblocks.io",
+              indexerUrl:
+              "postgres://public_readonly:nearprotocol@mainnet.db.explorer.indexer.near.dev/mainnet_explorer",
         },
-        debug: true, // 临时开启调试以便排查问题
         modules: [
           setupMyNearWallet({
-            successUrl: window.location.origin,
-            failureUrl: window.location.origin,
+            successUrl: window.location.origin + '/near-intents',
+            failureUrl: window.location.origin + '/near-intents',
           }) as unknown as WalletModuleFactory,
           setupMeteorWallet() as unknown as WalletModuleFactory,
-          // 保持其他钱包模块的注释不变
-          // setupHereWallet(),
-          // setupSender(),
-          // ...其他现有的钱包模块注释...
         ],
       })
 
@@ -129,7 +120,6 @@ export const WalletSelectorProvider: React.FC<{
   useEffect(() => {
     init().catch((err) => {
       console.error(err, "<====")
-      alert("Failed to initialise wallet selector")
     })
   }, [init])
 
@@ -174,9 +164,9 @@ export const WalletSelectorProvider: React.FC<{
     [selector, modal, accounts]
   )
 
-  if (loading) {
-    return <Loading />
-  }
+  // if (loading) {
+  //   return <Loading />
+  // }
 
   return (
     <WalletSelectorContext.Provider value={walletSelectorContextValue}>

@@ -1,5 +1,7 @@
 "use client";
-
+import "@radix-ui/themes/styles.css"
+import "@near-wallet-selector/modal-ui/styles.css"
+import "@near-wallet-selector/account-export/styles.css"
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -15,6 +17,8 @@ import { useTapSoundStore } from "@/stores/tap-sound";
 import TapSound from "@/components/tap-sound";
 import Rpc from "@/components/rpc";
 import SceneContextProvider from "@/context/scene";
+
+
 
 export default function RootLayout({
   children
