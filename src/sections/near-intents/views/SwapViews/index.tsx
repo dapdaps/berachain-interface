@@ -1,8 +1,7 @@
 "use client"
 
 import { useWallet as useWalletSolana } from "@solana/wallet-adapter-react"
-import { useRouter } from "next/navigation"
-import { useSignMessage } from "wagmi"
+import { useAccount, useSignMessage } from "wagmi"
 
 import { LIST_TOKENS } from "../../constants/tokens"
 import { ChainType, useConnectWallet } from "../../hooks/useConnectWallet"
@@ -16,7 +15,6 @@ export default function Swap() {
   const { signMessageAsync: signMessageAsyncWagmi } = useSignMessage()
   const solanaWallet = useWalletSolana()
   const tokenList = useTokenList(LIST_TOKENS)
-  const router = useRouter()
 
   return (
       <SwapWidget
@@ -82,7 +80,9 @@ export default function Swap() {
               throw new Error(`Unsupported sign in type: ${chainType}`)
           }
         }}
-        onSuccessSwap={() => {}}
+        onSuccessSwap={(params) => {
+          console.log("Swap success", params)
+        }}
         onNavigateDeposit={() => {
           // router.push("/deposit")
         }}

@@ -9,7 +9,7 @@ import ModalReviewWithdraw from "./ModalReviewWithdraw"
 
 export const ModalContainer = () => {
   const { modalType } = useModalStore((state) => state)
-  console.log(modalType, 'modalType')
+
   switch (modalType) {
     case ModalType.MODAL_SELECT_ASSETS:
       return <ModalSelectAssets />

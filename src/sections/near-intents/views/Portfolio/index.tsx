@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "@radix-ui/themes";
 import IconHistory from "@public/images/near-intents/icons/history.svg";
 import { SelectItemToken } from "../../components/Modal/ModalSelectAssets";
@@ -14,6 +14,9 @@ import { useAccount } from "wagmi";
 import { useWalletSelector } from "../../providers/WalletSelectorProvider"; 
 import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
 import { useWalletConnectStore } from "../../providers/WalletConnectStoreProvider";
+import { useSelector } from "@xstate/react";
+import { SwapUIMachineContext } from "../../features/swap/components/SwapUIMachineProvider";
+import { useNearConnectStore } from "@/stores/useNearConnectStore";
 
 const Portfolio = () => {
   const [assetList, setAssetList] = useState<SelectItemToken[]>([]);
@@ -25,10 +28,11 @@ const Portfolio = () => {
   )
   const { state, signIn, signOut } = useConnectWallet();
   
-  const { isConnected: isEvmConnected } = useAccount();
+  const { isConnected: isEvmConnected, address } = useAccount();
   const nearWallet = useWalletSelector();
   const solanaWallet = useSolanaWallet();
   const isSolConnected = solanaWallet.connected;
+  const swapUIActorRef = SwapUIMachineContext.useActorRef()
 
   const { 
     pendingChainType,
@@ -40,8 +44,13 @@ const Portfolio = () => {
   } = useWalletConnectStore(state => state);
 
   useEffect(() => {
+    console.log(nearWallet.accountId, 'accountId')
+    console.log(previousChainType, 'previousChainTypepreviousChainTypepreviousChainType')
+
     const checkNearRedirectStatus = async () => {
+      // 只在 NEAR 重定向回来且成功连接时处理
       if (isNearRedirecting && nearWallet.accountId) {
+        // 成功连接 NEAR 后，再断开之前的连接
         if (previousChainType && previousChainType !== ChainType.Near) {
           await signOut({ id: previousChainType });
         }
@@ -78,16 +87,14 @@ const Portfolio = () => {
     checkNonNearWalletStatus();
   }, [isEvmConnected, isSolConnected, pendingChainType]);
 
-  useEffect(() => {
-    if (state.chainType) {
-      setPreviousChainType(state.chainType);
-    }
-  }, [state.chainType]);
-
   const handleWalletClick = async (chainType: ChainType) => {
     if (state.chainType === chainType) return;
     
     try {
+      // 在切换开始前记录当前状态
+      if (state.chainType) {
+        setPreviousChainType(state.chainType);
+      }
       setPendingChainType(chainType);
          
       await signIn({ id: chainType });
@@ -103,10 +110,11 @@ const Portfolio = () => {
     }
   };
 
+  console.log('state.chainTypestate.chainTypestate.chainType', state.chainType);
+
   const renderWalletStatus = () => {
     const getOpacityClass = (walletType: ChainType) => {
       if (!state.chainType) return 'opacity-30';
-      
       return state.chainType === walletType ? '' : 'opacity-30';
     };
 
@@ -141,15 +149,21 @@ const Portfolio = () => {
     );
   };
 
+  const depositedBalanceRef = useSelector(
+    swapUIActorRef,
+    (state) => state.children.depositedBalanceRef
+  )
+
   useEffect(() => {
     if (!data.size && !isLoading) {
       return;
     }
-    const balances = {};
+    const balancesContext = depositedBalanceRef?.getSnapshot().context.balances
+
     const getAssetList: SelectItemToken[] = [];
 
     for (const [tokenId, token] of data) {
-      const totalBalance = computeTotalBalance(token, balances);
+      const totalBalance = computeTotalBalance(token, balancesContext ?? {});
 
       getAssetList.push({
         itemId: tokenId,
@@ -173,30 +187,32 @@ const Portfolio = () => {
     });
 
     setAssetList(getAssetList);
-  }, [data, isLoading]);
+    useNearConnectStore.getState().setState(state)
+
+  }, [data, isLoading, depositedBalanceRef, state.address]);
 
   const renderMainContent = () => (
     <div className="px-[20px] py-[16px] pb-[30px]">
       <div className="flex items-center justify-between">
         <div className="font-CherryBomb text-[26px]">Assets</div>
-        <IconHistory 
+        {/* <IconHistory 
           className="opacity-30 cursor-pointer hover:opacity-60" 
           onClick={() => setShowHistory(true)}
-        />
+        /> */}
       </div>
       <div className="flex items-center justify-between gap-2 my-5">
-        <button className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600]" onClick={() => setModalType(ModalType.MODAL_REVIEW_DEPOSIT)}>
+        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => setModalType(ModalType.MODAL_REVIEW_DEPOSIT)}>
           Deposit
         </button>
-        <button className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600]" onClick={() => setModalType(ModalType.MODAL_REVIEW_WITHDRAW)}>
+        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => setModalType(ModalType.MODAL_REVIEW_WITHDRAW)}>
           Withdraw
         </button>
       </div>
-      <div className="max-h-[500px] overflow-y-auto">
+      <div className="max-h-[500px] overflow-y-auto pb-6">
         {assetList.map(({ token, balance }, index) => (
-          <div key={index} className="flex items-center justify-between my-5">
+          <div key={index} className={`flex items-center justify-between ${index === 0 ? '' : 'mt-5'} mb-5`}>
             <div className="flex items-center gap-2">
-              <img src={token.icon} className="w-[30px] h-[30px]" alt="" />
+              <img src={token.icon} className="w-[30px] h-[30px] rounded-full" alt="" />
               <div className="font-Montserrat font-[600]">{token.symbol}</div>
             </div>
             <div className="font-Montserrat font-[600] opacity-30">

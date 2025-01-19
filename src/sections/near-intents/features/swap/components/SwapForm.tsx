@@ -30,6 +30,7 @@ import type { Context } from "../../machines/swapUIMachine"
 import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
+import { useAppKit } from "@reown/appkit/react"
 
 export type SwapFormValues = {
   amountIn: string
@@ -53,6 +54,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
   const snapshot = SwapUIMachineContext.useSelector((snapshot) => snapshot)
   const intentCreationResult = snapshot.context.intentCreationResult
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
+  const modal = useAppKit()
 
   const { tokenIn, tokenOut, noLiquidity } = SwapUIMachineContext.useSelector(
     (snapshot) => {
@@ -220,9 +222,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
               type="button"
               size="lg"
               fullWidth
-              onClick={() => {
-                setModalType(ModalType.MODAL_CONNECT_NETWORKS)
-              }}
+              onClick={() => modal.open()}
             >
               Connect Wallet
             </ButtonCustom>

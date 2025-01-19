@@ -6,6 +6,7 @@ import type { SwapWidgetProps } from "../../../types/swap"
 import { usePublicKeyModalOpener } from "../hooks/usePublicKeyModalOpener"
 import type { SwapFormValues } from "./SwapForm"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
+import useAddAction from "@/hooks/use-add-action"
 
 type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
@@ -21,6 +22,7 @@ export function SwapUIMachineFormSyncProvider({
 }: SwapUIMachineFormSyncProviderProps) {
   const { watch, setValue } = useFormContext<SwapFormValues>()
   const actorRef = SwapUIMachineContext.useActorRef()
+  const { addAction } = useAddAction("dapp");
 
   // Make `onSuccessSwap` stable reference, waiting for `useEvent` hook to come out
   const onSuccessSwapRef = useRef(onSuccessSwap)
@@ -57,6 +59,20 @@ export function SwapUIMachineFormSyncProvider({
         }
 
         case "INTENT_SETTLED": {
+
+           addAction({
+            type: "Swap",
+            inputCurrencyAmount: 0n,
+            inputCurrency: event.data.tokenIn,
+            outputCurrencyAmount: 0n,
+            outputCurrency: event.data.tokenOut,
+            template: 'swap',
+            transactionHash: event.data.txHash,
+            add: 0,
+            token_in_currency:  event.data.tokenIn,
+            token_out_currency:  event.data.tokenIn,
+           })
+          
           onSuccessSwapRef.current({
             amountIn: 0n, // todo: remove amount fields, as they may not exist for all types of intents
             amountOut: 0n,

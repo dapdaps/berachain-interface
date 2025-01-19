@@ -51,18 +51,18 @@ export default function RootLayout({
       </head>
       <body className="md:overflow-hidden">
         <WagmiProvider>
-          <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
-            <SceneContextProvider>
-              <Suspense>
-                {isMobile ? (
-                  <MobileLayout>{children}</MobileLayout>
-                ) : (
-                  <MainLayout>{children}</MainLayout>
-                )}
-                <Rpc />
-              </Suspense>
-            </SceneContextProvider>
-          </SkeletonTheme>
+            <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
+              <SceneContextProvider>
+                <Suspense>
+                  {isMobile ? (
+                    <MobileLayout>{children}</MobileLayout>
+                  ) : (
+                    <MainLayout>{children}</MainLayout>
+                  )}
+                  <Rpc />
+                </Suspense>
+              </SceneContextProvider>
+            </SkeletonTheme>
         </WagmiProvider>
         <ToastContainer
           position="top-right"

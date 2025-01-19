@@ -6,6 +6,10 @@ import type {
   NativeTokenInfo,
   UnifiedTokenInfo,
 } from "../types/base"
+import { SolverToken } from "../libs/de-sdk/providers/solver0Provider"
+import { NetworkTokenWithSwapRoute } from "../types/interfaces"
+import parseDefuseAsset from "./parseDefuseAsset"
+import { getChainIconFromId } from "../hooks/useTokensListAdapter"
 
 export function isBaseToken(
   token: BaseTokenInfo | UnifiedTokenInfo
@@ -55,4 +59,23 @@ export const tokenBalanceToFormatUnits = ({
   const balanceToUnits = ethers.utils.formatUnits(BigInt(balance), decimals).toString()
 
   return smallBalanceToFormat(balanceToUnits, 7)
+}
+
+export const tokenMetaAdapter = (
+  token: SolverToken
+): NetworkTokenWithSwapRoute => {
+  const result = parseDefuseAsset(token.defuse_asset_id)
+  return {
+    defuse_asset_id: token.defuse_asset_id,
+    symbol: token.asset_name,
+    name: token.asset_name,
+    decimals: token.decimals,
+    icon: token.metadata_link,
+    address: result?.contractId ?? "",
+    blockchain: result?.blockchain ?? "",
+    chainId: result?.network ?? "",
+    chainName: result?.blockchain ?? "",
+    chainIcon: getChainIconFromId(token.defuse_asset_id),
+    routes: token.routes_to,
+  }
 }

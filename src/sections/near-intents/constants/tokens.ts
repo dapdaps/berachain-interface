@@ -1,4 +1,6 @@
 import type { BaseTokenInfo, UnifiedTokenInfo } from "../types/base"
+import { NetworkTokenWithSwapRoute } from "../types/interfaces"
+const environment = process.env.environment || "production"
 
 export const NEAR_TOKEN_META = {
   defuse_asset_id: "near:mainnet:native",
@@ -676,3 +678,24 @@ export const LIST_TOKENS: (BaseTokenInfo | UnifiedTokenInfo)[] = [
 ]
 
 
+const listNativeTokensTestnet = [
+  {
+    defuse_asset_id: "near:testnet:native",
+    blockchain: "near",
+    chainName: "NEAR",
+    chainId: "1313161554",
+    address: "native",
+    name: "NEAR",
+    symbol: "NEAR",
+    chainIcon: "/images/near-intents/icons/network/near.svg",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/6535.png",
+    decimals: 24,
+    routes: ["wrap.testnet"],
+  },
+]
+const listNativeTokensMainnet = [NEAR_TOKEN_META]
+
+export const LIST_NATIVE_TOKENS: NetworkTokenWithSwapRoute[] =
+  environment === "development"
+    ? listNativeTokensTestnet
+    : listNativeTokensMainnet

@@ -36,6 +36,7 @@ export const ButtonCustom = ({
           })
         }
         style={{ border: '1px solid #000' }}
+        {...rest}
       >
         {isLoading ? <Loading size={18}/> : null}
         <Text weight="bold">{children}</Text>

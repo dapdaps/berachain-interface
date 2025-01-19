@@ -6,19 +6,19 @@ import { useCallback } from "react"
 import {
   getNearBlockById,
   getNearTransactionDetails,
-} from "@src/api/transaction"
-import type { ModalConfirmSwapPayload } from "@src/components/Modal/ModalConfirmSwap"
-import { CONFIRM_SWAP_LOCAL_KEY } from "@src/constants/contracts"
-import type { CollectorHook } from "@src/hooks/useHistoryCollector"
-import { useHistoryStore } from "@src/providers/HistoryStoreProvider"
-import { useWalletSelector } from "@src/providers/WalletSelectorProvider"
-import type { HistoryData } from "@src/stores/historyStore"
+} from "../api/transaction"
+import type { ModalConfirmSwapPayload } from "../components/Modal/ModalConfirmSwap"
+import { CONFIRM_SWAP_LOCAL_KEY } from "../constants/contracts"
+import type { CollectorHook } from "../hooks/useHistoryCollector"
+import { useHistoryStore } from "../providers/HistoryStoreProvider"
+import { useWalletSelector } from "../providers/WalletSelectorProvider"
+import type { HistoryData } from "../stores/historyStore"
 import type {
   NearBlock,
   NearTX,
   NetworkToken,
   Result,
-} from "@src/types/interfaces"
+} from "../types/interfaces"
 
 interface HistoryFromLocal {
   tokenIn?: string

@@ -22,6 +22,9 @@ import MobileNetworks from "@/components/connect-wallet/networks";
 import { useDebounceFn } from 'ahooks';
 import LazyImage from '@/components/layz-image';
 import { useWalletName } from '@/hooks/use-wallet-name';
+import { ChainType, useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet";
+import { usePathname } from "next/navigation";
+import { useNearConnectStore } from "@/stores/useNearConnectStore";
 
 const dropdownAnimations = {
   active: {
@@ -38,10 +41,13 @@ const dropdownAnimations = {
 
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
-
+  const nearConnectInfo = useNearConnectStore.getState();
+  const pathname = usePathname();
+  const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
+  console.log(nearConnectInfo, '<nearConnectInfo')
   const isMobile = useIsMobile();
   const total = useToast();
-  const { address, isConnected, chainId, chain, isConnecting } = useAccount();
+  const { address, isConnected, chainId = 80084, chain, isConnecting } = useAccount();
   const { disconnect } = useDisconnect();
   const { chains, switchChain } = useSwitchChain();
   const balance = useBalance({
@@ -68,12 +74,19 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   };
 
   const addressShown = useMemo(() => {
+    if (isNearPage && !isMobile && nearConnectInfo.address) {
+      if (nearConnectInfo.chainType === ChainType.Near) {
+        return nearConnectInfo.address;
+      }
+      return `${nearConnectInfo.address.slice(0, 5)}...${nearConnectInfo.address.slice(-4)}`;
+    }
     if (!address) return "";
     return `${address.slice(0, 5)}...${address.slice(-4)}`;
-  }, [address]);
+  }, [address, isNearPage, isMobile, nearConnectInfo.address]);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(address as string);
+    const addr = isNearPage ? nearConnectInfo.address : address;
+    navigator.clipboard.writeText(addr as string);
     total.success({
       title: `Copied address ${address}`,
     });
@@ -86,7 +99,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
 
   const handleChainSelect = (chainId: number, chain: any) => {
     switchChain({ chainId });
-    console.log(chains, chain);
   };
 
   const balanceShown = useMemo(() => {
@@ -174,7 +186,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           borderRadius={21}
           style={{ transform: "translateY(-4px)" }}
         />
-      ) : isConnected ? (
+      ) : (isConnected || (isNearPage && nearConnectInfo.address)) ? (
         <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3 md:min-w-[105px]">
           {isMobile ? (
             <>
@@ -191,6 +203,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 balanceShown={balanceShown}
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
+                isNearPage={isNearPage}
+                nearConnectInfo={nearConnectInfo}
               />
               <Chain
                 chainDropdownShow={chainDropdownShow}
@@ -224,6 +238,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 balanceShown={balanceShown}
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
+                isNearPage={isNearPage}
+                nearConnectInfo={nearConnectInfo}
               />
             </>
           )}
@@ -373,14 +389,20 @@ const User = (props: any) => {
     balanceShown,
     tokenSymbolShown,
     addressShown,
+    isNearPage,
+    nearConnectInfo
   } = props;
 
-  const walletName = walletInfo?.name || '';
+  if (isNearPage && nearConnectInfo && nearConnectInfo.chainType === ChainType.Near) {
+    return (
+      <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{nearConnectInfo.address}</div>
+    )
+  }
 
   return (
     <motion.div
       className="relative flex justify-center items-center cursor-pointer transition-all duration-300"
-      onClick={handleConnect}
+      onClick={isNearPage ? null : handleConnect}
       whileHover="active"
       animate="default"
       initial="default"
@@ -391,9 +413,13 @@ const User = (props: any) => {
         content={
           isMobile ? null : (
             <div className="w-[266px] pt-[24px] pb-[14px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]">
+              {
+                !isNearPage && (
               <div className="pl-[22px] pr-[26px] text-[#6F6F6F] text-[16px] font-normal text-nowrap leading-[1] overflow-hidden overflow-ellipsis">
-                Connected with {walletName}
+                Connected with {walletInfo.name}
               </div>
+                )
+              }
               <div className="pl-[22px] pr-[26px] flex justify-between items-center mt-[13px]">
                 <div className="text-black text-[16px] font-semibold leading-[1]">
                   {addressShown}
@@ -421,7 +447,9 @@ const User = (props: any) => {
                   </svg>
                 </div>
               </div>
-              <div className="pl-[22px] pr-[26px]">
+              {
+                !isNearPage && (
+                  <div className="pl-[22px] pr-[26px]">
                 <div className="pl-[9px] pr-[16px] w-fit h-[36px] border border-black rounded-full flex items-center gap-[8px] mt-[14px]">
                   <div
                     className="relative w-[20px] h-[20px] rounded-full shrink-0 bg-[#F0F0F0]"
@@ -449,6 +477,8 @@ const User = (props: any) => {
                   </div>
                 </div>
               </div>
+                )
+              }
               <div
                 className="cursor-pointer pl-[22px] pr-[26px] flex justify-between items-center click mt-[10px] pt-[10px] pb-[10px] transition-all duration-300 hover:bg-[#f7f7f7]"
                 onClick={handleDisconnect}

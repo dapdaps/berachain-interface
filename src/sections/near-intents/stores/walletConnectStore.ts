@@ -39,7 +39,7 @@ export const createWalletConnectStore = (initState: WalletConnectState = default
         reset: () => set(defaultInitState),
       }),
       {
-        name: 'wallet-connect-storage_v1.0.0', // 存储的唯一标识符
+        name: 'wallet-connect-storage_v1.0.0', 
         storage: createJSONStorage(() => localStorage),
       }
     )

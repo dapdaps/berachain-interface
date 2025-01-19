@@ -4,21 +4,31 @@ import { useAccount, Config, useConnectorClient } from 'wagmi';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 
 function clientToProvider(client: any) {
-  const { account, chain, transport } = client;
-  const network = {
-    chainId: chain.id,
-    name: chain.name,
-    ensAddress: chain.contracts?.ensRegistry?.address
-  };
-  if (transport.type === 'fallback')
-    return new providers.FallbackProvider(
-      (transport.transports as ReturnType<any>[]).map(
-        ({ value }) => new providers.JsonRpcProvider(value?.url, network)
-      )
-    );
-  return account.address
-    ? new providers.Web3Provider(transport, network)
-    : new providers.JsonRpcProvider(transport.url, network);
+  if (!client) return null;
+
+  try {
+    const { chain, transport } = client;
+    if (!chain || !transport) return null;
+
+    const network = {
+      chainId: chain.id,
+      name: chain.name,
+      ensAddress: chain.contracts?.ensRegistry?.address
+    };
+
+    if (transport.type === 'fallback') {
+      return new providers.FallbackProvider(
+        transport.transports?.map(({ value }: any) => 
+          new providers.JsonRpcProvider(value?.url, network)
+        ) || []
+      );
+    }
+
+    return new providers.JsonRpcProvider(transport.url, network);
+  } catch (error) {
+    console.error('Error in clientToProvider:', error);
+    return null;
+  }
 }
 
 export default function useCustomAccount() {
@@ -33,15 +43,16 @@ export default function useCustomAccount() {
   );
 
   return useMemo<{
-    chainId?: number;
-    account?: string;
+    chainId: number; 
+    account: string;  
     provider?: any;
+    chain: any;
   }>(
     () => ({
-      account: account?.address ?? '',
-      chainId: account?.chainId ?? -1,
+      account: account?.address || '',
+      chainId: account?.chainId || DEFAULT_CHAIN_ID, // 使用默认 chainId
       provider,
-      chain: account?.chain ?? null
+      chain: account?.chain || null
     }),
     [account, provider]
   );

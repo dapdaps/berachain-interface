@@ -23,6 +23,7 @@ import {
 import { useEVMWalletActions } from "./useEVMWalletActions"
 import { useNearWalletActions } from "./useNearWalletActions"
 import { useAppKit } from "@reown/appkit/react"
+import { useNearConnectStore } from '../../../stores/useNearConnectStore';
 
 export enum ChainType {
   Near = "near",
@@ -77,6 +78,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
     try {
       const wallet = await nearWallet.selector.wallet()
       await wallet.signOut()
+      useNearConnectStore.getState().clear();
     } catch (e) {
       console.log("Failed to sign out", e)
     }
@@ -100,6 +102,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
     for (const { connector } of evmWalletConnections) {
       evmWalletDisconnect.disconnect({ connector })
     }
+    useNearConnectStore.getState().clear();
   }
 
   /**
@@ -116,8 +119,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
 
   const handleSignOutViaSolanaSelector = async () => {
     await solanaWallet.disconnect()
-
-    // Issue: Phantom wallet also connects EVM wallet when it connects Solana wallet
+    useNearConnectStore.getState().clear();
     await handleSignOutViaWagmi()
   }
 
@@ -127,12 +129,67 @@ export const useConnectWallet = (): ConnectWalletAction => {
       network: "near:mainnet",
       chainType: ChainType.Near,
     }
+    useNearConnectStore.getState().setState(state)
+    return {
+      async signIn(params: {
+        id: ChainType
+        connector?: Connector
+      }): Promise<void> {
+        const strategies = {
+          [ChainType.Near]: () => handleSignInViaNearWalletSelector(),
+          [ChainType.EVM]: () => handleSignInViaWagmi(),
+          [ChainType.Solana]: () => handleSignInViaSolanaSelector(),
+        }
+        return strategies[params.id]()
+      },
+  
+      async signOut(params: {
+        id: ChainType
+      }): Promise<void> {
+        const strategies = {
+          [ChainType.Near]: () => handleSignOutViaNearWalletSelector(),
+          [ChainType.EVM]: () => handleSignOutViaWagmi(),
+          [ChainType.Solana]: () => handleSignOutViaSolanaSelector(),
+        }
+        return strategies[params.id]()
+      },
+  
+      sendTransaction: async (
+        params
+      ): Promise<string | FinalExecutionOutcome[]> => {
+        const strategies = {
+          [ChainType.Near]: async () =>
+            await nearWalletConnect.signAndSendTransactions({
+              transactions:
+                params.tx as SignAndSendTransactionsParams["transactions"],
+            }),
+  
+          [ChainType.EVM]: async () =>
+            await sendTransactions(params.tx as SendTransactionParameters),
+  
+          [ChainType.Solana]: async () => {
+            const transaction =
+              params.tx as SendTransactionSolanaParams["transactions"]
+            return await solanaWallet.sendTransaction(
+              transaction,
+              solanaConnection.connection
+            )
+          },
+        }
+  
+        const result = await strategies[params.id]()
+        if (result === undefined) {
+          throw new Error(`Transaction failed for ${params.id}`)
+        }
+        return result
+      },
+  
+      connectors: evmWalletConnect.connectors as Connector[],
+      state,
+    }
   }
 
-  // We check `account.chainId` instead of `account.chain` to determine if
-  // the user is connected. This is because the user might be connected to
-  // an unsupported chain (so `.chain` will undefined), but we still want
-  // to recognize that their wallet is connected.
+  // EVM 和 Solana 的检查逻辑保持不变
   if (evmWalletAccount.address != null && evmWalletAccount.chainId) {
     state = {
       address: evmWalletAccount.address,
@@ -141,6 +198,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
         : "unknown",
       chainType: ChainType.EVM,
     }
+    useNearConnectStore.getState().setState(state)
   }
 
   /**
@@ -158,6 +216,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
       network: "sol:mainnet",
       chainType: ChainType.Solana,
     }
+    useNearConnectStore.getState().setState(state)
   }
 
   return {

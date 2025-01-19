@@ -1,6 +1,6 @@
 import Ajv from "ajv"
 import * as borsh from "borsh"
-import { parseUnits } from "ethers"
+import ethers from "ethers"
 
 import {
   CONTRACTS_REGISTER,
@@ -8,21 +8,21 @@ import {
   CREATE_INTENT_ROLLBACK_DELAY,
   INDEXER,
   MAX_GAS_TRANSACTION,
-} from "@src/constants/contracts"
-import { LIST_NATIVE_TOKENS } from "@src/constants/tokens"
+} from "../../../constants/contracts"
+import { LIST_NATIVE_TOKENS } from "../../../constants/tokens"
 import {
   msgSchemaCreateIntent1CrossChain,
   msgSchemaCreateIntent1SingleChain,
-} from "@src/libs/de-sdk/utils/jsonValidations"
-import type { MapCreateIntentProps } from "@src/libs/de-sdk/utils/maps"
+} from "../../../libs/de-sdk/utils/jsonValidations"
+import type { MapCreateIntentProps } from "../../../libs/de-sdk/utils/maps"
 import {
   ContractIdEnum,
   type NearIntent1CreateCrossChain,
   type NearIntent1CreateSingleChain,
-} from "@src/types/interfaces"
-import { TransactionMethod } from "@src/types/solver0"
-import parseDefuseAsset from "@src/utils/parseDefuseAsset"
-import { swapSchema } from "@src/utils/schema"
+} from "../../../types/interfaces"
+import { TransactionMethod } from "../../../types/solver0"
+import parseDefuseAsset from "../../../utils/parseDefuseAsset"
+import { swapSchema } from "../../../utils/schemas"
 
 const REFERRAL_ACCOUNT = process.env.REFERRAL_ACCOUNT ?? ""
 
@@ -38,11 +38,11 @@ export const prepareCreateIntent0 = (inputs: MapCreateIntentProps) => {
       : ""
     : inputs.selectedTokenIn.address
 
-  const unitsSendAmount = parseUnits(
+  const unitsSendAmount = ethers.utils.parseUnits(
     inputs.tokenIn,
     inputs.selectedTokenIn.decimals as number
   ).toString()
-  const estimateUnitsBackAmount = parseUnits(
+  const estimateUnitsBackAmount = ethers.utils.parseUnits(
     inputs.tokenOut,
     inputs.selectedTokenOut.decimals as number
   ).toString()

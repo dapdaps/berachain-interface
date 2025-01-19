@@ -3,8 +3,8 @@
 import type { WalletSelector } from "@near-wallet-selector/core"
 import { useState } from "react"
 
-import { getNearTransactionDetails } from "@src/api/transaction"
-import { getBalanceNearAllowedToSwap } from "@src/app/(home)/SwapForm/service/getBalanceNearAllowedToSwap"
+import { getNearTransactionDetails } from "../api/transaction"
+import { getBalanceNearAllowedToSwap } from "../features/SwapForm/service/getBalanceNearAllowedToSwap"
 import {
   CONTRACTS_REGISTER,
   FT_MINIMUM_STORAGE_BALANCE_LARGE,
@@ -12,13 +12,13 @@ import {
   FT_WITHDRAW_GAS,
   INDEXER,
   MAX_GAS_TRANSACTION,
-} from "@src/constants/contracts"
-import { LIST_NATIVE_TOKENS, W_NEAR_TOKEN_META } from "@src/constants/tokens"
-import { useNearBlock } from "@src/hooks/useNearBlock"
-import useStorageDeposit from "@src/hooks/useStorageDeposit"
-import useNearSwapNearToWNear from "@src/hooks/useSwapNearToWNear"
-import { useTransactionScan } from "@src/hooks/useTransactionScan"
-import { mapCreateIntentTransactionCall } from "@src/libs/de-sdk/utils/maps"
+} from "../constants/contracts"
+import { LIST_NATIVE_TOKENS, W_NEAR_TOKEN_META } from "../constants/tokens"
+import { useNearBlock } from "./useNearBlock"
+import useStorageDeposit from "./useStorageDeposit"
+import useNearSwapNearToWNear from "./useSwapNearToWNear"
+import { useTransactionScan } from "./useTransactionScan"
+import { mapCreateIntentTransactionCall } from "../libs/de-sdk/utils/maps"
 import {
   BlockchainEnum,
   ContractIdEnum,
@@ -26,10 +26,10 @@ import {
   type NetworkToken,
   QueueTransactions,
   type Result,
-} from "@src/types/interfaces"
-import { TransactionMethod } from "@src/types/solver0"
-import { isStorageDepositException, nep141Balance } from "@src/utils/near"
-import { isForeignNetworkToken } from "@src/utils/network"
+} from "../types/interfaces"
+import { TransactionMethod } from "../types/solver0"
+import { isStorageDepositException, nep141Balance } from "../utils/near"
+import { isForeignNetworkToken } from "../utils/network"
 
 type Props = {
   accountId: string | null

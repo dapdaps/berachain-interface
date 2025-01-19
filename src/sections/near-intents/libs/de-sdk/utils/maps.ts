@@ -1,10 +1,10 @@
-import { INDEXER } from "@src/constants/contracts"
-import type { CallRequestIntentProps } from "@src/hooks/useSwap"
+import { INDEXER } from "../../../constants/contracts"
+import type { CallRequestIntentProps } from "../../../hooks/useSwap"
 import {
   prepareCreateIntent1CrossChain,
   prepareCreateIntent1SingleChain,
-} from "@src/libs/de-sdk/utils/intents"
-import parseDefuseAsset from "@src/utils/parseDefuseAsset"
+} from "./intents"
+import parseDefuseAsset from "../../../utils/parseDefuseAsset"
 
 export enum MapsEnum {
   NEAR_MAINNET = "near:mainnet",
