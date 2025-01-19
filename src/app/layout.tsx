@@ -18,6 +18,11 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import "@radix-ui/themes/styles.css"
+import "@near-wallet-selector/modal-ui/styles.css"
+import "@near-wallet-selector/account-export/styles.css"
+
 import "./globals.css";
 
 export default function RootLayout({
