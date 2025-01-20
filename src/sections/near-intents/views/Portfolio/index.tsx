@@ -110,8 +110,6 @@ const Portfolio = () => {
     }
   };
 
-  console.log('state.chainTypestate.chainTypestate.chainType', state.chainType);
-
   const renderWalletStatus = () => {
     const getOpacityClass = (walletType: ChainType) => {
       if (!state.chainType) return 'opacity-30';

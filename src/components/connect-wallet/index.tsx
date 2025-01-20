@@ -44,7 +44,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const nearConnectInfo = useNearConnectStore.getState();
   const pathname = usePathname();
   const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
-  console.log(nearConnectInfo, '<nearConnectInfo')
   const isMobile = useIsMobile();
   const total = useToast();
   const { address, isConnected, chainId = 80084, chain, isConnecting } = useAccount();
