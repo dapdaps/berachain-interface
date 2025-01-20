@@ -34,6 +34,10 @@ import { isNativeToken } from "../../../utils/token"
 import { depositGenerateAddressMachine } from "../../machines/depositGenerateAddressMachine"
 import { depositUIMachine } from "../../machines/depositUIMachine"
 import type { DepositFormValues } from "./DepositForm"
+import useAddAction from "@/hooks/use-add-action"
+import { ethers } from "ethers"
+import useToast from "@/hooks/use-toast"
+import { BaseTokenInfo, SupportedChainName } from "@/sections/near-intents/types/base"
 
 /**
  * We explicitly define the type of `depositUIMachine` to avoid:
@@ -65,6 +69,13 @@ interface DepositUIMachineProviderProps extends PropsWithChildren {
   sendTransactionNear: (tx: Transaction["NEAR"][]) => Promise<string | null>
   sendTransactionEVM: (tx: Transaction["EVM"]) => Promise<Hash | null>
   sendTransactionSolana: (tx: Transaction["Solana"]) => Promise<string | null>
+  onDepositSuccess?: (params: {
+    txHash: string
+    token: BaseTokenInfo
+    amount: bigint
+    userAddress: string
+    chainName?: SupportedChainName
+  }) => void
 }
 
 export function DepositUIMachineProvider({
@@ -73,8 +84,10 @@ export function DepositUIMachineProvider({
   sendTransactionNear,
   sendTransactionEVM,
   sendTransactionSolana,
+  onDepositSuccess,
 }: DepositUIMachineProviderProps) {
   const { setValue } = useFormContext<DepositFormValues>()
+
   return (
     <DepositUIMachineContext.Provider
       options={{
@@ -211,6 +224,13 @@ export function DepositUIMachineProvider({
                 if (receipt.status === "reverted") {
                   throw new Error("Transfer EVM transaction reverted")
                 }
+                onDepositSuccess?.({
+                  txHash,
+                  token: input.derivedToken,
+                  amount: input.amount,
+                  userAddress: input.userAddress,
+                  chainName: input.chainName
+                });
 
                 return txHash
               }),

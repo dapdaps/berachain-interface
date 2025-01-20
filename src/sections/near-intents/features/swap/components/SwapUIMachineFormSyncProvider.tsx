@@ -75,21 +75,21 @@ export function SwapUIMachineFormSyncProvider({
             intentHash: event.data.intentHash,
           })
           toast.success({
-            title: "Swap successful",
-            tx: event.data.txHash,
+            title: "Swap successful"
           })
 
           addAction({
             type: "Swap",
             inputCurrency: event.data.tokenIn,
             outputCurrency: event.data.tokenOut,
-            template: 'swap',
+            template: "near-intents",
             transactionHash: event.data.intentHash,
             inputCurrencyAmount: Number(amountIn), 
             outputCurrencyAmount: Number(amountOut),
             status: 1,
             token_in_currency: event.data.tokenIn,
-            token_out_currency: event.data.tokenOut
+            token_out_currency: event.data.tokenOut,
+            sub_type: 'swap',
           });
           break
         }

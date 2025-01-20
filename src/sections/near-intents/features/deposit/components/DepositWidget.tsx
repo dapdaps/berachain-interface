@@ -6,6 +6,9 @@ import { DepositForm } from "./DepositForm"
 import { DepositFormProvider } from "./DepositFormProvider"
 import { DepositUIMachineFormSyncProvider } from "./DepositUIMachineFormSyncProvider"
 import { DepositUIMachineProvider } from "./DepositUIMachineProvider"
+import useAddAction from "@/hooks/use-add-action"
+import useToast from "@/hooks/use-toast"
+import { ethers } from "ethers"
 
 export const DepositWidget = ({
   tokenList,
@@ -15,6 +18,11 @@ export const DepositWidget = ({
   sendTransactionEVM,
   sendTransactionSolana,
 }: DepositWidgetProps) => {
+
+    const { addAction } = useAddAction("dapp")
+
+    const toast = useToast()
+
   return (
       <DepositWidgetProvider>
         <TokenListUpdater tokenList={tokenList} />
@@ -24,6 +32,19 @@ export const DepositWidget = ({
             sendTransactionNear={sendTransactionNear}
             sendTransactionEVM={sendTransactionEVM}
             sendTransactionSolana={sendTransactionSolana}
+            onDepositSuccess={({ txHash, token, amount, userAddress, chainName }) => {
+              console.log("onDepositSuccess", txHash, token, amount, userAddress, chainName)
+              addAction?.({
+                type: "Staking",
+                action: 'Staking',
+                status: 1,
+                sub_type: "Deposit", 
+                transactionHash: txHash,
+                template: "near-intents",
+                token: token,
+                amount: ethers.utils.formatUnits(amount, token.decimals)
+              })
+            }}
           >
             <DepositUIMachineFormSyncProvider
               userAddress={userAddress}
