@@ -216,16 +216,14 @@ const ConnectWallet = ({ className }: { className?: string }) => {
             </>
           ) : (
             <>
-              {
-                !isNearPage && (<Chain
+               <Chain
                   chainDropdownShow={chainDropdownShow}
                   chainListRef={chainListRef}
                   handleChainDropdown={handleChainDropdown}
                   chainId={chainId}
                   chains={chains}
                   handleChainSelect={handleChainSelect}
-                />)
-              }
+                />
               <User
                 handleConnect={handleConnect}
                 isMobile={isMobile}
