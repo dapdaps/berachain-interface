@@ -7,6 +7,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
 } from "react"
 import { useFormContext } from "react-hook-form"
 import { useTokensUsdPrices } from "../../../hooks/useTokensUsdPrices"
@@ -51,8 +52,10 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
   } = useFormContext<SwapFormValues>()
   const { state } = useConnectWallet()
   const swapUIActorRef = SwapUIMachineContext.useActorRef()
+
   const snapshot = SwapUIMachineContext.useSelector((snapshot) => snapshot)
   const intentCreationResult = snapshot.context.intentCreationResult
+
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
   const modal = useAppKit()
 
@@ -341,9 +344,6 @@ export function renderIntentCreationResult(
 
   return (
     <Callout.Root size="1" color="red" className="mt-2 rounded-xl gap-1 p-4">
-      <Callout.Icon>
-        <ExclamationTriangleIcon />
-      </Callout.Icon>
       <Callout.Text>{content}</Callout.Text>
     </Callout.Root>
   )

@@ -1,5 +1,5 @@
 import { useSelector } from "@xstate/react"
-import { type PropsWithChildren, useEffect, useRef } from "react"
+import { type PropsWithChildren, useEffect, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import type { ChainType } from "../../../types/deposit"
 import type { SwapWidgetProps } from "../../../types/swap"
@@ -7,6 +7,8 @@ import { usePublicKeyModalOpener } from "../hooks/usePublicKeyModalOpener"
 import type { SwapFormValues } from "./SwapForm"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import useAddAction from "@/hooks/use-add-action"
+import { ethers } from "ethers"
+import useToast from "@/hooks/use-toast"
 
 type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
@@ -22,7 +24,8 @@ export function SwapUIMachineFormSyncProvider({
 }: SwapUIMachineFormSyncProviderProps) {
   const { watch, setValue } = useFormContext<SwapFormValues>()
   const actorRef = SwapUIMachineContext.useActorRef()
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction("dapp")
+  const toast = useToast()
 
   // Make `onSuccessSwap` stable reference, waiting for `useEvent` hook to come out
   const onSuccessSwapRef = useRef(onSuccessSwap)
@@ -58,21 +61,11 @@ export function SwapUIMachineFormSyncProvider({
           break
         }
 
-        case "INTENT_SETTLED": {
+        case "INTENT_SETTLED": {   
+          const snapshot = actorRef.getSnapshot()
+          const amountIn = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn || 0n, snapshot.context.formValues.tokenIn.decimals)
+          const amountOut = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut || 0n, snapshot.context.formValues.tokenOut.decimals)
 
-           addAction({
-            type: "Swap",
-            inputCurrencyAmount: 0n,
-            inputCurrency: event.data.tokenIn,
-            outputCurrencyAmount: 0n,
-            outputCurrency: event.data.tokenOut,
-            template: 'swap',
-            transactionHash: event.data.txHash,
-            add: 0,
-            token_in_currency:  event.data.tokenIn,
-            token_out_currency:  event.data.tokenIn,
-           })
-          
           onSuccessSwapRef.current({
             amountIn: 0n, // todo: remove amount fields, as they may not exist for all types of intents
             amountOut: 0n,
@@ -81,6 +74,23 @@ export function SwapUIMachineFormSyncProvider({
             txHash: event.data.txHash,
             intentHash: event.data.intentHash,
           })
+          toast.success({
+            title: "Swap successful",
+            tx: event.data.txHash,
+          })
+
+          addAction({
+            type: "Swap",
+            inputCurrency: event.data.tokenIn,
+            outputCurrency: event.data.tokenOut,
+            template: 'swap',
+            transactionHash: event.data.intentHash,
+            inputCurrencyAmount: Number(amountIn), 
+            outputCurrencyAmount: Number(amountOut),
+            status: 1,
+            token_in_currency: event.data.tokenIn,
+            token_out_currency: event.data.tokenOut
+          });
           break
         }
       }
@@ -89,7 +99,7 @@ export function SwapUIMachineFormSyncProvider({
     return () => {
       sub.unsubscribe()
     }
-  }, [actorRef, setValue])
+  }, [actorRef, setValue, addAction])
 
   const swapRef = useSelector(actorRef, (state) => state.children.swapRef)
   const publicKeyVerifierRef = useSelector(swapRef, (state) => {
