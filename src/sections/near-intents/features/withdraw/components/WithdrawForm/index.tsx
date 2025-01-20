@@ -57,6 +57,10 @@ import {
   isLiquidityUnavailableSelector,
   totalAmountReceivedSelector,
 } from "./selectors"
+import useAddAction from "@/hooks/use-add-action"
+import useToast from "@/hooks/use-toast"
+import { useAccount } from "wagmi"
+import { ethers } from "ethers"
 
 export type WithdrawFormNearValues = {
   amountIn: string
@@ -103,6 +107,19 @@ export const WithdrawForm = ({
       return state.children.publicKeyVerifierRef
     }
   })
+
+  const { addAction } = useAddAction("dapp");
+
+  const toast = useToast();
+
+  const { chainId } = useAccount();
+
+  const addActionChainIdMap: Record<ChainType, number> = {
+    [ChainType.EVM]: chainId ?? 0,
+    [ChainType.Near]: 99998,
+    [ChainType.Solana]: 99997,
+  };
+
   usePublicKeyModalOpener(publicKeyVerifierRef)
 
   useEffect(() => {
@@ -244,6 +261,38 @@ export const WithdrawForm = ({
       sub.unsubscribe()
     }
   }, [watch, actorRef, token.decimals])
+
+
+  useEffect(() => {
+
+    const sub = actorRef.on("INTENT_SETTLED", (event) => {
+
+      if (!chainType) return;
+      const snapshot = actorRef.getSnapshot()
+
+      const amount = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, token.decimals)
+      toast.success({
+        title: "Withdraw Success",
+      });
+
+      addAction?.({
+        type: "Staking",
+        action: "Staking",
+        status: 1,
+        sub_type: "Withdraw",
+        transactionHash: event.data.txHash,
+        template: "near-intents",
+        token: token,
+        amount: amount,
+        chainId: addActionChainIdMap[chainType],
+      });
+
+      return () => {
+        sub.unsubscribe()
+      }
+})
+  }, [actorRef, chainType, token, addAction])
+
 
   useEffect(() => {
     const sub = actorRef.on("INTENT_PUBLISHED", () => {
@@ -503,7 +552,7 @@ export const WithdrawForm = ({
         {renderPreparationResult(state.context.preparationOutput)}
         {renderIntentCreationResult(intentCreationResult)}
 
-        <Intents intentRefs={intentRefs} />
+        {/* <Intents intentRefs={intentRefs} /> */}
       </Flex>
     </div>
   )

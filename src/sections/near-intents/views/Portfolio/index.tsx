@@ -44,9 +44,6 @@ const Portfolio = () => {
   } = useWalletConnectStore(state => state);
 
   useEffect(() => {
-    console.log(nearWallet.accountId, 'accountId')
-    console.log(previousChainType, 'previousChainTypepreviousChainTypepreviousChainType')
-
     const checkNearRedirectStatus = async () => {
       // 只在 NEAR 重定向回来且成功连接时处理
       if (isNearRedirecting && nearWallet.accountId) {

@@ -1,7 +1,7 @@
 import { useSelector } from "@xstate/react"
 import { type PropsWithChildren, useEffect, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import type { ChainType } from "../../../types/deposit"
+import { ChainType } from "../../../types/deposit"
 import type { SwapWidgetProps } from "../../../types/swap"
 import { usePublicKeyModalOpener } from "../hooks/usePublicKeyModalOpener"
 import type { SwapFormValues } from "./SwapForm"
@@ -9,6 +9,7 @@ import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import useAddAction from "@/hooks/use-add-action"
 import { ethers } from "ethers"
 import useToast from "@/hooks/use-toast"
+import { useAccount } from "wagmi"
 
 type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
@@ -30,6 +31,15 @@ export function SwapUIMachineFormSyncProvider({
   // Make `onSuccessSwap` stable reference, waiting for `useEvent` hook to come out
   const onSuccessSwapRef = useRef(onSuccessSwap)
   onSuccessSwapRef.current = onSuccessSwap
+  const { chainId } = useAccount()
+
+
+  const addActionChainIdMap: Record<ChainType, number> = {
+    [ChainType.EVM]: chainId ?? 0,
+    [ChainType.Near]: 99998,
+    [ChainType.Solana]: 99997,
+  }
+
 
   useEffect(() => {
     const sub = watch(async (value, { name }) => {
@@ -74,22 +84,26 @@ export function SwapUIMachineFormSyncProvider({
             txHash: event.data.txHash,
             intentHash: event.data.intentHash,
           })
+
+          if (!userChainType) break 
+
           toast.success({
-            title: "Swap successful",
-            tx: event.data.txHash,
+            title: "Swap successful"
           })
 
           addAction({
             type: "Swap",
             inputCurrency: event.data.tokenIn,
             outputCurrency: event.data.tokenOut,
-            template: 'swap',
+            template: "near-intents",
             transactionHash: event.data.intentHash,
             inputCurrencyAmount: Number(amountIn), 
             outputCurrencyAmount: Number(amountOut),
             status: 1,
             token_in_currency: event.data.tokenIn,
-            token_out_currency: event.data.tokenOut
+            token_out_currency: event.data.tokenOut,
+            sub_type: 'swap',
+            chainId: addActionChainIdMap[userChainType],
           });
           break
         }
