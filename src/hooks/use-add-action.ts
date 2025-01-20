@@ -32,7 +32,7 @@ export default function useAddAction(source: string) {
           account_id: account,
           template: data.template,
           tx_id: data.transactionHash,
-          chain_id: chainId,
+          chain_id: data.chainId || chainId,
           token_in_currency: data?.token_in_currency,
           token_out_currency: data?.token_out_currency,
           extra_data: data?.extra_data ? JSON.stringify(data?.extra_data) : null,
@@ -115,7 +115,7 @@ export default function useAddAction(source: string) {
           account_id: account,
           template: data.template,
           tx_id: data.transactionHash,
-          chain_id: chainId,
+          chain_id: data.chainId || chainId,
           extra_data: data.extra_data,
           sub_type: data.sub_type
         };

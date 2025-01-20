@@ -158,6 +158,15 @@ export function DepositUIMachineProvider({
 
                 const txHash = await sendTransactionNear(tx)
                 assert(txHash != null, "Transaction failed")
+
+                onDepositSuccess?.({
+                  txHash,
+                  token: input.derivedToken,
+                  amount: input.amount,
+                  userAddress: input.userAddress,
+                  chainName: input.chainName
+                });
+
                 return txHash
               }),
               validateTransaction: fromPromise(async ({ input }) => {
@@ -264,7 +273,13 @@ export function DepositUIMachineProvider({
 
                 const txHash = await sendTransactionSolana(tx)
                 assert(txHash != null, "Tx hash is not defined")
-
+                onDepositSuccess?.({
+                  txHash,
+                  token: input.derivedToken,
+                  amount: input.amount,
+                  userAddress: input.userAddress,
+                  chainName: input.chainName
+                });
                 return txHash
               }),
             },
@@ -354,6 +369,13 @@ export function DepositUIMachineProvider({
                 if (receipt.status === "reverted") {
                   throw new Error("Deposit from Silo transaction reverted")
                 }
+                onDepositSuccess?.({
+                  txHash,
+                  token: input.derivedToken,
+                  amount: input.amount,
+                  userAddress: input.userAddress,
+                  chainName: input.chainName
+                });
 
                 return txHash
               }),
