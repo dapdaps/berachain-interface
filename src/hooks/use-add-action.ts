@@ -14,8 +14,6 @@ export default function useAddAction(source: string) {
       let params: any = {};
       
       if (!chainId || !account) return;
-      
-      const currentChain = chains[chainId] || chains[80084];
 
       console.info('addAction data: ', data);
 
