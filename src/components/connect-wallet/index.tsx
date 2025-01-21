@@ -25,6 +25,7 @@ import { useWalletName } from '@/hooks/use-wallet-name';
 import { ChainType } from "@/sections/near-intents/hooks/useConnectWallet";
 import { usePathname } from "next/navigation";
 import { useNearConnectStore } from "@/stores/useNearConnectStore";
+import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
 
 const dropdownAnimations = {
   active: {
@@ -42,6 +43,9 @@ const dropdownAnimations = {
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
   const nearConnectInfo = useNearConnectStore.getState();
+  
+  const { connectedWallets, removeWallet }  = useConnectedWalletsStore.getState();
+
   const pathname = usePathname();
   const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
   const isMobile = useIsMobile();
@@ -73,15 +77,15 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   };
 
   const addressShown = useMemo(() => {
-    if (isNearPage && !isMobile && nearConnectInfo.address) {
-      if (nearConnectInfo.chainType === ChainType.Near) {
-        return nearConnectInfo.address;
+    if (isNearPage && !isMobile && connectedWallets.length > 0 && connectedWallets[0].address) {
+      if (connectedWallets[0].chainType === ChainType.Near) {
+        return connectedWallets[0].address;
       }
-      return `${nearConnectInfo.address.slice(0, 5)}...${nearConnectInfo.address.slice(-4)}`;
+      return `${connectedWallets[0].address.slice(0, 5)}...${connectedWallets[0].address.slice(-4)}`;
     }
     if (!address) return "";
     return `${address.slice(0, 5)}...${address.slice(-4)}`;
-  }, [address, isNearPage, isMobile, nearConnectInfo.address]);
+  }, [address, isNearPage, isMobile]);
 
   const handleCopy = () => {
     const addr = isNearPage ? nearConnectInfo.address : address;
@@ -92,6 +96,9 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   };
 
   const handleDisconnect = () => {
+    if (isNearPage && connectedWallets.length > 0) {
+      removeWallet(connectedWallets[0].chainType);
+    }
     disconnect();
     setMobileUserInfoVisible(false);
   };
@@ -185,7 +192,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           borderRadius={21}
           style={{ transform: "translateY(-4px)" }}
         />
-      ) : (isConnected || (isNearPage && nearConnectInfo.address)) ? (
+      ) : (isConnected || (isNearPage && connectedWallets.length > 0 )) ? (
         <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3 md:min-w-[105px]">
           {isMobile ? (
             <>
@@ -203,7 +210,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
                 isNearPage={isNearPage}
-                nearConnectInfo={nearConnectInfo}
+                connectedWallets={connectedWallets}
               />
               <Chain
                 chainDropdownShow={chainDropdownShow}
@@ -238,7 +245,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
                 isNearPage={isNearPage}
-                nearConnectInfo={nearConnectInfo}
+                connectedWallets={connectedWallets}
               />
             </>
           )}
@@ -389,12 +396,12 @@ const User = (props: any) => {
     tokenSymbolShown,
     addressShown,
     isNearPage,
-    nearConnectInfo
+    connectedWallets    
   } = props;
 
-  if (isNearPage && nearConnectInfo && nearConnectInfo.chainType === ChainType.Near) {
+  if (isNearPage && connectedWallets.length > 0 && connectedWallets[0].chainType === ChainType.Near) {
     return (
-      <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{nearConnectInfo.address}</div>
+      <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{connectedWallets[0].address}</div>
     )
   }
 
