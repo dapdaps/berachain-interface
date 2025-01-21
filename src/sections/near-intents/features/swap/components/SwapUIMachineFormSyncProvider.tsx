@@ -104,6 +104,7 @@ export function SwapUIMachineFormSyncProvider({
             token_out_currency: event.data.tokenOut,
             sub_type: 'swap',
             chainId: addActionChainIdMap[userChainType],
+            account_id: userAddress,
           });
           break
         }

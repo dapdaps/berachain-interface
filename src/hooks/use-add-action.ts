@@ -29,7 +29,7 @@ export default function useAddAction(source: string) {
           action_amount: data?.inputCurrencyAmount
             ? data?.inputCurrencyAmount.toString()
             : '',
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: data.chainId || chainId,
@@ -52,7 +52,7 @@ export default function useAddAction(source: string) {
             action_type: 'Bridge',
             action_tokens: JSON.stringify([`${data.token.symbol}`]),
             action_amount: data.amount,
-            account_id: account,
+            account_id: data.account_id || account,
             template: data.template,
             tx_id: data.transactionHash,
             chain_id: data.fromChainId,
@@ -67,7 +67,7 @@ export default function useAddAction(source: string) {
       if (data.type === 'Lending') {
         params = {
           action_type: 'Lending',
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           sub_type: data.action === 'Deposit' ? 'Supply' : data.action,
           tx_id: data.transactionHash,
@@ -94,7 +94,7 @@ export default function useAddAction(source: string) {
             data?.token1 ?? ''
           ]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -112,7 +112,7 @@ export default function useAddAction(source: string) {
             ? JSON.stringify([`${data.token.symbol}`])
             : '',
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: data.chainId || chainId,
@@ -129,7 +129,7 @@ export default function useAddAction(source: string) {
           action_type: data.type,
           action_tokens: JSON.stringify([data.symbol]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -148,7 +148,7 @@ export default function useAddAction(source: string) {
             data?.token1 ?? ''
           ]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -168,7 +168,7 @@ export default function useAddAction(source: string) {
             data?.token1.symbol ?? ''
           ]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -191,7 +191,7 @@ export default function useAddAction(source: string) {
           action_type: 'NFT',
           action_tokens: JSON.stringify([`${data.name}`]),
           action_amount: data.price.toString(),
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,

@@ -285,6 +285,7 @@ export const WithdrawForm = ({
         token: token,
         amount: amount,
         chainId: addActionChainIdMap[chainType],
+        account_id: userAddress,
       });
 
       return () => {
