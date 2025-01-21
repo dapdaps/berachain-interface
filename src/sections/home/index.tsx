@@ -53,6 +53,10 @@ const Navigation = function () {
     router.push("/vaults");
   };
 
+  const onNavigateToNearIntents = () => {
+    router.push("/near-intents");
+  }
+
   const onNavigateToBeramas = () => {
     router.push(christmasPath as string);
   };
@@ -179,11 +183,16 @@ const Navigation = function () {
         </div>
         <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">Beraciaga</div>
       </div>
+
+      <div className="absolute left-[12%] bottom-[68px] z-10 hover:scale-110 transition-transform duration-500 cursor-pointer" onClick={onNavigateToNearIntents}>
+        <img src="/images/background/near-intents.png" className="w-[128px] h-[98px] aspect-square" alt="" />
+      </div>
+{/* 
       {
         isChristmas && (
           <ChristmasEnterance path={christmasPath} />
         )
-      }
+      } */}
     </>
   );
 };
