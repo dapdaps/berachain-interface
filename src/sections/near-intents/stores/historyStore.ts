@@ -21,6 +21,7 @@ export enum HistoryStatus {
   FAILED = "Failed", // Internal status
   WITHDRAW = "Withdraw", // Internal status
   DEPOSIT = "Deposit", // Internal status
+  SWAPPED = "Swapped", // Internal status
   STORAGE_DEPOSIT = "Storage Deposit", // Internal status
 }
 
