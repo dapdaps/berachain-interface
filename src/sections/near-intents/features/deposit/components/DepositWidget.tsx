@@ -51,6 +51,7 @@ export const DepositWidget = ({
             addAction?.({
               type: "Staking",
               action: "Staking",
+              account_id: userAddress,
               status: 1,
               sub_type: "Deposit",
               transactionHash: txHash,
