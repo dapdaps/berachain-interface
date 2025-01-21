@@ -54,7 +54,7 @@ export const useMint = () => {
     currentGroupId: number,
     amount: number,
   ) => {
-    if (!account) return;
+    if (!account || !chainId) return;
 
     try {
       const rpcUrl = CHAIN_RPC_URLS[chainId];
