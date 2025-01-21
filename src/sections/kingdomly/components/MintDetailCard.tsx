@@ -12,7 +12,6 @@ import Skeleton from "react-loading-skeleton";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
-import { title } from "process";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -218,9 +217,8 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
       setIsMinting(false);
     }
   };
-
   return (
-    <div className="mt-[14px]">
+    <div className="mt-[14px] lg:max-h-[330px] lg:overflow-y-auto">
       <div className="flex md:flex-col lg:flex-row w-full justify-between gap-5">
         <img
           src={item.profile_image}

@@ -46,7 +46,7 @@ export const checkEligibility = async (
 };
 
 export const useMint = () => {
-  const { provider, account } = useCustomAccount();
+  const { chainId, account } = useCustomAccount();
   const toast = useToast();
 
   const handleMint = async (
@@ -54,11 +54,17 @@ export const useMint = () => {
     currentGroupId: number,
     amount: number,
   ) => {
-    if (!provider || !account) return;
+    if (!account || !chainId) return;
 
     try {
-      const signer = provider.getSigner();
-      const contract = new Contract(collection.contract_address, NFTAbi, signer);
+      const rpcUrl = CHAIN_RPC_URLS[chainId];
+      if (!rpcUrl) {
+        console.error(`No RPC URL found for chain ID ${chainId}`);
+        return 'closed';
+      }
+  
+      const provider = new providers.JsonRpcProvider(rpcUrl);
+      const contract = new Contract(collection.contract_address, NFTAbi, provider);
       
       const currentGroup = collection.mint_group_data.find(g => g.id === currentGroupId);
       if (!currentGroup) throw new Error("Invalid mint group");
