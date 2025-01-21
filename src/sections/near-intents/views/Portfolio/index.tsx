@@ -17,6 +17,11 @@ import { useWalletConnectStore } from "../../providers/WalletConnectStoreProvide
 import { useSelector } from "@xstate/react";
 import { SwapUIMachineContext } from "../../features/swap/components/SwapUIMachineProvider";
 import { useNearConnectStore } from "@/stores/useNearConnectStore";
+import { useConnectedWalletsStore } from '@/stores/useConnectedWalletsStore';
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
+import IconCopy from "@public/images/near-intents/images/copy.svg";
+import IconDisconnect from "@public/images/near-intents/images/disconnect.svg";
+import useToast from "@/hooks/use-toast";
 
 const Portfolio = () => {
   const [assetList, setAssetList] = useState<SelectItemToken[]>([]);
@@ -26,6 +31,9 @@ const Portfolio = () => {
   const { setModalType } = useModalStore(
     (state) => state
   )
+
+  const toast = useToast();
+  
   const { state, signIn, signOut } = useConnectWallet();
   
   const { isConnected: isEvmConnected, address } = useAccount();
@@ -43,103 +51,181 @@ const Portfolio = () => {
     setIsNearRedirecting 
   } = useWalletConnectStore(state => state);
 
+  const { 
+    connectedWallets,
+    addWallet,
+    isWalletConnected,
+    removeWallet 
+  } = useConnectedWalletsStore();
+
   useEffect(() => {
     const checkNearRedirectStatus = async () => {
-      // 只在 NEAR 重定向回来且成功连接时处理
       if (isNearRedirecting && nearWallet.accountId) {
-        // 成功连接 NEAR 后，再断开之前的连接
-        if (previousChainType && previousChainType !== ChainType.Near) {
-          await signOut({ id: previousChainType });
-        }
+        addWallet({
+          ...state,
+          chainType: ChainType.Near,
+          address: nearWallet.accountId
+        });
         setIsNearRedirecting(false);
         setPendingChainType(null);
       }
     };
 
     checkNearRedirectStatus();
-  }, [isNearRedirecting, nearWallet.accountId]);
+  }, [isNearRedirecting, nearWallet.accountId, state]);
 
   useEffect(() => {
-    const checkNonNearWalletStatus = async () => {
-      if (!pendingChainType || pendingChainType === ChainType.Near || isNearRedirecting) return;
-
-      let isNewWalletConnected = false;
-      switch (pendingChainType) {
-        case ChainType.EVM:
-          isNewWalletConnected = isEvmConnected;
-          break;
-        case ChainType.Solana:
-          isNewWalletConnected = isSolConnected;
-          break;
+    const checkWalletConnections = async () => {
+      if (isEvmConnected && address) {
+        addWallet({
+          ...state,
+          chainType: ChainType.EVM,
+          address
+        });
       }
 
-      if (isNewWalletConnected) {
-        if (previousChainType && previousChainType !== pendingChainType) {
-          await signOut({ id: previousChainType });
-        }
-        setPendingChainType(null);
+      if (isSolConnected && solanaWallet.publicKey) {
+        addWallet({
+          ...state,
+          chainType: ChainType.Solana,
+          address: solanaWallet.publicKey.toString()
+        });
+      }
+
+      if (nearWallet.accountId) {
+        addWallet({
+          ...state,
+          chainType: ChainType.Near,
+          address: nearWallet.accountId
+        });
       }
     };
 
-    checkNonNearWalletStatus();
-  }, [isEvmConnected, isSolConnected, pendingChainType]);
+    checkWalletConnections();
+  }, [isEvmConnected, address, isSolConnected, solanaWallet.publicKey, nearWallet.accountId]);
 
   const handleWalletClick = async (chainType: ChainType) => {
-    if (state.chainType === chainType) return;
-    
-    try {
-      // 在切换开始前记录当前状态
-      if (state.chainType) {
-        setPreviousChainType(state.chainType);
+    if (!isWalletConnected(chainType)) {
+      try {
+        await signIn({ id: chainType });
+        setPendingChainType(chainType);
+      } catch (error) {
+        console.error('Failed to connect wallet:', error);
+        setIsNearRedirecting(false);
       }
-      setPendingChainType(chainType);
-         
-      await signIn({ id: chainType });
-
-      if (chainType === ChainType.Near) {
-        setIsNearRedirecting(true);
-      }
-
-    } catch (error) {
-      console.error('Failed to switch wallet:', error);
-      setPendingChainType(null);
-      setIsNearRedirecting(false);
     }
   };
 
   const renderWalletStatus = () => {
-    const getOpacityClass = (walletType: ChainType) => {
-      if (!state.chainType) return 'opacity-30';
-      return state.chainType === walletType ? '' : 'opacity-30';
+    const getWalletStyle = (walletType: ChainType) => {
+      return !isWalletConnected(walletType) ? 'opacity-30' : '';
+    };
+
+    const WalletList = () => {
+      const getWalletIcon = (chainType: ChainType) => {
+        switch (chainType) {
+          case ChainType.EVM:
+            return "/images/near-intents/icons/wallets/evm.png";
+          case ChainType.Solana:
+            return "/images/near-intents/icons/wallets/sol.png";
+          case ChainType.Near:
+            return "/images/near-intents/icons/wallets/near.png";
+        }
+      };
+
+      const getProtocolName = (chainType: ChainType) => {
+        switch (chainType) {
+          case ChainType.EVM:
+            return "EVM Protocol";
+          case ChainType.Solana:
+            return "Solana Protocol";
+          case ChainType.Near:
+            return "Near Protocol";
+        }
+      };
+
+      const handleCopy = (address: string) => {
+        navigator.clipboard.writeText(address);
+        toast.success({
+          title: 'Copied to clipboard',
+        })
+      };
+
+      const handleDisconnect = async (chainType: ChainType) => {
+        try {
+          await signOut({ id: chainType });
+          removeWallet(chainType);
+        } catch (error) {
+          console.error('Failed to disconnect:', error);
+        }
+      };
+
+      return (
+        <div className="bg-[#FFFDEB] rounded-[20px] shadow-shadow1 w-[320px] py-5 px-3 border border-black overflow-hidden">
+          {connectedWallets.map((wallet) => (
+            <div key={wallet.chainType} className={`flex p-2.5 bg-black bg-opacity-5 rounded-[10px] items-center gap-2 cursor-pointer ${
+              wallet.chainType !== connectedWallets[0].chainType ? 'mt-2.5' : ''
+            }`}>
+              <div className="w-[39px] h-[39px] flex items-center justify-center">
+                <img 
+                  src={getWalletIcon(wallet.chainType)} 
+                  alt={wallet.chainType} 
+                  className="w-full h-full" 
+                />
+              </div>
+              <div className="flex flex-col gap-1 font-Montserrat">
+                <span className="font-semibold">
+                  {wallet.address?.slice(0, 6)}...{wallet.address?.slice(-4)}
+                </span>
+                <span className="text-sm text-[#6F6F6F]">
+                  {getProtocolName(wallet.chainType)}
+                </span>
+              </div>
+              <div className="flex gap-5 items-center ml-auto">
+                <IconCopy 
+                  className="cursor-pointer hover:opacity-80"
+                  onClick={() => handleCopy(wallet.address || '')} 
+                />
+                <IconDisconnect 
+                  className="cursor-pointer hover:opacity-80"
+                  onClick={() => handleDisconnect(wallet.chainType)} 
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      );
     };
 
     return (
       <div className="flex items-center bg-[#FFDC50] justify-between border-b border-[#373A53] pt-[20px] pb-[12px] pl-[26px] pr-[20px]">
         <span className="font-Montserrat font-[600]">Connected</span>
-        {/* {!state.chainType ? (
-          <span className="font-Montserrat font-[600]">-</span>
-        ) : ( */}
-          <div className="flex items-center gap-2.5">
-            <img 
-              src="/images/near-intents/icons/wallets/evm.png" 
-              className={`w-[32px] h-[32px] cursor-pointer ${getOpacityClass(ChainType.EVM)}`} 
-              onClick={() => handleWalletClick(ChainType.EVM)}
-              alt="" 
-            />
-            <img 
-              src="/images/near-intents/icons/wallets/sol.png" 
-              className={`w-[32px] h-[32px] cursor-pointer ${getOpacityClass(ChainType.Solana)}`}
-              onClick={() => handleWalletClick(ChainType.Solana)} 
-              alt="" 
-            />
-            <img 
-              src="/images/near-intents/icons/wallets/near.png" 
-              className={`w-[32px] h-[32px] cursor-pointer ${getOpacityClass(ChainType.Near)}`}
-              onClick={() => handleWalletClick(ChainType.Near)} 
-              alt="" 
-            />
-          </div>
-        {/* )} */}
+        <Popover
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.BottomLeft}
+          offset={0}
+          content={connectedWallets.length > 0 ? ( <WalletList />) : null}>
+            <div className="flex items-center gap-2.5">
+              <img 
+                src="/images/near-intents/icons/wallets/evm.png" 
+                className={`w-[32px] h-[32px] cursor-pointer ${getWalletStyle(ChainType.EVM)}`} 
+                onClick={() => handleWalletClick(ChainType.EVM)}
+                alt="EVM" 
+              />
+              <img 
+                src="/images/near-intents/icons/wallets/sol.png" 
+                className={`w-[32px] h-[32px] cursor-pointer ${getWalletStyle(ChainType.Solana)}`}
+                onClick={() => handleWalletClick(ChainType.Solana)} 
+                alt="Solana" 
+              />
+              <img 
+                src="/images/near-intents/icons/wallets/near.png" 
+                className={`w-[32px] h-[32px] cursor-pointer ${getWalletStyle(ChainType.Near)}`}
+                onClick={() => handleWalletClick(ChainType.Near)} 
+                alt="NEAR" 
+              />
+            </div>
+         </Popover>
       </div>
     );
   };

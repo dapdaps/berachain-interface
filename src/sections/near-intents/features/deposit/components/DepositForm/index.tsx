@@ -33,6 +33,7 @@ import { computeTotalBalance } from "@/sections/near-intents/utils/tokenUtils";
 import { WidgetRoot } from "@/sections/near-intents/components/WidgetRoot";
 import { ConnectWalletButton } from "@/sections/near-intents/components/Button/ConnectWalletButton";
 import { useConnectWallet } from "../../../../hooks/useConnectWallet";
+import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
 
 export type DepositFormValues = {
   network: BlockchainEnum | null;
@@ -50,6 +51,8 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
   const { data: tokenList, isLoading } = useTokensStore((state) => state);
 
   const { state: walletState } = useConnectWallet();
+
+  const { connectedWallets } = useConnectedWalletsStore();
 
   useEffect(() => {
     if (!tokenList.size && !isLoading) {
