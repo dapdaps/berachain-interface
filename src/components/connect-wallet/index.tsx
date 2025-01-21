@@ -22,7 +22,7 @@ import MobileNetworks from "@/components/connect-wallet/networks";
 import { useDebounceFn } from 'ahooks';
 import LazyImage from '@/components/layz-image';
 import { useWalletName } from '@/hooks/use-wallet-name';
-import { ChainType, useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet";
+import { ChainType } from "@/sections/near-intents/hooks/useConnectWallet";
 import { usePathname } from "next/navigation";
 import { useNearConnectStore } from "@/stores/useNearConnectStore";
 

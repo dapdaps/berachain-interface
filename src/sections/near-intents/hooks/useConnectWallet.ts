@@ -71,12 +71,12 @@ export const useConnectWallet = (): ConnectWalletAction => {
   const nearWalletConnect = useNearWalletActions()
 
   const handleSignInViaNearWalletSelector = async (): Promise<void> => {
-    console.log("Sign in via Near Wallet Selector", nearWallet.modal)
     nearWallet.modal.show()
   }
   const handleSignOutViaNearWalletSelector = async () => {
     try {
       const wallet = await nearWallet.selector.wallet()
+      console.log("Signing out", wallet)
       await wallet.signOut()
       useNearConnectStore.getState().clear();
     } catch (e) {
@@ -90,6 +90,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
    */
   const evmWalletConnect = useConnect()
   const evmWalletDisconnect = useDisconnect()
+  const { disconnect } = useDisconnect();
   const evmWalletAccount = useAccount()
   const evmWalletConnections = useConnections()
   const { sendTransactions } = useEVMWalletActions()
@@ -99,9 +100,10 @@ export const useConnectWallet = (): ConnectWalletAction => {
     // await evmWalletConnect.connectAsync({ connector })
   }
   const handleSignOutViaWagmi = async () => {
-    for (const { connector } of evmWalletConnections) {
-      evmWalletDisconnect.disconnect({ connector })
-    }
+    // for (const { connector } of evmWalletConnections) {
+    //   evmWalletDisconnect.disconnect({ connector })
+    // }
+    disconnect();
     useNearConnectStore.getState().clear();
   }
 
@@ -123,100 +125,52 @@ export const useConnectWallet = (): ConnectWalletAction => {
     await handleSignOutViaWagmi()
   }
 
+  // 重构检查顺序,确保最新连接的钱包状态被正确设置
   if (nearWallet.accountId != null) {
-    state = {
-      address: nearWallet.accountId,
-      network: "near:mainnet",
-      chainType: ChainType.Near,
-    }
-    useNearConnectStore.getState().setState(state)
-    return {
-      async signIn(params: {
-        id: ChainType
-        connector?: Connector
-      }): Promise<void> {
-        const strategies = {
-          [ChainType.Near]: () => handleSignInViaNearWalletSelector(),
-          [ChainType.EVM]: () => handleSignInViaWagmi(),
-          [ChainType.Solana]: () => handleSignInViaSolanaSelector(),
-        }
-        return strategies[params.id]()
-      },
-  
-      async signOut(params: {
-        id: ChainType
-      }): Promise<void> {
-        const strategies = {
-          [ChainType.Near]: () => handleSignOutViaNearWalletSelector(),
-          [ChainType.EVM]: () => handleSignOutViaWagmi(),
-          [ChainType.Solana]: () => handleSignOutViaSolanaSelector(),
-        }
-        return strategies[params.id]()
-      },
-  
-      sendTransaction: async (
-        params
-      ): Promise<string | FinalExecutionOutcome[]> => {
-        const strategies = {
-          [ChainType.Near]: async () =>
-            await nearWalletConnect.signAndSendTransactions({
-              transactions:
-                params.tx as SignAndSendTransactionsParams["transactions"],
-            }),
-  
-          [ChainType.EVM]: async () =>
-            await sendTransactions(params.tx as SendTransactionParameters),
-  
-          [ChainType.Solana]: async () => {
-            const transaction =
-              params.tx as SendTransactionSolanaParams["transactions"]
-            return await solanaWallet.sendTransaction(
-              transaction,
-              solanaConnection.connection
-            )
-          },
-        }
-  
-        const result = await strategies[params.id]()
-        if (result === undefined) {
-          throw new Error(`Transaction failed for ${params.id}`)
-        }
-        return result
-      },
-  
-      connectors: evmWalletConnect.connectors as Connector[],
-      state,
+    const shouldUpdateNearState = 
+      state.chainType === undefined || // 初始状态
+      state.chainType === ChainType.Near // 当前就是 NEAR
+
+    if (shouldUpdateNearState) {
+      state = {
+        address: nearWallet.accountId,
+        network: "near:mainnet",
+        chainType: ChainType.Near,
+      }
+      useNearConnectStore.getState().setState(state)
     }
   }
 
-  // EVM 和 Solana 的检查逻辑保持不变
   if (evmWalletAccount.address != null && evmWalletAccount.chainId) {
-    state = {
-      address: evmWalletAccount.address,
-      network: evmWalletAccount.chainId
-        ? `eth:${evmWalletAccount.chainId}`
-        : "unknown",
-      chainType: ChainType.EVM,
+    const shouldUpdateEVMState = 
+      state.chainType === undefined || // 初始状态
+      state.chainType === ChainType.EVM // 当前就是 EVM
+
+    if (shouldUpdateEVMState) {
+      state = {
+        address: evmWalletAccount.address,
+        network: evmWalletAccount.chainId
+          ? `eth:${evmWalletAccount.chainId}`
+          : "unknown",
+        chainType: ChainType.EVM,
+      }
+      useNearConnectStore.getState().setState(state)
     }
-    useNearConnectStore.getState().setState(state)
   }
 
-  /**
-   * Ensure Solana Wallet state overrides EVM Wallet state:
-   * Context:
-   *   Phantom Wallet supports both Solana and EVM chains.
-   * Issue:
-   *   When Phantom Wallet connects, it may emit an EVM connection event.
-   *   This causes `wagmi` to connect to the EVM chain, leading to unexpected
-   *   address switching. Placing Solana Wallet state last prevents this.
-   */
   if (solanaWallet.publicKey != null) {
-    state = {
-      address: solanaWallet.publicKey.toBase58(),
-      network: "sol:mainnet",
-      chainType: ChainType.Solana,
+    const shouldUpdateSolanaState = 
+      state.chainType === undefined || // 初始状态
+      state.chainType === ChainType.Solana // 当前就是 Solana
+
+    if (shouldUpdateSolanaState) {
+      state = {
+        address: solanaWallet.publicKey.toBase58(),
+        network: "sol:mainnet",
+        chainType: ChainType.Solana,
+      }
+      useNearConnectStore.getState().setState(state)
     }
-    useNearConnectStore.getState().setState(state)
   }
 
   return {
@@ -224,6 +178,13 @@ export const useConnectWallet = (): ConnectWalletAction => {
       id: ChainType
       connector?: Connector
     }): Promise<void> {
+      // 连接新钱包时更新状态
+      state = {
+        ...state,
+        chainType: params.id
+      }
+      useNearConnectStore.getState().setState(state)
+
       const strategies = {
         [ChainType.Near]: () => handleSignInViaNearWalletSelector(),
         [ChainType.EVM]: () => handleSignInViaWagmi(),

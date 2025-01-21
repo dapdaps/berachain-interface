@@ -1,6 +1,6 @@
 import Ajv from "ajv"
 import * as borsh from "borsh"
-import ethers from "ethers"
+import { ethers } from "ethers"
 
 import {
   CONTRACTS_REGISTER,
