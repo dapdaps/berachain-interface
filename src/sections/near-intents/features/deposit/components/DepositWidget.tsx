@@ -11,6 +11,7 @@ import useToast from "@/hooks/use-toast";
 import { ethers } from "ethers";
 import { ChainType } from "@/sections/near-intents/hooks/useConnectWallet";
 import { useAccount } from "wagmi";
+import { CHAIN_IDS } from "@/sections/near-intents/constants/evm";
 
 export const DepositWidget = ({
   tokenList,
@@ -24,10 +25,7 @@ export const DepositWidget = ({
 
   const toast = useToast();
 
-  const { chainId } = useAccount();
-
-  const addActionChainIdMap: Record<ChainType, number> = {
-    [ChainType.EVM]: chainId ?? 0,
+  const addActionChainIdMap: Record<any, number> = {
     [ChainType.Near]: 99998,
     [ChainType.Solana]: 99997,
   };
@@ -41,7 +39,7 @@ export const DepositWidget = ({
           sendTransactionNear={sendTransactionNear}
           sendTransactionEVM={sendTransactionEVM}
           sendTransactionSolana={sendTransactionSolana}
-          onDepositSuccess={({ txHash, token, amount }) => {
+          onDepositSuccess={({ txHash, token, amount, chainName }) => {
             if (!chainType) return;
 
             toast.success({
@@ -58,7 +56,7 @@ export const DepositWidget = ({
               template: "near-intents",
               token: token,
               amount: ethers.utils.formatUnits(amount, token.decimals),
-              chainId: addActionChainIdMap[chainType],
+              chainId: chainType === ChainType.EVM ? CHAIN_IDS[chainName!] : addActionChainIdMap[chainType],
             });
           }}
         >

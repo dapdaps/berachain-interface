@@ -276,10 +276,10 @@ const Portfolio = () => {
     <div className="px-[20px] py-[16px] pb-[30px]">
       <div className="flex items-center justify-between">
         <div className="font-CherryBomb text-[26px]">Assets</div>
-        {/* <IconHistory 
+        <IconHistory 
           className="opacity-30 cursor-pointer hover:opacity-60" 
           onClick={() => setShowHistory(true)}
-        /> */}
+        />
       </div>
       <div className="flex items-center justify-between gap-2 my-5">
         <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => setModalType(ModalType.MODAL_REVIEW_DEPOSIT)}>
