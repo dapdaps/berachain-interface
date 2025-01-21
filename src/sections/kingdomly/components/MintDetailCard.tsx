@@ -218,9 +218,9 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
       setIsMinting(false);
     }
   };
-
+console.log("item", item)
   return (
-    <div className="mt-[14px]">
+    <div className="mt-[14px] lg:max-h-[330px] lg:overflow-y-auto">
       <div className="flex md:flex-col lg:flex-row w-full justify-between gap-5">
         <img
           src={item.profile_image}
