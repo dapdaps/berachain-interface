@@ -54,7 +54,7 @@ export const useMint = () => {
     currentGroupId: number,
     amount: number,
   ) => {
-    if (!account) return;
+    if (!account || !chainId) return;
 
     try {
       const rpcUrl = CHAIN_RPC_URLS[chainId];
@@ -62,7 +62,7 @@ export const useMint = () => {
         console.error(`No RPC URL found for chain ID ${chainId}`);
         return 'closed';
       }
-  
+
       const provider = new providers.JsonRpcProvider(rpcUrl);
       const contract = new Contract(collection.contract_address, NFTAbi, provider);
       

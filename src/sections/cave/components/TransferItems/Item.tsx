@@ -40,7 +40,7 @@ const TransferItem = (props: any) => {
         <div className="flex justify-center items-center gap-[2px] px-[5px] bg-[#C7FF6E] border-[2px] border-[#709D27] backdrop-blur-sm h-[30px] rounded-[15px] text-[#000] text-center font-[Montserrat] text-[12px] font-bold leading-[100%]">
           <img src="/images/cave/icon-flash.svg" alt="" className="w-[14px] h-[20px]" />
           <div className="">
-            +{Big(item.bonus_percentage || 0).div(100).toFixed(2)}%
+            +{Big(item.bonus_percentage || 0).toFixed(2)}%
           </div>
         </div>
         <CheckBox
