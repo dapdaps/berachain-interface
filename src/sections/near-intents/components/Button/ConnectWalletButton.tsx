@@ -1,5 +1,6 @@
 import { BlockchainEnum } from "../../types/interfaces";
 import { ChainType, useConnectWallet } from "../../hooks/useConnectWallet";
+import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
 import { ButtonCustom } from "./ButtonCustom";
 import { reverseAssetNetworkAdapter } from "../../utils/adapters";
 
@@ -13,6 +14,7 @@ export const ConnectWalletButton = ({
   className 
 }: ConnectWalletButtonProps) => {
   const { signIn } = useConnectWallet();
+  const { isWalletConnected, getWalletState, addWallet } = useConnectedWalletsStore();
 
   const getRequiredWalletType = (): ChainType => {
     const targetChain = reverseAssetNetworkAdapter[network];
@@ -29,7 +31,15 @@ export const ConnectWalletButton = ({
 
   const handleConnect = async () => {
     const requiredWallet = getRequiredWalletType();
-    await signIn({ id: requiredWallet });
+    if (isWalletConnected(requiredWallet)) {
+      const walletState = getWalletState(requiredWallet);
+      if (walletState) {
+        addWallet(walletState);
+        console.log(`Switched to wallet: `, walletState);
+      }
+    } else {
+      await signIn({ id: requiredWallet });
+    }
   }
 
   const getButtonText = (): string => {

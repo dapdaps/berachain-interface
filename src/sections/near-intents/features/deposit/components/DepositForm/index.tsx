@@ -149,7 +149,7 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
       // We have to clean up network because it could be not a valid value for the previous token
       setValue("network", null);
       setValue("amount", "");
-      onCloseModal(undefined);
+      // onCloseModal(undefined);
     }
   }, [payload, onCloseModal, depositUIActorRef, setValue]);
 
@@ -206,7 +206,7 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
       <Form<DepositFormValues>
         handleSubmit={handleSubmit(onSubmit)}
         register={register}
-        className="flex flex-col gap-5"
+        className="flex flex-col gap-5 md:max-h-[65vh] md:overflow-y-scroll"
       >
         <div className="flex flex-col gap-2.5" id="deposit">
           <div className="font-semibold font-Montserrat text-sm text-[#8A8A8A]">
@@ -275,7 +275,10 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
                       value={
                         getDefaultBlockchainOptionValue(token!) || network || ""
                       }
-                      onChange={field.onChange}
+                      portalContainer={document.getElementById("deposit")}
+                      onChange={(network) => {
+                        field.onChange(network);
+                      }}
                       name={field.name}
                     />
                   )
