@@ -180,7 +180,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     <Flex
       direction="column"
       gap="2"
-      className="bg-[#FFFDEB] rounded-[30px] p-5 border border-black shadow-shadow1"
+      className="bg-[#FFFDEB] lg:rounded-[30px] lg:p-5 lg:border lg:border-black lg:shadow-shadow1 md:px-3 md:pb-[40px]"
     >
       <div className="font-CherryBomb w-full text-center text-[26px] mb-3">Swap</div>
       <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
@@ -202,7 +202,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         />
 
         <div className="relative w-full">
-          <ButtonSwitch className="w-[34px] h-[34px] bg-[#BC9549] rounded-md font-bold" onClick={switchTokens} />
+          <ButtonSwitch className="w-[34px] h-[34px] !bg-[#BC9549] rounded-md font-bold border-[2px] border-[#FFFDEB]" onClick={switchTokens} />
         </div>
 
         <FieldComboInput<SwapFormValues>

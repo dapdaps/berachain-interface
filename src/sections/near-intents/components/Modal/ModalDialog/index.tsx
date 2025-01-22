@@ -9,6 +9,8 @@ import {
 } from "react"
 import { useModalStore } from "../../../providers/ModalStoreProvider"
 import { WidgetContext } from "../../WidgetRoot"
+import useIsMobile from "@/hooks/use-isMobile"
+import Drawer from "@/components/drawer"
 
 export const ModalDialog = ({
   children,
@@ -16,15 +18,24 @@ export const ModalDialog = ({
 }: PropsWithChildren<{
   onClose?: () => void
 }>) => {
-  const { onCloseModal } = useModalStore((state) => state)
+  const { onCloseModal, payload, modalType } = useModalStore((state) => state)
   const [open, setOpen] = useState(true)
   const divRef = useRef<HTMLDivElement>(null)
   const { portalContainer } = useContext(WidgetContext)
 
   const handleClose = () => {
+    console.log("handleClose - ModalDialog", payload, modalType)
     setOpen(false)
     onCloseModal()
     onClose?.()
+  }
+
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return <Drawer visible={open} onClose={handleClose} className="!bg-[#FFFDEB]">
+      {children}
+    </Drawer>
   }
 
   return (

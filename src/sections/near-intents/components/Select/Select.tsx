@@ -9,7 +9,7 @@ type Props<T extends string> = {
     [key in T extends string ? T : never]: {
       label: string
       icon: ReactNode
-      value: string // 确保 value 是字符串类型
+      value: string 
       key?: string
     }
   }
