@@ -12,7 +12,6 @@ import { ModalType } from "../../stores/modalStore";
 import { useConnectWallet } from "../../hooks/useConnectWallet";
 import { useSelector } from "@xstate/react";
 import { SwapUIMachineContext } from "../../features/swap/components/SwapUIMachineProvider";
-import { useNearConnectStore } from "@/stores/useNearConnectStore";
 import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
 import ConnectWalletBar from "../../components/ConnectWalletBar";
@@ -69,7 +68,6 @@ const Portfolio = () => {
     });
 
     setAssetList(getAssetList);
-    useNearConnectStore.getState().setState(state)
 
   }, [data, isLoading, depositedBalanceRef, state.address]);
 
