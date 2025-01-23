@@ -22,9 +22,8 @@ import MobileNetworks from "@/components/connect-wallet/networks";
 import { useDebounceFn } from 'ahooks';
 import LazyImage from '@/components/layz-image';
 import { useWalletName } from '@/hooks/use-wallet-name';
-import { ChainType } from "@/sections/near-intents/hooks/useConnectWallet";
+import { ChainType, State } from "@/sections/near-intents/hooks/useConnectWallet";
 import { usePathname } from "next/navigation";
-import { useNearConnectStore } from "@/stores/useNearConnectStore";
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
 
 const dropdownAnimations = {
@@ -42,9 +41,27 @@ const dropdownAnimations = {
 
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
-  const nearConnectInfo = useNearConnectStore.getState();
+  const { removeWallet }  = useConnectedWalletsStore.getState();
+  const currentWallet = useRef<State>();
+  const [, setForceUpdate] = useState({});
   
-  const { connectedWallets, removeWallet }  = useConnectedWalletsStore.getState();
+  useEffect(() => {
+    const state = useConnectedWalletsStore.getState();
+    currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
+    
+    // 订阅后续更新
+    const unsubscribe = useConnectedWalletsStore.subscribe(
+      (state) => {
+        if (!state) return;
+        currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
+        setForceUpdate({});
+      }
+    );
+    
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const pathname = usePathname();
   const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
@@ -77,18 +94,18 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   };
 
   const addressShown = useMemo(() => {
-    if (isNearPage && !isMobile && connectedWallets.length > 0 && connectedWallets[0].address) {
-      if (connectedWallets[0].chainType === ChainType.Near) {
-        return connectedWallets[0].address;
+    if (isNearPage && !isMobile && currentWallet.current) {
+      if (currentWallet.current.chainType === ChainType.Near) {
+        return currentWallet.current.address;
       }
-      return `${connectedWallets[0].address.slice(0, 5)}...${connectedWallets[0].address.slice(-4)}`;
+      return currentWallet.current.address && `${currentWallet.current.address.slice(0, 5)}...${currentWallet.current.address.slice(-4)}`;
     }
     if (!address) return "";
     return `${address.slice(0, 5)}...${address.slice(-4)}`;
-  }, [address, isNearPage, isMobile]);
+  }, [address, isNearPage, isMobile, currentWallet.current]);
 
   const handleCopy = () => {
-    const addr = isNearPage ? nearConnectInfo.address : address;
+    const addr = isNearPage && currentWallet.current && currentWallet.current.address ? currentWallet.current.address : address;
     navigator.clipboard.writeText(addr as string);
     total.success({
       title: `Copied address ${address}`,
@@ -96,8 +113,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   };
 
   const handleDisconnect = () => {
-    if (isNearPage && connectedWallets.length > 0) {
-      removeWallet(connectedWallets[0].chainType);
+    if (isNearPage && currentWallet.current) {
+      removeWallet(currentWallet.current.chainType!);
     }
     disconnect();
     setMobileUserInfoVisible(false);
@@ -192,7 +209,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           borderRadius={21}
           style={{ transform: "translateY(-4px)" }}
         />
-      ) : (isConnected || (isNearPage && connectedWallets.length > 0 )) ? (
+      ) : (isConnected || (isNearPage && currentWallet.current )) ? (
         <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3 md:min-w-[105px]">
           {isMobile ? (
             <>
@@ -210,9 +227,11 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
                 isNearPage={isNearPage}
-                connectedWallets={connectedWallets}
+                currentWallet={currentWallet.current}
               />
-              <Chain
+              {
+                !isNearPage && (
+                  <Chain
                 chainDropdownShow={chainDropdownShow}
                 chainListRef={chainListRef}
                 handleChainDropdown={handleChainDropdown}
@@ -220,17 +239,23 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 chains={chains}
                 handleChainSelect={handleChainSelect}
               />
+                )
+              }
             </>
           ) : (
             <>
-               <Chain
-                  chainDropdownShow={chainDropdownShow}
-                  chainListRef={chainListRef}
-                  handleChainDropdown={handleChainDropdown}
-                  chainId={chainId}
-                  chains={chains}
-                  handleChainSelect={handleChainSelect}
-                />
+              {
+                !isNearPage && (
+                  <Chain
+                chainDropdownShow={chainDropdownShow}
+                chainListRef={chainListRef}
+                handleChainDropdown={handleChainDropdown}
+                chainId={chainId}
+                chains={chains}
+                handleChainSelect={handleChainSelect}
+              />
+                )
+              }
               <User
                 handleConnect={handleConnect}
                 isMobile={isMobile}
@@ -245,7 +270,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
                 isNearPage={isNearPage}
-                connectedWallets={connectedWallets}
+                currentWallet={currentWallet.current}
               />
             </>
           )}
@@ -396,12 +421,12 @@ const User = (props: any) => {
     tokenSymbolShown,
     addressShown,
     isNearPage,
-    connectedWallets    
+    currentWallet
   } = props;
 
-  if (isNearPage && connectedWallets.length > 0 && connectedWallets[0].chainType === ChainType.Near) {
+  if (isNearPage && currentWallet && currentWallet.chainType !== ChainType.EVM) {
     return (
-      <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{connectedWallets[0].address}</div>
+      <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{addressShown}</div>
     )
   }
 

@@ -26,7 +26,6 @@ import { providers } from "near-api-js"
 
 import Loading from "@/components/loading"
 import { ChainType } from "../hooks/useConnectWallet"
-import { useNearConnectStore } from "@/stores/useNearConnectStore"
 
 declare global {
   interface Window {
@@ -142,7 +141,6 @@ export const WalletSelectorProvider: React.FC<{
           network: "near:mainnet",
           chainType: ChainType.EVM,
         }
-        useNearConnectStore.getState().setState(state)
         setAccounts(nextAccounts)
       })
 
@@ -154,7 +152,6 @@ export const WalletSelectorProvider: React.FC<{
 
     return () => {
       subscription.unsubscribe()
-      useNearConnectStore.getState().clear()
       onHideSubscription.remove()
     }
   }, [selector, modal])

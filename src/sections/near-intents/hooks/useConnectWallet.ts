@@ -23,7 +23,6 @@ import {
 import { useEVMWalletActions } from "./useEVMWalletActions"
 import { useNearWalletActions } from "./useNearWalletActions"
 import { useAppKit } from "@reown/appkit/react"
-import { useNearConnectStore } from '../../../stores/useNearConnectStore';
 
 export enum ChainType {
   Near = "near",
@@ -31,7 +30,7 @@ export enum ChainType {
   Solana = "solana",
 }
 
-type State = {
+export type State = {
   chainType?: ChainType
   network?: string
   address?: string
@@ -78,7 +77,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
       const wallet = await nearWallet.selector.wallet()
       console.log("Signing out", wallet)
       await wallet.signOut()
-      useNearConnectStore.getState().clear();
     } catch (e) {
       console.log("Failed to sign out", e)
     }
@@ -104,7 +102,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
     //   evmWalletDisconnect.disconnect({ connector })
     // }
     disconnect();
-    useNearConnectStore.getState().clear();
   }
 
   /**
@@ -121,7 +118,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
 
   const handleSignOutViaSolanaSelector = async () => {
     await solanaWallet.disconnect()
-    useNearConnectStore.getState().clear();
     await handleSignOutViaWagmi()
   }
 
@@ -137,7 +133,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
         network: "near:mainnet",
         chainType: ChainType.Near,
       }
-      useNearConnectStore.getState().setState(state)
     }
   }
 
@@ -154,7 +149,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
           : "unknown",
         chainType: ChainType.EVM,
       }
-      useNearConnectStore.getState().setState(state)
     }
   }
 
@@ -169,7 +163,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
         network: "sol:mainnet",
         chainType: ChainType.Solana,
       }
-      useNearConnectStore.getState().setState(state)
     }
   }
 
@@ -183,7 +176,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
         ...state,
         chainType: params.id
       }
-      useNearConnectStore.getState().setState(state)
 
       const strategies = {
         [ChainType.Near]: () => handleSignInViaNearWalletSelector(),
