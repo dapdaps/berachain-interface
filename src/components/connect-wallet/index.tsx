@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppKit } from "@reown/appkit/react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useAccount, useBalance, useDisconnect, useSwitchChain } from "wagmi";
 import Image from "next/image";
 import { icons } from "@/configs/chains";
@@ -43,25 +43,20 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
   const { removeWallet }  = useConnectedWalletsStore.getState();
   const currentWallet = useRef<State>();
-  const [, setForceUpdate] = useState({});
   
   useEffect(() => {
     const state = useConnectedWalletsStore.getState();
     currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
     
-    // 订阅后续更新
-    const unsubscribe = useConnectedWalletsStore.subscribe(
-      (state) => {
-        if (!state) return;
-        currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
-        setForceUpdate({});
-      }
-    );
+    const unsubscribe = useConnectedWalletsStore.subscribe((state) => {
+      if (!state) return;
+      currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
+    });
     
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, []); 
 
   const pathname = usePathname();
   const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
