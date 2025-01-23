@@ -227,7 +227,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           {/* Bottom Navigation */}
           <div className="flex items-center gap-3">
             <div className="relative">
-              {
+              {/* {
                 ['/'].includes(pathname) && isChristmas && (
                   <motion.div
                     className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
@@ -247,7 +247,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     <img className="w-full" src="/images/mobile/henlo.png" alt="Henlo" />
                   </motion.div>
                 )
-              }
+              } */}
   
               <motion.img
                 src="/images/mobile/town.png"
