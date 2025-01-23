@@ -1,6 +1,6 @@
 import { useChristmas } from "@/hooks/use-christmas";
 import { useProgressRouter } from "@/hooks/use-progress-router";
-import ChristmasEnterance from "@/sections/activity/christmas/enterance";
+
 import MobileHeader from '@/sections/home/mobile/header';
 import { useTapSoundStore } from "@/stores/tap-sound";
 import clsx from "clsx";
@@ -36,6 +36,8 @@ const Home = () => {
       window.removeEventListener("resize", updateViewportHeight);
     };
   }, []);
+
+  console.log('isChristmas', isChristmas)
 
 
   return (
@@ -215,6 +217,18 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
               </motion.div>
+              <motion.div
+                className='absolute w-[34.13vw] h-[26.13vw] left-0 bottom-[76px]'
+                whileTap="tap"
+                onClick={() => {
+                  router.push('/near-intents');
+                  tapSound.play?.();
+                  // handleReport('1015-008');
+                }}
+                data-bp="1015-012"
+              >
+                <motion.img transition={EntryAnimation} variants={EntryAnimationBg} src="/images/background/near-intents.png" className="cursor-pointer w-full h-full aspect-square" alt="" />
+              </motion.div>
             </div>
           ) : (
             <div
@@ -389,15 +403,27 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
               </motion.div>
+              <motion.div
+                className='absolute w-[34.13vw] h-[26.13vw] left-0 bottom-[76px]'
+                whileTap="tap"
+                onClick={() => {
+                  router.push('/near-intents');
+                  tapSound.play?.();
+                  // handleReport('1015-008');
+                }}
+                data-bp="1015-012"
+              >
+                <motion.img transition={EntryAnimation} variants={EntryAnimationBg} src="/images/background/near-intents.png" className="cursor-pointer w-full h-full aspect-square" alt="" />
+              </motion.div>
             </div>
           )
         }
       </div>
-      {
+      {/* {
         isChristmas && (
           <ChristmasEnterance path={christmasPath} />
         )
-      }
+      } */}
     </div >
   );
 };
