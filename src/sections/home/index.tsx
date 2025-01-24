@@ -171,11 +171,11 @@ const Navigation = function () {
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
       <MemeEnterance />
-      {
+      {/* {
         isChristmas && (
           <ChristmasEnterance path={christmasPath} />
         )
-      }
+      } */}
       <div
         className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
         onClick={() => {
