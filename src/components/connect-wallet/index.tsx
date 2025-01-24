@@ -43,6 +43,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
   const { removeWallet }  = useConnectedWalletsStore.getState();
   const currentWallet = useRef<State>();
+  const [_, setUpdater] = useState({})
   
   useEffect(() => {
     const state = useConnectedWalletsStore.getState();
@@ -51,6 +52,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     const unsubscribe = useConnectedWalletsStore.subscribe((state) => {
       if (!state) return;
       currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
+      setUpdater({})
     });
     
     return () => {
@@ -63,7 +65,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const isMobile = useIsMobile();
   const total = useToast();
   const { address, isConnected, chainId = 80084, chain, isConnecting } = useAccount();
-  const { disconnect } = useDisconnect();
   const { chains, switchChain } = useSwitchChain();
   const balance = useBalance({
     address,
@@ -107,13 +108,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     });
   };
 
-  const handleDisconnect = () => {
-    if (isNearPage && currentWallet.current) {
-      removeWallet(currentWallet.current.chainType!);
-    }
-    disconnect();
-    setMobileUserInfoVisible(false);
-  };
+
 
   const handleChainSelect = (chainId: number, chain: any) => {
     switchChain({ chainId });
@@ -214,7 +209,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 address={address}
                 userInfo={userInfo}
                 walletInfo={walletInfo}
-                handleDisconnect={handleDisconnect}
                 handleCopy={handleCopy}
                 tokenLogoShown={tokenLogoShown}
                 chainId={chainId}
@@ -223,6 +217,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 addressShown={addressShown}
                 isNearPage={isNearPage}
                 currentWallet={currentWallet.current}
+                setMobileUserInfoVisible={setMobileUserInfoVisible}
               />
               {
                 !isNearPage && (
@@ -257,7 +252,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 address={address}
                 userInfo={userInfo}
                 walletInfo={walletInfo}
-                handleDisconnect={handleDisconnect}
                 handleCopy={handleCopy}
                 tokenLogoShown={tokenLogoShown}
                 chainId={chainId}
@@ -266,6 +260,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 addressShown={addressShown}
                 isNearPage={isNearPage}
                 currentWallet={currentWallet.current}
+                removeWallet={removeWallet}
+                setMobileUserInfoVisible={setMobileUserInfoVisible}
               />
             </>
           )}
@@ -280,6 +276,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       )}
       <MobileUser
         visible={mobileUserInfoVisible}
+        setMobileUserInfoVisible={setMobileUserInfoVisible}
         onClose={() => {
           setMobileUserInfoVisible(false);
         }}
@@ -290,9 +287,10 @@ const ConnectWallet = ({ className }: { className?: string }) => {
         balanceShown={balanceShown}
         tokenSymbolShown={tokenSymbolShown}
         chainId={chainId}
-        handleDisconnect={handleDisconnect}
+        handleDisconnect={() => void 0}
         handleCopy={handleCopy}
         userInfo={userInfo}
+        isNearPage={isNearPage}
       />
       <MobileNetworks
         visible={mobileNetworksVisible}
@@ -401,11 +399,20 @@ const Chain = (props: any) => {
   );
 };
 
-const DisconnectButton = ({ onDisconnect }: { onDisconnect: () => void }) => {
+const DisconnectButton = ({ isNearPage, setMobileUserInfoVisible }: any) => {
+  const { disconnect } = useDisconnect();
+
+  const handleDisconnect = () => {
+    disconnect();
+    setMobileUserInfoVisible(false);
+  };
+  
+  if (isNearPage) return null
+
   return (
     <div
       className="cursor-pointer pl-[22px] pr-[26px] flex justify-between items-center click mt-[10px] pt-[10px] pb-[10px] transition-all duration-300 hover:bg-[#f7f7f7]"
-      onClick={onDisconnect}
+      onClick={handleDisconnect}
     >
       <div className="text-[#a6703d] text-[16px] font-medium leading-[1]">
         Disconnect
@@ -435,7 +442,6 @@ const User = (props: any) => {
     address,
     userInfo,
     walletInfo,
-    handleDisconnect,
     handleCopy,
     tokenLogoShown,
     chainId,
@@ -443,7 +449,8 @@ const User = (props: any) => {
     tokenSymbolShown,
     addressShown,
     isNearPage,
-    currentWallet
+    currentWallet,
+    setMobileUserInfoVisible,
   } = props;
 
   if (isNearPage && currentWallet && currentWallet.chainType !== ChainType.EVM) {
@@ -516,7 +523,7 @@ const User = (props: any) => {
           </div>
         </div>
       )}
-      {!isNearPage && <DisconnectButton onDisconnect={handleDisconnect} />}
+      <DisconnectButton isNearPage={isNearPage} setMobileUserInfoVisible={setMobileUserInfoVisible} />
     </div>
   );
 
