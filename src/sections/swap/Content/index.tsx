@@ -125,8 +125,6 @@ export default function Swap({
     setOutputCurrencyAmount(trade?.outputCurrencyAmount || "");
   }, [trade]);
 
-  console.log(trade, 'trade')
-
   return (
     <Card>
       <Header

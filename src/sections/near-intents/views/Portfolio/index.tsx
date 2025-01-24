@@ -15,61 +15,81 @@ import { SwapUIMachineContext } from "../../features/swap/components/SwapUIMachi
 import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
 import ConnectWalletBar from "../../components/ConnectWalletBar";
+import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
 
 const Portfolio = () => {
   const [assetList, setAssetList] = useState<SelectItemToken[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const { data, isLoading } = useTokensStore((state) => state);
   const isMobile = useIsMobile();
-  const { setModalType } = useModalStore(
-    (state) => state
-  )
-
-  
+  const { setModalType } = useModalStore((state) => state);
+  const { connectedWallets } = useConnectedWalletsStore();
   const { state } = useConnectWallet();
   
-  const swapUIActorRef = SwapUIMachineContext.useActorRef()
-
+  const swapUIActorRef = SwapUIMachineContext.useActorRef();
   const depositedBalanceRef = useSelector(
     swapUIActorRef,
     (state) => state.children.depositedBalanceRef
-  )
+  );
 
-  useEffect(() => {
-    if (!data.size && !isLoading) {
-      return;
-    }
-    const balancesContext = depositedBalanceRef?.getSnapshot().context.balances
-
-    const getAssetList: SelectItemToken[] = [];
-
-    for (const [tokenId, token] of data) {
-      const totalBalance = computeTotalBalance(token, balancesContext ?? {});
-
-      getAssetList.push({
+  const generateAssetList = (tokenData: Map<string, any>, balances: any) => {
+    const newAssetList: SelectItemToken[] = [];
+    
+    for (const [tokenId, token] of tokenData) {
+      const totalBalance = computeTotalBalance(token, balances ?? {});
+      newAssetList.push({
         itemId: tokenId,
         token,
         disabled: false,
-        balance:
-          totalBalance == null
-            ? undefined
-            : {
-                balance: totalBalance.toString(),
-                balanceUsd: undefined,
-                convertedLast: undefined,
-              },
+        balance: totalBalance == null
+          ? undefined
+          : {
+              balance: totalBalance.toString(),
+              balanceUsd: undefined,
+              convertedLast: undefined,
+            },
       });
     }
-    
-    getAssetList.sort((a, b) => {
+
+    newAssetList.sort((a, b) => {
       if (a.balance?.balance === "0") return 1;
       if (b.balance?.balance === "0") return -1;
       return 0;
     });
 
-    setAssetList(getAssetList);
+    return newAssetList;
+  };
 
-  }, [data, isLoading, depositedBalanceRef, state.address]);
+  useEffect(() => {
+    if (state.chainType && state.address && swapUIActorRef) {
+      swapUIActorRef.send({
+        type: "LOGIN",
+        params: {
+          userAddress: state.address,
+          userChainType: state.chainType
+        }
+      });
+
+      const subscription = depositedBalanceRef?.subscribe(state => {
+        const balances = state.context.balances;
+        if (data.size && balances) {
+          setAssetList(generateAssetList(data, balances));
+        }
+      });
+
+      return () => subscription?.unsubscribe();
+    }
+  }, [state.address, state.chainType, swapUIActorRef, data]);
+
+  useEffect(() => {
+    if (!data.size || !depositedBalanceRef) {
+      setAssetList([]);
+      return;
+    }
+
+    const balances = depositedBalanceRef.getSnapshot().context.balances;
+    setAssetList(generateAssetList(data, balances));
+  }, [data, depositedBalanceRef]);
 
   const renderMainContent = () => (
     <div className="lg:px-[20px] lg:py-[16px] pb-[30px]">
@@ -126,10 +146,4 @@ function renderBalance(
         ? formatTokenValue(balance, token.decimals, {
             min: 0.0001,
             fractionDigits: 4,
-          })
-        : null}
-    </Text>
-  );
-}
-
-export default Portfolio;
+          })        : null}    </Text>  );}export default Portfolio;
