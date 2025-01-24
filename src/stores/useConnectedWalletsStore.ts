@@ -5,6 +5,7 @@ import { persist } from 'zustand/middleware';
 export interface WalletState {
   chainType: ChainType;
   address?: string;
+  timestamp?: number; 
   [key: string]: any; 
 }
 
@@ -23,24 +24,32 @@ export const useConnectedWalletsStore = create<ConnectedWalletsStore>()(
 
       addWallet: (state) => {
         set((current) => {
-          const existingIndex = current.connectedWallets.findIndex(
+          const existingWallet = current.connectedWallets.find(
             w => w.chainType === state.chainType
           );
           
-          if (existingIndex >= 0) {
-            // 如果钱包已存在，先移除旧的
+          let updatedWallets;
+          if (existingWallet) {
             const newWallets = current.connectedWallets.filter(
               w => w.chainType !== state.chainType
             );
-            // 将更新的钱包状态添加到最前面
-            return { 
-              connectedWallets: [state, ...newWallets]
+            const updatedWallet = {
+              ...state,
+              timestamp: existingWallet.timestamp 
             };
+            updatedWallets = [...newWallets, updatedWallet];
+          } else {
+            const newWallet = {
+              ...state,
+              timestamp: Date.now()
+            };
+            updatedWallets = [...current.connectedWallets, newWallet];
           }
           
-          // 新钱包直接添加到最前面
           return {
-            connectedWallets: [state, ...current.connectedWallets],
+            connectedWallets: updatedWallets.sort((a, b) => 
+              (b.timestamp || 0) - (a.timestamp || 0)
+            )
           };
         });
       },
@@ -62,7 +71,7 @@ export const useConnectedWalletsStore = create<ConnectedWalletsStore>()(
       }
     }),
     {
-      name: 'connected-wallets-storage_v1.0.0',
+      name: 'connected-wallets-storage_v1.0.2',
     }
   )
 );

@@ -121,7 +121,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
     await handleSignOutViaWagmi()
   }
 
-  // 重构检查顺序,确保最新连接的钱包状态被正确设置
   if (nearWallet.accountId != null) {
     const shouldUpdateNearState = 
       state.chainType === undefined || // 初始状态
