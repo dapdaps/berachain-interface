@@ -39,6 +39,10 @@ const nextConfig = {
     {
       source: "/dapdap.game/:path*",
       destination: `${GAME_BASE_URL}/:path*`
+    },
+    {
+      source: "/api.solver.rpc/:path",
+      destination: "https://solver-relay-v2.chaindefuser.com/:path*"
     }
   ],
   webpack: (config, { dev }) => {
