@@ -1,6 +1,6 @@
 import type * as types from "./types"
 
-const BASE_URL = "https://solver-relay-v2.chaindefuser.com"
+const BASE_URL = "/api.solver.rpc"
 
 async function request(
   url: string,
