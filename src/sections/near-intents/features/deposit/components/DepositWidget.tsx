@@ -21,7 +21,7 @@ export const DepositWidget = ({
   sendTransactionEVM,
   sendTransactionSolana,
 }: DepositWidgetProps) => {
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction("dapp", true);
 
   const toast = useToast();
 

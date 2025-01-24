@@ -7,7 +7,7 @@ import { ModalDialog } from "./ModalDialog"
 const ModalReviewDeposit = () => {
     const { state, sendTransaction } = useConnectWallet()
     const tokenList = useTokenList(LIST_TOKENS)
-  
+
     return (
         <ModalDialog>
             <DepositWidget
