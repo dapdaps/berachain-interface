@@ -201,7 +201,7 @@ export default function useAddAction(source: string) {
 
       params.ss = getSignature(
         `template=${data.template}&action_type=${data.type}&tx_hash=${data.transactionHash
-        }&chain_id=${chainId}&time=${Math.ceil(Date.now() / 1000)}`
+        }&chain_id=${data.chainId || chainId}&time=${Math.ceil(Date.now() / 1000)}`
       );
       params.source = source;
       params.wallet = walletName;
