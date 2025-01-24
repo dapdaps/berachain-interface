@@ -52,6 +52,8 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
 
   const { state: walletState } = useConnectWallet();
 
+  console.log(walletState, '<<<<<= walletStatewalletStatewalletStatewalletState')
+
   const { connectedWallets } = useConnectedWalletsStore();
 
   useEffect(() => {

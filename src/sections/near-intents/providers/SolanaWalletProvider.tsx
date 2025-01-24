@@ -17,6 +17,8 @@ import React, { type FC, type ReactNode, useMemo } from "react"
 // Default styles that can be overridden by your app
 import "@solana/wallet-adapter-react-ui/styles.css"
 
+const SOLANA_RPC_URL = 'https://quiet-solemn-asphalt.solana-mainnet.quiknode.pro/91aa5918df65520d47a54d88590f1503a4e804b1'
+
 export const SolanaWalletProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -25,7 +27,7 @@ export const SolanaWalletProvider: FC<{ children: ReactNode }> = ({
 
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(
-    () => process.env.SOLANA_RPC_URL || clusterApiUrl(network),
+    () => SOLANA_RPC_URL || clusterApiUrl(network),
     [network]
   )
 
@@ -47,12 +49,12 @@ export const SolanaWalletProvider: FC<{ children: ReactNode }> = ({
       new SolflareWalletAdapter(),
     ]
 
-    if (process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
+    if (process.env.NEXT_PUBLIC_PROJECT_ID) {
       walletAdapters.push(
         new WalletConnectWalletAdapter({
           network,
           options: {
-            projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+            projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
           },
         })
       )

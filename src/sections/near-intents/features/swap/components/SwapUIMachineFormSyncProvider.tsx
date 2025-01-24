@@ -25,7 +25,7 @@ export function SwapUIMachineFormSyncProvider({
 }: SwapUIMachineFormSyncProviderProps) {
   const { watch, setValue } = useFormContext<SwapFormValues>()
   const actorRef = SwapUIMachineContext.useActorRef()
-  const { addAction } = useAddAction("dapp")
+  const { addAction } = useAddAction("dapp", true);
   const toast = useToast()
 
   // Make `onSuccessSwap` stable reference, waiting for `useEvent` hook to come out

@@ -20,7 +20,7 @@ export const DepositWarning = ({
     switch (status) {
       case "ERR_SUBMITTING_TRANSACTION":
         content =
-          "It seems the transaction was rejected in your wallet. Please try again."
+          "It seems the transaction was rejected in your wallet. Please try again or choose another deposit method."
         break
       case "ERR_GENERATING_ADDRESS":
         content =
@@ -54,10 +54,7 @@ export const DepositWarning = ({
   }
 
   return (
-    <Callout.Root size="1" color="red">
-      <Callout.Icon>
-        <ExclamationTriangleIcon />
-      </Callout.Icon>
+    <Callout.Root size="1" color="red" className="p-3 font-Montserrat rounded-xl">
       <Callout.Text>{content}</Callout.Text>
     </Callout.Root>
   )

@@ -108,7 +108,7 @@ export const WithdrawForm = ({
     }
   })
 
-  const { addAction } = useAddAction("dapp");
+const { addAction } = useAddAction("dapp", true);
 
   const toast = useToast();
 

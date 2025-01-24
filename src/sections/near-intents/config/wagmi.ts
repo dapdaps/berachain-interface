@@ -6,7 +6,7 @@ import { http, createConfig } from "wagmi"
 import { arbitrum, aurora, base, mainnet } from "wagmi/chains"
 import { coinbaseWallet, walletConnect } from "wagmi/connectors"
 
-const PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID
 
 export const turbo = {
   id: 1313161567,

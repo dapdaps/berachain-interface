@@ -5,7 +5,9 @@ import useAccount from './use-account';
 import { useWalletName } from '@/hooks/use-wallet-name';
 import { post } from '@/utils/http';
 
-export default function useAddAction(source: string) {
+
+// 
+export default function useAddAction(source: string, isNear = false) {
   const { account, chainId } = useAccount();
   const { name: walletName } = useWalletName();
 
@@ -13,7 +15,7 @@ export default function useAddAction(source: string) {
     (data: any) => {
       let params: any = {};
       
-      if (!chainId || !account) return;
+      if (!isNear && (!chainId || !account) ) return;
 
       console.info('addAction data: ', data);
 

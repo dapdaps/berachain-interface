@@ -119,7 +119,7 @@ export function ActiveDeposit({
         />
       </div>
 
-      {/* <DepositWarning depositWarning={depositOutput || preparationOutput} /> */}
+      <DepositWarning depositWarning={depositOutput || preparationOutput} />
 
       {renderDepositHint(network, minDepositAmount, token)}
 
