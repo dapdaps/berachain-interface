@@ -183,8 +183,8 @@ const Navigation = function () {
         </div>
         <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">Beraciaga</div>
       </div>
-
-      <div className="absolute left-[12%] bottom-[68px] z-10 hover:scale-110 transition-transform duration-500 cursor-pointer" data-bp="1010-020" onClick={onNavigateToNearIntents}>
+      {/* cursor-pointer absolute right-[10px] bottom-[10px] z-10 hover:scale-105 transition-transform duration-500 */}
+      <div className="absolute right-[50px] bottom-[50px] z-10 hover:scale-110 transition-transform duration-500 cursor-pointer" data-bp="1010-020" onClick={onNavigateToNearIntents}>
         <img src="/images/background/near-intents.png" className="w-[128px] h-[98px] aspect-square" alt="" />
       </div>
 {/* 

@@ -7,7 +7,7 @@ function clientToProvider(client: any) {
   if (!client) return null;
 
   try {
-    const { chain, transport } = client;
+    const { chain, transport, account } = client;
     if (!chain || !transport) return null;
 
     const network = {
@@ -24,7 +24,9 @@ function clientToProvider(client: any) {
       );
     }
 
-    return new providers.JsonRpcProvider(transport.url, network);
+    return account.address
+    ? new providers.Web3Provider(transport, network)
+    : new providers.JsonRpcProvider(transport.url, network);
   } catch (error) {
     console.error('Error in clientToProvider:', error);
     return null;
