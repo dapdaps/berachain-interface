@@ -1,6 +1,6 @@
 import { ChainType } from '@/sections/near-intents/hooks/useConnectWallet';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export interface WalletState {
   chainType: ChainType;
@@ -71,7 +71,8 @@ export const useConnectedWalletsStore = create<ConnectedWalletsStore>()(
       }
     }),
     {
-      name: 'connected-wallets-storage_v1.0.2',
+      name: 'connected-wallets-storage_v1.0.3',
+      storage: createJSONStorage(() => sessionStorage)
     }
   )
 );
