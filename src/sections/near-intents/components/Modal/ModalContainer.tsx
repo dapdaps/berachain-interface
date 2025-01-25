@@ -5,6 +5,7 @@ import { ModalType } from "../../stores/modalStore"
 import { ModalSelectAssets } from "./ModalSelectAssets"
 import ModalReviewDeposit from "./ModalReviewDeposit"
 import ModalReviewWithdraw from "./ModalReviewWithdraw"
+import { ModalConfirmAddPubkey } from "./ModalConfirmAddPubkey"
 
 
 export const ModalContainer = () => {
@@ -17,6 +18,8 @@ export const ModalContainer = () => {
       return <ModalReviewDeposit />
     case ModalType.MODAL_REVIEW_WITHDRAW:
       return <ModalReviewWithdraw />
+      case ModalType.MODAL_CONFIRM_ADD_PUBKEY:
+        return <ModalConfirmAddPubkey />
     default:
       return null
   }

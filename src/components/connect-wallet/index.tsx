@@ -90,8 +90,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   };
 
   const addressShown = useMemo(() => {
-    if (isNearPage && !isMobile && currentWallet.current) {
-      if (currentWallet.current.chainType === ChainType.Near) {
+    if (isNearPage && currentWallet.current) {
+      if (currentWallet.current.chainType === ChainType.Near && currentWallet.current.address.length < 30) {
         return currentWallet.current.address;
       }
       return currentWallet.current.address && `${currentWallet.current.address.slice(0, 5)}...${currentWallet.current.address.slice(-4)}`;
