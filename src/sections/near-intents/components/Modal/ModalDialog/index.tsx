@@ -15,8 +15,10 @@ import Drawer from "@/components/drawer"
 export const ModalDialog = ({
   children,
   onClose,
+  isMaskClose=true,
 }: PropsWithChildren<{
   onClose?: () => void
+  isMaskClose?: boolean
 }>) => {
   const { onCloseModal, payload, modalType } = useModalStore((state) => state)
   const [open, setOpen] = useState(true)
@@ -42,7 +44,7 @@ export const ModalDialog = ({
     <Modal
       open={open}
       onClose={handleClose}
-      isMaskClose={true}
+      isMaskClose={isMaskClose}
       className="z-[60]"
       closeIconClassName="right-[-14px] top-[-8px]"
     >

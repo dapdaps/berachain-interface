@@ -400,7 +400,7 @@ const ModalConfirmSwap = () => {
   )
 
   return (
-    <ModalDialog>
+    <ModalDialog isMaskClose={false}>
       <div className="flex flex-col min-h-[256px] max-h-[680px] h-full p-5">
         <div className="relative flex justify-between items-start mb-[44px]">
           <div className="w-full shrink absolute relative top-[30px] left-[50%] -translate-x-2/4 flex justify-center items-center">
