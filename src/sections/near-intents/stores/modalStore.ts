@@ -13,6 +13,8 @@ export enum ModalType {
   MODAL_REVIEW_DEPOSIT = "modalReviewDeposit",
   // withdraw
   MODAL_REVIEW_WITHDRAW = "modalReviewWithdraw",
+  // add
+  MODAL_CONFIRM_ADD_PUBKEY="modalConfirmAddPubkey"
 }
 
 export type ModalState = {

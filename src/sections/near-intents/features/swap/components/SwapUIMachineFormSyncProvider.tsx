@@ -114,7 +114,7 @@ export function SwapUIMachineFormSyncProvider({
     return () => {
       sub.unsubscribe()
     }
-  }, [actorRef, setValue, addAction])
+  }, [actorRef, setValue, addAction, userChainType])
 
   const swapRef = useSelector(actorRef, (state) => state.children.swapRef)
   const publicKeyVerifierRef = useSelector(swapRef, (state) => {
