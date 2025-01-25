@@ -11,6 +11,7 @@ import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
+import useUser from "@/hooks/use-user";
 
 
 const ConnectWalletBar = () => {
@@ -43,22 +44,20 @@ const ConnectWalletBar = () => {
   const [evmUpdated, setEvmUpdated] = useState(false);
   const [solUpdated, setSolUpdated] = useState(false);
   const [nearUpdated, setNearUpdated] = useState(false);
+  const { getAccessToken } = useUser();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isEvmConnected && address && !evmUpdated) {
-        addWallet({
-          ...state,
-          chainType: ChainType.EVM,
-          address
-        });
-        setEvmUpdated(true);
-      } else if (!isEvmConnected && evmUpdated) {
-        setEvmUpdated(false);
-      }
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    getAccessToken();
+  }, [connectedWallets]);
+
+  useEffect(() => {
+    if (isEvmConnected && address ) {
+      addWallet({
+        ...state,
+        chainType: ChainType.EVM,
+        address
+      });
+    }
   }, [isEvmConnected, address]);
 
   useEffect(() => {

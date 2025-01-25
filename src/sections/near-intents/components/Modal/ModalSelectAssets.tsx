@@ -117,7 +117,7 @@ export const ModalSelectAssets = () => {
   }, [data, isLoading, payload])
 
   return (
-    <ModalDialog>
+    <ModalDialog isMaskClose={false}>
       <div className="flex flex-col max-h-[608px] h-full">
         <div className="h-auto flex-none p-5 border-bz-10">
           <SearchBar

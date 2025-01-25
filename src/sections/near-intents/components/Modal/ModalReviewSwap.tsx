@@ -154,7 +154,7 @@ const ModalReviewSwap = () => {
   }, [])
 
   return (
-    <ModalDialog>
+    <ModalDialog isMaskClose={false}>
       <div className="flex flex-col min-h-[256px] max-h-[680px] h-full p-5">
         <div className="flex justify-between items-center mb-[44px]">
           <div className="relative w-full shrink text-center text-black-400">

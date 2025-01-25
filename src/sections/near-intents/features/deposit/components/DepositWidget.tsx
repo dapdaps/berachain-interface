@@ -48,7 +48,7 @@ export const DepositWidget = ({
 
             addAction?.({
               type: "Staking",
-              action: "Staking",
+              action: "Deposit",
               account_id: userAddress,
               status: 1,
               sub_type: "Deposit",

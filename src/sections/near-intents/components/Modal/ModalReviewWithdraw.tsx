@@ -15,7 +15,7 @@ const ModalReviewWithdraw = () => {
   const tokenList = useTokenList(LIST_TOKENS);
 
   return (
-    <ModalDialog>
+    <ModalDialog isMaskClose={false}>
       <WithdrawWidget
         tokenList={tokenList}
         userAddress={state.address}

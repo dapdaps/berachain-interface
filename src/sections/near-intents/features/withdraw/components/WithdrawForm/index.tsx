@@ -61,6 +61,7 @@ import useAddAction from "@/hooks/use-add-action"
 import useToast from "@/hooks/use-toast"
 import { useAccount } from "wagmi"
 import { ethers } from "ethers"
+import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
 
 export type WithdrawFormNearValues = {
   amountIn: string
@@ -270,21 +271,21 @@ const { addAction } = useAddAction("dapp", true);
       if (!chainType) return;
       const snapshot = actorRef.getSnapshot()
 
-      const amount = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, token.decimals)
+      const amount = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, event.data.tokenIn.decimals)
       toast.success({
         title: "Withdraw Success",
       });
 
       addAction?.({
         type: "Staking",
-        action: "Staking",
+        action: "Withdraw",
         status: 1,
         sub_type: "Withdraw",
         transactionHash: event.data.txHash,
         template: "near-intents",
         token: token,
         amount: amount,
-        chainId: addActionChainIdMap[chainType],
+        chainId: CHAIN_IDS[event.data.tokenOut?.chainName] || addActionChainIdMap[chainType],
         account_id: userAddress,
       });
 
@@ -292,7 +293,7 @@ const { addAction } = useAddAction("dapp", true);
         sub.unsubscribe()
       }
 })
-  }, [actorRef, chainType, token, addAction])
+  }, [actorRef, chainType])
 
 
   useEffect(() => {
