@@ -42,8 +42,6 @@ export function useUser() {
 
   const getAccessToken = async () => {
     setUserInfo({ accessTokenLoading: true });
-    console.log('address: >>>> ', connectedWallets);
-    
     // 获取当前使用的地址
     const currentAddress = isNearPage && near_current_wallet 
       ? near_current_wallet.address 

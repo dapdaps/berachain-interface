@@ -17,8 +17,10 @@ interface ConnectedWalletsStore {
   getWalletState: (chainType: ChainType) => WalletState | undefined;
 }
 
-export const useConnectedWalletsStore = create<ConnectedWalletsStore>()(
-  persist(
+
+export const useConnectedWalletsStore = create(
+  // @ts-ignore
+  persist<ConnectedWalletsStore>(
     (set, get) => ({
       connectedWallets: [],
 
@@ -75,4 +77,4 @@ export const useConnectedWalletsStore = create<ConnectedWalletsStore>()(
       storage: createJSONStorage(() => sessionStorage)
     }
   )
-);
+)
