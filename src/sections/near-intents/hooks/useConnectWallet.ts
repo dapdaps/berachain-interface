@@ -24,6 +24,7 @@ import { useEVMWalletActions } from "./useEVMWalletActions"
 import { useNearWalletActions } from "./useNearWalletActions"
 import { useAppKit } from "@reown/appkit/react"
 import { useConnectedWalletsStore } from '@/stores/useConnectedWalletsStore';
+import { useEffect } from 'react';
 
 export enum ChainType {
   Near = "near",
@@ -95,15 +96,23 @@ export const useConnectWallet = (): ConnectWalletAction => {
   const evmWalletConnections = useConnections()
   const { sendTransactions } = useEVMWalletActions()
 
+  // 监听 wagmi disconnect 事件
+  useEffect(() => {
+    if (!evmWalletAccount.address && isWalletConnected(ChainType.EVM)) {
+      console.log('EVM wallet disconnected, removing from store');
+      removeWallet(ChainType.EVM);
+    }
+  }, [evmWalletAccount.address]);
+
   const handleSignInViaWagmi = async (): Promise<void> => {
     await modal.open()
     // await evmWalletConnect.connectAsync({ connector })
   }
   const handleSignOutViaWagmi = async () => {
-    // for (const { connector } of evmWalletConnections) {
-    //   evmWalletDisconnect.disconnect({ connector })
-    // }
     disconnect();
+    for (const { connector } of evmWalletConnections) {
+      evmWalletDisconnect.disconnect({ connector })
+    }
   }
 
   /**
@@ -180,8 +189,8 @@ export const useConnectWallet = (): ConnectWalletAction => {
           removeWallet(ChainType.Near);
         },
         [ChainType.EVM]: async () => {
+          console.log("EVM signOut called");
           await handleSignOutViaWagmi();
-          removeWallet(ChainType.EVM);
         },
         [ChainType.Solana]: async () => {
           await handleSignOutViaSolanaSelector();

@@ -57,11 +57,13 @@ export const useConnectedWalletsStore = create(
       },
 
       removeWallet: (chainType) => {
-        set((state) => ({
-          connectedWallets: state.connectedWallets.filter(
-            w => w.chainType !== chainType
-          ),
-        }));
+        set((state) => {
+          return {
+            connectedWallets: state.connectedWallets
+              .filter(w => w.chainType !== chainType)
+              .map(wallet => ({...wallet}))
+          }
+        });
       },
 
       isWalletConnected: (chainType) => {
@@ -73,7 +75,7 @@ export const useConnectedWalletsStore = create(
       }
     }),
     {
-      name: 'connected-wallets-storage_v1.0.3',
+      name: 'connected-wallets-storage_v1.0.4',
       storage: createJSONStorage(() => sessionStorage)
     }
   )
