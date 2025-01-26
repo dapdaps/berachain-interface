@@ -10,6 +10,7 @@ import useAddAction from "@/hooks/use-add-action"
 import { ethers } from "ethers"
 import useToast from "@/hooks/use-toast"
 import { useAccount } from "wagmi"
+import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
 
 type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
@@ -34,8 +35,7 @@ export function SwapUIMachineFormSyncProvider({
   const { chainId } = useAccount()
 
 
-  const addActionChainIdMap: Record<ChainType, number> = {
-    [ChainType.EVM]: chainId ?? 0,
+  const addActionChainIdMap: Record<any, number> = {
     [ChainType.Near]: 99998,
     [ChainType.Solana]: 99997,
   }
@@ -103,7 +103,8 @@ export function SwapUIMachineFormSyncProvider({
             token_in_currency: event.data.tokenIn,
             token_out_currency: event.data.tokenOut,
             sub_type: 'swap',
-            chainId: addActionChainIdMap[userChainType],
+            chainId: addActionChainIdMap[event.data.tokenIn?.chainName] || CHAIN_IDS[event.data.tokenIn?.chainName],
+            toChainId: addActionChainIdMap[event.data.tokenOut?.chainName] || CHAIN_IDS[event.data.tokenOut?.chainName],
             account_id: userAddress,
           });
           break
