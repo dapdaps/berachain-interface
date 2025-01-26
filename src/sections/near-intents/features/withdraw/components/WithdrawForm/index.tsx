@@ -115,8 +115,7 @@ const { addAction } = useAddAction("dapp", true);
 
   const { chainId } = useAccount();
 
-  const addActionChainIdMap: Record<ChainType, number> = {
-    [ChainType.EVM]: chainId ?? 0,
+  const addActionChainIdMap: Record<any, number> = {
     [ChainType.Near]: 99998,
     [ChainType.Solana]: 99997,
   };
@@ -285,7 +284,7 @@ const { addAction } = useAddAction("dapp", true);
         template: "near-intents",
         token: token,
         amount: amount,
-        chainId: CHAIN_IDS[event.data.tokenOut?.chainName] || addActionChainIdMap[chainType],
+        chainId: addActionChainIdMap[event.data.tokenOut?.chainName] || CHAIN_IDS[event.data.tokenOut?.chainName],
         account_id: userAddress,
       });
 
