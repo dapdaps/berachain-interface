@@ -20,7 +20,6 @@ const ConnectWalletBar = () => {
   
   const { state, signIn, signOut } = useConnectWallet();
   
-  const { isConnected: isEvmConnected, address } = useAccount();
   const nearWallet = useWalletSelector();
   const solanaWallet = useSolanaWallet();
   const isSolConnected = solanaWallet.connected;
@@ -41,56 +40,11 @@ const ConnectWalletBar = () => {
     removeWallet 
   } = useConnectedWalletsStore();
 
-  const [evmUpdated, setEvmUpdated] = useState(false);
-  const [solUpdated, setSolUpdated] = useState(false);
-  const [nearUpdated, setNearUpdated] = useState(false);
   const { getAccessToken } = useUser();
 
   useEffect(() => {
     getAccessToken();
   }, [connectedWallets]);
-
-  useEffect(() => {
-    if (isEvmConnected && address ) {
-      addWallet({
-        ...state,
-        chainType: ChainType.EVM,
-        address
-      });
-    }
-  }, [isEvmConnected, address]);
-
-  useEffect(() => {
-    if (!isEvmConnected && evmUpdated) {
-      removeWallet(ChainType.EVM);
-    }
-  }, [isEvmConnected]);
-
-  useEffect(() => {
-    if (isSolConnected && solanaWallet.publicKey && !solUpdated) {
-      addWallet({
-        ...state,
-        chainType: ChainType.Solana,
-        address: solanaWallet.publicKey.toString()
-      });
-      setSolUpdated(true);
-    } else if (!isSolConnected && solUpdated) {
-      setSolUpdated(false);
-    }
-  }, [isSolConnected, solanaWallet.publicKey]);
-
-  useEffect(() => {
-    if (nearWallet.accountId && !nearUpdated) {
-      addWallet({
-        ...state,
-        chainType: ChainType.Near,
-        address: nearWallet.accountId
-      });
-      setNearUpdated(true);
-    } else if (!nearWallet.accountId && nearUpdated) {
-      setNearUpdated(false);
-    }
-  }, [nearWallet.accountId]);
 
   useEffect(() => {
     const checkNearRedirectStatus = async () => {

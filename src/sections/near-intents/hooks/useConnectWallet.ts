@@ -23,6 +23,7 @@ import {
 import { useEVMWalletActions } from "./useEVMWalletActions"
 import { useNearWalletActions } from "./useNearWalletActions"
 import { useAppKit } from "@reown/appkit/react"
+import { useConnectedWalletsStore } from '@/stores/useConnectedWalletsStore';
 
 export enum ChainType {
   Near = "near",
@@ -60,7 +61,8 @@ const defaultState: State = {
 }
 
 export const useConnectWallet = (): ConnectWalletAction => {
-  let state: State = defaultState
+  const { addWallet, removeWallet, connectedWallets, isWalletConnected } = useConnectedWalletsStore();
+  const currentState = connectedWallets[0]; // 第一个钱包为当前活跃钱包
   const modal = useAppKit();
   /**
    * NEAR:
@@ -121,48 +123,33 @@ export const useConnectWallet = (): ConnectWalletAction => {
     await handleSignOutViaWagmi()
   }
 
-  if (nearWallet.accountId != null) {
-    const shouldUpdateNearState = 
-      state.chainType === undefined || // 初始状态
-      state.chainType === ChainType.Near // 当前就是 NEAR
-
-    if (shouldUpdateNearState) {
-      state = {
-        address: nearWallet.accountId,
-        network: "near:mainnet",
-        chainType: ChainType.Near,
-      }
+  if (nearWallet.accountId != null && !isWalletConnected(ChainType.Near)) {
+    const walletState = {
+      address: nearWallet.accountId,
+      network: "near:mainnet",
+      chainType: ChainType.Near,
     }
+    addWallet(walletState);
   }
 
-  if (evmWalletAccount.address != null && evmWalletAccount.chainId) {
-    const shouldUpdateEVMState = 
-      state.chainType === undefined || // 初始状态
-      state.chainType === ChainType.EVM // 当前就是 EVM
-
-    if (shouldUpdateEVMState) {
-      state = {
-        address: evmWalletAccount.address,
-        network: evmWalletAccount.chainId
-          ? `eth:${evmWalletAccount.chainId}`
-          : "unknown",
-        chainType: ChainType.EVM,
-      }
+  if (evmWalletAccount.address != null && evmWalletAccount.chainId && !isWalletConnected(ChainType.EVM)) {
+    const walletState = {
+      address: evmWalletAccount.address,
+      network: evmWalletAccount.chainId
+        ? `eth:${evmWalletAccount.chainId}`
+        : "unknown",
+      chainType: ChainType.EVM,
     }
+    addWallet(walletState);
   }
 
-  if (solanaWallet.publicKey != null) {
-    const shouldUpdateSolanaState = 
-      state.chainType === undefined || // 初始状态
-      state.chainType === ChainType.Solana // 当前就是 Solana
-
-    if (shouldUpdateSolanaState) {
-      state = {
-        address: solanaWallet.publicKey.toBase58(),
-        network: "sol:mainnet",
-        chainType: ChainType.Solana,
-      }
+  if (solanaWallet.publicKey != null && !isWalletConnected(ChainType.Solana)) {
+    const walletState = {
+      address: solanaWallet.publicKey.toBase58(),
+      network: "sol:mainnet",
+      chainType: ChainType.Solana,
     }
+    addWallet(walletState);
   }
 
   return {
@@ -170,16 +157,16 @@ export const useConnectWallet = (): ConnectWalletAction => {
       id: ChainType
       connector?: Connector
     }): Promise<void> {
-      // 连接新钱包时更新状态
-      state = {
-        ...state,
-        chainType: params.id
-      }
-
       const strategies = {
-        [ChainType.Near]: () => handleSignInViaNearWalletSelector(),
-        [ChainType.EVM]: () => handleSignInViaWagmi(),
-        [ChainType.Solana]: () => handleSignInViaSolanaSelector(),
+        [ChainType.Near]: async () => {
+          await handleSignInViaNearWalletSelector();
+        },
+        [ChainType.EVM]: async () => {
+          await handleSignInViaWagmi();
+        },
+        [ChainType.Solana]: async () => {
+          await handleSignInViaSolanaSelector();  
+        },
       }
       return strategies[params.id]()
     },
@@ -188,9 +175,18 @@ export const useConnectWallet = (): ConnectWalletAction => {
       id: ChainType
     }): Promise<void> {
       const strategies = {
-        [ChainType.Near]: () => handleSignOutViaNearWalletSelector(),
-        [ChainType.EVM]: () => handleSignOutViaWagmi(),
-        [ChainType.Solana]: () => handleSignOutViaSolanaSelector(),
+        [ChainType.Near]: async () => {
+          await handleSignOutViaNearWalletSelector();
+          removeWallet(ChainType.Near);
+        },
+        [ChainType.EVM]: async () => {
+          await handleSignOutViaWagmi();
+          removeWallet(ChainType.EVM);
+        },
+        [ChainType.Solana]: async () => {
+          await handleSignOutViaSolanaSelector();
+          removeWallet(ChainType.Solana);
+        },
       }
       return strategies[params.id]()
     },
@@ -226,6 +222,6 @@ export const useConnectWallet = (): ConnectWalletAction => {
     },
 
     connectors: evmWalletConnect.connectors as Connector[],
-    state,
+    state: currentState || defaultState,
   }
 }
