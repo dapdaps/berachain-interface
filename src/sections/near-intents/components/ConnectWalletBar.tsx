@@ -110,7 +110,6 @@ const ConnectWalletBar = () => {
     const handleDisconnect = async (chainType: ChainType) => {
       try {
         await signOut({ id: chainType });
-        removeWallet(chainType);
       } catch (error) {
         console.error('Failed to disconnect:', error);
       }
