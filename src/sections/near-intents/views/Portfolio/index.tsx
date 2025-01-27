@@ -16,16 +16,19 @@ import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
 import ConnectWalletBar from "../../components/ConnectWalletBar";
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
+import useToast from "@/hooks/use-toast";
 
 const Portfolio = () => {
   const [assetList, setAssetList] = useState<SelectItemToken[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const { data, isLoading } = useTokensStore((state) => state);
-  const isMobile = useIsMobile();
   const { setModalType } = useModalStore((state) => state);
   const { connectedWallets } = useConnectedWalletsStore();
   const { state } = useConnectWallet();
   
+  const isMobile = useIsMobile();
+  const toast = useToast();
+
   const swapUIActorRef = SwapUIMachineContext.useActorRef();
   const depositedBalanceRef = useSelector(
     swapUIActorRef,
@@ -101,10 +104,26 @@ const Portfolio = () => {
         />
       </div>
       <div className="flex items-center justify-between gap-2 my-5">
-        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => setModalType(ModalType.MODAL_REVIEW_DEPOSIT)}>
+        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => {
+          if (isMobile) {
+            toast.info({
+              title: "Please visit the desktop version for a better experience."
+            })
+            return
+          }
+          setModalType(ModalType.MODAL_REVIEW_DEPOSIT)
+        }}>
           Deposit
         </button>
-        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => setModalType(ModalType.MODAL_REVIEW_WITHDRAW)}>
+        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => {
+          if (isMobile) {
+            toast.info({
+              title: "Please visit the desktop version for a better experience."
+            })
+            return
+          }
+          setModalType(ModalType.MODAL_REVIEW_WITHDRAW)
+        }}>
           Withdraw
         </button>
       </div>

@@ -32,6 +32,8 @@ import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
 import { useAppKit } from "@reown/appkit/react"
+import useIsMobile from "@/hooks/use-isMobile"
+import useToast from "@/hooks/use-toast"
 
 export type SwapFormValues = {
   amountIn: string
@@ -50,6 +52,10 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     getValues,
     formState: { errors },
   } = useFormContext<SwapFormValues>()
+
+  const isMobile = useIsMobile();
+  const toast = useToast();
+
   const { state } = useConnectWallet()
   const swapUIActorRef = SwapUIMachineContext.useActorRef()
 
@@ -225,7 +231,15 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
               type="button"
               size="lg"
               fullWidth
-              onClick={() => modal.open()}
+              onClick={() => {
+                if (isMobile) {
+                  toast.info({
+                    title: "Please visit the desktop version for a better experience."
+                  })
+                  return
+                }
+                modal.open()
+              }}
             >
               Connect Wallet
             </ButtonCustom>

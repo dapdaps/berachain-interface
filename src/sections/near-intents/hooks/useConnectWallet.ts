@@ -25,6 +25,8 @@ import { useNearWalletActions } from "./useNearWalletActions"
 import { useAppKit } from "@reown/appkit/react"
 import { useConnectedWalletsStore } from '@/stores/useConnectedWalletsStore';
 import { useEffect } from 'react';
+import useIsMobile from "@/hooks/use-isMobile"
+import useToast from "@/hooks/use-toast"
 
 export enum ChainType {
   Near = "near",
@@ -62,6 +64,10 @@ const defaultState: State = {
 }
 
 export const useConnectWallet = (): ConnectWalletAction => {
+
+  const isMobile = useIsMobile();
+  const toast = useToast();
+
   const { addWallet, removeWallet, connectedWallets, isWalletConnected } = useConnectedWalletsStore();
   const currentState = connectedWallets[0]; // 第一个钱包为当前活跃钱包
   const modal = useAppKit();
@@ -166,6 +172,12 @@ export const useConnectWallet = (): ConnectWalletAction => {
       id: ChainType
       connector?: Connector
     }): Promise<void> {
+      if (isMobile) {
+        toast.info({
+          title: "Please visit the desktop version for a better experience."
+        })
+        return
+      }
       const strategies = {
         [ChainType.Near]: async () => {
           await handleSignInViaNearWalletSelector();

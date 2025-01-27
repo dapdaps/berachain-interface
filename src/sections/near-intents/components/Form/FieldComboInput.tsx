@@ -20,6 +20,8 @@ import { SelectAssets } from "../SelectAssets";
 import IconDeposit from "@public/images/near-intents/icons/deposit-icon.svg";
 import { ModalType } from "../../stores/modalStore";
 import { useModalStore } from "../../providers/ModalStoreProvider";
+import useIsMobile from "@/hooks/use-isMobile";
+import useToast from "@/hooks/use-toast";
 
 interface Props<T extends FieldValues>
   extends Omit<BlockMultiBalancesProps, "decimals" | "balance"> {
@@ -62,6 +64,10 @@ export const FieldComboInput = <T extends FieldValues>({
   if (!register) {
     return null;
   }
+
+  const isMobile = useIsMobile();
+  const toast = useToast();
+
   const { setModalType } = useModalStore(
     (state) => state
   )
@@ -147,7 +153,15 @@ export const FieldComboInput = <T extends FieldValues>({
             disabled={disabled}
           />
           {fieldName === "amountIn" && usedType === "swap" && (
-            <div className="flex items-center gap-1 rounded-[6px] p-[5px] bg-[#FFDC50] border border-black cursor-pointer hover:opacity-60" onClick={() => setModalType(ModalType.MODAL_REVIEW_DEPOSIT)}>
+            <div className="flex items-center gap-1 rounded-[6px] p-[5px] bg-[#FFDC50] border border-black cursor-pointer hover:opacity-60" onClick={() => {
+              if (isMobile) {
+                toast.info({
+                  title: "Please visit the desktop version for a better experience."
+                })
+                return
+              }
+              setModalType(ModalType.MODAL_REVIEW_DEPOSIT)
+            }}>
               <IconDeposit />
               <span className="text-[10px] font-Montserrat font-[500]">
                 Deposit
