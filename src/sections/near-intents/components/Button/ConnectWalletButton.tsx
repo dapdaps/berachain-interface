@@ -14,7 +14,7 @@ export const ConnectWalletButton = ({
   className 
 }: ConnectWalletButtonProps) => {
   const { signIn } = useConnectWallet();
-  const { isWalletConnected, getWalletState, addWallet } = useConnectedWalletsStore();
+  const { isWalletConnected, switchActiveWallet } = useConnectedWalletsStore();
 
   const getRequiredWalletType = (): ChainType => {
     const targetChain = reverseAssetNetworkAdapter[network];
@@ -31,25 +31,39 @@ export const ConnectWalletButton = ({
 
   const handleConnect = async () => {
     const requiredWallet = getRequiredWalletType();
-    if (isWalletConnected(requiredWallet)) {
-      const walletState = getWalletState(requiredWallet);
-      if (walletState) {
-        addWallet(walletState);
-        console.log(`Switched to wallet: `, walletState);
-      }
+    const isConnected = isWalletConnected(requiredWallet);
+
+    if (isConnected) {
+      // 使用新的 switchActiveWallet 方法来切换活跃钱包
+      switchActiveWallet(requiredWallet);
     } else {
+      // 新钱包连接
       await signIn({ id: requiredWallet });
     }
   }
 
   const getButtonText = (): string => {
-    switch(getRequiredWalletType()) {
-      case ChainType.Solana:
-        return "Connect Solana Wallet";
-      case ChainType.Near:
-        return "Connect Near Wallet";
-      case ChainType.EVM:
-        return "Connect EVM Wallet";
+    const requiredWallet = getRequiredWalletType();
+    const isConnected = isWalletConnected(requiredWallet);
+
+    if (isConnected) {
+      switch(requiredWallet) {
+        case ChainType.Solana:
+          return "Switch to Solana Wallet";
+        case ChainType.Near:
+          return "Switch to Near Wallet";
+        case ChainType.EVM:
+          return "Switch to EVM Wallet";
+      }
+    } else {
+      switch(requiredWallet) {
+        case ChainType.Solana:
+          return "Connect Solana Wallet";
+        case ChainType.Near:
+          return "Connect Near Wallet";
+        case ChainType.EVM:
+          return "Connect EVM Wallet";
+      }
     }
   }
 

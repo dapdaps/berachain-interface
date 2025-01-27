@@ -15,6 +15,7 @@ interface ConnectedWalletsStore {
   removeWallet: (chainType: ChainType) => void;
   isWalletConnected: (chainType: ChainType) => boolean;
   getWalletState: (chainType: ChainType) => WalletState | undefined;
+  switchActiveWallet: (chainType: ChainType) => void;
 }
 
 
@@ -52,6 +53,29 @@ export const useConnectedWalletsStore = create(
             connectedWallets: updatedWallets.sort((a, b) => 
               (b.timestamp || 0) - (a.timestamp || 0)
             )
+          };
+        });
+      },
+      switchActiveWallet: (chainType) => {
+        set((current) => {
+          const targetWallet = current.connectedWallets.find(
+            w => w.chainType === chainType
+          );
+          
+          if (!targetWallet) return current;
+
+          const updatedWallet = {
+            ...targetWallet,
+            timestamp: Date.now()
+          };
+          
+          const updatedWallets = [
+            updatedWallet,
+            ...current.connectedWallets.filter(w => w.chainType !== chainType)
+          ];
+          
+          return {
+            connectedWallets: updatedWallets
           };
         });
       },
