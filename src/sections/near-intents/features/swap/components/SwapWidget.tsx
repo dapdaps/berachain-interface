@@ -14,6 +14,7 @@ import useIsMobile from "@/hooks/use-isMobile"
 import PageBack from "@/components/back"
 import Tabs from "@/components/tabs"
 import ConnectWalletBar from "@/sections/near-intents/components/ConnectWalletBar"
+import useToast from "@/hooks/use-toast"
 
 export const SwapWidget = ({
   tokenList,
@@ -31,11 +32,19 @@ export const SwapWidget = ({
     (state) => state
   )
 
+  const isMobile = useIsMobile();
+  const toast = useToast();
+
   const handleDeposit = () => {
+    if (isMobile) {
+      toast.info({
+        title: "Please visit the desktop version for a better experience."
+      })
+      return
+    }
     setModalType(ModalType.MODAL_REVIEW_DEPOSIT)
   }
 
-  const isMobile = useIsMobile()
   const [currentTab, setCurrentTab] = useState<string>('assets');
 
   const Laptop = () => (
