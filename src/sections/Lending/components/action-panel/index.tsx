@@ -4,7 +4,7 @@ import ActionPanelLaptop from './laptop';
 const ActionPanel = (props: Props) => {
   const { isMobile, ...restProps } = props;
 
-  const isLimit = ['BERA', 'WBERA'].includes(props.token.symbol) && props.actionText === 'Deposit';
+  const isLimit = ['BERA', 'WBERA', 'HONEY'].includes(props.token.symbol) && props.actionText === 'Deposit';
 
   return isMobile ? (
     <ActionPanelMobile {...restProps} isLimit={isLimit} />
