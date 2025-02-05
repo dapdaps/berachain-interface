@@ -62,7 +62,7 @@ const PartList = [
     indicatorClass: 'absolute left-[7%] bottom-[22%] z-10 flex items-center',
     buttonClass: 'rotate-[-5deg] mr-[10px]',
     arrowClass: 'relative top-[-20px]',
-    btnText: 'Marketplace',
+    btnText: 'Token Marketplace',
     link: '/marketplace',
     ArrowIcon: MarketPlaceArrowIcon
   },
@@ -88,7 +88,7 @@ const PartList = [
     indicatorClass: 'absolute right-[-4%] top-[20%] z-10',
     buttonClass: 'rotate-[2.58deg] mb-[8px]',
     arrowClass: 'relative left-[calc(50%-34px)]',
-    btnText: 'Dashboard',
+    btnText: 'Portfolio Dashboard',
     link: '/dashboard',
     ArrowIcon: dAppArrowIcon
   },

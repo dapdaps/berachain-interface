@@ -58,24 +58,22 @@ const Rpc = ({ className }: { className?: string }) => {
   }, []);
 
   return (
-    account && (
-      <div className="md:hidden">
-        <StyledRpcs
-          $color={renderPingConfig(ping).color}
-          onClick={handleRpc}
-          className={className}
-        >
-          {renderPing(ping)}
-        </StyledRpcs>
-        <RpcSelector
-          visible={rpcStore.visible}
-          onClose={() => {
-            rpcStore.setVisible(false);
-          }}
-        />
-        <RpcAlert visible={rpcStore.alert} />
-      </div>
-    )
+    <div className="md:hidden">
+      <StyledRpcs
+        $color={renderPingConfig(ping).color}
+        onClick={handleRpc}
+        className={className}
+      >
+        {renderPing(ping)}
+      </StyledRpcs>
+      <RpcSelector
+        visible={rpcStore.visible}
+        onClose={() => {
+          rpcStore.setVisible(false);
+        }}
+      />
+      <RpcAlert visible={rpcStore.alert} />
+    </div>
   );
 };
 

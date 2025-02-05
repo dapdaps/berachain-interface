@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import VaultsEnterance from "../vaults-enterance";
+import EntryCard from '@/sections/home/mobile/entry-card';
 
 const Home = () => {
   const router = useProgressRouter();
@@ -292,12 +293,19 @@ const Home = () => {
                   variants={EntryAnimationBg}
                   transition={EntryAnimation}
                 />
-                <motion.img
+                <EntryCard
+                  className="right-[9.856vw] bottom-[8.697vw]"
+                  childrenClassName="rotate-[-4deg]"
+                  bgClassName="rotate-[-4deg]"
+                >
+                  Token<br /> Marketplace
+                </EntryCard>
+                {/*<motion.img
                   src='/images/mobile/home/text-market.png'
                   className='absolute right-[9.856vw] bottom-[8.697vw] w-[37.435vw] h-[11.282vw]'
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
-                />
+                />*/}
               </motion.div>
               <motion.div
                 className='w-[63.076vw] h-[56.153vw] -translate-y-[12.85vw] -translate-x-[10.256vw]'
@@ -343,13 +351,16 @@ const Home = () => {
                   variants={EntryAnimationBg}
                   transition={EntryAnimation}
                 />
-                <motion.img
+                <EntryCard>
+                  Portfolio<br /> Dashboard
+                </EntryCard>
+                {/*<motion.img
                   src='/images/mobile/home/text-dashboard.png'
                   className='absolute right-[18.974vw] bottom-[10.471vw] w-[30.769vw] h-[9.271vw]'
                   alt=''
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
-                />
+                />*/}
               </motion.div>
               <motion.div
                 className='w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw]'
@@ -430,18 +441,18 @@ const Home = () => {
 
 export default Home;
 
-const EntryAnimation = {
+export const EntryAnimation = {
   type: "spring",
   stiffness: 200,
   damping: 10
 };
-const EntryAnimationBg = {
+export const EntryAnimationBg = {
   tap: {
     y: 4,
     scale: 0.95
   }
 };
-const EntryAnimationSignpost = {
+export const EntryAnimationSignpost = {
   tap: {
     y: -8,
     scale: 1.1
