@@ -70,7 +70,7 @@ const Navigation = function () {
             }`}
         >
           <div className={`text-[20px] font-CherryBomb leading-[90%]`}>
-            Marketplace
+            Token Marketplace
           </div>
           <ArrowTopSvg />
         </div>
@@ -119,8 +119,8 @@ const Navigation = function () {
         >
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
-            <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
-              Dashboard
+            <div className="text-[20px] text-black font-CherryBomb leading-[90%] whitespace-nowrap">
+              Portfolio Dashboard
             </div>
           </div>
           <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
@@ -167,6 +167,7 @@ const Navigation = function () {
       <div
         className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
         onClick={() => {
+          // @ts-ignore
           beraciagaStore.set({
             openModal: true
           })

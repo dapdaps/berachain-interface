@@ -53,7 +53,7 @@ const DashboardView = () => {
   const tabs = [
     {
       key: 1,
-      label: <DashboardTab icon='icon-in-wallet.svg'>In wallet</DashboardTab>,
+      label: <DashboardTab icon='icon-in-wallet.svg'>Wallet</DashboardTab>,
       children: (
         <DashboardWallet
           tokens={tokens}
@@ -64,7 +64,7 @@ const DashboardView = () => {
     },
     {
       key: 2,
-      label: <DashboardTab icon='icon-portfolio.svg'>In Protocol</DashboardTab>,
+      label: <DashboardTab icon='icon-portfolio.svg'>DeFi</DashboardTab>,
       children: (
         <DashboardPortfolio
           loading={dappsLoading}
@@ -77,7 +77,7 @@ const DashboardView = () => {
     },
     {
       key: 3,
-      label: <DashboardTab icon='icon-records.svg'>Records</DashboardTab>,
+      label: <DashboardTab icon='icon-records.svg'>Transactions</DashboardTab>,
       children: (
         <DashboardRecords
           loading={recordsLoading}
@@ -95,7 +95,7 @@ const DashboardView = () => {
   return (
     <BearBackground type='dashboard'>
       <PageBack className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]' />
-      <PageTitle className='pt-[30px] md:pt-[16px]'>Dashboard</PageTitle>
+      <PageTitle className='pt-[30px] md:pt-[16px] md:text-left md:pl-[30%]'>Portfolio Dashboard</PageTitle>
       <div className='w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]'>
         <Tabs
           currentTab={currentTab}
