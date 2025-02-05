@@ -201,7 +201,7 @@ const MarketplaceView = () => {
         <>
           <PageBack className="absolute left-[40px] top-[31px]" />
           <PageTitle className="pt-[30px] mb-[75px] hidden lg:block">
-            Marketplace
+            Token Marketplace
           </PageTitle>
         </>
       )}

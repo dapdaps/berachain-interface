@@ -16,10 +16,10 @@ import { useChristmas } from '@/hooks/use-christmas';
 const menuItems = [
   { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
   { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
-  { id: 3, title: "Marketplace", href: "/marketplace", dataBp: "1015-002-003" },
+  { id: 3, title: "Token Marketplace", href: "/marketplace", dataBp: "1015-002-003" },
   { id: 4, title: "Earn", href: "/earn", dataBp: "1015-002-004" },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
-  { id: 6, title: "Dashboard", href: "/dashboard", dataBp: "1015-002-006" },
+  { id: 6, title: "Portfolio Dashboard", href: "/dashboard", dataBp: "1015-002-006" },
   { id: 7, title: "Maps", href: "/", dataBp: "1015-002-007" }
 ];
 
@@ -179,7 +179,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               {menuItems.map((item) => (
                 <div
                   key={item.id}
-                  className="w-full flex justify-center items-center flex-col relative z-0"
+                  className="w-full flex justify-center items-center flex-col relative z-0 whitespace-nowrap"
                 >
                   <MenuButton
                     href={item.href}
