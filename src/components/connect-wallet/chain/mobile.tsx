@@ -1,17 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import LazyImage from "@/components/layz-image";
 import Image from "next/image";
-import { icons } from "@/configs/chains";
+import { IS_MAINNET } from "@/configs";
+import ChainIcon from "../../icons/chain";
 
 const Chain = (props: any) => {
-  const {
-    chainDropdownShow,
-    chainListRef,
-    handleChainDropdown,
-    chainId,
-    chains,
-    handleChainSelect
-  } = props;
+  const { chainDropdownShow, chainListRef, handleChainDropdown, chainId } =
+    props;
 
   return (
     <motion.div
@@ -21,19 +16,14 @@ const Chain = (props: any) => {
       ref={chainListRef}
       onClick={handleChainDropdown}
     >
-      {chainId && icons[chainId] ? (
-        <div className="flex items-center gap-x-[8px]">
-          <LazyImage src={icons[chainId]} alt="" width={26} height={26} />
-          <LazyImage
-            src="/images/icon-arrow.svg"
-            width={11}
-            height={5}
-            alt=""
-          />
-        </div>
-      ) : (
-        <div className="w-[26px] h-[26px] shrink-0 rounded-[8px] bg-[#eceff0]"></div>
-      )}
+      <div className="flex items-center gap-x-[8px]">
+        {IS_MAINNET ? (
+          <ChainIcon size={26} />
+        ) : (
+          <ChainIcon size={26} isMainnet={false} />
+        )}
+        <LazyImage src="/images/icon-arrow.svg" width={11} height={5} alt="" />
+      </div>
       {/*#region dropdown*/}
       <AnimatePresence mode="wait">
         {chainDropdownShow && (
@@ -50,25 +40,31 @@ const Chain = (props: any) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="pt-[6px] pb-[5px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]">
-              {chains.map((_chain: any) => (
+              {[
+                {
+                  name: "Berachain bArtio (Testnet)",
+                  icon: <ChainIcon size={20} isMainnet={false} />,
+                  link: "https://testnet.beratown.dapdap.net/"
+                },
+                {
+                  name: "Berachain Mainnet",
+                  icon: <ChainIcon size={20} />,
+                  link: "https://beratown.dapdap.net/"
+                }
+              ].map((_chain: any, i: number) => (
                 <div
                   key={_chain.name}
                   className="w-full h-[45px] flex justify-start gap-[9px] items-center px-[20px] cursor-pointer hover:bg-[#F2F2F2] transition-all ease-in-out duration-300"
                   style={{
                     background: chainId === _chain.id ? "#F2F2F2" : ""
                   }}
-                  onClick={(e) => handleChainSelect(_chain.id, _chain)}
+                  onClick={(e) => {
+                    if (i === 0 && !IS_MAINNET) return;
+                    if (i === 1 && IS_MAINNET) return;
+                    window.open(_chain.link, "_self");
+                  }}
                 >
-                  {icons[_chain.id] ? (
-                    <Image
-                      src={icons[_chain.id]}
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                  ) : (
-                    <div className="w-[20px] h-[20px] shrink-0 rounded-[4px] bg-[#eceff0]"></div>
-                  )}
+                  {_chain.icon}
                   <div className="text-black text-[16px] font-medium">
                     {_chain.name}
                   </div>
