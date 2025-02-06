@@ -4,17 +4,16 @@ import {
   SetStateAction,
   useEffect,
   useState
-} from 'react';
-import { beraB } from '@/configs/tokens/bera-bArtio';
-import useBend from '../Lending/Bend/hooks/useBend';
-
+} from "react";
+import { beraB } from "@/configs/tokens/bera-bArtio";
+import useBend from "../Lending/Bend/hooks/useBend";
 
 export function useMarketplaceContext(props: Props): Context {
   const { chainId } = props;
 
   const [lendingVisible, setLendingVisible] = useState(false);
   const [lendingData, setLendingData] = useState<any>({});
-  const { init: bendInit } = useBend()
+  const { init: bendInit } = useBend();
 
   const [stakingVisible, setStakingVisible] = useState(false);
   const [stakingData, setStakingData] = useState<any>({});
@@ -24,42 +23,42 @@ export function useMarketplaceContext(props: Props): Context {
   // const [vaultsType, setVaultsType] = useState<'Deposit' | 'Withdraw'>('Deposit');
 
   const openDolomite = async () => {
-    const dolomiteConfig = await import('@/configs/lending/dolomite');
+    const dolomiteConfig = await import("@/configs/lending/dolomite");
     const { networks, basic }: any = dolomiteConfig.default;
     const networkConfig = networks[chainId];
     setLendingData({
       dapp: LendingDApps.Dolomite,
-      dappLink: '/lending/dolomite',
+      dappLink: "/lending/dolomite",
       config: { ...basic, ...networkConfig },
       networks,
-      investToken: beraB['honey']
+      investToken: beraB["honey"]
     });
   };
 
   const openInfrared = async (data: any, type: number) => {
-    const config = await import('@/configs/staking/dapps/infrared');
+    const config = await import("@/configs/staking/dapps/infrared");
     setVaultsData({
       dapp: VaultsDApps.Infrared,
-      dappLink: '/staking/infrared',
+      dappLink: "/staking/infrared",
       config: config.default,
       type,
       platform: "infrared",
-      data,
+      data
     });
   };
 
   const openAquaBera = async (data: any, type: number) => {
-    const config = await import('@/configs/staking/dapps/aquabera');
+    const config = await import("@/configs/staking/dapps/aquabera");
 
     setVaultsData({
       dapp: VaultsDApps.AquaBera,
-      dappLink: '/staking/infrared',
+      dappLink: "/staking/infrared",
       config: config.default,
       type,
       platform: "aquabera",
       data
     });
-  }
+  };
 
   // FIXME Test code for Dolomite
   useEffect(() => {
@@ -70,7 +69,7 @@ export function useMarketplaceContext(props: Props): Context {
 
   // loader for bend
   useEffect(() => {
-    bendInit()
+    bendInit();
   }, []);
 
   return {
@@ -119,41 +118,39 @@ interface Context {
   setVaultsVisible: Dispatch<SetStateAction<boolean>>;
   setVaultsData: Dispatch<SetStateAction<any>>;
   // setVaultsType: Dispatch<SetStateAction<'Deposit' | 'Withdraw'>>;
-  openInfrared(data: any): void;
-  openAquaBera(data: any): void;
+  openInfrared: (data: any, type: number) => Promise<void>;
+  openAquaBera: (data: any, type: number) => Promise<void>;
 
   // open
-
 }
 
 const initialState: any = {
   chainId: 80084,
   lendingVisible: false,
   lendingData: {},
-  setLendingVisible: () => { },
-  setLendingData: () => { },
-  openDolomite: () => { },
+  setLendingVisible: () => {},
+  setLendingData: () => {},
+  openDolomite: () => {},
 
   stakingVisible: false,
   stakingData: {},
-  setStakingVisible: () => { },
-  setStakingData: () => { },
-  openInfrared: (data: any) => { },
-  openAquaBera: (data: any) => { }
+  setStakingVisible: () => {},
+  setStakingData: () => {},
+  openInfrared: (data: any) => {},
+  openAquaBera: (data: any) => {}
 };
 
 export const MarketplaceContext = createContext<Context>(initialState);
 
 export enum LendingDApps {
-  Bend = 'Bend',
-  Dolomite = 'Dolomite'
+  Bend = "Bend",
+  Dolomite = "Dolomite"
 }
 
 export enum StakingDApps {
-  Infrared = 'Infrared'
+  Infrared = "Infrared"
 }
 export enum VaultsDApps {
-  Infrared = 'Infrared',
-  AquaBera = 'AquaBera'
-
+  Infrared = "Infrared",
+  AquaBera = "AquaBera"
 }

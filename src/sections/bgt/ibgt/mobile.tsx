@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import Drawer from '@/components/drawer';
-import { useIBGT } from '@/hooks/use-ibgt';
-import IbgtHead from '@/sections/bgt/components/ibgt-head';
-import SwitchTabs from '@/components/switch-tabs';
-import Big from 'big.js';
-import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
-import Modal from '@/components/modal';
-import IbgtForm from '@/sections/bgt/components/ibgt-form';
-import { AnimatePresence } from 'framer-motion';
-import useToast from '@/hooks/use-toast';
-import { beraB } from '@/configs/tokens/bera-bArtio';
-import { createWalletClient, custom } from 'viem';
-import { berachainTestnetbArtio } from '@reown/appkit/networks';
+import { useState } from "react";
+import Drawer from "@/components/drawer";
+import { useIBGT } from "@/hooks/use-ibgt";
+import IbgtHead from "@/sections/bgt/components/ibgt-head";
+import SwitchTabs from "@/components/switch-tabs";
+import Big from "big.js";
+import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
+import Modal from "@/components/modal";
+import IbgtForm from "@/sections/bgt/components/ibgt-form";
+import { AnimatePresence } from "framer-motion";
+import useToast from "@/hooks/use-toast";
+import { beraB } from "@/configs/tokens/bera-bArtio";
+import { createWalletClient, custom } from "viem";
+import { berachainTestnetbArtio } from "@reown/appkit/networks";
 
 const IBGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
@@ -33,7 +33,7 @@ const IBGTMobileView = (props: Props) => {
     handleWithdraw,
     handleClaim,
     symbol,
-    handleMintIBGT,
+    handleMintIBGT
   } = useIBGT(props);
 
   const toast = useToast();
@@ -47,7 +47,7 @@ const IBGTMobileView = (props: Props) => {
     isTokenApproved,
     isTokenApproving,
     lpBalance,
-    lpAmount,
+    lpAmount
   } = state;
 
   const [totalVisible, setTotalVisible] = useState(false);
@@ -56,32 +56,39 @@ const IBGTMobileView = (props: Props) => {
   };
 
   const handleAddWallet = async () => {
-    if (!window?.ethereum || window.ethereum === void 0 || window.ethereum === 'undefined') return;
-    const _toastId = toast.loading({ title: 'Adding...' });
+    if (
+      !window?.ethereum ||
+      window.ethereum === void 0 ||
+      // @ts-ignore
+      window.ethereum === "undefined"
+    )
+      return;
+    const _toastId = toast.loading({ title: "Adding..." });
     try {
       const walletClient = createWalletClient({
         // @ts-ignore
         chain: berachainTestnetbArtio,
-        transport: custom(window.ethereum!),
+        // @ts-ignore
+        transport: custom(window.ethereum!)
       });
       await walletClient.watchAsset({
-        type: 'ERC20',
-        options: beraB.ibgt,
+        type: "ERC20",
+        options: beraB.ibgt
       });
       toast.dismiss(_toastId);
       toast.success({
-        title: 'Add Successful!',
+        title: "Add Successful!"
       });
     } catch (err: any) {
-      let msg = '';
-      if (err?.message?.includes('User denied')) {
-        msg = 'User denied';
+      let msg = "";
+      if (err?.message?.includes("User denied")) {
+        msg = "User denied";
       }
       console.log(err);
       toast.dismiss(_toastId);
       toast.fail({
-        title: 'Add failure!',
-        text: msg,
+        title: "Add failure!",
+        text: msg
       });
     }
   };
@@ -93,18 +100,18 @@ const IBGTMobileView = (props: Props) => {
         onClose={onClose}
         size="80dvh"
         style={{
-          background: '#000',
+          background: "#000"
         }}
       >
         <IbgtHead
           ibgtData={ibgtData}
-          style={{ position: 'absolute' }}
+          style={{ position: "absolute" }}
           className="scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%]"
           innerStyle={{
-            borderRadius: 44,
+            borderRadius: 44
           }}
           valueStyle={{
-            borderRadius: 44,
+            borderRadius: 44
           }}
         />
         <div className="absolute w-full h-[72px] overflow-hidden top-0">
@@ -116,7 +123,7 @@ const IBGTMobileView = (props: Props) => {
               <div className="">
                 <div className="text-[#3D405A] text-[14px] font-[500]">TVL</div>
                 <div className="text-black text-[16px] font-[600] mt-[11px]">
-                  {formatValueDecimal(data?.tvl, '$', 2, true)}
+                  {formatValueDecimal(data?.tvl, "$", 2, true)}
                 </div>
               </div>
               <div className="">
@@ -126,9 +133,22 @@ const IBGTMobileView = (props: Props) => {
                 </div>
               </div>
               <div className="flex flex-col items-end">
-                <div className="text-[#3D405A] text-[14px] font-[500]">% of iBGT staked</div>
-                <div className="text-black text-[16px] font-[600] relative mt-[11px]" onClick={handleTotal}>
-                  <span>{ibgtData?.total ? Big(ibgtData?.staked).div(ibgtData?.total).times(100).toFixed(2) : '-'}%</span>
+                <div className="text-[#3D405A] text-[14px] font-[500]">
+                  % of iBGT staked
+                </div>
+                <div
+                  className="text-black text-[16px] font-[600] relative mt-[11px]"
+                  onClick={handleTotal}
+                >
+                  <span>
+                    {ibgtData?.total
+                      ? Big(ibgtData?.staked)
+                          .div(ibgtData?.total)
+                          .times(100)
+                          .toFixed(2)
+                      : "-"}
+                    %
+                  </span>
                   <svg
                     className="absolute bottom-[-6px] left-0"
                     xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +168,11 @@ const IBGTMobileView = (props: Props) => {
               <div className="flex flex-col items-center gap-[7px] text-white text-[14px] font-[500]">
                 <div className="">Your Position</div>
                 <div className="flex justify-center items-center gap-[7px]">
-                  <img src="/images/dapps/infrared/ibgt.svg" alt="" className="w-[26px] h-[26px] rounded-full" />
+                  <img
+                    src="/images/dapps/infrared/ibgt.svg"
+                    alt=""
+                    className="w-[26px] h-[26px] rounded-full"
+                  />
                   <div className="text-[20px] font-[600]">0</div>
                   <div className="">iBGT</div>
                 </div>
@@ -164,7 +188,9 @@ const IBGTMobileView = (props: Props) => {
                 <div className="">Rewards</div>
                 <div className="flex justify-center items-center gap-[7px]">
                   <img
-                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? 'honey'}.svg`}
+                    src={`/images/dapps/infrared/${
+                      data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"
+                    }.svg`}
                     alt=""
                     className="w-[26px] h-[26px] rounded-full"
                   />
@@ -174,7 +200,7 @@ const IBGTMobileView = (props: Props) => {
                 <button
                   disabled={Big(data?.earned ?? 0).lte(0)}
                   style={{
-                    opacity: Big(data?.earned ?? 0).lte(0) ? 0.3 : 1,
+                    opacity: Big(data?.earned ?? 0).lte(0) ? 0.3 : 1
                   }}
                   type="button"
                   className="border border-[#373A53] rounded-[10px] h-[36px] leading-[34px] px-[16px] text-white text-[14px] font-[500] text-center"
@@ -201,58 +227,87 @@ const IBGTMobileView = (props: Props) => {
               cursorClassName="rounded-[10px]"
               tabClassName="text-white"
               renderTabStyle={(_tab) => ({
-                color: _tab.value === tab ? 'black' : 'white',
+                color: _tab.value === tab ? "black" : "white"
               })}
             />
             <AnimatePresence mode="wait">
-              {
-                tab === tabs[0] && (
-                  <IbgtForm
-                    key="stake"
-                    type="Stake"
-                    amount={inAmount}
-                    onChange={handleTokenChange}
-                    balance={Big(balances[symbol] ?? 0).toFixed(6)}
-                    usdValue={inAmount ? '$' + Big(inAmount).times(data?.initialData?.stake_token?.price ?? 0).toFixed(2) : '-'}
-                    onSubmit={handleDeposit}
-                    onBalance={handleMax}
-                    loading={isLoading}
-                    btnText="Stake iBGT"
-                    isInSufficient={isInSufficient}
-                    isTokenApproved={isTokenApproved}
-                    isTokenApproving={isTokenApproving}
-                    symbol={symbol}
-                    handleApprove={handleApprove}
-                  />
-                )
-              }
-              {
-                tab === tabs[1] && (
-                  <IbgtForm
-                    key="Withdraw"
-                    type="Withdraw"
-                    amount={lpAmount}
-                    onChange={handleLPChange}
-                    balance={lpBalance}
-                    usdValue={lpAmount ? '$' + Big(lpAmount).times(data?.initialData?.stake_token?.price ?? 0).toFixed(2) : '-'}
-                    onSubmit={handleWithdraw}
-                    onBalance={() => {
-                      handleLPChange(lpBalance);
-                    }}
-                    loading={isLoading}
-                    btnText="Withdraw iBGT"
-                    isInSufficient={isWithdrawInsufficient}
-                    isTokenApproved={true}
-                    isTokenApproving={false}
-                  />
-                )
-              }
+              {tab === tabs[0] && (
+                <IbgtForm
+                  key="stake"
+                  type="Stake"
+                  amount={inAmount}
+                  onChange={handleTokenChange}
+                  balance={Big(balances[symbol] ?? 0).toFixed(6)}
+                  usdValue={
+                    inAmount
+                      ? "$" +
+                        Big(inAmount)
+                          .times(data?.initialData?.stake_token?.price ?? 0)
+                          .toFixed(2)
+                      : "-"
+                  }
+                  onSubmit={handleDeposit}
+                  onBalance={handleMax}
+                  loading={isLoading}
+                  btnText="Stake iBGT"
+                  isInSufficient={isInSufficient}
+                  isTokenApproved={isTokenApproved}
+                  isTokenApproving={isTokenApproving}
+                  symbol={symbol}
+                  handleApprove={handleApprove}
+                />
+              )}
+              {tab === tabs[1] && (
+                <IbgtForm
+                  key="Withdraw"
+                  type="Withdraw"
+                  amount={lpAmount}
+                  onChange={handleLPChange}
+                  balance={lpBalance}
+                  usdValue={
+                    lpAmount
+                      ? "$" +
+                        Big(lpAmount)
+                          .times(data?.initialData?.stake_token?.price ?? 0)
+                          .toFixed(2)
+                      : "-"
+                  }
+                  onSubmit={handleWithdraw}
+                  onBalance={() => {
+                    handleLPChange(lpBalance);
+                  }}
+                  loading={isLoading}
+                  btnText="Withdraw iBGT"
+                  isInSufficient={isWithdrawInsufficient}
+                  isTokenApproved={true}
+                  isTokenApproving={false}
+                />
+              )}
             </AnimatePresence>
           </div>
-          <div className="flex justify-center items-center gap-[5px] py-[20px]" onClick={handleAddWallet}>
-            <span className="text-[#929292] font-[500] text-[14px]">Add iBGT to wallet</span>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="16" height="16" rx="8" stroke="#929292" strokeOpacity="0.5" />
+          <div
+            className="flex justify-center items-center gap-[5px] py-[20px]"
+            onClick={handleAddWallet}
+          >
+            <span className="text-[#929292] font-[500] text-[14px]">
+              Add iBGT to wallet
+            </span>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="1"
+                y="1"
+                width="16"
+                height="16"
+                rx="8"
+                stroke="#929292"
+                strokeOpacity="0.5"
+              />
               <path
                 d="M9.51055 9.54607L11.8693 9.54608C12.0467 9.54605 12.1905 9.43253 12.1905 9.29262L12.1905 8.77831C12.1905 8.63836 12.0466 8.52522 11.8692 8.52502L9.51052 8.52509L9.51047 6.16638C9.51056 5.98893 9.39713 5.84503 9.25709 5.84512L8.74276 5.84514C8.60296 5.84506 8.48944 5.98886 8.48956 6.16635L8.4896 8.52511L6.13074 8.52516C5.95347 8.52513 5.80954 8.63835 5.80957 8.77833L5.80954 9.29266C5.80955 9.43261 5.95338 9.5461 6.13072 9.54614L8.48961 9.54612L8.48959 11.9047C8.48956 12.0823 8.60291 12.226 8.74286 12.226L9.25719 12.2259C9.39711 12.2259 9.51054 12.0822 9.51066 11.9048L9.51055 9.54607Z"
                 fill="#929292"
@@ -271,14 +326,22 @@ const IBGTMobileView = (props: Props) => {
           <div className="text-black text-[16px] font-[600]">
             <div className="text-[#3D405A] text-[14px] font-[500]">Staked</div>
             <div className="mt-[7px]">
-              {formatThousandsSeparator(formatValueDecimal(ibgtData?.staked, '', 2, false, true))} iBGT
+              {formatThousandsSeparator(
+                formatValueDecimal(ibgtData?.staked, "", 2, false, true)
+              )}{" "}
+              iBGT
             </div>
           </div>
           <div className="w-full h-[1px] bg-[rgba(0,0,0,0.15)] my-[15px]" />
           <div className="text-black text-[16px] font-[600]">
-            <div className="text-[#3D405A] text-[14px] font-[500]">Total iBGT</div>
+            <div className="text-[#3D405A] text-[14px] font-[500]">
+              Total iBGT
+            </div>
             <div className="mt-[7px]">
-              {formatThousandsSeparator(formatValueDecimal(ibgtData?.total, '', 2, false, true))} iBGT
+              {formatThousandsSeparator(
+                formatValueDecimal(ibgtData?.total, "", 2, false, true)
+              )}{" "}
+              iBGT
             </div>
           </div>
         </div>
