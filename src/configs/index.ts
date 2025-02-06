@@ -1,6 +1,6 @@
 import { beraB } from "./tokens/bera-bArtio";
 
-export const DEFAULT_CHAIN_ID = 80084;
+export const DEFAULT_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID || 80084;
 
 export const IS_MAINNET = DEFAULT_CHAIN_ID !== 80084;
 
