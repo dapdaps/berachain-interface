@@ -5,13 +5,13 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useAccount, useBalance, useDisconnect, useSwitchChain } from "wagmi";
 import Image from "next/image";
 import { icons } from "@/configs/chains";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Big from "big.js";
 import allTokens from "@/configs/allTokens";
 import { utils } from "ethers";
 import Popover, {
   PopoverPlacement,
-  PopoverTrigger,
+  PopoverTrigger
 } from "@/components/popover";
 import useToast from "@/hooks/use-toast";
 import useUser from "@/hooks/use-user";
@@ -19,22 +19,9 @@ import Skeleton from "react-loading-skeleton";
 import useIsMobile from "@/hooks/use-isMobile";
 import MobileUser from "@/components/connect-wallet/user";
 import MobileNetworks from "@/components/connect-wallet/networks";
-import { useDebounceFn } from 'ahooks';
-import LazyImage from '@/components/layz-image';
-import { useWalletName } from '@/hooks/use-wallet-name';
-
-const dropdownAnimations = {
-  active: {
-    opacity: [0, 1],
-    y: [10, 0],
-    display: "block",
-  },
-  default: {
-    opacity: [1, 0],
-    y: [0, 10],
-    display: "none",
-  },
-};
+import { useDebounceFn } from "ahooks";
+import { useWalletName } from "@/hooks/use-wallet-name";
+import MobileChain from "./chain/mobile";
 
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
@@ -43,9 +30,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const total = useToast();
   const { address, isConnected, chainId, chain, isConnecting } = useAccount();
   const { disconnect } = useDisconnect();
-  const { chains, switchChain } = useSwitchChain();
   const balance = useBalance({
-    address,
+    address
   });
   const { userInfo } = useUser();
   const walletInfo = useWalletName();
@@ -75,18 +61,13 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(address as string);
     total.success({
-      title: `Copied address ${address}`,
+      title: `Copied address ${address}`
     });
   };
 
   const handleDisconnect = () => {
     disconnect();
     setMobileUserInfoVisible(false);
-  };
-
-  const handleChainSelect = (chainId: number, chain: any) => {
-    switchChain({ chainId });
-    console.log(chains, chain);
   };
 
   const balanceShown = useMemo(() => {
@@ -134,9 +115,12 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     setChainDropdownShow(true);
   };
 
-  const { run: closeConnecting, cancel: cancelCloseConnecting } = useDebounceFn(() => {
-    setConnecting(false);
-  }, { wait: 10000 });
+  const { run: closeConnecting, cancel: cancelCloseConnecting } = useDebounceFn(
+    () => {
+      setConnecting(false);
+    },
+    { wait: 10000 }
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -192,25 +176,15 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 tokenSymbolShown={tokenSymbolShown}
                 addressShown={addressShown}
               />
-              <Chain
+              <MobileChain
                 chainDropdownShow={chainDropdownShow}
                 chainListRef={chainListRef}
                 handleChainDropdown={handleChainDropdown}
                 chainId={chainId}
-                chains={chains}
-                handleChainSelect={handleChainSelect}
               />
             </>
           ) : (
             <>
-              <Chain
-                chainDropdownShow={chainDropdownShow}
-                chainListRef={chainListRef}
-                handleChainDropdown={handleChainDropdown}
-                chainId={chainId}
-                chains={chains}
-                handleChainSelect={handleChainSelect}
-              />
               <User
                 handleConnect={handleConnect}
                 isMobile={isMobile}
@@ -257,107 +231,12 @@ const ConnectWallet = ({ className }: { className?: string }) => {
         onClose={() => {
           setMobileNetworksVisible(false);
         }}
-        chains={chains}
-        chainId={chainId}
-        handleChainSelect={handleChainSelect}
       />
     </>
   );
 };
 
 export default memo(ConnectWallet);
-
-const Chain = (props: any) => {
-  const {
-    chainDropdownShow,
-    chainListRef,
-    handleChainDropdown,
-    chainId,
-    chains,
-    handleChainSelect,
-  } = props;
-
-  return (
-    <motion.div
-      className={`relative rounded-[10px] py-[6px] flex justify-center items-center cursor-pointer transition-all duration-300 ${
-        chainDropdownShow ? "bg-[rgba(0,0,0,0.04)]" : ""
-      }`}
-      ref={chainListRef}
-      onClick={handleChainDropdown}
-    >
-      {chainId && icons[chainId] ? (
-        <div className="flex items-center gap-x-[8px]">
-          <LazyImage src={icons[chainId]} alt="" width={26} height={26} />
-          <LazyImage src="/images/icon-arrow.svg" width={11} height={5} alt="" />
-        </div>
-      ) : (
-        <div className="w-[26px] h-[26px] shrink-0 rounded-[8px] bg-[#eceff0]"></div>
-      )}
-      {/*#region dropdown*/}
-      <AnimatePresence mode="wait">
-        {chainDropdownShow && (
-          <motion.div
-            animate={{
-              opacity: [0, 1],
-              y: [10, 0],
-              display: "block",
-              transition: {
-                duration: 0.3,
-              },
-            }}
-            className="absolute pt-[11px] top-[30px] left-[-114px] w-[228px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="pt-[6px] pb-[5px] rounded-[12px] bg-white border border-[#F0F0F0] shadow-[0px_15px_30px_0px_rgba(0,_0,_0,_0.30)]">
-              {chains.map((_chain: any) => (
-                <div
-                  key={_chain.name}
-                  className="w-full h-[45px] flex justify-start gap-[9px] items-center px-[20px] cursor-pointer hover:bg-[#F2F2F2] transition-all ease-in-out duration-300"
-                  style={{
-                    background: chainId === _chain.id ? "#F2F2F2" : "",
-                  }}
-                  onClick={(e) => handleChainSelect(_chain.id, _chain)}
-                >
-                  {icons[_chain.id] ? (
-                    <Image
-                      src={icons[_chain.id]}
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                  ) : (
-                    <div className="w-[20px] h-[20px] shrink-0 rounded-[4px] bg-[#eceff0]"></div>
-                  )}
-                  <div className="text-black text-[16px] font-medium">
-                    {_chain.name}
-                  </div>
-                  {chainId === _chain.id && (
-                    <div className="ml-auto">
-                      <svg
-                        width="13"
-                        height="10"
-                        viewBox="0 0 13 10"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M1 3.72727L5 8L12 1"
-                          stroke="black"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {/*#endregion*/}
-    </motion.div>
-  );
-};
 
 const User = (props: any) => {
   const {
@@ -372,10 +251,10 @@ const User = (props: any) => {
     chainId,
     balanceShown,
     tokenSymbolShown,
-    addressShown,
+    addressShown
   } = props;
 
-  const walletName = walletInfo?.name || '';
+  const walletName = walletInfo?.name || "";
 
   return (
     <motion.div
@@ -429,7 +308,7 @@ const User = (props: any) => {
                       backgroundImage: `url("${tokenLogoShown}")`,
                       backgroundPosition: "center",
                       backgroundSize: "contain",
-                      backgroundRepeat: "no-repeat",
+                      backgroundRepeat: "no-repeat"
                     }}
                   >
                     {chainId ? (
@@ -475,7 +354,7 @@ const User = (props: any) => {
           )
         }
         contentStyle={{
-          zIndex: 50,
+          zIndex: 50
         }}
       >
         {address && userInfo?.avatar ? (
@@ -490,4 +369,4 @@ const User = (props: any) => {
       </Popover>
     </motion.div>
   );
-}
+};
