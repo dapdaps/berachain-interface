@@ -111,10 +111,10 @@ const Navigation = function () {
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
         className={clsx(
-          "absolute right-[35px] hover:scale-110 transition-transform duration-500",
+          'absolute right-[35px] hover:scale-110 transition-transform duration-500 mt-[270px]',
           isChristmas
-            ? "text-white top-[calc(25%+50px)]"
-            : "text-black] top-[calc(33.333%+50px)]"
+            ? 'text-white top-[calc(25%+50px)]'
+            : 'text-black top-[calc(33.333%+50px)]'
         )}
       />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
@@ -195,7 +195,7 @@ const Navigation = function () {
       <div className="absolute right-[50px] bottom-[50px] z-10 hover:scale-110 transition-transform duration-500 cursor-pointer" data-bp="1010-020" onClick={onNavigateToNearIntents}>
         <img src="/images/background/near-intents.png" className="w-[128px] h-[98px] aspect-square" alt="" />
       </div>
-{/* 
+{/*
       {
         isChristmas && (
           <ChristmasEnterance path={christmasPath} />
