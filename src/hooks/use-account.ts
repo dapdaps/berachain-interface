@@ -1,7 +1,7 @@
-import { providers } from 'ethers';
-import { useMemo } from 'react';
-import { useAccount, Config, useConnectorClient } from 'wagmi';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import { providers } from "ethers";
+import { useMemo } from "react";
+import { useAccount, Config, useConnectorClient } from "wagmi";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 function clientToProvider(client: any) {
   const { account, chain, transport } = client;
@@ -10,7 +10,7 @@ function clientToProvider(client: any) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address
   };
-  if (transport.type === 'fallback')
+  if (transport.type === "fallback")
     return new providers.FallbackProvider(
       (transport.transports as ReturnType<any>[]).map(
         ({ value }) => new providers.JsonRpcProvider(value?.url, network)
@@ -38,7 +38,7 @@ export default function useCustomAccount() {
     provider?: any;
   }>(
     () => ({
-      account: account?.address ?? '',
+      account: account?.address ?? "",
       chainId: account?.chainId ?? -1,
       provider,
       chain: account?.chain ?? null

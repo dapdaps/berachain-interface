@@ -1,11 +1,11 @@
-import CircleLoading from '@/components/circle-loading';
-import Pager from '@/components/pager';
-import Empty from '@/components/empty';
-import Big from 'big.js';
-import { useEffect, useState } from 'react';
-import { cloneDeep } from 'lodash';
-import { motion } from 'framer-motion';
-import clsx from 'clsx';
+import CircleLoading from "@/components/circle-loading";
+import Pager from "@/components/pager";
+import Empty from "@/components/empty";
+import Big from "big.js";
+import { useEffect, useState } from "react";
+import { cloneDeep } from "lodash";
+import { motion } from "framer-motion";
+import clsx from "clsx";
 
 interface Meta {
   title: string;
@@ -35,7 +35,7 @@ export default function List({
   maxPage,
   onPageChange,
   bodyClassName,
-  onItemClick = () => { },
+  onItemClick = () => {},
   onChangeSort,
   loading,
   itemClassName,
@@ -48,7 +48,7 @@ export default function List({
 
   useEffect(() => {
     if (!list.length) {
-      setData([])
+      setData([]);
       return;
     }
     if (!sortItem) {
@@ -64,13 +64,13 @@ export default function List({
 
   return (
     <div>
-      <div className='w-[100%]'>
+      <div className="w-[100%]">
         {!withoutHeader && (
-          <div className='flex items-center'>
-            {meta.map((item: any) => {
+          <div className="flex items-center">
+            {meta.map((item: any, i: number) => {
               return (
                 <div
-                  key={item.key}
+                  key={item.key + i}
                   style={{
                     width: item.width
                   }}
@@ -80,24 +80,25 @@ export default function List({
                       setSortItem(item.key);
                     }
                   }}
-                  className='text-[14px] font-medium pl-[10px] py-[5px] text-center flex gap-[10px] items-center'
+                  className="text-[14px] font-medium pl-[10px] py-[5px] text-center flex gap-[10px] items-center"
                 >
                   <span> {item.title}</span>
                   {item.sort ? (
                     <motion.svg
-                      width='12'
-                      height='8'
-                      viewBox='0 0 12 8'
-                      fill='none'
-                      xmlns='http://www.w3.org/2000/svg'
+                      width="12"
+                      height="8"
+                      viewBox="0 0 12 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                       className="cursor-pointer"
                       animate={{
-                        rotate: sortItem === item.key && sortType === 1 ? 180 : 0,
+                        rotate:
+                          sortItem === item.key && sortType === 1 ? 180 : 0
                       }}
                     >
                       <path
-                        d='M4.8364 7.5C5.35356 8.16667 6.64644 8.16667 7.1636 7.5L11.818 1.5C12.3351 0.833334 11.6887 4.76837e-07 10.6544 4.76837e-07H1.34561C0.311302 4.76837e-07 -0.335141 0.833334 0.182014 1.5L4.8364 7.5Z'
-                        fill={sortItem === item ? '#000000' : '#D1CEB4'}
+                        d="M4.8364 7.5C5.35356 8.16667 6.64644 8.16667 7.1636 7.5L11.818 1.5C12.3351 0.833334 11.6887 4.76837e-07 10.6544 4.76837e-07H1.34561C0.311302 4.76837e-07 -0.335141 0.833334 0.182014 1.5L4.8364 7.5Z"
+                        fill={sortItem === item ? "#000000" : "#D1CEB4"}
                       />
                     </motion.svg>
                   ) : null}
@@ -108,24 +109,32 @@ export default function List({
         )}
         <div className={`${bodyClassName} mp-list`}>
           {loading ? (
-            <div className='h-full flex items-center justify-center'>
+            <div className="h-full flex items-center justify-center">
               <CircleLoading size={30} />
             </div>
           ) : (
             data.map((item: any, index: number) => {
               return (
                 <div
-                  className={clsx('flex', itemContainerClassName ? itemContainerClassName : 'tr rounded-md')}
-                  key={item.id}
+                  className={clsx(
+                    "flex",
+                    itemContainerClassName
+                      ? itemContainerClassName
+                      : "tr rounded-md"
+                  )}
+                  key={item.id + index}
                   onClick={() => {
                     onItemClick(item);
                   }}
                 >
-                  {meta.map((metaItem) => {
+                  {meta.map((metaItem, i) => {
                     return (
                       <div
-                        key={item.key}
-                        className={clsx('text-left h-[58px] pl-[10px] flex items-center td', itemClassName)}
+                        key={item.key + i}
+                        className={clsx(
+                          "text-left h-[58px] pl-[10px] flex items-center td",
+                          itemClassName
+                        )}
                         style={{
                           width: metaItem.width
                         }}
@@ -141,15 +150,15 @@ export default function List({
             })
           )}
           {!loading && !data.length && (
-            <div className='w-full flex justify-center items-center mt-[100px]'>
-              <Empty desc='No Pools' />
+            <div className="w-full flex justify-center items-center mt-[100px]">
+              <Empty desc="No Pools" />
             </div>
           )}
         </div>
       </div>
 
       {onPageChange && (
-        <div className='flex justify-end mt-[30px]'>
+        <div className="flex justify-end mt-[30px]">
           <Pager maxPage={maxPage || 1} onPageChange={onPageChange} />
         </div>
       )}
