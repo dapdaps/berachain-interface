@@ -4,6 +4,7 @@ import ConnectWallet from "@/components/connect-wallet";
 import BGTCoin, { CoinType } from "@/layouts/main/BGTCoin";
 import Logo from "@/layouts/main/logo";
 import IconMap from "@public/images/icon-map.svg";
+import LaptopChain from "@/components/connect-wallet/chain/laptop";
 import useMapModalStore from "@/stores/useMapModalStore";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import { useBgtCount } from "@/hooks/use-bgt-count";
@@ -78,6 +79,7 @@ const MainLayoutHeader = (props: Props) => {
         <div className="text-white flex items-center gap-x-[17px]">
           <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" />
+          <LaptopChain />
           <ConnectWallet />
         </div>
       </div>
