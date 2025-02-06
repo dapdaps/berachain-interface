@@ -1,20 +1,19 @@
-import { beraB } from '../tokens/bera-bArtio';
+import { bera } from "../tokens/bera";
 
 export default {
-  name: 'Ooga Booga',
-  icon: '/images/dapps/ooga-booga.svg',
-  path: '/dex/ooga-booga',
-  defaultInputCurrency: beraB['bera'],
+  name: "Ooga Booga",
+  icon: "/images/dapps/ooga-booga.svg",
+  path: "/dex/ooga-booga",
+  defaultInputCurrency: bera["bera"],
   tokens: {
-    80084: [
-      beraB['bera'],
-      beraB['wbera'],
-      beraB['honey'],
-      beraB['usdt'],
-      beraB['usdc'],
-      beraB['dai'],
-      beraB['yeet'],
-      beraB['paw'],
+    80094: [
+      bera["bera"],
+      bera["wbera"],
+      bera["weth"],
+      bera["usdc.e"],
+      bera["honey"],
+      bera["wbtc"],
+      bera["usdt"]
     ]
   }
 };
