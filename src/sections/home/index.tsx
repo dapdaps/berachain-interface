@@ -105,10 +105,10 @@ const Navigation = function () {
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
         className={clsx(
-          'absolute right-[35px] hover:scale-110 transition-transform duration-500',
+          'absolute right-[35px] hover:scale-110 transition-transform duration-500 mt-[270px]',
           isChristmas
             ? 'text-white top-[calc(25%+50px)]'
-            : 'text-black] top-[calc(33.333%+50px)]'
+            : 'text-black top-[calc(33.333%+50px)]'
         )}
       />
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
