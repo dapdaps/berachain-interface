@@ -149,7 +149,7 @@ const Card = (props: any) => {
       {loading ? (
         <CircleLoading size={18} style={{ marginTop: 12 }} />
       ) : (
-        <Value disabled={Big(amount).lte(0)} style={{ marginTop: 12 }}>
+        <Value disabled={Big(amount).lte(0)} style={{ marginTop: 12 }} isShort>
           {value}
         </Value>
       )}

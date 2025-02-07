@@ -18,7 +18,7 @@ interface MintDetailCardProps {
 }
 
 const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
-  const [currentGroupId, setCurrentGroupId] = useState<number>(0);
+  const [currentGroupId, setCurrentGroupId] = useState<number>(item.mint_group_data?.[0]?.id || 0); 
   const { account } = useCustomAccount();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,6 +118,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     };
 
     calculateData();
+    console.log('<=====================>', item)
   }, [
     item.chain.chain_id,
     item.contract_address,

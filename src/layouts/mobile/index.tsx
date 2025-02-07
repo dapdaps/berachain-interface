@@ -9,17 +9,22 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import useClickTracking from "@/hooks/use-click-tracking";
-import { useAccount } from 'wagmi';
-import useUser from '@/hooks/use-user';
-import { useChristmas } from '@/hooks/use-christmas';
+import { useAccount } from "wagmi";
+import useUser from "@/hooks/use-user";
+import { useChristmas } from "@/hooks/use-christmas";
 
 const menuItems = [
-  { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
+  // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
   { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
-  { id: 3, title: "Marketplace", href: "/marketplace", dataBp: "1015-002-003" },
+  {
+    id: 3,
+    title: "Token Marketplace",
+    href: "/marketplace",
+    dataBp: "1015-002-003"
+  },
   { id: 4, title: "Earn", href: "/earn", dataBp: "1015-002-004" },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
-  { id: 6, title: "Dashboard", href: "/dashboard", dataBp: "1015-002-006" },
+  // { id: 6, title: "Portfolio Dashboard", href: "/dashboard", dataBp: "1015-002-006" },
   { id: 7, title: "Maps", href: "/", dataBp: "1015-002-007" }
 ];
 
@@ -154,8 +159,9 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div
-      className={`relative overflow-hidden ${routes.includes(pathname) ? "min-h-full" : "h-full"
-        }`}
+      className={`relative overflow-hidden ${
+        routes.includes(pathname) ? "min-h-full" : "h-full"
+      }`}
       style={{
         backgroundColor: !routes.includes(pathname) ? "#96d6ff" : "transparent"
       }}
@@ -179,7 +185,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               {menuItems.map((item) => (
                 <div
                   key={item.id}
-                  className="w-full flex justify-center items-center flex-col relative z-0"
+                  className="w-full flex justify-center items-center flex-col relative z-0 whitespace-nowrap"
                 >
                   <MenuButton
                     href={item.href}
@@ -224,28 +230,29 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]">
         <div className="flex items-center gap-3">
           <div className="relative">
-
-            {
-              ['/'].includes(pathname) && isChristmas && (
-                <motion.div
-                  className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
-                  onClick={() => {
-                    router.push('/activity/christmas');
-                  }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 200,
-                    damping: 10
-                  }}
-                  whileTap={{
-                    y: 8,
-                    scale: 0.95
-                  }}
-                >
-                  <img className="w-full" src="/images/mobile/henlo.png" alt="Henlo" />
-                </motion.div>
-              )
-            }
+            {["/"].includes(pathname) && isChristmas && (
+              <motion.div
+                className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
+                onClick={() => {
+                  router.push("/activity/christmas");
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 10
+                }}
+                whileTap={{
+                  y: 8,
+                  scale: 0.95
+                }}
+              >
+                <img
+                  className="w-full"
+                  src="/images/mobile/henlo.png"
+                  alt="Henlo"
+                />
+              </motion.div>
+            )}
 
             {/* <motion.img
              src="/images/mobile/henlo.png"
