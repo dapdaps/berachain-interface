@@ -3,9 +3,8 @@
 import Popover, { PopoverPlacement } from "@/components/popover";
 import { balanceFormated } from "@/utils/balance";
 import { useMemo, useRef } from "react";
-import { usePriceStore } from '@/stores/usePriceStore';
-import useIsMobile from '@/hooks/use-isMobile';
-
+import { usePriceStore } from "@/stores/usePriceStore";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const HoneypotCard = (props: Props) => {
   const { color, name, icon, data = {}, onSwap = () => {} } = props;
@@ -16,23 +15,33 @@ const HoneypotCard = (props: Props) => {
     <>
       <Popover
         placement={PopoverPlacement.Center}
-        content={isMobile ? (
-          <div className="w-[118px] h-[118px] rounded-[18px] p-[10px] bg-[#FFE5B8] border border-[#000] flex flex-col justify-center items-center gap-[7px] shadow-shadow1">
-            <div className="text-[18px] font-[400] leading-[18px] text-center font-CherryBomb text-[#F7F9EA] text-stroke-2">{name}</div>
-            <div className="text-[12px] font-[400] leading-[14.4px] text-left font-Montserrat">Volume</div>
-            <div className="flex gap-1">
-              <div className="text-[14px] font-[600] leading-[12.6px] font-Montserrat">{props.volume?.value}</div>
-              <div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">
-                {props.volume?.type}{props.volume?.rate}
+        content={
+          isMobile ? (
+            <div className="w-[118px] h-[118px] rounded-[18px] p-[10px] bg-[#FFE5B8] border border-[#000] flex flex-col justify-center items-center gap-[7px] shadow-shadow1">
+              <div className="text-[18px] font-[400] leading-[18px] text-center font-CherryBomb text-[#F7F9EA] text-stroke-2">
+                {name}
+              </div>
+              <div className="text-[12px] font-[400] leading-[14.4px] text-left font-Montserrat">
+                Volume
+              </div>
+              <div className="flex gap-1">
+                <div className="text-[14px] font-[600] leading-[12.6px] font-Montserrat">
+                  {props.volume?.value}
+                </div>
+                <div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">
+                  {props.volume?.type}
+                  {props.volume?.rate}
+                </div>
+              </div>
+              <div
+                onClick={onSwap}
+                className="border-[2px] border-[#4B371F] w-[98px] leading-[32px] h-[32px] rounded-[30px] bg-[#FFF5A9] text-center font-[700] text-[14px] font-Montserrat"
+              >
+                Get
               </div>
             </div>
-            <div
-              onClick={onSwap}
-              className="border-[2px] border-[#4B371F] w-[98px] leading-[32px] h-[32px] rounded-[30px] bg-[#FFF5A9] text-center font-[700] text-[14px] font-Montserrat"
-            >Get
-            </div>
-          </div>
-        ) : null}
+          ) : null
+        }
       >
         <div className="relative left-[26px] flex-shrink-0 ml-[-26px] z-[3] md:flex md:justify-center md:w-[100px]">
           <div className="absolute lg:top-[42%] lg:left-[32%] md:top-[40%] md:left-[36%] lg:w-[42px] lg:h-[42px] md:w-[28px] md:h-[28px] rounded-[50%] border border-black overflow-hidden">
@@ -76,9 +85,7 @@ const HoneypotCard = (props: Props) => {
               mask="url(#path-4-inside-1_22057_76)"
             />
           </svg>
-          <button
-          className="hidden md:block absolute md:bottom-[-24px] md:z-[10] border border-black md:bg-[#E9B965] rounded-[10px] md:px-[12px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] md:text-sm"
-          >
+          <button className="hidden md:block absolute md:bottom-[-24px] md:z-[10] border border-black md:bg-[#E9B965] rounded-[10px] md:px-[12px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] md:text-sm">
             {name}
           </button>
         </div>
@@ -87,34 +94,34 @@ const HoneypotCard = (props: Props) => {
   );
 
   const list = useMemo(() => {
-    let _price: any = Math.random() * 10 + 30;
-    let _rate: any = Math.random() * 3;
-    if (name === 'STGUSDC') {
-      _price = 1;
-      _rate = Math.random();
-    }
-    if (name === 'BERA') {
-      _price = 500;
-      _rate = Math.random() * 2;
-    }
-    if (['WBTC', 'WETH'].includes(name)) {
-      _price = prices[name];
-    }
+    let _price: any = 0;
+    let _rate: any = 0;
+    // if (name === 'STGUSDC') {
+    //   _price = 1;
+    //   _rate = Math.random();
+    // }
+    // if (name === 'BERA') {
+    //   _price = 500;
+    //   _rate = Math.random() * 2;
+    // }
+    // if (['WBTC', 'WETH'].includes(name)) {
+    //   _price = prices[name];
+    // }
     return [
       {
         label: "Price",
         key: "price",
         type: "+",
         rate: balanceFormated(_rate, 2) + "%",
-        value: "$" + balanceFormated(_price, 2),
+        value: "$" + balanceFormated(_price, 2)
       },
       {
-        label: 'Volume',
-        key: 'volume',
-        type: '+',
-        rate: balanceFormated(Math.random() * 10, 2) +  '%',
-        value: '$' + balanceFormated(Math.random() * 10 + 2, 2) + 'M'
-      },
+        label: "Volume",
+        key: "volume",
+        type: "+",
+        rate: balanceFormated(Math.random() * 10, 2) + "%",
+        value: "$" + balanceFormated(Math.random() * 10 + 2, 2) + "M"
+      }
     ];
   }, [name, prices]);
 
@@ -135,14 +142,16 @@ const HoneypotCard = (props: Props) => {
               >
                 <div className="text-[#3D405A] font-[400]">{item.label}</div>
                 <div>
-                  <div className="font-[600] mb-[2px]">{item.value}</div>
+                  <div className="font-[600] mb-[2px]">
+                    {/* {item.value} */}-
+                  </div>
                   <div
                     className={`text-[10px] text-right ${
                       item.type === "+" ? "text-[#06B000]" : "text-[#FF008A]"
                     }`}
                   >
-                    {item.type}
-                    {item.rate}
+                    {/* {item.type} */}
+                    {/* {item.rate} */}
                   </div>
                 </div>
               </div>
