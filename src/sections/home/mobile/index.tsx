@@ -234,7 +234,7 @@ const Home = () => {
 
             {/*#region Beraciaga*/}
             <motion.div
-              className="w-[187px] h-[41vw] translate-y-[19.487vw] translate-x-[3vw] grayscale"
+              className="w-[187px] h-[41vw] translate-y-[19.487vw] translate-x-[3vw] opacity-50"
               // whileTap="tap"
               // style={{ clipPath: `path("M18.9114 5.11072C2.51142 13.1107 -2.58852 33.6113 -0.588519 43.6113C-0.588519 53.1114 1.91148 77.8111 1.91148 86.6111C1.91148 95.4111 14.0781 97.2778 18.9114 97.1111C17.5781 100.444 15.7114 109.611 18.9114 119.611C22.9114 132.111 77.9114 129.111 88.9114 124.611C97.7114 121.011 99.5781 102.778 99.4114 94.1111L126.411 84.1113C152.912 84.1113 161.411 86.1113 175.411 84.1113C189.411 82.1113 187.911 75.6111 179.411 61.6111C172.611 50.4111 153.245 53.9444 144.411 57.1111C135.911 35.6111 103.411 0.611248 90.9114 -2.38875C78.4114 -5.38875 39.4114 -4.88928 18.9114 5.11072Z")` }}
               data-bp="1015-011"
@@ -345,7 +345,7 @@ const Home = () => {
               />
             </motion.div>
             <motion.div
-              className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw] grayscale"
+              className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw] opacity-50"
               // whileTap="tap"
               onClick={() => {
                 // router.push("/dashboard");
