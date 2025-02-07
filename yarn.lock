@@ -4253,7 +4253,7 @@ dayjs@1.11.10:
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
   integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
 
-dayjs@^1.9.1:
+dayjs@^1.11.13, dayjs@^1.9.1:
   version "1.11.13"
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
   integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
@@ -6960,6 +6960,11 @@ react-native-webview@^11.26.0:
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
+
+react-parallax-tilt@^1.7.268:
+  version "1.7.279"
+  resolved "https://registry.yarnpkg.com/react-parallax-tilt/-/react-parallax-tilt-1.7.279.tgz#c5ecb1bece3cf0600fb1a7fc8af17c9ce0b2441e"
+  integrity sha512-vTEbBFg7K+f42fbR2CDLL9KTXrbfM3oJoK83ewlZFy+MllbGJxpD4MCA33CqZvMyv0H2pAKUDY/h+sjIzPwMDA==
 
 react-toastify@^10.0.5:
   version "10.0.5"

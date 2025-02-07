@@ -13,21 +13,27 @@ import { balanceFormated } from '@/utils/balance';
 
 interface Props {
   chain: Chain;
-  token: Token;
+  token: Token | null;
+  amount: string;
   disabledInput?: boolean;
   comingSoon?: boolean;
+  onAmountChange?: (v: string) => void;
   onTokenChange: (v: Token) => void;
 }
 
 export default function TokenAmout({
   chain,
   token,
+  amount,
   disabledInput = false,
   onTokenChange,
-  comingSoon
+  comingSoon,
+  onAmountChange
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
-  const { tokenBalance, isError, isLoading, update } = useTokenBalance(token.isNative ? 'native' : token.address, token.decimals, token.chainId)
+  const { tokenBalance, isError, isLoading, update } = useTokenBalance(
+    token ? (token.isNative ? 'native' : token.address) : '', token?.decimals ?? 0, token?.chainId ?? 0
+  )
   const prices: any = usePriceStore(store => store.price);
 
   return (
@@ -48,12 +54,12 @@ export default function TokenAmout({
               />
               <img
                 className='w-[10px] h-[10px] absolute right-0 bottom-0 md:rounded-sm'
-                src={icons[chain.id]}
+                src={''}
               />
             </div>
             <div>
               <div className='text-[16px] font-[600] whitespace-nowrap overflow-hidden text-ellipsis'>{ token?.symbol }</div>
-              <div className='text-[12px] font-medium '>{ chain.name }</div>
+              <div className='text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis'>{ chain?.name }</div>
             </div>
           </div>
           {
@@ -76,13 +82,15 @@ export default function TokenAmout({
           }
         </div>
         <div className="flex-1">
-          <input className="w-[100%] h-[100%] text-[26px] text-right" disabled={disabledInput} />
+          <input className="w-[100%] h-[100%] text-[26px] text-right" value={amount} onChange={(e) => {
+            onAmountChange?.(e.target.value)
+          }} disabled={disabledInput} />
         </div>
       </div>
 
       <div className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]">
         <div className="flex items-center">balance: {isLoading ? <Loading size={12}/> : balanceFormated(tokenBalance, 4)}</div>
-        <div>${(token && tokenBalance) ?  balanceFormated(prices[token.symbol] * (tokenBalance as any), 4) : '~'}</div>
+        <div>${(token && tokenBalance) ?  balanceFormated(prices[token.symbol.toUpperCase()] * (amount as any), 4) : '~'}</div>
       </div>
 
       <TokenSelector

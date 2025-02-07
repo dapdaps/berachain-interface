@@ -6,7 +6,7 @@ interface Props {
   show: boolean;
   onClose: () => void;
   tokenList: Token[];
-  token: Token;
+  token: Token | null;
   onTokenSelect: (v: Token) => void;
 }
 
@@ -79,7 +79,7 @@ export default function TokenSelector({ show, onClose, tokenList, token, onToken
                   />
                   <div>
                     <div className='text-[16px] font-[600] '>{ item.symbol }</div>
-                    <div className='text-[10px] font-[400]'>{ item.name }</div>
+                    <div className='text-[10px] font-[400]'>{ item?.name }</div>
                   </div>
                 </div>
   

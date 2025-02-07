@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import chains, { icons } from '@/configs/chains'
-import allTokens from '@/configs/allTokens'
 import Card from '@/components/card';
 import TokenAmout from './TokenAmount';
 import Routes from './Routes';
@@ -13,12 +12,21 @@ import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
 import { useParams } from 'next/navigation';
+import useQuote from './Hooks/Stargate/useQoute';
+import useBridge from './Hooks/Stargate/useBridge';
+import Big from 'big.js';
+import { useAccount, useSwitchChain } from "wagmi";
+import useApprove from '@/hooks/use-approve';
+import { formatLongText } from '@/utils/utils';
+import allTokens from '@/configs/allTokens'
+import { useDebounce } from 'ahooks';
+import useTokenBalance from '@/hooks/use-token-balance';
 
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
 
-  const capitalize = (str: string ) => {
+  const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
@@ -52,15 +60,60 @@ const DappHeader: React.FC = () => {
   );
 };
 
-const ComingSoon = true;
+const ComingSoon = false;
 
 export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
   const [fromChain, setFromChain] = useState<Chain>(chains[1])
-  const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
-  const [toChain, setToChain] = useState<Chain>(chains[80084])
-  const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
+  const [fromToken, setFromToken] = useState<Token>(allTokens[1][0])
+  const [toChain, setToChain] = useState<Chain>(chains[80094])
+  const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
+  const [amount, setAmount] = useState<string>('')
   const isMobile = useIsMobile()
+  const { switchChain } = useSwitchChain();
+  const { address, chainId } = useAccount()
+  const { tokenBalance, isError, isLoading, update } = useTokenBalance(
+    fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromToken?.chainId ?? 0
+  )
+
+  const inputValue = useDebounce(amount, { wait: 500 });
+
+  const { fee, receiveAmount, contractAddress, loading: quoteLoading } = useQuote({ fromChainId: fromChain.id, toChainId: toChain.id, token: fromToken, amount: inputValue })
+  const { approve, allowance } = useApprove({ token: fromToken, amount: '3', spender: contractAddress as string })
+
+  const { execute, loading: bridgeLoading } = useBridge()
+
+  const isValid = useMemo(() => {
+    return tokenBalance && Number(tokenBalance) > Number(inputValue) && Number(inputValue) > 0
+
+  }, [inputValue, tokenBalance])
+
+  const handleBridge = async () => {
+   
+
+    if (!fromToken.isNative) {
+      const isApproved = await allowance()
+      if (!isApproved) {
+        await approve()
+      }
+    }
+
+    const receipt = await execute({
+      fromChainId: fromChain.id,
+      toChainId: toChain.id,
+      token: fromToken,
+      amount: inputValue,
+      fee: fee as {
+        nativeFee: string,
+        lzTokenFee: string
+      },
+      contractAddress: contractAddress as string
+    })
+
+    if (receipt) {
+      setConfirmShow(true)
+    }
+  }
 
   return (
     <>
@@ -69,7 +122,13 @@ export default function Bridge() {
         <DappHeader />
         <Card>
           <TokenAmout
-            chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
+            chain={fromChain}
+            token={fromToken}
+            amount={amount}
+            onAmountChange={(v: string) => {
+              setAmount(v)
+            }}
+            onTokenChange={(token: Token) => {
               setFromToken(token)
             }}
             comingSoon={ComingSoon}
@@ -102,16 +161,17 @@ export default function Bridge() {
             </svg>
           </div>
           <TokenAmout
+            amount={receiveAmount ?? ''}
             chain={toChain} token={toToken} disabledInput={true} onTokenChange={(token: Token) => {
-            setToToken(token)
-          }}
+              setToToken(token)
+            }}
             comingSoon={ComingSoon}
           />
           <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
             <div>Receive address</div>
             <div className='flex items-center gap-2'>
-              <div>0xc25...9210d</div>
-              <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
+              <div>{formatLongText(address, 6, 6)}</div>
+              {/* <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
                 <svg
                   width='11'
                   height='12'
@@ -124,13 +184,26 @@ export default function Bridge() {
                     fill='black'
                   />
                 </svg>
-              </div>
+              </div> */}
             </div>
           </div>
 
-          <Routes />
+          {
+            fee && receiveAmount && (
+              <Routes route={[{
+                receiveAmount: receiveAmount ?? '',
+                fee: fee?.nativeFee ?? ''
+              }]} />
+            )
+          }
 
-          <SubmitBtn comingSoon={ComingSoon} />
+          <SubmitBtn
+            fromChainId={fromChain.id}
+            isLoading={quoteLoading || bridgeLoading}
+            disabled={!isValid}
+            onClick={() => {
+              handleBridge()
+            }} comingSoon={ComingSoon} />
         </Card>
 
         <Confirm
