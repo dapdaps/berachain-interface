@@ -1,25 +1,22 @@
-import Modal from '@/components/modal';
-import Stake from '@/sections/staking/Bridge/Detail/Stake';
-import { useDetail } from '@/sections/staking/Bridge/Detail/hooks';
-import { useBerps } from '@/sections/staking/hooks/use-berps';
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import useAccount from '@/hooks/use-account';
-import { useProvider } from '@/hooks/use-provider';
-import { useMemo } from 'react';
-import multicallAddresses from '@/configs/contract/multicall';
-import config from '@/configs/staking/dapps/berps';
+import Modal from "@/components/modal";
+import Stake from "@/sections/staking/Bridge/Detail/Stake";
+import { useDetail } from "@/sections/staking/Bridge/Detail/hooks";
+import { useBerps } from "@/sections/staking/hooks/use-berps";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import useAccount from "@/hooks/use-account";
+import { useProvider } from "@/hooks/use-provider";
+import { useMemo } from "react";
+import multicallAddresses from "@/configs/contract/multicall";
+import config from "@/configs/staking/dapps/berps";
 
 const BerpsDeposit = (props: any) => {
-  const {
-    visible,
-    onClose,
-  } = props;
-
+  const { visible, onClose } = props;
+  // @ts-ignore
   const dexConfig = config?.chains[DEFAULT_CHAIN_ID];
   const { pairs, description } = dexConfig;
 
   const name = config.name;
-  const id = 'BHONEY';
+  const id = "BHONEY";
 
   const { account: sender, chainId } = useAccount();
   const { provider } = useProvider();
@@ -28,7 +25,7 @@ const BerpsDeposit = (props: any) => {
     [chainId]
   );
 
-  const { dataList, loading, reload  } = useBerps({
+  const { dataList, loading, reload } = useBerps({
     name: name,
     description,
     pairs,
@@ -36,7 +33,7 @@ const BerpsDeposit = (props: any) => {
     chainId,
     provider,
     multicallAddress,
-    onChangeData: () => {},
+    onChangeData: () => {}
   });
 
   const data = useMemo(() => {
@@ -52,36 +49,28 @@ const BerpsDeposit = (props: any) => {
     handleMax,
     handleTokenChange,
     handleApprove,
-    handleDeposit,
+    handleDeposit
   } = useDetail({
     id,
     name,
     data,
-    defaultIndex: 0,
+    defaultIndex: 0
   });
 
-  const {
-    balances,
-    inAmount,
-    isLoading,
-    isTokenApproved,
-    isTokenApproving,
-  } = state;
+  const { balances, inAmount, isLoading, isTokenApproved, isTokenApproving } =
+    state;
 
   if (!visible) return null;
 
   const handleClose = () => {
     onClose?.();
     updateState({
-      inAmount: '',
+      inAmount: ""
     });
   };
 
   return (
-    <Modal
-      open={visible}
-      onClose={handleClose}
-    >
+    <Modal open={visible} onClose={handleClose}>
       <div className="px-[20px] pb-[20px] w-[520px] bg-[#FFFDEB] rounded-[20px] border border-black md:w-full md:px-[12px] md:rounded-b-none">
         <div className="pt-[27px] pb-[10px] flex justify-between md:pt-[16px] text-[20px] font-bold">
           Provide HONEY-bHONEY

@@ -34,8 +34,7 @@ const FIRST_LIST = [
     dApps: [
       {
         ..._dApps["infrared"],
-        attachedIcon: "",
-        disabled: true
+        attachedIcon: ""
       }
     ]
   },
@@ -208,8 +207,7 @@ const ALL_LIST = [
     dApps: [
       {
         ..._dApps["infrared"],
-        attachedIcon: "",
-        disabled: true
+        attachedIcon: ""
       }
     ]
   },

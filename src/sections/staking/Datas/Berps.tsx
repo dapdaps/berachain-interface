@@ -1,23 +1,15 @@
-import Big from 'big.js';
-import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
-import { multicall } from '@/utils/multicall';
-import { addHours } from 'date-fns';
-import { get } from '@/utils/http';
-import { usePriceStore } from '@/stores/usePriceStore';
+import Big from "big.js";
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
+import { multicall } from "@/utils/multicall";
+import { addHours } from "date-fns";
+import { get } from "@/utils/http";
+import { usePriceStore } from "@/stores/usePriceStore";
 
 export default function useBerpsData(props: any) {
-  const {
-    name,
-    pairs,
-    sender,
-    provider,
-    addresses,
-    onLoad,
-    multicallAddress,
-  } = props;
+  const { name, pairs, sender, provider, onLoad, multicallAddress } = props;
 
-  const prices = usePriceStore(store => store.price);
+  const prices = usePriceStore((store) => store.price);
 
   const [reloadCount, setReloadCount] = useState(0);
 
@@ -25,184 +17,184 @@ export default function useBerpsData(props: any) {
 
   const ERC20_ABI = [
     {
-      "inputs": [
+      inputs: [
         {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          internalType: "address",
+          name: "owner",
+          type: "address"
         }
       ],
-      "name": "balanceOf",
-      "outputs": [
+      name: "balanceOf",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "result",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "result",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
       constant: true,
       inputs: [
         {
-          internalType: 'address',
-          name: 'account',
-          type: 'address'
+          internalType: "address",
+          name: "account",
+          type: "address"
         },
         {
-          internalType: 'address',
-          name: '_rewardsToken',
-          type: 'address'
+          internalType: "address",
+          name: "_rewardsToken",
+          type: "address"
         }
       ],
-      name: 'earned',
+      name: "earned",
       outputs: [
         {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      stateMutability: 'view',
-      type: 'function'
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [],
-      "name": "shareToAssetsPrice",
-      "outputs": [
+      inputs: [],
+      name: "shareToAssetsPrice",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [],
-      "name": "currentEpoch",
-      "outputs": [
+      inputs: [],
+      name: "currentEpoch",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [],
-      "name": "currentEpochStart",
-      "outputs": [
+      inputs: [],
+      name: "currentEpochStart",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [],
-      "name": "marketCap",
-      "outputs": [
+      inputs: [],
+      name: "marketCap",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [],
-      "name": "totalSupply",
-      "outputs": [
+      inputs: [],
+      name: "totalSupply",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          internalType: "address",
+          name: "owner",
+          type: "address"
         }
       ],
-      "name": "completeBalanceOfAssets",
-      "outputs": [
+      name: "completeBalanceOfAssets",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          internalType: "address",
+          name: "owner",
+          type: "address"
         }
       ],
-      "name": "completeBalanceOf",
-      "outputs": [
+      name: "completeBalanceOf",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          internalType: "address",
+          name: "owner",
+          type: "address"
         }
       ],
-      "name": "totalSharesBeingWithdrawn",
-      "outputs": [
+      name: "totalSharesBeingWithdrawn",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "shares",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "shares",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "inputs": [],
-      "name": "tvl",
-      "outputs": [
+      inputs: [],
+      name: "tvl",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
-    },
+      stateMutability: "view",
+      type: "function"
+    }
   ];
 
   const formatedData = () => {
@@ -217,39 +209,39 @@ export default function useBerpsData(props: any) {
           calls: [
             {
               address: pair.withdrawToken.address,
-              name: 'shareToAssetsPrice',
+              name: "shareToAssetsPrice",
               params: []
             },
             {
               address: pair.withdrawToken.address,
-              name: 'currentEpoch',
+              name: "currentEpoch",
               params: []
             },
             {
               address: pair.withdrawToken.address,
-              name: 'currentEpochStart',
+              name: "currentEpochStart",
               params: []
             },
             {
               address: pair.withdrawToken.address,
-              name: 'marketCap',
+              name: "marketCap",
               params: []
             },
             {
               address: pair.withdrawToken.address,
-              name: 'totalSupply',
+              name: "totalSupply",
               params: []
             },
             {
               address: pair.depositToken.address,
-              name: 'balanceOf',
+              name: "balanceOf",
               params: [pair.withdrawToken.address]
             },
             {
               address: pair.withdrawToken.address,
-              name: 'tvl',
+              name: "tvl",
               params: []
-            },
+            }
           ],
           multicallAddress,
           provider
@@ -262,17 +254,32 @@ export default function useBerpsData(props: any) {
           [marketCap],
           [totalSupply],
           [tvl],
-          [bHoneyTvl],
+          [bHoneyTvl]
         ] = res;
 
-        price = ethers.utils.formatUnits(price, 36 - pair.withdrawToken.decimals);
-        const tvlValue = ethers.utils.formatUnits(tvl, pair.withdrawToken.decimals);
-        bHoneyTvl = ethers.utils.formatUnits(bHoneyTvl, pair.withdrawToken.decimals);
+        price = ethers.utils.formatUnits(
+          price,
+          36 - pair.withdrawToken.decimals
+        );
+        const tvlValue = ethers.utils.formatUnits(
+          tvl,
+          pair.withdrawToken.decimals
+        );
+        bHoneyTvl = ethers.utils.formatUnits(
+          bHoneyTvl,
+          pair.withdrawToken.decimals
+        );
         currentEpoch = ethers.utils.formatUnits(currentEpoch, 0);
         currentEpochStart = ethers.utils.formatUnits(currentEpochStart, 0);
         currentEpochStart = Big(currentEpochStart).times(1000).toNumber();
-        marketCap = ethers.utils.formatUnits(marketCap, pair.withdrawToken.decimals);
-        const totalSupplyValue = ethers.utils.formatUnits(totalSupply, pair.withdrawToken.decimals);
+        marketCap = ethers.utils.formatUnits(
+          marketCap,
+          pair.withdrawToken.decimals
+        );
+        const totalSupplyValue = ethers.utils.formatUnits(
+          totalSupply,
+          pair.withdrawToken.decimals
+        );
 
         _data.tvl = tvlValue;
         _data.withdrawTokenPrice = price;
@@ -280,12 +287,14 @@ export default function useBerpsData(props: any) {
         _data.currentEpochStart = new Date(currentEpochStart);
         _data.currentEpochEnd = addHours(new Date(currentEpochStart), 12);
         _data.marketCap = marketCap;
-        _data.collateralizationRatio = Big(marketCap).div(bHoneyTvl).times(100).toFixed(2, Big.roundDown) + '%';
+        _data.collateralizationRatio =
+          Big(marketCap).div(bHoneyTvl).times(100).toFixed(2, Big.roundDown) +
+          "%";
         _data.totalSupply = totalSupplyValue;
         _data.initialData.current_staked_amount = tvl;
-        _data.apy = '2260';
+        _data.apy = "2260";
       } catch (err: any) {
-        console.log('BERPS protocol failed: %o',err);
+        console.log("BERPS protocol failed: %o", err);
       }
       resolve(_data);
     });
@@ -299,24 +308,24 @@ export default function useBerpsData(props: any) {
           calls: [
             {
               address: pair.withdrawToken.address,
-              name: 'completeBalanceOfAssets',
+              name: "completeBalanceOfAssets",
               params: [sender]
             },
             {
               address: pair.withdrawToken.address,
-              name: 'completeBalanceOf',
+              name: "completeBalanceOf",
               params: [sender]
             },
             {
               address: pair.withdrawToken.address,
-              name: 'totalSharesBeingWithdrawn',
+              name: "totalSharesBeingWithdrawn",
               params: [sender]
             },
             {
               address: pair.withdrawToken.address,
-              name: 'balanceOf',
+              name: "balanceOf",
               params: [sender]
-            },
+            }
           ],
           multicallAddress,
           provider
@@ -326,32 +335,58 @@ export default function useBerpsData(props: any) {
           completeBalanceOfAssets,
           completeBalanceOf,
           totalSharesBeingWithdrawn,
-          balanceOf,
+          balanceOf
         ] = res;
 
-        completeBalanceOfAssets = completeBalanceOfAssets ? completeBalanceOfAssets[0] : '0';
-        completeBalanceOf = completeBalanceOf ? completeBalanceOf[0] : '0';
-        totalSharesBeingWithdrawn = totalSharesBeingWithdrawn ? totalSharesBeingWithdrawn[0] : '0';
-        balanceOf = balanceOf ? balanceOf[0] : '0';
+        completeBalanceOfAssets = completeBalanceOfAssets
+          ? completeBalanceOfAssets[0]
+          : "0";
+        completeBalanceOf = completeBalanceOf ? completeBalanceOf[0] : "0";
+        totalSharesBeingWithdrawn = totalSharesBeingWithdrawn
+          ? totalSharesBeingWithdrawn[0]
+          : "0";
+        balanceOf = balanceOf ? balanceOf[0] : "0";
 
-        completeBalanceOfAssets = ethers.utils.formatUnits(completeBalanceOfAssets, pair.withdrawToken.decimals);
-        completeBalanceOf = ethers.utils.formatUnits(completeBalanceOf, pair.withdrawToken.decimals);
-        totalSharesBeingWithdrawn = ethers.utils.formatUnits(totalSharesBeingWithdrawn, pair.withdrawToken.decimals);
-        balanceOf = ethers.utils.formatUnits(balanceOf, pair.withdrawToken.decimals);
+        completeBalanceOfAssets = ethers.utils.formatUnits(
+          completeBalanceOfAssets,
+          pair.withdrawToken.decimals
+        );
+        completeBalanceOf = ethers.utils.formatUnits(
+          completeBalanceOf,
+          pair.withdrawToken.decimals
+        );
+        totalSharesBeingWithdrawn = ethers.utils.formatUnits(
+          totalSharesBeingWithdrawn,
+          pair.withdrawToken.decimals
+        );
+        balanceOf = ethers.utils.formatUnits(
+          balanceOf,
+          pair.withdrawToken.decimals
+        );
 
-        const vaultEarnings = await get(`https://bartio-berps.berachain.com/vaultearnings/${sender}`);
+        const vaultEarnings = await get(
+          `https://bartio-berps.berachain.com/vaultearnings/${sender}`
+        );
         let { earnings } = vaultEarnings || {};
-        earnings = ethers.utils.formatUnits(earnings, pair.withdrawToken.decimals);
+        earnings = ethers.utils.formatUnits(
+          earnings,
+          pair.withdrawToken.decimals
+        );
 
         _data.completeBalanceOfAssets = completeBalanceOfAssets;
         _data.completeBalanceOf = completeBalanceOf;
         _data.totalSharesBeingWithdrawn = totalSharesBeingWithdrawn;
         _data.earnings = earnings;
-        _data.estimatedEarnings = Big(earnings).plus(completeBalanceOfAssets).abs().toString();
+        _data.estimatedEarnings = Big(earnings)
+          .plus(completeBalanceOfAssets)
+          .abs()
+          .toString();
         _data.depositAmount = balanceOf;
-        _data.usdDepositAmount = Big(balanceOf).times(_data.withdrawTokenPrice).toString();
+        _data.usdDepositAmount = Big(balanceOf)
+          .times(_data.withdrawTokenPrice)
+          .toString();
       } catch (err: any) {
-        console.log('BERPS protocol failed: %o',err);
+        console.log("BERPS protocol failed: %o", err);
       }
       resolve(_data);
     });
@@ -362,21 +397,21 @@ export default function useBerpsData(props: any) {
       const _data = {
         ...pair,
         name,
-        type: 'Staking',
+        type: "Staking",
         vaultAddress,
         initialData: {
           address: vaultAddress,
           current_staked_amount: 0,
           pool: {
             name: pair.withdrawToken.symbol,
-            protocol: 'Berps',
+            protocol: "Berps"
           },
           reward_tokens: [],
           stake_token: {
             ...pair.depositToken,
-            price: prices[pair.depositToken.symbol] || 1,
-          },
-        },
+            price: prices[pair.depositToken.symbol] || 1
+          }
+        }
       };
       await getBerpsData(pair, _data);
       await getBerpsUserData(pair, _data);
@@ -386,13 +421,13 @@ export default function useBerpsData(props: any) {
   };
 
   useEffect(() => {
-    if (name !== 'Berps') return;
+    if (name !== "Berps") return;
     getDataList();
   }, [name, sender, provider, reloadCount]);
 
   return {
     reload: () => {
       setReloadCount(reloadCount + 1);
-    },
+    }
   };
 }
