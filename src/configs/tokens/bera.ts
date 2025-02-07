@@ -58,13 +58,13 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/wbtc.png",
     color: "#F7931A"
   },
-  usdt: {
+  usdt0: {
     chainId: CHAIN_ID,
     address: "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
     decimals: 6,
-    symbol: "USDT",
-    name: "Tether USD",
-    icon: "/assets/tokens/usdt.png",
+    symbol: "USD₮0",
+    name: "USD₮0",
+    icon: "/assets/tokens/usdt0.png",
     color: "#059393"
   },
   ibgt: {
@@ -74,5 +74,69 @@ export const bera: { [key: string]: Token } = {
     symbol: "iBGT",
     name: "Infrared BGT",
     icon: "/assets/tokens/ibgt.png"
+  },
+  mim: {
+    chainId: CHAIN_ID,
+    address: "0x5B82028cfc477C4E7ddA7FF33d59A23FA7Be002a",
+    decimals: 18,
+    symbol: "MIM",
+    name: "Magic Internet Money",
+    icon: "/assets/tokens/mim.png"
+  },
+  "pumpBTC.bera": {
+    chainId: CHAIN_ID,
+    address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
+    decimals: 8,
+    symbol: "pumpBTC.bera",
+    name: "pumpBTC.bera",
+    icon: "/assets/tokens/pumpbtc.png"
+  },
+  unibtc: {
+    chainId: CHAIN_ID,
+    address: "0xc3827a4bc8224ee2d116637023b124ced6db6e90",
+    decimals: 8,
+    symbol: "uniBTC",
+    name: "uniBTC",
+    icon: "/assets/tokens/uni-btc.png"
+  },
+  nect: {
+    chainId: CHAIN_ID,
+    address: "0x1ce0a25d13ce4d52071ae7e02cf1f6606f4c79d3",
+    decimals: 18,
+    symbol: "NECT",
+    name: "Nectar",
+    icon: "/assets/tokens/nectar.png"
+  },
+  usde: {
+    chainId: CHAIN_ID,
+    address: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+    decimals: 18,
+    symbol: "USDe",
+    name: "USDe",
+    icon: "/assets/tokens/usde.png"
+  },
+  rusd: {
+    chainId: CHAIN_ID,
+    address: "0x09d4214c03d01f49544c0448dbe3a27f768f2b34",
+    decimals: 18,
+    symbol: "rUSD",
+    name: "Reservoir Stablecoin",
+    icon: "/assets/tokens/rusd.png"
+  },
+  beraeth: {
+    chainId: CHAIN_ID,
+    address: "0x6fc6545d5cde268d5c7f1e476d444f39c995120d",
+    decimals: 18,
+    symbol: "beraETH",
+    name: "Berachain Staked ETH",
+    icon: "/assets/tokens/beraeth.png"
+  },
+  usda: {
+    chainId: CHAIN_ID,
+    address: "0xff12470a969dd362eb6595ffb44c82c959fe9acc",
+    decimals: 18,
+    symbol: "USDa",
+    name: "USDa",
+    icon: "/assets/tokens/susda.png"
   }
 };
