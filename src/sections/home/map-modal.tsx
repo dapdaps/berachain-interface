@@ -84,20 +84,20 @@ const PartList = [
     btnText: "Bridge",
     link: "/bridge",
     ArrowIcon: BridgeArrowIcon
-  },
-  {
-    className:
-      "origin-top-right absolute top-[13%] right-[7.2%] w-[539px] h-[290px]",
-    clipPath: dashboardClipPath,
-    src: "dashboard.svg",
-    maskSrc: "mask-dashboard.svg",
-    indicatorClass: "absolute right-[-4%] top-[20%] z-10",
-    buttonClass: "rotate-[2.58deg] mb-[8px]",
-    arrowClass: "relative left-[calc(50%-34px)]",
-    btnText: "Portfolio Dashboard",
-    link: "/dashboard",
-    ArrowIcon: dAppArrowIcon
   }
+  // {
+  //   className:
+  //     "origin-top-right absolute top-[13%] right-[7.2%] w-[539px] h-[290px]",
+  //   clipPath: dashboardClipPath,
+  //   src: "dashboard.svg",
+  //   maskSrc: "mask-dashboard.svg",
+  //   indicatorClass: "absolute right-[-4%] top-[20%] z-10",
+  //   buttonClass: "rotate-[2.58deg] mb-[8px]",
+  //   arrowClass: "relative left-[calc(50%-34px)]",
+  //   btnText: "Portfolio Dashboard",
+  //   link: "/dashboard",
+  //   ArrowIcon: dAppArrowIcon
+  // }
   // {
   //   className:
   //     'origin-bottom-left absolute left-[6.3%] bottom-[10.8%] w-[314px] h-[340px]',

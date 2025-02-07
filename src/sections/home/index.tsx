@@ -102,7 +102,7 @@ const Navigation = function () {
         </div>
         <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
-      <VaultsEnterance
+      {/* <VaultsEnterance
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
         className={clsx(
@@ -111,9 +111,9 @@ const Navigation = function () {
             ? "text-white top-[calc(25%+50px)]"
             : "text-black] top-[calc(33.333%+50px)]"
         )}
-      />
+      /> */}
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
-        <div
+        {/* <div
           className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToDashBoard}
           data-bp="1010-008"
@@ -125,7 +125,7 @@ const Navigation = function () {
             </div>
           </div>
           <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
-        </div>
+        </div> */}
 
         <div
           className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px]"
@@ -166,7 +166,7 @@ const Navigation = function () {
         <div className="text-[20px] text-center font-CherryBomb">Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div> */}
-      <div
+      {/* <div
         className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
         onClick={() => {
           // @ts-ignore
@@ -186,7 +186,7 @@ const Navigation = function () {
         <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">
           Beraciaga
         </div>
-      </div>
+      </div> */}
       {isChristmas && <ChristmasEnterance path={christmasPath} />}
     </>
   );
