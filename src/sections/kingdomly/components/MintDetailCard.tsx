@@ -41,8 +41,6 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   const currentGroup =
     mintGroups.find((group) => group.id === currentGroupId) || mintGroups[0];
 
-    console.log('mintGroups', mintGroups);
-    console.log('currentGroup', currentGroup);
   const symbol = item.chain.native_currency;
 
   const mintGroupTabs = mintGroups.map((group) => ({
@@ -54,6 +52,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   const handleTabChange = (value: string) => {
     setCurrentGroupId(Number(value));
     setQuantity(1);
+    setUpdater(updater + 1);
   };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,7 +130,6 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     const updateMintStatuses = async () => {
       if (!item.mint_group_data) return;
       setIsMintStatusLoading(true);
-      console.log(item.mint_group_data, 'item.mint_group_data')
       try {
         const updatedGroups = await Promise.all(
           item.mint_group_data.map(async (group) => {
@@ -380,6 +378,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                 timestamp={item.mint_live_timestamp}
                 onClick={onMint}
                 loading={isMinting}
+                onCountdownEnd={() => setUpdater(updater + 1)}
               />
             )}
           </div>
