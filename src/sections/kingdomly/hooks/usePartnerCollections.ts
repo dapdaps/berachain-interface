@@ -6,7 +6,8 @@ import NFTAbi from "../abis/mint.json";
 
 export const CHAIN_RPC_URLS: { [key: number]: string } = {
   42161: "https://arb1.arbitrum.io/rpc", // Arbitrum One
-  80094: "https://bartio.drpc.org" // Berachain
+  80084: "https://bartio.drpc.org", // Berachain testnet
+  80094: "https://rpc.berachain.com" // Berachain mainnet
 };
 
 export const usePartnerCollections = () => {

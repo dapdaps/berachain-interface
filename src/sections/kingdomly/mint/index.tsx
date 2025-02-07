@@ -46,11 +46,13 @@ const MobileCard = ({
             />
             <span className="text-[12px]">
               {item.totalSupplyByContract}/{item.maxSupplyByContract} (
-              {Big(item.totalSupplyByContract || 0)
-                .div(item.maxSupplyByContract || 0)
-                .mul(100)
-                .toFixed(2)}
-              %)
+              {item.maxSupplyByContract ? 
+                Big(item.totalSupplyByContract || 0)
+                  .div(item.maxSupplyByContract)
+                  .mul(100)
+                  .toFixed(2)
+                : '0'
+              }%)
             </span>
           </div>
         </div>
@@ -109,6 +111,8 @@ const Mint = () => {
       );
   }, [collections, tab, debouncedValue]);
 
+  console.log('filteredCollections', filteredCollections);
+
   const getMetaConfig = () => {
     const baseConfig = [
       {
@@ -158,11 +162,13 @@ const Mint = () => {
                 {item.totalSupplyByContract}/{item.maxSupplyByContract}
               </div>
               <div className="text-[10px] font-[400]">
-                {Big(item.totalSupplyByContract || 0)
-                  .div(item.maxSupplyByContract || 0)
-                  .mul(100)
-                  .toFixed(2)}
-                %
+                {item.maxSupplyByContract ? 
+                  Big(item.totalSupplyByContract || 0)
+                    .div(item.maxSupplyByContract)
+                    .mul(100)
+                    .toFixed(2)
+                  : '0'
+                }%
               </div>
             </div>
           );
