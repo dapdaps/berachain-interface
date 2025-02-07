@@ -50,10 +50,12 @@ export default function TokenAmout({
           <div className='flex items-center gap-[10px]'>
             <div className='relative w-[26px]'>
               <img
+                key={token?.icon}
                 className='w-[26px] h-[26px]'
                 src={token?.icon}
               />
               <img
+                key={token?.icon}
                 className='w-[10px] h-[10px] absolute right-0 bottom-0 md:rounded-sm'
                 src={''}
               />
