@@ -13,7 +13,8 @@ export default {
       bera["usdc.e"],
       bera["honey"],
       bera["wbtc"],
-      bera["usdt0"]
+      bera["usdt0"],
+      bera["bonga"]
     ]
   }
 };
