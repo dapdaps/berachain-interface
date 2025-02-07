@@ -112,7 +112,7 @@ export default function useBridge() {
                     chainIds[toChainId],
                     utils.hexZeroPad(account, 32),
                     amountLD.toString(),
-                    amountLD.mul(1 - 0.005).toString(),
+                    amountLD.mul(1 - 0.005).toFixed(0, 0),
                     '0x',
                     '0x',
                     '0x'
