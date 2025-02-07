@@ -1,11 +1,10 @@
-import Big from 'big.js';
-import { memo, useEffect, useState } from 'react';
-
-import { usePriceStore } from '@/stores//usePriceStore';
-
-import { getAnotherAmountOutV2 } from '../../helpers';
-import Input from './input';
-import { StyledContainer, StyledSubtitle } from './styles';
+import Big from "big.js";
+import { memo, useEffect, useState } from "react";
+import { usePriceStore } from "@/stores//usePriceStore";
+import { getAnotherAmountOutV2 } from "../../helpers";
+import Input from "./input";
+import { StyledContainer, StyledSubtitle } from "./styles";
+import { sortTokens } from "../../utils";
 
 const DepositAmounts = ({
   label,
@@ -21,8 +20,8 @@ const DepositAmounts = ({
   onSelectToken
 }: any) => {
   const prices = usePriceStore((store) => store.price);
-  const [balance0, setBalance0] = useState('');
-  const [balance1, setBalance1] = useState('');
+  const [balance0, setBalance0] = useState("");
+  const [balance1, setBalance1] = useState("");
 
   const handleValue = (value: any, type: 0 | 1) => {
     if (type === 0) {
@@ -34,13 +33,13 @@ const DepositAmounts = ({
     if (!reserve0 || !reserve1) return;
 
     if (type === 0) {
-      setValue1('');
+      setValue1("");
     } else {
-      setValue0('');
+      setValue0("");
     }
-
+    const [_token0, _token1] = sortTokens(token0, token1);
     const isReversed =
-      token0.address.toLowerCase() > token1.address.toLowerCase();
+      token0.address !== _token0.address && token1.address !== _token1.address;
 
     const isToken0 = (type === 0 && !isReversed) || (type === 1 && isReversed);
 
@@ -51,25 +50,25 @@ const DepositAmounts = ({
           amount: value,
           isToken0
         })
-      : '';
+      : "";
 
     if (type === 0) {
       const _amountOut = !amountOut
-        ? ''
-        : new Big(amountOut).toFixed(token1.decimals).replace(/\.?0+$/, '');
+        ? ""
+        : new Big(amountOut).toFixed(token1.decimals).replace(/\.?0+$/, "");
       setValue1(_amountOut);
     } else {
       const _amountOut = !amountOut
-        ? ''
-        : new Big(amountOut).toFixed(token0.decimals).replace(/\.?0+$/, '');
+        ? ""
+        : new Big(amountOut).toFixed(token0.decimals).replace(/\.?0+$/, "");
       setValue0(_amountOut);
     }
   };
 
   useEffect(() => {
     if (!reserve0 || !reserve1) {
-      setValue0('');
-      setValue1('');
+      setValue0("");
+      setValue1("");
       return;
     }
     if (value0) {
@@ -79,17 +78,17 @@ const DepositAmounts = ({
 
   useEffect(() => {
     if (!value0 || !value1) {
-      onError('Enter Amount');
+      onError("Enter Amount");
       return;
     }
     if (
       new Big(balance0 || 0).lt(value0 || 0) ||
       new Big(balance1 || 0).lt(value1 || 0)
     ) {
-      onError('Insufficient Balance');
+      onError("Insufficient Balance");
       return;
     }
-    onError('');
+    onError("");
   }, [value0, value1, balance0, balance1]);
 
   return (

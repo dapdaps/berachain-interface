@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import DepositAmounts from '../../components/deposit-amounts/v2';
-import Result from '../../bex/result';
-import Button from '../../components/button/increase-button';
-import TokenSelector from '@/sections/swap/TokenSelector';
-import useData from '../../hooks/use-data-v2';
-import usdAdd from '../../hooks/use-add-v2';
-import kodiak from '@/configs/pools/kodiak';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useState, useRef } from "react";
+import DepositAmounts from "../../components/deposit-amounts/v2";
+import Result from "../../bex/result";
+import Button from "../../components/button/increase-button";
+import TokenSelector from "@/sections/swap/TokenSelector";
+import useData from "../../hooks/use-data-v2";
+import usdAdd from "../../hooks/use-add-v2";
+import kodiak from "@/configs/pools/kodiak";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function AddLiquidity({
   tokenSelectable,
@@ -16,7 +16,7 @@ export default function AddLiquidity({
   defaultToken0,
   defaultToken1
 }: any) {
-  const [errorTips, setErrorTips] = useState('');
+  const [errorTips, setErrorTips] = useState("");
   const [showSelectTokens, setShowSelectTokens] = useState(false);
   const [selectedToken, setSelectedToken] = useState<any>({});
   const inputType = useRef<0 | 1>(0);
@@ -48,7 +48,7 @@ export default function AddLiquidity({
   return (
     <>
       <DepositAmounts
-        label='Deposit Amounts'
+        label="Deposit Amounts"
         token0={token0}
         token1={token1}
         value0={value0}
@@ -66,12 +66,12 @@ export default function AddLiquidity({
         }}
       />
       <Result
-        price={value0 ? value1 / value0 : ''}
+        price={value0 ? value1 / value0 : ""}
         token0={token0}
         token1={token1}
       />
       <Button
-        text='Add Liquidity'
+        text="Add Liquidity"
         errorTips={errorTips}
         loading={increasing}
         onClick={onIncrease}
