@@ -115,7 +115,7 @@ export default function useBridge() {
                     amountLD.mul(1 - 0.005).toString(),
                     '0x',
                     '0x',
-                    '0x01'
+                    '0x'
                 ],
                 [Big(fee.nativeFee).mul(10 ** 18).toString(), Big(fee.lzTokenFee).mul(10 ** 18).toString()],
                 account,

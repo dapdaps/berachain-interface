@@ -129,11 +129,13 @@ export default function Bridge() {
         fromChainId: fromChain.id,
         toChainId: toChain.id,
         token: fromToken,
+        toToken: toToken,
         amount: inputValue,
         template: 'Stargate',
         add: false,
         status: 1,
         transactionHash: txHash,
+        time: Date.now(),
         extra_data: {}
       }
 

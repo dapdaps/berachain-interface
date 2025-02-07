@@ -7,19 +7,18 @@ export const useStatus = () => {
     const pendingCount = list.filter((item: any) => item.status === 1)
     const historyCount = list.filter((item: any) => item.status !== 1)
 
-    
     useInterval(async () => {
         const pendingTxs = list.filter((item: any) => item.status === 1)
-        
+
         if (pendingTxs.length > 0) {
             const newList = [...list]
-            
+
             for (const tx of pendingTxs) {
                 try {
-                    const response = await fetch(`https://api-testnet.layerzero-scan.com/tx/${tx.transactionHash}`)
+                    const response = await fetch(`https://api-mainnet.layerzero-scan.com/tx/${tx.transactionHash}`)
                     const resJson = await response.json()
 
-                    const data = resJson.message?.length > 0 ? resJson.message[0] : null
+                    const data = resJson.messages?.length > 0 ? resJson.messages[0] : null
 
                     if (data && data.dstTxHash && data.status === 'DELIVERED') {
                         const index = newList.findIndex((item: any) => item.transactionHash === tx.transactionHash)
@@ -34,10 +33,11 @@ export const useStatus = () => {
                     console.error('Failed to fetch transaction status:', error)
                 }
             }
+
             
             set({ list: newList })
         }
     }, 5000)
 
-    return { pendingCount: pendingCount.length, historyCount: historyCount.length }
+    return { pendingCount: pendingCount.length, historyCount: historyCount.length, list }
 }   

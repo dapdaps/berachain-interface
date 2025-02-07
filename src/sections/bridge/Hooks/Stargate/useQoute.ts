@@ -118,6 +118,8 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
         if (!account) return;
 
         if (!amount || Number(amount) <= 0) {
+            setFee(null)
+            setReceiveAmount(null)
             return
         }
 
