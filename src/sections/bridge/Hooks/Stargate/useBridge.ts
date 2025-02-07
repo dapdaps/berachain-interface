@@ -39,8 +39,6 @@ export default function useBridge() {
             setLoading(true);
             const signer = provider.getSigner(account);
 
-            // const contractAddress = token.isNative ? contractAddresses[fromChainId].native : contractAddresses[fromChainId].usdc
-            
             const contract = new Contract(
                 contractAddress,
                 [
@@ -124,8 +122,6 @@ export default function useBridge() {
                 { value }
             );
 
-            
-
             toast.dismiss(toastId);
             toastId = toast.loading({ title: "Pending...", tx: tx.hash });
 
@@ -138,7 +134,7 @@ export default function useBridge() {
                     title: "Bridge Successful!",
                     tx: receipt.transactionHash
                 });
-                return receipt;
+                return receipt.transactionHash;
             } else {
                 toast.fail({ title: "Bridge failed!" });
                 return null;

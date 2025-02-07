@@ -10,6 +10,7 @@ import useTokenBalance from '@/hooks/use-token-balance';
 import Loading from '@/components/loading';
 import { usePriceStore } from '@/stores/usePriceStore';
 import { balanceFormated } from '@/utils/balance';
+import { tokenPairs } from '../Hooks/Stargate/config';
 
 interface Props {
   chain: Chain;
@@ -41,7 +42,7 @@ export default function TokenAmout({
       <div className='flex items-center justify-between gap-[10px]'>
         <div
           onClick={() => {
-            if (comingSoon) return;
+            if (comingSoon || disabledInput) return;
             setTokenSelectorShow(true);
           }}
           className='border cursor-pointer flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]'
@@ -95,7 +96,7 @@ export default function TokenAmout({
 
       <TokenSelector
         show={tokenSelectorShow}
-        tokenList={allTokens[chain.id]}
+        tokenList={allTokens[chain.id].filter((token: Token) => !!tokenPairs[chain.id][token.symbol.toUpperCase()])}
         token={token}
         onTokenSelect={onTokenChange}
         onClose={() => {

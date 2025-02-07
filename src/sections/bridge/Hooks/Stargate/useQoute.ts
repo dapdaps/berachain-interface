@@ -39,7 +39,8 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
 
         const provider = new JsonRpcProvider(chain.rpcUrls.default.http[0]);
 
-        const contractAddress = token.isNative ? contractAddresses[fromChainId].native : contractAddresses[fromChainId].usdc
+        const contractAddress = contractAddresses[fromChainId][token.symbol.toUpperCase()]
+        //  token.isNative ? contractAddresses[fromChainId].native : contractAddresses[fromChainId].usdc
         setContractAddress(contractAddress)
         setReceiveAmount(null)
         setFee(null)
@@ -82,7 +83,6 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
                 ],
                 provider
             );
-
 
             const result = await contract.quoteSend(
                 [
@@ -132,7 +132,7 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
             })
 
         })()
-    }, [getQuote, toChainId, fromChainId, token, amount, account])
+    }, [toChainId, fromChainId, token, amount, account])
 
     return {
         loading,

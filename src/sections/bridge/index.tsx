@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import chains, { icons } from '@/configs/chains'
 import Card from '@/components/card';
@@ -12,6 +12,7 @@ import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
 import { useParams } from 'next/navigation';
+import History from './History';
 import useQuote from './Hooks/Stargate/useQoute';
 import useBridge from './Hooks/Stargate/useBridge';
 import Big from 'big.js';
@@ -21,6 +22,9 @@ import { formatLongText } from '@/utils/utils';
 import allTokens from '@/configs/allTokens'
 import { useDebounce } from 'ahooks';
 import useTokenBalance from '@/hooks/use-token-balance';
+import { tokenPairs } from './Hooks/Stargate/config';
+import useAddAction from '@/hooks/use-add-action';
+import { useBridgeHistory } from '@/stores/useBridgeHistory';
 
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
@@ -71,34 +75,40 @@ export default function Bridge() {
   const [amount, setAmount] = useState<string>('')
   const isMobile = useIsMobile()
   const { switchChain } = useSwitchChain();
-  const { address, chainId } = useAccount()
+  const { addAction } = useAddAction("bridge");
+  const { address, chainId } = useAccount() 
+  const { list, set }: any = useBridgeHistory()
   const { tokenBalance, isError, isLoading, update } = useTokenBalance(
-    fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromToken?.chainId ?? 0
+    fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromChain?.id ?? 0
   )
 
   const inputValue = useDebounce(amount, { wait: 500 });
 
   const { fee, receiveAmount, contractAddress, loading: quoteLoading } = useQuote({ fromChainId: fromChain.id, toChainId: toChain.id, token: fromToken, amount: inputValue })
-  const { approve, allowance } = useApprove({ token: fromToken, amount: '3', spender: contractAddress as string })
+  const { approve, allowance } = useApprove({ token: fromToken, amount: inputValue, spender: contractAddress as string })
 
   const { execute, loading: bridgeLoading } = useBridge()
 
   const isValid = useMemo(() => {
-    return tokenBalance && Number(tokenBalance) > Number(inputValue) && Number(inputValue) > 0
-
+    return tokenBalance && Number(tokenBalance) >= Number(inputValue) && Number(inputValue) > 0
   }, [inputValue, tokenBalance])
 
-  const handleBridge = async () => {
-   
+  useEffect(() => {
+    const tokenPair = tokenPairs[fromChain.id][fromToken.symbol.toUpperCase()]
+    if (tokenPair) {
+      setToToken(allTokens[toChain.id].find((token: Token) => token.symbol.toUpperCase() === tokenPair) as Token)
+    }
+  }, [fromChain, fromToken])  
 
+  const handleBridge = async () => {
     if (!fromToken.isNative) {
-      const isApproved = await allowance()
-      if (!isApproved) {
+      console.log(allowance, inputValue)
+      if (!allowance || Number(allowance) < Number(inputValue)) {
         await approve()
       }
     }
 
-    const receipt = await execute({
+    const txHash = await execute({
       fromChainId: fromChain.id,
       toChainId: toChain.id,
       token: fromToken,
@@ -110,8 +120,25 @@ export default function Bridge() {
       contractAddress: contractAddress as string
     })
 
-    if (receipt) {
+    console.log(txHash)
+    
+    if (txHash) {
+      const action = {
+        type: 'Bridge',
+        fromChainId: fromChain.id,
+        toChainId: toChain.id,
+        token: fromToken,
+        amount: inputValue,
+        template: 'Stargate',
+        add: false,
+        status: 1,
+        transactionHash: txHash,
+        extra_data: {}
+      }
+
+      addAction(action)
       setConfirmShow(true)
+      set({ list: [...list, action] })
     }
   }
 
@@ -133,7 +160,15 @@ export default function Bridge() {
             }}
             comingSoon={ComingSoon}
           />
-          <div className='h-[8px] md:h-4 flex justify-center items-center'>
+          <div className='h-[8px] md:h-4 flex justify-center items-center' onClick={() => {
+            const [_fromChain, _toChain] = [toChain, fromChain]
+            const [_fromToken, _toToken] = [toToken, fromToken] 
+            setFromChain(_fromChain)
+            setToChain(_toChain)
+            setFromToken(_fromToken)
+            setToToken(_toToken)
+
+          }}>
             <svg
               className='cursor-pointer'
               width='42'
@@ -190,7 +225,7 @@ export default function Bridge() {
 
           {
             fee && receiveAmount && (
-              <Routes route={[{
+              <Routes fromChain={fromChain} route={[{
                 receiveAmount: receiveAmount ?? '',
                 fee: fee?.nativeFee ?? ''
               }]} />
@@ -207,12 +242,19 @@ export default function Bridge() {
         </Card>
 
         <Confirm
+          fromChain={fromChain}
+          toChain={toChain}
+          fromToken={fromToken}
+          toToken={toToken}
+          amount={amount}
+          receiveAmount={receiveAmount ?? ''}
           show={confirmShow}
           onClose={() => {
             setConfirmShow(false);
           }}
         />
       </div>
+      <History />
     </>
   );
 }

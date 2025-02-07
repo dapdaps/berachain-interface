@@ -1,12 +1,20 @@
 import Card from '@/components/card';
 import Modal from '@/components/modal/index';
+import { Token } from '@/types';
+import { Chain } from 'viem';
 
 interface Props {
   show: boolean;
   onClose: () => void;
+  fromChain: Chain;
+  toChain: Chain;
+  fromToken: Token;
+  toToken: Token;
+  amount: string;
+  receiveAmount: string;
 }
 
-export default function Confirm({ show, onClose }: Props) {
+export default function Confirm({ show, onClose, fromChain, toChain, fromToken, toToken, amount, receiveAmount  }: Props) {
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
@@ -16,8 +24,8 @@ export default function Confirm({ show, onClose }: Props) {
           </div>
           <div className='flex items-center justify-between mt-[35px] text-[20px]'>
             <div className='flex-1 text-right pr-[40px]'>
-              <div>1 ETH </div>
-              <div>on Ethereum</div>
+              <div>{amount} {fromToken.symbol} </div>
+              <div>on { fromChain.name }</div>
             </div>
             <svg
               width='27'
@@ -35,8 +43,8 @@ export default function Confirm({ show, onClose }: Props) {
             </svg>
 
             <div className='flex-1 pl-[40px]'>
-              <div>1 ETH </div>
-              <div>on Ethereum</div>
+              <div>{receiveAmount} { toToken.symbol } </div>
+              <div>on {toChain.name}</div>
             </div>
           </div>
 
@@ -103,7 +111,7 @@ export default function Confirm({ show, onClose }: Props) {
               />
             </svg>
           </div>
-          <div className='text-[18px] text-center mt-[10px] md:font-CherryBomb'>
+          <div className='text-[18px] text-center mt-[10px] md:font-CherryBomb opacity-0'>
             You got a helmet！
           </div>
 
@@ -111,7 +119,7 @@ export default function Confirm({ show, onClose }: Props) {
             <div className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>
               View History
             </div>
-            <div className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>
+            <div onClick={onClose} className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>
               Back to Bera Town
             </div>
           </div>
