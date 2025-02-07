@@ -7,6 +7,7 @@ export const checkMintStatus = async (
   contractAddress: string,
   chainId: number,
   mintId: number,
+  price: number
 ): Promise<MintStatus> => {
   try {
     const rpcUrl = CHAIN_RPC_URLS[chainId];
@@ -21,14 +22,17 @@ export const checkMintStatus = async (
     const isContractLive = await contract.mintLive();
     const totalSupply = await contract.mintGroupMints(mintId);
     const maxSupply = await contract.maxSupplyPerMintGroup(mintId);
-
-
-    if (!isContractLive && (maxSupply.toNumber() !== totalSupply.toNumber())) return 'closed';
-
     const startTimestamp = await contract.presaleScheduledStartTimestamp(mintId);
     const currentTime = Math.floor(Date.now() / 1000);
-    
+
+    if (Number(price) === 0) {
+      const timestamp = await contract.scheduledMintLiveTimestamp()
+      if (currentTime < timestamp.toNumber()) return 'upcoming';
+    }
+
     if (currentTime < startTimestamp.toNumber()) return 'upcoming';
+
+    if (!isContractLive && (maxSupply.toNumber() !== totalSupply.toNumber())) return 'closed';
 
     const isActive = await contract.presaleActive(mintId);
     if (!isActive) return 'paused';
