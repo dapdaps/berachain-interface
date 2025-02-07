@@ -1,48 +1,50 @@
-import { beraB } from '@/configs/tokens/bera-bArtio';
+import { bera } from "@/configs/tokens/bera";
 
 const basic = {
-  name: 'Dolomite',
-  icon: '/images/dapps/dolomite.svg',
-  path: '/lending/dolomite',
+  name: "Dolomite",
+  icon: "/images/dapps/dolomite.svg",
+  path: "/lending/dolomite"
 };
-
-const API_HOST = 'https://subgraphapi.dolomite.io/api/public';
-const API_ID = '1301d2d1-7a9d-4be4-9e9a-061cb8611549';
-const API_VERSION = 'v0.1.3';
 
 const graphConfig = {
   blockNumberApiQuery: () => ({
-    operationName: 'getLatestBlockNumber',
+    operationName: "getLatestBlockNumber",
     variables: {},
     query:
-      'query getLatestBlockNumber {\n  _meta {\n    block {\n      number\n      __typename\n    }\n    __typename\n  }\n}\n'
+      "query getLatestBlockNumber {\n  _meta {\n    block {\n      number\n      __typename\n    }\n    __typename\n  }\n}\n"
   }),
   marketInfoApiQuery: ({ blockNumber }: { blockNumber: number }) => ({
-    operationName: 'allMarketInfos',
+    operationName: "allMarketInfos",
     variables: {
       blockNumber
     },
     query:
-      'query allMarketInfos($blockNumber: Int!) {\n  marketRiskInfos(block: {number_gte: $blockNumber}) {\n    id\n    token {\n      id\n      marketId\n      __typename\n    }\n    isBorrowingDisabled\n    marginPremium\n    liquidationRewardPremium\n    oracle\n    supplyMaxWei\n    __typename\n  }\n}\n'
+      "query allMarketInfos($blockNumber: Int!) {\n  marketRiskInfos(block: {number_gte: $blockNumber}) {\n    id\n    token {\n      id\n      marketId\n      __typename\n    }\n    isBorrowingDisabled\n    marginPremium\n    liquidationRewardPremium\n    oracle\n    supplyMaxWei\n    __typename\n  }\n}\n"
   }),
   allTokensApiQuery: ({ blockNumber }: { blockNumber: number }) => ({
-    operationName: 'allTokens',
+    operationName: "allTokens",
     variables: {
       blockNumber
     },
     query:
-      'query allTokens($blockNumber: Int!) {\n  tokens(\n    first: 1000\n    orderBy: symbol\n    orderDirection: asc\n    block: {number_gte: $blockNumber}\n  ) {\n    id\n    chainId\n    marketId\n    symbol\n    name\n    decimals\n    __typename\n  }\n}\n'
+      "query allTokens($blockNumber: Int!) {\n  tokens(\n    first: 1000\n    orderBy: symbol\n    orderDirection: asc\n    block: {number_gte: $blockNumber}\n  ) {\n    id\n    chainId\n    marketId\n    symbol\n    name\n    decimals\n    __typename\n  }\n}\n"
   }),
   allTotalParsApiQuery: ({ blockNumber }: { blockNumber: number }) => ({
-    operationName: 'allTotalPars',
+    operationName: "allTotalPars",
     variables: {
       blockNumber
     },
     query:
-      'query allTotalPars($blockNumber: Int!) {\n  totalPars(block: {number_gte: $blockNumber}) {\n    id\n    borrowPar\n    supplyPar\n    __typename\n  }\n}\n'
+      "query allTotalPars($blockNumber: Int!) {\n  totalPars(block: {number_gte: $blockNumber}) {\n    id\n    borrowPar\n    supplyPar\n    __typename\n  }\n}\n"
   }),
-  positionListApiQuery: ({ walletAddress, blockNumber }: { walletAddress: string; blockNumber: number }) => ({
-    operationName: 'borrowPositions',
+  positionListApiQuery: ({
+    walletAddress,
+    blockNumber
+  }: {
+    walletAddress: string;
+    blockNumber: number;
+  }) => ({
+    operationName: "borrowPositions",
     variables: { walletAddress: walletAddress, blockNumber: blockNumber },
     query:
       'query borrowPositions($blockNumber: Int!, $walletAddress: String!) {\n  borrowPositions(\n    block: {number_gte: $blockNumber}\n    where: {effectiveUser: $walletAddress, status_not: "CLOSED", marginAccount_: {accountNumber_not: 0}}\n    orderBy: openTimestamp\n    orderDirection: desc\n    first: 50\n  ) {\n    id\n    marginAccount {\n      id\n      user {\n        id\n        __typename\n      }\n      accountNumber\n      lastUpdatedTimestamp\n      lastUpdatedBlockNumber\n      __typename\n    }\n    openTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    closeTransaction {\n      id\n      blockNumber\n      timestamp\n      __typename\n    }\n    status\n    openTimestamp\n    closeTimestamp\n    effectiveSupplyTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveBorrowTokens {\n      id\n      symbol\n      name\n      decimals\n      marketId\n      __typename\n    }\n    effectiveUser {\n      id\n      __typename\n    }\n    amounts {\n      token {\n        id\n        symbol\n        name\n        decimals\n        marketId\n        __typename\n      }\n      expirationTimestamp\n      amountPar\n      amountWei\n      __typename\n    }\n    __typename\n  }\n}\n'
@@ -50,47 +52,42 @@ const graphConfig = {
 };
 
 const networks = {
-  80084: {
-    depositWithdrawalProxy: '0x36864DB0396B1aC36c5d6609deD5Cc7F8073d08c',
-    borrowPositionProxyV1: '0xe99A7e4556CaF7925fbac52765128e524E9Dd793',
-    marginAddress: '0x07d163861EB93e6A1f985d0caF0f505F66F11D13',
-    spenderAddress: '0x07d163861EB93e6A1f985d0caF0f505F66F11D13',
+  80094: {
+    depositWithdrawalProxy: "0xd6a31B6AeA4d26A19bF479b5032D9DDc481187e6",
+    borrowPositionProxyV1: "0x67567Fce98A44745820069C37C395426F1C30ba6",
+    marginAddress: "0x003Ca23Fd5F0ca87D01F6eC6CD14A8AE60c2b97D",
+    spenderAddress: "0x003Ca23Fd5F0ca87D01F6eC6CD14A8AE60c2b97D",
     // if your debt is $100, Liquidation Treshold = when collateral assets < $115 OR debt assets > $104.35
     // $120 / ($100 * liquidationRatio) = ~1.043 Health Factor
-    liquidationRatio: '1.25',
-    interestRatesApi: '/api.dolomite.io/tokens/80084/interest-rates',
-    pricesApi: '/api.dolomite.io/tokens/80084/prices',
-    graphApi: `${API_HOST}/${API_ID}/subgraphs/dolomite-berachain/${API_VERSION}/gn`,
+    liquidationRatio: "1.25",
+    interestRatesApi: "/api.dolomite.io/tokens/80094/interest-rates",
+    pricesApi: "/api.dolomite.io/tokens/80094/prices",
+    graphApi:
+      "https://api.goldsky.com/api/public/project_clyuw4gvq4d5801tegx0aafpu/subgraphs/dolomite-berachain-mainnet/v0.1.4/gn",
     ...graphConfig,
     approveMax: true,
-    wrappedToken: beraB['wbera'],
+    wrappedToken: bera["wbera"],
     markets: {
-      [beraB['wbera'].address]: {
-        ...beraB['wbera'],
-        underlyingToken: beraB['wbera']
+      [bera["wbera"].address]: {
+        ...bera["wbera"],
+        underlyingToken: bera["wbera"]
       },
-      [beraB['bera'].address]: {
-        ...beraB['bera'],
-        underlyingToken: beraB['bera']
+      [bera["bera"].address]: {
+        ...bera["bera"],
+        underlyingToken: bera["bera"]
       },
-      [beraB['honey'].address]: {
-        ...beraB['honey'],
-        underlyingToken: beraB['honey']
+      [bera["honey"].address]: {
+        ...bera["honey"],
+        underlyingToken: bera["honey"]
       },
-      [beraB['usdc'].address]: {
-        ...beraB['usdc'],
-        underlyingToken: beraB['usdc']
+      [bera["usdc.e"].address]: {
+        ...bera["usdc.e"],
+        underlyingToken: bera["usdc.e"]
       },
-      [beraB['unibtc'].address]: {
-        ...beraB['unibtc'],
-        underlyingToken: beraB['unibtc']
-      },
-      // reached supply cap
-      // [beraB['eth'].address]: {
-      //   ...beraB['eth'],
-      //   marketId: '0',
-      //   underlyingToken: beraB['eth'],
-      // }
+      [bera["unibtc"].address]: {
+        ...bera["unibtc"],
+        underlyingToken: bera["unibtc"]
+      }
     }
   }
 };

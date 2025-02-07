@@ -11,22 +11,22 @@ export class Kodiak {
   private v2: V2;
   private ROUTER_ABI = routerAbi;
   private FACTORY: { [key: number]: string } = {
-    80084: "0x217Cd80795EfCa5025d47023da5c03a24fA95356"
+    80094: "0xD84CBf0B02636E7f53dB9E5e45A616E05d710990"
   };
   private QUOTER: { [key: number]: string } = {
-    80084: "0x5da70228edf3c3235a52bfa3a1cc33d7c9d5497d"
+    80094: "0x644C8D6E501f7C994B74F5ceA96abe65d0BA662B"
   };
   private ROUTER_V3: { [key: number]: string } = {
-    80084: "0x496e305c03909ae382974caca4c580e1bf32afbe"
+    80094: "0xe301E48F77963D3F7DbD2a4796962Bd7f3867Fb4"
   };
   private ROUTER_V2: { [key: number]: string } = {
-    80084: "0x406846114B2A9b65a8A2Ab702C2C57d27784dBA2"
+    80094: "0xd91dd58387Ccd9B66B390ae2d7c66dBD46BC6022"
   };
   private FEES: { [key: number]: number[] } = {
-    80084: [500, 3000, 10000]
+    80094: [500, 3000, 10000]
   };
   private MID_TOKENS: { [key: number]: any } = {
-    80084: []
+    80094: []
   };
   constructor(chainId: number) {
     this.v3 = new V3({
@@ -38,7 +38,7 @@ export class Kodiak {
     });
     this.v2 = new V2({
       midTokens: this.MID_TOKENS[chainId],
-      factoryAddress: "0xb08Bfed214ba87d5d5D07B7DA573010016C44488",
+      factoryAddress: "0x5e705e184d233ff2a7cb1553793464a9d0c3028f",
       computablePairAddress: false,
       hasStable: false,
       includeStable: false,
@@ -165,7 +165,7 @@ export class Kodiak {
         options
       );
     } catch (err) {
-      // console.log('estimateGas err', err);
+      // console.log("estimateGas err", err);
     }
 
     const txn = await RouterContract.populateTransaction[method](...params, {
@@ -243,9 +243,9 @@ export class Kodiak {
         options
       );
     } catch (err) {
-      // console.log('estimateGas err', err);
+      console.log("estimateGas err", err);
     }
-
+    console.log("estimateGas", estimateGas);
     const txn = await multicallContract.populateTransaction.multicall(
       multicallParams,
       {
