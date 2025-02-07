@@ -8,7 +8,7 @@ import routerV2Abi from "../config/abi/router-v2-1";
 
 export class Kodiak {
   private v3: V3;
-  // private v2: V2;
+  private v2: V2;
   private ROUTER_ABI = routerAbi;
   private FACTORY: { [key: number]: string } = {
     80094: "0xD84CBf0B02636E7f53dB9E5e45A616E05d710990"
@@ -47,16 +47,16 @@ export class Kodiak {
       quoterAddress: this.QUOTER[chainId],
       midTokens: this.MID_TOKENS[chainId]
     });
-    // this.v2 = new V2({
-    //   midTokens: this.MID_TOKENS[chainId],
-    //   factoryAddress: "0x5e705e184d233ff2a7cb1553793464a9d0c3028f",
-    //   computablePairAddress: false,
-    //   hasStable: false,
-    //   includeStable: false,
-    //   feeIn: true,
-    //   fee: 3,
-    //   amountOutType: 2
-    // });
+    this.v2 = new V2({
+      midTokens: this.MID_TOKENS[chainId],
+      factoryAddress: "0x5e705e184d233ff2a7cb1553793464a9d0c3028f",
+      computablePairAddress: false,
+      hasStable: false,
+      includeStable: false,
+      feeIn: true,
+      fee: 3,
+      amountOutType: 2
+    });
   }
   public async quoter({
     inputCurrency,
@@ -68,28 +68,28 @@ export class Kodiak {
     const _amount = BigNumber(inputAmount)
       .multipliedBy(10 ** inputCurrency.decimals)
       .toFixed(0);
-    const [bestTradeV3] = await Promise.all([
+    const [bestTradeV3, bestTradeV2] = await Promise.all([
       this.v3.bestTrade({
         inputCurrency,
         outputCurrency,
         inputAmount: _amount
+      }),
+      this.v2.bestTrade({
+        inputCurrency,
+        outputCurrency,
+        inputAmount: _amount
       })
-      // this.v2.bestTrade({
-      //   inputCurrency,
-      //   outputCurrency,
-      //   inputAmount: _amount
-      // })
     ]);
 
     let bestTrade = bestTradeV3;
     let routerAddress = this.ROUTER_V3[inputCurrency.chainId];
     let type = "v3";
 
-    // if (BigNumber(bestTrade?.amountOut || 0).lt(bestTradeV2?.amountOut)) {
-    //   bestTrade = bestTradeV2;
-    //   routerAddress = this.ROUTER_V2[inputCurrency.chainId];
-    //   type = "v2";
-    // }
+    if (BigNumber(bestTrade?.amountOut || 0).lt(bestTradeV2?.amountOut)) {
+      bestTrade = bestTradeV2;
+      routerAddress = this.ROUTER_V2[inputCurrency.chainId];
+      type = "v2";
+    }
 
     if (!bestTrade) {
       return {
