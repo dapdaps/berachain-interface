@@ -3,8 +3,7 @@ import { useState } from 'react'
 import chains, { icons } from '@/configs/chains'
 import { formatEnglishDate } from '@/utils/date'
 
-export default function History({ pendingCount, historyCount, list, setIsOpen }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void }) {
-    const [activeTab, setActiveTab] = useState<'pending' | 'history'>('pending')
+export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
 
     const filteredList = list.filter((item: any) =>
         activeTab === 'pending' ? item.status === 1 : item.status !== 1
