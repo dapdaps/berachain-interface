@@ -34,8 +34,9 @@ export const useStatus = () => {
                 }
             }
 
-            
-            set({ list: newList })
+            if (list.length === newList.length) {
+                set({ list: newList })
+            }
         }
     }, 5000)
 

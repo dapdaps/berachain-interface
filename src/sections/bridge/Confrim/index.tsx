@@ -12,9 +12,10 @@ interface Props {
   toToken: Token;
   amount: string;
   receiveAmount: string;
+  showHistory: () => void;
 }
 
-export default function Confirm({ show, onClose, fromChain, toChain, fromToken, toToken, amount, receiveAmount  }: Props) {
+export default function Confirm({ show, onClose, fromChain, toChain, fromToken, toToken, amount, receiveAmount, showHistory }: Props) {
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
@@ -116,7 +117,10 @@ export default function Confirm({ show, onClose, fromChain, toChain, fromToken, 
           </div>
 
           <div className='flex gap-[16px] mt-[20px] md:flex-col md:h-[106px]'>
-            <div className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>
+            <div onClick={() => {
+              onClose()
+              showHistory()
+            }} className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>
               View History
             </div>
             <div onClick={onClose} className='flex text-[18px] h-[60px] items-center justify-center border border-[#373A53] flex-1 rounded-[12px] bg-white cursor-pointer'>

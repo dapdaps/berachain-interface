@@ -73,6 +73,7 @@ export default function Bridge() {
   const [toChain, setToChain] = useState<Chain>(chains[80094])
   const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
   const [amount, setAmount] = useState<string>('')
+  const [historyShow, setHistoryShow] = useState(false)
   const isMobile = useIsMobile()
   const { switchChain } = useSwitchChain();
   const { addAction } = useAddAction("bridge");
@@ -129,7 +130,6 @@ export default function Bridge() {
         fromChainId: fromChain.id,
         toChainId: toChain.id,
         token: fromToken,
-        toToken: toToken,
         amount: inputValue,
         template: 'Stargate',
         add: false,
@@ -139,9 +139,13 @@ export default function Bridge() {
         extra_data: {}
       }
 
+      set({ list: [...list, {
+        ...action,
+        toToken: toToken,
+      }] })
+
       addAction(action)
       setConfirmShow(true)
-      set({ list: [...list, action] })
     }
   }
 
@@ -255,9 +259,12 @@ export default function Bridge() {
           onClose={() => {
             setConfirmShow(false);
           }}
+          showHistory={() => {
+            
+          }}
         />
       </div>
-      <History />
+      <History isOpen={historyShow} setIsOpen={setHistoryShow} />
     </>
   );
 }
