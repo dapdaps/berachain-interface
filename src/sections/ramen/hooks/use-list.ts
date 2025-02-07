@@ -12,8 +12,8 @@ export default function useList() {
     try {
       setFeaturedLoading(true);
       const res = await asyncFetch("/api.ramen/v1/featured-projects");
-
-      setFeaturedList(res.data.projects || []);
+      const list = res.data.projects || [];
+      setFeaturedList(list.filter((item: any) => item.slug === "yeet"));
     } catch (err) {
       setFeaturedLoading(false);
     }

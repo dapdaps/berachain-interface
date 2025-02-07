@@ -7,6 +7,8 @@ export const TOKENS: any = {
     claimTime: "2025-02-09T20:00:00Z"
   },
   yeet: {
-    claimTime: "2025-02-10T14:00:00Z"
+    claimTime: "2025-02-10T14:00:00Z",
+    totalSupply: 1000000000,
+    auctionedSupply: 80000000
   }
 };

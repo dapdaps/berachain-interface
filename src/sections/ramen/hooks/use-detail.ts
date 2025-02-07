@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { asyncFetch } from "@/utils/http";
-import { TOKENS } from "../config";
 
 export default function useDetail() {
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState<any>();
   const [price, setPrice] = useState(0);
+  const [minBidPrice, setMinBidPrice] = useState(0);
+  const [pricePerToken, setPricePerToken] = useState(0);
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
 
@@ -23,8 +24,7 @@ export default function useDetail() {
 
   const queryPrice = useCallback(async () => {
     if (!slug) return;
-    const token = TOKENS[slug];
-    if (!token.isFixed) return;
+
     try {
       const priceIdRes = await asyncFetch(
         `/api.ramen/v1/project/${slug}/launch`
@@ -32,7 +32,9 @@ export default function useDetail() {
       const priceRes = await asyncFetch(
         `/api.ramen/v1/launch/${priceIdRes.data.liquidity_raise_id}`
       );
-      setPrice(priceRes.data.detail.ticket_price);
+      setPrice(priceRes.data.detail?.ticket_price);
+      setPricePerToken(priceRes.data.detail?.bera_price_per_token);
+      setMinBidPrice(priceRes.data.detail?.min_bid_price);
     } catch (err) {
       setPrice(0);
     }
@@ -47,6 +49,8 @@ export default function useDetail() {
   return {
     loading,
     detail,
-    price
+    price,
+    pricePerToken,
+    minBidPrice
   };
 }
