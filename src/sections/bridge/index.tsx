@@ -106,6 +106,7 @@ export default function Bridge() {
     console.log(fee)
 
     if (!fromToken.isNative) {
+      console.log('allowance', allowance, inputValue, Number(allowance) < Number(inputValue))
       if (!allowance || Number(allowance) < Number(inputValue)) {
         await approve()
       }
