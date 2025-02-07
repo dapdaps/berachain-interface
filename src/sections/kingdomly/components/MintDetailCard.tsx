@@ -52,6 +52,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   const handleTabChange = (value: string) => {
     setCurrentGroupId(Number(value));
     setQuantity(1);
+    setUpdater(updater + 1);
   };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +136,8 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
             const status = await checkMintStatus(
               item.contract_address,
               item.chain.chain_id,
-              group.id
+              group.id,
+              group.price
             );
             return {
               ...group,
@@ -159,7 +161,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   ]);
 
   const renderMintGroupTag = (tab: any) => {
-    if (!tab.status || ["closed", "paused"].includes(tab.status)) return null;
+    if (!tab.status || ["closed", "paused", "upcoming"].includes(tab.status)) return null;
 
     const statusMap: {
       [key: string]: string;
@@ -376,6 +378,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                 timestamp={item.mint_live_timestamp}
                 onClick={onMint}
                 loading={isMinting}
+                onCountdownEnd={() => setUpdater(updater + 1)}
               />
             )}
           </div>

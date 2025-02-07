@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/modal";
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import Range from "@/components/range";
@@ -12,14 +12,14 @@ import Big from "big.js";
 import useInfrared from "@/sections/staking/hooks/use-infrared";
 import IncreaseLiquidityModal from "@/sections/pools/increase-liquidity-modal";
 import UserInfo from "./user-info";
-import { StakePrompt } from '@/sections/staking/Bridge/Detail/StakePrompt';
-import BaseButton from '@/sections/pools/components/button/base-button';
-import WithdrawQueueDrawer from '@/sections/staking/Bridge/Detail/Berps/Drawer';
-import BerpsDeposit from '@/sections/staking/Bridge/Detail/Berps/Deposit';
+import { StakePrompt } from "@/sections/staking/Bridge/Detail/StakePrompt";
+import BaseButton from "@/sections/pools/components/button/base-button";
+import WithdrawQueueDrawer from "@/sections/staking/Bridge/Detail/Berps/Drawer";
+import BerpsDeposit from "@/sections/staking/Bridge/Detail/Berps/Deposit";
 
 const BerpsTypeName = {
-  Stake: 'Deposit',
-  Unstake: 'Withdraw',
+  Stake: "Deposit",
+  Unstake: "Withdraw"
 };
 
 export default function HandleModal({
@@ -29,11 +29,15 @@ export default function HandleModal({
   type,
   onSuccess
 }: any) {
-
   const pool = data?.initialData?.pool;
-  const isBERPS = data?.name === 'Berps';
-  const isInfraredBerps = data?.name === 'Infrared' && data?.initialData?.pool?.protocol === 'BERPS' && data?.initialData?.pool?.name === 'BHONEY';
-  const vaultAddress = isBERPS ? data?.withdrawToken?.address : data.vaultAddress;
+  const isBERPS = data?.name === "Berps";
+  const isInfraredBerps =
+    data?.name === "Infrared" &&
+    data?.initialData?.pool?.protocol === "BERPS" &&
+    data?.initialData?.pool?.name === "BHONEY";
+  const vaultAddress = isBERPS
+    ? data?.withdrawToken?.address
+    : data.vaultAddress;
   const approveSpender = type ? "" : vaultAddress;
   const symbol = useMemo(() => {
     if (isBERPS) {
@@ -58,6 +62,7 @@ export default function HandleModal({
     vaultAddress: vaultAddress,
     tokens: data.tokens,
     type,
+    data,
     onSuccess() {
       onClose();
       onSuccess();
@@ -98,11 +103,14 @@ export default function HandleModal({
       <Modal open={show} onClose={onClose} closeIconClassName="md:hidden">
         <div className="bg-[#FFFDEB] px-[15px] py-[20px] rounded-t-[20px]">
           <div className="text-[18px] font-bold">
-            {
-              type ?
-                isBERPS ? BerpsTypeName['Unstake'] : "Unstake" :
-                isBERPS ? BerpsTypeName['Stake'] : "Stake"
-            } {symbol}
+            {type
+              ? isBERPS
+                ? BerpsTypeName["Unstake"]
+                : "Unstake"
+              : isBERPS
+              ? BerpsTypeName["Stake"]
+              : "Stake"}{" "}
+            {symbol}
           </div>
           <UserInfo data={data} className="justify-between mt-[16px]" />
           <Input
@@ -154,18 +162,18 @@ export default function HandleModal({
               }}
             />
           </div>
-          {
-            isBERPS && !type && (
-              <StakePrompt className="mt-[20px]" />
-            )
-          }
+          {isBERPS && !type && <StakePrompt className="mt-[20px]" />}
           <div className="mt-[30px]">
             <Button
-              text={(
-                type ?
-                  isBERPS ? BerpsTypeName['Unstake'] : "Unstake" :
-                  isBERPS ? BerpsTypeName['Stake'] : "Stake"
-              )}
+              text={
+                type
+                  ? isBERPS
+                    ? BerpsTypeName["Unstake"]
+                    : "Unstake"
+                  : isBERPS
+                  ? BerpsTypeName["Stake"]
+                  : "Stake"
+              }
               errorTips=""
               loading={loading}
               onClick={onHandle}
@@ -174,24 +182,23 @@ export default function HandleModal({
               spender={approveSpender}
               disabled={type && Big(balance || 0).lte(0) && isBERPS}
             />
-            {
-              isBERPS && !!type && (
-                <BaseButton
-                  onClick={() => {
-                    setWithdrawalQueueVisible(true);
-                  }}
-                >
-                  Withdrawal Queue
-                </BaseButton>
-              )
-            }
+            {isBERPS && !!type && (
+              <BaseButton
+                onClick={() => {
+                  setWithdrawalQueueVisible(true);
+                }}
+              >
+                Withdrawal Queue
+              </BaseButton>
+            )}
           </div>
           {!!balance && Big(balance).eq(0) && !isBERPS && (
             <div className="mt-[16px] text-center text-[#FD4C67] text-[14px] font-medium">
               You don’t have any {pool?.name || data.tokens[0]} yet
             </div>
           )}
-          {((["BEX"].includes(pool?.protocol) && type === 0) || isInfraredBerps) && (
+          {((["BEX"].includes(pool?.protocol) && type === 0) ||
+            isInfraredBerps) && (
             <div
               onClick={() => {
                 if (isInfraredBerps) {

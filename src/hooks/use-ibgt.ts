@@ -1,56 +1,58 @@
-import { ethers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
-import useCustomAccount from './use-account';
-import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
-import useToast from '@/hooks/use-toast';
-import { useMultiState } from '@/hooks/use-multi-state';
-import Big from 'big.js';
-import { useRouter } from 'next/navigation';
-import useClickTracking from '@/hooks/use-click-tracking';
+import { ethers } from "ethers";
+import { useEffect, useMemo, useState } from "react";
+import useCustomAccount from "./use-account";
+import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
+import useToast from "@/hooks/use-toast";
+import { useMultiState } from "@/hooks/use-multi-state";
+import Big from "big.js";
+import { useRouter } from "next/navigation";
+import useClickTracking from "@/hooks/use-click-tracking";
 import useAddAction from "@/hooks/use-add-action";
-import useLpToAmount from '@/hooks/use-lp-to-amount';
+import useLpToAmount from "@/hooks/use-lp-to-amount";
 
-export const IBGT_ADDRESS = "0x46efc86f0d7455f135cc9df501673739d513e982"
+export const IBGT_ADDRESS = "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b";
 
-export const ABI = [{
-  "inputs": [
-    {
-      "internalType": "address",
-      "name": "account",
-      "type": "address"
-    }
-  ],
-  "name": "balanceOf",
-  "outputs": [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "totalSupply",
-  "outputs": [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-}]
+export const ABI = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address"
+      }
+    ],
+    name: "balanceOf",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "totalSupply",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  }
+];
 
 export type DataType = {
   count: number | string;
   total: number | string;
   staked: number | string;
-}
+};
 export function useIBGT(props: any) {
-
   const router = useRouter();
   const { handleReport } = useClickTracking();
   const { provider, account } = useCustomAccount();
@@ -60,36 +62,41 @@ export function useIBGT(props: any) {
   const [data, setData] = useState<DataType>({
     count: 0,
     total: 0,
-    staked: 0,
-  })
+    staked: 0
+  });
 
   const queryData = async function () {
-    const contract = new ethers.Contract(IBGT_ADDRESS, ABI, provider?.getSigner())
+    const contract = new ethers.Contract(
+      IBGT_ADDRESS,
+      ABI,
+      provider?.getSigner()
+    );
     try {
-      const balanceOfResult = await contract?.balanceOf(account)
-      const totalSupplyResult = await contract?.totalSupply()
-      const stakedBalanceOfResult = await contract?.balanceOf("0x4B95296B937AF613D65206Ba7C203CB9A1263003")
+      const balanceOfResult = await contract?.balanceOf(account);
+      const totalSupplyResult = await contract?.totalSupply();
+      const stakedBalanceOfResult = await contract?.balanceOf(
+        "0x4B95296B937AF613D65206Ba7C203CB9A1263003"
+      );
       setData((prev: DataType) => {
         return {
           ...prev,
           count: ethers.utils.formatUnits(balanceOfResult),
           total: ethers.utils.formatUnits(totalSupplyResult),
           staked: ethers.utils.formatUnits(stakedBalanceOfResult)
-        }
-      })
+        };
+      });
     } catch (error) {
-      console.log('===error', error)
+      console.log("===error", error);
     }
-
-  }
+  };
   const toast = useToast();
-  const tabs = ["Stake", "Unstake"]
-  const [tIndex, setTIndex] = useState(0)
+  const tabs = ["Stake", "Unstake"];
+  const [tIndex, setTIndex] = useState(0);
   const [state, updateState] = useMultiState({
     balances: [],
-    lpBalance: '',
-    inAmount: '',
-    lpAmount: '',
+    lpBalance: "",
+    inAmount: "",
+    lpAmount: "",
     isLoading: false,
     isError: false,
     loadingMsg: "",
@@ -110,28 +117,33 @@ export function useIBGT(props: any) {
     updater
   } = state;
 
-  const { loading, dataList, fullDataList } = useInfraredList(updater)
-  const tokenData = useMemo(() => fullDataList?.find((d: any) => d.id === "iBGT-HONEY"), [fullDataList])
+  const { loading, dataList, fullDataList } = useInfraredList(updater);
+  const tokenData = useMemo(
+    () => fullDataList?.find((d: any) => d.id === "iBGT-HONEY"),
+    [fullDataList]
+  );
   const { tokens, decimals, id, LP_ADDRESS } = tokenData ?? {};
   const symbol = id;
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
   const balanceLp =
     !lpAmount || !lpBalance
-      ? '-'
+      ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
-  const {
-    handleGetAmount
-  } = useLpToAmount(LP_ADDRESS)
+  const { handleGetAmount } = useLpToAmount(LP_ADDRESS);
 
   const updateLPBalance = () => {
-    const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider?.getSigner());
+    const abi = ["function balanceOf(address) view returns (uint256)"];
+    const contract = new ethers.Contract(
+      tokenData?.vaultAddress,
+      abi,
+      provider?.getSigner()
+    );
     contract.balanceOf(sender).then((balanceBig: any) => {
       const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
       updateState({
@@ -140,27 +152,38 @@ export function useIBGT(props: any) {
     });
   };
   const updateBalance = () => {
-    const abi = ['function balanceOf(address) view returns (uint256)'];
-    const contract = new ethers.Contract(LP_ADDRESS, abi, provider?.getSigner());
+    const abi = ["function balanceOf(address) view returns (uint256)"];
+    const contract = new ethers.Contract(
+      LP_ADDRESS,
+      abi,
+      provider?.getSigner()
+    );
     contract
       .balanceOf(sender)
       .then((balanceBig: any) => {
-        const adjustedBalance = Big(ethers.utils.formatUnits(balanceBig)).toFixed();
+        const adjustedBalance = Big(
+          ethers.utils.formatUnits(balanceBig)
+        ).toFixed();
         sourceBalances[symbol] = adjustedBalance;
         updateState({
           balances: sourceBalances
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         setTimeout(() => {
           updateBalance();
         }, 1500);
       });
   };
   const checkApproval = (amount: string) => {
-    const wei: any = ethers.utils.parseUnits(Big(amount).toFixed(decimals), decimals);
-    const abi = ['function allowance(address, address) external view returns (uint256)'];
+    const wei: any = ethers.utils.parseUnits(
+      Big(amount).toFixed(decimals),
+      decimals
+    );
+    const abi = [
+      "function allowance(address, address) external view returns (uint256)"
+    ];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     updateState({
       isTokenApproved: false
@@ -209,7 +232,7 @@ export function useIBGT(props: any) {
       loadingMsg: `Approving ${symbol}...`
     });
     const wei = ethers.utils.parseUnits(amount, decimals);
-    const abi = ['function approve(address, uint) public'];
+    const abi = ["function approve(address, uint) public"];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
 
     contract
@@ -217,16 +240,16 @@ export function useIBGT(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const payload = { isTokenApproved: true, isTokenApproving: false };
-        updateState({ ...payload, isLoading: false, loadingMsg: '' });
+        updateState({ ...payload, isLoading: false, loadingMsg: "" });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successful!',
+          title: "Approve Successful!",
           tx: receipt.transactionHash,
           chainId: props.chainId
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         updateState({
           isError: true,
           isLoading: false,
@@ -235,8 +258,10 @@ export function useIBGT(props: any) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Approve Failed!',
-          text: error?.message?.includes('user rejected transaction') ? 'User rejected transaction' : null
+          title: "Approve Failed!",
+          text: error?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
+            : null
         });
       });
   };
@@ -248,37 +273,44 @@ export function useIBGT(props: any) {
     updateState({
       isLoading: true,
       isError: false,
-      loadingMsg: 'Depositing...'
+      loadingMsg: "Depositing..."
     });
-    const wei = ethers.utils.parseUnits(Big(inAmount).toFixed(decimals), decimals);
+    const wei = ethers.utils.parseUnits(
+      Big(inAmount).toFixed(decimals),
+      decimals
+    );
     const abi = [
       {
         constant: false,
         inputs: [
           {
-            name: 'amount',
-            type: 'uint256'
+            name: "amount",
+            type: "uint256"
           }
         ],
-        name: 'stake',
+        name: "stake",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
+        stateMutability: "nonpayable",
+        type: "function"
       }
     ];
-    const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider.getSigner());
+    const contract = new ethers.Contract(
+      tokenData?.vaultAddress,
+      abi,
+      provider.getSigner()
+    );
     const createTx = (gas: any) => {
       contract
         .stake(wei, { gasLimit: gas })
         .then((tx: any) => tx.wait())
         .then((receipt: any) => {
           const { status, transactionHash } = receipt;
-          const [amount0, amount1] = handleGetAmount(inAmount)
+          const [amount0, amount1] = handleGetAmount(inAmount);
           addAction?.({
-            type: 'Staking',
-            action: 'Staking',
+            type: "Staking",
+            action: "Staking",
             token: {
-              symbol: tokens.join('-')
+              symbol: tokens.join("-")
             },
             amount: inAmount,
             template: "Infrared",
@@ -286,23 +318,23 @@ export function useIBGT(props: any) {
             add: 1,
             transactionHash,
             chain_id: props.chainId,
-            sub_type: "Stake",
+            sub_type: "Stake"
           });
           updateState({
-            isLoading: false,
+            isLoading: false
             // isPostTx: true
           });
           setTimeout(() => {
-            onSuccess?.()
-          }, 3000)
+            onSuccess?.();
+          }, 3000);
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Deposit successful!'
+            title: "Deposit successful!"
           });
         })
         .catch((error: Error) => {
-          console.log('error: ', error);
+          console.log("error: ", error);
           updateState({
             isError: true,
             isLoading: false,
@@ -310,18 +342,21 @@ export function useIBGT(props: any) {
           });
           toast?.dismiss(toastId);
           toast?.fail({
-            title: 'Deposit Failed!',
-            text: error?.message?.includes('user rejected transaction')
-              ? 'User rejected transaction'
-              : (error?.message ?? '')
+            title: "Deposit Failed!",
+            text: error?.message?.includes("user rejected transaction")
+              ? "User rejected transaction"
+              : error?.message ?? ""
           });
         });
     };
-    contract.estimateGas.stake(wei).then((res: any) => {
-      createTx(res);
-    }).catch((err: any) => {
-      createTx(4000000);
-    });
+    contract.estimateGas
+      .stake(wei)
+      .then((res: any) => {
+        createTx(res);
+      })
+      .catch((err: any) => {
+        createTx(4000000);
+      });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -330,7 +365,7 @@ export function useIBGT(props: any) {
     updateState({
       isLoading: true,
       isError: false,
-      loadingMsg: 'Withdrawing...'
+      loadingMsg: "Withdrawing..."
     });
 
     const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
@@ -339,33 +374,37 @@ export function useIBGT(props: any) {
         constant: false,
         inputs: [
           {
-            name: '_shareAmt',
-            type: 'uint256'
+            name: "_shareAmt",
+            type: "uint256"
           }
         ],
-        name: 'withdraw',
+        name: "withdraw",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
+        stateMutability: "nonpayable",
+        type: "function"
       }
     ];
 
-    const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider.getSigner());
+    const contract = new ethers.Contract(
+      tokenData?.vaultAddress,
+      abi,
+      provider.getSigner()
+    );
     const createTx = (gas: any) => {
       contract
         .withdraw(lpWeiAmount, { gasLimit: gas })
         .then((tx: any) => tx.wait())
         .then((receipt: any) => {
           updateState({
-            isLoading: false,
+            isLoading: false
           });
           const { status, transactionHash } = receipt;
-          const [amount0, amount1] = handleGetAmount(lpAmount)
+          const [amount0, amount1] = handleGetAmount(lpAmount);
           addAction?.({
-            type: 'Staking',
-            action: 'UnStake',
+            type: "Staking",
+            action: "UnStake",
             token: {
-              symbol: tokens.join('-')
+              symbol: tokens.join("-")
             },
             symbol: tokens.join("-"),
             amount: lpAmount,
@@ -374,20 +413,20 @@ export function useIBGT(props: any) {
             add: 0,
             transactionHash,
             chain_id: props.chainId,
-            sub_type: "Unstake",
+            sub_type: "Unstake"
           });
 
           setTimeout(() => {
-            onSuccess?.()
-          }, 3000)
+            onSuccess?.();
+          }, 3000);
 
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Withdraw Successful!'
+            title: "Withdraw Successful!"
           });
         })
         .catch((error: Error) => {
-          console.log('===error', error)
+          console.log("===error", error);
           updateState({
             isError: true,
             isLoading: false,
@@ -395,38 +434,44 @@ export function useIBGT(props: any) {
           });
           toast?.dismiss(toastId);
           toast?.fail({
-            title: 'Withdraw Failed!',
-            text: error?.message?.includes('user rejected transaction')
-              ? 'User rejected transaction'
-              : (error?.message ?? '')
+            title: "Withdraw Failed!",
+            text: error?.message?.includes("user rejected transaction")
+              ? "User rejected transaction"
+              : error?.message ?? ""
           });
         });
     };
-    contract
-      .estimateGas
-      .withdraw(lpWeiAmount).then((res: any) => {
+    contract.estimateGas
+      .withdraw(lpWeiAmount)
+      .then((res: any) => {
         createTx(res);
-      }).catch((err: any) => {
+      })
+      .catch((err: any) => {
         createTx(4000000);
       });
   };
 
   const handleClaim = function () {
-
     const toastId = toast?.loading({
       title: `Claim...`
     });
 
-    const abi = [{
-      "constant": false,
-      "inputs": [],
-      "name": "getReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }]
-    console.log('===tokenData', tokenData)
-    const contract = new ethers.Contract(tokenData?.vaultAddress, abi, provider.getSigner())
+    const abi = [
+      {
+        constant: false,
+        inputs: [],
+        name: "getReward",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function"
+      }
+    ];
+    console.log("===tokenData", tokenData);
+    const contract = new ethers.Contract(
+      tokenData?.vaultAddress,
+      abi,
+      provider.getSigner()
+    );
     const createTx = (gas: any) => {
       contract
         .getReward({ gasLimit: gas })
@@ -434,8 +479,8 @@ export function useIBGT(props: any) {
         .then((receipt: any) => {
           const { status, transactionHash } = receipt;
           addAction?.({
-            type: 'Staking',
-            action: 'Claim',
+            type: "Staking",
+            action: "Claim",
             token: {
               symbol: tokenData?.rewardSymbol
             },
@@ -448,43 +493,44 @@ export function useIBGT(props: any) {
           });
           toast?.dismiss(toastId);
           toast?.success({
-            title: 'Claim Successful!'
+            title: "Claim Successful!"
           });
           setTimeout(() => {
-            onSuccess?.()
-          }, 3000)
+            onSuccess?.();
+          }, 3000);
         })
         .catch((error: Error) => {
-          console.log('error: ', error);
+          console.log("error: ", error);
           toast?.dismiss(toastId);
           toast?.fail({
-            title: 'Claim Failed!',
-            text: error?.message?.includes('user rejected transaction')
-              ? 'User rejected transaction'
-              : (error?.message ?? '')
+            title: "Claim Failed!",
+            text: error?.message?.includes("user rejected transaction")
+              ? "User rejected transaction"
+              : error?.message ?? ""
           });
         });
     };
-    contract
-      .estimateGas
-      .getReward().then((res: any) => {
-      createTx(res);
-    }).catch((err: any) => {
-      createTx(4000000);
-    });
-  }
+    contract.estimateGas
+      .getReward()
+      .then((res: any) => {
+        createTx(res);
+      })
+      .catch((err: any) => {
+        createTx(4000000);
+      });
+  };
   const onSuccess = function () {
     updateState({
       updater: Date.now(),
       isTokenApproved: true,
       isTokenApproving: false
-    })
-    tIndex === 0 ? handleTokenChange("") : handleLPChange("")
-  }
+    });
+    tIndex === 0 ? handleTokenChange("") : handleLPChange("");
+  };
 
   const handleMintIBGT = () => {
     router.push("/dex/bex?lp=");
-    handleReport('1010-005-001');
+    handleReport("1010-005-001");
   };
 
   useEffect(() => {
@@ -494,8 +540,8 @@ export function useIBGT(props: any) {
   }, [sender, tokenData?.vaultAddress, updater]);
 
   useEffect(() => {
-    provider && account && queryData()
-  }, [provider, account, updater])
+    provider && account && queryData();
+  }, [provider, account, updater]);
 
   return {
     data,
@@ -524,8 +570,8 @@ export function useIBGT(props: any) {
     handleClaim,
     onSuccess,
     symbol,
-    handleMintIBGT,
-  }
+    handleMintIBGT
+  };
 }
 
 interface Props {

@@ -10,13 +10,15 @@ interface MintButtonProps {
   timestamp?: number;
   onClick?: () => void;
   loading?: boolean;
+  onCountdownEnd?: () => void;
 }
 
 const Button: FC<MintButtonProps> = ({ 
   status, 
   timestamp,
   onClick,
-  loading
+  loading,
+  onCountdownEnd
 }) => {
  
     const { address } = useAccount();
@@ -24,7 +26,8 @@ const Button: FC<MintButtonProps> = ({
 
   const countdown = useCountDown({
     targetTimestamp: timestamp || 0,
-    format: ' DDd HHh mmm sss'
+    format: ' DDd HHh mmm sss',
+    onEnd: onCountdownEnd
   });
 
   if (!address) {
