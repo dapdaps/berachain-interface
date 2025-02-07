@@ -85,7 +85,7 @@ export default function Bridge() {
   const inputValue = useDebounce(amount, { wait: 500 });
 
   const { fee, receiveAmount, contractAddress, loading: quoteLoading } = useQuote({ fromChainId: fromChain.id, toChainId: toChain.id, token: fromToken, amount: inputValue })
-  const { approve, allowance } = useApprove({ token: fromToken, amount: inputValue, spender: contractAddress as string })
+  const { approve, allowance, approving: approveLoading } = useApprove({ token: fromToken, amount: inputValue, spender: contractAddress as string })
 
   const { execute, loading: bridgeLoading } = useBridge()
 
@@ -101,8 +101,9 @@ export default function Bridge() {
   }, [fromChain, fromToken])  
 
   const handleBridge = async () => {
+    console.log(fee)
+
     if (!fromToken.isNative) {
-      console.log(allowance, inputValue)
       if (!allowance || Number(allowance) < Number(inputValue)) {
         await approve()
       }
@@ -234,7 +235,7 @@ export default function Bridge() {
 
           <SubmitBtn
             fromChainId={fromChain.id}
-            isLoading={quoteLoading || bridgeLoading}
+            isLoading={quoteLoading || bridgeLoading || approveLoading}
             disabled={!isValid}
             onClick={() => {
               handleBridge()

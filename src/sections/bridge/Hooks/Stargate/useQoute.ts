@@ -97,6 +97,8 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
                 payInLzToken
             );
 
+            console.log('Big(result.nativeFee.toString()).div(10 ** 18).toString():', Big(result.nativeFee.toString()).div(10 ** 18).toString())
+
             setFee({
                 nativeFee: Big(result.nativeFee.toString()).div(10 ** 18).toString(),
                 lzTokenFee: Big(result.lzTokenFee.toString()).div(10 ** 18).toString()
@@ -125,7 +127,7 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
                 dstEid: chainIds[toChainId],
                 to: utils.hexZeroPad(account, 32),
                 amountLD: amountLD.toString(),
-                minAmountLD: amountLD.mul(1 - 0.005).toString(),
+                minAmountLD: amountLD.mul(1 - 0.005).toFixed(0, 0),
                 extraOptions: '0x',
                 composeMsg: '0x',
                 oftCmd: '0x'

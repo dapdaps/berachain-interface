@@ -18,8 +18,8 @@ export default function Confirm({ show, onClose, fromChain, toChain, fromToken, 
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
-        <div className='lg:w-[520px] md:w-full'>
-          <div className='text-center text-[26px] mt-[30px] md:font-CherryBomb'>
+        <div className='lg:w-[520px] md:w-full font-CherryBomb'>
+          <div className='text-center text-[26px] mt-[30px]'>
             Bridged Successful!
           </div>
           <div className='flex items-center justify-between mt-[35px] text-[20px]'>
@@ -48,7 +48,7 @@ export default function Confirm({ show, onClose, fromChain, toChain, fromToken, 
             </div>
           </div>
 
-          <div className='flex justify-center mt-[30px]'>
+          <div className='flex justify-center mt-[30px] opacity-0'>
             <svg
               width='107'
               height='84'

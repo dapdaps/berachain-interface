@@ -18,9 +18,10 @@ export const useStatus = () => {
                 try {
                     const response = await fetch(`https://api-testnet.layerzero-scan.com/tx/${tx.transactionHash}`)
                     const resJson = await response.json()
-                    const data = resJson.message[0]
 
-                    if (data.dstTxHash && data.status === 'DELIVERED') {
+                    const data = resJson.message?.length > 0 ? resJson.message[0] : null
+
+                    if (data && data.dstTxHash && data.status === 'DELIVERED') {
                         const index = newList.findIndex((item: any) => item.transactionHash === tx.transactionHash)
                         if (index !== -1) {
                             newList[index] = {

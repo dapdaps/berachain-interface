@@ -4,7 +4,7 @@ export default function History() {
     const { pendingCount, historyCount } = useStatus()
 
     return (
-        <div className="fixed bottom-12 right-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]">
+        <div className="fixed bottom-[60px] right-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]">
             <div className="rounded-2xl p-4">
                 <h2 className="text-black text-[16px] font-[600] text-xl mb-3">My transactions</h2>
                 <div className="flex gap-3">

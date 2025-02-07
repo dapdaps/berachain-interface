@@ -5,8 +5,6 @@ import { balanceFormated } from "@/utils/balance";
 export default function Route({ name, fee, receiveAmount, fromChain }: any) {
     const prices: any = usePriceStore(store => store.price);
 
-    console.log(prices, fromChain)
-
     return <div className="flex items-center justify-between py-[10px]">
         <div className="flex items-center gap-[10px]">
             <img className="w-[30px] h-[30px]" src="https://s3.amazonaws.com/dapdap.prod/images/stargate.png"/>

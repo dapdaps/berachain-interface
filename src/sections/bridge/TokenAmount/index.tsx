@@ -90,8 +90,10 @@ export default function TokenAmout({
       </div>
 
       <div className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]">
-        <div className="flex items-center">balance: {isLoading ? <Loading size={12}/> : balanceFormated(tokenBalance, 4)}</div>
-        <div>${(token && tokenBalance) ?  balanceFormated(prices[token.symbol.toUpperCase()] * (amount as any), 4) : '~'}</div>
+        <div className={"flex items-center cursor-pointer"} onClick={() => {
+          onAmountChange?.(tokenBalance)
+        }}>balance: {isLoading ? <Loading size={12}/> : <span className={(disabledInput ? '' : ' underline')}>{ balanceFormated(tokenBalance, 4) }</span>}</div>
+        <div >${(token && tokenBalance) ?  balanceFormated(prices[token.symbol.toUpperCase()] * (amount as any), 4) : '~'}</div>
       </div>
 
       <TokenSelector
