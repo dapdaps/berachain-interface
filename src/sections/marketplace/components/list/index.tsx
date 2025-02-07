@@ -70,7 +70,7 @@ export default function List({
             {meta.map((item: any, i: number) => {
               return (
                 <div
-                  key={item.key + i}
+                  key={item.key}
                   style={{
                     width: item.width
                   }}
@@ -122,7 +122,7 @@ export default function List({
                       ? itemContainerClassName
                       : "tr rounded-md"
                   )}
-                  key={item.id + index}
+                  key={index}
                   onClick={() => {
                     onItemClick(item);
                   }}
@@ -130,7 +130,7 @@ export default function List({
                   {meta.map((metaItem, i) => {
                     return (
                       <div
-                        key={item.key + i}
+                        key={i}
                         className={clsx(
                           "text-left h-[58px] pl-[10px] flex items-center td",
                           itemClassName

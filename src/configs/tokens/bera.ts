@@ -24,7 +24,7 @@ export const bera: { [key: string]: Token } = {
   },
   weth: {
     chainId: CHAIN_ID,
-    address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
+    address: "0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
     decimals: 18,
     symbol: "WETH",
     name: "Wrapped Ether",
@@ -41,7 +41,7 @@ export const bera: { [key: string]: Token } = {
     color: "#2775CA"
   },
   honey: {
-    address: "0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce",
+    address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce",
     chainId: CHAIN_ID,
     symbol: "HONEY",
     decimals: 18,

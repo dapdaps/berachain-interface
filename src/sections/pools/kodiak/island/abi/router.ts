@@ -214,5 +214,152 @@ export default [
     ],
     stateMutability: "nonpayable",
     type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IKodiakIsland",
+        name: "island",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "totalAmountIn",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "amountSharesMin",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "maxStakingSlippageBPS",
+        type: "uint256"
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "amountIn",
+            type: "uint256"
+          },
+          {
+            internalType: "uint256",
+            name: "minAmountOut",
+            type: "uint256"
+          },
+          {
+            internalType: "bool",
+            name: "zeroForOne",
+            type: "bool"
+          },
+          {
+            internalType: "bytes",
+            name: "routeData",
+            type: "bytes"
+          }
+        ],
+        internalType: "struct RouterSwapParams",
+        name: "swapData",
+        type: "tuple"
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address"
+      }
+    ],
+    name: "addLiquiditySingle",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "amount0",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "amount1",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "mintAmount",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IKodiakIsland",
+        name: "island",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "amountSharesMin",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "maxStakingSlippageBPS",
+        type: "uint256"
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "amountIn",
+            type: "uint256"
+          },
+          {
+            internalType: "uint256",
+            name: "minAmountOut",
+            type: "uint256"
+          },
+          {
+            internalType: "bool",
+            name: "zeroForOne",
+            type: "bool"
+          },
+          {
+            internalType: "bytes",
+            name: "routeData",
+            type: "bytes"
+          }
+        ],
+        internalType: "struct RouterSwapParams",
+        name: "swapData",
+        type: "tuple"
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address"
+      }
+    ],
+    name: "addLiquiditySingleNative",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "amount0",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "amount1",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "mintAmount",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "payable",
+    type: "function"
   }
 ];

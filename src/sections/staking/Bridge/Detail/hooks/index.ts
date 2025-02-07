@@ -18,14 +18,17 @@ export function useDetail(props: any) {
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
   const toast = useToast();
-  const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS, data?.initialData?.pool?.protocol);
+  const { handleGetAmount } = useLpToAmount(
+    data?.LP_ADDRESS,
+    data?.initialData?.pool?.protocol
+  );
   const { addAction } = useAddAction("dapp");
 
   const detailBerpsRef = useRef<any>();
   const [claiming, setClaiming] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isBerpsDepositVisible, setIsBerpsDepositVisible] = useState(false);
-
+  // @ts-ignore
   const { addresses } = config.chains[DEFAULT_CHAIN_ID];
 
   const isBERPS = name === "Berps";
@@ -74,10 +77,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -249,7 +252,7 @@ export function useDetail(props: any) {
         .then((receipt: any) => {
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(inAmount);
-          const _symbol = tokens.join("-")
+          const _symbol = tokens.join("-");
           addAction?.({
             type: "Staking",
             action: "Staking",
@@ -337,7 +340,7 @@ export function useDetail(props: any) {
           });
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(lpAmount);
-          const _symbol = tokens.join("-")
+          const _symbol = tokens.join("-");
           addAction?.({
             type: "Staking",
             action: "UnStake",
@@ -485,7 +488,7 @@ export function useDetail(props: any) {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
     if (!["bex", "kodiak"].includes(protocol?.id)) return null;
-    const islandItem = (kodiak.islands as any)[
+    const islandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
     ];
     if (protocol?.id === "kodiak" && islandItem) {
@@ -497,7 +500,7 @@ export function useDetail(props: any) {
         stakingToken: data?.initialData?.stake_token
       };
     }
-    const underlying_tokens = data?.initialData?.underlying_tokens
+    const underlying_tokens = data?.initialData?.underlying_tokens;
     if (underlying_tokens?.length === 2)
       return {
         protocol: protocol?.id,
