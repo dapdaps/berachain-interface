@@ -125,7 +125,7 @@ interface Context {
 }
 
 const initialState: any = {
-  chainId: 80084,
+  chainId: 80094,
   lendingVisible: false,
   lendingData: {},
   setLendingVisible: () => {},

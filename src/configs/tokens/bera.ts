@@ -66,5 +66,13 @@ export const bera: { [key: string]: Token } = {
     name: "Tether USD",
     icon: "/assets/tokens/usdt.png",
     color: "#059393"
+  },
+  ibgt: {
+    chainId: CHAIN_ID,
+    address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+    decimals: 18,
+    symbol: "iBGT",
+    name: "Infrared BGT",
+    icon: "/assets/tokens/ibgt.png"
   }
 };

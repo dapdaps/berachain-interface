@@ -165,7 +165,7 @@ export class Kodiak {
         options
       );
     } catch (err) {
-      // console.log('estimateGas err', err);
+      // console.log("estimateGas err", err);
     }
 
     const txn = await RouterContract.populateTransaction[method](...params, {
@@ -243,9 +243,9 @@ export class Kodiak {
         options
       );
     } catch (err) {
-      // console.log('estimateGas err', err);
+      console.log("estimateGas err", err);
     }
-
+    console.log("estimateGas", estimateGas);
     const txn = await multicallContract.populateTransaction.multicall(
       multicallParams,
       {

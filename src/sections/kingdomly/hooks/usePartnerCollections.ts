@@ -1,23 +1,30 @@
-import { useEffect } from 'react';
-import { useListStore } from '../stores/useListStore';
-import { NFTCollection, NFTCollectionWithStatus, Status } from '../types';
-import { Contract, providers } from 'ethers';
-import NFTAbi from '../abis/mint.json';
+import { useEffect } from "react";
+import { useListStore } from "../stores/useListStore";
+import { NFTCollection, NFTCollectionWithStatus, Status } from "../types";
+import { Contract, providers } from "ethers";
+import NFTAbi from "../abis/mint.json";
 
 export const CHAIN_RPC_URLS: { [key: number]: string } = {
-  42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum One
-  80084: 'https://bartio.drpc.org', // Berachain
+  42161: "https://arb1.arbitrum.io/rpc", // Arbitrum One
+  80094: "https://bartio.drpc.org" // Berachain
 };
 
 export const usePartnerCollections = () => {
-  const { collections, isLoading, error, setCollections, setLoading, setError } = useListStore();
+  const {
+    collections,
+    isLoading,
+    error,
+    setCollections,
+    setLoading,
+    setError
+  } = useListStore();
 
   useEffect(() => {
     const fetchContractData = async (collection: NFTCollectionWithStatus) => {
       try {
         const chainId = collection.chain.chain_id;
         const rpcUrl = CHAIN_RPC_URLS[chainId];
-        
+
         if (!rpcUrl) {
           console.error(`No RPC URL found for chain ID ${chainId}`);
           return collection;
@@ -25,7 +32,11 @@ export const usePartnerCollections = () => {
 
         const provider = new providers.JsonRpcProvider(rpcUrl);
 
-        const contract = new Contract(collection.contract_address, NFTAbi, provider);
+        const contract = new Contract(
+          collection.contract_address,
+          NFTAbi,
+          provider
+        );
 
         const [totalSupply, maxSupply] = await Promise.all([
           contract.totalSupply(),
@@ -38,7 +49,10 @@ export const usePartnerCollections = () => {
           maxSupplyByContract: maxSupply.toString()
         };
       } catch (err) {
-        console.error(`Error fetching data for contract ${collection.contract_address}:`, err);
+        console.error(
+          `Error fetching data for contract ${collection.contract_address}:`,
+          err
+        );
         return collection;
       }
     };
@@ -46,10 +60,10 @@ export const usePartnerCollections = () => {
     const fetchPartnerCollections = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api.kingdomly/api/fetchPartnerMints', {
+        const response = await fetch("/api.kingdomly/api/fetchPartnerMints", {
           headers: {
-            'accept': 'application/json',
-            'API-Key': 'THEFOCUSEDMINDCANPIERCETHROUGHSTONE'
+            accept: "application/json",
+            "API-Key": "THEFOCUSEDMINDCANPIERCETHROUGHSTONE"
           }
         });
 
@@ -60,32 +74,40 @@ export const usePartnerCollections = () => {
             ...collection,
             status: Status.LIVE
           })),
-          ...data.partnerCollections.upcoming.map((collection: NFTCollection) => ({
-            ...collection,
-            status: Status.UPCOMING
-          }))
+          ...data.partnerCollections.upcoming.map(
+            (collection: NFTCollection) => ({
+              ...collection,
+              status: Status.UPCOMING
+            })
+          )
         ];
 
-        collections = collections.filter(collection => collection.chain.chain_id === 80084);
-
-        collections = await Promise.all(
-          collections.map(collection => fetchContractData(collection))
+        collections = collections.filter(
+          (collection) => collection.chain.chain_id === 80094
         );
 
-        collections = collections.map(collection => {
-          const validMintGroups = collection.mint_group_data.filter(group => group.allocation > 0);
-          const displayPrice = validMintGroups.length > 0 ? validMintGroups[0].price : 0;
+        collections = await Promise.all(
+          collections.map((collection) => fetchContractData(collection))
+        );
+
+        collections = collections.map((collection) => {
+          const validMintGroups = collection.mint_group_data.filter(
+            (group) => group.allocation > 0
+          );
+          const displayPrice =
+            validMintGroups.length > 0 ? validMintGroups[0].price : 0;
           return {
             ...collection,
             displayPrice
           };
         });
 
-
         setCollections(collections);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch collections');
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch collections"
+        );
       } finally {
         setLoading(false);
       }

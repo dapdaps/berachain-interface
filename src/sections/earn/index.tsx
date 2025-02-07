@@ -1,21 +1,29 @@
 import Tabs from "@/components/tabs";
 import { useState } from "react";
 import LiquidityList from "@/sections/marketplace/components/liquidity";
-import EarnLending from '@/sections/earn/lending';
+import EarnLending from "@/sections/earn/lending";
 
 import StakingList from "@/sections/marketplace/components/lnvest";
-import { useMarketplaceContext, MarketplaceContext } from '@/sections/marketplace/context';
+import {
+  useMarketplaceContext,
+  MarketplaceContext
+} from "@/sections/marketplace/context";
 import dynamic from "next/dynamic";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 const EarnViews = () => {
   const search = useSearchParams();
-  let defaultTab = search.get('tab');
-  defaultTab = defaultTab && ['liquidity', 'lending', 'staking'].includes(defaultTab) ? defaultTab : '';
+  let defaultTab = search.get("tab");
+  defaultTab =
+    defaultTab && ["liquidity", "lending", "staking"].includes(defaultTab)
+      ? defaultTab
+      : "";
 
-  const [currentTab, setCurrentTab] = useState<string>(defaultTab || "liquidity");
-  const context = useMarketplaceContext({ chainId: 80084 });
+  const [currentTab, setCurrentTab] = useState<string>(
+    defaultTab || "liquidity"
+  );
+  const context = useMarketplaceContext({ chainId: 80094 });
   const Vaults = dynamic(
-    () => import('@/sections/marketplace/components/dapps/vaults')
+    () => import("@/sections/marketplace/components/dapps/vaults")
   );
   return (
     <MarketplaceContext.Provider value={context}>
@@ -26,10 +34,10 @@ const EarnViews = () => {
           alt=""
         />
         <img
-            src="/images/background/earn-header.png"
-            alt="earn"
-            className="w-[345px] h-[98px] mb-[12px] hidden lg:block m-auto"
-          />
+          src="/images/background/earn-header.png"
+          alt="earn"
+          className="w-[345px] h-[98px] mb-[12px] hidden lg:block m-auto"
+        />
 
         <Tabs
           isCard
@@ -41,18 +49,18 @@ const EarnViews = () => {
             {
               key: "liquidity",
               label: <div>Liquidity</div>,
-              children: <LiquidityList />,
+              children: <LiquidityList />
             },
             {
               key: "lending",
               label: <div>Lending</div>,
-              children: <EarnLending />,
+              children: <EarnLending />
             },
             {
               key: "staking",
               label: <div>Staking</div>,
-              children: <StakingList source="earn" />,
-            },
+              children: <StakingList source="earn" />
+            }
           ]}
         />
       </div>

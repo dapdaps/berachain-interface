@@ -70,13 +70,7 @@ export const wagmiAdapter = new WagmiAdapter({
   // @ts-ignore
   connectors,
   transports: {
-    [berachainTestnetbArtio.id]: fallback([
-      http("https://bartio.rpc.berachain.com"),
-      http("https://bartio.drpc.org"),
-      http(
-        `https://rpc.walletconnect.org/v1/?chainId=eip155%3A80084&projectId=${projectId}`
-      )
-    ])
+    80094: fallback([http("https://rpc.berachain.com")])
   }
 });
 
