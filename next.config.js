@@ -5,7 +5,9 @@ const TerserPlugin = require("terser-webpack-plugin");
 const createBundleStatsPlugin = require("next-plugin-bundle-stats");
 
 const BASE_URL = process.env.NEXT_PUBLIC_API || "https://api.dapdap.net";
-const GAME_BASE_URL = process.env.NEXT_PUBLIC_GAME_API_DOMAIN || "https://dev-api-game.beratown.app";
+const GAME_BASE_URL =
+  process.env.NEXT_PUBLIC_GAME_API_DOMAIN ||
+  "https://dev-api-game.beratown.app";
 
 const nextConfig = {
   reactStrictMode: false,
@@ -37,6 +39,11 @@ const nextConfig = {
       destination: "https://api.infrared.finance/:path*"
     },
     {
+      source: "/api.ramen/:path*",
+      destination:
+        "https://prod-launchpad-1155389709.asia-southeast1.run.app/:path*"
+    },
+    {
       source: "/dapdap.game/:path*",
       destination: `${GAME_BASE_URL}/:path*`
     }
@@ -61,7 +68,7 @@ const nextConfig = {
       },
       {
         test: /\.json$/,
-        type: 'json'
+        type: "json"
       }
     );
     fileLoaderRule.exclude = /\.svg$/i;
@@ -87,7 +94,7 @@ const nextConfig = {
     };
 
     config.optimization.emitOnErrors = true;
-    if (process.env.NEXT_PUBLIC_API === 'https://dev-api.beratown.app') {
+    if (process.env.NEXT_PUBLIC_API === "https://dev-api.beratown.app") {
       config.optimization.minimizer = [
         new TerserPlugin({
           terserOptions: {
@@ -132,8 +139,8 @@ const nextConfig = {
 const withBundleStatsPlugin =
   process.env.ANALYZE_STATS === "true"
     ? createBundleStatsPlugin({
-      outDir: "./analyze"
-    })
+        outDir: "./analyze"
+      })
     : (conf) => conf;
 
 module.exports = withBundleStatsPlugin(nextConfig);

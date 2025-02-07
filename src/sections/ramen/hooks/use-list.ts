@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { get } from "@/utils/http";
+import { asyncFetch } from "@/utils/http";
 
 export default function useList() {
   const [featuredList, setFeaturedList] = useState<any>([]);
@@ -11,9 +11,7 @@ export default function useList() {
   const getFeaturedList = async () => {
     try {
       setFeaturedLoading(true);
-      const res = await get(
-        "https://prod-launchpad-1155389709.asia-southeast1.run.app/v1/featured-projects"
-      );
+      const res = await asyncFetch("/api.ramen/v1/featured-projects");
 
       setFeaturedList(res.data.projects || []);
     } catch (err) {
@@ -24,8 +22,8 @@ export default function useList() {
   const getFinishedList = async () => {
     try {
       setFinishedLoading(true);
-      const res = await get(
-        `https://prod-launchpad-1155389709.asia-southeast1.run.app/v1/finished-launch?sort=slug&order=desc&page=${finishedPage}&rows=10`
+      const res = await asyncFetch(
+        `/api.ramen/v1/finished-launch?sort=slug&order=desc&page=${finishedPage}&rows=10`
       );
 
       setFinishedList(res.data.projects || []);
