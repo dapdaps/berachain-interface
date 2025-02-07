@@ -74,6 +74,7 @@ export default function Bridge() {
   const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
   const [amount, setAmount] = useState<string>('')
   const [historyShow, setHistoryShow] = useState(false)
+  const [activeTab, setActiveTab] = useState('pending')
   const isMobile = useIsMobile()
   const { switchChain } = useSwitchChain();
   const { addAction } = useAddAction("bridge");
@@ -260,11 +261,12 @@ export default function Bridge() {
             setConfirmShow(false);
           }}
           showHistory={() => {
-            
+            setHistoryShow(true)
+            setActiveTab('pending')
           }}
         />
       </div>
-      <History isOpen={historyShow} setIsOpen={setHistoryShow} />
+      <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
     </>
   );
 }
