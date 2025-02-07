@@ -10,7 +10,7 @@ export const SCENE_LIST: Scene[] = [
     name: 'Beramas Wonderland',
     description: '',
     path: '/activity/christmas',
-    status: SceneStatus.Ongoing,
+    status: SceneStatus.Ended,
     api: '/api/mas',
     handleTime: (config) => {
       if (!config) return {};
@@ -196,6 +196,7 @@ export interface ISceneContext {
 }
 
 export const sceneDefault = {
+  currentSceneInfoValid: false,
   currentSceneInfoLoading: true,
   list: SCENE_LIST,
   current: SCENE_LIST[0],

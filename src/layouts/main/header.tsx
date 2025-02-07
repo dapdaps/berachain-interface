@@ -77,8 +77,8 @@ const MainLayoutHeader = (props: Props) => {
           </div>
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
-          <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
-          <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" />
+          {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
+          <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" /> */}
           <LaptopChain />
           <ConnectWallet />
         </div>

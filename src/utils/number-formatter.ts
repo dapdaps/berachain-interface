@@ -95,12 +95,35 @@ export const numberFormatter = (
         const decimal = _num.split('.')?.[1] ?? '';
         return `${prefix}${inter}${decimal ? '.' + decimal : ''}${unit}`;
       };
+      // septillion
+      // if (Big(value).gte(1e24)) {
+      //   return formatter(1e24, 't');
+      // }
+      // sextillion
+      // if (Big(value).gte(1e21)) {
+      //   return formatter(1e21, 's');
+      // }
+      // quintillion
+      // if (Big(value).gte(1e18)) {
+      //   return formatter(1e18, 'r');
+      // }
+      // quadrillion
+      // if (Big(value).gte(1e15)) {
+      //   return formatter(1e15, 'q');
+      // }
+      // trillion
+      if (Big(value).gte(1e12)) {
+        return formatter(1e12, 't');
+      }
+      // billion
       if (Big(value).gte(1e9)) {
         return formatter(1e9, 'b');
       }
+      // million
       if (Big(value).gte(1e6)) {
         return formatter(1e6, 'm');
       }
+      // thousand
       if (Big(value).gte(1e3)) {
         return formatter(1e3, 'k');
       }

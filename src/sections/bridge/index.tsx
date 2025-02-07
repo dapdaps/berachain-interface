@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import chains, { icons } from '@/configs/chains'
-import allTokens from '@/configs/allTokens'
 import Card from '@/components/card';
 import TokenAmout from './TokenAmount';
 import Routes from './Routes';
@@ -13,12 +12,25 @@ import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
 import { useParams } from 'next/navigation';
+import History from './History';
+import useQuote from './Hooks/Stargate/useQoute';
+import useBridge from './Hooks/Stargate/useBridge';
+import Big from 'big.js';
+import { useAccount, useSwitchChain } from "wagmi";
+import useApprove from '@/hooks/use-approve';
+import { formatLongText } from '@/utils/utils';
+import allTokens from '@/configs/allTokens'
+import { useDebounce } from 'ahooks';
+import useTokenBalance from '@/hooks/use-token-balance';
+import { tokenPairs } from './Hooks/Stargate/config';
+import useAddAction from '@/hooks/use-add-action';
+import { useBridgeHistory } from '@/stores/useBridgeHistory';
 
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
 
-  const capitalize = (str: string ) => {
+  const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
@@ -52,15 +64,92 @@ const DappHeader: React.FC = () => {
   );
 };
 
-const ComingSoon = true;
+const ComingSoon = false;
 
 export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
   const [fromChain, setFromChain] = useState<Chain>(chains[1])
-  const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
-  const [toChain, setToChain] = useState<Chain>(chains[80084])
-  const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
+  const [fromToken, setFromToken] = useState<Token>(allTokens[1][0])
+  const [toChain, setToChain] = useState<Chain>(chains[80094])
+  const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
+  const [amount, setAmount] = useState<string>('')
+  const [historyShow, setHistoryShow] = useState(false)
+  const [activeTab, setActiveTab] = useState('pending')
   const isMobile = useIsMobile()
+  const { switchChain } = useSwitchChain();
+  const { addAction } = useAddAction("bridge");
+  const { address, chainId } = useAccount() 
+  const { list, set }: any = useBridgeHistory()
+  const { tokenBalance, isError, isLoading, update } = useTokenBalance(
+    fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromChain?.id ?? 0
+  )
+
+  const inputValue = useDebounce(amount, { wait: 500 });
+
+  const { fee, receiveAmount, contractAddress, loading: quoteLoading } = useQuote({ fromChainId: fromChain.id, toChainId: toChain.id, token: fromToken, amount: inputValue })
+  const { approve, allowance, approving: approveLoading } = useApprove({ token: fromToken, amount: inputValue, spender: contractAddress as string })
+
+  const { execute, loading: bridgeLoading } = useBridge()
+
+  const isValid = useMemo(() => {
+    return tokenBalance && Number(tokenBalance) >= Number(inputValue) && Number(inputValue) > 0
+  }, [inputValue, tokenBalance])
+
+  useEffect(() => {
+    const tokenPair = tokenPairs[fromChain.id][fromToken.symbol.toUpperCase()]
+    if (tokenPair) {
+      setToToken(allTokens[toChain.id].find((token: Token) => token.symbol.toUpperCase() === tokenPair) as Token)
+    }
+  }, [fromChain, fromToken])  
+
+  const handleBridge = async () => {
+    console.log(fee)
+
+    if (!fromToken.isNative) {
+      console.log('allowance', allowance, inputValue, Number(allowance) < Number(inputValue))
+      if (!allowance || Number(allowance) < Number(inputValue)) {
+        await approve()
+      }
+    }
+
+    const txHash = await execute({
+      fromChainId: fromChain.id,
+      toChainId: toChain.id,
+      token: fromToken,
+      amount: inputValue,
+      fee: fee as {
+        nativeFee: string,
+        lzTokenFee: string
+      },
+      contractAddress: contractAddress as string
+    })
+
+    console.log(txHash)
+    
+    if (txHash) {
+      const action = {
+        type: 'Bridge',
+        fromChainId: fromChain.id,
+        toChainId: toChain.id,
+        token: fromToken,
+        amount: inputValue,
+        template: 'Stargate',
+        add: false,
+        status: 1,
+        transactionHash: txHash,
+        time: Date.now(),
+        extra_data: {}
+      }
+
+      set({ list: [...list, {
+        ...action,
+        toToken: toToken,
+      }] })
+
+      addAction(action)
+      setConfirmShow(true)
+    }
+  }
 
   return (
     <>
@@ -69,12 +158,26 @@ export default function Bridge() {
         <DappHeader />
         <Card>
           <TokenAmout
-            chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
+            chain={fromChain}
+            token={fromToken}
+            amount={amount}
+            onAmountChange={(v: string) => {
+              setAmount(v)
+            }}
+            onTokenChange={(token: Token) => {
               setFromToken(token)
             }}
             comingSoon={ComingSoon}
           />
-          <div className='h-[8px] md:h-4 flex justify-center items-center'>
+          <div className='h-[8px] md:h-4 flex justify-center items-center' onClick={() => {
+            const [_fromChain, _toChain] = [toChain, fromChain]
+            const [_fromToken, _toToken] = [toToken, fromToken] 
+            setFromChain(_fromChain)
+            setToChain(_toChain)
+            setFromToken(_fromToken)
+            setToToken(_toToken)
+
+          }}>
             <svg
               className='cursor-pointer'
               width='42'
@@ -102,16 +205,17 @@ export default function Bridge() {
             </svg>
           </div>
           <TokenAmout
+            amount={receiveAmount ?? ''}
             chain={toChain} token={toToken} disabledInput={true} onTokenChange={(token: Token) => {
-            setToToken(token)
-          }}
+              setToToken(token)
+            }}
             comingSoon={ComingSoon}
           />
           <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
             <div>Receive address</div>
             <div className='flex items-center gap-2'>
-              <div>0xc25...9210d</div>
-              <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
+              <div>{formatLongText(address, 6, 6)}</div>
+              {/* <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
                 <svg
                   width='11'
                   height='12'
@@ -124,22 +228,46 @@ export default function Bridge() {
                     fill='black'
                   />
                 </svg>
-              </div>
+              </div> */}
             </div>
           </div>
 
-          <Routes />
+          {
+            fee && receiveAmount && (
+              <Routes fromChain={fromChain} route={[{
+                receiveAmount: receiveAmount ?? '',
+                fee: fee?.nativeFee ?? ''
+              }]} />
+            )
+          }
 
-          <SubmitBtn comingSoon={ComingSoon} />
+          <SubmitBtn
+            fromChainId={fromChain.id}
+            isLoading={quoteLoading || bridgeLoading || approveLoading}
+            disabled={!isValid}
+            onClick={() => {
+              handleBridge()
+            }} comingSoon={ComingSoon} />
         </Card>
 
         <Confirm
+          fromChain={fromChain}
+          toChain={toChain}
+          fromToken={fromToken}
+          toToken={toToken}
+          amount={amount}
+          receiveAmount={receiveAmount ?? ''}
           show={confirmShow}
           onClose={() => {
             setConfirmShow(false);
           }}
+          showHistory={() => {
+            setHistoryShow(true)
+            setActiveTab('pending')
+          }}
         />
       </div>
+      <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
     </>
   );
 }

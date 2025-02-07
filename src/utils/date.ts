@@ -47,3 +47,25 @@ export function getRemainingDatetime(start: Date, end: Date) {
   }
   return '';
 }
+
+export function formatEnglishDate(date: Date | string | number) {
+  if (!date) {
+    return ''
+  }
+  const d = new Date(date);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[d.getMonth()];
+  const day = d.getDate();
+  const year = d.getFullYear();
+  const hours = d.getHours();
+  const minutes = d.getMinutes();
+  const seconds = d.getSeconds();
+
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+  return `${month} ${day}, ${year} ${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+}
+

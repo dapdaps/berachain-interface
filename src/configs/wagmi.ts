@@ -20,7 +20,7 @@ export const metadata = {
   icons: ["/favicon.ico"]
 };
 
-export const networks = Object.values(chains).filter((c) => c.isWalletSupport);
+export const networks = Object.values(chains) //.filter((c) => c.isWalletSupport);
 
 const connectors: CreateConnectorFn[] = [];
 

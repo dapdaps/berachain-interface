@@ -1,13 +1,13 @@
-import ConnectWallet from '@/components/connect-wallet';
-import Big from 'big.js';
-import BGTCoin, { CoinType } from '@/layouts/main/BGTCoin';
-import React from 'react';
-import { useBgt } from '@/sections/home/hooks/useBgt';
-import { useBgtCount } from '@/hooks/use-bgt-count';
-import useIsMobile from '@/hooks/use-isMobile';
-import { useTapSoundStore } from '@/stores/tap-sound';
-import BGTMobileView from '@/sections/bgt/mobile';
-import IBGTMobileView from '@/sections/bgt/ibgt/mobile';
+import ConnectWallet from "@/components/connect-wallet";
+import Big from "big.js";
+import BGTCoin, { CoinType } from "@/layouts/main/BGTCoin";
+import React from "react";
+import { useBgt } from "@/sections/home/hooks/useBgt";
+import { useBgtCount } from "@/hooks/use-bgt-count";
+import useIsMobile from "@/hooks/use-isMobile";
+import { useTapSoundStore } from "@/stores/tap-sound";
+import BGTMobileView from "@/sections/bgt/mobile";
+import IBGTMobileView from "@/sections/bgt/ibgt/mobile";
 
 const MobileHeader = () => {
   const bgt = useBgt();
@@ -21,8 +21,8 @@ const MobileHeader = () => {
   };
 
   return (
-    <div className='w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]'>
-      <div className='flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]'>
+    <div className="w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]">
+      <div className="flex h-[10.77vw] rounded-[5.12vw] bg-white bg-opacity-60 backdrop-blur-[10px]">
         <ConnectWallet />
       </div>
       <div
@@ -35,7 +35,7 @@ const MobileHeader = () => {
             : {}
         }
       >
-        <BGTCoin
+        {/* <BGTCoin
           type={CoinType.BGT}
           count={BGTCount}
           bp="1015-009"
@@ -46,7 +46,7 @@ const MobileHeader = () => {
           count={iBGTCount}
           bp="1015-010"
           onClick={handleBGTClick}
-        />
+        /> */}
       </div>
       <BGTMobileView
         visible={bgt.visible && bgt.type === CoinType.BGT}
