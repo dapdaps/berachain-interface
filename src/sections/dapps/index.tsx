@@ -99,7 +99,7 @@ const FIRST_LIST = [
         type: "bridge",
         attachedIcon: "",
         className: "",
-        disabled: true
+        disabled: false
       }
     ]
   }
