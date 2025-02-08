@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import kodiak from "@/configs/pools/kodiak";
 import { wrapNativeToken } from "@/sections/pools/utils";
 import { default as useBexPools } from "@/sections/pools/bex/use-pools";
 import { default as useKodiakV2Pools } from "@/sections/pools/kodiak/use-pools-v2";
 import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
-import { random } from 'lodash';
+import { random } from "lodash";
 
 export default function usePools() {
   const [pools, setPools] = useState<any>([]);
@@ -22,19 +22,8 @@ export default function usePools() {
   const query = async () => {
     setPools([
       {
-        token0: wrapNativeToken(beraB["bera"]),
-        token1: beraB["honey"],
-        protocolIcon: "/images/dapps/bex.svg",
-        protocol: "BEX",
-        id: 1,
-        tvl: random(1000, 1000000, true),
-        volume_24h: random(1000, 1000000, true),
-        fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true),
-      },
-      {
-        token0: wrapNativeToken(beraB["bera"]),
-        token1: beraB["honey"],
+        token0: wrapNativeToken(bera["bera"]),
+        token1: bera["honey"],
         protocolIcon: "/images/dapps/kodiak.svg",
         protocol: "Kodiak",
         version: "v2",
@@ -42,11 +31,11 @@ export default function usePools() {
         tvl: random(1000, 1000000, true),
         volume_24h: random(1000, 1000000, true),
         fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true),
+        yours: random(0, 10000, true)
       },
       {
-        token0: wrapNativeToken(beraB["bera"]),
-        token1: beraB["honey"],
+        token0: wrapNativeToken(bera["bera"]),
+        token1: bera["honey"],
         protocolIcon: "/images/dapps/kodiak.svg",
         protocol: "Kodiak",
         version: "v3",
@@ -55,7 +44,7 @@ export default function usePools() {
         tvl: random(1000, 1000000, true),
         volume_24h: random(1000, 1000000, true),
         fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true),
+        yours: random(0, 10000, true)
       }
     ]);
   };

@@ -2,7 +2,7 @@
 import Big from "big.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import { asyncFetch } from "@/utils/http";
 
 export default function useInfraredData(props: any) {
@@ -245,7 +245,7 @@ export default function useInfraredData(props: any) {
     allData?.forEach((item) => {
       if (!["kodiak", "dolomite"].includes(item?.protocol?.id)) return;
       item?.reward_tokens?.forEach((it: any) => {
-        const curr = Object.values(beraB).find(
+        const curr = Object.values(bera).find(
           (_it) => _it.address.toLowerCase() === it.address.toLowerCase()
         );
         if (!curr) return;
