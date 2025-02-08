@@ -5,19 +5,19 @@ import { numberFormatter } from "@/utils/number-formatter";
 import TokenInput from "@/sections/ramen/detail/components/token-input";
 import PriceRadio from "@/sections/ramen/detail/components/price-radio";
 import useTokenBalance from "@/hooks/use-token-balance";
+import AuctionButton from "./auction-button";
 import Big from "big.js";
 
 const PlaceYourBid = (props: any) => {
   const { className, auctionInfo, totalSupply } = props;
 
   const spendToken = bera.bera;
-  const { tokenBalance } = useTokenBalance(
+  const { tokenBalance, update } = useTokenBalance(
     spendToken.address,
     spendToken.decimals
   );
   const [spendAmount, setSpendAmount] = useState<string>();
   const [tokenBidPrice, setTokenBidPrice] = useState<any>();
-  const [FDV, setFDV] = useState<any>();
 
   const onSpendAmount = (val: string) => {
     setSpendAmount(val);
@@ -25,10 +25,6 @@ const PlaceYourBid = (props: any) => {
 
   const onTokenBidPrice = (val: string) => {
     setTokenBidPrice(val);
-  };
-
-  const onFDV = (val: string) => {
-    setFDV(val);
   };
 
   const onAuction = () => {};
@@ -86,7 +82,6 @@ const PlaceYourBid = (props: any) => {
           auctionInfo={auctionInfo}
           onChange={(item: any) => {
             onTokenBidPrice(item.price);
-            setFDV(item);
           }}
         />
       </div>
@@ -116,13 +111,7 @@ const PlaceYourBid = (props: any) => {
         </div>
       </div>
       <div className="mt-[20px]">
-        <button
-          type="button"
-          className="w-full border border-black rounded-[10px] bg-[#FFDC50] h-[46px] flex justify-center items-center"
-          onClick={onAuction}
-        >
-          Auction
-        </button>
+        <AuctionButton errorTips="" loading={false} onClick={onAuction} />
       </div>
     </div>
   );

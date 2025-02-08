@@ -1,9 +1,11 @@
 import clsx from "clsx";
 import StepVertical from "@/sections/ramen/detail/components/step/vertical";
 import { useMemo } from "react";
+import useCustomAccount from "@/hooks/use-account";
 
 const ParticipationOverview = (props: any) => {
   const { className, detail, auctionInfo, steps, isLaunched } = props;
+  const { account } = useCustomAccount();
 
   const mergedSteps = useMemo(() => {
     if (!steps.length) return [];
@@ -11,18 +13,22 @@ const ParticipationOverview = (props: any) => {
       let value = "";
       let status: any = "";
       if (i === 0) {
-        value = auctionInfo?.userBids.length
+        value = !account
+          ? "Wallet is not Connected"
+          : auctionInfo?.userBids.length
           ? "Bid Submitted"
           : "No Bid Submitted";
-        status = `Spend Amount: -`;
+        status = !account ? "Wallet is not Connected" : `Spend Amount: -`;
       }
       if (i === 1) {
         value = isLaunched ? "Bids Decrypted" : "Coming Soon";
-        status = "";
+        status = !account ? "Wallet is not Connected" : "";
       }
       if (i === 2) {
         value = isLaunched ? "No Allocation Won" : "Coming Soon";
-        status = (
+        status = !account ? (
+          "Wallet is not Connected"
+        ) : (
           <div className="flex flex-col items-end gap-[4px] text-[#3D405A] text-[12px] font-Montserrat font-[500] leading-[100%]">
             <div className="">Final Token Price: -</div>
             <div className="">Total Cost: -</div>
@@ -31,7 +37,7 @@ const ParticipationOverview = (props: any) => {
       }
       return { ...step, value, status };
     });
-  }, [steps, isLaunched, auctionInfo]);
+  }, [steps, isLaunched, auctionInfo, account]);
 
   return (
     <div className={clsx("mt-[22px]", className)}>
