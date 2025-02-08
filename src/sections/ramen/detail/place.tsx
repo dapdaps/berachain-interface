@@ -4,6 +4,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import TokenInput from "@/sections/ramen/detail/components/token-input";
 import PriceRadio from "@/sections/ramen/detail/components/price-radio";
 import useTokenBalance from "@/hooks/use-token-balance";
+import useBuy from "../hooks/use-buy";
 import AuctionButton from "./auction-button";
 import Big from "big.js";
 
@@ -16,6 +17,11 @@ const PlaceYourBid = (props: any) => {
   );
   const [spendAmount, setSpendAmount] = useState<string>();
   const [tokenBidPrice, setTokenBidPrice] = useState<any>();
+  const { buying, onBuy } = useBuy({
+    amount: spendAmount,
+    spendToken,
+    tokenBidPrice
+  });
 
   const onSpendAmount = (val: string) => {
     setSpendAmount(val);
@@ -24,8 +30,6 @@ const PlaceYourBid = (props: any) => {
   const onTokenBidPrice = (val: string) => {
     setTokenBidPrice(val);
   };
-
-  const onAuction = () => {};
 
   return (
     <div className={clsx("mt-[21px]", className)}>
@@ -110,7 +114,13 @@ const PlaceYourBid = (props: any) => {
         </div>
       </div>
       <div className="mt-[20px]">
-        <AuctionButton errorTips="" loading={false} onClick={onAuction} />
+        <AuctionButton
+          errorTips=""
+          loading={buying}
+          onClick={() => {
+            onBuy();
+          }}
+        />
       </div>
     </div>
   );

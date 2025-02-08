@@ -3,13 +3,17 @@ import useAccount from "@/hooks/use-account";
 import { useSwitchChain } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import clsx from "clsx";
 
 const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className="w-full border border-black rounded-[10px] bg-[#FFDC50] h-[46px] flex justify-center items-center"
+      className={clsx(
+        "w-full border border-black rounded-[10px] bg-[#FFDC50] h-[46px] flex justify-center items-center",
+        !loading && !disabled && "cursor-pointer"
+      )}
     >
       {loading ? <Loading /> : children}
     </button>
@@ -59,7 +63,7 @@ export default function AuctionButton({
 
   return (
     <BaseButton onClick={onClick} disabled={disabled} loading={loading}>
-      Auction
+      Submit Bid
     </BaseButton>
   );
 }
