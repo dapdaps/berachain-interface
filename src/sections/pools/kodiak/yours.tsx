@@ -11,7 +11,7 @@ export default function Yours() {
     pools: v2Pools,
     loading: v2Loading,
     queryPools: queryV2Pools
-  } = usePoolsV2();
+  } = usePoolsV2(false);
   const {
     pools: v3Pools,
     loading: v3Loading,

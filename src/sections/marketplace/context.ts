@@ -5,7 +5,7 @@ import {
   useEffect,
   useState
 } from "react";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import useBend from "../Lending/Bend/hooks/useBend";
 
 export function useMarketplaceContext(props: Props): Context {
@@ -31,7 +31,7 @@ export function useMarketplaceContext(props: Props): Context {
       dappLink: "/lending/dolomite",
       config: { ...basic, ...networkConfig },
       networks,
-      investToken: beraB["honey"]
+      investToken: bera["honey"]
     });
   };
 

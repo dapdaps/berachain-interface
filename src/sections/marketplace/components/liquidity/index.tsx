@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
@@ -14,8 +14,8 @@ import usePools from "./use-pools";
 import useIsMobile from "@/hooks/use-isMobile";
 import CheckBox from "@/components/check-box";
 import MobileList from "./mobile/list";
-import useClickTracking from '@/hooks/use-click-tracking';
-import { numberFormatter } from '@/utils/number-formatter';
+import useClickTracking from "@/hooks/use-click-tracking";
+import { numberFormatter } from "@/utils/number-formatter";
 
 const PAGE_SIZE = 9;
 
@@ -41,6 +41,7 @@ export default function Liquidity() {
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [modalType, setModalType] = useState("");
   const [selectedTokenId, setSelectedTokenId] = useState("");
+  const [refresher, setRefresher] = useState(0);
 
   const {
     pools,
@@ -52,8 +53,9 @@ export default function Liquidity() {
     kodiakV3Loading,
     kodiakV3Balances,
     kodiakTicksInfo
-  } = usePools();
+  } = usePools(refresher);
   const { handleReport } = useClickTracking();
+
   const [protocols] = useMemo(() => {
     let _dexs: any = [{ key: "all", name: "All Protocols" }];
     Object.values(dexs).forEach((dex) => {
@@ -72,14 +74,9 @@ export default function Liquidity() {
         if (protocol !== "all" && protocol !== token.protocol) {
           flag = false;
         }
-        console.log("=token", token);
 
         const pool = [token?.token0?.symbol, token?.token1?.symbol].join("-");
 
-        console.log(
-          "=pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1",
-          pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > -1
-        );
         if (
           searchVal &&
           !(pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > -1)
@@ -103,7 +100,7 @@ export default function Liquidity() {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    isMobile && handleReport('1019-001');
+    isMobile && handleReport("1019-001");
   }, [isMobile]);
 
   return (
@@ -113,7 +110,7 @@ export default function Liquidity() {
           Liquidity
         </div>
         <div className="md:w-full flex items-center gap-2 md:justify-between">
-          {!isMobile && (
+          {/* {!isMobile && (
             <div className="flex items-center gap-2">
               <div>You Added only</div>
               <CheckBox
@@ -123,7 +120,7 @@ export default function Liquidity() {
                 }}
               />
             </div>
-          )}
+          )} */}
           <Dropdown
             list={protocols}
             value={protocol}
@@ -134,13 +131,13 @@ export default function Liquidity() {
           />
           {isMobile ? (
             <div className="flex items-center gap-[8px]">
-              <div>You Added only</div>
+              {/* <div>You Added only</div>
               <CheckBox
                 checked={checked}
                 onClick={() => {
                   setChecked(!checked);
                 }}
-              />
+              /> */}
             </div>
           ) : (
             <SearchBox value={searchVal} onChange={setSearchVal} />
@@ -186,9 +183,9 @@ export default function Liquidity() {
                 sort: true,
                 width: "20%",
                 render: (item: any, index: number) => {
-                  return (
-                    numberFormatter(item["tvl"], 2, true, { isShort: true })
-                  );
+                  return item["tvl"]
+                    ? numberFormatter(item["tvl"], 2, true, { isShort: true })
+                    : "-";
                 }
               },
               {
@@ -197,9 +194,11 @@ export default function Liquidity() {
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
-                  return (
-                    numberFormatter(item["volume_24h"], 2, true, { isShort: true })
-                  );
+                  return item["volume_24h"]
+                    ? numberFormatter(item["volume_24h"], 2, true, {
+                        isShort: true
+                      })
+                    : "-";
                 }
               },
               {
@@ -208,9 +207,11 @@ export default function Liquidity() {
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
-                  return (
-                    numberFormatter(item["fees_24h"], 2, true, { isShort: true })
-                  );
+                  return item["fees_24h"]
+                    ? numberFormatter(item["fees_24h"], 2, true, {
+                        isShort: true
+                      })
+                    : "-";
                 }
               },
               {
@@ -219,10 +220,15 @@ export default function Liquidity() {
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
-                  return (
+                  return item["yours"] ? (
                     <div className="flex underline">
-                      {numberFormatter(item["yours"], 2, true, { prefix: '$', isShort: true })}
+                      {numberFormatter(item["yours"], 2, true, {
+                        prefix: "$",
+                        isShort: true
+                      })}
                     </div>
+                  ) : (
+                    "-"
                   );
                 }
               },
@@ -304,6 +310,7 @@ export default function Liquidity() {
             onClose={() => {
               setModalType("");
               setSelectedRecord(null);
+              setRefresher(refresher + 1);
             }}
           />
           <RemoveLiquidityModal
@@ -321,6 +328,7 @@ export default function Liquidity() {
             onSuccess={() => {
               setModalType("");
               setSelectedRecord(null);
+              setRefresher(refresher + 1);
             }}
           />
           <V3PoolsModal

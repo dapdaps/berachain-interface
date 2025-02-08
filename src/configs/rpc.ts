@@ -1,15 +1,7 @@
 export const RPC_LIST: any = {
   default: {
-    url: "https://bartio.rpc.berachain.com",
-    simpleName: "bartio rpc"
-  },
-  nodeinfra: {
-    url: "https://bera-testnet.nodeinfra.com",
-    simpleName: "node infra"
-  },
-  drpc: {
-    url: "https://bartio.drpc.org",
-    simpleName: "drpc rpc"
+    url: "https://rpc.berachain.com",
+    simpleName: "bera rpc"
   }
 };
 
