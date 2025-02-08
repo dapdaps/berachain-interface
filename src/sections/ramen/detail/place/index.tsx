@@ -51,8 +51,8 @@ const PlaceYourBid = (props: any) => {
     () =>
       spendAmount
         ? Big(spendAmount || 0).lt(
-            auctionInfo?.encryptedMarginalPrice?.minBidSize
-          )
+          auctionInfo?.encryptedMarginalPrice?.minBidSize
+        )
           ? `Minimum spend amount is ${auctionInfo?.encryptedMarginalPrice?.minBidSize} BERA`
           : ""
         : "",

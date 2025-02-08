@@ -2,8 +2,8 @@ import clsx from "clsx";
 import StepVertical from "@/sections/ramen/detail/components/step/vertical";
 import { useMemo } from "react";
 import useCustomAccount from "@/hooks/use-account";
-import AuctionButton from "./auction-button";
-import useClaim from "../hooks/use-claim";
+import AuctionButton from "../auction-button";
+import useClaim from "../../hooks/use-claim";
 
 const ParticipationOverview = (props: any) => {
   const { className, detail, auctionInfo, steps, isLaunched } = props;
@@ -18,8 +18,8 @@ const ParticipationOverview = (props: any) => {
         value = !account
           ? "Wallet is not Connected"
           : auctionInfo?.userBids.length
-          ? "Bid Submitted"
-          : "No Bid Submitted";
+            ? "Bid Submitted"
+            : "No Bid Submitted";
         status = !account ? "Wallet is not Connected" : `Spend Amount: -`;
       }
       if (i === 1) {

@@ -88,7 +88,7 @@ const Dashboard = (props: any) => {
         {
           isMobile ? (
             <StepVertical
-              className="mt-[22px] w-full ml-[1px] pb-0"
+              className="mt-[22px] w-full ml-[1px] !pb-0"
               list={steps.map((it: any) => ({
                 ...it,
                 label: (
