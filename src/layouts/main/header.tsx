@@ -42,7 +42,7 @@ const MainLayoutHeader = (props: Props) => {
           >
             <span className="relative z-10">Home</span>
           </button>
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() => {
               window.open("https://bartio.faucet.berachain.com");
@@ -74,7 +74,7 @@ const MainLayoutHeader = (props: Props) => {
                 </clipPath>
               </defs>
             </svg>
-          </div>
+          </div> */}
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
           {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
