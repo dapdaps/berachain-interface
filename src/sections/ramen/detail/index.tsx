@@ -78,7 +78,11 @@ const Detail = (props: any) => {
                 title="Auction Results"
                 prefix={<AuctionHead detail={detail} isLaunched={isLaunched} />}
               >
-                <AuctionResults />
+                <AuctionResults
+                  detail={detail}
+                  auctionInfo={auctionInfo}
+                  totalSupply={totalSupply}
+                />
               </Card>
             ) : (
               <Card
