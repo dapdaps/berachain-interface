@@ -12,6 +12,7 @@ import useClickTracking from "@/hooks/use-click-tracking";
 import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
 import { useChristmas } from "@/hooks/use-christmas";
+import clsx from "clsx";
 
 const menuItems = [
   // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -22,9 +23,21 @@ const menuItems = [
     href: "/marketplace",
     dataBp: "1015-002-003"
   },
-  // { id: 4, title: "Earn", href: "/earn", dataBp: "1015-002-004" },
+  {
+    id: 4,
+    title: "Earn",
+    href: "/earn",
+    dataBp: "1015-002-004",
+    disabled: true
+  },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
-  // { id: 6, title: "Portfolio Dashboard", href: "/dashboard", dataBp: "1015-002-006" },
+  {
+    id: 6,
+    title: "Portfolio Dashboard",
+    href: "/dashboard",
+    dataBp: "1015-002-006",
+    disabled: true
+  },
   { id: 7, title: "Maps", href: "/", dataBp: "1015-002-007" }
 ];
 
@@ -185,10 +198,13 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
               {menuItems.map((item) => (
                 <div
                   key={item.id}
-                  className="w-full flex justify-center items-center flex-col relative z-0 whitespace-nowrap"
+                  className={clsx(
+                    "w-full flex justify-center items-center flex-col relative z-0 whitespace-nowrap",
+                    item.disabled && "opacity-50"
+                  )}
                 >
                   <MenuButton
-                    href={item.href}
+                    href={item.disabled ? "" : item.href}
                     hasDropdown={item.hasDropdown}
                     isActive={item.hasDropdown && isDappsOpen}
                     onClick={item.hasDropdown ? toggleDapps : undefined}

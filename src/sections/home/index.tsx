@@ -113,10 +113,10 @@ const Navigation = function () {
         )}
       /> */}
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
-        {/* <div
-          className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
-          onClick={onNavigateToDashBoard}
-          data-bp="1010-008"
+        <div
+          className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px] opacity-50"
+          // onClick={onNavigateToDashBoard}
+          // data-bp="1010-008"
         >
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
@@ -124,22 +124,32 @@ const Navigation = function () {
               Portfolio Dashboard
             </div>
           </div>
-          <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
-        </div> */}
+          <DashboardSvg
+            className={clsx(
+              "transition-transform duration-500"
+              // "hover:scale-110"
+            )}
+          />
+        </div>
 
-        {/* <div
-          className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px]"
+        <div
+          className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px] opacity-50"
           onClick={onNavigateToEarn}
           data-bp="1010-012"
         >
-          <EarnSvg className="hover:scale-110 transition-transform duration-500" />
+          <EarnSvg
+            className={clsx(
+              "transition-transform duration-500"
+              // "hover:scale-110"
+            )}
+          />
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
             <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
               Earn
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
 
       <div
