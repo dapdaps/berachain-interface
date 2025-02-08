@@ -20,35 +20,35 @@ const LaunchCard = (props: any) => {
   return (
     <div className={clsx('relative bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[8px_8px_16px] text-black text-[20px] font-[700] leading-[90%] font-Montserrat', className)}>
       <div className="w-full relative">
-        <img src={project?.cover_image_url} alt="" className="w-full h-[200px] rounded-[10px] object-cover" />
-        <LaunchStatus value={0} className="absolute right-[14px] top-[10px]" />
+        <img src={project?.cover_image_url} alt="" className="w-full h-[200px] md:h-[164px] rounded-[10px] object-cover" />
+        <LaunchStatus value={project?.status} className="absolute right-[14px] top-[10px]" />
         <LaunchCountdown
           type="end"
-          className="absolute right-0 -bottom-[16px]"
+          className="absolute right-0 whitespace-nowrap -bottom-[16px] md:bottom-[33px] md:right-[unset] md:left-1/2 md:translate-x-[-50%]"
           endCountdown={countdown?.endSplit}
         />
-        <div className="absolute left-0 bottom-[-75px] w-full flex items-end gap-[9px]">
-          <div className="w-[88px] h-[88px] rounded-full border border-black overflow-hidden">
+        <div className="absolute left-0 bottom-[-75px] w-full flex items-end md:items-center gap-[9px] md:gap-[12px]">
+          <div className="w-[88px] h-[88px] md:w-[50px] md:h-[50px] rounded-full border border-black overflow-hidden">
             <img src={project?.token_icon_url} alt="" className="w-full h-full object-cover" />
           </div>
-          <div className="flex flex-col gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] pb-[9px]">
+          <div className="flex flex-col gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] pb-[9px] md:pb-0">
             <div className="">
-              {project?.token_name}
+              {project?.name}
             </div>
             <div className="text-[14px] text-[#646464]">
               {project?.token_symbol}
             </div>
           </div>
-          <LabelItem className="ml-auto !gap-[7px] pb-[9px]" label="Sale Price">
+          <LabelItem className="ml-auto !gap-[7px] pb-[9px] md:items-end" valueClassName="md:text-[16px] md:font-[500]" label="Sale Price">
             {numberFormatter(Big(project?.token_price_in_bera || 0).div(10 ** bera.bera.decimals), 4, true)} {bera.bera.symbol}
           </LabelItem>
         </div>
       </div>
       <div className="mt-[86px] grid grid-cols-2">
-        <LabelItem className="!gap-[7px]" label="Raise Amount">
+        <LabelItem className="!gap-[7px]" valueClassName="md:text-[16px] md:font-[500]" label="Raise Amount">
           {numberFormatter(Big(project?.raised_amount || 0).div(10 ** bera.bera.decimals), 4, true)} {bera.bera.symbol}
         </LabelItem>
-        <LabelItem className="!gap-[7px] items-end" label="Launch Type">
+        <LabelItem className="!gap-[7px] items-end" valueClassName="md:text-[16px] md:font-[500]" label="Launch Type">
           {!!project?.price_discovery_id && 'Price Discovery Mode' }
           {!!project?.private_sale_id && 'Fixed-Price Sale' }
         </LabelItem>

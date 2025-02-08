@@ -10,7 +10,7 @@ import Tabs from '@/components/tabs';
 import Content from '@/sections/ramen/content';
 import React, { useState } from 'react';
 
-const Laptop = ({ params, router, pathname, children }: any) => {
+const Laptop = ({ children }: any) => {
   const [currentTab, setCurrentTab] = useState<string>('current');
 
   return (
@@ -22,7 +22,7 @@ const Laptop = ({ params, router, pathname, children }: any) => {
       <div className="mt-[40px]">
         <div className="relative w-[970px] md:w-full mx-auto">
           <DappIcon
-            src="/images/dapps/red-ramen-logo.svg"
+            src="/images/dapps/ramen.svg"
             alt=""
             name="Ramen"
             type="launchpad"
@@ -47,26 +47,25 @@ const Laptop = ({ params, router, pathname, children }: any) => {
   );
 };
 
-const Mobile = ({ params, router, pathname, children }: any) => {
+const Mobile = ({ children }: any) => {
   return (
-    <div className="relative pt-[50px] h-full">
-      <PageBack
-        className="absolute left-[12px] top-[22px]"
-        showBackText={false}
-      />
-      {/* <div className="absolute top-[20px] right-[10px] w-[200px]">
-       <SwitchTabs
-       tabs={[
-       { label: "Swap", value: "swap" },
-       { label: "Liquidity", value: "pools" }
-       ]}
-       onChange={(val) => {
-       router.replace(`/dex/${params.dapp}/${val}`);
-       }}
-       current={pathname.includes("pools") ? "pools" : "swap"}
-       />
-       </div> */}
-      {children}
+    <div className="relative h-full">
+      <div className="relative flex items-center justify-center pt-[18px] pl-[12px]">
+        <PageBack
+          className="left-[12px] top-[18px] hidden absolute"
+          showBackText={false}
+        />
+        <DappIcon
+          src="/images/dapps/ramen.svg"
+          alt=""
+          name="Ramen Finance"
+          type="launchpad"
+          className="!static"
+        />
+      </div>
+      <div className="mt-[27px]">
+        {children}
+      </div>
     </div>
   );
 };
