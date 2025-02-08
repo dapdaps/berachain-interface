@@ -54,11 +54,13 @@ const EarnViews = () => {
             {
               key: "lending",
               label: <div>Lending</div>,
+              disabled: true,
               children: <EarnLending />
             },
             {
               key: "staking",
               label: <div>Staking</div>,
+              disabled: true,
               children: <StakingList source="earn" />
             }
           ]}

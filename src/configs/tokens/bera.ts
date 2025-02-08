@@ -65,7 +65,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "USD₮0",
     name: "USD₮0",
     icon: "/assets/tokens/usdt0.png",
-    color: "#059393"
+    color: "#059393",
+    priceKey: "USDT0"
   },
   ibgt: {
     chainId: CHAIN_ID,

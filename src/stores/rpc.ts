@@ -47,7 +47,7 @@ export const useRpcStore = create(
     }),
     {
       name: "_DAPDAP_RPC_STORAGE",
-      version: 0.1,
+      version: 0.11,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) =>
         ({ selected: state.selected, ping: state.ping } as any)

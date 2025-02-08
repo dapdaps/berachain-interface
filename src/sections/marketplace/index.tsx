@@ -10,7 +10,7 @@ import Tooltip from "@/components/tooltip";
 import dexs from "@/configs/swap";
 import SwapModal from "@/sections/swap/SwapModal";
 import { useMemo } from "react";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
 
@@ -103,7 +103,7 @@ const MarketplaceView = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>(
-    beraB.bera
+    bera.bera
   );
   const isMobile = useIsMobile();
 
@@ -187,9 +187,9 @@ const MarketplaceView = () => {
   };
 
   const onSwap = (item: any) => {
-    let _defaultInput = beraB.bera;
-    if (item.address.toLowerCase() === beraB.bera.address.toLowerCase()) {
-      _defaultInput = beraB.honey;
+    let _defaultInput = bera.bera;
+    if (item.address.toLowerCase() === bera.bera.address.toLowerCase()) {
+      _defaultInput = bera.honey;
     }
     setDefaultInputCurrency(_defaultInput);
     setSelectedRecord(item);
@@ -232,6 +232,7 @@ const MarketplaceView = () => {
                         name={it.symbol}
                         color={it.color}
                         icon={it.icon}
+                        {...it}
                         onSwap={() => onSwap(it)}
                       />
                     </div>
