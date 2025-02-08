@@ -17,7 +17,10 @@ const Content = (props: any) => {
   } = useList();
   return (
     <div className={clsx("max-h-[calc(100dvh_-_310px)] overflow-x-hidden overflow-y-auto", className)}>
-      <CurrentLaunches />
+      <CurrentLaunches
+        list={featuredList}
+        loading={featuredLoading}
+      />
       <PastLaunches
         loading={finishedLoading}
         list={finishedList}

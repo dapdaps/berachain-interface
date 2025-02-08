@@ -27,3 +27,20 @@ export const DIS_STEPS = [
     icon: "/images/ramen/icon-claim.svg"
   }
 ];
+
+export enum E_LAUNCH_STATUS {
+  UPCOMING = 'UPCOMING',
+  LIVE = 'LIVE',
+}
+export const LAUNCH_STATUS: Record<E_LAUNCH_STATUS, { value: E_LAUNCH_STATUS; label: string; color: string; }> = {
+  [E_LAUNCH_STATUS.UPCOMING]: {
+    value: E_LAUNCH_STATUS.UPCOMING,
+    label: 'Upcoming',
+    color: '#DBECF8',
+  },
+  [E_LAUNCH_STATUS.LIVE]: {
+    value: E_LAUNCH_STATUS.LIVE,
+    label: 'Live Now',
+    color: '#EBF479',
+  },
+};
