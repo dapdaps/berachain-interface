@@ -5,18 +5,19 @@ import { numberFormatter } from "@/utils/number-formatter";
 import TokenInput from "@/sections/ramen/detail/components/token-input";
 import PriceRadio from "@/sections/ramen/detail/components/price-radio";
 import useTokenBalance from "@/hooks/use-token-balance";
+import Big from "big.js";
 
 const PlaceYourBid = (props: any) => {
-  const { className, auctionInfo } = props;
-  console.log("auctionInfo", auctionInfo);
+  const { className, auctionInfo, totalSupply } = props;
+
   const spendToken = bera.bera;
   const { tokenBalance } = useTokenBalance(
     spendToken.address,
     spendToken.decimals
   );
   const [spendAmount, setSpendAmount] = useState<string>();
-  const [tokenBidPrice, setTokenBidPrice] = useState<string>();
-  const [FDV, setFDV] = useState<string>();
+  const [tokenBidPrice, setTokenBidPrice] = useState<any>();
+  const [FDV, setFDV] = useState<any>();
 
   const onSpendAmount = (val: string) => {
     setSpendAmount(val);
@@ -79,7 +80,15 @@ const PlaceYourBid = (props: any) => {
         <div className="text-black text-[16px] font-[600]">
           Price based on FDV (USD):
         </div>
-        <PriceRadio className="mt-[10px]" value={FDV} onChange={onFDV} />
+        <PriceRadio
+          className="mt-[10px]"
+          value={tokenBidPrice}
+          auctionInfo={auctionInfo}
+          onChange={(item: any) => {
+            onTokenBidPrice(item.price);
+            setFDV(item);
+          }}
+        />
       </div>
       <div className="mt-[20px]">
         <div className="flex items-center justify-between gap-[10px]">
@@ -89,10 +98,19 @@ const PlaceYourBid = (props: any) => {
           <div className="flex items-center gap-[5px] font-Montserrat text-black text-[12px] font-[600] leading-[90%]">
             <div className="">{numberFormatter("1562500", 2, true)} BERA</div>
             <div className="text-[#3D405A] font-[500]">
-              {numberFormatter("12516400", 2, true, {
-                isShort: true,
-                prefix: "$"
-              })}
+              {numberFormatter(
+                Big(totalSupply)
+                  .mul(
+                    tokenBidPrice || auctionInfo.encryptedMarginalPrice.minPrice
+                  )
+                  .toString(),
+                2,
+                true,
+                {
+                  isShort: true,
+                  prefix: "$"
+                }
+              )}
             </div>
           </div>
         </div>

@@ -23,6 +23,14 @@ const Detail = (props: any) => {
         : true,
     [detail]
   );
+  const totalSupply = useMemo(
+    () =>
+      !auctionInfo?.baseToken
+        ? 0
+        : auctionInfo.baseToken.totalSupply /
+          10 ** auctionInfo.baseToken.decimals,
+    [auctionInfo]
+  );
   const steps = useMemo(() => {
     if (!detail) return [];
     if (detail?.isFixed) {
@@ -69,7 +77,10 @@ const Detail = (props: any) => {
                 <AuctionResults />
               </Card>
             ) : (
-              <PlaceYourBid auctionInfo={auctionInfo} />
+              <PlaceYourBid
+                auctionInfo={auctionInfo}
+                totalSupply={totalSupply}
+              />
             )}
             <Card title="Participation Overview">
               <ParticipationOverview
@@ -84,6 +95,7 @@ const Detail = (props: any) => {
                 detail={detail}
                 minBidPrice={minBidPrice}
                 auctionInfo={auctionInfo}
+                totalSupply={totalSupply}
               />
             </Card>
           </div>

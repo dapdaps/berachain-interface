@@ -5,11 +5,8 @@ import { useMemo } from "react";
 import Big from "big.js";
 
 const TokenLaunchDetails = (props: any) => {
-  const { className, detail, auctionInfo, minBidPrice } = props;
-  const totalSupply = useMemo(
-    () => auctionInfo.baseToken.totalSupply / 1e18,
-    [auctionInfo]
-  );
+  const { className, detail, auctionInfo, totalSupply, minBidPrice } = props;
+
   const fdv = useMemo(() => {
     if (!minBidPrice) return 0;
     return Big(minBidPrice).mul(totalSupply).toString();
