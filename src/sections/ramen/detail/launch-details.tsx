@@ -5,11 +5,15 @@ import { useMemo } from "react";
 import Big from "big.js";
 
 const TokenLaunchDetails = (props: any) => {
-  const { className, detail, minBidPrice } = props;
+  const { className, detail, auctionInfo, minBidPrice } = props;
+  const totalSupply = useMemo(
+    () => auctionInfo.baseToken.totalSupply / 1e18,
+    [auctionInfo]
+  );
   const fdv = useMemo(() => {
     if (!minBidPrice) return 0;
-    return Big(minBidPrice).mul(detail.totalSupply).toString();
-  }, [detail, minBidPrice]);
+    return Big(minBidPrice).mul(totalSupply).toString();
+  }, [detail, minBidPrice, totalSupply]);
   return (
     <div
       className={clsx(
@@ -18,10 +22,10 @@ const TokenLaunchDetails = (props: any) => {
       )}
     >
       <LabelItem label="Total Supply">
-        {numberFormatter(detail.totalSupply, 2, true)} GAYMEN
+        {numberFormatter(totalSupply, 2, true)} {detail.token_symbol}
       </LabelItem>
       <LabelItem label="Auctioned Supply">
-        {numberFormatter(detail.auctionedSupply, 2, true)} BERA
+        {numberFormatter(auctionInfo.capacity, 2, true)} BERA
       </LabelItem>
       <LabelItem label="Min. Bid Price">
         {numberFormatter(minBidPrice, 4, true)} BERA

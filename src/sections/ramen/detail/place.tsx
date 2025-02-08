@@ -8,7 +8,7 @@ import useTokenBalance from "@/hooks/use-token-balance";
 
 const PlaceYourBid = (props: any) => {
   const { className, auctionInfo } = props;
-
+  console.log("auctionInfo", auctionInfo);
   const spendToken = bera.bera;
   const { tokenBalance } = useTokenBalance(
     spendToken.address,

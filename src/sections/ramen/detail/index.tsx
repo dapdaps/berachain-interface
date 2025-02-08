@@ -80,7 +80,11 @@ const Detail = (props: any) => {
               />
             </Card>
             <Card title="Token Launch Details" className="col-span-2">
-              <TokenLaunchDetails detail={detail} minBidPrice={minBidPrice} />
+              <TokenLaunchDetails
+                detail={detail}
+                minBidPrice={minBidPrice}
+                auctionInfo={auctionInfo}
+              />
             </Card>
           </div>
         </>
