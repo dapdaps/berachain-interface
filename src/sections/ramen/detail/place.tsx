@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { bera } from "@/configs/tokens/bera";
 import { useState } from "react";
 import { numberFormatter } from "@/utils/number-formatter";
 import TokenInput from "@/sections/ramen/detail/components/token-input";
@@ -8,9 +7,8 @@ import useTokenBalance from "@/hooks/use-token-balance";
 import Big from "big.js";
 
 const PlaceYourBid = (props: any) => {
-  const { className, auctionInfo, totalSupply } = props;
+  const { className, auctionInfo, totalSupply, spendToken } = props;
 
-  const spendToken = bera.bera;
   const { tokenBalance } = useTokenBalance(
     spendToken.address,
     spendToken.decimals
@@ -101,7 +99,7 @@ const PlaceYourBid = (props: any) => {
               {numberFormatter(
                 Big(totalSupply)
                   .mul(
-                    tokenBidPrice || auctionInfo.encryptedMarginalPrice.minPrice
+                    tokenBidPrice || auctionInfo?.encryptedMarginalPrice?.minPrice
                   )
                   .toString(),
                 2,

@@ -11,11 +11,27 @@ import CircleLoading from "@/components/circle-loading";
 import { DIS_STEPS } from "../config";
 import { useMemo } from "react";
 import dayjs from "dayjs";
+import AuctionHead from '@/sections/ramen/detail/components/auction-head';
+import useTokenBalance from '@/hooks/use-token-balance';
+import { bera } from '@/configs/tokens/bera';
 
 const Detail = (props: any) => {
   const { className } = props;
-  const { loading, detail, auctionInfo, pricePerToken, minBidPrice } =
-    useDetail();
+
+  const spendToken = bera.bera;
+
+  const {
+    loading,
+    detail,
+    auctionInfo,
+    pricePerToken,
+    minBidPrice
+  } = useDetail();
+  const { tokenBalance } = useTokenBalance(
+    spendToken.address,
+    spendToken.decimals
+  );
+
   const isLaunched = useMemo(
     () =>
       detail?.claimTime
@@ -46,6 +62,7 @@ const Detail = (props: any) => {
       };
     });
   }, [detail]);
+
   return (
     <div
       className={clsx(
@@ -64,23 +81,35 @@ const Detail = (props: any) => {
             {isLaunched ? (
               <Card
                 title="Auction Results"
-                prefix={
-                  <div className="mb-[37px] flex items-center gap-[10px] font-Montserrat font-[500] text-black text-[14px] leading-[90%]">
-                    <div className="text-[18px] font-[600]">
-                      {numberFormatter(detail.bidSubmitted, 2, true)}
-                    </div>
-                    <div className="">bids submitted</div>
-                    <div className="ml-auto">Auction Ended</div>
-                  </div>
-                }
+                prefix={(
+                  <AuctionHead detail={detail} isLaunched={isLaunched} />
+                )}
               >
                 <AuctionResults />
               </Card>
             ) : (
-              <PlaceYourBid
-                auctionInfo={auctionInfo}
-                totalSupply={totalSupply}
-              />
+              <Card
+                title={(
+                  <div className="flex items-center justify-between">
+                    <div className="">Place Your Bid</div>
+                    <div className="flex items-center justify-end gap-[5px] text-black font-[500] text-[12px]">
+                      <div className="text-[#8D8D8D]">Wallet Balance:</div>
+                      <div className="">
+                        {numberFormatter(tokenBalance, 4, true)} {spendToken.symbol}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                prefix={(
+                  <AuctionHead detail={detail} isLaunched={isLaunched} />
+                )}
+              >
+                <PlaceYourBid
+                  auctionInfo={auctionInfo}
+                  totalSupply={totalSupply}
+                  spendToken={spendToken}
+                />
+              </Card>
             )}
             <Card title="Participation Overview">
               <ParticipationOverview
