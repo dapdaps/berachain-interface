@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import StepVertical from "@/sections/ramen/detail/components/step/vertical";
 import { useMemo } from "react";
-import { numberFormatter } from "@/utils/number-formatter";
 
 const ParticipationOverview = (props: any) => {
   const { className, detail, auctionInfo, steps, isLaunched } = props;
@@ -37,18 +36,20 @@ const ParticipationOverview = (props: any) => {
   return (
     <div className={clsx("mt-[22px]", className)}>
       <StepVertical className="" list={mergedSteps} />
-      <div className="border border-[rgba(0,_0,_0,_0.10)] rounded-[10px] p-[19px_15px_12px] flex flex-col items-stretch gap-[15px] mt-[23px]">
-        <div className="text-[14px] text-black font-[600] leading-[90%] font-Montserrat flex justify-between items-center">
-          <div className="">Claimable from Auction</div>
-          <div className="text-[1.14em]">0 BOWL</div>
+      {isLaunched && (
+        <div className="border border-[rgba(0,_0,_0,_0.10)] rounded-[10px] p-[19px_15px_12px] flex flex-col items-stretch gap-[15px] mt-[23px]">
+          <div className="text-[14px] text-black font-[600] leading-[90%] font-Montserrat flex justify-between items-center">
+            <div className="">Claimable from Auction</div>
+            <div className="text-[1.14em]">0 {detail.token_symbol}</div>
+          </div>
+          <button
+            type="button"
+            className="w-full h-[46px] flex justify-center items-center rounded-[10px] border border-black bg-[#FFDC50]"
+          >
+            No Claimable Token
+          </button>
         </div>
-        <button
-          type="button"
-          className="w-full h-[46px] flex justify-center items-center rounded-[10px] border border-black bg-[#FFDC50]"
-        >
-          No Claimable Token
-        </button>
-      </div>
+      )}
     </div>
   );
 };

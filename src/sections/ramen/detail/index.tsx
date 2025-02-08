@@ -53,7 +53,7 @@ const Detail = (props: any) => {
         <>
           <Dashboard detail={detail} isLaunched={isLaunched} steps={steps} />
           <div className="mt-[21px] grid grid-cols-2 gap-x-[30px] gap-y-[20px]">
-            {isLaunched && (
+            {isLaunched ? (
               <Card
                 title="Auction Results"
                 prefix={
@@ -68,6 +68,8 @@ const Detail = (props: any) => {
               >
                 <AuctionResults />
               </Card>
+            ) : (
+              <PlaceYourBid />
             )}
             <Card title="Participation Overview">
               <ParticipationOverview
