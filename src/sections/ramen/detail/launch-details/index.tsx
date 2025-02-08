@@ -18,18 +18,29 @@ const TokenLaunchDetails = (props: any) => {
         className
       )}
     >
-      <LabelItem label="Total Supply">
-        {numberFormatter(totalSupply, 2, true)} {detail.token_symbol}
-      </LabelItem>
-      <LabelItem label="Auctioned Supply">
-        {numberFormatter(auctionInfo?.capacity, 2, true)} BERA
-      </LabelItem>
-      <LabelItem label="Min. Bid Price">
-        {numberFormatter(minBidPrice, 4, true)} BERA
-      </LabelItem>
-      <LabelItem label="Min. FDV">
-        {numberFormatter(fdv, 2, true)} BERA
-      </LabelItem>
+      {detail.isFixed ? (
+        Object.entries(detail.config).map(([key, value]: any, i: number) => (
+          <LabelItem label={key}>
+            {numberFormatter(value, 2, true)}{" "}
+            {i === 0 ? detail.token_symbol : i === 3 ? "Gacha" : "BERA"}
+          </LabelItem>
+        ))
+      ) : (
+        <>
+          <LabelItem label="Total Supply">
+            {numberFormatter(totalSupply, 2, true)} {detail.token_symbol}
+          </LabelItem>
+          <LabelItem label="Auctioned Supply">
+            {numberFormatter(auctionInfo?.capacity, 2, true)} BERA
+          </LabelItem>
+          <LabelItem label="Min. Bid Price">
+            {numberFormatter(minBidPrice, 4, true)} BERA
+          </LabelItem>
+          <LabelItem label="Min. FDV">
+            {numberFormatter(fdv, 2, true)} BERA
+          </LabelItem>
+        </>
+      )}
     </div>
   );
 };

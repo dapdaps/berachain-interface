@@ -5,7 +5,16 @@ export const TOKENS: any = {
     privateSale: "2025-02-09T10:00:00Z",
     gachaRound: "2025-02-09T14:00:00Z",
     claimTime: "2025-02-09T20:00:00Z",
-    isActive: false
+    isActive: false,
+    config: {
+      "Reserved for Token Sale": "5000000",
+      "Fundraising Hard Cap": "134500",
+      "Token Price": "0.0269 BERA",
+      "Requirement per Entry": "69",
+      "Allocation Cap per Winning Entry": "33.625",
+      FDV: "2690000",
+      "Private Sale Token Price": "0.0269"
+    }
   },
   yeet: {
     claimTime: "2025-02-10T14:00:00Z",
