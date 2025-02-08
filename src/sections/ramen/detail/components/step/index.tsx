@@ -50,8 +50,8 @@ const Step = (props: any) => {
             {idx < list.length - 1 && (
               <div
                 className={clsx(
-                   "grow border-b border-black min-w-[10px]",
-                  !isNextActive && "border-dashed"
+                  "grow border-b border-black min-w-[10px]",
+                  !isNextActive && "border-dashed",
                   spaceClassName
                 )}
               ></div>
