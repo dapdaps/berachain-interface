@@ -199,7 +199,7 @@ export const bera: { [key: string]: Token } = {
     address: "0xf6718b2701D4a6498eF77D7c152b2137Ab28b8A3",
     decimals: 18,
     symbol: "stBTC",
-    icon: "",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33310.png",
     name: "Lorenzo stBTC"
   },
   susda: {
@@ -223,7 +223,7 @@ export const bera: { [key: string]: Token } = {
     address: "0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b",
     decimals: 18,
     symbol: "waBTC",
-    icon: "",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33310.png",
     name: "Wrapped aBTC"
   },
   weeth: {
