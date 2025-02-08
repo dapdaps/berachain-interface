@@ -55,19 +55,19 @@ const PartList = [
   //   link: "/earn",
   //   ArrowIcon: dAppArrowIcon
   // },
-  // {
-  //   className:
-  //     "origin-top-left absolute top-[33.5%] left-[21%] w-[486px] h-[333px]",
-  //   clipPath: marketplaceClipPath,
-  //   src: "marketplace.svg",
-  //   maskSrc: "mask-marketplace.svg",
-  //   indicatorClass: "absolute left-[7%] bottom-[22%] z-10 flex items-center",
-  //   buttonClass: "rotate-[-5deg] mr-[10px]",
-  //   arrowClass: "relative top-[-20px]",
-  //   btnText: "Token Marketplace",
-  //   link: "/marketplace",
-  //   ArrowIcon: MarketPlaceArrowIcon
-  // },
+  {
+    className:
+      "origin-top-left absolute top-[33.5%] left-[21%] w-[486px] h-[333px]",
+    clipPath: marketplaceClipPath,
+    src: "marketplace.svg",
+    maskSrc: "mask-marketplace.svg",
+    indicatorClass: "absolute left-[7%] bottom-[22%] z-10 flex items-center",
+    buttonClass: "rotate-[-5deg] mr-[10px]",
+    arrowClass: "relative top-[-20px]",
+    btnText: "Token Marketplace",
+    link: "/marketplace",
+    ArrowIcon: MarketPlaceArrowIcon
+  },
   {
     classNameChristmas:
       "origin-bottom-right absolute bottom-[5.5%] right-[12.5%] w-[628px] h-[322px]",
