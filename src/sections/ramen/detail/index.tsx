@@ -11,9 +11,10 @@ import CircleLoading from "@/components/circle-loading";
 import { DIS_STEPS } from "../config";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import AuctionHead from "@/sections/ramen/detail/components/auction-head";
-import useTokenBalance from "@/hooks/use-token-balance";
-import { bera } from "@/configs/tokens/bera";
+import AuctionHead from '@/sections/ramen/detail/components/auction-head';
+import useTokenBalance from '@/hooks/use-token-balance';
+import { bera } from '@/configs/tokens/bera';
+import { useCountdown } from '@/sections/ramen/hooks/use-countdown';
 
 const Detail = (props: any) => {
   const { className } = props;
@@ -26,6 +27,10 @@ const Detail = (props: any) => {
     spendToken.address,
     spendToken.decimals
   );
+  const [countdown] = useCountdown({
+    startTime: detail?.launch_start_date,
+    endTime: detail?.launch_end_date
+  });
 
   const isLaunched = useMemo(
     () =>
@@ -71,7 +76,12 @@ const Detail = (props: any) => {
         </div>
       ) : (
         <>
-          <Dashboard detail={detail} isLaunched={isLaunched} steps={steps} />
+          <Dashboard
+            detail={detail}
+            isLaunched={isLaunched}
+            steps={steps}
+            countdown={countdown}
+          />
           <div className="mt-[21px] grid grid-cols-2 gap-x-[30px] gap-y-[20px]">
             {isLaunched ? (
               <Card
@@ -98,7 +108,7 @@ const Detail = (props: any) => {
                     </div>
                   </div>
                 }
-                prefix={<AuctionHead detail={detail} isLaunched={isLaunched} />}
+                prefix={<AuctionHead detail={detail} isLaunched={isLaunched} countdown={countdown} />}
               >
                 <PlaceYourBid
                   auctionInfo={auctionInfo}
@@ -107,6 +117,7 @@ const Detail = (props: any) => {
                   onSuccess={() => {
                     update();
                   }}
+                  countdown={countdown}
                 />
               </Card>
             )}

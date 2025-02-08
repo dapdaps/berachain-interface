@@ -114,10 +114,10 @@ const PlaceYourBid = (props: any) => {
             <div className="">{numberFormatter("1562500", 2, true)} BERA</div>
             <div className="text-[#8D8D8D] font-[500]">
               {numberFormatter(
-                Big(totalSupply)
+                Big(totalSupply || 0)
                   .mul(
                     tokenBidPrice ||
-                      auctionInfo?.encryptedMarginalPrice?.minPrice
+                      auctionInfo?.encryptedMarginalPrice?.minPrice || 0
                   )
                   .toString(),
                 2,

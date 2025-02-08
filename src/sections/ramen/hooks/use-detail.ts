@@ -38,7 +38,8 @@ export default function useDetail() {
       setDetail({
         ...detailRes.data,
         ...token,
-        bidSubmitted: actionRes?.data?.lotHypeMetric?.bidSubmitted || 0
+        bidSubmitted: actionRes?.data?.lotHypeMetric?.bidSubmitted || 0,
+        launch_end_date: TOKENS[slug]?.claimTime,
       });
     } catch (err) {
     } finally {

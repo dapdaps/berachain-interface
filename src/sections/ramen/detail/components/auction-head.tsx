@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { numberFormatter } from '@/utils/number-formatter';
 
 const AuctionHead = (props: any) => {
-  const { className, detail, isLaunched } = props;
+  const { className, detail, isLaunched, countdown } = props;
 
   return (
     <div className={clsx('mb-[37px] flex items-center gap-[10px] font-Montserrat font-[500] text-black text-[14px] leading-[90%]', className)}>
@@ -15,7 +15,9 @@ const AuctionHead = (props: any) => {
           isLaunched ? 'Auction Ended' : (
             <>
               <div className="">Closed in</div>
-              <div className="font-[700]">60h 50m 02s</div>
+              <div className="font-[700]">
+                {countdown?.endSplit?.[0]}d {countdown?.endSplit?.[1]}h {countdown?.endSplit?.[2]}m {countdown?.endSplit?.[3]}s
+              </div>
             </>
           )
         }
