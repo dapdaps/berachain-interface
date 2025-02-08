@@ -10,10 +10,7 @@ const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={clsx(
-        "w-full border border-black rounded-[10px] bg-[#FFDC50] h-[46px] flex justify-center items-center",
-        !loading && !disabled && "cursor-pointer"
-      )}
+      className="w-full border border-black rounded-[10px] bg-[#FFDC50] h-[46px] flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {loading ? <Loading /> : children}
     </button>

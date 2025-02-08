@@ -42,7 +42,7 @@ const PriceRadio = (props: any) => {
             }
           }}
         >
-          {numberFormatter(item.usd, 2, true, { isShort: true })}
+          {numberFormatter(item.usd, 2, true, { isShort: true, isShortUppercase: true })}
         </button>
       ))}
     </div>

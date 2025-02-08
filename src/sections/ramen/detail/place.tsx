@@ -38,11 +38,10 @@ const PlaceYourBid = (props: any) => {
         label={
           <div className="flex justify-between items-center">
             <div className="">Spend Amount</div>
-            <div className="text-[#3D405A] text-[12px] font-[400] leading-[90%]">
+            <div className="text-[#8D8D8D] text-[12px] font-[500] leading-[90%]">
               Min:&nbsp;
-              <span className="">
+              <span className="text-black">
                 {auctionInfo?.encryptedMarginalPrice?.minBidSize}{" "}
-                {spendToken.symbol}
               </span>
             </div>
           </div>
@@ -50,22 +49,21 @@ const PlaceYourBid = (props: any) => {
         value={spendAmount}
         onChange={onSpendAmount}
         token={spendToken}
-        balance={tokenBalance}
+        errorMsg="Your bid price is too high. Max bid price at your current spend amount: 0 BERA"
       />
       <TokenInput
         className="mt-[20px]"
         label={
           <div className="flex justify-between items-center">
             <div className="">Bid Price per Token</div>
-            <div className="text-[#3D405A] text-[12px] font-[400] leading-[90%]">
+            <div className="text-[#8D8D8D] text-[12px] font-[500] leading-[90%]">
               Min:&nbsp;
-              <span className="">
+              <span className="text-black">
                 {numberFormatter(
                   auctionInfo?.encryptedMarginalPrice?.minPrice,
                   4,
                   true
-                )}{" "}
-                {spendToken.symbol}
+                )}
               </span>
             </div>
           </div>
@@ -73,28 +71,30 @@ const PlaceYourBid = (props: any) => {
         value={tokenBidPrice}
         onChange={onTokenBidPrice}
         token={spendToken}
+        suffix={(
+          <div className="">
+            <div className="text-black text-[14px] font-[500]">
+              Price based on FDV (USD):
+            </div>
+            <PriceRadio
+              className="mt-[15px]"
+              value={tokenBidPrice}
+              auctionInfo={auctionInfo}
+              onChange={(item: any) => {
+                onTokenBidPrice(item.price);
+              }}
+            />
+          </div>
+        )}
       />
       <div className="mt-[20px]">
-        <div className="text-black text-[16px] font-[600]">
-          Price based on FDV (USD):
-        </div>
-        <PriceRadio
-          className="mt-[10px]"
-          value={tokenBidPrice}
-          auctionInfo={auctionInfo}
-          onChange={(item: any) => {
-            onTokenBidPrice(item.price);
-          }}
-        />
-      </div>
-      <div className="mt-[20px]">
-        <div className="flex items-center justify-between gap-[10px]">
-          <div className=" text-black text-[12px] font-[500] leading-[90%]">
+        <div className="flex items-start justify-between gap-[5px]">
+          <div className=" text-black text-[14px] font-[500] leading-[90%]">
             Estimated FDV at your Bid Price
           </div>
-          <div className="flex items-center gap-[5px] font-Montserrat text-black text-[12px] font-[600] leading-[90%]">
+          <div className="flex flex-col items-end gap-[5px] font-Montserrat text-black text-[14px] font-[600] leading-[90%]">
             <div className="">{numberFormatter("1562500", 2, true)} BERA</div>
-            <div className="text-[#3D405A] font-[500]">
+            <div className="text-[#8D8D8D] font-[500]">
               {numberFormatter(
                 Big(totalSupply)
                   .mul(
@@ -106,6 +106,7 @@ const PlaceYourBid = (props: any) => {
                 true,
                 {
                   isShort: true,
+                  isShortUppercase: true,
                   prefix: "$"
                 }
               )}
@@ -113,7 +114,7 @@ const PlaceYourBid = (props: any) => {
           </div>
         </div>
       </div>
-      <div className="mt-[20px]">
+      <div className="mt-[17px]">
         <AuctionButton
           errorTips=""
           loading={buying}
