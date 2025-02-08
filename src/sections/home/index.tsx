@@ -134,8 +134,8 @@ const Navigation = function () {
 
         <div
           className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px] opacity-50"
-          onClick={onNavigateToEarn}
-          data-bp="1010-012"
+          // onClick={onNavigateToEarn}
+          // data-bp="1010-012"
         >
           <EarnSvg
             className={clsx(
