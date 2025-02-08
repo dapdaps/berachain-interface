@@ -142,7 +142,7 @@ export const ethereum: { [key: string]: Token } = {
     address: "0x09D4214C03D01F49544C0448DBE3A27f768F2b34",
     decimals: 18,
     symbol: "rUSD",
-    icon: "",
+    icon: "/assets/tokens/usdc.png",
     name: "Reservoir Stablecoin"
   },
   solvbtc: {
@@ -166,7 +166,7 @@ export const ethereum: { [key: string]: Token } = {
     address: "0xf6718b2701D4a6498eF77D7c152b2137Ab28b8A3",
     decimals: 18,
     symbol: "stBTC",
-    icon: "",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png",
     name: "Lorenzo stBTC"
   },
   susda: {
@@ -189,7 +189,7 @@ export const ethereum: { [key: string]: Token } = {
     address: "0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568",
     decimals: 8,
     symbol: "uniBTC",
-    icon: "",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png",
     name: "uniBTC"
   },
   usda: {
@@ -212,7 +212,7 @@ export const ethereum: { [key: string]: Token } = {
     address: "0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b",
     decimals: 18,
     symbol: "waBTC",
-    icon: "",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png",
     name: "Wrapped aBTC"
   },
   weeth: {
