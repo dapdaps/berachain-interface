@@ -14,7 +14,8 @@ import dayjs from "dayjs";
 
 const Detail = (props: any) => {
   const { className } = props;
-  const { loading, detail, price, pricePerToken, minBidPrice } = useDetail();
+  const { loading, detail, auctionInfo, price, pricePerToken, minBidPrice } =
+    useDetail();
   const isLaunched = useMemo(
     () =>
       detail?.claimTime
@@ -37,7 +38,6 @@ const Detail = (props: any) => {
       };
     });
   }, [detail]);
-  console.log("detail", detail);
   return (
     <div
       className={clsx(
@@ -74,6 +74,7 @@ const Detail = (props: any) => {
                 detail={detail}
                 steps={steps}
                 isLaunched={isLaunched}
+                auctionInfo={auctionInfo}
               />
             </Card>
             <Card title="Token Launch Details" className="col-span-2">

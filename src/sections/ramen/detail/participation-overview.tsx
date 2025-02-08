@@ -1,9 +1,10 @@
 import clsx from "clsx";
 import StepVertical from "@/sections/ramen/detail/components/step/vertical";
 import { useMemo } from "react";
+import { numberFormatter } from "@/utils/number-formatter";
 
 const ParticipationOverview = (props: any) => {
-  const { className, detail, steps, isLaunched } = props;
+  const { className, detail, auctionInfo, steps, isLaunched } = props;
 
   const mergedSteps = useMemo(() => {
     if (!steps.length) return [];
@@ -11,8 +12,10 @@ const ParticipationOverview = (props: any) => {
       let value = "";
       let status: any = "";
       if (i === 0) {
-        value = "No Bid Submitted";
-        status = "Spend Amount: -";
+        value = auctionInfo?.userBids.length
+          ? "Bid Submitted"
+          : "No Bid Submitted";
+        status = `Spend Amount: -`;
       }
       if (i === 1) {
         value = isLaunched ? "Bids Decrypted" : "Coming Soon";
@@ -29,7 +32,7 @@ const ParticipationOverview = (props: any) => {
       }
       return { ...step, value, status };
     });
-  }, [steps, isLaunched]);
+  }, [steps, isLaunched, auctionInfo]);
 
   return (
     <div className={clsx("mt-[22px]", className)}>

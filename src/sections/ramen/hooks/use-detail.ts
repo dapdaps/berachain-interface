@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import { asyncFetch, post } from "@/utils/http";
 import { TOKENS } from "../config";
 import Big from "big.js";
+import useUserInfo from "./use-user-info";
 
 export default function useDetail() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export default function useDetail() {
   const [pricePerToken, setPricePerToken] = useState("");
   const params = useParams();
   const slug = params.id as string;
+  const { maxTicket, auctionInfo } = useUserInfo({ slug, ticketPrice: price });
 
   const queryDetail = useCallback(async () => {
     if (!slug) return;
@@ -83,6 +85,8 @@ export default function useDetail() {
   return {
     loading,
     detail,
+    userMaxTicket: maxTicket,
+    auctionInfo,
     price,
     pricePerToken,
     minBidPrice
