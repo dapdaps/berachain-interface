@@ -98,5 +98,129 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 18,
     name: 'rsETH',
     icon: '/assets/tokens/rseth.svg'
+  },
+  "pumpBTC.bera": {
+    chainId: CHAIN_ID,
+    address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
+    decimals: 8,
+    symbol: "pumpBTC.bera",
+    name: "pumpBTC.bera",
+    icon: "/assets/tokens/pumpbtc.png"
+  },
+  fbtc: {
+    chainId: CHAIN_ID,
+    address: "0xC96dE26018A54D51c097160568752c4E3BD6C364",
+    decimals: 8,
+    symbol: "FBTC",
+    name: "Fire Bitcoin",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/32306.png"
+  },
+  lbtc: {
+    chainId: CHAIN_ID,
+    address: "0x8236a87084f8B84306f72007F36F2618A5634494", 
+    decimals: 8,
+    symbol: "LBTC",
+    name: "Lombard Staked Bitcoin",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33652.png"
+  },
+  rseth: {
+    chainId: CHAIN_ID,
+    address: "0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7",
+    decimals: 18,
+    symbol: "rsETH",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29242.png"
+  },
+  rsweth: {
+    chainId: CHAIN_ID,
+    address: "0xFAe103DC9cf190eD75350761e95403b7b8aFa6c0",
+    decimals: 18,
+    symbol: "rswETH",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29974.png"
+  },
+  rusd: {
+    chainId: CHAIN_ID,
+    address: "0x09D4214C03D01F49544C0448DBE3A27f768F2b34",
+    decimals: 18,
+    symbol: "rUSD",
+    icon: "",
+    name: "Reservoir Stablecoin"
+  },
+  solvbtc: {
+    chainId: CHAIN_ID,
+    address: "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+    decimals: 18,
+    symbol: "SolvBTC",
+    name: "Solv BTC",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png"
+  },
+  solvbtcbbn: {
+    chainId: CHAIN_ID,
+    address: "0xd9D920AA40f578ab794426F5C90F6C731D159DEf",
+    decimals: 18,
+    symbol: "SolvBTC.BBN",
+    name: "SolvBTC Babylon",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33310.png"
+  },
+  stbtc: {
+    chainId: CHAIN_ID,
+    address: "0xf6718b2701D4a6498eF77D7c152b2137Ab28b8A3",
+    decimals: 18,
+    symbol: "stBTC",
+    icon: "",
+    name: "Lorenzo stBTC"
+  },
+  susda: {
+    chainId: CHAIN_ID,
+    address: "0x2B66AAdE1e9C062FF411bd47C44E0Ad696d43BD9",
+    decimals: 18,
+    symbol: "sUSDa",
+    name: "USDa saving token",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/35538.png"
+  },
+  susde: {
+    chainId: CHAIN_ID,
+    address: "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
+    decimals: 18,
+    symbol: "sUSDe",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29471.png"
+  },
+  unibtc: {
+    chainId: CHAIN_ID,
+    address: "0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568",
+    decimals: 8,
+    symbol: "uniBTC",
+    icon: "",
+    name: "uniBTC"
+  },
+  usda: {
+    chainId: CHAIN_ID,
+    address: "0x8A60E489004Ca22d775C5F2c657598278d17D9c2",
+    decimals: 18,
+    symbol: "USDa",
+    name: "USDa",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/35368.png"
+  },
+  usde: {
+    chainId: CHAIN_ID,
+    address: "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+    decimals: 18,
+    symbol: "USDe",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29470.png"
+  },
+  wabtc: {
+    chainId: CHAIN_ID,
+    address: "0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b",
+    decimals: 18,
+    symbol: "waBTC",
+    icon: "",
+    name: "Wrapped aBTC"
+  },
+  weeth: {
+    chainId: CHAIN_ID,
+    address: "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee",
+    decimals: 18,
+    symbol: "weETH",
+    name: "Wrapped eETH",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/28568.png"
   }
 };
