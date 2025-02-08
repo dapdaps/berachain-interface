@@ -5,7 +5,12 @@ import { asyncFetch } from "@/utils/http";
 import { utils } from "ethers";
 import Big from "big.js";
 
-export default function useBuy({ amount, spendToken, tokenBidPrice }: any) {
+export default function useBuy({
+  amount,
+  spendToken,
+  tokenBidPrice,
+  onSuccess
+}: any) {
   const [buying, setBuying] = useState(false);
   const toast = useToast();
   const { account } = useCustomAccount();
@@ -58,6 +63,8 @@ export default function useBuy({ amount, spendToken, tokenBidPrice }: any) {
       );
       if (!entryRes) throw Error("");
       const { ciphertext, x, y } = entryRes;
+
+      onSuccess();
       toast.dismiss(toastId);
       toast.success("Buy successfully");
       return;

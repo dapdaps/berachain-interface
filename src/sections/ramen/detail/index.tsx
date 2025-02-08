@@ -11,23 +11,18 @@ import CircleLoading from "@/components/circle-loading";
 import { DIS_STEPS } from "../config";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import AuctionHead from '@/sections/ramen/detail/components/auction-head';
-import useTokenBalance from '@/hooks/use-token-balance';
-import { bera } from '@/configs/tokens/bera';
+import AuctionHead from "@/sections/ramen/detail/components/auction-head";
+import useTokenBalance from "@/hooks/use-token-balance";
+import { bera } from "@/configs/tokens/bera";
 
 const Detail = (props: any) => {
   const { className } = props;
 
   const spendToken = bera.bera;
 
-  const {
-    loading,
-    detail,
-    auctionInfo,
-    pricePerToken,
-    minBidPrice
-  } = useDetail();
-  const { tokenBalance } = useTokenBalance(
+  const { loading, detail, auctionInfo, pricePerToken, minBidPrice } =
+    useDetail();
+  const { tokenBalance, update } = useTokenBalance(
     spendToken.address,
     spendToken.decimals
   );
@@ -81,33 +76,33 @@ const Detail = (props: any) => {
             {isLaunched ? (
               <Card
                 title="Auction Results"
-                prefix={(
-                  <AuctionHead detail={detail} isLaunched={isLaunched} />
-                )}
+                prefix={<AuctionHead detail={detail} isLaunched={isLaunched} />}
               >
                 <AuctionResults />
               </Card>
             ) : (
               <Card
-                title={(
+                title={
                   <div className="flex items-center justify-between">
                     <div className="">Place Your Bid</div>
                     <div className="flex items-center justify-end gap-[5px] text-black font-[500] text-[12px]">
                       <div className="text-[#8D8D8D]">Wallet Balance:</div>
                       <div className="">
-                        {numberFormatter(tokenBalance, 4, true)} {spendToken.symbol}
+                        {numberFormatter(tokenBalance, 4, true)}{" "}
+                        {spendToken.symbol}
                       </div>
                     </div>
                   </div>
-                )}
-                prefix={(
-                  <AuctionHead detail={detail} isLaunched={isLaunched} />
-                )}
+                }
+                prefix={<AuctionHead detail={detail} isLaunched={isLaunched} />}
               >
                 <PlaceYourBid
                   auctionInfo={auctionInfo}
                   totalSupply={totalSupply}
                   spendToken={spendToken}
+                  onSuccess={() => {
+                    update();
+                  }}
                 />
               </Card>
             )}

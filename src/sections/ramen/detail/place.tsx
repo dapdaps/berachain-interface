@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { numberFormatter } from "@/utils/number-formatter";
 import TokenInput from "@/sections/ramen/detail/components/token-input";
 import PriceRadio from "@/sections/ramen/detail/components/price-radio";
@@ -11,10 +11,6 @@ import Big from "big.js";
 const PlaceYourBid = (props: any) => {
   const { className, auctionInfo, totalSupply, spendToken } = props;
 
-  const { tokenBalance, update } = useTokenBalance(
-    spendToken.address,
-    spendToken.decimals
-  );
   const [spendAmount, setSpendAmount] = useState<string>();
   const [tokenBidPrice, setTokenBidPrice] = useState<any>();
   const { buying, onBuy } = useBuy({
@@ -30,6 +26,27 @@ const PlaceYourBid = (props: any) => {
   const onTokenBidPrice = (val: string) => {
     setTokenBidPrice(val);
   };
+
+  const amountErrorTips = useMemo(
+    () =>
+      spendAmount
+        ? Big(spendAmount || 0).lt(
+            auctionInfo?.encryptedMarginalPrice?.minBidSize
+          )
+          ? `Minimum spend amount is ${auctionInfo?.encryptedMarginalPrice?.minBidSize} BERA`
+          : ""
+        : "",
+    [spendAmount, auctionInfo]
+  );
+
+  const priceErrorTips = useMemo(() => {
+    if (!tokenBidPrice) return "";
+    if (
+      Big(tokenBidPrice || 0).lt(auctionInfo?.encryptedMarginalPrice?.minPrice)
+    )
+      return `Minimum bid price is ${auctionInfo?.encryptedMarginalPrice?.minPrice} BERA per token`;
+    return "";
+  }, [tokenBidPrice, auctionInfo]);
 
   return (
     <div className={clsx("mt-[21px]", className)}>
@@ -49,7 +66,7 @@ const PlaceYourBid = (props: any) => {
         value={spendAmount}
         onChange={onSpendAmount}
         token={spendToken}
-        errorMsg="Your bid price is too high. Max bid price at your current spend amount: 0 BERA"
+        errorMsg={amountErrorTips}
       />
       <TokenInput
         className="mt-[20px]"
@@ -71,7 +88,8 @@ const PlaceYourBid = (props: any) => {
         value={tokenBidPrice}
         onChange={onTokenBidPrice}
         token={spendToken}
-        suffix={(
+        errorMsg={priceErrorTips}
+        suffix={
           <div className="">
             <div className="text-black text-[14px] font-[500]">
               Price based on FDV (USD):
@@ -85,7 +103,7 @@ const PlaceYourBid = (props: any) => {
               }}
             />
           </div>
-        )}
+        }
       />
       <div className="mt-[20px]">
         <div className="flex items-start justify-between gap-[5px]">
@@ -117,6 +135,9 @@ const PlaceYourBid = (props: any) => {
       <div className="mt-[17px]">
         <AuctionButton
           errorTips=""
+          disabled={
+            !spendAmount || !tokenBidPrice || amountErrorTips || priceErrorTips
+          }
           loading={buying}
           onClick={() => {
             onBuy();
