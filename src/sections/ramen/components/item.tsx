@@ -2,11 +2,14 @@ import clsx from "clsx";
 import { numberFormatter } from "@/utils/number-formatter";
 import * as dateFns from "date-fns";
 import { useRouter } from "next/navigation";
+import { useBera } from '@/sections/ramen/hooks/use-bera';
+import Big from 'big.js';
 
 const Item = (props: any) => {
   const { className, project } = props;
 
   const router = useRouter();
+  const [beraPrice] = useBera();
 
   const onClick = () => {
     if (!project) return;
@@ -42,8 +45,9 @@ const Item = (props: any) => {
           {numberFormatter(project?.total_raised_in_ether, 2, true)} BERA
         </div>
         <div className="text-[0.75em]">
-          {numberFormatter(project?.total_raised_in_usd, 4, true, {
-            prefix: "$"
+          {numberFormatter(Big(project?.total_raised_in_ether || 0).times(beraPrice), 4, true, {
+            prefix: "$",
+            isShort: true,
           })}
         </div>
       </div>
@@ -53,13 +57,14 @@ const Item = (props: any) => {
         </div>
         <div className="text-[0.75em]">
           {numberFormatter(project?.sale_price_in_usd, 4, true, {
-            prefix: "$"
+            prefix: "$",
+            isShort: true,
           })}
         </div>
       </div>
       <div className="opacity-50">Pending</div>
       <div className="">
-        {dateFns.format(project?.date_ended, "MM/dd/yyyy")}
+        {project?.date_ended ? dateFns.format(project?.date_ended, "MM/dd/yyyy") : '-'}
       </div>
     </div>
   );
