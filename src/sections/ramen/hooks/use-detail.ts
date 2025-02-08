@@ -13,7 +13,10 @@ export default function useDetail() {
   const [pricePerToken, setPricePerToken] = useState("");
   const params = useParams();
   const slug = params.id as string;
-  const { maxTicket, auctionInfo } = useUserInfo({ slug, ticketPrice: price });
+  const { gachaInfo, auctionInfo, queryGachaBalance } = useUserInfo({
+    slug,
+    ticketPrice: price
+  });
 
   const queryDetail = useCallback(async () => {
     if (!slug) return;
@@ -39,7 +42,7 @@ export default function useDetail() {
         ...detailRes.data,
         ...token,
         bidSubmitted: actionRes?.data?.lotHypeMetric?.bidSubmitted || 0,
-        launch_end_date: TOKENS[slug]?.claimTime,
+        launch_end_date: TOKENS[slug]?.claimTime
       });
     } catch (err) {
     } finally {
@@ -65,10 +68,13 @@ export default function useDetail() {
           priceIdRes.data.price_discovery_id
         }`
       );
+
       setPrice(priceRes.data.detail?.ticket_price);
       setPricePerToken(priceRes.data.detail?.bera_price_per_token);
       setMinBidPrice(
-        Big(priceRes.data.detail?.min_bid_price).div(1e18).toString()
+        Big(priceRes.data.detail?.min_bid_price || 0)
+          .div(1e18)
+          .toString()
       );
     } catch (err) {
       setPrice("");
@@ -86,10 +92,11 @@ export default function useDetail() {
   return {
     loading,
     detail,
-    userMaxTicket: maxTicket,
+    gachaInfo,
     auctionInfo,
-    price,
+    ticketPrice: price,
     pricePerToken,
-    minBidPrice
+    minBidPrice,
+    queryGachaBalance
   };
 }

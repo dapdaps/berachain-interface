@@ -4,15 +4,21 @@ import { asyncFetch, post } from "@/utils/http";
 import { TOKENS } from "../config";
 
 export default function useUserInfo({ slug, ticketPrice }: any) {
-  const [maxTicket, setMaxTicket] = useState(0);
+  const [gachaInfo, setGachaInfo] = useState<any>();
   const [auctionInfo, setAuctionInfo] = useState<any>();
   const { account } = useCustomAccount();
+
   const queryGachaBalance = useCallback(async () => {
+    if (!account) return;
     const gachaRes = await asyncFetch(
       `/api.ramen/v1/rewards?address=${account}`
     );
     const gachaBalance = gachaRes.data.amount;
-    setMaxTicket(Math.floor(gachaBalance / ticketPrice));
+
+    setGachaInfo({
+      maxTicket: Math.floor(gachaBalance / Number(ticketPrice)),
+      balance: gachaBalance
+    });
   }, [account, ticketPrice]);
 
   const queryActionLot = useCallback(async () => {
@@ -37,17 +43,17 @@ export default function useUserInfo({ slug, ticketPrice }: any) {
 
   useEffect(() => {
     if (!account) return;
-    if (!ticketPrice) queryGachaBalance();
+    if (ticketPrice) queryGachaBalance();
   }, [account, ticketPrice]);
 
   useEffect(() => {
     if (!TOKENS[slug]) return;
-
     queryActionLot();
   }, [account, slug]);
 
   return {
-    maxTicket,
-    auctionInfo
+    gachaInfo,
+    auctionInfo,
+    queryGachaBalance
   };
 }

@@ -11,26 +11,25 @@ import CircleLoading from "@/components/circle-loading";
 import { DIS_STEPS } from "../config";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import AuctionHead from '@/sections/ramen/detail/components/auction-head';
-import useTokenBalance from '@/hooks/use-token-balance';
-import { bera } from '@/configs/tokens/bera';
-import { useCountdown } from '@/sections/ramen/hooks/use-countdown';
+import AuctionHead from "@/sections/ramen/detail/components/auction-head";
+import RegisterPanel from "./register-panel";
+import { bera } from "@/configs/tokens/bera";
 
 const Detail = (props: any) => {
   const { className } = props;
 
   const spendToken = bera.bera;
 
-  const { loading, detail, auctionInfo, pricePerToken, minBidPrice } =
-    useDetail();
-  const { tokenBalance, update } = useTokenBalance(
-    spendToken.address,
-    spendToken.decimals
-  );
-  const [countdown] = useCountdown({
-    startTime: detail?.launch_start_date,
-    endTime: detail?.launch_end_date
-  });
+  const {
+    loading,
+    detail,
+    auctionInfo,
+    gachaInfo,
+    ticketPrice,
+    pricePerToken,
+    minBidPrice,
+    queryGachaBalance
+  } = useDetail();
 
   const isLaunched = useMemo(
     () =>
@@ -76,12 +75,7 @@ const Detail = (props: any) => {
         </div>
       ) : (
         <>
-          <Dashboard
-            detail={detail}
-            isLaunched={isLaunched}
-            steps={steps}
-            countdown={countdown}
-          />
+          <Dashboard detail={detail} isLaunched={isLaunched} steps={steps} />
           <div className="mt-[21px] grid grid-cols-2 gap-x-[30px] gap-y-[20px]">
             {isLaunched ? (
               <Card
@@ -94,32 +88,23 @@ const Detail = (props: any) => {
                   totalSupply={totalSupply}
                 />
               </Card>
+            ) : detail.isFixed ? (
+              <RegisterPanel
+                gachaInfo={gachaInfo}
+                ticketPrice={ticketPrice}
+                detail={detail}
+                onSuccess={() => {
+                  queryGachaBalance();
+                }}
+              />
             ) : (
-              <Card
-                title={
-                  <div className="flex items-center justify-between">
-                    <div className="">Place Your Bid</div>
-                    <div className="flex items-center justify-end gap-[5px] text-black font-[500] text-[12px]">
-                      <div className="text-[#8D8D8D]">Wallet Balance:</div>
-                      <div className="">
-                        {numberFormatter(tokenBalance, 4, true)}{" "}
-                        {spendToken.symbol}
-                      </div>
-                    </div>
-                  </div>
-                }
-                prefix={<AuctionHead detail={detail} isLaunched={isLaunched} countdown={countdown} />}
-              >
-                <PlaceYourBid
-                  auctionInfo={auctionInfo}
-                  totalSupply={totalSupply}
-                  spendToken={spendToken}
-                  onSuccess={() => {
-                    update();
-                  }}
-                  countdown={countdown}
-                />
-              </Card>
+              <PlaceYourBid
+                auctionInfo={auctionInfo}
+                totalSupply={totalSupply}
+                spendToken={spendToken}
+                isLaunched={isLaunched}
+                detail={detail}
+              />
             )}
             <Card title="Participation Overview">
               <ParticipationOverview

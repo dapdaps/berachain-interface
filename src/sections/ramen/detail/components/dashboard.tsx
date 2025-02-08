@@ -2,11 +2,14 @@ import clsx from "clsx";
 import Back from "@/sections/ramen/detail/components/back";
 import Step from "@/sections/ramen/detail/components/step";
 import { useMemo } from "react";
-import { useCountdown } from '@/sections/ramen/hooks/use-countdown';
+import { useCountdown } from "@/sections/ramen/hooks/use-countdown";
 
 const Dashboard = (props: any) => {
-  const { className, detail, isLaunched, steps, countdown } = props;
-
+  const { className, detail, isLaunched, steps } = props;
+  const [countdown] = useCountdown({
+    startTime: detail?.launch_start_date,
+    endTime: detail?.launch_end_date
+  });
   const socials = useMemo(() => {
     const _s: any = [];
     if (detail.whitepaper_url) {
@@ -48,20 +51,19 @@ const Dashboard = (props: any) => {
               ${detail.token_symbol}
             </div>
           </div>
-          {
-            isLaunched ? (
-              <div className="translate-y-[10px] p-[9px_11px_8px_12px] w-[219px] shrink-0 bg-[#D4EEFF] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[600] leading-[100%]">
-                Launch is completed: Tokens are now claimable
+          {isLaunched ? (
+            <div className="translate-y-[10px] p-[9px_11px_8px_12px] w-[219px] shrink-0 bg-[#D4EEFF] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[600] leading-[100%]">
+              Launch is completed: Tokens are now claimable
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-[16px] ml-[75px] p-[9px_58px_15px] shrink-0 bg-[#D4EEFF] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[600] leading-[100%]">
+              <div className="">Auction ending in</div>
+              <div className="text-[22px] font-[700]">
+                {countdown?.endSplit?.[0]}d {countdown?.endSplit?.[1]}h{" "}
+                {countdown?.endSplit?.[2]}m {countdown?.endSplit?.[3]}s
               </div>
-            ) : (
-              <div className="flex flex-col items-center gap-[16px] ml-[75px] p-[9px_58px_15px] shrink-0 bg-[#D4EEFF] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[600] leading-[100%]">
-                <div className="">Auction ending in</div>
-                <div className="text-[22px] font-[700]">
-                  {countdown?.endSplit?.[0]}d {countdown?.endSplit?.[1]}h {countdown?.endSplit?.[2]}m {countdown?.endSplit?.[3]}s
-                </div>
-              </div>
-            )
-          }
+            </div>
+          )}
         </div>
         <div className="flex justify-end items-start gap-[20px] translate-y-[16px]">
           {socials.map((s: any) => (
