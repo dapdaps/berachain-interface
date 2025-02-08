@@ -42,9 +42,9 @@ const ActiveTab = (props: Props) => {
         />
       )}
       <div
-        className="bg-[url('/images/tabs/icon-tab-bg.svg')] grow flex justify-center items-center mt-[1px]"
+        className="bg-[#FFFDEB] border-t border-t-black grow flex justify-center items-center"
         style={{
-          height: height - 1,
+          height: height,
           paddingRight: isFirst && page !== "earn" ? marginWidth / 2 - 2 : 0
         }}
       >
