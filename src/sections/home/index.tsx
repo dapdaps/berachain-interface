@@ -133,14 +133,14 @@ const Navigation = function () {
         </div>
 
         <div
-          className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px] opacity-50"
-          // onClick={onNavigateToEarn}
-          // data-bp="1010-012"
+          className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px]"
+          onClick={onNavigateToEarn}
+          data-bp="1010-012"
         >
           <EarnSvg
             className={clsx(
-              "transition-transform duration-500"
-              // "hover:scale-110"
+              "transition-transform duration-500",
+              "hover:scale-110"
             )}
           />
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">

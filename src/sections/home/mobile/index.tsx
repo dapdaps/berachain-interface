@@ -377,11 +377,11 @@ const Home = () => {
                  />*/}
             </motion.div>
             <motion.div
-              className="w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw] opacity-50"
-              // whileTap="tap"
+              className="w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw]"
+              whileTap="tap"
               onClick={() => {
-                // router.push("/earn");
-                // tapSound.play?.();
+                router.push("/earn");
+                tapSound.play?.();
                 // handleReport('1015-007');
               }}
               data-bp="1015-007"

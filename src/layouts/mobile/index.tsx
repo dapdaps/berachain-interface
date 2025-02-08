@@ -27,8 +27,7 @@ const menuItems = [
     id: 4,
     title: "Earn",
     href: "/earn",
-    dataBp: "1015-002-004",
-    disabled: true
+    dataBp: "1015-002-004"
   },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
   {

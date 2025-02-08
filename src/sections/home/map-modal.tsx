@@ -53,8 +53,7 @@ const PartList = [
     arrowClass: "relative left-[calc(50%-34px)]",
     btnText: "Earn",
     link: "/earn",
-    ArrowIcon: dAppArrowIcon,
-    disabled: true
+    ArrowIcon: dAppArrowIcon
   },
   {
     className:
