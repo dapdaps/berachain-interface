@@ -232,6 +232,7 @@ const MarketplaceView = () => {
                         name={it.symbol}
                         color={it.color}
                         icon={it.icon}
+                        {...it}
                         onSwap={() => onSwap(it)}
                       />
                     </div>
