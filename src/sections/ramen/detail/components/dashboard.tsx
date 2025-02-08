@@ -84,5 +84,6 @@ const SOCIAL_ICONS: Record<string, string> = {
   medium: "/images/ramen/icon-points.svg",
   twitter: "/images/ramen/icon-x.svg",
   website: "/images/ramen/icon-website.svg",
-  doc: "/images/ramen/icon-doc.svg"
+  doc: "/images/ramen/icon-doc.svg",
+  youtube: "/images/ramen/icon-youtube.svg"
 };

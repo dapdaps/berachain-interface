@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import { numberFormatter } from "@/utils/number-formatter";
 import TokenInput from "@/sections/ramen/detail/components/token-input";
 import PriceRadio from "@/sections/ramen/detail/components/price-radio";
-import useTokenBalance from "@/hooks/use-token-balance";
 import useBuy from "../hooks/use-buy";
 import AuctionButton from "./auction-button";
 import Big from "big.js";
@@ -139,6 +138,7 @@ const PlaceYourBid = (props: any) => {
             !spendAmount || !tokenBidPrice || amountErrorTips || priceErrorTips
           }
           loading={buying}
+          text="Submit Bid"
           onClick={() => {
             onBuy();
           }}

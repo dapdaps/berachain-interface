@@ -1,8 +1,10 @@
+import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import { useState } from "react";
 
 export default function useClaim() {
   const [loading, setLoading] = useState(false);
+  const { account } = useCustomAccount();
   const toast = useToast();
 
   const onClaim = async () => {

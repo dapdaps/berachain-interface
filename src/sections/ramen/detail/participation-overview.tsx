@@ -2,11 +2,13 @@ import clsx from "clsx";
 import StepVertical from "@/sections/ramen/detail/components/step/vertical";
 import { useMemo } from "react";
 import useCustomAccount from "@/hooks/use-account";
+import AuctionButton from "./auction-button";
+import useClaim from "../hooks/use-claim";
 
 const ParticipationOverview = (props: any) => {
   const { className, detail, auctionInfo, steps, isLaunched } = props;
   const { account } = useCustomAccount();
-
+  const { loading, onClaim } = useClaim();
   const mergedSteps = useMemo(() => {
     if (!steps.length) return [];
     return steps.map((step: any, i: number) => {
@@ -48,12 +50,15 @@ const ParticipationOverview = (props: any) => {
             <div className="">Claimable from Auction</div>
             <div className="text-[1.14em]">0 {detail.token_symbol}</div>
           </div>
-          <button
-            type="button"
-            className="w-full h-[46px] flex justify-center items-center rounded-[10px] border border-black bg-[#FFDC50]"
-          >
-            No Claimable Token
-          </button>
+          <AuctionButton
+            loading={loading}
+            errorTips=""
+            disabled={true}
+            onClick={() => {
+              onClaim();
+            }}
+            text="Claim"
+          />
         </div>
       )}
     </div>

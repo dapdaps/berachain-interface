@@ -21,7 +21,8 @@ export default function AuctionButton({
   errorTips,
   disabled,
   onClick,
-  loading
+  loading,
+  text
 }: any) {
   const { isPending: switching, switchChain } = useSwitchChain();
   const { open } = useAppKit();
@@ -60,7 +61,7 @@ export default function AuctionButton({
 
   return (
     <BaseButton onClick={onClick} disabled={disabled} loading={loading}>
-      Submit Bid
+      {text}
     </BaseButton>
   );
 }
