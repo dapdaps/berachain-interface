@@ -13,10 +13,16 @@ const StepVertical = (props: any) => {
       {list.map((item: any, idx: number) => {
         const isActive = Date.now() < new Date(item.date).getTime();
 
-        const isPrevActive =
+        const isNextActive =
           idx < list.length - 1
             ? Date.now() < new Date(list[idx + 1].date).getTime()
             : true;
+
+        const icon = !isActive
+          ? "/images/ramen/icon-uncheck.svg"
+          : isNextActive
+          ? "/images/ramen/icon-check.svg"
+          : "/images/ramen/icon-current.svg";
         return (
           <div
             key={idx}
@@ -24,7 +30,7 @@ const StepVertical = (props: any) => {
           >
             <div className="relative flex items-center gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] shrink-0">
               <img
-                src={item.icon}
+                src={icon}
                 alt=""
                 className={clsx(
                   "w-[22px] h-[22px] rounded-full shrink-0",
@@ -38,7 +44,7 @@ const StepVertical = (props: any) => {
                 <div
                   className={clsx(
                     "absolute flex-1 w-[1px] h-[50px] left-[10.5px] top-[25px] border-l border-l-black",
-                    !isPrevActive && "border-dashed"
+                    !isNextActive && "border-dashed"
                   )}
                 ></div>
               )}

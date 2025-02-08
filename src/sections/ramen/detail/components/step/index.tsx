@@ -12,11 +12,16 @@ const Step = (props: any) => {
     >
       {list.map((item: any, idx: number) => {
         const isActive = Date.now() < new Date(item.date).getTime();
-
-        const isPrevActive =
+        const isNextActive =
           idx < list.length - 1
             ? Date.now() < new Date(list[idx + 1].date).getTime()
             : true;
+        const icon = !isActive
+          ? "/images/ramen/icon-uncheck.svg"
+          : isNextActive
+          ? "/images/ramen/icon-check.svg"
+          : "/images/ramen/icon-current.svg";
+
         return (
           <>
             <div
@@ -27,7 +32,7 @@ const Step = (props: any) => {
               )}
             >
               <img
-                src={item.icon}
+                src={icon}
                 alt=""
                 className="w-[22px] h-[22px] rounded-full shrink-0"
               />
@@ -40,7 +45,7 @@ const Step = (props: any) => {
               <div
                 className={clsx(
                   "flex-1 border-b border-black",
-                  !isPrevActive && "border-dashed"
+                  !isNextActive && "border-dashed"
                 )}
               ></div>
             )}

@@ -15,32 +15,32 @@ export const TOKENS: any = {
 
 export const DIS_STEPS = [
   {
-    label: "Auction",
-    icon: "/images/ramen/icon-check.svg"
+    label: "Auction"
   },
   {
-    label: "Decrypting Bids",
-    icon: "/images/ramen/icon-check.svg"
+    label: "Decrypting Bids"
   },
   {
-    label: "Claim",
-    icon: "/images/ramen/icon-claim.svg"
+    label: "Claim"
   }
 ];
 
 export enum E_LAUNCH_STATUS {
-  UPCOMING = 'UPCOMING',
-  LIVE = 'LIVE',
+  UPCOMING = "UPCOMING",
+  LIVE = "LIVE"
 }
-export const LAUNCH_STATUS: Record<E_LAUNCH_STATUS, { value: E_LAUNCH_STATUS; label: string; color: string; }> = {
+export const LAUNCH_STATUS: Record<
+  E_LAUNCH_STATUS,
+  { value: E_LAUNCH_STATUS; label: string; color: string }
+> = {
   [E_LAUNCH_STATUS.UPCOMING]: {
     value: E_LAUNCH_STATUS.UPCOMING,
-    label: 'Upcoming',
-    color: '#DBECF8',
+    label: "Upcoming",
+    color: "#DBECF8"
   },
   [E_LAUNCH_STATUS.LIVE]: {
     value: E_LAUNCH_STATUS.LIVE,
-    label: 'Live Now',
-    color: '#EBF479',
-  },
+    label: "Live Now",
+    color: "#EBF479"
+  }
 };
