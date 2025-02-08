@@ -42,32 +42,32 @@ const PartList = [
     link: "/dapps",
     ArrowIcon: dAppArrowIcon
   },
-  {
-    clipPath: "unset",
-    className:
-      "origin-top-left absolute top-[1%] left-[42%] w-[478px] h-[235px]",
-    src: "earn.svg",
-    maskSrc: "mask-earn.svg",
-    indicatorClass: "absolute right-[164px] top-[12px] z-10",
-    buttonClass: "rotate-[2.58deg] mb-[8px]",
-    arrowClass: "relative left-[calc(50%-34px)]",
-    btnText: "Earn",
-    link: "/earn",
-    ArrowIcon: dAppArrowIcon
-  },
-  {
-    className:
-      "origin-top-left absolute top-[33.5%] left-[21%] w-[486px] h-[333px]",
-    clipPath: marketplaceClipPath,
-    src: "marketplace.svg",
-    maskSrc: "mask-marketplace.svg",
-    indicatorClass: "absolute left-[7%] bottom-[22%] z-10 flex items-center",
-    buttonClass: "rotate-[-5deg] mr-[10px]",
-    arrowClass: "relative top-[-20px]",
-    btnText: "Token Marketplace",
-    link: "/marketplace",
-    ArrowIcon: MarketPlaceArrowIcon
-  },
+  // {
+  //   clipPath: "unset",
+  //   className:
+  //     "origin-top-left absolute top-[1%] left-[42%] w-[478px] h-[235px]",
+  //   src: "earn.svg",
+  //   maskSrc: "mask-earn.svg",
+  //   indicatorClass: "absolute right-[164px] top-[12px] z-10",
+  //   buttonClass: "rotate-[2.58deg] mb-[8px]",
+  //   arrowClass: "relative left-[calc(50%-34px)]",
+  //   btnText: "Earn",
+  //   link: "/earn",
+  //   ArrowIcon: dAppArrowIcon
+  // },
+  // {
+  //   className:
+  //     "origin-top-left absolute top-[33.5%] left-[21%] w-[486px] h-[333px]",
+  //   clipPath: marketplaceClipPath,
+  //   src: "marketplace.svg",
+  //   maskSrc: "mask-marketplace.svg",
+  //   indicatorClass: "absolute left-[7%] bottom-[22%] z-10 flex items-center",
+  //   buttonClass: "rotate-[-5deg] mr-[10px]",
+  //   arrowClass: "relative top-[-20px]",
+  //   btnText: "Token Marketplace",
+  //   link: "/marketplace",
+  //   ArrowIcon: MarketPlaceArrowIcon
+  // },
   {
     classNameChristmas:
       "origin-bottom-right absolute bottom-[5.5%] right-[12.5%] w-[628px] h-[322px]",
