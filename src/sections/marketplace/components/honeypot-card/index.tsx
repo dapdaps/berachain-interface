@@ -5,9 +5,18 @@ import { balanceFormated } from "@/utils/balance";
 import { useMemo, useRef } from "react";
 import { usePriceStore } from "@/stores/usePriceStore";
 import useIsMobile from "@/hooks/use-isMobile";
+import { numberFormatter } from "@/utils/number-formatter";
 
-const HoneypotCard = (props: Props) => {
-  const { color, name, icon, data = {}, onSwap = () => {} } = props;
+const HoneypotCard = (props: any) => {
+  const {
+    color,
+    name,
+    priceKey,
+    symbol,
+    icon,
+    data = {},
+    onSwap = () => {}
+  } = props;
   const prices = usePriceStore((store) => store.price);
   const isMobile = useIsMobile();
 
@@ -94,7 +103,7 @@ const HoneypotCard = (props: Props) => {
   );
 
   const list = useMemo(() => {
-    let _price: any = 0;
+    let _price: any = prices[priceKey || symbol];
     let _rate: any = 0;
     // if (name === 'STGUSDC') {
     //   _price = 1;
@@ -113,7 +122,7 @@ const HoneypotCard = (props: Props) => {
         key: "price",
         type: "+",
         rate: balanceFormated(_rate, 2) + "%",
-        value: "$" + balanceFormated(_price, 2)
+        value: _price ? numberFormatter(_price, 2, true, { prefix: "$" }) : "-"
       },
       {
         label: "Volume",
@@ -143,7 +152,7 @@ const HoneypotCard = (props: Props) => {
                 <div className="text-[#3D405A] font-[400]">{item.label}</div>
                 <div>
                   <div className="font-[600] mb-[2px]">
-                    {/* {item.value} */}-
+                    {index === 1 ? "-" : item.value}
                   </div>
                   <div
                     className={`text-[10px] text-right ${
