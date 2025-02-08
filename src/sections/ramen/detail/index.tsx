@@ -5,6 +5,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import AuctionResults from "@/sections/ramen/detail/auction-results";
 import ParticipationOverview from "@/sections/ramen/detail/participation-overview";
 import TokenLaunchDetails from "@/sections/ramen/detail/launch-details";
+import PlaceYourBid from "@/sections/ramen/detail/place";
 import useDetail from "../hooks/use-detail";
 import CircleLoading from "@/components/circle-loading";
 import { DIS_STEPS } from "../config";
