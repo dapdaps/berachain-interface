@@ -36,7 +36,7 @@ const nextConfig = {
     },
     {
       source: "/api.infrared.finance/:path*",
-      destination: "https://api.infrared.finance/:path*"
+      destination: "https://infrared.finance/:path*"
     },
     {
       source: "/api.ramen/:path*",

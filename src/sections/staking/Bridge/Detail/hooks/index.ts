@@ -20,7 +20,7 @@ export function useDetail(props: any) {
   const toast = useToast();
   const { handleGetAmount } = useLpToAmount(
     data?.LP_ADDRESS,
-    data?.initialData?.pool?.protocol
+    data?.initialData?.protocol
   );
   const { addAction } = useAddAction("dapp");
 
@@ -28,8 +28,6 @@ export function useDetail(props: any) {
   const [claiming, setClaiming] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isBerpsDepositVisible, setIsBerpsDepositVisible] = useState(false);
-  // @ts-ignore
-  const { addresses } = config.chains[DEFAULT_CHAIN_ID];
 
   const isBERPS = name === "Berps";
   const isInfraredBerps =
@@ -66,8 +64,10 @@ export function useDetail(props: any) {
 
   const sourceBalances: any = {};
   const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
-  const vaultAddress = (addresses as any)[symbol];
-  const approveSpender = isBERPS ? data?.withdrawToken?.address : vaultAddress;
+
+  const approveSpender = isBERPS
+    ? data?.withdrawToken?.address
+    : data.vaultAddress;
   const stakeMethod = isBERPS ? "deposit" : "stake";
   const unStakeMethod = isBERPS ? "makeWithdrawRequest" : "withdraw";
 
@@ -84,17 +84,22 @@ export function useDetail(props: any) {
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
-    let _contractAddr = vaultAddress;
+    let _contractAddr = data.vaultAddress;
     if (isBERPS) {
       _contractAddr = data?.withdrawToken?.address;
     }
+
     const contract = new ethers.Contract(
       _contractAddr,
       abi,
       provider?.getSigner()
     );
     contract.balanceOf(sender).then((balanceBig: any) => {
-      const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
+      const adjustedBalance = ethers.utils.formatUnits(
+        balanceBig,
+        data.decimals
+      );
+
       updateState({
         lpBalance: adjustedBalance
       });
@@ -516,10 +521,10 @@ export function useDetail(props: any) {
   }, [isWithdrawInsufficient, isLoading, lpAmount]);
 
   useEffect(() => {
-    if (!sender || !vaultAddress || !provider) return;
+    if (!sender || !data.vaultAddress || !provider) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, vaultAddress, updater, provider]);
+  }, [sender, data, updater, provider]);
 
   return {
     state,
@@ -528,7 +533,7 @@ export function useDetail(props: any) {
     isInfraredBerps,
     symbol,
     contractAddr,
-    vaultAddress,
+    vaultAddress: data.vaultAddress,
     approveSpender,
     stakeMethod,
     unStakeMethod,

@@ -58,7 +58,7 @@ const Navigation = function () {
 
   return (
     <>
-      <div
+      {/* <div
         className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]"
         onClick={onNavigateToMarketplace}
         data-bp="1010-006"
@@ -70,12 +70,12 @@ const Navigation = function () {
           }`}
         >
           <div className={`text-[20px] font-CherryBomb leading-[90%]`}>
-            Marketplace
+            Token Marketplace
           </div>
           <ArrowTopSvg />
         </div>
         <MarketplaceSvg className="hover:scale-110 transition-transform duration-500" />
-      </div>
+      </div> */}
       <div
         className={clsx(
           "absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]",
@@ -102,7 +102,7 @@ const Navigation = function () {
         </div>
         <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
-      <VaultsEnterance
+      {/* <VaultsEnterance
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
         className={clsx(
@@ -111,23 +111,23 @@ const Navigation = function () {
             ? "text-white top-[calc(25%+50px)]"
             : "text-black] top-[calc(33.333%+50px)]"
         )}
-      />
+      /> */}
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
-        <div
+        {/* <div
           className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToDashBoard}
           data-bp="1010-008"
         >
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
-            <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
-              Dashboard
+            <div className="text-[20px] text-black font-CherryBomb leading-[90%] whitespace-nowrap">
+              Portfolio Dashboard
             </div>
           </div>
           <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
-        </div>
+        </div> */}
 
-        <div
+        {/* <div
           className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToEarn}
           data-bp="1010-012"
@@ -139,7 +139,7 @@ const Navigation = function () {
               Earn
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div
@@ -166,9 +166,10 @@ const Navigation = function () {
         <div className="text-[20px] text-center font-CherryBomb">Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
       </div> */}
-      <div
+      {/* <div
         className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
         onClick={() => {
+          // @ts-ignore
           beraciagaStore.set({
             openModal: true
           });
@@ -185,7 +186,7 @@ const Navigation = function () {
         <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">
           Beraciaga
         </div>
-      </div>
+      </div> */}
       {isChristmas && <ChristmasEnterance path={christmasPath} />}
     </>
   );
