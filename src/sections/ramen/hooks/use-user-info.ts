@@ -6,6 +6,7 @@ import { TOKENS } from "../config";
 export default function useUserInfo({ slug, ticketPrice }: any) {
   const [gachaInfo, setGachaInfo] = useState<any>();
   const [auctionInfo, setAuctionInfo] = useState<any>();
+  const [entiresInfo, setEntriesInfo] = useState<any>();
   const { account } = useCustomAccount();
 
   const queryGachaBalance = useCallback(async () => {
@@ -41,6 +42,16 @@ export default function useUserInfo({ slug, ticketPrice }: any) {
     }
   }, [slug, account]);
 
+  const queryEntries = useCallback(async () => {
+    if (!account || !slug) {
+      return;
+    }
+    const res = await asyncFetch(
+      `/api.ramen/v1/project/${slug}/lottery/entries?address=${account}`
+    );
+    setEntriesInfo(res.data);
+  }, [slug, account]);
+
   useEffect(() => {
     if (!account) return;
     if (ticketPrice) queryGachaBalance();
@@ -48,12 +59,14 @@ export default function useUserInfo({ slug, ticketPrice }: any) {
 
   useEffect(() => {
     if (!TOKENS[slug]) return;
+    queryEntries();
     queryActionLot();
   }, [account, slug]);
 
   return {
     gachaInfo,
     auctionInfo,
+    entiresInfo,
     queryGachaBalance
   };
 }

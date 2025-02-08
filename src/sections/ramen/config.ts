@@ -25,6 +25,28 @@ export const DIS_STEPS = [
   }
 ];
 
+export const FIX_STEPS = [
+  {
+    label: "Registration"
+  },
+  {
+    label: "Allocation Announcement",
+    key: "allocationAnnouncementTime"
+  },
+  {
+    label: "Private Sale",
+    key: "privateSale"
+  },
+  {
+    label: "Gacha Round",
+    key: "gachaRound"
+  },
+  {
+    label: "Claim",
+    key: "claimTime"
+  }
+];
+
 export enum E_LAUNCH_STATUS {
   UPCOMING = "UPCOMING",
   LIVE = "LIVE"

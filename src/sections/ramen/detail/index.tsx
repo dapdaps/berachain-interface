@@ -1,14 +1,13 @@
 import clsx from "clsx";
 import Dashboard from "@/sections/ramen/detail/components/dashboard";
 import Card from "@/sections/ramen/detail/components/card";
-import { numberFormatter } from "@/utils/number-formatter";
 import AuctionResults from "@/sections/ramen/detail/auction-results";
 import ParticipationOverview from "@/sections/ramen/detail/participation-overview";
 import TokenLaunchDetails from "@/sections/ramen/detail/launch-details";
 import PlaceYourBid from "@/sections/ramen/detail/place";
 import useDetail from "../hooks/use-detail";
 import CircleLoading from "@/components/circle-loading";
-import { DIS_STEPS } from "../config";
+import { DIS_STEPS, FIX_STEPS } from "../config";
 import { useMemo } from "react";
 import dayjs from "dayjs";
 import AuctionHead from "@/sections/ramen/detail/components/auction-head";
@@ -26,7 +25,7 @@ const Detail = (props: any) => {
     auctionInfo,
     gachaInfo,
     ticketPrice,
-    pricePerToken,
+    entiresInfo,
     minBidPrice,
     queryGachaBalance
   } = useDetail();
@@ -49,7 +48,15 @@ const Detail = (props: any) => {
   const steps = useMemo(() => {
     if (!detail) return [];
     if (detail?.isFixed) {
-      return [];
+      return FIX_STEPS.map((step: any, i: number) => {
+        const date = dayjs(
+          i === 0 ? detail.launch_start_date : detail[step.key]
+        ).format("DD/MM/YYYY, HH:mm A");
+        return {
+          ...step,
+          date
+        };
+      });
     }
     return DIS_STEPS.map((step: any, i: number) => {
       const date = dayjs(
@@ -112,6 +119,7 @@ const Detail = (props: any) => {
                 steps={steps}
                 isLaunched={isLaunched}
                 auctionInfo={auctionInfo}
+                entiresInfo={entiresInfo}
               />
             </Card>
             <Card title="Token Launch Details" className="col-span-2">

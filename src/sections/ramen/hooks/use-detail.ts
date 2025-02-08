@@ -13,7 +13,7 @@ export default function useDetail() {
   const [pricePerToken, setPricePerToken] = useState("");
   const params = useParams();
   const slug = params.id as string;
-  const { gachaInfo, auctionInfo, queryGachaBalance } = useUserInfo({
+  const userInfo = useUserInfo({
     slug,
     ticketPrice: price
   });
@@ -92,11 +92,9 @@ export default function useDetail() {
   return {
     loading,
     detail,
-    gachaInfo,
-    auctionInfo,
     ticketPrice: price,
     pricePerToken,
     minBidPrice,
-    queryGachaBalance
+    ...userInfo
   };
 }

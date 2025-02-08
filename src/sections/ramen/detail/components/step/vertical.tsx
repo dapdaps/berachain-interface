@@ -11,12 +11,12 @@ const StepVertical = (props: any) => {
       )}
     >
       {list.map((item: any, idx: number) => {
-        const isActive = Date.now() < new Date(item.date).getTime();
-
+        const isActive =
+          idx === 0 ? true : Date.now() > new Date(item.date).getTime();
         const isNextActive =
           idx < list.length - 1
-            ? Date.now() < new Date(list[idx + 1].date).getTime()
-            : true;
+            ? Date.now() > new Date(list[idx + 1].date).getTime()
+            : false;
 
         const icon = !isActive
           ? "/images/ramen/icon-uncheck.svg"

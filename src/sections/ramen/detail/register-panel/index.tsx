@@ -54,7 +54,11 @@ export default function RegisterPanel({
           Max
         </div>
         <div className="text-[14px] mt-[24px] text-center">
-          Gacha Requirement: {Big(ticketPrice).div(1e18).toFixed(0)} Gacha/Entry
+          Gacha Requirement: 
+          {Big(ticketPrice || 0)
+            .div(1e18)
+            .toFixed(0)}
+           Gacha/Entry
         </div>
         <div className="text-[14px] font-medium text-center">
           Each wallet may only win up to 10 allocation tickets

@@ -79,9 +79,12 @@ const Dashboard = (props: any) => {
           ))}
         </div>
       </div>
-      <div className="">
+      <div className="flex justify-center">
         <Step
-          className="mt-[24px] w-[calc(100%_-_120px)] ml-[55px]"
+          className={clsx(
+            "mt-[24px]",
+            steps.length > 3 ? "w-full" : "w-[calc(100%-120px)]"
+          )}
           list={steps}
         />
       </div>

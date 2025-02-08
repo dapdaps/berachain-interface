@@ -11,11 +11,13 @@ const Step = (props: any) => {
       )}
     >
       {list.map((item: any, idx: number) => {
-        const isActive = Date.now() < new Date(item.date).getTime();
+        const isActive =
+          idx === 0 ? true : Date.now() > new Date(item.date).getTime();
         const isNextActive =
           idx < list.length - 1
-            ? Date.now() < new Date(list[idx + 1].date).getTime()
-            : true;
+            ? Date.now() > new Date(list[idx + 1].date).getTime()
+            : false;
+
         const icon = !isActive
           ? "/images/ramen/icon-uncheck.svg"
           : isNextActive
@@ -27,7 +29,7 @@ const Step = (props: any) => {
             <div
               key={idx}
               className={clsx(
-                "relative flex items-center gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] shrink-0",
+                "min-w-[142px] relative flex items-center gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] shrink-0",
                 !isActive && "opacity-50"
               )}
             >
@@ -36,7 +38,11 @@ const Step = (props: any) => {
                 alt=""
                 className="w-[22px] h-[22px] rounded-full shrink-0"
               />
-              <div className="">{item.label}</div>
+              <div
+                className={clsx(list.length > 3 && "max-w-[142px] truncate")}
+              >
+                {item.label}
+              </div>
               <div className="absolute left-0 -bottom-[24px] text-[#3D405A] text-[14px] font-[500] leading-normal whitespace-nowrap">
                 {item.date}
               </div>
@@ -44,7 +50,7 @@ const Step = (props: any) => {
             {idx < list.length - 1 && (
               <div
                 className={clsx(
-                  "flex-1 border-b border-black",
+                  "grow border-b border-black min-w-[10px]",
                   !isNextActive && "border-dashed"
                 )}
               ></div>

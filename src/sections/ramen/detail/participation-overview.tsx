@@ -6,11 +6,45 @@ import AuctionButton from "./auction-button";
 import useClaim from "../hooks/use-claim";
 
 const ParticipationOverview = (props: any) => {
-  const { className, detail, auctionInfo, steps, isLaunched } = props;
+  const { className, detail, auctionInfo, steps, isLaunched, entiresInfo } =
+    props;
   const { account } = useCustomAccount();
   const { loading, onClaim } = useClaim();
+
   const mergedSteps = useMemo(() => {
     if (!steps.length) return [];
+    if (detail.isFixed) {
+      return steps.map((step: any, i: number) => {
+        let value = "";
+        let status: any = "";
+        if (i === 0) {
+          value = !account
+            ? "Wallet is not Connected"
+            : `${entiresInfo?.my_entries || 0} entries registered`;
+          status = !account
+            ? "Wallet is not Connected"
+            : `Contributions: ${entiresInfo?.my_gacha_spent || 0} Gacha`;
+        } else {
+          value =
+            Date.now() < new Date(detail[step.key]).getTime()
+              ? "Coming Soon"
+              : "";
+        }
+
+        if (i === steps.length - 1) {
+          value = isLaunched ? "No Allocation Won" : "Coming Soon";
+          status = !account ? (
+            "Wallet is not Connected"
+          ) : (
+            <div className="flex flex-col items-end gap-[4px] text-[#3D405A] text-[12px] font-Montserrat font-[500] leading-[100%]">
+              <div className="">Final Token Price: -</div>
+              <div className="">Total Cost: -</div>
+            </div>
+          );
+        }
+        return { ...step, value, status };
+      });
+    }
     return steps.map((step: any, i: number) => {
       let value = "";
       let status: any = "";
