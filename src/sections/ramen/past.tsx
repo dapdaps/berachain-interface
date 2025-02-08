@@ -6,13 +6,16 @@ import Skeleton from 'react-loading-skeleton';
 import React from 'react';
 import Empty from '@/components/empty';
 import Pagination from '@/components/pagination';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const PastLaunches = (props: any) => {
   const { className, list, loading, page, onPage, total, more } = props;
 
+  const isMobile = useIsMobile();
+
   return (
     <div className={clsx('', className)}>
-      <Title className="mt-[38px]">Past Launches</Title>
+      <Title className="mt-[38px] md:hidden">Past Launches</Title>
       <Header />
       <div className="flex flex-col items-stretch gap-[12px]">
         {
@@ -20,7 +23,7 @@ const PastLaunches = (props: any) => {
             <>
               {
                 [...new Array(10)].map((_, idx) => (
-                  <Skeleton key={idx} width="100%" height={95} borderRadius={10} />
+                  <Skeleton key={idx} width="100%" height={isMobile ? 279 : 95} borderRadius={10} />
                 ))
               }
             </>
@@ -28,7 +31,7 @@ const PastLaunches = (props: any) => {
             list.length > 0 ? list.map((it: any, idx: number) => (
               <Item key={idx} project={it} />
             )) : (
-              <Empty desc="Empty launches" mt={20} />
+              <Empty desc="Launching projects coming soon..." mt={20} />
             )
           )
         }

@@ -10,8 +10,8 @@ const CurrentLaunches = (props: any) => {
 
   return (
     <div className={clsx('', className)}>
-      <Title>Current & Upcoming Launches</Title>
-      <div className={clsx('mt-[23px] gap-[24px]', (!loading && list.length <= 0) ? '' : 'grid grid-cols-2')}>
+      <Title className="md:hidden">Current & Upcoming Launches</Title>
+      <div className={clsx('mt-[23px] md:mt-[0] gap-[24px]', (!loading && list.length <= 0) ? '' : 'grid grid-cols-2 md:grid-cols-1')}>
         {
           loading ? (
             <>
