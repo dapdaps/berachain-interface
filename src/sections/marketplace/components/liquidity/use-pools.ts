@@ -5,7 +5,6 @@ import { wrapNativeToken } from "@/sections/pools/utils";
 import { default as useBexPools } from "@/sections/pools/bex/use-pools";
 import { default as useKodiakV2Pools } from "@/sections/pools/kodiak/use-pools-v2";
 import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
-import { random } from "lodash";
 
 export default function usePools() {
   const [pools, setPools] = useState<any>([]);
@@ -27,11 +26,11 @@ export default function usePools() {
         protocolIcon: "/images/dapps/kodiak.svg",
         protocol: "Kodiak",
         version: "v2",
-        id: 2,
-        tvl: random(1000, 1000000, true),
-        volume_24h: random(1000, 1000000, true),
-        fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true)
+        id: 2
+        // tvl: random(1000, 1000000, true),
+        // volume_24h: random(1000, 1000000, true),
+        // fees_24h: random(0, 100, true),
+        // yours: random(0, 10000, true)
       },
       {
         token0: wrapNativeToken(bera["bera"]),
@@ -40,11 +39,11 @@ export default function usePools() {
         protocol: "Kodiak",
         version: "v3",
         fee: 3000,
-        id: 3,
-        tvl: random(1000, 1000000, true),
-        volume_24h: random(1000, 1000000, true),
-        fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true)
+        id: 3
+        // tvl: random(1000, 1000000, true),
+        // volume_24h: random(1000, 1000000, true),
+        // fees_24h: random(0, 100, true),
+        // yours: random(0, 10000, true)
       }
     ]);
   };
