@@ -4,11 +4,13 @@ import Ramen from "@/sections/ramen/";
 import useIsMobile from '@/hooks/use-isMobile';
 import Tabs from '@/components/tabs';
 import React, { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function Page() {
   const isMobile = useIsMobile();
   const search = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   let defaultTab = search.get("tab");
   defaultTab =
@@ -44,7 +46,13 @@ export default function Page() {
             children: <Ramen tab={currentTab} />,
           },
         ]}
-        onChange={(key) => setCurrentTab(key as string)}
+        onChange={(key) => {
+          if (key === currentTab) return;
+          const _search = new URLSearchParams(search.toString());
+          _search.set('tab', key as string);
+          router.replace(pathname + '?' + _search.toString());
+          setCurrentTab(key as string);
+        }}
         className="h-full"
       />
     </div>

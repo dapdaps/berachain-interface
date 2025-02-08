@@ -77,7 +77,18 @@ const ParticipationOverview = (props: any) => {
 
   return (
     <div className={clsx("mt-[22px]", className)}>
-      <StepVertical className="" list={mergedSteps} />
+      <StepVertical
+        className=""
+        list={mergedSteps.map((it: any) => ({
+          ...it,
+          label: (
+            <div className="absolute w-full pr-[110px] whitespace-pre-wrap -translate-y-[10px]">
+              {it.label}
+            </div>
+          )
+        }))}
+        labelClassName="w-0 relative"
+      />
       {isLaunched && (
         <div className="border border-[rgba(0,_0,_0,_0.10)] rounded-[10px] p-[19px_15px_12px] flex flex-col items-stretch gap-[15px] mt-[23px]">
           <div className="text-[14px] text-black font-[600] leading-[90%] font-Montserrat flex justify-between items-center">

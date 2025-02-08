@@ -14,7 +14,7 @@ const TokenLaunchDetails = (props: any) => {
   return (
     <div
       className={clsx(
-        "grid grid-cols-3 gap-[35px] mt-[21px] pb-[13px]",
+        "grid grid-cols-3 md:grid-cols-1 gap-[35px] mt-[21px] pb-[13px]",
         className
       )}
     >

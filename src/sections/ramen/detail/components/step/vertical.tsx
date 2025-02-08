@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 const StepVertical = (props: any) => {
-  const { className, list, gap = 56 } = props;
+  const { className, labelClassName, list, gap = 56 } = props;
 
   return (
     <div
@@ -31,7 +31,7 @@ const StepVertical = (props: any) => {
             key={idx}
             className="relative w-full flex justify-between items-start"
           >
-            <div className="relative flex items-center gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] shrink-0">
+            <div className="w-full relative flex items-center gap-[8px] text-black text-[18px] font-Montserrat font-[600] leading-[90%] shrink-0 whitespace-nowrap">
               <img
                 src={icon}
                 alt=""
@@ -40,7 +40,7 @@ const StepVertical = (props: any) => {
                   !isActive && "opacity-50"
                 )}
               />
-              <div className={clsx(!isActive && "opacity-50")}>
+              <div className={clsx('flex-1', !isActive && "opacity-50", labelClassName)}>
                 {item.label}
               </div>
               {idx < list.length - 1 && (
