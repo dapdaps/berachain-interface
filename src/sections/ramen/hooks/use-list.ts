@@ -8,6 +8,8 @@ export default function useList() {
   const [featuredLoading, setFeaturedLoading] = useState(false);
   const [finishedLoading, setFinishedLoading] = useState(false);
   const [finishedPage, setFinishedPage] = useState(1);
+  const [finishedPageTotal, setFinishedPageTotal] = useState(1);
+  const [finishedHasMore, setFinishedHasMore] = useState(true);
 
   const getFeaturedList = async () => {
     try {
@@ -27,7 +29,11 @@ export default function useList() {
         `/api.ramen/v1/finished-launch?sort=slug&order=desc&page=${finishedPage}&rows=10`
       );
 
-      setFinishedList(res.data.projects || []);
+      const { projects, total } = res.data;
+      setFinishedList(projects || []);
+      setFinishedPageTotal(Math.ceil(total / 10));
+      setFinishedHasMore(10 * finishedPage < total);
+      setFinishedLoading(false);
     } catch (err) {
       setFinishedLoading(false);
     }
@@ -43,6 +49,8 @@ export default function useList() {
 
   return {
     finishedPage,
+    finishedPageTotal,
+    finishedHasMore,
     setFinishedPage,
     featuredList,
     featuredLoading,
