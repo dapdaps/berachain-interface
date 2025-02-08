@@ -1,4 +1,5 @@
 import useIsMobile from '@/hooks/use-isMobile';
+import clsx from 'clsx';
 
 const Offset = 20;
 
@@ -15,10 +16,16 @@ const Laptop = (props: any) => {
       }}
     >
       <div
-        className='w-full flex justify-center items-center bg-[#E9E3B5] rounded-[20px] md:text-[15px] md:rounded-[16px] border border-black cursor-pointer'
+        className={clsx(
+          'w-full flex justify-center items-center rounded-[20px] md:text-[15px] md:rounded-[16px] border',
+          disabled ? '!cursor-not-allowed' : 'cursor-pointer',
+          disabled ? 'text-[#b3b1a4]' : '',
+          disabled ? 'border-[#373A53]' : 'border-black',
+          disabled ? 'bg-[#f0eede]' : 'bg-[#E9E3B5]',
+        )}
         style={{
           paddingBottom: Offset * 1.5,
-          height: height + Offset
+          height: height + Offset,
         }}
         onClick={!disabled && onClick}
       >
