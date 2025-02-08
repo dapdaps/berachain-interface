@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 
 const Detail = (props: any) => {
   const { className } = props;
-  const { loading, detail, auctionInfo, price, pricePerToken, minBidPrice } =
+  const { loading, detail, auctionInfo, pricePerToken, minBidPrice } =
     useDetail();
   const isLaunched = useMemo(
     () =>
@@ -69,7 +69,7 @@ const Detail = (props: any) => {
                 <AuctionResults />
               </Card>
             ) : (
-              <PlaceYourBid />
+              <PlaceYourBid auctionInfo={auctionInfo} />
             )}
             <Card title="Participation Overview">
               <ParticipationOverview
