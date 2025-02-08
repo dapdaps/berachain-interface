@@ -1,17 +1,10 @@
 import clsx from "clsx";
 import Dashboard from "@/sections/ramen/detail/components/dashboard";
-import Card from "@/sections/ramen/detail/components/card";
-import { numberFormatter } from "@/utils/number-formatter";
-import AuctionResults from "@/sections/ramen/detail/auction-results";
-import ParticipationOverview from "@/sections/ramen/detail/participation-overview";
-import TokenLaunchDetails from "@/sections/ramen/detail/launch-details";
-import PlaceYourBid from "@/sections/ramen/detail/place";
 import useDetail from "../hooks/use-detail";
 import CircleLoading from "@/components/circle-loading";
 import { DIS_STEPS } from "../config";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import AuctionHead from "@/sections/ramen/detail/components/auction-head";
 import RegisterPanel from "./register-panel";
 import { bera } from "@/configs/tokens/bera";
 import useTokenBalance from '@/hooks/use-token-balance';
@@ -111,6 +104,10 @@ const Detail = (props: any) => {
                 countdown={countdown}
                 steps={steps}
                 minBidPrice={minBidPrice}
+                gachaInfo={gachaInfo}
+                ticketPrice={ticketPrice}
+                pricePerToken={pricePerToken}
+                queryGachaBalance={queryGachaBalance}
               />
             ) : (
               <div className="mt-[21px] grid grid-cols-2 gap-x-[30px] gap-y-[20px]">
@@ -131,6 +128,10 @@ const Detail = (props: any) => {
                     spendToken={spendToken}
                     update={update}
                     countdown={countdown}
+                    gachaInfo={gachaInfo}
+                    ticketPrice={ticketPrice}
+                    pricePerToken={pricePerToken}
+                    queryGachaBalance={queryGachaBalance}
                   />
                 )}
                 <ParticipationOverviewCard

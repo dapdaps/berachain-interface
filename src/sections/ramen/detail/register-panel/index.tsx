@@ -1,7 +1,5 @@
-import Card from "@/sections/ramen/detail/components/card";
 import Input from "./input";
 import AuctionButton from "../auction-button";
-import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
 import { useState } from "react";
 import useFixedBuy from "../../hooks/use-fixed-buy";
@@ -21,19 +19,7 @@ export default function RegisterPanel({
     }
   });
   return (
-    <Card
-      title={
-        <div className="flex items-center justify-between">
-          <span>Register for Launch</span>
-          <span className="text-[12px] text-[#8D8D8D]">
-            Balance:{" "}
-            <span className="text-black">
-              {numberFormatter(gachaInfo?.balance || 0, 0, true)} Gocha
-            </span>
-          </span>
-        </div>
-      }
-    >
+    <>
       <div className="text-[14px] text-[#3D405A] pt-[10px] font-medium">
         To increase your chances of winning allocation in this launch, you may
         choose to spend more Gacha to submit multiple entries. Note that Gacha
@@ -54,7 +40,7 @@ export default function RegisterPanel({
           Max
         </div>
         <div className="text-[14px] mt-[24px] text-center">
-          Gacha Requirement: {Big(ticketPrice).div(1e18).toFixed(0)} Gacha/Entry
+          Gacha Requirement: {Big(ticketPrice || 0).div(1e18).toFixed(0)} Gacha/Entry
         </div>
         <div className="text-[14px] font-medium text-center">
           Each wallet may only win up to 10 allocation tickets
@@ -68,6 +54,6 @@ export default function RegisterPanel({
           />
         </div>
       </div>
-    </Card>
+    </>
   );
 }
