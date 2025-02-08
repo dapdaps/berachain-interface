@@ -10,14 +10,14 @@ const PriceRadio = (props: any) => {
 
   const fdvs = useMemo(() => {
     if (!auctionInfo) return [];
-    const minFdv = Big(auctionInfo.encryptedMarginalPrice.minPrice)
+    const minFdv = Big(auctionInfo.encryptedMarginalPrice?.minPrice ?? 0)
       .mul(auctionInfo.baseToken.totalSupply)
       .div(10 ** auctionInfo.baseToken.decimals);
     const beraPrice = price["BERA"];
     return [2, 5, 7, 10].map((item) => ({
       usd: minFdv.mul(item).mul(beraPrice).toString(),
       bera: minFdv.mul(item).toString(),
-      price: Big(auctionInfo.encryptedMarginalPrice.minPrice)
+      price: Big(auctionInfo.encryptedMarginalPrice?.minPrice ?? 0)
         .mul(item)
         .toString()
     }));

@@ -16,7 +16,11 @@ export default function useList() {
       setFeaturedLoading(true);
       const res = await asyncFetch("/api.ramen/v1/featured-projects");
       const list = res.data.projects || [];
-      setFeaturedList(list?.filter?.((item: any) => TOKENS[item.slug]) || []);
+      const _list = list?.filter?.((item: any) => TOKENS[item.slug]) || [];
+      _list.forEach((item: any) => {
+        item.ends_at = TOKENS[item.slug]?.claimTime;
+      });
+      setFeaturedList(_list);
       setFeaturedLoading(false);
     } catch (err) {
       setFeaturedLoading(false);

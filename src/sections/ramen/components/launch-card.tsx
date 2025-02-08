@@ -5,11 +5,13 @@ import Big from 'big.js';
 import { bera } from '@/configs/tokens/bera';
 import { numberFormatter } from '@/utils/number-formatter';
 import { useRouter } from 'next/navigation';
+import { useCountdown } from '@/sections/ramen/hooks/use-countdown';
 
 const LaunchCard = (props: any) => {
   const { className, project } = props;
 
   const router = useRouter();
+  const [countdown] = useCountdown({ startTime: project?.starts_at, endTime: project?.ends_at });
 
   const onDetail = () => {
     router.push(`/ramen/${project?.slug}`);
@@ -20,7 +22,11 @@ const LaunchCard = (props: any) => {
       <div className="w-full relative">
         <img src={project?.cover_image_url} alt="" className="w-full h-[200px] rounded-[10px] object-cover" />
         <LaunchStatus value={0} className="absolute right-[14px] top-[10px]" />
-        <LaunchCountdown type="end" className="absolute right-0 -bottom-[16px]" />
+        <LaunchCountdown
+          type="end"
+          className="absolute right-0 -bottom-[16px]"
+          endCountdown={countdown?.endSplit}
+        />
         <div className="absolute left-0 bottom-[-75px] w-full flex items-end gap-[9px]">
           <div className="w-[88px] h-[88px] rounded-full border border-black overflow-hidden">
             <img src={project?.token_icon_url} alt="" className="w-full h-full object-cover" />
@@ -82,7 +88,7 @@ export const LaunchCountdown = (props: any) => {
     className,
     // start | end
     type,
-    datetime,
+    endCountdown,
   } = props;
 
   return (
@@ -91,7 +97,7 @@ export const LaunchCountdown = (props: any) => {
         {type?.slice?.(0, 1)?.toUpperCase?.() + type?.slice?.(1)}s in
       </div>
       <div className="text-[#CE494D]">
-        0d 0h 46m 02s
+        {endCountdown?.[0]}d {endCountdown?.[1]}h {endCountdown?.[2]}m {endCountdown?.[3]}s
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const TokenLaunchDetails = (props: any) => {
         {numberFormatter(totalSupply, 2, true)} {detail.token_symbol}
       </LabelItem>
       <LabelItem label="Auctioned Supply">
-        {numberFormatter(auctionInfo.capacity, 2, true)} BERA
+        {numberFormatter(auctionInfo?.capacity, 2, true)} BERA
       </LabelItem>
       <LabelItem label="Min. Bid Price">
         {numberFormatter(minBidPrice, 4, true)} BERA
