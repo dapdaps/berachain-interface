@@ -27,7 +27,7 @@ const PlaceYourBidCard = (props: any) => {
             {detail.isFixed ? 'Register for Launch' : 'Place Your Bid'}
           </div>
           <div className="flex items-center justify-end gap-[5px] text-black font-[500] text-[12px]">
-            <div className="text-[#8D8D8D]">Wallet Balance:</div>
+            <div className="text-[#8D8D8D]"><span className="md:hidden">Wallet </span>Balance:</div>
             {
               detail.isFixed ? (
                 <div className="">

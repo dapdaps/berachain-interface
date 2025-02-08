@@ -45,6 +45,7 @@ const MobileTabs = (props: any) => {
         onChange={(key) => setCurrentTab(key as string)}
         wrapperClassName="!border-[#373A53] !rounded-[12px] !w-full !ml-0 bg-white !p-[3px] h-[unset]"
         tabClassName="!rounded-[10px] text-[15px] font-[600] leading-[100%] flex justify-center items-center"
+        bodyClassName="!border-0"
       />
     </div>
   );

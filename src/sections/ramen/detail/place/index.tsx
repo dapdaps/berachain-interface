@@ -113,11 +113,11 @@ const PlaceYourBid = (props: any) => {
         }
       />
       <div className="mt-[20px]">
-        <div className="flex items-start justify-between gap-[5px]">
+        <div className="flex items-start justify-between gap-[5px] md:flex-col">
           <div className=" text-black text-[14px] font-[500] leading-[90%]">
             Estimated FDV at your Bid Price
           </div>
-          <div className="flex flex-col items-end gap-[5px] font-Montserrat text-black text-[14px] font-[600] leading-[90%]">
+          <div className="flex flex-col md:flex-row items-end gap-[5px] font-Montserrat text-black text-[14px] font-[600] leading-[90%]">
             <div className="">{numberFormatter("1562500", 2, true)} BERA</div>
             <div className="text-[#8D8D8D] font-[500]">
               {numberFormatter(

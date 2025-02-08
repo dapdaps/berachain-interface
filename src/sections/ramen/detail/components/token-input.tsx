@@ -10,7 +10,7 @@ const TokenInput = (props: any) => {
   };
 
   return (
-    <div className={clsx('font-Montserrat border border-[#373A53] bg-white rounded-[12px] p-[17px_16px_11px_13px]', className)}>
+    <div className={clsx('font-Montserrat border border-[#373A53] bg-white rounded-[12px] p-[17px_16px_11px_13px] md:p-[15px_12px]', className)}>
       <div className="text-black text-[14px] font-[500]">
         {label}
       </div>
