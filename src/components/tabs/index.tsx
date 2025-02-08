@@ -17,6 +17,8 @@ const Tabs = (props: TabsProps) => {
     onChange = () => { },
     isCard,
     page = 'dashboard',
+    wrapperClassName,
+    tabClassName,
   } = props;
 
   const tabConfig = useTabConfig(page);
@@ -57,11 +59,12 @@ const Tabs = (props: TabsProps) => {
 
   return (
     <div className={`${!!className ? className : ''} h-full`} style={style}>
-      <TabsWrapper isCard={isCard}>
+      <TabsWrapper isCard={isCard} className={wrapperClassName}>
         {tabs.map((tab, idx) => {
           return (
             <Tab
               key={tab.key}
+              className={tabClassName}
               active={currentTabIndex === idx}
               onClick={() => !tab.disabled && handleChange(tab.key, tab, idx)}
               isCard={isCard}
@@ -109,6 +112,8 @@ export interface TabsProps {
   isCard?: boolean;
   maxTabs?: number;
   page?: string;
+  wrapperClassName?: string;
+  tabClassName?: string;
 }
 
 export interface Tab {

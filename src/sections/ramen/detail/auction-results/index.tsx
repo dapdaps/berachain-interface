@@ -11,9 +11,9 @@ const AuctionResults = (props: any) => {
     [auctionInfo]
   );
   const avgSpend = useMemo(() => {
-    if (!detail.bidSubmitted) return 0;
+    if (!detail?.bidSubmitted) return 0;
     return Big(auctionInfo?.purchased || 0)
-      .div(detail.bidSubmitted)
+      .div(detail?.bidSubmitted)
       .toString();
   }, [detail, auctionInfo]);
 
