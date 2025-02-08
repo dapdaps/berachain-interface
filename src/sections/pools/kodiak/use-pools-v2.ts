@@ -2,14 +2,16 @@ import { useCallback, useEffect, useState } from "react";
 import useAccount from "@/hooks/use-account";
 import axios from "axios";
 import Big from "big.js";
-import kodiak from "@/configs/pools/kodiak";
 import { multicall, multicallAddresses } from "@/utils/multicall";
 import poolV2 from "../abi/pool-v2";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { getTokenAmountsV2 } from "../helpers";
 import { TOKENS } from "@/configs";
 
-export default function usePoolsV2(isSimple?: boolean) {
+export default function usePoolsV2(
+  isSimple: boolean = false,
+  refresher?: number
+) {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const { account, provider } = useAccount();
@@ -17,10 +19,13 @@ export default function usePoolsV2(isSimple?: boolean) {
     setLoading(true);
 
     try {
-      const response = await axios.post(kodiak.graph[DEFAULT_CHAIN_ID], {
-        operationName: "UserPools",
-        query: `query MyQuery {\n  user(id: \"${account?.toLowerCase()}\") {\n    liquidityPositions {\n      pair {\n        id\n        reserve0\n        reserve1\n        totalSupply\n        token1 {\n          id\n          name\n          decimals\n          symbol\n        }\n        token0 {\n          id\n          decimals\n          symbol\n          name\n        }\n      }\n    }\n  }\n}`
-      });
+      const response = await axios.post(
+        "https://api.goldsky.com/api/public/project_clpx84oel0al201r78jsl0r3i/subgraphs/kodiak-v2-berachain-mainnet/latest/gn",
+        {
+          operationName: "UserPools",
+          query: `query MyQuery {\n  user(id: \"${account?.toLowerCase()}\") {\n    liquidityPositions {\n      pair {\n        id\n        reserve0\n        reserve1\n        totalSupply\n        token1 {\n          id\n          name\n          decimals\n          symbol\n        }\n        token0 {\n          id\n          decimals\n          symbol\n          name\n        }\n      }\n    }\n  }\n}`
+        }
+      );
 
       const data = response.data.data?.user?.liquidityPositions ?? null;
 
@@ -94,7 +99,7 @@ export default function usePoolsV2(isSimple?: boolean) {
       return;
     }
     queryPools();
-  }, [account, provider]);
+  }, [account, provider, refresher]);
 
   return { pools, loading, queryPools };
 }

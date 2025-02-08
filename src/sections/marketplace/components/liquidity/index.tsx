@@ -41,6 +41,7 @@ export default function Liquidity() {
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [modalType, setModalType] = useState("");
   const [selectedTokenId, setSelectedTokenId] = useState("");
+  const [refresher, setRefresher] = useState(0);
 
   const {
     pools,
@@ -52,7 +53,7 @@ export default function Liquidity() {
     kodiakV3Loading,
     kodiakV3Balances,
     kodiakTicksInfo
-  } = usePools();
+  } = usePools(refresher);
   const { handleReport } = useClickTracking();
 
   const [protocols] = useMemo(() => {
@@ -73,14 +74,9 @@ export default function Liquidity() {
         if (protocol !== "all" && protocol !== token.protocol) {
           flag = false;
         }
-        console.log("=token", token);
 
         const pool = [token?.token0?.symbol, token?.token1?.symbol].join("-");
 
-        console.log(
-          "=pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > - 1",
-          pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > -1
-        );
         if (
           searchVal &&
           !(pool?.toLowerCase().indexOf(searchVal.toLowerCase()) > -1)
@@ -314,6 +310,7 @@ export default function Liquidity() {
             onClose={() => {
               setModalType("");
               setSelectedRecord(null);
+              setRefresher(refresher + 1);
             }}
           />
           <RemoveLiquidityModal
@@ -331,6 +328,7 @@ export default function Liquidity() {
             onSuccess={() => {
               setModalType("");
               setSelectedRecord(null);
+              setRefresher(refresher + 1);
             }}
           />
           <V3PoolsModal
