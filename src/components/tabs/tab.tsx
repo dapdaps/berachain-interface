@@ -1,12 +1,13 @@
 import useIsMobile from '@/hooks/use-isMobile';
+import clsx from 'clsx';
 
 const Offset = 20;
 
 const Laptop = (props: any) => {
-  const { children, width, height, onClick, disabled = false, post } = props;
+  const { children, width, height, onClick, disabled = false, post, className } = props;
   return (
     <div
-      className='relative z-[0]'
+      className={clsx('relative z-[0]', className)}
       style={{
         width,
         height,
@@ -31,12 +32,12 @@ const Laptop = (props: any) => {
   );
 };
 
-const Mobile = ({ children, active, onClick, disabled }: any) => {
+const Mobile = ({ children, active, onClick, disabled, className }: any) => {
   return (
     <div
       className={`hidden h-[56px] grow rounded-[16px] md:flex ${
         active && 'border border-black bg-[#FFDC50]'
-      } text-[15px] font-[700] leading-[13.5px] text-center font-Montserrat`}
+      } text-[15px] font-[700] leading-[13.5px] text-center font-Montserrat ${className}`}
       onClick={!disabled && onClick}
     >
       {children}
@@ -65,4 +66,5 @@ interface Props {
   height: number;
   disabled?: boolean;
   post?: string;
+  className?: string;
 }

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 const Step = (props: any) => {
-  const { className, list } = props;
+  const { className, list, spaceClassName } = props;
 
   return (
     <div
@@ -45,7 +45,8 @@ const Step = (props: any) => {
               <div
                 className={clsx(
                   "flex-1 border-b border-black",
-                  !isNextActive && "border-dashed"
+                  !isNextActive && "border-dashed",
+                  spaceClassName
                 )}
               ></div>
             )}

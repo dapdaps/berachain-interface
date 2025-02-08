@@ -1,14 +1,17 @@
 import clsx from "clsx";
 
 const StepVertical = (props: any) => {
-  const { className, list } = props;
+  const { className, list, gap = 56 } = props;
 
   return (
     <div
       className={clsx(
-        "flex flex-col items-start gap-[56px] pb-[30px]",
+        "flex flex-col items-start pb-[30px]",
         className
       )}
+      style={{
+        gap: gap,
+      }}
     >
       {list.map((item: any, idx: number) => {
         const isActive = Date.now() < new Date(item.date).getTime();
@@ -43,9 +46,12 @@ const StepVertical = (props: any) => {
               {idx < list.length - 1 && (
                 <div
                   className={clsx(
-                    "absolute flex-1 w-[1px] h-[50px] left-[10.5px] top-[25px] border-l border-l-black",
+                    "absolute flex-1 w-[1px] left-[10.5px] top-[25px] border-l border-l-black",
                     !isNextActive && "border-dashed"
                   )}
+                  style={{
+                    height: gap - 6,
+                  }}
                 ></div>
               )}
             </div>

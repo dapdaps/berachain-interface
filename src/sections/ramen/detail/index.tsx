@@ -14,12 +14,17 @@ import dayjs from "dayjs";
 import AuctionHead from "@/sections/ramen/detail/components/auction-head";
 import RegisterPanel from "./register-panel";
 import { bera } from "@/configs/tokens/bera";
+import useTokenBalance from '@/hooks/use-token-balance';
+import { useCountdown } from '@/sections/ramen/hooks/use-countdown';
+import useIsMobile from '@/hooks/use-isMobile';
+import MobileTabs from '@/sections/ramen/detail/components/mobile-tabs';
 
 const Detail = (props: any) => {
   const { className } = props;
 
   const spendToken = bera.bera;
 
+  const isMobile = useIsMobile();
   const {
     loading,
     detail,
@@ -30,6 +35,14 @@ const Detail = (props: any) => {
     minBidPrice,
     queryGachaBalance
   } = useDetail();
+  const { tokenBalance, update } = useTokenBalance(
+    spendToken.address,
+    spendToken.decimals
+  );
+  const [countdown] = useCountdown({
+    startTime: detail?.launch_start_date,
+    endTime: detail?.launch_end_date
+  });
 
   const isLaunched = useMemo(
     () =>
@@ -75,54 +88,89 @@ const Detail = (props: any) => {
         </div>
       ) : (
         <>
-          <Dashboard detail={detail} isLaunched={isLaunched} steps={steps} />
-          <div className="mt-[21px] grid grid-cols-2 gap-x-[30px] gap-y-[20px]">
-            {isLaunched ? (
-              <Card
-                title="Auction Results"
-                prefix={<AuctionHead detail={detail} isLaunched={isLaunched} />}
-              >
-                <AuctionResults
-                  detail={detail}
-                  auctionInfo={auctionInfo}
-                  totalSupply={totalSupply}
-                />
-              </Card>
-            ) : detail.isFixed ? (
-              <RegisterPanel
-                gachaInfo={gachaInfo}
-                ticketPrice={ticketPrice}
-                detail={detail}
-                onSuccess={() => {
-                  queryGachaBalance();
-                }}
-              />
+          <Dashboard
+            detail={detail}
+            isLaunched={isLaunched}
+            steps={steps}
+            countdown={countdown}
+          />
+          {
+            isMobile ? (
+              <MobileTabs />
             ) : (
-              <PlaceYourBid
-                auctionInfo={auctionInfo}
-                totalSupply={totalSupply}
-                spendToken={spendToken}
-                isLaunched={isLaunched}
-                detail={detail}
-              />
-            )}
-            <Card title="Participation Overview">
-              <ParticipationOverview
-                detail={detail}
-                steps={steps}
-                isLaunched={isLaunched}
-                auctionInfo={auctionInfo}
-              />
-            </Card>
-            <Card title="Token Launch Details" className="col-span-2">
-              <TokenLaunchDetails
-                detail={detail}
-                minBidPrice={minBidPrice}
-                auctionInfo={auctionInfo}
-                totalSupply={totalSupply}
-              />
-            </Card>
-          </div>
+              <div className="mt-[21px] grid grid-cols-2 gap-x-[30px] gap-y-[20px]">
+                {isLaunched ? (
+                  <Card
+                    title="Auction Results"
+                    prefix={<AuctionHead detail={detail} isLaunched={isLaunched} />}
+                  >
+                    <AuctionResults
+                      detail={detail}
+                      auctionInfo={auctionInfo}
+                      totalSupply={totalSupply}
+                    />
+                  </Card>
+                ) : (
+                  <Card
+                    title={
+                      <div className="flex items-center justify-between">
+                        <div className="">Place Your Bid</div>
+                        <div className="flex items-center justify-end gap-[5px] text-black font-[500] text-[12px]">
+                          <div className="text-[#8D8D8D]">Wallet Balance:</div>
+                          <div className="">
+                            {numberFormatter(tokenBalance, 4, true)}{" "}
+                            {spendToken.symbol}
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    prefix={<AuctionHead detail={detail} isLaunched={isLaunched} countdown={countdown} />}
+                  >
+                    {
+                      detail.isFixed ? (
+                        <RegisterPanel
+                          gachaInfo={gachaInfo}
+                          ticketPrice={ticketPrice}
+                          detail={detail}
+                          onSuccess={() => {
+                            queryGachaBalance();
+                          }}
+                        />
+                      ) : (
+                        <PlaceYourBid
+                          auctionInfo={auctionInfo}
+                          totalSupply={totalSupply}
+                          spendToken={spendToken}
+                          isLaunched={isLaunched}
+                          detail={detail}
+                          onSuccess={() => {
+                            update();
+                          }}
+                          countdown={countdown}
+                        />
+                      )
+                    }
+                  </Card>
+                )}
+                <Card title="Participation Overview">
+                  <ParticipationOverview
+                    detail={detail}
+                    steps={steps}
+                    isLaunched={isLaunched}
+                    auctionInfo={auctionInfo}
+                  />
+                </Card>
+                <Card title="Token Launch Details" className="col-span-2">
+                  <TokenLaunchDetails
+                    detail={detail}
+                    minBidPrice={minBidPrice}
+                    auctionInfo={auctionInfo}
+                    totalSupply={totalSupply}
+                  />
+                </Card>
+              </div>
+            )
+          }
         </>
       )}
     </div>
