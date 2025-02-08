@@ -16,13 +16,13 @@ import { useChristmas } from "@/hooks/use-christmas";
 const menuItems = [
   // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
   { id: 2, title: "Bridge", href: "/bridge", dataBp: "1015-002-002" },
-  {
-    id: 3,
-    title: "Token Marketplace",
-    href: "/marketplace",
-    dataBp: "1015-002-003"
-  },
-  { id: 4, title: "Earn", href: "/earn", dataBp: "1015-002-004" },
+  // {
+  //   id: 3,
+  //   title: "Token Marketplace",
+  //   href: "/marketplace",
+  //   dataBp: "1015-002-003"
+  // },
+  // { id: 4, title: "Earn", href: "/earn", dataBp: "1015-002-004" },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
   // { id: 6, title: "Portfolio Dashboard", href: "/dashboard", dataBp: "1015-002-006" },
   { id: 7, title: "Maps", href: "/", dataBp: "1015-002-007" }

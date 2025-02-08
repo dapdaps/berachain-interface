@@ -58,7 +58,7 @@ const Navigation = function () {
 
   return (
     <>
-      <div
+      {/* <div
         className="cursor-pointer absolute left-1/2 top-[31px] flex items-start gap-[14px] translate-x-[-25px]"
         onClick={onNavigateToMarketplace}
         data-bp="1010-006"
@@ -75,7 +75,7 @@ const Navigation = function () {
           <ArrowTopSvg />
         </div>
         <MarketplaceSvg className="hover:scale-110 transition-transform duration-500" />
-      </div>
+      </div> */}
       <div
         className={clsx(
           "absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]",
@@ -127,7 +127,7 @@ const Navigation = function () {
           <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
         </div> */}
 
-        <div
+        {/* <div
           className="cursor-pointer z-10 flex items-start gap-[21px] translate-x-[-33px]"
           onClick={onNavigateToEarn}
           data-bp="1010-012"
@@ -139,7 +139,7 @@ const Navigation = function () {
               Earn
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div

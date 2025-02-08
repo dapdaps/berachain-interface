@@ -287,12 +287,12 @@ const Home = () => {
               />
             </motion.div>
             <motion.div
-              className="w-[65.64vw] h-[47.43vw] translate-y-[10.256vw] translate-x-[40.256vw]"
-              whileTap="tap"
+              className="w-[65.64vw] h-[47.43vw] translate-y-[10.256vw] translate-x-[40.256vw] opacity-50"
+              // whileTap="tap"
               // style={{ clipPath: `path("M126.336 15.4999C102.736 14.2999 87.836 36.9999 83.336 48.4999C70.836 33.5 67 25 48.5 25C20.5 25 17.836 75.5 19.336 91C20.836 106.5 44.836 103.5 51.336 106C56.536 108 66.5027 116.5 70.836 120.5C71.1693 122.833 72.136 130.8 73.336 144C74.536 157.2 84.5027 161.5 89.336 162C131.669 158.667 210.436 152.3 220.836 149.5C236.494 145.284 231.951 134 228.336 110.5C225.797 94 214.169 96 208.836 97.5V91C212.836 87.6667 220.836 75 220.836 51C220.836 21 184.836 -7 162.336 -7C144.336 -7 130.836 7.99991 126.336 15.4999Z")` }}
               onClick={() => {
-                router.push("/marketplace");
-                tapSound.play?.();
+                // router.push("/marketplace");
+                // tapSound.play?.();
               }}
               data-bp="1015-004"
             >
@@ -375,11 +375,11 @@ const Home = () => {
                  />*/}
             </motion.div>
             <motion.div
-              className="w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw]"
-              whileTap="tap"
+              className="w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw] opacity-50"
+              // whileTap="tap"
               onClick={() => {
-                router.push("/earn");
-                tapSound.play?.();
+                // router.push("/earn");
+                // tapSound.play?.();
                 // handleReport('1015-007');
               }}
               data-bp="1015-007"

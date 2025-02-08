@@ -138,5 +138,13 @@ export const bera: { [key: string]: Token } = {
     symbol: "USDa",
     name: "USDa",
     icon: "/assets/tokens/susda.png"
+  },
+  bonga: {
+    chainId: CHAIN_ID,
+    address: "0x11909A68AE60903c96C35C059fcf262e54Df29d5",
+    decimals: 18,
+    symbol: "BONGA",
+    name: "Bong Bears",
+    icon: "/assets/tokens/bonga.png"
   }
 };

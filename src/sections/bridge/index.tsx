@@ -38,7 +38,7 @@ const DappHeader: React.FC = () => {
     return (
       <div className="flex gap-2 my-[30px] w-full justify-center items-center">
         <img
-          src={`/images/dapps/${dappName}.svg`}
+          src={`/images/dapps/${(dappName as string).toLowerCase()}.svg`}
           alt={dappName as string}
           className="w-9 h-9"
         />
@@ -106,7 +106,7 @@ export default function Bridge() {
     console.log(fee)
 
     if (!fromToken.isNative) {
-      console.log('allowance', allowance, inputValue, Number(allowance) < Number(inputValue))
+      // console.log('allowance', allowance, inputValue, Number(allowance) < Number(inputValue))
       if (!allowance || Number(allowance) < Number(inputValue)) {
         await approve()
       }
