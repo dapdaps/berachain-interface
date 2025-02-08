@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { asyncFetch } from "@/utils/http";
+import { TOKENS } from "../config";
 
 export default function useList() {
   const [featuredList, setFeaturedList] = useState<any>([]);
@@ -13,7 +14,7 @@ export default function useList() {
       setFeaturedLoading(true);
       const res = await asyncFetch("/api.ramen/v1/featured-projects");
       const list = res.data.projects || [];
-      setFeaturedList(list.filter((item: any) => item.slug === "yeet"));
+      setFeaturedList(list.filter((item: any) => TOKENS[item.slug]));
     } catch (err) {
       setFeaturedLoading(false);
     }
