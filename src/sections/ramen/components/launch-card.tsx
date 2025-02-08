@@ -4,9 +4,16 @@ import LabelItem from '@/sections/ramen/detail/components/label-item';
 import Big from 'big.js';
 import { bera } from '@/configs/tokens/bera';
 import { numberFormatter } from '@/utils/number-formatter';
+import { useRouter } from 'next/navigation';
 
 const LaunchCard = (props: any) => {
   const { className, project } = props;
+
+  const router = useRouter();
+
+  const onDetail = () => {
+    router.push(`/ramen/${project?.slug}`);
+  };
 
   return (
     <div className={clsx('relative bg-[rgba(0,_0,_0,_0.06)] rounded-[10px] p-[8px_8px_16px] text-black text-[20px] font-[700] leading-[90%] font-Montserrat', className)}>
@@ -43,6 +50,7 @@ const LaunchCard = (props: any) => {
       <button
         type="button"
         className={clsx('w-full h-[46px] mt-[15px] rounded-[10px] hover:scale-[0.99] hover:translate-y-[1px] transition-all duration-150 flex justify-center items-center border border-black bg-[#F0EEDD] text-black text-[16px] font-[600] font-Montserrat', project?.status === E_LAUNCH_STATUS.LIVE ? '!bg-[#FFDC50]' : '')}
+        onClick={onDetail}
       >
         {project?.status === E_LAUNCH_STATUS.LIVE ? 'Participate Now' : 'Preview'}
       </button>
