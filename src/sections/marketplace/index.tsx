@@ -12,6 +12,7 @@ import SwapModal from "@/sections/swap/SwapModal";
 import { useMemo } from "react";
 import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
+import useTokenVolume from "./hooks/use-token-volume";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
 
 const splitArray = (list: Record<string, any>[]) => {
@@ -106,26 +107,10 @@ const MarketplaceView = () => {
     bera.bera
   );
   const isMobile = useIsMobile();
+  const { voulmes } = useTokenVolume();
 
   const TOKENS_PER_PAGE = 9;
   const [displayCount, setDisplayCount] = useState(TOKENS_PER_PAGE);
-
-  const List = [
-    {
-      key: "price",
-      label: "Price",
-      value: "$0.0000001"
-    },
-    {
-      key: "volume",
-      label: "Volume",
-      value: "$0.9717"
-    }
-  ];
-
-  // const onMore = () => {
-  //   router.push('/marketplace/tokens');
-  // };
 
   const onFooterMore = () => {
     router.push("/marketplace/tokens");
@@ -234,6 +219,7 @@ const MarketplaceView = () => {
                         icon={it.icon}
                         {...it}
                         onSwap={() => onSwap(it)}
+                        voulmes={voulmes}
                       />
                     </div>
                   ))}

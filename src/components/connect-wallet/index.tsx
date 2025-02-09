@@ -37,7 +37,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   const walletInfo = useWalletName();
 
   const [connecting, setConnecting] = useState<boolean>(isConnecting);
-  const [chainDropdownShow, setChainDropdownShow] = useState<boolean>(false);
   const [mobileUserInfoVisible, setMobileUserInfoVisible] =
     useState<boolean>(false);
   const [mobileNetworksVisible, setMobileNetworksVisible] =
@@ -108,11 +107,10 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   }, [chainId, tokenSymbolShown]);
 
   const handleChainDropdown = () => {
-    if (isMobile && isConnected) {
+    if (isMobile) {
       setMobileNetworksVisible(true);
       return;
     }
-    setChainDropdownShow(true);
   };
 
   const { run: closeConnecting, cancel: cancelCloseConnecting } = useDebounceFn(
@@ -121,23 +119,6 @@ const ConnectWallet = ({ className }: { className?: string }) => {
     },
     { wait: 10000 }
   );
-
-  useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (
-        chainListRef.current &&
-        !chainListRef.current?.contains(event.target) &&
-        !chainListRef.current.contains(event.target)
-      ) {
-        setChainDropdownShow(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [chainListRef.current]);
 
   useEffect(() => {
     cancelCloseConnecting();
@@ -177,10 +158,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
                 addressShown={addressShown}
               />
               <MobileChain
-                chainDropdownShow={chainDropdownShow}
                 chainListRef={chainListRef}
                 handleChainDropdown={handleChainDropdown}
-                chainId={chainId}
               />
             </>
           ) : (
@@ -203,12 +182,22 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           )}
         </div>
       ) : (
-        <button
-          className={`click cursor-pointer rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black lg:shadow-shadow1 text-white ${className}`}
-          onClick={handleConnect}
-        >
-          Connect Wallet
-        </button>
+        <>
+          <button
+            className={`click cursor-pointer rounded-full px-[10px] py-[4px] text-[14px] font-semibold bg-black lg:shadow-shadow1 text-white ${className}`}
+            onClick={handleConnect}
+          >
+            Connect Wallet
+          </button>
+          {isMobile && (
+            <div className="ml-[10px]">
+              <MobileChain
+                chainListRef={chainListRef}
+                handleChainDropdown={handleChainDropdown}
+              />
+            </div>
+          )}
+        </>
       )}
       <MobileUser
         visible={mobileUserInfoVisible}

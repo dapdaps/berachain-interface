@@ -99,6 +99,14 @@ export const ethereum: { [key: string]: Token } = {
     name: 'rsETH',
     icon: '/assets/tokens/rseth.svg'
   },
+  wbtc: {
+    chainId: CHAIN_ID,
+    address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    decimals: 8,
+    symbol: "WBTC", 
+    name: "Wrapped BTC",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/3717.png"
+  },
   "pumpBTC.bera": {
     chainId: CHAIN_ID,
     address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
@@ -123,13 +131,13 @@ export const ethereum: { [key: string]: Token } = {
     name: "Lombard Staked Bitcoin",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33652.png"
   },
-  rseth: {
-    chainId: CHAIN_ID,
-    address: "0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7",
-    decimals: 18,
-    symbol: "rsETH",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29242.png"
-  },
+  // rseth: {
+  //   chainId: CHAIN_ID,
+  //   address: "0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7",
+  //   decimals: 18,
+  //   symbol: "rsETH",
+  //   icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29242.png"
+  // },
   rsweth: {
     chainId: CHAIN_ID,
     address: "0xFAe103DC9cf190eD75350761e95403b7b8aFa6c0",

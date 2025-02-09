@@ -1,13 +1,13 @@
-import { beraB } from '@/configs/tokens/bera-bArtio';
+import { bera } from "@/configs/tokens/bera";
 export default {
-  name: 'Bedrock',
-  icon: '/images/dapps/bedrock.svg',
-  type: 'Vaults',
+  name: "Bedrock",
+  icon: "/images/dapps/bedrock.svg",
+  type: "Vaults",
   chains: {
-    80084: {
-      STAKE_ADDRESS: '0x97e16DB82E089D0C9c37bc07F23FcE98cfF04823',
-      sourceToken: beraB["wbtc"],
-      targetToken: beraB["unibtc"]
+    80094: {
+      STAKE_ADDRESS: "0xE0240d05Ae9eF703E2b71F3f4Eb326ea1888DEa3",
+      sourceToken: bera["wbtc"],
+      targetToken: bera["unibtc"]
     }
   }
 };
