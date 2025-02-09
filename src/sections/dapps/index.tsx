@@ -160,8 +160,7 @@ const SECOND_LIST = [
         ..._dApps["bedrock"],
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
-        ),
-        disabled: true
+        )
       },
 
       {
@@ -324,8 +323,7 @@ const ALL_LIST = [
         ..._dApps["bedrock"],
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        ),
-        disabled: true
+        )
       },
       {
         icon: "/images/dapps/kingdomly.svg",

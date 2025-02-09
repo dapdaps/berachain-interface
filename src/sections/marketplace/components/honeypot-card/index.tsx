@@ -141,7 +141,7 @@ const HoneypotCard = (props: any) => {
             {list.map((item, index) => (
               <div
                 key={item.key}
-                className="flex-shrink-0 leading-none gap-x-[40px] mb-[13px] last:mb-0 flex items-start justify-between text-[14px] font-Montserrat pl-[16px]"
+                className="flex-shrink-0 leading-none mb-[13px] last:mb-0 flex items-start justify-between text-[14px] font-Montserrat pl-[16px]"
               >
                 <div className="text-[#3D405A] font-[400]">{item.label}</div>
                 <div>
