@@ -84,6 +84,7 @@ export default function Bridge() {
     fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromChain?.id ?? 0
   )
 
+
   const inputValue = useDebounce(amount, { wait: 500 });
 
   const { fee, receiveAmount, contractAddress, loading: quoteLoading } = useQuote({ fromChainId: fromChain.id, toChainId: toChain.id, token: fromToken, amount: inputValue })
@@ -154,8 +155,8 @@ export default function Bridge() {
 
   return (
     <>
-      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
-      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10'>
+      {isMobile ? null : <div className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]' />}
+      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10' style={{  overflow: isMobile ? 'auto' : 'hidden' }}>
         <DappHeader />
         <Card>
           <TokenAmout
