@@ -10,7 +10,7 @@ export const contractAddresses: any = {
         ['SOLVBTC.BBN']: '0x94DaBd84Cd36c4D364FcDD5CdABf41E73dBc99e6',
         USDE: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
         SUSDE: '0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2',
-        ['PUMPBTC.BERA']: '0xADc9c900b05F39f48bB6F402A1BAE60929F4f9A8',
+        // ['PUMPBTC.BERA']: '0xADc9c900b05F39f48bB6F402A1BAE60929F4f9A8',
         LBTC: '0x1290A6b480f7eF14925229fdB66f5680aD8F44AD',
         FBTC: '0x0b835f07a2a54C0e80c1F585e5b6Dd732816dA3F',
         RSWETH: '0x1486D39646cdee84619bd05997319545A8575079',
@@ -19,6 +19,13 @@ export const contractAddresses: any = {
         WBTC: '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c',
         PYUSD: '0x688e72142674041f8f6Af4c808a4045cA1D6aC82',
         USDA: '0x8A60E489004Ca22d775C5F2c657598278d17D9c2',
+        SUSDA: '0x2b66aade1e9c062ff411bd47c44e0ad696d43bd9',
+        RUSD: '0xf0e9f6d9ba5d1b3f76e0f82f9dcdb9ebeef4b4da',
+        WABTC: '0x37016812a5c2c54793fd277b7f75086a47377d28',
+
+        // disbaled
+        STBTC: '',
+        UNIBTC: '',
     },
     80094: {
         WETH: '0x45f1A95A4D3f3836523F5c83673c797f4d4d263B',
@@ -29,7 +36,7 @@ export const contractAddresses: any = {
         ['SOLVBTC.BBN']: '0x94DaBd84Cd36c4D364FcDD5CdABf41E73dBc99e6',
         USDE: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
         SUSDE: '0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2',
-        ['PUMPBTC.BERA']: '0xADc9c900b05F39f48bB6F402A1BAE60929F4f9A8',
+        // ['PUMPBTC.BERA']: '0xADc9c900b05F39f48bB6F402A1BAE60929F4f9A8',
         LBTC: '0x630e12D53D4E041b8C5451aD035Ea841E08391d7',
         FBTC: '0x0b835f07a2a54C0e80c1F585e5b6Dd732816dA3F',
         RSWETH: '0x850CDF416668210ED0c36bfFF5d21921C7adA3b8',
@@ -37,7 +44,15 @@ export const contractAddresses: any = {
         WEETH: '0x7DCC39B4d1C53CB31e1aBc0e358b43987FEF80f7',
         WBTC: '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c',
         PYUSD: '0x688e72142674041f8f6Af4c808a4045cA1D6aC82',
-        USDA: '0x8A60E489004Ca22d775C5F2c657598278d17D9c2',
+        USDA: '0xff12470a969dd362eb6595ffb44c82c959fe9acc',
+
+        SUSDA: '0x2840F9d9f96321435Ab0f977E7FDBf32EA8b304f',
+        RUSD: '0x09d4214c03d01f49544c0448dbe3a27f768f2b34',
+        WABTC: '0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b',
+
+        // disbaled
+        STBTC: '',
+        UNIBTC: '',
     }
 }
 
@@ -56,7 +71,8 @@ export const tokenPairs: any = {
         'SOLVBTC': 'SOLVBTC',
         'USDE': 'USDE',
         'SUSDE': 'SUSDE',
-        'PUMPBTC.BERA': 'PUMPBTC.BERA',
+        'SOLVBTC.BBN': 'SOLVBTC.BBN',
+        // 'PUMPBTC.BERA': 'PUMPBTC.BERA',
         'LBTC': 'LBTC',
         'FBTC': 'FBTC',
         'RSWETH': 'RSWETH',
@@ -64,7 +80,14 @@ export const tokenPairs: any = {
         'WEETH': 'WEETH',
         'WBTC': 'WBTC',
         'PYUSD': 'PYUSD',
-        'USDA': 'USDA'
+        'USDA': 'USDA',
+        'SUSDA': 'SUSDA',
+        'RUSD': 'RUSD',
+        'WABTC': 'WABTC',
+
+        // disabled
+        STBTC: 'STBTC',
+        UNIBTC: 'UNIBTC',
     },
     80094: {
         'WETH': 'ETH',
@@ -74,7 +97,8 @@ export const tokenPairs: any = {
         'SOLVBTC': 'SOLVBTC',
         'USDE': 'USDE',
         'SUSDE': 'SUSDE',
-        'PUMPBTC.BERA': 'PUMPBTC.BERA',
+        'SOLVBTC.BBN': 'SOLVBTC.BBN',
+        // 'PUMPBTC.BERA': 'PUMPBTC.BERA',
         'LBTC': 'LBTC',
         'FBTC': 'FBTC',
         'RSWETH': 'RSWETH',
@@ -82,6 +106,20 @@ export const tokenPairs: any = {
         'WEETH': 'WEETH',
         'WBTC': 'WBTC',
         'PYUSD': 'PYUSD',
-        'USDA': 'USDA'
+        'USDA': 'USDA',
+        'SUSDA': 'SUSDA',
+        'RUSD': 'RUSD',
+        'WABTC': 'WABTC',
+
+        // disabled
+        STBTC: 'STBTC',
+        UNIBTC: 'UNIBTC',
     }
+}
+
+export const tokenParams: any = {
+    LBTC: '0x00030100110100000000000000000000000000030d40',
+    USDA: '0x00030100110100000000000000000000000000030d40',
+    SUSDA: '0x00030100110100000000000000000000000000030d40',
+    WABTC: '0x00030100110100000000000000000000000000030d40'
 }

@@ -84,6 +84,7 @@ export default function Bridge() {
     fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromChain?.id ?? 0
   )
 
+
   const inputValue = useDebounce(amount, { wait: 500 });
 
   const { fee, receiveAmount, contractAddress, loading: quoteLoading } = useQuote({ fromChainId: fromChain.id, toChainId: toChain.id, token: fromToken, amount: inputValue })
@@ -96,6 +97,7 @@ export default function Bridge() {
   }, [inputValue, tokenBalance])
 
   useEffect(() => {
+    console.log(fromToken.symbol.toUpperCase())
     const tokenPair = tokenPairs[fromChain.id][fromToken.symbol.toUpperCase()]
     if (tokenPair) {
       setToToken(allTokens[toChain.id].find((token: Token) => token.symbol.toUpperCase() === tokenPair) as Token)
@@ -153,8 +155,9 @@ export default function Bridge() {
 
   return (
     <>
-      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
-      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10'>
+    <div className='h-full overflow-auto'>
+      {isMobile ? null : <div className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]' />}
+      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10 '>
         <DappHeader />
         <Card>
           <TokenAmout
@@ -268,6 +271,7 @@ export default function Bridge() {
         />
       </div>
       <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
+      </div>
     </>
   );
 }

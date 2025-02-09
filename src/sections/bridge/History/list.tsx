@@ -2,15 +2,21 @@ import { useStatus } from '../Hooks/Stargate/useStatus'
 import { useState } from 'react'
 import chains, { icons } from '@/configs/chains'
 import { formatEnglishDate } from '@/utils/date'
+import useIsMobile from '@/hooks/use-isMobile';
 
 export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
+    const isMobile = useIsMobile(); 
 
     const filteredList = list.filter((item: any) =>
         activeTab === 'pending' ? item.status === 1 : item.status !== 1
     )
 
+    const cls = isMobile 
+    ? 'm-auto md:w-[92.307vw] border border-[#000] rounded-2xl bg-[#FFFDEB]' 
+    : 'fixed bottom-[60px] w-[350px] right-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]'
+
     return (
-        <div className="fixed bottom-[60px] w-[350px] right-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]">
+        <div className={cls}>
             <div className="rounded-2xl p-4 relative">
                 <div className="absolute top-[20px] cursor-pointer right-[10px]" onClick={() => setIsOpen(false)}>
                     <svg width="16" height="9" viewBox="0 0 16 9" fill="none" xmlns="http://www.w3.org/2000/svg">

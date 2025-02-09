@@ -1,11 +1,19 @@
 import { useBridgeHistory } from "@/stores/useBridgeHistory"
 import { useInterval } from "ahooks"
+import { useEffect } from "react"
+import * as http from "@/utils/http";
+import { useHistory } from "../useHistory";
 
 export const useStatus = () => {
     const { list, set}: any = useBridgeHistory()
 
     const pendingCount = list.filter((item: any) => item.status === 1)
     const historyCount = list.filter((item: any) => item.status !== 1)
+
+    // const { data, isLoading } = useHistory() 
+
+    // console.log('data:', data)
+
 
     useInterval(async () => {
         const pendingTxs = list.filter((item: any) => item.status === 1)
