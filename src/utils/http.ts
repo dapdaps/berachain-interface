@@ -26,7 +26,8 @@ export const objectToQueryString = (obj: Record<string, any>): string => {
 
 const AUTH_TOKENS = `_user`;
 
-const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://dev-api.beratown.app';
+// const BASE_URL = process.env.NEXT_PUBLIC_API || 'https://testnet-api.beratown.app';
+const BASE_URL = 'https://testnet-api.beratown.app';
 
 const getUrl = (url: string) => {
   return url.startsWith('http') ? url : `${BASE_URL}${url}`;
