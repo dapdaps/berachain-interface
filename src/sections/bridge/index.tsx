@@ -155,8 +155,9 @@ export default function Bridge() {
 
   return (
     <>
+    <div className='h-full overflow-auto'>
       {isMobile ? null : <div className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]' />}
-      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10' style={{  overflow: isMobile ? 'auto' : 'hidden' }}>
+      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10 '>
         <DappHeader />
         <Card>
           <TokenAmout
@@ -270,6 +271,7 @@ export default function Bridge() {
         />
       </div>
       <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
+      </div>
     </>
   );
 }
