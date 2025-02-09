@@ -3,7 +3,7 @@ import { Contract, utils } from 'ethers';
 import useAccount from '@/hooks/use-account';
 import useToast from '@/hooks/use-toast';
 import { Token } from '@/types';
-import { chainIds, contractAddresses } from './config';
+import { chainIds, contractAddresses, tokenParams } from './config';
 import Big from 'big.js';
 
 export default function useBridge() {
@@ -113,7 +113,7 @@ export default function useBridge() {
                     utils.hexZeroPad(account, 32),
                     amountLD.toString(),
                     amountLD.mul(1 - 0.005).toFixed(0, 0),
-                    token.symbol.toUpperCase() === 'LBTC' ? '0x00030100110100000000000000000000000000030d40' : '0x',
+                    tokenParams[token.symbol.toUpperCase()] || '0x',
                     '0x',
                     '0x'
                 ],

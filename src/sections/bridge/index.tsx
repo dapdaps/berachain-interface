@@ -96,6 +96,7 @@ export default function Bridge() {
   }, [inputValue, tokenBalance])
 
   useEffect(() => {
+    console.log(fromToken.symbol.toUpperCase())
     const tokenPair = tokenPairs[fromChain.id][fromToken.symbol.toUpperCase()]
     if (tokenPair) {
       setToToken(allTokens[toChain.id].find((token: Token) => token.symbol.toUpperCase() === tokenPair) as Token)

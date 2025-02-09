@@ -100,7 +100,7 @@ export default function TokenAmout({
 
       <TokenSelector
         show={tokenSelectorShow}
-        tokenList={allTokens[chain.id].filter((token: Token) => !!tokenPairs[chain.id][(token.symbol.replace('.', '')).toUpperCase()])}
+        tokenList={allTokens[chain.id].filter((token: Token) => !!tokenPairs[chain.id][(token.symbol).toUpperCase()])}
         token={token}
         onTokenSelect={onTokenChange}
         onClose={() => {

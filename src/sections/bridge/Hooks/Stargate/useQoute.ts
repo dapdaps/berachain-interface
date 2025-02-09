@@ -4,7 +4,7 @@ import useAccount from '@/hooks/use-account';
 import { Token } from '@/types';
 import chains from '@/configs/chains';
 import Big from 'big.js';
-import { chainIds, contractAddresses } from './config';
+import { chainIds, contractAddresses, tokenParams } from './config';
 
 
 interface Props {
@@ -40,6 +40,13 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
         const provider = new JsonRpcProvider(chain.rpcUrls.default.http[0]);
 
         const contractAddress = contractAddresses[fromChainId][token.symbol.toUpperCase()]
+
+        if (!contractAddress) {
+            setContractAddress(null)
+            setReceiveAmount(null)
+            setFee(null)
+            return
+        }
         //  token.isNative ? contractAddresses[fromChainId].native : contractAddresses[fromChainId].usdc
         setContractAddress(contractAddress)
         setReceiveAmount(null)
@@ -130,7 +137,7 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
                 to: utils.hexZeroPad(account, 32),
                 amountLD: amountLD.toString(),
                 minAmountLD: amountLD.mul(1 - 0.005).toFixed(0, 0),
-                extraOptions: token.symbol.toUpperCase() === 'LBTC' ? '0x00030100110100000000000000000000000000030d40' : '0x',
+                extraOptions: tokenParams[token.symbol.toUpperCase()] || '0x',
                 composeMsg: '0x',
                 oftCmd: '0x'
             })
