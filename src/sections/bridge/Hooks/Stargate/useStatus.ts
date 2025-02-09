@@ -10,16 +10,10 @@ export const useStatus = () => {
     const pendingCount = list.filter((item: any) => item.status === 1)
     const historyCount = list.filter((item: any) => item.status !== 1)
 
-    const { data, isLoading } = useHistory() 
+    // const { data, isLoading } = useHistory() 
 
-    console.log('data:', data)
+    // console.log('data:', data)
 
-    // useEffect(() => {
-    //     const fetchHistory = async () => {
-    //         const res: any = await http.get(`/getOrderHistory/${address}`).then((res) => res.json());
-    //     }
-    //     fetchHistory();
-    // }, [list])
 
     useInterval(async () => {
         const pendingTxs = list.filter((item: any) => item.status === 1)
