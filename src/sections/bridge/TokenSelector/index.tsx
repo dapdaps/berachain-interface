@@ -1,6 +1,7 @@
 import Card from '@/components/card';
 import Modal from '@/components/modal/index';
 import { Token } from '@/types';
+import { useState } from 'react';
 
 interface Props {
   show: boolean;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export default function TokenSelector({ show, onClose, tokenList, token, onTokenSelect }: Props) {
+  const [search, setSearch] = useState('')  
+
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
@@ -60,6 +63,10 @@ export default function TokenSelector({ show, onClose, tokenList, token, onToken
             </svg>
 
             <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+              }}
               className='flex-1 h-[52px] bg-inherit outline-none'
               placeholder='search token or paste address'
             />
@@ -67,7 +74,11 @@ export default function TokenSelector({ show, onClose, tokenList, token, onToken
 
           <div className='h-[400px] overflow-auto mt-[5px]'>
             {
-              tokenList?.map((item: Token) => {
+              tokenList?.filter((item: Token) => {
+                return item.symbol.toUpperCase().includes(search.toUpperCase()) 
+                || item.address.toUpperCase() === search.toUpperCase() 
+                || item.name?.toUpperCase().includes(search.toUpperCase())
+              })?.map((item: Token) => {
                 return <div key={item.symbol} onClick={() => {
                   onTokenSelect(item)
                   onClose()

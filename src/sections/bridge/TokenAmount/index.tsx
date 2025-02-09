@@ -57,7 +57,7 @@ export default function TokenAmout({
               <img
                 // key={token?.icon}
                 className='w-[10px] h-[10px] absolute right-0 bottom-0 md:rounded-sm'
-                src={''}
+                src={icons[chain.id]}
               />
             </div>
             <div>
