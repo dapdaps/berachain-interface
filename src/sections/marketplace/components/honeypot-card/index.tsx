@@ -15,6 +15,7 @@ const HoneypotCard = (props: any) => {
     symbol,
     icon,
     data = {},
+    voulmes,
     onSwap = () => {}
   } = props;
   const prices = usePriceStore((store) => store.price);
@@ -28,7 +29,7 @@ const HoneypotCard = (props: any) => {
           isMobile ? (
             <div className="w-[118px] h-[118px] rounded-[18px] p-[10px] bg-[#FFE5B8] border border-[#000] flex flex-col justify-center items-center gap-[7px] shadow-shadow1">
               <div className="text-[18px] font-[400] leading-[18px] text-center font-CherryBomb text-[#F7F9EA] text-stroke-2">
-                {name}
+                {symbol}
               </div>
               <div className="text-[12px] font-[400] leading-[14.4px] text-left font-Montserrat">
                 Volume
@@ -38,8 +39,8 @@ const HoneypotCard = (props: any) => {
                   {props.volume?.value}
                 </div>
                 <div className="text-[10px] font-[600] leading-[9px] font-Montserrat text-[#06B000]">
-                  {props.volume?.type}
-                  {props.volume?.rate}
+                  {/* {props.volume?.type} */}
+                  {/* {props.volume?.rate} */}
                 </div>
               </div>
               <div
@@ -105,17 +106,8 @@ const HoneypotCard = (props: any) => {
   const list = useMemo(() => {
     let _price: any = prices[priceKey || symbol];
     let _rate: any = 0;
-    // if (name === 'STGUSDC') {
-    //   _price = 1;
-    //   _rate = Math.random();
-    // }
-    // if (name === 'BERA') {
-    //   _price = 500;
-    //   _rate = Math.random() * 2;
-    // }
-    // if (['WBTC', 'WETH'].includes(name)) {
-    //   _price = prices[name];
-    // }
+    let _volume: any = voulmes ? voulmes[priceKey || symbol] : "";
+
     return [
       {
         label: "Price",
@@ -129,10 +121,12 @@ const HoneypotCard = (props: any) => {
         key: "volume",
         type: "+",
         rate: balanceFormated(Math.random() * 10, 2) + "%",
-        value: "$" + balanceFormated(Math.random() * 10 + 2, 2) + "M"
+        value: _volume
+          ? numberFormatter(_volume, 2, true, { prefix: "$", isShort: true })
+          : "-"
       }
     ];
-  }, [name, prices]);
+  }, [name, prices, voulmes]);
 
   return (
     <div className="flex items-end justify-center md:relative">
@@ -151,9 +145,7 @@ const HoneypotCard = (props: any) => {
               >
                 <div className="text-[#3D405A] font-[400]">{item.label}</div>
                 <div>
-                  <div className="font-[600] mb-[2px]">
-                    {index === 1 ? "-" : item.value}
-                  </div>
+                  <div className="font-[600] mb-[2px]">{item.value}</div>
                   <div
                     className={`text-[10px] text-right ${
                       item.type === "+" ? "text-[#06B000]" : "text-[#FF008A]"
