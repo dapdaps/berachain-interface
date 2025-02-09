@@ -49,8 +49,6 @@ const handleUpgrade = (result: any) => {
 
 const get = async (url: string, query?: Record<string, any>) => {
   const tokens = JSON.parse(window.sessionStorage.getItem(AUTH_TOKENS) || "{}");
-
-  console.log('tokens:', tokens)
   const options = {
     method: "GET",
     headers: {
@@ -74,7 +72,6 @@ const get = async (url: string, query?: Record<string, any>) => {
 };
 
 const getWithToken = async (url: string, query?: Record<string, any>, token?: string) => {
-  console.log('tokens:', token)
   const options = {
     method: "GET",
     headers: {
