@@ -130,7 +130,7 @@ export default function useQuote({ fromChainId, toChainId, token, amount }: Prop
                 to: utils.hexZeroPad(account, 32),
                 amountLD: amountLD.toString(),
                 minAmountLD: amountLD.mul(1 - 0.005).toFixed(0, 0),
-                extraOptions: '0x',
+                extraOptions: token.symbol.toUpperCase() === 'LBTC' ? '0x00030100110100000000000000000000000000030d40' : '0x',
                 composeMsg: '0x',
                 oftCmd: '0x'
             })

@@ -49,10 +49,36 @@ const handleUpgrade = (result: any) => {
 
 const get = async (url: string, query?: Record<string, any>) => {
   const tokens = JSON.parse(window.sessionStorage.getItem(AUTH_TOKENS) || "{}");
+
+  console.log('tokens:', tokens)
   const options = {
     method: "GET",
     headers: {
       Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ""}`,
+      "Content-Type": "application/json"
+    }
+  };
+  if (!query) {
+    const res = await fetch(getUrl(url), options);
+    const result = (await res.json()) as any;
+    handleUpgrade(result);
+    return result;
+  }
+
+  query = removeEmptyKeys(query);
+  const queryStr = objectToQueryString(query);
+  const res = await fetch(`${getUrl(url)}?${queryStr}`, options);
+  const result = (await res.json()) as any;
+  handleUpgrade(result);
+  return result;
+};
+
+const getWithToken = async (url: string, query?: Record<string, any>, token?: string) => {
+  console.log('tokens:', token)
+  const options = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json"
     }
   };
@@ -154,6 +180,7 @@ const postUpload = async (url: string, data: any) => {
 
 export {
   get,
+  getWithToken,
   post,
   getWithoutActive,
   deleteRequest,

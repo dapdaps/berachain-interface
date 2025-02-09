@@ -113,7 +113,7 @@ export default function useBridge() {
                     utils.hexZeroPad(account, 32),
                     amountLD.toString(),
                     amountLD.mul(1 - 0.005).toFixed(0, 0),
-                    '0x',
+                    token.symbol.toUpperCase() === 'LBTC' ? '0x00030100110100000000000000000000000000030d40' : '0x',
                     '0x',
                     '0x'
                 ],
