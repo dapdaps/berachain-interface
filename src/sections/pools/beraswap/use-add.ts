@@ -10,14 +10,16 @@ import valutAbi from "../abi/balancer-valut";
 import poolAbi from "../abi/balancer-pool";
 import queryAbi from "../abi/balancer-query";
 import beraswap from "@/configs/pools/beraswap";
+import axios from "axios";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider, chainId } = useAccount();
-  const prices = usePrices();
+
   const toast = useToast();
   const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
+
   const { addAction } = useAddAction("dapp");
   const slippage = useSettingsStore((store: any) => store.slippage);
   const onIncrease = async () => {
@@ -37,7 +39,26 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         provider
       );
       const totalSupply = await poolContract.getActualSupply();
+
       const [assets, balances] = await valutContract.getPoolTokens(poolIdx);
+
+      const priceRes = await axios.post(beraswap.graph, {
+        query: `query{\n  tokenGetCurrentPrices(addressIn: ${JSON.stringify(
+          assets
+        )},chains: [BERACHAIN]){\n    price,\n    address\n  }\n}`,
+        variables: {
+          swapAmount: "0.001",
+          chain: "BERACHAIN",
+          swapType: "EXACT_IN",
+          tokenIn: "0x6969696969696969696969696969696969696969",
+          tokenOut: "0x779ded0c9e1022225f8e0630b35a9b54be713736"
+        }
+      });
+      const prices = priceRes.data.data.tokenGetCurrentPrices.reduce(
+        (acc: any, curr: any) => ({ ...acc, [curr.address]: curr.price }),
+        {}
+      );
+
       let val = Big(0);
       let poolValue = Big(0);
       let userValue = Big(0);
@@ -59,7 +80,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
             .mul(10 ** token.decimals)
             .toFixed(0)
         );
-        const price = prices[token.address] || token.token.latestUSDPrice;
+        const price = prices[token.address];
 
         if (token.isNative) {
           val = Big(0).add(values[token.address] || 0);
@@ -157,7 +178,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       addAction({
         type: "Liquidity",
         action: "Add Liquidity",
-        template: "Burrbear",
+        template: "BeraSwap",
         status,
         transactionHash,
         sub_type: "Add",

@@ -28,7 +28,7 @@ export default function IncreaseLiquidityModal({
   }, [data, title]);
 
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "burrbear") return { data };
+    if (dex?.toLowerCase() === "beraswap") return { data };
     return {
       defaultToken0: data.token0,
       defaultToken1: data.token1,

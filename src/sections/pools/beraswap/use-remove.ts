@@ -175,7 +175,7 @@ export default function useRemove({
       addAction({
         type: "Liquidity",
         action: "Remove Liquidity",
-        template: "Burrbear",
+        template: "BeraSwap",
         status,
         transactionHash,
         sub_type: "Remove",

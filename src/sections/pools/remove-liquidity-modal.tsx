@@ -25,7 +25,7 @@ export default function RemoveLiquidityModal({
   }, [data]);
 
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "burrbear") return { data };
+    if (dex?.toLowerCase() === "beraswap") return { data };
     return {
       tokenId,
       ...data,
