@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import TokenSelector from '../TokenSelector';
 import allTokens from '@/configs/allTokens'
-import { Chain } from 'viem';
-import { Token } from '@/types';
+
 import chains, { icons } from '@/configs/chains'
 import useTokenBalance from '@/hooks/use-token-balance';
 import Loading from '@/components/loading';
 import { usePriceStore } from '@/stores/usePriceStore';
 import { balanceFormated } from '@/utils/balance';
 import { tokenPairs } from '../Hooks/Stargate/config';
+
+import type { Chain, Token } from '@/types';
 
 interface Props {
   chain: Chain;
@@ -57,12 +58,12 @@ export default function TokenAmout({
               <img
                 // key={token?.icon}
                 className='w-[10px] h-[10px] absolute right-0 bottom-0 md:rounded-sm'
-                src={icons[chain.id]}
+                src={chain.icon}
               />
             </div>
             <div>
               <div className='text-[16px] font-[600] whitespace-nowrap overflow-hidden text-ellipsis'>{ token?.symbol }</div>
-              <div className='text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis'>{ chain?.name }</div>
+              <div className='text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis'>{ chain?.chainName }</div>
             </div>
           </div>
           {
@@ -100,7 +101,7 @@ export default function TokenAmout({
 
       <TokenSelector
         show={tokenSelectorShow}
-        tokenList={allTokens[chain.id].filter((token: Token) => !!tokenPairs[chain.id][(token.symbol).toUpperCase()])}
+        tokenList={allTokens[chain.chainId].filter((token: Token) => !!tokenPairs[chain.chainId][(token.symbol).toUpperCase()])}
         token={token}
         onTokenSelect={onTokenChange}
         onClose={() => {

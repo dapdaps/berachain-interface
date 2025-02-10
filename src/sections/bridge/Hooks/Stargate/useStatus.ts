@@ -10,10 +10,6 @@ export const useStatus = () => {
     const pendingCount = list.filter((item: any) => Number(item.bridge_status) !== 4)
     const historyCount = list.filter((item: any) => Number(item.bridge_status) === 4)
 
-
-    console.log('data:', list)
-
-
     useInterval(async () => {
         const pendingTxs = list.filter((item: any) => Number(item.bridge_status) !== 4)
 
