@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import DepositAmounts from "../../components/deposit-amounts/v2";
-import Result from "../../bex/result";
+import Result from "../../components/result";
 import Button from "../../components/button/increase-button";
 import TokenSelector from "@/sections/swap/TokenSelector";
 import useData from "../../hooks/use-data-v2";
