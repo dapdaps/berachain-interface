@@ -1,8 +1,8 @@
-import bex from "./bex";
+import beraswap from "./beraswap";
 import kodiak from "./kodiak";
 
 export default {
-  // bex,
+  beraswap,
   kodiak
 } as Record<string, any>;
 
