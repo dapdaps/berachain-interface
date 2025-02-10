@@ -28,6 +28,7 @@ const ActionPanelForm = (props: Props) => {
     onSuccess,
     addAction,
     isLimit,
+    isReachedSupplyCap,
   } = props;
 
   const networkConfig = networks[CHAIN_ID];
@@ -63,6 +64,13 @@ const ActionPanelForm = (props: Props) => {
   const isLimitDeposit = useMemo(() => {
     return !!(isLimit && Big(token.balance || 0).gt(1));
   }, [isLimit, token]);
+  const isLimitOver = useMemo(() => {
+    if (isLimit && !isLimitDeposit && Big(amount || 0).gt(0)) {
+      return Big(token.balance || 0).plus(amount).gt(1);
+    }
+    return false;
+  }, [amount, token, isLimit, isLimitDeposit]);
+
   const placeholderShown = useMemo(() => {
     if (isLimit) {
       if (isLimitDeposit) {
@@ -70,14 +78,11 @@ const ActionPanelForm = (props: Props) => {
       }
       return `Deposit limit: 1 ${token.symbol}`;
     }
-    return placeholder;
-  }, [placeholder, isLimit, isLimitDeposit]);
-  const isLimitOver = useMemo(() => {
-    if (isLimit && !isLimitDeposit && Big(amount || 0).gt(0)) {
-      return Big(token.balance || 0).plus(amount).gt(1);
+    if (isReachedSupplyCap) {
+      return 'Reached supply cap';
     }
-    return false;
-  }, [amount, token, isLimit, isLimitDeposit]);
+    return placeholder;
+  }, [placeholder, isLimit, isLimitDeposit, isReachedSupplyCap]);
 
   return (
     <>
@@ -87,12 +92,12 @@ const ActionPanelForm = (props: Props) => {
             value={amount}
             type="text"
             placeholder={placeholderShown}
-            disabled={inputDisabled || isLimitDeposit}
-            className={`w-full h-[40px] ${isLimitDeposit ? 'pl-[35px]' : ''} ${isLimitOver ? 'border-[#f00]' : ''} disabled:cursor-not-allowed md:h-[56px] md:text-[20px] outline-[#FFDC50] leading-[38px] rounded-[12px] border border-[#373A53] bg-white text-[16px] font-[600] px-[10px]`}
+            disabled={inputDisabled || isLimitDeposit || isReachedSupplyCap}
+            className={`w-full h-[40px] ${(isLimitDeposit || isReachedSupplyCap) ? 'pl-[35px]' : ''} ${(isLimitOver || isReachedSupplyCap) ? 'border-[#f00]' : ''} disabled:cursor-not-allowed md:h-[56px] md:text-[20px] outline-[#FFDC50] leading-[38px] rounded-[12px] border border-[#373A53] bg-white text-[16px] font-[600] px-[10px]`}
             onChange={handleAmount}
           />
           {
-            isLimitDeposit && (
+            (isLimitDeposit || isReachedSupplyCap) && (
               <img src="/images/icon-tips.svg" alt="" className="w-[20px] h-[20px] absolute left-[10px] top-1/2 -translate-y-1/2" />
             )
           }
@@ -104,24 +109,35 @@ const ActionPanelForm = (props: Props) => {
             </div>
           )
         }
+        {
+          isReachedSupplyCap && (
+            <div className="text-[12px] break-all mt-[10px]">
+              Can not deposit, <strong>{token.symbol}</strong> has reached its supply cap on Domomite.
+            </div>
+          )
+        }
       </div>
       {isMobile && (
         <AmountSelector
           token={token}
           setAmount={(val: any) => handleAmount({ target: { value: val } })}
           balance={balance}
-          disabled={isLimitDeposit}
+          disabled={isLimitDeposit || isReachedSupplyCap}
         >
-          <Balance balance={balance} handleBalance={handleBalance} disabled={isLimitDeposit} />
+          <Balance
+            balance={balance}
+            handleBalance={handleBalance}
+            disabled={isLimitDeposit || isReachedSupplyCap}
+          />
         </AmountSelector>
       )}
       <div className='flex justify-between items-center mt-[13px]'>
         {!isMobile && (
           <Balance
-            disabled={isLimitDeposit}
+            disabled={isLimitDeposit || isReachedSupplyCap}
             balance={balance}
             handleBalance={() => {
-              if (isLimitDeposit) {
+              if (isLimitDeposit || isReachedSupplyCap) {
                 return;
               }
               handleBalance();
@@ -130,7 +146,7 @@ const ActionPanelForm = (props: Props) => {
         )}
         <LendingButton
           type='primary'
-          disabled={disabled || isLimitDeposit || isLimitOver}
+          disabled={disabled || isLimitDeposit || isLimitOver || isReachedSupplyCap}
           loading={loading}
           style={
             isMobile
