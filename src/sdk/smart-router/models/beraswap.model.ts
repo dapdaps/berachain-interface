@@ -34,7 +34,7 @@ export class BeraSwap {
       "https://chgbtcc9ffu7rbdw2kmu4urwy.stellate.sh/",
       {
         query:
-          "#graphql\n  query MyQuery($chain: GqlChain!, $swapType: GqlSorSwapType!, $swapAmount: AmountHumanReadable!, $tokenIn: String!, $tokenOut: String!) {\n    sorGetSwapPaths(\n      swapAmount: $swapAmount\n      chain: $chain\n      swapType: $swapType\n      tokenIn: $tokenIn\n      tokenOut: $tokenOut\n    ) {\n      tokenInAmount\n      tokenOutAmount\n      returnAmount\n      priceImpact {\n        error\n        priceImpact\n      }\n      swapAmount\n      paths {\n        inputAmountRaw\n        outputAmountRaw\n        pools\n        protocolVersion\n        tokens {\n          address\n          decimals\n        }\n      }\n      routes {\n        share\n        tokenInAmount\n        tokenOut\n        tokenOutAmount\n        hops {\n          poolId\n          tokenIn\n          tokenInAmount\n          tokenOut\n          tokenOutAmount\n          pool {\n            symbol\n          }\n        }\n      }\n    }\n  }\n",
+          "query MyQuery($chain: GqlChain!, $swapType: GqlSorSwapType!, $swapAmount: AmountHumanReadable!, $tokenIn: String!, $tokenOut: String!) {\n  sorGetSwapPaths(\n    swapAmount: $swapAmount\n    chain: $chain     \n    swapType: $swapType\n    tokenIn: $tokenIn\n    tokenOut: $tokenOut\n  ) { \n    tokenInAmount\n    tokenOutAmount\n    returnAmount\n    swapAmount\n    tokenAddresses\n    paths {\n      inputAmountRaw\n      outputAmountRaw\n      pools\n      protocolVersion\n      tokens {\n        address\n        decimals\n      }\n    }\n    routes {\n      share\n      tokenInAmount\n      tokenOut\n      tokenOutAmount\n      hops {\n        poolId\n        tokenIn\n        tokenInAmount\n        tokenOut\n        tokenOutAmount\n      }\n    }\n  }\n}\n",
         variables: {
           chain: "BERACHAIN",
           swapAmount: inputAmount,
@@ -52,17 +52,20 @@ export class BeraSwap {
       };
     }
 
-    const { paths, routes, returnAmount, tokenInAmount, tokenOutAmount } =
-      poolsResponse.data.data.sorGetSwapPaths;
+    const {
+      paths,
+      tokenAddresses,
+      routes,
+      returnAmount,
+      tokenInAmount,
+      tokenOutAmount
+    } = poolsResponse.data.data.sorGetSwapPaths;
 
-    const tokenAddresses = paths[0]?.tokens.map((token: any) => token.address);
-
-    const { routes: formatedRoutes, symbols: midTokenSymbols = [] } =
-      await formatRoutes({
-        tokenAddresses,
-        inputCurrency,
-        outputCurrency
-      });
+    const formatedRoutes = await formatRoutes({
+      tokenAddresses: paths[0]?.tokens.map((token: any) => token.address),
+      inputCurrency,
+      outputCurrency
+    });
 
     const routerAddress = this.ROUTER_ADDRESS[inputCurrency.chainId];
 
@@ -75,15 +78,6 @@ export class BeraSwap {
 
     if (!account) return returnData;
 
-    const tokenSymbols = {
-      [_inputCurrency.address]: _inputCurrency.symbol,
-      [_outputCurrency.address]: _outputCurrency.symbol
-    };
-
-    midTokenSymbols.forEach((symbol: string, i: number) => {
-      tokenSymbols[tokenAddresses[i + 1]] = symbol[0];
-    });
-
     const provider = new providers.JsonRpcProvider(
       chains[inputCurrency.chainId].rpcUrls[0]
     );
@@ -93,64 +87,93 @@ export class BeraSwap {
       provider.getSigner(account)
     );
 
+    const method = routes[0]?.hops.length > 1 ? "batchSwap" : "swap";
+    let params: any = {};
     const funds = [account, false, account, false];
-    const limits = [tokenInAmount];
     const deadline = Math.ceil(Date.now() / 1000) + 120;
 
-    const swaps = routes[0]?.hops.map((hop: any, i: number) => {
-      if (i === routes[0]?.hops.length - 1) {
-        limits.push(
-          BigNumber(-tokenOutAmount)
-            .multipliedBy(1 - slippage)
-            .toFixed(0)
-        );
-      } else {
-        limits.push(0);
-      }
-      const poolSymbol = hop.pool.symbol.split("-");
-      const assetInSymbol = tokenSymbols[hop.tokenIn].toLowerCase();
-      const assetOutSymbol = tokenSymbols[hop.tokenOut].toLowerCase();
-      const assetInIndex = poolSymbol.findIndex((symbol: any) =>
-        symbol.toLowerCase().includes(assetInSymbol)
-      );
-      const assetOutIndex = poolSymbol.findIndex((symbol: any) =>
-        symbol.toLowerCase().includes(assetOutSymbol)
-      );
+    if (method === "batchSwap") {
+      const limits = [tokenInAmount];
 
-      return {
-        poolId: hop.poolId,
-        userData: "0x",
-        assetInIndex,
-        assetOutIndex,
-        amount:
-          i === 0
-            ? tokenInAmount
-            : i === routes[0]?.hops.length - 1
-            ? tokenOutAmount
-            : 0
-      };
-    });
-    const assets = tokenAddresses.map((address: any) =>
-      address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
-        ? "0x0000000000000000000000000000000000000000"
-        : address
-    );
-    const params = [0, swaps, assets, funds, limits, deadline.toFixed(0)];
+      const swaps = routes[0]?.hops.map((hop: any, i: number) => {
+        let isLast = false;
+        if (i === routes[0]?.hops.length - 1) {
+          limits.push(
+            BigNumber(-tokenOutAmount)
+              .multipliedBy(1 - slippage)
+              .toFixed(0)
+          );
+          isLast = true;
+        } else {
+          limits.push(0);
+          isLast = false;
+        }
+
+        const assetInIndex = tokenAddresses.findIndex((address: any) =>
+          address.includes(hop.tokenIn)
+        );
+        const assetOutIndex = tokenAddresses.findIndex((address: any) =>
+          address.includes(hop.tokenOut)
+        );
+
+        return {
+          poolId: hop.poolId,
+          userData: "0x",
+          assetInIndex,
+          assetOutIndex,
+          amount: i === 0 ? tokenInAmount : 0
+        };
+      });
+      const assets = tokenAddresses.map((address: any) =>
+        address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
+          ? "0x0000000000000000000000000000000000000000"
+          : address
+      );
+      params = [0, swaps, assets, funds, limits, deadline.toFixed(0)];
+    } else {
+      const swaps = routes[0]?.hops.map((hop: any, i: number) => {
+        return {
+          poolId: hop.poolId,
+          kind: 0,
+          assetIn:
+            hop.tokenIn.toLowerCase() ===
+            weth[inputCurrency.chainId].toLowerCase()
+              ? "0x0000000000000000000000000000000000000000"
+              : hop.tokenIn,
+          assetOut:
+            hop.tokenOut.toLowerCase() ===
+            weth[inputCurrency.chainId].toLowerCase()
+              ? "0x0000000000000000000000000000000000000000"
+              : hop.tokenOut,
+
+          amount: tokenInAmount,
+          userData: "0x"
+        };
+      });
+      params = [
+        swaps[0],
+        funds,
+        BigNumber(tokenOutAmount)
+          .multipliedBy(1 - slippage)
+          .toFixed(0),
+        deadline.toFixed(0)
+      ];
+    }
 
     const options = {
       value: inputCurrency.isNative ? tokenInAmount : "0"
     };
     let estimateGas;
     try {
-      estimateGas = await RouterContract.estimateGas.batchSwap(
+      estimateGas = await RouterContract.estimateGas[method](
         ...params,
         options
       );
     } catch (err) {
-      // console.log("estimateGas err", err);
+      console.log("estimateGas err", err);
     }
     console.log("estimateGas", estimateGas?.toString());
-    const txn = await RouterContract.populateTransaction.batchSwap(...params, {
+    const txn = await RouterContract.populateTransaction[method](...params, {
       ...options,
       gasLimit: estimateGas
         ? BigNumber(estimateGas.toString()).multipliedBy(1.2).toFixed(0)
