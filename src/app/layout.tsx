@@ -16,6 +16,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import GuidingTutorial from '@/components/GuidingTour/mainnet';
 
 export default function RootLayout({
   children
@@ -79,6 +80,11 @@ export default function RootLayout({
           shallowRouting
         />
         <TapSound ref={tapRef} />
+        {
+          !isMobile && (
+            <GuidingTutorial />
+          )
+        }
       </body>
       <Script async src="https://www.googletagmanager.com/gtag/js?id=G-SZ82B6ZN43"></Script>
       <Script id="ga-config">
