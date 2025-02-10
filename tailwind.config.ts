@@ -37,7 +37,9 @@ const config: Config = {
       shake: "shake 0.7s linear infinite",
       blink: "blink 4s ease-in-out infinite",
       "float-y": "floatY 4s ease-in-out infinite",
-      "ping": "ping 1s cubic-bezier(0,0,.2,1) infinite"
+      "ping": "ping 1s cubic-bezier(0,0,.2,1) infinite",
+      "cloud-float-left": "cloudFloatLeft 20s ease-in-out infinite",
+      "cloud-float-right": "cloudFloatRight 20s ease-in-out infinite",
     },
     keyframes: {
       snowDown: {
@@ -123,7 +125,29 @@ const config: Config = {
             transform: "scale(2)",
             opacity: "0"
         }
-    }
+    },
+      cloudFloatLeft: {
+        "0%": {
+          transform: "translateX(0) translateY(0) scale(1)",
+        },
+        "50%": {
+          transform: "translateX(-10px) translateY(-5px) scale(0.98)",
+        },
+        "100%": {
+          transform: "translateX(0) translateY(0) scale(1)",
+        }
+      },
+      cloudFloatRight: {
+        "0%": {
+          transform: "translateX(0) translateY(0) scale(1)",
+        },
+        "50%": {
+          transform: "translateX(10px) translateY(5px) scale(0.98)",
+        },
+        "100%": {
+          transform: "translateX(0) translateY(0) scale(1)",
+        }
+      }
     }
   },
   plugins: []
