@@ -140,12 +140,14 @@ export default function Bridge() {
         status: 1,
         transactionHash: txHash,
         time: Date.now(),
-        extra_data: {}
+        extra_data: JSON.stringify({
+          toToken
+        })
       }
 
       set({ list: [...list, {
         ...action,
-        toToken: toToken,
+        toToken,
       }] })
 
       addAction(action)
