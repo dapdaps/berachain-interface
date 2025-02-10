@@ -114,7 +114,7 @@ const HoneypotCard = (props: any) => {
         key: "price",
         type: "+",
         rate: balanceFormated(_rate, 2) + "%",
-        value: _price ? numberFormatter(_price, 2, true, { prefix: "$" }) : "-"
+        value: _price ? numberFormatter(_price, 6, true, { prefix: "$" }) : "-"
       },
       {
         label: "Volume",
