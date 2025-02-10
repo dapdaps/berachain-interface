@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { TOKENS } from "@/configs";
 import beraswap from "@/configs/pools/beraswap";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-
-const TOKENS: Record<string, any> = Object.values(beraB).reduce(
-  (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
-  {}
-);
 
 export default function usePools() {
   const [pools, setPools] = useState<any>([]);
@@ -30,13 +25,15 @@ export default function usePools() {
 
       setPools(
         response.data.data.poolGetPools.map((pool: any) => {
-          const tokens = pool.tokens.map((token: any) => {
-            return {
-              ...token,
-              icon: TOKENS[token.address]?.icon,
-              chainId: DEFAULT_CHAIN_ID
-            };
-          });
+          const tokens = pool.tokens
+            .filter((token: any) => token.name !== pool.name)
+            .map((token: any) => {
+              return {
+                ...token,
+                icon: TOKENS[token.address]?.icon,
+                chainId: DEFAULT_CHAIN_ID
+              };
+            });
           return {
             tokens,
             tvl: pool.dynamicData.totalLiquidity,
