@@ -4,7 +4,6 @@ import { useState } from "react";
 import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
-import usePrices from "./use-prices";
 import { useSettingsStore } from "@/stores/settings";
 import valutAbi from "../abi/balancer-valut";
 import poolAbi from "../abi/balancer-pool";
