@@ -301,11 +301,8 @@ export default function Liquidity() {
       {selectedRecord && (
         <>
           <AddLiquidityModal
-            token0={selectedRecord.token0}
-            token1={selectedRecord.token1}
-            version={selectedRecord.version}
+            data={selectedRecord}
             dex={selectedRecord.protocol}
-            fee={selectedRecord.fee}
             open={modalType === "add"}
             onClose={() => {
               setModalType("");
@@ -314,11 +311,8 @@ export default function Liquidity() {
             }}
           />
           <RemoveLiquidityModal
-            token0={selectedRecord.token0}
-            token1={selectedRecord.token1}
-            version={selectedRecord.version}
+            data={selectedRecord}
             dex={selectedRecord.protocol}
-            fee={selectedRecord.fee}
             open={modalType === "remove"}
             tokenId={selectedTokenId}
             onClose={() => {

@@ -1,46 +1,54 @@
 "use client";
 
 import BasicModal from "./components/modal";
-import Bex from "./bex/remove-liquidity";
+import BeraSwap from "./beraswap/remove-liquidity";
 import Kodiak from "./kodiak/remove-liquidity";
+import { useMemo } from "react";
 
 const RemoveLiquidityPanel = ({ dex, ...rest }: any) => {
-  if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
+  if (dex?.toLowerCase() === "beraswap") return <BeraSwap {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} />;
 };
 
 export default function RemoveLiquidityModal({
-  token0,
-  token1,
-  version,
   dex,
-  fee,
-  tokenId,
   open,
+  data,
+  tokenId,
   onClose,
   onSuccess
 }: any) {
+  const mergedTitle = useMemo(() => {
+    if (data.token0 && data.token1)
+      return `Remove ${data.token0.symbol}-${data.token1.symbol}`;
+    return `Remove ${data.symbol}`;
+  }, [data]);
+
+  const params = useMemo(() => {
+    if (dex?.toLowerCase() === "burrbear") return { data };
+    return {
+      tokenId,
+      ...data,
+      version: data.version
+    };
+  }, [data, dex]);
   return (
     <BasicModal
-      title={`Remove ${token0?.symbol}-${token1?.symbol}`}
+      title={mergedTitle}
       dex={dex}
-      fee={fee}
-      version={version}
+      fee={data.fee}
+      version={data.version}
       open={open}
       onClose={onClose}
     >
       <div className="pb-[20px]">
         <RemoveLiquidityPanel
           dex={dex}
-          token0={token0}
-          token1={token1}
-          fee={fee}
-          version={version}
-          tokenId={tokenId}
           onSuccess={() => {
             onSuccess();
             onClose();
           }}
+          {...params}
         />
       </div>
     </BasicModal>
