@@ -24,7 +24,7 @@ const HomeEarth = () => {
   return (
     <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
       <Follower />
-      {/*<Signpost />*/}
+      <Signpost />
       <HomeEarthTop />
       <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
         {/*#region Cloud*/}

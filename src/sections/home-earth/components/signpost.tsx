@@ -4,16 +4,16 @@ const Signpost = (props: any) => {
   const { className } = props;
 
   return (
-    <div className={clsx('absolute right-0 bottom-0 z-[5] w-[148px] h-[159px] overflow-hidden flex justify-center bg-[url("/images/home-earth/signpost-pole.svg")] bg-no-repeat bg-[center_50px] bg-contain', className)}>
+    <div className={clsx('absolute right-[100px] bottom-0 z-[5] w-[146px] h-[169px] overflow-hidden flex justify-center bg-[url("/images/home-earth/signpost.svg")] bg-no-repeat bg-[center_20px] bg-contain', className)}>
       <img
         src="/images/home-earth/signpost-beraciaga.svg"
         alt=""
-        className="w-[144px] h-[100px] absolute top-0"
+        className="w-[86px] h-[69px] absolute top-[16px] opacity-50 cursor-not-allowed"
       />
       <img
         src="/images/home-earth/signpost-bintent.png"
         alt=""
-        className="w-[133px] h-[75px] absolute top-[85px]"
+        className="w-[103px] h-[43px] absolute top-[104px] opacity-50 cursor-not-allowed"
       />
     </div>
   );
