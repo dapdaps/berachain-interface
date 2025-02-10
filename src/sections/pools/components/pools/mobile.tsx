@@ -42,7 +42,7 @@ export default function Mobile({
           <Dropdown
             list={[
               { key: "tvl", name: "TVL" },
-              { key: "volume", name: "Volume" }
+              { key: "volume24h", name: "24h Volume" }
             ]}
             title={`Sort by ${sortItem?.name || "TVL"}`}
             value="tvl"

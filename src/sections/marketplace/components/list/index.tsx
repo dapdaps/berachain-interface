@@ -19,6 +19,7 @@ interface Props {
   meta: Meta[];
   list: any[];
   maxPage?: number;
+  simplePager?: boolean;
   onPageChange?: (page: number) => void;
   onItemClick?: (record: any) => void;
   bodyClassName?: string;
@@ -33,6 +34,7 @@ export default function List({
   meta,
   list,
   maxPage,
+  simplePager,
   onPageChange,
   bodyClassName,
   onItemClick = () => {},
@@ -159,7 +161,11 @@ export default function List({
 
       {onPageChange && (
         <div className="flex justify-end mt-[30px]">
-          <Pager maxPage={maxPage || 1} onPageChange={onPageChange} />
+          <Pager
+            maxPage={maxPage || 1}
+            onPageChange={onPageChange}
+            simplePager={simplePager}
+          />
         </div>
       )}
     </div>
