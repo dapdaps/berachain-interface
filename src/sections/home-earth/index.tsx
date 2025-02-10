@@ -1,31 +1,40 @@
+'use client';
+
 import HomeEarthTop from '@/sections/home-earth/components/top';
+import CloudCircle from '@/sections/home-earth/components/cloud-circle';
+import MountainCircle from '@/sections/home-earth/components/mountain-circle';
+import Navigation from '@/sections/home-earth/components/navigation';
+import Follower from '@/sections/home-earth/components/follower';
+import Signpost from '@/sections/home-earth/components/signpost';
+import useIsMobile from '@/hooks/use-isMobile';
+import MobileHome from '@/sections/home/mobile';
+
+// seconds per lap
+const SPEED = 200;
 
 const HomeEarth = () => {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <MobileHome />
+    );
+  }
 
   return (
     <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
+      <Follower />
+      {/*<Signpost />*/}
       <HomeEarthTop />
       <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
         {/*#region Cloud*/}
-        <div
-          className="w-[3000px] h-[3000px] absolute z-[1] rounded-full top-[24.5dvh]"
-        >
-
-        </div>
+        <CloudCircle speed={SPEED} />
         {/*#endregion*/}
         {/*#region Mountain*/}
-        <div
-          className="w-[3000px] h-[3000px] absolute z-[2] rounded-full top-[24.5dvh]"
-        >
-
-        </div>
+        <MountainCircle speed={SPEED} />
         {/*#endregion*/}
-        {/*#region Ground*/}
-        <div
-          className="w-[3000px] h-[3000px] absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh]"
-        >
-
-        </div>
+        {/*#region Navigation*/}
+        <Navigation speed={SPEED} />
         {/*#endregion*/}
         <img src="/images/background/bear.gif" alt="" className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh]" />
       </div>

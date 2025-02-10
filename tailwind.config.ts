@@ -34,7 +34,9 @@ const config: Config = {
       "snow-down": "snowDown 10s linear infinite",
       "slide-to-left": "slide2Left 10s linear infinite",
       rotate: "rotate 2s linear infinite",
+      "rotate-reverse": "rotateReverse 2s linear infinite",
       shake: "shake 0.7s linear infinite",
+      shake2: "shake2 0.7s linear infinite",
       blink: "blink 4s ease-in-out infinite",
       "float-y": "floatY 4s ease-in-out infinite",
       "ping": "ping 1s cubic-bezier(0,0,.2,1) infinite",
@@ -60,10 +62,18 @@ const config: Config = {
       },
       rotate: {
         "0%": {
-          transform: "rotate(0)"
+          transform: "rotate3d(0, 0, 1, 0)"
         },
         "100%": {
-          transform: "rotate(360deg)"
+          transform: "rotate3d(0, 0, 1, 360deg)"
+        }
+      },
+      rotateReverse: {
+        "0%": {
+          transform: "rotate3d(0, 0, 1, 0)"
+        },
+        "100%": {
+          transform: "rotate3d(0, 0, 1, -360deg)"
         }
       },
       shake: {
@@ -78,6 +88,23 @@ const config: Config = {
         },
         "75%": {
           transform: "translateX(-5px) rotate(-5deg)"
+        },
+        "100%": {
+          transform: "translateX(0) rotate(0deg)"
+        }
+      },
+      shake2: {
+        "0%": {
+          transform: "translateX(0) rotate(0deg)"
+        },
+        "25%": {
+          transform: "translateX(-4px) rotate(-4deg)"
+        },
+        "50%": {
+          transform: "translateX(-2px) rotate(-2deg)"
+        },
+        "75%": {
+          transform: "translateX(-6px) rotate(-6deg)"
         },
         "100%": {
           transform: "translateX(0) rotate(0deg)"
