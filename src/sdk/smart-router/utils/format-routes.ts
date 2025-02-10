@@ -13,18 +13,16 @@ export default async function formatRoutes({
   outputCurrency: any;
 }) {
   if (tokenAddresses.length === 2) {
-    return {
-      routes: [
-        {
-          token0: {
-            symbol: inputCurrency.symbol
-          },
-          token1: {
-            symbol: outputCurrency.symbol
-          }
+    return [
+      {
+        token0: {
+          symbol: inputCurrency.symbol
+        },
+        token1: {
+          symbol: outputCurrency.symbol
         }
-      ]
-    };
+      }
+    ];
   }
   const rpcUrl = chains[inputCurrency.chainId].rpcUrls[0];
   const provider = new providers.JsonRpcProvider(rpcUrl);
@@ -83,8 +81,5 @@ export default async function formatRoutes({
       });
     }
   });
-  return {
-    routes,
-    symbols: result
-  };
+  return routes;
 }
