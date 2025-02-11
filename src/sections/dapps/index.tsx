@@ -142,6 +142,8 @@ const SECOND_LIST = [
         attachedIcon: (
           <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
         ),
+        disabled: true
+        // disabled: true
       }
     ]
   },
