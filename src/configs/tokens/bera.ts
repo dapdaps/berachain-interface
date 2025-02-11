@@ -58,6 +58,15 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/wbtc.png",
     color: "#F7931A"
   },
+  ebtc: {
+    chainId: CHAIN_ID,
+    address: "0x657e8c867d8b37dcc18fa4caead9c45eb088c642",
+    decimals: 8,
+    symbol: "eBTC",
+    name: "Ether.Fi BTC",
+    icon: "/assets/tokens/ebtc.svg",
+    color: "#F7931A"
+  },
   usdt0: {
     chainId: CHAIN_ID,
     address: "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
@@ -152,7 +161,7 @@ export const bera: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0xbAC93A69c62a1518136FF840B788Ba715cbDfE2B",
     decimals: 8,
-    symbol: "FBTC", 
+    symbol: "FBTC",
     name: "Fire Bitcoin",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/32306.png"
   },
@@ -166,7 +175,7 @@ export const bera: { [key: string]: Token } = {
   },
   rseth: {
     chainId: CHAIN_ID,
-    address: "0x4186BFC76E2E237523CBC30FD220FE055156b41F", 
+    address: "0x4186BFC76E2E237523CBC30FD220FE055156b41F",
     decimals: 18,
     symbol: "rsETH",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29242.png"
@@ -233,4 +242,37 @@ export const bera: { [key: string]: Token } = {
     symbol: "weETH",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/28568.png"
   },
+  yeet: {
+    chainId: CHAIN_ID,
+    address: "0x08a38caa631de329ff2dad1656ce789f31af3142",
+    decimals: 18,
+    symbol: "YEET",
+    name: "YEET",
+    icon: "/assets/tokens/YEET.png",
+    isMeme: true
+  },
+  ramen: {
+    chainId: CHAIN_ID,
+    address: "0xb8B1Af593Dc37B33a2c87C8Db1c9051FC32858B7",
+    decimals: 18,
+    symbol: "RAMEN",
+    name: "RAMEN",
+    icon: "/assets/tokens/ramen.png"
+  },
+  bblast: {
+    chainId: CHAIN_ID,
+    address: "0x6BAd2A58927198F8D39A90625699c2A3c9bDd4ce",
+    decimals: 18,
+    symbol: "BBLAST",
+    name: "Bera Blast",
+    icon: "/assets/tokens/bblast.png"
+  },
+  stone: {
+    chainId: CHAIN_ID,
+    address: "0xEc901DA9c68E90798BbBb74c11406A32A70652C3",
+    decimals: 18,
+    symbol: "STONE",
+    name: "StakeStone Ether",
+    icon: "/assets/tokens/stone.png"
+  }
 };

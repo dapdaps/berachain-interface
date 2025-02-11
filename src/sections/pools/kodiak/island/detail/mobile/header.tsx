@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Back from "./back";
 import { balanceShortFormated } from "@/utils/balance";
 
@@ -11,14 +10,14 @@ export default function Header({ onBack = () => {}, data }: any) {
       <div className="flex justify-center">
         <div className="flex items-center gap-[6px]">
           <div className="flex items-center">
-            <Image
+            <img
               src={data.token0.icon}
               alt={data.token0.name}
               width={36}
               height={36}
               className="rounded-full"
             />
-            <Image
+            <img
               src={data.token1.icon}
               alt={data.token1.name}
               width={36}
