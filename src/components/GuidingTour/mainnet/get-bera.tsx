@@ -79,8 +79,12 @@ const GetBera = (props: any) => {
               Join McBera Discord / Telegram and bera frens there will help you out!
             </div>
             <div className="flex items-center gap-[24px] mt-[20px]">
-              <img src="/images/guiding-tour/telegram.svg" alt="" className="w-[56px] h-[56px]" />
-              <img src="/images/guiding-tour/discord.svg" alt="" className="w-[56px] h-[56px]" />
+              <a href="https://t.me/DapDapDiscussion" target="_blank">
+                <img src="/images/guiding-tour/telegram.svg" alt="" className="w-[56px] h-[56px]" />
+              </a>
+              <a href="https://discord.com/invite/dapdapmeup" target="_blank">
+                <img src="/images/guiding-tour/discord.svg" alt="" className="w-[56px] h-[56px]" />
+              </a>
             </div>
           </div>
         </div>
