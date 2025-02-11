@@ -195,7 +195,7 @@ interface Props {
   disabledChainSelector?: boolean;
   onChainChange: (chain: Chain) => void;
   onTokenChange: (token: Token) => void;
-  limitBera: number;
+  limitBera: boolean;
 }
 
 const TokenListComp = forwardRef(function TokenListComp(
@@ -491,7 +491,7 @@ export default function ChainAndTokenSelector({
               setHoverChain(null);
             }}
           >
-            {sortedChainList?.filter((chain) => limitBera === 0 ? chain.chainId === 80094 : chain.chainId !== 80094).map((chain) => {
+            {sortedChainList?.filter((chain) => limitBera ? chain.chainId === 80094 : chain.chainId !== 80094).map((chain) => {
               return (
                 <div
                   key={chain.chainId}

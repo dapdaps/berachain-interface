@@ -146,7 +146,7 @@ export default function Bridge() {
           <DappHeader />
           <Card>
             <TokenAmout
-              limitBera={limitBera}
+              limitBera={limitBera === 1}
               chain={fromChain}
               token={fromToken ?? null}
               amount={sendAmount}
@@ -198,7 +198,7 @@ export default function Bridge() {
               </svg>
             </div>
             <TokenAmout
-              limitBera={limitBera}
+              limitBera={limitBera === 0}
               amount={reciveAmount ?? ''}
               chainList={chainList}
               chain={toChain}

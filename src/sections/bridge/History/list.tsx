@@ -1,8 +1,9 @@
 import { useStatus } from '../Hooks/Stargate/useStatus'
 import { useState } from 'react'
-import chains, { icons } from '@/configs/chains'
+import { icons } from '@/configs/chains'
 import { formatEnglishDate } from '@/utils/date'
 import useIsMobile from '@/hooks/use-isMobile';
+import chains from '../lib/util/chainConfig'
 
 import allTokens from '@/configs/allTokens'
 import { tokenPairs } from '@/sections/bridge/Hooks/Stargate/config'
@@ -109,10 +110,7 @@ function HistoryItem({ item }: { item: any }) {
                     <div>
                         {formatEnglishDate(new Date(item.create_time).getTime())}
                         {
-                            item.chain_id === 1 && <a target='_blank' href={`https://etherscan.io/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
-                        }
-                        {
-                            item.chain_id === 80094 && <a target='_blank' href={`https://berascan.com/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
+                            <a target='_blank' href={`${chains[item.chain_id].blockExplorers}/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
                         }
                     </div>
                     <div>

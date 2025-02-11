@@ -24,7 +24,7 @@ interface Props {
   onChainChange?: (v: Chain) => void;
   onTokenChange?: (v: Token) => void;
   chainList: Chain[];
-  limitBera: number;
+  limitBera: boolean;
 }
 
 export default function TokenAmout({
