@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
@@ -72,7 +71,7 @@ export default function Mydeposit({ info = {}, token0, token1, symbol }: any) {
 
       <div className="flex items-center justify-between mt-[18px]">
         <div className="flex items-center gap-[9px]">
-          <Image
+          <img
             src={token0.icon}
             alt={token0.name}
             width={26}
@@ -87,7 +86,7 @@ export default function Mydeposit({ info = {}, token0, token1, symbol }: any) {
       </div>
       <div className="flex items-center justify-between mt-[10px]">
         <div className="flex items-center gap-[9px]">
-          <Image
+          <img
             src={token1.icon}
             alt={token1.name}
             width={26}

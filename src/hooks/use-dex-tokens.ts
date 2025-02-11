@@ -32,7 +32,7 @@ export default function useDexTokens(dapp: any) {
       );
       kodiakTokensStore.set({
         tokens: list.reduce(
-          (acc, curr) => ({ ...acc, [curr.address]: curr }),
+          (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
           {}
         )
       });

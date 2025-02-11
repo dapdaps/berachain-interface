@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Range from "@/components/range";
 import Button from "@/components/button";
 import WithdrawModal from "../action-modal/withdraw-modal";
@@ -36,14 +35,14 @@ export default function Withdraw({ data, info, onSuccess }: any) {
       <div className="rounded-[12px] bg-white border-[#373A53] border p-[12px] mt-[16px]">
         <div className="flex items-center gap-[5px]">
           <div className="flex items-center">
-            <Image
+            <img
               src={data.token0.icon}
               alt={data.token0.name}
               width={26}
               height={26}
               className="rounded-full"
             />
-            <Image
+            <img
               src={data.token1.icon}
               alt={data.token1.name}
               width={26}
@@ -86,7 +85,7 @@ export default function Withdraw({ data, info, onSuccess }: any) {
             Pooled {data.token0.symbol}
           </div>
           <div className="flex items-center justify-end gap-[5px]">
-            <Image
+            <img
               src={data.token0.icon}
               alt={data.token0.name}
               width={26}
@@ -103,7 +102,7 @@ export default function Withdraw({ data, info, onSuccess }: any) {
             Pooled {data.token1.symbol}
           </div>
           <div className="flex items-center justify-end gap-[5px]">
-            <Image
+            <img
               src={data.token1.icon}
               alt={data.token1.name}
               width={26}
