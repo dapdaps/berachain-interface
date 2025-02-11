@@ -78,7 +78,7 @@ const FIRST_LIST = [
         )
       },
       {
-        ..._dApps["bex"],
+        ..._dApps["beraswap"],
         label: "BeraSwap",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
@@ -252,7 +252,7 @@ const ALL_LIST = [
         )
       },
       {
-        ..._dApps["bex"],
+        ..._dApps["beraswap"],
         label: "BeraSwap",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />

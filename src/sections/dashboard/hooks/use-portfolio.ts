@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import Big from 'big.js';
-import { useAccount } from 'wagmi';
-import { useAuthQuery } from '@/hooks/use-auth-query';
-import { get } from '@/utils/http';
-import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
+import { useState } from "react";
+import Big from "big.js";
+import { useAccount } from "wagmi";
+import { useAuthQuery } from "@/hooks/use-auth-query";
+import { get } from "@/utils/http";
+import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 
 const DAppPath: any = {
-  Bend: '/lending/bend',
-  Dolomite: '/lending/dolomite',
-  Infrared: '/liquidity/infrared',
-  Kodiak: '/dex/kodiak',
-  Bex: '/dex/bex',
-  'Ooga Booga': '/dex/ooga-booga',
+  Bend: "/lending/bend",
+  Dolomite: "/lending/dolomite",
+  Infrared: "/liquidity/infrared",
+  Kodiak: "/dex/kodiak",
+  BeraSwap: "/dex/beraswap",
+  "Ooga Booga": "/dex/ooga-booga"
 };
 
 export function usePortfolio(props: Props) {
@@ -30,7 +30,7 @@ export function usePortfolio(props: Props) {
       try {
         setDapps([]);
         const result = await get(`/db3`, {
-          url: 'api/balance/dapp/list',
+          url: "api/balance/dapp/list",
           params: JSON.stringify({
             address,
             chain_id: currentChain.id
@@ -44,7 +44,7 @@ export function usePortfolio(props: Props) {
         const _dappsByChain: any = networkList.map((chain: any) => ({
           chainId: chain.id,
           totalUsdValue: Big(0),
-          totalUsd: '0.00',
+          totalUsd: "0.00",
           dappList: [],
           logo: chain.icon,
           name: chain.name
@@ -63,7 +63,7 @@ export function usePortfolio(props: Props) {
               tokenAsset.tokenLogo = getTokenLogo(tokenAsset.symbol);
 
               // Leveraged Farming
-              if (['Leveraged Farming'].includes(dappType)) {
+              if (["Leveraged Farming"].includes(dappType)) {
                 // The first item in the innermost assets is Supply
                 if (i === 0) {
                   typeAsset.totalUsd = typeAsset.totalUsd.plus(
@@ -81,7 +81,7 @@ export function usePortfolio(props: Props) {
               }
               // other dApp types
               else {
-                if (assetType === 'Borrow') {
+                if (assetType === "Borrow") {
                   typeAsset.totalUsd = typeAsset.totalUsd.minus(
                     tokenAsset.usd || 0
                   );
@@ -102,7 +102,7 @@ export function usePortfolio(props: Props) {
             chainLogo: currentChain.icon,
             dappLogo: getDappLogo(_dapp.name),
             detailList: _dapp.assets || [],
-            path: DAppPath[_dapp.name],
+            path: DAppPath[_dapp.name]
           };
           dappsList.push(dappItem);
 
@@ -129,7 +129,7 @@ export function usePortfolio(props: Props) {
         setDappsByChain(_dappsByChainSorted);
         setTotalBalance(_totalBalance);
       } catch (err: any) {
-        console.log('query dApps failed: %o', err);
+        console.log("query dApps failed: %o", err);
       }
       setLoading(false);
     },
