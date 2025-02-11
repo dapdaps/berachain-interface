@@ -243,8 +243,11 @@ export default function Bridge() {
               fromChainId={fromChain.chainId}
               isLoading={quoteLoading || sendLoading}
               disabled={sendDisabled || !selectedRoute}
-              onClick={() => {
-                executeRoute()
+              onClick={async () => {
+                const isSuccess = await executeRoute()
+                if (isSuccess) {
+                  setConfirmShow(true)
+                }
               }} comingSoon={ComingSoon} />
           </Card>
 
