@@ -241,5 +241,13 @@ export const bera: { [key: string]: Token } = {
     name: "YEET",
     icon: "/assets/tokens/YEET.png",
     isMeme: true
+  },
+  ramen: {
+    chainId: CHAIN_ID,
+    address: "0xb8B1Af593Dc37B33a2c87C8Db1c9051FC32858B7",
+    decimals: 18,
+    symbol: "RAMEN",
+    name: "RAMEN",
+    icon: "/assets/tokens/ramen.png"
   }
 };
