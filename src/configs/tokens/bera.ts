@@ -157,14 +157,6 @@ export const bera: { [key: string]: Token } = {
     name: "Bong Bears",
     icon: "/assets/tokens/bonga.png"
   },
-  stone: {
-    chainId: CHAIN_ID,
-    address: "0xec901da9c68e90798bbbb74c11406a32a70652c3",
-    decimals: 18,
-    symbol: "STONE",
-    name: "StakeStone Ether",
-    icon: "/assets/tokens/stone.png"
-  },
   fbtc: {
     chainId: CHAIN_ID,
     address: "0xbAC93A69c62a1518136FF840B788Ba715cbDfE2B",
