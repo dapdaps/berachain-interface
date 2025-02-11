@@ -113,7 +113,7 @@ export default function TokenAmout({
         show={tokenSelectorShow}
         tokenList={allTokens[chain.chainId].filter((token: Token) => !!tokenPairs[chain.chainId][(token.symbol).toUpperCase()])}
         token={token}
-        onTokenSelect={onTokenChange}
+        onTokenSelect={onTokenChange as any}
         onClose={() => {
           setTokenSelectorShow(false);
         }}

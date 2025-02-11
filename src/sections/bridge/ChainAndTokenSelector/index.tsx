@@ -476,7 +476,7 @@ export default function ChainAndTokenSelector({
 
   return (
     <Modal open={true} onClose={onClose} >
-      <Container ref={wapperRef} className='border w-[520px] font-[#000000] border-[#000000] rounded-[30px] bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]'>
+      <Container ref={wapperRef} className='border lg:w-[520px] font-[#000000] border-[#000000] rounded-[30px] bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]'>
         <ChainWapper>
           <Title style={{ paddingLeft: 20 }}>Chain</Title>
           {hoverChain && (
