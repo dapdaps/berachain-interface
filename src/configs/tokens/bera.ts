@@ -58,6 +58,15 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/wbtc.png",
     color: "#F7931A"
   },
+  ebtc: {
+    chainId: CHAIN_ID,
+    address: "0x657e8c867d8b37dcc18fa4caead9c45eb088c642",
+    decimals: 8,
+    symbol: "eBTC",
+    name: "Ether.Fi BTC",
+    icon: "/assets/tokens/ebtc.svg",
+    color: "#F7931A"
+  },
   usdt0: {
     chainId: CHAIN_ID,
     address: "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
