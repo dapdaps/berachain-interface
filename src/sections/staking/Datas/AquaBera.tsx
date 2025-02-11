@@ -283,29 +283,22 @@ export default function useAquaBeraData(props: any) {
   };
 
   const get7DayApr = async (_dataList) => {
-    const response = await asyncFetch("https://rwf3uyiewzdnhavtega3imkynm.appsync-api.us-east-1.amazonaws.com/graphql", {
-      method: "POST",
-      headers: {
-        "x-api-key": "da2-lcrfa5vgu5dkdct5ddrckpilj4"
-      },
-      body: JSON.stringify({
-        "operationName": "ListMonitorVaults",
-        "variables": {},
-        "query": "query ListMonitorVaults {\n  listMonitorVaults {\n    items {\n      name\n      positions {\n        currentTick\n        limitLower\n        limitUpper\n        barsInsideLimit\n        barsInsideBase\n        baseLower\n        baseUpper\n        __typename\n      }\n      needRebalance\n      address\n      displayName\n      memberTokenRatio\n      baseTokenValue\n      pendingDeposits\n      pendingDepositsRatio\n      vaultStrength\n      tvl\n      sevenDaysChange\n      scarceTokenValue\n      scarceTokenMarketCap\n      vaultIRR\n      vaultIrrAllTx\n      isHodlVault\n      needRebalanceFrom\n      lastRebalance\n      isInverted\n      wallPrice\n      poolAddress\n      scarceTokenPriceFromVault\n      targetVaultStrength\n      vaultMetrics {\n        timeInterval\n        feeApr\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
-      })
-    })
-    const vaults = response?.data?.listMonitorVaults?.items ?? []
+    const response = await asyncFetch("https://app.aquabera.com/api/80094")
+
+    console.log('====response', response)
+    const vaults = response?.vaults ?? [] //response?.data?.listMonitorVaults?.items ?? []
     for (let i = 0; i < _dataList?.length; i++) {
       const _data = _dataList[i]
       for (let j = 0; j < _data?.pairedTokens?.length; j++) {
         const pairedToken = _data?.pairedTokens[j];
         const vault = vaults?.find(vault => vault?.address === pairedToken?.ichiAddress)
         if (vault) {
-          vault?.vaultMetrics?.forEach((metric: any) => {
-            if (metric?.timeInterval === 7) {
-              _data.pairedTokens[j].apr = metric?.feeApr
-            }
-          })
+          // vault?.vaultMetrics?.forEach((metric: any) => {
+          //   if (metric?.timeInterval === 7) {
+          //     _data.pairedTokens[j].apr = metric?.feeApr
+          //   }
+          // })
+          _data.pairedTokens[j].apr = vault?.apr?.["7d"]
         } else {
           _data.pairedTokens[j].apr = 0
         }
@@ -451,8 +444,13 @@ export default function useAquaBeraData(props: any) {
       }
       dataList.push(_data);
     }
-    await get7DayApr(dataList)
-    await getBalance(dataList)
+    try {
+      await get7DayApr(dataList)
+      await getBalance(dataList)
+    } catch (error) {
+      console.error(error);
+    }
+
     handleGetYourValue(dataList)
     handleGetTvl(dataList)
     formatedData();

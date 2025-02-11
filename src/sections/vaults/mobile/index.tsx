@@ -246,13 +246,22 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
-              <Image
-                className="mr-[-8px] rounded-full"
-                src={data?.icon}
-                width={40}
-                height={40}
-                alt="Token"
-              />
+              {
+                data?.icon ? (
+                  <Image
+                    className="mr-[-8px] rounded-full"
+                    src={data?.icon}
+                    width={40}
+                    height={40}
+                    alt="Token"
+                  />
+                ) : (
+                  <div className='flex items-center justify-center w-[40px] h-[40px] rounded-[4px] bg-gray-800 text-white font-bold'>
+                    {data?.symbol?.slice(0, 1)}
+                  </div>
+                )
+              }
+
             </div>
             <div className="text-[16px] font-semibold">
               {data?.symbol}

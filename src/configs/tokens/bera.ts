@@ -274,5 +274,12 @@ export const bera: { [key: string]: Token } = {
     symbol: "STONE",
     name: "StakeStone Ether",
     icon: "/assets/tokens/stone.png"
-  }
+  },
+  godl: {
+    chainId: CHAIN_ID,
+    address: "0x85468a0CB26B5Fc1F2B7B7BA3aee07F073dff709",
+    decimals: 18,
+    symbol: "Godl",
+    icon: ""
+  },
 };

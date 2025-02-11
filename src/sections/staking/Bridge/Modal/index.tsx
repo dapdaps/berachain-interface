@@ -321,9 +321,18 @@ export default memo(function index(props) {
           <div className='flex items-center gap-[16px]'>
             <div className='flex-1 h-[60px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]'>
               <div className='flex items-center gap-[10px]'>
-                <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                  <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
-                </div>
+                {
+                  token0?.icon ? (
+                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                      <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
+                    </div>
+                  ) : (
+                    <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
+                      {token0?.symbol?.slice(0, 1)}
+                    </div>
+                  )
+                }
+
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{token0?.symbol}</div>
               </div>
             </div>
@@ -335,9 +344,17 @@ export default memo(function index(props) {
               }}
             >
               <div className='flex items-center gap-[10px]'>
-                <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                  <img className='w-full' src={token1?.icon} alt={token1?.symbol} />
-                </div>
+                {
+                  token1?.icon ? (
+                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                      <img className='w-full' src={token1?.icon} alt={token1?.symbol} />
+                    </div>
+                  ) : (
+                    <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
+                      {token1?.symbol?.slice(0, 1)}
+                    </div>
+                  )
+                }
                 <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{token1?.symbol}</div>
               </div>
               {
@@ -381,9 +398,17 @@ export default memo(function index(props) {
                 </>
               ) : (
                 <div className='flex items-center gap-[9px]'>
-                  <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                    <img src={token0?.icon} alt={token0?.symbol} />
-                  </div>
+                  {
+                    token0?.icon ? (
+                      <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                        <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
+                      </div>
+                    ) : (
+                      <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
+                        {token0?.symbol?.slice(0, 1)}
+                      </div>
+                    )
+                  }
                   <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
                 </div>
               )
@@ -404,9 +429,18 @@ export default memo(function index(props) {
                     />
                   </div>
                   <div className='flex items-center gap-[9px]'>
-                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                      <img src={token0?.icon} alt={token0?.symbol} />
-                    </div>
+                    {
+                      token0?.icon ? (
+                        <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
+                          <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
+                        </div>
+                      ) : (
+                        <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
+                          {token0?.symbol?.slice(0, 1)}
+                        </div>
+                      )
+                    }
+
                     <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
                   </div>
                 </div>
