@@ -9,6 +9,8 @@ import Profile from '@/components/GuidingTour/mainnet/profile';
 import ChoosePill from '@/components/GuidingTour/mainnet/choose-pill';
 import GetBera from '@/components/GuidingTour/mainnet/get-bera';
 import Done from '@/components/GuidingTour/mainnet/done';
+import Title from '@/components/GuidingTour/mainnet/components/title';
+import Article from '@/components/GuidingTour/mainnet/components/article';
 
 const GuidingTutorial = (props: any) => {
   const {} = props;
@@ -46,16 +48,14 @@ const GuidingTutorial = (props: any) => {
         onClose={handleClose}
         isMaskClose={false}
       >
-        <Card className="w-[680px]">
-          <img src="/images/guiding-tour/banner.png" alt="" className="w-full h-[340px]" />
+        <Card className="w-[680px] md:w-full">
+          <img src="/images/guiding-tour/banner.png" alt="" className="w-full h-[340px] md:h-[186px] object-cover" />
           <div className="p-[25px_26px_31px]">
-            <div className="text-[24px] font-Montserrat font-[900] leading-[120%] text-black">
-              Welcome to BeraTown Mainnet!
-            </div>
-            <article className="text-[16px] font-Montserrat font-[500] text-black leading-[150%] mt-[11px]">
+            <Title>Welcome to BeraTown Mainnet!</Title>
+            <Article className="mt-[11px]">
               <strong>Q5</strong> is finally here, and so is <strong>da town</strong>! <strong>MeBera</strong> is bery excited to be <strong>your guide</strong>, helping you take <strong>your first steps</strong> into this ecosystem of <strong>low IQ</strong> and <strong>yeetard</strong> beras. Complete this totorial to earn some <strong>special welcome gifts</strong>!
-            </article>
-            <div className="flex justify-between items-center gap-[22px] mt-[23px]">
+            </Article>
+            <div className="flex justify-between items-center gap-[22px] md:gap-[10px] mt-[23px]">
               <Button
                 className="flex-1"
                 onClick={handleClose}

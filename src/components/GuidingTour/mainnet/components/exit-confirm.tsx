@@ -2,6 +2,8 @@ import Modal from '@/components/modal';
 import Card from '@/components/GuidingTour/mainnet/components/card';
 import { useGuidingTour } from '@/stores/useGuidingTour';
 import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/button';
+import Title from '@/components/GuidingTour/mainnet/components/title';
+import Article from '@/components/GuidingTour/mainnet/components/article';
 
 const ExitConfirm = (props: any) => {
   const { onClose } = props;
@@ -47,14 +49,14 @@ const ExitConfirm = (props: any) => {
       onClose={() => onClose(false)}
       isMaskClose={false}
     >
-      <Card className="w-[680px] p-[39px_26px_36px]">
-        <div className="text-[24px] font-Montserrat font-[900] leading-[120%] text-black px-[12px]">
+      <Card className="w-[680px] md:w-full p-[39px_26px_36px] md:p-[30px_20px_30px]">
+        <Title className="px-[12px]">
           Are you sure to skip the tutorial?
-        </div>
-        <article className="text-[16px] font-Montserrat font-[500] text-black leading-[150%] mt-[11px] px-[12px]">
+        </Title>
+        <Article className="mt-[11px] px-[12px]">
           If you’re new to <strong>Berachain</strong> or the mainnet, McBera highly encourages you to go through the <strong>tutorial</strong> to <strong>get familiar</strong> + you’re missing out some seriously dripping <strong>accessories</strong> in the <strong>Beracave</strong>!
-        </article>
-        <div className="flex justify-between items-center gap-[22px] mt-[23px]">
+        </Article>
+        <div className="flex justify-between items-center gap-[22px] md:gap-[10px] mt-[23px]">
           <Button
             className="flex-1"
             onClick={handleClose}
