@@ -16,12 +16,9 @@ import History from './History';
 // import useBridge from './Hooks/Stargate/useBridge';
 import Big from 'big.js';
 import { useAccount, useSwitchChain } from "wagmi";
-import useApprove from '@/hooks/use-approve';
 import { formatLongText } from '@/utils/utils';
 import allTokens from '@/configs/allTokens'
-import { useDebounce } from 'ahooks';
-import useTokenBalance from '@/hooks/use-token-balance';
-import { tokenPairs } from './Hooks/Stargate/config';
+import { tokenPairs } from './lib/bridges/stargate/config';
 import useAddAction from '@/hooks/use-add-action';
 import { useBridgeHistory } from '@/stores/useBridgeHistory';
 import useBridge from './Hooks/useBridge';
@@ -67,6 +64,7 @@ const DappHeader: React.FC = () => {
 };
 
 const ComingSoon = false;
+const chainList = Object.values(chains).filter((chain) => [1, 80094, 42161, 8453, 56, 43114, 59144, 5000, 10, 137, 534352].includes(chain.chainId));
 
 export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
@@ -82,6 +80,7 @@ export default function Bridge() {
   const { addAction } = useAddAction("bridge");
   const { address, chainId } = useAccount()
   const { list, set }: any = useBridgeHistory()
+  const [limitBera, setLimitBera] = useState(0)
 
   // const inputValue = useDebounce(amount, { wait: 500 });
 
@@ -117,6 +116,24 @@ export default function Bridge() {
   })
 
   useEffect(() => {
+    if (!fromToken) {
+      setToToken(undefined)
+      return
+    }
+    const tokenPair = tokenPairs[fromChain.chainId][fromToken?.symbol.toUpperCase()]
+    if (tokenPair) {
+      const token = allTokens[toChain.chainId].find((token: Token) => token.symbol.toUpperCase() === tokenPair) as Token
+      if (tokenPairs[toChain.chainId][tokenPair]) {
+        setToToken(token)
+      } else {
+        setToToken(undefined)
+      }
+    } else {
+      setToToken(undefined)
+    }
+  }, [fromChain, fromToken])
+
+  useEffect(() => {
     setFromToken(allTokens[1][0])
     setToToken(allTokens[80094][2])
   }, [])
@@ -129,11 +146,16 @@ export default function Bridge() {
           <DappHeader />
           <Card>
             <TokenAmout
+              limitBera={limitBera}
               chain={fromChain}
               token={fromToken ?? null}
               amount={sendAmount}
               onAmountChange={(v: string) => {
                 onSendAmountChange(v)
+              }}
+              chainList={chainList}
+              onChainChange={(chain: Chain) => {
+                setFromChain(chain)
               }}
               onTokenChange={(token: Token) => {
                 setFromToken(token)
@@ -147,6 +169,7 @@ export default function Bridge() {
               setToChain(_toChain)
               setFromToken(_fromToken)
               setToToken(_toToken)
+              setLimitBera(limitBera === 0 ? 1 : 0)
             }}>
               <svg
                 className='cursor-pointer'
@@ -175,8 +198,16 @@ export default function Bridge() {
               </svg>
             </div>
             <TokenAmout
+              limitBera={limitBera}
               amount={reciveAmount ?? ''}
-              chain={toChain} token={toToken ?? null} disabledInput={true} onTokenChange={(token: Token) => {
+              chainList={chainList}
+              chain={toChain}
+              token={toToken ?? null}
+              disabledInput={true}
+              onChainChange={(chain: Chain) => {
+                setToChain(chain)
+              }}
+              onTokenChange={(token: Token) => {
                 setToToken(token)
               }}
               comingSoon={ComingSoon}
@@ -203,7 +234,7 @@ export default function Bridge() {
             </div>
 
             {
-              routes && routes.length > 0 && (
+              routes && routes.length > 0 && toToken && (
                 <Routes fromChain={fromChain} selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} toToken={toToken as Token} routes={routes} />
               )
             }

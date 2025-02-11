@@ -16,6 +16,7 @@ const { JsonRpcProvider } = providers
 
 export async function getQuote(request: QuoteRequest, signer: Signer): Promise<QuoteResponse | null> {
     const dstEid = chainIds[Number(request.toChainId)]
+    console.log('dstEid:', dstEid)
 
     const params: {
         dstEid: number,
@@ -48,6 +49,8 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
     if (!contractAddress) {
         return null
     }
+
+    console.log('contractAddress:', contractAddress)
   
     try {
         const contract = new Contract(
@@ -98,10 +101,14 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
             params.oftCmd
         ]
 
+        console.log('sendParams:', sendParams)
+
         const result = await contract.quoteSend(
             sendParams,
             payInLzToken
         );
+
+        console.log('result:', result)
 
         console.log('Big(result.nativeFee.toString()).div(10 ** 18).toString():', Big(result.nativeFee.toString()).div(10 ** 18).toString())
 
@@ -129,7 +136,7 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
             bridgeName: 'Stargate',
             bridgeType: 'Stargate',
             fee: Big(result.nativeFee.toString()).div(10 ** 18).toString(),
-            receiveAmount: request.amount.toString(),
+            receiveAmount: request.amount.div(10 ** request.fromToken.decimals).mul(10 ** request.toToken.decimals).toString(),
             gas: '0',
             duration: '3',
             feeType: FeeType.origin,
@@ -245,11 +252,16 @@ export async function getStatus(params: StatusParams) {
     }
 
     if (isSuccessOnline === true) {
+        const response = await fetch(`https://api-mainnet.layerzero-scan.com/tx/${params.hash}`)
+        const resJson = await response.json()
 
-        return {
-            status: 1
+        const data = resJson.messages?.length > 0 ? resJson.messages[0] : null
+
+        if (data && data.dstTxHash && data.status === 'DELIVERED') {
+            return {
+                status: 1
+            }
         }
-
     }
 
     return {

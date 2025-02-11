@@ -107,14 +107,14 @@ export const ethereum: { [key: string]: Token } = {
     name: "Wrapped BTC",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/3717.png"
   },
-  "pumpBTC.bera": {
-    chainId: CHAIN_ID,
-    address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
-    decimals: 8,
-    symbol: "pumpBTC.bera",
-    name: "pumpBTC.bera",
-    icon: "/assets/tokens/pumpbtc.png"
-  },
+  // "pumpBTC.bera": {
+  //   chainId: CHAIN_ID,
+  //   address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
+  //   decimals: 8,
+  //   symbol: "pumpBTC.bera",
+  //   name: "pumpBTC.bera",
+  //   icon: "/assets/tokens/pumpbtc.png"
+  // },
   fbtc: {
     chainId: CHAIN_ID,
     address: "0xC96dE26018A54D51c097160568752c4E3BD6C364",

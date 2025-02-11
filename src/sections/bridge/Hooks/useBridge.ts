@@ -215,6 +215,8 @@ export default function useBridge({ originFromChain, originToChain, derection, d
     }
   };
 
+  console.log('sendDisabled', sendDisabled)
+
   return {
     fromChain,
     setFromChain,

@@ -31,14 +31,15 @@ export default function useTokenBalance(
   chainId: number = 80094
 ) {
   // console.info('use-token-bal:', address, decimals, chainId);
-  const { account, provider, chainId: walletChainId } = useAccount();
+  const { account, chainId: walletChainId } = useAccount();
   const [tokenBalance, setTokenBalance] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fresh, setFresh] = useState(0);
 
+
   const getBalance = async () => {
-    if (!account || !address || !provider) return;
+    if (!account || !address) return;
     // console.log('walletChainId:', walletChainId, chainId)
 
     const rpcUrl = chains[chainId as number].rpcUrls.default.http[0];
@@ -54,7 +55,9 @@ export default function useTokenBalance(
         setTokenBalance(utils.formatEther(rawBalance));
       } else {
         const TokenContract = new Contract(address, TOKEN_ABI, _provider);
+        console.log('_provider:', _provider, address)
         const rawBalance = await TokenContract.balanceOf(account);
+        // console.log('rawBalance:', rawBalance, account)
         setTokenBalance(utils.formatUnits(rawBalance, decimals));
       }
     } catch (error) {
@@ -69,7 +72,7 @@ export default function useTokenBalance(
   };
   useEffect(() => {
     getBalance();
-  }, [account, address, decimals, fresh, chainId, walletChainId, provider]);
+  }, [account, address, decimals, fresh, chainId, walletChainId]);
 
   return { tokenBalance, isError, isLoading, update };
 }

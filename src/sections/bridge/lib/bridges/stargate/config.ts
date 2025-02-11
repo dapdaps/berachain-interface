@@ -25,7 +25,6 @@ export const contractAddresses: any = {
 
         // disbaled
         STBTC: '',
-        UNIBTC: '',
     },
     80094: {
         WETH: '0x45f1A95A4D3f3836523F5c83673c797f4d4d263B',
@@ -53,13 +52,66 @@ export const contractAddresses: any = {
         // disbaled
         STBTC: '',
         UNIBTC: '',
+    },
+    42161: {
+        ETH: '0xa45b5130f36cdca45667738e2a258ab09f4a5f7f',
+        USDC: '0xe8cdf27acd73a434d661c84887215f7598e7d0d3',
+        ['USDT']: '0x14e4a1b13bf7f943c8ff7c51fb60fa964a298d92'
+    },
+    8453: {
+        ETH: '0xdc181bd607330aeebef6ea62e03e5e1fb4b6f7c7',
+        USDC: '0x27a16dc786820b16e5c9028b75b99f6f604b5d26',
+        WEETH: '0x04c0599ae5a44757c0af6f9ec3b93da8976c150a',
+        WBTC: '0x0555e30da8f98308edb960aa94c0db47230d2b9c'
+    },
+    56: {
+        USDC: '0x962Bd449E630b0d928f308Ce63f1A21F02576057',
+        WEETH: '0x04c0599ae5a44757c0af6f9ec3b93da8976c150a',
+        WBTC: '0x0555e30da8f98308edb960aa94c0db47230d2b9c'
+    },
+    43114: {
+        WBTC: '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
+        USDC: '0x5634c4a5FEd09819E3c46D86A965Dd9447d86e47'
+    },
+    59144: {
+        ETH: '0x81f6138153d473e8c5ecebd3dc8cd4903506b075'
+    },
+    5000: {
+        USDC: '0x09bc4e0d864854c6afb6eb9a9cdf58ac190d0df9'
+    },
+    10: {
+        ETH: '0xe8cdf27acd73a434d661c84887215f7598e7d0d3',
+        USDC: '0xcE8CcA271Ebc0533920C83d39F417ED6A0abB7D0'
+    },
+    137: {
+        USDC: '0x9Aa02D4Fae7F58b8E8f34c66E756cC734DAc7fe4'
+    },
+    534352: {
+        ETH: '0xc2b638cb5042c1b3c5d5c969361fb50569840583',
+        USDC: '0x3Fc69CC4A842838bCDC9499178740226062b14E4'
     }
 }
 
 
 export const chainIds: any = {
     1: 30101,
-    80094: 30362
+    80094: 30362,
+    42161: 30110,
+    8453: 30184,
+    5000: 30153,
+    43114: 30106,
+    56: 30102,
+    59144: 30183,
+    1088: 30151,
+    10: 30111,
+    137: 30109,
+    1101: 30177,
+    324: 30210,
+    100: 30124,
+    169: 30225,
+    534352: 30168,
+    81457: 30194,
+    34443: 30234
 }
 
 export const tokenPairs: any = {
@@ -114,6 +166,44 @@ export const tokenPairs: any = {
         // disabled
         STBTC: 'STBTC',
         UNIBTC: 'UNIBTC',
+    },
+    42161: {
+        'ETH': 'WETH',
+        'USDC': 'USDC.E',
+        'USDT': 'USD₮0',
+    },
+    8453: {
+        'ETH': 'WETH',
+        'USDC': 'USDC.E',
+        'WEETH': 'WEETH',
+        'WBTC': 'WBTC'
+    },
+    56: {
+        'USDC': 'USDC.E',
+        'WEETH': 'WEETH',
+        'WBTC': 'WBTC'
+    },
+    43114: {
+        'WBTC': 'WBTC',
+        'USDC': 'USDC.E',
+    },
+    59144: {
+        'ETH': 'WETH',
+    },
+    5000: {
+        'WETH': 'WETH',
+        'USDC': 'USDC.E',
+    },
+    10: {
+        'ETH': 'WETH',
+        'USDC': 'USDC.E',
+    },
+    137: {
+        'USDC': 'USDC.E',
+    },
+    534352: {
+        'ETH': 'WETH',
+        'USDC': 'USDC.E',
     }
 }
 
