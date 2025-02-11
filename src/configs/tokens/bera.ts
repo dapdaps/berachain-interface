@@ -257,5 +257,13 @@ export const bera: { [key: string]: Token } = {
     symbol: "BBLAST",
     name: "Bera Blast",
     icon: "/assets/tokens/bblast.png"
+  },
+  stone: {
+    chainId: CHAIN_ID,
+    address: "0xEc901DA9c68E90798BbBb74c11406A32A70652C3",
+    decimals: 18,
+    symbol: "STONE",
+    name: "StakeStone Ether",
+    icon: "/assets/tokens/stone.png"
   }
 };
