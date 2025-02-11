@@ -87,9 +87,17 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
       render: (data) => {
         return (
           <div className="flex items-center gap-[10px]">
-            <div className="w-[42px] h-[42px] rounded-full overflow-hidden">
-              <img className="w-full" src={data?.icon} alt={data?.symbol} />
-            </div>
+
+            {
+              data?.icon ? (
+                <div className="w-[42px] h-[42px] rounded-full overflow-hidden">
+                  <img className="w-full" src={data?.icon} alt={data?.symbol} />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center w-[42px] h-[42px] rounded-[8px] bg-gray-800 text-white font-bold text-[16px]">{data?.symbol?.slice(0, 1)}</div>
+              )
+            }
+
             <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{data?.symbol}</div>
           </div>
         )
@@ -151,9 +159,15 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
     render: (data) => {
       return (
         <div className="flex items-center gap-[10px]">
-          <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
-            <img className="w-full" src={data?.icon} alt={data?.symbol} />
-          </div>
+          {
+            data?.icon ? (
+              <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
+                <img className="w-full" src={data?.icon} alt={data?.symbol} />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center w-[30px] h-[30px] rounded-[4px] bg-gray-800 text-white font-bold">{data?.symbol?.slice(0, 1)}</div>
+            )
+          }
           <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{data?.symbol}</div>
         </div>
       );

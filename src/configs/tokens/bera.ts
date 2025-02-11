@@ -233,4 +233,19 @@ export const bera: { [key: string]: Token } = {
     symbol: "weETH",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/28568.png"
   },
+  godl: {
+    chainId: CHAIN_ID,
+    address: "0x85468a0CB26B5Fc1F2B7B7BA3aee07F073dff709",
+    decimals: 18,
+    symbol: "Godl",
+    icon: ""
+  },
+  stone: {
+    chainId: CHAIN_ID,
+    address: "0xEc901DA9c68E90798BbBb74c11406A32A70652C3",
+    decimals: 18,
+    symbol: "Stone",
+    icon: ""
+  },
+
 };
