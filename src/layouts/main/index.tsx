@@ -2,7 +2,7 @@
 
 import useTokenPrice from "@/hooks/use-token-price";
 import MainLayoutHeader from "@/layouts/main/header";
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import MapModal from "@/sections/home/map-modal";
 import useUser from "@/hooks/use-user";
@@ -11,6 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { useChristmas } from "@/hooks/use-christmas";
+import GuidingTutorial from '@/components/GuidingTour/mainnet';
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -197,6 +198,7 @@ const MainLayout = (props: Props) => {
         </Link>
       </div>
       <MapModal />
+      <GuidingTutorial />
     </div>
   );
 };

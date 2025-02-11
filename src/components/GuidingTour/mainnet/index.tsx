@@ -1,3 +1,5 @@
+'use client';
+
 import { useGuidingTour } from '@/stores/useGuidingTour';
 import Modal from '@/components/modal';
 import Card from '@/components/GuidingTour/mainnet/components/card';
