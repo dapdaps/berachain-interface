@@ -36,7 +36,55 @@ export default {
     }
   },
   islands: {
+    "0x97431f104be73fc0e6fc731ce84486da05c48871": {
+      name: "WETH-STONE",
+      farmAddress: "",
+      token0: bera["weth"],
+      token1: bera["stone"]
+    },
     "0x58fdb6eebf7df7ce4137994436fb0e629bb84b84": {
+      name: "WBTC-WETH",
+      farmAddress: "",
+      token0: bera["wbtc"],
+      token1: bera["weth"]
+    },
+    "0x57161d6272f47cd48ba165646c802f001040c2e0": {
+      name: "beraETH-STONE",
+      farmAddress: "",
+      token0: bera["beraeth"],
+      token1: bera["stone"]
+    },
+    "0xf6c6be0ff6d6f70a04dbe4f1ade62cb23053bd95": {
+      name: "WETH-HONEY",
+      farmAddress: "",
+      token0: bera["weth"],
+      token1: bera["honey"]
+    },
+    "0xf6b16e73d3b0e2784aae8c4cd06099be65d092bf": {
+      name: "WBTC-HONEY",
+      farmAddress: "",
+      token0: bera["wbtc"],
+      token1: bera["honey"]
+    },
+    "0xd5b6ea3544a51bfdda7e6926bdf778339801dfe8": {
+      name: "sUSDe-HONEY",
+      farmAddress: "",
+      token0: bera["susde"],
+      token1: bera["honey"]
+    },
+    "0xb73dee52f38539ba854979eab6342a60dd4c8c03": {
+      name: "USDC.e-HONEY",
+      farmAddress: "",
+      token0: bera["usdc.e"],
+      token1: bera["honey"]
+    },
+    "0x933b2e6a71edbf11bba75c5ad241d246b145e0b0": {
+      name: "MIM-HONEY",
+      farmAddress: "",
+      token0: bera["mim"],
+      token1: bera["honey"]
+    },
+    "0xb67d60fc02e0870eddca24d4fa8ea516c890152b": {
       name: "WBTC-uniBTC",
       farmAddress: "",
       token0: bera["wbtc"],
@@ -58,12 +106,6 @@ export default {
       name: "rUSD-HONEY",
       farmAddress: "",
       token0: bera["rusd"],
-      token1: bera["honey"]
-    },
-    "0xb73dee52f38539ba854979eab6342a60dd4c8c03": {
-      name: "USDC.e-HONEY",
-      farmAddress: "",
-      token0: bera["usdc.e"],
       token1: bera["honey"]
     },
     "0x03bccf796cdef61064c4a2effdd21f1ac8c29e92": {
