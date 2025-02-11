@@ -87,7 +87,47 @@ const networks = {
       [bera["unibtc"].address]: {
         ...bera["unibtc"],
         underlyingToken: bera["unibtc"]
-      }
+      },
+      [bera["beraeth"].address]: {
+        ...bera["beraeth"],
+        underlyingToken: bera["beraeth"]
+      },
+      [bera["ebtc"].address]: {
+        ...bera["ebtc"],
+        underlyingToken: bera["ebtc"]
+      },
+      [bera["weth"].address]: {
+        ...bera["weth"],
+        underlyingToken: bera["weth"]
+      },
+      [bera["lbtc"].address]: {
+        ...bera["lbtc"],
+        underlyingToken: bera["lbtc"]
+      },
+      [bera["nect"].address]: {
+        ...bera["nect"],
+        underlyingToken: bera["nect"]
+      },
+      [bera["stone"].address]: {
+        ...bera["stone"],
+        underlyingToken: bera["stone"]
+      },
+      [bera["usda"].address]: {
+        ...bera["usda"],
+        underlyingToken: bera["usda"]
+      },
+      [bera["usdc.e"].address]: {
+        ...bera["usdc.e"],
+        underlyingToken: bera["usdc.e"]
+      },
+      [bera["usdt0"].address]: {
+        ...bera["usdt0"],
+        underlyingToken: bera["usdt0"]
+      },
+      [bera["wbtc"].address]: {
+        ...bera["wbtc"],
+        underlyingToken: bera["wbtc"]
+      },
     }
   }
 };

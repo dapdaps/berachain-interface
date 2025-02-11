@@ -35,7 +35,6 @@ const FIRST_LIST = [
       {
         ..._dApps["infrared"],
         attachedIcon: "",
-        disabled: true
       }
     ]
   },
@@ -144,6 +143,7 @@ const SECOND_LIST = [
           <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
         ),
         disabled: true
+        // disabled: true
       }
     ]
   },
