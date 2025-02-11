@@ -15,6 +15,8 @@ const ExitConfirm = (props: any) => {
     setProfileVisible,
     choosePillVisible,
     setChoosePillVisible,
+    getBeraVisible,
+    setGetBeraVisible,
   } = useGuidingTour();
 
   const handleClose = () => {
@@ -25,6 +27,10 @@ const ExitConfirm = (props: any) => {
     }
     if (choosePillVisible) {
       setChoosePillVisible(true);
+      return;
+    }
+    if (getBeraVisible) {
+      setGetBeraVisible(true);
       return;
     }
     setEntryVisible(true);
