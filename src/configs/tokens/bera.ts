@@ -249,5 +249,13 @@ export const bera: { [key: string]: Token } = {
     symbol: "RAMEN",
     name: "RAMEN",
     icon: "/assets/tokens/ramen.png"
+  },
+  bblast: {
+    chainId: CHAIN_ID,
+    address: "0x6BAd2A58927198F8D39A90625699c2A3c9bDd4ce",
+    decimals: 18,
+    symbol: "BBLAST",
+    name: "Bera Blast",
+    icon: "/assets/tokens/bblast.png"
   }
 };
