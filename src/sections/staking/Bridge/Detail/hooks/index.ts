@@ -77,10 +77,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -493,19 +493,30 @@ export function useDetail(props: any) {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
     if (!["bex", "kodiak"].includes(protocol?.id)) return null;
-    const islandItem = (kodiak.sweetenedIslands as any)[
+    const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
     ];
-    if (protocol?.id === "kodiak" && islandItem) {
+    if (protocol?.id === "kodiak" && sweetenedIslandItem) {
       return {
-        token0: islandItem.token0,
-        token1: islandItem.token1,
+        token0: sweetenedIslandItem.token0,
+        token1: sweetenedIslandItem.token1,
         version: "island",
         protocol: "kodiak",
         stakingToken: data?.initialData?.stake_token
       };
     }
+    const index = kodiak?.islands?.findIndex((address: string) => data?.initialData?.stake_token?.address === address)
     const underlying_tokens = data?.initialData?.underlying_tokens;
+    if (index > -1) {
+      return {
+        protocol: protocol?.id,
+        token0: { ...underlying_tokens[0], icon: data.images[0] },
+        token1: { ...underlying_tokens[1], icon: data.images[1] },
+        version: "island",
+        protocol: "kodiak",
+        stakingToken: data?.initialData?.stake_token
+      };
+    }
     if (underlying_tokens?.length === 2)
       return {
         protocol: protocol?.id,

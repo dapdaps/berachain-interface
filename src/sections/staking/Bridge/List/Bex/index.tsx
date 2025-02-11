@@ -156,7 +156,7 @@ const List = forwardRef<any, any>((props, ref) => {
                         ? "/images/dapps/kodiak.svg"
                         : protocol?.id === "berps"
                         ? "/images/dapps/infrared/berps.svg"
-                        : "/images/dapps/infrared/infrared.svg"
+                        : "/images/dapps/dolomite.svg"
                       : "/images/dapps/infrared/aquabera.svg"
                   }
                 />
@@ -181,7 +181,7 @@ const List = forwardRef<any, any>((props, ref) => {
                     style={{ width: 26 }}
                     src={
                       data?.platform === "infrared"
-                        ? "/images/dapps/infrared/infrared.svg"
+                        ? "/images/dapps/dolomite.svg"
                         : "/images/dapps/infrared/aquabera.svg"
                     }
                   />
@@ -374,7 +374,7 @@ const List = forwardRef<any, any>((props, ref) => {
                       ? "/images/dapps/kodiak.svg"
                       : protocol?.id === "berps"
                       ? "/images/dapps/infrared/berps.svg"
-                      : "/images/dapps/infrared/infrared.svg"
+                      : "/images/dapps/dolomite.svg"
                   }
                 />
               );
