@@ -2,9 +2,13 @@ import Modal from '@/components/modal';
 import Card from '@/components/GuidingTour/mainnet/components/card';
 import { useGuidingTour } from '@/stores/useGuidingTour';
 import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/button';
+import Title from '@/components/GuidingTour/mainnet/components/title';
+import Article from '@/components/GuidingTour/mainnet/components/article';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const GetBera = (props: any) => {
   const { onClose } = props;
+  const isMobile = useIsMobile();
 
   const { getBeraVisible, setGetBeraVisible, setChoosePillVisible, setDoneVisible } = useGuidingTour();
 
@@ -24,19 +28,19 @@ const GetBera = (props: any) => {
       onClose={onClose}
       isMaskClose={false}
     >
-      <Card className="w-[1024px] p-[39px_20px_46px_57px]">
-        <div className="text-[24px] font-Montserrat font-[900] leading-[120%] text-black text-center">
+      <Card className="w-[1024px] md:w-full p-[39px_20px_46px_57px] md:p-[30px_20px_30px_20px]">
+        <Title className="text-center">
           Get $BERA for gas fees
-        </div>
-        <div className="flex justify-between items-stretch mt-[75px]">
+        </Title>
+        <div className="flex justify-between items-stretch mt-[75px] md:mt-[20px] md:flex-col md:h-[60dvh] md:overflow-y-auto md:items-center md:gap-[20px]">
           <div className="flex-1 pr-[32px]">
-            <div className="text-[24px] font-CherryBomb font-[400] leading-[120%] text-black">
+            <Title className="!font-CherryBomb md:!text-[20px]">
               Method 1
-            </div>
-            <div className="font-Montserrat text-[16px] leading-[120%] text-black font-[400] mt-[22px]">
+            </Title>
+            <Article className="mt-[22px] md:mt-[10px]">
               <span className="text-[20px] font-CherryBomb">Step 1: </span>Buy $BERA from the following CEXs
-            </div>
-            <div className="flex items-center gap-[5px] mt-[19px]">
+            </Article>
+            <div className="flex items-center gap-[5px] mt-[19px] md:mt-[10px]">
               {
                 [
                   '/images/guiding-tour/cex-1.svg',
@@ -50,56 +54,73 @@ const GetBera = (props: any) => {
                 ))
               }
             </div>
-            <div className="font-Montserrat text-[16px] leading-[120%] text-black font-[400] mt-[51px]">
+            <Article className="mt-[51px] md:mt-[10px]">
               <span className="text-[20px] font-CherryBomb">Step 2: </span>Withdraw to your own wallet
-            </div>
+            </Article>
           </div>
-          <div className="shrink-0 w-[7px] h-[289px] bg-[url('/images/guiding-tour/line-1.svg')] bg-no-repeat bg-center bg-contain"></div>
-          <div className="flex-1 pl-[51px] pr-[18px]">
-            <div className="text-[24px] font-CherryBomb font-[400] leading-[120%] text-black">
+          <div className="shrink-0 w-[7px] h-[289px] md:w-full md:h-[9px] bg-[url('/images/guiding-tour/line-1.svg')] md:bg-[url('/images/guiding-tour/line-3.svg')] bg-no-repeat bg-center bg-contain"></div>
+          <div className="flex-1 pl-[51px] md:pl-0 pr-[18px]">
+            <Title className="!font-CherryBomb md:!text-[20px]">
               Method 2
-            </div>
-            <div className="font-Montserrat text-[16px] leading-[120%] text-black font-[400] mt-[19px]">
+            </Title>
+            <Article className="mt-[19px] md:mt-[10px]">
               Bridge & convert assets directly to $BERA from other blockchains
-            </div>
+            </Article>
             <img src="/images/guiding-tour/bridge.svg" alt="" className="w-[154px] h-[143px] mx-auto mt-[40px]" />
           </div>
-          <div className="shrink-0 w-[10px] h-[279px] bg-[url('/images/guiding-tour/line-2.svg')] bg-no-repeat bg-center bg-contain"></div>
-          <div className="flex-1 pl-[46px]">
-            <div className="text-[24px] font-CherryBomb font-[400] leading-[120%] text-black">
+          <div className="shrink-0 w-[10px] h-[279px] md:w-full md:h-[10px] bg-[url('/images/guiding-tour/line-2.svg')] md:bg-[url('/images/guiding-tour/line-4.svg')] bg-no-repeat bg-center bg-contain"></div>
+          <div className="flex-1 pl-[46px] md:pl-0">
+            <Title className="!font-CherryBomb md:!text-[20px]">
               Method 3
-            </div>
-            <div className="font-Montserrat text-[16px] leading-[120%] text-black font-[400] mt-[19px]">
+            </Title>
+            <Article className="mt-[19px] md:mt-[10px]">
               Ask your bera frens to send you some $BERA for gas fees
-            </div>
-            <div className="font-Montserrat text-[16px] leading-[120%] text-black font-[400] mt-[19px]">
+            </Article>
+            <Article className="mt-[19px]">
               Don’t have any bera frens?
-            </div>
-            <div className="font-Montserrat text-[16px] leading-[120%] text-black font-[400] mt-[19px]">
+            </Article>
+            <Article className="mt-[19px]">
               Join McBera Discord / Telegram and bera frens there will help you out!
-            </div>
-            <div className="flex items-center gap-[24px] mt-[20px]">
+            </Article>
+            <div className="flex items-center gap-[24px] md:gap-[10px] mt-[20px]">
               <a href="https://t.me/DapDapDiscussion" target="_blank">
-                <img src="/images/guiding-tour/telegram.svg" alt="" className="w-[56px] h-[56px]" />
+                <img src="/images/guiding-tour/telegram.svg" alt="" className="w-[56px] h-[56px] md:w-[40px] md:h-[40px]" />
               </a>
               <a href="https://discord.com/invite/dapdapmeup" target="_blank">
-                <img src="/images/guiding-tour/discord.svg" alt="" className="w-[56px] h-[56px]" />
+                <img src="/images/guiding-tour/discord.svg" alt="" className="w-[56px] h-[56px] md:w-[40px] md:h-[40px]" />
               </a>
             </div>
           </div>
         </div>
+        {
+          isMobile && (
+            <Foot handleNext={handleNext} />
+          )
+        }
       </Card>
-      <div className="flex justify-center items-center mt-[24px]">
-        <Button
-          type={ButtonType.Primary}
-          className="w-[354px]"
-          onClick={handleNext}
-        >
-          I’m all set!
-        </Button>
-      </div>
+      {
+        !isMobile && (
+          <Foot handleNext={handleNext} />
+        )
+      }
     </Modal>
   );
 };
 
 export default GetBera;
+
+const Foot = (props: any) => {
+  const { handleNext } = props;
+
+  return (
+    <div className="flex justify-center items-center mt-[24px]">
+      <Button
+        type={ButtonType.Primary}
+        className="w-[354px]"
+        onClick={handleNext}
+      >
+        I’m all set!
+      </Button>
+    </div>
+  );
+};

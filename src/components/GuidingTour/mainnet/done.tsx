@@ -19,13 +19,13 @@ const Done = (props: any) => {
       onClose={() => onClose(false)}
       isMaskClose={false}
     >
-      <Card className="w-[680px] p-[39px_51px_35px] flex flex-col items-center">
-        <img src="/images/guiding-tour/done-title.png" alt="" className="shrink-0 w-[393px] h-[36px]" />
+      <Card className="w-[680px] md:w-full p-[39px_51px_35px] md:p-[30px_20px_35px] flex flex-col items-center">
+        <img src="/images/guiding-tour/done-title.png" alt="" className="shrink-0 w-[393px] md:w-[300px] h-[36px] md:h-[27px]" />
         <img src="/images/guiding-tour/balloon.svg" alt="" className="shrink-0 w-[102px] h-[96px] mt-[36px]" />
         <div className="text-[20px] font-CherryBomb font-[400] leading-[150%] text-black mt-[11px] text-center">
           Bera Balloon
         </div>
-        <div className="text-[16px] font-Montserrat font-[400] leading-[150%] text-black mt-[17px] text-center px-[71px]">
+        <div className="text-[16px] font-Montserrat font-[400] leading-[150%] text-black mt-[17px] text-center px-[71px] md:px-0">
           Congratz on your <strong>first step</strong> onto Berachain!<br />
           Here’s a <strong>small prize</strong> from McBera. You can check this item later on in the <strong>Beracave</strong>
         </div>

@@ -13,6 +13,7 @@ import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
+import GuidingTutorial from '@/components/GuidingTour/mainnet';
 
 const menuItems = [
   // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -381,6 +382,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           </motion.button>
         </div>
       </div>
+      <GuidingTutorial />
     </div>
   );
 };

@@ -7,7 +7,7 @@ const Button = (props: Props) => {
     <button
       type="button"
       className={clsx(
-        'border border-black h-[50px] flex justify-center items-center shadow-[6px_6px_0px_0px_rgba(0,_0,_0,_0.25)] rounded-[10px] font-Montserrat font-[700] text-[16px] text-black',
+        'border border-black h-[50px] flex justify-center items-center shadow-[6px_6px_0px_0px_rgba(0,_0,_0,_0.25)] rounded-[10px] font-Montserrat font-[700] text-[16px] text-black md:text-[14px] md:font-[600]',
         className,
         getButtonTypeStyle(type)
       )}
