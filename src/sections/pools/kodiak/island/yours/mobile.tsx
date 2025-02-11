@@ -1,4 +1,3 @@
-import Image from "next/image";
 import PoolTable from "../../../components/pool-table";
 import { balanceFormated } from "@/utils/balance";
 import Empty from "@/components/empty";
@@ -26,7 +25,7 @@ const Item = ({ record, onClick }: any) => {
       </div>
       <div className="mt-[8px] flex items-center">
         <div className="w-1/2 flex items-center gap-[8px]">
-          <Image
+          <img
             src={record.pool.token0.icon}
             width={20}
             height={20}
@@ -39,7 +38,7 @@ const Item = ({ record, onClick }: any) => {
           </div>
         </div>
         <div className="w-1/2 flex items-center gap-[8px]">
-          <Image
+          <img
             src={record.pool.token1.icon}
             width={20}
             height={20}

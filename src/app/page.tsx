@@ -1,4 +1,4 @@
-import Home from '@/sections/home';
+import Home from '@/sections/home-earth';
 
 export default function Index() {
   return (

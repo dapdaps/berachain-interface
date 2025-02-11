@@ -1,5 +1,4 @@
 import { balanceFormated } from "@/utils/balance";
-import Image from "next/image";
 import { useMemo } from "react";
 import Big from "big.js";
 import Button from "@/components/button";
@@ -43,14 +42,14 @@ export default function UnstakePanel({
             key={item.kek_id}
           >
             <div className="flex items-center">
-              <Image
+              <img
                 src={data.token0.icon}
                 alt={data.token0.name}
                 width={26}
                 height={26}
                 className="rounded-full"
               />
-              <Image
+              <img
                 src={data.token1.icon}
                 alt={data.token1.name}
                 width={26}
@@ -74,7 +73,7 @@ export default function UnstakePanel({
         </div>
         <div className="flex items-center justify-between mt-[6px]">
           <div className="flex gap-[4px] items-center text-[14px] font-medium	text-[#3D405A]">
-            <Image
+            <img
               src={data.icon}
               alt={data.symbol}
               width={26}
