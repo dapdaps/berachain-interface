@@ -34,7 +34,7 @@ const StyledBaseUI = styled.div`
 `;
 const StyledPool = styled(StyledBaseUI)``;
 
-const PoolRemoveToken = ({ percent = 0, tokens = [] }: any) => {
+const PoolRemoveToken = ({ percent = 0, tokens = [], amounts }: any) => {
   return (
     <StyledWrap>
       <StyledPool>
@@ -43,7 +43,7 @@ const PoolRemoveToken = ({ percent = 0, tokens = [] }: any) => {
             key={token.address}
             name={`Pooled ${token?.symbol}:`}
             value={balanceFormated(
-              Number(token?.amount || 0) * (percent / 100) + "",
+              Number(amounts[token.address] || 0) * (percent / 100) + "",
               4
             )}
             token={token}

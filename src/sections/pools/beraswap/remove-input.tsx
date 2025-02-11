@@ -11,8 +11,7 @@ export default function TokenAmout({
   currency,
   onCurrencySelectOpen,
   onAmountChange,
-  tokenBalance,
-  balanceLoading
+  tokenBalance
 }: any) {
   const [percent, setPercent] = useState<any>(0);
   const handleRangeChange = (e: any, isAmountChange = true) => {
@@ -111,37 +110,6 @@ export default function TokenAmout({
           value={percent}
           onChange={handleRangeChange}
         />
-      </div>
-
-      <div
-        onClick={() => {
-          const formatedBalance = balanceFormated(tokenBalance);
-          if (["-", "Loading", "0"].includes(formatedBalance)) return;
-          onAmountChange?.(tokenBalance);
-          setRange(tokenBalance);
-        }}
-        className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]"
-      >
-        <div className="flex items-center gap-[4px]">
-          balance:{" "}
-          {balanceLoading ? (
-            <Loading />
-          ) : (
-            <span
-              style={{
-                textDecoration: "underline"
-              }}
-            >
-              {currency ? balanceFormated(tokenBalance) : "-"}
-            </span>
-          )}
-        </div>
-        <div>
-          $
-          {currency.price && tokenBalance
-            ? balanceFormated(tokenBalance * currency.price)
-            : "-"}
-        </div>
       </div>
     </div>
   );

@@ -45,11 +45,14 @@ export default function useUserPools() {
           address: pool.address,
           tokens,
           symbol: pool.name,
+          liquidity: pool.dynamicData.totalLiquidity,
           deposit: pool.userBalance.totalBalanceUsd,
+          balance: pool.userBalance.walletBalance,
           shares: Big(pool.userBalance.totalBalanceUsd)
             .div(pool.dynamicData.totalLiquidity)
             .mul(100)
-            .toString()
+            .toString(),
+          type: pool.type
         };
       });
 

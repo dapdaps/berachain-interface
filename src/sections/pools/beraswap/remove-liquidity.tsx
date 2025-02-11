@@ -7,25 +7,33 @@ import RemoveAmount from "./remove-amount";
 import RemoveButton from "../components/button/remove-button";
 import RemoveInput from "./remove-input";
 import SwitchTabs from "@/components/switch-tabs";
+import TokenSelector from "@/sections/swap/TokenSelector";
+import { DEFAULT_CHAIN_ID } from "@/configs/index";
+import useAccount from "@/hooks/use-account";
+import chains from "@/configs/chains";
+
 import useRemove from "./use-remove";
 
 const Remove = ({ data, onSuccess }: any) => {
   const [percent, setPercent] = useState(0);
   const [type, setType] = useState(1);
-  const [exitToken, setExitToken] = useState<any>();
+
   const [exitAmount, setExitAmount] = useState("");
   const [showTokensModal, setShowTokenModal] = useState(false);
+  const { account, chainId } = useAccount();
 
   const {
     loading: removing,
-    tokenBalance,
+    amounts,
     balanceLoading,
-    onRemove,
-    onQuerySingleAmountOut
+    exitToken,
+    setExitToken,
+    onRemove
   } = useRemove({
     data,
     percent,
     type,
+    exitAmount,
     onSuccess: () => {
       onSuccess();
     }
@@ -38,10 +46,7 @@ const Remove = ({ data, onSuccess }: any) => {
 
   useEffect(() => {
     if (!data) return;
-    setTimeout(() => {
-      console.log("timer", 35);
-      onQuerySingleAmountOut(data.tokens[0]);
-    }, 3000);
+    setExitToken(data.tokens[0]);
   }, [data]);
 
   return (
@@ -68,7 +73,11 @@ const Remove = ({ data, onSuccess }: any) => {
       {type === 1 && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <RemovePercent percent={percent} setPercent={setPercent} />
-          <RemoveAmount tokens={data.tokens} percent={percent} />
+          <RemoveAmount
+            tokens={data.tokens}
+            percent={percent}
+            amounts={amounts}
+          />
           <RemoveButton
             text="Remove Liquidity"
             loading={removing}
@@ -78,19 +87,47 @@ const Remove = ({ data, onSuccess }: any) => {
         </motion.div>
       )}
       {type === 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-[20px]"
+        >
           <RemoveInput
             amount={exitAmount}
             currency={exitToken}
-            onCurrencySelectOpen={() => {}}
+            onCurrencySelectOpen={() => {
+              setShowTokenModal(true);
+            }}
             onAmountChange={(val: any) => {
               setExitAmount(val);
             }}
-            tokenBalance={tokenBalance}
             balanceLoading={balanceLoading}
+            tokenBalance={amounts[exitToken.address]}
+          />
+          <RemoveButton
+            text="Remove Liquidity"
+            loading={removing}
+            onClick={onRemove}
+            errorTips={exitAmount ? "" : "Select a percent"}
           />
         </motion.div>
       )}
+      <TokenSelector
+        display={showTokensModal}
+        chainIdNotSupport={chainId !== DEFAULT_CHAIN_ID}
+        selectedTokenAddress={exitToken?.address}
+        chainId={DEFAULT_CHAIN_ID}
+        tokens={data.tokens}
+        account={account}
+        explor={chains[DEFAULT_CHAIN_ID].blockExplorers.default.url}
+        onClose={() => {
+          setShowTokenModal(false);
+        }}
+        onSelect={(token: any) => {
+          setExitToken(token);
+        }}
+        showSearch={false}
+      />
     </>
   );
 };

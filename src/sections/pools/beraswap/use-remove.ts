@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { Contract, utils } from "ethers";
-import { useState } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
@@ -9,26 +9,26 @@ import queryAbi from "../abi/balancer-query";
 import beraswap from "@/configs/pools/beraswap";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-const Infa = new utils.Interface(valutAbi);
 const abiCoder = new utils.AbiCoder();
 
 export default function useRemove({
   data,
   type, // 0 for one token, 1 for tokens
   percent,
-  exitToken,
   exitAmount,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
-  const [tokenBalance, setTokenBalance] = useState("");
+  const [amounts, setAmounts] = useState<any>({});
   const [balanceLoading, setBalanceLoading] = useState(false);
   const { account, provider, chainId } = useAccount();
+  const [exitToken, setExitToken] = useState<any>();
   const toast = useToast();
   const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
+  const assetsRef = useRef<any>();
   const { addAction } = useAddAction("dapp");
 
-  const onQuerySingleAmountOut = async (token: any) => {
+  const onQueryAmountsOut = async () => {
     try {
       setBalanceLoading(true);
       const queryContract = new Contract(
@@ -36,32 +36,57 @@ export default function useRemove({
         queryAbi,
         provider
       );
-      let exitTokenIndex = data.tokensList.findIndex(
-        (asset: any) => asset.toLowerCase() === token.address
-      );
-      const types = ["uint256", "uint256", "uint256"];
-      const bptMinIn = Big(data.liquidity).toFixed(0);
-      const minAmountsOut = data.tokensList.map((asset: any, i: number) => {
-        if (asset.toLowerCase() === token.address) {
-          exitTokenIndex = i;
-        }
-        return "0";
-      });
 
-      const userData = abiCoder.encode(types, [0, bptMinIn, exitTokenIndex]);
+      if (!assetsRef.current) {
+        const valutContract = new Contract(contracts.Vault, valutAbi, provider);
+
+        const { tokens } = await valutContract.getPoolTokens(data.id);
+
+        assetsRef.current = tokens;
+      }
+
+      let exitTokenIndex = assetsRef.current.findIndex(
+        (asset: any) => asset.toLowerCase() === exitToken.address
+      );
+
+      const bptMinIn = Big(data.balance).mul(1e18).toFixed(0);
+      const minAmountsOut = assetsRef.current.map(
+        (asset: any, i: number) => "0"
+      );
+
+      const userData =
+        type === 0
+          ? abiCoder.encode(
+              ["uint256", "uint256", "uint256"],
+              [0, bptMinIn, exitTokenIndex]
+            )
+          : abiCoder.encode(
+              ["uint256", "uint256"],
+              [data.type === "COMPOSABLE_STABLE" ? 2 : 1, bptMinIn]
+            );
+      console.log(67, [assetsRef.current, minAmountsOut, userData, false]);
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
         data.id,
         account,
         account,
-        [data.tokensList, minAmountsOut, userData, false]
+        [assetsRef.current, minAmountsOut, userData, false]
       );
-      setTokenBalance(
-        Big(amountsOut[exitTokenIndex].toString())
+
+      const _amounts: any = {};
+
+      assetsRef.current.forEach((address: any, i: number) => {
+        const token = data.tokens.find(
+          (token: any) => token.address.toLowerCase() === address.toLowerCase()
+        );
+        if (!token) return;
+        _amounts[address.toLowerCase()] = Big(amountsOut[i].toString())
           .div(10 ** token.decimals)
-          .toString()
-      );
+          .toString();
+      });
+
+      setAmounts(_amounts);
     } catch (err) {
-      setTokenBalance("");
+      setAmounts({});
     } finally {
       setBalanceLoading(false);
     }
@@ -76,6 +101,10 @@ export default function useRemove({
     try {
       const signer = provider.getSigner(account);
       const valutContract = new Contract(contracts.Vault, valutAbi, signer);
+      if (!assetsRef.current) {
+        const { tokens } = await valutContract.getPoolTokens(data.id);
+        assetsRef.current = tokens;
+      }
       const queryContract = new Contract(
         contracts.BalancerQuery,
         queryAbi,
@@ -86,14 +115,12 @@ export default function useRemove({
       let bptMinIn = "0";
 
       if (type === 1) {
-        exitKind = 2;
-        bptMinIn = Big(data.liquidity)
-          .mul(percent / 100)
-          .toFixed(0);
+        exitKind = data.type === "COMPOSABLE_STABLE" ? 2 : 1;
+        bptMinIn = Big(data.balance).mul(1e18).toFixed(0);
         const abiCoder = new utils.AbiCoder();
         const minAmountsOut: any = [];
 
-        data.tokensList.forEach((asset: any, i: number) => {
+        assetsRef.current.forEach((asset: any, i: number) => {
           if (type === 0) return;
           const token = data.tokens.find(
             (t: any) => t.address === asset.toLowerCase()
@@ -102,7 +129,7 @@ export default function useRemove({
             minAmountsOut.push("0");
             return;
           }
-          const _v = Big(token.amount)
+          const _v = Big(amounts[asset.toLowerCase()])
             .mul(10 ** token.decimals)
             .mul(percent / 100)
             .toFixed(0);
@@ -115,28 +142,54 @@ export default function useRemove({
           data.id,
           account,
           account,
-          [data.tokensList, minAmountsOut, userData, false]
+          [assetsRef.current, minAmountsOut, userData, false]
         );
         params = [
           data.id,
           account,
           account,
           [
-            data.tokensList,
+            assetsRef.current,
             amountsOut,
-            abiCoder.encode(types, [exitKind, bptIn]),
+            abiCoder.encode(["uint256", "uint256"], [exitKind, bptIn]),
             false
           ]
         ];
       } else {
         exitKind = 0;
-        bptMinIn = Big(exitAmount)
-          .mul(10 ** exitToken.decimals)
+        const _percent = Big(exitAmount).div(amounts[exitToken.address]);
+        bptMinIn = Big(data.balance)
+          .mul(_percent)
+          .mul(10 ** 18)
           .toFixed(0);
-        const exitTokenIndex = data.tokensList.findIndex(
+
+        const types = ["uint256", "uint256", "uint256"];
+        let exitTokenIndex = assetsRef.current.findIndex(
           (asset: any) => asset.toLowerCase() === exitToken.address
         );
-        const types = ["uint256", "uint256", "uint256"];
+        const userData = abiCoder.encode(types, [0, bptMinIn, exitTokenIndex]);
+        const minAmountsOut = assetsRef.current.map(
+          (asset: any, i: number) => "0"
+        );
+
+        const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
+          data.id,
+          account,
+          account,
+          [assetsRef.current, minAmountsOut, userData, false]
+        );
+
+        params = [
+          data.id,
+          account,
+          account,
+          [
+            assetsRef.current,
+            amountsOut,
+            abiCoder.encode(types, [0, bptIn, exitTokenIndex]),
+            false
+          ]
+        ];
       }
 
       const method = "exitPool";
@@ -204,12 +257,19 @@ export default function useRemove({
     }
   };
 
+  useEffect(() => {
+    if (type === 1 && !exitToken) return;
+    onQueryAmountsOut();
+  }, [type, exitToken]);
+
   return {
     loading,
     contracts,
-    tokenBalance,
+    amounts,
     balanceLoading,
+    exitToken,
+    setExitToken,
     onRemove,
-    onQuerySingleAmountOut
+    onQueryAmountsOut
   };
 }
