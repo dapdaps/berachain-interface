@@ -38,7 +38,7 @@ const ExitConfirm = (props: any) => {
   return (
     <Modal
       open={exitConfirmVisible}
-      onClose={onClose}
+      onClose={() => onClose(false)}
       isMaskClose={false}
     >
       <Card className="w-[680px] p-[39px_26px_36px]">
