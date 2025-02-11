@@ -152,7 +152,7 @@ export const bera: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0xbAC93A69c62a1518136FF840B788Ba715cbDfE2B",
     decimals: 8,
-    symbol: "FBTC", 
+    symbol: "FBTC",
     name: "Fire Bitcoin",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/32306.png"
   },
@@ -166,7 +166,7 @@ export const bera: { [key: string]: Token } = {
   },
   rseth: {
     chainId: CHAIN_ID,
-    address: "0x4186BFC76E2E237523CBC30FD220FE055156b41F", 
+    address: "0x4186BFC76E2E237523CBC30FD220FE055156b41F",
     decimals: 18,
     symbol: "rsETH",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29242.png"
@@ -233,4 +233,13 @@ export const bera: { [key: string]: Token } = {
     symbol: "weETH",
     icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/28568.png"
   },
+  yeet: {
+    chainId: CHAIN_ID,
+    address: "0x08a38caa631de329ff2dad1656ce789f31af3142",
+    decimals: 18,
+    symbol: "YEET",
+    name: "YEET",
+    icon: "/assets/tokens/YEET.png",
+    isMeme: true
+  }
 };
