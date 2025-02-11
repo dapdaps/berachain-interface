@@ -2,6 +2,7 @@ import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
 import { asyncFetch } from "@/utils/http";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { bera } from "@/configs/tokens/bera";
 
 export default function useDexTokens(dapp: any) {
   const kodiakTokensStore: any = useKodiakTokensStore();
@@ -24,12 +25,14 @@ export default function useDexTokens(dapp: any) {
       const normalResponse = await asyncFetch(
         "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
       );
-      const list = [...pandaResponse.tokens, ...normalResponse.tokens].map(
-        (token: any) => ({
-          ...token,
-          icon: token.logoURI
-        })
-      );
+      const list = [
+        bera.bera,
+        ...pandaResponse.tokens,
+        ...normalResponse.tokens
+      ].map((token: any) => ({
+        ...token,
+        icon: token.logoURI || token.icon
+      }));
       kodiakTokensStore.set({
         tokens: list.reduce(
           (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
