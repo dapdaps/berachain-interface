@@ -21,17 +21,15 @@ const Done = (props: any) => {
     >
       <Card className="w-[680px] p-[76px_26px_53px] flex flex-col items-center">
         <img src="/images/guiding-tour/done-title.png" alt="" className="shrink-0 w-[393px] h-[36px]" />
-        <img src="/images/guiding-tour/helmet.png" alt="" className="shrink-0 w-[103px] h-[80px] mt-[32px]" />
-        <div className="text-[18px] font-CherryBomb font-[400] leading-[120%] text-black mt-[5px] text-center">
-          Common Bike Helmet
+        <img src="/images/guiding-tour/balloon.svg" alt="" className="shrink-0 w-[102px] h-[96px] mt-[36px]" />
+        <div className="text-[20px] font-CherryBomb font-[400] leading-[150%] text-black mt-[11px] text-center">
+          Bera Balloon
         </div>
-        <div className="text-[16px] font-Montserrat font-[400] leading-[120%] text-black mt-[22px] text-center">
-          Congratz on your <strong>first step</strong> onto Berachain!
-        </div>
-        <div className="text-[16px] font-Montserrat font-[400] leading-[120%] text-black mt-[22px] text-center">
+        <div className="text-[16px] font-Montserrat font-[400] leading-[150%] text-black mt-[17px] text-center">
+          Congratz on your <strong>first step</strong> onto Berachain!<br />
           Here’s a <strong>small prize</strong> from McBera. You can check this item later on in the <strong>Beracave</strong>
         </div>
-        <div className="flex justify-between items-center mt-[58px]">
+        <div className="flex justify-between items-center mt-[17px]">
           <Button
             type={ButtonType.Primary}
             className="w-[354px]"
