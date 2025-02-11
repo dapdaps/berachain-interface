@@ -13,9 +13,9 @@ const Button = (props: Props) => {
       }}
       disabled={disabled}
       type={htmlType}
-      whileHover={{
+      whileHover={!disabled ? {
         background: '#FFDC50',
-      }}
+      } : {}}
       onClick={onClick}
     >
       {
