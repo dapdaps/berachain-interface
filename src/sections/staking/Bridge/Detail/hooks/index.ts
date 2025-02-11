@@ -508,14 +508,23 @@ export function useDetail(props: any) {
     const index = kodiak?.islands?.findIndex((address: string) => data?.initialData?.stake_token?.address === address)
     const underlying_tokens = data?.initialData?.underlying_tokens;
     if (index > -1) {
-      return {
-        protocol: protocol?.id,
-        token0: { ...underlying_tokens[0], icon: data.images[0] },
-        token1: { ...underlying_tokens[1], icon: data.images[1] },
-        version: "island",
-        protocol: "kodiak",
-        stakingToken: data?.initialData?.stake_token
-      };
+      const array = data?.initialData?.stake_token?.name?.split("-")
+      const symbol0 = array[0]
+      const symbol1 = array[1]
+      const token0 = underlying_tokens?.find((token) => token?.name === symbol0) ?? null
+      const token1 = underlying_tokens?.find((token) => token?.name === symbol1) ?? null
+      if (token0 && token1) {
+        return {
+          protocol: protocol?.id,
+          token0: { ...token0, icon: token0?.image },
+          token1: { ...token1, icon: token1?.image },
+          version: "island",
+          protocol: "kodiak",
+          stakingToken: data?.initialData?.stake_token
+        };
+      } else {
+        console.error("some error");
+      }
     }
     if (underlying_tokens?.length === 2)
       return {
