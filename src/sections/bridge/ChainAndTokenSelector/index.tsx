@@ -212,6 +212,7 @@ const TokenListComp = forwardRef(function TokenListComp(
     onTokenChange,
     onClose,
     onTempChainChange,
+    limitBera
   }: {
     chain: Chain;
     chainToken: any;
@@ -225,6 +226,7 @@ const TokenListComp = forwardRef(function TokenListComp(
     searchAll: boolean;
     showSelectChain?: boolean;
     onTempChainChange: (chain: Chain) => void;
+    limitBera: boolean;
   },
   ref: any
 ) {
@@ -310,7 +312,7 @@ const TokenListComp = forwardRef(function TokenListComp(
               </svg>
             </div>
           </div>
-          {newFilterChain?.map((item: any) => {
+          {newFilterChain?.filter((chain: any) => limitBera ? chain.chainId === 80094 : chain.chainId !== 80094).map((item: any) => {
             if (item.chainId === chain.chainId) {
               return;
             }
@@ -573,6 +575,7 @@ export default function ChainAndTokenSelector({
                   showSelectChain={showSelectChain}
                   filterChain={filterChain}
                   onChainChange={onChainChange}
+                  limitBera={limitBera}
                   onTempChainChange={(item) => {
                     setTempChain(item);
                     setTimeout(() => {
