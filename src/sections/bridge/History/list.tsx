@@ -78,8 +78,16 @@ export default function History({ pendingCount, historyCount, list, setIsOpen, a
 function HistoryItem({ item }: { item: any }) {
     const action_tokens = JSON.parse(item.action_tokens)
     const fromToken = _allTokens[item.chain_id][action_tokens[0].toUpperCase()]
-    const toToken = _allTokens[item.to_chain_id]?.[tokenPairs[item.chain_id]?.[action_tokens[0].toUpperCase()]?.toUpperCase()]
+    let toToken = _allTokens[item.to_chain_id]?.[tokenPairs[item.chain_id]?.[action_tokens[0].toUpperCase()]?.toUpperCase()]
 
+    if (Number(item.chain_id) === 80094
+        && fromToken?.symbol === 'WETH'
+        && [5000, 43114, 56].includes(Number(item.to_chain_id))
+    ) {
+        toToken = _allTokens[item.to_chain_id]?.['WETH']
+    }
+
+    
     // console.log(_allTokens[item.chain_id], action_tokens)
 
     return <div className="border-b border-gray-200 py-3">
@@ -89,7 +97,7 @@ function HistoryItem({ item }: { item: any }) {
                     <div className="flex items-center gap-2">
                         <div className="w-[30px] h-[30px] relative">
                             <img className='w-full h-full object-contain' src={fromToken?.icon} />
-                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.chain_id]} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.chain_id].icon} />
                         </div>
                         <div>
                             {balanceFormated(item.action_amount)}<br />{fromToken?.symbol}
@@ -99,7 +107,7 @@ function HistoryItem({ item }: { item: any }) {
                     <div className="flex items-center gap-2">
                         <div className="w-[30px] h-[30px] relative">
                             <img className='w-full h-full object-contain' src={toToken?.icon} />
-                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.to_chain_id]} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.to_chain_id].icon} />
                         </div>
                         <div>
                             {balanceFormated(item.action_amount)}<br />{toToken?.symbol}

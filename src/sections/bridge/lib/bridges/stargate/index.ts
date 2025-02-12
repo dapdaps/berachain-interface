@@ -18,6 +18,8 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
     const fromEId = chainIds[Number(request.fromChainId)]
     const dstEid = chainIds[Number(request.toChainId)]
 
+    console.log(fromEId, dstEid, tokenPairs, tokenPairs[request.fromChainId], request.fromToken.symbol.toUpperCase())
+
     if (!fromEId || !dstEid) {
         return null
     }
@@ -30,6 +32,8 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
     ) {
         tokenPair = 'WETH'
     }
+
+    console.log(tokenPair, request.toToken.symbol.toUpperCase())
 
     if (!tokenPair || tokenPair !== request.toToken.symbol.toUpperCase()) {
         return null

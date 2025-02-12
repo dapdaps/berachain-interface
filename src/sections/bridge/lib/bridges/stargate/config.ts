@@ -77,6 +77,7 @@ export const contractAddresses: any = {
         ETH: '0x81f6138153d473e8c5ecebd3dc8cd4903506b075'
     },
     5000: {
+        WETH: '0x4c1d3Fc3fC3c177c3b633427c2F769276c547463',
         USDC: '0xac290ad4e0c891fdc295ca4f0a6214cf6dc6acdc'
     },
     10: {
