@@ -335,22 +335,26 @@ export default memo(function index(props) {
             {isDeposit ? "Deposit" : "Withdraw"}
           </div>
 
-          <div className='flex items-center gap-[16px]'>
-            <div className='flex-1 h-[60px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]'>
-              <div className='flex items-center gap-[10px]'>
-                {
-                  token0?.icon ? (
-                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                      <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
-                    </div>
-                  ) : (
-                    <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
-                      {token0?.symbol?.slice(0, 1)}
-                    </div>
-                  )
-                }
+          <div className="flex items-center gap-[16px]">
+            <div className="flex-1 h-[60px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]">
+              <div className="flex items-center gap-[10px]">
+                {token0?.icon ? (
+                  <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                    <img
+                      className="w-full"
+                      src={token0?.icon}
+                      alt={token0?.symbol}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                    {token0?.symbol?.slice(0, 1)}
+                  </div>
+                )}
 
-                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{token0?.symbol}</div>
+                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                  {token0?.symbol}
+                </div>
               </div>
             </div>
 
@@ -360,19 +364,23 @@ export default memo(function index(props) {
                 pairedTokens?.length > 0 && setTokenSelectorShow(true);
               }}
             >
-              <div className='flex items-center gap-[10px]'>
-                {
-                  token1?.icon ? (
-                    <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                      <img className='w-full' src={token1?.icon} alt={token1?.symbol} />
-                    </div>
-                  ) : (
-                    <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
-                      {token1?.symbol?.slice(0, 1)}
-                    </div>
-                  )
-                }
-                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{token1?.symbol}</div>
+              <div className="flex items-center gap-[10px]">
+                {token1?.icon ? (
+                  <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                    <img
+                      className="w-full"
+                      src={token1?.icon}
+                      alt={token1?.symbol}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                    {token1?.symbol?.slice(0, 1)}
+                  </div>
+                )}
+                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                  {token1?.symbol}
+                </div>
               </div>
               {pairedTokens?.length > 0 && (
                 <svg
@@ -401,83 +409,106 @@ export default memo(function index(props) {
               {formatValueDecimal(apr, "", 2, false, false)}%
             </div>
           </div>
-          <div className='flex items-center justify-between'>
-            <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{isDeposit ? "Deposit Amounts" : "Withdrawing"}</div>
+          <div className="flex items-center justify-between">
+            <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+              {isDeposit ? "Deposit Amounts" : "Withdrawing"}
+            </div>
 
-            {
-              isDeposit ? (
-                <>
-                  {
-                    token0?.symbol === "WBERA" && (
-                      <div className='flex items-center gap-[10px]'>
-                        <div
-                          className={clsx('py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer', isBera ? 'bg-[#FFDC50]' : '')}
-                          onClick={() => setIsBera(true)}
-                        >
-                          BERA
-                        </div>
-                        <div
-                          className={clsx('py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer', !isBera ? 'bg-[#FFDC50]' : '')}
-                          onClick={() => setIsBera(false)}
-                        >
-                          WBERA
-                        </div>
-                      </div>
-                    )
-                  }
-                </>
-              ) : (
-                <div className='flex items-center gap-[9px]'>
-                  {
-                    token0?.icon ? (
-                      <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                        <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
-                      </div>
-                    ) : (
-                      <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
-                        {token0?.symbol?.slice(0, 1)}
-                      </div>
-                    )
-                  }
-                  <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
+            {isDeposit ? (
+              <>
+                {token0?.symbol === "WBERA" && (
+                  <div className="flex items-center gap-[10px]">
+                    <div
+                      className={clsx(
+                        "py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer",
+                        isBera ? "bg-[#FFDC50]" : ""
+                      )}
+                      onClick={() => setIsBera(true)}
+                    >
+                      BERA
+                    </div>
+                    <div
+                      className={clsx(
+                        "py-[6px] px-[10px] rounded-[13px] border border-black text-black font-Montserrat text-[16px] font-semibold leading-[90%] cursor-pointer",
+                        !isBera ? "bg-[#FFDC50]" : ""
+                      )}
+                      onClick={() => setIsBera(false)}
+                    >
+                      WBERA
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-[9px]">
+                  {token0?.icon ? (
+                    <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                      <img
+                        className="w-full"
+                        src={token0?.icon}
+                        alt={token0?.symbol}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                      {token0?.symbol?.slice(0, 1)}
+                    </div>
+                  )}
+                  <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                    {isBera ? "BERA" : token0?.symbol}
+                  </span>
                 </div>
                 <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
                   {isBera ? "BERA" : token0?.symbol}
                 </span>
-              </div>
+              </>
             )}
           </div>
 
-          {
-            isDeposit && (
-              <div className="mt-[12px] mb-[20px] flex flex-col gap-[9px] h-[90px] rounded-[12px] border border-[#373A53] bg-white">
-                <div className="pt-[18px] pl-[13px] pr-[20px] flex items-center justify-between">
-                  <div className='flex-1'>
-                    <input
-                      type='number'
-                      className='w-full text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0'
-                      value={inAmount}
-                      onChange={(event) => handleAmountChange(event?.target?.value)}
-                    />
-                  </div>
-                  <div className='flex items-center gap-[9px]'>
-                    {
-                      token0?.icon ? (
-                        <div className='w-[36px] h-[36px] rounded-full overflow-hidden'>
-                          <img className='w-full' src={token0?.icon} alt={token0?.symbol} />
-                        </div>
-                      ) : (
-                        <div className='flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold'>
-                          {token0?.symbol?.slice(0, 1)}
-                        </div>
-                      )
+          {isDeposit && (
+            <div className="mt-[12px] mb-[20px] flex flex-col gap-[9px] h-[90px] rounded-[12px] border border-[#373A53] bg-white">
+              <div className="pt-[18px] pl-[13px] pr-[20px] flex items-center justify-between">
+                <div className="flex-1">
+                  <input
+                    type="number"
+                    className="w-full text-[26px] text-black font-bold leading-[90%] bg-transparent"
+                    placeholder="0"
+                    value={inAmount}
+                    onChange={(event) =>
+                      handleAmountChange(event?.target?.value)
                     }
-
-                    <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{isBera ? "BERA" : token0?.symbol}</span>
-                  </div>
+                  />
                 </div>
-                <div className="flex justify-end pr-[20px]">
-                  <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className='underline cursor-pointer' onClick={handleMax}>{formatValueDecimal(balance, '', 2)}</span></div>
+                <div className="flex items-center gap-[9px]">
+                  {token0?.icon ? (
+                    <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                      <img
+                        className="w-full"
+                        src={token0?.icon}
+                        alt={token0?.symbol}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                      {token0?.symbol?.slice(0, 1)}
+                    </div>
+                  )}
+
+                  <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                    {isBera ? "BERA" : token0?.symbol}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-end pr-[20px]">
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                  balance:{" "}
+                  <span
+                    className="underline cursor-pointer"
+                    onClick={handleMax}
+                  >
+                    {formatValueDecimal(balance, "", 2)}
+                  </span>
                 </div>
               </div>
             </div>
