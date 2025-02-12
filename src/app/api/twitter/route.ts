@@ -15,7 +15,7 @@ export async function GET(request: Request | NextRequest) {
             <meta name="twitter:card" content="summary_large_image"> <!-- Use 'summary_large_image' for large image cards -->
             <meta name="twitter:title" content="BeraTown">
             <meta name="twitter:description" content="BeraTown Airdrop">
-            <meta name="twitter:image" content="https://asset.dapdap.net/airdrop/${address}.png"> <!-- Image URL for sharing -->
+            <meta name="twitter:image" content="https://assets.dapdap.net/airdrop/${address}.png"> <!-- Image URL for sharing -->
             <meta http-equiv="refresh" content="0; url=https://beratown.dapdap.net">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta property="og:image:width" content="375">
