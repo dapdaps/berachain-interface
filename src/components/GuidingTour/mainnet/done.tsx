@@ -2,15 +2,17 @@ import Modal from '@/components/modal';
 import Card from '@/components/GuidingTour/mainnet/components/card';
 import { useGuidingTour } from '@/stores/useGuidingTour';
 import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/button';
+import { useAccount } from 'wagmi';
 
 const Done = (props: any) => {
   const { onClose } = props;
 
+  const { address } = useAccount();
   const { doneVisible, setDoneVisible, setVisited } = useGuidingTour();
 
   const handleNext = () => {
     setDoneVisible(false);
-    setVisited(true);
+    setVisited(address, true);
   };
 
   return (

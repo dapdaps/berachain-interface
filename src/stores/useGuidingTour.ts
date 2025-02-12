@@ -5,14 +5,14 @@ interface GuidingTourState {
   hasShownTour: boolean;
   setHasShownTour: (value: boolean) => void;
   // Mainnet guiding tour
-  visited: boolean;
+  visited: Record<string, boolean>;
   entryVisible: boolean;
   exitConfirmVisible: boolean;
   profileVisible: boolean;
   choosePillVisible: boolean;
   getBeraVisible: boolean;
   doneVisible: boolean;
-  setVisited: (visited: boolean) => void;
+  setVisited: (account?: string, visited?: boolean) => void;
   setEntryVisible: (visible: boolean) => void;
   setExitConfirmVisible: (visible: boolean) => void;
   setProfileVisible: (visible: boolean) => void;
@@ -26,14 +26,21 @@ export const useGuidingTour = create(
     (set) => ({
       hasShownTour: false,
       setHasShownTour: (value: boolean) => set({ hasShownTour: value }),
-      visited: false,
+      visited: {},
       entryVisible: true,
       exitConfirmVisible: false,
       profileVisible: false,
       choosePillVisible: false,
       getBeraVisible: false,
       doneVisible: false,
-      setVisited: (visited: boolean) => set({ visited: visited }),
+      setVisited: (account, visited) => {
+        set((state) => {
+          const _visited = { ...state.visited };
+          if (!account) return state;
+          _visited[account] = visited ?? false;
+          return { visited: _visited };
+        });
+      },
       setEntryVisible: (visible: boolean) => set({ entryVisible: visible }),
       setExitConfirmVisible: (visible: boolean) => set({ exitConfirmVisible: visible }),
       setProfileVisible: (visible: boolean) => set({ profileVisible: visible }),
@@ -43,7 +50,7 @@ export const useGuidingTour = create(
     }),
     {
       name: '_guidingTour',
-      version: 0.2,
+      version: 0.3,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         hasShownTour: state.hasShownTour,

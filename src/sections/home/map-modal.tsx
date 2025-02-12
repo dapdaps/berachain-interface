@@ -94,7 +94,7 @@ const PartList = [
     indicatorClass: "absolute right-[-4%] top-[20%] z-10",
     buttonClass: "rotate-[2.58deg] mb-[8px]",
     arrowClass: "relative left-[calc(50%-34px)]",
-    btnText: "Portfolio Dashboard",
+    btnText: "Portfolio",
     link: "/dashboard",
     ArrowIcon: dAppArrowIcon,
     disabled: true

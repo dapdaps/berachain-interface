@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Airdrop from '@/components/airdrop';
 
 const HomeEarthTop = (props: any) => {
   const {} = props;
@@ -39,6 +40,7 @@ const HomeEarthTop = (props: any) => {
           className="animate-cloud-float-right origin-top-right w-full h-full"
         />
       </div>
+      <Airdrop className="!left-[unset] right-0 !top-[150px]" />
     </div>
   );
 };

@@ -33,7 +33,7 @@ const menuItems = [
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
   {
     id: 6,
-    title: "Portfolio Dashboard",
+    title: "Portfolio",
     href: "/dashboard",
     dataBp: "1015-002-006",
     disabled: true

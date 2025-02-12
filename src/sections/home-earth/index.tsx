@@ -8,6 +8,7 @@ import Follower from '@/sections/home-earth/components/follower';
 import Signpost from '@/sections/home-earth/components/signpost';
 import useIsMobile from '@/hooks/use-isMobile';
 import MobileHome from '@/sections/home/mobile';
+import AirdropModal from '@/components/airdrop/modal';
 
 // seconds per lap
 const SPEED = 200;
@@ -26,6 +27,7 @@ const HomeEarth = () => {
       <Follower />
       <Signpost />
       <HomeEarthTop />
+      <AirdropModal />
       <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
         {/*#region Cloud*/}
         <CloudCircle speed={SPEED} />
