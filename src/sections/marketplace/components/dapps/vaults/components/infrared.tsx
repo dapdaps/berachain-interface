@@ -1,42 +1,36 @@
 // @ts-nocheck
-import CircleLoading from '@/components/circle-loading';
-import Modal from '@/components/modal';
-import SwitchTabs from '@/components/switch-tabs';
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import useCustomAccount from '@/hooks/use-account';
-import useAddAction from '@/hooks/use-add-action';
-import useLpToAmount from '@/hooks/use-lp-to-amount';
-import { useMultiState } from '@/hooks/use-multi-state';
-import useToast from '@/hooks/use-toast';
-import Capsule from '@/sections/marketplace/components/dapps/capsule';
-import { MarketplaceContext } from '@/sections/marketplace/context';
-import { formatValueDecimal } from '@/utils/balance';
-import Big from 'big.js';
-import clsx from 'clsx';
-import { ethers } from 'ethers';
-import { useRouter } from 'next/navigation';
-import { memo, useContext, useEffect, useState } from 'react';
+import CircleLoading from "@/components/circle-loading";
+import Modal from "@/components/modal";
+import SwitchTabs from "@/components/switch-tabs";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import useCustomAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import useLpToAmount from "@/hooks/use-lp-to-amount";
+import { useMultiState } from "@/hooks/use-multi-state";
+import useToast from "@/hooks/use-toast";
+import Capsule from "@/sections/marketplace/components/dapps/capsule";
+import { MarketplaceContext } from "@/sections/marketplace/context";
+import { formatValueDecimal } from "@/utils/balance";
+import Big from "big.js";
+import clsx from "clsx";
+import { ethers } from "ethers";
+import { useRouter } from "next/navigation";
+import { memo, useContext, useEffect, useState } from "react";
 
 const TABS = [
   {
-    value: 'Deposit',
-    label: 'Deposit',
+    value: "Deposit",
+    label: "Deposit",
     disabled: false
   },
   {
-    value: 'Withdraw',
-    label: 'Withdraw',
+    value: "Withdraw",
+    label: "Withdraw",
     disabled: false
   }
 ];
 export default memo(function Bex(props) {
-  const {
-    data,
-    type,
-    config,
-    visible,
-    setVisible
-  } = props
+  const { data, type, config, visible, setVisible } = props;
   const router = useRouter();
   // const {
   //   vaultsVisible,
@@ -45,7 +39,7 @@ export default memo(function Bex(props) {
   // } = useContext(MarketplaceContext);
 
   const toast = useToast();
-  const { addAction } = useAddAction('invest');
+  const { addAction } = useAddAction("invest");
   const { account: sender, provider } = useCustomAccount();
   // const { data, config } = vaultsData;
 
@@ -55,15 +49,17 @@ export default memo(function Bex(props) {
 
   const symbol = id;
 
-  const vaultAddress = addresses ? addresses[symbol] : '';
+  const vaultAddress = addresses ? addresses[symbol] : "";
 
-  const [currentTab, setCurrentTab] = useState(type === 0 ? "Deposit" : "Withdraw");
+  const [currentTab, setCurrentTab] = useState(
+    type === 0 ? "Deposit" : "Withdraw"
+  );
   const [state, updateState] = useMultiState({
     balances: [],
-    lpBalance: '',
-    inAmount: '',
-    outAmount: '',
-    lpAmount: '',
+    lpBalance: "",
+    inAmount: "",
+    outAmount: "",
+    lpAmount: "",
     isLoading: false,
     isTokenApproved: true,
     isTokenApproving: false,
@@ -86,15 +82,13 @@ export default memo(function Bex(props) {
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
 
-  const {
-    handleGetAmount
-  } = useLpToAmount(data?.LP_ADDRESS)
+  const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS);
   const handleClose = () => {
-    setVisible(false)
+    setVisible(false);
   };
 
   const updateLPBalance = () => {
-    const abi = ['function balanceOf(address) view returns (uint256)'];
+    const abi = ["function balanceOf(address) view returns (uint256)"];
     const contract = new ethers.Contract(
       vaultAddress,
       abi,
@@ -108,7 +102,7 @@ export default memo(function Bex(props) {
     });
   };
   const updateBalance = () => {
-    const abi = ['function balanceOf(address) view returns (uint256)'];
+    const abi = ["function balanceOf(address) view returns (uint256)"];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     contract
       .balanceOf(sender)
@@ -122,7 +116,7 @@ export default memo(function Bex(props) {
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         setTimeout(() => {
           updateBalance(token);
         }, 1500);
@@ -135,7 +129,7 @@ export default memo(function Bex(props) {
       decimals
     );
     const abi = [
-      'function allowance(address, address) external view returns (uint256)'
+      "function allowance(address, address) external view returns (uint256)"
     ];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     updateState({
@@ -157,9 +151,9 @@ export default memo(function Bex(props) {
   };
   const handleTokenChange = (amount) => {
     updateState({ inAmount: amount });
-    if (amount === '') {
+    if (amount === "") {
       updateState({
-        inAmount: '',
+        inAmount: "",
         isTokenApproved: true
       });
       return;
@@ -184,7 +178,7 @@ export default memo(function Bex(props) {
       loadingMsg: `Approving ${symbol}...`
     });
     const wei = ethers.utils.parseUnits(amount, decimals);
-    const abi = ['function approve(address, uint) public'];
+    const abi = ["function approve(address, uint) public"];
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
 
     contract
@@ -192,16 +186,16 @@ export default memo(function Bex(props) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const payload = { isTokenApproved: true, isTokenApproving: false };
-        updateState({ ...payload, isLoading: false, loadingMsg: '' });
+        updateState({ ...payload, isLoading: false, loadingMsg: "" });
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Approve Successful!',
+          title: "Approve Successful!",
           tx: receipt.transactionHash,
           chainId: props.chainId
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         updateState({
           isError: true,
           isLoading: false,
@@ -210,9 +204,9 @@ export default memo(function Bex(props) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Approve Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
+          title: "Approve Failed!",
+          text: error?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
             : null
         });
       });
@@ -226,7 +220,7 @@ export default memo(function Bex(props) {
       toastId,
       isLoading: true,
       isError: false,
-      loadingMsg: 'Staking...'
+      loadingMsg: "Staking..."
     });
     const wei = ethers.utils.parseUnits(
       Big(inAmount).toFixed(decimals),
@@ -237,14 +231,14 @@ export default memo(function Bex(props) {
         constant: false,
         inputs: [
           {
-            name: 'amount',
-            type: 'uint256'
+            name: "amount",
+            type: "uint256"
           }
         ],
-        name: 'stake',
+        name: "stake",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
+        stateMutability: "nonpayable",
+        type: "function"
       }
     ];
     const contract = new ethers.Contract(
@@ -257,13 +251,11 @@ export default memo(function Bex(props) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(inAmount)
+        const [amount0, amount1] = handleGetAmount(inAmount);
         addAction?.({
-          type: 'Staking',
-          action: 'Staking',
-          token: {
-            symbol: tokens.join('-')
-          },
+          type: "Staking",
+          action: "Staking",
+          tokens: tokens.map((token: string) => ({ symbol: token })),
           amount: inAmount,
           template: "Infrared",
           status: status,
@@ -271,12 +263,8 @@ export default memo(function Bex(props) {
           transactionHash,
           chain_id: props.chainId,
           sub_type: "Stake",
-          extra_data: JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
-            amount0,
-            amount1
-          })
+          amounts: [amount0, amount1],
+          extra_data: {}
         });
         updateState({
           isLoading: false,
@@ -289,11 +277,11 @@ export default memo(function Bex(props) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Stake Successful!'
+          title: "Stake Successful!"
         });
       })
       .catch((error: Error) => {
-        console.log('error: ', error);
+        console.log("error: ", error);
         updateState({
           isError: true,
           isLoading: false,
@@ -301,10 +289,10 @@ export default memo(function Bex(props) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Stake Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : error?.message ?? ''
+          title: "Stake Failed!",
+          text: error?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
+            : error?.message ?? ""
         });
       });
   };
@@ -315,7 +303,7 @@ export default memo(function Bex(props) {
     updateState({
       isLoading: true,
       isError: false,
-      loadingMsg: 'Unstaking...'
+      loadingMsg: "Unstaking..."
     });
 
     const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
@@ -324,14 +312,14 @@ export default memo(function Bex(props) {
         constant: false,
         inputs: [
           {
-            name: '_shareAmt',
-            type: 'uint256'
+            name: "_shareAmt",
+            type: "uint256"
           }
         ],
-        name: 'withdraw',
+        name: "withdraw",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
+        stateMutability: "nonpayable",
+        type: "function"
       }
     ];
 
@@ -349,14 +337,11 @@ export default memo(function Bex(props) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(lpAmount)
+        const [amount0, amount1] = handleGetAmount(lpAmount);
         addAction?.({
-          type: 'Staking',
-          action: 'UnStake',
-          token: {
-            symbol: tokens.join('-')
-          },
-          symbol: tokens.join("-"),
+          type: "Staking",
+          action: "UnStake",
+          tokens: tokens.map((token: string) => ({ symbol: token })),
           amount: lpAmount,
           template: "Infrared",
           status: status,
@@ -364,12 +349,8 @@ export default memo(function Bex(props) {
           transactionHash,
           chain_id: props.chainId,
           sub_type: "Unstake",
-          extra_data: JSON.stringify({
-            token0Symbol: tokens[0],
-            token1Symbol: tokens[1],
-            amount0,
-            amount1
-          })
+          amounts: [amount0, amount1],
+          extra_data: {}
         });
 
         setTimeout(() => {
@@ -378,7 +359,7 @@ export default memo(function Bex(props) {
 
         toast?.dismiss(toastId);
         toast?.success({
-          title: 'Unstake Successful!'
+          title: "Unstake Successful!"
         });
       })
       .catch((error: Error) => {
@@ -389,10 +370,10 @@ export default memo(function Bex(props) {
         });
         toast?.dismiss(toastId);
         toast?.fail({
-          title: 'Unstake Failed!',
-          text: error?.message?.includes('user rejected transaction')
-            ? 'User rejected transaction'
-            : error?.message ?? ''
+          title: "Unstake Failed!",
+          text: error?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
+            : error?.message ?? ""
         });
       });
   };
@@ -407,7 +388,7 @@ export default memo(function Bex(props) {
       isTokenApproved: true,
       isTokenApproving: false
     });
-    currentTab === 'Deposit' ? handleTokenChange('') : handleLPChange('');
+    currentTab === "Deposit" ? handleTokenChange("") : handleLPChange("");
   };
   useEffect(() => {
     if (!sender || !vaultAddress) return;
@@ -416,12 +397,12 @@ export default memo(function Bex(props) {
   }, [sender, vaultAddress, updater]);
   return (
     <Modal open={visible} onClose={handleClose}>
-      <div className='px-[20px] pt-[24px] pb-[20px] lg:w-[520px] rounded-[20px] bg-[#FFFDEB] border border-[#000] shadow-shadow1 z-[51]'>
-        <div className='flex items-center gap-[9px] text-black text-[20px] font-[700] leading-[90%]'>
-          <span>{`Invest ${data?.tokens.join('-')}`}</span>
+      <div className="px-[20px] pt-[24px] pb-[20px] lg:w-[520px] rounded-[20px] bg-[#FFFDEB] border border-[#000] shadow-shadow1 z-[51]">
+        <div className="flex items-center gap-[9px] text-black text-[20px] font-[700] leading-[90%]">
+          <span>{`Invest ${data?.tokens.join("-")}`}</span>
           <Capsule>Vaults</Capsule>
         </div>
-        <div className='mt-[40px]'>
+        <div className="mt-[40px]">
           <SwitchTabs
             tabs={TABS}
             current={currentTab}
@@ -430,32 +411,32 @@ export default memo(function Bex(props) {
             }}
           />
 
-          <div className='flex items-center mt-[34px] mb-[33px]'>
-            <div className='flex-1 flex flex-col gap-[14px]'>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
+          <div className="flex items-center mt-[34px] mb-[33px]">
+            <div className="flex-1 flex flex-col gap-[14px]">
+              <div className="text-black font-Montserrat text-[14px] font-medium">
                 APY
               </div>
-              <div className='text-black font-Montserrat text-[20px] font-bold'>
+              <div className="text-black font-Montserrat text-[20px] font-bold">
                 {Big(data?.apy ?? 0).toFixed(2)}%
               </div>
             </div>
-            <div className='flex-1 flex flex-col gap-[14px]'>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
+            <div className="flex-1 flex flex-col gap-[14px]">
+              <div className="text-black font-Montserrat text-[14px] font-medium">
                 My Vault Deposits
               </div>
-              <div className='flex items-center gap-[6px]'>
-                <div className='flex items-center'>
-                  <div className='w-[26px] h-[26px] rounded-full'>
+              <div className="flex items-center gap-[6px]">
+                <div className="flex items-center">
+                  <div className="w-[26px] h-[26px] rounded-full">
                     <img src={data?.images[0]} />
                   </div>
                   {data?.images[1] && (
-                    <div className='ml-[-10px] w-[26px] h-[26px] rounded-full'>
+                    <div className="ml-[-10px] w-[26px] h-[26px] rounded-full">
                       <img src={data?.images[1]} />
                     </div>
                   )}
                 </div>
-                <div className='text-black font-Montserrat text-[20px] font-bold'>
-                  {formatValueDecimal(data?.depositAmount, '', 2, true, false)}
+                <div className="text-black font-Montserrat text-[20px] font-bold">
+                  {formatValueDecimal(data?.depositAmount, "", 2, true, false)}
                 </div>
                 {/* <div className='text-black font-Montserrat text-[14px] font-medium'>
                   {data?.tokens?.join('-')}
@@ -463,54 +444,54 @@ export default memo(function Bex(props) {
               </div>
             </div>
 
-            <div className='flex-1 flex flex-col gap-[14px]'>
-              <div className='text-black font-Montserrat text-[14px] font-medium'>
+            <div className="flex-1 flex flex-col gap-[14px]">
+              <div className="text-black font-Montserrat text-[14px] font-medium">
                 Unclaimed Rewards
               </div>
-              <div className='flex items-center gap-[6px]'>
-                <div className='w-[26px] h-[26px] rounded-full'>
+              <div className="flex items-center gap-[6px]">
+                <div className="w-[26px] h-[26px] rounded-full">
                   <img
                     src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
                   />
                 </div>
-                <div className='text-black font-Montserrat text-[20px] font-bold'>
+                <div className="text-black font-Montserrat text-[20px] font-bold">
                   0
                 </div>
               </div>
             </div>
           </div>
 
-          {currentTab === 'Deposit' ? (
+          {currentTab === "Deposit" ? (
             <div>
-              <div className='flex items-center justify-between'>
-                <div className='text-black font-Montserrat text-[14px] font-medium'>
+              <div className="flex items-center justify-between">
+                <div className="text-black font-Montserrat text-[14px] font-medium">
                   Deposit
                 </div>
                 <div
-                  className='text-black font-Montserrat text-[14px] font-medium'
+                  className="text-black font-Montserrat text-[14px] font-medium"
                   onClick={handleMax}
                 >
-                  Balance:{' '}
-                  <span className='underline'>
+                  Balance:{" "}
+                  <span className="underline">
                     {Big(balances[symbol] ?? 0).toFixed(6)}
                   </span>
                 </div>
               </div>
-              <div className='relative mt-[9px] mb-[19px]'>
+              <div className="relative mt-[9px] mb-[19px]">
                 <input
                   value={inAmount}
-                  type='number'
+                  type="number"
                   onChange={(e) => handleTokenChange(e.target.value, id)}
-                  className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
-                  placeholder='0'
+                  className="w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]"
+                  placeholder="0"
                 />
-                <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                  <div className='flex items-center'>
-                    <div className='w-[30px] h-[30px] rounded-full'>
+                <div className="absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]">
+                  <div className="flex items-center">
+                    <div className="w-[30px] h-[30px] rounded-full">
                       <img src={data?.images[0]} alt={data?.tokens[0]} />
                     </div>
                     {data?.images[1] && (
-                      <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
+                      <div className="ml-[-10px] w-[30px] h-[30px] rounded-full">
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
                     )}
@@ -521,8 +502,8 @@ export default memo(function Bex(props) {
                 </div>
               </div>
               {isInSufficient && (
-                <button className='w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50'>
-                  <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
+                <button className="w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black opacity-50">
+                  <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
                     InSufficient Balance
                   </span>
                 </button>
@@ -532,24 +513,24 @@ export default memo(function Bex(props) {
                   <button
                     disabled={isLoading || Number(inAmount) <= 0}
                     className={clsx(
-                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                       {
-                        'opacity-50': isLoading || Number(inAmount) <= 0
+                        "opacity-50": isLoading || Number(inAmount) <= 0
                       }
                     )}
                     onClick={handleDeposit}
                   >
-                    <span className='text-black font-Montserrat text-[18px] font-semibold leading-[90%]'>
-                      {isLoading ? <CircleLoading size={14} /> : 'Stake'}
+                    <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
+                      {isLoading ? <CircleLoading size={14} /> : "Stake"}
                     </span>
                   </button>
                 ) : (
                   <button
                     disabled={isTokenApproved || isTokenApproving}
                     className={clsx(
-                      'w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                      "w-full h-[60px] flex items-center justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                       {
-                        'opacity-50': isTokenApproved || isTokenApproving
+                        "opacity-50": isTokenApproved || isTokenApproving
                       }
                     )}
                     onClick={() => handleApprove(true)}
@@ -558,8 +539,8 @@ export default memo(function Bex(props) {
                       <CircleLoading size={14} />
                     ) : (
                       <>
-                        {isTokenApproved ? 'Approved' : 'Approve'}{' '}
-                        {data?.tokens.join('-')}
+                        {isTokenApproved ? "Approved" : "Approve"}{" "}
+                        {data?.tokens.join("-")}
                       </>
                     )}
                   </button>
@@ -567,14 +548,14 @@ export default memo(function Bex(props) {
             </div>
           ) : (
             <div>
-              <div className='flex items-center justify-between'>
-                <div className='text-black font-Montserrat text-[14px] font-medium'>
+              <div className="flex items-center justify-between">
+                <div className="text-black font-Montserrat text-[14px] font-medium">
                   Withdraw
                 </div>
-                <div className='text-black font-Montserrat text-[14px] font-medium'>
-                  Balance:{' '}
+                <div className="text-black font-Montserrat text-[14px] font-medium">
+                  Balance:{" "}
                   <span
-                    className='underline'
+                    className="underline"
                     onClick={() => {
                       const newSliderPercent = Big(lpBalance || 0)
                         .div(Big(lpBalance).gt(0) ? lpBalance : 1)
@@ -590,10 +571,10 @@ export default memo(function Bex(props) {
                   </span>
                 </div>
               </div>
-              <div className='relative mt-[9px] mb-[19px]'>
+              <div className="relative mt-[9px] mb-[19px]">
                 <input
                   value={lpAmount}
-                  type='number'
+                  type="number"
                   onChange={(e) => {
                     handleLPChange(e.target.value);
 
@@ -611,16 +592,16 @@ export default memo(function Bex(props) {
                       onUpdateLpPercent(Number(newSliderPercent));
                     }
                   }}
-                  className='w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]'
-                  placeholder='0'
+                  className="w-full h-[72px] pl-[20px] pr-[110px] bg-white border border-[#373A53] rounded-[12px] text-[26px] font-[700]"
+                  placeholder="0"
                 />
-                <div className='absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]'>
-                  <div className='flex items-center'>
-                    <div className='w-[30px] h-[30px] rounded-full'>
+                <div className="absolute right-[16px] top-1/2 translate-y-[-50%] flex items-center gap-[8px]">
+                  <div className="flex items-center">
+                    <div className="w-[30px] h-[30px] rounded-full">
                       <img src={data?.images[0]} alt={data?.tokens[0]} />
                     </div>
                     {data?.images[1] && (
-                      <div className='ml-[-10px] w-[30px] h-[30px] rounded-full'>
+                      <div className="ml-[-10px] w-[30px] h-[30px] rounded-full">
                         <img src={data?.images[1]} alt={data?.tokens[1]} />
                       </div>
                     )}
@@ -635,9 +616,9 @@ export default memo(function Bex(props) {
                   isWithdrawInsufficient || isLoading || Number(lpAmount) <= 0
                 }
                 className={clsx(
-                  'w-full h-[60px] flex items-center font-semibold font-Montserrat justify-center rounded-[10px] bg-[#FFDC50] border border-black',
+                  "w-full h-[60px] flex items-center font-semibold font-Montserrat justify-center rounded-[10px] bg-[#FFDC50] border border-black",
                   {
-                    'opacity-50':
+                    "opacity-50":
                       isWithdrawInsufficient ||
                       isLoading ||
                       Number(lpAmount) <= 0
@@ -650,19 +631,19 @@ export default memo(function Bex(props) {
                 ) : (
                   <>
                     {isWithdrawInsufficient
-                      ? 'InSufficient Balance'
-                      : 'Withdraw'}
+                      ? "InSufficient Balance"
+                      : "Withdraw"}
                   </>
                 )}
               </button>
             </div>
           )}
-          <div className='mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center'>
-            Manage exist assets on{' '}
+          <div className="mt-[16px] text-[#979ABE] font-Montserrat text-[14px] text-center">
+            Manage exist assets on{" "}
             <span
-              className='text-black font-Montserrat underline'
+              className="text-black font-Montserrat underline"
               onClick={() => {
-                router.push('/staking/infrared');
+                router.push("/staking/infrared");
               }}
             >
               Infrared

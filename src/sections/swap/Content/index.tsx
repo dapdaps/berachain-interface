@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import useTrade from "../useTrade";
 import { useImportTokensStore } from "@/stores/import-tokens";
 import { useDebounceFn } from "ahooks";
+import { usePriceStore } from "@/stores/usePriceStore";
 import useAccount from "@/hooks/use-account";
 import Card from "@/components/card";
 import Header from "../Header";
@@ -39,6 +40,7 @@ export default function Swap({
   const { importTokens, addImportToken }: any = useImportTokensStore();
   const { account, chainId } = useAccount();
   const [showDetail, setShowDetail] = useState(true);
+  const prices = usePriceStore((store: any) => store.price);
 
   const [selectType, setSelectType] = useState<"in" | "out">("in");
   const { loading, trade, onQuoter, onSwap } = useTrade({
@@ -137,7 +139,7 @@ export default function Swap({
           type="in"
           currency={inputCurrency}
           amount={inputCurrencyAmount}
-          prices={{}}
+          prices={prices}
           account
           onCurrencySelectOpen={() => {
             setDisplayCurrencySelect(true);
@@ -170,7 +172,7 @@ export default function Swap({
           currency={outputCurrency}
           amount={outputCurrencyAmount}
           disabled
-          prices={{}}
+          prices={prices}
           account
           outputCurrencyReadonly={outputCurrencyReadonly}
           onCurrencySelectOpen={() => {

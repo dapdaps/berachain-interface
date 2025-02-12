@@ -41,9 +41,7 @@ export default function useInfrared({
       addAction?.({
         type: "Staking",
         action: "Claim",
-        token: {
-          symbol: `${tokens[0].symbol}-${tokens[1].symbol}`
-        },
+        tokens,
         amount,
         template: "Infrared",
         status: status,

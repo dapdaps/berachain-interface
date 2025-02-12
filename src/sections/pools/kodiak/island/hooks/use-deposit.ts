@@ -78,23 +78,20 @@ export default function useDeposit({
       } else {
         toast.fail({ title: "Deposit failed!" });
       }
+
       addAction({
         type: "Liquidity",
         action: "Add Liquidity",
-        token0: data.token0.symbol,
-        token1: data.token1.symbol,
+        tokens: [data.token0, data.token1],
+        amounts: [amount0, amount1],
         template: "Kodiak",
         status,
         transactionHash,
         sub_type: "Add",
-        extra_data: JSON.stringify({
-          amount0: amount0,
-          amount1: amount1,
+        extra_data: {
           action: "Add Liquidity",
-          type: "univ3",
-          token0Symbol: data.token0.symbol,
-          token1Symbol: data.token1.symbol
-        })
+          type: "univ3"
+        }
       });
     } catch (err: any) {
       console.log(err);

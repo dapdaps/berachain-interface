@@ -56,6 +56,7 @@ export default function useStake({
       } else {
         toast.fail({ title: "Stake failed!" });
       }
+
       addAction?.({
         type: "Staking",
         action: "Stake",
@@ -66,12 +67,9 @@ export default function useStake({
         status,
         transactionHash,
         sub_type: "Stake",
-        extra_data: JSON.stringify({
-          amount0: amount0,
-          amount1: amount1,
-          token0Symbol: data.token0.symbol,
-          token1Symbol: data.token1.symbol
-        })
+        tokens: [data.token0, data.token1],
+        amounts: [amount0, amount1],
+        extra_data: {}
       });
     } catch (err: any) {
       toast.dismiss(toastId);
