@@ -33,7 +33,7 @@ const AirdropReward = (props: any) => {
 
               window.open(
                 `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  "BeraTown Airdrop"
+                  `McBera iz so dumb he bought everything in my Beracave for ${data.amount} $BERA!\nSell (claim airdrop) your @0xberatown bArtio items now:`
                 )}&url=${encodeURIComponent(url)}`
               );
             }}
