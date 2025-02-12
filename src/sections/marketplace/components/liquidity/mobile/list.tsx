@@ -30,7 +30,7 @@ const MobileList = ({ list, onClick }: any) => {
                     alt="Token"
                   />
                 )}
-                <Image
+                <img
                   className="absolute right-[-2px] bottom-[0px]"
                   src={item.protocolIcon}
                   width={20}
