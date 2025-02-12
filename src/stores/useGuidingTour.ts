@@ -33,7 +33,13 @@ export const useGuidingTour = create(
       setVisited: (account, visited) => {
         set((state) => {
           const _visited = { ...state.visited };
-          if (!account) account = 'DEFAULT';
+          if (!account) {
+            account = 'DEFAULT';
+          } else {
+            if (visited) {
+              _visited['DEFAULT'] = visited;
+            }
+          }
           _visited[account] = visited ?? false;
           return { visited: _visited };
         });
