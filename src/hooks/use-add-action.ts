@@ -25,8 +25,8 @@ export default function useAddAction(source: string) {
           action_title: `Swap ${data.inputCurrency.symbol} on ${data.template}`,
           action_type: "Swap",
           action_tokens: JSON.stringify([
-            `${data.inputCurrency.symbol}`,
-            `${data.outputCurrency.symbol}`
+            `${getReportTokenSymbol(data.inputCurrency)}`,
+            `${getReportTokenSymbol(data.outputCurrency)}`
           ]),
           action_amount: data?.inputCurrencyAmount
             ? data?.inputCurrencyAmount.toString()
