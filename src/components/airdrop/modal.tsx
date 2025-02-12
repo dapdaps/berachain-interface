@@ -1,9 +1,9 @@
-import Modal from '@/components/modal';
-import Card from '@/components/card';
-import AirdropButton from '@/components/airdrop/components/button';
-import AirdropReward from '@/components/airdrop/components/reward';
-import clsx from 'clsx';
-import { useAirdrop } from '@/hooks/use-airdrop';
+import Modal from "@/components/modal";
+import Card from "@/components/card";
+import AirdropButton from "@/components/airdrop/components/button";
+import AirdropReward from "@/components/airdrop/components/reward";
+import clsx from "clsx";
+import { useAirdrop } from "@/hooks/use-airdrop";
 
 const AirdropModal = (props: any) => {
   const {} = props;
@@ -18,7 +18,7 @@ const AirdropModal = (props: any) => {
     handleCheck,
     invalidMsg,
     checkData,
-    checked,
+    checked
   } = useAirdrop();
 
   return (
@@ -30,10 +30,14 @@ const AirdropModal = (props: any) => {
       }}
       isMaskClose={false}
     >
-      <Card className={clsx(
-        'relative flex flex-col items-center w-[554px] !rounded-[20px] !p-[181px_40px_50px]',
-        (checked && checkData) ? 'bg-[url("/images/home-earth/airdrop/reward-bg.svg")] bg-no-repeat bg-[center_bottom_-8px] bg-[338px+355px]' : ''
-      )}>
+      <Card
+        className={clsx(
+          "relative flex flex-col items-center w-[554px] !rounded-[20px] !p-[181px_40px_50px]",
+          checked && checkData
+            ? 'bg-[url("/images/home-earth/airdrop/reward-bg.svg")] bg-no-repeat bg-[center_bottom_-8px] bg-[338px+355px]'
+            : ""
+        )}
+      >
         <img
           src="/images/home-earth/airdrop/entry.2x.png"
           alt=""
@@ -43,7 +47,9 @@ const AirdropModal = (props: any) => {
           BeraTown Airdrop Now!
         </div>
         <article className="mt-[23px] text-center text-black text-[16px] font-[500] leading-normal">
-          The airdrop is converted by the equipments you earned in BeraCave. <strong className="uppercase">Its not one-off airdrop</strong>, it will continue in the coming months. Please keep your eyes on BeraTown.
+          The airdrop is converted by the equipments you earned in BeraCave.{" "}
+          <strong className="uppercase">Its not one-off airdrop</strong>, it
+          will continue in the coming months. Please keep your eyes on BeraTown.
         </article>
         <div className="w-full mt-[25px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[28px_28px_31px] flex flex-col items-stretch gap-[13px]">
           <div className="w-full h-[54px] relative">
@@ -55,30 +61,30 @@ const AirdropModal = (props: any) => {
               disabled={pending}
               onChange={(e) => handleAddress(e.target.value)}
             />
-            {
-              !!address && (
-                <button
-                  type="button"
-                  className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 right-[13px]"
-                  onClick={() => handleAddress('')}
-                >
-                  <img
-                    src="/images/home-earth/airdrop/icon-clear.svg"
-                    alt=""
-                    className="w-[20px] h-[20px] pointer-events-none"
-                  />
-                </button>
-              )
-            }
+            {!!address && (
+              <button
+                type="button"
+                className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 right-[13px]"
+                onClick={() => handleAddress("")}
+              >
+                <img
+                  src="/images/home-earth/airdrop/icon-clear.svg"
+                  alt=""
+                  className="w-[20px] h-[20px] pointer-events-none"
+                />
+              </button>
+            )}
           </div>
-          {
-            !!invalidMsg && (
-              <div className="flex items-center justify-center text-[14px] text-black font-[600] leading-[90%] gap-[5px]">
-                <img src="/images/home-earth/airdrop/icon-error.svg" alt="" className="w-[19px] h-[19px]" />
-                <div>{invalidMsg}</div>
-              </div>
-            )
-          }
+          {!!invalidMsg && (
+            <div className="flex items-center justify-center text-[14px] text-black font-[600] leading-[90%] gap-[5px]">
+              <img
+                src="/images/home-earth/airdrop/icon-error.svg"
+                alt=""
+                className="w-[19px] h-[19px]"
+              />
+              <div>{invalidMsg}</div>
+            </div>
+          )}
           <AirdropButton
             disabled={!isValidAddress || pending}
             className="w-full"
@@ -88,13 +94,8 @@ const AirdropModal = (props: any) => {
             Check Eligibility
           </AirdropButton>
         </div>
-        {
-          checked && (
-            <AirdropReward className="mt-[24px]" data={checkData} />
-          )
-        }
+        {checked && <AirdropReward className="mt-[24px]" data={checkData} />}
       </Card>
-
     </Modal>
   );
 };
