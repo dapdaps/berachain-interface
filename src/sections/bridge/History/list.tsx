@@ -1,23 +1,22 @@
 import { useStatus } from '../Hooks/Stargate/useStatus'
 import { useState } from 'react'
-import chains, { icons } from '@/configs/chains'
+import { icons } from '@/configs/chains'
 import { formatEnglishDate } from '@/utils/date'
 import useIsMobile from '@/hooks/use-isMobile';
+import chains from '../lib/util/chainConfig'
 
-import allTokens from '@/configs/allTokens'
-import { tokenPairs } from '@/sections/bridge/Hooks/Stargate/config'
+import allTokens from '../lib/allTokens'
+import { tokenPairs } from '../lib/bridges/stargate/config'
 import { balanceFormated } from '@/utils/balance';
 
-const _allTokens: any = {
-    80094: {},
-    1: {}
-};
-[80094, 1].forEach((chainId: number) => {
-    allTokens[chainId].forEach((item: any) => {
-        _allTokens[chainId][item.symbol.toUpperCase()] = item
+const _allTokens: any = {};
+
+Object.keys(allTokens).forEach((chainId: string) => {
+    allTokens[Number(chainId)].forEach((item: any) => {
+        _allTokens[Number(chainId)] = _allTokens[Number(chainId)] || {}
+        _allTokens[Number(chainId)][item.symbol.toUpperCase()] = item
     })
 })
-
 
 
 export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
@@ -79,7 +78,17 @@ export default function History({ pendingCount, historyCount, list, setIsOpen, a
 function HistoryItem({ item }: { item: any }) {
     const action_tokens = JSON.parse(item.action_tokens)
     const fromToken = _allTokens[item.chain_id][action_tokens[0].toUpperCase()]
-    const toToken = _allTokens[item.to_chain_id][tokenPairs[item.chain_id][action_tokens[0].toUpperCase()]?.toUpperCase()]
+    let toToken = _allTokens[item.to_chain_id]?.[tokenPairs[item.chain_id]?.[action_tokens[0].toUpperCase()]?.toUpperCase()]
+
+    if (Number(item.chain_id) === 80094
+        && fromToken?.symbol === 'WETH'
+        && [5000, 43114, 56].includes(Number(item.to_chain_id))
+    ) {
+        toToken = _allTokens[item.to_chain_id]?.['WETH']
+    }
+
+    
+    // console.log(_allTokens[item.chain_id], action_tokens)
 
     return <div className="border-b border-gray-200 py-3">
         <div className="flex justify-between items-center">
@@ -88,7 +97,7 @@ function HistoryItem({ item }: { item: any }) {
                     <div className="flex items-center gap-2">
                         <div className="w-[30px] h-[30px] relative">
                             <img className='w-full h-full object-contain' src={fromToken?.icon} />
-                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.chain_id]} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.chain_id].icon} />
                         </div>
                         <div>
                             {balanceFormated(item.action_amount)}<br />{fromToken?.symbol}
@@ -98,7 +107,7 @@ function HistoryItem({ item }: { item: any }) {
                     <div className="flex items-center gap-2">
                         <div className="w-[30px] h-[30px] relative">
                             <img className='w-full h-full object-contain' src={toToken?.icon} />
-                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.to_chain_id]} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.to_chain_id].icon} />
                         </div>
                         <div>
                             {balanceFormated(item.action_amount)}<br />{toToken?.symbol}
@@ -109,10 +118,7 @@ function HistoryItem({ item }: { item: any }) {
                     <div>
                         {formatEnglishDate(new Date(item.create_time).getTime())}
                         {
-                            item.chain_id === 1 && <a target='_blank' href={`https://etherscan.io/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
-                        }
-                        {
-                            item.chain_id === 80094 && <a target='_blank' href={`https://berascan.com/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
+                            <a target='_blank' href={`${chains[item.chain_id].blockExplorers}/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
                         }
                     </div>
                     <div>

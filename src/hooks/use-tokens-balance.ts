@@ -1,38 +1,40 @@
-import { providers, utils } from "ethers";
-import { flatten, result } from "lodash";
-import { useCallback, useEffect, useState } from "react";
-import chains from "@/configs/chains";
-import multicallAddresses from "@/configs/contract/multicall";
-import useAccount from "@/hooks/use-account";
-import { multicall } from "@/utils/multicall";
+import { providers, utils } from 'ethers';
+import { flatten } from 'lodash';
+import { useCallback, useEffect, useState } from 'react';
+import chains from '@/configs/chains';
+import multicallAddresses from '@/configs/contract/multicall';
+import useAccount from '@/hooks/use-account';
+import { multicall } from '@/utils/multicall';
 
 export default function useTokensBalance(tokens: any) {
   const [loading, setLoading] = useState(false);
   const [balances, setBalances] = useState<any>({});
-  const { account, provider } = useAccount();
+  const { account } = useAccount();
 
   const queryBalance = useCallback(async () => {
-    if (!account || !tokens.length || !provider) return;
+    if (!account || !tokens.length) return;
     const chainId = tokens[0].chainId;
+
+    const provider = new providers.JsonRpcProvider(chains[chainId].rpcUrls.default.http[0]);
+
     try {
       setLoading(true);
       let hasNative = false;
       const tokensAddress = tokens.filter((token: any) => {
-        if (token.address === "native") hasNative = true;
-        return token.address !== "native";
+        if (token.address === 'native' || token.isNative) hasNative = true;
+        return token.address !== 'native' && !token.isNative;
       });
-      const calls = tokensAddress.map((token: any) => ({
+
+      const calls = tokensAddress.filter((token: any) => !token.isNative && token.address !== 'native').map((token: any) => ({
         address: token.address,
-        name: "balanceOf",
+        name: 'balanceOf',
         params: [account]
       }));
 
       const multicallAddress = multicallAddresses[chainId];
       const requests = [];
-      let nativeBalance: any = "";
-      if (hasNative) {
-        nativeBalance = await provider.getBalance(account);
-      }
+
+      if (hasNative) requests.push(provider.getBalance(account));
       const splits = Math.ceil(calls.length / 20);
       for (let i = 0; i < splits; i++) {
         requests.push(
@@ -40,14 +42,14 @@ export default function useTokensBalance(tokens: any) {
             abi: [
               {
                 inputs: [
-                  { internalType: "address", name: "account", type: "address" }
+                  { internalType: 'address', name: 'account', type: 'address' }
                 ],
-                name: "balanceOf",
+                name: 'balanceOf',
                 outputs: [
-                  { internalType: "uint256", name: "", type: "uint256" }
+                  { internalType: 'uint256', name: '', type: 'uint256' }
                 ],
-                stateMutability: "view",
-                type: "function"
+                stateMutability: 'view',
+                type: 'function'
               }
             ],
             options: {},
@@ -61,12 +63,19 @@ export default function useTokensBalance(tokens: any) {
         );
       }
 
-      const [...rest] = await Promise.all(requests);
-
       const _balance: any = {};
-      if (hasNative && nativeBalance)
-        _balance.native = utils.formatUnits(nativeBalance, 18);
-      const results = flatten(rest);
+      let rest: any = [];
+      if (hasNative) {
+        const [nativeBalance, ..._rest] = await Promise.all(requests);
+        if (hasNative && nativeBalance)
+          _balance.native = utils.formatUnits(nativeBalance, 18);
+        rest = _rest;
+      } else {
+        const [..._rest] = await Promise.all(requests);
+        rest = _rest;
+      }
+      
+      const results: any = flatten(rest);
 
       for (let i = 0; i < results.length; i++) {
         const token = tokensAddress[i];
@@ -75,17 +84,18 @@ export default function useTokensBalance(tokens: any) {
           token.decimals
         );
       }
+
       setBalances(_balance);
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.log('err:', err);
       setLoading(false);
     }
-  }, [tokens, account, provider]);
+  }, [tokens, account]);
 
   useEffect(() => {
     queryBalance();
-  }, [tokens, account, provider]);
+  }, [tokens, account]);
 
   return { loading, balances, queryBalance };
 }

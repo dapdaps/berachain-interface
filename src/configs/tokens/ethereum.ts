@@ -105,23 +105,23 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 8,
     symbol: "WBTC", 
     name: "Wrapped BTC",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/3717.png"
+    icon: "/assets/tokens/wbtc.png"
   },
-  "pumpBTC.bera": {
-    chainId: CHAIN_ID,
-    address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
-    decimals: 8,
-    symbol: "pumpBTC.bera",
-    name: "pumpBTC.bera",
-    icon: "/assets/tokens/pumpbtc.png"
-  },
+  // "pumpBTC.bera": {
+  //   chainId: CHAIN_ID,
+  //   address: "0x1fcca65fb6ae3b2758b9b2b394cb227eae404e1e",
+  //   decimals: 8,
+  //   symbol: "pumpBTC.bera",
+  //   name: "pumpBTC.bera",
+  //   icon: "/assets/tokens/pumpbtc.png"
+  // },
   fbtc: {
     chainId: CHAIN_ID,
     address: "0xC96dE26018A54D51c097160568752c4E3BD6C364",
     decimals: 8,
     symbol: "FBTC",
     name: "Fire Bitcoin",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/32306.png"
+    icon: "/assets/tokens/fbtc.png"
   },
   lbtc: {
     chainId: CHAIN_ID,
@@ -129,7 +129,7 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 8,
     symbol: "LBTC",
     name: "Lombard Staked Bitcoin",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33652.png"
+    icon: "/assets/tokens/lbtc.png"
   },
   // rseth: {
   //   chainId: CHAIN_ID,
@@ -143,7 +143,7 @@ export const ethereum: { [key: string]: Token } = {
     address: "0xFAe103DC9cf190eD75350761e95403b7b8aFa6c0",
     decimals: 18,
     symbol: "rswETH",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29974.png"
+    icon: "/assets/tokens/rsweth.png"
   },
   rusd: {
     chainId: CHAIN_ID,
@@ -159,7 +159,7 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 18,
     symbol: "SolvBTC",
     name: "Solv BTC",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png"
+    icon: "/assets/tokens/solvbtc.png"
   },
   solvbtcbbn: {
     chainId: CHAIN_ID,
@@ -167,14 +167,14 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 18,
     symbol: "SolvBTC.BBN",
     name: "SolvBTC Babylon",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33310.png"
+    icon: "/assets/tokens/solv-btc.bbn.webp"
   },
   stbtc: {
     chainId: CHAIN_ID,
     address: "0xf6718b2701D4a6498eF77D7c152b2137Ab28b8A3",
     decimals: 18,
     symbol: "stBTC",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png",
+    icon: "/assets/tokens/stbtc.png",
     name: "Lorenzo stBTC"
   },
   susda: {
@@ -183,21 +183,21 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 18,
     symbol: "sUSDa",
     name: "USDa saving token",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/35538.png"
+    icon: "/assets/tokens/susda.png"
   },
   susde: {
     chainId: CHAIN_ID,
     address: "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497",
     decimals: 18,
     symbol: "sUSDe",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29471.png"
+    icon: "/assets/tokens/sUSDe.svg"
   },
   unibtc: {
     chainId: CHAIN_ID,
     address: "0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568",
     decimals: 8,
     symbol: "uniBTC",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png",
+    icon: "/assets/tokens/uni-btc.png",
     name: "uniBTC"
   },
   usda: {
@@ -206,21 +206,21 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 18,
     symbol: "USDa",
     name: "USDa",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/35368.png"
+    icon: "/assets/tokens/usda.png"
   },
   usde: {
     chainId: CHAIN_ID,
     address: "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
     decimals: 18,
     symbol: "USDe",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/29470.png"
+    icon: "/assets/tokens/usde.png"
   },
   wabtc: {
     chainId: CHAIN_ID,
     address: "0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b",
     decimals: 18,
     symbol: "waBTC",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/33312.png",
+    icon: "/assets/tokens/wabtc.png",
     name: "Wrapped aBTC"
   },
   weeth: {
@@ -229,6 +229,6 @@ export const ethereum: { [key: string]: Token } = {
     decimals: 18,
     symbol: "weETH",
     name: "Wrapped eETH",
-    icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/28568.png"
+    icon: "/assets/tokens/weeth.png"
   }
 };
