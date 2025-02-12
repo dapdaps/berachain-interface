@@ -17,6 +17,8 @@ const AirdropModal = (props: any) => {
     pending,
     handleCheck,
     invalidMsg,
+    checkData,
+    checked,
   } = useAirdrop();
 
   return (
@@ -30,7 +32,7 @@ const AirdropModal = (props: any) => {
     >
       <Card className={clsx(
         'relative flex flex-col items-center w-[554px] !rounded-[20px] !p-[181px_40px_50px]',
-        'bg-[url("/images/home-earth/airdrop/reward-bg.svg")] bg-no-repeat bg-[center_bottom_-8px] bg-[338px+355px]'
+        (checked && checkData) ? 'bg-[url("/images/home-earth/airdrop/reward-bg.svg")] bg-no-repeat bg-[center_bottom_-8px] bg-[338px+355px]' : ''
       )}>
         <img
           src="/images/home-earth/airdrop/entry.2x.png"
@@ -86,9 +88,11 @@ const AirdropModal = (props: any) => {
             Check Eligibility
           </AirdropButton>
         </div>
-        <AirdropReward className="mt-[55px]">
-          12.322
-        </AirdropReward>
+        {
+          checked && (
+            <AirdropReward className="mt-[24px]" data={checkData} />
+          )
+        }
       </Card>
 
     </Modal>
