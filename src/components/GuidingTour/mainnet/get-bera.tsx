@@ -8,11 +8,15 @@ import useIsMobile from '@/hooks/use-isMobile';
 import { useState } from 'react';
 import { post } from '@/utils/http';
 import useToast from '@/hooks/use-toast';
+import { useAuthCheck } from '@/hooks/use-auth-check';
+import { useAccount } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 
 const GetBera = (props: any) => {
   const { onClose } = props;
   const isMobile = useIsMobile();
   const toast = useToast();
+  const { onAuthCheck } = useAuthCheck();
 
   const { getBeraVisible, setGetBeraVisible, setChoosePillVisible, setDoneVisible } = useGuidingTour();
 
@@ -31,6 +35,7 @@ const GetBera = (props: any) => {
   const handlePrize = async () => {
     if (pending) return;
     setPending(true);
+    await onAuthCheck();
     try {
       const res = await post('/api/user/guide/prize');
       if (res.code !== 0) {
@@ -101,7 +106,7 @@ const GetBera = (props: any) => {
               Ask your bera frens to send you some $BERA for gas fees
             </Article>
             <Article className="mt-[19px]">
-              Don’t have any bera frens?
+              Don't have any bera frens?
             </Article>
             <Article className="mt-[19px]">
               Join McBera Discord / Telegram and bera frens there will help you out!
@@ -136,16 +141,25 @@ export default GetBera;
 const Foot = (props: any) => {
   const { handleNext, loading } = props;
 
+  const { address } = useAccount();
+  const modal = useAppKit();
+
   return (
     <div className="flex justify-center items-center mt-[24px]">
       <Button
         type={ButtonType.Primary}
         className="w-[354px]"
-        onClick={handleNext}
+        onClick={() => {
+          if (!address) {
+            modal.open();
+            return;
+          }
+          handleNext();
+        }}
         loading={loading}
         disabled={loading}
       >
-        I’m all set!
+        {address ? 'I\'m all set!' : 'Connect Wallet'}
       </Button>
     </div>
   );

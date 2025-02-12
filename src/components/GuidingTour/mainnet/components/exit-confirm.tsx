@@ -5,16 +5,18 @@ import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
 import { useAccount } from 'wagmi';
+import { useContext } from 'react';
+import { GuidingTourContext } from '@/components/GuidingTour/mainnet/context';
 
 const ExitConfirm = (props: any) => {
   const { onClose } = props;
 
   const { address } = useAccount();
+  const { setEntryVisible } = useContext(GuidingTourContext);
   const {
     setVisited,
     exitConfirmVisible,
     setExitConfirmVisible,
-    setEntryVisible,
     profileVisible,
     setProfileVisible,
     choosePillVisible,
@@ -23,26 +25,26 @@ const ExitConfirm = (props: any) => {
     setGetBeraVisible,
   } = useGuidingTour();
 
-  const handleClose = () => {
+  const handleClose = (isClose?: boolean) => {
     setExitConfirmVisible(false);
     if (profileVisible) {
-      setProfileVisible(true);
+      setProfileVisible(!isClose);
       return;
     }
     if (choosePillVisible) {
-      setChoosePillVisible(true);
+      setChoosePillVisible(!isClose);
       return;
     }
     if (getBeraVisible) {
-      setGetBeraVisible(true);
+      setGetBeraVisible(!isClose);
       return;
     }
-    setEntryVisible(true);
+    setEntryVisible(!isClose); 
   };
 
   const handleConfirm = () => {
     setVisited(address, true);
-    handleClose();
+    handleClose(true);
   };
 
   return (
@@ -61,7 +63,7 @@ const ExitConfirm = (props: any) => {
         <div className="flex justify-between items-center gap-[22px] md:gap-[10px] mt-[23px]">
           <Button
             className="flex-1"
-            onClick={handleClose}
+            onClick={() => handleClose()}
           >
             Back
           </Button>

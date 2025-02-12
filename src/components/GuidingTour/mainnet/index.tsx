@@ -12,6 +12,9 @@ import Done from '@/components/GuidingTour/mainnet/done';
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
 import { useAccount } from 'wagmi';
+import { useEffect, useState } from 'react';
+import { useDebounceFn } from 'ahooks';
+import { GuidingTourContext } from './context';
 
 const GuidingTutorial = (props: any) => {
   const {} = props;
@@ -20,11 +23,13 @@ const GuidingTutorial = (props: any) => {
   const {
     visited,
     setVisited,
-    entryVisible,
-    setEntryVisible,
     setExitConfirmVisible,
     setProfileVisible,
+    getBeraVisible,
+    doneVisible,
   } = useGuidingTour();
+
+  const [entryVisible, setEntryVisible] = useState(false);
 
   const handleClose = (isConfirm = true) => {
     setEntryVisible(false);
@@ -41,10 +46,28 @@ const GuidingTutorial = (props: any) => {
     setProfileVisible(true);
   };
 
-  if (!address || visited[address]) return null;
+  const { run: setEntryVisibleDelay, cancel: setEntryVisibleCancel } = useDebounceFn((_visible: boolean) => {
+    setEntryVisible(_visible);
+  }, { wait: 2000 });
+
+  useEffect(() => {
+    setEntryVisibleCancel();
+
+    if (visited[address || 'DEFAULT'] || getBeraVisible || doneVisible) {
+      setEntryVisible(false);
+      return;
+    }
+
+    setEntryVisibleDelay(true);
+  }, [address, visited, getBeraVisible || doneVisible]);
 
   return (
-    <>
+    <GuidingTourContext.Provider
+      value={{
+        entryVisible,
+        setEntryVisible,
+      }}
+     >
       <Modal
         open={entryVisible}
         onClose={handleClose}
@@ -80,7 +103,7 @@ const GuidingTutorial = (props: any) => {
       <ChoosePill onClose={handleClose} />
       <GetBera onClose={handleClose} />
       <Done onClose={handleClose} />
-    </>
+    </GuidingTourContext.Provider>
   );
 };
 

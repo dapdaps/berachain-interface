@@ -6,14 +6,12 @@ interface GuidingTourState {
   setHasShownTour: (value: boolean) => void;
   // Mainnet guiding tour
   visited: Record<string, boolean>;
-  entryVisible: boolean;
   exitConfirmVisible: boolean;
   profileVisible: boolean;
   choosePillVisible: boolean;
   getBeraVisible: boolean;
   doneVisible: boolean;
   setVisited: (account?: string, visited?: boolean) => void;
-  setEntryVisible: (visible: boolean) => void;
   setExitConfirmVisible: (visible: boolean) => void;
   setProfileVisible: (visible: boolean) => void;
   setChoosePillVisible: (visible: boolean) => void;
@@ -27,7 +25,6 @@ export const useGuidingTour = create(
       hasShownTour: false,
       setHasShownTour: (value: boolean) => set({ hasShownTour: value }),
       visited: {},
-      entryVisible: true,
       exitConfirmVisible: false,
       profileVisible: false,
       choosePillVisible: false,
@@ -36,12 +33,11 @@ export const useGuidingTour = create(
       setVisited: (account, visited) => {
         set((state) => {
           const _visited = { ...state.visited };
-          if (!account) return state;
+          if (!account) account = 'DEFAULT';
           _visited[account] = visited ?? false;
           return { visited: _visited };
         });
       },
-      setEntryVisible: (visible: boolean) => set({ entryVisible: visible }),
       setExitConfirmVisible: (visible: boolean) => set({ exitConfirmVisible: visible }),
       setProfileVisible: (visible: boolean) => set({ profileVisible: visible }),
       setChoosePillVisible: (visible: boolean) => set({ choosePillVisible: visible }),
