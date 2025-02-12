@@ -123,7 +123,7 @@ const Navigation = function () {
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
             <div className="text-[20px] text-black font-CherryBomb leading-[90%] whitespace-nowrap">
-              Portfolio Dashboard
+              Portfolio
             </div>
           </div>
           <DashboardSvg

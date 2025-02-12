@@ -366,7 +366,6 @@ const Home = () => {
               />
               <EntryCard>
                 Portfolio
-                <br /> Dashboard
               </EntryCard>
               {/*<motion.img
                  src='/images/mobile/home/text-dashboard.png'
