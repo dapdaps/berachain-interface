@@ -6,8 +6,8 @@ import { useAppKit } from "@reown/appkit/react";
 
 const AirdropReward = (props: any) => {
   const { className, data } = props;
-  const { account } = useCustomAccount();
-  const modal = useAppKit();
+  // const { account } = useCustomAccount();
+  // const modal = useAppKit();
   return (
     <div className={clsx("flex flex-col items-center gap-[10px]", className)}>
       <img
@@ -29,7 +29,7 @@ const AirdropReward = (props: any) => {
               $BERA
             </div>
           </div>
-          {!account && (
+          {/* {!account && (
             <AirdropButton
               className="w-[240px] mt-[19px]"
               onClick={() => {
@@ -38,23 +38,23 @@ const AirdropReward = (props: any) => {
             >
               Connect Wallet To Share
             </AirdropButton>
-          )}
-          {account?.toLowerCase() === data.address.toLowerCase() && (
-            <AirdropButton
-              className="w-[220px] mt-[19px]"
-              onClick={() => {
-                const url = `${location.href}api/twitter?address=${data.address}`;
+          )} */}
+          {/* {account?.toLowerCase() === data.address.toLowerCase() && ( */}
+          <AirdropButton
+            className="w-[220px] mt-[19px]"
+            onClick={() => {
+              const url = `${location.href}api/twitter?address=${data.address}`;
 
-                window.open(
-                  `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                    `McBera iz so dumb he bought everything in my Beracave for ${data.amount} $BERA!\nSell (claim airdrop) your @0xberatown bArtio items now:`
-                  )}&url=${encodeURIComponent(url)}`
-                );
-              }}
-            >
-              Share on X
-            </AirdropButton>
-          )}
+              window.open(
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  `McBera iz so dumb he bought everything in my Beracave for ${data.amount} $BERA!\nSell (claim airdrop) your @0xberatown bArtio items now:`
+                )}&url=${encodeURIComponent(url)}`
+              );
+            }}
+          >
+            Share on X
+          </AirdropButton>
+          {/* )} */}
         </>
       ) : (
         <div className="flex flex-col items-center justify-center gap-[6px]">
