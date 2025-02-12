@@ -77,10 +77,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -261,9 +261,10 @@ export function useDetail(props: any) {
           addAction?.({
             type: "Staking",
             action: "Staking",
-            token: {
-              symbol: _symbol === "YEET-BERA" ? "KODIAK-3" : tokens.join("-")
-            },
+            tokens:
+              _symbol === "YEET-BERA"
+                ? [{ symbol: "KODIAK-3" }]
+                : tokens.map((token: string) => ({ symbol: token })),
             amount: inAmount,
             template: name || "Infrared",
             status: status,
@@ -271,12 +272,8 @@ export function useDetail(props: any) {
             transactionHash,
             chain_id: chainId,
             sub_type: "Stake",
-            extra_data: JSON.stringify({
-              token0Symbol: tokens[0],
-              token1Symbol: tokens[1],
-              amount0,
-              amount1
-            })
+            amounts: [amount0, amount1],
+            extra_data: {}
           });
           updateState({
             isLoading: false,
@@ -349,9 +346,10 @@ export function useDetail(props: any) {
           addAction?.({
             type: "Staking",
             action: "UnStake",
-            token: {
-              symbol: _symbol === "YEET-BERA" ? "KODIAK-3" : tokens.join("-")
-            },
+            tokens:
+              _symbol === "YEET-BERA"
+                ? [{ symbol: "KODIAK-3" }]
+                : tokens.map((token: string) => ({ symbol: token })),
             amount: lpAmount,
             template: name || "Infrared",
             status: status,
@@ -359,12 +357,8 @@ export function useDetail(props: any) {
             transactionHash,
             chain_id: chainId,
             sub_type: "Unstake",
-            extra_data: JSON.stringify({
-              token0Symbol: tokens[0],
-              token1Symbol: tokens[1],
-              amount0,
-              amount1
-            })
+            amounts: [amount0, amount1],
+            extra_data: {}
           });
           setTimeout(() => {
             onSuccess?.();
@@ -434,9 +428,7 @@ export function useDetail(props: any) {
         addAction?.({
           type: "Staking",
           action: "Claim",
-          token: {
-            symbol: tokens.join("-")
-          },
+          tokens: tokens.map((token: string) => ({ symbol: token })),
           amount: data?.earned,
           template: name || "Infrared",
           status: status,
@@ -505,14 +497,18 @@ export function useDetail(props: any) {
         stakingToken: data?.initialData?.stake_token
       };
     }
-    const index = kodiak?.islands?.findIndex((address: string) => data?.initialData?.stake_token?.address === address)
+    const index = kodiak?.islands?.findIndex(
+      (address: string) => data?.initialData?.stake_token?.address === address
+    );
     const underlying_tokens = data?.initialData?.underlying_tokens;
     if (index > -1) {
-      const array = data?.initialData?.stake_token?.name?.split("-")
-      const symbol0 = array[0]
-      const symbol1 = array[1]
-      const token0 = underlying_tokens?.find((token) => token?.name === symbol0) ?? null
-      const token1 = underlying_tokens?.find((token) => token?.name === symbol1) ?? null
+      const array = data?.initialData?.stake_token?.name?.split("-");
+      const symbol0 = array[0];
+      const symbol1 = array[1];
+      const token0 =
+        underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+      const token1 =
+        underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
       if (token0 && token1) {
         return {
           protocol: protocol?.id,

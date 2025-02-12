@@ -36,9 +36,7 @@ export default function useClaim({ earned, farmContract, onSuccess }: any) {
       addAction?.({
         type: "Staking",
         action: "Claim",
-        token: {
-          symbol: "KDK"
-        },
+        tokens: [{ symbol: "KDK" }],
         amount: earned,
         template: "Kodiak",
         status: status,

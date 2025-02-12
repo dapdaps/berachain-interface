@@ -64,23 +64,20 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
       } else {
         toast.fail({ title: "Withdraw failed!" });
       }
+
       addAction({
         type: "Liquidity",
         action: "Remove Liquidity",
-        token0: data.token0.symbol,
-        token1: data.token1.symbol,
+        tokens: [data.token0, data.token1],
+        amounts: [amount0, amount1],
         template: "Kodiak",
         status,
         transactionHash,
         sub_type: "Remove",
-        extra_data: JSON.stringify({
-          amount0,
-          amount1,
+        extra_data: {
           action: "Remove Liquidity",
-          type: "univ3",
-          token0Symbol: data.token0.symbol,
-          token1Symbol: data.token1.symbol
-        })
+          type: "univ3"
+        }
       });
     } catch (err: any) {
       console.log(err);
