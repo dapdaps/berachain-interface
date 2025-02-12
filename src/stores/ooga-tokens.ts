@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-export const useKodiakTokensStore = create(
+export const useOogaTokensStore = create(
   persist(
     (set, get: any) => ({
       tokens: {},
       set: (params: any) => set(() => ({ ...params }))
     }),
     {
-      name: "kodiak-tokens",
-      version: 0.12,
+      name: "ooga-tokens",
+      version: 0.1,
       storage: createJSONStorage(() => localStorage)
     }
   )

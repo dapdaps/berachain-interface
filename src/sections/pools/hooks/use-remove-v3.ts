@@ -112,20 +112,16 @@ export default function useRemove({
       addAction({
         type: "Liquidity",
         action: "Remove Liquidity",
-        token0: detail.token0.symbol,
-        token1: detail.token1.symbol,
+        tokens: [detail.token0, detail.token1],
+        amounts: [amount0 * (percent / 100), amount1 * (percent / 100)],
         template: dex.name,
         status,
         transactionHash,
         sub_type: "Remove",
-        extra_data: JSON.stringify({
-          amount0: amount0 * (percent / 100),
-          amount1: amount1 * (percent / 100),
-          token0Symbol: detail.token0.symbol,
-          token1Symbol: detail.token1.symbol,
+        extra_data: {
           action: "Remove Liquidity",
           type: "univ3"
-        })
+        }
       });
       toast.dismiss(toastId);
       if (status === 1) {
