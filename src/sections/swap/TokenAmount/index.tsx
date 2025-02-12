@@ -76,14 +76,14 @@ export default function TokenAmout({
         >
           {currency ? (
             <div className="flex items-center gap-[10px]">
-              <div className="relative">
+              <div className="relative shrink-0">
                 <img
                   className="w-[26px] h-[26px]"
                   src={currency.icon || "/assets/tokens/default_icon.png"}
                 />
               </div>
-              <div>
-                <div className="text-[16px] font-[600]">{currency?.symbol}</div>
+              <div className="text-[16px] font-[600] max-w-[100px] truncate">
+                {currency?.symbol}
               </div>
             </div>
           ) : (
