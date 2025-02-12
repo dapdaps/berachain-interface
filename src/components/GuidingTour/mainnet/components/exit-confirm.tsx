@@ -50,7 +50,7 @@ const ExitConfirm = (props: any) => {
   return (
     <Modal
       open={exitConfirmVisible}
-      onClose={() => onClose(false)}
+      onClose={() => handleConfirm()}
       isMaskClose={false}
     >
       <Card className="w-[680px] md:w-full p-[39px_26px_36px] md:p-[30px_20px_30px]">
