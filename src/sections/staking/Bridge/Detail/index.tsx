@@ -92,6 +92,11 @@ export default memo(function Detail(props: any) {
             claiming={claiming}
             handleClaim={handleClaim}
             isInfraredBerps={isInfraredBerps}
+            onRefresh={() => {
+              updateState({
+                updater: Date.now()
+              });
+            }}
           />
         )}
         <div className="flex-1 pt-[24px] pb-[20px] px-[20px] min-h-[300px]">
@@ -161,9 +166,9 @@ export default memo(function Detail(props: any) {
                 <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {lpAmount
                     ? "$" +
-                      Big(lpAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(lpAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : "-"}
                 </span>
                 <div
