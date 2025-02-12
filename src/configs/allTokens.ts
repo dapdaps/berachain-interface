@@ -2,21 +2,22 @@ import { bera } from "@/configs/tokens/bera";
 import { polygonZkevm } from "@/configs/tokens/polygonZkevm";
 import { ethereum } from "@/configs/tokens/ethereum";
 import type { Token } from "@/types";
-import { arbitrum } from "./tokens/arbitrum";
-import { avalanche } from "./tokens/avalanche";
-import { base } from "./tokens/base";
-import { bsc } from "./tokens/bsc";
-import { gnosis } from "./tokens/gnosis";
-import { linea } from "./tokens/linea";
-import { manta } from "./tokens/manta";
-import { mantle } from "./tokens/mantle";
-import { metis } from "./tokens/metis";
-import { mode } from "./tokens/mode";
-import { polygon } from "./tokens/polygon";
-import { zkSync } from "./tokens/zkSync";
-import { optimism } from "./tokens/optimism";
-import { blast } from "./tokens/blast";
-import { scroll } from './tokens/scroll';
+import { arbitrum } from "@/configs/tokens/arbitrum";
+import { avalanche } from "@/configs/tokens/avalanche"; 
+import { base } from "@/configs/tokens/base";
+import { bsc } from "@/configs/tokens/bsc";
+import { gnosis } from "@/configs/tokens/gnosis";
+import { linea } from "@/configs/tokens/linea";
+import { manta } from "@/configs/tokens/manta";
+import { mantle } from "@/configs/tokens/mantle";
+import { metis } from "@/configs/tokens/metis";
+import { mode } from "@/configs/tokens/mode";
+import { polygon } from "@/configs/tokens/polygon";
+import { zkSync } from "@/configs/tokens/zkSync";
+import { optimism } from "@/configs/tokens/optimism";
+import { blast } from "@/configs/tokens/blast";
+import { scroll } from "@/configs/tokens/scroll";
+
 
 const mapFn = (item: Token) => {
   if (item.address === "native") {

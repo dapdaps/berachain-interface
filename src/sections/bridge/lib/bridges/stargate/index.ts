@@ -9,14 +9,31 @@ import { FeeType } from '../../type/index'
 import type { QuoteRequest, QuoteResponse, ExecuteRequest, StatusParams } from '../../type/index'
 import { approve } from '../../util/approve';
 import chains from '@/configs/chains';
-import { contractAddresses, chainIds, tokenParams } from './config';
+import { contractAddresses, chainIds, tokenParams, tokenPairs } from './config';
 
 const icon = getIcon('stargate')
 const { JsonRpcProvider } = providers
 
 export async function getQuote(request: QuoteRequest, signer: Signer): Promise<QuoteResponse | null> {
+    const fromEId = chainIds[Number(request.fromChainId)]
     const dstEid = chainIds[Number(request.toChainId)]
-    console.log('dstEid:', dstEid)
+
+    if (!fromEId || !dstEid) {
+        return null
+    }
+
+    let tokenPair = tokenPairs[request.fromChainId][request.fromToken.symbol.toUpperCase()]
+
+    if (Number(request.fromChainId) === 80094
+        && request.fromToken.symbol.toUpperCase() === 'WETH'
+        && [5000, 43114, 56].includes(Number(request.toChainId))
+    ) {
+        tokenPair = 'WETH'
+    }
+
+    if (!tokenPair || tokenPair !== request.toToken.symbol.toUpperCase()) {
+        return null
+    }
 
     const params: {
         dstEid: number,
@@ -34,7 +51,7 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
         extraOptions: tokenParams[request.fromToken.symbol.toUpperCase()] || '0x',
         composeMsg: '0x',
         oftCmd: '0x'
-    }   
+    }
 
     const payInLzToken: boolean = false
 
@@ -50,8 +67,6 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
         return null
     }
 
-    console.log('contractAddress:', contractAddress)
-  
     try {
         const contract = new Contract(
             contractAddress,
@@ -110,14 +125,6 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
 
         console.log('result:', result)
 
-        console.log('Big(result.nativeFee.toString()).div(10 ** 18).toString():', Big(result.nativeFee.toString()).div(10 ** 18).toString())
-
-        // setFee({
-        //     nativeFee: Big(result.nativeFee.toString()).div(10 ** 18).toString(),
-        //     lzTokenFee: Big(result.lzTokenFee.toString()).div(10 ** 18).toString()
-        // });
-
-        // setReceiveAmount(Big(params.amountLD).div(10 ** token.decimals).toString());
 
         const uuid = setQuote({
             route: sendParams,
@@ -128,7 +135,7 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
             contractAddress,
             fee: result
         })
-      
+
 
         return {
             uuid,
@@ -147,9 +154,9 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
     } catch (err) {
         console.error('Failed to get quote:', err);
         // setFee(null);
-    } 
+    }
 
-   
+
 
     return null
 }
@@ -229,8 +236,6 @@ export async function execute(request: ExecuteRequest, signer: Signer): Promise<
     );
 
     const value = isNative ? quoteRequest.amount.plus(Big(fee.nativeFee.toString())).toString() : Big(fee.nativeFee.toString()).toString()
-
-    console.log('value', quoteRequest.amount.toString(), Big(fee.nativeFee.toString()).toString())
 
     const tx = await contract.send(
         route,

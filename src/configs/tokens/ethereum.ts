@@ -204,7 +204,7 @@ export const ethereum: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0x8A60E489004Ca22d775C5F2c657598278d17D9c2",
     decimals: 18,
-    symbol: "usd",
+    symbol: "USDa",
     name: "USDa",
     icon: "/assets/tokens/usda.png"
   },

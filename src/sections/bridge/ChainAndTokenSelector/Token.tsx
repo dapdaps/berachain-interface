@@ -70,14 +70,6 @@ interface Props {
 }
 
 export default function TokenRow({ token, chain, isSelected, loading, balances, onTokenChange }: Props) {
-  // const { balance, loading } = useTokenBalance({
-  //     currency: token,
-  //     updater: 1,
-  //     isNative: chain?.nativeCurrency.symbol === token?.symbol,
-  //     isPure: false,
-  // })
-
-  // console.log('token:', token, balances)
 
   const prices = usePriceStore((store) => store.price);
   const balanceKey = token.isNative ? 'native' : token.address;

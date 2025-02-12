@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import TokenSelector from '../TokenSelector';
-import allTokens from '@/configs/allTokens'
+import allTokens from '../lib/allTokens'
 
 import chains, { icons } from '@/configs/chains'
 import useTokenBalance from '@/hooks/use-token-balance';

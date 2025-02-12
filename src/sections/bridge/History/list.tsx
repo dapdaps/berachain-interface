@@ -5,20 +5,18 @@ import { formatEnglishDate } from '@/utils/date'
 import useIsMobile from '@/hooks/use-isMobile';
 import chains from '../lib/util/chainConfig'
 
-import allTokens from '@/configs/allTokens'
-import { tokenPairs } from '@/sections/bridge/Hooks/Stargate/config'
+import allTokens from '../lib/allTokens'
+import { tokenPairs } from '../lib/bridges/stargate/config'
 import { balanceFormated } from '@/utils/balance';
 
-const _allTokens: any = {
-    80094: {},
-    1: {}
-};
-[80094, 1].forEach((chainId: number) => {
-    allTokens[chainId].forEach((item: any) => {
-        _allTokens[chainId][item.symbol.toUpperCase()] = item
+const _allTokens: any = {};
+
+Object.keys(allTokens).forEach((chainId: string) => {
+    allTokens[Number(chainId)].forEach((item: any) => {
+        _allTokens[Number(chainId)] = _allTokens[Number(chainId)] || {}
+        _allTokens[Number(chainId)][item.symbol.toUpperCase()] = item
     })
 })
-
 
 
 export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
@@ -80,7 +78,9 @@ export default function History({ pendingCount, historyCount, list, setIsOpen, a
 function HistoryItem({ item }: { item: any }) {
     const action_tokens = JSON.parse(item.action_tokens)
     const fromToken = _allTokens[item.chain_id][action_tokens[0].toUpperCase()]
-    const toToken = _allTokens[item.to_chain_id][tokenPairs[item.chain_id][action_tokens[0].toUpperCase()]?.toUpperCase()]
+    const toToken = _allTokens[item.to_chain_id]?.[tokenPairs[item.chain_id]?.[action_tokens[0].toUpperCase()]?.toUpperCase()]
+
+    // console.log(_allTokens[item.chain_id], action_tokens)
 
     return <div className="border-b border-gray-200 py-3">
         <div className="flex justify-between items-center">

@@ -51,13 +51,11 @@ export default function useTokenBalance(
     try {
       if (address === "native") {
         const rawBalance = await _provider.getBalance(account);
-        // console.info('get-native-bal', rawBalance);
         setTokenBalance(utils.formatEther(rawBalance));
       } else {
         const TokenContract = new Contract(address, TOKEN_ABI, _provider);
         console.log('_provider:', _provider, address)
         const rawBalance = await TokenContract.balanceOf(account);
-        // console.log('rawBalance:', rawBalance, account)
         setTokenBalance(utils.formatUnits(rawBalance, decimals));
       }
     } catch (error) {

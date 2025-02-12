@@ -17,7 +17,7 @@ import History from './History';
 import Big from 'big.js';
 import { useAccount, useSwitchChain } from "wagmi";
 import { formatLongText } from '@/utils/utils';
-import allTokens from '@/configs/allTokens'
+import allTokens from './lib/allTokens'
 import { tokenPairs } from './lib/bridges/stargate/config';
 import useAddAction from '@/hooks/use-add-action';
 import { useBridgeHistory } from '@/stores/useBridgeHistory';
