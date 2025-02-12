@@ -7,7 +7,7 @@ import useDeposit from "../../../hooks/use-deposit";
 export default function SupplyPanel({
   data,
   mode,
-  singleIndex,
+  singleData,
   amount0,
   amount1,
   received,
@@ -20,7 +20,7 @@ export default function SupplyPanel({
     amount1,
     received,
     mode,
-    singleIndex,
+    singleData,
     type,
     onSuccess
   });

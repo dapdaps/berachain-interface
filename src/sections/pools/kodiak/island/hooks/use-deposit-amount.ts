@@ -15,6 +15,15 @@ export default function useDepositAmount({
   const slippage = useSettingsStore((store: any) => store.slippage);
 
   const queryAmounts = async ({ amount0, amount1, cb }: any) => {
+    if (!amount0 || !amount1) {
+      cb({
+        amount0: 0,
+        amount1: 0,
+        received: 0,
+        miniReceived: 0
+      });
+      return;
+    }
     try {
       setQuerying(true);
       const IslandContract = new Contract(islandContract, islandAbi, provider);

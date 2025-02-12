@@ -19,7 +19,7 @@ export default function DepositModal({
   received,
   type,
   mode,
-  singleIndex,
+  singleData,
   onClose,
   onSuccess
 }: any) {
@@ -139,7 +139,7 @@ export default function DepositModal({
             <SupplyPanel
               data={data}
               mode={mode}
-              singleIndex={singleIndex}
+              singleData={singleData}
               amount0={amount0}
               amount1={amount1}
               received={received}
@@ -161,7 +161,7 @@ export default function DepositModal({
             <SupplyPanel
               data={data}
               mode={mode}
-              singleIndex={singleIndex}
+              singleData={singleData}
               amount0={amount0}
               amount1={amount1}
               received={received}

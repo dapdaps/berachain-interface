@@ -63,7 +63,7 @@ export default function SingleInput({ data, setErrorTips, singleQuoter }: any) {
       setErrorTips("Enter an amount");
       return;
     }
-    if (Big(tokenBalance).lt(amount)) {
+    if (Big(tokenBalance || 0).lt(amount)) {
       setErrorTips("Insufficient Balance");
       return;
     }

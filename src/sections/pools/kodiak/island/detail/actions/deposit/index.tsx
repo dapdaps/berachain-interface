@@ -30,8 +30,11 @@ export default function Deposit({ data, info, onSuccess }: any) {
     token0: data.token0,
     token1: data.token1
   });
-  const { loading: singleQuoting, queryAmounts: querySingleAmounts } =
-    useQuoteSingleAmount(data, queryAmounts);
+  const {
+    loading: singleQuoting,
+    queryAmounts: querySingleAmounts,
+    swapData
+  } = useQuoteSingleAmount(data, queryAmounts);
   const [errorTips, setErrorTips] = useState("");
 
   const setAmounts = (amounts: any) => {
@@ -169,7 +172,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
           received={receives?.received}
           type={type}
           mode={mode}
-          singleIndex={singleIndex}
+          singleData={{ singleIndex, swapData }}
           onClose={() => {
             setShowModal(false);
           }}
