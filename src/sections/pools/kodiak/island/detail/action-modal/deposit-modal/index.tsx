@@ -18,6 +18,8 @@ export default function DepositModal({
   open,
   received,
   type,
+  mode,
+  singleIndex,
   onClose,
   onSuccess
 }: any) {
@@ -136,6 +138,8 @@ export default function DepositModal({
           {type === "deposit" && step === 3 && (
             <SupplyPanel
               data={data}
+              mode={mode}
+              singleIndex={singleIndex}
               amount0={amount0}
               amount1={amount1}
               received={received}
@@ -156,6 +160,8 @@ export default function DepositModal({
           {type === "staking" && step === 4 && (
             <SupplyPanel
               data={data}
+              mode={mode}
+              singleIndex={singleIndex}
               amount0={amount0}
               amount1={amount1}
               received={received}

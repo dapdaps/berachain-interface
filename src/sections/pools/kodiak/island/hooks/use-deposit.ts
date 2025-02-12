@@ -14,6 +14,8 @@ export default function useDeposit({
   amount1,
   received,
   type,
+  mode,
+  singleIndex,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
@@ -31,34 +33,82 @@ export default function useDeposit({
       const RouterContract = new Contract(data.router, routerAbi, signer);
       const _amount0 = Big(amount0).mul(10 ** data.token0.decimals);
       const _amount1 = Big(amount1).mul(10 ** data.token1.decimals);
+      const _minReceived = Big(received)
+        .mul(1e18)
+        .mul(1 - _slippage / 100)
+        .toFixed(0);
 
-      const nativeToken = data.token0.isNative
-        ? data.token0
-        : data.token1.isNative
-        ? data.token1
-        : null;
+      let method = "";
+      let params: any = [];
+      let options: any = {};
 
-      const tx = await RouterContract[
-        nativeToken ? "addLiquidityNative" : "addLiquidity"
-      ](
-        data.id,
-        _amount0.toFixed(0),
-        _amount1.toFixed(0),
-        _amount0.mul(1 - _slippage / 100).toFixed(0),
-        _amount1.mul(1 - _slippage / 100).toFixed(0),
-        Big(received)
-          .mul(1e18)
-          .mul(1 - _slippage / 100)
-          .toFixed(0),
-        account,
-        {
+      if (mode === "double") {
+        const nativeToken = data.token0.isNative
+          ? data.token0
+          : data.token1.isNative
+          ? data.token1
+          : null;
+        method = nativeToken ? "addLiquidityNative" : "addLiquidity";
+        params = [
+          data.id,
+          _amount0.toFixed(0),
+          _amount1.toFixed(0),
+          _amount0.mul(1 - _slippage / 100).toFixed(0),
+          _amount1.mul(1 - _slippage / 100).toFixed(0),
+          _minReceived,
+          account
+        ];
+        options = {
           value: data.token0.isNative
             ? _amount0.toFixed(0)
             : data.token1.isNative
             ? _amount1.toFixed(0)
             : 0
+        };
+      } else {
+        const nativeToken =
+          singleIndex === 0 && data.token0.isNative
+            ? data.token0
+            : singleIndex === 0 && data.token1.isNative
+            ? data.token1
+            : null;
+        const singleAmount =
+          singleIndex === 0 ? _amount0.mul(2) : _amount1.mul(2);
+        method = nativeToken
+          ? "addLiquiditySingleNative"
+          : "addLiquiditySingle";
+        params = [
+          data.id,
+          _minReceived,
+          100,
+          [_amount0.toFixed(0), _amount1.mul(1 - _slippage / 100).toFixed(0)],
+          account
+        ];
+        if (!nativeToken) {
+          params.splice(1, 0, singleAmount.toFixed(0));
         }
-      );
+        options = {
+          value: nativeToken ? singleAmount.toFixed(0) : 0
+        };
+        console.log(method, params, options);
+      }
+      let estimateGas: any = new Big(1000000);
+      try {
+        estimateGas = await RouterContract.estimateGas[method](
+          ...params,
+          options
+        );
+      } catch (err: any) {
+        console.log("estimateGas err", err);
+        if (err?.code === "UNPREDICTABLE_GAS_LIMIT") {
+          estimateGas = new Big(3000000);
+        }
+      }
+      console.log("estimateGas", estimateGas.toString());
+      const tx = await RouterContract[method](...params, {
+        ...options,
+        gasLimit: new Big(estimateGas).mul(1.2).toFixed(0)
+      });
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
       const res = await tx.wait();
@@ -70,11 +120,7 @@ export default function useDeposit({
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
-        if (type === "staking") {
-          onSuccess();
-        } else {
-          onSuccess();
-        }
+        onSuccess();
       } else {
         toast.fail({ title: "Deposit failed!" });
       }

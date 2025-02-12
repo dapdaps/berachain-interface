@@ -4,6 +4,7 @@ import config from "@/configs/pools/kodiak";
 import { tickToPrice } from "../tick-math";
 import { balanceFormated } from "@/utils/balance";
 import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
+import { bera } from "@/configs/tokens/bera";
 
 export default function usePoolsIslands() {
   const [pools, setPools] = useState<any>();
@@ -78,14 +79,20 @@ export default function usePoolsIslands() {
 
         setPools(
           list.map((item: any) => {
-            const _token0 = tokens[item._token0.id.toLowerCase()] || {
-              ...item._token0,
-              address: item._token0.id
-            };
-            const _token1 = tokens[item._token1.id.toLowerCase()] || {
-              ...item._token1,
-              address: item._token1.id
-            };
+            const _token0 =
+              item._token0.id === "0x6969696969696969696969696969696969696969"
+                ? bera.bera
+                : tokens[item._token0.id.toLowerCase()] || {
+                    ...item._token0,
+                    address: item._token0.id
+                  };
+            const _token1 =
+              item._token1.id === "0x6969696969696969696969696969696969696969"
+                ? bera.bera
+                : tokens[item._token1.id.toLowerCase()] || {
+                    ...item._token1,
+                    address: item._token1.id
+                  };
 
             const lowerPrice =
               item.lowerPrice < -887000

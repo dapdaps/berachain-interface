@@ -6,6 +6,8 @@ import useDeposit from "../../../hooks/use-deposit";
 
 export default function SupplyPanel({
   data,
+  mode,
+  singleIndex,
   amount0,
   amount1,
   received,
@@ -17,6 +19,8 @@ export default function SupplyPanel({
     amount0,
     amount1,
     received,
+    mode,
+    singleIndex,
     type,
     onSuccess
   });
