@@ -4,11 +4,14 @@ import { useGuidingTour } from '@/stores/useGuidingTour';
 import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/button';
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
+import { useContext } from 'react';
+import { GuidingTourContext } from '@/components/GuidingTour/mainnet/context';
 
 const Profile = (props: any) => {
   const { onClose } = props;
 
-  const { profileVisible, setProfileVisible, setEntryVisible, setChoosePillVisible } = useGuidingTour();
+  const { profileVisible, setProfileVisible, setChoosePillVisible } = useGuidingTour();
+  const { setEntryVisible } = useContext(GuidingTourContext);
 
   const handleBack = () => {
     setProfileVisible(false);

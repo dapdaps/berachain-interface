@@ -5,7 +5,7 @@ import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/
 import { useAccount } from 'wagmi';
 
 const Done = (props: any) => {
-  const { onClose } = props;
+  const {} = props;
 
   const { address } = useAccount();
   const { doneVisible, setDoneVisible, setVisited } = useGuidingTour();
@@ -18,7 +18,7 @@ const Done = (props: any) => {
   return (
     <Modal
       open={doneVisible}
-      onClose={() => onClose(false)}
+      onClose={handleNext}
       isMaskClose={false}
     >
       <Card className="w-[680px] md:w-full p-[39px_51px_35px] md:p-[30px_20px_35px] flex flex-col items-center">
