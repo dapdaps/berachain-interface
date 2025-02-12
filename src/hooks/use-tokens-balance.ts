@@ -63,11 +63,19 @@ export default function useTokensBalance(tokens: any) {
         );
       }
 
-      const [nativeBalance, ...rest] = await Promise.all(requests);
       const _balance: any = {};
-      if (hasNative && nativeBalance)
-        _balance.native = utils.formatUnits(nativeBalance, 18);
-      const results = flatten(rest);
+      let rest: any = [];
+      if (hasNative) {
+        const [nativeBalance, ..._rest] = await Promise.all(requests);
+        if (hasNative && nativeBalance)
+          _balance.native = utils.formatUnits(nativeBalance, 18);
+        rest = _rest;
+      } else {
+        const [..._rest] = await Promise.all(requests);
+        rest = _rest;
+      }
+      
+      const results: any = flatten(rest);
 
       for (let i = 0; i < results.length; i++) {
         const token = tokensAddress[i];
@@ -80,7 +88,7 @@ export default function useTokensBalance(tokens: any) {
       setBalances(_balance);
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.log('err:', err);
       setLoading(false);
     }
   }, [tokens, account]);

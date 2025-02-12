@@ -96,7 +96,7 @@ export default function TokenAmout({
           }
         </div>
         <div className="flex-1">
-          <input className="w-[100%] h-[100%] text-[26px] text-right" value={amount} onChange={(e) => {
+          <input type='number' className="w-[100%] h-[100%] text-[26px] text-right" value={amount} onChange={(e) => {
             onAmountChange?.(e.target.value)
           }} disabled={disabledInput} />
         </div>

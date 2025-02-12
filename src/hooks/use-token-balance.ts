@@ -54,7 +54,6 @@ export default function useTokenBalance(
         setTokenBalance(utils.formatEther(rawBalance));
       } else {
         const TokenContract = new Contract(address, TOKEN_ABI, _provider);
-        console.log('_provider:', _provider, address)
         const rawBalance = await TokenContract.balanceOf(account);
         setTokenBalance(utils.formatUnits(rawBalance, decimals));
       }
