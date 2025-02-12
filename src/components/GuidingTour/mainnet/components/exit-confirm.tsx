@@ -4,10 +4,12 @@ import { useGuidingTour } from '@/stores/useGuidingTour';
 import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/button';
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
+import { useAccount } from 'wagmi';
 
 const ExitConfirm = (props: any) => {
   const { onClose } = props;
 
+  const { address } = useAccount();
   const {
     setVisited,
     exitConfirmVisible,
@@ -39,7 +41,7 @@ const ExitConfirm = (props: any) => {
   };
 
   const handleConfirm = () => {
-    setVisited(true);
+    setVisited(address, true);
     handleClose();
   };
 

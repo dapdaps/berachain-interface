@@ -11,10 +11,12 @@ import GetBera from '@/components/GuidingTour/mainnet/get-bera';
 import Done from '@/components/GuidingTour/mainnet/done';
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
+import { useAccount } from 'wagmi';
 
 const GuidingTutorial = (props: any) => {
   const {} = props;
 
+  const { address } = useAccount();
   const {
     visited,
     setVisited,
@@ -31,7 +33,7 @@ const GuidingTutorial = (props: any) => {
       setExitConfirmVisible(true);
       return;
     }
-    setVisited(true);
+    setVisited(address, true);
   };
 
   const handleNext = () => {
@@ -39,7 +41,7 @@ const GuidingTutorial = (props: any) => {
     setProfileVisible(true);
   };
 
-  if (visited) return null;
+  if (!address || visited[address]) return null;
 
   return (
     <>

@@ -5,12 +5,18 @@ import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
 import useIsMobile from '@/hooks/use-isMobile';
+import { useState } from 'react';
+import { post } from '@/utils/http';
+import useToast from '@/hooks/use-toast';
 
 const GetBera = (props: any) => {
   const { onClose } = props;
   const isMobile = useIsMobile();
+  const toast = useToast();
 
   const { getBeraVisible, setGetBeraVisible, setChoosePillVisible, setDoneVisible } = useGuidingTour();
+
+  const [pending, setPending] = useState(false);
 
   const handleBack = () => {
     setGetBeraVisible(false);
@@ -20,6 +26,24 @@ const GetBera = (props: any) => {
   const handleNext = () => {
     setGetBeraVisible(false);
     setDoneVisible(true);
+  };
+
+  const handlePrize = async () => {
+    if (pending) return;
+    setPending(true);
+    try {
+      const res = await post('/api/user/guide/prize');
+      if (res.code !== 0) {
+        toast.fail({ title: res.msg || 'Something went wrong' });
+        setPending(false);
+        return;
+      }
+      handleNext();
+    } catch (err: any) {
+      console.log(err);
+      toast.fail({ title: err?.message || 'Something went wrong' });
+    }
+    setPending(false);
   };
 
   return (
@@ -94,13 +118,13 @@ const GetBera = (props: any) => {
         </div>
         {
           isMobile && (
-            <Foot handleNext={handleNext} />
+            <Foot handleNext={handlePrize} loading={pending} />
           )
         }
       </Card>
       {
         !isMobile && (
-          <Foot handleNext={handleNext} />
+          <Foot handleNext={handlePrize} loading={pending} />
         )
       }
     </Modal>
@@ -110,7 +134,7 @@ const GetBera = (props: any) => {
 export default GetBera;
 
 const Foot = (props: any) => {
-  const { handleNext } = props;
+  const { handleNext, loading } = props;
 
   return (
     <div className="flex justify-center items-center mt-[24px]">
@@ -118,6 +142,8 @@ const Foot = (props: any) => {
         type={ButtonType.Primary}
         className="w-[354px]"
         onClick={handleNext}
+        loading={loading}
+        disabled={loading}
       >
         I’m all set!
       </Button>
