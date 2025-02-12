@@ -4,6 +4,7 @@ import SwitchTabs from '@/components/switch-tabs';
 import useAddAction from '@/hooks/use-add-action';
 import { TabPanelProps, Tabs } from '@/sections/Lending/Dolomite/Panel/types';
 import MarketsLaptop from '@/sections/Lending/components/markets/laptop';
+import Big from 'big.js';
 
 const TabPanelLaptop: React.FC<TabPanelProps> = ({
   totalBalance,
@@ -86,6 +87,12 @@ const TabPanelLaptop: React.FC<TabPanelProps> = ({
             dataIndex: 'action',
             type: 'action',
             skeletonWidth: 82,
+            actionDisabled: (record: any) => {
+              return {
+                deposit: false,
+                withdraw: !record.balance || Big(record.balance).lte(0),
+              };
+            }
           },
         ]}
         markets={tokens}

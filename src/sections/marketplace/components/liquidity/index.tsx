@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from "react";
-import Image from "next/image";
 import Dropdown from "../dropdown";
 import SearchBox from "../searchbox";
 import List from "../list";

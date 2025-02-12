@@ -20,6 +20,8 @@ import { memo, useContext } from "react";
 import BeraciagaModal from "./beraciaga-modal";
 import MobileHome from "./mobile";
 import VaultsEnterance from "./vaults-enterance";
+import AirdropModal from '@/components/airdrop/modal';
+import Airdrop from '@/components/airdrop';
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -214,6 +216,8 @@ export default memo(function Home() {
     <BearBackground type="home">
       <Navigation />
       <BeraciagaModal />
+      <AirdropModal />
+      <Airdrop />
       {currentSceneInfoValid && <HomePrompt />}
     </BearBackground>
   );

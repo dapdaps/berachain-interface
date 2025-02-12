@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { balanceFormated } from "@/utils/balance";
 import Button from "@/components/button";
 import ModalLoading from "../loading";
@@ -29,7 +28,7 @@ export default function WithdrawPanel({
       <div className="mt-[20px] rounded-[12px] border border-[#373A53] p-[12px]">
         <div className="flex items-center justify-between mt-[6px]">
           <div className="flex items-center gap-[9px]">
-            <Image
+            <img
               src={data.token0.icon}
               alt={data.token0.name}
               width={26}
@@ -46,7 +45,7 @@ export default function WithdrawPanel({
         </div>
         <div className="flex items-center justify-between mt-[6px]">
           <div className="flex items-center gap-[9px]">
-            <Image
+            <img
               src={data.token1.icon}
               alt={data.token1.name}
               width={26}

@@ -6,6 +6,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 
 import allTokens from '@/configs/allTokens'
 import { tokenPairs } from '@/sections/bridge/Hooks/Stargate/config'
+import { balanceFormated } from '@/utils/balance';
 
 const _allTokens: any = {
     80094: {},
@@ -78,7 +79,7 @@ export default function History({ pendingCount, historyCount, list, setIsOpen, a
 function HistoryItem({ item }: { item: any }) {
     const action_tokens = JSON.parse(item.action_tokens)
     const fromToken = _allTokens[item.chain_id][action_tokens[0].toUpperCase()]
-    const toToken = _allTokens[item.to_chain_id][tokenPairs[item.chain_id][action_tokens[0]].toUpperCase()]
+    const toToken = _allTokens[item.to_chain_id][tokenPairs[item.chain_id][action_tokens[0].toUpperCase()]?.toUpperCase()]
 
     return <div className="border-b border-gray-200 py-3">
         <div className="flex justify-between items-center">
@@ -90,7 +91,7 @@ function HistoryItem({ item }: { item: any }) {
                             <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.chain_id]} />
                         </div>
                         <div>
-                            {item.action_amount}<br />{fromToken?.symbol}
+                            {balanceFormated(item.action_amount)}<br />{fromToken?.symbol}
                         </div>
                     </div>
                     <span>→</span>
@@ -100,7 +101,7 @@ function HistoryItem({ item }: { item: any }) {
                             <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.to_chain_id]} />
                         </div>
                         <div>
-                            {item.action_amount}<br />{toToken?.symbol}
+                            {balanceFormated(item.action_amount)}<br />{toToken?.symbol}
                         </div>
                     </div>
                 </div>

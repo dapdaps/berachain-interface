@@ -1,15 +1,15 @@
-import { utils } from 'ethers';
-import { useEffect, useState } from 'react';
-import Loading from '@/components/circle-loading';
-import Modal from '@/components/modal';
-import useTokenInfo from '@/hooks/use-token-info';
-import useTokensBalance from '@/hooks/use-tokens-balance';
-import Empty from '@/components/empty';
-import ImportWarning from '../ImportWarning';
-import CurrencyImportRow from './CurrencyImportRow';
-import CurrencyRow from './CurrencyRow';
+import { utils } from "ethers";
+import { useEffect, useState } from "react";
+import Loading from "@/components/circle-loading";
+import Modal from "@/components/modal";
+import useTokenInfo from "@/hooks/use-token-info";
+import useTokensBalance from "@/hooks/use-tokens-balance";
+import Empty from "@/components/empty";
+import ImportWarning from "../ImportWarning";
+import CurrencyImportRow from "./CurrencyImportRow";
+import CurrencyRow from "./CurrencyRow";
 
-const TABS = ['All', 'Imported'];
+const TABS = ["All", "Imported"];
 
 export default function CurrencySelect({
   display,
@@ -23,8 +23,8 @@ export default function CurrencySelect({
   onSelect,
   selectedTokenAddress
 }: any) {
-  const [tab, setTab] = useState('All');
-  const [searchVal, setSearchVal] = useState('');
+  const [tab, setTab] = useState("All");
+  const [searchVal, setSearchVal] = useState("");
   const [currencies, setCurrencies] = useState<any>(tokens || []);
   const { loading, queryToken } = useTokenInfo();
   const [importToken, setImportToken] = useState<any>(null);
@@ -39,16 +39,16 @@ export default function CurrencySelect({
     let tokenIsAvailable = false;
     const _tokens = tokens.filter((token: any) => {
       if (!searchVal) {
-        return tab === 'All' ? true : token.isImport;
+        return tab === "All" ? true : token.isImport;
       }
       if (token.address.toLowerCase() === searchVal?.toLowerCase())
         tokenIsAvailable = true;
       return (token.address.toLowerCase() === searchVal?.toLowerCase() ||
         token.name.toLowerCase().includes(searchVal.toLowerCase()) ||
         token.symbol.toLowerCase().includes(searchVal.toLowerCase())) &&
-        tab === 'All'
+        tab === "All"
         ? true
-        : tab === 'Imported'
+        : tab === "Imported"
         ? token.isImport
         : false;
     });
@@ -80,11 +80,11 @@ export default function CurrencySelect({
   };
 
   const handleClear = () => {
-    setSearchVal('');
+    setSearchVal("");
   };
 
   const handleClose = () => {
-    setSearchVal('');
+    setSearchVal("");
     onClose();
   };
 
@@ -102,8 +102,8 @@ export default function CurrencySelect({
 
   return (
     <Modal open={display} onClose={handleClose}>
-      <div className='w-[520px] p-[20px] bg-[#FFFDEB] md:w-full md:rounded-t-[20px]'>
-        <div className='flex items-center gap-[10px] cursor-pointer text-[20px]'>
+      <div className="w-[520px] p-[20px] bg-[#FFFDEB] md:w-full md:rounded-t-[20px]">
+        <div className="flex items-center gap-[10px] cursor-pointer text-[20px]">
           <button
             type="button"
             className="w-[16px] h-[16px] rotate-90 bg-[url('/images/icon-arrow.svg')] bg-no-repeat bg-center"
@@ -118,31 +118,31 @@ export default function CurrencySelect({
               width="21"
               height="15"
               viewBox="0 0 21 15"
-              fill='none'
-              className='cursor-pointer'
+              fill="none"
+              className="cursor-pointer"
             >
               <circle
-                cx='7.01829'
-                cy='7.01829'
-                r='6.01829'
-                stroke='#3D4159'
-                strokeWidth='2'
+                cx="7.01829"
+                cy="7.01829"
+                r="6.01829"
+                stroke="#3D4159"
+                strokeWidth="2"
               />
               <rect
-                x='14.9141'
-                y='9.6499'
-                width='6.141'
-                height='2.63186'
-                rx='1.31593'
-                transform='rotate(30 14.9141 9.6499)'
-                fill='#3D4159'
+                x="14.9141"
+                y="9.6499"
+                width="6.141"
+                height="2.63186"
+                rx="1.31593"
+                transform="rotate(30 14.9141 9.6499)"
+                fill="#3D4159"
               />
             </svg>
           )}
           <input
             value={searchVal}
-            className='text-[16px] bg-transparent flex-1'
-            placeholder='Search name or paste address'
+            className="text-[16px] bg-transparent flex-1"
+            placeholder="Search name or paste address"
             onChange={(ev) => {
               setSearchVal(ev.target.value);
             }}
@@ -152,31 +152,31 @@ export default function CurrencySelect({
               onClick={() => {
                 handleClear();
               }}
-              className='cursor-pointer'
+              className="cursor-pointer"
             >
               <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
               >
-                <circle cx='12' cy='12' r='12' fill='#303142' />
+                <circle cx="12" cy="12" r="12" fill="#303142" />
                 <path
-                  d='M13.444 12L16.7799 8.66415C17.0307 8.41332 17.0735 8.0494 16.8756 7.85157L16.1482 7.12424C15.9503 6.92632 15.5869 6.96974 15.3356 7.22041L12.0001 10.5561L8.66433 7.22049C8.41349 6.96941 8.04957 6.92632 7.85165 7.12449L7.12431 7.8519C6.92648 8.04949 6.96931 8.4134 7.22048 8.66423L10.5563 12L7.22048 15.336C6.96973 15.5866 6.92631 15.9503 7.12431 16.1482L7.85165 16.8756C8.04957 17.0735 8.41349 17.0306 8.66433 16.7799L12.0003 13.4439L15.3357 16.7794C15.587 17.0307 15.9504 17.0735 16.1483 16.8756L16.8757 16.1482C17.0735 15.9503 17.0307 15.5866 16.78 15.3356L13.444 12Z'
-                  fill='#979ABE'
+                  d="M13.444 12L16.7799 8.66415C17.0307 8.41332 17.0735 8.0494 16.8756 7.85157L16.1482 7.12424C15.9503 6.92632 15.5869 6.96974 15.3356 7.22041L12.0001 10.5561L8.66433 7.22049C8.41349 6.96941 8.04957 6.92632 7.85165 7.12449L7.12431 7.8519C6.92648 8.04949 6.96931 8.4134 7.22048 8.66423L10.5563 12L7.22048 15.336C6.96973 15.5866 6.92631 15.9503 7.12431 16.1482L7.85165 16.8756C8.04957 17.0735 8.41349 17.0306 8.66433 16.7799L12.0003 13.4439L15.3357 16.7794C15.587 17.0307 15.9504 17.0735 16.1483 16.8756L16.8757 16.1482C17.0735 15.9503 17.0307 15.5866 16.78 15.3356L13.444 12Z"
+                  fill="#979ABE"
                 />
               </svg>
             </div>
           )}
         </div>
-        <div className='flex items-center gap-[44px] text-[14px] px-[30px] py-[12px] border-b border-[##373A53]'>
+        <div className="flex items-center gap-[44px] text-[14px] px-[30px] py-[12px] border-b border-[##373A53]">
           {!!onImport &&
             TABS.map((_tab) => (
               <div
                 key={_tab}
                 className={`cursor-pointer ${
-                  _tab === tab ? 'opacity-100' : 'opacity-50'
+                  _tab === tab ? "opacity-100" : "opacity-50"
                 }`}
                 onClick={() => {
                   setTab(_tab);
@@ -186,9 +186,9 @@ export default function CurrencySelect({
               </div>
             ))}
         </div>
-        <div className='h-[calc(60vh-120px)] overflow-x-auto'>
+        <div className="h-[calc(60vh-120px)] overflow-x-auto">
           {loading && (
-            <div className='h-[100px] flex justify-center items-center'>
+            <div className="h-[100px] flex justify-center items-center">
               <Loading size={30} />
             </div>
           )}
@@ -217,7 +217,7 @@ export default function CurrencySelect({
             />
           ))}
           {(!currencies || !currencies?.length) && !loading && !importToken && (
-            <Empty desc='No token.' mt={30} />
+            <Empty desc="No token." mt={30} />
           )}
         </div>
         <ImportWarning
