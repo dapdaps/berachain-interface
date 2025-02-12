@@ -35,6 +35,8 @@ const config: Config = {
       "slide-to-left": "slide2Left 10s linear infinite",
       rotate: "rotate 2s linear infinite",
       shake: "shake 0.7s linear infinite",
+      shake2: "shake2 0.7s linear infinite",
+      shake3: "shake3 0.7s linear infinite",
       blink: "blink 4s ease-in-out infinite",
       "float-y": "floatY 4s ease-in-out infinite",
       "ping": "ping 1s cubic-bezier(0,0,.2,1) infinite"
@@ -79,6 +81,23 @@ const config: Config = {
         },
         "100%": {
           transform: "translateX(0) rotate(0deg)"
+        }
+      },
+      shake3: {
+        "0%": {
+          transform: "translateX(0) translateY(0) rotate(0deg) scale(1)"
+        },
+        "25%": {
+          transform: "translateX(-5px) translateY(2px) rotate(-6deg) scale(1.02)"
+        },
+        "50%": {
+          transform: "translateX(-2px) translateY(-1px) rotate(-2deg) scale(1)"
+        },
+        "75%": {
+          transform: "translateX(-10px) translateY(4px) rotate(-8deg) scale(1.02)"
+        },
+        "100%": {
+          transform: "translateX(0) translateY(0) rotate(0deg) scale(1)"
         }
       },
       blink: {
