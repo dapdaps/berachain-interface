@@ -16,7 +16,7 @@ export function useAirdrop() {
   const [isValidAddress, invalidMsg] = useMemo(() => {
     if (!address) return [false, ''];
     if (!ethers.utils.isAddress(address)) {
-      return [false, 'Invalid wallet address'];
+      return [false, 'Invalid address'];
     }
     return [true, ''];
   }, [address]);

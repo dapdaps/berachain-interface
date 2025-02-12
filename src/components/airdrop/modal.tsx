@@ -73,8 +73,8 @@ const AirdropModal = (props: any) => {
           </div>
           {
             !!invalidMsg && (
-              <div className="flex items-center text-[12px] text-[#CE494D] font-[400] leading-[90%] gap-[5px]">
-                <img src="/images/home-earth/airdrop/icon-error.svg" alt="" className="w-[11px] h-[11px]" />
+              <div className="flex items-center justify-center text-[14px] text-black font-[600] leading-[90%] gap-[5px]">
+                <img src="/images/home-earth/airdrop/icon-error.svg" alt="" className="w-[19px] h-[19px]" />
                 <div>{invalidMsg}</div>
               </div>
             )
