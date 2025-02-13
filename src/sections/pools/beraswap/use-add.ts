@@ -153,6 +153,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         }
       }
       console.log("estimateGas", estimateGas.toString());
+
       const tx = await valutContract[method](...params, {
         value,
         gasLimit: new Big(estimateGas).mul(120).div(100).toFixed(0)
@@ -181,14 +182,12 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         status,
         transactionHash,
         sub_type: "Add",
-        extra_data: JSON.stringify({
-          tokens: tokens.map((token: any) => ({
-            symbol: token.symbol,
-            amount: values[token.address]
-          })),
+        tokens: tokens,
+        amounts: tokens.map((token: any) => values[token.address]),
+        extra_data: {
           action: "Add Liquidity",
           type: "univ3"
-        })
+        }
       });
       setLoading(false);
     } catch (err: any) {

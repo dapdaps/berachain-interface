@@ -102,10 +102,11 @@ export default function useAddAction(source: string) {
         const symbols = data.tokens.map((token: any) => token.symbol);
 
         if (data.extra_data) {
-          data.tokens.forEach((token: any, i: number) => {
-            data.extra_data[`token${i}Symbol`] = getReportTokenSymbol(token);
-            data.extra_data[`amount${i}`] = data.amounts[i];
-          });
+          data.extra_data.tokens = data.tokens.map((token: any, i: number) => ({
+            symbol: getReportTokenSymbol(token),
+            address: token.address,
+            amount: data.amounts[i]
+          }));
         }
         params = {
           action_title: `${data.action} ${symbols.join("-")} on ${
@@ -124,6 +125,7 @@ export default function useAddAction(source: string) {
           extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
           sub_type: data.sub_type
         };
+        console.log(128, params);
       }
       if (data.type === "Staking") {
         const symbols = data.tokens.map((token: any) => token.symbol);

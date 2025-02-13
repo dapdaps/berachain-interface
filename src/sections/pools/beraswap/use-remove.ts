@@ -232,17 +232,15 @@ export default function useRemove({
         status,
         transactionHash,
         sub_type: "Remove",
-        extra_data: JSON.stringify({
-          tokens:
-            type === 1
-              ? data.tokens.map((token: any) => ({
-                  symbol: token.symbol,
-                  amount: token.value
-                }))
-              : [{ symbol: exitToken.symbol, amount: exitAmount }],
+        tokens: type === 1 ? data.tokens : [exitToken],
+        amounts:
+          type === 1
+            ? data.tokens.map((token: any) => token.value)
+            : [exitAmount],
+        extra_data: {
           action: "Remove Liquidity",
           type: "univ3"
-        })
+        }
       });
       setLoading(false);
     } catch (err: any) {
