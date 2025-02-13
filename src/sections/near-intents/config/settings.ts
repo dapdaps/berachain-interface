@@ -42,7 +42,7 @@ export const settings: Settings = {
    */
   rpcUrls: {
     near: "https://nearrpc.aurora.dev",
-    eth: "https://eth.meowrpc.com",
+    eth: "https://eth.drpc.org",
     base: "https://mainnet.base.org",
     arbitrum: "https://arb1.arbitrum.io/rpc",
     bitcoin: "https://mainnet.bitcoin.org",
@@ -52,5 +52,8 @@ export const settings: Settings = {
     turbochain: "https://rpc-0x4e45415f.aurora-cloud.dev",
     aurora: "https://mainnet.aurora.dev",
     xrpledger: "https://xrplcluster.com",
+    zcash: "https://mainnet.lightwalletd.com",
+    gnosis: "https://rpc.gnosischain.com",
+    berachain: "https://rpc.berachain.com",
   },
 }

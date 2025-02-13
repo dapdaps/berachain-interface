@@ -43,9 +43,14 @@ export const backgroundBalanceActor = fromPromise(
     const networkToSolverFormat = assetNetworkAdapter[blockchain]
     switch (networkToSolverFormat) {
       case BlockchainEnum.NEAR: {
+        const address = isFungibleToken(derivedToken)
+          ? derivedToken.address
+          : null
+        assert(address != null, "Address is not defined")
+
         const [nep141Balance, nativeBalance] = await Promise.all([
           getNearNep141Balance({
-            tokenAddress: derivedToken.address,
+            tokenAddress: address,
             accountId: normalizeToNearAddress(userAddress),
           }),
           getNearNativeBalance({
@@ -53,7 +58,7 @@ export const backgroundBalanceActor = fromPromise(
           }),
         ])
         // This is unique case for NEAR, where we need to sum up the native balance and the NEP-141 balance
-        if (derivedToken.address === "wrap.near") {
+        if (address === "wrap.near") {
           if (nep141Balance === null || nativeBalance === null) {
             throw new Error("Failed to fetch NEAR balances")
           }
@@ -62,7 +67,7 @@ export const backgroundBalanceActor = fromPromise(
           break
         }
         const balance = await getNearNep141Balance({
-          tokenAddress: derivedToken.address,
+          tokenAddress: address,
           accountId: normalizeToNearAddress(userAddress),
         })
         if (balance === null) {
@@ -76,7 +81,9 @@ export const backgroundBalanceActor = fromPromise(
       case BlockchainEnum.BASE:
       case BlockchainEnum.ARBITRUM:
       case BlockchainEnum.TURBOCHAIN:
-      case BlockchainEnum.AURORA: {
+      case BlockchainEnum.AURORA:
+      case BlockchainEnum.GNOSIS:
+      case BlockchainEnum.BERACHAIN: {
         if (isNativeToken(derivedToken)) {
           const balance = await getEvmNativeBalance({
             userAddress: userAddress as Address,
@@ -127,6 +134,7 @@ export const backgroundBalanceActor = fromPromise(
       case BlockchainEnum.BITCOIN:
       case BlockchainEnum.DOGECOIN:
       case BlockchainEnum.XRPLEDGER:
+      case BlockchainEnum.ZCASH:
         break
       default:
         networkToSolverFormat satisfies never

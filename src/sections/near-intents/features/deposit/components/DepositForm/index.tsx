@@ -195,7 +195,8 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
       : null;
 
   const chainOptions = token != null ? filterBlockchainsOptions(token) : {};
-
+  console.log(token, '<==111======chainOptionschainOptionschainOptionschainOptionschainOptions')
+  console.log(token && filterBlockchainsOptions(token), '<==222======chainOptionschainOptionschainOptionschainOptionschainOptions')
   return (
     <div className="p-5">
       <div className="font-CherryBomb text-[26px] text-center mb-4">
@@ -445,11 +446,38 @@ function getBlockchainsOptions(): Record<
       ),
       value: BlockchainEnum.XRPLEDGER,
     },
-  };
-  return options as unknown as Record<
-  BlockchainEnum,
-  { label: string; icon: React.ReactNode; value: BlockchainEnum }
->;
+    [BlockchainEnum.ZCASH]: {
+      label: "Zcash",
+      icon: (
+        <NetworkIcon
+          chainIcon="/images/near-intents/icons/network/zcash-icon-black.svg"
+          chainName="zcash"
+        />
+      ),
+      value: BlockchainEnum.ZCASH,
+    },
+    [BlockchainEnum.GNOSIS]: {
+      label: "Gnosis",
+      icon: (
+        <NetworkIcon
+          chainIcon="/images/near-intents/icons/network/gnosis.svg"
+          chainName="Gnosis"
+        />
+      ),
+      value: BlockchainEnum.GNOSIS,
+    },
+    [BlockchainEnum.BERACHAIN]: {
+      label: "BeraChain",
+      icon: (
+        <NetworkIcon
+          chainIcon="/images/near-intents/icons/network/berachain.svg"
+          chainName="BeraChain"
+        />
+      ),
+      value: BlockchainEnum.BERACHAIN,
+    },
+  }
+  return options
 }
 
 function filterBlockchainsOptions(
@@ -465,7 +493,6 @@ function filterBlockchainsOptions(
       chains.includes(reverseAssetNetworkAdapter[option.value])
     )
     .map((option) => [option.value, option]);
-
   return Object.fromEntries(res);
 }
 

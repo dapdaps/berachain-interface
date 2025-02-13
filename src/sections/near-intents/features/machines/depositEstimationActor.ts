@@ -13,7 +13,7 @@ import {
 import type { BaseTokenInfo, SupportedChainName } from "../../types/base"
 import { BlockchainEnum } from "../../types/interfaces"
 import { assetNetworkAdapter } from "../../utils/adapters"
-import { isBaseToken, isNativeToken } from "../../utils/token"
+import { isBaseToken, isFungibleToken, isNativeToken } from "../../utils/token"
 import { validateAddress } from "../../utils/validateAddress"
 
 export const depositEstimateMaxValueActor = fromPromise(
@@ -29,7 +29,6 @@ export const depositEstimateMaxValueActor = fromPromise(
   }: {
     input: {
       blockchain: SupportedChainName
-      tokenAddress: string
       userAddress: string
       balance: bigint
       nearBalance: bigint | null
@@ -40,8 +39,8 @@ export const depositEstimateMaxValueActor = fromPromise(
     const networkToSolverFormat = assetNetworkAdapter[blockchain]
     switch (networkToSolverFormat) {
       case BlockchainEnum.NEAR:
-        // Max value for NEAR is the sum of the native balance and the balance
-        if (isBaseToken(token) && token.address === "wrap.near") {
+        // Max value for NEAR is the sum of the selected token balance (wrap.near) and the NEAR native balance
+        if (isFungibleToken(token) && token.address === "wrap.near") {
           assert(nearBalance !== null, "Near balance is required")
           return nearBalance + balance
         }
@@ -50,7 +49,9 @@ export const depositEstimateMaxValueActor = fromPromise(
       case BlockchainEnum.BASE:
       case BlockchainEnum.ARBITRUM:
       case BlockchainEnum.TURBOCHAIN:
-      case BlockchainEnum.AURORA: {
+      case BlockchainEnum.AURORA:
+      case BlockchainEnum.GNOSIS:
+      case BlockchainEnum.BERACHAIN: {
         if (
           !validateAddress(userAddress, blockchain) ||
           generateAddress == null
@@ -93,10 +94,11 @@ export const depositEstimateMaxValueActor = fromPromise(
         }
         return balance - fee
       }
-      // Active deposits through Bitcoin, Dogecoin are not supported, so no network fees
+      // For next blockchains - active deposits are not supported, so no network fees
       case BlockchainEnum.BITCOIN:
       case BlockchainEnum.DOGECOIN:
       case BlockchainEnum.XRPLEDGER:
+      case BlockchainEnum.ZCASH:
         return 0n
       default:
         networkToSolverFormat satisfies never

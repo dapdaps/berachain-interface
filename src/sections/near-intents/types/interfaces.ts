@@ -17,8 +17,10 @@ export enum BlockchainEnum {
   TURBOCHAIN = "eth:1313161567",
   AURORA = "eth:1313161554",
   XRPLEDGER = "xrp:mainnet",
+  ZCASH = "zec:mainnet",
+  GNOSIS = "eth:100",
+  BERACHAIN = "eth:80094",
 }
-
 
 
 
@@ -248,11 +250,6 @@ export type JobsDetails = {
   link: string
 }
 
-export enum BlockchainEnum {
-  Near = "near",
-  Eth = "eth",
-  Btc = "btc",
-}
 
 export enum NetworkEnum {
   Mainnet = "mainnet",
