@@ -82,6 +82,8 @@ export default function Bridge() {
   const { list, set }: any = useBridgeHistory()
   const [limitBera, setLimitBera] = useState(0)
 
+  
+
   // const inputValue = useDebounce(amount, { wait: 500 });
 
   const {
@@ -115,6 +117,25 @@ export default function Bridge() {
     defaultBridgeText: 'Bridge',
   })
 
+  const _allTokens = useMemo(() => {
+    if (!fromToken) {
+      return allTokens
+    }
+
+    const newAllTokens: any = {}
+    Object.keys(allTokens).map((key: any) => {
+      newAllTokens[key] = allTokens[key].filter((token: Token) => {
+        let symbol = token.symbol.toUpperCase()
+        if ([5000, 43114, 56].includes(Number(token.chainId)) && fromToken.symbol.toUpperCase() === 'WETH' && token.symbol.toUpperCase() === 'WETH') {
+          symbol = 'ETH'
+        }
+        return tokenPairs[fromChain.chainId][fromToken.symbol.toUpperCase()] === symbol
+      })
+    }); 
+
+    return newAllTokens;
+  }, [fromToken, fromChain])
+
   useEffect(() => {
     if (!fromToken) {
       setToToken(undefined)
@@ -146,6 +167,8 @@ export default function Bridge() {
           <DappHeader />
           <Card>
             <TokenAmout
+              isDest={false}
+              allTokens={allTokens}
               limitBera={limitBera === 1}
               chain={fromChain}
               token={fromToken ?? null}
@@ -198,6 +221,8 @@ export default function Bridge() {
               </svg>
             </div>
             <TokenAmout
+              allTokens={_allTokens}
+              isDest={true}
               limitBera={limitBera === 0}
               amount={reciveAmount ?? ''}
               chainList={chainList}
