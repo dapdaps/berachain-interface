@@ -22,6 +22,7 @@ const Popover = (props: Props) => {
     contentClassName,
     triggerContainerStyle,
     triggerContainerClassName,
+    closeDelayDuration = 300,
     onClickBefore,
   } = props;
 
@@ -35,7 +36,7 @@ const Popover = (props: Props) => {
   const { run: closeDelay, cancel: closeCancel } = useDebounceFn(() => {
     setVisible(false);
     setRealVisible(false);
-  }, { wait: 300 });
+  }, { wait: closeDelayDuration });
 
   return (
     <>
@@ -201,6 +202,7 @@ interface Props {
   triggerContainerStyle?: React.CSSProperties;
   triggerContainerClassName?: string;
   elRef?: HTMLElement;
+  closeDelayDuration?: number;
 
   onClickBefore?(e: any): Promise<boolean> | boolean;
 }

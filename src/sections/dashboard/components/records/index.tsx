@@ -29,7 +29,7 @@ interface Props {
   pageTotal: number;
   isReport?: boolean;
   showHeader?: boolean;
-  tableBodyClassName?: string;
+  tableBodyClassName?: string | ((record: any, index: number) => string);
   onNext(): void;
   onPrev(): void;
   formatColumns?(columns: Column[]): Column[];
