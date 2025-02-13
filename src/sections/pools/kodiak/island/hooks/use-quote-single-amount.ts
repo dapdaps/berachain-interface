@@ -10,7 +10,7 @@ export default function useQuoteSingleAmount(data: any, query: Function) {
   const slippage = useSettingsStore((store: any) => store.slippage);
 
   const queryAmounts = async (amount: string, index: number, cb: Function) => {
-    if (!amount || isNaN(Number(amount))) return;
+    if (!amount || isNaN(Number(amount)) || Number(amount) === 0) return;
     try {
       setLoading(true);
       const [tokenIn, tokenOut] =
@@ -23,7 +23,7 @@ export default function useQuoteSingleAmount(data: any, query: Function) {
         : tokenOut.address;
       const quoteAmount = (Number(amount) / 2) * 10 ** tokenIn.decimals;
       const response = await asyncFetch(
-        `https://ebey72gfe6.execute-api.us-east-1.amazonaws.com/prod/quote?protocols=v2%2Cv3%2Cmixed&tokenInAddress=${tokenInAddress}&tokenInChainId=80094&tokenOutAddress=${tokenOutAddress}&tokenOutChainId=80094&amount=${quoteAmount}&type=exactIn&slippageTolerance=${slippage}&deadline=1000&recipient=${account}`
+        `https://ebey72gfe6.execute-api.us-east-1.amazonaws.com/prod/quote?protocols=v2%2Cv3%2Cmixed&tokenInAddress=${tokenInAddress}&tokenInChainId=80094&tokenOutAddress=${tokenOutAddress}&tokenOutChainId=80094&amount=${quoteAmount}&type=exactIn&slippageTolerance=${slippage}&deadline=1000&recipient=0x679a7C63FC83b6A4D9C1F931891d705483d4791F`
       );
 
       query({
