@@ -5,14 +5,16 @@ import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/
 import { AnimatePresence, motion } from 'framer-motion';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Title from '@/components/GuidingTour/mainnet/components/title';
+import { GuidingTourContext } from './context';
 
 const ChoosePill = (props: any) => {
   const { onClose } = props;
   const isMobile = useIsMobile();
+  const { handlePrize, prizing } = useContext(GuidingTourContext);
 
-  const { choosePillVisible, setChoosePillVisible, setProfileVisible, setGetBeraVisible } = useGuidingTour();
+  const { choosePillVisible, setChoosePillVisible, setProfileVisible, setGetBeraVisible, setDoneVisible } = useGuidingTour();
   const [choosed, setChoosed] = useState<'bera' | 'bgt'>();
 
   const handleBack = () => {
@@ -22,11 +24,18 @@ const ChoosePill = (props: any) => {
 
   const handleNext = () => {
     setChoosePillVisible(false);
-    setGetBeraVisible(true);
+    setDoneVisible(true);
   };
 
   const handleChoose = (token?: 'bera' | 'bgt') => {
     setChoosed(token);
+  };
+
+  const handleHowGetBera = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setChoosePillVisible(false);
+    setGetBeraVisible(true);
   };
 
   useEffect(() => {
@@ -72,7 +81,7 @@ const ChoosePill = (props: any) => {
           />
           <div
             className={clsx('absolute w-[149px] h-[149px] left-0 bottom-[-20px] cursor-pointer')}
-            onClick={() => handleChoose('bera')}
+            onMouseEnter={() => handleChoose('bera')}
           >
             <TokenBg visible={choosed === 'bera'} />
             <img
@@ -91,6 +100,7 @@ const ChoosePill = (props: any) => {
                     alt=""
                     className="w-[175px] h-[198px] absolute right-0 bottom-[30px] translate-x-[calc(100%_+_8px)]"
                     {...VisibleAnimation}
+                    onClick={handleHowGetBera}
                   />
                 )
               }
@@ -98,7 +108,7 @@ const ChoosePill = (props: any) => {
           </div>
           <div
             className={clsx('absolute w-[149px] h-[149px] right-0 bottom-[-20px] cursor-pointer')}
-            onClick={() => handleChoose('bgt')}
+            onMouseEnter={() => handleChoose('bgt')}
           >
             <TokenBg visible={choosed === 'bgt'} />
             <img
@@ -189,7 +199,9 @@ const ChoosePill = (props: any) => {
           <Button
             type={ButtonType.Primary}
             className="flex-1"
-            onClick={handleNext}
+            onClick={() => handlePrize(handleNext)}
+            loading={prizing}
+            disabled={prizing}
           >
             Next
           </Button>
@@ -212,6 +224,9 @@ const TokenBg = (props: any) => {
             src="/images/guiding-tour/choose-token-bg.svg"
             alt=""
             className="animate-rotate w-full h-full absolute left-0 bottom-0 z-[1] pointer-events-none"
+            style={{
+              animationDuration: '5s',
+            }}
             {...VisibleAnimation}
           />
         )

@@ -1,10 +1,13 @@
 import clsx from "clsx";
 import AirdropButton from "@/components/airdrop/components/button";
 import { numberFormatter } from "@/utils/number-formatter";
+import useCustomAccount from "@/hooks/use-account";
+import { useAppKit } from "@reown/appkit/react";
 
 const AirdropReward = (props: any) => {
   const { className, data } = props;
-  console.log("data", data);
+  // const { account } = useCustomAccount();
+  // const modal = useAppKit();
   return (
     <div className={clsx("flex flex-col items-center gap-[10px]", className)}>
       <img
@@ -26,6 +29,17 @@ const AirdropReward = (props: any) => {
               $BERA
             </div>
           </div>
+          {/* {!account && (
+            <AirdropButton
+              className="w-[240px] mt-[19px]"
+              onClick={() => {
+                modal.open();
+              }}
+            >
+              Connect Wallet To Share
+            </AirdropButton>
+          )} */}
+          {/* {account?.toLowerCase() === data.address.toLowerCase() && ( */}
           <AirdropButton
             className="w-[220px] mt-[19px]"
             onClick={() => {
@@ -40,6 +54,7 @@ const AirdropReward = (props: any) => {
           >
             Share on X
           </AirdropButton>
+          {/* )} */}
         </>
       ) : (
         <div className="flex flex-col items-center justify-center gap-[6px]">

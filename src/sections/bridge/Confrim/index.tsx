@@ -1,7 +1,6 @@
 import Card from '@/components/card';
 import Modal from '@/components/modal/index';
-import { Token } from '@/types';
-import { Chain } from 'viem';
+import type { Chain, Token } from '@/types';
 
 interface Props {
   show: boolean;
@@ -16,6 +15,11 @@ interface Props {
 }
 
 export default function Confirm({ show, onClose, fromChain, toChain, fromToken, toToken, amount, receiveAmount, showHistory }: Props) {
+
+  if (!show) {
+    return null
+  }
+
   return (
     <Modal open={show} onClose={onClose}>
       <Card>
@@ -26,7 +30,7 @@ export default function Confirm({ show, onClose, fromChain, toChain, fromToken, 
           <div className='flex items-center justify-between mt-[35px] text-[20px]'>
             <div className='flex-1 text-right pr-[40px]'>
               <div>{amount} {fromToken.symbol} </div>
-              <div>on { fromChain.name }</div>
+              <div>on { fromChain.chainName }</div>
             </div>
             <svg
               width='27'
@@ -45,7 +49,7 @@ export default function Confirm({ show, onClose, fromChain, toChain, fromToken, 
 
             <div className='flex-1 pl-[40px]'>
               <div>{receiveAmount} { toToken.symbol } </div>
-              <div>on {toChain.name}</div>
+              <div>on {toChain.chainName}</div>
             </div>
           </div>
 
