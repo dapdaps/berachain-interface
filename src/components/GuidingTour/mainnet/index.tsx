@@ -57,7 +57,11 @@ const GuidingTutorial = (props: any) => {
   const handlePrize = async (callback: () => {}) => {
     if (pending) return;
     setPending(true);
-    await onAuthCheck();
+    const authRes = await onAuthCheck(false, true);
+    if (!authRes) {
+      setPending(false);
+      return;
+    }
     try {
       const res = await post('/api/user/guide/prize');
       if (res.code !== 0) {
