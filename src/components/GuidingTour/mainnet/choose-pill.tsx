@@ -31,9 +31,9 @@ const ChoosePill = (props: any) => {
     setChoosed(token);
   };
 
-  const handleHowGetBera = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleHowGetBera = (e?: any) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
     setChoosePillVisible(false);
     setGetBeraVisible(true);
   };
@@ -142,7 +142,7 @@ const ChoosePill = (props: any) => {
                 {...VisibleAnimation}
               >
                 <Title className="!font-CherryBomb text-center">
-                  How to get $BERA?
+                  The $BERA token
                 </Title>
                 <ul className="mt-[10px] pl-[20px] flex flex-col gap-[10px] list-disc">
                   <li className="">
@@ -199,11 +199,17 @@ const ChoosePill = (props: any) => {
           <Button
             type={ButtonType.Primary}
             className="flex-1"
-            onClick={() => handlePrize(handleNext)}
+            onClick={() => {
+              if (choosed === 'bera' && isMobile) {
+                handleHowGetBera();
+                return;
+              }
+              handlePrize(handleNext);
+            }}
             loading={prizing}
             disabled={prizing}
           >
-            Next
+            {(choosed === 'bera' && isMobile) ? 'How to get $BERA?' : 'Next'}
           </Button>
         </div>
       </Card>
