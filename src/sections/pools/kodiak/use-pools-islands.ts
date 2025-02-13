@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 import config from "@/configs/pools/kodiak";
 import { tickToPrice } from "../tick-math";
 import { balanceFormated } from "@/utils/balance";
-import weth from "@/configs/contract/weth";
-import { DEFAULT_CHAIN_ID, TOKENS } from "@/configs";
+import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
 
 export default function usePoolsIslands() {
   const [pools, setPools] = useState<any>();
   const [loading, setLoading] = useState(true);
+  const kodiakTokensStore: any = useKodiakTokensStore();
 
   useEffect(() => {
     const queryPools = async () => {
       try {
-        const [sweetenedResult, result] = await Promise.all([
+        const calls = [
           axios.post(
             `https://api.goldsky.com/api/public/project_clpx84oel0al201r78jsl0r3i/subgraphs/kodiak-v3-berachain-mainnet/latest/gn`,
             {
@@ -35,11 +35,42 @@ export default function usePoolsIslands() {
               query:
                 "\n  \n  fragment TokenFields on Token {\n    id\n    symbol\n    name\n    decimals\n    totalSupply\n    volume\n    volumeUSD\n    untrackedVolumeUSD\n    feesUSD\n    txCount\n    poolCount\n    totalValueLocked\n    totalValueLockedUSD\n    totalValueLockedUSDUntracked\n    derivedETH\n  }\n\n  \n  fragment PoolFields on Pool {\n    id\n    createdAtTimestamp\n    createdAtBlockNumber\n    feeTier\n    liquidity\n    sqrtPrice\n    feeGrowthGlobal0X128\n    feeGrowthGlobal1X128\n    token0Price\n    token1Price\n    tick\n    observationIndex\n    volumeToken0\n    volumeToken1\n    volumeUSD\n    untrackedVolumeUSD\n    feesUSD\n    txCount\n    collectedFeesToken0\n    collectedFeesToken1\n    collectedFeesUSD\n    totalValueLockedToken0\n    totalValueLockedToken1\n    totalValueLockedETH\n    totalValueLockedUSD\n    totalValueLockedUSDUntracked\n    liquidityProviderCount\n  }\n\n  query getAllIslands($allowedIds: [ID!]!) {\n    kodiakVaults(where: { id_in: $allowedIds }, orderBy: apr__averageApr) {\n      id\n      name\n      symbol\n      depositLimit\n      createdTimestamp\n      createdBlockNumber\n      totalValueLockedUSD\n      cumulativeSupplySideRevenueUSD\n      cumulativeProtocolSideRevenueUSD\n      cumulativeTotalRevenueUSD\n      inputTokenBalance\n      outputTokenSupply\n      outputTokenPriceUSD\n      pricePerShare\n      stakedOutputTokenAmount\n      rewardTokenEmissionsAmount\n      rewardTokenEmissionsUSD\n      volumeToken0\n      volumeToken1\n      volumeUSD\n      _token0Amount\n      _token1Amount\n      _token0AmountUSD\n      _token1AmountUSD\n      _token0 {\n        ...TokenFields\n      }\n      _token1 {\n        ...TokenFields\n      }\n\n      inputToken {\n        ...TokenFields\n      }\n      outputToken {\n        ...TokenFields\n      }\n      rewardTokens {\n        token {\n          ...TokenFields\n        }\n        type\n      }\n\n      fees {\n        id\n        feePercentage\n        feeType\n      }\n      pool {\n        ...PoolFields\n      }\n      apr {\n        id\n        averageApr\n        timestamp\n      }\n      dailySnapshots {\n        timestamp\n        volumeUSD\n      }\n  upperTick\n lowerTick\n }\n  }\n",
               variables: {
-                allowedIds: Object.keys(config.islands)
+                allowedIds: config.islands
               }
             }
           )
-        ]);
+        ];
+        if (Object.values(kodiakTokensStore.tokens).length === 0) {
+          calls.push(
+            axios.get("https://api.panda.kodiak.finance/80094/tokenList.json")
+          );
+          calls.push(
+            axios.get(
+              "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
+            )
+          );
+        }
+        const [sweetenedResult, result, pandaResponse, normalResponse] =
+          await Promise.all(calls);
+
+        let tokens: any = kodiakTokensStore.tokens;
+        if (pandaResponse && normalResponse) {
+          const _tokens = [
+            ...pandaResponse.data.tokens,
+            ...normalResponse.data.tokens
+          ].map((token: any) => ({
+            ...token,
+            icon: token.logoURI
+          }));
+          tokens = _tokens.reduce(
+            (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
+            {}
+          );
+          kodiakTokensStore.set({
+            tokens
+          });
+          console.log(58, tokens);
+        }
         const list = [
           ...(sweetenedResult.data.data.kodiakVaults || []),
           ...(result.data.data.kodiakVaults || [])
@@ -47,22 +78,13 @@ export default function usePoolsIslands() {
 
         setPools(
           list.map((item: any) => {
-            const _token0 = TOKENS[
-              item._token0.id === weth[DEFAULT_CHAIN_ID]
-                ? "native"
-                : item._token0.id
-            ] || {
+            const _token0 = tokens[item._token0.id.toLowerCase()] || {
               ...item._token0,
               address: item._token0.id
             };
-            const _token1 = TOKENS[
-              item._token1.id === weth[DEFAULT_CHAIN_ID]
-                ? "native"
-                : item._token1.id
-            ] || {
+            const _token1 = tokens[item._token1.id.toLowerCase()] || {
               ...item._token1,
-              address: item._token1.id,
-              price: item.pool.token1Price
+              address: item._token1.id
             };
 
             const lowerPrice =
@@ -95,7 +117,7 @@ export default function usePoolsIslands() {
               },
               token1: {
                 ..._token1,
-                price: item.pool.token0Price,
+                price: item.pool.token1Price,
                 icon: _token1.icon || "/assets/tokens/default_icon.png"
               },
               fee: item.pool.feeTier,

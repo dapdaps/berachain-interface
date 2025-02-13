@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import MenuButton from "@/components/mobile/menuButton";
-import Image from "next/image";
 import Dropdown from "@/components/dropdown";
 import CheckBox from "@/components/check-box";
 import Empty from "@/components/empty";
@@ -50,7 +49,7 @@ const Item = ({ data, onClick }: any) => {
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
               {data?.images[0] && (
-                <Image
+                <img
                   className="mr-[-8px] rounded-full"
                   src={data?.images[0]}
                   width={40}
@@ -59,7 +58,7 @@ const Item = ({ data, onClick }: any) => {
                 />
               )}
               {data?.images[1] && (
-                <Image
+                <img
                   className="rounded-full"
                   src={data?.images[1]}
                   width={40}
@@ -67,11 +66,11 @@ const Item = ({ data, onClick }: any) => {
                   alt="Token"
                 />
               )}
-              <Image
+              <img
                 className="absolute right-[-2px] bottom-[0px]"
                 src={
-                  pool?.protocol === "BeraSwap"
-                    ? "/images/dapps/beraswap.svg"
+                  pool?.protocol === "BEX"
+                    ? "/images/dapps/infrared/bex.svg"
                     : pool?.protocol === "aquabera"
                     ? "/images/dapps/infrared/aquabera.svg"
                     : pool?.protocol === "Kodiak Finance"

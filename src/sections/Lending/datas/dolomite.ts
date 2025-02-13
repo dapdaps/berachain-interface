@@ -261,6 +261,204 @@ const MARGIN_ABI = [
     stateMutability: 'view',
     type: 'function'
   },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMarketWithInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isClosing",
+            "type": "bool"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "borrow",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "supply",
+                "type": "uint128"
+              }
+            ],
+            "internalType": "struct Types.TotalPar",
+            "name": "totalPar",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint112",
+                "name": "borrow",
+                "type": "uint112"
+              },
+              {
+                "internalType": "uint112",
+                "name": "supply",
+                "type": "uint112"
+              },
+              {
+                "internalType": "uint32",
+                "name": "lastUpdate",
+                "type": "uint32"
+              }
+            ],
+            "internalType": "struct Interest.Index",
+            "name": "index",
+            "type": "tuple"
+          },
+          {
+            "internalType": "contract IPriceOracle",
+            "name": "priceOracle",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IInterestSetter",
+            "name": "interestSetter",
+            "type": "address"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Decimal.D256",
+            "name": "marginPremium",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Decimal.D256",
+            "name": "liquidationSpreadPremium",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "sign",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Types.Wei",
+            "name": "maxSupplyWei",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "sign",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Types.Wei",
+            "name": "maxBorrowWei",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Decimal.D256",
+            "name": "earningsRateOverride",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct Storage.Market",
+        "name": "",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint112",
+            "name": "borrow",
+            "type": "uint112"
+          },
+          {
+            "internalType": "uint112",
+            "name": "supply",
+            "type": "uint112"
+          },
+          {
+            "internalType": "uint32",
+            "name": "lastUpdate",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct Interest.Index",
+        "name": "",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Monetary.Price",
+        "name": "",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Interest.Rate",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
 ];
 
 const apr2ApyDaily = (apr: string) => {
@@ -702,6 +900,11 @@ const DolomiteData = (props: any) => {
           address: marginAddress,
           name: 'getMarketSpreadPremium',
           params: [oToken.marketId]
+        },
+        {
+          address: marginAddress,
+          name: 'getMarketWithInfo',
+          params: [oToken.marketId]
         }
       ];
       multicall({
@@ -750,10 +953,24 @@ const DolomiteData = (props: any) => {
             .times(marketSupplyIndex)
             .toString();
 
-          console.log('totalParBorrow: %o', totalParBorrow);
-          console.log('totalParSupply: %o', totalParSupply);
-          console.log('marketBorrowIndex: %o', marketBorrowIndex);
-          console.log('marketSupplyIndex: %o', marketSupplyIndex);
+          const currentSuppliedPar = res[5]?.[0]?.totalPar?.supply;
+          const currentMaxSupplyWei = res[5]?.[0]?.maxSupplyWei?.value;
+          let currentSuppliedWeiAmount = '0';
+          let currentMaxSupplyWeiAmount = '0';
+          if (currentSuppliedPar) {
+            const currentSuppliedParValue = ethers.utils.formatUnits(currentSuppliedPar._hex || '0', oToken.decimals);
+            currentSuppliedWeiAmount = Big(currentSuppliedParValue).times(marketSupplyIndex).toString();
+          }
+          if (currentMaxSupplyWei) {
+            currentMaxSupplyWeiAmount = ethers.utils.formatUnits(currentMaxSupplyWei._hex || '0', oToken.decimals);
+          }
+
+          console.log('%s totalParBorrow: %o', oToken.symbol, totalParBorrow);
+          console.log('%s totalParSupply: %o', oToken.symbol, totalParSupply);
+          console.log('%s marketBorrowIndex: %o', oToken.symbol, marketBorrowIndex);
+          console.log('%s marketSupplyIndex: %o', oToken.symbol, marketSupplyIndex);
+          console.log('%s currentMaxSupplyWeiAmount: %o', oToken.symbol, currentMaxSupplyWeiAmount);
+          console.log('%s currentSuppliedWeiAmount: %o', oToken.symbol, currentSuppliedWeiAmount);
 
           let currentTokenBorrow = Big(0);
           let currentTokenCollateral = Big(0);
@@ -819,7 +1036,9 @@ const DolomiteData = (props: any) => {
             yourLendsUSD: Big(oToken.dolomiteBalance || 0)
               .times(monetaryPrice)
               .toString(),
-            balance: oToken.dolomiteBalance || '0'
+            balance: oToken.dolomiteBalance || '0',
+            currentMaxSupplyWeiAmount,
+            currentSuppliedWeiAmount,
           };
 
           console.log('_cTokensData: %o', _cTokensData);

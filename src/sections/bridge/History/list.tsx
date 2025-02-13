@@ -1,19 +1,34 @@
 import { useStatus } from '../Hooks/Stargate/useStatus'
 import { useState } from 'react'
-import chains, { icons } from '@/configs/chains'
+import { icons } from '@/configs/chains'
 import { formatEnglishDate } from '@/utils/date'
 import useIsMobile from '@/hooks/use-isMobile';
+import chains from '../lib/util/chainConfig'
+
+import allTokens from '../lib/allTokens'
+import { tokenPairs } from '../lib/bridges/stargate/config'
+import { balanceFormated } from '@/utils/balance';
+
+const _allTokens: any = {};
+
+Object.keys(allTokens).forEach((chainId: string) => {
+    allTokens[Number(chainId)].forEach((item: any) => {
+        _allTokens[Number(chainId)] = _allTokens[Number(chainId)] || {}
+        _allTokens[Number(chainId)][item.symbol.toUpperCase()] = item
+    })
+})
+
 
 export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
-    const isMobile = useIsMobile(); 
+    const isMobile = useIsMobile();
 
     const filteredList = list.filter((item: any) =>
-        activeTab === 'pending' ? item.status === 1 : item.status !== 1
+        activeTab === 'pending' ? Number(item.bridge_status) !== 4 : Number(item.bridge_status) === 4
     )
 
-    const cls = isMobile 
-    ? 'm-auto md:w-[92.307vw] border border-[#000] rounded-2xl bg-[#FFFDEB]' 
-    : 'fixed bottom-[60px] w-[350px] right-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]'
+    const cls = isMobile
+        ? 'm-auto md:w-[92.307vw] border border-[#000] rounded-2xl bg-[#FFFDEB]'
+        : 'fixed bottom-[60px] w-[350px] right-4 z-50 border border-[#000] rounded-2xl bg-[#FFFDEB] lg:shadow-[10px_10px_0px_0px_#00000040]'
 
     return (
         <div className={cls}>
@@ -52,52 +67,67 @@ export default function History({ pendingCount, historyCount, list, setIsOpen, a
 
                 <div className="max-h-[600px] overflow-y-auto">
                     {filteredList.map((item: any) => (
-                        <div key={item.transactionHash} className="border-b border-gray-200 py-3">
-                            <div className="flex justify-between items-center">
-                                <div className='flex-1'>
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-[30px] h-[30px] relative">
-                                                <img className='w-full h-full object-contain' src={item.token.icon} />
-                                                <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.fromChainId]} />
-                                            </div>
-                                            <div>
-                                                {item.amount}<br />{item.token.symbol}
-                                            </div>
-                                        </div>
-                                        <span>→</span>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-[30px] h-[30px] relative">
-                                                <img className='w-full h-full object-contain' src={item.toToken?.icon} />
-                                                <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={icons[item.toChainId]} />
-                                            </div>
-                                            <div>
-                                                {item.amount}<br />{item.toToken?.symbol}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="text-sm text-gray-500 flex justify-between items-center">
-                                        <div>
-                                            {formatEnglishDate(item.time)}
-                                            {
-                                                item.fromChainId === 1 && <a target='_blank' href={`https://etherscan.io/tx/${item.transactionHash}`} className="ml-2 text-blue-500 underline">Tx</a>
-                                            }
-                                            {
-                                                item.fromChainId === 80094 && <a target='_blank' href={`https://berascan.com/tx/${item.transactionHash}`} className="ml-2 text-blue-500 underline">Tx</a>
-                                            }
-                                        </div>
-                                        <div>
-                                            {item.status === 1 && <span className="text-[#006BFF]">Processing~3min</span>}
-                                            {item.status === 2 && <span className="text-[#006BFF]">Success</span>}
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                        <HistoryItem item={item} key={item.tx_id} />
                     ))}
                 </div>
             </div>
         </div>
     )
+}
+
+function HistoryItem({ item }: { item: any }) {
+    const action_tokens = JSON.parse(item.action_tokens)
+    const fromToken = _allTokens[item.chain_id][action_tokens[0].toUpperCase()]
+    let toToken = _allTokens[item.to_chain_id]?.[tokenPairs[item.chain_id]?.[action_tokens[0].toUpperCase()]?.toUpperCase()]
+
+    if (Number(item.chain_id) === 80094
+        && fromToken?.symbol === 'WETH'
+        && [5000, 43114, 56].includes(Number(item.to_chain_id))
+    ) {
+        toToken = _allTokens[item.to_chain_id]?.['WETH']
+    }
+
+    
+    // console.log(_allTokens[item.chain_id], action_tokens)
+
+    return <div className="border-b border-gray-200 py-3">
+        <div className="flex justify-between items-center">
+            <div className='flex-1'>
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-[30px] h-[30px] relative">
+                            <img className='w-full h-full object-contain' src={fromToken?.icon} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.chain_id].icon} />
+                        </div>
+                        <div>
+                            {balanceFormated(item.action_amount)}<br />{fromToken?.symbol}
+                        </div>
+                    </div>
+                    <span>→</span>
+                    <div className="flex items-center gap-2">
+                        <div className="w-[30px] h-[30px] relative">
+                            <img className='w-full h-full object-contain' src={toToken?.icon} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.to_chain_id].icon} />
+                        </div>
+                        <div>
+                            {balanceFormated(item.action_amount)}<br />{toToken?.symbol}
+                        </div>
+                    </div>
+                </div>
+                <div className="text-sm text-gray-500 flex justify-between items-center">
+                    <div>
+                        {formatEnglishDate(new Date(item.create_time).getTime())}
+                        {
+                            <a target='_blank' href={`${chains[item.chain_id].blockExplorers}/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
+                        }
+                    </div>
+                    <div>
+                        {Number(item.bridge_status) !== 4 && <span className="text-[#006BFF]">Processing~3min</span>}
+                        {Number(item.bridge_status) === 4 && <span className="text-[#006BFF]">Success</span>}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 }

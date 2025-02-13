@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useMemo } from "react";
 
 export default function PoolTable({ item, onClick = () => {} }: any) {
@@ -11,7 +10,7 @@ export default function PoolTable({ item, onClick = () => {} }: any) {
     <div className="flex items-center gap-[12px]" onClick={onClick}>
       <div className="flex items-center relative">
         {tokens.map((token: any, i: number) => (
-          <Image
+          <img
             key={i}
             src={token.icon || "/assets/tokens/default_icon.png"}
             width={30}
@@ -21,7 +20,7 @@ export default function PoolTable({ item, onClick = () => {} }: any) {
           />
         ))}
         {item.protocolIcon && (
-          <Image
+          <img
             className="absolute right-[-2px] bottom-[0px]"
             src={item.protocolIcon}
             width={16}

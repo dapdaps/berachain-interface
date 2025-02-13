@@ -127,6 +127,12 @@ const TabPanelMobile: React.FC<TabPanelProps> = ({
         onSuccess={onSuccess}
         onDeposit={handleDeposit}
         onWithdraw={handleWithdraw}
+        actionDisabled={(record: any) => {
+          return {
+            deposit: false,
+            withdraw: !record.balance || Big(record.balance).lte(0),
+          };
+        }}
       />
       <Drawer
         visible={visible}

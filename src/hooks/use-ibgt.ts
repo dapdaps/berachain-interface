@@ -309,9 +309,7 @@ export function useIBGT(props: any) {
           addAction?.({
             type: "Staking",
             action: "Staking",
-            token: {
-              symbol: tokens.join("-")
-            },
+            tokens: tokens.map((token: string) => ({ symbol: token })),
             amount: inAmount,
             template: "Infrared",
             status: status,
@@ -403,10 +401,7 @@ export function useIBGT(props: any) {
           addAction?.({
             type: "Staking",
             action: "UnStake",
-            token: {
-              symbol: tokens.join("-")
-            },
-            symbol: tokens.join("-"),
+            tokens: tokens.map((token: string) => ({ symbol: token })),
             amount: lpAmount,
             template: "Infrared",
             status: status,
@@ -481,9 +476,7 @@ export function useIBGT(props: any) {
           addAction?.({
             type: "Staking",
             action: "Claim",
-            token: {
-              symbol: tokenData?.rewardSymbol
-            },
+            tokens: tokenData ? [{ symbol: tokenData?.rewardSymbol }] : [],
             amount: tokenData?.earned,
             template: "Infrared",
             status: status,

@@ -1,5 +1,4 @@
 import List from "@/sections/marketplace/components/list";
-import Image from "next/image";
 import Big from "big.js";
 import useUserList from "../hooks/use-user-list";
 import { balanceFormated } from "@/utils/balance";
@@ -22,14 +21,14 @@ export default function Laptop({ onClick }: any) {
             render: (item: any, index: number) => {
               return (
                 <div className="flex items-center gap-[10px]">
-                  <Image
+                  <img
                     src={item.pool.token0.icon}
                     width={30}
                     height={30}
                     className="rounded-full"
                     alt={item.pool.token0.symbol}
                   />
-                  <Image
+                  <img
                     src={item.pool.token1.icon}
                     width={30}
                     height={30}
@@ -61,7 +60,7 @@ export default function Laptop({ onClick }: any) {
               return (
                 <div className="flex flex-col">
                   <div className="flex items-center gap-[8px] text-[14px] font-medium">
-                    <Image
+                    <img
                       src={item.pool.token0.icon}
                       width={20}
                       height={20}
@@ -74,7 +73,7 @@ export default function Laptop({ onClick }: any) {
                     </div>
                   </div>
                   <div className="flex items-center gap-[8px] text-[14px] font-medium">
-                    <Image
+                    <img
                       src={item.pool.token1.icon}
                       width={20}
                       height={20}
@@ -144,7 +143,7 @@ export default function Laptop({ onClick }: any) {
                 <div>
                   {/* <div className="text-[16px] font-medium">{`< $0.001`}</div> */}
                   <div className="flex items-center gap-[3px]">
-                    <Image
+                    <img
                       src={item.rewardToken.icon}
                       width={16}
                       height={16}

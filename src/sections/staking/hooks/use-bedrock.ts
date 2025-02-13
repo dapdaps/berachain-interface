@@ -109,9 +109,11 @@ export default function useBedrock(dexConfig: any) {
           addAction?.({
             type: "Staking",
             action: "Staking",
-            token: {
-              symbol: sourceToken?.symbol
-            },
+            tokens: [
+              {
+                symbol: sourceToken?.symbol
+              }
+            ],
             amount: inAmount,
             template: "Bedrock",
             status: status,

@@ -2,7 +2,22 @@ import { Chain } from "viem";
 import {
   mainnet,
   berachainTestnetbArtio,
-  arbitrum
+  base, 
+  mantle,
+  arbitrum,
+  avalanche,
+  bsc,
+  linea,
+  metis,
+  optimism,
+  polygon,
+  polygonZkEvm,
+  zksync,
+  gnosis,
+  manta,
+  scroll,
+  blast,
+  mode,
 } from "@reown/appkit/networks";
 
 const chains: Record<number, Chain | any> = {
@@ -28,6 +43,70 @@ const chains: Record<number, Chain | any> = {
   },
   [mainnet.id]: {
     ...mainnet,
+    isWalletSupport: false
+  },
+  [base.id]: {
+    ...base,
+    isWalletSupport: false
+  },
+  [mantle.id]: {
+    ...mantle,
+    isWalletSupport: false
+  },
+  [scroll.id]: {
+    ...scroll,
+    isWalletSupport: false
+  },
+  [blast.id]: {
+    ...blast,
+    isWalletSupport: false
+  },
+  [mode.id]: {
+    ...mode,
+    isWalletSupport: false
+  },
+  [polygonZkEvm.id]: {
+    ...polygonZkEvm,
+    isWalletSupport: false
+  },
+  [zksync.id]: {
+    ...zksync,
+    isWalletSupport: false
+  },
+  [gnosis.id]: {
+    ...gnosis,
+    isWalletSupport: false
+  },  
+  [manta.id]: {
+    ...manta,
+    isWalletSupport: false
+  },
+  [avalanche.id]: {
+    ...avalanche,
+    isWalletSupport: false
+  },
+  [bsc.id]: {
+    ...bsc,
+    isWalletSupport: false
+  },
+  [linea.id]: {
+    ...linea,
+    isWalletSupport: false
+  },
+  [metis.id]: {
+    ...metis,
+    isWalletSupport: false
+  },
+  [optimism.id]: {
+    ...optimism,
+    isWalletSupport: false
+  },
+  [polygon.id]: {
+    ...polygon,
+    isWalletSupport: false
+  },
+  [arbitrum.id]: {
+    ...arbitrum,
     isWalletSupport: false
   }
 };

@@ -97,7 +97,7 @@ const TokenList = (props: any) => {
   const { tokens, selected, handleSelect } = props;
 
   return (
-    <ul className="m-0 p-0 list-none mt-[25px]">
+    <ul className="m-0 p-0 list-none mt-[25px] max-h-[calc(100%_-_70px)] overflow-y-auto">
       {
         tokens.map((token: any, idx: number) => (
           <motion.li
