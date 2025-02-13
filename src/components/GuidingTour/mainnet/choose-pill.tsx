@@ -95,10 +95,8 @@ const ChoosePill = (props: any) => {
             <AnimatePresence>
               {
                 (choosed === 'bera' && !isMobile) && (
-                  <motion.img
-                    src="/images/guiding-tour/how-get-bera.svg"
-                    alt=""
-                    className="w-[175px] h-[198px] absolute right-0 bottom-[30px] translate-x-[calc(100%_+_8px)]"
+                  <motion.div
+                    className="w-[202px] h-[198px] absolute right-0 bottom-[30px] translate-x-[calc(100%_+_8px)] bg-[url('/images/guiding-tour/how-get-bera.svg')] bg-no-repeat bg-center bg-contain"
                     {...VisibleAnimation}
                     onClick={handleHowGetBera}
                   />
@@ -122,10 +120,8 @@ const ChoosePill = (props: any) => {
             <AnimatePresence>
               {
                 choosed === 'bgt' && !isMobile && (
-                  <motion.img
-                    src="/images/guiding-tour/how-get-bgt.svg"
-                    alt=""
-                    className="w-[172px] h-[274px] absolute left-0 bottom-0 translate-x-[calc(-100%_-_6px)]"
+                  <motion.div
+                    className="w-[207px] h-[289px] absolute left-0 bottom-[20px] translate-x-[calc(-100%_-_6px)] bg-[url('/images/guiding-tour/how-get-bgt.svg')] bg-no-repeat bg-center bg-contain"
                     {...VisibleAnimation}
                   />
                 )
