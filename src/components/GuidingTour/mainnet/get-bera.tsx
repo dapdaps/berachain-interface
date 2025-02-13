@@ -58,7 +58,7 @@ const GetBera = (props: any) => {
                   },
                   {
                     icon: '/images/guiding-tour/cex-3.svg',
-                    link: 'https://www.kraken.com/prices/near-protocol'
+                    link: 'https://www.kucoin.com/trade/BERA-USDT'
                   },
                   {
                     icon: '/images/guiding-tour/cex-4.svg',
