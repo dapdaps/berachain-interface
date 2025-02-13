@@ -33,11 +33,8 @@ export default function useAddAction(source: string) {
             : "",
           account_id: account,
           template: data.template,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain.name,
           chain_id: chainId,
-          action_switch: data.add ? 1 : 0,
           token_in_currency: data?.token_in_currency,
           token_out_currency: data?.token_out_currency,
           extra_data: data?.extra_data
@@ -48,9 +45,6 @@ export default function useAddAction(source: string) {
       }
       if (data.type === "Bridge") {
         try {
-          const fromChain = chains[data.fromChainId] || {
-            name: "Ethereum Mainnet"
-          };
           const toChain = chains[data.toChainId] || {
             name: "Ethereum Mainnet"
           };
@@ -61,10 +55,6 @@ export default function useAddAction(source: string) {
             action_amount: data.amount,
             account_id: account,
             template: data.template,
-            // action_network_id: currentChain?.name,
-            action_network_id: fromChain?.name,
-            action_switch: data.add ? 1 : 0,
-            action_status: data.status === 1 ? "Success" : "Failed",
             tx_id: data.transactionHash,
             chain_id: data.fromChainId,
             to_chain_id: data.toChainId,
@@ -81,10 +71,7 @@ export default function useAddAction(source: string) {
           account_id: account,
           template: data.template,
           sub_type: data.action === "Deposit" ? "Supply" : data.action,
-          action_switch: data.add ? 1 : 0,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain.name,
           chain_id: chainId
         };
 
@@ -115,10 +102,7 @@ export default function useAddAction(source: string) {
           action_tokens: JSON.stringify(symbols),
           action_amount: data.amount,
           account_id: account,
-          action_network_id: currentChain.name,
           template: data.template,
-          action_status: data.status === 1 ? "Success" : "Failed",
-          action_switch: data.add ? 1 : 0,
           tx_id: data.transactionHash,
           chain_id: chainId,
           extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
@@ -147,10 +131,7 @@ export default function useAddAction(source: string) {
           action_amount: data.amount,
           account_id: account,
           template: data.template,
-          action_switch: data.add ? 1 : 0,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain?.name || data.action_network_id,
           chain_id: chainId,
           extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
           sub_type: data.sub_type
@@ -167,10 +148,7 @@ export default function useAddAction(source: string) {
           action_amount: data.amount,
           account_id: account,
           template: data.template,
-          action_switch: data.add ? 1 : 0,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain?.name || data.action_network_id,
           chain_id: chainId,
           extra_data: data.extra_data,
           sub_type: data.sub_type
@@ -190,10 +168,7 @@ export default function useAddAction(source: string) {
           action_amount: data.amount,
           account_id: account,
           template: data.template,
-          action_switch: data.add ? 1 : 0,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain?.name || data.action_network_id,
           chain_id: chainId,
           extra_data: data.extra_data,
           sub_type: data.sub_type
@@ -214,10 +189,7 @@ export default function useAddAction(source: string) {
           action_amount: data.amount,
           account_id: account,
           template: data.template,
-          action_switch: data.add ? 1 : 0,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain?.name || data.action_network_id,
           chain_id: chainId,
           pool: data.pool,
           extra_data: JSON.stringify({
@@ -240,11 +212,8 @@ export default function useAddAction(source: string) {
           action_amount: data.price.toString(),
           account_id: account,
           template: data.template,
-          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          action_network_id: currentChain.name,
           chain_id: chainId,
-          action_switch: data.add ? 1 : 0,
           sub_type: data.action // 'mint' | 'list' | 'delist' | 'transfer' | 'burn'
         };
       }
