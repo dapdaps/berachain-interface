@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import useBerpsData from '@/sections/staking/Datas/Berps';
-import { useIbgtVaults } from '@/stores/ibgt-vaults';
+import { useState } from "react";
+import useBerpsData from "@/sections/staking/Datas/Berps";
+import { useIbgtVaults } from "@/stores/ibgt-vaults";
 
 export function useBerps(props: any) {
   const ibgtVaults: any = useIbgtVaults();
 
-  const { name, pairs, sender, provider, addresses, multicallAddress } = props;
+  const { name, pairs, sender, provider, multicallAddress } = props;
   const [loading, setLoading] = useState<boolean>(true);
   const [dataList, setDataList] = useState<any>(null);
 
@@ -14,7 +14,6 @@ export function useBerps(props: any) {
     pairs,
     sender,
     provider,
-    addresses,
     allData: [],
     multicallAddress,
     onLoad: (data: any) => {
@@ -27,6 +26,6 @@ export function useBerps(props: any) {
   return {
     dataList,
     loading,
-    reload,
+    reload
   };
 }

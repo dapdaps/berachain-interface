@@ -4,9 +4,11 @@ import ConnectWallet from "@/components/connect-wallet";
 import BGTCoin, { CoinType } from "@/layouts/main/BGTCoin";
 import Logo from "@/layouts/main/logo";
 import IconMap from "@public/images/icon-map.svg";
+import LaptopChain from "@/components/connect-wallet/chain/laptop";
 import useMapModalStore from "@/stores/useMapModalStore";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import { useBgtCount } from "@/hooks/use-bgt-count";
+import { usePathname } from "next/navigation";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -14,6 +16,8 @@ const MainLayoutHeader = (props: Props) => {
   const store: any = useMapModalStore();
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
+  const pathname = usePathname()
+  const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
 
   const goHome = () => {
     router.replace("/");
@@ -41,7 +45,7 @@ const MainLayoutHeader = (props: Props) => {
           >
             <span className="relative z-10">Home</span>
           </button>
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() => {
               window.open("https://bartio.faucet.berachain.com");
@@ -73,11 +77,14 @@ const MainLayoutHeader = (props: Props) => {
                 </clipPath>
               </defs>
             </svg>
-          </div>
+          </div> */}
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
-          <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
-          <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" />
+          {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
+          <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" /> */}
+          {
+            !isNearPage && <LaptopChain />
+          }
           <ConnectWallet />
         </div>
       </div>

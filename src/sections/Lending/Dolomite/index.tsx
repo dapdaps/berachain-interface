@@ -135,6 +135,11 @@ const LendingModal: React.FC<LendingModalProps> = () => {
         provider={provider}
         onLoad={(res: any) => {
           console.log('dolomite data res: %o', res);
+          // TODO BERA is reached supply cap, hide currently
+          if (res?.markets) {
+            delete res.markets['0x6969696969696969696969696969696969696969'];
+            delete res.markets['native'];
+          }
           setData(res);
           setLoading(false);
         }}

@@ -1,6 +1,4 @@
 import Drawer from "@/components/drawer";
-import Image from "next/image";
-import { icons } from "@/configs/chains";
 import { useDisconnect } from "wagmi";
 
 const MobileUser = (props: Props) => {
@@ -25,7 +23,12 @@ const MobileUser = (props: Props) => {
   const walletName = walletInfo?.name || '';
 
   return (
-    <Drawer visible={visible} onClose={onClose} size="203px" className="bg-[#FFFDEB]">
+    <Drawer
+      visible={visible}
+      onClose={onClose}
+      size="203px"
+      className="bg-[#FFFDEB]"
+    >
       <div className="mt-[30px] px-[20px]">
         <div className="flex gap-2 items-center">
           <div className="w-[40px] h-[40px]">
@@ -45,10 +48,28 @@ const MobileUser = (props: Props) => {
                 {address ? `${address.slice(0, 8)}...${address.slice(-6)}` : ""}
               </div>
               <div className="click cursor-pointer" onClick={handleCopy}>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="6.71436" y="6.71436" width="10.2857" height="10.2857" rx="2" stroke="#979ABE" stroke-width="2"/>
-                <path d="M11.2857 4.42857V3C11.2857 1.89543 10.3903 1 9.28571 1H3C1.89543 1 1 1.89543 1 3V9.28571C1 10.3903 1.89543 11.2857 3 11.2857H4.42857" stroke="#979ABE" stroke-width="2"/>
-              </svg>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="6.71436"
+                    y="6.71436"
+                    width="10.2857"
+                    height="10.2857"
+                    rx="2"
+                    stroke="#979ABE"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M11.2857 4.42857V3C11.2857 1.89543 10.3903 1 9.28571 1H3C1.89543 1 1 1.89543 1 3V9.28571C1 10.3903 1.89543 11.2857 3 11.2857H4.42857"
+                    stroke="#979ABE"
+                    stroke-width="2"
+                  />
+                </svg>
               </div>
             </div>
             <div className="text-[#3D405A] text-[16px] font-normal text-nowrap leading-[1] overflow-hidden overflow-ellipsis">
@@ -63,7 +84,7 @@ const MobileUser = (props: Props) => {
               backgroundImage: `url("${tokenLogoShown}")`,
               backgroundPosition: "center",
               backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
+              backgroundRepeat: "no-repeat"
             }}
           >
             {/* {chainId ? (
@@ -81,7 +102,6 @@ const MobileUser = (props: Props) => {
           <div className="text-black text-[16px] font-normal flex-shrink-0 overflow-hidden text-nowrap">
             {balanceShown} {tokenSymbolShown}
           </div>
-
         </div>
         <DisconnectButton isNearPage={isNearPage} setMobileUserInfoVisible={setMobileUserInfoVisible} />
 

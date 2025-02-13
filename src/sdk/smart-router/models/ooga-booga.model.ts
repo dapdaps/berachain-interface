@@ -21,7 +21,7 @@ export class OogaBooga {
       .multipliedBy(10 ** inputCurrency.decimals)
       .toFixed(0);
     const result = await axios.get(
-      `https://bartio.internal.oogabooga.io/route/swap/v1?tokenIn=${this.getTokenAddress(
+      `https://mainnet.internal.oogabooga.io/route/swap/v1/?tokenIn=${this.getTokenAddress(
         inputCurrency
       )}&tokenOut=${this.getTokenAddress(
         outputCurrency

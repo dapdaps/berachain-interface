@@ -10,8 +10,9 @@ import Tooltip from "@/components/tooltip";
 import dexs from "@/configs/swap";
 import SwapModal from "@/sections/swap/SwapModal";
 import { useMemo } from "react";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
+import useTokenVolume from "./hooks/use-token-volume";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
 
 const splitArray = (list: Record<string, any>[]) => {
@@ -26,68 +27,53 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
-const HotTokens = [
-  beraB.paw,
-  beraB.wbtc,
-  beraB.weth,
-  beraB.honey,
-  beraB.usdc,
-  beraB.bera
-  // beraB.usdt,
-  // beraB.dai
-];
-
-const MemeTokens = [
-  {
-    ...beraB.spepe,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.yeet,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.bebe,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.sproto,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.smonkey,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.croc,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.std,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB["0x15p"],
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.tedd,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  },
-  {
-    ...beraB.ooga,
-    price: "$0.0000001",
-    volume: "$0.9717"
-  }
+const MemeTokens: any = [
+  // {
+  //   ...beraB.spepe,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  bera.yeet
+  // {
+  //   ...beraB.bebe,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB.sproto,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB.smonkey,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB.croc,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB.std,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB["0x15p"],
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB.tedd,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // },
+  // {
+  //   ...beraB.ooga,
+  //   price: "$0.0000001",
+  //   volume: "$0.9717"
+  // }
 ];
 
 export const MoreButton = (props: {
@@ -95,14 +81,14 @@ export const MoreButton = (props: {
   classname?: string;
   text?: string;
 }) => {
-  const { onClick = () => {}, classname = '', text = 'more' } = props;
+  const { onClick = () => {}, classname = "", text = "more" } = props;
 
   return (
     <button
       onClick={onClick}
       className={`lg:pt-[8px] md:pt-[4px] rounded-[16px] border border-black font-CherryBomb text-[20px] md:text-[16px] font-[400]  bg-[#FFAFDF] shadow-shadow1 ${classname}`}
     >
-      <div className='lg:rounded-[16px] md:rounded-[16px] bg-[#FF80CC] md:px-[12px] lg:px-[16px] pt-[7px] pb-[15px] leading-none'>
+      <div className="lg:rounded-[16px] md:rounded-[16px] bg-[#FF80CC] md:px-[12px] lg:px-[16px] pt-[7px] pb-[15px] leading-none">
         {text}
       </div>
     </button>
@@ -113,28 +99,14 @@ const MarketplaceView = () => {
   const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>(beraB.bera);
+  const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>(
+    bera.bera
+  );
   const isMobile = useIsMobile();
+  const { voulmes } = useTokenVolume();
 
   const TOKENS_PER_PAGE = 9;
   const [displayCount, setDisplayCount] = useState(TOKENS_PER_PAGE);
-
-  const List = [
-    {
-      key: "price",
-      label: "Price",
-      value: "$0.0000001"
-    },
-    {
-      key: "volume",
-      label: "Volume",
-      value: "$0.9717"
-    }
-  ];
-
-  // const onMore = () => {
-  //   router.push('/marketplace/tokens');
-  // };
 
   const onFooterMore = () => {
     router.push("/marketplace/tokens");
@@ -146,12 +118,15 @@ const MarketplaceView = () => {
     const _protocols: string[] = [];
     Object.values(dexs).forEach((item) => {
       _protocols.push(item.name);
-      item.tokens[80084].forEach((token: any) => {
+      item.tokens[80094].forEach((token: any) => {
         if (
           // hide BERA
           token.isNative ||
           // do not display Meme tokens in the Hot section, ensuring there is no overlap with the sections below.
-          MemeTokens.some((meme) => meme.address.toLowerCase() === token.address.toLowerCase())
+          MemeTokens.some(
+            (meme: any) =>
+              meme.address.toLowerCase() === token.address.toLowerCase()
+          )
         ) {
           return;
         }
@@ -164,17 +139,16 @@ const MarketplaceView = () => {
     return [_protocols, splitArray(_tokens), _tokens.length];
   }, [dexs]);
 
+  const visibleTokens = useMemo(() => {
+    const groupsToShow = Math.ceil(displayCount / 3);
+    return allTokens.slice(0, groupsToShow);
+  }, [allTokens, displayCount]);
 
-    const visibleTokens = useMemo(() => {
-      const groupsToShow = Math.ceil(displayCount / 3);
-      return allTokens.slice(0, groupsToShow);
-    }, [allTokens, displayCount]);
-  
-    const onMore = () => {
-      setDisplayCount(prev => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
-    };
-  
-    const showMoreButton = displayCount < totalTokens;
+  const onMore = () => {
+    setDisplayCount((prev) => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
+  };
+
+  const showMoreButton = displayCount < totalTokens;
 
   const getAnimationName = (idx: number) => {
     if (hoveredIndex === null) {
@@ -194,21 +168,21 @@ const MarketplaceView = () => {
   };
 
   const onSwap = (item: any) => {
-    let _defaultInput = beraB.bera;
-    if (item.address.toLowerCase() === beraB.bera.address.toLowerCase()) {
-      _defaultInput = beraB.honey;
+    let _defaultInput = bera.bera;
+    if (item.address.toLowerCase() === bera.bera.address.toLowerCase()) {
+      _defaultInput = bera.honey;
     }
     setDefaultInputCurrency(_defaultInput);
     setSelectedRecord(item);
   };
 
   return (
-    <div className='relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]'>
-      {
-        !isMobile && (<>
-          <PageBack className='absolute left-[40px] top-[31px]' />
-          <PageTitle className='pt-[30px] mb-[75px] hidden lg:block'>
-            Marketplace
+    <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]">
+      {!isMobile && (
+        <>
+          <PageBack className="absolute left-[40px] top-[31px]" />
+          <PageTitle className="pt-[30px] mb-[75px] hidden lg:block">
+            Token Marketplace
           </PageTitle>
         </>
       )}
@@ -239,24 +213,27 @@ const MarketplaceView = () => {
                         name={it.symbol}
                         color={it.color}
                         icon={it.icon}
+                        {...it}
                         onSwap={() => onSwap(it)}
+                        voulmes={voulmes}
                       />
                     </div>
                   ))}
               </div>
-              {(isMobile || (index !== visibleTokens.length - 1 && !isMobile)) && (
+              {(isMobile ||
+                (index !== visibleTokens.length - 1 && !isMobile)) && (
                 <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
               )}
             </div>
           ))}
         </div>
-        <div className='absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]'></div>
+        <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div>
         {showMoreButton && (
-        <MoreButton
-          classname='absolute bottom-[-17px] lg:right-[-12px] md:right-[0]'
-          onClick={onMore}
-        />
-      )}
+          <MoreButton
+            classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
+            onClick={onMore}
+          />
+        )}
       </div>
       <div className="relative md:px-4 w-full bg-[#7990F4] pb-[40px]">
         <div className="lg:mx-auto lg:w-[1200px] md:w-full relative md:top-3 pb-[40px]">

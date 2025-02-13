@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import Image from "next/image";
 import Button from "@/components/button";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
@@ -30,7 +29,7 @@ export default function Earn({
         <div className="text-[16px] font-semibold">Earned</div>
         <div className="flex items-start justify-between mt-[10px]">
           <div className="flex items-center gap-[9px]">
-            <Image
+            <img
               src={rewardToken.icon}
               alt={rewardToken.symbol}
               width={26}

@@ -1,7 +1,110 @@
-import { formatValueDecimal } from "@/utils/balance";
-import Big from "big.js";
 import CircleLoading from "@/components/circle-loading";
+import Popover, { PopoverPlacement } from "@/components/popover";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import DolomiteConfig from '@/configs/lending/dolomite';
+import useCustomAccount from "@/hooks/use-account";
+import useAddAction from "@/hooks/use-add-action";
+import ActionPanel from "@/sections/Lending/components/action-panel";
+import DolomiteData from "@/sections/Lending/datas/dolomite";
+import { formatValueDecimal } from "@/utils/balance";
+import { numberFormatter } from '@/utils/number-formatter';
+import Big from "big.js";
+import { useEffect, useMemo, useState } from "react";
 
+
+function DolomiteButton({
+  id,
+  onSuccess
+}: {
+  id: string
+}) {
+  const { addAction } = useAddAction('dapp');
+  const { basic, networks }: any = DolomiteConfig;
+  const { account: address, provider, chainId } = useCustomAccount()
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<any>()
+  const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
+  const supplyTokens = useMemo(() => {
+    if (!data) return null;
+    const { markets } = data;
+    const tokenList = Object.values(markets);
+    return tokenList.map((it: any) => ({
+      ...it,
+      APR: it.lendAPR,
+      APY: it.lendAPY,
+      balance: it.balance,
+      balanceShown: numberFormatter(it.balance, 4, true),
+      walletBalance: it.walletBalance,
+      walletBalanceShown: numberFormatter(it.walletBalance, 4, true),
+    }))
+  }, [data])
+
+  const token = useMemo(() => supplyTokens?.find(supplyToken => supplyToken?.symbol === id) ?? null, supplyTokens)
+
+  useEffect(() => {
+    if (!chainId) {
+      return;
+    }
+    const currChain = networks[chainId];
+    setIsChainSupported(!!currChain);
+  }, [chainId]);
+
+  useEffect(() => {
+    setLoading(isChainSupported);
+  }, [isChainSupported]);
+
+  return (
+    <>
+      {
+        token && (
+          <Popover
+            placement={PopoverPlacement.BottomRight}
+            content={(
+              <ActionPanel
+                title="Deposit"
+                actionText="Deposit"
+                placeholder="0.00"
+                token={token}
+                CHAIN_ID={DEFAULT_CHAIN_ID}
+                onSuccess={() => {
+                  setLoading(true)
+                  onSuccess?.()
+                }}
+                addAction={addAction}
+              />
+            )}
+          >
+            <div
+              className="cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
+            >
+              <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
+                Mint Token
+              </span>
+            </div>
+          </Popover>
+        )
+      }
+      <DolomiteData
+        {...networks[DEFAULT_CHAIN_ID + '']}
+        {...basic}
+        chainId={chainId}
+        update={loading}
+        account={address}
+        provider={provider}
+        onLoad={(res: any) => {
+          console.log('dolomite data res: %o', res);
+          if (res?.markets) {
+            delete res.markets['0x6969696969696969696969696969696969696969'];
+            delete res.markets['native'];
+          }
+          setData(res);
+          setLoading(false);
+        }}
+      />
+    </>
+
+  )
+}
 const DetailBex = (props: any) => {
   const {
     data,
@@ -9,13 +112,14 @@ const DetailBex = (props: any) => {
     setShowAddModal,
     claiming,
     handleClaim,
-    isInfraredBerps
+    isInfraredBerps,
+    onRefresh
   } = props;
 
+  const protocol = data?.initialData?.protocol?.id;
   const handleMint = () => {
     setShowAddModal(true);
   };
-
   return (
     <div className="flex-1 pr-[24px] pl-[13px] h-[300px] bg-black/[0.06]">
       <div className="pt-[21px] pr-[2px] pb-[46px] pl-[17px]">
@@ -48,7 +152,11 @@ const DetailBex = (props: any) => {
             </div>
 
           </div>
-
+          {
+            protocol === "dolomite" && (
+              <DolomiteButton id={data?.id} onSuccess={onRefresh} />
+            )
+          }
           {(mintData || isInfraredBerps) && (
             <div
               className="cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50]"
@@ -59,6 +167,8 @@ const DetailBex = (props: any) => {
               </span>
             </div>
           )}
+
+
         </div>
       </div>
       <div className="w-full h-[1px] bg-black/[0.15]" />
@@ -89,7 +199,7 @@ const DetailBex = (props: any) => {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

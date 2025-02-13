@@ -1,15 +1,20 @@
 import ActionPanelMobile from './mobile';
 import ActionPanelLaptop from './laptop';
+import { useMemo } from 'react';
+import Big from 'big.js';
 
 const ActionPanel = (props: Props) => {
   const { isMobile, ...restProps } = props;
 
-  const isLimit = ['BERA', 'WBERA'].includes(props.token.symbol) && props.actionText === 'Deposit';
+  // const isLimit = ['BERA', 'WBERA', 'HONEY'].includes(props.token.symbol) && props.actionText === 'Deposit';
+  const isReachedSupplyCap = useMemo(() => {
+    return Big(restProps.token?.currentSuppliedWeiAmount).gt(restProps.token?.currentMaxSupplyWeiAmount) && props.actionText === 'Deposit';
+  }, [restProps.token, props.actionText]);
 
   return isMobile ? (
-    <ActionPanelMobile {...restProps} isLimit={isLimit} />
+    <ActionPanelMobile {...restProps} isLimit={false} isReachedSupplyCap={isReachedSupplyCap} />
   ) : (
-    <ActionPanelLaptop {...restProps} isLimit={isLimit} />
+    <ActionPanelLaptop {...restProps} isLimit={false} isReachedSupplyCap={isReachedSupplyCap} />
   );
 };
 
@@ -29,4 +34,5 @@ export interface Props {
   onSuccess?(): void;
   addAction: any;
   isLimit?: boolean;
+  isReachedSupplyCap?: boolean;
 }

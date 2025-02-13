@@ -15,7 +15,6 @@ const shortenAddress = (address: string) => {
 };
 
 const NextStep: React.FC<NextStepProps> = ({ item, onBack }) => {
-
   const mintedPercent = useMemo(() => {
     return Big(item.totalSupplyByContract || 0).div(item.maxSupplyByContract || 0).mul(100).toFixed(2);
   }, [item])

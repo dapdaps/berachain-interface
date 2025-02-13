@@ -1,24 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import chains, { icons } from '@/configs/chains'
-import allTokens from '@/configs/allTokens'
+import chains from './lib/util/chainConfig'
 import Card from '@/components/card';
 import TokenAmout from './TokenAmount';
 import Routes from './Routes';
 import SubmitBtn from './SubmitBtn';
 import Confirm from './Confrim';
-import { Chain } from 'viem';
-import { Token } from '@/types';
+
 import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
 import { useParams } from 'next/navigation';
+import History from './History';
+// import useQuote from './Hooks/Stargate/useQoute';
+// import useBridge from './Hooks/Stargate/useBridge';
+import Big from 'big.js';
+import { useAccount, useSwitchChain } from "wagmi";
+import { formatLongText } from '@/utils/utils';
+import allTokens from './lib/allTokens'
+import { tokenPairs } from './lib/bridges/stargate/config';
+import useAddAction from '@/hooks/use-add-action';
+import { useBridgeHistory } from '@/stores/useBridgeHistory';
+import useBridge from './Hooks/useBridge';
+
+import type { Token, Chain } from '@/types';
 
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
 
-  const capitalize = (str: string ) => {
+  const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
@@ -26,7 +37,7 @@ const DappHeader: React.FC = () => {
     return (
       <div className="flex gap-2 my-[30px] w-full justify-center items-center">
         <img
-          src={`/images/dapps/${dappName}.svg`}
+          src={`/images/dapps/${(dappName as string).toLowerCase()}.svg`}
           alt={dappName as string}
           className="w-9 h-9"
         />
@@ -52,66 +63,160 @@ const DappHeader: React.FC = () => {
   );
 };
 
-const ComingSoon = true;
+const ComingSoon = false;
+const chainList = Object.values(chains).filter((chain) => [1, 80094, 42161, 8453, 56, 43114, 59144, 5000, 10, 137, 534352].includes(chain.chainId));
 
 export default function Bridge() {
   const [confirmShow, setConfirmShow] = useState(false);
-  const [fromChain, setFromChain] = useState<Chain>(chains[1])
-  const [fromToken, setFromToken] = useState<Token>(allTokens[chains[1].id][0])
-  const [toChain, setToChain] = useState<Chain>(chains[80084])
-  const [toToken, setToToken] = useState<Token>(allTokens[chains[80084].id][0])
+  // const [fromChain, setFromChain] = useState<Chain>(chains[1])
+  // const [fromToken, setFromToken] = useState<Token>(allTokens[1][0])
+  // const [toChain, setToChain] = useState<Chain>(chains[80094])
+  // const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
+  // const [amount, setAmount] = useState<string>('')
+  const [historyShow, setHistoryShow] = useState(false)
+  const [activeTab, setActiveTab] = useState('pending')
   const isMobile = useIsMobile()
+  const { switchChain } = useSwitchChain();
+  const { addAction } = useAddAction("bridge");
+  const { address, chainId } = useAccount()
+  const { list, set }: any = useBridgeHistory()
+  const [limitBera, setLimitBera] = useState(0)
+
+  // const inputValue = useDebounce(amount, { wait: 500 });
+
+  const {
+    fromChain,
+    setFromChain,
+    toChain,
+    setToChain,
+    fromToken,
+    setFromToken,
+    toToken,
+    setToToken,
+    sendAmount,
+    onSendAmountChange,
+    setSelectedRoute,
+    updateBanlance,
+    reciveAmount,
+    identification,
+    routeSortType,
+    sendDisabled,
+    disableText,
+    sendLoading,
+    quoteLoading,
+    selectedRoute,
+    routes,
+    executeRoute,
+  } = useBridge({
+    originFromChain: chains[1],
+    originToChain: chains[80094],
+    derection: 1,
+    account: address,
+    defaultBridgeText: 'Bridge',
+  })
+
+  useEffect(() => {
+    if (!fromToken) {
+      setToToken(undefined)
+      return
+    }
+    const tokenPair = tokenPairs[fromChain.chainId][fromToken?.symbol.toUpperCase()]
+    if (tokenPair) {
+      const token = allTokens[toChain.chainId].find((token: Token) => token.symbol.toUpperCase() === tokenPair) as Token
+      if (tokenPairs[toChain.chainId][tokenPair]) {
+        setToToken(token)
+      } else {
+        setToToken(undefined)
+      }
+    } else {
+      setToToken(undefined)
+    }
+  }, [fromChain, fromToken])
+
+  useEffect(() => {
+    setFromToken(allTokens[1][0])
+    setToToken(allTokens[80094][2])
+  }, [])
 
   return (
     <>
-      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]" />
-      <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10'>
-        <DappHeader />
-        <Card>
-          <TokenAmout
-            chain={fromChain} token={fromToken} onTokenChange={(token: Token) => {
-              setFromToken(token)
-            }}
-            comingSoon={ComingSoon}
-          />
-          <div className='h-[8px] md:h-4 flex justify-center items-center'>
-            <svg
-              className='cursor-pointer'
-              width='42'
-              height='42'
-              viewBox='0 0 42 42'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                x='2'
-                y='2'
-                width='38'
-                height='38'
-                rx='10'
-                fill='#BC9549'
-                stroke='#FFFDEB'
-                stroke-width='4'
-              />
-              <path
-                d='M21.4999 16V26.5M21.4999 26.5L16 21M21.4999 26.5L27 21'
-                stroke='black'
-                stroke-width='2'
-                strokeLinecap='round'
-              />
-            </svg>
-          </div>
-          <TokenAmout
-            chain={toChain} token={toToken} disabledInput={true} onTokenChange={(token: Token) => {
-            setToToken(token)
-          }}
-            comingSoon={ComingSoon}
-          />
-          <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
-            <div>Receive address</div>
-            <div className='flex items-center gap-2'>
-              <div>0xc25...9210d</div>
-              <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
+      <div className='h-full overflow-auto'>
+        {isMobile ? null : <div className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]' />}
+        <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10 '>
+          <DappHeader />
+          <Card>
+            <TokenAmout
+              limitBera={limitBera === 1}
+              chain={fromChain}
+              token={fromToken ?? null}
+              amount={sendAmount}
+              onAmountChange={(v: string) => {
+                onSendAmountChange(v)
+              }}
+              chainList={chainList}
+              onChainChange={(chain: Chain) => {
+                setFromChain(chain)
+              }}
+              onTokenChange={(token: Token) => {
+                setFromToken(token)
+              }}
+              comingSoon={ComingSoon}
+            />
+            <div className='h-[8px] md:h-4 flex justify-center items-center' onClick={() => {
+              const [_fromChain, _toChain] = [toChain, fromChain]
+              const [_fromToken, _toToken] = [toToken, fromToken]
+              setFromChain(_fromChain)
+              setToChain(_toChain)
+              setFromToken(_fromToken)
+              setToToken(_toToken)
+              setLimitBera(limitBera === 0 ? 1 : 0)
+            }}>
+              <svg
+                className='cursor-pointer'
+                width='42'
+                height='42'
+                viewBox='0 0 42 42'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <rect
+                  x='2'
+                  y='2'
+                  width='38'
+                  height='38'
+                  rx='10'
+                  fill='#BC9549'
+                  stroke='#FFFDEB'
+                  stroke-width='4'
+                />
+                <path
+                  d='M21.4999 16V26.5M21.4999 26.5L16 21M21.4999 26.5L27 21'
+                  stroke='black'
+                  stroke-width='2'
+                  strokeLinecap='round'
+                />
+              </svg>
+            </div>
+            <TokenAmout
+              limitBera={limitBera === 0}
+              amount={reciveAmount ?? ''}
+              chainList={chainList}
+              chain={toChain}
+              token={toToken ?? null}
+              disabledInput={true}
+              onChainChange={(chain: Chain) => {
+                setToChain(chain)
+              }}
+              onTokenChange={(token: Token) => {
+                setToToken(token)
+              }}
+              comingSoon={ComingSoon}
+            />
+            <div className='flex items-center justify-between pt-[17px] lg:pl-[20px] text-[14px] text-[#3D405A]'>
+              <div>Receive address</div>
+              <div className='flex items-center gap-2'>
+                <div>{formatLongText(address, 6, 6)}</div>
+                {/* <div className='cursor-pointer bg-white w-[26px] h-[26px] border rounded-[8px] flex items-center justify-center'>
                 <svg
                   width='11'
                   height='12'
@@ -124,21 +229,46 @@ export default function Bridge() {
                     fill='black'
                   />
                 </svg>
+              </div> */}
               </div>
             </div>
-          </div>
 
-          <Routes />
+            {
+              routes && routes.length > 0 && toToken && (
+                <Routes fromChain={fromChain} selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} toToken={toToken as Token} routes={routes} />
+              )
+            }
 
-          <SubmitBtn comingSoon={ComingSoon} />
-        </Card>
+            <SubmitBtn
+              fromChainId={fromChain.chainId}
+              isLoading={quoteLoading || sendLoading}
+              disabled={sendDisabled || !selectedRoute}
+              onClick={async () => {
+                const isSuccess = await executeRoute()
+                if (isSuccess) {
+                  setConfirmShow(true)
+                }
+              }} comingSoon={ComingSoon} />
+          </Card>
 
-        <Confirm
-          show={confirmShow}
-          onClose={() => {
-            setConfirmShow(false);
-          }}
-        />
+          <Confirm
+            fromChain={fromChain}
+            toChain={toChain}
+            fromToken={fromToken as Token}
+            toToken={toToken as Token}
+            amount={sendAmount}
+            receiveAmount={reciveAmount ?? ''}
+            show={confirmShow}
+            onClose={() => {
+              setConfirmShow(false);
+            }}
+            showHistory={() => {
+              setHistoryShow(true)
+              setActiveTab('pending')
+            }}
+          />
+        </div>
+        <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
       </div>
     </>
   );

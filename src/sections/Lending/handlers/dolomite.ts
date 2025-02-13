@@ -1,323 +1,323 @@
-import Big from 'big.js';
-import { ethers } from 'ethers';
-import { useEffect } from 'react';
+import Big from "big.js";
+import { ethers } from "ethers";
+import { useEffect } from "react";
 
 const DEPOSIT_ABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_dolomiteMargin',
-        type: 'address'
+        internalType: "address",
+        name: "_dolomiteMargin",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'constructor'
+    stateMutability: "nonpayable",
+    type: "constructor"
   },
   {
     payable: true,
-    stateMutability: 'payable',
-    type: 'fallback'
+    stateMutability: "payable",
+    type: "fallback"
   },
   {
     constant: true,
     inputs: [],
-    name: 'DOLOMITE_MARGIN',
+    name: "DOLOMITE_MARGIN",
     outputs: [
       {
-        internalType: 'contract IDolomiteMargin',
-        name: '',
-        type: 'address'
+        internalType: "contract IDolomiteMargin",
+        name: "",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       }
     ],
-    name: 'depositETH',
+    name: "depositETH",
     outputs: [],
     payable: true,
-    stateMutability: 'payable',
-    type: 'function'
+    stateMutability: "payable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [],
-    name: 'depositETHIntoDefaultAccount',
+    name: "depositETHIntoDefaultAccount",
     outputs: [],
     payable: true,
-    stateMutability: 'payable',
-    type: 'function'
+    stateMutability: "payable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       }
     ],
-    name: 'depositPar',
+    name: "depositPar",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       }
     ],
-    name: 'depositParIntoDefaultAccount',
+    name: "depositParIntoDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       }
     ],
-    name: 'depositWei',
+    name: "depositWei",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       }
     ],
-    name: 'depositWeiIntoDefaultAccount',
+    name: "depositWeiIntoDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'address payable',
-        name: '_weth',
-        type: 'address'
+        internalType: "address payable",
+        name: "_weth",
+        type: "address"
       }
     ],
-    name: 'initializeETHMarket',
+    name: "initializeETHMarket",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawETH',
+    name: "withdrawETH",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawETHFromDefaultAccount',
+    name: "withdrawETHFromDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawPar',
+    name: "withdrawPar",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawParFromDefaultAccount',
+    name: "withdrawParFromDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawWei',
+    name: "withdrawWei",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawWeiFromDefaultAccount',
+    name: "withdrawWeiFromDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   }
 ];
 
@@ -325,363 +325,363 @@ const BERA_DEPOSIT_ABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_dolomiteMargin',
-        type: 'address'
+        internalType: "address",
+        name: "_dolomiteMargin",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'constructor'
+    stateMutability: "nonpayable",
+    type: "constructor"
   },
   {
     payable: true,
-    stateMutability: 'payable',
-    type: 'fallback'
+    stateMutability: "payable",
+    type: "fallback"
   },
   {
     constant: true,
     inputs: [],
-    name: 'DOLOMITE_MARGIN',
+    name: "DOLOMITE_MARGIN",
     outputs: [
       {
-        internalType: 'contract IDolomiteMargin',
-        name: '',
-        type: 'address'
+        internalType: "contract IDolomiteMargin",
+        name: "",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     constant: true,
     inputs: [],
-    name: 'PAYABLE_MARKET_ID',
+    name: "PAYABLE_MARKET_ID",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     constant: true,
     inputs: [],
-    name: 'WRAPPED_PAYABLE_TOKEN',
+    name: "WRAPPED_PAYABLE_TOKEN",
     outputs: [
       {
-        internalType: 'contract IWETH',
-        name: '',
-        type: 'address'
+        internalType: "contract IWETH",
+        name: "",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       }
     ],
-    name: 'depositPar',
+    name: "depositPar",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       }
     ],
-    name: 'depositParIntoDefaultAccount',
+    name: "depositParIntoDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       }
     ],
-    name: 'depositPayable',
+    name: "depositPayable",
     outputs: [],
     payable: true,
-    stateMutability: 'payable',
-    type: 'function'
+    stateMutability: "payable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [],
-    name: 'depositPayableIntoDefaultAccount',
+    name: "depositPayableIntoDefaultAccount",
     outputs: [],
     payable: true,
-    stateMutability: 'payable',
-    type: 'function'
+    stateMutability: "payable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       }
     ],
-    name: 'depositWei',
+    name: "depositWei",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       }
     ],
-    name: 'depositWeiIntoDefaultAccount',
+    name: "depositWeiIntoDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: true,
     inputs: [],
-    name: 'g_initialized',
+    name: "g_initialized",
     outputs: [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
+        internalType: "bool",
+        name: "",
+        type: "bool"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'address payable',
-        name: '_payableToken',
-        type: 'address'
+        internalType: "address payable",
+        name: "_payableToken",
+        type: "address"
       }
     ],
-    name: 'initializePayableMarket',
+    name: "initializePayableMarket",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawPar',
+    name: "withdrawPar",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountPar',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountPar",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawParFromDefaultAccount',
+    name: "withdrawParFromDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawPayable',
+    name: "withdrawPayable",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawPayableFromDefaultAccount',
+    name: "withdrawPayableFromDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawWei',
+    name: "withdrawWei",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'withdrawWeiFromDefaultAccount',
+    name: "withdrawWeiFromDefaultAccount",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   }
 ];
 
@@ -689,180 +689,180 @@ const BORROW_ABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'dolomiteMargin',
-        type: 'address'
+        internalType: "address",
+        name: "dolomiteMargin",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'constructor'
+    stateMutability: "nonpayable",
+    type: "constructor"
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: '_borrower',
-        type: 'address'
+        internalType: "address",
+        name: "_borrower",
+        type: "address"
       },
       {
         indexed: true,
-        internalType: 'uint256',
-        name: '_borrowAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_borrowAccountNumber",
+        type: "uint256"
       }
     ],
-    name: 'BorrowPositionOpen',
-    type: 'event'
+    name: "BorrowPositionOpen",
+    type: "event"
   },
   {
     constant: true,
     inputs: [],
-    name: 'DOLOMITE_MARGIN',
+    name: "DOLOMITE_MARGIN",
     outputs: [
       {
-        internalType: 'contract IDolomiteMargin',
-        name: '',
-        type: 'address'
+        internalType: "contract IDolomiteMargin",
+        name: "",
+        type: "address"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_borrowAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_borrowAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256[]',
-        name: '_collateralMarketIds',
-        type: 'uint256[]'
+        internalType: "uint256[]",
+        name: "_collateralMarketIds",
+        type: "uint256[]"
       }
     ],
-    name: 'closeBorrowPosition',
+    name: "closeBorrowPosition",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'openBorrowPosition',
+    name: "openBorrowPosition",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_borrowAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_borrowAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'repayAllForBorrowPosition',
+    name: "repayAllForBorrowPosition",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     constant: false,
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_fromAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_fromAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_toAccountNumber',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_toAccountNumber",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_marketId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_marketId",
+        type: "uint256"
       },
       {
-        internalType: 'uint256',
-        name: '_amountWei',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "_amountWei",
+        type: "uint256"
       },
       {
-        internalType: 'enum AccountBalanceLib.BalanceCheckFlag',
-        name: '_balanceCheckFlag',
-        type: 'uint8'
+        internalType: "enum AccountBalanceLib.BalanceCheckFlag",
+        name: "_balanceCheckFlag",
+        type: "uint8"
       }
     ],
-    name: 'transferBetweenAccounts',
+    name: "transferBetweenAccounts",
     outputs: [],
     payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function"
   }
 ];
 
 const generateAccountNumber = () => {
   const timestamp = Date.now().toString();
   const remainingLength = 77 - timestamp.length;
-  let randomDigits = '';
+  let randomDigits = "";
   for (let i = 0; i < remainingLength; i++) {
     randomDigits += Math.floor(Math.random() * 10);
   }
@@ -870,7 +870,7 @@ const generateAccountNumber = () => {
   return timestamp + randomDigits;
 };
 
-const BERA_CHAIN = 80084;
+const BERA_CHAIN = 80094;
 
 const DolomiteHandler = (props: any) => {
   const { update, data, amount, account, onLoad, provider, chainId } = props;
@@ -878,62 +878,101 @@ const DolomiteHandler = (props: any) => {
   const { marginAccount } = data.position || {};
 
   useEffect(() => {
-    const isCollateral = data.actionText.includes('Collateral');
+    const isCollateral = data.actionText.includes("Collateral");
     if (!data.actionText || !data.underlyingToken) return;
 
     if (!isCollateral && !update) return;
-    console.log('HANDLER--', isCollateral, update, data);
+    console.log("HANDLER--", isCollateral, update, data);
     const isNative = data.underlyingToken.isNative;
 
     let options: any = {};
     let params: any = [];
-    let method: any = '';
+    let method: any = "";
     let contract: any = null;
 
     if (!data.address || !amount) {
       return;
     }
 
-    const parsedAmount = ethers.utils.parseUnits(amount, data.underlyingToken.decimals);
-    const accountNumber = marginAccount?.accountNumber || '0';
+    const parsedAmount = ethers.utils.parseUnits(
+      amount,
+      data.underlyingToken.decimals
+    );
+    const accountNumber = marginAccount?.accountNumber || "0";
 
     options = {
-      value: isNative && (data.actionText === 'Deposit' || data.actionText === 'Repay') ? parsedAmount : 0,
+      value:
+        isNative &&
+        (data.actionText === "Deposit" || data.actionText === "Repay")
+          ? parsedAmount
+          : 0,
       gasLimit: 4000000
     };
 
-    if (['Deposit', 'Withdraw'].includes(data.actionText)) {
-      contract = new ethers.Contract(data.config.depositWithdrawalProxy, DEPOSIT_ABI, provider.getSigner());
+    if (["Deposit", "Withdraw"].includes(data.actionText)) {
+      contract = new ethers.Contract(
+        data.config.depositWithdrawalProxy,
+        DEPOSIT_ABI,
+        provider.getSigner()
+      );
       if (chainId === BERA_CHAIN) {
-        contract = new ethers.Contract(data.config.depositWithdrawalProxy, BERA_DEPOSIT_ABI, provider.getSigner());
+        contract = new ethers.Contract(
+          data.config.depositWithdrawalProxy,
+          BERA_DEPOSIT_ABI,
+          provider.getSigner()
+        );
       }
 
-      if (data.actionText === 'Deposit') {
-        method = isNative ? 'depositETHIntoDefaultAccount' : 'depositWeiIntoDefaultAccount';
+      if (data.actionText === "Deposit") {
+        method = isNative
+          ? "depositETHIntoDefaultAccount"
+          : "depositWeiIntoDefaultAccount";
         params = isNative ? [] : [data.marketId, parsedAmount];
 
         if (chainId === BERA_CHAIN) {
-          method = isNative ? 'depositPayableIntoDefaultAccount' : 'depositWeiIntoDefaultAccount';
+          method = isNative
+            ? "depositPayableIntoDefaultAccount"
+            : "depositWeiIntoDefaultAccount";
           params = isNative ? [] : [data.marketId, parsedAmount];
         }
       }
 
-      if (data.actionText === 'Withdraw') {
-        method = isNative ? 'withdrawETHFromDefaultAccount' : 'withdrawWeiFromDefaultAccount';
-        params = isNative ? [parsedAmount, 1] : [data.marketId, parsedAmount, 1];
+      if (data.actionText === "Withdraw") {
+        method = isNative
+          ? "withdrawETHFromDefaultAccount"
+          : "withdrawWeiFromDefaultAccount";
+        params = isNative
+          ? [parsedAmount, 1]
+          : [data.marketId, parsedAmount, 1];
 
         if (chainId === BERA_CHAIN) {
-          method = isNative ? 'withdrawPayableFromDefaultAccount' : 'withdrawWeiFromDefaultAccount';
-          params = isNative ? [parsedAmount, 1] : [data.marketId, parsedAmount, 1];
+          method = isNative
+            ? "withdrawPayableFromDefaultAccount"
+            : "withdrawWeiFromDefaultAccount";
+          params = isNative
+            ? [parsedAmount, 1]
+            : [data.marketId, parsedAmount, 1];
         }
       }
     }
 
-    if (['Add Collateral', 'Remove Collateral', 'Borrow', 'Repay', 'Add Position'].includes(data.actionText)) {
-      contract = new ethers.Contract(data.config.borrowPositionProxyV1, BORROW_ABI, provider.getSigner());
+    if (
+      [
+        "Add Collateral",
+        "Remove Collateral",
+        "Borrow",
+        "Repay",
+        "Add Position"
+      ].includes(data.actionText)
+    ) {
+      contract = new ethers.Contract(
+        data.config.borrowPositionProxyV1,
+        BORROW_ABI,
+        provider.getSigner()
+      );
 
-      if (data.actionText === 'Add Position') {
-        method = 'openBorrowPosition';
+      if (data.actionText === "Add Position") {
+        method = "openBorrowPosition";
         params = [
           // _fromAccountNumber
           0,
@@ -948,8 +987,8 @@ const DolomiteHandler = (props: any) => {
         ];
       }
 
-      if (data.actionText === 'Add Collateral') {
-        method = 'transferBetweenAccounts';
+      if (data.actionText === "Add Collateral") {
+        method = "transferBetweenAccounts";
         params = [
           // _fromAccountNumber
           0,
@@ -964,8 +1003,8 @@ const DolomiteHandler = (props: any) => {
         ];
       }
 
-      if (data.actionText === 'Remove Collateral') {
-        method = 'transferBetweenAccounts';
+      if (data.actionText === "Remove Collateral") {
+        method = "transferBetweenAccounts";
         params = [
           // _fromAccountNumber
           accountNumber,
@@ -979,7 +1018,7 @@ const DolomiteHandler = (props: any) => {
           1
         ];
         if (data.isClosePosition) {
-          method = 'closeBorrowPosition';
+          method = "closeBorrowPosition";
           params = [
             // _fromAccountNumber
             accountNumber,
@@ -991,8 +1030,8 @@ const DolomiteHandler = (props: any) => {
         }
       }
 
-      if (data.actionText === 'Borrow') {
-        method = 'transferBetweenAccounts';
+      if (data.actionText === "Borrow") {
+        method = "transferBetweenAccounts";
         params = [
           // _fromAccountNumber
           accountNumber,
@@ -1007,8 +1046,8 @@ const DolomiteHandler = (props: any) => {
         ];
       }
 
-      if (data.actionText === 'Repay') {
-        method = 'transferBetweenAccounts';
+      if (data.actionText === "Repay") {
+        method = "transferBetweenAccounts";
         params = [
           // _fromAccountNumber
           0,
@@ -1039,7 +1078,7 @@ const DolomiteHandler = (props: any) => {
 
     if (!contract) return;
 
-    console.log('HANDLER--', contract, method, params);
+    console.log("HANDLER--", contract, method, params);
 
     const createTx = (gas?: any) => {
       const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : 4000000;
@@ -1064,7 +1103,7 @@ const DolomiteHandler = (props: any) => {
         createTx(gas);
       })
       .catch((err: any) => {
-        console.log('estimateGas', err);
+        console.log("estimateGas", err);
         createTx();
       });
   }, [update]);

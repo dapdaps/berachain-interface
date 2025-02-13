@@ -12,14 +12,13 @@ import Skeleton from "react-loading-skeleton";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
-import { title } from "process";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
 }
 
 const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
-  const [currentGroupId, setCurrentGroupId] = useState<number>(0);
+  const [currentGroupId, setCurrentGroupId] = useState<number>(item.mint_group_data?.[0]?.id || 0); 
   const { account } = useCustomAccount();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +52,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   const handleTabChange = (value: string) => {
     setCurrentGroupId(Number(value));
     setQuantity(1);
+    setUpdater(updater + 1);
   };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +118,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     };
 
     calculateData();
+    console.log('<=====================>', item)
   }, [
     item.chain.chain_id,
     item.contract_address,
@@ -136,7 +137,8 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
             const status = await checkMintStatus(
               item.contract_address,
               item.chain.chain_id,
-              group.id
+              group.id,
+              group.price
             );
             return {
               ...group,
@@ -160,7 +162,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   ]);
 
   const renderMintGroupTag = (tab: any) => {
-    if (!tab.status || ["closed", "paused"].includes(tab.status)) return null;
+    if (!tab.status || ["closed", "paused", "upcoming"].includes(tab.status)) return null;
 
     const statusMap: {
       [key: string]: string;
@@ -218,9 +220,8 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
       setIsMinting(false);
     }
   };
-
   return (
-    <div className="mt-[14px]">
+    <div className="mt-[14px] lg:max-h-[330px] lg:overflow-y-auto">
       <div className="flex md:flex-col lg:flex-row w-full justify-between gap-5">
         <img
           src={item.profile_image}
@@ -378,6 +379,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                 timestamp={item.mint_live_timestamp}
                 onClick={onMint}
                 loading={isMinting}
+                onCountdownEnd={() => setUpdater(updater + 1)}
               />
             )}
           </div>

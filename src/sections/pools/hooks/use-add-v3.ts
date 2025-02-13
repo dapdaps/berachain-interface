@@ -205,20 +205,16 @@ export default function useIncrease({
       addAction({
         type: "Liquidity",
         action: "Add Liquidity",
-        token0: token0.symbol,
-        token1: token1.symbol,
+        tokens: [token0, token1],
+        amounts: [value0, value1],
         template: dex.name,
         status,
         transactionHash,
         sub_type: "Add",
-        extra_data: JSON.stringify({
-          amount0: value0,
-          amount1: value1,
-          token0Symbol: token0.symbol,
-          token1Symbol: token1.symbol,
+        extra_data: {
           action: "Add Liquidity",
           type: "univ3"
-        })
+        }
       });
       setLoading(false);
     } catch (err: any) {

@@ -26,7 +26,7 @@ export default function SwapModal({
     });
     return [_templates, _tokens];
   }, [dexs, protocols]);
-
+  console.log(defaultInputCurrency, defaultOutputCurrency);
   return (
     <Modal open={show} onClose={onClose} closeIconClassName="md:hidden">
       <Content

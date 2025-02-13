@@ -1,61 +1,51 @@
 import { useEffect, useState, useMemo } from "react";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import kodiak from "@/configs/pools/kodiak";
 import { wrapNativeToken } from "@/sections/pools/utils";
 import { default as useBexPools } from "@/sections/pools/bex/use-pools";
 import { default as useKodiakV2Pools } from "@/sections/pools/kodiak/use-pools-v2";
 import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
-import { random } from 'lodash';
 
-export default function usePools() {
+export default function usePools(refresher: number) {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const { pools: bexPools, loading: bexLoading } = useBexPools(true);
-  const { pools: kodiakV2Pools, loading: kodiakV2Loading } =
-    useKodiakV2Pools(true);
+  const { pools: kodiakV2Pools, loading: kodiakV2Loading } = useKodiakV2Pools(
+    true,
+    refresher
+  );
   const {
     pools: kodiakV3Pools,
     loading: kodiakV3Loading,
     ticksInfo: kodiakTicksInfo
-  } = usePoolsV3({ dex: kodiak });
+  } = usePoolsV3({ dex: kodiak, refresher });
 
   const query = async () => {
     setPools([
       {
-        token0: wrapNativeToken(beraB["bera"]),
-        token1: beraB["honey"],
-        protocolIcon: "/images/dapps/bex.svg",
-        protocol: "BEX",
-        id: 1,
-        tvl: random(1000, 1000000, true),
-        volume_24h: random(1000, 1000000, true),
-        fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true),
-      },
-      {
-        token0: wrapNativeToken(beraB["bera"]),
-        token1: beraB["honey"],
+        token0: wrapNativeToken(bera["bera"]),
+        token1: bera["honey"],
         protocolIcon: "/images/dapps/kodiak.svg",
         protocol: "Kodiak",
         version: "v2",
-        id: 2,
-        tvl: random(1000, 1000000, true),
-        volume_24h: random(1000, 1000000, true),
-        fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true),
+        id: 2
+        // tvl: random(1000, 1000000, true),
+        // volume_24h: random(1000, 1000000, true),
+        // fees_24h: random(0, 100, true),
+        // yours: random(0, 10000, true)
       },
       {
-        token0: wrapNativeToken(beraB["bera"]),
-        token1: beraB["honey"],
+        token0: wrapNativeToken(bera["bera"]),
+        token1: bera["honey"],
         protocolIcon: "/images/dapps/kodiak.svg",
         protocol: "Kodiak",
         version: "v3",
         fee: 3000,
-        id: 3,
-        tvl: random(1000, 1000000, true),
-        volume_24h: random(1000, 1000000, true),
-        fees_24h: random(0, 100, true),
-        yours: random(0, 10000, true),
+        id: 3
+        // tvl: random(1000, 1000000, true),
+        // volume_24h: random(1000, 1000000, true),
+        // fees_24h: random(0, 100, true),
+        // yours: random(0, 10000, true)
       }
     ]);
   };

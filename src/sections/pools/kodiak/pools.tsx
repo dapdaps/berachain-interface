@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import PoolsCom from "../components/pools";
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 import Island from "./island";
 
 export default function Pools() {
@@ -11,8 +11,8 @@ export default function Pools() {
       version === "v3"
         ? [
             {
-              token0: beraB["bera"],
-              token1: beraB["honey"],
+              token0: bera["bera"],
+              token1: bera["honey"],
               fee: 3000,
               version: "v3"
             }
@@ -20,8 +20,8 @@ export default function Pools() {
         : version === "v2"
         ? [
             {
-              token0: beraB["bera"],
-              token1: beraB["honey"],
+              token0: bera["bera"],
+              token1: bera["honey"],
               version: "v2"
             }
           ]

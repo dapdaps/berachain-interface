@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Range from "@/components/range";
 import Button from "@/components/button";
 import { balanceFormated } from "@/utils/balance";
@@ -52,7 +51,7 @@ export default function LockTimePanel({ data, info, received, onClick }: any) {
       <div className="mt-[20px] rounded-[12px] border border-[#373A53] p-[12px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-[4px]">
-            <Image
+            <img
               src={info.rewardToken.icon}
               alt={info.rewardToken.symbol}
               width={26}

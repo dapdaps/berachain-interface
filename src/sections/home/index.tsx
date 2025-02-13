@@ -1,11 +1,11 @@
 "use client";
 
 import BearBackground from "@/components/bear-background/laptop";
-import { SceneContext } from '@/context/scene';
+import { SceneContext } from "@/context/scene";
 import { useChristmas } from "@/hooks/use-christmas";
 import useIsMobile from "@/hooks/use-isMobile";
 import { useProgressRouter } from "@/hooks/use-progress-router";
-import HomePrompt from '@/sections/activity/christmas/components/home-prompt';
+import HomePrompt from "@/sections/activity/christmas/components/home-prompt";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
 import { useBeraciaga } from "@/stores/beraciaga";
 import ArrowTopSvg from "@public/images/background/arrow-top.svg";
@@ -20,12 +20,13 @@ import { memo, useContext } from "react";
 import BeraciagaModal from "./beraciaga-modal";
 import MobileHome from "./mobile";
 import VaultsEnterance from "./vaults-enterance";
-
+import AirdropModal from '@/components/airdrop/modal';
+import Airdrop from '@/components/airdrop';
 
 const Navigation = function () {
   const router = useProgressRouter();
   const { isChristmas, path: christmasPath } = useChristmas();
-  const beraciagaStore = useBeraciaga(store => store)
+  const beraciagaStore: any = useBeraciaga((store) => store);
 
   const onNavigateToBridge = () => {
     router.push("/bridge");
@@ -53,10 +54,6 @@ const Navigation = function () {
     router.push("/vaults");
   };
 
-  const onNavigateToNearIntents = () => {
-    router.push("/near-intents");
-  }
-
   const onNavigateToBeramas = () => {
     router.push(christmasPath as string);
   };
@@ -70,11 +67,12 @@ const Navigation = function () {
         id="btn-group1"
       >
         <div
-          className={`flex flex-col gap-[19px] items-center pt-[10px] ${isChristmas ? "text-white" : "text-black"
-            }`}
+          className={`flex flex-col gap-[19px] items-center pt-[10px] ${
+            isChristmas ? "text-white" : "text-black"
+          }`}
         >
           <div className={`text-[20px] font-CherryBomb leading-[90%]`}>
-            Marketplace
+            Token Marketplace
           </div>
           <ArrowTopSvg />
         </div>
@@ -82,22 +80,23 @@ const Navigation = function () {
       </div>
       <div
         className={clsx(
-          'absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]',
-          isChristmas ? 'top-1/4' : 'top-1/3'
+          "absolute right-[35px] top-1/3 cursor-pointer flex flex-col items-end gap-[16px]",
+          isChristmas ? "top-1/4" : "top-1/3"
         )}
         onClick={onNavigateToBridge}
         data-bp="1010-007"
         id="btn-group2"
       >
         <div
-          className={`flex items-center justify-end gap-[12px] pr-[10px] ${isChristmas ? 'text-white' : 'text-black'
-            }`}
+          className={`flex items-center justify-end gap-[12px] pr-[10px] ${
+            isChristmas ? "text-white" : "text-black"
+          }`}
         >
-          <ArrowTopSvg style={{ transform: 'rotate(90deg)' }} />
+          <ArrowTopSvg style={{ transform: "rotate(90deg)" }} />
           <div
             className={clsx(
-              'text-[20px] font-CherryBomb leading-[90%]',
-              isChristmas ? 'text-white' : 'text-black'
+              "text-[20px] font-CherryBomb leading-[90%]",
+              isChristmas ? "text-white" : "text-black"
             )}
           >
             Bridge
@@ -105,29 +104,34 @@ const Navigation = function () {
         </div>
         <BridgeSvg className="hover:scale-110 transition-transform duration-500" />
       </div>
-      <VaultsEnterance
+      {/* <VaultsEnterance
         imgSrc="/images/background/vaults.svg"
         onClick={onNavigateToVaults}
         className={clsx(
-          'absolute right-[35px] hover:scale-110 transition-transform duration-500',
+          "absolute right-[35px] hover:scale-110 transition-transform duration-500",
           isChristmas
-            ? 'text-white top-[calc(25%+50px)]'
-            : 'text-black] top-[calc(33.333%+50px)]'
+            ? "text-white top-[calc(25%+50px)]"
+            : "text-black] top-[calc(33.333%+50px)]"
         )}
-      />
+      /> */}
       <div className="absolute left-1/2 translate-x-[-50%] bottom-[19px] z-10 flex gap-[100px]">
         <div
-          className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px]"
-          onClick={onNavigateToDashBoard}
-          data-bp="1010-008"
+          className="cursor-pointer flex items-start gap-[21px] translate-x-[-33px] opacity-50"
+          // onClick={onNavigateToDashBoard}
+          // data-bp="1010-008"
         >
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
-            <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
-              Dashboard
+            <div className="text-[20px] text-black font-CherryBomb leading-[90%] whitespace-nowrap">
+              Portfolio
             </div>
           </div>
-          <DashboardSvg className="hover:scale-110 transition-transform duration-500" />
+          <DashboardSvg
+            className={clsx(
+              "transition-transform duration-500"
+              // "hover:scale-110"
+            )}
+          />
         </div>
 
         <div
@@ -135,7 +139,12 @@ const Navigation = function () {
           onClick={onNavigateToEarn}
           data-bp="1010-012"
         >
-          <EarnSvg className="hover:scale-110 transition-transform duration-500" />
+          <EarnSvg
+            className={clsx(
+              "transition-transform duration-500",
+              "hover:scale-110"
+            )}
+          />
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
             <div className="text-[20px] text-black font-CherryBomb leading-[90%]">
@@ -152,59 +161,52 @@ const Navigation = function () {
       >
         <DappsSvg className="hover:scale-110 transition-transform duration-500" />
         <div
-          className={`flex gap-[15px] items-center pl-[15px] ${isChristmas ? "text-white" : "text-black"
-            }`}
+          className={`flex gap-[15px] items-center pl-[15px] ${
+            isChristmas ? "text-white" : "text-black"
+          }`}
         >
           <div className="text-[20px] font-CherryBomb leading-[90%]">dApps</div>
           <ArrowTopSvg style={{ transform: "rotate(270deg)" }} />
         </div>
       </div>
 
-      <div
+      {/* <div
         className="cursor-pointer absolute left-[15px] bottom-[68px] z-10 flex flex-col gap-[8px]"
         onClick={onNavigateToCave}
         data-bp="1010-010"
       >
         <div className="text-[20px] text-center font-CherryBomb">Bera Cave</div>
         <CaveSvg className="hover:scale-110 transition-transform duration-500" />
-      </div>
-      <div
+      </div> */}
+      {/* <div
         className="absolute top-[40px] left-[40px] w-[96px] h-[136px] flex flex-col cursor-pointer "
         onClick={() => {
+          // @ts-ignore
           beraciagaStore.set({
             openModal: true
-          })
+          });
         }}
       >
         <div className="relative w-[96px] h-[114px] hover:scale-110 transition-transform duration-500">
           <div className="absolute w-[219px] -left-[36px] -bottom-[83px] pointer-events-none">
-            <img src="/images/beraciaga/beraciaga_nav.png" alt="beraciaga_nav" />
+            <img
+              src="/images/beraciaga/beraciaga_nav.png"
+              alt="beraciaga_nav"
+            />
           </div>
         </div>
-        <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">Beraciaga</div>
-      </div>
-      <div
-        className="absolute right-[210px] bottom-[205px] z-10 hover:scale-110 transition-transform duration-500 cursor-pointer"
-        data-bp="1010-020"
-        onClick={onNavigateToNearIntents}
-      >
-        <img src="/images/background/near-intents.png" className="w-[128px] h-[98px] aspect-square" alt="" />
-      </div>
-{/* 
-      {
-        isChristmas && (
-          <ChristmasEnterance path={christmasPath} />
-        )
-      } */}
+        <div className="text-white font-CherryBomb text-[20px] ledaing-[90%]">
+          Beraciaga
+        </div>
+      </div> */}
+      {isChristmas && <ChristmasEnterance path={christmasPath} />}
     </>
   );
 };
 
 export default memo(function Home() {
-
   const isMobile = useIsMobile();
   const { currentSceneInfoValid } = useContext(SceneContext);
-
 
   if (isMobile) {
     return <MobileHome />;
@@ -214,11 +216,9 @@ export default memo(function Home() {
     <BearBackground type="home">
       <Navigation />
       <BeraciagaModal />
-      {
-        currentSceneInfoValid && (
-          <HomePrompt />
-        )
-      }
+      <AirdropModal />
+      <Airdrop />
+      {currentSceneInfoValid && <HomePrompt />}
     </BearBackground>
   );
 });

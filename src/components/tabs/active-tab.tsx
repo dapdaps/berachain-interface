@@ -13,7 +13,7 @@ const ActiveTab = (props: Props) => {
     page = "dashboard"
   } = props;
 
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   return (
     <div
@@ -42,7 +42,7 @@ const ActiveTab = (props: Props) => {
         />
       )}
       <div
-        className="bg-[url('/images/tabs/icon-tab-bg.svg')] grow flex justify-center items-center"
+        className="bg-[#FFFDEB] border-t border-t-black grow flex justify-center items-center"
         style={{
           height: height,
           paddingRight: isFirst && page !== "earn" ? marginWidth / 2 - 2 : 0
@@ -52,75 +52,76 @@ const ActiveTab = (props: Props) => {
       </div>
       {isLast ? (
         <>
-          {
-            page === 'earn' && isMobile ? 
-           <div
-            className="shrink-0 rounded-tr-[20px] border-t border-r border-black bg-[#FFFDEB]"
-            style={{
-              width: page === "earn" ? marginWidth / 2 : marginWidth,
-              height: height
-            }}
-          /> :          <svg
-          width={marginWidth}
-          height={height}
-          className="shrink-0"
-          viewBox="0 0 62 62"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clipPath="url(#clip0_22123_394)">
-            <g filter="url(#filter0_d_22123_394)">
-              <path
-                d="M51 20C51 8.95429 42.0457 0 31 0L-223 0C-234.046 0 -243 8.95431 -243 20V40.5495C-243 51.5952 -251.954 60.5495 -263 60.5495H-811C-822.046 60.5495 -831 69.5038 -831 80.5495V730C-831 741.046 -822.046 750 -811 750H31C42.0457 750 51 741.046 51 730V20Z"
-                fill="#FFFDEB"
-              />
-              <path
-                d="M50.5 20C50.5 9.23043 41.7696 0.5 31 0.5H-223C-233.77 0.5 -242.5 9.23045 -242.5 20V40.5495C-242.5 51.8714 -251.678 61.0495 -263 61.0495H-811C-821.77 61.0495 -830.5 69.78 -830.5 80.5495V730C-830.5 740.77 -821.77 749.5 -811 749.5H31C41.7695 749.5 50.5 740.77 50.5 730V20Z"
-                stroke="black"
-              />
-            </g>
-          </g>
-          <defs>
-            <filter
-              id="filter0_d_22123_394"
-              x="-831"
-              y="0"
-              width="892"
-              height="760"
-              filterUnits="userSpaceOnUse"
-              colorInterpolationFilters="sRGB"
+          {page === "earn" && isMobile ? (
+            <div
+              className="shrink-0 rounded-tr-[20px] border-t border-r border-black bg-[#FFFDEB]"
+              style={{
+                width: page === "earn" ? marginWidth / 2 : marginWidth,
+                height: height
+              }}
+            />
+          ) : (
+            <svg
+              width={marginWidth}
+              height={height}
+              className="shrink-0"
+              viewBox="0 0 62 62"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <feFlood floodOpacity="0" result="BackgroundImageFix" />
-              <feColorMatrix
-                in="SourceAlpha"
-                type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                result="hardAlpha"
-              />
-              <feOffset dx="10" dy="10" />
-              <feComposite in2="hardAlpha" operator="out" />
-              <feColorMatrix
-                type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-              />
-              <feBlend
-                mode="normal"
-                in2="BackgroundImageFix"
-                result="effect1_dropShadow_22123_394"
-              />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="effect1_dropShadow_22123_394"
-                result="shape"
-              />
-            </filter>
-            <clipPath id="clip0_22123_394">
-              <rect width="62" height="62" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-          }
+              <g clipPath="url(#clip0_22123_394)">
+                <g filter="url(#filter0_d_22123_394)">
+                  <path
+                    d="M51 20C51 8.95429 42.0457 0 31 0L-223 0C-234.046 0 -243 8.95431 -243 20V40.5495C-243 51.5952 -251.954 60.5495 -263 60.5495H-811C-822.046 60.5495 -831 69.5038 -831 80.5495V730C-831 741.046 -822.046 750 -811 750H31C42.0457 750 51 741.046 51 730V20Z"
+                    fill="#FFFDEB"
+                  />
+                  <path
+                    d="M50.5 20C50.5 9.23043 41.7696 0.5 31 0.5H-223C-233.77 0.5 -242.5 9.23045 -242.5 20V40.5495C-242.5 51.8714 -251.678 61.0495 -263 61.0495H-811C-821.77 61.0495 -830.5 69.78 -830.5 80.5495V730C-830.5 740.77 -821.77 749.5 -811 749.5H31C41.7695 749.5 50.5 740.77 50.5 730V20Z"
+                    stroke="black"
+                  />
+                </g>
+              </g>
+              <defs>
+                <filter
+                  id="filter0_d_22123_394"
+                  x="-831"
+                  y="0"
+                  width="892"
+                  height="760"
+                  filterUnits="userSpaceOnUse"
+                  colorInterpolationFilters="sRGB"
+                >
+                  <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dx="10" dy="10" />
+                  <feComposite in2="hardAlpha" operator="out" />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="BackgroundImageFix"
+                    result="effect1_dropShadow_22123_394"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="effect1_dropShadow_22123_394"
+                    result="shape"
+                  />
+                </filter>
+                <clipPath id="clip0_22123_394">
+                  <rect width="62" height="62" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          )}
         </>
       ) : (
         <svg

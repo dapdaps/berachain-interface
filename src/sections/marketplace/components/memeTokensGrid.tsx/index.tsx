@@ -25,18 +25,20 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
                     <div className="text-[20px] font-CherryBomb leading-none">
                       {item.symbol}
                     </div>
-                    <div className="text-[#3D405A] text-[14px] font-Montserrat">
+                    {/* <div className="text-[#3D405A] text-[14px] font-Montserrat">
                       blackcat
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat">
                     <div className="grow">Price</div>
-                    <div className="font-[600] flex-shrink-0">{item.price}</div>
+                    <div className="font-[600] flex-shrink-0">
+                      {item.price || "-"}
+                    </div>
                   </div>
                   <div className="flex flex-nowrap mb-[16px] last:mb-0 items-start justify-between gap-x-[20px] text-[#3D405A] text-[14px] font-Montserrat">
                     <div className="grow">Volume</div>
                     <div className="font-[600] flex-shrink-0">
-                      {item.volume}
+                      {item.volume || "-"}
                     </div>
                   </div>
                 </div>
@@ -47,20 +49,20 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
                 onHoverEnd={() => setHoveredIndex(null)}
                 className="shadow-shadow1 rounded-full"
                 animate={{
-                  x: [1200, -10, 0],
+                  x: [1200, -10, 0]
                 }}
                 transition={{
                   duration: 3.5,
-                  times: [0, 0.85, 1],
+                  times: [0, 0.85, 1]
                 }}
               >
                 <motion.div
                   animate={{
-                    rotate: [0, -1090, -1080],
+                    rotate: [0, -1090, -1080]
                   }}
                   transition={{
                     duration: 3.5,
-                    times: [0, 0.85, 1],
+                    times: [0, 0.85, 1]
                   }}
                 >
                   <motion.div
@@ -70,7 +72,7 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
                       hover: { scale: 1.5 },
                       default: { scale: 1 },
                       prev: {},
-                      next: {},
+                      next: {}
                     }}
                   >
                     <motion.img
@@ -79,7 +81,7 @@ const TokenRow = ({ tokens, onSwap, setHoveredIndex, startIndex }: any) => {
                       src={item.icon}
                       style={{
                         borderRadius: "50%",
-                        objectFit: "cover",
+                        objectFit: "cover"
                       }}
                       onClick={() => onSwap(item)}
                     />
@@ -98,30 +100,29 @@ const MemeTokensGrid = ({ MemeTokens, onSwap }: any) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const isMobile = useIsMobile();
   const [displayCount, setDisplayCount] = useState(10);
-  
+
   const TOKENS_PER_ROW = isMobile ? 5 : 10;
-  
+
   useEffect(() => {
     setDisplayCount(isMobile ? 5 : 10);
   }, [isMobile]);
-  
 
-const visibleTokenRows = useMemo(() => {
-  const tokens = MemeTokens.slice(0, displayCount);
-  const rows = [];
-  for (let i = 0; i < tokens.length; i += TOKENS_PER_ROW) {
-    rows.push(tokens.slice(i, Math.min(i + TOKENS_PER_ROW, tokens.length)));
-  }
-  return rows;
-}, [MemeTokens, displayCount, TOKENS_PER_ROW]);
+  const visibleTokenRows = useMemo(() => {
+    const tokens = MemeTokens.slice(0, displayCount);
+    const rows = [];
+    for (let i = 0; i < tokens.length; i += TOKENS_PER_ROW) {
+      rows.push(tokens.slice(i, Math.min(i + TOKENS_PER_ROW, tokens.length)));
+    }
+    return rows;
+  }, [MemeTokens, displayCount, TOKENS_PER_ROW]);
 
+  const onFooterMore = () => {
+    setDisplayCount((prev) =>
+      Math.min(prev + TOKENS_PER_ROW, MemeTokens.length)
+    );
+  };
 
-const onFooterMore = () => {
-  setDisplayCount(prev => Math.min(prev + TOKENS_PER_ROW, MemeTokens.length));
-};
-
-
-const showMoreButton = displayCount < MemeTokens.length;
+  const showMoreButton = displayCount < MemeTokens.length;
 
   return (
     <>
@@ -133,7 +134,7 @@ const showMoreButton = displayCount < MemeTokens.length;
             setHoveredIndex={setHoveredIndex}
             startIndex={rowIndex * TOKENS_PER_ROW}
           />
-          {(
+          {
             <div className="relative">
               {rowIndex === visibleTokenRows.length - 1 && (
                 <div className="absolute top-[9px] lg:left-[50%] lg:right-0 md:left-0 lg:translate-x-[-50%] z-10 font-CherryBomb lg:text-[32px] md:text-[18px] leading-[0.9] lg:p-[21px] md:p-[12px] bg-[#B2E946] border border-black rounded-[20px] rotate-[5deg] shadow-shadow1 w-fit">
@@ -147,11 +148,11 @@ const showMoreButton = displayCount < MemeTokens.length;
                 />
               )}
               <div className="z-0 lg:shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-b-[10px] border border-black mb-[7px] md:font-CherryBomb md:text-[#D5AD67] md:pl-4 md:text-[18px] md:pt-1">
-                {isMobile ? 'Meme tokens' : ''}
+                {isMobile ? "Meme tokens" : ""}
               </div>
               <div className="hidden lg:block z-0 shadow-shadow1 w-full h-[44px] bg-[#9E762F] rounded-[10px] border border-black" />
             </div>
-          )}
+          }
         </React.Fragment>
       ))}
     </>

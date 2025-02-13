@@ -9,7 +9,7 @@ import weth from "@/configs/contract/weth";
 import getPoolsInfo from "../query/getPoolsInfo";
 import { DEFAULT_CHAIN_ID, TOKENS } from "@/configs";
 
-export default function usePoolsV3({ dex }: any) {
+export default function usePoolsV3({ dex, refresher }: any) {
   const { provider, account } = useAccount();
   const [ticksInfo, setTicksInfo] = useState({});
   const [pools, setPools] = useState<any>([]);
@@ -146,7 +146,7 @@ export default function usePoolsV3({ dex }: any) {
     } else {
       setLoading(false);
     }
-  }, [provider, account]);
+  }, [provider, account, refresher]);
 
   return { pools, loading, ticksInfo, queryPools };
 }

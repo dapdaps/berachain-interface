@@ -18,15 +18,16 @@ export function useDetail(props: any) {
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
   const toast = useToast();
-  const { handleGetAmount } = useLpToAmount(data?.LP_ADDRESS, data?.initialData?.pool?.protocol);
+  const { handleGetAmount } = useLpToAmount(
+    data?.LP_ADDRESS,
+    data?.initialData?.protocol
+  );
   const { addAction } = useAddAction("dapp");
 
   const detailBerpsRef = useRef<any>();
   const [claiming, setClaiming] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isBerpsDepositVisible, setIsBerpsDepositVisible] = useState(false);
-
-  const { addresses } = config.chains[DEFAULT_CHAIN_ID];
 
   const isBERPS = name === "Berps";
   const isInfraredBerps =
@@ -63,8 +64,10 @@ export function useDetail(props: any) {
 
   const sourceBalances: any = {};
   const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
-  const vaultAddress = (addresses as any)[symbol];
-  const approveSpender = isBERPS ? data?.withdrawToken?.address : vaultAddress;
+
+  const approveSpender = isBERPS
+    ? data?.withdrawToken?.address
+    : data.vaultAddress;
   const stakeMethod = isBERPS ? "deposit" : "stake";
   const unStakeMethod = isBERPS ? "makeWithdrawRequest" : "withdraw";
 
@@ -74,24 +77,29 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
-    let _contractAddr = vaultAddress;
+    let _contractAddr = data.vaultAddress;
     if (isBERPS) {
       _contractAddr = data?.withdrawToken?.address;
     }
+
     const contract = new ethers.Contract(
       _contractAddr,
       abi,
       provider?.getSigner()
     );
     contract.balanceOf(sender).then((balanceBig: any) => {
-      const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
+      const adjustedBalance = ethers.utils.formatUnits(
+        balanceBig,
+        data.decimals
+      );
+
       updateState({
         lpBalance: adjustedBalance
       });
@@ -249,13 +257,14 @@ export function useDetail(props: any) {
         .then((receipt: any) => {
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(inAmount);
-          const _symbol = tokens.join("-")
+          const _symbol = tokens.join("-");
           addAction?.({
             type: "Staking",
             action: "Staking",
-            token: {
-              symbol: _symbol === "YEET-BERA" ? "KODIAK-3" : tokens.join("-")
-            },
+            tokens:
+              _symbol === "YEET-BERA"
+                ? [{ symbol: "KODIAK-3" }]
+                : tokens.map((token: string) => ({ symbol: token })),
             amount: inAmount,
             template: name || "Infrared",
             status: status,
@@ -263,12 +272,8 @@ export function useDetail(props: any) {
             transactionHash,
             chain_id: chainId,
             sub_type: "Stake",
-            extra_data: JSON.stringify({
-              token0Symbol: tokens[0],
-              token1Symbol: tokens[1],
-              amount0,
-              amount1
-            })
+            amounts: [amount0, amount1],
+            extra_data: {}
           });
           updateState({
             isLoading: false,
@@ -337,13 +342,14 @@ export function useDetail(props: any) {
           });
           const { status, transactionHash } = receipt;
           const [amount0, amount1] = handleGetAmount(lpAmount);
-          const _symbol = tokens.join("-")
+          const _symbol = tokens.join("-");
           addAction?.({
             type: "Staking",
             action: "UnStake",
-            token: {
-              symbol: _symbol === "YEET-BERA" ? "KODIAK-3" : tokens.join("-")
-            },
+            tokens:
+              _symbol === "YEET-BERA"
+                ? [{ symbol: "KODIAK-3" }]
+                : tokens.map((token: string) => ({ symbol: token })),
             amount: lpAmount,
             template: name || "Infrared",
             status: status,
@@ -351,12 +357,8 @@ export function useDetail(props: any) {
             transactionHash,
             chain_id: chainId,
             sub_type: "Unstake",
-            extra_data: JSON.stringify({
-              token0Symbol: tokens[0],
-              token1Symbol: tokens[1],
-              amount0,
-              amount1
-            })
+            amounts: [amount0, amount1],
+            extra_data: {}
           });
           setTimeout(() => {
             onSuccess?.();
@@ -426,9 +428,7 @@ export function useDetail(props: any) {
         addAction?.({
           type: "Staking",
           action: "Claim",
-          token: {
-            symbol: tokens.join("-")
-          },
+          tokens: tokens.map((token: string) => ({ symbol: token })),
           amount: data?.earned,
           template: name || "Infrared",
           status: status,
@@ -485,8 +485,43 @@ export function useDetail(props: any) {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
     if (!["bex", "kodiak"].includes(protocol?.id)) return null;
-    // const protocol = pool.protocol.split(" ")[0];
-    const underlying_tokens = data?.initialData?.underlying_tokens
+    const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
+      data?.initialData?.stake_token?.address
+    ];
+    if (protocol?.id === "kodiak" && sweetenedIslandItem) {
+      return {
+        token0: sweetenedIslandItem.token0,
+        token1: sweetenedIslandItem.token1,
+        version: "island",
+        protocol: "kodiak",
+        stakingToken: data?.initialData?.stake_token
+      };
+    }
+    const index = kodiak?.islands?.findIndex(
+      (address: string) => data?.initialData?.stake_token?.address === address
+    );
+    const underlying_tokens = data?.initialData?.underlying_tokens;
+    if (index > -1) {
+      const array = data?.initialData?.stake_token?.name?.split("-");
+      const symbol0 = array[0];
+      const symbol1 = array[1];
+      const token0 =
+        underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+      const token1 =
+        underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+      if (token0 && token1) {
+        return {
+          protocol: protocol?.id,
+          token0: { ...token0, icon: token0?.image },
+          token1: { ...token1, icon: token1?.image },
+          version: "island",
+          protocol: "kodiak",
+          stakingToken: data?.initialData?.stake_token
+        };
+      } else {
+        console.error("some error");
+      }
+    }
     if (underlying_tokens?.length === 2)
       return {
         protocol: protocol?.id,
@@ -494,18 +529,6 @@ export function useDetail(props: any) {
         token1: { ...underlying_tokens[1], icon: data.images[1] },
         version: "v2"
       };
-    const islandItem = (kodiak.islands as any)[
-      data?.initialData?.stake_token?.address
-    ];
-    if (protocol?.id === "kodiak" && islandItem) {
-      return {
-        token0: islandItem.token0,
-        token1: islandItem.token1,
-        version: "island",
-        protocol: "kodiak",
-        stakingToken: data?.initialData?.stake_token
-      };
-    }
     return null;
   }, [data]);
 
@@ -514,10 +537,10 @@ export function useDetail(props: any) {
   }, [isWithdrawInsufficient, isLoading, lpAmount]);
 
   useEffect(() => {
-    if (!sender || !vaultAddress || !provider) return;
+    if (!sender || !data.vaultAddress || !provider) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, vaultAddress, updater, provider]);
+  }, [sender, data, updater, provider]);
 
   return {
     state,
@@ -526,7 +549,7 @@ export function useDetail(props: any) {
     isInfraredBerps,
     symbol,
     contractAddr,
-    vaultAddress,
+    vaultAddress: data.vaultAddress,
     approveSpender,
     stakeMethod,
     unStakeMethod,

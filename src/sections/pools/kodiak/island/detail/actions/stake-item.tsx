@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { balanceFormated } from "@/utils/balance";
-import Image from "next/image";
 
 const Item = ({ token0, token1, item, active, onClick }: any) => {
   return (
@@ -17,14 +16,14 @@ const Item = ({ token0, token1, item, active, onClick }: any) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-[5px]">
           <div className="flex items-center">
-            <Image
+            <img
               src={token0.icon}
               alt={token0.name}
               width={26}
               height={26}
               className="rounded-full"
             />
-            <Image
+            <img
               src={token1.icon}
               alt={token1.name}
               width={26}
