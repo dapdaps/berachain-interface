@@ -78,13 +78,13 @@ export default memo(function Delegate(props: IProps) {
     }
   };
   const getPercentage = (_amount: string) => {
-    _amount = Big(_amount).gt(state?.balance) ? state?.balance : _amount
+    _amount = Big(_amount).gt(state?.balance) ? state?.balance : _amount;
     return Big(state?.balance).eq(0)
       ? 0
       : Big(_amount)
-        .div(state?.balance ?? 1)
-        .times(100)
-        .toFixed();
+          .div(state?.balance ?? 1)
+          .times(100)
+          .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -97,15 +97,15 @@ export default memo(function Delegate(props: IProps) {
       });
       return;
     }
-    const percentage = getPercentage(amount)
+    const percentage = getPercentage(amount);
     const rangeIndex = RangeList.findIndex((range) =>
       Big(range).eq(Big(percentage).div(100))
-    )
+    );
     updateState({
       inAmount: amount,
       percentage,
       rangeIndex
-    })
+    });
   };
   const executionContract = async ({
     contract,
@@ -165,7 +165,9 @@ export default memo(function Delegate(props: IProps) {
           chain_id: DEFAULT_CHAIN_ID,
           add: operationType === "delegate" ? 1 : 0,
           sub_type: operationType === "delegate" ? "Stake" : "Unstake",
-          extra_data: JSON.stringify({ "validator": validator?.address?.toLocaleLowerCase() })
+          extra_data: JSON.stringify({
+            validator: validator?.address?.toLocaleLowerCase()
+          })
         });
         updateState({
           isLoading: false
@@ -205,6 +207,7 @@ export default memo(function Delegate(props: IProps) {
     const toastId = toast?.loading({
       title: type === "confirm" ? "Confirming..." : "Canceling..."
     });
+
     updateState({
       confirmAndCancelLoadingPosition: position
     });
@@ -224,14 +227,26 @@ export default memo(function Delegate(props: IProps) {
         updateState({
           confirmAndCancelLoadingPosition: []
         });
+        addAction?.({
+          type: "Delegate",
+          action: "Deposit",
+          symbol: "BGT",
+          name: validator?.name,
+          amount: queue?.balance,
+          template: "BGTStation",
+          transactionHash,
+          chain_id: DEFAULT_CHAIN_ID,
+          sub_type: type === "confirm" ? "Confirm" : "Cancel",
+          extra_data: JSON.stringify({
+            validator: validator?.address?.toLocaleLowerCase()
+          })
+        });
         onSuccess();
         onClose();
         toast?.dismiss(toastId);
         toast?.success({
           title:
-            type === "confirm"
-              ? "Confirm Successful!"
-              : "Cancel Successful!"
+            type === "confirm" ? "Confirm Successful!" : "Cancel Successful!"
         });
       })
       .catch((error: any) => {
@@ -414,7 +429,7 @@ export default memo(function Delegate(props: IProps) {
                         >
                           {state?.confirmAndCancelLoadingPosition[0] ===
                             "confirm" &&
-                            state?.confirmAndCancelLoadingPosition[1] ===
+                          state?.confirmAndCancelLoadingPosition[1] ===
                             index ? (
                             <CircleLoading size={14} />
                           ) : (
@@ -432,7 +447,7 @@ export default memo(function Delegate(props: IProps) {
                         >
                           {state?.confirmAndCancelLoadingPosition[0] ===
                             "cancel" &&
-                            state?.confirmAndCancelLoadingPosition[1] ===
+                          state?.confirmAndCancelLoadingPosition[1] ===
                             index ? (
                             <CircleLoading size={14} />
                           ) : (
