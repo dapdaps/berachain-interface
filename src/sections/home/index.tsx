@@ -20,6 +20,8 @@ import { memo, useContext } from "react";
 import BeraciagaModal from "./beraciaga-modal";
 import MobileHome from "./mobile";
 import VaultsEnterance from "./vaults-enterance";
+import AirdropModal from '@/components/airdrop/modal';
+import Airdrop from '@/components/airdrop';
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -121,7 +123,7 @@ const Navigation = function () {
           <div className="flex flex-col gap-[19px] items-center pt-[29px]">
             <ArrowTopSvg style={{ transform: "rotate(180deg)" }} />
             <div className="text-[20px] text-black font-CherryBomb leading-[90%] whitespace-nowrap">
-              Portfolio Dashboard
+              Portfolio
             </div>
           </div>
           <DashboardSvg
@@ -214,6 +216,8 @@ export default memo(function Home() {
     <BearBackground type="home">
       <Navigation />
       <BeraciagaModal />
+      <AirdropModal />
+      <Airdrop />
       {currentSceneInfoValid && <HomePrompt />}
     </BearBackground>
   );

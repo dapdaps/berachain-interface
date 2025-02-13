@@ -60,7 +60,11 @@ a,
     text-wrap: balance;
   }
   .text-stroke-1 {
-    -webkit-text-stroke-width: 1;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+  }
+  .text-stroke-2-black {
+    -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: #000;
   }
   .text-stroke-1-4b371f {
