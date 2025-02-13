@@ -19,9 +19,9 @@ export default function usePools() {
         variables: {
           chain: "BERACHAIN",
           orderBy: "totalLiquidity",
-          orderDirection: "desc",
-          first: 50,
-          skip: 0
+          orderDirection: "desc"
+          // first: 50,
+          // skip: 0
         }
       });
 

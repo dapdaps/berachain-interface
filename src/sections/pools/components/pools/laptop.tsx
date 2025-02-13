@@ -118,7 +118,6 @@ export default function Laptop({
           setSelectedRecord(item);
         }}
         loading={loading}
-        simplePager={true}
       />
     </div>
   );

@@ -1,17 +1,12 @@
 "use client";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 type PropsType = {
   maxPage: number;
-  simplePager?: boolean;
   onPageChange: (data: number) => void;
 };
 
-export default memo(function Pager({
-  maxPage,
-  simplePager = true,
-  onPageChange
-}: PropsType) {
+export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = function (page: number) {
     if (page < 1 || page > maxPage) return;
@@ -20,13 +15,31 @@ export default memo(function Pager({
   useEffect(() => {
     onPageChange(currentPage);
   }, [currentPage]);
+
+  const isOverflow = useMemo(() => maxPage > 5, [maxPage]);
   return (
     <div className="flex items-center gap-[10px]">
+      {isOverflow && (
+        <button
+          className={clsx(
+            "cursor-pointer rounded-[8px] px-[10px] py-[2px] text-[12px] font-semibold border-black border",
+            currentPage === 1 ? "opacity-[0.3]" : "opacity-[1]"
+          )}
+          onClick={() => {
+            handlePageChange(1);
+          }}
+        >
+          First
+        </button>
+      )}
       <div
         onClick={() => {
           handlePageChange(currentPage - 1);
         }}
-        className="cursor-pointer"
+        className={clsx(
+          "cursor-pointer",
+          currentPage === 1 ? "opacity-[0.3]" : "opacity-[1]"
+        )}
       >
         <svg
           width="8"
@@ -36,15 +49,14 @@ export default memo(function Pager({
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            opacity={currentPage === 1 ? "0.3" : "1"}
             d="M6.80005 1L2.00005 7L6.80005 13"
             stroke="black"
-            stroke-width="2"
+            strokeWidth="2"
             strokeLinecap="round"
           />
         </svg>
       </div>
-      {simplePager ? (
+      {isOverflow ? (
         <div
           className={clsx(
             "flex",
@@ -110,6 +122,19 @@ export default memo(function Pager({
           />
         </svg>
       </div>
+      {isOverflow && (
+        <button
+          className={clsx(
+            "cursor-pointer rounded-[8px] px-[10px] py-[2px] text-[12px] font-semibold border-black border",
+            currentPage === maxPage ? "opacity-[0.3]" : "opacity-[1]"
+          )}
+          onClick={() => {
+            handlePageChange(maxPage);
+          }}
+        >
+          Last
+        </button>
+      )}
     </div>
   );
 });
