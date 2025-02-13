@@ -12,7 +12,7 @@ import { useWallet } from "@/sections/dashboard/hooks/use-wallet";
 import { usePortfolio } from "@/sections/dashboard/hooks/use-portfolio";
 import { useTvl } from "@/sections/dashboard/hooks/use-tvl";
 import { useRecords } from "@/sections/dashboard/hooks/use-records";
-import FeeRebate from "./components/fee-rebate";
+import FeeRebate from "@/sections/dashboard/components/fee-rebate";
 
 const DashboardWallet = dynamic(
   () => import("@/sections/dashboard/components/wallet")

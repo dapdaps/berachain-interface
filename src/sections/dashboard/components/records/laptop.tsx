@@ -8,7 +8,10 @@ export default function Laptop({
   pageIndex,
   onPrev,
   onNext,
-  hasMore
+  hasMore,
+  formatColumns = (_columns: Column[]) => _columns,
+  showHeader = true,
+  tableBodyClassName,
 }: any) {
   const columns: Column[] = [
     {
@@ -17,13 +20,26 @@ export default function Laptop({
       render: (_, record) => (
         <div className='flex items-center gap-x-[14px]'>
           <div className='rounded-[8px] w-[30px] h-[30px] flex-shrink-0 bg-black flex items-center justify-center'>
-            <LazyImage
-              src={record.dapp_logo}
-              width={30}
-              height={30}
-              className='rounded-[8px]'
-              fallbackSrc={DefaultIcon}
-            />
+            <div className="relative">
+              <LazyImage
+                src={record.dapp_logo}
+                width={30}
+                height={30}
+                className='rounded-[8px]'
+                fallbackSrc={DefaultIcon}
+              />
+              {
+                record.isBeraTown && (
+                  <img
+                    src="/images/logo.svg"
+                    alt=""
+                    width={21}
+                    height={21}
+                    className="rounded-full absolute right-[-3px] bottom-[-2px]"
+                  />
+                )
+              }
+            </div>
           </div>
           <div className='text-[16px]'>{record.dapp_name}</div>
         </div>
@@ -63,7 +79,9 @@ export default function Laptop({
   return (
     <div className='h-full overflow-y-auto'>
       <FlexTable
-        columns={columns}
+        showHeader={showHeader}
+        bodyClass={tableBodyClassName}
+        columns={formatColumns(columns)}
         list={records}
         loading={loading}
         pagination={
