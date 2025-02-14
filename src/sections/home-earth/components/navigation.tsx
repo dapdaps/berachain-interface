@@ -287,9 +287,9 @@ export const ENTRIES = [
     signpostHeight: 59,
     signpostX: 20,
     signpostY: -120,
-    x: 800,
-    y: 220,
-    rotate: 36,
+    x: 820,
+    y: 216,
+    rotate: 30,
     path: '/bridge',
   },
 ];
