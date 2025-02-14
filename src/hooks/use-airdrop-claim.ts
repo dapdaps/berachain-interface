@@ -30,9 +30,10 @@ export default function useAirdropClaim() {
         multicallAddress,
         provider
       });
+
       setInfo({
         endTime: result[0][0].toString() * 1000,
-        claimed: new Big(result[1][0].toString()).eq(0)
+        claimed: result[1] ? new Big(result[1][0].toString()).eq(0) : true
       });
     } catch (err) {
       console.log(34, err);
@@ -95,7 +96,6 @@ export default function useAirdropClaim() {
   };
 
   useEffect(() => {
-    console.log(93, account, provider);
     if (account && provider) query();
   }, [provider, account]);
 
