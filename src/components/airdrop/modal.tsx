@@ -122,6 +122,7 @@ const AirdropModal = (props: any) => {
             claimed={claimed}
             claiming={claiming}
             onClaim={onClaim}
+            endTime={endTime}
           />
         )}
       </Card>
