@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { get } from "@/utils/http";
 import useAccount from "@/hooks/use-account";
@@ -10,12 +11,15 @@ export const useAirdrop = () => {
 
   useEffect(() => {
     get('/api/beracave/latest').then((res) => {
-      setAirDropRound({
-        round: res.data.round,
-        amount: res.data.amount,
-        startTime: res.data.start_time * 1000,
-        endTime: res.data.end_time * 1000
-      })
+      if (res.data) {
+        setAirDropRound({
+          round: res.data.round,
+          amount: res.data.amount,
+          startTime: res.data.start_time * 1000,
+          endTime: res.data.end_time * 1000
+        })
+      }
+      
     });
 
     if (account) {
