@@ -24,7 +24,8 @@ const AirdropModal = (props: any) => {
     checked
   } = useAirdrop();
   const {
-    info: claimInfo,
+    claimed,
+    endTime,
     loading: claimLoading,
     claiming,
     onClaim
@@ -63,12 +64,12 @@ const AirdropModal = (props: any) => {
         </article> */}
         <div className="w-[475px] m-[25px_40px_0px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[12px_28px_15px] flex flex-col justify-center items-center">
           <div className="text-[16px] font-bold text-center">Claim In</div>
-          {claimLoading || !claimInfo ? (
+          {claimLoading || !endTime ? (
             <div className="mt-[10px]">
               <CircleLoading size={20} />
             </div>
           ) : (
-            <ClaimCountDown time={claimInfo.endTime} />
+            <ClaimCountDown time={endTime} />
           )}
         </div>
         <div className="w-[475px] m-[14px_40px_0px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[28px_28px_31px] flex flex-col items-stretch gap-[13px]">
@@ -118,7 +119,7 @@ const AirdropModal = (props: any) => {
           <AirdropReward
             className="mt-[24px]"
             data={checkData}
-            claimInfo={claimInfo}
+            claimed={claimed}
             claiming={claiming}
             onClaim={onClaim}
           />

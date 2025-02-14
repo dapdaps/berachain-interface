@@ -1,46 +1,48 @@
-import { useEffect, useState } from "react";
-import multicallAddresses from "@/configs/contract/multicall";
-import { multicall } from "@/utils/multicall";
+import { useCallback, useEffect, useState } from "react";
 import { ContractAddresses, ChainId, abi } from "@/configs/airdrop";
 import useCustomAccount from "./use-account";
 import useToast from "@/hooks/use-toast";
-import { Contract } from "ethers";
+import { providers, Contract } from "ethers";
+import chains from "@/configs/chains";
 import Big from "big.js";
 
 export default function useAirdropClaim() {
-  const [info, setInfo] = useState<any>();
+  const [endTime, setEndTime] = useState<any>();
+  const [claimed, setClaimed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState(false);
   const { provider, account } = useCustomAccount();
   const toast = useToast();
 
-  const query = async () => {
+  const queryTime = useCallback(async () => {
+    if (endTime) return;
+    const rpcUrl = chains[ChainId]?.rpcUrls?.default.http[0];
     try {
       setLoading(true);
-      const multicallAddress = multicallAddresses[ChainId];
-      const contractAddress = ContractAddresses[ChainId];
-      const calls = [
-        { address: contractAddress, name: "claimPeriodEnd" },
-        { address: contractAddress, name: "claimableTokens", params: [account] }
-      ];
-      const result = await multicall({
+      const ClaimContract = new Contract(
+        ContractAddresses[ChainId],
         abi,
-        options: {},
-        calls,
-        multicallAddress,
-        provider
-      });
+        new providers.JsonRpcProvider(rpcUrl)
+      );
+      const result = await ClaimContract.claimPeriodEnd();
 
-      setInfo({
-        endTime: result[0][0].toString() * 1000,
-        claimed: result[1] ? new Big(result[1][0].toString()).eq(0) : true
-      });
+      setEndTime(result.toString() * 1000);
     } catch (err) {
-      console.log(34, err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [provider, endTime]);
+
+  const queryClaimable = useCallback(async () => {
+    if (!account) return;
+    const ClaimContract = new Contract(
+      ContractAddresses[ChainId],
+      abi,
+      provider
+    );
+    const result = await ClaimContract.claimableTokens(account);
+    setClaimed(result ? new Big(result.toString()).eq(0) : true);
+  }, [provider, account]);
 
   const onClaim = async () => {
     let toastId = toast.loading({ title: "Confirming..." });
@@ -77,7 +79,7 @@ export default function useAirdropClaim() {
           tx: transactionHash,
           chainId: ChainId
         });
-        setInfo({ ...info, claimed: true });
+        setClaimed(true);
       } else {
         toast.fail({ title: "Claim failed!" });
       }
@@ -96,8 +98,15 @@ export default function useAirdropClaim() {
   };
 
   useEffect(() => {
-    if (account && provider) query();
+    if (!provider) {
+      return;
+    }
+    queryClaimable();
   }, [provider, account]);
 
-  return { onClaim, loading, info, claiming };
+  useEffect(() => {
+    queryTime();
+  }, []);
+
+  return { onClaim, loading, claimed, endTime, claiming };
 }

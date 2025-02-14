@@ -3,11 +3,14 @@ import AirdropButton from "@/components/airdrop/components/button";
 import { numberFormatter } from "@/utils/number-formatter";
 import useCustomAccount from "@/hooks/use-account";
 import { useAppKit } from "@reown/appkit/react";
+import { ChainId } from "@/configs/airdrop";
+import { useSwitchChain } from "wagmi";
 
 const AirdropReward = (props: any) => {
-  const { className, data, claimInfo = {}, claiming, onClaim } = props;
-  const { account } = useCustomAccount();
+  const { className, data, claimed, claiming, onClaim } = props;
+  const { account, chainId } = useCustomAccount();
   const modal = useAppKit();
+  const { isPending, switchChain } = useSwitchChain();
   return (
     <div className={clsx("flex flex-col items-center gap-[10px]", className)}>
       <img
@@ -65,15 +68,28 @@ const AirdropReward = (props: any) => {
                 Connect Wallet To Claim
               </AirdropButton>
             )}
-            {account?.toLowerCase() === data.address.toLowerCase() && (
+            {chainId !== ChainId ? (
               <AirdropButton
-                className="w-[220px]"
-                onClick={onClaim}
-                disabled={claimInfo.claimed || claiming}
-                loading={claiming}
+                className="w-[240px]"
+                onClick={() => {
+                  switchChain({ chainId: ChainId });
+                }}
+                loading={isPending}
+                disabled={isPending}
               >
-                {claimInfo.claimed ? "Claimed" : "Claim"}
+                Switch Network
               </AirdropButton>
+            ) : (
+              account?.toLowerCase() === data.address.toLowerCase() && (
+                <AirdropButton
+                  className="w-[220px]"
+                  onClick={onClaim}
+                  disabled={claimed || claiming}
+                  loading={claiming}
+                >
+                  {claimed ? "Claimed" : "Claim"}
+                </AirdropButton>
+              )
             )}
           </div>
           {/* )} */}
