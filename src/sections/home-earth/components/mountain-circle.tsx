@@ -1,16 +1,35 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { HomeEarthContext } from '../context';
+import { motion } from 'framer-motion';
 
 const MountainCircle = (props: any) => {
-  const { speed } = props;
-  const { mountainRef } = useContext(HomeEarthContext);
+  const {} = props;
+  const {
+    mountainRef,
+    speed,
+    size,
+    mountainRotation,
+    mountainControls,
+    mountainRotateAnimation,
+  } = useContext(HomeEarthContext);
+
+  useEffect(() => {
+    mountainRotateAnimation();
+
+    return () => {
+      mountainControls.current?.stop?.();
+    };
+  }, []);
 
   return (
-    <div
+    <motion.div
       ref={mountainRef}
-      className="will-change-transform animate-rotate-reverse w-[3000px] h-[3000px] absolute z-[2] rounded-full top-[24.5dvh] flex justify-center items-center"
+      className="will-change-transform absolute z-[2] rounded-full top-[24.5dvh] flex justify-center items-center"
       style={{
+        rotate: mountainRotation,
         animationDuration: `${speed + 30}s`,
+        width: size,
+        height: size,
       }}
     >
       {
@@ -27,7 +46,7 @@ const MountainCircle = (props: any) => {
           />
         ))
       }
-    </div>
+    </motion.div>
   );
 };
 
