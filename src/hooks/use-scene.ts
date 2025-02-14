@@ -12,6 +12,8 @@ export const SCENE_LIST: Scene[] = [
     path: '/activity/christmas',
     status: SceneStatus.Ended,
     api: '/api/mas',
+    bg: 'linear-gradient(180deg, #000 0%, #455972 30%)',
+    bgPathname: ['/', '/activity/christmas'],
     handleTime: (config) => {
       if (!config) return {};
       let { start_time, end_time } = config;
@@ -24,14 +26,6 @@ export const SCENE_LIST: Scene[] = [
       };
     },
   },
-  {
-    id: 2,
-    name: 'Rainy Day',
-    description: '',
-    path: '',
-    status: SceneStatus.Ongoing,
-    api: '',
-  },
 ];
 
 export function useSceneValue(): ISceneContext {
@@ -40,7 +34,7 @@ export function useSceneValue(): ISceneContext {
   const [list] = useState<Scene[]>(SCENE_LIST);
   // ⚠️ this is the current scene
   // the end time of the scene and the activity page may not be the same
-  const [current] = useState<Scene>(SCENE_LIST[1]);
+  const [current] = useState<Scene>();
   // ⚠️ this is the current activity page data
   const [currentSceneInfo, setCurrentSceneInfo] = useState<any>();
   const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
@@ -207,7 +201,7 @@ export const sceneDefault = {
   currentSceneInfoValid: false,
   currentSceneInfoLoading: true,
   list: SCENE_LIST,
-  current: SCENE_LIST[1],
+  current: void 0,
   currentDateTime: new Date(),
 };
 
@@ -218,5 +212,7 @@ export interface Scene {
   path: string;
   status: SceneStatus;
   api: string;
+  bg: string;
+  bgPathname: string[];
   handleTime?: (config?: any) => ({ startUTCTime?: string; endUTCTime?: string; });
 }

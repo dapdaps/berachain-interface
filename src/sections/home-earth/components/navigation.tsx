@@ -9,6 +9,7 @@ import { HomeEarthContext } from '../context';
 const Navigation = (props: any) => {
   const {} = props;
   const {
+    isRainyDay,
     isDragging,
     navigationRef,
     navigationControls,
@@ -112,8 +113,9 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center',
-        isDragging ? 'cursor-grabbing' : ''
+        'will-change-transform absolute z-[3] border rounded-full top-[24.5dvh] flex justify-center items-center',
+        isDragging ? 'cursor-grabbing' : '',
+        isRainyDay ? 'border-[#5A6F2F] bg-[#90AF4E]' : 'border-[#5A6F2F] bg-[#B6DF5D]',
       )}
       style={{
         rotate: navigationRotation,

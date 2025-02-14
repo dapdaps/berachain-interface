@@ -14,6 +14,8 @@ import { HomeEarthContext } from './context';
 import { useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
 import { useRainyDay } from '@/hooks/use-rainy-day';
+import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
+import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
@@ -21,7 +23,7 @@ const SIZE = 3000;
 
 const HomeEarth = () => {
   const isMobile = useIsMobile();
-  const { isRainyDay } = useRainyDay();
+  const { isRainyDay, beraPrice } = useRainyDay();
 
   const bearRef = useRef<any>();
 
@@ -106,6 +108,7 @@ const HomeEarth = () => {
     <HomeEarthContext.Provider
       value={{
         isRainyDay,
+        beraPrice,
         cloudRef,
         cloudRotation,
         cloudControls,
@@ -157,6 +160,8 @@ const HomeEarth = () => {
         size: SIZE,
     }}>
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
+        {/*<BerachainFixes />*/}
+        <BeraPrice />
         <Follower />
         <Signpost />
         <HomeEarthTop />

@@ -2,7 +2,7 @@
 
 import useTokenPrice from "@/hooks/use-token-price";
 import MainLayoutHeader from "@/layouts/main/header";
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from 'react';
 import { usePathname } from "next/navigation";
 import MapModal from "@/sections/home/map-modal";
 import useUser from "@/hooks/use-user";
@@ -10,8 +10,12 @@ import { useAccount } from "wagmi";
 import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
-import { useChristmas } from "@/hooks/use-christmas";
 import GuidingTutorial from '@/components/GuidingTour/mainnet';
+import { SceneContext } from '@/context/scene';
+import { SceneStatus } from '@/configs/scene';
+import RainyDay from '@/components/rainy-day';
+import { useRainyDay } from '@/hooks/use-rainy-day';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -20,7 +24,9 @@ const MainLayout = (props: Props) => {
   const { initializePrice } = useTokenPrice();
   const { handleReportNoCode } = useClickTracking();
   const pathname = usePathname();
-  const { isChristmas } = useChristmas();
+  const context = useContext(SceneContext);
+  const currentScene = context.current;
+  const { isRainyDay, rainyDay } = useRainyDay({ isLoadPrice: true });
 
   useEffect(() => {
     handleReportNoCode();
@@ -40,22 +46,33 @@ const MainLayout = (props: Props) => {
     if (isVaults) {
       return "bg-transparent h-full";
     }
-    if (isChristmas && pathname === "/") {
-      return "bg-christmas";
-    }
-    if (pathname === "/activity/christmas") {
-      return "bg-christmas";
-    }
     return "bg-[var(--background)]";
-  }, [isVaults, isChristmas, pathname]);
+  }, [isVaults, pathname]);
+
+  const sceneStyles = useMemo(() => {
+    if (isRainyDay) {
+      return { background: rainyDay?.bg };
+    }
+
+    if (currentScene?.status === SceneStatus.Ongoing) {
+      if (currentScene?.bgPathname.includes(pathname)) {
+        return { background: currentScene?.bg };
+      }
+    }
+
+    return {};
+  }, [currentScene, isRainyDay, rainyDay]);
 
   const routes = ["/earn", "/activity/christmas"];
 
   return (
     <div
       id="layout"
-      className={`min-h-screen relative flex flex-col items-stretch justify-start ${bg}`}
-      style={style}
+      className={`min-h-screen relative flex flex-col items-stretch justify-start transition-background duration-150 ${bg}`}
+      style={{
+        ...sceneStyles,
+        ...style,
+      }}
       onClick={handleTrack}
     >
       <MainLayoutHeader
@@ -199,6 +216,30 @@ const MainLayout = (props: Props) => {
       </div>
       <MapModal />
       <GuidingTutorial />
+      <AnimatePresence mode="wait">
+        {
+          isRainyDay && rainyDay?.bgPathname.includes(pathname) && (
+            <motion.div
+              variants={{
+                visible: { opacity: 1 },
+                invisible: { opacity: 0 },
+              }}
+              animate="visible"
+              initial="invisible"
+              exit="invisible"
+              transition={{
+                duration: 2,
+              }}
+            >
+              <RainyDay
+                dropCount={200}
+                minSpeed={0.5}
+                maxSpeed={2}
+              />
+            </motion.div>
+          )
+        }
+      </AnimatePresence>
     </div>
   );
 };
