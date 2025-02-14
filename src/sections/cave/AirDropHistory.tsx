@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Modal from '@/components/modal';
 import { AirDropHistoryData } from './useAirdrop';
+import Empty from '@/components/empty';
 interface Props {
   show: boolean;
   onClose: () => void;
@@ -23,6 +24,10 @@ export default function AirdropHistory({ show, onClose, airDropHistory }: Props)
     >
       <div className="w-[850px] min-h-[450px] bg-[#FFFDEB] rounded-[10px] p-[20px]">
         <div className="text-[20px] font-bold mb-[20px]">Your Airdrop History</div>
+
+        {
+          airDropHistory?.length === 0 && <Empty mt={100} desc="No airdrop history" />
+        }
         {
           airDropHistory?.map((item, index) => {
             return (
