@@ -162,7 +162,7 @@ export default function Bridge() {
   return (
     <>
       <div className='h-full overflow-auto'>
-        {!isMobile ? <PageBack isBlack={true} className="ml-[30px] text-white absolute top-[20px] left-[30px] z-10" /> : null} 
+        {!isMobile ? <PageBack  className="ml-[30px] absolute top-[20px] left-[30px] z-10" /> : null} 
         {isMobile ? null : <div className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]' />}
         <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10 '>
           <DappHeader />
