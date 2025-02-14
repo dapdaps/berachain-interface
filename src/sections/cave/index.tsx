@@ -17,6 +17,8 @@ import Tips from "./Tip";
 import Welcome from "./Welcome";
 import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
+import AirDropTime from "./AirDropTime";
+import { AirDropHistoryData, AirDropRound, useAirdrop } from "./useAirdrop";
 
 const hatPositions = [{
     width: 102,
@@ -247,6 +249,10 @@ export default function Cave() {
         address: account as string
     })
 
+    const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
+
+
+
     const tipClick = useCallback((e: any, item: any, gameItem: any) => {
         console.log('tipClick', item, gameItem);
         if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
@@ -399,9 +405,12 @@ export default function Cave() {
                     />
                 </div>
             </div>
+
+            <AirDropTime airDropRound={airDropRound as AirDropRound} airDropHistory={airDropHistory as AirDropHistoryData[]}/>
+            
             {/*#endregion*/}
             {/*#region NFT*/}
-            <div className="flex gap-[65px] justify-center">
+            {/* <div className="flex gap-[65px] justify-center">
                 {
                     storePhotoList?.photoList?.map((photo: any, index: number) => (
                         <div className="relative w-[159px] h-[184px] group">
@@ -470,7 +479,7 @@ export default function Cave() {
                     ))
                 }
 
-            </div>
+            </div> */}
             {/*#endregion*/}
             {/*#region Hats*/}
             <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[270px] translate-x-[-50%]">
@@ -655,7 +664,13 @@ export default function Cave() {
             </div>
             {/*#endregion*/}
             {/*#region Mirror on Right*/}
-            <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
+            {
+                airDropPrize ? (
+                    <div className=" pointer-events-none absolute w-[358px] h-[818px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror-b.png')] bg-contain bg-no-repeat bg-bottom"></div>
+                ) : (
+                    <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
+                )
+            }
             {/*#endregion*/}
             {/*#region Stone on Right*/}
             <div className=" pointer-events-none absolute w-[757px] h-[386px] bottom-[0px] right-0 bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
@@ -697,7 +712,7 @@ export default function Cave() {
             />
         </div>
 
-        <div
+        {/* <div
             onClick={() => {
                 setTransferItemsVisible(true)
                 setTransferSelectedItems(transferItems)
@@ -711,7 +726,7 @@ export default function Cave() {
                     <img src="/images/cave/icon-bear.png" alt="icon-bear" />
                 </div>
             </div>
-        </div>
+        </div> */}
         <TransferItemsModal onAfterTransfer={getItems} />
     </div>
 }
