@@ -241,6 +241,7 @@ const MarketplaceView = () => {
           <div className="relative z-10 lg:w-[1196px]">
             <MemeTokensGrid
               MemeTokens={MemeTokens}
+              voulmes={voulmes}
               onSwap={onSwap}
               onFooterMore={onFooterMore}
             />
