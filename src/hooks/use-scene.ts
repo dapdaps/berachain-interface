@@ -24,6 +24,14 @@ export const SCENE_LIST: Scene[] = [
       };
     },
   },
+  {
+    id: 2,
+    name: 'Rainy Day',
+    description: '',
+    path: '',
+    status: SceneStatus.Ongoing,
+    api: '',
+  },
 ];
 
 export function useSceneValue(): ISceneContext {
@@ -32,7 +40,7 @@ export function useSceneValue(): ISceneContext {
   const [list] = useState<Scene[]>(SCENE_LIST);
   // ⚠️ this is the current scene
   // the end time of the scene and the activity page may not be the same
-  const [current] = useState<Scene>(SCENE_LIST[0]);
+  const [current] = useState<Scene>(SCENE_LIST[1]);
   // ⚠️ this is the current activity page data
   const [currentSceneInfo, setCurrentSceneInfo] = useState<any>();
   const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
@@ -74,7 +82,7 @@ export function useSceneValue(): ISceneContext {
   }, []);
 
   const getCurrentSceneInfo = useCallback(async (times: any) => {
-    if (!current || !current.api) {
+    if (!current || !current.api || !current.handleTime) {
       setCurrentSceneInfoLoading(false);
       return;
     }
@@ -199,7 +207,7 @@ export const sceneDefault = {
   currentSceneInfoValid: false,
   currentSceneInfoLoading: true,
   list: SCENE_LIST,
-  current: SCENE_LIST[0],
+  current: SCENE_LIST[1],
   currentDateTime: new Date(),
 };
 
@@ -210,5 +218,5 @@ export interface Scene {
   path: string;
   status: SceneStatus;
   api: string;
-  handleTime: (config?: any) => ({ startUTCTime?: string; endUTCTime?: string; });
+  handleTime?: (config?: any) => ({ startUTCTime?: string; endUTCTime?: string; });
 }

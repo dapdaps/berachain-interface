@@ -11,8 +11,9 @@ import MobileHome from '@/sections/home/mobile';
 import AirdropModal from '@/components/airdrop/modal';
 import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
-import { animate, useMotionValue } from 'framer-motion';
+import { useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
+import { useRainyDay } from '@/hooks/use-rainy-day';
 
 // seconds per lap
 const SPEED = 200;
@@ -20,6 +21,7 @@ const SIZE = 3000;
 
 const HomeEarth = () => {
   const isMobile = useIsMobile();
+  const { isRainyDay } = useRainyDay();
 
   const bearRef = useRef<any>();
 
@@ -103,6 +105,7 @@ const HomeEarth = () => {
   return (
     <HomeEarthContext.Provider
       value={{
+        isRainyDay,
         cloudRef,
         cloudRotation,
         cloudControls,
