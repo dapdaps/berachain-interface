@@ -34,9 +34,9 @@ export default function AirdropHistory({ show, onClose, airDropHistory }: Props)
               <div className="mb-[20px]  font-CherryBomb" key={item.round}>
                 <div className="flex items-center text-[22px] justify-between mb-[10px]">
                   <div className="font-bold">Airdrop Round {item.round}</div>
-                  <div className="flex items-center" style={{ opacity: Number(item.amount) === 0 ? 0.3 : 1 }}>
+                  <div className="flex items-center" style={{ opacity: Number(item.reward?.amount) === 0 ? 0.3 : 1 }}>
                     <img src="/images/cave/bera-token.png" alt="bera" className="w-[31px]" />
-                    <span className="ml-1">{item.amount}</span>
+                    <span className="ml-1">{item.reward?.amount}</span>
                   </div>
                 </div>
                 <div className="text-[16px] text-[#000000] mb-[5px]">{new Date(item.startTime).toLocaleDateString()} - {new Date(item.endTime).toLocaleDateString()}</div>

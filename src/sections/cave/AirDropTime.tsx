@@ -21,7 +21,7 @@ export default function AirDropTime({ airDropRound, airDropHistory }: AirDropTim
         <div className="relative flex items-center m-auto w-[570px] h-[118px] font-CherryBomb mt-[30px]">
             {/* Left side */}
             <div className="absolute top-[0px] left-[0px] w-[217px] h-[118px] bg-[url('/images/cave/cave-airdrop-bg.png')] bg-no-repeat bg-center" style={{ backgroundSize: '100% 100%' }}>
-                <div className="text-[22px] font-bold text-[#FFF5A9] text-center mt-[5px]" style={{ WebkitTextStroke: '1px #000' }}>Airdrop Round 1</div>
+                <div className="text-[22px] font-bold text-[#FFF5A9] text-center mt-[5px]" style={{ WebkitTextStroke: '1px #000' }}>Airdrop Round {airDropRound?.round}</div>
                 <div className="flex items-center justify-center">
                     <div className="w-[30px] h-[30px] text-center">
                         <img src="/images/cave/bera-token.png" alt="bera" className="w-full h-full" />
