@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from "react";
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
+import clsx from "clsx";
 
 interface Props {
   location: { x: number, y: number },
@@ -58,17 +59,21 @@ export default function Tips({ location, msg, transferItem, disabled }: Props) {
         <div className="text-[18px] text-[#F7F9EA] font-CherryBomb text-center " style={{ WebkitTextStroke: '1px #4B371F' }}>{msg.name}</div>
         <div className="text-[#fff] font-Montserrat text-[12px] px-[10px] mt-[5px] leading-[120%]">{msg.content}</div>
         <div
+          style={{
+            opacity: msg.btnText === 'Delegate' ? 0.3 : 1,
+            cursor: msg.btnText === 'Delegate' ? 'default' : 'pointer'
+          }}
           onClick={() => {
             if (disabled) return;
             if (msg.btnText === 'Delegate') {
-              router.push('/bgt')
+              // router.push('/bgt')
             } else if (msg.btnText === 'Join') {
               router.push("/activity/christmas")
             } else {
               setModalShow(true);
             }
           }}
-          className="bg-[#FFF5A9] text-[#F7F9EA] mt-[15px] font-CherryBomb border-[2px] border-[#4B371F] text-center mx-[10px] rounded-[31px] cursor-pointer h-[32px] "
+          className={clsx("bg-[#FFF5A9] text-[#F7F9EA] mt-[15px] font-CherryBomb border-[2px] border-[#4B371F] text-center mx-[10px] rounded-[31px] h-[32px] ", msg.btnText === 'Delegate' ? 'cursor-default' : 'cursor-pointer')}
         >
           <span style={{ WebkitTextStroke: '1px #4B371F' }}>
             {msg.btnText}

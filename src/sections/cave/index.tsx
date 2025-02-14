@@ -66,21 +66,25 @@ const lendDapps = [{
     icon: '/images/dapps/dolomite.svg',
     name: 'Dolomite',
     link: '/lending/dolomite'
-}, {
-    icon: '/images/dapps/bend.svg',
-    name: 'Bend',
-    link: '/lending/bend'
-}]
+}, 
+// {
+//     icon: '/images/dapps/bend.svg',
+//     name: 'Bend',
+//     link: '/lending/bend'
+// }
+]
 
 const swapDapps = [{
     icon: '/images/dapps/kodiak.svg',
     name: 'Kodiak',
     link: '/dex/kodiak'
-}, {
-    icon: '/images/dapps/bex.svg',
-    name: 'Bex',
-    link: '/dex/bex'
-}, {
+}, 
+// {
+//     icon: '/images/dapps/bex.svg',
+//     name: 'Bex',
+//     link: '/dex/bex'
+// }, 
+{
     icon: '/images/dapps/ooga-booga.svg',
     name: 'Ooga Booga',
     link: '/dex/ooga-booga'
@@ -95,28 +99,28 @@ const bridgeDapps = [{
 
 const hatTips = [{
     name: 'Baseball Cap',
-    content: '$1+ transaction, at least 1 transactions.',
+    content: '5 transactions, at least $1+ for each.',
     img: '/images/cave/hat/hat-1-1.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }, {
     name: 'Basic Helmet',
-    content: '$10+ transaction, at least 10 transactions.',
+    content: '10 transactions, at least $10+ for each.',
     img: '/images/cave/hat/hat-2-2.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }, {
     name: 'Flying Helmet',
-    content: '$100+ transaction, at least 100 transactions.',
+    content: '50 transactions, at least $100+ for each.',
     img: '/images/cave/hat/hat-3-3.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }, {
     name: 'Motor Helmet',
-    content: '$1000+ transaction, at least 1000 transactions.',
+    content: '200 transactions, at least $100+ for each.',
     img: '/images/cave/hat/hat-4-4.png',
     link: '/bridge',
     btnText: 'Bridge',
@@ -127,28 +131,28 @@ const hatTips = [{
 
 const clothTips = [{
     name: 'Hoodie',
-    content: '$1+ transaction, at least 1 transactions.',
+    content: '5 transaction, at least $1+ for each.',
     img: '/images/cave/clothing/cloth-1-1.png',
     link: '/swap',
     btnText: 'Swap',
     dapps: swapDapps,
 }, {
     name: 'Baseball Jacket',
-    content: '$10+ transaction, at least 10 transactions.',
+    content: '10 transaction, at least $1+ for each.',
     img: '/images/cave/clothing/cloth-2-2.png',
     link: '/swap',
     btnText: 'Swap',
     dapps: swapDapps,
 }, {
     name: 'Vintage Jacket',
-    content: '$100+ transaction, at least 100 transactions.',
+    content: '50 transaction, at least $100+ for each.',
     img: '/images/cave/clothing/cloth-3-3.png',
     link: '/swap',
     btnText: 'Swap',
     dapps: swapDapps,
 }, {
     name: 'Windcheater',
-    content: '$1000+ transaction, at least 1000 transactions.',
+    content: '200 transaction, at least $100+ for each.',
     img: '/images/cave/clothing/cloth-4-4.png',
     link: '/swap',
     btnText: 'Swap',
@@ -188,7 +192,7 @@ const carTips = [{
 const neckTips = [
     {
         name: 'Alloy Necklace',
-        content: '$Lend and Borrow in total $50.',
+        content: '20 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-1.png',
         link: '/swap',
         btnText: 'Lending',
@@ -196,7 +200,7 @@ const neckTips = [
     },
     {
         name: 'Silver Necklace',
-        content: '$Lend and Borrow in total $1000.',
+        content: '100 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-2.png',
         link: '/swap',
         btnText: 'Lending',
@@ -204,7 +208,7 @@ const neckTips = [
     },
     {
         name: 'Golden Necklace',
-        content: '$Lend and Borrow in total $500,000.',
+        content: '200 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-3.png',
         link: '/swap',
         btnText: 'Lending',
@@ -212,7 +216,7 @@ const neckTips = [
     },
     {
         name: 'Diamond Necklace',
-        content: '$Lend and Borrow in total $1,000,000.',
+        content: '300 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-4.png',
         link: '/swap',
         btnText: 'Lending',

@@ -61,7 +61,7 @@ export default function AirDropTime({ airDropRound, airDropHistory }: AirDropTim
             </div>
 
             {/* History button */}
-            <div onClick={() => setShow(true)} className="absolute top-[0px] cursor-pointer right-[-35px] w-[82px] h-[45px] bg-[url('/images/cave/history-icon.png')] bg-no-repeat bg-center" style={{ backgroundSize: '100% 100%' }}   >
+            <div onClick={() => setShow(true)} className="absolute top-[0px] cursor-pointer right-[-35px] w-[82px] h-[45px] bg-[url('/images/cave/history.svg')] bg-no-repeat bg-center" style={{ backgroundSize: '100% 100%' }}   >
             </div>
         </div>
 
