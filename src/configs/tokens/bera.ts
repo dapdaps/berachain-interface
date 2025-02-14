@@ -155,7 +155,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "BONGA",
     name: "Bong Bears",
-    icon: "/assets/tokens/bonga.png"
+    icon: "/assets/tokens/bonga.png",
+    isMeme: true
   },
   byusd: {
     chainId: CHAIN_ID,
@@ -273,7 +274,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "BBLAST",
     name: "Bera Blast",
-    icon: "/assets/tokens/bblast.png"
+    icon: "/assets/tokens/bblast.png",
+    isMeme: true
   },
   stone: {
     chainId: CHAIN_ID,
