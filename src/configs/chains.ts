@@ -2,7 +2,7 @@ import { Chain } from "viem";
 import {
   mainnet,
   berachainTestnetbArtio,
-  base, 
+  base,
   mantle,
   arbitrum,
   avalanche,
@@ -17,7 +17,7 @@ import {
   manta,
   scroll,
   blast,
-  mode,
+  mode
 } from "@reown/appkit/networks";
 
 const chains: Record<number, Chain | any> = {
@@ -39,6 +39,10 @@ const chains: Record<number, Chain | any> = {
         url: "https://berascan.com/"
       }
     },
+    isWalletSupport: true
+  },
+  [berachainTestnetbArtio.id]: {
+    ...berachainTestnetbArtio,
     isWalletSupport: true
   },
   [mainnet.id]: {
@@ -76,7 +80,7 @@ const chains: Record<number, Chain | any> = {
   [gnosis.id]: {
     ...gnosis,
     isWalletSupport: false
-  },  
+  },
   [manta.id]: {
     ...manta,
     isWalletSupport: false
