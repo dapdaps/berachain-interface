@@ -282,7 +282,7 @@ const ALL_LIST = [
         icon: "/images/dapps/stargate.svg",
         type: "bridge",
         className: "",
-        disabled: true,
+        disabled: false,
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
         )
