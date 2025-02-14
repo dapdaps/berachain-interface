@@ -1,18 +1,19 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { usePriceStore } from "@/stores/usePriceStore";
-import Input from "./simple-input";
+import Input from "./balancer-input";
 import { StyledContainer, StyledSubtitle } from "./styles";
+import { cloneDeep } from "lodash";
 
 const DepositAmounts = ({
   label,
   tokens,
   values,
   onValueChange,
-  onError
+  onError,
+  onUpdateTokens
 }: any) => {
   const prices = usePriceStore((store) => store.price);
   const [isError, setIsError] = useState(false);
-  const tokenList = useMemo(() => Object.values(tokens), [tokens]);
 
   useEffect(() => {
     if (!values) {
@@ -34,7 +35,7 @@ const DepositAmounts = ({
   return (
     <StyledContainer>
       <StyledSubtitle>{label}</StyledSubtitle>
-      {tokenList.map((token: any) => (
+      {tokens.map((token: any, i: number) => (
         <Input
           key={token.address}
           token={token}
@@ -44,6 +45,10 @@ const DepositAmounts = ({
           prices={prices}
           onError={(error: boolean) => {
             setIsError(error);
+          }}
+          onSelectToken={(_token: any) => {
+            tokens.splice(i, 1, _token);
+            onUpdateTokens(cloneDeep(tokens));
           }}
         />
       ))}

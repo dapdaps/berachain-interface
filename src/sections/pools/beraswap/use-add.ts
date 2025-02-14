@@ -11,6 +11,7 @@ import queryAbi from "../abi/balancer-query";
 import beraswap from "@/configs/pools/beraswap";
 import axios from "axios";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import weth from "@/configs/contract/weth";
 
 export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
@@ -67,24 +68,28 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
 
       assets.forEach((asset: any, i: number) => {
         const token = tokens.find(
-          (t: any) => t.address === asset.toLowerCase()
+          (t: any) =>
+            (t.address === "native" ? weth[DEFAULT_CHAIN_ID] : t.address) ===
+            asset.toLowerCase()
         );
         if (!token) {
           maxAmountsIn.push("0");
           return;
         }
 
+        const _address =
+          token.address === "native" ? weth[DEFAULT_CHAIN_ID] : token.address;
         amountsIn.push(
-          Big(values[token.address] || 0)
+          Big(values[_address] || 0)
             .mul(10 ** token.decimals)
             .toFixed(0)
         );
-        const price = prices[token.address];
+        const price = prices[_address];
 
         if (token.isNative) {
-          val = Big(0).add(values[token.address] || 0);
+          val = Big(0).add(values[_address] || 0);
         }
-        const _v = Big(values[token.address] || 0)
+        const _v = Big(values[_address] || 0)
           .mul(10 ** token.decimals)
           .toFixed(0);
 
@@ -95,7 +100,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
             .div(10 ** token.decimals)
             .mul(price)
         );
-        userValue = userValue.add(Big(values[token.address] || 0).mul(price));
+        userValue = userValue.add(Big(values[_address] || 0).mul(price));
       });
 
       const bptPriceUsd = poolValue.div(Big(totalSupply.toString()).div(1e18));
@@ -183,7 +188,14 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         transactionHash,
         sub_type: "Add",
         tokens: tokens,
-        amounts: tokens.map((token: any) => values[token.address]),
+        amounts: tokens.map(
+          (token: any) =>
+            values[
+              token.address === "native"
+                ? weth[DEFAULT_CHAIN_ID]
+                : token.address
+            ]
+        ),
         extra_data: {
           action: "Add Liquidity",
           type: "univ3"

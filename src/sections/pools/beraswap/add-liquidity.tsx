@@ -9,7 +9,7 @@ import Big from "big.js";
 export default function AddLiquidity({ onSuccess, data }: any) {
   const [errorTips, setErrorTips] = useState("");
   const [values, setValues] = useState<any>(null);
-  const tokens = useMemo(() => Object.values(data.tokens), [data]);
+  const [tokens, setTokens] = useState<any>(Object.values(data.tokens));
 
   const {
     loading: increasing,
@@ -43,6 +43,7 @@ export default function AddLiquidity({ onSuccess, data }: any) {
         onError={(tips: string) => {
           setErrorTips(tips);
         }}
+        onUpdateTokens={setTokens}
       />
 
       <Button

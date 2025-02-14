@@ -40,7 +40,7 @@ const Input = ({
   }, [value, balance]);
 
   useEffect(() => {
-    onLoad(balance);
+    onLoad?.(balance);
   }, [balance]);
 
   return (
