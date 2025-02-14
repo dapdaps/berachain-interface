@@ -1,11 +1,36 @@
+import { useContext, useEffect } from 'react';
+import { HomeEarthContext } from '@/sections/home-earth/context';
+import { motion } from 'framer-motion';
+
 const CloudCircle = (props: any) => {
-  const { speed } = props;
+  const {} = props;
+
+  const {
+    cloudRef,
+    speed,
+    size,
+    cloudRotation,
+    cloudControls,
+    cloudRotateAnimation,
+  } = useContext(HomeEarthContext);
+
+  useEffect(() => {
+    cloudRotateAnimation();
+
+    return () => {
+      cloudControls.current?.stop?.();
+    };
+  }, []);
 
   return (
-    <div
-      className="will-change-transform animate-rotate-reverse w-[3000px] h-[3000px] absolute z-[1] rounded-full top-[24.5dvh] flex justify-center items-center"
+    <motion.div
+      ref={cloudRef}
+      className="will-change-transform absolute z-[1] rounded-full top-[24.5dvh] flex justify-center items-center"
       style={{
+        rotate: cloudRotation,
         animationDuration: `${speed + 60}s`,
+        width: size,
+        height: size,
       }}
     >
       {
@@ -22,7 +47,7 @@ const CloudCircle = (props: any) => {
           />
         ))
       }
-    </div>
+    </motion.div>
   );
 };
 

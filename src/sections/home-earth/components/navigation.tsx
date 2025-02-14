@@ -1,42 +1,48 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRef, useState, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { HomeEarthContext } from '../context';
 
 const Navigation = (props: any) => {
-  const { speed } = props;
-  const { navigationRef, mountainRef, bearRef } = useContext(HomeEarthContext);
+  const {} = props;
+  const {
+    isDragging,
+    navigationRef,
+    navigationControls,
+    setIsDragging,
+    navigationRotation,
+    navigationStartRotationRef,
+    navigationEndRotationRef,
+    navigationDragStartedRef,
+    navigationDragEndedTimesRef,
+    navigationStartPointPositionRef,
+    hoverIndex,
+    setHoverIndex,
+    speed,
+    size,
+    navigationRotateAnimation,
+    cloudRotateAnimation,
+    cloudControls,
+    cloudStartRotationRef,
+    cloudEndRotationRef,
+    cloudRotation,
+    mountainRotateAnimation,
+    mountainControls,
+    mountainStartRotationRef,
+    mountainEndRotationRef,
+    mountainRotation,
+  } = useContext(HomeEarthContext);
   const router = useRouter();
-
-  const [hoverIndex, setHoverIndex] = useState<any>();
 
   const handleEntryHover = (item: any) => {
     setHoverIndex(item);
-    if (navigationRef.current) {
-      navigationRef.current.style.animationPlayState = "paused";
-    }
-    if (mountainRef.current) {
-      mountainRef.current.style.animationPlayState = "paused";
-    }
-    if (bearRef.current) {
-      bearRef.current.style.animationPlayState = "paused";
-    }
   };
 
   const handleEntryLeave = (item: any) => {
     setHoverIndex(void 0);
-    if (navigationRef.current) {
-      navigationRef.current.style.animationPlayState = "running";
-    }
-    if (mountainRef.current) {
-      mountainRef.current.style.animationPlayState = "running";
-    }
-    if (bearRef.current) {
-      bearRef.current.style.animationPlayState = "running";
-    }
   };
 
   const handleNavigation = (item: any) => {
@@ -44,20 +50,95 @@ const Navigation = (props: any) => {
     router.push(item.path);
   };
 
+  const handleDragStart = (event: MouseEvent, info: any) => {
+    setIsDragging(true);
+    navigationDragStartedRef.current = true;
+    navigationStartRotationRef.current = navigationRotation.get();
+    cloudStartRotationRef.current = cloudRotation.get();
+    mountainStartRotationRef.current = mountainRotation.get();
+    navigationStartPointPositionRef.current = { x: info.point.x, y: info.point.y };
+    navigationControls.current?.stop?.();
+    cloudControls.current?.stop?.();
+    mountainControls.current?.stop?.();
+
+    // console.log('%cStart rotate - navigation: %o', 'background: #5B913B;color:#fff;', navigationRotation.get());
+    // console.log('%cStart info.point.x - navigation: %o', 'background: #5B913B;color:#fff;', info.point.x);
+    // console.log('%cStart rotate - mountain: %o', 'background: #4635B1;color:#fff;', mountainRotation.get());
+    // console.log('%cStart rotate - cloud: %o', 'background: #F39E60;color:#fff;', cloudRotation.get());
+  };
+
+  const handleDragEnd = (event: MouseEvent, info: any) => {
+    setIsDragging(false);
+    navigationDragEndedTimesRef.current = navigationDragEndedTimesRef.current + 1;
+    navigationDragStartedRef.current = false;
+    navigationEndRotationRef.current = navigationRotation.get();
+    cloudEndRotationRef.current = cloudRotation.get();
+    mountainEndRotationRef.current = mountainRotation.get();
+    navigationRotateAnimation();
+    cloudRotateAnimation();
+    mountainRotateAnimation();
+
+    // console.log('%cEnd rotate - navigation: %o', 'background: #5B913B;color:#fff;', navigationRotation.get());
+    // console.log('%cEnd rotate - mountain: %o', 'background: #4635B1;color:#fff;', mountainRotation.get());
+    // console.log('%cEnd rotate - cloud: %o', 'background: #F39E60;color:#fff;', cloudRotation.get());
+  };
+
+  const handleDrag = (event: MouseEvent, info: any) => {
+    if (!navigationDragStartedRef.current) return;
+    const sensitivity = 0.05;
+    const navigationRotate = navigationStartRotationRef.current + (info.point.x - navigationStartPointPositionRef.current.x) * sensitivity;
+    const mountainRotate = mountainStartRotationRef.current + (info.point.x - navigationStartPointPositionRef.current.x) * (sensitivity * 0.5);
+    const cloudRotate = cloudStartRotationRef.current + (info.point.x - navigationStartPointPositionRef.current.x) * (sensitivity * 0.5 * 0.5);
+    navigationRotation.set(navigationRotate);
+    mountainRotation.set(mountainRotate);
+    cloudRotation.set(cloudRotate);
+
+    // console.log('%cCurrent rotate - navigation: %o', 'background: #5B913B;color:#fff;', navigationRotation.get());
+    // console.log('%cCurrent info.point.x - navigation: %o', 'background: #5B913B;color:#fff;', info.point.x);
+    // console.log('%cCurrent lastRotate - navigation: %o', 'background: #5B913B;color:#fff;', navigationStartRotationRef.current);
+    // console.log('%cCurrent rotate - mountain: %o', 'background: #4635B1;color:#fff;', mountainRotation.get());
+    // console.log('%cCurrent rotate - cloud: %o', 'background: #F39E60;color:#fff;', cloudRotation.get());
+  }
+
+  useEffect(() => {
+    navigationRotateAnimation();
+
+    return () => {
+      navigationControls.current?.stop?.();
+    };
+  }, []);
+
   return (
-    <div
+    <motion.div
       ref={navigationRef}
-      className="will-change-transform animate-rotate-reverse w-[3000px] h-[3000px] absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center"
+      className={clsx(
+        'will-change-transform absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center',
+        isDragging ? 'cursor-grabbing' : ''
+      )}
       style={{
+        rotate: navigationRotation,
         animationDuration: `${speed}s`,
+        width: size,
+        height: size,
       }}
+      drag
+      dragElastic={0}
+      dragMomentum={false}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      whileDrag={{ cursor: 'grabbing' }}
+      dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
+      onDrag={handleDrag}
     >
       {
         [...new Array(4)].map((_, idx) => (
           ENTRIES.map((item, i) => (
             <motion.div
               key={i}
-              className="absolute -top-[0px] flex justify-center"
+              className={clsx(
+                'absolute -top-[0px] flex justify-center',
+                item.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+              )}
               style={{
                 width: item.iconWidth,
                 height: item.iconHeight,
@@ -71,7 +152,10 @@ const Navigation = (props: any) => {
               <img
                 src={item.icon}
                 alt=""
-                className={clsx('w-full h-full transition-transform duration-150 ease-in-out', item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer')}
+                className={clsx(
+                  'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
+                  item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                )}
                 style={{
                   transform: `rotate(${item.rotate}deg) scale(${(hoverIndex?.name === item.name && !item.disabled) ? 1.1 : 1})`,
                   transformOrigin: 'center',
@@ -83,7 +167,7 @@ const Navigation = (props: any) => {
                     <motion.img
                       src={item.signpost}
                       alt=""
-                      className="absolute"
+                      className="absolute pointer-events-none"
                       style={{
                         width: item.signpostWidth,
                         height: item.signpostHeight,
@@ -121,7 +205,7 @@ const Navigation = (props: any) => {
           ))
         ))
       }
-    </div>
+    </motion.div>
   );
 };
 
