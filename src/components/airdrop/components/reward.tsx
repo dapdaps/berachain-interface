@@ -7,7 +7,7 @@ import { ChainId } from "@/configs/airdrop";
 import { useSwitchChain } from "wagmi";
 
 const AirdropReward = (props: any) => {
-  const { className, data, claimed, claiming, onClaim } = props;
+  const { className, data, claimed, claiming, endTime, onClaim } = props;
   const { account, chainId } = useCustomAccount();
   const modal = useAppKit();
   const { isPending, switchChain } = useSwitchChain();
@@ -84,7 +84,7 @@ const AirdropReward = (props: any) => {
                 <AirdropButton
                   className="w-[220px]"
                   onClick={onClaim}
-                  disabled={claimed || claiming}
+                  disabled={claimed || claiming || endTime < Date.now()}
                   loading={claiming}
                 >
                   {claimed ? "Claimed" : "Claim"}
