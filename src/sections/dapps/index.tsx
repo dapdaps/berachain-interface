@@ -34,7 +34,7 @@ const FIRST_LIST = [
     dApps: [
       {
         ..._dApps["infrared"],
-        attachedIcon: "",
+        attachedIcon: ""
       }
     ]
   },
@@ -81,8 +81,7 @@ const FIRST_LIST = [
         label: "BeraSwap",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        ),
-        disabled: true
+        )
       },
       {
         ..._dApps["ooga-booga"],
@@ -256,8 +255,7 @@ const ALL_LIST = [
         label: "BeraSwap",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        ),
-        disabled: true
+        )
       },
       {
         ..._dApps["ooga-booga"],
