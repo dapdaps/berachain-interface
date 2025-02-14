@@ -217,12 +217,9 @@ export default memo(function Detail(props: any) {
 
       {mintData && (
         <AddLiquidityModal
-          token0={mintData.token0}
-          token1={mintData.token1}
-          version={mintData.version}
+          data={mintData}
           dex={mintData.protocol}
           stakingToken={mintData.stakingToken}
-          fee={mintData.fee}
           open={showAddModal}
           onClose={() => {
             setShowAddModal(false);

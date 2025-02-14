@@ -77,11 +77,7 @@ export default function Yours({
       {selectedReocrd && (
         <>
           <IncreaseLiquidityModal
-            version={currentTab || "v2"}
-            fee={selectedReocrd.fee}
-            tokenId={selectedReocrd.tokenId}
-            token0={selectedReocrd.token0}
-            token1={selectedReocrd.token1}
+            data={{ ...selectedReocrd, version: currentTab || "v2" }}
             open={openModal === "increase"}
             onClose={() => {
               setOpenModal("");
@@ -91,11 +87,7 @@ export default function Yours({
             onSuccess={onSuccess}
           />
           <RemoveLiquidityModal
-            version={currentTab || "v2"}
-            fee={selectedReocrd.fee}
-            tokenId={selectedReocrd.tokenId}
-            token0={selectedReocrd.token0}
-            token1={selectedReocrd.token1}
+            data={{ ...selectedReocrd, version: currentTab || "v2" }}
             open={openModal === "remove"}
             onClose={() => {
               setOpenModal("");

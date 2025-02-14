@@ -158,6 +158,14 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/bonga.png",
     isMeme: true
   },
+  byusd: {
+    chainId: CHAIN_ID,
+    address: "0x688e72142674041f8f6af4c808a4045ca1d6ac82",
+    decimals: 6,
+    symbol: "BYUSD",
+    name: "BYUSD",
+    icon: "/assets/tokens/byusd.png"
+  },
   fbtc: {
     chainId: CHAIN_ID,
     address: "0xbAC93A69c62a1518136FF840B788Ba715cbDfE2B",

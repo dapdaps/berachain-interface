@@ -1,15 +1,15 @@
-import bex from "./bex";
+import beraswap from "./beraswap";
 import kodiak from "./kodiak";
 import oogaBooga from "./ooga-booga";
 
 export default {
-  // bex,
+  beraswap,
   kodiak,
   "ooga-booga": oogaBooga
 } as Record<string, any>;
 
 export const dexs: Record<string, any> = {
-  // bex,
+  beraswap,
   kodiak,
   "ooga booga": oogaBooga
 };
