@@ -1,29 +1,41 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
+import { HomeEarthContext } from '../context';
 
 const Navigation = (props: any) => {
   const { speed } = props;
-
+  const { navigationRef, mountainRef, bearRef } = useContext(HomeEarthContext);
   const router = useRouter();
 
-  const earthRef = useRef<any>(null);
   const [hoverIndex, setHoverIndex] = useState<any>();
 
   const handleEntryHover = (item: any) => {
     setHoverIndex(item);
-    if (earthRef.current) {
-      earthRef.current.style.animationPlayState = "paused";
+    if (navigationRef.current) {
+      navigationRef.current.style.animationPlayState = "paused";
+    }
+    if (mountainRef.current) {
+      mountainRef.current.style.animationPlayState = "paused";
+    }
+    if (bearRef.current) {
+      bearRef.current.style.animationPlayState = "paused";
     }
   };
 
   const handleEntryLeave = (item: any) => {
     setHoverIndex(void 0);
-    if (earthRef.current) {
-      earthRef.current.style.animationPlayState = "running";
+    if (navigationRef.current) {
+      navigationRef.current.style.animationPlayState = "running";
+    }
+    if (mountainRef.current) {
+      mountainRef.current.style.animationPlayState = "running";
+    }
+    if (bearRef.current) {
+      bearRef.current.style.animationPlayState = "running";
     }
   };
 
@@ -34,7 +46,7 @@ const Navigation = (props: any) => {
 
   return (
     <div
-      ref={earthRef}
+      ref={navigationRef}
       className="will-change-transform animate-rotate-reverse w-[3000px] h-[3000px] absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center"
       style={{
         animationDuration: `${speed}s`,

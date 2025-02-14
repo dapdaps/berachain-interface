@@ -13,7 +13,7 @@ import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
-import GuidingTutorial from '@/components/GuidingTour/mainnet';
+import GuidingTutorial from "@/components/GuidingTour/mainnet";
 
 const menuItems = [
   // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -55,19 +55,19 @@ const dapps: DApp[] = [
     icon: "/images/dapps/infrared.svg",
     href: "/staking/infrared"
   },
-  {
-    id: "berps",
-    name: "Berps",
-    icon: "/images/dapps/infrared/berps.svg",
-    href: "/staking/berps"
-  },
-  { id: "bex", name: "Bex", icon: "/images/dapps/bex.svg", href: "/dex/bex" },
-  {
-    id: "bend",
-    name: "Bend",
-    icon: "/images/dapps/bend.svg",
-    href: "/lending/bend"
-  },
+  // {
+  //   id: "berps",
+  //   name: "Berps",
+  //   icon: "/images/dapps/infrared/berps.svg",
+  //   href: "/staking/berps"
+  // },
+  // { id: "bex", name: "Bex", icon: "/images/dapps/bex.svg", href: "/dex/bex" },
+  // {
+  //   id: "bend",
+  //   name: "Bend",
+  //   icon: "/images/dapps/bend.svg",
+  //   href: "/lending/bend"
+  // },
   {
     id: "kodiak",
     name: "Kodiak",
@@ -332,7 +332,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           )}
         </div>
         <div className="flex items-center gap-[20px]">
-          {isMenuOpen && (
+          {/* {isMenuOpen && (
             <div
               className="cursor-pointer"
               onClick={() => {
@@ -366,7 +366,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 </defs>
               </svg>
             </div>
-          )}
+          )} */}
           <motion.button
             onClick={toggleMenu}
             whileTap={{ scale: 0.95, y: 8 }}

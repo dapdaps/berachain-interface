@@ -18,8 +18,6 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
     const fromEId = chainIds[Number(request.fromChainId)]
     const dstEid = chainIds[Number(request.toChainId)]
 
-    console.log(fromEId, dstEid, tokenPairs, tokenPairs[request.fromChainId], request.fromToken.symbol.toUpperCase())
-
     if (!fromEId || !dstEid) {
         return null
     }
