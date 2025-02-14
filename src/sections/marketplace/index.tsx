@@ -227,7 +227,7 @@ const MarketplaceView = () => {
             </div>
           ))}
         </div>
-        <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div>
+        {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
         {showMoreButton && (
           <MoreButton
             classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
