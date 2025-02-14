@@ -117,9 +117,9 @@ export function useSceneValue(): ISceneContext {
     //   setCurrentSceneInfoLoading(false);
     // }, 600);
 
-    getCurrentTimestamp().then((times) => {
-      getCurrentSceneInfo(times);
-    });
+    // getCurrentTimestamp().then((times) => {
+    //   getCurrentSceneInfo(times);
+    // });
     // const timer = setInterval(() => {
     //   getCurrentTimestamp().then((times) => {
     //     getCurrentSceneInfo(times);

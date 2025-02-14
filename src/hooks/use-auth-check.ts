@@ -12,7 +12,7 @@ export function useAuthCheck(props?: Props) {
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleCheck = (quiet?: boolean) => {
+  const handleCheck = (quiet?: boolean, isTimeout?: boolean) => {
     const realQuiet = quiet ?? isQuiet;
     const result = { accessToken: '', account: '' };
     return new Promise(async (resolve) => {
@@ -36,6 +36,12 @@ export function useAuthCheck(props?: Props) {
         // ⚠️ Unable to synchronize and retrieve the wallet login status
         // must wait until the user clicks again to check the accessToken
         // checkAt();
+        if (isTimeout) {
+          const timer = setTimeout(() => {
+            resolve(false);
+            clearTimeout(timer);
+          }, 3000);
+        }
         return;
       }
       result.account = account;
