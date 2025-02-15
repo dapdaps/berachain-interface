@@ -132,7 +132,7 @@ export default function useCollect({ address }: { address: string }) {
 
   const getItems = () => {
     const promiseArray = [
-      get(`/api/game/items?game_category=bera&address=${address || ''}`),
+      get(`/api/beracave/items`),
       get(`/api/mas/user/${address || ''}`)
     ]
     Promise.all(promiseArray).then((result: any) => {

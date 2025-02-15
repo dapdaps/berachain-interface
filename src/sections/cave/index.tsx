@@ -255,8 +255,6 @@ export default function Cave() {
 
     const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
 
-
-
     const tipClick = useCallback((e: any, item: any, gameItem: any) => {
         console.log('tipClick', item, gameItem);
         if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
