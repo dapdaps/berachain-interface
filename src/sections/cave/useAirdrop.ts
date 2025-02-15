@@ -27,7 +27,7 @@ export const useAirdrop = () => {
           setAirDropPrize(res.data.owned)
       });
 
-      get(`/api/beracave/history?address=${'0x8C7f311f5174b636Bc1849e523810b1e9a4B7a1D'}`).then((res) => {
+      get(`/api/beracave/history?address=${account}`).then((res) => {
         console.log('api/beracave/history', res);
         setAirDropHistory(res.data.map((item: any) => {
             return {
