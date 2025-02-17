@@ -246,15 +246,13 @@ export default function Cave() {
     const { transferItem, transferItems, setTransferItem, setTransferSelectedItems, setTransferItemsVisible } = useTransferItemsStore();
 
     const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
-
+    const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
     const { cars, hats, clothes, necklaces, items, nfts, getItems } = useCollect({
-        address: account as string
+        address: account as string,
+        round: airDropRound?.round || -1,
     })
 
-    const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
-
     const tipClick = useCallback((e: any, item: any, gameItem: any) => {
-        console.log('tipClick', item, gameItem);
         if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
             e.nativeEvent.stopImmediatePropagation()
             let y = e.clientY - 30

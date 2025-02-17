@@ -77,7 +77,7 @@ export const giftBoxTips = [
   },
 ]
 
-export default function useCollect({ address }: { address: string }) {
+export default function useCollect({ address, round }: { address: string, round: number | string }) {
   const [collection, setCollection] = useState<any>()
   const [cars, setCars] = useState<GameItem[]>([])
   const [clothes, setClothes] = useState<GameItem[]>([])
@@ -131,13 +131,18 @@ export default function useCollect({ address }: { address: string }) {
   const { setTransferItems } = useTransferItemsStore();
 
   const getItems = () => {
+    if (Number(round) < 0) {
+      return;
+    }
+
     const promiseArray = [
       get(`/api/beracave/items`),
-      get(`/api/mas/user/${address || ''}`)
+      get(`/api/beracave/items/${address || ''}/${round}`)
     ]
     Promise.all(promiseArray).then((result: any) => {
 
       const [firstResponse, secondResponse] = result
+
       if (firstResponse.code === 0 || secondResponse.code === 0) {
         const cars: GameItem[] = []
         const clothes: GameItem[] = []
@@ -149,16 +154,28 @@ export default function useCollect({ address }: { address: string }) {
         firstResponse.data?.forEach((item: GameItem) => {
           switch (item.category) {
             case 'hats':
-              hats.push(item)
+              hats.push({
+                ...item,
+                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
+              })
               break;
             case 'jackets':
-              clothes.push(item)
+              clothes.push({
+                ...item,
+                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
+              })
               break;
             case 'necklaces':
-              necklaces.push(item)
+              necklaces.push({
+                ...item,
+                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
+              })
               break;
             case 'cars':
-              cars.push(item)
+              cars.push({
+                ...item,
+                pc_item: secondResponse?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
+              })
               break;
           }
           if (item.pc_item) {
@@ -180,23 +197,23 @@ export default function useCollect({ address }: { address: string }) {
             _transferItems.push(item);
           }
         });
-        console.log('====_transferItems.filter((it) => !it.transfer_to)', _transferItems.filter((it) => !it.transfer_to))
         setTransferItems(_transferItems.filter((it) => !it.transfer_to));
+
 
         const _items = items?.map(item => {
           return {
             ...item,
             christmas: true,
-            pc_item: secondResponse?.data?.items?.findIndex((_item: any) => _item.category === item.category) > -1,
+            pc_item: secondResponse?.data?.findIndex((_item: any) => _item.category === item.category) > -1,
           }
         })
+
         const _nfts = secondResponse?.data?.nfts?.map((item: any) => {
           return {
             ...item,
             pc_item: true,
           }
         })
-
 
         setCars(cars.sort((a: any, b: any) => a.level - b.level))
         setClothes(clothes.sort((a: any, b: any) => a.level - b.level))
@@ -219,7 +236,7 @@ export default function useCollect({ address }: { address: string }) {
 
   useEffect(() => {
     getItems();
-  }, [address])
+  }, [address, round])
 
 
   const initEqu = useCallback((list: GameItem[], setList: any, itemNo: number | string, type?: "hat" | "cloth" | "car" | "necklace") => {
