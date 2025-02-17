@@ -127,8 +127,6 @@ const hatTips = [{
     dapps: bridgeDapps,
 }]
 
-
-
 const clothTips = [{
     name: 'Hoodie',
     content: '5 transaction, at least $1+ for each.',
