@@ -660,6 +660,36 @@ const allBlockchains = [
     ),
     value: "xrpledger",
   },
+  {
+    label: "Zcash",
+    icon: (
+      <NetworkIcon
+        chainIcon="/images/near-intents/icons/network/zcash-icon-black.svg"
+        chainName="Zcash"
+      />
+    ),
+    value: "zcash",
+  },
+  {
+    label: "Gnosis",
+    icon: (
+      <NetworkIcon
+        chainIcon="/images/near-intents/icons/network/gnosis.svg"
+        chainName="Gnosis"
+      />
+    ),
+    value: "gnosis",
+  },
+  {
+    label: "BeraChain",
+    icon: (
+      <NetworkIcon
+        chainIcon="/images/near-intents/icons/network/berachain.svg"
+        chainName="BeraChain"
+      />
+    ),
+    value: "berachain",
+  },
 ] as const satisfies Array<{
   label: string
   icon: ReactNode
@@ -682,7 +712,7 @@ function renderMinWithdrawalAmount(
     minWithdrawalAmount != null &&
     minWithdrawalAmount > 1n && (
     <Callout.Root size="1" color="gray" variant="surface" className="my-2.5 gap-1 p-2 rounded-xl">
-        <Callout.Icon>
+        <Callout.Icon className="mt-1">
           <InfoCircledIcon />
         </Callout.Icon>
         <Callout.Text>
@@ -737,8 +767,8 @@ function renderPreparationResult(preparationOutput: PreparationOutput | null) {
   if (content == null) return null
 
   return (
-    <Callout.Root size="1" color="red">
-      <Callout.Icon>
+    <Callout.Root size="1" color="red" className="mt-2 gap-1 p-2 rounded-xl">
+      <Callout.Icon className="mt-1">
         <ExclamationTriangleIcon />
       </Callout.Icon>
       <Callout.Text>{content}</Callout.Text>
@@ -775,6 +805,8 @@ function chainTypeSatisfiesChainName(
     case chainType === ChainType.EVM && chainName === "base":
     case chainType === ChainType.EVM && chainName === "turbochain":
     case chainType === ChainType.EVM && chainName === "aurora":
+    case chainType === ChainType.EVM && chainName === "gnosis":
+    case chainType === ChainType.EVM && chainName === "berachain":
     case chainType === ChainType.Solana && chainName === "solana":
       return true
   }

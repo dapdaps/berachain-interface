@@ -42,9 +42,9 @@ export const settings: Settings = {
    */
   rpcUrls: {
     near: "https://nearrpc.aurora.dev",
-    eth: "https://eth.drpc.org",
+    eth: "https://eth.meowrpc.com",
     base: "https://mainnet.base.org",
-    arbitrum: "https://arb1.arbitrum.io/rpc",
+    arbitrum: "https://arbitrum.meowrpc.com",
     bitcoin: "https://mainnet.bitcoin.org",
     solana:
       "https://quiet-solemn-asphalt.solana-mainnet.quiknode.pro/91aa5918df65520d47a54d88590f1503a4e804b1",
@@ -53,7 +53,7 @@ export const settings: Settings = {
     aurora: "https://mainnet.aurora.dev",
     xrpledger: "https://xrplcluster.com",
     zcash: "https://mainnet.lightwalletd.com",
-    gnosis: "https://rpc.gnosischain.com",
+    gnosis: "https://gnosis.drpc.org",
     berachain: "https://rpc.berachain.com",
   },
 }

@@ -195,8 +195,6 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
       : null;
 
   const chainOptions = token != null ? filterBlockchainsOptions(token) : {};
-  console.log(token, '<==111======chainOptionschainOptionschainOptionschainOptionschainOptions')
-  console.log(token && filterBlockchainsOptions(token), '<==222======chainOptionschainOptionschainOptionschainOptionschainOptions')
   return (
     <div className="p-5">
       <div className="font-CherryBomb text-[26px] text-center mb-4">
@@ -301,6 +299,8 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
                 <ActiveDeposit
                   network={network}
                   token={derivedToken}
+                  userAddress={userAddress}
+                  chainType={chainType}
                   minDepositAmount={minDepositAmount}
                 />
               )}
