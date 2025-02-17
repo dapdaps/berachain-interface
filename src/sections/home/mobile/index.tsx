@@ -401,7 +401,7 @@ const Home = () => {
                 transition={EntryAnimation}
               />
             </motion.div>
-            {/* <motion.div
+            <motion.div
                 className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]'
                 whileTap="tap"
                 onClick={() => {
@@ -426,7 +426,7 @@ const Home = () => {
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
                 />
-              </motion.div> */}
+              </motion.div>
           </div>
         )}
       </div>
