@@ -19,6 +19,7 @@ import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
 import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 import TransferButton from "./components/TransferButton";
+import { useAirdrop } from "../useAirdrop";
 
 
 
@@ -39,9 +40,19 @@ const TipsPopover = ({
         {tips?.content}
       </div>
       <div
+        style={{
+          opacity: tips?.btnText === 'Delegate' ? 0.5 : 1
+        }}
         onClick={() => {
-          if (!currentSceneInfoValid) return;
-          router.push("/activity/christmas")
+          if (!currentSceneInfoValid) return; 
+          if (tips?.btnText === 'Delegate') {
+            return
+          }
+          if (tips?.link) {
+            router.push(tips?.link)
+          } else {
+            // router.push("/activity/christmas")
+          }
         }}
         className="w-full h-8 border-[2px] bg-[#FFF5A9] rounded-[30px] border-[#4B371F] font-CherryBomb text-[18px] font-[400] text-center text-stroke-2 text-white"
       >
@@ -65,10 +76,12 @@ const Cave = () => {
     console.log("Selected item:", item);
   };
 
+  const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
   const { cars, hats, clothes, necklaces, getItems } = useCollect({
-    address: account as string
+    address: account as string,
+    round: airDropRound?.round || -1,
   })
-  const { moduleConfigs, loading, fetchGameItems } = useGameItems();
+  const { moduleConfigs, loading, fetchGameItems } = useGameItems({ round: airDropRound?.round || -1 });
   const { nfts, items, loading: masUserLoading } = useMasUser()
   const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
 
