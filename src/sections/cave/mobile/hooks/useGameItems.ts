@@ -43,7 +43,7 @@ export const useGameItems = () => {
   const fetchGameItems = async () => {
     try {
       setLoading(true);
-      const response = await get(`/api/game/items?game_category=bera&address=${address}`);
+      const response = await get(`/api/beracave/items`);
       if (response.code !== 0 ) return
 
       const groupedByCategory = response.data.reduce((acc: Record<string, GameItem[]>, item: GameItem) => {

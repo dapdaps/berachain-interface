@@ -98,20 +98,20 @@ const PartList = [
     link: "/dashboard",
     ArrowIcon: dAppArrowIcon,
     disabled: true
+  },
+  {
+    className:
+      'origin-bottom-left absolute left-[6.3%] bottom-[10.8%] w-[314px] h-[340px]',
+    clipPath: 'unset',
+    src: 'cave.svg',
+    maskSrc: 'mask-cave.svg',
+    indicatorClass: 'absolute left-[2%] top-[25%] z-10',
+    buttonClass: 'rotate-[-10deg] mb-[8px]',
+    arrowClass: 'relative left-[50%]',
+    btnText: 'Bera Cave',
+    link: '/cave',
+    ArrowIcon: caveArrowIcon
   }
-  // {
-  //   className:
-  //     'origin-bottom-left absolute left-[6.3%] bottom-[10.8%] w-[314px] h-[340px]',
-  //   clipPath: 'unset',
-  //   src: 'cave.svg',
-  //   maskSrc: 'mask-cave.svg',
-  //   indicatorClass: 'absolute left-[2%] top-[25%] z-10',
-  //   buttonClass: 'rotate-[-10deg] mb-[8px]',
-  //   arrowClass: 'relative left-[50%]',
-  //   btnText: 'Bera Cave',
-  //   link: '/cave',
-  //   ArrowIcon: caveArrowIcon
-  // }
 ];
 
 const MapItem = ({

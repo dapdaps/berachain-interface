@@ -181,7 +181,7 @@ const Cave = () => {
         >Rules</div>
       </div>
       <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[240vw]')}>
-        <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
+        {/* <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
             storePhotoList?.photoList?.map((photo: any, index: any) => (
               <div className="relative w-[159px] h-[184px] group z-20"
@@ -227,7 +227,7 @@ const Cave = () => {
               </div>
             ))
           }
-        </div>
+        </div> */}
         <div
           className='fixed bottom-0 z-[5]'
           style={{
@@ -303,7 +303,7 @@ const Cave = () => {
 
       </div>
 
-      <TransferButton />
+      {/* <TransferButton /> */}
       <Welcome show={welcomeStore.show} onClose={() => welcomeStore.set({ show: false })} />
       <Popup />
 
