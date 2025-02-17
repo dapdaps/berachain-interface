@@ -138,7 +138,7 @@ const clothTips = [{
     dapps: swapDapps,
 }, {
     name: 'Baseball Jacket',
-    content: '10 transaction, at least $1+ for each.',
+    content: '10 transaction, at least $10+ for each.',
     img: '/images/cave/clothing/cloth-2-2.png',
     link: '/swap',
     btnText: 'Swap',
