@@ -291,5 +291,13 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "Godl",
     icon: ""
+  },
+  bm: {
+    chainId: CHAIN_ID,
+    address: "0xb749584F9fC418Cf905d54f462fdbFdC7462011b",
+    decimals: 18,
+    symbol: "bm",
+    name: "bm",
+    icon: "/assets/tokens/bm.png"
   }
 };
