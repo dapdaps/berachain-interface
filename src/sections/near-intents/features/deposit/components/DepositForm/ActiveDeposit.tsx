@@ -1,7 +1,7 @@
 import { InfoCircledIcon } from "@radix-ui/react-icons"
 import { Text } from "@radix-ui/themes"
 import clsx from "clsx"
-import { useId } from "react"
+import { useEffect, useId } from "react"
 import { useFormContext } from "react-hook-form"
 import { BlockMultiBalances } from "../../../../components/Block/BlockMultiBalances"
 import { ButtonCustom } from "../../../../components/Button/ButtonCustom"
@@ -20,19 +20,45 @@ import { DepositWarning } from "../DepositWarning"
 import { TokenAmountInputCard } from "./TokenAmountInputCard"
 import type { DepositFormValues } from "./index"
 import { renderDepositHint } from "./renderDepositHint"
+import { waitFor } from "xstate"
+import { useActor } from "@xstate/react"
+import { depositMachine } from "../../../machines/depositMachine"
+import useAddAction from "@/hooks/use-add-action"
+import useToast from "@/hooks/use-toast"
+import { ChainType } from "@/sections/near-intents/types/deposit"
+import { ethers } from "ethers"
+import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
 
 export type ActiveDepositProps = {
   network: BlockchainEnum
   token: BaseTokenInfo
   minDepositAmount: bigint | null
+  chainType: ChainType | null
+  userAddress: string | null
 }
 
 export function ActiveDeposit({
   network,
   token,
   minDepositAmount,
+  chainType,
+  userAddress
 }: ActiveDepositProps) {
   const { setValue, watch } = useFormContext<DepositFormValues>()
+
+  const { addAction } = useAddAction("dapp", true);
+
+  const toast = useToast();
+
+  const addActionChainIdMap: Record<any, number> = {
+    [ChainType.Near]: 99998,
+    [ChainType.Solana]: 99997,
+  };
+
+  console.log({
+    chainType,
+    userAddress
+  }, '<----------')
 
   const {
     amount,
@@ -62,6 +88,28 @@ export function ActiveDeposit({
         snapshot.matches("submittingTurboTx"),
     }
   })
+
+  useEffect(() => {
+    if (depositOutput?.tag === 'ok') {
+      toast.success({
+        title: "Deposit Success",
+      });
+
+      if (!chainType) return 
+      addAction?.({
+        type: "Staking",
+        action: "Deposit",
+        account_id: userAddress,
+        status: 1,
+        sub_type: "Deposit",
+        transactionHash: depositOutput.value.txHash,
+        template: "near-intents",
+        tokens: [token],
+        amount: ethers.utils.formatUnits(depositOutput.value.depositDescription.amount, depositOutput.value.depositDescription.derivedToken.decimals),
+        chainId: chainType === ChainType.EVM ? CHAIN_IDS[depositOutput.value.depositDescription.derivedToken.chainName!] : addActionChainIdMap[chainType],
+      });
+    }
+  }, [depositOutput]);
 
   const balanceInsufficient =
     balance != null

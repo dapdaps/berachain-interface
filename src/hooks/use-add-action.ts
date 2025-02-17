@@ -20,7 +20,7 @@ export default function useAddAction(source: string, isNear = false) {
 
       const currentChain = chains[chainId];
 
-      if (!currentChain) return;
+      if (!currentChain && !isNear) return;
 
       console.info("addAction data: ", data);
 

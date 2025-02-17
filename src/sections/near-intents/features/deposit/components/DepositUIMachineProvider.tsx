@@ -1,5 +1,5 @@
 import { createActorContext } from "@xstate/react"
-import type { PropsWithChildren, ReactElement, ReactNode } from "react"
+import { useRef, type PropsWithChildren, type ReactElement, type ReactNode } from "react"
 import { useFormContext } from "react-hook-form"
 import { depositMachine } from "../../machines/depositMachine"
 import { type Hash, getAddress } from "viem"
@@ -30,7 +30,7 @@ import { assetNetworkAdapter } from "../../../utils/adapters"
 import { assert } from "../../../utils/assert"
 import { userAddressToDefuseUserId } from "../../../utils/defuse"
 import { getEVMChainId } from "../../../utils/evmChainId"
-import { isNativeToken } from "../../../utils/token"
+import { isFungibleToken, isNativeToken } from "../../../utils/token"
 import { depositGenerateAddressMachine } from "../../machines/depositGenerateAddressMachine"
 import { depositUIMachine } from "../../machines/depositUIMachine"
 import type { DepositFormValues } from "./DepositForm"
@@ -84,9 +84,12 @@ export function DepositUIMachineProvider({
   sendTransactionNear,
   sendTransactionEVM,
   sendTransactionSolana,
-  onDepositSuccess,
+  onDepositSuccess
 }: DepositUIMachineProviderProps) {
   const { setValue } = useFormContext<DepositFormValues>()
+
+  const onSuccessDepositRef = useRef(onDepositSuccess)
+  onSuccessDepositRef.current = onDepositSuccess
 
   return (
     <DepositUIMachineContext.Provider
@@ -121,7 +124,11 @@ export function DepositUIMachineProvider({
                   nearBalance,
                   storageDepositRequired,
                 } = input
+                const address = isFungibleToken(derivedToken)
+                  ? derivedToken.address
+                  : null
 
+                assert(address != null, "Address is not defined")
                 assert(
                   storageDepositRequired !== null,
                   "Storage deposit required is null"
@@ -129,7 +136,7 @@ export function DepositUIMachineProvider({
                 assert(nearBalance !== null, "Near balance is null")
 
                 let tx: Transaction["NEAR"][] = []
-                if (derivedToken.address === "wrap.near") {
+                if (address === "wrap.near") {
                   /**
                    * On calculation of the balance NEAR, we bound it with the amount of wrap.near
                    * So to destinguish how much NEAR we have, we need to subtract the amount of wrap.near
@@ -150,7 +157,7 @@ export function DepositUIMachineProvider({
                   )
                 } else {
                   tx = createBatchDepositNearNep141Transaction(
-                    derivedToken.address,
+                    address,
                     amount,
                     storageDepositRequired
                   )
@@ -158,15 +165,15 @@ export function DepositUIMachineProvider({
 
                 const txHash = await sendTransactionNear(tx)
                 assert(txHash != null, "Transaction failed")
-
-                onDepositSuccess?.({
-                  txHash,
-                  token: input.derivedToken,
-                  amount: input.amount,
-                  userAddress: input.userAddress,
-                  chainName: input.chainName
-                });
-
+                if (txHash) {
+                  onSuccessDepositRef.current?.({
+                    txHash,
+                    token: input.derivedToken,
+                    amount: input.amount,
+                    userAddress: input.userAddress,
+                    chainName: input.chainName
+                  });
+                }
                 return txHash
               }),
               validateTransaction: fromPromise(async ({ input }) => {
@@ -233,13 +240,24 @@ export function DepositUIMachineProvider({
                 if (receipt.status === "reverted") {
                   throw new Error("Transfer EVM transaction reverted")
                 }
-                onDepositSuccess?.({
-                  txHash,
-                  token: input.derivedToken,
-                  amount: input.amount,
-                  userAddress: input.userAddress,
-                  chainName: input.chainName
-                });
+
+                // console.log(input, '<----waitEVMTransaction')
+                // console.log({
+                //       txHash,
+                //     token: input.derivedToken,
+                //     amount: input.amount,
+                //     userAddress: input.userAddress,
+                //     chainName: input.chainName
+                // }, '<-------onDepositSuccess')
+                // if (txHash) {
+                //   onSuccessDepositRef.current?.({
+                //     txHash,
+                //     token: input.derivedToken,
+                //     amount: input.amount,
+                //     userAddress: input.userAddress,
+                //     chainName: input.chainName
+                //   });
+                // }
 
                 return txHash
               }),
@@ -273,13 +291,17 @@ export function DepositUIMachineProvider({
 
                 const txHash = await sendTransactionSolana(tx)
                 assert(txHash != null, "Tx hash is not defined")
-                onDepositSuccess?.({
-                  txHash,
-                  token: input.derivedToken,
-                  amount: input.amount,
-                  userAddress: input.userAddress,
-                  chainName: input.chainName
-                });
+
+                if (txHash) {
+                  onDepositSuccess?.({
+                    txHash,
+                    token: input.derivedToken,
+                    amount: input.amount,
+                    userAddress: input.userAddress,
+                    chainName: input.chainName
+                  });
+                }
+
                 return txHash
               }),
             },
@@ -369,13 +391,16 @@ export function DepositUIMachineProvider({
                 if (receipt.status === "reverted") {
                   throw new Error("Deposit from Silo transaction reverted")
                 }
-                onDepositSuccess?.({
-                  txHash,
-                  token: input.derivedToken,
-                  amount: input.amount,
-                  userAddress: input.userAddress,
-                  chainName: input.chainName
-                });
+
+                if (txHash) {
+                  onDepositSuccess?.({
+                    txHash,
+                    token: input.derivedToken,
+                    amount: input.amount,
+                    userAddress: input.userAddress,
+                    chainName: input.chainName
+                  });
+                }
 
                 return txHash
               }),
