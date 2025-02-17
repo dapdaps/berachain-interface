@@ -198,10 +198,10 @@ export default function useCollect({ address }: { address: string }) {
         })
 
 
-        setCars(cars)
-        setClothes(clothes)
-        setNecklaces(necklaces)
-        setHats(hats)
+        setCars(cars.sort((a: any, b: any) => a.level - b.level))
+        setClothes(clothes.sort((a: any, b: any) => a.level - b.level))
+        setNecklaces(necklaces.sort((a: any, b: any) => a.level - b.level))
+        setHats(hats.sort((a: any, b: any) => a.level - b.level))
 
         setItems(_items)
         setNfts(_nfts)
@@ -246,7 +246,7 @@ export default function useCollect({ address }: { address: string }) {
     }
     setList([
       ...list
-    ])
+    ].sort((a: any, b: any) => a.level - b.level))
   }, [address])
 
   useEffect(() => {
