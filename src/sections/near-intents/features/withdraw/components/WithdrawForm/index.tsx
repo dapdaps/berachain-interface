@@ -282,7 +282,7 @@ const { addAction } = useAddAction("dapp", true);
         sub_type: "Withdraw",
         transactionHash: event.data.txHash,
         template: "near-intents",
-        tokens: [token],
+        tokens: [event.data.tokenIn],
         amount: amount,
         chainId: addActionChainIdMap[event.data.tokenOut?.chainName] || CHAIN_IDS[event.data.tokenOut?.chainName],
         account_id: userAddress,

@@ -55,10 +55,6 @@ export function ActiveDeposit({
     [ChainType.Solana]: 99997,
   };
 
-  console.log({
-    chainType,
-    userAddress
-  }, '<----------')
 
   const {
     amount,
