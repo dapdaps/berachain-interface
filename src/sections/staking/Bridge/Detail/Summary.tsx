@@ -73,7 +73,7 @@ const DetailSummary = (props: any) => {
             )}
           </div>
           <div className="text-black font-Montserrat text-[26px] font-semibold leading-[100%]">
-            {data?.initialData?.name || data?.tokens?.[0] || 'iBGT'}
+            {data?.id || data?.tokens?.[0] || 'iBGT'}
           </div>
         </div>
         {
