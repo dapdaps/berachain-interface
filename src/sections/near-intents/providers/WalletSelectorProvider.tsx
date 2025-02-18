@@ -42,13 +42,9 @@ interface WalletSelectorContextValue {
   selectedWalletId: string | null
 }
 
-const NEAR_ENV = process.env.NEAR_ENV ?? "mainnet"
+const NEAR_ENV = "mainnet"
 // 简化 RPC 配置，使用单一节点
-const NEAR_NODE_URL =
-  NEAR_ENV === "mainnet"
-    ? "https://rpc.mainnet.near.org"
-    : "https://rpc.testnet.near.org"
-
+const NEAR_NODE_URL = "https://rpc.mainnet.near.org"
 
 export const WalletSelectorContext =
   createContext<WalletSelectorContextValue | null>(null)
@@ -69,9 +65,9 @@ export const WalletSelectorProvider: React.FC<{
           nodeUrl: NEAR_NODE_URL,
           helperUrl: "",
           explorerUrl: "https://nearblocks.io",
-          indexerUrl:
-            "postgres://public_readonly:nearprotocol@mainnet.db.explorer.indexer.near.dev/mainnet_explorer",
+          indexerUrl: "postgres://public_readonly:nearprotocol@mainnet.db.explorer.indexer.near.dev/mainnet_explorer",
         },
+        debug: true,
         modules: [
           setupMyNearWallet({
             successUrl: window.location.origin + '/near-intents',
