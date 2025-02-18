@@ -52,7 +52,7 @@ const RainyDay: React.FC<RainEffectProps> = ({
   }, [dropCount, minSpeed, maxSpeed]);
 
   return (
-    <div className="fixed inset-0 w-[130dvw] h-full pointer-events-none z-[1000] left-0 top-0">
+    <div className="fixed inset-0 w-[130dvw] h-full pointer-events-none z-[9] left-0 top-0">
       {raindrops.map((drop) => (
         <RainDrop
           key={drop.id}

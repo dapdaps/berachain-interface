@@ -50,7 +50,7 @@ const MainLayout = (props: Props) => {
   }, [isVaults, pathname]);
 
   const sceneStyles = useMemo(() => {
-    if (isRainyDay) {
+    if (isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname))) {
       return { background: rainyDay?.bg };
     }
 
@@ -61,7 +61,7 @@ const MainLayout = (props: Props) => {
     }
 
     return {};
-  }, [currentScene, isRainyDay, rainyDay]);
+  }, [currentScene, isRainyDay, rainyDay, pathname]);
 
   const routes = ["/earn", "/activity/christmas"];
 
@@ -218,7 +218,7 @@ const MainLayout = (props: Props) => {
       <GuidingTutorial />
       <AnimatePresence mode="wait">
         {
-          isRainyDay && rainyDay?.bgPathname.includes(pathname) && (
+          isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) && (
             <motion.div
               variants={{
                 visible: { opacity: 1 },

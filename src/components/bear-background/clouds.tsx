@@ -2,9 +2,12 @@
 
 import { motion } from 'framer-motion';
 import CloudSvg from '@public/images/background/cloud.svg';
+import CloudRainySvg from '@public/images/background/cloud-rainy.svg';
 import { useEffect, useState } from 'react';
 
-export const Clouds = () => {
+export const Clouds = (props: any) => {
+  const { isRainyDay } = props;
+
   const [screenWidth, setScreenWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
@@ -37,7 +40,7 @@ export const Clouds = () => {
         }}
         className='absolute top-[109px] '
       >
-        <CloudSvg />
+        {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
       <motion.div
         initial={{
@@ -54,7 +57,7 @@ export const Clouds = () => {
         }}
         className='absolute top-[13px]'
       >
-        <CloudSvg />
+        {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
       <motion.div
         initial={{
@@ -71,13 +74,15 @@ export const Clouds = () => {
         }}
         className='absolute top-[143px]'
       >
-        <CloudSvg />
+        {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
     </>
   );
 };
 
-export const DappClouds = () => {
+export const DappClouds = (props: any) => {
+  const { isRainyDay } = props;
+
   const [screenWidth, setScreenWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
@@ -110,7 +115,7 @@ export const DappClouds = () => {
         }}
         className='absolute bottom-[479px]'
       >
-        <CloudSvg />
+        {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
       <motion.div
         initial={{
@@ -127,7 +132,7 @@ export const DappClouds = () => {
         }}
         className='absolute bottom-[559px]'
       >
-        <CloudSvg />
+        {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
       <motion.div
         initial={{
@@ -144,7 +149,7 @@ export const DappClouds = () => {
         }}
         className='absolute bottom-[129px]'
       >
-        <CloudSvg />
+        {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
     </>
   );

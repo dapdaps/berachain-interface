@@ -5,7 +5,6 @@ import { SceneStatus } from '@/configs/scene';
 
 interface BeraPrice {
   price?: number;
-  lastDayPrice?: number;
   percentage?: string;
 }
 
@@ -19,7 +18,7 @@ type RainyDayStore = RainyDayState & {
   setBeraPrice: (price: BeraPrice) => void;
 };
 
-export const RAINY_DAY = {
+export const RAINY_DAY: Scene = {
   id: 2,
   name: 'Rainy Day',
   description: '',
@@ -27,7 +26,7 @@ export const RAINY_DAY = {
   status: SceneStatus.Ended,
   api: '',
   bg: '#647783',
-  bgPathname: ['/'],
+  bgPathname: 'ALL',
 };
 
 export const useRainyDayStore = create(

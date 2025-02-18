@@ -213,6 +213,6 @@ export interface Scene {
   status: SceneStatus;
   api: string;
   bg: string;
-  bgPathname: string[];
+  bgPathname: string[] | 'ALL';
   handleTime?: (config?: any) => ({ startUTCTime?: string; endUTCTime?: string; });
 }
