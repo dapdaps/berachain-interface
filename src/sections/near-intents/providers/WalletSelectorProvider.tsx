@@ -94,6 +94,7 @@ export const WalletSelectorProvider: React.FC<{
       // for more information (https://github.com/near/wallet-selector/pull/764#issuecomment-1498073367)
       window.selector = _selector
       window.modal = _modal
+      console.log(_modal, '_modal')
 
       setSelector(_selector)
       setModal(_modal)
