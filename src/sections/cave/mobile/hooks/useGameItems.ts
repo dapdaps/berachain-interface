@@ -99,7 +99,7 @@ export const useGameItems = ({ round }: { round: number }) => {
     }
 
     fetchGameItems();
-  }, [address]);
+  }, [address, round]);
 
   return {
     moduleConfigs,
