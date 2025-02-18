@@ -90,7 +90,7 @@ export class BeraSwap {
     const method = routes[0]?.hops.length > 1 ? "batchSwap" : "swap";
     let params: any = {};
     const funds = [account, false, account, false];
-    const deadline = Math.ceil(Date.now() / 1000) + 120;
+    const deadline = Math.ceil(Date.now() / 1000) + 300;
 
     if (method === "batchSwap") {
       const limits = [tokenInAmount];
