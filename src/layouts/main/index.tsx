@@ -12,6 +12,7 @@ import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { useChristmas } from "@/hooks/use-christmas";
 import GuidingTutorial from '@/components/GuidingTour/mainnet';
+import { useActivityStore } from "@/stores/useActivityStore";
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -21,6 +22,7 @@ const MainLayout = (props: Props) => {
   const { handleReportNoCode } = useClickTracking();
   const pathname = usePathname();
   const { isChristmas } = useChristmas();
+  const { isDefaultTheme, themeConfig } = useActivityStore();
 
   useEffect(() => {
     handleReportNoCode();
@@ -37,17 +39,21 @@ const MainLayout = (props: Props) => {
   const isVaults = useMemo(() => pathname === "/vaults", [pathname]);
 
   const bg = useMemo(() => {
-    if (isVaults) {
-      return "bg-transparent h-full";
-    }
-    if (isChristmas && pathname === "/") {
-      return "bg-christmas";
-    }
-    if (pathname === "/activity/christmas") {
-      return "bg-christmas";
-    }
+    if (isVaults) return "bg-transparent h-full";
+    if (isChristmas && pathname === "/") return "bg-christmas";
+    if (pathname === "/activity/christmas") return "bg-christmas";
     return "bg-[var(--background)]";
   }, [isVaults, isChristmas, pathname]);
+
+  const customStyle = useMemo(() => {
+    if (pathname === '/' && !isDefaultTheme()) {
+      return {
+        ...style,
+        backgroundColor: themeConfig.primaryColor
+      };
+    }
+    return style;
+  }, [pathname, isDefaultTheme, themeConfig.primaryColor, style]);
 
   const routes = ["/earn", "/activity/christmas"];
 
@@ -55,7 +61,7 @@ const MainLayout = (props: Props) => {
     <div
       id="layout"
       className={`min-h-screen relative flex flex-col items-stretch justify-start ${bg}`}
-      style={style}
+      style={customStyle}
       onClick={handleTrack}
     >
       <MainLayoutHeader

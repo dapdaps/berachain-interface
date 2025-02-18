@@ -5,6 +5,7 @@ import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { HomeEarthContext } from '../context';
+import { useActivityStore } from '@/stores/useActivityStore';
 
 const Navigation = (props: any) => {
   const {} = props;
@@ -36,6 +37,7 @@ const Navigation = (props: any) => {
     mountainRotation,
   } = useContext(HomeEarthContext);
   const router = useRouter();
+  const { isDefaultTheme, themeConfig } = useActivityStore();
 
   const handleEntryHover = (item: any) => {
     setHoverIndex(item);
@@ -112,14 +114,15 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center',
-        isDragging ? 'cursor-grabbing' : ''
+        'will-change-transform absolute z-[3] border border-[#5A6F2F] rounded-full top-[24.5dvh] flex justify-center items-center',
+        isDragging ? 'cursor-grabbing' : '',
       )}
       style={{
         rotate: navigationRotation,
         animationDuration: `${speed}s`,
         width: size,
         height: size,
+        backgroundColor: themeConfig.earthBackgroundColor
       }}
       drag
       dragElastic={0}

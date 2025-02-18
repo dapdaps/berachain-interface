@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
 import { animate, useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
+import { useActivityStore } from '@/stores/useActivityStore';
 
 // seconds per lap
 const SPEED = 200;
@@ -46,6 +47,8 @@ const HomeEarth = () => {
 
   const [isDragging, setIsDragging] = useState(false);
   const [hoverIndex, setHoverIndex] = useState<any>();
+
+  const { toggleTheme, isDefaultTheme } = useActivityStore();
 
   useEffect(() => {
     if (hoverIndex) {
@@ -159,15 +162,25 @@ const HomeEarth = () => {
         <HomeEarthTop />
         <AirdropModal />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
-          {/*#region Cloud*/}
-          <CloudCircle />
-          {/*#endregion*/}
-          {/*#region Mountain*/}
-          <MountainCircle />
-          {/*#endregion*/}
+          {
+            isDefaultTheme() && (<>
+              {/*#region Cloud*/}
+              <CloudCircle />
+              {/*#endregion*/}
+              {/*#region Mountain*/}
+              <MountainCircle />
+              {/*#endregion*/}
+            </>)
+          }
           {/*#region Navigation*/}
           <Navigation />
           {/*#endregion*/}
+          <img 
+            onClick={()=> toggleTheme()}
+            src={isDefaultTheme() ? "/images/lgbt.png" : "/images/theme-default.png"}
+            className="w-[103px] h-[130px] absolute z-[4] cursor-pointer bottom-0 right-[20%] transition-transform hover:scale-110" 
+            alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
+          />
           <img
             ref={bearRef}
             src="/images/background/bear.gif" 
