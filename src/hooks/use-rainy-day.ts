@@ -21,7 +21,7 @@ export function useRainyDay(props?: { isLoadPrice?: boolean; }) {
         const beraRes = res.data['BERA'];
         setRainyDay({
           ...RAINY_DAY,
-          status: Big(beraRes.change_percent || 0).gte(0) ? SceneStatus.Ongoing : SceneStatus.Ended,
+          status: Big(beraRes.change_percent || 0).lt(0) ? SceneStatus.Ongoing : SceneStatus.Ended,
         } as Scene);
         setBeraPrice({
           price: beraRes.price,
