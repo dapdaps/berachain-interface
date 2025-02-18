@@ -46,7 +46,7 @@ export default function useRemove({
       }
 
       let exitTokenIndex = assetsRef.current.findIndex(
-        (asset: any) => asset.toLowerCase() === exitToken.address
+        (asset: any) => asset.toLowerCase() === exitToken.address.toLowerCase()
       );
 
       const bptMinIn = Big(data.balance).mul(1e18).toFixed(0);
@@ -58,13 +58,18 @@ export default function useRemove({
         type === 0
           ? abiCoder.encode(
               ["uint256", "uint256", "uint256"],
-              [0, bptMinIn, exitTokenIndex]
+              [
+                0,
+                bptMinIn,
+                exitTokenIndex === 0
+                  ? 0
+                  : exitTokenIndex - (data.type === "COMPOSABLE_STABLE" ? 1 : 0)
+              ]
             )
           : abiCoder.encode(
               ["uint256", "uint256"],
               [data.type === "COMPOSABLE_STABLE" ? 2 : 1, bptMinIn]
             );
-      console.log(67, [assetsRef.current, minAmountsOut, userData, false]);
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
         data.id,
         account,
@@ -167,6 +172,10 @@ export default function useRemove({
         let exitTokenIndex = assetsRef.current.findIndex(
           (asset: any) => asset.toLowerCase() === exitToken.address
         );
+        exitTokenIndex =
+          exitTokenIndex === 0
+            ? 0
+            : exitTokenIndex - (data.type === "COMPOSABLE_STABLE" ? 1 : 0);
         const userData = abiCoder.encode(types, [0, bptMinIn, exitTokenIndex]);
         const minAmountsOut = assetsRef.current.map(
           (asset: any, i: number) => "0"

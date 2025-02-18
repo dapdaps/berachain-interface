@@ -1,7 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { balanceFormated } from "@/utils/balance";
-import Loading from "@/components/circle-loading";
 import Range from "@/components/range";
 import { motion } from "framer-motion";
 import Big from "big.js";
@@ -37,6 +36,10 @@ export default function TokenAmout({
     percent = Math.min(Math.max(+percent, 0), 100);
     handleRangeChange?.({ target: { value: percent } }, false);
   };
+
+  useEffect(() => {
+    setPercent(0);
+  }, [currency]);
 
   return (
     <div className="border border-[#000] rounded-[12px] p-[14px] bg-white">

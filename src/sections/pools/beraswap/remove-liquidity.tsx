@@ -125,6 +125,7 @@ const Remove = ({ data, onSuccess }: any) => {
         }}
         onSelect={(token: any) => {
           setExitToken(token);
+          setExitAmount("");
         }}
         showSearch={false}
       />
