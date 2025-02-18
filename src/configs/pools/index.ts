@@ -2,7 +2,7 @@ import bex from "./bex";
 import kodiak from "./kodiak";
 
 export default {
-  // bex,
+  bex,
   kodiak
 } as Record<string, any>;
 

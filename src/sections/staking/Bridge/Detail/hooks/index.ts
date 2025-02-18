@@ -77,10 +77,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -502,33 +502,23 @@ export function useDetail(props: any) {
     );
     const underlying_tokens = data?.initialData?.underlying_tokens;
     if (index > -1) {
-      const array = data?.initialData?.stake_token?.name?.split("-");
-      const symbol0 = array[0];
-      const symbol1 = array[1];
-      const token0 =
-        underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
-      const token1 =
-        underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
-      if (token0 && token1) {
-        return {
-          protocol: protocol?.id,
-          token0: { ...token0, icon: token0?.image },
-          token1: { ...token1, icon: token1?.image },
-          version: "island",
-          protocol: "kodiak",
-          stakingToken: data?.initialData?.stake_token
-        };
-      } else {
-        console.error("some error");
+      return {
+        protocol: protocol?.id,
+        token0: { ...underlying_tokens[0], icon: token0?.image },
+        token1: { ...underlying_tokens[1], icon: token1?.image },
+        version: "island",
+        protocol: "kodiak",
+        stakingToken: data?.initialData?.stake_token
       }
     }
-    if (underlying_tokens?.length === 2)
+    if (underlying_tokens?.length === 2) {
       return {
         protocol: protocol?.id,
         token0: { ...underlying_tokens[0], icon: data.images[0] },
         token1: { ...underlying_tokens[1], icon: data.images[1] },
         version: "v2"
       };
+    }
     return null;
   }, [data]);
 
