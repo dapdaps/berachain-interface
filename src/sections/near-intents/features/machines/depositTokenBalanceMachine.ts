@@ -1,4 +1,4 @@
-import { isNativeToken } from "../../utils/token"
+import { isFungibleToken, isNativeToken } from "../../utils/token"
 import type { Address } from "viem"
 import { assign, fromPromise, setup } from "xstate"
 import { getWalletRpcUrl } from "../../services/depositService"
@@ -14,6 +14,7 @@ import {
   getSolanaNativeBalance,
   getSolanaSplBalance,
 } from "./getBalanceMachine"
+import { assert } from "../../utils/assert"
 
 export const backgroundBalanceActor = fromPromise(
   async ({
@@ -227,14 +228,19 @@ export const depositTokenBalanceMachine = setup({
         },
         onError: {
           target: "completed",
-          actions: assign({
-            preparationOutput: {
-              tag: "err",
-              value: {
-                reason: "ERR_FETCH_BALANCE",
-              },
+          actions: [
+            ({ event }) => {
+              console.error(event.error)
             },
-          }),
+            assign({
+              preparationOutput: {
+                tag: "err",
+                value: {
+                  reason: "ERR_FETCH_BALANCE",
+                },
+              },
+            }),
+          ],
           reenter: true,
         },
       },

@@ -67,16 +67,10 @@ export const WalletSelectorProvider: React.FC<{
         network: {
           networkId: NEAR_ENV,
           nodeUrl: NEAR_NODE_URL,
-          helperUrl:
-            NEAR_ENV === "mainnet"
-              ? "https://helper.mainnet.near.org"
-              : "https://helper.testnet.near.org",
-          explorerUrl:
-            NEAR_ENV === "mainnet"
-              ? "https://nearblocks.io"
-              : "https://testnet.nearblocks.io",
-              indexerUrl:
-              "postgres://public_readonly:nearprotocol@mainnet.db.explorer.indexer.near.dev/mainnet_explorer",
+          helperUrl: "",
+          explorerUrl: "https://nearblocks.io",
+          indexerUrl:
+            "postgres://public_readonly:nearprotocol@mainnet.db.explorer.indexer.near.dev/mainnet_explorer",
         },
         modules: [
           setupMyNearWallet({
