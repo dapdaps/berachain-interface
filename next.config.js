@@ -45,6 +45,10 @@ const nextConfig = {
     {
       source: "/api.solver.rpc/:path",
       destination: "https://solver-relay-v2.chaindefuser.com/:path*"
+    },
+    {
+      source: "/api.dapdap.net/:path*",
+      destination: `https://api.dapdap.net/:path*`
     }
   ],
   webpack: (config, { dev }) => {
