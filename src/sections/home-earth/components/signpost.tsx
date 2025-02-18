@@ -16,7 +16,7 @@ const Signpost = (props: any) => {
         src="/images/home-earth/signpost-bintent.png"
         alt=""
         onClick={() => router.push('/near-intents')}
-        className="w-[103px] h-[43px] absolute top-[104px] opacity-50 cursor-pointer"
+        className="w-[103px] h-[43px] absolute top-[104px] cursor-pointer"
       />
     </div>
   );

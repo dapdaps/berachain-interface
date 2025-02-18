@@ -22,8 +22,7 @@ export function isImplicitAccount(accountId: string): boolean {
 }
 
 
-const NEAR_NODE_URL =
-  process?.env?.nearNodeUrl ?? "https://rpc.testnet.near.org"
+const NEAR_NODE_URL = process.env.nearNodeUrl ?? "https://rpc.mainnet.near.org"
 
 export async function storageBalance(contractId: string, accountId: string) {
   try {
