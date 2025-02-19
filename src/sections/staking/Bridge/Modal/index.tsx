@@ -56,9 +56,9 @@ export default memo(function index(props) {
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
-        .div(balance ?? 1)
-        .times(100)
-        .toFixed();
+          .div(balance ?? 1)
+          .times(100)
+          .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
