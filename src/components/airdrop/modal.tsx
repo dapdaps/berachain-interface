@@ -63,7 +63,9 @@ const AirdropModal = (props: any) => {
           future updates 👀
         </article> */}
         <div className="w-[475px] m-[25px_40px_0px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[12px_28px_15px] flex flex-col justify-center items-center">
-          <div className="text-[16px] font-bold text-center">Claim In</div>
+          <div className="text-[16px] font-bold text-center">
+            Claim is closing in
+          </div>
           {claimLoading || !endTime ? (
             <div className="mt-[10px]">
               <CircleLoading size={20} />
