@@ -148,14 +148,14 @@ const Navigation = (props: any) => {
                 width: item.iconWidth,
                 height: item.iconHeight,
                 transform: `rotate(${90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
-                transformOrigin: 'center 1500px',
+                transformOrigin: `center ${size/2}px`,
               }}
               onHoverStart={() => handleEntryHover(item)}
               onHoverEnd={() => handleEntryLeave(item)}
               onClick={() => handleNavigation(item)}
             >
               <img
-                src={item.icon}
+                src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
                 className={clsx(
                   'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
@@ -216,7 +216,7 @@ const Navigation = (props: any) => {
 
 export default Navigation;
 
-export const ENTRIES = [
+export const ENTRIES: any = [
   {
     sort: 2,
     name: 'DApp Tree',
@@ -321,7 +321,7 @@ export const ENTRIES = [
   },
 ];
 
-export const BADDIES_ENTRIES = [
+export const BADDIES_ENTRIES: any = [
   {
     sort: 1,
     name: 'Bridge',
@@ -334,9 +334,9 @@ export const BADDIES_ENTRIES = [
     signpostHeight: 59,
     signpostX: 40,
     signpostY: -40,
-    x: 872,
-    y: 70,
-    rotate: 30,
+    x: 1270,
+    y: 320,
+    rotate: 46,
     path: '/bridge',
   },
   {
@@ -351,9 +351,9 @@ export const BADDIES_ENTRIES = [
     signpostHeight: 59,
     signpostX: -90,
     signpostY: -30,
-    x: -930,
-    y: 150,
-    rotate: -36,
+    x: -912,
+    y: 76,
+    rotate: -30,
     path: '/dapps',
   },
   {
@@ -368,8 +368,8 @@ export const BADDIES_ENTRIES = [
     signpostHeight: 72,
     signpostX: -50,
     signpostY: -70,
-    x: -470,
-    y: -70,
+    x: -460,
+    y: -86,
     rotate: -18,
     path: '/marketplace',
   },
@@ -386,7 +386,7 @@ export const BADDIES_ENTRIES = [
     signpostX: 0,
     signpostY: -30,
     x: 20,
-    y: -110,
+    y: -119,
     rotate: 0,
     path: '/earn',
   },
@@ -408,22 +408,22 @@ export const BADDIES_ENTRIES = [
     rotate: 18,
     path: '/dashboard',
   },
-  // {
-  //   sort: 6,
-  //   name: 'Cave',
-  //   disabled: false,
-  //   icon: '/images/home-earth/baddies/baddies-cave.png',
-  //   disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.png',
-  //   iconWidth: 326,
-  //   iconHeight: 303,
-  //   signpost: '/images/home-earth/signpost-cave.svg',
-  //   signpostWidth: 170,
-  //   signpostHeight: 59,
-  //   signpostX: 20,
-  //   signpostY: -120,
-  //   x: 820,
-  //   y: 216,
-  //   rotate: 30,
-  //   path: '/cave',
-  // }
+  {
+    sort: 6,
+    name: 'Cave',
+    disabled: true,
+    icon: '/images/home-earth/baddies/baddies-cave.png',
+    disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.png',
+    iconWidth: 365,
+    iconHeight: 226,
+    signpost: '/images/home-earth/signpost-cave.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: 20,
+    signpostY: -120,
+    x: 882,
+    y: 82,
+    rotate: 30,
+    path: '/cave',
+  }
 ]
