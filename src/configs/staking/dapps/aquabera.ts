@@ -45,6 +45,34 @@ export default {
           ichiAddress: "0x42F617262Ac5Bb4B465038BEbbDc6d8A5f7B4c0b",
           tokens: [bera["weth"], bera["beraeth"]],
         },
+
+
+        {
+          id: "beraETH-STONE",
+          ichiAddress: "0xe871DAb8E23b2D625A818d2299d1c374b8114435",
+          tokens: [bera["beraeth"], bera["stone"]],
+        },
+        {
+          id: "STONE-beraETH",
+          ichiAddress: "0xae984315AA572b35EB22A9fb3A38f373F885918c",
+          tokens: [bera["stone"], bera["beraeth"]],
+        },
+
+        {
+          id: "STONE-WETH",
+          ichiAddress: "0x9A340B9432d6F68C11fac381878691287bF5d650",
+          tokens: [bera["stone"], bera["weth"]],
+        },
+        {
+          id: "WETH-STONE",
+          ichiAddress: "0xa4eF88d79072CBb070Be4Ad9D90A5dEd4D8FA8e0",
+          tokens: [bera["weth"], bera["stone"]],
+        },
+        {
+          id: "GODL-WBERA",
+          ichiAddress: "0x9Ee4f9259024d29AA004165334306915E350509D",
+          tokens: [bera["godl"], bera["wbera"]],
+        },
       ]
     }
   }
