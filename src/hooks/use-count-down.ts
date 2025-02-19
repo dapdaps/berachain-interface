@@ -71,7 +71,7 @@ const useCountdown = (timestamp: number) => {
 
 export default useCountdown;
 
-export const toTwo = (n: number) => (n < 10 ? 0 + "n" : String(n));
+export const toTwo = (n: number) => (n < 10 ? "0" + n : String(n));
 export const getTimePeriods = (seconds: number) => {
   const MINUTE_IN_SECONDS = 60;
   const HOUR_IN_SECONDS = 3600;
