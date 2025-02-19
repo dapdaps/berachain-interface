@@ -236,7 +236,7 @@ export default function useInfraredData(props: any) {
         (data) =>
           ["bex", "kodiak", "beraborrow", "berps", "honeypot", "dolomite"].includes(
             data?.initialData?.protocol?.id
-          ) || data?.id === "iBGT-HONEY"
+          ) || data?.id === "iBGT"
       ),
       fullDataList: dataList
     });
@@ -289,7 +289,7 @@ export default function useInfraredData(props: any) {
 
     console.log('====ibgt', ibgt)
     dataList.push({
-      id: 'iBGT-HONEY',
+      id: 'iBGT',
       tokens: ['iBGT'],
       images: ['/images/dapps/infrared/ibgt.svg'],
       decimals: 18,
@@ -350,7 +350,7 @@ export default function useInfraredData(props: any) {
         name: "earned",
         params: [
           sender,
-          data?.id === "iBGT-HONEY"
+          data?.id === "iBGT"
             ? "0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce"
             : IBGT_ADDRESS
         ]
