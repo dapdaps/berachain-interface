@@ -504,8 +504,8 @@ export function useDetail(props: any) {
     if (index > -1) {
       return {
         protocol: protocol?.id,
-        token0: { ...underlying_tokens[0], icon: token0?.image },
-        token1: { ...underlying_tokens[1], icon: token1?.image },
+        token0: { ...underlying_tokens[0], icon: data?.images[0] },
+        token1: { ...underlying_tokens[1], icon: data?.images[1] },
         version: "island",
         protocol: "kodiak",
         stakingToken: data?.initialData?.stake_token
