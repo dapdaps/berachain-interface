@@ -56,9 +56,9 @@ export default memo(function index(props) {
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -296,26 +296,16 @@ export default memo(function index(props) {
   }, [isBera, config]);
 
   useEffect(() => {
-    setApr(token1?.apr);
-    setIchiAddress(token1?.ichiAddress);
-    setValues(token1?.values);
-  }, [token1]);
+    setApr(data?.pool?.apr);
+    setIchiAddress(data?.pool?.ichiAddress);
+    setValues(data?.pool?.values);
+  }, [data?.pool]);
 
   useEffect(() => {
     if (show) {
-      console.log("===data", data);
-      if (data?.pairedTokens) {
-        const _pairedTokens = data?.pairedTokens;
-        const _token1 = _pairedTokens?.[0];
-        const token = _.cloneDeep(data);
-        delete token.pairedTokens;
-        setToken0(token);
-        setToken1(_token1);
-        setPairedTokens(_pairedTokens);
-      } else {
-        setToken0(data?.token0);
-        setToken1(data?.token1);
-      }
+
+      setToken0(data?.token0);
+      setToken1(data?.token1);
       setIsDeposit(type === 0 ? true : false);
     } else {
       setBalance("");
@@ -400,8 +390,7 @@ export default memo(function index(props) {
             <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
               {isDeposit ? "Deposit Amounts" : "Withdrawing"}
             </div>
-
-            {isDeposit ? (
+            {/* {isDeposit ? (
               <>
                 {token0?.symbol === "WBERA" && (
                   <div className="flex items-center gap-[10px]">
@@ -435,7 +424,7 @@ export default memo(function index(props) {
                   {isBera ? "BERA" : token0?.symbol}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
 
           {isDeposit && (
