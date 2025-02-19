@@ -3,11 +3,14 @@ import AirdropButton from "@/components/airdrop/components/button";
 import { numberFormatter } from "@/utils/number-formatter";
 import useCustomAccount from "@/hooks/use-account";
 import { useAppKit } from "@reown/appkit/react";
+import { ChainId } from "@/configs/airdrop";
+import { useSwitchChain } from "wagmi";
 
 const AirdropReward = (props: any) => {
-  const { className, data } = props;
-  // const { account } = useCustomAccount();
-  // const modal = useAppKit();
+  const { className, data, claimed, claiming, endTime, onClaim } = props;
+  const { account, chainId } = useCustomAccount();
+  const modal = useAppKit();
+  const { isPending, switchChain } = useSwitchChain();
   return (
     <div className={clsx("flex flex-col items-center gap-[10px]", className)}>
       <img
@@ -40,20 +43,55 @@ const AirdropReward = (props: any) => {
             </AirdropButton>
           )} */}
           {/* {account?.toLowerCase() === data.address.toLowerCase() && ( */}
-          <AirdropButton
-            className="w-[220px] mt-[19px]"
-            onClick={() => {
-              const url = `${location.href}api/twitter?address=${data.address}`;
+          <div className="flex items-center gap-[14px]  mt-[19px]">
+            <AirdropButton
+              className="w-[220px]"
+              onClick={() => {
+                const url = `${location.href}api/twitter?address=${data.address}`;
 
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  `McBera iz so dumb he bought everything in my Beracave for ${data.amount} $BERA!\nSell (claim airdrop) your @0xberatown bArtio items now:`
-                )}&url=${encodeURIComponent(url)}`
-              );
-            }}
-          >
-            Share on X
-          </AirdropButton>
+                window.open(
+                  `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                    `McBera iz so dumb he bought everything in my Beracave for ${data.amount} $BERA!\nSell (claim airdrop) your @0xberatown bArtio items now:`
+                  )}&url=${encodeURIComponent(url)}`
+                );
+              }}
+            >
+              Share on X
+            </AirdropButton>
+            {!account && (
+              <AirdropButton
+                className="w-[240px]"
+                onClick={() => {
+                  modal.open();
+                }}
+              >
+                Connect Wallet To Claim
+              </AirdropButton>
+            )}
+            {chainId !== ChainId ? (
+              <AirdropButton
+                className="w-[240px]"
+                onClick={() => {
+                  switchChain({ chainId: ChainId });
+                }}
+                loading={isPending}
+                disabled={isPending}
+              >
+                Switch Network
+              </AirdropButton>
+            ) : (
+              account?.toLowerCase() === data.address.toLowerCase() && (
+                <AirdropButton
+                  className="w-[220px]"
+                  onClick={onClaim}
+                  disabled={claimed || claiming || endTime < Date.now()}
+                  loading={claiming}
+                >
+                  {claimed ? "Claimed" : "Claim"}
+                </AirdropButton>
+              )
+            )}
+          </div>
           {/* )} */}
         </>
       ) : (
