@@ -98,8 +98,8 @@ export default function useUserList() {
         let total = Big(_balance);
         let locked = Big(0);
         let earned = "0";
-        const reserve0 = reversesRes[i][0].toString();
-        const reserve1 = reversesRes[i][1].toString();
+        const reserve0 = reversesRes[i] ? reversesRes[i][0].toString() : 0;
+        const reserve1 = reversesRes[i] ? reversesRes[i][1].toString() : 0;
 
         if (pool.farmAddress) {
           const staked = stakedRes[stakedI][0];
@@ -146,6 +146,7 @@ export default function useUserList() {
       });
       setList(_list);
     } catch (err) {
+      console.log(149, err);
     } finally {
       setLoading(false);
     }

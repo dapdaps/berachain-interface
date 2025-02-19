@@ -289,30 +289,20 @@ export default function useAquaBeraData(props: any) {
     const vaults = response?.vaults ?? [] //response?.data?.listMonitorVaults?.items ?? []
     for (let i = 0; i < _dataList?.length; i++) {
       const _data = _dataList[i]
-      for (let j = 0; j < _data?.pairedTokens?.length; j++) {
-        const pairedToken = _data?.pairedTokens[j];
-        const vault = vaults?.find(vault => vault?.address === pairedToken?.ichiAddress)
-        if (vault) {
-          // vault?.vaultMetrics?.forEach((metric: any) => {
-          //   if (metric?.timeInterval === 7) {
-          //     _data.pairedTokens[j].apr = metric?.feeApr
-          //   }
-          // })
-          _data.pairedTokens[j].apr = vault?.apr?.["7d"]
-        } else {
-          _data.pairedTokens[j].apr = 0
-        }
+      console.log('====_data', _data)
+      const vault = vaults?.find(vault => vault?.address === _data?.ichiAddress)
+
+      if (vault) {
+        _data.apr = vault?.apr?.["7d"]
+      } else {
+        _data.apr = 0
       }
-      const sortAprPairedTokens = _data.pairedTokens.sort((prev: any, next: any) => next?.apr - prev?.apr)
-      _data.maxApr = sortAprPairedTokens?.[0]?.apr
-      _data.minApr = sortAprPairedTokens?.[sortAprPairedTokens?.length - 1]?.apr
     }
   }
   const getBalance = async (_dataList: any) => {
     const calls = [
 
     ]
-
     _dataList.forEach(_data => {
       calls.push({
         address: _data?.address,
@@ -338,20 +328,18 @@ export default function useAquaBeraData(props: any) {
     ]
     const totalSupplyCalls = [
     ]
-    _data?.pairedTokens?.forEach(pairedToken => {
-      balanceOfCalls.push({
-        address: pairedToken?.ichiAddress,
-        name: 'balanceOf',
-        params: [sender]
-      })
-      getTotalAmountsCalls.push({
-        address: pairedToken?.ichiAddress,
-        name: 'getTotalAmounts',
-      })
-      totalSupplyCalls.push({
-        address: pairedToken?.ichiAddress,
-        name: 'totalSupply',
-      })
+    balanceOfCalls.push({
+      address: _data?.ichiAddress,
+      name: 'balanceOf',
+      params: [sender]
+    })
+    getTotalAmountsCalls.push({
+      address: _data?.ichiAddress,
+      name: 'getTotalAmounts',
+    })
+    totalSupplyCalls.push({
+      address: _data?.ichiAddress,
+      name: 'totalSupply',
     })
 
     try {
@@ -377,19 +365,26 @@ export default function useAquaBeraData(props: any) {
         provider
       })
 
-      for (let i = 0; i < _data?.pairedTokens?.length; i++) {
-        const pairedToken = _data?.pairedTokens[i];
-        const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
-        const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
-        const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
-        const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
-        _data.pairedTokens[i] = {
-          ..._data.pairedTokens[i],
-          values: [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()],
-          yourValue: Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed(),
-        }
-      }
+      // for (let i = 0; i < _data?.length; i++) {
+      //   const pairedToken = _data?.pairedTokens[i];
+      //   const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
+      //   const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
+      //   const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
+      //   const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
+      //   _data.pairedTokens[i] = {
+      //     ..._data.pairedTokens[i],
+      //     values: [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()],
+      //     yourValue: Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed(),
+      //   }
+      // }
 
+      const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
+      const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
+      const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
+      const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
+
+      _data.values = [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()]
+      _data.yourValue = Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed()
     } catch (error) {
       console.error(error)
     }
@@ -426,8 +421,75 @@ export default function useAquaBeraData(props: any) {
     }
   }
   const handleGetYourValue = async (_dataList: any) => {
+
+    const balanceOfCalls = [
+    ]
+    const getTotalAmountsCalls = [
+    ]
+    const totalSupplyCalls = [
+    ]
+    balanceOfCalls.push({
+      address: _data?.ichiAddress,
+      name: 'balanceOf',
+      params: [sender]
+    })
+    getTotalAmountsCalls.push({
+      address: _data?.ichiAddress,
+      name: 'getTotalAmounts',
+    })
+    totalSupplyCalls.push({
+      address: _data?.ichiAddress,
+      name: 'totalSupply',
+    })
+
+    try {
+      const balanceOfResult = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: balanceOfCalls,
+        multicallAddress,
+        provider
+      })
+      const getTotalAmountsResult = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: getTotalAmountsCalls,
+        multicallAddress,
+        provider
+      })
+      const totalSupplyResult = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: totalSupplyCalls,
+        multicallAddress,
+        provider
+      })
+
+      // for (let i = 0; i < _data?.length; i++) {
+      //   const pairedToken = _data?.pairedTokens[i];
+      //   const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
+      //   const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
+      //   const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
+      //   const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
+      //   _data.pairedTokens[i] = {
+      //     ..._data.pairedTokens[i],
+      //     values: [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()],
+      //     yourValue: Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed(),
+      //   }
+      // }
+
+      const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
+      const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
+      const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
+      const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
+
+      _data.values = [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()]
+      _data.yourValue = Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed()
+    } catch (error) {
+      console.error(error)
+    }
     for (let i = 0; i < _dataList.length; i++) {
-      await getYourValue(_dataList[i])
+      // await getYourValue(_dataList[i])
     }
     formatedData("handleGetYourValue")
   }

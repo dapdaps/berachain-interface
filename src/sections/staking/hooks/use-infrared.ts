@@ -150,9 +150,7 @@ export default function useInfrared({
       addAction?.({
         type: "Staking",
         action: type ? "UnStake" : "Staking",
-        token: {
-          symbol: `${tokens[0]}${tokens[1] ? "-" + tokens[1] : ""}`
-        },
+        tokens: tokens.map((token: string) => ({ symbol: token })),
         amount: amount,
         template: "Infrared",
         status: status,
@@ -160,12 +158,8 @@ export default function useInfrared({
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
         sub_type: type ? "UnStake" : "Stake",
-        extra_data: JSON.stringify({
-          token0Symbol: tokens[0],
-          token1Symbol: tokens[1],
-          amount0,
-          amount1
-        })
+        amounts: [amount0, amount1],
+        extra_data: {}
       });
 
       setTimeout(() => {

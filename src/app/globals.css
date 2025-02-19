@@ -54,13 +54,30 @@ a,
 .cursor-pointer {
   cursor: url("../../public/images/cursor.svg"), auto !important;
 }
+button[disabled="disabled"],
+button[disabled],
+a[disabled="disabled"],
+a[disabled],
+.disabled\:\!cursor-not-allowed:disabled,
+.disabled\:\!cursor-not-allowed:disabled[disabled="disabled"],
+.disabled\:\!cursor-not-allowed:disabled[disabled],
+.cursor-not-allowed {
+  cursor: url("../../public/images/cursor-not-allowed.svg") 12 0, auto !important;
+}
+.cursor-grabbing {
+  cursor: url("../../public/images/cursor-grabbing.svg") 12 0, auto !important;
+}
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
   .text-stroke-1 {
-    -webkit-text-stroke-width: 1;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+  }
+  .text-stroke-2-black {
+    -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: #000;
   }
   .text-stroke-1-4b371f {

@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { useCountDown } from '../hooks/use-count-down';
 import { MintStatus } from '../types';
-import { useAccount } from 'wagmi';
+import { useAccount, useSwitchChain } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import Loading from '@/components/loading';
+import { DEFAULT_CHAIN_ID } from '@/configs';
 
 interface MintButtonProps {
   status: MintStatus;
@@ -20,15 +21,11 @@ const Button: FC<MintButtonProps> = ({
   loading,
   onCountdownEnd
 }) => {
- 
-    const { address } = useAccount();
+  console.log(status, '<++=====currentGroup')
+    const { address, chainId } = useAccount();
     const modal = useAppKit();
 
-  const countdown = useCountDown({
-    targetTimestamp: timestamp || 0,
-    format: ' DDd HHh mmm sss',
-    onEnd: onCountdownEnd
-  });
+    const { isPending, switchChain } = useSwitchChain();
 
   if (!address) {
     return (
@@ -42,15 +39,25 @@ const Button: FC<MintButtonProps> = ({
   }
 
 
-  if (status === 'upcoming') {
+  if (DEFAULT_CHAIN_ID !== chainId) {
     return (
       <button 
-        className="w-full bg-[#FFDC50] border font-bold border-black h-[46px] font-Montserrat text-[18px] rounded-[10px] disabled:bg-opacity-30"
-        disabled
-      >
-        {countdown}
-      </button>
-    );
+      disabled={isPending || loading}
+      className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
+      onClick={() => switchChain({
+        chainId: DEFAULT_CHAIN_ID,
+      })}
+    >
+      Switch Network
+    </button>
+    )
+  }
+  
+
+
+  if (status === 'upcoming') {
+    console.log(timestamp, 'timestamp')
+    return <RenderCountDown timestamp={timestamp} onCountdownEnd={onCountdownEnd} />
   }
 
   if (status === 'closed') {
@@ -63,8 +70,6 @@ const Button: FC<MintButtonProps> = ({
       </button>
     );
   }
-
-
 
 
   switch (status) {
@@ -95,3 +100,32 @@ const Button: FC<MintButtonProps> = ({
 };
 
 export default Button;
+
+
+const RenderCountDown = ({
+  timestamp,
+  onCountdownEnd
+}: {
+  timestamp?: number
+  onCountdownEnd?: () => void
+}) => {
+
+  if (!timestamp) {
+    return null;
+  }
+
+  const countdown = useCountDown({
+    targetTimestamp: timestamp || 0,
+    format: ' DDd HHh mmm sss',
+    onEnd: onCountdownEnd
+  });
+
+  return (
+    <button 
+      className="w-full bg-[#FFDC50] border font-bold border-black h-[46px] font-Montserrat text-[18px] rounded-[10px] disabled:bg-opacity-30"
+      disabled
+    >
+      {countdown}
+    </button>
+  );
+}

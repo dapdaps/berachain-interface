@@ -1,6 +1,5 @@
 import Big from "big.js";
 import { memo, useEffect, useMemo } from "react";
-import Image from "next/image";
 import Loading from "@/components/circle-loading";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { balanceFormated, valueFormated } from "@/utils/balance";
@@ -62,7 +61,7 @@ const Input = ({
           token.icons ? (
             <div className="flex items-center relative shrink-0">
               {token.icons[0] && (
-                <Image
+                <img
                   className="mr-[-8px] rounded-full"
                   src={token.icons[0]}
                   width={30}
@@ -71,7 +70,7 @@ const Input = ({
                 />
               )}
               {token.icons[1] && (
-                <Image
+                <img
                   className="rounded-full"
                   src={token.icons[1]}
                   width={30}

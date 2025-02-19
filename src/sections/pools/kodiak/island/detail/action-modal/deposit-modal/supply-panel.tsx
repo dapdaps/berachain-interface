@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
 import Button from "@/components/button";
@@ -37,7 +36,7 @@ export default function SupplyPanel({
             {data.token0.symbol} deposited
           </div>
           <div className="flex items-center gap-[9px]">
-            <Image
+            <img
               src={data.token0.icon}
               alt={data.token0.name}
               width={26}
@@ -54,7 +53,7 @@ export default function SupplyPanel({
             {data.token1.symbol} deposited
           </div>
           <div className="flex items-center gap-[9px]">
-            <Image
+            <img
               src={data.token1.icon}
               alt={data.token1.name}
               width={26}

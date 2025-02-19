@@ -1,13 +1,11 @@
 import Big from "big.js";
 import { Contract } from "ethers";
 import { useState } from "react";
-
 import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import { useSettingsStore } from "@/stores/settings";
 import { wrapNativeToken, sortTokens } from "../utils";
-
 import routerAbi from "../abi/router-v2";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
@@ -133,20 +131,16 @@ export default function useAddV2({
       addAction({
         type: "Liquidity",
         action: "Add Liquidity",
-        token0: token0.symbol,
-        token1: token1.symbol,
+        tokens: [token0, token1],
+        amounts: [value0, value1],
         template: dex.name,
         status,
         transactionHash,
         sub_type: "Add",
-        extra_data: JSON.stringify({
-          amount0: value0,
-          amount1: value1,
-          token0Symbol: token0.symbol,
-          token1Symbol: token1.symbol,
+        extra_data: {
           action: "Add Liquidity",
           type: "univ3"
-        })
+        }
       });
       setLoading(false);
     } catch (err: any) {

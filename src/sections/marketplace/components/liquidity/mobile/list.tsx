@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { balanceFormated, formatValueDecimal } from "@/utils/balance";
 import clsx from "clsx";
 import Big from "big.js";
@@ -14,7 +13,7 @@ const MobileList = ({ list, onClick }: any) => {
             <div className="flex items-center gap-[10px]">
               <div className="flex items-center relative">
                 {item?.token0 && (
-                  <Image
+                  <img
                     className="mr-[-8px] rounded-full"
                     src={item.token0.icon || "/assets/tokens/default_icon.png"}
                     width={40}
@@ -23,7 +22,7 @@ const MobileList = ({ list, onClick }: any) => {
                   />
                 )}
                 {item?.token1 && (
-                  <Image
+                  <img
                     className="rounded-full"
                     src={item.token1.icon || "/assets/tokens/default_icon.png"}
                     width={40}
@@ -31,7 +30,7 @@ const MobileList = ({ list, onClick }: any) => {
                     alt="Token"
                   />
                 )}
-                <Image
+                <img
                   className="absolute right-[-2px] bottom-[0px]"
                   src={item.protocolIcon}
                   width={20}
@@ -45,7 +44,9 @@ const MobileList = ({ list, onClick }: any) => {
                     {item.token0.symbol}-{item.token1.symbol}
                   </div>
                   {item.fee && (
-                    <div className="text-[10px] rounded-[6px] p-[4px] bg-[#D9D9D9]">{item.fee / 1e4} %</div>
+                    <div className="text-[10px] rounded-[6px] p-[4px] bg-[#D9D9D9]">
+                      {item.fee / 1e4} %
+                    </div>
                   )}
                 </div>
                 <div className="text-[14px] mt-[4px]">{item?.protocol}</div>

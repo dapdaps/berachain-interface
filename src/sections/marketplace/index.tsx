@@ -33,11 +33,8 @@ const MemeTokens: any = [
   //   price: "$0.0000001",
   //   volume: "$0.9717"
   // },
-  // {
-  //   ...beraB.yeet,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
+  bera.yeet,
+  bera.bonga
   // {
   //   ...beraB.bebe,
   //   price: "$0.0000001",
@@ -231,7 +228,7 @@ const MarketplaceView = () => {
             </div>
           ))}
         </div>
-        <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div>
+        {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
         {showMoreButton && (
           <MoreButton
             classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
@@ -245,6 +242,7 @@ const MarketplaceView = () => {
           <div className="relative z-10 lg:w-[1196px]">
             <MemeTokensGrid
               MemeTokens={MemeTokens}
+              voulmes={voulmes}
               onSwap={onSwap}
               onFooterMore={onFooterMore}
             />
