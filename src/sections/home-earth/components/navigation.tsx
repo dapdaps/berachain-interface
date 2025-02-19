@@ -135,7 +135,7 @@ const Navigation = (props: any) => {
     >
       {
         [...new Array(4)].map((_, idx) => (
-          ENTRIES.map((item, i) => (
+          ENTRIES.sort((a, b) => a.sort - b.sort).map((item, i) => (
             <motion.div
               key={i}
               className={clsx(
@@ -216,6 +216,7 @@ export default Navigation;
 
 export const ENTRIES = [
   {
+    sort: 2,
     name: 'DApp Tree',
     disabled: false,
     icon: '/images/home-earth/entry-dapp.svg',
@@ -232,6 +233,7 @@ export const ENTRIES = [
     path: '/dapps',
   },
   {
+    sort: 3,
     name: 'Token Marketplace',
     disabled: false,
     icon: '/images/home-earth/entry-marketplace.svg',
@@ -248,6 +250,7 @@ export const ENTRIES = [
     path: '/marketplace',
   },
   {
+    sort: 5,
     name: 'Portfolio',
     disabled: true,
     icon: '/images/home-earth/entry-dashboard.svg',
@@ -258,12 +261,13 @@ export const ENTRIES = [
     signpostHeight: 59,
     signpostX: 4,
     signpostY: -60,
-    x: -50,
-    y: -100,
-    rotate: 0,
+    x: 350,
+    y: -40,
+    rotate: 18,
     path: '/dashboard',
   },
   {
+    sort: 4,
     name: 'Earn Yield',
     disabled: false,
     icon: '/images/home-earth/entry-earn.svg',
@@ -274,12 +278,13 @@ export const ENTRIES = [
     signpostHeight: 59,
     signpostX: 50,
     signpostY: -90,
-    x: 350,
-    y: -20,
-    rotate: 18,
+    x: -50,
+    y: -50,
+    rotate: 0,
     path: '/earn',
   },
   {
+    sort: 1,
     name: 'Bridge',
     disabled: false,
     icon: '/images/home-earth/entry-bridge.svg',
