@@ -76,7 +76,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    // navigationRotateAnimation();
+    navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -103,7 +103,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    // navigationRotateAnimation();
+    navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
