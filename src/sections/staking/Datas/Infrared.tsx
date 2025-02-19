@@ -202,6 +202,7 @@ export default function useInfraredData(props: any) {
     }
   ];
 
+  console.log('======multicallAddress=======', multicallAddress)
   const MulticallContract =
     multicallAddress &&
     new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
@@ -321,6 +322,7 @@ export default function useInfraredData(props: any) {
       calls,
       {},
       (result) => {
+
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
           dataList[i].depositAmount = Big(
