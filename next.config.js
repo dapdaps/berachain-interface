@@ -41,6 +41,10 @@ const nextConfig = {
     {
       source: "/dapdap.game/:path*",
       destination: `${GAME_BASE_URL}/:path*`
+    },
+    {
+      source: '/api.db3.app/:path*',
+      destination: 'https://api.db3.app/:path*'
     }
   ],
   webpack: (config, { dev }) => {

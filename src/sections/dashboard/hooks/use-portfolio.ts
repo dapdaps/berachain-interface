@@ -29,13 +29,10 @@ export function usePortfolio(props: Props) {
       setLoading(true);
       try {
         setDapps([]);
-        const result = await get(`/db3`, {
-          url: 'api/balance/dapp/list',
-          params: JSON.stringify({
-            address,
-            chain_id: currentChain.id
-          })
-        });
+        const result = await get(`/api.db3.app/api/balance/dapp/list`, {
+          address,
+          chain_id: currentChain.id
+        }, { isSkipFormatUrl: true });
 
         let _totalBalance = Big(0);
         const data: any = result?.data?.list || [];
