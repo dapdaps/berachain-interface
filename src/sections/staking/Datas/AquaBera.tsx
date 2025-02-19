@@ -355,19 +355,6 @@ export default function useAquaBeraData(props: any) {
     const contract = new ethers.Contract(address, ERC20_ABI, provider)
     return await contract.symbol()
   }
-  const getTvl = async (_data: any) => {
-    const contract = new ethers.Contract(_data?.ichiAddress, ICHI_ABI, provider)
-    const totalAmountsResponse = await contract.getTotalAmounts()
-    const address0 = await contract.token0()
-    const address1 = await contract.token1()
-
-    const symbol0 = await getSymbol(address0)
-    const symbol1 = await getSymbol(address1)
-    const decimals0 = await getDecimals(address0)
-    const decimals1 = await getDecimals(address1)
-    const [amount0, amount1] = totalAmountsResponse
-    return Big(ethers.utils.formatUnits(amount0, decimals0)).times(prices?.[symbol0] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, decimals1)).times(prices?.[symbol1] ?? 0)).toFixed()
-  }
   const handleGetYourValue = async (_dataList: any) => {
     const balanceOfCalls = [
     ]
@@ -429,16 +416,30 @@ export default function useAquaBeraData(props: any) {
     formatedData("handleGetYourValue")
   }
   const handleGetTvl = async (_dataList: any) => {
-    const promiseArray = []
-    for (let i = 0; i < _dataList.length; i++) {
-      promiseArray.push(getTvl(_dataList[i]))
-    }
+    const calls = [
+
+    ]
+    _dataList?.forEach(_data => {
+      calls.push({
+        address: _data?.ichiAddress,
+        name: 'getTotalAmounts',
+      })
+    })
     try {
-      const result = await Promise.all(promiseArray)
+      const result = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: calls,
+        multicallAddress,
+        provider
+      })
+
       for (let i = 0; i < _dataList?.length; i++) {
-        _dataList[i].tvl = result?.[i]
+        const _data = _dataList[i];
+        const [amount0, amount1] = result?.[i]
+        const [token0, token1] = _dataList[i].chainTopTokens
+        _dataList[i].tvl = Big(ethers.utils.formatUnits(amount0, token0?.decimals)).times(prices?.[token0?.symbol] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, token1?.decimals)).times(prices?.[token1?.symbol] ?? 0)).toFixed()
       }
-      formatedData("handleGetTvl")
     } catch (error) {
       console.error(error)
     }
