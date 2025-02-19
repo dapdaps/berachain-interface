@@ -14,6 +14,9 @@ import { HomeEarthContext } from './context';
 import { animate, useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
 import { useActivityStore } from '@/stores/useActivityStore';
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 
 // seconds per lap
 const SPEED = 200;
@@ -175,18 +178,56 @@ const HomeEarth = () => {
           {/*#region Navigation*/}
           <Navigation />
           {/*#endregion*/}
-          <img 
-            onClick={()=> toggleTheme()}
-            src={isDefaultTheme() ? "/images/lgbt.png" : "/images/theme-default.png"}
-            className="w-[103px] h-[130px] absolute z-[4] cursor-pointer bottom-0 right-[20%] transition-transform hover:scale-110" 
-            alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
-          />
-          <img
-            ref={bearRef}
-            src="/images/background/bear.gif" 
-            alt="" 
-            className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
-          />
+
+          <Popover
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Top}
+            offset={0}
+            content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg':'/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
+            triggerContainerClassName="absolute z-[4] cursor-pointer bottom-0 right-[22%] transition-transform hover:scale-110"
+          >
+            <div className='w-full h-full relative'>
+              <img 
+                onClick={()=> toggleTheme()}
+                src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
+                className={clsx('', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')} 
+                alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
+              />
+              {
+                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px]' alt="" />
+              }
+            </div>
+          </Popover>          
+          {
+            isDefaultTheme() ? (
+              <img
+                ref={bearRef}
+                src="/images/background/bear.gif" 
+                alt="" 
+                className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
+              />
+            ) : (
+              <div className='absolute z-[4] top-[25.4dvh] pointer-events-none' ref={bearRef}>
+              <div className='w-[289px] h-[289px] relative'>
+                <motion.img 
+                  src="/images/home-earth/lgbt-role.png" 
+                  className='w-full h-full relative z-10' 
+                  alt=""
+                  animate={{
+                    y: [0, -10, 0],
+                    x: [0, 5, 0],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <img src="/images/home-earth/role-wave.svg" className='absolute bottom-[15px] left-[18px] z-0' alt="" />
+              </div>
+            </div>
+            )
+          }
         </div>
       </div>
     </HomeEarthContext.Provider>
