@@ -190,11 +190,11 @@ const HomeEarth = () => {
               <img 
                 onClick={()=> toggleTheme()}
                 src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
-                className={clsx('', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')} 
+                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')} 
                 alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
               />
               {
-                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px]' alt="" />
+                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px] z-0' alt="" />
               }
             </div>
           </Popover>          
