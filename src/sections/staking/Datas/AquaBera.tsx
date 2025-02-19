@@ -454,12 +454,12 @@ export default function useAquaBeraData(props: any) {
     try {
       await get7DayApr(dataList)
       await getBalance(dataList)
+
+      await handleGetYourValue(dataList)
+      await handleGetTvl(dataList)
     } catch (error) {
       console.error(error);
     }
-
-    handleGetYourValue(dataList)
-    handleGetTvl(dataList)
     formatedData();
   };
   useEffect(() => {
