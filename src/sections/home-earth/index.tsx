@@ -22,6 +22,11 @@ import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover'
 const SPEED = 200;
 const SIZE = 3000;
 
+const BG_SIZE_MAP = {
+  default: SIZE,
+  lgbt: 3500,
+}
+
 const HomeEarth = () => {
   const isMobile = useIsMobile();
 
@@ -51,7 +56,7 @@ const HomeEarth = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [hoverIndex, setHoverIndex] = useState<any>();
 
-  const { toggleTheme, isDefaultTheme } = useActivityStore();
+  const { toggleTheme, isDefaultTheme, activeTheme } = useActivityStore();
 
   useEffect(() => {
     if (hoverIndex) {
@@ -157,7 +162,7 @@ const HomeEarth = () => {
         hoverIndex,
         setHoverIndex,
         speed: SPEED,
-        size: SIZE,
+        size: BG_SIZE_MAP[activeTheme] || SIZE,
     }}>
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
         <Follower />
