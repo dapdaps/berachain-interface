@@ -115,16 +115,15 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border rounded-full top-[24.5dvh] flex justify-center items-center',
+        'will-change-transform absolute z-[3] border rounded-full top-[24.5dvh] flex justify-center items-center border-[#5A6F2F]',
         isDragging ? 'cursor-grabbing' : '',
-        isRainyDay ? 'border-[#5A6F2F] bg-[#90AF4E]' : 'border-[#5A6F2F] bg-[#B6DF5D]',
       )}
       style={{
         rotate: navigationRotation,
         animationDuration: `${speed}s`,
         width: size,
         height: size,
-        backgroundColor: themeConfig.earthBackgroundColor
+        backgroundColor: isRainyDay ? '#90AF4E' : themeConfig.earthBackgroundColor
       }}
       drag
       dragElastic={0}
