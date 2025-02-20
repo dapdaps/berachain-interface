@@ -5,7 +5,7 @@ export default {
       '--button-color': 'rgb(249, 247, 245)',
       '--button-text-color': 'rgb(31, 28, 25)'
     },
-    icon: '/images/dapps/bex.svg'
+    icon: '/images/dapps/beraswap.svg'
   },
   'ooga-booga': {
     type: 'swap',

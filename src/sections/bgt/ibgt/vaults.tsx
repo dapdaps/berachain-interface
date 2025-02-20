@@ -73,7 +73,7 @@ export default function Vaults() {
             style={{ width: 26 }}
             src={
               protocol?.id === "bex" ?
-                '/images/dapps/infrared/bex.svg' :
+                '/images/dapps/beraswap.svg' :
                 protocol?.id === "kodiak" ?
                   '/images/dapps/kodiak.svg' :
                   protocol?.id === "berps" ?
