@@ -1,117 +1,89 @@
-import { beraB } from "@/configs/tokens/bera-bArtio";
+import { bera } from "@/configs/tokens/bera";
 
 export default {
   name: "AquaBera",
   icon: "/images/dapps/infrared/aquabera.svg",
   type: "Vaults",
   chains: {
-    80084: {
+    80094: {
       ETHVaultWithSlippage: "0x3021359e1d45A43378c94112B3418bF3ab1E5982",
-      ICHIVaultDepositGuard: "0x0Dad5a47adbec92E7472F6F34AC066798dEdEE40",
+      ICHIVaultDepositGuard: "0xc0c6D4178410849eC9765B4267A73F4F64241832",
       pairs: [
         {
-          ...beraB["ibgt"],
-          pairedTokens: [
-            {
-              ...beraB["honey"],
-              ichiAddress: "0x2f9961654FBcDE62B8dF385821eE5269cF5D5deE"
-            },
-            {
-              ...beraB["wbera"],
-              ichiAddress: "0xEF47982c43e8979d1d0Bddf855d60bb84eCf2E65"
-            }
-          ]
+          id: "HONEY-WBERA",
+          ichiAddress: "0xe2832ac11f8Af62FB3370d51d8dDE702bA7B734B",
+          tokens: [bera["honey"], bera["wbera"]],
+          chainTopTokens: [bera["wbera"], bera["honey"]]
         },
         {
-          ...beraB["honey"],
-          pairedTokens: [
-            {
-              ...beraB["arbera"],
-              ichiAddress: "0x374C7385f2189Ee1BB909Ac681314Cdb0856AbCa"
-            },
-            {
-              ...beraB["usdc"],
-              ichiAddress: "0x76a68ae8744db84b69aCDB02D1CAf3502401c42e"
-            },
-            {
-              ...beraB["wbera"],
-              ichiAddress: "0xE6C02585Ab235E0B501191201474f4637c91e4DE"
-            }
-          ]
+          id: "WBERA-HONEY",
+          ichiAddress: "0x3efF586Be3a907D8dEC40178eb35215215F58Af7",
+          tokens: [bera["wbera"], bera["honey"]],
+          chainTopTokens: [bera["wbera"], bera["honey"]]
         },
         {
-          ...beraB["wbera"],
-          pairedTokens: [
-            {
-              ...beraB["gold"],
-              ichiAddress: "0x4F2470226aB4eC9aa69f01E6fCA01aB68d2948de"
-            },
-            {
-              ...beraB["honey"],
-              ichiAddress: "0x1d451e2F5C106A26C0aAe50c7aF1920F21A15330"
-            },
-            {
-              ...beraB["kdk"],
-              ichiAddress: "0x6d501e865D112A051B42f8845E8b09Aa41765424"
-            },
-            {
-              ...beraB["ooga_booga"],
-              ichiAddress: "0x8b9ea50619e46E9C72289393AFc11f5256b78E63"
-            },
-            {
-              ...beraB["yeet"],
-              ichiAddress: "0x2d7622941ee8EBFc4C01fDFd8ab2d006D3D247BB"
-            }
-          ]
+          id: "WBERA-GODL",
+          ichiAddress: "0x8690964B1E222ff35e8900f8c9bCaee3Ea3eEceF",
+          tokens: [bera["wbera"], bera["godl"]],
+          chainTopTokens: [bera["wbera"], bera["godl"]]
         },
         {
-          ...beraB["arbera"],
-          pairedTokens: [
-            {
-              ...beraB["honey"],
-              ichiAddress: "0xEc255B5C8df5069128236767d5Ed54D2bBa74E80"
-            }
-          ]
+          id: "NECT-HONEY",
+          ichiAddress: "0x96d70aC7E342747D988F2896adFFC62CE2Cc4aF2",
+          tokens: [bera["nect"], bera["honey"]],
+          chainTopTokens: [bera["nect"], bera["honey"]]
         },
         {
-          ...beraB["usdc"],
-          symbol: "USDC",
-          pairedTokens: [
-            {
-              ...beraB["honey"],
-              ichiAddress: "0xF4585B319e0Ffe82935D8A983A2064b87419b6c6"
-            }
-          ]
+          id: "HONEY-NECT",
+          ichiAddress: "0x4eCC0E962daD165E910209E9E6f09577E3f75EbA",
+          tokens: [bera["honey"], bera["nect"]],
+          chainTopTokens: [bera["nect"], bera["honey"]]
         },
         {
-          ...beraB["yeet"],
-          pairedTokens: [
-            {
-              ...beraB["sip"],
-              ichiAddress: "0xaF7A6b24188D709639723162577ab82cc258CeE2"
-            }
-          ]
+          id: "beraETH-WETH",
+          ichiAddress: "0xC83952Ac09Ae1810927cEB08d8DCE849Ed409Cb7",
+          tokens: [bera["beraeth"], bera["weth"]],
+          chainTopTokens: [bera["weth"], bera["beraeth"]]
         },
         {
-          ...beraB["nect"],
-          symbol: "NECT",
+          id: "WETH-beraETH",
+          ichiAddress: "0x42F617262Ac5Bb4B465038BEbbDc6d8A5f7B4c0b",
+          tokens: [bera["weth"], bera["beraeth"]],
+          chainTopTokens: [bera["weth"], bera["beraeth"]]
+        },
 
-          pairedTokens: [
-            {
-              ...beraB["pollen"],
-              ichiAddress: "0xE267Ee642c643BE36CB5C5eC77Cae846F792B7eF"
-            }
-          ]
+
+        {
+          id: "beraETH-STONE",
+          ichiAddress: "0xe871DAb8E23b2D625A818d2299d1c374b8114435",
+          tokens: [bera["beraeth"], bera["stone"]],
+          chainTopTokens: [bera["beraeth"], bera["stone"]]
         },
         {
-          ...beraB["ivxusdc"],
-          pairedTokens: [
-            {
-              ...beraB["honey"],
-              ichiAddress: "0x46944330A8AcDc0235eFF3F8Ef2f38797aF05db8"
-            }
-          ]
-        }
+          id: "STONE-beraETH",
+          ichiAddress: "0xae984315AA572b35EB22A9fb3A38f373F885918c",
+          tokens: [bera["stone"], bera["beraeth"]],
+          chainTopTokens: [bera["beraeth"], bera["stone"]]
+        },
+
+        {
+          id: "STONE-WETH",
+          ichiAddress: "0x9A340B9432d6F68C11fac381878691287bF5d650",
+          tokens: [bera["stone"], bera["weth"]],
+          chainTopTokens: [bera["weth"], bera["stone"]]
+        },
+        {
+          id: "WETH-STONE",
+          ichiAddress: "0xa4eF88d79072CBb070Be4Ad9D90A5dEd4D8FA8e0",
+          tokens: [bera["weth"], bera["stone"]],
+          chainTopTokens: [bera["weth"], bera["stone"]]
+        },
+        {
+          id: "GODL-WBERA",
+          ichiAddress: "0x9Ee4f9259024d29AA004165334306915E350509D",
+          tokens: [bera["godl"], bera["wbera"]],
+          chainTopTokens: [bera["wbera"], bera["godl"]]
+        },
       ]
     }
   }

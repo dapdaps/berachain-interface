@@ -299,6 +299,7 @@ export default function useInfraredData(props: any) {
       calls,
       {},
       (result) => {
+
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
           dataList[i].depositAmount = Big(
