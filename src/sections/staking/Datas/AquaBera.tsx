@@ -438,13 +438,13 @@ export default function useAquaBeraData(props: any) {
         multicallAddress,
         provider
       })
-
-      console.log('=====result=====', result)
-
       for (let i = 0; i < _dataList?.length; i++) {
         const _data = _dataList[i];
         const [amount0, amount1] = result?.[i]
         const [token0, token1] = _dataList[i].chainTopTokens
+
+        console.log('=====ichiAddress=====', _data?.ichiAddress)
+        console.log("=====tvl=====", Big(ethers.utils.formatUnits(amount0, token0?.decimals)).times(prices?.[token0?.symbol] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, token1?.decimals)).times(prices?.[token1?.symbol] ?? 0)).toFixed())
         _dataList[i].tvl = Big(ethers.utils.formatUnits(amount0, token0?.decimals)).times(prices?.[token0?.symbol] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, token1?.decimals)).times(prices?.[token1?.symbol] ?? 0)).toFixed()
       }
     } catch (error) {
@@ -467,13 +467,12 @@ export default function useAquaBeraData(props: any) {
     }
     handleGetYourValue(dataList)
     handleGetTvl(dataList)
-    console.log('====dataList====', dataList)
     formatedData();
   };
   useEffect(() => {
-    if (name !== 'AquaBera' || !sender || !provider) return;
+    if (name !== 'AquaBera' || !sender || !provider || !prices) return;
     getDataList();
-  }, [name, sender, provider, reloadCount]);
+  }, [name, sender, provider, reloadCount, prices]);
 
   return {
     reload: () => {
