@@ -220,7 +220,7 @@ const HomeEarth = () => {
                 className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
               />
             ) : (
-              <div className='absolute z-[4] top-[25.4dvh] pointer-events-none' ref={bearRef}>
+              <div className='absolute z-[4] top-[32.4dvh] pointer-events-none' ref={bearRef}>
               <div className='w-[289px] h-[289px] relative'>
                 <motion.img 
                   src="/images/home-earth/lgbt-role.png" 
