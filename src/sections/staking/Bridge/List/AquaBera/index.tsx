@@ -85,7 +85,6 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
       label: 'Deposit Token',
       type: 'slot',
       render: (data) => {
-        console.log('====data', data)
         return (
           <div className="flex items-center gap-[10px]">
             <div className="w-[42px] h-[42px] rounded-full overflow-hidden">
@@ -253,7 +252,7 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
           })}
         </div>
       ) : state?.filterList && state?.filterList?.length > 0 ? (
-        <div className='flex flex-col gap-[14px] h-[calc(100vh-260px)] overflow-y-scroll'>
+        <div className='flex flex-col gap-[14px] h-[calc(100vh-360px)] overflow-y-scroll'>
           {state?.filterList.map((data: any, index: number) => {
             return (
               <div className="flex flex-col rounded-[10px] shrink-0 bg-black/[0.06]" key={index}>

@@ -56,9 +56,9 @@ export default memo(function index(props) {
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -554,7 +554,21 @@ export default memo(function index(props) {
           ) : (
             <div className="mt-[-16px] mb-[8px] flex justify-end">
               <div className="flex flex-col gap-[2px]">
-                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  My Positon{" "}
+                  {formatValueDecimal(
+                    Big(data?.pool?.usdDepositAmount ?? 0)
+                      .times(percentage)
+                      .div(100)
+                      .toFixed(),
+                    "$",
+                    2,
+                    false,
+                    false
+                  )}
+                </div>
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  {token0?.symbol}{" "}
                   {formatValueDecimal(
                     Big(values?.[0] ?? 0)
                       .times(percentage)
@@ -564,10 +578,10 @@ export default memo(function index(props) {
                     2,
                     false,
                     false
-                  )}{" "}
-                  {token0?.symbol}
+                  )}
                 </div>
-                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  {token1?.symbol}{" "}
                   {formatValueDecimal(
                     Big(values?.[1] ?? 0)
                       .times(percentage)
@@ -577,9 +591,9 @@ export default memo(function index(props) {
                     2,
                     false,
                     false
-                  )}{" "}
-                  {token1?.symbol}
+                  )}
                 </div>
+
               </div>
             </div>
           )}
