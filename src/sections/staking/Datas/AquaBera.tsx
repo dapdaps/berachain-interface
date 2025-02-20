@@ -442,9 +442,6 @@ export default function useAquaBeraData(props: any) {
         const _data = _dataList[i];
         const [amount0, amount1] = result?.[i]
         const [token0, token1] = _dataList[i].chainTopTokens
-
-        console.log('=====ichiAddress=====', _data?.ichiAddress)
-        console.log("=====tvl=====", Big(ethers.utils.formatUnits(amount0, token0?.decimals)).times(prices?.[token0?.symbol] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, token1?.decimals)).times(prices?.[token1?.symbol] ?? 0)).toFixed())
         _dataList[i].tvl = Big(ethers.utils.formatUnits(amount0, token0?.decimals)).times(prices?.[token0?.symbol] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, token1?.decimals)).times(prices?.[token1?.symbol] ?? 0)).toFixed()
       }
     } catch (error) {
