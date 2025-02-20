@@ -249,7 +249,7 @@ export const ENTRIES = [
   {
     sort: 5,
     name: 'Portfolio',
-    disabled: true,
+    disabled: false,
     icon: '/images/home-earth/entry-dashboard.svg',
     iconWidth: 279,
     iconHeight: 170,
