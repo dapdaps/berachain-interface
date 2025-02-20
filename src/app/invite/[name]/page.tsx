@@ -1,3 +1,4 @@
+'use client';
 import InviteViews from '@/sections/invite'
 const InvitePages = () => {
     return (
