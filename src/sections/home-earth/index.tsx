@@ -37,8 +37,8 @@ const HomeEarth = () => {
 
   const navigationRef = useRef<any>();
   const navigationControls = useRef<any>();
-  const navigationRotation = useMotionValue(-50);
-  const navigationEndRotationRef = useRef(-50);
+  const navigationRotation = useMotionValue(-40);
+  const navigationEndRotationRef = useRef(-40);
   const navigationStartRotationRef = useRef(0);
   const navigationDragStartedRef = useRef(false);
   const navigationDragEndedTimesRef = useRef(0);

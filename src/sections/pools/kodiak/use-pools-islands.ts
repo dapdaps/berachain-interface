@@ -74,7 +74,6 @@ export default function usePoolsIslands() {
           kodiakTokensStore.set({
             tokens
           });
-          console.log(58, tokens);
         }
         const list = [
           ...(sweetenedResult.data.data.kodiakVaults || []),
@@ -83,14 +82,20 @@ export default function usePoolsIslands() {
 
         setPools(
           list.map((item: any) => {
-            const _token0 = tokens[item._token0.id.toLowerCase()] || {
-              ...item._token0,
-              address: item._token0.id
-            };
-            const _token1 = tokens[item._token1.id.toLowerCase()] || {
-              ...item._token1,
-              address: item._token1.id
-            };
+            const _token0 =
+              item._token0.id === "0x6969696969696969696969696969696969696969"
+                ? tokens["native"]
+                : tokens[item._token0.id.toLowerCase()] || {
+                    ...item._token0,
+                    address: item._token0.id
+                  };
+            const _token1 =
+              item._token1.id === "0x6969696969696969696969696969696969696969"
+                ? tokens["native"]
+                : tokens[item._token1.id.toLowerCase()] || {
+                    ...item._token1,
+                    address: item._token1.id
+                  };
 
             const lowerPrice =
               item.lowerPrice < -887000
