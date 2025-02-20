@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useSize } from 'ahooks';
 
 interface RainDropParticle {
   x: number;
@@ -26,6 +27,8 @@ const CanvasRain: React.FC<CanvasRainProps> = ({
   angle = 30,
   speedMultiplier = 1.2
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const size = useSize(containerRef);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const raindrops = useRef<RainDropParticle[]>([]);
   const animationFrameId = useRef<number>(0);
@@ -108,6 +111,8 @@ const CanvasRain: React.FC<CanvasRainProps> = ({
   };
 
   useEffect(() => {
+    if (!size) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -136,14 +141,19 @@ const CanvasRain: React.FC<CanvasRainProps> = ({
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [width, height, dropCount, minSpeed, maxSpeed, angle, speedMultiplier]);
+  }, [size, width, height, dropCount, minSpeed, maxSpeed, angle, speedMultiplier]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[9]"
-      style={{ background: 'transparent' }}
-    />
+    <div
+      ref={containerRef}
+      className="fixed z-[9] inset-0 w-full h-full left-0 top-0 pointer-events-none"
+    >
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none"
+        style={{ background: 'transparent' }}
+      />
+    </div>
   );
 };
 

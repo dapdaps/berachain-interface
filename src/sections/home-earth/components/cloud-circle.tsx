@@ -27,7 +27,7 @@ const CloudCircle = (props: any) => {
   return (
     <motion.div
       ref={cloudRef}
-      className="will-change-transform absolute z-[1] rounded-full top-[24.5dvh] flex justify-center items-center"
+      className="will-change-transform absolute z-[1] rounded-full top-[24.5dvh] flex justify-center items-center pointer-events-none"
       style={{
         rotate: cloudRotation,
         animationDuration: `${speed + 60}s`,
