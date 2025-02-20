@@ -394,7 +394,7 @@ export const BADDIES_ENTRIES: any = [
   {
     sort: 5,
     name: 'Portfolio',
-    disabled: false,
+    disabled: true,
     icon: '/images/home-earth/baddies/baddies-dashboard.svg',
     disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
     iconWidth: 364,
