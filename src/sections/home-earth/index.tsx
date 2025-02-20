@@ -11,12 +11,15 @@ import MobileHome from '@/sections/home/mobile';
 import AirdropModal from '@/components/airdrop/modal';
 import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
-import { animate, useMotionValue } from 'framer-motion';
+import { useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
 import { useActivityStore } from '@/stores/useActivityStore';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import { useRainyDay } from '@/hooks/use-rainy-day';
+import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
+import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
@@ -24,6 +27,7 @@ const SIZE = 3000;
 
 const HomeEarth = () => {
   const isMobile = useIsMobile();
+  const { isRainyDay, beraPrice } = useRainyDay();
 
   const bearRef = useRef<any>();
 
@@ -109,6 +113,8 @@ const HomeEarth = () => {
   return (
     <HomeEarthContext.Provider
       value={{
+        isRainyDay,
+        beraPrice,
         cloudRef,
         cloudRotation,
         cloudControls,
@@ -160,6 +166,8 @@ const HomeEarth = () => {
         size: SIZE,
     }}>
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
+        {/*<BerachainFixes />*/}
+        <BeraPrice />
         <Follower />
         <Signpost />
         <HomeEarthTop />
@@ -187,31 +195,31 @@ const HomeEarth = () => {
             triggerContainerClassName="absolute z-[4] cursor-pointer bottom-0 right-[22%] transition-transform hover:scale-110"
           >
             <div className='w-full h-full relative'>
-              <img 
+              <img
                 onClick={()=> toggleTheme()}
                 src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
-                className={clsx('', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')} 
+                className={clsx('', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')}
                 alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
               />
               {
                 !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px]' alt="" />
               }
             </div>
-          </Popover>          
+          </Popover>
           {
             isDefaultTheme() ? (
               <img
                 ref={bearRef}
-                src="/images/background/bear.gif" 
-                alt="" 
+                src="/images/background/bear.gif"
+                alt=""
                 className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
               />
             ) : (
               <div className='absolute z-[4] top-[25.4dvh] pointer-events-none' ref={bearRef}>
               <div className='w-[289px] h-[289px] relative'>
-                <motion.img 
-                  src="/images/home-earth/lgbt-role.png" 
-                  className='w-full h-full relative z-10' 
+                <motion.img
+                  src="/images/home-earth/lgbt-role.png"
+                  className='w-full h-full relative z-10'
                   alt=""
                   animate={{
                     y: [0, -10, 0],

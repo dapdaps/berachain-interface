@@ -1,6 +1,10 @@
-function Ground() {
+import clsx from 'clsx';
+
+function Ground(props: any) {
+  const { isRainyDay } = props;
+
   return (
-    <div className='absolute bottom-0 left-0 w-full h-[233px] bg-[#B6DF5D] border-t border-black' />
+    <div className={clsx('absolute bottom-0 left-0 w-full h-[233px] border-t border-black', isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]')} />
   );
 }
 

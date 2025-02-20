@@ -13,3 +13,16 @@ export const createRotateAnimation = (params: any) => {
     }
   );
 };
+
+export const VisibleAnimation = {
+  variants: {
+    visible: { opacity: 1, },
+    invisible: { opacity: 0 },
+  },
+  animate: "visible",
+  initial: "invisible",
+  exit: "invisible",
+  transition: {
+    duration: 0.3,
+  },
+};
