@@ -439,6 +439,8 @@ export default function useAquaBeraData(props: any) {
         provider
       })
 
+      console.log('=====result=====', result)
+
       for (let i = 0; i < _dataList?.length; i++) {
         const _data = _dataList[i];
         const [amount0, amount1] = result?.[i]
@@ -465,6 +467,7 @@ export default function useAquaBeraData(props: any) {
     }
     handleGetYourValue(dataList)
     handleGetTvl(dataList)
+    console.log('====dataList====', dataList)
     formatedData();
   };
   useEffect(() => {
