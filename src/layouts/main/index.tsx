@@ -16,6 +16,8 @@ import { SceneStatus } from '@/configs/scene';
 import RainyDay from '@/components/rainy-day';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useActivityStore } from "@/stores/useActivityStore";
+import { useChristmas } from "@/hooks/use-christmas";
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -27,6 +29,8 @@ const MainLayout = (props: Props) => {
   const context = useContext(SceneContext);
   const currentScene = context.current;
   const { isRainyDay, rainyDay } = useRainyDay({ isLoadPrice: true });
+  const { isChristmas } = useChristmas();
+  const { isDefaultTheme, themeConfig } = useActivityStore();
 
   useEffect(() => {
     handleReportNoCode();
@@ -43,9 +47,9 @@ const MainLayout = (props: Props) => {
   const isVaults = useMemo(() => pathname === "/vaults", [pathname]);
 
   const bg = useMemo(() => {
-    if (isVaults) {
-      return "bg-transparent h-full";
-    }
+    if (isVaults) return "bg-transparent h-full";
+    if (isChristmas && pathname === "/") return "bg-christmas";
+    if (pathname === "/activity/christmas") return "bg-christmas";
     return "bg-[var(--background)]";
   }, [isVaults, pathname]);
 
@@ -63,6 +67,16 @@ const MainLayout = (props: Props) => {
     return {};
   }, [currentScene, isRainyDay, rainyDay, pathname]);
 
+  const customStyle = useMemo(() => {
+    if (pathname === '/' && !isDefaultTheme()) {
+      return {
+        ...style,
+        backgroundColor: themeConfig.primaryColor
+      };
+    }
+    return style;
+  }, [pathname, isDefaultTheme, themeConfig.primaryColor, style]);
+
   const routes = ["/earn", "/activity/christmas"];
 
   return (
@@ -72,6 +86,7 @@ const MainLayout = (props: Props) => {
       style={{
         ...sceneStyles,
         ...style,
+        ...customStyle,
       }}
       onClick={handleTrack}
     >

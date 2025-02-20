@@ -44,10 +44,7 @@ export function useRecords(props: Props) {
     try {
       setLoading(true);
       setRecords([]);
-      const result = await get(`/db3`, {
-        url: 'api/transaction/list',
-        params: JSON.stringify(_params)
-      });
+      const result = await get(`/api.db3.app/api/transaction/list`, _params, { isSkipFormatUrl: true });
 
       const _list = result.data.list
         // ?.filter((record: any) => record.token_in && record)
