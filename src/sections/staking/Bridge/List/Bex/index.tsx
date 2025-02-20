@@ -145,18 +145,19 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data: any) => {
             const protocol = data?.initialData?.protocol;
+
+            const ImageMapping = {
+              infrared: "/images/dapps/infrared/infrared.svg",
+              bex: "/images/dapps/beraswap.svg",
+              kodiak: "/images/dapps/kodiak.svg",
+              berps: "/images/dapps/infrared/berps.svg"
+            }
             return (
               <img
                 style={{ width: 26 }}
                 src={
                   data?.platform === "infrared"
-                    ? protocol?.id === "bex"
-                      ? "/images/dapps/infrared/bex.svg"
-                      : protocol?.id === "kodiak"
-                        ? "/images/dapps/kodiak.svg"
-                        : protocol?.id === "berps"
-                          ? "/images/dapps/infrared/berps.svg"
-                          : "/images/dapps/dolomite.svg"
+                    ? (ImageMapping?.[protocol?.id] ?? "/images/dapps/dolomite.svg")
                     : "/images/dapps/infrared/aquabera.svg"
                 }
               />
@@ -364,18 +365,16 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data: any) => {
             const protocol = data?.initialData?.protocol;
+            const ImageMapping = {
+              infrared: "/images/dapps/infrared/infrared.svg",
+              bex: "/images/dapps/beraswap.svg",
+              kodiak: "/images/dapps/kodiak.svg",
+              berps: "/images/dapps/infrared/berps.svg"
+            }
             return (
               <img
                 style={{ width: 26 }}
-                src={
-                  protocol?.id === "bex"
-                    ? "/images/dapps/infrared/bex.svg"
-                    : protocol?.id === "kodiak"
-                      ? "/images/dapps/kodiak.svg"
-                      : protocol?.id === "berps"
-                        ? "/images/dapps/infrared/berps.svg"
-                        : "/images/dapps/dolomite.svg"
-                }
+                src={ImageMapping?.[protocol?.id] ?? "/images/dapps/dolomite.svg"}
               />
             );
           }
