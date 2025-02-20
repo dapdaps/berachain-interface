@@ -202,7 +202,6 @@ export default function useInfraredData(props: any) {
     }
   ];
 
-  console.log('======multicallAddress=======', multicallAddress)
   const MulticallContract =
     multicallAddress &&
     new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());

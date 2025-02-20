@@ -56,8 +56,6 @@ export const multicall = async <T = any>({
     callData: itf.encodeFunctionData(call.name, call.params)
   }));
 
-  console.log('=====calldata====', calldata)
-
   const returnData = await multi?.callStatic.tryAggregate(
     requireSuccess,
     calldata,
