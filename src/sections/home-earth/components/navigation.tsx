@@ -137,7 +137,7 @@ const Navigation = (props: any) => {
     >
       {
         [...new Array(4)].map((_, idx) => (
-          (isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES).sort((a, b) => a.sort - b.sort).map((item, i) => (
+          (isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES).sort((a: any, b: any) => a.sort - b.sort).map((item: any, i: number) => (
             <motion.div
               key={i}
               className={clsx(
