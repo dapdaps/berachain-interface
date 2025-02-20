@@ -352,7 +352,7 @@ export const BADDIES_ENTRIES: any = [
     signpostX: -50,
     signpostY: -70,
     x: -460,
-    y: -86,
+    y: -62,
     rotate: -18,
     path: '/marketplace',
   },
