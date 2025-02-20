@@ -38,9 +38,9 @@ export default function UserCard({ loading, totalBalance }: any) {
         <>
           <div className='grow'>
             <div className='font-CherryBomb text-black text-[32px] md:text-[20px] font-[400] mb-[6px] leading-none'>
-              @{userInfo.username || (address ? address.slice(0, 6) + '...' + address.slice(-4) : '')}
+              @{userInfo.username || 'beraman'}
             </div>
-            <div className='text-[14px] text-[#3D405A] font-Montserrat'>
+            <div className='text-[14px] text-[#3D405A] font-Montserrat' title={address}>
               {address ? address.slice(0, 6) + '...' + address.slice(-4) : ''}
             </div>
           </div>
