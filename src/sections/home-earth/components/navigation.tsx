@@ -77,7 +77,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -104,7 +104,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
@@ -334,9 +334,9 @@ export const BADDIES_ENTRIES: any = [
     signpostHeight: 59,
     signpostX: 80,
     signpostY: 10,
-    x: 1270,
-    y: 320,
-    rotate: 46,
+    x: 882,
+    y: 80,
+    rotate: 36,
     path: '/bridge',
   },
   {
@@ -351,9 +351,9 @@ export const BADDIES_ENTRIES: any = [
     signpostHeight: 59,
     signpostX: -90,
     signpostY: -30,
-    x: -912,
-    y: 106,
-    rotate: -30,
+    x: -910,
+    y: 180,
+    rotate: -36,
     path: '/dapps',
   },
   {
@@ -408,22 +408,22 @@ export const BADDIES_ENTRIES: any = [
     rotate: 18,
     path: '/dashboard',
   },
-  {
-    sort: 6,
-    name: 'Cave',
-    disabled: true,
-    icon: '/images/home-earth/baddies/baddies-cave.svg',
-    disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
-    iconWidth: 365,
-    iconHeight: 226,
-    signpost: '/images/home-earth/signpost-cave.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 50,
-    signpostY: -40,
-    x: 882,
-    y: 82,
-    rotate: 30,
-    path: '/cave',
-  }
+  // {
+  //   sort: 6,
+  //   name: 'Cave',
+  //   disabled: true,
+  //   icon: '/images/home-earth/baddies/baddies-cave.svg',
+  //   disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
+  //   iconWidth: 365,
+  //   iconHeight: 226,
+  //   signpost: '/images/home-earth/signpost-cave.svg',
+  //   signpostWidth: 170,
+  //   signpostHeight: 59,
+  //   signpostX: 50,
+  //   signpostY: -40,
+  //   x: 882,
+  //   y: 82,
+  //   rotate: 30,
+  //   path: '/cave',
+  // }
 ]
