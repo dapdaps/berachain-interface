@@ -403,11 +403,16 @@ export default function useAquaBeraData(props: any) {
       for (let i = 0; i < _dataList.length; i++) {
         const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
         const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
-        const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0])
-        const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1])
-        _dataList[i].values = [Big(amt1).times(shares).div(totalSupply).toFixed(), Big(amt0).times(shares).div(totalSupply).toFixed()]
-        _dataList[i].yourValue = Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed()
-        _dataList[i].usdDepositAmount = _dataList[i].yourValue
+        // const [token0, token1] = _dataList[i].tokens
+        const [token0, token1] = _dataList[i].chainTopTokens
+        const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0], token0?.decimals)
+        const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1], token1?.decimals)
+        const value0 = Big(amt0).times(shares).div(totalSupply).toFixed()
+        const value1 = Big(amt1).times(shares).div(totalSupply).toFixed()
+
+        _dataList[i].values = token0?.symbol === _dataList?.[i]?.symbol ? [value0, value1] : [value1, value0]
+        _dataList[i].yourValue = Big(amt0).plus(amt1).times(shares).div(totalSupply).toFixed()
+        _dataList[i].usdDepositAmount = Big(value0).times(prices?.[token0?.symbol] ?? 0).plus(Big(value1).times(prices?.[token1?.symbol] ?? 0)).toFixed()
       }
 
     } catch (error) {
@@ -443,6 +448,7 @@ export default function useAquaBeraData(props: any) {
     } catch (error) {
       console.error(error)
     }
+    formatedData("handleGetTvl")
   }
   const getDataList = async () => {
     for (const pair of pairs) {
@@ -454,12 +460,11 @@ export default function useAquaBeraData(props: any) {
     try {
       await get7DayApr(dataList)
       await getBalance(dataList)
-
-      await handleGetYourValue(dataList)
-      await handleGetTvl(dataList)
     } catch (error) {
       console.error(error);
     }
+    handleGetYourValue(dataList)
+    handleGetTvl(dataList)
     formatedData();
   };
   useEffect(() => {
