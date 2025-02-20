@@ -255,7 +255,7 @@ const MainLayout = (props: Props) => {
               }}
             >
               <RainyDay
-                dropCount={200}
+                dropCount={120}
                 minSpeed={0.5}
                 maxSpeed={2}
               />
