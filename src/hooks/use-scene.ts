@@ -214,5 +214,6 @@ export interface Scene {
   api: string;
   bg: string;
   bgPathname: string[] | 'ALL';
+  excludePathname?: string[] | 'ALL';
   handleTime?: (config?: any) => ({ startUTCTime?: string; endUTCTime?: string; });
 }

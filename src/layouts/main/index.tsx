@@ -52,7 +52,18 @@ const MainLayout = (props: Props) => {
   }, [isVaults, pathname]);
 
   const sceneStyles = useMemo(() => {
-    if (isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) && isDefaultTheme()) {
+    if (
+      isRainyDay &&
+      (
+        rainyDay?.bgPathname === 'ALL' ||
+        rainyDay?.bgPathname.includes(pathname)
+      ) &&
+      (
+        !rainyDay?.excludePathname?.includes?.(pathname) &&
+        rainyDay?.excludePathname !== 'ALL'
+      ) &&
+      isDefaultTheme()
+    ) {
       return { background: rainyDay?.bg };
     }
 
@@ -226,7 +237,11 @@ const MainLayout = (props: Props) => {
       <GuidingTutorial />
       <AnimatePresence mode="wait">
         {
-          isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) && isDefaultTheme() && (
+          isRainyDay &&
+          (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) &&
+          (rainyDay?.excludePathname !== 'ALL' && !rainyDay?.excludePathname?.includes?.(pathname)) &&
+          isDefaultTheme() &&
+          (
             <motion.div
               variants={{
                 visible: { opacity: 1 },
