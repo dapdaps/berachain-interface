@@ -285,8 +285,6 @@ export default function useInfraredData(props: any) {
       dataList.push(_data);
     });
     const ibgt = await getIbgtData()
-
-    console.log('====ibgt', ibgt)
     dataList.push({
       id: 'iBGT',
       tokens: ['iBGT'],
@@ -298,7 +296,7 @@ export default function useInfraredData(props: any) {
       LP_ADDRESS: '0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b',
       vaultAddress: '0x75F3Be06b02E235f6d0E7EF2D462b29739168301',
       tvl: Big(ibgt?.tvl || 0).toFixed(),
-      apy: Big(ibgt?.apr || 0),
+      apy: Big(ibgt?.apr || 0).times(100).toFixed(),
       initialData: ibgt,
       type: "Staking",
       rewardSymbol: "Honey",

@@ -55,19 +55,6 @@ const dapps: DApp[] = [
     icon: "/images/dapps/infrared.svg",
     href: "/staking/infrared"
   },
-  // {
-  //   id: "berps",
-  //   name: "Berps",
-  //   icon: "/images/dapps/infrared/berps.svg",
-  //   href: "/staking/berps"
-  // },
-  // { id: "bex", name: "Bex", icon: "/images/dapps/bex.svg", href: "/dex/bex" },
-  // {
-  //   id: "bend",
-  //   name: "Bend",
-  //   icon: "/images/dapps/bend.svg",
-  //   href: "/lending/bend"
-  // },
   {
     id: "kodiak",
     name: "Kodiak",
