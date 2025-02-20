@@ -335,7 +335,7 @@ export const BADDIES_ENTRIES: any = [
     signpostX: -90,
     signpostY: -30,
     x: -912,
-    y: 76,
+    y: 106,
     rotate: -30,
     path: '/dapps',
   },
