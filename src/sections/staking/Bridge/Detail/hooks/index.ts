@@ -484,11 +484,12 @@ export function useDetail(props: any) {
   const mintData = useMemo<any>(() => {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
-    if (!["beraswap", "kodiak"].includes(protocol?.id)) return null;
+    const protocolId = protocol?.id === "bex" ? "beraswap" : protocol?.id
+    if (!["beraswap", "kodiak"].includes(protocolId)) return null;
     const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
     ];
-    if (protocol?.id === "kodiak" && sweetenedIslandItem) {
+    if (protocolId === "kodiak" && sweetenedIslandItem) {
       return {
         token0: sweetenedIslandItem.token0,
         token1: sweetenedIslandItem.token1,
@@ -503,7 +504,7 @@ export function useDetail(props: any) {
     const underlying_tokens = data?.initialData?.underlying_tokens;
     if (index > -1) {
       return {
-        protocol: protocol?.id,
+        protocol: protocolId,
         token0: { ...underlying_tokens[0], icon: data?.images[0] },
         token1: { ...underlying_tokens[1], icon: data?.images[1] },
         version: "island",
@@ -513,9 +514,12 @@ export function useDetail(props: any) {
     }
     if (underlying_tokens?.length === 2) {
       return {
-        protocol: protocol?.id,
-        token0: { ...underlying_tokens[0], icon: data.images[0] },
-        token1: { ...underlying_tokens[1], icon: data.images[1] },
+        protocol: protocolId,
+        symbol: `${underlying_tokens[0]?.symbol} | ${underlying_tokens[1]?.symbol}`,
+        tokens: [
+          { ...underlying_tokens[0], icon: data.images[0] },
+          { ...underlying_tokens[1], icon: data.images[1] },
+        ],
         version: "v2"
       };
     }
