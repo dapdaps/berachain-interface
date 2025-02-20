@@ -25,6 +25,11 @@ import BeraPrice from '@/sections/home-earth/components/bera-price';
 const SPEED = 200;
 const SIZE = 3000;
 
+const BG_SIZE_MAP = {
+  default: SIZE,
+  lgbt: 3500,
+}
+
 const HomeEarth = () => {
   const isMobile = useIsMobile();
   const { isRainyDay, beraPrice } = useRainyDay();
@@ -55,7 +60,7 @@ const HomeEarth = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [hoverIndex, setHoverIndex] = useState<any>();
 
-  const { toggleTheme, isDefaultTheme } = useActivityStore();
+  const { toggleTheme, isDefaultTheme, activeTheme } = useActivityStore();
 
   useEffect(() => {
     if (hoverIndex) {
@@ -163,7 +168,7 @@ const HomeEarth = () => {
         hoverIndex,
         setHoverIndex,
         speed: SPEED,
-        size: SIZE,
+        size: BG_SIZE_MAP[activeTheme] || SIZE,
     }}>
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
         {/*<BerachainFixes />*/}
@@ -198,11 +203,11 @@ const HomeEarth = () => {
               <img
                 onClick={()=> toggleTheme()}
                 src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
-                className={clsx('', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')}
+                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')}
                 alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
               />
               {
-                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px]' alt="" />
+                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px] z-0' alt="" />
               }
             </div>
           </Popover>
@@ -215,7 +220,7 @@ const HomeEarth = () => {
                 className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
               />
             ) : (
-              <div className='absolute z-[4] top-[25.4dvh] pointer-events-none' ref={bearRef}>
+              <div className='absolute z-[4] top-[32.4dvh] pointer-events-none' ref={bearRef}>
               <div className='w-[289px] h-[289px] relative'>
                 <motion.img
                   src="/images/home-earth/lgbt-role.png"

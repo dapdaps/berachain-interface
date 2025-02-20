@@ -148,18 +148,19 @@ const Navigation = (props: any) => {
                 width: item.iconWidth,
                 height: item.iconHeight,
                 transform: `rotate(${90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
-                transformOrigin: 'center 1500px',
+                transformOrigin: `center ${size/2}px`,
               }}
               onHoverStart={() => handleEntryHover(item)}
               onHoverEnd={() => handleEntryLeave(item)}
               onClick={() => handleNavigation(item)}
             >
               <img
-                src={item.icon}
+                src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
                 className={clsx(
                   'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
-                  item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                  item.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+                  isDefaultTheme() && item.disabled ? 'opacity-50' : '',
                 )}
                 style={{
                   transform: `rotate(${item.rotate}deg) scale(${(hoverIndex?.name === item.name && !item.disabled) ? 1.1 : 1})`,
@@ -216,7 +217,7 @@ const Navigation = (props: any) => {
 
 export default Navigation;
 
-export const ENTRIES = [
+export const ENTRIES: any = [
   {
     sort: 2,
     name: 'DApp Tree',
@@ -304,29 +305,29 @@ export const ENTRIES = [
   },
 ];
 
-export const BADDIES_ENTRIES = [
+export const BADDIES_ENTRIES: any = [
   {
     sort: 1,
     name: 'Bridge',
     disabled: false,
-    icon: '/images/home-earth/baddies/baddies-bridge.png',
+    icon: '/images/home-earth/baddies/baddies-bridge.svg',
     iconWidth: 326,
     iconHeight: 303,
     signpost: '/images/home-earth/signpost-bridge.svg',
     signpostWidth: 170,
     signpostHeight: 59,
-    signpostX: 40,
-    signpostY: -40,
-    x: 872,
-    y: 70,
-    rotate: 30,
+    signpostX: 80,
+    signpostY: 10,
+    x: 1270,
+    y: 320,
+    rotate: 46,
     path: '/bridge',
   },
   {
     sort: 2,
     name: 'DApp Tree',
     disabled: false,
-    icon: '/images/home-earth/baddies/baddies-dapp.png',
+    icon: '/images/home-earth/baddies/baddies-dapp.svg',
     iconWidth: 365,
     iconHeight: 226,
     signpost: '/images/home-earth/signpost-dapp.svg',
@@ -334,16 +335,16 @@ export const BADDIES_ENTRIES = [
     signpostHeight: 59,
     signpostX: -90,
     signpostY: -30,
-    x: -930,
-    y: 150,
-    rotate: -36,
+    x: -912,
+    y: 76,
+    rotate: -30,
     path: '/dapps',
   },
   {
     sort: 3,
     name: 'Token Marketplace',
     disabled: false,
-    icon: '/images/home-earth/baddies/baddies-marketplace.png',
+    icon: '/images/home-earth/baddies/baddies-marketplace.svg',
     iconWidth: 352,
     iconHeight: 232,
     signpost: '/images/home-earth/signpost-marketplace.svg',
@@ -351,8 +352,8 @@ export const BADDIES_ENTRIES = [
     signpostHeight: 72,
     signpostX: -50,
     signpostY: -70,
-    x: -470,
-    y: -70,
+    x: -460,
+    y: -86,
     rotate: -18,
     path: '/marketplace',
   },
@@ -360,16 +361,16 @@ export const BADDIES_ENTRIES = [
     sort: 4,
     name: 'Earn Yield',
     disabled: false,
-    icon: '/images/home-earth/baddies/baddies-earn.png',
+    icon: '/images/home-earth/baddies/baddies-earn.svg',
     iconWidth: 349,
     iconHeight: 155,
     signpost: '/images/home-earth/signpost-earn.svg',
     signpostWidth: 170,
     signpostHeight: 59,
     signpostX: 0,
-    signpostY: -30,
+    signpostY: -60,
     x: 20,
-    y: -110,
+    y: -119,
     rotate: 0,
     path: '/earn',
   },
@@ -377,8 +378,8 @@ export const BADDIES_ENTRIES = [
     sort: 5,
     name: 'Portfolio',
     disabled: false,
-    icon: '/images/home-earth/baddies/baddies-dashboard.png',
-    disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.png',
+    icon: '/images/home-earth/baddies/baddies-dashboard.svg',
+    disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
     iconWidth: 364,
     iconHeight: 208,
     signpost: '/images/home-earth/signpost-dashboard.svg',
@@ -391,22 +392,22 @@ export const BADDIES_ENTRIES = [
     rotate: 18,
     path: '/dashboard',
   },
-  // {
-  //   sort: 6,
-  //   name: 'Cave',
-  //   disabled: false,
-  //   icon: '/images/home-earth/baddies/baddies-cave.png',
-  //   disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.png',
-  //   iconWidth: 326,
-  //   iconHeight: 303,
-  //   signpost: '/images/home-earth/signpost-cave.svg',
-  //   signpostWidth: 170,
-  //   signpostHeight: 59,
-  //   signpostX: 20,
-  //   signpostY: -120,
-  //   x: 820,
-  //   y: 216,
-  //   rotate: 30,
-  //   path: '/cave',
-  // }
+  {
+    sort: 6,
+    name: 'Cave',
+    disabled: true,
+    icon: '/images/home-earth/baddies/baddies-cave.svg',
+    disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
+    iconWidth: 365,
+    iconHeight: 226,
+    signpost: '/images/home-earth/signpost-cave.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: 50,
+    signpostY: -40,
+    x: 882,
+    y: 82,
+    rotate: 30,
+    path: '/cave',
+  }
 ]
