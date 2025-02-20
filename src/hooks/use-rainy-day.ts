@@ -4,15 +4,19 @@ import { Scene } from '@/hooks/use-scene';
 import { random } from 'lodash';
 import Big from 'big.js';
 import { RAINY_DAY, useRainyDayStore } from '@/stores/rainy-day';
+import { useActivityStore } from '@/stores/useActivityStore';
 
 export function useRainyDay(props?: { isLoadPrice?: boolean; }) {
   const { isLoadPrice } = props || {};
 
+  const { isDefaultTheme } = useActivityStore();
   const { rainyDay, setRainyDay, beraPrice, setBeraPrice } = useRainyDayStore();
 
+  const _isDefaultTheme = isDefaultTheme();
+
   const isRainyDay = useMemo(() => {
-    return rainyDay?.status === SceneStatus.Ongoing;
-  }, [rainyDay]);
+    return rainyDay?.status === SceneStatus.Ongoing && _isDefaultTheme;
+  }, [rainyDay, _isDefaultTheme]);
 
   const getBera1DPrice = async () => {
     try {

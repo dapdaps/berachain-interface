@@ -17,7 +17,6 @@ import RainyDay from '@/components/rainy-day';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useActivityStore } from "@/stores/useActivityStore";
-import { useChristmas } from "@/hooks/use-christmas";
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -29,7 +28,6 @@ const MainLayout = (props: Props) => {
   const context = useContext(SceneContext);
   const currentScene = context.current;
   const { isRainyDay, rainyDay } = useRainyDay({ isLoadPrice: true });
-  const { isChristmas } = useChristmas();
   const { isDefaultTheme, themeConfig } = useActivityStore();
 
   useEffect(() => {
@@ -47,15 +45,21 @@ const MainLayout = (props: Props) => {
   const isVaults = useMemo(() => pathname === "/vaults", [pathname]);
 
   const bg = useMemo(() => {
-    if (isVaults) return "bg-transparent h-full";
-    if (isChristmas && pathname === "/") return "bg-christmas";
-    if (pathname === "/activity/christmas") return "bg-christmas";
+    if (isVaults) {
+      return "bg-transparent h-full";
+    }
     return "bg-[var(--background)]";
   }, [isVaults, pathname]);
 
   const sceneStyles = useMemo(() => {
-    if (isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname))) {
+    if (isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) && isDefaultTheme()) {
       return { background: rainyDay?.bg };
+    }
+
+    if (pathname === '/' && !isDefaultTheme()) {
+      return {
+        backgroundColor: themeConfig.primaryColor
+      };
     }
 
     if (currentScene?.status === SceneStatus.Ongoing) {
@@ -65,17 +69,7 @@ const MainLayout = (props: Props) => {
     }
 
     return {};
-  }, [currentScene, isRainyDay, rainyDay, pathname]);
-
-  const customStyle = useMemo(() => {
-    if (pathname === '/' && !isDefaultTheme()) {
-      return {
-        ...style,
-        backgroundColor: themeConfig.primaryColor
-      };
-    }
-    return style;
-  }, [pathname, isDefaultTheme, themeConfig.primaryColor, style]);
+  }, [currentScene, isRainyDay, rainyDay, pathname, isDefaultTheme, themeConfig.primaryColor]);
 
   const routes = ["/earn", "/activity/christmas"];
 
@@ -86,7 +80,6 @@ const MainLayout = (props: Props) => {
       style={{
         ...sceneStyles,
         ...style,
-        ...customStyle,
       }}
       onClick={handleTrack}
     >
@@ -233,7 +226,7 @@ const MainLayout = (props: Props) => {
       <GuidingTutorial />
       <AnimatePresence mode="wait">
         {
-          isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) && (
+          isRainyDay && (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) && isDefaultTheme() && (
             <motion.div
               variants={{
                 visible: { opacity: 1 },

@@ -2,19 +2,17 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Airdrop from '@/components/airdrop';
+import LGBTLogo from './lgbt-animated-logo';
+import { useActivityStore } from '@/stores/useActivityStore';
 import { useContext } from 'react';
 import { HomeEarthContext } from '@/sections/home-earth/context';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
-import LGBTLogo from './lgbt-animated-logo';
-import { useActivityStore } from '@/stores/useActivityStore';
 
 const HomeEarthTop = (props: any) => {
   const {} = props;
-
+  const { isDefaultTheme } = useActivityStore();
   const { isRainyDay } = useContext(HomeEarthContext);
 
-  const { isDefaultTheme } = useActivityStore();
-  
   return (
     <div className="relative w-full pt-[20px] flex justify-center shrink-0">
       {

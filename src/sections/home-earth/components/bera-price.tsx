@@ -4,6 +4,7 @@ import { HomeEarthContext } from '@/sections/home-earth/context';
 import { AnimatePresence, motion } from 'framer-motion';
 import { numberFormatter } from '@/utils/number-formatter';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
+import Big from 'big.js';
 
 const BeraPrice = (props: any) => {
   const { className } = props;
@@ -67,7 +68,7 @@ const BeraPrice = (props: any) => {
             isRainyDay ? 'text-[#C60F28]' : 'text-[#CF6]'
           )}
         >
-          {numberFormatter(beraPrice?.percentage, 2, true, {})}%(1d)
+          {Big(beraPrice?.percentage || 0).toFixed(2)}%(1d)
         </div>
       </div>
     </div>

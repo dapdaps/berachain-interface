@@ -13,13 +13,13 @@ import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
 import { useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
-import { useRainyDay } from '@/hooks/use-rainy-day';
-import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
-import BeraPrice from '@/sections/home-earth/components/bera-price';
 import { useActivityStore } from '@/stores/useActivityStore';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import { useRainyDay } from '@/hooks/use-rainy-day';
+import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
+import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
@@ -200,31 +200,31 @@ const HomeEarth = () => {
             triggerContainerClassName="absolute z-[4] cursor-pointer bottom-0 right-[22%] transition-transform hover:scale-110"
           >
             <div className='w-full h-full relative'>
-              <img 
+              <img
                 onClick={()=> toggleTheme()}
                 src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
-                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')} 
+                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')}
                 alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
               />
               {
                 !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px] z-0' alt="" />
               }
             </div>
-          </Popover>          
+          </Popover>
           {
             isDefaultTheme() ? (
               <img
                 ref={bearRef}
-                src="/images/background/bear.gif" 
-                alt="" 
+                src="/images/background/bear.gif"
+                alt=""
                 className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
               />
             ) : (
               <div className='absolute z-[4] top-[32.4dvh] pointer-events-none' ref={bearRef}>
               <div className='w-[289px] h-[289px] relative'>
-                <motion.img 
-                  src="/images/home-earth/lgbt-role.png" 
-                  className='w-full h-full relative z-10' 
+                <motion.img
+                  src="/images/home-earth/lgbt-role.png"
+                  className='w-full h-full relative z-10'
                   alt=""
                   animate={{
                     y: [0, -10, 0],
