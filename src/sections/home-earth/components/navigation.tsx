@@ -293,8 +293,8 @@ export const ENTRIES = [
     signpostX: -40,
     signpostY: -120,
     x: 620,
-    y: 120,
-    rotate: 30,
+    y: 103,
+    rotate: 21,
     path: '/bridge',
   },
   {
