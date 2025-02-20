@@ -178,11 +178,11 @@ const HomeEarth = () => {
         <HomeEarthTop />
         <AirdropModal />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
-          {
-            isDefaultTheme() && (<>
               {/*#region Cloud*/}
               <CloudCircle />
               {/*#endregion*/}
+          {
+            isDefaultTheme() && (<>
               {/*#region Mountain*/}
               <MountainCircle />
               {/*#endregion*/}
