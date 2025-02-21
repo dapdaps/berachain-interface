@@ -107,6 +107,7 @@ const FIRST_LIST = [
 ];
 const SECOND_LIST = [
   {
+
     className: "w-[174px] h-[112px]",
     dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
     sticks: [
@@ -116,11 +117,18 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
-        ..._dApps["berps"],
-        attachedIcon: "",
-        disabled: true
+        icon: "/images/dapps/ramen.svg",
+        name: "Ramen",
+        label: "Ramen",
+        type: "Launchpad",
+        className: "",
+        disabled: true,
+        // attachedIcon: (
+        //   <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
+        // )
       }
     ]
+
   },
   {
     className: "w-[230px] h-[132px]",
@@ -172,20 +180,19 @@ const SECOND_LIST = [
         )
       },
       {
-        icon: "/images/dapps/ramen.svg",
-        name: "Ramen",
-        label: "Ramen",
-        type: "Launchpad",
-        className: "",
-        disabled: true,
+        children: (
+          <div className="relative basis-[120px]">
+
+          </div>
+        ),
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
       },
       {
-        icon: "/images/dapps/royco.svg",
-        name: "Royco",
-        label: "Royco",
+        icon: "/images/dapps/jumper.png",
+        name: "Jumper",
+        label: "Jumper",
         type: "Vaults",
         disabled: true,
         className: ""
@@ -380,9 +387,8 @@ const DAppsView = () => {
   const router = useRouter();
 
   const onNavigateTo = (_dApp: any) => {
-    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${
-      _dApp.name
-    }`;
+    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${_dApp.name
+      }`;
     if (_dApp.name === "berps") {
       dAppPath += `?id=BHONEY&tab=0`;
     }
@@ -502,7 +508,7 @@ const DAppsView = () => {
                     >
                       {item.dApps.length > 0 && (
                         <div className={`flex ${item.dAppClassName}`}>
-                          {item.dApps.map((dApp, idx) => (
+                          {item.dApps.map((dApp, idx) => dApp.children ? dApp.children : (
                             <div
                               key={`treeNode_${idx}`}
                               className={
