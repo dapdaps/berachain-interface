@@ -1,6 +1,6 @@
 import useToast from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { useEffect } from "react";
 import useCustomAccount from "@/hooks/use-account";
@@ -8,6 +8,7 @@ import { useAppKit } from "@reown/appkit/react";
 import { post } from "@/utils/http";
 import { useAccount } from "wagmi";
 import { useWalletName } from "@/hooks/use-wallet-name";
+import { useActivityStore } from "@/stores/useActivityStore";
 
 const InviteViews = () => {
   return (
@@ -133,16 +134,26 @@ const Content = () => {
   const walletInfo = useWalletName();
   const { address, isConnecting, isConnected } = useAccount();
   const { name = '' } = useParams();
-  const toast = useToast();
   const modal = useAppKit();
+  const { toggleTheme, isDefaultTheme } = useActivityStore();
+  const router = useRouter();
   
   const brand = brands.find(brand => brand.name === name);
 
   if (!brand) {
-    toast.fail({
-      title: 'Brand not found',
-    });
-    return null;
+    return (
+      <div className="relative z-10 w-full h-full">
+        <div className="flex justify-center overflow-hidd">
+          <div className="w-[480px] h-auto mt-[180px]">
+            <div className="font-CherryBomb text-[48px] text-[#453636] text-center">Brand not found:(</div>
+            <div className="w-full flex flex-col items-end justify-end mt-2 text-[20px] font-CherryBomb px-[80px] text-[#453636] leading-[18px]">
+              <div>Love</div>
+              <div>BeraTown</div>
+            </div>
+          </div>
+      </div>
+    </div>
+    );
   }
 
   useEffect(() => {
@@ -165,17 +176,17 @@ const Content = () => {
   }
 
   const handleGo = () => {
-    if (brand.name === 'berabaddies') {
-
+      if (brand.name === 'berabaddies' && isDefaultTheme()) {
+        toggleTheme();
     }
-
+    router.replace('/')
   }
 
   return (
     <div className="relative z-10 w-full h-full">
       <div className="flex justify-center overflow-hidd">
         <div className="w-[480px] h-auto mt-[120px]">
-          <div className="flex justify-center w-full gap-[28px]">
+          <div className="flex justify-center items-center w-full gap-[28px]">
             <img src={brand.logo} className="w-[68px] h-[68px] object-contain" alt="" />
             <img src="/images/invite/town.png" className="w-[91px] h-[56px] object-contain" alt="" />
           </div>
