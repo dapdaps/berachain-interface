@@ -40,13 +40,13 @@ const MobileHeader = () => {
           count={BGTCount}
           bp="1015-009"
           onClick={handleBGTClick}
-        />
+        /> */}
         <BGTCoin
           type={CoinType.iBGT}
           count={iBGTCount}
           bp="1015-010"
           onClick={handleBGTClick}
-        /> */}
+        />
       </div>
       <BGTMobileView
         visible={bgt.visible && bgt.type === CoinType.BGT}
