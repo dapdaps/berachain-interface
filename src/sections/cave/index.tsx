@@ -75,7 +75,7 @@ const swapDapps = [{
     name: 'Kodiak',
     link: '/dex/kodiak'
 }, {
-    icon: '/images/dapps/bex.svg',
+    icon: '/images/dapps/beraswap.svg',
     name: 'Bex',
     link: '/dex/bex'
 }, {

@@ -5,10 +5,12 @@ import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { HomeEarthContext } from '../context';
+import { useActivityStore } from '@/stores/useActivityStore';
 
 const Navigation = (props: any) => {
   const {} = props;
   const {
+    isRainyDay,
     isDragging,
     navigationRef,
     navigationControls,
@@ -36,6 +38,7 @@ const Navigation = (props: any) => {
     mountainRotation,
   } = useContext(HomeEarthContext);
   const router = useRouter();
+  const { isDefaultTheme, themeConfig } = useActivityStore();
 
   const handleEntryHover = (item: any) => {
     setHoverIndex(item);
@@ -112,14 +115,15 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center',
-        isDragging ? 'cursor-grabbing' : ''
+        'will-change-transform absolute z-[3] border rounded-full top-[24.5dvh] flex justify-center items-center border-[#5A6F2F]',
+        isDragging ? 'cursor-grabbing' : '',
       )}
       style={{
         rotate: navigationRotation,
         animationDuration: `${speed}s`,
         width: size,
         height: size,
+        backgroundColor: isRainyDay ? '#90AF4E' : themeConfig.earthBackgroundColor
       }}
       drag
       dragElastic={0}
@@ -132,7 +136,7 @@ const Navigation = (props: any) => {
     >
       {
         [...new Array(4)].map((_, idx) => (
-          ENTRIES.sort((a, b) => a.sort - b.sort).map((item, i) => (
+          (isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES).sort((a: any, b: any) => a.sort - b.sort).map((item: any, i: number) => (
             <motion.div
               key={i}
               className={clsx(
@@ -143,18 +147,19 @@ const Navigation = (props: any) => {
                 width: item.iconWidth,
                 height: item.iconHeight,
                 transform: `rotate(${90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
-                transformOrigin: 'center 1500px',
+                transformOrigin: `center ${size/2}px`,
               }}
               onHoverStart={() => handleEntryHover(item)}
               onHoverEnd={() => handleEntryLeave(item)}
               onClick={() => handleNavigation(item)}
             >
               <img
-                src={item.icon}
+                src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
                 className={clsx(
                   'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
-                  item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                  item.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+                  isDefaultTheme() && item.disabled ? 'opacity-50' : '',
                 )}
                 style={{
                   transform: `rotate(${item.rotate}deg) scale(${(hoverIndex?.name === item.name && !item.disabled) ? 1.1 : 1})`,
@@ -165,7 +170,7 @@ const Navigation = (props: any) => {
                 {
                   hoverIndex?.name === item.name && (
                     <motion.img
-                      src={item.signpost}
+                      src={item.signpost || ''}
                       alt=""
                       className="absolute pointer-events-none"
                       style={{
@@ -211,7 +216,7 @@ const Navigation = (props: any) => {
 
 export default Navigation;
 
-export const ENTRIES = [
+export const ENTRIES: any = [
   {
     sort: 2,
     name: 'DApp Tree',
@@ -298,3 +303,110 @@ export const ENTRIES = [
     path: '/bridge',
   },
 ];
+
+export const BADDIES_ENTRIES: any = [
+  {
+    sort: 1,
+    name: 'Bridge',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-bridge.svg',
+    iconWidth: 326,
+    iconHeight: 303,
+    signpost: '/images/home-earth/signpost-bridge.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: 80,
+    signpostY: 10,
+    x: 882,
+    y: 80,
+    rotate: 36,
+    path: '/bridge',
+  },
+  {
+    sort: 2,
+    name: 'DApp Tree',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-dapp.svg',
+    iconWidth: 365,
+    iconHeight: 226,
+    signpost: '/images/home-earth/signpost-dapp.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: -90,
+    signpostY: -30,
+    x: -932,
+    y: 176,
+    rotate: -36,
+    path: '/dapps',
+  },
+  {
+    sort: 3,
+    name: 'Token Marketplace',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-marketplace.svg',
+    iconWidth: 352,
+    iconHeight: 232,
+    signpost: '/images/home-earth/signpost-marketplace.svg',
+    signpostWidth: 170,
+    signpostHeight: 72,
+    signpostX: -50,
+    signpostY: -70,
+    x: -460,
+    y: -62,
+    rotate: -18,
+    path: '/marketplace',
+  },
+  {
+    sort: 4,
+    name: 'Earn Yield',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-earn.svg',
+    iconWidth: 349,
+    iconHeight: 155,
+    signpost: '/images/home-earth/signpost-earn.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: 0,
+    signpostY: -60,
+    x: 20,
+    y: -80,
+    rotate: 0,
+    path: '/earn',
+  },
+  {
+    sort: 5,
+    name: 'Portfolio',
+    disabled: true,
+    icon: '/images/home-earth/baddies/baddies-dashboard.svg',
+    disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
+    iconWidth: 364,
+    iconHeight: 208,
+    signpost: '/images/home-earth/signpost-dashboard.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: 40,
+    signpostY: -30,
+    x: 460,
+    y: -80,
+    rotate: 18,
+    path: '/dashboard',
+  },
+  // {
+  //   sort: 6,
+  //   name: 'Cave',
+  //   disabled: true,
+  //   icon: '/images/home-earth/baddies/baddies-cave.svg',
+  //   disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
+  //   iconWidth: 365,
+  //   iconHeight: 226,
+  //   signpost: '/images/home-earth/signpost-cave.svg',
+  //   signpostWidth: 170,
+  //   signpostHeight: 59,
+  //   signpostX: 50,
+  //   signpostY: -40,
+  //   x: 882,
+  //   y: 82,
+  //   rotate: 30,
+  //   path: '/cave',
+  // }
+]

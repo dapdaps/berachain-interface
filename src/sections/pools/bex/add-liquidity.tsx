@@ -47,6 +47,10 @@ export default function AddLiquidity({
     }
   });
 
+
+  console.log('=====token0', token0)
+  console.log('=====token1', token1)
+
   return (
     <>
       <DepositAmounts

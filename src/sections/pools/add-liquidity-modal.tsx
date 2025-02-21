@@ -7,6 +7,8 @@ import Kodiak from "./kodiak/add-liquidity";
 import useIsMobile from "@/hooks/use-isMobile";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
+
+  console.log('====dex====', dex)
   if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
 });

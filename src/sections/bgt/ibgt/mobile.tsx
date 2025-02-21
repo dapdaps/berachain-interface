@@ -143,9 +143,9 @@ const IBGTMobileView = (props: Props) => {
                   <span>
                     {ibgtData?.total
                       ? Big(ibgtData?.staked)
-                          .div(ibgtData?.total)
-                          .times(100)
-                          .toFixed(2)
+                        .div(ibgtData?.total)
+                        .times(100)
+                        .toFixed(2)
                       : "-"}
                     %
                   </span>
@@ -173,7 +173,7 @@ const IBGTMobileView = (props: Props) => {
                     alt=""
                     className="w-[26px] h-[26px] rounded-full"
                   />
-                  <div className="text-[20px] font-[600]">0</div>
+                  <div className="text-[20px] font-[600]">{formatValueDecimal(data?.depositAmount ?? 0, '', 2, false, false)}</div>
                   <div className="">iBGT</div>
                 </div>
                 <button
@@ -188,13 +188,12 @@ const IBGTMobileView = (props: Props) => {
                 <div className="">Rewards</div>
                 <div className="flex justify-center items-center gap-[7px]">
                   <img
-                    src={`/images/dapps/infrared/${
-                      data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"
-                    }.svg`}
+                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"
+                      }.svg`}
                     alt=""
                     className="w-[26px] h-[26px] rounded-full"
                   />
-                  <div className="text-[20px] font-[600]">0</div>
+                  <div className="text-[20px] font-[600]">{formatValueDecimal(data?.earned, '', 2)}{' '}</div>
                   <div className="">{data?.rewardSymbol}</div>
                 </div>
                 <button
@@ -241,9 +240,9 @@ const IBGTMobileView = (props: Props) => {
                   usdValue={
                     inAmount
                       ? "$" +
-                        Big(inAmount)
-                          .times(data?.initialData?.stake_token?.price ?? 0)
-                          .toFixed(2)
+                      Big(inAmount)
+                        .times(data?.initialData?.stake_token?.price ?? 0)
+                        .toFixed(2)
                       : "-"
                   }
                   onSubmit={handleDeposit}
@@ -267,9 +266,9 @@ const IBGTMobileView = (props: Props) => {
                   usdValue={
                     lpAmount
                       ? "$" +
-                        Big(lpAmount)
-                          .times(data?.initialData?.stake_token?.price ?? 0)
-                          .toFixed(2)
+                      Big(lpAmount)
+                        .times(data?.initialData?.stake_token?.price ?? 0)
+                        .toFixed(2)
                       : "-"
                   }
                   onSubmit={handleWithdraw}
