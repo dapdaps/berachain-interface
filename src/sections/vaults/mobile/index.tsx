@@ -230,7 +230,6 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
   const isBerps = dapp?.name === 'Berps';
   const isAquaBera = dapp?.name === 'AquaBera'
 
-  console.log('====dapp', dapp)
   const _data = {
     pool: data,
     token0: data?.tokens?.[0],
@@ -386,7 +385,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           </div>
           <button
             onClick={() => {
-              onClick(0);
+              onClick(data, 0);
             }}
           >
             <svg
@@ -499,7 +498,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                 />
                 <button
                   onClick={() => {
-                    onClick(1);
+                    onClick(data, 1);
                   }}
                 >
                   <svg
