@@ -31,7 +31,6 @@ export default function AddLiquidityModal({
     setHasClearAll(!!panelRef.current?.onClearAll);
   }, []);
 
-  console.log('=====111111=======', dex)
   return (
     <BasicModal
       title={
