@@ -9,13 +9,13 @@ import Big from 'big.js';
 const BeraPrice = (props: any) => {
   const { className } = props;
 
-  const { beraPrice, isRainyDay } = useContext(HomeEarthContext);
+  const { beraPrice } = useContext(HomeEarthContext);
 
   return (
     <div className={clsx('absolute pt-[10px] flex flex-col items-center left-[320px] bottom-0 z-[5] w-[137px] h-[117px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain', className)}>
       <AnimatePresence mode="wait">
         {
-          isRainyDay ? (
+          Big(beraPrice?.percentage || 0).lt(0) ? (
             <motion.img
               key="down"
               src="/images/home-earth/bera-price-down-icon.svg"
@@ -43,7 +43,7 @@ const BeraPrice = (props: any) => {
       <div className="flex justify-center gap-[3px] items-center mt-[3px]">
         <AnimatePresence mode="wait">
           {
-            isRainyDay ? (
+            Big(beraPrice?.percentage || 0).lt(0) ? (
               <motion.img
                 key="down"
                 src="/images/home-earth/bera-price-down-arrow.svg"
@@ -65,7 +65,7 @@ const BeraPrice = (props: any) => {
         <div
           className={clsx(
             'text-center font-CherryBomb text-xs font-normal leading-[90%] transition-all duration-300',
-            isRainyDay ? 'text-[#C60F28]' : 'text-[#CF6]'
+            Big(beraPrice?.percentage || 0).lt(0) ? 'text-[#C60F28]' : 'text-[#CF6]'
           )}
         >
           {Big(beraPrice?.percentage || 0).toFixed(2)}%(1d)
