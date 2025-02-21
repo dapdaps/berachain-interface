@@ -7,6 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
 import { cloneDeep } from 'lodash';
 import { useRouter } from 'next/navigation';
+import { getProtocolIcon } from '@/utils/utils';
 
 function renderTD(data: any, column: any, index: number) {
   if (column.type === 'slot') {
@@ -71,15 +72,7 @@ export default function Vaults() {
         return (
           <img
             style={{ width: 26 }}
-            src={
-              protocol?.id === "bex" ?
-                '/images/dapps/beraswap.svg' :
-                protocol?.id === "kodiak" ?
-                  '/images/dapps/kodiak.svg' :
-                  protocol?.id === "berps" ?
-                    '/images/dapps/infrared/berps.svg' :
-                    '/images/dapps/infrared/infrared.svg'
-            }
+            src={getProtocolIcon(protocol?.id)}
           />
         );
       }
