@@ -285,7 +285,7 @@ export default function useInfraredData(props: any) {
       dataList.push(_data);
     });
     const ibgt = await getIbgtData()
-    dataList.push({
+    dataList.unshift({
       id: 'iBGT',
       tokens: ['iBGT'],
       images: ['/images/dapps/infrared/ibgt.svg'],
