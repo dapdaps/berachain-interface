@@ -278,6 +278,7 @@ export default function useInfraredData(props: any) {
         type: "Staking",
         vaultAddress: item.address,
         rewardSymbol: item?.reward_tokens?.[0]?.symbol,
+        platform: "infrared",
         protocolType: ["bex", "kodiak"].includes(item?.protocol?.id)
           ? "AMM"
           : "Perpetuals"
@@ -292,7 +293,6 @@ export default function useInfraredData(props: any) {
       decimals: 18,
       decimals0: 18,
       decimals1: 18,
-
       LP_ADDRESS: '0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b',
       vaultAddress: '0x75F3Be06b02E235f6d0E7EF2D462b29739168301',
       tvl: Big(ibgt?.tvl || 0).toFixed(),
@@ -300,6 +300,7 @@ export default function useInfraredData(props: any) {
       initialData: ibgt,
       type: "Staking",
       rewardSymbol: "Honey",
+      platform: "infrared",
       protocolType: "-"
     })
     formatedData("dataList");

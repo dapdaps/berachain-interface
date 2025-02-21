@@ -22,6 +22,7 @@ import Bg from "../components/mobile-bg";
 import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
 import UserInfo from "./user-info";
+import { getProtocolIcon } from '@/utils/utils';
 
 export default function Mobile({ dapp }: any) {
   const isVaults = _.isArray(dapp)
@@ -43,6 +44,8 @@ export default function Mobile({ dapp }: any) {
     multicallAddress: multicallAddresses[chainId as any]
   });
   const [dataList, loading, reload] = useMemo(() => {
+
+    console.log('====isVaults====', isVaults)
     if (isVaults) {
       return [getMergeDataList({
         infrared: infraredData,
@@ -227,6 +230,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
   const isBerps = dapp?.name === 'Berps';
   const isAquaBera = dapp?.name === 'AquaBera'
 
+  console.log('====dapp', dapp)
   const _data = {
     pool: data,
     token0: data?.tokens?.[0],
@@ -340,63 +344,6 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           </div>
         </div>
       </div>
-      {/* {
-        data?.pairedTokens
-          ?.filter((pairedToken: any) => Big(pairedToken?.yourValue ?? 0).gt(0))
-          ?.map((pairedToken: any) => {
-            const values = pairedToken?.values ?? []
-            return (
-              <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
-
-                <div className='flex items-center'>
-                  <div>
-                    <div className="text-[14px]">You Value</div>
-                    <div className="mt-[3px] flex items-center gap-[3px]">
-                      <span className="text-[16px] font-semibold">
-                        {formatValueDecimal(values?.[0], "", 2, true, false)}
-                      </span>
-                      <span className="text-[12px] font-medium">
-                        {data?.symbol}
-                      </span>
-                    </div>
-                    <div className="mt-[3px] flex items-center gap-[3px]">
-                      <span className="text-[16px] font-semibold">
-                        {formatValueDecimal(values?.[1], "", 2, true, false)}
-                      </span>
-                      <span className="text-[12px] font-medium">
-                        {pairedToken?.symbol}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    onClick(1, pairedToken);
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="34"
-                    height="34"
-                    viewBox="0 0 34 34"
-                    fill="none"
-                  >
-                    <rect
-                      opacity="0.5"
-                      x="1"
-                      y="1"
-                      width="32"
-                      height="32"
-                      rx="10"
-                      stroke="white"
-                    />
-                    <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
-                  </svg>
-                </button>
-              </div>
-            )
-          })
-      } */}
     </div>
   ) : (
     <div>
@@ -424,17 +371,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               )}
               <Image
                 className="absolute right-[-2px] bottom-[0px]"
-                src={
-                  data?.platform === 'infrared' ? (
-                    protocol?.id === "bex" ?
-                      '/images/dapps/beraswap.svg' :
-                      protocol?.id === "kodiak" ?
-                        '/images/dapps/kodiak.svg' :
-                        protocol?.id === "berps" ?
-                          '/images/dapps/infrared/berps.svg' :
-                          '/images/dapps/infrared/infrared.svg'
-                  ) : '/images/dapps/infrared/aquabera.svg'
-                }
+                src={getProtocolIcon(data?.platform === 'infrared' ? protocol?.id : "aquabera")}
                 width={20}
                 height={20}
                 alt="Protocol"
