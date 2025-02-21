@@ -5,6 +5,7 @@ import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import { useSettingsStore } from "@/stores/settings";
+import { usePriceStore } from "@/stores/usePriceStore";
 import valutAbi from "../abi/balancer-valut";
 import poolAbi from "../abi/balancer-pool";
 import queryAbi from "../abi/balancer-query";
@@ -19,6 +20,8 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
 
   const toast = useToast();
   const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
+
+  const storePrices = usePriceStore((store: any) => store.price);
 
   const { addAction } = useAddAction("dapp");
   const slippage = useSettingsStore((store: any) => store.slippage);
@@ -45,14 +48,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       const priceRes = await axios.post(beraswap.graph, {
         query: `query{\n  tokenGetCurrentPrices(addressIn: ${JSON.stringify(
           assets
-        )},chains: [BERACHAIN]){\n    price,\n    address\n  }\n}`,
-        variables: {
-          swapAmount: "0.001",
-          chain: "BERACHAIN",
-          swapType: "EXACT_IN",
-          tokenIn: "0x6969696969696969696969696969696969696969",
-          tokenOut: "0x779ded0c9e1022225f8e0630b35a9b54be713736"
-        }
+        )},chains: [BERACHAIN]){\n    price,\n    address\n  }\n}`
       });
       const prices = priceRes.data.data.tokenGetCurrentPrices.reduce(
         (acc: any, curr: any) => ({ ...acc, [curr.address]: curr.price }),
@@ -84,7 +80,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
             .mul(10 ** token.decimals)
             .toFixed(0)
         );
-        const price = prices[_address];
+        const price = prices[_address] || storePrices[token.symbol];
 
         if (token.isNative) {
           val = Big(0).add(values[_address] || 0);
@@ -98,9 +94,9 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         poolValue = poolValue.add(
           Big(balances[i].toString())
             .div(10 ** token.decimals)
-            .mul(price)
+            .mul(price || 0)
         );
-        userValue = userValue.add(Big(values[_address] || 0).mul(price));
+        userValue = userValue.add(Big(values[_address] || 0).mul(price || 0));
       });
 
       const bptPriceUsd = poolValue.div(Big(totalSupply.toString()).div(1e18));

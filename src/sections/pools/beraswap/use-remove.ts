@@ -61,7 +61,9 @@ export default function useRemove({
               [
                 0,
                 bptMinIn,
-                exitTokenIndex === 0
+                assetsRef.current.length > 3
+                  ? exitTokenIndex
+                  : exitTokenIndex === 0
                   ? 0
                   : exitTokenIndex - (data.type === "COMPOSABLE_STABLE" ? 1 : 0)
               ]
