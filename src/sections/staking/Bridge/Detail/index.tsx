@@ -21,13 +21,15 @@ export default memo(function Detail(props: any) {
   const ibgtVaults: any = useIbgtVaults();
   const id = params.get("id");
   const defaultIndex = params.get("tab");
+  const vaultAddress = params.get("vaultAddress")
   const pathname = usePathname();
   const router = useRouter();
   const data = useMemo(() => {
     if (name === "Berps") {
       return ibgtVaults.berpsVaults.find((item: any) => item.id === id);
     }
-    return ibgtVaults.vaults.find((item: any) => item.id === id);
+
+    return ibgtVaults.vaults.find((item: any) => item.vaultAddress === vaultAddress);
   }, [id, name, ibgtVaults]);
 
   const tabs: any = ["Stake", "Unstake"];
@@ -115,7 +117,7 @@ export default memo(function Detail(props: any) {
                     : ""
                 ])}
                 onClick={() => {
-                  router.replace(`${pathname}?id=${id}&tab=${index}`);
+                  router.replace(`${pathname}?id=${id}&vaultAddress=${vaultAddress}&tab=${index}`);
                 }}
               >
                 <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">

@@ -11,7 +11,7 @@ import useAddAction from "@/hooks/use-add-action";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
 
 export const IBGT_ADDRESS = "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b";
-
+export const STAKED_IBGT_ADDRESS = "0x75f3be06b02e235f6d0e7ef2d462b29739168301"
 export const ABI = [
   {
     inputs: [
@@ -66,17 +66,12 @@ export function useIBGT(props: any) {
   });
 
   const queryData = async function () {
-    const contract = new ethers.Contract(
-      IBGT_ADDRESS,
-      ABI,
-      provider?.getSigner()
-    );
+    const FirstContract = new ethers.Contract(IBGT_ADDRESS, ABI, provider);
+    const SecondContract = new ethers.Contract(STAKED_IBGT_ADDRESS, ABI, provider)
     try {
-      const balanceOfResult = await contract?.balanceOf(account);
-      const totalSupplyResult = await contract?.totalSupply();
-      const stakedBalanceOfResult = await contract?.balanceOf(
-        "0x4B95296B937AF613D65206Ba7C203CB9A1263003"
-      );
+      const balanceOfResult = await FirstContract?.balanceOf(account);
+      const totalSupplyResult = await FirstContract?.totalSupply();
+      const stakedBalanceOfResult = await SecondContract?.totalSupply();
       setData((prev: DataType) => {
         return {
           ...prev,
@@ -117,9 +112,10 @@ export function useIBGT(props: any) {
     updater
   } = state;
 
+  console.log('========111111222222========', updater)
   const { loading, dataList, fullDataList } = useInfraredList(updater);
   const tokenData = useMemo(
-    () => fullDataList?.find((d: any) => d.id === "iBGT-HONEY"),
+    () => fullDataList?.find((d: any) => d.id === "iBGT"),
     [fullDataList]
   );
   const { tokens, decimals, id, LP_ADDRESS } = tokenData ?? {};
@@ -130,10 +126,10 @@ export function useIBGT(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
 
   const { handleGetAmount } = useLpToAmount(LP_ADDRESS);
 
@@ -142,7 +138,7 @@ export function useIBGT(props: any) {
     const contract = new ethers.Contract(
       tokenData?.vaultAddress,
       abi,
-      provider?.getSigner()
+      provider
     );
     contract.balanceOf(sender).then((balanceBig: any) => {
       const adjustedBalance = ethers.utils.formatUnits(balanceBig, 18);
@@ -156,7 +152,7 @@ export function useIBGT(props: any) {
     const contract = new ethers.Contract(
       LP_ADDRESS,
       abi,
-      provider?.getSigner()
+      provider
     );
     contract
       .balanceOf(sender)
@@ -527,10 +523,10 @@ export function useIBGT(props: any) {
   };
 
   useEffect(() => {
-    if (!sender || !tokenData?.vaultAddress) return;
+    if (!sender || !provider || !tokenData?.vaultAddress) return;
     updateBalance();
     updateLPBalance();
-  }, [sender, tokenData?.vaultAddress, updater]);
+  }, [sender, provider, tokenData?.vaultAddress, updater]);
 
   useEffect(() => {
     provider && account && queryData();
