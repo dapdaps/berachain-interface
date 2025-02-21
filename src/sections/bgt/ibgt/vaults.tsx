@@ -140,7 +140,7 @@ export default function Vaults() {
               fill="none"
               className="cursor-pointer"
               onClick={() => {
-                router.push(`/staking/infrared?id=${data.id}&tab=0`);
+                router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=0`);
               }}
             >
               <rect
@@ -170,7 +170,7 @@ export default function Vaults() {
               }
               onClick={() => {
                 if (Big(data?.usdDepositAmount ?? 0).gt(0)) {
-                  router.push(`/staking/infrared?id=${data.id}&tab=1`);
+                  router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=1`);
                 }
               }}
             >
