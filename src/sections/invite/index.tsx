@@ -47,7 +47,9 @@ const InviteViews = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[url(/images/invite-bera.png)] absolute left-1/2 -translate-x-1/2 bottom-0 z-10 bg-no-repeat bg-center bg-contain w-[993px] h-[817px]"></div>
+      <div className="bg-[url(/images/invite-bera.png)] absolute left-1/2 -translate-x-1/2 bottom-0 z-10 bg-no-repeat bg-center bg-contain w-[993px] h-[817px]">
+        <Content></Content>
+      </div>
       <div className="absolute right-0 bottom-0 z-0 w-[663px] h-[765px] bg-[url(/images/invite/cloud-right.png)] bg-no-repeat bg-center bg-contain">
         <div className="w-full h-full relative">
           <img
@@ -55,10 +57,35 @@ const InviteViews = () => {
             className="absolute bottom-0 right-0 w-[270px] h-[294px] z-0"
             alt=""
           />
-          <div className="absolute w-[362px] h-[216px] left-0 bottom-0">
-            <div className="relative w-full h-full flex justify-between">
-                <img src="/images/invite/flowers-right-2.png" alt="" />
-                <img src="/images/invite/flowers-right-1.png" alt="" />
+          <div className="absolute w-[362px] h-[216px] right-0 bottom-0 z-10 overflow-hidden">
+            <div className="relative w-full h-full flex justify-between items-baseline">
+                <motion.img 
+                  animate={{
+                    rotate: [0, 2, -2, 0], 
+                  }}
+                  transition={{
+                    duration: 2, 
+                    repeat: Infinity, 
+                    ease: "easeInOut", 
+                  }}
+                  style={{
+                    transformOrigin: "left bottom",
+                  }} 
+                  src="/images/invite/flowers-right-2.png" 
+                  className="w-[221px] h-[162px]" alt="" />
+                <motion.img 
+                  animate={{
+                    rotate: [0, 2, -2, 0], 
+                  }}
+                  transition={{
+                    duration: 2, 
+                    repeat: Infinity, 
+                    ease: "easeInOut", 
+                  }}
+                  style={{
+                    transformOrigin: "left bottom",
+                  }}  
+                  src="/images/invite/flowers-right-1.png" className="w-[144px] h-[229px]" alt="" />
             </div>
           </div>
         </div>
@@ -66,5 +93,18 @@ const InviteViews = () => {
     </div>
   );
 };
+
+
+const Content = () => {
+  return (
+    <div className="relative z-10 w-full h-full">
+      <div className="flex justify-center overflow-hidd">
+        <div className="w-[480px] h-auto">
+          dqwwqeqwe
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default InviteViews;
