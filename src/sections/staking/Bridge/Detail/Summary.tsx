@@ -14,6 +14,7 @@ const DetailSummary = (props: any) => {
 
   const isBerps = data?.name === 'Berps';
 
+  console.log('====data=====', data)
   return (
     <div
       className='relative mb-[24px] py-[16px] pr-[16px] rounded-[10px] bg-[#FFDC50]'
