@@ -117,7 +117,7 @@ export default memo(function Detail(props: any) {
                     : ""
                 ])}
                 onClick={() => {
-                  router.replace(`${pathname}?id=${id}&tab=${index}`);
+                  router.replace(`${pathname}?id=${id}&vaultAddress=${vaultAddress}&tab=${index}`);
                 }}
               >
                 <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">

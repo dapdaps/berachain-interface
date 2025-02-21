@@ -508,6 +508,8 @@ export function useDetail(props: any) {
       underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
     const token1 =
       underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+
+    console.log('====index====', index)
     if (index > -1) {
       return {
         protocol: protocol?.id,
