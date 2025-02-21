@@ -258,13 +258,24 @@ export default function useInfraredData(props: any) {
         tokens: [],
         images: []
       };
-      item.underlying_tokens?.forEach((slip: any, i: number) => {
+
+      const array = item?.name?.split("-") ?? [];
+
+      console.log('====array', array)
+      const symbol0 = array[0];
+      const symbol1 = array[1];
+      const token0 =
+        item.underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+      const token1 =
+        item.underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+      [token0, token1]?.filter(token => !!token)?.forEach((slip: any, i: number) => {
         tokensInfo[`decimals${i}`] = slip.decimals;
         tokensInfo.tokens.push(slip.name);
         tokensInfo.images.push(slip.image);
-      });
+      })
+
       const _data = {
-        id: tokensInfo.tokens?.join("-"),
+        id: item.name,
         strategy: "Dynamic",
         strategy2: "",
         ...tokensInfo,

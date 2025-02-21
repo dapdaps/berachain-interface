@@ -61,11 +61,10 @@ export default function Staking({ dapp }: Props) {
       if (dapp?.name === "AquaBera") {
         setType(index);
         setCheckedRecord(data);
-        // modalRef?.current?.handleShow(data, index, dexConfig)
         return;
       }
     }
-    router.push(`/staking/infrared?id=${data.id}&tab=${index}`);
+    router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=${index}`);
   };
 
   const listProps = isVaults
