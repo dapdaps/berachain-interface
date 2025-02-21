@@ -15,7 +15,6 @@ import { WagmiProvider } from "wagmi"
 
 const Page = () => {
     return (
-        <WagmiProvider config={config}>
             <NotificationStoreProvider>
                 <QueryClientProvider client={queryClient}>
                 <WalletSelectorProvider>
@@ -34,7 +33,6 @@ const Page = () => {
                 </WalletSelectorProvider>
                 </QueryClientProvider>
             </NotificationStoreProvider>
-        </WagmiProvider>
     );
 }
 
