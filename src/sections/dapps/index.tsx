@@ -214,7 +214,6 @@ const ALL_LIST = [
       {
         ..._dApps["infrared"],
         attachedIcon: "",
-        disabled: true
       }
     ]
   },
@@ -322,7 +321,6 @@ const ALL_LIST = [
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
         ),
-        disabled: true
       },
       {
         ..._dApps["bedrock"],
