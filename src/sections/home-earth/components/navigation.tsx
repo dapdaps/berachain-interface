@@ -77,7 +77,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    // navigationRotateAnimation();
+    navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -104,7 +104,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    // navigationRotateAnimation();
+    navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
@@ -369,7 +369,7 @@ export const BADDIES_ENTRIES: any = [
     signpostX: -50,
     signpostY: -70,
     x: -460,
-    y: -86,
+    y: -62,
     rotate: -18,
     path: '/marketplace',
   },
