@@ -141,7 +141,7 @@ const DetailSummary = (props: any) => {
             width={60}
             height={18}
             className=""
-            value={data?.initialData?.protocol?.name || '-'}
+            value={data?.initialData?.protocol?.name === "BEX" ? "BeraSwap" : (data?.initialData?.protocol?.name || '-')}
           />
         </div>
         {
