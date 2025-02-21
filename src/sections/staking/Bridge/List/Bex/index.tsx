@@ -7,6 +7,7 @@ import Popover, {
 import { useMultiState } from "@/hooks/use-multi-state";
 import type { ColumnType, ColunmListType } from "@/sections/staking/types";
 import { formatValueDecimal } from "@/utils/balance";
+import { getProtocolIcon } from "@/utils/utils";
 import Big from "big.js";
 import clsx from "clsx";
 import { ethers } from "ethers";
@@ -145,21 +146,10 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data: any) => {
             const protocol = data?.initialData?.protocol;
-
-            const ImageMapping = {
-              infrared: "/images/dapps/infrared/infrared.svg",
-              bex: "/images/dapps/beraswap.svg",
-              kodiak: "/images/dapps/kodiak.svg",
-              berps: "/images/dapps/infrared/berps.svg"
-            }
             return (
               <img
                 style={{ width: 26 }}
-                src={
-                  data?.platform === "infrared"
-                    ? (ImageMapping?.[protocol?.id] ?? "/images/dapps/dolomite.svg")
-                    : "/images/dapps/infrared/aquabera.svg"
-                }
+                src={getProtocolIcon(data?.platform === 'infrared' ? protocol?.id : "aquabera")}
               />
             );
           }
@@ -180,11 +170,7 @@ const List = forwardRef<any, any>((props, ref) => {
               <div className="px-[21px]">
                 <img
                   style={{ width: 26 }}
-                  src={
-                    data?.platform === "infrared"
-                      ? "/images/dapps/dolomite.svg"
-                      : "/images/dapps/infrared/aquabera.svg"
-                  }
+                  src={getProtocolIcon(data?.platform === "infrared" ? "dolomite" : "aquabera")}
                 />
               </div>
             );
@@ -365,16 +351,10 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data: any) => {
             const protocol = data?.initialData?.protocol;
-            const ImageMapping = {
-              infrared: "/images/dapps/infrared/infrared.svg",
-              bex: "/images/dapps/beraswap.svg",
-              kodiak: "/images/dapps/kodiak.svg",
-              berps: "/images/dapps/infrared/berps.svg"
-            }
             return (
               <img
                 style={{ width: 26 }}
-                src={ImageMapping?.[protocol?.id] ?? "/images/dapps/dolomite.svg"}
+                src={getProtocolIcon(protocol?.id)}
               />
             );
           }
