@@ -100,11 +100,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       });
 
       const bptPriceUsd = poolValue.div(Big(totalSupply.toString()).div(1e18));
-      const initBalances = userValue
-        .div(bptPriceUsd)
-        .mul(1 - slippage / 100)
-        .mul(1e18)
-        .toFixed(0);
+      const initBalances = userValue.div(bptPriceUsd).mul(1e18).toFixed(0);
 
       const abiCoder = new utils.AbiCoder();
 
@@ -133,7 +129,13 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
           maxAmountsIn,
           abiCoder.encode(
             ["uint256", "uint256[]", "uint256"],
-            [1, amountsIn, bptOut]
+            [
+              1,
+              amountsIn,
+              Big(bptOut.toString())
+                .mul(1 - slippage)
+                .toFixed(0)
+            ]
           ),
           false
         ]
