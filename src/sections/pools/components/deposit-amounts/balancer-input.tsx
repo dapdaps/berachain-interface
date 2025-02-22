@@ -24,13 +24,14 @@ import { bera } from "@/configs/tokens/bera";
 const Input = ({
   token,
   setValue: onChangeValue,
+  value: defaultValue,
   prices,
   disabled,
   className,
   onError,
   onSelectToken
 }: any) => {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultValue);
   const { account, chainId } = useCustomAccount();
   const [showTokenSelector, setShowTokenSelector] = useState(false);
   const { tokenBalance: balance, isLoading } = useTokenBalance(
@@ -53,6 +54,10 @@ const Input = ({
   useEffect(() => {
     onError(isError);
   }, [isError]);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <>
