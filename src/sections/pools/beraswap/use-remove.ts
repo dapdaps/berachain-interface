@@ -6,6 +6,7 @@ import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import valutAbi from "../abi/balancer-valut";
 import queryAbi from "../abi/balancer-query";
+import poolAbi from "../abi/balancer-pool";
 import beraswap from "@/configs/pools/beraswap";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
@@ -27,6 +28,7 @@ export default function useRemove({
   const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
   const assetsRef = useRef<any>();
   const { addAction } = useAddAction("dapp");
+  const balanceRef = useRef<any>();
 
   const onQueryAmountsOut = async () => {
     try {
@@ -36,7 +38,11 @@ export default function useRemove({
         queryAbi,
         provider
       );
+      const poolContract = new Contract(data.address, poolAbi, provider);
 
+      const balanceRes = await poolContract.balanceOf(account);
+
+      balanceRef.current = balanceRes.toString();
       if (!assetsRef.current) {
         const valutContract = new Contract(contracts.Vault, valutAbi, provider);
 
@@ -45,11 +51,21 @@ export default function useRemove({
         assetsRef.current = tokens;
       }
 
-      let exitTokenIndex = assetsRef.current.findIndex(
-        (asset: any) => asset.toLowerCase() === exitToken.address.toLowerCase()
-      );
+      let exitTokenIndex = assetsRef.current
+        .filter((asset: any) =>
+          data.type === "COMPOSABLE_STABLE"
+            ? data.tokens.find(
+                (token: any) =>
+                  token.address.toLowerCase() === asset.toLowerCase()
+              )
+            : true
+        )
+        .findIndex(
+          (asset: any) =>
+            asset.toLowerCase() === exitToken.address.toLowerCase()
+        );
 
-      const bptMinIn = Big(data.balance).mul(1e18).toFixed(0);
+      const bptMinIn = Big(balanceRef.current).toFixed(0);
       const minAmountsOut = assetsRef.current.map(
         (asset: any, i: number) => "0"
       );
@@ -58,20 +74,13 @@ export default function useRemove({
         type === 0
           ? abiCoder.encode(
               ["uint256", "uint256", "uint256"],
-              [
-                0,
-                bptMinIn,
-                assetsRef.current.length > 3
-                  ? exitTokenIndex
-                  : exitTokenIndex === 0
-                  ? 0
-                  : exitTokenIndex - (data.type === "COMPOSABLE_STABLE" ? 1 : 0)
-              ]
+              [0, bptMinIn, exitTokenIndex]
             )
           : abiCoder.encode(
               ["uint256", "uint256"],
               [data.type === "COMPOSABLE_STABLE" ? 2 : 1, bptMinIn]
             );
+
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
         data.id,
         account,
@@ -123,7 +132,7 @@ export default function useRemove({
 
       if (type === 1) {
         exitKind = data.type === "COMPOSABLE_STABLE" ? 2 : 1;
-        bptMinIn = Big(data.balance).mul(1e18).toFixed(0);
+        bptMinIn = Big(balanceRef.current).toFixed(0);
         const abiCoder = new utils.AbiCoder();
         const minAmountsOut: any = [];
 
@@ -165,10 +174,7 @@ export default function useRemove({
       } else {
         exitKind = 0;
         const _percent = Big(exitAmount).div(amounts[exitToken.address]);
-        bptMinIn = Big(data.balance)
-          .mul(_percent)
-          .mul(10 ** 18)
-          .toFixed(0);
+        bptMinIn = Big(balanceRef.current).mul(_percent).toFixed(0);
 
         const types = ["uint256", "uint256", "uint256"];
         let exitTokenIndex = assetsRef.current.findIndex(

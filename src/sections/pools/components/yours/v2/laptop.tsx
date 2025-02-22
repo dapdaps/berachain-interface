@@ -50,7 +50,6 @@ export default function V2List({ pools, loading, onAction }: any) {
           sort: false,
           width: "20%",
           render: (item: any, index: number) => {
-            console.log(item.shares);
             return item["shares"]
               ? numberFormatter(item["shares"], 2, true, {
                   isShort: true
