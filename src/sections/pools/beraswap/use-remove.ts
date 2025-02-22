@@ -1,9 +1,10 @@
 import Big from "big.js";
 import { Contract, utils } from "ethers";
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
+import { useSettingsStore } from "@/stores/settings";
 import valutAbi from "../abi/balancer-valut";
 import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
@@ -27,8 +28,8 @@ export default function useRemove({
   const toast = useToast();
   const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
   const assetsRef = useRef<any>();
+  const slippage = useSettingsStore((store: any) => store.slippage);
   const { addAction } = useAddAction("dapp");
-  const balanceRef = useRef<any>();
 
   const onQueryAmountsOut = async () => {
     try {
@@ -42,7 +43,7 @@ export default function useRemove({
 
       const balanceRes = await poolContract.balanceOf(account);
 
-      balanceRef.current = balanceRes.toString();
+      const _balance = balanceRes.toString();
       if (!assetsRef.current) {
         const valutContract = new Contract(contracts.Vault, valutAbi, provider);
 
@@ -65,7 +66,7 @@ export default function useRemove({
             asset.toLowerCase() === exitToken.address.toLowerCase()
         );
 
-      const bptMinIn = Big(balanceRef.current).toFixed(0);
+      const bptMinIn = Big(_balance).toFixed(0);
       const minAmountsOut = assetsRef.current.map(
         (asset: any, i: number) => "0"
       );
@@ -117,6 +118,11 @@ export default function useRemove({
     try {
       const signer = provider.getSigner(account);
       const valutContract = new Contract(contracts.Vault, valutAbi, signer);
+      const poolContract = new Contract(data.address, poolAbi, provider);
+
+      const balanceRes = await poolContract.balanceOf(account);
+
+      const _balance = balanceRes.toString();
       if (!assetsRef.current) {
         const { tokens } = await valutContract.getPoolTokens(data.id);
         assetsRef.current = tokens;
@@ -132,12 +138,11 @@ export default function useRemove({
 
       if (type === 1) {
         exitKind = data.type === "COMPOSABLE_STABLE" ? 2 : 1;
-        bptMinIn = Big(balanceRef.current).toFixed(0);
+        bptMinIn = Big(_balance).toFixed(0);
         const abiCoder = new utils.AbiCoder();
         const minAmountsOut: any = [];
 
         assetsRef.current.forEach((asset: any, i: number) => {
-          if (type === 0) return;
           const token = data.tokens.find(
             (t: any) => t.address === asset.toLowerCase()
           );
@@ -145,13 +150,10 @@ export default function useRemove({
             minAmountsOut.push("0");
             return;
           }
-          const _v = Big(amounts[asset.toLowerCase()])
-            .mul(10 ** token.decimals)
-            .mul(percent / 100)
-            .toFixed(0);
 
-          minAmountsOut.push(_v);
+          minAmountsOut.push(0);
         });
+
         const types = ["uint256", "uint256"];
         const userData = abiCoder.encode(types, [exitKind, bptMinIn]);
         const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
@@ -160,13 +162,18 @@ export default function useRemove({
           account,
           [assetsRef.current, minAmountsOut, userData, false]
         );
+
         params = [
           data.id,
           account,
           account,
           [
             assetsRef.current,
-            amountsOut,
+            amountsOut.map((amount: any) =>
+              Big(amount.toString())
+                .mul(1 - slippage)
+                .toFixed(0)
+            ),
             abiCoder.encode(["uint256", "uint256"], [exitKind, bptIn]),
             false
           ]
@@ -174,7 +181,7 @@ export default function useRemove({
       } else {
         exitKind = 0;
         const _percent = Big(exitAmount).div(amounts[exitToken.address]);
-        bptMinIn = Big(balanceRef.current).mul(_percent).toFixed(0);
+        bptMinIn = Big(_balance).mul(_percent).toFixed(0);
 
         const types = ["uint256", "uint256", "uint256"];
         let exitTokenIndex = assetsRef.current.findIndex(
