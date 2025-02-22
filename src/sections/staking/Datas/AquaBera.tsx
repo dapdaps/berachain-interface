@@ -452,7 +452,8 @@ export default function useAquaBeraData(props: any) {
   const getDataList = async () => {
     for (const pair of pairs) {
       const _data = {
-        ...pair
+        ...pair,
+        platform: "aquabera",
       }
       dataList.push(_data);
     }

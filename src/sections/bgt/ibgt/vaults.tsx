@@ -1,12 +1,13 @@
-import clsx from "clsx";
-import Big from "big.js";
-import { useEffect } from "react";
-import { formatValueDecimal } from "@/utils/balance";
 import { useMultiState } from "@/hooks/use-multi-state";
-import Skeleton from "react-loading-skeleton";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
+import { formatValueDecimal } from "@/utils/balance";
+import { getProtocolIcon } from '@/utils/utils';
+import Big from "big.js";
+import clsx from "clsx";
 import { cloneDeep } from "lodash";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
 
 function renderTD(data: any, column: any, index: number) {
   if (column.type === "slot") {
@@ -71,15 +72,7 @@ export default function Vaults() {
         return (
           <img
             style={{ width: 26 }}
-            src={
-              protocol?.id === "beraswap"
-                ? "/images/dapps/infrared/beraswap.svg"
-                : protocol?.id === "kodiak"
-                ? "/images/dapps/kodiak.svg"
-                : protocol?.id === "berps"
-                ? "/images/dapps/infrared/berps.svg"
-                : "/images/dapps/infrared/infrared.svg"
-            }
+            src={getProtocolIcon(protocol?.id)}
           />
         );
       }
@@ -147,7 +140,7 @@ export default function Vaults() {
               fill="none"
               className="cursor-pointer"
               onClick={() => {
-                router.push(`/staking/infrared?id=${data.id}&tab=0`);
+                router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=0`);
               }}
             >
               <rect
@@ -177,7 +170,7 @@ export default function Vaults() {
               }
               onClick={() => {
                 if (Big(data?.usdDepositAmount ?? 0).gt(0)) {
-                  router.push(`/staking/infrared?id=${data.id}&tab=1`);
+                  router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=1`);
                 }
               }}
             >

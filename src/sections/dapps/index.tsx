@@ -89,9 +89,6 @@ const FIRST_LIST = [
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
       },
-      // {
-      //   ..._dApps["aquabera"],
-      // },
       {
         name: "Stargate",
         label: "Stargate",
@@ -106,6 +103,7 @@ const FIRST_LIST = [
 ];
 const SECOND_LIST = [
   {
+
     className: "w-[174px] h-[112px]",
     dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
     sticks: [
@@ -115,11 +113,15 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
-        ..._dApps["berps"],
-        attachedIcon: "",
-        disabled: true
+        icon: "/images/dapps/ramen.svg",
+        name: "Ramen",
+        label: "Ramen",
+        type: "Launchpad",
+        className: "",
+        disabled: true,
       }
     ]
+
   },
   {
     className: "w-[230px] h-[132px]",
@@ -171,20 +173,22 @@ const SECOND_LIST = [
         )
       },
       {
-        icon: "/images/dapps/ramen.svg",
-        name: "Ramen",
-        label: "Ramen",
-        type: "Launchpad",
-        className: "",
-        disabled: true,
+        children: (
+          <div className="relative basis-[120px]">
+            <div className="absolute w-[204px] z-10">
+              <img src="/images/dapps/icon_cellular.svg" alt="icon_cellular" />
+            </div>
+            <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
+          </div>
+        ),
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
       },
       {
-        icon: "/images/dapps/royco.svg",
-        name: "Royco",
-        label: "Royco",
+        icon: "/images/dapps/jumper.png",
+        name: "Jumper",
+        label: "Jumper",
         type: "Vaults",
         disabled: true,
         className: ""
@@ -206,7 +210,6 @@ const ALL_LIST = [
       {
         ..._dApps["infrared"],
         attachedIcon: "",
-        disabled: true
       }
     ]
   },
@@ -284,11 +287,11 @@ const ALL_LIST = [
         )
       },
       {
-        ..._dApps["berps"],
+
+        ..._dApps["bedrock"],
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
         ),
-        disabled: true
       },
       {
         ..._dApps["beraborrow"],
@@ -313,10 +316,15 @@ const ALL_LIST = [
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
         ),
-        disabled: true
       },
       {
-        ..._dApps["bedrock"],
+
+        icon: "/images/dapps/jumper.png",
+        name: "Jumper",
+        label: "Jumper",
+        type: "Vaults",
+        disabled: true,
+        className: "",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
         )
@@ -330,17 +338,7 @@ const ALL_LIST = [
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         )
-      }
-    ]
-  },
-  {
-    className: "w-[230px] h-[132px]",
-    dAppClassName: "absolute w-[388px] top-[-77px] justify-between -left-1/3",
-    sticks: [
-      "absolute left-[46px] bottom-[44px]",
-      "absolute left-[34px] bottom-[32px]"
-    ],
-    dApps: [
+      },
       {
         icon: "/images/dapps/ramen.svg",
         name: "Ramen",
@@ -348,23 +346,27 @@ const ALL_LIST = [
         type: "Launchpad",
         className: "",
         disabled: true,
-        attachedIcon: (
-          <TrunkSmall className="absolute left-[44%] bottom-[-24%]" />
-        )
       },
-      {
-        icon: "/images/dapps/royco.svg",
-        name: "Royco",
-        label: "Royco",
-        type: "Vaults",
-        disabled: true,
-        className: "",
-        attachedIcon: (
-          <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
-        )
-      }
     ]
-  }
+  },
+  // {
+  //   className: "w-[230px] h-[132px]",
+  //   dAppClassName: "absolute w-[388px] top-[-77px] justify-center -left-1/3",
+  //   sticks: [
+  //     "absolute left-[46px] bottom-[44px]",
+  //     "absolute left-[34px] bottom-[32px]"
+  //   ],
+  //   dApps: [
+  //     {
+  //       icon: "/images/dapps/ramen.svg",
+  //       name: "Ramen",
+  //       label: "Ramen",
+  //       type: "Launchpad",
+  //       className: "",
+  //       disabled: true,
+  //     },
+  //   ]
+  // }
 ];
 
 const toFirstUpperCase = (word: string) => {
@@ -378,9 +380,8 @@ const DAppsView = () => {
   const router = useRouter();
 
   const onNavigateTo = (_dApp: any) => {
-    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${
-      _dApp.name
-    }`;
+    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${_dApp.name
+      }`;
     if (_dApp.name === "berps") {
       dAppPath += `?id=BHONEY&tab=0`;
     }
@@ -409,11 +410,11 @@ const DAppsView = () => {
         <PageBack className="absolute left-[12px] top-[17px]" />
         <PageTitle className="pt-[30px] mb-[75px]">dApps</PageTitle>
         {isMobile ? (
-          <div className="absolute bottom-[46px] left-1/2  -translate-x-1/2 scale-[0.76] z-[1]">
-            <div className="w-[67px] h-[862px] bg-[#906925] border-black border-[2px] relative">
+          <div className="absolute bottom-[153px] left-1/2  -translate-x-1/2 scale-[0.76] z-[1]">
+            <div className="w-[67px] h-[762px] bg-[#906925] border-black border-[2px] relative">
               <IconLeftLeaf className="absolute left-[-25px] bottom-[-10px]" />
               <IconRightLeaf className="absolute right-[-10px] bottom-[-10px]" />
-              <Bees className="absolute left-[4px] bottom-[48px] z-[1]" />
+              {/* <Bees className="absolute left-[4px] bottom-[48px] z-[1]" /> */}
               <div className="absolute -top-[98px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-[14px]">
                 {ALL_LIST.map((item, index) => (
                   <Floor
@@ -500,7 +501,7 @@ const DAppsView = () => {
                     >
                       {item.dApps.length > 0 && (
                         <div className={`flex ${item.dAppClassName}`}>
-                          {item.dApps.map((dApp, idx) => (
+                          {item.dApps.map((dApp, idx) => dApp.children ? dApp.children : (
                             <div
                               key={`treeNode_${idx}`}
                               className={

@@ -14,6 +14,7 @@ const DetailSummary = (props: any) => {
 
   const isBerps = data?.name === 'Berps';
 
+  console.log('====data=====', data)
   return (
     <div
       className='relative mb-[24px] py-[16px] pr-[16px] rounded-[10px] bg-[#FFDC50]'
@@ -141,7 +142,7 @@ const DetailSummary = (props: any) => {
             width={60}
             height={18}
             className=""
-            value={data?.initialData?.protocol?.name || '-'}
+            value={data?.initialData?.protocol?.name === "BEX" ? "BeraSwap" : (data?.initialData?.protocol?.name || '-')}
           />
         </div>
         {

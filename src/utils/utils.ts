@@ -41,3 +41,15 @@ export function readClipboard() {
   }
   return Promise.resolve('');
 }
+
+
+export function getProtocolIcon(protocal) {
+  const ImageMapping = {
+    infrared: "/images/dapps/infrared/infrared.svg",
+    bex: "/images/dapps/beraswap.svg",
+    kodiak: "/images/dapps/kodiak.svg",
+    berps: "/images/dapps/infrared/berps.svg",
+    aquabera: "/images/dapps/infrared/aquabera.svg"
+  }
+  return ImageMapping?.[protocal] ?? "/images/dapps/dolomite.svg"
+}
