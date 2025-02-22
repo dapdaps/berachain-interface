@@ -27,14 +27,14 @@ export const useMasUser = () => {
         const response = await get(`/api/mas/user/${address}`);
         if (response.code !== 0) return
 
-        const _items = items?.map(item => {
+        const _items = items?.map((item: any) => {
           return {
             ...item,
             christmas: true,
-            pc_item: response?.data?.items?.findIndex(_item => _item.category === item.category) > -1,
+            pc_item: response?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
           }
         })
-        const _nfts = response?.data?.nfts?.map(item => {
+        const _nfts = response?.data?.nfts?.map((item: any) => {
           return {
             ...item,
             pc_item: true,

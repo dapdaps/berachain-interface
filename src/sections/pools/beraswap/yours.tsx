@@ -1,13 +1,13 @@
-import Com from '../components/yours';
-import usePools from './use-pools';
+import Com from "../components/yours";
+import useUserPools from "./use-user-pools";
 
 export default function Yours() {
-  const { pools, loading, queryPools } = usePools();
+  const { pools, loading, queryPools } = useUserPools();
 
   return (
     <Com
       pools={pools}
-      dex='bex'
+      dex="beraswap"
       loading={loading}
       onSuccess={() => {
         queryPools();
