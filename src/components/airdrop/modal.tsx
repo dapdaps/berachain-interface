@@ -4,6 +4,9 @@ import AirdropButton from "@/components/airdrop/components/button";
 import AirdropReward from "@/components/airdrop/components/reward";
 import clsx from "clsx";
 import { useAirdrop } from "@/hooks/use-airdrop";
+import ClaimCountDown from "./claim-count-down";
+import useAirdropClaim from "@/hooks/use-airdrop-claim";
+import CircleLoading from "../circle-loading";
 
 const AirdropModal = (props: any) => {
   const {} = props;
@@ -20,6 +23,13 @@ const AirdropModal = (props: any) => {
     checkData,
     checked
   } = useAirdrop();
+  const {
+    claimed,
+    endTime,
+    loading: claimLoading,
+    claiming,
+    onClaim
+  } = useAirdropClaim();
 
   return (
     <Modal
@@ -32,7 +42,7 @@ const AirdropModal = (props: any) => {
     >
       <Card
         className={clsx(
-          "relative flex flex-col items-center w-[554px] !rounded-[20px] !p-[181px_40px_50px]",
+          "relative flex flex-col items-center w-[590px] !rounded-[20px] !p-[181px_20px_50px]",
           checked && checkData
             ? 'bg-[url("/images/home-earth/airdrop/reward-bg.svg")] bg-no-repeat bg-[center_bottom_-8px] bg-[338px+355px]'
             : ""
@@ -44,14 +54,27 @@ const AirdropModal = (props: any) => {
           className="w-[280px] h-[242px] absolute top-[-80px] pointer-events-none"
         />
         <div className="text-center text-black text-[26px] font-[700] leading-[90%]">
-          BeraTown Airdrop Now!
+          Beratown Testnet Airdrop!
         </div>
-        <article className="mt-[23px] text-center text-black text-[16px] font-[500] leading-normal">
-          The airdrop is converted by the equipments you earned in BeraCave.{" "}
-          <strong className="uppercase">Its not one-off airdrop</strong>, it
-          will continue in the coming months. Please keep your eyes on BeraTown.
-        </article>
-        <div className="w-full mt-[25px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[28px_28px_31px] flex flex-col items-stretch gap-[13px]">
+        {/* <article className="mt-[23px] text-center text-black text-[16px] font-[500] leading-normal">
+          This airdrop is converted by the items you earned during testnet.
+          <strong className="uppercase">THERE WILL BE FUTURE AIRDROPS</strong>,
+          Beracave will return thoon. Keep your eyes on Beratown socials for
+          future updates 👀
+        </article> */}
+        <div className="w-[475px] m-[25px_40px_0px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[12px_28px_15px] flex flex-col justify-center items-center">
+          <div className="text-[16px] font-bold text-center">
+            Claim is closing in
+          </div>
+          {claimLoading || !endTime ? (
+            <div className="mt-[10px]">
+              <CircleLoading size={20} />
+            </div>
+          ) : (
+            <ClaimCountDown time={endTime} />
+          )}
+        </div>
+        <div className="w-[475px] m-[14px_40px_0px] bg-[rgba(0,_0,_0,_0.06)] backdrop-blur-[5px] rounded-[10px] p-[28px_28px_31px] flex flex-col items-stretch gap-[13px]">
           <div className="w-full h-[54px] relative">
             <input
               type="text"
@@ -94,7 +117,16 @@ const AirdropModal = (props: any) => {
             Check Eligibility
           </AirdropButton>
         </div>
-        {checked && <AirdropReward className="mt-[24px]" data={checkData} />}
+        {checked && (
+          <AirdropReward
+            className="mt-[24px]"
+            data={checkData}
+            claimed={claimed}
+            claiming={claiming}
+            onClaim={onClaim}
+            endTime={endTime}
+          />
+        )}
       </Card>
     </Modal>
   );

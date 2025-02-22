@@ -34,6 +34,7 @@ export default memo(function IBGTPageView(props: any) {
     handleMintIBGT
   } = useIBGT(props);
 
+
   const {
     balances,
     inAmount,

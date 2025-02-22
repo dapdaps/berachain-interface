@@ -50,9 +50,6 @@ export default function useAddAction(source: string, isNear = false) {
       }
       if (data.type === "Bridge") {
         try {
-          const fromChain = chains[data.fromChainId] || {
-            name: "Ethereum Mainnet"
-          };
           const toChain = chains[data.toChainId] || {
             name: "Ethereum Mainnet"
           };
@@ -63,10 +60,6 @@ export default function useAddAction(source: string, isNear = false) {
             action_amount: data.amount,
             account_id: data.account_id || account,
             template: data.template,
-            // action_network_id: currentChain?.name,
-            action_network_id: fromChain?.name,
-            action_switch: data.add ? 1 : 0,
-            action_status: data.status === 1 ? "Success" : "Failed",
             tx_id: data.transactionHash,
             chain_id: data.fromChainId,
             to_chain_id: data.toChainId,

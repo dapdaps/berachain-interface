@@ -19,7 +19,7 @@ export default memo(function List({ children }: any) {
           className="absolute left-[40px] top-[31px]"
           style={{ color: "#fff" }}
         />
-        <div className="relative pt-[30px] w-[1200px] m-auto">
+        <div className="relative pt-[30px] w-[1200px] m-auto z-10">
             <EarnViews />
         </div>
       </div>

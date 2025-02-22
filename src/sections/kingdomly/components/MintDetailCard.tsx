@@ -31,6 +31,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     limitPerWallet: 0,
     feeAmount: "",
     totalCostWithFee: "",
+    startTimestamp: 0,
   });
   const [updater, setUpdater] = useState(0);
 
@@ -98,12 +99,13 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
         const totalSupply = await contract.mintGroupMints(currentGroupId);
         const maxSupply = await contract.maxSupplyPerMintGroup(currentGroupId);
         const limitPerWallet = await contract.maxMintPerWallet(currentGroupId);
-
+        const startTimestamp = await contract.presaleScheduledStartTimestamp(currentGroupId);
         setMintInfo((prev) => ({
           ...prev,
           totalSupply: totalSupply.toNumber(),
           maxSupply: maxSupply.toNumber(),
           limitPerWallet: limitPerWallet.toNumber(),
+          startTimestamp: startTimestamp.toNumber() * 1000,
           feeAmount: ethers.utils.formatUnits(feeAmount.toString(), 18),
           totalCostWithFee: ethers.utils.formatUnits(
             totalCostWithFee.toString(),
@@ -162,13 +164,15 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   ]);
 
   const renderMintGroupTag = (tab: any) => {
-    if (!tab.status || ["closed", "paused", "upcoming"].includes(tab.status)) return null;
+    if (!tab.status || ["paused"].includes(tab.status)) return null;
 
     const statusMap: {
       [key: string]: string;
     } = {
       live: "Live",
       sold_out: "Sold Out",
+      closed: 'Closed',
+      upcoming: "Upcoming",
     };
 
     const getTagStyle = (status: string) => {
@@ -376,7 +380,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
             ) : (
               <Button
                 status={currentGroup.status}
-                timestamp={item.mint_live_timestamp}
+                timestamp={mintInfo.startTimestamp}
                 onClick={onMint}
                 loading={isMinting}
                 onCountdownEnd={() => setUpdater(updater + 1)}

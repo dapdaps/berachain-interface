@@ -33,7 +33,8 @@ const MemeTokens: any = [
   //   price: "$0.0000001",
   //   volume: "$0.9717"
   // },
-  bera.yeet
+  bera.yeet,
+  bera.bonga
   // {
   //   ...beraB.bebe,
   //   price: "$0.0000001",
@@ -192,7 +193,7 @@ const MarketplaceView = () => {
         alt=""
       />
 
-      <div className="relative mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
+      <div className="relative z-[10] mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
         <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
           Hot Sell Tokens
         </div>
@@ -227,7 +228,7 @@ const MarketplaceView = () => {
             </div>
           ))}
         </div>
-        <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div>
+        {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
         {showMoreButton && (
           <MoreButton
             classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
@@ -241,6 +242,7 @@ const MarketplaceView = () => {
           <div className="relative z-10 lg:w-[1196px]">
             <MemeTokensGrid
               MemeTokens={MemeTokens}
+              voulmes={voulmes}
               onSwap={onSwap}
               onFooterMore={onFooterMore}
             />

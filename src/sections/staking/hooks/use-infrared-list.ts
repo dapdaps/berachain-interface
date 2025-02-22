@@ -6,6 +6,7 @@ import { asyncFetch } from "@/utils/http";
 import { useEffect, useMemo, useState } from "react";
 import useInfraredData from "../Datas/Infrared";
 import { useIbgtVaults } from "@/stores/ibgt-vaults";
+import { useDebounceFn } from "ahooks";
 
 export default function useInfraredList(updater?: number, name?: string) {
   const { chainId, account: sender, provider } = useCustomAccount();
@@ -24,6 +25,12 @@ export default function useInfraredList(updater?: number, name?: string) {
     [chainId]
   );
 
+
+  const { run: debounceFetchAllData } = useDebounceFn(() => {
+    !loading && fetchAllData()
+  }, {
+    wait: 300
+  })
   function fetchAllData() {
     setLoading(true);
     asyncFetch("https://dev-api.beratown.app/infrared?path=api%2Fvaults&params=chainId%3D80094%26offset%3D0%26limit%3D100").then((res) => {
@@ -49,7 +56,7 @@ export default function useInfraredList(updater?: number, name?: string) {
   });
 
   useEffect(() => {
-    fetchAllData();
+    debounceFetchAllData();
   }, [updater]);
 
   return {

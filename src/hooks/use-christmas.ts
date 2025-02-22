@@ -7,7 +7,7 @@ export function useChristmas() {
   const scene = context.current;
 
   const isChristmas = useMemo(() => {
-    return scene?.status === SceneStatus.Ongoing;
+    return scene?.status === SceneStatus.Ongoing && scene.id === 1;
   }, [scene]);
 
   return {
