@@ -12,6 +12,7 @@ import Skeleton from "react-loading-skeleton";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
+import { isVideoFile } from "@/utils/utils";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -227,11 +228,21 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   return (
     <div className="mt-[14px] lg:max-h-[330px] lg:overflow-y-auto">
       <div className="flex md:flex-col lg:flex-row w-full justify-between gap-5">
-        <img
+        {
+          isVideoFile(item.profile_image) ? (
+            <video
+              src={item.profile_image}
+              className="md:w-full lg:w-[300px] md:h-[300px] object-cover rounded-[10px] aspect-square"
+              loop
+              muted
+              playsInline
+            />
+          ) : <img
           src={item.profile_image}
           className="md:w-full lg:w-[300px] md:h-[300px] object-cover rounded-[10px] aspect-square"
           alt=""
         />
+        }
         <div className="p-5 bg-black bg-opacity-[0.06] rounded-[10px] shrink-0 flex-1">
           <SwitchTabs
             tabs={mintGroupTabs}
