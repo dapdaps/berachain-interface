@@ -68,7 +68,7 @@ export const SwapWidget = ({
     <div className="w-full">
       <div className="flex items-center pl-5 pt-4 pr-2 gap-2.5">
         <PageBack showBackText={false} />
-        <img src="/images/background/intents-mobile-logo.png" className="w-[160px] h-[40px]" alt="" />
+        <img src="/images/background/intents-mobile-logo.png" className="w-[118px] h-[30px] object-contain" alt="" />
         <ConnectWalletBar />
       </div>
       <div className="mt-5 max-h-[90dvh] overflow-y-auto mb-5 scrollbar-hide pb-[50px]">
