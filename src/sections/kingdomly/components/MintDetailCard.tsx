@@ -232,14 +232,15 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
           isVideoFile(item.profile_image) ? (
             <video
               src={item.profile_image}
-              className="md:w-full lg:w-[300px] md:h-[300px] object-cover rounded-[10px] aspect-square"
+              className="md:w-full lg:w-[300px] lg:h-[300px] object-cover rounded-[10px] aspect-square"
               loop
               muted
               playsInline
+              autoPlay
             />
           ) : <img
           src={item.profile_image}
-          className="md:w-full lg:w-[300px] md:h-[300px] object-cover rounded-[10px] aspect-square"
+          className="md:w-full lg:w-[300px] lg:h-[300px] object-cover rounded-[10px] aspect-square"
           alt=""
         />
         }
