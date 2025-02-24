@@ -56,7 +56,8 @@ if (typeof window !== "undefined" && window.berasig) {
       }
     };
   };
-  connectors.push(BeraSig);
+
+  // connectors.push(BeraSig);
 }
 
 export const wagmiAdapter = new WagmiAdapter({
