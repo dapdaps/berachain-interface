@@ -18,6 +18,8 @@ import Ground from '@/components/bear-background/components/ground';
 import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 
+import { useActivityStore } from '@/stores/useActivityStore';
+
 const LeftTree = function () {
   return (
     <div className='absolute left-0 bottom-0'>
@@ -906,6 +908,7 @@ type PropsType = {
 
 export default memo(function BearBackground({ type, children }: PropsType) {
   const { isRainyDay } = useRainyDay();
+  const { isDefaultTheme } = useActivityStore()
 
   return (
     <div
@@ -928,15 +931,40 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       ) : type === 'bridge' ? (
         <>
           <Clouds isRainyDay={isRainyDay} />
-          <HatBear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-[8]' />
-          <BridgeGround className='z-[7]' isRainyDay={isRainyDay} />
+
+          {
+            isDefaultTheme() ? (
+              <>
+                <HatBear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-[8]' />
+                <BridgeGround className='z-[7]' isRainyDay={isRainyDay} />
+              </>
+            ) : (
+              (
+                <>
+                  <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[200px] left-0 z-[8]' alt="" />
+                  <div className={clsx('absolute left-0 bottom-0 right-0 w-full')}>
+                    <img src="/images/baddies/bridge-bg.png" className='w-full h-full object-contain' alt="" />
+                  </div>
+                </>
+              )
+            )
+          }
+          
+          
         </>
       ) : type === 'dapps' ? (
         <>
           <Clouds isRainyDay={isRainyDay} />
-          <Flowers />
-          <Ground isRainyDay={isRainyDay} />
-          <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
+          {
+            isDefaultTheme() && (
+              <>
+                <Flowers />
+                <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
+              </>
+            )
+          }
+          <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
+          
         </>
       ) : type === 'dapp' ? (
         <>
