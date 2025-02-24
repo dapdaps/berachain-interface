@@ -12,7 +12,7 @@ const BeraPrice = (props: any) => {
   const { beraPrice } = useContext(HomeEarthContext);
 
   return (
-    <div className={clsx('absolute pt-[10px] flex flex-col items-center left-[320px] bottom-0 z-[5] w-[137px] h-[117px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain', className)}>
+    <div onClick={() => console.log(`11111222`)} className={clsx('absolute pt-[10px] flex flex-col items-center right-[132px] bottom-0 z-[5] w-[137px] h-[117px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain', className)}>
       <AnimatePresence mode="wait">
         {
           Big(beraPrice?.percentage || 0).lt(0) ? (
