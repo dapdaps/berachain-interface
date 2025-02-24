@@ -254,7 +254,7 @@ export const ENTRIES: any = [
   {
     sort: 5,
     name: 'Portfolio',
-    disabled: false,
+    disabled: true,
     icon: '/images/home-earth/entry-dashboard.svg',
     iconWidth: 279,
     iconHeight: 170,
@@ -305,7 +305,7 @@ export const ENTRIES: any = [
   {
     sort: 6,
     name: 'Cave',
-    disabled: false,
+    disabled: true,
     icon: '/images/home-earth/entry-cave.svg',
     iconWidth: 285,
     iconHeight: 163,

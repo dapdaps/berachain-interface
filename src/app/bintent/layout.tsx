@@ -8,7 +8,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 
 const Laptop = ({ searchParams, router, pathname, children }: any) => {
   const handleTabChange = (val: string) => {
-    router.push(`/near-intents?tab=${val}`);
+    router.push(`/bintent?tab=${val}`);
   };
 
   return (

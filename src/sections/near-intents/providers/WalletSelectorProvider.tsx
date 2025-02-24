@@ -70,8 +70,8 @@ export const WalletSelectorProvider: React.FC<{
         debug: true,
         modules: [
           setupMyNearWallet({
-            successUrl: window.location.origin + '/near-intents',
-            failureUrl: window.location.origin + '/near-intents',
+            successUrl: window.location.origin + '/bintent',
+            failureUrl: window.location.origin + '/bintent',
           }) as unknown as WalletModuleFactory,
           setupMeteorWallet() as unknown as WalletModuleFactory,
         ],
