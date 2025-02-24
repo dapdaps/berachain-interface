@@ -23,7 +23,7 @@ export function useUser() {
 
   const pathname = usePathname();
 
-  const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
+  const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
   const near_current_wallet = connectedWallets.length > 0 ? connectedWallets[0] : null;
 
   const getUserInfo = useCallback(async () => {
