@@ -110,7 +110,8 @@ const PartList = [
     arrowClass: 'relative left-[50%]',
     btnText: 'Bera Cave',
     link: '/cave',
-    ArrowIcon: caveArrowIcon
+    ArrowIcon: caveArrowIcon,
+    disabled: true
   }
 ];
 
