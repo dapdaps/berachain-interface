@@ -544,6 +544,10 @@ const DolomiteData = (props: any) => {
         amounts.forEach((_amount: any) => {
           const { collateral, borrow, token } = _amount;
           const currentToken = _cTokensData[token.id.toLowerCase()];
+          if (!currentToken) {
+            console.log('_cTokensData: %o, token: %o', _cTokensData, token);
+            return;
+          }
           _amount.collateralValue = Big(collateral || 0).toFixed(currentToken.decimals);
           _amount.collateralUsd = Big(collateral || 0)
             .times(currentToken.price)
@@ -1084,7 +1088,7 @@ const DolomiteData = (props: any) => {
           walletBalance: tokenBalances[market.address.toLowerCase()],
           dolomiteBalance: dolomiteBalance[_address],
           interestRates: interestRates[_address],
-          price: Big(prices[_address]).lte(0) ? '1' : prices[_address],
+          price: Big(prices[_address] || 0).lte(0) ? '1' : prices[_address],
           borrowPar: totalPars[_address]?.borrowPar || '0',
           supplyPar: totalPars[_address]?.supplyPar || '0',
           marketId: marketTokenInfo[_address]?.marketId,
