@@ -402,10 +402,10 @@ const Home = () => {
               />
             </motion.div>
             <motion.div
-                className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]'
-                whileTap="tap"
+                className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw] opacity-50'
+                // whileTap="tap"
                 onClick={() => {
-                  router.push('/cave');
+                  // router.push('/cave');
                   tapSound.play?.();
                   // handleReport('1015-008');
                 }}
