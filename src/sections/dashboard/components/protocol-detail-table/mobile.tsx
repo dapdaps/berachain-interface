@@ -29,7 +29,7 @@ const Dex = ({ record }: any) => {
             </div>
           ))}
           <div className='text-[16px] font-semibold'>
-            {record.assets.map((token: any) => token.symbol).join(' / ')}
+            {record.assets.map((token: any) => token.symbol).join(' / ')} {record.version}
           </div>
         </div>
         <div className='text-[18px] font-semibold'>

@@ -59,7 +59,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   }, []);
 
   const pathname = usePathname();
-  const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
+  const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
   const isMobile = useIsMobile();
   const total = useToast();
   const { address, isConnected, chainId, chain, isConnecting } = useAccount();

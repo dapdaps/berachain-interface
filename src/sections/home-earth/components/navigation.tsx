@@ -305,7 +305,7 @@ export const ENTRIES: any = [
   {
     sort: 6,
     name: 'Cave',
-    disabled: false,
+    disabled: true,
     icon: '/images/home-earth/entry-cave.svg',
     iconWidth: 285,
     iconHeight: 163,

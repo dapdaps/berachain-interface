@@ -27,7 +27,7 @@ const currentChain = chains[80094];
 const networkList = Object.values(chains);
 
 const DashboardView = () => {
-  const [currentTab, setCurrentTab] = useState<TabKey>(1);
+  const [currentTab, setCurrentTab] = useState<TabKey>(2);
 
   const {
     loading: tokensLoading,
@@ -53,6 +53,7 @@ const DashboardView = () => {
   const tabs = [
     {
       key: 1,
+      sort: 2,
       label: <DashboardTab icon="icon-in-wallet.svg">Wallet</DashboardTab>,
       children: (
         <DashboardWallet
@@ -64,6 +65,7 @@ const DashboardView = () => {
     },
     {
       key: 2,
+      sort: 1,
       label: <DashboardTab icon="icon-portfolio.svg">DeFi</DashboardTab>,
       children: (
         <DashboardPortfolio
@@ -77,6 +79,7 @@ const DashboardView = () => {
     },
     {
       key: 3,
+      sort: 3,
       label: <DashboardTab icon="icon-records.svg">Transactions</DashboardTab>,
       children: (
         <DashboardRecords
@@ -101,7 +104,7 @@ const DashboardView = () => {
       <div className="w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]">
         <Tabs
           currentTab={currentTab}
-          tabs={tabs}
+          tabs={tabs.sort((a, b) => a.sort - b.sort)}
           onChange={(tabKey) => {
             setCurrentTab(tabKey);
           }}

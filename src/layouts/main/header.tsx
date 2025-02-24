@@ -17,7 +17,7 @@ const MainLayoutHeader = (props: Props) => {
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
   const pathname = usePathname()
-  const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
+  const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
 
   const goHome = () => {
     router.replace("/");
