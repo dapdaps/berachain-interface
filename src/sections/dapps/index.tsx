@@ -189,7 +189,7 @@ const SECOND_LIST = [
         icon: "/images/dapps/jumper.png",
         name: "Jumper",
         label: "Jumper",
-        type: "Vaults",
+        type: "bridge",
         disabled: true,
         className: ""
       }
@@ -322,7 +322,7 @@ const ALL_LIST = [
         icon: "/images/dapps/jumper.png",
         name: "Jumper",
         label: "Jumper",
-        type: "Vaults",
+        type: "bridge",
         disabled: true,
         className: "",
         attachedIcon: (
