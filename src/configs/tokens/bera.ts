@@ -158,6 +158,14 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/bonga.png",
     isMeme: true
   },
+  byusd: {
+    chainId: CHAIN_ID,
+    address: "0x688e72142674041f8f6af4c808a4045ca1d6ac82",
+    decimals: 6,
+    symbol: "BYUSD",
+    name: "BYUSD",
+    icon: "/assets/tokens/byusd.png"
+  },
   fbtc: {
     chainId: CHAIN_ID,
     address: "0xbAC93A69c62a1518136FF840B788Ba715cbDfE2B",
@@ -281,9 +289,10 @@ export const bera: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0x85468a0CB26B5Fc1F2B7B7BA3aee07F073dff709",
     decimals: 18,
-    symbol: "Godl",
-    icon: ""
+    symbol: "GODL",
+    icon: "https://ichi-images.s3.us-east-1.amazonaws.com/tokens/logo_256_godl.svg"
   },
+
   bm: {
     chainId: CHAIN_ID,
     address: "0xb749584F9fC418Cf905d54f462fdbFdC7462011b",

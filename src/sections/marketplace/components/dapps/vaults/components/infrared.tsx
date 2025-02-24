@@ -5,6 +5,7 @@ import SwitchTabs from "@/components/switch-tabs";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
+import useExecutionContract from "@/hooks/use-execution-contract";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
 import { useMultiState } from "@/hooks/use-multi-state";
 import useToast from "@/hooks/use-toast";
@@ -41,6 +42,8 @@ export default memo(function Bex(props) {
   const toast = useToast();
   const { addAction } = useAddAction("invest");
   const { account: sender, provider } = useCustomAccount();
+
+  const { executionContract } = useExecutionContract();
   // const { data, config } = vaultsData;
 
   const dexConfig = config?.chains[DEFAULT_CHAIN_ID];
@@ -246,9 +249,11 @@ export default memo(function Bex(props) {
       abi,
       provider.getSigner()
     );
-    contract
-      .stake(wei)
-      .then((tx: any) => tx.wait())
+    executionContract({
+      contract,
+      method: "stake",
+      params: [wei]
+    })
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
         const [amount0, amount1] = handleGetAmount(inAmount);
@@ -294,7 +299,56 @@ export default memo(function Bex(props) {
             ? "User rejected transaction"
             : error?.message ?? ""
         });
-      });
+      })
+    // contract
+    //   .stake(wei)
+    //   .then((tx: any) => tx.wait())
+    //   .then((receipt: any) => {
+    //     const { status, transactionHash } = receipt;
+    //     const [amount0, amount1] = handleGetAmount(inAmount);
+    //     addAction?.({
+    //       type: "Staking",
+    //       action: "Staking",
+    //       tokens: tokens.map((token: string) => ({ symbol: token })),
+    //       amount: inAmount,
+    //       template: "Infrared",
+    //       status: status,
+    //       add: 1,
+    //       transactionHash,
+    //       chain_id: props.chainId,
+    //       sub_type: "Stake",
+    //       amounts: [amount0, amount1],
+    //       extra_data: {}
+    //     });
+    //     updateState({
+    //       isLoading: false,
+    //       isPostTx: true
+    //     });
+
+    //     setTimeout(() => {
+    //       onSuccess?.();
+    //     }, 3000);
+
+    //     toast?.dismiss(toastId);
+    //     toast?.success({
+    //       title: "Stake Successful!"
+    //     });
+    //   })
+    //   .catch((error: Error) => {
+    //     console.log("error: ", error);
+    //     updateState({
+    //       isError: true,
+    //       isLoading: false,
+    //       loadingMsg: error?.message
+    //     });
+    //     toast?.dismiss(toastId);
+    //     toast?.fail({
+    //       title: "Stake Failed!",
+    //       text: error?.message?.includes("user rejected transaction")
+    //         ? "User rejected transaction"
+    //         : error?.message ?? ""
+    //     });
+    //   });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -451,7 +505,7 @@ export default memo(function Bex(props) {
               <div className="flex items-center gap-[6px]">
                 <div className="w-[26px] h-[26px] rounded-full">
                   <img
-                    src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
+                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase()}.svg`}
                   />
                 </div>
                 <div className="text-black font-Montserrat text-[20px] font-bold">

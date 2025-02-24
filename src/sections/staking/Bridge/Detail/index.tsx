@@ -2,7 +2,7 @@ import CircleLoading from "@/components/circle-loading";
 import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useIbgtVaults } from "@/stores/ibgt-vaults";
@@ -15,19 +15,21 @@ import BerpsDeposit from "@/sections/staking/Bridge/Detail/Berps/Deposit";
 import InputNumber from "@/components/input-number";
 
 export default memo(function Detail(props: any) {
-  const { dapp, loading } = props;
+  const { dapp, loading, onSuccess } = props;
   const name = dapp?.name;
   const params = useSearchParams();
   const ibgtVaults: any = useIbgtVaults();
   const id = params.get("id");
   const defaultIndex = params.get("tab");
+  const vaultAddress = params.get("vaultAddress")
   const pathname = usePathname();
   const router = useRouter();
   const data = useMemo(() => {
     if (name === "Berps") {
       return ibgtVaults.berpsVaults.find((item: any) => item.id === id);
     }
-    return ibgtVaults.vaults.find((item: any) => item.id === id);
+
+    return ibgtVaults.vaults.find((item: any) => item.vaultAddress === vaultAddress);
   }, [id, name, ibgtVaults]);
 
   const tabs: any = ["Stake", "Unstake"];
@@ -63,8 +65,6 @@ export default memo(function Detail(props: any) {
     data,
     defaultIndex
   });
-
-  console.log("====mintData", mintData);
   const {
     // isDeposit,
     balances,
@@ -76,6 +76,12 @@ export default memo(function Detail(props: any) {
     lpAmount,
     updater
   } = state;
+
+  useEffect(() => {
+    updater > 0 && onSuccess?.()
+  }, [updater])
+
+
 
   return (
     <div>
@@ -111,7 +117,7 @@ export default memo(function Detail(props: any) {
                     : ""
                 ])}
                 onClick={() => {
-                  router.replace(`${pathname}?id=${id}&tab=${index}`);
+                  router.replace(`${pathname}?id=${id}&vaultAddress=${vaultAddress}&tab=${index}`);
                 }}
               >
                 <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
@@ -217,12 +223,9 @@ export default memo(function Detail(props: any) {
 
       {mintData && (
         <AddLiquidityModal
-          token0={mintData.token0}
-          token1={mintData.token1}
-          version={mintData.version}
+          data={mintData}
           dex={mintData.protocol}
           stakingToken={mintData.stakingToken}
-          fee={mintData.fee}
           open={showAddModal}
           onClose={() => {
             setShowAddModal(false);

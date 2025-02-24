@@ -37,10 +37,10 @@ export default function Welcome({
                     <KeyHover />
                 </div>
 
-                <div className='mt-[10px] px-[20px]'>
+                {/* <div className='mt-[10px] px-[20px]'>
                     <div className='font-CherryBomb text-[16px] font-[400] leading-[19px] text-left'>Note:</div>
                     <div className='font-Montserrat text-[16px] font-[400] leading-[19px] text-left'>BeraTown is in its trial period, and all our partners are currently on testnet. The accessories you earn might not last forever—but who knows, they could end up meaning something. Or maybe… just maybe… probably nothing.</div>
-                </div>
+                </div> */}
             </div>
         </div>
     </Drawer>

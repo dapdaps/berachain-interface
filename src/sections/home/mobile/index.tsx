@@ -401,11 +401,11 @@ const Home = () => {
                 transition={EntryAnimation}
               />
             </motion.div>
-            {/* <motion.div
-                className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]'
-                whileTap="tap"
+            <motion.div
+                className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw] opacity-50'
+                // whileTap="tap"
                 onClick={() => {
-                  router.push('/cave');
+                  // router.push('/cave');
                   tapSound.play?.();
                   // handleReport('1015-008');
                 }}
@@ -426,7 +426,25 @@ const Home = () => {
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
                 />
-              </motion.div> */}
+              </motion.div>
+              <motion.div
+                className='w-[92px] h-[70px] -translate-y-[112.923vw] translate-x-[10px]'
+                whileTap="tap"
+                onClick={() => {
+                  router.push('/bintent');
+                  tapSound.play?.();
+                }}
+                data-bp="1015-012"
+                // style={{ clipPath: `path("M73.8874 23.9999C70.6874 26.3999 72.5541 41.6666 73.8874 48.9999C61.4874 63.3999 56.3874 77.9999 55.3875 83.5C42.3875 83.5 27.3875 100.5 30.3875 108C33.3875 115.5 50.3875 125 112.387 128.5C174.387 132 223.387 128 236.387 121.5C249.387 115 241.387 102.5 236.387 88C231.387 73.5 214.887 67 207.887 62C202.287 58 201.221 39.6667 201.387 31C203.887 30.0001 208.687 25.2002 207.887 14.0002C206.887 0.000192642 193.387 -0.999808 183.387 1.00019C175.387 2.60019 166.721 10.3335 163.387 14.0002C161.554 12.8334 154.687 9.99992 141.887 7.99992C129.087 5.99992 110.887 15.1666 103.387 19.9999C94.8875 20.3333 77.0874 21.5999 73.8874 23.9999Z")` }}
+              >
+                <motion.img
+                  src='/images/background/mobile-bintent.png'
+                  className='absolute top-0 left-[10px] w-[92px] h-[70px]'
+                  alt=''
+                  variants={EntryAnimationSignpost}
+                  transition={EntryAnimation}
+                />
+              </motion.div>
           </div>
         )}
       </div>

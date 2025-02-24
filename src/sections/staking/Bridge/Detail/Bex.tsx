@@ -144,7 +144,7 @@ const DetailBex = (props: any) => {
             </div>
             <div className="flex flex-col gap-[4px]">
               <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
-                {data?.initialData?.name || data?.tokens?.[0] || "iBGT"}
+                {data?.id || data?.tokens?.[0] || "iBGT"}
               </div>
               <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {formatValueDecimal(data?.depositAmount ?? 0, "", 2, false, false)}
@@ -180,7 +180,7 @@ const DetailBex = (props: any) => {
           <div className="flex items-center gap-[14px]">
             <div className="w-[32px] h-[32px] rounded-full">
               <img
-                src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
+                src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase()}.svg`}
               />
             </div>
             <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">

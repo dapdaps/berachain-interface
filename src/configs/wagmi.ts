@@ -1,10 +1,11 @@
 "use client";
 import { cookieStorage, createStorage, fallback, http } from "wagmi";
-import chains from "./chains";
+import chains, { turbo } from "./chains";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { injected } from "wagmi/connectors";
 import { CreateConnectorFn } from "wagmi";
-import { berachainTestnetbArtio } from "@reown/appkit/networks";
+import { berachainTestnetbArtio, Chain } from "@reown/appkit/networks";
+import { arbitrum, aurora, base, mainnet } from "wagmi/chains"
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
@@ -56,7 +57,8 @@ if (typeof window !== "undefined" && window.berasig) {
       }
     };
   };
-  connectors.push(BeraSig);
+
+  // connectors.push(BeraSig);
 }
 
 export const wagmiAdapter = new WagmiAdapter({
@@ -70,7 +72,12 @@ export const wagmiAdapter = new WagmiAdapter({
   // @ts-ignore
   connectors,
   transports: {
-    80094: fallback([http("https://rpc.berachain.com")])
+    80094: fallback([http("https://rpc.berachain.com")]),
+    [mainnet.id]: http(),
+    [base.id]: http(),
+    [arbitrum.id]: http(),
+    [turbo.id]: http(),
+    [aurora.id]: http(),
   }
 });
 
