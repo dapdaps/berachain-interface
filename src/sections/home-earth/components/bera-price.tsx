@@ -5,14 +5,16 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { numberFormatter } from '@/utils/number-formatter';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
 import Big from 'big.js';
+import { useRouter } from 'next/navigation';
 
 const BeraPrice = (props: any) => {
   const { className } = props;
 
   const { beraPrice } = useContext(HomeEarthContext);
+  const router = useRouter()
 
   return (
-    <div onClick={() => console.log(`11111222`)} className={clsx('absolute pt-[10px] flex flex-col items-center right-[132px] bottom-0 z-[5] w-[137px] h-[117px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain', className)}>
+    <div onClick={() => router.push('/marketplace')} className={clsx('absolute pt-[10px] flex flex-col items-center right-[10px] bottom-0 z-[5] w-[137px] h-[117px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain', className)}>
       <AnimatePresence mode="wait">
         {
           Big(beraPrice?.percentage || 0).lt(0) ? (
