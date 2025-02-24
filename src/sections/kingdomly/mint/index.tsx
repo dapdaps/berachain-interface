@@ -35,6 +35,8 @@ const MobileCard = ({
             <video 
               src={item.profile_image} 
               className="w-[60px] h-[60px] object-cover rounded-[8px]"
+              autoPlay
+              playsInline
               loop
               muted
             />
@@ -142,6 +144,8 @@ const Mint = () => {
                     src={item.profile_image} 
                     className="w-[78px] h-[78px] object-cover aspect-square rounded-[10px]"
                     loop
+                    autoPlay
+                    playsInline
                     muted
                   />
                 </>) : (
