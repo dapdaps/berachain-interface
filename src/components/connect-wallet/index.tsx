@@ -1,30 +1,29 @@
 "use client";
 
-import { useAppKit } from "@reown/appkit/react";
-import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { useAccount, useBalance, useDisconnect, useSwitchChain } from "wagmi";
-import Image from "next/image";
-import { icons } from "@/configs/chains";
-import { motion } from "framer-motion";
-import Big from "big.js";
-import allTokens from "@/configs/allTokens";
-import { utils } from "ethers";
+import MobileNetworks from "@/components/connect-wallet/networks";
+import MobileUser from "@/components/connect-wallet/user";
 import Popover, {
   PopoverPlacement,
   PopoverTrigger
 } from "@/components/popover";
+import allTokens from "@/configs/allTokens";
+import useIsMobile from "@/hooks/use-isMobile";
 import useToast from "@/hooks/use-toast";
 import useUser from "@/hooks/use-user";
-import Skeleton from "react-loading-skeleton";
-import useIsMobile from "@/hooks/use-isMobile";
-import MobileUser from "@/components/connect-wallet/user";
-import MobileNetworks from "@/components/connect-wallet/networks";
-import { useDebounceFn } from 'ahooks';
-import LazyImage from '@/components/layz-image';
 import { useWalletName } from '@/hooks/use-wallet-name';
+import chains from '@/sections/bridge/lib/util/chainConfig';
 import { ChainType, State } from "@/sections/near-intents/hooks/useConnectWallet";
-import { usePathname } from "next/navigation";
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
+import { useAppKit } from "@reown/appkit/react";
+import { useDebounceFn } from 'ahooks';
+import Big from "big.js";
+import { utils } from "ethers";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import { useAccount, useBalance, useDisconnect } from "wagmi";
 import MobileChain from "./chain/mobile";
 const dropdownAnimations = {
   active: {
@@ -38,28 +37,26 @@ const dropdownAnimations = {
     display: "none",
   },
 };
-
-
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
-  const { removeWallet }  = useConnectedWalletsStore.getState();
+  const { removeWallet } = useConnectedWalletsStore.getState();
   const currentWallet = useRef<State>();
   const [_, setUpdater] = useState({})
-  
+
   useEffect(() => {
     const state = useConnectedWalletsStore.getState();
     currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
-    
+
     const unsubscribe = useConnectedWalletsStore.subscribe((state) => {
       if (!state) return;
       currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
       setUpdater({})
     });
-    
+
     return () => {
       unsubscribe();
     };
-  }, []); 
+  }, []);
 
   const pathname = usePathname();
   const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
@@ -179,7 +176,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           borderRadius={21}
           style={{ transform: "translateY(-4px)" }}
         />
-      ) : (isConnected || (isNearPage && currentWallet.current )) ? (
+      ) : (isConnected || (isNearPage && currentWallet.current)) ? (
         <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3 md:min-w-[105px]">
           {isMobile ? (
             <>
@@ -348,9 +345,9 @@ const User = (props: any) => {
                 backgroundRepeat: "no-repeat",
               }}
             >
-              {chainId ? (
+              {chainId && chains?.[chainId]?.icon ? (
                 <Image
-                  src={icons[chainId]}
+                  src={chains?.[chainId]?.icon}
                   alt=""
                   width={10}
                   height={10}
@@ -407,7 +404,7 @@ const DisconnectButton = ({ isNearPage, setMobileUserInfoVisible }: any) => {
     disconnect();
     setMobileUserInfoVisible(false);
   };
-  
+
   if (isNearPage) return null
 
   return (
