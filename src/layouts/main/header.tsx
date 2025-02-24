@@ -8,6 +8,7 @@ import LaptopChain from "@/components/connect-wallet/chain/laptop";
 import useMapModalStore from "@/stores/useMapModalStore";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import { useBgtCount } from "@/hooks/use-bgt-count";
+import { usePathname } from "next/navigation";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -15,6 +16,8 @@ const MainLayoutHeader = (props: Props) => {
   const store: any = useMapModalStore();
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
+  const pathname = usePathname()
+  const isNearPage = ['/near-intents', '/my-near-wallet-gateway'].includes(pathname);
 
   const goHome = () => {
     router.replace("/");
@@ -79,7 +82,9 @@ const MainLayoutHeader = (props: Props) => {
         <div className="text-white flex items-center gap-x-[17px]">
           {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" /> */}
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" />
-          <LaptopChain />
+          {
+            !isNearPage && <LaptopChain />
+          }
           <ConnectWallet />
         </div>
       </div>

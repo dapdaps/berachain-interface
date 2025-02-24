@@ -21,6 +21,8 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const cachedTokens = useRef<any>();
   const prices = {};
 
+  console.log(account, provider, 'account, provider')
+
   const onQuoter = useCallback(
     async ({ inputCurrency, outputCurrency, inputCurrencyAmount }: any) => {
       setTrade(null);
@@ -34,6 +36,8 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
         return;
       }
       const wethAddress = weth[inputCurrency.chainId];
+
+      console.log(wethAddress, 'wethAddress')
       const wrapType =
         inputCurrency.isNative &&
         outputCurrency.address.toLowerCase() === wethAddress.toLowerCase()

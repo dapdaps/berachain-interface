@@ -100,7 +100,7 @@ export default function TokenAmout({
               <path
                 d="M1 1L6 5L11 1"
                 stroke="black"
-                stroke-width="2"
+                strokeWidth="2"
                 strokeLinecap="round"
               />
             </svg>

@@ -20,7 +20,7 @@ export default function TipModal({ data, style, note, iconWidth = 97 }: Props) {
   return (
     <div
       style={style}
-      className="flex-1 md:w-full shadow-[10px_10px_0px_0px_#00000040] relative bg-[#FFFDEB] border border-[#000] rounded-[20px] w-[396px] px-[25px] pt-[25px] pb-[5px]"
+      className="flex-1 md:w-full shadow-[10px_10px_0px_0px_#00000040] relative bg-[#FFFDEB] border border-[#000] rounded-[20px] w-[396px] px-[20px] pt-[25px] pb-[5px]"
     >
       <div className="w-[131px] h-[40px] absolute right-[20px] text-center top-[-7px] font-bold leading-[100%] flex justify-center items-center text-[16px] bg-[url('/images/cave/tip-top.png')] bg-contain bg-no-repeat bg-bottom">
         {data.tip}
