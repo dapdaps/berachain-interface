@@ -40,26 +40,28 @@ const dropdownAnimations = {
 };
 
 
+import chains from '@/sections/bridge/lib/util/chainConfig'
+
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
-  const { removeWallet }  = useConnectedWalletsStore.getState();
+  const { removeWallet } = useConnectedWalletsStore.getState();
   const currentWallet = useRef<State>();
   const [_, setUpdater] = useState({})
-  
+
   useEffect(() => {
     const state = useConnectedWalletsStore.getState();
     currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
-    
+
     const unsubscribe = useConnectedWalletsStore.subscribe((state) => {
       if (!state) return;
       currentWallet.current = state.connectedWallets.length === 0 ? undefined : state.connectedWallets[0];
       setUpdater({})
     });
-    
+
     return () => {
       unsubscribe();
     };
-  }, []); 
+  }, []);
 
   const pathname = usePathname();
   const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
@@ -85,7 +87,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       setMobileUserInfoVisible(true);
       return;
     }
-    modal.open();
+
+    !address && modal.open();
   };
 
   const addressShown = useMemo(() => {
@@ -178,7 +181,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
           borderRadius={21}
           style={{ transform: "translateY(-4px)" }}
         />
-      ) : (isConnected || (isNearPage && currentWallet.current )) ? (
+      ) : (isConnected || (isNearPage && currentWallet.current)) ? (
         <div className="flex justify-start items-center gap-x-[20px] md:gap-x-[8px] pl-2 pr-3 md:min-w-[105px]">
           {isMobile ? (
             <>
@@ -347,9 +350,9 @@ const User = (props: any) => {
                 backgroundRepeat: "no-repeat",
               }}
             >
-              {chainId ? (
+              {chainId && chains?.[chainId]?.icon ? (
                 <Image
-                  src={icons[chainId]}
+                  src={chains?.[chainId]?.icon}
                   alt=""
                   width={10}
                   height={10}
@@ -406,7 +409,7 @@ const DisconnectButton = ({ isNearPage, setMobileUserInfoVisible }: any) => {
     disconnect();
     setMobileUserInfoVisible(false);
   };
-  
+
   if (isNearPage) return null
 
   return (
