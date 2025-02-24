@@ -26,12 +26,11 @@ const StyledRpcs = styled.div<{ $color?: string }>`
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.50);
   padding: 4px 10px;
-
   backdrop-filter: blur(5px);
 
-  @media (max-width: 1394px) {
+  /* @media (max-width: 1394px) {
     bottom: 60px;
-  }
+  } */
 
   &:hover {
     opacity: 1;
