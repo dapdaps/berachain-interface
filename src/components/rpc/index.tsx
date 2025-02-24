@@ -29,9 +29,9 @@ const StyledRpcs = styled.div<{ $color?: string }>`
 
   backdrop-filter: blur(5px);
 
-  @media (max-width: 1394px) {
+  /* @media (max-width: 1394px) {
     bottom: 60px;
-  }
+  } */
 
   &:hover {
     opacity: 1;
