@@ -69,11 +69,11 @@ const DashboardPortfolioDetail = (props: Props) => {
   }, [dapp, isLending]);
 
   return (
-    <div className='mt-[18px] flex-1 border border-[#373A53] rounded-[12px] bg-white p-[11px_12px_11px_9px] md:rounded-t-[20px] md:rounded-b-none md:h-full'>
+    <div className='mt-[18px] flex-1 border border-[#373A53] rounded-[12px] bg-white p-[11px_12px_11px_9px] md:rounded-t-[20px] md:rounded-b-[20px] md:h-full'>
       <div className='flex justify-between items-center gap-[10px]'>
         <DappName
           icon={dappLogo}
-          name={`${show_name}${version ? ' ' + version : ''}`}
+          name={`${show_name}`}
           category={type}
         />
         <Value>{totalUsd}</Value>

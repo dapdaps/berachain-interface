@@ -97,7 +97,7 @@ const PartList = [
     btnText: "Portfolio",
     link: "/dashboard",
     ArrowIcon: dAppArrowIcon,
-    disabled: true
+    disabled: false
   },
   {
     className:
