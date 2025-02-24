@@ -67,7 +67,7 @@ const MainLayout = (props: Props) => {
       return { background: rainyDay?.bg };
     }
 
-    if (pathname === '/' && !isDefaultTheme()) {
+    if (['/', '/bridge', '/dapps', '/dex/kodiak'].includes(pathname) && !isDefaultTheme()) {
       return {
         backgroundColor: themeConfig.primaryColor
       };

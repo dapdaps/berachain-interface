@@ -4,7 +4,7 @@ const Follower = (props: any) => {
   const { className } = props;
 
   return (
-    <div className={clsx('absolute left-0 bottom-0 z-[5] w-[236px] h-[174px] overflow-hidden pointer-events-none', className)}>
+    <div className={clsx('absolute left-[140px] bottom-0 z-[5] w-[280px] h-[174px] pointer-events-none', className)}>
       <img
         src="/images/home-earth/follower-1.svg"
         alt=""
