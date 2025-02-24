@@ -197,7 +197,7 @@ const HomeEarth = () => {
             placement={PopoverPlacement.Top}
             offset={0}
             content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg':'/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
-            triggerContainerClassName="absolute z-[4] cursor-pointer bottom-0 right-0 transition-transform hover:scale-110"
+            triggerContainerClassName="absolute z-[4] cursor-pointer bottom-0 right-[150px] transition-transform hover:scale-110"
           >
             <div className='w-full h-full relative'>
               <img

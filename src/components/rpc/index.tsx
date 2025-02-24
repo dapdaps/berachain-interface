@@ -11,8 +11,8 @@ import useCustomAccount from "@/hooks/use-account";
 const StyledRpcs = styled.div<{ $color?: string }>`
   position: fixed;
   z-index: 62;
-  bottom: 30px;
-  right: 20px;
+  bottom: 6px;
+  right: 10px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -22,8 +22,12 @@ const StyledRpcs = styled.div<{ $color?: string }>`
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
-  opacity: 0.8;
   transition: opacity 0.2s linear;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.50);
+  padding: 4px 10px;
+
+  backdrop-filter: blur(5px);
 
   @media (max-width: 1394px) {
     bottom: 60px;
