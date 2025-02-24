@@ -239,8 +239,10 @@ export default function HandleModal({
             onSuccess={() => {
               onSuccess();
             }}
-            token0={{ ...pool?.underlying_tokens[0], icon: data.images[0] }}
-            token1={{ ...pool?.underlying_tokens[1], icon: data.images[1] }}
+            data={{
+              token0: { ...pool?.underlying_tokens[0], icon: data.images[0] },
+              token1: { ...pool?.underlying_tokens[1], icon: data.images[1] }
+            }}
             dex={pool?.protocol}
             title={`Mint ${pool?.underlying_tokens[0]?.symbol}-${pool?.underlying_tokens[1]?.symbol}`}
           />

@@ -29,13 +29,10 @@ export function useTvl(props: Props) {
     query: async () => {
       try {
         setLoading(true);
-        const result = await get(`/db3`, {
-          url: 'api/account/protocol/volume',
-          params: JSON.stringify({
-            address,
-            chain_id: currentChain.id,
-          }),
-        });
+        const result = await get(`/api.db3.app/api/account/protocol/volume`, {
+          address,
+          chain_id: currentChain.id,
+        }, { isSkipFormatUrl: true });
         const data = result?.data?.list ?? [];
         tvlsFormatter(data);
         setLoading(false);

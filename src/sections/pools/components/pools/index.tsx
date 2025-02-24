@@ -95,10 +95,7 @@ export default function Pools({
           onClose={() => {
             setSelectedRecord(null);
           }}
-          token0={selectedReocrd.token0}
-          token1={selectedReocrd.token1}
-          fee={selectedReocrd.fee}
-          version={selectedReocrd.version}
+          data={selectedReocrd}
           dex={dex}
         />
       )}

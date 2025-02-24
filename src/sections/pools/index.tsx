@@ -31,7 +31,7 @@ export default function Pools({ dapp }: any) {
           router.replace(`${pathname}?${params.toString()}`);
         }}
         bodyClassName="md:px-0 md:h-full md:pt-[10px] md:!rounded-b-none md:!border-b-0 md:!border-x-0"
-        bodyInnerClassName="md:h-full"
+        bodyInnerClassName="md:h-[calc(100%-62px)]"
       />
       <DappIcon
         src={dapp.icon}
