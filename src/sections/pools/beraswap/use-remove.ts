@@ -138,7 +138,9 @@ export default function useRemove({
 
       if (type === 1) {
         exitKind = data.type === "COMPOSABLE_STABLE" ? 2 : 1;
-        bptMinIn = Big(_balance).toFixed(0);
+        bptMinIn = Big(_balance)
+          .mul(percent / 100)
+          .toFixed(0);
         const abiCoder = new utils.AbiCoder();
         const minAmountsOut: any = [];
 
