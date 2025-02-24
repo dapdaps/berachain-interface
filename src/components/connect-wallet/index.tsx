@@ -49,7 +49,8 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       setMobileUserInfoVisible(true);
       return;
     }
-    modal.open();
+
+    !address && modal.open();
   };
 
   const addressShown = useMemo(() => {
