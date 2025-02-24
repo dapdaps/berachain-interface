@@ -132,6 +132,9 @@ const nextConfig = {
       "date-fns",
       "ethers"
     ]
+  },
+  images: {
+    domains: ["s3.amazonaws.com"]
   }
 };
 

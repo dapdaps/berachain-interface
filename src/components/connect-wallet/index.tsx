@@ -23,6 +23,8 @@ import { useDebounceFn } from "ahooks";
 import { useWalletName } from "@/hooks/use-wallet-name";
 import MobileChain from "./chain/mobile";
 
+import chains from '@/sections/bridge/lib/util/chainConfig'
+
 const ConnectWallet = ({ className }: { className?: string }) => {
   const modal = useAppKit();
 
@@ -301,9 +303,9 @@ const User = (props: any) => {
                       backgroundRepeat: "no-repeat"
                     }}
                   >
-                    {chainId ? (
+                    {chainId && chains?.[chainId]?.icon ? (
                       <Image
-                        src={icons[chainId]}
+                        src={chains?.[chainId]?.icon}
                         alt=""
                         width={10}
                         height={10}
