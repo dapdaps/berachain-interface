@@ -11,7 +11,7 @@ const Signpost = (props: any) => {
         src="/images/home-earth/signpost-bintent.png"
         alt=""
         onClick={() => router.push('/bintent')}
-        className="w-[94px] h-[27px] object-contain absolute top-[52px] left-[30px]"
+        className="w-[94px] h-[27px] object-contain absolute top-[52px] left-[30px] cursor-pointer"
       />
       <img
         src="/images/home-earth/signpost-beraciaga.svg"
