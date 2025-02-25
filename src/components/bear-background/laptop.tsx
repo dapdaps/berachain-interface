@@ -924,9 +924,17 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       ) : type === 'dashboard' ? (
         <>
           <Clouds isRainyDay={isRainyDay} />
-          <DashboardFlowers />
-          <DashboardBear isRainyDay={isRainyDay} />
-          <DashboardGround isRainyDay={isRainyDay} />
+          {
+            isDefaultTheme() ? (<>
+            <DashboardFlowers />
+            <DashboardBear isRainyDay={isRainyDay} />
+            <DashboardGround isRainyDay={isRainyDay} />
+            </>) : (<div className='absolute left-0 bottom-0 right-0 h-[234px] bg-[#FFF5A9] border-t border-black'>
+              <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[22dvh] left-0 z-[8]' alt="" />
+              <img src="/images/baddies/dashboard.png" className='w-[505px] absolute bottom-[5dvh] right-0 z-[8] object-contain' alt="" />
+            </div>)
+          }
+          
         </>
       ) : type === 'bridge' ? (
         <>
