@@ -179,7 +179,7 @@ const Home = () => {
               className="w-[65.128vw] -translate-y-[94.241vw] translate-x-[34.9vw]"
               whileTap="tap"
               onClick={() => {
-                router.push("/dashboard");
+                router.push("/portfolio");
                 tapSound.play?.();
               }}
               data-bp="1015-006"
@@ -352,7 +352,7 @@ const Home = () => {
               className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw] opacity-50"
               // whileTap="tap"
               onClick={() => {
-                // router.push("/dashboard");
+                // router.push("/portfolio");
                 // tapSound.play?.();
                 // handleReport('1015-006');
               }}

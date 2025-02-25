@@ -266,7 +266,7 @@ export const ENTRIES: any = [
     x: -150,
     y: -90,
     rotate: 0,
-    path: '/dashboard',
+    path: '/portfolio',
   },
   {
     sort: 4,
@@ -393,7 +393,7 @@ export const BADDIES_ENTRIES: any = [
   {
     sort: 5,
     name: 'Portfolio',
-    disabled: true,
+    disabled: false,
     icon: '/images/home-earth/baddies/baddies-dashboard.svg',
     disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
     iconWidth: 364,
@@ -406,7 +406,7 @@ export const BADDIES_ENTRIES: any = [
     x: 460,
     y: -80,
     rotate: 18,
-    path: '/dashboard',
+    path: '/portfolio',
   },
   // {
   //   sort: 6,
