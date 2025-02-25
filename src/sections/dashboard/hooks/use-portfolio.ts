@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import { useAuthQuery } from "@/hooks/use-auth-query";
 import { get } from "@/utils/http";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
+import { trim } from 'lodash';
 
 const DAppPath: any = {
   Bend: "/lending/bend",
@@ -46,7 +47,24 @@ export function usePortfolio(props: Props) {
           logo: chain.icon,
           name: chain.name
         }));
+
+        const uniqData: any = [];
         for (const _dapp of data) {
+          if (!_dapp.assets) continue;
+          for (const typeAsset of _dapp.assets) {
+            typeAsset.version = trim(_dapp.version || '');
+          }
+          const uniqIdx = uniqData.findIndex((_it: any) => _it.name === _dapp.name);
+          if (uniqIdx > -1) {
+            _dapp.assets.forEach((asset: any) => {
+              uniqData[uniqIdx].assets.push(asset);
+            });
+            continue;
+          }
+          uniqData.push(_dapp);
+        }
+
+        for (const _dapp of uniqData) {
           let dappTotalUsd = Big(0);
           const dappType = _dapp.type;
           if (!_dapp.assets) continue;

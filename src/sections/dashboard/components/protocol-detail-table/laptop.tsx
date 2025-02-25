@@ -55,7 +55,8 @@ export default function Laptop({ isLending, tableList }: any) {
                 </div>
               ))}
             </div>
-            {record.assets.map((token: any) => token.symbol).join(' / ')}
+            <div>{record.assets.map((token: any) => token.symbol).join(' / ')}</div>
+            <div>{record.version}</div>
           </div>
         );
       }

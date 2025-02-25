@@ -39,7 +39,7 @@ const Navigation = function () {
   };
 
   const onNavigateToDashBoard = () => {
-    router.push("/dashboard");
+    router.push("/portfolio");
   };
 
   const onNavigateToCave = () => {
