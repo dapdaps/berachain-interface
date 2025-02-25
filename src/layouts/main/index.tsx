@@ -67,7 +67,7 @@ const MainLayout = (props: Props) => {
       return { background: rainyDay?.bg };
     }
 
-    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly'].includes(pathname) 
+    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent'].includes(pathname) 
         || pathname.startsWith('/lending/') 
         || pathname.startsWith('/staking/') 
         || pathname.startsWith('/dex/')) 
