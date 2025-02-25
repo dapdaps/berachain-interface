@@ -106,11 +106,12 @@ export const ModalSelectAssets = () => {
       })
     }
 
-    // Put tokens with balance on top
     getAssetList.sort((a, b) => {
-      if (a.balance?.balance === "0") return 1 // Move `null` balances to the end
-      if (b.balance?.balance === "0") return -1 // Keep items with balance on top
-      return 0 // Retain original order if both have balances
+      if (a.token.symbol === 'BERA') return -1
+      if (b.token.symbol === 'BERA') return 1
+      if (a.balance?.balance === "0") return 1
+      if (b.balance?.balance === "0") return -1
+      return 0
     })
 
     setAssetList(getAssetList)
