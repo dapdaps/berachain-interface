@@ -95,7 +95,7 @@ const PartList = [
     buttonClass: "rotate-[2.58deg] mb-[8px]",
     arrowClass: "relative left-[calc(50%-34px)]",
     btnText: "Portfolio",
-    link: "/dashboard",
+    link: "/portfolio",
     ArrowIcon: dAppArrowIcon,
     disabled: false
   },
@@ -258,7 +258,7 @@ const MapModal = () => {
       case "/bridge":
         handleReport("1010-001-004");
         break;
-      case "/dashboard":
+      case "/portfolio":
         handleReport("1010-001-005");
         break;
       case "/cave":

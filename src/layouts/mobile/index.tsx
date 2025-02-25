@@ -34,7 +34,7 @@ const menuItems = [
   {
     id: 6,
     title: "Portfolio",
-    href: "/dashboard",
+    href: "/portfolio",
     dataBp: "1015-002-006",
     disabled: true
   },
