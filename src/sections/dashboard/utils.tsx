@@ -73,10 +73,32 @@ export const formatExecution = (record: any, isMobile?: boolean) => {
     return `${usd}`;
   };
 
+  const getDirection = (key: string) => {
+    const add = {
+      direction: '+ ',
+      color: '#06C17E'
+    };
+    const minus = {
+      direction: '- ',
+      color: ''
+    }
+    if (key === 'tokens_out') {
+      if (['swap', 'bridge'].includes(record.type)) {
+        return add;
+      }
+      return minus;
+    }
+    if (['swap', 'bridge'].includes(record.type)) {
+      return minus;
+    }
+    return add;
+  };
+
   const amount: any = (
     <>
       {
         keys.map((key) => {
+          const direction = getDirection(key);
           if (record[key]) {
             return (
               <>
@@ -93,10 +115,10 @@ export const formatExecution = (record: any, isMobile?: boolean) => {
                     <span
                       className=""
                       style={{
-                        color: key === 'tokens_out' ? '' : '#06C17E'
+                        color: direction.color
                       }}
                     >
-                      {`${key === 'tokens_out' ? '- ' : '+ '}${numberFormatter(it.amount, 4, true)} ${it.symbol} (${formatUsd(it.usd)})`}
+                      {`${direction.direction}${numberFormatter(it.amount, 4, true)} ${it.symbol} (${formatUsd(it.usd)})`}
                     </span>
                   </div>
                 ))}
