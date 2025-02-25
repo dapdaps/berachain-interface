@@ -941,9 +941,9 @@ export default memo(function BearBackground({ type, children }: PropsType) {
             ) : (
               (
                 <>
-                  <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[200px] left-0 z-[8]' alt="" />
+                  <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[10vw] left-0 z-[8]' alt="" />
                   <div className={clsx('absolute left-0 bottom-0 right-0 w-full')}>
-                    <img src="/images/baddies/bridge-bg.png" className='w-full h-full object-contain' alt="" />
+                    <img src="/images/baddies/bridge-bg.png" className='w-full min-w-[1600px] h-full object-contain' alt="" />
                   </div>
                 </>
               )
