@@ -24,7 +24,7 @@ const DashboardPortfolio = (props: Props) => {
   }, [isMobile]);
 
   return (
-    <div className='h-full overflow-y-auto md:overflow-y-hidden'>
+    <div className='h-full overflow-y-auto'>
       <>
         <div className='hidden lg:block'>
           <h5 className='font-CherryBomb text-black text-center text-[32px] font-[400] leading-[95%]'>
@@ -46,7 +46,7 @@ const DashboardPortfolio = (props: Props) => {
           />
         </div>
       </>
-      <div className='md:h-[calc(100%-80px)] md:overflow-y-auto'>
+      <div className=''>
         <div className='flex justify-between items-stretch gap-[16px] mt-[29px] md:gap-[6px] md:mt-[20px] md:px-[12px] md:flex-wrap'>
           {tvls.map((tvl: any, idx: number) => (
             <Card
@@ -99,7 +99,7 @@ const DashboardPortfolio = (props: Props) => {
           )}
         </section>
       </div>
-      <section className='mt-[34px] mb-[12px] hidden lg:block'>
+      <section className='mt-[34px] mb-[12px] md:px-[12px]'>
         <Title>Details</Title>
         <div className='flex flex-col justify-between items-stretch gap-[15px]'>
           {loading ? (
