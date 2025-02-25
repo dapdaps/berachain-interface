@@ -67,7 +67,11 @@ const MainLayout = (props: Props) => {
       return { background: rainyDay?.bg };
     }
 
-    if ((['/', '/bridge', '/dapps', '/portfolio'].includes(pathname) || pathname.startsWith('/dex/')) && !isDefaultTheme()) {
+    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly'].includes(pathname) 
+        || pathname.startsWith('/lending/') 
+        || pathname.startsWith('/staking/') 
+        || pathname.startsWith('/dex/')) 
+        && !isDefaultTheme()) {
       return {
         backgroundColor: themeConfig.primaryColor
       };
