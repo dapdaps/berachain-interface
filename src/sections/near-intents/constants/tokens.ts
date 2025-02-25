@@ -44,6 +44,18 @@ export const NEP141_STORAGE_TOKEN: BaseTokenInfo = {
 
 export const LIST_TOKENS: (BaseTokenInfo | UnifiedTokenInfo)[] = [
   {
+    defuseAssetId: "nep141:bera.omft.near",
+    type: "native",
+    decimals: 18,
+    icon: "/images/near-intents/icons/network/berachain.svg",
+    chainId: "",
+    chainIcon: "/images/near-intents/icons/network/berachain.svg",
+    chainName: "berachain",
+    routes: [],
+    symbol: "BERA",
+    name: "BERA",
+  },
+  {
     unifiedAssetId: "usdc",
     decimals: 6,
     symbol: "USDC",
@@ -169,18 +181,6 @@ export const LIST_TOKENS: (BaseTokenInfo | UnifiedTokenInfo)[] = [
     routes: [],
     symbol: "MELANIA",
     name: "Official Melania Meme",
-  },
-  {
-    defuseAssetId: "nep141:bera.omft.near",
-    type: "native",
-    decimals: 18,
-    icon: "/images/near-intents/icons/network/berachain.svg",
-    chainId: "",
-    chainIcon: "/images/near-intents/icons/network/berachain.svg",
-    chainName: "berachain",
-    routes: [],
-    symbol: "BERA",
-    name: "BERA",
   },
   {
     defuseAssetId: "nep141:zec.omft.near",
