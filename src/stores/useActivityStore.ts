@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { defaultTheme, themeConfigs, ThemeConfig } from '@/configs/theme';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface ActivityState {
   activeTheme: 'default' | 'lgbt';
@@ -8,7 +9,7 @@ interface ActivityState {
   isDefaultTheme: () => boolean;
 }
 
-export const useActivityStore = create<ActivityState>((set, get) => ({
+export const useActivityStore = create(persist<ActivityState>((set, get) => ({
   activeTheme: 'default',
   themeConfig: defaultTheme,
 
@@ -30,4 +31,8 @@ export const useActivityStore = create<ActivityState>((set, get) => ({
   isDefaultTheme: () => {
     return get().activeTheme === 'default';
   }
+}), {
+  name: 'activity-store',
+  version: 0.1,
+  storage: createJSONStorage(() => localStorage),
 }));
