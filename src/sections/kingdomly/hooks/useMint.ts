@@ -1,10 +1,9 @@
-import { Contract, ethers, providers } from "ethers";
+import { Contract  } from "ethers";
 import NFTAbi from "../abis/mint.json";
-import { CHAIN_RPC_URLS } from "./usePartnerCollections";
 import { NFTCollectionWithStatus } from "../types";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
-import Big from "big.js";
+import useTokenBalance from "@/hooks/use-token-balance";
 
 interface EligibilityGroup {
   id: number;
@@ -47,8 +46,9 @@ export const checkEligibility = async (
 };
 
 export const useMint = () => {
-  const { chainId, account } = useCustomAccount();
+  const { chainId, account, provider } = useCustomAccount();
   const toast = useToast();
+  const { tokenBalance } = useTokenBalance('native', 18, chainId);  
 
   const handleMint = async (
     collection: NFTCollectionWithStatus,
@@ -58,28 +58,24 @@ export const useMint = () => {
     if (!account || !chainId) return;
 
     try {
-      const rpcUrl = CHAIN_RPC_URLS[chainId];
-      if (!rpcUrl) {
-        console.error(`No RPC URL found for chain ID ${chainId}`);
-        return 'closed';
-      }
-  
-      const provider = new providers.JsonRpcProvider(rpcUrl);
-      const contract = new Contract(collection.contract_address, NFTAbi, provider);
+
+      const contract = new Contract(collection.contract_address, NFTAbi, provider.getSigner());
       
       const currentGroup = collection.mint_group_data.find(g => g.id === currentGroupId);
       if (!currentGroup) throw new Error("Invalid mint group");
-         
-      const max_mint_per_wallet = await contract.maxMintPerWallet(currentGroupId);   
-      const balance = await contract.balanceOf(account);
+
       const [feeAmount, totalCostWithFee] = await contract.quoteBatchMint(currentGroupId, amount);
 
-      if (Big(balance).lt(feeAmount)) {
+      if (tokenBalance < feeAmount) {
         toast.fail({
-          title: `Sorry sire, you don't have enough balance to mint NFT.`,
+          title: `Sorry sire, you don't have enough Bera to mint NFT.`,
         });
         return null;
       }
+
+      const max_mint_per_wallet = await contract.maxMintPerWallet(currentGroupId); 
+      
+      const balance = await contract.balanceOf(account);
 
       if (balance.add(amount) > max_mint_per_wallet) {
         toast.fail({
@@ -88,7 +84,7 @@ export const useMint = () => {
         return null;
       }
 
-      const [hasEligibilityResult, errorTips] = await contract.canMintCheck(20, currentGroup.id, account);
+      const [hasEligibilityResult, errorTips] = await contract.canMintCheck(amount, currentGroup.id, account);
 
       if (!hasEligibilityResult || errorTips) {
         toast.fail({
@@ -98,13 +94,17 @@ export const useMint = () => {
       }
 
       const tx = await contract.batchMint(amount, currentGroupId, {
-        value: totalCostWithFee.toString(),
+        value: feeAmount.toString(),
       });
-      
       return await tx.wait();
-    } catch (error) {
-      console.error("Mint error:", error);
-      throw error;
+    } catch (error: any) {
+      if (error?.code === 4001 || error?.message?.includes('user rejected')) {
+        toast.fail({
+          title: "Transaction was cancelled",
+        });
+      } else {
+        console.error("Mint batchMint:", error);
+      }
     }
   };
 
