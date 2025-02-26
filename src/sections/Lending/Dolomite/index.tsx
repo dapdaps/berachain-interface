@@ -27,6 +27,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
 
   const [currentTab, setCurrentTab] = useState<string>(defaultTab || 'supply');
   const [rateKey, setRateKey] = useState<'APY'|'APR'>('APY');
+  const [rateOrder, setRateOrder] = useState<'asc'|'desc'>('desc');
   const [loading, setLoading] = useState<boolean>(false);
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
   const [data, setData] = useState<any>();
@@ -105,6 +106,8 @@ const LendingModal: React.FC<LendingModalProps> = () => {
                 onSuccess={() => {
                   setLoading(true);
                 }}
+                rateOrder={rateOrder}
+                setRateOrder={setRateOrder}
               />
             )
           },
