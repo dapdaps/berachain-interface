@@ -35,7 +35,7 @@ export const checkEligibility = async (
     const data = await response.json();
 
     if ("error" in data) {
-      return null;
+      return data;
     }
 
     return data as EligibilityResponse;
@@ -68,6 +68,13 @@ export const useMint = () => {
       
       const currentGroup = collection.mint_group_data.find(g => g.id === currentGroupId);
       if (!currentGroup) throw new Error("Invalid mint group");
+      const eligibilityResult = await checkEligibility(collection.slug, account);
+      if (eligibilityResult && 'error' in eligibilityResult) {
+        toast.fail({
+          title: `Sorry sire, ${eligibilityResult.error}`,
+        });
+        return null;
+      }
 
       const isPublicMint = currentGroup.name.toLowerCase().includes('public') ||
                           currentGroup.mint_group_description?.toLowerCase().includes('public');
@@ -75,8 +82,7 @@ export const useMint = () => {
       const max_mint_per_wallet = await contract.maxMintPerWallet(currentGroupId);   
       
       const balance = await contract.balanceOf(account);
-      const eligibilityResult = await checkEligibility(collection.slug, account);
-      console.log('eligibilityResult', eligibilityResult);
+
 
       if (isPublicMint) {
         // Public mint 逻辑
