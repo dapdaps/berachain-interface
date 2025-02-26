@@ -19,6 +19,8 @@ export default function Swap() {
   return (
       <SwapWidget
         tokenList={tokenList}
+        initialTokenIn={LIST_TOKENS[1]}
+        initialTokenOut={LIST_TOKENS[0]}
         userAddress={state.address ?? null}
         sendNearTransaction={async (tx) => {
           const result = await signAndSendTransactions({ transactions: [tx] })

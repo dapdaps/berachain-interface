@@ -55,9 +55,11 @@ const Portfolio = () => {
     }
 
     newAssetList.sort((a, b) => {
-      if (a.balance?.balance === "0") return 1;
-      if (b.balance?.balance === "0") return -1;
-      return 0;
+      if (a.token.symbol === 'BERA') return -1
+      if (b.token.symbol === 'BERA') return 1
+      if (a.balance?.balance === "0") return 1
+      if (b.balance?.balance === "0") return -1
+      return 0
     });
 
     return newAssetList;
