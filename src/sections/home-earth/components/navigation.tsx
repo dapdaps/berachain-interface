@@ -77,7 +77,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -104,7 +104,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
@@ -159,7 +159,6 @@ const Navigation = (props: any) => {
                 className={clsx(
                   'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
                   item.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-                  isDefaultTheme() && item.disabled ? 'opacity-50' : '',
                 )}
                 style={{
                   transform: `rotate(${item.rotate}deg) scale(${(hoverIndex?.name === item.name && !item.disabled) ? 1.1 : 1})`,
@@ -306,6 +305,7 @@ export const ENTRIES: any = [
     sort: 6,
     name: 'Cave',
     disabled: true,
+    disabledIcon: '/images/home-earth/cave-lock.svg',
     icon: '/images/home-earth/entry-cave.svg',
     iconWidth: 285,
     iconHeight: 163,
@@ -351,9 +351,9 @@ export const BADDIES_ENTRIES: any = [
     signpostHeight: 59,
     signpostX: -90,
     signpostY: -30,
-    x: -932,
-    y: 176,
-    rotate: -36,
+    x: -916,
+    y: 140,
+    rotate: -32,
     path: '/dapps',
   },
   {
@@ -408,22 +408,22 @@ export const BADDIES_ENTRIES: any = [
     rotate: 18,
     path: '/portfolio',
   },
-  // {
-  //   sort: 6,
-  //   name: 'Cave',
-  //   disabled: true,
-  //   icon: '/images/home-earth/baddies/baddies-cave.svg',
-  //   disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
-  //   iconWidth: 365,
-  //   iconHeight: 226,
-  //   signpost: '/images/home-earth/signpost-cave.svg',
-  //   signpostWidth: 170,
-  //   signpostHeight: 59,
-  //   signpostX: 50,
-  //   signpostY: -40,
-  //   x: 882,
-  //   y: 82,
-  //   rotate: 30,
-  //   path: '/cave',
-  // }
+  {
+    sort: 6,
+    name: 'Cave',
+    disabled: true,
+    icon: '/images/home-earth/baddies/baddies-cave.svg',
+    disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
+    iconWidth: 365,
+    iconHeight: 226,
+    signpost: '/images/home-earth/signpost-cave.svg',
+    signpostWidth: 170,
+    signpostHeight: 59,
+    signpostX: 50,
+    signpostY: -40,
+    x: 1200,
+    y: 360,
+    rotate: 44,
+    path: '/cave',
+  }
 ]
