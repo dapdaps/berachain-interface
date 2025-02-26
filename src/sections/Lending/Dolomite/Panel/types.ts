@@ -16,11 +16,13 @@ export interface TabPanelProps {
   tokens: TokenInfo[];
   showRateSwitch?: boolean;
   rateKey: 'APY' | 'APR',
+  rateOrder: 'asc' | 'desc',
   totalRateLabel: string;
   totalBalanceLabel: string;
   loading?: boolean;
   CHAIN_ID: number;
   setRateKey: (rateKey: 'APY' | 'APR') => void;
+  setRateOrder: (rateOrder: 'asc' | 'desc') => void;
   onSuccess?(): void;
 }
 

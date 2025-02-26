@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import HoneypotCard from "@/sections/marketplace/components/honeypot-card/index";
 import PageBack from "@/components/back";
@@ -34,7 +34,8 @@ const MemeTokens: any = [
   //   volume: "$0.9717"
   // },
   bera.yeet,
-  bera.bonga
+  bera.bonga,
+  bera.bm,
   // {
   //   ...beraB.bebe,
   //   price: "$0.0000001",
@@ -98,6 +99,9 @@ export const MoreButton = (props: {
 
 const MarketplaceView = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const openFrom = searchParams.get("from");
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>(
@@ -122,7 +126,8 @@ const MarketplaceView = () => {
       item.tokens[80094].forEach((token: any) => {
         if (
           // hide BERA
-          token.isNative ||
+          // @Amy Add a BERA token to the marketplace, with the swap defaulting to display HONEY-BERA
+          // token.isNative ||
           // do not display Meme tokens in the Hot section, ensuring there is no overlap with the sections below.
           MemeTokens.some(
             (meme: any) =>
@@ -176,6 +181,13 @@ const MarketplaceView = () => {
     setDefaultInputCurrency(_defaultInput);
     setSelectedRecord(item);
   };
+
+  useEffect(() => {
+    if (openFrom !== 'bera-price') {
+      return;
+    }
+    onSwap(bera.bera);
+  }, [openFrom]);
 
   return (
     <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]">
