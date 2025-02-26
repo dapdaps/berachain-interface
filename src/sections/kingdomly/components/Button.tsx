@@ -1,10 +1,10 @@
-import { FC } from 'react';
-import { useCountDown } from '../hooks/use-count-down';
-import { MintStatus } from '../types';
-import { useAccount, useSwitchChain } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
-import Loading from '@/components/loading';
-import { DEFAULT_CHAIN_ID } from '@/configs';
+import { FC } from "react";
+import { useCountDown } from "../hooks/use-count-down";
+import { MintStatus } from "../types";
+import { useAccount, useSwitchChain } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
+import Loading from "@/components/loading";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 interface MintButtonProps {
   status: MintStatus;
@@ -14,22 +14,21 @@ interface MintButtonProps {
   onCountdownEnd?: () => void;
 }
 
-const Button: FC<MintButtonProps> = ({ 
-  status, 
+const Button: FC<MintButtonProps> = ({
+  status,
   timestamp,
   onClick,
   loading,
-  onCountdownEnd
+  onCountdownEnd,
 }) => {
-  console.log(status, '<++=====currentGroup')
-    const { address, chainId } = useAccount();
-    const modal = useAppKit();
+  const { address, chainId } = useAccount();
+  const modal = useAppKit();
 
-    const { isPending, switchChain } = useSwitchChain();
+  const { isPending, switchChain } = useSwitchChain();
 
   if (!address) {
     return (
-      <button 
+      <button
         className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
         onClick={() => modal.open()}
       >
@@ -38,31 +37,32 @@ const Button: FC<MintButtonProps> = ({
     );
   }
 
-
   if (DEFAULT_CHAIN_ID !== chainId) {
     return (
-      <button 
-      disabled={isPending || loading}
-      className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
-      onClick={() => switchChain({
-        chainId: DEFAULT_CHAIN_ID,
-      })}
-    >
-      Switch Network
-    </button>
-    )
-  }
-  
-
-
-  if (status === 'upcoming') {
-    console.log(timestamp, 'timestamp')
-    return <RenderCountDown timestamp={timestamp} onCountdownEnd={onCountdownEnd} />
+      <button
+        disabled={isPending || loading}
+        className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
+        onClick={() =>
+          switchChain({
+            chainId: DEFAULT_CHAIN_ID,
+          })
+        }
+      >
+        Switch Network
+      </button>
+    );
   }
 
-  if (status === 'closed') {
+  if (status === "upcoming") {
+    console.log(timestamp, "timestamp");
     return (
-      <button 
+      <RenderCountDown timestamp={timestamp} onCountdownEnd={onCountdownEnd} />
+    );
+  }
+
+  if (status === "closed") {
+    return (
+      <button
         className="w-full bg-[#FFDC50] border font-bold border-black h-[46px] font-Montserrat text-[18px] rounded-[10px] disabled:bg-opacity-30"
         disabled
       >
@@ -71,23 +71,27 @@ const Button: FC<MintButtonProps> = ({
     );
   }
 
-
   switch (status) {
-    case 'live':
+    case "live":
       return (
-        <button 
+        <button
           className="w-full bg-[#FFDC50] font-bold border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
           onClick={onClick}
           disabled={loading}
         >
-          {
-        loading ? <div className='flex leading-[1] w-full items-center justify-center gap-2'><Loading />Minting...</div> : 'Mint Now'
-          }
+          {loading ? (
+            <div className="flex leading-[1] w-full items-center justify-center gap-2">
+              <Loading />
+              Minting...
+            </div>
+          ) : (
+            "Mint Now"
+          )}
         </button>
       );
-    case 'sold_out':
+    case "sold_out":
       return (
-        <button 
+        <button
           className="w-full bg-[#FFDC50] font-bold border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px] disabled:bg-opacity-30"
           disabled
         >
@@ -101,31 +105,29 @@ const Button: FC<MintButtonProps> = ({
 
 export default Button;
 
-
 const RenderCountDown = ({
   timestamp,
-  onCountdownEnd
+  onCountdownEnd,
 }: {
-  timestamp?: number
-  onCountdownEnd?: () => void
+  timestamp?: number;
+  onCountdownEnd?: () => void;
 }) => {
-
   if (!timestamp) {
     return null;
   }
 
   const countdown = useCountDown({
     targetTimestamp: timestamp || 0,
-    format: ' DDd HHh mmm sss',
-    onEnd: onCountdownEnd
+    format: " DDd HHh mmm sss",
+    onEnd: onCountdownEnd,
   });
 
   return (
-    <button 
+    <button
       className="w-full bg-[#FFDC50] border font-bold border-black h-[46px] font-Montserrat text-[18px] rounded-[10px] disabled:bg-opacity-30"
       disabled
     >
       {countdown}
     </button>
   );
-}
+};
