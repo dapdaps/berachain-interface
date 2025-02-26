@@ -32,7 +32,7 @@ const generateImageUrls = (category: string, level: number, isActive: boolean) =
 };
 
 
-export const useGameItems = () => {
+export const useGameItems = ({ round }: { round: number }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [moduleConfigs, setModuleConfigs] = useState<Record<ModuleType, ModuleConfig>>(ModuleConfigs);
@@ -43,10 +43,12 @@ export const useGameItems = () => {
   const fetchGameItems = async () => {
     try {
       setLoading(true);
-      const response = await get(`/api/game/items?game_category=bera&address=${address}`);
-      if (response.code !== 0 ) return
+      const response = await get(`/api/beracave/items`);
+      const response2 = await get(`/api/beracave/items/${address || ''}/${round}`)
+      if (response.code !== 0 || response2.code !== 0) return
 
-      const groupedByCategory = response.data.reduce((acc: Record<string, GameItem[]>, item: GameItem) => {
+      const sortedItems = response.data.sort((a: any, b: any) => a.level - b.level)
+      const groupedByCategory = sortedItems.reduce((acc: Record<string, GameItem[]>, item: GameItem) => {
         if (!acc[item.category]) {
           acc[item.category] = [];
         }
@@ -66,7 +68,7 @@ export const useGameItems = () => {
             const { icon, popoverIcon } = generateImageUrls(
               item.category,
               item.level,
-              item.pc_item
+              item.pc_item || response2?.data?.findIndex((_item: any) => _item.name === item.name) > -1 
             );
 
             return {
@@ -97,7 +99,7 @@ export const useGameItems = () => {
     }
 
     fetchGameItems();
-  }, [address]);
+  }, [address, round]);
 
   return {
     moduleConfigs,

@@ -21,7 +21,7 @@ export default function SwapPage() {
       case "kodiak":
         handleReport(isMobile ? "1017-004" : "1012-004");
         break;
-      case "bex":
+      case "beraswap":
         handleReport(isMobile ? "1017-005" : "1012-005");
         break;
       case "ooga-booga":

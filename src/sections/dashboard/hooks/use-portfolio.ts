@@ -1,17 +1,18 @@
-import { useState } from 'react';
-import Big from 'big.js';
-import { useAccount } from 'wagmi';
-import { useAuthQuery } from '@/hooks/use-auth-query';
-import { get } from '@/utils/http';
-import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
+import { useState } from "react";
+import Big from "big.js";
+import { useAccount } from "wagmi";
+import { useAuthQuery } from "@/hooks/use-auth-query";
+import { get } from "@/utils/http";
+import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
+import { trim } from 'lodash';
 
 const DAppPath: any = {
-  Bend: '/lending/bend',
-  Dolomite: '/lending/dolomite',
-  Infrared: '/liquidity/infrared',
-  Kodiak: '/dex/kodiak',
-  Bex: '/dex/bex',
-  'Ooga Booga': '/dex/ooga-booga',
+  Bend: "/lending/bend",
+  Dolomite: "/lending/dolomite",
+  Infrared: "/liquidity/infrared",
+  Kodiak: "/dex/kodiak",
+  BeraSwap: "/dex/beraswap",
+  "Ooga Booga": "/dex/ooga-booga"
 };
 
 export function usePortfolio(props: Props) {
@@ -29,13 +30,10 @@ export function usePortfolio(props: Props) {
       setLoading(true);
       try {
         setDapps([]);
-        const result = await get(`/db3`, {
-          url: 'api/balance/dapp/list',
-          params: JSON.stringify({
-            address,
-            chain_id: currentChain.id
-          })
-        });
+        const result = await get(`/api.db3.app/api/balance/dapp/list`, {
+          address,
+          chain_id: currentChain.id
+        }, { isSkipFormatUrl: true });
 
         let _totalBalance = Big(0);
         const data: any = result?.data?.list || [];
@@ -44,12 +42,29 @@ export function usePortfolio(props: Props) {
         const _dappsByChain: any = networkList.map((chain: any) => ({
           chainId: chain.id,
           totalUsdValue: Big(0),
-          totalUsd: '0.00',
+          totalUsd: "0.00",
           dappList: [],
           logo: chain.icon,
           name: chain.name
         }));
+
+        const uniqData: any = [];
         for (const _dapp of data) {
+          if (!_dapp.assets) continue;
+          for (const typeAsset of _dapp.assets) {
+            typeAsset.version = trim(_dapp.version || '');
+          }
+          const uniqIdx = uniqData.findIndex((_it: any) => _it.name === _dapp.name);
+          if (uniqIdx > -1) {
+            _dapp.assets.forEach((asset: any) => {
+              uniqData[uniqIdx].assets.push(asset);
+            });
+            continue;
+          }
+          uniqData.push(_dapp);
+        }
+
+        for (const _dapp of uniqData) {
           let dappTotalUsd = Big(0);
           const dappType = _dapp.type;
           if (!_dapp.assets) continue;
@@ -63,7 +78,7 @@ export function usePortfolio(props: Props) {
               tokenAsset.tokenLogo = getTokenLogo(tokenAsset.symbol);
 
               // Leveraged Farming
-              if (['Leveraged Farming'].includes(dappType)) {
+              if (["Leveraged Farming"].includes(dappType)) {
                 // The first item in the innermost assets is Supply
                 if (i === 0) {
                   typeAsset.totalUsd = typeAsset.totalUsd.plus(
@@ -81,7 +96,7 @@ export function usePortfolio(props: Props) {
               }
               // other dApp types
               else {
-                if (assetType === 'Borrow') {
+                if (assetType === "Borrow") {
                   typeAsset.totalUsd = typeAsset.totalUsd.minus(
                     tokenAsset.usd || 0
                   );
@@ -102,7 +117,7 @@ export function usePortfolio(props: Props) {
             chainLogo: currentChain.icon,
             dappLogo: getDappLogo(_dapp.name),
             detailList: _dapp.assets || [],
-            path: DAppPath[_dapp.name],
+            path: DAppPath[_dapp.name]
           };
           dappsList.push(dappItem);
 
@@ -129,7 +144,7 @@ export function usePortfolio(props: Props) {
         setDappsByChain(_dappsByChainSorted);
         setTotalBalance(_totalBalance);
       } catch (err: any) {
-        console.log('query dApps failed: %o', err);
+        console.log("query dApps failed: %o", err);
       }
       setLoading(false);
     },

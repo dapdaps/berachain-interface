@@ -63,7 +63,7 @@ const LazyImage = (props: Props) => {
               setLoaded(true);
             }}
             onError={(e) => {
-              console.log('LazyImage caught the error: %o', e);
+              console.log('LazyImage caught the error: %o, src: %s', e, src);
             }}
           />
         )}

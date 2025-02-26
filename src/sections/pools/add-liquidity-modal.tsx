@@ -1,26 +1,21 @@
 "use client";
 
-import { useRef, forwardRef, useState, useEffect } from "react";
+import { useRef, forwardRef, useState, useEffect, useMemo } from "react";
 import BasicModal from "./components/modal";
-import Bex from "./bex/add-liquidity";
+import BeraSwap from "./beraswap/add-liquidity";
 import Kodiak from "./kodiak/add-liquidity";
 import useIsMobile from "@/hooks/use-isMobile";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
-
-  console.log('====dex====', dex)
-  if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
+  if (dex?.toLowerCase() === "beraswap") return <BeraSwap {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
 });
 
 export default function AddLiquidityModal({
-  token0,
-  token1,
-  version,
   dex,
-  fee,
   open,
   onClose,
+  data,
   ...rest
 }: any) {
   const panelRef = useRef<any>();
@@ -31,16 +26,29 @@ export default function AddLiquidityModal({
     setHasClearAll(!!panelRef.current?.onClearAll);
   }, []);
 
+  const title = useMemo(() => {
+    if (isMobile && data.version === "v3") return "Set Price Range";
+    if (data.token0 && data.token1)
+      return `Provide ${data.token0.symbol}-${data.token1.symbol}`;
+    return `Provide ${data.symbol}`;
+  }, [isMobile, data, data]);
+
+  const params = useMemo(() => {
+    if (dex?.toLowerCase() === "beraswap") return { data };
+    return {
+      defaultToken0: data.token0,
+      defaultToken1: data.token1,
+      defaultFee: data.fee,
+      version: data.version
+    };
+  }, [data, dex]);
+
   return (
     <BasicModal
-      title={
-        isMobile && version === "v3"
-          ? "Set Price Range"
-          : `Provide ${token0?.symbol}-${token1?.symbol}`
-      }
+      title={title}
       dex={dex}
-      fee={fee}
-      version={version}
+      fee={data.fee}
+      version={data.version}
       open={open}
       hasClearAll={hasClearAll}
       onClose={onClose}
@@ -51,14 +59,11 @@ export default function AddLiquidityModal({
       <div className="pb-[20px] md:max-h-[80dvh] md:overflow-y-auto">
         <AddLiquidityPanel
           dex={dex}
-          defaultToken0={token0}
-          defaultToken1={token1}
-          defaultFee={fee}
-          version={version}
           ref={panelRef}
           onSuccess={() => {
             onClose();
           }}
+          {...params}
           {...rest}
         />
       </div>

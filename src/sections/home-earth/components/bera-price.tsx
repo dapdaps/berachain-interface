@@ -5,22 +5,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { numberFormatter } from '@/utils/number-formatter';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
 import Big from 'big.js';
+import { useRouter } from 'next/navigation';
 
 const BeraPrice = (props: any) => {
   const { className } = props;
 
   const { beraPrice } = useContext(HomeEarthContext);
+  const router = useRouter()
 
   return (
-    <div className={clsx('absolute pt-[10px] flex flex-col items-center left-[320px] bottom-0 z-[5] w-[137px] h-[117px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain', className)}>
+    <div onClick={() => router.push('/marketplace')} className={clsx('absolute flex flex-col items-center right-[10px] bottom-0 z-[5] w-[137px] h-[124px] overflow-hidden bg-[url("/images/home-earth/bera-price-signpost.svg")] bg-no-repeat bg-center bg-contain cursor-pointer', className)}>
       <AnimatePresence mode="wait">
         {
           Big(beraPrice?.percentage || 0).lt(0) ? (
             <motion.img
               key="down"
-              src="/images/home-earth/bera-price-down-icon.svg"
+              src="/images/home-earth/price-down.gif"
               alt=""
-              className="w-[38px] h-[38px]"
+              className="w-[49px] h-[38px]"
               {...VisibleAnimation}
             />
           ) : (

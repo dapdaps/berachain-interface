@@ -32,9 +32,10 @@ export const getTokenLogo = (name: string) => {
 };
 
 export const executionTokenWay = (record: any) => {
+  const tokenKeys = ['tokens_in'];
   if (!record) {
     return {
-      tokenKey: 'tokens_in',
+      tokenKeys: tokenKeys,
       method: ''
     };
   }
@@ -48,8 +49,16 @@ export const executionTokenWay = (record: any) => {
     method = record.method;
   }
 
+  if (['borrow', 'remove', 'repayborrow', 'withdraw'].includes(record.sub_type.toLowerCase())) {
+    tokenKeys[0] = 'tokens_out';
+  }
+
+  if (record.type === 'swap') {
+    tokenKeys.unshift('tokens_out');
+  }
+
   return {
-    tokenKey: ['borrow', 'remove', 'repayborrow', 'withdraw'].includes(record.sub_type.toLowerCase()) ? 'tokens_out' : 'tokens_in',
+    tokenKeys: tokenKeys,
     method
   };
 };
@@ -57,40 +66,70 @@ export const executionTokenWay = (record: any) => {
 export const formatExecution = (record: any, isMobile?: boolean) => {
   if (!record) return '';
 
-  const { tokenKey: key, method } = executionTokenWay(record);
+  const { tokenKeys: keys, method } = executionTokenWay(record);
 
   const formatUsd = (usdValue: any) => {
     const usd = numberFormatter(usdValue, 2, true, { prefix: '$' });
     return `${usd}`;
   };
 
-  let amount: any;
-  if (record[key]) {
-    amount = (
-      <>
-        {record[key].map((it: any, idx: number) => (
-          <div className="flex gap-[4px]" key={idx}>
-            <LazyImage
-              className="shrink-0 rounded-full"
-              src={getTokenLogo(it.symbol)}
-              alt=""
-              width={20}
-              height={20}
-              fallbackSrc={DefaultIcon}
-            />
-            <span
-              className=""
-              style={{
-                color: key === 'tokens_out' ? '' : '#06C17E'
-              }}
-            >
-              {`${key === 'tokens_out' ? '- ' : '+ '}${numberFormatter(it.amount, 4, true)} ${it.symbol} (${formatUsd(it.usd)})`}
-            </span>
-          </div>
-        ))}
-      </>
-    );
-  }
+  const getDirection = (key: string) => {
+    const add = {
+      direction: '+ ',
+      color: '#06C17E'
+    };
+    const minus = {
+      direction: '- ',
+      color: ''
+    }
+    if (key === 'tokens_out') {
+      if (['swap', 'bridge'].includes(record.type)) {
+        return add;
+      }
+      return minus;
+    }
+    if (['swap', 'bridge'].includes(record.type)) {
+      return minus;
+    }
+    return add;
+  };
+
+  const amount: any = (
+    <>
+      {
+        keys.map((key) => {
+          const direction = getDirection(key);
+          if (record[key]) {
+            return (
+              <>
+                {record[key].map((it: any, idx: number) => (
+                  <div className="flex gap-[4px]" key={idx}>
+                    <LazyImage
+                      className="shrink-0 rounded-full"
+                      src={getTokenLogo(it.symbol)}
+                      alt=""
+                      width={20}
+                      height={20}
+                      fallbackSrc={DefaultIcon}
+                    />
+                    <span
+                      className=""
+                      style={{
+                        color: direction.color
+                      }}
+                    >
+                      {`${direction.direction}${numberFormatter(it.amount, 4, true)} ${it.symbol} (${formatUsd(it.usd)})`}
+                    </span>
+                  </div>
+                ))}
+              </>
+            );
+          }
+          return null;
+        })
+      }
+    </>
+  )
 
   return (
     <div className="flex items-center flex-wrap gap-[6px] break-all text-[14px]">

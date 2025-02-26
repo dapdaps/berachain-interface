@@ -19,13 +19,10 @@ export function useWallet(props: Props) {
     query: async () => {
       setLoading(true);
       try {
-        const result = await get(`/db3`, {
-          url: 'api/balance/list',
-          params: JSON.stringify({
-            address,
-            chain_id: currentChain.id,
-          }),
-        });
+        const result = await get(`/api.db3.app/api/balance/list`, {
+          address,
+          chain_id: currentChain.id,
+        }, { isSkipFormatUrl: true });
         const _data = result?.data?.list ?? [];
         const _networks: any = {};
         let _totalBalance = new Big(0);

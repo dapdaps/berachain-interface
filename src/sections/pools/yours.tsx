@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Bex from './bex/yours';
-import Kodiak from './kodiak/yours';
+import BeraSwap from "./beraswap/yours";
+import Kodiak from "./kodiak/yours";
 
 const Panel = ({ dex, ...rest }: any) => {
-  if (dex?.toLowerCase() === 'bex') return <Bex {...rest} />;
-  if (dex?.toLowerCase() === 'kodiak') return <Kodiak {...rest} />;
+  if (dex?.toLowerCase() === "beraswap") return <BeraSwap {...rest} />;
+  if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} />;
 };
 
 export default function Yours({ dex }: any) {

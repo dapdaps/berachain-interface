@@ -2,6 +2,7 @@ import Empty from "@/components/empty";
 import CircleLoading from "@/components/circle-loading";
 import PoolTable from "../../pool-table";
 import Button from "@/components/button";
+import { numberFormatter } from "@/utils/number-formatter";
 
 export default function Mobile({ pools, loading, onAction }: any) {
   return (
@@ -16,7 +17,13 @@ export default function Mobile({ pools, loading, onAction }: any) {
           </div>
           <div className="flex justify-between items-center mt-[20px]">
             <div className="text-[14px] text-[#3D405A]">Your Shares</div>
-            <div className="text-[16px]">-</div>
+            <div className="text-[16px]">
+              {item.shares
+                ? numberFormatter(item["shares"], 2, true, {
+                    isShort: true
+                  }) + "%"
+                : "-"}
+            </div>
           </div>
           <div className="flex gap-[8px] mt-[16px] justify-end">
             <Button

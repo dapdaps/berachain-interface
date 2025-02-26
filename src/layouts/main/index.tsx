@@ -11,12 +11,12 @@ import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
 import GuidingTutorial from '@/components/GuidingTour/mainnet';
-import { useActivityStore } from "@/stores/useActivityStore";
 import { SceneContext } from '@/context/scene';
 import { SceneStatus } from '@/configs/scene';
 import RainyDay from '@/components/rainy-day';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useActivityStore } from "@/stores/useActivityStore";
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -67,7 +67,11 @@ const MainLayout = (props: Props) => {
       return { background: rainyDay?.bg };
     }
 
-    if (pathname === '/' && !isDefaultTheme()) {
+    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent'].includes(pathname) 
+        || pathname.startsWith('/lending/') 
+        || pathname.startsWith('/staking/') 
+        || pathname.startsWith('/dex/')) 
+        && !isDefaultTheme()) {
       return {
         backgroundColor: themeConfig.primaryColor
       };

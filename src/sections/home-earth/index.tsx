@@ -50,8 +50,8 @@ const HomeEarth = () => {
 
   const navigationRef = useRef<any>();
   const navigationControls = useRef<any>();
-  const navigationRotation = useMotionValue(-40);
-  const navigationEndRotationRef = useRef(-40);
+  const navigationRotation = useMotionValue(-50);
+  const navigationEndRotationRef = useRef(-50);
   const navigationStartRotationRef = useRef(0);
   const navigationDragStartedRef = useRef(false);
   const navigationDragEndedTimesRef = useRef(0);
@@ -197,13 +197,13 @@ const HomeEarth = () => {
             placement={PopoverPlacement.Top}
             offset={0}
             content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg':'/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
-            triggerContainerClassName="absolute z-[4] cursor-pointer bottom-0 right-[22%] transition-transform hover:scale-110"
+            triggerContainerClassName={clsx('absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110', isDefaultTheme() ? 'right-[150px]' : 'right-[130px]')}
           >
             <div className='w-full h-full relative'>
               <img
                 onClick={()=> toggleTheme()}
                 src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
-                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[138px] h-[126px]' : 'w-[145px] h-[139px]')}
+                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[103px] h-[95px]' : 'w-[136px] h-[108px]')}
                 alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
               />
               {

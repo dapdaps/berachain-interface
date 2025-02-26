@@ -34,7 +34,7 @@ const menuItems = [
   {
     id: 6,
     title: "Portfolio",
-    href: "/dashboard",
+    href: "/portfolio",
     dataBp: "1015-002-006",
     disabled: true
   },
@@ -55,6 +55,24 @@ const dapps: DApp[] = [
     icon: "/images/dapps/infrared.svg",
     href: "/staking/infrared"
   },
+  // {
+  //   id: "berps",
+  //   name: "Berps",
+  //   icon: "/images/dapps/infrared/berps.svg",
+  //   href: "/staking/berps"
+  // },
+  // {
+  //   id: "beraswap",
+  //   name: "BeraSwap",
+  //   icon: "/images/dapps/beraswap.svg",
+  //   href: "/dex/beraswap"
+  // },
+  // {
+  //   id: "bend",
+  //   name: "Bend",
+  //   icon: "/images/dapps/bend.svg",
+  //   href: "/lending/bend"
+  // },
   {
     id: "kodiak",
     name: "Kodiak",

@@ -17,8 +17,22 @@ import {
   manta,
   scroll,
   blast,
-  mode
+  mode,
+  aurora
 } from "@reown/appkit/networks";
+
+
+export const turbo = {
+  id: 1313161567,
+  name: "TurboChain",
+  nativeCurrency: { name: "Turbo", symbol: "TURBO", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://rpc-0x4e45415f.aurora-cloud.dev"] },
+  },
+  blockExplorers: {
+    default: { name: "Explorer", url: "https://explorer.turbo.aurora.dev" },
+  },
+} as const satisfies any
 
 const chains: Record<number, Chain | any> = {
   80094: {
@@ -111,6 +125,14 @@ const chains: Record<number, Chain | any> = {
   },
   [arbitrum.id]: {
     ...arbitrum,
+    isWalletSupport: false
+  },
+  [turbo.id]: {
+    ...turbo,
+    isWalletSupport: false
+  },
+  [aurora.id]: {
+    ...aurora,
     isWalletSupport: false
   }
 };
