@@ -1,6 +1,7 @@
 import FlexTable, { Column } from '@/components/flex-table';
 import LazyImage from '@/components/layz-image';
 import { DefaultIcon, txTimeFormatter } from '@/sections/dashboard/utils';
+import clsx from 'clsx';
 
 export default function Laptop({
   records,
@@ -12,6 +13,7 @@ export default function Laptop({
   formatColumns = (_columns: Column[]) => _columns,
   showHeader = true,
   tableBodyClassName,
+  className
 }: any) {
   const columns: Column[] = [
     {
@@ -77,7 +79,7 @@ export default function Laptop({
   ];
 
   return (
-    <div className='h-full overflow-y-auto'>
+    <div className={clsx("h-full overflow-y-auto", className)}>
       <FlexTable
         showHeader={showHeader}
         bodyClass={tableBodyClassName}

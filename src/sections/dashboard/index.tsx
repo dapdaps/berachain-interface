@@ -98,10 +98,7 @@ const DashboardView = () => {
       <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]" />
       <PageTitle className="relative flex justify-center items-center pt-[30px] md:pt-[16px] md:text-left md:pl-[40%]">
         Portfolio
-        <FeeRebate
-          className="absolute translate-y-[5px] translate-x-[370px]"
-          value={123}
-        />
+        <FeeRebate className="absolute translate-y-[5px] translate-x-[370px]" />
       </PageTitle>
       <div className="w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]">
         <Tabs

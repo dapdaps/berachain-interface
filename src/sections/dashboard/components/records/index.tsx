@@ -30,6 +30,7 @@ interface Props {
   isReport?: boolean;
   showHeader?: boolean;
   tableBodyClassName?: string | ((record: any, index: number) => string);
+  className?: string;
   onNext(): void;
   onPrev(): void;
   formatColumns?(columns: Column[]): Column[];
