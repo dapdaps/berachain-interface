@@ -122,7 +122,8 @@ const MarketplaceView = () => {
       item.tokens[80094].forEach((token: any) => {
         if (
           // hide BERA
-          token.isNative ||
+          // @Amy Add a BERA token to the marketplace, with the swap defaulting to display HONEY-BERA
+          // token.isNative ||
           // do not display Meme tokens in the Hot section, ensuring there is no overlap with the sections below.
           MemeTokens.some(
             (meme: any) =>
