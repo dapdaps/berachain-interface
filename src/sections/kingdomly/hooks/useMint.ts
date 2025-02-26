@@ -4,6 +4,7 @@ import { CHAIN_RPC_URLS } from "./usePartnerCollections";
 import { NFTCollectionWithStatus } from "../types";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
+import Big from "big.js";
 
 interface EligibilityGroup {
   id: number;
@@ -68,115 +69,33 @@ export const useMint = () => {
       
       const currentGroup = collection.mint_group_data.find(g => g.id === currentGroupId);
       if (!currentGroup) throw new Error("Invalid mint group");
-
-      const isPublicMint = currentGroup.name.toLowerCase().includes('public') ||
-                          currentGroup.mint_group_description?.toLowerCase().includes('public');
-                          
+         
       const max_mint_per_wallet = await contract.maxMintPerWallet(currentGroupId);   
-      
       const balance = await contract.balanceOf(account);
-      const eligibilityResult = await checkEligibility(collection.slug, account);
-      console.log('eligibilityResult', eligibilityResult);
+      const [feeAmount, totalCostWithFee] = await contract.quoteBatchMint(currentGroupId, amount);
 
-      if (isPublicMint) {
-        // Public mint 逻辑
-        if (!eligibilityResult?.eligible_mint_groups || eligibilityResult.eligible_mint_groups.length === 0) {
-          if (balance.add(amount) > max_mint_per_wallet) {
-            toast.fail({
-              title: `Sorry sire, you can only mint up to ${max_mint_per_wallet} NFTs in public sale.`,
-            });
-            return null;
-          }
-        } else {
-          let otherGroupsBalance = 0;
-          
-          if (!eligibilityResult?.eligible_mint_groups) {
-            console.warn('No eligible groups found');
-            return null;
-          }
-          
-          // 使用Promise.all并行获取所有组的mintQuotas
-          const quotaPromises = eligibilityResult.eligible_mint_groups
-            .filter(group => !group.name.toLowerCase().includes('public'))
-            .map(async group => {
-              const mintQuota = await contract.mintQuotas(group.id, account);
-              console.log(`Group ${group.id} mintQuota:`, mintQuota.toString());
-              return {
-                groupId: group.id,
-                quota: mintQuota
-              };
-            });
-            
-          const quotaResults = await Promise.all(quotaPromises);
-          
-          // 计算其他组已mint的总数
-          for (const {groupId, quota} of quotaResults) {
-            if (quota.gt(0)) {
-              const groupMaxMint = await contract.maxMintPerWallet(groupId);
-              const groupBalance = groupMaxMint.sub(quota);
-              console.log(`Group ${groupId}: max=${groupMaxMint}, quota=${quota}, balance=${groupBalance}`);
-              otherGroupsBalance += Number(groupBalance.toString());
-            }
-          }
-          
-          // 转换余额并计算
-          const balanceNumber = Number(balance.toString());
-          const publicMintCount = balanceNumber - otherGroupsBalance;
-          
-          console.log('Final calculation:', {
-            balance: balanceNumber,
-            otherGroupsBalance,
-            publicMintCount,
-            maxAllowed: max_mint_per_wallet.toString(),
-            amount
-          });
-          
-          if (publicMintCount + amount > max_mint_per_wallet) {
-            toast.fail({
-              title: `Sorry sire, you can only mint up to ${max_mint_per_wallet} NFTs in public sale.`,
-            });
-            return null;
-          }
-        }
-      } else {
-        // 其他组的 mint 逻辑
-        if (!eligibilityResult) {
-          toast.fail({
-            title: "Sorry sire, the address is not allowlisted. Please ask the owner if you believe this is an error.",
-          });
-          return null;
-        }
-
-        const eligibleGroup = eligibilityResult.eligible_mint_groups.find(
-          group => group.id === currentGroupId
-        );
-
-        if (!eligibleGroup) {
-          toast.fail({
-            title: "Sorry sire, you don't have access to this group.",
-          });
-          return null;
-        }
-
-        // 从合约获取实际的quota
-        const currentQuota = await contract.mintQuotas(currentGroupId, account);
-        
-        if (currentQuota.eq(0)) {
-          toast.fail({
-            title: "Sorry sire, you don't have quota for this group.",
-          });
-          return null;
-        }
-
-        if (amount > Number(currentQuota.toString())) {
-          toast.fail({
-            title: `Sorry sire, you can only mint up to ${currentQuota.toString()} NFTs in this group.`,
-          });
-          return null;
-        }
+      if (Big(balance).lt(feeAmount)) {
+        toast.fail({
+          title: `Sorry sire, you don't have enough balance to mint NFT.`,
+        });
+        return null;
       }
 
-      const [feeAmount, totalCostWithFee] = await contract.quoteBatchMint(currentGroupId, amount);
+      if (balance.add(amount) > max_mint_per_wallet) {
+        toast.fail({
+          title: `Sorry sire, you can only mint up to ${max_mint_per_wallet} NFTs`,
+        });
+        return null;
+      }
+
+      const [hasEligibilityResult, errorTips] = await contract.canMintCheck(20, currentGroup.id, account);
+
+      if (!hasEligibilityResult || errorTips) {
+        toast.fail({
+          title: `Sorry sire, ${errorTips}`,
+        });
+        return null;
+      }
 
       const tx = await contract.batchMint(amount, currentGroupId, {
         value: totalCostWithFee.toString(),
