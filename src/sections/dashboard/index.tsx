@@ -12,6 +12,7 @@ import { useWallet } from "@/sections/dashboard/hooks/use-wallet";
 import { usePortfolio } from "@/sections/dashboard/hooks/use-portfolio";
 import { useTvl } from "@/sections/dashboard/hooks/use-tvl";
 import { useRecords } from "@/sections/dashboard/hooks/use-records";
+import FeeRebate from "@/sections/dashboard/components/fee-rebate";
 
 const DashboardWallet = dynamic(
   () => import("@/sections/dashboard/components/wallet")
@@ -98,8 +99,9 @@ const DashboardView = () => {
   return (
     <BearBackground type="dashboard">
       <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]" />
-      <PageTitle className="pt-[30px] md:pt-[16px] md:text-left md:pl-[40%]">
+      <PageTitle className="relative flex justify-center items-center pt-[30px] md:pt-[16px] md:text-left md:pl-[40%]">
         Portfolio
+        <FeeRebate className="absolute translate-y-[5px] translate-x-[370px]" />
       </PageTitle>
       <div className="w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]">
         <Tabs
