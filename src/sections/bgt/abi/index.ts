@@ -21,9 +21,9 @@ export const BGT_ABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "validator",
-        "type": "address"
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
       },
       {
         "internalType": "uint128",
@@ -40,17 +40,23 @@ export const BGT_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "validator",
+        "name": "user",
         "type": "address"
       },
       {
-        "internalType": "uint128",
-        "name": "amount",
-        "type": "uint128"
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
       }
     ],
     "name": "dropBoost",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -62,9 +68,9 @@ export const BGT_ABI = [
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "validator",
-        "type": "address"
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
       }
     ],
     "name": "boostedQueue",
@@ -87,21 +93,32 @@ export const BGT_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "validator",
+        "name": "user",
         "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
       }
     ],
     "name": "activateBoost",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "validator",
-        "type": "address"
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
       },
       {
         "internalType": "uint128",
@@ -122,9 +139,9 @@ export const BGT_ABI = [
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "validator",
-        "type": "address"
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
       }
     ],
     "name": "boosted",
@@ -137,7 +154,7 @@ export const BGT_ABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  },
+  }, ,
   {
     "inputs": [
       {
@@ -179,6 +196,24 @@ export const BGT_ABI = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "pubkey",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint128",
+        "name": "amount",
+        "type": "uint128"
+      }
+    ],
+    "name": "queueDropBoost",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

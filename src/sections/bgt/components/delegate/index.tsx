@@ -20,6 +20,8 @@ import Select from "./select";
 import Range from "@/components/range";
 import Back from "@/sections/bgt/validator/components/back";
 import useIsMobile from "@/hooks/use-isMobile";
+import useValidators from "./hooks/use-validators";
+import { formatLongText } from "@/utils/utils";
 const TABS = [
   {
     value: "Deposit",
@@ -38,10 +40,10 @@ interface IProps {
   validator: ValidatorType;
   operationType: OperationTypeType;
   onClose: VoidFunction;
-  onAddressSelect?(value: any): any;
+  onValidatorSelect?(value: any): any;
 }
 export default memo(function Delegate(props: IProps) {
-  const { visible, validator, operationType, onClose, onAddressSelect } = props;
+  const { visible, validator, operationType, onClose, onValidatorSelect } = props;
 
   const { provider, account } = useCustomAccount();
   const isMobile = useIsMobile();
@@ -49,6 +51,11 @@ export default memo(function Delegate(props: IProps) {
   const toast = useToast();
   const { addAction } = useAddAction("bgt");
   const { loading, delegationQueue, getDelegationQueue } = useDelegationQueue();
+
+  const {
+    validators,
+    getValidators
+  } = useValidators()
 
   const [state, updateState] = useMultiState({
     balance: "",
@@ -69,7 +76,7 @@ export default memo(function Delegate(props: IProps) {
       const response =
         operationType === "delegate"
           ? await contract?.unboostedBalanceOf(account)
-          : await contract?.boosted(account, validator?.address);
+          : await contract?.boosted(account, validator?.pubkey);
       updateState({
         balance: ethers.utils.formatUnits(response)
       });
@@ -82,9 +89,9 @@ export default memo(function Delegate(props: IProps) {
     return Big(state?.balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(state?.balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(state?.balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -148,8 +155,8 @@ export default memo(function Delegate(props: IProps) {
     const wei = ethers.utils.parseUnits(Big(state?.inAmount).toFixed(18), 18);
     executionContract({
       contract,
-      method: operationType === "delegate" ? "queueBoost" : "dropBoost",
-      params: [validator?.address, wei]
+      method: operationType === "delegate" ? "queueBoost" : "queueDropBoost",
+      params: [validator?.pubkey, wei]
     })
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
@@ -220,7 +227,7 @@ export default memo(function Delegate(props: IProps) {
     executionContract({
       contract,
       method: type === "confirm" ? "activateBoost" : "cancelBoost",
-      params: type === "confirm" ? [queue?.address] : [queue?.address, wei]
+      params: type === "confirm" ? [account, queue?.pubkey] : [queue?.pubkey, wei]
     })
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
@@ -268,17 +275,21 @@ export default memo(function Delegate(props: IProps) {
       updater: Date.now()
     });
   };
+
+  useEffect(() => {
+    getValidators()
+  }, [])
   useEffect(() => {
     if (visible && account) {
       getBalance();
-      getDelegationQueue();
+      validators && getDelegationQueue(validators);
     }
     updateState({
       inAmount: "",
       rangeIndex: -1,
       percentage: 0
     });
-  }, [visible, account, validator?.address, state?.updater]);
+  }, [visible, account, validators, validator?.address, state?.updater]);
   return (
     <>
       <Modal open={visible} onClose={onClose} innerStyle={{ width: "unset" }}>
@@ -303,10 +314,10 @@ export default memo(function Delegate(props: IProps) {
               }}
             >
               <div className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden">
-                <img src={validator?.icon} alt={validator?.name} />
+                <img src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={validator?.metadata?.name} />
               </div>
               <div className="ml-[8px] mr-[10px] w-[65px] text-ellipsis overflow-hidden text-black font-Montserrat text-[16px] whitespace-nowrap font-semibold leading-[90%]">
-                {validator?.name}
+                {validator?.metadata?.name ?? formatLongText(validator?.id, 4, 4)}
               </div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -325,7 +336,14 @@ export default memo(function Delegate(props: IProps) {
             </div>
           </div>
           <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
-            balance: {formatValueDecimal(state?.balance, "", 2)} BGT
+            balance: <span
+              onClick={() => {
+                updateState({
+                  inAmount: state?.balance
+                })
+              }}
+              className="underline cursor-pointer"
+            >{formatValueDecimal(state?.balance, "", 2)}</span> BGT
           </div>
           <div className="mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]">
             <div className="flex items-center gap-[8px]">
@@ -399,10 +417,10 @@ export default memo(function Delegate(props: IProps) {
                           <div className="relative shrink-0 overflow-hidden aspect-square flex items-center justify-center rounded-full text-foreground bg-background border border-border text-[8px] h-8 w-8">
                             <img
                               className="aspect-square h-full w-full rounded-full"
-                              src={queue?.icon}
+                              src={queue?.metadata?.logoURI}
                             />
                           </div>
-                          <div>{queue?.name}</div>
+                          <div>{queue?.metadata?.name}</div>
                         </div>
                         <div className="ml-8 text-muted-foreground">
                           <span className="relative inline-flex flex-row items-center text-nowrap">
@@ -429,7 +447,7 @@ export default memo(function Delegate(props: IProps) {
                         >
                           {state?.confirmAndCancelLoadingPosition[0] ===
                             "confirm" &&
-                          state?.confirmAndCancelLoadingPosition[1] ===
+                            state?.confirmAndCancelLoadingPosition[1] ===
                             index ? (
                             <CircleLoading size={14} />
                           ) : (
@@ -447,7 +465,7 @@ export default memo(function Delegate(props: IProps) {
                         >
                           {state?.confirmAndCancelLoadingPosition[0] ===
                             "cancel" &&
-                          state?.confirmAndCancelLoadingPosition[1] ===
+                            state?.confirmAndCancelLoadingPosition[1] ===
                             index ? (
                             <CircleLoading size={14} />
                           ) : (
@@ -499,7 +517,7 @@ export default memo(function Delegate(props: IProps) {
             selectVisible: false
           });
         }}
-        onAddressSelect={onAddressSelect}
+        onValidatorSelect={onValidatorSelect}
       />
     </>
   );

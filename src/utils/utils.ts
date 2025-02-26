@@ -49,23 +49,24 @@ export function getProtocolIcon(protocal) {
     bex: "/images/dapps/beraswap.svg",
     kodiak: "/images/dapps/kodiak.svg",
     berps: "/images/dapps/infrared/berps.svg",
-    aquabera: "/images/dapps/infrared/aquabera.svg"
+    aquabera: "/images/dapps/infrared/aquabera.svg",
+    hub: "/images/dapps/beraswap.svg"
   }
-  return ImageMapping?.[protocal] ?? "/images/dapps/dolomite.svg"
+  return ImageMapping?.[protocal?.toLocaleLowerCase()] ?? "/images/dapps/dolomite.svg"
 }
 
 export const isVideoFile = (url: string) => {
-    try {
-      const urlObj = new URL(url);
-      const pathname = urlObj.pathname;
-      const fileExtMatch = pathname.match(/\.([^./?]+)(?:[?#]|$)/);
-      if (!fileExtMatch) return false;
-      
-      const extension = fileExtMatch[1].toLowerCase();
-      const videoExtensions = ['mp4', 'webm', 'ogg'];
-      return videoExtensions.includes(extension);
-    } catch (e) {
-      const videoExtensions = ['.mp4', '.webm', '.ogg'];
-      return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-    }
-  };
+  try {
+    const urlObj = new URL(url);
+    const pathname = urlObj.pathname;
+    const fileExtMatch = pathname.match(/\.([^./?]+)(?:[?#]|$)/);
+    if (!fileExtMatch) return false;
+
+    const extension = fileExtMatch[1].toLowerCase();
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    return videoExtensions.includes(extension);
+  } catch (e) {
+    const videoExtensions = ['.mp4', '.webm', '.ogg'];
+    return videoExtensions.some(ext => url.toLowerCase().includes(ext));
+  }
+};

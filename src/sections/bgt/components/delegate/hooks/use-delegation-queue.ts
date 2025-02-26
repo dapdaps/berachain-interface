@@ -2,7 +2,7 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 import multicallAddresses from '@/configs/contract/multicall';
 import useCustomAccount from '@/hooks/use-account';
 import { BGT_ABI } from '@/sections/bgt/abi';
-import { BGT_ADDRESS, VALIDATORS } from '@/sections/bgt/config';
+import { BGT_ADDRESS } from '@/sections/bgt/config';
 import { ValidatorType } from '@/sections/bgt/types';
 import { multicall } from '@/utils/multicall';
 import Big from 'big.js';
@@ -11,22 +11,23 @@ import { useState } from 'react';
 export type QueueType = ValidatorType | { balance: string; blockNumberLast: any }
 
 const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
-export default function () {
-
+export default function useDelegationQueue() {
   const {
     provider, account
   } = useCustomAccount()
+  
   const [delegationQueue, setDelegationQueue] = useState<null | QueueType[]>(null)
   const [loading, setLoading] = useState(false)
 
-  const getDelegationQueue = async () => {
+  const getDelegationQueue = async (validators) => {
     setLoading(true)
     const calls: any = []
-    VALIDATORS.forEach(_validator => {
+    console.log('=======validators=======', validators)
+    validators?.forEach(_validator => {
       calls.push({
         address: BGT_ADDRESS,
         name: 'boostedQueue',
-        params: [account, _validator?.address]
+        params: [account, _validator?.pubkey]
       })
     })
     try {
@@ -47,7 +48,7 @@ export default function () {
           const balance = ethers.utils.formatUnits(boostedQueue[1])
           if (Big(balance).gt(0)) {
             _delegationQueue.push({
-              ...VALIDATORS[i],
+              ...validators[i],
               balance,
               blockNumberLast: boostedQueue[0],
               canConfirm: Big(difference).gt(8191),
@@ -64,7 +65,6 @@ export default function () {
       console.error(error)
     }
   }
-
   return {
     loading,
     delegationQueue,
