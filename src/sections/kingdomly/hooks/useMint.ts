@@ -35,7 +35,7 @@ export const checkEligibility = async (
     const data = await response.json();
 
     if ("error" in data) {
-      return data;
+      return null;
     }
 
     return data as EligibilityResponse;
@@ -63,13 +63,6 @@ export const useMint = () => {
       
       const currentGroup = collection.mint_group_data.find(g => g.id === currentGroupId);
       if (!currentGroup) throw new Error("Invalid mint group");
-      const eligibilityResult = await checkEligibility(collection.slug, account);
-      if (eligibilityResult && 'error' in eligibilityResult) {
-        toast.fail({
-          title: `Sorry sire, ${eligibilityResult.error}`,
-        });
-        return null;
-      }
 
       const [feeAmount, totalCostWithFee] = await contract.quoteBatchMint(currentGroupId, amount);
 
