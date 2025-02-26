@@ -83,10 +83,20 @@ const MainLayout = (props: Props) => {
       }
     }
 
+
+    if (pathname.startsWith('/invite/')) {
+      return {
+        height: '100vh',
+        overflow: 'hidden',
+      }
+    }
+
     return {};
   }, [currentScene, isRainyDay, rainyDay, pathname, isDefaultTheme, themeConfig.primaryColor]);
 
   const routes = ["/earn", "/activity/christmas"];
+
+
 
   return (
     <div

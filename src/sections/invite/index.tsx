@@ -109,22 +109,27 @@ const brands = [
   {
     name: "beraland",
     logo: "/images/invite/beraland.png",
-  },
-  {
-    name: "thc",
-    logo: "/images/invite/thc.png",
+    displayName: "BeraLand"
   },
   {
     name: "berabaddies",
     logo: "/images/invite/berabaddies.png",
+    displayName: "BeraBaddies"
   },
   {
     name: "thc",
     logo: "/images/invite/thc.png",
+    displayName: "THC"
   },
   {
     name: "thj",
     logo: "/images/invite/thj.png",
+    displayName: "THJ"
+  },
+  {
+    name: "cave",
+    logo: "/images/invite/cave.png",
+    displayName: "CAVE"
   }
 ]
 
@@ -194,7 +199,7 @@ const Content = () => {
             <div>Dear Bera:</div>
             <div className="mt-3">Welcome to Beratown: Your Gateway to Berachain</div>
             <div className="mt-3">Join Berachain's largest community hub on Beratown</div>
-            <div className="mt-3">You have been invited by <span className="underline">[{brand.name}]</span></div>
+            <div className="mt-3">You have been invited by <span className="underline">[{brand.displayName}]</span></div>
           </div>
           {
             address ? (
@@ -210,7 +215,7 @@ const Content = () => {
 
           <div className="w-full flex flex-col items-end justify-end mt-2 text-[20px] font-CherryBomb px-[40px] text-[#453636] leading-[18px]">
             <div>Love</div>
-            <div>{brand.name} & BeraTown</div>
+            <div>{brand.displayName} & BeraTown</div>
           </div>
         </div>
       </div>
