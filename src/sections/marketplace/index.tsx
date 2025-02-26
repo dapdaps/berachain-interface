@@ -34,7 +34,8 @@ const MemeTokens: any = [
   //   volume: "$0.9717"
   // },
   bera.yeet,
-  bera.bonga
+  bera.bonga,
+  bera.bm,
   // {
   //   ...beraB.bebe,
   //   price: "$0.0000001",
