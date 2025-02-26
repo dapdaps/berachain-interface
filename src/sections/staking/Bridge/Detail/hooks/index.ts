@@ -484,7 +484,7 @@ export function useDetail(props: any) {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
     const protocolId = protocol?.id === "bex" ? "beraswap" : protocol?.id
-    if (!["beraswap", "kodiak"].includes(protocolId)) return null;
+    if (!["kodiak"].includes(protocolId)) return null;
     const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
     ];
