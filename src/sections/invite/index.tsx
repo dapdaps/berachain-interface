@@ -138,12 +138,13 @@ const Content = () => {
   const { handleReport } = useClickTracking();
   const walletInfo = useWalletName();
   const { address, isConnecting, isConnected } = useAccount();
-  const { name = '' } = useParams();
+  const params = useParams();
+  const name = typeof params.name === 'string' ? params.name : '';
   const modal = useAppKit();
   const { toggleTheme, isDefaultTheme } = useActivityStore();
   const router = useRouter();
   
-  const brand = brands.find(brand => brand.name === name);
+  const brand = brands.find(brand => brand.name === name.toLowerCase());
 
   if (!brand) {
     return (
