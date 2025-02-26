@@ -5,7 +5,7 @@ import useClickTracking from "@/hooks/use-click-tracking";
 import useIsMobile from "@/hooks/use-isMobile";
 import useToast from "@/hooks/use-toast";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
-import { asyncFetch } from "@/utils/http";
+import { asyncFetch, post } from "@/utils/http";
 import { multicall } from "@/utils/multicall";
 import Big from "big.js";
 import { ethers } from "ethers";
@@ -125,21 +125,28 @@ export const VAULT_ADDRESS_ABI = [
     stateMutability: "nonpayable"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        name: "game",
-        type: "address"
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       }
     ],
-    name: "getReward",
-    outputs: [
+    "name": "getReward",
+    "outputs": [
       {
-        name: "",
-        type: "address"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    stateMutability: "nonpayable",
-    type: "function"
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     type: "function",
@@ -161,6 +168,7 @@ export const VAULT_ADDRESS_ABI = [
     stateMutability: "view"
   }
 ];
+export const BEARCHAIN_API = "https://api.berachain.com/"
 export type DataType = {
   count: number | string;
   totalSupply?: any;
@@ -189,36 +197,45 @@ export function useBGT(tab?: string) {
 
   const filterList = sortDataIndex
     ? // @ts-ignore
-      _.cloneDeep(yourVaults).sort((prev, next) =>
-        Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
-      )
+    _.cloneDeep(yourVaults).sort((prev, next) =>
+      Big(next[sortDataIndex]).minus(prev[sortDataIndex]).toFixed()
+    )
     : yourVaults;
   const queryPageData = async function () {
     const result = await asyncFetch(
-      "https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/homepage"
+      BEARCHAIN_API,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ "operationName": "GlobalData", "variables": { "chain": "BERACHAIN" }, "query": "query GlobalData($chain: GqlChain!) {\n  top3EmittingValidators: polGetValidators(\n    orderBy: bgtCapturePercentage\n    orderDirection: desc\n    first: 3\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    validators {\n      ...ApiValidatorMinimal\n      __typename\n    }\n    __typename\n  }\n  polGetGlobalInfo(chain: $chain) {\n    totalActiveBoostAmount\n    totalValidatorsCount\n    totalWhitelistedRewardVaults\n    totalActiveRewardVaults\n    totalActiveIncentives\n    totalActiveIncentivesValueUSD\n    totalDistributedBGTAmount\n    totalStakedBeraAmount\n    annualizedBGTEmission\n    annualizedBGTInflation\n    __typename\n  }\n  allValidatorsCount: polGetValidators {\n    pagination {\n      totalCount\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiValidatorMinimal on GqlValidator {\n  id\n  pubkey\n  operator\n  metadata {\n    name\n    logoURI\n    __typename\n  }\n  dynamicData {\n    activeBoostAmount\n    usersActiveBoostCount\n    queuedBoostAmount\n    usersQueuedBoostCount\n    allTimeDistributedBGTAmount\n    rewardRate\n    stakedBeraAmount\n    lastDayDistributedBGTAmount\n    activeBoostAmountRank\n    __typename\n  }\n  __typename\n}" })
+      }
     );
-    if (result?.top3EmittingValidators?.validators) {
-      result.top3EmittingValidators.validators.forEach((v: any) => {
-        if (!v.validator?.metadata) return;
-        switch (v.validator.metadata.name) {
+
+    const top3EmittingValidators = result?.data?.top3EmittingValidators
+    if (top3EmittingValidators?.validators) {
+      top3EmittingValidators.validators.forEach((v: any) => {
+        if (!v?.metadata) return;
+        switch (v.metadata.name) {
           case "Infrared":
-            v.validator.metadata.bp = "1010-004-001";
-            v.validator.metadata.bpMobile = "1016-003";
+            v.metadata.bp = "1010-004-001";
+            v.metadata.bpMobile = "1016-003";
             break;
           case "Kodiak Finance":
-            v.validator.metadata.bp = "1010-004-002";
+            v.metadata.bp = "1010-004-002";
             v.validator.metadata.bpMobile = "1016-004";
             break;
           case "The-Honey-Jar":
-            v.validator.metadata.bp = "1010-004-003";
-            v.validator.metadata.bpMobile = "1016-005";
+            v.metadata.bp = "1010-004-003";
+            v.metadata.bpMobile = "1016-005";
             break;
           default:
             break;
         }
       });
     }
-    setPageData(result);
+    setPageData(result?.data);
   };
 
   const refresh = function () {
@@ -232,10 +249,9 @@ export function useBGT(tab?: string) {
       provider?.getSigner()
     );
     try {
+      console.log('======1111111======')
       const balanceOfResult = await contract.balanceOf(account);
       const totalSupplyResult = await contract.totalSupply();
-
-      console.log("===totalSupplyResult", totalSupplyResult);
       setData((prev: DataType) => {
         return {
           ...prev,
@@ -244,7 +260,7 @@ export function useBGT(tab?: string) {
         };
       });
     } catch (error) {
-      console.error(error);
+      console.error("error===", error);
     }
   };
 
@@ -262,14 +278,13 @@ export function useBGT(tab?: string) {
     });
 
     setClaiming(index, true);
-
     const contract = new ethers.Contract(
       data?.vaultAddress,
       VAULT_ADDRESS_ABI,
       provider.getSigner()
     );
     contract
-      .getReward(account)
+      .getReward(account, account)
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         toast?.dismiss(toastId);
@@ -298,33 +313,41 @@ export function useBGT(tab?: string) {
   };
 
   const handleValidator = (data: any) => {
+
+    console.log('=====data====', data)
     if (isMobile) {
-      handleReport(data?.validator?.metadata?.bpMobile);
+      handleReport(data?.metadata?.bpMobile);
       return false;
     }
-    handleReport(data?.validator?.metadata?.bp);
-    router.push("/bgt/validator?address=" + data?.validator?.id);
+    handleReport(data?.metadata?.bp);
+    router.push("/bgt/validator?id=" + data?.id);
   };
 
   const queryYourVaults = async () => {
     try {
       setIsLoading(true);
-      const response = await asyncFetch(
-        "https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/" +
-          account +
-          "/vaults"
-      );
-      const vaults = response?.userVaults;
+      // const response = await asyncFetch(
+      //   "https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/" +
+      //   account +
+      //   "/vaults"
+      // );
+      const response = await post(
+        BEARCHAIN_API,
+        { "operationName": "GetUserVaults", "variables": { "userId": account, "chain": "BERACHAIN" }, "query": "query GetUserVaults($userId: String!, $chain: GqlChain!) {\n  userVaultDeposits: polGetUserVaultDeposits(userAddress: $userId, chain: $chain) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    deposits {\n      amount\n      vaultAddress\n      vault {\n        ...ApiVault\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}" }
+      )
+      const { deposits, pagination } = response?.data?.userVaultDeposits
+      console.log('====response', response)
+      // const vaults = deposits;
       const depositedAmountCalls: any = [];
       const bgtRewardsCalls: any = [];
-      vaults.forEach((valut: any) => {
+      deposits.forEach((deposit: any) => {
         depositedAmountCalls.push({
-          address: valut?.vaultAddress,
+          address: deposit?.vaultAddress,
           name: "balanceOf",
           params: [account]
         });
         bgtRewardsCalls.push({
-          address: valut?.vaultAddress,
+          address: deposit?.vaultAddress,
           name: "earned",
           params: [account]
         });
@@ -345,10 +368,13 @@ export function useBGT(tab?: string) {
       });
 
       const _yourVaults = [];
-      for (let i = 0; i < vaults.length; i++) {
+
+      console.log('====depositedAmountResult====', depositedAmountResult)
+      console.log('====bgtRewardsResult====', bgtRewardsResult)
+      for (let i = 0; i < deposits.length; i++) {
         if (depositedAmountResult[i]) {
           _yourVaults.push({
-            ...vaults[i],
+            ...deposits[i],
             depositedAmount: ethers.utils.formatUnits(
               depositedAmountResult?.[i][0] ?? 0
             ),

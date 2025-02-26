@@ -4,6 +4,8 @@ import Big from "big.js";
 
 import { useVaultList } from "../hooks/useList";
 import { useRouter } from "next/navigation";
+import { getProtocolIcon } from "@/utils/utils";
+import { formatValueDecimal } from "@/utils/balance";
 const VaultsList = () => {
   const router = useRouter()
   const {
@@ -30,25 +32,22 @@ const VaultsList = () => {
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <img
-                    src={item.metadata.logoURI || "/images/bgt-logo.svg"}
+                    src={item?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
                     className="w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
-                    alt=""
+                    alt={item?.metadata?.name}
                   />
                   <img
-                    src={
-                      item.metadata.productMetadata.logoURI ||
-                      "/images/bgt-logo-1.svg"
-                    }
+                    src={getProtocolIcon(item?.metadata?.protocolName)}
                     className="w-[16px] h-[16px] absolute bottom-0 right-0"
                     alt=""
                   />
                 </div>
                 <div className="flex flex-col">
                   <div className="text-[16px] font-[600]">
-                    {item.metadata.name}
+                    {item?.metadata?.name}
                   </div>
                   <div className="text-[10px] font-[400]">
-                    {item.metadata.product}
+                    {item?.metadata?.protocolName}
                   </div>
                 </div>
               </div>
@@ -61,10 +60,7 @@ const VaultsList = () => {
           sort: true,
           width: "35%",
           render: (item: any, index: number) => {
-            return (
-              "$" +
-              addThousandSeparator(item.activeIncentivesInHoney.toFixed(2))
-            );
+            return formatValueDecimal(item?.dynamicData?.activeIncentivesValueUsd ?? 0, "$", 2, false, false);
           },
         },
         {
@@ -73,7 +69,7 @@ const VaultsList = () => {
           sort: true,
           width: "15%",
           render: (item: any, index: number) => {
-            return Big(item.bgtInflationCapture).div(100).toFixed(2) + "%";
+            return formatValueDecimal(Big(item?.dynamicData?.bgtCapturePercentage).times(100).toFixed(), '', 2) + "%";
           },
         },
         {
@@ -84,11 +80,11 @@ const VaultsList = () => {
           render: (item: any, index: number) => {
             return (
               <>
-                {item.activeIncentives.map((v: any) => (
+                {item?.activeIncentives?.length > 0 ? item?.activeIncentives?.map((v: any) => (
                   <div className="w-fit rounded-lg border p-1">
                     <span className="text-[10px]">{v.token.symbol}</span>
                   </div>
-                ))}
+                )) : "No Incentives"}
               </>
             );
           },

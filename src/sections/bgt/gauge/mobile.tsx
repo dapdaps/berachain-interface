@@ -6,6 +6,7 @@ import Button from "../components/gauge/button";
 import Back from "./back";
 import Range from '@/components/range';
 import clsx from 'clsx';
+import { getProtocolIcon } from '@/utils/utils';
 export default function BgtGaugeMobile(props: any) {
   const {
     ABI,
@@ -32,6 +33,8 @@ export default function BgtGaugeMobile(props: any) {
     onBack,
   } = props
 
+
+  console.log('======gaugeData====', gaugeData)
   const handleSuccess = () => {
     onSuccess?.()
     onBack?.()
@@ -41,22 +44,26 @@ export default function BgtGaugeMobile(props: any) {
     <div className="relative px-[12px] pt-[19px] pb-[80px] bg-[#FFFDEB] h-full overflow-y-auto">
       <Back onBack={onBack} />
 
-      <div className="mt-[13px] mb-[16px] h-[75px] rounded-[10px] bg-[#FFDC50] flex items-center justify-center gap-[14px]">
-        <div className="w-[42px] h-[42px] rounded-full overflow-hidden">
-          <img src={gaugeData?.metadata?.logoURI || "/images/bgt-logo.svg"} alt={gaugeData?.metadata?.name} />
-        </div>
-        <div className="flex flex-col gap-[5px]">
-          <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-            {gaugeData?.metadata?.name}
-          </div>
-          <div className="flex items-center gap-[4px]">
-            <div className="w-[16px] h-[16px] rounded-full overflow-hidden">
-              <img src={gaugeData?.metadata?.productMetadata?.logoURI || "/images/bgt-logo-1.svg"} alt={gaugeData?.metadata?.product} />
+      {
+        gaugeData && (
+          <div className="mt-[13px] mb-[16px] h-[75px] rounded-[10px] bg-[#FFDC50] flex items-center justify-center gap-[14px]">
+            <div className="w-[42px] h-[42px] rounded-full overflow-hidden">
+              <img src={gaugeData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={gaugeData?.metadata?.name} />
             </div>
-            <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">{gaugeData?.metadata?.product}</div>
+            <div className="flex flex-col gap-[5px]">
+              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
+                {gaugeData?.metadata?.name}
+              </div>
+              <div className="flex items-center gap-[4px]">
+                <div className="w-[16px] h-[16px] rounded-full overflow-hidden">
+                  <img src={getProtocolIcon(gaugeData?.metadata?.protocolName)} alt={gaugeData?.metadata?.protocolName} />
+                </div>
+                <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">{gaugeData?.metadata?.protocolName}</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        )
+      }
 
       <SwitchTabs
         tabs={TABS}

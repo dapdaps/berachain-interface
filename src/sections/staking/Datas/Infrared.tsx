@@ -260,8 +260,6 @@ export default function useInfraredData(props: any) {
       };
 
       const array = item?.name?.split("-") ?? [];
-
-      console.log('====array', array)
       const symbol0 = array[0];
       const symbol1 = array[1];
       const token0 =
