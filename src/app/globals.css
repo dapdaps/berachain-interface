@@ -167,3 +167,12 @@ input[type="number"]::-webkit-inner-spin-button {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.invite-page-content {
+  @media (max-width: 390px) {
+    transform: translate(-51%, 15%) scale(0.7);
+  }
+  @media (min-width: 390px) and (max-width: 768px) {
+    transform: translate(-50%, 9%) scale(0.82);
+  }
+}
