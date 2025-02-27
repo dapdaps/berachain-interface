@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import Back from './back';
 import Range from '@/components/range';
 import clsx from 'clsx';
+import { getProtocolIcon } from '@/utils/utils';
 
 export default memo(function gauge(props: any) {
   const {
@@ -51,33 +52,32 @@ export default memo(function gauge(props: any) {
             </svg> */}
             <Back />
             <div className="ml-[32px] mr-[14px] w-[42px] h-[42px] rounded-full overflow-hidden">
-              <img src={gaugeData?.metadata?.logoURI || "/images/bgt-logo.svg"} alt={gaugeData?.metadata?.name} />
+              <img src={gaugeData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={gaugeData?.metadata?.name} />
             </div>
             <div className="flex flex-col gap-[5px]">
               <div className="text-black text-[20px] font-Montserrat font-semibold leading-[90%]">{gaugeData?.metadata?.name}</div>
               <div className="flex items-center gap-[4px]">
                 <div className='w-[16px] h-[16px] rounded-full overflow-hidden'>
-                  <img src={gaugeData?.metadata?.productMetadata?.logoURI || "/images/bgt-logo-1.svg"} alt={gaugeData?.metadata?.product} />
+                  <img src={getProtocolIcon(gaugeData?.metadata?.protocolName)} alt={gaugeData?.metadata?.protocolName} />
                 </div>
                 <div className="text-black text-[12px] font-Montserrat font-medium leading-[90%]">
-                  {gaugeData?.metadata?.product}
+                  {gaugeData?.metadata?.protocolName}
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-[12px]">
             <div className="text-black font-Montserrat text-[12px] font-medium">
-              Staking Token : <span className="underline cursor-pointer" onClick={() => window.open("https://bartio.beratrail.io/address/" + gaugeData?.stakingTokenAddress)}>{ellipsAddress(gaugeData?.stakingTokenAddress)}</span>
+              Staking Token : <span className="underline cursor-pointer" onClick={() => window.open("https://berascan.com/address/" + gaugeData?.stakingToken?.address)}>{ellipsAddress(gaugeData?.stakingToken?.address)}</span>
             </div>
             <div className="text-black font-Montserrat text-[12px] font-medium">
-              Reward Vault : <span className="underline cursor-pointer" onClick={() => window.open("https://bartio.beratrail.io/address/" + gaugeData?.vaultAddress)}>{ellipsAddress(gaugeData?.vaultAddress)}</span>
+              Reward Vault : <span className="underline cursor-pointer" onClick={() => window.open("https://berascan.com/address/" + gaugeData?.address)}>{ellipsAddress(gaugeData?.address)}</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-[24px]">
           <div className="flex-1 py-[24px] px-[20px] rounded-[10px] bg-black/[0.06]">
-
             <SwitchTabs
               tabs={TABS}
               current={currentTab}
@@ -94,7 +94,7 @@ export default memo(function gauge(props: any) {
                   <div className="mb-[14px] flex flex-col h-[72px] rounded-[12px] border border-[#373A53] bg-white">
                     <div className="pt-[16px] pl-[20px] pr-[14px] flex items-center justify-between">
                       <input type='number' value={state?.inAmount} onChange={(event) => handleAmountChange(event?.target?.value)} className='flex-1 text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0' />
-                      <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{gaugeData?.metadata?.name}</span>
+                      <span className="truncate text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{gaugeData?.stakingToken?.symbol}</span>
                     </div>
                     <div className="flex justify-end pr-[14px]">
                       <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className='underline cursor-pointer' onClick={handleMax}>{formatValueDecimal(state?.balance, '', 2)}</span></div>
@@ -102,8 +102,8 @@ export default memo(function gauge(props: any) {
                   </div>
                   <Button
                     type={currentTab}
-                    product={gaugeData?.metadata?.product}
-                    symbol={gaugeData?.metadata?.name}
+                    product={gaugeData?.metadata?.protocolName}
+                    symbol={gaugeData?.stakingToken?.symbol}
                     amount={state?.inAmount}
                     template={template}
                     decimals={18}
@@ -126,7 +126,7 @@ export default memo(function gauge(props: any) {
                   <div className="flex flex-col h-[72px] rounded-[12px] border border-[#373A53] bg-white">
                     <div className="pt-[16px] pl-[20px] pr-[14px] flex items-center justify-between">
                       <input value={state?.inAmount} onChange={(event) => handleAmountChange(event?.target?.value)} className='text-[26px] text-black font-bold leading-[90%] bg-transparent' placeholder='0' />
-                      <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{gaugeData?.metadata?.name}</span>
+                      <span className="truncate text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{gaugeData?.stakingToken?.symbol}</span>
                     </div>
                     <div className="flex justify-end pr-[14px]">
                       <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">balance: <span className='underline cursor-pointer' onClick={handleMax}>{formatValueDecimal(state?.balance, '', 2)}</span></div>
@@ -180,8 +180,8 @@ export default memo(function gauge(props: any) {
 
                   <Button
                     type={currentTab}
-                    product={gaugeData?.metadata?.product}
-                    symbol={gaugeData?.metadata?.name}
+                    product={gaugeData?.metadata?.protocolName}
+                    symbol={gaugeData?.stakingToken?.symbol}
                     amount={state?.inAmount}
                     template={template}
                     decimals={18}

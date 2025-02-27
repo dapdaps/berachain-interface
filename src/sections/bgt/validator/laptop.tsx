@@ -14,12 +14,15 @@ export default memo(function Validator(props: any) {
     currentTab,
     Tabs,
     setCurrentTab,
-    vaultsLoading,
+    loading,
     Columns,
     vaults,
 
   } = props;
 
+
+  console.log('====pageData====', pageData)
+  console.log('====vaults====', vaults)
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
@@ -27,7 +30,7 @@ export default memo(function Validator(props: any) {
         <Back />
         <Nav pageData={pageData} handleClick={handleClick} />
         <Summary vaults={vaults} pageData={pageData} />
-        <SwitchTabs
+        {/* <SwitchTabs
           current={currentTab}
           tabs={Tabs}
           onChange={(key) => setCurrentTab(key as string)}
@@ -40,11 +43,11 @@ export default memo(function Validator(props: any) {
             fontWeight: 500,
             fontSize: 14,
           }}
-        />
+        /> */}
         <FlexTable
-          loading={vaultsLoading}
+          loading={loading}
           columns={Columns}
-          list={currentTab === "gauges" ? vaults as any : []}
+          list={vaults}
         />
       </div>
     </div>
