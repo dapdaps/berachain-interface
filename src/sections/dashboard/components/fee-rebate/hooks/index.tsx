@@ -70,6 +70,7 @@ export function useFeeRebate(): FeeRebate {
           console.log('parse extra_data failed: %o', _err);
         }
       });
+      _list.sort((a: ActionRecord, b: ActionRecord) => a.refund_status - b.refund_status);
       setList(_list);
       setTotal(res.data.total);
       setTotalPage(res.data.total_page);
