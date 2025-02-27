@@ -27,55 +27,7 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
-const MemeTokens: any = [
-  // {
-  //   ...beraB.spepe,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  bera.yeet,
-  bera.bonga
-  // {
-  //   ...beraB.bebe,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.sproto,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.smonkey,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.croc,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.std,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB["0x15p"],
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.tedd,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.ooga,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // }
-];
+const MemeTokens: any = [bera.yeet, bera.bonga, bera.bblast];
 
 export const MoreButton = (props: {
   onClick: () => void;
