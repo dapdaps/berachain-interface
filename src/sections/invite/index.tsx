@@ -12,10 +12,11 @@ import { useActivityStore } from "@/stores/useActivityStore";
 import useIsMobile from "@/hooks/use-isMobile";
 
 const InviteViews = () => {
-  const router = useRouter();
   return (
     <div className="flex min-h-screen justify-center items-center relative">
-      <img onClick={() => router.push('/')} src="/images/invite/logo.svg" className="top-[8%] w-[94px] absolute left-1/2 -translate-x-1/2" alt="" />
+      <img src="/images/invite/f3.svg" className="absolute left-0 top-[10px] w-[163px] h-[97px]" alt="" />
+      <img src="/images/invite/f4.svg" className="absolute right-0 top-0 w-[125px] h-[200px]" alt="" />
+      {/* <img onClick={() => router.push('/')} src="/images/invite/logo.svg" className="top-[8%] w-[94px] absolute left-1/2 -translate-x-1/2" alt="" /> */}
       <div className="absolute left-[32px] bottom-0 z-[12] lg:hidden">
         <motion.img
           animate={{
