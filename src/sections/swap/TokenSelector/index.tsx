@@ -22,7 +22,8 @@ export default function CurrencySelect({
   onClose,
   onSelect,
   selectedTokenAddress,
-  showSearch = true
+  showSearch = true,
+  showBalance = true
 }: any) {
   const [tab, setTab] = useState("All");
   const [searchVal, setSearchVal] = useState("");
@@ -34,7 +35,7 @@ export default function CurrencySelect({
     loading: balancesLoading,
     balances = {},
     queryBalance
-  } = useTokensBalance(tokens);
+  } = useTokensBalance(showBalance ? tokens : []);
 
   const handleSearch = () => {
     let tokenIsAvailable = false;
@@ -217,6 +218,7 @@ export default function CurrencySelect({
               }}
               loading={balancesLoading}
               balance={balances[currency.address]}
+              showBalance={showBalance}
             />
           ))}
           {(!currencies || !currencies?.length) && !loading && !importToken && (

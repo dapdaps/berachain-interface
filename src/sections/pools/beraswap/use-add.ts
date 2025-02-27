@@ -126,12 +126,20 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         account,
         [
           assets,
-          maxAmountsIn,
+          maxAmountsIn.map((a: any) =>
+            Big(a)
+              .mul(1 - slippage)
+              .toFixed(0)
+          ),
           abiCoder.encode(
             ["uint256", "uint256[]", "uint256"],
             [
               1,
-              amountsIn,
+              amountsIn.map((a: any) =>
+                Big(a)
+                  .mul(1 - slippage)
+                  .toFixed(0)
+              ),
               Big(bptOut.toString())
                 .mul(1 - slippage)
                 .toFixed(0)

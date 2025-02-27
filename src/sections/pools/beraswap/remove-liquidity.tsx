@@ -120,6 +120,7 @@ const Remove = ({ data, onSuccess }: any) => {
         tokens={data.tokens}
         account={account}
         explor={chains[DEFAULT_CHAIN_ID].blockExplorers.default.url}
+        showBalance={false}
         onClose={() => {
           setShowTokenModal(false);
         }}
