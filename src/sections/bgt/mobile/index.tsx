@@ -83,6 +83,7 @@ const BGTMobileView = (props: Props) => {
     setGaugeId(record?.id)
   }
 
+  console.log('=====infraredData====', infraredData)
   return (
     <>
       <Drawer
@@ -140,7 +141,7 @@ const BGTMobileView = (props: Props) => {
       <BgtValidatorDrawer
         visible={infraredVisible}
         bgtData={bgtData}
-        id={infraredData?.validator?.id}
+        id={infraredData?.id}
         onClose={() => {
           setInfraredVisible(false);
         }}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { get } from '@/utils/http';
+import { get, post } from '@/utils/http';
 
 interface VaultListParams {
   page?: number;
@@ -63,16 +63,17 @@ export const useVaultList = (initialParams?: VaultListParams) => {
         query: params.query || '',
       });
 
-      const response = await get(
-        `https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/vaults?${queryParams}`
+      const response = await post(
+        `https://api.berachain.com/`,
+        { "operationName": "GetVaults", "variables": { "orderBy": "apr", "orderDirection": "desc", "pageSize": 300, "where": { "includeNonWhitelisted": false } }, "query": "query GetVaults($where: GqlRewardVaultFilter, $pageSize: Int, $skip: Int, $orderBy: GqlRewardVaultOrderBy = bgtCapturePercentage, $orderDirection: GqlRewardVaultOrderDirection = desc, $search: String) {\n  polGetRewardVaults(\n    where: $where\n    first: $pageSize\n    skip: $skip\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    search: $search\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    vaults {\n      ...ApiVault\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}" }
       );
-
+      const { vaults, pagination } = response?.data?.polGetRewardVaults
       if (params.add) {
-        setData([...data, ...(response.vaults || [])])
+        setData([...data, ...(vaults || [])])
       } else {
-        setData(response.vaults || []);
+        setData(vaults || []);
       }
-      setMaxPage(Math.ceil(response.total / pageSize) || 0);
+      setMaxPage(Math.ceil(pagination.totalCount / pageSize) || 0);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch data'));
     } finally {

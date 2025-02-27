@@ -3,11 +3,15 @@ import { useMemo } from 'react';
 import Big from 'big.js';
 import DappName from './dapp-name';
 import ProtocolDetailTable from './protocol-detail-table';
+import { useRouter } from 'next/navigation';
+import Button from '@/components/button';
 
 const DashboardPortfolioDetail = (props: Props) => {
   const { dapp } = props;
 
-  const { dappLogo, show_name, type, totalUsd, version } = dapp;
+  const router = useRouter();
+
+  const { dappLogo, show_name, type, totalUsd, version, path, earnPath } = dapp;
 
   const isLending = ['Lending', 'Yield'].includes(type);
 
@@ -75,8 +79,25 @@ const DashboardPortfolioDetail = (props: Props) => {
           icon={dappLogo}
           name={`${show_name}`}
           category={type}
+          onClick={() => {
+            router.push(path);
+          }}
         />
-        <Value>{totalUsd}</Value>
+        <div className="flex justify-end items-center gap-[10px]">
+          <Value>{totalUsd}</Value>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (earnPath) {
+                router.push(earnPath);
+                return;
+              }
+              router.push(path);
+            }}
+          >
+            Manage
+          </Button>
+        </div>
       </div>
       <ProtocolDetailTable isLending={isLending} tableList={tableList} />
     </div>

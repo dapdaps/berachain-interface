@@ -1,6 +1,8 @@
 import useClickTracking from '@/hooks/use-click-tracking';
 import Select from "@/sections/bgt/components/delegate/select";
 import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
+import { formatLongText } from '@/utils/utils';
+import Big from 'big.js';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 const Market = (props: any) => {
@@ -30,12 +32,12 @@ const Market = (props: any) => {
       <div className="flex justify-between items-start gap-[63px] px-[20px]">
         <div className="">
           <label htmlFor="" className="text-[#3D405A] text-[14px] font-[500]">Active Reward Vaults</label>
-          <div className="text-black text-[22px] font-[600] mt-[12px]">{pageData?.vaultCount}</div>
+          <div className="text-black text-[22px] font-[600] mt-[12px]">{pageData?.polGetGlobalInfo?.totalActiveRewardVaults}</div>
         </div>
         <div className="">
           <label htmlFor="" className="text-[#3D405A] text-[14px] font-[500]">Active Incentives</label>
           <div className="text-black text-[22px] font-[600] mt-[12px]">
-            {formatValueDecimal(pageData?.sumAllIncentivesInHoney, "$", 2, true)}
+            {formatValueDecimal(pageData?.polGetGlobalInfo?.sumAllIncentivesInHoney, "$", 2, true, false)}
           </div>
         </div>
       </div>
@@ -51,26 +53,26 @@ const Market = (props: any) => {
         </div>
         <div className="mt-[10px]">
           {
-            pageData?.top3EmittingValidators?.validators?.map((data: any, idx: number) => (
+            pageData?.top3EmittingValidators?.validators?.map((validator: any, idx: number) => (
               <div
                 key={idx}
                 className="mt-[10px] pl-[5px] pr-[14px] border border-[#373A53] rounded-[12px] bg-white h-[46px] flex justify-between items-center"
-                onClick={() => onTop3(data)}
-                data-bp={data.bpMobile}
+                onClick={() => onTop3(validator)}
+                data-bp={validator.bpMobile}
               >
                 <div className="flex items-center gap-[7px]">
                   <img
-                    src={data?.validator?.metadata?.logoURI}
-                    alt={data?.validator?.metadata?.name}
+                    src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                    alt={validator?.metadata?.name}
                     className="w-[26px] h-[26px] rounded-full"
                   />
                   <div className="text-[16px] text-black font-[600]">
-                    {data?.validator?.metadata?.name}
+                    {validator?.metadata?.name || formatLongText(validator?.pubkey, 4, 4)}
                   </div>
                 </div>
                 <div className="flex items-center justify-end gap-[11px]">
                   <div className="text-black text-[14px] font-[500]">
-                    BGT/Year: -
+                    BGT/Year: {formatValueDecimal(Big(validator?.dynamicData?.lastDayDistributedBGTAmount).times(360).toFixed(), "", 2, true)}
                   </div>
                   <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1 11L6 6L1 1" stroke="black" strokeWidth="2" strokeLinecap="round" />
@@ -88,7 +90,7 @@ const Market = (props: any) => {
         <div className="flex items-center gap-[11px] mt-[11px]">
           <img src="/images/icon-coin.svg" alt="" className="w-[26px] h-[26px] rounded-full" />
           <div className="text-black text-[18px] font-[600]">
-            {formatValueDecimal(pageData?.bgtInfo?.blockCountPerYear, "", 2, true)} Yearly
+            {formatValueDecimal(pageData?.polGetGlobalInfo?.annualizedBGTEmission, "", 2, true)} Yearly
           </div>
         </div>
         <div className="text-[#3D405A] text-[14px] font-[500] mt-[20px]">
@@ -97,7 +99,7 @@ const Market = (props: any) => {
         <div className="flex items-center gap-[11px] mt-[11px]">
           <img src="/images/icon-coin.svg" alt="" className="w-[26px] h-[26px] rounded-full" />
           <div className="text-black text-[18px] font-[600]">
-            {formatThousandsSeparator(formatValueDecimal(bgtData?.totalSupply ?? 0, '', 2))}
+            {formatValueDecimal(bgtData?.totalSupply ?? 0, '', 2, true)}
           </div>
         </div>
       </div>

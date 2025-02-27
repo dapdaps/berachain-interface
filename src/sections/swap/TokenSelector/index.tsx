@@ -8,6 +8,7 @@ import Empty from "@/components/empty";
 import ImportWarning from "../ImportWarning";
 import CurrencyImportRow from "./CurrencyImportRow";
 import CurrencyRow from "./CurrencyRow";
+import Big from 'big.js';
 
 const TABS = ["All", "Imported"];
 
@@ -203,22 +204,30 @@ export default function CurrencySelect({
               }}
             />
           )}
-          {currencies?.map((currency: any) => (
-            <CurrencyRow
-              key={currency.address}
-              selectedTokenAddress={selectedTokenAddress}
-              currency={currency}
-              display={display}
-              chainIdNotSupport={chainIdNotSupport}
-              account={account}
-              onClick={() => {
-                onSelect?.(currency);
-                handleClose();
-              }}
-              loading={balancesLoading}
-              balance={balances[currency.address]}
-            />
-          ))}
+          {currencies
+            ?.slice()
+            ?.sort((a: any, b: any) => {
+              const balanceA = balances[a.address] || '0';
+              const balanceB = balances[b.address] || '0';
+
+              return Big(balanceA || 0)?.gt(balanceB || 0) ? -1 : 1;
+            })
+            ?.map((currency: any) => (
+              <CurrencyRow
+                key={currency.address}
+                selectedTokenAddress={selectedTokenAddress}
+                currency={currency}
+                display={display}
+                chainIdNotSupport={chainIdNotSupport}
+                account={account}
+                onClick={() => {
+                  onSelect?.(currency);
+                  handleClose();
+                }}
+                loading={balancesLoading}
+                balance={balances[currency.address]}
+              />
+            ))}
           {(!currencies || !currencies?.length) && !loading && !importToken && (
             <Empty desc="No token." mt={30} />
           )}
