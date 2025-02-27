@@ -55,7 +55,7 @@ export default memo(function Select(props: any) {
               <img src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={record?.name} />
             </div>
             <div class="flex-1 min-w-0">
-              <div className="truncate text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.metadata?.name ?? formatLongText(record?.id, 4, 4)}</div>
+              <div className="truncate text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.metadata?.name ?? formatLongText(record?.pubkey, 4, 4)}</div>
             </div>
           </div>
         );
