@@ -9,6 +9,7 @@ import { post } from "@/utils/http";
 import { useAccount } from "wagmi";
 import { useWalletName } from "@/hooks/use-wallet-name";
 import { useActivityStore } from "@/stores/useActivityStore";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const InviteViews = () => {
   return (
@@ -57,7 +58,7 @@ const InviteViews = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[url(/images/invite-bera.png)] absolute left-1/2 -translate-x-1/2 bottom-0 z-10 bg-no-repeat bg-center bg-contain w-[993px] h-[817px]">
+      <div className="bg-[url(/images/invite-bera.png)] absolute left-1/2 -translate-x-1/2 bottom-0 z-10 bg-no-repeat bg-center bg-contain w-[993px] h-[817px] invite-page-content">
         <Content />
       </div>
       <div className="absolute right-0 bottom-0 z-0 w-[663px] h-[765px] bg-[url(/images/invite/cloud-right.png)] bg-no-repeat bg-center bg-contain">
@@ -143,6 +144,7 @@ const Content = () => {
   const modal = useAppKit();
   const { toggleTheme, isDefaultTheme } = useActivityStore();
   const router = useRouter();
+  const isMobile = useIsMobile();
   
   const brand = brands.find(brand => brand.name === name.toLowerCase());
 
@@ -182,7 +184,7 @@ const Content = () => {
   }
 
   const handleGo = () => {
-      if (brand.name === 'berabaddies' && isDefaultTheme()) {
+      if (brand.name === 'berabaddies' && isDefaultTheme() && !isMobile) {
         toggleTheme();
     }
     router.replace('/')
