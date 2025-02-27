@@ -18,9 +18,11 @@ import { GuidingTourContext } from './context';
 import { useAuthCheck } from '@/hooks/use-auth-check';
 import { post } from '@/utils/http';
 import useToast from '@/hooks/use-toast';
+import { usePathname } from 'next/navigation';
 
 const GuidingTutorial = (props: any) => {
   const {} = props;
+  const pathname = usePathname();
 
   const { address } = useAccount();
   const {
@@ -82,6 +84,8 @@ const GuidingTutorial = (props: any) => {
   }, { wait: 2000 });
 
   useEffect(() => {
+    if (pathname !== '/') return
+
     setEntryVisibleCancel();
 
     if (visited[address || 'DEFAULT'] || getBeraVisible || doneVisible || choosePillVisible || profileVisible) {
@@ -90,7 +94,7 @@ const GuidingTutorial = (props: any) => {
     }
 
     setEntryVisibleDelay(true);
-  }, [address, visited, getBeraVisible, doneVisible, choosePillVisible, profileVisible]);
+  }, [address, visited, getBeraVisible, doneVisible, choosePillVisible, profileVisible, pathname]);
 
   return (
     <GuidingTourContext.Provider

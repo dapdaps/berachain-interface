@@ -170,10 +170,16 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .invite-page-content {
-  @media (max-width: 390px) {
-    transform: translate(-51%, 15%) scale(0.7);
-  }
-  @media (min-width: 390px) and (max-width: 768px) {
-    transform: translate(-50%, 9%) scale(0.82);
-  }
+  @media (max-width: 375px) {
+    height: 610px;
+  };
+  @media (min-width: 376px) and (max-width: 390px) {
+    height: 636px;
+  };
+  @media (min-width: 391px) and (max-width: 420px) {
+    height: 676px;
+  };
+  @media (min-width: 421px) and (max-width: 768px) {
+    height: 700px;
+  };
 }
