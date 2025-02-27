@@ -61,6 +61,7 @@ a[disabled],
 .disabled\:\!cursor-not-allowed:disabled,
 .disabled\:\!cursor-not-allowed:disabled[disabled="disabled"],
 .disabled\:\!cursor-not-allowed:disabled[disabled],
+.\!cursor-not-allowed,
 .cursor-not-allowed {
   cursor: url("../../public/images/cursor-not-allowed.svg") 12 0, auto !important;
 }
