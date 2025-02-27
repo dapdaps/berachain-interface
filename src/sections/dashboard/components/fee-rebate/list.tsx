@@ -104,7 +104,7 @@ const FeeRebateList = ({ className }: FeeRebateListProps) => {
                       ) : null}
                       placement={PopoverPlacement.Top}
                       trigger={PopoverTrigger.Hover}
-                      contentClassName="z-[1200]"
+                      contentClassName="z-[2000]"
                       offset={10}
                       closeDelayDuration={0}
                     >
@@ -112,7 +112,7 @@ const FeeRebateList = ({ className }: FeeRebateListProps) => {
                         className={clsx(
                           'ml-[7px] flex justify-center items-center w-[20px] h-[20px] rounded-[6px] border border-black transition-all duration-150',
                           _selected ? 'bg-[#FFDC50]' : 'bg-white',
-                          (record.refund_status === 1 || refunding) ? '!cursor-not-allowed !opacity-50' : 'cursor-pointer'
+                          (record.refund_status === 1 || refunding) ? '!cursor-not-allowed' : 'cursor-pointer'
                         )}
                         onClick={() => handleSelected?.(record as ActionRecord)}
                       >
