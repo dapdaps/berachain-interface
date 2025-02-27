@@ -110,9 +110,9 @@ export default memo(function BgtMain() {
     handleValidator,
   } = useBGT(tab);
   return (
-    <>
-      <div className="w-[1140px] flex items-center h-[223px] rounded-[20px] bg-[#FFDC50]">
-        <div className=" h-full flex flex-col flex-1 py-[34px] pl-[30px] relative justify-between">
+    <div className="w-[1140px]">
+      <div className="flex items-center h-[223px] rounded-[20px] bg-[#FFDC50]">
+        <div className=" h-full flex flex-col flex-[0.7] py-[34px] pl-[30px] relative justify-between">
           <div className="flex flex-col gap-[12px]">
             <div className="text-[#3D405A]">Active Reward Vaults</div>
             <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">{pageData?.polGetGlobalInfo?.totalActiveRewardVaults}</div>
@@ -125,7 +125,7 @@ export default memo(function BgtMain() {
           <div className="absolute right-0 top-[37px] bottom-[28px] w-[1px] bg-black/[0.15]" />
         </div>
 
-        <div className="h-full flex flex-col items-start flex-1 py-[34px] pl-[30px] relative">
+        <div className="h-full flex flex-col items-start flex-[1.3] py-[34px] pl-[30px] relative">
           <div className="w-[320px] flex items-center justify-between mb-[10px] ">
             <div className="text-[#3D405A]">Top 3 Validators</div>
             <div className="text-[#3D405A] cursor-pointer underline" onClick={() => {
@@ -136,17 +136,17 @@ export default memo(function BgtMain() {
             {
               pageData?.top3EmittingValidators?.validators?.map((validator: any) => (
                 <div
-                  className="cursor-pointer flex items-center justify-between w-[320px] min-h-[36px] py-[5px] pr-[18px] pl-[5px] border border-[#373A53] bg-[#FFFDEB] rounded-[18px]"
+                  className="cursor-pointer flex items-center justify-between w-[420px] min-h-[34px] py-[5px] pr-[18px] pl-[5px] border border-[#373A53] bg-[#FFFDEB] rounded-[18px]"
                   onClick={() => handleValidator(validator)}
                 >
                   <div className="flex items-center">
                     <div className="w-[26px] h-[26px] rounded-full overflow-hidden">
                       <img src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={validator?.metadata?.name} />
                     </div>
-                    <div className="ml-[7px] mr-[10px] text-black  max-w-[170px] font-Montserrat text-[16px] font-semibold leading-[90%]">
+                    <div className="truncate ml-[7px] mr-[10px] text-black  max-w-[230px] font-Montserrat text-[16px] font-semibold">
                       {validator?.metadata?.name || formatLongText(validator?.pubkey, 4, 4)}
                     </div>
-                    <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">BGT/Year: {formatValueDecimal(Big(validator?.dynamicData?.lastDayDistributedBGTAmount).times(360).toFixed(), "", 2, true)}</div>
+                    <div className="text-black font-Montserrat text-[12px] font-medium leading-[100%]">BGT/Year: {formatValueDecimal(Big(validator?.dynamicData?.lastDayDistributedBGTAmount).times(360).toFixed(), "", 2, true)}</div>
                   </div>
 
                   <svg xmlns="http://www.w3.org/2000/svg" width="8" height="12" viewBox="0 0 8 12" fill="none">
@@ -227,6 +227,6 @@ export default memo(function BgtMain() {
           router.push("/bgt/validator?id=" + id);
         }}
       />
-    </>
+    </div>
   )
 })

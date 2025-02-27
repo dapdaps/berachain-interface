@@ -42,7 +42,7 @@ export default memo(function IbgtMain() {
   } = state;
 
   return (
-    <>
+    <div className='w-[1140px]'>
       <div className='relative mb-[24px] flex items-center h-[120px] rounded-[20px] bg-[#FFDC50]'>
         <div className='relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]'>
           <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
@@ -328,7 +328,7 @@ export default memo(function IbgtMain() {
         </div>
       </div>
       <Vaults />
-    </>
+    </div>
 
   )
 })
