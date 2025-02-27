@@ -1,10 +1,9 @@
 import FlexTable from "@/components/flex-table";
-import SwitchTabs from '@/components/switch-tabs';
 import BgtHead from '@/sections/bgt/components/bgt-head';
-import { memo } from "react";
 import Back from '@/sections/bgt/validator/components/back';
 import Nav from '@/sections/bgt/validator/components/nav';
 import Summary from '@/sections/bgt/validator/components/summary';
+import { memo } from "react";
 
 export default memo(function Validator(props: any) {
   const {
@@ -19,10 +18,6 @@ export default memo(function Validator(props: any) {
     vaults,
 
   } = props;
-
-
-  console.log('====pageData====', pageData)
-  console.log('====vaults====', vaults)
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />

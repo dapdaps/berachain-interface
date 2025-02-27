@@ -6,7 +6,7 @@ import Button from "../components/gauge/button";
 import Back from "./back";
 import Range from '@/components/range';
 import clsx from 'clsx';
-import { getProtocolIcon } from '@/utils/utils';
+import { formatLongText, getProtocolIcon } from '@/utils/utils';
 export default function BgtGaugeMobile(props: any) {
   const {
     ABI,
@@ -52,7 +52,7 @@ export default function BgtGaugeMobile(props: any) {
             </div>
             <div className="flex flex-col gap-[5px]">
               <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-                {gaugeData?.metadata?.name}
+                {gaugeData?.metadata?.name || formatLongText(gaugeData?.pubkey, 4, 4)}
               </div>
               <div className="flex items-center gap-[4px]">
                 <div className="w-[16px] h-[16px] rounded-full overflow-hidden">

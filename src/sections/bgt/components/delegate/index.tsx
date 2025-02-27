@@ -22,6 +22,7 @@ import Back from "@/sections/bgt/validator/components/back";
 import useIsMobile from "@/hooks/use-isMobile";
 import useValidators from "./hooks/use-validators";
 import { formatLongText } from "@/utils/utils";
+import { useBgtStore } from "@/stores/bgt";
 const TABS = [
   {
     value: "Deposit",
@@ -45,6 +46,7 @@ interface IProps {
 export default memo(function Delegate(props: IProps) {
   const { visible, validator, operationType, onClose, onValidatorSelect } = props;
 
+  const store = useBgtStore()
   const { provider, account } = useCustomAccount();
   const isMobile = useIsMobile();
 
@@ -52,10 +54,7 @@ export default memo(function Delegate(props: IProps) {
   const { addAction } = useAddAction("bgt");
   const { loading, delegationQueue, getDelegationQueue } = useDelegationQueue();
 
-  const {
-    validators,
-    getValidators
-  } = useValidators()
+  const validators = store.validators
 
   const [state, updateState] = useMultiState({
     balance: "",
@@ -64,7 +63,6 @@ export default memo(function Delegate(props: IProps) {
     percentage: 0,
     updater: 0,
     isLoading: false,
-    // isConfirmAndCancelLoading: false,
     confirmAndCancelLoadingPosition: [],
     selectVisible: false
   });
@@ -276,9 +274,9 @@ export default memo(function Delegate(props: IProps) {
     });
   };
 
-  useEffect(() => {
-    getValidators()
-  }, [])
+  // useEffect(() => {
+  //   getValidators()
+  // }, [])
   useEffect(() => {
     if (visible && account) {
       getBalance();
@@ -417,10 +415,10 @@ export default memo(function Delegate(props: IProps) {
                           <div className="relative shrink-0 overflow-hidden aspect-square flex items-center justify-center rounded-full text-foreground bg-background border border-border text-[8px] h-8 w-8">
                             <img
                               className="aspect-square h-full w-full rounded-full"
-                              src={queue?.metadata?.logoURI}
+                              src={queue?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
                             />
                           </div>
-                          <div>{queue?.metadata?.name}</div>
+                          <div>{queue?.metadata?.name || formatLongText(queue?.pubkey, 4, 4)}</div>
                         </div>
                         <div className="ml-8 text-muted-foreground">
                           <span className="relative inline-flex flex-row items-center text-nowrap">

@@ -1,18 +1,17 @@
-import useIsMobile from '@/hooks/use-isMobile';
-import BgtValidatorMobile from '@/sections/bgt/validator/mobile';
-import BgtValidatorLaptop from '@/sections/bgt/validator/laptop';
-import useValidator from '@/hooks/use-validator';
-import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useBGT } from '@/hooks/use-bgt';
-import useValidatorVaults from '@/hooks/use-validator-vaults';
-import { VALIDATORS } from '@/sections/bgt/config';
-import { OperationTypeType, ValidatorType } from '@/sections/bgt/types';
 import { Column } from '@/components/flex-table';
+import { useBGT } from '@/hooks/use-bgt';
+import useIsMobile from '@/hooks/use-isMobile';
+import useValidator from '@/hooks/use-validator';
 import Delegate from '@/sections/bgt/components/delegate';
-import { getProtocolIcon } from '@/utils/utils';
+import useValidators from '@/sections/bgt/components/delegate/hooks/use-validators';
+import { OperationTypeType } from '@/sections/bgt/types';
+import BgtValidatorLaptop from '@/sections/bgt/validator/laptop';
+import BgtValidatorMobile from '@/sections/bgt/validator/mobile';
 import { formatValueDecimal } from '@/utils/balance';
+import { getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 
 const BgtValidator = (props: any) => {
   const { id } = props;
@@ -23,11 +22,9 @@ const BgtValidator = (props: any) => {
     data: bgtData,
   } = useBGT();
 
-  // const {
-  //   loading: vaultsLoading,
-  //   vaults,
-  //   getVaults
-  // } = useValidatorVaults();
+  const {
+    getValidators
+  } = useValidators()
   const {
     loading,
     pageData,
@@ -82,7 +79,7 @@ const BgtValidator = (props: any) => {
         align: "left",
         width: "25%",
         render: (text: string, record: any) => {
-          return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{formatValueDecimal(Big(pageData?.dynamicData?.rewardRate ?? 0).times(Big(record?.percentageNumerator ?? 0).div(10000)).toFixed(), '', 2)} BGT</div>;
+          return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">{formatValueDecimal(Big(pageData?.dynamicData?.rewardRate ?? 0).times(Big(record?.percentageNumerator ?? 0).div(10000))?.toFixed(), '', 2)} BGT</div>;
         },
       },
       {
@@ -121,14 +118,16 @@ const BgtValidator = (props: any) => {
   }, [validatorId]);
 
   useEffect(() => {
-
-    console.log('========id', id)
     if (id) {
       setValidatorId(id);
     } else {
       setValidatorId(defaultId);
     }
   }, [defaultId, id]);
+
+  useEffect(() => {
+    getValidators()
+  }, [])
 
   return (
     <>

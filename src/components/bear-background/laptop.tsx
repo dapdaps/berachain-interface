@@ -990,12 +990,13 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       ) : type === 'hall' ? (
         <>
           <DashboardFlowers />
-          <div className="absolute right-0 bottom-[213px]">
+          <div className="absolute right-0 bottom-[213px] z-10">
             <HallPalace />
           </div>
-          <div className="absolute left-0 bottom-[220px]">
+          <div className="absolute left-0 bottom-[220px] z-10">
             <HallFlag />
           </div>
+          <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
         </>
       ) : (
         <></>
