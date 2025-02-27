@@ -10,11 +10,16 @@ import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rain
 import BridgeGroundSvg from '@public/images/background/bridge-ground.svg';
 import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy.svg';
 import LeftTreeSvg from '@public/images/background/tree.svg';
+import HallPalace from '@public/images/background/hall-palace.svg'
+import HallFlag from '@public/images/background/hall-flag.svg'
+
 import { memo } from 'react';
 import { Clouds, DappClouds } from './clouds';
 import BeraBgHome from '@/components/bear-background/home';
 import Flowers from '@/components/bear-background/components/flowers';
 import Ground from '@/components/bear-background/components/ground';
+
+
 import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 
@@ -902,7 +907,7 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall';
   children: React.ReactNode;
 };
 
@@ -926,9 +931,9 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           <Clouds isRainyDay={isRainyDay} />
           {
             isDefaultTheme() ? (<>
-            <DashboardFlowers />
-            <DashboardBear isRainyDay={isRainyDay} />
-            <DashboardGround isRainyDay={isRainyDay} />
+              <DashboardFlowers />
+              <DashboardBear isRainyDay={isRainyDay} />
+              <DashboardGround isRainyDay={isRainyDay} />
             </>) : (<div className='absolute left-0 bottom-0 right-0 h-[234px] bg-[#FFF5A9] border-t border-black'>
               <div className='w-full h-full relative'>
                 <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[80%] left-0 z-[8]' alt="" />
@@ -936,7 +941,7 @@ export default memo(function BearBackground({ type, children }: PropsType) {
               </div>
             </div>)
           }
-          
+
         </>
       ) : type === 'bridge' ? (
         <>
@@ -959,8 +964,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
               )
             )
           }
-          
-          
+
+
         </>
       ) : type === 'dapps' ? (
         <>
@@ -974,13 +979,23 @@ export default memo(function BearBackground({ type, children }: PropsType) {
             )
           }
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
-          
+
         </>
       ) : type === 'dapp' ? (
         <>
           <DappClouds isRainyDay={isRainyDay} />
           <LeftTree />
           <RightTree />
+        </>
+      ) : type === 'hall' ? (
+        <>
+          <DashboardFlowers />
+          <div className="absolute right-0 bottom-[213px]">
+            <HallPalace />
+          </div>
+          <div className="absolute left-0 bottom-[220px]">
+            <HallFlag />
+          </div>
         </>
       ) : (
         <></>

@@ -47,6 +47,28 @@ const MainLayoutHeader = (props: Props) => {
           </button>
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
+          <div className="cursor-pointer flex items-center justify-center w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/icon-hall-button-bg.svg')] bg-center"
+            onClick={() => {
+              router.replace("/hall")
+            }}
+          >
+            <div className="-mt-[2px] w-[113px]">
+              <img src="/images/icon-hall-button.svg" alt="icon-hall-button" />
+            </div>
+          </div>
+          <div className="cursor-pointer relative -top-[8px] w-[57px]"
+            onClick={() => {
+              router.replace("/kingdomly")
+            }}
+          >
+            <img src="/images/icon-nft.png" alt="icon-nft" />
+          </div>
+
+          <div className="grayscale w-[107px] h-[30px] rounded-[43px] border border-[#88FFB6] bg-[#AEAEAE]  shadow-[0_3px_0_0_black] cursor-not-allowed">
+            <div className="-ml-[12px] w-[111px]">
+              <img src="/images/icon-launchpad-bg.png" alt="icon-launchpad-bg" />
+            </div>
+          </div>
           <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" />
           {

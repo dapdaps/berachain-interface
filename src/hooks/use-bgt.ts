@@ -249,7 +249,6 @@ export function useBGT(tab?: string) {
       provider?.getSigner()
     );
     try {
-      console.log('======1111111======')
       const balanceOfResult = await contract.balanceOf(account);
       const totalSupplyResult = await contract.totalSupply();
       setData((prev: DataType) => {
@@ -313,8 +312,6 @@ export function useBGT(tab?: string) {
   };
 
   const handleValidator = (data: any) => {
-
-    console.log('=====data====', data)
     if (isMobile) {
       handleReport(data?.metadata?.bpMobile);
       return false;

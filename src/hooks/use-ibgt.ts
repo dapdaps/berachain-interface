@@ -52,7 +52,8 @@ export type DataType = {
   total: number | string;
   staked: number | string;
 };
-export function useIBGT(props: any) {
+export function useIBGT() {
+  const { chainId } = useCustomAccount()
   const router = useRouter();
   const { handleReport } = useClickTracking();
   const { provider, account } = useCustomAccount();
@@ -241,7 +242,7 @@ export function useIBGT(props: any) {
         toast?.success({
           title: "Approve Successful!",
           tx: receipt.transactionHash,
-          chainId: props.chainId
+          chainId
         });
       })
       .catch((error: Error) => {
@@ -311,7 +312,7 @@ export function useIBGT(props: any) {
             status: status,
             add: 1,
             transactionHash,
-            chain_id: props.chainId,
+            chain_id: chainId,
             sub_type: "Stake"
           });
           updateState({
@@ -403,7 +404,7 @@ export function useIBGT(props: any) {
             status: status,
             add: 0,
             transactionHash,
-            chain_id: props.chainId,
+            chain_id: chainId,
             sub_type: "Unstake"
           });
 
@@ -477,7 +478,7 @@ export function useIBGT(props: any) {
             template: "Infrared",
             status: status,
             transactionHash,
-            chain_id: props.chainId,
+            chain_id: chainId,
             sub_type: "Claim"
           });
           toast?.dismiss(toastId);
