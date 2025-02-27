@@ -317,7 +317,7 @@ export default memo(function Delegate(props: IProps) {
                 <img src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={validator?.metadata?.name} />
               </div>
               <div className="ml-[8px] mr-[10px] w-[65px] text-ellipsis overflow-hidden text-black font-Montserrat text-[16px] whitespace-nowrap font-semibold leading-[90%]">
-                {validator?.metadata?.name ?? formatLongText(validator?.id, 4, 4)}
+                {validator?.metadata?.name ?? formatLongText(validator?.pubkey, 4, 4)}
               </div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

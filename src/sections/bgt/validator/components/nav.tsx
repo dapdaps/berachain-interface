@@ -16,7 +16,7 @@ const Nav = (props: any) => {
             <img src={pageData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={pageData?.metadata?.name} />
           </div>
           <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-            {pageData?.metadata?.name ?? formatLongText(pageData?.id, 4, 4)}
+            {pageData?.metadata?.name ?? formatLongText(pageData?.pubkey, 4, 4)}
           </div>
         </div>
         <div className="flex items-center justify-between mt-[24px] md:flex-wrap md:gap-y-[31px]">
