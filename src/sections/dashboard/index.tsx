@@ -98,8 +98,8 @@ const DashboardView = () => {
 
   return (
     <BearBackground type="dashboard">
-      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]" />
-      <PageTitle className="relative flex justify-center items-center pt-[30px] md:pt-[16px] md:text-left md:pl-[40%] pointer-events-none">
+      <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[1]" />
+      <PageTitle className="relative flex justify-center items-center pt-[30px] md:pt-[16px] md:text-left md:pl-[40%]">
         Portfolio
         <FeeRebate className="absolute translate-y-[5px] translate-x-[370px]" />
       </PageTitle>
