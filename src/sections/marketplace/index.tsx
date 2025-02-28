@@ -35,7 +35,7 @@ const MemeTokens: any = [
   // },
   bera.yeet,
   bera.bonga,
-  bera.bm,
+  bera.bm, // add by @Amy
   // {
   //   ...beraB.bebe,
   //   price: "$0.0000001",
