@@ -2,13 +2,14 @@ import Big from 'big.js';
 import { formatValueDecimal } from '@/utils/balance';
 import clsx from 'clsx';
 import { formatLongText } from '@/utils/utils';
+import Loading from '@/components/loading';
 
 const Nav = (props: any) => {
   const { pageData, handleClick } = props;
 
 
   console.log('====pageData====', pageData)
-  return (
+  return pageData ? (
     <div className="flex md:flex-col items-start md:items-stretch justify-between md:justify-start h-[146px] md:h-[unset] rounded-[20px] bg-[#FFDC50] pl-[87px] md:mt-[13px] md:px-[14px] md:pb-[14px]">
       <div className="flex-1 mt-[11px] mr-[69px] md:mr-[unset]">
         <div className="flex items-center gap-[17px] md:justify-center">
@@ -57,8 +58,11 @@ const Nav = (props: any) => {
         </div>
       </div>
     </div>
-  )
-    ;
+  ) : (
+    <div className='flex items-center justify-center py-[30px] flex-col'>
+      <Loading size={24} />
+    </div>
+  );
 };
 
 export default Nav;
