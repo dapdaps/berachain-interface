@@ -69,3 +69,26 @@ export const multicall = async <T = any>({
   });
   return res as any;
 };
+
+
+export const multicallWrite = async ({
+  calls,
+  provider,
+  multicallAddress,
+}) => {
+  const multicall = new Contract(
+    multicallAddress,
+    [
+      "function aggregate3(tuple(address target, bool allowFailure, bytes callData)[] calls) payable returns (tuple(bool success, bytes returnData)[])"
+    ],
+    provider?.getSigner()
+  );
+
+  const estimatedGas = await multicall.estimateGas.aggregate3(calls);
+  const tx = await multicall.aggregate3(calls, {
+    gasLimit: estimatedGas.mul(120).div(100),
+    maxFeePerGas: provider.getFeeData().maxFeePerGas,
+    maxPriorityFeePerGas: provider.getFeeData().maxPriorityFeePerGas
+  });
+  return await tx.wait();
+}

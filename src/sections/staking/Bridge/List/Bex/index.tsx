@@ -5,6 +5,7 @@ import Popover, {
   PopoverTrigger
 } from "@/components/popover";
 import { useMultiState } from "@/hooks/use-multi-state";
+import IbgtRewards from "@/sections/bgt/components/ibgt-rewards";
 import type { ColumnType, ColunmListType } from "@/sections/staking/types";
 import { formatValueDecimal } from "@/utils/balance";
 import { getProtocolIcon } from "@/utils/utils";
@@ -59,6 +60,8 @@ const List = forwardRef<any, any>((props, ref) => {
     return Big(apy).toFixed(2);
   }, [dataList, maxApr]);
 
+  const rewards = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
+
   function renderTD(data: any, column: ColumnType, index: number) {
     if (column.type === "slot") {
       return column.render(data, index);
@@ -94,6 +97,8 @@ const List = forwardRef<any, any>((props, ref) => {
     }
   };
   useImperativeHandle(ref, () => refs);
+
+
 
   const columnList: ColunmListType =
     name === "vaults"
@@ -491,6 +496,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       ];
 
+
   return (
     <div>
       <div className="pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]">
@@ -499,7 +505,13 @@ const List = forwardRef<any, any>((props, ref) => {
       <div className="pt-[7px] pb-[12px] pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium">
         {description}
       </div>
-      <div className="px-[30px] pb-[23px]"></div>
+      <div className="px-[30px] pb-[23px]">
+        {
+          rewards?.length > 0 && (
+            <IbgtRewards rewards={rewards} onSuccess={reload} />
+          )
+        }
+      </div>
       <div className="flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]">
         <div className="flex flex-col gap-[12px] w-[20%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
