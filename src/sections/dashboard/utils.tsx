@@ -102,26 +102,30 @@ export const formatExecution = (record: any, isMobile?: boolean) => {
           if (record[key]) {
             return (
               <>
-                {record[key].map((it: any, idx: number) => (
-                  <div className="flex gap-[4px]" key={idx}>
-                    <LazyImage
-                      className="shrink-0 rounded-full"
-                      src={getTokenLogo(it.symbol)}
-                      alt=""
-                      width={20}
-                      height={20}
-                      fallbackSrc={DefaultIcon}
-                    />
-                    <span
-                      className=""
-                      style={{
-                        color: direction.color
-                      }}
-                    >
-                      {`${direction.direction}${numberFormatter(it.amount, 4, true)} ${it.symbol} (${formatUsd(it.usd)})`}
-                    </span>
-                  </div>
-                ))}
+                {record[key].map((it: any, idx: number) => {
+                  const isNFT = it.type === 'nft' && it.nft_token_id;
+                  const tks = isNFT ? [...it.nft_token_id.split(',')].map((i: any) => ({ ...it, nft_id: i })) : [it];
+                  return tks.map((_tk: any, _idx: number) => (
+                    <div className="flex gap-[4px]" key={idx + '-' + _idx}>
+                      <LazyImage
+                        className="shrink-0 rounded-full"
+                        src={getTokenLogo(isNFT ? _tk.address : _tk.symbol)}
+                        alt=""
+                        width={20}
+                        height={20}
+                        fallbackSrc={DefaultIcon}
+                      />
+                      <span
+                        className=""
+                        style={{
+                          color: direction.color
+                        }}
+                      >
+                        {`${direction.direction}${numberFormatter(_tk.amount, 4, true)} ${isNFT ? '#' + _tk.nft_id : _tk.symbol} ${!isNFT ? '(' + formatUsd(_tk.usd) + ')' : ''}`}
+                      </span>
+                    </div>
+                  ));
+                })}
               </>
             );
           }
