@@ -120,6 +120,7 @@ export default memo(function aquabera(props: any) {
       const totalSupply = ethers.utils.formatUnits(totalSupplyResult);
       const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[0]);
       const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[1]);
+      console.log("=balanceOfResult", balanceOfResult.toString());
       setShares(shares);
       setBalance(
         Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed()
@@ -316,26 +317,16 @@ export default memo(function aquabera(props: any) {
   }, [isBera, config]);
 
   useEffect(() => {
-    setApr(token1?.apr);
-    setIchiAddress(token1?.ichiAddress);
-    setValues(token1?.values);
-  }, [token1]);
+    setApr(data?.pool?.apr);
+    setIchiAddress(data?.pool?.ichiAddress);
+    setValues(data?.pool?.values);
+  }, [data?.pool]);
 
   useEffect(() => {
+    console.log('====data=====', data)
     if (show) {
-      if (data?.pairedTokens) {
-        const _pairedTokens = data?.pairedTokens;
-        const _token1 = _pairedTokens?.[0];
-        const token = _.cloneDeep(data);
-        delete token.pairedTokens;
-
-        setToken0(token);
-        setToken1(_token1);
-        setPairedTokens(_pairedTokens);
-      } else {
-        setToken0(data?.token0);
-        setToken1(data?.token1);
-      }
+      setToken0(data?.token0);
+      setToken1(data?.token1);
       setIsDeposit(type === 0 ? true : false);
     } else {
       setBalance("");
