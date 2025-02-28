@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import IbgtHead from '@/sections/bgt/components/ibgt-head';
 import Vaults from './vaults';
 import PageBack from '@/components/back';
+import IbgtAmount from '../components/ibgt-amount';
 export default memo(function IbgtMain() {
   const router = useRouter();
   const {
@@ -135,9 +136,10 @@ export default memo(function IbgtMain() {
                     <img src={`/images/dapps/infrared/ibgt.svg`} />
                   </div>
                 </div>
-                <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
+                {/* <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                   {formatValueDecimal(data?.depositAmount ?? 0, '', 2, false, false)} iBGT
-                </div>
+                </div> */}
+                <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
               </div>
             </div>
           </div>

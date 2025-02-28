@@ -4,6 +4,7 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import DolomiteConfig from '@/configs/lending/dolomite';
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
+import IbgtAmount from "@/sections/bgt/components/ibgt-amount";
 import ActionPanel from "@/sections/Lending/components/action-panel";
 import DolomiteData from "@/sections/Lending/datas/dolomite";
 import { formatValueDecimal } from "@/utils/balance";
@@ -146,9 +147,11 @@ const DetailBex = (props: any) => {
               <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {data?.id || data?.tokens?.[0] || "iBGT"}
               </div>
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+
+              {/* <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {formatValueDecimal(data?.depositAmount ?? 0, "", 2, false, false)}
-              </div>
+              </div> */}
+              <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
             </div>
 
           </div>

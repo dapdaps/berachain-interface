@@ -1,36 +1,47 @@
-import CheckBox from "@/components/check-box";
-import Drawer from "@/components/drawer";
-import LazyImage from "@/components/layz-image";
-import SwitchTabs from "@/components/switch-tabs";
-import { DEFAULT_CHAIN_ID } from "@/configs";
 import Lendings from "@/configs/lending";
-import DolomiteConfig from "@/configs/lending/dolomite";
-import useAddAction from "@/hooks/use-add-action";
-import useIsMobile from "@/hooks/use-isMobile";
-import { useProvider } from "@/hooks/use-provider";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import SwitchTabs from "@/components/switch-tabs";
+import LazyImage from "@/components/layz-image";
+import Drawer from "@/components/drawer";
 import { useSwapToken } from "@/hooks/use-swap-token";
-import DolomiteActionPanelMobile from "@/sections/Lending/components/action-panel/mobile";
-import Dropdown from "@/sections/marketplace/components/dropdown";
-import SearchBox from "@/sections/marketplace/components/searchbox";
 import SwapModal from "@/sections/swap/SwapModal";
-import { numberFormatter } from "@/utils/number-formatter";
-import { useDebounceFn } from "ahooks";
-import Big from "big.js";
+import BendActionModal from "@/sections/Lending/Bend/Action";
+import DolomiteActionPanelMobile from "@/sections/Lending/components/action-panel/mobile";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Skeleton from "react-loading-skeleton";
+import DolomiteConfig from "@/configs/lending/dolomite";
+import BeraborrowConfig from "@/configs/lending/beraborrow";
 import { useAccount } from "wagmi";
+import { useProvider } from "@/hooks/use-provider";
+import { numberFormatter } from "@/utils/number-formatter";
+import Big from "big.js";
+import useAddAction from "@/hooks/use-add-action";
+import { useRouter } from "next/navigation";
+import useBend from "@/sections/Lending/Bend/hooks/useBend";
+import useBendReward from "@/sections/Lending/Bend/hooks/useBendReward";
+import Skeleton from "react-loading-skeleton";
+import ActionModal from "@/sections/Lending/Bend/Action/index";
+import useMarketStore from "@/stores/useMarketStore";
+import Dropdown from "@/sections/marketplace/components/dropdown";
+import useIsMobile from "@/hooks/use-isMobile";
+import CheckBox from "@/components/check-box";
+import SearchBox from "@/sections/marketplace/components/searchbox";
 import LaptopList from "./laptop";
+import useClickTracking from "@/hooks/use-click-tracking";
+import Pool from "@/sections/Lending/Beraborrow/pool";
+import { useDebounceFn } from "ahooks";
 
 const { basic: DolomiteBasic, networks: DolomiteNetworks }: any =
   DolomiteConfig;
-
+const { basic: BeraborrowBasic, networks: BeraborrowNetworks }: any =
+  BeraborrowConfig;
 const DolomiteData = dynamic(() => import("@/sections/Lending/datas/dolomite"));
-
+const BeraborrowData = dynamic(
+  () => import("@/sections/Lending/datas/beraborrow")
+);
 
 const EarnLending = (props: any) => {
-  const { } = props;
+  const {} = props;
 
   const laptopListRef = useRef<any>();
 
@@ -39,7 +50,16 @@ const EarnLending = (props: any) => {
   const { provider } = useProvider();
   const { addAction } = useAddAction("lending");
   const router = useRouter();
-
+  const { markets: bendData, init: bendInit } = useBend();
+  const { rewardValue: bendRewardValue } = useBendReward({
+    provider,
+    account: address
+  });
+  const { initData: bendInitData } = useMarketStore();
+  const { handleReport } = useClickTracking();
+  const honeyInfo = bendInitData.markets.find(
+    (market) => market.symbol === "HONEY"
+  );
 
   const lendingProtocols = useMemo(() => {
     const _protocols = Object.values(Lendings).map((it) => it.basic);
@@ -54,10 +74,14 @@ const EarnLending = (props: any) => {
 
   const [actionData, setActionData] = useState<any>(null);
   const [actionType, setActionType] = useState<any>(null);
-
+  const [bendVisible, setBendVisible] = useState(false);
+  const [bendBorrowVisible, setBendBorrowVisible] = useState(false);
   const [dolomiteVisible, setDolomiteVisible] = useState(false);
+  const [beraborrowVisible, setBeraborrowVisible] = useState(false);
   const [dolomiteLoading, setDolomiteLoading] = useState<boolean>(false);
   const [dolomiteData, setDolomiteData] = useState<any>();
+  const [beraborrowLoading, setBeraborrowLoading] = useState<boolean>(false);
+  const [beraborrowData, setBeraborrowData] = useState<any>();
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
   const [checked, setChecked] = useState(false);
   const [searchVal, setSearchVal] = useState("");
@@ -66,6 +90,49 @@ const EarnLending = (props: any) => {
 
   const tokenList = useMemo(() => {
     const _tokens: any = [];
+    // Bend data
+    if (bendData) {
+      bendData
+        .filter((bend: any) => {
+          if (tab === "Borrow") {
+            return bend.symbol === "HONEY";
+          }
+          return true;
+        })
+        .forEach((bend: any) => {
+          if (checked && tab === "Supply") {
+            if (Big(bend.underlyingBalance || 0).lte(0)) return;
+          }
+          if (checked && tab === "Borrow") {
+            if (Big(bend.debt || 0).lte(0)) return;
+          }
+
+          _tokens.push({
+            ...bend,
+            address: bend.underlyingAsset,
+            protocol: Lendings.Bend.basic,
+            inWallet: bend.balance,
+            supplyAPR:
+              Big(bend.supplyAPY || 0)
+                .times(100)
+                .toFixed(2) + "%",
+            supply_apr: Big(bend.supplyAPY || 0)
+              .times(100)
+              .toFixed(2),
+            borrowAPR:
+              Big(bend.variableBorrowAPY || 0)
+                .times(100)
+                .toFixed(2) + "%",
+            borrow_apr: Big(bend.variableBorrowAPY || 0)
+              .times(100)
+              .toFixed(2),
+            borrowCapacity: bend.availableBorrows,
+            youSupplied: bend.underlyingBalance,
+            youBorrowed: bend.debt,
+            BGTRewards: bend.symbol === "HONEY" ? bendRewardValue : "0.00"
+          });
+        });
+    }
     // Dolomite data
     if (dolomiteData) {
       Object.values(dolomiteData.markets).forEach((dolomite: any) => {
@@ -91,11 +158,31 @@ const EarnLending = (props: any) => {
         });
       });
     }
+    // Beraborrow data
+    if (beraborrowData?.borrowToken) {
+      const { borrowToken: nectToken, markets: beraborrowMarkets } =
+        beraborrowData;
+      _tokens.push({
+        ...nectToken,
+        protocol: Lendings.Beraborrow.basic,
+        inWallet: Big(nectToken.walletBalance || 0).times(nectToken.realPrice),
+        supplyAPR: nectToken.apy,
+        supply_apr: "8.11",
+        borrowAPR: "0.00%",
+        borrow_apr: "0",
+        borrowCapacity: "0.00",
+        youSupplied: nectToken.balance,
+        youBorrowed: beraborrowMarkets
+          ?.map((it: any) => it.borrowed || 0)
+          ?.reduce((a: any, b: any) => Big(a).plus(b), 0),
+        BGTRewards: "0.00"
+      });
+    }
 
     if (protocol === lendingProtocols[0]?.name) return _tokens;
 
     return _tokens.filter((t: any) => t.protocol.name === protocol);
-  }, [protocol, dolomiteData, tab, checked]);
+  }, [protocol, dolomiteData, beraborrowData, tab, checked]);
 
   const handleAction = (type: any, data: any) => {
     if (
@@ -105,10 +192,40 @@ const EarnLending = (props: any) => {
       router.push("/lending/dolomite?tab=borrow");
       return;
     }
+    if (
+      data.protocol.name === "Beraborrow" &&
+      ["Borrow", "Repay"].includes(type)
+    ) {
+      router.push("/lending/beraborrow");
+      return;
+    }
+
     setActionType(type);
+
+    if (data.protocol.name === "Bend" && data.symbol === "HONEY") {
+      setActionData(honeyInfo);
+    } else {
+      setActionData(data);
+    }
+
+    if (data.protocol.name === "Bend" && ["Borrow", "Repay"].includes(type)) {
+      setBendBorrowVisible(true);
+      return;
+    }
+
+    if (data.protocol.name === "Beraborrow") {
+      setActionData(data);
+    }
+
     switch (data.protocol.name) {
+      case "Bend":
+        setBendVisible(true);
+        break;
       case "Dolomite":
         setDolomiteVisible(true);
+        break;
+      case "Beraborrow":
+        setBeraborrowVisible(true);
         break;
       default:
         break;
@@ -116,7 +233,10 @@ const EarnLending = (props: any) => {
   };
 
   const handleActionClose = () => {
+    setBendVisible(false);
+    setBendBorrowVisible(false);
     setDolomiteVisible(false);
+    setBeraborrowVisible(false);
     setActionData(null);
     setActionType(null);
   };
@@ -135,12 +255,27 @@ const EarnLending = (props: any) => {
     },
     { wait: 1500 }
   );
-
-
+  const { run: loadBeraborrowData } = useDebounceFn(
+    () => {
+      setBeraborrowLoading(isChainSupported);
+    },
+    { wait: 1000 }
+  );
+  const { run: loadBendData } = useDebounceFn(
+    () => {
+      bendInit();
+    },
+    { wait: 500 }
+  );
 
   useEffect(() => {
     loadDolomiteData();
+    loadBeraborrowData();
   }, [isChainSupported, address]);
+
+  useEffect(() => {
+    loadBendData();
+  }, [chainId, provider]);
 
   useEffect(() => {
     isMobile && handleReport("1019-002");
@@ -231,6 +366,12 @@ const EarnLending = (props: any) => {
             switch (type) {
               case "Dolomite":
                 setDolomiteLoading(true);
+                break;
+              case "Bend":
+                bendInit();
+                break;
+              case "Beraborrow":
+                setBeraborrowLoading(true);
                 break;
               default:
                 break;
@@ -326,15 +467,20 @@ const EarnLending = (props: any) => {
                       <div className="text-[14px] text-[#3D405A] font-[500]">
                         {tab === "Supply"
                           ? "In Wallet"
+                          : token.protocol.name === "Bend"
+                          ? "Borrow Capacity"
                           : "You Borrowed"}
                       </div>
                       <div className="mt-[5px]">
                         {tab === "Supply"
                           ? numberFormatter(token.inWallet, 2, true)
-                          : numberFormatter(token.youBorrowed,
-                            2,
-                            true
-                          )}
+                          : numberFormatter(
+                              token.protocol.name === "Bend"
+                                ? token.borrowCapacity
+                                : token.youBorrowed,
+                              2,
+                              true
+                            )}
                       </div>
                     </div>
                     <div className="text-right">
@@ -349,6 +495,9 @@ const EarnLending = (props: any) => {
                       >
                         {tab === "Supply"
                           ? token.supplyAPR
+                          : token.protocol.name === "Bend" &&
+                            token.symbol === "HONEY"
+                          ? Big(token?.borrowAPY).times(100).toFixed(2) + "%"
                           : token.borrowAPR}
                       </div>
                     </div>
@@ -414,7 +563,22 @@ const EarnLending = (props: any) => {
         />
       )}
       {/*#endregion*/}
-
+      {/*#region Bend Deposit*/}
+      <BendActionModal
+        isOpen={bendVisible}
+        onClose={handleActionClose}
+        action={actionType?.toLowerCase()}
+        token={actionData}
+      />
+      {/*#endregion*/}
+      {/*#region Bend Borrow*/}
+      <ActionModal
+        isOpen={bendBorrowVisible}
+        onClose={handleActionClose}
+        action={actionType?.toLowerCase()}
+        token={actionData}
+      />
+      {/*#endregion*/}
       {/*#region Dolomite Deposit*/}
       <Drawer visible={dolomiteVisible} onClose={handleActionClose} size="50vh">
         <div className="py-[23px]">
@@ -422,6 +586,32 @@ const EarnLending = (props: any) => {
             {actionType} {actionData?.symbol}
           </div>
           <DolomiteActionPanelMobile
+            title={actionType}
+            actionText={actionType}
+            placeholder="0.00"
+            token={actionData}
+            CHAIN_ID={80094}
+            onSuccess={() => {
+              // reload data
+              setDolomiteLoading(true);
+            }}
+            addAction={addAction}
+          />
+        </div>
+      </Drawer>
+      {/*#endregion*/}
+      {/*#region Beraborrow Deposit*/}
+      <Drawer
+        visible={beraborrowVisible}
+        onClose={handleActionClose}
+        size="60dvh"
+      >
+        <div className="py-[23px]">
+          <div className="text-[18px] font-[700] text-black px-[24px]">
+            {actionType} {actionData?.symbol}
+          </div>
+          <Pool
+            className="!bg-transparent !border-0 !shadow-none !rounded-none !w-full !h-min-unset"
             title={actionType}
             actionText={actionType}
             placeholder="0.00"
@@ -452,6 +642,25 @@ const EarnLending = (props: any) => {
           );
           setDolomiteData(res);
           setDolomiteLoading(false);
+        }}
+      />
+      {/*#endregion*/}
+      {/*#region Beraborrow data loader*/}
+      <BeraborrowData
+        {...BeraborrowNetworks[DEFAULT_CHAIN_ID + ""]}
+        {...BeraborrowBasic}
+        chainId={chainId}
+        update={beraborrowLoading}
+        account={address}
+        provider={provider}
+        onLoad={(res: any) => {
+          console.log(
+            "%cBeraborrow data res: %o",
+            "background:#FFDC50;color:#FFF;",
+            res
+          );
+          setBeraborrowData(res);
+          setBeraborrowLoading(false);
         }}
       />
       {/*#endregion*/}
