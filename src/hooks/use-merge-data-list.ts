@@ -30,7 +30,7 @@ export default function useMergeDataList() {
       _dataList.push({
         ..._data,
         images,
-        tokens,
+        // tokens,
         apy: _data?.apr,
         type: "Staking",
         depositAmount: _data.yourValue,

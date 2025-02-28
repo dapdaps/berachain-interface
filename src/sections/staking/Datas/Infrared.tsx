@@ -308,7 +308,7 @@ export default function useInfraredData(props: any) {
       apy: Big(ibgt?.apr || 0).times(100).toFixed(),
       initialData: ibgt,
       type: "Staking",
-      rewardSymbol: "Honey",
+      rewardSymbol: "HONEY",
       platform: "infrared",
       protocolType: "-"
     })
