@@ -40,9 +40,11 @@ export default function useDelegationQueue() {
         provider
       })
       const _delegationQueue = []
+      
       for (let i = 0; i < response.length; i++) {
         const boostedQueue = response[i];
 
+        console.log('==========boostedQueue========', boostedQueue)
         if (boostedQueue) {
           const difference = Big(blockNumber).minus(boostedQueue[0])
           const balance = ethers.utils.formatUnits(boostedQueue[1])

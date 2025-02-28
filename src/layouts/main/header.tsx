@@ -53,23 +53,6 @@ const MainLayoutHeader = (props: Props) => {
           </button>
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
-          <div className="cursor-pointer pl-[5px] flex items-center gap-[4px] w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/hall/icon-hall-button-bg.svg')] bg-center"
-            onClick={() => {
-              router.replace("/hall")
-            }}
-          >
-            <div className="w-[33px] -mt-[3px]">
-              {
-                hallStore.currentTab === "ibgt" ? (
-                  <img src="/images/hall/icon-ibgt.svg" alt="icon-bgt" />
-                ) : (
-                  <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
-                )
-              }
-
-            </div>
-            <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{hallStore.currentTab === "ibgt" ? `${numberFormatter(iBGTCount, 3, true)} iBGT` : `${numberFormatter(BGTCount, 3, true)} BGT`}</div>
-          </div>
           <div className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
               router.replace("/kingdomly")
@@ -87,6 +70,23 @@ const MainLayoutHeader = (props: Props) => {
             <div className="absolute -right-[16px] -top-[6px] flex items-center justify-center w-[42px] h-[13px] rounded-[8px] border-black border bg-[#FFF5A9]">
               <span className="text-black text-[16px] font-bold scale-50">Thoon...</span>
             </div>
+          </div>
+          <div className="cursor-pointer pl-[5px] flex items-center gap-[4px] w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/hall/icon-hall-button-bg.svg')] bg-center"
+            onClick={() => {
+              router.replace("/hall")
+            }}
+          >
+            <div className="w-[33px] -mt-[3px]">
+              {
+                hallStore.currentTab === "ibgt" ? (
+                  <img src="/images/hall/icon-ibgt.svg" alt="icon-bgt" />
+                ) : (
+                  <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
+                )
+              }
+
+            </div>
+            <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{hallStore.currentTab === "ibgt" ? `${numberFormatter(iBGTCount, 3, true)} iBGT` : `${numberFormatter(BGTCount, 3, true)} BGT`}</div>
           </div>
           {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" /> */}
