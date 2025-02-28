@@ -98,7 +98,7 @@ const DashboardView = () => {
   return (
     <BearBackground type="dashboard">
       <PageBack className="absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px]" />
-      <PageTitle className="pt-[30px] md:pt-[16px] md:text-left md:pl-[40%]">
+      <PageTitle className="pt-[30px] md:pt-[16px] md:text-left md:pl-[40%] pointer-events-none">
         Portfolio
       </PageTitle>
       <div className="w-[882px] mx-auto mt-[30px] md:mt-[25px] md:w-full md:h-[calc(100%-65px)]">
