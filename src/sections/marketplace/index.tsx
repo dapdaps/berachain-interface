@@ -27,7 +27,7 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
-const MemeTokens: any = [bera.yeet, bera.bonga, bera.bblast];
+const MemeTokens: any = [bera.yeet, bera.bonga, bera.bblast, bera.bm];
 
 export const MoreButton = (props: {
   onClick: () => void;
