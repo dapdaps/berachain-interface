@@ -11,7 +11,7 @@ const DAppPath: any = {
   dolomite: { dapp: "/lending/dolomite", earn: "" },
   infrared: { dapp: "/staking/infrared", earn: "" },
   kodiak: { dapp: "/dex/kodiak", earn: "/earn" },
-  beraswap: { dapp: "/dex/beraswap", earn: "" },
+  beraswap: { dapp: "/dex/beraswap", earn: "", Liquidity: "/dex/beraswap/pools"  },
   "ooga booga": { dapp: "/dex/ooga-booga", earn: "" },
   stargate: { dapp: "/bridge/Stargate", earn: "" },
   beraborrow: { dapp: "/lending/beraborrow", earn: "" },
@@ -19,7 +19,7 @@ const DAppPath: any = {
   bedrock: { dapp: "/staking/bedrock", earn: "" },
   kingdomly: { dapp: "/kingdomly", earn: "" },
   jumper: { dapp: "/bridge/jumper", earn: "" },
-  bex: { dapp: "/dex/beraswap", earn: "" }
+  bex: { dapp: "/dex/beraswap", earn: "", Liquidity: "/dex/beraswap/pools" }
 };
 
 export function usePortfolio(props: Props) {
@@ -78,7 +78,7 @@ export function usePortfolio(props: Props) {
           for (const typeAsset of _dapp.assets) {
             const assetType = typeAsset.type;
             typeAsset.totalUsd = Big(0);
-            typeAsset.path = DAppPath[_dapp.name?.toLowerCase?.()]?.dapp;
+            typeAsset.path = DAppPath[_dapp.name?.toLowerCase?.()]?.[dappType] || DAppPath[_dapp.name?.toLowerCase?.()]?.dapp;
             if (!typeAsset.assets) continue;
             for (let i = 0; i < typeAsset.assets.length; i++) {
               const tokenAsset = typeAsset.assets[i];
@@ -124,7 +124,7 @@ export function usePortfolio(props: Props) {
             chainLogo: currentChain.icon,
             dappLogo: getDappLogo(_dapp.name),
             detailList: _dapp.assets || [],
-            path: DAppPath[_dapp.name?.toLowerCase?.()]?.dapp,
+            path: DAppPath[_dapp.name?.toLowerCase?.()]?.[dappType] || DAppPath[_dapp.name?.toLowerCase?.()]?.dapp,
             earnPath: DAppPath[_dapp.name?.toLowerCase?.()]?.earn,
           };
           dappsList.push(dappItem);
