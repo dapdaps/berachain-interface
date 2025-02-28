@@ -60,7 +60,11 @@ export function useFeeRebate(): FeeRebate {
       }
       const _list = res.data.data || [];
       _list.forEach((record: ActionRecord) => {
-        record.dapp_logo = getDappLogo(record.template);
+        let _dappName = record.template;
+        if (_dappName?.toLowerCase() === 'beraswap') {
+          _dappName = 'bex';
+        }
+        record.dapp_logo = getDappLogo(_dappName);
         try {
           record.extraData = JSON.parse(record.extra_data || "{}");
           record.actionTokens = JSON.parse(record.action_tokens || "[]");
