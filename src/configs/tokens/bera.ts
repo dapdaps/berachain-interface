@@ -300,5 +300,13 @@ export const bera: { [key: string]: Token } = {
     symbol: "bm",
     name: "bm",
     icon: "/assets/tokens/bm.png"
+  },
+  hold: {
+    chainId: CHAIN_ID,
+    address: "0xff0a636dfc44bb0129b631cdd38d21b613290c98",
+    decimals: 18,
+    symbol: "HOLD",
+    name: "Holdstation",
+    icon: "/assets/tokens/hold.png"
   }
 };

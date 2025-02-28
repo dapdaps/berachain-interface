@@ -34,6 +34,8 @@ const BgtGauge = (props: any) => {
   const { id } = props;
   const isMobile = useIsMobile();
   const { data: bgtData } = useBGT();
+
+  console.log('=====id====', id)
   const { data: gaugeData } = useGauge(id);
 
   const toast = useToast();
@@ -61,12 +63,14 @@ const BgtGauge = (props: any) => {
   });
   const prices: any = usePriceStore((store) => store.price);
   const getBalance = async (stakingTokenAddress, vaultAddress) => {
+
     const contract = new ethers.Contract(
       currentTab === "deposit" ? stakingTokenAddress : vaultAddress,
       ABI,
       provider
     );
     const response = await contract.balanceOf(account);
+
     updateState({
       balance: ethers.utils.formatUnits(response)
     });
@@ -99,14 +103,15 @@ const BgtGauge = (props: any) => {
     });
   };
   const getContractData = () => {
-    const { stakingTokenAddress, vaultAddress } = gaugeData;
+
+    const { stakingToken, vaultAddress } = gaugeData;
     updateState({
-      stakeAddress: stakingTokenAddress,
-      vaultAddress
+      stakeAddress: stakingToken?.address,
+      vaultAddress: vaultAddress
     });
 
     try {
-      getBalance(stakingTokenAddress, vaultAddress);
+      getBalance(stakingToken?.address, vaultAddress);
       getEarned(vaultAddress);
       getDepositAmount(vaultAddress);
       getTotalsupply(vaultAddress);
@@ -127,17 +132,17 @@ const BgtGauge = (props: any) => {
     updateState({
       claimLoading: true
     });
+
     const contract = new ethers.Contract(
       state?.vaultAddress,
       VAULT_ADDRESS_ABI,
       provider?.getSigner()
     );
     contract
-      .getReward(account)
+      .getReward(account, account)
       .then((tx) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-
         addAction?.({
           type: "Staking",
           action: "Claim",
@@ -184,9 +189,9 @@ const BgtGauge = (props: any) => {
     return Big(state?.balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(state?.balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(state?.balance ?? 1)
+        .times(100)
+        .toFixed();
   };
 
   const handleAmountChange = (_amount: string) => {
@@ -221,7 +226,6 @@ const BgtGauge = (props: any) => {
     });
   };
   useEffect(() => {
-    console.log("====gaugeData", gaugeData);
     if (account && provider && gaugeData && currentTab) {
       getContractData();
     }

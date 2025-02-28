@@ -18,7 +18,8 @@ export default {
       bera["yeet"],
       bera["ramen"],
       bera["bblast"],
-      bera["bm"]
+      bera["bm"],
+      bera["hold"]
     ]
   }
 };

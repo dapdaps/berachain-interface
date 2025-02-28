@@ -67,9 +67,10 @@ const MainLayout = (props: Props) => {
       return { background: rainyDay?.bg };
     }
 
-    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent'].includes(pathname) 
+    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent', '/ibgt'].includes(pathname) 
         || pathname.startsWith('/lending/') 
         || pathname.startsWith('/staking/') 
+        || pathname.startsWith('/bridge/') 
         || pathname.startsWith('/dex/')) 
         && !isDefaultTheme()) {
       return {
@@ -83,10 +84,20 @@ const MainLayout = (props: Props) => {
       }
     }
 
+
+    if (pathname.startsWith('/invite/')) {
+      return {
+        height: '100vh',
+        overflow: 'hidden',
+      }
+    }
+
     return {};
   }, [currentScene, isRainyDay, rainyDay, pathname, isDefaultTheme, themeConfig.primaryColor]);
 
   const routes = ["/earn", "/activity/christmas"];
+
+
 
   return (
     <div

@@ -369,7 +369,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                   <Skeleton height={16} style={{ width: "100px" }} />
                 ) : (
                   <div className="text-base font-bold">
-                    {parseFloat(mintInfo.feeAmount || "0").toFixed(6)}{" "}
+                    {parseFloat(mintInfo.totalCostWithFee || "0").toFixed(6)}{" "}
                     {item.chain.native_currency}
                   </div>
                 )}
@@ -380,7 +380,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                   <Skeleton height={16} style={{ width: "100px" }} />
                 ) : (
                   <div className="text-base font-bold">
-                    {parseFloat(mintInfo.totalCostWithFee || "0").toFixed(6)}{" "}
+                    {parseFloat(mintInfo.feeAmount || "0").toFixed(6)}{" "}
                     {item.chain.native_currency}
                   </div>
                 )}
