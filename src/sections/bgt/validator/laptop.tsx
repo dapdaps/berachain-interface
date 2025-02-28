@@ -25,20 +25,6 @@ export default memo(function Validator(props: any) {
         <Back />
         <Nav pageData={pageData} handleClick={handleClick} />
         <Summary vaults={vaults} pageData={pageData} />
-        {/* <SwitchTabs
-          current={currentTab}
-          tabs={Tabs}
-          onChange={(key) => setCurrentTab(key as string)}
-          style={{
-            width: 340,
-            height: 40,
-            padding: 4,
-          }}
-          tabStyle={{
-            fontWeight: 500,
-            fontSize: 14,
-          }}
-        /> */}
         <FlexTable
           loading={loading}
           columns={Columns}

@@ -1,3 +1,4 @@
+import Loading from '@/components/loading';
 import { useBgtStore } from '@/stores/bgt';
 import Big from 'big.js';
 
@@ -6,27 +7,8 @@ const Summary = (props: any) => {
   const store = useBgtStore()
   const validators = store?.validators ?? []
   const positionIndex = store?.validators?.findIndex(validator => validator?.pubkey === pageData?.pubkey)
-  return (
+  return pageData ? (
     <div className="flex flex-col gap-[28px] md:gap-[21px] mt-[24px] md:mt-[33px] mb-[48px]">
-      {/* <div className="flex items-center md:items-start">
-        <div className="flex-1 flex flex-col gap-[10px]">
-          <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Active Gauges Vaults</div>
-          <div className="flex items-center gap-[6px]">
-            <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">1</span>
-            {
-              vaults?.[0]?.metadata?.logoURI && (
-                <div className="w-[30px] h-[30px]">
-                  <img src={vaults?.[0]?.metadata?.logoURI} alt={vaults?.[0]?.metadata?.name} />
-                </div>
-              )
-            }
-          </div>
-        </div>
-        <div className="flex-1 flex flex-col gap-[10px]">
-          <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Active Incentives</div>
-          <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
-        </div>
-      </div> */}
       <div className="flex items-center md:items-start md:flex-wrap md:gap-y-[21px]">
         <div className="flex-1 flex flex-col gap-[10px] md:w-1/2 md:flex-[unset]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Validator Ranking</div>
@@ -52,6 +34,10 @@ const Summary = (props: any) => {
           </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className='flex items-center justify-center py-[30px] flex-col'>
+      <Loading size={24} />
     </div>
   );
 };
