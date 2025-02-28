@@ -128,6 +128,10 @@ const networks = {
         ...bera["wbtc"],
         underlyingToken: bera["wbtc"]
       },
+      [bera["lbtc"].address]: {
+        ...bera["lbtc"],
+        underlyingToken: bera["lbtc"]
+      },
     }
   }
 };

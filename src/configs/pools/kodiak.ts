@@ -33,6 +33,12 @@ export default {
       farmAddress: "0xF41eCc551E3c7449E74a7a7464BB2674fA76954c",
       token0: bera["weth"],
       token1: bera["bera"]
+    },
+    "0xec8ba456b4e009408d0776cde8b91f8717d13fa1": {
+      name: "YEET-BERA",
+      farmAddress: "0x1c8e199c6c42d5cce652cf02002694d937118177",
+      token0: bera["yeet"],
+      token1: bera["bera"]
     }
   },
   islands: [

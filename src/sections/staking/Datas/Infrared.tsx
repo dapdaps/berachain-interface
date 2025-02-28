@@ -233,17 +233,20 @@ export default function useInfraredData(props: any) {
     onLoad({
       dataList: dataList?.filter(
         (data) =>
-          ["bex", "kodiak", "beraborrow", "berps", "honeypot"].includes(
+          ["bex", "kodiak", "beraborrow", "berps", "honeypot", "dolomite"].includes(
             data?.initialData?.protocol?.id
-          ) || data?.id !== "iBGT-HONEY"
+          ) || data?.id === "iBGT"
       ),
       fullDataList: dataList
     });
   }
 
+  async function getIbgtData() {
+    return await asyncFetch("https://dev-api.beratown.app/infrared?path=api%2Fvault%2Finfrared-ibgt-v2&params=chainId%3D80094")
+  }
   async function getDataList() {
     allData?.forEach((item) => {
-      if (!["kodiak", "dolomite"].includes(item?.protocol?.id)) return;
+      if (!["kodiak", "dolomite", "bex"].includes(item?.protocol?.id)) return;
       item?.reward_tokens?.forEach((it: any) => {
         const curr = Object.values(bera).find(
           (_it) => _it.address.toLowerCase() === it.address.toLowerCase()
@@ -255,11 +258,20 @@ export default function useInfraredData(props: any) {
         tokens: [],
         images: []
       };
-      item.underlying_tokens?.forEach((slip: any, i: number) => {
+
+      const array = item?.name?.split("-") ?? [];
+      const symbol0 = array[0];
+      const symbol1 = array[1];
+      const token0 =
+        item.underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+      const token1 =
+        item.underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+      [token0, token1]?.filter(token => !!token)?.forEach((slip: any, i: number) => {
         tokensInfo[`decimals${i}`] = slip.decimals;
         tokensInfo.tokens.push(slip.name);
         tokensInfo.images.push(slip.image);
-      });
+      })
+
       const _data = {
         id: item.name,
         strategy: "Dynamic",
@@ -275,13 +287,31 @@ export default function useInfraredData(props: any) {
         type: "Staking",
         vaultAddress: item.address,
         rewardSymbol: item?.reward_tokens?.[0]?.symbol,
+        platform: "infrared",
         protocolType: ["bex", "kodiak"].includes(item?.protocol?.id)
           ? "AMM"
           : "Perpetuals"
       };
       dataList.push(_data);
     });
-
+    const ibgt = await getIbgtData()
+    dataList.unshift({
+      id: 'iBGT',
+      tokens: ['iBGT'],
+      images: ['/images/dapps/infrared/ibgt.svg'],
+      decimals: 18,
+      decimals0: 18,
+      decimals1: 18,
+      LP_ADDRESS: '0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b',
+      vaultAddress: '0x75F3Be06b02E235f6d0E7EF2D462b29739168301',
+      tvl: Big(ibgt?.tvl || 0).toFixed(),
+      apy: Big(ibgt?.apr || 0).times(100).toFixed(),
+      initialData: ibgt,
+      type: "Staking",
+      rewardSymbol: "Honey",
+      platform: "infrared",
+      protocolType: "-"
+    })
     formatedData("dataList");
   }
   function getUsdDepositAmount() {
@@ -299,6 +329,7 @@ export default function useInfraredData(props: any) {
       calls,
       {},
       (result) => {
+
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
           dataList[i].depositAmount = Big(
@@ -326,8 +357,8 @@ export default function useInfraredData(props: any) {
         name: "earned",
         params: [
           sender,
-          data?.id === "iBGT-HONEY"
-            ? "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03"
+          data?.id === "iBGT"
+            ? "0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce"
             : IBGT_ADDRESS
         ]
       });
@@ -341,7 +372,7 @@ export default function useInfraredData(props: any) {
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
           dataList[i].earned = Big(
-            ethers.utils.formatUnits(result[i][0])
+            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
           ).toFixed();
         }
         formatedData("getEarned");

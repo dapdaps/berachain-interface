@@ -1,0 +1,78 @@
+import useToast from "@/hooks/use-toast"
+import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
+import { IconButton, Slot } from "@radix-ui/themes"
+import { type ReactNode, useEffect, useRef, useState } from "react"
+
+interface CopyButtonProps {
+  text: string
+  ariaLabel?: string
+}
+
+export function CopyButton({ text, ariaLabel }: CopyButtonProps) {
+  return (
+    <Copy text={text}>
+      {(copied) => (
+        <IconButton
+          type="button"
+          size="1"
+          variant="ghost"
+          color="gray"
+          aria-label={ariaLabel}
+        >
+          {copied ? <CheckIcon /> : <CopyIcon />}
+        </IconButton>
+      )}
+    </Copy>
+  )
+}
+
+export function Copy({
+  children,
+  text,
+}: { children: (copied: boolean) => ReactNode; text: string }) {
+  const [copied, setCopied] = useState(false)
+  const abortCtrlRef = useRef<AbortController | null>(null)
+  const toast = useToast()
+  useEffect(() => {
+    return () => {
+      abortCtrlRef.current?.abort()
+    }
+  }, [])
+
+  return (
+    <Slot
+      onClick={async () => {
+        abortCtrlRef.current?.abort()
+        abortCtrlRef.current = new AbortController()
+
+        await navigator.clipboard.writeText(text)
+        toast.success({
+          title: "Copied to clipboard"
+        })
+
+        let timerId: ReturnType<typeof setTimeout>
+        if (!copied) {
+          setCopied(true)
+          timerId = setTimeout(() => {
+            setCopied(false)
+          }, 2000)
+        } else {
+          setCopied(false)
+
+          timerId = setTimeout(() => {
+            setCopied(true)
+            timerId = setTimeout(() => {
+              setCopied(false)
+            }, 2000)
+          }, 125)
+        }
+
+        abortCtrlRef.current.signal.addEventListener("abort", () => {
+          clearTimeout(timerId)
+        })
+      }}
+    >
+      {children(copied)}
+    </Slot>
+  )
+}

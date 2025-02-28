@@ -3,15 +3,27 @@
 import { motion } from 'framer-motion';
 import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
 import HillsideSvg from '@public/images/background/hillside.svg';
+import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
 import GrassSvg from '@public/images/background/grass.svg';
 import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
+import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
 import BridgeGroundSvg from '@public/images/background/bridge-ground.svg';
+import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy.svg';
 import LeftTreeSvg from '@public/images/background/tree.svg';
+import HallPalace from '@public/images/background/hall-palace.svg'
+import HallFlag from '@public/images/background/hall-flag.svg'
+
 import { memo } from 'react';
 import { Clouds, DappClouds } from './clouds';
 import BeraBgHome from '@/components/bear-background/home';
 import Flowers from '@/components/bear-background/components/flowers';
 import Ground from '@/components/bear-background/components/ground';
+
+
+import clsx from 'clsx';
+import { useRainyDay } from '@/hooks/use-rainy-day';
+
+import { useActivityStore } from '@/stores/useActivityStore';
 
 const LeftTree = function () {
   return (
@@ -822,42 +834,87 @@ const DashboardFlowers = function () {
   );
 };
 
-const DashboardBear = function () {
+const DashboardBear = function (props: any) {
+  const { className, isRainyDay } = props;
+
   return (
-    <div className='absolute right-0 bottom-[31px] z-10'>
-      <DashboardBearSvg />
+    <div className={clsx('absolute right-0 bottom-[31px] z-10', className)}>
+      {isRainyDay ? (
+        <DashboardBearRainySvg />
+      ) : (
+        <DashboardBearSvg />
+      )}
     </div>
   );
 };
 
-const DashboardGround = function () {
+const DashboardGround = function (props: any) {
+  const { isRainyDay } = props;
+
   return (
     <div className='absolute bottom-0 left-0 w-full'>
-      <HillsideSvg className='absolute left-0 bottom-[186px]' />
+      {
+        isRainyDay ? (
+          <HillsideRainySvg className='absolute left-0 bottom-[186px]' />
+        ) : (
+          <HillsideSvg className='absolute left-0 bottom-[186px]' />
+        )
+      }
       <GrassSvg className='absolute right-0 bottom-[220px]' />
-      <div className='absolute left-0 bottom-0 w-full h-[233px] bg-[#B6DF5D]' />
+      <div className={clsx('absolute left-0 bottom-0 w-full h-[233px]', isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]')} />
     </div>
   );
 };
 
-const BridgeGround = function () {
+const BridgeGround = function (props: any) {
+  const { className, isRainyDay } = props;
+
   return (
-    <div className='absolute left-0 bottom-0 w-full'>
-      <BridgeGroundSvg className='relative mx-auto z-[5]' />
-      <div className='absolute bottom-[154px] left-[-21px] right-1/2 rounded-[8px] border border-black bg-[#B6DF5D] h-[80px]' />
-      <div className='absolute bottom-[-142px] left-0 right-1/2 bg-[#A7CC55] h-[297px] border-t border-black ' />
-      <div className='absolute bottom-[154px] right-[-21px] left-1/2 rounded-[8px] border border-black bg-[#B6DF5D] h-[80px]' />
-      <div className='absolute bottom-[-142px] right-0 left-1/2 bg-[#A7CC55] h-[297px] border-t border-black ' />
+    <div className={clsx('absolute left-0 bottom-0 w-full', className)}>
+      {
+        isRainyDay ? (
+          <BridgeGroundRainySvg className='relative mx-auto z-[5]' />
+        ) : (
+          <BridgeGroundSvg className='relative mx-auto z-[5]' />
+        )
+      }
+      <div
+        className={clsx(
+          'absolute bottom-[154px] left-[-21px] right-1/2 rounded-[8px] border border-black h-[80px]',
+          isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]'
+        )}
+      />
+      <div
+        className={clsx(
+          'absolute bottom-[-142px] left-0 right-1/2 h-[297px] border-t border-black',
+          isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
+        )}
+      />
+      <div
+        className={clsx(
+          'absolute bottom-[154px] right-[-21px] left-1/2 rounded-[8px] border border-black h-[80px]',
+          isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]'
+        )}
+      />
+      <div
+        className={clsx(
+          'absolute bottom-[-142px] right-0 left-1/2 h-[297px] border-t border-black',
+          isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
+        )}
+      />
     </div>
   );
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall';
   children: React.ReactNode;
 };
 
 export default memo(function BearBackground({ type, children }: PropsType) {
+  const { isRainyDay } = useRainyDay();
+  const { isDefaultTheme } = useActivityStore()
+
   return (
     <div
       className='relative hidden lg:block'
@@ -871,29 +928,75 @@ export default memo(function BearBackground({ type, children }: PropsType) {
         <BeraBgHome />
       ) : type === 'dashboard' ? (
         <>
-          <Clouds />
-          <DashboardFlowers />
-          <DashboardBear />
-          <DashboardGround />
+          <Clouds isRainyDay={isRainyDay} />
+          {
+            isDefaultTheme() ? (<>
+              <DashboardFlowers />
+              <DashboardBear isRainyDay={isRainyDay} />
+              <DashboardGround isRainyDay={isRainyDay} />
+            </>) : (<div className='absolute left-0 bottom-0 right-0 h-[234px] bg-[#FFF5A9] border-t border-black'>
+              <div className='w-full h-full relative'>
+                <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[80%] left-0 z-[8]' alt="" />
+                <img src="/images/baddies/dashboard.png" className='w-[505px] absolute bottom-[5%] right-0 z-[8] object-contain' alt="" />
+              </div>
+            </div>)
+          }
+
         </>
       ) : type === 'bridge' ? (
         <>
-          <Clouds />
-          <HatBear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-10' />
-          <BridgeGround />
+          <Clouds isRainyDay={isRainyDay} />
+
+          {
+            isDefaultTheme() ? (
+              <>
+                <HatBear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-676px] z-[8]' />
+                <BridgeGround className='z-[7]' isRainyDay={isRainyDay} />
+              </>
+            ) : (
+              (
+                <>
+                  <img src="/images/baddies/yeeze.png" className='w-[287px] absolute bottom-[10vw] left-0 z-[8]' alt="" />
+                  <div className={clsx('absolute left-0 bottom-0 right-0 w-full')}>
+                    <img src="/images/baddies/bridge-bg.png" className='w-full min-w-[1600px] h-full object-contain' alt="" />
+                  </div>
+                </>
+              )
+            )
+          }
+
+
         </>
       ) : type === 'dapps' ? (
         <>
-          <Clouds />
-          <Flowers />
-          <Ground />
-          <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
+          <Clouds isRainyDay={isRainyDay} />
+          {
+            isDefaultTheme() && (
+              <>
+                <Flowers />
+                <HatBear className='absolute w-[360px] left-[86px] bottom-[32px] z-20' />
+              </>
+            )
+          }
+          <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
+
         </>
       ) : type === 'dapp' ? (
         <>
-          <DappClouds />
+          <DappClouds isRainyDay={isRainyDay} />
           <LeftTree />
           <RightTree />
+        </>
+      ) : type === 'hall' ? (
+        <>
+          <DashboardFlowers />
+          <div className="absolute right-0 bottom-[213px] z-10">
+            <HallPalace />
+          </div>
+          <div className="absolute left-0 bottom-[220px] z-10">
+            <HallFlag />
+          </div>
+          <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
         </>
       ) : (
         <></>

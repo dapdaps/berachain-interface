@@ -13,7 +13,7 @@ const BgtValidatorMobile = (props: any) => {
     currentTab,
     Tabs,
     setCurrentTab,
-    vaultsLoading,
+    loading,
     Columns,
     vaults,
     visible,
@@ -46,7 +46,7 @@ const BgtValidatorMobile = (props: any) => {
       <Back onBack={onBack} />
       <Nav pageData={pageData} handleClick={handleClick} />
       <Summary vaults={vaults} pageData={pageData} />
-      <SwitchTabs
+      {/* <SwitchTabs
         current={currentTab}
         tabs={Tabs}
         onChange={(key) => setCurrentTab(key as string)}
@@ -63,10 +63,11 @@ const BgtValidatorMobile = (props: any) => {
         cursorStyle={{
           borderRadius: 10,
         }}
-      />
-      <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[17px_12px_24px] mt-[13px]">
-        {
-          listData.length > 0 ? listData.map((d: any, idx: number) => (
+      /> */}
+
+      {
+        listData.length > 0 ? listData.map((d: any, idx: number) => (
+          <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[17px_12px_24px] mt-[13px]">
             <div key={idx} className="w-full flex flex-wrap gap-y-[36px]">
               {
                 columns.map((c: any, index: number) => (
@@ -75,22 +76,23 @@ const BgtValidatorMobile = (props: any) => {
                       <div className="text-[#3D405A] font-[500] text-[14px] mb-[5px] whitespace-nowrap">{c.title}</div>
                     )}
                     {['incentives'].includes(c.dataIndex) ? (
-                      <div className="flex items-center gap-[5px]">
-                        <span className="text-[#3D405A] font-[500] text-[14px]">Incentives</span>
-                        <img src={d?.metadata?.logoURI} alt={d?.metadata?.name} className="w-[20px] h-[20px] rounded-full" />
+                      <div className="flex flex-col">
+                        <span className="text-[#3D405A] font-[500] text-[14px] mb-[5px] whitespace-nowrap leading-[90%]">Incentives</span>
+                        <span className="text-black font-Montserrat text-[16px] font-semibold">No Incentives</span>
                       </div>
                     ) : c.render(d[c.dataIndex], d)}
                   </div>
                 ))
               }
             </div>
-          )) : (
-            <div className="">
-              <Empty desc='No data' />
-            </div>
-          )
-        }
-      </div>
+          </div>
+        )) : (
+          <div className="">
+            <Empty desc='No data' />
+          </div>
+        )
+      }
+
     </div>
   );
 };

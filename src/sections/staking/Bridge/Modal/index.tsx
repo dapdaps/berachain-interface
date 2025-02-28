@@ -56,9 +56,9 @@ export default memo(function index(props) {
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -296,26 +296,16 @@ export default memo(function index(props) {
   }, [isBera, config]);
 
   useEffect(() => {
-    setApr(token1?.apr);
-    setIchiAddress(token1?.ichiAddress);
-    setValues(token1?.values);
-  }, [token1]);
+    setApr(data?.pool?.apr);
+    setIchiAddress(data?.pool?.ichiAddress);
+    setValues(data?.pool?.values);
+  }, [data?.pool]);
 
   useEffect(() => {
     if (show) {
-      console.log("===data", data);
-      if (data?.pairedTokens) {
-        const _pairedTokens = data?.pairedTokens;
-        const _token1 = _pairedTokens?.[0];
-        const token = _.cloneDeep(data);
-        delete token.pairedTokens;
-        setToken0(token);
-        setToken1(_token1);
-        setPairedTokens(_pairedTokens);
-      } else {
-        setToken0(data?.token0);
-        setToken1(data?.token1);
-      }
+
+      setToken0(data?.token0);
+      setToken1(data?.token1);
       setIsDeposit(type === 0 ? true : false);
     } else {
       setBalance("");
@@ -338,13 +328,20 @@ export default memo(function index(props) {
           <div className="flex items-center gap-[16px]">
             <div className="flex-1 h-[60px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]">
               <div className="flex items-center gap-[10px]">
-                <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                  <img
-                    className="w-full"
-                    src={token0?.icon}
-                    alt={token0?.symbol}
-                  />
-                </div>
+                {token0?.icon ? (
+                  <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                    <img
+                      className="w-full"
+                      src={token0?.icon}
+                      alt={token0?.symbol}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                    {token0?.symbol?.slice(0, 1)}
+                  </div>
+                )}
+
                 <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
                   {token0?.symbol}
                 </div>
@@ -358,13 +355,19 @@ export default memo(function index(props) {
               }}
             >
               <div className="flex items-center gap-[10px]">
-                <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                  <img
-                    className="w-full"
-                    src={token1?.icon}
-                    alt={token1?.symbol}
-                  />
-                </div>
+                {token1?.icon ? (
+                  <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                    <img
+                      className="w-full"
+                      src={token1?.icon}
+                      alt={token1?.symbol}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                    {token1?.symbol?.slice(0, 1)}
+                  </div>
+                )}
                 <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
                   {token1?.symbol}
                 </div>
@@ -400,8 +403,7 @@ export default memo(function index(props) {
             <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
               {isDeposit ? "Deposit Amounts" : "Withdrawing"}
             </div>
-
-            {isDeposit ? (
+            {/* {isDeposit ? (
               <>
                 {token0?.symbol === "WBERA" && (
                   <div className="flex items-center gap-[10px]">
@@ -427,15 +429,30 @@ export default memo(function index(props) {
                 )}
               </>
             ) : (
-              <div className="flex items-center gap-[9px]">
-                <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                  <img src={token0?.icon} alt={token0?.symbol} />
+              <>
+                <div className="flex items-center gap-[9px]">
+                  {token0?.icon ? (
+                    <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                      <img
+                        className="w-full"
+                        src={token0?.icon}
+                        alt={token0?.symbol}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                      {token0?.symbol?.slice(0, 1)}
+                    </div>
+                  )}
+                  <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                    {isBera ? "BERA" : token0?.symbol}
+                  </span>
                 </div>
                 <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
                   {isBera ? "BERA" : token0?.symbol}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
 
           {isDeposit && (
@@ -453,9 +470,20 @@ export default memo(function index(props) {
                   />
                 </div>
                 <div className="flex items-center gap-[9px]">
-                  <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                    <img src={token0?.icon} alt={token0?.symbol} />
-                  </div>
+                  {token0?.icon ? (
+                    <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                      <img
+                        className="w-full"
+                        src={token0?.icon}
+                        alt={token0?.symbol}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                      {token0?.symbol?.slice(0, 1)}
+                    </div>
+                  )}
+
                   <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
                     {isBera ? "BERA" : token0?.symbol}
                   </span>
@@ -526,7 +554,21 @@ export default memo(function index(props) {
           ) : (
             <div className="mt-[-16px] mb-[8px] flex justify-end">
               <div className="flex flex-col gap-[2px]">
-                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  My Positon{" "}
+                  {formatValueDecimal(
+                    Big(data?.pool?.usdDepositAmount ?? 0)
+                      .times(percentage)
+                      .div(100)
+                      .toFixed(),
+                    "$",
+                    2,
+                    false,
+                    false
+                  )}
+                </div>
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  {token0?.symbol}{" "}
                   {formatValueDecimal(
                     Big(values?.[0] ?? 0)
                       .times(percentage)
@@ -536,10 +578,10 @@ export default memo(function index(props) {
                     2,
                     false,
                     false
-                  )}{" "}
-                  {token0?.symbol}
+                  )}
                 </div>
-                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  {token1?.symbol}{" "}
                   {formatValueDecimal(
                     Big(values?.[1] ?? 0)
                       .times(percentage)
@@ -549,9 +591,9 @@ export default memo(function index(props) {
                     2,
                     false,
                     false
-                  )}{" "}
-                  {token1?.symbol}
+                  )}
                 </div>
+
               </div>
             </div>
           )}

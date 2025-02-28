@@ -17,6 +17,8 @@ import Tips from "./Tip";
 import Welcome from "./Welcome";
 import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
+import AirDropTime from "./AirDropTime";
+import { AirDropHistoryData, AirDropRound, useAirdrop } from "./useAirdrop";
 
 const hatPositions = [{
     width: 102,
@@ -64,21 +66,25 @@ const lendDapps = [{
     icon: '/images/dapps/dolomite.svg',
     name: 'Dolomite',
     link: '/lending/dolomite'
-}, {
-    icon: '/images/dapps/bend.svg',
-    name: 'Bend',
-    link: '/lending/bend'
-}]
+}, 
+// {
+//     icon: '/images/dapps/bend.svg',
+//     name: 'Bend',
+//     link: '/lending/bend'
+// }
+]
 
 const swapDapps = [{
     icon: '/images/dapps/kodiak.svg',
     name: 'Kodiak',
     link: '/dex/kodiak'
-}, {
-    icon: '/images/dapps/bex.svg',
-    name: 'Bex',
-    link: '/dex/bex'
-}, {
+}, 
+// {
+//     icon: '/images/dapps/bex.svg',
+//     name: 'Bex',
+//     link: '/dex/bex'
+// }, 
+{
     icon: '/images/dapps/ooga-booga.svg',
     name: 'Ooga Booga',
     link: '/dex/ooga-booga'
@@ -93,60 +99,58 @@ const bridgeDapps = [{
 
 const hatTips = [{
     name: 'Baseball Cap',
-    content: '$1+ transaction, at least 1 transactions.',
+    content: '5 transactions, at least $1+ for each.',
     img: '/images/cave/hat/hat-1-1.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }, {
     name: 'Basic Helmet',
-    content: '$10+ transaction, at least 10 transactions.',
+    content: '10 transactions, at least $10+ for each.',
     img: '/images/cave/hat/hat-2-2.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }, {
     name: 'Flying Helmet',
-    content: '$100+ transaction, at least 100 transactions.',
+    content: '50 transactions, at least $100+ for each.',
     img: '/images/cave/hat/hat-3-3.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }, {
     name: 'Motor Helmet',
-    content: '$1000+ transaction, at least 1000 transactions.',
+    content: '200 transactions, at least $100+ for each.',
     img: '/images/cave/hat/hat-4-4.png',
     link: '/bridge',
     btnText: 'Bridge',
     dapps: bridgeDapps,
 }]
 
-
-
 const clothTips = [{
     name: 'Hoodie',
-    content: '$1+ transaction, at least 1 transactions.',
+    content: '5 transaction, at least $1+ for each.',
     img: '/images/cave/clothing/cloth-1-1.png',
     link: '/swap',
     btnText: 'Swap',
     dapps: swapDapps,
 }, {
     name: 'Baseball Jacket',
-    content: '$10+ transaction, at least 10 transactions.',
+    content: '10 transaction, at least $10+ for each.',
     img: '/images/cave/clothing/cloth-2-2.png',
     link: '/swap',
     btnText: 'Swap',
     dapps: swapDapps,
 }, {
     name: 'Vintage Jacket',
-    content: '$100+ transaction, at least 100 transactions.',
+    content: '50 transaction, at least $100+ for each.',
     img: '/images/cave/clothing/cloth-3-3.png',
     link: '/swap',
     btnText: 'Swap',
     dapps: swapDapps,
 }, {
     name: 'Windcheater',
-    content: '$1000+ transaction, at least 1000 transactions.',
+    content: '200 transaction, at least $100+ for each.',
     img: '/images/cave/clothing/cloth-4-4.png',
     link: '/swap',
     btnText: 'Swap',
@@ -186,7 +190,7 @@ const carTips = [{
 const neckTips = [
     {
         name: 'Alloy Necklace',
-        content: '$Lend and Borrow in total $50.',
+        content: '20 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-1.png',
         link: '/swap',
         btnText: 'Lending',
@@ -194,7 +198,7 @@ const neckTips = [
     },
     {
         name: 'Silver Necklace',
-        content: '$Lend and Borrow in total $1000.',
+        content: '100 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-2.png',
         link: '/swap',
         btnText: 'Lending',
@@ -202,7 +206,7 @@ const neckTips = [
     },
     {
         name: 'Golden Necklace',
-        content: '$Lend and Borrow in total $500,000.',
+        content: '200 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-3.png',
         link: '/swap',
         btnText: 'Lending',
@@ -210,7 +214,7 @@ const neckTips = [
     },
     {
         name: 'Diamond Necklace',
-        content: '$Lend and Borrow in total $1,000,000.',
+        content: '300 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-4.png',
         link: '/swap',
         btnText: 'Lending',
@@ -242,13 +246,13 @@ export default function Cave() {
     const { transferItem, transferItems, setTransferItem, setTransferSelectedItems, setTransferItemsVisible } = useTransferItemsStore();
 
     const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
-
+    const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
     const { cars, hats, clothes, necklaces, items, nfts, getItems } = useCollect({
-        address: account as string
+        address: account as string,
+        round: airDropRound?.round || -1,
     })
 
     const tipClick = useCallback((e: any, item: any, gameItem: any) => {
-        console.log('tipClick', item, gameItem);
         if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
             e.nativeEvent.stopImmediatePropagation()
             let y = e.clientY - 30
@@ -399,9 +403,12 @@ export default function Cave() {
                     />
                 </div>
             </div>
+
+            <AirDropTime airDropRound={airDropRound as AirDropRound} airDropHistory={airDropHistory as AirDropHistoryData[]}/>
+            
             {/*#endregion*/}
             {/*#region NFT*/}
-            <div className="flex gap-[65px] justify-center">
+            {/* <div className="flex gap-[65px] justify-center">
                 {
                     storePhotoList?.photoList?.map((photo: any, index: number) => (
                         <div className="relative w-[159px] h-[184px] group">
@@ -470,7 +477,7 @@ export default function Cave() {
                     ))
                 }
 
-            </div>
+            </div> */}
             {/*#endregion*/}
             {/*#region Hats*/}
             <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[270px] translate-x-[-50%]">
@@ -655,7 +662,13 @@ export default function Cave() {
             </div>
             {/*#endregion*/}
             {/*#region Mirror on Right*/}
-            <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
+            {
+                airDropPrize ? (
+                    <div className=" pointer-events-none absolute w-[358px] h-[818px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror-b.png')] bg-contain bg-no-repeat bg-bottom"></div>
+                ) : (
+                    <div className=" pointer-events-none absolute w-[358px] h-[593px] bottom-[0px] right-[2%] bg-[url('/images/cave/mirror.png')] bg-contain bg-no-repeat bg-bottom"></div>
+                )
+            }
             {/*#endregion*/}
             {/*#region Stone on Right*/}
             <div className=" pointer-events-none absolute w-[757px] h-[386px] bottom-[0px] right-0 bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
@@ -697,7 +710,7 @@ export default function Cave() {
             />
         </div>
 
-        <div
+        {/* <div
             onClick={() => {
                 setTransferItemsVisible(true)
                 setTransferSelectedItems(transferItems)
@@ -711,7 +724,7 @@ export default function Cave() {
                     <img src="/images/cave/icon-bear.png" alt="icon-bear" />
                 </div>
             </div>
-        </div>
+        </div> */}
         <TransferItemsModal onAfterTransfer={getItems} />
     </div>
 }

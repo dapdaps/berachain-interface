@@ -5,22 +5,17 @@ import Button, { ButtonType } from '@/components/GuidingTour/mainnet/components/
 import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
 import useIsMobile from '@/hooks/use-isMobile';
-import { useState } from 'react';
-import { post } from '@/utils/http';
-import useToast from '@/hooks/use-toast';
-import { useAuthCheck } from '@/hooks/use-auth-check';
 import { useAccount } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
+import { useContext } from 'react';
+import { GuidingTourContext } from './context';
 
 const GetBera = (props: any) => {
   const { onClose } = props;
   const isMobile = useIsMobile();
-  const toast = useToast();
-  const { onAuthCheck } = useAuthCheck();
+  const { handlePrize, prizing } = useContext(GuidingTourContext);
 
   const { getBeraVisible, setGetBeraVisible, setChoosePillVisible, setDoneVisible } = useGuidingTour();
-
-  const [pending, setPending] = useState(false);
 
   const handleBack = () => {
     setGetBeraVisible(false);
@@ -32,29 +27,10 @@ const GetBera = (props: any) => {
     setDoneVisible(true);
   };
 
-  const handlePrize = async () => {
-    if (pending) return;
-    setPending(true);
-    await onAuthCheck();
-    try {
-      const res = await post('/api/user/guide/prize');
-      if (res.code !== 0) {
-        toast.fail({ title: res.msg || 'Something went wrong' });
-        setPending(false);
-        return;
-      }
-      handleNext();
-    } catch (err: any) {
-      console.log(err);
-      toast.fail({ title: err?.message || 'Something went wrong' });
-    }
-    setPending(false);
-  };
-
   return (
     <Modal
       open={getBeraVisible}
-      onClose={onClose}
+      onClose={handleBack}
       isMaskClose={false}
     >
       <Card className="w-[1024px] md:w-full p-[39px_20px_46px_57px] md:p-[30px_20px_30px_20px]">
@@ -72,14 +48,39 @@ const GetBera = (props: any) => {
             <div className="flex items-center gap-[5px] mt-[19px] md:mt-[10px]">
               {
                 [
-                  '/images/guiding-tour/cex-1.svg',
-                  '/images/guiding-tour/cex-2.svg',
-                  '/images/guiding-tour/cex-3.svg',
-                  '/images/guiding-tour/cex-4.svg',
-                  '/images/guiding-tour/cex-5.svg',
-                  '/images/guiding-tour/cex-6.svg',
+                  {
+                    icon: '/images/guiding-tour/cex-1.svg',
+                    link: 'https://www.gate.io/trade/BERA_USDT'
+                  },
+                  {
+                    icon: '/images/guiding-tour/cex-2.svg', 
+                    link: 'https://www.coinbase.com/price/bera'
+                  },
+                  {
+                    icon: '/images/guiding-tour/cex-3.svg',
+                    link: 'https://www.kucoin.com/trade/BERA-USDT'
+                  },
+                  {
+                    icon: '/images/guiding-tour/cex-4.svg',
+                    link: 'https://www.kraken.com/prices/near-protocol'
+                  },
+                  {
+                    icon: '/images/guiding-tour/cex-5.svg',
+                    link: 'https://www.bybit.com/en/trade/spot/NEAR/USDT'
+                  },
+                  {
+                    icon: '/images/guiding-tour/cex-6.svg',
+                    link: 'https://crypto.com/price/near-protocol'
+                  }
                 ].map((it, idx) => (
-                  <img key={idx} src={it} alt="" className="w-[40px] h-[40px] shrink-0" />
+                  <a 
+                    key={idx} 
+                    href={it.link} 
+                    target="_blank" 
+                    rel="nofollow"
+                  >
+                    <img src={it.icon} alt="" className="w-[40px] h-[40px] shrink-0" />
+                  </a>
                 ))
               }
             </div>
@@ -123,13 +124,19 @@ const GetBera = (props: any) => {
         </div>
         {
           isMobile && (
-            <Foot handleNext={handlePrize} loading={pending} />
+            <Foot
+              handleNext={() => handlePrize(handleNext)}
+              loading={prizing}
+            />
           )
         }
       </Card>
       {
         !isMobile && (
-          <Foot handleNext={handlePrize} loading={pending} />
+          <Foot
+            handleNext={() => handlePrize(handleNext)}
+            loading={prizing}
+          />
         )
       }
     </Modal>

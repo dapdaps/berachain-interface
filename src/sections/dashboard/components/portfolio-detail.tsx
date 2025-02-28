@@ -3,11 +3,15 @@ import { useMemo } from 'react';
 import Big from 'big.js';
 import DappName from './dapp-name';
 import ProtocolDetailTable from './protocol-detail-table';
+import { useRouter } from 'next/navigation';
+import Button from '@/components/button';
 
 const DashboardPortfolioDetail = (props: Props) => {
   const { dapp } = props;
 
-  const { dappLogo, show_name, type, totalUsd, version } = dapp;
+  const router = useRouter();
+
+  const { dappLogo, show_name, type, totalUsd, version, path, earnPath } = dapp;
 
   const isLending = ['Lending', 'Yield'].includes(type);
 
@@ -69,14 +73,31 @@ const DashboardPortfolioDetail = (props: Props) => {
   }, [dapp, isLending]);
 
   return (
-    <div className='mt-[18px] flex-1 border border-[#373A53] rounded-[12px] bg-white p-[11px_12px_11px_9px] md:rounded-t-[20px] md:rounded-b-none md:h-full'>
+    <div className='mt-[18px] flex-1 border border-[#373A53] rounded-[12px] bg-white p-[11px_12px_11px_9px] md:rounded-t-[20px] md:rounded-b-[20px] md:h-full'>
       <div className='flex justify-between items-center gap-[10px]'>
         <DappName
           icon={dappLogo}
-          name={`${show_name}${version ? ' ' + version : ''}`}
+          name={`${show_name}`}
           category={type}
+          onClick={() => {
+            router.push(path);
+          }}
         />
-        <Value>{totalUsd}</Value>
+        <div className="flex justify-end items-center gap-[10px]">
+          <Value>{totalUsd}</Value>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (earnPath) {
+                router.push(earnPath);
+                return;
+              }
+              router.push(path);
+            }}
+          >
+            Manage
+          </Button>
+        </div>
       </div>
       <ProtocolDetailTable isLending={isLending} tableList={tableList} />
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import HoneypotCard from "@/sections/marketplace/components/honeypot-card/index";
 import PageBack from "@/components/back";
@@ -27,54 +27,7 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
-const MemeTokens: any = [
-  // {
-  //   ...beraB.spepe,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  bera.yeet
-  // {
-  //   ...beraB.bebe,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.sproto,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.smonkey,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.croc,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.std,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB["0x15p"],
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.tedd,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // },
-  // {
-  //   ...beraB.ooga,
-  //   price: "$0.0000001",
-  //   volume: "$0.9717"
-  // }
-];
+const MemeTokens: any = [bera.yeet, bera.bonga, bera.bblast, bera.bm];
 
 export const MoreButton = (props: {
   onClick: () => void;
@@ -97,6 +50,9 @@ export const MoreButton = (props: {
 
 const MarketplaceView = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const openFrom = searchParams.get("from");
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>(
@@ -121,7 +77,8 @@ const MarketplaceView = () => {
       item.tokens[80094].forEach((token: any) => {
         if (
           // hide BERA
-          token.isNative ||
+          // @Amy Add a BERA token to the marketplace, with the swap defaulting to display HONEY-BERA
+          // token.isNative ||
           // do not display Meme tokens in the Hot section, ensuring there is no overlap with the sections below.
           MemeTokens.some(
             (meme: any) =>
@@ -176,6 +133,13 @@ const MarketplaceView = () => {
     setSelectedRecord(item);
   };
 
+  useEffect(() => {
+    if (openFrom !== 'bera-price') {
+      return;
+    }
+    onSwap(bera.bera);
+  }, [openFrom]);
+
   return (
     <div className="relative md:overflow-y-scroll overflow-x-hidden md:h-[calc(100dvh_-_62px)]">
       {!isMobile && (
@@ -192,7 +156,7 @@ const MarketplaceView = () => {
         alt=""
       />
 
-      <div className="relative mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
+      <div className="relative z-[10] mt-[100px] lg:w-[1200px] md:w-full mx-auto rounded-[20px] lg:mb-[100px] md:mb-[50px] p-[12px] md:pt-[56px] border-[2px] border-black bg-[#D5AD67] shadow-shadow1">
         <div className="absolute z-[2] border-black leading-none rounded-[20px] border bg-[#FF80CC] lg:text-[32px] md:text-[18px] rotate-[-5deg] md:px-[12px] lg:px-[24px] lg:pt-[18px] lg:pb-[22px] md:py-[10px] shadow-shadow1 font-CherryBomb lg:top-[-30px] lg:left-[50%] lg:translate-x-[-50%] md:left-0 md:top-[30px]">
           Hot Sell Tokens
         </div>
@@ -227,7 +191,7 @@ const MarketplaceView = () => {
             </div>
           ))}
         </div>
-        <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div>
+        {/* <div className="absolute w-[10px] right-[2px] bottom-0 h-[90%] bg-[#D5AD67]"></div> */}
         {showMoreButton && (
           <MoreButton
             classname="absolute bottom-[-17px] lg:right-[-12px] md:right-[0]"
@@ -241,6 +205,7 @@ const MarketplaceView = () => {
           <div className="relative z-10 lg:w-[1196px]">
             <MemeTokensGrid
               MemeTokens={MemeTokens}
+              voulmes={voulmes}
               onSwap={onSwap}
               onFooterMore={onFooterMore}
             />

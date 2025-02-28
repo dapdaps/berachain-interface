@@ -66,7 +66,13 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
           {desc}
         </div>
         <div
-          onClick={() =>
+          style={{
+            opacity: type === 'delegate' ? 0.5 : 1
+          }}
+          onClick={() => {
+            if (type === 'delegate') {
+              return
+            }
             onItemClick?.({
               icon,
               popoverIcon,
@@ -77,7 +83,7 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
               hasPopover,
               ...rest,
             })
-          }
+          }}
           className="w-full h-8 border-[2px] bg-[#FFF5A9] rounded-[30px] border-[#4B371F] font-CherryBomb text-[18px] font-[400] text-center text-stroke-2 text-white"
         >
           {type.charAt(0).toUpperCase() + type.slice(1)}

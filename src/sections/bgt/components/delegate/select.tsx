@@ -6,7 +6,7 @@ import useCustomAccount from '@/hooks/use-account';
 import { BGT_ABI } from "@/sections/bgt/abi";
 import { BGT_ADDRESS, VALIDATORS } from '@/sections/bgt/config';
 import { formatValueDecimal } from "@/utils/balance";
-import { asyncFetch } from "@/utils/http";
+import { asyncFetch, post } from "@/utils/http";
 import { multicall } from '@/utils/multicall';
 import Big from "big.js";
 import { ethers } from "ethers";
@@ -16,79 +16,85 @@ import useIsMobile from '@/hooks/use-isMobile';
 import Empty from '@/components/empty';
 import Back from '@/sections/bgt/validator/components/back';
 import Skeleton from 'react-loading-skeleton';
+import { BEARCHAIN_API } from "@/hooks/use-bgt";
+import { formatLongText } from "@/utils/utils";
+import useValidators from "./hooks/use-validators";
 const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 export default memo(function Select(props: any) {
   const {
     visible,
     onClose,
     onDataChange,
-    onAddressSelect,
+    onValidatorSelect,
   } = props
   const isMobile = useIsMobile();
 
+
+  const {
+    provider, account
+  } = useCustomAccount()
+  const {
+    loading,
+    validators,
+    getValidators
+  } = useValidators()
+  const router = useRouter()
+  const [value, setValue] = useState("")
+  const filterValidators = useMemo(() => validators?.filter((validator: any) => validator?.metadata?.name?.toLocaleLowerCase().indexOf(value?.toLocaleLowerCase()) > -1 || validator?.id?.toLocaleLowerCase().indexOf(value?.toLocaleLowerCase()) > -1), [value, loading])
+  
   const Columns: Column[] = [
     {
       title: "Validator",
       dataIndex: "vaults",
       align: "left",
-      width: "20%",
+      width: "23%",
       render: (text: string, record: any) => {
         return (
           <div className="flex items-center gap-[8px]">
             <div className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden">
-              <img src={record?.icon} alt={record?.name} />
+              <img src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={record?.name} />
             </div>
-            <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.name}</div>
+            <div className="flex-1 min-w-0">
+              <div className="truncate text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.metadata?.name ?? formatLongText(record?.pubkey, 4, 4)}</div>
+            </div>
           </div>
         );
       },
     },
     {
-      title: "User Staked",
+      title: "Boosts",
       dataIndex: "userStaked",
       align: "left",
       width: "15%",
       render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.userStaked ?? 0, '', 2, false, false)} BGT</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.dynamicData?.activeBoostAmount ?? 0, '', 2, true, false)} BGT</div>;
       },
     },
     {
-      title: "User Queued",
+      title: "Staked",
       dataIndex: "userQueued",
       align: "left",
-      width: "15%",
+      width: "17%",
       render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.userQueued ?? 0, '', 2, false, false)} BGT</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.dynamicData?.stakedBeraAmount ?? 0, '', 2, true, false)} BGT</div>;
       },
     },
     {
-      title: "BGT delegated",
+      title: "BGT Emissions (24h)",
       dataIndex: "BGTDelegated",
       align: "left",
-      width: "15%",
+      width: "17%",
       render: (text: string, record: any) => {
-        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.BGTDelegated ?? 0, '', 2, true, false)} BGT</div>;
+        return <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.dynamicData?.lastDayDistributedBGTAmount ?? 0, '', 2, true, false)} BGT</div>;
       },
     },
     {
-      title: "Commission",
-      dataIndex: "commission",
+      title: "Boost APY",
       align: "left",
-      width: "15%",
+      width: "13%",
       render: (text: string, record: any) => {
         return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.commission ?? 0, '', 2, false, false)} %</div>
-        );
-      },
-    },
-    {
-      title: "vApy",
-      dataIndex: "vApy",
-      align: "left",
-      width: "10%",
-      render: (text: string, record: any) => {
-        return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">{formatValueDecimal(record?.vApy ?? 0, '', 2, false, false)} %</div>
+          <div className="text-black font-Montserrat text-[16px] font-medium leading-[90%]">-</div>
         );
       },
     },
@@ -96,155 +102,14 @@ export default memo(function Select(props: any) {
       title: "Incentives",
       dataIndex: "incentives",
       align: "left",
-      width: "10%",
+      width: "15%",
       render: (text: string, record: any) => {
-        return record?.activeIncentives?.length > 0 ? (
-          <div>No Incentives</div>
-        ) : (
-          <div>-</div>
-        );
+        return <div>No Incentives</div>;
       },
     },
 
   ];
-  const {
-    provider, account
-  } = useCustomAccount()
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [value, setValue] = useState("")
-  const [validators, setValidators] = useState<any>(null)
 
-  const filterValidators = useMemo(() => validators?.filter((validator: any) => validator?.name?.toLocaleLowerCase().indexOf(value?.toLocaleLowerCase()) > -1), [value, loading])
-
-
-  const getUserStaked = async () => {
-    const calls: any = []
-    VALIDATORS.forEach(validator => {
-      calls.push({
-        address: BGT_ADDRESS,
-        name: 'boosted',
-        params: [account, validator?.address]
-      })
-    })
-    return (await multicall({
-      abi: BGT_ABI,
-      options: {},
-      calls,
-      multicallAddress,
-      provider
-    })).map((res: any) => res?.[0] ?? null)
-  }
-  const getUserQueued = async () => {
-    const calls: any = []
-    VALIDATORS.forEach(validator => {
-      calls.push({
-        address: BGT_ADDRESS,
-        name: 'boostedQueue',
-        params: [account, validator?.address]
-      })
-    })
-    return (await multicall({
-      abi: BGT_ABI,
-      options: {},
-      calls,
-      multicallAddress,
-      provider
-    })).map((res: any) => res?.[1] ?? null)
-  }
-  const getBGTDelegated = async () => {
-    const calls: any = []
-    VALIDATORS.forEach(validator => {
-      calls.push({
-        address: BGT_ADDRESS,
-        name: 'boostees',
-        params: [validator?.address]
-      })
-    })
-    return (await multicall({
-      abi: BGT_ABI,
-      options: {},
-      calls,
-      multicallAddress,
-      provider
-    })).map((res: any) => res?.[0] ?? null)
-  }
-  const getCommission = async () => {
-    const calls: any = []
-    VALIDATORS.forEach(validator => {
-      calls.push({
-        address: BGT_ADDRESS,
-        name: 'commissions',
-        params: [validator?.address]
-      })
-    })
-    return (await multicall({
-      abi: BGT_ABI,
-      options: {},
-      calls,
-      multicallAddress,
-      provider
-    })).map((res: any) => res?.[1] ?? null)
-  }
-  const getVApyAndIncentives = async () => {
-
-    const response = await asyncFetch("https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/validators?sortBy=votingpower&sortOrder=desc&page=1&pageSize=206&query=")
-
-    const vApyAndIncentives: any = []
-    const validators = response?.validators
-
-    VALIDATORS.forEach(validator => {
-      const idx = validators.findIndex((_validator: any) => _validator?.id === validator?.address)
-      if (idx > -1) {
-        vApyAndIncentives.push({
-          ...validators[idx],
-          vApy: Big(validators[idx]?.apy).div(100).toFixed(),
-          // incentives:
-        })
-      }
-    })
-    return vApyAndIncentives
-
-  }
-  const getIncentives = async () => {
-
-  }
-  const getValidators = async () => {
-
-    console.log('====1111====')
-    const promiseArray = [
-      getUserStaked(),
-      getUserQueued(),
-      getBGTDelegated(),
-      getCommission(),
-      getVApyAndIncentives()
-    ]
-    const _validators = []
-
-    try {
-
-      setLoading(true)
-      const result = await Promise.all(promiseArray)
-      for (let i = 0; i < VALIDATORS.length; i++) {
-
-        console.log('==result?.[3]?.[i]', Big(result?.[3]?.[i]?.toString()).div(100))
-        _validators.push({
-          ...VALIDATORS[i],
-          validator: result?.[4]?.[i],
-          userStaked: result?.[0]?.[i] ? ethers.utils.formatUnits(result?.[0]?.[i]) : 0,
-          userQueued: result?.[1]?.[i] ? ethers.utils.formatUnits(result?.[1]?.[i]) : 0,
-          BGTDelegated: result?.[2]?.[i] ? ethers.utils.formatUnits(result?.[2]?.[i]) : 0,
-          commission: result?.[3]?.[i] ? Big(result?.[3]?.[i]?.toString()).div(100).toFixed() : 0,
-          vApy: result?.[4]?.[i]?.vApy,
-        })
-      }
-      setLoading(false)
-      setValidators(_validators)
-    } catch (error) {
-      setLoading(false)
-      console.error(error)
-    }
-  }
   useEffect(() => {
     if (visible && account) {
       getValidators()
@@ -307,7 +172,7 @@ export default memo(function Select(props: any) {
                 bodyClass="cursor-pointer"
                 onRow={(record) => {
                   // router.replace('/bgt/validator?address=' + record?.address)
-                  onAddressSelect && onAddressSelect(record?.address);
+                  onValidatorSelect && onValidatorSelect(record?.id);
                   onClose && onClose()
                 }}
               />
@@ -325,7 +190,7 @@ export default memo(function Select(props: any) {
                             key={`col-${index}`}
                             className={`${index % 2 === 0 ? 'w-[60%]' : 'w-[40%]'}`}
                             onClick={() => {
-                              onAddressSelect && onAddressSelect(d?.address);
+                              onValidatorSelect && onValidatorSelect(d?.id);
                               onDataChange && onDataChange(d)
                               onClose && onClose();
                             }}

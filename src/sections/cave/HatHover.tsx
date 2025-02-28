@@ -7,16 +7,16 @@ const data = {
     title: 'How to Unlock Hats?',
     list: [{
         icon: '/images/cave/hat/hat-1-1.png',
-        content: <div><strong>1+</strong> transaction, at least 1 transactions</div>,
+        content: <div><strong>5</strong> transactions, at least $1+ for each</div>,
     }, {
         icon: '/images/cave/hat/hat-2-2.png',
-        content: <div><strong>10+</strong> transaction, at least 10 transactions</div>,
+        content: <div><strong>10</strong> transactions, at least $10+ for each</div>,
     }, {
         icon: '/images/cave/hat/hat-3-3.png',
-        content: <div><strong>100+</strong> transaction, at least 100 transactions</div>
+        content: <div><strong>50</strong> transactions, at least $100+ for each</div>
     }, {
         icon: '/images/cave/hat/hat-4-4.png',
-        content: <div><strong>1000+</strong> transaction, at least 1000 transactions</div>,
+        content: <div><strong>200</strong> transactions, at least $100+ for each</div>,
     }]
 }
 

@@ -1,10 +1,9 @@
 import FlexTable from "@/components/flex-table";
-import SwitchTabs from '@/components/switch-tabs';
 import BgtHead from '@/sections/bgt/components/bgt-head';
-import { memo } from "react";
 import Back from '@/sections/bgt/validator/components/back';
 import Nav from '@/sections/bgt/validator/components/nav';
 import Summary from '@/sections/bgt/validator/components/summary';
+import { memo } from "react";
 
 export default memo(function Validator(props: any) {
   const {
@@ -14,12 +13,11 @@ export default memo(function Validator(props: any) {
     currentTab,
     Tabs,
     setCurrentTab,
-    vaultsLoading,
+    loading,
     Columns,
     vaults,
 
   } = props;
-
   return (
     <div className="flex flex-col items-center pt-[75px]">
       <BgtHead bgtData={bgtData} />
@@ -27,24 +25,10 @@ export default memo(function Validator(props: any) {
         <Back />
         <Nav pageData={pageData} handleClick={handleClick} />
         <Summary vaults={vaults} pageData={pageData} />
-        <SwitchTabs
-          current={currentTab}
-          tabs={Tabs}
-          onChange={(key) => setCurrentTab(key as string)}
-          style={{
-            width: 340,
-            height: 40,
-            padding: 4,
-          }}
-          tabStyle={{
-            fontWeight: 500,
-            fontSize: 14,
-          }}
-        />
         <FlexTable
-          loading={vaultsLoading}
+          loading={loading}
           columns={Columns}
-          list={currentTab === "gauges" ? vaults as any : []}
+          list={vaults}
         />
       </div>
     </div>

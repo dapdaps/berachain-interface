@@ -17,7 +17,9 @@ export default {
       bera["bonga"],
       bera["yeet"],
       bera["ramen"],
-      bera["bblast"]
+      bera["bblast"],
+      bera["bm"],
+      bera["hold"]
     ]
   }
 };

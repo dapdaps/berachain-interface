@@ -1,12 +1,12 @@
-import { providers } from 'ethers';
-import chains from '../config/chains';
-import multicallAddresses from '../config/multicall';
-import { multicall } from './multicall';
+import { providers } from "ethers";
+import chains from "../config/chains";
+import multicallAddresses from "../config/multicall";
+import { multicall } from "./multicall";
 
 export default async function formatRoutes({
   tokenAddresses,
   inputCurrency,
-  outputCurrency,
+  outputCurrency
 }: {
   tokenAddresses: string[];
   inputCurrency: any;
@@ -16,12 +16,12 @@ export default async function formatRoutes({
     return [
       {
         token0: {
-          symbol: inputCurrency.symbol,
+          symbol: inputCurrency.symbol
         },
         token1: {
-          symbol: outputCurrency.symbol,
-        },
-      },
+          symbol: outputCurrency.symbol
+        }
+      }
     ];
   }
   const rpcUrl = chains[inputCurrency.chainId].rpcUrls[0];
@@ -31,53 +31,53 @@ export default async function formatRoutes({
     .filter((token, i) => i > 0 && i < tokenAddresses.length - 1)
     .map((token) => ({
       address: token,
-      name: 'symbol',
+      name: "symbol"
     }));
 
   const result = await multicall({
     abi: [
       {
         inputs: [],
-        name: 'symbol',
-        outputs: [{ internalType: 'string', name: '', type: 'string' }],
-        stateMutability: 'view',
-        type: 'function',
-      },
+        name: "symbol",
+        outputs: [{ internalType: "string", name: "", type: "string" }],
+        stateMutability: "view",
+        type: "function"
+      }
     ],
     calls,
     options: {},
     multicallAddress,
-    provider,
+    provider
   });
   const routes: any = [];
   result.forEach((item: string[], i: number) => {
     if (i === 0) {
       routes.push({
         token0: {
-          symbol: inputCurrency.symbol,
+          symbol: inputCurrency.symbol
         },
         token1: {
-          symbol: result[i][0],
-        },
+          symbol: result[i][0]
+        }
       });
     } else {
       routes.push({
         token0: {
-          symbol: result[i - 1][0],
+          symbol: result[i - 1][0]
         },
         token1: {
-          symbol: result[i][0],
-        },
+          symbol: result[i][0]
+        }
       });
     }
     if (i === result.length - 1) {
       routes.push({
         token0: {
-          symbol: result[i][0],
+          symbol: result[i][0]
         },
         token1: {
-          symbol: outputCurrency.symbol,
-        },
+          symbol: outputCurrency.symbol
+        }
       });
     }
   });

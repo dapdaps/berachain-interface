@@ -27,6 +27,7 @@ const LendingModal: React.FC<LendingModalProps> = () => {
 
   const [currentTab, setCurrentTab] = useState<string>(defaultTab || 'supply');
   const [rateKey, setRateKey] = useState<'APY'|'APR'>('APY');
+  const [rateOrder, setRateOrder] = useState<'asc'|'desc'>('desc');
   const [loading, setLoading] = useState<boolean>(false);
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
   const [data, setData] = useState<any>();
@@ -105,6 +106,8 @@ const LendingModal: React.FC<LendingModalProps> = () => {
                 onSuccess={() => {
                   setLoading(true);
                 }}
+                rateOrder={rateOrder}
+                setRateOrder={setRateOrder}
               />
             )
           },
@@ -135,11 +138,11 @@ const LendingModal: React.FC<LendingModalProps> = () => {
         provider={provider}
         onLoad={(res: any) => {
           console.log('dolomite data res: %o', res);
-          // TODO BERA is reached supply cap, hide currently
-          if (res?.markets) {
-            delete res.markets['0x6969696969696969696969696969696969696969'];
-            delete res.markets['native'];
-          }
+          // BERA is reached supply cap, hide currently
+          // if (res?.markets) {
+          //   delete res.markets['0x6969696969696969696969696969696969696969'];
+          //   delete res.markets['native'];
+          // }
           setData(res);
           setLoading(false);
         }}

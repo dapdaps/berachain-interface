@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import List from "@/sections/marketplace/components/list";
 import PoolTable from "../pool-table";
+import { numberFormatter } from "@/utils/number-formatter";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 10;
 
 export default function Laptop({
   pools,
@@ -67,7 +68,12 @@ export default function Laptop({
       sort: true,
       width: "15%",
       render: (item: any, index: number) => {
-        return item["tvl"] || "-";
+        return item["tvl"]
+          ? numberFormatter(item["tvl"], 2, true, {
+              prefix: "$",
+              isShort: true
+            })
+          : "-";
       }
     },
     {
@@ -76,7 +82,12 @@ export default function Laptop({
       sort: true,
       width: "15%",
       render: (item: any, index: number) => {
-        return item["yours"] || "-";
+        return item["volume24h"]
+          ? numberFormatter(item["volume24h"], 2, true, {
+              prefix: "$",
+              isShort: true
+            })
+          : "-";
       }
     },
     {
@@ -85,7 +96,12 @@ export default function Laptop({
       sort: true,
       width: "15%",
       render: (item: any, index: number) => {
-        return item["yours"] || "-";
+        return item["fees24h"]
+          ? numberFormatter(item["fees24h"], 2, true, {
+              prefix: "$",
+              isShort: true
+            })
+          : "-";
       }
     }
   ];

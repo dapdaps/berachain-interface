@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import TokenSelector from '../TokenSelector';
-import allTokens from '../lib/allTokens'
 
-import chains, { icons } from '@/configs/chains'
+
 import useTokenBalance from '@/hooks/use-token-balance';
 import Loading from '@/components/loading';
 import { usePriceStore } from '@/stores/usePriceStore';
@@ -13,6 +12,7 @@ import { tokenPairs } from '../Hooks/Stargate/config';
 
 import type { Chain, Token } from '@/types';
 import ChainAndTokenSelector from '../ChainAndTokenSelector';
+
 
 interface Props {
   chain: Chain;
@@ -25,6 +25,8 @@ interface Props {
   onTokenChange?: (v: Token) => void;
   chainList: Chain[];
   limitBera: boolean;
+  isDest: boolean;
+  allTokens: any;
 }
 
 export default function TokenAmout({
@@ -37,7 +39,9 @@ export default function TokenAmout({
   comingSoon,
   onAmountChange,
   chainList,
-  limitBera
+  limitBera,
+  isDest,
+  allTokens
 }: Props) {
   const [tokenSelectorShow, setTokenSelectorShow] = useState(false);
 
@@ -52,6 +56,10 @@ export default function TokenAmout({
         <div
           onClick={() => {
             if (comingSoon) return;
+
+            if (isDest && limitBera) {
+              return;
+            }
             setTokenSelectorShow(true);
           }}
           className='border cursor-pointer flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]'

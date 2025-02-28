@@ -15,9 +15,14 @@ import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
 import { useDebounceFn } from 'ahooks';
 import { GuidingTourContext } from './context';
+import { useAuthCheck } from '@/hooks/use-auth-check';
+import { post } from '@/utils/http';
+import useToast from '@/hooks/use-toast';
+import { usePathname } from 'next/navigation';
 
 const GuidingTutorial = (props: any) => {
   const {} = props;
+  const pathname = usePathname();
 
   const { address } = useAccount();
   const {
@@ -27,9 +32,14 @@ const GuidingTutorial = (props: any) => {
     setProfileVisible,
     getBeraVisible,
     doneVisible,
+    choosePillVisible,
+    profileVisible,
   } = useGuidingTour();
+  const { onAuthCheck } = useAuthCheck();
+  const toast = useToast();
 
   const [entryVisible, setEntryVisible] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const handleClose = (isConfirm = true) => {
     setEntryVisible(false);
@@ -46,26 +56,53 @@ const GuidingTutorial = (props: any) => {
     setProfileVisible(true);
   };
 
+  const handlePrize = async (callback: () => {}) => {
+    if (pending) return;
+    setPending(true);
+    const authRes = await onAuthCheck(false, true);
+    if (!authRes) {
+      setPending(false);
+      return;
+    }
+    try {
+      const res = await post('/api/user/guide/prize');
+      if (res.code !== 0) {
+        toast.fail({ title: res.msg || 'Something went wrong' });
+        setPending(false);
+        return;
+      }
+      callback();
+    } catch (err: any) {
+      console.log(err);
+      toast.fail({ title: err?.message || 'Something went wrong' });
+    }
+    setPending(false);
+  };
+
   const { run: setEntryVisibleDelay, cancel: setEntryVisibleCancel } = useDebounceFn((_visible: boolean) => {
     setEntryVisible(_visible);
   }, { wait: 2000 });
 
   useEffect(() => {
+    if (pathname !== '/') return
+
     setEntryVisibleCancel();
 
-    if (visited[address || 'DEFAULT'] || getBeraVisible || doneVisible) {
+    if (visited[address || 'DEFAULT'] || getBeraVisible || doneVisible || choosePillVisible || profileVisible) {
       setEntryVisible(false);
       return;
     }
 
     setEntryVisibleDelay(true);
-  }, [address, visited, getBeraVisible || doneVisible]);
+  }, [address, visited, getBeraVisible, doneVisible, choosePillVisible, profileVisible, pathname]);
 
   return (
     <GuidingTourContext.Provider
       value={{
         entryVisible,
         setEntryVisible,
+        handlePrize,
+        prizing: pending,
       }}
      >
       <Modal

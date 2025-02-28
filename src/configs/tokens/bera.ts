@@ -155,7 +155,16 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "BONGA",
     name: "Bong Bears",
-    icon: "/assets/tokens/bonga.png"
+    icon: "/assets/tokens/bonga.png",
+    isMeme: true
+  },
+  byusd: {
+    chainId: CHAIN_ID,
+    address: "0x688e72142674041f8f6af4c808a4045ca1d6ac82",
+    decimals: 6,
+    symbol: "BYUSD",
+    name: "BYUSD",
+    icon: "/assets/tokens/byusd.png"
   },
   fbtc: {
     chainId: CHAIN_ID,
@@ -265,7 +274,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "BBLAST",
     name: "Bera Blast",
-    icon: "/assets/tokens/bblast.png"
+    icon: "/assets/tokens/bblast.png",
+    isMeme: true
   },
   stone: {
     chainId: CHAIN_ID,
@@ -279,7 +289,24 @@ export const bera: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0x85468a0CB26B5Fc1F2B7B7BA3aee07F073dff709",
     decimals: 18,
-    symbol: "Godl",
-    icon: ""
+    symbol: "GODL",
+    icon: "https://ichi-images.s3.us-east-1.amazonaws.com/tokens/logo_256_godl.svg"
   },
+
+  bm: {
+    chainId: CHAIN_ID,
+    address: "0xb749584F9fC418Cf905d54f462fdbFdC7462011b",
+    decimals: 18,
+    symbol: "bm",
+    name: "bm",
+    icon: "/assets/tokens/bm.png"
+  },
+  hold: {
+    chainId: CHAIN_ID,
+    address: "0xff0a636dfc44bb0129b631cdd38d21b613290c98",
+    decimals: 18,
+    symbol: "HOLD",
+    name: "Holdstation",
+    icon: "/assets/tokens/hold.png"
+  }
 };

@@ -61,43 +61,42 @@ export default function Staking({ dapp }: Props) {
       if (dapp?.name === "AquaBera") {
         setType(index);
         setCheckedRecord(data);
-        // modalRef?.current?.handleShow(data, index, dexConfig)
         return;
       }
     }
-    router.push(`/staking/infrared?id=${data.id}&tab=${index}`);
+    router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=${index}`);
   };
 
   const listProps = isVaults
     ? {
-        name: "vaults",
-        description:
-          "Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) & Boosted Yield.",
-        pairs: [],
-        sender,
-        chainId,
-        provider,
-        multicallAddress,
-        onChangeData
-      }
+      name: "vaults",
+      description:
+        "Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) & Boosted Yield.",
+      pairs: [],
+      sender,
+      chainId,
+      provider,
+      multicallAddress,
+      onChangeData
+    }
     : {
-        name: dapp.name,
-        description,
-        pairs,
-        sender,
-        chainId,
-        provider,
-        addresses,
-        ALL_DATA_URL,
-        multicallAddress,
-        onChangeData
-      };
+      name: dapp.name,
+      description,
+      pairs,
+      sender,
+      chainId,
+      provider,
+      addresses,
+      ALL_DATA_URL,
+      multicallAddress,
+      onChangeData
+    };
 
   const {
     dataList: infraredData,
     loading: infraredLoading,
     fetchAllData: infraredReload,
-    maxApr
+    maxApr,
   } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
   const {
     dataList: aquaBeraData,
@@ -141,13 +140,14 @@ export default function Staking({ dapp }: Props) {
     dapp.name
   ]);
 
+
   return (
     <Card>
       {id ? (
         <Detail
           dapp={dapp}
           onSuccess={() => {
-            listRef.current?.reload?.();
+            reload?.()
           }}
           loading={loading}
         />

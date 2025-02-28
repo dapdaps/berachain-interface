@@ -41,6 +41,18 @@ const nextConfig = {
     {
       source: "/dapdap.game/:path*",
       destination: `${GAME_BASE_URL}/:path*`
+    },
+    {
+      source: "/api.solver.rpc/:path",
+      destination: "https://solver-relay-v2.chaindefuser.com/:path*"
+    },
+    {
+      source: "/api.dapdap.net/:path*",
+      destination: `https://api.dapdap.net/:path*`
+    },
+    {
+      source: '/api.db3.app/:path*',
+      destination: 'https://api.db3.app/:path*'
     }
   ],
   webpack: (config, { dev }) => {
@@ -128,6 +140,9 @@ const nextConfig = {
       "date-fns",
       "ethers"
     ]
+  },
+  images: {
+    domains: ["s3.amazonaws.com"]
   }
 };
 

@@ -179,7 +179,7 @@ const Home = () => {
               className="w-[65.128vw] -translate-y-[94.241vw] translate-x-[34.9vw]"
               whileTap="tap"
               onClick={() => {
-                router.push("/dashboard");
+                router.push("/portfolio");
                 tapSound.play?.();
               }}
               data-bp="1015-006"
@@ -263,7 +263,7 @@ const Home = () => {
             {/*#endregion*/}
 
             <motion.div
-              className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[19.487vw] translate-x-[10.256vw]"
+              className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[28vw] translate-x-[10.256vw]"
               whileTap="tap"
               // style={{ clipPath: `path("M18.9114 5.11072C2.51142 13.1107 -2.58852 33.6113 -0.588519 43.6113C-0.588519 53.1114 1.91148 77.8111 1.91148 86.6111C1.91148 95.4111 14.0781 97.2778 18.9114 97.1111C17.5781 100.444 15.7114 109.611 18.9114 119.611C22.9114 132.111 77.9114 129.111 88.9114 124.611C97.7114 121.011 99.5781 102.778 99.4114 94.1111L126.411 84.1113C152.912 84.1113 161.411 86.1113 175.411 84.1113C189.411 82.1113 187.911 75.6111 179.411 61.6111C172.611 50.4111 153.245 53.9444 144.411 57.1111C135.911 35.6111 103.411 0.611248 90.9114 -2.38875C78.4114 -5.38875 39.4114 -4.88928 18.9114 5.11072Z")` }}
               data-bp="1015-003"
@@ -289,9 +289,11 @@ const Home = () => {
             <motion.div
               className="w-[65.64vw] h-[47.43vw] translate-y-[10.256vw] translate-x-[40.256vw]"
               whileTap="tap"
-              style={{
-                // clipPath: `path("M126.336 15.4999C102.736 14.2999 87.836 36.9999 83.336 48.4999C70.836 33.5 67 25 48.5 25C20.5 25 17.836 75.5 19.336 91C20.836 106.5 44.836 103.5 51.336 106C56.536 108 66.5027 116.5 70.836 120.5C71.1693 122.833 72.136 130.8 73.336 144C74.536 157.2 84.5027 161.5 89.336 162C131.669 158.667 210.436 152.3 220.836 149.5C236.494 145.284 231.951 134 228.336 110.5C225.797 94 214.169 96 208.836 97.5V91C212.836 87.6667 220.836 75 220.836 51C220.836 21 184.836 -7 162.336 -7C144.336 -7 130.836 7.99991 126.336 15.4999Z")`
-              }}
+              style={
+                {
+                  // clipPath: `path("M126.336 15.4999C102.736 14.2999 87.836 36.9999 83.336 48.4999C70.836 33.5 67 25 48.5 25C20.5 25 17.836 75.5 19.336 91C20.836 106.5 44.836 103.5 51.336 106C56.536 108 66.5027 116.5 70.836 120.5C71.1693 122.833 72.136 130.8 73.336 144C74.536 157.2 84.5027 161.5 89.336 162C131.669 158.667 210.436 152.3 220.836 149.5C236.494 145.284 231.951 134 228.336 110.5C225.797 94 214.169 96 208.836 97.5V91C212.836 87.6667 220.836 75 220.836 51C220.836 21 184.836 -7 162.336 -7C144.336 -7 130.836 7.99991 126.336 15.4999Z")`
+                }
+              }
               onClick={() => {
                 router.push("/marketplace");
                 tapSound.play?.();
@@ -350,7 +352,7 @@ const Home = () => {
               className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw] opacity-50"
               // whileTap="tap"
               onClick={() => {
-                // router.push("/dashboard");
+                // router.push("/portfolio");
                 // tapSound.play?.();
                 // handleReport('1015-006');
               }}
@@ -364,9 +366,7 @@ const Home = () => {
                 variants={EntryAnimationBg}
                 transition={EntryAnimation}
               />
-              <EntryCard>
-                Portfolio
-              </EntryCard>
+              <EntryCard>Portfolio</EntryCard>
               {/*<motion.img
                  src='/images/mobile/home/text-dashboard.png'
                  className='absolute right-[18.974vw] bottom-[10.471vw] w-[30.769vw] h-[9.271vw]'
@@ -401,11 +401,11 @@ const Home = () => {
                 transition={EntryAnimation}
               />
             </motion.div>
-            {/* <motion.div
-                className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]'
-                whileTap="tap"
+            <motion.div
+                className='w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw] opacity-50'
+                // whileTap="tap"
                 onClick={() => {
-                  router.push('/cave');
+                  // router.push('/cave');
                   tapSound.play?.();
                   // handleReport('1015-008');
                 }}
@@ -426,7 +426,25 @@ const Home = () => {
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
                 />
-              </motion.div> */}
+              </motion.div>
+              <motion.div
+                className='w-[92px] h-[70px] -translate-y-[112.923vw] translate-x-[10px]'
+                whileTap="tap"
+                onClick={() => {
+                  router.push('/bintent');
+                  tapSound.play?.();
+                }}
+                data-bp="1015-012"
+                // style={{ clipPath: `path("M73.8874 23.9999C70.6874 26.3999 72.5541 41.6666 73.8874 48.9999C61.4874 63.3999 56.3874 77.9999 55.3875 83.5C42.3875 83.5 27.3875 100.5 30.3875 108C33.3875 115.5 50.3875 125 112.387 128.5C174.387 132 223.387 128 236.387 121.5C249.387 115 241.387 102.5 236.387 88C231.387 73.5 214.887 67 207.887 62C202.287 58 201.221 39.6667 201.387 31C203.887 30.0001 208.687 25.2002 207.887 14.0002C206.887 0.000192642 193.387 -0.999808 183.387 1.00019C175.387 2.60019 166.721 10.3335 163.387 14.0002C161.554 12.8334 154.687 9.99992 141.887 7.99992C129.087 5.99992 110.887 15.1666 103.387 19.9999C94.8875 20.3333 77.0874 21.5999 73.8874 23.9999Z")` }}
+              >
+                <motion.img
+                  src='/images/background/mobile-bintent.png'
+                  className='absolute top-0 left-[10px] w-[92px] h-[70px]'
+                  alt=''
+                  variants={EntryAnimationSignpost}
+                  transition={EntryAnimation}
+                />
+              </motion.div>
           </div>
         )}
       </div>
