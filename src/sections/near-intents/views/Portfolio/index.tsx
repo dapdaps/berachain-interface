@@ -25,7 +25,7 @@ const Portfolio = () => {
   const { setModalType } = useModalStore((state) => state);
   const { connectedWallets } = useConnectedWalletsStore();
   const { state } = useConnectWallet();
-  
+
   const isMobile = useIsMobile();
   const toast = useToast();
 
@@ -37,29 +37,53 @@ const Portfolio = () => {
 
   const generateAssetList = (tokenData: Map<string, any>, balances: any) => {
     const newAssetList: SelectItemToken[] = [];
-    
+
     for (const [tokenId, token] of tokenData) {
       const totalBalance = computeTotalBalance(token, balances ?? {});
       newAssetList.push({
         itemId: tokenId,
         token,
         disabled: false,
-        balance: totalBalance == null
-          ? undefined
-          : {
-              balance: totalBalance.toString(),
-              balanceUsd: undefined,
-              convertedLast: undefined,
-            },
+        balance:
+          totalBalance == null
+            ? undefined
+            : {
+                balance: totalBalance.toString(),
+                balanceUsd: undefined,
+                convertedLast: undefined,
+              },
       });
     }
 
+    // 自定义排序顺序
+    const priorityOrder = [
+      "BERA",
+      "ETH",
+      "BTC",
+      "USDT",
+      "USDC",
+      "SOL",
+      "TRUMP",
+    ];
+
     newAssetList.sort((a, b) => {
-      if (a.token.symbol === 'BERA') return -1
-      if (b.token.symbol === 'BERA') return 1
-      if (a.balance?.balance === "0") return 1
-      if (b.balance?.balance === "0") return -1
-      return 0
+      const indexA = priorityOrder.indexOf(a.token.symbol);
+      const indexB = priorityOrder.indexOf(b.token.symbol);
+
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+      if (indexA !== -1) {
+        return -1;
+      }
+      if (indexB !== -1) {
+        return 1;
+      }
+
+      // 两者都不在优先顺序列表中，按余额排序
+      if (a.balance?.balance === "0") return 1;
+      if (b.balance?.balance === "0") return -1;
+      return 0;
     });
 
     return newAssetList;
@@ -71,11 +95,11 @@ const Portfolio = () => {
         type: "LOGIN",
         params: {
           userAddress: state.address,
-          userChainType: state.chainType
-        }
+          userChainType: state.chainType,
+        },
       });
 
-      const subscription = depositedBalanceRef?.subscribe(state => {
+      const subscription = depositedBalanceRef?.subscribe((state) => {
         const balances = state.context.balances;
         if (data.size && balances) {
           setAssetList(generateAssetList(data, balances));
@@ -100,40 +124,59 @@ const Portfolio = () => {
     <div className="lg:px-[20px] lg:py-[16px] pb-[30px]">
       <div className="flex items-center justify-between">
         <div className="font-CherryBomb text-[26px]">Assets</div>
-        <IconHistory 
-          className="opacity-30 cursor-pointer hover:opacity-60" 
+        <IconHistory
+          className="opacity-30 cursor-pointer hover:opacity-60"
           onClick={() => setShowHistory(true)}
         />
       </div>
       <div className="flex items-center justify-between gap-2 my-5">
-        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => {
-          if (isMobile) {
-            toast.info({
-              title: "Please visit the desktop version for a better experience."
-            })
-            return
-          }
-          setModalType(ModalType.MODAL_REVIEW_DEPOSIT)
-        }}>
+        <button
+          disabled={!state.address}
+          className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed"
+          onClick={() => {
+            if (isMobile) {
+              toast.info({
+                title:
+                  "Please visit the desktop version for a better experience.",
+              });
+              return;
+            }
+            setModalType(ModalType.MODAL_REVIEW_DEPOSIT);
+          }}
+        >
           Deposit
         </button>
-        <button disabled={!state.address} className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => {
-          if (isMobile) {
-            toast.info({
-              title: "Please visit the desktop version for a better experience."
-            })
-            return
-          }
-          setModalType(ModalType.MODAL_REVIEW_WITHDRAW)
-        }}>
+        <button
+          disabled={!state.address}
+          className="w-1/2 h-[50px] bg-[#FFDC50] border border-black text-[14px] rounded-[10px] font-Montserrat font-[600] disabled:opacity-30 disabled:cursor-not-allowed"
+          onClick={() => {
+            if (isMobile) {
+              toast.info({
+                title:
+                  "Please visit the desktop version for a better experience.",
+              });
+              return;
+            }
+            setModalType(ModalType.MODAL_REVIEW_WITHDRAW);
+          }}
+        >
           Withdraw
         </button>
       </div>
       <div className="max-h-[500px] overflow-y-auto pb-6 scrollbar-hide">
         {assetList.map(({ token, balance }, index) => (
-          <div key={index} className={`flex items-center justify-between ${index === 0 ? '' : 'mt-5'} mb-5`}>
+          <div
+            key={index}
+            className={`flex items-center justify-between ${
+              index === 0 ? "" : "mt-5"
+            } mb-5`}
+          >
             <div className="flex items-center gap-2">
-              <img src={token.icon} className="w-[30px] h-[30px] rounded-full" alt="" />
+              <img
+                src={token.icon}
+                className="w-[30px] h-[30px] rounded-full"
+                alt=""
+              />
               <div className="font-Montserrat font-[600]">{token.symbol}</div>
             </div>
             <div className="font-Montserrat font-[600] opacity-30">
@@ -146,8 +189,14 @@ const Portfolio = () => {
   );
 
   return (
-    <div className={clsx(isMobile ? '' : 'w-[340px] mr-5 bg-[#FFFDEB] h-[680px] border border-[#373A53] rounded-[30px] shadow-shadow1 overflow-hidden')}>
-      { !isMobile && <ConnectWalletBar />}
+    <div
+      className={clsx(
+        isMobile
+          ? ""
+          : "w-[340px] mr-5 bg-[#FFFDEB] h-[680px] border border-[#373A53] rounded-[30px] shadow-shadow1 overflow-hidden"
+      )}
+    >
+      {!isMobile && <ConnectWalletBar />}
       {showHistory ? (
         <History onBack={() => setShowHistory(false)} />
       ) : (
@@ -167,4 +216,9 @@ function renderBalance(
         ? formatTokenValue(balance, token.decimals, {
             min: 0.0001,
             fractionDigits: 4,
-          })        : null}    </Text>  );}export default Portfolio;
+          })
+        : null}{" "}
+    </Text>
+  );
+}
+export default Portfolio;
