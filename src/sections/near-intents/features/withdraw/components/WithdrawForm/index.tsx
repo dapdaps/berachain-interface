@@ -62,6 +62,7 @@ import useToast from "@/hooks/use-toast"
 import { useAccount } from "wagmi"
 import { ethers } from "ethers"
 import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
+import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore"
 
 export type WithdrawFormNearValues = {
   amountIn: string
@@ -108,6 +109,8 @@ export const WithdrawForm = ({
       return state.children.publicKeyVerifierRef
     }
   })
+
+  const { connectedWallets } = useConnectedWalletsStore()
 
 const { addAction } = useAddAction("dapp", true);
 
@@ -288,6 +291,8 @@ const { addAction } = useAddAction("dapp", true);
         account_id: userAddress,
       });
 
+      setModalType(null);
+
       return () => {
         sub.unsubscribe()
       }
@@ -304,6 +309,43 @@ const { addAction } = useAddAction("dapp", true);
       sub.unsubscribe()
     }
   }, [actorRef, setValue])
+
+
+  useEffect(() => {
+    if (userAddress != null && recipient !== userAddress) {
+      // 检查 connectedWallets 数组是否有值
+      if (connectedWallets && connectedWallets.length > 0) {
+  
+        const evmChains = ["eth", "arbitrum", "base", "turbochain", "aurora", "gnosis", "berachain"];
+        
+        if (blockchain && evmChains.includes(blockchain)) {
+          // 查找 EVM 类型的钱包
+          const evmWallet = connectedWallets.find(wallet => wallet.chainType === ChainType.EVM);
+          if (evmWallet && evmWallet?.address) {
+            setValue("recipient", evmWallet.address, {
+              shouldValidate: true,
+            });
+          }
+        } else if (blockchain && blockchain === "near") {
+          // 查找 Near 类型的钱包
+          const nearWallet = connectedWallets.find(wallet => wallet.chainType === ChainType.Near);
+          if (nearWallet && nearWallet?.address) {
+            setValue("recipient", nearWallet.address, {
+              shouldValidate: true,
+            });
+          }
+        } else if (blockchain && blockchain === "solana") {
+          // 查找 Solana 类型的钱包
+          const solanaWallet = connectedWallets.find(wallet => wallet.chainType === ChainType.Solana);
+          if (solanaWallet && solanaWallet?.address) {
+            setValue("recipient", solanaWallet.address, {
+              shouldValidate: true,
+            });
+          }
+        }
+      }
+    }
+  }, [userAddress, recipient, connectedWallets, blockchain, setValue])
 
   const availableBlockchains = isBaseToken(token)
     ? [token.chainName]
@@ -326,11 +368,7 @@ const { addAction } = useAddAction("dapp", true);
     tokensUsdPriceData
   )
 
-  if (userAddress != null && recipient !== userAddress) {
-    setValue("recipient", userAddress, {
-      shouldValidate: true,
-    })
-  }
+
 
   return (
     <div className="pb-5">
