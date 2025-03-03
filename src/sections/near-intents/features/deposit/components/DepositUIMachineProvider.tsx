@@ -34,9 +34,7 @@ import { isFungibleToken, isNativeToken } from "../../../utils/token"
 import { depositGenerateAddressMachine } from "../../machines/depositGenerateAddressMachine"
 import { depositUIMachine } from "../../machines/depositUIMachine"
 import type { DepositFormValues } from "./DepositForm"
-import useAddAction from "@/hooks/use-add-action"
-import { ethers } from "ethers"
-import useToast from "@/hooks/use-toast"
+
 import { BaseTokenInfo, SupportedChainName } from "@/sections/near-intents/types/base"
 
 /**

@@ -20,13 +20,12 @@ export const ModalDialog = ({
   onClose?: () => void
   isMaskClose?: boolean
 }>) => {
-  const { onCloseModal, payload, modalType } = useModalStore((state) => state)
+  const { onCloseModal } = useModalStore((state) => state)
   const [open, setOpen] = useState(true)
   const divRef = useRef<HTMLDivElement>(null)
   const { portalContainer } = useContext(WidgetContext)
 
   const handleClose = () => {
-    console.log("handleClose - ModalDialog", payload, modalType)
     setOpen(false)
     onCloseModal()
     onClose?.()

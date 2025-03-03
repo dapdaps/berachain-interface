@@ -77,12 +77,26 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
       });
     }
 
+    const priorityOrder = ['BERA', 'ETH', 'BTC', 'USDT', 'USDC', 'SOL', 'TRUMP'];
+    
     getAssetList.sort((a, b) => {
-      if (a.token.symbol === 'BERA') return -1
-      if (b.token.symbol === 'BERA') return 1
-      if (a.balance?.balance === "0") return 1
-      if (b.balance?.balance === "0") return -1
-      return 0
+      const indexA = priorityOrder.indexOf(a.token.symbol);
+      const indexB = priorityOrder.indexOf(b.token.symbol);
+      
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+      if (indexA !== -1) {
+        return -1;
+      }
+      if (indexB !== -1) {
+        return 1;
+      }
+      
+      // 两者都不在优先顺序列表中，按余额排序
+      if (a.balance?.balance === "0") return 1;
+      if (b.balance?.balance === "0") return -1;
+      return 0;
     });
 
     setAssetList(getAssetList);
@@ -134,20 +148,18 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
 
   useEffect(() => {
     if (
-      (payload as ModalSelectAssetsPayload)?.modalType !==
-      ModalType.MODAL_SELECT_ASSETS
+      !payload || payload.modalType !== ModalType.MODAL_REVIEW_DEPOSIT
     ) {
       return;
     }
-    const { modalType, fieldName, token } = payload as ModalSelectAssetsPayload;
-    if (modalType === ModalType.MODAL_SELECT_ASSETS && fieldName && token) {
+    const { modalType, fieldName, selected:token } = payload as any
+    if (modalType === ModalType.MODAL_REVIEW_DEPOSIT && fieldName && token) {
       depositUIActorRef.send({
         type: "DEPOSIT_FORM.UPDATE_TOKEN",
         params: { token },
       });
       setValue("token", token);
       // We have to clean up network because it could be not a valid value for the previous token
-      setValue("network", null);
       setValue("amount", "");
       // onCloseModal(undefined);
     }

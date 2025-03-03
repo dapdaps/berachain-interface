@@ -28,6 +28,7 @@ import useToast from "@/hooks/use-toast"
 import { ChainType } from "@/sections/near-intents/types/deposit"
 import { ethers } from "ethers"
 import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
+import { useModalStore } from "@/sections/near-intents/providers/ModalStoreProvider"
 
 export type ActiveDepositProps = {
   network: BlockchainEnum
@@ -45,7 +46,9 @@ export function ActiveDeposit({
   userAddress
 }: ActiveDepositProps) {
   const { setValue, watch } = useFormContext<DepositFormValues>()
-
+  const { setModalType } = useModalStore(
+    (state) => state
+  )
   const { addAction } = useAddAction("dapp", true);
 
   const toast = useToast();
@@ -104,6 +107,7 @@ export function ActiveDeposit({
         amount: ethers.utils.formatUnits(depositOutput.value.depositDescription.amount, depositOutput.value.depositDescription.derivedToken.decimals),
         chainId: chainType === ChainType.EVM ? CHAIN_IDS[depositOutput.value.depositDescription.derivedToken.chainName!] : addActionChainIdMap[chainType],
       });
+      setModalType(null);
     }
   }, [depositOutput]);
 
