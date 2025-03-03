@@ -312,40 +312,35 @@ const { addAction } = useAddAction("dapp", true);
 
 
   useEffect(() => {
-    if (userAddress != null && recipient !== userAddress) {
-      // 检查 connectedWallets 数组是否有值
-      if (connectedWallets && connectedWallets.length > 0) {
-  
-        const evmChains = ["eth", "arbitrum", "base", "turbochain", "aurora", "gnosis", "berachain"];
-        
-        if (blockchain && evmChains.includes(blockchain)) {
-          // 查找 EVM 类型的钱包
-          const evmWallet = connectedWallets.find(wallet => wallet.chainType === ChainType.EVM);
-          if (evmWallet && evmWallet?.address) {
-            setValue("recipient", evmWallet.address, {
-              shouldValidate: true,
-            });
-          }
-        } else if (blockchain && blockchain === "near") {
-          // 查找 Near 类型的钱包
-          const nearWallet = connectedWallets.find(wallet => wallet.chainType === ChainType.Near);
-          if (nearWallet && nearWallet?.address) {
-            setValue("recipient", nearWallet.address, {
-              shouldValidate: true,
-            });
-          }
-        } else if (blockchain && blockchain === "solana") {
-          // 查找 Solana 类型的钱包
-          const solanaWallet = connectedWallets.find(wallet => wallet.chainType === ChainType.Solana);
-          if (solanaWallet && solanaWallet?.address) {
-            setValue("recipient", solanaWallet.address, {
-              shouldValidate: true,
-            });
-          }
-        }
-      }
+    if (!userAddress || recipient === userAddress || !connectedWallets?.length) {
+      return;
     }
-  }, [userAddress, recipient, connectedWallets, blockchain, setValue])
+  
+    const chainTypeMap: any = {
+      eth: ChainType.EVM,
+      arbitrum: ChainType.EVM,
+      base: ChainType.EVM,
+      turbochain: ChainType.EVM,
+      aurora: ChainType.EVM,
+      gnosis: ChainType.EVM,
+      berachain: ChainType.EVM,
+      near: ChainType.Near,
+      solana: ChainType.Solana
+    };
+  
+    if (!blockchain || !chainTypeMap[blockchain]) {
+      return;
+    }
+  
+    const matchedWallet = connectedWallets.find(
+      wallet => wallet.chainType === chainTypeMap[blockchain]
+    );
+  
+    if (matchedWallet?.address) {
+      setValue("recipient", matchedWallet.address, { shouldValidate: true });
+    }
+  
+  }, [userAddress, recipient, connectedWallets, blockchain, setValue]);
 
   const availableBlockchains = isBaseToken(token)
     ? [token.chainName]
