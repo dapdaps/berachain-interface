@@ -52,7 +52,7 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
     {
       width: '20%',
       key: 'apr',
-      label: '7-day APR',
+      label: 'APY',
       type: 'slot',
       render: (data) => {
         return (
@@ -164,7 +164,7 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
       })
     }
     updateState({
-      filterList: cloneDataList,
+      filterList: cloneDataList?.sort((prev, next) => Big(prev['apr']).gt(next['apr']) ? -1 : 1),
     });
   }, [dataList, searchParams.get("address")]);
 

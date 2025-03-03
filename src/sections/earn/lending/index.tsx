@@ -93,7 +93,6 @@ const EarnLending = (props: any) => {
     }
 
     if (protocol === lendingProtocols[0]?.name) return _tokens;
-
     return _tokens.filter((t: any) => t.protocol.name === protocol);
   }, [protocol, dolomiteData, tab, checked]);
 

@@ -36,7 +36,7 @@ const TABS = [
 
 const template = "AquaBera";
 export default memo(function aquabera(props: any) {
-  const { data, type, config, visible: show, setVisible } = props;
+  const { data, type, config, visible: show, setVisible, refresh } = props;
 
   const { account, provider, chainId } = useCustomAccount();
   const toast = useToast();
@@ -76,9 +76,9 @@ export default memo(function aquabera(props: any) {
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -120,7 +120,6 @@ export default memo(function aquabera(props: any) {
       const totalSupply = ethers.utils.formatUnits(totalSupplyResult);
       const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[0]);
       const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[1]);
-      console.log("=balanceOfResult", balanceOfResult.toString());
       setShares(shares);
       setBalance(
         Big(Big(amt0).plus(amt1)).times(shares).div(totalSupply).toFixed()
@@ -147,6 +146,8 @@ export default memo(function aquabera(props: any) {
   const handleSuccess = () => {
     // onSuccess?.()
     setUpdater(Date.now());
+    refresh?.()
+    handleClose()
   };
 
   const handleDepositOrWithdraw = (updateState: any) => {
