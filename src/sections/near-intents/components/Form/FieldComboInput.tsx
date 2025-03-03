@@ -160,7 +160,11 @@ export const FieldComboInput = <T extends FieldValues>({
                 })
                 return
               }
-              setModalType(ModalType.MODAL_REVIEW_DEPOSIT)
+              setModalType(ModalType.MODAL_REVIEW_DEPOSIT, {
+                fieldName,
+                selected,
+                modalType: ModalType.MODAL_REVIEW_DEPOSIT,
+              })
             }}>
               <IconDeposit />
               <span className="text-[10px] font-Montserrat font-[500]">

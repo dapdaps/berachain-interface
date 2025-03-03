@@ -326,6 +326,12 @@ const { addAction } = useAddAction("dapp", true);
     tokensUsdPriceData
   )
 
+  if (userAddress != null && recipient !== userAddress) {
+    setValue("recipient", userAddress, {
+      shouldValidate: true,
+    })
+  }
+
   return (
     <div className="pb-5">
       <div className="font-CherryBomb text-[26px] text-center mb-4 mt-5">
