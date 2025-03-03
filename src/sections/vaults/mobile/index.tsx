@@ -323,7 +323,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
         </div>
         <div className="mt-[16px] flex justify-between">
           <div>
-            <div className="font-medium	text-[14px]">7-day APR</div>
+            <div className="font-medium	text-[14px]">APY</div>
             <div className="font-semibold	text-[16px] mt-[8px]">
               {formatValueDecimal(data?.apr, '', 2, false, false)}%
             </div>

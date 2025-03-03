@@ -4,6 +4,7 @@ import { formatValueDecimal } from "@/utils/balance";
 import { getProtocolIcon } from '@/utils/utils';
 import Big from "big.js";
 import clsx from "clsx";
+import { motion } from 'framer-motion';
 import { cloneDeep } from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -24,7 +25,8 @@ export default function Vaults() {
   const [state, updateState] = useMultiState<any>({
     allData: null,
     filterList: [],
-    sortKey: ""
+    sortKey: "apy",
+    direction: 1
   });
 
   const { dataList, loading } = useInfraredList();
@@ -198,14 +200,13 @@ export default function Vaults() {
 
     updateState({
       filterList: state?.sortKey
-        ? cloneDataList.sort((prev: any, next: any) => {
-            return Big(next[state?.sortKey] || 0)
-              .minus(prev[state?.sortKey] || 0)
-              .toFixed();
-          })
+        ? cloneDataList?.sort((prev: any, next: any) => {
+          return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
+            ? state.direction : -state?.direction;
+        })
         : cloneDataList
     });
-  }, [state?.sortKey, dataList]);
+  }, [state?.sortKey, state?.direction, dataList]);
 
   return (
     <>
@@ -222,7 +223,8 @@ export default function Vaults() {
               onClick={() => {
                 column?.sort &&
                   updateState({
-                    sortKey: state?.sortKey === column.key ? "" : column.key
+                    sortKey: column.key,
+                    direction: -state?.direction
                   });
               }}
             >
@@ -230,18 +232,21 @@ export default function Vaults() {
                 {column?.label}
               </div>
               {column?.sort && (
-                <svg
+                <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="13"
                   height="8"
                   viewBox="0 0 13 8"
                   fill="none"
+                  animate={{
+                    rotate: (state?.sortKey === column?.key && state?.direction === 1) ? 0 : 180,
+                  }}
                 >
                   <path
                     d="M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z"
                     fill={state?.sortKey === column?.key ? "black" : "#D1CEB4"}
                   />
-                </svg>
+                </motion.svg>
               )}
             </div>
           );

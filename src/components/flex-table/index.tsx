@@ -69,7 +69,7 @@ const FlexTable = (props: FlexTableProps) => {
                   >
                     <path
                       d='M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z'
-                      fill="#D1CEB4"
+                      fill={sortDataIndex === column?.dataIndex ? "#000000" : "#D1CEB4"}
                     />
                   </motion.svg>
                 )}

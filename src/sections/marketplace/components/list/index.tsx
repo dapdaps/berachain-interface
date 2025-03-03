@@ -35,15 +35,16 @@ export default function List({
   maxPage,
   onPageChange,
   bodyClassName,
-  onItemClick = () => {},
+  onItemClick = () => { },
   onChangeSort,
   loading,
   itemClassName,
   itemContainerClassName,
-  withoutHeader = false
+  withoutHeader = false,
+  defaultSort
 }: Props) {
-  const [sortItem, setSortItem] = useState<any>(null);
-  const [sortType, setSortType] = useState(1);
+  const [sortItem, setSortItem] = useState<any>(defaultSort);
+  const [sortType, setSortType] = useState(-1);
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {
@@ -98,7 +99,7 @@ export default function List({
                     >
                       <path
                         d="M4.8364 7.5C5.35356 8.16667 6.64644 8.16667 7.1636 7.5L11.818 1.5C12.3351 0.833334 11.6887 4.76837e-07 10.6544 4.76837e-07H1.34561C0.311302 4.76837e-07 -0.335141 0.833334 0.182014 1.5L4.8364 7.5Z"
-                        fill={sortItem === item ? "#000000" : "#D1CEB4"}
+                        fill={sortItem === item.key ? "#000000" : "#D1CEB4"}
                       />
                     </motion.svg>
                   ) : null}

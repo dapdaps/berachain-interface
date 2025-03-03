@@ -31,11 +31,7 @@ export default function Invest(props: any) {
 
   const isMobile = useIsMobile();
 
-  const handleInfrared = (record: any, type: any) => {
-    openInfrared(record, type).then(() => {
-      setVaultsVisible(true);
-    });
-  };
+
 
   const Tabs: any = [
     { value: "Single", label: "Single Token" },
@@ -52,7 +48,7 @@ export default function Invest(props: any) {
   const [type, setType] = useState(searchParams.get("type") || "all");
   const [rateKey, setRateKey] = useState<"Single" | "LP">("Single");
   const [searchVal, setSearchVal] = useState("");
-  const [sortDataIndex, setSortDataIndex] = useState("");
+  const [sortDataIndex, setSortDataIndex] = useState("apy");
   const [sortDataDirection, setSortDataDirection] = useState(1);
   const [updater, setUpdater] = useState(0);
   const [checked, setChecked] = useState(false);
@@ -61,13 +57,14 @@ export default function Invest(props: any) {
   const [checkedIndex, setCheckedIndex] = useState(-1);
   const [checkedRecord, setCheckedRecord] = useState(null);
 
+
   const filterList = useMemo(() => {
     let _filterList = dataList
       .filter((data) => (searchVal ? data?.id.indexOf(searchVal) > -1 : true))
       .filter((data) =>
         rateKey === "Single"
           ? (data?.tokens?.length === 1 || data?.platform === "aquabera")
-          : data?.tokens?.length === 2
+          : data?.tokens?.length === 2 && data?.platform !== "aquabera"
       );
     if (checked) {
       _filterList = _filterList.filter((data) =>
@@ -81,26 +78,30 @@ export default function Invest(props: any) {
           : -sortDataDirection;
       })
       : _filterList;
-  }, [dataList, sortDataIndex, searchVal, rateKey, checked]);
+  }, [dataList, sortDataIndex, sortDataDirection, searchVal, rateKey, checked]);
 
   const handleMobileAction = (record, type) => {
-    console.log(
-      openInfrared,
-      setVaultsVisible,
-      "setVaultsVisible-openInfrared"
-    );
 
     if (record?.platform === "aquabera") {
-      openAquaBera(record, type).then(() => {
+      openAquaBera(record, type, refresh).then(() => {
         setVaultsVisible(true);
       });
     } else {
-      openInfrared(record, type).then(() => {
+      openInfrared(record, type, refresh).then(() => {
         setVaultsVisible(true);
       });
     }
   };
 
+  const handleInfrared = (record: any, type: any) => {
+    openInfrared(record, type, refresh).then(() => {
+      setVaultsVisible(true);
+    });
+  };
+
+  function refresh() {
+    setUpdater(Date.now())
+  }
   useEffect(() => {
     isMobile && handleReport("1019-003");
   }, [isMobile]);
@@ -255,7 +256,7 @@ export default function Invest(props: any) {
                   fill='none'
                   className='cursor-pointer'
                   onClick={() => {
-                    openAquaBera(_data, 0).then(() => {
+                    openAquaBera(_data, 0, refresh).then(() => {
                       setVaultsVisible(true);
                     });
                   }}
@@ -287,7 +288,7 @@ export default function Invest(props: any) {
                   }
                   onClick={() => {
                     if (Big(record?.yourValue ?? 0).gt(0)) {
-                      openAquaBera(_data, 1).then(() => {
+                      openAquaBera(_data, 1, refresh).then(() => {
                         setVaultsVisible(true);
                       });
                     }
@@ -309,6 +310,8 @@ export default function Invest(props: any) {
               </div>
             );
           }
+
+          console.log('=====record====', record)
           if (isEarn) {
             return (
               <div className="flex items-center gap-2">
@@ -343,13 +346,13 @@ export default function Invest(props: any) {
                   viewBox='0 0 34 34'
                   fill='none'
                   className={
-                    Big(record?.yourValue ?? 0).eq(0)
+                    Big(record?.depositAmount ?? 0).eq(0)
                       ? 'cursor-not-allowed'
                       : 'cursor-pointer'
                   }
-                  onClick={() => Big(record?.yourValue ?? 0).gt(0) && handleInfrared(record, 1)}
+                  onClick={() => Big(record?.depositAmount ?? 0).gt(0) && handleInfrared(record, 1)}
                 >
-                  <g opacity={Big(record?.yourValue ?? 0).eq(0) ? '0.3' : '1'}>
+                  <g opacity={Big(record?.depositAmount ?? 0).eq(0) ? '0.3' : '1'}>
                     <rect
                       x='0.5'
                       y='0.5'
@@ -457,7 +460,7 @@ export default function Invest(props: any) {
       });
     }
     return _columns;
-  }, [openInfrared, source]);
+  }, [openInfrared, source,]);
 
 
 

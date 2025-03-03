@@ -3,6 +3,7 @@ import {
   Dispatch,
   SetStateAction,
   useEffect,
+  useRef,
   useState
 } from "react";
 import { bera } from "@/configs/tokens/bera";
@@ -20,6 +21,9 @@ export function useMarketplaceContext(props: Props): Context {
 
   const [vaultsVisible, setVaultsVisible] = useState(false);
   const [vaultsData, setVaultsData] = useState<any>({});
+
+
+  const refreshRef = useRef(null)
   // const [vaultsType, setVaultsType] = useState<'Deposit' | 'Withdraw'>('Deposit');
 
   const openDolomite = async () => {
@@ -35,7 +39,7 @@ export function useMarketplaceContext(props: Props): Context {
     });
   };
 
-  const openInfrared = async (data: any, type: number) => {
+  const openInfrared = async (data: any, type: number, refresh: VoidFunction) => {
     const config = await import("@/configs/staking/dapps/infrared");
     setVaultsData({
       dapp: VaultsDApps.Infrared,
@@ -43,13 +47,13 @@ export function useMarketplaceContext(props: Props): Context {
       config: config.default,
       type,
       platform: "infrared",
-      data
+      data,
     });
+    refreshRef.current = refresh
   };
 
-  const openAquaBera = async (data: any, type: number) => {
+  const openAquaBera = async (data: any, type: number, refresh: VoidFunction) => {
     const config = await import("@/configs/staking/dapps/aquabera");
-
     setVaultsData({
       dapp: VaultsDApps.AquaBera,
       dappLink: "/staking/infrared",
@@ -58,6 +62,7 @@ export function useMarketplaceContext(props: Props): Context {
       platform: "aquabera",
       data
     });
+    refreshRef.current = refresh
   };
 
   // FIXME Test code for Dolomite
@@ -91,7 +96,9 @@ export function useMarketplaceContext(props: Props): Context {
     openInfrared,
     // vaultsType,
     // setVaultsType,
-    openAquaBera
+    openAquaBera,
+
+    refreshRef
   };
 }
 
@@ -121,6 +128,7 @@ interface Context {
   openInfrared: (data: any, type: number) => Promise<void>;
   openAquaBera: (data: any, type: number) => Promise<void>;
 
+  refreshRef: any
   // open
 }
 
@@ -128,16 +136,16 @@ const initialState: any = {
   chainId: 80094,
   lendingVisible: false,
   lendingData: {},
-  setLendingVisible: () => {},
-  setLendingData: () => {},
-  openDolomite: () => {},
+  setLendingVisible: () => { },
+  setLendingData: () => { },
+  openDolomite: () => { },
 
   stakingVisible: false,
   stakingData: {},
-  setStakingVisible: () => {},
-  setStakingData: () => {},
-  openInfrared: (data: any) => {},
-  openAquaBera: (data: any) => {}
+  setStakingVisible: () => { },
+  setStakingData: () => { },
+  openInfrared: (data: any) => { },
+  openAquaBera: (data: any) => { }
 };
 
 export const MarketplaceContext = createContext<Context>(initialState);
