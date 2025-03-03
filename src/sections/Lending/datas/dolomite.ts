@@ -513,7 +513,9 @@ const DolomiteData = (props: any) => {
 
       const tokenList: any = Object.values(_cTokensData);
       tokenList.forEach((token: any) => {
-        userTotalSupplyUsd = userTotalSupplyUsd.plus(token.yourLendsUSD);
+        if (token.address !== 'native') {
+          userTotalSupplyUsd = userTotalSupplyUsd.plus(token.yourLendsUSD);
+        }
         userTotalBorrowUsd = userTotalBorrowUsd.plus(token.currentTokenBorrowUsd);
         userTotalCollateralUsd = userTotalCollateralUsd.plus(token.currentTokenCollateralUsd);
 
@@ -606,7 +608,10 @@ const DolomiteData = (props: any) => {
         const latestHealth = 1.005;
 
         removeCollateralTokens.forEach((token: any) => {
-          const removeValue = totalCollateralUsd.minus(positionBorrowedUsd.times(latestHealth)).div(token.price);
+          let removeValue = totalCollateralUsd.minus(positionBorrowedUsd.times(latestHealth)).div(token.price);
+          if (Big(removeValue).lt(0)) {
+            removeValue = Big(0);
+          }
 
           if (removeValue.gte(token.currentPositionCollateral)) {
             token.balance = token.currentPositionCollateral.toFixed(token.decimals);
