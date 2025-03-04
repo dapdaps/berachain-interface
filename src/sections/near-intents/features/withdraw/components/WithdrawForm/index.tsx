@@ -62,6 +62,7 @@ import useToast from "@/hooks/use-toast"
 import { useAccount } from "wagmi"
 import { ethers } from "ethers"
 import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
+import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore"
 
 export type WithdrawFormNearValues = {
   amountIn: string
@@ -108,6 +109,8 @@ export const WithdrawForm = ({
       return state.children.publicKeyVerifierRef
     }
   })
+
+  const { connectedWallets } = useConnectedWalletsStore()
 
 const { addAction } = useAddAction("dapp", true);
 
@@ -288,6 +291,8 @@ const { addAction } = useAddAction("dapp", true);
         account_id: userAddress,
       });
 
+      setModalType(null);
+
       return () => {
         sub.unsubscribe()
       }
@@ -304,6 +309,38 @@ const { addAction } = useAddAction("dapp", true);
       sub.unsubscribe()
     }
   }, [actorRef, setValue])
+
+
+  useEffect(() => {
+    if (!userAddress || recipient === userAddress || !connectedWallets?.length) {
+      return;
+    }
+  
+    const chainTypeMap: any = {
+      eth: ChainType.EVM,
+      arbitrum: ChainType.EVM,
+      base: ChainType.EVM,
+      turbochain: ChainType.EVM,
+      aurora: ChainType.EVM,
+      gnosis: ChainType.EVM,
+      berachain: ChainType.EVM,
+      near: ChainType.Near,
+      solana: ChainType.Solana
+    };
+  
+    if (!blockchain || !chainTypeMap[blockchain]) {
+      return;
+    }
+  
+    const matchedWallet = connectedWallets.find(
+      wallet => wallet.chainType === chainTypeMap[blockchain]
+    );
+  
+    if (matchedWallet?.address) {
+      setValue("recipient", matchedWallet.address, { shouldValidate: true });
+    }
+  
+  }, [userAddress, recipient, connectedWallets, blockchain, setValue]);
 
   const availableBlockchains = isBaseToken(token)
     ? [token.chainName]
@@ -325,6 +362,8 @@ const { addAction } = useAddAction("dapp", true);
     token,
     tokensUsdPriceData
   )
+
+
 
   return (
     <div className="pb-5">

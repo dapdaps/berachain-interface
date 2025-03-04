@@ -106,13 +106,28 @@ export const ModalSelectAssets = () => {
       })
     }
 
+    // 自定义排序顺序
+    const priorityOrder = ['BERA', 'ETH', 'BTC', 'USDT', 'USDC', 'SOL', 'TRUMP'];
+    
     getAssetList.sort((a, b) => {
-      if (a.token.symbol === 'BERA') return -1
-      if (b.token.symbol === 'BERA') return 1
-      if (a.balance?.balance === "0") return 1
-      if (b.balance?.balance === "0") return -1
-      return 0
-    })
+      const indexA = priorityOrder.indexOf(a.token.symbol);
+      const indexB = priorityOrder.indexOf(b.token.symbol);
+      
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+      if (indexA !== -1) {
+        return -1;
+      }
+      if (indexB !== -1) {
+        return 1;
+      }
+      
+      // 两者都不在优先顺序列表中，按余额排序
+      if (a.balance?.balance === "0") return 1;
+      if (b.balance?.balance === "0") return -1;
+      return 0;
+    });
 
     setAssetList(getAssetList)
   }, [data, isLoading, payload])
