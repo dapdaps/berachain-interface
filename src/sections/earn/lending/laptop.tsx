@@ -273,12 +273,18 @@ const getListMeta = (
       sort: true,
       width: "15%",
       render: (item: any) => (
-        <div className="flex items-center gap-1">
-          <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
-          <div className="underline">
-            {numberFormatter(item.youBorrowed, 2, true)}
+        Big(item?.youBorrowed ? item?.youBorrowed : 0).eq(0) ? (
+          <div className="opacity-30">
+            $0.00
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-1">
+            <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
+            <div className="underline">
+              {numberFormatter(item.youBorrowed, 2, true)}
+            </div>
+          </div>
+        )
       )
     },
     {
@@ -286,7 +292,25 @@ const getListMeta = (
       key: "rewards",
       sort: true,
       width: "10%",
-      render: (item: any) => numberFormatter(item.rewards, 2, true)
+      render: (item: any) => {
+        console.log('====item', item)
+
+        return (
+          Big(item?.rewards ? item?.rewards : 0).eq(0) ? (
+            <div className="opacity-30">
+              $0.00
+            </div>
+          ) : (
+            <div className="flex items-center gap-1">
+              {/* <img src={item.icon} className="w-[20px] h-[20px]" alt="" /> */}
+              <div className="underline">
+                {numberFormatter(item.rewards, 2, true)}
+              </div>
+            </div>
+            // numberFormatter(item.rewards, 2, true)
+          )
+        )
+      }
     },
     {
       title: "Action",

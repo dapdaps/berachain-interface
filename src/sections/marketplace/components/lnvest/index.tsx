@@ -390,43 +390,55 @@ export default function Invest(props: any) {
         sort: true,
         render: (text: string, record: any) => {
           const isValid = Big(record.depositAmount || 0).gt(0);
+
+          console.log('====record', record)
           return record?.platform === "aquabera" ? (
-            <div className={clsx("decoration-solid", isValid ? '' : 'opacity-30')}>
-              {numberFormatter(record?.usdDepositAmount, 2, true, {
-                prefix: '$',
-                isShort: true
-              })}
-            </div>
+            isValid ? (
+              <div className="decoration-solid">
+                {numberFormatter(record?.usdDepositAmount, 2, true, {
+                  prefix: '$',
+                  isShort: true
+                })}
+              </div>
+            ) : (
+              <div className="opacity-30">
+                $0.00
+              </div>
+            )
           ) : (
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
               {isValid && (
                 <div className="flex items-center">
-                  <LazyImage
-                    src={record.images[0]}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="rounded-full"
-                  />
-                  {record.images[1] && (
-                    <LazyImage
-                      src={record.images[1]}
-                      alt=""
-                      width={20}
-                      height={20}
-                      className="rounded-full ml-[-10px] "
-                    />
-                  )}
+
+                  {
+                    record.images[0] && (
+                      <div className="w-[20px] rounded-full overflow-hidden">
+                        <img src={record.images[0]} alt="icon_0" />
+                      </div>
+                    )
+                  }
+                  {
+                    record.images[1] && (
+                      <div className="w-[20px] rounded-full overflow-hidden ml-[-10px]">
+                        <img src={record.images[1]} alt="icon_1" />
+                      </div>
+                    )
+                  }
                 </div>
               )}
-              <div
-                className="underline decoration-solid"
-                style={isValid ? {} : { opacity: 0.3, textDecoration: "none" }}
-              >
-                {numberFormatter(record.depositAmount, 2, true, {
-                  isShort: true
-                })}
-              </div>
+              {
+                isValid ? (
+                  <div className="underline decoration-solid">
+                    {numberFormatter(record.depositAmount, 2, true, {
+                      isShort: true
+                    })}
+                  </div>
+                ) : (
+                  <div className="opacity-30">
+                    $0.00
+                  </div>
+                )
+              }
             </div>
           );
         }
@@ -439,21 +451,30 @@ export default function Invest(props: any) {
         render: (text: string, record: any) => {
           const isValid = Big(record.earned || 0).gt(0);
           return (
-            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
-              {record?.initialData?.reward_tokens?.[0]?.icon && (
-                <div className="flex items-center">
-                  <LazyImage
-                    src={record?.initialData?.reward_tokens?.[0]?.icon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="rounded-full"
-                  />
-                </div>
-              )}
-              <div className="" style={isValid ? {} : { opacity: 0.3 }}>
-                {record?.platform === "aquabera" ? "-" : numberFormatter(record.earned, 2, true, { isShort: true })}
-              </div>
+            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+              {
+                isValid ? (
+                  <div className="flex items-center gap-[6px]">
+                    {record?.initialData?.reward_tokens?.[0]?.icon && (
+                      <div className="flex items-center">
+                        <LazyImage
+                          src={record?.initialData?.reward_tokens?.[0]?.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className="rounded-full"
+                        />
+                      </div>
+                    )}
+                    {record?.platform === "aquabera" ? "-" : numberFormatter(record.earned, 2, true, { isShort: true })}
+                  </div>
+
+                ) : (
+                  <div className="opacity-30">
+                    $0.00
+                  </div>
+                )
+              }
             </div>
           );
         }
