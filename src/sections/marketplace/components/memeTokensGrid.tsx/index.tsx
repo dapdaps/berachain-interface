@@ -18,7 +18,6 @@ const TokenRow = ({
     return index === setHoveredIndex ? "hover" : "default";
   };
   const prices = usePriceStore((store: any) => store.price);
-
   return (
     <div className="lg:h-[86px] md:h-[50px] w-full rounded-t-[10px] bg-[#D5AD67] border border-black border-b-0 p-[12px] md:mt-[-16px]">
       <div className="w-full lg:h-[91px] md:h-[40px] relative top-[-50%] overflow-hidden">
