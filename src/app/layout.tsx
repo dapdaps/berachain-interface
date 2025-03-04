@@ -19,6 +19,7 @@ import "./globals.css";
 import "@radix-ui/themes/styles.css"
 import "@near-wallet-selector/modal-ui/styles.css"
 import "@near-wallet-selector/account-export/styles.css"
+import PointMasker from "@/components/point-masker";
 
 
 
@@ -84,6 +85,8 @@ export default function RootLayout({
           shallowRouting
         />
         <TapSound ref={tapRef} />
+
+        <PointMasker />
       </body>
       <Script async src="https://www.googletagmanager.com/gtag/js?id=G-SZ82B6ZN43"></Script>
       <Script id="ga-config">
