@@ -5,6 +5,7 @@ import Popover, {
   PopoverTrigger
 } from "@/components/popover";
 import { useMultiState } from "@/hooks/use-multi-state";
+import IbgtRewards from "@/sections/bgt/components/ibgt-rewards";
 import type { ColumnType, ColunmListType } from "@/sections/staking/types";
 import { formatValueDecimal } from "@/utils/balance";
 import { getProtocolIcon } from "@/utils/utils";
@@ -14,6 +15,7 @@ import { ethers } from "ethers";
 import { cloneDeep } from "lodash";
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
+import { motion } from 'framer-motion';
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -33,8 +35,9 @@ const List = forwardRef<any, any>((props, ref) => {
   const [state, updateState] = useMultiState<any>({
     allData: null,
     filterList: [],
-    sortKey: "",
-    filterKey: "all"
+    sortKey: "apy",
+    filterKey: "all",
+    direction: 1
   });
 
   const tvl = useMemo(() => {
@@ -59,6 +62,8 @@ const List = forwardRef<any, any>((props, ref) => {
     return Big(apy).toFixed(2);
   }, [dataList, maxApr]);
 
+  const rewards = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
+
   function renderTD(data: any, column: ColumnType, index: number) {
     if (column.type === "slot") {
       return column.render(data, index);
@@ -73,10 +78,9 @@ const List = forwardRef<any, any>((props, ref) => {
   useEffect(() => {
     const cloneDataList = cloneDeep(dataList);
     const _sortList = state?.sortKey
-      ? cloneDataList.sort((prev, next) => {
-        return Big(next[state?.sortKey] || 0)
-          .minus(prev[state?.sortKey] || 0)
-          .toFixed();
+      ? cloneDataList?.sort((prev, next) => {
+        return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
+          ? state.direction : -state?.direction;
       })
       : cloneDataList;
     const [key, value] = state?.filterKey.split("|");
@@ -86,7 +90,7 @@ const List = forwardRef<any, any>((props, ref) => {
     updateState({
       filterList: _filterList
     });
-  }, [state?.sortKey, state?.filterKey, dataList]);
+  }, [state?.sortKey, state?.direction, state?.filterKey, dataList]);
 
   const refs = {
     reload: () => {
@@ -94,6 +98,8 @@ const List = forwardRef<any, any>((props, ref) => {
     }
   };
   useImperativeHandle(ref, () => refs);
+
+
 
   const columnList: ColunmListType =
     name === "vaults"
@@ -491,6 +497,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       ];
 
+
   return (
     <div>
       <div className="pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]">
@@ -499,7 +506,13 @@ const List = forwardRef<any, any>((props, ref) => {
       <div className="pt-[7px] pb-[12px] pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium">
         {description}
       </div>
-      <div className="px-[30px] pb-[23px]"></div>
+      <div className="px-[30px] pb-[23px]">
+        {
+          rewards?.length > 0 && (
+            <IbgtRewards rewards={rewards} onSuccess={reload} />
+          )
+        }
+      </div>
       <div className="flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]">
         <div className="flex flex-col gap-[12px] w-[20%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
@@ -556,7 +569,8 @@ const List = forwardRef<any, any>((props, ref) => {
               onClick={() => {
                 column?.sort &&
                   updateState({
-                    sortKey: state?.sortKey === column.key ? "" : column.key
+                    sortKey: column.key,
+                    direction: -state?.direction
                   });
               }}
             >
@@ -564,18 +578,21 @@ const List = forwardRef<any, any>((props, ref) => {
                 {column?.label}
               </div>
               {column?.sort && (
-                <svg
+                <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="13"
                   height="8"
                   viewBox="0 0 13 8"
                   fill="none"
+                  animate={{
+                    rotate: (state?.sortKey === column?.key && state?.direction === 1) ? 0 : 180,
+                  }}
                 >
                   <path
                     d="M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z"
                     fill={state?.sortKey === column?.key ? "black" : "#D1CEB4"}
                   />
-                </svg>
+                </motion.svg>
               )}
             </div>
           );

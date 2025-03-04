@@ -19,7 +19,8 @@ export default {
       bera["ramen"],
       bera["bblast"],
       bera["bm"],
-      bera["hold"]
+      bera["hold"],
+      bera["henlo"]
     ]
   }
 };

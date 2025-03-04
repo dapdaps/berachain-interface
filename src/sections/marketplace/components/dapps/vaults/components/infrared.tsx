@@ -12,6 +12,7 @@ import useToast from "@/hooks/use-toast";
 import Capsule from "@/sections/marketplace/components/dapps/capsule";
 import { MarketplaceContext } from "@/sections/marketplace/context";
 import { formatValueDecimal } from "@/utils/balance";
+import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
 import clsx from "clsx";
 import { ethers } from "ethers";
@@ -31,7 +32,7 @@ const TABS = [
   }
 ];
 export default memo(function Bex(props) {
-  const { data, type, config, visible, setVisible } = props;
+  const { data, type, config, visible, setVisible, refresh } = props;
   const router = useRouter();
   // const {
   //   vaultsVisible,
@@ -39,6 +40,7 @@ export default memo(function Bex(props) {
   //   vaultsData = {}
   // } = useContext(MarketplaceContext);
 
+  console.log('=======data======', data)
   const toast = useToast();
   const { addAction } = useAddAction("invest");
   const { account: sender, provider } = useCustomAccount();
@@ -47,12 +49,11 @@ export default memo(function Bex(props) {
   // const { data, config } = vaultsData;
 
   const dexConfig = config?.chains[DEFAULT_CHAIN_ID];
-  const { tokens, decimals, id, LP_ADDRESS } = data ?? {};
-  const { addresses } = dexConfig ?? {};
+  const { tokens, decimals, id, LP_ADDRESS, vaultAddress } = data ?? {};
 
   const symbol = id;
 
-  const vaultAddress = addresses ? addresses[symbol] : "";
+  console.log('====vaultAddress====', vaultAddress)
 
   const [currentTab, setCurrentTab] = useState(
     type === 0 ? "Deposit" : "Withdraw"
@@ -106,6 +107,8 @@ export default memo(function Bex(props) {
   };
   const updateBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
+
+    console.log('=====LP_ADDRESS', LP_ADDRESS)
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     contract
       .balanceOf(sender)
@@ -277,7 +280,7 @@ export default memo(function Bex(props) {
         });
 
         setTimeout(() => {
-          onSuccess?.();
+          handleSuccess()
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -300,55 +303,6 @@ export default memo(function Bex(props) {
             : error?.message ?? ""
         });
       })
-    // contract
-    //   .stake(wei)
-    //   .then((tx: any) => tx.wait())
-    //   .then((receipt: any) => {
-    //     const { status, transactionHash } = receipt;
-    //     const [amount0, amount1] = handleGetAmount(inAmount);
-    //     addAction?.({
-    //       type: "Staking",
-    //       action: "Staking",
-    //       tokens: tokens.map((token: string) => ({ symbol: token })),
-    //       amount: inAmount,
-    //       template: "Infrared",
-    //       status: status,
-    //       add: 1,
-    //       transactionHash,
-    //       chain_id: props.chainId,
-    //       sub_type: "Stake",
-    //       amounts: [amount0, amount1],
-    //       extra_data: {}
-    //     });
-    //     updateState({
-    //       isLoading: false,
-    //       isPostTx: true
-    //     });
-
-    //     setTimeout(() => {
-    //       onSuccess?.();
-    //     }, 3000);
-
-    //     toast?.dismiss(toastId);
-    //     toast?.success({
-    //       title: "Stake Successful!"
-    //     });
-    //   })
-    //   .catch((error: Error) => {
-    //     console.log("error: ", error);
-    //     updateState({
-    //       isError: true,
-    //       isLoading: false,
-    //       loadingMsg: error?.message
-    //     });
-    //     toast?.dismiss(toastId);
-    //     toast?.fail({
-    //       title: "Stake Failed!",
-    //       text: error?.message?.includes("user rejected transaction")
-    //         ? "User rejected transaction"
-    //         : error?.message ?? ""
-    //     });
-    //   });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -408,7 +362,7 @@ export default memo(function Bex(props) {
         });
 
         setTimeout(() => {
-          onSuccess?.();
+          handleSuccess()
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -431,6 +385,12 @@ export default memo(function Bex(props) {
         });
       });
   };
+
+  const handleSuccess = () => {
+    refresh?.()
+    onSuccess?.();
+    handleClose()
+  }
   const onUpdateLpPercent = (percent: number) => {
     updateState({
       lpPercent: percent
@@ -522,12 +482,12 @@ export default memo(function Bex(props) {
                   Deposit
                 </div>
                 <div
-                  className="text-black font-Montserrat text-[14px] font-medium"
+                  className="text-black font-Montserrat text-[14px] font-medium cursor-pointer"
                   onClick={handleMax}
                 >
                   Balance:{" "}
                   <span className="underline">
-                    {Big(balances[symbol] ?? 0).toFixed(6)}
+                    {numberFormatter(Big(balances?.[symbol] ?? 0).toFixed(), 6, true)}
                   </span>
                 </div>
               </div>
@@ -606,7 +566,7 @@ export default memo(function Bex(props) {
                 <div className="text-black font-Montserrat text-[14px] font-medium">
                   Withdraw
                 </div>
-                <div className="text-black font-Montserrat text-[14px] font-medium">
+                <div className="text-black font-Montserrat text-[14px] font-medium cursor-pointer">
                   Balance:{" "}
                   <span
                     className="underline"
@@ -621,7 +581,7 @@ export default memo(function Bex(props) {
                       handleLPChange(lpBalance);
                     }}
                   >
-                    {Big(lpBalance ? lpBalance : 0).toFixed(6)}
+                    {numberFormatter(Big(lpBalance ? lpBalance : 0).toFixed(), 6, true)}
                   </span>
                 </div>
               </div>

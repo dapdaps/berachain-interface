@@ -18,52 +18,6 @@ function renderTD(data: any, column: ColumnType, index: number, parentData: any,
     </div>
   );
 }
-export const PairedList = (props: any) => {
-  const {
-    columnList,
-    dataList,
-    parentData
-  } = props
-
-  return (
-    <div className="flex flex-col gap-[21px] mt-[14px] mb-[23px]">
-      <div className="flex items-center">
-        {columnList?.map((column: ColumnType, index: number) => {
-          return (
-            <div
-              key={index}
-              style={{ width: column.width }}
-              className={clsx('flex items-center gap-[5px] pl-[19px]', column?.class)}
-            >
-              <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
-                {column?.label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex flex-col gap-[23px]">
-        {
-          dataList?.map((pairedToken: any, index: number) => (
-            <div className="flex items-center">
-              {columnList.map((column: ColumnType, columnIndex: number) => {
-                return (
-                  <div
-                    key={index + columnIndex}
-                    className="pl-[19px]"
-                    style={{ width: column.width }}
-                  >
-                    {renderTD(pairedToken, column, index, parentData)}
-                  </div>
-                );
-              })}
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  )
-}
 export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
   const {
     onChangeData,
@@ -98,7 +52,7 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
     {
       width: '20%',
       key: 'apr',
-      label: '7-day APR',
+      label: 'APY',
       type: 'slot',
       render: (data) => {
         return (
@@ -210,7 +164,7 @@ export default memo(forwardRef<any, any>(function AquaBera(props: any, ref) {
       })
     }
     updateState({
-      filterList: cloneDataList,
+      filterList: cloneDataList?.sort((prev, next) => Big(prev['apr']).gt(next['apr']) ? -1 : 1),
     });
   }, [dataList, searchParams.get("address")]);
 
