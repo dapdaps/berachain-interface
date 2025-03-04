@@ -96,9 +96,9 @@ const LendingModal: React.FC<LendingModalProps> = () => {
                 loading={loading}
                 totalBalanceLabel="Your balance"
                 totalBalance={state.yourBalance}
-                totalRateLabel="Earning"
+                totalRateLabel="Earn"
                 totalRate={state[`earning${rateKey}`]}
-                rateName={`Earning ${rateKey}`}
+                rateName={`Earn ${rateKey}`}
                 tokens={state.supplyTokens}
                 rateKey={rateKey}
                 setRateKey={setRateKey}
