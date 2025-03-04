@@ -28,7 +28,7 @@ const tokens = [
 ];
 
 const MintHoneyModal: FC<MintHoneyModalProps> = ({
-  isOpen = true,
+  isOpen,
   onClose,
 }) => {
   const [tab, setTab] = useState("mint");
@@ -154,7 +154,7 @@ const MintHoneyModal: FC<MintHoneyModalProps> = ({
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose} className="mint-honey-modal">
+    <Modal open={isOpen} onClose={onClose} className="mint-honey-modal" closeIconClassName="top-[-10px] right-[-10px]">
       <div className="flex flex-col items-center w-[460px] px-[30px] py-[28px] bg-[#FFFDEB] rounded-[20px] border border-black shadow-[10px_10px_0_0_rgba(0, 0, 0, 0.25)]">
         <SwitchTabs
           tabs={[

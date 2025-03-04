@@ -8,10 +8,11 @@ import LaptopChain from "@/components/connect-wallet/chain/laptop";
 import useMapModalStore from "@/stores/useMapModalStore";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import { useBgtCount } from "@/hooks/use-bgt-count";
-import { usePathname } from "next/navigation";
+
 import { useHall } from "@/stores/hall";
 import { numberFormatter } from "@/utils/number-formatter";
 import MintHoneyModal from "@/components/mint-honey-modal";
+import { useState } from "react";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -21,8 +22,8 @@ const MainLayoutHeader = (props: Props) => {
   const hallStore = useHall()
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
-  const pathname = usePathname()
-  const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
+
+  const [mineModalOpen, setMineModalOpen] = useState(false);
 
   const goHome = () => {
     router.replace("/");
@@ -53,7 +54,7 @@ const MainLayoutHeader = (props: Props) => {
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
 
-          <div className="cursor-pointer mt-[4px] w-[120px]">
+          <div className="cursor-pointer mt-[4px] w-[120px]" onClick={() => setMineModalOpen(true)}>
             <img src="/images/mint-honey.png" alt="mint" />
           </div>
           
@@ -95,7 +96,7 @@ const MainLayoutHeader = (props: Props) => {
           {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" /> */}
           <ConnectWallet />
-          <MintHoneyModal />
+          <MintHoneyModal isOpen={mineModalOpen} onClose={() => setMineModalOpen(false) } />
         </div>
       </div>
     </header>
