@@ -81,12 +81,13 @@ export default function useDexTokens(dapp: any) {
       );
       const list = [
         bera.bera,
+        bera.henlo,
         ...pandaResponse.tokens,
-        ...normalResponse.tokens
+        ...normalResponse.tokens,
       ].map((token: any) => {
         const priceKey =
           token.address.toLowerCase() ===
-          "0x0d9ac083dd2760943f773e70ebffe621e950871c"
+            "0x0d9ac083dd2760943f773e70ebffe621e950871c"
             ? "BTCLUB"
             : token.symbol;
         return {
@@ -95,6 +96,7 @@ export default function useDexTokens(dapp: any) {
           icon: token.logoURI || token.icon
         };
       });
+
       kodiakTokensStore.set({
         tokens: list.reduce(
           (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
