@@ -70,3 +70,9 @@ export const isVideoFile = (url: string) => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   }
 };
+
+
+export function capitalize(str: string) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.substring(1);
+}

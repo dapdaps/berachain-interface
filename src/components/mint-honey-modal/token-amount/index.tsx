@@ -1,16 +1,16 @@
 "use client";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect } from "react";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { balanceFormated } from "@/utils/balance";
 import Loading from "@/components/circle-loading";
-import Big from "big.js";
+import clsx from "clsx";
 
 export default function TokenAmount({
+  tab,
   type,
   amount,
   disabled,
   currency,
-  outputCurrencyReadonly,
   onCurrencySelectOpen,
   onAmountChange,
   onUpdateCurrencyBalance,
@@ -32,6 +32,8 @@ export default function TokenAmount({
     update();
   }, [updater]);
 
+  const isSelectable = (tab === 'mint' && type === 'in') || (tab === 'redeem' && type === 'out');
+
   return (
     <div className="border border-[#373A53] rounded-[12px] p-[8px] bg-white">
       <div className="flex items-center justify-between gap-[10px]">
@@ -48,11 +50,11 @@ export default function TokenAmount({
           />
         </div>
         <div
-          className={`${
-            outputCurrencyReadonly ? "" : "border bg-[#FFFDEB]"
-          } flex items-center justify-between border-[#373A53] rounded-[8px]  w-[176px] h-[36px] px-[7px] cursor-pointer`}
+          className={clsx(`flex items-center border-[#373A53] rounded-[8px] w-[176px] h-[38px] px-[7px]`, isSelectable ? "border bg-[#FFFDEB] justify-between cursor-pointer" : "justify-end")}
           onClick={() => {
-            onCurrencySelectOpen();
+            if (isSelectable) {
+              onCurrencySelectOpen?.();
+            }
           }}
         >
           {currency ? (
@@ -70,7 +72,7 @@ export default function TokenAmount({
           ) : (
             <div className="text-[16px] font-[600]">Select a token</div>
           )}
-          {!outputCurrencyReadonly && (
+          {isSelectable && (
             <svg
               width="12"
               height="7"
@@ -94,7 +96,7 @@ export default function TokenAmount({
           if (["-", "Loading", "0"].includes(formatedBalance)) return;
           onAmountChange?.(tokenBalance);
         }}
-        className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]"
+        className="flex cursor-pointer items-center justify-end text-[#3D405A] mt-[10px] font-medium text-[12px]"
       >
         <div className="flex items-center gap-[4px]">
           balance:{" "}
