@@ -27,14 +27,14 @@ const splitArray = (list: Record<string, any>[]) => {
   return listAfter;
 };
 
-const MemeTokens: any = [bera.yeet, bera.bonga, bera.bblast, bera.bm];
+const MemeTokens: any = [bera.yeet, bera.bonga, bera.bblast, bera.bm, bera.henlo];
 
 export const MoreButton = (props: {
   onClick: () => void;
   classname?: string;
   text?: string;
 }) => {
-  const { onClick = () => {}, classname = "", text = "more" } = props;
+  const { onClick = () => { }, classname = "", text = "more" } = props;
 
   return (
     <button
@@ -93,6 +93,7 @@ const MarketplaceView = () => {
         }
       });
     });
+
     return [_protocols, splitArray(_tokens), _tokens.length];
   }, [dexs]);
 
@@ -186,8 +187,8 @@ const MarketplaceView = () => {
               </div>
               {(isMobile ||
                 (index !== visibleTokens.length - 1 && !isMobile)) && (
-                <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
-              )}
+                  <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
+                )}
             </div>
           ))}
         </div>

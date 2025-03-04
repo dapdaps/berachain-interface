@@ -308,5 +308,14 @@ export const bera: { [key: string]: Token } = {
     symbol: "HOLD",
     name: "HOLD",
     icon: "/assets/tokens/hold.png"
+  },
+
+  henlo: {
+    chainId: CHAIN_ID,
+    address: "0xb2F776e9c1C926C4b2e54182Fac058dA9Af0B6A5",
+    decimals: 18,
+    symbol: "Henlo",
+    name: "HENLO",
+    icon: "/assets/tokens/henlo.png"
   }
 };
