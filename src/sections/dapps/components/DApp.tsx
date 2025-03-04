@@ -66,7 +66,9 @@ const DApp = ({
           ) : <div className="w-[43px] h-[43px]" />
         }
         <div className='whitespace-nowrap overflow-ellipsis flex-shrink-0 font-[400] font-CherryBomb text-[20px] leading-[0.9]'>{name}</div>
-        <div className='whitespace-nowrap overflow-ellipsis flex-shrink-0 text-[12px] font-[600] leading-[0.9] text-[#527213]'>{type === "Staking" ? "Vaults" : type}</div>
+        <div className='whitespace-nowrap overflow-ellipsis flex-shrink-0 text-[12px] font-[600] leading-[0.9] text-[#527213]'>
+          {type === "Staking" ? "Vaults" : (type === "Lending" ? "Lend" : type)}
+        </div>
       </div>
     </motion.div>
   )
