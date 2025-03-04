@@ -12,6 +12,7 @@ import useToast from "@/hooks/use-toast";
 import Capsule from "@/sections/marketplace/components/dapps/capsule";
 import { MarketplaceContext } from "@/sections/marketplace/context";
 import { formatValueDecimal } from "@/utils/balance";
+import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
 import clsx from "clsx";
 import { ethers } from "ethers";
@@ -486,7 +487,7 @@ export default memo(function Bex(props) {
                 >
                   Balance:{" "}
                   <span className="underline">
-                    {Big(balances[symbol] ?? 0).toFixed(6)}
+                    {numberFormatter(Big(balances?.[symbol] ?? 0).toFixed(), 6, true)}
                   </span>
                 </div>
               </div>
@@ -580,7 +581,7 @@ export default memo(function Bex(props) {
                       handleLPChange(lpBalance);
                     }}
                   >
-                    {Big(lpBalance ? lpBalance : 0).toFixed(6)}
+                    {numberFormatter(Big(lpBalance ? lpBalance : 0).toFixed(), 6, true)}
                   </span>
                 </div>
               </div>

@@ -100,12 +100,18 @@ const getListMeta = (
       sort: true,
       width: "15%",
       render: (item: any) => (
-        <div className="flex items-center gap-1">
-          <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
-          <div>
-            {numberFormatter(item.inWallet, 2, true)}
+        Big(item?.inWallet ? item?.inWallet : 0).eq(0) ? (
+          <div className="opacity-30">
+            $0.00
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-1">
+            <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
+            <div>
+              {numberFormatter(item.inWallet, 2, true)}
+            </div>
+          </div>
+        )
       )
     },
     {
@@ -114,12 +120,18 @@ const getListMeta = (
       sort: true,
       width: "20%",
       render: (item: any) => (
-        <div className="flex items-center gap-1">
-          <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
-          <div className={clsx(Big(item?.youSupplied ? item?.youSupplied : 0).eq(0) ? 'opacity-30' : 'underline')}>
-            {numberFormatter(item.youSupplied, 2, true)}
+        Big(item?.youSupplied ? item?.youSupplied : 0).eq(0) ? (
+          <div className="opacity-30">
+            $0.00
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-1">
+            <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
+            <div className="underline">
+              {numberFormatter(item.youSupplied, 2, true)}
+            </div>
+          </div>
+        )
       )
     },
     {
