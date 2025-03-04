@@ -80,23 +80,27 @@ export const DepositForm = ({ chainType }: { chainType?: ChainType }) => {
     const priorityOrder = ['BERA', 'ETH', 'BTC', 'USDT', 'USDC', 'SOL', 'TRUMP'];
     
     getAssetList.sort((a, b) => {
+      const getFormattedBalance = (asset: any) => {
+        if (!asset.balance?.balance || !asset.token?.decimals) return 0;
+        return Number(asset.balance.balance) / 10 ** asset.token.decimals;
+      };
+    
+      const aBalance = getFormattedBalance(a);
+      const bBalance = getFormattedBalance(b);
+    
+      if (aBalance !== bBalance) {
+        return bBalance - aBalance;
+      }
+    
       const indexA = priorityOrder.indexOf(a.token.symbol);
       const indexB = priorityOrder.indexOf(b.token.symbol);
-      
-      if (indexA !== -1 && indexB !== -1) {
-        return indexA - indexB;
-      }
-      if (indexA !== -1) {
-        return -1;
-      }
-      if (indexB !== -1) {
-        return 1;
-      }
-      
-      // 两者都不在优先顺序列表中，按余额排序
-      if (a.balance?.balance === "0") return 1;
-      if (b.balance?.balance === "0") return -1;
-      return 0;
+    
+      if (indexA !== -1 && indexB === -1) return -1;
+      if (indexA === -1 && indexB !== -1) return 1;
+    
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    
+      return a.token.symbol.localeCompare(b.token.symbol);
     });
 
     setAssetList(getAssetList);
