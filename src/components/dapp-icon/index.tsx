@@ -25,7 +25,7 @@ const Laptop = ({ src, alt, name, type, style, className }: Props) => {
           <div className="text-[12px] text-[#527213]">
             {type === "Staking"
               ? "Vaults"
-              : type?.slice(0, 1)?.toUpperCase?.() + type?.slice(1)}
+              : (type === "lending" ? "Lend" : type?.slice(0, 1)?.toUpperCase?.() + type?.slice(1))}
           </div>
         </div>
       </div>
