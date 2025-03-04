@@ -314,7 +314,7 @@ export const bera: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0xb2F776e9c1C926C4b2e54182Fac058dA9Af0B6A5",
     decimals: 18,
-    symbol: "Henlo",
+    symbol: "HENLO",
     name: "HENLO",
     icon: "/assets/tokens/henlo.png"
   }
