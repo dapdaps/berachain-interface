@@ -7,6 +7,8 @@ import clsx from 'clsx';
 import { HomeEarthContext } from '../context';
 import { useActivityStore } from '@/stores/useActivityStore';
 
+const SPLIT_PIECES = 3;
+
 const Navigation = (props: any) => {
   const {} = props;
   const {
@@ -39,6 +41,7 @@ const Navigation = (props: any) => {
   } = useContext(HomeEarthContext);
   const router = useRouter();
   const { isDefaultTheme, themeConfig } = useActivityStore();
+  const entries = isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES;
 
   const handleEntryHover = (item: any) => {
     setHoverIndex(item);
@@ -115,7 +118,7 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border rounded-full top-[19.5dvh] flex justify-center items-center border-[#5A6F2F]',
+        'will-change-transform absolute z-[3] border rounded-full top-[24.8dvh] flex justify-center items-center border-[#5A6F2F]',
         isDragging ? 'cursor-grabbing' : '',
       )}
       style={{
@@ -135,35 +138,32 @@ const Navigation = (props: any) => {
       onDrag={handleDrag}
     >
       {
-        [...new Array(4)].map((_, idx) => (
-          (isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES).sort((a: any, b: any) => a.sort - b.sort).map((item: any, i: number) => (
-            <motion.div
-              key={i}
-              className={clsx(
-                'absolute -top-[0px] flex justify-center',
-                item.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
-              )}
+        [...new Array(SPLIT_PIECES)].map((_, idx) => (
+          entries.sort((a: any, b: any) => a.sort - b.sort).map((item: any, i: number) => (
+            <div
+              key={idx + "-" + i}
+              className="flex justify-center items-center w-[400px] top-0 absolute origin-bottom"
               style={{
-                width: item.iconWidth,
-                height: item.iconHeight,
-                transform: `rotate(${item.iconRotate || 90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
-                transformOrigin: `center ${size/2}px`,
+                left: "50%",
+                height: size / 2,
+                transform: `translateX(-50%) rotate(${(360 / SPLIT_PIECES) * idx + (360 / (entries.length * SPLIT_PIECES)) * i}deg)`,
+                // backgroundColor: "rgba(0, 0, 0, 0.1)",
               }}
-              onHoverStart={() => handleEntryHover(item)}
-              onHoverEnd={() => handleEntryLeave(item)}
-              onClick={() => handleNavigation(item)}
             >
-              <img
+              <motion.img
+                className={clsx("absolute left-1/2 top-[-80px] z-[1] w-[300px] object-center object-contain", item.disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
                 src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
-                className={clsx(
-                  'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
-                  item.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-                )}
                 style={{
-                  transform: `rotate(${item.rotate}deg) scale(${(hoverIndex?.name === item.name && !item.disabled) ? 1.1 : 1})`,
-                  transformOrigin: 'center',
+                  y: item.y,
+                  x: "-50%",
                 }}
+                whileHover={{
+                  scale: 1.1,
+                }}
+                onHoverStart={() => handleEntryHover(item)}
+                onHoverEnd={() => handleEntryLeave(item)}
+                onClick={() => handleNavigation(item)}
               />
               <AnimatePresence mode="wait">
                 {
@@ -171,26 +171,18 @@ const Navigation = (props: any) => {
                     <motion.img
                       src={item.signpost || ''}
                       alt=""
-                      className="absolute pointer-events-none"
+                      className="absolute z-[2] pointer-events-none left-1/2 -top-[140px]"
                       style={{
-                        width: item.signpostWidth,
-                        height: item.signpostHeight,
-                        // transform: `rotate(${item.rotate}deg) translateY(${item.signpostY}px) translateX(${item.signpostX}px)`,
+                        x: "-50%",
                       }}
                       variants={{
                         visible: {
                           opacity: 1,
                           scale: 1,
-                          y: item.signpostY,
-                          x: item.signpostX,
-                          rotate: item.rotate,
                         },
                         invisible: {
                           opacity: 0,
                           scale: 0.5,
-                          y: 0,
-                          x: 0,
-                          rotate: item.rotate,
                         },
                       }}
                       exit="invisible"
@@ -205,7 +197,7 @@ const Navigation = (props: any) => {
                   )
                 }
               </AnimatePresence>
-            </motion.div>
+            </div>
           ))
         ))
       }
@@ -221,16 +213,7 @@ export const ENTRIES: any = [
     name: 'DApp Tree',
     disabled: false,
     icon: '/images/home-earth/entry-dapp.svg',
-    iconWidth: 209,
-    iconHeight: 200,
     signpost: '/images/home-earth/signpost-dapp.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: -130,
-    signpostY: -10,
-    x: -1150,
-    y: 400,
-    rotate: -50,
     path: '/dapps',
   },
   {
@@ -238,16 +221,7 @@ export const ENTRIES: any = [
     name: 'Token Marketplace',
     disabled: false,
     icon: '/images/home-earth/entry-marketplace.svg',
-    iconWidth: 214,
-    iconHeight: 138,
     signpost: '/images/home-earth/signpost-marketplace.svg',
-    signpostWidth: 170,
-    signpostHeight: 72,
-    signpostX: -50,
-    signpostY: -90,
-    x: -890,
-    y: 220,
-    rotate: -35,
     path: '/marketplace',
   },
   {
@@ -255,16 +229,7 @@ export const ENTRIES: any = [
     name: 'Portfolio',
     disabled: false,
     icon: '/images/home-earth/entry-dashboard.svg',
-    iconWidth: 279,
-    iconHeight: 170,
     signpost: '/images/home-earth/signpost-dashboard.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 14,
-    signpostY: -60,
-    x: -150,
-    y: -90,
-    rotate: 0,
     path: '/portfolio',
   },
   {
@@ -272,16 +237,7 @@ export const ENTRIES: any = [
     name: 'Earn Yield',
     disabled: false,
     icon: '/images/home-earth/entry-earn.svg',
-    iconWidth: 203,
-    iconHeight: 122,
     signpost: '/images/home-earth/signpost-earn.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: -20,
-    signpostY: -70,
-    x: -550,
-    y: 40,
-    rotate: -20,
     path: '/earn',
   },
   {
@@ -289,17 +245,9 @@ export const ENTRIES: any = [
     name: 'Bridge',
     disabled: false,
     icon: '/images/home-earth/entry-bridge.svg',
-    iconWidth: 459,
-    iconHeight: 150,
     signpost: '/images/home-earth/signpost-bridge.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: -40,
-    signpostY: -120,
-    x: 620,
-    y: 103,
-    rotate: 21,
     path: '/bridge',
+    y: 38,
   },
   {
     sort: 6,
@@ -307,18 +255,18 @@ export const ENTRIES: any = [
     disabled: true,
     disabledIcon: '/images/home-earth/cave-lock.svg',
     icon: '/images/home-earth/entry-cave.svg',
-    iconWidth: 285,
-    iconHeight: 163,
     signpost: '/images/home-earth/signpost-cave.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 40,
-    signpostY: -70,
-    x: 200,
-    y: -30,
-    rotate: 6,
     path: '/cave',
+    y: 40,
   },
+  {
+    sort: 7,
+    name: 'Bgt',
+    disabled: false,
+    icon: '/images/home-earth/entry-bgt.svg',
+    signpost: '/images/home-earth/signpost-bgt.svg',
+    path: '/cave',
+  }
 ];
 
 export const BADDIES_ENTRIES: any = [
@@ -327,16 +275,7 @@ export const BADDIES_ENTRIES: any = [
     name: 'Bridge',
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-bridge.svg',
-    iconWidth: 326,
-    iconHeight: 303,
     signpost: '/images/home-earth/signpost-bridge.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 80,
-    signpostY: 10,
-    x: 882,
-    y: 80,
-    rotate: 36,
     path: '/bridge',
   },
   {
@@ -344,16 +283,7 @@ export const BADDIES_ENTRIES: any = [
     name: 'DApp Tree',
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-dapp.svg',
-    iconWidth: 365,
-    iconHeight: 226,
     signpost: '/images/home-earth/signpost-dapp.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: -90,
-    signpostY: -30,
-    x: -916,
-    y: 140,
-    rotate: -32,
     path: '/dapps',
   },
   {
@@ -361,16 +291,7 @@ export const BADDIES_ENTRIES: any = [
     name: 'Token Marketplace',
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-marketplace.svg',
-    iconWidth: 352,
-    iconHeight: 232,
     signpost: '/images/home-earth/signpost-marketplace.svg',
-    signpostWidth: 170,
-    signpostHeight: 72,
-    signpostX: -50,
-    signpostY: -70,
-    x: -460,
-    y: -62,
-    rotate: -18,
     path: '/marketplace',
   },
   {
@@ -378,16 +299,7 @@ export const BADDIES_ENTRIES: any = [
     name: 'Earn Yield',
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-earn.svg',
-    iconWidth: 349,
-    iconHeight: 155,
     signpost: '/images/home-earth/signpost-earn.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 0,
-    signpostY: -60,
-    x: 20,
-    y: -80,
-    rotate: 0,
     path: '/earn',
   },
   {
@@ -396,16 +308,7 @@ export const BADDIES_ENTRIES: any = [
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-dashboard.svg',
     disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
-    iconWidth: 364,
-    iconHeight: 208,
     signpost: '/images/home-earth/signpost-dashboard.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 40,
-    signpostY: -30,
-    x: 460,
-    y: -80,
-    rotate: 18,
     path: '/portfolio',
   },
   {
@@ -414,16 +317,7 @@ export const BADDIES_ENTRIES: any = [
     disabled: true,
     icon: '/images/home-earth/baddies/baddies-cave.svg',
     disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
-    iconWidth: 365,
-    iconHeight: 226,
     signpost: '/images/home-earth/signpost-cave.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 50,
-    signpostY: -40,
-    x: 1230,
-    y: 260,
-    rotate: 38,
     path: '/cave',
   },
   {
@@ -431,17 +325,7 @@ export const BADDIES_ENTRIES: any = [
     name: 'Bgt',
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-bgt.svg',
-    iconWidth: 365,
-    iconHeight: 226,
     signpost: '/images/home-earth/signpost-bgt.svg',
-    signpostWidth: 188,
-    signpostHeight: 57,
-    signpostX: 50,
-    signpostY: -40,
-    x: 1200,
-    y: 270,
-    rotate: 38,
-    iconRotate: 14,
     path: '/cave',
   }
 ]
