@@ -41,7 +41,7 @@ const MountainCircle = (props: any) => {
             className="absolute -top-[0px] w-[1888px] h-[588px]"
             style={{
               transform: `rotate(${90 * i}deg) translateY(-110px) translateX(190px)`,
-              transformOrigin: 'center 1500px',
+              transformOrigin: `center ${size / 2}px`,
             }}
           />
         ))

@@ -47,7 +47,7 @@ const CloudCircle = (props: any) => {
                 {...VisibleAnimation}
                 style={{
                   transform: `rotate(${45 * i}deg) translateY(-150px)`,
-                  transformOrigin: 'center 1500px',
+                  transformOrigin: `center ${size / 2}px`,
                 }}
               />
             ) : (
@@ -59,7 +59,7 @@ const CloudCircle = (props: any) => {
                 {...VisibleAnimation}
                 style={{
                   transform: `rotate(${45 * i}deg) translateY(-150px)`,
-                  transformOrigin: 'center 1500px',
+                  transformOrigin: `center ${size / 2}px`,
                 }}
               />
             )
