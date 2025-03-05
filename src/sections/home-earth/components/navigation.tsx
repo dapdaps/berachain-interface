@@ -80,7 +80,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    // navigationRotateAnimation();
+    navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -107,7 +107,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    // navigationRotateAnimation();
+    navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
@@ -265,7 +265,7 @@ export const ENTRIES: any = [
     disabled: false,
     icon: '/images/home-earth/entry-bgt.svg',
     signpost: '/images/home-earth/signpost-bgt.svg',
-    path: '/cave',
+    path: '/ibgt',
   }
 ];
 
@@ -326,6 +326,6 @@ export const BADDIES_ENTRIES: any = [
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-bgt.svg',
     signpost: '/images/home-earth/signpost-bgt.svg',
-    path: '/cave',
+    path: '/ibgt',
   }
 ]
