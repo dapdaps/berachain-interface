@@ -126,7 +126,7 @@ const MintHoneyModal: FC<MintHoneyModalProps> = ({
       
       const { status, transactionHash } = receipt;
       addAction?.({
-        type: "Staking",
+        type: "Mint",
         action: capitalize(tab),
         tokens: [{ symbol: inputCurrency.symbol }],
         amount: inputCurrencyAmount,

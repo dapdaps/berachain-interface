@@ -147,6 +147,37 @@ export default function useAddAction(source: string, isNear = false) {
           sub_type: data.sub_type
         };
       }
+      if (data.type === "Mint") {
+        const symbols = data.tokens.map((token: any) => token.symbol);
+
+        if (data.extra_data) {
+          data.tokens.forEach((token: any, i: number) => {
+            data.extra_data[`token${i}Symbol`] = getReportTokenSymbol(token);
+            data.extra_data[`amount${i}`] = data.amounts[i];
+          });
+        }
+        params = {
+          action_title: !!symbols.length
+            ? `${data.action} ${data.amount} ${symbols.join("-")} on ${
+                data.template
+              }`
+            : "",
+          action_type: "Mint",
+          action_tokens: !!symbols.length
+            ? JSON.stringify([`${symbols.join("-")}`])
+            : "",
+          action_amount: data.amount,
+          account_id: data.account_id || account,
+          template: data.template,
+          chain_id: data.chainId || chainId,
+          action_switch: data.add ? 1 : 0,
+          action_status: data.status === 1 ? "Success" : "Failed",
+          tx_id: data.transactionHash,
+          action_network_id: currentChain?.name || data.action_network_id,
+          extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
+          sub_type: data.sub_type
+        };
+      }
 
       if (data.type === "Delegate") {
         params = {
