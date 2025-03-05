@@ -5,8 +5,6 @@ export default function PoolTable({ item, onClick = () => { } }: any) {
     () => item.tokens || [item.token0, item.token1],
     [item]
   );
-
-  console.log('===item', item)
   return (
     <div className="flex items-center gap-[12px]" onClick={onClick}>
       <div className="flex items-center relative">

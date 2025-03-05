@@ -155,6 +155,7 @@ export default function Liquidity() {
           />
         ) : (
           <List
+            loading={loading}
             meta={[
               {
                 title: "#",
