@@ -128,7 +128,7 @@ const PartList = [
     buttonClass: "rotate-[-10deg] mb-[8px]",
     arrowClass: "relative left-[50%] translate-x-[50px] translate-y-[-150px]",
     btnText: "BGT Town hall",
-    link: "/ibgt",
+    link: "/hall",
     ArrowIcon: beramasArrowIcon,
     disabled: false,
   }

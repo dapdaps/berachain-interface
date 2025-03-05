@@ -265,7 +265,7 @@ export const ENTRIES: any = [
     disabled: false,
     icon: '/images/home-earth/entry-bgt.svg',
     signpost: '/images/home-earth/signpost-bgt.svg',
-    path: '/ibgt',
+    path: '/hall',
   }
 ];
 
@@ -326,6 +326,6 @@ export const BADDIES_ENTRIES: any = [
     disabled: false,
     icon: '/images/home-earth/baddies/baddies-bgt.svg',
     signpost: '/images/home-earth/signpost-bgt.svg',
-    path: '/ibgt',
+    path: '/hall',
   }
 ]
