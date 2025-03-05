@@ -82,6 +82,12 @@ const MintHoneyModal: FC<MintHoneyModalProps> = ({
     setOutputCurrencyAmount('');
   }, [tab]);
 
+  useEffect(() => {
+    if (isOpen) {
+      setInputCurrencyAmount("");
+      setOutputCurrencyAmount("");
+    }
+  }, [isOpen]);
 
   const handleHoney = async () => {
     if (!account || !chainId || !provider || !inputCurrencyAmount || Number(inputCurrencyAmount) <= 0) {
@@ -126,7 +132,7 @@ const MintHoneyModal: FC<MintHoneyModalProps> = ({
       
       const { status, transactionHash } = receipt;
       addAction?.({
-        type: "Staking",
+        type: "Mint",
         action: capitalize(tab),
         tokens: [{ symbol: inputCurrency.symbol }],
         amount: inputCurrencyAmount,
@@ -193,6 +199,7 @@ const MintHoneyModal: FC<MintHoneyModalProps> = ({
           </div>
           <Button 
             onClick={handleHoney}
+            currency={inputCurrency}
             amount={inputCurrencyAmount}
             token={inputCurrency}
             spender={HoneyFactoryAddress}
