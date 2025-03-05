@@ -86,7 +86,7 @@ export default function RootLayout({
         />
         <TapSound ref={tapRef} />
 
-        <PointMasker />
+        {/* <PointMasker /> */}
       </body>
       <Script async src="https://www.googletagmanager.com/gtag/js?id=G-SZ82B6ZN43"></Script>
       <Script id="ga-config">
