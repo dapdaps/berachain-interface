@@ -152,7 +152,7 @@ const Navigation = (props: any) => {
               }}
             >
               <motion.img
-                className={clsx("absolute left-1/2 top-[-80px] z-[1] object-center object-contain", item.disabled ? 'cursor-not-allowed' : 'cursor-pointer', isDefaultTheme() ? 'w-[260px]' : 'w-[300px]')}
+                className={clsx("absolute left-1/2 top-[-80px] z-[1] object-center object-contain", item.disabled ? 'cursor-not-allowed' : 'cursor-pointer', isDefaultTheme() ? 'w-[220px]' : 'w-[300px]')}
                 src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
                 style={{
@@ -234,6 +234,8 @@ export const ENTRIES: any = [
     icon: '/images/home-earth/entry-dashboard.svg',
     signpost: '/images/home-earth/signpost-dashboard.svg',
     path: '/portfolio',
+    width: '320px',
+    y: -40,
   },
   {
     sort: 4,
@@ -250,8 +252,8 @@ export const ENTRIES: any = [
     icon: '/images/home-earth/entry-bridge.svg',
     signpost: '/images/home-earth/signpost-bridge.svg',
     path: '/bridge',
-    y: 28,
-    width: '400px',
+    y: 32,
+    width: '360px',
   },
   {
     sort: 6,
@@ -262,6 +264,7 @@ export const ENTRIES: any = [
     signpost: '/images/home-earth/signpost-cave.svg',
     path: '/cave',
     y: 40,
+    width: '280px',
   },
   {
     sort: 7,
