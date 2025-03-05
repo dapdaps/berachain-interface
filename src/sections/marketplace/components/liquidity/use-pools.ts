@@ -5,10 +5,11 @@ import { wrapNativeToken } from "@/sections/pools/utils";
 import { default as useBexPools } from "@/sections/pools/beraswap/use-pools";
 import { default as useKodiakV2Pools } from "@/sections/pools/kodiak/use-pools-v2";
 import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
+import usePoolsIslands from "@/sections/pools/kodiak/use-pools-islands";
 
 export default function usePools(refresher: number) {
-  const [pools, setPools] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  // const [pools, setPools] = useState<any>([]);
+  // const [loading, setLoading] = useState(false);
   const { pools: bexPools, loading: bexLoading } = useBexPools();
   const { pools: kodiakV2Pools, loading: kodiakV2Loading } = useKodiakV2Pools(
     true,
@@ -20,39 +21,46 @@ export default function usePools(refresher: number) {
     ticksInfo: kodiakTicksInfo
   } = usePoolsV3({ dex: kodiak, refresher });
 
-  const query = async () => {
-    setPools([
-      {
-        token0: wrapNativeToken(bera["bera"]),
-        token1: bera["honey"],
-        protocolIcon: "/images/dapps/kodiak.svg",
-        protocol: "Kodiak",
-        version: "v2",
-        id: 2
-        // tvl: random(1000, 1000000, true),
-        // volume_24h: random(1000, 1000000, true),
-        // fees_24h: random(0, 100, true),
-        // yours: random(0, 10000, true)
-      },
-      {
-        token0: wrapNativeToken(bera["bera"]),
-        token1: bera["honey"],
-        protocolIcon: "/images/dapps/kodiak.svg",
-        protocol: "Kodiak",
-        version: "v3",
-        fee: 3000,
-        id: 3
-        // tvl: random(1000, 1000000, true),
-        // volume_24h: random(1000, 1000000, true),
-        // fees_24h: random(0, 100, true),
-        // yours: random(0, 10000, true)
-      }
-    ]);
-  };
+  const { loading: islandsLoading, pools: islands } = usePoolsIslands();
 
-  useEffect(() => {
-    query();
-  }, []);
+  const {
+    loading,
+    pools,
+  } = useMemo(() => {
+    return {
+      loading: islandsLoading,
+      pools: [
+        ...(islands ? islands : []).map(item => {
+          return {
+            ...item,
+            protocolIcon: "/images/dapps/kodiak.svg",
+            protocol: "Kodiak",
+            type: "Island"
+          }
+        }),
+        {
+          token0: wrapNativeToken(bera["bera"]),
+          token1: bera["honey"],
+          protocolIcon: "/images/dapps/kodiak.svg",
+          protocol: "Kodiak",
+          version: "v2",
+          id: 2,
+          type: "v2"
+        },
+        {
+          token0: wrapNativeToken(bera["bera"]),
+          token1: bera["honey"],
+          protocolIcon: "/images/dapps/kodiak.svg",
+          protocol: "Kodiak",
+          version: "v3",
+          fee: 3000,
+          id: 3,
+          type: "v3"
+        },
+      ]
+    }
+  }, [islands, islandsLoading])
+
 
   const bexBalances = useMemo(() => {
     if (bexPools.length === 0 || pools.length === 0) return {};

@@ -266,7 +266,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "RAMEN",
     name: "RAMEN",
-    icon: "/assets/tokens/ramen.png"
+    icon: "/assets/tokens/ramen.png",
+    color: "#d93527"
   },
   bblast: {
     chainId: CHAIN_ID,
@@ -307,7 +308,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "HOLD",
     name: "HOLD",
-    icon: "/assets/tokens/hold.png"
+    icon: "/assets/tokens/hold.png",
+    color: "#a28cff"
   },
 
   henlo: {

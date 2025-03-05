@@ -21,14 +21,12 @@ const PAGE_SIZE = 9;
 const checkIsExist = ({ record, balance, hasFee }: any) => {
   return (
     balance[
-      `${record.token0.address.toLowerCase()}-${record.token1.address.toLowerCase()}${
-        hasFee ? "-" + record.fee : ""
-      }`
+    `${record.token0.address.toLowerCase()}-${record.token1.address.toLowerCase()}${hasFee ? "-" + record.fee : ""
+    }`
     ] ||
     balance[
-      `${record.token1.address.toLowerCase()}-${record.token0.address.toLowerCase()}${
-        hasFee ? "-" + record.fee : ""
-      }`
+    `${record.token1.address.toLowerCase()}-${record.token0.address.toLowerCase()}${hasFee ? "-" + record.fee : ""
+    }`
     ]
   );
 };
@@ -171,7 +169,7 @@ export default function Liquidity() {
                 title: "Pool",
                 key: "pool",
                 sort: false,
-                width: "25%",
+                width: "60%",
                 render: (item: any, index: number) => {
                   return <PoolTable item={item} />;
                 }
@@ -180,7 +178,7 @@ export default function Liquidity() {
                 title: "TVL",
                 key: "tvl",
                 sort: true,
-                width: "20%",
+                width: "15%",
                 render: (item: any, index: number) => {
                   return item["tvl"]
                     ? numberFormatter(item["tvl"], 2, true, { isShort: true })
@@ -188,49 +186,50 @@ export default function Liquidity() {
                 }
               },
               {
-                title: "24h Volume",
-                key: "volume_24h",
+                title: "Volume",
+                key: "volume",
                 sort: true,
                 width: "15%",
                 render: (item: any, index: number) => {
-                  return item["volume_24h"]
-                    ? numberFormatter(item["volume_24h"], 2, true, {
-                        isShort: true
-                      })
+                  return item["volume"]
+                    ? numberFormatter(item["volume"], 2, true, {
+                      isShort: true
+                    })
                     : "-";
                 }
               },
-              {
-                title: "24h Fees",
-                key: "fees_24h",
-                sort: true,
-                width: "15%",
-                render: (item: any, index: number) => {
-                  return item["fees_24h"]
-                    ? numberFormatter(item["fees_24h"], 2, true, {
-                        isShort: true
-                      })
-                    : "-";
-                }
-              },
-              {
-                title: "Your Position",
-                key: "yours",
-                sort: true,
-                width: "15%",
-                render: (item: any, index: number) => {
-                  return item["yours"] ? (
-                    <div className="flex underline">
-                      {numberFormatter(item["yours"], 2, true, {
-                        prefix: "$",
-                        isShort: true
-                      })}
-                    </div>
-                  ) : (
-                    "-"
-                  );
-                }
-              },
+              // {
+              //   title: "Apr",
+              //   key: "apr",
+              //   sort: true,
+              //   width: "15%",
+              //   render: (item: any, index: number) => {
+              //     console.log('====item', item)
+              //     return item["apr"]
+              //       ? numberFormatter(item["apr"], 2, true, {
+              //         isShort: true
+              //       })
+              //       : "-";
+              //   }
+              // },
+              // {
+              //   title: "Your Position",
+              //   key: "yours",
+              //   sort: true,
+              //   width: "15%",
+              //   render: (item: any, index: number) => {
+              //     return item["yours"] ? (
+              //       <div className="flex underline">
+              //         {numberFormatter(item["yours"], 2, true, {
+              //           prefix: "$",
+              //           isShort: true
+              //         })}
+              //       </div>
+              //     ) : (
+              //       "-"
+              //     );
+              //   }
+              // },
               {
                 title: "Action",
                 key: "Action",
@@ -238,7 +237,7 @@ export default function Liquidity() {
                 width: "10%",
                 render: (item: any, index: number) => {
                   let _removeable: any = false;
-                  if (item.protocol.toLowerCase() === "bex") {
+                  if (item?.protocol?.toLowerCase() === "bex") {
                     _removeable = checkIsExist({
                       record: item,
                       balance: bexBalances
