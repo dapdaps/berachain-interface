@@ -80,45 +80,45 @@ export default function usePoolsIslands() {
           ...(result.data.data.kodiakVaults || [])
         ];
 
+        console.log('====list=', list)
         setPools(
           list.map((item: any) => {
             const _token0 =
-              item._token0.id === "0x6969696969696969696969696969696969696969"
+              (item._token0.id === "0x6969696969696969696969696969696969696969" && tokens["native"])
                 ? tokens["native"]
                 : tokens[item._token0.id.toLowerCase()] || {
-                    ...item._token0,
-                    address: item._token0.id
-                  };
+                  ...item._token0,
+                  address: item._token0.id
+                };
             const _token1 =
-              item._token1.id === "0x6969696969696969696969696969696969696969"
+              (item._token1.id === "0x6969696969696969696969696969696969696969" && tokens["native"])
                 ? tokens["native"]
                 : tokens[item._token1.id.toLowerCase()] || {
-                    ...item._token1,
-                    address: item._token1.id
-                  };
-
+                  ...item._token1,
+                  address: item._token1.id
+                };
             const lowerPrice =
               item.lowerPrice < -887000
                 ? "0"
                 : balanceFormated(
-                    tickToPrice({
-                      tick: item.lowerTick,
-                      token0: _token0,
-                      token1: _token1
-                    }),
-                    2
-                  );
+                  tickToPrice({
+                    tick: item.lowerTick,
+                    token0: _token0,
+                    token1: _token1
+                  }),
+                  2
+                );
             const upperPrice =
               item.upperTick > 887000
                 ? "∞"
                 : balanceFormated(
-                    tickToPrice({
-                      tick: item.upperTick,
-                      token0: _token0,
-                      token1: _token1
-                    }),
-                    2
-                  );
+                  tickToPrice({
+                    tick: item.upperTick,
+                    token0: _token0,
+                    token1: _token1
+                  }),
+                  2
+                );
             return {
               token0: {
                 ..._token0,
