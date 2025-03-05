@@ -77,7 +77,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -104,7 +104,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
@@ -115,7 +115,7 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border rounded-full top-[24.5dvh] flex justify-center items-center border-[#5A6F2F]',
+        'will-change-transform absolute z-[3] border rounded-full top-[19.5dvh] flex justify-center items-center border-[#5A6F2F]',
         isDragging ? 'cursor-grabbing' : '',
       )}
       style={{
@@ -146,7 +146,7 @@ const Navigation = (props: any) => {
               style={{
                 width: item.iconWidth,
                 height: item.iconHeight,
-                transform: `rotate(${90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
+                transform: `rotate(${item.iconRotate || 90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
                 transformOrigin: `center ${size/2}px`,
               }}
               onHoverStart={() => handleEntryHover(item)}
@@ -421,9 +421,27 @@ export const BADDIES_ENTRIES: any = [
     signpostHeight: 59,
     signpostX: 50,
     signpostY: -40,
+    x: 1230,
+    y: 260,
+    rotate: 38,
+    path: '/cave',
+  },
+  {
+    sort: 7,
+    name: 'Bgt',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-bgt.svg',
+    iconWidth: 365,
+    iconHeight: 226,
+    signpost: '/images/home-earth/signpost-bgt.svg',
+    signpostWidth: 188,
+    signpostHeight: 57,
+    signpostX: 50,
+    signpostY: -40,
     x: 1200,
-    y: 360,
-    rotate: 44,
+    y: 270,
+    rotate: 38,
+    iconRotate: 14,
     path: '/cave',
   }
 ]

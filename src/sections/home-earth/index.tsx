@@ -27,7 +27,7 @@ const SIZE = 3000;
 
 const BG_SIZE_MAP = {
   default: SIZE,
-  lgbt: 3500, // 3500 wait for Cave styles
+  lgbt: 4000, // 3500 wait for Cave styles
 }
 
 const HomeEarth = () => {
