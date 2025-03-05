@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 
-export default function PoolTable({ item, onClick = () => {} }: any) {
+export default function PoolTable({ item, onClick = () => { } }: any) {
   const tokens = useMemo(
     () => item.tokens || [item.token0, item.token1],
     [item]
   );
 
+  console.log('===item', item)
   return (
     <div className="flex items-center gap-[12px]" onClick={onClick}>
       <div className="flex items-center relative">
@@ -36,6 +37,12 @@ export default function PoolTable({ item, onClick = () => {} }: any) {
         {item.fee && (
           <div className="text-[10px] p-1 bg-[#D9D9D9] rounded-md text-black leading-[9px] font-Montserrat font-medium">
             {item.fee / 1e4} %
+          </div>
+        )}
+
+        {item.type && (
+          <div className="text-[10px] p-1 bg-[#D9D9D9] rounded-md text-black leading-[9px] font-Montserrat font-medium">
+            {item.type}
           </div>
         )}
       </div>
