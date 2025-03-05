@@ -8,14 +8,14 @@ import { trim } from 'lodash';
 
 const DAppPath: any = {
   bend: { dapp: "/lending/bend", earn: "" },
-  dolomite: { dapp: "/lending/dolomite", earn: "" },
-  infrared: { dapp: "/staking/infrared", earn: "" },
+  dolomite: { dapp: "/lending/dolomite", earn: "/earn?tab=lending" },
+  infrared: { dapp: "/staking/infrared", earn: "/earn?tab=staking" },
   kodiak: { dapp: "/dex/kodiak", earn: "/earn" },
-  beraswap: { dapp: "/dex/beraswap", earn: "", Liquidity: "/dex/beraswap/pools"  },
+  beraswap: { dapp: "/dex/beraswap", earn: "", Liquidity: "/dex/beraswap/pools" },
   "ooga booga": { dapp: "/dex/ooga-booga", earn: "" },
   stargate: { dapp: "/bridge/Stargate", earn: "" },
   beraborrow: { dapp: "/lending/beraborrow", earn: "" },
-  aquabera: { dapp: "/staking/aquabera", earn: "" },
+  aquabera: { dapp: "/staking/aquabera", earn: "/earn?tab=staking" },
   bedrock: { dapp: "/staking/bedrock", earn: "" },
   kingdomly: { dapp: "/kingdomly", earn: "" },
   jumper: { dapp: "/bridge/jumper", earn: "" },
