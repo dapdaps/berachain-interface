@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3003 -H 0.0.0.0",
-    "build": "next build",
+    "build": "pnpm config get registry && next build",
     "start": "next start",
     "lint": "next lint",
     "build:stats": "ANALYZE_STATS=true next build"
