@@ -23,11 +23,11 @@ import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
-const SIZE = 3000;
+const SIZE = 3500;
 
 const BG_SIZE_MAP = {
   default: SIZE,
-  lgbt: 3500, // 3500 wait for Cave styles
+  lgbt: 3500,
 }
 
 const HomeEarth = () => {
@@ -178,9 +178,9 @@ const HomeEarth = () => {
         <HomeEarthTop />
         <AirdropModal />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
-              {/*#region Cloud*/}
-              <CloudCircle />
-              {/*#endregion*/}
+          {/*#region Cloud*/}
+          <CloudCircle />
+          {/*#endregion*/}
           {
             isDefaultTheme() && (<>
               {/*#region Mountain*/}
