@@ -27,7 +27,7 @@ const SIZE = 3500;
 
 const BG_SIZE_MAP = {
   default: SIZE,
-  lgbt: 3500,
+  lgbt: SIZE,
 }
 
 const HomeEarth = () => {

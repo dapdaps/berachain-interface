@@ -281,6 +281,7 @@ export const BADDIES_ENTRIES: any = [
     icon: '/images/home-earth/baddies/baddies-bridge.svg',
     signpost: '/images/home-earth/signpost-bridge.svg',
     path: '/bridge',
+    y: -40
   },
   {
     sort: 2,
@@ -289,6 +290,7 @@ export const BADDIES_ENTRIES: any = [
     icon: '/images/home-earth/baddies/baddies-dapp.svg',
     signpost: '/images/home-earth/signpost-dapp.svg',
     path: '/dapps',
+    y: -30
   },
   {
     sort: 3,
@@ -297,6 +299,7 @@ export const BADDIES_ENTRIES: any = [
     icon: '/images/home-earth/baddies/baddies-marketplace.svg',
     signpost: '/images/home-earth/signpost-marketplace.svg',
     path: '/marketplace',
+    y: -30
   },
   {
     sort: 4,
@@ -314,6 +317,7 @@ export const BADDIES_ENTRIES: any = [
     disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
     signpost: '/images/home-earth/signpost-dashboard.svg',
     path: '/portfolio',
+    y: -20
   },
   {
     sort: 6,
@@ -323,6 +327,7 @@ export const BADDIES_ENTRIES: any = [
     disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
     signpost: '/images/home-earth/signpost-cave.svg',
     path: '/cave',
+    y: -20
   },
   {
     sort: 7,
@@ -331,5 +336,6 @@ export const BADDIES_ENTRIES: any = [
     icon: '/images/home-earth/baddies/baddies-bgt.svg',
     signpost: '/images/home-earth/signpost-bgt.svg',
     path: '/hall',
+    y: -20
   }
 ]
