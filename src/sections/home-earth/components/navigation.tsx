@@ -80,7 +80,7 @@ const Navigation = (props: any) => {
     navigationEndRotationRef.current = navigationRotation.get();
     cloudEndRotationRef.current = cloudRotation.get();
     mountainEndRotationRef.current = mountainRotation.get();
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
     cloudRotateAnimation();
     mountainRotateAnimation();
 
@@ -107,7 +107,7 @@ const Navigation = (props: any) => {
   }
 
   useEffect(() => {
-    navigationRotateAnimation();
+    // navigationRotateAnimation();
 
     return () => {
       navigationControls.current?.stop?.();
@@ -142,21 +142,23 @@ const Navigation = (props: any) => {
           entries.sort((a: any, b: any) => a.sort - b.sort).map((item: any, i: number) => (
             <div
               key={idx + "-" + i}
-              className="flex justify-center items-center w-[400px] top-0 absolute origin-bottom"
+              className={`flex justify-center items-center w-[300px] top-0 absolute origin-bottom`}
               style={{
                 left: "50%",
                 height: size / 2,
                 transform: `translateX(-50%) rotate(${(360 / SPLIT_PIECES) * idx + (360 / (entries.length * SPLIT_PIECES)) * i}deg)`,
                 // backgroundColor: "rgba(0, 0, 0, 0.1)",
+                ...(item.width && { width: item.width }),
               }}
             >
               <motion.img
-                className={clsx("absolute left-1/2 top-[-80px] z-[1] w-[300px] object-center object-contain", item.disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
+                className={clsx("absolute left-1/2 top-[-80px] z-[1] object-center object-contain", item.disabled ? 'cursor-not-allowed' : 'cursor-pointer', isDefaultTheme() ? 'w-[260px]' : 'w-[300px]')}
                 src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
                 style={{
                   y: item.y,
                   x: "-50%",
+                 ...(item.width && { width: item.width }),
                 }}
                 whileHover={{
                   scale: 1.1,
@@ -215,6 +217,7 @@ export const ENTRIES: any = [
     icon: '/images/home-earth/entry-dapp.svg',
     signpost: '/images/home-earth/signpost-dapp.svg',
     path: '/dapps',
+    y: -68,
   },
   {
     sort: 3,
@@ -247,7 +250,8 @@ export const ENTRIES: any = [
     icon: '/images/home-earth/entry-bridge.svg',
     signpost: '/images/home-earth/signpost-bridge.svg',
     path: '/bridge',
-    y: 38,
+    y: 28,
+    width: '400px',
   },
   {
     sort: 6,
