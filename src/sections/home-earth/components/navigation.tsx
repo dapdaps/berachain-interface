@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { HomeEarthContext } from '../context';
 import { useActivityStore } from '@/stores/useActivityStore';
 
-const SPLIT_PIECES = 3;
+const SPLIT_PIECES = 4;
 
 const Navigation = (props: any) => {
   const {} = props;
