@@ -513,7 +513,9 @@ const DolomiteData = (props: any) => {
 
       const tokenList: any = Object.values(_cTokensData);
       tokenList.forEach((token: any) => {
-        userTotalSupplyUsd = userTotalSupplyUsd.plus(token.yourLendsUSD);
+        if (token.address !== 'native') {
+          userTotalSupplyUsd = userTotalSupplyUsd.plus(token.yourLendsUSD);
+        }
         userTotalBorrowUsd = userTotalBorrowUsd.plus(token.currentTokenBorrowUsd);
         userTotalCollateralUsd = userTotalCollateralUsd.plus(token.currentTokenCollateralUsd);
 
@@ -544,6 +546,10 @@ const DolomiteData = (props: any) => {
         amounts.forEach((_amount: any) => {
           const { collateral, borrow, token } = _amount;
           const currentToken = _cTokensData[token.id.toLowerCase()];
+          if (!currentToken) {
+            console.log('_cTokensData: %o, token: %o', _cTokensData, token);
+            return;
+          }
           _amount.collateralValue = Big(collateral || 0).toFixed(currentToken.decimals);
           _amount.collateralUsd = Big(collateral || 0)
             .times(currentToken.price)
@@ -602,7 +608,10 @@ const DolomiteData = (props: any) => {
         const latestHealth = 1.005;
 
         removeCollateralTokens.forEach((token: any) => {
-          const removeValue = totalCollateralUsd.minus(positionBorrowedUsd.times(latestHealth)).div(token.price);
+          let removeValue = totalCollateralUsd.minus(positionBorrowedUsd.times(latestHealth)).div(token.price);
+          if (Big(removeValue).lt(0)) {
+            removeValue = Big(0);
+          }
 
           if (removeValue.gte(token.currentPositionCollateral)) {
             token.balance = token.currentPositionCollateral.toFixed(token.decimals);
@@ -1084,7 +1093,7 @@ const DolomiteData = (props: any) => {
           walletBalance: tokenBalances[market.address.toLowerCase()],
           dolomiteBalance: dolomiteBalance[_address],
           interestRates: interestRates[_address],
-          price: Big(prices[_address]).lte(0) ? '1' : prices[_address],
+          price: Big(prices[_address] || 0).lte(0) ? '1' : prices[_address],
           borrowPar: totalPars[_address]?.borrowPar || '0',
           supplyPar: totalPars[_address]?.supplyPar || '0',
           marketId: marketTokenInfo[_address]?.marketId,

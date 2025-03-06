@@ -8,7 +8,8 @@ export default memo(function Vaults() {
   const {
     vaultsVisible,
     setVaultsVisible,
-    vaultsData = {}
+    vaultsData = {},
+    refreshRef
   } = useContext(MarketplaceContext);
 
   const { data, config, platform, type, vaultsType } = vaultsData;
@@ -20,6 +21,7 @@ export default memo(function Vaults() {
       config={config}
       visible={vaultsVisible}
       setVisible={setVaultsVisible}
+      refresh={refreshRef?.current}
     />
   ) : (
     <AquaberaModal
@@ -28,6 +30,7 @@ export default memo(function Vaults() {
       config={config}
       visible={vaultsVisible}
       setVisible={setVaultsVisible}
+      refresh={refreshRef?.current}
     />
   )
 })

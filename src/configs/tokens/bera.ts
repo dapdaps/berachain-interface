@@ -266,7 +266,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "RAMEN",
     name: "RAMEN",
-    icon: "/assets/tokens/ramen.png"
+    icon: "/assets/tokens/ramen.png",
+    color: "#d93527"
   },
   bblast: {
     chainId: CHAIN_ID,
@@ -289,7 +290,34 @@ export const bera: { [key: string]: Token } = {
     chainId: CHAIN_ID,
     address: "0x85468a0CB26B5Fc1F2B7B7BA3aee07F073dff709",
     decimals: 18,
-    symbol: "Godl",
-    icon: ""
+    symbol: "GODL",
+    icon: "https://ichi-images.s3.us-east-1.amazonaws.com/tokens/logo_256_godl.svg"
+  },
+
+  bm: {
+    chainId: CHAIN_ID,
+    address: "0xb749584F9fC418Cf905d54f462fdbFdC7462011b",
+    decimals: 18,
+    symbol: "bm",
+    name: "bm",
+    icon: "/assets/tokens/bm.png"
+  },
+  hold: {
+    chainId: CHAIN_ID,
+    address: "0xff0a636dfc44bb0129b631cdd38d21b613290c98",
+    decimals: 18,
+    symbol: "HOLD",
+    name: "HOLD",
+    icon: "/assets/tokens/hold.png",
+    color: "#a28cff"
+  },
+
+  henlo: {
+    chainId: CHAIN_ID,
+    address: "0xb2F776e9c1C926C4b2e54182Fac058dA9Af0B6A5",
+    decimals: 18,
+    symbol: "HENLO",
+    name: "HENLO",
+    icon: "/assets/tokens/henlo.png"
   }
 };

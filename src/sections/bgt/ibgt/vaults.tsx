@@ -1,12 +1,14 @@
-import clsx from "clsx";
-import Big from "big.js";
-import { useEffect } from "react";
-import { formatValueDecimal } from "@/utils/balance";
 import { useMultiState } from "@/hooks/use-multi-state";
-import Skeleton from "react-loading-skeleton";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
+import { formatValueDecimal } from "@/utils/balance";
+import { getProtocolIcon } from '@/utils/utils';
+import Big from "big.js";
+import clsx from "clsx";
+import { motion } from 'framer-motion';
 import { cloneDeep } from "lodash";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
 
 function renderTD(data: any, column: any, index: number) {
   if (column.type === "slot") {
@@ -23,7 +25,8 @@ export default function Vaults() {
   const [state, updateState] = useMultiState<any>({
     allData: null,
     filterList: [],
-    sortKey: ""
+    sortKey: "apy",
+    direction: 1
   });
 
   const { dataList, loading } = useInfraredList();
@@ -71,15 +74,7 @@ export default function Vaults() {
         return (
           <img
             style={{ width: 26 }}
-            src={
-              protocol?.id === "beraswap"
-                ? "/images/dapps/infrared/beraswap.svg"
-                : protocol?.id === "kodiak"
-                ? "/images/dapps/kodiak.svg"
-                : protocol?.id === "berps"
-                ? "/images/dapps/infrared/berps.svg"
-                : "/images/dapps/infrared/infrared.svg"
-            }
+            src={getProtocolIcon(protocol?.id)}
           />
         );
       }
@@ -147,7 +142,7 @@ export default function Vaults() {
               fill="none"
               className="cursor-pointer"
               onClick={() => {
-                router.push(`/staking/infrared?id=${data.id}&tab=0`);
+                router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=0`);
               }}
             >
               <rect
@@ -177,7 +172,7 @@ export default function Vaults() {
               }
               onClick={() => {
                 if (Big(data?.usdDepositAmount ?? 0).gt(0)) {
-                  router.push(`/staking/infrared?id=${data.id}&tab=1`);
+                  router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=1`);
                 }
               }}
             >
@@ -205,14 +200,13 @@ export default function Vaults() {
 
     updateState({
       filterList: state?.sortKey
-        ? cloneDataList.sort((prev: any, next: any) => {
-            return Big(next[state?.sortKey] || 0)
-              .minus(prev[state?.sortKey] || 0)
-              .toFixed();
-          })
+        ? cloneDataList?.sort((prev: any, next: any) => {
+          return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
+            ? state.direction : -state?.direction;
+        })
         : cloneDataList
     });
-  }, [state?.sortKey, dataList]);
+  }, [state?.sortKey, state?.direction, dataList]);
 
   return (
     <>
@@ -229,7 +223,8 @@ export default function Vaults() {
               onClick={() => {
                 column?.sort &&
                   updateState({
-                    sortKey: state?.sortKey === column.key ? "" : column.key
+                    sortKey: column.key,
+                    direction: -state?.direction
                   });
               }}
             >
@@ -237,18 +232,21 @@ export default function Vaults() {
                 {column?.label}
               </div>
               {column?.sort && (
-                <svg
+                <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="13"
                   height="8"
                   viewBox="0 0 13 8"
                   fill="none"
+                  animate={{
+                    rotate: (state?.sortKey === column?.key && state?.direction === 1) ? 0 : 180,
+                  }}
                 >
                   <path
                     d="M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z"
                     fill={state?.sortKey === column?.key ? "black" : "#D1CEB4"}
                   />
-                </svg>
+                </motion.svg>
               )}
             </div>
           );

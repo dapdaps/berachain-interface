@@ -2,7 +2,9 @@
 import CircleLoading from '@/components/circle-loading';
 import Empty from '@/components/empty';
 import { useVaultList } from "@/sections/bgt/hooks/useList";
+import { formatValueDecimal } from '@/utils/balance';
 import { addThousandSeparator } from '@/utils/number-formatter';
+import { getProtocolIcon } from '@/utils/utils';
 import { useDebounceFn } from 'ahooks';
 import Big from 'big.js';
 import { useRouter } from "next/navigation";
@@ -14,6 +16,7 @@ const AllVaults = (props: any) => {
     onDeposit
   } = props
 
+  console.log('====data=====', data)
   return (
     <div className="p-[12px] flex flex-col gap-[12px]">
       {
@@ -23,16 +26,15 @@ const AllVaults = (props: any) => {
               <div className='flex items-center gap-[16px]'>
                 <div className='relative'>
                   <div className='w-[30px] h-[30px] rounded-full overflow-hidden'>
-                    <img src={record?.metadata?.logoURI || "/images/bgt-logo.svg"} />
+                    <img src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} />
                   </div>
                   <div className="absolute right-[-6px] bottom-[-2px] w-[16px]">
-                    <img src={record?.metadata?.productMetadata?.logoURI ||
-                      "/images/bgt-logo-1.svg"} />
+                    <img src={getProtocolIcon(record?.metadata?.protocolName)} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-[5px]">
-                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{record?.name}</div>
-                  <div className='text-black font-Montserrat text-[12px] font-medium leading-[90%]'>{record?.productMetadata?.name}</div>
+                  <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{record?.metadata?.name}</div>
+                  <div className='text-black font-Montserrat text-[12px] font-medium leading-[90%]'>{record?.metadata?.protocolName}</div>
                 </div>
               </div>
               <div className="w-[95px] h-[32px] rounded-[10px] bg-white border border-black flex items-center justify-center cursor-pointer text-[16px] font-Montserrat"
@@ -47,27 +49,19 @@ const AllVaults = (props: any) => {
             <div className='mb-[23px] flex items-center justify-between'>
               <div className='flex flex-col gap-[5px]'>
                 <div className='text-[#3D405A] text-[14px] font-Montserrat font-medium'>Total Incentive Value</div>
-                <div className='text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>{"$" +
-                  addThousandSeparator(record?.activeIncentivesInHoney.toFixed(2))}</div>
+                <div className='text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>{formatValueDecimal(record?.dynamicData?.activeIncentivesValueUsd ?? 0, "$", 2, false, false)}</div>
               </div>
               <div className='flex flex-col items-end gap-[5px]'>
                 <div className='text-[#3D405A] text-[14px] font-Montserrat font-medium'>BGT Capture</div>
-                <div className='text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>{Big(record?.bgtInflationCapture).div(100).toFixed(2) + "%"}</div>
+                <div className='text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>{formatValueDecimal(Big(record?.dynamicData?.bgtCapturePercentage).times(100).toFixed(), '', 2) + "%"}</div>
               </div>
             </div>
 
             <div className='flex items-center justify-between'>
-              {/* <div className='flex flex-col gap-[5px]'>
-                <div className='text-[#3D405A] text-[14px] font-Montserrat font-medium'>Validators</div>
-                <div className='text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>$5,452,700.42</div>
-              </div> */}
               <div className='flex flex-col gap-[5px]'>
                 <div className='text-[#3D405A] text-[14px] font-Montserrat font-medium'>Incentives</div>
-                <div className='flex items-center gap-[8px] text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>{record?.activeIncentives.map((v: any) => (
-                  <div className="w-fit rounded-lg border p-1">
-                    <span className="text-[10px]">{v.token.symbol}</span>
-                  </div>
-                ))}</div>
+                <div className='text-black text-[16px] font-Montserrat font-semibold leading-[90%]'>No Incentives</div>
+
               </div>
             </div>
           </div>

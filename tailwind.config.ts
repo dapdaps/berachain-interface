@@ -43,6 +43,7 @@ const config: Config = {
       "ping": "ping 1s cubic-bezier(0,0,.2,1) infinite",
       "cloud-float-left": "cloudFloatLeft 20s ease-in-out infinite",
       "cloud-float-right": "cloudFloatRight 20s ease-in-out infinite",
+      rainfall: "rainfall 1s linear infinite",
     },
     keyframes: {
       snowDown: {
@@ -191,6 +192,14 @@ const config: Config = {
         },
         "100%": {
           transform: "translateX(0) translateY(0) scale(1)",
+        }
+      },
+      rainfall: {
+        "0%": {
+          transform: "translateX(0) translateY(-200%) rotate(30deg)"
+        },
+        "100%": {
+          transform: "translateX(-30dvw) translateY(100dvh) rotate(30deg)"
         }
       }
     }

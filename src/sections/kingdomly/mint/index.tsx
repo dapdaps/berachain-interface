@@ -10,6 +10,7 @@ import { useCountDown } from "../hooks/use-count-down";
 import useIsMobile from "@/hooks/use-isMobile";
 import { useDebounce } from 'ahooks';
 import Skeleton from "react-loading-skeleton";
+import { isVideoFile } from "@/utils/utils";
 
 const CountdownCell = ({ timestamp }: { timestamp: number }) => {
   const countdown = useCountDown({
@@ -29,11 +30,25 @@ const MobileCard = ({
   return (
     <div className="bg-[#000000] bg-opacity-[0.06] rounded-[10px] p-[15px] mb-[10px] shadow-sm">
       <div className="flex items-center gap-[10px]">
-        <img
-          src={item.profile_image}
-          className="w-[60px] h-[60px] object-cover rounded-[8px]"
-          alt=""
-        />
+        {
+          isVideoFile(item.profile_image) ? (
+            <video 
+              src={item.profile_image} 
+              className="w-[60px] h-[60px] object-cover rounded-[8px]"
+              autoPlay
+              playsInline
+              loop
+              muted
+            />
+          ) : (
+            <img
+              src={item.profile_image}
+              className="w-[60px] h-[60px] object-cover rounded-[8px]"
+              alt=""
+            />
+          )
+        }
+
         <div className="flex-1">
           <div className="font-Montserrat font-bold text-[14px] mb-[5px]">
             {item.collection_name}
@@ -111,7 +126,7 @@ const Mint = () => {
       );
   }, [collections, tab, debouncedValue]);
 
-  console.log('filteredCollections', filteredCollections);
+
 
   const getMetaConfig = () => {
     const baseConfig = [
@@ -123,11 +138,25 @@ const Mint = () => {
         render: (item: NFTCollectionWithStatus) => {
           return (
             <div className="flex items-center gap-[15px]">
-              <img
+              {
+                isVideoFile(item.profile_image) ? (<>
+                  <video 
+                    src={item.profile_image} 
+                    className="w-[78px] h-[78px] object-cover aspect-square rounded-[10px]"
+                    loop
+                    autoPlay
+                    playsInline
+                    muted
+                  />
+                </>) : (
+                  <img
                 src={item.profile_image}
                 className="w-[78px] h-[78px] object-cover aspect-square rounded-[10px]"
                 alt=""
               />
+                )
+              }
+              
               <span className="font-Montserrat font-bold">
                 {item.collection_name}
               </span>

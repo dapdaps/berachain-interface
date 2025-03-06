@@ -22,6 +22,7 @@ import Bg from "../components/mobile-bg";
 import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
 import UserInfo from "./user-info";
+import { getProtocolIcon } from '@/utils/utils';
 
 export default function Mobile({ dapp }: any) {
   const isVaults = _.isArray(dapp)
@@ -43,6 +44,8 @@ export default function Mobile({ dapp }: any) {
     multicallAddress: multicallAddresses[chainId as any]
   });
   const [dataList, loading, reload] = useMemo(() => {
+
+    console.log('====isVaults====', isVaults)
     if (isVaults) {
       return [getMergeDataList({
         infrared: infraredData,
@@ -158,20 +161,8 @@ export default function Mobile({ dapp }: any) {
             data={item}
             dapp={dapp}
             isVaults={isVaults}
-            onClick={(type: 0 | 1, pairToken: any) => {
-
-              console.log('===type', type)
-              if (type === 0) {
-                setSelectedRecord(item);
-              } else {
-                const token = _.cloneDeep(item)
-                delete token.pairedTokens
-                setSelectedRecord({
-                  token0: token,
-                  token1: pairToken,
-                  platform: "aquabera"
-                })
-              }
+            onClick={(data, type: 0 | 1) => {
+              setSelectedRecord(data)
               setType(type);
             }}
             onClaim={setEarned}
@@ -238,101 +229,73 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
   const protocol = data?.initialData?.protocol
   const isBerps = dapp?.name === 'Berps';
   const isAquaBera = dapp?.name === 'AquaBera'
-  // console.log('=name', dapp?.name)
-  // console.log('=isAquaBera', isAquaBera)
+
+  const _data = {
+    pool: data,
+    token0: data?.tokens?.[0],
+    token1: data?.tokens?.[1],
+  }
   return isAquaBera ? (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
-              <Image
-                className="mr-[-8px] rounded-full"
-                src={data?.icon}
-                width={40}
-                height={40}
-                alt="Token"
-              />
+              {
+                data?.tokens?.[0]?.icon ? (
+                  <Image
+                    className="mr-[-8px] rounded-full"
+                    src={data?.tokens?.[0]?.icon}
+                    width={40}
+                    height={40}
+                    alt="Token"
+                  />
+                ) : (
+                  <div className='flex items-center justify-center w-[40px] h-[40px] rounded-[4px] bg-gray-800 text-white font-bold'>
+                    {data?.tokens?.[0]?.symbol?.slice(0, 1)}
+                  </div>
+                )
+              }
+
             </div>
             <div className="text-[16px] font-semibold">
-              {data?.symbol}
+              {data?.id}
             </div>
           </div>
-          <button
-            onClick={() => {
-              onClick(0);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="34"
-              height="34"
-              viewBox="0 0 34 34"
-              fill="none"
-            >
-              <rect
-                x="1"
-                y="1"
-                width="32"
-                height="32"
-                rx="10"
-                fill="#FFDC50"
-                stroke="black"
-              />
-              <path
-                d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
-                fill="black"
-              />
-            </svg>
-          </button>
-        </div>
-        <div className="mt-[16px] flex justify-between">
-          <div>
-            <div className="font-medium	text-[14px]">7-day APR</div>
-            <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.minApr, '', 2, false, false)}% - {formatValueDecimal(data?.maxApr, '', 2, false, false)}%
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="font-medium	text-[14px]">In Wallet</div>
-            <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.balance, '', 2, false, false)}
-            </div>
-          </div>
-        </div>
-      </div>
-      {
-        data?.pairedTokens
-          ?.filter((pairedToken: any) => Big(pairedToken?.yourValue ?? 0).gt(0))
-          ?.map((pairedToken: any) => {
-            const values = pairedToken?.values ?? []
-            return (
-              <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
 
-                <div className='flex items-center'>
-                  <div>
-                    <div className="text-[14px]">You Value</div>
-                    <div className="mt-[3px] flex items-center gap-[3px]">
-                      <span className="text-[16px] font-semibold">
-                        {formatValueDecimal(values?.[0], "", 2, true, false)}
-                      </span>
-                      <span className="text-[12px] font-medium">
-                        {data?.symbol}
-                      </span>
-                    </div>
-                    <div className="mt-[3px] flex items-center gap-[3px]">
-                      <span className="text-[16px] font-semibold">
-                        {formatValueDecimal(values?.[1], "", 2, true, false)}
-                      </span>
-                      <span className="text-[12px] font-medium">
-                        {pairedToken?.symbol}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+          <div className='flex items-center gap-[8px]'>
+            <button
+              onClick={() => {
+                onClick(_data, 0);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="34"
+                height="34"
+                viewBox="0 0 34 34"
+                fill="none"
+              >
+                <rect
+                  x="1"
+                  y="1"
+                  width="32"
+                  height="32"
+                  rx="10"
+                  fill="#FFDC50"
+                  stroke="black"
+                />
+                <path
+                  d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
+                  fill="black"
+                />
+              </svg>
+            </button>
+            {
+              Big(data?.yourValue ?? 0).gt(0) && (
                 <button
                   onClick={() => {
-                    onClick(1, pairedToken);
+                    onClick(_data, 1);
                   }}
                 >
                   <svg
@@ -354,10 +317,32 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                     <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
                   </svg>
                 </button>
-              </div>
-            )
-          })
-      }
+              )
+            }
+          </div>
+        </div>
+        <div className="mt-[16px] flex justify-between">
+          <div>
+            <div className="font-medium	text-[14px]">APY</div>
+            <div className="font-semibold	text-[16px] mt-[8px]">
+              {formatValueDecimal(data?.apr, '', 2, false, false)}%
+            </div>
+          </div>
+
+          <div>
+            <div className="font-medium	text-[14px]">TVL</div>
+            <div className="font-semibold	text-[16px] mt-[8px]">
+              {formatValueDecimal(data?.tvl, '$', 2, false, false)}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-medium	text-[14px]">In Wallet</div>
+            <div className="font-semibold	text-[16px] mt-[8px]">
+              {formatValueDecimal(data?.balance, '', 2, false, false)}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   ) : (
     <div>
@@ -385,17 +370,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               )}
               <Image
                 className="absolute right-[-2px] bottom-[0px]"
-                src={
-                  data?.platform === 'infrared' ? (
-                    protocol?.id === "bex" ?
-                      '/images/dapps/infrared/bex.svg' :
-                      protocol?.id === "kodiak" ?
-                        '/images/dapps/kodiak.svg' :
-                        protocol?.id === "berps" ?
-                          '/images/dapps/infrared/berps.svg' :
-                          '/images/dapps/infrared/infrared.svg'
-                  ) : '/images/dapps/infrared/aquabera.svg'
-                }
+                src={getProtocolIcon(data?.platform === 'infrared' ? protocol?.id : "aquabera")}
                 width={20}
                 height={20}
                 alt="Protocol"
@@ -410,7 +385,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           </div>
           <button
             onClick={() => {
-              onClick(0);
+              onClick(data, 0);
             }}
           >
             <svg
@@ -523,7 +498,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                 />
                 <button
                   onClick={() => {
-                    onClick(1);
+                    onClick(data, 1);
                   }}
                 >
                   <svg

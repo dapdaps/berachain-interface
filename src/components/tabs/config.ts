@@ -11,6 +11,11 @@ export const config: any = {
       tabHeight: 62,
       tabWidth: 400,
       tabMarginWidth: 62
+    },
+    hall: {
+      tabHeight: 62,
+      tabWidth: 400,
+      tabMarginWidth: 62
     }
   },
   mobile: {
@@ -20,6 +25,11 @@ export const config: any = {
       tabMarginWidth: 62
     },
     earn: {
+      tabHeight: 62,
+      tabWidth: 128,
+      tabMarginWidth: 62
+    },
+    hall: {
       tabHeight: 62,
       tabWidth: 128,
       tabMarginWidth: 62

@@ -21,28 +21,30 @@ export default function useMergeDataList() {
       })
     })
     aquaBera?.forEach((_data: any) => {
-      const _depositAmount = _data?.pairedTokens?.reduce((acc, curr) => Big(acc).plus(curr?.yourValue ?? 0).toFixed(), Big(0))
-      const _usdDepositAmount = _data?.pairedTokens?.reduce((acc, curr) => {
-        const [amount0, amount1] = curr?.values ?? []
-        const _usd = Big(Big(amount0 ?? 0).times(prices?.[_data?.symbol] ?? 0).plus(Big(amount1 ?? 0).times(prices?.[curr?.symbol] ?? 0))).div(prices?.["USDC"] ?? 1).toFixed()
-        return Big(acc).plus(_usd).toFixed()
-      }, Big(0))
+      const images = []
+      const tokens = []
+      _data?.tokens?.forEach(token => {
+        images.push(token?.icon)
+        tokens.push(token?.symbol)
+      })
       _dataList.push({
         ..._data,
-        images: [_data?.icon],
-        tokens: [_data?.symbol],
-        apy: _data?.maxApr,
+        images,
+        // tokens,
+        apy: _data?.apr,
         type: "Staking",
-        depositAmount: _depositAmount,
-        usdDepositAmount: _usdDepositAmount,
+        depositAmount: _data.yourValue,
+        usdDepositAmount: _data.usdDepositAmount,
         platform: "aquabera",
-        poolName: _data?.symbol,
+        poolName: _data?.id,
         pool: {
-          name: _data?.symbol,
+          name: _data?.id,
           protocol: 'aquabera'
         },
       })
     })
+
+    console.log('=====_dataList=====', _dataList)
     return _dataList
   }
 

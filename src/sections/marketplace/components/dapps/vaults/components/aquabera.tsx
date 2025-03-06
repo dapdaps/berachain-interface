@@ -36,7 +36,7 @@ const TABS = [
 
 const template = "AquaBera";
 export default memo(function aquabera(props: any) {
-  const { data, type, config, visible: show, setVisible } = props;
+  const { data, type, config, visible: show, setVisible, refresh } = props;
 
   const { account, provider, chainId } = useCustomAccount();
   const toast = useToast();
@@ -76,9 +76,9 @@ export default memo(function aquabera(props: any) {
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
-          .div(balance ?? 1)
-          .times(100)
-          .toFixed();
+        .div(balance ?? 1)
+        .times(100)
+        .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -146,6 +146,8 @@ export default memo(function aquabera(props: any) {
   const handleSuccess = () => {
     // onSuccess?.()
     setUpdater(Date.now());
+    refresh?.()
+    handleClose()
   };
 
   const handleDepositOrWithdraw = (updateState: any) => {
@@ -316,26 +318,16 @@ export default memo(function aquabera(props: any) {
   }, [isBera, config]);
 
   useEffect(() => {
-    setApr(token1?.apr);
-    setIchiAddress(token1?.ichiAddress);
-    setValues(token1?.values);
-  }, [token1]);
+    setApr(data?.pool?.apr);
+    setIchiAddress(data?.pool?.ichiAddress);
+    setValues(data?.pool?.values);
+  }, [data?.pool]);
 
   useEffect(() => {
+    console.log('====data=====', data)
     if (show) {
-      if (data?.pairedTokens) {
-        const _pairedTokens = data?.pairedTokens;
-        const _token1 = _pairedTokens?.[0];
-        const token = _.cloneDeep(data);
-        delete token.pairedTokens;
-
-        setToken0(token);
-        setToken1(_token1);
-        setPairedTokens(_pairedTokens);
-      } else {
-        setToken0(data?.token0);
-        setToken1(data?.token1);
-      }
+      setToken0(data?.token0);
+      setToken1(data?.token1);
       setIsDeposit(type === 0 ? true : false);
     } else {
       setBalance("");

@@ -6,17 +6,22 @@ import { useWalletName } from "@/hooks/use-wallet-name";
 import { getReportTokenSymbol } from "@/utils/token/symbol";
 import { post } from "@/utils/http";
 
-export default function useAddAction(source: string) {
+
+// 
+export default function useAddAction(source: string, isNear = false) {
   const { account, chainId } = useAccount();
   const { name: walletName } = useWalletName();
 
   const addAction = useCallback(
     (data: any) => {
       let params: any = {};
+      
+      if (!isNear && (!chainId || !account) ) return;
 
-      if (!chainId || !account) return;
       const currentChain = chains[chainId];
-      if (!currentChain) return;
+
+      if (!currentChain && !isNear) return;
+
       console.info("addAction data: ", data);
 
       if (data.type === "Swap" && data.template !== "launchpad") {
@@ -30,11 +35,11 @@ export default function useAddAction(source: string) {
           ]),
           action_amount: data?.inputCurrencyAmount
             ? data?.inputCurrencyAmount.toString()
-            : "",
-          account_id: account,
+            : '',
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
-          chain_id: chainId,
+          chain_id: data.chainId || chainId,
           token_in_currency: data?.token_in_currency,
           token_out_currency: data?.token_out_currency,
           extra_data: data?.extra_data
@@ -53,7 +58,7 @@ export default function useAddAction(source: string) {
             action_type: "Bridge",
             action_tokens: JSON.stringify([`${data.token.symbol}`]),
             action_amount: data.amount,
-            account_id: account,
+            account_id: data.account_id || account,
             template: data.template,
             tx_id: data.transactionHash,
             chain_id: data.fromChainId,
@@ -67,12 +72,12 @@ export default function useAddAction(source: string) {
       }
       if (data.type === "Lending") {
         params = {
-          action_type: "Lending",
-          account_id: account,
+          action_type: 'Lending',
+          account_id: data.account_id || account,
           template: data.template,
-          sub_type: data.action === "Deposit" ? "Supply" : data.action,
+          sub_type: data.action === 'Deposit' ? 'Supply' : data.action,
           tx_id: data.transactionHash,
-          chain_id: chainId
+          chain_id: chainId,
         };
 
         if (data.extra_data?.lending_actions) {
@@ -102,7 +107,7 @@ export default function useAddAction(source: string) {
           action_type: data.type,
           action_tokens: JSON.stringify(symbols),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -130,10 +135,44 @@ export default function useAddAction(source: string) {
             ? JSON.stringify([`${symbols.join("-")}`])
             : "",
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
+          chain_id: data.chainId || chainId,
+          action_switch: data.add ? 1 : 0,
+          action_status: data.status === 1 ? "Success" : "Failed",
           tx_id: data.transactionHash,
-          chain_id: chainId,
+          action_network_id: currentChain?.name || data.action_network_id,
+          extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
+          sub_type: data.sub_type
+        };
+      }
+      if (data.type === "Mint") {
+        const symbols = data.tokens.map((token: any) => token.symbol);
+
+        if (data.extra_data) {
+          data.tokens.forEach((token: any, i: number) => {
+            data.extra_data[`token${i}Symbol`] = getReportTokenSymbol(token);
+            data.extra_data[`amount${i}`] = data.amounts[i];
+          });
+        }
+        params = {
+          action_title: !!symbols.length
+            ? `${data.action} ${data.amount} ${symbols.join("-")} on ${
+                data.template
+              }`
+            : "",
+          action_type: "Mint",
+          action_tokens: !!symbols.length
+            ? JSON.stringify([`${symbols.join("-")}`])
+            : "",
+          action_amount: data.amount,
+          account_id: data.account_id || account,
+          template: data.template,
+          chain_id: data.chainId || chainId,
+          action_switch: data.add ? 1 : 0,
+          action_status: data.status === 1 ? "Success" : "Failed",
+          tx_id: data.transactionHash,
+          action_network_id: currentChain?.name || data.action_network_id,
           extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
           sub_type: data.sub_type
         };
@@ -147,7 +186,7 @@ export default function useAddAction(source: string) {
           action_type: data.type,
           action_tokens: JSON.stringify([data.symbol]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -167,7 +206,7 @@ export default function useAddAction(source: string) {
             data?.token1 ?? ""
           ]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -188,7 +227,7 @@ export default function useAddAction(source: string) {
             data?.token1.symbol ?? ""
           ]),
           action_amount: data.amount,
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
@@ -211,18 +250,17 @@ export default function useAddAction(source: string) {
           action_type: "NFT",
           action_tokens: JSON.stringify([`${data.name}`]),
           action_amount: data.price.toString(),
-          account_id: account,
+          account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
-          sub_type: data.action // 'mint' | 'list' | 'delist' | 'transfer' | 'burn'
+          sub_type: data.action  // 'mint' | 'list' | 'delist' | 'transfer' | 'burn'
         };
       }
 
       params.ss = getSignature(
-        `template=${data.template}&action_type=${data.type}&tx_hash=${
-          data.transactionHash
-        }&chain_id=${chainId}&time=${Math.ceil(Date.now() / 1000)}`
+        `template=${data.template}&action_type=${data.type}&tx_hash=${data.transactionHash
+        }&chain_id=${data.chainId || chainId}&time=${Math.ceil(Date.now() / 1000)}`
       );
       params.source = source;
       params.wallet = walletName;

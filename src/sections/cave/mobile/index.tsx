@@ -19,6 +19,7 @@ import { useWelcomeStore } from "./hooks/useWelcomeStore";
 import Popup from "./popup";
 import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
 import TransferButton from "./components/TransferButton";
+import { useAirdrop } from "../useAirdrop";
 
 
 
@@ -39,9 +40,19 @@ const TipsPopover = ({
         {tips?.content}
       </div>
       <div
+        style={{
+          opacity: tips?.btnText === 'Delegate' ? 0.5 : 1
+        }}
         onClick={() => {
-          if (!currentSceneInfoValid) return;
-          router.push("/activity/christmas")
+          if (!currentSceneInfoValid) return; 
+          if (tips?.btnText === 'Delegate') {
+            return
+          }
+          if (tips?.link) {
+            router.push(tips?.link)
+          } else {
+            // router.push("/activity/christmas")
+          }
         }}
         className="w-full h-8 border-[2px] bg-[#FFF5A9] rounded-[30px] border-[#4B371F] font-CherryBomb text-[18px] font-[400] text-center text-stroke-2 text-white"
       >
@@ -65,10 +76,12 @@ const Cave = () => {
     console.log("Selected item:", item);
   };
 
+  const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
   const { cars, hats, clothes, necklaces, getItems } = useCollect({
-    address: account as string
+    address: account as string,
+    round: airDropRound?.round || -1,
   })
-  const { moduleConfigs, loading, fetchGameItems } = useGameItems();
+  const { moduleConfigs, loading, fetchGameItems } = useGameItems({ round: airDropRound?.round || -1 });
   const { nfts, items, loading: masUserLoading } = useMasUser()
   const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
 
@@ -181,7 +194,7 @@ const Cave = () => {
         >Rules</div>
       </div>
       <div className={clsx('bg-[#9C948F] w-full', isChristmas ? 'h-[330vw]' : 'h-[240vw]')}>
-        <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
+        {/* <div className="relative flex gap-[30px] justify-center mb-[50px] z-30">
           {
             storePhotoList?.photoList?.map((photo: any, index: any) => (
               <div className="relative w-[159px] h-[184px] group z-20"
@@ -227,7 +240,7 @@ const Cave = () => {
               </div>
             ))
           }
-        </div>
+        </div> */}
         <div
           className='fixed bottom-0 z-[5]'
           style={{
@@ -303,7 +316,7 @@ const Cave = () => {
 
       </div>
 
-      <TransferButton />
+      {/* <TransferButton /> */}
       <Welcome show={welcomeStore.show} onClose={() => welcomeStore.set({ show: false })} />
       <Popup />
 

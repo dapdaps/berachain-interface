@@ -12,6 +12,7 @@ import Skeleton from "react-loading-skeleton";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
+import { isVideoFile } from "@/utils/utils";
 
 interface MintDetailCardProps {
   item: NFTCollectionWithStatus;
@@ -31,6 +32,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
     limitPerWallet: 0,
     feeAmount: "",
     totalCostWithFee: "",
+    startTimestamp: 0,
   });
   const [updater, setUpdater] = useState(0);
 
@@ -98,12 +100,13 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
         const totalSupply = await contract.mintGroupMints(currentGroupId);
         const maxSupply = await contract.maxSupplyPerMintGroup(currentGroupId);
         const limitPerWallet = await contract.maxMintPerWallet(currentGroupId);
-
+        const startTimestamp = await contract.presaleScheduledStartTimestamp(currentGroupId);
         setMintInfo((prev) => ({
           ...prev,
           totalSupply: totalSupply.toNumber(),
           maxSupply: maxSupply.toNumber(),
           limitPerWallet: limitPerWallet.toNumber(),
+          startTimestamp: startTimestamp.toNumber() * 1000,
           feeAmount: ethers.utils.formatUnits(feeAmount.toString(), 18),
           totalCostWithFee: ethers.utils.formatUnits(
             totalCostWithFee.toString(),
@@ -162,13 +165,15 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   ]);
 
   const renderMintGroupTag = (tab: any) => {
-    if (!tab.status || ["closed", "paused", "upcoming"].includes(tab.status)) return null;
+    if (!tab.status || ["paused"].includes(tab.status)) return null;
 
     const statusMap: {
       [key: string]: string;
     } = {
       live: "Live",
       sold_out: "Sold Out",
+      closed: 'Closed',
+      upcoming: "Upcoming",
     };
 
     const getTagStyle = (status: string) => {
@@ -223,11 +228,22 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
   return (
     <div className="mt-[14px] lg:max-h-[330px] lg:overflow-y-auto">
       <div className="flex md:flex-col lg:flex-row w-full justify-between gap-5">
-        <img
+        {
+          isVideoFile(item.profile_image) ? (
+            <video
+              src={item.profile_image}
+              className="md:w-full lg:w-[300px] lg:h-[300px] object-cover rounded-[10px] aspect-square"
+              loop
+              muted
+              playsInline
+              autoPlay
+            />
+          ) : <img
           src={item.profile_image}
-          className="md:w-full lg:w-[300px] md:h-[300px] object-cover rounded-[10px] aspect-square"
+          className="md:w-full lg:w-[300px] lg:h-[300px] object-cover rounded-[10px] aspect-square"
           alt=""
         />
+        }
         <div className="p-5 bg-black bg-opacity-[0.06] rounded-[10px] shrink-0 flex-1">
           <SwitchTabs
             tabs={mintGroupTabs}
@@ -353,7 +369,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                   <Skeleton height={16} style={{ width: "100px" }} />
                 ) : (
                   <div className="text-base font-bold">
-                    {parseFloat(mintInfo.feeAmount || "0").toFixed(6)}{" "}
+                    {parseFloat(mintInfo.totalCostWithFee || "0").toFixed(6)}{" "}
                     {item.chain.native_currency}
                   </div>
                 )}
@@ -364,7 +380,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
                   <Skeleton height={16} style={{ width: "100px" }} />
                 ) : (
                   <div className="text-base font-bold">
-                    {parseFloat(mintInfo.totalCostWithFee || "0").toFixed(6)}{" "}
+                    {parseFloat(mintInfo.feeAmount || "0").toFixed(6)}{" "}
                     {item.chain.native_currency}
                   </div>
                 )}
@@ -376,7 +392,7 @@ const MintDetailCard: React.FC<MintDetailCardProps> = ({ item }) => {
             ) : (
               <Button
                 status={currentGroup.status}
-                timestamp={item.mint_live_timestamp}
+                timestamp={mintInfo.startTimestamp}
                 onClick={onMint}
                 loading={isMinting}
                 onCountdownEnd={() => setUpdater(updater + 1)}

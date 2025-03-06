@@ -5,6 +5,7 @@ import useAddAction from '@/hooks/use-add-action';
 import { TabPanelProps, Tabs } from '@/sections/Lending/Dolomite/Panel/types';
 import MarketsLaptop from '@/sections/Lending/components/markets/laptop';
 import Big from 'big.js';
+import clsx from 'clsx';
 
 const TabPanelLaptop: React.FC<TabPanelProps> = ({
   totalBalance,
@@ -19,6 +20,8 @@ const TabPanelLaptop: React.FC<TabPanelProps> = ({
   totalBalanceLabel,
   loading,
   CHAIN_ID,
+  rateOrder,
+  setRateOrder,
 }) => {
   const { addAction } = useAddAction("lending");
 
@@ -65,7 +68,20 @@ const TabPanelLaptop: React.FC<TabPanelProps> = ({
             skeletonWidth: 248,
           },
           {
-            title: rateName,
+            title: (
+              <div className="flex items-center gap-[5px]">
+                <div>{rateName}</div>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-[13px] h-[13px]"
+                  onClick={() => {
+                    setRateOrder(rateOrder === 'asc' ? 'desc' : 'asc');
+                  }}
+                >
+                  <img src="/images/icon-triangle-down.svg" alt="" className={clsx("cursor-pointer transition-transform duration-150", rateOrder === 'asc' && "rotate-180")} />
+                </button>
+              </div>
+            ) as any,
             dataIndex: 'rate',
             skeletonWidth: 165,
             render: (text: any, token: any) => {
@@ -95,7 +111,15 @@ const TabPanelLaptop: React.FC<TabPanelProps> = ({
             }
           },
         ]}
-        markets={tokens}
+        markets={tokens.sort((a, b) => {
+          const aVal = a[rateKey]?.replace?.(/%$/, '') || '0';
+          const bVal = b[rateKey]?.replace?.(/%$/, '') || '0';
+          if (rateOrder === 'asc') {
+            return Big(aVal).gt(bVal) ? 1 : -1;
+          } else {
+            return Big(aVal).gt(bVal) ? -1 : 1;
+          }
+        })}
         depositPanel={(token: any) => (
           <ActionPanel
             title="Deposit"

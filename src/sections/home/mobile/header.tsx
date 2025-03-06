@@ -29,13 +29,13 @@ const MobileHeader = () => {
         className="text-white flex items-center justify-end gap-x-[10px]"
         style={
           isMobile &&
-          ((Big(BGTCount || 0).gt(0) && Big(BGTCount || 0).lt(1e2)) ||
-            (Big(iBGTCount || 0).gt(0) && Big(iBGTCount || 0).lt(1e2)))
+            ((Big(BGTCount || 0).gt(0) && Big(BGTCount || 0).lt(1e2)) ||
+              (Big(iBGTCount || 0).gt(0) && Big(iBGTCount || 0).lt(1e2)))
             ? { scale: 0.85 }
             : {}
         }
       >
-        {/* <BGTCoin
+        <BGTCoin
           type={CoinType.BGT}
           count={BGTCount}
           bp="1015-009"
@@ -46,7 +46,7 @@ const MobileHeader = () => {
           count={iBGTCount}
           bp="1015-010"
           onClick={handleBGTClick}
-        /> */}
+        />
       </div>
       <BGTMobileView
         visible={bgt.visible && bgt.type === CoinType.BGT}

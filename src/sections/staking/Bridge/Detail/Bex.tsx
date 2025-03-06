@@ -4,6 +4,7 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import DolomiteConfig from '@/configs/lending/dolomite';
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
+import IbgtAmount from "@/sections/bgt/components/ibgt-amount";
 import ActionPanel from "@/sections/Lending/components/action-panel";
 import DolomiteData from "@/sections/Lending/datas/dolomite";
 import { formatValueDecimal } from "@/utils/balance";
@@ -144,11 +145,13 @@ const DetailBex = (props: any) => {
             </div>
             <div className="flex flex-col gap-[4px]">
               <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
-                {data?.initialData?.name || data?.tokens?.[0] || "iBGT"}
+                {data?.id || data?.tokens?.[0] || "iBGT"}
               </div>
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+
+              {/* <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {formatValueDecimal(data?.depositAmount ?? 0, "", 2, false, false)}
-              </div>
+              </div> */}
+              <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
             </div>
 
           </div>
@@ -180,7 +183,7 @@ const DetailBex = (props: any) => {
           <div className="flex items-center gap-[14px]">
             <div className="w-[32px] h-[32px] rounded-full">
               <img
-                src={`/images/dapps/infrared/${data?.rewardSymbol.toLocaleLowerCase()}.svg`}
+                src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase()}.svg`}
               />
             </div>
             <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">

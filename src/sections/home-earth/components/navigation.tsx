@@ -5,10 +5,14 @@ import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { HomeEarthContext } from '../context';
+import { useActivityStore } from '@/stores/useActivityStore';
+
+const SPLIT_PIECES = 3;
 
 const Navigation = (props: any) => {
   const {} = props;
   const {
+    isRainyDay,
     isDragging,
     navigationRef,
     navigationControls,
@@ -36,6 +40,8 @@ const Navigation = (props: any) => {
     mountainRotation,
   } = useContext(HomeEarthContext);
   const router = useRouter();
+  const { isDefaultTheme, themeConfig } = useActivityStore();
+  const entries = isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES;
 
   const handleEntryHover = (item: any) => {
     setHoverIndex(item);
@@ -112,14 +118,15 @@ const Navigation = (props: any) => {
     <motion.div
       ref={navigationRef}
       className={clsx(
-        'will-change-transform absolute z-[3] border border-[#5A6F2F] bg-[#B6DF5D] rounded-full top-[24.5dvh] flex justify-center items-center',
-        isDragging ? 'cursor-grabbing' : ''
+        'will-change-transform absolute z-[3] border rounded-full top-[24.8dvh] flex justify-center items-center border-[#5A6F2F]',
+        isDragging ? 'cursor-grabbing' : '',
       )}
       style={{
         rotate: navigationRotation,
         animationDuration: `${speed}s`,
         width: size,
         height: size,
+        backgroundColor: isRainyDay ? '#90AF4E' : themeConfig.earthBackgroundColor
       }}
       drag
       dragElastic={0}
@@ -131,62 +138,53 @@ const Navigation = (props: any) => {
       onDrag={handleDrag}
     >
       {
-        [...new Array(4)].map((_, idx) => (
-          ENTRIES.map((item, i) => (
-            <motion.div
-              key={i}
-              className={clsx(
-                'absolute -top-[0px] flex justify-center',
-                item.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
-              )}
+        [...new Array(SPLIT_PIECES)].map((_, idx) => (
+          entries.sort((a: any, b: any) => a.sort - b.sort).map((item: any, i: number) => (
+            <div
+              key={idx + "-" + i}
+              className={`flex justify-center items-center w-[300px] top-0 absolute origin-bottom`}
               style={{
-                width: item.iconWidth,
-                height: item.iconHeight,
-                transform: `rotate(${90 * idx}deg) translateY(${item.y}px) translateX(${item.x}px)`,
-                transformOrigin: 'center 1500px',
+                left: "50%",
+                height: size / 2,
+                transform: `translateX(-50%) rotate(${(360 / SPLIT_PIECES) * idx + (360 / (entries.length * SPLIT_PIECES)) * i}deg)`,
+                // backgroundColor: "rgba(0, 0, 0, 0.1)",
+                ...(item.width && { width: item.width }),
               }}
-              onHoverStart={() => handleEntryHover(item)}
-              onHoverEnd={() => handleEntryLeave(item)}
-              onClick={() => handleNavigation(item)}
             >
-              <img
-                src={item.icon}
+              <motion.img
+                className={clsx("absolute left-1/2 top-[-80px] z-[1] object-center object-contain", item.disabled ? 'cursor-not-allowed' : 'cursor-pointer', isDefaultTheme() ? 'w-[220px]' : 'w-[300px]')}
+                src={item.disabled && item?.disabledIcon ? item?.disabledIcon : item.icon}
                 alt=""
-                className={clsx(
-                  'w-full h-full transition-transform duration-150 ease-in-out pointer-events-none',
-                  item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                )}
                 style={{
-                  transform: `rotate(${item.rotate}deg) scale(${(hoverIndex?.name === item.name && !item.disabled) ? 1.1 : 1})`,
-                  transformOrigin: 'center',
+                  y: item.y,
+                  x: "-50%",
+                 ...(item.width && { width: item.width }),
                 }}
+                whileHover={{
+                  scale: 1.1,
+                }}
+                onHoverStart={() => handleEntryHover(item)}
+                onHoverEnd={() => handleEntryLeave(item)}
+                onClick={() => handleNavigation(item)}
               />
               <AnimatePresence mode="wait">
                 {
                   hoverIndex?.name === item.name && (
                     <motion.img
-                      src={item.signpost}
+                      src={item.signpost || ''}
                       alt=""
-                      className="absolute pointer-events-none"
+                      className="absolute z-[2] pointer-events-none left-1/2 -top-[140px]"
                       style={{
-                        width: item.signpostWidth,
-                        height: item.signpostHeight,
-                        // transform: `rotate(${item.rotate}deg) translateY(${item.signpostY}px) translateX(${item.signpostX}px)`,
+                        x: "-50%",
                       }}
                       variants={{
                         visible: {
                           opacity: 1,
                           scale: 1,
-                          y: item.signpostY,
-                          x: item.signpostX,
-                          rotate: item.rotate,
                         },
                         invisible: {
                           opacity: 0,
                           scale: 0.5,
-                          y: 0,
-                          x: 0,
-                          rotate: item.rotate,
                         },
                       }}
                       exit="invisible"
@@ -201,7 +199,7 @@ const Navigation = (props: any) => {
                   )
                 }
               </AnimatePresence>
-            </motion.div>
+            </div>
           ))
         ))
       }
@@ -211,85 +209,136 @@ const Navigation = (props: any) => {
 
 export default Navigation;
 
-export const ENTRIES = [
+export const ENTRIES: any = [
   {
+    sort: 2,
     name: 'DApp Tree',
     disabled: false,
     icon: '/images/home-earth/entry-dapp.svg',
-    iconWidth: 209,
-    iconHeight: 200,
     signpost: '/images/home-earth/signpost-dapp.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: -90,
-    signpostY: -20,
-    x: -910,
-    y: 180,
-    rotate: -36,
     path: '/dapps',
+    y: -68,
   },
   {
+    sort: 3,
     name: 'Token Marketplace',
     disabled: false,
     icon: '/images/home-earth/entry-marketplace.svg',
-    iconWidth: 214,
-    iconHeight: 138,
     signpost: '/images/home-earth/signpost-marketplace.svg',
-    signpostWidth: 170,
-    signpostHeight: 72,
-    signpostX: -50,
-    signpostY: -90,
-    x: -500,
-    y: 0,
-    rotate: -18,
     path: '/marketplace',
   },
   {
+    sort: 5,
     name: 'Portfolio',
-    disabled: true,
+    disabled: false,
     icon: '/images/home-earth/entry-dashboard.svg',
-    iconWidth: 279,
-    iconHeight: 170,
     signpost: '/images/home-earth/signpost-dashboard.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 4,
-    signpostY: -60,
-    x: -50,
-    y: -100,
-    rotate: 0,
-    path: '/dashboard',
+    path: '/portfolio',
+    width: '260px',
+    y: -20,
   },
   {
+    sort: 4,
     name: 'Earn Yield',
     disabled: false,
     icon: '/images/home-earth/entry-earn.svg',
-    iconWidth: 203,
-    iconHeight: 122,
     signpost: '/images/home-earth/signpost-earn.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 50,
-    signpostY: -90,
-    x: 350,
-    y: -20,
-    rotate: 18,
     path: '/earn',
   },
   {
+    sort: 1,
     name: 'Bridge',
     disabled: false,
     icon: '/images/home-earth/entry-bridge.svg',
-    iconWidth: 459,
-    iconHeight: 150,
     signpost: '/images/home-earth/signpost-bridge.svg',
-    signpostWidth: 170,
-    signpostHeight: 59,
-    signpostX: 20,
-    signpostY: -120,
-    x: 820,
-    y: 216,
-    rotate: 30,
     path: '/bridge',
+    y: 32,
+    width: '360px',
   },
+  {
+    sort: 6,
+    name: 'Cave',
+    disabled: true,
+    disabledIcon: '/images/home-earth/cave-lock.svg',
+    icon: '/images/home-earth/entry-cave.svg',
+    signpost: '/images/home-earth/signpost-cave.svg',
+    path: '/cave',
+    y: 40,
+    width: '280px',
+  },
+  {
+    sort: 7,
+    name: 'Bgt',
+    disabled: false,
+    icon: '/images/home-earth/entry-bgt.svg',
+    signpost: '/images/home-earth/signpost-bgt.svg',
+    path: '/hall',
+  }
 ];
+
+export const BADDIES_ENTRIES: any = [
+  {
+    sort: 1,
+    name: 'Bridge',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-bridge.svg',
+    signpost: '/images/home-earth/signpost-bridge.svg',
+    path: '/bridge',
+    y: -40
+  },
+  {
+    sort: 2,
+    name: 'DApp Tree',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-dapp.svg',
+    signpost: '/images/home-earth/signpost-dapp.svg',
+    path: '/dapps',
+    y: -30
+  },
+  {
+    sort: 3,
+    name: 'Token Marketplace',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-marketplace.svg',
+    signpost: '/images/home-earth/signpost-marketplace.svg',
+    path: '/marketplace',
+    y: -30
+  },
+  {
+    sort: 4,
+    name: 'Earn Yield',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-earn.svg',
+    signpost: '/images/home-earth/signpost-earn.svg',
+    path: '/earn',
+  },
+  {
+    sort: 5,
+    name: 'Portfolio',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-dashboard.svg',
+    disabledIcon: '/images/home-earth/baddies/baddies-dashboard-lock.svg',
+    signpost: '/images/home-earth/signpost-dashboard.svg',
+    path: '/portfolio',
+    y: -20
+  },
+  {
+    sort: 6,
+    name: 'Cave',
+    disabled: true,
+    icon: '/images/home-earth/baddies/baddies-cave.svg',
+    disabledIcon: '/images/home-earth/baddies/baddies-cave-lock.svg',
+    signpost: '/images/home-earth/signpost-cave.svg',
+    path: '/cave',
+    y: -20
+  },
+  {
+    sort: 7,
+    name: 'Bgt',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-bgt.svg',
+    signpost: '/images/home-earth/signpost-bgt.svg',
+    path: '/hall',
+    y: -20
+  }
+]

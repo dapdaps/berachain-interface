@@ -4,6 +4,7 @@ import LazyImage from '@/components/layz-image';
 import { DefaultIcon } from '@/sections/dashboard/utils';
 import Big from 'big.js';
 import { useRouter } from 'next/navigation';
+import clsx from 'clsx';
 
 export function calcDebtRatio(borrowAmount: Big.Big, supplyAmount: Big.Big) {
   if (Big(supplyAmount).eq(0)) {
@@ -35,7 +36,10 @@ export default function Laptop({ isLending, tableList }: any) {
             <div className='items-center flex text-black text-[16px] font-[600]'>
               {record.assets.map((token: any, idx: number) => (
                 <div
-                  className='w-[26px] h-[26px] rounded-[50%] shrink-0 group:not(:first-child):ml-[-10px]'
+                  className={clsx(
+                    'w-[26px] h-[26px] rounded-[50%] shrink-0',
+                    idx > 0 ? 'ml-[-10px]' : ''
+                  )}
                   key={idx}
                 >
                   <LazyImage
@@ -51,7 +55,8 @@ export default function Laptop({ isLending, tableList }: any) {
                 </div>
               ))}
             </div>
-            {record.assets.map((token: any) => token.symbol).join(' / ')}
+            <div>{record.assets.map((token: any) => token.symbol).join(' / ')}</div>
+            <div>{record.version}</div>
           </div>
         );
       }

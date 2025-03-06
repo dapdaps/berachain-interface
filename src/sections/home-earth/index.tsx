@@ -11,15 +11,28 @@ import MobileHome from '@/sections/home/mobile';
 import AirdropModal from '@/components/airdrop/modal';
 import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
-import { animate, useMotionValue } from 'framer-motion';
+import { useMotionValue } from 'framer-motion';
 import { createRotateAnimation } from '@/sections/home-earth/utils';
+import { useActivityStore } from '@/stores/useActivityStore';
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import { useRainyDay } from '@/hooks/use-rainy-day';
+import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
+import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
-const SIZE = 3000;
+const SIZE = 3500;
+
+const BG_SIZE_MAP = {
+  default: SIZE,
+  lgbt: SIZE,
+}
 
 const HomeEarth = () => {
   const isMobile = useIsMobile();
+  const { isRainyDay, beraPrice } = useRainyDay();
 
   const bearRef = useRef<any>();
 
@@ -37,8 +50,8 @@ const HomeEarth = () => {
 
   const navigationRef = useRef<any>();
   const navigationControls = useRef<any>();
-  const navigationRotation = useMotionValue(0);
-  const navigationEndRotationRef = useRef(0);
+  const navigationRotation = useMotionValue(-50);
+  const navigationEndRotationRef = useRef(-50);
   const navigationStartRotationRef = useRef(0);
   const navigationDragStartedRef = useRef(false);
   const navigationDragEndedTimesRef = useRef(0);
@@ -46,6 +59,8 @@ const HomeEarth = () => {
 
   const [isDragging, setIsDragging] = useState(false);
   const [hoverIndex, setHoverIndex] = useState<any>();
+
+  const { toggleTheme, isDefaultTheme, activeTheme } = useActivityStore();
 
   useEffect(() => {
     if (hoverIndex) {
@@ -103,6 +118,8 @@ const HomeEarth = () => {
   return (
     <HomeEarthContext.Provider
       value={{
+        isRainyDay,
+        beraPrice,
         cloudRef,
         cloudRotation,
         cloudControls,
@@ -151,9 +168,11 @@ const HomeEarth = () => {
         hoverIndex,
         setHoverIndex,
         speed: SPEED,
-        size: SIZE,
+        size: BG_SIZE_MAP[activeTheme] || SIZE,
     }}>
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
+        {/*<BerachainFixes />*/}
+        <BeraPrice />
         <Follower />
         <Signpost />
         <HomeEarthTop />
@@ -162,18 +181,66 @@ const HomeEarth = () => {
           {/*#region Cloud*/}
           <CloudCircle />
           {/*#endregion*/}
-          {/*#region Mountain*/}
-          <MountainCircle />
-          {/*#endregion*/}
+          {
+            isDefaultTheme() && (<>
+              {/*#region Mountain*/}
+              <MountainCircle />
+              {/*#endregion*/}
+            </>)
+          }
           {/*#region Navigation*/}
           <Navigation />
           {/*#endregion*/}
-          <img
-            ref={bearRef}
-            src="/images/background/bear.gif" 
-            alt="" 
-            className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
-          />
+
+          <Popover
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Top}
+            offset={0}
+            content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg':'/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
+            triggerContainerClassName={clsx('absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110', isDefaultTheme() ? 'right-[150px]' : 'right-[130px]')}
+          >
+            <div className='w-full h-full relative'>
+              <img
+                onClick={()=> toggleTheme()}
+                src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
+                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[103px] h-[95px]' : 'w-[136px] h-[108px]')}
+                alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
+              />
+              {
+                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px] z-0' alt="" />
+              }
+            </div>
+          </Popover>
+          {
+            isDefaultTheme() ? (
+              <img
+                ref={bearRef}
+                src="/images/background/bear.gif"
+                alt=""
+                className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
+              />
+            ) : (
+              <div className='absolute z-[4] top-[32.4dvh] pointer-events-none' ref={bearRef}>
+              <div className='w-[289px] h-[289px] relative'>
+                <motion.img
+                  src="/images/home-earth/lgbt-role.png"
+                  className='w-full h-full relative z-10'
+                  alt=""
+                  animate={{
+                    y: [0, -10, 0],
+                    x: [0, 5, 0],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <img src="/images/home-earth/role-wave.svg" className='absolute bottom-[15px] left-[18px] z-0' alt="" />
+              </div>
+            </div>
+            )
+          }
         </div>
       </div>
     </HomeEarthContext.Provider>

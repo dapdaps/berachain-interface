@@ -25,9 +25,7 @@ const TABS = [
   }
 ];
 export default memo(function staking(props) {
-  const { stakingVisible, setStakingVisible, stakingData } =
-    useContext(MarketplaceContext);
-
+  const { stakingVisible, setStakingVisible, stakingData } = useContext(MarketplaceContext);
   const toast = useToast();
   const { account: sender, provider } = useCustomAccount();
   const { data, config } = stakingData;

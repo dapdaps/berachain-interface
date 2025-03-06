@@ -13,7 +13,7 @@ import useLpToAmount from "@/hooks/use-lp-to-amount";
 import useAddAction from "@/hooks/use-add-action";
 
 export function useDetail(props: any) {
-  const { id, name, data, defaultIndex } = props;
+  const { id, name, data, defaultIndex, vaultAddress } = props;
 
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
@@ -39,7 +39,6 @@ export function useDetail(props: any) {
   const { decimals, tokens, LP_ADDRESS } = data || {};
 
   const [state, updateState] = useMultiState<any>({
-    // isDeposit: tab === "Stake" || !tab,
     balances: [],
     lpBalance: "",
     inAmount: "",
@@ -77,10 +76,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-          Big(lpAmount)
-            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-            .toFixed(4)
-        );
+        Big(lpAmount)
+          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+          .toFixed(4)
+      );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -484,11 +483,12 @@ export function useDetail(props: any) {
   const mintData = useMemo<any>(() => {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
-    if (!["beraswap", "kodiak"].includes(protocol?.id)) return null;
+    const protocolId = protocol?.id === "bex" ? "beraswap" : protocol?.id
+    if (!["kodiak"].includes(protocolId)) return null;
     const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
     ];
-    if (protocol?.id === "kodiak" && sweetenedIslandItem) {
+    if (protocolId === "kodiak" && sweetenedIslandItem) {
       return {
         token0: sweetenedIslandItem.token0,
         token1: sweetenedIslandItem.token1,
@@ -501,34 +501,34 @@ export function useDetail(props: any) {
       (address: string) => data?.initialData?.stake_token?.address === address
     );
     const underlying_tokens = data?.initialData?.underlying_tokens;
+
+    const array = data?.initialData?.stake_token?.name?.split("-");
+    const symbol0 = array[0];
+    const symbol1 = array[1];
+    const token0 =
+      underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+    const token1 =
+      underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+
+    console.log('====index====', index)
     if (index > -1) {
-      const array = data?.initialData?.stake_token?.name?.split("-");
-      const symbol0 = array[0];
-      const symbol1 = array[1];
-      const token0 =
-        underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
-      const token1 =
-        underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
-      if (token0 && token1) {
-        return {
-          protocol: protocol?.id,
-          token0: { ...token0, icon: token0?.image },
-          token1: { ...token1, icon: token1?.image },
-          version: "island",
-          protocol: "kodiak",
-          stakingToken: data?.initialData?.stake_token
-        };
-      } else {
-        console.error("some error");
-      }
-    }
-    if (underlying_tokens?.length === 2)
       return {
         protocol: protocol?.id,
-        token0: { ...underlying_tokens[0], icon: data.images[0] },
-        token1: { ...underlying_tokens[1], icon: data.images[1] },
+        token0: { ...token0, icon: token0?.image },
+        token1: { ...token1, icon: token1?.image },
+        version: "island",
+        protocol: "kodiak",
+        stakingToken: data?.initialData?.stake_token
+      }
+    }
+    if (underlying_tokens?.length === 2) {
+      return {
+        protocol: protocol?.id,
+        token0: { ...token0, icon: token0?.image },
+        token1: { ...token1, icon: token1?.image },
         version: "v2"
       };
+    }
     return null;
   }, [data]);
 
