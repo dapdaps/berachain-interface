@@ -49,7 +49,7 @@ export function getProtocolIcon(protocal) {
     bex: "/images/dapps/beraswap.svg",
     kodiak: "/images/dapps/kodiak.svg",
     berps: "/images/dapps/infrared/berps.svg",
-    aquabera: "/images/dapps/infrared/aquabera.svg",
+    aquabera: "/images/dapps/infrared/aquabera.png",
     hub: "/images/dapps/beraswap.svg"
   }
   return ImageMapping?.[protocal?.toLocaleLowerCase()] ?? "/images/dapps/dolomite.svg"

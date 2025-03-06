@@ -211,6 +211,16 @@ export default Navigation;
 
 export const ENTRIES: any = [
   {
+    sort: 1,
+    name: 'Bridge',
+    disabled: false,
+    icon: '/images/home-earth/entry-bridge.svg',
+    signpost: '/images/home-earth/signpost-bridge.svg',
+    path: '/bridge',
+    y: 32,
+    width: '360px',
+  },
+  {
     sort: 2,
     name: 'DApp Tree',
     disabled: false,
@@ -228,6 +238,14 @@ export const ENTRIES: any = [
     path: '/marketplace',
   },
   {
+    sort: 4,
+    name: 'Bgt',
+    disabled: false,
+    icon: '/images/home-earth/entry-bgt.svg',
+    signpost: '/images/home-earth/signpost-bgt.svg',
+    path: '/hall',
+  },
+  {
     sort: 5,
     name: 'Portfolio',
     disabled: false,
@@ -238,25 +256,16 @@ export const ENTRIES: any = [
     y: -20,
   },
   {
-    sort: 4,
+    sort: 6,
     name: 'Earn Yield',
     disabled: false,
     icon: '/images/home-earth/entry-earn.svg',
     signpost: '/images/home-earth/signpost-earn.svg',
     path: '/earn',
   },
+  
   {
-    sort: 1,
-    name: 'Bridge',
-    disabled: false,
-    icon: '/images/home-earth/entry-bridge.svg',
-    signpost: '/images/home-earth/signpost-bridge.svg',
-    path: '/bridge',
-    y: 32,
-    width: '360px',
-  },
-  {
-    sort: 6,
+    sort: 7,
     name: 'Cave',
     disabled: true,
     disabledIcon: '/images/home-earth/cave-lock.svg',
@@ -266,14 +275,7 @@ export const ENTRIES: any = [
     y: 40,
     width: '280px',
   },
-  {
-    sort: 7,
-    name: 'Bgt',
-    disabled: false,
-    icon: '/images/home-earth/entry-bgt.svg',
-    signpost: '/images/home-earth/signpost-bgt.svg',
-    path: '/hall',
-  }
+  
 ];
 
 export const BADDIES_ENTRIES: any = [
@@ -304,13 +306,15 @@ export const BADDIES_ENTRIES: any = [
     path: '/marketplace',
     y: -30
   },
+
   {
     sort: 4,
-    name: 'Earn Yield',
+    name: 'Bgt',
     disabled: false,
-    icon: '/images/home-earth/baddies/baddies-earn.svg',
-    signpost: '/images/home-earth/signpost-earn.svg',
-    path: '/earn',
+    icon: '/images/home-earth/baddies/baddies-bgt.svg',
+    signpost: '/images/home-earth/signpost-bgt.svg',
+    path: '/hall',
+    y: -20
   },
   {
     sort: 5,
@@ -324,6 +328,15 @@ export const BADDIES_ENTRIES: any = [
   },
   {
     sort: 6,
+    name: 'Earn Yield',
+    disabled: false,
+    icon: '/images/home-earth/baddies/baddies-earn.svg',
+    signpost: '/images/home-earth/signpost-earn.svg',
+    path: '/earn',
+  },
+  
+  {
+    sort: 7,
     name: 'Cave',
     disabled: true,
     icon: '/images/home-earth/baddies/baddies-cave.svg',
@@ -332,13 +345,5 @@ export const BADDIES_ENTRIES: any = [
     path: '/cave',
     y: -20
   },
-  {
-    sort: 7,
-    name: 'Bgt',
-    disabled: false,
-    icon: '/images/home-earth/baddies/baddies-bgt.svg',
-    signpost: '/images/home-earth/signpost-bgt.svg',
-    path: '/hall',
-    y: -20
-  }
+  
 ]
