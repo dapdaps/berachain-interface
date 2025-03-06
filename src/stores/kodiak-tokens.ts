@@ -9,8 +9,8 @@ export const useKodiakTokensStore = create(
     }),
     {
       name: "kodiak-tokens",
-      version: 0.12,
-      storage: createJSONStorage(() => localStorage)
+      version: 0.1,
+      storage: createJSONStorage(() => sessionStorage)
     }
   )
 );
