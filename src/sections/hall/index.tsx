@@ -1,15 +1,17 @@
 "use client"
-import { memo, useEffect, useState } from "react";
-import PageBack from "@/components/back"
+import PageBack from "@/components/back";
+import BearBackground from "@/components/bear-background";
 import Tabs from "@/components/tabs";
 import BgtPageView from "@/sections/bgt";
 import IbgtPageView from "@/sections/bgt/ibgt";
-import BearBackground from "@/components/bear-background";
 import { useHall } from "@/stores/hall";
+import { useParams, useSearchParams } from "next/navigation";
+import { memo, useEffect, useState } from "react";
 export default memo(function HallView() {
   const store = useHall()
-  const [currentTab, setCurrentTab] = useState<string>("bgt");
-
+  const searchParams = useSearchParams()
+  const defaultCurrentTab = searchParams.get("tab")
+  const [currentTab, setCurrentTab] = useState<string>(["bgt", "ibgt"].includes(defaultCurrentTab) ? defaultCurrentTab : "bgt");
   useEffect(() => {
     store.set({
       currentTab

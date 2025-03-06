@@ -113,7 +113,6 @@ export function useIBGT() {
     updater
   } = state;
 
-  console.log('========111111222222========', updater)
   const { loading, dataList, fullDataList } = useInfraredList(updater);
   const tokenData = useMemo(
     () => fullDataList?.find((d: any) => d.id === "iBGT"),
