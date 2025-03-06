@@ -44,8 +44,8 @@ const HomeEarth = () => {
 
   const mountainRef = useRef<any>();
   const mountainControls = useRef<any>();
-  const mountainRotation = useMotionValue(0);
-  const mountainEndRotationRef = useRef(0);
+  const mountainRotation = useMotionValue(-20);
+  const mountainEndRotationRef = useRef(-20);
   const mountainStartRotationRef = useRef(0);
 
   const navigationRef = useRef<any>();
