@@ -227,6 +227,7 @@ export default function CurrencySelect({
                 }}
                 loading={balancesLoading}
                 balance={balances[currency.address]}
+                showBalance={showBalance}
               />
             ))}
           {(!currencies || !currencies?.length) && !loading && !importToken && (
