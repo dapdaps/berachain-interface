@@ -8,7 +8,7 @@ import Empty from "@/components/empty";
 import ImportWarning from "../ImportWarning";
 import CurrencyImportRow from "./CurrencyImportRow";
 import CurrencyRow from "./CurrencyRow";
-import Big from 'big.js';
+import Big from "big.js";
 
 const TABS = ["All", "Imported"];
 
@@ -23,7 +23,8 @@ export default function CurrencySelect({
   onClose,
   onSelect,
   selectedTokenAddress,
-  showSearch = true
+  showSearch = true,
+  showBalance = true
 }: any) {
   const [tab, setTab] = useState("All");
   const [searchVal, setSearchVal] = useState("");
@@ -35,7 +36,7 @@ export default function CurrencySelect({
     loading: balancesLoading,
     balances = {},
     queryBalance
-  } = useTokensBalance(tokens);
+  } = useTokensBalance(showBalance ? tokens : []);
 
   const handleSearch = () => {
     let tokenIsAvailable = false;
@@ -207,8 +208,8 @@ export default function CurrencySelect({
           {currencies
             ?.slice()
             ?.sort((a: any, b: any) => {
-              const balanceA = balances[a.address] || '0';
-              const balanceB = balances[b.address] || '0';
+              const balanceA = balances[a.address] || "0";
+              const balanceB = balances[b.address] || "0";
 
               return Big(balanceA || 0)?.gt(balanceB || 0) ? -1 : 1;
             })
