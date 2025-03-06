@@ -392,6 +392,6 @@ export const bera: { [key: string]: Token } = {
     symbol: "BITCOIN",
     name: "HarryPotterObamaSonic10Inu",
     decimals: 8,
-    icon: "/assets/tokens/bitcoin.png"
+    icon: "/assets/tokens/bitcoin.webp"
   }
 };
