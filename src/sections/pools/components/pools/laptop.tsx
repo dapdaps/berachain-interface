@@ -11,25 +11,26 @@ export default function Laptop({
   setPage,
   searchVal,
   setSelectedRecord,
-  loading
+  loading,
+  dex
 }: any) {
   const list = useMemo(
     () =>
       pools.filter((pool: any) => {
-        let flag = true;
-        if (
-          searchVal &&
-          !(
-            pool.token0.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token0.symbol
-              .toLowerCase()
-              .includes(searchVal.toLowerCase()) ||
-            pool.token1.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token1.symbol.toLowerCase().includes(searchVal.toLowerCase())
-          )
-        )
-          flag = false;
-        return flag;
+        if (!searchVal) return true;
+
+        let tokens: any = [];
+        if (dex === "beraswap") {
+          tokens = pool.tokens;
+        } else {
+          tokens = [pool.token0, pool.token1];
+        }
+
+        return tokens.some(
+          (token: any) =>
+            token.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+            token.symbol.toLowerCase().includes(searchVal.toLowerCase())
+        );
       }),
     [pools, searchVal]
   );
