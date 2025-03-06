@@ -141,6 +141,7 @@ const SECOND_LIST = [
       },
       {
         ..._dApps["aquabera"],
+        label: "AquaBera",
         attachedIcon: (
           <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
         ),
@@ -315,6 +316,7 @@ const ALL_LIST = [
     dApps: [
       {
         ..._dApps["aquabera"],
+        label: "AquaBera",
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
         ),

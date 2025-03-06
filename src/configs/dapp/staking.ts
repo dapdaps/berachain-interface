@@ -21,7 +21,7 @@ const ROUTE_CONFIG = {
       '--button-color': '#FFF',
       '--button-text-color': '#1E2028'
     },
-    icon: '/images/dapps/infrared/aquabera.svg'
+    icon: '/images/dapps/infrared/aquabera.png'
   },
   bedrock: {
     type: 'staking',

@@ -28,16 +28,26 @@ const EarnViews = () => {
   return (
     <MarketplaceContext.Provider value={context}>
       <div className="w-full lg:h-full md:h-dvh md:bg-[#5B5B5B] md:overflow-y-scroll md:overflow-x-hidden">
-        <img
+
+        <div className="w-[342px] h-[92px] mx-auto md:flex hidden items-center justify-center bg-[url('/images/mobile/earn.png')] bg-center bg-contain">
+          <div className="text-black font-CherryBomb text-[24px]">
+            Earn Yield
+          </div>
+        </div>
+        {/* <img
           src="/images/mobile/earn.png"
           className="w-[342px] h-[92px] mx-auto md:block hidden"
           alt=""
-        />
-        <img
-          src="/images/background/earn-header.png"
-          alt="earn"
-          className="w-[345px] h-[98px] mb-[12px] hidden lg:block m-auto"
-        />
+        /> */}
+        <div className="hidden lg:flex justify-center mb-[12px]">
+          <div className="w-[113px]">
+            <img src="/images/background/earn-header-left.png" alt="earn-header-left" />
+          </div>
+          <div className="mt-[10px] text-white font-CherryBomb text-[60px] leading-[90%]">Earn Yield</div>
+          <div className="m-[27px_0_0_7px] w-[97px]">
+            <img src="/images/background/earn-header-right.png" alt="earn-header-right" />
+          </div>
+        </div>
 
         <Tabs
           isCard

@@ -72,7 +72,7 @@ const Item = ({ data, onClick }: any) => {
                   pool?.protocol === "BEX"
                     ? "/images/dapps/beraswap.svg"
                     : pool?.protocol === "aquabera"
-                    ? "/images/dapps/infrared/aquabera.svg"
+                    ? "/images/dapps/infrared/aquabera.png"
                     : pool?.protocol === "Kodiak Finance"
                     ? "/images/dapps/kodiak.svg"
                     : "/images/dapps/infrared/berps.svg"
