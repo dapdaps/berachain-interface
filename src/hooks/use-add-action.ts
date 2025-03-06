@@ -109,7 +109,6 @@ export default function useAddAction(source: string) {
           extra_data: data.extra_data ? JSON.stringify(data.extra_data) : null,
           sub_type: data.sub_type
         };
-        console.log(128, params);
       }
       if (data.type === "Staking") {
         const symbols = data.tokens.map((token: any) => token.symbol);
