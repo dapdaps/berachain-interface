@@ -81,8 +81,7 @@ const FIRST_LIST = [
         label: "BeraSwap",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        ),
-        disabled: true
+        )
       },
       {
         ..._dApps["ooga-booga"],
@@ -104,7 +103,6 @@ const FIRST_LIST = [
 ];
 const SECOND_LIST = [
   {
-
     className: "w-[174px] h-[112px]",
     dAppClassName: "absolute left-1/2 -translate-x-1/2 top-[-76px] gap-[10px]",
     sticks: [
@@ -119,10 +117,9 @@ const SECOND_LIST = [
         label: "Ramen",
         type: "Launchpad",
         className: "",
-        disabled: true,
+        disabled: true
       }
     ]
-
   },
   {
     className: "w-[230px] h-[132px]",
@@ -143,7 +140,7 @@ const SECOND_LIST = [
         label: "AquaBera",
         attachedIcon: (
           <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
-        ),
+        )
       }
     ]
   },
@@ -210,7 +207,7 @@ const ALL_LIST = [
     dApps: [
       {
         ..._dApps["infrared"],
-        attachedIcon: "",
+        attachedIcon: ""
       }
     ]
   },
@@ -257,8 +254,7 @@ const ALL_LIST = [
         label: "BeraSwap",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        ),
-        disabled: true
+        )
       },
       {
         ..._dApps["ooga-booga"],
@@ -289,11 +285,10 @@ const ALL_LIST = [
         )
       },
       {
-
         ..._dApps["bedrock"],
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />
-        ),
+        )
       },
       {
         ..._dApps["beraborrow"],
@@ -317,10 +312,9 @@ const ALL_LIST = [
         label: "AquaBera",
         attachedIcon: (
           <TrunkLarge className="absolute left-[44%] bottom-[-28%]" />
-        ),
+        )
       },
       {
-
         icon: "/images/dapps/jumper.png",
         name: "Jumper",
         label: "Jumper",
@@ -347,10 +341,10 @@ const ALL_LIST = [
         label: "Ramen",
         type: "Launchpad",
         className: "",
-        disabled: true,
-      },
+        disabled: true
+      }
     ]
-  },
+  }
   // {
   //   className: "w-[230px] h-[132px]",
   //   dAppClassName: "absolute w-[388px] top-[-77px] justify-center -left-1/3",
@@ -382,8 +376,9 @@ const DAppsView = () => {
   const router = useRouter();
 
   const onNavigateTo = (_dApp: any) => {
-    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${_dApp.name
-      }`;
+    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${
+      _dApp.name
+    }`;
     if (_dApp.name === "berps") {
       dAppPath += `?id=BHONEY&tab=0`;
     }
@@ -503,24 +498,28 @@ const DAppsView = () => {
                     >
                       {item.dApps.length > 0 && (
                         <div className={`flex ${item.dAppClassName}`}>
-                          {item.dApps.map((dApp, idx) => dApp.children ? dApp.children : (
-                            <div
-                              key={`treeNode_${idx}`}
-                              className={
-                                "relative basis-[120px] " +
-                                (dApp.className ?? "")
-                              }
-                            >
-                              <DApp
-                                name={dApp.label}
-                                icon={dApp.icon}
-                                type={toFirstUpperCase(dApp.type)}
-                                onClick={() => onNavigateTo(dApp)}
-                                disabled={dApp.disabled}
-                              />
-                              {dApp.attachedIcon ?? null}
-                            </div>
-                          ))}
+                          {item.dApps.map((dApp, idx) =>
+                            dApp.children ? (
+                              dApp.children
+                            ) : (
+                              <div
+                                key={`treeNode_${idx}`}
+                                className={
+                                  "relative basis-[120px] " +
+                                  (dApp.className ?? "")
+                                }
+                              >
+                                <DApp
+                                  name={dApp.label}
+                                  icon={dApp.icon}
+                                  type={toFirstUpperCase(dApp.type)}
+                                  onClick={() => onNavigateTo(dApp)}
+                                  disabled={dApp.disabled}
+                                />
+                                {dApp.attachedIcon ?? null}
+                              </div>
+                            )
+                          )}
                         </div>
                       )}
                     </Floor>
