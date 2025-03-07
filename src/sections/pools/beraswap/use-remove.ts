@@ -254,7 +254,7 @@ export default function useRemove({
       addAction({
         type: "Liquidity",
         action: "Remove Liquidity",
-        template: "BeraSwap",
+        template: "Bex",
         status,
         transactionHash,
         sub_type: "Remove",

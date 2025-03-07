@@ -2,11 +2,11 @@
 
 import { useRef, forwardRef, useMemo } from "react";
 import BasicModal from "./components/modal";
-import BeraSwap from "./beraswap/add-liquidity";
+import Bex from "./beraswap/add-liquidity";
 import Kodiak from "./kodiak/increase-liquidity";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
-  if (dex?.toLowerCase() === "bex") return <BeraSwap {...rest} />;
+  if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
 });
 

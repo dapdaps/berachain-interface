@@ -190,7 +190,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       addAction({
         type: "Liquidity",
         action: "Add Liquidity",
-        template: "BeraSwap",
+        template: "Bex",
         status,
         transactionHash,
         sub_type: "Add",

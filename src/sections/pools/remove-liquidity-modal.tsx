@@ -1,12 +1,12 @@
 "use client";
 
 import BasicModal from "./components/modal";
-import BeraSwap from "./beraswap/remove-liquidity";
+import Bex from "./beraswap/remove-liquidity";
 import Kodiak from "./kodiak/remove-liquidity";
 import { useMemo } from "react";
 
 const RemoveLiquidityPanel = ({ dex, ...rest }: any) => {
-  if (dex?.toLowerCase() === "bex") return <BeraSwap {...rest} />;
+  if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} />;
 };
 

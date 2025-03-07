@@ -63,7 +63,7 @@ const dapps: DApp[] = [
   // },
   // {
   //   id: "beraswap",
-  //   name: "BeraSwap",
+  //   name: "Bex",
   //   icon: "/images/dapps/beraswap.svg",
   //   href: "/dex/beraswap"
   // },
