@@ -5,7 +5,7 @@ export const DEFAULT_CHAIN_ID =
 
 export const IS_MAINNET = DEFAULT_CHAIN_ID === 80094;
 
-export const DEFAULT_SWAP_DAPP = "beraswap";
+export const DEFAULT_SWAP_DAPP = "bex";
 
 export const DEFAULT_LIQUIDITY_DAPP = "infrared";
 
