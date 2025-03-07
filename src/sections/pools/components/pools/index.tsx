@@ -62,7 +62,8 @@ export default function Pools({
               searchVal,
               setSelectedRecord,
               type: currentTab,
-              loading
+              loading,
+              dex
             }}
           />
         ) : (
@@ -74,7 +75,8 @@ export default function Pools({
               searchVal,
               setSelectedRecord,
               type: currentTab,
-              loading
+              loading,
+              dex
             }}
           />
         )

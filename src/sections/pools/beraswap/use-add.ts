@@ -24,7 +24,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
   const storePrices = usePriceStore((store: any) => store.price);
 
   const { addAction } = useAddAction("dapp");
-  const slippage = useSettingsStore((store: any) => store.slippage);
+  const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const onIncrease = async () => {
     if (!contracts) return;
     setLoading(true);
@@ -87,6 +87,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         }
         const _v = Big(values[_address] || 0)
           .mul(10 ** token.decimals)
+          .mul(1 + slippage)
           .toFixed(0);
 
         maxAmountsIn.push(_v);
@@ -100,7 +101,11 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       });
 
       const bptPriceUsd = poolValue.div(Big(totalSupply.toString()).div(1e18));
-      const initBalances = userValue.div(bptPriceUsd).mul(1e18).toFixed(0);
+      const initBalances = userValue
+        .div(bptPriceUsd)
+        .mul(1e18)
+        .mul(1 - slippage)
+        .toFixed(0);
 
       const abiCoder = new utils.AbiCoder();
 
@@ -126,7 +131,11 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         account,
         [
           assets,
-          maxAmountsIn,
+          maxAmountsIn.map((a: any) =>
+            Big(a)
+              .mul(1 + slippage)
+              .toFixed(0)
+          ),
           abiCoder.encode(
             ["uint256", "uint256[]", "uint256"],
             [

@@ -319,5 +319,69 @@ export const bera: { [key: string]: Token } = {
     symbol: "HENLO",
     name: "HENLO",
     icon: "/assets/tokens/henlo.png"
+  },
+  stbgt: {
+    chainId: CHAIN_ID,
+    address: "0x2cec7f1ac87f5345ced3d6c74bbb61bfae231ffb",
+    symbol: "stBGT",
+    name: "stBGT",
+    decimals: 18,
+    icon: "/assets/tokens/stbgt.png"
+  },
+  usdbr: {
+    chainId: CHAIN_ID,
+    address: "0x6d4223dae2a8744a85a6d44e97f3f61679f87ee6",
+    symbol: "USDbr",
+    name: "USDbr",
+    decimals: 18,
+    icon: "/assets/tokens/usdbr.webp"
+  },
+  ibera: {
+    chainId: CHAIN_ID,
+    address: "0x9b6761bf2397bb5a6624a856cc84a3a14dcd3fe5",
+    symbol: "iBERA",
+    name: "Infrared BERA",
+    decimals: 18,
+    icon: "/assets/tokens/ibera.png"
+  },
+  lbgt: {
+    chainId: CHAIN_ID,
+    address: "0xbaadcc2962417c01af99fb2b7c75706b9bd6babe",
+    symbol: "LBGT",
+    name: "Liquid BGT",
+    decimals: 18,
+    icon: "/assets/tokens/lbgt.webp"
+  },
+  nome: {
+    chainId: CHAIN_ID,
+    address: "0xfaf4c16847bd0ebac546c49a9c9c6b81abd4b08c",
+    symbol: "NOME",
+    name: "NOME",
+    decimals: 18,
+    icon: "/assets/tokens/nome.webp"
+  },
+  azt: {
+    chainId: CHAIN_ID,
+    address: "0xdad7898717ade066e1114e6bdbfafd8a6f378b7b",
+    symbol: "AZT",
+    name: "AZEx Token",
+    decimals: 18,
+    icon: "/assets/tokens/azt.webp"
+  },
+  artio: {
+    chainId: CHAIN_ID,
+    address: "0x6ff4d64976428025cdcc3354ef53b5d19637481e",
+    symbol: "ARTIO",
+    name: "Artio",
+    decimals: 18,
+    icon: "/assets/tokens/artio.png"
+  },
+  bitcoin: {
+    chainId: CHAIN_ID,
+    address: "0x6b26f778bfae56cfb4bf9b62c678d9d40e725227",
+    symbol: "BITCOIN",
+    name: "HarryPotterObamaSonic10Inu",
+    decimals: 8,
+    icon: "/assets/tokens/bitcoin.webp"
   }
 };
