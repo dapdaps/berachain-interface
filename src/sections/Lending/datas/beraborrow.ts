@@ -323,9 +323,6 @@ const BeraborrowData = (props: any) => {
           .post(graphApi, borrowParams(account))
           .then((borrowsRes) => {
             const { user = {} } = borrowsRes?.data?.data || {};
-
-
-            console.log('=====user', user)
             const result = markets.map((m: any) => {
               const obj: any = {
                 id: m.id,
@@ -524,6 +521,7 @@ const BeraborrowData = (props: any) => {
           getNectData(),
         ]);
         let borrowTokenRes: any = borrowToken;
+        console.log('===Borrows', Borrows)
         const result = markets.map((market: any) => {
           let _address = market.address.toLowerCase();
           // if (market.isNative && wrappedToken) {
