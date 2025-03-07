@@ -323,6 +323,9 @@ const BeraborrowData = (props: any) => {
           .post(graphApi, borrowParams(account))
           .then((borrowsRes) => {
             const { user = {} } = borrowsRes?.data?.data || {};
+
+
+            console.log('=====user', user)
             const result = markets.map((m: any) => {
               const obj: any = {
                 id: m.id,
@@ -338,9 +341,11 @@ const BeraborrowData = (props: any) => {
               const curr = user?.dens?.find((d: any) => {
                 return d.denManager?.collateral?.id.toLowerCase() === obj.collVault.toLowerCase();
               });
+
+              console.log('====curr', curr)
               if (!curr) return obj;
-              obj.collateral = curr.collateral;
-              obj.debt = curr.debt;
+              obj.collateral = ethers.utils.formatUnits(curr.collateral);
+              obj.debt = ethers.utils.formatUnits(curr.debt);
               obj.status = curr.status;
               return obj;
             });
@@ -525,8 +530,8 @@ const BeraborrowData = (props: any) => {
           //   _address = wrappedToken.address.toLowerCase();
           // }
 
-          console.log('===DenManagers', DenManagers)
           const currBorrow = Borrows.find((b: any) => b.id === market.id);
+          console.log('====currBorrow', currBorrow)
           const currPrice = Prices.find((b: any) => b.id === market.id);
           const currDenManager = DenManagers?.find((b: any) => b.id === market.id);
 
@@ -539,6 +544,9 @@ const BeraborrowData = (props: any) => {
             liquidationPrice = Big(currBorrow?.debt || 0).times(Big(parseFloat(market.MCR)).div(100)).div(currBorrow?.collateral);
           }
           const balanceUsd = Big(currBorrow?.collateral || 0).times(currPrice?.price || 0);
+
+
+          console.log('====balanceUsd', balanceUsd)
           let collateralRatio = Big(0);
           if (Big(currBorrow?.debt || 0).gt(0)) {
             collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);

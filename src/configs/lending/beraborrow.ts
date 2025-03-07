@@ -24,8 +24,8 @@ const networks = {
     // 1-0.5%=0.995
     borrowingFee: 0.005,
     // Minimum Debt of 2 required
-    minimumDebt: 2,
-    multiCollateralHintHelpers: '0xa86Ba1FbC948834996c57d6F76D278395994CFD0',
+    minimumDebt: 69,
+    multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.0/gn',
     denManagersParams: (market: any[]) => ({
       "operationName": "GetDenManager",
@@ -94,14 +94,14 @@ const networks = {
         id: 7,
         ...bera['bera'],
         underlyingTokens: [bera['bera']],
-        collToken: bera['wbera'],
+        collToken: bera['bera'],
         vault: 'beraWrapper',
-        collVault: bera['wbera'].address,
-        collVaultToken: bera['wbera'],
+        collVault: "0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B",
         denManager: '0xf1356Cb726C2988C65c5313350C9115D9Af0f954',
         MCR: 200,
         CCR: 150,
         TCR: 459,
+        collIndex: 12
       },
     ],
   }

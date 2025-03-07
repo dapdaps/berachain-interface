@@ -37,6 +37,8 @@ export const ClosePosition = (props: any) => {
       valid: true,
       text: 'Confirm',
     };
+    console.log('====market?.borrowed', market?.borrowed)
+    console.log('====balance', balance)
     if (Big(market?.borrowed || 0).gt(balance)) {
       result.valid = false;
       result.text = `Insufficient ${market?.borrowToken?.symbol} Balance`;
