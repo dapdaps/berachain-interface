@@ -9,9 +9,9 @@ const basic = {
 
 const networks = {
   80094: {
-    beraWrapper: '0x9F02e5740D06CaDbf8Dc26B3f082239dF75FDF3a',
+    beraWrapper: '0x5f1619FfAEfdE17F7e54f850fe90AD5EE44dbf47',
     borrowerOperations: '0xDB32cA8f3bB099A76D4Ec713a2c2AACB3d8e84B9',
-    collVaultRouter: '0x5f1619FfAEfdE17F7e54f850fe90AD5EE44dbf47',
+    collVaultRouter: '0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B',
     wrappedToken: bera['wbera'],
     borrowToken: {
       ...bera['nect'],
@@ -24,7 +24,7 @@ const networks = {
     // 1-0.5%=0.995
     borrowingFee: 0.005,
     // Minimum Debt of 2 required
-    minimumDebt: 69,
+    minimumDebt: 2,
     multiCollateralHintHelpers: '0xa86Ba1FbC948834996c57d6F76D278395994CFD0',
     graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.0/gn',
     denManagersParams: (market: any[]) => ({
