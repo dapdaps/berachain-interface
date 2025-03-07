@@ -483,7 +483,7 @@ export function useDetail(props: any) {
   const mintData = useMemo<any>(() => {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
-    const protocolId = protocol?.id === "bex" ? "beraswap" : protocol?.id
+    const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id
     if (!["kodiak"].includes(protocolId)) return null;
     const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address

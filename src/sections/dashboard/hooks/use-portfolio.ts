@@ -11,7 +11,7 @@ const DAppPath: any = {
   dolomite: { dapp: "/lending/dolomite", earn: "/earn?tab=lending" },
   infrared: { dapp: "/staking/infrared", earn: "/earn?tab=staking" },
   kodiak: { dapp: "/dex/kodiak", earn: "/earn" },
-  beraswap: { dapp: "/dex/beraswap", earn: "", Liquidity: "/dex/beraswap/pools" },
+  // bex: { dapp: "/dex/bex", earn: "", Liquidity: "/dex/bex/pools" },
   "ooga booga": { dapp: "/dex/ooga-booga", earn: "" },
   stargate: { dapp: "/bridge/Stargate", earn: "" },
   beraborrow: { dapp: "/lending/beraborrow", earn: "" },
@@ -19,7 +19,7 @@ const DAppPath: any = {
   bedrock: { dapp: "/staking/bedrock", earn: "" },
   kingdomly: { dapp: "/kingdomly", earn: "" },
   jumper: { dapp: "/bridge/jumper", earn: "" },
-  bex: { dapp: "/dex/beraswap", earn: "", Liquidity: "/dex/beraswap/pools" }
+  bex: { dapp: "/dex/bex", earn: "", Liquidity: "/dex/bex/pools" }
 };
 
 export function usePortfolio(props: Props) {

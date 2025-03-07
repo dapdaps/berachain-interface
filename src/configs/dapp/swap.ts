@@ -1,11 +1,11 @@
 export default {
-  beraswap: {
+  bex: {
     type: "swap",
     theme: {
       "--button-color": "rgb(249, 247, 245)",
       "--button-text-color": "rgb(31, 28, 25)"
     },
-    icon: "/images/dapps/beraswap.svg"
+    icon: "/images/dapps/bex.svg"
   },
   "ooga-booga": {
     type: "swap",
