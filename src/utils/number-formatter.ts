@@ -146,5 +146,5 @@ export const numberFormatter = (
 };
 
 export const numberRemoveEndZero = (value: string) => {
-  return value.replace(/\.?0+$/, '');
+  return value.replace("-", "").replace(/\.?0+$/, '');
 };

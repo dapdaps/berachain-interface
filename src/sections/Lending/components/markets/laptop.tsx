@@ -3,12 +3,13 @@ import React from 'react';
 import Popover, { PopoverPlacement } from '@/components/popover';
 import Button from '@/components/button';
 import { Props } from '@/sections/Lending/components/markets/index';
+import clsx from 'clsx';
 
 const MarketsLaptop = (props: Props) => {
-  const { loading, loadingLength = 4, columns, markets, depositPanel, withdrawPanel, laptopGridCols, onDeposit, onWithdraw } = props;
+  const { loading, className, loadingLength = 4, columns, markets, depositPanel, withdrawPanel, laptopGridCols, onDeposit, onWithdraw } = props;
 
   return (
-    <div className="rounded-lg p-4">
+    <div className={clsx("rounded-lg p-4", className)}>
       <div className={`grid ${laptopGridCols} gap-4 font-bold mb-2`}>
         {
           columns.map((col: any, idx: number) => (
