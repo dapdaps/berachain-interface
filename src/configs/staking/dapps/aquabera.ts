@@ -2,7 +2,7 @@ import { bera } from "@/configs/tokens/bera";
 
 export default {
   name: "AquaBera",
-  icon: "/images/dapps/infrared/aquabera.svg",
+  icon: "/images/dapps/infrared/aquabera.png",
   type: "Vaults",
   chains: {
     80094: {

@@ -59,7 +59,7 @@ const PartList = [
     indicatorClass: "absolute right-[164px] top-[12px] z-10",
     buttonClass: "rotate-[2.58deg] mb-[8px]",
     arrowClass: "relative left-[calc(50%-34px)]",
-    btnText: "Earn",
+    btnText: "Earn Yield",
     link: "/earn",
     ArrowIcon: dAppArrowIcon
   },
@@ -115,7 +115,8 @@ const PartList = [
     btnText: 'Bera Cave',
     link: '/cave',
     ArrowIcon: caveArrowIcon,
-    disabled: true
+    disabled: true,
+    disabledIcon: 'cave-lock.svg'
   },
   {
     // bgt
@@ -147,7 +148,8 @@ const MapItem = ({
   onNavigateTo = () => {},
   btnText = "",
   link,
-  disabled
+  disabled,
+  disabledIcon
 }: any) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -193,7 +195,7 @@ const MapItem = ({
       >
         <motion.img
           className="absolute top-0 left-0 z-[1] w-full"
-          src={`/images/map/${src}`}
+          src={`/images/map/${disabled ? disabledIcon : src}`}
           alt=""
         />
         <motion.img
@@ -402,7 +404,7 @@ const MapModal = () => {
                       {...item}
                       styles={{
                         scale: (realWidth ?? 1470) / 1470,
-                        opacity: item.disabled ? 0.5 : 1
+                        // opacity: item.disabled ? 0.5 : 1
                       }}
                     />
                   ))}

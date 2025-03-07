@@ -125,6 +125,7 @@ export default function Invest(props: any) {
         width: "25%",
         render: (text: string, record: any) => {
           const pool = record?.pool;
+          const name = pool?.protocol || record.name
           return (
             <div
               className="flex items-center gap-[10px]"
@@ -154,8 +155,8 @@ export default function Invest(props: any) {
               <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
                 <div>{record?.id}</div>
                 {isEarn && (
-                  <div className="text-[12px] font-[500] mt-[3px] capitalize">
-                    {pool?.protocol || record.name}
+                  <div className="text-[12px] font-[500] mt-[3px]">
+                    {name === "aquabera" ? "AquaBera" : name}
                   </div>
                 )}
               </div>
@@ -177,7 +178,7 @@ export default function Invest(props: any) {
                 pool?.protocol === "BeraSwap"
                   ? "/images/dapps/beraswap.svg"
                   : pool?.protocol === "aquabera"
-                    ? "/images/dapps/infrared/aquabera.svg"
+                    ? "/images/dapps/infrared/aquabera.png"
                     : pool?.protocol === "Kodiak Finance"
                       ? "/images/dapps/kodiak.svg"
                       : "/images/dapps/infrared/berps.svg"
