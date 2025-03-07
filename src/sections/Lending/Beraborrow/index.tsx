@@ -144,7 +144,9 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                   },
                 ]}
                 markets={data?.markets || []}
-                onSuccess={() => {}}
+                onSuccess={() => {
+                  
+                }}
                 onDeposit={(token: any) => {
                   setCurrentType(ActionText.Borrow);
                   setCurrentMarket(token);
