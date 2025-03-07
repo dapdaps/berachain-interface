@@ -103,19 +103,6 @@ const networks = {
         TCR: 459,
         collIndex: 12
       },
-      {
-        id: 2,
-        ...bera['wbera'],
-        underlyingTokens: [bera['wbera']],
-        collToken: bera['wbera'],
-        vault: 'beraWrapper',
-        collVault: "0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B",
-        denManager: '0xf1356Cb726C2988C65c5313350C9115D9Af0f954',
-        MCR: 200,
-        CCR: 150,
-        TCR: 459,
-        collIndex: 12
-      },
     ],
   }
 };
