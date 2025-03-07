@@ -99,7 +99,7 @@ export const Form = (props: any) => {
     if (market.status === 'open') {
       return `${market?.borrowToken?.symbol} to be Minted`;
     }
-    return `Borrow ${market?.borrowToken?.symbol}`;
+    return `${market?.borrowToken?.symbol} to be Minted`;
   }, [type, market, market?.borrowToken]);
 
   const calcNECTBorrowed = (collateralAmount: any, _riskyRatio: string) => {
