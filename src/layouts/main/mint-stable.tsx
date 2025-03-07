@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 
 import { useRouter } from "next/navigation";
 import MintHoneyModal from "@/components/mint-honey-modal";
+import MintNectModal from "@/components/mint-nect-modal";
 
 const MintStable = () => {
   const router = useRouter();
@@ -18,6 +19,7 @@ const MintStable = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [mineModalOpen, setMineModalOpen] = useState(false);
+  const [nectModalOpen, setNectModalOpen] = useState(false);
 
   
   const tokens = [
@@ -73,6 +75,9 @@ const MintStable = () => {
 
     if (tokenId === 'honey') {
       setMineModalOpen(true);
+    } else {
+      console.log(`adasdadas`)
+      setNectModalOpen(true);
     }
   };
 
@@ -80,7 +85,7 @@ const MintStable = () => {
   return (
     <div 
       ref={containerRef}
-      className={`bg-[url(/images/header/${isHovered ? 'mint-stable':'mint-stable-shadow'}.svg)] w-[130px] bg-no-repeat bg-center cursor-pointer transition-transform relative ${isHovered ? 'transform translate-y-[2px] h-[37px]' : ' h-[39px]'}`}
+      className={`w-[130px] bg-no-repeat bg-[url("/images/header/${isHovered ? 'mint-stable':'mint-stable-shadow'}.svg")] bg-center cursor-pointer transition-transform relative ${isHovered ? 'transform translate-y-[2px] h-[37px]' : ' h-[39px]'}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -135,7 +140,7 @@ const MintStable = () => {
             ))}
           </div>
           <MintHoneyModal isOpen={mineModalOpen} onClose={() => setMineModalOpen(false) } />
-
+          <MintNectModal isOpen={nectModalOpen}  onClose={ () => setNectModalOpen(false)} />
         </motion.div>
       )}
     </div>
