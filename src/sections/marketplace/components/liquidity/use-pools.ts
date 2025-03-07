@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { bera } from "@/configs/tokens/bera";
 import kodiak from "@/configs/pools/kodiak";
 import { wrapNativeToken } from "@/sections/pools/utils";
-import { default as useBexPools } from "@/sections/pools/beraswap/use-pools";
+import { default as useBexPools } from "@/sections/pools/bex/use-pools";
 import { default as useKodiakV2Pools } from "@/sections/pools/kodiak/use-pools-v2";
 import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
 import usePoolsIslands from "@/sections/pools/kodiak/use-pools-islands";

@@ -46,11 +46,11 @@ export function readClipboard() {
 export function getProtocolIcon(protocal) {
   const ImageMapping = {
     infrared: "/images/dapps/infrared/infrared.svg",
-    bex: "/images/dapps/beraswap.svg",
+    bex: "/images/dapps/bex.svg",
     kodiak: "/images/dapps/kodiak.svg",
     berps: "/images/dapps/infrared/berps.svg",
     aquabera: "/images/dapps/infrared/aquabera.png",
-    hub: "/images/dapps/beraswap.svg"
+    hub: "/images/dapps/bex.svg"
   }
   return ImageMapping?.[protocal?.toLocaleLowerCase()] ?? "/images/dapps/dolomite.svg"
 }
