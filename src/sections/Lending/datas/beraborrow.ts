@@ -72,7 +72,19 @@ const DEN_ABI = [
 ];
 
 const APY_ABI = [
-  { type: "function", name: "totalSupply", inputs: [], outputs: [{ name: "", type: "uint256", internalType: "uint256" }], stateMutability: "view" },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
   { type: "function", name: "totalAssets", inputs: [], outputs: [{ name: "amountInAsset", type: "uint256", internalType: "uint256" }], stateMutability: "view" },
 ];
 
@@ -112,6 +124,8 @@ const getAPY = async (
   // const blockNumberOneWeekAgo = currentBlockNumber - BigInt(BLOCKS_IN_WEEK) < BigInt(startBlock) ? BigInt(startBlock) : currentBlockNumber - BigInt(BLOCKS_IN_WEEK);
   const blockNumberOneWeekAgo = Big(currentBlockNumber).minus(Big(BLOCKS_IN_WEEK).lt(startBlock) ? startBlock : Big(currentBlockNumber).minus(BLOCKS_IN_WEEK)).toNumber();
 
+
+  console.log('====contractAddress', contractAddress)
   const calls = [
     {
       address: contractAddress,
@@ -124,6 +138,8 @@ const getAPY = async (
       params: [],
     },
   ];
+
+  console.log('====blockNumberOneWeekAgo====', blockNumberOneWeekAgo)
 
   let [blockOneWeekAgo, [[currentTotalSupply], [currentTVL]], [[oneWeekAgoTotalSupply], [oneWeekAgoTVL]]] = await Promise.all([
     provider.getBlock(blockNumberOneWeekAgo),
@@ -186,35 +202,65 @@ const BeraborrowData = (props: any) => {
   useEffect(() => {
     if (!update || !account || !provider) return;
 
-    const getDenManagers = () => {
+    const handleGetDenManager = (market) => {
       return new Promise((resolve) => {
         axios
-          .post(graphApi, denManagersParams(markets))
+          .post(graphApi, denManagersParams(market))
           .then((denManagersRes) => {
-            const { denManagers = [] } = denManagersRes?.data?.data || {};
-            const result = markets.map((m: any) => {
-              const obj: any = {
-                id: m.id,
-                collVault: m.collVault,
-                symbol: m.symbol,
-                price: prices?.[m.symbol] || '0',
-                interestRate: '0',
-              };
-              const curr = denManagers.find((d: any) => {
-                return d.collateral.id.toLowerCase() === obj.collVault.toLowerCase();
-              });
-              if (!curr) return obj;
-              obj.price = utils.formatUnits(curr.collateral.price.price, 36 - curr.collateral.decimals);
-              obj.interestRate = Big(curr.interestRate || 0).div(100).toString();
-              return obj;
+            const { denManager = null } = denManagersRes?.data?.data || {};
+            resolve({
+              id: market.id,
+              collVault: market.collVault,
+              symbol: market.symbol,
+              interestRate: Big(denManager?.interestRate ?? "0").div(100).toFixed(),
             });
-            resolve(result);
           })
           .catch((err: any) => {
             resolve([]);
             console.log('getDenManagers failure: %o', err);
           });
       });
+    }
+    const getDenManagers = () => {
+      const promiseArray = []
+      markets.forEach(market => {
+        promiseArray.push(handleGetDenManager(market))
+      })
+
+      try {
+        return Promise.all(promiseArray)
+      } catch (error) {
+        resolve([]);
+        console.log('getDenManagers failure: %o', err);
+      }
+      // return new Promise((resolve) => {
+      //   axios
+      //     .post(graphApi, denManagersParams(markets))
+      //     .then((denManagersRes) => {
+      //       const { denManagers = [] } = denManagersRes?.data?.data || {};
+      //       const result = markets.map((m: any) => {
+      //         const obj: any = {
+      //           id: m.id,
+      //           collVault: m.collVault,
+      //           symbol: m.symbol,
+      //           price: prices?.[m.symbol] || '0',
+      //           interestRate: '0',
+      //         };
+      //         const curr = denManagers.find((d: any) => {
+      //           return d.collateral.id.toLowerCase() === obj.collVault.toLowerCase();
+      //         });
+      //         if (!curr) return obj;
+      //         obj.price = utils.formatUnits(curr.collateral.price.price, 36 - curr.collateral.decimals);
+      //         obj.interestRate = Big(curr.interestRate || 0).div(100).toString();
+      //         return obj;
+      //       });
+      //       resolve(result);
+      //     })
+      //     .catch((err: any) => {
+      //       resolve([]);
+      //       console.log('getDenManagers failure: %o', err);
+      //     });
+      // });
     };
 
     const getNectPrice = () => {
@@ -292,9 +338,11 @@ const BeraborrowData = (props: any) => {
               const curr = user?.dens?.find((d: any) => {
                 return d.denManager?.collateral?.id.toLowerCase() === obj.collVault.toLowerCase();
               });
+
+              console.log('====curr', curr)
               if (!curr) return obj;
-              obj.collateral = curr.collateral;
-              obj.debt = curr.debt;
+              obj.collateral = ethers.utils.formatUnits(curr.collateral);
+              obj.debt = ethers.utils.formatUnits(curr.debt);
               obj.status = curr.status;
               return obj;
             });
@@ -407,10 +455,12 @@ const BeraborrowData = (props: any) => {
 
     const getNectData = () => {
       const result: any = {};
+
+      console.log('====borrowToken====', borrowToken)
       return new Promise((resolve) => {
         const calls = [
           {
-            address: borrowToken.earnToken.address,
+            address: borrowToken?.earnToken?.address,
             name: 'balanceOf',
             params: [account],
           }
@@ -428,16 +478,16 @@ const BeraborrowData = (props: any) => {
             result.balance = balance;
 
             const currentBlockNumber = await provider.getBlock();
-            const apy = await getAPY(
-              currentBlockNumber.number,
-              2867937,
-              '0x3a7f6f2F27f7794a7820a32313F4a68e36580864',
-              2,
-              multicallAddress,
-              multicall,
-              provider,
-            );
-            result.apy = Big(apy).div(Math.pow(10, 18)).toFixed(2) + '%';
+            // const apy = await getAPY(
+            //   currentBlockNumber.number,
+            //   2867937,
+            //   '0x597877Ccf65be938BD214C4c46907669e3E62128',
+            //   2,
+            //   multicallAddress,
+            //   multicall,
+            //   provider,
+            // );
+            // result.apy = Big(apy).div(Math.pow(10, 18)).toFixed(2) + '%';
 
             resolve(result);
           })
@@ -449,91 +499,108 @@ const BeraborrowData = (props: any) => {
     };
 
     const getCTokensData = async () => {
-      const [
-        DenManagers,
-        Prices,
-        Borrows,
-        WalletBalance,
-        BorrowWalletBalance,
-        TCRs,
-        NECTPrice,
-        NECTData,
-      ]: any = await Promise.all([
-        getDenManagers(),
-        getPrices(),
-        getBorrows(),
-        getWalletBalance(),
-        getBorrowWalletBalance(),
-        getTCR(),
-        getNectPrice(),
-        getNectData(),
-      ]);
-      let borrowTokenRes: any = borrowToken;
-      const result = markets.map((market: any) => {
-        let _address = market.address.toLowerCase();
-        // if (market.isNative && wrappedToken) {
-        //   _address = wrappedToken.address.toLowerCase();
-        // }
-        const currBorrow = Borrows.find((b: any) => b.id === market.id);
-        const currPrice = Prices.find((b: any) => b.id === market.id);
-        const currDenManager = DenManagers?.find((b: any) => b.id === market.id);
-        const currTCR = TCRs.find((b: any) => b.id === market.id);
-        const currWalletBalance = WalletBalance[_address];
-        let liquidationPrice = Big(0);
-        if (Big(currBorrow?.collateral || 0).gt(0)) {
-          liquidationPrice = Big(currBorrow?.debt || 0).times(Big(parseFloat(market.MCR)).div(100)).div(currBorrow?.collateral);
-        }
-        const balanceUsd = Big(currBorrow?.collateral || 0).times(currPrice?.price || 0);
-        let collateralRatio = Big(0);
-        if (Big(currBorrow?.debt || 0).gt(0)) {
-          collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
-        }
-        const TCR = calcTCR(currTCR?.totalCollateral, currTCR?.totalDebt, currPrice?.price);
 
-        borrowTokenRes = {
-          ...borrowToken,
-          price: NECTPrice.price,
-          priceShow: numberFormatter(NECTPrice.price, 2, true),
-          realPrice: NECTPrice.realPrice,
-          realPriceShow: numberFormatter(NECTPrice.realPrice, 2, true),
-          walletBalance: BorrowWalletBalance,
-          walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
-          balance: NECTData?.balance || '0',
-          balanceShown: numberFormatter(NECTData?.balance, 2, true),
-          apy: NECTData?.apy || '0.00%',
-        };
+      try {
+        const [
+          DenManagers,
+          Prices,
+          Borrows,
+          WalletBalance,
+          BorrowWalletBalance,
+          TCRs,
+          NECTPrice,
+          NECTData,
+        ]: any = await Promise.all([
+          getDenManagers(),
+          getPrices(),
+          getBorrows(),
+          getWalletBalance(),
+          getBorrowWalletBalance(),
+          getTCR(),
+          getNectPrice(),
+          getNectData(),
+        ]);
+        let borrowTokenRes: any = borrowToken;
+        console.log('===Borrows', Borrows)
+        const result = markets.map((market: any) => {
+          let _address = market.address.toLowerCase();
+          // if (market.isNative && wrappedToken) {
+          //   _address = wrappedToken.address.toLowerCase();
+          // }
 
-        return {
-          ...market,
-          riskyRatio,
-          TCR,
+          const currBorrow = Borrows.find((b: any) => b.id === market.id);
+          console.log('====currBorrow', currBorrow)
+          const currPrice = Prices.find((b: any) => b.id === market.id);
+          const currDenManager = DenManagers?.find((b: any) => b.id === market.id);
+
+          console.log('====DenManagers', DenManagers)
+          console.log('====currDenManager', currDenManager)
+          const currTCR = TCRs.find((b: any) => b.id === market.id);
+          const currWalletBalance = WalletBalance[_address];
+          let liquidationPrice = Big(0);
+          if (Big(currBorrow?.collateral || 0).gt(0)) {
+            liquidationPrice = Big(currBorrow?.debt || 0).times(Big(parseFloat(market.MCR)).div(100)).div(currBorrow?.collateral);
+          }
+          const balanceUsd = Big(currBorrow?.collateral || 0).times(currPrice?.price || 0);
+
+
+          console.log('====balanceUsd', balanceUsd)
+          let collateralRatio = Big(0);
+          if (Big(currBorrow?.debt || 0).gt(0)) {
+            collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
+          }
+          const TCR = calcTCR(currTCR?.totalCollateral, currTCR?.totalDebt, currPrice?.price);
+
+          borrowTokenRes = {
+            ...borrowToken,
+            price: NECTPrice.price,
+            priceShow: numberFormatter(NECTPrice.price, 2, true),
+            realPrice: NECTPrice.realPrice,
+            realPriceShow: numberFormatter(NECTPrice.realPrice, 2, true),
+            walletBalance: BorrowWalletBalance,
+            walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
+            balance: NECTData?.balance || '0',
+            balanceShown: numberFormatter(NECTData?.balance, 2, true),
+            apy: NECTData?.apy || '0.00%',
+          };
+
+          return {
+            ...market,
+            riskyRatio,
+            TCR,
+            borrowToken: borrowTokenRes,
+            status: currBorrow?.status,
+            balance: currBorrow?.collateral,
+            balanceUsd: balanceUsd.toFixed(2),
+            balanceShown: numberFormatter(currBorrow?.collateral, 2, true),
+            balanceUsdShown: numberFormatter(balanceUsd, 2, true, { prefix: '$' }),
+            borrowed: currBorrow?.debt,
+            borrowedShown: numberFormatter(currBorrow?.debt, 2, true),
+            walletBalance: currWalletBalance,
+            walletBalanceShown: numberFormatter(currWalletBalance, 2, true),
+            price: currPrice?.price,
+            priceShown: numberFormatter(currPrice?.price, 2, true, { prefix: '$' }),
+            interestRate: currDenManager?.interestRate,
+            interestRateShown: currDenManager?.interestRate + '%',
+            apy: '100',
+            apyShown: '100%',
+            liquidationPrice: liquidationPrice.toFixed(2),
+            liquidationPriceShown: numberFormatter(liquidationPrice, 2, true, { prefix: '$' }),
+            collateralRatio: collateralRatio,
+            collateralRatioShown: numberFormatter(collateralRatio, 2, true) + '%',
+            collateralRatioRisk: Big(collateralRatio).lt(riskyRatio) ? 'HighRisk' : 'LowRisk',
+          };
+        });
+
+        console.log('====result====', result)
+        onLoad({
           borrowToken: borrowTokenRes,
-          status: currBorrow?.status,
-          balance: currBorrow?.collateral,
-          balanceUsd: balanceUsd.toFixed(2),
-          balanceShown: numberFormatter(currBorrow?.collateral, 2, true),
-          balanceUsdShown: numberFormatter(balanceUsd, 2, true, { prefix: '$' }),
-          borrowed: currBorrow?.debt,
-          borrowedShown: numberFormatter(currBorrow?.debt, 2, true),
-          walletBalance: currWalletBalance,
-          walletBalanceShown: numberFormatter(currWalletBalance, 2, true),
-          price: currPrice?.price,
-          priceShown: numberFormatter(currPrice?.price, 2, true, { prefix: '$' }),
-          interestRate: currDenManager?.interestRate,
-          interestRateShown: currDenManager?.interestRate + '%',
-          apy: '100',
-          apyShown: '100%',
-          liquidationPrice: liquidationPrice.toFixed(2),
-          liquidationPriceShown: numberFormatter(liquidationPrice, 2, true, { prefix: '$' }),
-          collateralRatio: collateralRatio,
-          collateralRatioShown: numberFormatter(collateralRatio, 2, true) + '%',
-          collateralRatioRisk: Big(collateralRatio).lt(riskyRatio) ? 'HighRisk' : 'LowRisk',
-        };
-      });
-      onLoad({
-        borrowToken: borrowTokenRes,
-        markets: result,
-      });
+          markets: result,
+        });
+      } catch (error) {
+        console.log('getCTokensData error', error)
+      }
+
     };
 
     getCTokensData();

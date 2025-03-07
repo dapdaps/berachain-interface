@@ -67,7 +67,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
               <Markets
                 loading={loading}
                 laptopGridCols="grid-cols-[3fr_2fr_2fr_2fr_1fr]"
-                className="max-h-[70dvh] overflow-y-auto"
+                className="min-h-[50dvh] max-h-[70dvh] overflow-y-auto"
                 columns={[
                   {
                     title: 'Token',
@@ -144,7 +144,9 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                   },
                 ]}
                 markets={data?.markets || []}
-                onSuccess={() => {}}
+                onSuccess={() => {
+                  
+                }}
                 onDeposit={(token: any) => {
                   setCurrentType(ActionText.Borrow);
                   setCurrentMarket(token);

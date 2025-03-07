@@ -99,7 +99,7 @@ export const Form = (props: any) => {
     if (market.status === 'open') {
       return `${market?.borrowToken?.symbol} to be Minted`;
     }
-    return `Borrow ${market?.borrowToken?.symbol}`;
+    return `${market?.borrowToken?.symbol} to be Minted`;
   }, [type, market, market?.borrowToken]);
 
   const calcNECTBorrowed = (collateralAmount: any, _riskyRatio: string) => {
@@ -188,7 +188,23 @@ export const Form = (props: any) => {
     if (type === ActionText.Borrow) {
       if (Big(totalBorrowAmount || 0).lt(minimumDebt)) {
         result.valid = false;
-        result.text = `Minimum Debt of ${minimumDebt} required`;
+        result.text = (
+          <div className='flex items-center justify-center gap-[8px]'>
+            <Popover
+              trigger={PopoverTrigger.Hover}
+              placement={PopoverPlacement.Top}
+              contentStyle={{ zIndex: 200 }}
+              content={(
+                <Card className="w-[300px] text-[14px]">
+                  A minimum debt of {minimumDebt} is required to proceed with this action. Please increase the amount of 70 you are minting or Close your Position
+                </Card>
+              )}
+            >
+              <img src="/images/icon-tips.svg" alt="" className="w-[18px] h-[18px] cursor-pointer" />
+            </Popover>
+            <span>{`Minimum Debt of ${minimumDebt} required`}</span>
+          </div>
+        );
         return result;
       }
     }

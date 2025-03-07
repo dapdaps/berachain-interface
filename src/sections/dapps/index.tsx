@@ -134,7 +134,6 @@ const SECOND_LIST = [
         attachedIcon: (
           <TrunkSmall className="absolute left-[44%] bottom-[-28%]" />
         ),
-        disabled: true
       },
       {
         ..._dApps["aquabera"],
@@ -296,7 +295,6 @@ const ALL_LIST = [
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
         ),
-        disabled: true
       }
     ]
   },

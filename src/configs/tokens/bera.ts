@@ -118,6 +118,16 @@ export const bera: { [key: string]: Token } = {
     name: "Nectar",
     icon: "/assets/tokens/nectar.png"
   },
+
+  snect: {
+    chainId: CHAIN_ID,
+    address: "0x597877Ccf65be938BD214C4c46907669e3E62128",
+    decimals: 18,
+    symbol: "sNECT",
+    name: "Staked Nectar",
+    icon: "/assets/tokens/nectar.png"
+  },
+
   usde: {
     chainId: CHAIN_ID,
     address: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
