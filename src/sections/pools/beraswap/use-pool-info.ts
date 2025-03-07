@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import beraswap from "@/configs/pools/beraswap";
+import bex from "@/configs/pools/bex";
 import axios from "axios";
 
 export default function usePoolInfo(id: any) {

@@ -15,13 +15,14 @@ export default function SwapPage() {
   const isMobile = useIsMobile();
 
   const dapp = dapps[urlParams.dapp as string] || dapps[DEFAULT_SWAP_DAPP];
+  console.log(dapps, urlParams.dapp)
   const tokens = useDexTokens(dapp);
   useEffect(() => {
     switch (urlParams.dapp) {
       case "kodiak":
         handleReport(isMobile ? "1017-004" : "1012-004");
         break;
-      case "beraswap":
+      case "bex":
         handleReport(isMobile ? "1017-005" : "1012-005");
         break;
       case "ooga-booga":

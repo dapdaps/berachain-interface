@@ -1,5 +1,5 @@
 export default {
-  beraswap: {
+  bex: {
     type: "swap",
     theme: {
       "--button-color": "rgb(249, 247, 245)",

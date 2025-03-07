@@ -9,7 +9,7 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import valutAbi from "../abi/balancer-valut";
 import poolAbi from "../abi/balancer-pool";
 import queryAbi from "../abi/balancer-query";
-import beraswap from "@/configs/pools/beraswap";
+import bex from "@/configs/pools/bex";
 import axios from "axios";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import weth from "@/configs/contract/weth";
@@ -19,7 +19,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
   const { account, provider, chainId } = useAccount();
 
   const toast = useToast();
-  const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
+  const contracts = bex.contracts[DEFAULT_CHAIN_ID];
 
   const storePrices = usePriceStore((store: any) => store.price);
 
@@ -45,7 +45,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
 
       const [assets, balances] = await valutContract.getPoolTokens(poolIdx);
 
-      const priceRes = await axios.post(beraswap.graph, {
+      const priceRes = await axios.post(bex.graph, {
         query: `query{\n  tokenGetCurrentPrices(addressIn: ${JSON.stringify(
           assets
         )},chains: [BERACHAIN]){\n    price,\n    address\n  }\n}`

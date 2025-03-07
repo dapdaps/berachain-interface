@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import useAccount from "@/hooks/use-account";
 import axios from "axios";
 import Big from "big.js";
-import beraswap from "@/configs/pools/beraswap";
+import bex from "@/configs/pools/bex";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { TOKENS } from "@/configs";
 
@@ -10,13 +10,13 @@ export default function useUserPools() {
   const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const { account, provider } = useAccount();
-  const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
+  const contracts = bex.contracts[DEFAULT_CHAIN_ID];
 
   const queryPools = useCallback(async () => {
     setLoading(true);
 
     try {
-      const listRes = await axios.post(beraswap.graph, {
+      const listRes = await axios.post(bex.graph, {
         operationName: "GetPools",
         variables: {
           chain: "BERACHAIN",

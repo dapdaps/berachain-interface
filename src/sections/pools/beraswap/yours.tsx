@@ -7,7 +7,7 @@ export default function Yours() {
   return (
     <Com
       pools={pools}
-      dex="beraswap"
+      dex="bex"
       loading={loading}
       onSuccess={() => {
         queryPools();

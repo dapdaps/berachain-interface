@@ -8,7 +8,7 @@ import { useSettingsStore } from "@/stores/settings";
 import valutAbi from "../abi/balancer-valut";
 import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
-import beraswap from "@/configs/pools/beraswap";
+import bex from "@/configs/pools/bex";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 const abiCoder = new utils.AbiCoder();
@@ -26,7 +26,7 @@ export default function useRemove({
   const { account, provider, chainId } = useAccount();
   const [exitToken, setExitToken] = useState<any>();
   const toast = useToast();
-  const contracts = beraswap.contracts[DEFAULT_CHAIN_ID];
+  const contracts = bex.contracts[DEFAULT_CHAIN_ID];
   const assetsRef = useRef<any>();
   const slippage = useSettingsStore((store: any) => store.slippage);
   const { addAction } = useAddAction("dapp");
