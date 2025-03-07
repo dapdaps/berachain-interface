@@ -175,7 +175,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 6,
     symbol: "BYUSD",
     name: "BYUSD",
-    icon: "/assets/tokens/byusd.png"
+    icon: "/assets/tokens/byusd.png",
+    color: "rgb(242,180,51)"
   },
   fbtc: {
     chainId: CHAIN_ID,
