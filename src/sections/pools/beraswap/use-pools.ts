@@ -27,9 +27,11 @@ export default function usePools() {
 
       setPools(
         response.data.data.poolGetPools.map((pool: any) => {
+          let _s: string[] = [];
           const tokens = pool.tokens
             .filter((token: any) => token.name !== pool.name)
             .map((token: any) => {
+              _s.push(token.symbol);
               return {
                 ...token,
                 icon: TOKENS[token.address]?.icon,
@@ -41,7 +43,7 @@ export default function usePools() {
             tvl: pool.dynamicData.totalLiquidity,
             volume24h: pool.dynamicData.volume24h,
             fees24h: pool.dynamicData.fees24h,
-            symbol: pool.name,
+            symbol: _s.length ? _s.join(" | ") : pool.name,
             id: pool.id,
             address: pool.address,
             poolType: pool.type

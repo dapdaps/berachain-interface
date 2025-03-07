@@ -10,7 +10,7 @@ export const useOogaTokensStore = create(
     {
       name: "ooga-tokens",
       version: 0.1,
-      storage: createJSONStorage(() => localStorage)
+      storage: createJSONStorage(() => sessionStorage)
     }
   )
 );

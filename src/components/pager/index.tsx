@@ -40,6 +40,9 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
           "cursor-pointer",
           currentPage === 1 ? "opacity-[0.3]" : "opacity-[1]"
         )}
+        style={{
+          padding: 5
+        }}
       >
         <svg
           width="8"
@@ -105,6 +108,9 @@ export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
           handlePageChange(currentPage + 1);
         }}
         className="cursor-pointer"
+        style={{
+          padding: 5
+        }}
       >
         <svg
           width="8"

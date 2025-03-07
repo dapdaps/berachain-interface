@@ -27,6 +27,7 @@ interface Props {
   onChangeSort?: (sort: string) => void;
   itemClassName?: string;
   itemContainerClassName?: string;
+  defaultSort?: boolean;
 }
 
 export default function List({
@@ -35,7 +36,7 @@ export default function List({
   maxPage,
   onPageChange,
   bodyClassName,
-  onItemClick = () => { },
+  onItemClick = () => {},
   onChangeSort,
   loading,
   itemClassName,

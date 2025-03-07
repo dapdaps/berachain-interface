@@ -23,11 +23,11 @@ import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
-const SIZE = 3000;
+const SIZE = 3500;
 
 const BG_SIZE_MAP = {
   default: SIZE,
-  lgbt: 3500, // 3500 wait for Cave styles
+  lgbt: SIZE,
 }
 
 const HomeEarth = () => {
@@ -44,14 +44,14 @@ const HomeEarth = () => {
 
   const mountainRef = useRef<any>();
   const mountainControls = useRef<any>();
-  const mountainRotation = useMotionValue(0);
-  const mountainEndRotationRef = useRef(0);
+  const mountainRotation = useMotionValue(-20);
+  const mountainEndRotationRef = useRef(-20);
   const mountainStartRotationRef = useRef(0);
 
   const navigationRef = useRef<any>();
   const navigationControls = useRef<any>();
-  const navigationRotation = useMotionValue(-50);
-  const navigationEndRotationRef = useRef(-50);
+  const navigationRotation = useMotionValue(-10);
+  const navigationEndRotationRef = useRef(-10);
   const navigationStartRotationRef = useRef(0);
   const navigationDragStartedRef = useRef(false);
   const navigationDragEndedTimesRef = useRef(0);
@@ -178,9 +178,9 @@ const HomeEarth = () => {
         <HomeEarthTop />
         <AirdropModal />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
-              {/*#region Cloud*/}
-              <CloudCircle />
-              {/*#endregion*/}
+          {/*#region Cloud*/}
+          <CloudCircle />
+          {/*#endregion*/}
           {
             isDefaultTheme() && (<>
               {/*#region Mountain*/}

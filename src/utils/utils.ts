@@ -49,7 +49,7 @@ export function getProtocolIcon(protocal) {
     bex: "/images/dapps/beraswap.svg",
     kodiak: "/images/dapps/kodiak.svg",
     berps: "/images/dapps/infrared/berps.svg",
-    aquabera: "/images/dapps/infrared/aquabera.svg",
+    aquabera: "/images/dapps/infrared/aquabera.png",
     hub: "/images/dapps/beraswap.svg"
   }
   return ImageMapping?.[protocal?.toLocaleLowerCase()] ?? "/images/dapps/dolomite.svg"
@@ -70,3 +70,9 @@ export const isVideoFile = (url: string) => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   }
 };
+
+
+export function capitalize(str: string) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.substring(1);
+}
