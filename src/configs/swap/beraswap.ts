@@ -17,7 +17,7 @@ export default {
       bera["weth"],
       bera["ibera"],
       bera["ibgt"],
-      bera["usdbr"],
+      // bera["usdbr"],
       bera["nome"],
       bera["azt"],
       bera["artio"],

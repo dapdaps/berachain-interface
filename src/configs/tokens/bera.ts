@@ -350,7 +350,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "LBGT",
     name: "Liquid BGT",
     decimals: 18,
-    icon: "/assets/tokens/lbgt.webp"
+    icon: "/assets/tokens/lbgt.webp",
+    isMeme: true
   },
   nome: {
     chainId: CHAIN_ID,
@@ -366,7 +367,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "AZT",
     name: "AZEx Token",
     decimals: 18,
-    icon: "/assets/tokens/azt.webp"
+    icon: "/assets/tokens/azt.webp",
+    isMeme: true
   },
   artio: {
     chainId: CHAIN_ID,
@@ -374,7 +376,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "ARTIO",
     name: "Artio",
     decimals: 18,
-    icon: "/assets/tokens/artio.png"
+    icon: "/assets/tokens/artio.png",
+    isMeme: true
   },
   bitcoin: {
     chainId: CHAIN_ID,
