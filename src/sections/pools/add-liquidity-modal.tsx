@@ -2,7 +2,7 @@
 
 import { useRef, forwardRef, useState, useEffect, useMemo } from "react";
 import BasicModal from "./components/modal";
-import Bex from "./beraswap/add-liquidity";
+import Bex from "./bex/add-liquidity";
 import Kodiak from "./kodiak/add-liquidity";
 import useIsMobile from "@/hooks/use-isMobile";
 

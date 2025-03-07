@@ -1,6 +1,6 @@
 "use client";
 
-import Bex from "./beraswap/pools";
+import Bex from "./bex/pools";
 import Kodiak from "./kodiak/pools";
 
 const PoolsPanel = ({ dex, ...rest }: any) => {

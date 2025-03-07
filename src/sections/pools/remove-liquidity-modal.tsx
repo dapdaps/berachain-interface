@@ -1,7 +1,7 @@
 "use client";
 
 import BasicModal from "./components/modal";
-import Bex from "./beraswap/remove-liquidity";
+import Bex from "./bex/remove-liquidity";
 import Kodiak from "./kodiak/remove-liquidity";
 import { useMemo } from "react";
 

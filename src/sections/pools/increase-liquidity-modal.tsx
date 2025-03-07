@@ -2,7 +2,7 @@
 
 import { useRef, forwardRef, useMemo } from "react";
 import BasicModal from "./components/modal";
-import Bex from "./beraswap/add-liquidity";
+import Bex from "./bex/add-liquidity";
 import Kodiak from "./kodiak/increase-liquidity";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
