@@ -5,13 +5,13 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 import { motion } from "framer-motion";
+import clsx from "clsx";
 
 import { useRouter } from "next/navigation";
 import MintHoneyModal from "@/components/mint-honey-modal";
 import MintNectModal from "@/components/mint-nect-modal";
 
 const MintStable = () => {
-  const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
@@ -20,8 +20,29 @@ const MintStable = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [mineModalOpen, setMineModalOpen] = useState(false);
   const [nectModalOpen, setNectModalOpen] = useState(false);
+  const [isAnyModalOpen, setIsAnyModalOpen] = useState(false);
 
-  
+  useEffect(() => {
+    setIsAnyModalOpen(mineModalOpen || nectModalOpen);
+  }, [mineModalOpen, nectModalOpen]);
+
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      setIsDropdownOpen(false);
+      setIsHovered(false);
+    }
+  }, [isAnyModalOpen]);
+
+  const handleModalClose = () => {
+    setMineModalOpen(false);
+    setNectModalOpen(false);
+    setIsDropdownOpen(false);
+    setIsHovered(false);
+    if (swiperRef.current) {
+      swiperRef.current.autoplay.start();
+    }
+  };
+
   const tokens = [
     { id: 'honey', name: 'HONEY', image: '/images/header/honey.svg' },
     { id: 'nect', name: 'NECT', image: '/images/header/nect.svg' },
@@ -50,6 +71,8 @@ const MintStable = () => {
   }, []);
 
   const handleMouseEnter = () => {
+    if (isAnyModalOpen) return;
+    
     setIsHovered(true);
     setIsDropdownOpen(true);
     if (swiperRef.current) {
@@ -58,37 +81,52 @@ const MintStable = () => {
   };
   
   const handleMouseLeave = (e: React.MouseEvent) => {
-    const toElement = e.relatedTarget as HTMLElement;
-    if (dropdownRef.current && dropdownRef.current.contains(toElement)) {
-      return;
-    }
-    if (!dropdownRef.current?.contains(toElement)) {
+    if (isAnyModalOpen) return;
+    
+    const toElement = e.relatedTarget as HTMLElement | null;
+    
+    if (!toElement) {
       setIsHovered(false);
       if (swiperRef.current) {
         swiperRef.current.autoplay.start();
       }
+      return;
     }
+    
+    if (dropdownRef.current && dropdownRef.current.contains(toElement)) {
+      return;
+    }
+    
+    setIsHovered(false);
   };
   
-  const handleTokenClick = (tokenId: string) => {
+  const handleTokenClick = (tokenId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
     setSelectedToken(tokenId);
-
     if (tokenId === 'honey') {
       setMineModalOpen(true);
     } else {
-      console.log(`adasdadas`)
       setNectModalOpen(true);
     }
+    setIsDropdownOpen(false);
+    setIsHovered(false);
   };
 
+  const handleContainerClick = () => {
+    if (isAnyModalOpen) return;
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   return (
     <div 
       ref={containerRef}
-      className={`w-[130px] bg-no-repeat bg-[url("/images/header/${isHovered ? 'mint-stable':'mint-stable-shadow'}.svg")] bg-center cursor-pointer transition-transform relative ${isHovered ? 'transform translate-y-[2px] h-[37px]' : ' h-[39px]'}`}
+      className={clsx(`w-[130px] bg-no-repeat bg-center cursor-pointer transition-transform relative`,
+        isHovered ? 'bg-[url(/images/header/mint-stable.svg)] transform translate-y-[2px] h-[37px]' : 'bg-[url(/images/header/mint-stable-shadow.svg)] h-[39px]'
+      )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      onClick={handleContainerClick}
     >
       <Swiper
         modules={[Autoplay]}
@@ -106,7 +144,7 @@ const MintStable = () => {
         }
       </Swiper>
 
-      {isDropdownOpen && (
+      {isDropdownOpen && !isAnyModalOpen && (
         <motion.div 
           ref={dropdownRef}
           initial={{ opacity: 0, y: -10 }}
@@ -114,11 +152,10 @@ const MintStable = () => {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
           className="absolute top-[100%] left-0 w-[128px] h-[90px] bg-[#FFFDEB] border border-black rounded-[12px] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)] mt-0 z-50 p-[6px] pb-[10px]"
-          onMouseEnter={handleMouseEnter} // 添加这个事件处理
+          onMouseEnter={handleMouseEnter}
           onMouseLeave={(e) => {
-            // 检查鼠标是否移向主按钮
-            const toElement = e.relatedTarget as HTMLElement;
-            if (!containerRef.current?.contains(toElement)) {
+            const toElement = e.relatedTarget as HTMLElement | null;
+            if (!toElement || !containerRef.current?.contains(toElement)) {
               setIsDropdownOpen(false);
               setIsHovered(false);
               if (swiperRef.current) {
@@ -132,17 +169,19 @@ const MintStable = () => {
               <div 
                 key={token.id}
                 className={`flex items-center p-1 cursor-pointer rounded-[8px] ${selectedToken === token.id ? 'bg-black/10' : ''} hover:bg-black/10`}
-                onClick={() => handleTokenClick(token.id)}
+                onClick={(e) => handleTokenClick(token.id, e)}
               >
                 <img src={token.image} alt={token.name} className="w-[24px] h-[24px]" />
                 <span className="ml-2 text-[#FFF5A9] text-stroke-1 text-[15px] leading-3 font-CherryBomb">{token.name}</span>
               </div>
             ))}
           </div>
-          <MintHoneyModal isOpen={mineModalOpen} onClose={() => setMineModalOpen(false) } />
-          <MintNectModal isOpen={nectModalOpen}  onClose={ () => setNectModalOpen(false)} />
         </motion.div>
       )}
+
+      <MintHoneyModal isOpen={mineModalOpen} onClose={handleModalClose} />
+      <MintNectModal isOpen={nectModalOpen}  onClose={handleModalClose} />
+        
     </div>
   );
 };

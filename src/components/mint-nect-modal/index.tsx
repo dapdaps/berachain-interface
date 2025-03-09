@@ -33,8 +33,6 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
     setLoading(isChainSupported);
   }, [isChainSupported, address]);
 
-  console.log(currentMarket, isOpen, '<currentMarket')
-
   return (
     <>
       <BeraborrowData
@@ -51,22 +49,20 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
           setLoading(false);
         }}
       />
-     {
-        currentMarket && (
-          <BorrowModal
-        type={ActionText.Borrow}
-        visible={isOpen}
-        onClose={onClose}
-        market={currentMarket}
-        borrowToken={borrowToken}
-        basic={basic}
-        networks={networks}
-        network={network}
-        onSuccess={onClose}
-        {...rest}
-      />
-        )
-     }
+      {currentMarket && (
+        <BorrowModal
+          type={ActionText.Borrow}
+          visible={isOpen}
+          onClose={onClose}
+          market={currentMarket}
+          borrowToken={borrowToken}
+          basic={basic}
+          networks={networks}
+          network={network}
+          onSuccess={onClose}
+          {...rest}
+        />
+      )}
     </>
   );
 };
