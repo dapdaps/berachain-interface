@@ -339,7 +339,7 @@ const User = (props: any) => {
             {balanceShown}
           </div>
         </div>
-        <div
+        {/* <div
           onClick={() => {
             router.push("/hall?tab=bgt")
           }}
@@ -364,7 +364,7 @@ const User = (props: any) => {
           <div className="text-black text-[14px] font-Montserrat flex-shrink-0 overflow-hidden text-nowrap">
             {Number(iBGTCount).toFixed(4)}
           </div>
-        </div>
+        </div> */}
       </div>
       <DisconnectButton isNearPage={isNearPage} setMobileUserInfoVisible={setMobileUserInfoVisible} />
     </div>

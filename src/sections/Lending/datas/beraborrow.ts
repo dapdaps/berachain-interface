@@ -200,8 +200,9 @@ const BeraborrowData = (props: any) => {
   const multicallAddress = multicallAddresses[chainId];
 
   useEffect(() => {
-    if (!update || !account || !provider) return;
+    console.log(!update , !account , !provider, '<-----------------')
 
+    if (!update || !account || !provider) return;
     const handleGetDenManager = (market) => {
       return new Promise((resolve) => {
         axios
