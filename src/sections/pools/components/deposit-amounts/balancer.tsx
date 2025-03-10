@@ -19,6 +19,7 @@ const DepositAmounts = ({
   const prices = usePriceStore((store) => store.price);
   const [isError, setIsError] = useState(false);
 
+  console.log('====info', info)
   useEffect(() => {
     if (!values) {
       onError("Enter Amount");
