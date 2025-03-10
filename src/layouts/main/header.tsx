@@ -15,6 +15,7 @@ import MintHoneyModal from "@/components/mint-honey-modal";
 import { useState } from "react";
 import Hall from "./hall";
 import MintStable from "./mint-stable";
+import { motion } from "framer-motion";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -60,13 +61,16 @@ const MainLayoutHeader = (props: Props) => {
           </div> */}
 
           
-          <div className="cursor-pointer relative -top-[8px] w-[57px]"
+          <motion.div 
+            className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
-              router.replace("/kingdomly")
+              router.push("/kingdomly")
             }}
+            whileHover={{ x: -4 }}
+            transition={{ duration: 0.2 }}
           >
             <img src="/images/icon-nft.png" alt="icon-nft" />
-          </div>
+          </motion.div>
 
           <MintStable />
 

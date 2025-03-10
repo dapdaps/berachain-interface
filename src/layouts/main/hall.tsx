@@ -37,7 +37,7 @@ const Hall = () => {
 
   return (
     <div 
-      className={`relative cursor-pointer transition-transform ${isHovered ? 'transform translate-y-[3px]' : ''}`}
+      className={`relative cursor-pointer transition-transform`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
@@ -46,14 +46,14 @@ const Hall = () => {
         modules={[Autoplay]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         loop={true}
-        className="w-[94px] h-[35px]"
+        className="w-[98px] h-[35px]"
         onSwiper={(swiper) => (swiperRef.current = swiper)}
       >
         <SwiperSlide>
           <div 
-            className={`flex items-center justify-center ${isHovered 
-              ? 'w-[93px] h-[32px] bg-[url(/images/hall/bgt.svg)]' 
-              : 'w-[94px] h-[35px] bg-[url(/images/hall/bgt-shadow.svg)]'} bg-no-repeat bg-center`}
+            className={`w-[98px] h-[35px] flex items-center justify-center ${isHovered 
+              ? 'bg-[url(/images/hall/bgt.svg)]' 
+              : ' bg-[url(/images/hall/bgt-shadow.svg)]'} bg-no-repeat bg-center`}
           >
             <div className={`text-white ml-5 flex ${
               numberFormatter(BGTCount, 3, true).length > 3 ? 'flex-col' : 'flex-row'
@@ -71,9 +71,9 @@ const Hall = () => {
         </SwiperSlide>
         <SwiperSlide>
           <div 
-            className={`flex items-center justify-center ${isHovered 
-              ? 'w-[93px] h-[32px] bg-[url(/images/hall/ibgt.svg)]' 
-              : 'w-[94px] h-[35px] bg-[url(/images/hall/ibgt-shadow.svg)]'} bg-no-repeat bg-center`}
+            className={`w-[98px] h-[35px] flex items-center justify-center ${isHovered 
+              ? 'bg-[url(/images/hall/ibgt.svg)]' 
+              : 'bg-[url(/images/hall/ibgt-shadow.svg)]'} bg-no-repeat bg-center`}
           >
             <div className={`text-white flex ml-6 ${
               numberFormatter(iBGTCount, 3, true).length > 3 ? 'flex-col' : 'flex-row'
