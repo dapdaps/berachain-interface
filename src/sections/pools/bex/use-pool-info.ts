@@ -3,7 +3,7 @@ import bex from "@/configs/pools/bex";
 import axios from "axios";
 
 export default function usePoolInfo(id: any) {
-  const [info, setInfo] = useState<any>();
+  const [info, setInfo] = useState<any>(null);
 
   const queryPoolInfo = async () => {
     try {

@@ -6,11 +6,13 @@ import { memo } from "react";
 export default memo(function IbgtAmount({
   className,
   usdAmount,
-  amount
+  amount,
+  symbol
 }: {
-  className: string
+  className: string,
+  symbol: string
 }) {
-  return (
+  return symbol === "iBGT" ? (
     <Popover
       placement={PopoverPlacement.BottomLeft}
       content={
@@ -32,5 +34,11 @@ export default memo(function IbgtAmount({
         })}
       </div>
     </Popover>
+  ) : (
+    <div className={className}>
+      {numberFormatter(usdAmount, 2, true, {
+        prefix: "$"
+      })}
+    </div>
   )
 })

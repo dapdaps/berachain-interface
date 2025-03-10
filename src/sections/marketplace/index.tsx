@@ -14,6 +14,7 @@ import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
 import useTokenVolume from "./hooks/use-token-volume";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
+import { forEach } from "lodash";
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -26,7 +27,6 @@ const splitArray = (list: Record<string, any>[]) => {
   }
   return listAfter;
 };
-
 const MemeTokens: any = [
   bera.yeet,
   bera.bonga,
@@ -35,7 +35,8 @@ const MemeTokens: any = [
   bera.henlo,
   bera.lbgt,
   bera.azt,
-  bera.artio
+  bera.artio,
+  bera.bitcoin
 ];
 
 export const MoreButton = (props: {
@@ -43,7 +44,7 @@ export const MoreButton = (props: {
   classname?: string;
   text?: string;
 }) => {
-  const { onClick = () => {}, classname = "", text = "more" } = props;
+  const { onClick = () => { }, classname = "", text = "more" } = props;
 
   return (
     <button
@@ -103,9 +104,25 @@ const MarketplaceView = () => {
       });
     });
 
-    return [_protocols, splitArray(_tokens), _tokens.length];
+    return [_protocols, splitArray(swapPosition(_tokens)), _tokens.length];
   }, [dexs]);
 
+  function swapPosition(_tokens: any) {
+    let i = -1
+    let j = -1
+    _tokens?.forEach((_token: any, index: number) => {
+      if (_token.symbol === "iBERA") {
+        i = index
+      }
+      if (_token?.symbol === "HOLD") {
+        j = index
+      }
+    })
+    if (i > -1 && j > -1) {
+      [_tokens[i], _tokens[j]] = [_tokens[j], _tokens[i]]
+    }
+    return _tokens
+  }
   const visibleTokens = useMemo(() => {
     const groupsToShow = Math.ceil(displayCount / 3);
     return allTokens.slice(0, groupsToShow);
@@ -196,8 +213,8 @@ const MarketplaceView = () => {
               </div>
               {(isMobile ||
                 (index !== visibleTokens.length - 1 && !isMobile)) && (
-                <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
-              )}
+                  <div className="w-full h-[16px] relative top-[-2px] rounded-[10px] border-black border-[2px] lg:bg-[#D5AD67] md:bg-[#9E762F] shadow-shadow1"></div>
+                )}
             </div>
           ))}
         </div>

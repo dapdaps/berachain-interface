@@ -10,11 +10,14 @@ import usePoolInfo from "./use-pool-info";
 export default function AddLiquidity({ onSuccess, data }: any) {
   const [errorTips, setErrorTips] = useState("");
   const [values, setValues] = useState<any>(null);
-  const [tokens, setTokens] = useState<any>(Object.values(data.tokens));
-  const { info } = usePoolInfo(data.id);
+
+  console.log('====data111111111', data)
+  const [tokens, setTokens] = useState<any>(Object.values(data?.tokens ?? []));
+  const { info } = usePoolInfo(data?.id);
   const [isProportional, setIsProportional] = useState(false);
   const inputTokenRef = useRef<any>(null);
 
+  console.log('====info', info)
   const {
     loading: increasing,
     contracts,

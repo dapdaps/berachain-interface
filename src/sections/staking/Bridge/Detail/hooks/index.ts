@@ -484,7 +484,7 @@ export function useDetail(props: any) {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
     const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id
-    if (!["kodiak"].includes(protocolId)) return null;
+    if (!["kodiak", "bex"].includes(protocolId)) return null;
     const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
     ];
@@ -510,24 +510,39 @@ export function useDetail(props: any) {
     const token1 =
       underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
 
-    console.log('====index====', index)
-    if (index > -1) {
+    // console.log('====data2222', data)
+    if (protocolId === "bex") {
+      const match = data?.initialData?.mint_url?.match(/\/pools\/(0x[a-fA-F0-9]{64})/)
+      const id = match ? match[1] : null
+      console.log('====id', id)
       return {
-        protocol: protocol?.id,
-        token0: { ...token0, icon: token0?.image },
-        token1: { ...token1, icon: token1?.image },
-        version: "island",
-        protocol: "kodiak",
-        stakingToken: data?.initialData?.stake_token
+        id,
+        protocol: protocolId,
+        symbol: data?.id,
+        tokens: [
+          { ...token0, icon: token0?.image },
+          { ...token1, icon: token1?.image }
+        ]
       }
-    }
-    if (underlying_tokens?.length === 2) {
-      return {
-        protocol: protocol?.id,
-        token0: { ...token0, icon: token0?.image },
-        token1: { ...token1, icon: token1?.image },
-        version: "v2"
-      };
+    } else {
+      if (index > -1) {
+        return {
+          protocol: protocol?.id,
+          token0: { ...token0, icon: token0?.image },
+          token1: { ...token1, icon: token1?.image },
+          version: "island",
+          protocol: "kodiak",
+          stakingToken: data?.initialData?.stake_token
+        }
+      }
+      if (underlying_tokens?.length === 2) {
+        return {
+          protocol: protocol?.id,
+          token0: { ...token0, icon: token0?.image },
+          token1: { ...token1, icon: token1?.image },
+          version: "v2"
+        };
+      }
     }
     return null;
   }, [data]);

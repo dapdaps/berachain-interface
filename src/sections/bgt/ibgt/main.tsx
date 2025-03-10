@@ -139,7 +139,7 @@ export default memo(function IbgtMain() {
                 {/* <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>
                   {formatValueDecimal(data?.depositAmount ?? 0, '', 2, false, false)} iBGT
                 </div> */}
-                <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
+                <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" symbol={data?.id} usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
               </div>
             </div>
           </div>
