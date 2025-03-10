@@ -121,8 +121,8 @@ const MintStable = () => {
   return (
     <div 
       ref={containerRef}
-      className={clsx(`w-[130px] bg-no-repeat bg-center cursor-pointer transition-transform relative`,
-        isHovered ? 'bg-[url(/images/header/mint-stable.svg)] transform translate-y-[2px] h-[37px]' : 'bg-[url(/images/header/mint-stable-shadow.svg)] h-[39px]'
+      className={clsx(`w-[131px] h-[38px] bg-no-repeat bg-center cursor-pointer transition-transform relative`,
+        isHovered ? 'bg-[url(/images/header/mint-stable.svg)] transform' : 'bg-[url(/images/header/mint-stable-shadow.svg)]'
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
