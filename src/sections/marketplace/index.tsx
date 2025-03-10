@@ -1,20 +1,16 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import HoneypotCard from "@/sections/marketplace/components/honeypot-card/index";
 import PageBack from "@/components/back";
 import PageTitle from "@/components/title";
-import Tooltip from "@/components/tooltip";
 import dexs from "@/configs/swap";
-import SwapModal from "@/sections/swap/SwapModal";
-import { useMemo } from "react";
 import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
-import useTokenVolume from "./hooks/use-token-volume";
+import HoneypotCard from "@/sections/marketplace/components/honeypot-card/index";
+import SwapModal from "@/sections/swap/SwapModal";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
-import { forEach } from "lodash";
+import useTokenVolume from "./hooks/use-token-volume";
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;

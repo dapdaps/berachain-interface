@@ -18,7 +18,6 @@ export default function BasicModal({
 }: any) {
   const pool = useMemo(() => pools[dex?.toLowerCase()], [dex]);
 
-  console.log('====dex', dex)
   return (
     <Modal
       open={open}
