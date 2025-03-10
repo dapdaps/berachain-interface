@@ -1,12 +1,12 @@
 "use client";
 
 import BasicModal from "./components/modal";
-import BeraSwap from "./beraswap/remove-liquidity";
+import Bex from "./bex/remove-liquidity";
 import Kodiak from "./kodiak/remove-liquidity";
 import { useMemo } from "react";
 
 const RemoveLiquidityPanel = ({ dex, ...rest }: any) => {
-  if (dex?.toLowerCase() === "beraswap") return <BeraSwap {...rest} />;
+  if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} />;
 };
 
@@ -25,7 +25,7 @@ export default function RemoveLiquidityModal({
   }, [data]);
 
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "beraswap") return { data };
+    if (dex?.toLowerCase() === "bex") return { data };
     return {
       tokenId,
       ...data,

@@ -70,7 +70,7 @@ const Item = ({ data, onClick }: any) => {
                 className="absolute right-[-2px] bottom-[0px]"
                 src={
                   pool?.protocol === "BEX"
-                    ? "/images/dapps/beraswap.svg"
+                    ? "/images/dapps/bex.svg"
                     : pool?.protocol === "aquabera"
                     ? "/images/dapps/infrared/aquabera.png"
                     : pool?.protocol === "Kodiak Finance"

@@ -83,7 +83,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "iBGT",
     name: "Infrared BGT",
-    icon: "/assets/tokens/ibgt.png"
+    icon: "/assets/tokens/ibgt.png",
+    color: "rgb(42,17,14)"
   },
   mim: {
     chainId: CHAIN_ID,
@@ -174,7 +175,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 6,
     symbol: "BYUSD",
     name: "BYUSD",
-    icon: "/assets/tokens/byusd.png"
+    icon: "/assets/tokens/byusd.png",
+    color: "rgb(242,180,51)"
   },
   fbtc: {
     chainId: CHAIN_ID,
@@ -328,7 +330,8 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     symbol: "HENLO",
     name: "HENLO",
-    icon: "/assets/tokens/henlo.png"
+    icon: "/assets/tokens/henlo.png",
+    color: "rgb(42,88,251)"
   },
   stbgt: {
     chainId: CHAIN_ID,
@@ -336,7 +339,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "stBGT",
     name: "stBGT",
     decimals: 18,
-    icon: "/assets/tokens/stbgt.png"
+    icon: "/assets/tokens/stbgt.png",
+    color: "rgb(203,48,100)"
   },
   usdbr: {
     chainId: CHAIN_ID,
@@ -344,7 +348,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "USDbr",
     name: "USDbr",
     decimals: 18,
-    icon: "/assets/tokens/usdbr.webp"
+    icon: "/assets/tokens/usdbr.webp",
+    color: "rgb(211,160,49)"
   },
   ibera: {
     chainId: CHAIN_ID,
@@ -352,7 +357,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "iBERA",
     name: "Infrared BERA",
     decimals: 18,
-    icon: "/assets/tokens/ibera.png"
+    icon: "/assets/tokens/ibera.png",
+    color: "rgb(180,71,94)"
   },
   lbgt: {
     chainId: CHAIN_ID,
@@ -360,7 +366,9 @@ export const bera: { [key: string]: Token } = {
     symbol: "LBGT",
     name: "Liquid BGT",
     decimals: 18,
-    icon: "/assets/tokens/lbgt.webp"
+    icon: "/assets/tokens/lbgt.png",
+    isMeme: true,
+    color: "rbg(78,179,249)"
   },
   nome: {
     chainId: CHAIN_ID,
@@ -368,7 +376,8 @@ export const bera: { [key: string]: Token } = {
     symbol: "NOME",
     name: "NOME",
     decimals: 18,
-    icon: "/assets/tokens/nome.webp"
+    icon: "/assets/tokens/nome.webp",
+    color: "rgb(232,193,88)"
   },
   azt: {
     chainId: CHAIN_ID,
@@ -376,7 +385,9 @@ export const bera: { [key: string]: Token } = {
     symbol: "AZT",
     name: "AZEx Token",
     decimals: 18,
-    icon: "/assets/tokens/azt.webp"
+    icon: "/assets/tokens/azt.webp",
+    isMeme: true,
+    color: "#fff"
   },
   artio: {
     chainId: CHAIN_ID,
@@ -384,7 +395,9 @@ export const bera: { [key: string]: Token } = {
     symbol: "ARTIO",
     name: "Artio",
     decimals: 18,
-    icon: "/assets/tokens/artio.png"
+    icon: "/assets/tokens/artio.png",
+    isMeme: true,
+    color: "rgb(244,193,55)"
   },
   bitcoin: {
     chainId: CHAIN_ID,
@@ -392,6 +405,7 @@ export const bera: { [key: string]: Token } = {
     symbol: "BITCOIN",
     name: "HarryPotterObamaSonic10Inu",
     decimals: 8,
-    icon: "/assets/tokens/bitcoin.webp"
+    icon: "/assets/tokens/bitcoin.webp",
+    color: "rgb(0,0,0)"
   }
 };
