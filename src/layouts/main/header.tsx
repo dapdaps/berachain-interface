@@ -59,7 +59,6 @@ const MainLayoutHeader = (props: Props) => {
             <img src="/images/mint-honey.png" alt="mint" />
           </div> */}
 
-          <MintStable />
           
           <div className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
@@ -68,6 +67,9 @@ const MainLayoutHeader = (props: Props) => {
           >
             <img src="/images/icon-nft.png" alt="icon-nft" />
           </div>
+
+          <MintStable />
+
 
           {/* <div className="relative">
             <div className="grayscale w-[107px] h-[30px] rounded-[43px] border border-[#88FFB6] bg-[#AEAEAE]  shadow-[0_3px_0_0_black] cursor-not-allowed">

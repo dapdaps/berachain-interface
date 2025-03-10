@@ -6,6 +6,7 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import { useProvider } from "@/hooks/use-provider";
 import { useAccount } from "wagmi";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 
 const MintNectModal = ({ isOpen, onClose }: any) => {
   const { basic, networks } = config as any;
@@ -18,8 +19,8 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>();
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
-
-  const currentMarket = useMemo(() => data?.markets?.[0], [data]);
+  
+  const currentMarket = data?.markets?.[0]
 
   useEffect(() => {
     if (!chainId) {
@@ -30,8 +31,10 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
   }, [chainId]);
 
   useEffect(() => {
-    setLoading(isChainSupported);
-  }, [isChainSupported, address]);
+    if (isOpen && isChainSupported) {
+      setLoading(true);
+    }
+  }, [isOpen, isChainSupported, address]);
 
   return (
     <>
