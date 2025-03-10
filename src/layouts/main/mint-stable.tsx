@@ -38,6 +38,7 @@ const MintStable = () => {
     setNectModalOpen(false);
     setIsDropdownOpen(false);
     setIsHovered(false);
+    setSelectedToken(null); 
     if (swiperRef.current) {
       swiperRef.current.autoplay.start();
     }
@@ -85,19 +86,17 @@ const MintStable = () => {
     
     const toElement = e.relatedTarget as HTMLElement | null;
     
-    if (!toElement) {
+    if (
+      !toElement || 
+      (containerRef.current && !containerRef.current.contains(toElement) && 
+       dropdownRef.current && !dropdownRef.current.contains(toElement))
+    ) {
       setIsHovered(false);
+      setIsDropdownOpen(false);
       if (swiperRef.current) {
         swiperRef.current.autoplay.start();
       }
-      return;
     }
-    
-    if (dropdownRef.current && dropdownRef.current.contains(toElement)) {
-      return;
-    }
-    
-    setIsHovered(false);
   };
   
   const handleTokenClick = (tokenId: string, e: React.MouseEvent) => {
@@ -153,16 +152,7 @@ const MintStable = () => {
           transition={{ duration: 0.2 }}
           className="absolute top-[100%] left-0 w-[128px] h-[90px] bg-[#FFFDEB] border border-black rounded-[12px] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)] mt-0 z-50 p-[6px] pb-[10px]"
           onMouseEnter={handleMouseEnter}
-          onMouseLeave={(e) => {
-            const toElement = e.relatedTarget as HTMLElement | null;
-            if (!toElement || !containerRef.current?.contains(toElement)) {
-              setIsDropdownOpen(false);
-              setIsHovered(false);
-              if (swiperRef.current) {
-                swiperRef.current.autoplay.start();
-              }
-            }
-          }}
+          onMouseLeave={handleMouseLeave}
         >
           <div className="flex flex-col space-y-2">
             {tokens.map((token) => (
