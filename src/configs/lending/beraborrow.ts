@@ -19,7 +19,7 @@ const networks = {
       earnToken: bera['snect'],
     },
     // lt 160 = Risky, otherwise is Good
-    riskyRatio: 160,
+    riskyRatio: 220,
     liquidationReserve: 1,
     // 1-0.5%=0.995
     borrowingFee: 0.005,
