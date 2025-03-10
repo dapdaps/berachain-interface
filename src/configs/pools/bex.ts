@@ -1,4 +1,4 @@
-import beraswap from "../swap/beraswap";
+import bex from "../swap/bex";
 
 const contracts: { [key: number]: any } = {
   80094: {
@@ -6,12 +6,12 @@ const contracts: { [key: number]: any } = {
     BalancerQuery: "0x3C612e132624f4Bd500eE1495F54565F0bcc9b59"
   }
 };
-const tokens = beraswap.tokens;
+const tokens = bex.tokens;
 
 export default {
   contracts,
   tokens,
-  officalSite: "/dex/beraswap/pools",
-  name: "BeraSwap",
+  officalSite: "/dex/bex/pools",
+  name: "Bex",
   graph: "https://chgbtcc9ffu7rbdw2kmu4urwy.stellate.sh"
 };

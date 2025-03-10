@@ -175,8 +175,8 @@ export default function Invest(props: any) {
             <img
               style={{ width: 20 }}
               src={
-                pool?.protocol === "BeraSwap"
-                  ? "/images/dapps/beraswap.svg"
+                pool?.protocol === "Bex"
+                  ? "/images/dapps/bex.svg"
                   : pool?.protocol === "aquabera"
                     ? "/images/dapps/infrared/aquabera.png"
                     : pool?.protocol === "Kodiak Finance"

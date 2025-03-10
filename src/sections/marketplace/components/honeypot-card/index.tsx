@@ -136,7 +136,7 @@ const HoneypotCard = (props: any) => {
           <div className="w-full h-full rounded-[18px] border border-black bg-[#FFE5B8] py-[11px] pl-[8px] pr-[12px]">
             {/*title*/}
             <div className="text-[20px] text-center font-CherryBomb leading-none mb-[7px]">
-              {name}
+              {symbol}
             </div>
             {list.map((item, index) => (
               <div

@@ -2,11 +2,11 @@
 
 import { useRef, forwardRef, useMemo } from "react";
 import BasicModal from "./components/modal";
-import BeraSwap from "./beraswap/add-liquidity";
+import Bex from "./bex/add-liquidity";
 import Kodiak from "./kodiak/increase-liquidity";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
-  if (dex?.toLowerCase() === "beraswap") return <BeraSwap {...rest} />;
+  if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
 });
 
@@ -28,7 +28,7 @@ export default function IncreaseLiquidityModal({
   }, [data, title]);
 
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "beraswap") return { data };
+    if (dex?.toLowerCase() === "bex") return { data };
     return {
       defaultToken0: data.token0,
       defaultToken1: data.token1,
