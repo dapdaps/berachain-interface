@@ -510,11 +510,9 @@ export function useDetail(props: any) {
     const token1 =
       underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
 
-    // console.log('====data2222', data)
     if (protocolId === "bex") {
       const match = data?.initialData?.mint_url?.match(/\/pools\/(0x[a-fA-F0-9]{64})/)
       const id = match ? match[1] : null
-      console.log('====id', id)
       return {
         id,
         protocol: protocolId,
