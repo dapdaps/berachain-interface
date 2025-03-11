@@ -80,7 +80,6 @@ export default function usePoolsIslands() {
           ...(result.data.data.kodiakVaults || [])
         ];
 
-        console.log('====list=', list)
         setPools(
           list.map((item: any) => {
             const _token0 =
@@ -134,6 +133,7 @@ export default function usePoolsIslands() {
               tvl: item.totalValueLockedUSD,
               volume: item.volumeUSD,
               version: item.pool.tick ? "v3" : "v2",
+              type: "island",
               apr: item.apr.averageApr,
               lowerPrice,
               upperPrice,

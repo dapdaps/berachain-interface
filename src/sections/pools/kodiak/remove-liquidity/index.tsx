@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import V2 from './v2';
 import V3 from './v3';
+import Island from './island'
 
 export default forwardRef(function RemoveLiquidity(
   { version, ...rest }: any,
@@ -12,4 +13,5 @@ export default forwardRef(function RemoveLiquidity(
   if (version === 'v3') {
     return <V3 {...rest} ref={ref} />;
   }
+  return <Island {...rest} />
 });
