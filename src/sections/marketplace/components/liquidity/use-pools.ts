@@ -8,6 +8,7 @@ import { default as usePoolsV3 } from "@/sections/pools/hooks/use-pools-v3";
 import usePoolsIslands from "@/sections/pools/kodiak/use-pools-islands";
 import useUserPools from "@/sections/pools/bex/use-user-pools";
 import useUserList from "@/sections/pools/kodiak/island/hooks/use-user-list";
+import Big from "big.js";
 export default function usePools(refresher: number) {
   // const [pools, setPools] = useState<any>([]);
   // const [loading, setLoading] = useState(false);
@@ -78,7 +79,7 @@ export default function usePools(refresher: number) {
         }),
         ...kodiakV2Pools,
         ...kodiakV3Pools
-      ]
+      ].sort((prev, next) => Big(next["tvl"] || 0).gt(prev["tvl"] || 0) ? 1 : -1)
     }
   }, [kodiakIslands, bexPools, bexLoading, kodiakIslandsLoading, userKodiakIslandsLoading, userKodiakV2Loading, userKodiakV3Loading])
 
