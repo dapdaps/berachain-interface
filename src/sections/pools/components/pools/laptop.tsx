@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import List from "@/sections/marketplace/components/list";
 import PoolTable from "../pool-table";
 import { numberFormatter } from "@/utils/number-formatter";
+import Big from "big.js";
 
 const PAGE_SIZE = 10;
 
@@ -58,9 +59,20 @@ export default function Laptop({
       title: "Pool",
       key: "pool",
       sort: false,
-      width: "50%",
+      width: "30%",
       render: (item: any, index: number) => {
         return <PoolTable item={item} />;
+      }
+    },
+    {
+      title: "Apr",
+      key: "apr",
+      sort: true,
+      width: "20%",
+      render: (item: any, index: number) => {
+        return Big(item?.["apr"] ?? 0).gt(0)
+          ? `${numberFormatter(item["apr"], 2, true)}%`
+          : "-";
       }
     },
     {

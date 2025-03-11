@@ -15,6 +15,7 @@ import CheckBox from "@/components/check-box";
 import MobileList from "./mobile/list";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { numberFormatter } from "@/utils/number-formatter";
+import Big from "big.js";
 
 const PAGE_SIZE = 9;
 
@@ -171,9 +172,20 @@ export default function Liquidity() {
                 title: "Pool",
                 key: "pool",
                 sort: false,
-                width: "60%",
+                width: "45%",
                 render: (item: any, index: number) => {
                   return <PoolTable item={item} />;
+                }
+              },
+              {
+                title: "Apr",
+                key: "apr",
+                sort: true,
+                width: "15%",
+                render: (item: any, index: number) => {
+                  return Big(item?.["apr"] ?? 0).gt(0)
+                    ? `${numberFormatter(item["apr"], 2, true)}%`
+                    : "-";
                 }
               },
               {
