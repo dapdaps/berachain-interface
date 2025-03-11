@@ -248,8 +248,6 @@ export default function Liquidity() {
                       });
                     }
 
-                    console.log('====item', item)
-                    console.log('=====_removeable', _removeable)
                   }
 
                   return (
@@ -259,16 +257,13 @@ export default function Liquidity() {
                         setSelectedRecord(item);
                       }}
                       onRemove={() => {
-                        if (item.type === "island") {
+
+                        if (item.version === "island") {
                           setModalType("remove");
                           setSelectedRecord({
                             ...item,
                             ...(_removeable[0] ? _removeable[0] : {})
                           });
-                          console.log('=====111111=====', {
-                            ...item,
-                            ...(_removeable[0] ? _removeable[0] : {})
-                          })
                           return;
                         } else {
                           if (item.version === "v3") {

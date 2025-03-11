@@ -81,7 +81,7 @@ export default function useWithdraw({ data, amount, onSuccess, onError }: any) {
       });
     } catch (err: any) {
       console.log(err);
-      onError();
+      onError?.();
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
