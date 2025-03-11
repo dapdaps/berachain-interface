@@ -36,10 +36,11 @@ export default function AddLiquidityModal({
   const params = useMemo(() => {
     if (dex?.toLowerCase() === "bex") return { data };
     return {
+      ...data,
       defaultToken0: data.token0,
       defaultToken1: data.token1,
       defaultFee: data.fee,
-      version: data.version
+      version: data.version,
     };
   }, [data, dex]);
 

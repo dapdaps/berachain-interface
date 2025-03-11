@@ -7,6 +7,7 @@ import Big from "big.js";
 import { balanceFormated } from "@/utils/balance";
 
 export default function Withdraw({ data, info, onSuccess }: any) {
+
   const [percent, setPercent] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [amount0, amount1, amount] = useMemo(() => {

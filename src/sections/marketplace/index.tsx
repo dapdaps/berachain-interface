@@ -114,8 +114,9 @@ const MarketplaceView = () => {
         j = index
       }
     })
+
     if (i > -1 && j > -1) {
-      [_tokens[i], _tokens[j]] = [_tokens[j], _tokens[i]]
+      _tokens?.splice(i, 0, _tokens.splice(j, 1)[0])
     }
     return _tokens
   }

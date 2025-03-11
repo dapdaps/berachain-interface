@@ -37,8 +37,6 @@ export const ClosePosition = (props: any) => {
       valid: true,
       text: 'Confirm',
     };
-    console.log('====market?.borrowed', market?.borrowed)
-    console.log('====balance', balance)
     if (Big(market?.borrowed || 0).minus(liquidationReserve).gt(balance)) {
       result.valid = false;
       result.text = `Insufficient ${market?.borrowToken?.symbol} Balance`;
@@ -50,6 +48,9 @@ export const ClosePosition = (props: any) => {
   useEffect(() => {
     setLoading(true);
   }, []);
+
+
+  console.log('=====market====11111', market)
 
   return (
     <div className="px-[12px] py-[20px] flex flex-col items-stretch gap-[5px]">
@@ -70,8 +71,8 @@ export const ClosePosition = (props: any) => {
         loading={loading}
         style={{ height: 60, width: '100%', marginTop: 10 }}
         invalidText={buttonValid.valid ? void 0 : buttonValid.text}
-        amount={market?.balance || ''}
-        token={market}
+        amount={Big(market?.borrowed ?? 0).minus(liquidationReserve).toFixed()}
+        token={market?.borrowToken}
         chain={{ chainId: DEFAULT_CHAIN_ID }}
         spender={network.spenderAddress}
         provider={provider}
