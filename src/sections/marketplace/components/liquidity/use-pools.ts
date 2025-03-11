@@ -66,7 +66,7 @@ export default function usePools(refresher: number) {
             protocol: "bex",
             type: "bex",
             // fee: item?.fees24h,
-            volume: item?.volume24h
+            volume: item?.volume24h,
           }
         }),
         ...(kodiakIslands ? kodiakIslands : []).map(item => {
@@ -125,9 +125,7 @@ export default function usePools(refresher: number) {
       const key =
         pool.token0.address.toLowerCase() +
         "-" +
-        pool.token1.address.toLowerCase() +
-        "-" +
-        pool.fee;
+        pool.token1.address.toLowerCase()
       if (_pools[key]) {
         _pools[key].push(pool);
       } else {
@@ -155,6 +153,8 @@ export default function usePools(refresher: number) {
     return _pools;
   }, [userKodiakV3Pools, pools]);
 
+
+  console.log('=====kodiakV2Balances====', kodiakV2Balances)
   return {
     pools,
     loading,

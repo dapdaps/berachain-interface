@@ -7,6 +7,8 @@ export default forwardRef(function RemoveLiquidity(
   { version, ...rest }: any,
   ref: any
 ) {
+  console.log('=====222222version', version)
+  console.log('=====222222rest====', rest)
   if (version === 'v2') {
     return <V2 {...rest} />;
   }

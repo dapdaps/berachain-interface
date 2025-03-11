@@ -23,8 +23,6 @@ export default function RemoveLiquidityModal({
       return `Remove ${data.token0.symbol}-${data.token1.symbol}`;
     return `Remove ${data.symbol}`;
   }, [data]);
-
-  console.log('======data=====', data)
   const params = useMemo(() => {
     if (dex?.toLowerCase() === "bex") return { data };
     return {

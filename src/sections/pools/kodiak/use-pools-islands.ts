@@ -133,7 +133,7 @@ export default function usePoolsIslands() {
               fee: item.pool.feeTier,
               tvl: item.totalValueLockedUSD,
               volume: item.volumeUSD,
-              version: item.pool.tick ? "v3" : "v2",
+              // version: item.pool.tick ? "v3" : "v2",
               type: "island",
               apr: item.apr.averageApr,
               lowerPrice,
