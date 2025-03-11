@@ -3,6 +3,7 @@ import axios from "axios";
 import { TOKENS } from "@/configs";
 import bex from "@/configs/pools/bex";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import Big from "big.js";
 
 export default function usePools() {
   const [pools, setPools] = useState<any>([]);
@@ -46,7 +47,8 @@ export default function usePools() {
             symbol: _s.length ? _s.join(" | ") : pool.name,
             id: pool.id,
             address: pool.address,
-            poolType: pool.type
+            poolType: pool.type,
+            apr: pool?.dynamicData?.aprItems?.reduce((acc, curr) => Big(acc).plus(Big(curr?.apr ?? 0).times(100)), 0),
           };
         })
       );

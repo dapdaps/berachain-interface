@@ -5,7 +5,7 @@ import { memo, useState } from "react"
 
 export default memo(function Faq() {
   const [faqVisible, setFaqVisible] = useState(false)
-  const [faqIndex, setFaqIndex] = useState(-1)
+  const [faqIndex, setFaqIndex] = useState(0)
   const FaqList = [{
     question: "What is Bintent?",
     answer: (
@@ -58,6 +58,7 @@ export default memo(function Faq() {
         <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">3.</span>Arbitrum</div>
         <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">4.</span>Base</div>
         <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">5.</span>Solana</div>
+        <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">6.</span>Berachain</div>
       </div>
     )
   }]

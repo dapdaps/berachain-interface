@@ -4,6 +4,7 @@ import config from "@/configs/pools/kodiak";
 import { tickToPrice } from "../tick-math";
 import { balanceFormated } from "@/utils/balance";
 import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
+import Big from "big.js";
 
 export default function usePoolsIslands() {
   const [pools, setPools] = useState<any>();
