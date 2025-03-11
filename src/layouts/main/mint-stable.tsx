@@ -127,7 +127,7 @@ const MintStable = () => {
       onMouseLeave={handleMouseLeave}
       onClick={handleContainerClick}
     >
-      <Swiper
+      {/* <Swiper
         modules={[Autoplay]}
         autoplay={{ delay: 1000, disableOnInteraction: false }}
         loop={true}
@@ -141,7 +141,9 @@ const MintStable = () => {
               </SwiperSlide>
             ))
         }
-      </Swiper>
+      </Swiper> */}
+
+      <img src='/images/header/honey.svg' className="absolute left-[6px] bottom-[4px] w-[24px] h-[24px]" />
 
       {isDropdownOpen && !isAnyModalOpen && (
         <motion.div 
