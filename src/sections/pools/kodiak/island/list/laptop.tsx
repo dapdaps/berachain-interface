@@ -3,6 +3,7 @@ import { balanceShortFormated } from "@/utils/balance";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useMemo } from "react";
 import PoolTable from "../../../components/pool-table";
+import Big from "big.js";
 
 const PAGE_SIZE = 9;
 
