@@ -13,6 +13,9 @@ import { useHall } from "@/stores/hall";
 import { numberFormatter } from "@/utils/number-formatter";
 import MintHoneyModal from "@/components/mint-honey-modal";
 import { useState } from "react";
+import Hall from "./hall";
+import MintStable from "./mint-stable";
+import { motion } from "framer-motion";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -23,7 +26,6 @@ const MainLayoutHeader = (props: Props) => {
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
 
-  const [mineModalOpen, setMineModalOpen] = useState(false);
 
   const goHome = () => {
     router.replace("/");
@@ -54,19 +56,26 @@ const MainLayoutHeader = (props: Props) => {
         </div>
         <div className="text-white flex items-center gap-x-[17px]">
 
-          <div className="cursor-pointer mt-[4px] w-[120px]" onClick={() => setMineModalOpen(true)}>
+          {/* <div className="cursor-pointer mt-[4px] w-[120px]" onClick={() => setMineModalOpen(true)}>
             <img src="/images/mint-honey.png" alt="mint" />
-          </div>
+          </div> */}
+
           
-          <div className="cursor-pointer relative -top-[8px] w-[57px]"
+          <motion.div 
+            className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
-              router.replace("/kingdomly")
+              router.push("/kingdomly")
             }}
+            whileHover={{ x: -4 }}
+            transition={{ duration: 0.2 }}
           >
             <img src="/images/icon-nft.png" alt="icon-nft" />
-          </div>
+          </motion.div>
 
-          <div className="relative">
+          <MintStable />
+
+
+          {/* <div className="relative">
             <div className="grayscale w-[107px] h-[30px] rounded-[43px] border border-[#88FFB6] bg-[#AEAEAE]  shadow-[0_3px_0_0_black] cursor-not-allowed">
               <div className="-ml-[12px] w-[111px]">
                 <img src="/images/icon-launchpad-bg.png" alt="icon-launchpad-bg" />
@@ -75,28 +84,12 @@ const MainLayoutHeader = (props: Props) => {
             <div className="absolute -right-[16px] -top-[6px] flex items-center justify-center w-[42px] h-[13px] rounded-[8px] border-black border bg-[#FFF5A9]">
               <span className="text-black text-[16px] font-bold scale-50">Thoon...</span>
             </div>
-          </div>
-          {/* <div className="cursor-pointer pl-[5px] flex items-center gap-[4px] w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/hall/icon-hall-button-bg.svg')] bg-center"
-            onClick={() => {
-              router.replace("/hall")
-            }}
-          >
-            <div className="w-[33px] -mt-[3px]">
-              {
-                hallStore.currentTab === "ibgt" ? (
-                  <img src="/images/hall/icon-ibgt.svg" alt="icon-bgt" />
-                ) : (
-                  <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
-                )
-              }
-
-            </div>
-            <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{hallStore.currentTab === "ibgt" ? `${numberFormatter(iBGTCount, 3, true)} iBGT` : `${numberFormatter(BGTCount, 3, true)} BGT`}</div>
           </div> */}
+          <Hall />
+
           {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" /> */}
           <ConnectWallet />
-          <MintHoneyModal isOpen={mineModalOpen} onClose={() => setMineModalOpen(false) } />
         </div>
       </div>
     </header>
