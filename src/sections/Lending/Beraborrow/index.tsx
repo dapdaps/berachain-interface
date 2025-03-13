@@ -62,7 +62,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
         tabs={[
           {
             key: 'borrow',
-            label: 'Borrow',
+            label: 'Lend & Borrow',
             children: (
               <Markets
                 loading={loading}
