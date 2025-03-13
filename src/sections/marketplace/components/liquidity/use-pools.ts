@@ -67,6 +67,8 @@ export default function usePools(refresher: number) {
             type: "bex",
             // fee: item?.fees24h,
             volume: item?.volume24h,
+            symbol: "BEX " + item?.symbol?.split("|").map(str => str.trim()).join("-"),
+            protocolIcon: "/images/dapps/bex.svg"
           }
         }),
         ...(kodiakIslands ? kodiakIslands : []).map(item => {
@@ -79,7 +81,7 @@ export default function usePools(refresher: number) {
         }),
         ...kodiakV2Pools,
         ...kodiakV3Pools
-      ].sort((prev, next) => Big(next["tvl"] || 0).gt(prev["tvl"] || 0) ? 1 : -1)
+      ].sort((prev, next) => Big(next["apr"] || 0).gt(prev["apr"] || 0) ? 1 : -1)
     }
   }, [kodiakIslands, bexPools, bexLoading, kodiakIslandsLoading, userKodiakIslandsLoading, userKodiakV2Loading, userKodiakV3Loading])
 
