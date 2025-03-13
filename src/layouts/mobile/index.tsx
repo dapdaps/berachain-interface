@@ -36,7 +36,7 @@ const menuItems = [
     title: "Portfolio",
     href: "/portfolio",
     dataBp: "1015-002-006",
-    disabled: true
+    disabled: false
   },
   { id: 7, title: "Maps", href: "/", dataBp: "1015-002-007" }
 ];
@@ -61,12 +61,12 @@ const dapps: DApp[] = [
   //   icon: "/images/dapps/infrared/berps.svg",
   //   href: "/staking/berps"
   // },
-  // {
-  //   id: "bex",
-  //   name: "Bex",
-  //   icon: "/images/dapps/bex.svg",
-  //   href: "/dex/bex"
-  // },
+  {
+    id: "bex",
+    name: "Bex",
+    icon: "/images/dapps/bex.svg",
+    href: "/dex/bex"
+  },
   // {
   //   id: "bend",
   //   name: "Bend",
@@ -96,7 +96,31 @@ const dapps: DApp[] = [
     name: "Ooga Booga",
     icon: "/images/dapps/ooga-booga.svg",
     href: "/dex/ooga-booga"
-  }
+  },
+  {
+    id: "beraborrow",
+    name: 'Beraborrow',
+    icon: '/images/dapps/beraborrow.png',
+    href: '/lending/beraborrow',
+  },
+  {
+    id: "aquabera",
+    name: 'AquaBera',
+    icon: '/images/dapps/infrared/aquabera.png',
+    href: '/staking/aquabera',
+  },
+  {
+    id: "bedrock",
+    name: 'Bedrock',
+    icon: '/images/dapps/bedrock.svg',
+    href: '/staking/bedrock',
+  },
+  {
+    id: "kingdomly",
+    name: 'Kingdomly',
+    icon: '/images/dapps/kingdomly.svg',
+    href: '/kingdomly',
+  },
 ];
 
 const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
