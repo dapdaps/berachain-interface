@@ -219,7 +219,9 @@ const EarnLending = (props: any) => {
           current={tab}
           className="w-[196px] hidden md:block"
           style={{ height: 40, borderRadius: 12 }}
-          cursorStyle={{ borderRadius: 10 }}
+          cursorStyle={{ borderRadius: 10, width: 82 }}
+          cursorClassName="!w-[82px]"
+          tabStyle={{ width: 82 }}
         />
       </div>
       {!isMobile ? (
