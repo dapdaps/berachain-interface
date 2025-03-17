@@ -312,7 +312,6 @@ export default function Invest(props: any) {
             );
           }
 
-          console.log('=====record====', record)
           if (isEarn) {
             return (
               <div className="flex items-center gap-2">
@@ -392,7 +391,6 @@ export default function Invest(props: any) {
         render: (text: string, record: any) => {
           const isValid = Big(record.depositAmount || 0).gt(0);
 
-          console.log('====record', record)
           return record?.platform === "aquabera" ? (
             isValid ? (
               <div className="decoration-solid">

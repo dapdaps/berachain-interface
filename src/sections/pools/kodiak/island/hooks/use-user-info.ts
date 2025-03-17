@@ -155,12 +155,12 @@ export default function useUserInfo({
   };
 
   useEffect(() => {
-    if (account) {
+    if (account && provider) {
       queryInfo();
     } else {
       setLoading(false);
     }
-  }, [account]);
+  }, [account, provider]);
 
   return { info, loading, queryInfo };
 }
