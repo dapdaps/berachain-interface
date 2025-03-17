@@ -14,6 +14,7 @@ import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
 import useTokenVolume from "./hooks/use-token-volume";
 import MemeTokensGrid from "./components/memeTokensGrid.tsx";
+import { usePrice7d } from '@/sections/marketplace/hooks/use-price-7d';
 
 const splitArray = (list: Record<string, any>[]) => {
   const length = list.length;
@@ -111,6 +112,8 @@ const MarketplaceView = () => {
     return allTokens.slice(0, groupsToShow);
   }, [allTokens, displayCount]);
 
+  const { data: price7dData } = usePrice7d({ visibleTokens });
+
   const onMore = () => {
     setDisplayCount((prev) => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
   };
@@ -190,6 +193,7 @@ const MarketplaceView = () => {
                         {...it}
                         onSwap={() => onSwap(it)}
                         voulmes={voulmes}
+                        priceData={price7dData[it.symbol]}
                       />
                     </div>
                   ))}
