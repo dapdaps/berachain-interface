@@ -4,7 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 const createBundleStatsPlugin = require("next-plugin-bundle-stats");
 
-const BASE_URL = process.env.NEXT_PUBLIC_API || "https://api.dapdap.net";
+const BASE_URL = "https://api.dapdap.net";
 const GAME_BASE_URL =
   process.env.NEXT_PUBLIC_GAME_API_DOMAIN ||
   "https://dev-api-game.beratown.app";
