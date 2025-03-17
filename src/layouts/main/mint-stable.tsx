@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import type { Swiper as SwiperType } from "swiper";
-import "swiper/css";
-import "swiper/css/autoplay";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Autoplay } from "swiper/modules";
+// import type { Swiper as SwiperType } from "swiper";
+// import "swiper/css";
+// import "swiper/css/autoplay";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 
@@ -15,7 +15,7 @@ const MintStable = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
-  const swiperRef = useRef<SwiperType | null>(null);
+//   const swiperRef = useRef<SwiperType | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [mineModalOpen, setMineModalOpen] = useState(false);
@@ -39,9 +39,9 @@ const MintStable = () => {
     setIsDropdownOpen(false);
     setIsHovered(false);
     setSelectedToken(null); 
-    if (swiperRef.current) {
-      swiperRef.current.autoplay.start();
-    }
+    // if (swiperRef.current) {
+    //   swiperRef.current.autoplay.start();
+    // }
   };
 
   const tokens = [
@@ -59,9 +59,9 @@ const MintStable = () => {
       ) {
         setIsDropdownOpen(false);
         setIsHovered(false);
-        if (swiperRef.current) {
-          swiperRef.current.autoplay.start();
-        }
+        // if (swiperRef.current) {
+        //   swiperRef.current.autoplay.start();
+        // }
       }
     };
 
@@ -76,9 +76,9 @@ const MintStable = () => {
     
     setIsHovered(true);
     setIsDropdownOpen(true);
-    if (swiperRef.current) {
-      swiperRef.current.autoplay.stop();
-    }
+    // if (swiperRef.current) {
+    //   swiperRef.current.autoplay.stop();
+    // }
   };
   
   const handleMouseLeave = (e: React.MouseEvent) => {
@@ -93,9 +93,9 @@ const MintStable = () => {
     ) {
       setIsHovered(false);
       setIsDropdownOpen(false);
-      if (swiperRef.current) {
-        swiperRef.current.autoplay.start();
-      }
+    //   if (swiperRef.current) {
+    //     swiperRef.current.autoplay.start();
+    //   }
     }
   };
   
@@ -127,7 +127,7 @@ const MintStable = () => {
       onMouseLeave={handleMouseLeave}
       onClick={handleContainerClick}
     >
-      <Swiper
+      {/* <Swiper
         modules={[Autoplay]}
         autoplay={{ delay: 1000, disableOnInteraction: false }}
         loop={true}
@@ -141,7 +141,9 @@ const MintStable = () => {
               </SwiperSlide>
             ))
         }
-      </Swiper>
+      </Swiper> */}
+
+      <img src='/images/header/honey.svg' className="absolute left-[6px] bottom-[4px] w-[24px] h-[24px]" />
 
       {isDropdownOpen && !isAnyModalOpen && (
         <motion.div 

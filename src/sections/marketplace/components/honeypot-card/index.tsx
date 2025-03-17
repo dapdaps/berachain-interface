@@ -96,7 +96,7 @@ const HoneypotCard = (props: any) => {
             />
           </svg>
           <button className="hidden md:block absolute md:bottom-[-24px] md:z-[10] border border-black md:bg-[#E9B965] rounded-[10px] md:px-[12px] py-[7px] leading-none font-Montserrat font-[600] text-[#000] md:text-sm">
-            {name}
+            {symbol}
           </button>
         </div>
       </Popover>

@@ -349,11 +349,11 @@ const Home = () => {
               />
             </motion.div>
             <motion.div
-              className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw] opacity-50"
-              // whileTap="tap"
+              className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw]"
+              whileTap="tap"
               onClick={() => {
-                // router.push("/portfolio");
-                // tapSound.play?.();
+                router.push("/portfolio");
+                tapSound.play?.();
                 // handleReport('1015-006');
               }}
               data-bp="1015-006"
@@ -402,7 +402,7 @@ const Home = () => {
               /> */}
 
               <EntryCard
-                className="right-[18.974vw] top-[7.692vw] w-[28.538vw] h-[8.794vw]"
+                className="right-[18.974vw] top-[7.692vw] w-[28.538vw] h-[8.794vw] whitespace-nowrap"
                 childrenClassName="rotate-[-9deg]"
                 bgClassName="rotate-[-9deg]"
               >
