@@ -147,13 +147,11 @@ const DetailBex = (props: any) => {
               <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {data?.id || data?.tokens?.[0] || "iBGT"}
               </div>
-
               {/* <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {formatValueDecimal(data?.depositAmount ?? 0, "", 2, false, false)}
               </div> */}
               <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" symbol={data?.id} usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
             </div>
-
           </div>
           {
             protocol === "dolomite" && (
