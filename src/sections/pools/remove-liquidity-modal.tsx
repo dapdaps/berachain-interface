@@ -23,7 +23,6 @@ export default function RemoveLiquidityModal({
       return `Remove ${data.token0.symbol}-${data.token1.symbol}`;
     return `Remove ${data.symbol}`;
   }, [data]);
-
   const params = useMemo(() => {
     if (dex?.toLowerCase() === "bex") return { data };
     return {
@@ -31,7 +30,7 @@ export default function RemoveLiquidityModal({
       ...data,
       version: data.version
     };
-  }, [data, dex]);
+  }, [data, dex, tokenId]);
   return (
     <BasicModal
       title={mergedTitle}

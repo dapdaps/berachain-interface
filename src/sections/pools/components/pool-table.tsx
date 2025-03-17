@@ -15,7 +15,7 @@ export default function PoolTable({ item, onClick = () => { } }: any) {
             width={30}
             height={30}
             alt={token.name}
-            className={`rounded-[50%] ${i !== 0 && "ml-[-8px]"}`}
+            className={`rounded-[50%] ${i !== 0 && "ml-[-20px]"}`}
           />
         ))}
         {item.protocolIcon && (

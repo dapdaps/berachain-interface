@@ -15,6 +15,7 @@ import CheckBox from "@/components/check-box";
 import MobileList from "./mobile/list";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { numberFormatter } from "@/utils/number-formatter";
+import Big from "big.js";
 
 const PAGE_SIZE = 9;
 
@@ -49,7 +50,8 @@ export default function Liquidity() {
     kodiakV2Balances,
     kodiakV3Loading,
     kodiakV3Balances,
-    kodiakTicksInfo
+    kodiakTicksInfo,
+    kodiakIslandsBalances
   } = usePools(refresher);
   const { handleReport } = useClickTracking();
 
@@ -170,9 +172,20 @@ export default function Liquidity() {
                 title: "Pool",
                 key: "pool",
                 sort: false,
-                width: "60%",
+                width: "45%",
                 render: (item: any, index: number) => {
                   return <PoolTable item={item} />;
+                }
+              },
+              {
+                title: "Apr",
+                key: "apr",
+                sort: true,
+                width: "15%",
+                render: (item: any, index: number) => {
+                  return Big(item?.["apr"] ?? 0).gt(0)
+                    ? `${numberFormatter(item["apr"], 2, true)}%`
+                    : "-";
                 }
               },
               {
@@ -199,38 +212,6 @@ export default function Liquidity() {
                     : "-";
                 }
               },
-              // {
-              //   title: "Apr",
-              //   key: "apr",
-              //   sort: true,
-              //   width: "15%",
-              //   render: (item: any, index: number) => {
-              //     console.log('====item', item)
-              //     return item["apr"]
-              //       ? numberFormatter(item["apr"], 2, true, {
-              //         isShort: true
-              //       })
-              //       : "-";
-              //   }
-              // },
-              // {
-              //   title: "Your Position",
-              //   key: "yours",
-              //   sort: true,
-              //   width: "15%",
-              //   render: (item: any, index: number) => {
-              //     return item["yours"] ? (
-              //       <div className="flex underline">
-              //         {numberFormatter(item["yours"], 2, true, {
-              //           prefix: "$",
-              //           isShort: true
-              //         })}
-              //       </div>
-              //     ) : (
-              //       "-"
-              //     );
-              //   }
-              // },
               {
                 title: "Action",
                 key: "Action",
@@ -243,26 +224,32 @@ export default function Liquidity() {
                       record: item,
                       balance: bexBalances
                     });
+
                   }
-                  if (
-                    item.protocol.toLowerCase() === "kodiak" &&
-                    item.version === "v2"
-                  ) {
-                    _removeable = checkIsExist({
-                      record: item,
-                      balance: kodiakV2Balances
-                    });
+
+
+                  if (item?.protocol?.toLowerCase() === "kodiak") {
+                    if (item.version === "v2") {
+                      _removeable = checkIsExist({
+                        record: item,
+                        balance: kodiakV2Balances
+                      });
+                    } else if (item.version === "v3") {
+                      _removeable = checkIsExist({
+                        record: item,
+                        balance: kodiakV3Balances,
+                        hasFee: true
+                      });
+                    } else if (item.version === "island") {
+                      _removeable = checkIsExist({
+                        record: item,
+                        balance: kodiakIslandsBalances,
+                        hasFee: true
+                      });
+                    }
+
                   }
-                  if (
-                    item.protocol.toLowerCase() === "kodiak" &&
-                    item.version === "v3"
-                  ) {
-                    _removeable = checkIsExist({
-                      record: item,
-                      balance: kodiakV3Balances,
-                      hasFee: true
-                    });
-                  }
+
                   return (
                     <Action
                       onAdd={() => {
@@ -270,19 +257,40 @@ export default function Liquidity() {
                         setSelectedRecord(item);
                       }}
                       onRemove={() => {
-                        if (item.version !== "v3") {
+
+                        if (item.version === "island") {
                           setModalType("remove");
-                          setSelectedRecord(item);
+                          setSelectedRecord({
+                            ...item,
+                            ...(_removeable[0] ? _removeable[0] : {})
+                          });
                           return;
+                        } else {
+                          if (item.version === "v3") {
+                            setModalType("pools");
+                            setSelectedRecord({ ...item, pools: _removeable });
+                          } else {
+                            setModalType("remove");
+                            setSelectedRecord({
+                              ...item,
+                              ...(_removeable[0] ? _removeable[0] : {})
+                            });
+                          }
+                          // if (_removeable.length === 1) {
+                          //   setModalType("remove");
+                          //   setSelectedRecord({
+                          //     ...item,
+                          //     ...(_removeable[0] ? _removeable[0] : {})
+                          //   });
+                          //   setSelectedTokenId(_removeable[0].tokenId);
+                          //   return;
+                          // }
+                          // setModalType("pools");
+                          // setSelectedRecord({ ...item, pools: _removeable });
                         }
-                        if (_removeable.length === 1) {
-                          setModalType("remove");
-                          setSelectedRecord(item);
-                          setSelectedTokenId(_removeable[0].tokenId);
-                          return;
-                        }
-                        setModalType("pools");
-                        setSelectedRecord({ ...item, pools: _removeable });
+
+                        console.log("11111_removeable", _removeable)
+
                       }}
                       removeable={_removeable}
                     />
@@ -336,6 +344,7 @@ export default function Liquidity() {
             onPick={(item: any) => {
               setModalType("remove");
               setSelectedTokenId(item.tokenId);
+              console.log('=====1111111111====', selectedRecord)
             }}
             onClose={() => {
               setModalType("");

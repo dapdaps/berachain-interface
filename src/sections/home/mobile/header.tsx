@@ -21,7 +21,7 @@ const MobileHeader = () => {
   };
 
   return (
-    <div className="w-full flex items-center justify-between px-3 fixed top-4 left-0 right-0 z-[10]">
+    <div className="w-full flex items-center justify-between px-1 fixed top-4 left-0 right-0 z-[10]">
       <div className="flex h-[10.77vw]">
         <ConnectWallet />
       </div>
