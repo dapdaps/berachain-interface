@@ -14,7 +14,7 @@ export default function Pools() {
               token0: bera["bera"],
               token1: bera["honey"],
               fee: 3000,
-              version: "v3"
+              version: "v3",
             }
           ]
         : version === "v2"
@@ -22,7 +22,7 @@ export default function Pools() {
             {
               token0: bera["bera"],
               token1: bera["honey"],
-              version: "v2"
+              version: "v2",
             }
           ]
         : [],

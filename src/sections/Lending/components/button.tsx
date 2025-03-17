@@ -160,6 +160,8 @@ const LendingButton = ({
       title: toastLoadingMsg || `Submitting ${token?.symbol} ${children.toLowerCase()} request...`
     });
     setPending(true);
+
+    console.log('====token', token)
     provider
       .getSigner()
       .sendTransaction(unsignedTx)

@@ -151,7 +151,7 @@ const DetailBex = (props: any) => {
               {/* <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
                 {formatValueDecimal(data?.depositAmount ?? 0, "", 2, false, false)}
               </div> */}
-              <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
+              <IbgtAmount className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]" symbol={data?.id} usdAmount={data?.usdDepositAmount} amount={data?.depositAmount} />
             </div>
 
           </div>

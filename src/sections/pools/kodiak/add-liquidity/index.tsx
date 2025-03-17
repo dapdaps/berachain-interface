@@ -7,13 +7,13 @@ export default forwardRef(function AddLiquidity(
   { version, ...rest }: any,
   ref: any
 ) {
+  console.log('=====111111version', version)
+  console.log('=====111111rest====', rest)
   if (version === "v2") {
     return <V2 {...rest} />;
   }
   if (version === "v3") {
     return <V3 {...rest} ref={ref} />;
   }
-  if (version === "island") {
-    return <Island {...rest} />;
-  }
+  return <Island {...rest} />;
 });

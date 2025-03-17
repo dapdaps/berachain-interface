@@ -13,9 +13,10 @@ import kodiak from "@/configs/pools/kodiak";
 
 export default function AddLiquidity({
   onSuccess,
+  // id,
   defaultToken0: token0,
   defaultToken1: token1,
-  stakingToken
+  ...rest
 }: any) {
   const [amount0, setAmount0] = useState<any>("");
   const [amount1, setAmount1] = useState<any>("");
@@ -23,7 +24,7 @@ export default function AddLiquidity({
   const [balance1, setBalance1] = useState("");
   const [receives, setReceives] = useState<any>();
   const { querying, queryAmounts } = useDepositAmount({
-    islandContract: stakingToken.address,
+    islandContract: rest?.id,
     token0,
     token1
   });
@@ -32,7 +33,7 @@ export default function AddLiquidity({
       router: kodiak.stakingRouter,
       token0,
       token1,
-      id: stakingToken.address
+      id: rest?.id
     },
     amount0,
     amount1,
@@ -106,13 +107,13 @@ export default function AddLiquidity({
                 {receives?.received
                   ? balanceFormated(receives.received, 5)
                   : "-"}{" "}
-                {stakingToken.symbol}
+                {rest?.symbol}
               </div>
               <div>
                 (${" "}
-                {receives?.received && stakingToken.price
+                {receives?.received && rest?.price
                   ? balanceFormated(
-                      Big(receives.received).mul(stakingToken.price).toString(),
+                      Big(receives.received).mul(rest?.price).toString(),
                       5
                     )
                   : "-"}{" "}
@@ -131,14 +132,14 @@ export default function AddLiquidity({
                 {receives?.miniReceived
                   ? balanceFormated(receives.miniReceived, 5)
                   : "-"}{" "}
-                {stakingToken.symbol}
+                {rest?.symbol}
               </div>
-              {receives?.miniReceived && stakingToken.price && (
+              {receives?.miniReceived && rest?.price && (
                 <div>
                   (${" "}
                   {balanceFormated(
                     Big(receives.miniReceived)
-                      .mul(stakingToken.price)
+                      .mul(rest.price)
                       .toString(),
                     5
                   )}
