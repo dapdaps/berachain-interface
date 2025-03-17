@@ -16,6 +16,7 @@ import { cloneDeep } from "lodash";
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { motion } from 'framer-motion';
+import { useRouter } from "next/navigation";
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -31,6 +32,8 @@ const List = forwardRef<any, any>((props, ref) => {
     reload,
     maxApr
   } = props;
+  const router = useRouter()
+
 
   const [state, updateState] = useMultiState<any>({
     allData: null,
@@ -321,7 +324,7 @@ const List = forwardRef<any, any>((props, ref) => {
       ]
       : [
         {
-          width: "25%",
+          width: "30%",
           key: "pool",
           label: "Pool",
           type: "slot",
@@ -346,12 +349,24 @@ const List = forwardRef<any, any>((props, ref) => {
                 <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
                   {data?.id || "iBGT"}
                 </div>
+                {
+                  data?.initialData?.protocol?.id === "bex" && (
+                    <div
+                      className="w-[35px] cursor-pointer"
+                      onClick={() => {
+                        router.push("/bgt/gauge?address=" + data?.initialData?.bera_vault_address)
+                      }}
+                    >
+                      <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
+                    </div>
+                  )
+                }
               </div>
             );
           }
         },
         {
-          width: "15%",
+          width: "10%",
           key: "protocol",
           label: "Protocol",
           type: "slot",
