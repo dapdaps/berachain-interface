@@ -183,11 +183,14 @@ export function useBGT(tab?: string) {
     count: 0
   });
   const [yourVaults, setYourVaults] = useState<any>([]);
+  const [vaults, setVaults] = useState<any>([])
 
   const [updater, setUpdater] = useState(0);
   const { loading, dataList } = useInfraredList(updater);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [vaultsLoading, setVaultsLoading] = useState(false)
   const [sortDataIndex, setSortDataIndex] = useState("");
   const [myVaults, setMyVaults] = useState<any>(null);
 
@@ -323,17 +326,11 @@ export function useBGT(tab?: string) {
   const queryYourVaults = async () => {
     try {
       setIsLoading(true);
-      // const response = await asyncFetch(
-      //   "https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/" +
-      //   account +
-      //   "/vaults"
-      // );
       const response = await post(
         BEARCHAIN_API,
         { "operationName": "GetUserVaults", "variables": { "userId": account, "chain": "BERACHAIN" }, "query": "query GetUserVaults($userId: String!, $chain: GqlChain!) {\n  userVaultDeposits: polGetUserVaultDeposits(userAddress: $userId, chain: $chain) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    deposits {\n      amount\n      vaultAddress\n      vault {\n        ...ApiVault\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}" }
       )
       const { deposits, pagination } = response?.data?.userVaultDeposits
-      console.log('====response', response)
       // const vaults = deposits;
       const depositedAmountCalls: any = [];
       const bgtRewardsCalls: any = [];
@@ -397,8 +394,29 @@ export function useBGT(tab?: string) {
     }
   };
 
+  const queryVaults = async () => {
+    try {
+      setVaultsLoading(true)
+      const response = await post(
+        BEARCHAIN_API,
+        {
+          "operationName": "GetVaults",
+          "variables": { "skip": 0, "pageSize": 10, "where": { "includeNonWhitelisted": false } },
+          "query": "query GetVaults($where: GqlRewardVaultFilter, $pageSize: Int, $skip: Int, $orderBy: GqlRewardVaultOrderBy = bgtCapturePercentage, $orderDirection: GqlRewardVaultOrderDirection = desc, $search: String) {\n  polGetRewardVaults(\n    where: $where\n    first: $pageSize\n    skip: $skip\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    search: $search\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    vaults {\n      ...ApiVault\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}"
+        }
+      )
+      console.log('====response', response)
+      setVaults(response?.data?.polGetRewardVaults?.vaults ?? [])
+      setVaultsLoading(false)
+    } catch (error) {
+      console.error(error)
+      setVaultsLoading(false)
+    }
+  }
+
   useEffect(() => {
     queryPageData();
+    queryVaults()
   }, []);
 
   useEffect(() => {
@@ -422,6 +440,8 @@ export function useBGT(tab?: string) {
     setSortDataIndex,
     pageData,
     queryPageData,
+    vaults,
+    vaultsLoading,
     handleClaim,
     handleExplore,
     handleValidator

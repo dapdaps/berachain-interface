@@ -106,7 +106,7 @@ export default function Liquidity() {
     <>
       <div className="flex justify-between items-center">
         <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left">
-          Liquidity
+          Provide LP
         </div>
         <div className="md:w-full flex items-center gap-2 md:justify-between">
           {/* {!isMobile && (

@@ -490,7 +490,7 @@ export default function Invest(props: any) {
         <div className="flex items-center gap-[16px] lg:justify-between lg:w-full">
           <div className="flex gap-2 items-center lg:p-4">
             <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left mr-[20px]">
-              Staking
+              Stake and Earn
             </div>
             <SwitchTabs
               tabs={Tabs}
