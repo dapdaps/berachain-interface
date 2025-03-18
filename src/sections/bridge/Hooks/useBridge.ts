@@ -1,7 +1,7 @@
 import { useDebounce } from 'ahooks';
 import Big from 'big.js';
 import { useCallback, useEffect, useState } from 'react';
-import type { ExecuteRequest, QuoteRequest, QuoteResponse } from '../lib/type';
+import type { engineType, ExecuteRequest, QuoteRequest, QuoteResponse } from '../lib/type';
 import { execute, getQuote, getStatus } from '../lib/index';
 
 import useAccount from '@/hooks/use-account';
@@ -23,9 +23,10 @@ interface BridgeProps {
   derection: number;
   account?: string | undefined;
   defaultBridgeText: string;
+  tool?: engineType;
 }
 
-export default function useBridge({ originFromChain, originToChain, derection, defaultBridgeText }: BridgeProps) {
+export default function useBridge({ originFromChain, originToChain, derection, defaultBridgeText, tool }: BridgeProps) {
   const [fromChain, setFromChain] = useState(originFromChain);
   const [toChain, setToChain] = useState(originToChain);
 
@@ -57,15 +58,6 @@ export default function useBridge({ originFromChain, originToChain, derection, d
   useRouteSorted(routes, 1, (route: QuoteResponse | null) => {
     setSelectedRoute(route);
   });
-
-  useEffect(() => {
-    // const [_fromChain, _toChain] = [toChain, fromChain]
-    // const [_fromToken, _toToken] = [toToken, fromToken]
-    // setFromChain(_fromChain)
-    // setToChain(_toChain)
-    // setFromToken(_fromToken)
-    // setToToken(_toToken)
-  }, [derection]);
 
   useEffect(() => {
     if (!fromChain || !toChain || !fromToken || !toToken || !account || !inputValue) {
@@ -103,9 +95,10 @@ export default function useBridge({ originFromChain, originToChain, derection, d
       amount: new Big(inputValue).mul(10 ** fromToken?.decimals),
       identification,
       exclude: ['official'],
-      UNIZEN_AUTH_KEY: process.env.NEXT_PUBLIC_UNIZEN_AUTH_KEY
+      UNIZEN_AUTH_KEY: process.env.NEXT_PUBLIC_UNIZEN_AUTH_KEY,
+      engine: tool ? [tool] : null
     });
-  }, [fromChain, toChain, fromToken, toToken, account, inputValue]);
+  }, [fromChain, toChain, fromToken, toToken, account, inputValue, tool]);
 
   useEffect(() => {
     if (!fromChain || !toChain || !fromToken || !toToken || !account || !inputValue) {

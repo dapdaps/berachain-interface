@@ -18,7 +18,7 @@ export interface QuoteRequest {
     fromAddress: string;
     destAddress: string;
     amount: Big;
-    engine?: engineType[] | bridgeEngineType[];
+    engine?: engineType[] | bridgeEngineType[] | null;
     identification?: string | number;
     exclude?: engineType[]
 }
