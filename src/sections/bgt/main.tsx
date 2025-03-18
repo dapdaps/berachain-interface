@@ -9,10 +9,52 @@ import { formatValueDecimal } from "@/utils/balance";
 import { formatLongText, getProtocolIcon } from "@/utils/utils";
 import Big from 'big.js';
 import { useRouter } from "next/navigation";
-import { memo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import BgtEmpty from "./components/bgt-empty";
 import VaultsList from "./components/list";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import Card from "@/components/card";
+import { numberFormatter } from "@/utils/number-formatter";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    console.log('====data', data)
+    return (
+      <Card>
+        <div className="flex gap-[8px]">
+          <div className="w-[4px] h-[72px] rounded-[2px]" style={{ backgroundColor: data?.color }}></div>
+          <div className="flex flex-col justify-between">
+            <div className="text-black">{numberFormatter(data?.payload?.value, 2, true)}%</div>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <img
+                  src={data?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                  className="min-w-[30px] w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
+                  alt={data?.metadata?.name}
+                />
+                <img
+                  src={getProtocolIcon(data?.metadata?.protocolName)}
+                  className="w-[16px] h-[16px] absolute bottom-0 right-0"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col justify-between items-stretch">
+                <div className="text-[16px] font-[600] whitespace-nowrap">
+                  {data?.metadata?.name}
+                </div>
+                <div className="text-[10px] font-[400]">
+                  {data?.metadata?.protocolName}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+  return null;
+};
 export default memo(function BgtMain() {
   const router = useRouter()
   const [tab, setTab] = useState('all');
@@ -105,10 +147,35 @@ export default memo(function BgtMain() {
     setSortDataIndex,
     pageData,
     filterList,
+    vaults,
+    vaultsLoading,
     handleClaim,
     handleExplore,
     handleValidator,
   } = useBGT(tab);
+
+  const ChartsData = useMemo(() => {
+    const ColorMapping = {
+      "WBERA | HONEY": "#5eca58",
+      "WBTC | WBERA": "#60d05e",
+      "WETH | WBERA": "#585ecb",
+      "BYUSD | HONEY": "#46c1c5",
+      "USDC.e | HONEY": "#5b85cd"
+    }
+    return vaults?.map(vault => {
+      return {
+        name: vault?.metadata?.name,
+        value: +Big(vault?.dynamicData?.bgtCapturePercentage ?? 0).times(100).toFixed(),
+        metadata: vault?.metadata,
+        color: ColorMapping?.[vault?.metadata?.name] ?? "#5eca58"
+      }
+    })
+  }, [vaults]);
+  const BgtDistributed = useMemo(() => vaults?.reduce((acc, curr) => Big(acc).plus(curr?.dynamicData?.allTimeReceivedBGTAmount ?? 0).toFixed(), 0), [vaults])
+
+  console.log('====vaults', vaults)
+  console.log('=====ChartsData', ChartsData)
+  console.log('====BgtDistributed', BgtDistributed)
   return (
     <div className="w-[1140px]">
       <div className="flex items-center h-[223px] rounded-[20px] bg-[#FFDC50]">
@@ -158,8 +225,8 @@ export default memo(function BgtMain() {
           </div>
           <div className="absolute right-0 top-[37px] bottom-[28px] w-[1px] bg-black/[0.15]" />
         </div>
-        <div className="h-full flex flex-col flex-1 py-[34px] pl-[30px] justify-between">
-          <div className="flex flex-col gap-[12px]">
+        <div className="h-full flex flex-col flex-1 py-[24px] pl-[30px] justify-between">
+          {/* <div className="flex flex-col gap-[12px]">
             <div className="text-[#3D405A]">Est. Yearly BGT Distribution</div>
             <div className="flex items-center gap-[10px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -169,7 +236,6 @@ export default memo(function BgtMain() {
               <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.polGetGlobalInfo?.annualizedBGTEmission, "", 2, true)} Yearly</div>
             </div>
           </div>
-
           <div className="flex flex-col gap-[12px]">
             <div className="text-[#3D405A]">Total Circulating BGT</div>
             <div className="flex items-center gap-[10px]">
@@ -179,8 +245,39 @@ export default memo(function BgtMain() {
               </svg>
               <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">{formatValueDecimal(bgtData?.totalSupply ?? 0, '', 2, true)}</div>
             </div>
-          </div>
+          </div> */}
+          <div className="">
+            <div className="text-black">Reward Weights</div>
+            <div className="w-[180px] h-[180px] relative">
+              <div className="absolute left-0 top-0 bottom-0 right-0 flex  flex-col items-center justify-center pointer-events-none">
+                <div className="text-black text-[10px]">BGT DISTRIBUTED</div>
+                <div className="text-black text-[10px]">{numberFormatter(BgtDistributed, 2, true, { isShort: true })}</div>
+              </div>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={ChartsData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={75}
+                    fill="#8884d8"
+                    dataKey="value"
+                    paddingAngle={3}
+                    cornerRadius={6}
+                    stroke="none"
+                    activeShape={null}
+                  >
+                    {ChartsData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry?.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
 
+            </div>
+          </div>
         </div>
 
       </div>

@@ -107,7 +107,7 @@ const VaultsList = () => {
                     <span className="text-[10px]">{v.token.symbol}</span>
                   </div>
                 ))} */}
-                Deposit
+                Stake
               </div>
             );
           },

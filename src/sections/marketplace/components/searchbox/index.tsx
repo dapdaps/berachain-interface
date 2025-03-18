@@ -28,7 +28,7 @@ export default function SearchBox({ value, onChange, placeholder = 'search token
         </svg>
 
         <input
-          className='flex-1 h-[40px] bg-inherit outline-none w-[300px]'
+          className='flex-1 h-[40px] bg-inherit outline-none w-[200px]'
           placeholder={placeholder}
           value={value || ''}
           onChange={(ev: any) => {

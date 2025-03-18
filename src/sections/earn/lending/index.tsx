@@ -154,7 +154,7 @@ const EarnLending = (props: any) => {
           <>
             <div className="flex gap-2 items-center p-4">
               <div className="hidden lg:block font-Montserrat text-[26px] font-bold leading-[23px] text-left">
-                Lending
+                Lend and Borrow
               </div>
               <SwitchTabs
                 tabs={[
