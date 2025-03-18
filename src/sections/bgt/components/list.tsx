@@ -58,9 +58,18 @@ const VaultsList = () => {
           title: "Total Incentive Value",
           key: "incentiveValue",
           sort: true,
-          width: "35%",
+          width: "20%",
           render: (item: any, index: number) => {
             return formatValueDecimal(item?.dynamicData?.activeIncentivesValueUsd ?? 0, "$", 2, false, false);
+          },
+        },
+        {
+          title: "BGT APR",
+          key: "capture",
+          sort: true,
+          width: "15%",
+          render: (item: any, index: number) => {
+            return formatValueDecimal(Big(item?.dynamicData?.apr).times(100).toFixed(), '', 2) + "%";
           },
         },
         {

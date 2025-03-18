@@ -1,10 +1,13 @@
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 export default function PoolTable({ item, onClick = () => { } }: any) {
+  const router = useRouter()
   const tokens = useMemo(
     () => item.tokens || [item.token0, item.token1],
     [item]
   );
+  console.log('====item', item)
   return (
     <div className="flex items-center gap-[12px]" onClick={onClick}>
       <div className="flex items-center relative">
@@ -43,6 +46,19 @@ export default function PoolTable({ item, onClick = () => { } }: any) {
             {item.type}
           </div>
         )}
+
+        {
+          item?.protocol === "bex" && (
+            <div
+              className="w-[30px] cursor-pointer"
+              onClick={() => {
+                router.push("/bgt/gauge?address=" + item?.vaultAddress)
+              }}
+            >
+              <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
+            </div>
+          )
+        }
       </div>
     </div>
   );
