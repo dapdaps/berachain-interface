@@ -352,7 +352,7 @@ const List = forwardRef<any, any>((props, ref) => {
                 {
                   data?.initialData?.protocol?.id === "bex" && (
                     <div
-                      className="w-[35px] cursor-pointer"
+                      className="w-[30px] cursor-pointer"
                       onClick={() => {
                         router.push("/bgt/gauge?address=" + data?.initialData?.bera_vault_address)
                       }}

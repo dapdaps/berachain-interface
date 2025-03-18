@@ -89,7 +89,7 @@ export default memo(function gauge(props: any) {
             {
               currentTab === "deposit" ? (
                 <div className="flex flex-col">
-                  <div className="ml-[15px] mt-[17px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">Deposit your tokens to start earning BGT rewards</div>
+                  <div className="ml-[15px] mt-[17px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">Stake your tokens to start earning BGT rewards</div>
 
                   <div className="mb-[14px] flex flex-col h-[72px] rounded-[12px] border border-[#373A53] bg-white">
                     <div className="pt-[16px] pl-[20px] pr-[14px] flex items-center justify-between">
@@ -116,7 +116,7 @@ export default memo(function gauge(props: any) {
                     onSuccess={onSuccess}
                     addAction={addAction}
                   >
-                    Deposit
+                    Stake
                   </Button>
                 </div>
               ) : (
@@ -194,7 +194,7 @@ export default memo(function gauge(props: any) {
                     onSuccess={onSuccess}
                     addAction={addAction}
                   >
-                    Withdraw
+                    Unstake
                   </Button>
                 </div>
               )
@@ -203,7 +203,7 @@ export default memo(function gauge(props: any) {
 
           <div className="w-[465px] flex flex-col gap-[13px]">
             <div className="p-[20px] w-full h-[103px] rounded-[10px] bg-black/[0.06]">
-              <div className="mb-[30px] text-black font-Montserrat text-[18px] font-semibold leading-[90%]">My Vault Deposits</div>
+              <div className="mb-[30px] text-black font-Montserrat text-[18px] font-semibold leading-[90%]">My Staked Tokens</div>
               <div className="flex items-center justify-between">
                 <div className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">{gaugeData?.metadata?.name}</div>
                 <div className="flex items-center gap-[11px]">

@@ -70,7 +70,7 @@ export default function Liquidity() {
     () =>
       pools.filter((token: any) => {
         let flag = true;
-        if (protocol !== "all" && protocol !== token.protocol) {
+        if (protocol !== "all" && protocol?.toLocaleLowerCase() !== token.protocol?.toLocaleLowerCase()) {
           flag = false;
         }
 
@@ -178,7 +178,7 @@ export default function Liquidity() {
                 }
               },
               {
-                title: "Apr",
+                title: "APR",
                 key: "apr",
                 sort: true,
                 width: "15%",
