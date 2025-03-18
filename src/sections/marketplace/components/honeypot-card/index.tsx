@@ -6,6 +6,7 @@ import { useMemo, useRef } from "react";
 import { usePriceStore } from "@/stores/usePriceStore";
 import useIsMobile from "@/hooks/use-isMobile";
 import { numberFormatter } from "@/utils/number-formatter";
+import { Line, LineChart, Tooltip, YAxis } from 'recharts';
 
 const HoneypotCard = (props: any) => {
   const {
@@ -16,8 +17,10 @@ const HoneypotCard = (props: any) => {
     icon,
     data = {},
     voulmes,
+    priceData,
     onSwap = () => {}
   } = props;
+
   const prices = usePriceStore((store) => store.price);
   const isMobile = useIsMobile();
 
@@ -128,6 +131,15 @@ const HoneypotCard = (props: any) => {
     ];
   }, [name, prices, voulmes]);
 
+  const getCustomDomain = (data: any[], key: string) => {
+    if (!data?.length) return [0, 0];
+    const values = data.map(item => item[key]);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = (max - min) * 0.1;
+    return [min - padding, max + padding];
+  };
+
   return (
     <div className="flex items-end justify-center md:relative">
       <Honeypot volume={list?.[1]} />
@@ -141,11 +153,11 @@ const HoneypotCard = (props: any) => {
             {list.map((item, index) => (
               <div
                 key={item.key}
-                className="flex-shrink-0 leading-none mb-[13px] last:mb-0 flex items-start justify-between text-[14px] font-Montserrat pl-[16px]"
+                className="flex-shrink-0 leading-none mb-[10px] last:mb-0 flex items-start justify-between text-[14px] font-Montserrat pl-[16px]"
               >
-                <div className="text-[#3D405A] font-[400]">{item.label}</div>
+                <div className="text-[#3D405A] font-[600] whitespace-nowrap text-[12px] leading-[100%]">{item.label}</div>
                 <div>
-                  <div className="font-[600] mb-[2px]">{item.value}</div>
+                  <div className=" font-[600] text-[12px] leading-[100%] mb-[2px]">{item.value}</div>
                   <div
                     className={`text-[10px] text-right ${
                       item.type === "+" ? "text-[#06B000]" : "text-[#FF008A]"
@@ -157,6 +169,52 @@ const HoneypotCard = (props: any) => {
                 </div>
               </div>
             ))}
+            {
+              !isMobile && (
+                <div className="w-full flex-shrink-0 leading-none mb-[13px] last:mb-0 flex items-start text-[14px] font-Montserrat pl-[16px]">
+                  <div className="text-[#3D405A] font-[600] whitespace-nowrap text-[12px] leading-[100%]">Last 7 days</div>
+                  <div className="w-[86px] shrink-0">
+                    <LineChart
+                      width={86}
+                      height={32}
+                      data={priceData}
+                      margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
+                    >
+                      <YAxis
+                        domain={getCustomDomain(priceData, priceKey)}
+                        hide
+                      />
+                      <Line
+                        type="natural"
+                        dataKey="price"
+                        stroke="#76A813"
+                        strokeWidth={1}
+                        dot={false}
+                        activeDot={false}
+                        isAnimationActive={false}
+                        animationBegin={0}
+                        animationDuration={1500}
+                        animationEasing="ease-in-out"
+                      />
+                      <Tooltip
+                        position={{ y: -30 }}
+                        content={({ active, payload, label }) => {
+                          if (!active || !payload || !payload.length) return null;
+                          return (
+                            <div className="custom-tooltip bg-[#FFFDEB] border border-[#000] rounded-[4px] p-[5px] text-[10px] leading-1 whitespace-nowrap">
+                              <p className="label">{`${payload[0]?.payload.date}`}</p>
+                              <p className="value">
+                                {`Price: ${numberFormatter(payload[0]?.value as any, 6, true, { isShort: true, prefix: "$" })}`}
+                              </p>
+                            </div>
+                          );
+                        }}
+                      />
+                    </LineChart>
+                  </div>
+                </div>
+              )
+            }
           </div>
         </div>
         <button

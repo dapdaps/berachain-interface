@@ -60,6 +60,7 @@
     "react-parallax-tilt": "^1.7.268",
     "react-shadow": "^20.6.0",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.15.1",
     "ripple-address-codec": "^5.0.0",
     "rxjs": "^7.8.1",
     "swiper": "^11.2.5",
