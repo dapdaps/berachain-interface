@@ -22,6 +22,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useAccount } from "wagmi";
 import LaptopList from "./laptop";
+import useClickTracking from '@/hooks/use-click-tracking';
 
 const { basic: DolomiteBasic, networks: DolomiteNetworks }: any =
   DolomiteConfig;
@@ -39,6 +40,7 @@ const EarnLending = (props: any) => {
   const { provider } = useProvider();
   const { addAction } = useAddAction("lending");
   const router = useRouter();
+  const { handleReport } = useClickTracking();
 
 
   const lendingProtocols = useMemo(() => {
@@ -217,7 +219,9 @@ const EarnLending = (props: any) => {
           current={tab}
           className="w-[196px] hidden md:block"
           style={{ height: 40, borderRadius: 12 }}
-          cursorStyle={{ borderRadius: 10 }}
+          cursorStyle={{ borderRadius: 10, width: 82 }}
+          cursorClassName="!w-[82px]"
+          tabStyle={{ width: 82 }}
         />
       </div>
       {!isMobile ? (

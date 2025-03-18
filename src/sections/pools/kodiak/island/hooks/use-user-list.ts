@@ -91,6 +91,8 @@ export default function useUserList() {
 
       let stakedI = 0;
 
+      console.log('====balanceRes', balanceRes)
+
       const _list: any = [];
       pools.forEach((pool: any, i: number) => {
         const _balance = balanceRes[i] ? balanceRes[i].toString() : 0;
@@ -146,19 +148,19 @@ export default function useUserList() {
       });
       setList(_list);
     } catch (err) {
-      console.log(149, err);
+      console.log("149===========", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (account && pools?.length) {
+    if (account && provider && pools?.length) {
       queryList();
     } else {
       setLoading(false);
     }
-  }, [account, pools]);
+  }, [account, provider, pools]);
 
   return { list, loading: loading || poolLoading };
 }

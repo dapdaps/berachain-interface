@@ -74,6 +74,7 @@ export default function useApprove({
   };
 
   const approve = async () => {
+    console.log('111111111222222')
     if (!token?.address || !amount || !spender) return;
     setApproving(true);
     try {

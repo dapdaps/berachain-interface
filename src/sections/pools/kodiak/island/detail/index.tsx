@@ -7,6 +7,7 @@ export default function Detail(props: any) {
   const { id, farmAddress, pool, token0, token1, price } = props.data;
   const isMobile = useIsMobile();
 
+  console.log('111111222222222222')
   const { loading, info, queryInfo } = useUserInfo({
     islandContract: id,
     farmContract: farmAddress,

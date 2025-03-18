@@ -1,7 +1,9 @@
-import { useMemo } from "react";
 import List from "@/sections/marketplace/components/list";
-import PoolTable from "../../../components/pool-table";
 import { balanceShortFormated } from "@/utils/balance";
+import { numberFormatter } from "@/utils/number-formatter";
+import { useMemo } from "react";
+import PoolTable from "../../../components/pool-table";
+import Big from "big.js";
 
 const PAGE_SIZE = 9;
 
@@ -57,16 +59,27 @@ export default function Laptop({
       title: "Pool",
       key: "pool",
       sort: false,
-      width: "50%",
+      width: "45%",
       render: (item: any, index: number) => {
         return <PoolTable item={item} />;
+      }
+    },
+    {
+      title: "Apr",
+      key: "apr",
+      sort: true,
+      width: "20%",
+      render: (item: any, index: number) => {
+        return Big(item?.["apr"] ?? 0).gt(0)
+          ? `${numberFormatter(item["apr"], 2, true)}%`
+          : "-";
       }
     },
     {
       title: "TVL",
       key: "tvl",
       sort: true,
-      width: "25%",
+      width: "15%",
       render: (item: any, index: number) => {
         return item["tvl"] ? balanceShortFormated(item["tvl"], 2) : "-";
       }
@@ -75,7 +88,7 @@ export default function Laptop({
       title: "Volume",
       key: "volume",
       sort: true,
-      width: "20%",
+      width: "15%",
       render: (item: any, index: number) => {
         return item["volume"] ? balanceShortFormated(item["volume"], 2) : "-";
       }

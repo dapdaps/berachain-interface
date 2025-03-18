@@ -10,6 +10,7 @@ export default function WithdrawPanel({
   onError
 }: any) {
   const { amount0, amount1, amount } = amounts;
+  console.log('=====amount', amount)
   const { loading, onWithdraw } = useWithdraw({
     data,
     amount,

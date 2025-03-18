@@ -16,6 +16,10 @@ import { useState } from "react";
 import Hall from "./hall";
 import MintStable from "./mint-stable";
 import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/autoplay";
 
 const MainLayoutHeader = (props: Props) => {
   const { className, style } = props;
@@ -25,7 +29,6 @@ const MainLayoutHeader = (props: Props) => {
   const hallStore = useHall()
   const router = useProgressRouter();
   const { iBGTCount, BGTCount } = useBgtCount();
-
 
   const goHome = () => {
     router.replace("/");
@@ -85,7 +88,34 @@ const MainLayoutHeader = (props: Props) => {
               <span className="text-black text-[16px] font-bold scale-50">Thoon...</span>
             </div>
           </div> */}
-          <Hall />
+          {/* <Hall /> */}
+          <div className="cursor-pointer pl-[5px] flex items-center gap-[4px] w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/hall/icon-hall-button-bg.svg')] bg-center"
+            onClick={() => {
+              router.replace("/hall")
+            }}
+          >
+            <div className="w-full h-full -mt-[3px]">
+            <Swiper
+              modules={[Autoplay]}
+              autoplay={{ delay: 1500, disableOnInteraction: false }}
+              loop={true}
+              className="w-full h-full"
+            >
+               <SwiperSlide>
+                  <div className="flex items-center">
+                    <img src="/images/hall/icon-ibgt.svg" alt="icon-ibgt" />
+                    <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{numberFormatter(iBGTCount, 3, true)} iBGT</div>
+                  </div>
+               </SwiperSlide>
+               <SwiperSlide>
+                  <div className="flex items-center">
+                    <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
+                    <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{numberFormatter(BGTCount, 3, true)} BGT</div>
+                  </div>
+               </SwiperSlide>
+            </Swiper>
+            </div>
+          </div>
 
           {/* <BGTCoin type={CoinType.BGT} count={BGTCount} bp="1010-004" />
           <BGTCoin type={CoinType.iBGT} count={iBGTCount} bp="1010-005" /> */}

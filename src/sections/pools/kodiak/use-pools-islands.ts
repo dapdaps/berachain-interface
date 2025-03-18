@@ -4,6 +4,7 @@ import config from "@/configs/pools/kodiak";
 import { tickToPrice } from "../tick-math";
 import { balanceFormated } from "@/utils/balance";
 import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
+import Big from "big.js";
 
 export default function usePoolsIslands() {
   const [pools, setPools] = useState<any>();
@@ -80,7 +81,6 @@ export default function usePoolsIslands() {
           ...(result.data.data.kodiakVaults || [])
         ];
 
-        console.log('====list=', list)
         setPools(
           list.map((item: any) => {
             const _token0 =
@@ -133,7 +133,8 @@ export default function usePoolsIslands() {
               fee: item.pool.feeTier,
               tvl: item.totalValueLockedUSD,
               volume: item.volumeUSD,
-              version: item.pool.tick ? "v3" : "v2",
+              // version: item.pool.tick ? "v3" : "v2",
+              type: "island",
               apr: item.apr.averageApr,
               lowerPrice,
               upperPrice,
