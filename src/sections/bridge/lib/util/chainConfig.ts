@@ -36,7 +36,7 @@ export default {
       chainName: 'Ethereum',
       icon: 'https://assets.dapdap.net/images/bafkreicjsbkvvcxahxjejkctwopcnmzbeskxhfrkg7lyawhkhzrxcmvgfy.svg',
       nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-      rpcUrls: ['https://rpc.ankr.com/eth'],
+      rpcUrls: ['https://eth.llamarpc.com'],
       blockExplorers: 'https://etherscan.io',
     },
     42161: {

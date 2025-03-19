@@ -87,14 +87,14 @@ export async function getQuote(
             route: route,
             amount: quoteRequest.amount,
             isNative: false,
-            bridgeType: 'liFi',
+            bridgeType: 'Jumper',
         })
 
         max = {
             uuid,
             icon: '/images/dapps/jumper.png',
             bridgeName: route.steps[0].toolDetails.name,
-            bridgeType: 'liFi',
+            bridgeType: 'Jumper',
             fee: computeFee(route),
             receiveAmount: new Big(route.toAmount).toString(),
             gas: route.gasCostUSD,
