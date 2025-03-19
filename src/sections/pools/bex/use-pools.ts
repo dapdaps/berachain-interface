@@ -50,6 +50,7 @@ export default function usePools() {
             poolType: pool.type,
             apr: pool?.dynamicData?.aprItems?.reduce((acc, curr) => Big(acc).plus(Big(curr?.apr ?? 0).times(100)), 0),
             bgtApr: Big(pool?.rewardVault?.dynamicData?.apr ?? 0).times(100).toFixed(),
+            vaultAddress: pool?.rewardVault?.vaultAddress
           };
         })
       );

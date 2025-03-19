@@ -16,12 +16,12 @@ import { useEffect, useState } from "react";
 const TABS = [
   {
     value: "deposit",
-    label: "Deposit",
+    label: "Stake",
     disabled: false
   },
   {
     value: "withdraw",
-    label: "Withdraw",
+    label: "Unstake",
     disabled: false
   }
 ];
