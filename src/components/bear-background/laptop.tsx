@@ -7,8 +7,8 @@ import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
 import GrassSvg from '@public/images/background/grass.svg';
 import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
 import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
-import BridgeGroundSvg from '@public/images/background/bridge-ground.svg';
-import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy.svg';
+import BridgeGroundSvg from '@public/images/background/bridge-ground-2.svg';
+import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy-2.svg';
 import LeftTreeSvg from '@public/images/background/tree.svg';
 import HallPalace from '@public/images/background/hall-palace.svg'
 import HallFlag from '@public/images/background/hall-flag.svg'
@@ -24,6 +24,7 @@ import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 
 import { useActivityStore } from '@/stores/useActivityStore';
+import { useParams } from 'next/navigation';
 
 const LeftTree = function () {
   return (
@@ -866,8 +867,16 @@ const DashboardGround = function (props: any) {
   );
 };
 
+const nameMap: any = {
+  'jumper': 'Jumper',
+  'stargate': 'Stargate',
+ 
+}
 const BridgeGround = function (props: any) {
   const { className, isRainyDay } = props;
+  const { dapp: dappName } = useParams();
+
+  const dappShowName = (dappName && nameMap[(dappName as string).toLowerCase()]) || 'Stargate';
 
   return (
     <div className={clsx('absolute left-0 bottom-0 w-full', className)}>
@@ -896,12 +905,28 @@ const BridgeGround = function (props: any) {
           isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]'
         )}
       />
+
       <div
         className={clsx(
           'absolute bottom-[-142px] right-0 left-1/2 h-[297px] border-t border-black',
           isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
         )}
       />
+       
+      <div
+        className={clsx(
+          'absolute bottom-[213px] right-[20%] z-[10] w-[164px] h-[145px] bg-[url("/images/background/background-bridge-dapp.svg")] bg-cover bg-center bg-no-repeat',
+        )}
+      >
+         <div className='flex items-center justify-center pt-[25px]'>
+          <img
+            src={`/images/dapps/${dappShowName.toLowerCase()}.png`}
+            alt={dappName as string}
+            className="w-9 h-9"
+          />
+         </div>
+         <div className='text-center text-[#000] text-[18px] font-CherryBomb pt-[5px]'>{ dappShowName }</div>
+      </div>
     </div>
   );
 };

@@ -11,7 +11,10 @@ export default function useBridgeType() {
     const { dapp: dappName } = useParams();
 
     const bridgeType = useMemo(() => {
-        return toolMap[(dappName as string).toLowerCase()] || 'stargate'
+        if (dappName) {
+            return toolMap[(dappName as string).toLowerCase()] || 'stargate'
+        }
+        return 'stargate'
     }, [dappName])
    
 
