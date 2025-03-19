@@ -158,7 +158,7 @@ function HistorySingleBridgeItem({ item }: { item: any }) {
                     <div className="flex items-center gap-2">
                         <div className="w-[30px] h-[30px] relative">
                             <img className='w-full h-full object-contain' src={extra_data?.toTokenLogo} />
-                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={chains[item.to_chain_id].icon} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={extra_data?.toChainLogo} />
                         </div>
                         <div>
                             {balanceFormated(extra_data.toAmout)}<br />{extra_data?.toTokenSymbol}
