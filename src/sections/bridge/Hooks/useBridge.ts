@@ -180,7 +180,7 @@ export default function useBridge({ originFromChain, originToChain, derection, d
           toChainId: toChain.chainId,
           token: fromToken,
           amount: inputValue,
-          template: selectedRoute.bridgeName,
+          template: selectedRoute.bridgeType,
           add: false,
           status: 1,
           transactionHash: txHash,

@@ -7,16 +7,16 @@ import { getQuoteInfo, setQuote } from '../../util/routerController'
 import { getIcon } from '../../util/index'
 import { QuoteRequest, QuoteResponse, ExecuteRequest, StatusParams } from '../../type/index'
 import { FeeType } from '../../type/index'
-import { createWalletClient, custom } from 'viem';
+import { Chain, createWalletClient, custom } from 'viem';
 import { http } from 'viem';
-import { mainnet, berachain } from 'viem/chains';
+import { mainnet, berachain, polygon, arbitrum, optimism, scroll, polygonZkEvm ,metis, bsc, manta, mode, base, mantle, avalanche, fantom, gnosis, linea, zksync } from 'viem/chains';
 
-let chains: any[] = []
-
+const chains = [arbitrum, mainnet, optimism, polygon, scroll, metis,berachain, polygonZkEvm, manta, mode, bsc, base, mantle, avalanche, fantom, gnosis, linea, zksync]
 export async function init(signer: Signer) {
+    const chainId = await signer.getChainId()
     const client = createWalletClient({
         account: await signer.getAddress() as any,
-        chain: mainnet,
+        chain: chains.find((chain) => chain.id == chainId) as Chain,
         transport: custom((signer as any)?.provider?.provider),
     })
 
