@@ -151,7 +151,7 @@ function HistorySingleBridgeItem({ item }: { item: any }) {
                             <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={extra_data?.fromChainLogo} />
                         </div>
                         <div>
-                            {balanceFormated(extra_data.fromAmount)}<br />{extra_data?.toTokenSymbol}
+                            {balanceFormated(extra_data.fromAmount)}<br />{extra_data?.fromTokenSymbol}
                         </div>
                     </div>
                     <span>→</span>
