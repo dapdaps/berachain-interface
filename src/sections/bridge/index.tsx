@@ -24,7 +24,8 @@ import { useBridgeHistory } from '@/stores/useBridgeHistory';
 import useBridge from './Hooks/useBridge';
 
 import type { Token, Chain } from '@/types';
-
+import type { engineType } from './lib/type';
+import useBridgeType from './Hooks/useBridgeType';
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
@@ -37,7 +38,7 @@ const DappHeader: React.FC = () => {
     return (
       <div className="flex gap-2 my-[30px] w-full justify-center items-center">
         <img
-          src={`/images/dapps/${(dappName as string).toLowerCase()}.svg`}
+          src={`/images/dapps/${(dappName as string).toLowerCase()}.png`}
           alt={dappName as string}
           className="w-9 h-9"
         />
@@ -66,25 +67,20 @@ const DappHeader: React.FC = () => {
 const ComingSoon = false;
 const chainList = Object.values(chains).filter((chain) => [1, 80094, 42161, 8453, 56, 43114, 59144, 5000, 10, 137, 534352].includes(chain.chainId));
 
+
 export default function Bridge() {
+  const { dapp: dappName } = useParams();
   const [confirmShow, setConfirmShow] = useState(false);
-  // const [fromChain, setFromChain] = useState<Chain>(chains[1])
-  // const [fromToken, setFromToken] = useState<Token>(allTokens[1][0])
-  // const [toChain, setToChain] = useState<Chain>(chains[80094])
-  // const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
-  // const [amount, setAmount] = useState<string>('')
   const [historyShow, setHistoryShow] = useState(false)
   const [activeTab, setActiveTab] = useState('pending')
   const isMobile = useIsMobile()
   const { switchChain } = useSwitchChain();
   const { addAction } = useAddAction("bridge");
   const { address, chainId } = useAccount()
-  const { list, set }: any = useBridgeHistory()
   const [limitBera, setLimitBera] = useState(0)
 
-  
+  const { bridgeType } = useBridgeType()
 
-  // const inputValue = useDebounce(amount, { wait: 500 });
 
   const {
     fromChain,
@@ -115,10 +111,11 @@ export default function Bridge() {
     derection: 1,
     account: address,
     defaultBridgeText: 'Bridge',
+    tool: bridgeType
   })
 
   const _allTokens = useMemo(() => {
-    if (!fromToken) {
+    if (!fromToken || bridgeType !== 'stargate') {
       return allTokens
     }
 
@@ -134,9 +131,13 @@ export default function Bridge() {
     }); 
 
     return newAllTokens;
-  }, [fromToken, fromChain])
+  }, [fromToken, fromChain, bridgeType])
 
   useEffect(() => {
+    if (bridgeType !== 'stargate') {
+      return;
+    }
+
     if (!fromToken) {
       setToToken(undefined)
       return
@@ -152,11 +153,16 @@ export default function Bridge() {
     } else {
       setToToken(undefined)
     }
-  }, [fromChain, fromToken])
+  }, [fromChain, fromToken, bridgeType])
 
   useEffect(() => {
-    setFromToken(allTokens[1][0])
-    setToToken(allTokens[80094][2])
+    const fromTokens = allTokens[1]
+    const toTokens = allTokens[80094]
+
+    const fromToken = fromTokens.find((token: Token) => token.symbol.toUpperCase() === 'ETH')
+    const toToken = toTokens.find((token: Token) => token.symbol.toUpperCase() === 'WETH')
+    setFromToken(fromToken)
+    setToToken(toToken)
   }, [])
 
   return (

@@ -4,10 +4,10 @@ import List from './list'
 import Simple from './simple'
 import { useAccount } from 'wagmi'
 import useIsMobile from '@/hooks/use-isMobile'
-import { useHistory } from '../Hooks/useHistory'
+import { getStatus } from '../lib/index'
 
 export default function History({ activeTab, setActiveTab, isOpen, setIsOpen }: { activeTab: string, setActiveTab: (tab: string) => void, isOpen: boolean, setIsOpen: (isOpen: boolean) => void }) {
-    const { pendingCount, historyCount, list } = useStatus()
+    const { pendingCount, historyCount, list } = useStatus({ getStatus: getStatus })
     const { address, chainId } = useAccount()
     const isMobile = useIsMobile();
 

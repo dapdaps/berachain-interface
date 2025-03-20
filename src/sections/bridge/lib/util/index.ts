@@ -15,18 +15,21 @@ const BRIDGE_ICONS: {
   [key: string]: string
 } = {
   'stargate': 'https://s3.amazonaws.com/dapdap.prod/images/stargate.png',
+  'liFi': 'https://s3.amazonaws.com/dapdap.prod/images/liFi.png',
 }
 
 const BRIDGE_NAME: {
   [key: string]: string
 } = {
   'stargate': 'Stargate',
+  'liFi': 'liFi',
 }
 
 const BRIDGE_COLOR: {
   [key: string]: string
 } = {
   'stargate': '#EFEFEF',
+  'liFi': '#EFEFEF',
 }
 
 export function getIcon(type: string): string {

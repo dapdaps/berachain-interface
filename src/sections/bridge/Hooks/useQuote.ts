@@ -21,6 +21,7 @@ export default function useQuote(
   // const inputValue = useDebounce(quoteLoading, { wait: 500 });
 
   async function getRoutes(quoteRequest: QuoteRequest | null) {
+
     if (!quoteRequest) {
       setRoutes(null);
       setQuoteLoading(false);
