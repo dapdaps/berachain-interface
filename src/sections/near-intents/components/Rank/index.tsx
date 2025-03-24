@@ -3,8 +3,8 @@ import FlexTable from "@/components/flex-table"
 import Modal from "@/components/modal"
 import SwitchTabs from "@/components/switch-tabs"
 import useCustomAccount from "@/hooks/use-account"
-import useRanks from "@/sections/compaign/hooks/use-ranks"
-import useYourRank from "@/sections/compaign/hooks/use-your-rank"
+import useRanks from "@/sections/bintent-trading-challenge/hooks/use-ranks"
+import useYourRank from "@/sections/bintent-trading-challenge/hooks/use-your-rank"
 import { useBintent } from "@/stores/bintent"
 import { numberFormatter } from "@/utils/number-formatter"
 import { formatLongText } from "@/utils/utils"
@@ -24,7 +24,7 @@ export default memo(function Rank() {
     width: '10%',
     render: (text, record, index) => {
       return (
-        <div className="flex items-center justify-center w-[26px] h-[26px] bg-center bg-no-repeat" style={{ backgroundImage: index < 3 ? "url('/images/compaign/star_" + (index + 1) + ".svg')" : "" }}>
+        <div className="flex items-center justify-center w-[26px] h-[26px] bg-center bg-no-repeat" style={{ backgroundImage: index < 3 ? "url('/images/campaign/star_" + (index + 1) + ".svg')" : "" }}>
           <div className="text-black font-Montserrat font-semibold">{index + 1}</div>
         </div>
       )

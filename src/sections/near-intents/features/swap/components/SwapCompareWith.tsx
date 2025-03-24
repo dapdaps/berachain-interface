@@ -98,7 +98,7 @@ export default memo(function SwapCompareWith({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-[3px]">
           <div className="w-[20px]">
-            <img src="/images/compaign/gun.svg" alt="gun" />
+            <img src="/images/campaign/gun.svg" alt="gun" />
           </div>
           <div className=" text-black text-[12px] font-medium">{numberFormatter(gunAmountOut ? gunAmountOut : 0, 3, true)}</div>
           <div className="text-[#8D8D8D] text-[12px] font-medium">~{numberFormatter(usdGunAmountOut ? usdGunAmountOut : 0, 2, true, { prefix: "$" })}</div>

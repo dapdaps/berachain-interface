@@ -1,33 +1,33 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
-import HillsideSvg from '@public/images/background/hillside.svg';
-import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
-import GrassSvg from '@public/images/background/grass.svg';
-import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
-import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
 import BridgeGroundSvg from '@public/images/background/bridge-ground-2.svg';
 import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy-2.svg';
+import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
+import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
+import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
+import GrassSvg from '@public/images/background/grass.svg';
+import HallFlag from '@public/images/background/hall-flag.svg';
+import HallPalace from '@public/images/background/hall-palace.svg';
+import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
+import HillsideSvg from '@public/images/background/hillside.svg';
 import LeftTreeSvg from '@public/images/background/tree.svg';
-import HallPalace from '@public/images/background/hall-palace.svg'
-import HallFlag from '@public/images/background/hall-flag.svg'
+import { motion } from 'framer-motion';
 
-import { memo } from 'react';
-import { Clouds, DappClouds } from './clouds';
-import BeraBgHome from '@/components/bear-background/home';
 import Flowers from '@/components/bear-background/components/flowers';
 import Ground from '@/components/bear-background/components/ground';
+import BeraBgHome from '@/components/bear-background/home';
+import { memo } from 'react';
+import { Clouds, DappClouds } from './clouds';
 
 
-import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
+import clsx from 'clsx';
 
 import { useActivityStore } from '@/stores/useActivityStore';
-import { useParams } from 'next/navigation';
-import BeraBgCompaign from '@/components/bear-background/compaign'
-import { useRouter } from 'next/navigation';
+
+import BeraBgcampaign from '@/components/bear-background/campaign';
 import { useBintent } from '@/stores/bintent';
+import { useParams, useRouter } from 'next/navigation';
 
 const LeftTree = function () {
   return (
@@ -841,7 +841,7 @@ const BintentBear = function (props: any) {
         <div
           className='cursor-pointer w-[190px]'
           onClick={() => {
-            router.push("/compaign")
+            router.push("/bintent-trading-challenge")
           }}
         >
           <img src="/images/background/balloon_1.svg" alt="balloon_1" />
@@ -1090,8 +1090,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           </div>
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
         </>
-      ) : type === 'compaign' ? (
-        <BeraBgCompaign />
+      ) : type === 'campaign' ? (
+        <BeraBgcampaign />
       ) : (
         <></>
       )}
