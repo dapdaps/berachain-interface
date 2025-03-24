@@ -19,7 +19,7 @@ export default memo(function AirShip() {
   useEffect(() => {
     const sequence = async () => {
       await controls.start("stage1", {
-        duration: 6,
+        duration: 8,
         ease: "linear"
       });
 

@@ -8,7 +8,7 @@ import useYourRank from "@/sections/compaign/hooks/use-your-rank"
 import { useBintent } from "@/stores/bintent"
 import { numberFormatter } from "@/utils/number-formatter"
 import { formatLongText } from "@/utils/utils"
-import { memo, useState } from "react"
+import { memo, useEffect, useState } from "react"
 
 export default memo(function Rank() {
   const store = useBintent()
@@ -40,16 +40,21 @@ export default memo(function Rank() {
       )
     }
   }, , {
-    title: 'price',
-    dataIndex: 'price',
+    title: 'volume',
+    dataIndex: 'volume',
     align: 'right',
     width: '20%',
     render: (text, record, index) => {
       return (
-        <div>{numberFormatter(record?.[currentTab], 2, true, { isShort: true, prefix: "$" })}</div>
+        <div>{numberFormatter(record?.[currentTab], 2, true, { isShort: true, prefix: currentTab === "volume" ? "$" : "" })}</div>
       )
     }
   },]
+  
+
+  useEffect(() => {
+    setCurrentTab(store?.showRankModal ? "volume" : "")
+  }, [store?.showRankModal])
 
   return (
     <Modal

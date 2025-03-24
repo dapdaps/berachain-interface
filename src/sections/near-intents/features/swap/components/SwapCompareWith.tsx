@@ -64,7 +64,11 @@ export default memo(function SwapCompareWith({
         }
       })
       const result = await response.json()
-      setGunAmountOut(ethers.utils.formatUnits(result?.outputAmount?.value ?? 0, result?.outputAmount?.decimals ?? 18))
+      if (result?.error) {
+        throw new Error(result?.error)
+      } else {
+        setGunAmountOut(ethers.utils.formatUnits(result?.outputAmount?.value ?? 0, result?.outputAmount?.decimals ?? 18))
+      }
     } catch (error) {
       setGunAmountOut("")
       throw new Error(error)
@@ -86,6 +90,7 @@ export default memo(function SwapCompareWith({
     }
   }, [tokenIn, tokenOut, amountIn])
 
+  console.log('====gunAmountOut', gunAmountOut)
 
   return gunAmountOut && Big(saved).gt(0) ? (
     <div className="flex flex-col gap-[5px] mb-[20px]">

@@ -21,7 +21,7 @@ export default function useRanks(category: TCategory) {
     setLoading(false)
   }
   useEffect(() => {
-    queryRanks();
+    category && queryRanks();
   }, [category]);
 
   return {
