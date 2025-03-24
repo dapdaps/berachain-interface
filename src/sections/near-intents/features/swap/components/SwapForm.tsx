@@ -54,7 +54,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     formState: { errors,  },
   } = useFormContext<SwapFormValues>()
 
-  console.log('====errors', errors)
   const isMobile = useIsMobile();
   const toast = useToast();
 
@@ -63,6 +62,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
 
   const snapshot = SwapUIMachineContext.useSelector((snapshot) => snapshot)
   const intentCreationResult = snapshot.context.intentCreationResult
+  const intentRefs = snapshot.context.intentRefs
 
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
   const modal = useAppKit()
@@ -183,6 +183,12 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     tokenOut,
     tokensUsdPriceData
   )
+
+  const hasOngoingIntents = intentRefs.some(intentRef => {
+    const intentState = intentRef.getSnapshot();
+    return intentState.matches("pending") || intentState.matches("checking");
+  });
+
   return (
     <Flex
       direction="column"
@@ -260,7 +266,11 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
               size="lg"
               fullWidth
               isLoading={snapshot.matches("submitting")}
-              disabled={!!balanceInsufficient || !!noLiquidity}
+              disabled={
+                !!balanceInsufficient || 
+                !!noLiquidity || 
+                hasOngoingIntents
+              }
             >
               {noLiquidity
                 ? "No liquidity providers"
