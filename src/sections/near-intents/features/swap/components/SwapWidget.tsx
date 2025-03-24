@@ -17,6 +17,7 @@ import { SwapFormProvider } from "./SwapFormProvider"
 import { SwapSubmitterProvider } from "./SwapSubmitter"
 import { SwapUIMachineFormSyncProvider } from "./SwapUIMachineFormSyncProvider"
 import { SwapUIMachineProvider } from "./SwapUIMachineProvider"
+import { useRouter } from "next/navigation"
 
 export const SwapWidget = ({
   tokenList,
@@ -29,6 +30,7 @@ export const SwapWidget = ({
   initialTokenIn,
   initialTokenOut,
 }: SwapWidgetProps) => {
+  const router = useRouter()
 
   const {
     yourRank,
@@ -71,7 +73,11 @@ export const SwapWidget = ({
             <div className="absolute left-1/2 -bottom-[16px] -translate-x-1/2 translate-y-[100%] w-[520px] h-[54px] bg-[url('/images/campaign/ribbon.svg')] bg-center bg-no-repeat">
               <div className="p-[12px_44px_0] flex items-center justify-center gap-[17px]">
                 <span className="text-black text-[14px] font-Montserrat font-bold whitespace-nowrap">You're only {numberFormatter(yourRank?.away_top_volume ?? 0, 2, true, { isShort: true })} in PnL away from a top 10 spot.</span>
-                <span className="text-black text-[12px] font-Montserrat font-semibold underline whitespace-nowrap">View Rank</span>
+                <span className="text-black text-[12px] font-Montserrat font-semibold underline whitespace-nowrap"
+                  onClick={() => {
+                    router.push("/bintent-trading-challenge")
+                  }}
+                >View Rank</span>
               </div>
             </div>
           )

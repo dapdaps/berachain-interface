@@ -85,7 +85,6 @@ export default memo(function Leaderboard() {
               <div className="absolute left-1/2 -top-[44px] -translate-x-1/2 w-[520px] h-[54px] bg-[url('/images/campaign/ribbon.svg')] bg-center bg-no-repeat">
                 <div className="p-[12px_44px_0] flex items-center justify-center gap-[17px]">
                   <span className="text-black text-[14px] font-Montserrat font-bold whitespace-nowrap">You're only {numberFormatter(yourRank?.away_top_volume ?? 0, 2, true, { isShort: true })} in PnL away from a top 10 spot.</span>
-                  <span className="text-black text-[12px] font-Montserrat font-semibold underline whitespace-nowrap">View Rank</span>
                 </div>
               </div>
             )
