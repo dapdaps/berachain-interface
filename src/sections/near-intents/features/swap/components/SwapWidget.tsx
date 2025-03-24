@@ -2,7 +2,7 @@ import PageBack from "@/components/back"
 import Tabs from "@/components/tabs"
 import useIsMobile from "@/hooks/use-isMobile"
 import useToast from "@/hooks/use-toast"
-import useYourRank from "@/sections/compaign/hooks/use-your-rank"
+import useYourRank from "@/sections/bintent-trading-challenge/hooks/use-your-rank"
 import ConnectWalletBar from "@/sections/near-intents/components/ConnectWalletBar"
 import { useModalStore } from "@/sections/near-intents/providers/ModalStoreProvider"
 import { ModalType } from "@/sections/near-intents/stores/modalStore"
@@ -34,7 +34,7 @@ export const SwapWidget = ({
     yourRank,
     loading: loadingYourRank
   } = useYourRank("volume")
-  
+
   const { setModalType } = useModalStore(
     (state) => state
   )
@@ -68,7 +68,7 @@ export const SwapWidget = ({
         <SwapForm />
         {
           yourRank?.away_top_volume && (
-            <div className="absolute left-1/2 -bottom-[16px] -translate-x-1/2 translate-y-[100%] w-[520px] h-[54px] bg-[url('/images/compaign/ribbon.svg')] bg-center bg-no-repeat">
+            <div className="absolute left-1/2 -bottom-[16px] -translate-x-1/2 translate-y-[100%] w-[520px] h-[54px] bg-[url('/images/campaign/ribbon.svg')] bg-center bg-no-repeat">
               <div className="p-[12px_44px_0] flex items-center justify-center gap-[17px]">
                 <span className="text-black text-[14px] font-Montserrat font-bold whitespace-nowrap">You're only {numberFormatter(yourRank?.away_top_volume ?? 0, 2, true, { isShort: true })} in PnL away from a top 10 spot.</span>
                 <span className="text-black text-[12px] font-Montserrat font-semibold underline whitespace-nowrap">View Rank</span>

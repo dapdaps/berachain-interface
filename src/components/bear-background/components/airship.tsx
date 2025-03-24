@@ -35,16 +35,16 @@ export default memo(function AirShip() {
   return (
     <motion.div
       onClick={() => {
-        router.push("/compaign")
+        router.push("/bintent-trading-challenge")
       }}
       className="fixed top-[88px] w-[264px] cursor-pointer"
       variants={variants}
       initial="initial"
       animate={controls}
     >
-      <img src="/images/compaign/airship.svg" alt="airship" />
+      <img src="/images/campaign/airship.svg" alt="airship" />
       <div className="absolute w-[186px] top-[18px] -right-[169px]">
-        <img src="/images/compaign/flag.gif" alt="flag" />
+        <img src="/images/campaign/flag.gif" alt="flag" />
       </div>
     </motion.div>
   )

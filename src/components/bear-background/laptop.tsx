@@ -24,7 +24,12 @@ import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 
 import { useActivityStore } from '@/stores/useActivityStore';
+<<<<<<< Updated upstream
 import BeraBgCompaign from '@/components/bear-background/compaign'
+=======
+import { useParams } from 'next/navigation';
+import BeraBgcampaign from '@/components/bear-background/campaign'
+>>>>>>> Stashed changes
 import { useRouter } from 'next/navigation';
 import { useBintent } from '@/stores/bintent';
 
@@ -840,7 +845,7 @@ const BintentBear = function (props: any) {
         <div
           className='cursor-pointer w-[190px]'
           onClick={() => {
-            router.push("/compaign")
+            router.push("/bintent-trading-challenge")
           }}
         >
           <img src="/images/background/balloon_1.svg" alt="balloon_1" />
@@ -1065,8 +1070,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           </div>
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
         </>
-      ) : type === 'compaign' ? (
-        <BeraBgCompaign />
+      ) : type === 'campaign' ? (
+        <BeraBgcampaign />
       ) : (
         <></>
       )}

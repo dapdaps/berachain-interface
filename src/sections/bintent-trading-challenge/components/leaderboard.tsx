@@ -21,7 +21,7 @@ export default memo(function Leaderboard() {
     width: '10%',
     render: (text, record, index) => {
       return (
-        <div className="flex items-center justify-center w-[26px] h-[26px] bg-center bg-no-repeat" style={{ backgroundImage: index < 3 ? "url('/images/compaign/star_" + (index + 1) + ".svg')" : "" }}>
+        <div className="flex items-center justify-center w-[26px] h-[26px] bg-center bg-no-repeat" style={{ backgroundImage: index < 3 ? "url('/images/campaign/star_" + (index + 1) + ".svg')" : "" }}>
           <div className="text-black font-Montserrat font-semibold">{index + 1}</div>
         </div>
       )
@@ -50,7 +50,7 @@ export default memo(function Leaderboard() {
 
   return (
     <div className="m-[0_auto_39px] relative w-[720px] h-[732px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
-      <div className="absolute left-1/2 -top-[39px] -translate-x-1/2 w-[379px] h-[77px] bg-[url('/images/compaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb text-[32px] uppercase">
+      <div className="absolute left-1/2 -top-[39px] -translate-x-1/2 w-[379px] h-[77px] bg-[url('/images/campaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb text-[32px] uppercase">
         Leaderboard
       </div>
       <div className="h-full p-[50px_16px_16px] rounded-[10px] border-[2px] border-[#E5C375] bg-[#FFF1C7]">
@@ -82,7 +82,7 @@ export default memo(function Leaderboard() {
         <div className="relative h-[80px] rounded-[12px] bg-[#FFDC50] border border-black p-[23px_17px_18px]">
           {
             yourRank?.away_top_volume && (
-              <div className="absolute left-1/2 -top-[44px] -translate-x-1/2 w-[520px] h-[54px] bg-[url('/images/compaign/ribbon.svg')] bg-center bg-no-repeat">
+              <div className="absolute left-1/2 -top-[44px] -translate-x-1/2 w-[520px] h-[54px] bg-[url('/images/campaign/ribbon.svg')] bg-center bg-no-repeat">
                 <div className="p-[12px_44px_0] flex items-center justify-center gap-[17px]">
                   <span className="text-black text-[14px] font-Montserrat font-bold whitespace-nowrap">You're only {numberFormatter(yourRank?.away_top_volume ?? 0, 2, true, { isShort: true })} in PnL away from a top 10 spot.</span>
                   <span className="text-black text-[12px] font-Montserrat font-semibold underline whitespace-nowrap">View Rank</span>

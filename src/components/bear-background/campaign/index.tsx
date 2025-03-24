@@ -3,14 +3,14 @@ import { memo } from "react";
 import { Clouds } from "../clouds";
 import Ground from "../components/ground";
 import { useActivityStore } from "@/stores/useActivityStore";
-import PegAirshipSvg from '@public/images/compaign/peg_airship.svg'
-import LighthouseSvg from '@public/images/compaign/lighthouse.svg'
-import LakeSurfaceSvg from '@public/images/compaign/lake_surface.svg'
-import BridgeSvg from '@public/images/compaign/bridge.svg'
-import ShipSvg from '@public/images/compaign/ship.svg'
+import PegAirshipSvg from '@public/images/campaign/peg_airship.svg'
+import LighthouseSvg from '@public/images/campaign/lighthouse.svg'
+import LakeSurfaceSvg from '@public/images/campaign/lake_surface.svg'
+import BridgeSvg from '@public/images/campaign/bridge.svg'
+import ShipSvg from '@public/images/campaign/ship.svg'
 
 
-export default memo(function BeraBgCompaign() {
+export default memo(function BeraBgcampaign() {
   const { isDefaultTheme } = useActivityStore()
   return (
     <AnimatePresence mode="wait">
@@ -24,7 +24,7 @@ export default memo(function BeraBgCompaign() {
         <div className="absolute w-[802px] left-[5vw] bottom-[194px] z-10">
           <PegAirshipSvg />
           <div className="absolute w-[261px] top-[40px] -right-[2px]">
-            <img src="/images/compaign/flag.gif" alt="flag" />
+            <img src="/images/campaign/flag.gif" alt="flag" />
           </div>
         </div>
         <LighthouseSvg className="absolute w-[73px] left-[16.55vw] bottom-[233px] z-10" />
