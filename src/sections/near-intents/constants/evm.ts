@@ -10,7 +10,7 @@ export const CHAIN_IDS: Record<SupportedChainName, number | undefined> = {
   base: 8453,
   arbitrum: 42161,
   bitcoin: undefined,
-  solana: undefined,
+  solana: 7565164,
   dogecoin: undefined,
   turbochain: 1313161567,
   aurora: 1313161554,

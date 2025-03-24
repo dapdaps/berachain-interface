@@ -34,6 +34,7 @@ import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet
 import { useAppKit } from "@reown/appkit/react"
 import useIsMobile from "@/hooks/use-isMobile"
 import useToast from "@/hooks/use-toast"
+import SwapCompareWith from "./SwapCompareWith"
 
 export type SwapFormValues = {
   amountIn: string
@@ -50,9 +51,10 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     register,
     setValue,
     getValues,
-    formState: { errors },
+    formState: { errors,  },
   } = useFormContext<SwapFormValues>()
 
+  console.log('====errors', errors)
   const isMobile = useIsMobile();
   const toast = useToast();
 
@@ -181,7 +183,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     tokenOut,
     tokensUsdPriceData
   )
-
   return (
     <Flex
       direction="column"
@@ -217,7 +218,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenOut")
           }}
-          className="border border-[#373A53] border-t-[0] rounded-b-xl mb-5"
+          className="border border-[#373A53] border-t-[0] rounded-b-xl mb-[14px]"
           errors={errors}
           disabled={true}
           isLoading={snapshot.matches({ editing: "waiting_quote" })}
@@ -225,7 +226,16 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           balance={tokenOutBalance}
         />
 
-        
+        <SwapCompareWith
+          tokenIn={tokenIn}
+          tokenOut={tokenOut}
+          amountIn={getValues().amountIn}
+          amountOut={getValues().amountOut}
+          usdAmountOut={usdAmountOut}
+          tokensUsdPriceData={tokensUsdPriceData}
+        />
+
+
         <Flex align="stretch" direction="column">
           {!state.address ? (
             <ButtonCustom
@@ -244,7 +254,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
             >
               Connect Wallet
             </ButtonCustom>
-          ) :  (
+          ) : (
             <ButtonCustom
               type="submit"
               size="lg"
