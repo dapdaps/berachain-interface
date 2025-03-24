@@ -124,7 +124,7 @@ export const FieldComboInput = <T extends FieldValues>({
           <SelectAssets selected={selected} handleSelect={handleSelect} />
         )}
         <input
-          type="text"
+          type="number"
           inputMode="decimal"
           pattern="[0-9]*[,.]?[0-9]*"
           {...reactHookFormRegisterProps}

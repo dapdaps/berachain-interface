@@ -27,3 +27,25 @@ export interface Chain {
   rpcUrls: string[];
   blockExplorers: string;
 }
+
+
+export type TCategory = "volume" | "transactions"
+export interface IRank {
+  id: number
+  address: string
+  actual_volume: number
+  volume: number
+  transactions: number
+  rank_transactions: number
+  rank_volume: number
+}
+export interface IYourRank {
+  id: number
+  address: string
+  actual_volume: number
+  volume: number
+  transactions: number
+  rank_transactions: number
+  rank_volume: number
+  away_top_volume: any
+}

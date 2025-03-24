@@ -20,6 +20,7 @@ import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover'
 import { useRainyDay } from '@/hooks/use-rainy-day';
 import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
 import BeraPrice from '@/sections/home-earth/components/bera-price';
+import Airship from '@/components/bear-background/components/airship';
 
 // seconds per lap
 const SPEED = 200;
@@ -169,7 +170,7 @@ const HomeEarth = () => {
         setHoverIndex,
         speed: SPEED,
         size: BG_SIZE_MAP[activeTheme] || SIZE,
-    }}>
+      }}>
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
         {/*<BerachainFixes />*/}
         <BeraPrice />
@@ -177,6 +178,7 @@ const HomeEarth = () => {
         <Signpost />
         <HomeEarthTop />
         <AirdropModal />
+        <Airship />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
           {/*#region Cloud*/}
           <CloudCircle />
@@ -196,12 +198,12 @@ const HomeEarth = () => {
             trigger={PopoverTrigger.Hover}
             placement={PopoverPlacement.Top}
             offset={0}
-            content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg':'/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
+            content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg' : '/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
             triggerContainerClassName={clsx('absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110', isDefaultTheme() ? 'right-[150px]' : 'right-[130px]')}
           >
             <div className='w-full h-full relative'>
               <img
-                onClick={()=> toggleTheme()}
+                onClick={() => toggleTheme()}
                 src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
                 className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[103px] h-[95px]' : 'w-[136px] h-[108px]')}
                 alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
@@ -221,24 +223,24 @@ const HomeEarth = () => {
               />
             ) : (
               <div className='absolute z-[4] top-[32.4dvh] pointer-events-none' ref={bearRef}>
-              <div className='w-[289px] h-[289px] relative'>
-                <motion.img
-                  src="/images/home-earth/lgbt-role.png"
-                  className='w-full h-full relative z-10'
-                  alt=""
-                  animate={{
-                    y: [0, -10, 0],
-                    x: [0, 5, 0],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-                <img src="/images/home-earth/role-wave.svg" className='absolute bottom-[15px] left-[18px] z-0' alt="" />
+                <div className='w-[289px] h-[289px] relative'>
+                  <motion.img
+                    src="/images/home-earth/lgbt-role.png"
+                    className='w-full h-full relative z-10'
+                    alt=""
+                    animate={{
+                      y: [0, -10, 0],
+                      x: [0, 5, 0],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  <img src="/images/home-earth/role-wave.svg" className='absolute bottom-[15px] left-[18px] z-0' alt="" />
+                </div>
               </div>
-            </div>
             )
           }
         </div>

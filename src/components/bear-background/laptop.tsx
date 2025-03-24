@@ -24,6 +24,9 @@ import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 
 import { useActivityStore } from '@/stores/useActivityStore';
+import BeraBgCompaign from '@/components/bear-background/compaign'
+import { useRouter } from 'next/navigation';
+import { useBintent } from '@/stores/bintent';
 
 const LeftTree = function () {
   return (
@@ -772,7 +775,7 @@ const HatBear = function (props: any) {
     <div {...{ ...props }}>
       <img src='/images/background/bear.gif' />
 
-      <motion.svg
+      {/* <motion.svg
         animate={{
           rotate: [0, 3, 0, 3, 0, 3, 0]
         }}
@@ -821,10 +824,61 @@ const HatBear = function (props: any) {
           stroke='black'
           stroke-linecap='round'
         />
-      </motion.svg>
+      </motion.svg> */}
     </div>
   );
 };
+const BintentBear = function (props: any) {
+  const router = useRouter()
+  const store = useBintent()
+  return (
+    <div className='absolute left-[86px] bottom-[32px] z-20' >
+      <div className='cursor-pointer w-[360px]'>
+        <img src='/images/background/bear.gif' />
+      </div>
+      <div className='absolute -top-[343px] left-[48px]'>
+        <div
+          className='cursor-pointer w-[190px]'
+          onClick={() => {
+            router.push("/compaign")
+          }}
+        >
+          <img src="/images/background/balloon_1.svg" alt="balloon_1" />
+        </div>
+        <div className='absolute right-[20px] -bottom-[266px] w-[55px]'>
+          <img src="/images/background/balloon_line_1.svg" alt="balloon_line_1" />
+        </div>
+      </div>
+
+      <div className='absolute -top-[206px] left-[35px] z-10'>
+        <div
+          className='cursor-pointer w-[87px]'
+          onClick={() => {
+            store.set({
+              showRankModal: true
+            })
+          }}
+        >
+          <img src="/images/background/balloon_2.svg" alt="balloon_2" />
+        </div>
+        <div className='absolute -right-[96px] top-[87px] w-[120px]'>
+          <img src="/images/background/balloon_line_2.svg" alt="balloon_line_2" />
+        </div>
+      </div>
+
+      <div className='absolute -top-[183px] left-[150px]'>
+        <div className='cursor-pointer w-[55px]'>
+          <img src="/images/background/balloon_3.svg" alt="balloon_3" />
+        </div>
+        <div className='absolute -right-[13px] -bottom-[235px] w-[36.5px]'>
+          <img src="/images/background/balloon_line_3.svg" alt="balloon_line_3" />
+        </div>
+      </div>
+    </div>
+
+  );
+}
+
 
 const DashboardFlowers = function () {
   return (
@@ -907,7 +961,7 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent';
   children: React.ReactNode;
 };
 
@@ -981,6 +1035,19 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
 
         </>
+      ) : type === 'bintent' ? (
+        <>
+          <Clouds isRainyDay={isRainyDay} />
+          {
+            isDefaultTheme() && (
+              <>
+                <Flowers />
+                <BintentBear />
+              </>
+            )
+          }
+          <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
+        </>
       ) : type === 'dapp' ? (
         <>
           <DappClouds isRainyDay={isRainyDay} />
@@ -998,6 +1065,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           </div>
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
         </>
+      ) : type === 'compaign' ? (
+        <BeraBgCompaign />
       ) : (
         <></>
       )}
