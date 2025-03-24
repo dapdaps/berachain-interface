@@ -23,11 +23,9 @@ import { Clouds, DappClouds } from './clouds';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 import clsx from 'clsx';
 
-import { useActivityStore } from '@/stores/useActivityStore';
-import { useParams } from 'next/navigation';
-import BeraBgcampaign from '@/components/bear-background/campaign'
-import { useRouter } from 'next/navigation';
+import BeraBgcampaign from '@/components/bear-background/campaign';
 import { useBintent } from '@/stores/bintent';
+import { useActivityStore } from '@/stores/useActivityStore';
 import { useParams, useRouter } from 'next/navigation';
 
 const LeftTree = function () {
