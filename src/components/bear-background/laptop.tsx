@@ -24,12 +24,8 @@ import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 
 import { useActivityStore } from '@/stores/useActivityStore';
-<<<<<<< Updated upstream
-import BeraBgCompaign from '@/components/bear-background/compaign'
-=======
 import { useParams } from 'next/navigation';
 import BeraBgcampaign from '@/components/bear-background/campaign'
->>>>>>> Stashed changes
 import { useRouter } from 'next/navigation';
 import { useBintent } from '@/stores/bintent';
 
