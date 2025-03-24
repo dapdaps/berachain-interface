@@ -2,6 +2,9 @@ import clsx from 'clsx';
 import FlexTable from '@/components/flex-table';
 import { numberFormatter } from '@/utils/number-formatter';
 import Big from 'big.js';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import Card from '@/components/card';
+import LazyImage from '@/components/layz-image';
 
 const VaultsTable = (props: any) => {
   const { className } = props;
@@ -31,6 +34,7 @@ const VaultsTable = (props: any) => {
           name: "Infrared BGT",
           icon: "/assets/tokens/ibgt.png",
           apy: "11.42",
+          claim: "2999999.123",
         },
         {
           address: "0xbaadcc2962417c01af99fb2b7c75706b9bd6babe",
@@ -43,25 +47,45 @@ const VaultsTable = (props: any) => {
       ],
       balance: "20.34",
     },
+    {
+      tokens: [
+        {
+          icon: "/assets/tokens/honey.svg",
+          symbol: "HONEY",
+          decimals: 18,
+        },
+        {
+          icon: "/assets/tokens/usdc.png",
+          symbol: "USDC.e",
+          decimals: 6,
+        },
+      ],
+      protocol: "Berps",
+      tvl: "30800",
+      apy: "0.30",
+      balance: "20.34",
+    },
   ];
 
   const columns = [
     {
       title: "Vaults",
       dataIndex: "vaults",
-      width: 300,
+      width: 280,
       render: (text: any, record: any, index: any) => {
         return (
           <div className="w-full flex items-center gap-[5px]">
             <div className="flex items-center shrink-0">
               {
                 record.tokens.map((tk: any, idx: number) => (
-                  <img
+                  <LazyImage
                     key={idx}
                     src={tk.icon}
                     alt=""
-                    className="shrink-0 w-[26px] h-[26px] rounded-full"
-                    style={{
+                    width={26}
+                    height={26}
+                    containerClassName="shrink-0 rounded-full overflow-hidden"
+                    containerStyle={{
                       transform: idx > 0 ? "translateX(-6px)" : ""
                     }}
                   />
@@ -100,29 +124,127 @@ const VaultsTable = (props: any) => {
           });
         }
         return (
-          <div className="underline decoration-dashed underline-offset-4 cursor-pointer">
-            {
-              numberFormatter(totalApy, 2, true) + "%"
-            }
-          </div>
+          <Popover
+            triggerContainerClassName="inline-block"
+            content={(
+              <Card className="!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]">
+                <div className="w-full flex flex-col gap-[20px]">
+                  <div className="w-full flex justify-between items-center gap-[10px]">
+                    <div className="">Pool APY</div>
+                    <div className="">
+                      {numberFormatter(record.apy, 2, true)}%
+                    </div>
+                  </div>
+                  {
+                    record.rewards && record.rewards.length > 0 && (
+                      record.rewards.map((reward: any, idx: number) => (
+                        <div key={idx} className="w-full flex justify-between items-center gap-[5px]">
+                          <div className="">{reward.name} APY</div>
+                          <div className="">
+                            {numberFormatter(reward.apy, 2, true)}%
+                          </div>
+                        </div>
+                      ))
+                    )
+                  }
+                </div>
+              </Card>
+            )}
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Bottom}
+            closeDelayDuration={0}
+          >
+            <button type="button" className="underline decoration-dashed underline-offset-4">
+              {numberFormatter(totalApy, 2, true)}%
+            </button>
+          </Popover>
         );
       },
     },
     {
       title: "Rewards",
       dataIndex: "rewards",
-      render: (text: any, record: any, index: any) => {},
+      width: 160,
+      render: (text: any, record: any, index: any) => {
+        if (!record.rewards) return null;
+        return (
+          <div className="flex items-center gap-[2px] flex-wrap">
+            <div className="flex items-center">
+              {
+                record.rewards.map((reward: any, idx: number) => (
+                  <LazyImage
+                    key={idx}
+                    src={reward.icon}
+                    alt=""
+                    width={26}
+                    height={26}
+                    containerClassName="shrink-0 rounded-full overflow-hidden"
+                    containerStyle={{
+                      transform: idx > 0 ? "translateX(-6px)" : ""
+                    }}
+                  />
+                ))
+              }
+            </div>
+            {
+              record.rewards.map((reward: any, idx: number) => {
+                if (!reward.claim) return null;
+                return (
+                  <div key={idx} className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]">
+                    <div className="">
+                      +{numberFormatter(reward.claim, 2, true, { prefix: "$", isShort: true })}
+                    </div>
+                    <Popover
+                      triggerContainerClassName="inline-block"
+                      content={(
+                        <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
+                          Claim rewards
+                        </Card>
+                      )}
+                      trigger={PopoverTrigger.Hover}
+                      placement={PopoverPlacement.Top}
+                      closeDelayDuration={0}
+                    >
+                      <button
+                        type="button"
+                        className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
+                      />
+                    </Popover>
+                  </div>
+                );
+              })
+            }
+          </div>
+        )
+      },
     },
     {
       title: "Yours",
       dataIndex: "yours",
       sort: true,
-      render: (text: any, record: any, index: any) => {},
+      render: (text: any, record: any, index: any) => {
+        return numberFormatter(record.balance, 2, true, { prefix: "$", isShort: true });
+      },
     },
     {
       title: "Action",
       dataIndex: "action",
-      render: (text: any, record: any, index: any) => {},
+      width: 75,
+      render: (text: any, record: any, index: any) => {
+        return (
+          <div className="flex justify-end items-center gap-[10px]">
+            <button
+              type="button"
+              className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/deposit.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
+            />
+            <button
+              type="button"
+              disabled
+              className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -132,7 +254,7 @@ const VaultsTable = (props: any) => {
         columns={columns}
         list={list}
         headClass="px-[11px] py-[8px] text-[14px] font-[500] text-[#3D405A]"
-        bodyClass="text-[16px] font-[500]"
+        bodyClass="text-[16px] font-[500] !py-[13px] !pl-[11px] !pr-[14px]"
       />
     </div>
   );
