@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import FilterItem from '@/sections/vaults/v2/components/filter-item';
 import Dashboard from '@/sections/vaults/v2/components/dashboard';
+import VaultsTable from '@/sections/vaults/v2/components/vaults-table';
 
 const VaultsV2 = (props: any) => {
   const { } = props;
@@ -11,12 +12,12 @@ const VaultsV2 = (props: any) => {
   const [availableAssets, setAvailableAssets] = useState(false);
 
   return (
-    <div className="relative w-full h-full bg-[url('/images/vaults/v2/bg.png')] bg-no-repeat bg-top bg-cover">
+    <div className="relative w-full h-full bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
       <PageBack className='absolute left-[36px] top-[100px] text-white' />
       <div className="pt-[117px] mx-auto flex justify-center">
         <img src="/images/vaults/v2/title.png" alt="" className="w-[180px] h-[54px] shrink-0 pointer-events-none object-center object-contain" />
       </div>
-      <div className="max-h-[calc(100%_-_228px)] flex justify-between gap-[13px] w-[1257px] mx-auto text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
+      <div className="max-h-[calc(100%_-_278px)] mt-[50px] flex justify-between gap-[13px] w-[1257px] mx-auto text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
         <Card className="w-[337px] shrink-0 !rounded-[18px] !px-0 max-h-[100%] flex flex-col">
           <div className="flex items-center gap-[7px] pb-[24px] pl-[17px] border-b border-[rgba(0,0,0,0.2)] shrink-0">
             <div className="text-[20px] font-[700]">
@@ -99,6 +100,7 @@ const VaultsV2 = (props: any) => {
         </Card>
         <Card className="w-0 flex-1 !rounded-[18px] !px-[18px]">
           <Dashboard />
+          <VaultsTable />
         </Card>
       </div>
     </div>
