@@ -23,7 +23,7 @@ export default function useYourRank(category: TCategory) {
   }
 
   useEffect(() => {
-    account && queryYourRank()
+    account && category && queryYourRank()
   }, [category, account])
   return {
     loading,

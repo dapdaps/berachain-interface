@@ -37,17 +37,17 @@ export default memo(function Leaderboard() {
       )
     }
   }, , {
-    title: 'price',
-    dataIndex: 'price',
+    title: 'volume',
+    dataIndex: 'volume',
     align: 'right',
     width: '15%',
     render: (text, record, index) => {
       return (
-        <div>{numberFormatter(record?.[currentTab], 2, true, { isShort: true, prefix: "$" })}</div>
+        <div>{numberFormatter(record?.[currentTab], 2, true, { isShort: true, prefix: currentTab === "volume" ? "$" : "" })}</div>
       )
     }
   },]
-  
+
   return (
     <div className="m-[0_auto_39px] relative w-[720px] h-[732px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
       <div className="absolute left-1/2 -top-[39px] -translate-x-1/2 w-[379px] h-[77px] bg-[url('/images/compaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb text-[32px] uppercase">
