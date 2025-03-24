@@ -31,7 +31,6 @@ export async function getQuote(request: QuoteRequest, signer: Signer): Promise<Q
         tokenPair = 'WETH'
     }
 
-    console.log(tokenPair, request.toToken.symbol.toUpperCase())
 
     if (!tokenPair || tokenPair !== request.toToken.symbol.toUpperCase()) {
         return null

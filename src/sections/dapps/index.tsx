@@ -188,7 +188,7 @@ const SECOND_LIST = [
         name: "Jumper",
         label: "Jumper",
         type: "bridge",
-        disabled: true,
+        disabled: false,
         className: ""
       }
     ]
