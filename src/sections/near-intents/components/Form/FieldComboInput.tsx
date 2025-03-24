@@ -100,11 +100,12 @@ export const FieldComboInput = <T extends FieldValues>({
   };
 
   // react-hook-form specific props
+  console.log('=====fieldName', fieldName)
   const reactHookFormRegisterProps = register(fieldName, {
     min,
     max,
     pattern: {
-      value: /^[0-9]*[,.]?[0-9]*$/, // Valid result "10", "1,0", "0.01", ".01"
+      value: /^[0-9]*[,.]?[0-9]*$/,
       message: "Please enter a valid number",
     },
     required: required ? "This field is required" : false,
@@ -112,6 +113,7 @@ export const FieldComboInput = <T extends FieldValues>({
 
   const allInputRefs = useMergedRef(inputRef, reactHookFormRegisterProps.ref);
   const fieldError = errors?.[fieldName];
+
   return (
     <div
       className={clsx(
@@ -124,7 +126,7 @@ export const FieldComboInput = <T extends FieldValues>({
           <SelectAssets selected={selected} handleSelect={handleSelect} />
         )}
         <input
-          type="number"
+          type="text"
           inputMode="decimal"
           pattern="[0-9]*[,.]?[0-9]*"
           {...reactHookFormRegisterProps}
@@ -135,7 +137,7 @@ export const FieldComboInput = <T extends FieldValues>({
           className={clsx(
             "w-full text-3xl font-medium placeholder-black border-transparent focus:border-transparent focus:ring-0 px-0 text-right",
             disabled &&
-              "text-black-200 pointer-events-none placeholder-black-200",
+            "text-black-200 pointer-events-none placeholder-black-200",
             {
               hidden: isLoading,
             }
