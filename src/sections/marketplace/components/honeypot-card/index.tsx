@@ -7,6 +7,7 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import useIsMobile from "@/hooks/use-isMobile";
 import { numberFormatter } from "@/utils/number-formatter";
 import { Line, LineChart, Tooltip, YAxis } from 'recharts';
+import Big from 'big.js';
 
 const HoneypotCard = (props: any) => {
   const {
@@ -187,7 +188,7 @@ const HoneypotCard = (props: any) => {
                       <Line
                         type="natural"
                         dataKey="price"
-                        stroke="#76A813"
+                        stroke={priceData?.length ? Big(priceData[priceData.length - 1]?.price || 0).gte(priceData[priceData.length - 2]?.price || 0) ? "#76A813" : "#FF1DA5" : "#76A813"}
                         strokeWidth={1}
                         dot={false}
                         activeDot={false}
