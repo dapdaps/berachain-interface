@@ -19,6 +19,7 @@ const HoneypotCard = (props: any) => {
     data = {},
     voulmes,
     priceData,
+    priceFullData,
     onSwap = () => {}
   } = props;
 
@@ -188,7 +189,7 @@ const HoneypotCard = (props: any) => {
                       <Line
                         type="natural"
                         dataKey="price"
-                        stroke={priceData?.length ? Big(priceData[priceData.length - 1]?.price || 0).gte(priceData[priceData.length - 2]?.price || 0) ? "#76A813" : "#FF1DA5" : "#76A813"}
+                        stroke={priceFullData?.length ? Big(priceFullData[priceFullData.length - 1]?.price || 0).gte(priceFullData[priceFullData.length - 2]?.price || 0) ? "#76A813" : "#FF1DA5" : "#76A813"}
                         strokeWidth={1}
                         dot={false}
                         activeDot={false}
