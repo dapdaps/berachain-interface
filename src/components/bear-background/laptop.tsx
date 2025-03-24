@@ -24,8 +24,9 @@ import { useRainyDay } from '@/hooks/use-rainy-day';
 import clsx from 'clsx';
 
 import { useActivityStore } from '@/stores/useActivityStore';
-
-import BeraBgcampaign from '@/components/bear-background/campaign';
+import { useParams } from 'next/navigation';
+import BeraBgcampaign from '@/components/bear-background/campaign'
+import { useRouter } from 'next/navigation';
 import { useBintent } from '@/stores/bintent';
 import { useParams, useRouter } from 'next/navigation';
 
