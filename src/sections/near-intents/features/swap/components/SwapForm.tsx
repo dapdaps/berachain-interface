@@ -225,6 +225,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           balance={tokenOutBalance}
         />
 
+        
         <Flex align="stretch" direction="column">
           {!state.address ? (
             <ButtonCustom
@@ -262,10 +263,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
       </Form>
 
       {renderIntentCreationResult(intentCreationResult)}
-
-      {/* <Box>
-        <Intents intentRefs={snapshot.context.intentRefs} />
-      </Box> */}
     </Flex>
   )
 }

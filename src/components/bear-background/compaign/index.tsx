@@ -1,0 +1,49 @@
+import { AnimatePresence, motion } from "framer-motion";
+import { memo } from "react";
+import { Clouds } from "../clouds";
+import Ground from "../components/ground";
+import { useActivityStore } from "@/stores/useActivityStore";
+import PegAirshipSvg from '@public/images/compaign/peg_airship.svg'
+import LighthouseSvg from '@public/images/compaign/lighthouse.svg'
+import LakeSurfaceSvg from '@public/images/compaign/lake_surface.svg'
+import BridgeSvg from '@public/images/compaign/bridge.svg'
+import ShipSvg from '@public/images/compaign/ship.svg'
+
+
+export default memo(function BeraBgCompaign() {
+  const { isDefaultTheme } = useActivityStore()
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        initial={{ opacity: 0 }}
+        exit={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <Clouds />
+        <div className="absolute w-[802px] left-[5vw] bottom-[194px] z-10">
+          <PegAirshipSvg />
+          <div className="absolute w-[261px] top-[40px] -right-[2px]">
+            <img src="/images/compaign/flag.gif" alt="flag" />
+          </div>
+        </div>
+        <LighthouseSvg className="absolute w-[73px] left-[16.55vw] bottom-[233px] z-10" />
+        <LakeSurfaceSvg className="absolute w-[766px] right-0 bottom-0 z-10" />
+        <BridgeSvg className="absolute w-[446px] right-[246px] bottom-[128px] z-[11]" />
+        <motion.div
+          className="absolute w-[301px] right-0 bottom-[138px] z-10"
+          animate={{
+            transform: ["rotate(-2deg)", "rotate(2deg)", "rotate(-2deg)"]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity
+          }}
+        >
+          <ShipSvg />
+        </motion.div>
+        <Ground isDefaultTheme={isDefaultTheme} />
+      </motion.div>
+    </AnimatePresence>
+  )
+})
