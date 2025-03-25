@@ -1,5 +1,5 @@
 import { providers } from "near-api-js"
-import { type ReactNode, createContext } from "react"
+import { type ReactNode, createContext, useCallback } from "react"
 import { logger } from "../../../logger"
 import type { ChainType } from "../../../types/deposit"
 import type { SendNearTransaction } from "../../machines/publicKeyVerifierMachine"
@@ -8,7 +8,7 @@ import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 export const SwapSubmitterContext = createContext<{
   onSubmit: () => void
 }>({
-  onSubmit: () => {},
+  onSubmit: () => { },
 })
 
 export function SwapSubmitterProvider({
@@ -24,7 +24,7 @@ export function SwapSubmitterProvider({
 }) {
   const actorRef = SwapUIMachineContext.useActorRef()
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     if (userAddress == null || userChainType == null) {
       logger.warn("No user address provided")
       return
@@ -41,7 +41,7 @@ export function SwapSubmitterProvider({
         sendNearTransaction,
       },
     })
-  }
+  }, [userAddress, userChainType, sendNearTransaction])
 
   return (
     <SwapSubmitterContext.Provider value={{ onSubmit }}>

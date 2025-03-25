@@ -8,6 +8,7 @@ import { SwapWidget } from "../../features/swap/components/SwapWidget"
 import { ChainType, useConnectWallet } from "../../hooks/useConnectWallet"
 import { useNearWalletActions } from "../../hooks/useNearWalletActions"
 import { useTokenList } from "../../hooks/useTokenList"
+import { useCallback } from "react"
 
 export default function Swap() {
   const { state } = useConnectWallet()
@@ -19,10 +20,10 @@ export default function Swap() {
   return (
     <SwapWidget
       tokenList={tokenList}
-      initialTokenIn={LIST_TOKENS[1]}
-      initialTokenOut={LIST_TOKENS[0]}
+      initialTokenIn={LIST_TOKENS[0]}
+      initialTokenOut={LIST_TOKENS[1]}
       userAddress={state.address ?? null}
-      sendNearTransaction={async (tx) => {
+      sendNearTransaction={useCallback(async (tx) => {
         const result = await signAndSendTransactions({ transactions: [tx] })
 
         if (typeof result === "string") {
@@ -35,7 +36,7 @@ export default function Swap() {
         }
 
         return { txHash: outcome.transaction.hash }
-      }}
+      }, [])}
       signMessage={async (params) => {
         const chainType = state.chainType
         switch (chainType) {
@@ -86,7 +87,6 @@ export default function Swap() {
         console.log("Swap success", params)
       }}
       onNavigateDeposit={() => {
-        // router.push("/deposit")
       }}
       userChainType={state.chainType ?? null}
     />

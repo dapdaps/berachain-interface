@@ -33,6 +33,7 @@ interface Props<T extends FieldValues>
   placeholder?: string;
   balance?: bigint;
   selected?: BaseTokenInfo | UnifiedTokenInfo;
+  disabledSelect?: boolean;
   handleSelect?: () => void;
   className?: string;
   errors?: FieldErrors;
@@ -53,6 +54,7 @@ export const FieldComboInput = <T extends FieldValues>({
   placeholder = "0",
   balance,
   selected,
+  disabledSelect,
   handleSelect,
   className,
   errors,
@@ -100,7 +102,6 @@ export const FieldComboInput = <T extends FieldValues>({
   };
 
   // react-hook-form specific props
-  console.log('=====fieldName', fieldName)
   const reactHookFormRegisterProps = register(fieldName, {
     min,
     max,
@@ -130,7 +131,7 @@ export const FieldComboInput = <T extends FieldValues>({
     >
       <div className="w-full flex justify-between items-center gap-2 h-15">
         {selected && (
-          <SelectAssets selected={selected} handleSelect={handleSelect} />
+          <SelectAssets disabledSelect={disabledSelect} selected={selected} handleSelect={handleSelect} />
         )}
         <input
           type="text"

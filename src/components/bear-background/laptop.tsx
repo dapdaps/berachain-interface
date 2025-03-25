@@ -866,7 +866,11 @@ const BintentBear = function (props: any) {
         </div>
       </div>
 
-      <div className='absolute -top-[183px] left-[150px]'>
+      <div className='absolute -top-[183px] left-[150px]' onClick={() => {
+        store.set({
+          showRulesModal: true
+        })
+      }}>
         <div className='cursor-pointer w-[55px]'>
           <img src="/images/background/balloon_3.svg" alt="balloon_3" />
         </div>

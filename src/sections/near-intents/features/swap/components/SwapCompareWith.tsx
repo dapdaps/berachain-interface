@@ -1,5 +1,6 @@
 import { getEVMChainId } from "@/sections/near-intents/utils/evmChainId";
 import getTokenUsdPrice from "@/sections/near-intents/utils/getTokenUsdPrice";
+import { useBintent } from "@/stores/bintent";
 import { objectToQueryString } from "@/utils/http";
 import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
@@ -20,7 +21,19 @@ export default memo(function SwapCompareWith({
   usdAmountOut,
   tokensUsdPriceData
 }) {
+  const store = useBintent()
   const [gunAmountOut, setGunAmountOut] = useState("")
+
+
+  const usdGunAmountOut = useMemo(() => gunAmountOut ? (
+    getTokenUsdPrice(
+      gunAmountOut,
+      tokenOut,
+      tokensUsdPriceData
+    )
+  ) : 0, [gunAmountOut])
+  const saved = useMemo(() => Big(usdAmountOut ? usdAmountOut : 0).minus(usdGunAmountOut ? usdGunAmountOut : 0).toFixed(), [usdAmountOut, usdGunAmountOut])
+  const gapPercentage = useMemo(() => Big(saved).div(usdAmountOut ? usdAmountOut : 1).times(100).toFixed(), [saved, usdAmountOut])
 
   async function handleQueryGunAmountOut() {
     try {
@@ -71,26 +84,23 @@ export default memo(function SwapCompareWith({
       }
     } catch (error) {
       setGunAmountOut("")
-      throw new Error(error)
+      // throw new Error(error)
     }
+    const extra_data = store.extra_data
+    const better_than_shogun = gunAmountOut && Big(saved).gt(0)
+    store.set({
+      extra_data: {
+        ...extra_data,
+        better_than_shogun
+      }
+    })
   }
-  const usdGunAmountOut = useMemo(() => gunAmountOut ? (
-    getTokenUsdPrice(
-      gunAmountOut,
-      tokenOut,
-      tokensUsdPriceData
-    )
-  ) : 0, [gunAmountOut])
-  const saved = useMemo(() => Big(usdAmountOut ? usdAmountOut : 0).minus(usdGunAmountOut ? usdGunAmountOut : 0).toFixed(), [usdAmountOut, usdGunAmountOut])
-  const gapPercentage = useMemo(() => Big(saved).div(usdAmountOut ? usdAmountOut : 1).times(100).toFixed(), [saved, usdAmountOut])
-
   useEffect(() => {
     if (tokenIn && tokenOut && Number(amountIn) > 0) {
       handleQueryGunAmountOut()
     }
   }, [tokenIn, tokenOut, amountIn])
 
-  console.log('====gunAmountOut', gunAmountOut)
 
   return gunAmountOut && Big(saved).gt(0) ? (
     <div className="flex flex-col gap-[5px] mb-[20px]">
