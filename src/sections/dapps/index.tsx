@@ -184,9 +184,9 @@ const SECOND_LIST = [
         )
       },
       {
-        icon: "/images/dapps/jumper.png",
-        name: "Jumper",
-        label: "Jumper",
+        icon: "/images/dapps/lifi.png",
+        name: "lifi",
+        label: "Li.Fi",
         type: "bridge",
         disabled: false,
         className: ""

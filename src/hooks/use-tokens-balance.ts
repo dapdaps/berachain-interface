@@ -15,7 +15,13 @@ export default function useTokensBalance(tokens: any) {
     if (!account || !tokens.length) return;
     const chainId = tokens[0].chainId;
 
-    const provider = new providers.JsonRpcProvider(chains[chainId].rpcUrls.default.http[0]);
+    let rpcUrl = chains[chainId].rpcUrls.default.http[0]
+
+    if (chainId === 56) {
+      rpcUrl = 'https://binance.llamarpc.com'
+    }
+
+    const provider = new providers.JsonRpcProvider(rpcUrl);
 
     try {
       setLoading(true);
