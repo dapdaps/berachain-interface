@@ -34,11 +34,11 @@ interface VaultItem {
   activeIncentives: Incentive[];
 }
 
-const pageSize = 9
 export const useVaultList = (initialParams?: VaultListParams) => {
   const [data, setData] = useState<VaultItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const pageSize = 10
   const [params, setParams] = useState<VaultListParams>({
     page: 1,
     sortBy: 'activeIncentivesInHoney',
@@ -54,18 +54,18 @@ export const useVaultList = (initialParams?: VaultListParams) => {
     setError(null);
 
     try {
-      const queryParams = new URLSearchParams({
-        page: params.page?.toString() || '1',
-        pageSize: pageSize?.toString() || '10',
-        sortBy: params.sortBy || 'activeIncentivesInHoney',
-        sortOrder: params.sortOrder || 'desc',
-        filterByProduct: params.filterByProduct || '',
-        query: params.query || '',
-      });
-
       const response = await post(
         `https://api.berachain.com/`,
-        { "operationName": "GetVaults", "variables": { "orderBy": "apr", "orderDirection": "desc", "pageSize": 300, "where": { "includeNonWhitelisted": false } }, "query": "query GetVaults($where: GqlRewardVaultFilter, $pageSize: Int, $skip: Int, $orderBy: GqlRewardVaultOrderBy = bgtCapturePercentage, $orderDirection: GqlRewardVaultOrderDirection = desc, $search: String) {\n  polGetRewardVaults(\n    where: $where\n    first: $pageSize\n    skip: $skip\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    search: $search\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    vaults {\n      ...ApiVault\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}" }
+        {
+          "operationName": "GetVaults",
+          "variables": {
+            "orderBy": "apr",
+            "orderDirection": "desc",
+            "pageSize": pageSize, "skip": pageSize * (params?.page - 1),
+            "where": { "includeNonWhitelisted": false }
+          },
+          "query": "query GetVaults($where: GqlRewardVaultFilter, $pageSize: Int, $skip: Int, $orderBy: GqlRewardVaultOrderBy = bgtCapturePercentage, $orderDirection: GqlRewardVaultOrderDirection = desc, $search: String) {\n  polGetRewardVaults(\n    where: $where\n    first: $pageSize\n    skip: $skip\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    search: $search\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    vaults {\n      ...ApiVault\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}"
+        }
       );
       const { vaults, pagination } = response?.data?.polGetRewardVaults
       if (params.add) {
