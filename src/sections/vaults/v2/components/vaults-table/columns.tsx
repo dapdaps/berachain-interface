@@ -12,31 +12,27 @@ export const Vaults = (props: any) => {
   const { record, index, className } = props;
 
   return (
-    <div className={clsx("w-full flex items-center gap-[5px]", className)}>
+    <div className="w-full flex items-center gap-[5px]">
       <div className="flex items-center shrink-0">
-        {
-          record.tokens.map((tk: any, idx: number) => (
-            <LazyImage
-              key={idx}
-              src={tk.icon}
-              alt=""
-              width={26}
-              height={26}
-              containerClassName="shrink-0 rounded-full overflow-hidden"
-              containerStyle={{
-                transform: idx > 0 ? "translateX(-6px)" : ""
-              }}
-            />
-          ))
-        }
+        {record.tokens.map((tk: any, idx: number) => (
+          <LazyImage
+            key={idx}
+            src={tk.icon}
+            alt=""
+            width={26}
+            height={26}
+            containerClassName="shrink-0 rounded-full overflow-hidden"
+            containerStyle={{
+              transform: idx > 0 ? "translateX(-6px)" : ""
+            }}
+          />
+        ))}
       </div>
       <div className="flex flex-col gap-[1px]">
         <div className="text-[16px]">
           {record.tokens.map((tk: any) => tk.symbol).join("-")}
         </div>
-        <div className="text-[12px]">
-          {record.protocol}
-        </div>
+        <div className="text-[12px]">{record.protocol}</div>
       </div>
     </div>
   );
@@ -50,11 +46,13 @@ export const DepositButton = (props: any) => {
   return (
     <button
       type="button"
+      className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/deposit.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
       {...restProps}
-      className={clsx("w-[32px] h-[32px] bg-[url('/images/vaults/v2/deposit.svg')] rounded-[10px] bg-white bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]", className)}
       onClick={() => {
         toggleActionVisible({
-          type: ACTION_TYPE.DEPOSIT
+          type: ACTION_TYPE.DEPOSIT,
+          record,
+          visible: true
         });
       }}
     />
@@ -70,10 +68,12 @@ export const WithdrawButton = (props: any) => {
     <button
       type="button"
       {...restProps}
-      className={clsx("w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]", className)}
+      className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
       onClick={() => {
         toggleActionVisible({
           type: ACTION_TYPE.WITHDRAW,
+          record,
+          visible: true
         });
       }}
     />
@@ -83,7 +83,11 @@ export const WithdrawButton = (props: any) => {
 export const TVL = (props: any) => {
   const { record, index, className } = props;
 
-  return numberFormatter(record.tvl, 2, true, { prefix: "$", isShort: true, isShortUppercase: true });
+  return numberFormatter(record.tvl, 2, true, {
+    prefix: "$",
+    isShort: true,
+    isShortUppercase: true
+  });
 };
 
 export const APY = (props: any) => {
@@ -99,8 +103,8 @@ export const APY = (props: any) => {
   return (
     <Popover
       triggerContainerClassName="inline-block"
-      content={(
-        <Card className={clsx("!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]", className)}>
+      content={
+        <Card className="!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]">
           <div className="w-full flex flex-col gap-[20px]">
             <div className="w-full flex justify-between items-center gap-[10px]">
               <div className="">Pool APY</div>
@@ -108,26 +112,30 @@ export const APY = (props: any) => {
                 {numberFormatter(record.apy, 2, true)}%
               </div>
             </div>
-            {
-              record.rewards && record.rewards.length > 0 && (
-                record.rewards.map((reward: any, idx: number) => (
-                  <div key={idx} className="w-full flex justify-between items-center gap-[5px]">
-                    <div className="">{reward.name} APY</div>
-                    <div className="">
-                      {numberFormatter(reward.apy, 2, true)}%
-                    </div>
+            {record.rewards &&
+              record.rewards.length > 0 &&
+              record.rewards.map((reward: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="w-full flex justify-between items-center gap-[5px]"
+                >
+                  <div className="">{reward.name} APY</div>
+                  <div className="">
+                    {numberFormatter(reward.apy, 2, true)}%
                   </div>
-                ))
-              )
-            }
+                </div>
+              ))}
           </div>
         </Card>
-      )}
+      }
       trigger={PopoverTrigger.Hover}
       placement={PopoverPlacement.Bottom}
       closeDelayDuration={0}
     >
-      <button type="button" className="underline decoration-dashed underline-offset-4">
+      <button
+        type="button"
+        className="underline decoration-dashed underline-offset-4"
+      >
         {numberFormatter(totalApy, 2, true)}%
       </button>
     </Popover>
@@ -143,61 +151,67 @@ export const Rewards = (props: any) => {
   if (!record.rewards) return null;
 
   return (
-    <div className={clsx("flex items-center gap-[2px] flex-wrap", className)}>
+    <div className="flex items-center gap-[2px] flex-wrap">
       <div className="flex items-center">
-        {
-          record.rewards.map((reward: any, idx: number) => (
-            <LazyImage
-              key={idx}
-              src={reward.icon}
-              alt=""
-              width={isMobile ? 18 : 26}
-              height={isMobile ? 18 : 26}
-              containerClassName="shrink-0 rounded-full overflow-hidden"
-              containerStyle={{
-                transform: idx > 0 ? "translateX(-6px)" : ""
-              }}
-            />
-          ))
-        }
+        {record.rewards.map((reward: any, idx: number) => (
+          <LazyImage
+            key={idx}
+            src={reward.icon}
+            alt=""
+            width={isMobile ? 18 : 26}
+            height={isMobile ? 18 : 26}
+            containerClassName="shrink-0 rounded-full overflow-hidden"
+            containerStyle={{
+              transform: idx > 0 ? "translateX(-6px)" : ""
+            }}
+          />
+        ))}
       </div>
-      {
-        isClaim && record.rewards.map((reward: any, idx: number) => {
-          if (!reward.claim) return null;
-          return (
-            <div key={idx} className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]">
-              <div className="">
-                +{numberFormatter(reward.claim, 2, true, { prefix: "$", isShort: true })}
-              </div>
-              <Popover
-                triggerContainerClassName="inline-block"
-                content={(
-                  <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
-                    Claim rewards
-                  </Card>
-                )}
-                trigger={PopoverTrigger.Hover}
-                placement={PopoverPlacement.Top}
-                closeDelayDuration={0}
-              >
-                <button
-                  type="button"
-                  className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
-                  onClick={() => toggleClaimVisible()}
-                />
-              </Popover>
+      {isClaim && record.rewards.map((reward: any, idx: number) => {
+        if (!reward.claim) return null;
+        return (
+          <div
+            key={idx}
+            className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]"
+          >
+            <div className="">
+              +
+              {numberFormatter(reward.claim, 2, true, {
+                prefix: "$",
+                isShort: true
+              })}
             </div>
-          );
-        })
-      }
+            <Popover
+              triggerContainerClassName="inline-block"
+              content={
+                <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
+                  Claim rewards
+                </Card>
+              }
+              trigger={PopoverTrigger.Hover}
+              placement={PopoverPlacement.Top}
+              closeDelayDuration={0}
+            >
+              <button
+                type="button"
+                className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
+                onClick={() => toggleClaimVisible()}
+              />
+            </Popover>
+          </div>
+        );
+      })}
     </div>
-  )
+  );
 };
 
 export const Yours = (props: any) => {
   const { record, index, className } = props;
 
-  return numberFormatter(record.balance, 2, true, { prefix: "$", isShort: true });
+  return numberFormatter(record.balance, 2, true, {
+    prefix: "$",
+    isShort: true
+  });
 };
 
 export const ClaimButton = (props: any) => {

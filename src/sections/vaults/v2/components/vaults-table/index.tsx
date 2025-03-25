@@ -1,6 +1,6 @@
-import clsx from 'clsx';
-import FlexTable from '@/components/flex-table';
-import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import clsx from "clsx";
+import FlexTable from "@/components/flex-table";
+import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import {
   APY,
   DepositButton,
@@ -25,7 +25,7 @@ const VaultsTable = (props: any) => {
         return (
           <Vaults record={record} index={index} />
         );
-      },
+      }
     },
     {
       title: "TVL",
@@ -35,7 +35,7 @@ const VaultsTable = (props: any) => {
         return (
           <TVL record={record} index={index} />
         );
-      },
+      }
     },
     {
       title: "APY",
@@ -45,17 +45,18 @@ const VaultsTable = (props: any) => {
         return (
           <APY record={record} index={index} />
         );
-      },
+      }
     },
     {
       title: "Rewards",
       dataIndex: "rewards",
       width: 160,
       render: (text: any, record: any, index: any) => {
+        if (!record.rewards) return null;
         return (
           <Rewards record={record} index={index} />
-        )
-      },
+        );
+      }
     },
     {
       title: "Yours",
@@ -65,7 +66,7 @@ const VaultsTable = (props: any) => {
         return (
           <Yours record={record} index={index} />
         );
-      },
+      }
     },
     {
       title: "Action",
@@ -78,12 +79,17 @@ const VaultsTable = (props: any) => {
             <WithdrawButton record={record} index={index} disabled />
           </div>
         );
-      },
-    },
+      }
+    }
   ];
 
   return (
-    <div className={clsx("text-[20px] text-black leading-[90%] font-[600] font-Montserrat mt-[20px] w-full", className)}>
+    <div
+      className={clsx(
+        "text-[20px] text-black leading-[90%] font-[600] font-Montserrat mt-[20px] w-full",
+        className
+      )}
+    >
       <FlexTable
         columns={columns}
         list={listData}

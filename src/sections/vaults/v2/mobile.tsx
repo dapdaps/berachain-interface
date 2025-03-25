@@ -1,9 +1,6 @@
 import PageBack from '@/components/back';
 import Card from '@/components/card';
-import { motion } from 'framer-motion';
-import FilterItem from '@/sections/vaults/v2/components/filter-item';
 import Dashboard from '@/sections/vaults/v2/components/dashboard';
-import VaultsTable from '@/sections/vaults/v2/components/vaults-table';
 import TopCard from '@/sections/vaults/v2/components/top-card';
 import ActionModal from '@/sections/vaults/v2/components/action/modal';
 import VaultsV2ContextProvider from '@/sections/vaults/v2/context';
