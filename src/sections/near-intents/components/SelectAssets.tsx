@@ -23,8 +23,6 @@ export const SelectAssets = ({ selected, disabledSelect, handleSelect }: Props) 
     e.preventDefault()
     handleSelect?.()
   }
-
-  console.log('===disabledSelect', disabledSelect)
   return (
     <button
       type="button"

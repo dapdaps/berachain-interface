@@ -91,7 +91,6 @@ export function SwapUIMachineFormSyncProvider({
           toast.success({
             title: "Swap successful"
           })
-
           addAction({
             type: "Swap",
             inputCurrency: event.data.tokenIn,
@@ -116,7 +115,7 @@ export function SwapUIMachineFormSyncProvider({
     return () => {
       sub.unsubscribe()
     }
-  }, [actorRef, setValue, addAction, userChainType])
+  }, [actorRef, setValue, addAction, userChainType, store.extra_data])
 
   const swapRef = useSelector(actorRef, (state) => state.children.swapRef)
   const publicKeyVerifierRef = useSelector(swapRef, (state) => {
