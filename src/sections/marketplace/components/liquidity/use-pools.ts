@@ -81,7 +81,8 @@ export default function usePools(refresher: number) {
         }),
         ...kodiakV2Pools,
         ...kodiakV3Pools
-      ].sort((prev, next) => Big(next["apr"] || 0).gt(prev["apr"] || 0) ? 1 : -1)
+      ].filter(pool => Big(pool?.tvl ?? 0).gt(100))
+        .sort((prev, next) => Big(next["apr"] || 0).gt(prev["apr"] || 0) ? 1 : -1)
     }
   }, [kodiakIslands, bexPools, bexLoading, kodiakIslandsLoading, userKodiakIslandsLoading, userKodiakV2Loading, userKodiakV3Loading])
 
