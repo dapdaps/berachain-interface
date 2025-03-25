@@ -5,6 +5,7 @@ export function usePrice7d(props: any) {
   const { visibleTokens } = props;
 
   const [data, setData] = useState<Record<string, {id:number;price:string;price_key:string;timestamp:number;date:string;}[]>>({});
+  const [fullData, setFullData] = useState<Record<string, {id:number;price:string;price_key:string;timestamp:number;date:string;}[]>>({});
 
   const symbols = useMemo(() => {
     return visibleTokens?.flat?.()?.map?.((it: any) => it.symbol) ?? [];
@@ -19,6 +20,7 @@ export function usePrice7d(props: any) {
       }
       const _data = res.data || {};
       const dataBySymbol: Record<string, any[]> = {};
+      const fullDataBySymbol: Record<string, any[]> = {};
 
       Object.entries(_data).forEach(([symbol, prices]: any) => {
         const groupedData = prices.reduce((acc: Record<string, any[]>, item: any) => {
@@ -33,6 +35,7 @@ export function usePrice7d(props: any) {
           return acc;
         }, {});
 
+        fullDataBySymbol[symbol] = Object.values(groupedData).flatMap((dayData: any) => dayData);
         dataBySymbol[symbol] = Object.values(groupedData).flatMap((dayData: any) => {
           if (dayData.length <= 3) return dayData;
 
@@ -45,6 +48,7 @@ export function usePrice7d(props: any) {
       });
 
       setData(dataBySymbol);
+      setFullData(fullDataBySymbol);
     } catch (err: any) {
       console.log(err);
     }
@@ -57,5 +61,6 @@ export function usePrice7d(props: any) {
 
   return {
     data,
+    fullData,
   };
 }
