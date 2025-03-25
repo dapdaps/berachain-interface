@@ -14,7 +14,7 @@ const TopCard = (props: any) => {
 
   return (
     <div
-      className={clsx("rounded-[14px] p-[19px_20px_20px] h-[152px]", className)}
+      className={clsx("rounded-[14px] p-[19px_20px_20px] h-[152px] shadow-[6px_6px_0px_rgba(0,_0,_0,_0.25)]", className)}
       style={{
         backgroundColor: currType.bg,
       }}
