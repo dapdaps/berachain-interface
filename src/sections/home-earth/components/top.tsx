@@ -7,6 +7,7 @@ import { useActivityStore } from '@/stores/useActivityStore';
 import { useContext } from 'react';
 import { HomeEarthContext } from '@/sections/home-earth/context';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
+import Link from 'next/link';
 
 const HomeEarthTop = (props: any) => {
   const {} = props;
@@ -84,6 +85,33 @@ const HomeEarthTop = (props: any) => {
         </AnimatePresence>
       </div>
       <Airdrop className="!left-[unset] right-0 !top-[150px]" />
+      <Link
+        href="/vaults"
+        className="flex flex-col items-center absolute right-[70px] top-[300px] z-[3]"
+      >
+        <motion.img
+          src="/images/vaults/v2/entry.png"
+          alt=""
+          className="w-[94px] h-[94px] object-center object-contain origin-bottom"
+          variants={{
+            shake: {
+              rotate: [0, -12, 12, -8, 8, -4, 4, 0],
+            },
+          }}
+          animate="shake"
+          transition={{
+            duration: 0.6,
+            repeat: Infinity,
+            delay: 5,
+            repeatDelay: 5,
+          }}
+        />
+        <img
+          src="/images/vaults/v2/entry-title.png"
+          alt=""
+          className="w-[79px] h-[25px] object-center object-contain absolute bottom-0"
+        />
+      </Link>
     </div>
   );
 };
