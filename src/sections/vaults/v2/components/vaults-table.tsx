@@ -13,6 +13,7 @@ const VaultsTable = (props: any) => {
 
   const {
     toggleActionVisible,
+    toggleClaimVisible,
   } = useVaultsV2Context();
 
   const list = [
@@ -214,6 +215,7 @@ const VaultsTable = (props: any) => {
                       <button
                         type="button"
                         className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
+                        onClick={() => toggleClaimVisible()}
                       />
                     </Popover>
                   </div>

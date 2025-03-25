@@ -8,6 +8,8 @@ import TopCard from '@/sections/vaults/v2/components/top-card';
 import ActionModal from '@/sections/vaults/v2/components/action/modal';
 import VaultsV2ContextProvider from '@/sections/vaults/v2/context';
 import { useVaultsV2 } from '@/sections/vaults/v2/hooks';
+import ClaimModal from '@/sections/vaults/v2/components/claim/modal';
+import ClaimSuccessModal from '@/sections/vaults/v2/components/claim/success';
 
 const VaultsV2 = (props: any) => {
   const { } = props;
@@ -115,6 +117,8 @@ const VaultsV2 = (props: any) => {
           </div>
         </div>
         <ActionModal />
+        <ClaimModal />
+        <ClaimSuccessModal />
       </div>
     </VaultsV2ContextProvider>
   );
