@@ -6,6 +6,7 @@ import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import handleAction from "../../dapps/action";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import useTokenBalance from "@/hooks/use-token-balance";
+import Big from "big.js";
 
 export default function useAction() {
   const [loading, setLoading] = useState(false);
@@ -15,9 +16,10 @@ export default function useAction() {
   const [amount, setAmount] = useState<string>();
   const [inputError, setInputError] = useState<boolean>(false);
   const [inputErrorMessage, setInputErrorMessage] = useState<string>();
-  const { currentRecord, actionType } = useVaultsV2Context();
+  const { currentRecord, actionType, toggleActionVisible } =
+    useVaultsV2Context();
 
-  const { tokenBalance } = useTokenBalance(
+  const { tokenBalance, update } = useTokenBalance(
     currentRecord?.token?.address,
     currentRecord?.token?.decimals
   );
@@ -36,7 +38,9 @@ export default function useAction() {
       const tx = await handleAction({
         actionType: actionType.button,
         signer,
-        amount,
+        amount: Big(amount)
+          .mul(10 ** currentRecord.token.decimals)
+          .toFixed(0),
         currentRecord
       });
       toast.dismiss(toastId);
@@ -45,12 +49,13 @@ export default function useAction() {
 
       if (status === 1) {
         toast.success({
-          title: actionType.button + "successful!",
+          title: actionType.button + " successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
+        toggleActionVisible({ visible: false });
       } else {
-        toast.fail({ title: actionType.button + "failed!" });
+        toast.fail({ title: actionType.button + " failed!" });
       }
       addAction?.({
         type: "Staking",
@@ -68,12 +73,13 @@ export default function useAction() {
       });
       setLoading(false);
     } catch (err: any) {
+      console.log(71, err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : actionType.button + "failed!"
+          : actionType.button + " failed!"
       });
       setLoading(false);
     }
@@ -86,6 +92,7 @@ export default function useAction() {
     handleAmountChange,
     inputError,
     inputErrorMessage,
-    balance: tokenBalance
+    balance: tokenBalance,
+    updateBalance: update
   };
 }

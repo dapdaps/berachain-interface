@@ -15,6 +15,7 @@ export default function AddLiquidityModal({
   dex,
   open,
   onClose,
+  onSuccess,
   data,
   ...rest
 }: any) {
@@ -30,7 +31,7 @@ export default function AddLiquidityModal({
     if (isMobile && data.version === "v3") return "Set Price Range";
     if (data.token0 && data.token1)
       return `Provide ${data.token0.symbol}-${data.token1.symbol}`;
-    return `Provide ${data.symbol}`;
+    return `Provide ${data.symbol || data.token.symbol}`;
   }, [isMobile, data, data]);
 
   const params = useMemo(() => {
@@ -40,11 +41,11 @@ export default function AddLiquidityModal({
       defaultToken0: data.token0,
       defaultToken1: data.token1,
       defaultFee: data.fee,
-      version: data.version,
+      version: data.version
     };
   }, [data, dex]);
 
-  console.log(dex, '<---dex')
+  console.log(dex, "<---dex");
 
   return (
     <BasicModal
@@ -65,6 +66,7 @@ export default function AddLiquidityModal({
           ref={panelRef}
           onSuccess={() => {
             onClose();
+            onSuccess?.();
           }}
           {...params}
           {...rest}

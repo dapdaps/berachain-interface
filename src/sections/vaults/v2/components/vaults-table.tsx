@@ -22,12 +22,14 @@ const VaultsTable = (props: any) => {
         {
           icon: "/assets/tokens/honey.svg",
           symbol: "HONEY",
-          decimals: 18
+          decimals: 18,
+          address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
         },
         {
           icon: "/assets/tokens/usdc.png",
           symbol: "USDC.e",
-          decimals: 6
+          decimals: 6,
+          address: "0x549943e04f40284185054145c6E4e9568C1D3241"
         }
       ],
       protocol: "Bex",
@@ -58,7 +60,9 @@ const VaultsTable = (props: any) => {
         address: "0xF961a8f6d8c69E7321e78d254ecAfBcc3A637621",
         decimals: 18
       },
-      vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84"
+      vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84",
+      id: "0xf961a8f6d8c69e7321e78d254ecafbcc3a637621000000000000000000000001",
+      poolType: "COMPOSABLE_STABLE"
     },
     {
       tokens: [

@@ -65,8 +65,10 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       assets.forEach((asset: any, i: number) => {
         const token = tokens.find(
           (t: any) =>
-            (t.address === "native" ? weth[DEFAULT_CHAIN_ID] : t.address) ===
-            asset.toLowerCase()
+            (t.address === "native"
+              ? weth[DEFAULT_CHAIN_ID]
+              : t.address
+            ).toLowerCase() === asset.toLowerCase()
         );
         if (!token) {
           maxAmountsIn.push("0");
@@ -108,7 +110,15 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         .toFixed(0);
 
       const abiCoder = new utils.AbiCoder();
-
+      console.log([
+        assets,
+        maxAmountsIn,
+        abiCoder.encode(
+          ["uint256", "uint256[]", "uint256"],
+          [1, amountsIn, initBalances]
+        ),
+        false
+      ]);
       const [bptOut] = await queryContract.callStatic.queryJoin(
         poolIdx,
         account,

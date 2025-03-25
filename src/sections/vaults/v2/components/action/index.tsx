@@ -5,10 +5,12 @@ import ButtonWithApprove from "@/components/button/button-with-approve";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import useAction from "../../hooks/use-action";
+import { useState } from "react";
+import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 
 const Action = (props: any) => {
   const { className } = props;
-
+  const [openAddLp, setOpenAddLp] = useState(false);
   const { actionType, currentRecord } = useVaultsV2Context();
   const {
     loading,
@@ -16,7 +18,8 @@ const Action = (props: any) => {
     amount,
     handleAmountChange,
     inputErrorMessage,
-    balance
+    balance,
+    updateBalance
   } = useAction();
 
   const handleBalance = () => {
@@ -71,6 +74,9 @@ const Action = (props: any) => {
           <button
             type="button"
             className="px-[15px] shrink-0 disabled:!cursor-not-allowed disabled:opacity-30 h-[26px] rounded-[6px] border border-[#373A53] bg-[#FFF] text-[#000] text-center font-Montserrat text-[14px] font-medium leading-normal"
+            onClick={() => {
+              setOpenAddLp(true);
+            }}
           >
             Get
           </button>
@@ -110,7 +116,7 @@ const Action = (props: any) => {
           </div>
         </div>
         <div className="flex justify-between items-center gap-[10px] w-full text-[#3D405A] font-Montserrat text-[14px] font-normal leading-normal">
-          <div className="">$0.00</div>
+          <div className="" />
           <div className="flex items-center gap-[2px]">
             <div>balance:</div>
             <button
@@ -125,7 +131,13 @@ const Action = (props: any) => {
       </div>
       {["Bex"].includes(currentRecord.protocol) && (
         <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
-          <button type="button" className="underline underline-offset-2">
+          <button
+            type="button"
+            className="underline underline-offset-2"
+            onClick={() => {
+              setOpenAddLp(true);
+            }}
+          >
             Mint LP tokens
           </button>
           <div>first</div>
@@ -141,13 +153,25 @@ const Action = (props: any) => {
           disabled={inputErrorMessage || loading}
           onClick={onAction}
           buttonProps={{
-            className: "w-full h-[50px]",
+            className: "w-full h-[50px] font-bold",
             type: "primary"
           }}
         >
           {actionType.button}
         </ButtonWithApprove>
       </div>
+
+      {["Bex"].includes(currentRecord.protocol) && (
+        <AddLiquidityModal
+          dex={currentRecord.protocol}
+          data={currentRecord}
+          open={openAddLp}
+          onClose={() => {
+            setOpenAddLp(false);
+          }}
+          onSuccess={updateBalance}
+        />
+      )}
     </div>
   );
 };
