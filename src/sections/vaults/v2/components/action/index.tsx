@@ -1,14 +1,14 @@
-import clsx from 'clsx';
-import LazyImage from '@/components/layz-image';
-import InputNumber from '@/components/input-number';
-import { useState } from 'react';
-import { numberFormatter } from '@/utils/number-formatter';
-import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import clsx from "clsx";
+import LazyImage from "@/components/layz-image";
+import InputNumber from "@/components/input-number";
+import { useState } from "react";
+import { numberFormatter } from "@/utils/number-formatter";
+import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 
 const Action = (props: any) => {
   const { className } = props;
 
-  const { actionType } = useVaultsV2Context();
+  const { actionType, currentRecord } = useVaultsV2Context();
 
   const balance = "123";
 
@@ -31,24 +31,35 @@ const Action = (props: any) => {
         className
       )}
     >
-      <div className="">
-        {actionType.title}
-      </div>
+      <div className="">{actionType.title}</div>
       <div className="mt-[30px] flex justify-between items-start gap-[10px]">
         <div className="flex items-center w-0 flex-1">
           <div className="flex items-center shrink-0">
-            <LazyImage src="/images/icon-coin.svg" width={50} height={50} containerClassName="shrink-0 rounded-full overflow-hidden" />
-            <LazyImage src="/images/icon-coin.svg" width={50} height={50} containerClassName="shrink-0 rounded-full overflow-hidden translate-x-[-20px]" />
+            <LazyImage
+              src="/images/icon-coin.svg"
+              width={50}
+              height={50}
+              containerClassName="shrink-0 rounded-full overflow-hidden"
+            />
+            <LazyImage
+              src="/images/icon-coin.svg"
+              width={50}
+              height={50}
+              containerClassName="shrink-0 rounded-full overflow-hidden translate-x-[-20px]"
+            />
           </div>
           <div className="flex-1 w-0 overflow-hidden">
             <div className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
               HONEY-USDC.e
             </div>
             <div className="mt-[8px] flex items-center gap-[4px]">
-              <LazyImage src="/images/icon-coin.svg" width={16} height={16} containerClassName="shrink-0" />
-              <div className="text-[14px] font-medium leading-[100%]">
-                Hub
-              </div>
+              <LazyImage
+                src="/images/icon-coin.svg"
+                width={16}
+                height={16}
+                containerClassName="shrink-0"
+              />
+              <div className="text-[14px] font-medium leading-[100%]">Hub</div>
             </div>
           </div>
         </div>
@@ -62,7 +73,9 @@ const Action = (props: any) => {
       <div
         className={clsx(
           "mt-[20px] h-[90px] rounded-[12px] border flex flex-col items-stretch gap-[15px] pl-[13px] pr-[14px] pt-[20px] pb-[13px]",
-          inputError ? "border-[#CE4314] bg-[#FFEFEF]" : "border-[#373A53] bg-[#FFF]"
+          inputError
+            ? "border-[#CE4314] bg-[#FFEFEF]"
+            : "border-[#373A53] bg-[#FFF]"
         )}
       >
         <div className="flex justify-between items-center gap-[10px] w-full">
@@ -76,14 +89,22 @@ const Action = (props: any) => {
             )}
           />
           <div className="flex items-center justify-end shrink-0 translate-x-[10px]">
-            <LazyImage src="/images/icon-coin.svg" width={26} height={26} containerClassName="shrink-0 rounded-full overflow-hidden" />
-            <LazyImage src="/images/icon-coin.svg" width={26} height={26} containerClassName="shrink-0 rounded-full overflow-hidden translate-x-[-10px]" />
+            <LazyImage
+              src="/images/icon-coin.svg"
+              width={26}
+              height={26}
+              containerClassName="shrink-0 rounded-full overflow-hidden"
+            />
+            <LazyImage
+              src="/images/icon-coin.svg"
+              width={26}
+              height={26}
+              containerClassName="shrink-0 rounded-full overflow-hidden translate-x-[-10px]"
+            />
           </div>
         </div>
         <div className="flex justify-between items-center gap-[10px] w-full text-[#3D405A] font-Montserrat text-[14px] font-normal leading-normal">
-          <div className="">
-            $0.00
-          </div>
+          <div className="">$0.00</div>
           <div className="flex items-center gap-[2px]">
             <div>balance:</div>
             <button
@@ -97,10 +118,7 @@ const Action = (props: any) => {
         </div>
       </div>
       <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
-        <button
-          type="button"
-          className="underline underline-offset-2"
-        >
+        <button type="button" className="underline underline-offset-2">
           Mint LP tokens
         </button>
         <div>first</div>

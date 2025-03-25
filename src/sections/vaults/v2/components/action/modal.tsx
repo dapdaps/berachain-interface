@@ -1,7 +1,7 @@
-import Modal from '@/components/modal';
-import Index from './index';
-import Card from '@/components/card';
-import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import Modal from "@/components/modal";
+import Index from "./index";
+import Card from "@/components/card";
+import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 
 const ActionModal = (props: any) => {
   const { className } = props;
