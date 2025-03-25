@@ -70,7 +70,7 @@ const Action = (props: any) => {
             </div>
           </div>
         </div>
-        {["Bex"].includes(currentRecord.protocol) && (
+        {["Bex"].includes(currentRecord.lpProtocol) && (
           <button
             type="button"
             className="px-[15px] shrink-0 disabled:!cursor-not-allowed disabled:opacity-30 h-[26px] rounded-[6px] border border-[#373A53] bg-[#FFF] text-[#000] text-center font-Montserrat text-[14px] font-medium leading-normal"
@@ -129,7 +129,7 @@ const Action = (props: any) => {
           </div>
         </div>
       </div>
-      {["Bex"].includes(currentRecord.protocol) && (
+      {["Bex"].includes(currentRecord.lpProtocol) && (
         <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
           <button
             type="button"
@@ -161,9 +161,9 @@ const Action = (props: any) => {
         </ButtonWithApprove>
       </div>
 
-      {["Bex"].includes(currentRecord.protocol) && (
+      {["Bex"].includes(currentRecord.lpProtocol) && (
         <AddLiquidityModal
-          dex={currentRecord.protocol}
+          dex={currentRecord.lpProtocol}
           data={currentRecord}
           open={openAddLp}
           onClose={() => {

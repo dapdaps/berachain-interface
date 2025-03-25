@@ -30,6 +30,7 @@ export function useList(): List {
             }
           ],
           protocol: "Bex",
+          lpProtocol: "Bex",
           tvl: "308320000",
           apy: "0.16",
           rewards: [
