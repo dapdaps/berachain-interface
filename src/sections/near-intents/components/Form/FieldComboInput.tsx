@@ -114,7 +114,14 @@ export const FieldComboInput = <T extends FieldValues>({
 
   const allInputRefs = useMergedRef(inputRef, reactHookFormRegisterProps.ref);
   const fieldError = errors?.[fieldName];
-
+  
+  const handleInputValidation = (e: React.FormEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    if (!/^\d*\.?\d*$/.test(value)) {
+      e.currentTarget.value = value.replace(/[^\d.]/g, '').replace(/(\..*?)\..*/g, '$1');
+    }
+  };
+  
   return (
     <div
       className={clsx(
@@ -135,6 +142,7 @@ export const FieldComboInput = <T extends FieldValues>({
           placeholder={placeholder}
           disabled={disabled}
           autoComplete="off"
+          onInput={handleInputValidation}
           className={clsx(
             "w-full text-3xl font-medium placeholder-black border-transparent focus:border-transparent focus:ring-0 px-0 text-right",
             disabled &&

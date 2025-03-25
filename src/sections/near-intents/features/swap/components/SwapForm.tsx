@@ -67,6 +67,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
 
   const snapshot = SwapUIMachineContext.useSelector((snapshot) => snapshot)
   const intentCreationResult = snapshot.context.intentCreationResult
+  const intentRefs = snapshot.context.intentRefs
 
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
   const modal = useAppKit()
@@ -195,29 +196,33 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
   )
 
 
-  // useEffect(() => {
-  //   if (currentTab === "trading_challenge") {
-  //     swapUIActorRef.send({
-  //       type: "input",
-  //       params: { tokenIn: LIST_TOKENS[0], tokenOut: LIST_TOKENS[1] },
-  //     })
-  //   } else {
-  //     swapUIActorRef.send({
-  //       type: "input",
-  //       params: { tokenIn: LIST_TOKENS[1], tokenOut: LIST_TOKENS[0] },
-  //     })
-  //   }
-  //   const extra_data = store.extra_data
 
-  //   store.set({
-  //     extra_data: {
-  //       trading_challenge: currentTab === "trading_challenge",
-  //       better_than_shogun: false
-  //     }
-  //   })
+  const hasOngoingIntents = intentRefs.some(intentRef => {
+    const intentState = intentRef.getSnapshot();
+    return intentState.matches("pending") || intentState.matches("checking");
+  });
 
-
-  // }, [currentTab])
+  useEffect(() => {
+    if (currentTab === "trading_challenge") {
+      swapUIActorRef.send({
+        type: "input",
+        params: { tokenIn: LIST_TOKENS[0], tokenOut: LIST_TOKENS[1] },
+      })
+    } else {
+      swapUIActorRef.send({
+        type: "input",
+        params: { tokenIn: LIST_TOKENS[1], tokenOut: LIST_TOKENS[0] },
+      })
+    }
+    const extra_data = store.extra_data
+    const better_than_shogun = extra_data.better_than_shogun
+    store.set({
+      extra_data: {
+        trading_challenge: currentTab === "trading_challenge",
+        better_than_shogun: currentTab === "trading_challenge" ? better_than_shogun : false
+      }
+    })
+  }, [currentTab])
 
   return (
     <Flex
@@ -317,7 +322,11 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
               size="lg"
               fullWidth
               isLoading={snapshot.matches("submitting")}
-              disabled={!!balanceInsufficient || !!noLiquidity}
+              disabled={
+                !!balanceInsufficient ||
+                !!noLiquidity ||
+                hasOngoingIntents
+              }
             >
               {noLiquidity
                 ? "No liquidity providers"
