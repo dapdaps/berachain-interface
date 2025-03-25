@@ -200,6 +200,12 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     return intentState.matches("pending") || intentState.matches("checking");
   });
 
+
+  const hasOngoingIntents = intentRefs.some(intentRef => {
+    const intentState = intentRef.getSnapshot();
+    return intentState.matches("pending") || intentState.matches("checking");
+  });
+
   useEffect(() => {
     if (currentTab === "trading_challenge") {
       swapUIActorRef.send({
@@ -213,11 +219,11 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
       })
     }
     const extra_data = store.extra_data
-
+    const better_than_shogun = extra_data.better_than_shogun
     store.set({
       extra_data: {
         trading_challenge: currentTab === "trading_challenge",
-        better_than_shogun: false
+        better_than_shogun: currentTab === "trading_challenge" ? better_than_shogun : false
       }
     })
   }, [currentTab])
