@@ -7,6 +7,7 @@ export function useVaultsV2(): VaultsV2 {
   const [availableAssets, setAvailableAssets] = useState(false);
   const [claimVisible, setClaimVisible] = useState(false);
   const [claimSuccessVisible, setClaimSuccessVisible] = useState(false);
+  const [strategyVisible, setStrategyVisible] = useState(false);
 
   const toggleActionVisible = (params?: { visible?: boolean; type?: ACTION_TYPE; }) => {
     const { visible: _actionVisible, type: _actionType } = params ?? {};
@@ -28,16 +29,22 @@ export function useVaultsV2(): VaultsV2 {
     setClaimSuccessVisible(typeof _claimSuccessVisible === "boolean" ? _claimSuccessVisible : !claimSuccessVisible);
   }
 
+  const toggleStrategyVisible = (_strategyVisible?: boolean) => {
+    setStrategyVisible(typeof _strategyVisible === "boolean" ? _strategyVisible : !strategyVisible);
+  }
+
   return {
     actionType,
     actionVisible,
     availableAssets,
     claimVisible,
     claimSuccessVisible,
+    strategyVisible,
     toggleActionVisible,
     toggleAvailableAssets,
     toggleClaimVisible,
     toggleClaimSuccessVisible,
+    toggleStrategyVisible,
   };
 }
 
@@ -51,4 +58,6 @@ export interface VaultsV2 {
   toggleClaimVisible: (claimVisible?: boolean) => void;
   claimSuccessVisible: boolean;
   toggleClaimSuccessVisible: (claimSuccessVisible?: boolean) => void;
+  strategyVisible: boolean;
+  toggleStrategyVisible: (strategyVisible?: boolean) => void;
 }
