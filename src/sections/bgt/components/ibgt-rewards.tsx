@@ -7,6 +7,7 @@ import useCustomAccount from "@/hooks/use-account";
 import { multicallWrite, multicallAddresses } from "@/utils/multicall";
 import useToast from "@/hooks/use-toast";
 import Loading from "@/components/loading";
+import { usePriceStore } from "@/stores/usePriceStore";
 export default memo(function IbgtRewards({
   rewards,
   onSuccess
@@ -15,10 +16,11 @@ export default memo(function IbgtRewards({
   onSuccess: VoidFunction
 }) {
   const toast = useToast()
+  const prices = usePriceStore((store) => store.price);
   const { account, provider, chainId } = useCustomAccount()
   const multicallAddress = multicallAddresses[chainId];
   const [loading, setLoading] = useState(false)
-  const count = useMemo(() => rewards?.reduce((acc, curr) => acc = Big(acc).plus(curr?.earned ?? 0), 0), [rewards])
+  const count = useMemo(() => rewards?.reduce((acc, curr) => acc = Big(acc).plus(Big(curr?.earned ?? 0).times(prices?.[curr?.rewardSymbol] ?? 0)), 0), [rewards])
   const handleClaimAllRewards = async () => {
     const toastId = toast?.loading({
       title: `Claim All Rewards...`
