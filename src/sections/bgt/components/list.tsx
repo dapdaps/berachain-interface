@@ -69,7 +69,7 @@ const VaultsList = () => {
           sort: true,
           width: "15%",
           render: (item: any, index: number) => {
-            return formatValueDecimal(Big(item?.dynamicData?.apr).times(100).toFixed(), '', 2) + "%";
+            return formatValueDecimal(Big(item?.dynamicData?.apr ?? 0).times(100).toFixed(), '', 2) + "%";
           },
         },
         {
@@ -78,7 +78,7 @@ const VaultsList = () => {
           sort: true,
           width: "15%",
           render: (item: any, index: number) => {
-            return formatValueDecimal(Big(item?.dynamicData?.bgtCapturePercentage).times(100).toFixed(), '', 2) + "%";
+            return formatValueDecimal(Big(item?.dynamicData?.bgtCapturePercentage ?? 0).times(100).toFixed(), '', 2) + "%";
           },
         },
         {
