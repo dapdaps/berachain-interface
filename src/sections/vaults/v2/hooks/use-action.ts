@@ -5,6 +5,7 @@ import useAddAction from "@/hooks/use-add-action";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import handleAction from "../../dapps/action";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import useTokenBalance from "@/hooks/use-token-balance";
 
 export default function useAction() {
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,11 @@ export default function useAction() {
   const [inputError, setInputError] = useState<boolean>(false);
   const [inputErrorMessage, setInputErrorMessage] = useState<string>();
   const { currentRecord, actionType } = useVaultsV2Context();
-  const balance = "123";
+
+  const { tokenBalance } = useTokenBalance(
+    currentRecord?.token?.address,
+    currentRecord?.token?.decimals
+  );
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);
@@ -81,6 +86,6 @@ export default function useAction() {
     handleAmountChange,
     inputError,
     inputErrorMessage,
-    balance
+    balance: tokenBalance
   };
 }

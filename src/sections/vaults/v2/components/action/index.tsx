@@ -39,6 +39,7 @@ const Action = (props: any) => {
                 src={token.icon || "/assets/tokens/default_icon.png"}
                 width={50}
                 height={50}
+                key={idx}
                 containerClassName={clsx(
                   "shrink-0 rounded-full overflow-hidden",
                   idx !== 0 && "translate-x-[-20px]"
@@ -99,6 +100,7 @@ const Action = (props: any) => {
                 src={token.icon || "/assets/tokens/default_icon.png"}
                 width={26}
                 height={26}
+                key={idx}
                 containerClassName={clsx(
                   "shrink-0 rounded-full overflow-hidden",
                   idx !== 0 && "translate-x-[-10px]"

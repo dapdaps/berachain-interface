@@ -52,7 +52,13 @@ const VaultsTable = (props: any) => {
           apy: "14.55"
         }
       ],
-      balance: "20.34"
+      balance: "20.34",
+      token: {
+        symbol: "HONEY-USDC.e",
+        address: "0xF961a8f6d8c69E7321e78d254ecAfBcc3A637621",
+        decimals: 18
+      },
+      vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84"
     },
     {
       tokens: [
