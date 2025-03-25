@@ -15,7 +15,7 @@ import { OrderKeys } from '@/sections/vaults/v2/config';
 const VaultsTable = (props: any) => {
   const { className } = props;
 
-  const { listData, listLoading } = useVaultsV2Context();
+  const { listData, listLoading, listOrderDirection, listOrderKey, toggleListOrder } = useVaultsV2Context();
 
   const columns: any[] = [
     {
@@ -94,8 +94,11 @@ const VaultsTable = (props: any) => {
         columns={columns}
         list={listData}
         loading={listLoading}
+        sortDataIndex={listOrderKey}
+        sortDataDirection={listOrderDirection === "asc" ? -1 : 1}
         headClass="px-[11px] py-[8px] text-[14px] font-[500] text-[#3D405A]"
         bodyClass="text-[16px] font-[500] !py-[13px] !pl-[11px] !pr-[14px]"
+        onChangeSortDataIndex={toggleListOrder}
       />
     </div>
   );
