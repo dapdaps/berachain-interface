@@ -1,20 +1,21 @@
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
-import { Box, Callout, Flex } from "@radix-ui/themes"
-import { useSelector } from "@xstate/react"
+import SwitchTabs from "@/components/switch-tabs"
+import useIsMobile from "@/hooks/use-isMobile"
+import useToast from "@/hooks/use-toast"
 import { LIST_TOKENS } from "@/sections/near-intents/constants/tokens"
+import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
+import { useBintent } from "@/stores/bintent"
+import { Callout, Flex } from "@radix-ui/themes"
+import { useAppKit } from "@reown/appkit/react"
+import { useSelector } from "@xstate/react"
 import {
   Fragment,
   type ReactNode,
   useCallback,
   useContext,
   useEffect,
-  useRef,
-  useState,
+  useState
 } from "react"
 import { useFormContext } from "react-hook-form"
-import { useTokensUsdPrices } from "../../../hooks/useTokensUsdPrices"
-import { formatUsdAmount } from "../../../utils/format"
-import getTokenUsdPrice from "../../../utils/getTokenUsdPrice"
 import type { ActorRefFrom, SnapshotFrom } from "xstate"
 import { ButtonCustom } from "../../../components/Button/ButtonCustom"
 import { ButtonSwitch } from "../../../components/Button/ButtonSwitch"
@@ -22,23 +23,20 @@ import { Form } from "../../../components/Form"
 import { FieldComboInput } from "../../../components/Form/FieldComboInput"
 import { SwapIntentCard } from "../../../components/IntentCard/SwapIntentCard"
 import type { ModalSelectAssetsPayload } from "../../../components/Modal/ModalSelectAssets"
+import { useTokensUsdPrices } from "../../../hooks/useTokensUsdPrices"
 import { useModalStore } from "../../../providers/ModalStoreProvider"
 import { isAggregatedQuoteEmpty } from "../../../services/quoteService"
 import { ModalType } from "../../../stores/modalStore"
 import type { SwappableToken } from "../../../types/swap"
+import { formatUsdAmount } from "../../../utils/format"
+import getTokenUsdPrice from "../../../utils/getTokenUsdPrice"
 import { computeTotalBalance } from "../../../utils/tokenUtils"
 import type { depositedBalanceMachine } from "../../machines/depositedBalanceMachine"
 import type { intentStatusMachine } from "../../machines/intentStatusMachine"
 import type { Context } from "../../machines/swapUIMachine"
+import SwapCompareWith from "./SwapCompareWith"
 import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
-import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
-import { useAppKit } from "@reown/appkit/react"
-import useIsMobile from "@/hooks/use-isMobile"
-import useToast from "@/hooks/use-toast"
-import SwapCompareWith from "./SwapCompareWith"
-import SwitchTabs from "@/components/switch-tabs"
-import { useBintent } from "@/stores/bintent"
 
 export type SwapFormValues = {
   amountIn: string
