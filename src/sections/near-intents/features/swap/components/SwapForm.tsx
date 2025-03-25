@@ -1,6 +1,7 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { Box, Callout, Flex } from "@radix-ui/themes"
 import { useSelector } from "@xstate/react"
+import { LIST_TOKENS } from "@/sections/near-intents/constants/tokens"
 import {
   Fragment,
   type ReactNode,
@@ -8,6 +9,7 @@ import {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react"
 import { useFormContext } from "react-hook-form"
 import { useTokensUsdPrices } from "../../../hooks/useTokensUsdPrices"
@@ -35,6 +37,8 @@ import { useAppKit } from "@reown/appkit/react"
 import useIsMobile from "@/hooks/use-isMobile"
 import useToast from "@/hooks/use-toast"
 import SwapCompareWith from "./SwapCompareWith"
+import SwitchTabs from "@/components/switch-tabs"
+import { useBintent } from "@/stores/bintent"
 
 export type SwapFormValues = {
   amountIn: string
@@ -51,13 +55,13 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     register,
     setValue,
     getValues,
-    formState: { errors,  },
+    formState: { errors, },
   } = useFormContext<SwapFormValues>()
 
-  console.log('====errors', errors)
   const isMobile = useIsMobile();
   const toast = useToast();
 
+  const store = useBintent()
   const { state } = useConnectWallet()
   const swapUIActorRef = SwapUIMachineContext.useActorRef()
 
@@ -67,6 +71,8 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
   const modal = useAppKit()
 
+  const [currentTab, setCurrentTab] = useState<string>('trading_challenge');
+
   const { tokenIn, tokenOut, noLiquidity } = SwapUIMachineContext.useSelector(
     (snapshot) => {
       const tokenIn = snapshot.context.formValues.tokenIn
@@ -74,10 +80,14 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
       const noLiquidity =
         snapshot.context.quote && isAggregatedQuoteEmpty(snapshot.context.quote)
 
+      const currentTab = snapshot.context.currentTab
+
+      console.log('====snapshot.context', snapshot.context)
       return {
         tokenIn,
         tokenOut,
         noLiquidity,
+        currentTab
       }
     }
   )
@@ -183,14 +193,56 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     tokenOut,
     tokensUsdPriceData
   )
+
+
+  // useEffect(() => {
+  //   if (currentTab === "trading_challenge") {
+  //     swapUIActorRef.send({
+  //       type: "input",
+  //       params: { tokenIn: LIST_TOKENS[0], tokenOut: LIST_TOKENS[1] },
+  //     })
+  //   } else {
+  //     swapUIActorRef.send({
+  //       type: "input",
+  //       params: { tokenIn: LIST_TOKENS[1], tokenOut: LIST_TOKENS[0] },
+  //     })
+  //   }
+  //   const extra_data = store.extra_data
+
+  //   store.set({
+  //     extra_data: {
+  //       trading_challenge: currentTab === "trading_challenge",
+  //       better_than_shogun: false
+  //     }
+  //   })
+
+
+  // }, [currentTab])
+
   return (
     <Flex
       direction="column"
       gap="2"
       className="bg-[#FFFDEB] lg:rounded-[30px] lg:p-5 lg:border lg:border-black lg:shadow-shadow1 md:px-3 md:pb-[40px]"
     >
-      <div className="font-CherryBomb w-full text-center text-[26px] mb-3">Swap</div>
-      <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
+      <SwitchTabs
+        tabs={[
+          { label: "Trading Challenge", value: "trading_challenge" },
+          { label: "Normal", value: "normal" }
+        ]}
+        onChange={(val) => {
+          setCurrentTab(val)
+        }}
+        current={currentTab}
+        className="mx-auto w-[480px]"
+      />
+      {
+        currentTab === "trading_challenge" ? (
+          <div className="font-Montserrat text-[14px] my-[11px]">In this mode your trades will count towards the challenge, and only BERA token (token in /out) counts.  </div>
+        ) : (
+          <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
+        )
+      }
       <Form<SwapFormValues>
         handleSubmit={handleSubmit(onSubmit)}
         register={register}
@@ -198,6 +250,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         <FieldComboInput<SwapFormValues>
           fieldName="amountIn"
           selected={tokenIn}
+          disabledSelect={currentTab === "trading_challenge" && tokenIn?.symbol === LIST_TOKENS?.[0]?.symbol}
           handleSelect={() => {
             openModalSelectAssets("tokenIn")
           }}
@@ -218,6 +271,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenOut")
           }}
+          disabledSelect={currentTab === "trading_challenge" && tokenOut?.symbol === LIST_TOKENS?.[0]?.symbol}
           className="border border-[#373A53] border-t-[0] rounded-b-xl mb-[14px]"
           errors={errors}
           disabled={true}
@@ -225,15 +279,18 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           usdAmount={usdAmountOut ? `~${formatUsdAmount(usdAmountOut)}` : null}
           balance={tokenOutBalance}
         />
-
-        <SwapCompareWith
-          tokenIn={tokenIn}
-          tokenOut={tokenOut}
-          amountIn={getValues().amountIn}
-          amountOut={getValues().amountOut}
-          usdAmountOut={usdAmountOut}
-          tokensUsdPriceData={tokensUsdPriceData}
-        />
+        {
+          currentTab === "trading_challenge" && (
+            <SwapCompareWith
+              tokenIn={tokenIn}
+              tokenOut={tokenOut}
+              amountIn={getValues().amountIn}
+              amountOut={getValues().amountOut}
+              usdAmountOut={usdAmountOut}
+              tokensUsdPriceData={tokensUsdPriceData}
+            />
+          )
+        }
 
 
         <Flex align="stretch" direction="column">

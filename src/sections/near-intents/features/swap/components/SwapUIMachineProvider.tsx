@@ -75,6 +75,7 @@ export function SwapUIMachineProvider({
           tokenIn,
           tokenOut,
           tokenList,
+          currentTab: "trading_challenge",
         },
       }}
       logic={swapUIMachine.provide({

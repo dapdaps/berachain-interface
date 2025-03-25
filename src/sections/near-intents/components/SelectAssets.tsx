@@ -7,6 +7,7 @@ import { AssetComboIcon } from "./Asset/AssetComboIcon"
 
 type Props = {
   selected?: BaseTokenInfo | UnifiedTokenInfo
+  disabledSelect?: boolean
   handleSelect?: () => void
 }
 
@@ -16,11 +17,14 @@ const EmptyIcon = () => {
   )
 }
 
-export const SelectAssets = ({ selected, handleSelect }: Props) => {
+export const SelectAssets = ({ selected, disabledSelect, handleSelect }: Props) => {
   const handleAssetsSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabledSelect) return
     e.preventDefault()
     handleSelect?.()
   }
+
+  console.log('===disabledSelect', disabledSelect)
   return (
     <button
       type="button"
@@ -44,7 +48,11 @@ export const SelectAssets = ({ selected, handleSelect }: Props) => {
       <span className="font-Montserrat leading-[14px] font-[600] uppercase truncate">
         {selected?.symbol || "select token"}
       </span>
-      <CaretDownIcon width={25} height={25} />
+      {
+        disabledSelect ? <div /> : (
+          <CaretDownIcon width={25} height={25} />
+        )
+      }
     </button>
   )
 }
