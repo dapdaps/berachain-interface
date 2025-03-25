@@ -9,7 +9,7 @@ const Dashboard = (props: any) => {
         <Item label="You Invested" value="$40.68" />
         <Item label="Your Rewards" value="$6.47" />
       </div>
-      <Item label="Your Vaults" value="2" valueClassName="underline" className="items-end" />
+      <Item label="Your Vaults" value="2" valueClassName="underline" className="lg:items-end" />
     </div>
   );
 };

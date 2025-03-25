@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
+import { ORDER_DIRECTION, ORDER_KEYS } from '@/sections/vaults/v2/config';
 
 export function useList(): List {
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
+  const [orderKey, setOrderKey] = useState<ORDER_KEYS>(ORDER_KEYS.TVL);
+  const [orderDirection, setDirection] = useState<ORDER_DIRECTION>(ORDER_DIRECTION.DESC);
+  const [filterVisible, setFilterVisible] = useState(false);
 
   const getData = async () => {
     setLoading(true);
@@ -75,6 +79,19 @@ export function useList(): List {
     }, 1000);
   };
 
+  const toggleOrder = (key: ORDER_KEYS) => {
+    if (key === orderKey) {
+      setDirection(orderDirection === ORDER_DIRECTION.DESC ? ORDER_DIRECTION.ASC : ORDER_DIRECTION.DESC);
+    } else {
+      setOrderKey(key);
+      setDirection(ORDER_DIRECTION.DESC);
+    }
+  };
+
+  const toggleFilterVisible = (_filterVisible?: boolean) => {
+    setFilterVisible(typeof _filterVisible === "boolean" ? _filterVisible : !filterVisible);
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -82,10 +99,20 @@ export function useList(): List {
   return {
     listData: data,
     listLoading: loading,
+    listOrderKey: orderKey,
+    listOrderDirection: orderDirection,
+    toggleListOrder: toggleOrder,
+    listFilterVisible: filterVisible,
+    toggleListFilterVisible: toggleFilterVisible,
   };
 }
 
 export interface List {
   listData: any;
   listLoading: boolean;
+  listOrderKey: ORDER_KEYS;
+  listOrderDirection: ORDER_DIRECTION;
+  toggleListOrder: (key: ORDER_KEYS) => void;
+  listFilterVisible: boolean;
+  toggleListFilterVisible: (filterVisible?: boolean) => void;
 }

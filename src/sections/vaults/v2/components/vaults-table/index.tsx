@@ -10,13 +10,14 @@ import {
   WithdrawButton,
   Yours
 } from '@/sections/vaults/v2/components/vaults-table/columns';
+import { OrderKeys } from '@/sections/vaults/v2/config';
 
 const VaultsTable = (props: any) => {
   const { className } = props;
 
   const { listData, listLoading } = useVaultsV2Context();
 
-  const columns = [
+  const columns: any[] = [
     {
       title: "Vaults",
       dataIndex: "vaults",
@@ -30,7 +31,6 @@ const VaultsTable = (props: any) => {
     {
       title: "TVL",
       dataIndex: "tvl",
-      sort: true,
       render: (text: any, record: any, index: any) => {
         return (
           <TVL record={record} index={index} />
@@ -40,7 +40,6 @@ const VaultsTable = (props: any) => {
     {
       title: "APY",
       dataIndex: "apy",
-      sort: true,
       render: (text: any, record: any, index: any) => {
         return (
           <APY record={record} index={index} />
@@ -61,7 +60,6 @@ const VaultsTable = (props: any) => {
     {
       title: "Yours",
       dataIndex: "yours",
-      sort: true,
       render: (text: any, record: any, index: any) => {
         return (
           <Yours record={record} index={index} />
@@ -81,7 +79,9 @@ const VaultsTable = (props: any) => {
         );
       }
     }
-  ];
+  ].map((c) => (
+    { ...c, sort: Object.keys(OrderKeys).some((o) => o === c.dataIndex) }
+  ));
 
   return (
     <div
