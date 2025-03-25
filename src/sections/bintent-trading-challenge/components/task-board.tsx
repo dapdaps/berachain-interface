@@ -57,7 +57,7 @@ export default memo(function TaskBoard() {
             </div>
 
             <div className="flex items-center justify-between px-[20px] h-[56px]">
-              <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Execute 5 trades</span>
+              <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Execute 5 trades at a better price than Shogun</span>
               <div className="flex items-center gap-[11px]">
                 <span className="text-black font-CherryBomb text-[18px] leading-[120%]">$5</span>
                 <Radio checked={task?.quests?.includes("dailyTransactions")} />
