@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from 'react';
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
@@ -7,6 +7,7 @@ import handleAction from "../../dapps/action";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import useTokenBalance from "@/hooks/use-token-balance";
 import Big from "big.js";
+import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 
 export default function useAction() {
   const [loading, setLoading] = useState(false);
@@ -14,15 +15,22 @@ export default function useAction() {
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const [amount, setAmount] = useState<string>();
-  const [inputError, setInputError] = useState<boolean>(false);
-  const [inputErrorMessage, setInputErrorMessage] = useState<string>();
   const { currentRecord, actionType, toggleActionVisible } =
     useVaultsV2Context();
 
-  const { tokenBalance, update } = useTokenBalance(
+  const { tokenBalance, update, isLoading } = useTokenBalance(
     currentRecord?.token?.address,
     currentRecord?.token?.decimals
   );
+
+  const [inputError, inputErrorMessage] = useMemo<[boolean, string | undefined]>(() => {
+    const DEFAULT: [boolean, string | undefined] = [false, void 0];
+    if (isLoading) return DEFAULT;
+    if (Big(tokenBalance || 0).lte(0) && actionType.value === ACTION_TYPE.DEPOSIT) {
+      return [false, "Insufficient Balance"];
+    }
+    return DEFAULT;
+  }, [tokenBalance, isLoading, actionType]);
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);
@@ -44,6 +52,11 @@ export default function useAction() {
         currentRecord
       });
       toast.dismiss(toastId);
+      if (!tx) {
+        setLoading(false);
+        toast.fail({ title: actionType.button + " failed!" });
+        return;
+      }
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
 
@@ -93,6 +106,7 @@ export default function useAction() {
     inputError,
     inputErrorMessage,
     balance: tokenBalance,
+    balanceLoading: isLoading,
     updateBalance: update
   };
 }
