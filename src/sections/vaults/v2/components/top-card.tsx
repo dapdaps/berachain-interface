@@ -1,10 +1,16 @@
 import clsx from 'clsx';
 import LazyImage from '@/components/layz-image';
+import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 
 const TopCard = (props: any) => {
   const { className, type } = props;
 
   const currType = cardType[type as CardType] ?? cardType[CardType.TopAPR];
+
+  const {
+    toggleActionVisible,
+  } = useVaultsV2Context();
 
   return (
     <div
@@ -37,6 +43,11 @@ const TopCard = (props: any) => {
         <button
           type="button"
           className="h-[36px] px-[19px] disabled:opacity-30 disabled:!cursor-not-allowed flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-normal font-medium leading-[100%]"
+          onClick={() => {
+            toggleActionVisible({
+              type: ACTION_TYPE.DEPOSIT
+            });
+          }}
         >
           {currType.button}
         </button>

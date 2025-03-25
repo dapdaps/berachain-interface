@@ -5,9 +5,15 @@ import Big from 'big.js';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
 import LazyImage from '@/components/layz-image';
+import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 
 const VaultsTable = (props: any) => {
   const { className } = props;
+
+  const {
+    toggleActionVisible,
+  } = useVaultsV2Context();
 
   const list = [
     {
@@ -236,11 +242,21 @@ const VaultsTable = (props: any) => {
             <button
               type="button"
               className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/deposit.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
+              onClick={() => {
+                toggleActionVisible({
+                  type: ACTION_TYPE.DEPOSIT
+                });
+              }}
             />
             <button
               type="button"
               disabled
               className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
+              onClick={() => {
+                toggleActionVisible({
+                  type: ACTION_TYPE.WITHDRAW,
+                });
+              }}
             />
           </div>
         );
