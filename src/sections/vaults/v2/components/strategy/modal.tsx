@@ -14,7 +14,7 @@ const StrategyModal = (props: any) => {
       onClose={toggleStrategyVisible}
       className={className}
     >
-      <Card className="!rounded-[20px] w-[473px] !p-0">
+      <Card className="!rounded-[20px] w-[473px] md:w-full !p-0">
         <Index />
       </Card>
     </Modal>

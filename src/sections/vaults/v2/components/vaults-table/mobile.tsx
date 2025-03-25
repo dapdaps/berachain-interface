@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { OrderKeys } from '@/sections/vaults/v2/config';
 import LazyImage from '@/components/layz-image';
+import Skeleton from 'react-loading-skeleton';
 
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
@@ -66,7 +67,12 @@ const VaultsTableMobile = (props: any) => {
       </div>
       <div className={clsx("w-full text-[16px] text-black leading-[100%] font-[600] font-Montserrat mt-[13px] flex flex-col items-stretch gap-[10px]", className)}>
         {
-          listData.map((record: any, index: number) => (
+          listLoading ? (
+            <>
+              <Skeleton width="100%" height={118} borderRadius={10} />
+              <Skeleton width="100%" height={118} borderRadius={10} />
+            </>
+          ) : listData.map((record: any, index: number) => (
             <div
               key={index}
               className="w-full shrink-0 rounded-[10px] bg-[rgba(0,0,0,0.06)]"

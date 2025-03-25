@@ -14,7 +14,7 @@ const ActionModal = (props: any) => {
       onClose={toggleActionVisible}
       className={className}
     >
-      <Card className="!rounded-[20px] w-[496px]">
+      <Card className="!rounded-[20px] w-[496px] md:w-full">
         <Index />
       </Card>
     </Modal>

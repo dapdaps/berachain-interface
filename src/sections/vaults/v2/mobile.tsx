@@ -12,6 +12,7 @@ import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import VaultsTableMobile from '@/sections/vaults/v2/components/vaults-table/mobile';
 import { useList } from '@/sections/vaults/v2/hooks/list';
+import FilterModal from '@/sections/vaults/v2/components/filter/modal';
 
 const VaultsV2Mobile = (props: any) => {
   const { } = props;
@@ -63,6 +64,7 @@ const VaultsV2Mobile = (props: any) => {
         <ClaimModal />
         <ClaimSuccessModal />
         <StrategyModal />
+        <FilterModal />
       </div>
     </VaultsV2ContextProvider>
   );
