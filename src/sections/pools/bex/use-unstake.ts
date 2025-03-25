@@ -3,7 +3,7 @@ import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
-import vaultAbi from "../abi/bex-vault";
+import vaultAbi from "../../vaults/dapps/bex/bex-vault";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useUnstake(pool: any, onSuccess: Function) {

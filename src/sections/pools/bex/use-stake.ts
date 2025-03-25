@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
-import vaultAbi from "../abi/bex-vault";
+import vaultAbi from "../../vaults/dapps/bex/bex-vault";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function useStake(pool: any, onSuccess: Function) {

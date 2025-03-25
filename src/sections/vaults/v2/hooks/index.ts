@@ -21,6 +21,7 @@ export function useVaultsV2(): VaultsV2 {
     type?: ACTION_TYPE;
     record?: any;
   }) => {
+    console.log(24, params);
     const { visible: _actionVisible, type: _actionType, record } = params ?? {};
     setActionVisible(
       typeof _actionVisible === "boolean" ? _actionVisible : !actionVisible
@@ -84,6 +85,7 @@ export interface VaultsV2 {
   toggleActionVisible: (params?: {
     visible?: boolean;
     type?: ACTION_TYPE;
+    record?: any;
   }) => void;
   availableAssets: boolean;
   toggleAvailableAssets: (availableAssets?: boolean) => void;
