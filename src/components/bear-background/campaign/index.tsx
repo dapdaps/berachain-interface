@@ -21,9 +21,9 @@ export default memo(function BeraBgcampaign() {
         transition={{ duration: 1 }}
       >
         <Clouds />
-        <div className="absolute w-[802px] left-[5vw] bottom-[194px] z-10">
-          <PegAirshipSvg />
-          <div className="absolute w-[261px] top-[40px] -right-[2px]">
+        <div className="absolute w-[762px] left-[5vw] bottom-[194px] z-10">
+          <img src="/images/campaign/peg_airship.svg" alt="peg_airship" />
+          <div className="absolute w-[261px] top-[36px] -right-[14px]">
             <img src="/images/campaign/flag.gif" alt="flag" />
           </div>
         </div>
