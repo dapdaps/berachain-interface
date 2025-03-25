@@ -1,4 +1,4 @@
-export type engineType = 'axelar' | 'bunnyFi' | 'jumper' | 'meson' | 'miniBridge' | 'orbiter' | 'owlto' | 'rubic' | 'swing' | 'wormhole' | 'bungee' | 'rango' | 'stargate' | 'xy' | 'official' | 'across' | 'router'
+export type engineType = 'axelar' | 'bunnyFi' | 'jumper' | 'lifi' | 'meson' | 'miniBridge' | 'orbiter' | 'owlto' | 'rubic' | 'swing' | 'wormhole' | 'bungee' | 'rango' | 'stargate' | 'xy' | 'official' | 'across' | 'router'
 export type bridgeEngineType = 'connext' | 'across' | 'celer'
 
 export interface QuoteRequest {

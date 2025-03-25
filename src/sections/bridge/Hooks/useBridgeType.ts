@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 import { engineType } from '../lib/type';
 
 const toolMap: Record<string, engineType> = {
-    jumper: 'jumper',
+    lifi: 'jumper',
     stargate: 'stargate',
   } 
 

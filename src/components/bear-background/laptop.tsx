@@ -868,7 +868,7 @@ const DashboardGround = function (props: any) {
 };
 
 const nameMap: any = {
-  'jumper': 'Jumper',
+  'lifi': 'Li.Fi',
   'stargate': 'Stargate',
  
 }
@@ -877,6 +877,7 @@ const BridgeGround = function (props: any) {
   const { dapp: dappName } = useParams();
 
   const dappShowName = (dappName && nameMap[(dappName as string).toLowerCase()]) || 'Stargate';
+  const imgName = (dappName && (dappName as string).toLowerCase()) || 'stargate';
 
   return (
     <div className={clsx('absolute left-0 bottom-0 w-full', className)}>
@@ -920,7 +921,7 @@ const BridgeGround = function (props: any) {
       >
          <div className='flex items-center justify-center pt-[25px]'>
           <img
-            src={`/images/dapps/${dappShowName.toLowerCase()}.png`}
+            src={`/images/dapps/${imgName}.png`}
             alt={dappName as string}
             className="w-9 h-9"
           />
