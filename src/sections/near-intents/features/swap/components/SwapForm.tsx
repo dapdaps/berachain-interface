@@ -37,12 +37,6 @@ import type { Context } from "../../machines/swapUIMachine"
 import SwapCompareWith from "./SwapCompareWith"
 import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
-
-export type SwapFormValues = {
-  amountIn: string
-  amountOut: string
-}
-
 export interface SwapFormProps {
   onNavigateDeposit?: () => void
 }
