@@ -835,6 +835,9 @@ const DashboardFlowers = function () {
   );
 };
 
+
+
+
 const DashboardBear = function (props: any) {
   const { className, isRainyDay } = props;
 
@@ -867,18 +870,9 @@ const DashboardGround = function (props: any) {
   );
 };
 
-const nameMap: any = {
-  'lifi': 'Li.Fi',
-  'stargate': 'Stargate',
- 
-}
+
 const BridgeGround = function (props: any) {
   const { className, isRainyDay } = props;
-  const { dapp: dappName } = useParams();
-
-  const dappShowName = (dappName && nameMap[(dappName as string).toLowerCase()]) || 'Stargate';
-  const imgName = (dappName && (dappName as string).toLowerCase()) || 'stargate';
-
   return (
     <div className={clsx('absolute left-0 bottom-0 w-full', className)}>
       {
@@ -913,21 +907,8 @@ const BridgeGround = function (props: any) {
           isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
         )}
       />
-       
-      <div
-        className={clsx(
-          'absolute bottom-[213px] right-[20%] z-[10] w-[164px] h-[145px] bg-[url("/images/background/background-bridge-dapp.svg")] bg-cover bg-center bg-no-repeat',
-        )}
-      >
-         <div className='flex items-center justify-center pt-[25px]'>
-          <img
-            src={`/images/dapps/${imgName}.png`}
-            alt={dappName as string}
-            className="w-9 h-9"
-          />
-         </div>
-         <div className='text-center text-[#000] text-[18px] font-CherryBomb pt-[5px]'>{ dappShowName }</div>
-      </div>
+
+     
     </div>
   );
 };

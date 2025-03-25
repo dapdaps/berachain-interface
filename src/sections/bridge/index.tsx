@@ -10,7 +10,7 @@ import Confirm from './Confrim';
 import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import History from './History';
 // import useQuote from './Hooks/Stargate/useQoute';
 // import useBridge from './Hooks/Stargate/useBridge';
@@ -26,6 +26,7 @@ import useBridge from './Hooks/useBridge';
 import type { Token, Chain } from '@/types';
 import type { engineType } from './lib/type';
 import useBridgeType from './Hooks/useBridgeType';
+import clsx from 'clsx';
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
@@ -78,7 +79,7 @@ export default function Bridge() {
   const { addAction } = useAddAction("bridge");
   const { address, chainId } = useAccount()
   const [limitBera, setLimitBera] = useState(0)
-
+  const router = useRouter()
   const { bridgeType } = useBridgeType()
 
 
@@ -300,8 +301,39 @@ export default function Bridge() {
             }}
           />
         </div>
+        <div
+        className={clsx(
+          'absolute z-50 bottom-[213px] right-[20%] w-[164px] h-[191px]',
+        )}
+      >
+        <img src="/images/background/bridge-type-bg.svg" className='w-[164px]' />
+        <div className='absolute top-[22px] right-[12px]'>
+          { bridgeType === 'stargate' ? checkIcon : unCheckIcon }
+        </div>
+        <div className='absolute top-[90px] right-[32px]'>
+          { bridgeType === 'jumper' ? checkIcon : unCheckIcon }
+        </div>
+
+        <div className='absolute w-[164px] h-[65px] cursor-pointer  left-0 top-0' onClick={() => {
+          router.push('/bridge/stargate')
+        }}></div>
+
+        <div className='absolute w-[164px] h-[65px] cursor-pointer  left-0 top-[75px]' onClick={() => {
+          router.push('/bridge/lifi')
+        }}></div>
+        
+      </div>
         <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
       </div>
     </>
   );
 }
+
+const checkIcon = <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10.705" cy="10.5166" r="9.5" transform="rotate(-3 10.705 10.5166)" fill="#FFDC50" stroke="#373A53" />
+  <path d="M7.73411 10.1674L10.1951 12.5418L14.5937 7.30442" stroke="black" stroke-width="2" stroke-linecap="round" />
+</svg>
+
+const unCheckIcon = <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="10" r="9.5" fill="white" stroke="#373A53" />
+</svg>
