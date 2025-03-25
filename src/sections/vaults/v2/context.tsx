@@ -1,7 +1,10 @@
 import { createContext, ReactNode, useContext } from 'react';
 import { VaultsV2 } from '@/sections/vaults/v2/hooks';
+import { List } from '@/sections/vaults/v2/hooks/list';
 
-export const VaultsV2Context = createContext<Partial<VaultsV2>>({});
+interface ContextValue extends List, VaultsV2 {}
+
+export const VaultsV2Context = createContext<Partial<ContextValue>>({});
 
 function VaultsV2ContextProvider({ children, value }: { children: ReactNode; value: VaultsV2 }) {
   return (
@@ -13,6 +16,6 @@ function VaultsV2ContextProvider({ children, value }: { children: ReactNode; val
 
 export default VaultsV2ContextProvider;
 
-export function useVaultsV2Context(): VaultsV2 {
-  return useContext(VaultsV2Context) as VaultsV2;
+export function useVaultsV2Context(): ContextValue {
+  return useContext(VaultsV2Context) as ContextValue;
 }

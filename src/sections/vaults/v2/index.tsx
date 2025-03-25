@@ -11,14 +11,16 @@ import { useVaultsV2 } from '@/sections/vaults/v2/hooks';
 import ClaimModal from '@/sections/vaults/v2/components/claim/modal';
 import ClaimSuccessModal from '@/sections/vaults/v2/components/claim/success';
 import StrategyModal from '@/sections/vaults/v2/components/strategy/modal';
+import { useList } from '@/sections/vaults/v2/hooks/list';
 
 const VaultsV2 = (props: any) => {
   const { } = props;
 
   const vaultsV2 = useVaultsV2();
+  const list = useList();
 
   return (
-    <VaultsV2ContextProvider value={vaultsV2}>
+    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list }}>
       <div className="relative w-full h-full bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
         <PageBack className='absolute left-[36px] top-[100px] text-white' />
         <div className="pt-[117px] mx-auto flex justify-center">
