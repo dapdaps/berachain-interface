@@ -6,10 +6,7 @@ export const useBintent = create(
     (set, get: any) => ({
       showRankModal: false,
       showRulesModal: false,
-      extra_data: {
-        trading_challenge: false,
-        better_than_shogun: false
-      },
+      currentTab: "trading_challenge",
       set: (params: any) => set(() => ({ ...params }))
     }),
     {

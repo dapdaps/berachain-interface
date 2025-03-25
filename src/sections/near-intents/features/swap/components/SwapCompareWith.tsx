@@ -16,12 +16,14 @@ const NATIVE_CHAIN_ADDRESS = {
 export default memo(function SwapCompareWith({
   tokenIn,
   tokenOut,
+  currentTab,
   amountIn,
   amountOut,
   usdAmountOut,
   tokensUsdPriceData
 }) {
   const store = useBintent()
+  const [loading, setLoading] = useState(false)
   const [gunAmountOut, setGunAmountOut] = useState("")
 
 
@@ -36,6 +38,7 @@ export default memo(function SwapCompareWith({
   const gapPercentage = useMemo(() => Big(saved).div(usdAmountOut ? usdAmountOut : 1).times(100).toFixed(), [saved, usdAmountOut])
 
   async function handleQueryGunAmountOut() {
+    let _gunAmountOut = ""
     try {
       const _inToken = tokenIn?.groupedTokens?.[0] ?? tokenIn
       const _outToken = tokenOut?.groupedTokens?.[0] ?? tokenOut
@@ -71,6 +74,7 @@ export default memo(function SwapCompareWith({
         affiliateFee: 0.1,
         ...other
       })
+      setLoading(true)
       const response = await fetch("https://dextra-node-825534211396.us-central1.run.app/v2/quote?" + queryStr, {
         headers: {
           "x-api-key": process.env.NEXT_PUBLIC_X_API_KEY
@@ -80,29 +84,45 @@ export default memo(function SwapCompareWith({
       if (result?.error) {
         throw new Error(result?.error)
       } else {
-        setGunAmountOut(ethers.utils.formatUnits(result?.outputAmount?.value ?? 0, result?.outputAmount?.decimals ?? 18))
+        _gunAmountOut = ethers.utils.formatUnits(result?.outputAmount?.value ?? 0, result?.outputAmount?.decimals ?? 18)
+        // setGunAmountOut(ethers.utils.formatUnits(result?.outputAmount?.value ?? 0, result?.outputAmount?.decimals ?? 18))
       }
     } catch (error) {
-      setGunAmountOut("")
-      // throw new Error(error)
+      _gunAmountOut = ""
     }
+    setLoading(false)
+    const _usdGunAmountOut = getTokenUsdPrice(
+      _gunAmountOut,
+      tokenOut,
+      tokensUsdPriceData
+    )
     const extra_data = store.extra_data
-    const better_than_shogun = gunAmountOut && Big(saved).gt(0)
+    const better_than_shogun = !!_gunAmountOut && Big(usdAmountOut ? usdAmountOut : 0).minus(_usdGunAmountOut ? _usdGunAmountOut : 0).gt(0)
     store.set({
       extra_data: {
-        ...extra_data,
+        trading_challenge: true,
         better_than_shogun
       }
     })
+    setGunAmountOut(_gunAmountOut)
   }
   useEffect(() => {
-    if (tokenIn && tokenOut && Number(amountIn) > 0) {
-      handleQueryGunAmountOut()
+    if (currentTab === "trading_challenge") {
+      if (tokenIn && tokenOut && Number(amountIn) > 0 && Number(usdAmountOut) > 0) {
+        handleQueryGunAmountOut()
+      }
+    } else {
+      store.set({
+        extra_data: {
+          trading_challenge: false,
+          better_than_shogun: false
+        }
+      })
     }
-  }, [tokenIn, tokenOut, amountIn])
+  }, [tokenIn, tokenOut, amountIn, usdAmountOut, currentTab])
 
 
-  return gunAmountOut && Big(saved).gt(0) ? (
+  return currentTab === "trading_challenge" && gunAmountOut && Big(saved).gt(0) ? (
     <div className="flex flex-col gap-[5px] mb-[20px]">
       <div className="text-black text-[12px] font-medium">Compare with</div>
       <div className="flex items-center justify-between">

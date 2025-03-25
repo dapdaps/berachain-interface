@@ -8,7 +8,8 @@ import { useModalStore } from "@/sections/near-intents/providers/ModalStoreProvi
 import { ModalType } from "@/sections/near-intents/stores/modalStore"
 import Portfolio from "@/sections/near-intents/views/Portfolio"
 import { numberFormatter } from "@/utils/number-formatter"
-import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { memo, useEffect, useState } from "react"
 import { SwapWidgetProvider } from "../../../providers/SwapWidgetProvider"
 import { useTokensStore } from "../../../providers/TokensStoreProvider"
 import type { SwapWidgetProps } from "../../../types/swap"
@@ -17,9 +18,8 @@ import { SwapFormProvider } from "./SwapFormProvider"
 import { SwapSubmitterProvider } from "./SwapSubmitter"
 import { SwapUIMachineFormSyncProvider } from "./SwapUIMachineFormSyncProvider"
 import { SwapUIMachineProvider } from "./SwapUIMachineProvider"
-import { useRouter } from "next/navigation"
 
-export const SwapWidget = ({
+export const SwapWidget = memo(({
   tokenList,
   userAddress,
   userChainType,
@@ -159,7 +159,7 @@ export const SwapWidget = ({
       </SwapFormProvider>
     </SwapWidgetProvider>
   )
-}
+})
 
 function TokenListUpdater({
   tokenList,
