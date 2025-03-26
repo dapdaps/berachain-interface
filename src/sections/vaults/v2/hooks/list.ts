@@ -72,52 +72,56 @@ export function useList(): List {
         return;
       }
       const _list = res.data.data || [];
-      const _data = _list.map((item: any) => {
-        item.apr = parseJSONString(item.apr, {});
-        item.reward_tokens = parseJSONString(item.reward_tokens, []);
-        item.tokens = parseJSONString(item.tokens, []);
-        item.extra_data = parseJSONString(item.extra_data, {});
+      const _data = _list
+        .filter((item: any) =>
+          ["Hub", "Kodiak", "Infrared", "Dolomite"].includes(item.project)
+        )
+        .map((item: any) => {
+          item.apr = parseJSONString(item.apr, {});
+          item.reward_tokens = parseJSONString(item.reward_tokens, []);
+          item.tokens = parseJSONString(item.tokens, []);
+          item.extra_data = parseJSONString(item.extra_data, {});
 
-        item.tokens.forEach((token: any) => {
-          token.icon = getTokenLogo(token.symbol);
-        });
-        item.reward_tokens.forEach((token: any) => {
-          token.icon = getTokenLogo(token.symbol);
-        });
+          item.tokens.forEach((token: any) => {
+            token.icon = getTokenLogo(token.symbol);
+          });
+          item.reward_tokens.forEach((token: any) => {
+            token.icon = getTokenLogo(token.symbol);
+          });
 
-        const specialVault: any = SPECIAL_VAULTS.find(
-          (sp) => sp.vaultAddress === item.vault_address
-        );
-        if (specialVault) {
-          for (const key in specialVault) {
-            item[key] = specialVault[key];
+          const specialVault: any = SPECIAL_VAULTS.find(
+            (sp) => sp.vaultAddress === item.vault_address
+          );
+          if (specialVault) {
+            for (const key in specialVault) {
+              item[key] = specialVault[key];
+            }
           }
-        }
-        item.apy = item.apr.pool || "0";
-        let totalApy = Big(item.apy || 0);
-        if (item.apr) {
-          Object.keys(item.apr)
-            .filter((ak) => ak !== "pool")
-            .forEach((ak: any) => {
-              totalApy = totalApy.plus(Big(item.apr[ak] || 0));
-            });
-        }
-        item.totalApy = totalApy;
-        item.token = {
-          symbol: item.name,
-          address: item.pool_address,
-          decimals: 18
-        };
-        item.protocol = item.project;
-        item.protocolIcon = getDappLogo(item.pool_project);
-        item.lpProtocol = item.pool_project;
-        item.backendId = item.id;
-        item.id = item.extra_data.pool_id;
-        item.balance = "0";
-        item.vaultAddress = item.vault_address;
+          item.apy = item.apr.pool || "0";
+          let totalApy = Big(item.apy || 0);
+          if (item.apr) {
+            Object.keys(item.apr)
+              .filter((ak) => ak !== "pool")
+              .forEach((ak: any) => {
+                totalApy = totalApy.plus(Big(item.apr[ak] || 0));
+              });
+          }
+          item.totalApy = totalApy;
+          item.token = {
+            symbol: item.name,
+            address: item.pool_address,
+            decimals: 18
+          };
+          item.protocol = item.project;
+          item.protocolIcon = getDappLogo(item.pool_project);
+          item.lpProtocol = item.pool_project;
+          item.backendId = item.id;
+          item.id = item.extra_data.pool_id;
+          item.balance = "0";
+          item.vaultAddress = item.vault_address;
 
-        return item;
-      });
+          return item;
+        });
       console.log("vaults list: %o", _data);
       setData(_data);
     } catch (err: any) {
