@@ -26,8 +26,8 @@ export const ActionTypes: Record<ACTION_TYPE, ActionType> = {
 
 export enum ORDER_KEYS {
   TVL = "tvl",
-  APY = "apy",
-  YOURS = "yours"
+  APY = "totalApy",
+  YOURS = "balance"
 }
 
 export enum ORDER_DIRECTION {
@@ -89,7 +89,6 @@ export const SPECIAL_VAULTS = [
   // Dolomite - BERA
   {
     vaultAddress: DolomiteConfig.networks["80094"].spenderAddress,
-    protocolIcon: DolomiteConfig.basic.icon,
     config: {
       ...DolomiteConfig.basic,
       ...DolomiteConfig.networks["80094"]

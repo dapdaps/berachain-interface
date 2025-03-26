@@ -96,13 +96,6 @@ export const TVL = (props: any) => {
 export const APY = (props: any) => {
   const { record, index, className } = props;
 
-  let totalApy = Big(record.apy || 0);
-  if (record.apr) {
-    Object.keys(record.apr).filter((ak) => ak !== "pool").forEach((ak: any) => {
-      totalApy = totalApy.plus(Big(record.apr[ak] || 0));
-    });
-  }
-
   return (
     <Popover
       triggerContainerClassName="inline-block"
@@ -136,7 +129,7 @@ export const APY = (props: any) => {
         type="button"
         className="underline decoration-dashed underline-offset-4"
       >
-        {numberFormatter(totalApy, 2, true)}%
+        {numberFormatter(record.totalApy, 2, true)}%
       </button>
     </Popover>
   );

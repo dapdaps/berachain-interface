@@ -16,7 +16,7 @@ const VaultsTable = (props: any) => {
   const { className } = props;
 
   const {
-    listData,
+    listDataShown,
     listLoading,
     listOrderDirection,
     listOrderKey,
@@ -41,7 +41,7 @@ const VaultsTable = (props: any) => {
     },
     {
       title: "APY",
-      dataIndex: "apy",
+      dataIndex: "totalApy",
       render: (text: any, record: any, index: any) => {
         return <APY record={record} index={index} />;
       }
@@ -57,7 +57,7 @@ const VaultsTable = (props: any) => {
     },
     {
       title: "Yours",
-      dataIndex: "yours",
+      dataIndex: "balance",
       render: (text: any, record: any, index: any) => {
         return <Yours record={record} index={index} />;
       }
@@ -89,7 +89,7 @@ const VaultsTable = (props: any) => {
     >
       <FlexTable
         columns={columns}
-        list={listData}
+        list={listDataShown}
         loading={listLoading}
         sortDataIndex={listOrderKey}
         sortDataDirection={listOrderDirection === "asc" ? -1 : 1}

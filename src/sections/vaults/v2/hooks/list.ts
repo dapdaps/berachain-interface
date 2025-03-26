@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { ORDER_DIRECTION, ORDER_KEYS, SPECIAL_VAULTS } from '@/sections/vaults/v2/config';
 import { BASE_URL } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import axios from 'axios';
-import { getTokenLogo } from '@/sections/dashboard/utils';
+import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
+import Big from 'big.js';
 
 export function useList(): List {
   const { account } = useCustomAccount();
@@ -15,6 +16,23 @@ export function useList(): List {
     ORDER_DIRECTION.DESC
   );
   const [filterVisible, setFilterVisible] = useState(false);
+
+  const dataShown = useMemo(() => {
+    if (!data || data.length === 0) return [];
+
+    const sortedData = [...data].sort((a, b) => {
+      const valA = new Big(a[orderKey] || 0);
+      const valB = new Big(b[orderKey] || 0);
+
+      if (orderDirection === ORDER_DIRECTION.ASC) {
+        return valA.gt(valB) ? 1 : valA.lt(valB) ? -1 : 0;
+      } else {
+        return valA.lt(valB) ? 1 : valA.gt(valB) ? -1 : 0;
+      }
+    });
+
+    return sortedData;
+  }, [data, orderKey, orderDirection]);
 
   const getData = async () => {
     setLoading(true);
@@ -49,14 +67,22 @@ export function useList(): List {
               item[key] = specialVault[key];
             }
           }
+          item.apy = item.apr.pool || "0";
+          let totalApy = Big(item.apy || 0);
+          if (item.apr) {
+            Object.keys(item.apr).filter((ak) => ak !== "pool").forEach((ak: any) => {
+              totalApy = totalApy.plus(Big(item.apr[ak] || 0));
+            });
+          }
+          item.totalApy = totalApy;
           item.token = {
             symbol: item.name,
             address: item.pool_address,
             decimals: 18
           };
           item.protocol = item.project;
+          item.protocolIcon = getDappLogo(item.pool_project);
           item.lpProtocol = item.pool_project;
-          item.apy = item.apr.pool || "0";
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;
           item.balance = "0";
@@ -249,6 +275,7 @@ export function useList(): List {
 
   return {
     listData: data,
+    listDataShown: dataShown,
     listLoading: loading,
     listOrderKey: orderKey,
     listOrderDirection: orderDirection,
@@ -260,6 +287,7 @@ export function useList(): List {
 
 export interface List {
   listData: any;
+  listDataShown: any;
   listLoading: boolean;
   listOrderKey: ORDER_KEYS;
   listOrderDirection: ORDER_DIRECTION;

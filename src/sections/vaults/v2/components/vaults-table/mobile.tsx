@@ -14,7 +14,7 @@ import Skeleton from 'react-loading-skeleton';
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
 
-  const { listData, listLoading, listOrderKey, listOrderDirection, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
+  const { listDataShown, listLoading, listOrderKey, listOrderDirection, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -72,7 +72,7 @@ const VaultsTableMobile = (props: any) => {
               <Skeleton width="100%" height={118} borderRadius={10} />
               <Skeleton width="100%" height={118} borderRadius={10} />
             </>
-          ) : listData.map((record: any, index: number) => (
+          ) : listDataShown.map((record: any, index: number) => (
             <div
               key={index}
               className="w-full shrink-0 rounded-[10px] bg-[rgba(0,0,0,0.06)]"
