@@ -11,6 +11,7 @@ import ClaimSuccessModal from "@/sections/vaults/v2/components/claim/success";
 import StrategyModal from "@/sections/vaults/v2/components/strategy/modal";
 import { useList } from "@/sections/vaults/v2/hooks/list";
 import Filter from "@/sections/vaults/v2/components/filter";
+import { StrategyPool } from "./config";
 
 const VaultsV2 = (props: any) => {
   const {} = props;
@@ -33,7 +34,7 @@ const VaultsV2 = (props: any) => {
           <div className="w-full grid grid-cols-3 gap-[21px]">
             <TopCard type={0} />
             <TopCard type={1} />
-            <TopCard type={2} />
+            <TopCard type={2} pool={StrategyPool} />
           </div>
           <div className="max-h-[calc(100%_-_152px)] min-h-[320px] pt-[25px] flex justify-between gap-[13px] w-full text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
             <Card className="w-[337px] shrink-0 !rounded-[18px] !px-0 max-h-[100%] flex flex-col">

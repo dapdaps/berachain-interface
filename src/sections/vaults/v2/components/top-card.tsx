@@ -1,14 +1,13 @@
 import clsx from "clsx";
 import LazyImage from "@/components/layz-image";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
-import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 
 const TopCard = (props: any) => {
-  const { className, type } = props;
+  const { className, type, pool } = props;
 
   const currType = cardType[type as CardType] ?? cardType[CardType.TopAPR];
 
-  const { toggleActionVisible } = useVaultsV2Context();
+  const { toggleStrategyVisible } = useVaultsV2Context();
 
   return (
     <div
@@ -29,36 +28,47 @@ const TopCard = (props: any) => {
           lineHeight: "23.4px"
         }}
       >
-        {}
-        380.94%
+        {type === 2 ? (
+          <div className="flex items-center gap-[4px]">
+            <span>380.94%</span>
+            <div className="text-[16px] font-normal px-[4px] bg-[#B8FF2B] rounded-[6px] leading-[16px] self-end">
+              APR
+            </div>
+            <span>+ 0.16%</span>
+            <div className="text-[16px] font-normal px-[4px] bg-[#FFF5A9] rounded-[6px] leading-[16px] self-end">
+              Boost
+            </div>
+          </div>
+        ) : (
+          "380.94%"
+        )}
       </div>
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
           <div className="flex items-center">
-            <LazyImage
-              src="/images/icon-coin.svg"
-              width={36}
-              height={36}
-              containerClassName="shrink-0 rounded-full overflow-hidden"
-            />
-            <LazyImage
-              src="/images/icon-coin.svg"
-              width={36}
-              height={36}
-              containerClassName="shrink-0 rounded-full overflow-hidden translate-x-[-10px]"
-            />
+            {pool?.tokens.map((token: any, idx: number) => (
+              <LazyImage
+                src={token.icon || "/assets/tokens/default_icon.png"}
+                width={36}
+                height={36}
+                containerClassName={clsx(
+                  "shrink-0 rounded-full overflow-hidden",
+                  idx !== 0 && "translate-x-[-10px]"
+                )}
+              />
+            ))}
           </div>
           <div className="text-[#000] font-Montserrat text-[16px] not-italic font-medium leading-[100%]">
-            NECT-BERA
+            {pool?.token.symbol || "-"}
           </div>
         </div>
         <button
           type="button"
           className="h-[36px] px-[19px] disabled:opacity-30 disabled:!cursor-not-allowed flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-normal font-medium leading-[100%]"
           onClick={() => {
-            toggleActionVisible({
-              type: ACTION_TYPE.DEPOSIT
-            });
+            if (type === 2) {
+              toggleStrategyVisible(true);
+            }
           }}
         >
           {currType.button}
