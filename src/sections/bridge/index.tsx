@@ -27,6 +27,7 @@ import type { Token, Chain } from '@/types';
 import type { engineType } from './lib/type';
 import useBridgeType from './Hooks/useBridgeType';
 import clsx from 'clsx';
+import { useActivityStore } from '@/stores/useActivityStore';
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
@@ -81,6 +82,8 @@ export default function Bridge() {
   const [limitBera, setLimitBera] = useState(0)
   const router = useRouter()
   const { bridgeType } = useBridgeType()
+
+  const { isDefaultTheme } = useActivityStore()
 
 
   const {
@@ -303,7 +306,8 @@ export default function Bridge() {
         </div>
         <div
         className={clsx(
-          'absolute z-50 bottom-[213px] right-[20%] w-[164px] h-[191px]',
+          'absolute z-50  right-[20%] w-[164px] h-[191px]',
+          isDefaultTheme() ? 'bottom-[213px]' : 'bottom-[300px]'
         )}
       >
         <img src="/images/background/bridge-type-bg.svg" className='w-[164px]' />
