@@ -53,7 +53,7 @@ const VaultsTableMobile = (props: any) => {
           onClick={() => toggleListFilterVisible()}
         >
           <div className="flex-1 flex items-center gap-[4px] pl-[4px]">
-            <LazyImage src="/images/vaults/v2/filter.svg" width={14} height={14} />
+            <LazyImage src="/images/vaults/v2/filter.svg" width={14} height={14} fallbackSrc="/assets/tokens/default_icon.png" />
             <div className="">
               Filter
             </div>

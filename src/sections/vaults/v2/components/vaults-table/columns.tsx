@@ -28,6 +28,7 @@ export const Vaults = (props: any) => {
             containerStyle={{
               transform: idx > 0 ? "translateX(-6px)" : ""
             }}
+            fallbackSrc="/assets/tokens/default_icon.png"
           />
         ))}
       </div>
@@ -157,6 +158,7 @@ export const Rewards = (props: any) => {
             containerStyle={{
               transform: idx > 0 ? "translateX(-6px)" : ""
             }}
+            fallbackSrc="/assets/tokens/default_icon.png"
           />
         ))}
       </div>

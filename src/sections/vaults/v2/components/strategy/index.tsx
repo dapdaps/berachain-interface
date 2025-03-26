@@ -136,6 +136,7 @@ const Strategy = (props: any) => {
               width={25}
               height={25}
               containerClassName="shrink-0 rounded-full overflow-hidden"
+              fallbackSrc="/assets/tokens/default_icon.png"
             />
             <div className="">Infrared by Luganodes</div>
           </StrategyGroupWithButton>

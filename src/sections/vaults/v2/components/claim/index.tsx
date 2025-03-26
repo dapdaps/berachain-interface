@@ -22,6 +22,7 @@ const Claim = (props: any) => {
           width={36}
           height={36}
           containerClassName="shrink-0 rounded-full overflow-hidden"
+          fallbackSrc="/assets/tokens/default_icon.png"
         />
         <div className="mt-[15px] text-[20px] font-[600]">0.45 BGT</div>
         <div className="mt-[5px] text-[16px] font-[500]">+$2.99</div>

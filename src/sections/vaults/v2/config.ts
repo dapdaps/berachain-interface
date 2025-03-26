@@ -97,18 +97,30 @@ export const SPECIAL_VAULTS = [
   },
 ];
 
-export const FILTERS: Record<string, { reg: RegExp, label: string; icon: string; }[]> = {
-  ASSETS: [
+export interface FilterItem {
+  reg: RegExp;
+  label: string;
+  icon: string;
+}
+
+export enum FILTER_KEYS {
+  ASSETS = "ASSETS",
+  REWARDS = "REWARDS",
+  PROTOCOLS = "PROTOCOLS"
+}
+
+export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
+  [FILTER_KEYS.ASSETS]: [
     { reg: /^W?BERA$/i, label: "BERA", icon: getTokenLogo("BERA") },
     { reg: /^iBGT$/i, label: "iBGT", icon: getTokenLogo("iBGT") },
     { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY") },
     { reg: /^WETH$/i, label: "WETH", icon: getTokenLogo("WETH") },
     { reg: /^WBTC$/i, label: "WBTC", icon: getTokenLogo("WBTC") },
+    { reg: /^NECT$/i, label: "NECT", icon: getTokenLogo("NECT") },
     { reg: /^USDC.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e") },
-    { reg: /^NETC$/i, label: "NETC", icon: getTokenLogo("NETC") },
-    { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("STGUSDC") },
+    { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC") },
   ],
-  REWARDS: [
+  [FILTER_KEYS.REWARDS]: [
     { reg: /^BGT$/i, label: 'BGT', icon: getTokenLogo('BGT') },
     { reg: /^oBERO$/i, label: 'oBERO', icon: getTokenLogo('oBERO') },
     { reg: /^iBGT$/i, label: 'iBGT', icon: getTokenLogo('iBGT') },
@@ -120,7 +132,7 @@ export const FILTERS: Record<string, { reg: RegExp, label: string; icon: string;
     { reg: /^USDbr$/i, label: 'USDbr', icon: getTokenLogo('USDbr') },
     { reg: /^NOME$/i, label: 'NOME', icon: getTokenLogo('NOME') },
   ],
-  PROTOCOLS: [
+  [FILTER_KEYS.PROTOCOLS]: [
     { reg: /^Hub$/i, label: 'Hub', icon: getDappLogo('Hub') },
     { reg: /^BeraDrome$/i, label: 'BeraDrome', icon: getDappLogo('BeraDrome') },
     { reg: /^BurrBear$/i, label: 'BurrBear', icon: getDappLogo('BurrBear') },

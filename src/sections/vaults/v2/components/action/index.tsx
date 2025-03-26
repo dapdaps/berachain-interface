@@ -60,6 +60,7 @@ const Action = (props: any) => {
                   "shrink-0 rounded-full overflow-hidden",
                   idx !== 0 && "translate-x-[-20px]"
                 )}
+                fallbackSrc="/assets/tokens/default_icon.png"
               />
             ))}
           </div>
@@ -76,6 +77,7 @@ const Action = (props: any) => {
                 width={16}
                 height={16}
                 containerClassName="shrink-0"
+                fallbackSrc="/assets/tokens/default_icon.png"
               />
               <div className="text-[14px] font-medium leading-[100%]">
                 {currentRecord.protocol}
@@ -130,6 +132,7 @@ const Action = (props: any) => {
                   "shrink-0 rounded-full overflow-hidden",
                   idx !== 0 && "translate-x-[-10px]"
                 )}
+                fallbackSrc="/assets/tokens/default_icon.png"
               />
             ))}
           </div>

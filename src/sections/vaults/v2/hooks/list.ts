@@ -3,14 +3,21 @@ import {
   StrategyPool,
   ORDER_DIRECTION,
   ORDER_KEYS,
-  SPECIAL_VAULTS
-} from "@/sections/vaults/v2/config";
+  SPECIAL_VAULTS, FILTER_KEYS, FilterItem
+} from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
+import { cloneDeep } from 'lodash';
+
+const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
+  [FILTER_KEYS.ASSETS]: [],
+  [FILTER_KEYS.REWARDS]: [],
+  [FILTER_KEYS.PROTOCOLS]: [],
+};
 
 export function useList(): List {
   const { account } = useCustomAccount();
@@ -22,6 +29,7 @@ export function useList(): List {
     ORDER_DIRECTION.DESC
   );
   const [filterVisible, setFilterVisible] = useState(false);
+  const [filterSelected, setFilterSelected] = useState<Record<FILTER_KEYS, FilterItem[]>>(cloneDeep(DEFAULT_FILTER_SELECTED));
 
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -310,6 +318,27 @@ export function useList(): List {
     );
   };
 
+  const toggleFilterSelected = (key: FILTER_KEYS, item: FilterItem) => {
+    const _filterSelected = { ...filterSelected };
+    for (const k in _filterSelected) {
+      if (key === k) {
+        if (_filterSelected[k].some((it) => it.label === item.label)) {
+          _filterSelected[k] = _filterSelected[k].filter(
+            (it) => it.label !== item.label
+          );
+        } else {
+          _filterSelected[k].push(item);
+        }
+        break;
+      }
+    }
+    setFilterSelected(_filterSelected);
+  };
+
+  const clearFilterSelected = () => {
+    setFilterSelected(cloneDeep(DEFAULT_FILTER_SELECTED));
+  };
+
   useEffect(() => {
     if (!account) return;
     getData();
@@ -326,7 +355,10 @@ export function useList(): List {
     listOrderDirection: orderDirection,
     toggleListOrder: toggleOrder,
     listFilterVisible: filterVisible,
-    toggleListFilterVisible: toggleFilterVisible
+    toggleListFilterVisible: toggleFilterVisible,
+    listFilterSelected: filterSelected,
+    toggleListFilterSelected: toggleFilterSelected,
+    clearListFilterSelected: clearFilterSelected,
   };
 }
 
@@ -342,6 +374,9 @@ export interface List {
   toggleListOrder: (key: ORDER_KEYS) => void;
   listFilterVisible: boolean;
   toggleListFilterVisible: (filterVisible?: boolean) => void;
+  listFilterSelected: Record<FILTER_KEYS, FilterItem[]>;
+  toggleListFilterSelected: (key: FILTER_KEYS, item: FilterItem) => void;
+  clearListFilterSelected: () => void;
 }
 
 function parseJSONString(str: string, defaultValue: any = {}) {

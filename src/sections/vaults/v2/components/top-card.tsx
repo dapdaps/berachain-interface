@@ -54,6 +54,7 @@ const TopCard = (props: any) => {
                   "shrink-0 rounded-full overflow-hidden",
                   idx !== 0 && "translate-x-[-10px]"
                 )}
+                fallbackSrc="/assets/tokens/default_icon.png"
               />
             ))}
           </div>

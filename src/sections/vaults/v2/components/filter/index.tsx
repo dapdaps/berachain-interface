@@ -3,12 +3,17 @@ import FilterItem from '@/sections/vaults/v2/components/filter/item';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
-import { FILTERS } from '@/sections/vaults/v2/config';
+import { FILTER_KEYS, FILTERS } from '@/sections/vaults/v2/config';
 
 const Filter = (props: any) => {
   const { className } = props;
 
-  const { availableAssets, toggleAvailableAssets } = useVaultsV2Context();
+  const {
+    availableAssets,
+    toggleAvailableAssets,
+    clearListFilterSelected,
+    listLoading,
+  } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
   return (
@@ -30,10 +35,12 @@ const Filter = (props: any) => {
         </div>
         <button
           type="button"
+          disabled={listLoading}
           className={clsx(
-            "shrink-0 h-[13px] flex justify-center items-center",
+            "shrink-0 h-[13px] flex justify-center items-center disabled:cursor-not-allowed disabled:opacity-30",
             isMobile ? "gap-[10px] w-[unset]" : "w-[13px]"
           )}
+          onClick={clearListFilterSelected}
         >
           <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -55,13 +62,14 @@ const Filter = (props: any) => {
       <div className="text-[15px] font-[600] pt-[26px] px-[15px]">
         Deposit Asset
       </div>
-      <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[20px] pt-[20px]">
+      <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[15px] pt-[20px]">
         <div className="text-[15px] font-[500]">
           Your available assets only
         </div>
         <motion.button
           type="button"
-          className="w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px]"
+          disabled={listLoading}
+          className="w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px] disabled:cursor-not-allowed disabled:opacity-30"
           animate={{ backgroundColor: availableAssets ? '#FFDC50' : '#E8E5C7' }}
           onClick={() => toggleAvailableAssets()}
         >
@@ -71,42 +79,53 @@ const Filter = (props: any) => {
           />
         </motion.button>
       </div>
-      <div className="pt-[12px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
+      <div className="pt-[12px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
           FILTERS.ASSETS.map((it, idx) => (
-            <FilterItem key={idx} selected={false} data={it} />
+            <FilterItem
+              key={idx}
+              type={FILTER_KEYS.ASSETS}
+              data={it}
+            />
           ))
         }
       </div>
-      <div className="pt-[14px] pl-[15px] pr-[20px]">
+      {/*<div className="pt-[14px] pl-[15px] pr-[15px]">
         <button
+          disabled={listLoading}
           type="button"
-          className="text-[#999] text-[12px]"
+          className="text-[#999] text-[12px] disabled:cursor-not-allowed disabled:opacity-30"
         >
           View More
         </button>
-      </div>
-      <div className="pt-[24px] pl-[15px] pr-[20px] font-[600]">
+      </div>*/}
+      <div className="pt-[24px] pl-[15px] pr-[15px] font-[600]">
         Reward Asset
       </div>
-      <div className="pt-[14px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
-        <FilterItem selected={true} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
+      <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+        {
+          FILTERS.REWARDS.map((it, idx) => (
+            <FilterItem
+              key={idx}
+              type={FILTER_KEYS.REWARDS}
+              data={it}
+            />
+          ))
+        }
       </div>
-      <div className="pt-[28px] pl-[15px] pr-[20px] font-[600]">
+      <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
         Protocol
       </div>
-      <div className="pt-[14px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
-        <FilterItem selected={true} />
-        <FilterItem selected={true} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
+      <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+        {
+          FILTERS.PROTOCOLS.map((it, idx) => (
+            <FilterItem
+              key={idx}
+              type={FILTER_KEYS.PROTOCOLS}
+              data={it}
+            />
+          ))
+        }
       </div>
     </div>
   );
