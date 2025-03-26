@@ -78,14 +78,7 @@ export default function ButtonWithApprove({
     );
   }
 
-  if (!spender)
-    return (
-      <Button disabled {...buttonProps}>
-        Insufficient Liquidity
-      </Button>
-    );
-
-  if (!approved) {
+  if (!approved && spender) {
     return (
       <Button onClick={approve} {...buttonProps}>
         Approve {token?.symbol}

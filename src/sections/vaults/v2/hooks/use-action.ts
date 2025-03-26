@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
@@ -7,7 +7,7 @@ import handleAction from "../../dapps/action";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import useTokenBalance from "@/hooks/use-token-balance";
 import Big from "big.js";
-import { ACTION_TYPE } from '@/sections/vaults/v2/config';
+import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 
 export default function useAction() {
   const [loading, setLoading] = useState(false);
@@ -19,18 +19,22 @@ export default function useAction() {
     useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
-    currentRecord?.token?.address,
+    actionType.value === ACTION_TYPE.DEPOSIT
+      ? currentRecord?.token?.address
+      : currentRecord?.vaultAddress,
     currentRecord?.token?.decimals
   );
 
-  const [inputError, inputErrorMessage] = useMemo<[boolean, string | undefined]>(() => {
+  const [inputError, inputErrorMessage] = useMemo<
+    [boolean, string | undefined]
+  >(() => {
     const DEFAULT: [boolean, string | undefined] = [false, void 0];
-    if (isLoading) return DEFAULT;
-    if (Big(tokenBalance || 0).lte(0) && actionType.value === ACTION_TYPE.DEPOSIT) {
-      return [false, "Insufficient Balance"];
+    if (Big(amount || 0).eq(0)) return [false, "Enter an amount"];
+    if (Big(tokenBalance || 0).lt(amount || 0)) {
+      return [true, "Insufficient Balance"];
     }
     return DEFAULT;
-  }, [tokenBalance, isLoading, actionType]);
+  }, [tokenBalance, isLoading, actionType, amount]);
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);
@@ -86,7 +90,6 @@ export default function useAction() {
       });
       setLoading(false);
     } catch (err: any) {
-      console.log(71, err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

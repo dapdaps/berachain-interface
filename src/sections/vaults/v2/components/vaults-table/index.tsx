@@ -9,13 +9,19 @@ import {
   Vaults,
   WithdrawButton,
   Yours
-} from '@/sections/vaults/v2/components/vaults-table/columns';
-import { OrderKeys } from '@/sections/vaults/v2/config';
+} from "@/sections/vaults/v2/components/vaults-table/columns";
+import { OrderKeys } from "@/sections/vaults/v2/config";
 
 const VaultsTable = (props: any) => {
   const { className } = props;
 
-  const { listData, listLoading, listOrderDirection, listOrderKey, toggleListOrder } = useVaultsV2Context();
+  const {
+    listData,
+    listLoading,
+    listOrderDirection,
+    listOrderKey,
+    toggleListOrder
+  } = useVaultsV2Context();
 
   const columns: any[] = [
     {
@@ -23,27 +29,21 @@ const VaultsTable = (props: any) => {
       dataIndex: "vaults",
       width: 280,
       render: (text: any, record: any, index: any) => {
-        return (
-          <Vaults record={record} index={index} />
-        );
+        return <Vaults record={record} index={index} />;
       }
     },
     {
       title: "TVL",
       dataIndex: "tvl",
       render: (text: any, record: any, index: any) => {
-        return (
-          <TVL record={record} index={index} />
-        );
+        return <TVL record={record} index={index} />;
       }
     },
     {
       title: "APY",
       dataIndex: "apy",
       render: (text: any, record: any, index: any) => {
-        return (
-          <APY record={record} index={index} />
-        );
+        return <APY record={record} index={index} />;
       }
     },
     {
@@ -52,18 +52,14 @@ const VaultsTable = (props: any) => {
       width: 160,
       render: (text: any, record: any, index: any) => {
         if (!record.rewards) return null;
-        return (
-          <Rewards record={record} index={index} />
-        );
+        return <Rewards record={record} index={index} />;
       }
     },
     {
       title: "Yours",
       dataIndex: "yours",
       render: (text: any, record: any, index: any) => {
-        return (
-          <Yours record={record} index={index} />
-        );
+        return <Yours record={record} index={index} />;
       }
     },
     {
@@ -74,14 +70,15 @@ const VaultsTable = (props: any) => {
         return (
           <div className="flex justify-end items-center gap-[10px]">
             <DepositButton record={record} index={index} />
-            <WithdrawButton record={record} index={index} disabled />
+            <WithdrawButton record={record} index={index} />
           </div>
         );
       }
     }
-  ].map((c) => (
-    { ...c, sort: Object.keys(OrderKeys).some((o) => o === c.dataIndex) }
-  ));
+  ].map((c) => ({
+    ...c,
+    sort: Object.keys(OrderKeys).some((o) => o === c.dataIndex)
+  }));
 
   return (
     <div

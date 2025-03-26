@@ -7,8 +7,9 @@ import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import useAction from "../../hooks/use-action";
 import { useState } from "react";
 import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
-import Big from 'big.js';
-import Loading from '@/components/loading';
+import Big from "big.js";
+import Loading from "@/components/loading";
+import { ACTION_TYPE } from "../../config";
 
 const Action = (props: any) => {
   const { className } = props;
@@ -23,7 +24,7 @@ const Action = (props: any) => {
     inputErrorMessage,
     balance,
     updateBalance,
-    balanceLoading,
+    balanceLoading
   } = useAction();
 
   const handleBalance = () => {
@@ -39,7 +40,12 @@ const Action = (props: any) => {
     >
       <div className="">{actionType.title}</div>
       <div className="mt-[30px] flex justify-between items-start gap-[10px]">
-        <div className={clsx("flex items-center w-0 flex-1", currentRecord.tokens?.length < 2 && "gap-[10px]")}>
+        <div
+          className={clsx(
+            "flex items-center w-0 flex-1",
+            currentRecord.tokens?.length < 2 && "gap-[10px]"
+          )}
+        >
           <div className="flex items-center shrink-0">
             {currentRecord.tokens.map((token: any, idx: number) => (
               <LazyImage
@@ -104,7 +110,12 @@ const Action = (props: any) => {
               inputError ? "text-[#FF3F3F]" : "text-black"
             )}
           />
-          <div className={clsx("flex items-center justify-end shrink-0", currentRecord.tokens.length > 1 && "translate-x-[10px]")}>
+          <div
+            className={clsx(
+              "flex items-center justify-end shrink-0",
+              currentRecord.tokens.length > 1 && "translate-x-[10px]"
+            )}
+          >
             {currentRecord.tokens.map((token: any, idx: number) => (
               <LazyImage
                 src={token.icon || "/assets/tokens/default_icon.png"}
@@ -123,45 +134,48 @@ const Action = (props: any) => {
           <div className=""></div>
           <div className="flex items-center gap-[2px]">
             <div>balance:</div>
-            {
-              balanceLoading ? (
-                <Loading size={14} />
-              ) : (
-                <button
-                  type="button"
-                  disabled={Big(balance || 0).lte(0) || balanceLoading}
-                  className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
-                  onClick={handleBalance}
-                >
-                  {numberFormatter(balance, 2, true)}
-                </button>
-              )
-            }
+            {balanceLoading ? (
+              <Loading size={14} />
+            ) : (
+              <button
+                type="button"
+                disabled={Big(balance || 0).lte(0) || balanceLoading}
+                className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
+                onClick={handleBalance}
+              >
+                {numberFormatter(balance, 2, true)}
+              </button>
+            )}
           </div>
         </div>
       </div>
-      {["Bex"].includes(currentRecord.lpProtocol) && (
-        <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
-          <button
-            type="button"
-            className="underline underline-offset-2"
-            onClick={() => {
-              setOpenAddLp(true);
-            }}
-          >
-            Mint LP tokens
-          </button>
-          <div>first</div>
-        </div>
-      )}
+      {["Bex"].includes(currentRecord.lpProtocol) &&
+        inputErrorMessage === "Insufficient Balance" && (
+          <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
+            <button
+              type="button"
+              className="underline underline-offset-2"
+              onClick={() => {
+                setOpenAddLp(true);
+              }}
+            >
+              Mint LP tokens
+            </button>
+            <div>first</div>
+          </div>
+        )}
       <div className="mt-[20px] flex justify-center">
         <ButtonWithApprove
-          spender={currentRecord.vaultAddress}
+          spender={
+            actionType.value === ACTION_TYPE.DEPOSIT
+              ? currentRecord.vaultAddress
+              : ""
+          }
           token={currentRecord.token}
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}
-          disabled={inputErrorMessage || loading}
+          disabled={inputError || loading}
           onClick={onAction}
           buttonProps={{
             className: "w-full h-[50px] font-bold",
