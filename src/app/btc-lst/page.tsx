@@ -1,10 +1,10 @@
 "use client"
 import BearBackground from '@/components/bear-background'
-import BgtLstView from '@/sections/bgt-lst'
+import BtcLstView from '@/sections/btc-lst'
 export default function BgtLstPage() {
   return (
     <BearBackground type="bgt-lst">
-      <BgtLstView />
+      <BtcLstView />
     </BearBackground>
   )
 }
