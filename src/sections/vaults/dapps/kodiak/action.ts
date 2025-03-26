@@ -17,7 +17,7 @@ export default async function onAction({
     const secs = (dappParams?.days || 0) * 86400;
     return await VaultContract.stakeLocked(amount, secs);
   } else if (actionType === "Withdraw") {
-    return await VaultContract.withdrawLockedMultiple(dappParams.kekId);
+    return await VaultContract.withdrawLockedMultiple(dappParams.kekIds);
   }
 
   throw new Error("Invalid action type");

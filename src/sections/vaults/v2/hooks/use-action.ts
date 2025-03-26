@@ -15,14 +15,16 @@ export default function useAction() {
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const [amount, setAmount] = useState<string>();
-  const [dappParams, setDappParams] = useState<any>();
+  const [dappParams, setDappParams] = useState<any>({});
   const { currentRecord, actionType, toggleActionVisible } =
     useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
       ? currentRecord?.token?.address
-      : currentRecord?.vaultAddress,
+      : currentRecord.protocol !== "Kodiak"
+      ? currentRecord?.vaultAddress
+      : "",
     currentRecord?.token?.decimals
   );
 
@@ -42,16 +44,15 @@ export default function useAction() {
   };
 
   const onAction = async () => {
-    if (!amount || !currentRecord) return;
+    if (!currentRecord) return;
     let toastId = toast.loading({ title: "Confirming..." });
     try {
-      setLoading(true);
       setLoading(true);
       const signer = provider.getSigner(account);
       const tx = await handleAction({
         actionType: actionType.button,
         signer,
-        amount: Big(amount)
+        amount: Big(amount || 0)
           .mul(10 ** currentRecord.token.decimals)
           .toFixed(0),
         currentRecord,
