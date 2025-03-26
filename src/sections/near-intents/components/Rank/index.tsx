@@ -97,7 +97,7 @@ export default memo(function Rank() {
               <div className="text-black font-Montserrat text-[14px] font-semibold">{yourRank?.rank_volume}</div>
               <div className="text-black font-Montserrat text-[14px] font-medium">{formatLongText(account, 5, 5)}</div>
             </div>
-            <div className="absolute right-[16px] bottom-[24px] text-black font-Montserrat text-[14px] font-medium">{numberFormatter(yourRank?.[currentTab], 2, true, { isShort: true, prefix: "$" })}</div>
+            <div className="absolute right-[16px] bottom-[24px] text-black font-Montserrat text-[14px] font-medium">{numberFormatter(yourRank?.[currentTab], 2, true, { isShort: true, prefix: currentTab === "volume" ? "$" : "" })}</div>
           </div>
         </div>
       </div>
