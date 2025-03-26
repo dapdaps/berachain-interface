@@ -36,7 +36,7 @@ const BgtEmpty = (props: any) => {
       </svg>
       <div className="mt-[8px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">No active vaults yet</div>
       <div
-        className="flex items-center justify-center w-[242px] h-[48px] rounded-[10px] border border-black bg-[#FFDC50]"
+        className="cursor-pointer flex items-center justify-center w-[242px] h-[48px] rounded-[10px] border border-black bg-[#FFDC50]"
         onClick={handleExplore}
       >
         <span className="text-[#3D405A] font-Montserrat text-[16px] font-semibold">Explore Vaults</span>

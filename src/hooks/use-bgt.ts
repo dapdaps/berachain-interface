@@ -310,7 +310,7 @@ export function useBGT(tab?: string) {
   };
 
   const handleExplore = function () {
-    router.push("/marketplace/invest?type=vaults");
+    // router.push("/marketplace/invest?type=vaults");
     handleReport("1010-004-004");
   };
 
