@@ -9,6 +9,7 @@ import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
+import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
 
 export function useList(): List {
@@ -113,12 +114,20 @@ export function useList(): List {
             decimals: 18
           };
           item.protocol = item.project;
-          item.protocolIcon = getDappLogo(["Hub"].includes(item.project) ? item.pool_project : item.project);
+          item.protocolIcon = getDappLogo(
+            ["Hub"].includes(item.project) ? item.pool_project : item.project
+          );
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;
           item.balance = "0";
           item.vaultAddress = item.vault_address;
+
+          if (item.protocol === "Kodiak") {
+            item.vaultAddress = (kodiakConfig.sweetenedIslands as any)[
+              item.pool_address
+            ]?.farmAddress;
+          }
 
           return item;
         });

@@ -74,7 +74,6 @@ export default function useApprove({
   };
 
   const approve = async () => {
-    console.log('111111111222222')
     if (!token?.address || !amount || !spender) return;
     setApproving(true);
     try {
@@ -103,12 +102,23 @@ export default function useApprove({
           .div(Big(10).pow(token.decimals))
           .toFixed(token.decimals);
       }
-      const tx = await TokenContract.approve(
+      const params = [
         spender,
         Big(approveValue)
           .times(10 ** token.decimals)
           .toFixed(0)
-      );
+      ];
+      let estimateGas;
+      try {
+        estimateGas = await TokenContract.estimateGas.approve(...params);
+      } catch (err) {}
+      console.log("estimateGas", estimateGas?.toString());
+      const tx = await TokenContract.approve(...params, {
+        gasLimit: estimateGas
+          ? Big(estimateGas.toString()).mul(1.2).toFixed(0)
+          : 5000000
+      });
+      console.log("estimateGas", estimateGas?.toString());
       const res = await tx.wait();
       setApproving(false);
       if (res.status === 1) {
