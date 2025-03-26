@@ -115,6 +115,10 @@ export function useList(): List {
     return [topAPY, topTVL, hotStrategy];
   }, [data]);
 
+  const filterSelectedLength = useMemo(() => {
+    return Object.values(filterSelected).flat().length;
+  }, [filterSelected]);
+
   const getData = async () => {
     setLoading(true);
     try {
@@ -476,6 +480,7 @@ export function useList(): List {
     toggleListAvailableAssets: toggleAvailableAssets,
     listFilterAssetsBalanceLoading: filterAssetsBalanceLoading,
     listFilterAssetsBalance: filterAssetsBalance,
+    listFilterSelectedLength: filterSelectedLength,
   };
 }
 
@@ -498,6 +503,7 @@ export interface List {
   toggleListAvailableAssets: (availableAssets?: boolean) => void;
   listFilterAssetsBalanceLoading: boolean;
   listFilterAssetsBalance: any;
+  listFilterSelectedLength: number;
 }
 
 function parseJSONString(str: string, defaultValue: any = {}) {

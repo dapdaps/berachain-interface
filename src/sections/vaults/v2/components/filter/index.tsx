@@ -18,6 +18,8 @@ const Filter = (props: any) => {
     listLoading,
     listFilterAssetsBalance,
     listFilterAssetsBalanceLoading,
+    listFilterSelectedLength,
+    toggleListFilterVisible,
   } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
@@ -38,7 +40,7 @@ const Filter = (props: any) => {
               <div
                 className="flex justify-center items-center rounded-full w-[19px] h-[19px] shrink-0 bg-[#FDD54C] border border-[#000] text-[#000] text-center font-[Montserrat] text-[12px] font-[600] leading-[90%]"
               >
-                3
+                {listFilterSelectedLength}
               </div>
             )
           }
@@ -50,7 +52,12 @@ const Filter = (props: any) => {
             "shrink-0 h-[13px] flex justify-center items-center disabled:cursor-not-allowed disabled:opacity-30",
             isMobile ? "gap-[10px] w-[unset]" : "w-[13px]"
           )}
-          onClick={clearListFilterSelected}
+          onClick={() => {
+            clearListFilterSelected();
+            if (isMobile) {
+              toggleListFilterVisible();
+            }
+          }}
         >
           <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -81,7 +88,9 @@ const Filter = (props: any) => {
           disabled={listLoading || listFilterAssetsBalanceLoading}
           className="w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px] disabled:cursor-not-allowed disabled:opacity-30"
           animate={{ backgroundColor: listAvailableAssets ? '#FFDC50' : '#E8E5C7' }}
-          onClick={() => toggleListAvailableAssets()}
+          onClick={() => {
+            toggleListAvailableAssets();
+          }}
         >
           <motion.div
             className="w-[20px] h-[20px] rounded-full border border-[#BBBBBB] bg-[#FFFDEB] flex justify-center items-center"

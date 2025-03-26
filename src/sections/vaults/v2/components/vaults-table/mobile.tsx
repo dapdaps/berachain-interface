@@ -14,7 +14,7 @@ import Skeleton from 'react-loading-skeleton';
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
 
-  const { listDataShown, listLoading, listOrderKey, listOrderDirection, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
+  const { listDataShown, listLoading, listOrderKey, listFilterSelectedLength, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -61,7 +61,7 @@ const VaultsTableMobile = (props: any) => {
           <div
             className="flex justify-center items-center w-[26px] h-[26px] flex-shrink-0 rounded-[6px] border-[1px] border-[#000] bg-[#FDD54C] text-[#000] text-center font-Montserrat text-[12px] font-[600] leading-[100%]"
           >
-            3
+            {listFilterSelectedLength}
           </div>
         </button>
       </div>

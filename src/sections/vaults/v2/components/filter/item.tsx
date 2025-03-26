@@ -2,11 +2,18 @@ import { motion } from "framer-motion";
 import LazyImage from '@/components/layz-image';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { FILTER_KEYS } from '@/sections/vaults/v2/config';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const FilterItem = (props: any) => {
   const { type, data } = props;
 
-  const { listFilterSelected, toggleListFilterSelected, listLoading } = useVaultsV2Context();
+  const {
+    listFilterSelected,
+    toggleListFilterSelected,
+    listLoading,
+    toggleListFilterVisible,
+  } = useVaultsV2Context();
+  const isMobile = useIsMobile();
 
   const selectedList = listFilterSelected[type as FILTER_KEYS] || [];
   const selected = selectedList?.some((it: any) => it.label === data.label);
@@ -22,6 +29,9 @@ const FilterItem = (props: any) => {
       }}
       onClick={() => {
         toggleListFilterSelected(type, data);
+        if (isMobile) {
+          toggleListFilterVisible();
+        }
       }}
     >
       <LazyImage src={data?.icon} width={26} height={26} className="shrink-0" fallbackSrc="/assets/tokens/default_icon.png" />

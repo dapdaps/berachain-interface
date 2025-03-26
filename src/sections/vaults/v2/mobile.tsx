@@ -13,6 +13,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import VaultsTableMobile from '@/sections/vaults/v2/components/vaults-table/mobile';
 import { useList } from '@/sections/vaults/v2/hooks/list';
 import FilterModal from '@/sections/vaults/v2/components/filter/modal';
+import Loading from '@/components/loading';
 
 const VaultsV2Mobile = (props: any) => {
   const { } = props;
@@ -28,7 +29,11 @@ const VaultsV2Mobile = (props: any) => {
           <div className="w-[200px] h-[50px] flex justify-center items-center gap-[10px] mx-auto shrink-0 rounded-[4px] border border-[#000] bg-[#E9B965] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] text-[#000] text-center font-[400] font-CherryBomb text-[24px] leading-[90%]">
             <div className="">Vaults</div>
             <div className="flex justify-center items-center w-[24px] h-[24px] shrink-0 bg-[#edc784] border border-[#bb9451] rounded-[6px] text-black text-right font-Montserrat text-[12px] font-[500] leading-[90%]">
-              54
+              {
+                list.listLoading ? (
+                  <Loading size={12} />
+                ) : list.listData.length
+              }
             </div>
           </div>
         </div>
@@ -44,13 +49,13 @@ const VaultsV2Mobile = (props: any) => {
             updateOnWindowResize={true}
           >
             <SwiperSlide>
-              <TopCard type={0} className="!px-[15px]" />
+              <TopCard type={0} className="!px-[15px]" pool={list.listDataTopAPY} />
             </SwiperSlide>
             <SwiperSlide>
-              <TopCard type={1} className="!px-[15px]" />
+              <TopCard type={1} className="!px-[15px]" pool={list.listDataTopTVL} />
             </SwiperSlide>
             <SwiperSlide>
-              <TopCard type={2} className="!px-[15px]" />
+              <TopCard type={2} className="!px-[15px]" pool={list.listDataHotStrategy} />
             </SwiperSlide>
           </Swiper>
         </div>
