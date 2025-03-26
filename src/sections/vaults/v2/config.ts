@@ -1,4 +1,5 @@
 import DolomiteConfig from '@/configs/lending/dolomite';
+import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
 
 export enum ACTION_TYPE {
   DEPOSIT = "deposit",
@@ -95,3 +96,40 @@ export const SPECIAL_VAULTS = [
     }
   },
 ];
+
+export const FILTERS: Record<string, { reg: RegExp, label: string; icon: string; }[]> = {
+  ASSETS: [
+    { reg: /^W?BERA$/i, label: "BERA", icon: getTokenLogo("BERA") },
+    { reg: /^iBGT$/i, label: "iBGT", icon: getTokenLogo("iBGT") },
+    { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY") },
+    { reg: /^WETH$/i, label: "WETH", icon: getTokenLogo("WETH") },
+    { reg: /^WBTC$/i, label: "WBTC", icon: getTokenLogo("WBTC") },
+    { reg: /^USDC.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e") },
+    { reg: /^NETC$/i, label: "NETC", icon: getTokenLogo("NETC") },
+    { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("STGUSDC") },
+  ],
+  REWARDS: [
+    { reg: /^BGT$/i, label: 'BGT', icon: getTokenLogo('BGT') },
+    { reg: /^oBERO$/i, label: 'oBERO', icon: getTokenLogo('oBERO') },
+    { reg: /^iBGT$/i, label: 'iBGT', icon: getTokenLogo('iBGT') },
+    { reg: /^xKDK$/i, label: 'xKDK', icon: getTokenLogo('xKDK') },
+    { reg: /^W?BERA$/i, label: 'BERA', icon: getTokenLogo('BERA') },
+    { reg: /^BURR Points$/i, label: 'BURR Points', icon: getTokenLogo('BURR Points') },
+    { reg: /^HONEY$/i, label: 'HONEY', icon: getTokenLogo('HONEY') },
+    { reg: /^gBERA$/i, label: 'gBERA', icon: getTokenLogo('gBERA') },
+    { reg: /^USDbr$/i, label: 'USDbr', icon: getTokenLogo('USDbr') },
+    { reg: /^NOME$/i, label: 'NOME', icon: getTokenLogo('NOME') },
+  ],
+  PROTOCOLS: [
+    { reg: /^Hub$/i, label: 'Hub', icon: getDappLogo('Hub') },
+    { reg: /^BeraDrome$/i, label: 'BeraDrome', icon: getDappLogo('BeraDrome') },
+    { reg: /^BurrBear$/i, label: 'BurrBear', icon: getDappLogo('BurrBear') },
+    { reg: /^WeBera$/i, label: 'WeBera', icon: getDappLogo('WeBera') },
+    { reg: /^Infrared$/i, label: 'Infrared', icon: getDappLogo('Infrared') },
+    { reg: /^Kodiak$/i, label: 'Kodiak', icon: getDappLogo('Kodiak') },
+    { reg: /^Smilee$/i, label: 'Smilee', icon: getDappLogo('Smilee') },
+    { reg: /^Dolomite$/i, label: 'Dolomite', icon: getDappLogo('Dolomite') },
+    { reg: /^Memeswap$/i, label: 'Memeswap', icon: getDappLogo('Memeswap') },
+    { reg: /^Nome$/i, label: 'Nome', icon: getDappLogo('Nome') },
+  ],
+};
