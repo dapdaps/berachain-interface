@@ -1,7 +1,7 @@
 import PageBack from '@/components/back';
 import Card from '@/components/card';
 import { motion } from 'framer-motion';
-import FilterItem from '@/sections/vaults/v2/components/filter-item';
+import FilterItem from '@/sections/vaults/v2/components/filter/item';
 import Dashboard from '@/sections/vaults/v2/components/dashboard';
 import VaultsTable from '@/sections/vaults/v2/components/vaults-table';
 import TopCard from '@/sections/vaults/v2/components/top-card';
@@ -12,6 +12,7 @@ import ClaimModal from '@/sections/vaults/v2/components/claim/modal';
 import ClaimSuccessModal from '@/sections/vaults/v2/components/claim/success';
 import StrategyModal from '@/sections/vaults/v2/components/strategy/modal';
 import { useList } from '@/sections/vaults/v2/hooks/list';
+import Filter from '@/sections/vaults/v2/components/filter';
 
 const VaultsV2 = (props: any) => {
   const { } = props;
@@ -42,76 +43,7 @@ const VaultsV2 = (props: any) => {
                   54
                 </div>
               </div>
-              <div className="h-0 flex-1 overflow-y-auto">
-                <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[24px] pt-[14px]">
-                  <div className="text-[16px] font-[700]">
-                    Filter
-                  </div>
-                  <button
-                    type="button"
-                    className="shrink-0 w-[13px] h-[13px] flex justify-center items-center"
-                  >
-                    <img src="/images/vaults/v2/refresh.svg" alt="" className="w-full h-full object-center object-contain pointer-events-none" />
-                  </button>
-                </div>
-                <div className="text-[15px] font-[600] pt-[26px] px-[15px]">
-                  Deposit Asset
-                </div>
-                <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[20px] pt-[20px]">
-                  <div className="text-[15px] font-[500]">
-                    Your available assets only
-                  </div>
-                  <motion.button
-                    type="button"
-                    className="w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px]"
-                    animate={{ backgroundColor: vaultsV2.availableAssets ? '#FFDC50' : '#E8E5C7' }}
-                    onClick={() => vaultsV2.toggleAvailableAssets()}
-                  >
-                    <motion.div
-                      className="w-[20px] h-[20px] rounded-full border border-[#BBBBBB] bg-[#FFFDEB]"
-                      animate={{ x: vaultsV2.availableAssets ? 19 : 0 }}
-                    />
-                  </motion.button>
-                </div>
-                <div className="pt-[12px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
-                  <FilterItem selected={true} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                </div>
-                <div className="pt-[14px] pl-[15px] pr-[20px]">
-                  <button
-                    type="button"
-                    className="text-[#999] text-[12px]"
-                  >
-                    View More
-                  </button>
-                </div>
-                <div className="pt-[24px] pl-[15px] pr-[20px] font-[600]">
-                  Reward Asset
-                </div>
-                <div className="pt-[14px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
-                  <FilterItem selected={true} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                </div>
-                <div className="pt-[28px] pl-[15px] pr-[20px] font-[600]">
-                  Protocol
-                </div>
-                <div className="pt-[14px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
-                  <FilterItem selected={true} />
-                  <FilterItem selected={true} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                  <FilterItem selected={false} />
-                </div>
-              </div>
+             <Filter />
             </Card>
             <Card className="w-0 flex-1 !rounded-[18px] !px-[18px]">
               <Dashboard />

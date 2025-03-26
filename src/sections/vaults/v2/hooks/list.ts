@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { ORDER_DIRECTION, ORDER_KEYS } from "@/sections/vaults/v2/config";
+import DolomiteConfig from "@/configs/lending/dolomite";
+import { bera } from '@/configs/tokens/bera';
 
 export function useList(): List {
   const [data, setData] = useState<any>([]);
@@ -64,21 +66,22 @@ export function useList(): List {
         },
         {
           tokens: [
-            {
-              icon: "/assets/tokens/honey.svg",
-              symbol: "HONEY",
-              decimals: 18
-            },
-            {
-              icon: "/assets/tokens/usdc.png",
-              symbol: "USDC.e",
-              decimals: 6
-            }
+            DolomiteConfig.networks['80094'].markets[bera["bera"].address],
           ],
-          protocol: "Berps",
-          tvl: "30800",
-          apy: "0.30",
-          balance: "20.34"
+          token: {
+            ...bera["bera"],
+            marketId: "1",
+          },
+          protocol: "Dolomite",
+          protocolIcon: DolomiteConfig.basic.icon,
+          tvl: "3080000",
+          apy: "79",
+          balance: "1.34",
+          vaultAddress: DolomiteConfig.networks['80094'].spenderAddress,
+          config: {
+            ...DolomiteConfig.basic,
+            ...DolomiteConfig.networks['80094'],
+          },
         }
       ];
       setData(_list);

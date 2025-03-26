@@ -13,7 +13,7 @@ export const Vaults = (props: any) => {
 
   return (
     <div className="w-full flex items-center gap-[5px]">
-      <div className="flex items-center shrink-0">
+      <div className="flex items-center shrink-0 min-w-[52px]">
         {record.tokens.map((tk: any, idx: number) => (
           <LazyImage
             key={idx}

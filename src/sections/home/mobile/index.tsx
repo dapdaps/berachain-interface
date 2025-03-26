@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import VaultsEnterance from "../vaults-enterance";
 import EntryCard from "@/sections/home/mobile/entry-card";
+import VaultsEntrance from '@/sections/vaults/v2/entrance';
 
 const Home = () => {
   const router = useProgressRouter();
@@ -223,14 +224,7 @@ const Home = () => {
               minHeight: "100dvh"
             }}
           >
-            {/* <VaultsEnterance
-              imgSrc="/images/background/vaults-m.svg"
-              onClick={() => {
-                router.push("/vaults");
-                tapSound.play?.();
-              }}
-              className="absolute z-[20] right-[0px] top-[-80px] hover:scale-110 transition-transform duration-500"
-            /> */}
+            <VaultsEntrance className="absolute right-[12px] top-[70px] z-[1]" />
 
             {/*#region Beraciaga*/}
             <motion.div

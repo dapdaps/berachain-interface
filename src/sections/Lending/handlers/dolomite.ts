@@ -2,7 +2,7 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import { useEffect } from "react";
 
-const DEPOSIT_ABI = [
+export const DEPOSIT_ABI = [
   {
     inputs: [
       {
@@ -321,7 +321,7 @@ const DEPOSIT_ABI = [
   }
 ];
 
-const BERA_DEPOSIT_ABI = [
+export const BERA_DEPOSIT_ABI = [
   {
     inputs: [
       {
@@ -685,7 +685,7 @@ const BERA_DEPOSIT_ABI = [
   }
 ];
 
-const BORROW_ABI = [
+export const BORROW_ABI = [
   {
     inputs: [
       {
@@ -859,7 +859,7 @@ const BORROW_ABI = [
   }
 ];
 
-const generateAccountNumber = () => {
+export const generateAccountNumber = () => {
   const timestamp = Date.now().toString();
   const remainingLength = 77 - timestamp.length;
   let randomDigits = "";

@@ -6,16 +6,19 @@ export enum ACTION_TYPE {
 export interface ActionType {
   button: string;
   title: string;
+  value: ACTION_TYPE;
 }
 
 export const ActionTypes: Record<ACTION_TYPE, ActionType> = {
   [ACTION_TYPE.DEPOSIT]: {
     title: "Deposit Vaults",
     button: "Deposit",
+    value: ACTION_TYPE.DEPOSIT,
   },
   [ACTION_TYPE.WITHDRAW]: {
     title: "Withdraw Vaults",
     button: "Withdraw",
+    value: ACTION_TYPE.WITHDRAW,
   },
 };
 

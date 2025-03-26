@@ -14,7 +14,7 @@ const ClaimModal = (props: any) => {
       onClose={toggleClaimVisible}
       className={className}
     >
-      <Card className="!rounded-[20px] w-[354px]">
+      <Card className="!rounded-[20px] w-[354px] md:w-full">
         <Index />
       </Card>
     </Modal>
