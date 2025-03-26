@@ -3,7 +3,7 @@ import {
   StrategyPool,
   ORDER_DIRECTION,
   ORDER_KEYS,
-  SPECIAL_VAULTS, FILTER_KEYS, FilterItem, SUPPORTED_PROTOCOLS
+  SPECIAL_VAULTS, FILTER_KEYS, FilterItem, SUPPORTED_PROTOCOLS, SPECIAL_PROTOCOLS, FILTERS
 } from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
@@ -12,12 +12,21 @@ import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
 import { cloneDeep } from 'lodash';
+import chains from '@/configs/chains';
+import { Contract, providers, utils } from 'ethers';
+import { TOKEN_ABI } from '@/hooks/use-token-balance';
+import { bera } from '@/configs/tokens/bera';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
   [FILTER_KEYS.REWARDS]: [],
   [FILTER_KEYS.PROTOCOLS]: [],
 };
+
+const DEFAULT_FILTER_ASSETS_BALANCE: { symbol?: string; balance: string; address?: string; decimals?: number; }[] = FILTERS.ASSETS.map((it) => ({
+  ...it.token,
+  balance: "0",
+}));
 
 export function useList(): List {
   const { account } = useCustomAccount();
@@ -30,6 +39,9 @@ export function useList(): List {
   );
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterSelected, setFilterSelected] = useState<Record<FILTER_KEYS, FilterItem[]>>(cloneDeep(DEFAULT_FILTER_SELECTED));
+  const [availableAssets, setAvailableAssets] = useState(false);
+  const [filterAssetsBalance, setFilterAssetsBalance] = useState(cloneDeep(DEFAULT_FILTER_ASSETS_BALANCE));
+  const [filterAssetsBalanceLoading, setFilterAssetsBalanceLoading] = useState(false);
 
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -139,6 +151,15 @@ export function useList(): List {
           if (specialVault) {
             for (const key in specialVault) {
               item[key] = specialVault[key];
+            }
+          }
+          const specialProtocol: any = SPECIAL_PROTOCOLS.find(
+            (sp) => sp.protocol === item.project
+          );
+          if (specialProtocol) {
+            for (const key in specialProtocol) {
+              if (key === "protocol") continue;
+              item[key] = specialProtocol[key];
             }
           }
           item.apy = item.apr.pool || "0";
@@ -371,13 +392,69 @@ export function useList(): List {
     setFilterSelected(_filterSelected);
   };
 
+  const toggleAvailableAssets = (_availableAssets?: boolean) => {
+    const __availableAssets = typeof _availableAssets === "boolean"
+      ? _availableAssets
+      : !availableAssets;
+    setAvailableAssets(__availableAssets);
+    if (__availableAssets) {
+      const _filterSelected = { ...filterSelected };
+      _filterSelected.ASSETS = [];
+      setFilterSelected(_filterSelected);
+    }
+  };
+
   const clearFilterSelected = () => {
     setFilterSelected(cloneDeep(DEFAULT_FILTER_SELECTED));
+  };
+
+  const getFilterAssetsBalance = async () => {
+    setFilterAssetsBalanceLoading(true);
+    const getBalance = async (token: any) => {
+      const rpcUrl = chains[80094].rpcUrls.default.http[0];
+      const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
+
+      try {
+        if (token.address === "native") {
+          const rawBalance = await rpcProvider.getBalance(account);
+          return {
+            ...token,
+            balance: utils.formatEther(rawBalance),
+          };
+        } else {
+          const TokenContract = new Contract(token.address, TOKEN_ABI, rpcProvider);
+          const rawBalance = await TokenContract.balanceOf(account);
+          return {
+            ...token,
+            balance: utils.formatUnits(rawBalance, token.decimals),
+          };
+        }
+      } catch (error) {
+        console.log("get token %s balance failed: %o", token.symbol, error);
+      }
+      return {
+        ...token,
+        balance: "0",
+      };
+    };
+    try {
+      const balances = await Promise.all(filterAssetsBalance.map((it) => getBalance(it)));
+      const WBERABalance = await getBalance(bera.wbera);
+      const BERABalance = balances.find((it) => it.symbol === "BERA");
+      if (BERABalance && Big(BERABalance.balance || 0).lte(0) && Big(WBERABalance.balance || 0).gt(0)) {
+        BERABalance.balance = WBERABalance.balance;
+      }
+      setFilterAssetsBalance(balances);
+    } catch (error) {
+      console.error('Error fetching balances:', error);
+    }
+    setFilterAssetsBalanceLoading(false);
   };
 
   useEffect(() => {
     if (!account) return;
     getData();
+    getFilterAssetsBalance();
   }, [account]);
 
   return {
@@ -395,6 +472,10 @@ export function useList(): List {
     listFilterSelected: filterSelected,
     toggleListFilterSelected: toggleFilterSelected,
     clearListFilterSelected: clearFilterSelected,
+    listAvailableAssets: availableAssets,
+    toggleListAvailableAssets: toggleAvailableAssets,
+    listFilterAssetsBalanceLoading: filterAssetsBalanceLoading,
+    listFilterAssetsBalance: filterAssetsBalance,
   };
 }
 
@@ -413,6 +494,10 @@ export interface List {
   listFilterSelected: Record<FILTER_KEYS, FilterItem[]>;
   toggleListFilterSelected: (key: FILTER_KEYS, item: FilterItem) => void;
   clearListFilterSelected: () => void;
+  listAvailableAssets: boolean;
+  toggleListAvailableAssets: (availableAssets?: boolean) => void;
+  listFilterAssetsBalanceLoading: boolean;
+  listFilterAssetsBalance: any;
 }
 
 function parseJSONString(str: string, defaultValue: any = {}) {

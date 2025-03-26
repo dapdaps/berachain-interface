@@ -4,17 +4,27 @@ import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
 import { FILTER_KEYS, FILTERS, SUPPORTED_PROTOCOLS } from '@/sections/vaults/v2/config';
+import Big from 'big.js';
+import Loading from '@/components/loading';
+import Empty from '@/components/empty';
 
 const Filter = (props: any) => {
   const { className } = props;
 
   const {
-    availableAssets,
-    toggleAvailableAssets,
+    listAvailableAssets,
+    toggleListAvailableAssets,
     clearListFilterSelected,
     listLoading,
+    listFilterAssetsBalance,
+    listFilterAssetsBalanceLoading,
   } = useVaultsV2Context();
   const isMobile = useIsMobile();
+
+  const filterAssetsList = FILTERS.ASSETS.filter((it) => {
+    if (!listAvailableAssets) return true;
+    return listFilterAssetsBalance.some((_it: any) => _it.address === it.token?.address && Big(_it.balance || 0).gt(0));
+  });
 
   return (
     <div className={clsx("h-0 flex-1 overflow-y-auto", className)}>
@@ -68,26 +78,36 @@ const Filter = (props: any) => {
         </div>
         <motion.button
           type="button"
-          disabled={listLoading}
+          disabled={listLoading || listFilterAssetsBalanceLoading}
           className="w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px] disabled:cursor-not-allowed disabled:opacity-30"
-          animate={{ backgroundColor: availableAssets ? '#FFDC50' : '#E8E5C7' }}
-          onClick={() => toggleAvailableAssets()}
+          animate={{ backgroundColor: listAvailableAssets ? '#FFDC50' : '#E8E5C7' }}
+          onClick={() => toggleListAvailableAssets()}
         >
           <motion.div
-            className="w-[20px] h-[20px] rounded-full border border-[#BBBBBB] bg-[#FFFDEB]"
-            animate={{ x: availableAssets ? 19 : 0 }}
-          />
+            className="w-[20px] h-[20px] rounded-full border border-[#BBBBBB] bg-[#FFFDEB] flex justify-center items-center"
+            animate={{ x: listAvailableAssets ? 19 : 0 }}
+          >
+            {
+              listFilterAssetsBalanceLoading && (
+                <Loading size={12} />
+              )
+            }
+          </motion.div>
         </motion.button>
       </div>
       <div className="pt-[12px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
-          FILTERS.ASSETS.map((it, idx) => (
+          filterAssetsList.length > 0 ? filterAssetsList.map((it, idx) => (
             <FilterItem
               key={idx}
               type={FILTER_KEYS.ASSETS}
               data={it}
             />
-          ))
+          )) : (
+            <div className="w-full flex justify-center">
+              <Empty desc="No assets available"  />
+            </div>
+          )
         }
       </div>
       {/*<div className="pt-[14px] pl-[15px] pr-[15px]">

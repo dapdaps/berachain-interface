@@ -1,5 +1,6 @@
 import DolomiteConfig from '@/configs/lending/dolomite';
 import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
+import { bera } from '@/configs/tokens/bera';
 
 export enum ACTION_TYPE {
   DEPOSIT = "deposit",
@@ -97,10 +98,23 @@ export const SPECIAL_VAULTS = [
   },
 ];
 
+export const SPECIAL_PROTOCOLS = [
+  // Hub
+  {
+    protocol: "Hub",
+    nameIcon: "/images/vaults/v2/hub.png",
+  },
+];
+
 export interface FilterItem {
   reg: RegExp;
   label: string;
   icon: string;
+  token?: {
+    symbol: string;
+    address: string;
+    decimals: number;
+  };
 }
 
 export enum FILTER_KEYS {
@@ -111,14 +125,14 @@ export enum FILTER_KEYS {
 
 export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [
-    { reg: /^W?BERA$/i, label: "BERA", icon: getTokenLogo("BERA") },
-    { reg: /^iBGT$/i, label: "iBGT", icon: getTokenLogo("iBGT") },
-    { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY") },
-    { reg: /^WETH$/i, label: "WETH", icon: getTokenLogo("WETH") },
-    { reg: /^WBTC$/i, label: "WBTC", icon: getTokenLogo("WBTC") },
-    { reg: /^NECT$/i, label: "NECT", icon: getTokenLogo("NECT") },
-    { reg: /^USDC.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e") },
-    { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC") },
+    { reg: /^W?BERA$/i, label: "BERA", icon: getTokenLogo("BERA"), token: bera.bera },
+    { reg: /^iBGT$/i, label: "iBGT", icon: getTokenLogo("iBGT"), token: bera.ibgt },
+    { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY"), token: bera.honey },
+    { reg: /^WETH$/i, label: "WETH", icon: getTokenLogo("WETH"), token: bera.weth },
+    { reg: /^WBTC$/i, label: "WBTC", icon: getTokenLogo("WBTC"), token: bera.wbtc },
+    { reg: /^NECT$/i, label: "NECT", icon: getTokenLogo("NECT"), token: bera.nect },
+    { reg: /^USDC.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e"), token: bera["usdc.e"] },
+    // { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC"), token: bera.usdc },
   ],
   [FILTER_KEYS.REWARDS]: [
     { reg: /^BGT$/i, label: 'BGT', icon: getTokenLogo('BGT') },

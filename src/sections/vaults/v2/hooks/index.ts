@@ -10,7 +10,6 @@ export function useVaultsV2(): VaultsV2 {
   const [actionType, setActionType] = useState<ActionType>(
     ActionTypes[ACTION_TYPE.DEPOSIT]
   );
-  const [availableAssets, setAvailableAssets] = useState(false);
   const [claimVisible, setClaimVisible] = useState(false);
   const [claimSuccessVisible, setClaimSuccessVisible] = useState(false);
   const [strategyVisible, setStrategyVisible] = useState(false);
@@ -29,14 +28,6 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
-  };
-
-  const toggleAvailableAssets = (_availableAssets?: boolean) => {
-    setAvailableAssets(
-      typeof _availableAssets === "boolean"
-        ? _availableAssets
-        : !availableAssets
-    );
   };
 
   const toggleClaimVisible = (_claimVisible?: boolean, record?: any) => {
@@ -65,13 +56,11 @@ export function useVaultsV2(): VaultsV2 {
   return {
     actionType,
     actionVisible,
-    availableAssets,
     claimVisible,
     claimSuccessVisible,
     strategyVisible,
     currentRecord,
     toggleActionVisible,
-    toggleAvailableAssets,
     toggleClaimVisible,
     toggleClaimSuccessVisible,
     toggleStrategyVisible
@@ -87,8 +76,6 @@ export interface VaultsV2 {
     type?: ACTION_TYPE;
     record?: any;
   }) => void;
-  availableAssets: boolean;
-  toggleAvailableAssets: (availableAssets?: boolean) => void;
   claimVisible: boolean;
   toggleClaimVisible: (claimVisible?: boolean, record?: any) => void;
   claimSuccessVisible: boolean;
