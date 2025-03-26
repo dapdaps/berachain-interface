@@ -1,5 +1,6 @@
 import { Contract } from "ethers";
 import vaultAbi from "./bex-vault";
+import Big from "big.js";
 
 export default async function onAction({
   currentRecord,
@@ -12,11 +13,16 @@ export default async function onAction({
     vaultAbi,
     signer
   );
-  if (actionType === "Deposit") {
-    return await VaultContract.stake(amount);
-  } else if (actionType === "Withdraw") {
-    return await VaultContract.withdraw(amount);
-  }
+  let estimateGas;
+  const method = actionType === "Deposit" ? "stake" : "withdraw";
 
-  throw new Error("Invalid action type");
+  try {
+    estimateGas = await VaultContract.estimateGas[method](amount);
+  } catch (err) {}
+  console.log("estimateGas", estimateGas?.toString());
+  return await VaultContract[method](amount, {
+    gasLimit: estimateGas
+      ? Big(estimateGas.toString()).mul(1.2).toFixed(0)
+      : 5000000
+  });
 }

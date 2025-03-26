@@ -1,5 +1,6 @@
 import { Contract } from "ethers";
 import vaultAbi from "@/sections/pools/kodiak/island/abi/farm";
+import Big from "big.js";
 
 export default async function onAction({
   currentRecord,
@@ -13,12 +14,21 @@ export default async function onAction({
     vaultAbi,
     signer
   );
-  if (actionType === "Deposit") {
-    const secs = (dappParams?.days || 0) * 86400;
-    return await VaultContract.stakeLocked(amount, secs);
-  } else if (actionType === "Withdraw") {
-    return await VaultContract.withdrawLockedMultiple(dappParams.kekIds);
-  }
+  let estimateGas;
+  const method =
+    actionType === "Deposit" ? "stakeLocked" : "withdrawLockedMultiple";
+  const params =
+    actionType === "Deposit"
+      ? [amount, (dappParams?.days || 0) * 86400]
+      : [dappParams.kekIds];
 
-  throw new Error("Invalid action type");
+  try {
+    estimateGas = await VaultContract.estimateGas[method](...params);
+  } catch (err) {}
+  console.log("estimateGas", estimateGas?.toString());
+  return await VaultContract[method](...params, {
+    gasLimit: estimateGas
+      ? Big(estimateGas.toString()).mul(1.2).toFixed(0)
+      : 5000000
+  });
 }
