@@ -47,7 +47,7 @@ export default function PoolTable({ item, onClick = () => { } }: any) {
           </div>
         )}
 
-        {
+        {/* {
           item?.protocol === "bex" && (
             <div
               className="w-[30px] cursor-pointer"
@@ -58,7 +58,7 @@ export default function PoolTable({ item, onClick = () => { } }: any) {
               <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
             </div>
           )
-        }
+        } */}
       </div>
     </div>
   );

@@ -892,6 +892,9 @@ const DashboardFlowers = function () {
   );
 };
 
+
+
+
 const DashboardBear = function (props: any) {
   const { className, isRainyDay } = props;
 
@@ -931,10 +934,6 @@ const nameMap: any = {
 }
 const BridgeGround = function (props: any) {
   const { className, isRainyDay } = props;
-  const { dapp: dappName } = useParams();
-
-  const dappShowName = (dappName && nameMap[(dappName as string).toLowerCase()]) || 'Stargate';
-
   return (
     <div className={clsx('absolute left-0 bottom-0 w-full', className)}>
       {

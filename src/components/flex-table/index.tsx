@@ -8,6 +8,7 @@ const FlexTable = (props: FlexTableProps) => {
     wrapperClass = '',
     headClass = '',
     bodyClass = '',
+    bodyWrapClass = '',
     loading,
     list,
     columns,
@@ -82,7 +83,7 @@ const FlexTable = (props: FlexTableProps) => {
             <Loading size={24} />
           </div>
         ) : (
-          <div>
+          <div className={bodyWrapClass}>
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                 <div
@@ -145,8 +146,8 @@ export type FlexTableProps = {
   list: Record<string, any>[];
   loading?: boolean;
   wrapperClass?: string;
-  headClass?: string;
   bodyClass?: string | ((record: any, index: number) => string);
+  bodyWrapClass?: string;
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;

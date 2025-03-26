@@ -8,7 +8,7 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
                 <Route
                     checked={selectedRoute === route}
                     key={route.bridgeType}
-                    name={route.bridgeType}
+                    name={route.bridgeName}
                     toToken={toToken}
                     fee={route.fee}
                     receiveAmount={route.receiveAmount}
