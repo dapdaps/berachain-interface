@@ -908,13 +908,13 @@ const BridgeGround = function (props: any) {
         )}
       />
 
-     
+
     </div>
   );
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bgt-lst';
   children: React.ReactNode;
 };
 
@@ -1004,6 +1004,16 @@ export default memo(function BearBackground({ type, children }: PropsType) {
             <HallFlag />
           </div>
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
+        </>
+      ) : type === 'bgt-lst' ? (
+        <>
+          <Clouds isRainyDay={isRainyDay} />
+          <div className='absolute w-[435px] bottom-0 right-0 z-10'>
+            <img src="/images/background/lst-tree.png" alt="lst-tree" />
+          </div>
+          <div className='absolute bottom-0 left-0 right-0'>
+            <img className='w-full' src="/images/background/lst-ground.svg" alt="lst-ground" />
+          </div>
         </>
       ) : (
         <></>
