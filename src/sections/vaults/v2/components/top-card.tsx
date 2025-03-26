@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import LazyImage from "@/components/layz-image";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
+import { numberFormatter } from '@/utils/number-formatter';
 
 const TopCard = (props: any) => {
   const { className, type, pool } = props;
@@ -30,23 +31,21 @@ const TopCard = (props: any) => {
       >
         {type === 2 ? (
           <div className="flex items-center gap-[4px]">
-            <span>380.94%</span>
+            <span>{numberFormatter(pool?.totalApy, 2, true)}%</span>
             <div className="text-[16px] font-normal px-[4px] bg-[#B8FF2B] rounded-[6px] leading-[16px] self-end">
               APR
             </div>
-            <span>+ 0.16%</span>
+            {/*<span>+ 0.16%</span>
             <div className="text-[16px] font-normal px-[4px] bg-[#FFF5A9] rounded-[6px] leading-[16px] self-end">
               Boost
-            </div>
+            </div>*/}
           </div>
-        ) : (
-          "380.94%"
-        )}
+        ) : numberFormatter(pool?.totalApy, 2, true) + "%"}
       </div>
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
           <div className="flex items-center">
-            {pool?.tokens.map((token: any, idx: number) => (
+            {pool?.tokens?.map((token: any, idx: number) => (
               <LazyImage
                 src={token.icon || "/assets/tokens/default_icon.png"}
                 width={36}
@@ -59,7 +58,7 @@ const TopCard = (props: any) => {
             ))}
           </div>
           <div className="text-[#000] font-Montserrat text-[16px] not-italic font-medium leading-[100%]">
-            {pool?.token.symbol || "-"}
+            {pool?.token?.symbol || "-"}
           </div>
         </div>
         <button

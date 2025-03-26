@@ -32,9 +32,9 @@ const VaultsV2 = (props: any) => {
         </div>
         <div className="w-[1257px] h-[calc(100dvh_-_228px)] mx-auto pt-[54px]">
           <div className="w-full grid grid-cols-3 gap-[21px]">
-            <TopCard type={0} />
-            <TopCard type={1} />
-            <TopCard type={2} pool={StrategyPool} />
+            <TopCard type={0} pool={list.listDataTopAPY} />
+            <TopCard type={1} pool={list.listDataTopTVL} />
+            <TopCard type={2} pool={list.listDataHotStrategy} />
           </div>
           <div className="max-h-[calc(100%_-_152px)] min-h-[320px] pt-[25px] flex justify-between gap-[13px] w-full text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
             <Card className="w-[337px] shrink-0 !rounded-[18px] !px-0 max-h-[100%] flex flex-col">

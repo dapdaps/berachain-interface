@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ORDER_DIRECTION, ORDER_KEYS, SPECIAL_VAULTS } from '@/sections/vaults/v2/config';
+import { StrategyPool, ORDER_DIRECTION, ORDER_KEYS, SPECIAL_VAULTS } from '@/sections/vaults/v2/config';
 import { BASE_URL } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import axios from 'axios';
@@ -33,6 +33,22 @@ export function useList(): List {
 
     return sortedData;
   }, [data, orderKey, orderDirection]);
+
+  const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
+    const topAPY = data.reduce((prev: any, curr: any) =>
+        Big(curr.totalApy || 0).gt(Big(prev.totalApy || 0)) ? curr : prev,
+      {}
+    );
+
+    const topTVL = data.reduce((prev: any, curr: any) =>
+        Big(curr.tvl || 0).gt(Big(prev.tvl || 0)) ? curr : prev,
+      {}
+    );
+
+    const hotStrategy = data.find((item: any) => item.vault_address === StrategyPool.vaultAddress);
+
+    return [topAPY, topTVL, hotStrategy];
+  }, [data]);
 
   const getData = async () => {
     setLoading(true);
@@ -276,6 +292,9 @@ export function useList(): List {
   return {
     listData: data,
     listDataShown: dataShown,
+    listDataTopAPY: dataTopAPY,
+    listDataTopTVL: dataTopTVL,
+    listDataHotStrategy: dataHotStrategy,
     listLoading: loading,
     listOrderKey: orderKey,
     listOrderDirection: orderDirection,
@@ -288,6 +307,9 @@ export function useList(): List {
 export interface List {
   listData: any;
   listDataShown: any;
+  listDataTopAPY: any;
+  listDataTopTVL: any;
+  listDataHotStrategy: any;
   listLoading: boolean;
   listOrderKey: ORDER_KEYS;
   listOrderDirection: ORDER_DIRECTION;
