@@ -122,6 +122,45 @@ export function useList(): List {
             decimals: 18
           },
           vaultAddress: "0x40c4d0a87157c3c1df26267ac02505d930baeeeb"
+        },
+        {
+          tokens: [
+            {
+              icon: "/assets/tokens/honey.svg",
+              symbol: "HONEY",
+              decimals: 18,
+              address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
+            },
+            {
+              icon: "/assets/tokens/wbera.png",
+              symbol: "WBERA",
+              decimals: 18,
+              address: "0x6969696969696969696969696969696969696969"
+            }
+          ],
+          protocol: "Infrared",
+          lpProtocol: "Bex",
+          id: "0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002",
+          tvl: "308320000",
+          apy: "0.16",
+          rewards: [
+            {
+              address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+              decimals: 18,
+              symbol: "iBGT",
+              name: "Infrared BGT",
+              icon: "/assets/tokens/ibgt.png",
+              apy: "11.42",
+              claim: "2999999.123"
+            }
+          ],
+          balance: "20.34",
+          token: {
+            symbol: "HONEY-WBERA",
+            address: "0x2c4a603a2aa5596287a06886862dc29d56dbc354",
+            decimals: 18
+          },
+          vaultAddress: "0xe2d8941dfb85435419d90397b09d18024ebeef2c"
         }
       ];
       setData(_list);

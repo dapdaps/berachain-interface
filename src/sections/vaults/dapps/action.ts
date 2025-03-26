@@ -1,6 +1,7 @@
 import onBexAction from "./bex/action";
 import onDolomiteAction from "@/sections/vaults/dapps/dolomite/action";
 import onKodiakAction from "./kodiak/action";
+import onInfrared from "./infrared/action";
 
 export default function onAction(params: any) {
   const { currentRecord } = params;
@@ -15,5 +16,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "Kodiak") {
     return onKodiakAction(params);
+  }
+
+  if (currentRecord.protocol === "Infrared") {
+    return onInfrared(params);
   }
 }

@@ -220,7 +220,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       });
       setLoading(false);
     } catch (err: any) {
-      console.log(err);
+      console.error(err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
