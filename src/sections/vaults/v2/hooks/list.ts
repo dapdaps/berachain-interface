@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { ORDER_DIRECTION, ORDER_KEYS } from "@/sections/vaults/v2/config";
-import DolomiteConfig from "@/configs/lending/dolomite";
-import { bera } from "@/configs/tokens/bera";
-import { isNative } from "lodash";
+import { ORDER_DIRECTION, ORDER_KEYS, SUPPORTED_VAULTS } from '@/sections/vaults/v2/config';
+import { BASE_URL } from '@/utils/http';
+import useCustomAccount from '@/hooks/use-account';
+import axios from 'axios';
+import { getTokenLogo } from '@/sections/dashboard/utils';
 
 export function useList(): List {
+  const { account } = useCustomAccount();
+
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [orderKey, setOrderKey] = useState<ORDER_KEYS>(ORDER_KEYS.TVL);
@@ -15,157 +18,210 @@ export function useList(): List {
 
   const getData = async () => {
     setLoading(true);
-    setTimeout(() => {
-      const _list = [
-        {
-          tokens: [
-            {
-              icon: "/assets/tokens/honey.svg",
-              symbol: "HONEY",
-              decimals: 18,
-              address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
-            },
-            {
-              icon: "/assets/tokens/usdc.png",
-              symbol: "USDC.e",
-              decimals: 6,
-              address: "0x549943e04f40284185054145c6E4e9568C1D3241"
-            }
-          ],
-          protocol: "Bex",
-          lpProtocol: "Bex",
-          tvl: "308320000",
-          apy: "0.16",
-          rewards: [
-            {
-              address: "0x46eFC86F0D7455F135CC9df501673739d513E982",
-              decimals: 18,
-              symbol: "iBGT",
-              name: "Infrared BGT",
-              icon: "/assets/tokens/ibgt.png",
-              apy: "11.42",
-              claim: "2999999.123"
-            },
-            {
-              address: "0xbaadcc2962417c01af99fb2b7c75706b9bd6babe",
-              symbol: "LBGT",
-              name: "Liquid BGT",
-              decimals: 18,
-              icon: "/assets/tokens/lbgt.png",
-              apy: "14.55"
-            }
-          ],
-          balance: "20.34",
-          token: {
-            symbol: "HONEY-USDC.e",
-            address: "0xF961a8f6d8c69E7321e78d254ecAfBcc3A637621",
-            decimals: 18
-          },
-          vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84",
-          id: "0xf961a8f6d8c69e7321e78d254ecafbcc3a637621000000000000000000000001",
-          poolType: "COMPOSABLE_STABLE"
+    try {
+      const res = await axios.get(`${BASE_URL}/api/go/vaults/list`, {
+        params: {
+          address: account,
         },
-        {
-          tokens: [
-            DolomiteConfig.networks["80094"].markets[bera["bera"].address]
-          ],
-          token: {
-            ...bera["bera"],
-            marketId: "1"
-          },
-          protocol: "Dolomite",
-          protocolIcon: DolomiteConfig.basic.icon,
-          tvl: "3080000",
-          apy: "79",
-          balance: "1.34",
-          vaultAddress: DolomiteConfig.networks["80094"].spenderAddress,
-          config: {
-            ...DolomiteConfig.basic,
-            ...DolomiteConfig.networks["80094"]
+      });
+      if (res.status !== 200 || res.data.code !== 200) {
+        console.log("get vaults list error:", res.data.message);
+        return;
+      }
+      const _list = res.data.data || [];
+      const _data = _list
+        .filter((item: any) => SUPPORTED_VAULTS.some((sp) => sp.vaultAddress === item.vault_address))
+        .map((item: any) => {
+          item.apr = parseJSONString(item.apr, {});
+          item.reward_tokens = parseJSONString(item.reward_tokens, []);
+          item.tokens = parseJSONString(item.tokens, []);
+          item.extra_data = parseJSONString(item.extra_data, {});
+
+          item.tokens.forEach((token: any) => {
+            token.icon = getTokenLogo(token.symbol);
+          });
+          item.reward_tokens.forEach((token: any) => {
+            token.icon = getTokenLogo(token.symbol);
+          });
+
+          const supportedVault: any = SUPPORTED_VAULTS.find((sp) => sp.vaultAddress === item.vault_address);
+          if (supportedVault) {
+            for (const key in supportedVault) {
+              item[key] = supportedVault[key];
+            }
           }
-        },
-        {
-          tokens: [
-            {
-              icon: "/assets/tokens/bera.svg",
-              symbol: "BERA",
-              decimals: 18,
-              isNative: true,
-              address: "0x6969696969696969696969696969696969696969"
-            },
-            {
-              icon: "/assets/tokens/honey.svg",
-              symbol: "HONEY",
-              decimals: 18,
-              address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
-            }
-          ],
-          protocol: "Kodiak",
-          lpProtocol: "Kodiak",
-          tvl: "308320000",
-          apy: "0.16",
-          rewards: [
-            {
-              address: "0x46eFC86F0D7455F135CC9df501673739d513E982",
-              decimals: 18,
-              symbol: "xKDK",
-              name: "xKDK",
-              icon: "/assets/tokens/kdk.svg",
-              apy: "11.42",
-              claim: "2999999.123"
-            }
-          ],
-          balance: "20.34",
-          token: {
-            symbol: "HONEY-BERA",
-            address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
+          item.token = {
+            symbol: item.name,
+            address: item.pool_address,
             decimals: 18
-          },
-          vaultAddress: "0x40c4d0a87157c3c1df26267ac02505d930baeeeb"
-        },
-        {
-          tokens: [
-            {
-              icon: "/assets/tokens/honey.svg",
-              symbol: "HONEY",
-              decimals: 18,
-              address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
-            },
-            {
-              icon: "/assets/tokens/wbera.png",
-              symbol: "WBERA",
-              decimals: 18,
-              address: "0x6969696969696969696969696969696969696969"
-            }
-          ],
-          protocol: "Infrared",
-          lpProtocol: "Bex",
-          id: "0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002",
-          tvl: "308320000",
-          apy: "0.16",
-          rewards: [
-            {
-              address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
-              decimals: 18,
-              symbol: "iBGT",
-              name: "Infrared BGT",
-              icon: "/assets/tokens/ibgt.png",
-              apy: "11.42",
-              claim: "2999999.123"
-            }
-          ],
-          balance: "20.34",
-          token: {
-            symbol: "HONEY-WBERA",
-            address: "0x2c4a603a2aa5596287a06886862dc29d56dbc354",
-            decimals: 18
-          },
-          vaultAddress: "0xe2d8941dfb85435419d90397b09d18024ebeef2c"
-        }
-      ];
-      setData(_list);
-      setLoading(false);
-    }, 1000);
+          };
+          item.protocol = item.project;
+          item.lpProtocol = item.pool_project;
+          item.apy = item.apr.pool || "0";
+          item.backendId = item.id;
+          item.id = item.extra_data.pool_id;
+          item.balance = "0";
+
+          return item;
+        });
+      console.log("vaults list: %o", _data);
+      setData(_data);
+    } catch (err: any) {
+      console.log("get vaults list error:", err.message);
+    }
+    setLoading(false);
+    // FIXME Mock data
+    // setTimeout(() => {
+    //   const _list = [
+    //     {
+    //       tokens: [
+    //         {
+    //           icon: "/assets/tokens/honey.svg",
+    //           symbol: "HONEY",
+    //           decimals: 18,
+    //           address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
+    //         },
+    //         {
+    //           icon: "/assets/tokens/usdc.png",
+    //           symbol: "USDC.e",
+    //           decimals: 6,
+    //           address: "0x549943e04f40284185054145c6E4e9568C1D3241"
+    //         }
+    //       ],
+    //       protocol: "Bex",
+    //       lpProtocol: "Bex",
+    //       tvl: "308320000",
+    //       apy: "0.16",
+    //       rewards: [
+    //         {
+    //           address: "0x46eFC86F0D7455F135CC9df501673739d513E982",
+    //           decimals: 18,
+    //           symbol: "iBGT",
+    //           name: "Infrared BGT",
+    //           icon: "/assets/tokens/ibgt.png",
+    //           apy: "11.42",
+    //           claim: "2999999.123"
+    //         },
+    //         {
+    //           address: "0xbaadcc2962417c01af99fb2b7c75706b9bd6babe",
+    //           symbol: "LBGT",
+    //           name: "Liquid BGT",
+    //           decimals: 18,
+    //           icon: "/assets/tokens/lbgt.png",
+    //           apy: "14.55"
+    //         }
+    //       ],
+    //       balance: "20.34",
+    //       token: {
+    //         symbol: "HONEY-USDC.e",
+    //         address: "0xF961a8f6d8c69E7321e78d254ecAfBcc3A637621",
+    //         decimals: 18
+    //       },
+    //       vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84",
+    //       id: "0xf961a8f6d8c69e7321e78d254ecafbcc3a637621000000000000000000000001",
+    //       poolType: "COMPOSABLE_STABLE"
+    //     },
+    //     {
+    //       tokens: [
+    //         DolomiteConfig.networks["80094"].markets[bera["bera"].address]
+    //       ],
+    //       token: {
+    //         ...bera["bera"],
+    //         marketId: "1"
+    //       },
+    //       protocol: "Dolomite",
+    //       protocolIcon: DolomiteConfig.basic.icon,
+    //       tvl: "3080000",
+    //       apy: "79",
+    //       balance: "1.34",
+    //       vaultAddress: DolomiteConfig.networks["80094"].spenderAddress,
+    //       config: {
+    //         ...DolomiteConfig.basic,
+    //         ...DolomiteConfig.networks["80094"]
+    //       }
+    //     },
+    //     {
+    //       tokens: [
+    //         {
+    //           icon: "/assets/tokens/bera.svg",
+    //           symbol: "BERA",
+    //           decimals: 18,
+    //           isNative: true,
+    //           address: "0x6969696969696969696969696969696969696969"
+    //         },
+    //         {
+    //           icon: "/assets/tokens/honey.svg",
+    //           symbol: "HONEY",
+    //           decimals: 18,
+    //           address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
+    //         }
+    //       ],
+    //       protocol: "Kodiak",
+    //       lpProtocol: "Kodiak",
+    //       tvl: "308320000",
+    //       apy: "0.16",
+    //       rewards: [
+    //         {
+    //           address: "0x46eFC86F0D7455F135CC9df501673739d513E982",
+    //           decimals: 18,
+    //           symbol: "xKDK",
+    //           name: "xKDK",
+    //           icon: "/assets/tokens/kdk.svg",
+    //           apy: "11.42",
+    //           claim: "2999999.123"
+    //         }
+    //       ],
+    //       balance: "20.34",
+    //       token: {
+    //         symbol: "HONEY-BERA",
+    //         address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
+    //         decimals: 18
+    //       },
+    //       vaultAddress: "0x40c4d0a87157c3c1df26267ac02505d930baeeeb"
+    //     },
+    //     {
+    //       tokens: [
+    //         {
+    //           icon: "/assets/tokens/honey.svg",
+    //           symbol: "HONEY",
+    //           decimals: 18,
+    //           address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
+    //         },
+    //         {
+    //           icon: "/assets/tokens/wbera.png",
+    //           symbol: "WBERA",
+    //           decimals: 18,
+    //           address: "0x6969696969696969696969696969696969696969"
+    //         }
+    //       ],
+    //       protocol: "Infrared",
+    //       lpProtocol: "Bex",
+    //       id: "0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002",
+    //       tvl: "308320000",
+    //       apy: "0.16",
+    //       rewards: [
+    //         {
+    //           address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+    //           decimals: 18,
+    //           symbol: "iBGT",
+    //           name: "Infrared BGT",
+    //           icon: "/assets/tokens/ibgt.png",
+    //           apy: "11.42",
+    //           claim: "2999999.123"
+    //         }
+    //       ],
+    //       balance: "20.34",
+    //       token: {
+    //         symbol: "HONEY-WBERA",
+    //         address: "0x2c4a603a2aa5596287a06886862dc29d56dbc354",
+    //         decimals: 18
+    //       },
+    //       vaultAddress: "0xe2d8941dfb85435419d90397b09d18024ebeef2c"
+    //     }
+    //   ];
+    //   setData(_list);
+    //   setLoading(false);
+    // }, 1000);
   };
 
   const toggleOrder = (key: ORDER_KEYS) => {
@@ -188,8 +244,9 @@ export function useList(): List {
   };
 
   useEffect(() => {
+    if (!account) return;
     getData();
-  }, []);
+  }, [account]);
 
   return {
     listData: data,
@@ -210,4 +267,12 @@ export interface List {
   toggleListOrder: (key: ORDER_KEYS) => void;
   listFilterVisible: boolean;
   toggleListFilterVisible: (filterVisible?: boolean) => void;
+}
+
+function parseJSONString(str: string, defaultValue: any = {}) {
+  try {
+    return str ? JSON.parse(str) : defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
 }

@@ -1,3 +1,5 @@
+import DolomiteConfig from '@/configs/lending/dolomite';
+
 export enum ACTION_TYPE {
   DEPOSIT = "deposit",
   WITHDRAW = "withdraw"
@@ -77,3 +79,28 @@ export const StrategyPool = {
   id: "0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002",
   poolType: "WEIGHTED"
 };
+
+export const SUPPORTED_VAULTS = [
+  // Bex - HONEY-USDC.e
+  {
+    vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84",
+    poolType: "COMPOSABLE_STABLE"
+  },
+  // Dolomite - BERA
+  {
+    vaultAddress: DolomiteConfig.networks["80094"].spenderAddress,
+    protocolIcon: DolomiteConfig.basic.icon,
+    config: {
+      ...DolomiteConfig.basic,
+      ...DolomiteConfig.networks["80094"]
+    }
+  },
+  // Kodiak - HONEY-BERA
+  {
+    vaultAddress: "0x40c4d0a87157c3c1df26267ac02505d930baeeeb",
+  },
+  // Infrared - HONEY-WBERA
+  {
+    vaultAddress: "0xe2d8941dfb85435419d90397b09d18024ebeef2c",
+  },
+];

@@ -48,10 +48,10 @@ const VaultsTable = (props: any) => {
     },
     {
       title: "Rewards",
-      dataIndex: "rewards",
+      dataIndex: "reward_tokens",
       width: 160,
       render: (text: any, record: any, index: any) => {
-        if (!record.rewards) return null;
+        if (!record.reward_tokens) return null;
         return <Rewards record={record} index={index} />;
       }
     },

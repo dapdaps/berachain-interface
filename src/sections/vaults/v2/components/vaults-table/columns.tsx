@@ -97,9 +97,9 @@ export const APY = (props: any) => {
   const { record, index, className } = props;
 
   let totalApy = Big(record.apy || 0);
-  if (record.rewards) {
-    record.rewards.forEach((reward: any) => {
-      totalApy = totalApy.plus(Big(reward.apy || 0));
+  if (record.apr) {
+    Object.keys(record.apr).filter((ak) => ak !== "pool").forEach((ak: any) => {
+      totalApy = totalApy.plus(Big(record.apr[ak] || 0));
     });
   }
 
@@ -111,18 +111,17 @@ export const APY = (props: any) => {
           <div className="w-full flex flex-col gap-[20px]">
             <div className="w-full flex justify-between items-center gap-[10px]">
               <div className="">Pool APY</div>
-              <div className="">{numberFormatter(record.apy, 2, true)}%</div>
+              <div className="">{numberFormatter(record.apy, 6, true)}%</div>
             </div>
-            {record.rewards &&
-              record.rewards.length > 0 &&
-              record.rewards.map((reward: any, idx: number) => (
+            {record.apr &&
+              Object.keys(record.apr).filter((ak) => ak !== "pool").map((ak: any, idx: number) => (
                 <div
                   key={idx}
                   className="w-full flex justify-between items-center gap-[5px]"
                 >
-                  <div className="">{reward.name} APY</div>
+                  <div className="">{ak.slice(0, 1).toUpperCase() + ak.slice(1)} APY</div>
                   <div className="">
-                    {numberFormatter(reward.apy, 2, true)}%
+                    {numberFormatter(record.apr[ak], 6, true)}%
                   </div>
                 </div>
               ))}
@@ -149,12 +148,12 @@ export const Rewards = (props: any) => {
   const { toggleClaimVisible } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
-  if (!record.rewards) return null;
+  if (!record.reward_tokens) return null;
 
   return (
     <div className="flex items-center gap-[2px] flex-wrap">
       <div className="flex items-center">
-        {record.rewards.map((reward: any, idx: number) => (
+        {record.reward_tokens.map((reward: any, idx: number) => (
           <LazyImage
             key={idx}
             src={reward.icon}
@@ -169,7 +168,7 @@ export const Rewards = (props: any) => {
         ))}
       </div>
       {isClaim &&
-        record.rewards.map((reward: any, idx: number) => {
+        record.reward_tokens.map((reward: any, idx: number) => {
           if (!reward.claim) return null;
           return (
             <div
