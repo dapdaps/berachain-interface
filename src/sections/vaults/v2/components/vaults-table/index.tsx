@@ -83,7 +83,7 @@ const VaultsTable = (props: any) => {
   return (
     <div
       className={clsx(
-        "text-[20px] text-black leading-[90%] font-[600] font-Montserrat mt-[20px] w-full",
+        "text-[20px] text-black leading-[90%] font-[600] font-Montserrat w-full",
         className
       )}
     >
@@ -93,8 +93,10 @@ const VaultsTable = (props: any) => {
         loading={listLoading}
         sortDataIndex={listOrderKey}
         sortDataDirection={listOrderDirection === "asc" ? -1 : 1}
+        wrapperClass="h-full"
         headClass="px-[11px] py-[8px] text-[14px] font-[500] text-[#3D405A]"
         bodyClass="text-[16px] font-[500] !py-[13px] !pl-[11px] !pr-[14px]"
+        bodyClassName="max-h-[calc(100%_-_34px)] overflow-y-auto"
         onChangeSortDataIndex={toggleListOrder}
       />
     </div>

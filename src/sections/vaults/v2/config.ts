@@ -80,7 +80,7 @@ export const StrategyPool = {
   poolType: "WEIGHTED"
 };
 
-export const SUPPORTED_VAULTS = [
+export const SPECIAL_VAULTS = [
   // Bex - HONEY-USDC.e
   {
     vaultAddress: "0xf99be47baf0c22b7eb5eac42c8d91b9942dc7e84",
@@ -94,13 +94,5 @@ export const SUPPORTED_VAULTS = [
       ...DolomiteConfig.basic,
       ...DolomiteConfig.networks["80094"]
     }
-  },
-  // Kodiak - HONEY-BERA
-  {
-    vaultAddress: "0x40c4d0a87157c3c1df26267ac02505d930baeeeb",
-  },
-  // Infrared - HONEY-WBERA
-  {
-    vaultAddress: "0xe2d8941dfb85435419d90397b09d18024ebeef2c",
   },
 ];

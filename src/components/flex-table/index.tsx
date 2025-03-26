@@ -2,12 +2,14 @@ import Loading from '@/components/loading';
 import React from 'react';
 import Empty from '@/components/empty';
 import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
 const FlexTable = (props: FlexTableProps) => {
   const {
     wrapperClass = '',
     headClass = '',
     bodyClass = '',
+    bodyClassName = '',
     loading,
     list,
     columns,
@@ -82,7 +84,7 @@ const FlexTable = (props: FlexTableProps) => {
             <Loading size={24} />
           </div>
         ) : (
-          <div>
+          <div className={clsx("", bodyClassName)}>
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                 <div
@@ -147,6 +149,7 @@ export type FlexTableProps = {
   wrapperClass?: string;
   headClass?: string;
   bodyClass?: string;
+  bodyClassName?: string;
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;

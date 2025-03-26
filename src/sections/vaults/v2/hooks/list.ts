@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ORDER_DIRECTION, ORDER_KEYS, SUPPORTED_VAULTS } from '@/sections/vaults/v2/config';
+import { ORDER_DIRECTION, ORDER_KEYS, SPECIAL_VAULTS } from '@/sections/vaults/v2/config';
 import { BASE_URL } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import axios from 'axios';
@@ -30,7 +30,6 @@ export function useList(): List {
       }
       const _list = res.data.data || [];
       const _data = _list
-        .filter((item: any) => SUPPORTED_VAULTS.some((sp) => sp.vaultAddress === item.vault_address))
         .map((item: any) => {
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
@@ -44,10 +43,10 @@ export function useList(): List {
             token.icon = getTokenLogo(token.symbol);
           });
 
-          const supportedVault: any = SUPPORTED_VAULTS.find((sp) => sp.vaultAddress === item.vault_address);
-          if (supportedVault) {
-            for (const key in supportedVault) {
-              item[key] = supportedVault[key];
+          const specialVault: any = SPECIAL_VAULTS.find((sp) => sp.vaultAddress === item.vault_address);
+          if (specialVault) {
+            for (const key in specialVault) {
+              item[key] = specialVault[key];
             }
           }
           item.token = {

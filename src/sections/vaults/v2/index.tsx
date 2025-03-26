@@ -46,9 +46,9 @@ const VaultsV2 = (props: any) => {
               </div>
               <Filter />
             </Card>
-            <Card className="w-0 flex-1 !rounded-[18px] !px-[18px]">
-              <Dashboard />
-              <VaultsTable />
+            <Card className="w-0 flex-1 !rounded-[18px] !px-[18px] flex flex-col gap-[20px]">
+              <Dashboard className="shrink-0" />
+              <VaultsTable className="flex-1 h-0" />
             </Card>
           </div>
         </div>
