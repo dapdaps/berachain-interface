@@ -4,8 +4,11 @@ import IconArrowSvg from '@public/images/icon-arrow.svg';
 import { memo, useMemo, useState } from "react";
 import StakeModal from "./components/stake-modal";
 import TokenCard from './components/token-card';
-import useBedrock, { LstHookResult } from './hooks/use-bedrock';
+import useBedrock from './hooks/use-bedrock';
 import useEtherFi from './hooks/use-etherfi';
+import { LstHookResult } from './constant';
+import Big from 'big.js';
+import { balanceShortFormated } from "@/utils/balance";
 
 export default memo(function Laptop() {
   const [currentTab, setCurrentTab] = useState("stake")
@@ -45,7 +48,7 @@ export default memo(function Laptop() {
         };
       }
       
-      const hookData = lst.hookData as LstHookResult;
+      const hookData = lst.hookData || {} as LstHookResult;
       
       return {
         name: lst.name,
@@ -62,6 +65,22 @@ export default memo(function Laptop() {
     });
   }, [lstConfig]);
 
+  const totalStakedAmountUsd = useMemo(() => {
+    return btcLstComposeDataByHooks
+      .filter(item => !item.disabled)
+      .reduce((total, item) => {
+        try {
+          const amountUsd = typeof item.stakedAmountUsd === 'string' 
+            ? item.stakedAmountUsd 
+            : String(item.stakedAmountUsd || 0);
+          
+          return total.plus(Big(amountUsd));
+        } catch (e) {
+          console.error('Error adding stakedAmountUsd:', e);
+          return total;
+        }
+      }, Big(0));
+  }, [btcLstComposeDataByHooks]);
 
   return (
     <div>
@@ -72,17 +91,18 @@ export default memo(function Laptop() {
           <div className="flex-1 flex flex-col gap-[16px]">
             <div className="flex items-center gap-[10px]">
               <div className="text-black font-Montserrat text-[16px] leading-[100%]">Your Staked</div>
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">$368.58</div>
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">${balanceShortFormated(totalStakedAmountUsd.toString())}</div>
             </div>
             <div className="flex items-center gap-[45px]">
-              <div className="flex items-center gap-[12px]">
-                <div className="w-[36px] h-[36px] overflow-hidden"></div>
-                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0.02 UniBTC</div>
-              </div>
-              <div className="flex items-center gap-[12px]">
-                <div className="w-[36px] h-[36px] overflow-hidden"></div>
-                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0.02 UniBTC</div>
-              </div>
+              {
+                btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => (
+                  <div className="flex items-center gap-[12px]">
+                    <img src={item.dappIcon} className="w-[36px] h-[36px] overflow-hidden" />
+                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{item.stakedAmount} {item.targetToken?.symbol}</div>
+                  </div>
+                ))
+              }
+
             </div>
           </div>
 

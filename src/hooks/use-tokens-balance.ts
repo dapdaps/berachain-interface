@@ -21,6 +21,8 @@ export default function useTokensBalance(tokens: any) {
       rpcUrl = 'https://binance.llamarpc.com'
     }
 
+    console.log('rpcUrl:', rpcUrl);
+
     const provider = new providers.JsonRpcProvider(rpcUrl);
 
     try {

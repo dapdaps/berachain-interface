@@ -23,6 +23,7 @@ export default function useEtherFi(): LstHookResult {
   const [tvl, setTvl] = useState("");
 
   const tokens = useMemo(() => [sourceToken, targetToken], [sourceToken, targetToken]);
+
   const { loading: getBalanceLoading, balances, queryBalance } = useTokensBalance(tokens);
   
   const prices = usePriceStore((store) => store.price);
@@ -150,10 +151,12 @@ export default function useEtherFi(): LstHookResult {
     getTvlByContract()
   }, []);
 
+  console.log('balances: ', balances);
+
   return {
-    stakedAmount: balances?.[targetToken.address],
-    stakedAmountUsd: Big(balances?.[targetToken.address] || 0).times(prices?.[targetToken.symbol] || 0).toFixed(5),
-    availableAmount: balances?.[sourceToken.address],
+    stakedAmount: balances?.[targetToken.address] || 0,
+    stakedAmountUsd: Big(balances?.[targetToken.address] || 0).times(prices?.[targetToken.symbol] || 0).toFixed(5) || '0',
+    availableAmount: balances?.[sourceToken.address] || 0,
     availableAmountUsd: Big(balances?.[sourceToken.address] || 0).times(prices?.[sourceToken.symbol] || 0).toFixed(5),
     tvl,
     tvlUsd: Big(tvl || 0).times(prices?.[sourceToken.symbol] || 0).toFixed(5),
