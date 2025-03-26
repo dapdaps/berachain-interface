@@ -5,16 +5,16 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import bedrock from "@/configs/lst/dapps/bedrock";
+import etherFi from "@/configs/lst/dapps/etherFi";
 import useTokensBalance from "@/hooks/use-tokens-balance";
 import { usePriceStore } from "@/stores/usePriceStore";
 import { LstHookResult, STAKE_ABI } from "../constant";
 
-
-export default function useBedrock(): LstHookResult {
+// 1 wBTC = 0.9970 eBTC
+export default function useEtherFi(): LstHookResult {
   const { addAction } = useAddAction("dapp");
 
-  const { STAKE_ADDRESS, sourceToken, targetToken } = bedrock.chains?.[DEFAULT_CHAIN_ID as keyof typeof bedrock.chains];
+  const { STAKE_ADDRESS, sourceToken, targetToken } = etherFi.chains?.[DEFAULT_CHAIN_ID as keyof typeof etherFi.chains];
 
   const { provider, account, chainId } = useCustomAccount();
   const toast = useToast();
@@ -56,7 +56,7 @@ export default function useBedrock(): LstHookResult {
       provider?.getSigner()
     );
 
-    const stakeMethod = "mint";
+    const stakeMethod = "deposit";
     const params: any = [sourceToken.address, wei];
 
     const createTx = (gasLimit: any) => {

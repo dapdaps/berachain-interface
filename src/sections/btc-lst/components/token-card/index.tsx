@@ -6,7 +6,6 @@ import { memo } from "react"
 export default memo(function TokenCard({
   token,
   className,
-
 }: {
   token: Token,
   className: string
