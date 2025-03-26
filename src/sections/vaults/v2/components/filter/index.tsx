@@ -3,7 +3,7 @@ import FilterItem from '@/sections/vaults/v2/components/filter/item';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
-import { FILTER_KEYS, FILTERS } from '@/sections/vaults/v2/config';
+import { FILTER_KEYS, FILTERS, SUPPORTED_PROTOCOLS } from '@/sections/vaults/v2/config';
 
 const Filter = (props: any) => {
   const { className } = props;
@@ -118,7 +118,7 @@ const Filter = (props: any) => {
       </div>
       <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
-          FILTERS.PROTOCOLS.map((it, idx) => (
+          FILTERS.PROTOCOLS.filter((it) => SUPPORTED_PROTOCOLS.includes(it.label)).map((it, idx) => (
             <FilterItem
               key={idx}
               type={FILTER_KEYS.PROTOCOLS}

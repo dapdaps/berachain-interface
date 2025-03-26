@@ -8,7 +8,7 @@ const TopCard = (props: any) => {
 
   const currType = cardType[type as CardType] ?? cardType[CardType.TopAPR];
 
-  const { toggleStrategyVisible } = useVaultsV2Context();
+  const { toggleStrategyVisible, listLoading } = useVaultsV2Context();
 
   return (
     <div
@@ -64,6 +64,7 @@ const TopCard = (props: any) => {
         </div>
         <button
           type="button"
+          disabled={listLoading}
           className="h-[36px] px-[19px] disabled:opacity-30 disabled:!cursor-not-allowed flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-normal font-medium leading-[100%]"
           onClick={() => {
             if (type === 2) {

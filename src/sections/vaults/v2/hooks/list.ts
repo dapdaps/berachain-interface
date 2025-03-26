@@ -3,7 +3,7 @@ import {
   StrategyPool,
   ORDER_DIRECTION,
   ORDER_KEYS,
-  SPECIAL_VAULTS, FILTER_KEYS, FilterItem
+  SPECIAL_VAULTS, FILTER_KEYS, FilterItem, SUPPORTED_PROTOCOLS
 } from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
@@ -34,7 +34,42 @@ export function useList(): List {
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
 
-    const sortedData = [...data].sort((a, b) => {
+    const filteredData = data.filter((item: any) => {
+      if (
+        filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
+        !item.tokens.some((token: any) =>
+          filterSelected[FILTER_KEYS.ASSETS].some((filter) =>
+            filter.reg.test(token.symbol)
+          )
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
+        !item.reward_tokens.some((token: any) =>
+          filterSelected[FILTER_KEYS.REWARDS].some((filter) =>
+            filter.reg.test(token.symbol)
+          )
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
+        !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
+          filter.reg.test(item.project)
+        )
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    const sortedData = [...filteredData].sort((a: any, b: any) => {
       const valA = new Big(a[orderKey] || 0);
       const valB = new Big(b[orderKey] || 0);
 
@@ -46,7 +81,7 @@ export function useList(): List {
     });
 
     return sortedData;
-  }, [data, orderKey, orderDirection]);
+  }, [data, orderKey, orderDirection, filterSelected]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
     const topAPY = data.reduce(
@@ -83,7 +118,7 @@ export function useList(): List {
       const _list = res.data.data || [];
       const _data = _list
         .filter((item: any) =>
-          ["Hub", "Kodiak", "Infrared", "Dolomite"].includes(item.project)
+          SUPPORTED_PROTOCOLS.includes(item.project)
         )
         .map((item: any) => {
           item.apr = parseJSONString(item.apr, {});
@@ -300,6 +335,7 @@ export function useList(): List {
   };
 
   const toggleOrder = (key: ORDER_KEYS) => {
+    if (loading) return;
     if (key === orderKey) {
       setDirection(
         orderDirection === ORDER_DIRECTION.DESC
