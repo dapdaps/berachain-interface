@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { ORDER_DIRECTION, ORDER_KEYS } from "@/sections/vaults/v2/config";
 import DolomiteConfig from "@/configs/lending/dolomite";
-import { bera } from '@/configs/tokens/bera';
+import { bera } from "@/configs/tokens/bera";
+import { isNative } from "lodash";
 
 export function useList(): List {
   const [data, setData] = useState<any>([]);
@@ -66,22 +67,61 @@ export function useList(): List {
         },
         {
           tokens: [
-            DolomiteConfig.networks['80094'].markets[bera["bera"].address],
+            DolomiteConfig.networks["80094"].markets[bera["bera"].address]
           ],
           token: {
             ...bera["bera"],
-            marketId: "1",
+            marketId: "1"
           },
           protocol: "Dolomite",
           protocolIcon: DolomiteConfig.basic.icon,
           tvl: "3080000",
           apy: "79",
           balance: "1.34",
-          vaultAddress: DolomiteConfig.networks['80094'].spenderAddress,
+          vaultAddress: DolomiteConfig.networks["80094"].spenderAddress,
           config: {
             ...DolomiteConfig.basic,
-            ...DolomiteConfig.networks['80094'],
+            ...DolomiteConfig.networks["80094"]
+          }
+        },
+        {
+          tokens: [
+            {
+              icon: "/assets/tokens/bera.svg",
+              symbol: "BERA",
+              decimals: 18,
+              isNative: true,
+              address: "0x6969696969696969696969696969696969696969"
+            },
+            {
+              icon: "/assets/tokens/honey.svg",
+              symbol: "HONEY",
+              decimals: 18,
+              address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
+            }
+          ],
+          protocol: "Kodiak",
+          lpProtocol: "Kodiak",
+          tvl: "308320000",
+          apy: "0.16",
+          rewards: [
+            {
+              address: "0x46eFC86F0D7455F135CC9df501673739d513E982",
+              decimals: 18,
+              symbol: "xKDK",
+              name: "xKDK",
+              icon: "/assets/tokens/kdk.svg",
+              apy: "11.42",
+              claim: "2999999.123"
+            }
+          ],
+          balance: "20.34",
+          token: {
+            symbol: "HONEY-BERA",
+            address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
+            decimals: 18
           },
+          vaultAddress: "0x40c4d0a87157c3c1df26267ac02505d930baeeeb"
         }
       ];
       setData(_list);

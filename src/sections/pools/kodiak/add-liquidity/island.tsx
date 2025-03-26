@@ -24,7 +24,7 @@ export default function AddLiquidity({
   const [balance1, setBalance1] = useState("");
   const [receives, setReceives] = useState<any>();
   const { querying, queryAmounts } = useDepositAmount({
-    islandContract: rest?.id,
+    islandContract: rest?.id || rest?.token?.address,
     token0,
     token1
   });
@@ -33,7 +33,7 @@ export default function AddLiquidity({
       router: kodiak.stakingRouter,
       token0,
       token1,
-      id: rest?.id
+      id: rest?.id || rest?.token?.address
     },
     amount0,
     amount1,
@@ -138,9 +138,7 @@ export default function AddLiquidity({
                 <div>
                   (${" "}
                   {balanceFormated(
-                    Big(receives.miniReceived)
-                      .mul(rest.price)
-                      .toString(),
+                    Big(receives.miniReceived).mul(rest.price).toString(),
                     5
                   )}
                   )

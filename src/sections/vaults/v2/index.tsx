@@ -1,21 +1,19 @@
-import PageBack from '@/components/back';
-import Card from '@/components/card';
-import { motion } from 'framer-motion';
-import FilterItem from '@/sections/vaults/v2/components/filter/item';
-import Dashboard from '@/sections/vaults/v2/components/dashboard';
-import VaultsTable from '@/sections/vaults/v2/components/vaults-table';
-import TopCard from '@/sections/vaults/v2/components/top-card';
-import ActionModal from '@/sections/vaults/v2/components/action/modal';
-import VaultsV2ContextProvider from '@/sections/vaults/v2/context';
-import { useVaultsV2 } from '@/sections/vaults/v2/hooks';
-import ClaimModal from '@/sections/vaults/v2/components/claim/modal';
-import ClaimSuccessModal from '@/sections/vaults/v2/components/claim/success';
-import StrategyModal from '@/sections/vaults/v2/components/strategy/modal';
-import { useList } from '@/sections/vaults/v2/hooks/list';
-import Filter from '@/sections/vaults/v2/components/filter';
+import PageBack from "@/components/back";
+import Card from "@/components/card";
+import Dashboard from "@/sections/vaults/v2/components/dashboard";
+import VaultsTable from "@/sections/vaults/v2/components/vaults-table";
+import TopCard from "@/sections/vaults/v2/components/top-card";
+import ActionModal from "@/sections/vaults/v2/components/action/modal";
+import VaultsV2ContextProvider from "@/sections/vaults/v2/context";
+import { useVaultsV2 } from "@/sections/vaults/v2/hooks";
+import ClaimModal from "@/sections/vaults/v2/components/claim/modal";
+import ClaimSuccessModal from "@/sections/vaults/v2/components/claim/success";
+import StrategyModal from "@/sections/vaults/v2/components/strategy/modal";
+import { useList } from "@/sections/vaults/v2/hooks/list";
+import Filter from "@/sections/vaults/v2/components/filter";
 
 const VaultsV2 = (props: any) => {
-  const { } = props;
+  const {} = props;
 
   const vaultsV2 = useVaultsV2();
   const list = useList();
@@ -23,9 +21,13 @@ const VaultsV2 = (props: any) => {
   return (
     <VaultsV2ContextProvider value={{ ...vaultsV2, ...list }}>
       <div className="relative w-full h-full bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
-        <PageBack className='absolute left-[36px] top-[100px] text-white' />
+        <PageBack className="absolute left-[36px] top-[100px] text-white" />
         <div className="pt-[117px] mx-auto flex justify-center">
-          <img src="/images/vaults/v2/title.png" alt="" className="w-[180px] h-[54px] shrink-0 pointer-events-none object-center object-contain" />
+          <img
+            src="/images/vaults/v2/title.png"
+            alt=""
+            className="w-[180px] h-[54px] shrink-0 pointer-events-none object-center object-contain"
+          />
         </div>
         <div className="w-[1257px] h-[calc(100dvh_-_228px)] mx-auto pt-[54px]">
           <div className="w-full grid grid-cols-3 gap-[21px]">
@@ -36,14 +38,12 @@ const VaultsV2 = (props: any) => {
           <div className="max-h-[calc(100%_-_152px)] min-h-[320px] pt-[25px] flex justify-between gap-[13px] w-full text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
             <Card className="w-[337px] shrink-0 !rounded-[18px] !px-0 max-h-[100%] flex flex-col">
               <div className="flex items-center gap-[7px] pb-[24px] pl-[17px] border-b border-[rgba(0,0,0,0.2)] shrink-0">
-                <div className="text-[20px] font-[700]">
-                  Vaults
-                </div>
+                <div className="text-[20px] font-[700]">Vaults</div>
                 <div className="shrink-0 text-[12px] w-[24px] h-[24px] flex justify-center items-center rounded-[5px] border border-[rgba(0,0,0,0.2)]">
                   54
                 </div>
               </div>
-             <Filter />
+              <Filter />
             </Card>
             <Card className="w-0 flex-1 !rounded-[18px] !px-[18px]">
               <Dashboard />

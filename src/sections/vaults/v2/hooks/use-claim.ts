@@ -11,13 +11,13 @@ export default function useClaim() {
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
-  const { currentRecord, toggleClaimSuccessVisible } = useVaultsV2Context();
+  const { currentRecord, toggleClaimSuccessVisible, toggleClaimVisible } =
+    useVaultsV2Context();
 
   const onClaim = async () => {
     if (!currentRecord) return;
     let toastId = toast.loading({ title: "Confirming..." });
     try {
-      setLoading(true);
       setLoading(true);
       const signer = provider.getSigner(account);
       const tx = await handleClaim({
@@ -26,6 +26,7 @@ export default function useClaim() {
         currentRecord
       });
       toast.dismiss(toastId);
+
       if (!tx) {
         setLoading(false);
         toast.fail({ title: "Claim failed!" });
@@ -41,6 +42,7 @@ export default function useClaim() {
           chainId: DEFAULT_CHAIN_ID
         });
         toggleClaimSuccessVisible(true);
+        toggleClaimVisible(false);
       } else {
         toast.fail({ title: "Claim failed!" });
       }
@@ -55,6 +57,7 @@ export default function useClaim() {
       });
       setLoading(false);
     } catch (err: any) {
+      console.log("Claim error:", err.message);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

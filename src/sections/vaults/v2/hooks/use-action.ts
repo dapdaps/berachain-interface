@@ -15,6 +15,7 @@ export default function useAction() {
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const [amount, setAmount] = useState<string>();
+  const [dappParams, setDappParams] = useState<any>();
   const { currentRecord, actionType, toggleActionVisible } =
     useVaultsV2Context();
 
@@ -53,7 +54,8 @@ export default function useAction() {
         amount: Big(amount)
           .mul(10 ** currentRecord.token.decimals)
           .toFixed(0),
-        currentRecord
+        currentRecord,
+        dappParams
       });
       toast.dismiss(toastId);
       if (!tx) {
@@ -90,6 +92,7 @@ export default function useAction() {
       });
       setLoading(false);
     } catch (err: any) {
+      console.log("Deposit error:", err.message);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
@@ -110,6 +113,8 @@ export default function useAction() {
     inputErrorMessage,
     balance: tokenBalance,
     balanceLoading: isLoading,
-    updateBalance: update
+    updateBalance: update,
+    dappParams,
+    setDappParams
   };
 }

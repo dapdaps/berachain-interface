@@ -32,20 +32,18 @@ export default function AddLiquidityModal({
     if (data.token0 && data.token1)
       return `Provide ${data.token0.symbol}-${data.token1.symbol}`;
     return `Provide ${data.symbol || data.token.symbol}`;
-  }, [isMobile, data, data]);
+  }, [isMobile, data]);
 
   const params = useMemo(() => {
     if (dex?.toLowerCase() === "bex") return { data };
     return {
       ...data,
-      defaultToken0: data.token0,
-      defaultToken1: data.token1,
+      defaultToken0: data.token0 || data.tokens?.[0],
+      defaultToken1: data.token1 || data.tokens?.[1],
       defaultFee: data.fee,
       version: data.version
     };
   }, [data, dex]);
-
-  console.log(dex, "<---dex");
 
   return (
     <BasicModal

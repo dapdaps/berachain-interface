@@ -9,6 +9,7 @@ import { useState } from "react";
 import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 import Big from "big.js";
 import Loading from "@/components/loading";
+import Range from "@/components/range";
 import { ACTION_TYPE } from "../../config";
 
 const Action = (props: any) => {
@@ -24,7 +25,9 @@ const Action = (props: any) => {
     inputErrorMessage,
     balance,
     updateBalance,
-    balanceLoading
+    balanceLoading,
+    dappParams,
+    setDappParams
   } = useAction();
 
   const handleBalance = () => {
@@ -80,17 +83,18 @@ const Action = (props: any) => {
             </div>
           </div>
         </div>
-        {["Bex"].includes(currentRecord.lpProtocol) && (
-          <button
-            type="button"
-            className="px-[15px] shrink-0 disabled:!cursor-not-allowed disabled:opacity-30 h-[26px] rounded-[6px] border border-[#373A53] bg-[#FFF] text-[#000] text-center font-Montserrat text-[14px] font-medium leading-normal"
-            onClick={() => {
-              setOpenAddLp(true);
-            }}
-          >
-            Get
-          </button>
-        )}
+        {["Bex", "Kodiak"].includes(currentRecord.lpProtocol) &&
+          actionType.value === ACTION_TYPE.DEPOSIT && (
+            <button
+              type="button"
+              className="px-[15px] shrink-0 disabled:!cursor-not-allowed disabled:opacity-30 h-[26px] rounded-[6px] border border-[#373A53] bg-[#FFF] text-[#000] text-center font-Montserrat text-[14px] font-medium leading-normal"
+              onClick={() => {
+                setOpenAddLp(true);
+              }}
+            >
+              Get
+            </button>
+          )}
       </div>
       <div
         className={clsx(
@@ -149,7 +153,27 @@ const Action = (props: any) => {
           </div>
         </div>
       </div>
-      {["Bex"].includes(currentRecord.lpProtocol) &&
+      {currentRecord.protocol === "Kodiak" &&
+        actionType.value === ACTION_TYPE.DEPOSIT && (
+          <>
+            <div className="flex items-center justify-between mt-[16px]">
+              <div className="text-[14px] font-medium	text-[#3D405A]">
+                Select lock-up period
+              </div>
+              <div className="font-semibold text-[16px]">
+                {dappParams?.days || 0} days
+              </div>
+            </div>
+            <Range
+              value={Math.ceil((dappParams?.days || 0 / 30) * 100)}
+              onChange={(e: any) => {
+                setDappParams({ days: Math.ceil((e.target.value * 30) / 100) });
+              }}
+            />
+          </>
+        )}
+      {["Bex", "Kodiak"].includes(currentRecord.lpProtocol) &&
+        actionType.value === ACTION_TYPE.DEPOSIT &&
         inputErrorMessage === "Insufficient Balance" && (
           <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
             <button
@@ -186,7 +210,7 @@ const Action = (props: any) => {
         </ButtonWithApprove>
       </div>
 
-      {["Bex"].includes(currentRecord.lpProtocol) && (
+      {["Bex", "Kodiak"].includes(currentRecord.lpProtocol) && (
         <AddLiquidityModal
           dex={currentRecord.lpProtocol}
           data={currentRecord}

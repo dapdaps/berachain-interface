@@ -13,5 +13,6 @@ export default forwardRef(function AddLiquidity(
   if (version === "v3") {
     return <V3 {...rest} ref={ref} />;
   }
+
   return <Island {...rest} />;
 });
