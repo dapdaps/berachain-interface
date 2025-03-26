@@ -258,19 +258,25 @@ export default function useInfraredData(props: any) {
         tokens: [],
         images: []
       };
+      
+      if (item?.underlying_tokens?.length > 1) {
+        const array = item?.name?.split("-") ?? [];
+        const symbol0 = array[0];
+        const symbol1 = array[1];
+        const token0 =
+          item.underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+        const token1 =
+          item.underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+        [token0, token1]?.filter(token => !!token)?.forEach((slip: any, i: number) => {
+          tokensInfo[`decimals${i}`] = slip.decimals;
+          tokensInfo.tokens.push(slip.name);
+          tokensInfo.images.push(slip.image);
+        })
+      } else {
+        tokensInfo.tokens.push(item?.underlying_tokens?.[0]?.name);
+        tokensInfo.images.push(item?.underlying_tokens?.[0]?.image);
+      }
 
-      const array = item?.name?.split("-") ?? [];
-      const symbol0 = array[0];
-      const symbol1 = array[1];
-      const token0 =
-        item.underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
-      const token1 =
-        item.underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
-      [token0, token1]?.filter(token => !!token)?.forEach((slip: any, i: number) => {
-        tokensInfo[`decimals${i}`] = slip.decimals;
-        tokensInfo.tokens.push(slip.name);
-        tokensInfo.images.push(slip.image);
-      })
 
       const _data = {
         id: item.name,
