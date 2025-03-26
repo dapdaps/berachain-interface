@@ -113,7 +113,7 @@ export function useList(): List {
             decimals: 18
           };
           item.protocol = item.project;
-          item.protocolIcon = getDappLogo(item.pool_project);
+          item.protocolIcon = getDappLogo(["Hub"].includes(item.project) ? item.pool_project : item.project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;
