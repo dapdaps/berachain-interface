@@ -7,7 +7,6 @@ import { useActivityStore } from '@/stores/useActivityStore';
 import { useContext } from 'react';
 import { HomeEarthContext } from '@/sections/home-earth/context';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
-import VaultsEntrance from '@/sections/vaults/v2/entrance';
 
 const HomeEarthTop = (props: any) => {
   const {} = props;
@@ -85,7 +84,6 @@ const HomeEarthTop = (props: any) => {
         </AnimatePresence>
       </div>
       <Airdrop className="!left-[unset] right-0 !top-[150px]" />
-      <VaultsEntrance className="absolute right-[70px] top-[300px] z-[3]" />
     </div>
   );
 };
