@@ -1,12 +1,15 @@
-import LazyImage from '@/components/layz-image';
-import clsx from 'clsx';
-import { ACTION_TYPE } from '@/sections/vaults/v2/config';
-import { useVaultsV2Context } from '@/sections/vaults/v2/context';
-import { numberFormatter } from '@/utils/number-formatter';
-import Big from 'big.js';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import Card from '@/components/card';
-import useIsMobile from '@/hooks/use-isMobile';
+import LazyImage from "@/components/layz-image";
+import clsx from "clsx";
+import { ACTION_TYPE } from "@/sections/vaults/v2/config";
+import { useVaultsV2Context } from "@/sections/vaults/v2/context";
+import { numberFormatter } from "@/utils/number-formatter";
+import Big from "big.js";
+import Popover, {
+  PopoverPlacement,
+  PopoverTrigger
+} from "@/components/popover";
+import Card from "@/components/card";
+import useIsMobile from "@/hooks/use-isMobile";
 
 export const Vaults = (props: any) => {
   const { record, index, className } = props;
@@ -108,9 +111,7 @@ export const APY = (props: any) => {
           <div className="w-full flex flex-col gap-[20px]">
             <div className="w-full flex justify-between items-center gap-[10px]">
               <div className="">Pool APY</div>
-              <div className="">
-                {numberFormatter(record.apy, 2, true)}%
-              </div>
+              <div className="">{numberFormatter(record.apy, 2, true)}%</div>
             </div>
             {record.rewards &&
               record.rewards.length > 0 &&
@@ -167,40 +168,41 @@ export const Rewards = (props: any) => {
           />
         ))}
       </div>
-      {isClaim && record.rewards.map((reward: any, idx: number) => {
-        if (!reward.claim) return null;
-        return (
-          <div
-            key={idx}
-            className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]"
-          >
-            <div className="">
-              +
-              {numberFormatter(reward.claim, 2, true, {
-                prefix: "$",
-                isShort: true
-              })}
-            </div>
-            <Popover
-              triggerContainerClassName="inline-block"
-              content={
-                <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
-                  Claim rewards
-                </Card>
-              }
-              trigger={PopoverTrigger.Hover}
-              placement={PopoverPlacement.Top}
-              closeDelayDuration={0}
+      {isClaim &&
+        record.rewards.map((reward: any, idx: number) => {
+          if (!reward.claim) return null;
+          return (
+            <div
+              key={idx}
+              className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]"
             >
-              <button
-                type="button"
-                className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
-                onClick={() => toggleClaimVisible()}
-              />
-            </Popover>
-          </div>
-        );
-      })}
+              <div className="">
+                +
+                {numberFormatter(reward.claim, 2, true, {
+                  prefix: "$",
+                  isShort: true
+                })}
+              </div>
+              <Popover
+                triggerContainerClassName="inline-block"
+                content={
+                  <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
+                    Claim rewards
+                  </Card>
+                }
+                trigger={PopoverTrigger.Hover}
+                placement={PopoverPlacement.Top}
+                closeDelayDuration={0}
+              >
+                <button
+                  type="button"
+                  className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
+                  onClick={() => toggleClaimVisible(true, record)}
+                />
+              </Popover>
+            </div>
+          );
+        })}
     </div>
   );
 };
@@ -223,7 +225,10 @@ export const ClaimButton = (props: any) => {
     <button
       type="button"
       {...restProps}
-      className={clsx("w-[32px] h-[32px] bg-[url('/images/vaults/v2/claim-square.svg')] bg-[#C1F45C] rounded-[10px] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]", className)}
+      className={clsx(
+        "w-[32px] h-[32px] bg-[url('/images/vaults/v2/claim-square.svg')] bg-[#C1F45C] rounded-[10px] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]",
+        className
+      )}
       onClick={() => toggleClaimVisible()}
     />
   );
