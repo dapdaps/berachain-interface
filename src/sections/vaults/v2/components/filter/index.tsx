@@ -3,6 +3,7 @@ import FilterItem from '@/sections/vaults/v2/components/filter/item';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
+import { FILTERS } from '@/sections/vaults/v2/config';
 
 const Filter = (props: any) => {
   const { className } = props;
@@ -71,12 +72,11 @@ const Filter = (props: any) => {
         </motion.button>
       </div>
       <div className="pt-[12px] pl-[15px] pr-[20px] flex items-center gap-[8px] flex-wrap">
-        <FilterItem selected={true} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
-        <FilterItem selected={false} />
+        {
+          FILTERS.ASSETS.map((it, idx) => (
+            <FilterItem key={idx} selected={false} data={it} />
+          ))
+        }
       </div>
       <div className="pt-[14px] pl-[15px] pr-[20px]">
         <button

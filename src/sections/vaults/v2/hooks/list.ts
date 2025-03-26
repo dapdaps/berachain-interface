@@ -109,7 +109,7 @@ export function useList(): List {
           item.totalApy = totalApy;
           item.token = {
             symbol: item.name,
-            address: item.pool_address,
+            address: item.pool_address === "0x0000000000000000000000000000000000000000" ? "native" : item.pool_address,
             decimals: 18
           };
           item.protocol = item.project;
