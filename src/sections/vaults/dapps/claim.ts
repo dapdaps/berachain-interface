@@ -5,7 +5,7 @@ import onInfraredClaim from "./infrared/claim";
 export default function onClaim(params: any) {
   const { currentRecord } = params;
 
-  if (currentRecord.protocol === "Bex") {
+  if (currentRecord.protocol === "Hub") {
     return onBexClaim(params);
   }
 

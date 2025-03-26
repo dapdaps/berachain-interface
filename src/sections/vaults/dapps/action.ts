@@ -6,7 +6,7 @@ import onInfrared from "./infrared/action";
 export default function onAction(params: any) {
   const { currentRecord } = params;
 
-  if (currentRecord.protocol === "Bex") {
+  if (currentRecord.protocol === "Hub") {
     return onBexAction(params);
   }
 

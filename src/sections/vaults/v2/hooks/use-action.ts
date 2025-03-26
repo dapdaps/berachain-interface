@@ -49,6 +49,7 @@ export default function useAction() {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
+
       const tx = await handleAction({
         actionType: actionType.button,
         signer,

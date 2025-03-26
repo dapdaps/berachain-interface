@@ -1,10 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import { StrategyPool, ORDER_DIRECTION, ORDER_KEYS, SPECIAL_VAULTS } from '@/sections/vaults/v2/config';
-import { BASE_URL } from '@/utils/http';
-import useCustomAccount from '@/hooks/use-account';
-import axios from 'axios';
-import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
-import Big from 'big.js';
+import { useEffect, useMemo, useState } from "react";
+import {
+  StrategyPool,
+  ORDER_DIRECTION,
+  ORDER_KEYS,
+  SPECIAL_VAULTS
+} from "@/sections/vaults/v2/config";
+import { BASE_URL } from "@/utils/http";
+import useCustomAccount from "@/hooks/use-account";
+import axios from "axios";
+import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
+import Big from "big.js";
 
 export function useList(): List {
   const { account } = useCustomAccount();
@@ -35,17 +40,21 @@ export function useList(): List {
   }, [data, orderKey, orderDirection]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
-    const topAPY = data.reduce((prev: any, curr: any) =>
+    const topAPY = data.reduce(
+      (prev: any, curr: any) =>
         Big(curr.totalApy || 0).gt(Big(prev.totalApy || 0)) ? curr : prev,
       {}
     );
 
-    const topTVL = data.reduce((prev: any, curr: any) =>
+    const topTVL = data.reduce(
+      (prev: any, curr: any) =>
         Big(curr.tvl || 0).gt(Big(prev.tvl || 0)) ? curr : prev,
       {}
     );
 
-    const hotStrategy = data.find((item: any) => item.vault_address === StrategyPool.vaultAddress);
+    const hotStrategy = data.find(
+      (item: any) => item.vault_address === StrategyPool.vaultAddress
+    );
 
     return [topAPY, topTVL, hotStrategy];
   }, [data]);
@@ -55,56 +64,60 @@ export function useList(): List {
     try {
       const res = await axios.get(`${BASE_URL}/api/go/vaults/list`, {
         params: {
-          address: account,
-        },
+          address: account
+        }
       });
       if (res.status !== 200 || res.data.code !== 200) {
         console.log("get vaults list error:", res.data.message);
         return;
       }
       const _list = res.data.data || [];
-      const _data = _list
-        .map((item: any) => {
-          item.apr = parseJSONString(item.apr, {});
-          item.reward_tokens = parseJSONString(item.reward_tokens, []);
-          item.tokens = parseJSONString(item.tokens, []);
-          item.extra_data = parseJSONString(item.extra_data, {});
+      const _data = _list.map((item: any) => {
+        item.apr = parseJSONString(item.apr, {});
+        item.reward_tokens = parseJSONString(item.reward_tokens, []);
+        item.tokens = parseJSONString(item.tokens, []);
+        item.extra_data = parseJSONString(item.extra_data, {});
 
-          item.tokens.forEach((token: any) => {
-            token.icon = getTokenLogo(token.symbol);
-          });
-          item.reward_tokens.forEach((token: any) => {
-            token.icon = getTokenLogo(token.symbol);
-          });
+        item.tokens.forEach((token: any) => {
+          token.icon = getTokenLogo(token.symbol);
+        });
+        item.reward_tokens.forEach((token: any) => {
+          token.icon = getTokenLogo(token.symbol);
+        });
 
-          const specialVault: any = SPECIAL_VAULTS.find((sp) => sp.vaultAddress === item.vault_address);
-          if (specialVault) {
-            for (const key in specialVault) {
-              item[key] = specialVault[key];
-            }
+        const specialVault: any = SPECIAL_VAULTS.find(
+          (sp) => sp.vaultAddress === item.vault_address
+        );
+        if (specialVault) {
+          for (const key in specialVault) {
+            item[key] = specialVault[key];
           }
-          item.apy = item.apr.pool || "0";
-          let totalApy = Big(item.apy || 0);
-          if (item.apr) {
-            Object.keys(item.apr).filter((ak) => ak !== "pool").forEach((ak: any) => {
+        }
+        item.apy = item.apr.pool || "0";
+        let totalApy = Big(item.apy || 0);
+        if (item.apr) {
+          Object.keys(item.apr)
+            .filter((ak) => ak !== "pool")
+            .forEach((ak: any) => {
               totalApy = totalApy.plus(Big(item.apr[ak] || 0));
             });
-          }
-          item.totalApy = totalApy;
-          item.token = {
-            symbol: item.name,
-            address: item.pool_address,
-            decimals: 18
-          };
-          item.protocol = item.project;
-          item.protocolIcon = getDappLogo(item.pool_project);
-          item.lpProtocol = item.pool_project;
-          item.backendId = item.id;
-          item.id = item.extra_data.pool_id;
-          item.balance = "0";
+        }
+        item.totalApy = totalApy;
+        item.token = {
+          symbol: item.name,
+          address: item.pool_address,
+          decimals: 18
+        };
+        item.protocol = item.project;
+        item.protocolIcon = getDappLogo(item.pool_project);
+        item.lpProtocol = item.pool_project;
+        item.backendId = item.id;
+        item.id = item.extra_data.pool_id;
+        item.balance = "0";
+        item.vaultAddress = item.vault_address;
 
-          return item;
-        });
+        return item;
+      });
       console.log("vaults list: %o", _data);
       setData(_data);
     } catch (err: any) {
