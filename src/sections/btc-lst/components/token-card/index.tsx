@@ -14,8 +14,6 @@ export default memo(function TokenCard({
 }) {
   const comingSoon = false
 
-  console.log(item, '<==item')
-
   return (
 
     <div className="relative md:w-full w-[calc((100%_-_42px)_/_3)]">
@@ -55,7 +53,9 @@ export default memo(function TokenCard({
               <div className="text-black font-Montserrat text-[12px] font-medium leading-[100%]">${balanceShortFormated(item.stakedAmountUsd)}</div>
             </div>
           </div>
-          <div className="flex items-center gap-[10px]">
+          <div className="flex items-center gap-[10px]" onClick={() => {
+            
+          }}>
             <div
               className="cursor-pointer flex items-center justify-center flex-1 h-[50px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[16px] font-semibold"
             >
