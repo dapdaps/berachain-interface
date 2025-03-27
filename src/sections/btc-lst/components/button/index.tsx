@@ -245,6 +245,8 @@ export default memo(function Button(props: IProps) {
       }
     }
   }, [amount]);
+
+  
   if (isInSufficient) {
     return (
       <div className={clsx(BTN_CLASS, "opacity-60 !cursor-not-allowed")}>

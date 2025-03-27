@@ -8,11 +8,15 @@ import useBedrock from './hooks/use-bedrock';
 import useEtherFi from './hooks/use-etherfi';
 import { LstHookResult } from './constant';
 import Big from 'big.js';
-import { balanceShortFormated } from "@/utils/balance";
+import { balanceShortFormated, valueFormated } from "@/utils/balance";
+import { useRouter } from 'next/navigation';
 
 export default memo(function Laptop() {
   const [currentTab, setCurrentTab] = useState("stake")
   const [checkedToken, setCheckedToken] = useState<null | Token>(null)
+  const router = useRouter();
+
+
   const bedrockData = useBedrock();
   const etherFiData = useEtherFi();
 
@@ -29,13 +33,15 @@ export default memo(function Laptop() {
       disabled: false, 
       dappIcon: '/images/lst/etherfi.png' 
     },
-    { name: 'babylon', disabled: true, dappIcon: '/images/lst/babylon.png' },
+    { name: 'pumpBTC', disabled: true, dappIcon: '/images/lst/pumpBTC.png' },
     { name: 'solv', disabled: true, dappIcon: '/images/lst/solv.png' },
     { name: 'stakestone', disabled: true, dappIcon: '/images/lst/stakestone.png' },
     { name: 'lombard', disabled: true, dappIcon: '/images/lst/lombard.png' },
-    { name: 'lorenzo', disabled: true, dappIcon: '/images/lst/lorenzo.png' },
-    { name: 'sumer', disabled: true, dappIcon: '/images/lst/sumer.png' },
   ], [bedrockData, etherFiData]);
+
+  const wbtcToken = useMemo(() => {
+    return bedrockData?.sourceToken
+  }, [bedrockData]);
 
   const btcLstComposeDataByHooks = useMemo(() => {
     return lstConfig.map(lst => {
@@ -44,6 +50,7 @@ export default memo(function Laptop() {
           name: lst.name,
           disabled: true,
           dappIcon: lst.dappIcon,
+          sourceToken: wbtcToken,
           apy: 'Coming Soon'
         };
       }
@@ -97,12 +104,11 @@ export default memo(function Laptop() {
               {
                 btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => (
                   <div className="flex items-center gap-[12px]">
-                    <img src={item.dappIcon} className="w-[36px] h-[36px] overflow-hidden" />
+                    <img src={item?.targetToken?.icon} className="w-[36px] h-[36px] rounded-full" />
                     <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{item.stakedAmount} {item.targetToken?.symbol}</div>
                   </div>
                 ))
               }
-
             </div>
           </div>
 
@@ -110,10 +116,10 @@ export default memo(function Laptop() {
             <div className="text-black font-Montserrat text-[16px] leading-[100%]">Available to stake</div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[12px]">
-                <div className="w-[36px] h-[36px] overflow-hidden"></div>
-                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">0 WBTC</div>
+                <img src={wbtcToken.icon} className="w-[36px] h-[36px] overflow-hidden" />
+                <div className="text-black font-Montserrat text-[16px] font-semibold lea ding-[100%]">{valueFormated(bedrockData.availableAmount)} WBTC</div>
               </div>
-              <div className="w-[115px] h-[40px] bg-[#FFDC50] border border-black flex items-center justify-center gap-[10px] rounded-[10px]">
+              <div onClick={() => router.push('/bridge')} className="w-[115px] h-[40px] bg-[#FFDC50] border border-black flex items-center justify-center gap-[10px] rounded-[10px]">
                 <span className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">Bridge</span>
                 <IconArrowSvg className="-rotate-90" />
               </div>
@@ -122,7 +128,11 @@ export default memo(function Laptop() {
         </div>
 
         <div className="flex items-center gap-[30px_21px] flex-wrap">
-          <TokenCard />
+          {
+            btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
+              <TokenCard item={item} key={item.name} />
+            ))
+          }
         </div>
       </div>
       <StakeModal
