@@ -531,6 +531,7 @@ export function useList(): List {
 
   return {
     listData: data,
+    getListData: getData,
     listDataShown: dataShown,
     listDataTopAPY: dataTopAPY,
     listDataTopTVL: dataTopTVL,
@@ -557,6 +558,7 @@ export function useList(): List {
 
 export interface List {
   listData: any;
+  getListData: () => Promise<void>;
   listDataShown: any;
   listDataTopAPY: any;
   listDataTopTVL: any;
