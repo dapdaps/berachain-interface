@@ -108,7 +108,7 @@ export const bera: { [key: string]: Token } = {
     decimals: 8,
     symbol: "uniBTC",
     name: "uniBTC",
-    icon: "/assets/tokens/uni-btc.png"
+    icon: "/assets/tokens/uniBTC.webp"
   },
   nect: {
     chainId: CHAIN_ID,

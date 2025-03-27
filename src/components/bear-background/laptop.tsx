@@ -968,27 +968,12 @@ const BridgeGround = function (props: any) {
           isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
         )}
       />
-
-      <div
-        className={clsx(
-          'absolute bottom-[213px] right-[20%] z-[10] w-[164px] h-[145px] bg-[url("/images/background/background-bridge-dapp.svg")] bg-cover bg-center bg-no-repeat',
-        )}
-      >
-         <div className='flex items-center justify-center pt-[25px]'>
-          <img
-            src={`/images/dapps/${dappShowName.toLowerCase()}.png`}
-            alt={dappName as string}
-            className="w-9 h-9"
-          />
-         </div>
-         <div className='text-center text-[#000] text-[18px] font-CherryBomb pt-[5px]'>{ dappShowName }</div>
-      </div>
     </div>
   );
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'bgt-lst' | 'campaign';
   children: React.ReactNode;
 };
 
@@ -1094,6 +1079,16 @@ export default memo(function BearBackground({ type, children }: PropsType) {
         </>
       ) : type === 'campaign' ? (
         <BeraBgcampaign />
+      ) : type === 'bgt-lst' ? (
+        <>
+          <Clouds isRainyDay={isRainyDay} />
+          <div className='absolute w-[435px] bottom-0 right-0 z-10'>
+            <img src="/images/background/lst-tree.png" alt="lst-tree" />
+          </div>
+          <div className='absolute bottom-0 left-0 right-0'>
+            <img className='w-full' src="/images/background/lst-ground.svg" alt="lst-ground" />
+          </div>
+        </>
       ) : (
         <></>
       )}

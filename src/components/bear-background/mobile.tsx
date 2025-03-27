@@ -32,11 +32,12 @@ const Clouds = () => {
   );
 };
 
-export default function Mobile({ children, showGrassland = false }: any) {
+export default function Mobile({ children, showGrassland = false, type }: any) {
 
   const pathname = usePathname()
   const routes = ['/cave', '/']
 
+  console.log('====type', type)
   return (
     <div className='relative hidden md:block w-full h-full'>
       <Clouds />

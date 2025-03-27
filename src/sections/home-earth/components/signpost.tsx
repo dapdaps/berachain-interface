@@ -49,8 +49,8 @@ const Signpost = (props: any) => {
       <img
         src="/images/home-earth/signpost-btc-lst.png"
         alt=""
-        onClick={() => {}}
-        className="w-[77px] h-[17px] absolute left-[66px] top-[196px] cursor-not-allowed opacity-50 object-center object-contain"
+        onClick={() => router.push('/btc-lst')}
+        className="w-[77px] h-[17px] absolute left-[66px] top-[196px] opacity-50 object-center object-contain"
       />
     </div>
   );
