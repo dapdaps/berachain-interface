@@ -33,7 +33,7 @@ export const Vaults = (props: any) => {
           />
         ))}*/}
         <LazyImage
-          src={record.protocolIcon}
+          src={record.creatorProtocolIcon}
           alt=""
           width={36}
           height={36}
