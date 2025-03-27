@@ -1,10 +1,10 @@
-import Big from 'big.js';
-import { memo, useEffect, useState } from 'react';
-import { usePriceStore } from '@/stores/usePriceStore';
-import { getAnotherAmountOut } from '../../helpers';
-import Input from './input';
-import { StyledContainer, StyledSubtitle } from './styles';
-import { sortTokens } from '../../utils';
+import Big from "big.js";
+import { memo, useEffect, useState } from "react";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { getAnotherAmountOut } from "../../helpers";
+import Input from "./input";
+import { StyledContainer, StyledSubtitle } from "./styles";
+import { sortTokens } from "../../utils";
 
 const DepositAmounts = ({
   label,
@@ -21,8 +21,8 @@ const DepositAmounts = ({
   onError
 }: any) => {
   const prices = usePriceStore((store) => store.price);
-  const [balance0, setBalance0] = useState('');
-  const [balance1, setBalance1] = useState('');
+  const [balance0, setBalance0] = useState("");
+  const [balance1, setBalance1] = useState("");
   const [_token0, _token1] = sortTokens(token0, token1);
   const reverse =
     _token0.address !== token0.address && _token1.address !== token1.address;
@@ -30,9 +30,9 @@ const DepositAmounts = ({
   const handleValue = (value: any, type: 0 | 1) => {
     if (type === 0) {
       setValue0(value);
-      setValue1('');
+      setValue1("");
     } else {
-      setValue0('');
+      setValue0("");
       setValue1(value);
     }
     if ([1, 2].includes(rangeType) || !Number(value)) return;
@@ -51,25 +51,25 @@ const DepositAmounts = ({
           isToken0,
           isFullRange: rangeType === 3 || rangeType === 0
         })
-      : '';
+      : "";
 
     if (type === 0) {
       const _amountOut = new Big(amountOut)
         .toFixed(token1.decimals)
-        .replace(/\.?0+$/, '');
+        .replace(/\.?0+$/, "");
       setValue1(_amountOut);
     } else {
       const _amountOut = new Big(amountOut)
         .toFixed(token0.decimals)
-        .replace(/\.?0+$/, '');
+        .replace(/\.?0+$/, "");
       setValue0(_amountOut);
     }
   };
 
   useEffect(() => {
     if (!upperPrice || !lowerPrice || !currentPrice) {
-      setValue0('');
-      setValue1('');
+      setValue0("");
+      setValue1("");
       return;
     }
     if (value0) {
@@ -79,10 +79,10 @@ const DepositAmounts = ({
 
   useEffect(() => {
     if (rangeType === 1) {
-      setValue1('');
+      setValue1("");
     }
     if (rangeType === 2) {
-      setValue0('');
+      setValue0("");
     }
   }, [rangeType]);
 
@@ -92,7 +92,7 @@ const DepositAmounts = ({
       (rangeType === 2 && !(!reverse ? value1 : value0)) ||
       ([0, 3].includes(rangeType) && (!value0 || !value1))
     ) {
-      onError('Enter Amount');
+      onError("Enter Amount");
       return;
     }
     if (
@@ -108,10 +108,10 @@ const DepositAmounts = ({
         (new Big(balance0 || 0).lt(value0 || 0) ||
           new Big(balance1 || 0).lt(value1 || 0)))
     ) {
-      onError('Insufficient Balance');
+      onError("Insufficient Balance");
       return;
     }
-    onError('');
+    onError("");
   }, [rangeType, value0, value1, balance0, balance1]);
 
   return (

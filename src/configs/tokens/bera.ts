@@ -416,5 +416,29 @@ export const bera: { [key: string]: Token } = {
     decimals: 9,
     icon: "/assets/tokens/ohm.webp",
     color: "rgb(117,138,149)"
+  },
+  dinero: {
+    chainId: CHAIN_ID,
+    address: "0x09d9420332bff75522a45fcff4855f82a0a3ff50",
+    symbol: "DINERO",
+    name: "Dinero OFT",
+    decimals: 18,
+    icon: "/assets/tokens/dinero.png"
+  },
+  nav: {
+    chainId: CHAIN_ID,
+    address: "0x6536cead649249cae42fc9bfb1f999429b3ec755",
+    symbol: "NAV",
+    name: "NavFinance",
+    decimals: 18,
+    icon: "/assets/tokens/nav.png"
+  },
+  "ez-eth": {
+    chainId: CHAIN_ID,
+    address: "0x2416092f143378750bb29b79ed961ab195cceea5",
+    symbol: "ezETH",
+    name: "Renzo Restaked ETH",
+    decimals: 18,
+    icon: "/assets/tokens/ezeth.png"
   }
 };

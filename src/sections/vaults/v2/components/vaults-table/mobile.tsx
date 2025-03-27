@@ -10,6 +10,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { OrderKeys } from '@/sections/vaults/v2/config';
 import LazyImage from '@/components/layz-image';
 import Skeleton from 'react-loading-skeleton';
+import Search from '@/sections/vaults/v2/components/filter/search';
+import Empty from '@/components/empty';
 
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
@@ -65,6 +67,9 @@ const VaultsTableMobile = (props: any) => {
           </div>
         </button>
       </div>
+      <div className="flex mt-[9px]">
+        <Search className="flex-1 w-0" />
+      </div>
       <div className={clsx("w-full text-[16px] text-black leading-[100%] font-[600] font-Montserrat mt-[13px] flex flex-col items-stretch gap-[10px]", className)}>
         {
           listLoading ? (
@@ -72,7 +77,7 @@ const VaultsTableMobile = (props: any) => {
               <Skeleton width="100%" height={118} borderRadius={10} />
               <Skeleton width="100%" height={118} borderRadius={10} />
             </>
-          ) : listDataShown.map((record: any, index: number) => (
+          ) : listDataShown?.length > 0 ? listDataShown.map((record: any, index: number) => (
             <div
               key={index}
               className="w-full shrink-0 rounded-[10px] bg-[rgba(0,0,0,0.06)]"
@@ -157,7 +162,11 @@ const VaultsTableMobile = (props: any) => {
                 }
               </AnimatePresence>
             </div>
-          ))
+          )) : (
+            <div className="flex justify-center items-center py-[30px]">
+              <Empty desc="No vaults available" />
+            </div>
+          )
         }
       </div>
     </div>

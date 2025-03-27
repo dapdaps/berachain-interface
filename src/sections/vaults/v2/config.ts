@@ -160,7 +160,91 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       label: "USDC.e",
       icon: getTokenLogo("USDC.e"),
       token: bera["usdc.e"]
-    }
+    },
+    {
+      reg: /^BM$/i,
+      label: "BM",
+      icon: getTokenLogo("BM"),
+      token: bera["bm"]
+    },
+    {
+      reg: /^RAMEN$/i,
+      label: "RAMEN",
+      icon: getTokenLogo("RAMEN"),
+      token: bera["ramen"]
+    },
+    {
+      reg: /^OHM$/i,
+      label: "OHM",
+      icon: getTokenLogo("OHM"),
+      token: bera["ohm"]
+    },
+    {
+      reg: /^DINERO$/i,
+      label: "DINERO",
+      icon: getTokenLogo("DINERO"),
+      token: bera["dinero"]
+    },
+    {
+      reg: /^stBGT$/i,
+      label: "stBGT",
+      icon: getTokenLogo("stBGT"),
+      token: bera["stbgt"]
+    },
+    {
+      reg: /^YEET$/i,
+      label: "YEET",
+      icon: getTokenLogo("YEET"),
+      token: bera["yeet"]
+    },
+    {
+      reg: /^SolvBTC/i,
+      label: "SolvBTC",
+      icon: getTokenLogo("SolvBTC"),
+      token: bera["solvbtc"]
+    },
+    {
+      reg: /^NAV$/i,
+      label: "NAV",
+      icon: getTokenLogo("NAV"),
+      token: bera["nav"]
+    },
+    {
+      reg: /^ezETH$/i,
+      label: "ezETH",
+      icon: getTokenLogo("ezETH"),
+      token: bera["ez-eth"]
+    },
+    {
+      reg: /^uniBTC$/i,
+      label: "uniBTC",
+      icon: getTokenLogo("uniBTC"),
+      token: bera["unibtc"]
+    },
+    {
+      reg: /^rUSD$/i,
+      label: "rUSD",
+      icon: getTokenLogo("rUSD"),
+      token: bera["rusd"]
+    },
+    {
+      reg: /^BITCOIN$/i,
+      label: "BITCOIN",
+      icon: getTokenLogo("BITCOIN"),
+      token: bera["bitcoin"]
+    },
+    {
+      reg: /^STONE$/i,
+      label: "STONE",
+      icon: getTokenLogo("STONE"),
+      token: bera["stone"]
+    },
+    {
+      reg: /^USDbr/i,
+      label: "USDbr",
+      icon: getTokenLogo("USDbr"),
+      token: bera["usdbr"]
+    },
     // { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC"), token: bera.usdc },
   ],
   [FILTER_KEYS.REWARDS]: [
