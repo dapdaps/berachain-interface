@@ -177,7 +177,7 @@ export default memo(function BgtMain() {
   return (
     <div className="w-[1140px]">
       <div className="flex items-center h-[223px] rounded-[20px] bg-[#FFDC50]">
-        <div className=" h-full flex flex-col flex-[0.8] py-[34px] pl-[30px] justify-between">
+        <div className="relative h-full flex flex-col flex-[0.8] py-[34px] pl-[30px] justify-between">
           <div className="flex flex-col gap-[12px]">
             <div className="text-[#3D405A]">Active Reward Vaults</div>
             <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">{pageData?.polGetGlobalInfo?.totalActiveRewardVaults}</div>
@@ -186,8 +186,9 @@ export default memo(function BgtMain() {
             <div className="text-[#3D405A]">Active Incentives</div>
             <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.polGetGlobalInfo?.sumAllIncentivesInHoney, "$", 2, true, false)}</div>
           </div>
+          <div className="absolute right-0 top-[37px] bottom-[28px] w-[1px] bg-black/[0.15]" />
         </div>
-        <div className="relative h-full flex flex-col flex-1 py-[34px] pr-[15px] justify-between">
+        <div className="relative h-full flex flex-col flex-1 py-[34px] px-[15px] justify-between">
           <div className="flex flex-col gap-[12px]">
             <div className="text-[#3D405A]">Est. Yearly BGT Distribution</div>
             <div className="flex items-center gap-[10px]">
