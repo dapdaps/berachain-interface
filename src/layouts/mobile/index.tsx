@@ -92,6 +92,12 @@ const dapps: DApp[] = [
     href: "/bridge/stargate"
   },
   {
+    id: "lifi",
+    name: "Li.Fi",
+    icon: "/images/dapps/lifi.png",
+    href: "/bridge/lifi"
+  },
+  {
     id: "ooga",
     name: "Ooga Booga",
     icon: "/images/dapps/ooga-booga.svg",
