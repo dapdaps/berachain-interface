@@ -43,7 +43,9 @@ const PoolRemoveToken = ({ percent = 0, tokens = [], amounts }: any) => {
             key={token.address}
             name={`Pooled ${token?.symbol}:`}
             value={balanceFormated(
-              Number(amounts[token.address] || 0) * (percent / 100) + "",
+              Number(amounts[token.address.toLowerCase()] || 0) *
+                (percent / 100) +
+                "",
               4
             )}
             token={token}

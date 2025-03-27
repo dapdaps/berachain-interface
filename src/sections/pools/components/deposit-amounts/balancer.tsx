@@ -13,6 +13,7 @@ const DepositAmounts = ({
   onValueChange,
   onError,
   onUpdateTokens,
+  hasProportional = true,
   isProportional,
   onChangeProportional
 }: any) => {
@@ -57,16 +58,18 @@ const DepositAmounts = ({
           }}
         />
       ))}
-      <div className="flex items-center gap-[4px] mt-[10px]">
-        <CheckBox
-          checked={isProportional}
-          disabled={!info}
-          onClick={onChangeProportional}
-        />
-        <div className="text-[rgb(151,154,190)] text-[14px]">
-          Keep Amounts Proportional
+      {hasProportional && (
+        <div className="flex items-center gap-[4px] mt-[10px]">
+          <CheckBox
+            checked={isProportional}
+            disabled={!info}
+            onClick={onChangeProportional}
+          />
+          <div className="text-[rgb(151,154,190)] text-[14px]">
+            Keep Amounts Proportional
+          </div>
         </div>
-      </div>
+      )}
     </StyledContainer>
   );
 };

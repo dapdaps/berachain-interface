@@ -8,7 +8,7 @@ import { useSettingsStore } from "@/stores/settings";
 import valutAbi from "../abi/balancer-valut";
 import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
-import burrbear from "@/configs/pools/burrbear";
+import dapp from "@/configs/pools/burrbear";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 const abiCoder = new utils.AbiCoder();
@@ -26,9 +26,9 @@ export default function useRemove({
   const { account, provider, chainId } = useAccount();
   const [exitToken, setExitToken] = useState<any>();
   const toast = useToast();
-  const contracts = burrbear.contracts[DEFAULT_CHAIN_ID];
+  const contracts = dapp.contracts[DEFAULT_CHAIN_ID];
   const assetsRef = useRef<any>();
-  const slippage = useSettingsStore((store: any) => store.slippage);
+  const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const { addAction } = useAddAction("dapp");
 
   const onQueryAmountsOut = async () => {
@@ -39,11 +39,16 @@ export default function useRemove({
         queryAbi,
         provider
       );
-      const poolContract = new Contract(data.address, poolAbi, provider);
+      const poolContract = new Contract(
+        data.address || data.token?.address,
+        poolAbi,
+        provider
+      );
 
       const balanceRes = await poolContract.balanceOf(account);
 
       const _balance = balanceRes.toString();
+
       if (!assetsRef.current) {
         const valutContract = new Contract(contracts.Vault, valutAbi, provider);
 
@@ -52,9 +57,19 @@ export default function useRemove({
         assetsRef.current = tokens;
       }
 
-      let exitTokenIndex = assetsRef.current.findIndex(
-        (asset: any) => asset.toLowerCase() === exitToken.address.toLowerCase()
-      );
+      let exitTokenIndex = assetsRef.current
+        .filter((asset: any) =>
+          data.poolType === "ComposableStable"
+            ? data.tokens.find(
+                (token: any) =>
+                  token.address.toLowerCase() === asset.toLowerCase()
+              )
+            : true
+        )
+        .findIndex(
+          (asset: any) =>
+            asset.toLowerCase() === exitToken.address.toLowerCase()
+        );
 
       const bptMinIn = Big(_balance).toFixed(0);
       const minAmountsOut = assetsRef.current.map(
@@ -69,7 +84,7 @@ export default function useRemove({
             )
           : abiCoder.encode(
               ["uint256", "uint256"],
-              [data.type === "COMPOSABLE_STABLE" ? 2 : 1, bptMinIn]
+              [data.poolType === "ComposableStable" ? 2 : 1, bptMinIn]
             );
 
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
@@ -92,7 +107,8 @@ export default function useRemove({
       });
 
       setAmounts(_amounts);
-    } catch (err) {
+    } catch (err: any) {
+      console.log("Query Error", err?.message);
       setAmounts({});
     } finally {
       setBalanceLoading(false);
@@ -108,7 +124,11 @@ export default function useRemove({
     try {
       const signer = provider.getSigner(account);
       const valutContract = new Contract(contracts.Vault, valutAbi, signer);
-      const poolContract = new Contract(data.address, poolAbi, provider);
+      const poolContract = new Contract(
+        data.address || data.token?.address,
+        poolAbi,
+        provider
+      );
 
       const balanceRes = await poolContract.balanceOf(account);
 
@@ -127,7 +147,7 @@ export default function useRemove({
       let bptMinIn = "0";
 
       if (type === 1) {
-        exitKind = data.type === "COMPOSABLE_STABLE" ? 2 : 1;
+        exitKind = data.poolType === "ComposableStable" ? 2 : 1;
         bptMinIn = Big(_balance)
           .mul(percent / 100)
           .toFixed(0);
@@ -182,7 +202,7 @@ export default function useRemove({
         exitTokenIndex =
           exitTokenIndex === 0
             ? 0
-            : exitTokenIndex - (data.type === "COMPOSABLE_STABLE" ? 1 : 0);
+            : exitTokenIndex - (data.poolType === "ComposableStable" ? 1 : 0);
         const userData = abiCoder.encode(types, [0, bptMinIn, exitTokenIndex]);
         const minAmountsOut = assetsRef.current.map(
           (asset: any, i: number) => "0"

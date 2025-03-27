@@ -53,7 +53,7 @@ export function useList(): List {
   const [filterSelected, setFilterSelected] = useState<
     Record<FILTER_KEYS, FilterItem[]>
   >(cloneDeep(DEFAULT_FILTER_SELECTED));
-  const [availableAssets, setAvailableAssets] = useState(false);
+  const [availableAssets, setAvailableAssets] = useState(true);
   const [filterAssetsBalance, setFilterAssetsBalance] = useState(
     cloneDeep(DEFAULT_FILTER_ASSETS_BALANCE)
   );
@@ -93,6 +93,15 @@ export function useList(): List {
         filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
         !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
           filter.reg.test(item.pool_project)
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        filterSelected[FILTER_KEYS.CREATORS].length > 0 &&
+        !filterSelected[FILTER_KEYS.CREATORS].some((filter) =>
+          filter.reg.test(item.creator_project)
         )
       ) {
         return false;
@@ -252,6 +261,7 @@ export function useList(): List {
           };
           item.protocol = item.project;
           item.protocolIcon = getDappLogo(item.pool_project);
+          item.creatorProtocolIcon = getDappLogo(item.creator_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;

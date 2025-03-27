@@ -31,6 +31,7 @@ export default function AddLiquidity({ onSuccess, data }: any) {
         label="Deposit Amounts"
         tokens={tokens}
         values={values}
+        hasProportional={false}
         onValueChange={(token: any, value: string) => {
           if (Big(value || 0).eq(0)) {
             if (!values) return;

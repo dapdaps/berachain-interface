@@ -28,7 +28,7 @@ export default function useIncrease({
   const [loading, setLoading] = useState(false);
   const { account, provider, chainId } = useAccount();
   const toast = useToast();
-  const slippage = useSettingsStore((store: any) => store.slippage);
+  const slippage = useSettingsStore((store: any) => store.slippage / 100);
 
   const { addAction } = useAddAction("dapp");
 
