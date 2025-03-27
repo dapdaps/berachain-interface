@@ -87,7 +87,7 @@ const Action = (props: any) => {
                 fallbackSrc="/assets/tokens/default_icon.png"
               />
               <div className="text-[14px] font-medium leading-[100%]">
-                {currentRecord.protocol}
+                {currentRecord.pool_project}
               </div>
             </div>
           </div>
