@@ -3,7 +3,7 @@ import FilterItem from '@/sections/vaults/v2/components/filter/item';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
-import { FILTER_KEYS, FILTERS, SUPPORTED_PROTOCOLS } from '@/sections/vaults/v2/config';
+import { FILTER_KEYS, FILTERS } from '@/sections/vaults/v2/config';
 import Big from 'big.js';
 import Loading from '@/components/loading';
 import Empty from '@/components/empty';
@@ -22,6 +22,8 @@ const Filter = (props: any) => {
     listFilterSelectedLength,
     toggleListFilterVisible,
     listRewardTokens,
+    listPoolProjects,
+    listCreatorProjects,
   } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
@@ -31,7 +33,7 @@ const Filter = (props: any) => {
   });
 
   return (
-    <div className={clsx("h-0 flex-1 overflow-y-auto", className)}>
+    <div className={clsx("h-0 flex-1 overflow-y-auto max-h-[662px]", className)}>
       <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[24px] pt-[14px] md:pt-0">
         <div className="flex items-center gap-[7px]">
           <div className="text-[16px] md:text-[20px] font-[700]">
@@ -159,7 +161,7 @@ const Filter = (props: any) => {
         }
       </div>
       <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
-        Platform
+        Pool Protocol
       </div>
       <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
@@ -170,7 +172,29 @@ const Filter = (props: any) => {
               <Skeleton width={80} height={36} borderRadius={10} />
             </>
           ) : FILTERS.PROTOCOLS
-            .filter((it) => SUPPORTED_PROTOCOLS.includes(it.label))
+            .filter((it) => listPoolProjects?.some((_it: any) => _it.toLowerCase() === it.label.toLowerCase()))
+            .map((it, idx) => (
+              <FilterItem
+                key={idx}
+                type={FILTER_KEYS.PROTOCOLS}
+                data={it}
+              />
+            ))
+        }
+      </div>
+      <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
+        Vault Protocol
+      </div>
+      <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+        {
+          listLoading ? (
+            <>
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+            </>
+          ) : FILTERS.CREATORS
+            .filter((it) => listCreatorProjects?.some((_it: any) => _it.toLowerCase() === it.label.toLowerCase()))
             .map((it, idx) => (
               <FilterItem
                 key={idx}
