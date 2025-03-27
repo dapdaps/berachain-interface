@@ -6,10 +6,8 @@ import {
   SPECIAL_VAULTS,
   FILTER_KEYS,
   FilterItem,
-  SUPPORTED_PROTOCOLS,
-  SPECIAL_PROTOCOLS,
-  FILTERS
-} from "@/sections/vaults/v2/config";
+  FILTERS, PAGINATION_ACTION
+} from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import axios from "axios";
@@ -22,11 +20,13 @@ import { Contract, providers, utils } from "ethers";
 import { TOKEN_ABI } from "@/hooks/use-token-balance";
 import { bera } from "@/configs/tokens/bera";
 import { useDebounceFn } from "ahooks";
+import useIsMobile from '@/hooks/use-isMobile';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
   [FILTER_KEYS.REWARDS]: [],
-  [FILTER_KEYS.PROTOCOLS]: []
+  [FILTER_KEYS.PROTOCOLS]: [],
+  [FILTER_KEYS.CREATORS]: []
 };
 
 const DEFAULT_FILTER_ASSETS_BALANCE: {
@@ -41,6 +41,7 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
 
 export function useList(): List {
   const { account } = useCustomAccount();
+  const isMobile = useIsMobile();
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -58,6 +59,9 @@ export function useList(): List {
   );
   const [filterAssetsBalanceLoading, setFilterAssetsBalanceLoading] =
     useState(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageSize] = useState(10);
+  const [pageTotal, setPageTotal] = useState(0);
 
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -108,8 +112,14 @@ export function useList(): List {
       }
     });
 
-    return sortedData;
-  }, [data, orderKey, orderDirection, filterSelected]);
+    setPageTotal(Math.ceil(sortedData.length / pageSize));
+
+    if (isMobile) {
+      return sortedData;
+    }
+
+    return sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  }, [data, orderKey, orderDirection, filterSelected, pageIndex, pageSize, isMobile]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
     const topAPY = data.reduce(
@@ -154,13 +164,22 @@ export function useList(): List {
     return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount];
   }, [data]);
 
-  const rewardTokens = useMemo(() => {
-    const tokens = data
+  const [rewardTokens, poolProjects, creatorProjects] = useMemo(() => {
+    const _tokens = data
       .flatMap((item: any) => item.reward_tokens || [])
       .filter((token: any, index: any, self: any) =>
         self.findIndex((t: any) => t.address === token.address) === index
       );
-    return tokens;
+
+    const _poolProjects = Array.from(
+      new Set(data.map((item: any) => item.pool_project).filter(Boolean))
+    );
+
+    const _creatorProjects = Array.from(
+      new Set(data.map((item: any) => item.creator_project).filter(Boolean))
+    );
+
+    return [_tokens, _poolProjects, _creatorProjects];
   }, [data]);
 
   const getData = async () => {
@@ -177,7 +196,7 @@ export function useList(): List {
       }
       const _list = res.data.data || [];
       const _data = _list
-        .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
+        // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any) => {
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
@@ -213,15 +232,6 @@ export function useList(): List {
               item[key] = specialVault[key];
             }
           }
-          const specialProtocol: any = SPECIAL_PROTOCOLS.find(
-            (sp) => sp.protocol === item.project
-          );
-          if (specialProtocol) {
-            for (const key in specialProtocol) {
-              if (key === "protocol") continue;
-              item[key] = specialProtocol[key];
-            }
-          }
           item.apy = item.apr.pool || "0";
           let totalApy = Big(item.apy || 0);
           if (item.apr) {
@@ -241,9 +251,7 @@ export function useList(): List {
             decimals: 18
           };
           item.protocol = item.project;
-          item.protocolIcon = getDappLogo(
-            ["Hub"].includes(item.project) ? item.pool_project : item.project
-          );
+          item.protocolIcon = getDappLogo(item.pool_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;
@@ -258,12 +266,36 @@ export function useList(): List {
 
           return item;
         });
-      console.log("vaults list: %o", _data);
       setData(_data);
     } catch (err: any) {
       console.log("get vaults list error:", err.message);
     }
     setLoading(false);
+  };
+
+  const togglePageIndex = (index: PAGINATION_ACTION | number) => {
+    if (typeof index === "number") {
+      setPageIndex(index);
+      return;
+    }
+    if (index === PAGINATION_ACTION.FIRST) {
+      setPageIndex(1);
+      return;
+    }
+    if (index === PAGINATION_ACTION.PREV) {
+      if (pageIndex <= 1) return;
+      setPageIndex(pageIndex - 1);
+      return;
+    }
+    if (index === PAGINATION_ACTION.NEXT) {
+      if (pageIndex >= pageTotal) return;
+      setPageIndex(pageIndex + 1);
+      return;
+    }
+    if (index === PAGINATION_ACTION.LAST) {
+      setPageIndex(pageTotal);
+      return;
+    }
   };
 
   const toggleOrder = (key: ORDER_KEYS, direction?: ORDER_DIRECTION) => {
@@ -302,6 +334,7 @@ export function useList(): List {
       }
     }
     setFilterSelected(_filterSelected);
+    togglePageIndex(PAGINATION_ACTION.FIRST);
   };
 
   const toggleAvailableAssets = (_availableAssets?: boolean) => {
@@ -314,11 +347,13 @@ export function useList(): List {
       const _filterSelected = { ...filterSelected };
       _filterSelected.ASSETS = [];
       setFilterSelected(_filterSelected);
+      togglePageIndex(PAGINATION_ACTION.FIRST);
     }
   };
 
   const clearFilterSelected = () => {
     setFilterSelected(cloneDeep(DEFAULT_FILTER_SELECTED));
+    togglePageIndex(PAGINATION_ACTION.FIRST);
   };
 
   const getFilterAssetsBalance = async () => {
@@ -411,6 +446,12 @@ export function useList(): List {
     totalUserRewardUsd: totalUserRewardUsd,
     totalUserVaultsCount: totalUserVaultsCount,
     listRewardTokens: rewardTokens,
+    listPoolProjects: poolProjects,
+    listCreatorProjects: creatorProjects,
+    listPageIndex: pageIndex,
+    listPageSize: pageSize,
+    listPageTotal: pageTotal,
+    toggleListPageIndex: togglePageIndex,
   };
 }
 
@@ -439,6 +480,12 @@ export interface List {
   totalUserRewardUsd: Big.Big;
   totalUserVaultsCount: Big.Big;
   listRewardTokens: any;
+  listPoolProjects: any;
+  listCreatorProjects: any;
+  listPageIndex: number;
+  listPageSize: number;
+  listPageTotal: number;
+  toggleListPageIndex: (index: PAGINATION_ACTION | number) => void;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {

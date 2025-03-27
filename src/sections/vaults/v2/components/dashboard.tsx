@@ -28,10 +28,10 @@ const Dashboard = (props: any) => {
       <Item
         label="Your Vaults"
         value={numberFormatter(totalUserVaultsCount, 0, true)}
-        valueClassName="underline cursor-pointer"
+        // valueClassName="underline cursor-pointer"
         className="lg:items-end"
         onClick={() => {
-          toggleListOrder(ORDER_KEYS.YOURS, ORDER_DIRECTION.DESC);
+          // toggleListOrder(ORDER_KEYS.YOURS, ORDER_DIRECTION.DESC);
         }}
       />
     </div>
