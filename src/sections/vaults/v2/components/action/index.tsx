@@ -5,7 +5,7 @@ import ButtonWithApprove from "@/components/button/button-with-approve";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import useAction from "../../hooks/use-action";
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
 import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 import Big from "big.js";
 import Loading from "@/components/loading";
@@ -101,7 +101,7 @@ const Action = (props: any) => {
                 setOpenAddLp(true);
               }}
             >
-              Get
+              Mint LP tokens
             </button>
           )}
       </div>
@@ -153,7 +153,10 @@ const Action = (props: any) => {
             ) : (
               <button
                 type="button"
-                disabled={Big(balance || 0).lte(0) || (actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading)}
+                disabled={
+                  Big(balance || 0).lte(0) ||
+                  (actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading)
+                }
                 className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
                 onClick={handleBalance}
               >

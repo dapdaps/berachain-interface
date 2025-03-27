@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from "react";
 import { usePriceStore } from "@/stores/usePriceStore";
 import Input from "./balancer-input";
 import { StyledContainer, StyledSubtitle } from "./styles";
-import { cloneDeep, remove } from "lodash";
+import { cloneDeep } from "lodash";
 import SwapModal from "@/sections/swap/SwapModal";
 import CheckBox from "@/components/check-box";
 
@@ -20,7 +20,6 @@ const DepositAmounts = ({
 }: any) => {
   const prices = usePriceStore((store) => store.price);
   const [isError, setIsError] = useState(false);
-  const [insufficientTokens, setInsufficientTokens] = useState<any>([]);
   const [selectedToken, setSelectedToken] = useState<any>(null);
 
   useEffect(() => {
@@ -54,15 +53,6 @@ const DepositAmounts = ({
           prices={prices}
           onError={(error: boolean) => {
             setIsError(error);
-            if (error) {
-              insufficientTokens.push(token);
-            } else {
-              remove(
-                insufficientTokens,
-                (t: any) => t.address === token.address
-              );
-            }
-            setInsufficientTokens(cloneDeep(insufficientTokens));
           }}
           onSelectToken={(_token: any) => {
             tokens.splice(i, 1, _token);
@@ -85,10 +75,10 @@ const DepositAmounts = ({
         ) : (
           <div />
         )}
-        {insufficientTokens?.length ? (
+        {tokens?.length ? (
           <div className="text-[14px] text-black font-bold">
             Get{" "}
-            {insufficientTokens.map((token: any, idx: number) => (
+            {tokens.map((token: any, idx: number) => (
               <span
                 className="cursor-pointer underline"
                 onClick={() => {
