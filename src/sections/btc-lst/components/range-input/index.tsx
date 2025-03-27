@@ -20,19 +20,31 @@ export default memo(function RangeInput({
   const [inAmount, setInAmount] = useState("");
 
   function getPercentage(_amount: any) {
-    if (!balance) return "0";
-    _amount = Big(_amount).gt(balance) ? balance : _amount;
-    return Big(balance).eq(0)
-      ? "0"
-      : Big(_amount)
-        .div(balance ?? 1)
-        .times(100)
-        .toFixed();
+    if (!balance || !_amount || _amount === '') return "0";
+    try {
+      _amount = Big(_amount).gt(balance) ? balance : _amount;
+      return Big(balance).eq(0)
+        ? "0"
+        : Big(_amount)
+          .div(balance ?? 1)
+          .times(100)
+          .toFixed();
+    } catch (error) {
+      return "0";
+    }
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setInAmount(value);
+    if (value === '') {
+      setPercentage("0");
+      setRangeIndex(-1);
+      if (onChange) {
+        onChange('');
+      }
+      return;
+    }
     const newPercentage = getPercentage(value);
     setPercentage(newPercentage);
     
