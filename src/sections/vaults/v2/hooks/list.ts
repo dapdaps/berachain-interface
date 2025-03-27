@@ -6,7 +6,6 @@ import {
   SPECIAL_VAULTS,
   FILTER_KEYS,
   FilterItem,
-  SUPPORTED_PROTOCOLS,
   FILTERS, PAGINATION_ACTION
 } from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
@@ -26,7 +25,8 @@ import useIsMobile from '@/hooks/use-isMobile';
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
   [FILTER_KEYS.REWARDS]: [],
-  [FILTER_KEYS.PROTOCOLS]: []
+  [FILTER_KEYS.PROTOCOLS]: [],
+  [FILTER_KEYS.CREATORS]: []
 };
 
 const DEFAULT_FILTER_ASSETS_BALANCE: {
@@ -164,13 +164,22 @@ export function useList(): List {
     return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount];
   }, [data]);
 
-  const rewardTokens = useMemo(() => {
-    const tokens = data
+  const [rewardTokens, poolProjects, creatorProjects] = useMemo(() => {
+    const _tokens = data
       .flatMap((item: any) => item.reward_tokens || [])
       .filter((token: any, index: any, self: any) =>
         self.findIndex((t: any) => t.address === token.address) === index
       );
-    return tokens;
+
+    const _poolProjects = Array.from(
+      new Set(data.map((item: any) => item.pool_project).filter(Boolean))
+    );
+
+    const _creatorProjects = Array.from(
+      new Set(data.map((item: any) => item.creator_project).filter(Boolean))
+    );
+
+    return [_tokens, _poolProjects, _creatorProjects];
   }, [data]);
 
   const getData = async () => {
@@ -187,7 +196,7 @@ export function useList(): List {
       }
       const _list = res.data.data || [];
       const _data = _list
-        .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
+        // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any) => {
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
@@ -257,7 +266,6 @@ export function useList(): List {
 
           return item;
         });
-      console.log("vaults list: %o", _data);
       setData(_data);
     } catch (err: any) {
       console.log("get vaults list error:", err.message);
@@ -438,6 +446,8 @@ export function useList(): List {
     totalUserRewardUsd: totalUserRewardUsd,
     totalUserVaultsCount: totalUserVaultsCount,
     listRewardTokens: rewardTokens,
+    listPoolProjects: poolProjects,
+    listCreatorProjects: creatorProjects,
     listPageIndex: pageIndex,
     listPageSize: pageSize,
     listPageTotal: pageTotal,
@@ -470,6 +480,8 @@ export interface List {
   totalUserRewardUsd: Big.Big;
   totalUserVaultsCount: Big.Big;
   listRewardTokens: any;
+  listPoolProjects: any;
+  listCreatorProjects: any;
   listPageIndex: number;
   listPageSize: number;
   listPageTotal: number;

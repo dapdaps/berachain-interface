@@ -113,7 +113,8 @@ export interface FilterItem {
 export enum FILTER_KEYS {
   ASSETS = "ASSETS",
   REWARDS = "REWARDS",
-  PROTOCOLS = "PROTOCOLS"
+  PROTOCOLS = "PROTOCOLS",
+  CREATORS = "CREATORS"
 }
 
 export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
@@ -183,16 +184,45 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^BeraDrome$/i, label: "BeraDrome", icon: getDappLogo("BeraDrome") },
     { reg: /^BurrBear$/i, label: "BurrBear", icon: getDappLogo("BurrBear") },
     { reg: /^WeBera$/i, label: "WeBera", icon: getDappLogo("WeBera") },
-    // { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared") },
+    { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared") },
     { reg: /^Kodiak$/i, label: "Kodiak", icon: getDappLogo("Kodiak") },
     { reg: /^Smilee$/i, label: "Smilee", icon: getDappLogo("Smilee") },
     { reg: /^Dolomite$/i, label: "Dolomite", icon: getDappLogo("Dolomite") },
     { reg: /^Memeswap$/i, label: "Memeswap", icon: getDappLogo("Memeswap") },
     { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome") }
+  ],
+  [FILTER_KEYS.CREATORS]: [
+    { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex") },
+    { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared") },
+    { reg: /^BeraPaw$/i, label: "BeraPaw", icon: getDappLogo("BeraPaw") },
+    { reg: /^Dinero$/i, label: "Dinero", icon: getDappLogo("Dinero") },
+    { reg: /^Stride$/i, label: "Stride", icon: getDappLogo("Stride") },
+    { reg: /^Beradrome$/i, label: "Beradrome", icon: getDappLogo("Beradrome") },
+    { reg: /^Smilee$/i, label: "Smilee", icon: getDappLogo("Smilee") },
+    { reg: /^Olympus$/i, label: "Olympus", icon: getDappLogo("Olympus") },
+    { reg: /^Berapulg$/i, label: "Berapulg", icon: getDappLogo("Berapulg") },
+    { reg: /^Yeet$/i, label: "Yeet", icon: getDappLogo("Yeet") },
+    { reg: /^Kodiak$/i, label: "Kodiak", icon: getDappLogo("Kodiak") },
+    { reg: /^SolvProtocol$/i, label: "SolvProtocol", icon: getDappLogo("SolvProtocol") },
+    { reg: /^NAV$/i, label: "NAV", icon: getDappLogo("NAV") },
+    { reg: /^Renzo$/i, label: "Renzo", icon: getDappLogo("Renzo") },
+    { reg: /^Bedrock$/i, label: "Bedrock", icon: getDappLogo("Bedrock") },
+    { reg: /^Holdstation$/i, label: "Holdstation", icon: getDappLogo("Holdstation") },
+    { reg: /^Reservoir$/i, label: "Reservoir", icon: getDappLogo("Reservoir") },
+    { reg: /^Avalon Labs$/i, label: "Avalon Labs", icon: getDappLogo("Avalon Labs") },
+    { reg: /^HPOS10I$/i, label: "HPOS10I", icon: getDappLogo("HPOS10I") },
+    { reg: /^Beramonium$/i, label: "Beramonium", icon: getDappLogo("Beramonium") },
+    { reg: /^StakeStone$/i, label: "StakeStone", icon: getDappLogo("StakeStone") },
+    { reg: /^BM$/i, label: "BM", icon: getDappLogo("BM") },
+    { reg: /^Ramen$/i, label: "Ramen", icon: getDappLogo("Ramen") },
+    { reg: /^Bulla$/i, label: "Bulla", icon: getDappLogo("Bulla") },
+    { reg: /^BurrBear$/i, label: "BurrBear", icon: getDappLogo("BurrBear") },
+    { reg: /^WeBera$/i, label: "WeBera", icon: getDappLogo("WeBera") },
+    { reg: /^Dolomite$/i, label: "Dolomite", icon: getDappLogo("Dolomite") },
+    { reg: /^Memeswap$/i, label: "Memeswap", icon: getDappLogo("Memeswap") },
+    { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome") },
   ]
 };
-
-export const SUPPORTED_PROTOCOLS = ["Bex", "Kodiak", "Infrared", "Dolomite"];
 
 export enum PAGINATION_ACTION {
   FIRST = "first",
