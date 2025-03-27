@@ -3,7 +3,7 @@ import { Token } from "@/types";
 import { memo, useState } from "react";
 import StakeModal from "./components/stake-modal";
 import TokenCard from "./components/token-card";
-import usePage from "./hooks/use-page";
+import usePage, { EnabledLstItem } from "./hooks/use-page";
 import { balanceShortFormated } from "@/utils/balance";
 
 export default memo(function Mobile() {
