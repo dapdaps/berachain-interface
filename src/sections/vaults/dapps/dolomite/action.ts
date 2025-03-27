@@ -26,6 +26,7 @@ export default async function onDolomiteAction(actionParams: any) {
   const parsedAmount = amount;
   options = {
     value: (isNative && actionType === "Deposit") ? parsedAmount : 0,
+    gasLimit: 4000000,
   };
 
   if (["Deposit", "Withdraw"].includes(actionType)) {
@@ -39,7 +40,7 @@ export default async function onDolomiteAction(actionParams: any) {
       method = isNative
         ? "depositPayableIntoDefaultAccount"
         : "depositWeiIntoDefaultAccount";
-      params = isNative ? [] : [currentRecord.token.marketId, parsedAmount];
+      params = isNative ? [] : [currentRecord.extra_data.market_id, parsedAmount];
     }
 
     if (actionType === "Withdraw") {
@@ -48,7 +49,7 @@ export default async function onDolomiteAction(actionParams: any) {
         : "withdrawWeiFromDefaultAccount";
       params = isNative
         ? [parsedAmount, 1]
-        : [currentRecord.token.marketId, parsedAmount, 1];
+        : [currentRecord.extra_data.market_id, parsedAmount, 1];
     }
   }
 

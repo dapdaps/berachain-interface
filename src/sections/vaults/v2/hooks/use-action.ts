@@ -19,7 +19,8 @@ export default function useAction() {
   const {
     currentRecord,
     actionType,
-    toggleActionVisible
+    toggleActionVisible,
+    getListData
   } = useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
@@ -85,6 +86,7 @@ export default function useAction() {
           chainId: DEFAULT_CHAIN_ID
         });
         toggleActionVisible({ visible: false });
+        getListData();
       } else {
         toast.fail({ title: actionType.button + " failed!" });
       }
