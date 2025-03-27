@@ -10,6 +10,7 @@ import Popover, {
 } from "@/components/popover";
 import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
+import Link from 'next/link';
 
 export const Vaults = (props: any) => {
   const { record, index, className } = props;
@@ -17,7 +18,7 @@ export const Vaults = (props: any) => {
   return (
     <div className="w-full flex items-center gap-[5px]">
       <div className="flex items-center shrink-0 min-w-[52px]">
-        {record.tokens.map((tk: any, idx: number) => (
+        {/*{record.tokens.map((tk: any, idx: number) => (
           <LazyImage
             key={idx}
             src={tk.icon}
@@ -30,20 +31,30 @@ export const Vaults = (props: any) => {
             }}
             fallbackSrc="/assets/tokens/default_icon.png"
           />
-        ))}
+        ))}*/}
+        <LazyImage
+          src={record.protocolIcon}
+          alt=""
+          width={36}
+          height={36}
+          containerClassName="shrink-0 rounded-full overflow-hidden"
+          fallbackSrc="/assets/tokens/default_icon.png"
+        />
       </div>
       <div className="flex flex-col gap-[1px]">
         <div className="text-[16px] flex items-center gap-[4px]">
           <div className="flex-1">
             {record.tokens.map((tk: any) => tk.symbol).join("-")}
           </div>
-          <LazyImage
-            src={record.protocolIcon}
-            width={20}
-            height={20}
-            containerClassName="shrink-0"
-            fallbackSrc="/assets/tokens/default_icon.png"
-          />
+          {record.reward_tokens?.some((tk: any) => ["BGT"].includes(tk.symbol?.toUpperCase?.())) && (
+            <Link
+              href="/hall?from=vaults"
+              className="w-[20px] h-[20px] block shrink-0 bg-no-repeat bg-center bg-contain"
+              style={{
+                backgroundImage: 'url("/images/vaults/v2/hub.png")'
+              }}
+            />
+          )}
         </div>
         <div className="text-[12px]">{record.pool_project}</div>
       </div>
