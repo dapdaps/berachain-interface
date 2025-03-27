@@ -135,6 +135,25 @@ export function useList(): List {
     return Object.values(filterSelected).flat().length;
   }, [filterSelected]);
 
+  const [totalUserStakeUsd, totalUserRewardUsd, totalUserVaultsCount] = useMemo(() => {
+    const DEFAULT = [Big(0), Big(0), Big(0)];
+    if (!data?.length) return [...DEFAULT];
+    let _totalUserStakeUsd = Big(0);
+    let _totalUserRewardUsd = Big(0);
+    let _totalUserVaultsCount = Big(0);
+    data.forEach((item: any) => {
+      if (item.user_stake?.usd) {
+        _totalUserStakeUsd = _totalUserStakeUsd.plus(Big(item.user_stake.usd || 0));
+        _totalUserVaultsCount = _totalUserVaultsCount.plus(1);
+      }
+      if (item.user_reward?.length) {
+        const _totalUsd = item.user_reward.reduce((prev: any, curr: any) => Big(prev.usd || 0).plus(Big(curr.usd || 0)), Big(0));
+        _totalUserRewardUsd = _totalUserRewardUsd.plus(_totalUsd);
+      }
+    });
+    return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount];
+  }, [data]);
+
   const getData = async () => {
     setLoading(true);
     try {
@@ -155,12 +174,21 @@ export function useList(): List {
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
           item.tokens = parseJSONString(item.tokens, []);
           item.extra_data = parseJSONString(item.extra_data, {});
+          item.user_reward = item.user_reward || [];
+          item.user_stake = item.user_stake || {};
 
           item.tokens.forEach((token: any) => {
             token.icon = getTokenLogo(token.symbol);
           });
           item.reward_tokens.forEach((token: any) => {
             token.icon = getTokenLogo(token.symbol);
+          });
+          item.user_reward.forEach((reward: any) => {
+            const curr = item.reward_tokens.find((token: any) => token.address.toLowerCase() === reward.address.toLowerCase());
+            if (curr) {
+              reward.symbol = curr.symbol;
+              reward.icon = curr.icon;
+            }
           });
 
           const specialVault: any = SPECIAL_VAULTS.find(
@@ -205,7 +233,7 @@ export function useList(): List {
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;
-          item.balance = "0";
+          item.balance = item.user_stake?.usd;
           item.vaultAddress = item.vault_address;
 
           if (item.protocol === "Kodiak") {
@@ -376,17 +404,18 @@ export function useList(): List {
     // }, 1000);
   };
 
-  const toggleOrder = (key: ORDER_KEYS) => {
+  const toggleOrder = (key: ORDER_KEYS, direction?: ORDER_DIRECTION) => {
     if (loading) return;
     if (key === orderKey) {
       setDirection(
-        orderDirection === ORDER_DIRECTION.DESC
+        direction ??
+        (orderDirection === ORDER_DIRECTION.DESC
           ? ORDER_DIRECTION.ASC
-          : ORDER_DIRECTION.DESC
+          : ORDER_DIRECTION.DESC)
       );
     } else {
       setOrderKey(key);
-      setDirection(ORDER_DIRECTION.DESC);
+      setDirection(direction ?? ORDER_DIRECTION.DESC);
     }
   };
 
@@ -514,7 +543,10 @@ export function useList(): List {
     toggleListAvailableAssets: toggleAvailableAssets,
     listFilterAssetsBalanceLoading: filterAssetsBalanceLoading,
     listFilterAssetsBalance: filterAssetsBalance,
-    listFilterSelectedLength: filterSelectedLength
+    listFilterSelectedLength: filterSelectedLength,
+    totalUserStakeUsd: totalUserStakeUsd,
+    totalUserRewardUsd: totalUserRewardUsd,
+    totalUserVaultsCount: totalUserVaultsCount,
   };
 }
 
@@ -527,7 +559,7 @@ export interface List {
   listLoading: boolean;
   listOrderKey: ORDER_KEYS;
   listOrderDirection: ORDER_DIRECTION;
-  toggleListOrder: (key: ORDER_KEYS) => void;
+  toggleListOrder: (key: ORDER_KEYS, direction?: ORDER_DIRECTION) => void;
   listFilterVisible: boolean;
   toggleListFilterVisible: (filterVisible?: boolean) => void;
   listFilterSelected: Record<FILTER_KEYS, FilterItem[]>;
@@ -538,9 +570,13 @@ export interface List {
   listFilterAssetsBalanceLoading: boolean;
   listFilterAssetsBalance: any;
   listFilterSelectedLength: number;
+  totalUserStakeUsd: Big.Big;
+  totalUserRewardUsd: Big.Big;
+  totalUserVaultsCount: Big.Big;
 }
 
-function parseJSONString(str: string, defaultValue: any = {}) {
+function parseJSONString(str: any, defaultValue: any = {}) {
+  if (typeof str !== "string") return str || defaultValue;
   try {
     return str ? JSON.parse(str) : defaultValue;
   } catch (e) {
