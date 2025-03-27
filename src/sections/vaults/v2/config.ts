@@ -1,6 +1,6 @@
-import DolomiteConfig from '@/configs/lending/dolomite';
-import { getDappLogo, getTokenLogo } from '@/sections/dashboard/utils';
-import { bera } from '@/configs/tokens/bera';
+import DolomiteConfig from "@/configs/lending/dolomite";
+import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
+import { bera } from "@/configs/tokens/bera";
 
 export enum ACTION_TYPE {
   DEPOSIT = "deposit",
@@ -70,7 +70,8 @@ export const StrategyPool = {
       address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
     }
   ],
-  protocol: "Bex",
+  protocol: "Hub",
+  protocolIcon: "https://assets.db3.app/dapp/bex.png",
   lpProtocol: "Bex",
   token: {
     symbol: "WBERA-HONEY",
@@ -95,15 +96,15 @@ export const SPECIAL_VAULTS = [
       ...DolomiteConfig.basic,
       ...DolomiteConfig.networks["80094"]
     }
-  },
+  }
 ];
 
 export const SPECIAL_PROTOCOLS = [
   // Hub
   {
     protocol: "Hub",
-    nameIcon: "/images/vaults/v2/hub.png",
-  },
+    nameIcon: "/images/vaults/v2/hub.png"
+  }
 ];
 
 export interface FilterItem {
@@ -125,44 +126,78 @@ export enum FILTER_KEYS {
 
 export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [
-    { reg: /^W?BERA$/i, label: "BERA", icon: getTokenLogo("BERA"), token: bera.bera },
-    { reg: /^iBGT$/i, label: "iBGT", icon: getTokenLogo("iBGT"), token: bera.ibgt },
-    { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY"), token: bera.honey },
-    { reg: /^WETH$/i, label: "WETH", icon: getTokenLogo("WETH"), token: bera.weth },
-    { reg: /^WBTC$/i, label: "WBTC", icon: getTokenLogo("WBTC"), token: bera.wbtc },
-    { reg: /^NECT$/i, label: "NECT", icon: getTokenLogo("NECT"), token: bera.nect },
-    { reg: /^USDC.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e"), token: bera["usdc.e"] },
+    {
+      reg: /^W?BERA$/i,
+      label: "BERA",
+      icon: getTokenLogo("BERA"),
+      token: bera.bera
+    },
+    {
+      reg: /^iBGT$/i,
+      label: "iBGT",
+      icon: getTokenLogo("iBGT"),
+      token: bera.ibgt
+    },
+    {
+      reg: /^HONEY$/i,
+      label: "HONEY",
+      icon: getTokenLogo("HONEY"),
+      token: bera.honey
+    },
+    {
+      reg: /^WETH$/i,
+      label: "WETH",
+      icon: getTokenLogo("WETH"),
+      token: bera.weth
+    },
+    {
+      reg: /^WBTC$/i,
+      label: "WBTC",
+      icon: getTokenLogo("WBTC"),
+      token: bera.wbtc
+    },
+    {
+      reg: /^NECT$/i,
+      label: "NECT",
+      icon: getTokenLogo("NECT"),
+      token: bera.nect
+    },
+    {
+      reg: /^USDC.e$/i,
+      label: "USDC.e",
+      icon: getTokenLogo("USDC.e"),
+      token: bera["usdc.e"]
+    }
     // { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC"), token: bera.usdc },
   ],
   [FILTER_KEYS.REWARDS]: [
-    { reg: /^BGT$/i, label: 'BGT', icon: getTokenLogo('BGT') },
-    { reg: /^oBERO$/i, label: 'oBERO', icon: getTokenLogo('oBERO') },
-    { reg: /^iBGT$/i, label: 'iBGT', icon: getTokenLogo('iBGT') },
-    { reg: /^xKDK$/i, label: 'xKDK', icon: getTokenLogo('xKDK') },
-    { reg: /^W?BERA$/i, label: 'BERA', icon: getTokenLogo('BERA') },
-    { reg: /^BURR Points$/i, label: 'BURR Points', icon: getTokenLogo('BURR Points') },
-    { reg: /^HONEY$/i, label: 'HONEY', icon: getTokenLogo('HONEY') },
-    { reg: /^gBERA$/i, label: 'gBERA', icon: getTokenLogo('gBERA') },
-    { reg: /^USDbr$/i, label: 'USDbr', icon: getTokenLogo('USDbr') },
-    { reg: /^NOME$/i, label: 'NOME', icon: getTokenLogo('NOME') },
+    { reg: /^BGT$/i, label: "BGT", icon: getTokenLogo("BGT") },
+    { reg: /^oBERO$/i, label: "oBERO", icon: getTokenLogo("oBERO") },
+    { reg: /^iBGT$/i, label: "iBGT", icon: getTokenLogo("iBGT") },
+    { reg: /^xKDK$/i, label: "xKDK", icon: getTokenLogo("xKDK") },
+    { reg: /^W?BERA$/i, label: "BERA", icon: getTokenLogo("BERA") },
+    {
+      reg: /^BURR Points$/i,
+      label: "BURR Points",
+      icon: getTokenLogo("BURR Points")
+    },
+    { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY") },
+    { reg: /^gBERA$/i, label: "gBERA", icon: getTokenLogo("gBERA") },
+    { reg: /^USDbr$/i, label: "USDbr", icon: getTokenLogo("USDbr") },
+    { reg: /^NOME$/i, label: "NOME", icon: getTokenLogo("NOME") }
   ],
   [FILTER_KEYS.PROTOCOLS]: [
-    { reg: /^Bex$/i, label: 'Bex', icon: getDappLogo('Bex') },
-    { reg: /^BeraDrome$/i, label: 'BeraDrome', icon: getDappLogo('BeraDrome') },
-    { reg: /^BurrBear$/i, label: 'BurrBear', icon: getDappLogo('BurrBear') },
-    { reg: /^WeBera$/i, label: 'WeBera', icon: getDappLogo('WeBera') },
-    { reg: /^Infrared$/i, label: 'Infrared', icon: getDappLogo('Infrared') },
-    { reg: /^Kodiak$/i, label: 'Kodiak', icon: getDappLogo('Kodiak') },
-    { reg: /^Smilee$/i, label: 'Smilee', icon: getDappLogo('Smilee') },
-    { reg: /^Dolomite$/i, label: 'Dolomite', icon: getDappLogo('Dolomite') },
-    { reg: /^Memeswap$/i, label: 'Memeswap', icon: getDappLogo('Memeswap') },
-    { reg: /^Nome$/i, label: 'Nome', icon: getDappLogo('Nome') },
-  ],
+    { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex") },
+    { reg: /^BeraDrome$/i, label: "BeraDrome", icon: getDappLogo("BeraDrome") },
+    { reg: /^BurrBear$/i, label: "BurrBear", icon: getDappLogo("BurrBear") },
+    { reg: /^WeBera$/i, label: "WeBera", icon: getDappLogo("WeBera") },
+    { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared") },
+    { reg: /^Kodiak$/i, label: "Kodiak", icon: getDappLogo("Kodiak") },
+    { reg: /^Smilee$/i, label: "Smilee", icon: getDappLogo("Smilee") },
+    { reg: /^Dolomite$/i, label: "Dolomite", icon: getDappLogo("Dolomite") },
+    { reg: /^Memeswap$/i, label: "Memeswap", icon: getDappLogo("Memeswap") },
+    { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome") }
+  ]
 };
 
-export const SUPPORTED_PROTOCOLS = [
-  "Bex",
-  "Kodiak",
-  "Infrared",
-  "Dolomite"
-];
+export const SUPPORTED_PROTOCOLS = ["Bex", "Kodiak", "Infrared", "Dolomite"];

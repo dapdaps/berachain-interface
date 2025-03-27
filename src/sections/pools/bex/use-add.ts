@@ -110,15 +110,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         .toFixed(0);
 
       const abiCoder = new utils.AbiCoder();
-      console.log([
-        assets,
-        maxAmountsIn,
-        abiCoder.encode(
-          ["uint256", "uint256[]", "uint256"],
-          [1, amountsIn, initBalances]
-        ),
-        false
-      ]);
+
       const [bptOut] = await queryContract.callStatic.queryJoin(
         poolIdx,
         account,
