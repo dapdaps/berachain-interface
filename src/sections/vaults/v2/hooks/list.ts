@@ -7,7 +7,6 @@ import {
   FILTER_KEYS,
   FilterItem,
   SUPPORTED_PROTOCOLS,
-  SPECIAL_PROTOCOLS,
   FILTERS, PAGINATION_ACTION
 } from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
@@ -224,15 +223,6 @@ export function useList(): List {
               item[key] = specialVault[key];
             }
           }
-          const specialProtocol: any = SPECIAL_PROTOCOLS.find(
-            (sp) => sp.protocol === item.project
-          );
-          if (specialProtocol) {
-            for (const key in specialProtocol) {
-              if (key === "protocol") continue;
-              item[key] = specialProtocol[key];
-            }
-          }
           item.apy = item.apr.pool || "0";
           let totalApy = Big(item.apy || 0);
           if (item.apr) {
@@ -252,9 +242,7 @@ export function useList(): List {
             decimals: 18
           };
           item.protocol = item.project;
-          item.protocolIcon = getDappLogo(
-            ["Hub"].includes(item.project) ? item.pool_project : item.project
-          );
+          item.protocolIcon = getDappLogo(item.pool_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
           item.id = item.extra_data.pool_id;

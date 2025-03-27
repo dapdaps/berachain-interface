@@ -37,15 +37,13 @@ export const Vaults = (props: any) => {
           <div className="flex-1">
             {record.tokens.map((tk: any) => tk.symbol).join("-")}
           </div>
-          {record.nameIcon && (
-            <LazyImage
-              src={record.nameIcon}
-              width={20}
-              height={20}
-              containerClassName="shrink-0"
-              fallbackSrc="/assets/tokens/default_icon.png"
-            />
-          )}
+          <LazyImage
+            src={record.protocolIcon}
+            width={20}
+            height={20}
+            containerClassName="shrink-0"
+            fallbackSrc="/assets/tokens/default_icon.png"
+          />
         </div>
         <div className="text-[12px]">{record.pool_project}</div>
       </div>
