@@ -16,8 +16,11 @@ export default function useAction() {
   const { addAction } = useAddAction("dapp");
   const [amount, setAmount] = useState<string>();
   const [dappParams, setDappParams] = useState<any>({});
-  const { currentRecord, actionType, toggleActionVisible } =
-    useVaultsV2Context();
+  const {
+    currentRecord,
+    actionType,
+    toggleActionVisible
+  } = useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
@@ -33,11 +36,18 @@ export default function useAction() {
   >(() => {
     const DEFAULT: [boolean, string | undefined] = [false, void 0];
     if (Big(amount || 0).eq(0)) return [false, "Enter an amount"];
-    if (Big(tokenBalance || 0).lt(amount || 0)) {
-      return [true, "Insufficient Balance"];
+    if (actionType.value === ACTION_TYPE.DEPOSIT) {
+      if (Big(tokenBalance || 0).lt(amount || 0)) {
+        return [true, "Insufficient Balance"];
+      }
+    }
+    if (actionType.value === ACTION_TYPE.WITHDRAW) {
+      if (Big(currentRecord.user_stake?.amount || 0).lt(amount || 0)) {
+        return [true, "Insufficient Balance"];
+      }
     }
     return DEFAULT;
-  }, [tokenBalance, isLoading, actionType, amount]);
+  }, [tokenBalance, currentRecord, isLoading, actionType, amount]);
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);

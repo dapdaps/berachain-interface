@@ -5,7 +5,7 @@ import ButtonWithApprove from "@/components/button/button-with-approve";
 import { numberFormatter } from "@/utils/number-formatter";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import useAction from "../../hooks/use-action";
-import { useState } from "react";
+import { useMemo, useState } from 'react';
 import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 import Big from "big.js";
 import Loading from "@/components/loading";
@@ -23,12 +23,19 @@ const Action = (props: any) => {
     handleAmountChange,
     inputError,
     inputErrorMessage,
-    balance,
+    balance: depositBalance,
     updateBalance,
     balanceLoading,
     dappParams,
     setDappParams
   } = useAction();
+
+  const balance = useMemo(() => {
+    if (actionType.value === ACTION_TYPE.DEPOSIT) {
+      return depositBalance;
+    }
+    return currentRecord.user_stake?.amount || "0";
+  }, [actionType, depositBalance, currentRecord.user_stake]);
 
   const handleBalance = () => {
     handleAmountChange(balance);
@@ -141,16 +148,16 @@ const Action = (props: any) => {
           <div className=""></div>
           <div className="flex items-center gap-[2px]">
             <div>balance:</div>
-            {balanceLoading ? (
+            {actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading ? (
               <Loading size={14} />
             ) : (
               <button
                 type="button"
-                disabled={Big(balance || 0).lte(0) || balanceLoading}
+                disabled={Big(balance || 0).lte(0) || (actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading)}
                 className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
                 onClick={handleBalance}
               >
-                {numberFormatter(balance, 2, true)}
+                {numberFormatter(balance, 6, true)}
               </button>
             )}
           </div>

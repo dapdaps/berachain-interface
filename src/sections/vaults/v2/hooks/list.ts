@@ -192,7 +192,12 @@ export function useList(): List {
           });
 
           const specialVault: any = SPECIAL_VAULTS.find(
-            (sp) => sp.vaultAddress === item.vault_address
+            (sp) => {
+              return (
+                sp.vaultAddress?.toLowerCase() === item.vault_address.toLowerCase() ||
+                sp.project?.toLowerCase() === item.project.toLowerCase()
+              );
+            }
           );
           if (specialVault) {
             for (const key in specialVault) {

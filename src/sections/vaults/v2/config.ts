@@ -90,7 +90,7 @@ export const SPECIAL_VAULTS = [
   },
   // Dolomite - BERA
   {
-    vaultAddress: DolomiteConfig.networks["80094"].spenderAddress,
+    project: "Dolomite",
     config: {
       ...DolomiteConfig.basic,
       ...DolomiteConfig.networks["80094"]
