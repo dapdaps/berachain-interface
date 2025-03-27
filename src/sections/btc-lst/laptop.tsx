@@ -105,7 +105,7 @@ export default memo(function Laptop() {
                 btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => (
                   <div className="flex items-center gap-[12px]">
                     <img src={item?.targetToken?.icon} className="w-[36px] h-[36px] rounded-full" />
-                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{item.stakedAmount} {item.targetToken?.symbol}</div>
+                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{balanceShortFormated(item.stakedAmount)} {item.targetToken?.symbol}</div>
                   </div>
                 ))
               }
@@ -119,7 +119,7 @@ export default memo(function Laptop() {
                 <img src={wbtcToken.icon} className="w-[36px] h-[36px] overflow-hidden" />
                 <div className="text-black font-Montserrat text-[16px] font-semibold lea ding-[100%]">{valueFormated(bedrockData.availableAmount)} WBTC</div>
               </div>
-              <div onClick={() => router.push('/bridge')} className="w-[115px] h-[40px] bg-[#FFDC50] border border-black flex items-center justify-center gap-[10px] rounded-[10px]">
+              <div onClick={() => router.push('/bridge')} className="w-[115px] h-[40px] bg-[#FFDC50] border border-black flex items-center justify-center gap-[10px] rounded-[10px] cursor-pointer hover:bg-opacity-50">
                 <span className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">Bridge</span>
                 <IconArrowSvg className="-rotate-90" />
               </div>
