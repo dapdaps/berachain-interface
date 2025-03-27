@@ -34,10 +34,26 @@ export default memo(function RangeInput({
     }
   }
 
+  const validateInputByDecimals = (value: string): string => {
+    if (!value || !token?.decimals) return value;
+    
+    if (value.includes('.')) {
+      const [integerPart, decimalPart] = value.split('.');
+      if (decimalPart.length > token.decimals) {
+        return `${integerPart}.${decimalPart.substring(0, token.decimals)}`;
+      }
+    }
+    
+    return value;
+  };
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setInAmount(value);
-    if (value === '') {
+    
+    const validatedValue = validateInputByDecimals(value);
+    
+    setInAmount(validatedValue);
+    if (validatedValue === '') {
       setPercentage("0");
       setRangeIndex(-1);
       if (onChange) {
@@ -45,7 +61,7 @@ export default memo(function RangeInput({
       }
       return;
     }
-    const newPercentage = getPercentage(value);
+    const newPercentage = getPercentage(validatedValue);
     setPercentage(newPercentage);
     
     const matchIndex = RangeList.findIndex((range) => 
@@ -54,7 +70,7 @@ export default memo(function RangeInput({
     setRangeIndex(matchIndex);
     
     if (onChange) {
-      onChange(value);
+      onChange(validatedValue);
     }
   };
   
@@ -62,9 +78,15 @@ export default memo(function RangeInput({
     const newPercentage = e.target.value;
     setPercentage(newPercentage);
     
-    const newAmount = Big(balance || 0)
+    let newAmount = Big(balance || 0)
       .times(Big(newPercentage).div(100))
       .toFixed();
+    
+    // 确保金额符合token.decimals的限制
+    if (token?.decimals) {
+      newAmount = Big(newAmount).toFixed(token.decimals);
+    }
+    
     setInAmount(newAmount);
     
     const matchIndex = RangeList.findIndex((range) => 
@@ -78,9 +100,15 @@ export default memo(function RangeInput({
   };
   
   const handleRangeButtonClick = (range: number, index: number) => {
-    const newAmount = Big(balance || 0)
+    let newAmount = Big(balance || 0)
       .times(range)
       .toFixed();
+    
+    // 确保金额符合token.decimals的限制
+    if (token?.decimals) {
+      newAmount = Big(newAmount).toFixed(token.decimals);
+    }
+    
     setInAmount(newAmount);
     setPercentage(String(range * 100));
     setRangeIndex(index);
@@ -95,11 +123,18 @@ export default memo(function RangeInput({
       setPercentage(newPercentage);
       
       if (Big(inAmount).gt(balance)) {
-        setInAmount(balance);
+        let maxAmount = balance;
+        
+        // 确保最大金额符合token.decimals的限制
+        if (token?.decimals) {
+          maxAmount = Big(balance).toFixed(token.decimals);
+        }
+        
+        setInAmount(maxAmount);
         setPercentage("100");
         setRangeIndex(3); 
         if (onChange) {
-          onChange(balance);
+          onChange(maxAmount);
         }
       }
     }
@@ -111,6 +146,9 @@ export default memo(function RangeInput({
         <InputNumber 
           value={inAmount} 
           onChange={handleInputChange} 
+          max={balance}
+          // 添加对token.decimals的支持
+          decimals={token?.decimals}
         />
         <div className="flex items-center gap-[6px]">
           <div className="w-[30px] h-[30px] rounded-full overflow-hidden">

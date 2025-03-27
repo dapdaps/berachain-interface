@@ -50,7 +50,7 @@ const Signpost = (props: any) => {
         src="/images/home-earth/signpost-btc-lst.png"
         alt=""
         onClick={() => router.push('/btc-lst')}
-        className="w-[77px] h-[17px] absolute left-[66px] top-[196px] opacity-50 object-center object-contain"
+        className="w-[140px] h-[53px] cursor-pointer absolute left-[24px] top-[174px] object-center object-contain"
       />
     </div>
   );

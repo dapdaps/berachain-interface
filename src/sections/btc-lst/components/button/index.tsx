@@ -10,11 +10,12 @@ import useExecutionContract from "@/hooks/use-execution-contract";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
 import { VAULT_MAPPING } from "@/sections/bgt/config/gauge";
 import useAddAction from "@/hooks/use-add-action";
-import { EnabledLstItem } from "../../laptop";
+
 import { useAppKit } from "@reown/appkit/react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { useSwitchChain } from "wagmi";
 import { STAKE_ABI } from "../../constant";
+import { EnabledLstItem } from "../../hooks/use-page";
 
 interface IProps {
   type: "deposit" | "withdraw";
@@ -29,6 +30,7 @@ export const PROJECT_STRATEGIES: any = {
   bedrock: {
     deposit: {
       method: "mint",
+      approvalToken: "token0",
       formatParams: (tokenAddress: string, amount: ethers.BigNumber) => [tokenAddress, amount]
     }
   },
@@ -36,6 +38,7 @@ export const PROJECT_STRATEGIES: any = {
     deposit: {
       method: "deposit",
       fee: 0.003,
+      approvalToken: "token1",
       formatParams: (tokenAddress: string, amount: ethers.BigNumber) => {
         return [tokenAddress, amount, 0];
       }
@@ -68,16 +71,27 @@ export default function Button(props: IProps) {
   const isInSufficient = Number(amount) > Number(balance);
 
   const checkApproval = (_amount: string) => {
-    if (!token1) return;
+    if (!item) return;
+    
+    const projectName = item.name.toLowerCase();
+    const projectStrategy = PROJECT_STRATEGIES[projectName];
+    
+    if (!projectStrategy || !projectStrategy[type]) return;
+    
+    const approvalTokenType = projectStrategy[type].approvalToken || "token1";
+    const tokenToApprove = approvalTokenType === "token0" ? token0 : token1;
+    
+    if (!tokenToApprove) return;
+    
     const wei: any = ethers.utils.parseUnits(
-      Big(_amount).toFixed(token1?.decimals),
-      token1?.decimals
+      Big(_amount).toFixed(tokenToApprove?.decimals),
+      tokenToApprove?.decimals
     );
     const _abi = [
       "function allowance(address, address) external view returns (uint256)",
     ];
     const contract = new ethers.Contract(
-      token1.address,
+      tokenToApprove.address,
       _abi,
       provider?.getSigner()
     );
@@ -94,26 +108,38 @@ export default function Button(props: IProps) {
       })
       .catch((e: Error) => console.log(e));
   };
+  
   const handleApprove = () => {
-    if (!token1) return;
+    if (!item) return;
+    
+    const projectName = item.name.toLowerCase();
+    const projectStrategy = PROJECT_STRATEGIES[projectName];
+    
+    if (!projectStrategy || !projectStrategy[type]) return;
+    
+    const approvalTokenType = projectStrategy[type].approvalToken || "token1";
+    const tokenToApprove = approvalTokenType === "token0" ? token0 : token1;
+    
+    if (!tokenToApprove) return;
+    
     const payload = { isApproving: true };
-    const _amount = Big(amount).toFixed(token1.decimals);
+    const _amount = Big(amount).toFixed(tokenToApprove.decimals);
     const toastId = toast?.loading({
-      title: `Approve ${token1.symbol}`,
+      title: `Approve ${tokenToApprove.symbol}`,
     });
     updateState({
       ...payload,
       isLoading: true,
     });
-
-    const wei = ethers.utils.parseUnits(_amount, token1.decimals);
+  
+    const wei = ethers.utils.parseUnits(_amount, tokenToApprove.decimals);
     const _abi = ["function approve(address, uint) public"];
     const contract = new ethers.Contract(
-      token1.address,
+      tokenToApprove.address,
       _abi,
       provider?.getSigner()
     );
-
+  
     contract
       .approve(item.dappConfig.STAKE_ADDRESS, wei)
       .then((tx: any) => tx.wait())
@@ -217,15 +243,16 @@ export default function Button(props: IProps) {
       });
     } catch (error: any) {
       console.log(error, '<<---error');
-      updateState({
-        isLoading: false,
-      });
       toast?.dismiss(toastId);
       toast?.fail({
         title: `${type === "deposit" ? "Deposit" : "Withdraw"} failed!`,
         text: error?.message?.includes("user rejected transaction")
           ? "user rejected transaction"
           : error?.message ?? "",
+      });
+    } finally {
+      updateState({
+        isLoading: false,
       });
     }
   };
