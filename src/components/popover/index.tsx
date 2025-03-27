@@ -24,6 +24,7 @@ const Popover = (props: Props) => {
     triggerContainerClassName,
     closeDelayDuration = 300,
     onClickBefore,
+    closeDelayDuration = 300,
   } = props;
 
   const triggerRef = useRef<any>();

@@ -60,24 +60,16 @@ const Input = ({
         {token ? (
           token.icons ? (
             <div className="flex items-center relative shrink-0">
-              {token.icons[0] && (
+              {token.icons.map((icon: string, idx: number) => (
                 <img
-                  className="mr-[-8px] rounded-full"
-                  src={token.icons[0]}
+                  className={`${idx === 0 && "mr-[-8px]"} rounded-full`}
+                  src={icon || "/assets/tokens/default_icon.png"}
                   width={30}
                   height={30}
                   alt="Token"
+                  key={idx}
                 />
-              )}
-              {token.icons[1] && (
-                <img
-                  className="rounded-full"
-                  src={token.icons[1]}
-                  width={30}
-                  height={30}
-                  alt="Token"
-                />
-              )}
+              ))}
             </div>
           ) : (
             <StyledToken className="shrink-0">
