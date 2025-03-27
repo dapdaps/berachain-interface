@@ -3,29 +3,40 @@ import {
   StrategyPool,
   ORDER_DIRECTION,
   ORDER_KEYS,
-  SPECIAL_VAULTS, FILTER_KEYS, FilterItem, SUPPORTED_PROTOCOLS, SPECIAL_PROTOCOLS, FILTERS
-} from '@/sections/vaults/v2/config';
+  SPECIAL_VAULTS,
+  FILTER_KEYS,
+  FilterItem,
+  SUPPORTED_PROTOCOLS,
+  SPECIAL_PROTOCOLS,
+  FILTERS
+} from "@/sections/vaults/v2/config";
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
-import { cloneDeep } from 'lodash';
-import chains from '@/configs/chains';
-import { Contract, providers, utils } from 'ethers';
-import { TOKEN_ABI } from '@/hooks/use-token-balance';
-import { bera } from '@/configs/tokens/bera';
+import { cloneDeep } from "lodash";
+import chains from "@/configs/chains";
+import { Contract, providers, utils } from "ethers";
+import { TOKEN_ABI } from "@/hooks/use-token-balance";
+import { bera } from "@/configs/tokens/bera";
+import { useDebounceFn } from "ahooks";
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
   [FILTER_KEYS.REWARDS]: [],
-  [FILTER_KEYS.PROTOCOLS]: [],
+  [FILTER_KEYS.PROTOCOLS]: []
 };
 
-const DEFAULT_FILTER_ASSETS_BALANCE: { symbol?: string; balance: string; address?: string; decimals?: number; }[] = FILTERS.ASSETS.map((it) => ({
+const DEFAULT_FILTER_ASSETS_BALANCE: {
+  symbol?: string;
+  balance: string;
+  address?: string;
+  decimals?: number;
+}[] = FILTERS.ASSETS.map((it) => ({
   ...it.token,
-  balance: "0",
+  balance: "0"
 }));
 
 export function useList(): List {
@@ -38,10 +49,15 @@ export function useList(): List {
     ORDER_DIRECTION.DESC
   );
   const [filterVisible, setFilterVisible] = useState(false);
-  const [filterSelected, setFilterSelected] = useState<Record<FILTER_KEYS, FilterItem[]>>(cloneDeep(DEFAULT_FILTER_SELECTED));
+  const [filterSelected, setFilterSelected] = useState<
+    Record<FILTER_KEYS, FilterItem[]>
+  >(cloneDeep(DEFAULT_FILTER_SELECTED));
   const [availableAssets, setAvailableAssets] = useState(false);
-  const [filterAssetsBalance, setFilterAssetsBalance] = useState(cloneDeep(DEFAULT_FILTER_ASSETS_BALANCE));
-  const [filterAssetsBalanceLoading, setFilterAssetsBalanceLoading] = useState(false);
+  const [filterAssetsBalance, setFilterAssetsBalance] = useState(
+    cloneDeep(DEFAULT_FILTER_ASSETS_BALANCE)
+  );
+  const [filterAssetsBalanceLoading, setFilterAssetsBalanceLoading] =
+    useState(false);
 
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -133,9 +149,7 @@ export function useList(): List {
       }
       const _list = res.data.data || [];
       const _data = _list
-        .filter((item: any) =>
-          SUPPORTED_PROTOCOLS.includes(item.project)
-        )
+        .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.project))
         .map((item: any) => {
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
@@ -178,7 +192,10 @@ export function useList(): List {
           item.totalApy = totalApy;
           item.token = {
             symbol: item.name,
-            address: item.pool_address === "0x0000000000000000000000000000000000000000" ? "native" : item.pool_address,
+            address:
+              item.pool_address === "0x0000000000000000000000000000000000000000"
+                ? "native"
+                : item.pool_address,
             decimals: 18
           };
           item.protocol = item.project;
@@ -397,9 +414,10 @@ export function useList(): List {
   };
 
   const toggleAvailableAssets = (_availableAssets?: boolean) => {
-    const __availableAssets = typeof _availableAssets === "boolean"
-      ? _availableAssets
-      : !availableAssets;
+    const __availableAssets =
+      typeof _availableAssets === "boolean"
+        ? _availableAssets
+        : !availableAssets;
     setAvailableAssets(__availableAssets);
     if (__availableAssets) {
       const _filterSelected = { ...filterSelected };
@@ -423,14 +441,18 @@ export function useList(): List {
           const rawBalance = await rpcProvider.getBalance(account);
           return {
             ...token,
-            balance: utils.formatEther(rawBalance),
+            balance: utils.formatEther(rawBalance)
           };
         } else {
-          const TokenContract = new Contract(token.address, TOKEN_ABI, rpcProvider);
+          const TokenContract = new Contract(
+            token.address,
+            TOKEN_ABI,
+            rpcProvider
+          );
           const rawBalance = await TokenContract.balanceOf(account);
           return {
             ...token,
-            balance: utils.formatUnits(rawBalance, token.decimals),
+            balance: utils.formatUnits(rawBalance, token.decimals)
           };
         }
       } catch (error) {
@@ -438,27 +460,39 @@ export function useList(): List {
       }
       return {
         ...token,
-        balance: "0",
+        balance: "0"
       };
     };
     try {
-      const balances = await Promise.all(filterAssetsBalance.map((it) => getBalance(it)));
+      const balances = await Promise.all(
+        filterAssetsBalance.map((it) => getBalance(it))
+      );
       const WBERABalance = await getBalance(bera.wbera);
       const BERABalance = balances.find((it) => it.symbol === "BERA");
-      if (BERABalance && Big(BERABalance.balance || 0).lte(0) && Big(WBERABalance.balance || 0).gt(0)) {
+      if (
+        BERABalance &&
+        Big(BERABalance.balance || 0).lte(0) &&
+        Big(WBERABalance.balance || 0).gt(0)
+      ) {
         BERABalance.balance = WBERABalance.balance;
       }
       setFilterAssetsBalance(balances);
     } catch (error) {
-      console.error('Error fetching balances:', error);
+      console.error("Error fetching balances:", error);
     }
     setFilterAssetsBalanceLoading(false);
   };
 
+  const { run: init } = useDebounceFn(
+    () => {
+      getData();
+      getFilterAssetsBalance();
+    },
+    { wait: 1000 }
+  );
+
   useEffect(() => {
-    if (!account) return;
-    getData();
-    getFilterAssetsBalance();
+    init();
   }, [account]);
 
   return {
@@ -480,7 +514,7 @@ export function useList(): List {
     toggleListAvailableAssets: toggleAvailableAssets,
     listFilterAssetsBalanceLoading: filterAssetsBalanceLoading,
     listFilterAssetsBalance: filterAssetsBalance,
-    listFilterSelectedLength: filterSelectedLength,
+    listFilterSelectedLength: filterSelectedLength
   };
 }
 
