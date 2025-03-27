@@ -3,6 +3,7 @@ import { memo, useEffect, useState } from "react";
 import { usePriceStore } from "@/stores//usePriceStore";
 import { getAnotherAmountOutV2 } from "../../helpers";
 import Input from "./input";
+import SwapModal from "@/sections/swap/SwapModal";
 import { StyledContainer, StyledSubtitle } from "./styles";
 import { sortTokens } from "../../utils";
 
@@ -22,6 +23,8 @@ const DepositAmounts = ({
   const prices = usePriceStore((store) => store.price);
   const [balance0, setBalance0] = useState("");
   const [balance1, setBalance1] = useState("");
+  const [insufficientTokens, setInsufficientTokens] = useState<any>([]);
+  const [selectedToken, setSelectedToken] = useState<any>(null);
 
   const handleValue = (value: any, type: 0 | 1) => {
     if (type === 0) {
@@ -85,6 +88,14 @@ const DepositAmounts = ({
       new Big(balance0 || 0).lt(value0 || 0) ||
       new Big(balance1 || 0).lt(value1 || 0)
     ) {
+      let _insufficientTokens = [];
+      if (new Big(balance0 || 0).lt(value0 || 0)) {
+        _insufficientTokens.push(token0);
+      }
+      if (new Big(balance1 || 0).lt(value1 || 0)) {
+        _insufficientTokens.push(token1);
+      }
+      setInsufficientTokens(_insufficientTokens);
       onError("Insufficient Balance");
       return;
     }
@@ -125,6 +136,34 @@ const DepositAmounts = ({
           onSelectToken?.(1);
         }}
       />
+
+      {!!insufficientTokens?.length && (
+        <div className="text-[14px] text-black font-bold mt-[10px] flex justify-end gap-[4px]">
+          Get{" "}
+          {insufficientTokens.map((token: any, idx: number) => (
+            <span
+              className="cursor-pointer underline"
+              onClick={() => {
+                setSelectedToken(token);
+              }}
+            >
+              {token.symbol}
+              {idx !== insufficientTokens.length - 1 && ","}
+            </span>
+          ))}
+        </div>
+      )}
+      {selectedToken && (
+        <SwapModal
+          defaultOutputCurrency={selectedToken}
+          outputCurrencyReadonly={true}
+          show={!!selectedToken}
+          onClose={() => {
+            setSelectedToken(null);
+          }}
+          from="marketplace"
+        />
+      )}
     </StyledContainer>
   );
 };

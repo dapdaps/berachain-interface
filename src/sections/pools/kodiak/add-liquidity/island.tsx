@@ -5,6 +5,7 @@ import Big from "big.js";
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import Button from "../../components/button/increase-button";
 import Loading from "@/components/loading";
+import SwapModal from "@/sections/swap/SwapModal";
 import { balanceFormated } from "@/utils/balance";
 import { useDebounceFn } from "ahooks";
 import useDeposit from "../island/hooks/use-deposit";
@@ -23,6 +24,8 @@ export default function AddLiquidity({
   const [balance0, setBalance0] = useState("");
   const [balance1, setBalance1] = useState("");
   const [receives, setReceives] = useState<any>();
+  const [insufficientTokens, setInsufficientTokens] = useState<any>([]);
+  const [selectedToken, setSelectedToken] = useState<any>(null);
   const { querying, queryAmounts } = useDepositAmount({
     islandContract: rest?.id || rest?.token?.address,
     token0,
@@ -65,8 +68,17 @@ export default function AddLiquidity({
 
   const errorTips = useMemo(() => {
     if (!amount0 || !amount1) return "Enter an amount";
-    if (Big(balance0 || 0).lt(amount0) || Big(balance1 || 0).lt(amount1))
+    if (Big(balance0 || 0).lt(amount0) || Big(balance1 || 0).lt(amount1)) {
+      let _insufficientTokens = [];
+      if (new Big(balance0 || 0).lt(amount0 || 0)) {
+        _insufficientTokens.push(token0);
+      }
+      if (new Big(balance1 || 0).lt(amount1 || 0)) {
+        _insufficientTokens.push(token1);
+      }
+      setInsufficientTokens(_insufficientTokens);
       return "Insufficient Balance";
+    }
     return "";
   }, [amount0, amount1, balance0, balance1]);
 
@@ -96,6 +108,33 @@ export default function AddLiquidity({
         }}
         onLoad={setBalance1}
       />
+      {!!insufficientTokens?.length && (
+        <div className="text-[14px] text-black font-bold mt-[10px] flex justify-end gap-[4px]">
+          Get{" "}
+          {insufficientTokens.map((token: any, idx: number) => (
+            <span
+              className="cursor-pointer underline"
+              onClick={() => {
+                setSelectedToken(token);
+              }}
+            >
+              {token.symbol}
+              {idx !== insufficientTokens.length - 1 && ","}
+            </span>
+          ))}
+        </div>
+      )}
+      {selectedToken && (
+        <SwapModal
+          defaultOutputCurrency={selectedToken}
+          outputCurrencyReadonly={true}
+          show={!!selectedToken}
+          onClose={() => {
+            setSelectedToken(null);
+          }}
+          from="marketplace"
+        />
+      )}
       <div className="rounded-[12px] border-[#373A53] border p-[14px] mt-[10px] text-[14px] text-[#3D405A] font-medium">
         <div className="flex justify-between items-start">
           <div>Estimated Received</div>
