@@ -11,8 +11,12 @@ export default function useClaim() {
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
-  const { currentRecord, toggleClaimSuccessVisible, toggleClaimVisible } =
-    useVaultsV2Context();
+  const {
+    currentRecord,
+    currentReward,
+    toggleClaimSuccessVisible,
+    toggleClaimVisible
+  } = useVaultsV2Context();
 
   const onClaim = async () => {
     if (!currentRecord) return;
@@ -41,7 +45,7 @@ export default function useClaim() {
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
-        toggleClaimSuccessVisible(true);
+        toggleClaimSuccessVisible(true, currentReward);
         toggleClaimVisible(false);
       } else {
         toast.fail({ title: "Claim failed!" });
@@ -49,7 +53,7 @@ export default function useClaim() {
       addAction?.({
         type: "Staking",
         action: "Claim",
-        tokens: currentRecord.rewards,
+        tokens: currentRecord.reward_tokens,
         template: currentRecord.protocol,
         status,
         transactionHash,

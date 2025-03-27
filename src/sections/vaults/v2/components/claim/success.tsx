@@ -2,11 +2,16 @@ import Modal from '@/components/modal';
 import Card from '@/components/card';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import LazyImage from '@/components/layz-image';
+import { numberFormatter } from '@/utils/number-formatter';
 
 const ClaimSuccessModal = (props: any) => {
   const { className } = props;
 
-  const { claimSuccessVisible, toggleClaimSuccessVisible } = useVaultsV2Context();
+  const {
+    claimSuccessVisible,
+    toggleClaimSuccessVisible,
+    successReward,
+  } = useVaultsV2Context();
 
   return (
     <Modal
@@ -25,7 +30,7 @@ const ClaimSuccessModal = (props: any) => {
             fallbackSrc="/assets/tokens/default_icon.png"
           />
           <div className="">
-            0.45 BGT Claimed
+            {numberFormatter(successReward?.amount, 6, true, { isShort: true, isShortUppercase: true })} {successReward?.symbol} Claimed
           </div>
         </div>
       </Card>

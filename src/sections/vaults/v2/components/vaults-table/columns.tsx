@@ -49,7 +49,7 @@ export const Vaults = (props: any) => {
             )
           }
         </div>
-        <div className="text-[12px]">{record.protocol}</div>
+        <div className="text-[12px]">{record.pool_project}</div>
       </div>
     </div>
   );
@@ -176,8 +176,8 @@ export const Rewards = (props: any) => {
         ))}
       </div>
       {isClaim &&
-        record.reward_tokens.map((reward: any, idx: number) => {
-          if (!reward.claim) return null;
+        record.user_reward.map((reward: any, idx: number) => {
+          if (!reward.amount) return null;
           return (
             <div
               key={idx}
@@ -185,8 +185,8 @@ export const Rewards = (props: any) => {
             >
               <div className="">
                 +
-                {numberFormatter(reward.claim, 2, true, {
-                  prefix: "$",
+                {numberFormatter(reward.amount, 2, true, {
+                  // prefix: "$",
                   isShort: true
                 })}
               </div>
@@ -204,7 +204,7 @@ export const Rewards = (props: any) => {
                 <button
                   type="button"
                   className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
-                  onClick={() => toggleClaimVisible(true, record)}
+                  onClick={() => toggleClaimVisible(true, record, reward)}
                 />
               </Popover>
             </div>
