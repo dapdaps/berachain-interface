@@ -11,16 +11,45 @@ import Big from 'big.js';
 import { balanceShortFormated, valueFormated } from "@/utils/balance";
 import { useRouter } from 'next/navigation';
 
+interface LstConfigItem {
+  name: string;
+  hookData?: LstHookResult;
+  disabled: boolean;
+  dappIcon: string;
+}
+
+interface DisabledLstItem {
+  name: string;
+  disabled: true;
+  dappIcon: string;
+  sourceToken: Token;
+  apy: string;
+}
+
+export interface EnabledLstItem extends LstHookResult {
+  name: string;
+  disabled: false;
+  dappIcon: string;
+  sourceToken: Token;
+  targetToken: Token;
+  tvl: string;
+  tvlUsd: string;
+  stakedAmount: string;
+  stakedAmountUsd: string;
+  apy: string;
+}
+
+export type LstItem = DisabledLstItem | EnabledLstItem;
+
 export default memo(function Laptop() {
   const [currentTab, setCurrentTab] = useState("stake")
-  const [checkedToken, setCheckedToken] = useState<null | Token>(null)
+  const [selectedToken, setSelectedToken] = useState<EnabledLstItem | null>(null)
   const router = useRouter();
-
 
   const bedrockData = useBedrock();
   const etherFiData = useEtherFi();
 
-  const lstConfig = useMemo(() => [
+  const lstConfig = useMemo<LstConfigItem[]>(() => [
     { 
       name: 'bedrock', 
       hookData: bedrockData, 
@@ -43,7 +72,7 @@ export default memo(function Laptop() {
     return bedrockData?.sourceToken
   }, [bedrockData]);
 
-  const btcLstComposeDataByHooks = useMemo(() => {
+  const btcLstComposeDataByHooks = useMemo<LstItem[]>(() => {
     return lstConfig.map(lst => {
       if (lst.disabled) {
         return {
@@ -52,34 +81,31 @@ export default memo(function Laptop() {
           dappIcon: lst.dappIcon,
           sourceToken: wbtcToken,
           apy: 'Coming Soon'
-        };
+        } as DisabledLstItem;
       }
       
       const hookData = lst.hookData || {} as LstHookResult;
       
       return {
+        ...hookData,
         name: lst.name,
         disabled: false,
         dappIcon: lst.dappIcon,
-        sourceToken: hookData.sourceToken,
-        targetToken: hookData.targetToken,
-        tvl: hookData.tvl || 0,
-        tvlUsd: hookData.tvlUsd || '0',
-        stakedAmount: hookData.stakedAmount || 0,
-        stakedAmountUsd: hookData.stakedAmountUsd || '0',
         apy: 'Soon'
-      };
+      } as EnabledLstItem;
     });
-  }, [lstConfig]);
+  }, [lstConfig, wbtcToken]);
 
   const totalStakedAmountUsd = useMemo(() => {
     return btcLstComposeDataByHooks
       .filter(item => !item.disabled)
       .reduce((total, item) => {
         try {
-          const amountUsd = typeof item.stakedAmountUsd === 'string' 
-            ? item.stakedAmountUsd 
-            : String(item.stakedAmountUsd || 0);
+          const amountUsd = 'stakedAmountUsd' in item
+            ? (typeof item.stakedAmountUsd === 'string'
+              ? item.stakedAmountUsd
+              : String(item.stakedAmountUsd || 0))
+            : '0';
           
           return total.plus(Big(amountUsd));
         } catch (e) {
@@ -88,6 +114,10 @@ export default memo(function Laptop() {
         }
       }, Big(0));
   }, [btcLstComposeDataByHooks]);
+
+  const handleStakeModal = (data: any) => {
+    setSelectedToken(data)
+  }
 
   return (
     <div>
@@ -102,12 +132,17 @@ export default memo(function Laptop() {
             </div>
             <div className="flex items-center gap-[45px]">
               {
-                btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => (
-                  <div className="flex items-center gap-[12px]">
-                    <img src={item?.targetToken?.icon} className="w-[36px] h-[36px] rounded-full" />
-                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{balanceShortFormated(item.stakedAmount)} {item.targetToken?.symbol}</div>
-                  </div>
-                ))
+                btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => {
+                  const enabledItem = item as EnabledLstItem;
+                  return (
+                    <div key={enabledItem.name} className="flex items-center gap-[12px]">
+                      <img src={enabledItem.targetToken.icon} className="w-[36px] h-[36px] rounded-full" />
+                      <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+                        {balanceShortFormated(enabledItem.stakedAmount, 3)} {enabledItem.targetToken.symbol}
+                      </div>
+                    </div>
+                  );
+                })
               }
             </div>
           </div>
@@ -117,7 +152,7 @@ export default memo(function Laptop() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[12px]">
                 <img src={wbtcToken.icon} className="w-[36px] h-[36px] overflow-hidden" />
-                <div className="text-black font-Montserrat text-[16px] font-semibold lea ding-[100%]">{valueFormated(bedrockData.availableAmount)} WBTC</div>
+                <div className="text-black font-Montserrat text-[16px] font-semibold lea ding-[100%]">{balanceShortFormated(bedrockData.availableAmount, 3)} WBTC</div>
               </div>
               <div onClick={() => router.push('/bridge')} className="w-[115px] h-[40px] bg-[#FFDC50] border border-black flex items-center justify-center gap-[10px] rounded-[10px] cursor-pointer hover:bg-opacity-50">
                 <span className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">Bridge</span>
@@ -130,19 +165,21 @@ export default memo(function Laptop() {
         <div className="flex items-center gap-[30px_21px] flex-wrap">
           {
             btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
-              <TokenCard item={item} key={item.name} />
+              <TokenCard item={item} key={item.name} onClick={() => handleStakeModal(item)}/>
             ))
           }
         </div>
       </div>
-      <StakeModal
-        token={checkedToken}
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-        onClose={() => {
-          setCheckedToken(null)
-        }}
-      />
+      {
+        selectedToken && (
+          <StakeModal
+            token={selectedToken}
+            onClose={() => {
+              setSelectedToken(null)
+            }}
+          />
+        )
+      }
     </div>
   )
 })

@@ -9,74 +9,113 @@ import useCustomAccount from "@/hooks/use-account";
 import useExecutionContract from "@/hooks/use-execution-contract";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
 import { VAULT_MAPPING } from "@/sections/bgt/config/gauge";
-export default memo(function Button(props: IProps) {
-  const {
-    abi,
-    type,
-    method,
-    symbol,
-    amount,
-    template,
-    decimals,
-    balance,
-    address,
-    vaultAddress,
+import useAddAction from "@/hooks/use-add-action";
+import { EnabledLstItem } from "../../laptop";
+import { useAppKit } from "@reown/appkit/react";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import { useSwitchChain } from "wagmi";
+import { STAKE_ABI } from "../../constant";
 
-    onSuccess,
-    addAction
-  } = props;
+interface IProps {
+  type: "deposit" | "withdraw";
+  amount: string;
+  balance: string;
+  onSuccess?: VoidFunction;
+  children?: React.ReactNode;
+  item?: EnabledLstItem;
+}
 
+export const PROJECT_STRATEGIES: any = {
+  bedrock: {
+    deposit: {
+      method: "mint",
+      formatParams: (tokenAddress: string, amount: ethers.BigNumber) => [tokenAddress, amount]
+    }
+  },
+  etherfi: {
+    deposit: {
+      method: "deposit",
+      fee: 0.003,
+      formatParams: (tokenAddress: string, amount: ethers.BigNumber) => {
+        const adjustedAmount = amount.mul(997).div(1000); 
+        return [tokenAddress, adjustedAmount, 0];
+      }
+    },
+  }
+};
+
+
+export default function Button(props: IProps) {
+  const { type, amount, balance, item, onSuccess } = props;
+  console.log(item, '<---item')
+  const modal = useAppKit();
+  const { addAction } = useAddAction("dapp");
   const { account, provider, chainId } = useCustomAccount();
   const toast = useToast();
   const { executionContract } = useExecutionContract();
+  const { switchChain } = useSwitchChain();
+  
+  const token0 = item?.sourceToken;
+
   const [state, updateState] = useMultiState({
     isLoading: false,
     isApproved: true,
-    isApproving: false
+    isApproving: false,
   });
   const BTN_CLASS =
-    "cursor-pointer flex items-center justify-center h-[60px] rounded-[10px] border border-black bg-[#FFDC50]  text-black font-Montserrat text-[18px] font-semibold leading-[90%]";
+    "w-full cursor-pointer flex items-center justify-center h-[60px] rounded-[10px] border border-black bg-[#FFDC50]  text-black font-Montserrat text-[18px] font-semibold leading-[90%]";
 
   const isInSufficient = Number(amount) > Number(balance);
 
-  const checkApproval = (_amount) => {
+  const checkApproval = (_amount: string) => {
+    if (!token0) return;
     const wei: any = ethers.utils.parseUnits(
-      Big(_amount).toFixed(decimals),
-      decimals
+      Big(_amount).toFixed(token0?.decimals),
+      token0?.decimals
     );
     const _abi = [
-      "function allowance(address, address) external view returns (uint256)"
+      "function allowance(address, address) external view returns (uint256)",
     ];
-    const contract = new ethers.Contract(address, _abi, provider?.getSigner());
+    const contract = new ethers.Contract(
+      token0.address,
+      _abi,
+      provider?.getSigner()
+    );
     updateState({
-      isApproved: false
+      isApproved: false,
     });
     contract
-      .allowance(account, vaultAddress)
+      .allowance(account, item.dappConfig.STAKE_ADDRESS)
       .then((allowance: any) => {
         const approved = !new Big(allowance.toString()).lt(wei);
         updateState({
-          isApproved: approved
+          isApproved: approved,
         });
       })
       .catch((e: Error) => console.log(e));
   };
   const handleApprove = () => {
+    if (!token0) return;
     const payload = { isApproving: true };
-    const _amount = Big(amount).toFixed(decimals);
+    const _amount = Big(amount).toFixed(token0.decimals);
     const toastId = toast?.loading({
-      title: `Approve ${symbol}`
+      title: `Approve ${token0.symbol}`,
     });
     updateState({
       ...payload,
-      isLoading: true
+      isLoading: true,
     });
-    const wei = ethers.utils.parseUnits(_amount, decimals);
+
+    const wei = ethers.utils.parseUnits(_amount, token0.decimals);
     const _abi = ["function approve(address, uint) public"];
-    const contract = new ethers.Contract(address, _abi, provider?.getSigner());
+    const contract = new ethers.Contract(
+      token0.address,
+      _abi,
+      provider?.getSigner()
+    );
 
     contract
-      .approve(vaultAddress, wei)
+      .approve(item.dappConfig.STAKE_ADDRESS, wei)
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const payload = { isApproved: true, isApproving: false };
@@ -85,160 +124,117 @@ export default memo(function Button(props: IProps) {
         toast?.success({
           title: "Approve Successful!",
           tx: receipt.transactionHash,
-          chainId
+          chainId,
         });
       })
       .catch((error: Error) => {
         console.log("error: ", error);
         updateState({
-          isError: true,
           isLoading: false,
-          isApproving: false
+          isApproving: false,
         });
         toast?.dismiss(toastId);
         toast?.fail({
           title: "Approve Failed!",
           text: error?.message?.includes("user rejected transaction")
             ? "User rejected transaction"
-            : null
+            : null,
         });
       });
   };
+
   const handleDepositOrWithdraw = async function () {
+    if (!token0 || !item) return;
     const toastId = toast?.loading({
-      title: type === "deposit" ? "Depositing..." : "Withdrawing..."
+      title: type === "deposit" ? "Depositing..." : "Withdrawing...",
     });
     updateState({
-      isLoading: true
+      isLoading: true,
     });
-    const wei = ethers.utils.parseUnits(
-      Big(amount).toFixed(decimals),
-      decimals
-    );
+  
+    try {
+      const wei = ethers.utils.parseUnits(amount, token0.decimals);
+      const contract = new ethers.Contract(
+        item.dappConfig.STAKE_ADDRESS,
+        STAKE_ABI,
+        provider?.getSigner()
+      );
+  
+      const projectName = item.name.toLowerCase();
+      const projectStrategy = PROJECT_STRATEGIES[projectName];
+      
+      if (!projectStrategy) {
+        return
+      }
+      
+      const operationConfig = projectStrategy[type];
+      
+      if (!operationConfig) {
+        return
+      }
+      
+      const methodName = operationConfig.method;
+      const params = operationConfig.formatParams(token0.address, wei);
 
-    const contract = new ethers.Contract(
-      vaultAddress,
-      abi,
-      provider?.getSigner()
-    );
-    const vault = VAULT_MAPPING[vaultAddress];
-    if (type === "deposit") {
-      executionContract({
+      const receipt = await executionContract({
         contract,
-        method,
-        params: [wei]
-      })
-        .then((receipt: any) => {
-          const { status, transactionHash } = receipt;
-          const addParams: any = {
-            type: "Staking",
-            action: "Staking",
-            tokens: [{ symbol }],
-            amount,
-            template,
-            status: status,
-            add: 1,
-            transactionHash,
-            chain_id: chainId,
-            sub_type: "Stake"
-          };
-          addAction?.(addParams);
-          updateState({
-            isLoading: false
-          });
-          setTimeout(() => {
-            onSuccess?.();
-          }, 3000);
+        method: methodName,
+        params
+      });
 
-          toast?.dismiss(toastId);
-          toast?.success({
-            title: "Deposit successful!",
-            tx: transactionHash,
-            chainId
-          });
-        })
-        .catch((error: Error) => {
-          updateState({
-            isLoading: false
-          });
-          toast?.dismiss(toastId);
-          toast?.fail({
-            title: "Deposit Failed!",
-            text: error?.message?.includes("user rejected transaction")
-              ? "User rejected transaction"
-              : error?.message ?? ""
-          });
-        });
-    } else {
-      executionContract({
-        contract,
-        method,
-        params: [wei]
-      })
-        .then((receipt: any) => {
-          updateState({
-            isLoading: false
-          });
-          const { status, transactionHash } = receipt;
-          const tokens = symbol?.split("-");
-          const addParams: any = {
-            type: "Staking",
-            action: "UnStake",
-            tokens: [
-              {
-                symbol
-              }
-            ],
-            amount,
-            template,
-            status: status,
-            add: 0,
-            transactionHash,
-            chain_id: chainId,
-            sub_type: "Unstake"
-          };
+      if (!receipt) {
+        throw new Error("交易失败，未收到回执");
+      }
 
-          if (vault && amount0 && amount1) {
-            addParams.tokens = [
-              { symbol: vault.symbol0 },
-              { symbol: vault.symbol1 }
-            ];
-            addParams.amounts = [amount0, amount1];
-
-            addParams["extra_data"] = {};
-          }
-          addAction?.(addParams);
-          setTimeout(() => {
-            onSuccess?.();
-          }, 3000);
-
-          toast?.dismiss(toastId);
-          toast?.success({
-            title: "Withdraw Successful!",
-            tx: transactionHash,
-            chainId
-          });
-        })
-        .catch((error: Error) => {
-          updateState({
-            isError: true,
-            isLoading: false
-          });
-          toast?.dismiss(toastId);
-          toast?.fail({
-            title: "Withdraw Failed!",
-            text: error?.message?.includes("user rejected transaction")
-              ? "User rejected transaction"
-              : error?.message ?? ""
-          });
-        });
+      const { status, transactionHash } = receipt;
+      const addParams = {
+        type: "Staking",
+        action: "Staking",
+        tokens: [{ symbol: token0.symbol }],
+        amount,
+        template: "btc-lst",
+        status: status,
+        add: 1,
+        transactionHash,
+        chain_id: chainId,
+        sub_type: type === "deposit" ? "Stake" : "Unstake",
+      };
+      
+      addAction?.(addParams);
+      updateState({
+        isLoading: false,
+      });
+      
+      setTimeout(() => {
+        onSuccess?.();
+      }, 3000);
+  
+      toast?.dismiss(toastId);
+      toast?.success({
+        title: `${type === "deposit" ? "Deposit" : "Withdraw"} successful!`,
+        tx: transactionHash,
+        chainId,
+      });
+    } catch (error: any) {
+      console.log(error, '<<---error');
+      updateState({
+        isLoading: false,
+      });
+      toast?.dismiss(toastId);
+      toast?.fail({
+        title: `${type === "deposit" ? "Deposit" : "Withdraw"} failed!`,
+        text: error?.message?.includes("user rejected transaction")
+          ? "user rejected transaction"
+          : error?.message ?? "",
+      });
     }
   };
+
   useEffect(() => {
     if (type === "deposit") {
       if (amount === "") {
         updateState({
-          isApproved: true
+          isApproved: true,
         });
       } else {
         checkApproval(amount);
@@ -246,7 +242,32 @@ export default memo(function Button(props: IProps) {
     }
   }, [amount]);
 
-  
+  if (!account) {
+    return (
+      <button
+        className={BTN_CLASS}
+        onClick={() => modal.open()}
+      >
+        Connect Wallet
+      </button>
+    );
+  }
+
+    if (DEFAULT_CHAIN_ID !== chainId) {
+      return (
+        <button
+          className={BTN_CLASS}
+          onClick={() =>
+            switchChain({
+              chainId: DEFAULT_CHAIN_ID,
+            })
+          }
+        >
+          Switch Network
+        </button>
+      );
+    }
+
   if (isInSufficient) {
     return (
       <div className={clsx(BTN_CLASS, "opacity-60 !cursor-not-allowed")}>
@@ -279,10 +300,10 @@ export default memo(function Button(props: IProps) {
     );
   } else {
     return (
-      <div
+      <button
         disabled={state?.isApproved || state?.isApproving}
         className={clsx(BTN_CLASS, {
-          "opacity-50": state?.isApproved || state?.isApproving
+          "opacity-50": state?.isApproved || state?.isApproving,
         })}
         onClick={() => handleApprove()}
       >
@@ -290,24 +311,10 @@ export default memo(function Button(props: IProps) {
           <CircleLoading size={14} />
         ) : (
           <>
-            {state?.isApproved ? "Approved" : "Approve"} {symbol}
+            {state?.isApproved ? "Approved" : "Approve"} {token0?.symbol}
           </>
         )}
-      </div>
+      </button>
     );
   }
-});
-interface IProps {
-  abi: any;
-  type: "deposit" | "withdraw";
-  method: string;
-  symbol: string;
-  amount: string;
-  template: string;
-  decimals: number;
-  balance: string;
-  address: string;
-  vaultAddress?: string;
-  onSuccess?: VoidFunction;
-  addAction?: any;
 }

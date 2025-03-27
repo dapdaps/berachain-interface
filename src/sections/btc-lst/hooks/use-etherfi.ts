@@ -10,11 +10,13 @@ import useTokensBalance from "@/hooks/use-tokens-balance";
 import { usePriceStore } from "@/stores/usePriceStore";
 import { LstHookResult, STAKE_ABI } from "../constant";
 
-// 1 wBTC = 0.9970 eBTC
+
 export default function useEtherFi(): LstHookResult {
   const { addAction } = useAddAction("dapp");
 
-  const { STAKE_ADDRESS, sourceToken, targetToken } = etherFi.chains?.[DEFAULT_CHAIN_ID as keyof typeof etherFi.chains];
+  const dappConfig = etherFi.chains?.[DEFAULT_CHAIN_ID as keyof typeof etherFi.chains]
+
+  const { STAKE_ADDRESS, sourceToken, targetToken } = dappConfig
 
   const { provider, account, chainId } = useCustomAccount();
   const toast = useToast();
@@ -168,6 +170,8 @@ export default function useEtherFi(): LstHookResult {
     getBalanceLoading,
     balances,
     sourceToken,
-    targetToken
+    targetToken,
+    dappConfig,
+    exchangeRate: 0.9970
   };
 }

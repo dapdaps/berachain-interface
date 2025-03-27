@@ -8,11 +8,12 @@ import { balanceShortFormated } from "@/utils/balance"
 export default memo(function TokenCard({
   item,
   className,
+  onClick
 }: {
   item: any,
   className?: string
+  onClick: () => void
 }) {
-  const comingSoon = false
 
   return (
 
@@ -57,6 +58,7 @@ export default memo(function TokenCard({
             
           }}>
             <div
+              onClick={onClick}
               className="cursor-pointer flex items-center justify-center flex-1 h-[50px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[16px] font-semibold"
             >
               Stake

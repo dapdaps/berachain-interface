@@ -45,6 +45,29 @@ export const STAKE_ABI = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "depositAsset",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "depositAmount",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "minimumMint",
+        type: "uint256"
+      }
+    ],
+    name: "deposit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
       { internalType: 'address', name: 'account', type: 'address' }
     ],
     name: 'balanceOf',

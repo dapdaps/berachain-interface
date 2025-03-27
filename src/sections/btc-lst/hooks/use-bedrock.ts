@@ -14,7 +14,9 @@ import { LstHookResult, STAKE_ABI } from "../constant";
 export default function useBedrock(): LstHookResult {
   const { addAction } = useAddAction("dapp");
 
-  const { STAKE_ADDRESS, sourceToken, targetToken } = bedrock.chains?.[DEFAULT_CHAIN_ID as keyof typeof bedrock.chains];
+  const dappConfig = bedrock.chains?.[DEFAULT_CHAIN_ID as keyof typeof bedrock.chains]
+
+  const { STAKE_ADDRESS, sourceToken, targetToken } = dappConfig
 
   const { provider, account, chainId } = useCustomAccount();
   const toast = useToast();
@@ -148,7 +150,7 @@ export default function useBedrock(): LstHookResult {
 
   useEffect(() => {
     getTvlByContract()
-  }, []);
+  }, [provider]);
 
   return {
     stakedAmount: balances?.[targetToken.address],
@@ -165,6 +167,8 @@ export default function useBedrock(): LstHookResult {
     getBalanceLoading,
     balances,
     sourceToken,
-    targetToken
+    targetToken,
+    dappConfig,
+    exchangeRate: 1,
   };
 }

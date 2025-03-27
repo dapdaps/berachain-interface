@@ -8,7 +8,7 @@ export default function Range({ value, onChange, style, className }: any) {
     >
       <input
         type="range"
-        value={value}
+        value={Number(value)}
         onChange={onChange}
         className="appearance-none"
       />
@@ -16,7 +16,7 @@ export default function Range({ value, onChange, style, className }: any) {
         className={clsx(
           "absolute top-0 left-0 h-[8px] rounded-[16px] bg-[#ffdc50]"
         )}
-        style={{ width: value + "%" }}
+        style={{ width: Number(value) + "%" }}
       />
     </div>
   );
