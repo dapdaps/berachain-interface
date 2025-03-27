@@ -4,11 +4,14 @@ import { useRef, forwardRef, useState, useEffect, useMemo } from "react";
 import BasicModal from "./components/modal";
 import Bex from "./bex/add-liquidity";
 import Kodiak from "./kodiak/add-liquidity";
+import BurrBear from "./burrbear/add-liquidity";
 import useIsMobile from "@/hooks/use-isMobile";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
   if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
+  if (dex?.toLowerCase() === "burrbear")
+    return <BurrBear {...rest} ref={ref} />;
 });
 
 export default function AddLiquidityModal({
