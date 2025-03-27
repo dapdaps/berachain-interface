@@ -64,6 +64,7 @@ export default function useAction() {
       const tx = await handleAction({
         actionType: actionType.button,
         signer,
+        account,
         amount: Big(amount || 0)
           .mul(10 ** currentRecord.token.decimals)
           .toFixed(0),

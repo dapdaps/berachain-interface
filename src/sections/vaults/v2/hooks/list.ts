@@ -88,7 +88,7 @@ export function useList(): List {
       if (
         filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
         !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
-          filter.reg.test(item.project)
+          filter.reg.test(item.pool_project)
         )
       ) {
         return false;
@@ -168,7 +168,7 @@ export function useList(): List {
       }
       const _list = res.data.data || [];
       const _data = _list
-        .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.project))
+        .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any) => {
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
