@@ -83,7 +83,7 @@ export const WithdrawButton = (props: any) => {
     <button
       type="button"
       {...restProps}
-      disabled={record.protocol === "Slimee"}
+      disabled={record.protocol === "Slimee" || Big(record.balance || 0).lte(0)}
       className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
       onClick={() => {
         if (record.protocol === "Slimee") return;
