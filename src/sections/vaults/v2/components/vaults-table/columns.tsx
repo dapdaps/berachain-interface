@@ -37,17 +37,15 @@ export const Vaults = (props: any) => {
           <div className="flex-1">
             {record.tokens.map((tk: any) => tk.symbol).join("-")}
           </div>
-          {
-            record.nameIcon && (
-              <LazyImage
-                src={record.nameIcon}
-                width={20}
-                height={20}
-                containerClassName="shrink-0"
-                fallbackSrc="/assets/tokens/default_icon.png"
-              />
-            )
-          }
+          {record.nameIcon && (
+            <LazyImage
+              src={record.nameIcon}
+              width={20}
+              height={20}
+              containerClassName="shrink-0"
+              fallbackSrc="/assets/tokens/default_icon.png"
+            />
+          )}
         </div>
         <div className="text-[12px]">{record.pool_project}</div>
       </div>
@@ -85,8 +83,10 @@ export const WithdrawButton = (props: any) => {
     <button
       type="button"
       {...restProps}
+      disabled={record.protocol === "Slimee"}
       className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
       onClick={() => {
+        if (record.protocol === "Slimee") return;
         toggleActionVisible({
           type: ACTION_TYPE.WITHDRAW,
           record,
@@ -121,17 +121,21 @@ export const APY = (props: any) => {
               <div className="">{numberFormatter(record.apy, 6, true)}%</div>
             </div>
             {record.apr &&
-              Object.keys(record.apr).filter((ak) => ak !== "pool").map((ak: any, idx: number) => (
-                <div
-                  key={idx}
-                  className="w-full flex justify-between items-center gap-[5px]"
-                >
-                  <div className="">{ak.slice(0, 1).toUpperCase() + ak.slice(1)} APY</div>
-                  <div className="">
-                    {numberFormatter(record.apr[ak], 6, true)}%
+              Object.keys(record.apr)
+                .filter((ak) => ak !== "pool")
+                .map((ak: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="w-full flex justify-between items-center gap-[5px]"
+                  >
+                    <div className="">
+                      {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APY
+                    </div>
+                    <div className="">
+                      {numberFormatter(record.apr[ak], 6, true)}%
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
           </div>
         </Card>
       }

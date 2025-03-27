@@ -2,6 +2,8 @@ import onBexAction from "./bex/action";
 import onDolomiteAction from "@/sections/vaults/dapps/dolomite/action";
 import onKodiakAction from "./kodiak/action";
 import onInfrared from "./infrared/action";
+import onBeraDrome from "./bera-drome/action";
+import onSlimee from "./slimee/action";
 
 export default function onAction(params: any) {
   const { currentRecord } = params;
@@ -20,5 +22,13 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "Infrared") {
     return onInfrared(params);
+  }
+
+  if (currentRecord.protocol === "BeraDrome") {
+    return onBeraDrome(params);
+  }
+
+  if (currentRecord.protocol === "Slimee") {
+    return onSlimee(params);
   }
 }
