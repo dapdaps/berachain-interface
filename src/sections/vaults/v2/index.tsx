@@ -22,7 +22,7 @@ const VaultsV2 = (props: any) => {
 
   return (
     <VaultsV2ContextProvider value={{ ...vaultsV2, ...list }}>
-      <div className="relative w-full h-full bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
+      <div className="relative w-full min-w-[1257px] min-h-[750px] h-full bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
         <PageBack className="absolute left-[36px] top-[100px] text-white" />
         <div className="pt-[117px] mx-auto flex justify-center">
           <img
