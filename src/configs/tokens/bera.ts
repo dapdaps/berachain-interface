@@ -407,5 +407,14 @@ export const bera: { [key: string]: Token } = {
     decimals: 8,
     icon: "/assets/tokens/bitcoin.webp",
     color: "rgb(0,0,0)"
+  },
+  ohm: {
+    chainId: CHAIN_ID,
+    address: "0x18878Df23e2a36f81e820e4b47b4A40576D3159C",
+    symbol: "OHM",
+    name: "Olympus",
+    decimals: 9,
+    icon: "/assets/tokens/ohm.webp",
+    color: "rgb(117,138,149)"
   }
 };

@@ -46,7 +46,7 @@ const MainLayout = (props: Props) => {
 
   const bg = useMemo(() => {
     if (isVaults) {
-      return "bg-transparent h-full";
+      return "bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover";
     }
     return "bg-[var(--background)]";
   }, [isVaults, pathname]);
@@ -112,7 +112,7 @@ const MainLayout = (props: Props) => {
       <MainLayoutHeader
         className={routes.includes(pathname) ? "bg-transparent !fixed" : ""}
       />
-      <div className={isVaults ? "h-full w-full absolute" : "grow"}>
+      <div className="grow">
         {children}
       </div>
       <div className="fixed left-[16px] bottom-[16px] z-[13] flex items-center gap-[6px]">

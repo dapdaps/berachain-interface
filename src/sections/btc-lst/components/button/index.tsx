@@ -37,8 +37,7 @@ export const PROJECT_STRATEGIES: any = {
       method: "deposit",
       fee: 0.003,
       formatParams: (tokenAddress: string, amount: ethers.BigNumber) => {
-        const adjustedAmount = amount.mul(997).div(1000); 
-        return [tokenAddress, adjustedAmount, 0];
+        return [tokenAddress, amount, 0];
       }
     },
   }
@@ -47,7 +46,7 @@ export const PROJECT_STRATEGIES: any = {
 
 export default function Button(props: IProps) {
   const { type, amount, balance, item, onSuccess } = props;
-  console.log(item, '<---item')
+
   const modal = useAppKit();
   const { addAction } = useAddAction("dapp");
   const { account, provider, chainId } = useCustomAccount();
@@ -56,6 +55,7 @@ export default function Button(props: IProps) {
   const { switchChain } = useSwitchChain();
   
   const token0 = item?.sourceToken;
+  const token1 = item?.targetToken;
 
   const [state, updateState] = useMultiState({
     isLoading: false,
@@ -68,16 +68,16 @@ export default function Button(props: IProps) {
   const isInSufficient = Number(amount) > Number(balance);
 
   const checkApproval = (_amount: string) => {
-    if (!token0) return;
+    if (!token1) return;
     const wei: any = ethers.utils.parseUnits(
-      Big(_amount).toFixed(token0?.decimals),
-      token0?.decimals
+      Big(_amount).toFixed(token1?.decimals),
+      token1?.decimals
     );
     const _abi = [
       "function allowance(address, address) external view returns (uint256)",
     ];
     const contract = new ethers.Contract(
-      token0.address,
+      token1.address,
       _abi,
       provider?.getSigner()
     );
@@ -95,21 +95,21 @@ export default function Button(props: IProps) {
       .catch((e: Error) => console.log(e));
   };
   const handleApprove = () => {
-    if (!token0) return;
+    if (!token1) return;
     const payload = { isApproving: true };
-    const _amount = Big(amount).toFixed(token0.decimals);
+    const _amount = Big(amount).toFixed(token1.decimals);
     const toastId = toast?.loading({
-      title: `Approve ${token0.symbol}`,
+      title: `Approve ${token1.symbol}`,
     });
     updateState({
       ...payload,
       isLoading: true,
     });
 
-    const wei = ethers.utils.parseUnits(_amount, token0.decimals);
+    const wei = ethers.utils.parseUnits(_amount, token1.decimals);
     const _abi = ["function approve(address, uint) public"];
     const contract = new ethers.Contract(
-      token0.address,
+      token1.address,
       _abi,
       provider?.getSigner()
     );
@@ -183,7 +183,7 @@ export default function Button(props: IProps) {
       });
 
       if (!receipt) {
-        throw new Error("交易失败，未收到回执");
+        return
       }
 
       const { status, transactionHash } = receipt;

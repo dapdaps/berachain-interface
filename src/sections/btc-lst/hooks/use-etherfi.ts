@@ -142,7 +142,7 @@ export default function useEtherFi(): LstHookResult {
       provider
     );
     try {
-      const tvl = await contract.balanceOf(STAKE_ADDRESS);
+      const tvl = await contract.balanceOf(targetToken.address);
       setTvl(ethers.utils.formatUnits(tvl, sourceToken.decimals))
     } catch (error) {
       console.log(error, '<==error')
@@ -151,7 +151,7 @@ export default function useEtherFi(): LstHookResult {
 
   useEffect(() => {
     getTvlByContract()
-  }, []);
+  }, [provider]);
 
   console.log('balances: ', balances);
 

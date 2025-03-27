@@ -61,7 +61,6 @@ export default memo(function StakeModal({
   };
 
   const handleInput = (value) => {
-    console.log('value:', value);
     setAmount(value)
   }
 

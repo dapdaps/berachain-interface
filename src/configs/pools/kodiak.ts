@@ -39,6 +39,42 @@ export default {
       farmAddress: "0x1c8e199c6c42d5cce652cf02002694d937118177",
       token0: bera["yeet"],
       token1: bera["bera"]
+    },
+    "0xc227c8639a41db8393dd1b4eac41464a62d64fb4": {
+      name: "OHM-BERA",
+      farmAddress: "0x3c8e4d4324f7ab2e3238c23a2838a762ecb7051d",
+      token0: bera["ohm"],
+      token1: bera["bera"]
+    },
+    "0xf06ea29fcf4765200742d29e685973a1870eac98": {
+      name: "WBTC-BERA",
+      farmAddress: "0x0d74359866a86d0f192f5cd53d103d299043165b",
+      token0: bera["wbtc"],
+      token1: bera["bera"]
+    },
+    "0x93a913351cae2d8c82c4b85f699726947eb76d32": {
+      name: "BERA-RAMEN",
+      farmAddress: "0x6f22221dc5845a25597bc96629d92f2b4979d943",
+      token0: bera["bera"],
+      token1: bera["ramen"]
+    },
+    "0x218c12fe0c2f8a507929d4f5c30a83e38fbca285": {
+      name: "NECT-BERA",
+      farmAddress: "0x517dbcd3d89ef5a59b02a4142274e3dd5aed5626",
+      token0: bera["nect"],
+      token1: bera["bera"]
+    },
+    "0x2cafe99db26cf86ae8587f5934830d25ad5c3cb3": {
+      name: "BERA-BITCOIN",
+      farmAddress: "0xb4a1519956cee0798eaac3de08f1531f58a0c950",
+      token0: bera["bera"],
+      token1: bera["bitcoin"]
+    },
+    "0x28a54eaeec63fbb1175d13466a9ada5f3175d577": {
+      name: "USDbr-HONEY",
+      farmAddress: "0x274441c8c34b7785fada01ec0d7fe9ba2c72aea0",
+      token0: bera["usdbr"],
+      token1: bera["honey"]
     }
   },
   islands: [
