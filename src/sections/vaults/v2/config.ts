@@ -201,3 +201,10 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
 };
 
 export const SUPPORTED_PROTOCOLS = ["Bex", "Kodiak", "Infrared", "Dolomite"];
+
+export enum PAGINATION_ACTION {
+  FIRST = "first",
+  PREV = "previous",
+  NEXT = "next",
+  LAST = "last",
+}

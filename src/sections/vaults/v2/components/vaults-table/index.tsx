@@ -11,6 +11,7 @@ import {
   Yours
 } from "@/sections/vaults/v2/components/vaults-table/columns";
 import { OrderKeys } from "@/sections/vaults/v2/config";
+import Pagination from '@/sections/vaults/v2/components/pagination';
 
 const VaultsTable = (props: any) => {
   const { className } = props;
@@ -96,8 +97,11 @@ const VaultsTable = (props: any) => {
         wrapperClass="h-full"
         headClass="px-[11px] py-[8px] text-[14px] font-[500] text-[#3D405A]"
         bodyClass="text-[16px] font-[500] !py-[13px] !pl-[11px] !pr-[14px]"
-        bodyClassName="max-h-[calc(100%_-_34px)] overflow-y-auto"
+        bodyClassName=""
         onChangeSortDataIndex={toggleListOrder}
+        pagination={(
+          <Pagination />
+        )}
       />
     </div>
   );
