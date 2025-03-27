@@ -1,14 +1,16 @@
 import clsx from "clsx";
 import LazyImage from "@/components/layz-image";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
-import { numberFormatter } from '@/utils/number-formatter';
+import { numberFormatter } from "@/utils/number-formatter";
+import { ACTION_TYPE } from "../config";
 
 const TopCard = (props: any) => {
   const { className, type, pool } = props;
 
   const currType = cardType[type as CardType] ?? cardType[CardType.TopAPR];
 
-  const { toggleStrategyVisible, listLoading } = useVaultsV2Context();
+  const { toggleStrategyVisible, toggleActionVisible, listLoading } =
+    useVaultsV2Context();
 
   return (
     <div
@@ -40,7 +42,9 @@ const TopCard = (props: any) => {
               Boost
             </div>*/}
           </div>
-        ) : numberFormatter(pool?.totalApy, 2, true) + "%"}
+        ) : (
+          numberFormatter(pool?.totalApy, 2, true) + "%"
+        )}
       </div>
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
@@ -69,6 +73,12 @@ const TopCard = (props: any) => {
           onClick={() => {
             if (type === 2) {
               toggleStrategyVisible(true);
+            } else {
+              toggleActionVisible({
+                visible: true,
+                type: ACTION_TYPE.DEPOSIT,
+                record: pool
+              });
             }
           }}
         >
