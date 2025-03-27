@@ -99,14 +99,6 @@ export const SPECIAL_VAULTS = [
   }
 ];
 
-export const SPECIAL_PROTOCOLS = [
-  // Hub
-  {
-    protocol: "Hub",
-    nameIcon: "/images/vaults/v2/hub.png"
-  }
-];
-
 export interface FilterItem {
   reg: RegExp;
   label: string;
