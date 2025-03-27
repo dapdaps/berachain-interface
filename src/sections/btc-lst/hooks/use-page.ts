@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import useBedrock from "./use-bedrock";
 import useEtherFi from "./use-etherfi";
 import Big from "big.js";
+import { LstHookResult } from "../constant";
+import { Token } from "@/types";
 
 interface LstConfigItem {
   name: string;

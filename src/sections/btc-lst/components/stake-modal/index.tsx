@@ -15,9 +15,9 @@ import useToast from "@/hooks/use-toast";
 import { createWalletClient, custom } from "viem";
 import { berachain } from "viem/chains";
 import Big from "big.js";
-import { EnabledLstItem } from "../../laptop";
+import { EnabledLstItem } from "../../hooks/use-page";
 
-export default memo(function StakeModal({
+export default function StakeModal({
   token,
   onClose
 }: {
@@ -26,6 +26,7 @@ export default memo(function StakeModal({
 }) {
   const toast = useToast();
   const [amount, setAmount] = useState<string>("");
+
 
   const addMetaMask = async () => {
     if (!window?.ethereum || !token) {
@@ -149,4 +150,4 @@ export default memo(function StakeModal({
       </Card>
     </Modal>
   )
-})
+}
