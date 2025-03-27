@@ -7,6 +7,7 @@ import { FILTER_KEYS, FILTERS, SUPPORTED_PROTOCOLS } from '@/sections/vaults/v2/
 import Big from 'big.js';
 import Loading from '@/components/loading';
 import Empty from '@/components/empty';
+import Skeleton from 'react-loading-skeleton';
 
 const Filter = (props: any) => {
   const { className } = props;
@@ -20,6 +21,7 @@ const Filter = (props: any) => {
     listFilterAssetsBalanceLoading,
     listFilterSelectedLength,
     toggleListFilterVisible,
+    listRewardTokens,
   } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
@@ -106,7 +108,13 @@ const Filter = (props: any) => {
       </div>
       <div className="pt-[12px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
-          filterAssetsList.length > 0 ? filterAssetsList.map((it, idx) => (
+          listLoading ? (
+            <>
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+            </>
+          ) : (filterAssetsList.length > 0 ? filterAssetsList.map((it, idx) => (
             <FilterItem
               key={idx}
               type={FILTER_KEYS.ASSETS}
@@ -116,7 +124,7 @@ const Filter = (props: any) => {
             <div className="w-full flex justify-center">
               <Empty desc="No assets available"  />
             </div>
-          )
+          ))
         }
       </div>
       {/*<div className="pt-[14px] pl-[15px] pr-[15px]">
@@ -133,13 +141,21 @@ const Filter = (props: any) => {
       </div>
       <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
-          FILTERS.REWARDS.map((it, idx) => (
-            <FilterItem
-              key={idx}
-              type={FILTER_KEYS.REWARDS}
-              data={it}
-            />
-          ))
+          listLoading ? (
+            <>
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+            </>
+          ) : FILTERS.REWARDS
+            .filter((it) => listRewardTokens.some((_it: any) => _it.symbol?.toLowerCase?.() === it.label.toLowerCase()))
+            .map((it, idx) => (
+              <FilterItem
+                key={idx}
+                type={FILTER_KEYS.REWARDS}
+                data={it}
+              />
+            ))
         }
       </div>
       <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
@@ -147,13 +163,21 @@ const Filter = (props: any) => {
       </div>
       <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {
-          FILTERS.PROTOCOLS.filter((it) => SUPPORTED_PROTOCOLS.includes(it.label)).map((it, idx) => (
-            <FilterItem
-              key={idx}
-              type={FILTER_KEYS.PROTOCOLS}
-              data={it}
-            />
-          ))
+          listLoading ? (
+            <>
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+            </>
+          ) : FILTERS.PROTOCOLS
+            .filter((it) => SUPPORTED_PROTOCOLS.includes(it.label))
+            .map((it, idx) => (
+              <FilterItem
+                key={idx}
+                type={FILTER_KEYS.PROTOCOLS}
+                data={it}
+              />
+            ))
         }
       </div>
     </div>

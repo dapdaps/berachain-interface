@@ -154,6 +154,15 @@ export function useList(): List {
     return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount];
   }, [data]);
 
+  const rewardTokens = useMemo(() => {
+    const tokens = data
+      .flatMap((item: any) => item.reward_tokens || [])
+      .filter((token: any, index: any, self: any) =>
+        self.findIndex((t: any) => t.address === token.address) === index
+      );
+    return tokens;
+  }, [data]);
+
   const getData = async () => {
     setLoading(true);
     try {
@@ -401,6 +410,7 @@ export function useList(): List {
     totalUserStakeUsd: totalUserStakeUsd,
     totalUserRewardUsd: totalUserRewardUsd,
     totalUserVaultsCount: totalUserVaultsCount,
+    listRewardTokens: rewardTokens,
   };
 }
 
@@ -428,6 +438,7 @@ export interface List {
   totalUserStakeUsd: Big.Big;
   totalUserRewardUsd: Big.Big;
   totalUserVaultsCount: Big.Big;
+  listRewardTokens: any;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {
