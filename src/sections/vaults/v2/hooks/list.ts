@@ -14,12 +14,11 @@ import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
-import { cloneDeep } from "lodash";
+import { cloneDeep, trim } from 'lodash';
 import chains from "@/configs/chains";
 import { Contract, providers, utils } from "ethers";
 import { TOKEN_ABI } from "@/hooks/use-token-balance";
 import { bera } from "@/configs/tokens/bera";
-import { useDebounceFn } from "ahooks";
 import useIsMobile from '@/hooks/use-isMobile';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
@@ -44,7 +43,7 @@ export function useList(): List {
   const isMobile = useIsMobile();
 
   const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [orderKey, setOrderKey] = useState<ORDER_KEYS>(ORDER_KEYS.TVL);
   const [orderDirection, setDirection] = useState<ORDER_DIRECTION>(
     ORDER_DIRECTION.DESC
@@ -62,6 +61,10 @@ export function useList(): List {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize] = useState(10);
   const [pageTotal, setPageTotal] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>();
+  const [searchValueDelay, setSearchValueDelay] = useState<string>();
+  const [filterAssetsViewMore, setFilterAssetsViewMore] = useState<boolean>(false);
 
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -107,6 +110,19 @@ export function useList(): List {
         return false;
       }
 
+      const _search = trim(searchValueDelay || "").toLowerCase();
+      if (
+        _search && (
+          !item.tokens?.some((tk: any) => tk.symbol?.toLowerCase().includes(_search)) &&
+          !item.reward_tokens?.some((tk: any) => tk.symbol?.toLowerCase().includes(_search)) &&
+          !item.pool_project?.toLowerCase().includes(_search) &&
+          !item.project?.toLowerCase().includes(_search) &&
+          !item.name?.toLowerCase().includes(_search)
+        )
+      ) {
+        return false;
+      }
+
       return true;
     });
 
@@ -128,7 +144,7 @@ export function useList(): List {
     }
 
     return sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [data, orderKey, orderDirection, filterSelected, pageIndex, pageSize, isMobile]);
+  }, [data, orderKey, orderDirection, filterSelected, pageIndex, pageSize, isMobile, searchValueDelay]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
     const topAPY = data.reduce(
@@ -329,6 +345,22 @@ export function useList(): List {
     );
   };
 
+  const toggleSearchOpen = (_searchOpen?: boolean) => {
+    setSearchOpen(
+      typeof _searchOpen === "boolean" ? _searchOpen : !searchOpen
+    );
+  };
+
+  const toggleFilterAssetsViewMore = (_filterAssetsViewMore?: boolean) => {
+    setFilterAssetsViewMore(
+      typeof _filterAssetsViewMore === "boolean" ? _filterAssetsViewMore : !filterAssetsViewMore
+    );
+  };
+
+  const handleSearchValue = (_searchValue?: string) => {
+    setSearchValue(_searchValue);
+  };
+
   const toggleFilterSelected = (key: FILTER_KEYS, item: FilterItem) => {
     const _filterSelected = { ...filterSelected };
     for (const k in _filterSelected) {
@@ -419,17 +451,23 @@ export function useList(): List {
     setFilterAssetsBalanceLoading(false);
   };
 
-  const { run: init } = useDebounceFn(
-    () => {
-      getData();
+  useEffect(() => {
+    getData();
+    if (account) {
       getFilterAssetsBalance();
-    },
-    { wait: 1000 }
-  );
+    }
+  }, [account]);
 
   useEffect(() => {
-    init();
-  }, [account]);
+    const timer = setTimeout(() => {
+      setSearchValueDelay(searchValue);
+      clearTimeout(timer);
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [searchValue]);
 
   return {
     listData: data,
@@ -462,6 +500,12 @@ export function useList(): List {
     listPageSize: pageSize,
     listPageTotal: pageTotal,
     toggleListPageIndex: togglePageIndex,
+    listSearchOpen: searchOpen,
+    toggleListSearchOpen: toggleSearchOpen,
+    listSearchValue: searchValue,
+    handleListSearchValue: handleSearchValue,
+    listFilterAssetsViewMore: filterAssetsViewMore,
+    toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
   };
 }
 
@@ -496,6 +540,12 @@ export interface List {
   listPageSize: number;
   listPageTotal: number;
   toggleListPageIndex: (index: PAGINATION_ACTION | number) => void;
+  listSearchOpen: boolean;
+  toggleListSearchOpen: (searchOpen?: boolean) => void;
+  listSearchValue?: string;
+  handleListSearchValue: (searchValue?: string) => void;
+  listFilterAssetsViewMore: boolean;
+  toggleListFilterAssetsViewMore: (filterAssetsViewMore?: boolean) => void;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {
