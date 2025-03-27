@@ -26,7 +26,6 @@ export default async function onDolomiteAction(actionParams: any) {
   const parsedAmount = amount;
   options = {
     value: (isNative && actionType === "Deposit") ? parsedAmount : 0,
-    gasLimit: 4000000
   };
 
   if (["Deposit", "Withdraw"].includes(actionType)) {
