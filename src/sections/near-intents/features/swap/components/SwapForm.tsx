@@ -224,7 +224,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         store?.currentTab === "trading_challenge" ? (
           <div className="font-Montserrat text-[14px] my-[11px]">In this mode your trades will count towards the challenge, and only BERA token (token in /out) counts.  </div>
         ) : (
-          <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
+          <div className="font-Montserrat text-[14px] my-[11px] text-center">Cross-chain swap across any network, any token.</div>
         )
       }
       <Form<SwapFormValues>
