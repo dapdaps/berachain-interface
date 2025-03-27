@@ -230,3 +230,7 @@ export enum PAGINATION_ACTION {
   NEXT = "next",
   LAST = "last",
 }
+
+export const WITHDRAW_APPROVAL_VAULT_ADDRESS = [
+  "0xf44328d75638eec3E2f7075846c7596E92774aD2",
+];

@@ -10,7 +10,7 @@ import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 import Big from "big.js";
 import Loading from "@/components/loading";
 import Range from "@/components/range";
-import { ACTION_TYPE } from "../../config";
+import { ACTION_TYPE, WITHDRAW_APPROVAL_VAULT_ADDRESS } from '../../config';
 
 const Action = (props: any) => {
   const { className } = props;
@@ -203,9 +203,19 @@ const Action = (props: any) => {
           spender={
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentRecord.vaultAddress
-              : ""
+              : (
+                WITHDRAW_APPROVAL_VAULT_ADDRESS.some((addr) => addr.toLowerCase() === currentRecord.vaultAddress.toLowerCase())
+                  ? currentRecord.vaultAddress
+                  : ""
+              )
           }
-          token={currentRecord.token}
+          token={
+            actionType.value === ACTION_TYPE.DEPOSIT
+              ? currentRecord.token
+              : (
+                currentRecord.extra_data?.vault_token || currentRecord.token
+              )
+          }
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}
