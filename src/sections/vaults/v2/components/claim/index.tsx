@@ -30,9 +30,9 @@ const Claim = (props: any) => {
         <div className="mt-[15px] text-[20px] font-[600]">
           {numberFormatter(currentReward?.amount, 6, true, { isShort: true, isShortUppercase: true })} {currentReward?.symbol}
         </div>
-        <div className="mt-[5px] text-[16px] font-[500]">
-          +{numberFormatter(currentReward?.usd, 2, true, { prefix: "$", isShort: true, isShortUppercase: true })}
-        </div>
+        {/*<div className="mt-[5px] text-[16px] font-[500]">*/}
+        {/*  +{numberFormatter(currentReward?.usd, 2, true, { prefix: "$", isShort: true, isShortUppercase: true })}*/}
+        {/*</div>*/}
       </div>
       <button
         type="button"

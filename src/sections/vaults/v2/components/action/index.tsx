@@ -87,7 +87,7 @@ const Action = (props: any) => {
                 fallbackSrc="/assets/tokens/default_icon.png"
               />
               <div className="text-[14px] font-medium leading-[100%]">
-                {currentRecord.protocol}
+                {currentRecord.pool_project}
               </div>
             </div>
           </div>
@@ -175,9 +175,9 @@ const Action = (props: any) => {
               </div>
             </div>
             <Range
-              value={Math.ceil((dappParams?.days || 0 / 30) * 100)}
+              value={Math.ceil(((dappParams?.days || 0) / 30) * 100)}
               onChange={(e: any) => {
-                setDappParams({ days: Math.ceil((e.target.value * 30) / 100) });
+                setDappParams({ days: Math.ceil((e.target.value / 100) * 30) });
               }}
             />
           </>

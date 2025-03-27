@@ -31,20 +31,24 @@ const TopCard = (props: any) => {
           lineHeight: "23.4px"
         }}
       >
-        {type === 2 ? (
-          <div className="flex items-center gap-[4px]">
-            <span>{numberFormatter(pool?.totalApy, 2, true)}%</span>
-            <div className="text-[16px] font-normal px-[4px] bg-[#B8FF2B] rounded-[6px] leading-[16px] self-end">
-              APR
-            </div>
-            {/*<span>+ 0.16%</span>
-            <div className="text-[16px] font-normal px-[4px] bg-[#FFF5A9] rounded-[6px] leading-[16px] self-end">
-              Boost
-            </div>*/}
+        <div className="flex items-center gap-[4px]">
+          <span>
+            {numberFormatter(pool?.[currType.dataIndex], 2, true, { isShort: true, isShortUppercase: true, prefix: currType.dataIndex === "tvl" ? "$" : "" })}
+            {currType.dataIndex === "totalApy" ? "%" : ""}
+          </span>
+          <div
+            className="text-[16px] font-normal px-[4px] rounded-[6px] leading-[16px] self-end"
+            style={{
+              backgroundColor: currType.unitBg
+            }}
+          >
+            {currType.unit}
           </div>
-        ) : (
-          numberFormatter(pool?.totalApy, 2, true) + "%"
-        )}
+          {/*<span>+ 0.16%</span>
+           <div className="text-[16px] font-normal px-[4px] bg-[#FFF5A9] rounded-[6px] leading-[16px] self-end">
+           Boost
+           </div>*/}
+        </div>
       </div>
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
@@ -101,16 +105,25 @@ export const cardType: Record<CardType, any> = {
   [CardType.TopAPR]: {
     bg: "#CFFFBE",
     title: "Top APR",
-    button: "Deposit"
+    button: "Deposit",
+    unit: "APR",
+    unitBg: "#B8FF2B",
+    dataIndex: "totalApy",
   },
   [CardType.HotVault]: {
     bg: "#FFB8B9",
     title: "Hot Vault",
-    button: "Deposit"
+    button: "Deposit",
+    unit: "TVL",
+    unitBg: "#FF58B7",
+    dataIndex: "tvl",
   },
   [CardType.HotStrategy]: {
     bg: "#B0A9FF",
     title: "Hot Strategy",
-    button: "Strategy"
+    button: "Strategy",
+    unit: "APR",
+    unitBg: "#B8FF2B",
+    dataIndex: "totalApy",
   }
 };

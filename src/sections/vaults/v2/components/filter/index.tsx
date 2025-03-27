@@ -159,7 +159,7 @@ const Filter = (props: any) => {
         }
       </div>
       <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
-        Protocol
+        Platform
       </div>
       <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
         {

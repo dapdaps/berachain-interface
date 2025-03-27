@@ -191,7 +191,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^BeraDrome$/i, label: "BeraDrome", icon: getDappLogo("BeraDrome") },
     { reg: /^BurrBear$/i, label: "BurrBear", icon: getDappLogo("BurrBear") },
     { reg: /^WeBera$/i, label: "WeBera", icon: getDappLogo("WeBera") },
-    { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared") },
+    // { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared") },
     { reg: /^Kodiak$/i, label: "Kodiak", icon: getDappLogo("Kodiak") },
     { reg: /^Smilee$/i, label: "Smilee", icon: getDappLogo("Smilee") },
     { reg: /^Dolomite$/i, label: "Dolomite", icon: getDappLogo("Dolomite") },
@@ -201,3 +201,10 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
 };
 
 export const SUPPORTED_PROTOCOLS = ["Bex", "Kodiak", "Infrared", "Dolomite"];
+
+export enum PAGINATION_ACTION {
+  FIRST = "first",
+  PREV = "previous",
+  NEXT = "next",
+  LAST = "last",
+}
