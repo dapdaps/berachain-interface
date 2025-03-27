@@ -16,12 +16,8 @@ export default function useAction() {
   const { addAction } = useAddAction("dapp");
   const [amount, setAmount] = useState<string>();
   const [dappParams, setDappParams] = useState<any>({});
-  const {
-    currentRecord,
-    actionType,
-    toggleActionVisible,
-    getListData
-  } = useVaultsV2Context();
+  const { currentRecord, actionType, toggleActionVisible, getListData } =
+    useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
