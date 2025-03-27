@@ -172,16 +172,27 @@ export default function Liquidity() {
                 title: "Pool",
                 key: "pool",
                 sort: false,
-                width: "45%",
+                width: "35%",
                 render: (item: any, index: number) => {
                   return <PoolTable item={item} />;
+                }
+              },
+              {
+                title: "BGT APR",
+                key: "bgtApr",
+                sort: true,
+                width: "12.5%",
+                render: (item: any, index: number) => {
+                  return Big(item?.["bgtApr"] ?? 0).gt(0)
+                    ? `${numberFormatter(item["bgtApr"], 2, true)}%`
+                    : "-";
                 }
               },
               {
                 title: "APR",
                 key: "apr",
                 sort: true,
-                width: "15%",
+                width: "12.5%",
                 render: (item: any, index: number) => {
                   return Big(item?.["apr"] ?? 0).gt(0)
                     ? `${numberFormatter(item["apr"], 2, true)}%`

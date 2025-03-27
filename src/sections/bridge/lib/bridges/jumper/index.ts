@@ -92,8 +92,8 @@ export async function getQuote(
 
         max = {
             uuid,
-            icon: '/images/dapps/jumper.png',
-            bridgeName: route.steps[0].toolDetails.name,
+            icon: 'https://s3.amazonaws.com/dapdap.prod/images/li.fi.png',
+            bridgeName: 'Li.Fi',
             bridgeType: 'Jumper',
             fee: computeFee(route),
             receiveAmount: new Big(route.toAmount).toString(),
