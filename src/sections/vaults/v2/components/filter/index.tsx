@@ -8,6 +8,7 @@ import Big from 'big.js';
 import Loading from '@/components/loading';
 import Empty from '@/components/empty';
 import Skeleton from 'react-loading-skeleton';
+import { useEffect, useRef, useState } from 'react';
 
 const Filter = (props: any) => {
   const { className } = props;
@@ -24,13 +25,46 @@ const Filter = (props: any) => {
     listRewardTokens,
     listPoolProjects,
     listCreatorProjects,
+    listFilterAssetsViewMore,
+    toggleListFilterAssetsViewMore,
   } = useVaultsV2Context();
   const isMobile = useIsMobile();
+
+  const [viewMoreVisible, setViewMoreVisible] = useState(false);
 
   const filterAssetsList = FILTERS.ASSETS.filter((it) => {
     if (!listAvailableAssets) return true;
     return listFilterAssetsBalance.some((_it: any) => _it.address === it.token?.address && Big(_it.balance || 0).gt(0));
   });
+
+  const assetsFilterRef = useRef<any>();
+
+  useEffect(() => {
+    const checkHeight = () => {
+      if (assetsFilterRef.current) {
+        const height = assetsFilterRef.current.clientHeight;
+        if (height < 136) {
+          setViewMoreVisible(false);
+        } else {
+          setViewMoreVisible(true);
+        }
+      }
+    };
+
+    checkHeight();
+
+    const resizeObserver = new ResizeObserver(checkHeight);
+    if (assetsFilterRef.current) {
+      resizeObserver.observe(assetsFilterRef.current);
+    }
+
+    return () => {
+      if (assetsFilterRef.current) {
+        resizeObserver.unobserve(assetsFilterRef.current);
+      }
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <div className={clsx("h-0 flex-1 overflow-y-auto max-h-[662px]", className)}>
@@ -108,7 +142,13 @@ const Filter = (props: any) => {
           </motion.div>
         </motion.button>
       </div>
-      <div className="pt-[12px] pl-[10px] pr-[10px] flex items-center gap-x-[6px] gap-y-[8px] flex-wrap">
+      <div
+        ref={assetsFilterRef}
+        className={clsx(
+          "pt-[12px] pl-[10px] pr-[10px] flex items-center gap-x-[6px] gap-y-[8px] flex-wrap overflow-hidden",
+          listFilterAssetsViewMore ? "max-h-[unset]" : "max-h-[136px]"
+        )}
+      >
         {
           listLoading ? (
             <>
@@ -116,7 +156,7 @@ const Filter = (props: any) => {
               <Skeleton width={80} height={36} borderRadius={10} />
               <Skeleton width={80} height={36} borderRadius={10} />
             </>
-          ) : (filterAssetsList.length > 0 ? filterAssetsList.filter((it) => listAvailableAssets ? true : it.label !== "NECT").map((it, idx) => (
+          ) : (filterAssetsList.length > 0 ? filterAssetsList.filter((it) => listAvailableAssets ? true : it.label !== 'NECT').map((it, idx) => (
             <FilterItem
               key={idx}
               type={FILTER_KEYS.ASSETS}
@@ -124,20 +164,25 @@ const Filter = (props: any) => {
             />
           )) : (
             <div className="w-full flex justify-center">
-              <Empty desc="No assets available"  />
+              <Empty desc="No assets available" />
             </div>
           ))
         }
       </div>
-      {/*<div className="pt-[14px] pl-[15px] pr-[15px]">
-        <button
-          disabled={listLoading}
-          type="button"
-          className="text-[#999] text-[12px] disabled:cursor-not-allowed disabled:opacity-30"
-        >
-          View More
-        </button>
-      </div>*/}
+      {
+        viewMoreVisible && (
+          <div className="pt-[14px] pl-[15px] pr-[15px]">
+            <button
+              disabled={listLoading}
+              type="button"
+              className="text-[#999] text-[12px] disabled:cursor-not-allowed disabled:opacity-30"
+              onClick={() => toggleListFilterAssetsViewMore()}
+            >
+              View {listFilterAssetsViewMore ? "Less" : "More"}
+            </button>
+          </div>
+        )
+      }
       <FilterGroup title="Reward Asset" loading={listLoading}>
         {
           FILTERS.REWARDS
@@ -159,19 +204,6 @@ const Filter = (props: any) => {
               <FilterItem
                 key={idx}
                 type={FILTER_KEYS.PROTOCOLS}
-                data={it}
-              />
-            ))
-        }
-      </FilterGroup>
-      <FilterGroup title="Vault Protocol" loading={listLoading}>
-        {
-          FILTERS.CREATORS
-            .filter((it) => listCreatorProjects?.some((_it: any) => it.reg.test(_it)))
-            .map((it, idx) => (
-              <FilterItem
-                key={idx}
-                type={FILTER_KEYS.CREATORS}
                 data={it}
               />
             ))
