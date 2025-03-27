@@ -147,7 +147,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^NOME$/i, label: 'NOME', icon: getTokenLogo('NOME') },
   ],
   [FILTER_KEYS.PROTOCOLS]: [
-    { reg: /^Hub$/i, label: 'Hub', icon: getDappLogo('Bex') },
+    { reg: /^Bex$/i, label: 'Bex', icon: getDappLogo('Bex') },
     { reg: /^BeraDrome$/i, label: 'BeraDrome', icon: getDappLogo('BeraDrome') },
     { reg: /^BurrBear$/i, label: 'BurrBear', icon: getDappLogo('BurrBear') },
     { reg: /^WeBera$/i, label: 'WeBera', icon: getDappLogo('WeBera') },
@@ -161,7 +161,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
 };
 
 export const SUPPORTED_PROTOCOLS = [
-  "Hub",
+  "Bex",
   "Kodiak",
   "Infrared",
   "Dolomite"
