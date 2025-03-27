@@ -34,7 +34,7 @@ const Filter = (props: any) => {
 
   return (
     <div className={clsx("h-0 flex-1 overflow-y-auto max-h-[662px]", className)}>
-      <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[24px] pt-[14px] md:pt-0">
+      <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[24px] pt-[14px] md:pt-0">
         <div className="flex items-center gap-[7px]">
           <div className="text-[16px] md:text-[20px] font-[700]">
             Filter
@@ -80,10 +80,10 @@ const Filter = (props: any) => {
           }
         </button>
       </div>
-      <div className="text-[15px] font-[600] pt-[26px] px-[15px]">
+      <div className="text-[15px] font-[600] pt-[26px] px-[12px]">
         Deposit Asset
       </div>
-      <div className="flex justify-between items-center gap-[10px] pl-[15px] pr-[15px] pt-[20px]">
+      <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
         <div className="text-[15px] font-[500]">
           Your available assets only
         </div>
@@ -108,7 +108,7 @@ const Filter = (props: any) => {
           </motion.div>
         </motion.button>
       </div>
-      <div className="pt-[12px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+      <div className="pt-[12px] pl-[10px] pr-[10px] flex items-center gap-x-[6px] gap-y-[8px] flex-wrap">
         {
           listLoading ? (
             <>
@@ -116,7 +116,7 @@ const Filter = (props: any) => {
               <Skeleton width={80} height={36} borderRadius={10} />
               <Skeleton width={80} height={36} borderRadius={10} />
             </>
-          ) : (filterAssetsList.length > 0 ? filterAssetsList.map((it, idx) => (
+          ) : (filterAssetsList.length > 0 ? filterAssetsList.filter((it) => listAvailableAssets ? true : it.label !== "NECT").map((it, idx) => (
             <FilterItem
               key={idx}
               type={FILTER_KEYS.ASSETS}
@@ -138,18 +138,9 @@ const Filter = (props: any) => {
           View More
         </button>
       </div>*/}
-      <div className="pt-[24px] pl-[15px] pr-[15px] font-[600]">
-        Reward Asset
-      </div>
-      <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+      <FilterGroup title="Reward Asset" loading={listLoading}>
         {
-          listLoading ? (
-            <>
-              <Skeleton width={80} height={36} borderRadius={10} />
-              <Skeleton width={80} height={36} borderRadius={10} />
-              <Skeleton width={80} height={36} borderRadius={10} />
-            </>
-          ) : FILTERS.REWARDS
+          FILTERS.REWARDS
             .filter((it) => listRewardTokens.some((_it: any) => _it.symbol?.toLowerCase?.() === it.label.toLowerCase()))
             .map((it, idx) => (
               <FilterItem
@@ -159,20 +150,11 @@ const Filter = (props: any) => {
               />
             ))
         }
-      </div>
-      <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
-        Pool Protocol
-      </div>
-      <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+      </FilterGroup>
+      <FilterGroup title="Pool Protocol" loading={listLoading}>
         {
-          listLoading ? (
-            <>
-              <Skeleton width={80} height={36} borderRadius={10} />
-              <Skeleton width={80} height={36} borderRadius={10} />
-              <Skeleton width={80} height={36} borderRadius={10} />
-            </>
-          ) : FILTERS.PROTOCOLS
-            .filter((it) => listPoolProjects?.some((_it: any) => _it.toLowerCase() === it.label.toLowerCase()))
+          FILTERS.PROTOCOLS
+            .filter((it) => listPoolProjects?.some((_it: any) => it.reg.test(_it)))
             .map((it, idx) => (
               <FilterItem
                 key={idx}
@@ -181,31 +163,45 @@ const Filter = (props: any) => {
               />
             ))
         }
-      </div>
-      <div className="pt-[28px] pl-[15px] pr-[15px] font-[600]">
-        Vault Protocol
-      </div>
-      <div className="pt-[14px] pl-[15px] pr-[15px] flex items-center gap-[8px] flex-wrap">
+      </FilterGroup>
+      <FilterGroup title="Vault Protocol" loading={listLoading}>
         {
-          listLoading ? (
-            <>
-              <Skeleton width={80} height={36} borderRadius={10} />
-              <Skeleton width={80} height={36} borderRadius={10} />
-              <Skeleton width={80} height={36} borderRadius={10} />
-            </>
-          ) : FILTERS.CREATORS
-            .filter((it) => listCreatorProjects?.some((_it: any) => _it.toLowerCase() === it.label.toLowerCase()))
+          FILTERS.CREATORS
+            .filter((it) => listCreatorProjects?.some((_it: any) => it.reg.test(_it)))
             .map((it, idx) => (
               <FilterItem
                 key={idx}
-                type={FILTER_KEYS.PROTOCOLS}
+                type={FILTER_KEYS.CREATORS}
                 data={it}
               />
             ))
         }
-      </div>
+      </FilterGroup>
     </div>
   );
 };
 
 export default Filter;
+
+const FilterGroup = (props: any) => {
+  const { className, title, children, loading } = props;
+
+  return (
+    <>
+      <div className="pt-[24px] pl-[10px] pr-[10px] font-[600]">
+        {title}
+      </div>
+      <div className={clsx("pt-[14px] pl-[10px] pr-[10px] flex items-center gap-x-[6px] gap-y-[8px] flex-wrap", className)}>
+        {
+          loading ? (
+            <>
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+              <Skeleton width={80} height={36} borderRadius={10} />
+            </>
+          ) : children
+        }
+      </div>
+    </>
+  );
+};
