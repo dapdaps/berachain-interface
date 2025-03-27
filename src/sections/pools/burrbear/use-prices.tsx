@@ -16,7 +16,7 @@ export default function usePrices(tokens: any) {
             addressIn: tokens.map((t: any) => t.address)
           }
         });
-        const _p = response.data.data.tokenInformations;
+        const _p = response.data.data.prices;
         setPrices(
           _p.reduce(
             (acc: any, curr: any) => ({

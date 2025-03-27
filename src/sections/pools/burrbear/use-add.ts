@@ -10,6 +10,8 @@ import valutAbi from "../abi/balancer-valut";
 import poolAbi from "../abi/balancer-pool";
 import queryAbi from "../abi/balancer-query";
 import burrbear from "@/configs/pools/burrbear";
+import { usePriceStore } from "@/stores/usePriceStore";
+import weth from "@/configs/contract/weth";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
@@ -19,7 +21,9 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
   const toast = useToast();
   const contracts = burrbear.contracts[DEFAULT_CHAIN_ID];
   const { addAction } = useAddAction("dapp");
-  const slippage = useSettingsStore((store: any) => store.slippage);
+  const slippage = useSettingsStore((store: any) => store.slippage / 100);
+  const storePrices = usePriceStore((store: any) => store.price);
+
   const onIncrease = async () => {
     if (!contracts) return;
     setLoading(true);
@@ -47,25 +51,31 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
 
       assets.forEach((asset: any, i: number) => {
         const token = tokens.find(
-          (t: any) => t.address === asset.toLowerCase()
+          (t: any) =>
+            (t.address === "native"
+              ? weth[DEFAULT_CHAIN_ID]
+              : t.address
+            ).toLowerCase() === asset.toLowerCase()
         );
         if (!token) {
           maxAmountsIn.push("0");
           return;
         }
-
+        const _address =
+          token.address === "native" ? weth[DEFAULT_CHAIN_ID] : token.address;
         amountsIn.push(
           Big(values[token.address] || 0)
             .mul(10 ** token.decimals)
             .toFixed(0)
         );
-        const price = prices[token.address] || token.token.latestUSDPrice;
+        const price = prices[_address] || storePrices[token.symbol];
 
         if (token.isNative) {
           val = Big(0).add(values[token.address] || 0);
         }
         const _v = Big(values[token.address] || 0)
           .mul(10 ** token.decimals)
+          .mul(1 + slippage)
           .toFixed(0);
 
         maxAmountsIn.push(_v);
@@ -73,16 +83,17 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         poolValue = poolValue.add(
           Big(balances[i].toString())
             .div(10 ** token.decimals)
-            .mul(price)
+            .mul(price || 0)
         );
+
         userValue = userValue.add(Big(values[token.address] || 0).mul(price));
       });
 
       const bptPriceUsd = poolValue.div(Big(totalSupply.toString()).div(1e18));
       const initBalances = userValue
         .div(bptPriceUsd)
-        .mul(1 - slippage / 100)
         .mul(1e18)
+        .mul(1 - slippage)
         .toFixed(0);
 
       const abiCoder = new utils.AbiCoder();
@@ -109,10 +120,20 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         account,
         [
           assets,
-          maxAmountsIn,
+          maxAmountsIn.map((a: any) =>
+            Big(a)
+              .mul(1 + slippage)
+              .toFixed(0)
+          ),
           abiCoder.encode(
             ["uint256", "uint256[]", "uint256"],
-            [1, amountsIn, bptOut]
+            [
+              1,
+              amountsIn,
+              Big(bptOut.toString())
+                .mul(1 - slippage)
+                .toFixed(0)
+            ]
           ),
           false
         ]
@@ -161,14 +182,19 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
         status,
         transactionHash,
         sub_type: "Add",
-        extra_data: JSON.stringify({
-          tokens: tokens.map((token: any) => ({
-            symbol: token.symbol,
-            amount: values[token.address]
-          })),
+        tokens: tokens,
+        amounts: tokens.map(
+          (token: any) =>
+            values[
+              token.address === "native"
+                ? weth[DEFAULT_CHAIN_ID]
+                : token.address
+            ]
+        ),
+        extra_data: {
           action: "Add Liquidity",
           type: "univ3"
-        })
+        }
       });
       setLoading(false);
     } catch (err: any) {

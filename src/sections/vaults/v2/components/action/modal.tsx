@@ -1,6 +1,7 @@
 import Modal from "@/components/modal";
 import Index from "./index";
 import KodiakUnstake from "./kodiak-unstake";
+import BurrBear from "./burrbear";
 import Card from "@/components/card";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import { ACTION_TYPE } from "../../config";
@@ -18,8 +19,10 @@ const ActionModal = (props: any) => {
       className={className}
     >
       <Card className="!rounded-[20px] w-[496px] md:w-full">
-        {currentRecord?.protocol === "Kodiak" &&
-        actionType.value === ACTION_TYPE.WITHDRAW ? (
+        {currentRecord?.protocol === "BurrBear" ? (
+          <BurrBear />
+        ) : currentRecord?.protocol === "Kodiak" &&
+          actionType.value === ACTION_TYPE.WITHDRAW ? (
           <KodiakUnstake />
         ) : (
           <Index />
