@@ -16,7 +16,7 @@ export default memo(function Rules() {
       }}
     >
       <Card className="w-[585px] p-[24px_22px_34px]">
-        <div className="text-black font-CherryBomb text-[26px] mb-[10px]">Bintent Trading Campaign</div>
+        <div className="text-black font-CherryBomb text-[26px] mb-[10px]">Bound for Berachain</div>
 
         <div className="flex flex-col gap-[10px]">
           <div className="text-black font-CherryBomb text-[16px] leading-[90%]">Duration: April 3 - April 17</div>

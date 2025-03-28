@@ -41,6 +41,9 @@ export default memo(function BeraBgcampaign() {
           }}
         >
           <ShipSvg />
+          <div className="absolute w-[90px] right-[52px] top-[160px]">
+            <img src="/images/campaign/bintent.png" alt="bintent" />
+          </div>
         </motion.div>
         <Ground isDefaultTheme={isDefaultTheme} />
       </motion.div>
