@@ -10,6 +10,7 @@ import VaultsEnterance from "../vaults-enterance";
 import EntryCard from "@/sections/home/mobile/entry-card";
 import VaultsEntrance from '@/sections/vaults/v2/entrance';
 import Signpost from '@/sections/home-earth/components/signpost';
+import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 const Home = () => {
   const router = useProgressRouter();
@@ -437,6 +438,7 @@ const Home = () => {
                 className="absolute z-[1] w-[71px] h-[49px] object-center object-contain bottom-[-30px] left-0 pointer-events-none"
               />
             </div>
+            <BeraPrice className="scale-[0.8832] origin-bottom-right absolute bottom-[-26px] right-[80px] z-[52]" />
           </div>
         )}
       </div>
