@@ -44,6 +44,11 @@ export default function usePage() {
   const bedrockData = useBedrock();
   const etherFiData = useEtherFi();
 
+  const isDataLoading = useMemo(() => {
+    return bedrockData?.getBalanceLoading || etherFiData?.getBalanceLoading;
+  }, [bedrockData?.getBalanceLoading, etherFiData?.getBalanceLoading]);
+
+
   const lstConfig = useMemo<LstConfigItem[]>(() => [
     {
       name: 'bedrock',
@@ -117,6 +122,7 @@ export default function usePage() {
     router.push('/bridge')
   }
   return {
+    isDataLoading,
     wbtcToken,
     bedrockData,
     selectedToken,

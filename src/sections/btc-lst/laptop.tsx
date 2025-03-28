@@ -5,7 +5,8 @@ import { memo } from "react";
 import StakeModal from "./components/stake-modal";
 import TokenCard from './components/token-card';
 import usePage, { EnabledLstItem } from './hooks/use-page';
-
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'; // 确保引入样式
 
 
 export default memo(function Laptop() {
@@ -18,7 +19,9 @@ export default memo(function Laptop() {
     btcLstComposeDataByHooks,
     handleBridge,
     handleStakeModal,
+    isDataLoading
   } = usePage()
+
   return (
     <div>
       <PageBack className="absolute left-[36px] top-[31px]" showBackText={false} />
@@ -28,10 +31,23 @@ export default memo(function Laptop() {
           <div className="flex-1 flex flex-col gap-[16px]">
             <div className="flex items-center gap-[10px]">
               <div className="text-black font-Montserrat text-[16px] leading-[100%]">Your Staked</div>
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">${balanceShortFormated(totalStakedAmountUsd.toString())}</div>
+              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+                {isDataLoading ? (
+                  <Skeleton width={60} height={16} />
+                ) : (
+                  `$${balanceShortFormated(totalStakedAmountUsd.toString())}`
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-[45px]">
-              {
+              {isDataLoading ? (
+                Array(3).fill(0).map((_, index) => (
+                  <div key={index} className="flex items-center gap-[12px]">
+                    <Skeleton circle width={36} height={36} />
+                    <Skeleton width={80} height={16} />
+                  </div>
+                ))
+              ) : (
                 btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => {
                   const enabledItem = item as EnabledLstItem;
                   return (
@@ -43,7 +59,7 @@ export default memo(function Laptop() {
                     </div>
                   );
                 })
-              }
+              )}
             </div>
           </div>
 
@@ -51,8 +67,19 @@ export default memo(function Laptop() {
             <div className="text-black font-Montserrat text-[16px] leading-[100%]">Available to stake</div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[12px]">
-                <img src={wbtcToken.icon} className="w-[36px] h-[36px] overflow-hidden" />
-                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">{balanceShortFormated(bedrockData.availableAmount, 3)} WBTC</div>
+                {isDataLoading ? (
+                  <>
+                    <Skeleton circle width={36} height={36} />
+                    <Skeleton width={80} height={16} />
+                  </>
+                ) : (
+                  <>
+                    <img src={wbtcToken.icon} className="w-[36px] h-[36px] overflow-hidden" />
+                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
+                      {balanceShortFormated(bedrockData.availableAmount, 3)} WBTC
+                    </div>
+                  </>
+                )}
               </div>
               <div onClick={handleBridge} className="w-[115px] h-[40px] bg-[#FFDC50] border border-black flex items-center justify-center gap-[10px] rounded-[10px] cursor-pointer hover:bg-opacity-50">
                 <span className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">Bridge</span>
@@ -63,11 +90,17 @@ export default memo(function Laptop() {
         </div>
 
         <div className="flex items-center gap-[30px_21px] flex-wrap">
-          {
+          {isDataLoading ? (
+            Array(6).fill(0).map((_, index) => (
+              <div key={index} className="relative h-[270px] md:w-full w-[calc((100%_-_42px)_/_3)] rounded-[20px] ">
+                  <Skeleton height={270} />
+              </div>
+            ))
+          ) : (
             btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
               <TokenCard item={item} key={item.name} onClick={() => handleStakeModal(item)} />
             ))
-          }
+          )}
         </div>
       </div>
       {
