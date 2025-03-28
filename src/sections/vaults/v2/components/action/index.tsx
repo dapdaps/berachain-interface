@@ -101,7 +101,7 @@ const Action = (props: any) => {
                 setOpenAddLp(true);
               }}
             >
-              Mint LP tokens
+              Mint LP
             </button>
           )}
       </div>
@@ -196,7 +196,7 @@ const Action = (props: any) => {
                 setOpenAddLp(true);
               }}
             >
-              Mint LP tokens
+              Mint LP
             </button>
             <div>first</div>
           </div>
