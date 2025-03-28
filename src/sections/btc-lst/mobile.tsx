@@ -135,7 +135,7 @@ export default memo(function Mobile() {
           ))
         ) : (
           btcLstComposeDataByHooks.length > 0 && btcLstComposeDataByHooks.map((item, index) => (
-            <TokenCard item={item} key={item.name} onClick={() => handleStakeModal(item)} />
+            <TokenCard wbtc={wbtcToken} item={item} key={item.name} onClick={() => handleStakeModal(item)} />
           ))
         )}
       </div>
