@@ -22,7 +22,7 @@ export default memo(function TokenCard({
     <div className="relative md:w-full w-[calc((100%_-_42px)_/_3)]">
       <div className={clsx("h-[270px] rounded-[20px] bg-[#FFFDEB] border border-black drop-shadow-[10px_10px_0px_rgba(0,0,0,0.25]", item.disabled ? "blur-[10px]" : "")}>
         <div className="p-[24px_24px_30px] flex items-center gap-[10px]">
-          <img src={item?.targetToken?.icon || item?.sourceToken?.icon} className="w-[60px] h-[60px] rounded-full overflow-hidden"></img>
+          <img src={item?.targetToken?.icon || item?.dappIcon} className="w-[60px] h-[60px] rounded-full overflow-hidden"></img>
           <div className="flex flex-col gap-[8px]">
             <div className="text-black font-Montserrat text-[20px] font-semibold leading-[100%]">{item?.targetToken?.symbol || '-'}</div>
             <div className="flex items-center gap-[3px]">
