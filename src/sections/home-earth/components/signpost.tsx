@@ -2,10 +2,12 @@ import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import SignpostBubble from '@/sections/home-earth/components/signpost-bubble';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const Signpost = (props: any) => {
   const { className } = props;
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   return (
     <div className={clsx('absolute left-0 bottom-0 z-[5] w-[178px] h-[277px] overflow-hidden flex justify-center bg-[url("/images/home-earth/signpost.svg")] bg-no-repeat bg-[center_30px] bg-contain', className)}>
@@ -42,7 +44,10 @@ const Signpost = (props: any) => {
         <img
           src="/images/home-earth/signpost-vaults.png"
           alt=""
-          onClick={() => router.push('/vaults')}
+          onClick={() => {
+            if (isMobile) return;
+            router.push('/vaults');
+          }}
           className="w-[110px] h-[47px] cursor-pointer object-center object-contain"
         />
       </Popover>
