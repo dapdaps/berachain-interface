@@ -44,6 +44,19 @@ export const STAKE_ABI = [
     type: "function"
   },
   {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "result",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     inputs: [
       {
         internalType: "address",
