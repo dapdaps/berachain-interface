@@ -207,7 +207,7 @@ const Action = (props: any) => {
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentRecord.vaultAddress
               : (
-                currentRecord.extra_data?.withdraw_token
+                currentRecord.extra_data?.vault_token
                   ? currentRecord.vaultAddress
                   : ""
               )
@@ -216,7 +216,7 @@ const Action = (props: any) => {
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentRecord.token
               : (
-                currentRecord.extra_data?.withdraw_token || currentRecord.token
+                currentRecord.extra_data?.vault_token || currentRecord.token
               )
           }
           amount={amount}
