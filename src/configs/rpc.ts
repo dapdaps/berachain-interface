@@ -1,7 +1,19 @@
 export const RPC_LIST: any = {
   default: {
     url: "https://rpc.berachain.com",
-    simpleName: "bera rpc"
+    simpleName: "Official"
+  },
+  drpc: {
+    url: "https://berachain.drpc.org",
+    simpleName: "dRPC"
+  },
+  blockpi: {
+    url: "https://berachain.blockpi.network/v1/rpc/public",
+    simpleName: "BlockPI"
+  },
+  publicnode: {
+    url: "https://berachain-rpc.publicnode.com",
+    simpleName: "PublicNode"
   }
 };
 
