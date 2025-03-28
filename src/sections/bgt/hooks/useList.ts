@@ -41,8 +41,8 @@ export const useVaultList = (initialParams?: VaultListParams) => {
   const pageSize = 10
   const [params, setParams] = useState<VaultListParams>({
     page: 1,
-    sortBy: 'activeIncentivesInHoney',
-    sortOrder: 'desc',
+    sortBy: '',
+    sortOrder: '',
     filterByProduct: '',
     query: '',
     ...initialParams,
@@ -59,8 +59,8 @@ export const useVaultList = (initialParams?: VaultListParams) => {
         {
           "operationName": "GetVaults",
           "variables": {
-            "orderBy": "apr",
-            "orderDirection": "desc",
+            "orderBy": params?.sortBy,
+            "orderDirection": params?.sortOrder,
             "pageSize": pageSize, "skip": pageSize * (params?.page - 1),
             "where": { "includeNonWhitelisted": false }
           },
