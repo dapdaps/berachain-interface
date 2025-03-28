@@ -65,7 +65,7 @@ export default memo(function Laptop() {
         <div className="flex items-center gap-[30px_21px] flex-wrap">
           {
             btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
-              <TokenCard item={item} key={item.name} onClick={() => handleStakeModal(item)} />
+              <TokenCard wbtc={wbtcToken} item={item} key={item.name} onClick={() => handleStakeModal(item)} />
             ))
           }
         </div>

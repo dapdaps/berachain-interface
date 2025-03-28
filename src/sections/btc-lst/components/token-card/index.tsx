@@ -7,10 +7,12 @@ import { balanceShortFormated } from "@/utils/balance"
 
 export default memo(function TokenCard({
   item,
+  wbtc,
   className,
-  onClick
+  onClick,
 }: {
-  item: any,
+  item: any
+  wbtc: Token
   className?: string
   onClick: () => void
 }) {
@@ -24,8 +26,8 @@ export default memo(function TokenCard({
           <div className="flex flex-col gap-[8px]">
             <div className="text-black font-Montserrat text-[20px] font-semibold leading-[100%]">{item?.targetToken?.symbol || '-'}</div>
             <div className="flex items-center gap-[3px]">
-              <img src={item.dappIcon} className="w-[16px] h-[16px]"></img>
-                <div className="text-black font-Montserrat text-[12px] font-medium leading-[100%]">{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</div>
+              <img src={item.dappIcon} className="w-[16px] h-[16px]" />
+              <div className="text-black font-Montserrat text-[12px] font-medium leading-[100%]">{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</div>
             </div>
           </div>
         </div>
@@ -35,7 +37,9 @@ export default memo(function TokenCard({
               <div className="text-[#737373] font-Montserrat text-[14px] font-medium leading-[100%]">TVL</div>
               <div className="flex items-center gap-[3px]">
                 <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">{balanceShortFormated(item.tvl)}</div>
-                <div className="w-[16px]"></div>
+                <div className="w-[16px]">
+                  <img src={wbtc?.icon} alt={wbtc?.symbol} />
+                </div>
               </div>
               <div className="text-black font-Montserrat text-[12px] font-medium leading-[100%]">${balanceShortFormated(item.tvlUsd)}</div>
             </div>
@@ -49,13 +53,15 @@ export default memo(function TokenCard({
               <div className="text-[#737373] font-Montserrat text-[14px] font-medium leading-[100%]">Your Staked</div>
               <div className="flex items-center gap-[3px]">
                 <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">{balanceShortFormated(item.stakedAmount)}</div>
-                <div className="w-[16px]"></div>
+                <div className="w-[16px]">
+                  <img src={wbtc?.icon} alt={wbtc?.symbol} />
+                </div>
               </div>
               <div className="text-black font-Montserrat text-[12px] font-medium leading-[100%]">${balanceShortFormated(item.stakedAmountUsd)}</div>
             </div>
           </div>
           <div className="flex items-center gap-[10px]" onClick={() => {
-            
+
           }}>
             <div
               onClick={onClick}
