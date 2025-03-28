@@ -132,6 +132,20 @@ const PartList = [
     link: "/hall",
     ArrowIcon: beramasArrowIcon,
     disabled: false,
+  },
+  {
+    className:
+      "origin-bottom-right absolute right-[7%] bottom-[58%] w-[214px] h-[267px]",
+    clipPath: 'unset',
+    src: "bintent.svg",
+    maskSrc: "mask-bintent.svg",
+    indicatorClass: "absolute right-[-38%] top-[0] z-10",
+    buttonClass: "rotate-[2.58deg] mb-[8px]",
+    arrowClass: "relative left-[calc(50%-34px)]",
+    btnText: "Bintent",
+    link: "/bintent",
+    ArrowIcon: dAppArrowIcon,
+    disabled: false,
   }
 ];
 
