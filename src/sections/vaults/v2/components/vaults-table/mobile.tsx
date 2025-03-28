@@ -10,16 +10,18 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { OrderKeys } from '@/sections/vaults/v2/config';
 import LazyImage from '@/components/layz-image';
 import Skeleton from 'react-loading-skeleton';
+import Search from '@/sections/vaults/v2/components/filter/search';
+import Empty from '@/components/empty';
 
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
 
   const { listDataShown, listLoading, listOrderKey, listFilterSelectedLength, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState<number>();
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const toggleExpand = (index: number) => {
+    setIsExpanded(index === isExpanded ? void 0 : index);
   };
 
   return (
@@ -65,6 +67,9 @@ const VaultsTableMobile = (props: any) => {
           </div>
         </button>
       </div>
+      <div className="flex mt-[9px]">
+        <Search className="flex-1 w-0" />
+      </div>
       <div className={clsx("w-full text-[16px] text-black leading-[100%] font-[600] font-Montserrat mt-[13px] flex flex-col items-stretch gap-[10px]", className)}>
         {
           listLoading ? (
@@ -72,14 +77,14 @@ const VaultsTableMobile = (props: any) => {
               <Skeleton width="100%" height={118} borderRadius={10} />
               <Skeleton width="100%" height={118} borderRadius={10} />
             </>
-          ) : listDataShown.map((record: any, index: number) => (
+          ) : listDataShown?.length > 0 ? listDataShown.map((record: any, index: number) => (
             <div
               key={index}
               className="w-full shrink-0 rounded-[10px] bg-[rgba(0,0,0,0.06)]"
             >
               <div
                 className="p-[16px_14px_9px_14px]"
-                onClick={toggleExpand}
+                onClick={() => toggleExpand(index)}
               >
                 <div className="flex justify-between items-center gap-[10px]">
                   <Vaults record={record} index={index} className="flex-1 w-0" />
@@ -96,7 +101,7 @@ const VaultsTableMobile = (props: any) => {
                   </div>
                   <div className="">
                     <div className="text-[#3D405A] font-Montserrat text-[14px] font-[500] leading-normal">
-                      APY
+                      APR
                     </div>
                     <div className="text-[#000] font-Montserrat text-[16px] font-[600] leading-[100%] mt-[8px]">
                       <APY record={record} index={index} />
@@ -114,7 +119,7 @@ const VaultsTableMobile = (props: any) => {
               </div>
               <AnimatePresence>
                 {
-                  isExpanded && (
+                  isExpanded === index && (
                     <motion.div
                       key={`Expanded-${index}`}
                       className="bg-[rgba(0,0,0,0.06)] px-[14px] rounded-b-[10px] flex flex-col justify-center gap-[12px] overflow-hidden"
@@ -157,7 +162,11 @@ const VaultsTableMobile = (props: any) => {
                 }
               </AnimatePresence>
             </div>
-          ))
+          )) : (
+            <div className="flex justify-center items-center py-[30px]">
+              <Empty desc="No vaults available" />
+            </div>
+          )
         }
       </div>
     </div>

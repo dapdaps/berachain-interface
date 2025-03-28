@@ -1,8 +1,9 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { usePriceStore } from "@/stores/usePriceStore";
 import Input from "./balancer-input";
 import { StyledContainer, StyledSubtitle } from "./styles";
 import { cloneDeep } from "lodash";
+import SwapModal from "@/sections/swap/SwapModal";
 import CheckBox from "@/components/check-box";
 
 const DepositAmounts = ({
@@ -19,6 +20,7 @@ const DepositAmounts = ({
 }: any) => {
   const prices = usePriceStore((store) => store.price);
   const [isError, setIsError] = useState(false);
+  const [selectedToken, setSelectedToken] = useState<any>(null);
 
   useEffect(() => {
     if (!values) {
@@ -58,17 +60,50 @@ const DepositAmounts = ({
           }}
         />
       ))}
-      {hasProportional && (
-        <div className="flex items-center gap-[4px] mt-[10px]">
-          <CheckBox
-            checked={isProportional}
-            disabled={!info}
-            onClick={onChangeProportional}
-          />
-          <div className="text-[rgb(151,154,190)] text-[14px]">
-            Keep Amounts Proportional
+      <div className="flex justify-between items-center mt-[10px]">
+        {hasProportional ? (
+          <div className="flex items-center gap-[4px] mt-[10px]">
+            <CheckBox
+              checked={isProportional}
+              disabled={!info}
+              onClick={onChangeProportional}
+            />
+            <div className="text-[rgb(151,154,190)] text-[14px]">
+              Keep Amounts Proportional
+            </div>
           </div>
-        </div>
+        ) : (
+          <div />
+        )}
+        {tokens?.length ? (
+          <div className="text-[14px] text-black font-bold">
+            Get{" "}
+            {tokens.map((token: any, idx: number) => (
+              <span
+                className="cursor-pointer underline"
+                onClick={() => {
+                  setSelectedToken(token);
+                }}
+              >
+                {idx > 0 && ", "}
+                {token.symbol}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <div />
+        )}
+      </div>
+      {selectedToken && (
+        <SwapModal
+          defaultOutputCurrency={selectedToken}
+          outputCurrencyReadonly={true}
+          show={!!selectedToken}
+          onClose={() => {
+            setSelectedToken(null);
+          }}
+          from="marketplace"
+        />
       )}
     </StyledContainer>
   );

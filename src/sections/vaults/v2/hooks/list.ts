@@ -14,12 +14,11 @@ import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
-import { cloneDeep } from "lodash";
+import { cloneDeep, trim } from 'lodash';
 import chains from "@/configs/chains";
 import { Contract, providers, utils } from "ethers";
 import { TOKEN_ABI } from "@/hooks/use-token-balance";
 import { bera } from "@/configs/tokens/bera";
-import { useDebounceFn } from "ahooks";
 import useIsMobile from '@/hooks/use-isMobile';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
@@ -44,7 +43,7 @@ export function useList(): List {
   const isMobile = useIsMobile();
 
   const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [orderKey, setOrderKey] = useState<ORDER_KEYS>(ORDER_KEYS.TVL);
   const [orderDirection, setDirection] = useState<ORDER_DIRECTION>(
     ORDER_DIRECTION.DESC
@@ -62,6 +61,10 @@ export function useList(): List {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize] = useState(10);
   const [pageTotal, setPageTotal] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>();
+  const [searchValueDelay, setSearchValueDelay] = useState<string>();
+  const [filterAssetsViewMore, setFilterAssetsViewMore] = useState<boolean>(false);
 
   const dataShown = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -107,6 +110,19 @@ export function useList(): List {
         return false;
       }
 
+      const _search = trim(searchValueDelay || "").toLowerCase();
+      if (
+        _search && (
+          !item.tokens?.some((tk: any) => tk.symbol?.toLowerCase().includes(_search)) &&
+          !item.reward_tokens?.some((tk: any) => tk.symbol?.toLowerCase().includes(_search)) &&
+          !item.pool_project?.toLowerCase().includes(_search) &&
+          !item.project?.toLowerCase().includes(_search) &&
+          !item.name?.toLowerCase().includes(_search)
+        )
+      ) {
+        return false;
+      }
+
       return true;
     });
 
@@ -128,7 +144,7 @@ export function useList(): List {
     }
 
     return sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [data, orderKey, orderDirection, filterSelected, pageIndex, pageSize, isMobile]);
+  }, [data, orderKey, orderDirection, filterSelected, pageIndex, pageSize, isMobile, searchValueDelay]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
     const topAPY = data.reduce(
@@ -154,23 +170,45 @@ export function useList(): List {
     return Object.values(filterSelected).flat().length;
   }, [filterSelected]);
 
-  const [totalUserStakeUsd, totalUserRewardUsd, totalUserVaultsCount] = useMemo(() => {
-    const DEFAULT = [Big(0), Big(0), Big(0)];
+  const [totalUserStakeUsd, totalUserRewardUsd, totalUserVaultsCount, totalUserRewardTokens] = useMemo<any>(() => {
+    const DEFAULT = [Big(0), Big(0), Big(0), []];
     if (!data?.length) return [...DEFAULT];
     let _totalUserStakeUsd = Big(0);
     let _totalUserRewardUsd = Big(0);
     let _totalUserVaultsCount = Big(0);
+    const rewardTokensMap = new Map<string, { symbol: string; amount: Big; link: string; icon: string; address: string; }>();
+
     data.forEach((item: any) => {
       if (item.user_stake?.usd) {
         _totalUserStakeUsd = _totalUserStakeUsd.plus(Big(item.user_stake.usd || 0));
+      }
+      if (Big(item.user_stake?.amount || 0).gt(0)) {
         _totalUserVaultsCount = _totalUserVaultsCount.plus(1);
       }
       if (item.user_reward?.length) {
         const _totalUsd = item.user_reward.reduce((prev: any, curr: any) => Big(prev.usd || 0).plus(Big(curr.usd || 0)), Big(0));
         _totalUserRewardUsd = _totalUserRewardUsd.plus(_totalUsd);
+        item.user_reward.forEach((reward: any) => {
+          if (!reward.address) return;
+          const existingReward = rewardTokensMap.get(reward.address.toLowerCase());
+          const rewardAmount = Big(reward.amount || 0);
+          if (existingReward) {
+            existingReward.amount = existingReward.amount.plus(rewardAmount);
+          } else {
+            rewardTokensMap.set(reward.address.toLowerCase(), {
+              symbol: reward.symbol,
+              amount: rewardAmount,
+              link: reward.link,
+              icon: reward.icon,
+              address: reward.address,
+            });
+          }
+        });
       }
     });
-    return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount];
+
+    const totalUserRewardTokens = Array.from(rewardTokensMap.values());
+    return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount, totalUserRewardTokens];
   }, [data]);
 
   const [rewardTokens, poolProjects, creatorProjects] = useMemo(() => {
@@ -221,11 +259,8 @@ export function useList(): List {
             token.icon = getTokenLogo(token.symbol);
           });
           item.user_reward.forEach((reward: any) => {
-            const curr = item.reward_tokens.find((token: any) => token.address.toLowerCase() === reward.address.toLowerCase());
-            if (curr) {
-              reward.symbol = curr.symbol;
-              reward.icon = curr.icon;
-            }
+            reward.icon = getTokenLogo(reward.symbol);
+            reward.link = `https://berascan.com/token/${reward.address}`;
           });
 
           const specialVault: any = SPECIAL_VAULTS.find(
@@ -329,6 +364,22 @@ export function useList(): List {
     );
   };
 
+  const toggleSearchOpen = (_searchOpen?: boolean) => {
+    setSearchOpen(
+      typeof _searchOpen === "boolean" ? _searchOpen : !searchOpen
+    );
+  };
+
+  const toggleFilterAssetsViewMore = (_filterAssetsViewMore?: boolean) => {
+    setFilterAssetsViewMore(
+      typeof _filterAssetsViewMore === "boolean" ? _filterAssetsViewMore : !filterAssetsViewMore
+    );
+  };
+
+  const handleSearchValue = (_searchValue?: string) => {
+    setSearchValue(_searchValue);
+  };
+
   const toggleFilterSelected = (key: FILTER_KEYS, item: FilterItem) => {
     const _filterSelected = { ...filterSelected };
     for (const k in _filterSelected) {
@@ -419,17 +470,23 @@ export function useList(): List {
     setFilterAssetsBalanceLoading(false);
   };
 
-  const { run: init } = useDebounceFn(
-    () => {
-      getData();
+  useEffect(() => {
+    getData();
+    if (account) {
       getFilterAssetsBalance();
-    },
-    { wait: 1000 }
-  );
+    }
+  }, [account]);
 
   useEffect(() => {
-    init();
-  }, [account]);
+    const timer = setTimeout(() => {
+      setSearchValueDelay(searchValue);
+      clearTimeout(timer);
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [searchValue]);
 
   return {
     listData: data,
@@ -455,6 +512,7 @@ export function useList(): List {
     totalUserStakeUsd: totalUserStakeUsd,
     totalUserRewardUsd: totalUserRewardUsd,
     totalUserVaultsCount: totalUserVaultsCount,
+    totalUserRewardTokens: totalUserRewardTokens,
     listRewardTokens: rewardTokens,
     listPoolProjects: poolProjects,
     listCreatorProjects: creatorProjects,
@@ -462,6 +520,12 @@ export function useList(): List {
     listPageSize: pageSize,
     listPageTotal: pageTotal,
     toggleListPageIndex: togglePageIndex,
+    listSearchOpen: searchOpen,
+    toggleListSearchOpen: toggleSearchOpen,
+    listSearchValue: searchValue,
+    handleListSearchValue: handleSearchValue,
+    listFilterAssetsViewMore: filterAssetsViewMore,
+    toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
   };
 }
 
@@ -489,6 +553,7 @@ export interface List {
   totalUserStakeUsd: Big.Big;
   totalUserRewardUsd: Big.Big;
   totalUserVaultsCount: Big.Big;
+  totalUserRewardTokens: { address: string; symbol: string; amount: string; icon: string; link: string }[];
   listRewardTokens: any;
   listPoolProjects: any;
   listCreatorProjects: any;
@@ -496,6 +561,12 @@ export interface List {
   listPageSize: number;
   listPageTotal: number;
   toggleListPageIndex: (index: PAGINATION_ACTION | number) => void;
+  listSearchOpen: boolean;
+  toggleListSearchOpen: (searchOpen?: boolean) => void;
+  listSearchValue?: string;
+  handleListSearchValue: (searchValue?: string) => void;
+  listFilterAssetsViewMore: boolean;
+  toggleListFilterAssetsViewMore: (filterAssetsViewMore?: boolean) => void;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {

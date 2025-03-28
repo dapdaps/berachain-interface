@@ -41,7 +41,7 @@ const VaultsTable = (props: any) => {
       }
     },
     {
-      title: "APY",
+      title: "APR",
       dataIndex: "totalApy",
       render: (text: any, record: any, index: any) => {
         return <APY record={record} index={index} />;
