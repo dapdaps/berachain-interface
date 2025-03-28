@@ -136,13 +136,13 @@ export default function useBedrock(): LstHookResult {
 
   const getTvlByContract = async () => {
     const contract = new ethers.Contract(
-      sourceToken.address,
+      targetToken.address,
       STAKE_ABI,
       provider
     );
     try {
-      const tvl = await contract.balanceOf(STAKE_ADDRESS);
-      setTvl(ethers.utils.formatUnits(tvl, sourceToken.decimals))
+      const tvl = await contract.totalSupply();
+      setTvl(ethers.utils.formatUnits(tvl, targetToken.decimals))
     } catch (error) {
       console.log(error, '<==error')
     }
