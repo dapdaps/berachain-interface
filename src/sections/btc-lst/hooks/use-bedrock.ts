@@ -9,6 +9,7 @@ import bedrock from "@/configs/lst/dapps/bedrock";
 import useTokensBalance from "@/hooks/use-tokens-balance";
 import { usePriceStore } from "@/stores/usePriceStore";
 import { LstHookResult, STAKE_ABI } from "../constant";
+import useUpdaterStore from "@/stores/useUpdaterStore";
 
 
 export default function useBedrock(): LstHookResult {
@@ -28,6 +29,7 @@ export default function useBedrock(): LstHookResult {
   const { loading: getBalanceLoading, balances, queryBalance } = useTokensBalance(tokens);
   
   const prices = usePriceStore((store) => store.price);
+  const updater = useUpdaterStore((state) => state.updater);
 
 
   function handleMax() {
@@ -150,7 +152,8 @@ export default function useBedrock(): LstHookResult {
 
   useEffect(() => {
     getTvlByContract()
-  }, [provider]);
+    queryBalance();
+  }, [provider, updater]);
 
   return {
     stakedAmount: balances?.[targetToken.address],
