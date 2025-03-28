@@ -29,8 +29,16 @@ export default [
     constant: false,
     inputs: [
       {
-        name: "_shareAmt",
+        name: "toAssetAmount",
         type: "uint256"
+      },
+      {
+        name: "vault",
+        type: "address"
+      },
+      {
+        name: "toAsset",
+        type: "address"
       }
     ],
     name: "withdraw",
