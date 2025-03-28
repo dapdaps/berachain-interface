@@ -12,9 +12,8 @@ import IconArrow from '@public/images/icon-arrow.svg'
 import FlexTable from "@/components/flex-table";
 import Pager from "@/components/pager";
 const VaultsList = () => {
-  const { chainId } = useCustomAccount()
   const router = useRouter()
-  const currChainTokens = useMemo(() => allTokens[chainId], [chainId])
+  const currChainTokens = useMemo(() => allTokens["80094"], [allTokens])
 
   const [sortDataIndex, setSortDataIndex] = useState("apy");
   const [sortDataDirection, setSortDataDirection] = useState(1);
