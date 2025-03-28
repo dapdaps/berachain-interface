@@ -119,7 +119,7 @@ export default function usePage() {
     setSelectedToken(data)
   }
   function handleBridge() {
-    router.push('/bridge')
+    router.push('/bridge?fromToken=WBTC&toToken=WETH')
   }
   return {
     isDataLoading,
