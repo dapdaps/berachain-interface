@@ -21,7 +21,7 @@ const Claim = (props: any) => {
       <div className="">Claim Rewards</div>
       <div className="mt-[30px] flex flex-col items-center">
         <LazyImage
-          src="/images/icon-coin.svg"
+          src={currentReward?.icon}
           width={36}
           height={36}
           containerClassName="shrink-0 rounded-full overflow-hidden"
