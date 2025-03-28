@@ -52,6 +52,12 @@ const MainLayout = (props: Props) => {
   }, [isVaults, pathname]);
 
   const sceneStyles = useMemo(() => {
+    if (isVaults) {
+      return {
+        background: "rgba(0, 0, 0, 0.9) url('/images/vaults/v2/bg.png') no-repeat top center / cover"
+      };
+    }
+
     if (
       isRainyDay &&
       (
