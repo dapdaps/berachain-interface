@@ -82,8 +82,6 @@ export const useVaultList = (initialParams?: VaultListParams) => {
   };
 
   useEffect(() => {
-
-    console.log('====params', params)
     fetchData();
   }, [params]);
 
@@ -96,7 +94,6 @@ export const useVaultList = (initialParams?: VaultListParams) => {
   };
 
   const setSortBy = (sortBy: VaultListParams['sortBy'], sortOrder?: 'asc' | 'desc') => {
-    console.log('======sortBy', sortBy, '====sortOrder', sortOrder)
     updateParams({ sortBy, sortOrder, page: 1 });
   };
 

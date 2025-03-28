@@ -6,7 +6,7 @@ import useCustomAccount from "@/hooks/use-account";
 import { formatValueDecimal } from "@/utils/balance";
 import { formatLongText, getProtocolIcon } from "@/utils/utils";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useVaultList } from "../hooks/useList";
 import IconArrow from '@public/images/icon-arrow.svg'
 import FlexTable from "@/components/flex-table";
@@ -18,6 +18,8 @@ const VaultsList = () => {
 
   const [sortDataIndex, setSortDataIndex] = useState("apy");
   const [sortDataDirection, setSortDataDirection] = useState(1);
+
+  const pagerRef = useRef(null)
   const {
     data,
     loading: isLoading,
@@ -137,19 +139,25 @@ const VaultsList = () => {
 
 
   return (
-    <FlexTable
-      loading={isLoading}
-      columns={Columns}
-      list={data}
-      sortDataIndex={sortDataIndex}
-      sortDataDirection={sortDataDirection}
-      onChangeSortDataIndex={(index) => {
-        setSortDataIndex(index);
-        setSortDataDirection(-sortDataDirection);
-        setSortBy(index, -sortDataDirection > 0 ? "desc" : "asc")
-      }}
-      
-    />
+    <>
+      <FlexTable
+        loading={isLoading}
+        columns={Columns}
+        list={data}
+        sortDataIndex={sortDataIndex}
+        sortDataDirection={sortDataDirection}
+        onChangeSortDataIndex={(index) => {
+          setSortDataIndex(index);
+          setSortDataDirection(-sortDataDirection);
+          setSortBy(index, -sortDataDirection > 0 ? "desc" : "asc")
+          pagerRef?.current?.setCurrentPage(1)
+        }}
+
+      />
+      <div className="flex justify-end mt-[30px]">
+        <Pager ref={pagerRef} maxPage={maxPage} onPageChange={setPage} />
+      </div>
+    </>
 
   );
 };
