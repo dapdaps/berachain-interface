@@ -24,7 +24,7 @@ const Signpost = (props: any) => {
         offset={50}
         // closeDelayDuration={0}
         content={(
-          <SignpostBubble className="">
+          <SignpostBubble className={clsx("", isMobile && "scale-[0.8322]")}>
             <div className="text-[#FF7040] font-CherryBomb text-[26px] font-normal not-italic leading-[90%] text-stroke-1">
               APR up to 300%!
             </div>
