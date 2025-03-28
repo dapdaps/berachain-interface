@@ -19,7 +19,7 @@ const Signpost = (props: any) => {
       />
       <Popover
         placement={PopoverPlacement.Right}
-        trigger={PopoverTrigger.Hover}
+        trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
         triggerContainerClassName="absolute left-[20px] top-[112px]"
         offset={50}
         // closeDelayDuration={0}
