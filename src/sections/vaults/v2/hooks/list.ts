@@ -181,6 +181,8 @@ export function useList(): List {
     data.forEach((item: any) => {
       if (item.user_stake?.usd) {
         _totalUserStakeUsd = _totalUserStakeUsd.plus(Big(item.user_stake.usd || 0));
+      }
+      if (Big(item.user_stake?.amount || 0).gt(0)) {
         _totalUserVaultsCount = _totalUserVaultsCount.plus(1);
       }
       if (item.user_reward?.length) {
