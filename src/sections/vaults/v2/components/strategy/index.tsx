@@ -15,6 +15,9 @@ import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 
 import Big from "big.js";
 
+const DefaultValidatorId =
+  "0x482a2049a2ca55eb9b4dd5818fea5f9aafcf1fc73494d6834771f505cfa35a0f";
+
 const Strategy = (props: any) => {
   const { className } = props;
   const [showSwapModal, setShowSwapModal] = useState(false);
@@ -40,9 +43,7 @@ const Strategy = (props: any) => {
   const { loading: validatorLoading, pageData, getPageData } = useValidator();
 
   useEffect(() => {
-    getPageData(
-      "0x482a2049a2ca55eb9b4dd5818fea5f9aafcf1fc73494d6834771f505cfa35a0f"
-    );
+    getPageData(DefaultValidatorId);
   }, []);
 
   return (
@@ -176,6 +177,9 @@ const Strategy = (props: any) => {
         operationType="delegate"
         onClose={() => {
           setShowBoostModal(false);
+        }}
+        onValidatorSelect={(value: any) => {
+          getPageData(value);
         }}
       />
     </div>
