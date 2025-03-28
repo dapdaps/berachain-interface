@@ -95,19 +95,11 @@ export default memo(function Laptop() {
               <div key={index} className="relative h-[270px] md:w-full w-[calc((100%_-_42px)_/_3)] rounded-[20px] ">
                   <Skeleton height={270} />
               </div>
-<<<<<<< HEAD
-            ))
-          ) : (
-            btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
-              <TokenCard item={item} key={item.name} onClick={() => handleStakeModal(item)} />
-            ))
-=======
             ))
           ) : (
             btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
               <TokenCard wbtc={wbtcToken} item={item} key={item.name} onClick={() => handleStakeModal(item)} />
             ))
->>>>>>> feat_lst
           )}
         </div>
       </div>
