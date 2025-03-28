@@ -46,7 +46,7 @@ export const OrderKeys: Record<
     value: ORDER_KEYS.TVL
   },
   [ORDER_KEYS.APY]: {
-    label: "APY",
+    label: "APR",
     value: ORDER_KEYS.APY
   },
   [ORDER_KEYS.YOURS]: {

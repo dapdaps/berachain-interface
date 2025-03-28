@@ -126,7 +126,7 @@ export const APY = (props: any) => {
         <Card className="!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]">
           <div className="w-full flex flex-col gap-[20px]">
             <div className="w-full flex justify-between items-center gap-[10px]">
-              <div className="">Pool APY</div>
+              <div className="">Pool APR</div>
               <div className="">{numberFormatter(record.apy, 6, true)}%</div>
             </div>
             {record.apr &&
@@ -138,7 +138,7 @@ export const APY = (props: any) => {
                     className="w-full flex justify-between items-center gap-[5px]"
                   >
                     <div className="">
-                      {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APY
+                      {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APR
                     </div>
                     <div className="">
                       {numberFormatter(record.apr[ak], 6, true)}%

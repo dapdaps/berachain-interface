@@ -101,7 +101,7 @@ const VaultsTableMobile = (props: any) => {
                   </div>
                   <div className="">
                     <div className="text-[#3D405A] font-Montserrat text-[14px] font-[500] leading-normal">
-                      APY
+                      APR
                     </div>
                     <div className="text-[#000] font-Montserrat text-[16px] font-[600] leading-[100%] mt-[8px]">
                       <APY record={record} index={index} />

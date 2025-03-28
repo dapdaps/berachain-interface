@@ -170,12 +170,14 @@ export function useList(): List {
     return Object.values(filterSelected).flat().length;
   }, [filterSelected]);
 
-  const [totalUserStakeUsd, totalUserRewardUsd, totalUserVaultsCount] = useMemo(() => {
-    const DEFAULT = [Big(0), Big(0), Big(0)];
+  const [totalUserStakeUsd, totalUserRewardUsd, totalUserVaultsCount, totalUserRewardTokens] = useMemo<any>(() => {
+    const DEFAULT = [Big(0), Big(0), Big(0), []];
     if (!data?.length) return [...DEFAULT];
     let _totalUserStakeUsd = Big(0);
     let _totalUserRewardUsd = Big(0);
     let _totalUserVaultsCount = Big(0);
+    const rewardTokensMap = new Map<string, { symbol: string; amount: Big; link: string; icon: string; address: string; }>();
+
     data.forEach((item: any) => {
       if (item.user_stake?.usd) {
         _totalUserStakeUsd = _totalUserStakeUsd.plus(Big(item.user_stake.usd || 0));
@@ -184,9 +186,27 @@ export function useList(): List {
       if (item.user_reward?.length) {
         const _totalUsd = item.user_reward.reduce((prev: any, curr: any) => Big(prev.usd || 0).plus(Big(curr.usd || 0)), Big(0));
         _totalUserRewardUsd = _totalUserRewardUsd.plus(_totalUsd);
+        item.user_reward.forEach((reward: any) => {
+          if (!reward.address) return;
+          const existingReward = rewardTokensMap.get(reward.address.toLowerCase());
+          const rewardAmount = Big(reward.amount || 0);
+          if (existingReward) {
+            existingReward.amount = existingReward.amount.plus(rewardAmount);
+          } else {
+            rewardTokensMap.set(reward.address.toLowerCase(), {
+              symbol: reward.symbol,
+              amount: rewardAmount,
+              link: reward.link,
+              icon: reward.icon,
+              address: reward.address,
+            });
+          }
+        });
       }
     });
-    return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount];
+
+    const totalUserRewardTokens = Array.from(rewardTokensMap.values());
+    return [_totalUserStakeUsd, _totalUserRewardUsd, _totalUserVaultsCount, totalUserRewardTokens];
   }, [data]);
 
   const [rewardTokens, poolProjects, creatorProjects] = useMemo(() => {
@@ -237,11 +257,8 @@ export function useList(): List {
             token.icon = getTokenLogo(token.symbol);
           });
           item.user_reward.forEach((reward: any) => {
-            const curr = item.reward_tokens.find((token: any) => token.address.toLowerCase() === reward.address.toLowerCase());
-            if (curr) {
-              reward.symbol = curr.symbol;
-              reward.icon = curr.icon;
-            }
+            reward.icon = getTokenLogo(reward.symbol);
+            reward.link = `https://berascan.com/token/${reward.address}`;
           });
 
           const specialVault: any = SPECIAL_VAULTS.find(
@@ -493,6 +510,7 @@ export function useList(): List {
     totalUserStakeUsd: totalUserStakeUsd,
     totalUserRewardUsd: totalUserRewardUsd,
     totalUserVaultsCount: totalUserVaultsCount,
+    totalUserRewardTokens: totalUserRewardTokens,
     listRewardTokens: rewardTokens,
     listPoolProjects: poolProjects,
     listCreatorProjects: creatorProjects,
@@ -533,6 +551,7 @@ export interface List {
   totalUserStakeUsd: Big.Big;
   totalUserRewardUsd: Big.Big;
   totalUserVaultsCount: Big.Big;
+  totalUserRewardTokens: { address: string; symbol: string; amount: string; icon: string; link: string }[];
   listRewardTokens: any;
   listPoolProjects: any;
   listCreatorProjects: any;
