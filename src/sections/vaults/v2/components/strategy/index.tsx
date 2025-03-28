@@ -40,7 +40,12 @@ const Strategy = (props: any) => {
 
   const { toggleActionVisible } = useVaultsV2Context();
 
-  const { loading: validatorLoading, pageData, getPageData } = useValidator();
+  const {
+    loading: validatorLoading,
+    pageData,
+    getPageData,
+    setPageData
+  } = useValidator();
 
   useEffect(() => {
     getPageData(DefaultValidatorId);
@@ -179,7 +184,7 @@ const Strategy = (props: any) => {
           setShowBoostModal(false);
         }}
         onValidatorSelect={(value: any) => {
-          getPageData(value);
+          setPageData(value);
         }}
       />
     </div>
