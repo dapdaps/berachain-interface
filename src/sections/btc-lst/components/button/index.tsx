@@ -39,7 +39,7 @@ export const PROJECT_STRATEGIES: any = {
     deposit: {
       method: "deposit",
       fee: 0.003,
-      approvalToken: "token1",
+      approvalToken: "token0",
       formatParams: (tokenAddress: string, amount: ethers.BigNumber) => {
         return [tokenAddress, amount, 0];
       },
