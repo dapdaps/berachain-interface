@@ -32,7 +32,7 @@ const Filter = (props: any) => {
 
   const [viewMoreVisible, setViewMoreVisible] = useState(false);
 
-  const filterAssetsList = FILTERS.ASSETS.filter((it) => {
+  const filterAssetsList = FILTERS.ASSETS.sort((a, b) => a.sort - b.sort).filter((it) => {
     if (!listAvailableAssets) return true;
     return listFilterAssetsBalance.some((_it: any) => _it.address === it.token?.address && Big(_it.balance || 0).gt(0));
   });
@@ -186,6 +186,7 @@ const Filter = (props: any) => {
       <FilterGroup title="Reward Asset" loading={listLoading}>
         {
           FILTERS.REWARDS
+            .sort((a, b) => a.sort - b.sort)
             .filter((it) => listRewardTokens.some((_it: any) => _it.symbol?.toLowerCase?.() === it.label.toLowerCase()))
             .map((it, idx) => (
               <FilterItem
@@ -199,6 +200,7 @@ const Filter = (props: any) => {
       <FilterGroup title="Pool Protocol" loading={listLoading}>
         {
           FILTERS.PROTOCOLS
+            .sort((a, b) => a.sort - b.sort)
             .filter((it) => listPoolProjects?.some((_it: any) => it.reg.test(_it)))
             .map((it, idx) => (
               <FilterItem

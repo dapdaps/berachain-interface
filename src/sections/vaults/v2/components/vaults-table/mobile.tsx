@@ -18,10 +18,10 @@ const VaultsTableMobile = (props: any) => {
 
   const { listDataShown, listLoading, listOrderKey, listFilterSelectedLength, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState<number>();
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const toggleExpand = (index: number) => {
+    setIsExpanded(index === isExpanded ? void 0 : index);
   };
 
   return (
@@ -84,7 +84,7 @@ const VaultsTableMobile = (props: any) => {
             >
               <div
                 className="p-[16px_14px_9px_14px]"
-                onClick={toggleExpand}
+                onClick={() => toggleExpand(index)}
               >
                 <div className="flex justify-between items-center gap-[10px]">
                   <Vaults record={record} index={index} className="flex-1 w-0" />
@@ -101,7 +101,7 @@ const VaultsTableMobile = (props: any) => {
                   </div>
                   <div className="">
                     <div className="text-[#3D405A] font-Montserrat text-[14px] font-[500] leading-normal">
-                      APY
+                      APR
                     </div>
                     <div className="text-[#000] font-Montserrat text-[16px] font-[600] leading-[100%] mt-[8px]">
                       <APY record={record} index={index} />
@@ -119,7 +119,7 @@ const VaultsTableMobile = (props: any) => {
               </div>
               <AnimatePresence>
                 {
-                  isExpanded && (
+                  isExpanded === index && (
                     <motion.div
                       key={`Expanded-${index}`}
                       className="bg-[rgba(0,0,0,0.06)] px-[14px] rounded-b-[10px] flex flex-col justify-center gap-[12px] overflow-hidden"
