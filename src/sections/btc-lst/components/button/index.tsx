@@ -31,7 +31,8 @@ export const PROJECT_STRATEGIES: any = {
     deposit: {
       method: "mint",
       approvalToken: "token0",
-      formatParams: (tokenAddress: string, amount: ethers.BigNumber) => [tokenAddress, amount]
+      formatParams: (tokenAddress: string, amount: ethers.BigNumber) => [tokenAddress, amount],
+      spender: (item: EnabledLstItem) => item.dappConfig.STAKE_ADDRESS
     }
   },
   etherfi: {
@@ -41,7 +42,8 @@ export const PROJECT_STRATEGIES: any = {
       approvalToken: "token1",
       formatParams: (tokenAddress: string, amount: ethers.BigNumber) => {
         return [tokenAddress, amount, 0];
-      }
+      },
+      spender: (item: EnabledLstItem) => item.targetToken.address
     },
   }
 };
@@ -83,6 +85,10 @@ export default function Button(props: IProps) {
     
     if (!tokenToApprove) return;
     
+    const spenderAddress = projectStrategy[type].spender 
+      ? projectStrategy[type].spender(item) 
+      : item.dappConfig.STAKE_ADDRESS;
+    
     const wei: any = ethers.utils.parseUnits(
       Big(_amount).toFixed(tokenToApprove?.decimals),
       tokenToApprove?.decimals
@@ -99,7 +105,7 @@ export default function Button(props: IProps) {
       isApproved: false,
     });
     contract
-      .allowance(account, item.dappConfig.STAKE_ADDRESS)
+      .allowance(account, spenderAddress)
       .then((allowance: any) => {
         const approved = !new Big(allowance.toString()).lt(wei);
         updateState({
@@ -122,6 +128,10 @@ export default function Button(props: IProps) {
     
     if (!tokenToApprove) return;
     
+    const spenderAddress = projectStrategy[type].spender 
+      ? projectStrategy[type].spender(item) 
+      : item.dappConfig.STAKE_ADDRESS;
+    
     const payload = { isApproving: true };
     const _amount = Big(amount).toFixed(tokenToApprove.decimals);
     const toastId = toast?.loading({
@@ -141,7 +151,7 @@ export default function Button(props: IProps) {
     );
   
     contract
-      .approve(item.dappConfig.STAKE_ADDRESS, wei)
+      .approve(spenderAddress, wei)
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const payload = { isApproved: true, isApproving: false };
