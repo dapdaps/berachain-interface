@@ -16,7 +16,7 @@ import Empty from '@/components/empty';
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
 
-  const { listDataShown, listLoading, listOrderKey, listFilterSelectedLength, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
+  const { listDataGroupByPool, listLoading, listOrderKey, listFilterSelectedLength, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
 
   const [isExpanded, setIsExpanded] = useState<number>();
 
@@ -77,7 +77,7 @@ const VaultsTableMobile = (props: any) => {
               <Skeleton width="100%" height={118} borderRadius={10} />
               <Skeleton width="100%" height={118} borderRadius={10} />
             </>
-          ) : listDataShown?.length > 0 ? listDataShown.map((record: any, index: number) => (
+          ) : listDataGroupByPool?.length > 0 ? listDataGroupByPool.map((record: any, index: number) => (
             <div
               key={index}
               className="w-full shrink-0 rounded-[10px] bg-[rgba(0,0,0,0.06)]"

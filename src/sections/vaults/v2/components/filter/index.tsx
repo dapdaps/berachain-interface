@@ -197,7 +197,7 @@ const Filter = (props: any) => {
             ))
         }
       </FilterGroup>
-      <FilterGroup title="Pool Protocol" loading={listLoading}>
+      <FilterGroup title="Defi Protocol" loading={listLoading}>
         {
           FILTERS.PROTOCOLS
             .sort((a, b) => a.sort - b.sort)

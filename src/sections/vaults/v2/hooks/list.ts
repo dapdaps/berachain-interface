@@ -68,10 +68,56 @@ export function useList(): List {
   const [filterAssetsViewMore, setFilterAssetsViewMore] =
     useState<boolean>(false);
 
-  const dataShown = useMemo(() => {
+  // pagination & grouped by pool_address & sorted & filters
+  const dataGroupByPool = useMemo(() => {
     if (!data || data.length === 0) return [];
 
-    const filteredData = data.filter((item: any) => {
+    const grouped = data.reduce((acc: any[], item: any) => {
+      const group = acc.find((g: any) => g.pool_address === item.pool_address);
+      if (group) {
+        group.list.push(item);
+        group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
+        group.user_stake.amount = Big(group.user_stake?.amount || 0)
+          .plus(item.user_stake?.amount || 0);
+        group.user_stake.usd = Big(group.user_stake?.usd || 0)
+          .plus(item.user_stake?.usd || 0);
+        if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
+          group.totalApy[0] = item.totalApy;
+        }
+        if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
+          group.totalApy[1] = item.totalApy;
+        }
+        group.apr.push(item.apr);
+        group.creatorProtocolIcon.push(item.creatorProtocolIcon);
+        group.reward_tokens = group.reward_tokens.concat(item.reward_tokens);
+        group.user_reward = group.user_reward.concat(item.user_reward);
+        group.balance = Big(group.balance).plus(item.balance || 0);
+      } else {
+        acc.push({
+          pool_address: item.pool_address,
+          pool_project: item.pool_project,
+          name: item.name,
+          tvl: Big(item.tvl || 0),
+          user_stake: {
+            amount: Big(item.user_stake?.amount || 0),
+            usd: Big(item.user_stake?.usd || 0),
+          },
+          // [min, max]
+          totalApy: [item.totalApy, item.totalApy],
+          apr: [item.apr],
+          creatorProtocolIcon: [item.creatorProtocolIcon],
+          tokens: item.tokens,
+          reward_tokens: item.reward_tokens || [],
+          user_reward: item.user_reward || [],
+          balance: Big(item.balance || 0),
+          list: [item],
+        });
+      }
+      return acc;
+    }, []);
+
+    const filteredData = grouped.filter((item: any) => {
+      // Deposit Asset
       if (
         filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
         !item.tokens.some((token: any) =>
@@ -83,6 +129,7 @@ export function useList(): List {
         return false;
       }
 
+      // Reward Asset
       if (
         filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
         !item.reward_tokens.some((token: any) =>
@@ -94,6 +141,7 @@ export function useList(): List {
         return false;
       }
 
+      // Defi Protocol
       if (
         filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
         !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
@@ -132,8 +180,20 @@ export function useList(): List {
     });
 
     const sortedData = [...filteredData].sort((a: any, b: any) => {
-      const valA = new Big(a[orderKey] || 0);
-      const valB = new Big(b[orderKey] || 0);
+      let valA: any;
+      let valB: any;
+      if (orderKey === "totalApy") {
+        if (orderDirection === ORDER_DIRECTION.ASC) {
+          valA = new Big(a[orderKey][0] || 0);
+          valB = new Big(b[orderKey][0] || 0);
+        } else {
+          valA = new Big(a[orderKey][1] || 0);
+          valB = new Big(b[orderKey][1] || 0);
+        }
+      } else {
+        valA = new Big(a[orderKey] || 0);
+        valB = new Big(b[orderKey] || 0);
+      }
 
       if (orderDirection === ORDER_DIRECTION.ASC) {
         return valA.gt(valB) ? 1 : valA.lt(valB) ? -1 : 0;
@@ -151,14 +211,16 @@ export function useList(): List {
     return sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [
     data,
-    orderKey,
-    orderDirection,
     filterSelected,
+    searchValueDelay,
     pageIndex,
     pageSize,
     isMobile,
-    searchValueDelay
+    orderKey,
+    orderDirection
   ]);
+
+  console.log('dataGroupByPool: %o', dataGroupByPool);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
     const topAPY = data.reduce(
@@ -532,7 +594,7 @@ export function useList(): List {
   return {
     listData: data,
     getListData: getData,
-    listDataShown: dataShown,
+    listDataGroupByPool: dataGroupByPool,
     listDataTopAPY: dataTopAPY,
     listDataTopTVL: dataTopTVL,
     listDataHotStrategy: dataHotStrategy,
@@ -573,7 +635,7 @@ export function useList(): List {
 export interface List {
   listData: any;
   getListData: () => Promise<void>;
-  listDataShown: any;
+  listDataGroupByPool: any;
   listDataTopAPY: any;
   listDataTopTVL: any;
   listDataHotStrategy: any;
