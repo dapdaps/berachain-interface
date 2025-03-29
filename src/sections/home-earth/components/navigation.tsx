@@ -259,9 +259,9 @@ export const ENTRIES: any = [
     sort: 6,
     name: 'Earn Yield',
     disabled: false,
-    icon: '/images/home-earth/entry-earn.svg',
-    signpost: '/images/home-earth/signpost-earn.svg',
-    path: '/earn',
+    icon: '/images/home-earth/entry-vaults.svg',
+    signpost: '/images/home-earth/signpost-vaults.svg',
+    path: '/vaults',
   },
   
   {
