@@ -12,7 +12,7 @@ const ActionSummary = (props: any) => {
   const { currentProtocol } = useVaultsV2Context();
 
   return (
-    <div className={clsx("bg-[#FFDC50] rounded-[10px] p-[16px_30px_18px]", className)}>
+    <div className={clsx("bg-[#FFDC50] rounded-[10px] p-[16px_30px_18px] md:p-[8px_15px_9px]", className)}>
       <div className="flex items-center gap-[14px]">
         <div className="flex items-center shrink-0">
           {
@@ -21,17 +21,17 @@ const ActionSummary = (props: any) => {
                 src={token.icon}
                 alt=""
                 key={index}
-                containerClassName={clsx("!w-[48px] !h-[48px] border border-black rounded-full", index > 0 && "ml-[-16px]")}
+                containerClassName={clsx("!w-[48px] !h-[48px] md:!w-[34px] md:!h-[34px] border border-black rounded-full", index > 0 && "ml-[-16px] md:ml-[-10px]")}
                 fallbackSrc="/assets/tokens/default_icon.png"
               />
             ))
           }
         </div>
-        <div className="text-black font-Montserrat text-[26px] font-semibold leading-[26px] whitespace-nowrap">
+        <div className="text-black font-Montserrat text-[26px] md:text-[20px] font-semibold leading-[26px] whitespace-nowrap">
           {currentProtocol?.tokens?.map((token: any, index: number) => token.symbol).join('-')}
         </div>
       </div>
-      <div className="flex items-start gap-[60px] mt-[17px]">
+      <div className="flex items-start gap-[60px] md:gap-[30px] mt-[17px]">
         <ActionSummaryItem label="TVL">
           {numberFormatter(currentProtocol?.tvl, 2, true, { prefix: "$", isShort: true, isShortUppercase: true })}
         </ActionSummaryItem>

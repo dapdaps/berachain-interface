@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import {
-  APY, ClaimButton,
+  APY,
   DepositButton, Rewards, TVL,
-  Vaults, WithdrawButton,
+  Vaults, WithdrawButton, Yours,
 } from '@/sections/vaults/v2/components/vaults-table/columns';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -141,9 +141,9 @@ const VaultsTableMobile = (props: any) => {
                         </div>
                         <div className="flex justify-end items-center gap-[10px] text-[#000] font-Montserrat text-[16px] font-[600] leading-[100%]">
                           <div className="">
-                            $2.34M
+                            <Yours record={record} index={index} />
                           </div>
-                          <WithdrawButton className="shrink-0" />
+                          <WithdrawButton record={record} index={index} className="shrink-0" />
                         </div>
                       </div>
                       <div className="flex justify-between items-center gap-[10px]">
@@ -151,10 +151,7 @@ const VaultsTableMobile = (props: any) => {
                           Your Rewards
                         </div>
                         <div className="flex justify-end items-center gap-[10px] text-[#000] font-Montserrat text-[16px] font-[600] leading-[100%]">
-                          <div className="underline underline-offset-4 decoration-dashed">
-                            $2.99
-                          </div>
-                          <ClaimButton className="shrink-0" />
+                          <Rewards record={record} index={index} />
                         </div>
                       </div>
                     </motion.div>

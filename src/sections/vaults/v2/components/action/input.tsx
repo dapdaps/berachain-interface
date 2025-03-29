@@ -58,10 +58,7 @@ const ActionInput = (props: any) => {
           )}
         />
         <div
-          className={clsx(
-            "flex items-center justify-end shrink-0",
-            record.tokens.length > 1 && "translate-x-[10px]"
-          )}
+          className={clsx("flex items-center justify-end shrink-0",)}
         >
           <Popover
             ref={tokenSelectPopRef}
@@ -128,7 +125,7 @@ const ActionInput = (props: any) => {
                       containerClassName={clsx(
                         "shrink-0 rounded-full overflow-hidden",
                         isDolomiteBera && "cursor-pointer",
-                        idx !== 0 && "translate-x-[-10px]"
+                        idx !== 0 && "ml-[-10px]"
                       )}
                       fallbackSrc="/assets/tokens/default_icon.png"
                     />

@@ -21,9 +21,9 @@ const ActionUnion = (props: any) => {
     >
       <div className={clsx("w-full flex flex-col items-stretch gap-[24px]", className)}>
         <ActionSummary />
-        <div className="grid grid-cols-2 gap-[30px]">
-          <ActionUnionLeft />
-          <ActionUnionRight />
+        <div className="grid grid-cols-2 gap-[30px] md:grid-cols-1">
+          <ActionUnionLeft className="md:order-2" />
+          <ActionUnionRight className="md:order-1" />
         </div>
         {["Bex", "Kodiak"].includes(currentProtocol.lpProtocol) && (
           <AddLiquidityModal
