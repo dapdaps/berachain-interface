@@ -170,18 +170,15 @@ export const APY = (props: any) => {
 };
 
 export const Rewards = (props: any) => {
-  const { record, index, className, isClaim = true } = props;
+  const { record } = props;
 
-  const { toggleClaimVisible } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
   if (!record.reward_tokens) return null;
 
-  const isUserReward = isClaim && record.user_reward?.length > 0;
-
   return (
     <div className="flex items-center gap-[2px] flex-wrap">
-      <div className={clsx("flex flex-col gap-[4px]", !isUserReward && "!flex-row !gap-[0]")}>
+      <div className={clsx("flex items-center")}>
         {record.reward_tokens.map((reward: any, index: number) => (
           <div key={index} className="flex items-center gap-[4px]">
             <LazyImage
@@ -190,44 +187,9 @@ export const Rewards = (props: any) => {
               alt=""
               width={isMobile ? 18 : 26}
               height={isMobile ? 18 : 26}
-              containerClassName={clsx("shrink-0 rounded-full overflow-hidden", (!isUserReward && index > 0) && "ml-[-10px]")}
+              containerClassName={clsx("shrink-0 rounded-full overflow-hidden", index > 0 && "ml-[-10px]")}
               fallbackSrc="/assets/tokens/default_icon.png"
             />
-            {isClaim &&
-              record.user_reward.map((_reward: any, idx: number) => {
-                if (!_reward.amount || _reward.address.toLowerCase() !== reward.address.toLowerCase()) return null;
-                return (
-                  <div
-                    key={idx}
-                    className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]"
-                  >
-                    <div className="">
-                      +
-                      {numberFormatter(_reward.amount, 2, true, {
-                        // prefix: "$",
-                        isShort: true
-                      })}
-                    </div>
-                    <Popover
-                      triggerContainerClassName="inline-block"
-                      content={
-                        <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
-                          Claim rewards
-                        </Card>
-                      }
-                      trigger={PopoverTrigger.Hover}
-                      placement={PopoverPlacement.Top}
-                      closeDelayDuration={0}
-                    >
-                      <button
-                        type="button"
-                        className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
-                        onClick={() => toggleClaimVisible(true, record, _reward)}
-                      />
-                    </Popover>
-                  </div>
-                );
-              })}
           </div>
         ))}
       </div>

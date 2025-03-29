@@ -10,7 +10,7 @@ import ButtonWithApprove from '@/components/button/button-with-approve';
 const ActionUnionForm = (props: any) => {
   const { className } = props;
 
-  const { actionType, currentProtocol, toggleOpenAddLp } = useVaultsV2Context();
+  const { actionType, currentProtocol, toggleOpenAddLp, setCurrentProtocol } = useVaultsV2Context();
   const {
     amount,
     balanceShown,
@@ -35,6 +35,7 @@ const ActionUnionForm = (props: any) => {
         actionType={actionType}
         balanceLoading={balanceLoading}
         balance={balanceShown}
+        setCurrentProtocol={setCurrentProtocol}
       />
       {currentProtocol.protocol === "Kodiak" &&
         actionType.value === ACTION_TYPE.DEPOSIT && (

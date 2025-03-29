@@ -47,12 +47,9 @@ export function useVaultsV2(): VaultsV2 {
     );
   };
 
-  const toggleClaimVisible = (_claimVisible?: boolean, record?: any, reward?: any) => {
-    setClaimVisible(
-      typeof _claimVisible === "boolean" ? _claimVisible : !claimVisible
-    );
+  const toggleClaimVisible = (_claimVisible?: boolean, reward?: any) => {
+    setClaimVisible(typeof _claimVisible === "boolean" ? _claimVisible : !claimVisible);
     setCurrentReward(_claimVisible && reward ? reward : null);
-    setCurrentRecord(_claimVisible && record ? record : null);
   };
 
   const toggleClaimSuccessVisible = (_claimSuccessVisible?: boolean, reward?: any) => {
@@ -111,7 +108,7 @@ export interface VaultsV2 {
     record?: any;
   }) => void;
   claimVisible: boolean;
-  toggleClaimVisible: (claimVisible?: boolean, record?: any, reward?: any) => void;
+  toggleClaimVisible: (claimVisible?: boolean, reward?: any) => void;
   claimSuccessVisible: boolean;
   toggleClaimSuccessVisible: (claimSuccessVisible?: boolean, reward?: any) => void;
   strategyVisible: boolean;

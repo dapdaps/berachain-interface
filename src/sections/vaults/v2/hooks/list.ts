@@ -69,8 +69,8 @@ export function useList(): List {
     useState<boolean>(false);
 
   // pagination & grouped by pool_address & sorted & filters
-  const dataGroupByPool = useMemo(() => {
-    if (!data || data.length === 0) return [];
+  const [dataGroupByPool, dataGroupByPoolAll] = useMemo(() => {
+    if (!data || data.length === 0) return [[], []];
 
     const grouped = data.reduce((acc: any[], item: any) => {
       const group = acc.find((g: any) => g.pool_address === item.pool_address);
@@ -205,10 +205,10 @@ export function useList(): List {
     setPageTotal(Math.ceil(sortedData.length / pageSize));
 
     if (isMobile) {
-      return sortedData;
+      return [sortedData, sortedData];
     }
 
-    return sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+    return [sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize), sortedData];
   }, [
     data,
     filterSelected,
@@ -220,16 +220,14 @@ export function useList(): List {
     orderDirection
   ]);
 
-  console.log('dataGroupByPool: %o', dataGroupByPool);
-
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
-    const topAPY = data.reduce(
+    const topAPY = dataGroupByPoolAll.reduce(
       (prev: any, curr: any) =>
-        Big(curr.totalApy || 0).gt(Big(prev.totalApy || 0)) ? curr : prev,
+        Big(curr.totalApy?.[1] || 0).gt(Big(prev.totalApy?.[1] || 0)) ? curr : prev,
       {}
     );
 
-    const topTVL = data.reduce(
+    const topTVL = dataGroupByPoolAll.reduce(
       (prev: any, curr: any) =>
         Big(curr.tvl || 0).gt(Big(prev.tvl || 0)) ? curr : prev,
       {}
@@ -240,7 +238,7 @@ export function useList(): List {
     );
 
     return [topAPY, topTVL, hotStrategy];
-  }, [data]);
+  }, [dataGroupByPoolAll]);
 
   const filterSelectedLength = useMemo(() => {
     return Object.values(filterSelected).flat().length;
@@ -345,6 +343,7 @@ export function useList(): List {
         return;
       }
       const _list = res.data.data || [];
+      let _dolomite_bera: any;
       const _data = _list
         // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any) => {
@@ -410,6 +409,17 @@ export function useList(): List {
               item.extra_data?.farm ||
               (kodiakConfig.sweetenedIslands as any)[item.pool_address]
                 ?.farmAddress;
+          }
+
+          if (item.pool_project === "Dolomite" && item.tokens?.length === 1 && ["BERA", "WBERA"].includes(item.tokens[0]?.symbol?.toUpperCase())) {
+            item.pool_address = "0x0000000000000000000000000000000000000000";
+            item.tokens[0] = {
+              ...bera.bera,
+              address: "0x0000000000000000000000000000000000000000",
+            };
+            item.token = {
+              ...bera.bera,
+            };
           }
 
           return item;

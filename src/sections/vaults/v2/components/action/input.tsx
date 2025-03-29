@@ -5,13 +5,37 @@ import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 import Loading from '@/components/loading';
 import Big from 'big.js';
 import { numberFormatter } from '@/utils/number-formatter';
+import { useMemo, useRef, useState } from 'react';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import Card from '@/components/card';
+import { bera } from '@/configs/tokens/bera';
 
 const ActionInput = (props: any) => {
-  const { className, inputError, value, onChange, record, actionType, balanceLoading, balance } = props;
+  const {
+    className,
+    inputError,
+    value,
+    onChange,
+    record,
+    actionType,
+    balanceLoading,
+    balance,
+    setCurrentProtocol,
+  } = props;
+
+  const tokenSelectPopRef = useRef<any>();
+
+  const [currentToken, setCurrentToken] = useState(record.token);
 
   const handleBalance = () => {
     onChange(balance);
   };
+
+  const [isDolomiteBera, isBera] = useMemo(() => {
+    const isDolomiteBera = record?.pool_project === "Dolomite" && record?.tokens?.length === 1 && ["BERA", "WBERA"].includes(record?.tokens[0]?.symbol?.toUpperCase());
+    const isBera = record?.tokens[0]?.symbol?.toUpperCase() === "BERA";
+    return [isDolomiteBera, isBera];
+  }, [record]);
 
   return (
     <div
@@ -39,19 +63,93 @@ const ActionInput = (props: any) => {
             record.tokens.length > 1 && "translate-x-[10px]"
           )}
         >
-          {record.tokens.map((token: any, idx: number) => (
-            <LazyImage
-              src={token.icon || "/assets/tokens/default_icon.png"}
-              width={26}
-              height={26}
-              key={idx}
-              containerClassName={clsx(
-                "shrink-0 rounded-full overflow-hidden",
-                idx !== 0 && "translate-x-[-10px]"
+          <Popover
+            ref={tokenSelectPopRef}
+            placement={PopoverPlacement.BottomRight}
+            trigger={PopoverTrigger.Click}
+            contentClassName="!z-[101]"
+            content={isDolomiteBera && (
+              <Card className="!rounded-[10px] !w-[150px] !p-[5px_5px] flex flex-col gap-[5px]">
+                {
+                  [bera.bera, bera.wbera].map((_token: any, idx: number) => (
+                    <button
+                      type="button"
+                      key={idx}
+                      className={clsx(
+                        "flex items-center justify-between cursor-pointer hover:bg-[rgba(0,0,0,0.06)] transition duration-300 p-[5px_10px] rounded-[8px]",
+                        currentToken.address === _token?.address && "!bg-[rgba(0,0,0,0.12)]"
+                      )}
+                      onClick={() => {
+                        if (balanceLoading) return;
+                        tokenSelectPopRef.current?.onClose();
+                        setCurrentToken(_token);
+                        setCurrentProtocol?.({
+                          ...record,
+                          pool_address: _token.address === "native" ? "0x0000000000000000000000000000000000000000" : _token.address,
+                          token: _token,
+                          tokens: [
+                            {
+                              ..._token,
+                              address: _token.address === "native" ? "0x0000000000000000000000000000000000000000" : _token.address,
+                            }
+                          ],
+                        });
+                      }}
+                    >
+                      <LazyImage
+                        src={_token.icon}
+                        width={26}
+                        height={26}
+                        containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
+                        fallbackSrc="/assets/tokens/default_icon.png"
+                      />
+                      <div className="">{_token.symbol}</div>
+                    </button>
+                  ))
+                }
+              </Card>
+            )}
+            triggerContainerClassName="shrink-0"
+          >
+            <div
+              className={clsx(
+                "flex items-center gap-[5px] shrink-0",
+                isDolomiteBera && (balanceLoading ? "cursor-not-allowed opacity-30" : "cursor-pointer")
               )}
-              fallbackSrc="/assets/tokens/default_icon.png"
-            />
-          ))}
+            >
+              <div className="flex items-center">
+                {
+                  record.tokens.map((token: any, idx: number) => (
+                    <LazyImage
+                      src={token.icon}
+                      width={26}
+                      height={26}
+                      key={idx}
+                      containerClassName={clsx(
+                        "shrink-0 rounded-full overflow-hidden",
+                        isDolomiteBera && "cursor-pointer",
+                        idx !== 0 && "translate-x-[-10px]"
+                      )}
+                      fallbackSrc="/assets/tokens/default_icon.png"
+                    />
+                  ))
+                }
+              </div>
+              {
+                isDolomiteBera && (
+                  balanceLoading ? (
+                    <Loading size={10} />
+                  ) : (
+                    <img
+                      src="/images/vaults/v2/arrow-down.svg"
+                      alt=""
+                      className="w-[10px] object-center object-contain shrink-0"
+                    />
+                  )
+                )
+              }
+            </div>
+          </Popover>
         </div>
       </div>
       <div className="flex justify-between items-center gap-[10px] w-full text-[#3D405A] font-Montserrat text-[14px] font-normal leading-normal">

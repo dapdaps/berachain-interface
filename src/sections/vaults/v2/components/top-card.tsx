@@ -33,7 +33,18 @@ const TopCard = (props: any) => {
       >
         <div className="flex items-center gap-[4px]">
           <span>
-            {numberFormatter(pool?.[currType.dataIndex], 2, true, { isShort: true, isShortUppercase: true, prefix: currType.dataIndex === "tvl" ? "$" : "" })}
+            {
+              type === CardType.TopAPR ? (
+                <>
+                  {numberFormatter(pool?.[currType.dataIndex]?.[0], 2, true, { isShort: true, isShortUppercase: true })}~
+                  {numberFormatter(pool?.[currType.dataIndex]?.[1], 2, true, { isShort: true, isShortUppercase: true })}
+                </>
+              ) : (
+                <>
+                  {numberFormatter(pool?.[currType.dataIndex], 2, true, { isShort: true, isShortUppercase: true, prefix: type === CardType.HotVault ? "$" : "" })}
+                </>
+              )
+            }
             {currType.dataIndex === "totalApy" ? "%" : ""}
           </span>
           <div
@@ -53,9 +64,9 @@ const TopCard = (props: any) => {
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
           <div className="flex items-center">
-            {pool?.tokens?.map((token: any, idx: number) => (
+            {pool?.[type === CardType.HotStrategy ? "tokens" : "list"]?.map((protocol: any, idx: number) => (
               <LazyImage
-                src={token.icon || "/assets/tokens/default_icon.png"}
+                src={type === CardType.HotStrategy ? protocol.icon : protocol.creatorProtocolIcon}
                 width={36}
                 height={36}
                 containerClassName={clsx(
@@ -67,7 +78,7 @@ const TopCard = (props: any) => {
             ))}
           </div>
           <div className="text-[#000] font-Montserrat text-[16px] not-italic font-medium leading-[100%]">
-            {pool?.token?.symbol || "-"}
+            {pool?.tokens?.map((token: any) => token.symbol)?.join("-") || "-"}
           </div>
         </div>
         <button

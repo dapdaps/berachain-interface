@@ -12,14 +12,14 @@ export default function useClaim() {
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const {
-    currentRecord,
+    currentProtocol,
     currentReward,
     toggleClaimSuccessVisible,
     toggleClaimVisible
   } = useVaultsV2Context();
 
   const onClaim = async () => {
-    if (!currentRecord) return;
+    if (!currentProtocol) return;
     let toastId = toast.loading({ title: "Confirming..." });
     try {
       setLoading(true);
@@ -27,7 +27,7 @@ export default function useClaim() {
       const tx = await handleClaim({
         account,
         signer,
-        currentRecord
+        currentRecord: currentProtocol
       });
       toast.dismiss(toastId);
 
@@ -53,8 +53,8 @@ export default function useClaim() {
       addAction?.({
         type: "Staking",
         action: "Claim",
-        tokens: currentRecord.reward_tokens,
-        template: currentRecord.protocol,
+        tokens: currentProtocol.reward_tokens,
+        template: currentProtocol.protocol,
         status,
         transactionHash,
         sub_type: "Claim"

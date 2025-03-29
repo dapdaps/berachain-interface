@@ -54,8 +54,8 @@ export default function useAction(): Action {
     if (actionType.value === ACTION_TYPE.DEPOSIT) {
       return tokenBalance;
     }
-    return currentProtocol.user_stake?.amount || "0";
-  }, [actionType, tokenBalance, currentProtocol.user_stake]);
+    return currentProtocol?.user_stake?.amount || "0";
+  }, [actionType, tokenBalance, currentProtocol?.user_stake]);
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);
@@ -75,7 +75,7 @@ export default function useAction(): Action {
         amount: Big(amount || 0)
           .mul(10 ** currentProtocol.token.decimals)
           .toFixed(0),
-        currentProtocol,
+        currentRecord: currentProtocol,
         dappParams
       });
       toast.dismiss(toastId);
