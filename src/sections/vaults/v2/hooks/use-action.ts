@@ -9,23 +9,27 @@ import useTokenBalance from "@/hooks/use-token-balance";
 import Big from "big.js";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 
-export default function useAction() {
+export default function useAction(): Action {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const [amount, setAmount] = useState<string>();
   const [dappParams, setDappParams] = useState<any>({});
-  const { currentRecord, actionType, toggleActionVisible, getListData } =
-    useVaultsV2Context();
+  const {
+    currentProtocol,
+    actionType,
+    toggleActionVisible,
+    getListData
+  } = useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
-      ? currentRecord?.token?.address
-      : currentRecord.protocol !== "Kodiak"
-      ? currentRecord?.vaultAddress
+      ? currentProtocol?.token?.address
+      : currentProtocol.protocol !== "Kodiak"
+      ? currentProtocol?.vaultAddress
       : "",
-    currentRecord?.token?.decimals
+    currentProtocol?.token?.decimals
   );
 
   const [inputError, inputErrorMessage] = useMemo<
@@ -39,19 +43,26 @@ export default function useAction() {
       }
     }
     if (actionType.value === ACTION_TYPE.WITHDRAW) {
-      if (Big(currentRecord.user_stake?.amount || 0).lt(amount || 0)) {
+      if (Big(currentProtocol.user_stake?.amount || 0).lt(amount || 0)) {
         return [true, "Insufficient Balance"];
       }
     }
     return DEFAULT;
-  }, [tokenBalance, currentRecord, isLoading, actionType, amount]);
+  }, [tokenBalance, currentProtocol, isLoading, actionType, amount]);
+
+  const balanceShown = useMemo(() => {
+    if (actionType.value === ACTION_TYPE.DEPOSIT) {
+      return tokenBalance;
+    }
+    return currentProtocol.user_stake?.amount || "0";
+  }, [actionType, tokenBalance, currentProtocol.user_stake]);
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);
   };
 
   const onAction = async () => {
-    if (!currentRecord) return;
+    if (!currentProtocol) return;
     let toastId = toast.loading({ title: "Confirming..." });
     try {
       setLoading(true);
@@ -62,9 +73,9 @@ export default function useAction() {
         signer,
         account,
         amount: Big(amount || 0)
-          .mul(10 ** currentRecord.token.decimals)
+          .mul(10 ** currentProtocol.token.decimals)
           .toFixed(0),
-        currentRecord,
+        currentProtocol,
         dappParams
       });
       toast.dismiss(toastId);
@@ -90,14 +101,14 @@ export default function useAction() {
       addAction?.({
         type: "Staking",
         action: actionType.button === "Deposit" ? "Stake" : "Unstake",
-        token: currentRecord.token,
+        token: currentProtocol.token,
         amount,
-        template: currentRecord.protocol,
+        template: currentProtocol.protocol,
         add: false,
         status,
         transactionHash,
         sub_type: actionType.button === "Deposit" ? "Stake" : "Unstake",
-        tokens: [currentRecord.token],
+        tokens: [currentProtocol.token],
         amounts: [amount],
         extra_data: {}
       });
@@ -126,6 +137,22 @@ export default function useAction() {
     balanceLoading: isLoading,
     updateBalance: update,
     dappParams,
-    setDappParams
+    setDappParams,
+    balanceShown
   };
+}
+
+export interface Action {
+  loading: boolean;
+  onAction: () => Promise<void>;
+  amount: string | undefined;
+  handleAmountChange: (_amount: string) => void;
+  inputError: boolean;
+  inputErrorMessage: string | undefined;
+  balance: string | undefined;
+  balanceLoading: boolean;
+  updateBalance: () => void;
+  dappParams: any;
+  setDappParams: React.Dispatch<React.SetStateAction<any>>;
+  balanceShown: string;
 }

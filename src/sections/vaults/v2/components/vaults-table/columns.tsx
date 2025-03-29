@@ -107,38 +107,44 @@ export const TVL = (props: any) => {
   });
 };
 
+export const APYContent = (props: any) => {
+  const { record, className } = props;
+
+  return (
+    <Card className={clsx("!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]", className)}>
+      <div className="w-full flex flex-col gap-[20px]">
+        <div className="w-full flex justify-between items-center gap-[10px]">
+          <div className="">Pool APR</div>
+          <div className="">{numberFormatter(record.apy, 6, true)}%</div>
+        </div>
+        {record.apr &&
+          Object.keys(record.apr)
+            .filter((ak) => ak !== "pool")
+            .map((ak: any, idx: number) => (
+              <div
+                key={idx}
+                className="w-full flex justify-between items-center gap-[5px]"
+              >
+                <div className="">
+                  {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APR
+                </div>
+                <div className="">
+                  {numberFormatter(record.apr[ak], 6, true)}%
+                </div>
+              </div>
+            ))}
+      </div>
+    </Card>
+  );
+};
+
 export const APY = (props: any) => {
   const { record, index, className } = props;
 
   return (
     <Popover
       triggerContainerClassName="inline-block"
-      content={null
-        /*<Card className="!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]">
-          <div className="w-full flex flex-col gap-[20px]">
-            <div className="w-full flex justify-between items-center gap-[10px]">
-              <div className="">Pool APR</div>
-              <div className="">{numberFormatter(record.apy, 6, true)}%</div>
-            </div>
-            {(record.apr && record.list?.length < 2) &&
-              Object.keys(record.apr)
-                .filter((ak) => ak !== "pool")
-                .map((ak: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="w-full flex justify-between items-center gap-[5px]"
-                  >
-                    <div className="">
-                      {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APR
-                    </div>
-                    <div className="">
-                      {numberFormatter(record.apr[ak], 6, true)}%
-                    </div>
-                  </div>
-                ))}
-          </div>
-        </Card>*/
-      }
+      content={null}
       trigger={PopoverTrigger.Hover}
       placement={PopoverPlacement.Bottom}
       closeDelayDuration={0}

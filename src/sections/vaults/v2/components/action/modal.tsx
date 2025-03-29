@@ -1,10 +1,7 @@
 import Modal from "@/components/modal";
-import Index from "./index";
-import KodiakUnstake from "./kodiak-unstake";
-import BurrBear from "./burrbear";
+import Index from "./union";
 import Card from "@/components/card";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
-import { ACTION_TYPE } from "../../config";
 
 const ActionModal = (props: any) => {
   const { className } = props;
@@ -18,15 +15,8 @@ const ActionModal = (props: any) => {
       onClose={toggleActionVisible}
       className={className}
     >
-      <Card className="!rounded-[20px] w-[496px] md:w-full">
-        {currentRecord?.protocol === "BurrBear" ? (
-          <BurrBear />
-        ) : currentRecord?.protocol === "Kodiak" &&
-          actionType.value === ACTION_TYPE.WITHDRAW ? (
-          <KodiakUnstake />
-        ) : (
-          <Index />
-        )}
+      <Card className="rounded-[20px] !p-[46px_30px_54px] w-[970px] md:w-full">
+        <Index />
       </Card>
     </Modal>
   );

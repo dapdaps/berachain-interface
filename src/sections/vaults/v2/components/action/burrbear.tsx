@@ -4,19 +4,19 @@ import { ACTION_TYPE } from "../../config";
 import RemoveLiquidity from "@/sections/pools/burrbear/remove-liquidity";
 
 export default function Burrbear() {
-  const { currentRecord, actionType, toggleActionVisible } =
+  const { currentProtocol, actionType, toggleActionVisible } =
     useVaultsV2Context();
 
   return actionType.value === ACTION_TYPE.DEPOSIT ? (
     <AddLiquidity
-      data={currentRecord}
+      data={currentProtocol}
       onSuccess={() => {
         toggleActionVisible({ visible: false });
       }}
     />
   ) : (
     <RemoveLiquidity
-      data={currentRecord}
+      data={currentProtocol}
       onSuccess={() => {
         toggleActionVisible({ visible: false });
       }}
