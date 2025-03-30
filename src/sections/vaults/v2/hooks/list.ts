@@ -77,10 +77,12 @@ export function useList(): List {
       if (group) {
         group.list.push(item);
         group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
-        group.user_stake.amount = Big(group.user_stake?.amount || 0)
-          .plus(item.user_stake?.amount || 0);
-        group.user_stake.usd = Big(group.user_stake?.usd || 0)
-          .plus(item.user_stake?.usd || 0);
+        group.user_stake.amount = Big(group.user_stake?.amount || 0).plus(
+          item.user_stake?.amount || 0
+        );
+        group.user_stake.usd = Big(group.user_stake?.usd || 0).plus(
+          item.user_stake?.usd || 0
+        );
         if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
           group.totalApy[0] = item.totalApy;
         }
@@ -89,6 +91,7 @@ export function useList(): List {
         }
         group.apr.push(item.apr);
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
+        group.protocolIcon.push(item.protocolIcon);
         group.reward_tokens = group.reward_tokens.concat(item.reward_tokens);
         group.user_reward = group.user_reward.concat(item.user_reward);
         group.balance = Big(group.balance).plus(item.balance || 0);
@@ -100,17 +103,18 @@ export function useList(): List {
           tvl: Big(item.tvl || 0),
           user_stake: {
             amount: Big(item.user_stake?.amount || 0),
-            usd: Big(item.user_stake?.usd || 0),
+            usd: Big(item.user_stake?.usd || 0)
           },
           // [min, max]
           totalApy: [item.totalApy, item.totalApy],
           apr: [item.apr],
           creatorProtocolIcon: [item.creatorProtocolIcon],
+          protocolIcon: [item.protocolIcon],
           tokens: item.tokens,
           reward_tokens: item.reward_tokens || [],
           user_reward: item.user_reward || [],
           balance: Big(item.balance || 0),
-          list: [item],
+          list: [item]
         });
       }
       return acc;
@@ -208,7 +212,10 @@ export function useList(): List {
       return [sortedData, sortedData];
     }
 
-    return [sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize), sortedData];
+    return [
+      sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
+      sortedData
+    ];
   }, [
     data,
     filterSelected,
@@ -223,7 +230,9 @@ export function useList(): List {
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
     const topAPY = dataGroupByPoolAll.reduce(
       (prev: any, curr: any) =>
-        Big(curr.totalApy?.[1] || 0).gt(Big(prev.totalApy?.[1] || 0)) ? curr : prev,
+        Big(curr.totalApy?.[1] || 0).gt(Big(prev.totalApy?.[1] || 0))
+          ? curr
+          : prev,
       {}
     );
 
@@ -396,7 +405,7 @@ export function useList(): List {
             decimals: 18
           };
           item.protocol = item.project;
-          item.protocolIcon = getDappLogo(item.pool_project);
+          item.protocolIcon = getDappLogo(item.project);
           item.creatorProtocolIcon = getDappLogo(item.creator_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
@@ -411,14 +420,18 @@ export function useList(): List {
                 ?.farmAddress;
           }
 
-          if (item.pool_project === "Dolomite" && item.tokens?.length === 1 && ["BERA", "WBERA"].includes(item.tokens[0]?.symbol?.toUpperCase())) {
+          if (
+            item.pool_project === "Dolomite" &&
+            item.tokens?.length === 1 &&
+            ["BERA", "WBERA"].includes(item.tokens[0]?.symbol?.toUpperCase())
+          ) {
             item.pool_address = "0x0000000000000000000000000000000000000000";
             item.tokens[0] = {
               ...bera.bera,
-              address: "0x0000000000000000000000000000000000000000",
+              address: "0x0000000000000000000000000000000000000000"
             };
             item.token = {
-              ...bera.bera,
+              ...bera.bera
             };
           }
 

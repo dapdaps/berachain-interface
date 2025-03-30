@@ -11,7 +11,7 @@ import {
   Yours
 } from "@/sections/vaults/v2/components/vaults-table/columns";
 import { OrderKeys } from "@/sections/vaults/v2/config";
-import Pagination from '@/sections/vaults/v2/components/pagination';
+import Pagination from "@/sections/vaults/v2/components/pagination";
 
 const VaultsTable = (props: any) => {
   const { className } = props;
@@ -84,6 +84,8 @@ const VaultsTable = (props: any) => {
     sort: Object.keys(OrderKeys).some((o) => o === c.dataIndex)
   }));
 
+  console.log("listDataGroupByPool", listDataGroupByPool);
+
   return (
     <div
       className={clsx(
@@ -102,9 +104,7 @@ const VaultsTable = (props: any) => {
         bodyClass="text-[16px] font-[500] !py-[13px] !pl-[11px] !pr-[14px]"
         bodyClassName=""
         onChangeSortDataIndex={toggleListOrder}
-        pagination={(
-          <Pagination />
-        )}
+        pagination={<Pagination />}
       />
     </div>
   );

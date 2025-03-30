@@ -33,18 +33,27 @@ const TopCard = (props: any) => {
       >
         <div className="flex items-center gap-[4px]">
           <span>
-            {
-              type === CardType.TopAPR ? (
-                <>
-                  {numberFormatter(pool?.[currType.dataIndex]?.[0], 2, true, { isShort: true, isShortUppercase: true })}~
-                  {numberFormatter(pool?.[currType.dataIndex]?.[1], 2, true, { isShort: true, isShortUppercase: true })}
-                </>
-              ) : (
-                <>
-                  {numberFormatter(pool?.[currType.dataIndex], 2, true, { isShort: true, isShortUppercase: true, prefix: type === CardType.HotVault ? "$" : "" })}
-                </>
-              )
-            }
+            {type === CardType.TopAPR ? (
+              <>
+                {numberFormatter(pool?.[currType.dataIndex]?.[0], 2, true, {
+                  isShort: true,
+                  isShortUppercase: true
+                })}
+                ~
+                {numberFormatter(pool?.[currType.dataIndex]?.[1], 2, true, {
+                  isShort: true,
+                  isShortUppercase: true
+                })}
+              </>
+            ) : (
+              <>
+                {numberFormatter(pool?.[currType.dataIndex], 2, true, {
+                  isShort: true,
+                  isShortUppercase: true,
+                  prefix: type === CardType.HotVault ? "$" : ""
+                })}
+              </>
+            )}
             {currType.dataIndex === "totalApy" ? "%" : ""}
           </span>
           <div
@@ -64,18 +73,24 @@ const TopCard = (props: any) => {
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
           <div className="flex items-center">
-            {pool?.[type === CardType.HotStrategy ? "tokens" : "list"]?.map((protocol: any, idx: number) => (
-              <LazyImage
-                src={type === CardType.HotStrategy ? protocol.icon : protocol.creatorProtocolIcon}
-                width={36}
-                height={36}
-                containerClassName={clsx(
-                  "shrink-0 rounded-full overflow-hidden",
-                  idx !== 0 && "translate-x-[-10px]"
-                )}
-                fallbackSrc="/assets/tokens/default_icon.png"
-              />
-            ))}
+            {pool?.[type === CardType.HotStrategy ? "tokens" : "list"]?.map(
+              (protocol: any, idx: number) => (
+                <LazyImage
+                  src={
+                    type === CardType.HotStrategy
+                      ? protocol.icon
+                      : protocol.protocolIcon
+                  }
+                  width={36}
+                  height={36}
+                  containerClassName={clsx(
+                    "shrink-0 rounded-full overflow-hidden",
+                    idx !== 0 && "ml-[-10px]"
+                  )}
+                  fallbackSrc="/assets/tokens/default_icon.png"
+                />
+              )
+            )}
           </div>
           <div className="text-[#000] font-Montserrat text-[16px] not-italic font-medium leading-[100%]">
             {pool?.tokens?.map((token: any) => token.symbol)?.join("-") || "-"}
@@ -119,7 +134,7 @@ export const cardType: Record<CardType, any> = {
     button: "Deposit",
     unit: "APR",
     unitBg: "#B8FF2B",
-    dataIndex: "totalApy",
+    dataIndex: "totalApy"
   },
   [CardType.HotVault]: {
     bg: "#FFB8B9",
@@ -127,7 +142,7 @@ export const cardType: Record<CardType, any> = {
     button: "Deposit",
     unit: "TVL",
     unitBg: "#FF58B7",
-    dataIndex: "tvl",
+    dataIndex: "tvl"
   },
   [CardType.HotStrategy]: {
     bg: "#B0A9FF",
@@ -135,6 +150,6 @@ export const cardType: Record<CardType, any> = {
     button: "Strategy",
     unit: "APR",
     unitBg: "#B8FF2B",
-    dataIndex: "totalApy",
+    dataIndex: "totalApy"
   }
 };
