@@ -1,10 +1,10 @@
-import Modal from '@/components/modal';
-import Index from './index';
-import Card from '@/components/card';
-import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import Modal from "@/components/modal";
+import Index from "./index";
+import Card from "@/components/card";
+import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 
 const StrategyModal = (props: any) => {
-  const { className } = props;
+  const { className, pool } = props;
 
   const { strategyVisible, toggleStrategyVisible } = useVaultsV2Context();
 
@@ -15,7 +15,7 @@ const StrategyModal = (props: any) => {
       className={className}
     >
       <Card className="!rounded-[20px] w-[473px] md:w-full !p-0">
-        <Index />
+        <Index pool={pool} />
       </Card>
     </Modal>
   );

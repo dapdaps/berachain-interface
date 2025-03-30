@@ -84,8 +84,6 @@ const VaultsTable = (props: any) => {
     sort: Object.keys(OrderKeys).some((o) => o === c.dataIndex)
   }));
 
-  console.log("listDataGroupByPool", listDataGroupByPool);
-
   return (
     <div
       className={clsx(

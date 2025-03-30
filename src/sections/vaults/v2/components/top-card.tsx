@@ -33,7 +33,7 @@ const TopCard = (props: any) => {
       >
         <div className="flex items-center gap-[4px]">
           <span>
-            {type === CardType.TopAPR ? (
+            {[CardType.TopAPR, CardType.HotStrategy].includes(type) ? (
               <>
                 {numberFormatter(pool?.[currType.dataIndex]?.[0], 2, true, {
                   isShort: true,

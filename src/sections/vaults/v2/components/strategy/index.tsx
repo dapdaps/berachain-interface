@@ -2,11 +2,10 @@ import clsx from "clsx";
 import StrategyGroupWithButton from "@/sections/vaults/v2/components/strategy/group-with-button";
 import LazyImage from "@/components/layz-image";
 import StrategyItem from "@/sections/vaults/v2/components/strategy/item";
-import { StrategyPool } from "../../config";
 import SwapModal from "@/sections/swap/SwapModal";
 import AddLiquidityModal from "@/sections/pools/add-liquidity-modal";
 import useTokenBalance from "@/hooks/use-token-balance";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import useValidator from "@/hooks/use-validator";
 import { numberFormatter } from "@/utils/number-formatter";
@@ -19,24 +18,26 @@ const DefaultValidatorId =
   "0x482a2049a2ca55eb9b4dd5818fea5f9aafcf1fc73494d6834771f505cfa35a0f";
 
 const Strategy = (props: any) => {
-  const { className } = props;
+  const { className, pool } = props;
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [openAddLp, setOpenAddLp] = useState(false);
   const [showBoostModal, setShowBoostModal] = useState(false);
   const swapTokenIndex = useRef(0);
 
+  const lpToken = useMemo(() => pool?.list[0].token, [pool]);
+
   const { tokenBalance: token0Balance, update: updateToken0 } = useTokenBalance(
-    StrategyPool.tokens[0].address,
-    StrategyPool.tokens[0].decimals
+    pool.tokens[0].address,
+    pool.tokens[0].decimals
   );
 
   const { tokenBalance: token1Balance, update: updateToken1 } = useTokenBalance(
-    StrategyPool.tokens[1].address,
-    StrategyPool.tokens[1].decimals
+    pool.tokens[1].address,
+    pool.tokens[1].decimals
   );
 
   const { tokenBalance: lpTokenBalance, update: updateLpToken } =
-    useTokenBalance(StrategyPool.token.address, StrategyPool.token.decimals);
+    useTokenBalance(lpToken.address, lpToken.decimals);
 
   const { toggleActionVisible } = useVaultsV2Context();
 
@@ -74,8 +75,7 @@ const Strategy = (props: any) => {
               setShowSwapModal(true);
             }}
           >
-            {numberFormatter(token0Balance, 2, true)}{" "}
-            {StrategyPool.tokens[0].symbol}
+            {numberFormatter(token0Balance, 2, true)} {pool.tokens[0].symbol}
           </StrategyGroupWithButton>
           <StrategyGroupWithButton
             buttonText="Get"
@@ -84,8 +84,7 @@ const Strategy = (props: any) => {
               setShowSwapModal(true);
             }}
           >
-            {numberFormatter(token1Balance, 2, true)}{" "}
-            {StrategyPool.tokens[1].symbol}
+            {numberFormatter(token1Balance, 2, true)} {pool.tokens[1].symbol}
           </StrategyGroupWithButton>
         </StrategyItem>
 
@@ -107,8 +106,7 @@ const Strategy = (props: any) => {
               setOpenAddLp(true);
             }}
           >
-            {numberFormatter(lpTokenBalance, 2, true)}{" "}
-            {StrategyPool.token.symbol}
+            {numberFormatter(lpTokenBalance, 2, true)} {lpToken.symbol}
           </StrategyGroupWithButton>
         </StrategyItem>
 
@@ -119,13 +117,12 @@ const Strategy = (props: any) => {
             onClick={() => {
               toggleActionVisible({
                 type: ACTION_TYPE.DEPOSIT,
-                record: StrategyPool,
+                record: pool,
                 visible: true
               });
             }}
           >
-            {numberFormatter(lpTokenBalance, 2, true)}{" "}
-            {StrategyPool.token.symbol}
+            {numberFormatter(lpTokenBalance, 2, true)} {lpToken.symbol}
           </StrategyGroupWithButton>
         </StrategyItem>
 
@@ -149,7 +146,7 @@ const Strategy = (props: any) => {
         </StrategyItem>
       </div>
       <SwapModal
-        defaultOutputCurrency={StrategyPool.tokens[swapTokenIndex.current]}
+        defaultOutputCurrency={pool.tokens[swapTokenIndex.current]}
         outputCurrencyReadonly={true}
         show={showSwapModal}
         onClose={() => {
@@ -166,7 +163,7 @@ const Strategy = (props: any) => {
       />
       <AddLiquidityModal
         dex="Bex"
-        data={StrategyPool}
+        data={pool?.list[0]}
         open={openAddLp}
         onClose={() => {
           setOpenAddLp(false);

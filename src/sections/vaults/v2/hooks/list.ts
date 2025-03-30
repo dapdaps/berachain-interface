@@ -242,8 +242,8 @@ export function useList(): List {
       {}
     );
 
-    const hotStrategy = data.find(
-      (item: any) => item.vault_address === StrategyPool.vaultAddress
+    const hotStrategy = dataGroupByPoolAll.find(
+      (item: any) => item.pool_address === StrategyPool
     );
 
     return [topAPY, topTVL, hotStrategy];

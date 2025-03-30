@@ -1,4 +1,4 @@
-import { Dispatch, useState } from 'react';
+import { Dispatch, useState } from "react";
 import {
   ACTION_TYPE,
   ActionType,
@@ -32,27 +32,30 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
-    setCurrentProtocol((_actionVisible && record) ? record.list?.[0] : null);
+    setCurrentProtocol(_actionVisible && record ? record.list?.[0] : null);
   };
 
   const toggleActionType = (_actionType?: ActionType) => {
     setActionType(
       typeof _actionType !== void 0
         ? (_actionType as ActionType)
-        : (
-          actionType === ActionTypes[ACTION_TYPE.DEPOSIT]
-            ? ActionTypes[ACTION_TYPE.WITHDRAW]
-            : ActionTypes[ACTION_TYPE.DEPOSIT]
-        )
+        : actionType === ActionTypes[ACTION_TYPE.DEPOSIT]
+        ? ActionTypes[ACTION_TYPE.WITHDRAW]
+        : ActionTypes[ACTION_TYPE.DEPOSIT]
     );
   };
 
   const toggleClaimVisible = (_claimVisible?: boolean, reward?: any) => {
-    setClaimVisible(typeof _claimVisible === "boolean" ? _claimVisible : !claimVisible);
+    setClaimVisible(
+      typeof _claimVisible === "boolean" ? _claimVisible : !claimVisible
+    );
     setCurrentReward(_claimVisible && reward ? reward : null);
   };
 
-  const toggleClaimSuccessVisible = (_claimSuccessVisible?: boolean, reward?: any) => {
+  const toggleClaimSuccessVisible = (
+    _claimSuccessVisible?: boolean,
+    reward?: any
+  ) => {
     setClaimSuccessVisible(
       typeof _claimSuccessVisible === "boolean"
         ? _claimSuccessVisible
@@ -70,11 +73,7 @@ export function useVaultsV2(): VaultsV2 {
   };
 
   const toggleOpenAddLp = (_openAddLp?: boolean) => {
-    setOpenAddLp(
-      typeof _openAddLp === "boolean"
-        ? _openAddLp
-        : !openAddLp
-    );
+    setOpenAddLp(typeof _openAddLp === "boolean" ? _openAddLp : !openAddLp);
   };
 
   return {
@@ -110,7 +109,10 @@ export interface VaultsV2 {
   claimVisible: boolean;
   toggleClaimVisible: (claimVisible?: boolean, reward?: any) => void;
   claimSuccessVisible: boolean;
-  toggleClaimSuccessVisible: (claimSuccessVisible?: boolean, reward?: any) => void;
+  toggleClaimSuccessVisible: (
+    claimSuccessVisible?: boolean,
+    reward?: any
+  ) => void;
   strategyVisible: boolean;
   toggleStrategyVisible: (strategyVisible?: boolean) => void;
   currentReward?: any;
