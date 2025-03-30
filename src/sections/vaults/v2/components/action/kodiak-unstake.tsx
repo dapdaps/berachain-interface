@@ -16,7 +16,7 @@ export default function KodiakUnstake() {
   const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const { account, provider } = useCustomAccount();
-  const { currentRecord } = useVaultsV2Context();
+  const { currentProtocol } = useVaultsV2Context();
 
   const {
     loading: staking,
@@ -29,12 +29,12 @@ export default function KodiakUnstake() {
 
   const onQueryInfo = async () => {
     const FarmContract = new Contract(
-      currentRecord.vaultAddress,
+      currentProtocol.vaultAddress,
       vaultAbi,
       provider
     );
     const IslandContract = new Contract(
-      currentRecord.token.address,
+      currentProtocol.token.address,
       islandAbi,
       provider
     );
@@ -60,8 +60,8 @@ export default function KodiakUnstake() {
             totalSupply: totalSupply.toString(),
             reserve0,
             reserve1,
-            token0: currentRecord.tokens[0],
-            token1: currentRecord.tokens[1]
+            token0: currentProtocol.tokens[0],
+            token1: currentProtocol.tokens[1]
           });
 
           items.push({
@@ -119,8 +119,8 @@ export default function KodiakUnstake() {
       {items.map((item: any) => (
         <Item
           key={item.kek_id}
-          token0={currentRecord.tokens[0]}
-          token1={currentRecord.tokens[1]}
+          token0={currentProtocol.tokens[0]}
+          token1={currentProtocol.tokens[1]}
           item={item}
           onClick={onSelect}
           active={dappParams.kekIds?.includes(item.kek_id)}

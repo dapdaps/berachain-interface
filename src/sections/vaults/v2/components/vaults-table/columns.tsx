@@ -10,43 +10,37 @@ import Popover, {
 } from "@/components/popover";
 import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
-import Link from 'next/link';
+import Link from "next/link";
 
 export const Vaults = (props: any) => {
   const { record, index, className } = props;
 
   return (
     <div className="w-full flex items-center gap-[5px]">
-      <div className="flex items-center shrink-0 min-w-[52px]">
-        {/*{record.tokens.map((tk: any, idx: number) => (
+      <div className="flex items-center shrink-0 min-w-[72px]">
+        {record.protocolIcon?.map((icon: any, idx: number) => (
           <LazyImage
             key={idx}
-            src={tk.icon}
+            src={icon}
             alt=""
-            width={26}
-            height={26}
-            containerClassName="shrink-0 rounded-full overflow-hidden"
-            containerStyle={{
-              transform: idx > 0 ? "translateX(-6px)" : ""
-            }}
+            width={36}
+            height={36}
+            containerClassName={clsx(
+              "shrink-0 rounded-full overflow-hidden",
+              idx > 0 && "ml-[-10px]"
+            )}
             fallbackSrc="/assets/tokens/default_icon.png"
           />
-        ))}*/}
-        <LazyImage
-          src={record.creatorProtocolIcon}
-          alt=""
-          width={36}
-          height={36}
-          containerClassName="shrink-0 rounded-full overflow-hidden"
-          fallbackSrc="/assets/tokens/default_icon.png"
-        />
+        ))}
       </div>
       <div className="flex flex-col gap-[1px]">
-        <div className="text-[16px] flex items-center gap-[4px]">
+        <div className="text-[16px] flex items-center gap-[4px] whitespace-nowrap">
           <div className="flex-1">
             {record.tokens.map((tk: any) => tk.symbol).join("-")}
           </div>
-          {record.reward_tokens?.some((tk: any) => ["BGT"].includes(tk.symbol?.toUpperCase?.())) && (
+          {record.reward_tokens?.some((tk: any) =>
+            ["BGT"].includes(tk.symbol?.toUpperCase?.())
+          ) && (
             <Link
               href="/hall?from=vaults"
               className="w-[20px] h-[20px] block shrink-0 bg-no-repeat bg-center bg-contain"
@@ -92,7 +86,9 @@ export const WithdrawButton = (props: any) => {
     <button
       type="button"
       {...restProps}
-      disabled={record?.protocol === "Slimee" || Big(record?.balance || 0).lte(0)}
+      disabled={
+        record?.protocol === "Slimee" || Big(record?.balance || 0).lte(0)
+      }
       className="w-[32px] h-[32px] bg-[url('/images/vaults/v2/withdraw.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
       onClick={() => {
         if (record.protocol === "Slimee") return;
@@ -116,113 +112,96 @@ export const TVL = (props: any) => {
   });
 };
 
+export const APYContent = (props: any) => {
+  const { record, className } = props;
+
+  return (
+    <Card
+      className={clsx(
+        "!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]",
+        className
+      )}
+    >
+      <div className="w-full flex flex-col gap-[20px]">
+        <div className="w-full flex justify-between items-center gap-[10px]">
+          <div className="">Pool APR</div>
+          <div className="">{numberFormatter(record.apy, 6, true)}%</div>
+        </div>
+        {record.apr &&
+          Object.keys(record.apr)
+            .filter((ak) => ak !== "pool")
+            .map((ak: any, idx: number) => (
+              <div
+                key={idx}
+                className="w-full flex justify-between items-center gap-[5px]"
+              >
+                <div className="">
+                  {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APR
+                </div>
+                <div className="">
+                  {numberFormatter(record.apr[ak], 6, true)}%
+                </div>
+              </div>
+            ))}
+      </div>
+    </Card>
+  );
+};
+
 export const APY = (props: any) => {
   const { record, index, className } = props;
 
   return (
     <Popover
       triggerContainerClassName="inline-block"
-      content={
-        <Card className="!rounded-[10px] !bg-white !p-[18px_14px] !text-[14px] font-[500]">
-          <div className="w-full flex flex-col gap-[20px]">
-            <div className="w-full flex justify-between items-center gap-[10px]">
-              <div className="">Pool APR</div>
-              <div className="">{numberFormatter(record.apy, 6, true)}%</div>
-            </div>
-            {record.apr &&
-              Object.keys(record.apr)
-                .filter((ak) => ak !== "pool")
-                .map((ak: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="w-full flex justify-between items-center gap-[5px]"
-                  >
-                    <div className="">
-                      {ak.slice(0, 1).toUpperCase() + ak.slice(1)} APR
-                    </div>
-                    <div className="">
-                      {numberFormatter(record.apr[ak], 6, true)}%
-                    </div>
-                  </div>
-                ))}
-          </div>
-        </Card>
-      }
+      content={null}
       trigger={PopoverTrigger.Hover}
       placement={PopoverPlacement.Bottom}
       closeDelayDuration={0}
     >
-      <button
-        type="button"
-        className="underline decoration-dashed underline-offset-4"
-      >
-        {numberFormatter(record.totalApy, 2, true)}%
+      <button type="button" className="whitespace-nowrap">
+        {record.list?.length > 1 ? (
+          <>
+            {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}% ~{" "}
+            {numberFormatter(record.totalApy[1], 2, true, { isShort: true })}%
+          </>
+        ) : (
+          <>
+            {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}%
+          </>
+        )}
       </button>
     </Popover>
   );
 };
 
 export const Rewards = (props: any) => {
-  const { record, index, className, isClaim = true } = props;
+  const { record } = props;
 
-  const { toggleClaimVisible } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
   if (!record.reward_tokens) return null;
 
   return (
     <div className="flex items-center gap-[2px] flex-wrap">
-      <div className="flex items-center">
-        {record.reward_tokens.map((reward: any, idx: number) => (
-          <LazyImage
-            key={idx}
-            src={reward.icon}
-            alt=""
-            width={isMobile ? 18 : 26}
-            height={isMobile ? 18 : 26}
-            containerClassName="shrink-0 rounded-full overflow-hidden"
-            containerStyle={{
-              transform: idx > 0 ? "translateX(-6px)" : ""
-            }}
-            fallbackSrc="/assets/tokens/default_icon.png"
-          />
+      <div className={clsx("flex items-center")}>
+        {record.reward_tokens.map((reward: any, index: number) => (
+          <div key={index} className="flex items-center gap-[4px]">
+            <LazyImage
+              src={reward.icon}
+              title={reward.symbol}
+              alt=""
+              width={isMobile ? 18 : 26}
+              height={isMobile ? 18 : 26}
+              containerClassName={clsx(
+                "shrink-0 rounded-full overflow-hidden",
+                index > 0 && "ml-[-10px]"
+              )}
+              fallbackSrc="/assets/tokens/default_icon.png"
+            />
+          </div>
         ))}
       </div>
-      {isClaim &&
-        record.user_reward.map((reward: any, idx: number) => {
-          if (!reward.amount) return null;
-          return (
-            <div
-              key={idx}
-              className="text-[#6CA200] font-[500] text-[16px] flex items-center gap-[4px]"
-            >
-              <div className="">
-                +
-                {numberFormatter(reward.amount, 2, true, {
-                  // prefix: "$",
-                  isShort: true
-                })}
-              </div>
-              <Popover
-                triggerContainerClassName="inline-block"
-                content={
-                  <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
-                    Claim rewards
-                  </Card>
-                }
-                trigger={PopoverTrigger.Hover}
-                placement={PopoverPlacement.Top}
-                closeDelayDuration={0}
-              >
-                <button
-                  type="button"
-                  className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
-                  onClick={() => toggleClaimVisible(true, record, reward)}
-                />
-              </Popover>
-            </div>
-          );
-        })}
     </div>
   );
 };

@@ -11,11 +11,13 @@ import Big from "big.js";
 import Loading from "@/components/loading";
 import Range from "@/components/range";
 import { ACTION_TYPE } from "../../config";
+import ActionInput from '@/sections/vaults/v2/components/action/input';
+import ActionRangeDays from '@/sections/vaults/v2/components/action/range-days';
+import ActionMintLP from '@/sections/vaults/v2/components/action/mint-lp';
 
 const Action = (props: any) => {
   const { className } = props;
-  const [openAddLp, setOpenAddLp] = useState(false);
-  const { actionType, currentRecord } = useVaultsV2Context();
+  const { actionType, currentRecord, openAddLp, toggleOpenAddLp } = useVaultsV2Context();
   const {
     loading,
     onAction,
@@ -98,108 +100,38 @@ const Action = (props: any) => {
               type="button"
               className="px-[15px] shrink-0 disabled:!cursor-not-allowed disabled:opacity-30 h-[26px] rounded-[6px] border border-[#373A53] bg-[#FFF] text-[#000] text-center font-Montserrat text-[14px] font-medium leading-normal"
               onClick={() => {
-                setOpenAddLp(true);
+                toggleOpenAddLp(true);
               }}
             >
               Mint LP
             </button>
           )}
       </div>
-      <div
-        className={clsx(
-          "mt-[20px] h-[90px] rounded-[12px] border flex flex-col items-stretch gap-[15px] pl-[13px] pr-[14px] pt-[20px] pb-[13px]",
-          inputError
-            ? "border-[#CE4314] bg-[#FFEFEF]"
-            : "border-[#373A53] bg-[#FFF]"
-        )}
-      >
-        <div className="flex justify-between items-center gap-[10px] w-full">
-          <InputNumber
-            value={amount}
-            onNumberChange={handleAmountChange}
-            placeholder="0"
-            className={clsx(
-              "flex-1 h-[26px] text-[20px] font-Montserrat !bg-[unset]",
-              inputError ? "text-[#FF3F3F]" : "text-black"
-            )}
-          />
-          <div
-            className={clsx(
-              "flex items-center justify-end shrink-0",
-              currentRecord.tokens.length > 1 && "translate-x-[10px]"
-            )}
-          >
-            {currentRecord.tokens.map((token: any, idx: number) => (
-              <LazyImage
-                src={token.icon || "/assets/tokens/default_icon.png"}
-                width={26}
-                height={26}
-                key={idx}
-                containerClassName={clsx(
-                  "shrink-0 rounded-full overflow-hidden",
-                  idx !== 0 && "translate-x-[-10px]"
-                )}
-                fallbackSrc="/assets/tokens/default_icon.png"
-              />
-            ))}
-          </div>
-        </div>
-        <div className="flex justify-between items-center gap-[10px] w-full text-[#3D405A] font-Montserrat text-[14px] font-normal leading-normal">
-          <div className=""></div>
-          <div className="flex items-center gap-[2px]">
-            <div>balance:</div>
-            {actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading ? (
-              <Loading size={14} />
-            ) : (
-              <button
-                type="button"
-                disabled={
-                  Big(balance || 0).lte(0) ||
-                  (actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading)
-                }
-                className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
-                onClick={handleBalance}
-              >
-                {numberFormatter(balance, 6, true)}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <ActionInput
+        className="mt-[20px]"
+        inputError={inputError}
+        value={amount}
+        onChange={handleAmountChange}
+        record={currentRecord}
+        actionType={actionType}
+        balanceLoading={balanceLoading}
+        balance={balance}
+      />
       {currentRecord.protocol === "Kodiak" &&
         actionType.value === ACTION_TYPE.DEPOSIT && (
-          <>
-            <div className="flex items-center justify-between mt-[16px]">
-              <div className="text-[14px] font-medium	text-[#3D405A]">
-                Select lock-up period
-              </div>
-              <div className="font-semibold text-[16px]">
-                {dappParams?.days || 0} days
-              </div>
-            </div>
-            <Range
-              value={Math.ceil(((dappParams?.days || 0) / 30) * 100)}
-              onChange={(e: any) => {
-                setDappParams({ days: Math.ceil((e.target.value / 100) * 30) });
-              }}
-            />
-          </>
+          <ActionRangeDays
+            className="mt-[16px]"
+            dappParams={dappParams}
+            setDappParams={setDappParams}
+          />
         )}
       {["Bex", "Kodiak"].includes(currentRecord.lpProtocol) &&
         actionType.value === ACTION_TYPE.DEPOSIT &&
         inputErrorMessage === "Insufficient Balance" && (
-          <div className="flex justify-center mt-[15px] items-center gap-[4px] text-[#000] text-right font-Montserrat text-[14px] font-semibold leading-normal">
-            <button
-              type="button"
-              className="underline underline-offset-2"
-              onClick={() => {
-                setOpenAddLp(true);
-              }}
-            >
-              Mint LP
-            </button>
-            <div>first</div>
-          </div>
+          <ActionMintLP
+            className="mt-[15px]"
+            toggleOpenAddLp={toggleOpenAddLp}
+          />
         )}
       <div className="mt-[20px] flex justify-center">
         <ButtonWithApprove
@@ -229,7 +161,7 @@ const Action = (props: any) => {
           data={currentRecord}
           open={openAddLp}
           onClose={() => {
-            setOpenAddLp(false);
+            toggleOpenAddLp(false);
           }}
           onSuccess={updateBalance}
         />

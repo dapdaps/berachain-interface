@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import {
   ACTION_TYPE,
   ActionType,
@@ -14,8 +14,10 @@ export function useVaultsV2(): VaultsV2 {
   const [claimSuccessVisible, setClaimSuccessVisible] = useState(false);
   const [strategyVisible, setStrategyVisible] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<any>(null);
+  const [currentProtocol, setCurrentProtocol] = useState<any>(null);
   const [currentReward, setCurrentReward] = useState<any>(null);
   const [successReward, setSuccessReward] = useState<any>(null);
+  const [openAddLp, setOpenAddLp] = useState(false);
 
   const toggleActionVisible = (params?: {
     visible?: boolean;
@@ -30,17 +32,30 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
+    setCurrentProtocol(_actionVisible && record ? record.list?.[0] : null);
   };
 
-  const toggleClaimVisible = (_claimVisible?: boolean, record?: any, reward?: any) => {
+  const toggleActionType = (_actionType?: ActionType) => {
+    setActionType(
+      typeof _actionType !== void 0
+        ? (_actionType as ActionType)
+        : actionType === ActionTypes[ACTION_TYPE.DEPOSIT]
+        ? ActionTypes[ACTION_TYPE.WITHDRAW]
+        : ActionTypes[ACTION_TYPE.DEPOSIT]
+    );
+  };
+
+  const toggleClaimVisible = (_claimVisible?: boolean, reward?: any) => {
     setClaimVisible(
       typeof _claimVisible === "boolean" ? _claimVisible : !claimVisible
     );
     setCurrentReward(_claimVisible && reward ? reward : null);
-    setCurrentRecord(_claimVisible && record ? record : null);
   };
 
-  const toggleClaimSuccessVisible = (_claimSuccessVisible?: boolean, reward?: any) => {
+  const toggleClaimSuccessVisible = (
+    _claimSuccessVisible?: boolean,
+    reward?: any
+  ) => {
     setClaimSuccessVisible(
       typeof _claimSuccessVisible === "boolean"
         ? _claimSuccessVisible
@@ -57,6 +72,10 @@ export function useVaultsV2(): VaultsV2 {
     );
   };
 
+  const toggleOpenAddLp = (_openAddLp?: boolean) => {
+    setOpenAddLp(typeof _openAddLp === "boolean" ? _openAddLp : !openAddLp);
+  };
+
   return {
     actionType,
     actionVisible,
@@ -66,10 +85,15 @@ export function useVaultsV2(): VaultsV2 {
     currentRecord,
     currentReward,
     successReward,
+    currentProtocol,
+    openAddLp,
     toggleActionVisible,
     toggleClaimVisible,
     toggleClaimSuccessVisible,
-    toggleStrategyVisible
+    toggleStrategyVisible,
+    setCurrentProtocol,
+    toggleActionType,
+    toggleOpenAddLp
   };
 }
 
@@ -83,11 +107,19 @@ export interface VaultsV2 {
     record?: any;
   }) => void;
   claimVisible: boolean;
-  toggleClaimVisible: (claimVisible?: boolean, record?: any, reward?: any) => void;
+  toggleClaimVisible: (claimVisible?: boolean, reward?: any) => void;
   claimSuccessVisible: boolean;
-  toggleClaimSuccessVisible: (claimSuccessVisible?: boolean, reward?: any) => void;
+  toggleClaimSuccessVisible: (
+    claimSuccessVisible?: boolean,
+    reward?: any
+  ) => void;
   strategyVisible: boolean;
   toggleStrategyVisible: (strategyVisible?: boolean) => void;
   currentReward?: any;
   successReward?: any;
+  currentProtocol?: any;
+  setCurrentProtocol: Dispatch<any>;
+  toggleActionType: (actionType?: ActionType) => void;
+  openAddLp: boolean;
+  toggleOpenAddLp: (openAddLp?: boolean) => void;
 }

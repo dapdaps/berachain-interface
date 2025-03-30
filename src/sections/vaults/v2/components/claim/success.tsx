@@ -11,12 +11,18 @@ const ClaimSuccessModal = (props: any) => {
     claimSuccessVisible,
     toggleClaimSuccessVisible,
     successReward,
+    toggleActionVisible,
+    getListData,
   } = useVaultsV2Context();
 
   return (
     <Modal
       open={claimSuccessVisible}
-      onClose={toggleClaimSuccessVisible}
+      onClose={() => {
+        toggleClaimSuccessVisible(false);
+        toggleActionVisible({ visible: false });
+        getListData();
+      }}
       className={className}
     >
       <Card className="!rounded-[20px] !py-[50px] w-[354px] flex flex-col items-center gap-[30px]">

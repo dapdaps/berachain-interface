@@ -55,33 +55,7 @@ export const OrderKeys: Record<
   }
 };
 
-export const StrategyPool = {
-  tokens: [
-    {
-      icon: "/assets/tokens/wbera.png",
-      symbol: "WBERA",
-      decimals: 18,
-      address: "0x6969696969696969696969696969696969696969"
-    },
-    {
-      icon: "/assets/tokens/honey.svg",
-      symbol: "HONEY",
-      decimals: 18,
-      address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce"
-    }
-  ],
-  protocol: "Hub",
-  protocolIcon: "https://assets.db3.app/dapp/bex.png",
-  lpProtocol: "Bex",
-  token: {
-    symbol: "WBERA-HONEY",
-    address: "0x2c4a603a2aa5596287a06886862dc29d56dbc354",
-    decimals: 18
-  },
-  vaultAddress: "0xc2baa8443cda8ebe51a640905a8e6bc4e1f9872c",
-  id: "0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002",
-  poolType: "WEIGHTED"
-};
+export const StrategyPool = "0x2c4a603a2aa5596287a06886862dc29d56dbc354";
 
 export const SPECIAL_VAULTS = [
   // Bex - HONEY-USDC.e
@@ -266,7 +240,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       icon: getTokenLogo("USDbr"),
       sort: 21,
       token: bera["usdbr"]
-    },
+    }
     // { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC"), token: bera.usdc },
   ],
   [FILTER_KEYS.REWARDS]: [
@@ -288,46 +262,151 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
   ],
   [FILTER_KEYS.PROTOCOLS]: [
     { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },
-    { reg: /^BeraDrome$/i, label: "BeraDrome", icon: getDappLogo("BeraDrome"), sort: 2 },
-    { reg: /^BurrBear$/i, label: "BurrBear", icon: getDappLogo("BurrBear"), sort: 3 },
+    {
+      reg: /^BeraDrome$/i,
+      label: "BeraDrome",
+      icon: getDappLogo("BeraDrome"),
+      sort: 2
+    },
+    {
+      reg: /^BurrBear$/i,
+      label: "BurrBear",
+      icon: getDappLogo("BurrBear"),
+      sort: 3
+    },
     { reg: /^WeBera$/i, label: "WeBera", icon: getDappLogo("WeBera"), sort: 4 },
-    { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared"), sort: 5 },
+    {
+      reg: /^Infrared$/i,
+      label: "Infrared",
+      icon: getDappLogo("Infrared"),
+      sort: 5
+    },
     { reg: /^Kodiak$/i, label: "Kodiak", icon: getDappLogo("Kodiak"), sort: 6 },
     { reg: /^Smilee$/i, label: "Smilee", icon: getDappLogo("Smilee"), sort: 7 },
-    { reg: /^Dolomite$/i, label: "Dolomite", icon: getDappLogo("Dolomite"), sort: 8 },
-    { reg: /^Memeswap$/i, label: "Memeswap", icon: getDappLogo("Memeswap"), sort: 9 },
+    {
+      reg: /^Dolomite$/i,
+      label: "Dolomite",
+      icon: getDappLogo("Dolomite"),
+      sort: 8
+    },
+    {
+      reg: /^Memeswap$/i,
+      label: "Memeswap",
+      icon: getDappLogo("Memeswap"),
+      sort: 9
+    },
     { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome"), sort: 10 }
   ],
   [FILTER_KEYS.CREATORS]: [
     { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },
-    { reg: /^Infrared$/i, label: "Infrared", icon: getDappLogo("Infrared"), sort: 1 },
-    { reg: /^BeraPaw$/i, label: "BeraPaw", icon: getDappLogo("BeraPaw"), sort: 1 },
+    {
+      reg: /^Infrared$/i,
+      label: "Infrared",
+      icon: getDappLogo("Infrared"),
+      sort: 1
+    },
+    {
+      reg: /^BeraPaw$/i,
+      label: "BeraPaw",
+      icon: getDappLogo("BeraPaw"),
+      sort: 1
+    },
     { reg: /^Dinero$/i, label: "Dinero", icon: getDappLogo("Dinero"), sort: 1 },
     { reg: /^Stride$/i, label: "Stride", icon: getDappLogo("Stride"), sort: 1 },
-    { reg: /^Beradrome$/i, label: "Beradrome", icon: getDappLogo("Beradrome"), sort: 1 },
+    {
+      reg: /^Beradrome$/i,
+      label: "Beradrome",
+      icon: getDappLogo("Beradrome"),
+      sort: 1
+    },
     { reg: /^Smilee$/i, label: "Smilee", icon: getDappLogo("Smilee"), sort: 1 },
-    { reg: /^Olympus$/i, label: "Olympus", icon: getDappLogo("Olympus"), sort: 1 },
-    { reg: /^Berapulg$/i, label: "Berapulg", icon: getDappLogo("Berapulg"), sort: 1 },
+    {
+      reg: /^Olympus$/i,
+      label: "Olympus",
+      icon: getDappLogo("Olympus"),
+      sort: 1
+    },
+    {
+      reg: /^Berapulg$/i,
+      label: "Berapulg",
+      icon: getDappLogo("Berapulg"),
+      sort: 1
+    },
     { reg: /^Yeet$/i, label: "Yeet", icon: getDappLogo("Yeet"), sort: 1 },
     { reg: /^Kodiak$/i, label: "Kodiak", icon: getDappLogo("Kodiak"), sort: 1 },
-    { reg: /^SolvProtocol$/i, label: "SolvProtocol", icon: getDappLogo("SolvProtocol"), sort: 1 },
+    {
+      reg: /^SolvProtocol$/i,
+      label: "SolvProtocol",
+      icon: getDappLogo("SolvProtocol"),
+      sort: 1
+    },
     { reg: /^NAV$/i, label: "NAV", icon: getDappLogo("NAV"), sort: 1 },
     { reg: /^Renzo$/i, label: "Renzo", icon: getDappLogo("Renzo"), sort: 1 },
-    { reg: /^Bedrock$/i, label: "Bedrock", icon: getDappLogo("Bedrock"), sort: 1 },
-    { reg: /^Holdstation$/i, label: "Holdstation", icon: getDappLogo("Holdstation"), sort: 1 },
-    { reg: /^Reservoir$/i, label: "Reservoir", icon: getDappLogo("Reservoir"), sort: 1 },
-    { reg: /^Avalon Labs$/i, label: "Avalon Labs", icon: getDappLogo("Avalon Labs"), sort: 1 },
-    { reg: /^HPOS10I$/i, label: "HPOS10I", icon: getDappLogo("HPOS10I"), sort: 1 },
-    { reg: /^Beramonium$/i, label: "Beramonium", icon: getDappLogo("Beramonium"), sort: 1 },
-    { reg: /^StakeStone$/i, label: "StakeStone", icon: getDappLogo("StakeStone"), sort: 1 },
+    {
+      reg: /^Bedrock$/i,
+      label: "Bedrock",
+      icon: getDappLogo("Bedrock"),
+      sort: 1
+    },
+    {
+      reg: /^Holdstation$/i,
+      label: "Holdstation",
+      icon: getDappLogo("Holdstation"),
+      sort: 1
+    },
+    {
+      reg: /^Reservoir$/i,
+      label: "Reservoir",
+      icon: getDappLogo("Reservoir"),
+      sort: 1
+    },
+    {
+      reg: /^Avalon Labs$/i,
+      label: "Avalon Labs",
+      icon: getDappLogo("Avalon Labs"),
+      sort: 1
+    },
+    {
+      reg: /^HPOS10I$/i,
+      label: "HPOS10I",
+      icon: getDappLogo("HPOS10I"),
+      sort: 1
+    },
+    {
+      reg: /^Beramonium$/i,
+      label: "Beramonium",
+      icon: getDappLogo("Beramonium"),
+      sort: 1
+    },
+    {
+      reg: /^StakeStone$/i,
+      label: "StakeStone",
+      icon: getDappLogo("StakeStone"),
+      sort: 1
+    },
     { reg: /^BM$/i, label: "BM", icon: getDappLogo("BM"), sort: 1 },
     { reg: /^Ramen$/i, label: "Ramen", icon: getDappLogo("Ramen"), sort: 1 },
     { reg: /^Bulla$/i, label: "Bulla", icon: getDappLogo("Bulla"), sort: 1 },
-    { reg: /^BurrBear$/i, label: "BurrBear", icon: getDappLogo("BurrBear"), sort: 1 },
+    {
+      reg: /^BurrBear$/i,
+      label: "BurrBear",
+      icon: getDappLogo("BurrBear"),
+      sort: 1
+    },
     { reg: /^WeBera$/i, label: "WeBera", icon: getDappLogo("WeBera"), sort: 1 },
-    { reg: /^Dolomite$/i, label: "Dolomite", icon: getDappLogo("Dolomite"), sort: 1 },
-    { reg: /^Memeswap$/i, label: "Memeswap", icon: getDappLogo("Memeswap"), sort: 1 },
-    { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome"), sort: 1 },
+    {
+      reg: /^Dolomite$/i,
+      label: "Dolomite",
+      icon: getDappLogo("Dolomite"),
+      sort: 1
+    },
+    {
+      reg: /^Memeswap$/i,
+      label: "Memeswap",
+      icon: getDappLogo("Memeswap"),
+      sort: 1
+    },
+    { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome"), sort: 1 }
   ]
 };
 
@@ -335,5 +414,5 @@ export enum PAGINATION_ACTION {
   FIRST = "first",
   PREV = "previous",
   NEXT = "next",
-  LAST = "last",
+  LAST = "last"
 }

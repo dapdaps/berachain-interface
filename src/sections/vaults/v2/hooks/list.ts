@@ -68,10 +68,60 @@ export function useList(): List {
   const [filterAssetsViewMore, setFilterAssetsViewMore] =
     useState<boolean>(false);
 
-  const dataShown = useMemo(() => {
-    if (!data || data.length === 0) return [];
+  // pagination & grouped by pool_address & sorted & filters
+  const [dataGroupByPool, dataGroupByPoolAll] = useMemo(() => {
+    if (!data || data.length === 0) return [[], []];
 
-    const filteredData = data.filter((item: any) => {
+    const grouped = data.reduce((acc: any[], item: any) => {
+      const group = acc.find((g: any) => g.pool_address === item.pool_address);
+      if (group) {
+        group.list.push(item);
+        group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
+        group.user_stake.amount = Big(group.user_stake?.amount || 0).plus(
+          item.user_stake?.amount || 0
+        );
+        group.user_stake.usd = Big(group.user_stake?.usd || 0).plus(
+          item.user_stake?.usd || 0
+        );
+        if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
+          group.totalApy[0] = item.totalApy;
+        }
+        if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
+          group.totalApy[1] = item.totalApy;
+        }
+        group.apr.push(item.apr);
+        group.creatorProtocolIcon.push(item.creatorProtocolIcon);
+        group.protocolIcon.push(item.protocolIcon);
+        group.reward_tokens = group.reward_tokens.concat(item.reward_tokens);
+        group.user_reward = group.user_reward.concat(item.user_reward);
+        group.balance = Big(group.balance).plus(item.balance || 0);
+      } else {
+        acc.push({
+          pool_address: item.pool_address,
+          pool_project: item.pool_project,
+          name: item.name,
+          tvl: Big(item.tvl || 0),
+          user_stake: {
+            amount: Big(item.user_stake?.amount || 0),
+            usd: Big(item.user_stake?.usd || 0)
+          },
+          // [min, max]
+          totalApy: [item.totalApy, item.totalApy],
+          apr: [item.apr],
+          creatorProtocolIcon: [item.creatorProtocolIcon],
+          protocolIcon: [item.protocolIcon],
+          tokens: item.tokens,
+          reward_tokens: item.reward_tokens || [],
+          user_reward: item.user_reward || [],
+          balance: Big(item.balance || 0),
+          list: [item]
+        });
+      }
+      return acc;
+    }, []);
+
+    const filteredData = grouped.filter((item: any) => {
+      // Deposit Asset
       if (
         filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
         !item.tokens.some((token: any) =>
@@ -83,6 +133,7 @@ export function useList(): List {
         return false;
       }
 
+      // Reward Asset
       if (
         filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
         !item.reward_tokens.some((token: any) =>
@@ -94,6 +145,7 @@ export function useList(): List {
         return false;
       }
 
+      // Defi Protocol
       if (
         filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
         !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
@@ -132,8 +184,20 @@ export function useList(): List {
     });
 
     const sortedData = [...filteredData].sort((a: any, b: any) => {
-      const valA = new Big(a[orderKey] || 0);
-      const valB = new Big(b[orderKey] || 0);
+      let valA: any;
+      let valB: any;
+      if (orderKey === "totalApy") {
+        if (orderDirection === ORDER_DIRECTION.ASC) {
+          valA = new Big(a[orderKey][0] || 0);
+          valB = new Big(b[orderKey][0] || 0);
+        } else {
+          valA = new Big(a[orderKey][1] || 0);
+          valB = new Big(b[orderKey][1] || 0);
+        }
+      } else {
+        valA = new Big(a[orderKey] || 0);
+        valB = new Big(b[orderKey] || 0);
+      }
 
       if (orderDirection === ORDER_DIRECTION.ASC) {
         return valA.gt(valB) ? 1 : valA.lt(valB) ? -1 : 0;
@@ -145,40 +209,45 @@ export function useList(): List {
     setPageTotal(Math.ceil(sortedData.length / pageSize));
 
     if (isMobile) {
-      return sortedData;
+      return [sortedData, sortedData];
     }
 
-    return sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+    return [
+      sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
+      sortedData
+    ];
   }, [
     data,
-    orderKey,
-    orderDirection,
     filterSelected,
+    searchValueDelay,
     pageIndex,
     pageSize,
     isMobile,
-    searchValueDelay
+    orderKey,
+    orderDirection
   ]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
-    const topAPY = data.reduce(
+    const topAPY = dataGroupByPoolAll.reduce(
       (prev: any, curr: any) =>
-        Big(curr.totalApy || 0).gt(Big(prev.totalApy || 0)) ? curr : prev,
+        Big(curr.totalApy?.[1] || 0).gt(Big(prev.totalApy?.[1] || 0))
+          ? curr
+          : prev,
       {}
     );
 
-    const topTVL = data.reduce(
+    const topTVL = dataGroupByPoolAll.reduce(
       (prev: any, curr: any) =>
         Big(curr.tvl || 0).gt(Big(prev.tvl || 0)) ? curr : prev,
       {}
     );
 
-    const hotStrategy = data.find(
-      (item: any) => item.vault_address === StrategyPool.vaultAddress
+    const hotStrategy = dataGroupByPoolAll.find(
+      (item: any) => item.pool_address === StrategyPool
     );
 
     return [topAPY, topTVL, hotStrategy];
-  }, [data]);
+  }, [dataGroupByPoolAll]);
 
   const filterSelectedLength = useMemo(() => {
     return Object.values(filterSelected).flat().length;
@@ -283,6 +352,7 @@ export function useList(): List {
         return;
       }
       const _list = res.data.data || [];
+      let _dolomite_bera: any;
       const _data = _list
         // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any) => {
@@ -335,7 +405,7 @@ export function useList(): List {
             decimals: 18
           };
           item.protocol = item.project;
-          item.protocolIcon = getDappLogo(item.pool_project);
+          item.protocolIcon = getDappLogo(item.project);
           item.creatorProtocolIcon = getDappLogo(item.creator_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
@@ -348,6 +418,21 @@ export function useList(): List {
               item.extra_data?.farm ||
               (kodiakConfig.sweetenedIslands as any)[item.pool_address]
                 ?.farmAddress;
+          }
+
+          if (
+            item.pool_project === "Dolomite" &&
+            item.tokens?.length === 1 &&
+            ["BERA", "WBERA"].includes(item.tokens[0]?.symbol?.toUpperCase())
+          ) {
+            item.pool_address = "0x0000000000000000000000000000000000000000";
+            item.tokens[0] = {
+              ...bera.bera,
+              address: "0x0000000000000000000000000000000000000000"
+            };
+            item.token = {
+              ...bera.bera
+            };
           }
 
           return item;
@@ -532,7 +617,7 @@ export function useList(): List {
   return {
     listData: data,
     getListData: getData,
-    listDataShown: dataShown,
+    listDataGroupByPool: dataGroupByPool,
     listDataTopAPY: dataTopAPY,
     listDataTopTVL: dataTopTVL,
     listDataHotStrategy: dataHotStrategy,
@@ -573,7 +658,7 @@ export function useList(): List {
 export interface List {
   listData: any;
   getListData: () => Promise<void>;
-  listDataShown: any;
+  listDataGroupByPool: any;
   listDataTopAPY: any;
   listDataTopTVL: any;
   listDataHotStrategy: any;

@@ -1,6 +1,14 @@
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  forwardRef,
+  SetStateAction,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
+} from "react";
 import { useDebounceFn } from "ahooks";
 
 // Placement:
@@ -11,7 +19,7 @@ import { useDebounceFn } from "ahooks";
 //            |                                  |
 // LeftBottom ------------------------------------ RightBottom
 //            BottomLeft     Bottom    BottomRight
-const Popover = (props: Props) => {
+const Popover = forwardRef((props: Props, ref: any) => {
   const {
     children,
     content,
@@ -40,6 +48,14 @@ const Popover = (props: Props) => {
     },
     { wait: closeDelayDuration }
   );
+
+  const refs: any = {
+    onClose: () => {
+      setVisible(false);
+      setRealVisible(false);
+    }
+  };
+  useImperativeHandle(ref, () => refs);
 
   return (
     <>
@@ -175,7 +191,7 @@ const Popover = (props: Props) => {
         )}
     </>
   );
-};
+});
 
 export default Popover;
 
@@ -237,6 +253,10 @@ const Card = (props: CardProps) => {
   useEffect(() => {
     if (!cardRef.current) return;
     onLoaded(cardRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!cardRef.current || !visible) return;
 
     const handleClose = (e: any) => {
       if (cardRef.current.contains(e.target)) return;
@@ -246,7 +266,7 @@ const Card = (props: CardProps) => {
     return () => {
       document.removeEventListener("click", handleClose);
     };
-  }, []);
+  }, [visible]);
 
   return (
     <AnimatePresence mode="wait">

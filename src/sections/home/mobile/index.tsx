@@ -377,7 +377,7 @@ const Home = () => {
                 className="w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw]"
                 whileTap="tap"
                 onClick={() => {
-                  router.push("/earn");
+                  router.push("/vaults");
                   tapSound.play?.();
                   // handleReport('1015-007');
                 }}
@@ -404,7 +404,7 @@ const Home = () => {
                   childrenClassName="rotate-[-9deg]"
                   bgClassName="rotate-[-9deg]"
                 >
-                  Earn Yield
+                  Vaults
                 </EntryCard>
               </motion.div>
               <motion.div

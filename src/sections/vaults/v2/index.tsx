@@ -11,11 +11,10 @@ import ClaimSuccessModal from "@/sections/vaults/v2/components/claim/success";
 import StrategyModal from "@/sections/vaults/v2/components/strategy/modal";
 import { useList } from "@/sections/vaults/v2/hooks/list";
 import Filter from "@/sections/vaults/v2/components/filter";
-import { StrategyPool } from "./config";
-import Loading from '@/components/loading';
-import Search from '@/sections/vaults/v2/components/filter/search';
-import Feedback from '@/sections/vaults/v2/components/feedback/feedback';
-import SubmitVault from '@/sections/vaults/v2/components/feedback/submit-vault';
+import Loading from "@/components/loading";
+import Search from "@/sections/vaults/v2/components/filter/search";
+import Feedback from "@/sections/vaults/v2/components/feedback/feedback";
+import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
 
 const VaultsV2 = (props: any) => {
   const {} = props;
@@ -48,11 +47,11 @@ const VaultsV2 = (props: any) => {
                   <div className="flex items-center gap-[7px] shrink-0">
                     <div className="text-[20px] font-[700]">Vaults</div>
                     <div className="shrink-0 text-[12px] w-[24px] h-[24px] flex justify-center items-center rounded-[5px] border border-[rgba(0,0,0,0.2)]">
-                      {
-                        list.listLoading ? (
-                          <Loading size={12} />
-                        ) : list.listData.length
-                      }
+                      {list.listLoading ? (
+                        <Loading size={12} />
+                      ) : (
+                        list.listData.length
+                      )}
                     </div>
                   </div>
                   <Search className="flex-1 w-0" />
@@ -72,7 +71,7 @@ const VaultsV2 = (props: any) => {
         <ActionModal />
         <ClaimModal />
         <ClaimSuccessModal />
-        <StrategyModal />
+        <StrategyModal pool={list.listDataHotStrategy} />
       </div>
     </VaultsV2ContextProvider>
   );
