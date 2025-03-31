@@ -85,11 +85,11 @@ export function useList(): List {
         );
         if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
           group.totalApy[0] = item.totalApy;
-          group.totalApyList[0] = { apr: item.apr };
+          group.totalApyList[0] = { apr: item.apr, apy: item.apr.pool };
         }
         if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
           group.totalApy[1] = item.totalApy;
-          group.totalApyList[1] = { apr: item.apr };
+          group.totalApyList[1] = { apr: item.apr, apy: item.apr.pool };
         }
         group.apr.push(item.apr);
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
@@ -109,7 +109,10 @@ export function useList(): List {
           },
           // [min, max]
           totalApy: [item.totalApy, item.totalApy],
-          totalApyList: [{ apr: item.apr }, { apr: item.apr }],
+          totalApyList: [
+            { apr: item.apr, apy: item.apr.pool },
+            { apr: item.apr, apy: item.apr.pool }
+          ],
           apr: [item.apr],
           creatorProtocolIcon: [item.creatorProtocolIcon],
           protocolIcon: [item.protocolIcon],
