@@ -182,7 +182,7 @@ export function useList(): List {
           tk.symbol?.toLowerCase().includes(_search)
         ) &&
         !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.project?.toLowerCase().includes(_search) &&
+        !item.list.some((__it: any) => __it.project?.toLowerCase().includes(_search)) &&
         !item.name?.toLowerCase().includes(_search)
       ) {
         return false;
