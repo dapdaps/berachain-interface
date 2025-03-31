@@ -3,13 +3,13 @@ import FlexTable from "@/components/flex-table";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import {
   APY,
-  DepositButton,
+  DepositButton, Pool,
   Rewards,
   TVL,
   Vaults,
   WithdrawButton,
   Yours
-} from "@/sections/vaults/v2/components/vaults-table/columns";
+} from '@/sections/vaults/v2/components/vaults-table/columns';
 import { OrderKeys } from "@/sections/vaults/v2/config";
 import Pagination from "@/sections/vaults/v2/components/pagination";
 
@@ -28,9 +28,17 @@ const VaultsTable = (props: any) => {
     {
       title: "Vaults",
       dataIndex: "vaults",
-      width: 290,
+      width: 75,
       render: (text: any, record: any, index: any) => {
         return <Vaults record={record} index={index} />;
+      }
+    },
+    {
+      title: "Pool",
+      dataIndex: "pool",
+      width: 215,
+      render: (text: any, record: any, index: any) => {
+        return <Pool record={record} index={index} />;
       }
     },
     {

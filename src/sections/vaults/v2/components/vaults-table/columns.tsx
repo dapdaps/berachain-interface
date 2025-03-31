@@ -14,46 +14,58 @@ import Link from "next/link";
 import { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
 import { motion } from "framer-motion";
 
-export const Vaults = (props: any) => {
-  const { record, index, className } = props;
+export const Pool = (props: any) => {
+  const { record, className } = props;
 
   return (
-    <div className="w-full flex items-center gap-[5px]">
-      <div className="flex items-center shrink-0 min-w-[88px]">
+    <div className={clsx("flex flex-col gap-[1px] items-stretch", className)}>
+      <div className="text-[16px] flex items-center gap-[4px] whitespace-nowrap w-full">
+        <div className="overflow-hidden text-ellipsis">
+          {record.tokens.map((tk: any) => tk.symbol).join("-")}
+        </div>
+        {record.reward_tokens?.some((tk: any) =>
+          ["BGT"].includes(tk.symbol?.toUpperCase?.())
+        ) && (
+          <Link
+            href="/hall?from=vaults"
+            className="w-[20px] h-[20px] block shrink-0 bg-no-repeat bg-center bg-contain"
+            style={{
+              backgroundImage: 'url("/images/vaults/v2/hub.png")'
+            }}
+          />
+        )}
+      </div>
+      <div className="text-[12px]">{record.pool_project}</div>
+    </div>
+  );
+};
+
+export const Vaults = (props: any) => {
+  const { record, index, className, isPool } = props;
+
+  return (
+    <div className={clsx("w-full flex items-center gap-[5px]", className)}>
+      <div className="flex items-center shrink-0 min-w-[70px]">
         {record.protocolIcon?.map((icon: any, idx: number) => (
           <LazyImage
             key={idx}
             src={icon}
             alt=""
-            width={36}
-            height={36}
+            width={26}
+            height={26}
             containerClassName={clsx(
-              "shrink-0 rounded-full overflow-hidden",
-              idx > 0 && "ml-[-10px]"
+              "shrink-0 overflow-hidden rounded-[8px] border border-[#FFFDEB]",
+              idx > 0 && "ml-[-6px]"
             )}
             fallbackSrc="/assets/tokens/default_icon.png"
           />
         ))}
       </div>
-      <div className="flex flex-col gap-[1px]">
-        <div className="text-[16px] flex items-center gap-[4px] whitespace-nowrap">
-          <div className="flex-1">
-            {record.tokens.map((tk: any) => tk.symbol).join("-")}
-          </div>
-          {record.reward_tokens?.some((tk: any) =>
-            ["BGT"].includes(tk.symbol?.toUpperCase?.())
-          ) && (
-            <Link
-              href="/hall?from=vaults"
-              className="w-[20px] h-[20px] block shrink-0 bg-no-repeat bg-center bg-contain"
-              style={{
-                backgroundImage: 'url("/images/vaults/v2/hub.png")'
-              }}
-            />
-          )}
-        </div>
-        <div className="text-[12px]">{record.pool_project}</div>
-      </div>
+      {
+        isPool && (
+          <Pool record={record} />
+        )
+      }
     </div>
   );
 };

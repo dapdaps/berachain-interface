@@ -3,6 +3,7 @@ import LazyImage from '@/components/layz-image';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { FILTER_KEYS } from '@/sections/vaults/v2/config';
 import useIsMobile from '@/hooks/use-isMobile';
+import clsx from 'clsx';
 
 const FilterItem = (props: any) => {
   const { type, data } = props;
@@ -34,7 +35,13 @@ const FilterItem = (props: any) => {
         }
       }}
     >
-      <LazyImage src={data?.icon} width={26} height={26} className="shrink-0" fallbackSrc="/assets/tokens/default_icon.png" />
+      <LazyImage
+        src={data?.icon}
+        width={26}
+        height={26}
+        className={clsx("shrink-0 overflow-hidden", [FILTER_KEYS.PROTOCOLS, FILTER_KEYS.CREATORS].includes(type) ? "rounded-[4px]" : "rounded-full")}
+        fallbackSrc="/assets/tokens/default_icon.png"
+      />
       <div className="">
         {data?.label}
       </div>

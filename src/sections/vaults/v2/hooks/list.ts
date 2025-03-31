@@ -94,6 +94,7 @@ export function useList(): List {
         group.apr.push(item.apr);
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
         group.protocolIcon.push(item.protocolIcon);
+        group.poolProjectIcon.push(item.poolProjectIcon);
         group.reward_tokens = group.reward_tokens.concat(item.reward_tokens);
         group.user_reward = group.user_reward.concat(item.user_reward);
         group.balance = Big(group.balance).plus(item.balance || 0);
@@ -116,6 +117,7 @@ export function useList(): List {
           apr: [item.apr],
           creatorProtocolIcon: [item.creatorProtocolIcon],
           protocolIcon: [item.protocolIcon],
+          poolProjectIcon: [item.poolProjectIcon],
           tokens: item.tokens,
           reward_tokens: item.reward_tokens || [],
           user_reward: item.user_reward || [],
@@ -155,7 +157,7 @@ export function useList(): List {
       if (
         filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
         !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
-          filter.reg.test(item.pool_project)
+          item.list.some((__it: any) => filter.reg.test(__it.project))
         )
       ) {
         return false;
