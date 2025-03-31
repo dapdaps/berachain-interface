@@ -17,7 +17,7 @@ export const Vaults = (props: any) => {
 
   return (
     <div className="w-full flex items-center gap-[5px]">
-      <div className="flex items-center shrink-0 min-w-[72px]">
+      <div className="flex items-center shrink-0 min-w-[88px]">
         {record.protocolIcon?.map((icon: any, idx: number) => (
           <LazyImage
             key={idx}
