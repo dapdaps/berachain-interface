@@ -42,7 +42,7 @@ const RewardIcon = (props: any) => {
 export default RewardIcon;
 
 export const RewardIconContent = (props: any) => {
-  const { reward, className } = props;
+  const { reward, className, isNumber = true } = props;
 
   return (
     <div className={clsx("w-full flex justify-between items-center gap-[10px] text-[#000] font-Montserrat text-[14px] font-[500] leading-[100%]", className)}>
@@ -67,9 +67,13 @@ export const RewardIconContent = (props: any) => {
           <img src="/images/vaults/v2/open-link.svg" alt="" className="w-[20px] h-[20px] object-center object-cover shrink-0" />
         </a>
       </div>
-      <div className="flex items-center justify-end shrink-0">
-        {numberFormatter(reward.amount, 6, true, { isShort: true, isShortUppercase: true })}
-      </div>
+      {
+        isNumber && (
+          <div className="flex items-center justify-end shrink-0">
+            {numberFormatter(reward.amount, 6, true, { isShort: true, isShortUppercase: true })}
+          </div>
+        )
+      }
     </div>
   );
 };

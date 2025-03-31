@@ -11,6 +11,8 @@ import Popover, {
 import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
 import Link from "next/link";
+import { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
+import { motion } from "framer-motion";
 
 export const Vaults = (props: any) => {
   const { record, index, className } = props;
@@ -207,20 +209,39 @@ export const Rewards = (props: any) => {
     <div className="flex items-center gap-[2px] flex-wrap">
       <div className={clsx("flex items-center")}>
         {record.reward_tokens.map((reward: any, index: number) => (
-          <div key={index} className="flex items-center gap-[4px]">
-            <LazyImage
-              src={reward.icon}
-              title={reward.symbol}
-              alt=""
-              width={isMobile ? 18 : 26}
-              height={isMobile ? 18 : 26}
-              containerClassName={clsx(
-                "shrink-0 rounded-full overflow-hidden",
-                index > 0 && "ml-[-10px]"
-              )}
-              fallbackSrc="/assets/tokens/default_icon.png"
-            />
-          </div>
+          <Popover
+            key={index}
+            trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
+            placement={PopoverPlacement.Bottom}
+            content={(
+              <Card className="!rounded-[10px] !p-[10px] w-[150px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+                <RewardIconContent
+                  reward={reward}
+                  className=""
+                  isNumber={false}
+                />
+              </Card>
+            )}
+          >
+            <motion.div
+              key={index}
+              className="relative flex items-center gap-[4px]"
+              whileHover={{ scale: 1.1, zIndex: 1 }}
+            >
+              <LazyImage
+                src={reward.icon}
+                title={reward.symbol}
+                alt=""
+                width={isMobile ? 18 : 26}
+                height={isMobile ? 18 : 26}
+                containerClassName={clsx(
+                  "shrink-0 rounded-full overflow-hidden",
+                  index > 0 && "ml-[-10px]"
+                )}
+                fallbackSrc="/assets/tokens/default_icon.png"
+              />
+            </motion.div>
+          </Popover>
         ))}
       </div>
     </div>

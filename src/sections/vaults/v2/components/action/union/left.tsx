@@ -149,6 +149,9 @@ const ActionUnionLeft = (props: any) => {
                       onClick={() =>
                         toggleClaimVisible(true, protocol.user_reward)
                       }
+                      style={{
+                        display: protocol.user_reward?.length > 0 ? "flex" : "none"
+                      }}
                     >
                       Claim
                     </button>
