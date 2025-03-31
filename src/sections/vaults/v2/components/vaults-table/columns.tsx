@@ -212,9 +212,9 @@ export const Rewards = (props: any) => {
           <Popover
             key={index}
             trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
-            placement={PopoverPlacement.Bottom}
+            placement={PopoverPlacement.Top}
             content={(
-              <Card className="!rounded-[10px] !p-[10px] w-[150px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+              <Card className="!rounded-[10px] !bg-white !p-[5px_10px] w-[150px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                 <RewardIconContent
                   reward={reward}
                   className=""
@@ -251,10 +251,45 @@ export const Rewards = (props: any) => {
 export const Yours = (props: any) => {
   const { record, index, className } = props;
 
-  return numberFormatter(record.balance, 2, true, {
-    prefix: "$",
-    isShort: true
-  });
+  return (
+    <Popover
+      content={Big(record.balance || 0).gt(0) ? (
+        <Card className="!rounded-[10px] !bg-white !p-[5px_10px] !text-[14px] font-[500] whitespace-nowrap flex items-center">
+          {
+            record.list?.filter((protocol: any) => Big(protocol.balance || 0).gt(0))?.map((protocol: any, index: number) => (
+              <div
+                className="text-[14px] font-[500] leading-normal font-[Montserrat] text-[#000]"
+                key={index}
+              >
+                {index > 0 && (
+                  <>&nbsp;+&nbsp;</>
+                )}
+                {
+                  numberFormatter(protocol.balance, 2, true, {
+                    prefix: "$",
+                    isShort: true
+                  })
+                }
+              </div>
+            ))
+          }
+        </Card>
+      ) : null}
+      trigger={PopoverTrigger.Hover}
+      placement={PopoverPlacement.Top}
+    >
+      <div
+        className={clsx("", Big(record.balance || 0).gt(0) ? "opacity-100 underline decoration-dashed underline-offset-4 cursor-pointer" : "opacity-30")}
+      >
+        {
+          numberFormatter(record.balance, 2, true, {
+            prefix: "$",
+            isShort: true
+          })
+        }
+      </div>
+    </Popover>
+  );
 };
 
 export const ClaimButton = (props: any) => {
