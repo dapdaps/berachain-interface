@@ -381,6 +381,7 @@ export function useList(): List {
           });
           item.reward_tokens.forEach((token: any) => {
             token.icon = getTokenLogo(token.symbol);
+            token.link = `https://berascan.com/token/${token.address}`;
           });
           item.user_reward.forEach((reward: any) => {
             reward.icon = getTokenLogo(reward.symbol);

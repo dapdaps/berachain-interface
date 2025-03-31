@@ -5,6 +5,7 @@ import useAddAction from "@/hooks/use-add-action";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import handleClaim from "../../dapps/claim";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { cloneDeep } from 'lodash';
 
 export default function useClaim() {
   const [loading, setLoading] = useState(false);
@@ -38,14 +39,14 @@ export default function useClaim() {
       }
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
-
+      toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
           title: "Claim successful!",
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
-        toggleClaimSuccessVisible(true, currentReward);
+        toggleClaimSuccessVisible(true, cloneDeep(currentReward));
         toggleClaimVisible(false);
       } else {
         toast.fail({ title: "Claim failed!" });

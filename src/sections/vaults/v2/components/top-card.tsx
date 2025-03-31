@@ -73,19 +73,20 @@ const TopCard = (props: any) => {
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
           <div className="flex items-center">
-            {pool?.[type === CardType.HotStrategy ? "tokens" : "list"]?.map(
+            {pool?.list?.filter((protocol: any) => {
+              if (type === CardType.HotStrategy) {
+                return /^(Hub|Bex)$/i.test(protocol.project);
+              }
+              return true;
+            })?.map(
               (protocol: any, idx: number) => (
                 <LazyImage
-                  src={
-                    type === CardType.HotStrategy
-                      ? protocol.icon
-                      : protocol.protocolIcon
-                  }
+                  src={protocol.protocolIcon}
                   width={36}
                   height={36}
                   containerClassName={clsx(
-                    "shrink-0 rounded-full overflow-hidden",
-                    idx !== 0 && "ml-[-10px]"
+                    "shrink-0 overflow-hidden rounded-[10px] border border-[#FFFDEB]",
+                    idx !== 0 && "ml-[-10px]",
                   )}
                   fallbackSrc="/assets/tokens/default_icon.png"
                 />

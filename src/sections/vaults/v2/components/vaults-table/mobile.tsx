@@ -87,7 +87,7 @@ const VaultsTableMobile = (props: any) => {
                 onClick={() => toggleExpand(index)}
               >
                 <div className="flex justify-between items-center gap-[10px]">
-                  <Vaults record={record} index={index} className="flex-1 w-0" />
+                  <Vaults isPool={true} record={record} index={index} className="flex-1 w-0" />
                   <DepositButton record={record} index={index} className="shrink-0 !bg-[#FFDC50]" />
                 </div>
                 <div className="flex justify-between items-center gap-[10px] mt-[13px]">
