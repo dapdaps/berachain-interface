@@ -133,6 +133,7 @@ const ActionUnionLeft = (props: any) => {
                   ))} */}
                   <Popover
                     triggerContainerClassName="inline-block"
+                    contentClassName="!z-[101]"
                     content={
                       <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
                         Claim rewards
@@ -144,11 +145,13 @@ const ActionUnionLeft = (props: any) => {
                   >
                     <button
                       type="button"
-                      className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain mt-[5px]"
+                      className="shrink-0 w-[53px] h-[25px] rounded-[6px] bg-[#FFDC50] border border-black text-[14px] font-[500] flex justify-center items-center mt-[5px]"
                       onClick={() =>
                         toggleClaimVisible(true, protocol.user_reward)
                       }
-                    />
+                    >
+                      Claim
+                    </button>
                   </Popover>
                 </div>
                 <button

@@ -65,8 +65,8 @@ export function useList(): List {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchValueDelay, setSearchValueDelay] = useState<string>();
-  const [filterAssetsViewMore, setFilterAssetsViewMore] =
-    useState<boolean>(false);
+  const [filterAssetsViewMore, setFilterAssetsViewMore] = useState(false);
+  const [vaultsStaked, setVaultsStaked] = useState(false);
 
   // pagination & grouped by pool_address & sorted & filters
   const [dataGroupByPool, dataGroupByPoolAll] = useMemo(() => {
@@ -186,6 +186,10 @@ export function useList(): List {
         return false;
       }
 
+      if (vaultsStaked && Big(item.user_stake?.amount || 0).lte(0)) {
+        return false;
+      }
+
       return true;
     });
 
@@ -215,12 +219,12 @@ export function useList(): List {
     setPageTotal(Math.ceil(sortedData.length / pageSize));
 
     if (isMobile) {
-      return [sortedData, sortedData];
+      return [sortedData, grouped];
     }
 
     return [
       sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
-      sortedData
+      grouped
     ];
   }, [
     data,
@@ -230,7 +234,8 @@ export function useList(): List {
     pageSize,
     isMobile,
     orderKey,
-    orderDirection
+    orderDirection,
+    vaultsStaked
   ]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
@@ -544,6 +549,10 @@ export function useList(): List {
     }
   };
 
+  const toggleVaultsStaked = (_vaultsStaked?: boolean) => {
+    setVaultsStaked(typeof _vaultsStaked === "boolean" ? _vaultsStaked : !vaultsStaked);
+  };
+
   const clearFilterSelected = () => {
     setFilterSelected(cloneDeep(DEFAULT_FILTER_SELECTED));
     togglePageIndex(PAGINATION_ACTION.FIRST);
@@ -657,7 +666,9 @@ export function useList(): List {
     listSearchValue: searchValue,
     handleListSearchValue: handleSearchValue,
     listFilterAssetsViewMore: filterAssetsViewMore,
-    toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore
+    toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
+    listVaultsStaked: vaultsStaked,
+    toggleListVaultsStaked: toggleVaultsStaked,
   };
 }
 
@@ -705,6 +716,8 @@ export interface List {
   handleListSearchValue: (searchValue?: string) => void;
   listFilterAssetsViewMore: boolean;
   toggleListFilterAssetsViewMore: (filterAssetsViewMore?: boolean) => void;
+  listVaultsStaked: boolean;
+  toggleListVaultsStaked: (_listVaultsStaked?: boolean) => void;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {
