@@ -261,7 +261,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^NOME$/i, label: "NOME", icon: getTokenLogo("NOME"), sort: 10 }
   ],
   [FILTER_KEYS.PROTOCOLS]: [
-    { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },
+    { reg: /^(Hub|Bex)$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },
     {
       reg: /^BeraDrome$/i,
       label: "BeraDrome",
