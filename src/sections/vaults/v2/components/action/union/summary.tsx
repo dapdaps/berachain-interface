@@ -53,11 +53,16 @@ const ActionSummary = (props: any) => {
           </Popover>
         </ActionSummaryItem>
         <ActionSummaryItem label="Protocol" valueClassName="flex items-center gap-[4px]">
+          <div className="flex-1 whitespace-nowrap">
+            {currentProtocol.project}
+          </div>
+        </ActionSummaryItem>
+        <ActionSummaryItem label="Vaults" valueClassName="flex items-center gap-[4px]">
           <LazyImage
-            src={currentProtocol.protocolIcon}
-            width={16}
-            height={16}
-            containerClassName="shrink-0"
+            src={currentProtocol.poolProjectIcon}
+            width={18}
+            height={18}
+            containerClassName="shrink-0 rounded-[4px] border border-[#FFFDEB] overflow-hidden"
             fallbackSrc="/assets/tokens/default_icon.png"
           />
           <div className="flex-1 whitespace-nowrap">
