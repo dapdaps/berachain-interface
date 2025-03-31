@@ -54,19 +54,19 @@ const ActionSummary = (props: any) => {
         </ActionSummaryItem>
         <ActionSummaryItem label="Protocol" valueClassName="flex items-center gap-[4px]">
           <div className="flex-1 whitespace-nowrap">
-            {currentProtocol.project}
+            {currentProtocol.pool_project}
           </div>
         </ActionSummaryItem>
         <ActionSummaryItem label="Vaults" valueClassName="flex items-center gap-[4px]">
           <LazyImage
-            src={currentProtocol.poolProjectIcon}
+            src={currentProtocol.protocolIcon}
             width={18}
             height={18}
             containerClassName="shrink-0 rounded-[4px] border border-[#FFFDEB] overflow-hidden"
             fallbackSrc="/assets/tokens/default_icon.png"
           />
           <div className="flex-1 whitespace-nowrap">
-            {currentProtocol.pool_project}
+            {currentProtocol.protocol}
           </div>
         </ActionSummaryItem>
       </div>
