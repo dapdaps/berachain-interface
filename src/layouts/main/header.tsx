@@ -63,8 +63,8 @@ const MainLayoutHeader = (props: Props) => {
             <img src="/images/mint-honey.png" alt="mint" />
           </div> */}
 
-          
-          <motion.div 
+
+          <motion.div
             className="cursor-pointer relative -top-[8px] w-[57px]"
             onClick={() => {
               router.push("/kingdomly")
@@ -91,29 +91,32 @@ const MainLayoutHeader = (props: Props) => {
           {/* <Hall /> */}
           <div className="cursor-pointer pl-[5px] flex items-center gap-[4px] w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/hall/icon-hall-button-bg.svg')] bg-center"
             onClick={() => {
+              hallStore.set({
+                currentTab: "bgt"
+              })
               router.replace("/hall")
             }}
           >
             <div className="w-full h-full -mt-[3px]">
-            <Swiper
-              modules={[Autoplay]}
-              autoplay={{ delay: 1500, disableOnInteraction: false }}
-              loop={true}
-              className="w-full h-full"
-            >
-               <SwiperSlide>
+              <Swiper
+                modules={[Autoplay]}
+                autoplay={{ delay: 1500, disableOnInteraction: false }}
+                loop={true}
+                className="w-full h-full"
+              >
+                <SwiperSlide>
                   <div className="flex items-center">
                     <img src="/images/hall/icon-ibgt.svg" alt="icon-ibgt" />
                     <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{numberFormatter(iBGTCount, 3, true)} iBGT</div>
                   </div>
-               </SwiperSlide>
-               <SwiperSlide>
+                </SwiperSlide>
+                <SwiperSlide>
                   <div className="flex items-center">
                     <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
                     <div className="text-[#FFF5A9] text-[16px] text-stroke-1 font-CherryBomb whitespace-nowrap">{numberFormatter(BGTCount, 3, true)} BGT</div>
                   </div>
-               </SwiperSlide>
-            </Swiper>
+                </SwiperSlide>
+              </Swiper>
             </div>
           </div>
 

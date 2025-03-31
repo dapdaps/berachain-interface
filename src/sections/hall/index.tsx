@@ -7,11 +7,13 @@ import IbgtPageView from "@/sections/bgt/ibgt";
 import { useHall } from "@/stores/hall";
 import { useParams, useSearchParams } from "next/navigation";
 import { memo, useEffect, useState } from "react";
+import Validators from "../bgt/validators";
 export default memo(function HallView() {
   const store = useHall()
   const searchParams = useSearchParams()
-  const defaultCurrentTab = searchParams.get("tab")
-  const [currentTab, setCurrentTab] = useState<string>(["bgt", "ibgt"].includes(defaultCurrentTab) ? defaultCurrentTab : "bgt");
+  const defaultCurrentTab = searchParams.get("tab") || store.currentTab
+
+  const [currentTab, setCurrentTab] = useState<string>(["bgt", "ibgt", "validators"].includes(defaultCurrentTab) ? defaultCurrentTab : "bgt");
   useEffect(() => {
     store.set({
       currentTab
@@ -62,16 +64,19 @@ export default memo(function HallView() {
                   children: <IbgtPageView />
                 },
                 {
-                  key: "Validators",
+                  key: "validators",
                   label: (
-                    <div className="relative">
-                      Validators
-                      <div className="absolute -right-[20px] top-0 flex items-center justify-center w-[42px] h-[13px] rounded-[8px] border-black border bg-[#FFF5A9]">
-                        <span className="text-black text-[16px] font-bold scale-50">Thoon...</span>
+                    // <div className="relative">
+                    //   Validators
+                    // </div>
+                    <div className="flex items-center gap-[10px]">
+                      <div className="w-[30px]">
+                        <img src="/images/validators.svg" alt="validators" />
                       </div>
+                      <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">Validators</div>
                     </div>
                   ),
-                  disabled: true,
+                  children: <Validators />
                 }
               ]}
             />

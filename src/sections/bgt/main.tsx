@@ -19,7 +19,6 @@ import { numberFormatter } from "@/utils/number-formatter";
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
-    console.log('====data', data)
     return (
       <Card>
         <div className="flex gap-[8px]">
