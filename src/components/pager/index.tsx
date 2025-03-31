@@ -1,6 +1,6 @@
 "use client";
-import { memo, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
+import { forwardRef, memo, useEffect, useImperativeHandle, useMemo, useState } from "react";
 type PropsType = {
   maxPage: number;
   defaultPage?: number;
@@ -18,6 +18,10 @@ export default memo(function Pager({ maxPage, defaultPage = 1, onPageChange }: P
   }, [currentPage]);
 
   const isOverflow = useMemo(() => maxPage > 5, [maxPage]);
+  const refs = {
+    setCurrentPage
+  }
+  useImperativeHandle(ref, () => refs)
   return (
     <div className="flex items-center gap-[10px]">
       {isOverflow && (
@@ -144,4 +148,4 @@ export default memo(function Pager({ maxPage, defaultPage = 1, onPageChange }: P
       )}
     </div>
   );
-});
+}));
