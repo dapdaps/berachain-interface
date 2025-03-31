@@ -417,6 +417,7 @@ export function useList(): List {
           };
           item.protocol = item.project;
           item.protocolIcon = getDappLogo(item.project);
+          item.poolProjectIcon = getDappLogo(item.pool_project);
           item.creatorProtocolIcon = getDappLogo(item.creator_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;

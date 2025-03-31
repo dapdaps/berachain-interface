@@ -76,9 +76,9 @@ const ActionUnionLeft = (props: any) => {
                           />
                           <LazyImage
                             key={index}
-                            src={protocol.protocolIcon}
+                            src={protocol.poolProjectIcon}
                             containerClassName={clsx(
-                              "!w-[17px] !h-[17px] overflow-hidden shrink-0 !absolute bottom-[0px] right-[-5px]"
+                              "!w-[18px] !h-[18px] rounded-[4px] border border-[#FFFDEB] overflow-hidden shrink-0 !absolute bottom-[0px] right-[-5px]"
                             )}
                             fallbackSrc="/assets/tokens/default_icon.png"
                           />
@@ -93,7 +93,7 @@ const ActionUnionLeft = (props: any) => {
                         .join("-")}
                     </div>
                     <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%]">
-                      {protocol?.creator_project}
+                      {protocol?.pool_project}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
