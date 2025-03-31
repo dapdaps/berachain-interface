@@ -3,17 +3,18 @@ import { memo, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 type PropsType = {
   maxPage: number;
+  defaultPage?: number;
   onPageChange: (data: number) => void;
 };
 
-export default memo(function Pager({ maxPage, onPageChange }: PropsType) {
-  const [currentPage, setCurrentPage] = useState(1);
+export default memo(function Pager({ maxPage, defaultPage = 1, onPageChange }: PropsType) {
+  const [currentPage, setCurrentPage] = useState(defaultPage);
   const handlePageChange = function (page: number) {
     if (page < 1 || page > maxPage) return;
     setCurrentPage(page);
   };
   useEffect(() => {
-    onPageChange(currentPage);
+    onPageChange?.(currentPage);
   }, [currentPage]);
 
   const isOverflow = useMemo(() => maxPage > 5, [maxPage]);

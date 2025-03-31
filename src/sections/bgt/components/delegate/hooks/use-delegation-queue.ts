@@ -15,14 +15,13 @@ export default function useDelegationQueue() {
   const {
     provider, account
   } = useCustomAccount()
-  
+
   const [delegationQueue, setDelegationQueue] = useState<null | QueueType[]>(null)
   const [loading, setLoading] = useState(false)
 
   const getDelegationQueue = async (validators) => {
     setLoading(true)
     const calls: any = []
-    console.log('=======validators=======', validators)
     validators?.forEach(_validator => {
       calls.push({
         address: BGT_ADDRESS,
@@ -40,7 +39,7 @@ export default function useDelegationQueue() {
         provider
       })
       const _delegationQueue = []
-      
+
       for (let i = 0; i < response.length; i++) {
         const boostedQueue = response[i];
 

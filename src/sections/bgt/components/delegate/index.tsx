@@ -23,6 +23,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import useValidators from "./hooks/use-validators";
 import { formatLongText } from "@/utils/utils";
 import { useBgtStore } from "@/stores/bgt";
+import QueueList from "./queue-list";
 const TABS = [
   {
     value: "Deposit",
@@ -178,7 +179,7 @@ export default memo(function Delegate(props: IProps) {
           isLoading: false
         });
         onSuccess();
-        onClose();
+        // onClose();
         toast?.dismiss(toastId);
         toast?.success({
           title:
@@ -247,7 +248,7 @@ export default memo(function Delegate(props: IProps) {
           })
         });
         onSuccess();
-        onClose();
+        // onClose();
         toast?.dismiss(toastId);
         toast?.success({
           title:
@@ -272,13 +273,11 @@ export default memo(function Delegate(props: IProps) {
     updateState({
       updater: Date.now()
     });
+    onClose?.()
   };
 
-  // useEffect(() => {
-  //   getValidators()
-  // }, [])
   useEffect(() => {
-    if (visible && account) {
+    if (visible && account && provider) {
       getBalance();
       validators && getDelegationQueue(validators);
     }
@@ -287,7 +286,7 @@ export default memo(function Delegate(props: IProps) {
       rangeIndex: -1,
       percentage: 0
     });
-  }, [visible, account, validators, validator?.address, state?.updater]);
+  }, [visible, account, provider, validators, validator?.address, state?.updater]);
   return (
     <>
       <Modal open={visible} onClose={onClose} innerStyle={{ width: "unset" }}>
@@ -401,7 +400,7 @@ export default memo(function Delegate(props: IProps) {
               Delegation Queue
             </div>
 
-            {loading ? (
+            {/* {loading ? (
               <div className="flex justify-center">
                 <CircleLoading size={28} />
               </div>
@@ -504,7 +503,12 @@ export default memo(function Delegate(props: IProps) {
               <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
                 No validators in queue
               </div>
-            )}
+            )} */}
+            <QueueList
+              loading={loading}
+              delegationQueue={delegationQueue}
+              onSuccess={onSuccess}
+            />
           </div>
         </div>
       </Modal>

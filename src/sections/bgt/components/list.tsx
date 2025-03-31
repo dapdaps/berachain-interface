@@ -96,6 +96,7 @@ const VaultsList = () => {
               <>
                 {item?.activeIncentives?.length > 0 ? item?.activeIncentives?.map((v: any) => {
                   const token = currChainTokens?.find(chainToken => chainToken?.address === v?.token?.address)
+                  console.log('===token', token)
                   return (
                     <div className="w-6 h-6 overflow-hidden shrink-0 rounded-full ml-[-5px]">
                       {token?.icon ? (
