@@ -212,9 +212,9 @@ export const Rewards = (props: any) => {
           <Popover
             key={index}
             trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
-            placement={PopoverPlacement.Bottom}
+            placement={PopoverPlacement.Top}
             content={(
-              <Card className="!rounded-[10px] !p-[10px] w-[150px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+              <Card className="!rounded-[10px] !bg-white !p-[5px_10px] w-[150px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                 <RewardIconContent
                   reward={reward}
                   className=""
