@@ -7,8 +7,8 @@ type PropsType = {
   onPageChange: (data: number) => void;
 };
 
-export default memo(function Pager({ maxPage, defaultPage = 1, onPageChange }: PropsType) {
-  const [currentPage, setCurrentPage] = useState(defaultPage);
+export default memo(forwardRef(function Pager({ maxPage, defaultPage = 1, onPageChange }: PropsType, ref) {
+  const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = function (page: number) {
     if (page < 1 || page > maxPage) return;
     setCurrentPage(page);
