@@ -93,7 +93,7 @@ const ActionUnionLeft = (props: any) => {
                         .join("-")}
                     </div>
                     <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%]">
-                      {protocol?.protocol}
+                      {/^(Hub|Bex)$/i.test(protocol?.protocol || "") ? "Bex" : protocol?.protocol}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
