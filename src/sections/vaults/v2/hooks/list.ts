@@ -554,7 +554,11 @@ export function useList(): List {
   };
 
   const toggleVaultsStaked = (_vaultsStaked?: boolean) => {
-    setVaultsStaked(typeof _vaultsStaked === "boolean" ? _vaultsStaked : !vaultsStaked);
+    const __vaultsStaked = typeof _vaultsStaked === "boolean" ? _vaultsStaked : !vaultsStaked;
+    if (__vaultsStaked) {
+      togglePageIndex(PAGINATION_ACTION.FIRST);
+    }
+    setVaultsStaked(__vaultsStaked);
   };
 
   const clearFilterSelected = () => {
