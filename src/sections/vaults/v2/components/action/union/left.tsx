@@ -80,9 +80,9 @@ const ActionUnionLeft = (props: any) => {
                       {protocol?.creator_project}
                     </div>
                   </div>
-                  {protocol.reward_tokens.map((reward: any, index: number) => (
+                  {/* {protocol.reward_tokens.map((reward: any, index: number) => (
                     <div key={index} className="flex items-center gap-[4px]">
-                      {/*<LazyImage
+                      <LazyImage
                           src={reward.icon}
                           title={reward.symbol}
                           alt=""
@@ -90,7 +90,7 @@ const ActionUnionLeft = (props: any) => {
                           height={isMobile ? 18 : 26}
                           containerClassName={clsx("shrink-0 rounded-full overflow-hidden", (!isUserReward && index > 0) && "ml-[-10px]")}
                           fallbackSrc="/assets/tokens/default_icon.png"
-                        />*/}
+                        />
                       {protocol.user_reward.map((_reward: any, idx: number) => {
                         if (
                           !_reward.amount ||
@@ -110,30 +110,30 @@ const ActionUnionLeft = (props: any) => {
                                 isShort: true
                               })}
                             </div>
-                            <Popover
-                              triggerContainerClassName="inline-block"
-                              content={
-                                <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
-                                  Claim rewards
-                                </Card>
-                              }
-                              trigger={PopoverTrigger.Hover}
-                              placement={PopoverPlacement.Top}
-                              closeDelayDuration={0}
-                            >
-                              <button
-                                type="button"
-                                className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain"
-                                onClick={() =>
-                                  toggleClaimVisible(true, _reward)
-                                }
-                              />
-                            </Popover>
                           </div>
                         );
                       })}
                     </div>
-                  ))}
+                  ))} */}
+                  <Popover
+                    triggerContainerClassName="inline-block"
+                    content={
+                      <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
+                        Claim rewards
+                      </Card>
+                    }
+                    trigger={PopoverTrigger.Hover}
+                    placement={PopoverPlacement.Top}
+                    closeDelayDuration={0}
+                  >
+                    <button
+                      type="button"
+                      className="shrink-0 w-[21px] h-[21px] rounded-full bg-[url('/images/vaults/v2/claim.svg')] bg-no-repeat bg-center bg-contain mt-[5px]"
+                      onClick={() =>
+                        toggleClaimVisible(true, protocol.user_reward)
+                      }
+                    />
+                  </Popover>
                 </div>
                 <button
                   type="button"
