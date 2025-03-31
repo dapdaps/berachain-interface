@@ -152,26 +152,47 @@ export const APY = (props: any) => {
   const { record, index, className } = props;
 
   return (
-    <Popover
-      triggerContainerClassName="inline-block"
-      content={null}
-      trigger={PopoverTrigger.Hover}
-      placement={PopoverPlacement.Bottom}
-      closeDelayDuration={0}
-    >
-      <button type="button" className="whitespace-nowrap">
-        {record.list?.length > 1 ? (
-          <>
-            {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}% ~{" "}
-            {numberFormatter(record.totalApy[1], 2, true, { isShort: true })}%
-          </>
-        ) : (
-          <>
+    <button type="button" className="whitespace-nowrap flex items-center gap-[2px]">
+      {record.list?.length > 1 ? (
+        <>
+          <Popover
+            triggerContainerClassName="inline-block"
+            content={<APYContent record={record.totalApyList[0]} />}
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Bottom}
+            closeDelayDuration={0}
+          >
+            <div className="underline decoration-dashed underline-offset-4">
+              {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}%
+            </div>
+          </Popover>
+          <div className="">~</div>
+          <Popover
+            triggerContainerClassName="inline-block"
+            content={<APYContent record={record.totalApyList[1]} />}
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Bottom}
+            closeDelayDuration={0}
+          >
+            <div className="underline decoration-dashed underline-offset-4">
+              {numberFormatter(record.totalApy[1], 2, true, { isShort: true })}%
+            </div>
+          </Popover>
+        </>
+      ) : (
+        <Popover
+          triggerContainerClassName="inline-block"
+          content={<APYContent record={record.totalApyList[0]} />}
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.Bottom}
+          closeDelayDuration={0}
+        >
+          <div className="underline decoration-dashed underline-offset-4">
             {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}%
-          </>
-        )}
-      </button>
-    </Popover>
+          </div>
+        </Popover>
+      )}
+    </button>
   );
 };
 
