@@ -276,7 +276,7 @@ export const Yours = (props: any) => {
         </Card>
       ) : null}
       trigger={PopoverTrigger.Hover}
-      placement={PopoverPlacement.Bottom}
+      placement={PopoverPlacement.Top}
     >
       <div
         className={clsx("", Big(record.balance || 0).gt(0) ? "opacity-100 underline decoration-dashed underline-offset-4 cursor-pointer" : "opacity-30")}
