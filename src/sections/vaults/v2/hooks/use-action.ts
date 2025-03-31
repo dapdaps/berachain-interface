@@ -86,7 +86,7 @@ export default function useAction(): Action {
       }
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
-
+      toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
           title: actionType.button + " successful!",
