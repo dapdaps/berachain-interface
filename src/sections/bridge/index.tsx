@@ -17,7 +17,7 @@ import History from './History';
 import Big from 'big.js';
 import { useAccount, useSwitchChain } from "wagmi";
 import { formatLongText } from '@/utils/utils';
-import allTokens from './lib/allTokens'
+import useAllToken from './Hooks/useAllToken';
 import { tokenPairs } from './lib/bridges/stargate/config';
 import useAddAction from '@/hooks/use-add-action';
 import { useBridgeHistory } from '@/stores/useBridgeHistory';
@@ -83,6 +83,7 @@ export default function Bridge() {
   const [limitBera, setLimitBera] = useState(0)
   const router = useRouter()
   const { bridgeType } = useBridgeType()
+  const allTokens = useAllToken()
 
   const { isDefaultTheme } = useActivityStore()
 
@@ -157,7 +158,7 @@ export default function Bridge() {
     } else {
       setToToken(undefined)
     }
-  }, [fromChain, fromToken, bridgeType])
+  }, [fromChain, fromToken, bridgeType, allTokens])
 
   useEffect(() => {
     const fromToken = searchParams.get('fromToken')
@@ -174,7 +175,7 @@ export default function Bridge() {
       setFromToken(fromToken)
       setToToken(toToken)
     }
-  }, [searchParams])
+  }, [searchParams, allTokens])
 
   return (
     <>
