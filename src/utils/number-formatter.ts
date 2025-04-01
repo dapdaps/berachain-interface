@@ -22,6 +22,7 @@ export const numberFormatter = (
     // should zeros be added at the end
     isZeroPrecision?: boolean;
     isShort?: boolean;
+    isShortUppercase?: boolean;
     round?: Big.RoundingMode;
   }
 ): any => {
@@ -30,6 +31,7 @@ export const numberFormatter = (
     isLTIntegerZero,
     isZeroPrecision,
     isShort,
+    isShortUppercase,
     round = Big.roundHalfUp,
   } = options || {};
 
@@ -113,19 +115,19 @@ export const numberFormatter = (
       // }
       // trillion
       if (Big(value).gte(1e12)) {
-        return formatter(1e12, 't');
+        return formatter(1e12, isShortUppercase ? 'T' : 't');
       }
       // billion
       if (Big(value).gte(1e9)) {
-        return formatter(1e9, 'b');
+        return formatter(1e9, isShortUppercase ? 'B' : 'b');
       }
       // million
       if (Big(value).gte(1e6)) {
-        return formatter(1e6, 'm');
+        return formatter(1e6, isShortUppercase ? 'M' : 'm');
       }
       // thousand
       if (Big(value).gte(1e3)) {
-        return formatter(1e3, 'k');
+        return formatter(1e3, isShortUppercase ? 'K' : 'k');
       }
     }
     if (isZeroPrecision) {

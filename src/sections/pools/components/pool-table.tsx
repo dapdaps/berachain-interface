@@ -1,13 +1,13 @@
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
-export default function PoolTable({ item, onClick = () => { } }: any) {
-  const router = useRouter()
+export default function PoolTable({ item, onClick = () => {} }: any) {
+  const router = useRouter();
   const tokens = useMemo(
     () => item.tokens || [item.token0, item.token1],
     [item]
   );
-  console.log('====item', item)
+
   return (
     <div className="flex items-center gap-[12px]" onClick={onClick}>
       <div className="flex items-center relative">

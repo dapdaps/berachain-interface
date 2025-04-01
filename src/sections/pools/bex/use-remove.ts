@@ -28,7 +28,7 @@ export default function useRemove({
   const toast = useToast();
   const contracts = bex.contracts[DEFAULT_CHAIN_ID];
   const assetsRef = useRef<any>();
-  const slippage = useSettingsStore((store: any) => store.slippage);
+  const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const { addAction } = useAddAction("dapp");
 
   const onQueryAmountsOut = async () => {

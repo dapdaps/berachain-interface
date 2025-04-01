@@ -1,25 +1,22 @@
 'use client';
 
-import HomeEarthTop from '@/sections/home-earth/components/top';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import useIsMobile from '@/hooks/use-isMobile';
+import { useRainyDay } from '@/hooks/use-rainy-day';
+import BeraPrice from '@/sections/home-earth/components/bera-price';
 import CloudCircle from '@/sections/home-earth/components/cloud-circle';
+import Follower from '@/sections/home-earth/components/follower';
 import MountainCircle from '@/sections/home-earth/components/mountain-circle';
 import Navigation from '@/sections/home-earth/components/navigation';
-import Follower from '@/sections/home-earth/components/follower';
 import Signpost from '@/sections/home-earth/components/signpost';
-import useIsMobile from '@/hooks/use-isMobile';
+import HomeEarthTop from '@/sections/home-earth/components/top';
+import { createRotateAnimation } from '@/sections/home-earth/utils';
 import MobileHome from '@/sections/home/mobile';
-import AirdropModal from '@/components/airdrop/modal';
+import { useActivityStore } from '@/stores/useActivityStore';
+import clsx from 'clsx';
+import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
-import { useMotionValue } from 'framer-motion';
-import { createRotateAnimation } from '@/sections/home-earth/utils';
-import { useActivityStore } from '@/stores/useActivityStore';
-import { motion } from 'framer-motion';
-import clsx from 'clsx';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import { useRainyDay } from '@/hooks/use-rainy-day';
-import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
-import BeraPrice from '@/sections/home-earth/components/bera-price';
 
 // seconds per lap
 const SPEED = 200;
@@ -176,7 +173,6 @@ const HomeEarth = () => {
         <Follower />
         <Signpost />
         <HomeEarthTop />
-        <AirdropModal />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
           {/*#region Cloud*/}
           <CloudCircle />

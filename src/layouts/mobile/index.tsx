@@ -26,8 +26,8 @@ const menuItems = [
   },
   {
     id: 4,
-    title: "Earn",
-    href: "/earn",
+    title: "Vaults",
+    href: "/vaults",
     dataBp: "1015-002-004"
   },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
@@ -280,7 +280,12 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       {/* Bottom Navigation */}
       {
         !pathname.startsWith('/invite/') && (
-          <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]">
+          <div
+            className={clsx(
+              "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
+              pathname === "/" && "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
+            )}
+          >
           <div className="flex items-center gap-3">
             <div className="relative">
               {/* {["/"].includes(pathname) && isChristmas && (

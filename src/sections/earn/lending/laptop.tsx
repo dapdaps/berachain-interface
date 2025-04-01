@@ -18,7 +18,6 @@ import Pool from "@/sections/Lending/Beraborrow/pool";
 import clsx from "clsx";
 import Big from "big.js";
 
-
 const PAGE_SIZE = 9;
 
 const ActionButton = ({
@@ -28,27 +27,44 @@ const ActionButton = ({
   onClick,
   className
 }: {
-  color: string
-  type: 'plus' | 'minus'
-  disabled: boolean
-  onClick?: (event: Event) => void
-  className?: string
+  color: string;
+  type: "plus" | "minus";
+  disabled: boolean;
+  onClick?: (event: Event) => void;
+  className?: string;
 }) => {
   return (
-    <svg className={clsx(className, disabled ? 'cursor-not-allowed' : '')} xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none" onClick={onClick}>
+    <svg
+      className={clsx(className, disabled ? "cursor-not-allowed" : "")}
+      xmlns="http://www.w3.org/2000/svg"
+      width="34"
+      height="34"
+      viewBox="0 0 34 34"
+      fill="none"
+      onClick={onClick}
+    >
       <g opacity={disabled ? "0.3" : "1"}>
-        <rect x="0.5" y="0.5" width="33" height="33" rx="10.5" fill="white" stroke="#373A53" />
-        {
-          type === 'plus' ? (
-            <path d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z" fill="black" />
-          ) : (
-            <rect x="11" y="16" width="13" height="2" rx="1" fill="black" />
-          )
-        }
+        <rect
+          x="0.5"
+          y="0.5"
+          width="33"
+          height="33"
+          rx="10.5"
+          fill="white"
+          stroke="#373A53"
+        />
+        {type === "plus" ? (
+          <path
+            d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
+            fill="black"
+          />
+        ) : (
+          <rect x="11" y="16" width="13" height="2" rx="1" fill="black" />
+        )}
       </g>
     </svg>
-  )
-}
+  );
+};
 
 const getListMeta = (
   tabType: "Supply" | "Borrow",
@@ -99,31 +115,24 @@ const getListMeta = (
       key: "inWallet",
       sort: true,
       width: "15%",
-      render: (item: any) => (
+      render: (item: any) =>
         Big(item?.inWallet ? item?.inWallet : 0).eq(0) ? (
-          <div className="opacity-30">
-            $0.00
-          </div>
+          <div className="opacity-30">$0.00</div>
         ) : (
           <div className="flex items-center gap-1">
             <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
-            <div>
-              {numberFormatter(item.inWallet, 2, true)}
-            </div>
+            <div>{numberFormatter(item.inWallet, 2, true)}</div>
           </div>
         )
-      )
     },
     {
       title: "You Supplied",
       key: "youSupplied",
       sort: true,
       width: "20%",
-      render: (item: any) => (
+      render: (item: any) =>
         Big(item?.youSupplied ? item?.youSupplied : 0).eq(0) ? (
-          <div className="opacity-30">
-            $0.00
-          </div>
+          <div className="opacity-30">$0.00</div>
         ) : (
           <div className="flex items-center gap-1">
             <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
@@ -132,7 +141,6 @@ const getListMeta = (
             </div>
           </div>
         )
-      )
     },
     {
       title: "Action",
@@ -170,34 +178,36 @@ const getListMeta = (
               >
                 <ActionButton type="plus" />
               </Popover>
-              {
-                Big(item?.youSupplied ? item?.youSupplied : 0).eq(0) ? (
-                  <ActionButton type="minus" disabled />
-                ) : (
-                  <Popover
-                    trigger={PopoverTrigger.Click}
-                    placement={PopoverPlacement.BottomRight}
-                    content={
-                      <ActionPanelLaptop
-                        title="Withdraw"
-                        actionText="Withdraw"
-                        placeholder="0.00"
-                        token={item}
-                        CHAIN_ID={80094}
-                        onSuccess={() => {
-                          onSuccess(item.protocol.name);
-                        }}
-                        addAction={addAction}
-                      />
-                    }
-                    triggerContainerClassName="cursor-pointer"
-                  >
-                    <ActionButton type="minus" disabled={Big(item?.youSupplied ? item?.youSupplied : 0).eq(0)} />
-                  </Popover>
-                )
-              }
+              {Big(item?.youSupplied ? item?.youSupplied : 0).eq(0) ? (
+                <ActionButton type="minus" disabled />
+              ) : (
+                <Popover
+                  trigger={PopoverTrigger.Click}
+                  placement={PopoverPlacement.BottomRight}
+                  content={
+                    <ActionPanelLaptop
+                      title="Withdraw"
+                      actionText="Withdraw"
+                      placeholder="0.00"
+                      token={item}
+                      CHAIN_ID={80094}
+                      onSuccess={() => {
+                        onSuccess(item.protocol.name);
+                      }}
+                      addAction={addAction}
+                    />
+                  }
+                  triggerContainerClassName="cursor-pointer"
+                >
+                  <ActionButton
+                    type="minus"
+                    disabled={Big(item?.youSupplied ? item?.youSupplied : 0).eq(
+                      0
+                    )}
+                  />
+                </Popover>
+              )}
             </>
-
           )}
           {item.protocol.name === "Bend" && (
             <Popover
@@ -272,11 +282,9 @@ const getListMeta = (
       key: "youBorrowed",
       sort: true,
       width: "15%",
-      render: (item: any) => (
+      render: (item: any) =>
         Big(item?.youBorrowed ? item?.youBorrowed : 0).eq(0) ? (
-          <div className="opacity-30">
-            $0.00
-          </div>
+          <div className="opacity-30">$0.00</div>
         ) : (
           <div className="flex items-center gap-1">
             <img src={item.icon} className="w-[20px] h-[20px]" alt="" />
@@ -285,7 +293,6 @@ const getListMeta = (
             </div>
           </div>
         )
-      )
     },
     {
       title: "Rewards",
@@ -293,23 +300,17 @@ const getListMeta = (
       sort: true,
       width: "10%",
       render: (item: any) => {
-        console.log('====item', item)
-
-        return (
-          Big(item?.rewards ? item?.rewards : 0).eq(0) ? (
-            <div className="opacity-30">
-              $0.00
+        return Big(item?.rewards ? item?.rewards : 0).eq(0) ? (
+          <div className="opacity-30">$0.00</div>
+        ) : (
+          <div className="flex items-center gap-1">
+            {/* <img src={item.icon} className="w-[20px] h-[20px]" alt="" /> */}
+            <div className="underline">
+              {numberFormatter(item.rewards, 2, true)}
             </div>
-          ) : (
-            <div className="flex items-center gap-1">
-              {/* <img src={item.icon} className="w-[20px] h-[20px]" alt="" /> */}
-              <div className="underline">
-                {numberFormatter(item.rewards, 2, true)}
-              </div>
-            </div>
-            // numberFormatter(item.rewards, 2, true)
-          )
-        )
+          </div>
+          // numberFormatter(item.rewards, 2, true)
+        );
       }
     },
     {
@@ -326,7 +327,7 @@ const getListMeta = (
               ["Dolomite", "Beraborrow"].includes(item.protocol.name) ? null : (
                 <ActionModal
                   isOpen={true}
-                  onClose={() => { }}
+                  onClose={() => {}}
                   action="borrow"
                   token={
                     item.protocol.name === "Bend" && item.symbol === "HONEY"
@@ -352,7 +353,7 @@ const getListMeta = (
               ["Dolomite", "Beraborrow"].includes(item.protocol.name) ? null : (
                 <ActionModal
                   isOpen={true}
-                  onClose={() => { }}
+                  onClose={() => {}}
                   action="repay"
                   token={
                     item.protocol.name === "Bend" && item.symbol === "HONEY"
