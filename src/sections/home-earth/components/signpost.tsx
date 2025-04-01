@@ -35,11 +35,11 @@ const Signpost = (props: any) => {
           "absolute left-[20px]",
           OPEN_BTC_LST ? "top-[112px]" : "top-[82px]"
         )}
-        contentClassName={isMobile ? "!z-[53]" : ""}
+        contentClassName={isMobile ? "!z-[53]" : "-mt-[50px]"}
         offset={50}
         // closeDelayDuration={0}
         content={(
-          <SignpostBubble className={clsx("", isMobile && "scale-[0.8322]")}>
+          <SignpostBubble className={clsx("", isMobile && "scale-[0.8322]")} leftArrowY={140}>
             <div className="text-[#FF7040] font-CherryBomb text-[26px] font-normal not-italic leading-[90%] text-stroke-1">
               APR up to 700%!
             </div>
@@ -51,7 +51,7 @@ const Signpost = (props: any) => {
               className="mt-[16px] h-[50px] flex-shrink-0 w-full rounded-[10px] border border-[#000] bg-[#FFDC50] shadow-[6px_6px_0px_rgba(0,0,0,0.25)] text-[#000] text-center font-Montserrat text-[16px] font-bold leading-normal"
               onClick={() => router.push('/vaults')}
             >
-              Get me in
+              Enter
             </button>
           </SignpostBubble>
         )}
