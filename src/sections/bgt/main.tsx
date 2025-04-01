@@ -155,7 +155,7 @@ export default memo(function BgtMain() {
 
   function stringToHslColor(str, saturation = 70, lightness = 60) {
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {
+    for (let i = 0; i < str?.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     const hue = hash % 360; // 0-359
