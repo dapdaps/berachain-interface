@@ -144,6 +144,14 @@ export const bera: { [key: string]: Token } = {
     name: "Reservoir Stablecoin",
     icon: "/assets/tokens/rusd.png"
   },
+  "rusd ot": {
+    chainId: CHAIN_ID,
+    address: "0x4a8b5283e053a8b118eadc4981e8ec8659995652",
+    decimals: 18,
+    symbol: "rUSD OT",
+    name: "rUSD OT",
+    icon: "/assets/tokens/rusd.png"
+  },
   beraeth: {
     chainId: CHAIN_ID,
     address: "0x6fc6545d5cde268d5c7f1e476d444f39c995120d",
@@ -407,38 +415,5 @@ export const bera: { [key: string]: Token } = {
     decimals: 8,
     icon: "/assets/tokens/bitcoin.webp",
     color: "rgb(0,0,0)"
-  },
-  ohm: {
-    chainId: CHAIN_ID,
-    address: "0x18878Df23e2a36f81e820e4b47b4A40576D3159C",
-    symbol: "OHM",
-    name: "Olympus",
-    decimals: 9,
-    icon: "/assets/tokens/ohm.webp",
-    color: "rgb(117,138,149)"
-  },
-  dinero: {
-    chainId: CHAIN_ID,
-    address: "0x09d9420332bff75522a45fcff4855f82a0a3ff50",
-    symbol: "DINERO",
-    name: "Dinero OFT",
-    decimals: 18,
-    icon: "/assets/tokens/dinero.png"
-  },
-  nav: {
-    chainId: CHAIN_ID,
-    address: "0x6536cead649249cae42fc9bfb1f999429b3ec755",
-    symbol: "NAV",
-    name: "NavFinance",
-    decimals: 18,
-    icon: "/assets/tokens/nav.png"
-  },
-  "ez-eth": {
-    chainId: CHAIN_ID,
-    address: "0x2416092f143378750bb29b79ed961ab195cceea5",
-    symbol: "ezETH",
-    name: "Renzo Restaked ETH",
-    decimals: 18,
-    icon: "/assets/tokens/ezeth.png"
   }
 };

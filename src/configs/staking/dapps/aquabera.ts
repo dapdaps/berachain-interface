@@ -84,6 +84,13 @@ export default {
           tokens: [bera["godl"], bera["wbera"]],
           chainTopTokens: [bera["wbera"], bera["godl"]]
         },
+
+        {
+          id: "RUSD-RUSD OT",
+          ichiAddress: "0x20a49a266AE70d07Ba066Ef1F8b6e670216Ab2a6",
+          tokens: [bera["rusd"], bera["rusd ot"]],
+          chainTopTokens: [bera["rusd ot"], bera["rusd"]]
+        },
       ]
     }
   }
