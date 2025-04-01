@@ -66,7 +66,9 @@ const Popover = forwardRef((props: Props, ref: any) => {
         onClick={async (e) => {
           if (trigger === PopoverTrigger.Hover) return;
           if (onClickBefore) {
-            const isContinue = await onClickBefore(e);
+            const isContinue = await onClickBefore(e, () => {
+              setVisible(true);
+            });
             if (!isContinue) return;
           }
           setVisible(true);
@@ -229,7 +231,7 @@ interface Props {
   elRef?: HTMLElement;
   closeDelayDuration?: number;
 
-  onClickBefore?(e: any): Promise<boolean> | boolean;
+  onClickBefore?(e: any, onContinue: () => void): Promise<boolean> | boolean;
 }
 
 const Card = (props: CardProps) => {
