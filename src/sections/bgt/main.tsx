@@ -15,6 +15,7 @@ import VaultsList from "./components/list";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import Card from "@/components/card";
 import { numberFormatter } from "@/utils/number-formatter";
+import { color } from "framer-motion";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -26,21 +27,25 @@ const CustomTooltip = ({ active, payload, label }) => {
           <div className="flex flex-col justify-between">
             <div className="text-black">{numberFormatter(data?.payload?.value, 2, true)}%</div>
             <div className="flex items-center gap-2">
-              <div className="relative">
-                <img
-                  src={data?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
-                  className="min-w-[30px] w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
-                  alt={data?.metadata?.name}
-                />
-                <img
-                  src={getProtocolIcon(data?.metadata?.protocolName)}
-                  className="w-[16px] h-[16px] absolute bottom-0 right-0"
-                  alt=""
-                />
-              </div>
+              {
+                data?.name?.indexOf("Others") > -1 ? <></> : (
+                  <div className="relative">
+                    <img
+                      src={data?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                      className="min-w-[30px] w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
+                      alt={data?.metadata?.name}
+                    />
+                    <img
+                      src={getProtocolIcon(data?.metadata?.protocolName)}
+                      className="w-[16px] h-[16px] absolute bottom-0 right-0"
+                      alt=""
+                    />
+                  </div>
+                )
+              }
               <div className="flex flex-col justify-between items-stretch">
                 <div className="text-[16px] font-[600] whitespace-nowrap">
-                  {data?.metadata?.name}
+                  {data?.name}
                 </div>
                 <div className="text-[10px] font-[400]">
                   {data?.metadata?.protocolName}
@@ -162,14 +167,26 @@ export default memo(function BgtMain() {
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   }
   const ChartsData = useMemo(() => {
-    return vaults?.map(vault => {
+    const firstArray = vaults?.slice(0, 10)
+    const secondArray = vaults?.slice(10)
+    const array = firstArray.map(vault => {
+      const name = vault?.metadata?.name ? vault?.metadata?.name : formatLongText(vault?.id, 4, 4)
       return {
-        name: vault?.metadata?.name,
+        name,
         value: +Big(vault?.dynamicData?.bgtCapturePercentage ?? 0).times(100).toFixed(),
         metadata: vault?.metadata,
-        color: stringToHslColor(vault?.metadata?.name)
+        color: stringToHslColor(name)
       }
     })
+    const othersName = `Others（${secondArray.length}）`
+    const othersValue = secondArray.reduce((acc, curr) => Big(acc).plus(curr?.dynamicData?.bgtCapturePercentage).toFixed(), 0)
+    array.push({
+      name: othersName,
+      value: +Big(othersValue).times(100).toFixed(),
+      color: stringToHslColor(othersName)
+    })
+    console.log('====array', array)
+    return array
   }, [vaults]);
   const BgtDistributed = useMemo(() => vaults?.reduce((acc, curr) => Big(acc).plus(curr?.dynamicData?.allTimeReceivedBGTAmount ?? 0).toFixed(), 0), [vaults])
 

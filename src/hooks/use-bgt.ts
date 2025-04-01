@@ -405,11 +405,10 @@ export function useBGT(tab?: string) {
         BEARCHAIN_API,
         {
           "operationName": "GetVaults",
-          "variables": { "skip": 0, "pageSize": 10, "where": { "includeNonWhitelisted": false } },
+          "variables": { "skip": 0, "pageSize": 300, "where": { "includeNonWhitelisted": false } },
           "query": "query GetVaults($where: GqlRewardVaultFilter, $pageSize: Int, $skip: Int, $orderBy: GqlRewardVaultOrderBy = bgtCapturePercentage, $orderDirection: GqlRewardVaultOrderDirection = desc, $search: String) {\n  polGetRewardVaults(\n    where: $where\n    first: $pageSize\n    skip: $skip\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    search: $search\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    vaults {\n      ...ApiVault\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}"
         }
       )
-      console.log('====response', response)
       setVaults(response?.data?.polGetRewardVaults?.vaults ?? [])
       setVaultsLoading(false)
     } catch (error) {
