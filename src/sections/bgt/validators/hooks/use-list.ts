@@ -80,7 +80,6 @@ export default function useList(currentTab: string) {
       setMaxPage(1)
       setLoading(false)
       setFilterList(validators)
-
       return validators
     } catch (error) {
       console.error(error)
@@ -103,8 +102,9 @@ export default function useList(currentTab: string) {
     } else if (currentTab === "my") {
       getUserValidators()
     } else {
-      const validators = await getUserValidators()
-      validators?.length > 0 && getDelegationQueue(validators)
+      // const validators = await getUserValidators()
+      // validators?.length > 0 && getDelegationQueue(validators)
+      getDelegationQueue()
     }
   }
   useEffect(() => {
