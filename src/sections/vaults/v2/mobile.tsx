@@ -14,16 +14,18 @@ import VaultsTableMobile from '@/sections/vaults/v2/components/vaults-table/mobi
 import { useList } from '@/sections/vaults/v2/hooks/list';
 import FilterModal from '@/sections/vaults/v2/components/filter/modal';
 import Loading from '@/components/loading';
+import { useRef } from 'react';
 
 const VaultsV2Mobile = (props: any) => {
   const { } = props;
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const vaultsV2 = useVaultsV2();
   const list = useList();
 
   return (
-    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list }}>
-      <div className="relative w-full h-full overflow-y-auto pb-[64px] bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
+    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list, containerRef }}>
+      <div ref={containerRef} className="relative w-full h-full overflow-y-auto pb-[64px] bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover">
         <div className="pt-[23px] flex justify-center items-center">
           <PageBack className="absolute left-[17px]" />
           <div className="w-[200px] h-[50px] flex justify-center items-center gap-[10px] mx-auto shrink-0 rounded-[4px] border border-[#000] bg-[#E9B965] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] text-[#000] text-center font-[400] font-CherryBomb text-[24px] leading-[90%]">

@@ -13,6 +13,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import Link from "next/link";
 import { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
 import { motion } from "framer-motion";
+import { useEffect, useRef } from 'react';
 
 export const Pool = (props: any) => {
   const { record, className } = props;
@@ -165,16 +166,41 @@ export const APYContent = (props: any) => {
 export const APY = (props: any) => {
   const { record, index, className } = props;
 
+  const popoverRef1 = useRef<any>();
+  const popoverRef2 = useRef<any>();
+  const popoverRef3 = useRef<any>();
+  const isMobile = useIsMobile();
+  const { containerRef } = useVaultsV2Context();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      popoverRef1.current?.onClose();
+      popoverRef2.current?.onClose();
+      popoverRef3.current?.onClose();
+    };
+
+    containerRef.current?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      containerRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <button type="button" className="whitespace-nowrap flex items-center gap-[2px]">
       {record.list?.length > 1 ? (
         <>
           <Popover
+            ref={popoverRef1}
             triggerContainerClassName="inline-block"
             content={<APYContent record={record.totalApyList[0]} />}
-            trigger={PopoverTrigger.Hover}
+            trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
             placement={PopoverPlacement.Bottom}
             closeDelayDuration={0}
+            onClickBefore={(e) => {
+              e.stopPropagation();
+              return true;
+            }}
           >
             <div className="underline decoration-dashed underline-offset-4">
               {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}%
@@ -182,11 +208,16 @@ export const APY = (props: any) => {
           </Popover>
           <div className="">~</div>
           <Popover
+            ref={popoverRef2}
             triggerContainerClassName="inline-block"
             content={<APYContent record={record.totalApyList[1]} />}
-            trigger={PopoverTrigger.Hover}
+            trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
             placement={PopoverPlacement.Bottom}
             closeDelayDuration={0}
+            onClickBefore={(e) => {
+              e.stopPropagation();
+              return true;
+            }}
           >
             <div className="underline decoration-dashed underline-offset-4">
               {numberFormatter(record.totalApy[1], 2, true, { isShort: true })}%
@@ -195,11 +226,16 @@ export const APY = (props: any) => {
         </>
       ) : (
         <Popover
+          ref={popoverRef3}
           triggerContainerClassName="inline-block"
           content={<APYContent record={record.totalApyList[0]} />}
-          trigger={PopoverTrigger.Hover}
+          trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
           placement={PopoverPlacement.Bottom}
           closeDelayDuration={0}
+          onClickBefore={(e) => {
+            e.stopPropagation();
+            return true;
+          }}
         >
           <div className="underline decoration-dashed underline-offset-4">
             {numberFormatter(record.totalApy[0], 2, true, { isShort: true })}%
@@ -213,7 +249,21 @@ export const APY = (props: any) => {
 export const Rewards = (props: any) => {
   const { record } = props;
 
+  const { containerRef } = useVaultsV2Context();
   const isMobile = useIsMobile();
+  const popoverRef = useRef<any>();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      popoverRef.current?.onClose();
+    };
+
+    containerRef.current?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      containerRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   if (!record.reward_tokens) return null;
 
@@ -222,6 +272,7 @@ export const Rewards = (props: any) => {
       <div className={clsx("flex items-center")}>
         {record.reward_tokens.map((reward: any, index: number) => (
           <Popover
+            ref={popoverRef}
             key={index}
             trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
             placement={PopoverPlacement.Top}
@@ -234,6 +285,10 @@ export const Rewards = (props: any) => {
                 />
               </Card>
             )}
+            onClickBefore={(e) => {
+              e.stopPropagation();
+              return true;
+            }}
           >
             <motion.div
               key={index}
@@ -263,8 +318,25 @@ export const Rewards = (props: any) => {
 export const Yours = (props: any) => {
   const { record, index, className } = props;
 
+  const isMobile = useIsMobile();
+  const { containerRef } = useVaultsV2Context();
+  const popoverRef = useRef<any>();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      popoverRef.current?.onClose();
+    };
+
+    containerRef.current?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      containerRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <Popover
+      ref={popoverRef}
       content={Big(record.balance || 0).gt(0) ? (
         <Card className="!rounded-[10px] !bg-white !p-[5px_10px] !text-[14px] font-[500] whitespace-nowrap flex items-center">
           {
@@ -287,8 +359,12 @@ export const Yours = (props: any) => {
           }
         </Card>
       ) : null}
-      trigger={PopoverTrigger.Hover}
+      trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
       placement={PopoverPlacement.Top}
+      onClickBefore={(e) => {
+        e.stopPropagation();
+        return true;
+      }}
     >
       <div
         className={clsx("", Big(record.balance || 0).gt(0) ? "opacity-100 underline decoration-dashed underline-offset-4 cursor-pointer" : "opacity-30")}

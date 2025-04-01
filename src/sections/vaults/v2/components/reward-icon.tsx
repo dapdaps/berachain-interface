@@ -4,14 +4,32 @@ import LazyImage from '@/components/layz-image';
 import { numberFormatter } from '@/utils/number-formatter';
 import clsx from 'clsx';
 import useIsMobile from '@/hooks/use-isMobile';
+import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import { useEffect, useRef } from 'react';
 
 const RewardIcon = (props: any) => {
   const { reward, className } = props;
 
   const isMobile = useIsMobile();
+  const { containerRef } = useVaultsV2Context();
+
+  const popoverRef = useRef<any>();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      popoverRef.current?.onClose();
+    };
+
+    containerRef.current?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      containerRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <Popover
+      ref={popoverRef}
       trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
       placement={PopoverPlacement.Bottom}
       content={(
