@@ -1,7 +1,6 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import Airdrop from '@/components/airdrop';
 import LGBTLogo from './lgbt-animated-logo';
 import { useActivityStore } from '@/stores/useActivityStore';
 import { useContext } from 'react';
@@ -83,7 +82,6 @@ const HomeEarthTop = (props: any) => {
           }
         </AnimatePresence>
       </div>
-      <Airdrop className="!left-[unset] right-0 !top-[150px]" />
     </div>
   );
 };
