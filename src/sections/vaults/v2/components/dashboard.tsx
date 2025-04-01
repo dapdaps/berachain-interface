@@ -7,6 +7,7 @@ import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover'
 import Card from '@/components/card';
 import RewardIcon, { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
 import useIsMobile from '@/hooks/use-isMobile';
+import { useEffect, useRef } from 'react';
 
 const Dashboard = (props: any) => {
   const { className } = props;
@@ -22,6 +23,21 @@ const Dashboard = (props: any) => {
   const isMobile = useIsMobile();
 
   const visibleRewardTokenLength = isMobile ? 3 : 5;
+
+  const { containerRef } = useVaultsV2Context();
+  const popoverRef = useRef<any>();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      popoverRef.current?.onClose();
+    };
+
+    containerRef.current?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      containerRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className={clsx("text-[20px] text-black leading-[90%] font-[600] font-Montserrat bg-[#FFDC50] rounded-[10px] p-[20px_24px_23px_31px] md:p-[16px_19px_17px_9px] flex justify-between items-start", className)}>
@@ -55,6 +71,7 @@ const Dashboard = (props: any) => {
                     {
                       totalUserRewardTokens.length > visibleRewardTokenLength && (
                         <Popover
+                          ref={popoverRef}
                           trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
                           placement={PopoverPlacement.Bottom}
                           content={(

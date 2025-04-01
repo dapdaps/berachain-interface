@@ -66,7 +66,7 @@ const ActionSummary = (props: any) => {
             fallbackSrc="/assets/tokens/default_icon.png"
           />
           <div className="flex-1 whitespace-nowrap">
-            {currentProtocol.protocol}
+            {/^(Hub|Bex)$/i.test(currentProtocol.protocol) ? "Bex" : currentProtocol.protocol}
           </div>
         </ActionSummaryItem>
       </div>

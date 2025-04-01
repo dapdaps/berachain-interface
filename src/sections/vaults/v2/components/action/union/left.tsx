@@ -49,42 +49,48 @@ const ActionUnionLeft = (props: any) => {
               >
                 <div className="flex items-center gap-[16px]">
                   <div className="flex items-center">
-                    {protocol?.reward_tokens?.map((token: any, idx: number) => (
-                      <Popover
-                        key={idx}
-                        triggerContainerClassName="inline-block"
-                        content={(
-                          <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
-                            <RewardIconContent
-                              reward={token}
-                              className=""
+                    {protocol?.reward_tokens?.map((token: any, idx: number) => {
+                      const currentRewardToken = protocol.user_reward?.find((_it: any) => _it.address.toLowerCase() === token.address.toLowerCase());
+                      return (
+                        <Popover
+                          key={idx}
+                          triggerContainerClassName="inline-block"
+                          content={(
+                            <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+                              <RewardIconContent
+                                reward={{
+                                  ...token,
+                                  amount: currentRewardToken?.amount,
+                                }}
+                                className=""
+                              />
+                            </Card>
+                          )}
+                          trigger={PopoverTrigger.Hover}
+                          placement={PopoverPlacement.BottomLeft}
+                          contentClassName="!z-[101]"
+                        >
+                          <div key={idx} className="relative">
+                            <LazyImage
+                              src={token.icon}
+                              containerClassName={clsx(
+                                "!w-[34px] !h-[34px] rounded-[50%] overflow-hidden shrink-0",
+                                idx > 0 && "ml-[-10px]"
+                              )}
+                              fallbackSrc="/assets/tokens/default_icon.png"
                             />
-                          </Card>
-                        )}
-                        trigger={PopoverTrigger.Hover}
-                        placement={PopoverPlacement.BottomLeft}
-                        contentClassName="!z-[101]"
-                      >
-                        <div key={idx} className="relative">
-                          <LazyImage
-                            src={token.icon}
-                            containerClassName={clsx(
-                              "!w-[34px] !h-[34px] rounded-[50%] overflow-hidden shrink-0",
-                              idx > 0 && "ml-[-10px]"
-                            )}
-                            fallbackSrc="/assets/tokens/default_icon.png"
-                          />
-                          <LazyImage
-                            key={index}
-                            src={protocol.protocolIcon}
-                            containerClassName={clsx(
-                              "!w-[18px] !h-[18px] rounded-[4px] border border-[#FFFDEB] overflow-hidden shrink-0 !absolute bottom-[0px] right-[-5px]"
-                            )}
-                            fallbackSrc="/assets/tokens/default_icon.png"
-                          />
-                        </div>
-                      </Popover>
-                    ))}
+                            <LazyImage
+                              key={index}
+                              src={protocol.protocolIcon}
+                              containerClassName={clsx(
+                                "!w-[18px] !h-[18px] rounded-[4px] border border-[#FFFDEB] overflow-hidden shrink-0 !absolute bottom-[0px] right-[-5px]"
+                              )}
+                              fallbackSrc="/assets/tokens/default_icon.png"
+                            />
+                          </div>
+                        </Popover>
+                      );
+                    })}
                   </div>
                   <div className="text-black font-Montserrat text-[16px] font-[600] leading-[100%] flex flex-col gap-[4px]">
                     <div className="">
@@ -93,7 +99,7 @@ const ActionUnionLeft = (props: any) => {
                         .join("-")}
                     </div>
                     <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%]">
-                      {protocol?.protocol}
+                      {/^(Hub|Bex)$/i.test(protocol?.protocol || "") ? "Bex" : protocol?.protocol}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (

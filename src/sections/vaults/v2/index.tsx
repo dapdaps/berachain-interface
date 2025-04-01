@@ -15,16 +15,18 @@ import Loading from "@/components/loading";
 import Search from "@/sections/vaults/v2/components/filter/search";
 import Feedback from "@/sections/vaults/v2/components/feedback/feedback";
 import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
+import { useRef } from 'react';
 
 const VaultsV2 = (props: any) => {
   const {} = props;
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const vaultsV2 = useVaultsV2();
   const list = useList();
 
   return (
-    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list }}>
-      <div className="relative w-full min-w-[1257px] min-h-[750px] pb-[56px]">
+    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list, containerRef }}>
+      <div ref={containerRef} className="relative w-full min-w-[1257px] min-h-[750px] pb-[56px]">
         <PageBack className="absolute left-[36px] top-[32px] text-white" />
         <div className="w-[1257px] mx-auto h-[103px] pt-[49px] flex items-end justify-end relative">
           <img
