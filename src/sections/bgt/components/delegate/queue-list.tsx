@@ -15,6 +15,7 @@ import { BGT_ABI } from "../../abi";
 import { QueueType } from "./hooks/use-delegation-queue";
 
 export default memo(function QueueList({
+  empty,
   loading,
   className,
   delegationQueue,
@@ -198,9 +199,9 @@ export default memo(function QueueList({
         ))
       }
     </div>
-  ) : (
+  ) : (empty ? empty : (
     <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium">
       No validators in queue
     </div>
-  )
+  ))
 })

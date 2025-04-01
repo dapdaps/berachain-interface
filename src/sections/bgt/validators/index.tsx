@@ -316,7 +316,7 @@ export default memo(function Validators() {
             sortDataIndex={sortBy}
             sortDataDirection={sortOrder === "desc" ? 1 : -1}
             renderEmpty={() => (
-              <BgtEmpty />
+              <BgtEmpty text="This wallet is not associated with a validator" />
             )}
             onChangeSortDataIndex={(index) => {
               handleSort(index, sortOrder === "desc" ? "asc" : "desc")
@@ -338,7 +338,7 @@ export default memo(function Validators() {
             loading={loadingDelegationQueue}
             className="grid grid-cols-2"
             delegationQueue={delegationQueue}
-          // onSuccess={ }
+            empty={<BgtEmpty text="No validators in queue" />}
           />
         )
       }

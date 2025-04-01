@@ -1,5 +1,5 @@
 const BgtEmpty = (props: any) => {
-  const { handleExplore, style, className } = props;
+  const { handleExplore, text, style, className } = props;
 
   return (
     <div className={`flex flex-col items-center ${className}`} style={style}>
@@ -34,13 +34,17 @@ const BgtEmpty = (props: any) => {
           stroke="black"
         />
       </svg>
-      <div className="mt-[8px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">No active vaults yet</div>
-      <div
-        className="cursor-pointer flex items-center justify-center w-[242px] h-[48px] rounded-[10px] border border-black bg-[#FFDC50]"
-        onClick={handleExplore}
-      >
-        <span className="text-[#3D405A] font-Montserrat text-[16px] font-semibold">Explore Vaults</span>
-      </div>
+      <div className="mt-[8px] mb-[20px] text-[#3D405A] font-Montserrat text-[14px] font-medium">{text || "No active vaults yet"}</div>
+      {
+        handleExplore && (
+          <div
+            className="cursor-pointer flex items-center justify-center w-[242px] h-[48px] rounded-[10px] border border-black bg-[#FFDC50]"
+            onClick={handleExplore}
+          >
+            <span className="text-[#3D405A] font-Montserrat text-[16px] font-semibold">Explore Vaults</span>
+          </div>
+        )
+      }
     </div>
   );
 };

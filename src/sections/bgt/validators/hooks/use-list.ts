@@ -4,15 +4,17 @@ import { post } from "@/utils/http";
 import { useEffect, useMemo, useState } from "react";
 import useDelegationQueue from "@/sections/bgt/components/delegate/hooks/use-delegation-queue";
 import _ from "lodash";
+import { useBgtStore } from "@/stores/bgt";
 
 const pageSize = 10
 export default function useList(currentTab: string) {
 
+  const store = useBgtStore()
   const { loading: loadingDelegationQueue, delegationQueue, getDelegationQueue } = useDelegationQueue();
   const { account } = useCustomAccount()
   const [loading, setLoading] = useState(false)
   const [filterList, setFilterList] = useState([])
-  const [sortDataIndex, setSortDataIndex] = useState("")
+  // const [sortDataIndex, setSortDataIndex] = useState("")
 
   const [maxPage, setMaxPage] = useState(1);
   const [page, setPage] = useState(1)
@@ -45,6 +47,9 @@ export default function useList(currentTab: string) {
       const { pagination, validators } = response?.data?.validators
       setFilterList(validators)
       setMaxPage(pagination?.totalPages)
+      store.set({
+        totalCount: pagination?.totalCount
+      })
     } catch (error) {
       setLoading(false)
       console.error(error)
@@ -114,7 +119,7 @@ export default function useList(currentTab: string) {
     filterList,
     delegationQueue,
     loadingDelegationQueue,
-    sortDataIndex,
+    // sortDataIndex,
     handleSort,
     handleSearch,
     handlePageChange,
