@@ -4,7 +4,7 @@ import SignpostBubble from '@/sections/home-earth/components/signpost-bubble';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import useIsMobile from '@/hooks/use-isMobile';
 
-const OPEN_BTC_LST = false;
+const OPEN_BTC_LST = true;
 
 const Signpost = (props: any) => {
   const { className } = props;

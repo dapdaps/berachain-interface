@@ -1,5 +1,6 @@
 'use client';
 
+import Airship from '@/components/bear-background/components/airship';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useRainyDay } from '@/hooks/use-rainy-day';
@@ -173,6 +174,7 @@ const HomeEarth = () => {
         <Follower />
         <Signpost />
         <HomeEarthTop />
+        <Airship />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
           {/*#region Cloud*/}
           <CloudCircle />
