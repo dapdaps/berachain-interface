@@ -1,10 +1,9 @@
 import clsx from 'clsx';
-import { useAirdrop } from '@/hooks/use-airdrop';
+import { useRouter } from 'next/navigation';
 
-const Airdrop = (props: any) => {
+const Vaults = (props: any) => {
+  const router = useRouter()
   const { className, disabled } = props;
-
-  const { handleVisible } = useAirdrop();
 
   return (
     <button
@@ -12,11 +11,11 @@ const Airdrop = (props: any) => {
       disabled={disabled}
       className={clsx('fixed block z-[1] left-[calc(50%_+_150px)] top-[230px] disabled:opacity-50 disabled:!cursor-not-allowed', className)}
       onClick={() => {
-        handleVisible(true);
+        router.push("/vaults")
       }}
     >
       <img
-        src="/images/home-earth/airdrop/entry.2x.png"
+        src="/images/home-earth/vaults/entry.2x.png"
         alt=""
         className="animate-shake3 w-[232px] h-[200px] pointer-events-none"
         style={{
@@ -29,4 +28,4 @@ const Airdrop = (props: any) => {
   );
 };
 
-export default Airdrop;
+export default Vaults;
