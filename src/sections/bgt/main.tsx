@@ -216,9 +216,6 @@ export default memo(function BgtMain() {
         <div className="h-full flex flex-col items-start flex-[1.3] py-[34px] px-[15px] relative">
           <div className="w-[362px] flex items-center justify-between mb-[10px] ">
             <div className="text-[#3D405A]">Top 3 Validators</div>
-            <div className="text-[#3D405A] cursor-pointer underline" onClick={() => {
-              setSelectVisible(true)
-            }}>More</div>
           </div>
           <div className="flex flex-col gap-[12px]">
             {

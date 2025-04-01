@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { DEFAULT_CHAIN_ID } from "@/configs";
 import multicallAddresses from "@/configs/contract/multicall";
 import useClickTracking from "@/hooks/use-click-tracking";
 import useIsMobile from "@/hooks/use-isMobile";
@@ -7,13 +8,13 @@ import useToast from "@/hooks/use-toast";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import { asyncFetch, post } from "@/utils/http";
 import { multicall } from "@/utils/multicall";
+import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
 import { ethers } from "ethers";
 import _ from "lodash";
 import { useRouter } from "next/navigation";
 import useCustomAccount from "./use-account";
-import { numberFormatter } from "@/utils/number-formatter";
-import { DEFAULT_CHAIN_ID } from "@/configs";
+import { useBgtStore } from "@/stores/bgt";
 
 export const BGT_ADDRESS = "0x656b95E550C07a9ffe548bd4085c72418Ceb1dba";
 export const ERC20_ABI = [
@@ -174,6 +175,7 @@ export type DataType = {
   totalSupply?: any;
 };
 export function useBGT(tab?: string) {
+  const store = useBgtStore()
   const isMobile = useIsMobile();
   const toast = useToast();
   const router = useRouter();
@@ -215,7 +217,6 @@ export function useBGT(tab?: string) {
         body: JSON.stringify({ "operationName": "GlobalData", "variables": { "chain": "BERACHAIN" }, "query": "query GlobalData($chain: GqlChain!) {\n  top3EmittingValidators: polGetValidators(\n    orderBy: bgtCapturePercentage\n    orderDirection: desc\n    first: 3\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    validators {\n      ...ApiValidatorMinimal\n      __typename\n    }\n    __typename\n  }\n  polGetGlobalInfo(chain: $chain) {\n    totalActiveBoostAmount\n    totalValidatorsCount\n    totalWhitelistedRewardVaults\n    totalActiveRewardVaults\n    totalActiveIncentives\n    totalActiveIncentivesValueUSD\n    totalDistributedBGTAmount\n    totalStakedBeraAmount\n    annualizedBGTEmission\n    annualizedBGTInflation\n    __typename\n  }\n  allValidatorsCount: polGetValidators {\n    pagination {\n      totalCount\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiValidatorMinimal on GqlValidator {\n  id\n  pubkey\n  operator\n  metadata {\n    name\n    logoURI\n    __typename\n  }\n  dynamicData {\n    activeBoostAmount\n    usersActiveBoostCount\n    queuedBoostAmount\n    usersQueuedBoostCount\n    allTimeDistributedBGTAmount\n    rewardRate\n    stakedBeraAmount\n    lastDayDistributedBGTAmount\n    activeBoostAmountRank\n    __typename\n  }\n  __typename\n}" })
       }
     );
-
     const top3EmittingValidators = result?.data?.top3EmittingValidators
     if (top3EmittingValidators?.validators) {
       top3EmittingValidators.validators.forEach((v: any) => {
@@ -239,6 +240,9 @@ export function useBGT(tab?: string) {
       });
     }
     setPageData(result?.data);
+    store.set({
+      totalCount: top3EmittingValidators?.pagination?.totalCount
+    })
   };
 
   const refresh = function () {

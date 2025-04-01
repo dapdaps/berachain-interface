@@ -1,4 +1,5 @@
 import { Column } from '@/components/flex-table';
+import { bera } from '@/configs/tokens/bera';
 import { useBGT } from '@/hooks/use-bgt';
 import useIsMobile from '@/hooks/use-isMobile';
 import useValidator from '@/hooks/use-validator';
@@ -97,7 +98,27 @@ const BgtValidator = (props: any) => {
         align: "left",
         width: "25%",
         render: (text: string, record: any) => {
-          return <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">No Incentives</div>;
+          const incentives = record?.receivingVault?.activeIncentives?.reduce((acc, curr) => {
+            if (!acc.find((incentive) => incentive?.token?.symbol === curr?.token?.symbol)) acc.push(curr);
+            return acc
+          }, [])
+          return incentives?.length > 0 ? (
+            <div className="flex items-center">
+              {
+                incentives?.map((incentive, index) => (
+                  <div className="flex items-center justify-center w-[24px] h-[24px] rounded-full ml-[-5px] overflow-hidden bg-[#1f1c19] text-[#eae8e6] text-[8px] font-medium">
+                    {
+                      bera[incentive?.token?.symbol?.toLocaleLowerCase()]?.icon ? (
+                        <img src={bera[incentive?.token?.symbol?.toLocaleLowerCase()]?.icon} alt={incentive?.token?.symbol} />
+                      ) : (
+                        <span>{incentive?.token?.symbol}</span>
+                      )
+                    }
+                  </div>
+                ))
+              }
+            </div>
+          ) : <div>No Incentives</div>;
         },
       },
     ]

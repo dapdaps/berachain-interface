@@ -24,12 +24,7 @@ export default function () {
         "https://api.berachain.0xgraph.xyz/api/public/13732ec1-5d76-4134-9f2a-33cf3958a874/subgraphs/pol-subgraph/v1.1.0/gn",
         { "operationName": "GetValidatorBlockStats", "variables": { "pubKey": firstResponse?.data?.validator?.pubkey, "first": 1 }, "query": "query GetValidatorBlockStats($pubKey: Bytes, $first: Int) {\n  blockStatsByValidators(\n    interval: day\n    first: $first\n    where: {validator_: {publicKey: $pubKey}}\n  ) {\n    blockCount\n    allTimeBlockCount\n    validator {\n      ...ValidatorMinimal\n      __typename\n    }\n    timestamp\n    __typename\n  }\n  blockStats_collection(interval: day, first: $first) {\n    blockCount\n    __typename\n  }\n}\n\nfragment ValidatorMinimal on Validator {\n  id\n  publicKey\n  activeBoostAmount: activeBoostAmount\n  __typename\n}" }
       )
-
       const blockProposingRate = Big(secondResponse?.data?.blockStatsByValidators?.[0]?.blockCount).div(secondResponse?.data?.blockStats_collection?.[0]?.blockCount).times(100).toFixed()
-      console.log('====firstResponse====', firstResponse)
-      console.log('====secondResponse====', secondResponse)
-
-      console.log('=====blockProposingRate====', blockProposingRate)
       setLoading(false)
       setPageData({ ...firstResponse?.data?.validator, blockProposingRate })
     } catch (error) {

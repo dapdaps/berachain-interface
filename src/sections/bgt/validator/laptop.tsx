@@ -9,6 +9,7 @@ export default memo(function Validator(props: any) {
   const {
     bgtData,
     pageData,
+    bgtPageData,
     handleClick,
     currentTab,
     Tabs,
