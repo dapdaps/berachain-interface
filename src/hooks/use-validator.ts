@@ -33,7 +33,6 @@ export default function () {
       const blockProposingRate = Big(
         secondResponse?.data?.blockStatsByValidators?.[0]?.blockCount
       )
-      const blockProposingRate = Big(secondResponse?.data?.blockStatsByValidators?.[0]?.blockCount).div(secondResponse?.data?.blockStats_collection?.[0]?.blockCount).times(100).toFixed()
       setLoading(false)
       setPageData({ ...firstResponse?.data?.validator, blockProposingRate })
     } catch (error) {
