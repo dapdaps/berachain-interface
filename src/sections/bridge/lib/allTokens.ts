@@ -34,34 +34,71 @@ const fikterFn = (item: Token) => {
   return !!tokenPairs[item.chainId]?.[item.symbol.toUpperCase()]
 }
 
-const allTokens: { [key: number]: Token[] } = {
-  80094: Object.values(bera).map(mapFn).filter(fikterFn),
+export const fullToken: { [key: number]: Token[] } = {
+  80094: Object.values(bera).map(mapFn),
   // 1101: Object.values(polygonZkevm).map(mapFn),
-  1: Object.values(ethereum).map(mapFn).filter(fikterFn),
-  534352: Object.values(scroll).map(mapFn).filter(fikterFn) ,
-  42161: Object.values(arbitrum).map(mapFn).filter(fikterFn),
-  43114: Object.values(avalanche).map(mapFn).filter(fikterFn),
-  8453: Object.values(base).map(mapFn).filter(fikterFn) ,
+  1: Object.values(ethereum).map(mapFn),
+  534352: Object.values(scroll).map(mapFn) ,
+  42161: Object.values(arbitrum).map(mapFn),
+  43114: Object.values(avalanche).map(mapFn),
+  8453: Object.values(base).map(mapFn) ,
   56: Object.values(bsc)
     .map(mapFn)
     .filter((item) => {
       return ['RDNT', 'JONES', 'BSC-USD', 'BTCB'].indexOf(item.symbol) === -1;
     }).filter(fikterFn),
-  100: Object.values(gnosis).map(mapFn).filter(fikterFn)  ,
-  59144: Object.values(linea).map(mapFn).filter(fikterFn),
-  169: Object.values(manta).map(mapFn).filter(fikterFn),
-  5000: Object.values(mantle).map(mapFn).filter(fikterFn),
-  1088: Object.values(metis).map(mapFn).filter(fikterFn),
-  34443: Object.values(mode).map(mapFn).filter(fikterFn),
+  100: Object.values(gnosis).map(mapFn)  ,
+  59144: Object.values(linea).map(mapFn),
+  169: Object.values(manta).map(mapFn),
+  5000: Object.values(mantle).map(mapFn),
+  1088: Object.values(metis).map(mapFn),
+  34443: Object.values(mode).map(mapFn),
   137: Object.values(polygon)
     .map(mapFn)
     .filter((item) => {
       return ['WETH'].indexOf(item.symbol) === -1;
-    }).filter(fikterFn),
-  1101: Object.values(polygonZkevm).map(mapFn).filter(fikterFn),
-  324: Object.values(zkSync).map(mapFn).filter(fikterFn),
-  10: Object.values(optimism).map(mapFn).filter(fikterFn),
-  81457: Object.values(blast).map(mapFn).filter(fikterFn)
-};
+    }),
+  1101: Object.values(polygonZkevm).map(mapFn),
+  324: Object.values(zkSync).map(mapFn),
+  10: Object.values(optimism).map(mapFn),
+  81457: Object.values(blast).map(mapFn)
+}
 
-export default allTokens;
+export const stargateToken: { [key: number]: Token[] } = {}
+
+Object.keys(fullToken).forEach((key: string) => {
+  stargateToken[Number(key)] = fullToken[Number(key)].filter(fikterFn)
+})
+
+// const allTokens: { [key: number]: Token[] } = {
+//   80094: Object.values(bera).map(mapFn).filter(fikterFn),
+//   // 1101: Object.values(polygonZkevm).map(mapFn),
+//   1: Object.values(ethereum).map(mapFn).filter(fikterFn),
+//   534352: Object.values(scroll).map(mapFn).filter(fikterFn) ,
+//   42161: Object.values(arbitrum).map(mapFn).filter(fikterFn),
+//   43114: Object.values(avalanche).map(mapFn).filter(fikterFn),
+//   8453: Object.values(base).map(mapFn).filter(fikterFn) ,
+//   56: Object.values(bsc)
+//     .map(mapFn)
+//     .filter((item) => {
+//       return ['RDNT', 'JONES', 'BSC-USD', 'BTCB'].indexOf(item.symbol) === -1;
+//     }).filter(fikterFn),
+//   100: Object.values(gnosis).map(mapFn).filter(fikterFn)  ,
+//   59144: Object.values(linea).map(mapFn).filter(fikterFn),
+//   169: Object.values(manta).map(mapFn).filter(fikterFn),
+//   5000: Object.values(mantle).map(mapFn).filter(fikterFn),
+//   1088: Object.values(metis).map(mapFn).filter(fikterFn),
+//   34443: Object.values(mode).map(mapFn).filter(fikterFn),
+//   137: Object.values(polygon)
+//     .map(mapFn)
+//     .filter((item) => {
+//       return ['WETH'].indexOf(item.symbol) === -1;
+//     }).filter(fikterFn),
+//   1101: Object.values(polygonZkevm).map(mapFn).filter(fikterFn),
+//   324: Object.values(zkSync).map(mapFn).filter(fikterFn),
+//   10: Object.values(optimism).map(mapFn).filter(fikterFn),
+//   81457: Object.values(blast).map(mapFn).filter(fikterFn)
+// };
+
+
+
