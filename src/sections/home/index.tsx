@@ -14,14 +14,10 @@ import DappsSvg from "@public/images/background/dapps.svg";
 import DashboardSvg from "@public/images/background/dashboard.svg";
 import EarnSvg from "@public/images/background/earn.svg";
 import MarketplaceSvg from "@public/images/background/marketplace.svg";
-import CaveSvg from "@public/images/cave/cave.svg";
 import clsx from "clsx";
 import { memo, useContext } from "react";
 import BeraciagaModal from "./beraciaga-modal";
 import MobileHome from "./mobile";
-import VaultsEnterance from "./vaults-enterance";
-import AirdropModal from '@/components/airdrop/modal';
-import Airdrop from '@/components/airdrop';
 
 const Navigation = function () {
   const router = useProgressRouter();
@@ -216,8 +212,6 @@ export default memo(function Home() {
     <BearBackground type="home">
       <Navigation />
       <BeraciagaModal />
-      <AirdropModal />
-      <Airdrop />
       {currentSceneInfoValid && <HomePrompt />}
     </BearBackground>
   );
