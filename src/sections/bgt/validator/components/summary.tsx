@@ -47,10 +47,10 @@ const Summary = (props: any) => {
           {
             pageData ? (
               <div className="flex items-center gap-[6px]">
-                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">0</span>
-                <div className="w-[20px] h-[20px]">
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
+                {/* <div className="w-[20px] h-[20px]">
                   <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />
-                </div>
+                </div> */}
               </div>
             ) : (
               <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
