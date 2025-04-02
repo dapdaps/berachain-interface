@@ -103,11 +103,11 @@ const TopCard = (props: any) => {
           disabled={listLoading}
           className="h-[36px] px-[19px] disabled:opacity-30 disabled:!cursor-not-allowed flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-normal font-medium leading-[100%]"
           data-bp={
-            type === 1
+            type === 0
               ? isMobile
                 ? "1022-002-004"
                 : "1022-001-005"
-              : type === 2
+              : type === 1
               ? isMobile
                 ? "1022-002-005"
                 : "1022-001-006"
