@@ -10,7 +10,7 @@ import {
   WithdrawButton,
   Yours
 } from '@/sections/vaults/v2/components/vaults-table/columns';
-import { OrderKeys } from "@/sections/vaults/v2/config";
+import { ORDER_DIRECTION, OrderKeys } from '@/sections/vaults/v2/config';
 import Pagination from "@/sections/vaults/v2/components/pagination";
 
 const VaultsTable = (props: any) => {
@@ -19,8 +19,7 @@ const VaultsTable = (props: any) => {
   const {
     listDataGroupByPool,
     listLoading,
-    listOrderDirection,
-    listOrderKey,
+    listOrderKeys,
     toggleListOrder
   } = useVaultsV2Context();
 
@@ -87,10 +86,34 @@ const VaultsTable = (props: any) => {
         );
       }
     }
-  ].map((c) => ({
-    ...c,
-    sort: Object.keys(OrderKeys).some((o) => o === c.dataIndex)
-  }));
+  ].map((c) => {
+    return {
+      ...c,
+      renderTitle: (column: any, columnIdx: any) => {
+        const isCustomSort = Object.keys(OrderKeys).some((o) => o === column.dataIndex);
+        if (isCustomSort) {
+          const currentOrder = listOrderKeys.find((k) => k.value === column.dataIndex);
+          return (
+            <div className="flex items-center gap-[5px]">
+              {column.title}
+              <button
+                type="button"
+                className={clsx(
+                  "bg-[url('/images/vaults/v2/triangle.svg')] bg-no-repeat bg-center bg-contain w-[14px] h-[14px] transition-all duration-300",
+                  currentOrder?.direction === ORDER_DIRECTION.ASC ? "rotate-180" : "",
+                  currentOrder?.value === listOrderKeys[0]?.value ? "opacity-100" : "opacity-50",
+                )}
+                onClick={() => {
+                  toggleListOrder(column.dataIndex);
+                }}
+              />
+            </div>
+          );
+        }
+        return column.title;
+      }
+    };
+  });
 
   return (
     <div
@@ -103,13 +126,10 @@ const VaultsTable = (props: any) => {
         columns={columns}
         list={listDataGroupByPool}
         loading={listLoading}
-        sortDataIndex={listOrderKey}
-        sortDataDirection={listOrderDirection === "asc" ? -1 : 1}
         wrapperClass="h-full"
         headClass="px-[11px] py-[8px] text-[14px] font-[500] text-[#3D405A]"
         bodyClass="text-[16px] font-[500] !py-[13px] !pl-[11px] !pr-[14px]"
         bodyClassName=""
-        onChangeSortDataIndex={toggleListOrder}
         pagination={<Pagination />}
       />
     </div>

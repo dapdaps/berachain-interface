@@ -37,21 +37,31 @@ export enum ORDER_DIRECTION {
   DESC = "desc"
 }
 
-export const OrderKeys: Record<
-  ORDER_KEYS,
-  { label: string; value: ORDER_KEYS }
-> = {
+export interface Order {
+  label: string;
+  sort: number;
+  value: ORDER_KEYS;
+  direction: ORDER_DIRECTION;
+}
+
+export const OrderKeys: Record<ORDER_KEYS, Order> = {
   [ORDER_KEYS.TVL]: {
     label: "TVL",
-    value: ORDER_KEYS.TVL
+    sort: 2,
+    value: ORDER_KEYS.TVL,
+    direction: ORDER_DIRECTION.DESC,
   },
   [ORDER_KEYS.APY]: {
     label: "APR",
-    value: ORDER_KEYS.APY
+    sort: 3,
+    value: ORDER_KEYS.APY,
+    direction: ORDER_DIRECTION.DESC,
   },
   [ORDER_KEYS.YOURS]: {
     label: "Yours",
-    value: ORDER_KEYS.YOURS
+    sort: 1,
+    value: ORDER_KEYS.YOURS,
+    direction: ORDER_DIRECTION.DESC,
   }
 };
 
