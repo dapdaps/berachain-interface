@@ -11,7 +11,7 @@ export const report = ({
   code: string;
   url: string;
 }) => {
-  post("/track", { address, code, url });
+  post("/api/track", { address, code, url });
 };
 
 const findBP = (target: any, cb: any) => {
