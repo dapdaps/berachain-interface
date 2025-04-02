@@ -132,7 +132,7 @@ export default function Swap({
       <Header
         showSetting={showSetting}
         style={{ justifyContent: "space-between" }}
-        title={from === "marketplace" ? `GET ${outputCurrency.symbol}` : ""}
+        title={from === "marketplace" ? `GET ${outputCurrency?.symbol}` : ""}
       />
       <div className="md:max-h-[calc(100dvh-210px)] md:overflow-y-auto">
         <TokenAmount
@@ -156,7 +156,7 @@ export default function Swap({
         />
         <ExchangeIcon
           onClick={() => {
-            if (loading) return;
+            if (loading || outputCurrencyReadonly) return;
             const [_inputCurrency, _outputCurrency] = [
               outputCurrency,
               inputCurrency
