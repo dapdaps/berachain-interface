@@ -1,9 +1,17 @@
-import { useDebounceFn } from 'ahooks';
-import useAccount from './use-account';
-import { post } from '@/utils/http';
+import { useDebounceFn } from "ahooks";
+import useAccount from "./use-account";
+import { post } from "@/utils/http";
 
-export const report = ({ address, code, url }: { address: string; code: string; url: string; }) => {
-  post('/track', { address, code, url });
+export const report = ({
+  address,
+  code,
+  url
+}: {
+  address: string;
+  code: string;
+  url: string;
+}) => {
+  post("/track", { address, code, url });
 };
 
 const findBP = (target: any, cb: any) => {
@@ -24,33 +32,47 @@ const findBP = (target: any, cb: any) => {
 
 export default function useClickTracking() {
   const { account } = useAccount();
+
+  const handleReportWithoutDebounce = (code: string) => {
+    if (!code) return;
+    report({
+      address: account || "",
+      code,
+      url: window.location.href
+    });
+  };
   const { run: handleReport } = useDebounceFn(
     (code: string) => {
-      console.log('%cfollowed: %s-%s', 'background:#FFF5A9;color:#000;', account || '[none]', code || '[none]');
-      if (!code) return;
-      report({
-        address: account || '',
-        code,
-        url: window.location.href,
-      });
+      console.log(
+        "%cfollowed: %s-%s",
+        "background:#FFF5A9;color:#000;",
+        account || "[none]",
+        code || "[none]"
+      );
+      handleReportWithoutDebounce(code);
     },
     {
-      wait: 500,
-    },
+      wait: 500
+    }
   );
 
   const { run: handleReportNoCode } = useDebounceFn(
     () => {
-      console.log('%cfollowed: %s-%s', 'background:#FFF5A9;color:#000;', account || '[none]', window.location.href || '[none]');
+      console.log(
+        "%cfollowed: %s-%s",
+        "background:#FFF5A9;color:#000;",
+        account || "[none]",
+        window.location.href || "[none]"
+      );
       report({
-        address: account || '',
-        code: '',
-        url: window.location.href,
+        address: account || "",
+        code: "",
+        url: window.location.href
       });
     },
     {
-      wait: 500,
-    },
+      wait: 500
+    }
   );
 
   const handleTrack = (ev: any) => {
@@ -64,5 +86,6 @@ export default function useClickTracking() {
     handleTrack,
     handleReport,
     handleReportNoCode,
+    handleReportWithoutDebounce
   };
 }

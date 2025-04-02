@@ -14,7 +14,7 @@ const Signpost = (props: any) => {
   const { className } = props;
   const router = useRouter();
   const isMobile = useIsMobile();
-  const { handleReport } = useClickTracking();
+  const { handleReportWithoutDebounce } = useClickTracking();
   return (
     <div
       className={clsx(
@@ -60,11 +60,11 @@ const Signpost = (props: any) => {
               type="button"
               className="mt-[16px] h-[50px] flex-shrink-0 w-full rounded-[10px] border border-[#000] bg-[#FFDC50] shadow-[6px_6px_0px_rgba(0,0,0,0.25)] text-[#000] text-center font-Montserrat text-[16px] font-bold leading-normal"
               onClick={() => {
-                handleReport(isMobile ? "1022-002-002" : "1022-001-004");
+                handleReportWithoutDebounce(
+                  isMobile ? "1022-002-002" : "1022-001-004"
+                );
 
-                setTimeout(() => {
-                  router.push("/vaults");
-                }, 600);
+                router.push("/vaults");
               }}
             >
               Enter
