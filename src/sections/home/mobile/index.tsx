@@ -8,11 +8,11 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import VaultsEnterance from "../vaults-enterance";
 import EntryCard from "@/sections/home/mobile/entry-card";
-import VaultsEntrance from '@/sections/vaults/v2/entrance';
-import Signpost from '@/sections/home-earth/components/signpost';
-import BeraPrice from '@/sections/home-earth/components/bera-price';
+import VaultsEntrance from "@/sections/vaults/v2/entrance";
+import Signpost from "@/sections/home-earth/components/signpost";
+import BeraPrice from "@/sections/home-earth/components/bera-price";
 import { HomeEarthContext } from "@/sections/home-earth/context";
-import { useRainyDay } from '@/hooks/use-rainy-day';
+import { useRainyDay } from "@/hooks/use-rainy-day";
 
 const Home = () => {
   const router = useProgressRouter();
@@ -119,7 +119,7 @@ const Home = () => {
                 onClick={() => {
                   window.open(
                     process.env.NEXT_PUBLIC_TG_ADDRESS ||
-                    "https://t.me/beraciaga_official_bot/Beraciaga"
+                      "https://t.me/beraciaga_official_bot/Beraciaga"
                   );
                 }}
               >
@@ -381,7 +381,7 @@ const Home = () => {
                   tapSound.play?.();
                   // handleReport('1015-007');
                 }}
-                data-bp="1015-007"
+                data-bp="1022-002-001"
                 // style={{ clipPath: `path("M188.949 14.0009C184.382 -1.52529 152.449 9.00029 112.949 14.0014C92.9491 16.5336 101.949 57.0024 95.4491 81.5C77.4491 89 65.449 103.502 69.949 125.502C72.5053 138 158.949 129.502 224.449 125.502C276.849 122.302 267.116 104.502 260.449 95.5024C263.449 87.0024 268.549 76.6024 270.949 57.0024C273.349 37.4024 243.449 34.0024 215.949 34.0024C205.949 21.501 193.949 30.9995 188.949 14.0009Z")` }}
               >
                 <motion.img
@@ -408,7 +408,7 @@ const Home = () => {
                 </EntryCard>
               </motion.div>
               <motion.div
-                className='relative w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]'
+                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]"
                 // whileTap="tap"
                 onClick={() => {
                   // router.push('/cave');
@@ -426,13 +426,17 @@ const Home = () => {
                   transition={EntryAnimation}
                 />
                 <motion.img
-                  src='/images/mobile/home/text-cave.png'
-                  className='absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw] opacity-50'
-                  alt=''
+                  src="/images/mobile/home/text-cave.png"
+                  className="absolute top-0 left-[21.025vw] w-[32.679vw] h-[14.407vw] opacity-50"
+                  alt=""
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
                 />
-                <img src="/images/mobile/icon-lock.svg" alt="" className="w-[52px] h-[53px] absolute left-1/2 -translate-x-1/2 top-1/2 translate-y-[calc(-50%_-_26px)]" />
+                <img
+                  src="/images/mobile/icon-lock.svg"
+                  alt=""
+                  className="w-[52px] h-[53px] absolute left-1/2 -translate-x-1/2 top-1/2 translate-y-[calc(-50%_-_26px)]"
+                />
               </motion.div>
               <div className="absolute bottom-[40px] w-[113px] h-[176px]">
                 <Signpost className="scale-[0.6348] origin-bottom-left z-[2]" />

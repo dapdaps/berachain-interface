@@ -192,6 +192,7 @@ const Navigation = (props: any) => {
                 onHoverStart={() => handleEntryHover(item)}
                 onHoverEnd={() => handleEntryLeave(item)}
                 onClick={() => handleNavigation(item)}
+                data-bp={item.bp}
               />
               <AnimatePresence mode="wait">
                 {hoverIndex?.name === item.name && (
@@ -284,7 +285,8 @@ export const ENTRIES: any = [
     disabled: false,
     icon: "/images/home-earth/entry-vaults.svg",
     signpost: "/images/home-earth/signpost-vaults.svg",
-    path: "/vaults"
+    path: "/vaults",
+    bp: "1022-001-003"
   },
 
   {

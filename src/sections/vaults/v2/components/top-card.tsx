@@ -3,10 +3,11 @@ import LazyImage from "@/components/layz-image";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import { numberFormatter } from "@/utils/number-formatter";
 import { ACTION_TYPE } from "../config";
+import useIsMobile from "@/hooks/use-isMobile";
 
 const TopCard = (props: any) => {
   const { className, type, pool } = props;
-
+  const isMobile = useIsMobile();
   const currType = cardType[type as CardType] ?? cardType[CardType.TopAPR];
 
   const { toggleStrategyVisible, toggleActionVisible, listLoading } =
@@ -73,25 +74,25 @@ const TopCard = (props: any) => {
       <div className="flex justify-between items-center gap-[10px] mt-[24px]">
         <div className="flex items-center gap-[2px]">
           <div className="flex items-center">
-            {pool?.list?.filter((protocol: any) => {
-              if (type === CardType.HotStrategy) {
-                return /^(Hub|Bex)$/i.test(protocol.project);
-              }
-              return true;
-            })?.map(
-              (protocol: any, idx: number) => (
+            {pool?.list
+              ?.filter((protocol: any) => {
+                if (type === CardType.HotStrategy) {
+                  return /^(Hub|Bex)$/i.test(protocol.project);
+                }
+                return true;
+              })
+              ?.map((protocol: any, idx: number) => (
                 <LazyImage
                   src={protocol.protocolIcon}
                   width={36}
                   height={36}
                   containerClassName={clsx(
                     "shrink-0 overflow-hidden rounded-[10px] border border-[#FFFDEB]",
-                    idx !== 0 && "ml-[-10px]",
+                    idx !== 0 && "ml-[-10px]"
                   )}
                   fallbackSrc="/assets/tokens/default_icon.png"
                 />
-              )
-            )}
+              ))}
           </div>
           <div className="text-[#000] font-Montserrat text-[16px] not-italic font-medium leading-[100%]">
             {pool?.tokens?.map((token: any) => token.symbol)?.join("-") || "-"}
@@ -101,6 +102,19 @@ const TopCard = (props: any) => {
           type="button"
           disabled={listLoading}
           className="h-[36px] px-[19px] disabled:opacity-30 disabled:!cursor-not-allowed flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-normal font-medium leading-[100%]"
+          data-bp={
+            type === 1
+              ? isMobile
+                ? "1022-002-004"
+                : "1022-001-005"
+              : type === 2
+              ? isMobile
+                ? "1022-002-005"
+                : "1022-001-006"
+              : isMobile
+              ? "1022-002-006"
+              : "1022-001-007"
+          }
           onClick={() => {
             if (type === 2) {
               toggleStrategyVisible(true);
