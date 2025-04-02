@@ -8,6 +8,7 @@ import useYourRank from "@/sections/bintent-trading-challenge/hooks/use-your-ran
 import { useBintent } from "@/stores/bintent"
 import { numberFormatter } from "@/utils/number-formatter"
 import { formatLongText } from "@/utils/utils"
+import Big from "big.js"
 import { memo, useEffect, useState } from "react"
 
 export default memo(function Rank() {
@@ -45,12 +46,23 @@ export default memo(function Rank() {
     align: 'right',
     width: '20%',
     render: (text, record, index) => {
-      return (
-        <div>{numberFormatter(record?.[currentTab], 2, true, { isShort: true, prefix: currentTab === "volume" ? "$" : "" })}</div>
+      return currentTab === "volume" ? (
+        <div className="flex items-center justify-end gap-[8px]">
+          <span>
+            {numberFormatter(record?.actual_volume, 2, true, { isShort: true, prefix: "$" })}
+          </span>
+          <span className="text-[#12AAFF] text-[12px]">
+            {numberFormatter(Big(record?.volume).minus(record?.actual_volume).toFixed(), 2, true, { isShort: true, prefix: "+$" })}
+          </span>
+        </div>
+      ) : (
+        <div>
+          {numberFormatter(record?.transactions, 2, true, { isShort: true })}
+        </div>
       )
     }
   },]
-  
+
 
   useEffect(() => {
     setCurrentTab(store?.showRankModal ? "volume" : "")

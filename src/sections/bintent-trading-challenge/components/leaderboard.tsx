@@ -7,6 +7,7 @@ import { formatLongText } from "@/utils/utils"
 import { memo, useState } from "react"
 import useRanks from "../hooks/use-ranks"
 import useYourRank from "../hooks/use-your-rank"
+import Big from "big.js"
 
 export default memo(function Leaderboard() {
   const { account } = useCustomAccount()
@@ -42,8 +43,19 @@ export default memo(function Leaderboard() {
     align: 'right',
     width: '15%',
     render: (text, record, index) => {
-      return (
-        <div>{numberFormatter(record?.[currentTab], 2, true, { isShort: true, prefix: currentTab === "volume" ? "$" : "" })}</div>
+      return currentTab === "volume" ? (
+        <div className="flex items-center justify-end gap-[8px]">
+          <span>
+            {numberFormatter(record?.actual_volume, 2, true, { isShort: true, prefix: "$" })}
+          </span>
+          <span className="text-[#12AAFF] text-[12px]">
+            {numberFormatter(Big(record?.volume).minus(record?.actual_volume).toFixed(), 2, true, { isShort: true, prefix: "+$" })}
+          </span>
+        </div>
+      ) : (
+        <div>
+          {numberFormatter(record?.transactions, 2, true, { isShort: true })}
+        </div>
       )
     }
   },]
