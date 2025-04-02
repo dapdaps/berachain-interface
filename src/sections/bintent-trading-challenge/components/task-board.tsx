@@ -136,7 +136,7 @@ export default memo(function TaskBoard() {
                 <div
                   className="opacity-50 w-[121px] h-[36px] flex items-center justify-center rounded-[10px] border border-black bg-[#FFDC50]"
                 ><Loading size={14} /></div>
-              ) : categoryVerify["boost1.2"] ? (
+              ) : categoryVerify["boost1.1"] ? (
                 <Radio checked />
               ) : (
                 <div
