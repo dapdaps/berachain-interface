@@ -1,11 +1,12 @@
-import useCustomAccount from "@/hooks/use-account";
-import { useState, useEffect } from 'react';
-import { get, post } from '@/utils/http';
 import { IYourRank, TCategory } from "@/types";
+import { get } from '@/utils/http';
+import { useEffect, useState } from 'react';
+import useAccount from "./use-account";
+import useNearWallet from "./use-near-wallet";
 
 
 export default function useYourRank(category: TCategory) {
-  const { account } = useCustomAccount()
+  const { account } = useNearWallet()
   const [yourRank, setYourRank] = useState<IYourRank>();
   const [loading, setLoading] = useState(false)
 
@@ -25,6 +26,8 @@ export default function useYourRank(category: TCategory) {
   useEffect(() => {
     account && category && queryYourRank()
   }, [category, account])
+
+
   return {
     loading,
     yourRank,

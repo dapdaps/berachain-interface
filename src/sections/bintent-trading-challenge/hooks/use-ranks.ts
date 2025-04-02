@@ -1,10 +1,8 @@
-import useCustomAccount from "@/hooks/use-account";
 import { IRank, TCategory } from "@/types";
 import { get } from '@/utils/http';
 import { useEffect, useState } from 'react';
 
 export default function useRanks(category: TCategory) {
-  const { account } = useCustomAccount()
   const [ranks, setRanks] = useState<IRank[]>([]);
   const [loading, setLoading] = useState(false);
 
