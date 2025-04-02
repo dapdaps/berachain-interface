@@ -11,7 +11,7 @@ export default function useClaim() {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction("vaults");
   const {
     currentProtocol,
     currentReward,
