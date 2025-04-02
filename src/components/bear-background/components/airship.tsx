@@ -43,7 +43,7 @@ export default memo(function AirShip() {
       animate={controls}
     >
       <img src="/images/campaign/airship.svg" alt="airship" />
-      <div className="absolute w-[186px] top-[18px] -right-[169px]">
+      <div className="absolute w-[186px] top-[17px] -right-[166px]">
         <img src="/images/campaign/flag.gif" alt="flag" />
       </div>
     </motion.div>

@@ -14,7 +14,7 @@ export default memo(function TaskBoard() {
   }
 
   return (
-    <div className="m-[182px_auto_69px] relative w-[720px] h-[1237px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
+    <div className="m-[182px_auto_69px] relative w-[720px] h-[1176px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
       <div className="absolute left-1/2 -top-[39px] -translate-x-1/2 w-[379px] h-[77px] bg-[url('/images/campaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb text-[32px] uppercase">
         Task board
       </div>
@@ -74,7 +74,7 @@ export default memo(function TaskBoard() {
             <img src="/images/campaign/bookmark_3.svg" alt="bookmark_3" />
           </div>
           <div className="p-[12px_12px_8px_20px] flex items-center justify-between">
-            <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Execute transactions on the first day </span>
+            <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Earn multipliers through consecutive check-ins </span>
             <div className="cursor-pointer w-[121px] h-[36px] flex items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[14px] font-semibold" onClick={handleTradeNow}>Trade Now</div>
           </div>
 
