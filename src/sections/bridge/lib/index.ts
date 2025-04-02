@@ -5,11 +5,13 @@ import { approve } from './util/approve'
 import { getIcon, getAllToken, getChainScan, getBridgeMsg } from './util/index'
 import { getQuoteInfo, setQuote } from './util/routerController'
 import { getQuote as getStargateRoute, execute as executeStargate, getStatus as getStargateStatus } from './bridges/stargate'
+import { getQuote as getJumperRoute, execute as executeJumper, getStatus as getJumperStatus } from './bridges/jumper'
 
 import { ExecuteRequest, QuoteRequest, QuoteResponse, StatusParams, StatusRes } from './type'
 
 const executeTypes: any = {
   executeStargate,
+  executeJumper,
 }
 
 
@@ -53,7 +55,10 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
       const key = engine[i]
       switch (key) {
         case 'stargate':
-          quoteP.push(getStargateRoute(quoteRequest, signer))
+          quoteP.push(getStargateRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('stargate:', e)))
+          break;
+        case 'jumper':
+          quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))
           break;
       }
     }
@@ -93,5 +98,9 @@ export async function getStatus(params: StatusParams, engine: string, signer: Si
   const _engine = engine.toLocaleLowerCase()
   if (_engine === 'stargate') {
     return getStargateStatus(params)
+  }
+
+  if (_engine === 'jumper') {
+    return getJumperStatus(params)
   }
 }

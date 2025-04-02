@@ -12,7 +12,8 @@ import { tokenPairs } from '../Hooks/Stargate/config';
 
 import type { Chain, Token } from '@/types';
 import ChainAndTokenSelector from '../ChainAndTokenSelector';
-
+import { useParams } from 'next/navigation';
+import useBridgeType from '../Hooks/useBridgeType';
 
 interface Props {
   chain: Chain;
@@ -50,6 +51,8 @@ export default function TokenAmout({
   )
   const prices: any = usePriceStore(store => store.price);
 
+  const { bridgeType } = useBridgeType()
+
   return (
     <div className='border border-[#000] rounded-[12px] p-[14px] bg-white'>
       <div className='flex items-center justify-between gap-[10px]'>
@@ -57,9 +60,10 @@ export default function TokenAmout({
           onClick={() => {
             if (comingSoon) return;
 
-            if (isDest && limitBera) {
+            if (isDest && limitBera && bridgeType === 'stargate') {
               return;
             }
+            
             setTokenSelectorShow(true);
           }}
           className='border cursor-pointer flex items-center justify-between border-[#000] rounded-[8px] bg-[#FFFDEB] w-[176px] h-[46px] px-[7px]'

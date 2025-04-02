@@ -7,12 +7,15 @@ export default function Routes({ routes, fromChain, toToken, selectedRoute, setS
             routes.map((route: any, index) => (
                 <Route
                     checked={selectedRoute === route}
-                    key={route.bridgeName}
+                    key={route.bridgeType}
                     name={route.bridgeName}
                     toToken={toToken}
                     fee={route.fee}
                     receiveAmount={route.receiveAmount}
                     fromChain={fromChain} 
+                    icon={route.icon}
+                    duration={route.duration}
+                    feeType={route.feeType}
                     onChange={() => {
                         setSelectedRoute(route)
                     }}

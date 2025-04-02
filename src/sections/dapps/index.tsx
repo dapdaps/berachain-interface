@@ -184,11 +184,11 @@ const SECOND_LIST = [
         )
       },
       {
-        icon: "/images/dapps/jumper.png",
-        name: "Jumper",
-        label: "Jumper",
+        icon: "/images/dapps/lifi.png",
+        name: "lifi",
+        label: "Li.Fi",
         type: "bridge",
-        disabled: true,
+        disabled: false,
         className: ""
       }
     ]
@@ -315,11 +315,11 @@ const ALL_LIST = [
         )
       },
       {
-        icon: "/images/dapps/jumper.png",
-        name: "Jumper",
-        label: "Jumper",
+        icon: "/images/dapps/lifi.png",
+        name: "lifi",
+        label: "Li.Fi",
         type: "bridge",
-        disabled: true,
+        disabled: false,
         className: "",
         attachedIcon: (
           <div className="absolute left-[44%] bottom-[-16%] w-[17px] h-[32px] rounded-[12px] border-[2px] border-black bg-[#906925]" />

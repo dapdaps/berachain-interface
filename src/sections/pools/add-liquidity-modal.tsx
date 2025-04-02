@@ -4,17 +4,21 @@ import { useRef, forwardRef, useState, useEffect, useMemo } from "react";
 import BasicModal from "./components/modal";
 import Bex from "./bex/add-liquidity";
 import Kodiak from "./kodiak/add-liquidity";
+import BurrBear from "./burrbear/add-liquidity";
 import useIsMobile from "@/hooks/use-isMobile";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
   if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
+  if (dex?.toLowerCase() === "burrbear")
+    return <BurrBear {...rest} ref={ref} />;
 });
 
 export default function AddLiquidityModal({
   dex,
   open,
   onClose,
+  onSuccess,
   data,
   ...rest
 }: any) {
@@ -30,21 +34,19 @@ export default function AddLiquidityModal({
     if (isMobile && data.version === "v3") return "Set Price Range";
     if (data.token0 && data.token1)
       return `Provide ${data.token0.symbol}-${data.token1.symbol}`;
-    return `Provide ${data.symbol}`;
-  }, [isMobile, data, data]);
+    return `Provide ${data.symbol || data.token.symbol}`;
+  }, [isMobile, data]);
 
   const params = useMemo(() => {
     if (dex?.toLowerCase() === "bex") return { data };
     return {
       ...data,
-      defaultToken0: data.token0,
-      defaultToken1: data.token1,
+      defaultToken0: data.token0 || data.tokens?.[0],
+      defaultToken1: data.token1 || data.tokens?.[1],
       defaultFee: data.fee,
-      version: data.version,
+      version: data.version
     };
   }, [data, dex]);
-
-  console.log(dex, '<---dex')
 
   return (
     <BasicModal
@@ -65,6 +67,7 @@ export default function AddLiquidityModal({
           ref={panelRef}
           onSuccess={() => {
             onClose();
+            onSuccess?.();
           }}
           {...params}
           {...rest}

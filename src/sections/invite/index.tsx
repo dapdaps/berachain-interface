@@ -173,6 +173,11 @@ const brands = [
     logo: "/images/invite/cave.png",
     displayName: "CAVE",
   },
+  {
+    name: "137labs",
+    logo: "/images/invite/137labs.png",
+    displayName: "137Labs",
+  }
 ];
 
 const Content = () => {

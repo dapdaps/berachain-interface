@@ -10,21 +10,24 @@ import Confirm from './Confrim';
 import PageBack from '@/components/back';
 import useIsMobile from '@/hooks/use-isMobile';
 import MenuButton from '@/components/mobile/menuButton';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import History from './History';
 // import useQuote from './Hooks/Stargate/useQoute';
 // import useBridge from './Hooks/Stargate/useBridge';
 import Big from 'big.js';
 import { useAccount, useSwitchChain } from "wagmi";
 import { formatLongText } from '@/utils/utils';
-import allTokens from './lib/allTokens'
+import useAllToken from './Hooks/useAllToken';
 import { tokenPairs } from './lib/bridges/stargate/config';
 import useAddAction from '@/hooks/use-add-action';
 import { useBridgeHistory } from '@/stores/useBridgeHistory';
 import useBridge from './Hooks/useBridge';
 
 import type { Token, Chain } from '@/types';
-
+import type { engineType } from './lib/type';
+import useBridgeType from './Hooks/useBridgeType';
+import clsx from 'clsx';
+import { useActivityStore } from '@/stores/useActivityStore';
 const DappHeader: React.FC = () => {
   const { dapp: dappName } = useParams();
   const isMobile = useIsMobile();
@@ -37,7 +40,7 @@ const DappHeader: React.FC = () => {
     return (
       <div className="flex gap-2 my-[30px] w-full justify-center items-center">
         <img
-          src={`/images/dapps/${(dappName as string).toLowerCase()}.svg`}
+          src={`/images/dapps/${(dappName as string).toLowerCase()}.png`}
           alt={dappName as string}
           className="w-9 h-9"
         />
@@ -66,25 +69,23 @@ const DappHeader: React.FC = () => {
 const ComingSoon = false;
 const chainList = Object.values(chains).filter((chain) => [1, 80094, 42161, 8453, 56, 43114, 59144, 5000, 10, 137, 534352].includes(chain.chainId));
 
+
 export default function Bridge() {
+  const { dapp: dappName } = useParams();
+  const searchParams = useSearchParams();
   const [confirmShow, setConfirmShow] = useState(false);
-  // const [fromChain, setFromChain] = useState<Chain>(chains[1])
-  // const [fromToken, setFromToken] = useState<Token>(allTokens[1][0])
-  // const [toChain, setToChain] = useState<Chain>(chains[80094])
-  // const [toToken, setToToken] = useState<Token>(allTokens[80094][2])
-  // const [amount, setAmount] = useState<string>('')
   const [historyShow, setHistoryShow] = useState(false)
   const [activeTab, setActiveTab] = useState('pending')
   const isMobile = useIsMobile()
   const { switchChain } = useSwitchChain();
   const { addAction } = useAddAction("bridge");
   const { address, chainId } = useAccount()
-  const { list, set }: any = useBridgeHistory()
   const [limitBera, setLimitBera] = useState(0)
+  const router = useRouter()
+  const { bridgeType } = useBridgeType()
+  const allTokens = useAllToken()
 
-  
-
-  // const inputValue = useDebounce(amount, { wait: 500 });
+  const { isDefaultTheme } = useActivityStore()
 
   const {
     fromChain,
@@ -115,10 +116,11 @@ export default function Bridge() {
     derection: 1,
     account: address,
     defaultBridgeText: 'Bridge',
+    tool: bridgeType
   })
 
   const _allTokens = useMemo(() => {
-    if (!fromToken) {
+    if (!fromToken || bridgeType !== 'stargate') {
       return allTokens
     }
 
@@ -131,12 +133,16 @@ export default function Bridge() {
         }
         return tokenPairs[fromChain.chainId][fromToken.symbol.toUpperCase()] === symbol
       })
-    }); 
+    });
 
     return newAllTokens;
-  }, [fromToken, fromChain])
+  }, [fromToken, fromChain, bridgeType])
 
   useEffect(() => {
+    if (bridgeType !== 'stargate') {
+      return;
+    }
+
     if (!fromToken) {
       setToToken(undefined)
       return
@@ -152,17 +158,29 @@ export default function Bridge() {
     } else {
       setToToken(undefined)
     }
-  }, [fromChain, fromToken])
+  }, [fromChain, fromToken, bridgeType, allTokens])
 
   useEffect(() => {
-    setFromToken(allTokens[1][0])
-    setToToken(allTokens[80094][2])
-  }, [])
+    const fromToken = searchParams.get('fromToken')
+    const toToken = searchParams.get('toToken')
+    const fromTokens = allTokens[1]
+    const toTokens = allTokens[80094]
+
+    if (fromToken && toToken) {
+      setFromToken(fromTokens.find((token: Token) => token.symbol.toUpperCase() === fromToken.toUpperCase()))
+      setToToken(toTokens.find((token: Token) => token.symbol.toUpperCase() === toToken.toUpperCase()))
+    } else {
+      const fromToken = fromTokens.find((token: Token) => token.symbol.toUpperCase() === 'ETH')
+      const toToken = toTokens.find((token: Token) => token.symbol.toUpperCase() === 'WETH')
+      setFromToken(fromToken)
+      setToToken(toToken)
+    }
+  }, [searchParams, allTokens])
 
   return (
     <>
       <div className='h-full overflow-auto'>
-        {!isMobile ? <PageBack  className="ml-[30px] absolute top-[20px] left-[30px] z-10" /> : null} 
+        {!isMobile ? <PageBack className="ml-[30px] absolute top-[20px] left-[30px] z-10" /> : null}
         {isMobile ? null : <div className='absolute left-[36px] md:left-[15px] top-[31px] md:top-[14px] z-[12]' />}
         <div className='lg:w-[520px] md:w-[92.307vw] m-auto relative z-10 '>
           <DappHeader />
@@ -294,8 +312,40 @@ export default function Bridge() {
             }}
           />
         </div>
+        <div
+          className={clsx(
+            'absolute z-50  left-[50%] translate-x-[400px] w-[164px] h-[191px]',
+            isDefaultTheme() ? 'bottom-[213px]' : 'bottom-[14vw]'
+          )}
+        >
+          <img src="/images/background/bridge-type-bg.svg" className='w-[164px]' />
+          <div className='absolute top-[22px] right-[12px]'>
+            {bridgeType === 'stargate' ? checkIcon : unCheckIcon}
+          </div>
+          <div className='absolute top-[90px] right-[32px]'>
+            {bridgeType === 'jumper' ? checkIcon : unCheckIcon}
+          </div>
+
+          <div className='absolute w-[164px] h-[65px] cursor-pointer  left-0 top-0' onClick={() => {
+            router.push('/bridge/stargate')
+          }}></div>
+
+          <div className='absolute w-[164px] h-[65px] cursor-pointer  left-0 top-[75px]' onClick={() => {
+            router.push('/bridge/lifi')
+          }}></div>
+
+        </div>
         <History activeTab={activeTab} setActiveTab={setActiveTab} isOpen={historyShow} setIsOpen={setHistoryShow} />
       </div>
     </>
   );
 }
+
+const checkIcon = <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10.705" cy="10.5166" r="9.5" transform="rotate(-3 10.705 10.5166)" fill="#FFDC50" stroke="#373A53" />
+  <path d="M7.73411 10.1674L10.1951 12.5418L14.5937 7.30442" stroke="black" stroke-width="2" stroke-linecap="round" />
+</svg>
+
+const unCheckIcon = <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="10" r="9.5" fill="white" stroke="#373A53" />
+</svg>

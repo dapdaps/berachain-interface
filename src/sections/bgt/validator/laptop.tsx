@@ -9,6 +9,7 @@ export default memo(function Validator(props: any) {
   const {
     bgtData,
     pageData,
+    bgtPageData,
     handleClick,
     currentTab,
     Tabs,
@@ -19,7 +20,7 @@ export default memo(function Validator(props: any) {
 
   } = props;
   return (
-    <div className="flex flex-col items-center pt-[75px]">
+    <div className="flex flex-col h-full overflow-auto items-center py-[75px]">
       <BgtHead bgtData={bgtData} />
       <div className="relative w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <Back />
@@ -29,6 +30,7 @@ export default memo(function Validator(props: any) {
           loading={loading}
           columns={Columns}
           list={vaults}
+          bodyWrapClass="h-[500px] overflow-y-auto mt-[20px]"
         />
       </div>
     </div>

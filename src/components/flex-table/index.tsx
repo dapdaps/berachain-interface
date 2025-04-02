@@ -2,12 +2,15 @@ import Loading from '@/components/loading';
 import React from 'react';
 import Empty from '@/components/empty';
 import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
 const FlexTable = (props: FlexTableProps) => {
   const {
     wrapperClass = '',
     headClass = '',
     bodyClass = '',
+    bodyClassName = '',
+    bodyWrapClass = '',
     loading,
     list,
     columns,
@@ -82,12 +85,12 @@ const FlexTable = (props: FlexTableProps) => {
             <Loading size={24} />
           </div>
         ) : (
-          <div>
+          <div className={clsx("", bodyClassName, bodyWrapClass)}>
             {list?.length > 0
               ? list.map((record: any, index: number) => (
                 <div
                   key={index}
-                  className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] flex-shrink-0 flex flex-col ${bodyClass}`}
+                  className={`odd:bg-[rgba(0,0,0,0.06)] rounded-[10px] md:rounded-none py-[16px] pl-[13px] pr-[13px] flex-shrink-0 flex flex-col ${bodyClass}`}
                   onClick={(e) => onRow(record, index, e)}
                 >
                   <div className='flex items-center'>
@@ -100,7 +103,7 @@ const FlexTable = (props: FlexTableProps) => {
                           textAlign: column.align ?? 'left',
                           flexShrink: column.width ? 0 : 1
                         }}
-                        className={`font-[600] first:pl-[13px] last:pr-[13px] ${column.ellipsis ? 'truncate' : ''
+                        className={`font-[600] ${column.ellipsis ? 'truncate' : ''
                           }`}
                       >
                         {typeof column.render === 'function'
@@ -147,6 +150,8 @@ export type FlexTableProps = {
   wrapperClass?: string;
   headClass?: string;
   bodyClass?: string;
+  bodyWrapClass?: string;
+  bodyClassName?: string;
   pagination?: any;
   renderEmpty?(): any;
   sortDataIndex?: string;

@@ -65,8 +65,10 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       assets.forEach((asset: any, i: number) => {
         const token = tokens.find(
           (t: any) =>
-            (t.address === "native" ? weth[DEFAULT_CHAIN_ID] : t.address) ===
-            asset.toLowerCase()
+            (t.address === "native"
+              ? weth[DEFAULT_CHAIN_ID]
+              : t.address
+            ).toLowerCase() === asset.toLowerCase()
         );
         if (!token) {
           maxAmountsIn.push("0");
@@ -210,7 +212,7 @@ export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
       });
       setLoading(false);
     } catch (err: any) {
-      console.log(err);
+      console.error(err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

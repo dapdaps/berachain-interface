@@ -5,6 +5,7 @@ export const useBgtStore = create(
   persist(
     (set, get: any) => ({
       validators: null,
+      totalCount: 0,
       set: (params: any) => set(() => ({ ...params }))
     }),
     {

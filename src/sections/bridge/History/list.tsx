@@ -5,26 +5,27 @@ import { formatEnglishDate } from '@/utils/date'
 import useIsMobile from '@/hooks/use-isMobile';
 import chains from '../lib/util/chainConfig'
 
-import allTokens from '../lib/allTokens'
 import { tokenPairs } from '../lib/bridges/stargate/config'
 import { balanceFormated } from '@/utils/balance';
-
-const _allTokens: any = {};
-
-Object.keys(allTokens).forEach((chainId: string) => {
-    allTokens[Number(chainId)].forEach((item: any) => {
-        _allTokens[Number(chainId)] = _allTokens[Number(chainId)] || {}
-        _allTokens[Number(chainId)][item.symbol.toUpperCase()] = item
-    })
-})
-
+import useBridgeType from '../Hooks/useBridgeType';
+import useAllToken from '../Hooks/useAllToken';
 
 export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
     const isMobile = useIsMobile();
-
+    const { bridgeType } = useBridgeType()
+    const allTokens = useAllToken()
     const filteredList = list.filter((item: any) =>
         activeTab === 'pending' ? Number(item.bridge_status) !== 4 : Number(item.bridge_status) === 4
     )
+
+    const _allTokens: any = {};
+
+    Object.keys(allTokens).forEach((chainId: string) => {
+        allTokens[Number(chainId)].forEach((item: any) => {
+            _allTokens[Number(chainId)] = _allTokens[Number(chainId)] || {}
+            _allTokens[Number(chainId)][item.symbol.toUpperCase()] = item
+        })
+    })
 
     const cls = isMobile
         ? 'm-auto md:w-[92.307vw] border border-[#000] rounded-2xl bg-[#FFFDEB]'
@@ -66,16 +67,21 @@ export default function History({ pendingCount, historyCount, list, setIsOpen, a
                 </div>
 
                 <div className="max-h-[600px] overflow-y-auto">
-                    {filteredList.map((item: any) => (
-                        <HistoryItem item={item} key={item.tx_id} />
-                    ))}
+                    {filteredList.map((item: any) => {
+                        if (item.template.toLowerCase() !== 'stargate') {
+                            return <HistorySingleBridgeItem item={item} key={item.tx_id} />
+                        }
+
+                        return <HistoryItem _allTokens={_allTokens} item={item} key={item.tx_id} />
+                    }
+                    )}
                 </div>
             </div>
         </div>
     )
 }
 
-function HistoryItem({ item }: { item: any }) {
+function HistoryItem({ item, _allTokens }: { item: any, _allTokens: any }) {
     const action_tokens = JSON.parse(item.action_tokens)
     const fromToken = _allTokens[item.chain_id][action_tokens[0].toUpperCase()]
     let toToken = _allTokens[item.to_chain_id]?.[tokenPairs[item.chain_id]?.[action_tokens[0].toUpperCase()]?.toUpperCase()]
@@ -87,7 +93,6 @@ function HistoryItem({ item }: { item: any }) {
         toToken = _allTokens[item.to_chain_id]?.['WETH']
     }
 
-    
     // console.log(_allTokens[item.chain_id], action_tokens)
 
     return <div className="border-b border-gray-200 py-3">
@@ -127,7 +132,50 @@ function HistoryItem({ item }: { item: any }) {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+}
 
+function HistorySingleBridgeItem({ item }: { item: any }) {
+    const extra_data = JSON.parse(item.extra_data)
+
+    return <div className="border-t border-[#958FBC] py-3">
+        <div className="flex justify-between items-center">
+            <div className='flex-1'>
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-[30px] h-[30px] relative">
+                            <img className='w-full h-full object-contain' src={extra_data?.fromTokenLogo} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={extra_data?.fromChainLogo} />
+                        </div>
+                        <div>
+                            {balanceFormated(extra_data.fromAmount)}<br />{extra_data?.fromTokenSymbol}
+                        </div>
+                    </div>
+                    <span>→</span>
+                    <div className="flex items-center gap-2">
+                        <div className="w-[30px] h-[30px] relative">
+                            <img className='w-full h-full object-contain' src={extra_data?.toTokenLogo} />
+                            <img className='w-[10px] h-[10px] object-contain border border-[#000] rounded-full absolute bottom-0 right-0' src={extra_data?.toChainLogo} />
+                        </div>
+                        <div>
+                            {balanceFormated(extra_data.toAmout)}<br />{extra_data?.toTokenSymbol}
+                        </div>
+                    </div>
+                </div>
+                <div className="text-sm text-gray-500 flex justify-between items-center">
+                    <div>
+                        {formatEnglishDate(extra_data.time)}
+                        {
+                            <a target='_blank' href={`${chains[extra_data?.fromChainId].blockExplorers}/tx/${item.tx_id}`} className="ml-2 text-blue-500 underline">Tx</a>
+                        }
+                    </div>
+                    <div>
+                        {Number(item.bridge_status) !== 4 && <span className="text-[#006BFF]">Processing~3min</span>}
+                        {Number(item.bridge_status) === 4 && <span className="text-[#006BFF]">Success</span>}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 }

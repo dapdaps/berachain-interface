@@ -1,15 +1,15 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import Airdrop from '@/components/airdrop';
-import LGBTLogo from './lgbt-animated-logo';
-import { useActivityStore } from '@/stores/useActivityStore';
-import { useContext } from 'react';
+import Vaults from '@/components/vaults';
 import { HomeEarthContext } from '@/sections/home-earth/context';
 import { VisibleAnimation } from '@/sections/home-earth/utils';
+import { useActivityStore } from '@/stores/useActivityStore';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useContext } from 'react';
+import LGBTLogo from './lgbt-animated-logo';
 
 const HomeEarthTop = (props: any) => {
-  const {} = props;
+  const { } = props;
   const { isDefaultTheme } = useActivityStore();
   const { isRainyDay } = useContext(HomeEarthContext);
 
@@ -83,7 +83,7 @@ const HomeEarthTop = (props: any) => {
           }
         </AnimatePresence>
       </div>
-      <Airdrop className="!left-[unset] right-0 !top-[150px]" />
+      <Vaults className="!left-[unset] right-0 !top-[150px]" />
     </div>
   );
 };

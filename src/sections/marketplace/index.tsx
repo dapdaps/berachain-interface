@@ -126,7 +126,7 @@ const MarketplaceView = () => {
     return allTokens.slice(0, groupsToShow);
   }, [allTokens, displayCount]);
 
-  const { data: price7dData } = usePrice7d({ visibleTokens });
+  const { data: price7dData, fullData: price7dFullData } = usePrice7d({ visibleTokens });
 
   const onMore = () => {
     setDisplayCount((prev) => Math.min(prev + TOKENS_PER_PAGE, totalTokens));
@@ -208,6 +208,7 @@ const MarketplaceView = () => {
                         onSwap={() => onSwap(it)}
                         voulmes={voulmes}
                         priceData={price7dData[it.symbol]}
+                        priceFullData={price7dFullData[it.symbol]}
                       />
                     </div>
                   ))}

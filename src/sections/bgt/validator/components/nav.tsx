@@ -3,39 +3,74 @@ import { formatValueDecimal } from '@/utils/balance';
 import clsx from 'clsx';
 import { formatLongText } from '@/utils/utils';
 import Loading from '@/components/loading';
-
+import Skeleton from 'react-loading-skeleton';
 const Nav = (props: any) => {
   const { pageData, handleClick } = props;
 
-
-  console.log('====pageData====', pageData)
-  return pageData ? (
+  return (
     <div className="flex md:flex-col items-start md:items-stretch justify-between md:justify-start h-[146px] md:h-[unset] rounded-[20px] bg-[#FFDC50] pl-[87px] md:mt-[13px] md:px-[14px] md:pb-[14px]">
       <div className="flex-1 mt-[11px] mr-[69px] md:mr-[unset]">
         <div className="flex items-center gap-[17px] md:justify-center">
-          <div className="w-[40px] h-[40px] rounded-[20px] border border-black overflow-hidden">
-            <img src={pageData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={pageData?.metadata?.name} />
-          </div>
-          <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-            {pageData?.metadata?.name ?? formatLongText(pageData?.pubkey, 4, 4)}
-          </div>
+          {
+            pageData ? (
+              <div className="w-[40px] h-[40px] rounded-[20px] border border-black overflow-hidden">
+                <img src={pageData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={pageData?.metadata?.name} />
+              </div>
+            ) : (
+              <Skeleton className='w-[40px] h-[40px] rounded-full' />
+            )
+          }
+          {
+            pageData ? (
+              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
+                {pageData?.metadata?.name ?? formatLongText(pageData?.pubkey, 4, 4)}
+              </div>
+            ) : (
+              <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
+            )
+          }
         </div>
         <div className="flex items-center justify-between mt-[24px] md:flex-wrap md:gap-y-[31px]">
           <div className="flex flex-col gap-[12px] md:w-1/2">
             <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">BGT emitted</div>
-            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.dynamicData?.allTimeDistributedBGTAmount, "", 2, true)} BGT</div>
+            {
+              pageData ? (
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.dynamicData?.allTimeDistributedBGTAmount, "", 2, true)} BGT</div>
+              ) : (
+                <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
+              )
+            }
           </div>
           <div className="flex flex-col gap-[12px] md:w-1/2">
             <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Bera staked</div>
-            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.dynamicData?.stakedBeraAmount, '', 2, true)}</div>
+            {
+              pageData ? (
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.dynamicData?.stakedBeraAmount, '', 2, true)}</div>
+              ) : (
+                <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
+              )
+            }
           </div>
           <div className="flex flex-col gap-[12px] md:w-1/2">
             <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Boosted</div>
-            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.dynamicData?.activeBoostAmount, '', 2, true)}</div>
+
+            {
+              pageData ? (
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{formatValueDecimal(pageData?.dynamicData?.activeBoostAmount, '', 2, true)}</div>
+              ) : (
+                <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
+              )
+            }
           </div>
           <div className="flex flex-col gap-[12px] md:w-1/2">
             <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Website</div>
-            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] w-full overflow-hidden overflow-ellipsis">{pageData?.metadata?.website ?? "-"}</div>
+            {
+              pageData ? (
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] w-full overflow-hidden overflow-ellipsis">{pageData?.metadata?.website ? pageData?.metadata?.website : "-"}</div>
+              ) : (
+                <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
+              )
+            }
           </div>
         </div>
       </div>
@@ -57,10 +92,6 @@ const Nav = (props: any) => {
           UnBoost -
         </div>
       </div>
-    </div>
-  ) : (
-    <div className='flex items-center justify-center py-[30px] flex-col'>
-      <Loading size={24} />
     </div>
   );
 };

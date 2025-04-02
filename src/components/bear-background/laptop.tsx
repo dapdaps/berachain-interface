@@ -1,33 +1,32 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
-import HillsideSvg from '@public/images/background/hillside.svg';
-import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
-import GrassSvg from '@public/images/background/grass.svg';
-import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
+import BridgeGroundSvg from '@public/images/background/bridge-ground-2.svg';
+import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy-2.svg';
 import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
-import BridgeGroundSvg from '@public/images/background/bridge-ground.svg';
-import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy.svg';
+import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
+import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
+import GrassSvg from '@public/images/background/grass.svg';
+import HallFlag from '@public/images/background/hall-flag.svg';
+import HallPalace from '@public/images/background/hall-palace.svg';
+import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
+import HillsideSvg from '@public/images/background/hillside.svg';
 import LeftTreeSvg from '@public/images/background/tree.svg';
-import HallPalace from '@public/images/background/hall-palace.svg'
-import HallFlag from '@public/images/background/hall-flag.svg'
+import { motion } from 'framer-motion';
 
-import { memo } from 'react';
-import { Clouds, DappClouds } from './clouds';
-import BeraBgHome from '@/components/bear-background/home';
 import Flowers from '@/components/bear-background/components/flowers';
 import Ground from '@/components/bear-background/components/ground';
+import BeraBgHome from '@/components/bear-background/home';
+import { memo } from 'react';
+import { Clouds, DappClouds } from './clouds';
 
 
-import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
+import clsx from 'clsx';
 
-import { useActivityStore } from '@/stores/useActivityStore';
-import { useParams } from 'next/navigation';
-import BeraBgcampaign from '@/components/bear-background/campaign'
-import { useRouter } from 'next/navigation';
+import BeraBgcampaign from '@/components/bear-background/campaign';
 import { useBintent } from '@/stores/bintent';
+import { useActivityStore } from '@/stores/useActivityStore';
+import { useRouter } from 'next/navigation';
 
 const LeftTree = function () {
   return (
@@ -893,6 +892,9 @@ const DashboardFlowers = function () {
   );
 };
 
+
+
+
 const DashboardBear = function (props: any) {
   const { className, isRainyDay } = props;
 
@@ -925,9 +927,9 @@ const DashboardGround = function (props: any) {
   );
 };
 
+
 const BridgeGround = function (props: any) {
   const { className, isRainyDay } = props;
-
   return (
     <div className={clsx('absolute left-0 bottom-0 w-full', className)}>
       {
@@ -955,12 +957,15 @@ const BridgeGround = function (props: any) {
           isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]'
         )}
       />
+
       <div
         className={clsx(
           'absolute bottom-[-142px] right-0 left-1/2 h-[297px] border-t border-black',
           isRainyDay ? 'bg-[#7C9744]' : 'bg-[#A7CC55]'
         )}
       />
+
+     
     </div>
   );
 };

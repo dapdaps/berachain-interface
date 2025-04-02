@@ -3,6 +3,7 @@ import { memo, useEffect, useState } from "react";
 import { usePriceStore } from "@/stores//usePriceStore";
 import { getAnotherAmountOutV2 } from "../../helpers";
 import Input from "./input";
+import SwapModal from "@/sections/swap/SwapModal";
 import { StyledContainer, StyledSubtitle } from "./styles";
 import { sortTokens } from "../../utils";
 
@@ -22,6 +23,7 @@ const DepositAmounts = ({
   const prices = usePriceStore((store) => store.price);
   const [balance0, setBalance0] = useState("");
   const [balance1, setBalance1] = useState("");
+  const [selectedToken, setSelectedToken] = useState<any>(null);
 
   const handleValue = (value: any, type: 0 | 1) => {
     if (type === 0) {
@@ -125,6 +127,31 @@ const DepositAmounts = ({
           onSelectToken?.(1);
         }}
       />
+      <div className="text-[14px] text-black font-bold mt-[10px] flex justify-end gap-[4px]">
+        Get{" "}
+        {[token0, token1].map((token: any, idx: number) => (
+          <span
+            className="cursor-pointer underline"
+            onClick={() => {
+              setSelectedToken(token);
+            }}
+          >
+            {token.symbol}
+            {idx !== 1 && ","}
+          </span>
+        ))}
+      </div>
+      {selectedToken && (
+        <SwapModal
+          defaultOutputCurrency={selectedToken}
+          outputCurrencyReadonly={true}
+          show={!!selectedToken}
+          onClose={() => {
+            setSelectedToken(null);
+          }}
+          from="marketplace"
+        />
+      )}
     </StyledContainer>
   );
 };
