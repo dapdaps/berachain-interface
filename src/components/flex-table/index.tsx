@@ -57,7 +57,15 @@ const FlexTable = (props: FlexTableProps) => {
                     onChangeSortDataIndex(column?.dataIndex);
                 }}
               >
-                {renderTitle ? renderTitle(column, columnIdx) : column.title}
+                {
+                  column?.renderTitle
+                    ? column?.renderTitle(column, columnIdx)
+                    : (
+                      renderTitle
+                        ? renderTitle(column, columnIdx)
+                        : column.title
+                    )
+                }
                 {column?.sort && (
                   <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -144,6 +152,7 @@ export default FlexTable;
 
 export type Column = {
   title: string | React.ReactNode;
+  renderTitle?: (col: any, colIdx?: number) => any;
   dataIndex: string;
   render?: (text: any, record: Record<string, any>, idx?: number) => any;
   width?: string | number;
