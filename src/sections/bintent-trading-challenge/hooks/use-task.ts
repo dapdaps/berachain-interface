@@ -1,14 +1,14 @@
-import useCustomAccount from "@/hooks/use-account";
-import { useState, useEffect } from 'react';
 import { get, post } from '@/utils/http';
 import _ from "lodash";
+import { useEffect, useState } from 'react';
+import useNearWallet from "./use-near-wallet";
 
 interface ITask {
   quests: any[]
   trade_days: number
 }
 export default function useTask() {
-  const { account } = useCustomAccount()
+  const { account } = useNearWallet()
   const [task, setTask] = useState<ITask>();
   const [loading, setLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState({

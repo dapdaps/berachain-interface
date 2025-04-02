@@ -14,12 +14,12 @@ export default memo(function TaskBoard() {
   }
 
   return (
-    <div className="m-[182px_auto_69px] relative w-[720px] h-[1176px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
+    <div className="m-[182px_auto_69px] relative w-[720px] h-[836px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
       <div className="absolute left-1/2 -top-[39px] -translate-x-1/2 w-[379px] h-[77px] bg-[url('/images/campaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb text-[32px] uppercase">
         Task board
       </div>
       <div className="h-full p-[20px] rounded-[10px] border-[2px] border-[#E5C375] bg-[#FFF1C7]">
-        <div className="flex flex-col gap-[5px]">
+        {/* <div className="flex flex-col gap-[5px]">
           <div className="relative flex justify-end">
             <div className="absolute -left-[10px] -bottom-[16.84px] w-[220px]">
               <img src="/images/campaign/bookmark_1.svg" alt="bookmark_1" />
@@ -67,9 +67,9 @@ export default memo(function TaskBoard() {
             </div>
 
           </div>
-        </div>
+        </div> */}
 
-        <div className="relative flex flex-col rounded-[16px] bg-[#FFFAEA] border border-[#D7C69D]">
+        <div className="mt-[50px] relative flex flex-col rounded-[16px] bg-[#FFFAEA] border border-[#D7C69D]">
           <div className="absolute -left-[10px] -top-[45px] w-[448px]">
             <img src="/images/campaign/bookmark_3.svg" alt="bookmark_3" />
           </div>

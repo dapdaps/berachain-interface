@@ -63,7 +63,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
   }, []);
 
   const pathname = usePathname();
-  const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
+  const isNearPage = ['/bintent', '/my-near-wallet-gateway', '/bintent-trading-challenge'].includes(pathname);
   const isMobile = useIsMobile();
   const total = useToast();
   const { address, isConnected, chainId, chain, isConnecting } = useAccount();
@@ -300,6 +300,8 @@ const User = (props: any) => {
   const router = useRouter()
   const { iBGTCount, BGTCount } = useBgtCount();
 
+  console.log('====isNearPage', isNearPage)
+  console.log('====currentWallet', currentWallet)
   if (isNearPage && currentWallet) {
     return (
       <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{addressShown}</div>
