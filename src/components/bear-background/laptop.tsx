@@ -26,7 +26,7 @@ import clsx from 'clsx';
 import BeraBgcampaign from '@/components/bear-background/campaign';
 import { useBintent } from '@/stores/bintent';
 import { useActivityStore } from '@/stores/useActivityStore';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const LeftTree = function () {
   return (
