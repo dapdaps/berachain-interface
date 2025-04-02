@@ -1,5 +1,6 @@
 'use client';
 
+import Airship from '@/components/bear-background/components/airship';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useRainyDay } from '@/hooks/use-rainy-day';
@@ -17,16 +18,6 @@ import clsx from 'clsx';
 import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
-import { useMotionValue } from 'framer-motion';
-import { createRotateAnimation } from '@/sections/home-earth/utils';
-import { useActivityStore } from '@/stores/useActivityStore';
-import { motion } from 'framer-motion';
-import clsx from 'clsx';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import { useRainyDay } from '@/hooks/use-rainy-day';
-import BerachainFixes from '@/sections/home-earth/components/berachain-fixes';
-import BeraPrice from '@/sections/home-earth/components/bera-price';
-import Airship from '@/components/bear-background/components/airship';
 
 // seconds per lap
 const SPEED = 200;
