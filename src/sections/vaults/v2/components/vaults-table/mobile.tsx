@@ -38,7 +38,7 @@ const VaultsTableMobile = (props: any) => {
           <div className="text-[#000] text-center font-Montserrat text-[12px] font-[600] leading-[100%]">Rank</div>
           <div className="flex items-center gap-[5px]">
             {
-              listOrderKeys.sort((a, b) => a.sort - b.sort).map((ok) => (
+              listOrderKeys.slice().sort((a, b) => a.sort - b.sort).map((ok) => (
                 <button
                   type="button"
                   key={ok.label}
