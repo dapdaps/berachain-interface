@@ -28,7 +28,7 @@ const menuItems = [
     id: 4,
     title: "Vaults",
     href: "/vaults",
-    dataBp: "1015-002-004"
+    dataBp: "1022-002-003"
   },
   { id: 5, title: "DApps", hasDropdown: true, dataBp: "1015-002-005" },
   {
@@ -105,28 +105,28 @@ const dapps: DApp[] = [
   },
   {
     id: "beraborrow",
-    name: 'Beraborrow',
-    icon: '/images/dapps/beraborrow.png',
-    href: '/lending/beraborrow',
+    name: "Beraborrow",
+    icon: "/images/dapps/beraborrow.png",
+    href: "/lending/beraborrow"
   },
   {
     id: "aquabera",
-    name: 'AquaBera',
-    icon: '/images/dapps/infrared/aquabera.png',
-    href: '/staking/aquabera',
+    name: "AquaBera",
+    icon: "/images/dapps/infrared/aquabera.png",
+    href: "/staking/aquabera"
   },
   {
     id: "bedrock",
-    name: 'Bedrock',
-    icon: '/images/dapps/bedrock.svg',
-    href: '/staking/bedrock',
+    name: "Bedrock",
+    icon: "/images/dapps/bedrock.svg",
+    href: "/staking/bedrock"
   },
   {
     id: "kingdomly",
-    name: 'Kingdomly',
-    icon: '/images/dapps/kingdomly.svg',
-    href: '/kingdomly',
-  },
+    name: "Kingdomly",
+    icon: "/images/dapps/kingdomly.svg",
+    href: "/kingdomly"
+  }
 ];
 
 const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
@@ -278,14 +278,14 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      {
-        !pathname.startsWith('/invite/') && (
-          <div
-            className={clsx(
-              "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
-              pathname === "/" && "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
-            )}
-          >
+      {!pathname.startsWith("/invite/") && (
+        <div
+          className={clsx(
+            "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
+            pathname === "/" &&
+              "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
+          )}
+        >
           <div className="flex items-center gap-3">
             <div className="relative">
               {/* {["/"].includes(pathname) && isChristmas && (
@@ -390,23 +390,22 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 </svg>
               </div>
             )} */}
-                <motion.button
-                  onClick={toggleMenu}
-                  whileTap={{ scale: 0.95, y: 8 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 10
-                  }}
-                  className="bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center"
-                  data-bp="1015-002"
-                >
-                  {isMenuOpen ? <IconClose /> : <IconMenu />}
-                </motion.button>
+            <motion.button
+              onClick={toggleMenu}
+              whileTap={{ scale: 0.95, y: 8 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 10
+              }}
+              className="bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center"
+              data-bp="1015-002"
+            >
+              {isMenuOpen ? <IconClose /> : <IconMenu />}
+            </motion.button>
           </div>
         </div>
-        )
-      }
+      )}
       <GuidingTutorial />
     </div>
   );

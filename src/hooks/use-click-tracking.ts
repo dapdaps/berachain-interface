@@ -32,6 +32,15 @@ const findBP = (target: any, cb: any) => {
 
 export default function useClickTracking() {
   const { account } = useAccount();
+
+  const handleReportWithoutDebounce = (code: string) => {
+    if (!code) return;
+    report({
+      address: account || "",
+      code,
+      url: window.location.href
+    });
+  };
   const { run: handleReport } = useDebounceFn(
     (code: string) => {
       console.log(
@@ -40,12 +49,7 @@ export default function useClickTracking() {
         account || "[none]",
         code || "[none]"
       );
-      if (!code) return;
-      report({
-        address: account || "",
-        code,
-        url: window.location.href
-      });
+      handleReportWithoutDebounce(code);
     },
     {
       wait: 500
@@ -81,6 +85,7 @@ export default function useClickTracking() {
   return {
     handleTrack,
     handleReport,
-    handleReportNoCode
+    handleReportNoCode,
+    handleReportWithoutDebounce
   };
 }
