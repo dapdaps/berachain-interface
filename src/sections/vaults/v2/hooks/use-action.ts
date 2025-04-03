@@ -13,15 +13,11 @@ export default function useAction(): Action {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction("vaults");
   const [amount, setAmount] = useState<string>();
   const [dappParams, setDappParams] = useState<any>({});
-  const {
-    currentProtocol,
-    actionType,
-    toggleActionVisible,
-    getListData
-  } = useVaultsV2Context();
+  const { currentProtocol, actionType, toggleActionVisible, getListData } =
+    useVaultsV2Context();
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT

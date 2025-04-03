@@ -7,7 +7,7 @@ import {
 } from '@/sections/vaults/v2/components/vaults-table/columns';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { OrderKeys } from '@/sections/vaults/v2/config';
+import { ORDER_DIRECTION } from '@/sections/vaults/v2/config';
 import LazyImage from '@/components/layz-image';
 import Skeleton from 'react-loading-skeleton';
 import Search from '@/sections/vaults/v2/components/filter/search';
@@ -16,7 +16,14 @@ import Empty from '@/components/empty';
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
 
-  const { listDataGroupByPool, listLoading, listOrderKey, listFilterSelectedLength, toggleListOrder, toggleListFilterVisible } = useVaultsV2Context();
+  const {
+    listDataGroupByPool,
+    listLoading,
+    listOrderKeys,
+    listFilterSelectedLength,
+    toggleListOrder,
+    toggleListFilterVisible
+  } = useVaultsV2Context();
 
   const [isExpanded, setIsExpanded] = useState<number>();
 
@@ -31,19 +38,28 @@ const VaultsTableMobile = (props: any) => {
           <div className="text-[#000] text-center font-Montserrat text-[12px] font-[600] leading-[100%]">Rank</div>
           <div className="flex items-center gap-[5px]">
             {
-              Object.values(OrderKeys).map((ok) => (
+              listOrderKeys.slice().sort((a, b) => a.sort - b.sort).map((ok) => (
                 <button
                   type="button"
                   key={ok.label}
                   className={clsx(
-                    "w-[52px] h-[26px] flex justify-center transition-all duration-300 items-center flex-shrink-0 rounded-[6px] border-[1px] text-[#000] font-Montserrat text-[12px] font-[500] leading-[100%]",
-                    listOrderKey === ok.value ? "bg-[#FDD54C] border-black" : "border-[rgba(0,0,0,.2)]",
+                    "w-[58px] h-[26px] flex gap-[4px] justify-center transition-all duration-300 items-center flex-shrink-0 rounded-[6px] border-[1px] text-[#000] font-Montserrat text-[12px] font-[500] leading-[100%]",
+                    listOrderKeys[0]?.value === ok.value ? "bg-[#FDD54C] border-black" : "border-[rgba(0,0,0,.2)]",
                   )}
                   onClick={() => {
                     toggleListOrder(ok.value);
                   }}
                 >
-                  {ok.label}
+                  <div className="">{ok.label}</div>
+                  <img
+                    src="/images/vaults/v2/triangle.svg"
+                    alt=""
+                    className={clsx(
+                      "w-[10px] h-[10px] object-center object-contain transition-all duration-300",
+                      ok?.direction === ORDER_DIRECTION.ASC ? "rotate-180" : "",
+                      ok?.value === listOrderKeys[0]?.value ? "opacity-100" : "opacity-50",
+                    )}
+                  />
                 </button>
               ))
             }

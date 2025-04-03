@@ -7,8 +7,8 @@ import {
   FILTER_KEYS,
   FilterItem,
   FILTERS,
-  PAGINATION_ACTION
-} from "@/sections/vaults/v2/config";
+  PAGINATION_ACTION, Order, OrderKeys
+} from '@/sections/vaults/v2/config';
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import axios from "axios";
@@ -45,10 +45,11 @@ export function useList(): List {
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
-  const [orderKey, setOrderKey] = useState<ORDER_KEYS>(ORDER_KEYS.TVL);
-  const [orderDirection, setDirection] = useState<ORDER_DIRECTION>(
-    ORDER_DIRECTION.DESC
-  );
+  const [orderKeys, setOrderKeys] = useState<Order[]>([
+    { ...OrderKeys[ORDER_KEYS.YOURS] },
+    { ...OrderKeys[ORDER_KEYS.TVL] },
+    { ...OrderKeys[ORDER_KEYS.APY] },
+  ]);
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterSelected, setFilterSelected] = useState<
     Record<FILTER_KEYS, FilterItem[]>
@@ -196,26 +197,27 @@ export function useList(): List {
     });
 
     const sortedData = [...filteredData].sort((a: any, b: any) => {
-      let valA: any;
-      let valB: any;
-      if (orderKey === "totalApy") {
-        if (orderDirection === ORDER_DIRECTION.ASC) {
-          valA = new Big(a[orderKey][0] || 0);
-          valB = new Big(b[orderKey][0] || 0);
-        } else {
-          valA = new Big(a[orderKey][1] || 0);
-          valB = new Big(b[orderKey][1] || 0);
-        }
-      } else {
-        valA = new Big(a[orderKey] || 0);
-        valB = new Big(b[orderKey] || 0);
-      }
+      for (const key of orderKeys) {
+        let valA: any;
+        let valB: any;
 
-      if (orderDirection === ORDER_DIRECTION.ASC) {
-        return valA.gt(valB) ? 1 : valA.lt(valB) ? -1 : 0;
-      } else {
-        return valA.lt(valB) ? 1 : valA.gt(valB) ? -1 : 0;
+        if (key.value === ORDER_KEYS.APY) {
+          if (key.direction === ORDER_DIRECTION.ASC) {
+            valA = new Big(a[key.value]?.[0] || 0);
+            valB = new Big(b[key.value]?.[0] || 0);
+          } else {
+            valA = new Big(a[key.value]?.[1] || 0);
+            valB = new Big(b[key.value]?.[1] || 0);
+          }
+        } else {
+          valA = new Big(a[key.value] || 0);
+          valB = new Big(b[key.value] || 0);
+        }
+
+        if (valA.gt(valB)) return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
+        if (valA.lt(valB)) return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
       }
+      return 0; // If all fields are equal, maintain the original order
     });
 
     setPageTotal(Math.ceil(sortedData.length / pageSize));
@@ -235,8 +237,7 @@ export function useList(): List {
     pageIndex,
     pageSize,
     isMobile,
-    orderKey,
-    orderDirection,
+    orderKeys,
     vaultsStaked
   ]);
 
@@ -486,16 +487,28 @@ export function useList(): List {
 
   const toggleOrder = (key: ORDER_KEYS, direction?: ORDER_DIRECTION) => {
     if (loading) return;
-    if (key === orderKey) {
-      setDirection(
-        direction ??
-          (orderDirection === ORDER_DIRECTION.DESC
-            ? ORDER_DIRECTION.ASC
-            : ORDER_DIRECTION.DESC)
-      );
-    } else {
-      setOrderKey(key);
-      setDirection(direction ?? ORDER_DIRECTION.DESC);
+    const _orderKeys: Order[] = orderKeys.slice();
+    // first order
+    if (key === _orderKeys[0]?.value) {
+      _orderKeys[0].direction = direction
+        ? (direction === ORDER_DIRECTION.ASC ? ORDER_DIRECTION.DESC : ORDER_DIRECTION.ASC)
+        : (_orderKeys[0]?.direction === ORDER_DIRECTION.ASC ? ORDER_DIRECTION.DESC : ORDER_DIRECTION.ASC);
+      setOrderKeys(_orderKeys);
+    }
+    // new order
+    else {
+      const currentOrder = _orderKeys.find((it) => it.value === key);
+      if (!currentOrder) return;
+      const __orderKeys: Order[] = [
+        {
+          ...currentOrder,
+          direction: ORDER_DIRECTION.DESC,
+        },
+        ..._orderKeys
+          .filter((it) => it.value !== key)
+          .sort((a, b) => a.sort - b.sort)
+      ];
+      setOrderKeys(__orderKeys);
     }
   };
 
@@ -645,8 +658,7 @@ export function useList(): List {
     listDataTopTVL: dataTopTVL,
     listDataHotStrategy: dataHotStrategy,
     listLoading: loading,
-    listOrderKey: orderKey,
-    listOrderDirection: orderDirection,
+    listOrderKeys: orderKeys,
     toggleListOrder: toggleOrder,
     listFilterVisible: filterVisible,
     toggleListFilterVisible: toggleFilterVisible,
@@ -688,8 +700,7 @@ export interface List {
   listDataTopTVL: any;
   listDataHotStrategy: any;
   listLoading: boolean;
-  listOrderKey: ORDER_KEYS;
-  listOrderDirection: ORDER_DIRECTION;
+  listOrderKeys: Order[];
   toggleListOrder: (key: ORDER_KEYS, direction?: ORDER_DIRECTION) => void;
   listFilterVisible: boolean;
   toggleListFilterVisible: (filterVisible?: boolean) => void;

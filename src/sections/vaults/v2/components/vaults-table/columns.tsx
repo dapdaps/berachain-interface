@@ -298,7 +298,6 @@ export const Rewards = (props: any) => {
             >
               <LazyImage
                 src={reward.icon}
-                title={reward.symbol}
                 alt=""
                 width={isMobile ? 18 : 26}
                 height={isMobile ? 18 : 26}
