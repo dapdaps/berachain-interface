@@ -5,13 +5,15 @@ import { post } from "@/utils/http";
 export const report = ({
   address,
   code,
-  url
+  url,
+  content
 }: {
   address: string;
   code: string;
   url: string;
+  content?: string;
 }) => {
-  post("/api/track", { address, code, url });
+  post("/api/track", { address, code, url, content });
 };
 
 const findBP = (target: any, cb: any) => {
@@ -33,23 +35,24 @@ const findBP = (target: any, cb: any) => {
 export default function useClickTracking() {
   const { account } = useAccount();
 
-  const handleReportWithoutDebounce = (code: string) => {
+  const handleReportWithoutDebounce = (code: string, content?: string) => {
     if (!code) return;
     report({
       address: account || "",
       code,
-      url: window.location.href
+      url: window.location.href,
+      content
     });
   };
   const { run: handleReport } = useDebounceFn(
-    (code: string) => {
+    (code: string, content?: string) => {
       console.log(
         "%cfollowed: %s-%s",
         "background:#FFF5A9;color:#000;",
         account || "[none]",
         code || "[none]"
       );
-      handleReportWithoutDebounce(code);
+      handleReportWithoutDebounce(code, content);
     },
     {
       wait: 500

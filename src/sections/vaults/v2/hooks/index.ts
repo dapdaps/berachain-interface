@@ -4,6 +4,7 @@ import {
   ActionType,
   ActionTypes
 } from "@/sections/vaults/v2/config";
+import useClickTracking from "@/hooks/use-click-tracking";
 
 export function useVaultsV2(): VaultsV2 {
   const [actionVisible, setActionVisible] = useState(false);
@@ -18,6 +19,7 @@ export function useVaultsV2(): VaultsV2 {
   const [currentReward, setCurrentReward] = useState<any>(null);
   const [successReward, setSuccessReward] = useState<any>(null);
   const [openAddLp, setOpenAddLp] = useState(false);
+  const { handleReportWithoutDebounce } = useClickTracking();
 
   const toggleActionVisible = (params?: {
     visible?: boolean;
@@ -25,6 +27,11 @@ export function useVaultsV2(): VaultsV2 {
     record?: any;
   }) => {
     const { visible: _actionVisible, type: _actionType, record } = params ?? {};
+
+    if (_actionVisible) {
+      handleReportWithoutDebounce("1022-001-009", record.pool_address);
+    }
+
     setActionVisible(
       typeof _actionVisible === "boolean" ? _actionVisible : !actionVisible
     );
@@ -74,6 +81,9 @@ export function useVaultsV2(): VaultsV2 {
 
   const toggleOpenAddLp = (_openAddLp?: boolean) => {
     setOpenAddLp(typeof _openAddLp === "boolean" ? _openAddLp : !openAddLp);
+    if (_openAddLp) {
+      handleReportWithoutDebounce("1022-001-013", currentRecord.pool_address);
+    }
   };
 
   return {

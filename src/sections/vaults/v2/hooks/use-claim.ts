@@ -5,7 +5,8 @@ import useAddAction from "@/hooks/use-add-action";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import handleClaim from "../../dapps/claim";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from "lodash";
+import useClickTracking from "@/hooks/use-click-tracking";
 
 export default function useClaim() {
   const [loading, setLoading] = useState(false);
@@ -19,8 +20,13 @@ export default function useClaim() {
     toggleClaimVisible
   } = useVaultsV2Context();
 
+  const { handleReport } = useClickTracking();
+
   const onClaim = async () => {
     if (!currentProtocol) return;
+    console.log(27, currentProtocol.vaultAddress);
+    handleReport("1022-001-012", currentProtocol.vaultAddress);
+
     let toastId = toast.loading({ title: "Confirming..." });
     try {
       setLoading(true);
