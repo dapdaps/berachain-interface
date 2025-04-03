@@ -218,7 +218,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           })
         }}
         current={store?.currentTab}
-        className="mx-auto w-[480px]"
+        className="mx-auto md:w-[320px] w-[480px]"
       />
       {
         store?.currentTab === "trading_challenge" ? (

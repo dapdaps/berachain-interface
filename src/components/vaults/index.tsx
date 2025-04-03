@@ -21,7 +21,7 @@ const Vaults = (props: any) => {
       <img
         src="/images/home-earth/vaults/entry.2x.png"
         alt=""
-        className="animate-shake3 w-[232px] h-[200px] pointer-events-none"
+        className="animate-shake3 w-[232px] pointer-events-none"
         style={{
           animationDuration: "10s",
           transformOrigin: "center bottom",

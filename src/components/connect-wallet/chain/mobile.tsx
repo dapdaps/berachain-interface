@@ -11,7 +11,7 @@ const Chain = (props: any) => {
         chainDropdownShow ? "bg-[rgba(0,0,0,0.04)]" : ""
       }`}
       ref={chainListRef}
-      onClick={handleChainDropdown}
+      // onClick={handleChainDropdown}
     >
       {IS_MAINNET ? (
         <ChainIcon size={32} className="rounded-[9px]" />

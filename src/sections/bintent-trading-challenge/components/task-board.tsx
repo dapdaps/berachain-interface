@@ -166,7 +166,7 @@ export default memo(function TaskBoard() {
               Holders of <a className="underline" href="https://marketplace.kingdomly.app/collection/berachain/0xe8b2acb4553acddf33214749751906dff5887701" target="_blank">Deek NFT</a>
             </div>
             <div className="flex items-center gap-[6px] before:w-[8px] before:h-[8px] before:rounded-full before:bg-black text-[20px] font-CherryBomb text-black leading-[120%]">
-              Holders of <a className="underline" href="https://berascan.com/token/0xbba3eac9ab7cbcaaef36f239f029a56c28ee7d33" target="_blank">BeraBaddies NFT</a>
+              Holders of <a className="underline" href="https://berascan.com/token/0xbba3eac9ab7cbcaaef36f239f029a56c28ee7d33" target="_blank">BeraBaddies</a>
             </div>
             <div className="flex gap-[6px] before:w-[8px] before:h-[8px] before:mt-[9px] before:rounded-full before:bg-black text-[20px] font-CherryBomb text-black leading-[120%]">
               Holders of <br />$GEAR\$LONK\$SHITZU\$BLACKDRAGON\$REF
