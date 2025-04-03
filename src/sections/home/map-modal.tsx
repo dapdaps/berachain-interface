@@ -161,7 +161,7 @@ const MapItem = ({
   buttonClass = "",
   arrowClass = "",
   ArrowIcon,
-  onNavigateTo = () => {},
+  onNavigateTo = () => { },
   btnText = "",
   link,
   disabled,
