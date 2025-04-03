@@ -412,7 +412,7 @@ export function useList(): List {
           }
           item.totalApy = totalApy;
           item.token = {
-            symbol: item.name,
+            // symbol: item.name,
             address:
               item.pool_address === "0x0000000000000000000000000000000000000000"
                 ? "native"

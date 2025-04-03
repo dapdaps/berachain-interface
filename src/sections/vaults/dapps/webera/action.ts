@@ -11,7 +11,7 @@ export default async function onAction(actionParams: any) {
   } = actionParams;
 
   const VaultContract = new Contract(
-    currentRecord.vaultAddress,
+    currentRecord.extra_data?.vault_router,
     vaultAbi,
     signer
   );
@@ -23,7 +23,7 @@ export default async function onAction(actionParams: any) {
     // assets(deposit) / toAssetAmount(withdraw)
     amount,
     // vault
-    currentRecord.extra_data?.vault_token?.address,
+    currentRecord.vault_address,
     // fromAsset(deposit) / toAsset(withdraw)
     currentRecord.pool_address,
   ];
