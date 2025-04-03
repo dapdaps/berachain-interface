@@ -51,9 +51,13 @@ export default memo(function Rank() {
           <span>
             {numberFormatter(record?.actual_volume, 2, true, { isShort: true, prefix: "$" })}
           </span>
-          <span className="text-[#12AAFF] text-[12px]">
-            {numberFormatter(Big(record?.volume).minus(record?.actual_volume).toFixed(), 2, true, { isShort: true, prefix: "+$" })}
-          </span>
+          {
+            Big(record?.volume ?? 0).minus(record?.actual_volume ?? 0).gt(0) && (
+              <span className="text-[#12AAFF] text-[12px]">
+                {numberFormatter(Big(record?.volume ?? 0).minus(record?.actual_volume ?? 0).toFixed(), 2, true, { isShort: true, prefix: "+$" })}
+              </span>
+            )
+          }
         </div>
       ) : (
         <div>
@@ -77,7 +81,7 @@ export default memo(function Rank() {
         })
       }}
     >
-      <div className="w-[520px] h-[668px] border border-black bg-[#FFFDEB] rounded-[20px] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)]">
+      <div className="md:w-full w-[520px] h-[668px] border border-black bg-[#FFFDEB] md:rounded-[20px_20px_0_0] rounded-[20px] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)]">
         <div className="p-[27px_0_23px_28px] text-black font-Montserrat text-[20px] font-bold leading-[90%]">Rank</div>
         <SwitchTabs
           tabs={[
@@ -88,7 +92,8 @@ export default memo(function Rank() {
             setCurrentTab(val)
           }}
           current={currentTab}
-          className="mx-auto w-[480px]"
+          cursorClassName="md:!rounded-[12px]"
+          className="mx-auto md:w-[338px] md:h-[56px] md:!rounded-[12px] w-[480px]"
         />
         <div className="mt-[20px]">
           <FlexTable
@@ -103,7 +108,7 @@ export default memo(function Rank() {
               </div>
             )}
           />
-          <div className="absolute left-0 right-0 bottom-0 h-[80px] rounded-[0_0_12px_12px] bg-[#FFDC50] border-t border-black p-[23px_17px_18px]">
+          <div className="absolute left-0 right-0 bottom-0 h-[80px] md:rounded-0 rounded-[0_0_12px_12px] bg-[#FFDC50] border-t border-black p-[23px_17px_18px]">
             <div className="text-black font-Montserrat text-[16px] font-semibold ">Your Rank</div>
             <div className="flex items-center gap-[13px]">
               <div className="text-black font-Montserrat text-[14px] font-semibold">{yourRank?.rank_volume}</div>

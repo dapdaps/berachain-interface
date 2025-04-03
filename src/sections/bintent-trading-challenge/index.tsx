@@ -1,11 +1,8 @@
+import useIsMobile from "@/hooks/use-isMobile";
 import { memo } from "react";
-import Leaderboard from "./components/leaderboard";
-import TaskBoard from "./components/task-board";
+import Laptop from "./laptop";
+import Mobile from "./mobile";
 export default memo(function Compaign() {
-  return (
-    <div className="absolute left-0 top-0 right-0 bottom-0 z-30 overflow-auto">
-      <TaskBoard />
-      <Leaderboard />
-    </div>
-  )
+  const isMobile = useIsMobile()
+  return isMobile ? <Mobile /> : <Laptop />
 })

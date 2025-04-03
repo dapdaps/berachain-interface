@@ -48,9 +48,13 @@ export default memo(function Leaderboard() {
           <span>
             {numberFormatter(record?.actual_volume, 2, true, { isShort: true, prefix: "$" })}
           </span>
-          <span className="text-[#12AAFF] text-[12px]">
-            {numberFormatter(Big(record?.volume).minus(record?.actual_volume).toFixed(), 2, true, { isShort: true, prefix: "+$" })}
-          </span>
+          {
+            Big(record?.volume ?? 0).minus(record?.actual_volume ?? 0).gt(0) && (
+              <span className="text-[#12AAFF] text-[12px]">
+                {numberFormatter(Big(record?.volume ?? 0).minus(record?.actual_volume ?? 0).toFixed(), 2, true, { isShort: true, prefix: "+$" })}
+              </span>
+            )
+          }
         </div>
       ) : (
         <div>
@@ -61,11 +65,11 @@ export default memo(function Leaderboard() {
   },]
 
   return (
-    <div className="m-[0_auto_39px] relative w-[720px] h-[732px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
-      <div className="absolute left-1/2 -top-[39px] -translate-x-1/2 w-[379px] h-[77px] bg-[url('/images/campaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb text-[32px] uppercase">
+    <div className="m-[0_auto_39px] relative md:w-full w-[720px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
+      <div className="absolute left-1/2 md:-top-[27px] -top-[39px] -translate-x-1/2 md:w-[235px] w-[379px] md:h-[59px] h-[77px] md:bg-[url('/images/campaign/mobile/leaderboard_bg.svg')] bg-[url('/images/campaign/task_board_bg.svg')] bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb md:text-[26px] text-[32px] uppercase">
         Leaderboard
       </div>
-      <div className="h-full p-[50px_16px_16px] rounded-[10px] border-[2px] border-[#E5C375] bg-[#FFF1C7]">
+      <div className="h-full md:p-[39px_10px] p-[50px_16px_16px] rounded-[10px] border-[2px] border-[#E5C375] bg-[#FFF1C7]">
         <SwitchTabs
           tabs={[
             { label: "Volume Rank", value: "volume" },
@@ -75,9 +79,10 @@ export default memo(function Leaderboard() {
             setCurrentTab(val)
           }}
           current={currentTab}
-          className="mx-auto w-[665px]"
+          cursorClassName="md:!rounded-[12px]"
+          className="mx-auto md:w-[338px] md:h-[56px] md:!rounded-[12px] w-[665px]"
         />
-        <div className="m-[20px_0_85px] min-h-[400px]">
+        <div className="m-[20px_0_85px] min-h-[400px] overflow-auto">
           <FlexTable
             loading={loadingRanks}
             columns={COLUMNS}

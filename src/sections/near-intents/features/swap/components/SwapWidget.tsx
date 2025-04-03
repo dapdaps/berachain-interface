@@ -18,6 +18,7 @@ import { SwapFormProvider } from "./SwapFormProvider"
 import { SwapSubmitterProvider } from "./SwapSubmitter"
 import { SwapUIMachineFormSyncProvider } from "./SwapUIMachineFormSyncProvider"
 import { SwapUIMachineProvider } from "./SwapUIMachineProvider"
+import { BintentBear } from '@/components/bear-background/laptop';
 
 export const SwapWidget = memo(({
   tokenList,
@@ -88,13 +89,19 @@ export const SwapWidget = memo(({
   )
 
   const Mobile = () => (
-    <div className="w-full">
-      <div className="flex items-center pl-5 pt-4 pr-2 gap-2.5">
+    <div className="w-full h-[100dvh] overflow-y-auto">
+      <div className="relative z-[3] flex items-center pl-5 pt-4 pr-2 gap-2.5">
         <PageBack showBackText={false} />
         <img src="/images/background/intents-mobile-logo.png" className="w-[118px] h-[30px] object-contain" alt="" />
         <ConnectWalletBar />
       </div>
-      <div className="mt-5 max-h-[90dvh] overflow-y-auto mb-5 scrollbar-hide pb-[50px]">
+      <BintentBear
+        isBear={false}
+        className="w-[226px] h-[319px] !z-[1] !bottom-[unset] !left-1/2 !-translate-x-1/2 !top-[410px] scale-70 origin-top"
+        ranksClassName="!top-[-260px] !left-[-15px]"
+        rulesClassName="!top-[-260px] !left-[230px]"
+      />
+      <div className="relative z-[2] mt-5 max-h-[90dvh] overflow-y-auto mb-5 scrollbar-hide pb-[50px] md:pb-[44px] md:mt-[150px] md:max-h-[unset]">
         <Tabs
           isCard
           currentTab={currentTab}
