@@ -50,7 +50,6 @@ export default memo(function TaskBoard() {
   const signArray = new Array(10).fill(null)
   const { task, loading, categoryLoading, categoryVerify, queryVerify } = useTask()
   const handleTradeNow = function () {
-    handleReport("1023-006")
     router.push("/bintent")
   }
 
@@ -66,7 +65,7 @@ export default memo(function TaskBoard() {
           </div>
           <div className="md:p-[19px_0_39px_13px] p-[12px_12px_8px_20px] flex items-center justify-between">
             <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Earn multipliers through consecutive check-ins </span>
-            <div className="cursor-pointer md:hidden w-[121px] h-[36px] flex items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[14px] font-semibold" onClick={handleTradeNow}>Trade Now</div>
+            <div data-bp="1023-006" className="cursor-pointer md:hidden w-[121px] h-[36px] flex items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[14px] font-semibold" onClick={handleTradeNow}>Trade Now</div>
           </div>
 
           <div className="md:p-[0_15px_50px] p-[38px_16px_21px] md:border-0 border-t border-[#D7C69D] flex items-center md:flex-wrap gap-[16px]">
@@ -89,7 +88,7 @@ export default memo(function TaskBoard() {
               ))
             }
           </div>
-          <div className="cursor-pointer md:flex hidden m-[0_auto_17px] w-[302px] h-[36px] items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[14px] font-semibold" onClick={handleTradeNow}>Trade Now</div>
+          <div data-bp="1023-006" className="cursor-pointer md:flex hidden m-[0_auto_17px] w-[302px] h-[36px] items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[14px] font-semibold" onClick={handleTradeNow}>Trade Now</div>
         </div>
         <div className="mt-[60px] relative flex flex-col md:rounded-none rounded-[16px] md:bg-transparent bg-[#FFFAEA] md:border-0 border border-[#D7C69D]">
           <div className="absolute -left-[10px] -top-[54px] w-[358px]">
