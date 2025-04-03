@@ -1,30 +1,32 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
-import HillsideSvg from '@public/images/background/hillside.svg';
-import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
-import GrassSvg from '@public/images/background/grass.svg';
-import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
-import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
 import BridgeGroundSvg from '@public/images/background/bridge-ground-2.svg';
 import BridgeGroundRainySvg from '@public/images/background/bridge-ground-rainy-2.svg';
+import DashboardBearRainySvg from '@public/images/background/dashboard-bear-rainy.svg';
+import DashboardBearSvg from '@public/images/background/dashboard-bear.svg';
+import DashboardFlowersSvg from '@public/images/background/dashboard-flowers.svg';
+import GrassSvg from '@public/images/background/grass.svg';
+import HallFlag from '@public/images/background/hall-flag.svg';
+import HallPalace from '@public/images/background/hall-palace.svg';
+import HillsideRainySvg from '@public/images/background/hillside-rainy.svg';
+import HillsideSvg from '@public/images/background/hillside.svg';
 import LeftTreeSvg from '@public/images/background/tree.svg';
-import HallPalace from '@public/images/background/hall-palace.svg'
-import HallFlag from '@public/images/background/hall-flag.svg'
+import { motion } from 'framer-motion';
 
-import { memo } from 'react';
-import { Clouds, DappClouds } from './clouds';
-import BeraBgHome from '@/components/bear-background/home';
 import Flowers from '@/components/bear-background/components/flowers';
 import Ground from '@/components/bear-background/components/ground';
+import BeraBgHome from '@/components/bear-background/home';
+import { memo } from 'react';
+import { Clouds, DappClouds } from './clouds';
 
 
-import clsx from 'clsx';
 import { useRainyDay } from '@/hooks/use-rainy-day';
+import clsx from 'clsx';
 
+import BeraBgcampaign from '@/components/bear-background/campaign';
+import { useBintent } from '@/stores/bintent';
 import { useActivityStore } from '@/stores/useActivityStore';
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const LeftTree = function () {
   return (
@@ -773,7 +775,7 @@ const HatBear = function (props: any) {
     <div {...{ ...props }}>
       <img src='/images/background/bear.gif' />
 
-      <motion.svg
+      {/* <motion.svg
         animate={{
           rotate: [0, 3, 0, 3, 0, 3, 0]
         }}
@@ -822,10 +824,73 @@ const HatBear = function (props: any) {
           stroke='black'
           stroke-linecap='round'
         />
-      </motion.svg>
+      </motion.svg> */}
     </div>
   );
 };
+
+export const BintentBear = function (props: any) {
+  const { className, isBear = true, ranksClassName, ranksLineClassName, rulesClassName } = props;
+
+  const router = useRouter()
+  const store: any = useBintent()
+  return (
+    <div className={clsx('absolute left-[86px] bottom-[32px] z-20', className)} >
+      {
+        isBear && (
+          <div className='cursor-pointer w-[360px]'>
+            <img src='/images/background/bear.gif' />
+          </div>
+        )
+      }
+
+      <div className='absolute -top-[343px] left-[48px]'>
+        <div
+          className='cursor-pointer w-[190px]'
+          onClick={() => {
+            router.push("/bintent-trading-challenge")
+          }}
+        >
+          <img src="/images/background/balloon_1.svg" alt="balloon_1" />
+        </div>
+        <div className='absolute right-[20px] -bottom-[266px] w-[55px]'>
+          <img src="/images/background/balloon_line_1.svg" alt="balloon_line_1" />
+        </div>
+      </div>
+
+      <div className={clsx('absolute -top-[206px] left-[35px] z-10', ranksClassName)}>
+        <div
+          className='cursor-pointer w-[87px]'
+          onClick={() => {
+            store.set({
+              showRankModal: true
+            })
+          }}
+        >
+          <img src="/images/background/balloon_2.svg" alt="balloon_2" />
+        </div>
+        <div className={clsx('absolute -right-[96px] top-[87px] w-[120px]', ranksLineClassName)}>
+          <img src="/images/background/balloon_line_2.svg" alt="balloon_line_2" />
+        </div>
+      </div>
+
+      <div className={clsx('absolute -top-[183px] left-[150px]', rulesClassName)} onClick={() => {
+        store.set({
+          showRulesModal: true
+        })
+      }}>
+        <div className='cursor-pointer w-[55px]'>
+          <img src="/images/background/balloon_3.svg" alt="balloon_3" />
+        </div>
+        <div className='absolute -right-[13px] -bottom-[235px] w-[36.5px]'>
+          <img src="/images/background/balloon_line_3.svg" alt="balloon_line_3" />
+        </div>
+      </div>
+    </div>
+
+  );
+}
+
 
 const DashboardFlowers = function () {
   return (
@@ -914,7 +979,7 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign';
   children: React.ReactNode;
 };
 
@@ -988,6 +1053,19 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
 
         </>
+      ) : type === 'bintent' ? (
+        <>
+          <Clouds isRainyDay={isRainyDay} />
+          {
+            isDefaultTheme() && (
+              <>
+                <Flowers />
+                <BintentBear />
+              </>
+            )
+          }
+          <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
+        </>
       ) : type === 'dapp' ? (
         <>
           <DappClouds isRainyDay={isRainyDay} />
@@ -1005,6 +1083,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           </div>
           <Ground isDefaultTheme={isDefaultTheme} isRainyDay={isRainyDay} />
         </>
+      ) : type === 'campaign' ? (
+        <BeraBgcampaign />
       ) : (
         <></>
       )}

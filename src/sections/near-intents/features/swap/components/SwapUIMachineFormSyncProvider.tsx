@@ -10,6 +10,7 @@ import useAddAction from "@/hooks/use-add-action"
 import { ethers } from "ethers"
 import useToast from "@/hooks/use-toast"
 import { useAccount } from "wagmi"
+import { useBintent } from "@/stores/bintent"
 
 type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
@@ -27,6 +28,7 @@ export function SwapUIMachineFormSyncProvider({
   const actorRef = SwapUIMachineContext.useActorRef()
   const { addAction } = useAddAction("dapp", true);
   const toast = useToast()
+  const store = useBintent()
 
   // Make `onSuccessSwap` stable reference, waiting for `useEvent` hook to come out
   const onSuccessSwapRef = useRef(onSuccessSwap)
@@ -70,7 +72,7 @@ export function SwapUIMachineFormSyncProvider({
           break
         }
 
-        case "INTENT_SETTLED": {   
+        case "INTENT_SETTLED": {
           const snapshot = actorRef.getSnapshot()
           const amountIn = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn || 0n, snapshot.context.formValues.tokenIn.decimals)
           const amountOut = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut || 0n, snapshot.context.formValues.tokenOut.decimals)
@@ -84,19 +86,18 @@ export function SwapUIMachineFormSyncProvider({
             intentHash: event.data.intentHash,
           })
 
-          if (!userChainType) break 
+          if (!userChainType) break
 
           toast.success({
             title: "Swap successful"
           })
-
           addAction({
             type: "Swap",
             inputCurrency: event.data.tokenIn,
             outputCurrency: event.data.tokenOut,
             template: "near-intents",
             transactionHash: event.data.intentHash,
-            inputCurrencyAmount: Number(amountIn), 
+            inputCurrencyAmount: Number(amountIn),
             outputCurrencyAmount: Number(amountOut),
             status: 1,
             token_in_currency: event.data.tokenIn,
@@ -104,6 +105,7 @@ export function SwapUIMachineFormSyncProvider({
             sub_type: 'swap',
             chainId: addActionChainIdMap[userChainType] || chainId,
             account_id: userAddress,
+            extra_data: store?.extra_data
           });
           break
         }
@@ -113,7 +115,7 @@ export function SwapUIMachineFormSyncProvider({
     return () => {
       sub.unsubscribe()
     }
-  }, [actorRef, setValue, addAction, userChainType])
+  }, [actorRef, setValue, addAction, userChainType, store.extra_data])
 
   const swapRef = useSelector(actorRef, (state) => state.children.swapRef)
   const publicKeyVerifierRef = useSelector(swapRef, (state) => {

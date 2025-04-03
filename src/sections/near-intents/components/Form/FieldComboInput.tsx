@@ -33,6 +33,7 @@ interface Props<T extends FieldValues>
   placeholder?: string;
   balance?: bigint;
   selected?: BaseTokenInfo | UnifiedTokenInfo;
+  disabledSelect?: boolean;
   handleSelect?: () => void;
   className?: string;
   errors?: FieldErrors;
@@ -53,6 +54,7 @@ export const FieldComboInput = <T extends FieldValues>({
   placeholder = "0",
   balance,
   selected,
+  disabledSelect,
   handleSelect,
   className,
   errors,
@@ -104,7 +106,7 @@ export const FieldComboInput = <T extends FieldValues>({
     min,
     max,
     pattern: {
-      value: /^[0-9]*[,.]?[0-9]*$/, // Valid result "10", "1,0", "0.01", ".01"
+      value: /^[0-9]*[,.]?[0-9]*$/,
       message: "Please enter a valid number",
     },
     required: required ? "This field is required" : false,
@@ -112,6 +114,14 @@ export const FieldComboInput = <T extends FieldValues>({
 
   const allInputRefs = useMergedRef(inputRef, reactHookFormRegisterProps.ref);
   const fieldError = errors?.[fieldName];
+  
+  const handleInputValidation = (e: React.FormEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    if (!/^\d*\.?\d*$/.test(value)) {
+      e.currentTarget.value = value.replace(/[^\d.]/g, '').replace(/(\..*?)\..*/g, '$1');
+    }
+  };
+  
   return (
     <div
       className={clsx(
@@ -121,7 +131,7 @@ export const FieldComboInput = <T extends FieldValues>({
     >
       <div className="w-full flex justify-between items-center gap-2 h-15">
         {selected && (
-          <SelectAssets selected={selected} handleSelect={handleSelect} />
+          <SelectAssets disabledSelect={disabledSelect} selected={selected} handleSelect={handleSelect} />
         )}
         <input
           type="text"
@@ -132,10 +142,11 @@ export const FieldComboInput = <T extends FieldValues>({
           placeholder={placeholder}
           disabled={disabled}
           autoComplete="off"
+          onInput={handleInputValidation}
           className={clsx(
             "w-full text-3xl font-medium placeholder-black border-transparent focus:border-transparent focus:ring-0 px-0 text-right",
             disabled &&
-              "text-black-200 pointer-events-none placeholder-black-200",
+            "text-black-200 pointer-events-none placeholder-black-200",
             {
               hidden: isLoading,
             }

@@ -23,7 +23,7 @@ export function useUser() {
 
   const pathname = usePathname();
 
-  const isNearPage = ['/bintent', '/my-near-wallet-gateway'].includes(pathname);
+  const isNearPage = ['/bintent', '/my-near-wallet-gateway', '/bintent-trading-challenge'].includes(pathname);
   const near_current_wallet = connectedWallets.length > 0 ? connectedWallets[0] : null;
 
   const getUserInfo = useCallback(async () => {
@@ -43,8 +43,8 @@ export function useUser() {
   const getAccessToken = async () => {
     setUserInfo({ accessTokenLoading: true });
     // 获取当前使用的地址
-    const currentAddress = isNearPage && near_current_wallet 
-      ? near_current_wallet.address 
+    const currentAddress = isNearPage && near_current_wallet
+      ? near_current_wallet.address
       : address;
 
     if (!currentAddress) {
@@ -77,7 +77,7 @@ export function useUser() {
         address: currentAddress,
         code: '',
         source: isBitget ? 'bitget_wallet' : isCoin98 ? 'coin98_wallet' : isOkx ? 'okx_wallet' : '',
-        wallet:  _walletName.toLowerCase(),
+        wallet: _walletName.toLowerCase(),
       });
       if (!activateRes.isSuccess && !isNearPage) {
         toast.fail({
@@ -89,7 +89,7 @@ export function useUser() {
 
     const res = await post('/api/auth/access-token', {
       address: currentAddress,
-      wallet:  _walletName.toLowerCase(),
+      wallet: _walletName.toLowerCase(),
     });
     setUserInfo({
       accessToken: res,

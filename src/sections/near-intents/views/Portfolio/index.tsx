@@ -38,7 +38,7 @@ const Portfolio = () => {
   const generateAssetList = (tokenData: Map<string, any>, balances: any) => {
     const newAssetList: SelectItemToken[] = [];
 
-    for (const [tokenId, token] of tokenData) {
+    for (const [tokenId, token] of (tokenData as any)) {
       const totalBalance = computeTotalBalance(token, balances ?? {});
       newAssetList.push({
         itemId: tokenId,
@@ -167,7 +167,7 @@ const Portfolio = () => {
           Withdraw
         </button>
       </div>
-      <div className="max-h-[500px] overflow-y-auto pb-6 scrollbar-hide">
+      <div className="max-h-[500px] md:max-h-[unset] overflow-y-auto pb-6 scrollbar-hide">
         {assetList.map(({ token, balance }, index) => (
           <div
             key={index}

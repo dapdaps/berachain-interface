@@ -67,6 +67,7 @@ type EmittedEvents = PassthroughEvent | { type: "INTENT_PUBLISHED" }
 export const swapUIMachine = setup({
   types: {
     input: {} as {
+      currentTab: string
       tokenIn: SwappableToken
       tokenOut: SwappableToken
       tokenList: SwappableToken[]
@@ -74,30 +75,30 @@ export const swapUIMachine = setup({
     context: {} as Context,
     events: {} as
       | {
-          type: "input"
-          params: Partial<{
-            tokenIn: SwappableToken
-            tokenOut: SwappableToken
-            amountIn: string
-          }>
-        }
+        type: "input"
+        params: Partial<{
+          tokenIn: SwappableToken
+          tokenOut: SwappableToken
+          amountIn: string
+        }>
+      }
       | {
-          type: "submit"
-          params: {
-            userAddress: string
-            userChainType: ChainType
-            nearClient: providers.Provider
-            sendNearTransaction: (
-              tx: Transaction["NEAR"]
-            ) => Promise<{ txHash: string } | null>
-          }
+        type: "submit"
+        params: {
+          userAddress: string
+          userChainType: ChainType
+          nearClient: providers.Provider
+          sendNearTransaction: (
+            tx: Transaction["NEAR"]
+          ) => Promise<{ txHash: string } | null>
         }
+      }
       | {
-          type: "BALANCE_CHANGED"
-          params: {
-            changedBalanceMapping: BalanceMapping
-          }
+        type: "BALANCE_CHANGED"
+        params: {
+          changedBalanceMapping: BalanceMapping
         }
+      }
       | BackgroundQuoterParentEvents
       | DepositedBalanceEvents
       | PassthroughEvent,
@@ -157,6 +158,9 @@ export const swapUIMachine = setup({
     }),
     clearQuote: assign({ quote: null }),
     clearError: assign({ error: null }),
+    setCurrentTab: assign({
+      currentTab: (_, value: string) => value,
+    }),
     setIntentCreationResult: assign({
       intentCreationResult: (_, value: SwapIntentMachineOutput) => value,
     }),
@@ -285,6 +289,7 @@ export const swapUIMachine = setup({
     intentCreationResult: null,
     intentRefs: [],
     tokenList: input.tokenList,
+    currentTab: "trading_challenge"
   }),
 
   entry: ["spawnBackgroundQuoterRef", "spawnDepositedBalanceRef"],

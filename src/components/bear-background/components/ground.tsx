@@ -4,7 +4,7 @@ function Ground(props: any) {
   const { isRainyDay, isDefaultTheme } = props;
   
   const getBgColor = () => {
-    if (isDefaultTheme()) {
+    if (isDefaultTheme?.()) {
       return isRainyDay ? 'bg-[#90AF4E]' : 'bg-[#B6DF5D]'
     }
     return 'bg-[#FFF5A9]'

@@ -1,5 +1,10 @@
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
-import { Box, Callout, Flex } from "@radix-ui/themes"
+import SwitchTabs from "@/components/switch-tabs"
+import useIsMobile from "@/hooks/use-isMobile"
+import useToast from "@/hooks/use-toast"
+import { LIST_TOKENS } from "@/sections/near-intents/constants/tokens"
+import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
+import { Callout, Flex } from "@radix-ui/themes"
+import { useAppKit } from "@reown/appkit/react"
 import { useSelector } from "@xstate/react"
 import {
   Fragment,
@@ -7,12 +12,9 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
+  useState
 } from "react"
 import { useFormContext } from "react-hook-form"
-import { useTokensUsdPrices } from "../../../hooks/useTokensUsdPrices"
-import { formatUsdAmount } from "../../../utils/format"
-import getTokenUsdPrice from "../../../utils/getTokenUsdPrice"
 import type { ActorRefFrom, SnapshotFrom } from "xstate"
 import { ButtonCustom } from "../../../components/Button/ButtonCustom"
 import { ButtonSwitch } from "../../../components/Button/ButtonSwitch"
@@ -20,26 +22,21 @@ import { Form } from "../../../components/Form"
 import { FieldComboInput } from "../../../components/Form/FieldComboInput"
 import { SwapIntentCard } from "../../../components/IntentCard/SwapIntentCard"
 import type { ModalSelectAssetsPayload } from "../../../components/Modal/ModalSelectAssets"
+import { useTokensUsdPrices } from "../../../hooks/useTokensUsdPrices"
 import { useModalStore } from "../../../providers/ModalStoreProvider"
 import { isAggregatedQuoteEmpty } from "../../../services/quoteService"
 import { ModalType } from "../../../stores/modalStore"
 import type { SwappableToken } from "../../../types/swap"
+import { formatUsdAmount } from "../../../utils/format"
+import getTokenUsdPrice from "../../../utils/getTokenUsdPrice"
 import { computeTotalBalance } from "../../../utils/tokenUtils"
 import type { depositedBalanceMachine } from "../../machines/depositedBalanceMachine"
 import type { intentStatusMachine } from "../../machines/intentStatusMachine"
 import type { Context } from "../../machines/swapUIMachine"
+import SwapCompareWith from "./SwapCompareWith"
 import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
-import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
-import { useAppKit } from "@reown/appkit/react"
-import useIsMobile from "@/hooks/use-isMobile"
-import useToast from "@/hooks/use-toast"
-
-export type SwapFormValues = {
-  amountIn: string
-  amountOut: string
-}
-
+import { useBintent } from "@/stores/bintent"
 export interface SwapFormProps {
   onNavigateDeposit?: () => void
 }
@@ -50,20 +47,23 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     register,
     setValue,
     getValues,
-    formState: { errors },
+    formState: { errors, },
   } = useFormContext<SwapFormValues>()
+  const store = useBintent()
 
   const isMobile = useIsMobile();
   const toast = useToast();
-
   const { state } = useConnectWallet()
   const swapUIActorRef = SwapUIMachineContext.useActorRef()
 
   const snapshot = SwapUIMachineContext.useSelector((snapshot) => snapshot)
   const intentCreationResult = snapshot.context.intentCreationResult
+  const intentRefs = snapshot.context.intentRefs
 
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
   const modal = useAppKit()
+
+  // const [currentTab, setCurrentTab] = useState<string>('trading_challenge');
 
   const { tokenIn, tokenOut, noLiquidity } = SwapUIMachineContext.useSelector(
     (snapshot) => {
@@ -71,7 +71,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
       const tokenOut = snapshot.context.formValues.tokenOut
       const noLiquidity =
         snapshot.context.quote && isAggregatedQuoteEmpty(snapshot.context.quote)
-
       return {
         tokenIn,
         tokenOut,
@@ -182,14 +181,59 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     tokensUsdPriceData
   )
 
+  const hasOngoingIntents = intentRefs.some(intentRef => {
+    const intentState = intentRef.getSnapshot();
+    return intentState.matches("pending") || intentState.matches("checking");
+  });
+
+  useEffect(() => {
+    if (store?.currentTab === "trading_challenge") {
+      swapUIActorRef.send({
+        type: "input",
+        params: { tokenIn: LIST_TOKENS[0], tokenOut: LIST_TOKENS[1] },
+      })
+    } else {
+      swapUIActorRef.send({
+        type: "input",
+        params: { tokenIn: LIST_TOKENS[1], tokenOut: LIST_TOKENS[0] },
+      })
+    }
+  }, [store?.currentTab])
+
+  useEffect(() => {
+    return () => {
+      store.set({
+        currentTab: "trading_challenge"
+      })
+    }
+  }, [])
+
   return (
     <Flex
       direction="column"
       gap="2"
       className="bg-[#FFFDEB] lg:rounded-[30px] lg:p-5 lg:border lg:border-black lg:shadow-shadow1 md:px-3 md:pb-[40px]"
     >
-      <div className="font-CherryBomb w-full text-center text-[26px] mb-3">Swap</div>
-      <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
+      <SwitchTabs
+        tabs={[
+          { label: "Trading Challenge", value: "trading_challenge" },
+          { label: "Normal", value: "normal" }
+        ]}
+        onChange={(val) => {
+          store.set({
+            currentTab: val
+          })
+        }}
+        current={store?.currentTab}
+        className="mx-auto md:w-[320px] w-[480px]"
+      />
+      {
+        store?.currentTab === "trading_challenge" ? (
+          <div className="font-Montserrat text-[14px] my-[11px]">In this mode your trades will count towards the challenge, and only BERA token (token in /out) counts.  </div>
+        ) : (
+          <div className="font-Montserrat text-[14px] my-[11px] text-center">Cross-chain swap across any network, any token.</div>
+        )
+      }
       <Form<SwapFormValues>
         handleSubmit={handleSubmit(onSubmit)}
         register={register}
@@ -197,6 +241,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         <FieldComboInput<SwapFormValues>
           fieldName="amountIn"
           selected={tokenIn}
+          disabledSelect={store?.currentTab === "trading_challenge" && tokenIn?.symbol === LIST_TOKENS?.[0]?.symbol}
           handleSelect={() => {
             openModalSelectAssets("tokenIn")
           }}
@@ -217,14 +262,23 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenOut")
           }}
-          className="border border-[#373A53] border-t-[0] rounded-b-xl mb-5"
+          disabledSelect={store?.currentTab === "trading_challenge" && tokenOut?.symbol === LIST_TOKENS?.[0]?.symbol}
+          className="border border-[#373A53] border-t-[0] rounded-b-xl mb-[14px]"
           errors={errors}
           disabled={true}
           isLoading={snapshot.matches({ editing: "waiting_quote" })}
           usdAmount={usdAmountOut ? `~${formatUsdAmount(usdAmountOut)}` : null}
           balance={tokenOutBalance}
         />
-
+        <SwapCompareWith
+          tokenIn={tokenIn}
+          tokenOut={tokenOut}
+          currentTab={store?.currentTab}
+          amountIn={getValues().amountIn}
+          amountOut={getValues().amountOut}
+          usdAmountOut={usdAmountOut}
+          tokensUsdPriceData={tokensUsdPriceData}
+        />
         <Flex align="stretch" direction="column">
           {!state.address ? (
             <ButtonCustom
@@ -243,13 +297,17 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
             >
               Connect Wallet
             </ButtonCustom>
-          ) :  (
+          ) : (
             <ButtonCustom
               type="submit"
               size="lg"
               fullWidth
               isLoading={snapshot.matches("submitting")}
-              disabled={!!balanceInsufficient || !!noLiquidity}
+              disabled={
+                !!balanceInsufficient ||
+                !!noLiquidity ||
+                hasOngoingIntents
+              }
             >
               {noLiquidity
                 ? "No liquidity providers"
@@ -262,10 +320,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
       </Form>
 
       {renderIntentCreationResult(intentCreationResult)}
-
-      {/* <Box>
-        <Intents intentRefs={snapshot.context.intentRefs} />
-      </Box> */}
     </Flex>
   )
 }

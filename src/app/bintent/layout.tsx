@@ -22,7 +22,6 @@ const Laptop = ({ searchParams, router, pathname, children }: any) => {
 const Mobile = ({ searchParams, router, pathname, children }: any) => {
   return (
     <div className="relative">
-      {/* <PageBack className="absolute left-[12px] top-[22px]" showBackText={false} /> */}
       {children}
     </div>
   );
@@ -40,7 +39,7 @@ export default function DexLayout({
   const isMobile = useIsMobile();
 
   return (
-    <BearBackground type="dapps">
+    <BearBackground type="bintent">
       {isMobile ? (
         <Mobile {...{ searchParams, router, pathname, children }} />
       ) : (
