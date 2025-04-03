@@ -828,14 +828,22 @@ const HatBear = function (props: any) {
     </div>
   );
 };
-const BintentBear = function (props: any) {
+
+export const BintentBear = function (props: any) {
+  const { className, isBear = true, ranksClassName, ranksLineClassName, rulesClassName } = props;
+
   const router = useRouter()
-  const store = useBintent()
+  const store: any = useBintent()
   return (
-    <div className='absolute left-[86px] bottom-[32px] z-20' >
-      <div className='cursor-pointer w-[360px]'>
-        <img src='/images/background/bear.gif' />
-      </div>
+    <div className={clsx('absolute left-[86px] bottom-[32px] z-20', className)} >
+      {
+        isBear && (
+          <div className='cursor-pointer w-[360px]'>
+            <img src='/images/background/bear.gif' />
+          </div>
+        )
+      }
+
       <div className='absolute -top-[343px] left-[48px]'>
         <div
           className='cursor-pointer w-[190px]'
@@ -850,7 +858,7 @@ const BintentBear = function (props: any) {
         </div>
       </div>
 
-      <div className='absolute -top-[206px] left-[35px] z-10'>
+      <div className={clsx('absolute -top-[206px] left-[35px] z-10', ranksClassName)}>
         <div
           className='cursor-pointer w-[87px]'
           onClick={() => {
@@ -861,12 +869,12 @@ const BintentBear = function (props: any) {
         >
           <img src="/images/background/balloon_2.svg" alt="balloon_2" />
         </div>
-        <div className='absolute -right-[96px] top-[87px] w-[120px]'>
+        <div className={clsx('absolute -right-[96px] top-[87px] w-[120px]', ranksLineClassName)}>
           <img src="/images/background/balloon_line_2.svg" alt="balloon_line_2" />
         </div>
       </div>
 
-      <div className='absolute -top-[183px] left-[150px]' onClick={() => {
+      <div className={clsx('absolute -top-[183px] left-[150px]', rulesClassName)} onClick={() => {
         store.set({
           showRulesModal: true
         })
@@ -971,7 +979,7 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'campaign';
   children: React.ReactNode;
 };
 
