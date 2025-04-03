@@ -37,6 +37,7 @@ import SwapCompareWith from "./SwapCompareWith"
 import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import { useBintent } from "@/stores/bintent"
+import useClickTracking from "@/hooks/use-click-tracking"
 export interface SwapFormProps {
   onNavigateDeposit?: () => void
 }
@@ -49,6 +50,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     getValues,
     formState: { errors, },
   } = useFormContext<SwapFormValues>()
+  const { handleReport } = useClickTracking();
   const store = useBintent()
 
   const isMobile = useIsMobile();
@@ -220,6 +222,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           { label: "Normal", value: "normal" }
         ]}
         onChange={(val) => {
+          handleReport("1023-005")
           store.set({
             currentTab: val
           })

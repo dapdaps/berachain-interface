@@ -37,6 +37,7 @@ export default memo(function AirShip(props: any) {
 
   return (
     <motion.div
+      data-bp="1023-001"
       onClick={() => {
         router.push("/bintent-trading-challenge")
       }}

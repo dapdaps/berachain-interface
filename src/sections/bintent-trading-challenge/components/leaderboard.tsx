@@ -2,14 +2,16 @@ import Empty from "@/components/empty"
 import FlexTable from "@/components/flex-table"
 import SwitchTabs from "@/components/switch-tabs"
 import useCustomAccount from "@/hooks/use-account"
+import useClickTracking from "@/hooks/use-click-tracking"
 import { numberFormatter } from "@/utils/number-formatter"
 import { formatLongText } from "@/utils/utils"
+import Big from "big.js"
 import { memo, useState } from "react"
 import useRanks from "../hooks/use-ranks"
 import useYourRank from "../hooks/use-your-rank"
-import Big from "big.js"
 
 export default memo(function Leaderboard() {
+  const { handleReport } = useClickTracking();
   const { account } = useCustomAccount()
   const [currentTab, setCurrentTab] = useState("volume")
   const { ranks, loading: loadingRanks } = useRanks(currentTab)
@@ -76,6 +78,7 @@ export default memo(function Leaderboard() {
             { label: "Trades Rank", value: "transactions" }
           ]}
           onChange={(val) => {
+            handleReport("1023-008")
             setCurrentTab(val)
           }}
           current={currentTab}
