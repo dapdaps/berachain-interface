@@ -8,7 +8,7 @@ import Popover, {
 } from "@/components/popover";
 import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
-import { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
+import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 
 const ActionUnionLeft = (props: any) => {
   const { className } = props;
@@ -50,22 +50,26 @@ const ActionUnionLeft = (props: any) => {
                 <div className="flex items-center gap-[16px]">
                   <div className="flex items-center">
                     {protocol?.reward_tokens?.map((token: any, idx: number) => {
-                      const currentRewardToken = protocol.user_reward?.find((_it: any) => _it.address.toLowerCase() === token.address.toLowerCase());
+                      const currentRewardToken = protocol.user_reward?.find(
+                        (_it: any) =>
+                          _it.address.toLowerCase() ===
+                          token.address.toLowerCase()
+                      );
                       return (
                         <Popover
                           key={idx}
                           triggerContainerClassName="inline-block"
-                          content={(
+                          content={
                             <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                               <RewardIconContent
                                 reward={{
                                   ...token,
-                                  amount: currentRewardToken?.amount,
+                                  amount: currentRewardToken?.amount
                                 }}
                                 className=""
                               />
                             </Card>
-                          )}
+                          }
                           trigger={PopoverTrigger.Hover}
                           placement={PopoverPlacement.BottomLeft}
                           contentClassName="!z-[101]"
@@ -99,7 +103,9 @@ const ActionUnionLeft = (props: any) => {
                         .join("-")}
                     </div>
                     <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%]">
-                      {/^(Hub|Bex)$/i.test(protocol?.protocol || "") ? "Bex" : protocol?.protocol}
+                      {/^(Hub|Bex)$/i.test(protocol?.protocol || "")
+                        ? "Bex"
+                        : protocol?.protocol}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
@@ -152,11 +158,13 @@ const ActionUnionLeft = (props: any) => {
                     <button
                       type="button"
                       className="shrink-0 w-[53px] h-[25px] rounded-[6px] bg-[#FFDC50] border border-black text-[14px] font-[500] flex justify-center items-center mt-[5px]"
-                      onClick={() =>
-                        toggleClaimVisible(true, protocol.user_reward)
-                      }
+                      onClick={() => {
+                        setCurrentProtocol(protocol);
+                        toggleClaimVisible(true, protocol.user_reward);
+                      }}
                       style={{
-                        display: protocol.user_reward?.length > 0 ? "flex" : "none"
+                        display:
+                          protocol.user_reward?.length > 0 ? "flex" : "none"
                       }}
                     >
                       Claim
