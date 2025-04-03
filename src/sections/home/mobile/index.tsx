@@ -13,6 +13,8 @@ import Signpost from "@/sections/home-earth/components/signpost";
 import BeraPrice from "@/sections/home-earth/components/bera-price";
 import { HomeEarthContext } from "@/sections/home-earth/context";
 import { useRainyDay } from "@/hooks/use-rainy-day";
+import Vaults from "@/components/vaults";
+import AirShip from "@/components/bear-background/components/airship";
 
 const Home = () => {
   const router = useProgressRouter();
@@ -226,13 +228,33 @@ const Home = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "top",
                 backgroundRepeat: "no-repeat",
-                height: "calc(252vw + 64px)",
+                height: "calc(280vw + 64px)",
                 minHeight: "100dvh"
               }}
             >
+              <Vaults className="!absolute z-[2] !left-[unset] !top-[130px] right-[-30px] scale-[0.78] origin-right" />
+              <AirShip
+                className="!absolute z-[3] !left-[4px] !top-[60px] !right-[unset] origin-left"
+                variants={{
+                  init: {
+                    x: "200%",
+                    scale: 0.88,
+                  },
+                  enter: {
+                    x: 0,
+                    scale: 0.88,
+                  },
+                }}
+                initial="init"
+                animate="enter"
+                transition={{
+                  duration: 3,
+                }}
+              />
+
               {/*#region Beraciaga*/}
               <motion.div
-                className="w-[187px] h-[41vw] translate-y-[19.487vw] translate-x-[3vw] opacity-50"
+                className="w-[187px] h-[41vw] translate-y-[50vw] translate-x-[3vw] opacity-50"
                 // whileTap="tap"
                 // style={{ clipPath: `path("M18.9114 5.11072C2.51142 13.1107 -2.58852 33.6113 -0.588519 43.6113C-0.588519 53.1114 1.91148 77.8111 1.91148 86.6111C1.91148 95.4111 14.0781 97.2778 18.9114 97.1111C17.5781 100.444 15.7114 109.611 18.9114 119.611C22.9114 132.111 77.9114 129.111 88.9114 124.611C97.7114 121.011 99.5781 102.778 99.4114 94.1111L126.411 84.1113C152.912 84.1113 161.411 86.1113 175.411 84.1113C189.411 82.1113 187.911 75.6111 179.411 61.6111C172.611 50.4111 153.245 53.9444 144.411 57.1111C135.911 35.6111 103.411 0.611248 90.9114 -2.38875C78.4114 -5.38875 39.4114 -4.88928 18.9114 5.11072Z")` }}
                 data-bp="1015-011"
@@ -254,7 +276,7 @@ const Home = () => {
               {/*#endregion*/}
 
               <motion.div
-                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[23vw] translate-x-[10.256vw]"
+                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[48vw] translate-x-[10.256vw]"
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {
@@ -277,7 +299,7 @@ const Home = () => {
                 />
               </motion.div>
               <motion.div
-                className="w-[65.64vw] h-[47.43vw] translate-y-[10.256vw] translate-x-[40.256vw]"
+                className="w-[65.64vw] h-[47.43vw] translate-y-[40vw] translate-x-[40.256vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/marketplace");
@@ -308,7 +330,7 @@ const Home = () => {
                  />*/}
               </motion.div>
               <motion.div
-                className="w-[63.076vw] h-[56.153vw] -translate-y-[12.85vw] -translate-x-[10.256vw]"
+                className="w-[63.076vw] h-[56.153vw] translate-y-[16vw] -translate-x-[10.256vw]"
                 whileTap="tap"
                 data-bp="1015-005"
                 onClick={() => {
@@ -334,7 +356,7 @@ const Home = () => {
                 />
               </motion.div>
               <motion.div
-                className="w-[77.435vw] h-[54.684vw] -translate-y-[45.641vw] translate-x-[34.8vw]"
+                className="w-[77.435vw] h-[54.684vw] -translate-y-[16vw] translate-x-[34.8vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/portfolio");
@@ -361,7 +383,7 @@ const Home = () => {
                  />*/}
               </motion.div>
               <motion.div
-                className="w-[73.846vw] h-[47.692vw] -translate-y-[65.64vw] -translate-x-[17.948vw]"
+                className="w-[73.846vw] h-[47.692vw] -translate-y-[30vw] -translate-x-[17.948vw]"
                 whileTap="tap"
                 onClick={() => {
                   router.push("/vaults");
@@ -395,7 +417,7 @@ const Home = () => {
                 </EntryCard>
               </motion.div>
               <motion.div
-                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[76.923vw] translate-x-[34.8vw]"
+                className="relative w-[77.435vw] h-[51.794vw] -translate-y-[47vw] translate-x-[34.8vw]"
                 // whileTap="tap"
                 onClick={() => {
                   // router.push('/cave');
