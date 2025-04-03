@@ -81,7 +81,9 @@ export function useVaultsV2(): VaultsV2 {
 
   const toggleOpenAddLp = (_openAddLp?: boolean) => {
     setOpenAddLp(typeof _openAddLp === "boolean" ? _openAddLp : !openAddLp);
-    handleReportWithoutDebounce("1022-001-013", currentRecord.pool_address);
+    if (_openAddLp) {
+      handleReportWithoutDebounce("1022-001-013", currentRecord.pool_address);
+    }
   };
 
   return {
