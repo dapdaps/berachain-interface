@@ -82,7 +82,7 @@ export default memo(function Leaderboard() {
           cursorClassName="md:!rounded-[12px]"
           className="mx-auto md:w-[338px] md:h-[56px] md:!rounded-[12px] w-[665px]"
         />
-        <div className="m-[20px_0_85px] min-h-[400px] overflow-auto">
+        <div className="m-[20px_0_85px] md:min-h-[400px] md:h-auto h-[400px] overflow-auto">
           <FlexTable
             loading={loadingRanks}
             columns={COLUMNS}
