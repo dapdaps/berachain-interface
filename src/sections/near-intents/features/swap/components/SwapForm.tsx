@@ -200,6 +200,14 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     }
   }, [store?.currentTab])
 
+  useEffect(() => {
+    return () => {
+      store.set({
+        currentTab: "trading_challenge"
+      })
+    }
+  }, [])
+
   return (
     <Flex
       direction="column"
@@ -212,7 +220,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           { label: "Normal", value: "normal" }
         ]}
         onChange={(val) => {
-          // setCurrentTab(val)
           store.set({
             currentTab: val
           })

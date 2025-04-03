@@ -20,7 +20,7 @@ export default memo(function Rules() {
 
         <div className="flex flex-col gap-[10px]">
           <div className="text-black font-CherryBomb text-[16px] leading-[90%]">Duration: April 3 - April 17</div>
-          <div className="text-black font-CherryBomb text-[16px] leading-[90%]">How to Participate?</div>
+          <div className="text-black font-CherryBomb text-[16px] leading-[90%]">How to Participate</div>
 
           <div className="text-[#3D405A] text-[14px] font-medium leading-[150%]">
             <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">1.</span>Visit the Beratown campaign and access Bintent.</div>
@@ -29,7 +29,7 @@ export default memo(function Rules() {
             <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">4.</span>Complete tasks, climb the leaderboard, and earn rewards.</div>
           </div>
 
-          <div className="text-black font-CherryBomb text-[16px] leading-[90%]">Rewards?</div>
+          <div className="text-black font-CherryBomb text-[16px] leading-[90%]">Rewards</div>
           <div className="text-[#3D405A] text-[14px] font-medium leading-[150%]">
             <div className="flex gap-[6px]"><span className="mt-[6px] min-w-[8px] w-[8px] h-[8px] rounded-full bg-black" />Top 10 by volume share $5,000 in NEAR.</div>
             <div className="pl-[6px]">

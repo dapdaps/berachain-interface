@@ -14,6 +14,11 @@ function VerifyButton({
   className,
   queryVerify,
 }) {
+  const isMobile = useIsMobile()
+
+  if (isMobile && verify?.[type]) {
+    return <></>
+  }
   return (
     <div className={className}>
       {
@@ -45,7 +50,7 @@ export default memo(function TaskBoard() {
   }
 
   return (
-    <div className="md:m-[222px_0_65px] m-[182px_auto_69px] relative md:w-full w-[720px] md:h-[1085px] h-[836px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
+    <div className="md:m-[56px_0_65px] m-[182px_auto_69px] relative md:w-full w-[720px] md:h-[1085px] h-[836px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
       <div className="absolute left-1/2 md:-top-[27px] -top-[39px] -translate-x-1/2 md:w-[235px] w-[379px] md:h-[59px] h-[77px] md:bg-[url('/images/campaign/mobile/task_board_bg.svg')] bg-[url('/images/campaign/task_board_bg.svg')] bg-cover bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb md:text-[26px] text-[32px] uppercase">
         Task board
       </div>
@@ -86,11 +91,17 @@ export default memo(function TaskBoard() {
             <img src="/images/campaign/bookmark_4.png" alt="bookmark_4" />
           </div>
           <div className="md:mb-[10px] md:rounded-[16px] md:bg-[#FFFAEA] md:border md:border-[#D7C69D]">
-            <div className="md:p-[23px_5px_15px_13px] p-[12px_12px_8px_20px] flex items-center justify-between">
+            <div className="md:p-[23px_5px_15px_13px] p-[12px_12px_8px_20px] flex items-center gap-[8px] justify-between">
               <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Meet any of the following for a x1.2 boost</span>
-              <VerifyButton className="md:hidden block w-[121px]" type="boost1.2" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
+              {
+                isMobile && categoryVerify?.["boost1.2"] ? (
+                  <Radio checked />
+                ) : (
+                  <VerifyButton className="md:hidden flex justify-end w-[121px]" type="boost1.2" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
+                )
+              }
             </div>
-            <div className="md:p-[0_8px] p-[22px_36px] md:border-0 border-y border-[#D7C69D]">
+            <div className="md:p-[0_8px_16px] p-[22px_36px] md:border-0 border-y border-[#D7C69D]">
               <div className="flex items-center gap-[6px] before:w-[8px] before:h-[8px] before:rounded-full before:bg-black md:text-[16px] text-[20px] md:font-Montserrat font-CherryBomb md:font-semibold text-black md:leading-[150%] leading-[120%]">
                 Holders of <a className="underline" href="https://magiceden.io/collections/berachain/steady-teddys-9" target="_blank">Steady Teddy NFT</a>
               </div>
@@ -98,15 +109,21 @@ export default memo(function TaskBoard() {
                 Holders of <a className="underline" href="https://dexscreener.com/berachain/0xcb42b9d09d8da230d0390728c6f236511fac403b" target="_blank">$Henlo</a>
               </div>
 
-              <VerifyButton className="m-[14px_auto_16px] md:flex w-[302px] hidden" type="boost1.2" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
+              <VerifyButton className="m-[14px_auto_0] md:flex w-[302px] hidden" type="boost1.2" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
             </div>
           </div>
           <div className="md:rounded-[16px] md:bg-[#FFFAEA] md:border md:border-[#D7C69D]">
-            <div className="md:p-[11px_5px_15px_13px] p-[12px_12px_8px_20px] flex items-center justify-between">
+            <div className="md:p-[11px_5px_15px_13px] p-[12px_12px_8px_20px] flex items-center gap-[8px] justify-between">
               <span className="text-black font-CherryBomb text-[20px] leading-[120%]">Meet any of the following for a x1.1 boost</span>
-              <VerifyButton className="md:hidden block w-[121px]" type="boost1.1" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
+              {
+                isMobile && categoryVerify?.["boost1.1"] ? (
+                  <Radio checked />
+                ) : (
+                  <VerifyButton className="md:hidden  flex justify-end w-[121px]" type="boost1.1" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
+                )
+              }
             </div>
-            <div className="md:p-[0_8px] p-[22px_36px] md:border-0 border-t border-[#D7C69D]">
+            <div className="md:p-[0_8px_16px] p-[22px_36px] md:border-0 border-t border-[#D7C69D]">
               <div className="flex items-center gap-[6px] before:w-[8px] before:h-[8px] before:rounded-full before:bg-black md:text-[16px] text-[20px] md:font-Montserrat font-CherryBomb md:font-semibold text-black md:leading-[150%] leading-[120%]">
                 Holders of <a className="underline" href="https://magiceden.io/collections/berachain/thc-20" target="_blank">THC NFT</a>
               </div>
@@ -126,7 +143,6 @@ export default memo(function TaskBoard() {
                 Holders of <a className="underline" href="https://berascan.com/token/0xbba3eac9ab7cbcaaef36f239f029a56c28ee7d33" target="_blank">BeraBaddies</a>
               </div>
               <div className="flex gap-[6px] before:w-[8px] before:h-[8px] before:mt-[9px] before:rounded-full before:bg-black md:text-[16px] text-[20px] md:font-Montserrat font-CherryBomb md:font-semibold text-black md:leading-[150%] leading-[120%]">
-
                 {
                   isMobile ? (
                     <>
@@ -140,7 +156,7 @@ export default memo(function TaskBoard() {
                 }
               </div>
 
-              <VerifyButton className="m-[14px_auto_16px] md:flex w-[302px] hidden" type="boost1.1" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
+              <VerifyButton className="m-[14px_auto_0] md:flex w-[302px] hidden" type="boost1.1" loading={categoryLoading} verify={categoryVerify} queryVerify={queryVerify} />
             </div>
           </div>
         </div>
