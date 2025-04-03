@@ -1,11 +1,11 @@
 import axios from "axios";
 import { Contract, providers } from "ethers";
 import { nativeToWNative } from "../utils/token";
-import weth from "../config/weth";
 import chains from "../config/chains";
 import routerAbi from "../config/abi/router-balancer";
 import formatRoutes from "../utils/format-routes";
 import BigNumber from "bignumber.js";
+import weth from "../config/weth";
 
 type QuoterProps = {
   inputCurrency: any;
@@ -124,12 +124,10 @@ export class Bex {
           amount: i === 0 ? tokenInAmount : 0
         };
       });
-      const assets = tokenAddresses.map(
-        (address: any) =>
-          // address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
-          //   ? "0x0000000000000000000000000000000000000000"
-          //   : address
-          address
+      const assets = tokenAddresses.map((address: any) =>
+        address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
+          ? "0x0000000000000000000000000000000000000000"
+          : address
       );
       params = [0, swaps, assets, funds, limits, deadline.toFixed(0)];
     } else {
@@ -137,18 +135,16 @@ export class Bex {
         return {
           poolId: hop.poolId,
           kind: 0,
-          // assetIn:
-          //   hop.tokenIn.toLowerCase() ===
-          //   weth[inputCurrency.chainId].toLowerCase()
-          //     ? "0x0000000000000000000000000000000000000000"
-          //     : hop.tokenIn,
-          // assetOut:
-          //   hop.tokenOut.toLowerCase() ===
-          //   weth[inputCurrency.chainId].toLowerCase()
-          //     ? "0x0000000000000000000000000000000000000000"
-          //     : hop.tokenOut,
-          assetIn: hop.assetIn,
-          assetOut: hop.assetOut,
+          assetIn:
+            hop.tokenIn.toLowerCase() ===
+            weth[inputCurrency.chainId].toLowerCase()
+              ? "0x0000000000000000000000000000000000000000"
+              : hop.tokenIn,
+          assetOut:
+            hop.tokenOut.toLowerCase() ===
+            weth[inputCurrency.chainId].toLowerCase()
+              ? "0x0000000000000000000000000000000000000000"
+              : hop.tokenOut,
           amount: tokenInAmount,
           userData: "0x"
         };
@@ -166,6 +162,7 @@ export class Bex {
     const options = {
       value: inputCurrency.isNative ? tokenInAmount : "0"
     };
+
     let estimateGas;
     try {
       estimateGas = await RouterContract.estimateGas[method](
