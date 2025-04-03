@@ -28,6 +28,7 @@ const Signpost = (props: any) => {
       <img
         src="/images/home-earth/signpost-bintent.png"
         alt=""
+        data-bp="1023-009"
         onClick={() => router.push("/bintent")}
         className={clsx(
           "w-[94px] h-[27px] absolute left-[36px] cursor-pointer object-center object-contain",
@@ -87,7 +88,7 @@ const Signpost = (props: any) => {
         <img
           src="/images/home-earth/signpost-btc-lst.png"
           alt=""
-          onClick={() => {}}
+          onClick={() => { }}
           className="w-[77px] h-[17px] absolute left-[66px] top-[196px] cursor-not-allowed opacity-50 object-center object-contain"
         />
       )}

@@ -3,6 +3,7 @@ import FlexTable from "@/components/flex-table"
 import Modal from "@/components/modal"
 import SwitchTabs from "@/components/switch-tabs"
 import useCustomAccount from "@/hooks/use-account"
+import useClickTracking from "@/hooks/use-click-tracking"
 import useRanks from "@/sections/bintent-trading-challenge/hooks/use-ranks"
 import useYourRank from "@/sections/bintent-trading-challenge/hooks/use-your-rank"
 import { useBintent } from "@/stores/bintent"
@@ -12,6 +13,7 @@ import Big from "big.js"
 import { memo, useEffect, useState } from "react"
 
 export default memo(function Rank() {
+  const { handleReport } = useClickTracking();
   const store = useBintent()
   const { account } = useCustomAccount()
   const [currentTab, setCurrentTab] = useState("volume")
@@ -89,6 +91,7 @@ export default memo(function Rank() {
             { label: "Trades Rank", value: "transactions" }
           ]}
           onChange={(val) => {
+            handleReport("1023-008")
             setCurrentTab(val)
           }}
           current={currentTab}
