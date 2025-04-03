@@ -138,9 +138,19 @@ const Action = (props: any) => {
           spender={
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentRecord.vaultAddress
-              : ""
+              : (
+                currentRecord.extra_data?.vault_token
+                  ? currentRecord.vaultAddress
+                  : ""
+              )
           }
-          token={currentRecord.token}
+          token={
+            actionType.value === ACTION_TYPE.DEPOSIT
+              ? currentRecord.token
+              : (
+                currentRecord.extra_data?.vault_token || currentRecord.token
+              )
+          }
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}
