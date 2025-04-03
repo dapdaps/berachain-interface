@@ -15,7 +15,7 @@ import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
-import { cloneDeep, trim } from "lodash";
+import { cloneDeep, trim, uniqBy } from 'lodash';
 import chains from "@/configs/chains";
 import { Contract, providers, utils } from "ethers";
 import { TOKEN_ABI } from "@/hooks/use-token-balance";
@@ -96,7 +96,7 @@ export function useList(): List {
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
         group.protocolIcon.push(item.protocolIcon);
         group.poolProjectIcon.push(item.poolProjectIcon);
-        group.reward_tokens = group.reward_tokens.concat(item.reward_tokens);
+        group.reward_tokens = uniqBy(group.reward_tokens.concat(item.reward_tokens), "address");
         group.user_reward = group.user_reward.concat(item.user_reward);
         group.balance = Big(group.balance).plus(item.balance || 0);
       } else {
