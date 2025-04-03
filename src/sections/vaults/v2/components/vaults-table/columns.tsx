@@ -11,9 +11,9 @@ import Popover, {
 import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
 import Link from "next/link";
-import { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
+import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import { motion } from "framer-motion";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export const Pool = (props: any) => {
   const { record, className } = props;
@@ -62,11 +62,7 @@ export const Vaults = (props: any) => {
           />
         ))}
       </div>
-      {
-        isPool && (
-          <Pool record={record} />
-        )
-      }
+      {isPool && <Pool record={record} />}
     </div>
   );
 };
@@ -187,7 +183,10 @@ export const APY = (props: any) => {
   }, []);
 
   return (
-    <button type="button" className="whitespace-nowrap flex items-center gap-[2px]">
+    <button
+      type="button"
+      className="whitespace-nowrap flex items-center gap-[2px]"
+    >
       {record.list?.length > 1 ? (
         <>
           <Popover
@@ -276,7 +275,7 @@ export const Rewards = (props: any) => {
             key={index}
             trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
             placement={PopoverPlacement.Top}
-            content={(
+            content={
               <Card className="!rounded-[10px] !bg-white !p-[5px_10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                 <RewardIconContent
                   reward={reward}
@@ -285,7 +284,7 @@ export const Rewards = (props: any) => {
                   isNumber={false}
                 />
               </Card>
-            )}
+            }
             onClickBefore={(e) => {
               e.stopPropagation();
               return true;
@@ -337,28 +336,26 @@ export const Yours = (props: any) => {
   return (
     <Popover
       ref={popoverRef}
-      content={Big(record.balance || 0).gt(0) ? (
-        <Card className="!rounded-[10px] !bg-white !p-[5px_10px] !text-[14px] font-[500] whitespace-nowrap flex items-center">
-          {
-            record.list?.filter((protocol: any) => Big(protocol.balance || 0).gt(0))?.map((protocol: any, index: number) => (
-              <div
-                className="text-[14px] font-[500] leading-normal font-[Montserrat] text-[#000]"
-                key={index}
-              >
-                {index > 0 && (
-                  <>&nbsp;+&nbsp;</>
-                )}
-                {
-                  numberFormatter(protocol.balance, 2, true, {
+      content={
+        Big(record.balance || 0).gt(0) ? (
+          <Card className="!rounded-[10px] !bg-white !p-[5px_10px] !text-[14px] font-[500] whitespace-nowrap flex items-center">
+            {record.list
+              ?.filter((protocol: any) => Big(protocol.balance || 0).gt(0))
+              ?.map((protocol: any, index: number) => (
+                <div
+                  className="text-[14px] font-[500] leading-normal font-[Montserrat] text-[#000]"
+                  key={index}
+                >
+                  {index > 0 && <>&nbsp;+&nbsp;</>}
+                  {numberFormatter(protocol.balance, 2, true, {
                     prefix: "$",
                     isShort: true
-                  })
-                }
-              </div>
-            ))
-          }
-        </Card>
-      ) : null}
+                  })}
+                </div>
+              ))}
+          </Card>
+        ) : null
+      }
       trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
       placement={PopoverPlacement.Top}
       onClickBefore={(e) => {
@@ -367,33 +364,18 @@ export const Yours = (props: any) => {
       }}
     >
       <div
-        className={clsx("", Big(record.balance || 0).gt(0) ? "opacity-100 underline decoration-dashed underline-offset-4 cursor-pointer" : "opacity-30")}
+        className={clsx(
+          "",
+          Big(record.balance || 0).gt(0)
+            ? "opacity-100 underline decoration-dashed underline-offset-4 cursor-pointer"
+            : "opacity-30"
+        )}
       >
-        {
-          numberFormatter(record.balance, 2, true, {
-            prefix: "$",
-            isShort: true
-          })
-        }
+        {numberFormatter(record.balance, 2, true, {
+          prefix: "$",
+          isShort: true
+        })}
       </div>
     </Popover>
-  );
-};
-
-export const ClaimButton = (props: any) => {
-  const { record, index, className, ...restProps } = props;
-
-  const { toggleClaimVisible } = useVaultsV2Context();
-
-  return (
-    <button
-      type="button"
-      {...restProps}
-      className={clsx(
-        "w-[32px] h-[32px] bg-[url('/images/vaults/v2/claim-square.svg')] bg-[#C1F45C] rounded-[10px] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]",
-        className
-      )}
-      onClick={() => toggleClaimVisible()}
-    />
   );
 };

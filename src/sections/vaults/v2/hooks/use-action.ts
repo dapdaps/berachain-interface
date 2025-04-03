@@ -8,6 +8,7 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import useTokenBalance from "@/hooks/use-token-balance";
 import Big from "big.js";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
+import useClickTracking from "@/hooks/use-click-tracking";
 
 export default function useAction(): Action {
   const [loading, setLoading] = useState(false);
@@ -27,6 +28,8 @@ export default function useAction(): Action {
       : "",
     currentProtocol?.token?.decimals
   );
+
+  const { handleReportWithoutDebounce } = useClickTracking();
 
   const [inputError, inputErrorMessage] = useMemo<
     [boolean, string | undefined]
@@ -59,6 +62,14 @@ export default function useAction(): Action {
 
   const onAction = async () => {
     if (!currentProtocol) return;
+
+    handleReportWithoutDebounce(
+      actionType.value === ACTION_TYPE.DEPOSIT
+        ? "1022-001-010"
+        : "1022-001-011",
+      currentProtocol.vaultAddress
+    );
+
     let toastId = toast.loading({ title: "Confirming..." });
     try {
       setLoading(true);
