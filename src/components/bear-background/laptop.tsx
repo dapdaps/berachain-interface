@@ -846,6 +846,7 @@ export const BintentBear = function (props: any) {
 
       <div className='absolute -top-[343px] left-[48px]'>
         <div
+          data-bp="1023-002"
           className='cursor-pointer w-[190px]'
           onClick={() => {
             router.push("/bintent-trading-challenge")
@@ -860,6 +861,7 @@ export const BintentBear = function (props: any) {
 
       <div className={clsx('absolute -top-[206px] left-[35px] z-10', ranksClassName)}>
         <div
+          data-bp="1023-004"
           className='cursor-pointer w-[87px]'
           onClick={() => {
             store.set({
@@ -874,11 +876,14 @@ export const BintentBear = function (props: any) {
         </div>
       </div>
 
-      <div className={clsx('absolute -top-[183px] left-[150px]', rulesClassName)} onClick={() => {
-        store.set({
-          showRulesModal: true
-        })
-      }}>
+      <div
+        data-bp="1023-003"
+        className={clsx('absolute -top-[183px] left-[150px]', rulesClassName)}
+        onClick={() => {
+          store.set({
+            showRulesModal: true
+          })
+        }}>
         <div className='cursor-pointer w-[55px]'>
           <img src="/images/background/balloon_3.svg" alt="balloon_3" />
         </div>

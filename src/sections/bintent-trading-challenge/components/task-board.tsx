@@ -5,6 +5,7 @@ import Radio from "./radio";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 import useIsMobile from "@/hooks/use-isMobile";
+import useClickTracking from "@/hooks/use-click-tracking";
 
 
 function VerifyButton({
@@ -14,6 +15,7 @@ function VerifyButton({
   className,
   queryVerify,
 }) {
+  const { handleReport } = useClickTracking();
   const isMobile = useIsMobile()
 
   if (isMobile && verify?.[type]) {
@@ -32,6 +34,7 @@ function VerifyButton({
           <div
             className="cursor-pointer w-full h-[36px] flex items-center justify-center rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[14px] font-semibold"
             onClick={() => {
+              handleReport("1023-007")
               queryVerify(type)
             }}
           >Verify</div>
@@ -41,11 +44,13 @@ function VerifyButton({
   )
 }
 export default memo(function TaskBoard() {
+  const { handleReport } = useClickTracking();
   const isMobile = useIsMobile()
   const router = useRouter()
   const signArray = new Array(10).fill(null)
   const { task, loading, categoryLoading, categoryVerify, queryVerify } = useTask()
   const handleTradeNow = function () {
+    handleReport("1023-006")
     router.push("/bintent")
   }
 
