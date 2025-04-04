@@ -97,15 +97,21 @@ export function SwapUIMachineFormSyncProvider({
             outputCurrency: event.data.tokenOut,
             template: "near-intents",
             transactionHash: event.data.intentHash,
-            inputCurrencyAmount: Number(amountIn),
-            outputCurrencyAmount: Number(amountOut),
+            inputCurrencyAmount: parseFloat(amountIn),
+            outputCurrencyAmount: parseFloat(amountOut),
             status: 1,
             token_in_currency: event.data.tokenIn,
             token_out_currency: event.data.tokenOut,
             sub_type: 'swap',
             chainId: addActionChainIdMap[userChainType] || chainId,
             account_id: userAddress,
-            extra_data: store?.extra_data
+            extra_data: {
+              ...(store && store?.extra_data),
+              amountIn: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn,
+              amountOut: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut,
+              decimalsIn: snapshot.context.formValues.tokenIn.decimals,
+              decimalsOut: snapshot.context.formValues.tokenOut.decimals,
+            }
           });
           break
         }
