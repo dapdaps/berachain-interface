@@ -74,8 +74,8 @@ export function SwapUIMachineFormSyncProvider({
 
         case "INTENT_SETTLED": {
           const snapshot = actorRef.getSnapshot()
-          const amountIn = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn || 0n, snapshot.context.formValues.tokenIn.decimals)
-          const amountOut = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut || 0n, snapshot.context.formValues.tokenOut.decimals)
+          const amountIn = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn || 0n, event.data.tokenIn.decimals)
+          const amountOut = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut || 0n, event.data.tokenOut.decimals)
 
           onSuccessSwapRef.current({
             amountIn: 0n, // todo: remove amount fields, as they may not exist for all types of intents
@@ -109,8 +109,8 @@ export function SwapUIMachineFormSyncProvider({
               ...(store?.extra_data && typeof store.extra_data === "object" ? store.extra_data : {}),
               amountIn: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn?.toString(), 
               amountOut: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut?.toString(),
-              decimalsIn: snapshot.context.formValues.tokenIn.decimals,
-              decimalsOut: snapshot.context.formValues.tokenOut.decimals,
+              decimalsIn: event.data.tokenIn.decimals,
+              decimalsOut: event.data.tokenOut.decimals,
             }
           });
           break
