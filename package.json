@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@lifeomic/attempt": "^3.1.0",
+    "@lifi/sdk": "3.6.2",
     "@near-eth/client": "^1.12.0",
     "@near-wallet-selector/account-export": "8.9.12",
     "@near-wallet-selector/core": "8.9.12",
@@ -64,15 +65,14 @@
     "ripple-address-codec": "^5.0.0",
     "rxjs": "^7.8.1",
     "swiper": "^11.2.5",
-    "terser-webpack-plugin": "^5.3.10",
+    "terser-webpack-plugin": "^5.3.14",
     "tweetnacl": "^1.0.3",
     "uuid": "^11.0.5",
     "viem": "^2.21.37",
     "wagmi": "^2.12.25",
     "xstate": "^5.19.2",
     "zod": "^3.24.1",
-    "zustand": "^5.0.0-rc.2",
-    "@lifi/sdk": "3.6.2"
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
