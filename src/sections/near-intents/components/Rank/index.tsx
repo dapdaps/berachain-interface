@@ -98,7 +98,7 @@ export default memo(function Rank() {
           cursorClassName="md:!rounded-[12px]"
           className="mx-auto md:w-[338px] md:h-[56px] md:!rounded-[12px] w-[480px]"
         />
-        <div className="mt-[20px]">
+        <div className="mt-[20px] md:min-h-[400px] md:h-auto h-[400px] overflow-auto">
           <FlexTable
             loading={loadingRanks}
             columns={COLUMNS}
