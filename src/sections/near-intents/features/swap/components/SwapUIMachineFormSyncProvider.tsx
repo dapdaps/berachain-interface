@@ -107,8 +107,8 @@ export function SwapUIMachineFormSyncProvider({
             account_id: userAddress,
             extra_data: {
               ...(store && store?.extra_data),
-              amountIn: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn,
-              amountOut: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut,
+              amountIn: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn?.toString(), // 转为字符串
+              amountOut: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut?.toString(), // 转为字符串
               decimalsIn: snapshot.context.formValues.tokenIn.decimals,
               decimalsOut: snapshot.context.formValues.tokenOut.decimals,
             }
