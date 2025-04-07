@@ -138,8 +138,8 @@ const { addAction } = useAddAction("dapp", true);
       })
     }
   }, [userAddress, actorRef, chainType])
-
-  const { token, tokenOut, blockchain, amountIn, parsedAmountIn, recipient } =
+  
+  const { token, tokenOut, blockchain,amountIn, parsedAmountIn, recipient } =
     useSelector(formRef, (state) => {
       const { tokenOut } = state.context
 
@@ -369,10 +369,7 @@ const { addAction } = useAddAction("dapp", true);
     tokensUsdPriceData
   )
 
-  
-  if (!token || !tokenInBalance) return null
-
-
+  if (!token || !tokenOut || !tokenInBalance) return 
 
   return (
     <ErrorBoundary fallback={<div>Failed, plz retry</div>}>
