@@ -7,7 +7,8 @@
     "build": "pnpm config get registry && next build",
     "start": "next start",
     "lint": "next lint",
-    "build:stats": "ANALYZE_STATS=true next build"
+    "build:stats": "ANALYZE_STATS=true next build",
+    "build:dev": "GENERATE_SOURCEMAP=true NODE_ENV=development next build"
   },
   "dependencies": {
     "@lifeomic/attempt": "^3.1.0",

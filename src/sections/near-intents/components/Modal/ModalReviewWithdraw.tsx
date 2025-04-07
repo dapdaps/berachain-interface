@@ -16,7 +16,6 @@ const ModalReviewWithdraw = () => {
   const tokenList = useTokenList(LIST_TOKENS);
 
   return (
-    <ErrorBoundary fallback={<div>Failed, plz retry</div>}>
       <ModalDialog isMaskClose={false}>
         <WithdrawWidget
           tokenList={tokenList}
@@ -85,7 +84,6 @@ const ModalReviewWithdraw = () => {
           }}
         />
       </ModalDialog>
-    </ErrorBoundary>
   );
 };
 
