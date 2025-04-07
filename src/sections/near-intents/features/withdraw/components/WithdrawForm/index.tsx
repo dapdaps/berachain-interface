@@ -63,6 +63,7 @@ import { useAccount } from "wagmi"
 import { ethers } from "ethers"
 import { CHAIN_IDS } from "@/sections/near-intents/constants/evm"
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore"
+import ErrorBoundary from "@/sections/near-intents/components/ErrorBoundary"
 
 export type WithdrawFormNearValues = {
   amountIn: string
@@ -137,8 +138,8 @@ const { addAction } = useAddAction("dapp", true);
       })
     }
   }, [userAddress, actorRef, chainType])
-
-  const { token, tokenOut, blockchain, amountIn, parsedAmountIn, recipient } =
+  
+  const { token, tokenOut, blockchain,amountIn, parsedAmountIn, recipient } =
     useSelector(formRef, (state) => {
       const { tokenOut } = state.context
 
@@ -273,7 +274,12 @@ const { addAction } = useAddAction("dapp", true);
       if (!chainType) return;
       const snapshot = actorRef.getSnapshot()
 
-      const amount = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, event.data.tokenIn.decimals)
+      const amount = event.data?.tokenIn?.decimals ? 
+      ethers.utils.formatUnits(
+        snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, 
+        event.data.tokenIn.decimals
+      ) : "0";
+      
       toast.success({
         title: "Withdraw Success",
       });
@@ -363,238 +369,240 @@ const { addAction } = useAddAction("dapp", true);
     tokensUsdPriceData
   )
 
-
+  if (!token || !tokenOut) return 
 
   return (
-    <div className="pb-5">
-      <div className="font-CherryBomb text-[26px] text-center mb-4 mt-5">
-        Withdraw
-      </div>
-      <Flex
-        direction="column"
-        gap="2"
-        className="rounded-2xl bg-gray-1 px-5 h-full"
-      >
-        <Form<WithdrawFormNearValues>
-          handleSubmit={handleSubmit(() => {
-            if (userAddress == null || chainType == null) {
-              logger.warn("No user address provided")
-              return
-            }
-
-            actorRef.send({
-              type: "submit",
-              params: {
-                userAddress,
-                userChainType: chainType,
-                nearClient: new providers.JsonRpcProvider({
-                  url: "https://nearrpc.aurora.dev",
-                }),
-                sendNearTransaction: sendNearTransaction,
-              },
-            })
-          })}
-          register={register}
+    <ErrorBoundary fallback={<div>Failed, plz retry</div>}>
+      <div className="pb-5">
+        <div className="font-CherryBomb text-[26px] text-center mb-4 mt-5">
+          Withdraw
+        </div>
+        <Flex
+          direction="column"
+          gap="2"
+          className="rounded-2xl bg-gray-1 px-5 h-full"
         >
-          <Flex direction="column" gap="5">
-            <div className="font-semibold font-Montserrat text-sm text-[#8A8A8A] mb-2.5">
-            Amount
-            </div>
-            <FieldComboInput<WithdrawFormNearValues>
-              fieldName="amountIn"
-              usedType="withdraw"
-              selected={token}
-              handleSelect={() => {
-                handleSelect()
-              }}
-              className="border border-[#010102] rounded-xl bg-white !p-2.5"
-              required
-              min={
-                minWithdrawalAmount != null
-                  ? {
-                      value: formatTokenValue(
-                        minWithdrawalAmount,
-                        token.decimals
-                      ),
-                      message: "Amount is too low",
-                    }
-                  : undefined
+          <Form<WithdrawFormNearValues>
+            handleSubmit={handleSubmit(() => {
+              if (userAddress == null || chainType == null) {
+                logger.warn("No user address provided")
+                return
               }
-              max={
-                tokenInBalance != null
-                  ? {
-                      value: formatTokenValue(tokenInBalance, token.decimals),
-                      message: "Insufficient balance",
-                    }
-                  : undefined
-              }
-              errors={errors}
-              balance={tokenInBalance}
-              register={register}
-              usdAmount={
-                tokenToWithdrawUsdAmount
-                  ? `~${formatUsdAmount(tokenToWithdrawUsdAmount)}`
-                  : null
-              }
-            />
 
-            {renderMinWithdrawalAmount(minWithdrawalAmount, tokenOut)}
-            <LongWithdrawWarning
-              amountIn={parsedAmountIn}
-              token={tokenOut}
-              tokensUsdPriceData={tokensUsdPriceData}
-            />
-
-            <Flex direction="column" gap="2">
-              <Box px="2" asChild className="mt-5 mb-2.5">
-                <Text className="font-semibold font-Montserrat text-sm text-[#8A8A8A]">
-                  Recipient
-                </Text>
-              </Box>
-              <Controller
-                name="blockchain"
-                control={control}
-                rules={{
-                  required: "This field is required",
-                  deps: "recipient",
+              actorRef.send({
+                type: "submit",
+                params: {
+                  userAddress,
+                  userChainType: chainType,
+                  nearClient: new providers.JsonRpcProvider({
+                    url: "https://nearrpc.aurora.dev",
+                  }),
+                  sendNearTransaction: sendNearTransaction,
+                },
+              })
+            })}
+            register={register}
+          >
+            <Flex direction="column" gap="5">
+              <div className="font-semibold font-Montserrat text-sm text-[#8A8A8A] mb-2.5">
+              Amount
+              </div>
+              <FieldComboInput<WithdrawFormNearValues>
+                fieldName="amountIn"
+                usedType="withdraw"
+                selected={token}
+                handleSelect={() => {
+                  handleSelect()
                 }}
-                render={({ field }) => {
-                  return (
-                    <Select
-                      name={field.name}
-                      value={field.value}
-                      onChange={field.onChange}
-                      disabled={Object.keys(blockchainSelectItems).length === 1}
-                      options={blockchainSelectItems}
-                      placeholder={{
-                        label: "Select network",
-                        icon: <EmptyIcon />,
-                      }}
-                    />
-                  )
-                }}
+                className="border border-[#010102] rounded-xl bg-white !p-2.5"
+                required
+                min={
+                  minWithdrawalAmount != null
+                    ? {
+                        value: formatTokenValue(
+                          minWithdrawalAmount,
+                          token.decimals
+                        ),
+                        message: "Amount is too low",
+                      }
+                    : undefined
+                }
+                max={
+                  tokenInBalance != null
+                    ? {
+                        value: formatTokenValue(tokenInBalance, token.decimals),
+                        message: "Insufficient balance",
+                      }
+                    : undefined
+                }
+                errors={errors}
+                balance={tokenInBalance}
+                register={register}
+                usdAmount={
+                  tokenToWithdrawUsdAmount
+                    ? `~${formatUsdAmount(tokenToWithdrawUsdAmount)}`
+                    : null
+                }
               />
 
-              <Flex direction="column" gap="1" className="mt-2.5">
-                <Flex gap="2" align="center">
-                  <Box asChild flexGrow="1">
-                    <TextField.Root
-                      className="w-full h-[50px] border border-[#373A53] rounded-xl py-[18px] text-[14px] px-4 placeholder-[#8A8A8A] text-black font-Montserrat font-[600]"
-                      {...register("recipient", {
-                        validate: {
-                          pattern: (value, formValues) => {
-                            if (
-                              !validateAddress(value, formValues.blockchain)
-                            ) {
-                              return "* Invalid address for the selected blockchain"
-                            }
-                          },
-                        },
-                      })}
-                      placeholder="Enter wallet address"
-                    >
-                    </TextField.Root>
-                  </Box>
+              {renderMinWithdrawalAmount(minWithdrawalAmount, tokenOut)}
+              <LongWithdrawWarning
+                amountIn={parsedAmountIn}
+                token={tokenOut}
+                tokensUsdPriceData={tokensUsdPriceData}
+              />
 
-                  {/* {isChainTypeSatisfiesChainName &&
-                    userAddress != null &&
-                    recipient !== userAddress && (
-                      <IconButton
-                        type="button"
-                        onClick={() => {
-                          setValue("recipient", userAddress, {
-                            shouldValidate: true,
-                          })
+              <Flex direction="column" gap="2">
+                <Box px="2" asChild className="mt-5 mb-2.5">
+                  <Text className="font-semibold font-Montserrat text-sm text-[#8A8A8A]">
+                    Recipient
+                  </Text>
+                </Box>
+                <Controller
+                  name="blockchain"
+                  control={control}
+                  rules={{
+                    required: "This field is required",
+                    deps: "recipient",
+                  }}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        name={field.name}
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={Object.keys(blockchainSelectItems).length === 1}
+                        options={blockchainSelectItems}
+                        placeholder={{
+                          label: "Select network",
+                          icon: <EmptyIcon />,
                         }}
-                        variant="outline"
-                        size="3"
-                        title={`Autofill with your address ${truncateUserAddress(userAddress)}`}
-                        aria-label={`Autofill with your address ${truncateUserAddress(userAddress)}`}
+                      />
+                    )
+                  }}
+                />
+
+                <Flex direction="column" gap="1" className="mt-2.5">
+                  <Flex gap="2" align="center">
+                    <Box asChild flexGrow="1">
+                      <TextField.Root
+                        className="w-full h-[50px] border border-[#373A53] rounded-xl py-[18px] text-[14px] px-4 placeholder-[#8A8A8A] text-black font-Montserrat font-[600]"
+                        {...register("recipient", {
+                          validate: {
+                            pattern: (value, formValues) => {
+                              if (
+                                !validateAddress(value, formValues.blockchain)
+                              ) {
+                                return "* Invalid address for the selected blockchain"
+                              }
+                            },
+                          },
+                        })}
+                        placeholder="Enter wallet address"
                       >
-                        <MagicWandIcon />
-                      </IconButton>
-                    )} */}
-                </Flex>
+                      </TextField.Root>
+                    </Box>
 
-                {errors.recipient && (
-                  <Box px="2" asChild>
-                    <Text size="1" color="red" weight="medium">
-                      {errors.recipient.message}
-                    </Text>
-                  </Box>
-                )}
-              </Flex>
+                    {/* {isChainTypeSatisfiesChainName &&
+                      userAddress != null &&
+                      recipient !== userAddress && (
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            setValue("recipient", userAddress, {
+                              shouldValidate: true,
+                            })
+                          }}
+                          variant="outline"
+                          size="3"
+                          title={`Autofill with your address ${truncateUserAddress(userAddress)}`}
+                          aria-label={`Autofill with your address ${truncateUserAddress(userAddress)}`}
+                        >
+                          <MagicWandIcon />
+                        </IconButton>
+                      )} */}
+                  </Flex>
 
-              {blockchain === "xrpledger" && (
-                <Flex direction="column" gap="1">
-                  <Box px="2" asChild>
-                    <Text size="1" weight="bold">
-                      Destination Tag (optional)
-                    </Text>
-                  </Box>
-                  <TextField.Root
-                    size="3"
-                    {...register("destinationMemo", {
-                      validate: {
-                        uint32: (value) => {
-                          if (value == null || value === "") return
-
-                          if (
-                            parseDestinationMemo(value, tokenOut.chainName) ==
-                            null
-                          ) {
-                            return "Should be a number"
-                          }
-                        },
-                      },
-                    })}
-                    placeholder="Enter destination tag"
-                  />
-                  {errors.destinationMemo && (
+                  {errors.recipient && (
                     <Box px="2" asChild>
                       <Text size="1" color="red" weight="medium">
-                        {errors.destinationMemo.message}
+                        {errors.recipient.message}
                       </Text>
                     </Box>
                   )}
                 </Flex>
-              )}
+
+                {blockchain === "xrpledger" && (
+                  <Flex direction="column" gap="1">
+                    <Box px="2" asChild>
+                      <Text size="1" weight="bold">
+                        Destination Tag (optional)
+                      </Text>
+                    </Box>
+                    <TextField.Root
+                      size="3"
+                      {...register("destinationMemo", {
+                        validate: {
+                          uint32: (value) => {
+                            if (value == null || value === "") return
+
+                            if (
+                              parseDestinationMemo(value, tokenOut.chainName) ==
+                              null
+                            ) {
+                              return "Should be a number"
+                            }
+                          },
+                        },
+                      })}
+                      placeholder="Enter destination tag"
+                    />
+                    {errors.destinationMemo && (
+                      <Box px="2" asChild>
+                        <Text size="1" color="red" weight="medium">
+                          {errors.destinationMemo.message}
+                        </Text>
+                      </Box>
+                    )}
+                  </Flex>
+                )}
+              </Flex>
+
+              <Flex justify="between" px="2" className="mt-5 mb-4">
+                <Text className="font-semibold font-Montserrat text-sm text-black">
+                  Received amount
+                </Text>
+
+                <Text className="font-semibold font-Montserrat text-sm text-black">
+                  {state.matches({ editing: "preparation" }) ? (
+                    <Skeleton>100.000000</Skeleton>
+                  ) : totalAmountReceived == null ? (
+                    "–"
+                  ) : (
+                    formatTokenValue(totalAmountReceived, tokenOut.decimals)
+                    // biome-ignore lint/nursery/useConsistentCurlyBraces: space is needed here
+                  )}{" "}
+                  {token.symbol}
+                </Text>
+              </Flex>
+
+              <ButtonCustom
+                size="lg"
+                disabled={state.matches("submitting") || !!noLiquidity}
+                isLoading={state.matches("submitting")}
+              >
+                {noLiquidity ? "No liquidity providers" : "Withdraw"}
+              </ButtonCustom>
             </Flex>
+          </Form>
 
-            <Flex justify="between" px="2" className="mt-5 mb-4">
-              <Text className="font-semibold font-Montserrat text-sm text-black">
-                Received amount
-              </Text>
+          {renderPreparationResult(state.context.preparationOutput)}
+          {renderIntentCreationResult(intentCreationResult)}
 
-              <Text className="font-semibold font-Montserrat text-sm text-black">
-                {state.matches({ editing: "preparation" }) ? (
-                  <Skeleton>100.000000</Skeleton>
-                ) : totalAmountReceived == null ? (
-                  "–"
-                ) : (
-                  formatTokenValue(totalAmountReceived, tokenOut.decimals)
-                  // biome-ignore lint/nursery/useConsistentCurlyBraces: space is needed here
-                )}{" "}
-                {token.symbol}
-              </Text>
-            </Flex>
-
-            <ButtonCustom
-              size="lg"
-              disabled={state.matches("submitting") || !!noLiquidity}
-              isLoading={state.matches("submitting")}
-            >
-              {noLiquidity ? "No liquidity providers" : "Withdraw"}
-            </ButtonCustom>
-          </Flex>
-        </Form>
-
-        {renderPreparationResult(state.context.preparationOutput)}
-        {renderIntentCreationResult(intentCreationResult)}
-
-        {/* <Intents intentRefs={intentRefs} /> */}
-      </Flex>
-    </div>
+          {/* <Intents intentRefs={intentRefs} /> */}
+        </Flex>
+      </div>
+    </ErrorBoundary>
   )
 }
 

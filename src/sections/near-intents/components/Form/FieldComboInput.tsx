@@ -184,7 +184,11 @@ export const FieldComboInput = <T extends FieldValues>({
             </div>
           )}
         </div>
-        {usdAmount ? (
+        {fieldError ? (
+          <span className="text-xs sm:text-sm font-medium text-red-400  whitespace-nowrap overflow-hidden">
+            {(fieldError as FieldError).message}
+          </span>
+        ) : usdAmount ? (
           <span className="text-xs sm:text-sm font-medium text-gray-400 whitespace-nowrap overflow-hidden">
             {usdAmount}
           </span>

@@ -32,6 +32,7 @@ export const WithdrawWidget = (props: WithdrawWidgetProps) => {
   )
 
   return (
+    <>
       <WithdrawWidgetProvider>
         <WithdrawUIMachineContext.Provider
           options={{
@@ -142,5 +143,6 @@ export const WithdrawWidget = (props: WithdrawWidgetProps) => {
           <WithdrawForm {...props} />
         </WithdrawUIMachineContext.Provider>
       </WithdrawWidgetProvider>
+    </>
   )
 }

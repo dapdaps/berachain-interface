@@ -11,6 +11,9 @@ const GAME_BASE_URL =
 
 const nextConfig = {
   reactStrictMode: false,
+  reactProductionProfiling: true,
+  productionBrowserSourceMaps: true,
+  swcMinify: false,
   eslint: {
     ignoreDuringBuilds: true
   },
