@@ -589,13 +589,13 @@ const { addAction } = useAddAction("dapp", true);
                 </Text>
               </Flex>
 
-              {/* <ButtonCustom
+              <ButtonCustom
                 size="lg"
                 disabled={state.matches("submitting") || !!noLiquidity}
                 isLoading={state.matches("submitting")}
               >
                 {noLiquidity ? "No liquidity providers" : "Withdraw"}
-              </ButtonCustom> */}
+              </ButtonCustom>
             </Flex>
           </Form>
 
