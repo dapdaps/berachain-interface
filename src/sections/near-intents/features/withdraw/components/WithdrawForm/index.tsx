@@ -274,7 +274,12 @@ const { addAction } = useAddAction("dapp", true);
       if (!chainType) return;
       const snapshot = actorRef.getSnapshot()
 
-      const amount = ethers.utils.formatUnits(snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, event.data.tokenIn.decimals)
+      const amount = event.data?.tokenIn?.decimals ? 
+      ethers.utils.formatUnits(
+        snapshot.context.intentCreationResult?.value?.intentDescription?.amountWithdrawn || 0n, 
+        event.data.tokenIn.decimals
+      ) : "0";
+      
       toast.success({
         title: "Withdraw Success",
       });
