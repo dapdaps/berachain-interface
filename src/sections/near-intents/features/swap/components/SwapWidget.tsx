@@ -71,9 +71,9 @@ export const SwapWidget = memo(({
         <SwapForm />
         {
           yourRank?.away_top_volume && (
-            <div className="absolute left-1/2 -bottom-[16px] -translate-x-1/2 translate-y-[100%] w-[520px] h-[54px] bg-[url('/images/campaign/ribbon.svg')] bg-center bg-no-repeat">
-              <div className="p-[12px_44px_0] flex items-center justify-center gap-[8px]">
-                <span className="text-black text-[14px] font-Montserrat font-bold whitespace-nowrap">You're only {numberFormatter(yourRank?.away_top_volume ?? 1484.6015, 2, true, { isShort: true, prefix: "$" })} in volume away from a top 10 spot.</span>
+            <div className="absolute left-1/2 -bottom-[16px] -translate-x-1/2 translate-y-[100%] w-[560px] h-[60px] bg-[url('/images/campaign/ribbon.svg')] bg-contain bg-center bg-no-repeat">
+              <div className="p-[15px_44px_0] flex items-center justify-center gap-[8px]">
+                <span className="text-black text-[14px] font-Montserrat font-bold whitespace-nowrap">You're only {numberFormatter(yourRank?.away_top_volume ?? 0, 2, true, { isShort: true, prefix: "$" })} in volume away from a top 10 spot.</span>
                 <span className="text-black text-[12px] font-Montserrat font-semibold underline whitespace-nowrap"
                   onClick={() => {
                     router.push("/bintent-trading-challenge")
