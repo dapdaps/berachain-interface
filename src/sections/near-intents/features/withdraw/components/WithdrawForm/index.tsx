@@ -369,7 +369,7 @@ const { addAction } = useAddAction("dapp", true);
     tokensUsdPriceData
   )
 
-  if (!token || !tokenOut || !tokenInBalance) return 
+  if (!token || !tokenOut) return 
 
   return (
     <ErrorBoundary fallback={<div>Failed, plz retry</div>}>
