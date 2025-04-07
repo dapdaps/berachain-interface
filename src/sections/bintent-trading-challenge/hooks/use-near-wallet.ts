@@ -13,7 +13,9 @@ export default function useNearWallet() {
       }
       return currentWallet.address ? currentWallet.address : "";
     }
-  }, [isNearPage, currentWallet]);
+    if (!address) return "";
+    return address;
+  }, [isNearPage, currentWallet, address]);
   useEffect(() => {
     const state = useConnectedWalletsStore.getState();
     setCurrentWallet(state.connectedWallets.length === 0 ? null : state.connectedWallets[0])
