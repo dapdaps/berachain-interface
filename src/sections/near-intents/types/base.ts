@@ -100,3 +100,9 @@ export function isNativeToken(
 ): token is NativeTokenInfo {
   return isBaseToken(token) && "type" in token && token.type === "native"
 }
+
+
+export interface TokenValue {
+  amount: bigint
+  decimals: number
+}
