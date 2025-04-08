@@ -26,7 +26,7 @@ const networks = {
     // Minimum Debt of 2 required
     minimumDebt: 69,
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
-    graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.0/gn',
+    graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.5/gn',
     denManagersParams: (market: any[]) => ({
       "operationName": "GetDenManager",
       "variables": { "id": market?.denManager?.toLocaleLowerCase() },
