@@ -24,7 +24,6 @@ export default function useClaim() {
 
   const onClaim = async () => {
     if (!currentProtocol) return;
-    console.log(27, currentProtocol.vaultAddress);
     handleReport("1022-001-012", currentProtocol.vaultAddress);
 
     let toastId = toast.loading({ title: "Confirming..." });
@@ -62,9 +61,13 @@ export default function useClaim() {
         action: "Claim",
         tokens: currentProtocol.reward_tokens,
         template: currentProtocol.protocol,
+        amounts: (currentReward.splice ? currentReward : [currentReward]).map(
+          (token: any) => token.amount
+        ),
         status,
         transactionHash,
-        sub_type: "Claim"
+        sub_type: "Claim",
+        extra_data: {}
       });
       setLoading(false);
     } catch (err: any) {
