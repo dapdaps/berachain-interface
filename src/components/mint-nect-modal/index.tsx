@@ -1,12 +1,13 @@
+import SwitchNetwork from '@/components/switch-network';
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import BorrowModal, { ActionText } from "./form";
+import chains from '@/configs/chains';
 import config from "@/configs/lending/beraborrow";
+import { useProvider } from "@/hooks/use-provider";
 import BeraborrowData from "@/sections/Lending/datas/beraborrow";
 import { usePriceStore } from "@/stores/usePriceStore";
-import { useProvider } from "@/hooks/use-provider";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { useEffect, useMemo, useState } from "react";
-import React from "react";
+import BorrowModal, { ActionText } from "./form";
 
 const MintNectModal = ({ isOpen, onClose }: any) => {
   const { basic, networks } = config as any;
@@ -19,7 +20,7 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>();
   const [isChainSupported, setIsChainSupported] = useState<boolean>(false);
-  
+
   const currentMarket = data?.markets?.[0]
 
   useEffect(() => {
@@ -52,6 +53,7 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
           setLoading(false);
         }}
       />
+
       {currentMarket && (
         <BorrowModal
           type={ActionText.Borrow}
@@ -66,6 +68,11 @@ const MintNectModal = ({ isOpen, onClose }: any) => {
           {...rest}
         />
       )}
+      {
+        isOpen && !isChainSupported && (
+          <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
+        )
+      }
     </>
   );
 };
