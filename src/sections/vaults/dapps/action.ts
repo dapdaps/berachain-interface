@@ -29,7 +29,7 @@ export default function onAction(params: any) {
     return onBeraDrome(params);
   }
 
-  if (currentRecord.protocol === "Slimee") {
+  if (currentRecord.protocol === "Smilee") {
     return onSlimee(params);
   }
 
