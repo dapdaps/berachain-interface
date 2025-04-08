@@ -6,7 +6,12 @@ import Button from "./button";
 import usdAdd from "./use-add";
 import Big from "big.js";
 
-export default function AddLiquidity({ onSuccess, data }: any) {
+export default function AddLiquidity({
+  onSuccess,
+  data,
+  showLabel = true,
+  from
+}: any) {
   const [errorTips, setErrorTips] = useState("");
   const [values, setValues] = useState<any>(null);
   const tokens = useMemo(() => Object.values(data.tokens), [data]);
@@ -20,6 +25,7 @@ export default function AddLiquidity({ onSuccess, data }: any) {
     poolType: data?.poolType,
     tokens,
     values,
+    from,
     onSuccess: () => {
       onSuccess?.();
     }
@@ -28,7 +34,7 @@ export default function AddLiquidity({ onSuccess, data }: any) {
   return (
     <>
       <DepositAmounts
-        label="Deposit Amounts"
+        label={showLabel ? "Deposit Amounts" : ""}
         tokens={tokens}
         values={values}
         hasProportional={false}

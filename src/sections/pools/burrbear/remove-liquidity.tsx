@@ -13,7 +13,7 @@ import useAccount from "@/hooks/use-account";
 import chains from "@/configs/chains";
 import useRemove from "./use-remove";
 
-const Remove = ({ data, onSuccess }: any) => {
+const Remove = ({ data, onSuccess, from }: any) => {
   const [percent, setPercent] = useState(0);
   const [type, setType] = useState(1);
 
@@ -33,6 +33,7 @@ const Remove = ({ data, onSuccess }: any) => {
     percent,
     type,
     exitAmount,
+    from,
     onSuccess: () => {
       onSuccess();
     }

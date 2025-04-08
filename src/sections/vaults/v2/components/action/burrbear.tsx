@@ -13,13 +13,18 @@ export default function Burrbear() {
       onSuccess={() => {
         toggleActionVisible({ visible: false });
       }}
+      showLabel={false}
+      from="vaults"
     />
   ) : (
-    <RemoveLiquidity
-      data={currentProtocol}
-      onSuccess={() => {
-        toggleActionVisible({ visible: false });
-      }}
-    />
+    <div className="mt-[10px]">
+      <RemoveLiquidity
+        data={currentProtocol}
+        onSuccess={() => {
+          toggleActionVisible({ visible: false });
+        }}
+        from="vaults"
+      />
+    </div>
   );
 }
