@@ -40,7 +40,11 @@ export const poaBridgeInfoActor = setup({
         _,
         bridgeInfo: types.GetSupportedTokensResponse["result"]
       ) => {
-        const arr = bridgeInfo.tokens.map(
+        if (!bridgeInfo || !bridgeInfo.tokens || !Array.isArray(bridgeInfo.tokens)) {
+          console.log("Invalid bridgeInfo response", bridgeInfo);
+          return {};
+        }
+        const arr = bridgeInfo?.tokens.map(
           (
             bridgedTokenInfo
           ): [keyof Context["bridgeInfo"], Values<Context["bridgeInfo"]>] => {
