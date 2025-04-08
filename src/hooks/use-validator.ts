@@ -36,10 +36,6 @@ export default function () {
         .div(secondResponse?.data?.blockStats_collection?.[0]?.blockCount)
         .times(100)
         .toFixed();
-      console.log("====firstResponse====", firstResponse);
-      console.log("====secondResponse====", secondResponse);
-
-      console.log("=====blockProposingRate====", blockProposingRate);
       setLoading(false);
       setPageData({ ...firstResponse?.data?.validator, blockProposingRate });
     } catch (error) {

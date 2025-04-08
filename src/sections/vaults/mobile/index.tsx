@@ -44,8 +44,6 @@ export default function Mobile({ dapp }: any) {
     multicallAddress: multicallAddresses[chainId as any]
   });
   const [dataList, loading, reload] = useMemo(() => {
-
-    console.log('====isVaults====', isVaults)
     if (isVaults) {
       return [getMergeDataList({
         infrared: infraredData,
