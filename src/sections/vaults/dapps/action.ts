@@ -4,6 +4,7 @@ import onKodiakAction from "./kodiak/action";
 import onInfrared from "./infrared/action";
 import onBeraDrome from "./bera-drome/action";
 import onSlimee from "./slimee/action";
+import onBurrbear from "./burrbear/action";
 import onWeBera from "./webera/action";
 
 export default function onAction(params: any) {
@@ -31,6 +32,10 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "Slimee") {
     return onSlimee(params);
+  }
+
+  if (currentRecord.protocol === "BurrBear") {
+    return onBurrbear(params);
   }
 
   if (currentRecord.protocol === "WeBera") {

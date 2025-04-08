@@ -74,7 +74,7 @@ export default function useAction(): Action {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-
+      console.log(amount, currentProtocol);
       const tx = await handleAction({
         actionType: actionType.button,
         signer,

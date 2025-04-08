@@ -11,13 +11,14 @@ import Big from "big.js";
 import Loading from "@/components/loading";
 import Range from "@/components/range";
 import { ACTION_TYPE } from "../../config";
-import ActionInput from '@/sections/vaults/v2/components/action/input';
-import ActionRangeDays from '@/sections/vaults/v2/components/action/range-days';
-import ActionMintLP from '@/sections/vaults/v2/components/action/mint-lp';
+import ActionInput from "@/sections/vaults/v2/components/action/input";
+import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
+import ActionMintLP from "@/sections/vaults/v2/components/action/mint-lp";
 
 const Action = (props: any) => {
   const { className } = props;
-  const { actionType, currentRecord, openAddLp, toggleOpenAddLp } = useVaultsV2Context();
+  const { actionType, currentRecord, openAddLp, toggleOpenAddLp } =
+    useVaultsV2Context();
   const {
     loading,
     onAction,
@@ -125,7 +126,7 @@ const Action = (props: any) => {
             setDappParams={setDappParams}
           />
         )}
-      {["Bex", "Kodiak"].includes(currentRecord.lpProtocol) &&
+      {["Bex", "Kodiak", "BurrBear"].includes(currentRecord.lpProtocol) &&
         actionType.value === ACTION_TYPE.DEPOSIT &&
         inputErrorMessage === "Insufficient Balance" && (
           <ActionMintLP
@@ -138,18 +139,14 @@ const Action = (props: any) => {
           spender={
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentRecord.vaultAddress
-              : (
-                currentRecord.extra_data?.vault_token
-                  ? currentRecord.vaultAddress
-                  : ""
-              )
+              : currentRecord.extra_data?.vault_token
+              ? currentRecord.vaultAddress
+              : ""
           }
           token={
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentRecord.token
-              : (
-                currentRecord.extra_data?.vault_token || currentRecord.token
-              )
+              : currentRecord.extra_data?.vault_token || currentRecord.token
           }
           amount={amount}
           loading={loading}

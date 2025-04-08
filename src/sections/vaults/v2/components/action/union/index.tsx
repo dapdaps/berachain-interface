@@ -29,7 +29,9 @@ const ActionUnion = (props: any) => {
           <ActionUnionRight className="md:order-1" />
         </div>
         {!!currentProtocol &&
-          ["Bex", "Kodiak"].includes(currentProtocol.lpProtocol) && (
+          ["Bex", "Kodiak", "BurrBear"].includes(
+            currentProtocol.lpProtocol
+          ) && (
             <AddLiquidityModal
               dex={currentProtocol.lpProtocol}
               data={currentProtocol}

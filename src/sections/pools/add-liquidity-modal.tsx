@@ -38,7 +38,7 @@ export default function AddLiquidityModal({
   }, [isMobile, data]);
 
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "bex") return { data };
+    if (["bex", "burrbear"].includes(dex?.toLowerCase())) return { data };
     return {
       ...data,
       defaultToken0: data.token0 || data.tokens?.[0],

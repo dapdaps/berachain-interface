@@ -49,19 +49,19 @@ export const OrderKeys: Record<ORDER_KEYS, Order> = {
     label: "TVL",
     sort: 2,
     value: ORDER_KEYS.TVL,
-    direction: ORDER_DIRECTION.DESC,
+    direction: ORDER_DIRECTION.DESC
   },
   [ORDER_KEYS.APY]: {
     label: "APR",
     sort: 3,
     value: ORDER_KEYS.APY,
-    direction: ORDER_DIRECTION.DESC,
+    direction: ORDER_DIRECTION.DESC
   },
   [ORDER_KEYS.YOURS]: {
     label: "Yours",
     sort: 1,
     value: ORDER_KEYS.YOURS,
-    direction: ORDER_DIRECTION.DESC,
+    direction: ORDER_DIRECTION.DESC
   }
 };
 
