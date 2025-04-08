@@ -457,7 +457,6 @@ export function useIBGT() {
         type: "function"
       }
     ];
-    console.log("===tokenData", tokenData);
     const contract = new ethers.Contract(
       tokenData?.vaultAddress,
       abi,

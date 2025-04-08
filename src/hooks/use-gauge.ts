@@ -30,8 +30,6 @@ export default function useGauge(id: string) {
   }, [address])
 
   useEffect(() => {
-    console.log('=====defaultAddress', defaultAddress)
-    console.log('=====id', id)
     if (defaultAddress) {
       setAddress(defaultAddress)
     } else {

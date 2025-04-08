@@ -9,7 +9,6 @@ import useWithdraw from '../island/hooks/use-withdraw';
 import Big from 'big.js';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 const Remove = (data: any) => {
-  console.log('====data', data)
   const {
     id,
     tokenId,
@@ -34,11 +33,6 @@ const Remove = (data: any) => {
   const [percent, setPercent] = useState(0);
 
   const [amount0, amount1, amount] = useMemo(() => {
-    console.log('===percent', percent)
-    console.log('===info?.withdraw?.amount0 ', info?.withdraw?.amount0)
-    console.log(Big(info?.withdraw?.amount0 ?? 0)
-      .times(percent / 100)
-      .toString())
     return [
       Big(info?.withdraw?.amount0 ?? 0).toFixed(),
       Big(info?.withdraw?.amount1 ?? 0).toFixed(),

@@ -11,7 +11,6 @@ const YourVaults = (props: any) => {
   const { filterList, handleExplore, isLoading } = props;
   const { handleReport } = useClickTracking();
 
-  console.log('===filterList', filterList)
   useEffect(() => {
     handleReport('1016-002');
   }, []);

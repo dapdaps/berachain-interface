@@ -100,7 +100,6 @@ const MintStable = () => {
   };
   
   const handleTokenClick = (tokenId: string, e: React.MouseEvent) => {
-    console.log("====11111=====")
     e.stopPropagation();
     
     setSelectedToken(tokenId);

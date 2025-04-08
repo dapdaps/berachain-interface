@@ -63,9 +63,6 @@ export default function useLpToAmount(address: string, product: any) {
   };
 
   const handleGetTokensReserve = async () => {
-    console.log("=====address", address);
-
-    console.log("===product", product);
     if (
       product?.name === "BEX" ||
       [
