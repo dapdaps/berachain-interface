@@ -23,7 +23,7 @@ export default function Swap() {
       initialTokenIn={LIST_TOKENS[0]}
       initialTokenOut={LIST_TOKENS[1]}
       userAddress={state.address ?? null}
-      sendNearTransaction={useCallback(async (tx) => {
+      sendNearTransaction={async (tx) => {
         const result = await signAndSendTransactions({ transactions: [tx] })
 
         if (typeof result === "string") {
@@ -36,7 +36,7 @@ export default function Swap() {
         }
 
         return { txHash: outcome.transaction.hash }
-      }, [])}
+      }}
       signMessage={async (params) => {
         const chainType = state.chainType
         switch (chainType) {

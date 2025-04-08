@@ -42,6 +42,11 @@ export interface SwapFormProps {
   onNavigateDeposit?: () => void
 }
 
+export type SwapFormValues = {
+  amountIn: string
+  amountOut: string
+}
+
 export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
   const {
     handleSubmit,
