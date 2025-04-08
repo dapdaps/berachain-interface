@@ -105,6 +105,11 @@ export const WithdrawForm = ({
     }
   })
 
+  const hasOngoingIntents = intentRefs.some(intentRef => {
+    const intentState = intentRef.getSnapshot();
+    return intentState.matches("pending") || intentState.matches("checking");
+  });
+
   const publicKeyVerifierRef = useSelector(swapRef, (state) => {
     if (state) {
       return state.children.publicKeyVerifierRef
@@ -588,8 +593,8 @@ const { addAction } = useAddAction("dapp", true);
 
               <ButtonCustom
                 size="lg"
-                disabled={state.matches("submitting") || !!noLiquidity}
-                isLoading={state.matches("submitting")}
+                disabled={state.matches("submitting") || !!noLiquidity || hasOngoingIntents}
+                isLoading={state.matches("submitting") || hasOngoingIntents}
               >
                 {noLiquidity ? "No liquidity providers" : "Withdraw"}
               </ButtonCustom>
