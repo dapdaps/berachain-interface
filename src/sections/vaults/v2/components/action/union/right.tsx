@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import { ACTION_TYPE, ActionTypes } from "@/sections/vaults/v2/config";
 import ActionUnionForm from "@/sections/vaults/v2/components/action/union/form";
-import BurrBear from "@/sections/vaults/v2/components/action/burrbear";
 import KodiakUnstake from "@/sections/vaults/v2/components/action/kodiak-unstake";
 
 const ActionUnionRight = (props: any) => {
