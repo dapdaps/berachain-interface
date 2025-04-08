@@ -151,6 +151,7 @@ export const SwapWidget = memo(({
             userAddress={userAddress}
             userChainType={userChainType}
             onSuccessSwap={onSuccessSwap}
+            sendNearTransaction={sendNearTransaction}
           >
             <SwapSubmitterProvider
               userAddress={userAddress}
