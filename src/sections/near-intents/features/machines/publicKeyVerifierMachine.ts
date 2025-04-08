@@ -8,6 +8,9 @@ import {
   type WalletErrorCode,
   extractWalletErrorCode,
 } from "../../utils/walletErrorExtractor"
+import { config } from "../../config"
+import { decodeQueryResult } from "../../utils/near"
+import * as v from "valibot"
 
 export type SendNearTransaction = (
   tx: Transaction["NEAR"]
@@ -16,7 +19,6 @@ export type SendNearTransaction = (
 type Input = {
   nearAccount: { accountId: string; publicKey: string } | null
   nearClient: providers.Provider
-  sendNearTransaction: SendNearTransaction
 }
 
 export type ErrorCodes =
@@ -27,15 +29,20 @@ export type ErrorCodes =
 
 type Output = { tag: "ok" } | { tag: "err"; value: ErrorCodes }
 
-type Context = Input & {
+export interface Context extends Input {
   error: ErrorCodes | null
 }
+
+type Events =
+  | { type: "ADD_PUBLIC_KEY"; sendNearTransaction: SendNearTransaction }
+  | { type: "ABORT_ADD_PUBLIC_KEY" }
 
 export const publicKeyVerifierMachine = setup({
   types: {
     context: {} as Context,
     input: {} as Input,
     output: {} as Output,
+    events: {} as Events,
   },
   actors: {
     checkPubKeyActor: fromPromise(
@@ -57,6 +64,14 @@ export const publicKeyVerifierMachine = setup({
       error: (_, { error }: { error: ErrorCodes }) => error,
     }),
   },
+  guards: {
+    isNonNearAccount: ({ context }) => {
+      // Don't need to check public key if it is not Near account,
+      // because public key cannot change for non-Near accounts.
+      return context.nearAccount == null
+    },
+    isTrue: (_, value: boolean) => value,
+  },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QAcCuAjANgSwMYGkwBPANTACdsAzbCgOmwkzAGIBtABgF1EUB7WNgAu2PgDteIAB6IAjACYArHQBsigBybZK+QE5dHWQGZ5AGhBFE62XRN7tugOwAWWbsWKVAXy-m0WPEJSCmpacgYmVjZZHiQQZAFhUQk4mQQFZTVNax19QxNzSwR5dSM6DgNdayNnZxLPHz8MHAJiMkoaelwACzBcAGtsMSgWCHEwBjEANz5+iZ6+-oAFDCCAJTAqTlj+QRFxSTSVdXly40NtFRd1WsLEPVPHDgr1FWc1N0UjRvjmwLaQp1wgsBkMRmMxBMhjM5nQQctVsQNlsYpIEntkodEJ5HipdLInrp5G4bs47ggjNZbESCSZtDVHIofv4WkF2qEur1QcMWBRyHxwshMABDIRUAUAWzhXIR6HWm22aMS+xSoDSsg4RmUJKMul1RjxzgN5KUKlUeI47y1VUMjkczL+rWCHTC0sWkBYAEEACLegD6SwAqgAhAAyAEkAMJ+-AAUQAmoq4uikgdUohHLIbCpddpHKUOEpdCpyYo3HRjOpFCUOFdHFqHQEneygXRhRAIGDRuNJjCJu2ICs5UiFdwlRi02q5EZZJkZ4yrcd3Ipyc5XnR3O9nJrnHaFN9fL8m2zAa6B12IVDprN+x2h-KUTt4srMen0ios+V3PInnpM0SyQsRAtzoeQjGeIx-xqWR1F0RtWQBF16HPHk+QFOghVFcVyClAd7xHLYx2TF9J2kOQ3jNPVKT0HNrAqRxyRMZw6FePUdCuAxMxqHxDzEPgIDgNFHRPJDyHHVNVTIhAAFoSyAmTlH0fR1EcFQrg4etTXg-5nQ5cJGGYcSVSxBA6nJKtVC+eRa11fM8mcbTm1PTlFjBIzXynYoVLoRxdDqFSKg8azVJNRRHDoRR8Q-Cp1P0bxDxZHSW1deFIHc0i0i+M1YOcL4FDeSDZFLGCWNratng1d5q0ckS9LbDs3OIidJLSJx1FA2DnieRRnicXRV3cakCTxNQ9Ss+KmmPRC6twPgJSFMAhDSpqJJMy52pONiTBcDSXHJPy6FcbcNCULNiTtHivCAA */
   id: "publicKeyVerifier",
@@ -77,11 +92,7 @@ export const publicKeyVerifierMachine = setup({
       always: [
         {
           target: "completed",
-          guard: ({ context }) => {
-            // Don't need to check public key if it is not Near account,
-            // because public key cannot change for non-Near accounts.
-            return context.nearAccount == null
-          },
+          guard: "isNonNearAccount",
         },
         {
           target: "checking",
@@ -101,13 +112,15 @@ export const publicKeyVerifierMachine = setup({
           return {
             nearAccount: context.nearAccount,
             nearClient: context.nearClient,
-            sendNearTransaction: context.sendNearTransaction,
           }
         },
         onDone: [
           {
             target: "completed",
-            guard: ({ event }) => event.output,
+            guard: {
+              type: "isTrue",
+              params: ({ event }) => event.output,
+            },
           },
           {
             target: "checked",
@@ -152,14 +165,15 @@ export const publicKeyVerifierMachine = setup({
       invoke: {
         id: "addPubKeyRef",
         src: "addPubKeyActor",
-        input: ({ context }) => {
+        input: ({ context, event }) => {
+
           if (context.nearAccount == null) {
             throw new Error("no near account")
           }
 
           return {
             pubKey: context.nearAccount.publicKey,
-            sendNearTransaction: context.sendNearTransaction,
+            sendNearTransaction: event.sendNearTransaction,
           }
         },
         onDone: "completed",
@@ -199,9 +213,9 @@ async function checkPublicKeyOnchain({
   nearClient: providers.Provider
   nearAccount: { accountId: string; publicKey: string }
 }): Promise<boolean> {
-  const output = await nearClient.query<CodeResult>({
+  const response = await nearClient.query({
     request_type: "call_function",
-    account_id: settings.defuseContractId,
+    account_id: config.env.contractID,
     method_name: "has_public_key",
     args_base64: btoa(
       JSON.stringify({
@@ -212,13 +226,7 @@ async function checkPublicKeyOnchain({
     finality: "optimistic",
   })
 
-  const stringData = String.fromCharCode(...output.result)
-  const value = JSON.parse(stringData)
-  if (typeof value !== "boolean") {
-    throw new Error("Unexpected response from has_public_key")
-  }
-
-  return value
+  return decodeQueryResult(response, v.boolean())
 }
 
 async function addPublicKeyToContract({
@@ -229,7 +237,7 @@ async function addPublicKeyToContract({
   sendNearTransaction: SendNearTransaction
 }): Promise<boolean> {
   const tx: Transaction["NEAR"] = {
-    receiverId: settings.defuseContractId,
+    receiverId: config.env.contractID,
     actions: [
       {
         type: "FunctionCall",

@@ -16,6 +16,7 @@ type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
   userChainType: ChainType | null
   onSuccessSwap: SwapWidgetProps["onSuccessSwap"]
+  sendNearTransaction: SwapWidgetProps["sendNearTransaction"]
 }>
 
 export function SwapUIMachineFormSyncProvider({
@@ -23,6 +24,7 @@ export function SwapUIMachineFormSyncProvider({
   userAddress,
   userChainType,
   onSuccessSwap,
+  sendNearTransaction
 }: SwapUIMachineFormSyncProviderProps) {
   const { watch, setValue } = useFormContext<SwapFormValues>()
   const actorRef = SwapUIMachineContext.useActorRef()
@@ -130,7 +132,7 @@ export function SwapUIMachineFormSyncProvider({
     }
   })
 
-  usePublicKeyModalOpener(publicKeyVerifierRef)
+  usePublicKeyModalOpener(publicKeyVerifierRef, sendNearTransaction)
 
   return <>{children}</>
 }

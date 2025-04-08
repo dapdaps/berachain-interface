@@ -135,7 +135,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
 
   const handleSignOutViaSolanaSelector = async () => {
     await solanaWallet.disconnect()
-    await handleSignOutViaWagmi()
+    // await handleSignOutViaWagmi()
   }
 
   if (nearWallet.accountId != null && !isWalletConnected(ChainType.Near)) {
