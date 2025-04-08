@@ -6,8 +6,7 @@ import { useWalletName } from "@/hooks/use-wallet-name";
 import { getReportTokenSymbol } from "@/utils/token/symbol";
 import { post } from "@/utils/http";
 
-
-// 
+//
 export default function useAddAction(source: string, isNear = false) {
   const { account, chainId } = useAccount();
   const { name: walletName } = useWalletName();
@@ -15,8 +14,8 @@ export default function useAddAction(source: string, isNear = false) {
   const addAction = useCallback(
     (data: any) => {
       let params: any = {};
-      
-      if (!isNear && (!chainId || !account) ) return;
+
+      if (!isNear && (!chainId || !account)) return;
 
       const currentChain = chains[chainId];
 
@@ -35,7 +34,7 @@ export default function useAddAction(source: string, isNear = false) {
           ]),
           action_amount: data?.inputCurrencyAmount
             ? data?.inputCurrencyAmount.toString()
-            : '',
+            : "",
           account_id: data.account_id || account,
           template: data.template,
           tx_id: data.transactionHash,
@@ -72,12 +71,12 @@ export default function useAddAction(source: string, isNear = false) {
       }
       if (data.type === "Lending") {
         params = {
-          action_type: 'Lending',
+          action_type: "Lending",
           account_id: data.account_id || account,
           template: data.template,
-          sub_type: data.action === 'Deposit' ? 'Supply' : data.action,
+          sub_type: data.action === "Deposit" ? "Supply" : data.action,
           tx_id: data.transactionHash,
-          chain_id: chainId,
+          chain_id: chainId
         };
 
         if (data.extra_data?.lending_actions) {
@@ -122,13 +121,14 @@ export default function useAddAction(source: string, isNear = false) {
           data.tokens.forEach((token: any, i: number) => {
             data.extra_data[`token${i}Symbol`] = getReportTokenSymbol(token);
             data.extra_data[`amount${i}`] = data.amounts[i];
+            data.extra_data[`token${i}Address`] = token.address;
           });
         }
         params = {
           action_title: !!symbols.length
-            ? `${data.action} ${data.amount} ${symbols.join("-")} on ${
-                data.template
-              }`
+            ? `${data.action}${
+                data?.amount ? " " + data.amount : ""
+              } ${symbols.join("-")} on ${data.template}`
             : "",
           action_type: "Staking",
           action_tokens: !!symbols.length
@@ -254,13 +254,16 @@ export default function useAddAction(source: string, isNear = false) {
           template: data.template,
           tx_id: data.transactionHash,
           chain_id: chainId,
-          sub_type: data.action  // 'mint' | 'list' | 'delist' | 'transfer' | 'burn'
+          sub_type: data.action // 'mint' | 'list' | 'delist' | 'transfer' | 'burn'
         };
       }
 
       params.ss = getSignature(
-        `template=${data.template}&action_type=${data.type}&tx_hash=${data.transactionHash
-        }&chain_id=${data.chainId || chainId}&time=${Math.ceil(Date.now() / 1000)}`
+        `template=${data.template}&action_type=${data.type}&tx_hash=${
+          data.transactionHash
+        }&chain_id=${data.chainId || chainId}&time=${Math.ceil(
+          Date.now() / 1000
+        )}`
       );
       params.source = source;
       params.wallet = walletName;
