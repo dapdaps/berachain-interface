@@ -1,9 +1,11 @@
 import bex from "./bex";
 import kodiak from "./kodiak";
+import burrbear from "./burrbear";
 
 export default {
   bex,
-  kodiak
+  kodiak,
+  burrbear
 } as Record<string, any>;
 
 export const MAX_TICK = 887272;

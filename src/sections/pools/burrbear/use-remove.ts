@@ -49,7 +49,6 @@ export default function useRemove({
       const balanceRes = await poolContract.balanceOf(account);
 
       const _balance = balanceRes.toString();
-
       if (!assetsRef.current) {
         const valutContract = new Contract(contracts.Vault, valutAbi, provider);
 
@@ -87,7 +86,7 @@ export default function useRemove({
               ["uint256", "uint256"],
               [data.poolType === "ComposableStable" ? 2 : 1, bptMinIn]
             );
-
+      console.log(90);
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
         data.id,
         account,
