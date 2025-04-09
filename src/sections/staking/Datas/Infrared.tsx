@@ -242,7 +242,7 @@ export default function useInfraredData(props: any) {
   }
 
   async function getIbgtData() {
-    return await asyncFetch("https://dev-api.beratown.app/infrared?path=api%2Fvault%2Finfrared-ibgt-v2&params=chainId%3D80094")
+    return await asyncFetch("https://dev-api.beratown.app/infrared?path=api%2Fvault%2Finfrared-ibgt&params=chainId%3D80094")
   }
   async function getDataList() {
     allData?.forEach((item) => {
@@ -258,7 +258,7 @@ export default function useInfraredData(props: any) {
         tokens: [],
         images: []
       };
-      
+
       if (item?.underlying_tokens?.length > 1) {
         const array = item?.name?.split("-") ?? [];
         const symbol0 = array[0];
