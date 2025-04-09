@@ -5,6 +5,7 @@ import onInfrared from "./infrared/action";
 import onBeraDrome from "./bera-drome/action";
 import onSlimee from "./slimee/action";
 import onBurrbear from "./burrbear/action";
+import onWeBera from "./webera/action";
 
 export default function onAction(params: any) {
   const { currentRecord } = params;
@@ -35,5 +36,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "BurrBear") {
     return onBurrbear(params);
+  }
+
+  if (currentRecord.protocol === "WeBera") {
+    return onWeBera(params);
   }
 }

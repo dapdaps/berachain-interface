@@ -49,16 +49,24 @@ const ActionUnionForm = (props: any) => {
       <div className="mt-[20px] flex justify-center">
         <ButtonWithApprove
           spender={
-            actionType.value === ACTION_TYPE.DEPOSIT
+            // 👇for WeBera
+            currentProtocol.extra_data?.vault_router
+              ? currentProtocol.extra_data?.vault_router
+              : actionType.value === ACTION_TYPE.DEPOSIT
               ? currentProtocol.vaultAddress
               : ""
           }
-          token={{
-            ...currentProtocol.token,
-            symbol: currentProtocol?.tokens
-              ?.map((token: any, index: number) => token.symbol)
-              .join("-")
-          }}
+          token={
+            actionType.value === ACTION_TYPE.DEPOSIT
+              ? currentProtocol.token
+              : // 👇for WeBera
+              currentProtocol.extra_data?.vault_router
+              ? {
+                  address: currentProtocol.vaultAddress,
+                  decimals: currentProtocol.token.decimals
+                }
+              : currentProtocol.token
+          }
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}
