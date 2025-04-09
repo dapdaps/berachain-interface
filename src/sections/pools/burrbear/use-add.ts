@@ -14,13 +14,19 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import weth from "@/configs/contract/weth";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function usdAdd({ tokens, values, poolIdx, onSuccess }: any) {
+export default function usdAdd({
+  tokens,
+  values,
+  poolIdx,
+  onSuccess,
+  from
+}: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider, chainId } = useAccount();
   const prices = usePrices(tokens);
   const toast = useToast();
   const contracts = burrbear.contracts[DEFAULT_CHAIN_ID];
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction(from === "vaults" ? "vaults" : "dapp");
   const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const storePrices = usePriceStore((store: any) => store.price);
 

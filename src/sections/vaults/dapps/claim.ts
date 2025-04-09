@@ -1,6 +1,7 @@
 import onBexClaim from "./bex/claim";
 import onKodiakClaim from "./kodiak/claim";
 import onInfraredClaim from "./infrared/claim";
+import onBurrbearClaim from "./burrbear/claim";
 
 export default function onClaim(params: any) {
   const { currentRecord } = params;
@@ -15,5 +16,9 @@ export default function onClaim(params: any) {
 
   if (currentRecord.protocol === "Infrared") {
     return onInfraredClaim(params);
+  }
+
+  if (currentRecord.protocol === "BurrBear") {
+    return onBurrbearClaim(params);
   }
 }

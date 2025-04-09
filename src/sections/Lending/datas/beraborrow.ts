@@ -1,31 +1,31 @@
-import axios from 'axios';
-import Big from 'big.js';
-import { ethers, utils } from 'ethers';
-import { useEffect } from 'react';
-import multicallAddresses from '@/configs/contract/multicall';
-import { multicall } from '@/utils/multicall';
+import axios from "axios";
+import Big from "big.js";
+import { ethers, utils } from "ethers";
+import { useEffect } from "react";
+import multicallAddresses from "@/configs/contract/multicall";
+import { multicall } from "@/utils/multicall";
 
-import { numberFormatter } from '@/utils/number-formatter';
+import { numberFormatter } from "@/utils/number-formatter";
 
 const ERC20_ABI = [
   {
     constant: true,
     inputs: [
       {
-        name: '_owner',
-        type: 'address'
+        name: "_owner",
+        type: "address"
       }
     ],
-    name: 'balanceOf',
+    name: "balanceOf",
     outputs: [
       {
-        name: 'balance',
-        type: 'uint256'
+        name: "balance",
+        type: "uint256"
       }
     ],
     payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function"
   },
   {
     type: "function",
@@ -35,11 +35,11 @@ const ERC20_ABI = [
       {
         name: "",
         type: "uint256",
-        internalType: "uint256",
-      },
+        internalType: "uint256"
+      }
     ],
-    stateMutability: "view",
-  },
+    stateMutability: "view"
+  }
 ];
 
 const DEN_ABI = [
@@ -51,10 +51,10 @@ const DEN_ABI = [
       {
         name: "",
         type: "uint256",
-        internalType: "uint256",
-      },
+        internalType: "uint256"
+      }
     ],
-    stateMutability: "view",
+    stateMutability: "view"
   },
   {
     type: "function",
@@ -64,34 +64,46 @@ const DEN_ABI = [
       {
         name: "",
         type: "uint256",
-        internalType: "uint256",
-      },
+        internalType: "uint256"
+      }
     ],
-    stateMutability: "view",
-  },
+    stateMutability: "view"
+  }
 ];
 
 const APY_ABI = [
   {
-    "inputs": [],
-    "name": "totalSupply",
-    "outputs": [
+    inputs: [],
+    name: "totalSupply",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function"
   },
-  { type: "function", name: "totalAssets", inputs: [], outputs: [{ name: "amountInAsset", type: "uint256", internalType: "uint256" }], stateMutability: "view" },
+  {
+    type: "function",
+    name: "totalAssets",
+    inputs: [],
+    outputs: [
+      { name: "amountInAsset", type: "uint256", internalType: "uint256" }
+    ],
+    stateMutability: "view"
+  }
 ];
 
 const calcTCR = (collateral: any, debt: any, price: any) => {
   if (!collateral || Big(collateral).lte(0)) return 0;
   if (!debt || Big(debt).lte(0)) return 0;
-  return Big(collateral).times(price || 1).div(debt).times(100).toFixed(0);
+  return Big(collateral)
+    .times(price || 1)
+    .div(debt)
+    .times(100)
+    .toFixed(0);
 };
 
 const SCALING_FACTOR = Big(1000000000000000000);
@@ -118,30 +130,39 @@ const getAPY = async (
   averageBlockTime = 2,
   multicallAddress: string,
   multicall: any,
-  provider: any,
+  provider: any
 ) => {
   const BLOCKS_IN_WEEK = (7 * 24 * 60 * 60) / averageBlockTime;
   // const blockNumberOneWeekAgo = currentBlockNumber - BigInt(BLOCKS_IN_WEEK) < BigInt(startBlock) ? BigInt(startBlock) : currentBlockNumber - BigInt(BLOCKS_IN_WEEK);
-  const blockNumberOneWeekAgo = Big(currentBlockNumber).minus(Big(BLOCKS_IN_WEEK).lt(startBlock) ? startBlock : Big(currentBlockNumber).minus(BLOCKS_IN_WEEK)).toNumber();
+  const blockNumberOneWeekAgo = Big(currentBlockNumber)
+    .minus(
+      Big(BLOCKS_IN_WEEK).lt(startBlock)
+        ? startBlock
+        : Big(currentBlockNumber).minus(BLOCKS_IN_WEEK)
+    )
+    .toNumber();
 
-
-  console.log('====contractAddress', contractAddress)
+  console.log("====contractAddress", contractAddress);
   const calls = [
     {
       address: contractAddress,
-      name: 'totalSupply',
-      params: [],
+      name: "totalSupply",
+      params: []
     },
     {
       address: contractAddress,
-      name: 'totalAssets',
-      params: [],
-    },
+      name: "totalAssets",
+      params: []
+    }
   ];
 
-  console.log('====blockNumberOneWeekAgo====', blockNumberOneWeekAgo)
+  console.log("====blockNumberOneWeekAgo====", blockNumberOneWeekAgo);
 
-  let [blockOneWeekAgo, [[currentTotalSupply], [currentTVL]], [[oneWeekAgoTotalSupply], [oneWeekAgoTVL]]] = await Promise.all([
+  let [
+    blockOneWeekAgo,
+    [[currentTotalSupply], [currentTVL]],
+    [[oneWeekAgoTotalSupply], [oneWeekAgoTVL]]
+  ] = await Promise.all([
     provider.getBlock(blockNumberOneWeekAgo),
     multicall({
       abi: APY_ABI,
@@ -154,11 +175,11 @@ const getAPY = async (
       abi: APY_ABI,
       calls: calls,
       options: {
-        blockTag: blockNumberOneWeekAgo,
+        blockTag: blockNumberOneWeekAgo
       },
       multicallAddress,
       provider: provider
-    }),
+    })
   ]);
 
   currentTotalSupply = utils.formatUnits(currentTotalSupply, 18);
@@ -169,12 +190,20 @@ const getAPY = async (
   // const realOneWeekAgo = Date.now() / 1000 - Number(blockOneWeekAgo.timestamp);
   const realOneWeekAgo = Date.now() / 1000 - Number(blockOneWeekAgo.timestamp);
   // const sharePriceOneWeekAgo = oneWeekAgoTotalSupply == 0n ? 0n : (oneWeekAgoTVL * SCALING_FACTOR) / oneWeekAgoTotalSupply;
-  const sharePriceOneWeekAgo = Big(oneWeekAgoTotalSupply).eq(0) ? Big(0) : Big(Big(oneWeekAgoTVL).times(SCALING_FACTOR)).div(oneWeekAgoTotalSupply);
+  const sharePriceOneWeekAgo = Big(oneWeekAgoTotalSupply).eq(0)
+    ? Big(0)
+    : Big(Big(oneWeekAgoTVL).times(SCALING_FACTOR)).div(oneWeekAgoTotalSupply);
   // const sharePriceNow = currentTotalSupply == 0n ? 0n : (currentTVL * SCALING_FACTOR) / currentTotalSupply;
-  const sharePriceNow = Big(currentTotalSupply).eq(0) ? Big(0) : Big(Big(currentTVL).times(SCALING_FACTOR)).div(currentTotalSupply);
+  const sharePriceNow = Big(currentTotalSupply).eq(0)
+    ? Big(0)
+    : Big(Big(currentTVL).times(SCALING_FACTOR)).div(currentTotalSupply);
   const SECONDS_IN_YEAR = Big(31536000);
   // const apy = sharePriceOneWeekAgo == 0n ? 0 : (SECONDS_IN_YEAR / realOneWeekAgo) * Math.log(Number(sharePriceNow) / Number(sharePriceOneWeekAgo));
-  const apy = Big(sharePriceOneWeekAgo).eq(0) ? 0 : Big(Big(SECONDS_IN_YEAR).div(realOneWeekAgo)).times(Math.log(Big(sharePriceNow).div(sharePriceOneWeekAgo).toNumber()));
+  const apy = Big(sharePriceOneWeekAgo).eq(0)
+    ? 0
+    : Big(Big(SECONDS_IN_YEAR).div(realOneWeekAgo)).times(
+        Math.log(Big(sharePriceNow).div(sharePriceOneWeekAgo).toNumber())
+      );
 
   // return BigInt((apy * Number(SCALING_FACTOR)).toFixed(0));
   return Big(apy).times(SCALING_FACTOR).toFixed(0);
@@ -194,13 +223,13 @@ const BeraborrowData = (props: any) => {
     update,
     provider,
     chainId,
-    borrowToken,
+    borrowToken
   } = props;
 
   const multicallAddress = multicallAddresses[chainId];
 
   useEffect(() => {
-    console.log(!update , !account , !provider, '<-----------------')
+    console.log(!update, !account, !provider, "<-----------------");
     if (!update || !account || !provider) return;
     const handleGetDenManager = (market) => {
       return new Promise((resolve) => {
@@ -212,26 +241,28 @@ const BeraborrowData = (props: any) => {
               id: market.id,
               collVault: market.collVault,
               symbol: market.symbol,
-              interestRate: Big(denManager?.interestRate ?? "0").div(100).toFixed(),
+              interestRate: Big(denManager?.interestRate ?? "0")
+                .div(100)
+                .toFixed()
             });
           })
           .catch((err: any) => {
             resolve([]);
-            console.log('getDenManagers failure: %o', err);
+            console.log("getDenManagers failure: %o", err);
           });
       });
-    }
+    };
     const getDenManagers = () => {
-      const promiseArray = []
-      markets.forEach(market => {
-        promiseArray.push(handleGetDenManager(market))
-      })
+      const promiseArray = [];
+      markets.forEach((market) => {
+        promiseArray.push(handleGetDenManager(market));
+      });
 
       try {
-        return Promise.all(promiseArray)
+        return Promise.all(promiseArray);
       } catch (error) {
         resolve([]);
-        console.log('getDenManagers failure: %o', err);
+        console.log("getDenManagers failure: %o", err);
       }
       // return new Promise((resolve) => {
       //   axios
@@ -271,12 +302,18 @@ const BeraborrowData = (props: any) => {
             const { tokens } = priceRes?.data?.data || {};
             const nextPrice = tokens?.[0]?.price?.price;
             // resolve(utils.formatUnits(nextPrice, 36 - borrowToken.decimals));
-            console.log('NectPrice is %o', utils.formatUnits(nextPrice, 36 - borrowToken.decimals));
-            resolve({ price: '1', realPrice: utils.formatUnits(nextPrice, 36 - borrowToken.decimals) });
+            console.log(
+              "NectPrice is %o",
+              utils.formatUnits(nextPrice, 36 - borrowToken.decimals)
+            );
+            resolve({
+              price: "1",
+              realPrice: utils.formatUnits(nextPrice, 36 - borrowToken.decimals)
+            });
           })
           .catch((err: any) => {
-            resolve({ price: '1', realPrice: '1' });
-            console.log('get Nect Price failure: %o', err);
+            resolve({ price: "1", realPrice: "1" });
+            console.log("get Nect Price failure: %o", err);
           });
       });
     };
@@ -288,7 +325,7 @@ const BeraborrowData = (props: any) => {
         markets.forEach((token: any) => {
           calls.push({
             address: token.denManager,
-            name: 'fetchPrice',
+            name: "fetchPrice",
             params: []
           });
         });
@@ -301,17 +338,20 @@ const BeraborrowData = (props: any) => {
         })
           .then((res: any) => {
             markets.forEach((token: any, index: number) => {
-              let denManagerPrice = res?.[index]?.[0] ?? '0';
-              denManagerPrice = utils.formatUnits(denManagerPrice, 36 - token.decimals);
+              let denManagerPrice = res?.[index]?.[0] ?? "0";
+              denManagerPrice = utils.formatUnits(
+                denManagerPrice,
+                36 - token.decimals
+              );
               result.push({
                 id: token.id,
-                price: denManagerPrice,
+                price: denManagerPrice
               });
             });
             resolve(result);
           })
           .catch((err: any) => {
-            console.log('getPrices error', err);
+            console.log("getPrices error", err);
             resolve(result);
           });
       });
@@ -331,15 +371,18 @@ const BeraborrowData = (props: any) => {
                 symbol: m.symbol,
                 decimals: m.decimals,
                 collToken: m.collToken,
-                collateral: '0',
-                debt: '0',
-                status: '',
+                collateral: "0",
+                debt: "0",
+                status: ""
               };
               const curr = user?.dens?.find((d: any) => {
-                return d.denManager?.collateral?.id.toLowerCase() === obj.collVault.toLowerCase();
+                return (
+                  d.denManager?.collateral?.id.toLowerCase() ===
+                  obj.collVault.toLowerCase()
+                );
               });
 
-              console.log('====curr', curr)
+              console.log("====curr", curr);
               if (!curr) return obj;
               obj.collateral = ethers.utils.formatUnits(curr.collateral);
               obj.debt = ethers.utils.formatUnits(curr.debt);
@@ -350,7 +393,7 @@ const BeraborrowData = (props: any) => {
           })
           .catch((err: any) => {
             resolve({});
-            console.log('getBorrows failure: %o', err);
+            console.log("getBorrows failure: %o", err);
           });
       });
     };
@@ -358,14 +401,14 @@ const BeraborrowData = (props: any) => {
     const getWalletBalance = () => {
       const result: any = {};
       return new Promise((resolve) => {
-        let nativeOToken = '';
+        let nativeOToken = "";
         const tokenList: any = markets.filter((market: any) => {
           if (market.isNative) nativeOToken = market.address;
           return market.address && !market.isNative;
         });
         const calls = tokenList.map((token: any) => ({
           address: token.address,
-          name: 'balanceOf',
+          name: "balanceOf",
           params: [account]
         }));
         multicall({
@@ -377,11 +420,20 @@ const BeraborrowData = (props: any) => {
         })
           .then((res: any) => {
             for (let i = 0; i < res.length; i++) {
-              result[tokenList[i].address.toLowerCase()] = res[i] && res[i][0] ? ethers.utils.formatUnits(res[i][0]._hex, tokenList[i].decimals) : '0';
+              result[tokenList[i].address.toLowerCase()] =
+                res[i] && res[i][0]
+                  ? ethers.utils.formatUnits(
+                      res[i][0]._hex,
+                      tokenList[i].decimals
+                    )
+                  : "0";
             }
             if (nativeOToken) {
               provider.getBalance(account).then((rawBalance: any) => {
-                result[nativeOToken.toLowerCase()] = ethers.utils.formatUnits(rawBalance._hex, 18);
+                result[nativeOToken.toLowerCase()] = ethers.utils.formatUnits(
+                  rawBalance._hex,
+                  18
+                );
                 resolve(result);
               });
               return;
@@ -389,22 +441,27 @@ const BeraborrowData = (props: any) => {
             resolve(result);
           })
           .catch((err: any) => {
-            console.log('getWalletBalance error', err);
+            console.log("getWalletBalance error", err);
             resolve(result);
           });
       });
     };
 
     const getBorrowWalletBalance = () => {
-      const contract = new ethers.Contract(borrowToken.address, ERC20_ABI, provider);
+      const contract = new ethers.Contract(
+        borrowToken.address,
+        ERC20_ABI,
+        provider
+      );
       return new Promise((resolve) => {
-        contract.balanceOf(account)
+        contract
+          .balanceOf(account)
           .then((balance: any) => {
-            resolve(utils.formatUnits(balance || '0', borrowToken.decimals));
+            resolve(utils.formatUnits(balance || "0", borrowToken.decimals));
           })
           .catch((err: any) => {
-            console.log('getBorrowWalletBalance failure: %o', err);
-            resolve('0');
+            console.log("getBorrowWalletBalance failure: %o", err);
+            resolve("0");
           });
       });
     };
@@ -416,12 +473,12 @@ const BeraborrowData = (props: any) => {
         markets.forEach((token: any) => {
           calls.push({
             address: token.denManager,
-            name: 'getTotalActiveCollateral',
+            name: "getTotalActiveCollateral",
             params: []
           });
           calls.push({
             address: token.denManager,
-            name: 'getTotalActiveDebt',
+            name: "getTotalActiveDebt",
             params: []
           });
         });
@@ -434,20 +491,20 @@ const BeraborrowData = (props: any) => {
         })
           .then((res: any) => {
             markets.forEach((token: any, index: number) => {
-              let totalCollateral = res?.[index * 2]?.[0] ?? '0';
-              let totalDebt = res?.[index * 2 + 1]?.[0] ?? '0';
+              let totalCollateral = res?.[index * 2]?.[0] ?? "0";
+              let totalDebt = res?.[index * 2 + 1]?.[0] ?? "0";
               totalCollateral = utils.formatUnits(totalCollateral, 18);
               totalDebt = utils.formatUnits(totalDebt, 18);
               result.push({
                 id: token.id,
                 totalCollateral: totalCollateral,
-                totalDebt: totalDebt,
+                totalDebt: totalDebt
               });
             });
             resolve(result);
           })
           .catch((err: any) => {
-            console.log('getPrices error', err);
+            console.log("getPrices error", err);
             resolve(result);
           });
       });
@@ -456,13 +513,13 @@ const BeraborrowData = (props: any) => {
     const getNectData = () => {
       const result: any = {};
 
-      console.log('====borrowToken====', borrowToken)
+      console.log("====borrowToken====", borrowToken);
       return new Promise((resolve) => {
         const calls = [
           {
             address: borrowToken?.earnToken?.address,
-            name: 'balanceOf',
-            params: [account],
+            name: "balanceOf",
+            params: [account]
           }
         ];
         multicall({
@@ -473,8 +530,8 @@ const BeraborrowData = (props: any) => {
           provider: provider
         })
           .then(async (res: any) => {
-            let balance = res?.[0]?.[0] ?? '0';
-            balance = utils.formatUnits(balance || '0', borrowToken.decimals);
+            let balance = res?.[0]?.[0] ?? "0";
+            balance = utils.formatUnits(balance || "0", borrowToken.decimals);
             result.balance = balance;
 
             const currentBlockNumber = await provider.getBlock();
@@ -492,14 +549,13 @@ const BeraborrowData = (props: any) => {
             resolve(result);
           })
           .catch((err: any) => {
-            console.log('getNectData error', err);
+            console.log("getNectData error", err);
             resolve(result);
           });
       });
     };
 
     const getCTokensData = async () => {
-
       try {
         const [
           DenManagers,
@@ -509,7 +565,7 @@ const BeraborrowData = (props: any) => {
           BorrowWalletBalance,
           TCRs,
           NECTPrice,
-          NECTData,
+          NECTData
         ]: any = await Promise.all([
           getDenManagers(),
           getPrices(),
@@ -518,10 +574,10 @@ const BeraborrowData = (props: any) => {
           getBorrowWalletBalance(),
           getTCR(),
           getNectPrice(),
-          getNectData(),
+          getNectData()
         ]);
         let borrowTokenRes: any = borrowToken;
-        console.log('===Borrows', Borrows)
+        console.log("===Borrows", Borrows);
         const result = markets.map((market: any) => {
           let _address = market.address.toLowerCase();
           // if (market.isNative && wrappedToken) {
@@ -529,27 +585,36 @@ const BeraborrowData = (props: any) => {
           // }
 
           const currBorrow = Borrows.find((b: any) => b.id === market.id);
-          console.log('====currBorrow', currBorrow)
+          console.log("====currBorrow", currBorrow);
           const currPrice = Prices.find((b: any) => b.id === market.id);
-          const currDenManager = DenManagers?.find((b: any) => b.id === market.id);
+          const currDenManager = DenManagers?.find(
+            (b: any) => b.id === market.id
+          );
 
-          console.log('====DenManagers', DenManagers)
-          console.log('====currDenManager', currDenManager)
+          console.log("====DenManagers", DenManagers);
+          console.log("====currDenManager", currDenManager);
           const currTCR = TCRs.find((b: any) => b.id === market.id);
           const currWalletBalance = WalletBalance[_address];
           let liquidationPrice = Big(0);
           if (Big(currBorrow?.collateral || 0).gt(0)) {
-            liquidationPrice = Big(currBorrow?.debt || 0).times(Big(parseFloat(market.MCR)).div(100)).div(currBorrow?.collateral);
+            liquidationPrice = Big(currBorrow?.debt || 0)
+              .times(Big(parseFloat(market.MCR)).div(100))
+              .div(currBorrow?.collateral);
           }
-          const balanceUsd = Big(currBorrow?.collateral || 0).times(currPrice?.price || 0);
+          const balanceUsd = Big(currBorrow?.collateral || 0).times(
+            currPrice?.price || 0
+          );
 
-
-          console.log('====balanceUsd', balanceUsd)
+          console.log("====balanceUsd", balanceUsd);
           let collateralRatio = Big(0);
           if (Big(currBorrow?.debt || 0).gt(0)) {
             collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
           }
-          const TCR = calcTCR(currTCR?.totalCollateral, currTCR?.totalDebt, currPrice?.price);
+          const TCR = calcTCR(
+            currTCR?.totalCollateral,
+            currTCR?.totalDebt,
+            currPrice?.price
+          );
 
           borrowTokenRes = {
             ...borrowToken,
@@ -559,9 +624,9 @@ const BeraborrowData = (props: any) => {
             realPriceShow: numberFormatter(NECTPrice.realPrice, 2, true),
             walletBalance: BorrowWalletBalance,
             walletBalanceShown: numberFormatter(BorrowWalletBalance, 2, true),
-            balance: NECTData?.balance || '0',
+            balance: NECTData?.balance || "0",
             balanceShown: numberFormatter(NECTData?.balance, 2, true),
-            apy: NECTData?.apy || '0.00%',
+            apy: NECTData?.apy || "0.00%"
           };
 
           return {
@@ -573,34 +638,42 @@ const BeraborrowData = (props: any) => {
             balance: currBorrow?.collateral,
             balanceUsd: balanceUsd.toFixed(2),
             balanceShown: numberFormatter(currBorrow?.collateral, 2, true),
-            balanceUsdShown: numberFormatter(balanceUsd, 2, true, { prefix: '$' }),
+            balanceUsdShown: numberFormatter(balanceUsd, 2, true, {
+              prefix: "$"
+            }),
             borrowed: currBorrow?.debt,
             borrowedShown: numberFormatter(currBorrow?.debt, 2, true),
             walletBalance: currWalletBalance,
             walletBalanceShown: numberFormatter(currWalletBalance, 2, true),
             price: currPrice?.price,
-            priceShown: numberFormatter(currPrice?.price, 2, true, { prefix: '$' }),
+            priceShown: numberFormatter(currPrice?.price, 2, true, {
+              prefix: "$"
+            }),
             interestRate: currDenManager?.interestRate,
-            interestRateShown: currDenManager?.interestRate + '%',
-            apy: '100',
-            apyShown: '100%',
+            interestRateShown: currDenManager?.interestRate + "%",
+            apy: "100",
+            apyShown: "100%",
             liquidationPrice: liquidationPrice.toFixed(2),
-            liquidationPriceShown: numberFormatter(liquidationPrice, 2, true, { prefix: '$' }),
+            liquidationPriceShown: numberFormatter(liquidationPrice, 2, true, {
+              prefix: "$"
+            }),
             collateralRatio: collateralRatio,
-            collateralRatioShown: numberFormatter(collateralRatio, 2, true) + '%',
-            collateralRatioRisk: Big(collateralRatio).lt(riskyRatio) ? 'HighRisk' : 'LowRisk',
+            collateralRatioShown:
+              numberFormatter(collateralRatio, 2, true) + "%",
+            collateralRatioRisk: Big(collateralRatio).lt(riskyRatio)
+              ? "HighRisk"
+              : "LowRisk"
           };
         });
 
-        console.log('====result====', result)
+        console.log("====result====", result);
         onLoad({
           borrowToken: borrowTokenRes,
-          markets: result,
+          markets: result
         });
       } catch (error) {
-        console.log('getCTokensData error', error)
+        console.log("getCTokensData error", error);
       }
-
     };
     getCTokensData();
   }, [update, account, provider]);

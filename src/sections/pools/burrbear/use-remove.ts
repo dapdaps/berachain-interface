@@ -18,7 +18,8 @@ export default function useRemove({
   type, // 0 for one token, 1 for tokens
   percent,
   exitAmount,
-  onSuccess
+  onSuccess,
+  from
 }: any) {
   const [loading, setLoading] = useState(false);
   const [amounts, setAmounts] = useState<any>({});
@@ -29,7 +30,7 @@ export default function useRemove({
   const contracts = dapp.contracts[DEFAULT_CHAIN_ID];
   const assetsRef = useRef<any>();
   const slippage = useSettingsStore((store: any) => store.slippage / 100);
-  const { addAction } = useAddAction("dapp");
+  const { addAction } = useAddAction(from === "vaults" ? "vaults" : "dapp");
 
   const onQueryAmountsOut = async () => {
     try {
@@ -48,7 +49,6 @@ export default function useRemove({
       const balanceRes = await poolContract.balanceOf(account);
 
       const _balance = balanceRes.toString();
-
       if (!assetsRef.current) {
         const valutContract = new Contract(contracts.Vault, valutAbi, provider);
 
@@ -86,7 +86,7 @@ export default function useRemove({
               ["uint256", "uint256"],
               [data.poolType === "ComposableStable" ? 2 : 1, bptMinIn]
             );
-
+      console.log(90);
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
         data.id,
         account,
