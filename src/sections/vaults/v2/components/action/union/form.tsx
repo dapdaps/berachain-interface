@@ -48,29 +48,35 @@ const ActionUnionForm = (props: any) => {
         )}
       <div className="mt-[20px] flex justify-center">
         <ButtonWithApprove
-          spender={(
+          spender={
             // 👇for WeBera
             currentProtocol.extra_data?.vault_router
               ? currentProtocol.extra_data?.vault_router
-              : (
-                actionType.value === ACTION_TYPE.DEPOSIT
-                  ? currentProtocol.vaultAddress
-                  : ""
-              )
-          )}
-          token={(
+              : actionType.value === ACTION_TYPE.DEPOSIT
+              ? currentProtocol.vaultAddress
+              : ""
+          }
+          token={
             actionType.value === ACTION_TYPE.DEPOSIT
-              ? currentProtocol.token
-              : (
-                // 👇for WeBera
-                currentProtocol.extra_data?.vault_router
-                  ? {
-                    address: currentProtocol.vaultAddress,
-                    decimals: currentProtocol.token.decimals,
-                  }
-                  : currentProtocol.token
-              )
-          )}
+              ? {
+                  ...currentProtocol.token,
+                  symbol: currentProtocol?.tokens
+                    ?.map((token: any, index: number) => token.symbol)
+                    .join("-")
+                }
+              : // 👇for WeBera
+              currentProtocol.extra_data?.vault_router
+              ? {
+                  address: currentProtocol.vaultAddress,
+                  decimals: currentProtocol.token.decimals
+                }
+              : {
+                  ...currentProtocol.token,
+                  symbol: currentProtocol?.tokens
+                    ?.map((token: any, index: number) => token.symbol)
+                    .join("-")
+                }
+          }
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}

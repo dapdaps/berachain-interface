@@ -34,7 +34,6 @@ export default function BgtGaugeMobile(props: any) {
   } = props
 
 
-  console.log('======gaugeData====', gaugeData)
   const handleSuccess = () => {
     onSuccess?.()
     onBack?.()

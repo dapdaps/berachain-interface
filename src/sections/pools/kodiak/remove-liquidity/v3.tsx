@@ -21,7 +21,6 @@ const Remove = ({ token0, token1, fee, tokenId, onSuccess }: any) => {
   const { amount0, amount1, liquidity } = info || {};
   const [percent, setPercent] = useState(0);
 
-  console.log('====liquidity', liquidity)
   const { loading, onRemove } = useRemove({
     detail: info,
     percent,

@@ -185,7 +185,6 @@ export default memo(function BgtMain() {
       value: +Big(othersValue).times(100).toFixed(),
       color: stringToHslColor(othersName)
     })
-    console.log('====array', array)
     return array
   }, [vaults]);
   const BgtDistributed = useMemo(() => vaults?.reduce((acc, curr) => Big(acc).plus(curr?.dynamicData?.allTimeReceivedBGTAmount ?? 0).toFixed(), 0), [vaults])

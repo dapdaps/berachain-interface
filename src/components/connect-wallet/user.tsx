@@ -18,8 +18,6 @@ const MobileUser = (props: Props) => {
     isNearPage
   } = props;
 
-  
-
   const walletName = walletInfo?.name || '';
 
   return (

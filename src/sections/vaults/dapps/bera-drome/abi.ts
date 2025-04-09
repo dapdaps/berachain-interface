@@ -4,7 +4,7 @@ export default [
       { internalType: "address", name: "account", type: "address" },
       { internalType: "uint256", name: "amount", type: "uint256" }
     ],
-    name: "_deposit",
+    name: "depositFor",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function"
@@ -14,7 +14,7 @@ export default [
       { internalType: "address", name: "account", type: "address" },
       { internalType: "uint256", name: "amount", type: "uint256" }
     ],
-    name: "_withdraw",
+    name: "withdrawTo",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function"

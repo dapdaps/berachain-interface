@@ -298,7 +298,6 @@ const User = (props: any) => {
   } = props;
 
   const router = useRouter()
-
   if (isNearPage && currentWallet) {
     return (
       <div className="h-[30px] border border-black rounded-xl bg-white flex items-center justify-center font-Montserrat text-[14px] font-semibold text-black px-5 py-2">{addressShown}</div>

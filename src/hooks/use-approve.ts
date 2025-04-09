@@ -117,7 +117,6 @@ export default function useApprove({
       try {
         estimateGas = await TokenContract.estimateGas.approve(...params);
       } catch (err) {}
-      console.log("estimateGas", estimateGas?.toString());
       const tx = await TokenContract.approve(...params, {
         gasLimit: estimateGas
           ? Big(estimateGas.toString()).mul(1.2).toFixed(0)

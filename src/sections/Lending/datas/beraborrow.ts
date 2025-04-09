@@ -230,10 +230,6 @@ const BeraborrowData = (props: any) => {
 
   useEffect(() => {
     console.log(!update, !account, !provider, "<-----------------");
-
-    console.log("===update", update);
-    console.log("===account", account);
-    console.log("===provider", provider);
     if (!update || !account || !provider) return;
     const handleGetDenManager = (market) => {
       return new Promise((resolve) => {
@@ -679,7 +675,6 @@ const BeraborrowData = (props: any) => {
         console.log("getCTokensData error", error);
       }
     };
-    console.log("11111====11111");
     getCTokensData();
   }, [update, account, provider]);
 

@@ -44,7 +44,6 @@ export default function useMergeDataList() {
       })
     })
 
-    console.log('=====_dataList=====', _dataList)
     return _dataList
   }
 
