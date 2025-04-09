@@ -15,7 +15,7 @@ export default async function onAction({
     signer
   );
   let estimateGas;
-  const method = actionType === "Deposit" ? "_deposit" : "_withdraw";
+  const method = actionType === "Deposit" ? "depositFor" : "withdrawTo";
 
   try {
     estimateGas = await VaultContract.estimateGas[method](account, amount);

@@ -35,6 +35,11 @@ export default function useApprove({
 
   const checkApproved = async () => {
     if (!token?.address || !amount || !spender) return;
+    if (token.address === "native") {
+      setApproved(true);
+      setChecking(false);
+      return;
+    }
     try {
       const walletProvider: any = await connector?.getProvider();
       const provider = new ethers.providers.Web3Provider(walletProvider, "any");
