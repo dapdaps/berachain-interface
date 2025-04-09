@@ -4,7 +4,7 @@ import Big from "big.js";
 
 export default async function onClaim({ currentRecord, signer, account }: any) {
   const VaultContract = new Contract(
-    currentRecord.vaultAddress,
+    currentRecord.extra_data.gauge_address,
     vaultAbi,
     signer
   );

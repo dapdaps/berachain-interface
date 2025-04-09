@@ -53,7 +53,12 @@ const ActionUnionForm = (props: any) => {
               ? currentProtocol.vaultAddress
               : ""
           }
-          token={currentProtocol.token}
+          token={{
+            ...currentProtocol.token,
+            symbol: currentProtocol?.tokens
+              ?.map((token: any, index: number) => token.symbol)
+              .join("-")
+          }}
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}
