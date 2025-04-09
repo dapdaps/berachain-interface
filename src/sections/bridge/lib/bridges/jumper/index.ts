@@ -39,8 +39,6 @@ export async function getQuote(
         return null
     }
 
-    console.log('quoteRequest: ', quoteRequest)
-
     // let allChainSup = 0
     // for (let i = 0; i < chains.length; i++) {
     //     if (chains[i].id === numFromChainId) {

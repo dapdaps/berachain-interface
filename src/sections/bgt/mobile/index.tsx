@@ -83,7 +83,6 @@ const BGTMobileView = (props: Props) => {
     setGaugeId(record?.id)
   }
 
-  console.log('=====infraredData====', infraredData)
   return (
     <>
       <Drawer

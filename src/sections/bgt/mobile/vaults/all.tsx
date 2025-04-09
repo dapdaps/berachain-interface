@@ -16,7 +16,6 @@ const AllVaults = (props: any) => {
     onDeposit
   } = props
 
-  console.log('====data=====', data)
   return (
     <div className="p-[12px] flex flex-col gap-[12px]">
       {

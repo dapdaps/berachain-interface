@@ -35,7 +35,6 @@ const BgtGauge = (props: any) => {
   const isMobile = useIsMobile();
   const { data: bgtData } = useBGT();
 
-  console.log('=====id====', id)
   const { data: gaugeData } = useGauge(id);
 
   const toast = useToast();
@@ -97,7 +96,6 @@ const BgtGauge = (props: any) => {
     const contract = new ethers.Contract(vaultAddress, ABI, provider);
     const response = await contract.totalSupply();
 
-    console.log("===totalSupply111", ethers.utils.formatUnits(response));
     updateState({
       totalSupply: ethers.utils.formatUnits(response)
     });

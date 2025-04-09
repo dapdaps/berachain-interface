@@ -278,7 +278,6 @@ export function useBGT(tab?: string) {
     });
   };
   const handleClaim = function (data: any, index: number) {
-    console.log("---data", data);
     const toastId = toast?.loading({
       title: `Claim...`
     });
@@ -367,8 +366,6 @@ export function useBGT(tab?: string) {
 
       const _yourVaults = [];
 
-      console.log('====depositedAmountResult====', depositedAmountResult)
-      console.log('====bgtRewardsResult====', bgtRewardsResult)
       for (let i = 0; i < deposits.length; i++) {
         if (depositedAmountResult[i]) {
           _yourVaults.push({
