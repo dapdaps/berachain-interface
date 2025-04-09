@@ -12,6 +12,7 @@ import {
 } from '@/sections/vaults/v2/components/vaults-table/columns';
 import { ORDER_DIRECTION, OrderKeys } from '@/sections/vaults/v2/config';
 import Pagination from "@/sections/vaults/v2/components/pagination";
+import { useMemo } from 'react';
 
 const VaultsTable = (props: any) => {
   const { className } = props;
@@ -23,11 +24,21 @@ const VaultsTable = (props: any) => {
     toggleListOrder
   } = useVaultsV2Context();
 
+  const VaultsWidth = useMemo(() => {
+    const maxIconLength = listDataGroupByPool
+      .reduce((max: any, item: any) => Math.max(max, item.protocolIcon.length), 0);
+
+    if (maxIconLength <= 2) return 60;
+    if (maxIconLength === 3) return 75;
+    if (maxIconLength === 4) return 90;
+    return 100;
+  }, [listDataGroupByPool]);
+
   const columns: any[] = [
     {
       title: "Vaults",
       dataIndex: "vaults",
-      width: 75,
+      width: VaultsWidth,
       render: (text: any, record: any, index: any) => {
         return <Vaults record={record} index={index} />;
       }

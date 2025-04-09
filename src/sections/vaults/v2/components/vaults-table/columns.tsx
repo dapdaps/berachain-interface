@@ -14,6 +14,7 @@ import Link from "next/link";
 import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { uniq } from 'lodash';
 
 export const Pool = (props: any) => {
   const { record, className } = props;
@@ -36,7 +37,9 @@ export const Pool = (props: any) => {
           />
         )}
       </div>
-      <div className="text-[12px]">{record.pool_project}</div>
+      <div className="text-[12px]">
+        {uniq(record.list.map((p: any) => p.pool_project)).join("/")}
+      </div>
     </div>
   );
 };
