@@ -34,7 +34,12 @@ const ActionUnion = (props: any) => {
           ) && (
             <AddLiquidityModal
               dex={currentProtocol.lpProtocol}
-              data={currentProtocol}
+              data={{
+                ...currentProtocol,
+                symbol: currentProtocol?.tokens
+                  ?.map((token: any, index: number) => token.symbol)
+                  .join("-")
+              }}
               open={openAddLp}
               onClose={() => {
                 toggleOpenAddLp(false);

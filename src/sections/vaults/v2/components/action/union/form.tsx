@@ -58,24 +58,14 @@ const ActionUnionForm = (props: any) => {
           }
           token={
             actionType.value === ACTION_TYPE.DEPOSIT
-              ? {
-                  ...currentProtocol.token,
-                  symbol: currentProtocol?.tokens
-                    ?.map((token: any, index: number) => token.symbol)
-                    .join("-")
-                }
+              ? currentProtocol.token
               : // 👇for WeBera
               currentProtocol.extra_data?.vault_router
               ? {
                   address: currentProtocol.vaultAddress,
                   decimals: currentProtocol.token.decimals
                 }
-              : {
-                  ...currentProtocol.token,
-                  symbol: currentProtocol?.tokens
-                    ?.map((token: any, index: number) => token.symbol)
-                    .join("-")
-                }
+              : currentProtocol.token
           }
           amount={amount}
           loading={loading}
