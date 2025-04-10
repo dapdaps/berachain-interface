@@ -3,6 +3,7 @@ import onKodiakClaim from "./kodiak/claim";
 import onInfraredClaim from "./infrared/claim";
 import onBurrbearClaim from "./burrbear/claim";
 import onBeraDromeClaim from "./bera-drome/claim";
+import onMemeswapClaim from "./memeswap/claim";
 
 export default function onClaim(params: any) {
   const { currentRecord } = params;
@@ -25,5 +26,9 @@ export default function onClaim(params: any) {
 
   if (currentRecord.protocol === "BeraDrome") {
     return onBeraDromeClaim(params);
+  }
+
+  if (currentRecord.protocol === "Memeswap") {
+    return onMemeswapClaim(params);
   }
 }
