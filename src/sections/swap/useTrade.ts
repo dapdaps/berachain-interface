@@ -46,7 +46,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
 
       const amount = Big(inputCurrencyAmount)
         .mul(10 ** inputCurrency.decimals)
-        .toString();
+        .toFixed(0);
       lastestCachedKey.current = `${inputCurrency.address}-${outputCurrency.address}-${inputCurrencyAmount}`;
 
       try {
