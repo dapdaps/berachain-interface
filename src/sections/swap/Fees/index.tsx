@@ -2,7 +2,8 @@ import Big from "big.js";
 import { motion, AnimatePresence } from "framer-motion";
 import Fee from "./Fee";
 import { useSettingsStore } from "@/stores/settings";
-
+import { dexs } from "@/configs/swap";
+import Image from "next/image";
 const COLOR: Record<number, string> = {
   1: "text-[#ff9445]",
   2: "text-[#ff547d]",
@@ -15,7 +16,8 @@ export default function Routes({
   gasUsd,
   routerStr,
   outputCurrencyAmount,
-  show
+  show,
+  name
 }: any) {
   const slippage = useSettingsStore((store: any) => store.slippage);
 
@@ -40,7 +42,22 @@ export default function Routes({
               .mul(1 - slippage / 100)
               .toFixed(8)}
           />
-          <Fee name="Route" value={routerStr} />
+          <Fee
+            name="Route"
+            value={
+              <div className="flex items-center gap-2">
+                {dexs[name?.toLowerCase()]?.icon && (
+                  <Image
+                    src={dexs[name?.toLowerCase()]?.icon}
+                    alt={name}
+                    width={20}
+                    height={20}
+                  />
+                )}
+                <span>{routerStr}</span>
+              </div>
+            }
+          />
         </motion.div>
       )}
     </AnimatePresence>
