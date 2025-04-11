@@ -202,6 +202,7 @@ export default function Swap({
               routerStr={trade?.routerStr}
               outputCurrencyAmount={outputCurrencyAmount}
               show={showDetail}
+              name={trade?.name}
             />
           </>
         )}
