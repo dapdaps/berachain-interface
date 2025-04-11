@@ -11,7 +11,7 @@ const DashboardPortfolioDetail = (props: Props) => {
 
   const router = useRouter();
 
-  const { dappLogo, show_name, type, totalUsd, version, path, earnPath } = dapp;
+  const { dappLogo, show_name, type, categories, totalUsd, version, path, earnPath } = dapp;
 
   const isLending = ['Lending', 'Yield'].includes(type);
 
@@ -79,6 +79,7 @@ const DashboardPortfolioDetail = (props: Props) => {
           icon={dappLogo}
           name={`${show_name}`}
           category={type}
+          categories={categories}
           onClick={() => {
             router.push(path);
           }}
@@ -88,10 +89,10 @@ const DashboardPortfolioDetail = (props: Props) => {
           <Button
             type="primary"
             onClick={() => {
-              if (earnPath) {
-                router.push(earnPath);
-                return;
-              }
+              // if (earnPath) {
+              //   router.push(earnPath);
+              //   return;
+              // }
               router.push(path);
             }}
           >
