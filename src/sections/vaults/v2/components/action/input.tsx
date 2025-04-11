@@ -1,14 +1,17 @@
-import clsx from 'clsx';
-import InputNumber from '@/components/input-number';
-import LazyImage from '@/components/layz-image';
-import { ACTION_TYPE } from '@/sections/vaults/v2/config';
-import Loading from '@/components/loading';
-import Big from 'big.js';
-import { numberFormatter } from '@/utils/number-formatter';
-import { useMemo, useRef, useState } from 'react';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import Card from '@/components/card';
-import { bera } from '@/configs/tokens/bera';
+import clsx from "clsx";
+import InputNumber from "@/components/input-number";
+import LazyImage from "@/components/layz-image";
+import { ACTION_TYPE } from "@/sections/vaults/v2/config";
+import Loading from "@/components/loading";
+import Big from "big.js";
+import { numberFormatter } from "@/utils/number-formatter";
+import { useMemo, useRef, useState } from "react";
+import Popover, {
+  PopoverPlacement,
+  PopoverTrigger
+} from "@/components/popover";
+import Card from "@/components/card";
+import { bera } from "@/configs/tokens/bera";
 
 const ActionInput = (props: any) => {
   const {
@@ -21,6 +24,7 @@ const ActionInput = (props: any) => {
     balanceLoading,
     balance,
     setCurrentProtocol,
+    queuedAmount
   } = props;
 
   const tokenSelectPopRef = useRef<any>();
@@ -32,7 +36,10 @@ const ActionInput = (props: any) => {
   };
 
   const [isDolomiteBera, isBera] = useMemo(() => {
-    const isDolomiteBera = record?.pool_project === "Dolomite" && record?.tokens?.length === 1 && ["BERA", "WBERA"].includes(record?.tokens[0]?.symbol?.toUpperCase());
+    const isDolomiteBera =
+      record?.pool_project === "Dolomite" &&
+      record?.tokens?.length === 1 &&
+      ["BERA", "WBERA"].includes(record?.tokens[0]?.symbol?.toUpperCase());
     const isBera = record?.tokens[0]?.symbol?.toUpperCase() === "BERA";
     return [isDolomiteBera, isBera];
   }, [record]);
@@ -57,24 +64,23 @@ const ActionInput = (props: any) => {
             inputError ? "text-[#FF3F3F]" : "text-black"
           )}
         />
-        <div
-          className={clsx("flex items-center justify-end shrink-0",)}
-        >
+        <div className={clsx("flex items-center justify-end shrink-0")}>
           <Popover
             ref={tokenSelectPopRef}
             placement={PopoverPlacement.BottomRight}
             trigger={PopoverTrigger.Click}
             contentClassName="!z-[101]"
-            content={isDolomiteBera && (
-              <Card className="!rounded-[10px] !w-[150px] !p-[5px_5px] flex flex-col gap-[5px]">
-                {
-                  [bera.bera, bera.wbera].map((_token: any, idx: number) => (
+            content={
+              isDolomiteBera && (
+                <Card className="!rounded-[10px] !w-[150px] !p-[5px_5px] flex flex-col gap-[5px]">
+                  {[bera.bera, bera.wbera].map((_token: any, idx: number) => (
                     <button
                       type="button"
                       key={idx}
                       className={clsx(
                         "flex items-center justify-between cursor-pointer hover:bg-[rgba(0,0,0,0.06)] transition duration-300 p-[5px_10px] rounded-[8px]",
-                        currentToken.address === _token?.address && "!bg-[rgba(0,0,0,0.12)]"
+                        currentToken.address === _token?.address &&
+                          "!bg-[rgba(0,0,0,0.12)]"
                       )}
                       onClick={() => {
                         if (balanceLoading) return;
@@ -82,14 +88,20 @@ const ActionInput = (props: any) => {
                         setCurrentToken(_token);
                         setCurrentProtocol?.({
                           ...record,
-                          pool_address: _token.address === "native" ? "0x0000000000000000000000000000000000000000" : _token.address,
+                          pool_address:
+                            _token.address === "native"
+                              ? "0x0000000000000000000000000000000000000000"
+                              : _token.address,
                           token: _token,
                           tokens: [
                             {
                               ..._token,
-                              address: _token.address === "native" ? "0x0000000000000000000000000000000000000000" : _token.address,
+                              address:
+                                _token.address === "native"
+                                  ? "0x0000000000000000000000000000000000000000"
+                                  : _token.address
                             }
-                          ],
+                          ]
                         });
                       }}
                     >
@@ -97,54 +109,54 @@ const ActionInput = (props: any) => {
                         src={_token.icon}
                         width={26}
                         height={26}
-                        containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
+                        containerClassName={clsx(
+                          "shrink-0 rounded-full overflow-hidden"
+                        )}
                         fallbackSrc="/assets/tokens/default_icon.png"
                       />
                       <div className="">{_token.symbol}</div>
                     </button>
-                  ))
-                }
-              </Card>
-            )}
+                  ))}
+                </Card>
+              )
+            }
             triggerContainerClassName="shrink-0"
           >
             <div
               className={clsx(
                 "flex items-center gap-[5px] shrink-0",
-                isDolomiteBera && (balanceLoading ? "cursor-not-allowed opacity-30" : "cursor-pointer")
+                isDolomiteBera &&
+                  (balanceLoading
+                    ? "cursor-not-allowed opacity-30"
+                    : "cursor-pointer")
               )}
             >
               <div className="flex items-center">
-                {
-                  record.tokens.map((token: any, idx: number) => (
-                    <LazyImage
-                      src={token.icon}
-                      width={26}
-                      height={26}
-                      key={idx}
-                      containerClassName={clsx(
-                        "shrink-0 rounded-full overflow-hidden",
-                        isDolomiteBera && "cursor-pointer",
-                        idx !== 0 && "ml-[-10px]"
-                      )}
-                      fallbackSrc="/assets/tokens/default_icon.png"
-                    />
-                  ))
-                }
+                {record.tokens.map((token: any, idx: number) => (
+                  <LazyImage
+                    src={token.icon}
+                    width={26}
+                    height={26}
+                    key={idx}
+                    containerClassName={clsx(
+                      "shrink-0 rounded-full overflow-hidden",
+                      isDolomiteBera && "cursor-pointer",
+                      idx !== 0 && "ml-[-10px]"
+                    )}
+                    fallbackSrc="/assets/tokens/default_icon.png"
+                  />
+                ))}
               </div>
-              {
-                isDolomiteBera && (
-                  balanceLoading ? (
-                    <Loading size={10} />
-                  ) : (
-                    <img
-                      src="/images/vaults/v2/arrow-down.svg"
-                      alt=""
-                      className="w-[10px] object-center object-contain shrink-0"
-                    />
-                  )
-                )
-              }
+              {isDolomiteBera &&
+                (balanceLoading ? (
+                  <Loading size={10} />
+                ) : (
+                  <img
+                    src="/images/vaults/v2/arrow-down.svg"
+                    alt=""
+                    className="w-[10px] object-center object-contain shrink-0"
+                  />
+                ))}
             </div>
           </Popover>
         </div>
@@ -167,6 +179,12 @@ const ActionInput = (props: any) => {
             >
               {numberFormatter(balance, 6, true)}
             </button>
+          )}
+          {queuedAmount && actionType.value !== ACTION_TYPE.DEPOSIT && (
+            <span className="text-[12px]">
+              {" "}
+              (In queue: {numberFormatter(queuedAmount, 6, true)})
+            </span>
           )}
         </div>
       </div>

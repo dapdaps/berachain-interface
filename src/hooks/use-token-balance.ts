@@ -37,7 +37,6 @@ export default function useTokenBalance(
   const [isError, setIsError] = useState(false);
   const [fresh, setFresh] = useState(0);
 
-
   const getBalance = async () => {
     if (!account || !address) return;
     // console.log('walletChainId:', walletChainId, chainId)
