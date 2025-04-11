@@ -12,7 +12,7 @@ const DAppPath: any = {
   bend: { dapp: "/lending/bend", earn: "" },
   dolomite: { dapp: "/lending/dolomite", earn: "/earn?tab=lending" },
   infrared: { dapp: "/staking/infrared", earn: "/earn?tab=staking" },
-  kodiak: { dapp: "/dex/kodiak", earn: "/earn?tab=liquidity", Liquidity: "/dex/kodiak/pools", Staking: "/earn?tab=staking", earnStaking: "/earn?tab=staking" },
+  kodiak: { dapp: "/dex/kodiak", earn: "/earn?tab=liquidity" },
   "ooga booga": { dapp: "/dex/ooga-booga", earn: "" },
   stargate: { dapp: "/bridge/Stargate", earn: "" },
   beraborrow: { dapp: "/lending/beraborrow", earn: "" },
@@ -20,7 +20,7 @@ const DAppPath: any = {
   bedrock: { dapp: "/staking/bedrock", earn: "" },
   kingdomly: { dapp: "/kingdomly", earn: "" },
   jumper: { dapp: "/bridge/jumper", earn: "" },
-  bex: { dapp: "/dex/bex", earn: "/earn?tab=liquidity", Liquidity: "/dex/bex/pools", Staking: "/earn?tab=staking" }
+  bex: { dapp: "/dex/bex", earn: "/earn?tab=liquidity" }
 };
 
 export function usePortfolio(props: Props) {
@@ -63,15 +63,21 @@ export function usePortfolio(props: Props) {
             typeAsset.version = trim(_dapp.version || '');
           }
           const uniqIdx = uniqData.findIndex((_it: any) => {
-            return _it.name === _dapp.name && _it.type === _dapp.type;
+            return _it.name === _dapp.name;
           });
           if (uniqIdx > -1) {
             _dapp.assets.forEach((asset: any) => {
               uniqData[uniqIdx].assets.push(asset);
             });
+            if (!uniqData[uniqIdx].categories?.includes(_dapp.type)) {
+              uniqData[uniqIdx].categories?.push(_dapp.type);
+            }
             continue;
           }
-          uniqData.push(_dapp);
+          uniqData.push({
+            ..._dapp,
+            categories: [_dapp.type],
+          });
         }
 
         for (const _dapp of uniqData) {
