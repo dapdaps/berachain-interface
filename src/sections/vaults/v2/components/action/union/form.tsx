@@ -5,11 +5,12 @@ import clsx from "clsx";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
 import ButtonWithApprove from "@/components/button/button-with-approve";
+import { useMemo } from "react";
 
 const ActionUnionForm = (props: any) => {
   const { className } = props;
 
-  const { actionType, currentProtocol, toggleOpenAddLp, setCurrentProtocol } =
+  const { actionType, currentProtocol, currentRecord, setCurrentProtocol } =
     useVaultsV2Context();
   const {
     amount,
@@ -24,6 +25,33 @@ const ActionUnionForm = (props: any) => {
     queuedAmount,
     onAction
   } = useVaultsV2ActionContext();
+
+  const buttonDisabled = useMemo(() => {
+    if (inputError) return true;
+    if (loading) return true;
+    if (
+      currentProtocol.protocol === "Smilee" &&
+      actionType.value === ACTION_TYPE.WITHDRAW
+    )
+      return true;
+    if (currentProtocol.protocol === "d2 finance") {
+      if (
+        actionType.value === ACTION_TYPE.DEPOSIT &&
+        (currentRecord.extra_data.fundingStart > Date.now() ||
+          currentRecord.extra_data.epochStart <= Date.now())
+      ) {
+        return true;
+      }
+      if (
+        actionType.value === ACTION_TYPE.WITHDRAW &&
+        (currentRecord.extra_data.epochEnd > Date.now() ||
+          currentRecord.extra_data.epochStart <= Date.now())
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }, [inputError, loading, currentProtocol.protocol]);
 
   return (
     <div className={clsx("", className)}>
@@ -71,12 +99,7 @@ const ActionUnionForm = (props: any) => {
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}
-          disabled={
-            inputError ||
-            loading ||
-            (currentProtocol.protocol === "Smilee" &&
-              actionType.value === ACTION_TYPE.WITHDRAW)
-          }
+          disabled={buttonDisabled}
           onClick={onAction}
           buttonProps={{
             className: "w-full h-[50px] font-bold",
