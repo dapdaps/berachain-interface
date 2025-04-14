@@ -502,14 +502,13 @@ export function useDetail(props: any) {
     );
     const underlying_tokens = data?.initialData?.underlying_tokens;
 
-    const array = data?.initialData?.stake_token?.name?.split("-");
+    const array = data?.id?.split("-");
     const symbol0 = array[0];
     const symbol1 = array[1];
     const token0 =
       underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
     const token1 =
       underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
-
     if (protocolId === "bex") {
       const match = data?.initialData?.mint_url?.match(/\/pools\/(0x[a-fA-F0-9]{64})/)
       const id = match ? match[1] : null
