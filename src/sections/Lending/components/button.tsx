@@ -25,6 +25,7 @@ const LendingButton = ({
   gas,
   config,
   addAction,
+  addActionParamsFormatter,
   isApproveMax,
   toastLoadingMsg,
   invalidText,
@@ -161,40 +162,44 @@ const LendingButton = ({
     });
     setPending(true);
 
-    console.log('====token', token)
+    const handleSucceed = (res: any) => {
+      const { status, transactionHash } = res;
+      toast?.dismiss(toastId);
+      setPending(false);
+      let _addActionParams: any = {
+        type: 'Lending',
+        action: addActionText || children,
+        token: addActionToken || token,
+        amount,
+        template: config.name,
+        add: false,
+        status,
+        transactionHash
+      };
+      if (typeof addActionParamsFormatter === "function") {
+        _addActionParams = addActionParamsFormatter(_addActionParams);
+      }
+      addAction?.(_addActionParams);
+      if (status === 1) {
+        onSuccess?.();
+        toast?.success({
+          title: `${token?.symbol} ${children.toLowerCase()} request succeed!`,
+          tx: transactionHash,
+          chainId
+        });
+      } else {
+        toast?.fail({
+          title: `${token?.symbol} ${children.toLowerCase()} request failed!`,
+          tx: transactionHash,
+          chainId
+        });
+      }
+    };
+
     provider
       .getSigner()
       .sendTransaction(unsignedTx)
       .then((tx: any) => {
-        const handleSucceed = (res: any) => {
-          const { status, transactionHash } = res;
-          toast?.dismiss(toastId);
-          setPending(false);
-          addAction?.({
-            type: 'Lending',
-            action: addActionText || children,
-            token: addActionToken || token,
-            amount,
-            template: config.name,
-            add: false,
-            status,
-            transactionHash
-          });
-          if (status === 1) {
-            onSuccess?.();
-            toast?.success({
-              title: `${token?.symbol} ${children.toLowerCase()} request succeed!`,
-              tx: transactionHash,
-              chainId
-            });
-          } else {
-            toast?.fail({
-              title: `${token?.symbol} ${children.toLowerCase()} request failed!`,
-              tx: transactionHash,
-              chainId
-            });
-          }
-        };
         tx.wait()
           .then((res: any) => {
             handleSucceed(res);
@@ -281,6 +286,7 @@ interface Props {
   gas: any;
   config: any;
   addAction?: any;
+  addActionParamsFormatter?(sourceParams: Record<string, any>): Record<string, any>;
   isApproveMax?: boolean;
   toastLoadingMsg?: any;
   invalidText?: any;

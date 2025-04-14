@@ -459,6 +459,28 @@ export const Form = (props: any) => {
             addAction={addAction}
             addActionText={buttonValid.actions[0]}
             addActionToken={buttonValid.actionTokens[0]}
+            addActionParamsFormatter={(addActionParams) => {
+              const _addActionParams: any = {
+                ...addActionParams,
+                extra_data: {},
+              };
+              for (let i = 0; i < buttonValid.actions.length; i++) {
+                const ac = buttonValid.actions[i];
+                if (ac === "Deposit") {
+                  _addActionParams.extra_data.deposit_amount = buttonValid.actionAmounts[i];
+                }
+                if (ac === "Borrow") {
+                  _addActionParams.extra_data.borrow_amount = buttonValid.actionAmounts[i];
+                }
+                if (ac === "Withdraw") {
+                  _addActionParams.extra_data.withdraw_amount = buttonValid.actionAmounts[i];
+                }
+                if (ac === "Repay") {
+                  _addActionParams.extra_data.repay_amount = buttonValid.actionAmounts[i];
+                }
+              }
+              return _addActionParams;
+            }}
           >
             {buttonValid.text}
           </LendingButton>

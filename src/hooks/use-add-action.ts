@@ -87,6 +87,10 @@ export default function useAddAction(source: string, isNear = false) {
           )} ${data.token.symbol} on ${data.template}`;
           params.action_tokens = JSON.stringify([`${data.token.symbol}`]);
           params.action_amount = data.amount;
+          // for beraborrow
+          if (data.extra_data) {
+            params.extra_data = JSON.stringify(data.extra_data);
+          }
         }
       }
       if (data.type === "Liquidity") {
