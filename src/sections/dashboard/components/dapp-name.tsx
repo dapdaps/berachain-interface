@@ -1,6 +1,6 @@
 import Category from './category';
 
-const Laptop = ({ icon, name, category, onClick }: any) => {
+const Laptop = ({ icon, name, category, categories, onClick }: any) => {
   return (
     <div className='justify-between items-center gap-[10px] hidden lg:flex'>
       <div className='flex items-center gap-[7px]'>
@@ -9,12 +9,12 @@ const Laptop = ({ icon, name, category, onClick }: any) => {
           {name}
         </span>
       </div>
-      <Category>{category}</Category>
+      <Category>{categories?.join("/") ?? category}</Category>
     </div>
   );
 };
 
-const Mobile = ({ icon, name, category, onClick }: any) => {
+const Mobile = ({ icon, name, category, categories, onClick }: any) => {
   return (
     <div className='items-center gap-[10px] hidden md:flex'>
       <img src={icon} alt='' width={40} height={40} onClick={onClick} className="cursor-pointer" />
@@ -22,7 +22,7 @@ const Mobile = ({ icon, name, category, onClick }: any) => {
         <span className='text-black text-[16px] font-[600] leading-[90%] cursor-pointer' onClick={onClick}>
           {name}
         </span>
-        <Category>{category}</Category>
+        <Category>{categories?.join("/") ?? category}</Category>
       </div>
     </div>
   );

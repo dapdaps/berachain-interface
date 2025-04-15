@@ -274,7 +274,8 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^HONEY$/i, label: "HONEY", icon: getTokenLogo("HONEY"), sort: 7 },
     { reg: /^gBERA$/i, label: "gBERA", icon: getTokenLogo("gBERA"), sort: 8 },
     { reg: /^USDbr$/i, label: "USDbr", icon: getTokenLogo("USDbr"), sort: 9 },
-    { reg: /^NOME$/i, label: "NOME", icon: getTokenLogo("NOME"), sort: 10 }
+    { reg: /^NOME$/i, label: "NOME", icon: getTokenLogo("NOME"), sort: 10 },
+    { reg: /^usdc.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e"), sort: 11 }
   ],
   [FILTER_KEYS.PROTOCOLS]: [
     { reg: /^(Hub|Bex)$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },

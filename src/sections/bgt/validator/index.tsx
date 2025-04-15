@@ -9,7 +9,7 @@ import { OperationTypeType } from '@/sections/bgt/types';
 import BgtValidatorLaptop from '@/sections/bgt/validator/laptop';
 import BgtValidatorMobile from '@/sections/bgt/validator/mobile';
 import { formatValueDecimal } from '@/utils/balance';
-import { getProtocolIcon } from '@/utils/utils';
+import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -49,12 +49,10 @@ const BgtValidator = (props: any) => {
             <div className="flex items-center gap-[16px]">
               <div className="relative">
                 <div className="w-[30px] h-[30px]">
-                  {receivingVault?.metadata?.logoURI && (
-                    <img
-                      src={receivingVault?.metadata?.logoURI}
-                      alt={receivingVault?.metadata?.name}
-                    />
-                  )}
+                  <img
+                    src={receivingVault?.metadata?.logoURI ?? "/images/bgt-logo.svg"}
+                    alt={receivingVault?.metadata?.name}
+                  />
                 </div>
                 <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
                   <img
@@ -67,10 +65,10 @@ const BgtValidator = (props: any) => {
               </div>
               <div className="flex flex-col gap-[5px]">
                 <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
-                  {receivingVault?.metadata?.name}
+                  {receivingVault?.metadata?.name ? receivingVault?.metadata?.name : formatLongText(receivingVault?.id, 4, 4)}
                 </div>
                 <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">
-                  {receivingVault?.metadata?.protocolName}
+                  {receivingVault?.metadata?.protocolName ?? "OTHER"}
                 </div>
               </div>
             </div>
@@ -107,7 +105,7 @@ const BgtValidator = (props: any) => {
             <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
               {formatValueDecimal(
                 record?.receivingVault?.dynamicData?.activeIncentivesValueUsd ??
-                  0,
+                0,
                 "$",
                 2,
                 false,

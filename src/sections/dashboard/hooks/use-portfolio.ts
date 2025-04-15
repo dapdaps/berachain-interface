@@ -6,12 +6,13 @@ import { get } from "@/utils/http";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import { trim } from 'lodash';
 
+// ⚠️`dapp & XXX` path for card in "Your dApps"
+// ⚠️`earn & earnXXX` path for "Manage" button in "Details"
 const DAppPath: any = {
   bend: { dapp: "/lending/bend", earn: "" },
   dolomite: { dapp: "/lending/dolomite", earn: "/earn?tab=lending" },
   infrared: { dapp: "/staking/infrared", earn: "/earn?tab=staking" },
-  kodiak: { dapp: "/dex/kodiak", earn: "/earn" },
-  // bex: { dapp: "/dex/bex", earn: "", Liquidity: "/dex/bex/pools" },
+  kodiak: { dapp: "/dex/kodiak", earn: "/earn?tab=liquidity" },
   "ooga booga": { dapp: "/dex/ooga-booga", earn: "" },
   stargate: { dapp: "/bridge/Stargate", earn: "" },
   beraborrow: { dapp: "/lending/beraborrow", earn: "" },
@@ -19,7 +20,7 @@ const DAppPath: any = {
   bedrock: { dapp: "/staking/bedrock", earn: "" },
   kingdomly: { dapp: "/kingdomly", earn: "" },
   jumper: { dapp: "/bridge/jumper", earn: "" },
-  bex: { dapp: "/dex/bex", earn: "", Liquidity: "/dex/bex/pools" }
+  bex: { dapp: "/dex/bex", earn: "/earn?tab=liquidity" }
 };
 
 export function usePortfolio(props: Props) {
@@ -61,14 +62,22 @@ export function usePortfolio(props: Props) {
           for (const typeAsset of _dapp.assets) {
             typeAsset.version = trim(_dapp.version || '');
           }
-          const uniqIdx = uniqData.findIndex((_it: any) => _it.name === _dapp.name);
+          const uniqIdx = uniqData.findIndex((_it: any) => {
+            return _it.name === _dapp.name;
+          });
           if (uniqIdx > -1) {
             _dapp.assets.forEach((asset: any) => {
               uniqData[uniqIdx].assets.push(asset);
             });
+            if (!uniqData[uniqIdx].categories?.includes(_dapp.type)) {
+              uniqData[uniqIdx].categories?.push(_dapp.type);
+            }
             continue;
           }
-          uniqData.push(_dapp);
+          uniqData.push({
+            ..._dapp,
+            categories: [_dapp.type],
+          });
         }
 
         for (const _dapp of uniqData) {
@@ -125,7 +134,7 @@ export function usePortfolio(props: Props) {
             dappLogo: getDappLogo(_dapp.name),
             detailList: _dapp.assets || [],
             path: DAppPath[_dapp.name?.toLowerCase?.()]?.[dappType] || DAppPath[_dapp.name?.toLowerCase?.()]?.dapp,
-            earnPath: DAppPath[_dapp.name?.toLowerCase?.()]?.earn,
+            earnPath: DAppPath[_dapp.name?.toLowerCase?.()]?.[`earn${dappType}`] || DAppPath[_dapp.name?.toLowerCase?.()]?.earn,
           };
           dappsList.push(dappItem);
 

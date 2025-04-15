@@ -6,17 +6,19 @@ import DappName from './dapp-name';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useRouter } from 'next/navigation';
 
-const Laptop = ({ icon, name, category, value, percent, path }: any) => {
+const Laptop = ({ icon, name, category, categories, value, percent, path }: any) => {
   const router = useRouter();
   return (
     <div
       className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden lg:block'
-      onClick={() => {
-        if (!path) return;
-        router.push(path);
-      }}
     >
-      <DappName {...{ icon, name, category }} />
+      <DappName
+        {...{ icon, name, category, categories }}
+        onClick={() => {
+          if (!path) return;
+          router.push(path);
+        }}
+      />
       <div className='flex justify-between items-center gap-[10px] mt-[10px]'>
         <Value>{value}</Value>
         <div className='text-[#3D405A] text-[14px] font-[500] lending-[100%]'>
@@ -31,6 +33,7 @@ const Mobile = ({
   icon,
   name,
   category,
+  categories,
   value,
   percent,
   showName,
@@ -46,7 +49,7 @@ const Mobile = ({
         }}
         className='bg-white border border-[#373A53] rounded-[12px] p-[10px_9px_10px_9px] hidden md:flex justify-between'
       >
-        <DappName {...{ icon, name, category }} />
+        <DappName {...{ icon, name, category, categories }} />
         <div className='flex flex-col items-center gap-[10px]'>
           <Value>{value}</Value>
           <div className='text-[#3D405A] text-[14px] font-[500] lending-[100%]'>

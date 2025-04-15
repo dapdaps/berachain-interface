@@ -14,7 +14,15 @@ const Nav = (props: any) => {
           {
             pageData ? (
               <div className="w-[40px] h-[40px] rounded-[20px] border border-black overflow-hidden">
-                <img src={pageData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={pageData?.metadata?.name} />
+                <img
+                  onError={(event) => {
+                    const target = event.currentTarget
+                    const errorImage = target.getAttribute("errorImage")
+                    target.setAttribute("src", errorImage)
+                  }}
+                  errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+                  src={pageData?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={pageData?.metadata?.name}
+                />
               </div>
             ) : (
               <Skeleton className='w-[40px] h-[40px] rounded-full' />
