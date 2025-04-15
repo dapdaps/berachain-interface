@@ -466,7 +466,7 @@ export function useList(): List {
           item.creatorProtocolIcon = getDappLogo(item.creator_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
-          item.id = item.extra_data.pool_id;
+          item.id = item.pool_address;
           item.balance = item.user_stake?.usd;
           item.vaultAddress = item.vault_address;
 
