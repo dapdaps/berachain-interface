@@ -180,8 +180,8 @@ export default function Laptop({ isLending, tableList }: any) {
       columns={isLending ? LendingColumns : columns}
       list={tableList}
       onRow={(record) => {
-        if (!record?.path) return;
-        router.push(record.path);
+        // if (!record?.path) return;
+        // router.push(record.path);
       }}
     />
   );
