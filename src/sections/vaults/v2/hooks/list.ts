@@ -100,10 +100,7 @@ export function useList(): List {
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
         group.protocolIcon.push(item.protocolIcon);
         group.poolProjectIcon.push(item.poolProjectIcon);
-        group.reward_tokens = uniqBy(
-          group.reward_tokens.concat(item.reward_tokens),
-          "address"
-        );
+        group.reward_tokens = uniqBy(group.reward_tokens.concat(item.reward_tokens), 'address');
         group.user_reward = group.user_reward.concat(item.user_reward);
         group.balance = Big(group.balance).plus(item.balance || 0);
       } else {
@@ -190,9 +187,7 @@ export function useList(): List {
           tk.symbol?.toLowerCase().includes(_search)
         ) &&
         !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.list.some((__it: any) =>
-          __it.project?.toLowerCase().includes(_search)
-        ) &&
+        !item.list.some((__it: any) => __it.project?.toLowerCase().includes(_search)) &&
         !item.name?.toLowerCase().includes(_search)
       ) {
         return false;
@@ -209,16 +204,34 @@ export function useList(): List {
       if (defaultOrder) {
         const tvlA = Big(a[ORDER_KEYS.TVL] || 0);
         const tvlB = Big(b[ORDER_KEYS.TVL] || 0);
+        const apyA0 = Big(a[ORDER_KEYS.APY]?.[0] || 0);
+        const apyB0 = Big(b[ORDER_KEYS.APY]?.[0] || 0);
+        const apyA1 = Big(a[ORDER_KEYS.APY]?.[1] || 0);
+        const apyB1 = Big(b[ORDER_KEYS.APY]?.[1] || 0);
 
-        if (tvlA.gte(20000000) && tvlB.gte(20000000)) {
-          return Big(b[ORDER_KEYS.APY]?.[1] || 0)
-            .minus(Big(a[ORDER_KEYS.APY]?.[1] || 0))
-            .toNumber();
-        } else if (tvlA.lt(20000000) && tvlB.lt(20000000)) {
-          return tvlB.minus(tvlA).toNumber();
-        } else {
-          return tvlB.minus(tvlA).toNumber();
+        const calculatePoints = (tvl: Big, apy1: Big) => {
+          const tvlPoints = Big(tvl).div(1000000);
+          const apyPoints = Big(apy1).times(2);
+          return Big(tvlPoints).plus(apyPoints);
+        };
+
+        const aEligible = tvlA.gt(1000000) && apyA1.gt(1);
+        const bEligible = tvlB.gt(1000000) && apyB1.gt(1);
+
+        if (aEligible && bEligible) {
+          const pointsA = calculatePoints(tvlA, apyA1);
+          const pointsB = calculatePoints(tvlB, apyB1);
+          return Big(pointsB).minus(pointsA).toNumber();
         }
+
+        if (aEligible) return -1;
+        if (bEligible) return 1;
+
+        if (tvlA.eq(tvlB)) {
+          return apyB1.minus(apyA1).toNumber();
+        }
+
+        return tvlB.minus(tvlA).toNumber();
       }
 
       for (const key of orderKeys) {
@@ -238,11 +251,10 @@ export function useList(): List {
           valB = new Big(b[key.value] || 0);
         }
 
-        if (valA.gt(valB))
-          return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
-        if (valA.lt(valB))
-          return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
+        if (valA.gt(valB)) return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
+        if (valA.lt(valB)) return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
       }
+
       return 0; // If all fields are equal, maintain the original order
     });
 
