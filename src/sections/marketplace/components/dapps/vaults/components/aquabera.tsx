@@ -324,7 +324,6 @@ export default memo(function aquabera(props: any) {
   }, [data?.pool]);
 
   useEffect(() => {
-    console.log('====data=====', data)
     if (show) {
       setToken0(data?.token0);
       setToken1(data?.token1);

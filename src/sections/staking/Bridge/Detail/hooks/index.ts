@@ -497,6 +497,7 @@ export function useDetail(props: any) {
         stakingToken: data?.initialData?.stake_token
       };
     }
+    console.log("=====data?.initialData?.stake_token", data?.initialData?.stake_token)
     const index = kodiak?.islands?.findIndex(
       (address: string) => data?.initialData?.stake_token?.address === address
     );
