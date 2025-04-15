@@ -91,6 +91,12 @@ export default {
           tokens: [bera["rusd"], bera["rusd ot"]],
           chainTopTokens: [bera["rusd ot"], bera["rusd"]]
         },
+        {
+          id: "AB-KODIAK-WBERA-HENLO-10000",
+          ichiAddress: "0x04fd6a7b02e2e48caedad7135420604de5f834f8",
+          tokens: [bera["henlo"], bera["wbera"]],
+          chainTopTokens: [bera["wbera"], bera["henlo"]],
+        },
       ]
     }
   }
