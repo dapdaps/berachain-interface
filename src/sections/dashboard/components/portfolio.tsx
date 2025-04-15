@@ -73,6 +73,7 @@ const DashboardPortfolio = (props: Props) => {
                     }`}
                     icon={dapp.dappLogo}
                     category={dapp.type}
+                    categories={dapp.categories}
                     value={dapp.totalUsd}
                     showName={dapp.show_name}
                     version={dapp.version}

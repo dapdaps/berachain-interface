@@ -48,6 +48,7 @@ export function useList(): List {
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [defaultOrder, setDefaultOrder] = useState(true);
   const [orderKeys, setOrderKeys] = useState<Order[]>([
     { ...OrderKeys[ORDER_KEYS.YOURS] },
     { ...OrderKeys[ORDER_KEYS.TVL] },
@@ -205,6 +206,39 @@ export function useList(): List {
     });
 
     const sortedData = [...filteredData].sort((a: any, b: any) => {
+      if (defaultOrder) {
+        const tvlA = Big(a[ORDER_KEYS.TVL] || 0);
+        const tvlB = Big(b[ORDER_KEYS.TVL] || 0);
+        const apyA0 = Big(a[ORDER_KEYS.APY]?.[0] || 0);
+        const apyB0 = Big(b[ORDER_KEYS.APY]?.[0] || 0);
+        const apyA1 = Big(a[ORDER_KEYS.APY]?.[1] || 0);
+        const apyB1 = Big(b[ORDER_KEYS.APY]?.[1] || 0);
+
+        const calculatePoints = (tvl: Big, apy1: Big) => {
+          const tvlPoints = Big(tvl).div(1000000);
+          const apyPoints = Big(apy1).times(0.02);
+          return Big(tvlPoints).plus(apyPoints);
+        };
+
+        const aEligible = tvlA.gt(1000000) && apyA1.gt(10);
+        const bEligible = tvlB.gt(1000000) && apyB1.gt(10);
+
+        if (aEligible && bEligible) {
+          const pointsA = calculatePoints(tvlA, apyA1);
+          const pointsB = calculatePoints(tvlB, apyB1);
+          return Big(pointsB).minus(pointsA).toNumber();
+        }
+
+        if (aEligible) return -1;
+        if (bEligible) return 1;
+
+        if (tvlA.eq(tvlB)) {
+          return apyB1.minus(apyA1).toNumber();
+        }
+
+        return tvlB.minus(tvlA).toNumber();
+      }
+
       for (const key of orderKeys) {
         let valA: any;
         let valB: any;
@@ -227,6 +261,7 @@ export function useList(): List {
         if (valA.lt(valB))
           return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
       }
+
       return 0; // If all fields are equal, maintain the original order
     });
 
@@ -248,6 +283,7 @@ export function useList(): List {
     pageSize,
     isMobile,
     orderKeys,
+    defaultOrder,
     vaultsStaked
   ]);
 
@@ -516,6 +552,7 @@ export function useList(): List {
 
   const toggleOrder = (key: ORDER_KEYS, direction?: ORDER_DIRECTION) => {
     if (loading) return;
+    setDefaultOrder(false);
     const _orderKeys: Order[] = orderKeys.slice();
     // first order
     if (key === _orderKeys[0]?.value) {
@@ -722,7 +759,8 @@ export function useList(): List {
     listFilterAssetsViewMore: filterAssetsViewMore,
     toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
     listVaultsStaked: vaultsStaked,
-    toggleListVaultsStaked: toggleVaultsStaked
+    toggleListVaultsStaked: toggleVaultsStaked,
+    listDefaultOrder: defaultOrder
   };
 }
 
@@ -771,6 +809,7 @@ export interface List {
   toggleListFilterAssetsViewMore: (filterAssetsViewMore?: boolean) => void;
   listVaultsStaked: boolean;
   toggleListVaultsStaked: (_listVaultsStaked?: boolean) => void;
+  listDefaultOrder: boolean;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {

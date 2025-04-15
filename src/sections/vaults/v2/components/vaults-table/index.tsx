@@ -21,6 +21,7 @@ const VaultsTable = (props: any) => {
     listDataGroupByPool,
     listLoading,
     listOrderKeys,
+    listDefaultOrder,
     toggleListOrder
   } = useVaultsV2Context();
 
@@ -70,7 +71,7 @@ const VaultsTable = (props: any) => {
     {
       title: "Rewards",
       dataIndex: "reward_tokens",
-      width: 130,
+      width: 110,
       render: (text: any, record: any, index: any) => {
         if (!record.reward_tokens) return null;
         return <Rewards record={record} index={index} />;
@@ -113,6 +114,7 @@ const VaultsTable = (props: any) => {
                   "bg-[url('/images/vaults/v2/triangle.svg')] bg-no-repeat bg-center bg-contain w-[14px] h-[14px] transition-all duration-300",
                   currentOrder?.direction === ORDER_DIRECTION.ASC ? "rotate-180" : "",
                   currentOrder?.value === listOrderKeys[0]?.value ? "opacity-100" : "opacity-50",
+                  listDefaultOrder && "!opacity-50",
                 )}
                 onClick={() => {
                   toggleListOrder(column.dataIndex);
