@@ -242,7 +242,16 @@ export default memo(function BgtMain() {
                 >
                   <div className="flex items-center">
                     <div className="w-[26px] h-[26px] rounded-full overflow-hidden">
-                      <img src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={validator?.metadata?.name} />
+                      <img
+                        onError={(event) => {
+                          const target = event.currentTarget
+                          const errorImage = target.getAttribute("errorImage")
+                          target.setAttribute("src", errorImage)
+                        }}
+                        errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+                        src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                        alt={validator?.metadata?.name}
+                      />
                     </div>
                     <div className="truncate ml-[7px] mr-[10px] text-black  max-w-[230px] font-Montserrat text-[16px] font-semibold">
                       {validator?.metadata?.name || formatLongText(validator?.pubkey, 4, 4)}
