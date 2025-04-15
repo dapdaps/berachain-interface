@@ -26,5 +26,27 @@ export default [
     outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function"
+  },
+  {
+    inputs: [],
+    name: "getCurrentEpochInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint80",
+            name: "fundingStart",
+            type: "uint80"
+          },
+          { internalType: "uint80", name: "epochStart", type: "uint80" },
+          { internalType: "uint80", name: "epochEnd", type: "uint80" }
+        ],
+        internalType: "struct VaultV3.Epoch",
+        name: "",
+        type: "tuple"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
   }
 ];

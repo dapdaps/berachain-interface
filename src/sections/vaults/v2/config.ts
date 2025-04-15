@@ -311,7 +311,13 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       icon: getDappLogo("Memeswap"),
       sort: 9
     },
-    { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome"), sort: 10 }
+    { reg: /^Nome$/i, label: "Nome", icon: getDappLogo("Nome"), sort: 10 },
+    {
+      reg: /^D2 Finance$/i,
+      label: "D2 Finance",
+      icon: getDappLogo("D2 Finance"),
+      sort: 11
+    }
   ],
   [FILTER_KEYS.CREATORS]: [
     { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },

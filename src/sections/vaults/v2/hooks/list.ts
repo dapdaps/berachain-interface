@@ -7,20 +7,23 @@ import {
   FILTER_KEYS,
   FilterItem,
   FILTERS,
-  PAGINATION_ACTION, Order, OrderKeys
-} from '@/sections/vaults/v2/config';
+  PAGINATION_ACTION,
+  Order,
+  OrderKeys
+} from "@/sections/vaults/v2/config";
 import { BASE_URL } from "@/utils/http";
 import useCustomAccount from "@/hooks/use-account";
 import axios from "axios";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import kodiakConfig from "@/configs/pools/kodiak";
 import Big from "big.js";
-import { cloneDeep, trim, uniqBy } from 'lodash';
+import { cloneDeep, trim, uniqBy } from "lodash";
 import chains from "@/configs/chains";
 import { Contract, providers, utils } from "ethers";
 import { TOKEN_ABI } from "@/hooks/use-token-balance";
 import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
+import getD2FinanceInfo from "@/sections/vaults/dapps/d2-finance/info";
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
@@ -48,7 +51,7 @@ export function useList(): List {
   const [orderKeys, setOrderKeys] = useState<Order[]>([
     { ...OrderKeys[ORDER_KEYS.YOURS] },
     { ...OrderKeys[ORDER_KEYS.TVL] },
-    { ...OrderKeys[ORDER_KEYS.APY] },
+    { ...OrderKeys[ORDER_KEYS.APY] }
   ]);
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterSelected, setFilterSelected] = useState<
@@ -96,7 +99,10 @@ export function useList(): List {
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
         group.protocolIcon.push(item.protocolIcon);
         group.poolProjectIcon.push(item.poolProjectIcon);
-        group.reward_tokens = uniqBy(group.reward_tokens.concat(item.reward_tokens), "address");
+        group.reward_tokens = uniqBy(
+          group.reward_tokens.concat(item.reward_tokens),
+          "address"
+        );
         group.user_reward = group.user_reward.concat(item.user_reward);
         group.balance = Big(group.balance).plus(item.balance || 0);
       } else {
@@ -183,7 +189,9 @@ export function useList(): List {
           tk.symbol?.toLowerCase().includes(_search)
         ) &&
         !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.list.some((__it: any) => __it.project?.toLowerCase().includes(_search)) &&
+        !item.list.some((__it: any) =>
+          __it.project?.toLowerCase().includes(_search)
+        ) &&
         !item.name?.toLowerCase().includes(_search)
       ) {
         return false;
@@ -214,8 +222,10 @@ export function useList(): List {
           valB = new Big(b[key.value] || 0);
         }
 
-        if (valA.gt(valB)) return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
-        if (valA.lt(valB)) return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
+        if (valA.gt(valB))
+          return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
+        if (valA.lt(valB))
+          return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
       }
       return 0; // If all fields are equal, maintain the original order
     });
@@ -365,11 +375,13 @@ export function useList(): List {
         console.log("get vaults list error:", res.data.message);
         return;
       }
+
       const _list = res.data.data || [];
       let _dolomite_bera: any;
+      let d2FinanceIdx = -1;
       const _data = _list
         // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
-        .map((item: any) => {
+        .map((item: any, index: number) => {
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
           item.tokens = parseJSONString(item.tokens, []);
@@ -451,8 +463,25 @@ export function useList(): List {
             };
           }
 
+          if (item.protocol === "D2 Finance") {
+            d2FinanceIdx = index;
+          }
+
           return item;
         });
+      if (d2FinanceIdx !== -1) {
+        const rpcUrl = chains[80094].rpcUrls.default.http[0];
+        const rpcProvider = new providers.JsonRpcProvider(rpcUrl);
+        const d2FinanceInfo = await getD2FinanceInfo({
+          provider: rpcProvider,
+          address: _data[d2FinanceIdx].vaultAddress
+        });
+        _data[d2FinanceIdx].extra_data = {
+          ...(_data[d2FinanceIdx].extra_data || {}),
+          ...d2FinanceInfo
+        };
+        _data[d2FinanceIdx].token = _data[d2FinanceIdx].tokens[0];
+      }
       setData(_data);
     } catch (err: any) {
       console.log("get vaults list error:", err.message);
@@ -491,8 +520,12 @@ export function useList(): List {
     // first order
     if (key === _orderKeys[0]?.value) {
       _orderKeys[0].direction = direction
-        ? (direction === ORDER_DIRECTION.ASC ? ORDER_DIRECTION.DESC : ORDER_DIRECTION.ASC)
-        : (_orderKeys[0]?.direction === ORDER_DIRECTION.ASC ? ORDER_DIRECTION.DESC : ORDER_DIRECTION.ASC);
+        ? direction === ORDER_DIRECTION.ASC
+          ? ORDER_DIRECTION.DESC
+          : ORDER_DIRECTION.ASC
+        : _orderKeys[0]?.direction === ORDER_DIRECTION.ASC
+        ? ORDER_DIRECTION.DESC
+        : ORDER_DIRECTION.ASC;
       setOrderKeys(_orderKeys);
     }
     // new order
@@ -502,7 +535,7 @@ export function useList(): List {
       const __orderKeys: Order[] = [
         {
           ...currentOrder,
-          direction: ORDER_DIRECTION.DESC,
+          direction: ORDER_DIRECTION.DESC
         },
         ..._orderKeys
           .filter((it) => it.value !== key)
@@ -567,7 +600,8 @@ export function useList(): List {
   };
 
   const toggleVaultsStaked = (_vaultsStaked?: boolean) => {
-    const __vaultsStaked = typeof _vaultsStaked === "boolean" ? _vaultsStaked : !vaultsStaked;
+    const __vaultsStaked =
+      typeof _vaultsStaked === "boolean" ? _vaultsStaked : !vaultsStaked;
     if (__vaultsStaked) {
       togglePageIndex(PAGINATION_ACTION.FIRST);
     }
@@ -688,7 +722,7 @@ export function useList(): List {
     listFilterAssetsViewMore: filterAssetsViewMore,
     toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
     listVaultsStaked: vaultsStaked,
-    toggleListVaultsStaked: toggleVaultsStaked,
+    toggleListVaultsStaked: toggleVaultsStaked
   };
 }
 

@@ -7,6 +7,8 @@ import onSlimee from "./slimee/action";
 import onBurrbear from "./burrbear/action";
 import onWeBera from "./webera/action";
 import onMemeswap from "./memeswap/action";
+import onD2Finance from "./d2-finance/action";
+
 export default function onAction(params: any) {
   const { currentRecord } = params;
 
@@ -44,5 +46,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "Memeswap") {
     return onMemeswap(params);
+  }
+
+  if (currentRecord.protocol === "D2 Finance") {
+    return onD2Finance(params);
   }
 }

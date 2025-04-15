@@ -34,18 +34,20 @@ const ActionUnionForm = (props: any) => {
       actionType.value === ACTION_TYPE.WITHDRAW
     )
       return true;
-    if (currentProtocol.protocol === "d2 finance") {
+
+    if (currentProtocol.protocol === "D2 Finance") {
       if (
         actionType.value === ACTION_TYPE.DEPOSIT &&
-        (currentRecord.extra_data.fundingStart > Date.now() ||
-          currentRecord.extra_data.epochStart <= Date.now())
+        (currentProtocol.extra_data.fundingStart > Date.now() ||
+          currentProtocol.extra_data.epochStart <= Date.now())
       ) {
         return true;
       }
       if (
         actionType.value === ACTION_TYPE.WITHDRAW &&
-        (currentRecord.extra_data.epochEnd > Date.now() ||
-          currentRecord.extra_data.epochStart <= Date.now())
+        (currentProtocol.extra_data.epochEnd > Date.now() ||
+          currentProtocol.extra_data.epochStart <= Date.now()) &&
+        currentProtocol.extra_data.custodied
       ) {
         return true;
       }

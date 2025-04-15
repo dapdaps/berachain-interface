@@ -17,7 +17,7 @@ const Claim = (props: any) => {
     [currentReward]
   );
 
-  if (currentProtocol.protocol === "d2 finance") return;
+  if (currentProtocol.protocol === "D2 Finance") return;
 
   return (
     <div
