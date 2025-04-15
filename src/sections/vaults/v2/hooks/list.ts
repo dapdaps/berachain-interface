@@ -208,12 +208,12 @@ export function useList(): List {
 
         const calculatePoints = (tvl: Big, apy1: Big) => {
           const tvlPoints = Big(tvl).div(1000000);
-          const apyPoints = Big(apy1).times(2);
+          const apyPoints = Big(apy1).times(0.02);
           return Big(tvlPoints).plus(apyPoints);
         };
 
-        const aEligible = tvlA.gt(1000000) && apyA1.gt(1);
-        const bEligible = tvlB.gt(1000000) && apyB1.gt(1);
+        const aEligible = tvlA.gt(1000000) && apyA1.gt(10);
+        const bEligible = tvlB.gt(1000000) && apyB1.gt(10);
 
         if (aEligible && bEligible) {
           const pointsA = calculatePoints(tvlA, apyA1);
