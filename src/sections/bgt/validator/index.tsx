@@ -12,6 +12,7 @@ import { formatValueDecimal } from '@/utils/balance';
 import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
+
 import { useEffect, useMemo, useState } from 'react';
 
 const BgtValidator = (props: any) => {
