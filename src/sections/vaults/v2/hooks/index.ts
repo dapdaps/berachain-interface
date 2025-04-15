@@ -19,6 +19,7 @@ export function useVaultsV2(): VaultsV2 {
   const [currentReward, setCurrentReward] = useState<any>(null);
   const [successReward, setSuccessReward] = useState<any>(null);
   const [openAddLp, setOpenAddLp] = useState(false);
+  const [swapToken, setSwapToken] = useState<any>(null);
   const { handleReportWithoutDebounce } = useClickTracking();
 
   const toggleActionVisible = (params?: {
@@ -103,7 +104,9 @@ export function useVaultsV2(): VaultsV2 {
     toggleStrategyVisible,
     setCurrentProtocol,
     toggleActionType,
-    toggleOpenAddLp
+    toggleOpenAddLp,
+    swapToken,
+    setSwapToken
   };
 }
 
@@ -132,4 +135,6 @@ export interface VaultsV2 {
   toggleActionType: (actionType?: ActionType) => void;
   openAddLp: boolean;
   toggleOpenAddLp: (openAddLp?: boolean) => void;
+  swapToken: any;
+  setSwapToken: (swapToken: any) => void;
 }

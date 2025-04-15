@@ -10,12 +10,14 @@ const Claim = (props: any) => {
   const { className } = props;
 
   const { loading, onClaim } = useClaim();
-  const { currentReward } = useVaultsV2Context();
+  const { currentReward, currentProtocol } = useVaultsV2Context();
 
   const rewards = useMemo(
     () => (currentReward.splice ? currentReward : [currentReward]),
     [currentReward]
   );
+
+  if (currentProtocol.protocol === "D2 Finance") return;
 
   return (
     <div

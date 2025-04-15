@@ -40,7 +40,10 @@ export default function useAction(): Action {
   const { handleReportWithoutDebounce } = useClickTracking();
 
   const [balanceShown, balanceLoading, updateBalance] = useMemo(() => {
-    if (actionType.value === ACTION_TYPE.DEPOSIT) {
+    if (
+      actionType.value === ACTION_TYPE.DEPOSIT ||
+      currentProtocol.protocol === "D2 Finance"
+    ) {
       return [tokenBalance, isLoading, update];
     }
     if (currentProtocol.protocol === "Memeswap") {
@@ -57,6 +60,12 @@ export default function useAction(): Action {
     if (actionType.value === ACTION_TYPE.DEPOSIT) {
       if (Big(balanceShown || 0).lt(amount || 0)) {
         return [true, "Insufficient Balance"];
+      }
+      if (
+        currentProtocol.protocol === "D2 Finance" &&
+        Big(balanceShown || 0).lt(1)
+      ) {
+        return [true, "At least 1 token"];
       }
     }
     if (actionType.value === ACTION_TYPE.WITHDRAW) {
