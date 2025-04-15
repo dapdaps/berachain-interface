@@ -14,7 +14,7 @@ import Link from "next/link";
 import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { uniq } from 'lodash';
+import { uniq } from "lodash";
 
 export const Pool = (props: any) => {
   const { record, className } = props;

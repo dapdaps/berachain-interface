@@ -4,7 +4,6 @@ import { useVaultsV2ActionContext } from "@/sections/vaults/v2/components/action
 import clsx from "clsx";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
-import ActionMintLP from "@/sections/vaults/v2/components/action/mint-lp";
 import ButtonWithApprove from "@/components/button/button-with-approve";
 
 const ActionUnionForm = (props: any) => {
@@ -22,6 +21,7 @@ const ActionUnionForm = (props: any) => {
     setDappParams,
     inputErrorMessage,
     loading,
+    queuedAmount,
     onAction
   } = useVaultsV2ActionContext();
 
@@ -37,6 +37,7 @@ const ActionUnionForm = (props: any) => {
         balanceLoading={balanceLoading}
         balance={balanceShown}
         setCurrentProtocol={setCurrentProtocol}
+        queuedAmount={queuedAmount}
       />
       {currentProtocol.protocol === "Kodiak" &&
         actionType.value === ACTION_TYPE.DEPOSIT && (

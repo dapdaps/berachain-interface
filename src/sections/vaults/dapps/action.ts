@@ -6,7 +6,7 @@ import onBeraDrome from "./bera-drome/action";
 import onSlimee from "./slimee/action";
 import onBurrbear from "./burrbear/action";
 import onWeBera from "./webera/action";
-
+import onMemeswap from "./memeswap/action";
 export default function onAction(params: any) {
   const { currentRecord } = params;
 
@@ -40,5 +40,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "WeBera") {
     return onWeBera(params);
+  }
+
+  if (currentRecord.protocol === "Memeswap") {
+    return onMemeswap(params);
   }
 }

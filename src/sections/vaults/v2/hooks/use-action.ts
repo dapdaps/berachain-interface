@@ -9,6 +9,7 @@ import useTokenBalance from "@/hooks/use-token-balance";
 import Big from "big.js";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import useClickTracking from "@/hooks/use-click-tracking";
+import useMemeswapBalance from "./use-memeswap-balance";
 
 export default function useAction(): Action {
   const [loading, setLoading] = useState(false);
@@ -23,13 +24,30 @@ export default function useAction(): Action {
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
       ? currentProtocol?.token?.address
-      : currentProtocol.protocol !== "Kodiak"
+      : !["Kodiak", "Memeswap"].includes(currentProtocol.protocol)
       ? currentProtocol?.vaultAddress
       : "",
     currentProtocol?.token?.decimals
   );
 
+  const {
+    balance: memeswapBalance,
+    update: updateMemeswapBalance,
+    loading: memeswapLoading,
+    queuedAmount
+  } = useMemeswapBalance();
+
   const { handleReportWithoutDebounce } = useClickTracking();
+
+  const [balanceShown, balanceLoading, updateBalance] = useMemo(() => {
+    if (actionType.value === ACTION_TYPE.DEPOSIT) {
+      return [tokenBalance, isLoading, update];
+    }
+    if (currentProtocol.protocol === "Memeswap") {
+      return [memeswapBalance, memeswapLoading, updateMemeswapBalance];
+    }
+    return [currentProtocol?.user_stake?.amount || "0", isLoading, update];
+  }, [actionType, tokenBalance, currentProtocol?.user_stake, memeswapBalance]);
 
   const [inputError, inputErrorMessage] = useMemo<
     [boolean, string | undefined]
@@ -37,24 +55,17 @@ export default function useAction(): Action {
     const DEFAULT: [boolean, string | undefined] = [false, void 0];
     if (Big(amount || 0).eq(0)) return [false, "Enter an amount"];
     if (actionType.value === ACTION_TYPE.DEPOSIT) {
-      if (Big(tokenBalance || 0).lt(amount || 0)) {
+      if (Big(balanceShown || 0).lt(amount || 0)) {
         return [true, "Insufficient Balance"];
       }
     }
     if (actionType.value === ACTION_TYPE.WITHDRAW) {
-      if (Big(currentProtocol.user_stake?.amount || 0).lt(amount || 0)) {
+      if (Big(balanceShown).lt(amount || 0)) {
         return [true, "Insufficient Balance"];
       }
     }
     return DEFAULT;
-  }, [tokenBalance, currentProtocol, isLoading, actionType, amount]);
-
-  const balanceShown = useMemo(() => {
-    if (actionType.value === ACTION_TYPE.DEPOSIT) {
-      return tokenBalance;
-    }
-    return currentProtocol?.user_stake?.amount || "0";
-  }, [actionType, tokenBalance, currentProtocol?.user_stake]);
+  }, [balanceShown, actionType, amount]);
 
   const handleAmountChange = (_amount: string) => {
     setAmount(_amount);
@@ -63,12 +74,14 @@ export default function useAction(): Action {
   const onAction = async () => {
     if (!currentProtocol) return;
 
-    handleReportWithoutDebounce(
-      actionType.value === ACTION_TYPE.DEPOSIT
-        ? "1022-001-010"
-        : "1022-001-011",
-      currentProtocol.vaultAddress
-    );
+    if (actionType.value !== ACTION_TYPE.EXIT) {
+      handleReportWithoutDebounce(
+        actionType.value === ACTION_TYPE.DEPOSIT
+          ? "1022-001-010"
+          : "1022-001-011",
+        currentProtocol.vaultAddress
+      );
+    }
 
     let toastId = toast.loading({ title: "Confirming..." });
     try {
@@ -105,6 +118,9 @@ export default function useAction(): Action {
       } else {
         toast.fail({ title: actionType.button + " failed!" });
       }
+      setLoading(false);
+
+      if (actionType.button === "Exit") return;
       addAction?.({
         type: "Staking",
         action: actionType.button === "Deposit" ? "Stake" : "Unstake",
@@ -119,9 +135,7 @@ export default function useAction(): Action {
         amounts: [amount],
         extra_data: {}
       });
-      setLoading(false);
     } catch (err: any) {
-      console.log("Deposit error:", err.message);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
@@ -141,11 +155,12 @@ export default function useAction(): Action {
     inputError,
     inputErrorMessage,
     balance: tokenBalance,
-    balanceLoading: isLoading,
-    updateBalance: update,
+    balanceLoading,
+    updateBalance,
     dappParams,
     setDappParams,
-    balanceShown
+    balanceShown,
+    queuedAmount
   };
 }
 
@@ -162,4 +177,5 @@ export interface Action {
   dappParams: any;
   setDappParams: React.Dispatch<React.SetStateAction<any>>;
   balanceShown: string;
+  queuedAmount?: string;
 }

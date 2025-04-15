@@ -4,7 +4,8 @@ import { bera } from "@/configs/tokens/bera";
 
 export enum ACTION_TYPE {
   DEPOSIT = "deposit",
-  WITHDRAW = "withdraw"
+  WITHDRAW = "withdraw",
+  EXIT = "exit"
 }
 
 export interface ActionType {
@@ -23,6 +24,11 @@ export const ActionTypes: Record<ACTION_TYPE, ActionType> = {
     title: "Withdraw Vaults",
     button: "Withdraw",
     value: ACTION_TYPE.WITHDRAW
+  },
+  [ACTION_TYPE.EXIT]: {
+    title: "Exit Vaults",
+    button: "Exit",
+    value: ACTION_TYPE.EXIT
   }
 };
 
