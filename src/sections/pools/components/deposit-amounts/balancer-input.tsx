@@ -20,6 +20,7 @@ import weth from "@/configs/contract/weth";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import clsx from "clsx";
 import { bera } from "@/configs/tokens/bera";
+import LazyImage from '@/components/layz-image';
 
 const Input = ({
   token,
@@ -84,8 +85,10 @@ const Input = ({
               showSelector && setShowTokenSelector(true);
             }}
           >
-            <StyledIcon
-              src={token?.icon || "/assets/tokens/default_icon.png"}
+            <LazyImage
+              src={token?.icon}
+              fallbackSrc="/assets/tokens/default_icon.png"
+              containerClassName="!w-[26px] !h-[26px] !shrink-0 !rounded-full !overflow-hidden"
             />
             <StyledSymbol>{token.symbol}</StyledSymbol>
             {showSelector && (

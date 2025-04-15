@@ -4,6 +4,7 @@ import { balanceFormated } from "@/utils/balance";
 import Range from "@/components/range";
 import { motion } from "framer-motion";
 import Big from "big.js";
+import LazyImage from '@/components/layz-image';
 
 export default function TokenAmout({
   amount,
@@ -53,9 +54,10 @@ export default function TokenAmout({
           {currency ? (
             <div className="flex items-center gap-[10px]">
               <div className="relative">
-                <img
-                  className="w-[26px] h-[26px]"
-                  src={currency.icon || "/assets/tokens/default_icon.png"}
+                <LazyImage
+                  src={currency.icon}
+                  fallbackSrc="/assets/tokens/default_icon.png"
+                  containerClassName="!w-[26px] !h-[26px] shrink-0 rounded-full overflow-hidden"
                 />
               </div>
               <div>

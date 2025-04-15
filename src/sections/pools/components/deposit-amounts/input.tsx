@@ -15,6 +15,7 @@ import {
   StyledSymbol,
   StyledToken
 } from "./styles";
+import LazyImage from '@/components/layz-image';
 
 const Input = ({
   value,
@@ -73,8 +74,11 @@ const Input = ({
             </div>
           ) : (
             <StyledToken className="shrink-0">
-              <StyledIcon
-                src={token?.icon || "/assets/tokens/default_icon.png"}
+              <LazyImage
+                src={token?.icon}
+                fallbackSrc="/assets/tokens/default_icon.png"
+                containerClassName="!w-[26px] !h-[26px] !shrink-0 !rounded-full !overflow-hidden"
+                className="!w-[26px] !h-[26px]"
               />
               <StyledSymbol>{token.symbol}</StyledSymbol>
             </StyledToken>
