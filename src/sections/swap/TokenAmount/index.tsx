@@ -6,6 +6,7 @@ import Loading from "@/components/circle-loading";
 import Range from "@/components/range";
 import { motion } from "framer-motion";
 import Big from "big.js";
+import LazyImage from '@/components/layz-image';
 
 export default function TokenAmout({
   type,
@@ -77,9 +78,10 @@ export default function TokenAmout({
           {currency ? (
             <div className="flex items-center gap-[10px]">
               <div className="relative shrink-0">
-                <img
-                  className="w-[26px] h-[26px]"
-                  src={currency.icon || "/assets/tokens/default_icon.png"}
+                <LazyImage
+                  src={currency.icon}
+                  fallbackSrc="/assets/tokens/default_icon.png"
+                  containerClassName="!w-[26px] !h-[26px] shrink-0 rounded-full overflow-hidden"
                 />
               </div>
               <div className="text-[16px] font-[600] max-w-[100px] truncate">

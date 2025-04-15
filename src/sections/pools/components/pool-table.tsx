@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import LazyImage from '@/components/layz-image';
 
 export default function PoolTable({ item, onClick = () => {} }: any) {
   const router = useRouter();
@@ -12,13 +13,12 @@ export default function PoolTable({ item, onClick = () => {} }: any) {
     <div className="flex items-center gap-[12px]" onClick={onClick}>
       <div className="flex items-center relative">
         {tokens.map((token: any, i: number) => (
-          <img
+          <LazyImage
             key={i}
-            src={token.icon || "/assets/tokens/default_icon.png"}
-            width={30}
-            height={30}
+            src={token.icon}
             alt={token.name}
-            className={`rounded-[50%] ${i !== 0 && "ml-[-20px]"}`}
+            fallbackSrc="/assets/tokens/default_icon.png"
+            containerClassName={`!w-[30px] !h-[30px] !rounded-full !overflow-hidden !shrink-0 ${i !== 0 && "!ml-[-20px]"}`}
           />
         ))}
         {item.protocolIcon && (
