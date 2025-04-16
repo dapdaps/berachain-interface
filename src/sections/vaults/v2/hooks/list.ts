@@ -419,7 +419,7 @@ export function useList(): List {
           item.user_stake = item.user_stake || {};
 
           item.tokens.forEach((token: any) => {
-            token.icon = getTokenLogo(token.symbol);
+            token.icon = getTokenLogo(token.symbol?.replace(/\s/g, ""));
           });
           item.reward_tokens.forEach((token: any) => {
             token.icon = getTokenLogo(token.symbol);
