@@ -233,7 +233,7 @@ const Home = () => {
               }}
             >
               <Vaults className="!absolute z-[2] !left-[unset] !top-[130px] right-[-30px] scale-[0.78] origin-right" />
-              <AirShip
+              {/* <AirShip
                 className="!absolute z-[3] !left-[4px] !top-[60px] !right-[unset] origin-left"
                 variants={{
                   init: {
@@ -250,7 +250,7 @@ const Home = () => {
                 transition={{
                   duration: 3,
                 }}
-              />
+              /> */}
 
               {/*#region Beraciaga*/}
               <motion.div
