@@ -259,15 +259,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           usdAmount={usdAmountOut ? `~${formatUsdAmount(usdAmountOut)}` : null}
           balance={tokenOutBalance}
         />
-        <SwapCompareWith
-          tokenIn={tokenIn}
-          tokenOut={tokenOut}
-          currentTab={store?.currentTab}
-          amountIn={getValues().amountIn}
-          amountOut={getValues().amountOut}
-          usdAmountOut={usdAmountOut}
-          tokensUsdPriceData={tokensUsdPriceData}
-        />
         <Flex align="stretch" direction="column">
           {!state.address ? (
             <ButtonCustom
