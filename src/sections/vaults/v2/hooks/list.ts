@@ -100,7 +100,10 @@ export function useList(): List {
         group.creatorProtocolIcon.push(item.creatorProtocolIcon);
         group.protocolIcon.push(item.protocolIcon);
         group.poolProjectIcon.push(item.poolProjectIcon);
-        group.reward_tokens = uniqBy(group.reward_tokens.concat(item.reward_tokens), 'address');
+        group.reward_tokens = uniqBy(
+          group.reward_tokens.concat(item.reward_tokens),
+          "address"
+        );
         group.user_reward = group.user_reward.concat(item.user_reward);
         group.balance = Big(group.balance).plus(item.balance || 0);
       } else {
@@ -187,7 +190,9 @@ export function useList(): List {
           tk.symbol?.toLowerCase().includes(_search)
         ) &&
         !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.list.some((__it: any) => __it.project?.toLowerCase().includes(_search)) &&
+        !item.list.some((__it: any) =>
+          __it.project?.toLowerCase().includes(_search)
+        ) &&
         !item.name?.toLowerCase().includes(_search)
       ) {
         return false;
@@ -251,8 +256,10 @@ export function useList(): List {
           valB = new Big(b[key.value] || 0);
         }
 
-        if (valA.gt(valB)) return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
-        if (valA.lt(valB)) return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
+        if (valA.gt(valB))
+          return key.direction === ORDER_DIRECTION.ASC ? 1 : -1;
+        if (valA.lt(valB))
+          return key.direction === ORDER_DIRECTION.ASC ? -1 : 1;
       }
 
       return 0; // If all fields are equal, maintain the original order
