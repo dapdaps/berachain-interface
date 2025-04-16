@@ -49,18 +49,25 @@ const ActionUnionPotions = (props: any) => {
               .join("-")}
           </div>
         </div>
-        {["Bex", "Kodiak", "BurrBear"].includes(currentProtocol.lpProtocol) &&
-          actionType.value === ACTION_TYPE.DEPOSIT && (
-            <button
-              type="button"
-              className="flex justify-center items-center w-[148px] h-[46px] flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[18px] font-semibold leading-[90%]"
-              onClick={() => {
-                toggleOpenAddLp(true);
-              }}
-            >
-              Mint LP
-            </button>
-          )}
+        {
+          [
+            "Bex",
+            "Kodiak",
+            // ⚠️@Bob#14:56 2025-04-16 Remove the button of Mint LP witch protocol is BurrBear
+            // "BurrBear"
+          ].includes(currentProtocol.lpProtocol) &&
+            actionType.value === ACTION_TYPE.DEPOSIT && (
+              <button
+                type="button"
+                className="flex justify-center items-center w-[148px] h-[46px] flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[18px] font-semibold leading-[90%]"
+                onClick={() => {
+                  toggleOpenAddLp(true);
+                }}
+              >
+                Mint LP
+              </button>
+          )
+        }
         {["D2 Finance"].includes(currentProtocol.lpProtocol) &&
           actionType.value === ACTION_TYPE.DEPOSIT && (
             <button
