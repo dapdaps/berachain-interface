@@ -426,7 +426,7 @@ export function useList(): List {
           item.user_stake = item.user_stake || {};
 
           item.tokens.forEach((token: any) => {
-            token.icon = getTokenLogo(token.symbol);
+            token.icon = getTokenLogo(token.symbol?.replace(/\s/g, ""));
           });
           item.reward_tokens.forEach((token: any) => {
             token.icon = getTokenLogo(token.symbol);
@@ -473,7 +473,7 @@ export function useList(): List {
           item.creatorProtocolIcon = getDappLogo(item.creator_project);
           item.lpProtocol = item.pool_project;
           item.backendId = item.id;
-          item.id = item.extra_data.pool_id;
+          item.id = item.pool_address;
           item.balance = item.user_stake?.usd;
           item.vaultAddress = item.vault_address;
 
