@@ -193,27 +193,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     return intentState.matches("pending") || intentState.matches("checking");
   });
 
-  useEffect(() => {
-    if (store?.currentTab === "trading_challenge") {
-      swapUIActorRef.send({
-        type: "input",
-        params: { tokenIn: LIST_TOKENS[0], tokenOut: LIST_TOKENS[1] },
-      })
-    } else {
-      swapUIActorRef.send({
-        type: "input",
-        params: { tokenIn: LIST_TOKENS[1], tokenOut: LIST_TOKENS[0] },
-      })
-    }
-  }, [store?.currentTab])
-
-  useEffect(() => {
-    return () => {
-      store.set({
-        currentTab: "trading_challenge"
-      })
-    }
-  }, [])
 
   return (
     <Flex
@@ -230,7 +209,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         <FieldComboInput<SwapFormValues>
           fieldName="amountIn"
           selected={tokenIn}
-          disabledSelect={store?.currentTab === "trading_challenge" && tokenIn?.symbol === LIST_TOKENS?.[0]?.symbol}
           handleSelect={() => {
             openModalSelectAssets("tokenIn")
           }}
@@ -251,7 +229,6 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenOut")
           }}
-          disabledSelect={store?.currentTab === "trading_challenge" && tokenOut?.symbol === LIST_TOKENS?.[0]?.symbol}
           className="border border-[#373A53] border-t-[0] rounded-b-xl mb-[14px]"
           errors={errors}
           disabled={true}
