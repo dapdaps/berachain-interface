@@ -108,7 +108,7 @@ export function SwapUIMachineFormSyncProvider({
             chainId: addActionChainIdMap[userChainType] || chainId,
             account_id: userAddress,
             extra_data: {
-              ...(store?.extra_data && typeof store.extra_data === "object" ? store.extra_data : {}),
+              // ...(store?.extra_data && typeof store.extra_data === "object" ? store.extra_data : {}),
               amountIn: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn?.toString(), 
               amountOut: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut?.toString(),
               decimalsIn: event.data.tokenIn.decimals,
