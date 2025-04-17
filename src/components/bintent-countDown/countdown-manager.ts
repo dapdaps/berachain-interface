@@ -9,8 +9,8 @@ const getEndTimestamp = () => {
 };
 
 // 测试模式设置
-const TEST_MODE = false; 
-const getTestEndTimestamp = () => dayjs().add(8, 'second').unix();
+const TEST_MODE = true; 
+const getTestEndTimestamp = () => dayjs().add(20, 'second').unix();
 
 const getCurrentTimestamp = () => TEST_MODE ? getTestEndTimestamp() : getEndTimestamp();
 
