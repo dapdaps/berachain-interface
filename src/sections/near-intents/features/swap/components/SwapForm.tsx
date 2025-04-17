@@ -39,6 +39,7 @@ import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import { useBintent } from "@/stores/bintent"
 import useClickTracking from "@/hooks/use-click-tracking"
 import { useEventEnded } from "@/components/bintent-countDown"
+import BintentCountDown from '@/components/bintent-countDown'
 export interface SwapFormProps {
   onNavigateDeposit?: () => void
 }
@@ -226,7 +227,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     >
     {
       !isEventEnded ? (
-        <>
+        <div className="relative w-full">
           <SwitchTabs
             tabs={[
               { label: "Trading Challenge", value: "trading_challenge" },
@@ -241,6 +242,9 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
             current={store?.currentTab}
             className="mx-auto md:w-[320px] w-[480px]"
           />
+          <div className="absolute left-[10px] bottom-[106px] scale-[0.8]">
+            <BintentCountDown />
+          </div>
           {
             store?.currentTab === "trading_challenge" ? (
               <div className="font-Montserrat text-[14px] my-[11px]">In this mode your trades will count towards the challenge, and only BERA token (token in /out) counts.  </div>
@@ -248,7 +252,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
               <div className="font-Montserrat text-[14px] my-[11px] text-center">Cross-chain swap across any network, any token.</div>
             )
           }
-        </>
+        </div>
       ) : (
         <>
           <div className="font-CherryBomb w-full text-center text-[26px] mb-3">Swap</div>
@@ -293,15 +297,19 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           usdAmount={usdAmountOut ? `~${formatUsdAmount(usdAmountOut)}` : null}
           balance={tokenOutBalance}
         />
-        <SwapCompareWith
-          tokenIn={tokenIn}
-          tokenOut={tokenOut}
-          currentTab={store?.currentTab}
-          amountIn={getValues().amountIn}
-          amountOut={getValues().amountOut}
-          usdAmountOut={usdAmountOut}
-          tokensUsdPriceData={tokensUsdPriceData}
-        />
+        {
+          !isEventEnded && (
+            <SwapCompareWith
+              tokenIn={tokenIn}
+              tokenOut={tokenOut}
+              currentTab={store?.currentTab}
+              amountIn={getValues().amountIn}
+              amountOut={getValues().amountOut}
+              usdAmountOut={usdAmountOut}
+              tokensUsdPriceData={tokensUsdPriceData}
+            />
+          )
+        }
         <Flex align="stretch" direction="column">
           {!state.address ? (
             <ButtonCustom
