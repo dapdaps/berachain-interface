@@ -5,7 +5,7 @@ import useCountdown from '@/hooks/use-count-down';
 
 // 定义结束时间
 const getEndTimestamp = () => {
-  return dayjs('2025-04-18 20:00:00').unix();
+  return dayjs('2025-04-18 08:00:00').unix();
 };
 // 测试模式设置
 const TEST_MODE = false; 
