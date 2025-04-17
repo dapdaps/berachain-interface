@@ -9,6 +9,9 @@ import LazyImage from '@/components/layz-image';
 import { motion } from 'framer-motion';
 import { numberFormatter } from '@/utils/number-formatter';
 import clsx from 'clsx';
+import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import { useEffect } from 'react';
+import Skeleton from 'react-loading-skeleton';
 
 const DAPPS = [
   {
@@ -75,6 +78,16 @@ const DAPPS = [
 
 const Aggregating = (props: any) => {
   const {} = props;
+
+  const {
+    getTotalStatistics,
+    totalStatistics,
+    totalStatisticsLoading,
+  } = useVaultsV2Context();
+
+  useEffect(() => {
+    getTotalStatistics();
+  }, []);
 
   return (
     <div className="w-full mt-[20px]">
@@ -168,7 +181,11 @@ const Aggregating = (props: any) => {
       </div>
       <div className="mt-[46px]">
         <div className="text-center text-[#FFF5A9] text-[42px] text-stroke-1 font-CherryBomb font-normal leading-[90%]">
-          {numberFormatter(302256.68, 2, true, { prefix: '$' })}
+          {
+            totalStatisticsLoading ? (
+              <Skeleton height={38} width={150} borderRadius={6} />
+            ) : numberFormatter(totalStatistics?.total_staked_volume, 2, true, { prefix: '$' })
+          }
         </div>
         <div className="text-center mt-[8px] text-white font-Montserrat text-[16px] font-[500] leading-[100%]">
           Total Staked via Beratown
