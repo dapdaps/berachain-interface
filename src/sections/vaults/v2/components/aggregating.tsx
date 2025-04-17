@@ -1,0 +1,180 @@
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import Card from '@/components/card';
+import Infrared from '@/configs/staking/dapps/infrared';
+import Bex from '@/configs/swap/bex';
+import Kodiak from '@/configs/swap/kodiak';
+import Dolomite from '@/configs/lending/dolomite';
+import Beraborrow from '@/configs/lending/beraborrow';
+import LazyImage from '@/components/layz-image';
+import { motion } from 'framer-motion';
+import { numberFormatter } from '@/utils/number-formatter';
+
+const DAPPS = [
+  {
+    name: Infrared.name,
+    icon: Infrared.icon,
+    path: Infrared.path,
+    bg: "#FFB8B9",
+    rotate: 8,
+    message: {
+      avatar: "/assets/tokens/default_icon.png",
+      title: "Cap’n Jack Bearow",
+      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+    },
+  },
+  {
+    name: "Berahub",
+    icon: Bex.icon,
+    path: Bex.path,
+    bg: "#FFF5A9",
+    rotate: -6,
+    message: {
+      avatar: "/assets/tokens/default_icon.png",
+      title: "Cap’n Jack Bearow",
+      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+    },
+  },
+  {
+    name: Dolomite.basic.name,
+    icon: Dolomite.basic.icon,
+    path: Dolomite.basic.path,
+    bg: "#E7FFB8",
+    rotate: 0,
+    message: {
+      avatar: "/assets/tokens/default_icon.png",
+      title: "Cap’n Jack Bearow",
+      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+    },
+  },
+  {
+    name: Beraborrow.basic.name,
+    icon: Beraborrow.basic.icon,
+    path: Beraborrow.basic.path,
+    bg: "#DBECF8",
+    rotate: 8,
+    message: {
+      avatar: "/assets/tokens/default_icon.png",
+      title: "Cap’n Jack Bearow",
+      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+    },
+  },
+  {
+    name: Kodiak.name,
+    icon: Kodiak.icon,
+    path: Kodiak.path,
+    bg: "#FFF5A9",
+    rotate: -8,
+    message: {
+      avatar: "/assets/tokens/default_icon.png",
+      title: "Cap’n Jack Bearow",
+      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+    },
+  },
+];
+
+const Aggregating = (props: any) => {
+  const {} = props;
+
+  return (
+    <div className="w-full mt-[20px]">
+      <div className="text-[#FFF5A9] text-center text-stroke-1 font-CherryBomb text-[24px] font-normal leading-[90%]">
+        The best place to access PoL Vaults and earn Berachain yield.
+      </div>
+      <div className="flex justify-center items-center gap-[10px] text-white font-Montserrat text-[16px] font-[500] leading-[100%] mt-[27px]">
+        <div className="shrink-0">
+          Aggregating from:
+        </div>
+        <div className="flex items-center gap-[3px]">
+          {
+            DAPPS.map((dapp, idx) => (
+              <Popover
+                key={idx}
+                offset={20}
+                content={(
+                  <div className="w-[267px] h-[267px] p-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
+                    <div className="flex items-center gap-[5px]">
+                      <img
+                        src={dapp.message.avatar}
+                        alt=""
+                        className="w-[40px] h-[40px] rounded-full"
+                      />
+                      <div className="font-[700]">
+                        {dapp.message.title}
+                      </div>
+                    </div>
+                    <div className="mt-[5px]">
+                      {dapp.message.content}
+                    </div>
+                  </div>
+                )}
+                triggerContainerClassName="shrink-0 cursor-pointer !w-[80px] !h-[80px]"
+                trigger={PopoverTrigger.Hover}
+                placement={PopoverPlacement.BottomLeft}
+                closeDelayDuration={0}
+              >
+                <motion.div
+                  key={idx}
+                  className="relative flex flex-col justify-center items-center gap-[3px] w-[80px] h-[80px] shrink-0 shadow-[-3px_4px_0px_0px_rgba(0,_0,_0,_0.25)]"
+                  style={{
+                    background: dapp.bg,
+                    zIndex: idx + 1,
+                    rotate: dapp.rotate,
+                  }}
+                  whileHover={{
+                    zIndex: 10,
+                    scale: 1.1,
+                    y: 5,
+                    rotate: 0,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 10
+                  }}
+                >
+                  <LazyImage
+                    src={dapp.icon}
+                    alt={dapp.name}
+                    containerClassName="shrink-0 !w-[40px] !h-[40px] rounded-[10px] overflow-hidden"
+                    fallbackSrc="/assets/tokens/default_icon.png"
+                  />
+                  <div className="text-[#060606] text-center font-Montserrat text-[13px] font-bold leading-[100%] whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    {dapp.name}
+                  </div>
+                </motion.div>
+              </Popover>
+            ))
+          }
+        </div>
+        <div className="flex shrink-0 items-center gap-[5px]">
+          <div className="">
+            and more…
+          </div>
+          <Popover
+            content={(
+              <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
+                <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
+              </Card>
+            )}
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.RightTop}
+            triggerContainerClassName="shrink-0 cursor-pointer w-[15px] h-[15px]"
+            closeDelayDuration={0}
+          >
+            <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full" />
+          </Popover>
+        </div>
+      </div>
+      <div className="mt-[46px]">
+        <div className="text-center text-[#FFF5A9] text-[42px] text-stroke-1 font-CherryBomb font-normal leading-[90%]">
+          {numberFormatter(302256.68, 2, true, { prefix: '$' })}
+        </div>
+        <div className="text-center mt-[8px] text-white font-Montserrat text-[16px] font-[500] leading-[100%]">
+          Total Staked via Beratown
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Aggregating;

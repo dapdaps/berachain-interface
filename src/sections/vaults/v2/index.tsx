@@ -2,7 +2,6 @@ import PageBack from "@/components/back";
 import Card from "@/components/card";
 import Dashboard from "@/sections/vaults/v2/components/dashboard";
 import VaultsTable from "@/sections/vaults/v2/components/vaults-table";
-import TopCard from "@/sections/vaults/v2/components/top-card";
 import ActionModal from "@/sections/vaults/v2/components/action/modal";
 import VaultsV2ContextProvider from "@/sections/vaults/v2/context";
 import { useVaultsV2 } from "@/sections/vaults/v2/hooks";
@@ -16,6 +15,8 @@ import Search from "@/sections/vaults/v2/components/filter/search";
 import Feedback from "@/sections/vaults/v2/components/feedback/feedback";
 import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
 import { useRef } from "react";
+import Aggregating from '@/sections/vaults/v2/components/aggregating';
+import RewardTopCard from '@/sections/vaults/v2/components/reward-top-card';
 
 const VaultsV2 = (props: any) => {
   const {} = props;
@@ -39,11 +40,11 @@ const VaultsV2 = (props: any) => {
           />
           <SubmitVault className="shrink-0" />
         </div>
-        <div className="w-[1257px] mx-auto pt-[54px]">
-          <div className="w-full grid grid-cols-3 gap-[21px]">
-            <TopCard type={0} pool={list.listDataTopAPY} />
-            <TopCard type={1} pool={list.listDataTopTVL} />
-            <TopCard type={2} pool={list.listDataHotStrategy} />
+        <Aggregating />
+        <div className="w-[1257px] mx-auto pt-[42px]">
+          <div className="w-full grid grid-cols-2 gap-[20px]">
+            <RewardTopCard type={1} />
+            <RewardTopCard type={0} />
           </div>
           <div className="min-h-[320px] pt-[25px] flex justify-between items-start gap-[13px] w-full text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
             <div className="w-[337px] shrink-0">

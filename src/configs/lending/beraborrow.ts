@@ -3,7 +3,7 @@ import kodiak from '@/configs/swap/kodiak';
 
 const basic = {
   name: 'Beraborrow',
-  icon: '/images/dapps/beraborrow.png',
+  icon: '/images/dapps/beraborrow.svg',
   path: '/lending/beraborrow',
 };
 
