@@ -20,7 +20,7 @@ export default function useAction(): Action {
   const [dappParams, setDappParams] = useState<any>({});
   const { currentProtocol, actionType, toggleActionVisible, getListData } =
     useVaultsV2Context();
-  console.log(currentProtocol);
+
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
       ? currentProtocol?.token?.address
