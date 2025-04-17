@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { icons } from '@/configs/chains';
 
 const DAPPS = [
   {
@@ -27,15 +28,17 @@ const DAPPS = [
     },
   },
   {
-    name: "Berahub",
+    name: "BEX",
     icon: Bex.icon,
     path: Bex.path,
     bg: "#FFF5A9",
     rotate: -6,
     message: {
       avatar: "/images/vaults/v2/avatar-berahub.png",
-      title: "Cap’n Jack Bearow",
-      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+      avatarCorner: icons[80094],
+      name: "Cap’n Jack Bearow",
+      title: "Head of DeFi, Berachain Foundation",
+      content: "Beratown offers a fun and gamified way to interact with the Berachain app ecosystem in an easy-to-use and abstracted format!",
     },
   },
   {
@@ -105,19 +108,31 @@ const Aggregating = (props: any) => {
                 key={idx}
                 offset={20}
                 content={dapp.message.title ? (
-                  <div className="w-[267px] h-[267px] p-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
-                    <div className="flex items-center gap-[5px]">
-                      <img
-                        src={dapp.message.avatar}
-                        alt=""
-                        className="w-[40px] h-[40px] rounded-full"
-                      />
-                      <div className="font-[700]">
-                        {dapp.message.title}
-                      </div>
+                  <div className="w-[300px] h-[280px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] py-[30px] px-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
+                    <div className="line-clamp-5">
+                      '{dapp.message.content}'
                     </div>
-                    <div className="mt-[5px]">
-                      {dapp.message.content}
+                    <div className="w-full flex items-center gap-[15px] mt-[20px]">
+                      <div
+                        className="relative w-[64px] h-[64px] shrink-0 rounded-full border-[2px] border-black bg-no-repeat bgcenter bg-contain"
+                        style={{
+                          backgroundImage: `url(${dapp.message.avatar})`,
+                        }}
+                      >
+                        <img
+                          src={dapp.message.avatarCorner}
+                          alt=""
+                          className="w-[26px] h-[26px] rounded-full absolute right-[-10px] bottom-[-5px]"
+                        />
+                      </div>
+                      <div className="flex-1 w-0">
+                        <div className="font-[700] text-[16px] line-clamp-1">
+                          {dapp.message.name}
+                        </div>
+                        <div className="text-[12px] line-clamp-2">
+                          {dapp.message.title}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ) : null}

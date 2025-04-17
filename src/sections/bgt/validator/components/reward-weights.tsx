@@ -80,7 +80,7 @@ const RewardWeights = (props: any) => {
               activeShape={renderActiveShape}
             >
               {list.map((entry: any, index: number) => (
-                <Cell 
+                <Cell
                   key={`cell-${index}`}
                   fill={randomColors[index]}
                   style={{
