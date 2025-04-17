@@ -242,7 +242,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
             current={store?.currentTab}
             className="mx-auto md:w-[320px] w-[480px]"
           />
-          <div className="absolute left-[10px] bottom-[106px] scale-[0.8]">
+          <div className="absolute left-[-10px] bottom-[106px] scale-[0.8]">
             <BintentCountDown />
           </div>
           {
