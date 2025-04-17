@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 import useIsMobile from "@/hooks/use-isMobile";
 import useClickTracking from "@/hooks/use-click-tracking";
+import CountDown from "@/components/bintent-countDown";
 
 
 function VerifyButton({
@@ -55,9 +56,13 @@ export default memo(function TaskBoard() {
 
   return (
     <div className="md:m-[56px_0_65px] m-[182px_auto_69px] relative md:w-full w-[720px] md:h-[1085px] h-[836px] p-[12px] border-[2px] border-[#7F6C41] rounded-[10px] bg-[linear-gradient(180deg,_#D4A20C_0%,_#FFCC34_100%)]">
-      <div className="absolute left-1/2 md:-top-[27px] -top-[39px] -translate-x-1/2 md:w-[235px] w-[379px] md:h-[59px] h-[77px] md:bg-[url('/images/campaign/mobile/task_board_bg.svg')] bg-[url('/images/campaign/task_board_bg.svg')] bg-cover bg-no-repeat bg-center flex items-center justify-center text-[#F7F9EA] text-stroke-2 font-CherryBomb md:text-[26px] text-[32px] uppercase">
-        Task board
+      <div className="absolute left-1/2 md:-top-[27px] -top-[39px] -translate-x-1/2 md:w-[235px] w-[379px] md:h-[59px] h-[77px] md:bg-[url('/images/campaign/mobile/task_board_bg.svg')] bg-[url('/images/campaign/task_board_bg.svg')] bg-cover bg-no-repeat bg-center flex items-center justify-center">
+        <span className="text-[#F7F9EA] text-stroke-2 font-CherryBomb md:text-[26px] text-[32px] uppercase">Task board</span>
+        <div className="w-[184px] absolute left-1/2 -translate-x-1/2 bottom-[60px]">
+          <CountDown />
+        </div>
       </div>
+
       <div className="h-full md:p-[10px] p-[20px] md:rounded-[16px] rounded-[10px] border-[2px] border-[#E5C375] bg-[#FFF1C7]">
         <div className="md:mt-[90px] mt-[50px] relative flex flex-col rounded-[16px] bg-[#FFFAEA] border border-[#D7C69D]">
           <div className="absolute md:-left-[8px] -left-[10px] md:-top-[66px] -top-[45px] md:w-[330px] w-[448px]">

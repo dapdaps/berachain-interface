@@ -2,6 +2,7 @@ import { memo, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion"
 import { useRouter } from "next/navigation";
 import clsx from 'clsx';
+import CountDown, { useEventEnded } from "@/components/bintent-countDown";
 export default memo(function AirShip(props: any) {
   const { className, ...motionProps } = props;
 
@@ -35,13 +36,17 @@ export default memo(function AirShip(props: any) {
     sequence();
   }, [])
 
+  const isEventEnded = useEventEnded();
+
+  if (isEventEnded) return null
+
   return (
     <motion.div
       data-bp="1023-001"
       onClick={() => {
         router.push("/bintent-trading-challenge")
       }}
-      className={clsx("fixed top-[88px] w-[264px] cursor-pointer", className)}
+      className={clsx("fixed top-[88px] w-[287px] cursor-pointer", className)}
       variants={variants}
       initial="initial"
       animate={controls}
@@ -50,6 +55,9 @@ export default memo(function AirShip(props: any) {
       <img src="/images/campaign/airship.svg" alt="airship" />
       <div className="absolute w-[186px] top-[17px] -right-[166px]">
         <img src="/images/campaign/flag.gif" alt="flag" />
+      </div>
+      <div className="absolute bottom-[24px] left-[46px]">
+        <CountDown />
       </div>
     </motion.div>
   )
