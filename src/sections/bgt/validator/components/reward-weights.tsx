@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recha
 import { useMemo, useState } from 'react';
 import Big from 'big.js';
 import { numberFormatter } from '@/utils/number-formatter';
-import { getProtocolIcon } from '@/utils/utils';
+import { formatLongText, getProtocolIcon } from '@/utils/utils';
 
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -35,10 +35,10 @@ const RewardWeights = (props: any) => {
     const _totalBGT = vaults.reduce((acc: any, curr: any) => Big(acc).plus(Big(pageData?.dynamicData?.rewardRate ?? 0).times(Big(curr?.percentageNumerator ?? 0).div(10000))), Big(0));
     return vaults.map((item: any) => ({
       value: Big(pageData?.dynamicData?.rewardRate ?? 0).times(Big(item?.percentageNumerator ?? 0).div(10000)).div(_totalBGT).times(100).toNumber(),
-      name: item.receivingVault?.metadata?.name,
-      icon: item.receivingVault?.metadata?.logoURI,
+      name: item.receivingVault?.metadata?.name ?? formatLongText(item.receivingVault?.id, 4, 4),
+      icon: item.receivingVault?.metadata?.logoURI ?? "/images/bgt-logo.svg",
       cornerIcon: getProtocolIcon(item.receivingVault?.metadata?.protocolName),
-      protocol: item.receivingVault?.metadata?.protocolName,
+      protocol: item.receivingVault?.metadata?.protocolName ?? "OTHER",
     }));
   }, [vaults]);
 
