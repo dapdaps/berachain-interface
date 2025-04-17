@@ -8,7 +8,7 @@ const getEndTimestamp = () => {
   return dayjs('2025-04-18 20:00:00').unix();
 };
 // 测试模式设置
-const TEST_MODE = true; 
+const TEST_MODE = false; 
 const getTestEndTimestamp = () => dayjs().add(180, 'second').unix();
 
 const getCurrentTimestamp = () => TEST_MODE ? getTestEndTimestamp() : getEndTimestamp();
