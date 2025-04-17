@@ -844,7 +844,7 @@ export const BintentBear = function (props: any) {
         )
       }
 
-      <div className='absolute -top-[343px] left-[48px]'>
+      <div className='absolute -top-[363px] left-[58px]'>
         <div
           data-bp="1023-002"
           className='cursor-pointer w-[190px]'
@@ -854,7 +854,7 @@ export const BintentBear = function (props: any) {
         >
           <img src="/images/background/balloon_1.svg" alt="balloon_1" />
         </div>
-        <div className='absolute right-[20px] -bottom-[266px] w-[55px]'>
+        <div className='absolute right-[30px] rotate-[2deg] -bottom-[266px] w-[55px]'>
           <img src="/images/background/balloon_line_1.svg" alt="balloon_line_1" />
         </div>
       </div>
