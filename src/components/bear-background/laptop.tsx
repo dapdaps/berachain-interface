@@ -18,6 +18,7 @@ import Ground from '@/components/bear-background/components/ground';
 import BeraBgHome from '@/components/bear-background/home';
 import { memo } from 'react';
 import { Clouds, DappClouds } from './clouds';
+import BintentCountDown from '@/components/bintent-countDown'
 
 
 import { useRainyDay } from '@/hooks/use-rainy-day';
@@ -27,6 +28,7 @@ import BeraBgcampaign from '@/components/bear-background/campaign';
 import { useBintent } from '@/stores/bintent';
 import { useActivityStore } from '@/stores/useActivityStore';
 import { useRouter } from 'next/navigation';
+import { useEventEnded } from '../bintent-countDown';
 
 const LeftTree = function () {
   return (
@@ -834,8 +836,12 @@ export const BintentBear = function (props: any) {
 
   const router = useRouter()
   const store: any = useBintent()
+  const isEventEnded = useEventEnded();
   return (
     <div className={clsx('absolute left-[86px] bottom-[32px] z-20', className)} >
+      {
+        !isEventEnded && <div className='absolute left-[9999px]'><BintentCountDown /></div>
+      }
       {
         isBear && (
           <div className='cursor-pointer w-[360px]'>
@@ -844,7 +850,7 @@ export const BintentBear = function (props: any) {
         )
       }
 
-      <div className='absolute -top-[343px] left-[48px]'>
+      <div className='absolute -top-[363px] left-[58px]'>
         <div
           data-bp="1023-002"
           className='cursor-pointer w-[190px]'
@@ -852,9 +858,11 @@ export const BintentBear = function (props: any) {
             router.push("/bintent-trading-challenge")
           }}
         >
-          <img src="/images/background/balloon_1.svg" alt="balloon_1" />
+          <img src={
+            isEventEnded ? '/images/background/balloon_1-end.svg' : '/images/background/balloon_1.svg'
+          } alt="balloon_1" />
         </div>
-        <div className='absolute right-[20px] -bottom-[266px] w-[55px]'>
+        <div className='absolute right-[30px] rotate-[2deg] -bottom-[266px] w-[55px]'>
           <img src="/images/background/balloon_line_1.svg" alt="balloon_line_1" />
         </div>
       </div>

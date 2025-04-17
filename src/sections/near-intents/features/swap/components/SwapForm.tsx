@@ -38,6 +38,8 @@ import { SwapSubmitterContext } from "./SwapSubmitter"
 import { SwapUIMachineContext } from "./SwapUIMachineProvider"
 import { useBintent } from "@/stores/bintent"
 import useClickTracking from "@/hooks/use-click-tracking"
+import { useEventEnded } from "@/components/bintent-countDown"
+import BintentCountDown from '@/components/bintent-countDown'
 export interface SwapFormProps {
   onNavigateDeposit?: () => void
 }
@@ -193,6 +195,8 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
     return intentState.matches("pending") || intentState.matches("checking");
   });
 
+  const isEventEnded = useEventEnded();
+
   useEffect(() => {
     if (store?.currentTab === "trading_challenge") {
       swapUIActorRef.send({
@@ -221,27 +225,42 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
       gap="2"
       className="bg-[#FFFDEB] lg:rounded-[30px] lg:p-5 lg:border lg:border-black lg:shadow-shadow1 md:px-3 md:pb-[40px]"
     >
-      <SwitchTabs
-        tabs={[
-          { label: "Trading Challenge", value: "trading_challenge" },
-          { label: "Normal", value: "normal" }
-        ]}
-        onChange={(val) => {
-          handleReport("1023-005")
-          store.set({
-            currentTab: val
-          })
-        }}
-        current={store?.currentTab}
-        className="mx-auto md:w-[320px] w-[480px]"
-      />
-      {
-        store?.currentTab === "trading_challenge" ? (
-          <div className="font-Montserrat text-[14px] my-[11px]">In this mode your trades will count towards the challenge, and only BERA token (token in /out) counts.  </div>
-        ) : (
-          <div className="font-Montserrat text-[14px] my-[11px] text-center">Cross-chain swap across any network, any token.</div>
-        )
-      }
+    {
+      !isEventEnded ? (
+        <div className="relative w-full">
+          <SwitchTabs
+            tabs={[
+              { label: "Trading Challenge", value: "trading_challenge" },
+              { label: "Normal", value: "normal" }
+            ]}
+            onChange={(val) => {
+              handleReport("1023-005")
+              store.set({
+                currentTab: val
+              })
+            }}
+            current={store?.currentTab}
+            className="mx-auto md:w-[320px] w-[480px]"
+          />
+          <div className="absolute left-[-10px] bottom-[106px] scale-[0.8]">
+            <BintentCountDown />
+          </div>
+          {
+            store?.currentTab === "trading_challenge" ? (
+              <div className="font-Montserrat text-[14px] my-[11px]">In this mode your trades will count towards the challenge, and only BERA token (token in /out) counts.  </div>
+            ) : (
+              <div className="font-Montserrat text-[14px] my-[11px] text-center">Cross-chain swap across any network, any token.</div>
+            )
+          }
+        </div>
+      ) : (
+        <>
+          <div className="font-CherryBomb w-full text-center text-[26px] mb-3">Swap</div>
+          <div className="font-Montserrat text-[14px] mb-[25px] text-center">Cross-chain swap across any network, any token.</div>
+        </>
+      )
+    }
+
       <Form<SwapFormValues>
         handleSubmit={handleSubmit(onSubmit)}
         register={register}
@@ -249,10 +268,10 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
         <FieldComboInput<SwapFormValues>
           fieldName="amountIn"
           selected={tokenIn}
-          disabledSelect={store?.currentTab === "trading_challenge" && tokenIn?.symbol === LIST_TOKENS?.[0]?.symbol}
           handleSelect={() => {
             openModalSelectAssets("tokenIn")
           }}
+          disabledSelect={!isEventEnded && store?.currentTab === "trading_challenge" && tokenIn?.symbol === LIST_TOKENS?.[0]?.symbol}
           className="border border-[#373A53] rounded-t-xl"
           required
           errors={errors}
@@ -270,7 +289,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           handleSelect={() => {
             openModalSelectAssets("tokenOut")
           }}
-          disabledSelect={store?.currentTab === "trading_challenge" && tokenOut?.symbol === LIST_TOKENS?.[0]?.symbol}
+          disabledSelect={!isEventEnded && store?.currentTab === "trading_challenge" && tokenOut?.symbol === LIST_TOKENS?.[0]?.symbol}
           className="border border-[#373A53] border-t-[0] rounded-b-xl mb-[14px]"
           errors={errors}
           disabled={true}
@@ -278,15 +297,19 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
           usdAmount={usdAmountOut ? `~${formatUsdAmount(usdAmountOut)}` : null}
           balance={tokenOutBalance}
         />
-        <SwapCompareWith
-          tokenIn={tokenIn}
-          tokenOut={tokenOut}
-          currentTab={store?.currentTab}
-          amountIn={getValues().amountIn}
-          amountOut={getValues().amountOut}
-          usdAmountOut={usdAmountOut}
-          tokensUsdPriceData={tokensUsdPriceData}
-        />
+        {
+          !isEventEnded && (
+            <SwapCompareWith
+              tokenIn={tokenIn}
+              tokenOut={tokenOut}
+              currentTab={store?.currentTab}
+              amountIn={getValues().amountIn}
+              amountOut={getValues().amountOut}
+              usdAmountOut={usdAmountOut}
+              tokensUsdPriceData={tokensUsdPriceData}
+            />
+          )
+        }
         <Flex align="stretch" direction="column">
           {!state.address ? (
             <ButtonCustom
