@@ -174,6 +174,7 @@ const HomeEarth = () => {
         <Follower />
         <Signpost />
         <HomeEarthTop />
+        <Airship />
         <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
           {/*#region Cloud*/}
           <CloudCircle />
