@@ -5,6 +5,7 @@ import Nav from '@/sections/bgt/validator/components/nav';
 import Summary from '@/sections/bgt/validator/components/summary';
 import { memo } from "react";
 import Incentives from '@/sections/bgt/validator/components/incentives';
+import RewardWeights from '@/sections/bgt/validator/components/reward-weights';
 
 export default memo(function Validator(props: any) {
   const {
@@ -20,10 +21,6 @@ export default memo(function Validator(props: any) {
     vaults,
   } = props;
 
-  // console.log('bgtData: %o', bgtData);
-  // console.log('pageData: %o', pageData);
-  // console.log('bgtPageData: %o', bgtPageData);
-
   return (
     <div className="flex flex-col h-full overflow-auto items-center py-[75px]">
       <BgtHead bgtData={bgtData} />
@@ -31,14 +28,17 @@ export default memo(function Validator(props: any) {
         <Back />
         <Nav pageData={pageData} handleClick={handleClick} />
         <Summary vaults={vaults} pageData={pageData} />
-        {/*<Incentives className="mt-[58px]" vaults={vaults} pageData={pageData} />*/}
-        <FlexTable
-          loading={loading}
-          columns={Columns}
-          list={vaults}
-          wrapperClass="mt-[50px]"
-          bodyWrapClass="h-[500px] overflow-y-auto mt-[20px]"
-        />
+        <Incentives className="mt-[58px]" vaults={vaults} loading={loading} />
+        <div className="mt-[50px] flex justify-between items-start gap-[40px]">
+          <FlexTable
+            loading={loading}
+            columns={Columns}
+            list={vaults}
+            bodyWrapClass="h-[500px] overflow-y-auto mt-[20px]"
+            wrapperClass="flex-1"
+          />
+          <RewardWeights vaults={vaults} loading={loading} pageData={pageData} />
+        </div>
       </div>
     </div>
   )

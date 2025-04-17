@@ -128,7 +128,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
               Balance: {
                 balanceLoading ? (
                   <Loading size={16} />
-                ) : numberFormatter(balance?.value?.toString(), 2, true, { isShort: true, isShortUppercase: true })
+                ) : numberFormatter(balance?.formatted, 2, true, { isShort: true, isShortUppercase: true })
               }
             </div>
           </div>

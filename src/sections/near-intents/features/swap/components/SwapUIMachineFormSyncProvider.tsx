@@ -11,6 +11,7 @@ import { ethers } from "ethers"
 import useToast from "@/hooks/use-toast"
 import { useAccount } from "wagmi"
 import { useBintent } from "@/stores/bintent"
+import { useEventEnded } from "@/components/bintent-countDown"
 
 type SwapUIMachineFormSyncProviderProps = PropsWithChildren<{
   userAddress: string | null
@@ -36,7 +37,7 @@ export function SwapUIMachineFormSyncProvider({
   const onSuccessSwapRef = useRef(onSuccessSwap)
   onSuccessSwapRef.current = onSuccessSwap
   const { chainId } = useAccount()
-
+  const isEventEnded = useEventEnded();
 
   const addActionChainIdMap: Record<any, number> = {
     [ChainType.Near]: 99998,
@@ -108,7 +109,7 @@ export function SwapUIMachineFormSyncProvider({
             chainId: addActionChainIdMap[userChainType] || chainId,
             account_id: userAddress,
             extra_data: {
-              // ...(store?.extra_data && typeof store.extra_data === "object" ? store.extra_data : {}),
+              ...(!isEventEnded && store?.extra_data && typeof store.extra_data === "object" ? store.extra_data : {}),
               amountIn: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountIn?.toString(), 
               amountOut: snapshot.context.intentCreationResult?.value?.intentDescription?.quote.totalAmountOut?.toString(),
               decimalsIn: event.data.tokenIn.decimals,
