@@ -8,6 +8,7 @@ import Beraborrow from '@/configs/lending/beraborrow';
 import LazyImage from '@/components/layz-image';
 import { motion } from 'framer-motion';
 import { numberFormatter } from '@/utils/number-formatter';
+import clsx from 'clsx';
 
 const DAPPS = [
   {
@@ -17,9 +18,9 @@ const DAPPS = [
     bg: "#FFB8B9",
     rotate: 8,
     message: {
-      avatar: "/assets/tokens/default_icon.png",
-      title: "Cap’n Jack Bearow",
-      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+      avatar: "/images/vaults/v2/avatar-berahub.png",
+      title: "",
+      content: "",
     },
   },
   {
@@ -29,7 +30,7 @@ const DAPPS = [
     bg: "#FFF5A9",
     rotate: -6,
     message: {
-      avatar: "/assets/tokens/default_icon.png",
+      avatar: "/images/vaults/v2/avatar-berahub.png",
       title: "Cap’n Jack Bearow",
       content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
     },
@@ -41,9 +42,9 @@ const DAPPS = [
     bg: "#E7FFB8",
     rotate: 0,
     message: {
-      avatar: "/assets/tokens/default_icon.png",
-      title: "Cap’n Jack Bearow",
-      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+      avatar: "/images/vaults/v2/avatar-berahub.png",
+      title: "",
+      content: "",
     },
   },
   {
@@ -53,9 +54,9 @@ const DAPPS = [
     bg: "#DBECF8",
     rotate: 8,
     message: {
-      avatar: "/assets/tokens/default_icon.png",
-      title: "Cap’n Jack Bearow",
-      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+      avatar: "/images/vaults/v2/avatar-berahub.png",
+      title: "",
+      content: "",
     },
   },
   {
@@ -65,9 +66,9 @@ const DAPPS = [
     bg: "#FFF5A9",
     rotate: -8,
     message: {
-      avatar: "/assets/tokens/default_icon.png",
-      title: "Cap’n Jack Bearow",
-      content: "Beratown is a fun & gamified way to interact with the Berachain application ecosystem in an easy-to-use and abstracted format",
+      avatar: "/images/vaults/v2/avatar-berahub.png",
+      title: "",
+      content: "",
     },
   },
 ];
@@ -90,7 +91,7 @@ const Aggregating = (props: any) => {
               <Popover
                 key={idx}
                 offset={20}
-                content={(
+                content={dapp.message.title ? (
                   <div className="w-[267px] h-[267px] p-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
                     <div className="flex items-center gap-[5px]">
                       <img
@@ -106,8 +107,8 @@ const Aggregating = (props: any) => {
                       {dapp.message.content}
                     </div>
                   </div>
-                )}
-                triggerContainerClassName="shrink-0 cursor-pointer !w-[80px] !h-[80px]"
+                ) : null}
+                triggerContainerClassName={clsx("shrink-0 !w-[80px] !h-[80px]", !!dapp.message.title && "cursor-pointer")}
                 trigger={PopoverTrigger.Hover}
                 placement={PopoverPlacement.BottomLeft}
                 closeDelayDuration={0}
