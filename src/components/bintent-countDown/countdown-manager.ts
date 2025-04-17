@@ -3,14 +3,13 @@ import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import useCountdown from '@/hooks/use-count-down';
 
-// 定义结束时间：明天晚上8点
+// 定义结束时间
 const getEndTimestamp = () => {
-  return dayjs().add(1, 'day').hour(20).minute(0).second(0).unix();
+  return dayjs('2025-04-18 20:00:00').unix();
 };
-
 // 测试模式设置
 const TEST_MODE = true; 
-const getTestEndTimestamp = () => dayjs().add(20, 'second').unix();
+const getTestEndTimestamp = () => dayjs().add(180, 'second').unix();
 
 const getCurrentTimestamp = () => TEST_MODE ? getTestEndTimestamp() : getEndTimestamp();
 
