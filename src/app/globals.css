@@ -67,6 +67,9 @@ a[disabled],
 .cursor-grabbing {
   cursor: url("../../public/images/cursor-grabbing.svg") 12 0, auto !important;
 }
+.recharts-pie {
+  cursor: url("../../public/images/cursor.svg"), auto !important;
+}
 
 @layer utilities {
   .text-balance {

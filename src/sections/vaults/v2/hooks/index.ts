@@ -5,6 +5,9 @@ import {
   ActionTypes
 } from "@/sections/vaults/v2/config";
 import useClickTracking from "@/hooks/use-click-tracking";
+import { BASE_URL, get } from '@/utils/http';
+import axios from 'axios';
+import { useRequest } from 'ahooks';
 
 export function useVaultsV2(): VaultsV2 {
   const [actionVisible, setActionVisible] = useState(false);
@@ -20,6 +23,7 @@ export function useVaultsV2(): VaultsV2 {
   const [successReward, setSuccessReward] = useState<any>(null);
   const [openAddLp, setOpenAddLp] = useState(false);
   const [swapToken, setSwapToken] = useState<any>(null);
+
   const { handleReportWithoutDebounce } = useClickTracking();
 
   const toggleActionVisible = (params?: {
@@ -87,6 +91,22 @@ export function useVaultsV2(): VaultsV2 {
     }
   };
 
+  const { data: totalStatistics, loading: totalStatisticsLoading, runAsync: getTotalStatistics } = useRequest(async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/go/vaults/stats`);
+      if (res.status !== 200 || res.data.code !== 200) {
+        console.log("getTotalStatistics error:", res.data.message);
+        return {};
+      }
+      return res.data.data || {};
+    } catch (err: any) {
+      console.log(err);
+    }
+    return {};
+  }, {
+    manual: true,
+  });
+
   return {
     actionType,
     actionVisible,
@@ -106,7 +126,10 @@ export function useVaultsV2(): VaultsV2 {
     toggleActionType,
     toggleOpenAddLp,
     swapToken,
-    setSwapToken
+    setSwapToken,
+    totalStatistics,
+    getTotalStatistics,
+    totalStatisticsLoading,
   };
 }
 
@@ -137,4 +160,7 @@ export interface VaultsV2 {
   toggleOpenAddLp: (openAddLp?: boolean) => void;
   swapToken: any;
   setSwapToken: (swapToken: any) => void;
+  totalStatistics: { id?: number; total_staked_transactions?: number; total_staked_volume?: string; total_transactions?: number; total_volume?: string; };
+  getTotalStatistics: () => Promise<void>;
+  totalStatisticsLoading: boolean;
 }

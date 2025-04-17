@@ -74,7 +74,7 @@ const Nav = (props: any) => {
             <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Website</div>
             {
               pageData ? (
-                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%] w-full overflow-hidden overflow-ellipsis">{pageData?.metadata?.website ? pageData?.metadata?.website : "-"}</div>
+                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[110%] w-full overflow-hidden overflow-ellipsis">{pageData?.metadata?.website ? pageData?.metadata?.website : "-"}</div>
               ) : (
                 <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
               )
