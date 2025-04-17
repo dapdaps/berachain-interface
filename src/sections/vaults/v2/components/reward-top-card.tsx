@@ -13,12 +13,61 @@ import Link from 'next/link';
 const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type } = props;
 
+  const { tokenData: iBGTTokenData, loading: iBGTLoading } = useIBGT();
+  const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
+
+  const RewardTopCardTypeMap = useMemo<Record<RewardTopCardType, RewardTopCardItem>>(() => {
+    return {
+      [RewardTopCardType.iBgt]: {
+        type: RewardTopCardType.iBgt,
+        token: {
+          name: bera['ibgt'].name as string,
+          address: bera['ibgt'].address,
+          symbol: bera['ibgt'].symbol,
+          decimals: bera['ibgt'].decimals,
+        },
+        icon: "/images/vaults/v2/icon-ibgt.svg",
+        bg: "#FFB8B9",
+        title: "iBGT",
+        button: [
+          {
+            type: "primary",
+            text: "Stake",
+            link: "/hall?tab=ibgt",
+          },
+        ],
+      },
+      [RewardTopCardType.Bgt]: {
+        type: RewardTopCardType.Bgt,
+        token: {
+          name: "Bera Governance Token",
+          address: BGT_ADDRESS,
+          symbol: "BGT",
+          decimals: 18
+        },
+        icon: "/images/vaults/v2/icon-bgt.svg",
+        bg: "#FFF5A9",
+        title: "BGT",
+        button: [
+          {
+            type: "default",
+            text: "View all validators",
+            link: "/hall?tab=validators",
+          },
+          {
+            type: "primary",
+            text: "+ Boost",
+            link: `/bgt/validator?id=${BGTPageData?.top3EmittingValidators?.validators?.[0]?.id}`,
+          },
+        ],
+      },
+    };
+  }, [BGTPageData]);
+
   const currentItem = RewardTopCardTypeMap[type];
 
   const { address } = useAccount();
 
-  const { tokenData: iBGTTokenData, loading: iBGTLoading } = useIBGT();
-  const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
   const { data: balance, isLoading: balanceLoading } = useBalance({
     address: address,
     token: currentItem.token.address as `0x${string}`,
@@ -164,49 +213,3 @@ export interface RewardTopCardItem {
   token: { name: string; address: string; symbol: string; decimals: number; };
   button: { type?: "primary" | "default", text: string; link: string; }[];
 }
-
-export const RewardTopCardTypeMap: Record<RewardTopCardType, RewardTopCardItem> = {
-  [RewardTopCardType.iBgt]: {
-    type: RewardTopCardType.iBgt,
-    token: {
-      name: bera['ibgt'].name as string,
-      address: bera['ibgt'].address,
-      symbol: bera['ibgt'].symbol,
-      decimals: bera['ibgt'].decimals,
-    },
-    icon: "/images/vaults/v2/icon-ibgt.svg",
-    bg: "#FFB8B9",
-    title: "iBGT",
-    button: [
-      {
-        type: "primary",
-        text: "Stake",
-        link: "/hall?tab=ibgt",
-      },
-    ],
-  },
-  [RewardTopCardType.Bgt]: {
-    type: RewardTopCardType.Bgt,
-    token: {
-      name: "Bera Governance Token",
-      address: BGT_ADDRESS,
-      symbol: "BGT",
-      decimals: 18
-    },
-    icon: "/images/vaults/v2/icon-bgt.svg",
-    bg: "#FFF5A9",
-    title: "BGT",
-    button: [
-      {
-        type: "default",
-        text: "View all validators",
-        link: "/hall?tab=validators",
-      },
-      {
-        type: "primary",
-        text: "+ Boost",
-        link: "/bgt/validator?id=0x68b58f24be0e7c16df3852402e8475e8b3cc53a64cfaf45da3dbc148cdc05d30",
-      },
-    ],
-  },
-};
