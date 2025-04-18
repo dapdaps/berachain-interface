@@ -14,6 +14,8 @@ import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
+import { useCurrentValidator } from '@/sections/bgt/validator/hooks/use-current-validator';
 
 const BgtValidator = (props: any) => {
   const { id } = props;
@@ -24,6 +26,11 @@ const BgtValidator = (props: any) => {
 
   const { getValidators } = useValidators();
   const { loading, pageData, getPageData } = useValidator();
+  const { estReturnPerBGT, list: incentiveList } = useIncentive({
+    // @ts-ignore
+    vaults: pageData?.rewardAllocationWeights ?? []
+  });
+  const { currentValidator, currentValidatorLoading } = useCurrentValidator();
 
   const defaultId = searchParams.get("id");
   const [currentTab, setCurrentTab] = useState("gauges");
@@ -188,6 +195,10 @@ const BgtValidator = (props: any) => {
           loading={loading}
           Columns={Columns}
           vaults={pageData?.rewardAllocationWeights ?? []}
+          estReturnPerBGT={estReturnPerBGT}
+          incentiveList={incentiveList}
+          currentValidator={currentValidator}
+          currentValidatorLoading={currentValidatorLoading}
         />
       ) : (
         <BgtValidatorLaptop
@@ -201,6 +212,10 @@ const BgtValidator = (props: any) => {
           loading={loading}
           Columns={Columns}
           vaults={pageData?.rewardAllocationWeights ?? []}
+          estReturnPerBGT={estReturnPerBGT}
+          incentiveList={incentiveList}
+          currentValidator={currentValidator}
+          currentValidatorLoading={currentValidatorLoading}
         />
       )}
       <Delegate

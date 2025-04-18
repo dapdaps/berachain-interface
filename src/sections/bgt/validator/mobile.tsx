@@ -21,6 +21,9 @@ const BgtValidatorMobile = (props: any) => {
     operationType,
     handleClose,
     onBack,
+    estReturnPerBGT,
+    currentValidator,
+    currentValidatorLoading,
   } = props;
 
   const listData = currentTab === "gauges" ? vaults || [] : [];
@@ -45,7 +48,13 @@ const BgtValidatorMobile = (props: any) => {
     <div className="relative px-[12px] pt-[19px] pb-[80px] h-full overflow-y-auto">
       <Back onBack={onBack} />
       <Nav pageData={pageData} handleClick={handleClick} />
-      <Summary vaults={vaults} pageData={pageData} />
+      <Summary
+        vaults={vaults}
+        pageData={pageData}
+        estReturnPerBGT={estReturnPerBGT}
+        currentValidator={currentValidator}
+        currentValidatorLoading={currentValidatorLoading}
+      />
       {/* <SwitchTabs
         current={currentTab}
         tabs={Tabs}
