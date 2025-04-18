@@ -55,20 +55,20 @@ const RewardWeights = (props: any) => {
   };
 
   return (
-    <div className={clsx("w-[289px] bg-[rgba(0,0,0,0.06)] rounded-[10px] shrink-0 p-[16px]", className)}>
-      <div className="text-[#3D405A] text-center font-Montserrat text-[14px] font-medium mb-4">
+    <div className={clsx("w-[289px] md:w-full bg-[rgba(0,0,0,0.06)] rounded-[10px] shrink-0 p-[16px]", className)}>
+      <div className="text-[#3D405A] text-center md:text-left font-Montserrat text-[14px] md:text-[16px] md:text-black md:font-[600] font-medium mb-4">
         Reward Weights
       </div>
       
-      <div className="h-[200px]">
+      <div className="h-[200px] md:h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
+          <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <Pie
               data={list}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={80}
+              innerRadius={70}
+              outerRadius={100}
               fill="#8884d8"
               paddingAngle={2}
               cornerRadius={2}
