@@ -140,7 +140,17 @@ export default function useAction(): Action {
         status,
         transactionHash,
         sub_type: actionType.button === "Deposit" ? "Stake" : "Unstake",
-        tokens: [currentProtocol.token],
+        tokens:
+          currentProtocol.tokens.length === 1
+            ? currentProtocol.tokens
+            : [
+                {
+                  ...currentProtocol.token,
+                  symbol: currentProtocol.tokens
+                    .map((token: any) => token.symbol)
+                    .join("-")
+                }
+              ],
         amounts: [amount],
         extra_data: {}
       });
