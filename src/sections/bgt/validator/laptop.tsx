@@ -20,6 +20,8 @@ export default memo(function Validator(props: any) {
     Columns,
     vaults,
     estReturnPerBGT,
+    currentValidator,
+    currentValidatorLoading,
     incentiveList,
   } = props;
 
@@ -29,7 +31,13 @@ export default memo(function Validator(props: any) {
       <div className="relative w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <Back />
         <Nav pageData={pageData} handleClick={handleClick} />
-        <Summary vaults={vaults} pageData={pageData} estReturnPerBGT={estReturnPerBGT} />
+        <Summary
+          vaults={vaults}
+          pageData={pageData}
+          estReturnPerBGT={estReturnPerBGT}
+          currentValidator={currentValidator}
+          currentValidatorLoading={currentValidatorLoading}
+        />
         <Incentives className="mt-[58px]" list={incentiveList} loading={loading} />
         <div className="mt-[50px] flex justify-between items-start gap-[40px]">
           <FlexTable
