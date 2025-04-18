@@ -21,10 +21,6 @@ export default function useInfrared({
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
-  const { handleGetAmount } = useLpToAmount(
-    vaultAddress,
-    data?.initialData?.pool
-  );
 
   const onHandle = async () => {
     let toastId = toast?.loading({
@@ -145,12 +141,13 @@ export default function useInfrared({
       }
       const tx = await contract[type ? unStakeMethod : stakeMethod](...params);
       const { status, transactionHash } = await tx.wait();
-      const [amount0, amount1] = handleGetAmount(amount);
 
       addAction?.({
         type: "Staking",
         action: type ? "UnStake" : "Staking",
-        tokens: tokens.map((token: string) => ({ symbol: token })),
+        tokens: data?.initialData?.stake_token
+          ? [data.initialData.stake_token]
+          : [],
         amount: amount,
         template: "Infrared",
         status: status,
@@ -158,7 +155,7 @@ export default function useInfrared({
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
         sub_type: type ? "UnStake" : "Stake",
-        amounts: [amount0, amount1],
+        amounts: [amount],
         extra_data: {}
       });
 
