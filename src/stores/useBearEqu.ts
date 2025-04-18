@@ -9,6 +9,7 @@ export const useBearEqu = create(
       cloth: -1,
       car: -1,
       necklace: -1,
+      pet: -1,
       set: (params: any) => set(() => ({ ...params }))
     }),
     {

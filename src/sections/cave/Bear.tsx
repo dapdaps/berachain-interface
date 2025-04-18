@@ -8,10 +8,11 @@ interface Props {
     clothes: GameItem[];
     necklaces: GameItem[];
     items: GameItem[];
+    pets: GameItem[];
 }
 
 export default function Bear({
-    cars, hats, clothes, necklaces, items
+    cars, hats, clothes, necklaces, items, pets
 }: Props) {
     const { isChristmas } = useChristmas();
     const hasCars = useMemo(() => {
@@ -25,7 +26,6 @@ export default function Bear({
         return false
     }, [cars, items])
 
-    console.log('====hasCars', hasCars)
 
     return <div className=" scale-75 pointer-events-none absolute bottom-[5%] left-[50%] translate-x-[-50%] w-[395px] h-[359px] z-10">
         {!hasCars && <img src="/images/cave/bear/bear-empty.png" className="absolute left-0 top-[0px] max-w-[395px]" />}
@@ -37,9 +37,10 @@ export default function Bear({
 
 
         {!!hats.length && hats[0].checked && <img src="/images/cave/bear/hat/hat-1.png" className=" absolute w-[117px] left-[210px] top-[-30px]" />}
-        {!!hats.length && hats[1].checked && <img src="/images/cave/bear/hat/hat-2.png" className=" absolute w-[135px] left-[230px] top-[-35px]" />}
-        {!!hats.length && hats[2].checked && <img src="/images/cave/bear/hat/hat-3.png" className=" absolute w-[110px] left-[230px] top-[-20px]" />}
-        {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[120px] left-[230px] top-[-25px]" />}
+        {!!hats.length && hats[1].checked && <img src="/images/cave/bear/hat/hat-5.png" className=" absolute w-[120px] left-[232px] top-[-36px]" />}
+        {!!hats.length && hats[2].checked && <img src="/images/cave/bear/hat/hat-2.png" className=" absolute w-[135px] left-[230px] top-[-35px]" />}
+        {!!hats.length && hats[3].checked && <img src="/images/cave/bear/hat/hat-3.png" className=" absolute w-[110px] left-[230px] top-[-20px]" />}
+        {!!hats.length && hats[4].checked && <img src="/images/cave/bear/hat/hat-4.png" className=" absolute w-[120px] left-[230px] top-[-25px]" />}
 
 
         {!!clothes.length && clothes[0].checked && <img src="/images/cave/bear/cloth/cloth-1.png" className=" absolute w-[226px] left-[89px] top-[26px] z-20" />}
@@ -54,6 +55,7 @@ export default function Bear({
         {!!necklaces.length && necklaces[2].checked && <img src="/images/cave/bear/necklace/neck-3.png" className="absolute w-[110px] left-[205px] top-[16px] z-20" />}
         {!!necklaces.length && necklaces[3].checked && <img src="/images/cave/bear/necklace/neck-4.png" className="absolute w-[110px] left-[205px] top-[38px] z-20" />}
 
+        {!!pets.length && pets[0].checked && <img src="/images/cave/bear/pet/pet-1.png" className="absolute w-[124px] left-[80px] -top-[50px] z-20" />}
 
         {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-1.png" className="absolute left-[-170px] bottom-0 max-w-[757px]" />}
         {

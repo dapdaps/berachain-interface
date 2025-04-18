@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { HomeEarthContext } from "../context";
 import { useActivityStore } from "@/stores/useActivityStore";
+import useClickTracking from "@/hooks/use-click-tracking";
 
 const SPLIT_PIECES = 4;
 
 const Navigation = (props: any) => {
-  const {} = props;
+  const { } = props;
   const {
     isRainyDay,
     isDragging,
@@ -39,6 +40,7 @@ const Navigation = (props: any) => {
     mountainEndRotationRef,
     mountainRotation
   } = useContext(HomeEarthContext);
+  const { handleReportWithoutDebounce } = useClickTracking();
   const router = useRouter();
   const { isDefaultTheme, themeConfig } = useActivityStore();
   const entries = isDefaultTheme() ? ENTRIES : BADDIES_ENTRIES;
@@ -53,6 +55,13 @@ const Navigation = (props: any) => {
 
   const handleNavigation = (item: any) => {
     if (item.disabled) return;
+    switch (item?.path) {
+      case "/cave":
+        handleReportWithoutDebounce("1010-010")
+        break;
+      default:
+        break;
+    }
     router.push(item.path);
   };
 
@@ -102,11 +111,11 @@ const Navigation = (props: any) => {
     const mountainRotate =
       mountainStartRotationRef.current +
       (info.point.x - navigationStartPointPositionRef.current.x) *
-        (sensitivity * 0.5);
+      (sensitivity * 0.5);
     const cloudRotate =
       cloudStartRotationRef.current +
       (info.point.x - navigationStartPointPositionRef.current.x) *
-        (sensitivity * 0.5 * 0.5);
+      (sensitivity * 0.5 * 0.5);
     navigationRotation.set(navigationRotate);
     mountainRotation.set(mountainRotate);
     cloudRotation.set(cloudRotate);
@@ -161,10 +170,9 @@ const Navigation = (props: any) => {
               style={{
                 left: "50%",
                 height: size / 2,
-                transform: `translateX(-50%) rotate(${
-                  (360 / SPLIT_PIECES) * idx +
+                transform: `translateX(-50%) rotate(${(360 / SPLIT_PIECES) * idx +
                   (360 / (entries.length * SPLIT_PIECES)) * i
-                }deg)`,
+                  }deg)`,
                 // backgroundColor: "rgba(0, 0, 0, 0.1)",
                 ...(item.width && { width: item.width })
               }}
@@ -293,7 +301,6 @@ export const ENTRIES: any = [
     sort: 7,
     name: "Cave",
     disabled: false,
-    disabledIcon: "/images/home-earth/cave-lock.svg",
     icon: "/images/home-earth/entry-cave.svg",
     signpost: "/images/home-earth/signpost-cave.svg",
     path: "/cave",

@@ -117,8 +117,8 @@ const PartList = [
     btnText: "Bera Cave",
     link: "/cave",
     ArrowIcon: caveArrowIcon,
-    disabled: true,
-    disabledIcon: "cave-lock.svg"
+    // disabled: true,
+    // disabledIcon: "cave-lock.svg"
   },
   {
     // bgt
@@ -236,7 +236,7 @@ const MapItem = ({
 
 const MapModal = () => {
   const store: any = useMapModalStore();
-  const { handleReport } = useClickTracking();
+  const { handleReportWithoutDebounce } = useClickTracking();
   const christmas = useChristmas();
 
   const modalRef = useRef<any>(null);
@@ -287,25 +287,26 @@ const MapModal = () => {
     }
     switch (link) {
       case "/dapps":
-        handleReport("1010-001-001");
+        handleReportWithoutDebounce("1010-001-001");
         break;
       case "/marketplace":
-        handleReport("1010-001-003");
+        handleReportWithoutDebounce("1010-001-003");
         break;
       case "/bridge":
-        handleReport("1010-001-004");
+        handleReportWithoutDebounce("1010-001-004");
         break;
       case "/portfolio":
-        handleReport("1010-001-005");
+        handleReportWithoutDebounce("1010-001-005");
         break;
       case "/cave":
-        handleReport("1010-001-002");
+        handleReportWithoutDebounce("1010-001-002");
         break;
       case "/earn":
-        handleReport("1010-001-006");
+        handleReportWithoutDebounce("1010-001-006");
         break;
       case "/vaults":
-        handleReport("1022-001-002");
+        handleReportWithoutDebounce("1022-001-002");
+        break;
       default:
         break;
     }

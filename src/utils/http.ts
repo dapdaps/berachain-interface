@@ -127,13 +127,14 @@ const getWithoutActive = async (
   return res.json() as any;
 };
 
-const post = async (url: string, data?: object) => {
+const post = async (url: string, data?: object, options?: object) => {
   const tokens = JSON.parse(window.sessionStorage.getItem(AUTH_TOKENS) || "{}");
   const res = await fetch(getUrl(url), {
     method: "POST",
     headers: {
       Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ""}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      ...(options?.headers ?? {})
     },
     body: data ? JSON.stringify(data) : undefined
   });

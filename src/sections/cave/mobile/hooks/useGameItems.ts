@@ -15,15 +15,15 @@ interface GameItem {
 }
 
 const categoryToModuleType: Record<string, ModuleType> = {
-  cars: 'cars',
-  hats: 'hats',
-  jackets: 'jackets',
-  necklaces: 'necklaces',
+  Vehicle: 'cars',
+  Hat: 'hats',
+  Clothes: 'jackets',
+  Necklace: 'necklaces',
+  Pet: 'pets'
 };
 
-const generateImageUrls = (category: string, level: number, isActive: boolean) => {
-  const basePath = `/images/mobile/cave/${category}/${category}-${level}`;
-  
+const generateImageUrls = (category: string, level: number, isActive: boolean, name: string) => {
+  const basePath = name === "Wool Hat" ? "/images/mobile/cave/hats/hats-5" : `/images/mobile/cave/${category}/${category}-${level}`;
   return {
     icon: `${basePath}${isActive ? '-active' : ''}.png`,
     popoverIcon: `${basePath}-m.png`,
@@ -37,13 +37,13 @@ export const useGameItems = ({ round }: { round: number }) => {
   const [error, setError] = useState<Error | null>(null);
   const [moduleConfigs, setModuleConfigs] = useState<Record<ModuleType, ModuleConfig>>(ModuleConfigs);
 
-  const { address }  = useAccount();
+  const { address } = useAccount();
   const toast = useToast();
 
   const fetchGameItems = async () => {
     try {
       setLoading(true);
-      const response = await get(`/api/beracave/items`);
+      const response = await get(`/api/beracave/items/${round}`);
       const response2 = await get(`/api/beracave/items/${address || ''}/${round}`)
       if (response.code !== 0 || response2.code !== 0) return
 
@@ -55,9 +55,7 @@ export const useGameItems = ({ round }: { round: number }) => {
         acc[item.category].push(item);
         return acc;
       }, {});
-
       const newConfigs: Record<ModuleType, ModuleConfig> = { ...ModuleConfigs };
-
       Object.entries(groupedByCategory).forEach(([category, items]: any) => {
         const moduleType = categoryToModuleType[category] as ModuleType;
 
@@ -66,9 +64,10 @@ export const useGameItems = ({ round }: { round: number }) => {
           items: items.map((item: any, index: any) => {
 
             const { icon, popoverIcon } = generateImageUrls(
-              item.category,
+              moduleType,
               item.level,
-              item.pc_item || response2?.data?.findIndex((_item: any) => _item.name === item.name) > -1 
+              item.pc_item || response2?.data?.findIndex((_item: any) => _item.name === item.name) > -1,
+              item.name
             );
 
             return {
@@ -95,7 +94,7 @@ export const useGameItems = ({ round }: { round: number }) => {
 
   useEffect(() => {
     if (!address) {
-      return ;
+      return;
     }
 
     fetchGameItems();
