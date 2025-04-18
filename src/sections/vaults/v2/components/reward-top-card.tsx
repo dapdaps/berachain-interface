@@ -9,10 +9,12 @@ import { useAccount, useBalance } from 'wagmi';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import Loading from '@/components/loading';
 import Link from 'next/link';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type } = props;
 
+  const isMobile = useIsMobile();
   const { tokenData: iBGTTokenData, loading: iBGTLoading } = useIBGT();
   const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
 
@@ -108,84 +110,99 @@ const RewardTopCard = (props: RewardTopCardProps) => {
 
   return (
     <div
-      className={clsx('h-[160px] shrink-0 w-full p-[24px_22px_18px_24px] rounded-[10px] border border-black', className)}
+      className={clsx('h-[160px] md:h-[115px] shrink-0 w-full p-[24px_22px_18px_24px] md:p-[8px_10px_10px] rounded-[10px] border border-black', className)}
       style={{
         backgroundColor: currentItem.bg,
       }}
     >
-      <div className="flex justify-between">
+      <div className="flex justify-between md:flex-col">
         <div className="flex gap-[7px] relative">
           <img
             src={currentItem.icon}
             alt=""
-            className="absolute w-[107px] h-[100px] object-contain object-center shrink-0 -translate-y-[40px]"
+            className="absolute w-[107px] md:w-[38px] h-[100px] md:h-[36px] object-contain object-center shrink-0 -translate-y-[40px] md:-translate-y-[15px] md:-translate-x-[15px]"
           />
-          <div className="pl-[115px] text-black font-CherryBomb text-[32px] font-normal leading-[90%]">
+          <div className="pl-[115px] md:pl-[28px] text-black font-CherryBomb text-[32px] md:text-[18px] font-normal leading-[90%]">
             <div className="">
               {currentItem.title}
             </div>
-            <div className="text-[16px] font-[400] mt-[7px]">
-              Balance: {
-                balanceLoading ? (
-                  <Loading size={16} />
-                ) : numberFormatter(balance?.formatted, 2, true, { isShort: true, isShortUppercase: true })
-              }
-            </div>
+            {
+              !isMobile && (
+                <div className="text-[16px] md:text-[10px] font-[400] mt-[7px] md:mt-0">
+                  Balance: {
+                  balanceLoading ? (
+                    <Loading size={isMobile ? 10 : 16} />
+                  ) : numberFormatter(balance?.formatted, 2, true, { isShort: true, isShortUppercase: true })
+                }
+                </div>
+              )
+            }
           </div>
         </div>
-        <div className="text-black text-end font-CherryBomb text-[32px] font-normal leading-[90%]">
+        <div className="text-black text-end font-CherryBomb md:font-Montserrat text-[32px] md:text-[12px] font-normal md:font-[500] leading-[90%] md:flex md:flex-row-reverse md:justify-between md:mt-[12px]">
           <div className="">
             {
               aprLoading ? (
-                <Skeleton height={28} width={130} borderRadius={6} />
+                isMobile ? (
+                  <Loading size={12} />
+                ) : (
+                  <Skeleton height={28} width={130} borderRadius={6} />
+                )
               ) : apr
             }
           </div>
-          <div className="text-[16px] mt-[7px] font-[400]">
+          <div className="text-[16px] md:text-[12px] mt-[7px] md:mt-0 font-[400]">
             {aprLabel}
           </div>
         </div>
       </div>
       <div className="flex justify-between items-center mt-[15px]">
-        <div className="flex items-center gap-[10px]">
-          {
-            rewardLoading ? (
-              <Skeleton height={30} width={30} borderRadius={type === RewardTopCardType.iBgt ? 15 : 6} />
-            ) : (
-              <img
-                src={rewardIcon}
-                alt=""
-                className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-[6px]", type === RewardTopCardType.iBgt && "rounded-full")}
-              />
-            )
-          }
-          <div className="text-black font-Montserrat text-[16px] font-[700] leading-[120%]">
-            <div className="text-[14px] font-[500]">
-              {rewardLabel}:
-            </div>
-            <div className="">
+        {
+          !isMobile && (
+            <div className="flex items-center gap-[10px]">
               {
                 rewardLoading ? (
-                  <Skeleton height={19} width={120} borderRadius={6} />
-                ) : reward
+                  <Skeleton height={30} width={30} borderRadius={type === RewardTopCardType.iBgt ? 15 : 6} />
+                ) : (
+                  <img
+                    src={rewardIcon}
+                    alt=""
+                    className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-[6px]", type === RewardTopCardType.iBgt && "rounded-full")}
+                  />
+                )
               }
+              <div className="text-black font-Montserrat text-[16px] font-[700] leading-[120%]">
+                <div className="text-[14px] font-[500]">
+                  {rewardLabel}:
+                </div>
+                <div className="">
+                  {
+                    rewardLoading ? (
+                      <Skeleton height={19} width={120} borderRadius={6} />
+                    ) : reward
+                  }
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="shrink-0 flex items-center gap-[12px] justify-end">
+          )
+        }
+        <div className="shrink-0 flex items-center gap-[12px] justify-end md:w-full">
           {
-            currentItem.button.map((item, index) => (
-              <Link
-                key={index}
-                href={item.link}
-                className={clsx(
-                  'flex items-center justify-center gap-[5px] min-w-[127px] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
-                  item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
-                )}
-              >
-                {item.text}
-              </Link>
-            ))
+            currentItem.button.map((item, index) => {
+              if (isMobile && item.type === 'default') return null;
+              return (
+                <Link
+                  key={index}
+                  href={item.link}
+                  className={clsx(
+                    'flex items-center justify-center gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
+                    item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
+                  )}
+                >
+                  {item.text}
+                </Link>
+              );
+            })
           }
         </div>
       </div>

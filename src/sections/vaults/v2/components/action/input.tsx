@@ -60,7 +60,7 @@ const ActionInput = (props: any) => {
           onNumberChange={onChange}
           placeholder="0"
           className={clsx(
-            "flex-1 h-[26px] text-[20px] font-Montserrat !bg-[unset]",
+            "flex-1 w-0 h-[26px] text-[20px] font-Montserrat !bg-[unset]",
             inputError ? "text-[#FF3F3F]" : "text-black"
           )}
         />

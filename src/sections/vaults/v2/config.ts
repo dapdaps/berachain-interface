@@ -277,6 +277,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^NOME$/i, label: "NOME", icon: getTokenLogo("NOME"), sort: 10 },
     { reg: /^usdc.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e"), sort: 11 }
   ],
+  // 👇Useless anymore
   [FILTER_KEYS.PROTOCOLS]: [
     { reg: /^(Hub|Bex)$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },
     {
@@ -320,6 +321,7 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       sort: 11
     }
   ],
+  // 👇️Useless anymore
   [FILTER_KEYS.CREATORS]: [
     { reg: /^Bex$/i, label: "Bex", icon: getDappLogo("Bex"), sort: 1 },
     {

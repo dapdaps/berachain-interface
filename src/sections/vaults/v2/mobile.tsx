@@ -15,6 +15,8 @@ import { useList } from "@/sections/vaults/v2/hooks/list";
 import FilterModal from "@/sections/vaults/v2/components/filter/modal";
 import Loading from "@/components/loading";
 import { useRef } from "react";
+import { Description, Statistics, Tips } from '@/sections/vaults/v2/components/aggregating';
+import RewardTopCard from '@/sections/vaults/v2/components/reward-top-card';
 
 const VaultsV2Mobile = (props: any) => {
   const {} = props;
@@ -29,27 +31,42 @@ const VaultsV2Mobile = (props: any) => {
         ref={containerRef}
         className="relative w-full h-full overflow-y-auto pb-[64px] bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover"
       >
-        <div className="pt-[23px] flex justify-center items-center">
+        <div className="pt-[23px] px-[16px] flex justify-center items-center">
           <PageBack className="absolute left-[17px]" />
-          <div className="w-[200px] h-[50px] flex justify-center items-center gap-[10px] mx-auto shrink-0 rounded-[4px] border border-[#000] bg-[#E9B965] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] text-[#000] text-center font-[400] font-CherryBomb text-[24px] leading-[90%]">
+          <div className="w-full h-[50px] flex justify-center items-center gap-[10px] mx-auto shrink-0 text-white text-center font-[400] font-CherryBomb text-[30px] leading-[90%]">
             <div className="">Vaults</div>
-            <div className="flex justify-center items-center w-[24px] h-[24px] shrink-0 bg-[#edc784] border border-[#bb9451] rounded-[6px] text-black text-right font-Montserrat text-[12px] font-[500] leading-[90%]">
+            {/*<div className="flex justify-center items-center w-[24px] h-[24px] shrink-0 bg-[#edc784] border border-[#bb9451] rounded-[6px] text-black text-right font-Montserrat text-[12px] font-[500] leading-[90%]">
               {list.listLoading ? <Loading size={12} /> : list.listData.length}
-            </div>
+            </div>*/}
           </div>
+          <Tips className="absolute right-[17px]" />
         </div>
 
-        <div className="w-full pl-[8px] mt-[27px]">
+        <Description className="mt-[12px] text-center text-white font-Montserrat text-[12px] font-[500] leading-[120%]" />
+
+        <Statistics className="mt-[20px]" />
+
+        <div className="w-full pl-[8px] md:pl-0 mt-[27px] md:mt-[17px]">
           <Swiper
             modules={[Autoplay]}
             autoplay={{ delay: 3000 }}
             loop={true}
-            className="w-full h-[157px]"
-            spaceBetween={11}
-            slidesPerView={1.2}
+            className="w-full h-[130px]"
+            spaceBetween={0}
+            slidesPerView={2}
             updateOnWindowResize={true}
           >
             <SwiperSlide>
+              <div className="pl-[10px] pt-[10px]">
+                <RewardTopCard type={1} />
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="pl-[10px] pt-[10px]">
+                <RewardTopCard type={0} />
+              </div>
+            </SwiperSlide>
+            {/*<SwiperSlide>
               <TopCard
                 type={0}
                 className="!px-[15px]"
@@ -69,12 +86,15 @@ const VaultsV2Mobile = (props: any) => {
                 className="!px-[15px]"
                 pool={list.listDataHotStrategy}
               />
-            </SwiperSlide>
+            </SwiperSlide>*/}
           </Swiper>
         </div>
 
-        <Card className="w-full !rounded-[18px] !px-[12px] mt-[17px]">
+        <div className="px-[12px] mt-[14px]">
           <Dashboard />
+        </div>
+
+        <Card className="w-full !rounded-[18px] !px-[12px] mt-[16px] !pt-[13px]">
           <VaultsTableMobile />
         </Card>
 

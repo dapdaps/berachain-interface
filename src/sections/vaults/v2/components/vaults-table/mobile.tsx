@@ -12,6 +12,7 @@ import LazyImage from '@/components/layz-image';
 import Skeleton from 'react-loading-skeleton';
 import Search from '@/sections/vaults/v2/components/filter/search';
 import Empty from '@/components/empty';
+import Loading from '@/components/loading';
 
 const VaultsTableMobile = (props: any) => {
   const { className } = props;
@@ -22,7 +23,8 @@ const VaultsTableMobile = (props: any) => {
     listOrderKeys,
     listFilterSelectedLength,
     toggleListOrder,
-    toggleListFilterVisible
+    toggleListFilterVisible,
+    listData
   } = useVaultsV2Context();
 
   const [isExpanded, setIsExpanded] = useState<number>();
@@ -33,8 +35,8 @@ const VaultsTableMobile = (props: any) => {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center gap-[10px] mt-[9px]">
-        <div className="flex items-center gap-[8px] pl-[8px]">
+      <div className="flex justify-between items-center gap-[10px]">
+        {/*<div className="flex items-center gap-[8px] pl-[8px]">
           <div className="text-[#000] text-center font-Montserrat text-[12px] font-[600] leading-[100%]">Rank</div>
           <div className="flex items-center gap-[5px]">
             {
@@ -64,13 +66,22 @@ const VaultsTableMobile = (props: any) => {
               ))
             }
           </div>
+        </div>*/}
+        <div className="text-black text-right font-Montserrat text-[20px] font-bold leading-[90%] flex items-center gap-[7px]">
+          <div className="">
+            Vaults
+          </div>
+          <div className="flex justify-center items-center min-w-[24px] px-[4px] h-[24px] shrink-0 border border-[#cccabc] rounded-[5px] text-black text-right font-Montserrat text-[12px] font-[500] leading-[90%]">
+            {listLoading ? <Loading size={12} /> : listData.length}
+          </div>
         </div>
         <button
           type="button"
-          className="flex items-center w-[88px] h-[26px] flex-shrink-0 rounded-[6px] border-[1px] border-[rgba(0,0,0,.2)] text-[#000] text-center font-Montserrat text-[12px] font-[600] leading-[100%]"
+          className="flex items-center pl-[25px] pr-[17px] h-[40px] flex-shrink-0 rounded-[10px] border border-black bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-[600] leading-[100%]"
           onClick={() => toggleListFilterVisible()}
         >
-          <div className="flex-1 flex items-center gap-[4px] pl-[4px]">
+          Filter {listFilterSelectedLength}
+          {/*<div className="flex-1 flex items-center gap-[4px] pl-[4px]">
             <LazyImage src="/images/vaults/v2/filter.svg" width={14} height={14} fallbackSrc="/assets/tokens/default_icon.png" />
             <div className="">
               Filter
@@ -80,7 +91,7 @@ const VaultsTableMobile = (props: any) => {
             className="flex justify-center items-center w-[26px] h-[26px] flex-shrink-0 rounded-[6px] border-[1px] border-[#000] bg-[#FDD54C] text-[#000] text-center font-Montserrat text-[12px] font-[600] leading-[100%]"
           >
             {listFilterSelectedLength}
-          </div>
+          </div>*/}
         </button>
       </div>
       <div className="flex mt-[9px]">
@@ -102,8 +113,8 @@ const VaultsTableMobile = (props: any) => {
                 className="p-[16px_14px_9px_14px]"
                 onClick={() => toggleExpand(index)}
               >
-                <div className="flex justify-between items-center gap-[10px]">
-                  <Vaults isPool={true} record={record} index={index} className="flex-1 w-0" />
+                <div className="w-full flex justify-between items-center gap-[10px]">
+                  <Vaults isPool={true} record={record} index={index} className="flex-1 !w-0" />
                   <DepositButton record={record} index={index} className="shrink-0 !bg-[#FFDC50]" />
                 </div>
                 <div className="flex justify-between items-center gap-[10px] mt-[13px]">
