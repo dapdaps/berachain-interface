@@ -6,13 +6,13 @@ import StakeModal from "./components/stake-modal";
 import TokenCard from './components/token-card';
 import usePage, { EnabledLstItem } from './hooks/use-page';
 import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'; // 确保引入样式
 
 
 export default memo(function Laptop() {
   const {
     wbtcToken,
-    bedrockData,
+    bedrockUniBTCData,
+    bedrockBrBTCData, 
     selectedToken,
     setSelectedToken,
     totalStakedAmountUsd,
@@ -21,6 +21,9 @@ export default memo(function Laptop() {
     handleStakeModal,
     isDataLoading
   } = usePage()
+
+  const availableWbtc = wbtcToken || bedrockUniBTCData?.sourceToken || bedrockBrBTCData?.sourceToken;
+  const availableAmount = bedrockUniBTCData?.availableAmount || '0';
 
   return (
     <div>
@@ -51,10 +54,12 @@ export default memo(function Laptop() {
                 btcLstComposeDataByHooks.filter(v => !v.disabled).map((item, index) => {
                   const enabledItem = item as EnabledLstItem;
                   return (
-                    <div key={enabledItem.name} className="flex items-center gap-[12px]">
-                      <img src={enabledItem.targetToken.icon} className="w-[36px] h-[36px] rounded-full" />
+                    <div key={`${enabledItem.name}-${index}`} className="flex items-center gap-[12px]">
+                      {enabledItem.targetToken?.icon && (
+                        <img src={enabledItem.targetToken.icon} className="w-[36px] h-[36px] rounded-full" />
+                      )}
                       <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
-                        {balanceShortFormated(enabledItem.stakedAmount, 3)} {enabledItem.targetToken.symbol}
+                        {balanceShortFormated(enabledItem.stakedAmount, 3)} {enabledItem.targetToken?.symbol}
                       </div>
                     </div>
                   );
@@ -74,9 +79,11 @@ export default memo(function Laptop() {
                   </>
                 ) : (
                   <>
-                    <img src={wbtcToken.icon} className="w-[36px] h-[36px] overflow-hidden" />
+                    {availableWbtc?.icon && (
+                      <img src={availableWbtc.icon} className="w-[36px] h-[36px] overflow-hidden" />
+                    )}
                     <div className="text-black font-Montserrat text-[16px] font-semibold leading-[100%]">
-                      {balanceShortFormated(bedrockData.availableAmount, 3)} WBTC
+                      {balanceShortFormated(availableAmount, 3)} WBTC
                     </div>
                   </>
                 )}
@@ -98,7 +105,12 @@ export default memo(function Laptop() {
             ))
           ) : (
             btcLstComposeDataByHooks.length && btcLstComposeDataByHooks.map((item, index) => (
-              <TokenCard wbtc={wbtcToken} item={item} key={item.name} onClick={() => handleStakeModal(item)} />
+              <TokenCard 
+                wbtc={availableWbtc} 
+                item={item} 
+                key={`${item.name}-${index}`} 
+                onClick={() => handleStakeModal(item)} 
+              />
             ))
           )}
         </div>

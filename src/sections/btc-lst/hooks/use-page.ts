@@ -11,10 +11,12 @@ interface LstConfigItem {
   hookData?: LstHookResult;
   disabled: boolean;
   dappIcon: string;
+  displayName?: string;
 }
 
 interface DisabledLstItem {
   name: string;
+  displayName?: string;
   disabled: true;
   dappIcon: string;
   sourceToken: Token;
@@ -23,6 +25,7 @@ interface DisabledLstItem {
 
 export interface EnabledLstItem extends LstHookResult {
   name: string;
+  displayName?: string;
   disabled: false;
   dappIcon: string;
   sourceToken: Token;
@@ -41,18 +44,28 @@ export default function usePage() {
   const [selectedToken, setSelectedToken] = useState<EnabledLstItem | null>(null)
   const router = useRouter();
 
-  const bedrockData = useBedrock();
+  const bedrockUniBTCData = useBedrock('uniBTC');
+  const bedrockBrBTCData = useBedrock('brBTC');
   const etherFiData = useEtherFi();
 
   const isDataLoading = useMemo(() => {
-    return bedrockData?.getBalanceLoading || etherFiData?.getBalanceLoading;
-  }, [bedrockData?.getBalanceLoading, etherFiData?.getBalanceLoading]);
-
+    return bedrockUniBTCData?.getBalanceLoading || 
+           bedrockBrBTCData?.getBalanceLoading || 
+           etherFiData?.getBalanceLoading;
+  }, [bedrockUniBTCData?.getBalanceLoading, bedrockBrBTCData?.getBalanceLoading, etherFiData?.getBalanceLoading]);
 
   const lstConfig = useMemo<LstConfigItem[]>(() => [
     {
       name: 'bedrock',
-      hookData: bedrockData,
+      displayName: 'Bedrock uniBTC',
+      hookData: bedrockUniBTCData,
+      disabled: false,
+      dappIcon: '/images/lst/bedrock.png'
+    },
+    {
+      name: 'bedrock',
+      displayName: 'Bedrock brBTC',
+      hookData: bedrockBrBTCData,
       disabled: false,
       dappIcon: '/images/lst/bedrock.png'
     },
@@ -65,18 +78,19 @@ export default function usePage() {
     { name: 'pumpBTC', disabled: true, dappIcon: '/images/lst/pumpBTC.png' },
     { name: 'solv', disabled: true, dappIcon: '/images/lst/solv.png' },
     { name: 'stakestone', disabled: true, dappIcon: '/images/lst/stakestone.png' },
-    { name: 'lombard', disabled: true, dappIcon: '/images/lst/lombard.png' },
-  ], [bedrockData, etherFiData]);
+    // { name: 'lombard', disabled: true, dappIcon: '/images/lst/lombard.png' },
+  ], [bedrockUniBTCData, bedrockBrBTCData, etherFiData]);
 
   const wbtcToken = useMemo(() => {
-    return bedrockData?.sourceToken
-  }, [bedrockData]);
+    return bedrockUniBTCData?.sourceToken
+  }, [bedrockUniBTCData]);
 
   const btcLstComposeDataByHooks = useMemo<LstItem[]>(() => {
     return lstConfig.map(lst => {
       if (lst.disabled) {
         return {
           name: lst.name,
+          displayName: lst.displayName,
           disabled: true,
           dappIcon: lst.dappIcon,
           sourceToken: wbtcToken,
@@ -89,6 +103,7 @@ export default function usePage() {
       return {
         ...hookData,
         name: lst.name,
+        displayName: lst.displayName,
         disabled: false,
         dappIcon: lst.dappIcon,
         apy: 'Soon'
@@ -124,7 +139,8 @@ export default function usePage() {
   return {
     isDataLoading,
     wbtcToken,
-    bedrockData,
+    bedrockUniBTCData,
+    bedrockBrBTCData,
     selectedToken,
     setSelectedToken,
     totalStakedAmountUsd,
@@ -132,5 +148,4 @@ export default function usePage() {
     handleBridge,
     handleStakeModal,
   }
-
 }
