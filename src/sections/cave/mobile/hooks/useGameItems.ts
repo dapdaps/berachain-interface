@@ -23,7 +23,7 @@ const categoryToModuleType: Record<string, ModuleType> = {
 
 const generateImageUrls = (category: string, level: number, isActive: boolean) => {
   const basePath = `/images/mobile/cave/${category}/${category}-${level}`;
-  
+
   return {
     icon: `${basePath}${isActive ? '-active' : ''}.png`,
     popoverIcon: `${basePath}-m.png`,
@@ -37,13 +37,13 @@ export const useGameItems = ({ round }: { round: number }) => {
   const [error, setError] = useState<Error | null>(null);
   const [moduleConfigs, setModuleConfigs] = useState<Record<ModuleType, ModuleConfig>>(ModuleConfigs);
 
-  const { address }  = useAccount();
+  const { address } = useAccount();
   const toast = useToast();
 
   const fetchGameItems = async () => {
     try {
       setLoading(true);
-      const response = await get(`/api/beracave/items`);
+      const response = await get(`/api/beracave/items/${round}`);
       const response2 = await get(`/api/beracave/items/${address || ''}/${round}`)
       if (response.code !== 0 || response2.code !== 0) return
 
@@ -68,7 +68,7 @@ export const useGameItems = ({ round }: { round: number }) => {
             const { icon, popoverIcon } = generateImageUrls(
               item.category,
               item.level,
-              item.pc_item || response2?.data?.findIndex((_item: any) => _item.name === item.name) > -1 
+              item.pc_item || response2?.data?.findIndex((_item: any) => _item.name === item.name) > -1
             );
 
             return {
@@ -95,7 +95,7 @@ export const useGameItems = ({ round }: { round: number }) => {
 
   useEffect(() => {
     if (!address) {
-      return ;
+      return;
     }
 
     fetchGameItems();

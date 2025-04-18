@@ -1,7 +1,10 @@
 import PageBack from "@/components/back";
 import { SceneContext } from '@/context/scene';
 import { useChristmas } from '@/hooks/use-christmas';
-import useCollect, { cloth_cateogries, giftBoxTips, hat_categories, sockTips } from "@/sections/cave/useCollect";
+import useClickTracking from '@/hooks/use-click-tracking';
+import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
+import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
+import useCollect, { cloth_cateogries, GameItem, giftBoxTips, hat_categories, sockTips } from "@/sections/cave/useCollect";
 import { useBearEqu } from "@/stores/useBearEqu";
 import { useCavePhotoList } from "@/stores/useCavePhotoList";
 import { useCaveWelcome } from "@/stores/useCaveWelcome";
@@ -9,16 +12,14 @@ import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useAccount } from 'wagmi';
+import AirDropTime from "./AirDropTime";
 import Bear from "./Bear";
 import CheckBox from "./CheckBox";
 import ImportEquipments from "./ImportEquipments";
 import NftModal from "./NftModal";
 import Tips from "./Tip";
-import Welcome from "./Welcome";
-import TransferItemsModal from '@/sections/cave/components/TransferItems/Modal';
-import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
-import AirDropTime from "./AirDropTime";
 import { AirDropHistoryData, AirDropRound, useAirdrop } from "./useAirdrop";
+import Welcome from "./Welcome";
 
 const hatPositions = [{
     width: 102,
@@ -55,6 +56,28 @@ const carsSize = [{
     height: 102,
     marginLeft: -13
 }]
+const petsPosition = [{
+    left: 91,
+    top: 102
+}, {
+    left: 244,
+    top: 79
+}, {
+    left: 95,
+    top: 238
+}, {
+    left: 249,
+    top: 210
+}]
+const petsSize = [{
+    width: 93
+}, {
+    width: 104
+}, {
+    width: 84
+}, {
+    width: 94
+},]
 
 const stakeDapps = [{
     icon: '/images/dapps/infrared.svg',
@@ -66,24 +89,14 @@ const lendDapps = [{
     icon: '/images/dapps/dolomite.svg',
     name: 'Dolomite',
     link: '/lending/dolomite'
-}, 
-// {
-//     icon: '/images/dapps/bend.svg',
-//     name: 'Bend',
-//     link: '/lending/bend'
-// }
+},
 ]
 
 const swapDapps = [{
     icon: '/images/dapps/kodiak.svg',
     name: 'Kodiak',
     link: '/dex/kodiak'
-}, 
-// {
-//     icon: '/images/dapps/bex.svg',
-//     name: 'Bex',
-//     link: '/dex/bex'
-// }, 
+},
 {
     icon: '/images/dapps/ooga-booga.svg',
     name: 'Ooga Booga',
@@ -96,35 +109,70 @@ const bridgeDapps = [{
     link: '/bridge'
 }]
 
+const KODIAK_DAPP = {
+    icon: '/images/dapps/kodiak.svg',
+    name: 'Kodiak',
+    link: '/dex/kodiak'
+}
+const BEX_DAPP = {
+    icon: '/images/dapps/bex.svg',
+    name: 'Bex',
+    link: '/dex/bex'
+}
+const OOGA_BOOGA_DAPP = {
+    icon: '/images/dapps/ooga-booga.svg',
+    name: 'Ooga Booga',
+    link: '/dex/ooga-booga'
+}
+const DOLOMITE_DAPP = {
+    icon: '/images/dapps/dolomite.svg',
+    name: 'Dolomite',
+    link: '/lending/dolomite'
+}
+const BERABORROW_DAPP = {
+    icon: '/images/dapps/beraborrow.png',
+    name: 'Beraborrow',
+    link: '/lending/beraborrow'
+}
+const BINTENT_DAPP = {
+    icon: '/images/home-earth/signpost-bintent.png',
+    name: 'Bintent',
+    link: '/lending/beraborrow'
+}
+
 
 const hatTips = [{
     name: 'Baseball Cap',
     content: '5 transactions, at least $1+ for each.',
     img: '/images/cave/hat/hat-1-1.png',
-    link: '/bridge',
-    btnText: 'Bridge',
-    dapps: bridgeDapps,
+    link: '/dex/kodiak',
+    btnText: 'Swap',
 }, {
     name: 'Basic Helmet',
     content: '10 transactions, at least $10+ for each.',
     img: '/images/cave/hat/hat-2-2.png',
-    link: '/bridge',
-    btnText: 'Bridge',
-    dapps: bridgeDapps,
+    link: '/dex/ooga-booga',
+    btnText: 'Swap',
 }, {
     name: 'Flying Helmet',
     content: '50 transactions, at least $100+ for each.',
     img: '/images/cave/hat/hat-3-3.png',
     link: '/bridge',
-    btnText: 'Bridge',
-    dapps: bridgeDapps,
+    btnText: 'Swap',
+    dapps: [KODIAK_DAPP, BEX_DAPP, OOGA_BOOGA_DAPP],
 }, {
     name: 'Motor Helmet',
     content: '200 transactions, at least $100+ for each.',
     img: '/images/cave/hat/hat-4-4.png',
     link: '/bridge',
-    btnText: 'Bridge',
-    dapps: bridgeDapps,
+    btnText: 'Swap',
+    dapps: [KODIAK_DAPP, BEX_DAPP, OOGA_BOOGA_DAPP],
+}, {
+    name: 'Wool Hat',
+    content: 'Swap over 5 transactions, at least $10+ for each ',
+    img: '/images/cave/hat/hat-5-5.png',
+    link: '/dex/bex',
+    btnText: 'Swap',
 }]
 
 const clothTips = [{
@@ -132,58 +180,58 @@ const clothTips = [{
     content: '5 transaction, at least $1+ for each.',
     img: '/images/cave/clothing/cloth-1-1.png',
     link: '/swap',
-    btnText: 'Swap',
-    dapps: swapDapps,
+    btnText: 'Liquidty',
+    dapps: [KODIAK_DAPP, BEX_DAPP],
 }, {
     name: 'Baseball Jacket',
     content: '10 transaction, at least $10+ for each.',
     img: '/images/cave/clothing/cloth-2-2.png',
     link: '/swap',
-    btnText: 'Swap',
-    dapps: swapDapps,
+    btnText: 'Liquidty',
+    dapps: [KODIAK_DAPP, BEX_DAPP],
 }, {
     name: 'Vintage Jacket',
     content: '50 transaction, at least $100+ for each.',
     img: '/images/cave/clothing/cloth-3-3.png',
     link: '/swap',
-    btnText: 'Swap',
-    dapps: swapDapps,
+    btnText: 'Liquidty',
+    dapps: [KODIAK_DAPP, BEX_DAPP],
 }, {
     name: 'Windcheater',
     content: '200 transaction, at least $100+ for each.',
     img: '/images/cave/clothing/cloth-4-4.png',
     link: '/swap',
-    btnText: 'Swap',
-    dapps: swapDapps,
+    btnText: 'Liquidty',
+    dapps: [KODIAK_DAPP, BEX_DAPP],
 }]
 
 const carTips = [{
     name: 'Bicycle',
-    content: 'Bicycle, Delegate 1 BGT.',
+    content: 'Bridge over 5 transactions, at least $10+ for each Or Swap over 5 transactions, at least $10+ for each on Bintent',
     img: '/images/cave/key/key-tip-1.png',
     link: '/swap',
-    btnText: 'Delegate',
+    btnText: 'Bridge or bintent',
     dapps: stakeDapps,
 }, {
     name: 'Scooter',
-    content: 'Scooter, Delegate 100 BGT.',
+    content: 'Bridge over 10 transactions, at least $50+ for each Or Swap over 10 transactions, at least $50+ for each on Bintent ',
     img: '/images/cave/key/key-tip-2.png',
     link: '/swap',
-    btnText: 'Delegate',
+    btnText: 'Bridge or bintent',
     dapps: stakeDapps,
 }, {
     name: 'Motobike',
-    content: 'Motobike, Delegate 10,000 BGT.',
+    content: 'Bridge over 20 transactions, at least $100+ for each Or Swap over 20 transactions, at least $100+ for each on Bintent ',
     img: '/images/cave/key/key-tip-3.png',
     link: '/swap',
-    btnText: 'Delegate',
+    btnText: 'Bridge or bintent',
     dapps: stakeDapps,
 }, {
     name: 'Lambo',
-    content: 'Lambo, Delegate 1,000,000 BGT.',
+    content: 'Bridge over 50 transactions, at least $100+ for each Or Swap over 50 transactions, at least $100+ for each on Bintent ',
     img: '/images/cave/key/key-tip-4.png',
     link: '/swap',
-    btnText: 'Delegate',
+    btnText: 'Bridge or bintent',
     dapps: stakeDapps,
 }]
 
@@ -192,17 +240,15 @@ const neckTips = [
         name: 'Alloy Necklace',
         content: '20 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-1.png',
-        link: '/swap',
+        link: DOLOMITE_DAPP?.link,
         btnText: 'Lending',
-        dapps: lendDapps,
     },
     {
         name: 'Silver Necklace',
         content: '100 transactions, at least $100+ for each.',
         img: '/images/cave/neck/neck-tip-2.png',
-        link: '/swap',
+        link: BERABORROW_DAPP?.link,
         btnText: 'Lending',
-        dapps: lendDapps,
     },
     {
         name: 'Golden Necklace',
@@ -210,7 +256,7 @@ const neckTips = [
         img: '/images/cave/neck/neck-tip-3.png',
         link: '/swap',
         btnText: 'Lending',
-        dapps: lendDapps,
+        dapps: [DOLOMITE_DAPP, BERABORROW_DAPP],
     },
     {
         name: 'Diamond Necklace',
@@ -218,8 +264,43 @@ const neckTips = [
         img: '/images/cave/neck/neck-tip-4.png',
         link: '/swap',
         btnText: 'Lending',
-        dapps: lendDapps,
+        dapps: [DOLOMITE_DAPP, BERABORROW_DAPP],
     }
+]
+
+const petTips = [
+    {
+        name: 'Aeris',
+        content: 'Add 100$ worth of tLP to a BGT vault (1-time).',
+        img: '/images/cave/pet/pet-1-1.png',
+        link: '/swap',
+        btnText: 'Go to Vaults',
+        dapps: lendDapps,
+    },
+    {
+        name: 'Luma',
+        content: 'Deposit 420$ to an Infrared vault (1-time)',
+        img: '/images/cave/pet/pet-2-2.png',
+        link: '/swap',
+        btnText: 'Go to Vaults',
+        dapps: lendDapps,
+    },
+    {
+        name: 'Noa',
+        content: 'Deposit 2000$ to any vault in the Vaults page (1-time)',
+        img: '/images/cave/pet/pet-3-3.png',
+        link: '/swap',
+        btnText: 'Go to Vaults',
+        dapps: lendDapps,
+    },
+    {
+        name: 'Saffi',
+        content: 'Deposit 5000$ to any vault in the Vaults page (1-time)',
+        img: '/images/cave/pet/pet-4-4.png',
+        link: '/swap',
+        btnText: 'Go to Vaults',
+        dapps: lendDapps,
+    },
 ]
 
 
@@ -228,6 +309,7 @@ export default function Cave() {
     const { currentSceneInfoValid } = useContext(SceneContext);
     const { isChristmas } = useChristmas();
     const { address: account } = useAccount()
+    const { handleReport, handleReportWithoutDebounce } = useClickTracking();
     const [tipLocation, setTipLocation] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
     const [tipMsg, setTipMsg] = useState<any>()
     const [tipShow, setTipShow] = useState<boolean>()
@@ -246,11 +328,83 @@ export default function Cave() {
     const { transferItem, transferItems, setTransferItem, setTransferSelectedItems, setTransferItemsVisible } = useTransferItemsStore();
 
     const [checkPhotoIndex, setCheckPhotoIndex] = useState(-1)
-    const { airDropRound, airDropPrize, airDropHistory } = useAirdrop(); 
-    const { cars, hats, clothes, necklaces, items, nfts, getItems } = useCollect({
+    const { airDropRound, airDropPrize, airDropHistory } = useAirdrop();
+    const { cars, hats, clothes, necklaces, items, nfts, pets, getItems } = useCollect({
         address: account as string,
         round: airDropRound?.round || -1,
     })
+
+    function doReport(gameItem: any) {
+        switch (gameItem.name) {
+            case 'Baseball Cap':
+                handleReport("1024-001")
+                break;
+            case 'Wool Hat':
+                handleReport("1024-002")
+                break;
+            case 'Basic Helmet':
+                handleReport("1024-003")
+                break;
+            case 'Flying Helmet':
+                handleReport("1024-004")
+                break;
+            case 'Motor Helmet':
+                handleReport("1024-005")
+                break;
+            case 'Alloy Necklace':
+                handleReport("1024-006")
+                break;
+            case 'Silver Necklace':
+                handleReport("1024-007")
+                break;
+            case 'Golden Necklace':
+                handleReport("1024-008")
+                break;
+            case 'Diamond Necklace':
+                handleReport("1024-009")
+                break;
+            case 'Bicycle':
+                handleReport("1024-010")
+                break;
+            case 'Scooter':
+                handleReport("1024-011")
+                break;
+            case 'Motobike':
+                handleReport("1024-012")
+                break;
+            case 'Lambo':
+                handleReport("1024-013")
+                break;
+            case 'Hoodie':
+                handleReport("1024-014")
+                break;
+            case 'Baseball Jacket':
+                handleReport("1024-015")
+                break;
+            case 'Vintage Jacket':
+                handleReport("1024-016")
+                break;
+            case 'Windcheater':
+                handleReport("1024-017")
+                break;
+
+            case 'Aeris':
+                handleReport("1024-018")
+                break;
+            case 'Luma':
+                handleReport("1024-019")
+                break;
+            case 'Noa':
+                handleReport("1024-020")
+                break;
+            case 'Saffi':
+                handleReport("1024-021")
+                break;
+            default:
+                break;
+        }
+
+    }
 
     const tipClick = useCallback((e: any, item: any, gameItem: any) => {
         if (e.target.classList.contains('cave-tip') || e.target?.parentNode?.classList.contains('cave-tip')) {
@@ -259,7 +413,7 @@ export default function Cave() {
             if (y + 220 > window.innerHeight) {
                 y = y - 220
             }
-
+            doReport(gameItem)
             setTipLocation({
                 x: e.clientX,
                 y
@@ -268,6 +422,7 @@ export default function Cave() {
             setTipShow(true)
             setTransferItem(gameItem)
             setTransferSelectedItems([gameItem])
+
         }
 
     }, [])
@@ -278,6 +433,17 @@ export default function Cave() {
         }
     }, [])
 
+    function handleSortHats(_hats: GameItem[]) {
+        if (_hats.length > 0) {
+            const findIndex = _hats.findIndex((item: GameItem) => item.name === "Wool Hat")
+            const array = _hats.splice(findIndex, 1)
+            _hats.splice(1, 0, array[0])
+            return _hats
+        } else {
+            return []
+        }
+    }
+
     useEffect(() => {
         document.addEventListener('click', docClick, false)
 
@@ -285,6 +451,7 @@ export default function Cave() {
             document.removeEventListener('click', docClick)
         }
     }, [])
+
 
     return <div className="relative w-screen h-full min-w-[1200px] min-h-[890px]">
         <PageBack isBlack={false} className="ml-[30px] text-white absolute top-[20px] left-[30px] z-10" />
@@ -404,8 +571,8 @@ export default function Cave() {
                 </div>
             </div>
 
-            <AirDropTime airDropRound={airDropRound as AirDropRound} airDropHistory={airDropHistory as AirDropHistoryData[]}/>
-            
+            <AirDropTime airDropRound={airDropRound as AirDropRound} airDropHistory={airDropHistory as AirDropHistoryData[]} />
+
             {/*#endregion*/}
             {/*#region NFT*/}
             {/* <div className="flex gap-[65px] justify-center">
@@ -482,7 +649,7 @@ export default function Cave() {
             {/*#region Hats*/}
             <div className="flex items-end px-[30px] absolute w-[583px] left-[50%] top-[270px] translate-x-[-50%]">
                 {
-                    hats.map(item => {
+                    handleSortHats(hats).map(item => {
                         return <div
                             className="flex-1 relative cursor-pointer cave-tip" onClick={(e) => {
                                 tipClick(e, hatTips[item.level - 1], item)
@@ -547,36 +714,69 @@ export default function Cave() {
             </div>
             {/*#endregion*/}
             {/*#region Keychains*/}
-            <div
-                style={{ left: isChristmas ? 'calc(50% - (772px - 45px - 174.5px)' : 'calc(50% - 170px - 290px)' }}
-                className={clsx("w-[349px] h-[230px] translate-x-[-50%] absolute bg-[url('/images/cave/box.png')] bg-contain bg-no-repeat bg-bottom", isChristmas ? "bottom-[432px]" : "top-[500px]")}
-            >
-                {
-                    cars.map(item => {
-                        return <div
-                            className="absolute cave-tip" style={carPositions[item.level - 1]} onClick={(e) => {
-                                tipClick(e, carTips[item.level - 1], item)
-                            }}
-                        >
-                            <img
-                                className="h-[78px] cursor-pointer"
-                                style={item.pc_item ? carsSize[item.level - 1] : {}}
-                                src={`/images/cave/key/key-${item.level}${item.pc_item ? '-' + item.level : ''}.png`}
-                            />
-                            {item.pc_item && <div className=" absolute top-[-30px] left-[30%] translate-x-[-50%]">
-                                <CheckBox
-                                    checked={item.checked}
-                                    onCheckChange={(isChecked) => {
-                                        setEqu({
-                                            car: isChecked ? item.level : 0
-                                        })
-                                    }}
-                                    item={item}
+            <div className="absolute left-[calc(50%_-_460px)] translate-x-[-50%]">
+                <div className="w-[349px] h-[230px] bg-[url('/images/cave/box.png')] bg-contain bg-no-repeat bg-bottom">
+                    {
+                        cars.map(item => {
+                            return <div
+                                className="absolute cave-tip" style={carPositions[item.level - 1]} onClick={(e) => {
+                                    tipClick(e, carTips[item.level - 1], item)
+                                }}
+                            >
+                                <img
+                                    className="h-[78px] cursor-pointer"
+                                    style={item.pc_item ? carsSize[item.level - 1] : {}}
+                                    src={`/images/cave/key/key-${item.level}${item.pc_item ? '-' + item.level : ''}.png`}
                                 />
-                            </div>}
-                        </div>
-                    })
-                }
+                                {item.pc_item && <div className=" absolute top-[-30px] left-[30%] translate-x-[-50%]">
+                                    <CheckBox
+                                        checked={item.checked}
+                                        onCheckChange={(isChecked) => {
+                                            setEqu({
+                                                car: isChecked ? item.level : 0
+                                            })
+                                        }}
+                                        item={item}
+                                    />
+                                </div>}
+                            </div>
+                        })
+                    }
+                </div>
+                <div className="relative -top-[20px] -left-[10px] w-[437px] h-[395px] bg-[url('/images/cave/pets-box.png')] bg-contain bg-no-repeat">
+                    {
+                        pets?.map((item, index) => {
+                            return (
+                                <div
+                                    className="cave-tip absolute cursor-pointer"
+                                    style={{
+                                        left: petsPosition?.[index]?.left,
+                                        top: petsPosition?.[index]?.top,
+                                        width: petsSize?.[index]?.width
+                                    }}
+                                    onClick={(e) => {
+                                        tipClick(e, petTips[item.level - 1], item)
+                                    }}
+                                >
+                                    <img className="w-full" src={`/images/cave/pet/pet-${item.level}${item.pc_item ? '-' + item.level : ''}.png`} alt="" />
+
+                                    {item.pc_item && <div className="absolute left-0 top-0">
+                                        <CheckBox
+                                            checked={item.checked}
+                                            onCheckChange={(isChecked) => {
+                                                setEqu({
+                                                    pet: isChecked ? item.level : 0
+                                                })
+                                            }}
+                                            item={item}
+                                        />
+                                    </div>}
+                                </div>
+                            )
+
+                        })
+                    }
+                </div>
             </div>
             {/*#endregion*/}
             {/*#region Window on Right*/}
@@ -673,7 +873,7 @@ export default function Cave() {
             {/*#region Stone on Right*/}
             <div className=" pointer-events-none absolute w-[757px] h-[386px] bottom-[0px] right-0 bg-[url('/images/cave/stone.png')] bg-contain bg-no-repeat bg-bottom"></div>
             {/*#endregion*/}
-            <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} items={items} />
+            <Bear cars={cars} hats={hats} clothes={clothes} necklaces={necklaces} items={items} pets={pets} />
             <Welcome
                 show={store.welcomeShow} onClose={() => {
                     store.set({ welcomeShow: false })

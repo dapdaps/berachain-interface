@@ -13,7 +13,7 @@ export const report = ({
   url: string;
   content?: string;
 }) => {
-  post("/api/track", { address, code, url, content });
+  post("/api/track", { address, code, url, content }, { headers: { keepalive: true } });
 };
 
 const findBP = (target: any, cb: any) => {
