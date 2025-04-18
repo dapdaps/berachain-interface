@@ -7,7 +7,7 @@ import type { Token } from "@/types";
 
 import { useAccount } from "wagmi";
 
-const MAX_APPROVE =
+export const MAX_APPROVE =
   "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
 export default function useApprove({
