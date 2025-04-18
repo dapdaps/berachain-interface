@@ -11,6 +11,7 @@ import { useDebounceFn } from "ahooks";
 import useDeposit from "../island/hooks/use-deposit";
 import useDepositAmount from "../island/hooks/use-deposit-amount";
 import kodiak from "@/configs/pools/kodiak";
+import { usePriceStore } from "@/stores/usePriceStore";
 
 export default function AddLiquidity({
   onSuccess,
@@ -25,7 +26,7 @@ export default function AddLiquidity({
   const [balance1, setBalance1] = useState("");
   const [receives, setReceives] = useState<any>();
   const [selectedToken, setSelectedToken] = useState<any>(null);
-
+  const prices = usePriceStore((state: any) => state.price);
   const { querying, queryAmounts } = useDepositAmount({
     islandContract: rest?.id || rest?.stakingToken?.address,
     token0,
@@ -87,6 +88,7 @@ export default function AddLiquidity({
           runQuoter();
         }}
         onLoad={setBalance0}
+        prices={prices}
       />
       <Input
         value={amount1}
@@ -99,6 +101,7 @@ export default function AddLiquidity({
           runQuoter();
         }}
         onLoad={setBalance1}
+        prices={prices}
       />
       <div className="text-[14px] text-black font-bold mt-[10px] flex justify-end gap-[4px]">
         Get{" "}
@@ -142,9 +145,9 @@ export default function AddLiquidity({
                 (${" "}
                 {receives?.received && rest?.price
                   ? balanceFormated(
-                    Big(receives.received).mul(rest?.price).toString(),
-                    5
-                  )
+                      Big(receives.received).mul(rest?.price).toString(),
+                      5
+                    )
                   : "-"}{" "}
                 )
               </div>
