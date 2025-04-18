@@ -38,7 +38,8 @@ const ActionUnion = (props: any) => {
                 ...currentProtocol,
                 symbol: currentProtocol?.tokens
                   ?.map((token: any, index: number) => token.symbol)
-                  .join("-")
+                  .join("-"),
+                version: currentProtocol.extra_data?.pool_version
               }}
               open={openAddLp}
               onClose={() => {
