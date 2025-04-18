@@ -94,8 +94,21 @@ const Aggregating = (props: any) => {
 
   return (
     <div className="w-full mt-[20px]">
-      <div className="text-[#FFF5A9] text-center text-stroke-1 font-CherryBomb text-[24px] font-normal leading-[90%]">
-        The best place to access PoL Vaults and earn Berachain yield.
+      <div className="text-[#FFF5A9] text-center text-stroke-1 font-CherryBomb text-[24px] font-normal leading-[90%] flex justify-center items-center gap-[5px]">
+        <div>The best place to access PoL Vaults and earn Berachain yield.</div>
+        <Popover
+          content={(
+            <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
+              <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
+            </Card>
+          )}
+          trigger={PopoverTrigger.Hover}
+          placement={PopoverPlacement.RightTop}
+          triggerContainerClassName="shrink-0 cursor-pointer w-[15px] h-[15px]"
+          closeDelayDuration={0}
+        >
+          <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full translate-y-0.5" />
+        </Popover>
       </div>
       <div className="flex justify-center items-center gap-[10px] text-white font-Montserrat text-[16px] font-[500] leading-[100%] mt-[27px]">
         <div className="shrink-0">
@@ -176,22 +189,7 @@ const Aggregating = (props: any) => {
           }
         </div>
         <div className="flex shrink-0 items-center gap-[5px]">
-          <div className="">
-            and more…
-          </div>
-          <Popover
-            content={(
-              <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
-                <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
-              </Card>
-            )}
-            trigger={PopoverTrigger.Hover}
-            placement={PopoverPlacement.RightTop}
-            triggerContainerClassName="shrink-0 cursor-pointer w-[15px] h-[15px]"
-            closeDelayDuration={0}
-          >
-            <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full" />
-          </Popover>
+          and more…
         </div>
       </div>
       <div className="mt-[46px]">
