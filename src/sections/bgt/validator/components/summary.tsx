@@ -2,9 +2,10 @@ import Loading from '@/components/loading';
 import { useBgtStore } from '@/stores/bgt';
 import Big from 'big.js';
 import Skeleton from 'react-loading-skeleton';
+import { numberFormatter } from '@/utils/number-formatter';
 
 const Summary = (props: any) => {
-  const { vaults, pageData } = props;
+  const { vaults, pageData, estReturnPerBGT } = props;
   const store = useBgtStore()
   return (
     <div className="flex flex-col gap-[28px] md:gap-[21px] mt-[24px] md:mt-[33px] mb-[48px]">
@@ -47,7 +48,9 @@ const Summary = (props: any) => {
           {
             pageData ? (
               <div className="flex items-center gap-[6px]">
-                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">-</span>
+                <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
+                  {numberFormatter(estReturnPerBGT, 2, true)}
+                </span>
                 {/* <div className="w-[20px] h-[20px]">
                   <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />
                 </div> */}

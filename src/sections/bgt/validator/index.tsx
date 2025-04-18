@@ -13,6 +13,7 @@ import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
 
 const BgtValidator = (props: any) => {
   const { id } = props;
@@ -23,6 +24,10 @@ const BgtValidator = (props: any) => {
 
   const { getValidators } = useValidators();
   const { loading, pageData, getPageData } = useValidator();
+  const { estReturnPerBGT, list: incentiveList } = useIncentive({
+    // @ts-ignore
+    vaults: pageData?.rewardAllocationWeights ?? []
+  });
 
   const defaultId = searchParams.get("id");
   const [currentTab, setCurrentTab] = useState("gauges");
@@ -187,6 +192,8 @@ const BgtValidator = (props: any) => {
           loading={loading}
           Columns={Columns}
           vaults={pageData?.rewardAllocationWeights ?? []}
+          estReturnPerBGT={estReturnPerBGT}
+          incentiveList={incentiveList}
         />
       ) : (
         <BgtValidatorLaptop
@@ -200,6 +207,8 @@ const BgtValidator = (props: any) => {
           loading={loading}
           Columns={Columns}
           vaults={pageData?.rewardAllocationWeights ?? []}
+          estReturnPerBGT={estReturnPerBGT}
+          incentiveList={incentiveList}
         />
       )}
       <Delegate
