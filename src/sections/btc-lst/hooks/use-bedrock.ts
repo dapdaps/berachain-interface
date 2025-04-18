@@ -9,17 +9,19 @@ import bedrock from "@/configs/lst/dapps/bedrock";
 import useTokensBalance from "@/hooks/use-tokens-balance";
 import { usePriceStore } from "@/stores/usePriceStore";
 import { LstHookResult, STAKE_ABI } from "../constant";
+import useUpdaterStore from "@/stores/useUpdaterStore";
 
-
-export default function useBedrock(): LstHookResult {
+export default function useBedrock(productType: 'uniBTC' | 'brBTC' = 'uniBTC'): LstHookResult {
   const { addAction } = useAddAction("dapp");
-
-  const dappConfig = bedrock.chains?.[DEFAULT_CHAIN_ID as keyof typeof bedrock.chains]
-
-  const { STAKE_ADDRESS, sourceToken, targetToken } = dappConfig
-
   const { provider, account, chainId } = useCustomAccount();
   const toast = useToast();
+
+  const dappConfig = useMemo(() => {
+    const chainConfig = bedrock.chains?.[DEFAULT_CHAIN_ID as keyof typeof bedrock.chains];
+    return chainConfig?.[productType];
+  }, [productType]);
+
+  const { STAKE_ADDRESS, sourceToken, targetToken } = dappConfig || {};
 
   const [inAmount, setInAmount] = useState("");
   const [tvl, setTvl] = useState("");
@@ -28,6 +30,7 @@ export default function useBedrock(): LstHookResult {
   const { loading: getBalanceLoading, balances, queryBalance } = useTokensBalance(tokens);
   
   const prices = usePriceStore((store) => store.price);
+  const updater = useUpdaterStore((state) => state.updater);
 
 
   function handleMax() {
@@ -135,6 +138,8 @@ export default function useBedrock(): LstHookResult {
   }
 
   const getTvlByContract = async () => {
+    if (!provider || !targetToken) return;
+    
     const contract = new ethers.Contract(
       targetToken.address,
       STAKE_ABI,
@@ -150,15 +155,16 @@ export default function useBedrock(): LstHookResult {
 
   useEffect(() => {
     getTvlByContract()
-  }, [provider]);
+    queryBalance();
+  }, [provider, updater, targetToken]);
 
   return {
-    stakedAmount: balances?.[targetToken.address],
-    stakedAmountUsd: Big(balances?.[targetToken.address] || 0).times(prices?.[targetToken.symbol] || 0).toFixed(5),
-    availableAmount: balances?.[sourceToken.address],
-    availableAmountUsd: Big(balances?.[sourceToken.address] || 0).times(prices?.[sourceToken.symbol] || 0).toFixed(5),
+    stakedAmount: balances?.[targetToken?.address],
+    stakedAmountUsd: Big(balances?.[targetToken?.address] || 0).times(prices?.[targetToken?.symbol] || 0).toFixed(5),
+    availableAmount: balances?.[sourceToken?.address],
+    availableAmountUsd: Big(balances?.[sourceToken?.address] || 0).times(prices?.[sourceToken?.symbol] || 0).toFixed(5),
     tvl,
-    tvlUsd: Big(tvl || 0).times(prices?.[sourceToken.symbol] || 0).toFixed(5),
+    tvlUsd: Big(tvl || 0).times(prices?.[sourceToken?.symbol] || 0).toFixed(5),
     inAmount,
     handleMax,
     handleAmountChange,
@@ -170,5 +176,6 @@ export default function useBedrock(): LstHookResult {
     targetToken,
     dappConfig,
     exchangeRate: 1,
+    productType, 
   };
 }

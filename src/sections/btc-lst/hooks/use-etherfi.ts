@@ -9,6 +9,7 @@ import etherFi from "@/configs/lst/dapps/etherFi";
 import useTokensBalance from "@/hooks/use-tokens-balance";
 import { usePriceStore } from "@/stores/usePriceStore";
 import { LstHookResult, STAKE_ABI } from "../constant";
+import useUpdaterStore from "@/stores/useUpdaterStore";
 
 
 export default function useEtherFi(): LstHookResult {
@@ -29,6 +30,7 @@ export default function useEtherFi(): LstHookResult {
   const { loading: getBalanceLoading, balances, queryBalance } = useTokensBalance(tokens);
   
   const prices = usePriceStore((store) => store.price);
+  const updater = useUpdaterStore((state) => state.updater);
 
 
   function handleMax() {
@@ -151,7 +153,8 @@ export default function useEtherFi(): LstHookResult {
 
   useEffect(() => {
     getTvlByContract()
-  }, [provider]);
+    queryBalance();
+  }, [provider, updater]);
 
   console.log('balances: ', balances);
 

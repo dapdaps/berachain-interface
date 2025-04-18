@@ -16,6 +16,7 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { useSwitchChain } from "wagmi";
 import { STAKE_ABI } from "../../constant";
 import { EnabledLstItem } from "../../hooks/use-page";
+import useUpdaterStore from "@/stores/useUpdaterStore";
 
 interface IProps {
   type: "deposit" | "withdraw";
@@ -58,6 +59,7 @@ export default function Button(props: IProps) {
   const toast = useToast();
   const { executionContract } = useExecutionContract();
   const { switchChain } = useSwitchChain();
+  const updaterStore = useUpdaterStore();
   
   const token0 = item?.sourceToken;
   const token1 = item?.targetToken;
@@ -241,9 +243,11 @@ export default function Button(props: IProps) {
         isLoading: false,
       });
       
+      // updaterStore.setOpen(Date.now()); TODO: check this if real time update is needed
+      
       setTimeout(() => {
         onSuccess?.();
-      }, 3000);
+      }, 300);
   
       toast?.dismiss(toastId);
       toast?.success({

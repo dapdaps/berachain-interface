@@ -110,6 +110,14 @@ export const bera: { [key: string]: Token } = {
     name: "uniBTC",
     icon: "/assets/tokens/uniBTC.webp"
   },
+  brbtc : {
+    chainId: CHAIN_ID,
+    address: "0x93919784c523f39cacaa98ee0a9d96c3f32b593e",
+    decimals: 8,
+    symbol: "brBTC",
+    name: "Bedrock BTC",
+    icon: "/assets/tokens/brBTC.webp"
+  },
   nect: {
     chainId: CHAIN_ID,
     address: "0x1ce0a25d13ce4d52071ae7e02cf1f6606f4c79d3",
