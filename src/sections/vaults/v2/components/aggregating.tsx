@@ -108,7 +108,7 @@ const Aggregating = (props: any) => {
                 key={idx}
                 offset={20}
                 content={dapp.message.title ? (
-                  <div className="w-[300px] h-[280px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] py-[30px] px-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
+                  <div className="w-[300px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] py-[20px] px-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
                     <div className="line-clamp-5">
                       '{dapp.message.content}'
                     </div>
