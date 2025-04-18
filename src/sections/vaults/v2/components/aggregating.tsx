@@ -23,9 +23,13 @@ const DAPPS = [
     bg: "#FFB8B9",
     rotate: 8,
     message: {
-      avatar: "/images/vaults/v2/avatar-berahub.png",
-      title: "",
-      content: "",
+      avatar: "/images/vaults/v2/avatar-infrared.png",
+      avatarCorner: Infrared.icon,
+      name: "Viperr",
+      title: "Head of Growth, Infrared ",
+      content: "Beratown is my premier one stop shop for all things Berachain. Access Infrared’s supported PoL vaults and stake iBGT easier than ever.",
+      bg: "#FFB8B9",
+      rotate: -3.39,
     },
   },
   {
@@ -37,9 +41,12 @@ const DAPPS = [
     message: {
       avatar: "/images/vaults/v2/avatar-berahub.png",
       avatarCorner: icons[80094],
+      avatarCornerFullRounded: true,
       name: "Cap’n Jack Bearow",
       title: "Head of DeFi, Berachain Foundation",
       content: "Beratown offers a fun and gamified way to interact with the Berachain app ecosystem in an easy-to-use and abstracted format!",
+      bg: "#FFF5A9",
+      rotate: 3,
     },
   },
   {
@@ -100,7 +107,13 @@ const Aggregating = (props: any) => {
                 key={idx}
                 offset={20}
                 content={dapp.message.title ? (
-                  <div className="w-[300px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] pt-[30px] pb-[20px] px-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
+                  <div
+                    className="w-[300px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] pt-[30px] pb-[20px] px-[20px] shrink-0 border border-[#847B36] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]"
+                    style={{
+                      backgroundColor: dapp.message.bg,
+                      transform: `rotate(${dapp.message.rotate}deg)`,
+                    }}
+                  >
                     <div className="line-clamp-5">
                       '{dapp.message.content}'
                     </div>
@@ -114,7 +127,7 @@ const Aggregating = (props: any) => {
                         <img
                           src={dapp.message.avatarCorner}
                           alt=""
-                          className="w-[26px] h-[26px] rounded-full absolute right-[-10px] bottom-[-5px]"
+                          className={clsx("w-[26px] h-[26px] absolute right-[-10px] bottom-[-5px]", dapp.message.avatarCornerFullRounded ? "rounded-full" : "rounded-[6px]")}
                         />
                       </div>
                       <div className="flex-1 w-0">
