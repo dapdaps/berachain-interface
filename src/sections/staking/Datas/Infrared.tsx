@@ -264,9 +264,11 @@ export default function useInfraredData(props: any) {
         const symbol0 = array[0];
         const symbol1 = array[1];
         const token0 =
-          item.underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
+          item.underlying_tokens?.find((token) => token?.symbol?.toLocaleLowerCase() === symbol0?.toLocaleLowerCase()) ?? null;
         const token1 =
-          item.underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
+          item.underlying_tokens?.find((token) => token?.symbol?.toLocaleLowerCase() === symbol1?.toLocaleLowerCase()) ?? null;
+
+
         [token0, token1]?.filter(token => !!token)?.forEach((slip: any, i: number) => {
           tokensInfo[`decimals${i}`] = slip.decimals;
           tokensInfo.tokens.push(slip.name);
