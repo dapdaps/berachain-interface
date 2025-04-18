@@ -42,7 +42,7 @@ const ActionSummary = (props: any) => {
             .join("-")}
         </div>
       </div>
-      <div className="flex items-start gap-[60px] md:gap-[30px] mt-[17px]">
+      <div className="flex items-start md:grid md:grid-cols-2 gap-[60px] md:gap-x-[30px] md:gap-y-[20px] mt-[17px]">
         <ActionSummaryItem label="TVL">
           {numberFormatter(currentProtocol?.tvl, 2, true, {
             prefix: "$",
