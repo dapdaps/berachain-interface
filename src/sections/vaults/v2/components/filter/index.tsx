@@ -194,13 +194,11 @@ const Filter = (props: any) => {
           ))}
       </FilterGroup>
       <FilterGroup title="Defi Protocol" loading={listLoading}>
-        {FILTERS.PROTOCOLS.sort((a, b) => a.sort - b.sort)
-          .filter((it) =>
-            listPoolProjects?.some((_it: any) => it.reg.test(_it))
-          )
-          .map((it, idx) => (
+        {
+          listPoolProjects.map((it: any, idx: number) => (
             <FilterItem key={idx} type={FILTER_KEYS.PROTOCOLS} data={it} />
-          ))}
+          ))
+        }
       </FilterGroup>
     </div>
   );
