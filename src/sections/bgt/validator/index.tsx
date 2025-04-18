@@ -55,11 +55,12 @@ const BgtValidator = (props: any) => {
 
           return (
             <div className="flex items-center gap-[16px]">
-              <div className="relative">
+              <div className="relative shrink-0">
                 <div className="w-[30px] h-[30px]">
                   <img
                     src={receivingVault?.metadata?.logoURI ?? "/images/bgt-logo.svg"}
                     alt={receivingVault?.metadata?.name}
+                    className="w-full h-full rounded-full object-center object-contain"
                   />
                 </div>
                 <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
@@ -71,11 +72,11 @@ const BgtValidator = (props: any) => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-[5px]">
-                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+              <div className="flex flex-col gap-[5px] flex-1 w-0">
+                <div className="w-full text-black font-Montserrat text-[16px] font-semibold leading-[90%] line-clamp-1">
                   {receivingVault?.metadata?.name ? receivingVault?.metadata?.name : formatLongText(receivingVault?.id, 4, 4)}
                 </div>
-                <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">
+                <div className="w-full text-black font-Montserrat text-[12px] font-medium leading-[90%] line-clamp-1">
                   {receivingVault?.metadata?.protocolName ?? "OTHER"}
                 </div>
               </div>
