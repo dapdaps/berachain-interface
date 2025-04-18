@@ -79,36 +79,6 @@ const petsSize = [{
     width: 94
 },]
 
-const stakeDapps = [{
-    icon: '/images/dapps/infrared.svg',
-    name: 'Infrared',
-    link: '/staking/infrared'
-}]
-
-const lendDapps = [{
-    icon: '/images/dapps/dolomite.svg',
-    name: 'Dolomite',
-    link: '/lending/dolomite'
-},
-]
-
-const swapDapps = [{
-    icon: '/images/dapps/kodiak.svg',
-    name: 'Kodiak',
-    link: '/dex/kodiak'
-},
-{
-    icon: '/images/dapps/ooga-booga.svg',
-    name: 'Ooga Booga',
-    link: '/dex/ooga-booga'
-}]
-
-const bridgeDapps = [{
-    icon: '/images/dapps/stargate.svg',
-    name: 'Stargate',
-    link: '/bridge'
-}]
-
 const KODIAK_DAPP = {
     icon: '/images/dapps/kodiak.svg',
     name: 'Kodiak',
@@ -134,12 +104,16 @@ const BERABORROW_DAPP = {
     name: 'Beraborrow',
     link: '/lending/beraborrow'
 }
+const STARGATE_DAPP = {
+    icon: '/images/dapps/stargate.svg',
+    name: 'Stargate',
+    link: '/bridge/Stargate'
+}
 const BINTENT_DAPP = {
-    icon: '/images/home-earth/signpost-bintent.png',
+    icon: '/images/campaign/bintent.png',
     name: 'Bintent',
     link: '/lending/beraborrow'
 }
-
 
 const hatTips = [{
     name: 'Baseball Cap',
@@ -211,28 +185,28 @@ const carTips = [{
     img: '/images/cave/key/key-tip-1.png',
     link: '/swap',
     btnText: 'Bridge or bintent',
-    dapps: stakeDapps,
+    dapps: [STARGATE_DAPP, BINTENT_DAPP],
 }, {
     name: 'Scooter',
-    content: 'Bridge over 10 transactions, at least $50+ for each Or Swap over 10 transactions, at least $50+ for each on Bintent ',
+    content: 'Bridge over 10 transactions, at least $50+ for each Or Swap over 10 transactions, at least $50+ for each on Bintent',
     img: '/images/cave/key/key-tip-2.png',
     link: '/swap',
     btnText: 'Bridge or bintent',
-    dapps: stakeDapps,
+    dapps: [STARGATE_DAPP, BINTENT_DAPP],
 }, {
     name: 'Motobike',
-    content: 'Bridge over 20 transactions, at least $100+ for each Or Swap over 20 transactions, at least $100+ for each on Bintent ',
+    content: 'Bridge over 20 transactions, at least $100+ for each Or Swap over 20 transactions, at least $100+ for each on Bintent',
     img: '/images/cave/key/key-tip-3.png',
     link: '/swap',
     btnText: 'Bridge or bintent',
-    dapps: stakeDapps,
+    dapps: [STARGATE_DAPP, BINTENT_DAPP],
 }, {
     name: 'Lambo',
-    content: 'Bridge over 50 transactions, at least $100+ for each Or Swap over 50 transactions, at least $100+ for each on Bintent ',
+    content: 'Bridge over 50 transactions, at least $100+ for each Or Swap over 50 transactions, at least $100+ for each on Bintent',
     img: '/images/cave/key/key-tip-4.png',
     link: '/swap',
     btnText: 'Bridge or bintent',
-    dapps: stakeDapps,
+    dapps: [STARGATE_DAPP, BINTENT_DAPP],
 }]
 
 const neckTips = [
@@ -271,35 +245,31 @@ const neckTips = [
 const petTips = [
     {
         name: 'Aeris',
-        content: 'Add 100$ worth of tLP to a BGT vault (1-time).',
+        content: 'Add 100$ worth of tLP to a BGT vault (1-time)',
         img: '/images/cave/pet/pet-1-1.png',
-        link: '/swap',
-        btnText: 'Go to Vaults',
-        dapps: lendDapps,
+        link: '/vaults',
+        btnText: 'Stake in Vaults',
     },
     {
         name: 'Luma',
         content: 'Deposit 420$ to an Infrared vault (1-time)',
         img: '/images/cave/pet/pet-2-2.png',
-        link: '/swap',
-        btnText: 'Go to Vaults',
-        dapps: lendDapps,
+        link: '/vaults',
+        btnText: 'Stake in Vaults',
     },
     {
         name: 'Noa',
         content: 'Deposit 2000$ to any vault in the Vaults page (1-time)',
         img: '/images/cave/pet/pet-3-3.png',
-        link: '/swap',
-        btnText: 'Go to Vaults',
-        dapps: lendDapps,
+        link: '/vaults',
+        btnText: 'Stake in Vaults',
     },
     {
         name: 'Saffi',
         content: 'Deposit 5000$ to any vault in the Vaults page (1-time)',
         img: '/images/cave/pet/pet-4-4.png',
-        link: '/swap',
-        btnText: 'Go to Vaults',
-        dapps: lendDapps,
+        link: '/vaults',
+        btnText: 'Stake in Vaults',
     },
 ]
 
@@ -334,8 +304,8 @@ export default function Cave() {
         round: airDropRound?.round || -1,
     })
 
-    function doReport(gameItem: any) {
-        switch (gameItem.name) {
+    function doReport(name: string) {
+        switch (name) {
             case 'Baseball Cap':
                 handleReport("1024-001")
                 break;
@@ -413,7 +383,7 @@ export default function Cave() {
             if (y + 220 > window.innerHeight) {
                 y = y - 220
             }
-            doReport(gameItem)
+            doReport(gameItem.name)
             setTipLocation({
                 x: e.clientX,
                 y

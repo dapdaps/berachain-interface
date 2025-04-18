@@ -6,6 +6,7 @@ import { differenceInSeconds } from 'date-fns';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
+import DappsModal from "./components/DappsModal";
 interface Props {
   location: { x: number, y: number },
   link?: string;
@@ -65,7 +66,7 @@ export default function Tips({ location, msg, transferItem, disabled }: Props) {
       case "Lending":
         handleReportWithoutDebounce("1024-023")
         break;
-      case "Go to Vaults":
+      case "Stake in Vaults":
         handleReportWithoutDebounce("1024-026")
         break;
       default:
@@ -134,39 +135,14 @@ export default function Tips({ location, msg, transferItem, disabled }: Props) {
           )
         } */}
       </div >
-      <Modal
+      <DappsModal
         open={modalShow}
-        closeIconClassName="right-[-10px] top-[-10px]"
         onClose={() => {
           setModalShow(false);
         }}
-      >
-        <div className=" border-[#000] rounded-[20px] bg-[#FFFDEB] p-[20px]">
-          <div className="text-[20px] font-bold">Select dApp for {textMap[msg.btnText]}</div>
-          <div className="flex mt-[10px] justify-center">
-            {
-              msg.dapps?.map(item => {
-                return (
-                  <Link
-                    href={item.link}
-                    key={item.name}
-                  >
-                    <div
-                      onClick={() => {
-                      }}
-                      className="rounded-[10px] w-[134px] h-[134px] cursor-pointer flex items-center justify-center flex-col hover:bg-[#0000000F]"
-                      key={item.name}
-                    >
-                      <img src={item.icon} className="w-[42px] h-[42px]" />
-                      <div className="text-[16px] font-[600] mt-[5px]">{item.name}</div>
-                    </div>
-                  </Link>
-                )
-              })
-            }
-          </div>
-        </div>
-      </Modal>
+        dapps={msg.dapps}
+        text={msg.btnText}
+      />
     </>
   );
 }

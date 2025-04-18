@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useRef } from 'react';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 import Card from '@/components/card';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import useClickTracking from '@/hooks/use-click-tracking';
+import { useTransferItemsStore } from '@/sections/cave/stores/useTransferItems';
 import { formatLongText } from '@/utils/utils';
-
-export type ModuleType = "hats" | "jackets" | "necklaces" | "cars";
+import clsx from 'clsx';
+import React, { createContext, useContext, useRef } from 'react';
+export type ModuleType = "hats" | "jackets" | "necklaces" | "cars" | "pets";
 export type ActionType = "bridge" | "swap" | "delegate" | "lend";
 
 export interface ModuleStyles {
@@ -24,6 +25,8 @@ export interface ModuleItem {
   type: ActionType;
   hasPopover?: boolean;
   needTransactionNums?: number;
+  link?: string;
+  dapps: any[];
   [k: string]: any;
 }
 
@@ -47,11 +50,84 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
     ...rest
   } = props;
 
+  const { handleReport } = useClickTracking();
   const transferredRef = useRef<any>(null);
   const { onItemClick } = useModuleContext();
   const { setTransferItemsVisible, setTransferSelectedItems, setTransferItem } = useTransferItemsStore();
   const isTransfer = rest?.pc_item && !rest.transfer_to;
 
+
+  function doReport(name: string) {
+    switch (name) {
+      case 'Baseball Cap':
+        handleReport("1024-001")
+        break;
+      case 'Wool Hat':
+        handleReport("1024-002")
+        break;
+      case 'Basic Helmet':
+        handleReport("1024-003")
+        break;
+      case 'Flying Helmet':
+        handleReport("1024-004")
+        break;
+      case 'Motor Helmet':
+        handleReport("1024-005")
+        break;
+      case 'Alloy Necklace':
+        handleReport("1024-006")
+        break;
+      case 'Silver Necklace':
+        handleReport("1024-007")
+        break;
+      case 'Golden Necklace':
+        handleReport("1024-008")
+        break;
+      case 'Diamond Necklace':
+        handleReport("1024-009")
+        break;
+      case 'Bicycle':
+        handleReport("1024-010")
+        break;
+      case 'Scooter':
+        handleReport("1024-011")
+        break;
+      case 'Motobike':
+        handleReport("1024-012")
+        break;
+      case 'Lambo':
+        handleReport("1024-013")
+        break;
+      case 'Hoodie':
+        handleReport("1024-014")
+        break;
+      case 'Baseball Jacket':
+        handleReport("1024-015")
+        break;
+      case 'Vintage Jacket':
+        handleReport("1024-016")
+        break;
+      case 'Windcheater':
+        handleReport("1024-017")
+        break;
+
+      case 'Aeris':
+        handleReport("1024-018")
+        break;
+      case 'Luma':
+        handleReport("1024-019")
+        break;
+      case 'Noa':
+        handleReport("1024-020")
+        break;
+      case 'Saffi':
+        handleReport("1024-021")
+        break;
+      default:
+        break;
+    }
+
+  }
   const PopoverContent = () => {
     const [before, after] = desc.split("$TRANSACTION_COUNT");
     return (
@@ -108,7 +184,7 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
   };
 
   const ImageContent = () => (
-    <div className="flex-1 relative">
+    <div className={clsx("flex-1 relative", styles.imageWrapper)}>
       <img className={styles.image} src={icon} alt={title} />
       <div className="absolute top-0 right-0">
         {
@@ -140,6 +216,7 @@ const ModuleItem: React.FC<ModuleItem & { styles: ModuleStyles }> = (props) => {
       contentClassName={`backdrop-blur-[10px]`}
       content={<PopoverContent />}
       onClickBefore={(e) => {
+        handleReport(title)
         return !transferredRef.current?.contains(e.target);
       }}
     >
@@ -160,12 +237,14 @@ const useModuleContext = () => {
   return context;
 };
 
+
+
 const Module: React.FC<{ config: ModuleConfig }> = ({ config }) => {
   return (
     <ModuleContext.Provider value={{ onItemClick: config.onItemClick }}>
       <div className={config.styles.container}>
         {config.items.map((item) => (
-          <ModuleItem key={item.id} {...item} styles={config.styles} />
+          <ModuleItem key={item.id} {...item} styles={item.styles ? item.styles : config.styles} />
         ))}
       </div>
     </ModuleContext.Provider>
