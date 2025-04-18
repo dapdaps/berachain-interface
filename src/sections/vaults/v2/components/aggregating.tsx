@@ -13,6 +13,7 @@ import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { icons } from '@/configs/chains';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const DAPPS = [
   {
@@ -82,33 +83,11 @@ const DAPPS = [
 const Aggregating = (props: any) => {
   const {} = props;
 
-  const {
-    getTotalStatistics,
-    totalStatistics,
-    totalStatisticsLoading,
-  } = useVaultsV2Context();
-
-  useEffect(() => {
-    getTotalStatistics();
-  }, []);
-
   return (
     <div className="w-full mt-[20px]">
       <div className="text-[#FFF5A9] text-center text-stroke-1 font-CherryBomb text-[24px] font-normal leading-[90%] flex justify-center items-center gap-[5px]">
-        <div>The best place to access PoL Vaults and earn Berachain yield.</div>
-        <Popover
-          content={(
-            <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
-              <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
-            </Card>
-          )}
-          trigger={PopoverTrigger.Hover}
-          placement={PopoverPlacement.RightTop}
-          triggerContainerClassName="shrink-0 cursor-pointer w-[15px] h-[15px]"
-          closeDelayDuration={0}
-        >
-          <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full translate-y-0.5" />
-        </Popover>
+        <Description />
+        <Tips />
       </div>
       <div className="flex justify-center items-center gap-[10px] text-white font-Montserrat text-[16px] font-[500] leading-[100%] mt-[27px]">
         <div className="shrink-0">
@@ -192,20 +171,71 @@ const Aggregating = (props: any) => {
           and more…
         </div>
       </div>
-      <div className="mt-[46px]">
-        <div className="text-center text-[#FFF5A9] text-[42px] text-stroke-1 font-CherryBomb font-normal leading-[90%]">
-          {
-            totalStatisticsLoading ? (
-              <Skeleton height={38} width={150} borderRadius={6} />
-            ) : numberFormatter(totalStatistics?.total_staked_volume, 2, true, { prefix: '$' })
-          }
-        </div>
-        <div className="text-center mt-[8px] text-white font-Montserrat text-[16px] font-[500] leading-[100%]">
-          Total Staked via Beratown
-        </div>
-      </div>
+      <Statistics className="mt-[46px]" />
     </div>
   );
 };
 
 export default Aggregating;
+
+export const Statistics = (props: any) => {
+  const { className } = props;
+
+  const isMobile = useIsMobile();
+  const {
+    getTotalStatistics,
+    totalStatistics,
+    totalStatisticsLoading,
+  } = useVaultsV2Context();
+
+  useEffect(() => {
+    getTotalStatistics();
+  }, []);
+
+  return (
+    <div className={clsx("", className)}>
+      <div className="text-center text-[#FFF5A9] text-[42px] md:text-[36px] text-stroke-1 font-CherryBomb font-normal leading-[90%]">
+        {
+          totalStatisticsLoading ? (
+            <Skeleton height={38} width={150} borderRadius={6} />
+          ) : numberFormatter(totalStatistics?.total_staked_volume, 2, true, { prefix: '$', isShort: isMobile, isShortUppercase: true })
+        }
+      </div>
+      <div className="text-center mt-[8px] text-white font-Montserrat text-[16px] md:text-[12px] font-[500] leading-[100%]">
+        Total Staked via Beratown
+      </div>
+    </div>
+  );
+};
+
+export const Description = (props: any) => {
+  const { className } = props;
+
+  return (
+    <div className={clsx("", className)}>
+      The best place to access PoL Vaults and earn Berachain yield.
+    </div>
+  );
+};
+
+export const Tips = (props: any) => {
+  const { className } = props;
+
+  const isMobile = useIsMobile();
+
+  return (
+    <Popover
+      content={(
+        <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
+          <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
+        </Card>
+      )}
+      trigger={PopoverTrigger.Hover}
+      placement={isMobile ? PopoverPlacement.Left : PopoverPlacement.RightTop}
+      triggerContainerClassName={clsx("shrink-0 cursor-pointer w-[15px] h-[15px]", className)}
+      closeDelayDuration={0}
+    >
+      <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full translate-y-0.5" />
+    </Popover>
+  );
+};
