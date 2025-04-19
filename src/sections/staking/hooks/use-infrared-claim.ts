@@ -9,7 +9,8 @@ export default function useInfrared({
   amount,
   vaultAddress,
   tokens,
-  onSuccess
+  onSuccess,
+  data
 }: any) {
   const [loading, setLoading] = useState(false);
   const { provider } = useCustomAccount();
@@ -37,18 +38,22 @@ export default function useInfrared({
       );
       const tx = await contract.getReward();
       const { status, transactionHash } = await tx.wait();
-
+      const rewardToken = data?.initialData?.reward_tokens.find(
+        (token: any) => token.symbol === data?.rewardSymbol
+      );
       addAction?.({
         type: "Staking",
         action: "Claim",
-        tokens,
+        tokens: [rewardToken],
         amount,
+        amounts: [amount],
         template: "Infrared",
         status: status,
         add: 1,
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
-        sub_type: "Claim"
+        sub_type: "Claim",
+        extra_data: {}
       });
 
       setTimeout(() => {

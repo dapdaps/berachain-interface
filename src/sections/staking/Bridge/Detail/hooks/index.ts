@@ -420,16 +420,21 @@ export function useDetail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        const rewardToken = data?.initialData?.reward_tokens.find(
+          (token: any) => token.symbol === data?.rewardSymbol
+        );
         addAction?.({
           type: "Staking",
           action: "Claim",
-          tokens: tokens.map((token: string) => ({ symbol: token })),
+          tokens: [rewardToken],
           amount: data?.earned,
+          amounts: [data?.earned],
           template: name || "Infrared",
           status: status,
           transactionHash,
           chain_id: chainId,
-          sub_type: "Claim"
+          sub_type: "Claim",
+          extra_data: {}
         });
         toast?.dismiss(toastId);
         toast?.success({
