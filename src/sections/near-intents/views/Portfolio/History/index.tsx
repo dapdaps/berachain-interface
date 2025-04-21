@@ -137,7 +137,7 @@ const History: FC<HistoryProps> = ({ onBack }) => {
         <div className="w-6"></div>
       </div>
       
-      <div className="mt-5 max-h-[600px] overflow-y-auto mb-5">
+      <div className="mt-5 max-h-[520px] overflow-y-auto mb-5">
         {
           isLoading ? (
             <div className="space-y-3">
