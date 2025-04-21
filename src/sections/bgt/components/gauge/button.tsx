@@ -137,14 +137,16 @@ export default memo(function Button(props: IProps) {
           const addParams: any = {
             type: "Staking",
             action: "Staking",
-            tokens: [{ symbol }],
+            tokens: [{ symbol, address }],
             amount,
+            amounts: [amount],
             template,
             status: status,
             add: 1,
             transactionHash,
             chain_id: chainId,
-            sub_type: "Stake"
+            sub_type: "Stake",
+            extra_data: {}
           };
           if (vault && amount0 && amount1) {
             addParams.amounts = [amount0, amount1];
@@ -198,16 +200,19 @@ export default memo(function Button(props: IProps) {
             action: "UnStake",
             tokens: [
               {
-                symbol
+                symbol,
+                address
               }
             ],
             amount,
+            amounts: [amount],
             template,
             status: status,
             add: 0,
             transactionHash,
             chain_id: chainId,
-            sub_type: "Unstake"
+            sub_type: "Unstake",
+            extra_data: {}
           };
 
           if (vault && amount0 && amount1) {

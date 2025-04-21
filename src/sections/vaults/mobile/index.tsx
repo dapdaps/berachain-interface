@@ -1,17 +1,17 @@
-import PageBack from '@/components/back';
+import PageBack from "@/components/back";
 import CheckBox from "@/components/check-box";
 import CircleLoading from "@/components/circle-loading";
 import Dropdown from "@/components/dropdown";
 import Empty from "@/components/empty";
 import MenuButton from "@/components/mobile/menuButton";
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import multicallAddresses from '@/configs/contract/multicall';
-import aquaberaConfig from '@/configs/staking/dapps/aquabera';
-import useCustomAccount from '@/hooks/use-account';
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import multicallAddresses from "@/configs/contract/multicall";
+import aquaberaConfig from "@/configs/staking/dapps/aquabera";
+import useCustomAccount from "@/hooks/use-account";
 import useMergeDataList from "@/hooks/use-merge-data-list";
-import StakingModal from '@/sections/staking/Bridge/Modal';
-import useAquaBera from '@/sections/staking/hooks/use-aquabera';
-import { useBerps } from '@/sections/staking/hooks/use-berps';
+import StakingModal from "@/sections/staking/Bridge/Modal";
+import useAquaBera from "@/sections/staking/hooks/use-aquabera";
+import { useBerps } from "@/sections/staking/hooks/use-berps";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import { formatValueDecimal } from "@/utils/balance";
 import Big from "big.js";
@@ -22,20 +22,31 @@ import Bg from "../components/mobile-bg";
 import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
 import UserInfo from "./user-info";
-import { getProtocolIcon } from '@/utils/utils';
+import { getProtocolIcon } from "@/utils/utils";
 
 export default function Mobile({ dapp }: any) {
-  const isVaults = _.isArray(dapp)
+  const isVaults = _.isArray(dapp);
   const { chainId, provider, account } = useCustomAccount();
-
 
   const dexConfig = useMemo(() => aquaberaConfig.chains[chainId], [chainId]);
 
-  const { dataList: infraredData, loading: infraredLoading, fetchAllData: infraredReload } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
-  const { dataList: aquaBeraData, loading: aquabearLoading, reload: aquabearReload } = useAquaBera(isVaults ? "AquaBera" : dapp?.name)
-  const { getMergeDataList } = useMergeDataList()
+  const {
+    dataList: infraredData,
+    loading: infraredLoading,
+    fetchAllData: infraredReload
+  } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
+  const {
+    dataList: aquaBeraData,
+    loading: aquabearLoading,
+    reload: aquabearReload
+  } = useAquaBera(isVaults ? "AquaBera" : dapp?.name);
+  const { getMergeDataList } = useMergeDataList();
 
-  const { dataList: berpsData, loading: berpsLoading, reload: berpsReload } = useBerps({
+  const {
+    dataList: berpsData,
+    loading: berpsLoading,
+    reload: berpsReload
+  } = useBerps({
     name: dapp?.name,
     pairs: dapp?.chains?.[DEFAULT_CHAIN_ID]?.pairs,
     sender: account,
@@ -45,16 +56,21 @@ export default function Mobile({ dapp }: any) {
   });
   const [dataList, loading, reload] = useMemo(() => {
     if (isVaults) {
-      return [getMergeDataList({
-        infrared: infraredData,
-        aquaBera: aquaBeraData
-      }), infraredLoading || aquabearLoading, () => {
-        infraredReload()
-        aquabearReload()
-      }]
+      return [
+        getMergeDataList({
+          infrared: infraredData,
+          aquaBera: aquaBeraData
+        }),
+        infraredLoading || aquabearLoading,
+        () => {
+          infraredReload();
+          aquabearReload();
+        }
+      ];
     } else {
-      if (dapp?.name === 'Berps') return [berpsData, berpsLoading, berpsReload];
-      if (dapp?.name === 'AquaBera') return [aquaBeraData, aquabearLoading, aquabearReload]
+      if (dapp?.name === "Berps") return [berpsData, berpsLoading, berpsReload];
+      if (dapp?.name === "AquaBera")
+        return [aquaBeraData, aquabearLoading, aquabearReload];
       return [infraredData, infraredLoading, infraredReload];
     }
   }, [
@@ -65,7 +81,7 @@ export default function Mobile({ dapp }: any) {
     aquaBeraData,
     aquabearLoading,
     isVaults,
-    dapp.name,
+    dapp.name
   ]);
   const [sortType, setSortType] = useState(-1);
   const [sortItem, setSortItem] = useState<any>("tvl");
@@ -94,30 +110,22 @@ export default function Mobile({ dapp }: any) {
       <PageBack className="md:absolute md:left-[12px] md:top-[17px] z-[10]" />
       <div className="relative z-[3]">
         <MenuButton className="my-0 mx-auto" contentClassName="text-2xl">
-          {
-            isVaults ? (
-              <div className="flex gap-[12px] text-[24px] items-center">
-                <Image
-                  src="/images/dapps/infrared.svg"
-                  width={33}
-                  height={33}
-                  alt="Icon"
-                />
-                <div>Vaults</div>
-              </div>
-            ) : (
-              <div className="flex gap-[12px] text-[24px] items-center">
-                <Image
-                  src={dapp?.icon}
-                  width={33}
-                  height={33}
-                  alt="Icon"
-                />
-                <div>{dapp?.name}</div>
-              </div>
-            )
-          }
-
+          {isVaults ? (
+            <div className="flex gap-[12px] text-[24px] items-center">
+              <Image
+                src="/images/dapps/infrared.svg"
+                width={33}
+                height={33}
+                alt="Icon"
+              />
+              <div>Vaults</div>
+            </div>
+          ) : (
+            <div className="flex gap-[12px] text-[24px] items-center">
+              <img src={dapp?.icon} width={33} height={33} alt="Icon" />
+              <div>{dapp?.name}</div>
+            </div>
+          )}
         </MenuButton>
         <div className="mt-[12px] text-[14px] font-medium px-[12px] text-center">
           {dapp?.chains?.[DEFAULT_CHAIN_ID]?.description}
@@ -160,7 +168,7 @@ export default function Mobile({ dapp }: any) {
             dapp={dapp}
             isVaults={isVaults}
             onClick={(data, type: 0 | 1) => {
-              setSelectedRecord(data)
+              setSelectedRecord(data);
               setType(type);
             }}
             onClaim={setEarned}
@@ -177,9 +185,9 @@ export default function Mobile({ dapp }: any) {
           </div>
         )}
       </div>
-      {!!selectedRecord && (
-        dapp?.name === "AquaBera" ||
-          selectedRecord?.platform === "aquabera" ? (
+      {!!selectedRecord &&
+        (dapp?.name === "AquaBera" ||
+        selectedRecord?.platform === "aquabera" ? (
           <StakingModal
             show={!!selectedRecord}
             data={selectedRecord}
@@ -190,7 +198,7 @@ export default function Mobile({ dapp }: any) {
             }}
             onSuccess={() => {
               reload();
-              setSelectedRecord(null)
+              setSelectedRecord(null);
             }}
           />
         ) : (
@@ -206,8 +214,7 @@ export default function Mobile({ dapp }: any) {
               reload();
             }}
           />
-        )
-      )}
+        ))}
       {earned && (
         <RewardsModal
           show={!!earned}
@@ -224,44 +231,39 @@ export default function Mobile({ dapp }: any) {
   );
 }
 const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
-  const protocol = data?.initialData?.protocol
-  const isBerps = dapp?.name === 'Berps';
-  const isAquaBera = dapp?.name === 'AquaBera'
+  const protocol = data?.initialData?.protocol;
+  const isBerps = dapp?.name === "Berps";
+  const isAquaBera = dapp?.name === "AquaBera";
 
   const _data = {
     pool: data,
     token0: data?.tokens?.[0],
-    token1: data?.tokens?.[1],
-  }
+    token1: data?.tokens?.[1]
+  };
   return isAquaBera ? (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
-              {
-                data?.tokens?.[0]?.icon ? (
-                  <Image
-                    className="mr-[-8px] rounded-full"
-                    src={data?.tokens?.[0]?.icon}
-                    width={40}
-                    height={40}
-                    alt="Token"
-                  />
-                ) : (
-                  <div className='flex items-center justify-center w-[40px] h-[40px] rounded-[4px] bg-gray-800 text-white font-bold'>
-                    {data?.tokens?.[0]?.symbol?.slice(0, 1)}
-                  </div>
-                )
-              }
-
+              {data?.tokens?.[0]?.icon ? (
+                <img
+                  className="mr-[-8px] rounded-full"
+                  src={data?.tokens?.[0]?.icon}
+                  width={40}
+                  height={40}
+                  alt="Token"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-[40px] h-[40px] rounded-[4px] bg-gray-800 text-white font-bold">
+                  {data?.tokens?.[0]?.symbol?.slice(0, 1)}
+                </div>
+              )}
             </div>
-            <div className="text-[16px] font-semibold">
-              {data?.id}
-            </div>
+            <div className="text-[16px] font-semibold">{data?.id}</div>
           </div>
 
-          <div className='flex items-center gap-[8px]'>
+          <div className="flex items-center gap-[8px]">
             <button
               onClick={() => {
                 onClick(_data, 0);
@@ -289,54 +291,59 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                 />
               </svg>
             </button>
-            {
-              Big(data?.yourValue ?? 0).gt(0) && (
-                <button
-                  onClick={() => {
-                    onClick(_data, 1);
-                  }}
+            {Big(data?.yourValue ?? 0).gt(0) && (
+              <button
+                onClick={() => {
+                  onClick(_data, 1);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  fill="none"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="34"
-                    height="34"
-                    viewBox="0 0 34 34"
-                    fill="none"
-                  >
-                    <rect
-                      opacity="0.5"
-                      x="1"
-                      y="1"
-                      width="32"
-                      height="32"
-                      rx="10"
-                      stroke="white"
-                    />
-                    <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
-                  </svg>
-                </button>
-              )
-            }
+                  <rect
+                    opacity="0.5"
+                    x="1"
+                    y="1"
+                    width="32"
+                    height="32"
+                    rx="10"
+                    stroke="white"
+                  />
+                  <rect
+                    x="11"
+                    y="16"
+                    width="13"
+                    height="2"
+                    rx="1"
+                    fill="white"
+                  />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
         <div className="mt-[16px] flex justify-between">
           <div>
             <div className="font-medium	text-[14px]">APY</div>
             <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.apr, '', 2, false, false)}%
+              {formatValueDecimal(data?.apr, "", 2, false, false)}%
             </div>
           </div>
 
           <div>
             <div className="font-medium	text-[14px]">TVL</div>
             <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.tvl, '$', 2, false, false)}
+              {formatValueDecimal(data?.tvl, "$", 2, false, false)}
             </div>
           </div>
           <div className="text-right">
             <div className="font-medium	text-[14px]">In Wallet</div>
             <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.balance, '', 2, false, false)}
+              {formatValueDecimal(data?.balance, "", 2, false, false)}
             </div>
           </div>
         </div>
@@ -349,7 +356,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
               {data?.images[0] && (
-                <Image
+                <img
                   className="mr-[-8px] rounded-full"
                   src={data?.images[0]}
                   width={40}
@@ -358,7 +365,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                 />
               )}
               {data?.images[1] && (
-                <Image
+                <img
                   className="rounded-full"
                   src={data?.images[1]}
                   width={40}
@@ -366,9 +373,11 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                   alt="Token"
                 />
               )}
-              <Image
+              <img
                 className="absolute right-[-2px] bottom-[0px]"
-                src={getProtocolIcon(data?.platform === 'infrared' ? protocol?.id : "aquabera")}
+                src={getProtocolIcon(
+                  data?.platform === "infrared" ? protocol?.id : "aquabera"
+                )}
                 width={20}
                 height={20}
                 alt="Protocol"
@@ -376,7 +385,9 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
             </div>
             <div>
               <div className="text-[16px] font-semibold">
-                {data?.platform === "infrared" ? data?.initialData?.name : data?.pool?.name}
+                {data?.platform === "infrared"
+                  ? data?.initialData?.name
+                  : data?.pool?.name}
               </div>
               <div className="text-[14px] mt-[4px]">{protocol?.name}</div>
             </div>
@@ -424,106 +435,117 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           </div>
         </div>
       </div>
-      {
-        data?.platform === "aquabera" ? (
-          <>
-            {
-              data?.pairedTokens
-                ?.filter((pairedToken: any) => Big(pairedToken?.yourValue ?? 0).gt(0))
-                ?.map((pairedToken: any) => {
-                  const values = pairedToken?.values ?? []
-                  return (
-                    <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
-                      <div className='flex items-center'>
-                        <div>
-                          <div className="text-[14px]">You Value</div>
-                          <div className="mt-[3px] flex items-center gap-[3px]">
-                            <span className="text-[16px] font-semibold">
-                              {formatValueDecimal(values?.[0], "", 2, true, false)}
-                            </span>
-                            <span className="text-[12px] font-medium">
-                              {data?.symbol}
-                            </span>
-                          </div>
-                          <div className="mt-[3px] flex items-center gap-[3px]">
-                            <span className="text-[16px] font-semibold">
-                              {formatValueDecimal(values?.[1], "", 2, true, false)}
-                            </span>
-                            <span className="text-[12px] font-medium">
-                              {pairedToken?.symbol}
-                            </span>
-                          </div>
-                        </div>
+      {data?.platform === "aquabera" ? (
+        <>
+          {data?.pairedTokens
+            ?.filter((pairedToken: any) =>
+              Big(pairedToken?.yourValue ?? 0).gt(0)
+            )
+            ?.map((pairedToken: any) => {
+              const values = pairedToken?.values ?? [];
+              return (
+                <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
+                  <div className="flex items-center">
+                    <div>
+                      <div className="text-[14px]">You Value</div>
+                      <div className="mt-[3px] flex items-center gap-[3px]">
+                        <span className="text-[16px] font-semibold">
+                          {formatValueDecimal(values?.[0], "", 2, true, false)}
+                        </span>
+                        <span className="text-[12px] font-medium">
+                          {data?.symbol}
+                        </span>
                       </div>
-                      <button
-                        onClick={() => {
-                          onClick(1, pairedToken);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="34"
-                          height="34"
-                          viewBox="0 0 34 34"
-                          fill="none"
-                        >
-                          <rect
-                            opacity="0.5"
-                            x="1"
-                            y="1"
-                            width="32"
-                            height="32"
-                            rx="10"
-                            stroke="white"
-                          />
-                          <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
-                        </svg>
-                      </button>
+                      <div className="mt-[3px] flex items-center gap-[3px]">
+                        <span className="text-[16px] font-semibold">
+                          {formatValueDecimal(values?.[1], "", 2, true, false)}
+                        </span>
+                        <span className="text-[12px] font-medium">
+                          {pairedToken?.symbol}
+                        </span>
+                      </div>
                     </div>
-                  )
-                })
-            }
-          </>
-        ) : (
-          <>
-            {(Big(data?.usdDepositAmount || 0).gt(0) || isBerps) && (
-              <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
-                <UserInfo
-                  data={data}
-                  onClaim={() => {
-                    onClaim(data);
-                  }}
-                />
-                <button
-                  onClick={() => {
-                    onClick(data, 1);
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="34"
-                    height="34"
-                    viewBox="0 0 34 34"
-                    fill="none"
+                  </div>
+                  <button
+                    onClick={() => {
+                      onClick(1, pairedToken);
+                    }}
                   >
-                    <rect
-                      opacity="0.5"
-                      x="1"
-                      y="1"
-                      width="32"
-                      height="32"
-                      rx="10"
-                      stroke="white"
-                    />
-                    <rect x="11" y="16" width="13" height="2" rx="1" fill="white" />
-                  </svg>
-                </button>
-              </div>
-            )}
-          </>
-        )
-      }
-
-    </div >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="34"
+                      height="34"
+                      viewBox="0 0 34 34"
+                      fill="none"
+                    >
+                      <rect
+                        opacity="0.5"
+                        x="1"
+                        y="1"
+                        width="32"
+                        height="32"
+                        rx="10"
+                        stroke="white"
+                      />
+                      <rect
+                        x="11"
+                        y="16"
+                        width="13"
+                        height="2"
+                        rx="1"
+                        fill="white"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
+        </>
+      ) : (
+        <>
+          {(Big(data?.usdDepositAmount || 0).gt(0) || isBerps) && (
+            <div className="text-white bg-black/50 rounded-[10px] p-[14px] flex items-center justify-between gap-[20px]">
+              <UserInfo
+                data={data}
+                onClaim={() => {
+                  onClaim(data);
+                }}
+              />
+              <button
+                onClick={() => {
+                  onClick(data, 1);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  fill="none"
+                >
+                  <rect
+                    opacity="0.5"
+                    x="1"
+                    y="1"
+                    width="32"
+                    height="32"
+                    rx="10"
+                    stroke="white"
+                  />
+                  <rect
+                    x="11"
+                    y="16"
+                    width="13"
+                    height="2"
+                    rx="1"
+                    fill="white"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
   );
 };

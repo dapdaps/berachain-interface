@@ -68,9 +68,14 @@ const DAPPS = [
     bg: "#DBECF8",
     rotate: 8,
     message: {
-      avatar: "/images/vaults/v2/avatar-berahub.png",
-      title: "",
-      content: "",
+      avatar: "/images/vaults/v2/avatar-beraborrow.png",
+      avatarCorner: icons[80094],
+      avatarCornerFullRounded: true,
+      name: "Kobble",
+      title: "Founder of BeraBorrow",
+      content: "The Berachain ecosystem has some of the most exciting opportunities in DeFi right now, but it often requires visiting multiple dApps. Beratown is a brilliant product of what is possible on Berachain, all packaged into one intuitive dApp.",
+      bg: "#DBECF8",
+      rotate: -3,
     },
   },
   {
@@ -114,7 +119,7 @@ const Aggregating = (props: any) => {
                       transform: `rotate(${dapp.message.rotate}deg)`,
                     }}
                   >
-                    <div className="line-clamp-5">
+                    <div className="">
                       '{dapp.message.content}'
                     </div>
                     <div className="w-full flex items-center gap-[15px] mt-[20px]">
