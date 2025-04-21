@@ -14,8 +14,6 @@ import BeraPrice from "@/sections/home-earth/components/bera-price";
 import { HomeEarthContext } from "@/sections/home-earth/context";
 import { useRainyDay } from "@/hooks/use-rainy-day";
 import Vaults from "@/components/vaults";
-import AirShip from "@/components/bear-background/components/airship";
-import { useEventEnded } from "@/components/bintent-countDown";
 
 const Home = () => {
   const router = useProgressRouter();
@@ -47,8 +45,6 @@ const Home = () => {
       window.removeEventListener("resize", updateViewportHeight);
     };
   }, [isChristmas]);
-
-  const isEventEnded = useEventEnded();
 
   return (
     <HomeEarthContext.Provider value={{ isRainyDay, beraPrice }}>
@@ -236,29 +232,6 @@ const Home = () => {
               }}
             >
               <Vaults className="!absolute z-[2] !left-[unset] !top-[130px] right-[-30px] scale-[0.78] origin-right" />
-              {
-                !isEventEnded && (
-                  <AirShip
-                  className="!absolute z-[3] !left-[4px] !top-[60px] !right-[unset] origin-left"
-                  variants={{
-                    init: {
-                      x: "200%",
-                      scale: 0.88,
-                    },
-                    enter: {
-                      x: 0,
-                      scale: 0.88,
-                    },
-                  }}
-                  initial="init"
-                  animate="enter"
-                  transition={{
-                    duration: 3,
-                  }}
-                />
-                )
-              }
-
 
               {/*#region Beraciaga*/}
               <motion.div
