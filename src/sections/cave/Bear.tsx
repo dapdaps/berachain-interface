@@ -56,6 +56,9 @@ export default function Bear({
         {!!necklaces.length && necklaces[3].checked && <img src="/images/cave/bear/necklace/neck-4.png" className="absolute w-[110px] left-[205px] top-[38px] z-20" />}
 
         {!!pets.length && pets[0].checked && <img src="/images/cave/bear/pet/pet-1.png" className="absolute w-[124px] left-[80px] -top-[50px] z-20" />}
+        {!!pets.length && pets[1].checked && <img src="/images/cave/bear/pet/pet-2.png" className="absolute w-[124px] left-[80px] -top-[50px] z-20" />}
+        {!!pets.length && pets[2].checked && <img src="/images/cave/bear/pet/pet-3.png" className="absolute w-[124px] left-[80px] -top-[50px] z-20" />}
+        {!!pets.length && pets[3].checked && <img src="/images/cave/bear/pet/pet-4.png" className="absolute w-[134px] left-[80px] -top-[50px] z-20" />}
 
         {!!cars.length && cars[3].checked && <img src="/images/cave/bear/car/car-4-1.png" className="absolute left-[-170px] bottom-0 max-w-[757px]" />}
         {
