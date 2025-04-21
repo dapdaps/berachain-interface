@@ -836,12 +836,8 @@ export const BintentBear = function (props: any) {
 
   const router = useRouter()
   const store: any = useBintent()
-  const isEventEnded = useEventEnded();
   return (
     <div className={clsx('absolute left-[86px] bottom-[32px] z-20', className)} >
-      {
-        !isEventEnded && <div className='absolute left-[9999px]'><BintentCountDown /></div>
-      }
       {
         isBear && (
           <div className='cursor-pointer w-[360px]'>
@@ -858,9 +854,7 @@ export const BintentBear = function (props: any) {
             router.push("/bintent-trading-challenge")
           }}
         >
-          <img src={
-            isEventEnded ? '/images/background/balloon_1-end.svg' : '/images/background/balloon_1.svg'
-          } alt="balloon_1" />
+          <img src='/images/background/balloon_1-end.svg' alt="balloon_1" />
         </div>
         <div className='absolute right-[30px] rotate-[2deg] -bottom-[266px] w-[55px]'>
           <img src="/images/background/balloon_line_1.svg" alt="balloon_line_1" />
