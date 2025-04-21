@@ -5,6 +5,7 @@ import useAccount from "./use-account";
 import { useWalletName } from "@/hooks/use-wallet-name";
 import { getReportTokenSymbol } from "@/utils/token/symbol";
 import { post } from "@/utils/http";
+import Big from "big.js";
 
 //
 export default function useAddAction(source: string, isNear = false) {
@@ -100,7 +101,7 @@ export default function useAddAction(source: string, isNear = false) {
           data.extra_data.tokens = data.tokens.map((token: any, i: number) => ({
             symbol: getReportTokenSymbol(token),
             address: token.address,
-            amount: data.amounts[i]
+            amount: Big(data.amounts[i] || 0).toFixed(token.decimals || 18)
           }));
         }
         params = {
