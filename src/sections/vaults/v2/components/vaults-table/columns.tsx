@@ -38,7 +38,7 @@ export const Pool = (props: any) => {
         )}
       </div>
       <div
-        className="text-[12px] whitespace-nowrap overflow-hidden text-ellipsis"
+        className="text-[12px] truncate"
         title={uniq(record.list.map((p: any) => p.pool_project)).join("/")}
       >
         {uniq(record.list.map((p: any) => p.pool_project)).join("/")}
