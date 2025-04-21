@@ -8,6 +8,7 @@ export default function ClaimModal({ show, onClose, data, onSuccess }: any) {
   const { loading, onClaim } = useInfraredClaim({
     amount: data.earned,
     tokens: data.tokens,
+    data,
     vaultAddress: data.vaultAddress,
     onSuccess() {
       onClose();

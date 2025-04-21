@@ -40,7 +40,7 @@ export default memo(function Bex(props) {
   //   vaultsData = {}
   // } = useContext(MarketplaceContext);
 
-  console.log('=======data======', data)
+  console.log("=======data======", data);
   const toast = useToast();
   const { addAction } = useAddAction("invest");
   const { account: sender, provider } = useCustomAccount();
@@ -53,7 +53,7 @@ export default memo(function Bex(props) {
 
   const symbol = id;
 
-  console.log('====vaultAddress====', vaultAddress)
+  console.log("====vaultAddress====", vaultAddress);
 
   const [currentTab, setCurrentTab] = useState(
     type === 0 ? "Deposit" : "Withdraw"
@@ -108,7 +108,7 @@ export default memo(function Bex(props) {
   const updateBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
 
-    console.log('=====LP_ADDRESS', LP_ADDRESS)
+    console.log("=====LP_ADDRESS", LP_ADDRESS);
     const contract = new ethers.Contract(LP_ADDRESS, abi, provider.getSigner());
     contract
       .balanceOf(sender)
@@ -228,10 +228,9 @@ export default memo(function Bex(props) {
       isError: false,
       loadingMsg: "Staking..."
     });
-    const wei = ethers.utils.parseUnits(
-      Big(inAmount).toFixed(decimals),
-      decimals
-    );
+    const wei = ethers.utils
+      .parseUnits(Big(inAmount).toFixed(decimals), decimals)
+      .toString();
     const abi = [
       {
         constant: false,
@@ -259,19 +258,20 @@ export default memo(function Bex(props) {
     })
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(inAmount);
         addAction?.({
           type: "Staking",
           action: "Staking",
-          tokens: tokens.map((token: string) => ({ symbol: token })),
+          tokens: data?.initialData?.stake_token
+            ? [data.initialData.stake_token]
+            : [],
           amount: inAmount,
+          amounts: [inAmount],
           template: "Infrared",
           status: status,
           add: 1,
           transactionHash,
           chain_id: props.chainId,
           sub_type: "Stake",
-          amounts: [amount0, amount1],
           extra_data: {}
         });
         updateState({
@@ -280,7 +280,7 @@ export default memo(function Bex(props) {
         });
 
         setTimeout(() => {
-          handleSuccess()
+          handleSuccess();
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -302,7 +302,7 @@ export default memo(function Bex(props) {
             ? "User rejected transaction"
             : error?.message ?? ""
         });
-      })
+      });
   };
   const handleWithdraw = () => {
     const toastId = toast?.loading({
@@ -314,7 +314,9 @@ export default memo(function Bex(props) {
       loadingMsg: "Unstaking..."
     });
 
-    const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
+    const lpWeiAmount = ethers.utils
+      .parseUnits(Big(lpAmount).toFixed(18), 18)
+      .toString();
     const abi = [
       {
         constant: false,
@@ -345,24 +347,26 @@ export default memo(function Bex(props) {
           isPostTx: true
         });
         const { status, transactionHash } = receipt;
-        const [amount0, amount1] = handleGetAmount(lpAmount);
+
         addAction?.({
           type: "Staking",
           action: "UnStake",
-          tokens: tokens.map((token: string) => ({ symbol: token })),
+          tokens: data?.initialData?.stake_token
+            ? [data.initialData.stake_token]
+            : [],
           amount: lpAmount,
+          amounts: [lpAmount],
           template: "Infrared",
           status: status,
           add: 0,
           transactionHash,
           chain_id: props.chainId,
           sub_type: "Unstake",
-          amounts: [amount0, amount1],
           extra_data: {}
         });
 
         setTimeout(() => {
-          handleSuccess()
+          handleSuccess();
         }, 3000);
 
         toast?.dismiss(toastId);
@@ -387,10 +391,10 @@ export default memo(function Bex(props) {
   };
 
   const handleSuccess = () => {
-    refresh?.()
+    refresh?.();
     onSuccess?.();
-    handleClose()
-  }
+    handleClose();
+  };
   const onUpdateLpPercent = (percent: number) => {
     updateState({
       lpPercent: percent
@@ -487,7 +491,11 @@ export default memo(function Bex(props) {
                 >
                   Balance:{" "}
                   <span className="underline">
-                    {numberFormatter(Big(balances?.[symbol] ?? 0).toFixed(), 6, true)}
+                    {numberFormatter(
+                      Big(balances?.[symbol] ?? 0).toFixed(),
+                      6,
+                      true
+                    )}
                   </span>
                 </div>
               </div>
@@ -581,7 +589,11 @@ export default memo(function Bex(props) {
                       handleLPChange(lpBalance);
                     }}
                   >
-                    {numberFormatter(Big(lpBalance ? lpBalance : 0).toFixed(), 6, true)}
+                    {numberFormatter(
+                      Big(lpBalance ? lpBalance : 0).toFixed(),
+                      6,
+                      true
+                    )}
                   </span>
                 </div>
               </div>

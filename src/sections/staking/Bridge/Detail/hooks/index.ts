@@ -1,6 +1,4 @@
 import { useMultiState } from "@/hooks/use-multi-state";
-import config from "@/configs/staking/dapps/infrared";
-import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -76,10 +74,10 @@ export function useDetail(props: any) {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -237,10 +235,9 @@ export function useDetail(props: any) {
       isError: false,
       loadingMsg: "Staking..."
     });
-    const wei = ethers.utils.parseUnits(
-      Big(inAmount).toFixed(decimals),
-      decimals
-    );
+    const wei = ethers.utils
+      .parseUnits(Big(inAmount).toFixed(decimals), decimals)
+      .toString();
     const contract = new ethers.Contract(
       approveSpender,
       stakeAbi,
@@ -250,28 +247,27 @@ export function useDetail(props: any) {
     if (isBERPS) {
       params.push(sender);
     }
+
     const createTx = (gasLimit: any) => {
       contract[stakeMethod](...params, { gasLimit })
         .then((tx: any) => tx.wait())
         .then((receipt: any) => {
           const { status, transactionHash } = receipt;
-          const [amount0, amount1] = handleGetAmount(inAmount);
-          const _symbol = tokens.join("-");
+
           addAction?.({
             type: "Staking",
             action: "Staking",
-            tokens:
-              _symbol === "YEET-BERA"
-                ? [{ symbol: "KODIAK-3" }]
-                : tokens.map((token: string) => ({ symbol: token })),
+            tokens: data?.initialData?.stake_token
+              ? [data.initialData.stake_token]
+              : [],
             amount: inAmount,
+            amounts: [inAmount],
             template: name || "Infrared",
             status: status,
             add: 1,
             transactionHash,
             chain_id: chainId,
             sub_type: "Stake",
-            amounts: [amount0, amount1],
             extra_data: {}
           });
           updateState({
@@ -324,7 +320,9 @@ export function useDetail(props: any) {
       loadingMsg: "Unstaking..."
     });
 
-    const lpWeiAmount = ethers.utils.parseUnits(Big(lpAmount).toFixed(18), 18);
+    const lpWeiAmount = ethers.utils
+      .parseUnits(Big(lpAmount).toFixed(18), 18)
+      .toString();
 
     const contract = new ethers.Contract(
       approveSpender,
@@ -340,23 +338,21 @@ export function useDetail(props: any) {
             isPostTx: true
           });
           const { status, transactionHash } = receipt;
-          const [amount0, amount1] = handleGetAmount(lpAmount);
-          const _symbol = tokens.join("-");
+
           addAction?.({
             type: "Staking",
             action: "UnStake",
-            tokens:
-              _symbol === "YEET-BERA"
-                ? [{ symbol: "KODIAK-3" }]
-                : tokens.map((token: string) => ({ symbol: token })),
+            tokens: data?.initialData?.stake_token
+              ? [data.initialData.stake_token]
+              : [],
             amount: lpAmount,
+            amounts: [inAmount],
             template: name || "Infrared",
             status: status,
             add: 0,
             transactionHash,
             chain_id: chainId,
             sub_type: "Unstake",
-            amounts: [amount0, amount1],
             extra_data: {}
           });
           setTimeout(() => {
@@ -424,16 +420,21 @@ export function useDetail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        const rewardToken = data?.initialData?.reward_tokens.find(
+          (token: any) => token.symbol === data?.rewardSymbol
+        );
         addAction?.({
           type: "Staking",
           action: "Claim",
-          tokens: tokens.map((token: string) => ({ symbol: token })),
+          tokens: [rewardToken],
           amount: data?.earned,
+          amounts: [data?.earned],
           template: name || "Infrared",
           status: status,
           transactionHash,
           chain_id: chainId,
-          sub_type: "Claim"
+          sub_type: "Claim",
+          extra_data: {}
         });
         toast?.dismiss(toastId);
         toast?.success({
@@ -483,7 +484,7 @@ export function useDetail(props: any) {
   const mintData = useMemo<any>(() => {
     const protocol = data?.initialData?.protocol;
     if (!protocol) return;
-    const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id
+    const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id;
     if (!["kodiak", "bex"].includes(protocolId)) return null;
     const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
       data?.initialData?.stake_token?.address
@@ -511,8 +512,10 @@ export function useDetail(props: any) {
     const token1 =
       underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
     if (protocolId === "bex") {
-      const match = data?.initialData?.mint_url?.match(/\/pools\/(0x[a-fA-F0-9]{64})/)
-      const id = match ? match[1] : null
+      const match = data?.initialData?.mint_url?.match(
+        /\/pools\/(0x[a-fA-F0-9]{64})/
+      );
+      const id = match ? match[1] : null;
       return {
         id,
         protocol: protocolId,
@@ -521,7 +524,7 @@ export function useDetail(props: any) {
           { ...token0, icon: token0?.image },
           { ...token1, icon: token1?.image }
         ]
-      }
+      };
     } else {
       if (index > -1) {
         return {
@@ -531,7 +534,7 @@ export function useDetail(props: any) {
           version: "island",
           protocol: "kodiak",
           stakingToken: data?.initialData?.stake_token
-        }
+        };
       }
       if (underlying_tokens?.length === 2) {
         return {
