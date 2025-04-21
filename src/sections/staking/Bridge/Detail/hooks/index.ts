@@ -82,6 +82,7 @@ export function useDetail(props: any) {
   const updateLPBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
     let _contractAddr = data.vaultAddress;
+
     if (isBERPS) {
       _contractAddr = data?.withdrawToken?.address;
     }
@@ -346,7 +347,7 @@ export function useDetail(props: any) {
               ? [data.initialData.stake_token]
               : [],
             amount: lpAmount,
-            amounts: [inAmount],
+            amounts: [lpAmount],
             template: name || "Infrared",
             status: status,
             add: 0,
