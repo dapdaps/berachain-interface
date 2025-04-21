@@ -75,15 +75,19 @@ export default memo(function BgtMain() {
           <div className='flex items-center gap-[16px]'>
             <div className='relative'>
               <div className='w-[30px] h-[30px] rounded-full'>
-                <img src={vault?.metadata?.logoURI} />
+                <img src={vault?.metadata?.logoURI ?? "/images/bgt-logo.svg"} />
               </div>
               <div className="absolute right-[-6px] bottom-[-2px] w-[16px]">
                 <img src={getProtocolIcon(vault?.metadata?.protocolName)} />
               </div>
             </div>
             <div className="flex flex-col gap-[5px]">
-              <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{vault?.metadata?.name}</div>
-              <div className='text-black font-Montserrat text-[12px] font-medium leading-[90%]'>{vault?.metadata?.protocolName}</div>
+              <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>
+                {vault?.metadata?.name ? vault?.metadata?.name : formatLongText(vault?.id, 4, 4)}
+              </div>
+              <div className='text-black font-Montserrat text-[12px] font-medium leading-[90%]'>
+                {vault?.metadata?.protocolName ?? "OTHER"}
+              </div>
             </div>
           </div>
         );
