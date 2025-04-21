@@ -487,13 +487,16 @@ export function useDetail(props: any) {
     if (!protocol) return;
     const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id;
     if (!["kodiak", "bex"].includes(protocolId)) return null;
-    const sweetenedIslandItem = (kodiak.sweetenedIslands as any)[
-      data?.initialData?.stake_token?.address
-    ];
-    if (protocolId === "kodiak" && sweetenedIslandItem) {
+    const underlying_tokens = data?.initialData?.underlying_tokens.map(
+      (token: any) => ({ ...token, icon: token?.image })
+    );
+    if (
+      protocolId === "kodiak" &&
+      data?.initialData.stake_token.symbol !== "UNI-V2"
+    ) {
       return {
-        token0: sweetenedIslandItem.token0,
-        token1: sweetenedIslandItem.token1,
+        token0: underlying_tokens[0],
+        token1: underlying_tokens[1],
         version: "island",
         protocol: "kodiak",
         stakingToken: data?.initialData?.stake_token
@@ -503,15 +506,7 @@ export function useDetail(props: any) {
     const index = kodiak?.islands?.findIndex(
       (address: string) => data?.initialData?.stake_token?.address === address
     );
-    const underlying_tokens = data?.initialData?.underlying_tokens;
 
-    const array = data?.id?.split("-");
-    const symbol0 = array[0];
-    const symbol1 = array[1];
-    const token0 =
-      underlying_tokens?.find((token) => token?.name === symbol0) ?? null;
-    const token1 =
-      underlying_tokens?.find((token) => token?.name === symbol1) ?? null;
     if (protocolId === "bex") {
       const match = data?.initialData?.mint_url?.match(
         /\/pools\/(0x[a-fA-F0-9]{64})/
@@ -521,27 +516,23 @@ export function useDetail(props: any) {
         id,
         protocol: protocolId,
         symbol: data?.id,
-        tokens: [
-          { ...token0, icon: token0?.image },
-          { ...token1, icon: token1?.image }
-        ]
+        tokens: [underlying_tokens[0], underlying_tokens[1]]
       };
     } else {
       if (index > -1) {
         return {
           protocol: protocol?.id,
-          token0: { ...token0, icon: token0?.image },
-          token1: { ...token1, icon: token1?.image },
+          token0: underlying_tokens[0],
+          token1: underlying_tokens[1],
           version: "island",
-          protocol: "kodiak",
           stakingToken: data?.initialData?.stake_token
         };
       }
       if (underlying_tokens?.length === 2) {
         return {
           protocol: protocol?.id,
-          token0: { ...token0, icon: token0?.image },
-          token1: { ...token1, icon: token1?.image },
+          token0: underlying_tokens[0],
+          token1: underlying_tokens[1],
           version: "v2"
         };
       }

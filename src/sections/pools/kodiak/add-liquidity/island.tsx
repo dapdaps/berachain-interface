@@ -12,12 +12,13 @@ import useDeposit from "../island/hooks/use-deposit";
 import useDepositAmount from "../island/hooks/use-deposit-amount";
 import kodiak from "@/configs/pools/kodiak";
 import { usePriceStore } from "@/stores/usePriceStore";
+import { sortTokens } from "../../utils";
 
 export default function AddLiquidity({
   onSuccess,
   // id,
-  defaultToken0: token0,
-  defaultToken1: token1,
+  defaultToken0,
+  defaultToken1,
   ...rest
 }: any) {
   const [amount0, setAmount0] = useState<any>("");
@@ -27,6 +28,11 @@ export default function AddLiquidity({
   const [receives, setReceives] = useState<any>();
   const [selectedToken, setSelectedToken] = useState<any>(null);
   const prices = usePriceStore((state: any) => state.price);
+
+  const [token0, token1] = useMemo(() => {
+    return sortTokens(defaultToken0, defaultToken1);
+  }, [defaultToken0, defaultToken1]);
+
   const { querying, queryAmounts } = useDepositAmount({
     islandContract: rest?.id || rest?.stakingToken?.address,
     token0,
