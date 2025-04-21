@@ -2,9 +2,10 @@ import { formatValueDecimal } from "@/utils/balance";
 import useCustomAccount from '@/hooks/use-account';
 import { useMemo } from 'react';
 import { numberFormatter } from "@/utils/number-formatter";
+import clsx from 'clsx';
 
 const BgtHead = (props: any) => {
-  const { bgtData, style, className } = props;
+  const { bgtData, valueClassName, className, isShort } = props;
 
   const { account } = useCustomAccount();
 
@@ -14,13 +15,13 @@ const BgtHead = (props: any) => {
   }, [account, bgtData]);
 
   return (
-    <div className="relative mb-[20px]">
+    <div className={clsx("relative mb-[20px]", className)}>
       <div className='absolute -left-[16px] top-[50%] translate-y-[-50%] w-[66px]'>
         <img className="w-full" src="/images/icon-coin.svg" alt="coin" />
       </div>
       <div className="rounded-[30px] bg-[#DAA56B] shadow-[1px_1px_0_0_#77481E] p-[6px]">
-        <div className="bg-[#A6703D] font-CherryBomb whitespace-nowrap text-[32px] font-[400] items-center rounded-[26px] border border-[#924E00] pl-[68px] pr-[12px] py-[6px] leading-[0.9]">
-          {numberFormatter(count, 3, true)} BGT
+        <div className={clsx("bg-[#A6703D] font-CherryBomb whitespace-nowrap text-[32px] font-[400] items-center rounded-[26px] border border-[#924E00] pl-[68px] pr-[12px] py-[6px] leading-[0.9]", valueClassName)}>
+          {numberFormatter(count, 3, true, { isShort: isShort, isShortUppercase: true })} BGT
         </div>
       </div>
     </div>

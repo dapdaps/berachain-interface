@@ -68,7 +68,7 @@ export const Vaults = (props: any) => {
           />
         ))}
       </div>
-      {isPool && <Pool record={record} />}
+      {isPool && <Pool record={record} className="flex-1 w-0" />}
     </div>
   );
 };

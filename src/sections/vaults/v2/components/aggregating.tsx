@@ -13,6 +13,7 @@ import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { icons } from '@/configs/chains';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const DAPPS = [
   {
@@ -22,9 +23,13 @@ const DAPPS = [
     bg: "#FFB8B9",
     rotate: 8,
     message: {
-      avatar: "/images/vaults/v2/avatar-berahub.png",
-      title: "",
-      content: "",
+      avatar: "/images/vaults/v2/avatar-infrared.png",
+      avatarCorner: Infrared.icon,
+      name: "Viperr",
+      title: "Head of Growth, Infrared ",
+      content: "Beratown is my premier one stop shop for all things Berachain. Access Infrared’s supported PoL vaults and stake iBGT easier than ever.",
+      bg: "#FFB8B9",
+      rotate: -3.39,
     },
   },
   {
@@ -36,9 +41,12 @@ const DAPPS = [
     message: {
       avatar: "/images/vaults/v2/avatar-berahub.png",
       avatarCorner: icons[80094],
+      avatarCornerFullRounded: true,
       name: "Cap’n Jack Bearow",
       title: "Head of DeFi, Berachain Foundation",
       content: "Beratown offers a fun and gamified way to interact with the Berachain app ecosystem in an easy-to-use and abstracted format!",
+      bg: "#FFF5A9",
+      rotate: 3,
     },
   },
   {
@@ -82,20 +90,11 @@ const DAPPS = [
 const Aggregating = (props: any) => {
   const {} = props;
 
-  const {
-    getTotalStatistics,
-    totalStatistics,
-    totalStatisticsLoading,
-  } = useVaultsV2Context();
-
-  useEffect(() => {
-    getTotalStatistics();
-  }, []);
-
   return (
     <div className="w-full mt-[20px]">
-      <div className="text-[#FFF5A9] text-center text-stroke-1 font-CherryBomb text-[24px] font-normal leading-[90%]">
-        The best place to access PoL Vaults and earn Berachain yield.
+      <div className="text-[#FFF5A9] text-center text-stroke-1 font-CherryBomb text-[24px] font-normal leading-[90%] flex justify-center items-center gap-[5px]">
+        <Description />
+        <Tips />
       </div>
       <div className="flex justify-center items-center gap-[10px] text-white font-Montserrat text-[16px] font-[500] leading-[100%] mt-[27px]">
         <div className="shrink-0">
@@ -108,7 +107,13 @@ const Aggregating = (props: any) => {
                 key={idx}
                 offset={20}
                 content={dapp.message.title ? (
-                  <div className="w-[300px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] pt-[30px] pb-[20px] px-[20px] rotate-[3deg] shrink-0 border border-[#847B36] bg-[#FFF5A9] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]">
+                  <div
+                    className="w-[300px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] pt-[30px] pb-[20px] px-[20px] shrink-0 border border-[#847B36] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]"
+                    style={{
+                      backgroundColor: dapp.message.bg,
+                      transform: `rotate(${dapp.message.rotate}deg)`,
+                    }}
+                  >
                     <div className="line-clamp-5">
                       '{dapp.message.content}'
                     </div>
@@ -122,7 +127,7 @@ const Aggregating = (props: any) => {
                         <img
                           src={dapp.message.avatarCorner}
                           alt=""
-                          className="w-[26px] h-[26px] rounded-full absolute right-[-10px] bottom-[-5px]"
+                          className={clsx("w-[26px] h-[26px] absolute right-[-10px] bottom-[-5px]", dapp.message.avatarCornerFullRounded ? "rounded-full" : "rounded-[6px]")}
                         />
                       </div>
                       <div className="flex-1 w-0">
@@ -176,38 +181,74 @@ const Aggregating = (props: any) => {
           }
         </div>
         <div className="flex shrink-0 items-center gap-[5px]">
-          <div className="">
-            and more…
-          </div>
-          <Popover
-            content={(
-              <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
-                <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
-              </Card>
-            )}
-            trigger={PopoverTrigger.Hover}
-            placement={PopoverPlacement.RightTop}
-            triggerContainerClassName="shrink-0 cursor-pointer w-[15px] h-[15px]"
-            closeDelayDuration={0}
-          >
-            <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full" />
-          </Popover>
+          and more…
         </div>
       </div>
-      <div className="mt-[46px]">
-        <div className="text-center text-[#FFF5A9] text-[42px] text-stroke-1 font-CherryBomb font-normal leading-[90%]">
-          {
-            totalStatisticsLoading ? (
-              <Skeleton height={38} width={150} borderRadius={6} />
-            ) : numberFormatter(totalStatistics?.total_staked_volume, 2, true, { prefix: '$' })
-          }
-        </div>
-        <div className="text-center mt-[8px] text-white font-Montserrat text-[16px] font-[500] leading-[100%]">
-          Total Staked via Beratown
-        </div>
-      </div>
+      <Statistics className="mt-[46px]" />
     </div>
   );
 };
 
 export default Aggregating;
+
+export const Statistics = (props: any) => {
+  const { className } = props;
+
+  const isMobile = useIsMobile();
+  const {
+    getTotalStatistics,
+    totalStatistics,
+    totalStatisticsLoading,
+  } = useVaultsV2Context();
+
+  useEffect(() => {
+    getTotalStatistics();
+  }, []);
+
+  return (
+    <div className={clsx("", className)}>
+      <div className="text-center text-[#FFF5A9] text-[42px] md:text-[36px] text-stroke-1 font-CherryBomb font-normal leading-[90%]">
+        {
+          totalStatisticsLoading ? (
+            <Skeleton height={38} width={150} borderRadius={6} />
+          ) : numberFormatter(totalStatistics?.total_staked_volume, 2, true, { prefix: '$', isShort: isMobile, isShortUppercase: true })
+        }
+      </div>
+      <div className="text-center mt-[8px] text-white font-Montserrat text-[16px] md:text-[12px] font-[500] leading-[100%]">
+        Total Staked via Beratown
+      </div>
+    </div>
+  );
+};
+
+export const Description = (props: any) => {
+  const { className } = props;
+
+  return (
+    <div className={clsx("", className)}>
+      The best place to access PoL Vaults and earn Berachain yield.
+    </div>
+  );
+};
+
+export const Tips = (props: any) => {
+  const { className } = props;
+
+  const isMobile = useIsMobile();
+
+  return (
+    <Popover
+      content={(
+        <Card className="!w-[347px] !bg-[#FFF5A9] !p-[11px_9px_12px_14px] !rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]">
+          <strong>Note:</strong> You are directly interacting with all vault and pool protocols themselves. Beratown does not host any smart contracts.
+        </Card>
+      )}
+      trigger={PopoverTrigger.Hover}
+      placement={isMobile ? PopoverPlacement.Left : PopoverPlacement.RightTop}
+      triggerContainerClassName={clsx("shrink-0 cursor-pointer w-[15px] h-[15px]", className)}
+      closeDelayDuration={0}
+    >
+      <img src="/images/vaults/v2/icon-tips.svg" alt="" className="w-full h-full translate-y-0.5" />
+    </Popover>
+  );
+};

@@ -13,6 +13,8 @@ import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
+import { useCurrentValidator } from '@/sections/bgt/validator/hooks/use-current-validator';
 
 const BgtValidator = (props: any) => {
   const { id } = props;
@@ -23,6 +25,11 @@ const BgtValidator = (props: any) => {
 
   const { getValidators } = useValidators();
   const { loading, pageData, getPageData } = useValidator();
+  const { estReturnPerBGT, list: incentiveList } = useIncentive({
+    // @ts-ignore
+    vaults: pageData?.rewardAllocationWeights ?? []
+  });
+  const { currentValidator, currentValidatorLoading } = useCurrentValidator();
 
   const defaultId = searchParams.get("id");
   const [currentTab, setCurrentTab] = useState("gauges");
@@ -47,11 +54,12 @@ const BgtValidator = (props: any) => {
 
           return (
             <div className="flex items-center gap-[16px]">
-              <div className="relative">
+              <div className="relative shrink-0">
                 <div className="w-[30px] h-[30px]">
                   <img
                     src={receivingVault?.metadata?.logoURI ?? "/images/bgt-logo.svg"}
                     alt={receivingVault?.metadata?.name}
+                    className="w-full h-full rounded-full object-center object-contain"
                   />
                 </div>
                 <div className="absolute right-[-7px] bottom-[-1px] w-[16px] h-[16px]">
@@ -63,11 +71,11 @@ const BgtValidator = (props: any) => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-[5px]">
-                <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+              <div className="flex flex-col gap-[5px] flex-1 w-0">
+                <div className="w-full text-black font-Montserrat text-[16px] font-semibold leading-[90%] line-clamp-1">
                   {receivingVault?.metadata?.name ? receivingVault?.metadata?.name : formatLongText(receivingVault?.id, 4, 4)}
                 </div>
-                <div className="text-black font-Montserrat text-[12px] font-medium leading-[90%]">
+                <div className="w-full text-black font-Montserrat text-[12px] font-medium leading-[90%] line-clamp-1">
                   {receivingVault?.metadata?.protocolName ?? "OTHER"}
                 </div>
               </div>
@@ -187,6 +195,10 @@ const BgtValidator = (props: any) => {
           loading={loading}
           Columns={Columns}
           vaults={pageData?.rewardAllocationWeights ?? []}
+          estReturnPerBGT={estReturnPerBGT}
+          incentiveList={incentiveList}
+          currentValidator={currentValidator}
+          currentValidatorLoading={currentValidatorLoading}
         />
       ) : (
         <BgtValidatorLaptop
@@ -200,6 +212,10 @@ const BgtValidator = (props: any) => {
           loading={loading}
           Columns={Columns}
           vaults={pageData?.rewardAllocationWeights ?? []}
+          estReturnPerBGT={estReturnPerBGT}
+          incentiveList={incentiveList}
+          currentValidator={currentValidator}
+          currentValidatorLoading={currentValidatorLoading}
         />
       )}
       <Delegate

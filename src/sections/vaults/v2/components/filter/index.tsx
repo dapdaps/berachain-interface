@@ -9,6 +9,8 @@ import Loading from "@/components/loading";
 import Empty from "@/components/empty";
 import Skeleton from "react-loading-skeleton";
 import { useEffect, useRef, useState } from "react";
+import SubmitVault from '@/sections/vaults/v2/components/feedback/submit-vault';
+import Feedback from '@/sections/vaults/v2/components/feedback/feedback';
 
 const Filter = (props: any) => {
   const { className } = props;
@@ -194,14 +196,20 @@ const Filter = (props: any) => {
           ))}
       </FilterGroup>
       <FilterGroup title="Defi Protocol" loading={listLoading}>
-        {FILTERS.PROTOCOLS.sort((a, b) => a.sort - b.sort)
-          .filter((it) =>
-            listPoolProjects?.some((_it: any) => it.reg.test(_it))
-          )
-          .map((it, idx) => (
+        {
+          listPoolProjects.map((it: any, idx: number) => (
             <FilterItem key={idx} type={FILTER_KEYS.PROTOCOLS} data={it} />
-          ))}
+          ))
+        }
       </FilterGroup>
+      {
+        isMobile && (
+          <div className="absolute left-0 bottom-0 h-[46px] w-full border-t border-[rgba(0,0,0,0.2)] flex justify-between items-center px-[16px]">
+            <SubmitVault className="!bg-[unset] !w-[unset] !h-[unset] !text-[14px] !font-semibold !border-0" />
+            <Feedback className="!text-black !text-[14px] !font-semibold" />
+          </div>
+        )
+      }
     </div>
   );
 };

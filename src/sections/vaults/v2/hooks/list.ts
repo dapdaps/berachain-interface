@@ -388,9 +388,29 @@ export function useList(): List {
           self.findIndex((t: any) => t.address === token.address) === index
       );
 
-    const _poolProjects = Array.from(
-      new Set(data.map((item: any) => item.pool_project).filter(Boolean))
-    );
+    const _poolProjectsMap = new Map();
+    data.forEach((item: any) => {
+      const poolProjectKey = item.project;
+      if (_poolProjectsMap.has(poolProjectKey)) {
+        const poolProject = _poolProjectsMap.get(poolProjectKey);
+        poolProject.vaults.push(item);
+      } else {
+        _poolProjectsMap.set(poolProjectKey, {
+          label: poolProjectKey,
+          reg: new RegExp(`^${poolProjectKey}$`, "i"),
+          icon: getDappLogo(poolProjectKey),
+          vaults: [item]
+        });
+      }
+    });
+    const _poolProjects = Array.from(_poolProjectsMap.values())
+      .sort((a, b) => b.vaults.length - a.vaults.length)
+      .map((item, index) => {
+        return {
+          ...item,
+          sort: index + 1,
+        };
+      })
 
     const _creatorProjects = Array.from(
       new Set(data.map((item: any) => item.creator_project).filter(Boolean))
