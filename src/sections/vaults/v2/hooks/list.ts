@@ -523,6 +523,10 @@ export function useList(): List {
             d2FinanceIdx = index;
           }
 
+          if (item.pool_project === "Bex") {
+            item.id = item.extra_data.pool_id;
+          }
+
           return item;
         });
       if (d2FinanceIdx !== -1) {
