@@ -61,7 +61,7 @@ const Content = (props: any) => {
     handleAmountChange(balance);
   };
   const getPercentage = (_amount: string) => {
-    _amount = Big(_amount).gt(balance) ? balance : _amount;
+    _amount = Big(_amount).gt(balance || 0) ? balance : _amount;
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
