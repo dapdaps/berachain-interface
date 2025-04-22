@@ -69,8 +69,8 @@ const DAPPS = [
     rotate: 8,
     message: {
       avatar: "/images/vaults/v2/avatar-beraborrow.png",
-      avatarCorner: icons[80094],
-      avatarCornerFullRounded: true,
+      avatarCorner: Beraborrow.basic.icon,
+      avatarCornerFullRounded: false,
       name: "Kobble",
       title: "Founder of BeraBorrow",
       content: "The Berachain ecosystem offers some of the most exciting DeFi opportunities today, but it often requires visiting several dApps. Beratown simplifies this by offering everything in one intuitive dApp!",
@@ -85,9 +85,18 @@ const DAPPS = [
     bg: "#FFF5A9",
     rotate: -8,
     message: {
-      avatar: "/images/vaults/v2/avatar-berahub.png",
-      title: "",
-      content: "",
+      avatar: "/images/vaults/v2/avatar-kodiak.png",
+      avatarCorner: Kodiak.icon,
+      avatarCornerFullRounded: false,
+      name: "Bera Rodman",
+      title: "Lead BD, Kodiak",
+      content: "The best yields onchain, accessible from Beratown.",
+      contentStyle: {
+        textAlign: "center",
+        fontSize: 18,
+      },
+      bg: "#FFF5A9",
+      rotate: 3,
     },
   },
 ];
@@ -113,16 +122,16 @@ const Aggregating = (props: any) => {
                 offset={20}
                 content={dapp.message.title ? (
                   <div
-                    className="w-[300px] bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] pt-[30px] pb-[20px] px-[20px] shrink-0 border border-[#847B36] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]"
+                    className="w-[300px] min-h-[265px] flex flex-col justify-between bg-[url('/images/vaults/v2/berachain-logo.svg')] bg-no-repeat bg-center bg-[length:169px_82px] pt-[30px] pb-[20px] px-[20px] shrink-0 border border-[#847B36] shadow-[6px_14px_0px_0px_rgba(0,_0,_0,_0.25)] font-Fuzzy text-black text-[15px] font-normal leading-[150%]"
                     style={{
                       backgroundColor: dapp.message.bg,
                       transform: `rotate(${dapp.message.rotate}deg)`,
                     }}
                   >
-                    <div className="">
+                    <div className="" style={dapp.message.contentStyle as any}>
                       '{dapp.message.content}'
                     </div>
-                    <div className="w-full flex items-center gap-[15px] mt-[20px]">
+                    <div className="w-full flex items-center gap-[15px] mt-auto pt-[20px]">
                       <div
                         className="relative w-[64px] h-[64px] shrink-0 rounded-full border-[2px] border-black bg-no-repeat bgcenter bg-contain"
                         style={{
