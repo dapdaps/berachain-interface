@@ -8,6 +8,7 @@ import onBurrbear from "./burrbear/action";
 import onWeBera from "./webera/action";
 import onMemeswap from "./memeswap/action";
 import onD2Finance from "./d2-finance/action";
+import onBeraborrow from "./beraborrow/action";
 
 export default function onAction(params: any) {
   const { currentRecord } = params;
@@ -50,5 +51,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "D2 Finance") {
     return onD2Finance(params);
+  }
+
+  if (currentRecord.protocol === "BeraBorrow") {
+    return onBeraborrow(params);
   }
 }
