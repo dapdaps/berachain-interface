@@ -26,7 +26,7 @@ const CurrencyInput = forwardRef<any, any>((props, ref) => {
           className={`${isTokenSelectable ? 'cursor-pointer' : ''} absolute right-[14px] top-[50%] translate-y-[-50%] w-[176px] md:w-[120px] h-[46px] flex justify-between items-center rounded-[8px] border border-[#373A53] bg-[#FFFDEB] p-[10px_14px_10px_7px]`}
           style={tokenSelectorStyle}
         >
-          <div className="flex items-center gap-[8px]">
+          <div className="flex items-center gap-[8px] w-full">
             {
               !!token?.underlyingTokens ? (
                 <div className="flex items-center shrink-0">
@@ -46,9 +46,19 @@ const CurrencyInput = forwardRef<any, any>((props, ref) => {
                 <img src={token?.icon} alt="" className="w-[26px] h-[26px] rounded-full border-0 shrink-0" />
               )
             }
-            <div className="leading-none whitespace-nowrap">
-              <div className="text-[16px] font-[600] text-black">{token?.symbol}</div>
-              <div className="text-[12px] text-[#3D405A] font-[500] mt-[3px]">{token?.name}</div>
+            <div className="leading-none whitespace-nowrap flex-1 w-0">
+              <div
+                className="text-[16px] font-[600] text-black w-full whitespace-nowrap overflow-hidden overflow-ellipsis"
+                title={token?.symbol}
+              >
+                {token?.symbol}
+              </div>
+              <div
+                className="text-[12px] text-[#3D405A] font-[500] mt-[3px] w-full whitespace-nowrap overflow-hidden overflow-ellipsis"
+                title={token?.name}
+              >
+                {token?.name}
+              </div>
             </div>
           </div>
           {
