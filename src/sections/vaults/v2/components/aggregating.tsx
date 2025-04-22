@@ -73,7 +73,7 @@ const DAPPS = [
       avatarCornerFullRounded: true,
       name: "Kobble",
       title: "Founder of BeraBorrow",
-      content: "The Berachain ecosystem has some of the most exciting opportunities in DeFi right now, but it often requires visiting multiple dApps. Beratown is a brilliant product of what is possible on Berachain, all packaged into one intuitive dApp.",
+      content: "The Berachain ecosystem offers some of the most exciting DeFi opportunities today, but it often requires visiting several dApps. Beratown simplifies this by offering everything in one intuitive dApp!",
       bg: "#DBECF8",
       rotate: -3,
     },
