@@ -181,9 +181,37 @@ const brands = [
   {
     name: "137labs-2",
     logo: "/images/invite/137labs.png",
-    displayName: "137Labs",
+    displayName: `老金’s community`,
   }
 ];
+
+const hasChinese = (text: string) => /[\u4e00-\u9fa5]/.test(text);
+
+const splitChineseAndEnglish = (text: string) => {
+  const chineseChars = text.match(/[\u4e00-\u9fa5]+/g) || [];
+  const chinese = chineseChars.join('');
+  let english = text;
+  chineseChars.forEach(char => {
+    english = english.replace(char, '');
+  });
+  
+  return { chinese, english };
+};
+
+const BrandDisplayName: React.FC<{ name: string }> = ({ name }) => {
+  if (!hasChinese(name)) {
+    return <span>{name}</span>;
+  }
+  
+  const { chinese, english } = splitChineseAndEnglish(name);
+  
+  return (
+    <span>
+      {chinese && <span className="font-YouYuan text-[16px] font-[800]">{chinese}</span>}
+      {english}
+    </span>
+  );
+};
 
 const Content = () => {
   const { handleReport } = useClickTracking();
@@ -268,7 +296,7 @@ const Content = () => {
             </div>
             <div className="mt-3">
               You have been invited by{" "}
-              <span className="underline">[{brand.displayName}]</span>
+              <span className="underline">[<BrandDisplayName name={brand.displayName} />]</span>
             </div>
           </div>
           {address ? (
@@ -295,12 +323,15 @@ const Content = () => {
 
           <div className="w-full flex flex-col items-end justify-end mt-2 text-[20px] font-CherryBomb px-[40px] text-[#453636] leading-[18px]">
             <div>Love</div>
-            <div>{brand.displayName} & BeraTown</div>
+            <div><BrandDisplayName name={brand.displayName} /> & BeraTown</div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+
+
 
 export default InviteViews;
