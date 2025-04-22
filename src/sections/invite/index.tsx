@@ -177,6 +177,11 @@ const brands = [
     name: "137labs",
     logo: "/images/invite/137labs.png",
     displayName: "137Labs",
+  },
+  {
+    name: "137labs-2",
+    logo: "/images/invite/137labs.png",
+    displayName: "137Labs",
   }
 ];
 
