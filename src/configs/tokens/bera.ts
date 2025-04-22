@@ -152,14 +152,6 @@ export const bera: { [key: string]: Token } = {
     name: "Reservoir Stablecoin",
     icon: "/assets/tokens/rusd.png"
   },
-  "rusd ot": {
-    chainId: CHAIN_ID,
-    address: "0x4a8b5283e053a8b118eadc4981e8ec8659995652",
-    decimals: 18,
-    symbol: "rUSD OT",
-    name: "rUSD OT",
-    icon: "/assets/tokens/rusd.png"
-  },
   beraeth: {
     chainId: CHAIN_ID,
     address: "0x6fc6545d5cde268d5c7f1e476d444f39c995120d",
@@ -424,31 +416,13 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/bitcoin.webp",
     color: "rgb(0,0,0)"
   },
-  wizz: {
+  ohm: {
     chainId: CHAIN_ID,
-    address: "0x01c8a5ccad23a4d3764ef71c403862160aa2913a",
-    symbol: "WIZZ",
-    name: "Wizzwoods Token",
-    decimals: 18,
-    icon: "/assets/tokens/wizz.svg",
-    color: "rgb(0,0,0)"
-  },
-  br: {
-    chainId: CHAIN_ID,
-    address: "0xd352dc6e5f0c45e2f2b38eb5565eb286a1ea4087",
-    symbol: "BR",
-    name: "Bedrock",
-    decimals: 18,
-    icon: "/assets/tokens/bedrock.png",
-    color: "rgb(0,0,0)"
-  },
-  pollen: {
-    chainId: CHAIN_ID,
-    address: "0xc99e948e9d183848a6c4f5e6c1d225f02f171d79",
-    symbol: "POLLEN",
-    name: "POLLEN",
-    decimals: 18,
-    icon: "/assets/tokens/pollen.png",
-    color: "rgb(0,0,0)"
-  },
+    address: "0x18878Df23e2a36f81e820e4b47b4A40576D3159C",
+    symbol: "OHM",
+    name: "Olympus",
+    decimals: 9,
+    icon: "/assets/tokens/ohm.webp",
+    color: "rgb(117,138,149)"
+  }
 };
