@@ -13,7 +13,8 @@ const config: Config = {
     fontFamily: {
       Montserrat: ["Montserrat"],
       CherryBomb: ["Cherry Bomb"],
-      Fuzzy: ["Fuzzy"]
+      Fuzzy: ["Fuzzy"],
+      YouYuan: ["YouYuan"]
     },
     backgroundImage: {
       vault: "linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)",
