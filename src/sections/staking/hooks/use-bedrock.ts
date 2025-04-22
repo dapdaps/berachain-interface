@@ -3,76 +3,38 @@ import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import Big from "big.js";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import bedrock from "@/configs/staking/dapps/bedrock";
+import useTokensBalance from "@/hooks/use-tokens-balance";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { STAKE_ABI } from "../constant";
+import useUpdaterStore from "@/stores/useUpdaterStore";
 
-export const ERC20_ABI = [
-  {
-    constant: true,
-    inputs: [
-      {
-        name: "_owner",
-        type: "address"
-      }
-    ],
-    name: "balanceOf",
-    outputs: [
-      {
-        name: "balance",
-        type: "uint256"
-      }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  }
-];
-
-const STAKE_ABI = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_token",
-        type: "address"
-      },
-      {
-        internalType: "uint256",
-        name: "_amount",
-        type: "uint256"
-      }
-    ],
-    name: "mint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  }
-];
-export default function useBedrock(dexConfig: any) {
+export default function useBedrock(productType: 'uniBTC' | 'brBTC' = 'uniBTC') {
   const { addAction } = useAddAction("dapp");
-  const { STAKE_ADDRESS, sourceToken, targetToken } = dexConfig;
-
   const { provider, account, chainId } = useCustomAccount();
   const toast = useToast();
-  const [balance, setBalance] = useState(0);
+
+  const dappConfig = useMemo(() => {
+    const chainConfig = bedrock.chains?.[DEFAULT_CHAIN_ID as keyof typeof bedrock.chains];
+    return chainConfig?.[productType];
+  }, [productType]);
+
+  const { STAKE_ADDRESS, sourceToken, targetToken } = dappConfig || {};
+
   const [inAmount, setInAmount] = useState("");
 
-  async function getBalance() {
-    const contract = new ethers.Contract(
-      sourceToken?.address,
-      ERC20_ABI,
-      provider
-    );
-    try {
-      const result = await contract.balanceOf(account);
-      // @ts-ignore
-      setBalance(ethers.utils.formatUnits(result, sourceToken?.decimals));
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const tokens = useMemo(() => [sourceToken, targetToken], [sourceToken, targetToken]);
+  const { loading: getBalanceLoading, balances, queryBalance } = useTokensBalance(tokens);
+  
+  const prices = usePriceStore((store) => store.price);
+  const updater = useUpdaterStore((state) => state.updater);
+
+
   function handleMax() {
     // @ts-ignore
-    setInAmount(balance);
+    if (balances?.[sourceToken.address]) setInAmount(balances?.[sourceToken.address]);
   }
   function handleAmountChange(amount: any) {
     setInAmount(amount);
@@ -164,7 +126,7 @@ export default function useBedrock(dexConfig: any) {
   }
   function onSuccess() {
     setInAmount("");
-    getBalance();
+    queryBalance();
   }
 
   function handleCopy(address: any) {
@@ -173,19 +135,27 @@ export default function useBedrock(dexConfig: any) {
       title: `Copied address ${address}`
     });
   }
+
   useEffect(() => {
-    if (account && provider) {
-      getBalance();
-    }
-  }, [account, provider]);
+    queryBalance();
+  }, [provider, updater, targetToken]);
 
   return {
-    balance,
+    stakedAmount: balances?.[targetToken?.address],
+    stakedAmountUsd: Big(balances?.[targetToken?.address] || 0).times(prices?.[targetToken?.symbol] || 0).toFixed(5),
+    availableAmount: balances?.[sourceToken?.address],
+    availableAmountUsd: Big(balances?.[sourceToken?.address] || 0).times(prices?.[sourceToken?.symbol] || 0).toFixed(5),
     inAmount,
     handleMax,
     handleAmountChange,
     handleDeposit,
-    handleCopy
-    // setInAmount
+    handleCopy,
+    getBalanceLoading,
+    balances,
+    sourceToken,
+    targetToken,
+    dappConfig,
+    exchangeRate: 1,
+    productType, 
   };
 }
