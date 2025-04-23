@@ -88,8 +88,8 @@ const MintStable = () => {
     
     if (
       !toElement || 
-      (containerRef.current && !containerRef.current.contains(toElement) && 
-       dropdownRef.current && !dropdownRef.current.contains(toElement))
+      (containerRef.current && toElement instanceof Node && !containerRef.current.contains(toElement) && 
+       dropdownRef.current && toElement instanceof Node && !dropdownRef.current.contains(toElement))
     ) {
       setIsHovered(false);
       setIsDropdownOpen(false);
