@@ -89,13 +89,19 @@ export default {
           id: "RUSD-RUSD OT",
           ichiAddress: "0x20a49a266AE70d07Ba066Ef1F8b6e670216Ab2a6",
           tokens: [bera["rusd"], bera["rusd ot"]],
-          chainTopTokens: [bera["rusd ot"], bera["rusd"]]
+          chainTopTokens: [bera["rusd"], bera["rusd ot"]]
         },
         {
-          id: "AB-KODIAK-WBERA-HENLO-10000",
+          id: "WBERA-HENLO",
           ichiAddress: "0x04fd6a7b02e2e48caedad7135420604de5f834f8",
-          tokens: [bera["henlo"], bera["wbera"]],
+          tokens: [bera["wbera"], bera["henlo"]],
           chainTopTokens: [bera["wbera"], bera["henlo"]],
+        },
+        {
+          id: "WBERA-BERAMO",
+          ichiAddress: "0xf9845a03f7e6b06645a03a28b943c8a4b5fe7bcc",
+          tokens: [bera["wbera"], bera["beramo"]],
+          chainTopTokens: [bera["wbera"], bera["beramo"]],
         },
       ]
     }

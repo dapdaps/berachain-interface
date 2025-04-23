@@ -253,7 +253,7 @@ export function useDetail(props: any) {
       contract[stakeMethod](...params, { gasLimit })
         .then((tx: any) => tx.wait())
         .then((receipt: any) => {
-          const { status, transactionHash } = receipt;
+          const { status, transactionHash } = receipt ?? {};
 
           addAction?.({
             type: "Staking",
@@ -338,7 +338,7 @@ export function useDetail(props: any) {
             isLoading: false,
             isPostTx: true
           });
-          const { status, transactionHash } = receipt;
+          const { status, transactionHash } = receipt ?? {};
 
           addAction?.({
             type: "Staking",
@@ -420,7 +420,7 @@ export function useDetail(props: any) {
       .getReward()
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
-        const { status, transactionHash } = receipt;
+        const { status, transactionHash } = receipt ?? {};
         const rewardToken = data?.initialData?.reward_tokens.find(
           (token: any) => token.symbol === data?.rewardSymbol
         );

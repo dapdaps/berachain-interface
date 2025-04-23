@@ -68,6 +68,16 @@ export default function AddLiquidityModal(props: any) {
     if (["bex", "burrbear"].includes(dex?.toLowerCase())) return { data };
     if (["aquabera"].includes(dex?.toLowerCase())) {
       const _chains: any = AquaBeraConfig["chains"];
+      let chainTopTokens = [
+        data.tokens[0],
+        data.tokens[1],
+      ];
+      if (/^W?BERA$/i.test(data.tokens[1].symbol)) {
+        chainTopTokens = [
+          data.tokens[1],
+          data.tokens[0],
+        ];
+      }
       return {
         ...data,
         config: { ..._chains[DEFAULT_CHAIN_ID] },
@@ -75,24 +85,21 @@ export default function AddLiquidityModal(props: any) {
           pool: {
             apr: Big(data.totalApy || 0).times(7).div(365).toNumber(),
             balance: data.balance || 10,
-            chainTopTokens: [
-              data.tokens[1],
-              data.tokens[0],
-            ],
+            chainTopTokens: chainTopTokens,
             ichiAddress: data.pool_address,
             id: data.name,
             platform: dex?.toLowerCase(),
-            tokens: data.tokens,
+            tokens: chainTopTokens,
             tvl: data.tvl,
             usdDepositAmount: data.user_stake ? data.user_stake.usd : 0,
             values: ["0", "0"],
             yourValue: "0"
           },
           token0: {
-            ...data.tokens[0],
+            ...chainTopTokens[0],
           },
           token1: {
-            ...data.tokens[1],
+            ...chainTopTokens[1],
           },
         },
         show: true,
