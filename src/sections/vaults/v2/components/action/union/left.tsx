@@ -9,6 +9,7 @@ import Popover, {
 import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
 import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
+import DoubleTokenIcons from "@/components/token-icon/double";
 
 const ActionUnionLeft = (props: any) => {
   const { className } = props;
@@ -75,14 +76,26 @@ const ActionUnionLeft = (props: any) => {
                           contentClassName="!z-[101]"
                         >
                           <div key={idx} className="relative">
-                            <LazyImage
-                              src={token.icon}
-                              containerClassName={clsx(
-                                "!w-[34px] !h-[34px] rounded-[50%] overflow-hidden shrink-0",
-                                idx > 0 && "ml-[-10px]"
-                              )}
-                              fallbackSrc="/assets/tokens/default_icon.png"
-                            />
+                            {typeof token.icon === "string" ? (
+                              <LazyImage
+                                src={token.icon}
+                                containerClassName={clsx(
+                                  "!w-[34px] !h-[34px] rounded-[50%] overflow-hidden shrink-0",
+                                  idx > 0 && "ml-[-10px]"
+                                )}
+                                fallbackSrc="/assets/tokens/default_icon.png"
+                              />
+                            ) : (
+                              <DoubleTokenIcons
+                                size={34}
+                                icon0={token.icon[0]}
+                                icon1={token.icon[1]}
+                                className={clsx(
+                                  "!w-[34px] !h-[34px] rounded-[50%] overflow-hidden shrink-0",
+                                  idx > 0 && "ml-[-10px]"
+                                )}
+                              />
+                            )}
                             <LazyImage
                               key={index}
                               src={protocol.protocolIcon}
@@ -143,33 +156,35 @@ const ActionUnionLeft = (props: any) => {
                       })}
                     </div>
                   ))} */}
-                  <Popover
-                    triggerContainerClassName="inline-block"
-                    contentClassName="!z-[101]"
-                    content={
-                      <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
-                        Claim rewards
-                      </Card>
-                    }
-                    trigger={PopoverTrigger.Hover}
-                    placement={PopoverPlacement.Top}
-                    closeDelayDuration={0}
-                  >
-                    <button
-                      type="button"
-                      className="shrink-0 w-[53px] h-[25px] rounded-[6px] bg-[#FFDC50] border border-black text-[14px] font-[500] flex justify-center items-center mt-[5px]"
-                      onClick={() => {
-                        setCurrentProtocol(protocol);
-                        toggleClaimVisible(true, protocol.user_reward);
-                      }}
-                      style={{
-                        display:
-                          protocol.user_reward?.length > 0 ? "flex" : "none"
-                      }}
+                  {!["BeraBorrow"].includes(currentProtocol.protocol) && (
+                    <Popover
+                      triggerContainerClassName="inline-block"
+                      contentClassName="!z-[101]"
+                      content={
+                        <Card className="!rounded-[10px] !bg-white !p-[7px_12px] !text-[14px] font-[500]">
+                          Claim rewards
+                        </Card>
+                      }
+                      trigger={PopoverTrigger.Hover}
+                      placement={PopoverPlacement.Top}
+                      closeDelayDuration={0}
                     >
-                      Claim
-                    </button>
-                  </Popover>
+                      <button
+                        type="button"
+                        className="shrink-0 w-[53px] h-[25px] rounded-[6px] bg-[#FFDC50] border border-black text-[14px] font-[500] flex justify-center items-center mt-[5px]"
+                        onClick={() => {
+                          setCurrentProtocol(protocol);
+                          toggleClaimVisible(true, protocol.user_reward);
+                        }}
+                        style={{
+                          display:
+                            protocol.user_reward?.length > 0 ? "flex" : "none"
+                        }}
+                      >
+                        Claim
+                      </button>
+                    </Popover>
+                  )}
                 </div>
                 <button
                   type="button"

@@ -449,7 +449,7 @@ export function useList(): List {
             token.icon = getTokenLogo(token.symbol?.replace(/\s/g, ""));
           });
           item.reward_tokens.forEach((token: any) => {
-            token.icon = getTokenLogo(token.symbol);
+            token.icon = (item.project === "BeraBorrow" && item.tokens.length > 1) ? item.tokens.map((token:any) => getTokenLogo(token.symbol)) : getTokenLogo(token.symbol);
             token.link = `https://berascan.com/token/${token.address}`;
           });
           item.user_reward.forEach((reward: any) => {
@@ -542,6 +542,7 @@ export function useList(): List {
         };
         _data[d2FinanceIdx].token = _data[d2FinanceIdx].tokens[0];
       }
+    
       setData(_data);
     } catch (err: any) {
       console.log("get vaults list error:", err.message);
