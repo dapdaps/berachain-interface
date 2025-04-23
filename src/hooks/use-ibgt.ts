@@ -5,7 +5,7 @@ import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import useToast from "@/hooks/use-toast";
 import { useMultiState } from "@/hooks/use-multi-state";
 import Big from "big.js";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from 'next/navigation';
 import useClickTracking from "@/hooks/use-click-tracking";
 import useAddAction from "@/hooks/use-add-action";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
@@ -57,7 +57,9 @@ export function useIBGT() {
   const router = useRouter();
   const { handleReport } = useClickTracking();
   const { provider, account } = useCustomAccount();
-  const { addAction } = useAddAction("ibgt");
+  const searchParams = useSearchParams();
+  const searchParamFrom = searchParams.get("from");
+  const { addAction } = useAddAction(searchParamFrom === "vaults" ? "vaults" : "ibgt");
   const sender = account;
 
   const [data, setData] = useState<DataType>({

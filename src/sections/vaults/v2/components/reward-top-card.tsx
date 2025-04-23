@@ -35,7 +35,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             type: "primary",
             text: "Stake",
-            link: "/hall?tab=ibgt",
+            link: "/hall?tab=ibgt&from=vaults",
           },
         ],
       },
@@ -54,12 +54,12 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             type: "default",
             text: "View all validators",
-            link: "/hall?tab=validators",
+            link: "/hall?tab=validators&from=vaults",
           },
           {
             type: "primary",
             text: "+ Boost",
-            link: `/bgt/validator?id=${BGTPageData?.top3EmittingValidators?.validators?.[0]?.id}`,
+            link: `/bgt/validator?id=${BGTPageData?.top3EmittingValidators?.validators?.[0]?.id}&from=vaults`,
           },
         ],
       },
