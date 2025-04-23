@@ -10,12 +10,14 @@ import BgtEmpty from "../components/bgt-empty";
 import useList from "./hooks/use-list";
 import { bera } from "@/configs/tokens/bera";
 import QueueList from "@/sections/bgt/components/delegate/queue-list";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from 'next/navigation';
 // import usePageData from "./hooks/use-page-data";
 
 export default memo(function Validators() {
   const router = useRouter()
   const { pageData } = useBGT()
+  const searchParams = useSearchParams();
+  const searchParamFrom = searchParams.get("from");
 
   const [currentTab, setCurrentTab] = useState("all")
 
@@ -322,7 +324,7 @@ export default memo(function Validators() {
               handleSort(index, sortOrder === "desc" ? "asc" : "desc")
             }}
             onRow={(record) => {
-              router.push("/bgt/validator?id=" + record.id)
+              router.push("/bgt/validator?id=" + record.id + "&from=" + searchParamFrom)
             }}
             pagination={currentTab === "all" ? (
               <div className="flex justify-end mt-[8px]">
