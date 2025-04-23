@@ -219,7 +219,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
               return (
                 <Link
                   key={index}
-                  href={item.link}
+                  href={item.link as string}
                   className={clsx(
                     'flex items-center justify-center gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
                     item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
@@ -254,5 +254,5 @@ export interface RewardTopCardItem {
   bg: string;
   title: string;
   token: { name: string; address: string; symbol: string; decimals: number; };
-  button: { type?: "primary" | "default", text: string; link: string; pool_address?: string; }[];
+  button: { type?: "primary" | "default", text: string; link?: string; pool_address?: string; }[];
 }
