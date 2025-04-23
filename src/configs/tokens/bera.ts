@@ -152,6 +152,14 @@ export const bera: { [key: string]: Token } = {
     name: "Reservoir Stablecoin",
     icon: "/assets/tokens/rusd.png"
   },
+  "rusd ot": {
+    chainId: CHAIN_ID,
+    address: "0x4a8b5283e053a8b118eadc4981e8ec8659995652",
+    decimals: 18,
+    symbol: "rUSD OT",
+    name: "rUSD OT",
+    icon: "/assets/tokens/rusd.png"
+  },
   beraeth: {
     chainId: CHAIN_ID,
     address: "0x6fc6545d5cde268d5c7f1e476d444f39c995120d",

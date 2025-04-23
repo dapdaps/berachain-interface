@@ -90,7 +90,7 @@ export default memo(function Bedrock({ dapp }: any) {
                   type: "deposit",
                   symbol: sourceToken?.symbol,
                   amount: inAmount,
-                  minAmount: "0.0000001",
+                  minAmount: "0.0001",
                   decimals: sourceToken?.decimals,
                   balance,
                   address: sourceToken?.address,
