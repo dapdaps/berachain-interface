@@ -175,7 +175,10 @@ export default memo(function Delegate(props: IProps) {
           add: operationType === "delegate" ? 1 : 0,
           sub_type: operationType === "delegate" ? "Stake" : "Unstake",
           extra_data: JSON.stringify({
-            validator: validator?.address?.toLocaleLowerCase()
+            validator: validator?.address?.toLocaleLowerCase(),
+            token0Symbol: "BGT",
+            amount0: state.inAmount,
+            token0Address: "0x656b95e550c07a9ffe548bd4085c72418ceb1dba",
           })
         });
         updateState({
