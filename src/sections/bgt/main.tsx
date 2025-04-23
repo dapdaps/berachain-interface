@@ -16,6 +16,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 import Card from "@/components/card";
 import { numberFormatter } from "@/utils/number-formatter";
 import { color } from "framer-motion";
+import _ from "lodash";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -35,11 +36,11 @@ const CustomTooltip = ({ active, payload, label }) => {
                       className="min-w-[30px] w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
                       alt={data?.metadata?.name}
                     />
-                    <img
+                    {/* <img
                       src={getProtocolIcon(data?.metadata?.protocolName)}
                       className="w-[16px] h-[16px] absolute bottom-0 right-0"
                       alt=""
-                    />
+                    /> */}
                   </div>
                 )
               }
@@ -161,6 +162,8 @@ export default memo(function BgtMain() {
     handleExplore,
     handleValidator,
   } = useBGT(tab);
+
+  const [value, setValue] = useState("")
 
   function stringToHslColor(str, saturation = 70, lightness = 60) {
     let hash = 0;
@@ -309,7 +312,6 @@ export default memo(function BgtMain() {
 
       </div>
       <div className="my-[30px] flex justify-between items-center">
-
         <SwitchTabs
           tabs={[
             { label: 'All Vaults', value: 'all' },
@@ -323,10 +325,51 @@ export default memo(function BgtMain() {
           style={{ height: 40, borderRadius: 12 }}
           cursorStyle={{ borderRadius: 10 }}
         />
+        {
+          tab === 'all' && (
+            <div className="flex">
+              <div className="w-auto flex items-center border bg-[#fff] rounded-[12px] overflow-hidden border-[#373A53] px-[15px] gap-[10px]">
+                <svg
+                  width="21"
+                  height="15"
+                  viewBox="0 0 21 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="7.01829"
+                    cy="7.01829"
+                    r="6.01829"
+                    stroke="#3D4159"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="14.9138"
+                    y="9.64978"
+                    width="6.141"
+                    height="2.63186"
+                    rx="1.31593"
+                    transform="rotate(30 14.9138 9.64978)"
+                    fill="#3D4159"
+                  />
+                </svg>
+                <input
+                  className=" w-[300px] h-[40px] bg-inherit outline-none"
+                  placeholder="Search..."
+                  // value={value || ""}
+                  onChange={_.debounce((ev: any) => {
+                    console.log("======11111=====")
+                    setValue(ev.target.value);
+                  }, 500)}
+                />
+              </div>
+            </div>
+          )
+        }
       </div>
       {
         tab === 'all' ? (
-          <VaultsList />
+          <VaultsList value={value} />
         ) : (
           <FlexTable
             loading={loading}
