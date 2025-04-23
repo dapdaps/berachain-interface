@@ -5,7 +5,6 @@ interface VaultListParams {
   page?: number;
   sortBy?: 'activeIncentivesInHoney' | 'bgtInflationCapture';
   sortOrder?: 'asc' | 'desc';
-  filterByProduct?: string;
   query?: string;
 }
 
@@ -43,7 +42,6 @@ export const useVaultList = (initialParams?: VaultListParams) => {
     page: 1,
     sortBy: '',
     sortOrder: '',
-    filterByProduct: '',
     query: '',
     ...initialParams,
   });
@@ -62,6 +60,7 @@ export const useVaultList = (initialParams?: VaultListParams) => {
             "orderBy": params?.sortBy,
             "orderDirection": params?.sortOrder,
             "pageSize": pageSize, "skip": pageSize * (params?.page - 1),
+            "search": params?.query,
             "where": { "includeNonWhitelisted": false }
           },
           "query": "query GetVaults($where: GqlRewardVaultFilter, $pageSize: Int, $skip: Int, $orderBy: GqlRewardVaultOrderBy = bgtCapturePercentage, $orderDirection: GqlRewardVaultOrderDirection = desc, $search: String) {\n  polGetRewardVaults(\n    where: $where\n    first: $pageSize\n    skip: $skip\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    search: $search\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      __typename\n    }\n    vaults {\n      ...ApiVault\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}"
@@ -97,9 +96,12 @@ export const useVaultList = (initialParams?: VaultListParams) => {
     updateParams({ sortBy, sortOrder, page: 1 });
   };
 
-  const setFilter = (filterByProduct: string) => {
-    updateParams({ filterByProduct, page: 1 });
-  };
+  const setQuery = (query: VaultListParams['query']) => {
+    updateParams({
+      query
+    })
+  }
+
 
   return {
     data,
@@ -109,7 +111,7 @@ export const useVaultList = (initialParams?: VaultListParams) => {
     params,
     setPage,
     setSortBy,
-    setFilter,
+    setQuery,
     refresh: fetchData,
   };
 };
