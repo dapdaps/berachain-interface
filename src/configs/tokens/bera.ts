@@ -108,7 +108,15 @@ export const bera: { [key: string]: Token } = {
     decimals: 8,
     symbol: "uniBTC",
     name: "uniBTC",
-    icon: "/assets/tokens/uni-btc.png"
+    icon: "/assets/tokens/uniBTC.webp"
+  },
+  brbtc : {
+    chainId: CHAIN_ID,
+    address: "0x93919784c523f39cacaa98ee0a9d96c3f32b593e",
+    decimals: 8,
+    symbol: "brBTC",
+    name: "Bedrock BTC",
+    icon: "/assets/tokens/brBTC.webp"
   },
   nect: {
     chainId: CHAIN_ID,
@@ -415,6 +423,15 @@ export const bera: { [key: string]: Token } = {
     decimals: 8,
     icon: "/assets/tokens/bitcoin.webp",
     color: "rgb(0,0,0)"
+  },
+  ohm: {
+    chainId: CHAIN_ID,
+    address: "0x18878Df23e2a36f81e820e4b47b4A40576D3159C",
+    symbol: "OHM",
+    name: "Olympus",
+    decimals: 9,
+    icon: "/assets/tokens/ohm.webp",
+    color: "rgb(117,138,149)"
   },
   wizz: {
     chainId: CHAIN_ID,

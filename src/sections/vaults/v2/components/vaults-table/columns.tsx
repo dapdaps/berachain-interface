@@ -15,6 +15,7 @@ import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { uniq } from "lodash";
+import DoubleTokenIcons from "@/components/token-icon/double";
 
 export const Pool = (props: any) => {
   const { record, className } = props;
@@ -62,7 +63,8 @@ export const Vaults = (props: any) => {
             height={26}
             containerClassName={clsx(
               "shrink-0 overflow-hidden rounded-[8px] border border-[#FFFDEB]",
-              idx > 0 && "ml-[-6px]"
+              idx > 0 &&
+                (record.protocolIcon.length < 5 ? "ml-[-6px]" : "ml-[-10px]")
             )}
             fallbackSrc="/assets/tokens/default_icon.png"
           />
@@ -301,17 +303,29 @@ export const Rewards = (props: any) => {
               className="relative flex items-center gap-[4px]"
               whileHover={{ scale: 1.1, zIndex: 1 }}
             >
-              <LazyImage
-                src={reward.icon}
-                alt=""
-                width={isMobile ? 18 : 26}
-                height={isMobile ? 18 : 26}
-                containerClassName={clsx(
-                  "shrink-0 rounded-full overflow-hidden",
-                  index > 0 && "ml-[-10px]"
-                )}
-                fallbackSrc="/assets/tokens/default_icon.png"
-              />
+              {typeof reward.icon === "string" ? (
+                <LazyImage
+                  src={reward.icon}
+                  alt=""
+                  width={isMobile ? 18 : 26}
+                  height={isMobile ? 18 : 26}
+                  containerClassName={clsx(
+                    "shrink-0 rounded-full overflow-hidden",
+                    index > 0 && "ml-[-10px]"
+                  )}
+                  fallbackSrc="/assets/tokens/default_icon.png"
+                />
+              ) : (
+                <DoubleTokenIcons
+                  size={isMobile ? 18 : 26}
+                  icon0={reward.icon[0]}
+                  icon1={reward.icon[1]}
+                  className={clsx(
+                    "shrink-0 rounded-full overflow-hidden",
+                    index > 0 && "ml-[-10px]"
+                  )}
+                />
+              )}
             </motion.div>
           </Popover>
         ))}

@@ -7,19 +7,32 @@ import { formatValueDecimal } from "@/utils/balance";
 import Button from "../../Bridge/Button";
 import { usePriceStore } from "@/stores/usePriceStore";
 import Big from "big.js";
-export default memo(function Bedrock({ dapp }: any) {
+import BtcSelector from "../../components/selector";
 
+export default memo(function Bedrock({ dapp }: any) {
   const prices = usePriceStore(store => store.price)
   const [isSwitched, setIsSwitched] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('stake');
-  const dexConfig = dapp?.chains?.[DEFAULT_CHAIN_ID]
-  const { balance, inAmount, handleAmountChange, handleMax, handleDeposit, handleCopy } = useBedrock(dexConfig)
+  const [productType, setProductType] = useState<'uniBTC' | 'brBTC'>('uniBTC');
 
-  const {
-    STAKE_ADDRESS,
+  const { 
+    availableAmount: balance, 
+    inAmount, 
+    handleAmountChange, 
+    handleMax, 
+    handleDeposit, 
+    handleCopy, 
     sourceToken,
     targetToken,
-  } = dexConfig
+    dappConfig
+  } = useBedrock(productType);
+
+  const STAKE_ADDRESS = dappConfig?.STAKE_ADDRESS;
+
+  const handleProductChange = (type: 'uniBTC' | 'brBTC') => {
+    setProductType(type);
+  };
+
   return (
     <Tabs
       isCard
@@ -56,10 +69,15 @@ export default memo(function Bedrock({ dapp }: any) {
                 )
               }
 
-              <div className="mt-[16px] mb-[22px] flex items-center gap-[17px]">
+              <div className="mt-[16px] mb-[22px] flex items-center gap-[17px] pb-4">
                 <div className="flex flex-col gap-[15px] flex-1 h-[89px] rounded-[10px] bg-black/[0.06] pt-[25px] px-[20px] md:px-[10px]">
                   <div className="text-[#6F6F6F] font-Montserrat text-[16px] font-semibold leading-[90%]">You will receive</div>
-                  <div className="text-black font-Montserrat text-[16px] font-bold leading-[90%]">{inAmount ? inAmount : 0} {targetToken.symbol}</div>
+                  <div className="text-black font-Montserrat text-[16px] font-bold leading-[90%] w-full flex items-center justify-between">
+                    <div>{inAmount ? inAmount : 0}</div>
+                    <div className="">
+                      <BtcSelector onSelect={handleProductChange} selected={productType} />
+                    </div>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-[15px] flex-1 h-[89px] rounded-[10px] bg-black/[0.06] pt-[25px] px-[20px] md:px-[10px]">
                   <div className="text-[#6F6F6F] font-Montserrat text-[16px] font-semibold leading-[90%]">Staking pool fee</div>
@@ -80,7 +98,6 @@ export default memo(function Bedrock({ dapp }: any) {
                   onDepositOrWithdraw: handleDeposit,
                 }}
               >Stake</Button>
-
 
               <div className="mt-[28px] flex flex-col gap-[30px]">
                 <div className="flex items-center justify-between">
@@ -115,7 +132,6 @@ export default memo(function Bedrock({ dapp }: any) {
                   </div>
                 </div>
               </div>
-
             </div>
           )
         },

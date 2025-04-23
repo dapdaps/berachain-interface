@@ -6,12 +6,16 @@ import useCustomAccount from "@/hooks/use-account";
 import { formatValueDecimal } from "@/utils/balance";
 import { formatLongText, getProtocolIcon } from "@/utils/utils";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useVaultList } from "../hooks/useList";
 import IconArrow from '@public/images/icon-arrow.svg'
 import FlexTable from "@/components/flex-table";
 import Pager from "@/components/pager";
-const VaultsList = () => {
+const VaultsList = ({
+  value
+}: {
+  value: string
+}) => {
   const router = useRouter()
   const currChainTokens = useMemo(() => allTokens["80094"], [allTokens])
 
@@ -25,9 +29,10 @@ const VaultsList = () => {
     maxPage,
     setPage,
     setSortBy,
+    setQuery
   } = useVaultList({
     sortBy: "apr",
-    sortOrder: "desc"
+    sortOrder: "desc",
   });
 
   const Columns = [{
@@ -44,11 +49,11 @@ const VaultsList = () => {
               className="w-[30px] h-[30px] bg-[#0d0703] bg-opacity-10 border border-[#0d0703] text-white rounded-full"
               alt={item?.metadata?.name}
             />
-            <img
+            {/* <img
               src={getProtocolIcon(item?.metadata?.protocolName)}
               className="w-[16px] h-[16px] absolute bottom-0 right-0"
               alt=""
-            />
+            /> */}
           </div>
           <div className="flex flex-col">
             <div className="text-[16px] font-[600]">
@@ -136,6 +141,10 @@ const VaultsList = () => {
     },
   }]
 
+
+  useEffect(() => {
+    setQuery(value)
+  }, [value])
 
   return (
     <>
