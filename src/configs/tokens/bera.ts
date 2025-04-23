@@ -443,4 +443,13 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/pollen.png",
     color: "rgb(0,0,0)"
   },
+  beramo: {
+    chainId: CHAIN_ID,
+    address: "0x1f7210257fa157227d09449229a9266b0d581337",
+    symbol: "BERAMO",
+    name: "BeramoniumCoin",
+    decimals: 18,
+    icon: "/assets/tokens/beramo.svg",
+    color: "rgb(0,0,0)"
+  },
 };

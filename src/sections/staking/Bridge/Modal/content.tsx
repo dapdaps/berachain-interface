@@ -180,7 +180,7 @@ const Content = (props: any) => {
           : [ichiAddress, owner, token0?.address, wei, 0, account]
       })
         .then((receipt: any) => {
-          const { status, transactionHash } = receipt;
+          const { status, transactionHash } = receipt ?? {};
           const addParams = {
             type: "Staking",
             action: "Staking",
@@ -234,7 +234,7 @@ const Content = (props: any) => {
           updateState({
             isLoading: false
           });
-          const { status, transactionHash } = receipt;
+          const { status, transactionHash } = receipt ?? {};
           const addParams = {
             type: "Staking",
             action: "UnStake",
