@@ -83,7 +83,7 @@ const Beraborrow: React.FC<BeraborrowProps> = (props) => {
                                 <img
                                   src={t.icon}
                                   alt={t.symbol}
-                                  className="w-[30px] h-[30px]"
+                                  className="w-[30px] h-[30px] rounded-full object-contain object-center"
                                   style={{ marginLeft: i > 0 ? -10 : 0 }}
                                 />
                               ))

@@ -61,7 +61,7 @@ const Content = (props: any) => {
     handleAmountChange(balance);
   };
   const getPercentage = (_amount: string) => {
-    _amount = Big(_amount).gt(balance) ? balance : _amount;
+    _amount = Big(_amount).gt(balance || 0) ? balance : _amount;
     return Big(balance).eq(0)
       ? 0
       : Big(_amount)
@@ -180,7 +180,7 @@ const Content = (props: any) => {
           : [ichiAddress, owner, token0?.address, wei, 0, account]
       })
         .then((receipt: any) => {
-          const { status, transactionHash } = receipt;
+          const { status, transactionHash } = receipt ?? {};
           const addParams = {
             type: "Staking",
             action: "Staking",
@@ -234,7 +234,7 @@ const Content = (props: any) => {
           updateState({
             isLoading: false
           });
-          const { status, transactionHash } = receipt;
+          const { status, transactionHash } = receipt ?? {};
           const addParams = {
             type: "Staking",
             action: "UnStake",

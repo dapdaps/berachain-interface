@@ -24,6 +24,7 @@ import useValidators from "./hooks/use-validators";
 import { formatLongText } from "@/utils/utils";
 import { useBgtStore } from "@/stores/bgt";
 import QueueList from "./queue-list";
+import { useSearchParams } from 'next/navigation';
 const TABS = [
   {
     value: "Deposit",
@@ -52,7 +53,9 @@ export default memo(function Delegate(props: IProps) {
   const isMobile = useIsMobile();
 
   const toast = useToast();
-  const { addAction } = useAddAction("bgt");
+  const searchParams = useSearchParams();
+  const searchParamFrom = searchParams.get("from");
+  const { addAction } = useAddAction(searchParamFrom === "vaults" ? "vaults" : "bgt");
   const { loading, delegationQueue, getDelegationQueue } = useDelegationQueue();
 
   // const validators = store.validators
@@ -172,7 +175,10 @@ export default memo(function Delegate(props: IProps) {
           add: operationType === "delegate" ? 1 : 0,
           sub_type: operationType === "delegate" ? "Stake" : "Unstake",
           extra_data: JSON.stringify({
-            validator: validator?.address?.toLocaleLowerCase()
+            validator: validator?.address?.toLocaleLowerCase(),
+            token0Symbol: "BGT",
+            amount0: state.inAmount,
+            token0Address: "0x656b95e550c07a9ffe548bd4085c72418ceb1dba",
           })
         });
         updateState({

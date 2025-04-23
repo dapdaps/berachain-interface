@@ -10,6 +10,8 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 import Loading from '@/components/loading';
 import Link from 'next/link';
 import useIsMobile from '@/hooks/use-isMobile';
+import { useVaultsV2Context } from '@/sections/vaults/v2/context';
+import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 
 const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type } = props;
@@ -17,6 +19,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
   const isMobile = useIsMobile();
   const { tokenData: iBGTTokenData, loading: iBGTLoading } = useIBGT();
   const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
+  const { toggleActionVisible, listDataGroupByPool } = useVaultsV2Context();
 
   const RewardTopCardTypeMap = useMemo<Record<RewardTopCardType, RewardTopCardItem>>(() => {
     return {
@@ -35,7 +38,8 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             type: "primary",
             text: "Stake",
-            link: "/hall?tab=ibgt",
+            // link: "/hall?tab=ibgt&from=vaults",
+            pool_address: "0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b",
           },
         ],
       },
@@ -54,12 +58,12 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             type: "default",
             text: "View all validators",
-            link: "/hall?tab=validators",
+            link: "/hall?tab=validators&from=vaults",
           },
           {
             type: "primary",
             text: "+ Boost",
-            link: `/bgt/validator?id=${BGTPageData?.top3EmittingValidators?.validators?.[0]?.id}`,
+            link: `/bgt/validator?id=${BGTPageData?.top3EmittingValidators?.validators?.[0]?.id}&from=vaults`,
           },
         ],
       },
@@ -190,10 +194,32 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             currentItem.button.map((item, index) => {
               if (isMobile && item.type === 'default') return null;
+              if (item.pool_address) {
+                return (
+                  <button
+                    type="button"
+                    key={index}
+                    className={clsx(
+                      'flex items-center justify-center gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
+                      item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
+                    )}
+                    onClick={() => {
+                      const currPool = listDataGroupByPool?.find((it: any) => it.pool_address === item.pool_address);
+                      toggleActionVisible({
+                        type: ACTION_TYPE.DEPOSIT,
+                        record: currPool,
+                        visible: true
+                      });
+                    }}
+                  >
+                    {item.text}
+                  </button>
+                );
+              }
               return (
                 <Link
                   key={index}
-                  href={item.link}
+                  href={item.link as string}
                   className={clsx(
                     'flex items-center justify-center gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
                     item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
@@ -228,5 +254,5 @@ export interface RewardTopCardItem {
   bg: string;
   title: string;
   token: { name: string; address: string; symbol: string; decimals: number; };
-  button: { type?: "primary" | "default", text: string; link: string; }[];
+  button: { type?: "primary" | "default", text: string; link?: string; pool_address?: string; }[];
 }

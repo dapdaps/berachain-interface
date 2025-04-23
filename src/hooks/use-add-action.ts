@@ -121,7 +121,7 @@ export default function useAddAction(source: string, isNear = false) {
         if (data.extra_data) {
           data.tokens.forEach((token: any, i: number) => {
             data.extra_data[`token${i}Symbol`] = getReportTokenSymbol(token);
-            data.extra_data[`amount${i}`] = data.amounts[i];
+            data.extra_data[`amount${i}`] = data.amounts?.[i];
             data.extra_data[`token${i}Address`] = token.address;
           });
         }

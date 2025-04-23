@@ -5,10 +5,11 @@ import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import useToast from "@/hooks/use-toast";
 import { useMultiState } from "@/hooks/use-multi-state";
 import Big from "big.js";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from 'next/navigation';
 import useClickTracking from "@/hooks/use-click-tracking";
 import useAddAction from "@/hooks/use-add-action";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
+import { bera } from '@/configs/tokens/bera';
 
 export const IBGT_ADDRESS = "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b";
 export const STAKED_IBGT_ADDRESS = "0x75f3be06b02e235f6d0e7ef2d462b29739168301"
@@ -57,7 +58,9 @@ export function useIBGT() {
   const router = useRouter();
   const { handleReport } = useClickTracking();
   const { provider, account } = useCustomAccount();
-  const { addAction } = useAddAction("ibgt");
+  const searchParams = useSearchParams();
+  const searchParamFrom = searchParams.get("from");
+  const { addAction } = useAddAction(searchParamFrom === "vaults" ? "vaults" : "ibgt");
   const sender = account;
 
   const [data, setData] = useState<DataType>({
@@ -118,7 +121,31 @@ export function useIBGT() {
     () => fullDataList?.find((d: any) => d.id === "iBGT"),
     [fullDataList]
   );
-  const { tokens, decimals, id, LP_ADDRESS } = tokenData ?? {};
+  const { tokens, decimals, id, LP_ADDRESS, rewardSymbol } = tokenData ?? {};
+  const multipleAttributesTokens = useMemo(() => {
+    if (Array.isArray(tokens)) {
+      return tokens.map((token: any) => {
+        let _token: any = {
+          symbol: token,
+        };
+        const currToken = Object.values(bera).find((_t) => _t.symbol.toLowerCase() === token.toLowerCase());
+        if (currToken) {
+          _token = {
+            ...currToken,
+          };
+        }
+        return _token;
+      });
+    }
+    return [];
+  }, [tokens]);
+  const rewardTokenWithMultipleAttributes = useMemo(() => {
+    const currToken = Object.values(bera).find((_t) => _t.symbol.toLowerCase() === rewardSymbol?.toLowerCase());
+    return {
+      ...currToken,
+    };
+  }, [rewardSymbol]);
+
   const symbol = id;
   const isInSufficient = Number(inAmount) > Number(balances[symbol]);
   const isWithdrawInsufficient = Number(lpAmount) > Number(lpBalance);
@@ -305,14 +332,16 @@ export function useIBGT() {
           addAction?.({
             type: "Staking",
             action: "Staking",
-            tokens: tokens.map((token: string) => ({ symbol: token })),
+            tokens: multipleAttributesTokens,
             amount: inAmount,
+            amounts: [inAmount],
             template: "Infrared",
             status: status,
             add: 1,
             transactionHash,
             chain_id: chainId,
-            sub_type: "Stake"
+            sub_type: "Stake",
+            extra_data: {}
           });
           updateState({
             isLoading: false
@@ -397,14 +426,16 @@ export function useIBGT() {
           addAction?.({
             type: "Staking",
             action: "UnStake",
-            tokens: tokens.map((token: string) => ({ symbol: token })),
+            tokens: multipleAttributesTokens,
             amount: lpAmount,
+            amounts: [lpAmount],
             template: "Infrared",
             status: status,
             add: 0,
             transactionHash,
             chain_id: chainId,
-            sub_type: "Unstake"
+            sub_type: "Unstake",
+            extra_data: {}
           });
 
           setTimeout(() => {
@@ -446,7 +477,6 @@ export function useIBGT() {
     const toastId = toast?.loading({
       title: `Claim...`
     });
-
     const abi = [
       {
         constant: false,
@@ -471,13 +501,15 @@ export function useIBGT() {
           addAction?.({
             type: "Staking",
             action: "Claim",
-            tokens: tokenData ? [{ symbol: tokenData?.rewardSymbol }] : [],
+            tokens: tokenData ? [rewardTokenWithMultipleAttributes] : [],
             amount: tokenData?.earned,
+            amounts: [tokenData?.earned],
             template: "Infrared",
             status: status,
             transactionHash,
             chain_id: chainId,
-            sub_type: "Claim"
+            sub_type: "Claim",
+            extra_data: {}
           });
           toast?.dismiss(toastId);
           toast?.success({
