@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useIBGT } from '@/hooks/use-ibgt';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { numberFormatter } from '@/utils/number-formatter';
 import { BGT_ADDRESS, useBGT } from '@/hooks/use-bgt';
 import Skeleton from 'react-loading-skeleton';
@@ -12,6 +12,10 @@ import Link from 'next/link';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { ACTION_TYPE } from '@/sections/vaults/v2/config';
+import useValidator from '@/hooks/use-validator';
+import StakeBGTModal from '@/sections/vaults/v2/components/action/bgt/modal';
+import { useCurrentValidator } from '@/sections/bgt/validator/hooks/use-current-validator';
+import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
 
 const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type } = props;
@@ -19,7 +23,25 @@ const RewardTopCard = (props: RewardTopCardProps) => {
   const isMobile = useIsMobile();
   const { tokenData: iBGTTokenData, loading: iBGTLoading } = useIBGT();
   const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
-  const { toggleActionVisible, listDataGroupByPool } = useVaultsV2Context();
+  const { loading: validatorDetailLoading, pageData: validatorDetailData, getPageData: getValidatorDetailData } = useValidator();
+  const { estReturnPerBGT, list: incentiveList, priceDataLoading: incentiveLoading } = useIncentive({
+    // @ts-ignore
+    vaults: validatorDetailData?.rewardAllocationWeights ?? []
+  });
+  const { currentValidator, currentValidatorLoading, getCurrentValidator } = useCurrentValidator();
+  const { toggleActionVisible, listDataGroupByPool, toggleBgtVisible, bgtVisible } = useVaultsV2Context();
+  const [selectedValidator, setSelectedValidator] = useState<any>();
+
+  const top1Validator = useMemo(() => {
+    return BGTPageData?.top3EmittingValidators?.validators?.[0];
+  }, [BGTPageData]);
+
+  const [operateValidator] = useMemo(() => {
+    if (!selectedValidator) {
+      return [top1Validator];
+    }
+    return [selectedValidator];
+  }, [selectedValidator, top1Validator]);
 
   const RewardTopCardTypeMap = useMemo<Record<RewardTopCardType, RewardTopCardItem>>(() => {
     return {
@@ -63,12 +85,16 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             type: "primary",
             text: "+ Boost",
-            link: `/bgt/validator?id=${BGTPageData?.top3EmittingValidators?.validators?.[0]?.id}&from=vaults`,
+            loading: validatorDetailLoading || BGTLoading,
+            onClick: () => {
+              if (!validatorDetailData || validatorDetailLoading) return;
+              toggleBgtVisible(true);
+            },
           },
         ],
       },
     };
-  }, [BGTPageData]);
+  }, [BGTLoading, validatorDetailLoading, validatorDetailData]);
 
   const currentItem = RewardTopCardTypeMap[type];
 
@@ -105,12 +131,26 @@ const RewardTopCard = (props: RewardTopCardProps) => {
       ];
     }
     return [
-      BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.name,
+      top1Validator?.metadata?.name,
       "Top Validator",
-      BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.logoURI,
+      top1Validator?.metadata?.logoURI,
       BGTLoading
     ];
-  }, [type, iBGTTokenData, BGTPageData, iBGTLoading, BGTLoading]);
+  }, [type, iBGTTokenData, top1Validator, iBGTLoading, BGTLoading]);
+
+  useEffect(() => {
+    if (type !== RewardTopCardType.Bgt || !operateValidator) return;
+    if (!operateValidator) return;
+    getValidatorDetailData(operateValidator.id);
+    getCurrentValidator(operateValidator.id);
+  }, [type, operateValidator]);
+
+  useEffect(() => {
+    if (!bgtVisible) {
+      setSelectedValidator(void 0);
+      return;
+    }
+  }, [bgtVisible]);
 
   return (
     <div
@@ -194,16 +234,21 @@ const RewardTopCard = (props: RewardTopCardProps) => {
           {
             currentItem.button.map((item, index) => {
               if (isMobile && item.type === 'default') return null;
-              if (item.pool_address) {
+              if (item.pool_address || typeof item.onClick === "function") {
                 return (
                   <button
                     type="button"
                     key={index}
                     className={clsx(
-                      'flex items-center justify-center gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
+                      'flex items-center justify-center disabled:!cursor-not-allowed disabled:opacity-30 gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
                       item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
                     )}
-                    onClick={() => {
+                    disabled={item.loading}
+                    onClick={(e) => {
+                      if (typeof item.onClick === "function") {
+                        item.onClick(currentItem, e);
+                        return;
+                      }
                       const currPool = listDataGroupByPool?.find((it: any) => it.pool_address === item.pool_address);
                       toggleActionVisible({
                         type: ACTION_TYPE.DEPOSIT,
@@ -212,7 +257,12 @@ const RewardTopCard = (props: RewardTopCardProps) => {
                       });
                     }}
                   >
-                    {item.text}
+                    {
+                      item.loading && (
+                        <Loading size={12} />
+                      )
+                    }
+                    <div>{item.text}</div>
                   </button>
                 );
               }
@@ -222,16 +272,36 @@ const RewardTopCard = (props: RewardTopCardProps) => {
                   href={item.link as string}
                   className={clsx(
                     'flex items-center justify-center gap-[5px] min-w-[127px] md:w-full md:min-w-[unset] px-[15px] h-[40px] border border-black rounded-[10px] text-black font-Montserrat text-[14px] font-[500] leading-[120%]',
-                    item.type === 'primary' && 'bg-[#FFDC50] font-[600]'
+                    item.type === 'primary' && 'bg-[#FFDC50] font-[600]',
+                    item.loading && 'cursor-not-allowed opacity-30'
                   )}
                 >
-                  {item.text}
+                  {
+                    item.loading && (
+                      <Loading size={12} />
+                    )
+                  }
+                  <div>{item.text}</div>
                 </Link>
               );
             })
           }
         </div>
       </div>
+      {
+        type === RewardTopCardType.Bgt && (
+          <StakeBGTModal
+            pageData={validatorDetailData}
+            currentValidator={currentValidator}
+            estReturnPerBGT={estReturnPerBGT}
+            incentiveList={incentiveList}
+            loading={validatorDetailLoading || BGTLoading || currentValidatorLoading || incentiveLoading}
+            onValidatorSelect={(_selected: any) => {
+              setSelectedValidator(_selected);
+            }}
+          />
+        )
+      }
     </div>
   );
 };
@@ -254,5 +324,12 @@ export interface RewardTopCardItem {
   bg: string;
   title: string;
   token: { name: string; address: string; symbol: string; decimals: number; };
-  button: { type?: "primary" | "default", text: string; link?: string; pool_address?: string; }[];
+  button: {
+    type?: "primary" | "default";
+    text: string;
+    link?: string;
+    pool_address?: string;
+    loading?: boolean;
+    onClick?: (item: RewardTopCardItem, e: any) => void;
+  }[];
 }

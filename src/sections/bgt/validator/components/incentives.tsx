@@ -4,7 +4,7 @@ import { numberFormatter } from '@/utils/number-formatter';
 import Skeleton from 'react-loading-skeleton';
 
 const Incentives = (props: any) => {
-  const { className, list = [], loading } = props;
+  const { className, list = [], loading, listClassName } = props;
 
   return (
     <div className={clsx("", className)}>
@@ -14,7 +14,7 @@ const Incentives = (props: any) => {
       <div className="text-[#3D405A] font-Montserrat text-[14px] md:text-[12px] font-medium leading-normal mt-[7px]">
         Breakdown of incentives given to user for boosting this validator
       </div>
-      <div className="mt-[24px] md:mt-[8px] grid grid-cols-3 md:grid-cols-2 gap-x-[13px] md:gap-x-[10px] gap-y-[16px] md:gap-y-[12px]">
+      <div className={clsx("mt-[24px] md:mt-[8px] grid grid-cols-3 md:grid-cols-2 gap-x-[13px] md:gap-x-[10px] gap-y-[16px] md:gap-y-[12px]", listClassName)}>
         {
           loading ? (
             <>

@@ -17,6 +17,7 @@ export function useVaultsV2(): VaultsV2 {
   const [claimVisible, setClaimVisible] = useState(false);
   const [claimSuccessVisible, setClaimSuccessVisible] = useState(false);
   const [strategyVisible, setStrategyVisible] = useState(false);
+  const [bgtVisible, setBgtVisible] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<any>(null);
   const [currentProtocol, setCurrentProtocol] = useState<any>(null);
   const [currentReward, setCurrentReward] = useState<any>(null);
@@ -84,6 +85,14 @@ export function useVaultsV2(): VaultsV2 {
     );
   };
 
+  const toggleBgtVisible = (_bgtVisible?: boolean) => {
+    setBgtVisible(
+      typeof _bgtVisible === "boolean"
+        ? _bgtVisible
+        : !bgtVisible
+    );
+  };
+
   const toggleOpenAddLp = (_openAddLp?: boolean) => {
     setOpenAddLp(typeof _openAddLp === "boolean" ? _openAddLp : !openAddLp);
     if (_openAddLp) {
@@ -130,6 +139,8 @@ export function useVaultsV2(): VaultsV2 {
     totalStatistics,
     getTotalStatistics,
     totalStatisticsLoading,
+    bgtVisible,
+    toggleBgtVisible,
   };
 }
 
@@ -163,4 +174,6 @@ export interface VaultsV2 {
   totalStatistics: { id?: number; total_staked_transactions?: number; total_staked_volume?: string; total_transactions?: number; total_volume?: string; };
   getTotalStatistics: () => Promise<void>;
   totalStatisticsLoading: boolean;
+  bgtVisible: boolean;
+  toggleBgtVisible: (bgtVisible?: boolean) => void;
 }

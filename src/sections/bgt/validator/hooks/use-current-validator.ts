@@ -9,7 +9,11 @@ export function useCurrentValidator(props?: any) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
-  const { runAsync: getCurrentValidator, data: currentValidator, loading: currentValidatorLoading } = useRequest(async () => {
+  const { runAsync: getCurrentValidator, data: currentValidator, loading: currentValidatorLoading } = useRequest(async (_id?: string) => {
+    let queryId: any = _id;
+    if (!queryId) {
+      queryId = id;
+    }
     const res = await getValidatorsResponse({
       sortBy: "boostApr",
       sortOrder: "desc",
@@ -17,7 +21,7 @@ export function useCurrentValidator(props?: any) {
       pageSize: 10,
       "chain": "BERACHAIN",
       "where": {
-        idIn: [id]
+        idIn: [queryId]
       },
       "skip": 0,
     });
@@ -35,5 +39,6 @@ export function useCurrentValidator(props?: any) {
   return {
     currentValidator,
     currentValidatorLoading,
+    getCurrentValidator,
   };
 }
