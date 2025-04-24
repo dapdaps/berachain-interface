@@ -21,7 +21,9 @@ import { BGT_ABI } from '@/sections/bgt/abi';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 
 const DelegateContent = (props: any) => {
-  const { visible, validator, operationType, onClose, onValidatorSelect, className, isFromVaults } = props;
+  const { visible, validator, operationType, onClose, onValidatorSelect, className, isFromVaults, isShowTitle = true } = props;
+
+  console.log('operationType: %o', operationType);
 
   const { provider, account } = useCustomAccount();
   const isMobile = useIsMobile();
@@ -205,10 +207,14 @@ const DelegateContent = (props: any) => {
   return (
     <>
       <div className={clsx("", className)}>
-        <div className="flex items-center gap-[16px] text-black font-Montserrat text-[20px] font-bold leading-[90%]">
-          {isMobile && <Back onBack={onClose} />}
-          {operationType === "delegate" ? "Delegate" : "Unbond"}
-        </div>
+        {
+          isShowTitle && (
+            <div className="flex items-center gap-[16px] text-black font-Montserrat text-[20px] font-bold leading-[90%]">
+              {isMobile && <Back onBack={onClose} />}
+              {operationType === "delegate" ? "Delegate" : "Unbond"}
+            </div>
+          )
+        }
         <div className="mt-[35px] mb-[12px] w-full h-[72px] flex items-center gap-[8px] justify-between rounded-[12px] border border-[#373A53] bg-white">
           <input
             value={state?.inAmount}

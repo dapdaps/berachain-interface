@@ -30,7 +30,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
 
   const handleChange = (tab: any, idx: number) => {
     if (tab.value === current) return;
-    onChange?.(tab.value, idx);
+    onChange?.(tab.value, idx, tab);
 
     if (isScroll && tabsContainerRef.current && tabRefs.current[idx]) {
       const container = tabsContainerRef.current;
@@ -62,7 +62,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
     if (allRefsReady) {
       setIsReady(true);
       if (current === undefined && tabs.length > 0) {
-        onChange?.(tabs[0].value, 0);
+        onChange?.(tabs[0].value, 0, tabs[0]);
       }
     }
   }, [tabs, current, onChange]);
@@ -111,7 +111,7 @@ function SwitchTabs<Value = any>(props: Props<Value>) {
                 transition={{
                   type: "spring",
                   stiffness: 300,
-                  damping: 30
+                  damping: 20
                 }}
                 style={cursorStyle}
               />
@@ -175,7 +175,7 @@ interface Props<Value> {
   isScroll?: boolean;
   renderTag?: (tab: ITab) => React.ReactNode;
 
-  onChange?(current: Value, index: number): void;
+  onChange?(current: Value, index: number, tab: ITab): void;
   renderTabStyle?(
     tab: { value: Value; label: any; disabled?: boolean },
     idx: number

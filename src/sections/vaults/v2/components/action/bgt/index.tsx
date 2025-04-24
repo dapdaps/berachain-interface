@@ -7,11 +7,30 @@ import Big from 'big.js';
 import { numberFormatter } from '@/utils/number-formatter';
 import DelegateContent from '@/sections/bgt/components/delegate/content';
 import Incentives from '@/sections/bgt/validator/components/incentives';
+import SwitchTabs from '@/components/switch-tabs';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+
+const TABS = [
+  { label: "Boost +", value: "delegate" },
+  { label: "UnBoost -", value: "unbond" }
+];
 
 const StakeBGT = (props: any) => {
-  const { className, pageData, loading, currentValidator, estReturnPerBGT, onClose, onValidatorSelect, incentiveList } = props;
+  const {
+    className,
+    pageData,
+    loading,
+    currentValidator,
+    estReturnPerBGT,
+    onClose,
+    onValidatorSelect,
+    incentiveList,
+  } = props;
 
   const store: any = useBgtStore();
+
+  const [currentTab, setCurrentTab] = useState(TABS[0]);
 
   return (
     <Card className={clsx("rounded-[20px] !max-h-[80dvh] !overflow-y-auto !p-[46px_30px_54px] md:!p-[23px_15px_27px] w-[970px] md:w-full md:max-h-[80dvh] md:overflow-y-auto", className)}>
@@ -75,15 +94,57 @@ const StakeBGT = (props: any) => {
             listClassName="!grid-cols-1 !max-h-[260px] md:!max-h-[unset] !overflow-y-auto"
           />
         </div>
-        <div className="w-full bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[24px_20px_20px_20px] md:order-1">
-          <DelegateContent
-            visible={true}
-            validator={pageData}
-            operationType="delegate"
-            onClose={onClose}
-            onValidatorSelect={onValidatorSelect}
-            isFromVaults={true}
+        <div className="w-full overflow-hidden bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[24px_20px_20px_20px] md:order-1">
+          <SwitchTabs
+            tabs={TABS}
+            onChange={(val, idx, tab) => {
+              setCurrentTab(tab);
+            }}
+            current={currentTab.value}
+            className="w-full"
           />
+          <AnimatePresence mode="wait">
+            {
+              currentTab.value === TABS[0].value && (
+                <motion.div
+                  key={`delegate-${currentTab.value}`}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                >
+                  <DelegateContent
+                    visible={true}
+                    isShowTitle={false}
+                    validator={pageData}
+                    operationType={currentTab.value}
+                    onClose={onClose}
+                    onValidatorSelect={onValidatorSelect}
+                    isFromVaults={true}
+                  />
+                </motion.div>
+              )
+            }
+            {
+              currentTab.value === TABS[1].value && (
+                <motion.div
+                  key={`delegate-${currentTab.value}`}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                >
+                  <DelegateContent
+                    visible={true}
+                    isShowTitle={false}
+                    validator={pageData}
+                    operationType={currentTab.value}
+                    onClose={onClose}
+                    onValidatorSelect={onValidatorSelect}
+                    isFromVaults={true}
+                  />
+                </motion.div>
+              )
+            }
+          </AnimatePresence>
         </div>
       </div>
     </Card>
