@@ -63,9 +63,10 @@ export const Vaults = (props: any) => {
             height={26}
             containerClassName={clsx(
               "shrink-0 overflow-hidden rounded-[8px] border border-[#FFFDEB]",
-              idx > 0 &&
-                (record.protocolIcon.length < 5 ? "ml-[-6px]" : "ml-[-10px]")
             )}
+            containerStyle={{
+              marginLeft:  idx > 0 ?(record.protocolIcon.length < 5 ? -6 : -record.protocolIcon.length * 2 - 2 ) :0
+            }}
             fallbackSrc="/assets/tokens/default_icon.png"
           />
         ))}
