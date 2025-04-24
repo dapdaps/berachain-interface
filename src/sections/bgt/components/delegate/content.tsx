@@ -23,8 +23,6 @@ import { DEFAULT_CHAIN_ID } from '@/configs';
 const DelegateContent = (props: any) => {
   const { visible, validator, operationType, onClose, onValidatorSelect, className, isFromVaults, isShowTitle = true } = props;
 
-  console.log('operationType: %o', operationType);
-
   const { provider, account } = useCustomAccount();
   const isMobile = useIsMobile();
 
