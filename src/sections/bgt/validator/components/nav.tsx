@@ -5,10 +5,10 @@ import { formatLongText } from '@/utils/utils';
 import Loading from '@/components/loading';
 import Skeleton from 'react-loading-skeleton';
 const Nav = (props: any) => {
-  const { pageData, handleClick } = props;
+  const { pageData, handleClick, isAction = true, className } = props;
 
   return (
-    <div className="flex md:flex-col items-start md:items-stretch justify-between md:justify-start h-[146px] md:h-[unset] rounded-[20px] bg-[#FFDC50] pl-[87px] md:mt-[13px] md:px-[14px] md:pb-[14px]">
+    <div className={clsx("flex md:flex-col items-start md:items-stretch justify-between md:justify-start h-[146px] md:h-[unset] rounded-[20px] bg-[#FFDC50] pl-[87px] md:mt-[13px] md:px-[14px] md:pb-[14px]", className)}>
       <div className="flex-1 mt-[11px] mr-[69px] md:mr-[unset]">
         <div className="flex items-center gap-[17px] md:justify-center">
           {
@@ -82,24 +82,28 @@ const Nav = (props: any) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row gap-[12px] mt-[26px] md:mt-[33px] mr-[26px] md:mr-[unset]">
-        <div
-          className={clsx(BTN_CLASS, 'md:flex-1')}
-          onClick={() => {
-            handleClick("delegate")
-          }}
-        >
-          Boost +
-        </div>
-        <div
-          className={clsx(BTN_CLASS, "!bg-transparent border-black/50 md:flex-1")}
-          onClick={() => {
-            handleClick("unbond")
-          }}
-        >
-          UnBoost -
-        </div>
-      </div>
+      {
+        isAction && (
+          <div className="flex flex-col md:flex-row gap-[12px] mt-[26px] md:mt-[33px] mr-[26px] md:mr-[unset]">
+            <div
+              className={clsx(BTN_CLASS, 'md:flex-1')}
+              onClick={() => {
+                handleClick("delegate")
+              }}
+            >
+              Boost +
+            </div>
+            <div
+              className={clsx(BTN_CLASS, "!bg-transparent border-black/50 md:flex-1")}
+              onClick={() => {
+                handleClick("unbond")
+              }}
+            >
+              UnBoost -
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };

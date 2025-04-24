@@ -13,6 +13,7 @@ import { ethers } from "ethers";
 import { memo } from "react";
 import { BGT_ABI } from "../../abi";
 import { QueueType } from "./hooks/use-delegation-queue";
+import Empty from '@/components/empty';
 
 export default memo(function QueueList({
   empty,
@@ -200,8 +201,8 @@ export default memo(function QueueList({
       }
     </div>
   ) : (empty ? empty : (
-    <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium">
-      No validators in queue
+    <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium mt-[15px]">
+      <Empty desc="No validators in queue" />
     </div>
   ))
 })

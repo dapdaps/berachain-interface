@@ -14,7 +14,9 @@ const Summary = (props: any) => {
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">Validator Ranking</div>
           {
             pageData ? (
-              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">{pageData?.dynamicData?.activeBoostAmountRank} of {store?.totalCount ?? 0}</div>
+              <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
+                {pageData?.dynamicData?.activeBoostAmountRank} of {store?.totalCount ?? 0}
+              </div>
             ) : (
               <Skeleton className='w-[120px] h-[26px] rounded-[10px] leading-[26px]' />
             )

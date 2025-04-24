@@ -11,8 +11,7 @@ import BgtValidatorMobile from '@/sections/bgt/validator/mobile';
 import { formatValueDecimal } from '@/utils/balance';
 import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
-import { useSearchParams } from 'next/navigation';
-
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
 import { useCurrentValidator } from '@/sections/bgt/validator/hooks/use-current-validator';
@@ -24,6 +23,7 @@ const BgtValidator = (props: any) => {
   const searchParams = useSearchParams();
   const { data: bgtData } = useBGT();
 
+  const router = useRouter();
   const { getValidators } = useValidators();
   const { loading, pageData, getPageData } = useValidator();
   const { estReturnPerBGT, list: incentiveList } = useIncentive({
@@ -225,6 +225,16 @@ const BgtValidator = (props: any) => {
         operationType={operationType}
         onClose={handleClose}
         onValidatorSelect={(value: any) => {
+          try {
+            const search = window.location.search;
+            const params = new URLSearchParams(search);
+            if (params.has("id")) {
+              params.set("id", value?.id);
+            }
+            router.replace(`${window.location.pathname}?${params.toString()}`);
+          } catch (err: any) {
+            console.log(err);
+          }
           setValidatorId(value?.id);
         }}
       />

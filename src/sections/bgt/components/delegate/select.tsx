@@ -20,7 +20,8 @@ import { BEARCHAIN_API } from "@/hooks/use-bgt";
 import { formatLongText } from "@/utils/utils";
 import useValidators from "./hooks/use-validators";
 const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
-export default memo(function Select(props: any) {
+
+const Select = memo((props: any) => {
   const { visible, onClose, onDataChange, onValidatorSelect } = props;
   const isMobile = useIsMobile();
 
@@ -261,3 +262,5 @@ export default memo(function Select(props: any) {
     </Modal>
   );
 });
+
+export default Select;

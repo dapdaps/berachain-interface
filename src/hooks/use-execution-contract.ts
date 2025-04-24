@@ -18,7 +18,8 @@ export default function () {
         console.error(error)
       }
       try {
-        gas = gas ? Big(gas.toString()).div(2).toFixed(0) : 4000000;
+        gas = gas ? Big(gas.toString()).times(2).toFixed(0) : 4000000;
+        console.log('%s estimateGas gas limit is: %o', method, gas);
         const unsignedTx = await contract.populateTransaction[method](...params, {
           ...options,
           gasLimit: gas
