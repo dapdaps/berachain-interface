@@ -9,6 +9,7 @@ import onWeBera from "./webera/action";
 import onMemeswap from "./memeswap/action";
 import onD2Finance from "./d2-finance/action";
 import onBeraborrow from "./beraborrow/action";
+import onYeetit from "./yeetit/action";
 
 export default function onAction(params: any) {
   const { currentRecord } = params;
@@ -55,5 +56,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "BeraBorrow") {
     return onBeraborrow(params);
+  }
+
+  if (currentRecord.protocol === "Yeet") {
+    return onYeetit(params);
   }
 }

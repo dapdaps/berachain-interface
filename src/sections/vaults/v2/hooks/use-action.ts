@@ -27,9 +27,12 @@ export default function useAction(): Action {
       : !["Kodiak", "Memeswap"].includes(currentProtocol.protocol)
       ? currentProtocol?.vaultAddress
       : "",
-    currentProtocol?.token?.decimals
+    currentProtocol.protocol === "Yeet" &&
+      actionType.value === ACTION_TYPE.WITHDRAW
+      ? 23
+      : currentProtocol?.token?.decimals
   );
-
+ 
   const {
     balance: memeswapBalance,
     update: updateMemeswapBalance,
@@ -42,7 +45,7 @@ export default function useAction(): Action {
   const [balanceShown, balanceLoading, updateBalance] = useMemo(() => {
     if (
       actionType.value === ACTION_TYPE.DEPOSIT ||
-      currentProtocol.protocol === "D2 Finance"
+      ["D2 Finance", "Yeet"].includes(currentProtocol.protocol)
     ) {
       return [tokenBalance, isLoading, update];
     }

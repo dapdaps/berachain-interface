@@ -408,9 +408,9 @@ export function useList(): List {
       .map((item, index) => {
         return {
           ...item,
-          sort: index + 1,
+          sort: index + 1
         };
-      })
+      });
 
     const _creatorProjects = Array.from(
       new Set(data.map((item: any) => item.creator_project).filter(Boolean))
@@ -449,7 +449,10 @@ export function useList(): List {
             token.icon = getTokenLogo(token.symbol?.replace(/\s/g, ""));
           });
           item.reward_tokens.forEach((token: any) => {
-            token.icon = (item.project === "BeraBorrow" && item.tokens.length > 1) ? item.tokens.map((token:any) => getTokenLogo(token.symbol)) : getTokenLogo(token.symbol);
+            token.icon =
+              item.project === "BeraBorrow" && item.tokens.length > 1
+                ? item.tokens.map((token: any) => getTokenLogo(token.symbol))
+                : getTokenLogo(token.symbol);
             token.link = `https://berascan.com/token/${token.address}`;
           });
           item.user_reward.forEach((reward: any) => {
@@ -527,6 +530,18 @@ export function useList(): List {
             item.id = item.extra_data.pool_id;
           }
 
+          if (item.protocol === "Yeet") {
+            const symbols = item.tokens.map((token: any) => token.symbol);
+            item.reward_tokens = [
+              {
+                address: item.pool_address,
+                symbol: symbols.join("-"),
+                icon: symbols.map((symbol: any) => getTokenLogo(symbol)),
+                decimals: 18
+              }
+            ];
+          }
+
           return item;
         });
       if (d2FinanceIdx !== -1) {
@@ -542,7 +557,7 @@ export function useList(): List {
         };
         _data[d2FinanceIdx].token = _data[d2FinanceIdx].tokens[0];
       }
-    
+
       setData(_data);
     } catch (err: any) {
       console.log("get vaults list error:", err.message);
