@@ -72,7 +72,7 @@ const StakeBGT = (props: any) => {
             className="mt-[30px]"
             list={incentiveList}
             loading={loading}
-            listClassName="!grid-cols-1 !max-h-[260px] !overflow-y-auto"
+            listClassName="!grid-cols-1 !max-h-[260px] md:!max-h-[unset] !overflow-y-auto"
           />
         </div>
         <div className="w-full bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[24px_20px_20px_20px] md:order-1">
