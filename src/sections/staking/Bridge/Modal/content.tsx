@@ -124,20 +124,25 @@ const Content = (props: any) => {
   };
   const getMaxDepositAmount = async () => {
     const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider);
-    const address0 = await contract.token0();
-    const address1 = await contract.token1();
-    if (
-      token0?.address?.toLocaleLowerCase() === address0?.toLocaleLowerCase()
-    ) {
-      const response0 = await contract.deposit0Max();
-      setDepositMaxAmount(
-        ethers.utils.formatUnits(response0, token0?.decimals)
-      );
-    } else {
-      const response1 = await contract.deposit1Max();
-      setDepositMaxAmount(
-        ethers.utils.formatUnits(response1, token0?.decimals)
-      );
+    try {
+      const address0 = await contract.token0();
+      const address1 = await contract.token1();
+      if (
+        token0?.address?.toLocaleLowerCase() === address0?.toLocaleLowerCase()
+      ) {
+        const response0 = await contract.deposit0Max();
+        setDepositMaxAmount(
+          ethers.utils.formatUnits(response0, token0?.decimals)
+        );
+      } else {
+        const response1 = await contract.deposit1Max();
+        setDepositMaxAmount(
+          ethers.utils.formatUnits(response1, token0?.decimals)
+        );
+      }
+    } catch (err: any) {
+      setDepositMaxAmount(ethers.utils.formatUnits(MAX_APPROVE, token0?.decimals));
+      console.log('getMaxDepositAmount failed: %o', err);
     }
   };
   const handleSuccess = () => {

@@ -1,0 +1,1 @@
+export const BERAPAW_MINT_ADDRESS = "0xFeedb9750d6ac77D2E52e0C9EB8fB79F9de5Cafe";

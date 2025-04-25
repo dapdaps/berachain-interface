@@ -1,4 +1,4 @@
-import { Dispatch, useState } from "react";
+import { Dispatch, useMemo, useState } from 'react';
 import {
   ACTION_TYPE,
   ActionType,
@@ -23,6 +23,10 @@ export function useVaultsV2(): VaultsV2 {
   const [successReward, setSuccessReward] = useState<any>(null);
   const [openAddLp, setOpenAddLp] = useState(false);
   const [swapToken, setSwapToken] = useState<any>(null);
+
+  const [isBeraPaw] = useMemo(() => {
+    return [currentProtocol?.project?.toLowerCase() === "berapaw" && currentProtocol?.linkVault];
+  }, [currentProtocol]);
 
   const { handleReportWithoutDebounce } = useClickTracking();
 
@@ -130,6 +134,7 @@ export function useVaultsV2(): VaultsV2 {
     totalStatistics,
     getTotalStatistics,
     totalStatisticsLoading,
+    isBeraPaw,
   };
 }
 
@@ -163,4 +168,5 @@ export interface VaultsV2 {
   totalStatistics: { id?: number; total_staked_transactions?: number; total_staked_volume?: string; total_transactions?: number; total_volume?: string; };
   getTotalStatistics: () => Promise<void>;
   totalStatisticsLoading: boolean;
+  isBeraPaw: boolean;
 }
