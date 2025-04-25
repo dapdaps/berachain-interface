@@ -4,12 +4,19 @@ import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import { ACTION_TYPE, ActionTypes } from "@/sections/vaults/v2/config";
 import ActionUnionForm from "@/sections/vaults/v2/components/action/union/form";
 import KodiakUnstake from "@/sections/vaults/v2/components/action/kodiak-unstake";
+import Berapaw from '@/sections/vaults/v2/components/action/union/berapaw';
 
 const ActionUnionRight = (props: any) => {
   const { className } = props;
 
-  const { actionType, toggleActionType, currentProtocol } =
-    useVaultsV2Context();
+  const {
+    isBeraPaw,
+    actionType,
+    toggleActionType,
+    currentProtocol,
+    toggleActionVisible,
+    getListData,
+  } = useVaultsV2Context();
 
   return (
     <div
@@ -18,6 +25,7 @@ const ActionUnionRight = (props: any) => {
         className
       )}
     >
+      {/*#region 👇Switch Header*/}
       <div
         className={clsx(
           "relative grid  h-[56px] flex-shrink-0 w-full rounded-[12px] border border-[#373A53] bg-white p-[5px_4px] text-center text-[18px] font-[600] leading-[90%] font-Montserrat text-[#000]",
@@ -65,12 +73,35 @@ const ActionUnionRight = (props: any) => {
           }}
         />
       </div>
-      {currentProtocol?.protocol === "Kodiak" &&
-      actionType.value === ACTION_TYPE.WITHDRAW ? (
-        <KodiakUnstake />
-      ) : (
-        <ActionUnionForm className="mt-[17px]" />
-      )}
+      {/*#endregion 👆*/}
+
+      {/*#region 👇Form*/}
+      {
+        (
+          currentProtocol?.protocol === "Kodiak"
+          && actionType.value === ACTION_TYPE.WITHDRAW
+        ) ? (
+          <KodiakUnstake />
+        ) : (
+          <>
+            <ActionUnionForm className="mt-[17px]" />
+            {
+              (isBeraPaw && actionType.value === ACTION_TYPE.DEPOSIT) && (
+                <Berapaw
+                  currentProtocol={currentProtocol}
+                  approveClassName="mt-[30px]"
+                  mintClassName="mt-[30px]"
+                  onClose={() => {
+                    toggleActionVisible({ visible: false });
+                    getListData();
+                  }}
+                />
+              )
+            }
+          </>
+        )
+      }
+      {/*#endregion 👆*/}
     </div>
   );
 };
