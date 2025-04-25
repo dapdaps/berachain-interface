@@ -19,7 +19,7 @@ const ActionUnion = (props: any) => {
     <VaultsV2ActionContextProvider value={action}>
       <div
         className={clsx(
-          "w-full flex flex-col items-stretch gap-[24px]",
+          "w-full flex flex-col items-stretch gap-[24px] max-h-[90dvh] md:max-h-[unset] overflow-y-auto",
           className
         )}
       >
