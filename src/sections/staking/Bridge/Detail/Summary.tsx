@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { numberFormatter } from '@/utils/number-formatter';
 import { format } from 'date-fns';
 import Skeleton from 'react-loading-skeleton';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 
 const DetailSummary = (props: any) => {
   const { data, loading } = props;
@@ -118,6 +119,27 @@ const DetailSummary = (props: any) => {
             className=""
             value={formatValueDecimal(data?.tvl, isBerps ? '' : '$', 2, true)}
           />
+        </div>
+        <div className="flex flex-col gap-[12px]">
+          <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
+            Points
+          </div>
+
+          <Popover
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Top}
+            content={(
+              <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
+            )}
+          >
+            <Item
+              loading={loading}
+              width={100}
+              height={18}
+              className="underline cursor-pointer"
+              value={`${data?.initialData?.pp_multiplier}x`}
+            />
+          </Popover>
         </div>
         <div className="flex flex-col gap-[12px]">
           <div className='text-[#3D405A] font-Montserrat text-[14px] font-medium'>
