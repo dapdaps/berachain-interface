@@ -26,7 +26,6 @@ export default function Page() {
   const { address } = useAccount()
   
   useEffect(() => {
-    if (!address) return 
     const reportCode = reportMapping[pathname] || reportMapping['/vaults'];
     handleReport(reportCode)
 
