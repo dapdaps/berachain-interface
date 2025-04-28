@@ -122,6 +122,7 @@ const ActionUnionLeft = (props: any) => {
                         isIBGT && (
                           <div className="shrink-0">
                             <IBGTPoints
+                              isPopover={false}
                               className="!text-[12px] !font-[400] !h-[18px] !px-[6px]"
                               cardClassName=""
                               contentClassName="!z-[110]"
