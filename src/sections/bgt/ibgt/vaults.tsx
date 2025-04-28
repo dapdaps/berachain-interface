@@ -1,3 +1,4 @@
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import { useMultiState } from "@/hooks/use-multi-state";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import { formatValueDecimal } from "@/utils/balance";
@@ -80,21 +81,7 @@ export default function Vaults() {
       }
     },
     {
-      width: "15%",
-      key: "tvl",
-      label: "TVL",
-      type: "slot",
-      sort: true,
-      render: (data: any) => {
-        return (
-          <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-            {formatValueDecimal(data?.tvl, "$", 2, true)}
-          </div>
-        );
-      }
-    },
-    {
-      width: "15%",
+      width: "12%",
       key: "apy",
       label: "APY",
       type: "slot",
@@ -108,7 +95,46 @@ export default function Vaults() {
       }
     },
     {
-      width: "15%",
+      width: "12%",
+      key: "points",
+      label: "Points",
+      type: "slot",
+      sort: true,
+      render: (data) => {
+        return (
+          <Popover
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Top}
+            content={(
+              <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
+            )}
+          >
+
+            <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+              {data?.initialData?.pp_multiplier}x
+            </div>
+          </Popover>
+        );
+      }
+    },
+    {
+      width: "12%",
+      key: "tvl",
+      label: "TVL",
+      type: "slot",
+      sort: true,
+      render: (data: any) => {
+        return (
+          <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+            {formatValueDecimal(data?.tvl, "$", 2, true)}
+          </div>
+        );
+      }
+    },
+
+
+    {
+      width: "12%",
       key: "usdDepositAmount",
       label: "Yours",
       type: "slot",
@@ -127,7 +153,7 @@ export default function Vaults() {
       }
     },
     {
-      width: "15%",
+      width: "12%",
       key: "action",
       label: "Action",
       type: "slot",

@@ -71,6 +71,29 @@ const ActionSummary = (props: any) => {
             </button>
           </Popover>
         </ActionSummaryItem>
+        {currentProtocol?.extra_data?.pp_multiplier && (
+          <ActionSummaryItem label="Points">
+            <Popover
+              trigger={PopoverTrigger.Hover}
+              placement={PopoverPlacement.Bottom}
+              triggerContainerClassName="inline-block"
+              contentClassName="!z-[101]"
+              closeDelayDuration={0}
+              content={
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
+                  currentProtocol?.extra_data?.pp_multiplier + "x"
+                } points per iBGT claimed.`}</div>
+              }
+            >
+              <button
+                type="button"
+                className="underline underline-offset-4 decoration-dashed"
+              >
+                {currentProtocol?.extra_data?.pp_multiplier}x
+              </button>
+            </Popover>
+          </ActionSummaryItem>
+        )}
         <ActionSummaryItem
           label="Protocol"
           valueClassName="flex items-center gap-[4px]"
