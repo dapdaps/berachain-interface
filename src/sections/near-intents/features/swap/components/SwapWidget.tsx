@@ -133,6 +133,7 @@ export const SwapWidget = memo(({
           initialTokenOut={initialTokenOut}
           tokenList={tokenList}
           signMessage={signMessage}
+          referral={process.env.NEXT_PUBLIC_BINTENT_REFERRAL || ''}
         >
           <SwapUIMachineFormSyncProvider
             userAddress={userAddress}

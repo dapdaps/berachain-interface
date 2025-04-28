@@ -85,6 +85,7 @@ type Context = {
   };
   signature: WalletSignatureResult | null;
   intentHash: string | null;
+  referral?: string
   error: null | {
     tag: "err";
     value:
@@ -193,6 +194,7 @@ export const swapIntentMachine = setup({
               context.intentOperationParams.quote.expirationTime
             ).getTime()
           ),
+          referral: process.env.NEXT_PUBLIC_BINTENT_REFERRAL || context.referral,
         });
 
         return {
