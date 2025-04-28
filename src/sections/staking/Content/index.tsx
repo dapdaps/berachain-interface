@@ -33,6 +33,18 @@ export default function Staking({ dapp }: Props) {
 
   const dexConfig = isVaults ? null : dapp?.chains[DEFAULT_CHAIN_ID];
 
+  const {
+    dataList: berapawData,
+    loading: berapawLoading,
+    getDataList: berapawReload,
+    pageIndex: berapawPageIndex,
+    pageTotal: berapawPageTotal,
+    handleAction: berapawHandleAction,
+    approving: berapawApproving,
+    minting: berapawMinting,
+    currentVault: currentBerapawItem,
+  } = useBerapaw({ ...dapp, ...dexConfig });
+
   const { ALL_DATA_URL, addresses, pairs, description } = dexConfig ?? {};
   const { account: sender, chainId } = useAccount();
   const { provider } = useProvider();
@@ -62,6 +74,10 @@ export default function Staking({ dapp }: Props) {
       if (dapp?.name === "AquaBera") {
         setType(index);
         setCheckedRecord(data);
+        return;
+      }
+      if (dapp?.name === "BeraPaw") {
+        berapawHandleAction(data, index);
         return;
       }
     }
@@ -109,16 +125,9 @@ export default function Staking({ dapp }: Props) {
     loading: berpsLoading,
     reload: berpsReload
   } = useBerps(listProps);
-  const {
-    dataList: berapawData,
-    loading: berapawLoading,
-    getDataList: berapawReload,
-    pageIndex: berapawPageIndex,
-    pageTotal: berapawPageTotal,
-  } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { getMergeDataList } = useMergeDataList();
-  const [dataList, loading, reload, pageIndex, pageTotal] = useMemo(() => {
+  const [dataList, loading, reload, pageIndex, pageTotal, pending, currentItem] = useMemo(() => {
     if (isVaults) {
       return [
         getMergeDataList({
@@ -139,7 +148,15 @@ export default function Staking({ dapp }: Props) {
         return [aquaBeraData, aquabearLoading, aquabearReload];
       }
       if (dapp.name === "BeraPaw") {
-        return [berapawData, berapawLoading, berapawReload, berapawPageIndex, berapawPageTotal];
+        return [
+          berapawData,
+          berapawLoading,
+          berapawReload,
+          berapawPageIndex,
+          berapawPageTotal,
+          berapawApproving || berapawMinting,
+          currentBerapawItem
+        ];
       }
       return [infraredData, infraredLoading, infraredReload];
     }
@@ -157,6 +174,9 @@ export default function Staking({ dapp }: Props) {
     berapawReload,
     berapawPageIndex,
     berapawPageTotal,
+    berapawApproving,
+    berapawMinting,
+    currentBerapawItem,
   ]);
 
   return (
@@ -179,6 +199,8 @@ export default function Staking({ dapp }: Props) {
           maxApr={maxApr}
           pageIndex={pageIndex}
           pageTotal={pageTotal}
+          pending={pending}
+          currentItem={currentItem}
         />
       )}
       <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />

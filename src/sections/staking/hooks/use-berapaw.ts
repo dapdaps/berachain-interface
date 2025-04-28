@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getTokenLogo } from '@/sections/dashboard/utils';
 import Big from 'big.js';
 import { usePriceStore } from '@/stores/usePriceStore';
@@ -16,20 +16,33 @@ import { TOKEN_ABI } from '@/hooks/use-token-balance';
 import { multicall } from '@/utils/multicall';
 import multicallAddresses from '@/configs/contract/multicall';
 import { DEFAULT_CHAIN_ID } from '@/configs';
+import { useAction } from '@/sections/vaults/v2/components/action/union/berapaw/use-action';
 
 export function useBerapaw(props: any) {
   const { vaults, name } = props;
 
   const prices = usePriceStore((store) => store.price);
   const { account, provider } = useCustomAccount();
-  const signer = provider?.getSigner();
+  const signer = useMemo(() => {
+    return provider?.getSigner(account);
+  }, [provider, account]);
 
   const { host, query } = vaults;
   const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 
   const [pageIndex, setPageIndex] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
-  console.log('useBerapaw props: %o', props);
+  const [currentVault, setCurrentVault] = useState<any>();
+
+  const {
+    onApprove,
+    approving,
+    approved,
+    onMint,
+    minting,
+  } = useAction({
+    rewardVault: currentVault?.vaultAddress,
+  });
 
   const getPercentual = (vaults: any) => {
     return new Promise((resolve) => {
@@ -190,6 +203,25 @@ export function useBerapaw(props: any) {
     return [];
   }, { manual: true });
 
+  const handleAction = async (record: any, type: any) => {
+    setCurrentVault(record);
+    if (type === "mint") {
+      if (minting) return;
+      const res = await onMint({ rewardVault: record.vaultAddress });
+      if (res?.success) {
+        runAsync();
+      }
+      return;
+    }
+    if (type === "approve") {
+      if (approving) return;
+      const res = await onApprove({ rewardVault: record.vaultAddress });
+      if (res) {
+        runAsync();
+      }
+    }
+  };
+
   useEffect(() => {
     if (!name || name !== "BeraPaw") return;
     const timer = setTimeout(() => {
@@ -202,11 +234,19 @@ export function useBerapaw(props: any) {
     };
   }, [name, account, provider]);
 
+  useEffect(() => {
+
+  }, [currentVault?.vaultAddress]);
+
   return {
     loading,
     dataList: data,
     getDataList: runAsync,
     pageIndex,
     pageTotal,
+    handleAction,
+    approving,
+    minting,
+    currentVault,
   };
 }

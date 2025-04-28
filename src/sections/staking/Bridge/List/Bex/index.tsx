@@ -38,6 +38,8 @@ const List = forwardRef<any, any>((props, ref) => {
     maxApr,
     pageIndex,
     pageTotal,
+    pending,
+    currentItem,
   } = props;
   const router = useRouter()
 
@@ -431,10 +433,12 @@ const List = forwardRef<any, any>((props, ref) => {
               return (
                 <Button
                   type="primary"
-                  onClick={() => {}}
-                  disabled={disabled}
+                  disabled={false}
                   className="shrink-0 !h-[30px] w-full !text-[14px] !font-[500] !rounded-[10px] !leading-[1]"
-                  loading={false}
+                  loading={pending && currentItem?.id === data.id}
+                  onClick={() => {
+                    onChangeData?.(data, "mint");
+                  }}
                 >
                   Mint
                 </Button>
@@ -443,10 +447,12 @@ const List = forwardRef<any, any>((props, ref) => {
             return (
               <Button
                 type="primary"
-                onClick={() => {}}
                 disabled={disabled}
                 className="shrink-0 !h-[30px] w-full !text-[14px] !font-[500] !rounded-[10px] !leading-[1]"
-                loading={false}
+                loading={pending && currentItem?.id === data.id}
+                onClick={() => {
+                  onChangeData?.(data, "approve");
+                }}
               >
                 Approve
               </Button>
@@ -644,7 +650,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       }
     ];
-  }, []);
+  }, [pending, currentItem]);
 
   const [hasScrollbar, setHasScrollbar] = useState(false);
 
@@ -826,7 +832,6 @@ const List = forwardRef<any, any>((props, ref) => {
               defaultPage={pageIndex}
               maxPage={pageTotal}
               onPageChange={(page) => {
-                console.log('page: %o', page);
                 reload(page);
               }}
               isLast={false}
