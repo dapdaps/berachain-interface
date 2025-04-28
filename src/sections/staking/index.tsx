@@ -9,5 +9,6 @@ export default function Staking(props: any) {
   if (props?.dapp?.name === "Bedrock") {
     return <Bedrock {...props} />
   }
+
   return isMobile ? <Mobile {...props} /> : <Laptop {...props} />;
 }

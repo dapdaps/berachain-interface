@@ -18,6 +18,7 @@ import { useMemo, useRef, useState } from "react";
 import Detail from "../Bridge/Detail";
 import List from "../Bridge/List";
 import Modal from "../Bridge/Modal";
+import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
 
 type Props = {
   dapp: any;
@@ -108,6 +109,11 @@ export default function Staking({ dapp }: Props) {
     loading: berpsLoading,
     reload: berpsReload
   } = useBerps(listProps);
+  const {
+    dataList: berapawData,
+    loading: berapawLoading,
+    reload: berapawReload
+  } = useBerapaw(listProps);
 
   const { getMergeDataList } = useMergeDataList();
   const [dataList, loading, reload] = useMemo(() => {
