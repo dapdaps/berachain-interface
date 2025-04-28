@@ -94,6 +94,7 @@ const ActionUnionPotions = (props: any) => {
             setSwapToken(null);
           }}
           onSuccess={() => {
+            setSwapToken(null);
             updateBalance();
           }}
           from="marketplace"

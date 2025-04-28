@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from 'react';
 import { usePriceStore } from "@/stores/usePriceStore";
 import Input from "./balancer-input";
 import { StyledContainer, StyledSubtitle } from "./styles";
@@ -18,6 +18,8 @@ const DepositAmounts = ({
   isProportional,
   onChangeProportional
 }: any) => {
+  const inputRef = useRef<any>(null);
+
   const prices = usePriceStore((store) => store.price);
   const [isError, setIsError] = useState(false);
   const [selectedToken, setSelectedToken] = useState<any>(null);
@@ -44,6 +46,7 @@ const DepositAmounts = ({
       <StyledSubtitle>{label}</StyledSubtitle>
       {tokens.map((token: any, i: number) => (
         <Input
+          ref={inputRef}
           key={token.address}
           token={token}
           value={values?.[token.address] || ""}
@@ -101,6 +104,10 @@ const DepositAmounts = ({
           show={!!selectedToken}
           onClose={() => {
             setSelectedToken(null);
+          }}
+          onSuccess={() => {
+            setSelectedToken(null);
+            inputRef.current?.updateBalance();
           }}
           from="marketplace"
         />
