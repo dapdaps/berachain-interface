@@ -23,6 +23,7 @@ import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
 import UserInfo from "./user-info";
 import { getProtocolIcon } from "@/utils/utils";
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 
 export default function Mobile({ dapp }: any) {
   const isVaults = _.isArray(dapp);
@@ -187,7 +188,7 @@ export default function Mobile({ dapp }: any) {
       </div>
       {!!selectedRecord &&
         (dapp?.name === "AquaBera" ||
-        selectedRecord?.platform === "aquabera" ? (
+          selectedRecord?.platform === "aquabera" ? (
           <StakingModal
             show={!!selectedRecord}
             data={selectedRecord}
@@ -240,6 +241,8 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
     token0: data?.tokens?.[0],
     token1: data?.tokens?.[1]
   };
+
+  console.log("====data", data)
   return isAquaBera ? (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
@@ -427,6 +430,24 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               {formatValueDecimal(data.tvl, "$", 2, true)}
             </div>
           </div>
+
+          <div>
+            <div className="font-medium	text-[14px]">Points</div>
+            <Popover
+              trigger={PopoverTrigger.Click}
+              placement={PopoverPlacement.Top}
+              content={(
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
+              )}
+            >
+              <div className="font-semibold	text-[16px] mt-[8px] underline">
+                {data?.initialData?.pp_multiplier}x
+              </div>
+            </Popover>
+
+
+          </div>
+
           <div className="text-right">
             <div className="font-medium	text-[14px]">APY</div>
             <div className="font-semibold	text-[16px] mt-[8px]">
