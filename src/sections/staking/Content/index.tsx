@@ -112,8 +112,8 @@ export default function Staking({ dapp }: Props) {
   const {
     dataList: berapawData,
     loading: berapawLoading,
-    reload: berapawReload
-  } = useBerapaw(listProps);
+    getDataList: berapawReload
+  } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { getMergeDataList } = useMergeDataList();
   const [dataList, loading, reload] = useMemo(() => {
@@ -130,9 +130,15 @@ export default function Staking({ dapp }: Props) {
         }
       ];
     } else {
-      if (dapp.name === "Berps") return [berpsData, berpsLoading, berpsReload];
-      if (dapp.name === "AquaBera")
+      if (dapp.name === "Berps") {
+        return [berpsData, berpsLoading, berpsReload];
+      }
+      if (dapp.name === "AquaBera") {
         return [aquaBeraData, aquabearLoading, aquabearReload];
+      }
+      if (dapp.name === "BeraPaw") {
+        return [berapawData, berapawLoading, berapawReload];
+      }
       return [infraredData, infraredLoading, infraredReload];
     }
   }, [
@@ -143,7 +149,10 @@ export default function Staking({ dapp }: Props) {
     aquaBeraData,
     aquabearLoading,
     isVaults,
-    dapp.name
+    dapp.name,
+    berapawData,
+    berapawLoading,
+    berapawReload,
   ]);
 
 
