@@ -1,6 +1,6 @@
 import useToast from '@/hooks/use-toast';
 import useCustomAccount from '@/hooks/use-account';
-import { useMemo } from 'react';
+import React, { useImperativeHandle, useMemo } from 'react';
 import { useRequest } from 'ahooks';
 import { Contract, ethers } from 'ethers';
 import BerapawApprove from '@/sections/vaults/v2/components/action/union/berapaw/approve';
@@ -14,7 +14,7 @@ import { BERAPAW_MINT_ADDRESS } from '@/sections/vaults/v2/components/action/uni
 import { getEstimateGas } from '@/sections/vaults/v2/components/action/union/berapaw/utils';
 import Big from 'big.js';
 
-const Berapaw = (props: any) => {
+const Berapaw = (props: any, ref: any) => {
   const { className, approveClassName, mintClassName, currentProtocol, onClose } = props;
 
   const rewardVault = currentProtocol.linkVault.vault_address;
@@ -84,7 +84,7 @@ const Berapaw = (props: any) => {
     refreshDeps: [account, signer, checkApproved, rewardVault],
   });
 
-  const { data: estimateMintLBGT, loading: estimateMintLBGTLoading } = useRequest(async () => {
+  const { data: estimateMintLBGT, loading: estimateMintLBGTLoading, runAsync: getEstimateMintLBGT } = useRequest(async () => {
     if (!account || !provider || !rewardVault) return;
     let percentual = "0";
     try {
@@ -146,6 +146,11 @@ const Berapaw = (props: any) => {
     return { success: false, minted: null };
   }, { manual: true });
 
+  const refs = {
+    getEstimateMintLBGT,
+  };
+  useImperativeHandle(ref, () => refs);
+
   return (
     <div className={className}>
       <BerapawApprove
@@ -168,4 +173,4 @@ const Berapaw = (props: any) => {
   );
 };
 
-export default Berapaw;
+export default React.forwardRef(Berapaw);

@@ -165,15 +165,12 @@ const ActionInput = (props: any) => {
         <div className=""></div>
         <div className="flex items-center gap-[2px]">
           <div>balance:</div>
-          {actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading ? (
+          {balanceLoading ? (
             <Loading size={14} />
           ) : (
             <button
               type="button"
-              disabled={
-                Big(balance || 0).lte(0) ||
-                (actionType.value === ACTION_TYPE.DEPOSIT && balanceLoading)
-              }
+              disabled={Big(balance || 0).lte(0)}
               className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
               onClick={handleBalance}
             >

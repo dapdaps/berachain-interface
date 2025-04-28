@@ -5,6 +5,7 @@ import { ACTION_TYPE, ActionTypes } from "@/sections/vaults/v2/config";
 import ActionUnionForm from "@/sections/vaults/v2/components/action/union/form";
 import KodiakUnstake from "@/sections/vaults/v2/components/action/kodiak-unstake";
 import Berapaw from '@/sections/vaults/v2/components/action/union/berapaw';
+import { useVaultsV2ActionContext } from '@/sections/vaults/v2/components/action/context';
 
 const ActionUnionRight = (props: any) => {
   const { className } = props;
@@ -17,6 +18,7 @@ const ActionUnionRight = (props: any) => {
     toggleActionVisible,
     getListData,
   } = useVaultsV2Context();
+  const { beraPawRef, updateBalance } = useVaultsV2ActionContext();
 
   return (
     <div
@@ -36,21 +38,30 @@ const ActionUnionRight = (props: any) => {
       >
         <div
           className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
-          onClick={() => toggleActionType(ActionTypes[ACTION_TYPE.DEPOSIT])}
+          onClick={() => {
+            toggleActionType(ActionTypes[ACTION_TYPE.DEPOSIT]);
+            updateBalance?.();
+          }}
         >
           Deposit
         </div>
         {currentProtocol.protocol === "Memeswap" && (
           <div
             className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
-            onClick={() => toggleActionType(ActionTypes[ACTION_TYPE.EXIT])}
+            onClick={() => {
+              toggleActionType(ActionTypes[ACTION_TYPE.EXIT]);
+              updateBalance?.();
+            }}
           >
             Exit
           </div>
         )}
         <div
           className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
-          onClick={() => toggleActionType(ActionTypes[ACTION_TYPE.WITHDRAW])}
+          onClick={() => {
+            toggleActionType(ActionTypes[ACTION_TYPE.WITHDRAW]);
+            updateBalance?.();
+          }}
         >
           Withdraw
         </div>
@@ -88,6 +99,7 @@ const ActionUnionRight = (props: any) => {
             {
               (isBeraPaw && actionType.value === ACTION_TYPE.DEPOSIT) && (
                 <Berapaw
+                  ref={beraPawRef}
                   currentProtocol={currentProtocol}
                   approveClassName="mt-[30px]"
                   mintClassName="mt-[30px]"

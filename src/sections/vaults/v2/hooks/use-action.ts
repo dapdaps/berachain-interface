@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { MutableRefObject, useMemo, useRef, useState } from 'react';
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
@@ -12,6 +12,7 @@ import useClickTracking from "@/hooks/use-click-tracking";
 import useMemeswapBalance from "./use-memeswap-balance";
 
 export default function useAction(): Action {
+  const beraPawRef = useRef<any>();
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -42,7 +43,7 @@ export default function useAction(): Action {
       ? 23
       : _currentProtocol?.token?.decimals
   );
- 
+
   const {
     balance: memeswapBalance,
     update: updateMemeswapBalance,
@@ -62,8 +63,8 @@ export default function useAction(): Action {
     if (_currentProtocol.protocol === "Memeswap") {
       return [memeswapBalance, memeswapLoading, updateMemeswapBalance];
     }
-    return [_currentProtocol?.user_stake?.amount || "0", isLoading, update];
-  }, [actionType, tokenBalance, _currentProtocol?.user_stake, memeswapBalance]);
+    return [Big(tokenBalance || 0).gt(0) ? tokenBalance : _currentProtocol?.user_stake?.amount || "0", isLoading, update];
+  }, [actionType, tokenBalance, _currentProtocol?.user_stake, memeswapBalance, isLoading, update]);
 
   const [inputError, inputErrorMessage] = useMemo<
     [boolean, string | undefined]
@@ -171,6 +172,8 @@ export default function useAction(): Action {
         amounts: [amount],
         extra_data: {}
       });
+      beraPawRef.current?.getEstimateMintLBGT();
+      updateBalance?.();
     } catch (err: any) {
       toast.dismiss(toastId);
       setLoading(false);
@@ -196,7 +199,8 @@ export default function useAction(): Action {
     dappParams,
     setDappParams,
     balanceShown,
-    queuedAmount
+    queuedAmount,
+    beraPawRef
   };
 }
 
@@ -214,4 +218,5 @@ export interface Action {
   setDappParams: React.Dispatch<React.SetStateAction<any>>;
   balanceShown: string;
   queuedAmount?: string;
+  beraPawRef: MutableRefObject<any>;
 }
