@@ -3,7 +3,7 @@ import Card from '@/components/card';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 
 const IBGTPoints = (props: any) => {
-  const { className, cardClassName, contentClassName } = props;
+  const { className, cardClassName, contentClassName, placement } = props;
 
   return (
     <Popover
@@ -12,7 +12,7 @@ const IBGTPoints = (props: any) => {
           Earn points for staking iBGT over time
         </Card>
       )}
-      placement={PopoverPlacement.Right}
+      placement={placement || PopoverPlacement.Right}
       trigger={PopoverTrigger.Hover}
       closeDelayDuration={0}
       contentClassName={contentClassName}
