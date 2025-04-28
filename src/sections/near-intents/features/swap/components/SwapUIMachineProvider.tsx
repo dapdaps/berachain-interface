@@ -54,6 +54,7 @@ interface SwapUIMachineProviderProps extends PropsWithChildren {
   initialTokenOut?: SwappableToken
   tokenList: SwappableToken[]
   signMessage: (params: WalletMessage) => Promise<WalletSignatureResult | null>
+  referral?: string
 }
 
 export function SwapUIMachineProvider({
@@ -62,6 +63,7 @@ export function SwapUIMachineProvider({
   initialTokenOut,
   tokenList,
   signMessage,
+  referral,
 }: SwapUIMachineProviderProps) {
   const { setValue, resetField } = useFormContext<SwapFormValues>()
   const tokenIn = initialTokenIn || tokenList[0]
@@ -75,6 +77,7 @@ export function SwapUIMachineProvider({
           tokenIn,
           tokenOut,
           tokenList,
+          referral
         },
       }}
       logic={swapUIMachine.provide({
