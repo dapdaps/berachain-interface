@@ -4,6 +4,7 @@ import { useVaultsV2ActionContext } from "@/sections/vaults/v2/components/action
 import LazyImage from "@/components/layz-image";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import SwapModal from "@/sections/swap/SwapModal";
+import { bera } from '@/configs/tokens/bera';
 
 const ActionUnionPotions = (props: any) => {
   const { className } = props;
@@ -70,7 +71,7 @@ const ActionUnionPotions = (props: any) => {
               </button>
           )
         }
-        {["D2 Finance"].includes(currentProtocol.lpProtocol) &&
+        {(["D2 Finance"].includes(currentProtocol.lpProtocol) || (currentProtocol?.tokens?.length < 2)) &&
           actionType.value === ACTION_TYPE.DEPOSIT && (
             <button
               type="button"
@@ -85,6 +86,7 @@ const ActionUnionPotions = (props: any) => {
       </div>
       {swapToken && (
         <SwapModal
+          defaultInputCurrency={swapToken?.symbol === "BERA" ? void 0 : bera["bera"]}
           defaultOutputCurrency={swapToken}
           outputCurrencyReadonly={true}
           show={!!swapToken}
