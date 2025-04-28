@@ -161,6 +161,7 @@ const Berapaw = (props: any) => {
         onMint={onMint}
         minting={minting}
         approved={approved}
+        estimateMintLBGT={estimateMintLBGT}
         disabled={!estimateMintLBGT || Big(estimateMintLBGT).lte(0)}
       />
     </div>
