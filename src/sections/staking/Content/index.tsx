@@ -112,11 +112,13 @@ export default function Staking({ dapp }: Props) {
   const {
     dataList: berapawData,
     loading: berapawLoading,
-    getDataList: berapawReload
+    getDataList: berapawReload,
+    pageIndex: berapawPageIndex,
+    pageTotal: berapawPageTotal,
   } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { getMergeDataList } = useMergeDataList();
-  const [dataList, loading, reload] = useMemo(() => {
+  const [dataList, loading, reload, pageIndex, pageTotal] = useMemo(() => {
     if (isVaults) {
       return [
         getMergeDataList({
@@ -137,7 +139,7 @@ export default function Staking({ dapp }: Props) {
         return [aquaBeraData, aquabearLoading, aquabearReload];
       }
       if (dapp.name === "BeraPaw") {
-        return [berapawData, berapawLoading, berapawReload];
+        return [berapawData, berapawLoading, berapawReload, berapawPageIndex, berapawPageTotal];
       }
       return [infraredData, infraredLoading, infraredReload];
     }
@@ -153,8 +155,9 @@ export default function Staking({ dapp }: Props) {
     berapawData,
     berapawLoading,
     berapawReload,
+    berapawPageIndex,
+    berapawPageTotal,
   ]);
-
 
   return (
     <Card>
@@ -174,6 +177,8 @@ export default function Staking({ dapp }: Props) {
           loading={loading}
           reload={reload}
           maxApr={maxApr}
+          pageIndex={pageIndex}
+          pageTotal={pageTotal}
         />
       )}
       <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />

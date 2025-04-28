@@ -13,11 +13,15 @@ import Big from "big.js";
 import clsx from "clsx";
 import { ethers } from "ethers";
 import { cloneDeep } from "lodash";
-import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState, useCallback } from 'react';
 import Skeleton from "react-loading-skeleton";
 import { motion } from 'framer-motion';
 import { useRouter } from "next/navigation";
 import LazyImage from '@/components/layz-image';
+import { numberFormatter } from '@/utils/number-formatter';
+import { bera } from '@/configs/tokens/bera';
+import Button from '@/components/button';
+import Pager from '@/components/pager';
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -31,10 +35,13 @@ const List = forwardRef<any, any>((props, ref) => {
     dataList,
     loading,
     reload,
-    maxApr
+    maxApr,
+    pageIndex,
+    pageTotal,
   } = props;
   const router = useRouter()
 
+  const bodyRef = useRef<any>();
 
   const [state, updateState] = useMultiState<any>({
     allData: null,
@@ -333,21 +340,116 @@ const List = forwardRef<any, any>((props, ref) => {
             return (
               <div className="flex items-center gap-[8px]">
                 <div className="flex items-center min-w-[50px]">
-                  {
-                    data.tokens.map((token: any, index: number) => (
-                      <LazyImage
-                        src={token.icon}
-                        width={30}
-                        height={30}
-                        containerClassName={clsx("shrink-0 rounded-full overflow-hidden", index > 0 && "ml-[-12px]")}
-                      />
-                    ))
-                  }
+                  <LazyImage
+                    src={data.metadata?.logoURI}
+                    width={30}
+                    height={30}
+                    containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
+                    fallbackSrc="/assets/tokens/default_icon.png"
+                  />
                 </div>
                 <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
                   {data.stakingToken?.symbol}
                 </div>
               </div>
+            );
+          }
+        },
+        {
+          width: "13%",
+          key: "position",
+          label: "Position",
+          type: "slot",
+          render: (data) => {
+            return (
+              <div className="flex items-center gap-[8px]">
+                {numberFormatter(data.positionAmount, 2, true, { isShort: true, isShortUppercase: true })}
+              </div>
+            );
+          }
+        },
+        {
+          width: "15%",
+          key: "tvl",
+          label: "TVL",
+          type: "slot",
+          render: (data) => {
+            return (
+              <div className="flex items-center gap-[8px]">
+                {numberFormatter(data.dynamicData?.tvl, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
+              </div>
+            );
+          }
+        },
+        {
+          width: "15%",
+          key: "apr",
+          label: "APR",
+          type: "slot",
+          render: (data) => {
+            return (
+              <div className="flex flex-col whitespace-nowrap">
+                <div className="text-[#6CA200]">
+                  LBGT: {numberFormatter(Big(data.LBGTApr || 0).times(100), 2, true, { isShort: true, isShortUppercase: true })}%
+                </div>
+                <div className="">
+                  BGT: {numberFormatter(Big(data.dynamicData?.apr || 0).times(100), 2, true, { isShort: true, isShortUppercase: true })}%
+                </div>
+              </div>
+            );
+          }
+        },
+        {
+          width: "13%",
+          key: "reward",
+          label: "Reward",
+          type: "slot",
+          render: (data) => {
+            return (
+              <div className="flex items-center gap-[8px]">
+                <LazyImage
+                  src={bera["lbgt"].icon}
+                  width={24}
+                  height={24}
+                  containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
+                />
+                <div className="">
+                  {numberFormatter(data.estimateMintAmount, 2, true, { isShort: true, isShortUppercase: true })}
+                </div>
+              </div>
+            );
+          }
+        },
+        {
+          width: "13%",
+          key: "action",
+          label: "",
+          type: "slot",
+          render: (data) => {
+            const disabled = !data.estimateMintAmount || Big(data.estimateMintAmount).lte(0);
+            if (data.approved) {
+              return (
+                <Button
+                  type="primary"
+                  onClick={() => {}}
+                  disabled={disabled}
+                  className="shrink-0 !h-[30px] w-full !text-[14px] !font-[500] !rounded-[10px] !leading-[1]"
+                  loading={false}
+                >
+                  Mint
+                </Button>
+              );
+            }
+            return (
+              <Button
+                type="primary"
+                onClick={() => {}}
+                disabled={disabled}
+                className="shrink-0 !h-[30px] w-full !text-[14px] !font-[500] !rounded-[10px] !leading-[1]"
+                loading={false}
+              >
+                Approve
+              </Button>
             );
           }
         },
@@ -544,6 +646,26 @@ const List = forwardRef<any, any>((props, ref) => {
     ];
   }, []);
 
+  const [hasScrollbar, setHasScrollbar] = useState(false);
+
+  const checkScrollbar = useCallback(() => {
+    if (bodyRef.current) {
+      const hasVerticalScrollbar = bodyRef.current.scrollHeight > bodyRef.current.clientHeight;
+      setHasScrollbar(hasVerticalScrollbar);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkScrollbar();
+  }, [state?.filterList, checkScrollbar]);
+
+  useEffect(() => {
+    window.addEventListener('resize', checkScrollbar);
+    return () => {
+      window.removeEventListener('resize', checkScrollbar);
+    };
+  }, [checkScrollbar]);
+
   return (
     <div>
       <div className="pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]">
@@ -578,7 +700,9 @@ const List = forwardRef<any, any>((props, ref) => {
           </div>
         </div>
       </div>
-      <div className="flex items-center pt-[23px] pb-[8px]">
+      <div className={clsx("bex-table-header flex items-center pt-[23px] pb-[8px]", {
+        'pr-[6px]': hasScrollbar
+      })}>
         {columnList.map((column: ColumnType, index: number) => {
           return column?.isFilter ? (
             <div
@@ -657,7 +781,10 @@ const List = forwardRef<any, any>((props, ref) => {
           })}
         </div>
       ) : state?.filterList && state?.filterList?.length > 0 ? (
-        <div className="flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll">
+        <div
+          ref={bodyRef}
+          className="bex-table-body flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll"
+        >
           {state?.filterList.map((data: any, index: number) => {
             return (
               <div
@@ -691,6 +818,24 @@ const List = forwardRef<any, any>((props, ref) => {
           You didn’t add any liquidity yet
         </div>
       )}
+
+      {
+        name === "BeraPaw" && (
+          <div className="mt-[10px] flex justify-end">
+            <Pager
+              defaultPage={pageIndex}
+              maxPage={pageTotal}
+              onPageChange={(page) => {
+                console.log('page: %o', page);
+                reload(page);
+              }}
+              isLast={false}
+              isFirst={false}
+              loading={loading}
+            />
+          </div>
+        )
+      }
     </div>
   );
 });
