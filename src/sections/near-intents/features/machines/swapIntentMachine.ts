@@ -194,7 +194,7 @@ export const swapIntentMachine = setup({
               context.intentOperationParams.quote.expirationTime
             ).getTime()
           ),
-          referral: context.referral,
+          referral: process.env.NEXT_PUBLIC_BINTENT_REFERRAL || context.referral,
         });
 
         return {
