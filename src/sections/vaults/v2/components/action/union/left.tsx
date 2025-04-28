@@ -10,6 +10,7 @@ import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
 import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import DoubleTokenIcons from "@/components/token-icon/double";
+import IBGTPoints from '@/sections/vaults/v2/components/ibgt-points';
 
 const ActionUnionLeft = (props: any) => {
   const { className } = props;
@@ -39,6 +40,7 @@ const ActionUnionLeft = (props: any) => {
             const protocolSelected =
               protocol.backendId === currentProtocol?.backendId;
             const isUserReward = protocol.user_reward?.length > 0;
+            const isIBGT = protocol?.reward_tokens?.length === 1 && protocol?.reward_tokens?.some((t: any) => t.symbol === "iBGT");
 
             return (
               <div
@@ -121,6 +123,16 @@ const ActionUnionLeft = (props: any) => {
                         : protocol?.protocol}
                     </div>
                   </div>
+                  {
+                    isIBGT && (
+                      <div className="">
+                        <IBGTPoints
+                          className="!text-[12px]"
+                          contentClassName="!z-[110]"
+                        />
+                      </div>
+                    )
+                  }
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
                     <div key={index} className="flex items-center gap-[4px]">
                       <LazyImage
