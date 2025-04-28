@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { memo, useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import Loading from "@/components/circle-loading";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { balanceFormated, valueFormated } from "@/utils/balance";
@@ -31,11 +31,11 @@ const Input = ({
   className,
   onError,
   onSelectToken
-}: any) => {
+}: any, ref: any) => {
   const [value, setValue] = useState(defaultValue);
   const { account, chainId } = useCustomAccount();
   const [showTokenSelector, setShowTokenSelector] = useState(false);
-  const { tokenBalance: balance, isLoading } = useTokenBalance(
+  const { tokenBalance: balance, isLoading, update: updateBalance } = useTokenBalance(
     token?.isNative ? "native" : token?.address,
     token?.decimals
   );
@@ -51,6 +51,11 @@ const Input = ({
     () => token.isNative || token.address === weth[DEFAULT_CHAIN_ID],
     [token]
   );
+
+  const refs = {
+    updateBalance,
+  };
+  useImperativeHandle(ref, () => refs);
 
   useEffect(() => {
     onError(isError);
@@ -156,4 +161,4 @@ const Input = ({
   );
 };
 
-export default memo(Input);
+export default memo(React.forwardRef(Input));

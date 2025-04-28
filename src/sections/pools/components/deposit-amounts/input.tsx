@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { memo, useEffect, useMemo } from "react";
+import React, { memo, useEffect, useImperativeHandle, useMemo } from 'react';
 import Loading from "@/components/circle-loading";
 import useTokenBalance from "@/hooks/use-token-balance";
 import { balanceFormated, valueFormated } from "@/utils/balance";
@@ -26,8 +26,8 @@ const Input = ({
   onLoad,
   onSelectToken,
   className
-}: any) => {
-  const { tokenBalance: balance, isLoading } = useTokenBalance(
+}: any, ref: any) => {
+  const { tokenBalance: balance, isLoading, update: updateBalance } = useTokenBalance(
     token?.isNative ? "native" : token?.address,
     token?.decimals
   );
@@ -39,6 +39,11 @@ const Input = ({
 
     return new Big(value || 0).gt(balance);
   }, [value, balance]);
+
+  const refs = {
+    updateBalance,
+  };
+  useImperativeHandle(ref, () => refs);
 
   useEffect(() => {
     onLoad?.(balance);
@@ -117,4 +122,4 @@ const Input = ({
   );
 };
 
-export default memo(Input);
+export default memo(React.forwardRef(Input));

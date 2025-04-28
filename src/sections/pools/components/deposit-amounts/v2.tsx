@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { usePriceStore } from "@/stores//usePriceStore";
 import { getAnotherAmountOutV2 } from "../../helpers";
 import Input from "./input";
@@ -21,6 +21,10 @@ const DepositAmounts = ({
   onSelectToken
 }: any) => {
   const prices = usePriceStore((store) => store.price);
+
+  const input0Ref = useRef<any>(null);
+  const input1Ref = useRef<any>(null);
+
   const [balance0, setBalance0] = useState("");
   const [balance1, setBalance1] = useState("");
   const [selectedToken, setSelectedToken] = useState<any>(null);
@@ -97,6 +101,7 @@ const DepositAmounts = ({
     <StyledContainer>
       <StyledSubtitle>{label}</StyledSubtitle>
       <Input
+        ref={input0Ref}
         token={token0}
         value={value0}
         setValue={(val: any) => {
@@ -113,6 +118,7 @@ const DepositAmounts = ({
       />
 
       <Input
+        ref={input1Ref}
         token={token1}
         value={value1}
         setValue={(val: any) => {
@@ -150,6 +156,11 @@ const DepositAmounts = ({
             setSelectedToken(null);
           }}
           from="marketplace"
+          onSuccess={() => {
+            setSelectedToken(null);
+            input0Ref.current?.updateBalance();
+            input1Ref.current?.updateBalance();
+          }}
         />
       )}
     </StyledContainer>

@@ -74,38 +74,50 @@ export function useList(): List {
   const [vaultsStaked, setVaultsStaked] = useState(false);
 
   // pagination & grouped by pool_address & sorted & filters
+  // 20250425#Added BeraPaw pool, BeraPaw's pool_address corresponds to hub's vault_address;
+  // After merging non-BeraPaw pools, check if there are any pools in the list whose vault_address matches 
+  // BeraPaw pool's pool_address, if match then append to the list
   const [dataGroupByPool, dataGroupByPoolAll] = useMemo(() => {
     if (!data || data.length === 0) return [[], []];
 
-    const grouped = data.reduce((acc: any[], item: any) => {
+    const beraPawList = data.filter((item: any) => item.project?.toLowerCase() === 'berapaw');
+    const hubList = data.filter((item: any) => item.project?.toLowerCase() !== 'berapaw');
+
+    const addItem2Group = (group: any, item: any) => {
+      group.list.push(item);
+      group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
+      group.user_stake.amount = Big(group.user_stake?.amount || 0).plus(
+        item.user_stake?.amount || 0
+      );
+      group.user_stake.usd = Big(group.user_stake?.usd || 0).plus(
+        item.user_stake?.usd || 0
+      );
+      if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
+        group.totalApy[0] = item.totalApy;
+        group.totalApyList[0] = { apr: item.apr, apy: item.apr.pool };
+      }
+      if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
+        group.totalApy[1] = item.totalApy;
+        group.totalApyList[1] = { apr: item.apr, apy: item.apr.pool };
+      }
+      group.apr.push(item.apr);
+      group.creatorProtocolIcon.push(item.creatorProtocolIcon);
+      group.protocolIcon.push(item.protocolIcon);
+      group.poolProjectIcon.push(item.poolProjectIcon);
+      group.reward_tokens = uniqBy(
+        group.reward_tokens.concat(item.reward_tokens),
+        'address'
+      );
+      group.user_reward = group.user_reward.concat(item.user_reward);
+      group.balance = Big(group.balance).plus(item.balance || 0);
+
+      return group;
+    };
+
+    const grouped = hubList.reduce((acc: any[], item: any) => {
       const group = acc.find((g: any) => g.pool_address === item.pool_address);
       if (group) {
-        group.list.push(item);
-        group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
-        group.user_stake.amount = Big(group.user_stake?.amount || 0).plus(
-          item.user_stake?.amount || 0
-        );
-        group.user_stake.usd = Big(group.user_stake?.usd || 0).plus(
-          item.user_stake?.usd || 0
-        );
-        if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
-          group.totalApy[0] = item.totalApy;
-          group.totalApyList[0] = { apr: item.apr, apy: item.apr.pool };
-        }
-        if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
-          group.totalApy[1] = item.totalApy;
-          group.totalApyList[1] = { apr: item.apr, apy: item.apr.pool };
-        }
-        group.apr.push(item.apr);
-        group.creatorProtocolIcon.push(item.creatorProtocolIcon);
-        group.protocolIcon.push(item.protocolIcon);
-        group.poolProjectIcon.push(item.poolProjectIcon);
-        group.reward_tokens = uniqBy(
-          group.reward_tokens.concat(item.reward_tokens),
-          "address"
-        );
-        group.user_reward = group.user_reward.concat(item.user_reward);
-        group.balance = Big(group.balance).plus(item.balance || 0);
+        addItem2Group(group, item);
       } else {
         acc.push({
           pool_address: item.pool_address,
@@ -130,13 +142,30 @@ export function useList(): List {
           reward_tokens: item.reward_tokens || [],
           user_reward: item.user_reward || [],
           balance: Big(item.balance || 0),
-          list: [item]
+          list: [item],
         });
       }
       return acc;
     }, []);
 
-    const filteredData = grouped.filter((item: any) => {
+    const groupedWithBeraPaw = grouped.map((group: any) => {
+      const matchedBeraPaw = beraPawList.find((beraPaw: any) =>
+        group.list.some((item: any) => {
+          if (item.vault_address === beraPaw.pool_address) {
+            beraPaw.linkVault = item;
+            return true;
+          }
+          return false;
+        })
+      );
+
+      if (matchedBeraPaw) {
+        return addItem2Group(group, matchedBeraPaw);
+      }
+      return group;
+    });
+
+    const filteredData = groupedWithBeraPaw.filter((item: any) => {
       // Deposit Asset
       if (
         filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
@@ -268,12 +297,12 @@ export function useList(): List {
     setPageTotal(Math.ceil(sortedData.length / pageSize));
 
     if (isMobile) {
-      return [sortedData, grouped];
+      return [sortedData, groupedWithBeraPaw];
     }
 
     return [
       sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
-      grouped
+      groupedWithBeraPaw
     ];
   }, [
     data,
@@ -432,6 +461,17 @@ export function useList(): List {
         return;
       }
 
+      const _currentTokenAddress = (item: any) => {
+        let _addr = item.pool_address;
+        if (item.project?.toLowerCase() === "berapaw") {
+          _addr = item.vault_address;
+        }
+        if (_addr === "0x0000000000000000000000000000000000000000") {
+          _addr = "native";
+        }
+        return _addr;
+      };
+
       const _list = res.data.data || [];
       let _dolomite_bera: any;
       let d2FinanceIdx = -1;
@@ -484,10 +524,7 @@ export function useList(): List {
           item.totalApy = totalApy;
           item.token = {
             // symbol: item.name,
-            address:
-              item.pool_address === "0x0000000000000000000000000000000000000000"
-                ? "native"
-                : item.pool_address,
+            address: _currentTokenAddress(item),
             decimals: 18
           };
           item.protocol = item.project;

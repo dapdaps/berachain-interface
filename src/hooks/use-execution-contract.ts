@@ -15,7 +15,7 @@ export default function () {
       try {
         gas = await contract.estimateGas[method](...params)
       } catch (error) {
-        console.error(error)
+        console.log("%s estimateGas failed: %o", method, error)
       }
       try {
         gas = gas ? Big(gas.toString()).times(2).toFixed(0) : 4000000;
@@ -27,7 +27,8 @@ export default function () {
         const tx = await provider.getSigner().sendTransaction(unsignedTx)
         return tx.wait()
       } catch (error) {
-        console.error(error)
+        console.log("%s populateTransaction failed: %o, params: %o, options: %o", method, error, params, { ...options, gasLimit: gas });
+        return Promise.reject(error);
       }
     }
   }
