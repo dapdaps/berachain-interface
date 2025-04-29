@@ -11,6 +11,9 @@ import IbgtHead from "@/sections/bgt/components/ibgt-head";
 import Vaults from "./vaults";
 import PageBack from "@/components/back";
 import IbgtAmount from "../components/ibgt-amount";
+import { numberFormatter } from "@/utils/number-formatter";
+import useUserPoints from "@/hooks/use-user-points";
+import InfraredTop from "@/sections/staking/components/infrared-top";
 export default memo(function IbgtMain() {
   const router = useRouter();
   const {
@@ -32,6 +35,7 @@ export default memo(function IbgtMain() {
     symbol,
     handleMintIBGT
   } = useIBGT();
+  const { userPoints } = useUserPoints()
   const {
     balances,
     inAmount,
@@ -44,6 +48,7 @@ export default memo(function IbgtMain() {
 
   return (
     <div className="w-[1140px]">
+      <InfraredTop />
       <div className="relative mb-[24px] flex items-center h-[120px] rounded-[20px] bg-[#FFDC50]">
         <div className="relative h-full flex-1 flex flex-col gap-[12px] pt-[34px] pl-[30px]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
@@ -91,9 +96,9 @@ export default memo(function IbgtMain() {
             <div className="cursor-pointer text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">
               {ibgtData?.total
                 ? Big(ibgtData?.staked)
-                    .div(ibgtData?.total)
-                    .times(100)
-                    .toFixed(2)
+                  .div(ibgtData?.total)
+                  .times(100)
+                  .toFixed(2)
                 : "-"}
               %
             </div>
@@ -146,9 +151,8 @@ export default memo(function IbgtMain() {
               <div className="flex items-center gap-[14px]">
                 <div className="w-[32px] h-[32px] rounded-full">
                   <img
-                    src={`/images/dapps/infrared/${
-                      data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"
-                    }.svg`}
+                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"
+                      }.svg`}
                   />
                 </div>
 
@@ -201,9 +205,9 @@ export default memo(function IbgtMain() {
                 <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {inAmount
                     ? "$" +
-                      Big(inAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(inAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : "-"}
                 </span>
                 <div
@@ -275,9 +279,9 @@ export default memo(function IbgtMain() {
                 <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {lpAmount
                     ? "$" +
-                      Big(lpAmount)
-                        .times(data?.initialData?.stake_token?.price ?? 0)
-                        .toFixed(2)
+                    Big(lpAmount)
+                      .times(data?.initialData?.stake_token?.price ?? 0)
+                      .toFixed(2)
                     : "-"}
                 </span>
                 <div
