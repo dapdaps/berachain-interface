@@ -3,6 +3,8 @@ import BigNumber from "bignumber.js";
 import { nativeToWNative } from "../utils/token";
 import chains from "../config/chains";
 import routerAbi from "../config/abi/router-balancer";
+import formatRoutes from "../utils/format-routes";
+import weth from "../config/weth";
 
 export class BalancerLib {
   private pools: any = [];
@@ -27,99 +29,151 @@ export class BalancerLib {
     const _amount = BigNumber(inputAmount)
       .multipliedBy(10 ** inputCurrency.decimals)
       .toFixed(0);
+
+    const paths: any[] = [];
+
+    const visited = new Set();
+    const findPaths = (
+      currentNode: string,
+      currentPath: any[],
+      depth: number = 0
+    ) => {
+      // Limit recursion depth to prevent stack overflow
+      if (depth > 3) return;
+
+      // Mark current node as visited in this path
+      visited.add(currentNode);
+
+      // If we found the output currency, add this path to our results
+      if (currentNode.toLowerCase() === _outputCurrency.address.toLowerCase()) {
+        paths.push([...currentPath]);
+      } else {
+        // Find all pools that contain the current token
+        const connectedPools = this.pools?.filter((poolData: any) =>
+          poolData[0].includes(currentNode.toLowerCase())
+        );
+
+        // For each connected pool, explore all tokens in that pool
+        for (const pool of connectedPools) {
+          const poolId = pool[1];
+          const poolTokens = pool[0];
+
+          // For each token in the pool
+          for (const token of poolTokens) {
+            // Skip if it's the current token or already visited
+            if (
+              token.toLowerCase() === currentNode.toLowerCase() ||
+              visited.has(token)
+            )
+              continue;
+
+            // Add this step to the path and continue searching
+            currentPath.push({ poolId, tokenIn: currentNode, tokenOut: token });
+            findPaths(token, currentPath, depth + 1);
+            currentPath.pop(); // Backtrack
+          }
+        }
+      }
+
+      // Remove from visited when backtracking
+      visited.delete(currentNode);
+    };
+
+    // Start the search from the input currency
+    findPaths(_inputCurrency.address.toLowerCase(), []);
+
+    // If no paths found, return no pair
+    if (paths.length === 0) {
+      return {
+        outputCurrencyAmount: "",
+        noPair: true
+      };
+    }
+
+    // Use multicall to query each path using queryBatchSwap
     const provider = new providers.JsonRpcProvider(
       chains[inputCurrency.chainId].rpcUrls[0]
     );
-    const RouterContract = new Contract(
+    const routerContract = new Contract(
       this.routerAddress,
       routerAbi,
-      provider.getSigner(account)
+      provider
     );
-    const finalPool = this.pools
-      ?.filter(
-        (poolData: any) =>
-          poolData[0].includes(_inputCurrency.address.toLowerCase()) &&
-          poolData[0].includes(_outputCurrency.address.toLowerCase())
-      )
-      .map((poolData: any) => poolData[1]);
 
-    if (finalPool.length === 0)
-      return {
-        outputCurrencyAmount: "",
-        noPair: true
-      };
+    // Prepare multicall queries for each path
+    const multicallQueries = paths.map((path) => {
+      // Format the swaps for queryBatchSwap
+      const swaps = path.map((hop: any, i: number) => {
+        const tokenInIndex = i === 0 ? 0 : i;
+        const tokenOutIndex = i === 0 ? 1 : i + 1;
 
-    const assets = [_inputCurrency.address, _outputCurrency.address];
-    const funds = [account, false, account, false];
+        return {
+          poolId: hop.poolId,
+          assetInIndex: tokenInIndex,
+          assetOutIndex: tokenOutIndex,
+          amount: i === 0 ? _amount : 0,
+          userData: "0x"
+        };
+      });
 
-    const swap_steps = [
-      {
-        poolId: finalPool[0],
-        assetIn: _inputCurrency.address,
-        assetOut: _outputCurrency.address,
-        amount: _amount
+      // Collect unique tokens in the path
+      const assets = [_inputCurrency.address];
+      path.forEach((hop: any) => {
+        if (!assets.includes(hop.tokenOut)) {
+          assets.push(hop.tokenOut);
+        }
+      });
+
+      // Return the queryBatchSwap call
+      return routerContract.callStatic.queryBatchSwap(
+        0, // SwapKind.GIVEN_IN
+        swaps,
+        assets,
+        [account, false, account, false] // funds
+      );
+    });
+
+    // Execute all queries in parallel
+    const results = await Promise.all(multicallQueries);
+
+    // Find the best path (the one with the highest output amount)
+    let bestPathIndex = 0;
+    let bestOutputAmount = new BigNumber(0);
+
+    results.forEach((result, index) => {
+      // The last element in the result array is the output amount (negative value)
+      const outputAmount = new BigNumber(
+        result[result.length - 1].toString()
+      ).multipliedBy(-1);
+
+      if (outputAmount.gt(bestOutputAmount)) {
+        bestOutputAmount = outputAmount;
+        bestPathIndex = index;
       }
-    ];
+    });
 
-    const token_indices: { [key: string]: number } = {};
-    for (let i = 0; i < assets.length; i++) {
-      token_indices[assets[i]] = i;
-    }
-
-    const swap_steps_struct = [];
-    for (const step of swap_steps) {
-      const swap_step_struct = [
-        step["poolId"],
-        token_indices[step["assetIn"]],
-        token_indices[step["assetOut"]],
-        step["amount"],
-        "0x"
-      ];
-      swap_steps_struct.push(swap_step_struct);
-    }
-    const quoterQarams = [
-      0,
-      swap_steps_struct,
-      [
-        inputCurrency.isNative
-          ? "0x0000000000000000000000000000000000000000"
-          : inputCurrency.address,
-        outputCurrency.isNative
-          ? "0x0000000000000000000000000000000000000000"
-          : outputCurrency.address
-      ],
-      funds
-    ];
-
-    const result = await RouterContract.callStatic.queryBatchSwap(
-      ...quoterQarams
-    );
-
-    const _amountOut =
-      new BigNumber(result[1]?.abs().toString()) || new BigNumber(0);
-
-    if (_amountOut.eq(0)) {
+    // If no valid path found
+    if (bestOutputAmount.isZero()) {
       return {
         outputCurrencyAmount: "",
         noPair: true
       };
     }
 
-    const deadline = Math.ceil(Date.now() / 1000) + 120;
+    // Format the best path for return
+    const bestPath = paths[bestPathIndex];
 
-    const _amountOutMin = _amountOut.multipliedBy(1 - slippage).toFixed(0);
+    const formattedRoutes = await formatRoutes({
+      tokenAddresses: [
+        _inputCurrency.address,
+        ...bestPath.map((hop: any) => hop.tokenOut)
+      ],
+      inputCurrency,
+      outputCurrency
+    });
 
-    const options = {
-      value: inputCurrency.isNative ? _amount : "0"
-    };
-
-    const params = [
-      ...quoterQarams,
-      [_amount, _amountOutMin],
-      deadline.toFixed()
-    ];
-
-    const outputCurrencyAmount = _amountOut
+    // Prepare the return data
+    const outputCurrencyAmount = bestOutputAmount
       .div(10 ** outputCurrency.decimals)
       .toFixed(outputCurrency.decimals)
       .replace(/\.?0+$/, "");
@@ -127,20 +181,134 @@ export class BalancerLib {
     const returnData = {
       outputCurrencyAmount,
       noPair: false,
-      routerAddress: this.routerAddress
+      routerAddress: this.routerAddress,
+      routes: [{ percentage: 100, routes: formattedRoutes }]
     };
 
+    // If no account provided, return just the quote
+    if (!account) return returnData;
+
+    // Prepare transaction data for batchSwap
+    const RouterContract = new Contract(
+      this.routerAddress,
+      routerAbi,
+      provider.getSigner(account)
+    );
+
+    // Determine if we should use swap or batchSwap based on path length
+    const method = bestPath.length > 1 ? "batchSwap" : "swap";
+    let params: any = [];
+    const funds = [account, false, account, false];
+    const deadline = Math.ceil(Date.now() / 1000) + 300;
+
+    if (method === "batchSwap") {
+      // Collect unique tokens in the path
+      const assets = [_inputCurrency.address];
+
+      // Merge consecutive hops with the same poolId
+      const mergedPath = [];
+      let currentHop = null;
+
+      for (let i = 0; i < bestPath.length; i++) {
+        if (!currentHop) {
+          currentHop = { ...bestPath[i] };
+        } else if (currentHop.poolId === bestPath[i].poolId) {
+          // If same poolId, update the tokenOut to the latest one
+          currentHop.tokenOut = bestPath[i].tokenOut;
+        } else {
+          // Different poolId, add the current hop to merged path and start a new one
+          mergedPath.push(currentHop);
+          currentHop = { ...bestPath[i] };
+        }
+
+        // Add the last hop
+        if (i === bestPath.length - 1 && currentHop) {
+          mergedPath.push(currentHop);
+        }
+      }
+
+      // Format the swaps for batchSwap using the merged path
+      const swaps = mergedPath.map((hop: any, i: number) => {
+        const tokenInIndex = i === 0 ? 0 : i;
+        const tokenOutIndex = i === 0 ? 1 : i + 1;
+
+        if (!assets.includes(hop.tokenOut)) {
+          assets.push(hop.tokenOut);
+        }
+
+        return {
+          poolId: hop.poolId,
+          assetInIndex: tokenInIndex,
+          assetOutIndex: tokenOutIndex,
+          amount: i === 0 ? _amount : 0,
+          userData: "0x"
+        };
+      });
+
+      // Calculate limits (amount in for first token, minimum amount out for last token)
+      const limits = Array(assets.length).fill("0");
+      limits[0] = _amount; // Amount in
+      limits[assets.length - 1] = bestOutputAmount
+        .multipliedBy(1 - slippage)
+        .multipliedBy(-1)
+        .toFixed(0); // Minimum amount out with slippage
+
+      params = [
+        0,
+        swaps,
+        assets.map((address: any) =>
+          address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
+            ? "0x0000000000000000000000000000000000000000"
+            : address
+        ),
+        funds,
+        limits,
+        deadline.toFixed(0)
+      ];
+    } else {
+      // For single hop, use swap method
+      const hop = bestPath[0];
+      const swap = {
+        poolId: hop.poolId,
+        kind: 0,
+        assetIn:
+          hop.tokenIn.toLowerCase() ===
+          weth[inputCurrency.chainId].toLowerCase()
+            ? "0x0000000000000000000000000000000000000000"
+            : hop.tokenIn,
+        assetOut:
+          hop.tokenOut.toLowerCase() ===
+          weth[inputCurrency.chainId].toLowerCase()
+            ? "0x0000000000000000000000000000000000000000"
+            : hop.tokenOut,
+        amount: _amount,
+        userData: "0x"
+      };
+
+      const minAmountOut = bestOutputAmount
+        .multipliedBy(1 - slippage)
+        .toFixed(0);
+
+      params = [swap, funds, minAmountOut, deadline.toFixed(0)];
+    }
+
+    const options = {
+      value: inputCurrency.isNative ? _amount : "0"
+    };
+    // Estimate gas
     let estimateGas;
     try {
-      estimateGas = await RouterContract.estimateGas.batchSwap(
+      estimateGas = await RouterContract.estimateGas[method](
         ...params,
         options
       );
     } catch (err) {
-      // console.log('estimateGas err', err);
+      console.log("estimateGas err", err);
     }
+    console.log(`${method} estimateGas:`, estimateGas?.toString());
 
-    const txn = await RouterContract.populateTransaction.batchSwap(...params, {
+    // Populate transaction
+    const txn = await RouterContract.populateTransaction[method](...params, {
       ...options,
       gasLimit: estimateGas
         ? BigNumber(estimateGas.toString()).multipliedBy(1.2).toFixed(0)

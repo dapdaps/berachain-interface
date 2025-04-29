@@ -22,5 +22,13 @@ export default {
       "--button-text-color": "#fff"
     },
     icon: "/images/dapps/kodiak.svg"
+  },
+  burrbear: {
+    type: "swap",
+    theme: {
+      "--button-color": "rgb(255, 120, 7)",
+      "--button-text-color": "#fff"
+    },
+    icon: "/images/dapps/burrbear.svg"
   }
 };
