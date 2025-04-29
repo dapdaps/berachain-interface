@@ -5,18 +5,17 @@ import Popover, {
   PopoverTrigger
 } from "@/components/popover";
 import { useMultiState } from "@/hooks/use-multi-state";
-import IbgtRewards from "@/sections/bgt/components/ibgt-rewards";
+import InfraredTop from "@/sections/staking/components/infrared-top";
 import type { ColumnType, ColunmListType } from "@/sections/staking/types";
 import { formatValueDecimal } from "@/utils/balance";
 import { getProtocolIcon } from "@/utils/utils";
 import Big from "big.js";
 import clsx from "clsx";
-import { ethers } from "ethers";
+import { motion } from 'framer-motion';
 import { cloneDeep } from "lodash";
+import { useRouter } from "next/navigation";
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
-import { motion } from 'framer-motion';
-import { useRouter } from "next/navigation";
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -32,6 +31,7 @@ const List = forwardRef<any, any>((props, ref) => {
     reload,
     maxApr
   } = props;
+
   const router = useRouter()
 
 
@@ -42,6 +42,7 @@ const List = forwardRef<any, any>((props, ref) => {
     filterKey: "all",
     direction: 1
   });
+
 
   const tvl = useMemo(() => {
     return formatValueDecimal(
@@ -65,7 +66,6 @@ const List = forwardRef<any, any>((props, ref) => {
     return Big(apy).toFixed(2);
   }, [dataList, maxApr]);
 
-  const rewards = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
 
   function renderTD(data: any, column: ColumnType, index: number) {
     if (column.type === "slot") {
@@ -101,9 +101,6 @@ const List = forwardRef<any, any>((props, ref) => {
     }
   };
   useImperativeHandle(ref, () => refs);
-
-
-
   const columnList: ColunmListType =
     name === "vaults"
       ? [
@@ -546,13 +543,7 @@ const List = forwardRef<any, any>((props, ref) => {
       <div className="pt-[7px] pb-[12px] pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium">
         {description}
       </div>
-      <div className="px-[30px] pb-[23px]">
-        {
-          rewards?.length > 0 && (
-            <IbgtRewards rewards={rewards} onSuccess={reload} />
-          )
-        }
-      </div>
+      <InfraredTop />
       <div className="flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]">
         <div className="flex flex-col gap-[12px] w-[20%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
