@@ -16,8 +16,10 @@ export default memo(function InfraredTop() {
         <div className="">Rewards</div>
         <div className="h-[40px]">
           {
-            rewards?.length > 0 && (
+            rewards?.length > 0 ? (
               <IbgtRewards rewards={rewards} onSuccess={reload} />
+            ) : (
+              <>-</>
             )
           }
         </div>
