@@ -44,6 +44,9 @@ export const Pool = (props: any) => {
       >
         {uniq(record.list.map((p: any) => p.pool_project)).join("/")}
       </div>
+      {/*<div className="text-[12px] truncate">
+        [ids: {record.list.map((i: any) => i.backendId).join(", ")}]
+      </div>*/}
     </div>
   );
 };

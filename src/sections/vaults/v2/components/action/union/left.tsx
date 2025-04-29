@@ -136,6 +136,7 @@ const ActionUnionLeft = (props: any) => {
                       {/^(Hub|Bex)$/i.test(protocol?.protocol || "")
                         ? "Bex"
                         : protocol?.protocol}
+                      {/*[ids: {protocol?.backendId}]*/}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
