@@ -7,9 +7,14 @@ export default function useUserPoints() {
   const [loading, setLoading] = useState(false)
   const [userPoints, setUserPoints] = useState()
   async function getUserPoints() {
-    const result = await get("https://dev-api.beratown.app/infrared?path=api%2Fpoints%2Fuser%2F" + account + "&params=chainId%3D80094")
-    console.log('====result', result)
-    setUserPoints(result)
+    try {
+      setLoading(true)
+      const result = await get("https://dev-api.beratown.app/infrared?path=api%2Fpoints%2Fuser%2F" + account + "&params=chainId%3D80094")
+      setUserPoints(result)
+    } catch (error) {
+      console.log(error)
+    }
+    setLoading(false)
   }
   useEffect(() => {
     account && getUserPoints()
