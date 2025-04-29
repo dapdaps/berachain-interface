@@ -10,6 +10,7 @@ import onMemeswap from "./memeswap/action";
 import onD2Finance from "./d2-finance/action";
 import onBeraborrow from "./beraborrow/action";
 import onYeetit from "./yeetit/action";
+import onBeraPaw from "./berapaw/action";
 
 export default function onAction(params: any) {
   const { currentRecord } = params;
@@ -60,5 +61,9 @@ export default function onAction(params: any) {
 
   if (currentRecord.protocol === "Yeet") {
     return onYeetit(params);
+  }
+
+  if (currentRecord.protocol === "BeraPaw") {
+    return onBeraPaw(params);
   }
 }

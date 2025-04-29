@@ -122,6 +122,7 @@ const ActionUnionLeft = (props: any) => {
                         isIBGT && (
                           <div className="shrink-0">
                             <IBGTPoints
+                              isPopover={false}
                               className="!text-[12px] !font-[400] !h-[18px] !px-[6px]"
                               cardClassName=""
                               contentClassName="!z-[110]"
@@ -135,6 +136,7 @@ const ActionUnionLeft = (props: any) => {
                       {/^(Hub|Bex)$/i.test(protocol?.protocol || "")
                         ? "Bex"
                         : protocol?.protocol}
+                      {/*[ids: {protocol?.backendId}]*/}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
