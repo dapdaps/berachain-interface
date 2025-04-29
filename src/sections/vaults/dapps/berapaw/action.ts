@@ -46,6 +46,6 @@ export default async function onAction(params: any) {
     }
   }
 
-  const options = await getEstimateGas(contract, method, contractParams);
+  const options = await getEstimateGas(contract, method, contractParams, { times: 1.2 });
   return contract[method](...contractParams, options);
 }
