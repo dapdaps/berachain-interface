@@ -36,12 +36,16 @@ const List = forwardRef<any, any>((props, ref) => {
     loading,
     reload,
     maxApr,
+    totalTVL,
     pageIndex,
     pageTotal,
     pending,
     currentItem,
+    title,
   } = props;
   const router = useRouter()
+
+  const isBeraPaw = name === "BeraPaw";
 
   const bodyRef = useRef<any>();
 
@@ -54,6 +58,9 @@ const List = forwardRef<any, any>((props, ref) => {
   });
 
   const tvl = useMemo(() => {
+    if (totalTVL) {
+      return numberFormatter(totalTVL, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" });
+    }
     return formatValueDecimal(
       dataList?.reduce((prev, cur) => {
         return prev.plus(Big(cur?.tvl ?? 0));
@@ -62,9 +69,9 @@ const List = forwardRef<any, any>((props, ref) => {
       2,
       true
     );
-  }, [dataList]);
+  }, [dataList, totalTVL]);
   const maxApy = useMemo(() => {
-    if (maxApr) return maxApr;
+    if (maxApr) return numberFormatter(maxApr, 2, true, { isShort: true, isShortUppercase: true });
     let apy = 0;
     if (!dataList) return apy;
     dataList.forEach((it: any) => {
@@ -331,7 +338,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       ];
     }
-    if (name === "BeraPaw") {
+    if (isBeraPaw) {
       return [
         {
           width: "30%",
@@ -650,7 +657,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       }
     ];
-  }, [pending, currentItem]);
+  }, [pending, currentItem, name]);
 
   const [hasScrollbar, setHasScrollbar] = useState(false);
 
@@ -675,12 +682,22 @@ const List = forwardRef<any, any>((props, ref) => {
   return (
     <div>
       <div className="pl-[18px] text-black font-Montserrat text-[26px] font-bold leading-[90%]">
-        Vaults
+        {typeof title !== "undefined" ? title : "Vaults"}
       </div>
-      <div className="pt-[7px] pb-[12px] pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium">
+      <div
+        className={clsx(
+          "pl-[18px] text-[#3D405A] font-Montserrat text-[14px] font-medium",
+          !!description ? "pt-[7px] pb-[12px]" : ""
+        )}
+      >
         {description}
       </div>
-      <div className="px-[30px] pb-[23px]">
+      <div
+        className={clsx(
+          "px-[30px]",
+          rewards?.length > 0 ? "pb-[23px]" : ""
+        )}
+      >
         {
           rewards?.length > 0 && (
             <IbgtRewards rewards={rewards} onSuccess={reload} />
@@ -699,7 +716,7 @@ const List = forwardRef<any, any>((props, ref) => {
 
         <div className="flex flex-col gap-[12px] w-[80%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
-            APY up to
+            {isBeraPaw ? "APR" : "APY"} up to
           </div>
           <div className="text-black font-Montserrat text-[26px] font-semibold leading-[90%]">
             {maxApy}%
@@ -776,11 +793,17 @@ const List = forwardRef<any, any>((props, ref) => {
       </div>
 
       {loading ? (
-        <div className="flex items-center gap-[4px]">
-          {columnList.map((column: ColumnType) => {
+        <div
+          className={clsx("grid gap-[4px]")}
+          style={{
+            gridTemplateColumns: columnList.map((column: ColumnType) => column?.width).join(" "),
+          }}
+        >
+          {columnList.map((column: ColumnType, idx: number) => {
             return (
               <Skeleton
-                width={(928 * parseInt(column?.width)) / 100 - 4}
+                key={idx}
+                width="100%"
                 height={58}
               />
             );
@@ -826,7 +849,7 @@ const List = forwardRef<any, any>((props, ref) => {
       )}
 
       {
-        name === "BeraPaw" && (
+        isBeraPaw && (
           <div className="mt-[10px] flex justify-end">
             <Pager
               defaultPage={pageIndex}

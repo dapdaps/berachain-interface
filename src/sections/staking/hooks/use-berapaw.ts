@@ -18,6 +18,8 @@ import multicallAddresses from '@/configs/contract/multicall';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import { useAction } from '@/sections/vaults/v2/components/action/union/berapaw/use-action';
 
+const pageSize = 10;
+
 export function useBerapaw(props: any) {
   const { vaults, name } = props;
 
@@ -27,12 +29,13 @@ export function useBerapaw(props: any) {
     return provider?.getSigner(account);
   }, [provider, account]);
 
-  const { host, query } = vaults;
+  const { host, query } = vaults ?? {};
   const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 
   const [pageIndex, setPageIndex] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
   const [currentVault, setCurrentVault] = useState<any>();
+  const [maxAPR, setMaxAPR] = useState<any>();
 
   const {
     onApprove,
@@ -160,47 +163,74 @@ export function useBerapaw(props: any) {
     });
   };
 
-  const { data, runAsync, loading } = useRequest(async (_pageIndex?: number) => {
-    const __pageIndex = typeof _pageIndex === "undefined" ? pageIndex : _pageIndex;
-
+  const { data: totalData, runAsync: getTotalData, loading: totalDataLoading } = useRequest(async () => {
     try {
-      const res = await axios.post(host, query({ pageSize: 10, skip: (__pageIndex - 1) * 10 }));
+      const res = await axios.post(host, query({ pageSize: 300 }));
       if (res.status !== 200 || !res.data.data?.polGetRewardVaults?.vaults) {
         return [];
       }
-      const { vaults, pagination } = res.data.data.polGetRewardVaults;
-      const { LBGT: LBGTPrice = 1, BERA: BERAPrice = 1 } = prices;
+      const { vaults: _vaults, pagination } = res.data.data.polGetRewardVaults;
+      setPageTotal(Math.ceil(Big(pagination?.totalCount || 0).div(pageSize).toNumber()));
 
-      const allPercentual: any = await getPercentual(vaults);
-      const allEarnedAmount: any = await getEarnedAmount(vaults);
-      const allBalances: any = await getBalance(vaults);
-      const allApproved: any = await getApproved(vaults);
-
-      for (let i = 0; i < vaults.length; i++) {
-        const it = vaults[i];
-        const underlyingTokens = it.activeIncentives?.map((incentive: any) => ({
-          ...incentive.token,
-          icon: getTokenLogo(incentive.token?.symbol),
-
-        })) ?? [];
-        // const percentual = await getPercentual(it.vaultAddress);
-        // console.log('rewardVault[%s] percentual: %o', it.vaultAddress, percentual);
-        it.underlyingTokens = underlyingTokens;
-        // LBGT APR：=BGT APR × Price × (1 − BribeBack Percentual)
-        // Price= LBGT price / bera price
-        // BribeBack Percentual = mint bribeBack percentual / 1e18
-        it.LBGTApr = Big(it.dynamicData?.apr || 0).times(Big(LBGTPrice).div(BERAPrice)).times(Big(1).minus(allPercentual[i] || 0));
-        it.estimateMintAmount = Big(allEarnedAmount[i] || 0).times(Big(1).minus(allPercentual[i] || 0));
-        it.approved = allApproved[i] || false;
-        it.positionAmount = allBalances[i] || "0";
-      }
-      setPageIndex(__pageIndex);
-      setPageTotal(Math.ceil(Big(pagination?.totalCount || 0).div(10).toNumber()));
-      return vaults.sort((a: any, b: any) => Big(a.dynamicData?.apr || 0).minus(Big(b?.dynamicData?.apr || 0)));
+      return _vaults.sort((a: any, b: any) => Big(b.dynamicData?.apr || 0).minus(Big(a.dynamicData?.apr || 0)));
     } catch (err: any) {
       console.log("get berapaw vaults failed: %o", err);
     }
     return [];
+  }, { manual: true });
+
+  const [totalTVL, maxBgtAPRVault] = useMemo<any[]>(() => {
+    if (!totalData) return ["0", "0"];
+    let _maxBgtAPRVault;
+    totalData.reduce((acc: any, it: any) => {
+      if (Big(acc).lt(Big(it.dynamicData?.apr || 0).times(100))) {
+        _maxBgtAPRVault = it;
+        return Big(it.dynamicData?.apr || 0).times(100);
+      }
+      return Big(acc);
+    }, 0);
+    return [
+      totalData.reduce((acc: any, it: any) => {
+        return Big(acc).plus(Big(it.dynamicData?.tvl || 0))
+      }, 0),
+      _maxBgtAPRVault
+    ];
+  }, [totalData]);
+
+  const { data, runAsync, loading } = useRequest(async (_pageIndex?: number) => {
+    const __pageIndex = typeof _pageIndex === "undefined" ? pageIndex : _pageIndex;
+
+    const { LBGT: LBGTPrice = 1, BERA: BERAPrice = 1 } = prices;
+
+    const pageData = totalData.slice((__pageIndex - 1) * pageSize, __pageIndex * pageSize);
+
+    const allPercentual: any = await getPercentual(pageData);
+    const allEarnedAmount: any = await getEarnedAmount(pageData);
+    const allBalances: any = await getBalance(pageData);
+    const allApproved: any = await getApproved(pageData);
+
+    for (let i = 0; i < pageData.length; i++) {
+      const it = pageData[i];
+      const underlyingTokens = it.activeIncentives?.map((incentive: any) => ({
+        ...incentive.token,
+        icon: getTokenLogo(incentive.token?.symbol),
+
+      })) ?? [];
+      // const percentual = await getPercentual(it.vaultAddress);
+      // console.log('rewardVault[%s] percentual: %o', it.vaultAddress, percentual);
+      it.underlyingTokens = underlyingTokens;
+      // LBGT APR：=BGT APR × Price × (1 − BribeBack Percentual)
+      // Price= LBGT price / bera price
+      // BribeBack Percentual = mint bribeBack percentual / 1e18
+      it.LBGTApr = Big(it.dynamicData?.apr || 0).times(Big(LBGTPrice).div(BERAPrice)).times(Big(1).minus(allPercentual[i] || 0));
+      it.estimateMintAmount = Big(allEarnedAmount[i] || 0).times(Big(1).minus(allPercentual[i] || 0));
+      it.approved = allApproved[i] || false;
+      it.positionAmount = allBalances[i] || "0";
+    }
+
+    setPageIndex(__pageIndex);
+
+    return pageData.sort((a: any, b: any) => Big(a.dynamicData?.apr || 0).minus(Big(b.dynamicData?.apr || 0)));
   }, { manual: true });
 
   const handleAction = async (record: any, type: any) => {
@@ -226,7 +256,7 @@ export function useBerapaw(props: any) {
     if (!name || name !== "BeraPaw") return;
     const timer = setTimeout(() => {
       clearTimeout(timer);
-      runAsync();
+      getTotalData();
     }, 1000);
 
     return () => {
@@ -235,18 +265,36 @@ export function useBerapaw(props: any) {
   }, [name, account, provider]);
 
   useEffect(() => {
+    runAsync();
+  }, [totalData]);
 
-  }, [currentVault?.vaultAddress]);
+  useEffect(() => {
+    if (!maxBgtAPRVault) return;
+    const { LBGT: LBGTPrice = 1, BERA: BERAPrice = 1 } = prices;
+    getPercentual([maxBgtAPRVault]).then((allPercentual: any) => {
+      setMaxAPR(
+        Big(maxBgtAPRVault.dynamicData?.apr || 0).times(100).times(Big(LBGTPrice).div(BERAPrice)).times(Big(1).minus(allPercentual[0] || 0))
+      )
+    });
+  }, [maxBgtAPRVault, prices]);
 
   return {
-    loading,
+    loading: loading || totalDataLoading,
     dataList: data,
-    getDataList: runAsync,
+    getDataList: (_pageIndex?: number) => {
+      if (typeof _pageIndex !== "undefined") {
+        runAsync(_pageIndex);
+        return;
+      }
+      getTotalData();
+    },
     pageIndex,
     pageTotal,
     handleAction,
     approving,
     minting,
     currentVault,
+    totalTVL,
+    maxAPR,
   };
 }
