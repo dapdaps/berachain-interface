@@ -83,6 +83,13 @@ export function useList(): List {
     const beraPawList = data.filter((item: any) => item.project?.toLowerCase() === 'berapaw');
     const hubList = data.filter((item: any) => item.project?.toLowerCase() !== 'berapaw');
 
+    const addIcon2List = (iconList: any, icon: any) => {
+      if (iconList.some((_icon: any) => _icon === icon)) {
+        return;
+      }
+      iconList.push(icon);
+    };
+
     const addItem2Group = (group: any, item: any) => {
       group.list.push(item);
       group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
@@ -101,9 +108,9 @@ export function useList(): List {
         group.totalApyList[1] = { apr: item.apr, apy: item.apr.pool };
       }
       group.apr.push(item.apr);
-      group.creatorProtocolIcon.push(item.creatorProtocolIcon);
-      group.protocolIcon.push(item.protocolIcon);
-      group.poolProjectIcon.push(item.poolProjectIcon);
+      addIcon2List(group.creatorProtocolIcon, item.creatorProtocolIcon);
+      addIcon2List(group.protocolIcon, item.protocolIcon);
+      addIcon2List(group.poolProjectIcon, item.poolProjectIcon);
       group.reward_tokens = uniqBy(
         group.reward_tokens.concat(item.reward_tokens),
         'address'
@@ -111,59 +118,67 @@ export function useList(): List {
       group.user_reward = group.user_reward.concat(item.user_reward);
       group.balance = Big(group.balance).plus(item.balance || 0);
 
+      item.tokens?.forEach((token: any) => {
+        if (!group.tokens?.some((_token: any) => _token.address.toLowerCase() === token.address.toLowerCase())) {
+          group.tokens.push(token);
+        }
+      });
+
       return group;
     };
 
-    const grouped = hubList.reduce((acc: any[], item: any) => {
-      const group = acc.find((g: any) => g.pool_address === item.pool_address);
-      if (group) {
-        addItem2Group(group, item);
-      } else {
-        acc.push({
-          pool_address: item.pool_address,
-          pool_project: item.pool_project,
-          name: item.name,
-          tvl: Big(item.tvl || 0),
-          user_stake: {
-            amount: Big(item.user_stake?.amount || 0),
-            usd: Big(item.user_stake?.usd || 0)
-          },
-          // [min, max]
-          totalApy: [item.totalApy, item.totalApy],
-          totalApyList: [
-            { apr: item.apr, apy: item.apr.pool },
-            { apr: item.apr, apy: item.apr.pool }
-          ],
-          apr: [item.apr],
-          creatorProtocolIcon: [item.creatorProtocolIcon],
-          protocolIcon: [item.protocolIcon],
-          poolProjectIcon: [item.poolProjectIcon],
-          tokens: item.tokens,
-          reward_tokens: item.reward_tokens || [],
-          user_reward: item.user_reward || [],
-          balance: Big(item.balance || 0),
-          list: [item],
-        });
-      }
-      return acc;
-    }, []);
+    const generateGroup = (listData: any, defaultGroupList = []) => {
+      return listData.reduce((acc: any[], item: any) => {
+        const group = acc.find((g: any) => g.pool_address === item.pool_address);
+        if (group) {
+          addItem2Group(group, item);
+        } else {
+          acc.push({
+            pool_address: item.pool_address,
+            pool_project: item.pool_project,
+            name: item.name,
+            tvl: Big(item.tvl || 0),
+            user_stake: {
+              amount: Big(item.user_stake?.amount || 0),
+              usd: Big(item.user_stake?.usd || 0)
+            },
+            // [min, max]
+            totalApy: [item.totalApy, item.totalApy],
+            totalApyList: [
+              { apr: item.apr, apy: item.apr.pool },
+              { apr: item.apr, apy: item.apr.pool }
+            ],
+            apr: [item.apr],
+            creatorProtocolIcon: [item.creatorProtocolIcon],
+            protocolIcon: [item.protocolIcon],
+            poolProjectIcon: [item.poolProjectIcon],
+            tokens: item.tokens,
+            reward_tokens: item.reward_tokens || [],
+            user_reward: item.user_reward || [],
+            balance: Big(item.balance || 0),
+            list: [item],
+          });
+        }
+        return acc;
+      }, defaultGroupList);
+    }
 
-    const groupedWithBeraPaw = grouped.map((group: any) => {
-      const matchedBeraPaw = beraPawList.find((beraPaw: any) =>
-        group.list.some((item: any) => {
-          if (item.vault_address === beraPaw.pool_address) {
-            beraPaw.linkVault = item;
-            return true;
-          }
-          return false;
-        })
-      );
+    const grouped = generateGroup(hubList);
 
-      if (matchedBeraPaw) {
-        return addItem2Group(group, matchedBeraPaw);
+    grouped.forEach((group: any) => {
+      for (let i = beraPawList.length - 1; i >= 0; i--) {
+        const currentBeraPaw = beraPawList[i];
+        const linkVault = group.list.find((_protocol: any) => _protocol.vault_address === currentBeraPaw.pool_address);
+        if (linkVault) {
+          currentBeraPaw.linkVault = linkVault;
+          addItem2Group(group, currentBeraPaw);
+          beraPawList.splice(i, 1);
+          break;
+        }
       }
-      return group;
     });
+
+    const groupedWithBeraPaw = generateGroup(beraPawList, grouped);
 
     const filteredData = groupedWithBeraPaw.filter((item: any) => {
       // Deposit Asset
@@ -461,9 +476,11 @@ export function useList(): List {
         return;
       }
 
+      const _list = res.data.data || [];
+
       const _currentTokenAddress = (item: any) => {
         let _addr = item.pool_address;
-        if (item.project?.toLowerCase() === "berapaw") {
+        if (item.project?.toLowerCase() === "berapaw" && _list.some((it: any) => it.id !== item.id && it.vault_address.toLowerCase() === item.pool_address.toLowerCase())) {
           _addr = item.vault_address;
         }
         if (_addr === "0x0000000000000000000000000000000000000000") {
@@ -472,7 +489,6 @@ export function useList(): List {
         return _addr;
       };
 
-      const _list = res.data.data || [];
       let _dolomite_bera: any;
       let d2FinanceIdx = -1;
       const _data = _list
