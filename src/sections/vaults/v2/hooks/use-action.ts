@@ -175,6 +175,7 @@ export default function useAction(): Action {
       beraPawRef.current?.getEstimateMintLBGT();
       updateBalance?.();
     } catch (err: any) {
+      console.log('err: %o', err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

@@ -469,4 +469,13 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/beramo.svg",
     color: "rgb(0,0,0)"
   },
+  stlbgt: {
+    chainId: CHAIN_ID,
+    address: "0xFace73a169e2CA2934036C8Af9f464b5De9eF0ca",
+    symbol: "stLBGT",
+    name: "stLBGT",
+    decimals: 18,
+    icon: "/assets/tokens/lbgt.png",
+    color: "rgb(0,0,0)"
+  },
 };
