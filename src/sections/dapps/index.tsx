@@ -53,11 +53,10 @@ const FIRST_LIST = [
         )
       },
       {
-        ..._dApps["bend"],
+        ..._dApps["burrbear"],
         attachedIcon: (
           <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
-        ),
-        disabled: true
+        )
       }
     ]
   },
@@ -133,7 +132,7 @@ const SECOND_LIST = [
         ..._dApps["beraborrow"],
         attachedIcon: (
           <TrunkSmall className="absolute left-[44%] bottom-[-28%]" />
-        ),
+        )
       },
       {
         ..._dApps["aquabera"],
@@ -226,11 +225,10 @@ const ALL_LIST = [
         )
       },
       {
-        ..._dApps["bend"],
+        ..._dApps["burrbear"],
         attachedIcon: (
           <TrunkSmall className="scale-x-[-1] absolute right-[44%] bottom-[-24%]" />
-        ),
-        disabled: true
+        )
       }
     ]
   },
@@ -294,7 +292,7 @@ const ALL_LIST = [
         ..._dApps["beraborrow"],
         attachedIcon: (
           <TrunkLarge className="scale-x-[-1] absolute right-[44%] bottom-[-28%]" />
-        ),
+        )
       }
     ]
   },
