@@ -21,6 +21,14 @@ import { numberFormatter } from '@/utils/number-formatter';
 import { bera } from '@/configs/tokens/bera';
 import Button from '@/components/button';
 import Pager from '@/components/pager';
+import {
+  ColumnAction,
+  ColumnAPR,
+  ColumnPool,
+  ColumnPosition,
+  ColumnReward,
+  ColumnTVL
+} from '@/sections/staking/Bridge/List/Bex/columns';
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -347,20 +355,7 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data) => {
             return (
-              <div className="flex items-center gap-[8px]">
-                <div className="flex items-center min-w-[50px]">
-                  <LazyImage
-                    src={data.metadata?.logoURI}
-                    width={30}
-                    height={30}
-                    containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
-                    fallbackSrc="/assets/tokens/default_icon.png"
-                  />
-                </div>
-                <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-                  {data.stakingToken?.symbol}
-                </div>
-              </div>
+              <ColumnPool data={data} />
             );
           }
         },
@@ -371,9 +366,7 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data) => {
             return (
-              <div className="flex items-center gap-[8px]">
-                {numberFormatter(data.positionAmount, 2, true, { isShort: true, isShortUppercase: true })}
-              </div>
+              <ColumnPosition data={data} />
             );
           }
         },
@@ -384,9 +377,7 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data) => {
             return (
-              <div className="flex items-center gap-[8px]">
-                {numberFormatter(data.dynamicData?.tvl, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
-              </div>
+              <ColumnTVL data={data} />
             );
           }
         },
@@ -397,14 +388,7 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data) => {
             return (
-              <div className="flex flex-col whitespace-nowrap">
-                <div className="text-[#6CA200]">
-                  LBGT: {numberFormatter(Big(data.LBGTApr || 0).times(100), 2, true, { isShort: true, isShortUppercase: true })}%
-                </div>
-                <div className="">
-                  BGT: {numberFormatter(Big(data.dynamicData?.apr || 0).times(100), 2, true, { isShort: true, isShortUppercase: true })}%
-                </div>
-              </div>
+              <ColumnAPR data={data} />
             );
           }
         },
@@ -415,17 +399,7 @@ const List = forwardRef<any, any>((props, ref) => {
           type: "slot",
           render: (data) => {
             return (
-              <div className="flex items-center gap-[8px]">
-                <LazyImage
-                  src={bera["lbgt"].icon}
-                  width={24}
-                  height={24}
-                  containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
-                />
-                <div className="">
-                  {numberFormatter(data.estimateMintAmount, 2, true, { isShort: true, isShortUppercase: true })}
-                </div>
-              </div>
+              <ColumnReward data={data} />
             );
           }
         },
@@ -435,34 +409,13 @@ const List = forwardRef<any, any>((props, ref) => {
           label: "",
           type: "slot",
           render: (data) => {
-            const disabled = !data.estimateMintAmount || Big(data.estimateMintAmount).lte(0);
-            if (data.approved) {
-              return (
-                <Button
-                  type="primary"
-                  disabled={false}
-                  className="shrink-0 !h-[30px] w-full !text-[14px] !font-[500] !rounded-[10px] !leading-[1]"
-                  loading={pending && currentItem?.id === data.id}
-                  onClick={() => {
-                    onChangeData?.(data, "mint");
-                  }}
-                >
-                  Mint
-                </Button>
-              );
-            }
             return (
-              <Button
-                type="primary"
-                disabled={disabled}
-                className="shrink-0 !h-[30px] w-full !text-[14px] !font-[500] !rounded-[10px] !leading-[1]"
-                loading={pending && currentItem?.id === data.id}
-                onClick={() => {
-                  onChangeData?.(data, "approve");
-                }}
-              >
-                Approve
-              </Button>
+              <ColumnAction
+                data={data}
+                pending={pending}
+                currentItem={currentItem}
+                onChangeData={onChangeData}
+              />
             );
           }
         },
@@ -717,7 +670,11 @@ const List = forwardRef<any, any>((props, ref) => {
       >
         {description}
       </div>
-      <InfraredTop />
+      {
+        !isBeraPaw && (
+          <InfraredTop />
+        )
+      }
       <div className="flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]">
         <div className="flex flex-col gap-[12px] w-[20%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
