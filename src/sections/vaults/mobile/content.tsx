@@ -15,6 +15,7 @@ import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
 import React, { useImperativeHandle, useMemo } from 'react';
 import { cloneDeep } from 'lodash';
 import useCustomAccount from '@/hooks/use-account';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 
 // ⚠️Moved from src/sections/vaults/mobile/index.tsx
 const MobileContent = (props: any, ref: any) => {
@@ -202,6 +203,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
     token0: data?.tokens?.[0],
     token1: data?.tokens?.[1]
   };
+
   return isAquaBera ? (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
@@ -317,7 +319,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
-              {data?.images?.[0] && (
+              {data?.images[0] && (
                 <img
                   className="mr-[-8px] rounded-full"
                   src={data?.images[0]}
@@ -326,7 +328,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                   alt="Token"
                 />
               )}
-              {data?.images?.[1] && (
+              {data?.images[1] && (
                 <img
                   className="rounded-full"
                   src={data?.images[1]}
@@ -389,6 +391,24 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
               {formatValueDecimal(data.tvl, "$", 2, true)}
             </div>
           </div>
+
+          <div>
+            <div className="font-medium	text-[14px]">Points</div>
+            <Popover
+              trigger={PopoverTrigger.Click}
+              placement={PopoverPlacement.Top}
+              content={(
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
+              )}
+            >
+              <div className="font-semibold	text-[16px] mt-[8px] underline">
+                {data?.initialData?.pp_multiplier}x
+              </div>
+            </Popover>
+
+
+          </div>
+
           <div className="text-right">
             <div className="font-medium	text-[14px]">APY</div>
             <div className="font-semibold	text-[16px] mt-[8px]">

@@ -1,30 +1,17 @@
 import PageBack from "@/components/back";
 import CheckBox from "@/components/check-box";
-import CircleLoading from "@/components/circle-loading";
 import Dropdown from "@/components/dropdown";
-import Empty from "@/components/empty";
 import MenuButton from "@/components/mobile/menuButton";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-import multicallAddresses from "@/configs/contract/multicall";
 import aquaberaConfig from "@/configs/staking/dapps/aquabera";
 import useCustomAccount from "@/hooks/use-account";
-import useMergeDataList from "@/hooks/use-merge-data-list";
 import StakingModal from "@/sections/staking/Bridge/Modal";
-import useAquaBera from "@/sections/staking/hooks/use-aquabera";
-import { useBerps } from "@/sections/staking/hooks/use-berps";
-import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
-import { formatValueDecimal } from "@/utils/balance";
-import Big from "big.js";
-import _, { cloneDeep } from "lodash";
+import _ from "lodash";
 import Image from "next/image";
 import { useMemo, useRef, useState } from 'react';
 import Bg from "../components/mobile-bg";
 import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
-import UserInfo from "./user-info";
-import { getProtocolIcon } from "@/utils/utils";
-import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
-import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
 import MobileContent from '@/sections/vaults/mobile/content';
 
 export default function Mobile({ dapp }: any) {
