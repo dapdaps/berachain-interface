@@ -12,10 +12,18 @@ import { useBerps } from '@/sections/staking/hooks/use-berps';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import multicallAddresses from '@/configs/contract/multicall';
 import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
-import React, { useImperativeHandle, useMemo } from 'react';
+import React, { useImperativeHandle, useMemo, useRef, useEffect } from 'react';
 import { cloneDeep } from 'lodash';
 import useCustomAccount from '@/hooks/use-account';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import LazyImage from '@/components/layz-image';
+import {
+  ColumnAction,
+  ColumnAPR,
+  ColumnPool,
+  ColumnPosition,
+  ColumnTVL
+} from '@/sections/staking/Bridge/List/Bex/columns';
 
 // ⚠️Moved from src/sections/vaults/mobile/index.tsx
 const MobileContent = (props: any, ref: any) => {
@@ -31,6 +39,9 @@ const MobileContent = (props: any, ref: any) => {
     sortType,
   } = props;
 
+  const isBeraPaw = dapp?.name === "BeraPaw";
+
+  const contentRef = useRef<any>();
   const { chainId, provider, account } = useCustomAccount();
 
   const {
@@ -162,8 +173,35 @@ const MobileContent = (props: any, ref: any) => {
   };
   useImperativeHandle(ref, () => refs);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current || !isBeraPaw || !pageIndex || !pageTotal) return;
+      
+      const { scrollHeight, scrollTop, clientHeight } = contentRef.current;
+      const isBottom = scrollHeight - scrollTop - clientHeight < 20;
+
+      if (isBottom && !loading && pageIndex < pageTotal) {
+        reload(pageIndex + 1);
+      }
+    };
+
+    const current = contentRef.current;
+    current?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [isBeraPaw, loading, pageIndex, pageTotal, reload]);
+
   return (
-    <div className={clsx("relative z-[2] flex flex-col gap-[12px] px-[12px] mt-[12px] h-[calc(100dvh-260px)] overflow-y-auto pb-[50px]", className)}>
+    <div
+      ref={contentRef}
+      className={clsx(
+        "relative z-[2] flex flex-col gap-[12px] mt-[12px] h-[calc(100dvh-260px)] overflow-y-auto pb-[50px]",
+        isBeraPaw ? "" : "px-[12px]",
+        className,
+      )}
+    >
       {data.map((item: any, idx: number) => (
         <Item
           key={item.id}
@@ -175,6 +213,10 @@ const MobileContent = (props: any, ref: any) => {
             setType(type);
           }}
           onClaim={setEarned}
+          isBeraPaw={isBeraPaw}
+          pending={pending}
+          currentItem={currentItem}
+          onChangeData={berapawHandleAction}
         />
       ))}
       {data.length === 0 && !loading && (
@@ -193,7 +235,7 @@ const MobileContent = (props: any, ref: any) => {
 
 export default React.forwardRef(MobileContent);
 
-const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
+const Item = ({ data, dapp, isVaults, onClick, onClaim, pending, currentItem, onChangeData, isBeraPaw }: any) => {
   const protocol = data?.initialData?.protocol;
   const isBerps = dapp?.name === "Berps";
   const isAquaBera = dapp?.name === "AquaBera";
@@ -204,61 +246,34 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
     token1: data?.tokens?.[1]
   };
 
-  return isAquaBera ? (
-    <div>
-      <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-[10px]">
-            <div className="flex items-center relative">
-              {data?.tokens?.[0]?.icon ? (
-                <img
-                  className="mr-[-8px] rounded-full"
-                  src={data?.tokens?.[0]?.icon}
-                  width={40}
-                  height={40}
-                  alt="Token"
-                />
-              ) : (
-                <div className="flex items-center justify-center w-[40px] h-[40px] rounded-[4px] bg-gray-800 text-white font-bold">
-                  {data?.tokens?.[0]?.symbol?.slice(0, 1)}
-                </div>
-              )}
+  if (isAquaBera) {
+    return (
+      <div>
+        <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-[10px]">
+              <div className="flex items-center relative">
+                {data?.tokens?.[0]?.icon ? (
+                  <img
+                    className="mr-[-8px] rounded-full"
+                    src={data?.tokens?.[0]?.icon}
+                    width={40}
+                    height={40}
+                    alt="Token"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-[40px] h-[40px] rounded-[4px] bg-gray-800 text-white font-bold">
+                    {data?.tokens?.[0]?.symbol?.slice(0, 1)}
+                  </div>
+                )}
+              </div>
+              <div className="text-[16px] font-semibold">{data?.id}</div>
             </div>
-            <div className="text-[16px] font-semibold">{data?.id}</div>
-          </div>
 
-          <div className="flex items-center gap-[8px]">
-            <button
-              onClick={() => {
-                onClick(_data, 0);
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="34"
-                height="34"
-                viewBox="0 0 34 34"
-                fill="none"
-              >
-                <rect
-                  x="1"
-                  y="1"
-                  width="32"
-                  height="32"
-                  rx="10"
-                  fill="#FFDC50"
-                  stroke="black"
-                />
-                <path
-                  d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
-                  fill="black"
-                />
-              </svg>
-            </button>
-            {Big(data?.yourValue ?? 0).gt(0) && (
+            <div className="flex items-center gap-[8px]">
               <button
                 onClick={() => {
-                  onClick(_data, 1);
+                  onClick(_data, 0);
                 }}
               >
                 <svg
@@ -269,57 +284,121 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                   fill="none"
                 >
                   <rect
-                    opacity="0.5"
                     x="1"
                     y="1"
                     width="32"
                     height="32"
                     rx="10"
-                    stroke="white"
+                    fill="#FFDC50"
+                    stroke="black"
                   />
-                  <rect
-                    x="11"
-                    y="16"
-                    width="13"
-                    height="2"
-                    rx="1"
-                    fill="white"
+                  <path
+                    d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
+                    fill="black"
                   />
                 </svg>
               </button>
-            )}
-          </div>
-        </div>
-        <div className="mt-[16px] flex justify-between">
-          <div>
-            <div className="font-medium	text-[14px]">APY</div>
-            <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.apr, "", 2, false, false)}%
+              {Big(data?.yourValue ?? 0).gt(0) && (
+                <button
+                  onClick={() => {
+                    onClick(_data, 1);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="34"
+                    height="34"
+                    viewBox="0 0 34 34"
+                    fill="none"
+                  >
+                    <rect
+                      opacity="0.5"
+                      x="1"
+                      y="1"
+                      width="32"
+                      height="32"
+                      rx="10"
+                      stroke="white"
+                    />
+                    <rect
+                      x="11"
+                      y="16"
+                      width="13"
+                      height="2"
+                      rx="1"
+                      fill="white"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
+          <div className="mt-[16px] flex justify-between">
+            <div>
+              <div className="font-medium	text-[14px]">APY</div>
+              <div className="font-semibold	text-[16px] mt-[8px]">
+                {formatValueDecimal(data?.apr, "", 2, false, false)}%
+              </div>
+            </div>
 
-          <div>
-            <div className="font-medium	text-[14px]">TVL</div>
-            <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.tvl, "$", 2, false, false)}
+            <div>
+              <div className="font-medium	text-[14px]">TVL</div>
+              <div className="font-semibold	text-[16px] mt-[8px]">
+                {formatValueDecimal(data?.tvl, "$", 2, false, false)}
+              </div>
             </div>
-          </div>
-          <div className="text-right">
-            <div className="font-medium	text-[14px]">In Wallet</div>
-            <div className="font-semibold	text-[16px] mt-[8px]">
-              {formatValueDecimal(data?.balance, "", 2, false, false)}
+            <div className="text-right">
+              <div className="font-medium	text-[14px]">In Wallet</div>
+              <div className="font-semibold	text-[16px] mt-[8px]">
+                {formatValueDecimal(data?.balance, "", 2, false, false)}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  ) : (
+    );
+  }
+
+  if (isBeraPaw) {
+    return (
+      <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
+        <div className="flex justify-between items-center gap-[10px]">
+          <ColumnPool
+            data={data}
+            className="flex-1 w-0"
+            iconClassName="!min-w-[unset]"
+            nameClassName="line-clamp-2"
+          />
+          <ColumnAction
+            data={data}
+            pending={pending}
+            currentItem={currentItem}
+            onChangeData={onChangeData}
+            className="!w-[100px] !shrink-0"
+          />
+        </div>
+        <div className="flex justify-between items-center mt-[20px]">
+          <LabelAndValue label="Position">
+            <ColumnPosition data={data} />
+          </LabelAndValue>
+          <LabelAndValue label="TVL">
+            <ColumnTVL data={data} />
+          </LabelAndValue>
+          <LabelAndValue label="APR">
+            <ColumnAPR data={data} />
+          </LabelAndValue>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div>
       <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center relative">
-              {data?.images[0] && (
+              {data?.images?.[0] && (
                 <img
                   className="mr-[-8px] rounded-full"
                   src={data?.images[0]}
@@ -328,7 +407,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
                   alt="Token"
                 />
               )}
-              {data?.images[1] && (
+              {data?.images?.[1] && (
                 <img
                   className="rounded-full"
                   src={data?.images[1]}
@@ -528,6 +607,21 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim }: any) => {
           )}
         </>
       )}
+    </div>
+  );
+};
+
+const LabelAndValue = (props: any) => {
+  const { className, label, children, labelClassName, valueClassName } = props;
+
+  return (
+    <div className={clsx("text-[#3D405A] font-Montserrat text-[14px] md:text-[12px] font-medium leading-normal", className)}>
+      <div className={clsx('', labelClassName)}>
+        {label}
+      </div>
+      <div className={clsx("text-black text-[16px] font-[600] md:text-[12px] flex items-center gap-[4px]", valueClassName)}>
+        {children}
+      </div>
     </div>
   );
 };
