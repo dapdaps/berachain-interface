@@ -77,13 +77,16 @@ export default function KodiakUnstake() {
             amount1
           });
         });
-
+        let _amount = Big(amount || 0);
         setDappParams({
           kekIds: items
             .filter((item: any) => item.unlocked)
-            .map((item: any) => item.kek_id)
+            .map((item: any) => {
+              _amount.add(item.liquidity);
+              return item.kek_id;
+            })
         });
-
+        handleAmountChange(_amount.div(1e18).toString());
         setItems(items);
       } else {
         setItems([]);
@@ -107,7 +110,7 @@ export default function KodiakUnstake() {
       _amount = _amount.add(item.liquidity);
     }
     setDappParams({ kekIds: uniq(dappParams.kekIds) });
-    handleAmountChange(_amount.toString());
+    handleAmountChange(_amount.div(1e18).toString());
   };
 
   useEffect(() => {
