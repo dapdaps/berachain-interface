@@ -4,12 +4,16 @@ import { forwardRef, memo, useEffect, useImperativeHandle, useMemo, useState } f
 type PropsType = {
   maxPage: number;
   defaultPage?: number;
+  isFirst?: boolean;
+  isLast?: boolean;
+  loading?: boolean;
   onPageChange: (data: number) => void;
 };
 
-export default memo(forwardRef(function Pager({ maxPage, defaultPage = 1, onPageChange }: PropsType, ref) {
+export default memo(forwardRef(function Pager({ maxPage, defaultPage = 1, onPageChange, isFirst = true, isLast = true, loading }: PropsType, ref) {
   const [currentPage, setCurrentPage] = useState(defaultPage);
   const handlePageChange = function (page: number) {
+    if (loading) return;
     if (page < 1 || page > maxPage) return;
     setCurrentPage(page);
   };
@@ -24,7 +28,7 @@ export default memo(forwardRef(function Pager({ maxPage, defaultPage = 1, onPage
   useImperativeHandle(ref, () => refs)
   return (
     <div className="flex items-center gap-[10px]">
-      {isOverflow && (
+      {isOverflow && isFirst && (
         <button
           className={clsx(
             "cursor-pointer rounded-[8px] px-[10px] py-[2px] text-[12px] font-semibold border-black border",
@@ -133,7 +137,7 @@ export default memo(forwardRef(function Pager({ maxPage, defaultPage = 1, onPage
           />
         </svg>
       </div>
-      {isOverflow && (
+      {isOverflow && isLast && (
         <button
           className={clsx(
             "cursor-pointer rounded-[8px] px-[10px] py-[2px] text-[12px] font-semibold border-black border",

@@ -18,19 +18,36 @@ import { useMemo, useRef, useState } from "react";
 import Detail from "../Bridge/Detail";
 import List from "../Bridge/List";
 import Modal from "../Bridge/Modal";
+import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
 
 type Props = {
   dapp: any;
+  className?: string;
+  listTitle?: any;
 };
 
 export type DefaultIndexType = 0 | 1;
-export default function Staking({ dapp }: Props) {
+export default function Staking({ dapp, className, listTitle }: Props) {
   const isVaults = _.isArray(dapp);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const prices = usePriceStore((store) => store.price);
 
   const dexConfig = isVaults ? null : dapp?.chains[DEFAULT_CHAIN_ID];
+
+  const {
+    dataList: berapawData,
+    loading: berapawLoading,
+    getDataList: berapawReload,
+    pageIndex: berapawPageIndex,
+    pageTotal: berapawPageTotal,
+    handleAction: berapawHandleAction,
+    approving: berapawApproving,
+    minting: berapawMinting,
+    currentVault: currentBerapawItem,
+    maxAPR: berapawMaxApr,
+    totalTVL: berapawTotalTVL,
+  } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { ALL_DATA_URL, addresses, pairs, description } = dexConfig ?? {};
   const { account: sender, chainId } = useAccount();
@@ -61,6 +78,10 @@ export default function Staking({ dapp }: Props) {
       if (dapp?.name === "AquaBera") {
         setType(index);
         setCheckedRecord(data);
+        return;
+      }
+      if (dapp?.name === "BeraPaw") {
+        berapawHandleAction(data, index);
         return;
       }
     }
@@ -96,7 +117,7 @@ export default function Staking({ dapp }: Props) {
     dataList: infraredData,
     loading: infraredLoading,
     fetchAllData: infraredReload,
-    maxApr,
+    maxApr: infraredMaxApr,
   } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
   const {
     dataList: aquaBeraData,
@@ -110,7 +131,7 @@ export default function Staking({ dapp }: Props) {
   } = useBerps(listProps);
 
   const { getMergeDataList } = useMergeDataList();
-  const [dataList, loading, reload] = useMemo(() => {
+  const [dataList, loading, reload, maxApr, totalTVL, pageIndex, pageTotal, pending, currentItem] = useMemo(() => {
     if (isVaults) {
       return [
         getMergeDataList({
@@ -121,12 +142,29 @@ export default function Staking({ dapp }: Props) {
         () => {
           infraredReload();
           aquabearReload();
-        }
+        },
+        infraredMaxApr,
       ];
     } else {
-      if (dapp.name === "Berps") return [berpsData, berpsLoading, berpsReload];
-      if (dapp.name === "AquaBera")
-        return [aquaBeraData, aquabearLoading, aquabearReload];
+      if (dapp.name === "Berps") {
+        return [berpsData, berpsLoading, berpsReload];
+      }
+      if (dapp.name === "AquaBera") {
+        return [aquaBeraData, aquabearLoading, aquabearReload, infraredMaxApr];
+      }
+      if (dapp.name === "BeraPaw") {
+        return [
+          berapawData,
+          berapawLoading,
+          berapawReload,
+          berapawMaxApr,
+          berapawTotalTVL,
+          berapawPageIndex,
+          berapawPageTotal,
+          berapawApproving || berapawMinting,
+          currentBerapawItem
+        ];
+      }
       return [infraredData, infraredLoading, infraredReload];
     }
   }, [
@@ -137,12 +175,22 @@ export default function Staking({ dapp }: Props) {
     aquaBeraData,
     aquabearLoading,
     isVaults,
-    dapp.name
+    dapp.name,
+    berapawData,
+    berapawLoading,
+    berapawReload,
+    berapawPageIndex,
+    berapawPageTotal,
+    berapawApproving,
+    berapawMinting,
+    currentBerapawItem,
+    berapawMaxApr,
+    berapawTotalTVL,
+    infraredMaxApr,
   ]);
 
-
   return (
-    <Card>
+    <Card className={className}>
       {id ? (
         <Detail
           dapp={dapp}
@@ -159,6 +207,12 @@ export default function Staking({ dapp }: Props) {
           loading={loading}
           reload={reload}
           maxApr={maxApr}
+          totalTVL={totalTVL}
+          pageIndex={pageIndex}
+          pageTotal={pageTotal}
+          pending={pending}
+          currentItem={currentItem}
+          title={listTitle}
         />
       )}
       <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />

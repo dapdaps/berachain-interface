@@ -145,7 +145,7 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ["s3.amazonaws.com"]
+    domains: ["s3.amazonaws.com", "assets.db3.app"]
   }
 };
 
