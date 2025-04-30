@@ -78,13 +78,15 @@ export default function KodiakUnstake() {
           });
         });
         let _amount = Big(amount || 0);
+        let _kekIds: any[] = [];
+        items
+          .filter((item: any) => item.unlocked)
+          .map((item: any) => {
+            _amount = _amount.add(item.liquidity);
+            _kekIds.push(item.kek_id);
+          });
         setDappParams({
-          kekIds: items
-            .filter((item: any) => item.unlocked)
-            .map((item: any) => {
-              _amount.add(item.liquidity);
-              return item.kek_id;
-            })
+          kekIds: _kekIds
         });
         handleAmountChange(_amount.div(1e18).toString());
         setItems(items);
@@ -100,7 +102,7 @@ export default function KodiakUnstake() {
 
   const onSelect = (item: any) => {
     const id = item.kek_id;
-    let _amount = Big(amount || 0);
+    let _amount = Big(amount || 0).mul(1e18);
     if (!dappParams?.kekIds) dappParams.kekIds = [];
     if (dappParams.kekIds.includes(id)) {
       remove(dappParams.kekIds, (i) => i === id);
@@ -109,6 +111,7 @@ export default function KodiakUnstake() {
       dappParams.kekIds.push(id);
       _amount = _amount.add(item.liquidity);
     }
+
     setDappParams({ kekIds: uniq(dappParams.kekIds) });
     handleAmountChange(_amount.div(1e18).toString());
   };
