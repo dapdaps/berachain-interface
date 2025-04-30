@@ -21,6 +21,8 @@ export default function LiquidityPage() {
       case 'berps':
         // handleReport(isMobile ? '1017-001' : '1012-001');
         break;
+      case 'berapaw':
+        break;
       default:
         break;
     }
