@@ -12,7 +12,7 @@ import { useBerps } from '@/sections/staking/hooks/use-berps';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import multicallAddresses from '@/configs/contract/multicall';
 import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
-import React, { useImperativeHandle, useMemo } from 'react';
+import React, { useImperativeHandle, useMemo, useRef, useEffect } from 'react';
 import { cloneDeep } from 'lodash';
 import useCustomAccount from '@/hooks/use-account';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
@@ -41,6 +41,7 @@ const MobileContent = (props: any, ref: any) => {
 
   const isBeraPaw = dapp?.name === "BeraPaw";
 
+  const contentRef = useRef<any>();
   const { chainId, provider, account } = useCustomAccount();
 
   const {
@@ -172,8 +173,29 @@ const MobileContent = (props: any, ref: any) => {
   };
   useImperativeHandle(ref, () => refs);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current || !isBeraPaw || !pageIndex || !pageTotal) return;
+      
+      const { scrollHeight, scrollTop, clientHeight } = contentRef.current;
+      const isBottom = scrollHeight - scrollTop - clientHeight < 20;
+
+      if (isBottom && !loading && pageIndex < pageTotal) {
+        reload(pageIndex + 1);
+      }
+    };
+
+    const current = contentRef.current;
+    current?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [isBeraPaw, loading, pageIndex, pageTotal, reload]);
+
   return (
     <div
+      ref={contentRef}
       className={clsx(
         "relative z-[2] flex flex-col gap-[12px] mt-[12px] h-[calc(100dvh-260px)] overflow-y-auto pb-[50px]",
         isBeraPaw ? "" : "px-[12px]",

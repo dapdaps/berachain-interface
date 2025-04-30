@@ -17,6 +17,7 @@ import { multicall } from '@/utils/multicall';
 import multicallAddresses from '@/configs/contract/multicall';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import { useAction } from '@/sections/vaults/v2/components/action/union/berapaw/use-action';
+import useIsMobile from '@/hooks/use-isMobile';
 
 const pageSize = 10;
 
@@ -28,6 +29,7 @@ export function useBerapaw(props: any) {
   const signer = useMemo(() => {
     return provider?.getSigner(account);
   }, [provider, account]);
+  const isMobile = useIsMobile();
 
   const { host, query } = vaults ?? {};
   const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
@@ -202,7 +204,7 @@ export function useBerapaw(props: any) {
 
     const { LBGT: LBGTPrice = 1, BERA: BERAPrice = 1 } = prices;
 
-    const pageData = totalData.slice((__pageIndex - 1) * pageSize, __pageIndex * pageSize);
+    const pageData = totalData.slice(isMobile ? 0 : (__pageIndex - 1) * pageSize, __pageIndex * pageSize);
 
     const allPercentual: any = await getPercentual(pageData);
     const allEarnedAmount: any = await getEarnedAmount(pageData);
@@ -230,7 +232,12 @@ export function useBerapaw(props: any) {
 
     setPageIndex(__pageIndex);
 
-    return pageData.sort((a: any, b: any) => Big(a.dynamicData?.apr || 0).minus(Big(b.dynamicData?.apr || 0)));
+    return pageData.sort((a: any, b: any) => {
+      if (isMobile) {
+        return Big(b.dynamicData?.apr || 0).minus(Big(a.dynamicData?.apr || 0));
+      }
+      return Big(a.dynamicData?.apr || 0).minus(Big(b.dynamicData?.apr || 0));
+    });
   }, { manual: true });
 
   const handleAction = async (record: any, type: any) => {
