@@ -19,10 +19,12 @@ export function makeInnerSwapMessage({
   tokenDeltas,
   signerId,
   deadlineTimestamp,
+  referral
 }: {
   tokenDeltas: [string, bigint][];
   signerId: DefuseUserId;
   deadlineTimestamp: number;
+  referral?: string;
 }): any {
   const tokenDiff: Record<string, string> = {};
   const tokenDiffNum: Record<string, bigint> = {};
@@ -49,6 +51,7 @@ export function makeInnerSwapMessage({
       {
         intent: "token_diff",
         diff: tokenDiff,
+        referral,
       },
     ],
     signer_id: signerId,
@@ -66,11 +69,13 @@ export function makeInnerSwapAndWithdrawMessage({
   withdrawParams,
   signerId,
   deadlineTimestamp,
+  referral
 }: {
   tokenDeltas: [string, bigint][] | null;
   withdrawParams: WithdrawParams;
   signerId: DefuseUserId;
   deadlineTimestamp: number;
+  referral?: string;
 }): any {
   const intents: NonNullable<any["intents"]> = [];
 
@@ -79,6 +84,7 @@ export function makeInnerSwapAndWithdrawMessage({
       tokenDeltas,
       signerId,
       deadlineTimestamp,
+      referral
     });
     assert(swapIntents, "swapIntents must be defined");
     intents.push(...swapIntents);
@@ -177,6 +183,7 @@ export function makeSwapMessage({
   recipient: string;
   nonce?: Uint8Array;
 }): WalletMessage {
+  console.log(innerMessage, '<====innerMessage')
   return {
     NEP413: {
       message: JSON.stringify(innerMessage),

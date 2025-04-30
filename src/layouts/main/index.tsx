@@ -42,7 +42,7 @@ const MainLayout = (props: Props) => {
     getAccessToken();
   }, [address]);
 
-  const isVaults = useMemo(() => pathname === "/vaults", [pathname]);
+  const isVaults = useMemo(() => pathname === "/vaults" || pathname.startsWith('/vaults/'), [pathname]);
 
   const bg = useMemo(() => {
     if (isVaults) {

@@ -112,27 +112,33 @@ const ActionUnionLeft = (props: any) => {
                     })}
                   </div>
                   <div className="text-black font-Montserrat text-[16px] font-[600] leading-[100%] flex flex-col gap-[4px]">
-                    <div className="">
-                      {protocol?.reward_tokens
-                        ?.map((token: any, index: number) => token.symbol)
-                        .join("-")}
+                    <div className="flex items-center gap-[10px]">
+                      <div className="">
+                        {protocol?.reward_tokens
+                          ?.map((token: any, index: number) => token.symbol)
+                          .join("-")}
+                      </div>
+                      {
+                        isIBGT && (
+                          <div className="shrink-0">
+                            <IBGTPoints
+                              isPopover={false}
+                              className="!text-[12px] !font-[400] !h-[18px] !px-[6px]"
+                              cardClassName=""
+                              contentClassName="!z-[110]"
+                              placement={PopoverPlacement.TopLeft}
+                            />
+                          </div>
+                        )
+                      }
                     </div>
                     <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%]">
                       {/^(Hub|Bex)$/i.test(protocol?.protocol || "")
                         ? "Bex"
                         : protocol?.protocol}
+                      {/*[ids: {protocol?.backendId}]*/}
                     </div>
                   </div>
-                  {
-                    isIBGT && (
-                      <div className="">
-                        <IBGTPoints
-                          className="!text-[12px]"
-                          contentClassName="!z-[110]"
-                        />
-                      </div>
-                    )
-                  }
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (
                     <div key={index} className="flex items-center gap-[4px]">
                       <LazyImage

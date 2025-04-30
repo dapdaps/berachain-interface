@@ -38,18 +38,21 @@ import {
 
 export type Context = {
   error: Error | null
-  quote: AggregatedQuote | null
+  quote: QuoteResult | null
   formValues: {
     tokenIn: SwappableToken
     tokenOut: SwappableToken
     amountIn: string
   }
   parsedFormValues: {
-    amountIn: bigint | null
+    tokenOut: BaseTokenInfo
+    amountIn: TokenValue | null
   }
   intentCreationResult: SwapIntentMachineOutput | null
   intentRefs: ActorRefFrom<typeof intentStatusMachine>[]
   tokenList: SwappableToken[]
+  referral?: string
+  slippageBasisPoints: number
 }
 
 type PassthroughEvent = {
@@ -67,10 +70,11 @@ type EmittedEvents = PassthroughEvent | { type: "INTENT_PUBLISHED" }
 export const swapUIMachine = setup({
   types: {
     input: {} as {
-      currentTab: string
+      currentTab?: string
       tokenIn: SwappableToken
       tokenOut: SwappableToken
       tokenList: SwappableToken[]
+      referral?: string
     },
     context: {} as Context,
     events: {} as
@@ -289,6 +293,7 @@ export const swapUIMachine = setup({
     intentCreationResult: null,
     intentRefs: [],
     tokenList: input.tokenList,
+    referral: input.referral,
     currentTab: "trading_challenge"
   }),
 

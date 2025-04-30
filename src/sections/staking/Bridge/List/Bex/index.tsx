@@ -5,13 +5,12 @@ import Popover, {
   PopoverTrigger
 } from "@/components/popover";
 import { useMultiState } from "@/hooks/use-multi-state";
-import IbgtRewards from "@/sections/bgt/components/ibgt-rewards";
+import InfraredTop from "@/sections/staking/components/infrared-top";
 import type { ColumnType, ColunmListType } from "@/sections/staking/types";
 import { formatValueDecimal } from "@/utils/balance";
 import { getProtocolIcon } from "@/utils/utils";
 import Big from "big.js";
 import clsx from "clsx";
-import { ethers } from "ethers";
 import { cloneDeep } from "lodash";
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState, useCallback } from 'react';
 import Skeleton from "react-loading-skeleton";
@@ -43,6 +42,7 @@ const List = forwardRef<any, any>((props, ref) => {
     currentItem,
     title,
   } = props;
+
   const router = useRouter()
 
   const isBeraPaw = name === "BeraPaw";
@@ -56,6 +56,7 @@ const List = forwardRef<any, any>((props, ref) => {
     filterKey: "all",
     direction: 1
   });
+
 
   const tvl = useMemo(() => {
     if (totalTVL) {
@@ -82,7 +83,6 @@ const List = forwardRef<any, any>((props, ref) => {
     return Big(apy).toFixed(2);
   }, [dataList, maxApr]);
 
-  const rewards = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
 
   function renderTD(data: any, column: ColumnType, index: number) {
     if (column.type === "slot") {
@@ -526,8 +526,47 @@ const List = forwardRef<any, any>((props, ref) => {
           );
         }
       },
+
       {
-        width: "15%",
+        width: "12%",
+        key: "apy",
+        label: "APY",
+        type: "slot",
+        sort: true,
+        render: (data) => {
+          return (
+            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+              {Big(data?.apy ?? 0).toFixed(2)}%
+            </div>
+          );
+        }
+      },
+
+      {
+        width: "12%",
+        key: "points",
+        label: "Points",
+        type: "slot",
+        sort: true,
+        render: (data) => {
+          return (
+            <Popover
+              trigger={PopoverTrigger.Hover}
+              placement={PopoverPlacement.Top}
+              content={(
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
+              )}
+            >
+
+              <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
+                {data?.initialData?.pp_multiplier}x
+              </div>
+            </Popover>
+          );
+        }
+      },
+      {
+        width: "12%",
         key: "tvl",
         label: "TVL",
         type: "slot",
@@ -541,21 +580,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       },
       {
-        width: "15%",
-        key: "apy",
-        label: "APY",
-        type: "slot",
-        sort: true,
-        render: (data) => {
-          return (
-            <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {Big(data?.apy ?? 0).toFixed(2)}%
-            </div>
-          );
-        }
-      },
-      {
-        width: "15%",
+        width: "10%",
         key: "usdDepositAmount",
         label: "Yours",
         type: "slot",
@@ -580,7 +605,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       },
       {
-        width: "15%",
+        width: "14%",
         key: "action",
         label: "Action",
         type: "slot",
@@ -692,18 +717,7 @@ const List = forwardRef<any, any>((props, ref) => {
       >
         {description}
       </div>
-      <div
-        className={clsx(
-          "px-[30px]",
-          rewards?.length > 0 ? "pb-[23px]" : ""
-        )}
-      >
-        {
-          rewards?.length > 0 && (
-            <IbgtRewards rewards={rewards} onSuccess={reload} />
-          )
-        }
-      </div>
+      <InfraredTop />
       <div className="flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]">
         <div className="flex flex-col gap-[12px] w-[20%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">

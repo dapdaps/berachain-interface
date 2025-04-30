@@ -23,6 +23,7 @@ import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
 import UserInfo from "./user-info";
 import { getProtocolIcon } from "@/utils/utils";
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
 import MobileContent from '@/sections/vaults/mobile/content';
 
@@ -111,7 +112,7 @@ export default function Mobile({ dapp }: any) {
       />
       {!!selectedRecord &&
         (dapp?.name === "AquaBera" ||
-        selectedRecord?.platform === "aquabera" ? (
+          selectedRecord?.platform === "aquabera" ? (
           <StakingModal
             show={!!selectedRecord}
             data={selectedRecord}

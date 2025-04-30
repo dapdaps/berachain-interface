@@ -41,6 +41,8 @@ const VaultsTable = (props: any) => {
       dataIndex: "vaults",
       width: VaultsWidth,
       render: (text: any, record: any, index: any) => {
+
+        console.log("======record", record)
         return <Vaults record={record} index={index} />;
       }
     },
