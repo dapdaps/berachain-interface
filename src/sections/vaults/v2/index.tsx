@@ -32,11 +32,11 @@ const VaultsV2 = (props: any) => {
         className="relative w-full min-w-[1257px] min-h-[750px] pb-[56px]"
       >
         <PageBack className="absolute left-[36px] top-[32px] text-white" />
-        <div className="w-[1257px] mx-auto h-[103px] pt-[49px] flex items-end justify-end relative">
+        <div className="w-[1257px] mx-auto h-[140px] pt-[20px] flex items-center justify-end relative">
           <img
             src="/images/vaults/v2/title.png"
             alt=""
-            className="w-[180px] h-[54px] shrink-0 pointer-events-none object-center object-contain absolute left-1/2 -translate-x-1/2"
+            className="w-[254px] h-[120px] shrink-0 pointer-events-none object-center object-contain absolute left-1/2 -translate-x-1/2"
           />
           <SubmitVault className="shrink-0" />
         </div>
