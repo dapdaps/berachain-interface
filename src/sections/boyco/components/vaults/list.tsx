@@ -40,7 +40,7 @@ export default function List({ vaults, loading }: any) {
                         {item.tokens.map((token: any, index: number) => (
                           <img
                             key={index}
-                            src={token.icon}
+                            src={token.logo || token.icon}
                             className={clsx(
                               "w-[26px] h-[26px] rounded-full",
                               index !== 0 && "ml-[-14px]"

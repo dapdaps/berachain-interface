@@ -188,7 +188,7 @@ const Label = ({ index, data, onLoad, isReverse }: any) => {
         {data[index].tokens.map((item: any, index: number) => (
           <img
             key={index}
-            src={item.logo}
+            src={item.icon}
             className={clsx(
               "w-[26px] h-[26px] rounded-full",
               index !== 0 && "ml-[-14px]"

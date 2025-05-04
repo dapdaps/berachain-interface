@@ -9,7 +9,7 @@ import config from "./config";
 export default function useBoycoData(defaultVaults?: any) {
   const { listDataGroupByPoolAll, listLoading } = useList(!!defaultVaults);
   const { account } = useCustomAccount();
-  // const account = "0x90c4903895e27a3cf5cc0b17c90cee927bb857e0";
+  // const account = "0xf984B471EbB8ec3dc56153b0D4369b0556d87345"; //0x90c4903895e27a3cf5cc0b17c90cee927bb857e0
 
   const propsPositionsBoyco = useEnrichedPositionsBoyco({
     account_address: account.toLowerCase() ?? "",
@@ -49,7 +49,7 @@ export default function useBoycoData(defaultVaults?: any) {
       const tokens = vault
         ? vault.tokens.map((it: any) => ({
             ...it,
-            logo: getTokenLogo(it.symbol)
+            icon: getTokenLogo(it.symbol)
           }))
         : configItem.tokens;
 

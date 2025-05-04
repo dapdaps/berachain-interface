@@ -28,7 +28,7 @@ export default function Vaults({
             <div className="flex">
               {item.tokens.map((token: any, index: number) => (
                 <img
-                  src={token.logo}
+                  src={token.icon}
                   className={clsx(
                     "w-[26px] h-[26px] rounded-full",
                     index !== 0 && "ml-[-14px]"
