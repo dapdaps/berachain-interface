@@ -39,6 +39,7 @@ export default function List({ vaults, loading }: any) {
                       <div className="flex relative z-[2]">
                         {item.tokens.map((token: any, index: number) => (
                           <img
+                            key={index}
                             src={token.icon}
                             className={clsx(
                               "w-[26px] h-[26px] rounded-full",
@@ -62,7 +63,7 @@ export default function List({ vaults, loading }: any) {
                 onClick={() => {
                   router.push("/vaults");
                 }}
-                className="text-[#E2CFB6] w-full h-[36px] bg-[#392C1D] text-[14px] leading-[100%] mt-[10px]"
+                className="button text-[#E2CFB6] w-full h-[36px] bg-[#392C1D] text-[14px] leading-[100%] mt-[10px]"
               >
                 View all vaults
               </button>

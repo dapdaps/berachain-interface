@@ -34,7 +34,7 @@ export default function useBoycoData() {
 
     let totalUsd = Big(0);
     const positions: any[] = [];
-    const vaults: any[] = [];
+    const cachedVaults: any = {};
     const cachedAssets: any = {};
 
     propsPositionsBoyco.data.data?.forEach((item: any) => {
@@ -66,7 +66,6 @@ export default function useBoycoData() {
           amount: _amount.toString(),
           amountUsd: _usd.toString()
         };
-        if (vault) vaults.push(vault);
       } else {
         cachedAssets[key].amount = Big(cachedAssets[key].amount)
           .add(_amount)
@@ -75,13 +74,27 @@ export default function useBoycoData() {
           .add(_usd)
           .toString();
       }
+      if (tokens.length === 1) {
+        listDataGroupByPoolAll.forEach((pool: any) => {
+          const idx = pool.tokens.findIndex(
+            (token: any) => tokens[0].address.toLowerCase() === token.address
+          );
+          if (idx === -1) {
+            return;
+          }
+          if (cachedVaults[pool.pool_address]) return;
+          cachedVaults[pool.pool_address] = pool;
+        });
+      } else if (vault && !cachedVaults[vault.pool_address]) {
+        cachedVaults[vault.pool_address] = vault;
+      }
     });
 
     return {
       totalUsd: totalUsd.toString(),
       positions,
       assets: Object.values(cachedAssets),
-      vaults
+      vaults: Object.values(cachedVaults)
     };
   }, [listDataGroupByPoolAll, propsPositionsBoyco]);
 
