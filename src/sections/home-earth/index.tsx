@@ -1,23 +1,26 @@
-'use client';
+"use client";
 
-import Airship from '@/components/bear-background/components/airship';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import useIsMobile from '@/hooks/use-isMobile';
-import { useRainyDay } from '@/hooks/use-rainy-day';
-import BeraPrice from '@/sections/home-earth/components/bera-price';
-import CloudCircle from '@/sections/home-earth/components/cloud-circle';
-import Follower from '@/sections/home-earth/components/follower';
-import MountainCircle from '@/sections/home-earth/components/mountain-circle';
-import Navigation from '@/sections/home-earth/components/navigation';
-import Signpost from '@/sections/home-earth/components/signpost';
-import HomeEarthTop from '@/sections/home-earth/components/top';
-import { createRotateAnimation } from '@/sections/home-earth/utils';
-import MobileHome from '@/sections/home/mobile';
-import { useActivityStore } from '@/stores/useActivityStore';
-import clsx from 'clsx';
-import { motion, useMotionValue } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { HomeEarthContext } from './context';
+import Airship from "@/components/bear-background/components/airship";
+import Popover, {
+  PopoverPlacement,
+  PopoverTrigger
+} from "@/components/popover";
+import useIsMobile from "@/hooks/use-isMobile";
+import { useRainyDay } from "@/hooks/use-rainy-day";
+import BeraPrice from "@/sections/home-earth/components/bera-price";
+import CloudCircle from "@/sections/home-earth/components/cloud-circle";
+import Follower from "@/sections/home-earth/components/follower";
+import MountainCircle from "@/sections/home-earth/components/mountain-circle";
+import Navigation from "@/sections/home-earth/components/navigation";
+import Signpost from "@/sections/home-earth/components/signpost";
+import HomeEarthTop from "@/sections/home-earth/components/top";
+import { createRotateAnimation } from "@/sections/home-earth/utils";
+import MobileHome from "@/sections/home/mobile";
+import { useActivityStore } from "@/stores/useActivityStore";
+import clsx from "clsx";
+import { motion, useMotionValue } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { HomeEarthContext } from "./context";
 import Boyco from "../boyco";
 
 // seconds per lap
@@ -26,8 +29,8 @@ const SIZE = 3500;
 
 const BG_SIZE_MAP = {
   default: SIZE,
-  lgbt: SIZE,
-}
+  lgbt: SIZE
+};
 
 const HomeEarth = () => {
   const isMobile = useIsMobile();
@@ -100,18 +103,16 @@ const HomeEarth = () => {
       }
     };
 
-    window.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      window.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
   if (isMobile) {
-    return (
-      <MobileHome />
-    );
+    return <MobileHome />;
   }
 
   return (
