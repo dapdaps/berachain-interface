@@ -27,7 +27,7 @@ export default function List({ positions, loading }: any) {
                   {it.tokens.map((item: any, i: number) => (
                     <img
                       key={i}
-                      src={item.logo}
+                      src={item.icon}
                       className={clsx(
                         "w-[26px] h-[26px] rounded-full flex-shrink-0"
                       )}
