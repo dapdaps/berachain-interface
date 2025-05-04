@@ -49,8 +49,8 @@ export default function List({ vaults, loading }: any) {
                         ))}
                       </div>
                     </div>
-                    <div className="text-[14px] text-[#392C1D]">
-                      Join <span className="font-bold">{item.name}</span> vaults
+                    <div className="text-[14px] text-[#392C1D] leading-[90%]">
+                      Join <span className="font-bold">{item.name}</span> vault
                       , APY up to{" "}
                       <span className="font-bold">
                         {item.totalApy[1].toFixed(2)}%

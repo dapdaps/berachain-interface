@@ -22,14 +22,14 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
       className={clsx("fixed top-0 right-0 w-full h-full z-[90] bg-black/50")}
     >
       <motion.div
-        className="absolute bottom-[30px] left-[calc(50%-600px)] w-[1200px] h-[800px]"
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 100 }}
+        className="absolute bottom-[30px] left-[50%] w-[1200px] max-w-[90vw] h-[800px] max-h-[90vh]"
+        initial={{ opacity: 0, y: 100, x: "-50%" }}
+        animate={{ opacity: 1, y: 0, x: "-50%" }}
+        exit={{ opacity: 0, y: 100, x: "-50%" }}
         transition={{ duration: 0.3 }}
       >
         <button
-          className="button absolute z-[11] top-[30px] right-[30px]"
+          className="button absolute z-[11] top-[20px] right-[30px]"
           onClick={onClose}
         >
           <IconClose />
@@ -38,19 +38,19 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           <div
             className={clsx(
               gasoekOne.className,
-              "text-[#392C1D] text-[65px] font-normal leading-[90%] text-center"
+              "text-[#392C1D] text-[65px] md:text-[48px] font-normal leading-[90%] text-center"
             )}
           >
             Boyco Unlock & Future Yield
           </div>
-          <div className="flex items-center justify-center gap-[10px] mt-[4px]">
-            <div className="w-[432px] h-[1px] bg-[#392C1D]" />
-            <div className="text-[#392C1D] text-[30px] font-bold">
+          <div className="flex items-center justify-center gap-[10px] mt-[4px] px-[20px]">
+            <div className="grow h-[1px] bg-[#392C1D]" />
+            <div className="text-[#392C1D] text-[30px] font-bold md:text-[20px]">
               6th, May, 2025
             </div>
-            <div className="w-[432px] h-[1px] bg-[#392C1D]" />
+            <div className="grow h-[1px] bg-[#392C1D]" />
           </div>
-          <div className="px-[40px] pt-[20px] flex">
+          <div className="px-[40px] pt-[20px] flex h-[calc(100%-150px)]">
             <div className="w-1/2 pl-[10px] pr-[30px]">
               <Positions
                 positions={positions}
@@ -59,7 +59,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
                 loading={loading}
               />
             </div>
-            <div className="w-[1px] h-[572px] bg-[#392C1D] mt-[10px]" />
+            <div className="w-[1px] h-full bg-[#392C1D] mt-[10px]" />
             <div className="w-1/2 pl-[30px] pr-[20px]">
               <Vaults vaults={vaults} assets={assets} loading={loading} />
             </div>
