@@ -2,20 +2,20 @@ import clsx from "clsx";
 import LabelIcon from "./label-icon";
 import Empty from "@/components/empty";
 import Loading from "@/components/loading";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function List({ vaults, loading }: any) {
   const router = useRouter();
   return (
     <div className="flex flex-col gap-[10px] mt-[14px] max-h-[calc(100%-206px)] overflow-y-auto">
       {loading ? (
-        <div className="flex justify-center items-center h-[calc(100%-206px)]">
+        <div className="flex justify-center items-center h-[400px]">
           <Loading size={20} />
         </div>
       ) : (
         <>
           {!vaults?.length ? (
-            <div className="flex justify-center items-center h-[calc(100%-206px)]">
+            <div className="flex justify-center items-center h-[400px]">
               <Empty desc="No vaults" />
             </div>
           ) : (
