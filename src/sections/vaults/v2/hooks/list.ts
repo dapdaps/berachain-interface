@@ -239,21 +239,42 @@ export function useList(notNeedingFetchData?: boolean): List {
       }
 
       const _search = trim(searchValueDelay || "").toLowerCase();
-      if (
-        _search &&
-        !item.tokens?.some((tk: any) =>
-          tk.symbol?.toLowerCase().includes(_search)
-        ) &&
-        !item.reward_tokens?.some((tk: any) =>
-          tk.symbol?.toLowerCase().includes(_search)
-        ) &&
-        !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.list.some((__it: any) =>
-          __it.project?.toLowerCase().includes(_search)
-        ) &&
-        !item.name?.toLowerCase().includes(_search)
-      ) {
-        return false;
+
+      if (_search) {
+        if (/[_\-|/\\,:~]/.test(_search) && !item.name?.toLowerCase().includes(_search)) {
+          const matchTokens = item.list.some((v: any) => {
+            if (v.tokens.length < 2) return false;
+            const _regPrefix1 = new RegExp(`^${v.tokens[0].symbol}`, "i");
+            const _regSuffix1 = new RegExp(`${v.tokens[1].symbol}$`, "i");
+            const _regPrefix2 = new RegExp(`^${v.tokens[1].symbol}`, "i");
+            const _regSuffix2 = new RegExp(`${v.tokens[0].symbol}$`, "i");
+            if (_regPrefix1.test(_search) && _regSuffix1.test(_search)) {
+              return true;
+            }
+            if (_regPrefix2.test(_search) && _regSuffix2.test(_search)) {
+              return true;
+            }
+            return false;
+          });
+          if (!matchTokens) return false;
+        }
+        else {
+          if (
+            !item.tokens?.some((tk: any) =>
+              tk.symbol?.toLowerCase().includes(_search)
+            ) &&
+            !item.reward_tokens?.some((tk: any) =>
+              tk.symbol?.toLowerCase().includes(_search)
+            ) &&
+            !item.pool_project?.toLowerCase().includes(_search) &&
+            !item.list.some((__it: any) =>
+              __it.project?.toLowerCase().includes(_search)
+            ) &&
+            !item.name?.toLowerCase().includes(_search)
+          ) {
+            return false;
+          }
+        }
       }
 
       if (vaultsStaked && Big(item.user_stake?.amount || 0).lte(0)) {
