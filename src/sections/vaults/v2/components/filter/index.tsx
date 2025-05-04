@@ -72,8 +72,6 @@ const Filter = (props: any, ref: any) => {
 
   const assetsFilterRef = useRef<any>();
 
-  console.log('boycoAssets: %o', boycoAssets);
-
   const refs = {
     assetsFilterRef,
     boycoAssetsSelected,
