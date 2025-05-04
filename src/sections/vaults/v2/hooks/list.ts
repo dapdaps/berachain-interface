@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   StrategyPool,
   ORDER_DIRECTION,
@@ -45,6 +45,8 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
 export function useList(notNeedingFetchData?: boolean): List {
   const { account } = useCustomAccount();
   const isMobile = useIsMobile();
+  const filterRef = useRef<any>();
+  const boycoAssetsRef = useRef<any>();
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +74,8 @@ export function useList(notNeedingFetchData?: boolean): List {
   const [searchValueDelay, setSearchValueDelay] = useState<string>();
   const [filterAssetsViewMore, setFilterAssetsViewMore] = useState(false);
   const [vaultsStaked, setVaultsStaked] = useState(false);
+  const [vaultsBoyco, setVaultsBoyco] = useState(false);
+  const [boycoAssetsSelected, setBoycoAssetsSelected] = useState<any>([]);
 
   // pagination & grouped by pool_address & sorted & filters
   // 20250425#Added BeraPaw pool, BeraPaw's pool_address corresponds to hub's vault_address;
@@ -195,6 +199,11 @@ export function useList(notNeedingFetchData?: boolean): List {
     const groupedWithBeraPaw = generateGroup(beraPawList, grouped);
 
     const filteredData = groupedWithBeraPaw.filter((item: any) => {
+      // Boyco
+      if (vaultsBoyco) {
+        return !!boycoAssetsSelected?.some((asset: any) => asset.pool_address.some((pool: any) => item.pool_address === pool));
+      }
+
       // Deposit Asset
       if (
         filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
@@ -239,21 +248,42 @@ export function useList(notNeedingFetchData?: boolean): List {
       }
 
       const _search = trim(searchValueDelay || "").toLowerCase();
-      if (
-        _search &&
-        !item.tokens?.some((tk: any) =>
-          tk.symbol?.toLowerCase().includes(_search)
-        ) &&
-        !item.reward_tokens?.some((tk: any) =>
-          tk.symbol?.toLowerCase().includes(_search)
-        ) &&
-        !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.list.some((__it: any) =>
-          __it.project?.toLowerCase().includes(_search)
-        ) &&
-        !item.name?.toLowerCase().includes(_search)
-      ) {
-        return false;
+
+      if (_search) {
+        if (/[_\-|/\\,:~]/.test(_search) && !item.name?.toLowerCase().includes(_search)) {
+          const matchTokens = item.list.some((v: any) => {
+            if (v.tokens.length < 2) return false;
+            const _regPrefix1 = new RegExp(`^${v.tokens[0].symbol}`, "i");
+            const _regSuffix1 = new RegExp(`${v.tokens[1].symbol}$`, "i");
+            const _regPrefix2 = new RegExp(`^${v.tokens[1].symbol}`, "i");
+            const _regSuffix2 = new RegExp(`${v.tokens[0].symbol}$`, "i");
+            if (_regPrefix1.test(_search) && _regSuffix1.test(_search)) {
+              return true;
+            }
+            if (_regPrefix2.test(_search) && _regSuffix2.test(_search)) {
+              return true;
+            }
+            return false;
+          });
+          if (!matchTokens) return false;
+        }
+        else {
+          if (
+            !item.tokens?.some((tk: any) =>
+              tk.symbol?.toLowerCase().includes(_search)
+            ) &&
+            !item.reward_tokens?.some((tk: any) =>
+              tk.symbol?.toLowerCase().includes(_search)
+            ) &&
+            !item.pool_project?.toLowerCase().includes(_search) &&
+            !item.list.some((__it: any) =>
+              __it.project?.toLowerCase().includes(_search)
+            ) &&
+            !item.name?.toLowerCase().includes(_search)
+          ) {
+            return false;
+          }
+        }
       }
 
       if (vaultsStaked && Big(item.user_stake?.amount || 0).lte(0)) {
@@ -342,7 +372,9 @@ export function useList(notNeedingFetchData?: boolean): List {
     isMobile,
     orderKeys,
     defaultOrder,
-    vaultsStaked
+    vaultsStaked,
+    vaultsBoyco,
+    boycoAssetsSelected
   ]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
@@ -735,6 +767,14 @@ export function useList(notNeedingFetchData?: boolean): List {
     }
     setFilterSelected(_filterSelected);
     togglePageIndex(PAGINATION_ACTION.FIRST);
+    const isSthSelected = Object.values(_filterSelected).some((f) => f.length > 0);
+    if (isSthSelected) {
+      setVaultsBoyco(false);
+      setBoycoAssetsSelected([]);
+    } else {
+      setVaultsBoyco(true);
+      setBoycoAssetsSelected(boycoAssetsRef.current || []);
+    }
   };
 
   const toggleAvailableAssets = (_availableAssets?: boolean) => {
@@ -763,6 +803,20 @@ export function useList(notNeedingFetchData?: boolean): List {
   const clearFilterSelected = () => {
     setFilterSelected(cloneDeep(DEFAULT_FILTER_SELECTED));
     togglePageIndex(PAGINATION_ACTION.FIRST);
+  };
+
+  const toggleVaultsBoyco = (_vaultsBoyco?: boolean) => {
+    const __vaultsBoyco =
+      typeof _vaultsBoyco === "boolean" ? _vaultsBoyco : !vaultsBoyco;
+    if (__vaultsBoyco) {
+      clearFilterSelected();
+    }
+    setVaultsBoyco(__vaultsBoyco);
+    if (!__vaultsBoyco) {
+      setBoycoAssetsSelected([]);
+    } else {
+      setBoycoAssetsSelected(boycoAssetsRef.current || []);
+    }
   };
 
   const getFilterAssetsBalance = async () => {
@@ -816,6 +870,25 @@ export function useList(notNeedingFetchData?: boolean): List {
       console.error("Error fetching balances:", error);
     }
     setFilterAssetsBalanceLoading(false);
+  };
+
+  const onBoycoAssetsSelect = (item: any) => {
+    if (item === "clear") {
+      setBoycoAssetsSelected([]);
+      toggleVaultsBoyco(false);
+      return;
+    }
+    if (boycoAssetsSelected?.some((asset: any) => asset.key === item.key)) {
+      setBoycoAssetsSelected((_boycoAssetsSelected: any) => {
+        const _selected = _boycoAssetsSelected.filter((asset: any) => asset.key !== item.key);
+        if (!_selected.length) {
+          toggleVaultsBoyco(false);
+        }
+        return _selected;
+      });
+    } else {
+      setBoycoAssetsSelected((_boycoAssetsSelected: any) => [..._boycoAssetsSelected, { ...item }]);
+    }
   };
 
   useEffect(() => {
@@ -876,7 +949,13 @@ export function useList(notNeedingFetchData?: boolean): List {
     toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
     listVaultsStaked: vaultsStaked,
     toggleListVaultsStaked: toggleVaultsStaked,
-    listDefaultOrder: defaultOrder
+    listDefaultOrder: defaultOrder,
+    vaultsBoyco,
+    toggleVaultsBoyco,
+    filterRef,
+    boycoAssetsSelected,
+    onBoycoAssetsSelect,
+    boycoAssetsRef,
   };
 }
 
@@ -927,6 +1006,12 @@ export interface List {
   listVaultsStaked: boolean;
   toggleListVaultsStaked: (_listVaultsStaked?: boolean) => void;
   listDefaultOrder: boolean;
+  vaultsBoyco: any;
+  toggleVaultsBoyco: (vaultsBoyco?: any) => void;
+  filterRef: any;
+  boycoAssetsSelected: any;
+  onBoycoAssetsSelect: (item: any) => void;
+  boycoAssetsRef: any;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {

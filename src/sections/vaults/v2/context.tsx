@@ -4,6 +4,7 @@ import { List } from '@/sections/vaults/v2/hooks/list';
 
 interface ContextValue extends List, VaultsV2 {
   containerRef?: RefObject<HTMLDivElement>;
+  boycoData?: any;
 }
 
 export const VaultsV2Context = createContext<Partial<ContextValue>>({});

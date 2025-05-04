@@ -1,8 +1,8 @@
-import clsx from "clsx";
 import List from "./list";
-import { numberFormatter } from "@/utils/number-formatter";
+import AssetButton from '@/sections/boyco/components/vaults/asset-button';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 
-export default function Vaults({
+export default React.forwardRef(function Vaults({
   vaults,
   assets,
   loading
@@ -10,44 +10,46 @@ export default function Vaults({
   vaults: any;
   assets: any;
   loading: boolean;
-}) {
+}, ref: any) {
+  const [selected, setSelected] = useState<any>([]);
+  const [vaultsList, setVaultsList] = useState<any>([]);
+
+  const refs = {
+    selectedAssets: selected,
+    vaultsList,
+  };
+  useImperativeHandle(ref, () => refs);
+
+  useEffect(() => {
+    setSelected(assets?.map((asset: any) => ({ ...asset })) ?? []);
+  }, [assets]);
+
+  useEffect(() => {
+    setVaultsList(vaults?.filter((vault: any) => selected.some((asset: any) => asset.pool_address.includes(vault.pool_address))));
+  }, [vaults, selected]);
+
   return (
     <>
-      <div className="text-[#392C1D] text-[30px] font-bold leading-[100%]">
-        Yield Opportunities Based on Your Locked Assets.
-      </div>
-      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[30px]">
+      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[40px]">
         Est. Unlocked assets (Available in vaults)
       </div>
       <div className="flex gap-[10px] flex-wrap">
         {assets?.map((item: any, index: number) => (
-          <div
-            className="px-[8px] py-[4px] h-[34px] border border-[#5B4E3C] rounded-[8px] flex items-center gap-[7px] mt-[10px]"
+          <AssetButton
             key={index}
-          >
-            <div className="flex">
-              {item.tokens.map((token: any, index: number) => (
-                <img
-                  src={token.icon}
-                  className={clsx(
-                    "w-[26px] h-[26px] rounded-full",
-                    index !== 0 && "ml-[-14px]"
-                  )}
-                />
-              ))}
-            </div>
-            <div className="text-[#392C1D] text-[14px] leading-[100%]">
-              <span className="font-bold">
-                {numberFormatter(item.amount, 2, true, {
-                  isShort: true
-                })}
-              </span>{" "}
-              {item.name}
-            </div>
-          </div>
+            item={item}
+            selected={selected.some((asset: any) => asset.key === item.key)}
+            onSelect={() => {
+              if (selected.some((asset: any) => asset.key === item.key)) {
+                setSelected(selected.filter((asset: any) => asset.key !== item.key));
+              } else {
+                setSelected([...selected, { ...item }]);
+              }
+            }}
+          />
         ))}
       </div>
-      <List vaults={vaults} loading={loading} />
+      <List vaults={vaultsList} loading={loading} />
     </>
   );
-}
+});

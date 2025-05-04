@@ -38,19 +38,33 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           <div
             className={clsx(
               gasoekOne.className,
-              "text-[#392C1D] text-[65px] md:text-[48px] font-normal leading-[90%] text-center"
+              "text-[#392C1D] text-[38px] md:text-[48px] font-normal leading-[90%] text-center"
             )}
           >
-            Boyco Unlock & Future Yield
+            BREAKING: BOYCO UNLOCK COMING ON 6TH OF MAY!
           </div>
           <div className="flex items-center justify-center gap-[10px] mt-[4px] px-[20px]">
-            <div className="grow h-[1px] bg-[#392C1D]" />
-            <div className="text-[#392C1D] text-[30px] font-bold md:text-[20px]">
-              6th, May, 2025
+            {/*<div className="grow h-[1px] bg-[#392C1D]" />*/}
+            <div className={clsx("text-[#392C1D] text-[26px] font-bold md:text-[20px]", gasoekOne.className)}>
+              Redeploy Your Assets to Earn up to &lt;x&gt; APY
             </div>
-            <div className="grow h-[1px] bg-[#392C1D]" />
+            {/*<div className="grow h-[1px] bg-[#392C1D]" />*/}
           </div>
-          <div className="px-[40px] pt-[20px] flex h-[calc(100%-150px)]">
+          <div className="px-[40px] pt-[20px] pb-[10px]">
+            <div className="w-full h-[4px] bg-[#392C1D]"></div>
+          </div>
+          <div className="flex justify-between gap-[60px] px-[40px] pt-[30px]">
+            <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] shrink-0">
+              Your Boyco Position
+            </div>
+            <div className="relative w-0 flex-1 h-[2px] bg-[#392C1D] mx-auto my-[16px]">
+              <div className="absolute right-[-1px] top-[-2px] w-[6px] h-[6px] border-t-[2px] border-r-[2px] border-[#392C1D] rotate-45" />
+            </div>
+            <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] text-end shrink-0">
+              Your Personalised Yield<br /> Opportunities
+            </div>
+          </div>
+          <div className="px-[40px] pt-[10px] flex h-[calc(100%-240px)]">
             <div className="w-1/2 pl-[10px] pr-[30px]">
               <Positions
                 positions={positions}

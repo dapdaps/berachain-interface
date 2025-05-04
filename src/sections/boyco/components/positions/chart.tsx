@@ -17,7 +17,7 @@ const COLORS = [
   "#392C1D33" // 20% opacity (0.2)
 ];
 
-export default function Chart({ assets }: any) {
+export default function Chart({ assets, loading }: any) {
   const labelsPositions = useRef<{ [key: string]: number }>({});
   const data = useMemo(() => {
     if (!assets?.length) return [];
@@ -46,18 +46,18 @@ export default function Chart({ assets }: any) {
 
   return (
     <div className="pt-[30px] relative">
-      {!data?.length ? (
-        <div className="flex justify-center items-center h-full">
+      {loading ? (
+        <div className="flex justify-center items-center h-[440px]">
           <Loading size={20} />
         </div>
       ) : (
         <>
           {!data?.length && (
-            <div className="flex justify-center items-center h-full">
+            <div className="flex justify-center items-center h-[440px]">
               <Empty desc="No assets" />
             </div>
           )}
-          {data?.length && (
+          {!!data?.length && (
             <>
               <ResponsiveContainer width={550} height={400}>
                 <PieChart>
