@@ -17,6 +17,7 @@ import Loading from "@/components/loading";
 import { useRef } from "react";
 import { Description, Statistics, Tips } from '@/sections/vaults/v2/components/aggregating';
 import RewardTopCard from '@/sections/vaults/v2/components/reward-top-card';
+import useBoycoData from '@/sections/boyco/use-data';
 
 const VaultsV2Mobile = (props: any) => {
   const {} = props;
@@ -24,9 +25,10 @@ const VaultsV2Mobile = (props: any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const vaultsV2 = useVaultsV2();
   const list = useList();
+  const boycoData = useBoycoData(list.listDataGroupByPoolAll || []);
 
   return (
-    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list, containerRef }}>
+    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list, boycoData, containerRef }}>
       <div
         ref={containerRef}
         className="relative w-full h-full overflow-y-auto pb-[64px] bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover"

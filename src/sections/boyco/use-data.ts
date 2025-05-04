@@ -63,6 +63,8 @@ export default function useBoycoData(defaultVaults?: any) {
       });
       if (!cachedAssets[key]) {
         cachedAssets[key] = {
+          key,
+          pool_address: [key],
           tokens,
           amount: _amount.toString(),
           amountUsd: _usd.toString()
@@ -74,6 +76,9 @@ export default function useBoycoData(defaultVaults?: any) {
         cachedAssets[key].amountUsd = Big(cachedAssets[key].amountUsd)
           .add(_usd)
           .toString();
+        if (!cachedAssets[key].pool_address.includes(key)) {
+          cachedAssets[key].pool_address.push(key);
+        }
       }
       if (tokens.length === 1) {
         _listDataGroupByPoolAll.forEach((pool: any) => {
@@ -85,6 +90,9 @@ export default function useBoycoData(defaultVaults?: any) {
           }
           if (cachedVaults[pool.pool_address]) return;
           cachedVaults[pool.pool_address] = pool;
+          if (!cachedAssets[key].pool_address.includes(pool.pool_address)) {
+            cachedAssets[key].pool_address.push(pool.pool_address);
+          }
         });
       } else if (vault && !cachedVaults[vault.pool_address]) {
         cachedVaults[vault.pool_address] = vault;
@@ -101,6 +109,6 @@ export default function useBoycoData(defaultVaults?: any) {
 
   return {
     ...data,
-    loading: listLoading || propsPositionsBoyco.status === "pending"
+    loading: !!defaultVaults ? propsPositionsBoyco.status === "pending" : (listLoading || propsPositionsBoyco.status === "pending")
   };
 }

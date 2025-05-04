@@ -19,10 +19,7 @@ export default function Positions({
 
   return (
     <>
-      <div className="text-[#392C1D] text-[30px] font-bold leading-[100%]">
-        Your Boyco Position
-      </div>
-      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[30px]">
+      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[10px]">
         Total Locked Assets on <span className="font-bold">Boyco</span>
       </div>
       <div className="flex items-center justify-between mt-[6px]">

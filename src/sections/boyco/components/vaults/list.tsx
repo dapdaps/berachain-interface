@@ -61,7 +61,7 @@ export default function List({ vaults, loading }: any) {
               ))}
               <button
                 onClick={() => {
-                  router.push("/vaults");
+                  router.push("/vaults?from=boyco");
                 }}
                 className="button text-[#E2CFB6] w-full h-[36px] bg-[#392C1D] text-[14px] leading-[100%] mt-[10px]"
               >
