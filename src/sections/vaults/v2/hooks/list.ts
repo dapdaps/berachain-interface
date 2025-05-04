@@ -42,7 +42,7 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
   balance: "0"
 }));
 
-export function useList(): List {
+export function useList(notNeedingFetchData?: boolean): List {
   const { account } = useCustomAccount();
   const isMobile = useIsMobile();
 
@@ -478,6 +478,7 @@ export function useList(): List {
   }, [data]);
 
   const getData = async () => {
+    if (notNeedingFetchData) return;
     setLoading(true);
     try {
       const res = await axios.get(`${BASE_URL}/api/go/vaults/list`, {

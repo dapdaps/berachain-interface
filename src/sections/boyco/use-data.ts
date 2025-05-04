@@ -6,8 +6,8 @@ import { useList } from "@/sections/vaults/v2/hooks/list";
 import Big from "big.js";
 import config from "./config";
 
-export default function useBoycoData() {
-  const { listDataGroupByPoolAll, listLoading } = useList();
+export default function useBoycoData(defaultVaults?: any) {
+  const { listDataGroupByPoolAll, listLoading } = useList(!!defaultVaults);
   const { account } = useCustomAccount();
   // const account = "0x90c4903895e27a3cf5cc0b17c90cee927bb857e0";
 
@@ -18,13 +18,14 @@ export default function useBoycoData() {
   });
 
   const data = useMemo(() => {
+    const _listDataGroupByPoolAll = defaultVaults || listDataGroupByPoolAll;
     if (
-      !listDataGroupByPoolAll?.length ||
+      !_listDataGroupByPoolAll?.length ||
       !propsPositionsBoyco.data?.data?.length
     )
       return {};
 
-    const _groupByPool = listDataGroupByPoolAll.reduce(
+    const _groupByPool = _listDataGroupByPoolAll.reduce(
       (acc: any, item: any) => {
         acc[item.pool_address] = item;
         return acc;
@@ -75,7 +76,7 @@ export default function useBoycoData() {
           .toString();
       }
       if (tokens.length === 1) {
-        listDataGroupByPoolAll.forEach((pool: any) => {
+        _listDataGroupByPoolAll.forEach((pool: any) => {
           const idx = pool.tokens.findIndex(
             (token: any) => tokens[0].address.toLowerCase() === token.address
           );
@@ -96,7 +97,7 @@ export default function useBoycoData() {
       assets: Object.values(cachedAssets),
       vaults: Object.values(cachedVaults)
     };
-  }, [listDataGroupByPoolAll, propsPositionsBoyco]);
+  }, [listDataGroupByPoolAll, defaultVaults, propsPositionsBoyco]);
 
   return {
     ...data,
