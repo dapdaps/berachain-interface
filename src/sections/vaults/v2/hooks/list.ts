@@ -75,13 +75,17 @@ export function useList(): List {
 
   // pagination & grouped by pool_address & sorted & filters
   // 20250425#Added BeraPaw pool, BeraPaw's pool_address corresponds to hub's vault_address;
-  // After merging non-BeraPaw pools, check if there are any pools in the list whose vault_address matches 
+  // After merging non-BeraPaw pools, check if there are any pools in the list whose vault_address matches
   // BeraPaw pool's pool_address, if match then append to the list
   const [dataGroupByPool, dataGroupByPoolAll] = useMemo(() => {
     if (!data || data.length === 0) return [[], []];
 
-    const beraPawList = data.filter((item: any) => item.project?.toLowerCase() === 'berapaw');
-    const hubList = data.filter((item: any) => item.project?.toLowerCase() !== 'berapaw');
+    const beraPawList = data.filter(
+      (item: any) => item.project?.toLowerCase() === "berapaw"
+    );
+    const hubList = data.filter(
+      (item: any) => item.project?.toLowerCase() !== "berapaw"
+    );
 
     const addIcon2List = (iconList: any, icon: any) => {
       if (iconList.some((_icon: any) => _icon === icon)) {
@@ -113,13 +117,18 @@ export function useList(): List {
       addIcon2List(group.poolProjectIcon, item.poolProjectIcon);
       group.reward_tokens = uniqBy(
         group.reward_tokens.concat(item.reward_tokens),
-        'address'
+        "address"
       );
       group.user_reward = group.user_reward.concat(item.user_reward);
       group.balance = Big(group.balance).plus(item.balance || 0);
 
       item.tokens?.forEach((token: any) => {
-        if (!group.tokens?.some((_token: any) => _token.address.toLowerCase() === token.address.toLowerCase())) {
+        if (
+          !group.tokens?.some(
+            (_token: any) =>
+              _token.address.toLowerCase() === token.address.toLowerCase()
+          )
+        ) {
           group.tokens.push(token);
         }
       });
@@ -129,7 +138,9 @@ export function useList(): List {
 
     const generateGroup = (listData: any, defaultGroupList = []) => {
       return listData.reduce((acc: any[], item: any) => {
-        const group = acc.find((g: any) => g.pool_address === item.pool_address);
+        const group = acc.find(
+          (g: any) => g.pool_address === item.pool_address
+        );
         if (group) {
           addItem2Group(group, item);
         } else {
@@ -156,19 +167,22 @@ export function useList(): List {
             reward_tokens: item.reward_tokens || [],
             user_reward: item.user_reward || [],
             balance: Big(item.balance || 0),
-            list: [item],
+            list: [item]
           });
         }
         return acc;
       }, defaultGroupList);
-    }
+    };
 
     const grouped = generateGroup(hubList);
 
     grouped.forEach((group: any) => {
       for (let i = beraPawList.length - 1; i >= 0; i--) {
         const currentBeraPaw = beraPawList[i];
-        const linkVault = group.list.find((_protocol: any) => _protocol.vault_address === currentBeraPaw.pool_address);
+        const linkVault = group.list.find(
+          (_protocol: any) =>
+            _protocol.vault_address === currentBeraPaw.pool_address
+        );
         if (linkVault) {
           currentBeraPaw.linkVault = linkVault;
           addItem2Group(group, currentBeraPaw);
@@ -480,7 +494,14 @@ export function useList(): List {
 
       const _currentTokenAddress = (item: any) => {
         let _addr = item.pool_address;
-        if (item.project?.toLowerCase() === "berapaw" && _list.some((it: any) => it.id !== item.id && it.vault_address.toLowerCase() === item.pool_address.toLowerCase())) {
+        if (
+          item.project?.toLowerCase() === "berapaw" &&
+          _list.some(
+            (it: any) =>
+              it.id !== item.id &&
+              it.vault_address.toLowerCase() === item.pool_address.toLowerCase()
+          )
+        ) {
           _addr = item.vault_address;
         }
         if (_addr === "0x0000000000000000000000000000000000000000") {
@@ -818,6 +839,7 @@ export function useList(): List {
     listData: data,
     getListData: getData,
     listDataGroupByPool: dataGroupByPool,
+    listDataGroupByPoolAll: dataGroupByPoolAll,
     listDataTopAPY: dataTopAPY,
     listDataTopTVL: dataTopTVL,
     listDataHotStrategy: dataHotStrategy,
@@ -861,6 +883,7 @@ export interface List {
   listData: any;
   getListData: () => Promise<void>;
   listDataGroupByPool: any;
+  listDataGroupByPoolAll: any;
   listDataTopAPY: any;
   listDataTopTVL: any;
   listDataHotStrategy: any;
