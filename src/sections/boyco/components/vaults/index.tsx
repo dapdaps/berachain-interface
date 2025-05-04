@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import List from "./list";
 import { numberFormatter } from "@/utils/number-formatter";
+
 export default function Vaults({
   vaults,
   assets,
@@ -30,7 +31,7 @@ export default function Vaults({
                   src={token.logo}
                   className={clsx(
                     "w-[26px] h-[26px] rounded-full",
-                    index !== 0 && "ml-[-10px]"
+                    index !== 0 && "ml-[-14px]"
                   )}
                 />
               ))}

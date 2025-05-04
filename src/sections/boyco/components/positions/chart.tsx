@@ -5,6 +5,18 @@ import { numberFormatter } from "@/utils/number-formatter";
 import Empty from "@/components/empty";
 import Loading from "@/components/loading";
 
+const COLORS = [
+  "#392C1D", // 100% opacity
+  "#392C1DE6", // 90% opacity (0.9)
+  "#392C1DCC", // 80% opacity (0.8)
+  "#392C1DB3", // 70% opacity (0.7)
+  "#392C1D99", // 60% opacity (0.6)
+  "#392C1D80", // 50% opacity (0.5)
+  "#392C1D66", // 40% opacity (0.4)
+  "#392C1D4D", // 30% opacity (0.3)
+  "#392C1D33" // 20% opacity (0.2)
+];
+
 export default function Chart({ assets }: any) {
   const labelsPositions = useRef<{ [key: string]: number }>({});
   const data = useMemo(() => {
@@ -13,7 +25,7 @@ export default function Chart({ assets }: any) {
       name: asset.tokens.map((item: any) => item.symbol).join("-"),
       value: Number(asset.amountUsd),
       amount: asset.amount,
-      color: `#392C1D`
+      color: COLORS[i]
     }));
   }, [assets]);
 
@@ -59,7 +71,7 @@ export default function Chart({ assets }: any) {
                     dataKey="value"
                     activeIndex={0}
                     shapeRendering="geometricPrecision"
-                    isAnimationActive={false}
+                    isAnimationActive={true}
                     label={({
                       cx,
                       cy,
@@ -68,27 +80,68 @@ export default function Chart({ assets }: any) {
                       index,
                       percent
                     }) => {
+                      const RADIUS = 150; // Outer radius + some padding
+                      const x =
+                        cx + Math.cos((-midAngle * Math.PI) / 180) * RADIUS;
+                      const y =
+                        cy + Math.sin((-midAngle * Math.PI) / 180) * RADIUS;
+                      const isRight = x > cx;
+
+                      // Calculate position adjustments for label placement
+                      const labelHeight = 40;
+                      const labelWidth = labelsPositions.current[index] || 100;
+
+                      // Adjust x position based on whether label is on right or left side
+                      const adjustedX = isRight ? x : x - labelWidth;
+                      // Center the label vertically
+                      const adjustedY = y - labelHeight / 2;
+
                       return (
                         <foreignObject
-                          x={
-                            cx < 200
-                              ? cx - labelsPositions.current[index]
-                              : cx + labelsPositions.current[index] + 60
-                          }
-                          y={cy}
-                          height={40}
-                          width={labelsPositions.current[index]}
+                          x={adjustedX}
+                          y={adjustedY}
+                          height={labelHeight}
+                          width={labelWidth}
                         >
                           <Label
                             key={index}
                             index={index}
                             data={assets}
-                            isReverse={cx >= 200}
+                            isReverse={isRight}
                           />
                         </foreignObject>
                       );
                     }}
-                    labelLine={false}
+                    labelLine={(props) => {
+                      const { cx, cy, midAngle, outerRadius, index } = props;
+                      const RADIUS = 150; // Outer radius + some padding
+                      const x1 =
+                        cx +
+                        Math.cos((-midAngle * Math.PI) / 180) * outerRadius;
+                      const y1 =
+                        cy +
+                        Math.sin((-midAngle * Math.PI) / 180) * outerRadius;
+                      const x2 =
+                        cx +
+                        Math.cos((-midAngle * Math.PI) / 180) *
+                          (outerRadius + 20);
+                      const y2 =
+                        cy +
+                        Math.sin((-midAngle * Math.PI) / 180) *
+                          (outerRadius + 20);
+                      const x3 =
+                        cx + Math.cos((-midAngle * Math.PI) / 180) * RADIUS;
+                      const y3 =
+                        cy + Math.sin((-midAngle * Math.PI) / 180) * RADIUS;
+
+                      return (
+                        <path
+                          d={`M${x1},${y1}L${x2},${y2}L${x3},${y3}`}
+                          stroke="#392C1D"
+                          fill="none"
+                        />
+                      );
+                    }}
                   >
                     {data.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
@@ -124,10 +177,11 @@ const Label = ({ index, data, onLoad, isReverse }: any) => {
   }, []);
   return (
     <div
-      className="flex items-center gap-[2px] relative"
+      className="flex items-center gap-[2px] relative mt-[1px]"
       ref={ref}
       style={{
-        flexDirection: isReverse ? "row-reverse" : "row"
+        flexDirection: isReverse ? "row-reverse" : "row",
+        justifyContent: "flex-end"
       }}
     >
       <div className="flex">
@@ -137,7 +191,7 @@ const Label = ({ index, data, onLoad, isReverse }: any) => {
             src={item.logo}
             className={clsx(
               "w-[26px] h-[26px] rounded-full",
-              index !== 0 && "ml-[-10px]"
+              index !== 0 && "ml-[-14px]"
             )}
           />
         ))}

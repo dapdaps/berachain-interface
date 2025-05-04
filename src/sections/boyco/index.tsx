@@ -1,7 +1,6 @@
 import { useState } from "react";
 import HomeEntry from "./components/home-entry";
 import BoycoModal from "./components/modal";
-import BoycoPage from "@/sections/boyco";
 import { RoycoProvider } from "royco";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -43,7 +42,9 @@ export default function Boyco() {
             rpcApiKeys={RPC_API_KEYS}
           >
             {isModalOpen && (
-              <BoycoModal onClose={() => setIsModalOpen(false)} />
+              <>
+                <BoycoModal onClose={() => setIsModalOpen(false)} />
+              </>
             )}
           </RoycoProvider>
         </QueryClientProvider>

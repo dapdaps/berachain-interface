@@ -6,6 +6,7 @@ import Positions from "../positions";
 import Vaults from "../vaults";
 import { motion } from "framer-motion";
 import useBoycoData from "@/sections/boyco/use-data";
+import { useActivityStore } from "@/stores/useActivityStore";
 
 const gasoekOne = Gasoek_One({
   weight: "400",
@@ -14,10 +15,11 @@ const gasoekOne = Gasoek_One({
 
 export default function BoycoModal({ onClose }: { onClose: () => void }) {
   const { totalUsd, positions, assets, vaults, loading } = useBoycoData();
+  const { isDefaultTheme } = useActivityStore();
 
   return ReactDOM.createPortal(
     <div
-      className={clsx("fixed top-0 right-0 w-full h-full z-[300] bg-black/50")}
+      className={clsx("fixed top-0 right-0 w-full h-full z-[90] bg-black/50")}
     >
       <motion.div
         className="absolute bottom-[30px] left-[calc(50%-600px)] w-[1200px] h-[800px]"
@@ -27,12 +29,12 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
         transition={{ duration: 0.3 }}
       >
         <button
-          className="button absolute z-[7] top-[30px] right-[30px]"
+          className="button absolute z-[11] top-[30px] right-[30px]"
           onClick={onClose}
         >
           <IconClose />
         </button>
-        <div className="absolute w-full h-full left-0 top-0 z-[6] pt-[50px]">
+        <div className="absolute w-full h-full left-0 top-0 z-[10] pt-[50px]">
           <div
             className={clsx(
               gasoekOne.className,
@@ -64,6 +66,21 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <div className="absolute z-[5] w-full h-full bg-[url(/images/boyco/bg.png)] bg-no-repeat bg-center bg-cover" />
+        {!isDefaultTheme() ? (
+          <>
+            <div className="absolute z-[2] bottom-[-58px] left-[-141px] w-[173px] h-[319px] bg-[url(/images/boyco/b-left-arm.png)] bg-no-repeat bg-center bg-cover" />
+            <div className="absolute z-[2] bottom-[-100px] right-[-344px] w-[359px] h-[549px] bg-[url(/images/boyco/b-right-arm.png)] bg-no-repeat bg-center bg-cover" />
+            <div className="absolute z-[12] bottom-[75px] left-[-29px] w-[61px] h-[176px] bg-[url(/images/boyco/b-left-finger.png)] bg-no-repeat bg-center bg-cover" />
+            <div className="absolute z-[12] bottom-[243px] right-[-38px] w-[121px] h-[168px] bg-[url(/images/boyco/b-right-finger.png)] bg-no-repeat bg-center bg-cover" />
+          </>
+        ) : (
+          <>
+            <div className="absolute z-[2] bottom-[-58px] left-[-190px] w-[345px] h-[364px] bg-[url(/images/boyco/left-hand.png)] bg-no-repeat bg-center bg-cover" />
+            <div className="absolute z-[2] bottom-[-100px] right-[-344px] w-[370px] h-[657px] bg-[url(/images/boyco/right-hand.png)] bg-no-repeat bg-center bg-cover" />
+            <div className="absolute z-[12] bottom-[96px] left-[-92px] w-[157px] h-[148px] bg-[url(/images/boyco/left-paw.png)] bg-no-repeat bg-center bg-cover" />
+            <div className="absolute z-[12] bottom-[334px] right-[-90px] w-[159px] h-[152px] bg-[url(/images/boyco/right-paw.png)] bg-no-repeat bg-center bg-cover" />
+          </>
+        )}
       </motion.div>
     </div>,
     document.body
