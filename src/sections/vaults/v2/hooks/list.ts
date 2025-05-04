@@ -201,50 +201,52 @@ export function useList(notNeedingFetchData?: boolean): List {
     const filteredData = groupedWithBeraPaw.filter((item: any) => {
       // Boyco
       if (vaultsBoyco) {
-        return !!boycoAssetsSelected?.some((asset: any) => asset.pool_address.some((pool: any) => item.pool_address === pool));
-      }
-
-      // Deposit Asset
-      if (
-        filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
-        !item.tokens.some((token: any) =>
-          filterSelected[FILTER_KEYS.ASSETS].some((filter) =>
-            filter.reg.test(token.symbol)
+        if (!boycoAssetsSelected?.some((asset: any) => asset.pool_address.some((pool: any) => item.pool_address === pool))) {
+          return false;
+        }
+      } else {
+        // Deposit Asset
+        if (
+          filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
+          !item.tokens.some((token: any) =>
+            filterSelected[FILTER_KEYS.ASSETS].some((filter) =>
+              filter.reg.test(token.symbol)
+            )
           )
-        )
-      ) {
-        return false;
-      }
+        ) {
+          return false;
+        }
 
-      // Reward Asset
-      if (
-        filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
-        !item.reward_tokens.some((token: any) =>
-          filterSelected[FILTER_KEYS.REWARDS].some((filter) =>
-            filter.reg.test(token.symbol)
+        // Reward Asset
+        if (
+          filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
+          !item.reward_tokens.some((token: any) =>
+            filterSelected[FILTER_KEYS.REWARDS].some((filter) =>
+              filter.reg.test(token.symbol)
+            )
           )
-        )
-      ) {
-        return false;
-      }
+        ) {
+          return false;
+        }
 
-      // Defi Protocol
-      if (
-        filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
-        !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
-          item.list.some((__it: any) => filter.reg.test(__it.project))
-        )
-      ) {
-        return false;
-      }
+        // Defi Protocol
+        if (
+          filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
+          !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
+            item.list.some((__it: any) => filter.reg.test(__it.project))
+          )
+        ) {
+          return false;
+        }
 
-      if (
-        filterSelected[FILTER_KEYS.CREATORS].length > 0 &&
-        !filterSelected[FILTER_KEYS.CREATORS].some((filter) =>
-          filter.reg.test(item.creator_project)
-        )
-      ) {
-        return false;
+        if (
+          filterSelected[FILTER_KEYS.CREATORS].length > 0 &&
+          !filterSelected[FILTER_KEYS.CREATORS].some((filter) =>
+            filter.reg.test(item.creator_project)
+          )
+        ) {
+          return false;
+        }
       }
 
       const _search = trim(searchValueDelay || "").toLowerCase();
