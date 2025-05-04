@@ -18,6 +18,7 @@ import clsx from 'clsx';
 import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { HomeEarthContext } from './context';
+import Boyco from "../boyco";
 
 // seconds per lap
 const SPEED = 200;
@@ -128,7 +129,7 @@ const HomeEarth = () => {
             controls: cloudControls,
             rotation: cloudRotation,
             endRotationRef: cloudEndRotationRef,
-            speed: SPEED + 60,
+            speed: SPEED + 60
           });
         },
         mountainRef,
@@ -141,7 +142,7 @@ const HomeEarth = () => {
             controls: mountainControls,
             rotation: mountainRotation,
             endRotationRef: mountainEndRotationRef,
-            speed: SPEED + 30,
+            speed: SPEED + 30
           });
         },
         navigationRef,
@@ -157,7 +158,7 @@ const HomeEarth = () => {
             controls: navigationControls,
             rotation: navigationRotation,
             endRotationRef: navigationEndRotationRef,
-            speed: SPEED,
+            speed: SPEED
           });
         },
         bearRef,
@@ -166,8 +167,9 @@ const HomeEarth = () => {
         hoverIndex,
         setHoverIndex,
         speed: SPEED,
-        size: BG_SIZE_MAP[activeTheme] || SIZE,
-      }}>
+        size: BG_SIZE_MAP[activeTheme] || SIZE
+      }}
+    >
       <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
         {/*<BerachainFixes />*/}
         <BeraPrice />
@@ -179,13 +181,13 @@ const HomeEarth = () => {
           {/*#region Cloud*/}
           <CloudCircle />
           {/*#endregion*/}
-          {
-            isDefaultTheme() && (<>
+          {isDefaultTheme() && (
+            <>
               {/*#region Mountain*/}
               <MountainCircle />
               {/*#endregion*/}
-            </>)
-          }
+            </>
+          )}
           {/*#region Navigation*/}
           <Navigation />
           {/*#endregion*/}
@@ -194,52 +196,89 @@ const HomeEarth = () => {
             trigger={PopoverTrigger.Hover}
             placement={PopoverPlacement.Top}
             offset={0}
-            content={<img src={isDefaultTheme() ? '/images/home-earth/signpost-baddies.svg' : '/images/home-earth/signpost-mcbera.svg'} className={isDefaultTheme() ? 'w-[127px] h-[57px]' : 'w-[168px] h-[57px]'} />}
-            triggerContainerClassName={clsx('absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110', isDefaultTheme() ? 'right-[150px]' : 'right-[130px]')}
+            content={
+              <img
+                src={
+                  isDefaultTheme()
+                    ? "/images/home-earth/signpost-baddies.svg"
+                    : "/images/home-earth/signpost-mcbera.svg"
+                }
+                className={
+                  isDefaultTheme() ? "w-[127px] h-[57px]" : "w-[168px] h-[57px]"
+                }
+              />
+            }
+            triggerContainerClassName={clsx(
+              "absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110",
+              isDefaultTheme() ? "right-[150px]" : "right-[130px]"
+            )}
           >
-            <div className='w-full h-full relative'>
+            <div className="w-full h-full relative">
               <img
                 onClick={() => toggleTheme()}
-                src={isDefaultTheme() ? "/images/theme-baddies.png" : "/images/theme-default.png"}
-                className={clsx('relative z-[4]', isDefaultTheme() ? 'w-[103px] h-[95px]' : 'w-[136px] h-[108px]')}
-                alt={isDefaultTheme() ? "Switch to LGBT Theme" : "Switch to Default Theme"}
+                src={
+                  isDefaultTheme()
+                    ? "/images/theme-baddies.png"
+                    : "/images/theme-default.png"
+                }
+                className={clsx(
+                  "relative z-[4]",
+                  isDefaultTheme()
+                    ? "w-[103px] h-[95px]"
+                    : "w-[136px] h-[108px]"
+                )}
+                alt={
+                  isDefaultTheme()
+                    ? "Switch to LGBT Theme"
+                    : "Switch to Default Theme"
+                }
               />
-              {
-                !isDefaultTheme() && <img src="/images/home-earth/likes/heart.gif" className='absolute top-[-40px] left-[-40px] z-0' alt="" />
-              }
+              {!isDefaultTheme() && (
+                <img
+                  src="/images/home-earth/likes/heart.gif"
+                  className="absolute top-[-40px] left-[-40px] z-0"
+                  alt=""
+                />
+              )}
             </div>
           </Popover>
-          {
-            isDefaultTheme() ? (
-              <img
-                ref={bearRef}
-                src="/images/background/bear.gif"
-                alt=""
-                className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
-              />
-            ) : (
-              <div className='absolute z-[4] top-[32.4dvh] pointer-events-none' ref={bearRef}>
-                <div className='w-[289px] h-[289px] relative'>
-                  <motion.img
-                    src="/images/home-earth/lgbt-role.png"
-                    className='w-full h-full relative z-10'
-                    alt=""
-                    animate={{
-                      y: [0, -10, 0],
-                      x: [0, 5, 0],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  />
-                  <img src="/images/home-earth/role-wave.svg" className='absolute bottom-[15px] left-[18px] z-0' alt="" />
-                </div>
+          {isDefaultTheme() ? (
+            <img
+              ref={bearRef}
+              src="/images/background/bear.gif"
+              alt=""
+              className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
+            />
+          ) : (
+            <div
+              className="absolute z-[4] top-[32.4dvh] pointer-events-none"
+              ref={bearRef}
+            >
+              <div className="w-[289px] h-[289px] relative">
+                <motion.img
+                  src="/images/home-earth/lgbt-role.png"
+                  className="w-full h-full relative z-10"
+                  alt=""
+                  animate={{
+                    y: [0, -10, 0],
+                    x: [0, 5, 0]
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <img
+                  src="/images/home-earth/role-wave.svg"
+                  className="absolute bottom-[15px] left-[18px] z-0"
+                  alt=""
+                />
               </div>
-            )
-          }
+            </div>
+          )}
         </div>
+        <Boyco />
       </div>
     </HomeEarthContext.Provider>
   );
