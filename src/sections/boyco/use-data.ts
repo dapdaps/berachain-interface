@@ -85,6 +85,7 @@ export default function useBoycoData(defaultVaults?: any) {
           cachedAssets[key].pool_address.push(key);
         }
       }
+
       if (tokens.length === 1) {
         _listDataGroupByPoolAll.forEach((pool: any) => {
           const idx = pool.tokens.findIndex(

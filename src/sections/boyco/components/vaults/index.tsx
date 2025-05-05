@@ -27,6 +27,8 @@ export default React.forwardRef(function Vaults(
 
   useEffect(() => {
     setSelected(assets?.map((asset: any) => ({ ...asset })) ?? []);
+    const assetsH = assetsRef.current?.clientHeight || 0;
+    setVaultsHeight(`calc(100% - ${assetsH + 60}px)`);
   }, [assets]);
 
   useEffect(() => {
@@ -39,17 +41,12 @@ export default React.forwardRef(function Vaults(
     );
   }, [vaults, selected]);
 
-  useEffect(() => {
-    const assetsH = assetsRef.current?.clientHeight || 0;
-    setVaultsHeight(`calc(100% - ${assetsH + 60}px)`);
-  }, []);
-
   return (
     <>
       <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[40px]">
         Est. Unlocked assets (Available in vaults)
       </div>
-      <div className="flex gap-[10px] flex-wrap" ref={assetsRef}>
+      <div className="flex gap-x-[10px] gap-y-[0px] flex-wrap" ref={assetsRef}>
         {assets?.map((item: any, index: number) => (
           <AssetButton
             key={index}
