@@ -203,7 +203,6 @@ const Label = ({ index, data, onLoad, isReverse }: any) => {
               isShort: true
             })}
           </span>{" "}
-          {data[index].name}
         </div>
         <div className="h-[1px] bg-[#392C1D] relative"></div>
         <div className="font-bold">
