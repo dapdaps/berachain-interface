@@ -8,7 +8,7 @@ const AssetButton = (props: any) => {
 
   useEffect(() => {
     if (!isAutoSelect) return;
-    onSelect(item);
+    onSelect(item, { isAutoSelect });
   }, [isAutoSelect]);
 
   return (

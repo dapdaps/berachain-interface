@@ -19,7 +19,7 @@ import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
 import Feedback from "@/sections/vaults/v2/components/feedback/feedback";
 import AssetButton from "@/sections/boyco/components/vaults/asset-button";
 import useBoycoData from "@/sections/boyco/use-data";
-import useCustomAccount from "@/hooks/use-account";
+import { useSearchParams } from 'next/navigation';
 
 const Filter = (props: any, ref: any) => {
   const { className } = props;
@@ -45,7 +45,7 @@ const Filter = (props: any, ref: any) => {
     onBoycoAssetsSelect,
     boycoAssetsRef
   } = useVaultsV2Context();
-  const { account } = useCustomAccount();
+  const searchParams = useSearchParams();
   const boycoData = useBoycoData(listDataGroupByPoolAll || []);
   const isMobile = useIsMobile();
   const {
@@ -53,11 +53,15 @@ const Filter = (props: any, ref: any) => {
     vaults: boycoVaults,
     loading: boycoLoading
   } = boycoData || {};
+  const isFromBoyco = searchParams.get("from") === "boyco";
 
   useEffect(() => {
     if (boycoLoading) return;
-    toggleVaultsBoyco(boycoAssets?.length && !isMobile);
-  }, [boycoLoading, isMobile]);
+    if (isMobile) {
+      if (!isFromBoyco) return;
+    }
+    toggleVaultsBoyco(boycoAssets?.length);
+  }, [boycoLoading, isFromBoyco, isMobile]);
 
   useEffect(() => {
     boycoAssetsRef.current = boycoAssets;
@@ -120,8 +124,8 @@ const Filter = (props: any, ref: any) => {
         <div className="flex items-center gap-[7px]">
           <div className="text-[16px] md:text-[20px] font-[700]">Filter</div>
           {isMobile && (
-            <div className="flex justify-center items-center rounded-full w-[19px] h-[19px] shrink-0 bg-[#FDD54C] border border-[#000] text-[#000] text-center font-[Montserrat] text-[12px] font-[600] leading-[90%]">
-              {listFilterSelectedLength}
+            <div className="flex justify-center items-center rounded-full px-[4px] h-[19px] shrink-0 bg-[#FDD54C] border border-[#000] text-[#000] text-center font-[Montserrat] text-[12px] font-[600] leading-[90%]">
+              {vaultsBoyco ? "Boyco" : listFilterSelectedLength}
             </div>
           )}
         </div>
@@ -161,48 +165,50 @@ const Filter = (props: any, ref: any) => {
         </button>
       </div>
       {/*#region 👇Boyco*/}
-      {!isMobile && (
-        <>
-          <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
-            <div className="text-[15px] font-[500]">
-              Your available Boyco assets only
-            </div>
-            <Switch
-              disabled={listLoading || listFilterAssetsBalanceLoading}
-              value={vaultsBoyco}
-              onChange={() => {
-                if (!boycoAssets?.length) return;
-                const _vaultsBoyco = !vaultsBoyco;
-                toggleVaultsBoyco?.(_vaultsBoyco);
+      <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
+        <div className="text-[15px] font-[500]">
+          Your available Boyco assets only
+        </div>
+        <Switch
+          disabled={listLoading || listFilterAssetsBalanceLoading}
+          value={vaultsBoyco}
+          onChange={() => {
+            if (!boycoAssets?.length) return;
+            const _vaultsBoyco = !vaultsBoyco;
+            toggleVaultsBoyco?.(_vaultsBoyco);
+            if (isMobile) {
+              toggleListFilterVisible();
+            }
+          }}
+          loading={listFilterAssetsBalanceLoading}
+        />
+      </div>
+      <FilterGroup title="" loading={listLoading || boycoLoading}>
+        {boycoAssets && boycoAssets?.length > 0 ? (
+          boycoAssets?.map((it: any, idx: any) => (
+            <AssetButton
+              disabled={!vaultsBoyco}
+              isAutoSelect={true}
+              key={idx}
+              className=""
+              item={it}
+              selected={boycoAssetsSelected?.some(
+                (asset: any) => asset.key === it.key
+              )}
+              onSelect={(_it: any, opts: any) => {
+                onBoycoAssetsSelect(it);
+                if (isMobile && !opts.isAutoSelect) {
+                  toggleListFilterVisible();
+                }
               }}
-              loading={listFilterAssetsBalanceLoading}
             />
+          ))
+        ) : (
+          <div className="w-full flex justify-center items-center">
+            <Empty desc="No assets available" />
           </div>
-          <FilterGroup title="" loading={listLoading || boycoLoading}>
-            {boycoAssets && boycoAssets?.length > 0 ? (
-              boycoAssets?.map((it: any, idx: any) => (
-                <AssetButton
-                  disabled={!vaultsBoyco}
-                  isAutoSelect={true}
-                  key={idx}
-                  className=""
-                  item={it}
-                  selected={boycoAssetsSelected?.some(
-                    (asset: any) => asset.key === it.key
-                  )}
-                  onSelect={() => {
-                    onBoycoAssetsSelect(it);
-                  }}
-                />
-              ))
-            ) : (
-              <div className="w-full flex justify-center items-center">
-                <Empty desc="No assets available" />
-              </div>
-            )}
-          </FilterGroup>
-        </>
-      )}
+        )}
+      </FilterGroup>
       {/*#endregion 👆*/}
       <div className="text-[15px] font-[600] pt-[26px] px-[12px]">
         Deposit Asset
