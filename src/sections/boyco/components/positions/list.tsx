@@ -5,7 +5,7 @@ import Loading from "@/components/loading";
 
 export default function List({ positions, loading }: any) {
   return (
-    <div className="mt-[20px] flex flex-col gap-[10px] h-[calc(100%-66px)] overflow-y-auto">
+    <div className="mt-[20px] flex flex-col gap-[10px] h-[calc(100%-96px)] overflow-y-auto">
       {loading ? (
         <div className="flex justify-center items-center h-full">
           <Loading size={20} />

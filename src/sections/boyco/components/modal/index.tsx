@@ -8,6 +8,7 @@ import ArrowIcon from "./arrow-icon";
 import { motion } from "framer-motion";
 import useBoycoData from "@/sections/boyco/use-data";
 import { useActivityStore } from "@/stores/useActivityStore";
+import { BERA_OPPORTUNITIES } from '@/sections/boyco/config';
 
 const gasoekOne = Gasoek_One({
   weight: "400",
@@ -39,7 +40,8 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           <div
             className={clsx(
               gasoekOne.className,
-              "text-[#392C1D] text-[38px] md:text-[48px] font-normal leading-[90%] text-center"
+              "boyco-title_250505",
+              "text-[#392C1D] text-center font-normal leading-[90%] whitespace-nowrap"
             )}
           >
             BREAKING: BOYCO UNLOCK COMING ON 6TH OF MAY!
@@ -69,7 +71,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
               <br /> Opportunities
             </div>
           </div>
-          <div className="px-[40px] pt-[10px] flex h-[calc(100%-230px)]">
+          <div className="px-[40px] pt-[10px] flex h-[calc(100%-250px)]">
             <div className="w-1/2 pl-[10px] pr-[30px]">
               <Positions
                 positions={positions}
@@ -78,9 +80,30 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
                 loading={loading}
               />
             </div>
-            <div className="w-[1px] h-full bg-[#392C1D] mt-[10px]" />
+            <div className="w-[1px] h-[calc(100%_-_20px)] bg-[#392C1D] mt-[10px]" />
             <div className="w-1/2 pl-[30px] pr-[20px]">
               <Vaults vaults={vaults} assets={assets} loading={loading} />
+            </div>
+          </div>
+          <div className="pl-[50px] pr-[60px] w-full h-[35px]">
+            <div className="w-full h-full flex items-stretch border-t-[3px] border-b-[3px] border-[#392C1D]">
+              <img src="/images/boyco/opportunities.svg" alt="" className="w-[180px] h-full shrink-0 object-left object-contain" />
+              <div className="flex-1 w-0 flex items-center gap-[30px] overflow-x-auto pr-[10px]">
+                {
+                  BERA_OPPORTUNITIES.map((it, idx) => (
+                    <>
+                      <div key={idx} className=" shrink-0 text-[#392C1D] font-Montserrat text-[13px] font-bold leading-[100%]">
+                        {it.label} {it.value}%
+                      </div>
+                      {
+                        idx < BERA_OPPORTUNITIES.length - 1 && (
+                          <div className="w-[1px] h-[calc(100%_-_8px)] shrink-0 bg-[#392C1D]"></div>
+                        )
+                      }
+                    </>
+                  ))
+                }
+              </div>
             </div>
           </div>
         </div>
