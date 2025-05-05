@@ -8,7 +8,7 @@ const gasoekOne = Gasoek_One({
 
 const HomeEntry: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   return (
-    <div className="lg:fixed md:absolute lg:top-[-50px] lg:scale-[0.8] lg:left-[calc(50%-159px)] w-[318px] h-[200px] flex justify-center pt-[40px] z-[60] md:scale-[0.6] md:left-[-50px] md:top-[40px]">
+    <div className="lg:fixed md:absolute lg:top-[-50px] lg:scale-[0.8] lg:left-[calc(50%-159px)] w-[318px] h-[200px] flex justify-center pt-[40px] z-[60] md:scale-[0.8] md:left-[-20px] md:top-[40px]">
       <Paper className="absolute top-1 left-1 z-2 transform -rotate-6" />
       <Paper className="absolute top-1 left-1 z-1 transform -rotate-2" />
       <div className="relative z-10 -rotate-2">

@@ -1,5 +1,8 @@
+import useIsMobile from "@/hooks/use-isMobile";
 import List from "./list";
 import AssetButton from "@/sections/boyco/components/vaults/asset-button";
+import router from "@/sections/pools/kodiak/island/abi/router";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 
 export default React.forwardRef(function Vaults(
@@ -18,7 +21,8 @@ export default React.forwardRef(function Vaults(
   const [vaultsList, setVaultsList] = useState<any>([]);
   const assetsRef = useRef<HTMLDivElement>(null);
   const [vaultsHeight, setVaultsHeight] = useState("0px");
-
+  const router = useRouter()
+  const isMobile = useIsMobile()
   const refs = {
     selectedAssets: selected,
     vaultsList
@@ -43,27 +47,37 @@ export default React.forwardRef(function Vaults(
 
   return (
     <>
-      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] lg:mt-[10px] md:my-[10px]">
-        Based on your locked Boyco assets
+      <div className="flex lg:items-start w-full lg:justify-between lg:gap-2 md:flex-col">
+        {
+          isMobile ? (<img onClick={() => router.push('/vaults')} src="/images/boyco/mobile-top.png" className="w-full object-contain cursor-pointer" alt="" />) : (
+            <img onClick={() => router.push('/vaults')} src="/images/boyco/top.png" className="w-[214px] object-contain cursor-pointer" alt="" />
+          )
+        }
+        <div className="flex-1">
+          <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] md:my-[10px]">
+          <span className="font-bold">[Filter]</span> Based on your locked Boyco assets
+          </div>
+          <div className="flex gap-x-[10px] gap-y-[0px] flex-wrap max-h-[160px] overflow-y-auto" ref={assetsRef}>
+            {assets?.map((item: any, index: number) => (
+              <AssetButton
+                key={index}
+                item={item}
+                selected={selected.some((asset: any) => asset.key === item.key)}
+                onSelect={() => {
+                  if (selected.some((asset: any) => asset.key === item.key)) {
+                    setSelected(
+                      selected.filter((asset: any) => asset.key !== item.key)
+                    );
+                  } else {
+                    setSelected([...selected, { ...item }]);
+                  }
+                }}
+              />
+            ))}
+          </div>
       </div>
-      <div className="flex gap-x-[10px] gap-y-[0px] flex-wrap" ref={assetsRef}>
-        {assets?.map((item: any, index: number) => (
-          <AssetButton
-            key={index}
-            item={item}
-            selected={selected.some((asset: any) => asset.key === item.key)}
-            onSelect={() => {
-              if (selected.some((asset: any) => asset.key === item.key)) {
-                setSelected(
-                  selected.filter((asset: any) => asset.key !== item.key)
-                );
-              } else {
-                setSelected([...selected, { ...item }]);
-              }
-            }}
-          />
-        ))}
       </div>
+
       <List vaults={vaultsList} loading={loading} height={vaultsHeight} />
     </>
   );
