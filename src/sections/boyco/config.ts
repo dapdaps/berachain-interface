@@ -14,7 +14,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["usdc.e"]]
   },
   "0x17ffd16948c053cc184c005477548e559566879a0e2847e87ebd1111c602535c": {
     pool_address: "0xf6c6Be0FF6d6F70A04dBE4F1aDE62cB23053Bd95",
@@ -39,7 +40,8 @@ export default {
         name: "DEX Fees",
         rate: "Estimated 15-30% APY"
       }
-    ]
+    ],
+    tokens: [bera["weth"], bera["honey"]]
   },
   "0xab37ea8895eed81c4aa76d5dba64441756904b15e78f6ffa5183b0fc1563c1c5": {
     pool_address: "0x58fdb6eebf7df7ce4137994436fb0e629bb84b84",
@@ -59,7 +61,8 @@ export default {
         name: "DEX Fees",
         rate: "Estimated 15-30% APY"
       }
-    ]
+    ],
+    tokens: [bera["wbtc"], bera["weth"]]
   },
   "0x027987432679079fbbc990691d14dabe7f7780f51df6a1a53e7bd875b1f9581a": {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
@@ -79,7 +82,8 @@ export default {
         name: "Ether.fi Rewards",
         rate: "3x"
       }
-    ]
+    ],
+    tokens: [bera["usdc.e"]]
   },
   "0x72bec627884d7bdf538f174bedd551e9eccf3995adc880f40972e2bab87df3b9": {
     pool_address: "0xb73deE52F38539bA854979eab6342A60dD4C8c03",
@@ -125,7 +129,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["usdt0"], bera["honey"]]
   },
   "0x5f7935e257b94aee6caf9bbe917d4cfad75e8bc3b231806769ca0935af8371e8": {
     pool_address: "0xE5A2ab5D2fb268E5fF43A5564e44c3309609aFF9",
@@ -150,7 +155,8 @@ export default {
         name: "STG",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["usde"], bera["honey"]]
   },
   "0x0964848864e96952ee2454ce58fc93b867f9b2d9a6b44216eec8b08726813d1b": {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
@@ -160,7 +166,8 @@ export default {
         name: "BERA",
         rate: "19.299%"
       }
-    ]
+    ],
+    tokens: [bera["usdc.e"]]
   },
   "0xdd3f0e11d59726f2e63fc1b180abc94034dd3e0f4018b51371b73348d82b3769": {
     pool_address: "0xc3827a4bc8224ee2d116637023b124ced6db6e90",
@@ -232,7 +239,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["susde"], bera["honey"]]
   },
   "0x7dadff589e53d9813969d0be6de99c033d140ec1d304e57a754797736656dcd5": {
     pool_address: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
@@ -263,7 +271,8 @@ export default {
         name: "BERA",
         rate: "1.208%"
       }
-    ]
+    ],
+    tokens: [bera["usdc.e"]]
   },
   "0xde894ab596c084e65d0123ab6fa66f95b0571091cd8ec7efbeabe4942e7c40cd": {
     pool_address: "0xecAc9C5F704e954931349Da37F60E39f515c11c1",
@@ -466,7 +475,8 @@ export default {
         name: "Infrared Yield",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["weth"]]
   },
   "0x9778047cb8f3740866882a97a186dff42743bebb3ad8010edbf637ab0e37751f": {
     pool_address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce",
@@ -538,7 +548,8 @@ export default {
         name: "Bodiak Points",
         rate: "6x"
       }
-    ]
+    ],
+    tokens: [bera["wbtc"], bera["honey"]]
   },
   "0x9c7bd5b59ebcb9a9e6787b9b174a98a69e27fa5a4fe98270b461a1b9b1b1aa3e": {
     pool_address: "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
@@ -621,7 +632,8 @@ export default {
         name: "Ethena Sats",
         rate: "5x"
       }
-    ]
+    ],
+    tokens: [bera["usdc.e"]]
   },
   "0xa31a8bb230f77a5d286985b92fe8d0c7504a1892568d70685659f781aec78209": {
     pool_address: "0xecAc9C5F704e954931349Da37F60E39f515c11c1",
@@ -681,7 +693,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["weth"], bera["stone"]]
   },
   "0xaf2a845c9d6007128b7aec375a4fcdee2b12bbaeb78caf928d3bd08e104417d6": {
     pool_address: "0x03bCcF796cDef61064c4a2EffdD21f1AC8C29E92",
@@ -716,7 +729,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["weth"], bera["beraeth"]]
   },
   "0x6262ac035c2284f5b5249a690a6fd81c35f1ecef501da089f25741a4492cf5f3": {
     pool_address: "0xf6b16E73d3b0e2784AAe8C4cd06099BE65d092Bf",
@@ -736,7 +750,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["wbtc"], bera["honey"]]
   },
   "0xa655556eb64a0fd18b9a3c80794ab370743bc431a4b2a6116fa97dcc7f741a2b": {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
@@ -746,7 +761,8 @@ export default {
         name: "BERA",
         rate: "3.261%"
       }
-    ]
+    ],
+    tokens: [bera["usdc.e"]]
   },
   "0x71cee3cf3329e9a2803d578cdd6c823d7a16aa39adea3a7053395299bd258800": {
     pool_address: "0xd10e65a5f8ca6f835f2b1832e37cf150fb955f23",
@@ -766,7 +782,8 @@ export default {
         name: "Beraborrow bPOLLEN",
         rate: "4x"
       }
-    ]
+    ],
+    tokens: [bera["nect"], bera["usdc.e"], bera["honey"]]
   },
   "0xd10bdc88272e0958baa62a4ae2bfce1d8feed639a93e03c0aa5cec7adfbdf2c3": {
     pool_address: "0xc3827a4bc8224ee2d116637023b124ced6db6e90",
@@ -877,7 +894,8 @@ export default {
         name: "Bodiak Points",
         rate: "5x"
       }
-    ]
+    ],
+    tokens: [bera["wbtc"], bera["weth"]]
   },
   "0xabf4b2f17bc32faf4c3295b1347f36d21ec5629128d465b5569e600bf8d46c4f": {
     pool_address: "0xecAc9C5F704e954931349Da37F60E39f515c11c1",
@@ -1017,7 +1035,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["rusd"], bera["honey"]]
   },
   "0xb32d047eb63b5c2af537c2e4df6a09c40a50b75aefd83a928600241a4666b087": {
     pool_address: "0xc3827a4bc8224ee2d116637023b124ced6db6e90",
@@ -1197,7 +1216,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["wbtc"], bera["solvbtc"]]
   },
   "0x568f3bb6ba4c6afe37899fda35bc315ae8167274685ea295e03cf20d471afd8b": {
     pool_address: "0xb67d60fc02e0870eddca24d4fa8ea516c890152b",
@@ -1222,7 +1242,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["wbtc"], bera["unibtc"]]
   },
   "0xab32e1695b84b148140cb78c044d247e307b26cb043dc5538657f3a5634dee6e": {
     pool_address: "0xf8163EaC4c0239a81a7d8BD05B8e14498a5fD880",
@@ -1304,7 +1325,7 @@ export default {
     ]
   },
   "0x72679855f582a6d908bf39d40cb5a299b6a98a82bf1bfd9055f1853fc5160f54": {
-    pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
+    pool_address: "0x1d5224Aff66EbB2Cf46De98f69A5982f650F098c",
     tokens: [bera["unibtc"], bera["unibtcot"]],
     reward: [
       {
@@ -1368,7 +1389,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["mim"], bera["honey"]]
   },
   "0x289dc2a22ebb4ef7404de9293b6718d9f81f0843e1af4cf9a9c51d2e757348d6": {
     pool_address: "0x502eED2a3a88Ffd2B49d7f5018C7Ca9965C43e95",
@@ -1666,7 +1688,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["beraeth"], bera["stone"]]
   },
   "0xd77d3e3e075394a6c94a8c83dab114bb7266b96c5234e4a98476f41339029c30": {
     pool_address: "0x6fc6545d5cDE268D5C7f1e476D444F39c995120d",
@@ -1827,7 +1850,8 @@ export default {
         name: "Bodiak Points",
         rate: "6x"
       }
-    ]
+    ],
+    tokens: [bera["weth"], bera["honey"]]
   },
   "0x3d7cf2bd0a04fd3c66a5fa334a399b3926efe0fc0450b8da49a5da29f2c36d7f": {
     pool_address: "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
@@ -2038,7 +2062,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["solvbtc"], bera["solvbtcbbn"]]
   },
   "0xd70673b98af7096f575717d70fbf2fa935dd719926b55c0e011480678cdac563": {
     pool_address: "0x7cebcc76a2faecc0ae378b340815fcbb71ec1fe0",
@@ -2063,7 +2088,8 @@ export default {
         name: "DEX Fees",
         rate: "Variable Rate"
       }
-    ]
+    ],
+    tokens: [bera["susda"], bera["usda"]]
   },
   "0x4fa4a76aa8b93ccdddba0c20c336056803b7410fb375c9c9541e9c54fbfb2f9a": {
     pool_address: "0xE946Dd7d03F6F5C440F68c84808Ca88d26475FC5",
