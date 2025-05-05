@@ -56,12 +56,9 @@ const Filter = (props: any, ref: any) => {
   const isFromBoyco = searchParams.get("from") === "boyco";
 
   useEffect(() => {
-    if (boycoLoading) return;
-    if (isMobile) {
-      if (!isFromBoyco) return;
-    }
+    if (boycoLoading || !isFromBoyco) return;
     toggleVaultsBoyco(boycoAssets?.length);
-  }, [boycoLoading, isFromBoyco, isMobile]);
+  }, [boycoLoading, isFromBoyco]);
 
   useEffect(() => {
     boycoAssetsRef.current = boycoAssets;
