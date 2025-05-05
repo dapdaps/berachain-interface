@@ -4,6 +4,13 @@ import AssetButton from "@/sections/boyco/components/vaults/asset-button";
 import router from "@/sections/pools/kodiak/island/abi/router";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
+import clsx from "clsx";
+import { Gasoek_One } from "next/font/google";
+
+const gasoekOne = Gasoek_One({
+  weight: "400",
+  subsets: ["latin"]
+});
 
 export default React.forwardRef(function Vaults(
   {
@@ -59,11 +66,11 @@ export default React.forwardRef(function Vaults(
   return (
     <>
       <div className="flex lg:items-start w-full lg:justify-between lg:gap-2 md:flex-col">
-      {
-          (!loading && vaultsList?.length > 0) && (
-            isMobile ? 
-              (<img onClick={handleGo} src="/images/boyco/mobile-top.png" className="w-full object-contain cursor-pointer" alt="" />) : 
-              (<img onClick={handleGo} src="/images/boyco/top.png" className="w-[214px] object-contain cursor-pointer" alt="" />)
+        {
+          !loading && vaultsList?.length > 0 && (
+            <div onClick={handleGo} className={clsx(isMobile ? 'bg-[url(/images/boyco/mobile-top.png)] w-full h-[83px]': 'bg-[url(/images/boyco/top.png)] w-[214px] h-[196px]', 'bg-no-repeat bg-contain relative')}>
+              <div className={clsx('text-[#392C1D] text-[32px] leading-[90%] capitalize -rotate-[10deg] absolute md:left-[92px] md:bottom-[20px] lg:left-[30px] lg:bottom-[46px]', gasoekOne.className)}>{process.env.NEXT_PUBLIC_BOYCO_EARNUP || 599.58}%</div>
+            </div>
           )
         }
         <div className="flex-1">
