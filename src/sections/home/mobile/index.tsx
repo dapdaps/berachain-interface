@@ -14,6 +14,7 @@ import BeraPrice from "@/sections/home-earth/components/bera-price";
 import { HomeEarthContext } from "@/sections/home-earth/context";
 import { useRainyDay } from "@/hooks/use-rainy-day";
 import Vaults from "@/components/vaults";
+import Boyco from "@/sections/boyco";
 
 const Home = () => {
   const router = useProgressRouter();
@@ -92,7 +93,6 @@ const Home = () => {
                }}
                className="absolute z-[20] right-[calc(15vw)] top-[-80px] hover:scale-110 transition-transform duration-500"
                /> */}
-
               <motion.div
                 className={clsx(
                   "transform relative z-10 w-[9.487vw] translate-y-[24vw] translate-x-[30vw]",
@@ -231,6 +231,8 @@ const Home = () => {
                 minHeight: "100dvh"
               }}
             >
+              <Boyco />
+
               <Vaults className="!absolute z-[2] !left-[unset] !top-[130px] right-[-30px] scale-[0.78] origin-right" />
 
               {/*#region Beraciaga*/}

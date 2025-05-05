@@ -14,14 +14,13 @@ const AssetButton = (props: any) => {
   return (
     <motion.button
       className={clsx(
-        "px-[8px] py-[4px] h-[34px] border border-[#5B4E3C] rounded-[8px] flex items-center gap-[7px] mt-[6px] disabled:opacity-30 disabled:!cursor-not-allowed",
+        "px-[8px] py-[4px] h-[34px] font-Montserrat border border-[#5B4E3C] rounded-[8px] flex items-center gap-[7px] mt-[6px] disabled:opacity-30 disabled:!cursor-not-allowed",
         className
       )}
       animate={{
         backgroundColor: selected
-          ? "rgba(253,213,76,0.5)"
-          : "rgba(253,213,76,0)",
-        borderColor: selected ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.2)"
+          ? "#392C1D"
+          : "transparent",
       }}
       onClick={() => onSelect?.(item)}
       disabled={disabled}
@@ -37,7 +36,7 @@ const AssetButton = (props: any) => {
           />
         ))}
       </div>
-      <div className="text-[#392C1D] text-[14px] leading-[100%]">
+      <div className={clsx('text-[14px] leading-[100%]', selected ? 'text-[#F2E6D4]' : 'text-[#392C1D]')}>
         <span className="font-bold">
           {numberFormatter(item.amount, 2, true, {
             isShort: true

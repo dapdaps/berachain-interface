@@ -37,6 +37,8 @@ export default function useBoycoData(defaultVaults?: any) {
       {}
     );
 
+    console.log("propsPositionsBoyco >>>> ", propsPositionsBoyco);
+
     let totalUsd = Big(0);
     const positions: any[] = [];
     const cachedVaults: any = {};
