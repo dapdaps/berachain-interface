@@ -12,6 +12,7 @@ import useToast from "@/hooks/use-toast";
 import { beraB } from "@/configs/tokens/bera-bArtio";
 import { createWalletClient, custom } from "viem";
 import { berachainTestnetbArtio } from "@reown/appkit/networks";
+import InfraredTop from "@/sections/staking/components/infrared-top";
 
 const IBGTMobileView = (props: Props) => {
   const { visible, onClose } = props;
@@ -118,7 +119,10 @@ const IBGTMobileView = (props: Props) => {
           <div className="opacity-90 w-full h-[143px] absolute top-[-72px] blur-md rounded-[387px] bg-[radial-gradient(50%_50%_at_50%_50%,_#FFDC50_0%,_rgba(255,_220,_80,_0.00)_100%)]" />
         </div>
         <div className="max-h-[calc(100%)] overflow-x-hidden overflow-y-auto pb-[80px]">
-          <div className="px-[10px] mt-[54px]">
+          <div className="mb-[10px]">
+            <InfraredTop pointsClass="md:bg-[rgba(255,255,255,0.16)]" hiddenRewards />
+          </div>
+          <div className="px-[10px] ">
             <div className="bg-[#FFDC50] rounded-[10px] p-[17px_8px_19px_16px] flex justify-between">
               <div className="">
                 <div className="text-[#3D405A] text-[14px] font-[500]">TVL</div>

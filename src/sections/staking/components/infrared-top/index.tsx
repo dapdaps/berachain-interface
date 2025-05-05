@@ -3,28 +3,38 @@ import IbgtRewards from "@/sections/bgt/components/ibgt-rewards";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
+import clsx from "clsx";
 import { memo, useMemo } from "react";
-export default memo(function InfraredTop() {
+export default memo(function InfraredTop({
+  hiddenRewards,
+  pointsClass
+}: {
+  hiddenRewards: boolean
+  pointsClass: string
+}) {
   const { dataList, loading, fetchAllData: reload } = useInfraredList();
   const { userPoints } = useUserPoints()
   const rewards = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
 
   return (
-    <div className="md:px-[12px] px-[30px] md:pb-0 md:pt-[15px] pb-[23px] flex items-center justify-between md:flex-col">
-
-      <div className="flex flex-col gap-[8px] md:w-full md:p-[11px_20px_13px] md:rounded-[20px] md:bg-[#FFFDEB] md:border md:border-black">
-        <div className="">Rewards</div>
-        <div className="md:h-[32px] h-[40px]">
-          {
-            rewards?.length > 0 ? (
-              <IbgtRewards rewards={rewards} onSuccess={reload} />
-            ) : (
-              <>-</>
-            )
-          }
-        </div>
-      </div>
-      <div className=" flex md:justify-between gap-[60px] text-black font-Montserrat md:text-[14px] text-[16px] font-medium leading-[100%] md:w-full md:text-white md:p-[11px_20px_13px] md:rounded-[10px] md:bg-black/50">
+    <div className="md:px-[10px] px-[30px] md:pb-0 md:pt-[15px] pb-[23px] flex items-center justify-between md:flex-col">
+      {
+        !hiddenRewards && (
+          <div className="flex flex-col gap-[8px] md:w-full md:p-[11px_20px_13px] md:rounded-[20px] md:bg-[#FFFDEB] md:border md:border-black">
+            <div className="">Rewards</div>
+            <div className="md:h-[32px] h-[40px]">
+              {
+                rewards?.length > 0 ? (
+                  <IbgtRewards rewards={rewards} onSuccess={reload} />
+                ) : (
+                  <>-</>
+                )
+              }
+            </div>
+          </div>
+        )
+      }
+      <div className={clsx("flex md:justify-between gap-[60px] text-black font-Montserrat md:text-[14px] text-[16px] font-medium leading-[100%] md:w-full md:text-white md:p-[11px_20px_13px] md:rounded-[10px] md:bg-black/50", pointsClass)}>
         <div className="flex flex-col gap-[8px]">
           <span className="font-normal">Points</span>
           <span className="leading-[40px] md:leading-[100%]">{Big(userPoints?.points ?? 0).toFixed(0)}</span>
