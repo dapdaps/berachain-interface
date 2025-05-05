@@ -41,13 +41,13 @@ export default React.forwardRef(function Vaults(
 
   useEffect(() => {
     const assetsH = assetsRef.current?.clientHeight || 0;
-    setVaultsHeight(`calc(100% - ${assetsH + 60}px)`);
+    setVaultsHeight(`calc(100% - ${assetsH + 90}px)`);
   }, []);
 
   return (
     <>
-      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[40px]">
-        Est. Unlocked assets (Available in vaults)
+      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[10px]">
+        Based on your locked Boyco assets
       </div>
       <div className="flex gap-[10px] flex-wrap" ref={assetsRef}>
         {assets?.map((item: any, index: number) => (
