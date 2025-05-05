@@ -85,6 +85,7 @@ export default function useBoycoData(defaultVaults?: any) {
           cachedAssets[key].pool_address.push(key);
         }
       }
+
       if (tokens.length === 1) {
         _listDataGroupByPoolAll.forEach((pool: any) => {
           const idx = pool.tokens.findIndex(
@@ -108,7 +109,9 @@ export default function useBoycoData(defaultVaults?: any) {
       totalUsd: totalUsd.toString(),
       positions,
       assets: Object.values(cachedAssets),
-      vaults: Object.values(cachedVaults)
+      vaults: Object.values(cachedVaults).sort((a: any, b: any) =>
+        Big(a.totalApy[1]).gt(b.totalApy[1]) ? -1 : 1
+      )
     };
   }, [listDataGroupByPoolAll, defaultVaults, propsPositionsBoyco]);
 

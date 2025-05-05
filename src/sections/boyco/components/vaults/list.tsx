@@ -24,7 +24,7 @@ export default function List({ vaults, loading, height }: any) {
                 {vaults?.map((item: any, index: number) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between h-[36px] w-full border border-[#392C1D] pr-[14px]"
+                    className="flex items-center justify-between h-[36px] w-full border border-[#392C1D] pr-[14px] shrink-0"
                   >
                     <div className="grow flex items-center">
                       <div
@@ -51,7 +51,12 @@ export default function List({ vaults, loading, height }: any) {
                         </div>
                       </div>
                       <div className="text-[14px] text-[#392C1D] leading-[90%]">
-                        Join <span className="font-bold">{item.name}</span>{" "}
+                        Join{" "}
+                        <span className="font-bold">
+                          {item.tokens
+                            .map((token: any) => token.symbol)
+                            .join("-")}
+                        </span>{" "}
                         vault , APY up to{" "}
                         <span className="font-bold">
                           {item.totalApy[1].toFixed(2)}%
