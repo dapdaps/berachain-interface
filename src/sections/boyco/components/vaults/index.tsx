@@ -45,14 +45,25 @@ export default React.forwardRef(function Vaults(
     );
   }, [vaults, selected]);
 
+  const handleGo = () => {
+    const searchParams = new URLSearchParams(
+      window.location.search
+    ).toString();
+    router.push(
+      `/vaults?from=boyco${
+        searchParams ? "&" + searchParams : ""
+      }`
+    );
+  }
+
   return (
     <>
       <div className="flex lg:items-start w-full lg:justify-between lg:gap-2 md:flex-col">
       {
           (!loading && vaultsList?.length > 0) && (
             isMobile ? 
-              (<img onClick={() => router.push('/vaults')} src="/images/boyco/mobile-top.png" className="w-full object-contain cursor-pointer" alt="" />) : 
-              (<img onClick={() => router.push('/vaults')} src="/images/boyco/top.png" className="w-[214px] object-contain cursor-pointer" alt="" />)
+              (<img onClick={handleGo} src="/images/boyco/mobile-top.png" className="w-full object-contain cursor-pointer" alt="" />) : 
+              (<img onClick={handleGo} src="/images/boyco/top.png" className="w-[214px] object-contain cursor-pointer" alt="" />)
           )
         }
         <div className="flex-1">
