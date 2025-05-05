@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import IconClose from "@public/images/modal/close.svg";
 import useIsMobile from "@/hooks/use-isMobile";
 import { AnimatePresence, motion } from "framer-motion";
+import clsx from 'clsx';
 
 interface ModalProps {
   open?: boolean;
@@ -17,6 +18,7 @@ interface ModalProps {
   innerClassName?: string;
   isMaskClose?: boolean;
   isShowCloseIcon?: boolean;
+  isStyleHide?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
@@ -25,7 +27,7 @@ const Modal: React.FC<ModalProps> = (props) => {
     ...restProps
   } = props;
 
-  if (!props.open) return null;
+  if (!props.open && !props.isStyleHide) return null;
 
   return ReactDOM.createPortal(
     (
@@ -52,7 +54,8 @@ export const ModalContent = (props: ModalProps) => {
     innerStyle,
     innerClassName,
     isMaskClose = true,
-    isShowCloseIcon = true
+    isShowCloseIcon = true,
+    isStyleHide
   } = props;
 
   const isMobile = useIsMobile();
@@ -77,7 +80,11 @@ export const ModalContent = (props: ModalProps) => {
   return (
     <AnimatePresence mode="wait">
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 flex lg:items-center lg:justify-center z-[100] ${className}`}
+        className={clsx(
+          "fixed inset-0 bg-black bg-opacity-50 lg:items-center lg:justify-center z-[100]",
+          className,
+          isStyleHide ? (open ? "flex" : "hidden") : "flex"
+        )}
         style={style}
         onClick={handleBackdropClick}
       >

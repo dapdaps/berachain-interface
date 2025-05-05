@@ -24,7 +24,8 @@ const VaultsTableMobile = (props: any) => {
     listFilterSelectedLength,
     toggleListOrder,
     toggleListFilterVisible,
-    listData
+    listData,
+    vaultsBoyco
   } = useVaultsV2Context();
 
   const [isExpanded, setIsExpanded] = useState<number>();
@@ -80,7 +81,7 @@ const VaultsTableMobile = (props: any) => {
           className="flex items-center pl-[25px] pr-[17px] h-[40px] flex-shrink-0 rounded-[10px] border border-black bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[14px] font-[600] leading-[100%]"
           onClick={() => toggleListFilterVisible()}
         >
-          Filter {listFilterSelectedLength}
+          Filter {vaultsBoyco ? "Boyco" : listFilterSelectedLength}
           {/*<div className="flex-1 flex items-center gap-[4px] pl-[4px]">
             <LazyImage src="/images/vaults/v2/filter.svg" width={14} height={14} fallbackSrc="/assets/tokens/default_icon.png" />
             <div className="">
