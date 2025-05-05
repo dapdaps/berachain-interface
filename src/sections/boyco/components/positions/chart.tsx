@@ -45,7 +45,7 @@ export default function Chart({ assets, loading }: any) {
   };
 
   return (
-    <div className="pt-[30px] relative lg:h-[calc(100%-50px)] md:h-[400px]">
+    <div className="pt-[30px] relative lg:h-[calc(100%-50px)] md:h-[380px] md:scale-[0.9]">
       {loading ? (
         <div className="flex justify-center items-center h-full">
           <Loading size={20} />
