@@ -72,7 +72,21 @@ export default function List({ positions, loading }: any) {
                       </svg>
                       <div className="text-[12px]">Incentives</div>
                     </div>
-                    <div></div>
+                    <div className="flex items-center gap-[10px]">
+                      {it.rewards.map((item: any, j: number) => {
+                        return (
+                          <div className="flex items-center gap-[2px]" key={j}>
+                            <img
+                              src={item.icon}
+                              className="w-[16px] h-[16px] rounded-full"
+                            />
+                            <div className="text-[12px] text-[#392C1D]">
+                              {item.rate}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>

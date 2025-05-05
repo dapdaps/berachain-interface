@@ -37,7 +37,7 @@ const Filter = (props: any, ref: any) => {
     toggleVaultsBoyco,
     boycoAssetsSelected,
     onBoycoAssetsSelect,
-    boycoAssetsRef,
+    boycoAssetsRef
   } = useVaultsV2Context();
   const { account } = useCustomAccount();
   const boycoData = useBoycoData(listDataGroupByPoolAll || []);
@@ -45,7 +45,7 @@ const Filter = (props: any, ref: any) => {
   const {
     assets: boycoAssets,
     vaults: boycoVaults,
-    loading: boycoLoading,
+    loading: boycoLoading
   } = boycoData || {};
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const Filter = (props: any, ref: any) => {
     assetsFilterRef,
     boycoAssetsSelected,
     onBoycoAssetsSelect,
-    boycoAssets,
+    boycoAssets
   };
   useImperativeHandle(ref, () => refs);
 
@@ -156,45 +156,48 @@ const Filter = (props: any, ref: any) => {
         </button>
       </div>
       {/*#region 👇Boyco*/}
-      {
-        !isMobile && (
-          <>
-            <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
-              <div className="text-[15px] font-[500]">Your available Boyco assets only</div>
-              <Switch
-                disabled={listLoading || listFilterAssetsBalanceLoading}
-                value={vaultsBoyco}
-                onChange={() => {
-                  const _vaultsBoyco = !vaultsBoyco;
-                  toggleVaultsBoyco?.(_vaultsBoyco);
-                }}
-                loading={listFilterAssetsBalanceLoading}
-              />
+      {!isMobile && (
+        <>
+          <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
+            <div className="text-[15px] font-[500]">
+              Your available Boyco assets only
             </div>
-            <FilterGroup title="" loading={listLoading || boycoLoading}>
-              {
-                (boycoAssets && boycoAssets?.length > 0) ? boycoAssets?.map((it: any, idx: any) => (
-                  <AssetButton
-                    disabled={!vaultsBoyco}
-                    isAutoSelect={true}
-                    key={idx}
-                    className=""
-                    item={it}
-                    selected={boycoAssetsSelected?.some((asset: any) => asset.key === it.key)}
-                    onSelect={() => {
-                      onBoycoAssetsSelect(it);
-                    }}
-                  />
-                )) : (
-                  <div className="w-full flex justify-center items-center">
-                    <Empty desc="No assets available" />
-                  </div>
-                )
-              }
-            </FilterGroup>
-          </>
-        )
-      }
+            <Switch
+              disabled={listLoading || listFilterAssetsBalanceLoading}
+              value={!boycoAssets?.length ? false : vaultsBoyco}
+              onChange={() => {
+                if (!boycoAssets?.length) return;
+                const _vaultsBoyco = !vaultsBoyco;
+                toggleVaultsBoyco?.(_vaultsBoyco);
+              }}
+              loading={listFilterAssetsBalanceLoading}
+            />
+          </div>
+          <FilterGroup title="" loading={listLoading || boycoLoading}>
+            {boycoAssets && boycoAssets?.length > 0 ? (
+              boycoAssets?.map((it: any, idx: any) => (
+                <AssetButton
+                  disabled={!vaultsBoyco}
+                  isAutoSelect={true}
+                  key={idx}
+                  className=""
+                  item={it}
+                  selected={boycoAssetsSelected?.some(
+                    (asset: any) => asset.key === it.key
+                  )}
+                  onSelect={() => {
+                    onBoycoAssetsSelect(it);
+                  }}
+                />
+              ))
+            ) : (
+              <div className="w-full flex justify-center items-center">
+                <Empty desc="No assets available" />
+              </div>
+            )}
+          </FilterGroup>
+        </>
+      )}
       {/*#endregion 👆*/}
       <div className="text-[15px] font-[600] pt-[26px] px-[12px]">
         Deposit Asset
@@ -258,20 +261,16 @@ const Filter = (props: any, ref: any) => {
           ))}
       </FilterGroup>
       <FilterGroup title="Defi Protocol" loading={listLoading}>
-        {
-          listPoolProjects.map((it: any, idx: number) => (
-            <FilterItem key={idx} type={FILTER_KEYS.PROTOCOLS} data={it} />
-          ))
-        }
+        {listPoolProjects.map((it: any, idx: number) => (
+          <FilterItem key={idx} type={FILTER_KEYS.PROTOCOLS} data={it} />
+        ))}
       </FilterGroup>
-      {
-        isMobile && (
-          <div className="absolute left-0 bottom-0 h-[46px] w-full border-t border-[rgba(0,0,0,0.2)] flex justify-between items-center px-[16px]">
-            <SubmitVault className="!bg-[unset] !w-[unset] !h-[unset] !text-[14px] !font-semibold !border-0" />
-            <Feedback className="!text-black !text-[14px] !font-semibold" />
-          </div>
-        )
-      }
+      {isMobile && (
+        <div className="absolute left-0 bottom-0 h-[46px] w-full border-t border-[rgba(0,0,0,0.2)] flex justify-between items-center px-[16px]">
+          <SubmitVault className="!bg-[unset] !w-[unset] !h-[unset] !text-[14px] !font-semibold !border-0" />
+          <Feedback className="!text-black !text-[14px] !font-semibold" />
+        </div>
+      )}
     </div>
   );
 };
