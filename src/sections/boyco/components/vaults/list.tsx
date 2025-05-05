@@ -50,7 +50,7 @@ export default function List({ vaults, loading, height }: any) {
                           ))}
                         </div>
                       </div>
-                      <div className="text-[14px] text-[#392C1D] leading-[90%]">
+                      <div className="flex-1 font-Montserrat md:text-[12px] lg:text-[14px] text-[#392C1D] leading-[100%]">
                         Join{" "}
                         <span className="font-bold">
                           {item.tokens

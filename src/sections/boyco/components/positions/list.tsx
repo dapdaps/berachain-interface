@@ -5,7 +5,7 @@ import Loading from "@/components/loading";
 
 export default function List({ positions, loading }: any) {
   return (
-    <div className="mt-[20px] flex flex-col gap-[10px] h-[calc(100%-96px)] overflow-y-auto">
+    <div className="mt-[20px] flex flex-col gap-[10px] lg:h-[calc(100%-96px)] overflow-y-auto">
       {loading ? (
         <div className="flex justify-center items-center h-full">
           <Loading size={20} />
@@ -20,7 +20,7 @@ export default function List({ positions, loading }: any) {
           {positions?.map((it: any, index: number) => (
             <div
               key={index}
-              className="flex items-center h-[75px] border border-[#392C1D] relative"
+              className="flex items-center lg:h-[75px] md:h-[120px] border border-[#392C1D] relative"
             >
               <div className="flex w-full px-[14px] py-[10px]">
                 <div className="flex w-[50px]">

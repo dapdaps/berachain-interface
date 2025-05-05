@@ -43,7 +43,7 @@ export default React.forwardRef(function Vaults(
 
   return (
     <>
-      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[10px]">
+      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] lg:mt-[10px] md:my-[10px]">
         Based on your locked Boyco assets
       </div>
       <div className="flex gap-x-[10px] gap-y-[0px] flex-wrap" ref={assetsRef}>
