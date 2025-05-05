@@ -108,7 +108,9 @@ export default function useBoycoData(defaultVaults?: any) {
       totalUsd: totalUsd.toString(),
       positions,
       assets: Object.values(cachedAssets),
-      vaults: Object.values(cachedVaults)
+      vaults: Object.values(cachedVaults).sort((a: any, b: any) =>
+        Big(a.totalApy[1]).gt(b.totalApy[1]) ? -1 : 1
+      )
     };
   }, [listDataGroupByPoolAll, defaultVaults, propsPositionsBoyco]);
 
