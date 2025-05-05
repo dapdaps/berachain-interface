@@ -28,7 +28,7 @@ export default React.forwardRef(function Vaults(
   useEffect(() => {
     setSelected(assets?.map((asset: any) => ({ ...asset })) ?? []);
     const assetsH = assetsRef.current?.clientHeight || 0;
-    setVaultsHeight(`calc(100% - ${assetsH + 60}px)`);
+    setVaultsHeight(`calc(100% - ${assetsH + 50}px)`);
   }, [assets]);
 
   useEffect(() => {
