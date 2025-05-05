@@ -16,6 +16,7 @@ const FilterModal = (props: any) => {
       open={listFilterVisible}
       onClose={toggleListFilterVisible}
       className={className}
+      isStyleHide={isMobile}
     >
       <Card className={clsx("w-full", isMobile ? "!rounded-b-0 !rounded-t-[20px] !p-[21px_0px_56px] relative" : "!rounded-[20px] !p-[21px_0px_32px]")}>
         <Filter className="min-h-[400px]" />
