@@ -56,9 +56,12 @@ const Filter = (props: any, ref: any) => {
 
   useEffect(() => {
     if (boycoLoading) return;
-    boycoAssetsRef.current = boycoAssets;
     toggleVaultsBoyco(boycoAssets?.length && !isMobile);
   }, [boycoLoading, isMobile]);
+
+  useEffect(() => {
+    boycoAssetsRef.current = boycoAssets;
+  }, [boycoAssets]);
 
   const [viewMoreVisible, setViewMoreVisible] = useState(false);
 
