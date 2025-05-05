@@ -105,7 +105,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
               <Vaults vaults={vaults} assets={assets} loading={loading} />
             </div>
             <div className="lg:hidden mt-[20px] flex items-center justify-center gap-2 flex-col">
-              <div className="w-full h-[33px] bg-[url(/images/boyco/oppot.svg)] bg-no-repeat shrink-0"></div>
+              <div className="w-full h-[33px] bg-[url(/images/boyco/oppot.svg)] bg-no-repeat bg-center shrink-0"></div>
               <div className="p-4 text-center text-[#2B2B2B] font-semibold text-sm space-y-2">
                 <div className="flex items-center justify-center">
                   {BERA_OPPORTUNITIES.slice(0,3).map((item, index) => (
