@@ -20,7 +20,7 @@ export default function List({ positions, loading }: any) {
           {positions?.map((it: any, index: number) => (
             <div
               key={index}
-              className="flex items-center min-h-[75px] border border-[#392C1D] relative"
+              className="flex items-center h-[75px] border border-[#392C1D] relative"
             >
               <div className="flex w-full px-[14px] py-[10px]">
                 <div className="flex w-[50px]">
