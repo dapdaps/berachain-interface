@@ -19,7 +19,7 @@ export default function Positions({
 
   return (
     <>
-      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mt-[10px]">
+      <div className="text-[#392C1D] text-[14px] font-normal leading-[100%]">
         Total Locked Assets on <span className="font-bold">Boyco</span>
       </div>
       <div className="flex items-center justify-between mt-[6px]">
