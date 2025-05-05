@@ -1,12 +1,11 @@
 import { bera } from "@/configs/tokens/bera";
-import { inc } from "nprogress";
 
 export default {
   "0xaa449e0679bd82798c7896c6a031f2da55299e64c0b4bddd57ad440921c04628": {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "5.899%"
       },
@@ -21,22 +20,22 @@ export default {
     pool_address: "0xf6c6Be0FF6d6F70A04dBE4F1aDE62cB23053Bd95",
     reward: [
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "4.707%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "18.256%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "6x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Estimated 15-30% APY"
       }
@@ -46,17 +45,17 @@ export default {
     pool_address: "0x58fdb6eebf7df7ce4137994436fb0e629bb84b84",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "18.256%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "5x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Estimated 15-30% APY"
       }
@@ -66,7 +65,7 @@ export default {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.52%"
       },
@@ -87,22 +86,22 @@ export default {
     tokens: [bera["usdc.e"], bera["honey"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "5.882%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "21.524%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -112,17 +111,17 @@ export default {
     pool_address: "0x12C195768f65F282EA5F1B5C42755FBc910B0D8F",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "5.847%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -132,22 +131,22 @@ export default {
     pool_address: "0xE5A2ab5D2fb268E5fF43A5564e44c3309609aFF9",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.236%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Ethena Sats",
         rate: "30x"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "Variable Rate"
       }
@@ -157,7 +156,7 @@ export default {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "19.299%"
       }
@@ -168,7 +167,7 @@ export default {
     tokens: [bera["unibtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "19.299%"
       },
@@ -189,7 +188,7 @@ export default {
     tokens: [bera["wabtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.191%"
       },
@@ -209,7 +208,7 @@ export default {
     pool_address: "0xD5B6EA3544a51BfdDa7E6926BdF778339801dFe8",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.204%"
       },
@@ -240,7 +239,7 @@ export default {
     tokens: [bera["solvbtcbbn"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.208%"
       },
@@ -260,7 +259,7 @@ export default {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.208%"
       }
@@ -271,7 +270,7 @@ export default {
     tokens: [bera["lbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.208%"
       },
@@ -292,7 +291,7 @@ export default {
     tokens: [bera["sbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.208%"
       },
@@ -308,7 +307,7 @@ export default {
     tokens: [bera["pumpBTC.bera"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.229%"
       },
@@ -329,7 +328,7 @@ export default {
     tokens: [bera["solvbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.682%"
       },
@@ -339,7 +338,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -355,7 +354,7 @@ export default {
     tokens: [bera["pumpBTC.bera"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.682%"
       },
@@ -365,7 +364,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -381,7 +380,7 @@ export default {
     tokens: [bera["stone"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.682%"
       },
@@ -391,7 +390,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       }
@@ -402,7 +401,7 @@ export default {
     tokens: [bera["sbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.682%"
       },
@@ -412,7 +411,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       }
@@ -423,22 +422,22 @@ export default {
     tokens: [bera["nect"], bera["honey"]],
     reward: [
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "16.669%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.306%"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "BODIAK Points",
         rate: "2.5x"
       }
@@ -448,12 +447,12 @@ export default {
     pool_address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
     reward: [
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "101.78%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.682%"
       },
@@ -463,7 +462,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       }
@@ -474,17 +473,17 @@ export default {
     tokens: [bera["honey"]],
     reward: [
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "9.174%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.621%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -500,7 +499,7 @@ export default {
     tokens: [bera["usdc.e"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.621%"
       },
@@ -515,7 +514,7 @@ export default {
     pool_address: "0xf6b16E73d3b0e2784AAe8C4cd06099BE65d092Bf",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "18.538%"
       },
@@ -525,17 +524,17 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Kodiak DEX Fees",
         rate: "Estimated 15-30% APY"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points",
         rate: "6x"
       }
@@ -546,12 +545,12 @@ export default {
     tokens: [bera["usdt0"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.621%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared points",
         rate: "1.5x"
       },
@@ -567,12 +566,12 @@ export default {
     tokens: [bera["wbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.621%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared points",
         rate: "1.5x"
       },
@@ -588,17 +587,17 @@ export default {
     tokens: [bera["weth"]],
     reward: [
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "1.229%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.621%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared points",
         rate: "1.5x"
       },
@@ -613,7 +612,7 @@ export default {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.621%"
       },
@@ -629,7 +628,7 @@ export default {
     tokens: [bera["lbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.297%"
       },
@@ -644,7 +643,7 @@ export default {
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points (for eligible assets)",
         rate: "3x"
       },
@@ -658,12 +657,12 @@ export default {
     pool_address: "0x97431F104be73FC0e6fc731cE84486DA05C48871",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.297%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "1.5x"
       },
@@ -678,7 +677,7 @@ export default {
         rate: "Variable Rate (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -688,17 +687,17 @@ export default {
     pool_address: "0x03bCcF796cDef61064c4a2EffdD21f1AC8C29E92",
     reward: [
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/18934.png",
+        icon: "/assets/tokens/stg.webp",
         name: "STG",
         rate: "7.308%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.261%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "2.5x"
       },
@@ -713,7 +712,7 @@ export default {
         rate: "Variable Rate (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -723,17 +722,17 @@ export default {
     pool_address: "0xf6b16E73d3b0e2784AAe8C4cd06099BE65d092Bf",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.261%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "6x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -743,7 +742,7 @@ export default {
     pool_address: "0x549943e04f40284185054145c6E4e9568C1D3241",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.261%"
       }
@@ -753,12 +752,12 @@ export default {
     pool_address: "0xd10e65a5f8ca6f835f2b1832e37cf150fb955f23",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "STG",
         rate: "18.172%"
       },
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "5.894%"
       },
@@ -774,7 +773,7 @@ export default {
     tokens: [bera["unibtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.637%"
       },
@@ -790,7 +789,7 @@ export default {
     tokens: [bera["weeth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.261%"
       },
@@ -805,12 +804,12 @@ export default {
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points",
         rate: "3x"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points (for eligible assets)",
         rate: "1.25x"
       },
@@ -829,7 +828,7 @@ export default {
     tokens: [bera["pumpBTC.bera"], bera["wbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.261%"
       },
@@ -844,7 +843,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -854,7 +853,7 @@ export default {
     pool_address: "0x58FDB6EEbf7df7Ce4137994436fb0e629Bb84b84",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "18.336%"
       },
@@ -864,17 +863,17 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Kodiak DEX Fees",
         rate: "Estimated 15-30% APY"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points",
         rate: "5x"
       }
@@ -885,7 +884,7 @@ export default {
     tokens: [bera["lbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.26%"
       },
@@ -895,7 +894,7 @@ export default {
         rate: "2x"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points (for eligible assets)",
         rate: "1.25x"
       },
@@ -905,7 +904,7 @@ export default {
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points",
         rate: "3x"
       },
@@ -929,7 +928,7 @@ export default {
     tokens: [bera["weth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.545%"
       },
@@ -950,7 +949,7 @@ export default {
     tokens: [bera["rsweth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.635%"
       },
@@ -971,7 +970,7 @@ export default {
     tokens: [bera["weth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.26%"
       },
@@ -981,12 +980,12 @@ export default {
         rate: "4x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points",
         rate: "3x"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points (for eligible assets)",
         rate: "1.25x"
       },
@@ -1004,7 +1003,7 @@ export default {
     pool_address: "0x7fd165B73775884a38AA8f2B384A53A3Ca7400E6",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.26%"
       },
@@ -1014,7 +1013,7 @@ export default {
         rate: "3 Points per Day per $1 TVL"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1025,7 +1024,7 @@ export default {
     tokens: [bera["unibtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.657%"
       },
@@ -1035,7 +1034,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -1051,7 +1050,7 @@ export default {
     tokens: [bera["usda"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.632%"
       },
@@ -1067,7 +1066,7 @@ export default {
     tokens: [bera["solvbtcbbn"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.657%"
       },
@@ -1077,7 +1076,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -1093,7 +1092,7 @@ export default {
     tokens: [bera["solvbtcbbnot"], bera["solvbtcbbn"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.657%"
       },
@@ -1109,7 +1108,7 @@ export default {
     tokens: [bera["usde"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.257%"
       },
@@ -1119,7 +1118,7 @@ export default {
         rate: "30x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points (for eligible assets)",
         rate: "3x"
       },
@@ -1139,7 +1138,7 @@ export default {
     tokens: [bera["wbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.257%"
       },
@@ -1154,7 +1153,7 @@ export default {
         rate: "1x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points (for eligible assets)",
         rate: "3x"
       },
@@ -1169,7 +1168,7 @@ export default {
     tokens: [bera["stone"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.211%"
       },
@@ -1184,7 +1183,7 @@ export default {
     pool_address: "0x3879451f4f69F0c2d37CaD45319cFf2E7d29C596",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.311%"
       },
@@ -1194,7 +1193,7 @@ export default {
         rate: "4x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1204,7 +1203,7 @@ export default {
     pool_address: "0xb67d60fc02e0870eddca24d4fa8ea516c890152b",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.311%"
       },
@@ -1219,7 +1218,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1230,7 +1229,7 @@ export default {
     tokens: [bera["rseth"], bera["rsethot"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.685%"
       },
@@ -1246,7 +1245,7 @@ export default {
     tokens: [bera["honey"], bera["usda"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.311%"
       },
@@ -1256,7 +1255,7 @@ export default {
         rate: "TBD"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1267,7 +1266,7 @@ export default {
     tokens: [bera["beraeth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.692%"
       },
@@ -1288,7 +1287,7 @@ export default {
     tokens: [bera["usda"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.692%"
       },
@@ -1309,7 +1308,7 @@ export default {
     tokens: [bera["unibtc"], bera["unibtcot"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.694%"
       },
@@ -1325,7 +1324,7 @@ export default {
     tokens: [bera["pumpBTC.bera"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.713%"
       },
@@ -1350,12 +1349,12 @@ export default {
     pool_address: "0x933b2e6a71edBF11BBA75C5Ad241D246b145E0b0",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.329%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "1x"
       },
@@ -1365,7 +1364,7 @@ export default {
         rate: "500M total SPELL tokens, pro-rata"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1376,7 +1375,7 @@ export default {
     tokens: [bera["wbtc"], bera["sbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.329%"
       },
@@ -1386,7 +1385,7 @@ export default {
         rate: "6x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1397,7 +1396,7 @@ export default {
     tokens: [bera["wbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.329%"
       },
@@ -1407,12 +1406,12 @@ export default {
         rate: "3x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points",
         rate: "3x"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points (for eligible assets)",
         rate: "1.25x"
       },
@@ -1431,7 +1430,7 @@ export default {
     tokens: [bera["pumpBTC.bera"], bera["ylpumpbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.694%"
       },
@@ -1451,7 +1450,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1462,7 +1461,7 @@ export default {
     tokens: [bera["wbtc"], bera["wabtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.327%"
       },
@@ -1477,7 +1476,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1488,7 +1487,7 @@ export default {
     tokens: [bera["sbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.237%"
       },
@@ -1509,7 +1508,7 @@ export default {
     tokens: [bera["beraeth"], bera["rsweth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.693%"
       },
@@ -1524,7 +1523,7 @@ export default {
         rate: "10M total SWELL tokens, pro-rata"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1535,7 +1534,7 @@ export default {
     tokens: [bera["wbtc"], bera["stbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.327%"
       },
@@ -1545,7 +1544,7 @@ export default {
         rate: "1.5x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1556,17 +1555,17 @@ export default {
     tokens: [bera["nect"], bera["usde"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.693%"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "BODIAK Points",
         rate: "1x"
       },
@@ -1582,17 +1581,17 @@ export default {
     tokens: [bera["usde"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.693%"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "BODIAK Points",
         rate: "1x"
       },
@@ -1608,7 +1607,7 @@ export default {
     tokens: [bera["ylpumpbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.693%"
       },
@@ -1618,7 +1617,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -1638,12 +1637,12 @@ export default {
     pool_address: "0x57161d6272F47cd48BA165646c802f001040C2E0",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.685%"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Points",
         rate: "2x"
       },
@@ -1663,7 +1662,7 @@ export default {
         rate: "10x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1674,7 +1673,7 @@ export default {
     tokens: [bera["beraeth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.685%"
       },
@@ -1684,7 +1683,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "LSP Yield",
         rate: "Variable Rate"
       },
@@ -1700,7 +1699,7 @@ export default {
     tokens: [bera["usdc.e"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "6.648%"
       }
@@ -1711,7 +1710,7 @@ export default {
     tokens: [bera["beraeth"], bera["ylsteth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.685%"
       },
@@ -1731,7 +1730,7 @@ export default {
         rate: "Variable Rate (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1742,7 +1741,7 @@ export default {
     tokens: [bera["rseth"], bera["beraeth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.679%"
       },
@@ -1757,7 +1756,7 @@ export default {
         rate: "50K points per week, pro-rata"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1768,7 +1767,7 @@ export default {
     tokens: [bera["stbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.68%"
       },
@@ -1784,7 +1783,7 @@ export default {
     tokens: [bera["nect"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.227%"
       },
@@ -1804,7 +1803,7 @@ export default {
     pool_address: "0xf6c6Be0FF6d6F70A04dBE4F1aDE62cB23053Bd95",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "18.552%"
       },
@@ -1835,7 +1834,7 @@ export default {
     tokens: [bera["susde"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.3%"
       },
@@ -1845,7 +1844,7 @@ export default {
         rate: "5x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "Bodiak Points (for eligible assets)",
         rate: "3x"
       },
@@ -1865,7 +1864,7 @@ export default {
     tokens: [bera["solvbtcbbn"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.68%"
       },
@@ -1886,7 +1885,7 @@ export default {
     tokens: [bera["wbtc"], bera["fbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.297%"
       },
@@ -1896,7 +1895,7 @@ export default {
         rate: "2x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -1907,7 +1906,7 @@ export default {
     tokens: [bera["rseth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.226%"
       },
@@ -1928,7 +1927,7 @@ export default {
     tokens: [bera["stbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.678%"
       },
@@ -1938,7 +1937,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -1954,7 +1953,7 @@ export default {
     tokens: [bera["ylsteth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.678%"
       },
@@ -1964,7 +1963,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -1995,7 +1994,7 @@ export default {
     tokens: [bera["rseth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.678%"
       },
@@ -2005,7 +2004,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -2020,7 +2019,7 @@ export default {
     pool_address: "0x43e487126c4f37d1915cf02a90b5c5295afb1790",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.678%"
       },
@@ -2035,7 +2034,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2045,7 +2044,7 @@ export default {
     pool_address: "0x7cebcc76a2faecc0ae378b340815fcbb71ec1fe0",
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.678%"
       },
@@ -2060,7 +2059,7 @@ export default {
         rate: "Variable Rate (on sUSDa tvl)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2071,7 +2070,7 @@ export default {
     tokens: [bera["ylfbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.694%"
       },
@@ -2081,7 +2080,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -2112,7 +2111,7 @@ export default {
     tokens: [bera["ylrseth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.677%"
       },
@@ -2122,7 +2121,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://i.imgur.com/sJptWp0.png",
+        icon: "/images/dapps/infrared.svg",
         name: "Infrared Yield",
         rate: "Variable Rate"
       },
@@ -2138,7 +2137,7 @@ export default {
     tokens: [bera["unibtc"], bera["ylfbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.677%"
       },
@@ -2158,7 +2157,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2169,7 +2168,7 @@ export default {
     tokens: [bera["pumpBTC.bera"], bera["fbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.677%"
       },
@@ -2184,7 +2183,7 @@ export default {
         rate: "4x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2195,7 +2194,7 @@ export default {
     tokens: [bera["susde"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.224%"
       },
@@ -2216,7 +2215,7 @@ export default {
     tokens: [bera["solvbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.224%"
       },
@@ -2237,7 +2236,7 @@ export default {
     tokens: [bera["ylpumpbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.224%"
       },
@@ -2263,7 +2262,7 @@ export default {
     tokens: [bera["pumpBTC.bera"], bera["ylfbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.676%"
       },
@@ -2283,7 +2282,7 @@ export default {
         rate: "1x (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2294,7 +2293,7 @@ export default {
     tokens: [bera["ylsteth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.673%"
       },
@@ -2315,7 +2314,7 @@ export default {
     tokens: [bera["rseth"], bera["ylrseth"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.676%"
       },
@@ -2335,7 +2334,7 @@ export default {
         rate: "Variable Rate (for eligible assets)"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2346,7 +2345,7 @@ export default {
     tokens: [bera["solvbtc"], bera["fbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.676%"
       },
@@ -2361,7 +2360,7 @@ export default {
         rate: "4x"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2372,7 +2371,7 @@ export default {
     tokens: [bera["ylfbtc"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "3.673%"
       },
@@ -2403,7 +2402,7 @@ export default {
     tokens: [bera["usde"], bera["usda"]],
     reward: [
       {
-        icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
+        icon: "/assets/tokens/bera.svg",
         name: "BERA",
         rate: "1.676%"
       },
@@ -2418,7 +2417,7 @@ export default {
         rate: "TBD"
       },
       {
-        icon: "https://static.kodiak.finance/tokens/kdk.png",
+        icon: "/images/dapps/kodiak.svg",
         name: "DEX Fees",
         rate: "Variable Rate"
       }
@@ -2431,5 +2430,5 @@ export const BERA_OPPORTUNITIES = [
   { label: "iBERA", value: "139.53" },
   { label: "weiBERA", value: "101.14" },
   { label: "wgBERA", value: "35.96" },
-  { label: "weWBERA", value: "23.76" },
+  { label: "weWBERA", value: "23.76" }
 ];
