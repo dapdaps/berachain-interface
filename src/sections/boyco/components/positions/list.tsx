@@ -74,12 +74,21 @@ export default function List({ positions, loading }: any) {
                     </div>
                     <div className="flex items-center gap-[10px]">
                       {it.rewards.map((item: any, j: number) => {
+                        const icons = item.icon.split(",");
                         return (
                           <div className="flex items-center gap-[2px]" key={j}>
-                            <img
-                              src={item.icon}
-                              className="w-[16px] h-[16px] rounded-full"
-                            />
+                            <div className="flex">
+                              {icons.map((icon: string, k: number) => (
+                                <img
+                                  key={k}
+                                  src={icon}
+                                  className="w-[16px] h-[16px] rounded-full"
+                                  style={{
+                                    marginLeft: k !== 0 ? -10 : 0
+                                  }}
+                                />
+                              ))}
+                            </div>
                             <div className="text-[12px] text-[#392C1D]">
                               {item.rate}
                             </div>

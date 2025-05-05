@@ -105,7 +105,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xf8f745f188ddb10c16724faee95583521191c3c69e15490fa53c1136b73c17d7": {
@@ -160,7 +160,7 @@ export default {
         icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
         name: "BERA",
         rate: "19.299%"
-      },
+      }
     ]
   },
   "0xdd3f0e11d59726f2e63fc1b180abc94034dd3e0f4018b51371b73348d82b3769": {
@@ -178,10 +178,10 @@ export default {
         rate: "1x"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "4M"
-      },
+      }
     ]
   },
   "0x2dcd8ec59fe12b4cb802f5a26445f9684635c52139560f169a7c4d67da186c18": {
@@ -202,7 +202,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Acorn Points",
         rate: "3x"
-      },
+      }
     ]
   },
   "0xad9ee12ea8b3dccf85934c2918bd4ad38ccf7bc8b43d5fcb6f298858aa4c9ca4": {
@@ -232,7 +232,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x7dadff589e53d9813969d0be6de99c033d140ec1d304e57a754797736656dcd5": {
@@ -253,7 +253,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Solv S2 Points (Boosted)",
         rate: "4x"
-      },
+      }
     ]
   },
   "0xb7b78119806fcb9bbc499131da16b52ce52cf4a1ceabfc59e4f2f6e6ef7046c0": {
@@ -284,7 +284,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/33652.png",
         name: "Lombard Lux",
         rate: "2x"
-      },
+      }
     ]
   },
   "0x7ccce28638cbb503d17e8d9290a97f18731199655ccde282da7b464f21361b79": {
@@ -321,7 +321,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/32272.png",
         name: "PumpBTC Rewards",
         rate: "4x"
-      },
+      }
     ]
   },
   "0x28b337bd45eda5e2fc596bfe22320bef0af9da85d4c770d0fd03ddf72428c00a": {
@@ -347,7 +347,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/33310.png",
         name: "Solv Season 2 Points",
         rate: "4x"
-      },
+      }
     ]
   },
   "0xfe95d44ab171140b66fb5180e9de765578d9d2bfbdbb66307abb86ba05a59e93": {
@@ -373,7 +373,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/33310.png",
         name: "Solv Season 2 Points",
         rate: "2x"
-      },
+      }
     ]
   },
   "0x88ee202388086447b8dc8403c5aa2cfbcdb52e749fd16af5c6a3c7bb614b17c9": {
@@ -492,7 +492,7 @@ export default {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
         name: "Dolomite Lending Yield",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x1e0a98a276ba873cfa427e247c7d0e438f604a54fcb36481063e1220af021faf": {
@@ -508,7 +508,7 @@ export default {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
         name: "Dolomite Lending Yield",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xcdd60ed30d20f9edc3fac624bb623db32103658b6da678949ef53df16139b488": {
@@ -559,7 +559,7 @@ export default {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
         name: "Dolomite Lending Yield",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xa6905c68ad66ea9ce966aa1662e1417df08be333ab8ec04507e0f0301d3a78e9": {
@@ -580,7 +580,7 @@ export default {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
         name: "Dolomite Lending Yield",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x0a7565b14941c6a3dde083fb7a857e27e12c55fa34f709c37586ec585dbe7f3f": {
@@ -606,7 +606,7 @@ export default {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
         name: "Dolomite Lending Yield",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x7e804adb4c426b81fbe1f005f92d8dee99f98b0502c3946ac5ad436b453c6435": {
@@ -621,7 +621,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/29470.png",
         name: "Ethena Sats",
         rate: "5x"
-      },
+      }
     ]
   },
   "0xa31a8bb230f77a5d286985b92fe8d0c7504a1892568d70685659f781aec78209": {
@@ -650,7 +650,7 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "DOLOMITE: veDOLO Rewards",
+        name: "DOLOMITE: veDOLO Rewards"
       }
     ]
   },
@@ -779,7 +779,7 @@ export default {
         rate: "3.637%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "4M total, pro-rata"
       }
@@ -816,12 +816,12 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "Dolomite: veDOLO Rewards",
+        name: "Dolomite: veDOLO Rewards"
       },
       {
         icon: "https://www.goldilocksdao.io/images/big-porridge-logo.png",
-        name: "Goldilocks Rewards",
-      },
+        name: "Goldilocks Rewards"
+      }
     ]
   },
   "0xa74b61544834483b093531cff533d01788a5dea12d8a83902646111025303bfb": {
@@ -877,7 +877,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "Bodiak Points",
         rate: "5x"
-      },
+      }
     ]
   },
   "0xabf4b2f17bc32faf4c3295b1347f36d21ec5629128d465b5569e600bf8d46c4f": {
@@ -916,12 +916,12 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "Dolomite: veDOLO Rewards",
+        name: "Dolomite: veDOLO Rewards"
       },
       {
         icon: "https://www.goldilocksdao.io/images/big-porridge-logo.png",
-        name: "Goldilocks Rewards",
-      },
+        name: "Goldilocks Rewards"
+      }
     ]
   },
   "0x4dd921e829db80e73c56d888eeaf46a7934a3c4a2f7f78231dd4502f8eaa2558": {
@@ -992,12 +992,12 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "Dolomite: veDOLO Rewards",
+        name: "Dolomite: veDOLO Rewards"
       },
       {
         icon: "https://www.goldilocksdao.io/images/big-porridge-logo.png",
-        name: "Goldilocks Rewards",
-      },
+        name: "Goldilocks Rewards"
+      }
     ]
   },
   "0xcdb30c06ea11f3f5408bce5eefdb392dfe0008ef81af3a486bcfed891f9cc112": {
@@ -1017,7 +1017,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xb32d047eb63b5c2af537c2e4df6a09c40a50b75aefd83a928600241a4666b087": {
@@ -1040,10 +1040,10 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "12.5M"
-      },
+      }
     ]
   },
   "0x86a5077c6a9190cde78ec75b8888c46ed0a3d1289054127a955a2af544633cf3": {
@@ -1085,7 +1085,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/33310.png",
         name: "Solv S2 Points",
         rate: "4x"
-      },
+      }
     ]
   },
   "0xbd3ef685577bdca03225bb2cd2158f0772cdfd694ba03b9eb4856b59a7288081": {
@@ -1101,7 +1101,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/33310.png",
         name: "Solv S2 Points",
         rate: "4x"
-      },
+      }
     ]
   },
   "0x5043bfe3f6bab5fa4c8f19fb2f6856de2d2e717a541e0d7126b308926be04e2e": {
@@ -1125,13 +1125,13 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "DOLOMITE: veDOLO Rewards",
+        name: "DOLOMITE: veDOLO Rewards"
       },
       {
         icon: "https://assets.beraborrow.com/android-chrome-512x512.png",
         name: "Beraborrow Points",
         rate: "1x"
-      },
+      }
     ]
   },
   "0xece925dbccbb21333dbe99679fef655ad2dc2cb185e0963711c944e302595b28": {
@@ -1160,7 +1160,7 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "DOLOMITE: veDOLO Rewards",
+        name: "DOLOMITE: veDOLO Rewards"
       }
     ]
   },
@@ -1209,7 +1209,7 @@ export default {
         rate: "3.311%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "17.5M total Bedrock Diamonds, pro-rata"
       },
@@ -1238,7 +1238,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/29242.png",
         name: "Kelp Miles",
         rate: "2x"
-      },
+      }
     ]
   },
   "0xfa4917a871f9cf06d3d00be6678993888b3aac41c3da21edf32c3c9cf3978d70": {
@@ -1259,7 +1259,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x258ac521d801d5112a484ad1b82e6fd2efc24aba29e5cd3d56db83f4a173dc90": {
@@ -1280,7 +1280,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png",
         name: "ETH Staking Yield",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x2dd74f8f8a8d7f27b2a82a6edce57b201f9b4a3c4780934caf99363115e48be6": {
@@ -1301,7 +1301,7 @@ export default {
         icon: "https://coin-images.coingecko.com/coins/images/51599/large/SUSDA.png?1731604761",
         name: "Avalon",
         rate: "Staking yield"
-      },
+      }
     ]
   },
   "0x72679855f582a6d908bf39d40cb5a299b6a98a82bf1bfd9055f1853fc5160f54": {
@@ -1314,7 +1314,7 @@ export default {
         rate: "1.694%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds (pro rata)",
         rate: "22.5M"
       }
@@ -1343,7 +1343,7 @@ export default {
         icon: "https://cdn.prod.website-files.com/633c67ced5457aa4dec572be/6627e31d92bc8930fa6b9719_babylon.png",
         name: "Babylon points",
         rate: "1x"
-      },
+      }
     ]
   },
   "0x9a117f13c7d5d2b4b18e444f72e6e77c010a1fd90cf21135be75669d66ad9428": {
@@ -1368,7 +1368,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x289dc2a22ebb4ef7404de9293b6718d9f81f0843e1af4cf9a9c51d2e757348d6": {
@@ -1389,7 +1389,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xb36f14fd392b9a1d6c3fabedb9a62a63d2067ca0ebeb63bbc2c93b11cc8eb3a2": {
@@ -1418,12 +1418,12 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "Dolomite: veDOLO Rewards",
+        name: "Dolomite: veDOLO Rewards"
       },
       {
         icon: "https://www.goldilocksdao.io/images/big-porridge-logo.png",
-        name: "Goldilocks Rewards",
-      },
+        name: "Goldilocks Rewards"
+      }
     ]
   },
   "0xaa636d73f39ea0de0e04ed9270eac5d943707e7f8fb9c3480c0d80eb015ccfc8": {
@@ -1574,7 +1574,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/29470.png",
         name: "Ethena Sats",
         rate: "20x"
-      },
+      }
     ]
   },
   "0xa588ad19850cf2a111c3c727033da8e557abc94de70fce2d2b2f2f78140f15e5": {
@@ -1600,7 +1600,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/29470.png",
         name: "Ethena Sats",
         rate: "20x"
-      },
+      }
     ]
   },
   "0x897eec875e51d6c8b5339d6a9984a00acb0aa86f9d4ab4eddbb4a791bb0a88e9": {
@@ -1631,7 +1631,7 @@ export default {
         icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/32272.png",
         name: "PumpBTC Points",
         rate: "10x"
-      },
+      }
     ]
   },
   "0x1997c604de34a71974228bca4a66f601427c48960b6e59ff7ebc8e34f43f3ecf": {
@@ -1666,7 +1666,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xd77d3e3e075394a6c94a8c83dab114bb7266b96c5234e4a98476f41339029c30": {
@@ -1703,7 +1703,7 @@ export default {
         icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
         name: "BERA",
         rate: "6.648%"
-      },
+      }
     ]
   },
   "0x219169d9e78064768cddd0397c2202dc9e5c2bc0e1dbc13465363b0458d33c34": {
@@ -1760,7 +1760,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xc6887dddd833a3d585c7941cd31b0f8ff3ec5903d49cd5e7ac450b46532d3e79": {
@@ -1797,7 +1797,7 @@ export default {
         icon: "https://assets.beraborrow.com/android-chrome-512x512.png",
         name: "Beraborrow bPollen",
         rate: "3x"
-      },
+      }
     ]
   },
   "0xf8663b3c0f78b4efae0422b163e86e79afa1ce90778885d93d53c9d4f6d5c3d8": {
@@ -1827,7 +1827,7 @@ export default {
         icon: "https://assets.beraborrow.com/android-chrome-512x512.png",
         name: "Bodiak Points",
         rate: "6x"
-      },
+      }
     ]
   },
   "0x3d7cf2bd0a04fd3c66a5fa334a399b3926efe0fc0450b8da49a5da29f2c36d7f": {
@@ -1851,13 +1851,13 @@ export default {
       },
       {
         icon: "https://dolomite.io/static/veDOLO-black-b908253bcce957330226cd87d1fe9c71.png",
-        name: "DOLOMITE: veDOLO Rewards",
+        name: "DOLOMITE: veDOLO Rewards"
       },
       {
         icon: "https://assets.beraborrow.com/android-chrome-512x512.png",
         name: "Beraborrow Points",
         rate: "1x"
-      },
+      }
     ]
   },
   "0x2a3a73ba927ec6bbf0e2e12e21a32e274a295389ce9d6ae2b32435d12c597c2c": {
@@ -1987,7 +1987,7 @@ export default {
         icon: "https://i.imgur.com/3p46OKE.png",
         name: "Renzo Rewards",
         rate: "REZ Emissions"
-      },
+      }
     ]
   },
   "0xfef8ead03d79cf7cbe6f73c8d1136f8c84f6cf6ed9bc208719e7fcee807cb336": {
@@ -2104,7 +2104,7 @@ export default {
         icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455, https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Corn Points",
         rate: "2x"
-      },
+      }
     ]
   },
   "0x6b3dfac03cea102e59d2d5711088f3001782e07239dcc90f274dd9762220c49a": {
@@ -2161,7 +2161,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xab27dc8061f66791bb94a536546b08ba15e06344dabad2cc6267cf44f0070574": {
@@ -2255,7 +2255,7 @@ export default {
         icon: "https://cdn.prod.website-files.com/633c67ced5457aa4dec572be/6627e31d92bc8930fa6b9719_babylon.png",
         name: "Babylon points",
         rate: "1x"
-      },
+      }
     ]
   },
   "0x2fa37184f43783f5d6b23548c4a7a21bb86cd2f314bba9d5bb7d2415d61d11c8": {
@@ -2286,7 +2286,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x5bac1cacdd36b3d95a7f9880a264f8481ab56d3d1a53993de084c6fa5febcc15": {
@@ -2338,7 +2338,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0xc5165360e2e8b195cb55e21cf259ce6a5ee996b055057d8705851d9b01fc8620": {
@@ -2364,7 +2364,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   },
   "0x0194c329e2b9712802c37d3f17502bcefce2e128933f24f4fe847dfc7e5e8965": {
@@ -2395,7 +2395,7 @@ export default {
         icon: "https://cdn.prod.website-files.com/633c67ced5457aa4dec572be/6627e31d92bc8930fa6b9719_babylon.png",
         name: "Babylon points",
         rate: "1x"
-      },
+      }
     ]
   },
   "0xab689b5eac7541b8cc774f0ca3705a91b21660e8221fc7bd8e93c391fb5d690d": {
@@ -2421,7 +2421,7 @@ export default {
         icon: "https://static.kodiak.finance/tokens/kdk.png",
         name: "DEX Fees",
         rate: "Variable Rate"
-      },
+      }
     ]
   }
 } as Record<string, any>;
