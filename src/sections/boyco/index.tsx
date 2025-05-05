@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import HomeEntry from "./components/home-entry";
 import BoycoModal from "./components/modal";
 import BoycoProvider from "./boyco-provider";
@@ -9,7 +9,7 @@ export const RPC_API_KEYS: {
   1: "https://api.zan.top/node/v1/eth/mainnet/ff581749dd63422abccd9be5ed56f09d"
 };
 
-export default function Boyco() {
+export default memo(function Boyco() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -26,4 +26,4 @@ export default function Boyco() {
       )}
     </>
   );
-}
+});

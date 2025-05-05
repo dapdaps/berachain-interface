@@ -8,12 +8,18 @@ import Big from "big.js";
 import Loading from "@/components/loading";
 import Empty from "@/components/empty";
 import Skeleton from "react-loading-skeleton";
-import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import SubmitVault from '@/sections/vaults/v2/components/feedback/submit-vault';
-import Feedback from '@/sections/vaults/v2/components/feedback/feedback';
-import AssetButton from '@/sections/boyco/components/vaults/asset-button';
-import useBoycoData from '@/sections/boyco/use-data';
-import useCustomAccount from '@/hooks/use-account';
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
+import Feedback from "@/sections/vaults/v2/components/feedback/feedback";
+import AssetButton from "@/sections/boyco/components/vaults/asset-button";
+import useBoycoData from "@/sections/boyco/use-data";
+import useCustomAccount from "@/hooks/use-account";
 
 const Filter = (props: any, ref: any) => {
   const { className } = props;
@@ -49,14 +55,10 @@ const Filter = (props: any, ref: any) => {
   } = boycoData || {};
 
   useEffect(() => {
+    if (boycoLoading) return;
     boycoAssetsRef.current = boycoAssets;
-    // !boycoAssets || !boycoAssets.length ||
-    if (!account || isMobile) {
-      toggleVaultsBoyco(false);
-      return;
-    }
-    toggleVaultsBoyco(true);
-  }, [account, isMobile]);
+    toggleVaultsBoyco(boycoAssets?.length && !isMobile);
+  }, [boycoLoading, isMobile]);
 
   const [viewMoreVisible, setViewMoreVisible] = useState(false);
 
@@ -164,7 +166,7 @@ const Filter = (props: any, ref: any) => {
             </div>
             <Switch
               disabled={listLoading || listFilterAssetsBalanceLoading}
-              value={!boycoAssets?.length ? false : vaultsBoyco}
+              value={vaultsBoyco}
               onChange={() => {
                 if (!boycoAssets?.length) return;
                 const _vaultsBoyco = !vaultsBoyco;
@@ -282,11 +284,9 @@ const FilterGroup = (props: any) => {
 
   return (
     <>
-      {
-        title && (
-          <div className="pt-[24px] pl-[10px] pr-[10px] font-[600]">{title}</div>
-        )
-      }
+      {title && (
+        <div className="pt-[24px] pl-[10px] pr-[10px] font-[600]">{title}</div>
+      )}
       <div
         className={clsx(
           "pt-[14px] pl-[10px] pr-[10px] flex items-center gap-x-[6px] gap-y-[8px] flex-wrap",
@@ -314,7 +314,10 @@ const Switch = (props: any) => {
     <motion.button
       type="button"
       disabled={disabled}
-      className={clsx("w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px] disabled:cursor-not-allowed disabled:opacity-30", className)}
+      className={clsx(
+        "w-[45px] h-[26px] shrink-0 rounded-[13px] p-[3px] disabled:cursor-not-allowed disabled:opacity-30",
+        className
+      )}
       animate={{
         backgroundColor: value ? "#FFDC50" : "#E8E5C7"
       }}
