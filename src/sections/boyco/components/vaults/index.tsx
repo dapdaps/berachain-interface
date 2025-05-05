@@ -41,7 +41,7 @@ export default React.forwardRef(function Vaults(
 
   useEffect(() => {
     const assetsH = assetsRef.current?.clientHeight || 0;
-    setVaultsHeight(`calc(100% - ${assetsH + 60}px)`);
+    setVaultsHeight(`calc(100% - ${assetsH + 90}px)`);
   }, []);
 
   return (
