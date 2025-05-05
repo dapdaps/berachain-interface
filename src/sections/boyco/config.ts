@@ -178,7 +178,7 @@ export default {
         rate: "1x"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "4M"
       },
@@ -779,7 +779,7 @@ export default {
         rate: "3.637%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "4M total, pro-rata"
       }
@@ -1040,7 +1040,7 @@ export default {
         rate: "Variable Rate"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "12.5M"
       },
@@ -1209,7 +1209,7 @@ export default {
         rate: "3.311%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds",
         rate: "17.5M total Bedrock Diamonds, pro-rata"
       },
@@ -1314,7 +1314,7 @@ export default {
         rate: "1.694%"
       },
       {
-        icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+        icon: "https://coin-images.coingecko.com/coins/images/39599/large/uniBTC_200px.png?1723064455,https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
         name: "Bedrock Diamonds (pro rata)",
         rate: "22.5M"
       }
