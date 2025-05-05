@@ -96,9 +96,11 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div className="md:hidden w-[1px] h-[calc(100%_-_20px)] bg-[#392C1D] mt-[10px]" />
-            <div className="lg:hidden flex flex-col items-center w-full gap-[10px] mt-[20px]">
-              <IconBoycoArrow />
-              <div className="text-[#392C1D] text-[20px] font-bold shrink-0">Your Yield Opportunities</div>
+            <div className="lg:hidden flex flex-col items-center justify-center w-full gap-[10px] mt-[20px]">
+              <div className="flex justify-center w-full">
+                <IconBoycoArrow />
+              </div>
+              <div className="text-[#392C1D] text-[20px] font-bold text-left w-full">Your Yield Opportunities</div>
             </div>
             <div className="lg:w-1/2 lg:pl-[30px] lg:pr-[20px] md:w-full">
               <Vaults vaults={vaults} assets={assets} loading={loading} />
