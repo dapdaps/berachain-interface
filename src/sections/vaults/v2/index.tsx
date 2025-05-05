@@ -31,7 +31,7 @@ const VaultsV2 = (props: any) => {
         ref={containerRef}
         className="relative w-full min-w-[1257px] min-h-[750px] pb-[56px]"
       >
-        <PageBack className="absolute left-[36px] top-[32px] text-white" />
+        <PageBack className="absolute z-[10] left-[36px] top-[32px] text-white" />
         <div className="w-[1257px] mx-auto h-[140px] pt-[20px] flex items-center justify-end relative">
           <img
             src="/images/vaults/v2/title.png"

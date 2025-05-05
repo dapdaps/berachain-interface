@@ -64,7 +64,7 @@ export default function useBoycoData(defaultVaults?: any) {
         amount: _amount.toString(),
         amountUsd: _usd.toString(),
         tokens,
-        rewards: configItem.rewards || []
+        rewards: configItem.reward || []
       });
       if (!cachedAssets[key]) {
         cachedAssets[key] = {
