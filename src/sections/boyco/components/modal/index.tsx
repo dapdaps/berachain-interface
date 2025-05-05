@@ -4,6 +4,7 @@ import IconClose from "@public/images/modal/close.svg";
 import clsx from "clsx";
 import Positions from "../positions";
 import Vaults from "../vaults";
+import ArrowIcon from "./arrow-icon";
 import { motion } from "framer-motion";
 import useBoycoData from "@/sections/boyco/use-data";
 import { useActivityStore } from "@/stores/useActivityStore";
@@ -45,7 +46,12 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="flex items-center justify-center gap-[10px] mt-[4px] px-[20px]">
             {/*<div className="grow h-[1px] bg-[#392C1D]" />*/}
-            <div className={clsx("text-[#392C1D] text-[26px] font-bold md:text-[20px]", gasoekOne.className)}>
+            <div
+              className={clsx(
+                "text-[#392C1D] text-[26px] font-bold md:text-[20px]",
+                gasoekOne.className
+              )}
+            >
               Redeploy Your Assets to Earn up to &lt;x&gt; APY
             </div>
             {/*<div className="grow h-[1px] bg-[#392C1D]" />*/}
@@ -53,15 +59,14 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           <div className="px-[40px] pt-[20px] pb-[10px]">
             <div className="w-full h-[4px] bg-[#392C1D]"></div>
           </div>
-          <div className="flex justify-between gap-[60px] px-[40px] pt-[30px]">
+          <div className="flex justify-between gap-[20px] px-[40px] pt-[20px]">
             <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] shrink-0">
               Your Boyco Position
             </div>
-            <div className="relative w-0 flex-1 h-[2px] bg-[#392C1D] mx-auto my-[16px]">
-              <div className="absolute right-[-1px] top-[-2px] w-[6px] h-[6px] border-t-[2px] border-r-[2px] border-[#392C1D] rotate-45" />
-            </div>
+            <ArrowIcon />
             <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] text-end shrink-0">
-              Your Personalised Yield<br /> Opportunities
+              Your Personalised Yield
+              <br /> Opportunities
             </div>
           </div>
           <div className="px-[40px] pt-[10px] flex h-[calc(100%-240px)]">
