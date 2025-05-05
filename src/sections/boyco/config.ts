@@ -1264,7 +1264,7 @@ export default {
   },
   "0x258ac521d801d5112a484ad1b82e6fd2efc24aba29e5cd3d56db83f4a173dc90": {
     pool_address: "0xa4d6d4e667effe07f0c6777399721ddd03f04630",
-    tokens: ["beraeth"],
+    tokens: [bera["beraeth"]],
     reward: [
       {
         icon: "https://res.cloudinary.com/duv0g402y/raw/upload/v1717773645/src/assets/bera.png",
