@@ -79,16 +79,18 @@ export default memo(function IbgtRewards({
     }
   }
   return (
-    <div className="flex items-center gap-[8px]">
-      <div className="flex items-center min-w-[50px]">
-        {
-          rewards?.map((reward, index) => (
-            <img className="w-[30px] h-[30px] rounded-full" style={{ objectPosition: "left center", marginLeft: -10 * index }} src={`/images/dapps/infrared/${reward?.rewardSymbol?.toLocaleLowerCase()}.svg`} alt={reward?.rewardSymbol} />
-          ))
-        }
+    <div className="flex items-center gap-[8px] md:justify-between">
+      <div className="flex items-center gap-[8px]">
+        <div className="flex items-center min-w-[50px]">
+          {
+            rewards?.map((reward, index) => (
+              <img className="w-[30px] h-[30px] rounded-full" style={{ objectPosition: "left center", marginLeft: -10 * index }} src={`/images/dapps/infrared/${reward?.rewardSymbol?.toLocaleLowerCase()}.svg`} alt={reward?.rewardSymbol} />
+            ))
+          }
+        </div>
+        <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">{formatValueDecimal(count, '$', 2)}</div>
       </div>
-      <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">{formatValueDecimal(count, '$', 2)}</div>
-      <div className="cursor-pointer flex items-center justify-center w-[206px] h-[40px] rounded-[10px] border border-black bg-white text-black text-[16px] font-Montserrat font-semibold" onClick={handleClaimAllRewards}>
+      <div className="cursor-pointer flex items-center justify-center md:w-[126px] w-[206px] md:h-[32px] h-[40px] rounded-[10px] border border-black bg-white text-black md:text-[12px] text-[16px] font-Montserrat font-semibold" onClick={handleClaimAllRewards}>
         {loading ? <Loading size={16} /> : "Claim All Rewards"}
       </div>
     </div>
