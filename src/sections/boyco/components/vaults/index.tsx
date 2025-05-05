@@ -74,7 +74,7 @@ export default React.forwardRef(function Vaults(
           )
         }
         <div className="flex-1">
-          <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] md:my-[10px]">
+          <div className="text-[#392C1D] text-[14px] font-normal leading-[100%] mb-[10px]">
           <span className="font-bold">[Filter]</span> Based on your locked Boyco assets
           </div>
           <div className="flex gap-x-[10px] gap-y-[0px] flex-wrap max-h-[160px] overflow-y-auto" ref={assetsRef}>

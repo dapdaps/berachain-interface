@@ -81,13 +81,12 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
                 </div>
                 <ArrowIcon />
                 <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] text-start shrink-0">
-                  Your Personalised Yield
-                  <br /> Opportunities
+                  Your Yield Opportunities
                 </div>
           </div>
             )
           }
-          <div className="lg:px-[40px] md:px-[20px] lg:pt-[10px] md:w-full flex lg:flex-row md:flex-col lg:h-[calc(100%-250px)] md:h-[460px] md:max-h-[460px] overflow-x-hidden overflow-y-auto">
+          <div className="lg:px-[40px] md:px-[20px] lg:pt-[10px] md:w-full flex lg:flex-row md:flex-col lg:h-[calc(100%-250px)] md:h-[470px] md:max-h-[470px] overflow-x-hidden overflow-y-auto">
             <div className="md:w-full lg:w-1/2 lg:pl-[10px] lg:pr-[30px]">
               <Positions
                 positions={positions}
@@ -99,13 +98,13 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
             <div className="md:hidden w-[1px] h-[calc(100%_-_20px)] bg-[#392C1D] mt-[10px]" />
             <div className="lg:hidden flex flex-col items-center w-full gap-[10px] mt-[20px]">
               <IconBoycoArrow />
-              <div className="text-[#392C1D] text-[20px] font-bold shrink-0">Your Personalised Yield Opportunities</div>
+              <div className="text-[#392C1D] text-[20px] font-bold shrink-0">Your Yield Opportunities</div>
             </div>
             <div className="lg:w-1/2 lg:pl-[30px] lg:pr-[20px] md:w-full">
               <Vaults vaults={vaults} assets={assets} loading={loading} />
             </div>
             <div className="lg:hidden mt-[20px] flex items-center justify-center gap-2 flex-col">
-              <div className="w-full h-[33px] bg-[url(/images/boyco/oppot.svg)] bg-no-repeat shrink-0"></div>
+              <div className="w-full h-[33px] bg-[url(/images/boyco/oppot.svg)] bg-no-repeat bg-center shrink-0"></div>
               <div className="p-4 text-center text-[#2B2B2B] font-semibold text-sm space-y-2">
                 <div className="flex items-center justify-center">
                   {BERA_OPPORTUNITIES.slice(0,3).map((item, index) => (
