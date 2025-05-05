@@ -20,7 +20,7 @@ export default function List({ positions, loading }: any) {
           {positions?.map((it: any, index: number) => (
             <div
               key={index}
-              className="flex items-center h-[75px] border border-[#392C1D] relative"
+              className="flex items-center min-h-[75px] border border-[#392C1D] relative"
             >
               <div className="flex w-full px-[14px] py-[10px]">
                 <div className="flex w-[50px]">
@@ -72,26 +72,26 @@ export default function List({ positions, loading }: any) {
                       </svg>
                       <div className="text-[12px]">Incentives</div>
                     </div>
-                    <div className="flex items-center gap-[10px]">
+                    <div className="flex items-center gap-x-[6px] gap-y-[2px]">
                       {it.rewards.map((item: any, j: number) => {
                         const icons = item.icon.split(",");
                         return (
                           <div className="flex items-center gap-[2px]" key={j}>
-                            <div className="flex">
+                            <div className="flex shrink-0">
                               {icons.map((icon: string, k: number) => (
                                 <img
                                   key={k}
                                   src={icon}
-                                  className="w-[16px] h-[16px] rounded-full"
+                                  className="w-[16px] h-[16px] rounded-full shrink-0"
                                   style={{
                                     marginLeft: k !== 0 ? -10 : 0
                                   }}
                                 />
                               ))}
                             </div>
-                            <div className="text-[12px] text-[#392C1D]">
+                            {/* <div className="text-[12px] text-[#392C1D]">
                               {item.rate}
-                            </div>
+                            </div> */}
                           </div>
                         );
                       })}
