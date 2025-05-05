@@ -80,7 +80,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
                   Your Boyco Position
                 </div>
                 <ArrowIcon />
-                <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] text-end shrink-0">
+                <div className="text-[#392C1D] text-[30px] font-bold leading-[100%] text-start shrink-0">
                   Your Personalised Yield
                   <br /> Opportunities
                 </div>
