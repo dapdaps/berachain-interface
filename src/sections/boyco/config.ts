@@ -2425,3 +2425,11 @@ export default {
     ]
   }
 } as Record<string, any>;
+
+export const BERA_OPPORTUNITIES = [
+  { label: "WBERA", value: "603.43" },
+  { label: "iBERA", value: "139.53" },
+  { label: "weiBERA", value: "101.14" },
+  { label: "wgBERA", value: "35.96" },
+  { label: "weWBERA", value: "23.76" },
+];
