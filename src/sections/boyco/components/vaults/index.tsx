@@ -48,9 +48,11 @@ export default React.forwardRef(function Vaults(
   return (
     <>
       <div className="flex lg:items-start w-full lg:justify-between lg:gap-2 md:flex-col">
-        {
-          isMobile ? (<img onClick={() => router.push('/vaults')} src="/images/boyco/mobile-top.png" className="w-full object-contain cursor-pointer" alt="" />) : (
-            <img onClick={() => router.push('/vaults')} src="/images/boyco/top.png" className="w-[214px] object-contain cursor-pointer" alt="" />
+      {
+          (!loading && vaultsList?.length > 0) && (
+            isMobile ? 
+              (<img onClick={() => router.push('/vaults')} src="/images/boyco/mobile-top.png" className="w-full object-contain cursor-pointer" alt="" />) : 
+              (<img onClick={() => router.push('/vaults')} src="/images/boyco/top.png" className="w-[214px] object-contain cursor-pointer" alt="" />)
           )
         }
         <div className="flex-1">
