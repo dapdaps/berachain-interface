@@ -69,7 +69,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
               <br /> Opportunities
             </div>
           </div>
-          <div className="px-[40px] pt-[10px] flex h-[calc(100%-240px)]">
+          <div className="px-[40px] pt-[10px] flex h-[calc(100%-230px)]">
             <div className="w-1/2 pl-[10px] pr-[30px]">
               <Positions
                 positions={positions}

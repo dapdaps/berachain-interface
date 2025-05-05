@@ -4,23 +4,23 @@ import Empty from "@/components/empty";
 import Loading from "@/components/loading";
 import { useRouter } from "next/navigation";
 
-export default function List({ vaults, loading }: any) {
+export default function List({ vaults, loading, height }: any) {
   const router = useRouter();
   return (
-    <div className="mt-[14px] ">
+    <div className="mt-[14px]" style={{ height }}>
       {loading ? (
-        <div className="flex justify-center items-center h-[400px]">
+        <div className="flex justify-center items-center h-full">
           <Loading size={20} />
         </div>
       ) : (
         <>
           {!vaults?.length ? (
-            <div className="flex justify-center items-center h-[400px]">
+            <div className="flex justify-center items-center h-full">
               <Empty desc="No vaults" />
             </div>
           ) : (
             <>
-              <div className="max-h-[calc(100%-206px)] overflow-y-auto flex flex-col gap-[10px]">
+              <div className="max-h-[calc(100%-46px)] overflow-y-auto flex flex-col gap-[10px]">
                 {vaults?.map((item: any, index: number) => (
                   <div
                     key={index}
@@ -63,7 +63,14 @@ export default function List({ vaults, loading }: any) {
               </div>
               <button
                 onClick={() => {
-                  router.push("/vaults?from=boyco");
+                  const searchParams = new URLSearchParams(
+                    window.location.search
+                  ).toString();
+                  router.push(
+                    `/vaults?from=boyco${
+                      searchParams ? "&" + searchParams : ""
+                    }`
+                  );
                 }}
                 className="button text-[#E2CFB6] w-full h-[36px] bg-[#392C1D] text-[14px] leading-[100%] mt-[10px]"
               >

@@ -45,21 +45,21 @@ export default function Chart({ assets, loading }: any) {
   };
 
   return (
-    <div className="pt-[30px] relative">
+    <div className="pt-[30px] relative h-[calc(100%-50px)]">
       {loading ? (
-        <div className="flex justify-center items-center h-[440px]">
+        <div className="flex justify-center items-center h-full">
           <Loading size={20} />
         </div>
       ) : (
         <>
           {!data?.length && (
-            <div className="flex justify-center items-center h-[440px]">
+            <div className="flex justify-center items-center h-full">
               <Empty desc="No assets" />
             </div>
           )}
           {!!data?.length && (
             <>
-              <ResponsiveContainer width={550} height={400}>
+              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={data}
@@ -147,7 +147,7 @@ export default function Chart({ assets, loading }: any) {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip content={<CustomTooltip />} />
+                  {/* <Tooltip content={<CustomTooltip />} /> */}
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute left-[-99999px] top-[-99999px] opacity-0">
