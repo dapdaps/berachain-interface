@@ -28,7 +28,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
       className={clsx("fixed top-0 right-0 w-full h-full z-[90] bg-black/50")}
     >
       <motion.div
-        className="absolute bottom-[30px] left-[50%] w-[1200px] max-w-[90vw] h-[800px] max-h-[90vh]"
+        className="absolute bottom-[30px] left-[50%] w-[1200px] max-w-[90vw] h-[800px] lg:max-h-[90vh] md:max-h-[80vh]"
         initial={{ opacity: 0, y: 100, x: "-50%" }}
         animate={{ opacity: 1, y: 0, x: "-50%" }}
         exit={{ opacity: 0, y: 100, x: "-50%" }}
@@ -87,7 +87,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
           </div>
             )
           }
-          <div className="lg:px-[40px] md:px-[20px] lg:pt-[10px] md:w-full flex lg:flex-row md:flex-col lg:h-[calc(100%-250px)] md:h-[580px] md:max-h-[580px] overflow-y-auto">
+          <div className="lg:px-[40px] md:px-[20px] lg:pt-[10px] md:w-full flex lg:flex-row md:flex-col lg:h-[calc(100%-250px)] md:h-[520px] md:max-h-[520px] overflow-y-auto">
             <div className="md:w-full lg:w-1/2 lg:pl-[10px] lg:pr-[30px]">
               <Positions
                 positions={positions}
@@ -104,7 +104,7 @@ export default function BoycoModal({ onClose }: { onClose: () => void }) {
             <div className="lg:w-1/2 lg:pl-[30px] lg:pr-[20px] md:w-full">
               <Vaults vaults={vaults} assets={assets} loading={loading} />
             </div>
-            <div className="lg:hidden mt-[20px] flex items-center justify-center gap-2 flex-col">
+            <div className="lg:hidden mt-[40px] flex items-center justify-center gap-2 flex-col]">
               <IconBoycoOppot />
               <div className="p-4 text-center text-[#2B2B2B] font-semibold text-sm space-y-2">
                 <div className="flex items-center justify-center">
