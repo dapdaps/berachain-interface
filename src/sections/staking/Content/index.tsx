@@ -33,7 +33,15 @@ export default function Staking({ dapp, className, listTitle }: Props) {
   const id = searchParams.get("id");
   const prices = usePriceStore((store) => store.price);
 
-  const dexConfig = isVaults ? null : dapp?.chains[DEFAULT_CHAIN_ID];
+  const dexConfig = useMemo(() => {
+    if (dapp?.name === "BeraPaw") {
+      return {
+        ...dapp?.chains[DEFAULT_CHAIN_ID],
+        ...dapp,
+      };
+    }
+    return isVaults ? null : dapp?.chains[DEFAULT_CHAIN_ID];
+  }, [isVaults, dapp]);
 
   const {
     dataList: berapawData,
@@ -81,6 +89,11 @@ export default function Staking({ dapp, className, listTitle }: Props) {
         return;
       }
       if (dapp?.name === "BeraPaw") {
+        if (data.type === "stake") {
+          setType(index);
+          setCheckedRecord(data);
+          return;
+        }
         berapawHandleAction(data, index);
         return;
       }

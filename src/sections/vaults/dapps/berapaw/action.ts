@@ -16,7 +16,7 @@ export default async function onAction(params: any) {
   let contractParams: any = [];
 
   // WBERA_LBGT
-  if (currentRecord.vaultAddress === "0xa77dee7bc36c463bb3e39804c9c7b13427d712b0") {
+  if (currentRecord.vaultAddress.toLowerCase() === "0xa77dee7bc36c463bb3e39804c9c7b13427d712b0") {
     contract = new Contract(
       currentRecord.vaultAddress,
       LPSTAKING_ABI,

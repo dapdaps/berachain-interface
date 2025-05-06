@@ -1,4 +1,4 @@
-export const  STLBGT_ABI = [
+export const STLBGT_ABI = [
   {
     inputs: [
       { internalType: "uint256", name: "assets", type: "uint256" },
