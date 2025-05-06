@@ -4,7 +4,7 @@ import onKodiakAction from "./kodiak/action";
 import onInfrared from "./infrared/action";
 import onBeraDrome from "./bera-drome/action";
 import onSlimee from "./slimee/action";
-import onBurrbear from "./burrbear/action";
+import onBurrBear from "./burrbear/action";
 import onWeBera from "./webera/action";
 import onMemeswap from "./memeswap/action";
 import onD2Finance from "./d2-finance/action";
@@ -39,7 +39,7 @@ export default function onAction(params: any) {
   }
 
   if (currentRecord.protocol === "BurrBear") {
-    return onBurrbear(params);
+    return onBurrBear(params);
   }
 
   if (currentRecord.protocol === "WeBera") {

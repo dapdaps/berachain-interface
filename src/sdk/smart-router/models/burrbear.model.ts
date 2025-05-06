@@ -9,7 +9,7 @@ type QuoterProps = {
   account: string;
 };
 
-export class Burrbear {
+export class BurrBear {
   private balancer: any;
   private ROUTER_ADDRESS: { [key: number]: string } = {
     80094: "0xBE09E71BDc7b8a50A05F7291920590505e3C7744"
