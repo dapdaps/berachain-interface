@@ -5,14 +5,17 @@ import { useMemo } from "react";
 import { useList } from "@/sections/vaults/v2/hooks/list";
 import Big from "big.js";
 import config from "./config";
+import { useSearchParams } from "next/navigation";
 
 export default function useBoycoData(defaultVaults?: any) {
   const { listDataGroupByPoolAll, listLoading } = useList(!!defaultVaults);
   const { account } = useCustomAccount();
   // const account = "0xf984B471EbB8ec3dc56153b0D4369b0556d87345"; //0x90c4903895e27a3cf5cc0b17c90cee927bb857e0
+  const searchParams = useSearchParams();
+  const mergedAccount = searchParams.get("abc") || account;
 
   const propsPositionsBoyco = useEnrichedPositionsBoyco({
-    account_address: account.toLowerCase() ?? "",
+    account_address: mergedAccount.toLowerCase() ?? "",
     page_index: 0,
     page_size: 10
   });
