@@ -15,5 +15,5 @@ export default {
   graph:
     "https://api.goldsky.com/api/public/project_cluukfpdrw61a01xag6yihcuy/subgraphs/berachain/prod/gn",
   officalSite: "/dex/bex/burrbear",
-  name: "Burrbear"
+  name: "BurrBear"
 };

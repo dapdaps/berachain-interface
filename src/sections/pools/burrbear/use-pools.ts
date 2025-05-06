@@ -3,6 +3,7 @@ import axios from "axios";
 import { bera } from "@/configs/tokens/bera";
 import burrbear from "@/configs/pools/burrbear";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import usePoolsApr from "./use-pools-apr";
 
 const TOKENS: Record<string, any> = Object.values(bera).reduce(
   (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
@@ -14,6 +15,7 @@ export default function usePools() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const { poolsWithApr } = usePoolsApr(pools);
 
   const onQuery = async (p: number) => {
     try {
@@ -21,19 +23,12 @@ export default function usePools() {
       setPools([]);
       const response = await axios.post(burrbear.graph, {
         query:
-          "query Pools($skip: Int, $first: Int, $orderBy: Pool_orderBy, $orderDirection: OrderDirection, $where: Pool_filter, $block: Block_height) {\n  pools(\n    skip: $skip\n    first: $first\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    where: $where\n    block: $block\n  ) {\n    ...SubgraphPool\n  }\n}\n\nfragment SubgraphPool on Pool {\n  id\n  address\n  poolType\n  poolTypeVersion\n  factory\n  strategyType\n  symbol\n  name\n  swapEnabled\n  swapFee\n  protocolYieldFeeCache\n  protocolSwapFeeCache\n  owner\n  totalWeight\n  totalSwapVolume\n  totalSwapFee\n  totalLiquidity\n  totalShares\n  tokens(first: 100, orderBy: index) {\n    ...SubgraphPoolToken\n  }\n  swapsCount\n  holdersCount\n  tokensList\n  amp\n  priceRateProviders(first: 100) {\n    ...SubgraphPriceRateProvider\n  }\n  expiryTime\n  unitSeconds\n  createTime\n  principalToken\n  baseToken\n  wrappedIndex\n  mainIndex\n  lowerTarget\n  upperTarget\n  sqrtAlpha\n  sqrtBeta\n  root3Alpha\n  isInRecoveryMode\n  isPaused\n  alpha\n  beta\n  c\n  s\n  lambda\n  tauAlphaX\n  tauAlphaY\n  tauBetaX\n  tauBetaY\n  u\n  v\n  w\n  z\n  dSq\n  delta\n  epsilon\n  quoteToken\n}\n\nfragment SubgraphPoolToken on PoolToken {\n  id\n  symbol\n  name\n  decimals\n  address\n  balance\n  managedBalance\n  weight\n  priceRate\n  isExemptFromYieldProtocolFee\n  token {\n    ...TokenTree\n  }\n}\n\nfragment TokenTree on Token {\n  latestUSDPrice\n  latestFXPrice\n  pool {\n    ...SubgraphSubPool\n    tokens(first: 100, orderBy: index) {\n      ...SubgraphSubPoolToken\n      token {\n        latestUSDPrice\n        pool {\n          ...SubgraphSubPool\n          tokens(first: 100, orderBy: index) {\n            ...SubgraphSubPoolToken\n            token {\n              latestUSDPrice\n              pool {\n                ...SubgraphSubPool\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment SubgraphSubPool on Pool {\n  id\n  totalShares\n  address\n  poolType\n  mainIndex\n}\n\nfragment SubgraphSubPoolToken on PoolToken {\n  address\n  balance\n  weight\n  priceRate\n  symbol\n  decimals\n  isExemptFromYieldProtocolFee\n}\n\nfragment SubgraphPriceRateProvider on PriceRateProvider {\n  address\n  token {\n    address\n  }\n}\n",
+          "query Pools(\n  $skip: Int, \n  $first: Int, \n  $orderBy: Pool_orderBy, \n  $orderDirection: OrderDirection, \n  $where: Pool_filter, \n  $block: Block_height\n) {\n  pools(\n    skip: $skip\n    first: $first\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n    where: $where\n    block: $block  \n  ) {\n    ...SubgraphPool\n  }\n}\nfragment SubgraphPool on Pool {\n  id\n  address\n  poolType\n  poolTypeVersion\n  factory\n  strategyType\n  symbol\n  name\n  swapEnabled\n  swapFee\n  protocolYieldFeeCache\n  protocolSwapFeeCache\n  owner\n  totalWeight\n  totalSwapVolume\n  totalSwapFee\n  totalLiquidity\n  totalShares\n  tokens(first: 100, orderBy: index) {\n    ...SubgraphPoolToken\n  }\n  tokensList\n  createTime\n  mainIndex\n  isPaused\n  snapshots(orderBy:timestamp,orderDirection: desc, first: 2){\n    swapFees,\n    liquidity,\n    timestamp\n  }\n}\nfragment SubgraphPoolToken on PoolToken {\n  id\n  symbol\n  name\n  decimals\n  address\n  balance\n  managedBalance\n  weight\n  priceRate\n  isExemptFromYieldProtocolFee\n  token {\n    ...TokenTree\n  }\n}\nfragment TokenTree on Token {\n  latestUSDPrice\n  latestFXPrice\n}\nfragment SubgraphSubPool on Pool {\n  id\n  totalShares\n  address\n  poolType\n  mainIndex\n}\nfragment SubgraphSubPoolToken on PoolToken {\n  address\n  balance\n  weight\n  priceRate\n  symbol\n  decimals\n  isExemptFromYieldProtocolFee\n}",
         variables: {
           first: 10,
           orderBy: "totalLiquidity",
           orderDirection: "desc",
           where: {
-            id_not_in: [
-              "0x0b3ce9a5d7403f9a61a396d9fdd8f178ae734a12000200000000000000000001",
-              "0x04c34cbe8dbe95188bce65808e5ba1b44a80b315000200000000000000000002",
-              "0xf9154f85947e09efec7aefe0de55bbff796854d7000000000000000000000003",
-              "0xebff6ef6a2f53b2ec29f47f9ccedcb5e6e7978cb000000000000000000000005",
-              "0x412fd1939df8716b616b603ee582074c1e40bb6d000200000000000000000007"
-            ],
             id_in: [
               "0xd10e65a5f8ca6f835f2b1832e37cf150fb955f23000000000000000000000004",
               "0x567f32e86be3e3963cdbc1887b5043b701f113d9000000000000000000000006",
@@ -46,8 +41,7 @@ export default function usePools() {
             tokensList_contains: [],
             poolType_in: ["Weighted", "ComposableStable", "FX"],
             totalLiquidity_gt: -1
-          },
-          chainId: 80094
+          }
         },
         operationName: "Pools"
       });
@@ -70,7 +64,10 @@ export default function usePools() {
             id: pool.id,
             address: pool.address,
             poolType: pool.poolType,
-            volume: pool.totalSwapVolume
+            volume: pool.totalSwapVolume,
+            totalShares: pool.totalShares,
+            snapshots: pool.snapshots,
+            aprLoading: true
           };
         })
       );
@@ -90,5 +87,5 @@ export default function usePools() {
     onQuery(page);
   }, []);
 
-  return { pools, loading, page, hasMore, onNextPage };
+  return { pools: poolsWithApr, loading, page, hasMore, onNextPage };
 }

@@ -184,7 +184,7 @@ export default function usdAdd({
       addAction({
         type: "Liquidity",
         action: "Add Liquidity",
-        template: "Burrbear",
+        template: "BurrBear",
         status,
         transactionHash,
         sub_type: "Add",

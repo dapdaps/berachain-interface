@@ -1,7 +1,7 @@
 import { bera } from "../tokens/bera";
 
 export default {
-  name: "Burrbear",
+  name: "BurrBear",
   icon: "/images/dapps/burrbear.svg",
   path: "/dex/burrbear",
   defaultInputCurrency: bera["bera"],

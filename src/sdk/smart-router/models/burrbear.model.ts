@@ -9,7 +9,7 @@ type QuoterProps = {
   account: string;
 };
 
-export class Burrbear {
+export class BurrBear {
   private balancer: any;
   private ROUTER_ADDRESS: { [key: number]: string } = {
     80094: "0xBE09E71BDc7b8a50A05F7291920590505e3C7744"
@@ -49,10 +49,9 @@ export class Burrbear {
         noPair: true
       };
     }
-    const pools = poolsResponse.data.data.pool0.map((pool: any) => [
-      pool.tokensList,
-      pool.id
-    ]);
+    const pools = poolsResponse.data.data.pool0.map((pool: any) => {
+      return [pool.tokensList, pool.id];
+    });
 
     this.balancer.setPools(pools);
     const bestTrade = await this.balancer.bestTrade(params);

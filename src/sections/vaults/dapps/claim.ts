@@ -1,7 +1,7 @@
 import onBexClaim from "./bex/claim";
 import onKodiakClaim from "./kodiak/claim";
 import onInfraredClaim from "./infrared/claim";
-import onBurrbearClaim from "./burrbear/claim";
+import onBurrBearClaim from "./burrbear/claim";
 import onBeraDromeClaim from "./bera-drome/claim";
 import onMemeswapClaim from "./memeswap/claim";
 import onBeraPawClaim from "./berapaw/claim";
@@ -22,7 +22,7 @@ export default function onClaim(params: any) {
   }
 
   if (currentRecord.protocol === "BurrBear") {
-    return onBurrbearClaim(params);
+    return onBurrBearClaim(params);
   }
 
   if (currentRecord.protocol === "BeraDrome") {

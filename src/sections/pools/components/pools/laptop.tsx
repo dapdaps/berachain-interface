@@ -19,7 +19,7 @@ export default function Laptop({
         if (!searchVal) return true;
 
         let tokens: any = [];
-        if (dex === "bex") {
+        if (["bex", "burrbear"].includes(dex)) {
           tokens = pool.tokens;
         } else {
           tokens = [pool.token0, pool.token1];
