@@ -110,7 +110,7 @@ export const bera: { [key: string]: Token } = {
     name: "uniBTC",
     icon: "/assets/tokens/uniBTC.webp"
   },
-  brbtc : {
+  brbtc: {
     chainId: CHAIN_ID,
     address: "0x93919784c523f39cacaa98ee0a9d96c3f32b593e",
     decimals: 8,
@@ -478,4 +478,76 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/lbgt.png",
     color: "rgb(0,0,0)"
   },
+  sbtc: {
+    chainId: CHAIN_ID,
+    address: "0x93F4d0ab6a8B4271f4a28Db399b5E30612D21116",
+    symbol: "SBTC",
+    name: "StakeStone Bitcoin",
+    decimals: 18,
+    icon: "/assets/tokens/sbtc.png",
+    color: "rgb(0,0,0)"
+  },
+  solvbtcbbnot: {
+    chainId: CHAIN_ID,
+    address: "0xA01cB564ecc3F58a4e2bA5fD59d13a6b998de9b8",
+    symbol: "SolvBTC.BBN-OT",
+    name: "SolvBTC.BBN-OT",
+    decimals: 18,
+    icon: "/assets/tokens/default_icon.png",
+    color: "rgb(0,0,0)"
+  },
+  rsethot: {
+    chainId: CHAIN_ID,
+    address: "0xB1195a6cdB7ef8fB22671bd8321727dBB6DDDe03",
+    symbol: "rsETH-OT",
+    name: "rsETH-OT",
+    decimals: 18,
+    icon: "/assets/tokens/default_icon.png",
+    color: "rgb(0,0,0)"
+  },
+  unibtcot: {
+    chainId: CHAIN_ID,
+    address: "0xE771779B350d2cC291E9461387d7f41765a7cB8b",
+    symbol: "uniBTC-OT",
+    name: "uniBTC-OT",
+    decimals: 18,
+    icon: "/assets/tokens/default_icon.png",
+    color: "rgb(0,0,0)"
+  },
+  ylpumpbtc: {
+    chainId: CHAIN_ID,
+    address: "0xdCB3D91555385DaE23e6B966b5626aa7A75Be940",
+    symbol: "ylpumpBTC",
+    name: "CIAN yield layer pumpBTC",
+    decimals: 8,
+    icon: "/assets/tokens/ylpumpbtc.png",
+    color: "rgb(0,0,0)"
+  },
+  ylsteth: {
+    chainId: CHAIN_ID,
+    address: "0xa958090601E21A82e9873042652e35891D945a8C",
+    symbol: "ylstETH",
+    name: "CIAN yield layer stETH",
+    decimals: 18,
+    icon: "/assets/tokens/ylsteth.png",
+    color: "rgb(0,0,0)"
+  },
+  ylfbtc: {
+    chainId: CHAIN_ID,
+    address: "0xE946Dd7d03F6F5C440F68c84808Ca88d26475FC5",
+    symbol: "ylfBTC",
+    name: "CIAN yield layer fBTC",
+    decimals: 8,
+    icon: "/assets/tokens/ylbtclst.png",
+    color: "rgb(0,0,0)"
+  },
+  ylrseth: {
+    chainId: CHAIN_ID,
+    address: "0x9B2316cfe980515de7430F1c4E831B89a5921137",
+    symbol: "ylrsETH",
+    name: "CIAN yield layer rsETH",
+    decimals: 18,
+    icon: "/assets/tokens/ylrseth.png",
+    color: "rgb(0,0,0)"
+  }
 };

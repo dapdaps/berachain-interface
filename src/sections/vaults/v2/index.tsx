@@ -14,9 +14,9 @@ import Loading from "@/components/loading";
 import Search from "@/sections/vaults/v2/components/filter/search";
 import Feedback from "@/sections/vaults/v2/components/feedback/feedback";
 import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
-import { useRef } from "react";
-import Aggregating from '@/sections/vaults/v2/components/aggregating';
-import RewardTopCard from '@/sections/vaults/v2/components/reward-top-card';
+import { useRef } from 'react';
+import Aggregating from "@/sections/vaults/v2/components/aggregating";
+import RewardTopCard from "@/sections/vaults/v2/components/reward-top-card";
 
 const VaultsV2 = (props: any) => {
   const {} = props;
@@ -26,17 +26,17 @@ const VaultsV2 = (props: any) => {
   const list = useList();
 
   return (
-    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list, containerRef }}>
+    <VaultsV2ContextProvider value={{ ...vaultsV2, ...list,  containerRef }}>
       <div
         ref={containerRef}
         className="relative w-full min-w-[1257px] min-h-[750px] pb-[56px]"
       >
-        <PageBack className="absolute left-[36px] top-[32px] text-white" />
-        <div className="w-[1257px] mx-auto h-[103px] pt-[49px] flex items-end justify-end relative">
+        <PageBack className="absolute z-[10] left-[36px] top-[32px] text-white" />
+        <div className="w-[1257px] mx-auto h-[140px] pt-[20px] flex items-center justify-end relative">
           <img
             src="/images/vaults/v2/title.png"
             alt=""
-            className="w-[180px] h-[54px] shrink-0 pointer-events-none object-center object-contain absolute left-1/2 -translate-x-1/2"
+            className="w-[254px] h-[120px] shrink-0 pointer-events-none object-center object-contain absolute left-1/2 -translate-x-1/2"
           />
           <SubmitVault className="shrink-0" />
         </div>
@@ -62,7 +62,7 @@ const VaultsV2 = (props: any) => {
                   </div>
                   <Search className="flex-1 w-0" />
                 </div>
-                <Filter />
+                <Filter ref={list.filterRef} />
               </Card>
               <div className="w-full flex justify-center pt-[20px]">
                 <Feedback className="opacity-70" />
