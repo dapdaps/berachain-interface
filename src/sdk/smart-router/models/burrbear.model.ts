@@ -49,10 +49,9 @@ export class Burrbear {
         noPair: true
       };
     }
-    const pools = poolsResponse.data.data.pool0.map((pool: any) => [
-      pool.tokensList,
-      pool.id
-    ]);
+    const pools = poolsResponse.data.data.pool0.map((pool: any) => {
+      return [pool.tokensList, pool.id];
+    });
 
     this.balancer.setPools(pools);
     const bestTrade = await this.balancer.bestTrade(params);

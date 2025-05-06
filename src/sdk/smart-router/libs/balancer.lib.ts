@@ -5,6 +5,8 @@ import chains from "../config/chains";
 import routerAbi from "../config/abi/router-balancer";
 import formatRoutes from "../utils/format-routes";
 import weth from "../config/weth";
+import { multicall } from "../utils/multicall";
+import { multicallAddresses } from "@/utils/multicall";
 
 export class BalancerLib {
   private pools: any = [];
@@ -101,7 +103,7 @@ export class BalancerLib {
     );
 
     // Prepare multicall queries for each path
-    const multicallQueries = paths.map((path) => {
+    const multicallCalls = paths.map((path) => {
       // Format the swaps for queryBatchSwap
       const swaps = path.map((hop: any, i: number) => {
         const tokenInIndex = i === 0 ? 0 : i;
@@ -124,33 +126,39 @@ export class BalancerLib {
         }
       });
 
-      // Return the queryBatchSwap call
-      return routerContract.callStatic.queryBatchSwap(
-        0, // SwapKind.GIVEN_IN
-        swaps,
-        assets,
-        [account, false, account, false] // funds
-      );
+      return {
+        address: this.routerAddress,
+        name: "queryBatchSwap",
+        params: [0, swaps, assets, [account, false, account, false]]
+      };
     });
-
-    // Execute all queries in parallel
-    const results = await Promise.all(multicallQueries);
+    const multicallResults = await multicall({
+      abi: routerAbi,
+      calls: multicallCalls,
+      options: {
+        requireSuccess: false
+      },
+      multicallAddress: multicallAddresses[inputCurrency.chainId],
+      provider
+    });
 
     // Find the best path (the one with the highest output amount)
     let bestPathIndex = 0;
     let bestOutputAmount = new BigNumber(0);
 
-    results.forEach((result, index) => {
-      // The last element in the result array is the output amount (negative value)
-      const outputAmount = new BigNumber(
-        result[result.length - 1].toString()
-      ).multipliedBy(-1);
+    multicallResults
+      .filter((result: any) => result)
+      .forEach((result: any, index: number) => {
+        // The last element in the result array is the output amount (negative value)
+        const outputAmount = new BigNumber(
+          result[0][result[0].length - 1].toString()
+        ).multipliedBy(-1);
 
-      if (outputAmount.gt(bestOutputAmount)) {
-        bestOutputAmount = outputAmount;
-        bestPathIndex = index;
-      }
-    });
+        if (outputAmount.gt(bestOutputAmount)) {
+          bestOutputAmount = outputAmount;
+          bestPathIndex = index;
+        }
+      });
 
     // If no valid path found
     if (bestOutputAmount.isZero()) {
@@ -257,6 +265,7 @@ export class BalancerLib {
         0,
         swaps,
         assets.map((address: any) =>
+          inputCurrency.isNative &&
           address.toLowerCase() === weth[inputCurrency.chainId].toLowerCase()
             ? "0x0000000000000000000000000000000000000000"
             : address
@@ -272,13 +281,15 @@ export class BalancerLib {
         poolId: hop.poolId,
         kind: 0,
         assetIn:
+          inputCurrency.isNative &&
           hop.tokenIn.toLowerCase() ===
-          weth[inputCurrency.chainId].toLowerCase()
+            weth[inputCurrency.chainId].toLowerCase()
             ? "0x0000000000000000000000000000000000000000"
             : hop.tokenIn,
         assetOut:
+          inputCurrency.isNative &&
           hop.tokenOut.toLowerCase() ===
-          weth[inputCurrency.chainId].toLowerCase()
+            weth[inputCurrency.chainId].toLowerCase()
             ? "0x0000000000000000000000000000000000000000"
             : hop.tokenOut,
         amount: _amount,
@@ -295,6 +306,7 @@ export class BalancerLib {
     const options = {
       value: inputCurrency.isNative ? _amount : "0"
     };
+
     // Estimate gas
     let estimateGas;
     try {
