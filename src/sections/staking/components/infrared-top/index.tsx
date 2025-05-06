@@ -9,8 +9,8 @@ export default memo(function InfraredTop({
   hiddenRewards,
   pointsClass
 }: {
-  hiddenRewards: boolean
-  pointsClass: string
+  hiddenRewards?: boolean
+  pointsClass?: string
 }) {
   const { dataList, loading, fetchAllData: reload } = useInfraredList();
   const { userPoints } = useUserPoints()

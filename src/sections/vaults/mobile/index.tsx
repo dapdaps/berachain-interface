@@ -13,6 +13,7 @@ import Bg from "../components/mobile-bg";
 import HandleModal from "./handle-modal";
 import RewardsModal from "./rewards-modal";
 import MobileContent from '@/sections/vaults/mobile/content';
+import InfraredTop from "@/sections/staking/components/infrared-top";
 
 export default function Mobile({ dapp }: any) {
   const isVaults = _.isArray(dapp);
@@ -55,6 +56,11 @@ export default function Mobile({ dapp }: any) {
         <div className="mt-[12px] text-[14px] font-medium px-[12px] text-center">
           {dapp?.chains?.[DEFAULT_CHAIN_ID]?.description}
         </div>
+        {
+          dapp?.name === "Infrared" && (
+            <InfraredTop />
+          )
+        }
         <div className="px-[12px] pt-[20px] flex justify-between items-center text-[14px] font-medium">
           <div className="flex items-center gap-[8px]">
             <div>Sort by</div>
