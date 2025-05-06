@@ -751,6 +751,7 @@ export function useList(notNeedingFetchData?: boolean): List {
 
   const handleSearchValue = (_searchValue?: string) => {
     setSearchValue(_searchValue);
+    togglePageIndex(PAGINATION_ACTION.FIRST);
   };
 
   const toggleFilterSelected = (key: FILTER_KEYS, item: FilterItem) => {
