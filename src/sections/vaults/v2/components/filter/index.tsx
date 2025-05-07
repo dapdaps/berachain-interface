@@ -170,7 +170,9 @@ const Filter = (props: any, ref: any) => {
           disabled={listLoading || listFilterAssetsBalanceLoading}
           value={vaultsBoyco}
           onChange={() => {
-            if (!boycoAssets?.length) return;
+            // if users had no boycoAssets, they cannot close this Switch
+            // 👇CANNOT SET THE CONDITION
+            // if (!boycoAssets?.length) return;
             const _vaultsBoyco = !vaultsBoyco;
             toggleVaultsBoyco?.(_vaultsBoyco);
             if (isMobile) {
