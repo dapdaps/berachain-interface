@@ -1,3 +1,5 @@
+import { getDappLogo } from '@/sections/dashboard/utils';
+
 const ROUTE_CONFIG = {
   infrared: {
     type: 'staking',
@@ -30,6 +32,14 @@ const ROUTE_CONFIG = {
       '--button-text-color': '#1E2028'
     },
     icon: '/images/dapps/bedrock.svg'
+  },
+  berapaw: {
+    type: 'staking',
+    theme: {
+      '--button-color': '#FFF',
+      '--button-text-color': '#1E2028'
+    },
+    icon: getDappLogo("BeraPaw")
   },
 };
 
