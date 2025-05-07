@@ -16,8 +16,6 @@ import BeraPawContextProvider from '@/sections/staking/dapps/berapaw/context';
 const Berapaw = (props: any) => {
   const { className, dapp } = props;
 
-  console.log('props: %o', props);
-
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const defaultCurrentTab = searchParams.get("tab") || "vaults";
@@ -27,7 +25,8 @@ const Berapaw = (props: any) => {
   return (
     <BeraPawContextProvider value={{ currentTab, setCurrentTab }}>
       <BearBackground type="dapp">
-        <div className="p-[25px_35px] w-[970px] mx-auto md:w-full md:p-[20px_0] md:bg-vault md:min-h-[100dvh]">
+        <PageBack className="absolute left-[36px] md:left-[12px] md:top-[17px] z-[10]" />
+        <div className="p-[25px_0px_0px] w-[990px] mx-auto md:w-full md:p-[20px_0] md:bg-vault md:min-h-[100dvh]">
           {
             isMobile && (
               <>
@@ -46,7 +45,6 @@ const Berapaw = (props: any) => {
               </>
             )
           }
-          <PageBack className="md:absolute md:left-[12px] md:top-[17px]" />
           <div className="relative">
             <Tabs
               isCard

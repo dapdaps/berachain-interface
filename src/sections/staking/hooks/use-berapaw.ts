@@ -21,7 +21,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 import { useBeraPawContext } from '@/sections/staking/dapps/berapaw/context';
 import { bera } from '@/configs/tokens/bera';
 
-const pageSize = 10;
+const pageSize = 9;
 export const LPStakingWBERALBGTPoolAddress = "0x705fc16ba5a1eb67051934f2fb17eacae660f6c7";
 export const LPStakingWBERALBGTVaultAddress = "0xa77dee7bc36c463bB3E39804c9C7b13427D712B0";
 
