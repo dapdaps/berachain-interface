@@ -522,7 +522,7 @@ const Content = (props: any) => {
 
         <div className="flex items-center justify-between my-[24px]">
           <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
-            7-day Fee APR
+            {isBeraPaw ? "APR" : "7-day Fee APR"}
           </div>
           <div className="text-[#7EA82B] font-Montserrat text-[16px] font-semibold leading-[90%]">
             {formatValueDecimal(apr, "", 2, false, false)}%
