@@ -12,6 +12,7 @@ import MenuButton from '@/components/mobile/menuButton';
 import LazyImage from '@/components/layz-image';
 import Bg from '@/sections/vaults/components/mobile-bg';
 import BeraPawContextProvider from '@/sections/staking/dapps/berapaw/context';
+import Stake from '@/sections/staking/dapps/berapaw/stake';
 
 const Berapaw = (props: any) => {
   const { className, dapp } = props;
@@ -69,16 +70,10 @@ const Berapaw = (props: any) => {
                 {
                   key: 'stake',
                   label: 'Stake',
-                  children: isMobile ? (
-                    <MobileContent
+                  children: (
+                    <Stake
                       {...props}
-                      className="!h-[calc(100dvh-260px)]"
-                    />
-                  ) : (
-                    <Content
-                      {...props}
-                      className="!border-0 !bg-[unset] !rounded-0 !shadow-[unset] !p-0"
-                      listTitle=""
+                      className=""
                     />
                   ),
                 },
