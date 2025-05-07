@@ -1,3 +1,5 @@
+import burrbear from "../swap/burrbear";
+
 const contracts: { [key: number]: any } = {
   80094: {
     Vault: "0xBE09E71BDc7b8a50A05F7291920590505e3C7744",
@@ -5,9 +7,13 @@ const contracts: { [key: number]: any } = {
   }
 };
 
+const tokens = burrbear.tokens;
+
 export default {
   contracts,
-  graph: "https://api.berachain.com",
+  tokens,
+  graph:
+    "https://api.goldsky.com/api/public/project_cluukfpdrw61a01xag6yihcuy/subgraphs/berachain/prod/gn",
   officalSite: "/dex/bex/burrbear",
-  name: "Burrbear"
+  name: "BurrBear"
 };

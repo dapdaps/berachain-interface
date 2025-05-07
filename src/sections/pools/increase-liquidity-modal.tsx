@@ -4,10 +4,13 @@ import { useRef, forwardRef, useMemo } from "react";
 import BasicModal from "./components/modal";
 import Bex from "./bex/add-liquidity";
 import Kodiak from "./kodiak/increase-liquidity";
+import BurrBear from "./burrbear/add-liquidity";
 
 const AddLiquidityPanel = forwardRef(({ dex, ...rest }: any, ref: any) => {
   if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} ref={ref} />;
+  if (dex?.toLowerCase() === "burrbear")
+    return <BurrBear {...rest} ref={ref} />;
 });
 
 export default function IncreaseLiquidityModal({
@@ -28,7 +31,7 @@ export default function IncreaseLiquidityModal({
   }, [data, title]);
 
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "bex") return { data };
+    if (["bex", "burrbear"].includes(dex?.toLowerCase())) return { data };
     return {
       defaultToken0: data.token0,
       defaultToken1: data.token1,

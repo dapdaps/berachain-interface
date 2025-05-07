@@ -10,6 +10,7 @@ import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
 import dapp from "@/configs/pools/burrbear";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { useDebounceFn } from "ahooks";
 
 const abiCoder = new utils.AbiCoder();
 
@@ -31,6 +32,7 @@ export default function useRemove({
   const assetsRef = useRef<any>();
   const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const { addAction } = useAddAction(from === "vaults" ? "vaults" : "dapp");
+  const cachedAmounts = useRef<any>({});
 
   const onQueryAmountsOut = async () => {
     try {
@@ -86,7 +88,7 @@ export default function useRemove({
               ["uint256", "uint256"],
               [data.poolType === "ComposableStable" ? 2 : 1, bptMinIn]
             );
-      console.log(90);
+
       const [bptIn, amountsOut] = await queryContract.callStatic.queryExit(
         data.id,
         account,
@@ -106,6 +108,11 @@ export default function useRemove({
           .toString();
       });
 
+      if (type === 1) {
+        cachedAmounts.current["tokens"] = _amounts;
+      } else {
+        cachedAmounts.current[exitToken.address] = _amounts;
+      }
       setAmounts(_amounts);
     } catch (err: any) {
       console.log("Query Error", err?.message);
@@ -117,6 +124,7 @@ export default function useRemove({
 
   const onRemove = async () => {
     if (!contracts) return;
+
     setLoading(true);
 
     let toastId = toast.loading({ title: "Confirming..." });
@@ -145,6 +153,7 @@ export default function useRemove({
       let params: any = [];
       let exitKind = 2;
       let bptMinIn = "0";
+      let _amountsOut: any = [];
 
       if (type === 1) {
         exitKind = data.poolType === "ComposableStable" ? 2 : 1;
@@ -175,6 +184,8 @@ export default function useRemove({
           [assetsRef.current, minAmountsOut, userData, false]
         );
 
+        assetsRef.current.forEach((asset: any, i: number) => {});
+
         params = [
           data.id,
           account,
@@ -190,6 +201,8 @@ export default function useRemove({
             false
           ]
         ];
+
+        _amountsOut = amountsOut;
       } else {
         exitKind = 0;
         const _percent = Big(exitAmount).div(amounts[exitToken.address]);
@@ -226,6 +239,8 @@ export default function useRemove({
             false
           ]
         ];
+
+        _amountsOut = amountsOut;
       }
 
       const method = "exitPool";
@@ -261,18 +276,32 @@ export default function useRemove({
       } else {
         toast.fail({ title: "Remove faily!" });
       }
+
+      const _tokens = type === 1 ? data.tokens : [exitToken];
+      const _amounts: any = [];
+
+      _tokens.forEach((token: any, i: number) => {
+        const idx = assetsRef.current.findIndex(
+          (asset: any) => asset.toLowerCase() === token.address.toLowerCase()
+        );
+        if (idx !== -1) {
+          _amounts.push(
+            Big(_amountsOut[idx].toString())
+              .div(10 ** token.decimals)
+              .toString()
+          );
+        }
+      });
+
       addAction({
         type: "Liquidity",
         action: "Remove Liquidity",
-        template: "Bex",
+        template: "BurrBear",
         status,
         transactionHash,
         sub_type: "Remove",
-        tokens: type === 1 ? data.tokens : [exitToken],
-        amounts:
-          type === 1
-            ? data.tokens.map((token: any) => token.value)
-            : [exitAmount],
+        tokens: _tokens,
+        amounts: _amounts,
         extra_data: {
           action: "Remove Liquidity",
           type: "univ3"
@@ -291,9 +320,24 @@ export default function useRemove({
     }
   };
 
+  const { run: onQueryAmountsOutDebounce } = useDebounceFn(
+    () => {
+      if (type === 1 && cachedAmounts.current.tokens) {
+        setAmounts(cachedAmounts.current.tokens);
+      } else if (type === 0 && cachedAmounts.current[exitToken.address]) {
+        setAmounts(cachedAmounts.current[exitToken.address]);
+      } else {
+        onQueryAmountsOut();
+      }
+    },
+    {
+      wait: 500
+    }
+  );
+
   useEffect(() => {
-    if (type === 1 && !exitToken) return;
-    onQueryAmountsOut();
+    if (type === 0 && !exitToken) return;
+    onQueryAmountsOutDebounce();
   }, [type, exitToken]);
 
   return {

@@ -392,7 +392,7 @@ export const bera: { [key: string]: Token } = {
     symbol: "pPAW",
     name: "Pre-TGE Paw",
     decimals: 18,
-    icon: "/assets/tokens/ppaw.svg",
+    icon: "/assets/tokens/ppaw.svg"
   },
   nome: {
     chainId: CHAIN_ID,
@@ -556,6 +556,33 @@ export const bera: { [key: string]: Token } = {
     name: "CIAN yield layer rsETH",
     decimals: 18,
     icon: "/assets/tokens/ylrseth.png",
+    color: "rgb(0,0,0)"
+  },
+  wgbera: {
+    chainId: CHAIN_ID,
+    address: "0xD77552D3849ab4D8C3b189A9582d0ba4C1F4f912",
+    symbol: "wgBERA",
+    name: "Wrapped gBERA",
+    decimals: 18,
+    icon: "/assets/tokens/wgbera.png",
+    color: "rgb(0,0,0)"
+  },
+  burr: {
+    chainId: CHAIN_ID,
+    address: "0x28e0e3b9817012b356119df9e217c25932d609c2",
+    symbol: "BURR",
+    name: "Burr Governance Token",
+    decimals: 18,
+    icon: "/assets/tokens/burr.png",
+    color: "rgb(0,0,0)"
+  },
+  plug: {
+    chainId: CHAIN_ID,
+    address: "0x231a6bd8eb88cfa42776b7ac575cecaf82bf1e21",
+    symbol: "PLUG",
+    name: "Beraplug",
+    decimals: 18,
+    icon: "/assets/tokens/plug.webp",
     color: "rgb(0,0,0)"
   }
 };

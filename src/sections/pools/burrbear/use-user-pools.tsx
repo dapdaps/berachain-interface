@@ -19,13 +19,14 @@ export default function useUserPools() {
     setLoading(true);
 
     try {
-      const shares = await axios.post(burrbear.graph[DEFAULT_CHAIN_ID], {
-        query: `query PoolShares{\n  poolShares(first: 1000,where: {balance_gt: 0.000001,userAddress:\"${account?.toLowerCase()}\"}){\n     poolId { id,address,symbol,tokensList,tokens{\n      address,\n      decimals,\n      symbol,\n      name\n    } } \n     balance \n  }\n}`
+      const shares = await axios.post(burrbear.graph, {
+        query: `query PoolShares{\n  poolShares(first: 1000,where: {balance_gt: 0.000001,userAddress:\"${account?.toLowerCase()}\"}){\n     poolId { id,address,symbol,tokensList,poolType,tokens{\n      address,\n      decimals,\n      symbol,\n      name\n    } } \n     balance \n  }\n}`
       });
       const _pools: any = [];
       const supplyCalls: any = [];
       const tokensCalls: any = [];
       const tokenAddresses: string[] = [];
+
       shares.data.data.poolShares.forEach((item: any) => {
         const tokens = item.poolId.tokens
           .filter((token: any) => token.symbol !== item.poolId.symbol)
@@ -43,7 +44,8 @@ export default function useUserPools() {
           liquidity: Big(item.balance).mul(1e18).toString(),
           tokens,
           symbol: item.poolId.symbol,
-          tokensList: item.poolId.tokensList
+          tokensList: item.poolId.tokensList,
+          poolType: item.poolId.poolType
         });
         supplyCalls.push({
           address: item.poolId.address,
@@ -65,7 +67,7 @@ export default function useUserPools() {
           addressIn: tokenAddresses
         }
       });
-      const prices = pricesRes.data.data.tokenInformations.reduce(
+      const prices = pricesRes.data.data.prices.reduce(
         (acc: any, curr: any) => ({
           ...acc,
           [curr.address]: curr.usdValue

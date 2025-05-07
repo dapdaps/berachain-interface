@@ -8,7 +8,7 @@ const POOLS_TYPE = {
   "0xbe09e71bdc7b8a50a05f7291920590505e3c7744": "ComposableStable"
 };
 
-export default function Burrbear() {
+export default function BurrBear() {
   const { currentProtocol, actionType, toggleActionVisible } =
     useVaultsV2Context();
 

@@ -5,6 +5,7 @@ import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import { useSettingsStore } from "@/stores/settings";
+import { useDebounceFn } from "ahooks";
 import valutAbi from "../abi/balancer-valut";
 import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
@@ -30,6 +31,7 @@ export default function useRemove({
   const assetsRef = useRef<any>();
   const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const { addAction } = useAddAction("dapp");
+  const cachedAmounts = useRef<any>({});
 
   const onQueryAmountsOut = async () => {
     try {
@@ -101,6 +103,11 @@ export default function useRemove({
           .toString();
       });
 
+      if (type === 1) {
+        cachedAmounts.current["tokens"] = _amounts;
+      } else {
+        cachedAmounts.current[exitToken.address] = _amounts;
+      }
       setAmounts(_amounts);
     } catch (err) {
       setAmounts({});
@@ -134,6 +141,7 @@ export default function useRemove({
       let params: any = [];
       let exitKind = 2;
       let bptMinIn = "0";
+      let _amountsOut: any = [];
 
       if (type === 1) {
         exitKind = data.type === "COMPOSABLE_STABLE" ? 2 : 1;
@@ -179,6 +187,7 @@ export default function useRemove({
             false
           ]
         ];
+        _amountsOut = amountsOut;
       } else {
         exitKind = 0;
         const _percent = Big(exitAmount).div(amounts[exitToken.address]);
@@ -215,6 +224,7 @@ export default function useRemove({
             false
           ]
         ];
+        _amountsOut = amountsOut;
       }
 
       const method = "exitPool";
@@ -250,6 +260,22 @@ export default function useRemove({
       } else {
         toast.fail({ title: "Remove faily!" });
       }
+      const _tokens = type === 1 ? data.tokens : [exitToken];
+      const _amounts: any = [];
+
+      _tokens.forEach((token: any, i: number) => {
+        const idx = assetsRef.current.findIndex(
+          (asset: any) => asset.toLowerCase() === token.address.toLowerCase()
+        );
+        if (idx !== -1) {
+          _amounts.push(
+            Big(_amountsOut[idx].toString())
+              .div(10 ** token.decimals)
+              .toString()
+          );
+        }
+      });
+
       addAction({
         type: "Liquidity",
         action: "Remove Liquidity",
@@ -279,12 +305,25 @@ export default function useRemove({
       });
     }
   };
+  const { run: onQueryAmountsOutDebounce } = useDebounceFn(
+    () => {
+      if (type === 1 && cachedAmounts.current.tokens) {
+        setAmounts(cachedAmounts.current.tokens);
+      } else if (type === 0 && cachedAmounts.current[exitToken.address]) {
+        setAmounts(cachedAmounts.current[exitToken.address]);
+      } else {
+        onQueryAmountsOut();
+      }
+    },
+    {
+      wait: 500
+    }
+  );
 
   useEffect(() => {
-    if (type === 1 && !exitToken) return;
-    onQueryAmountsOut();
+    if (type === 0 && !exitToken) return;
+    onQueryAmountsOutDebounce();
   }, [type, exitToken]);
-
   return {
     loading,
     contracts,

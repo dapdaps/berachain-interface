@@ -3,11 +3,13 @@
 import BasicModal from "./components/modal";
 import Bex from "./bex/remove-liquidity";
 import Kodiak from "./kodiak/remove-liquidity";
+import BurrBear from "./burrbear/remove-liquidity";
 import { useMemo } from "react";
 
 const RemoveLiquidityPanel = ({ dex, ...rest }: any) => {
   if (dex?.toLowerCase() === "bex") return <Bex {...rest} />;
   if (dex?.toLowerCase() === "kodiak") return <Kodiak {...rest} />;
+  if (dex?.toLowerCase() === "burrbear") return <BurrBear {...rest} />;
 };
 
 export default function RemoveLiquidityModal({
@@ -24,7 +26,7 @@ export default function RemoveLiquidityModal({
     return `Remove ${data.symbol}`;
   }, [data]);
   const params = useMemo(() => {
-    if (dex?.toLowerCase() === "bex") return { data };
+    if (["bex", "burrbear"].includes(dex?.toLowerCase())) return { data };
     return {
       tokenId,
       ...data,
