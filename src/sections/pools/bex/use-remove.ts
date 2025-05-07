@@ -5,6 +5,7 @@ import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import useToast from "@/hooks/use-toast";
 import { useSettingsStore } from "@/stores/settings";
+import { useDebounceFn } from "ahooks";
 import valutAbi from "../abi/balancer-valut";
 import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
@@ -30,6 +31,7 @@ export default function useRemove({
   const assetsRef = useRef<any>();
   const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const { addAction } = useAddAction("dapp");
+  const cachedAmounts = useRef<any>({});
 
   const onQueryAmountsOut = async () => {
     try {
@@ -101,6 +103,11 @@ export default function useRemove({
           .toString();
       });
 
+      if (type === 1) {
+        cachedAmounts.current["tokens"] = _amounts;
+      } else {
+        cachedAmounts.current[exitToken.address] = _amounts;
+      }
       setAmounts(_amounts);
     } catch (err) {
       setAmounts({});
@@ -296,12 +303,25 @@ export default function useRemove({
       });
     }
   };
+  const { run: onQueryAmountsOutDebounce } = useDebounceFn(
+    () => {
+      if (type === 1 && cachedAmounts.current.tokens) {
+        setAmounts(cachedAmounts.current.tokens);
+      } else if (type === 0 && cachedAmounts.current[exitToken.address]) {
+        setAmounts(cachedAmounts.current[exitToken.address]);
+      } else {
+        onQueryAmountsOut();
+      }
+    },
+    {
+      wait: 500
+    }
+  );
 
   useEffect(() => {
-    if (type === 1 && !exitToken) return;
-    onQueryAmountsOut();
+    if (type === 0 && !exitToken) return;
+    onQueryAmountsOutDebounce();
   }, [type, exitToken]);
-
   return {
     loading,
     contracts,

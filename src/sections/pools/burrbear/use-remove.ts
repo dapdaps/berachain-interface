@@ -10,6 +10,7 @@ import queryAbi from "../abi/balancer-query";
 import poolAbi from "../abi/balancer-pool";
 import dapp from "@/configs/pools/burrbear";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { useDebounceFn } from "ahooks";
 
 const abiCoder = new utils.AbiCoder();
 
@@ -31,6 +32,7 @@ export default function useRemove({
   const assetsRef = useRef<any>();
   const slippage = useSettingsStore((store: any) => store.slippage / 100);
   const { addAction } = useAddAction(from === "vaults" ? "vaults" : "dapp");
+  const cachedAmounts = useRef<any>({});
 
   const onQueryAmountsOut = async () => {
     try {
@@ -106,6 +108,11 @@ export default function useRemove({
           .toString();
       });
 
+      if (type === 1) {
+        cachedAmounts.current["tokens"] = _amounts;
+      } else {
+        cachedAmounts.current[exitToken.address] = _amounts;
+      }
       setAmounts(_amounts);
     } catch (err: any) {
       console.log("Query Error", err?.message);
@@ -313,9 +320,24 @@ export default function useRemove({
     }
   };
 
+  const { run: onQueryAmountsOutDebounce } = useDebounceFn(
+    () => {
+      if (type === 1 && cachedAmounts.current.tokens) {
+        setAmounts(cachedAmounts.current.tokens);
+      } else if (type === 0 && cachedAmounts.current[exitToken.address]) {
+        setAmounts(cachedAmounts.current[exitToken.address]);
+      } else {
+        onQueryAmountsOut();
+      }
+    },
+    {
+      wait: 500
+    }
+  );
+
   useEffect(() => {
-    if (type === 1 && !exitToken) return;
-    onQueryAmountsOut();
+    if (type === 0 && !exitToken) return;
+    onQueryAmountsOutDebounce();
   }, [type, exitToken]);
 
   return {
