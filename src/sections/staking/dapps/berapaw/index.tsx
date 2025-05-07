@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import BearBackground from '@/components/bear-background';
 import Tabs from '@/components/tabs';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useSearchParams } from 'next/navigation';
 import Content from '@/sections/staking/Content';
@@ -21,13 +21,41 @@ const Berapaw = (props: any) => {
   const searchParams = useSearchParams();
   const defaultCurrentTab = searchParams.get("tab") || "vaults";
 
+  const mobileContentRef = useRef<any>();
+  const containerRef = useRef<any>();
+
   const [currentTab, setCurrentTab] = useState<string>(defaultCurrentTab);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!isMobile) return;
+
+      if (!containerRef.current || !mobileContentRef.current?.pageIndex || !mobileContentRef.current?.pageTotal) return;
+
+      const { scrollHeight, scrollTop, clientHeight } = containerRef.current;
+      const isBottom = scrollHeight - scrollTop - clientHeight < 20;
+
+      if (isBottom && !mobileContentRef.current?.loading && mobileContentRef.current?.pageIndex < mobileContentRef.current?.pageTotal) {
+        mobileContentRef.current?.reload(mobileContentRef.current?.pageIndex + 1);
+      }
+    };
+
+    const current = containerRef.current;
+    current?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [isMobile, mobileContentRef.current, containerRef.current]);
 
   return (
     <BeraPawContextProvider value={{ currentTab, setCurrentTab }}>
       <BearBackground type="dapp">
         <PageBack className="absolute left-[36px] md:left-[12px] md:top-[17px] z-[10]" />
-        <div className="p-[25px_0px_0px] w-[990px] mx-auto md:w-full md:p-[20px_0] md:bg-vault md:min-h-[100dvh]">
+        <div
+          ref={containerRef}
+          className="p-[25px_0px_0px] w-[990px] mx-auto md:w-full md:p-[20px_0] md:bg-vault md:h-[100dvh] md:overflow-y-auto md:overflow-x-hidden md:pb-[64px]"
+        >
           {
             isMobile && (
               <>
@@ -56,8 +84,9 @@ const Berapaw = (props: any) => {
                   label: 'Vaults',
                   children: isMobile ? (
                     <MobileContent
+                      ref={mobileContentRef}
                       {...props}
-                      className="!h-[calc(100dvh-260px)]"
+                      className="!h-[unset]"
                     />
                   ) : (
                     <Content

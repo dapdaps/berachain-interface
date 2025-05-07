@@ -96,7 +96,7 @@ const Stake = (props: any) => {
   }, { manual: true });
 
   return (
-    <div className={clsx("w-full flex justify-between items-stretch gap-[26px] min-h-[500px]", className)}>
+    <div className={clsx("w-full flex justify-between items-stretch gap-[26px] min-h-[500px] md:flex-col md:min-h-[unset]", className)}>
       {
         (loading && !dataList?.length) ? [0, 1].map((idx) => (
           <Card key={idx}>
