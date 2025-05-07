@@ -171,7 +171,7 @@ const Filter = (props: any, ref: any) => {
           value={vaultsBoyco}
           onChange={() => {
             // if users had no boycoAssets, they cannot close this Switch
-            // 👇CANNOT SET THE CONDITION
+            // 👇DO NOT SET THE CONDITION
             // if (!boycoAssets?.length) return;
             const _vaultsBoyco = !vaultsBoyco;
             toggleVaultsBoyco?.(_vaultsBoyco);
