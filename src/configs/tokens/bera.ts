@@ -386,6 +386,14 @@ export const bera: { [key: string]: Token } = {
     isMeme: true,
     color: "rbg(78,179,249)"
   },
+  ppaw: {
+    chainId: CHAIN_ID,
+    address: "0x03c86e21623f25eca0ea544890c7603b9a33e1ac",
+    symbol: "pPAW",
+    name: "Pre-TGE Paw",
+    decimals: 18,
+    icon: "/assets/tokens/ppaw.svg",
+  },
   nome: {
     chainId: CHAIN_ID,
     address: "0xfaf4c16847bd0ebac546c49a9c9c6b81abd4b08c",

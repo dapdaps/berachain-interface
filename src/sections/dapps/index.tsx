@@ -112,12 +112,7 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
-        icon: "/images/dapps/ramen.svg",
-        name: "Ramen",
-        label: "Ramen",
-        type: "Launchpad",
-        className: "",
-        disabled: true
+        ..._dApps["berapaw"],
       }
     ]
   },
