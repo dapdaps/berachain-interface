@@ -10,6 +10,7 @@ import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
 import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import DoubleTokenIcons from "@/components/token-icon/double";
+import IBGTPoints from '@/sections/vaults/v2/components/ibgt-points';
 
 const ActionUnionLeft = (props: any) => {
   const { className } = props;
@@ -39,6 +40,7 @@ const ActionUnionLeft = (props: any) => {
             const protocolSelected =
               protocol.backendId === currentProtocol?.backendId;
             const isUserReward = protocol.user_reward?.length > 0;
+            const isIBGT = protocol?.reward_tokens?.length === 1 && protocol?.reward_tokens?.some((t: any) => t.symbol === "iBGT");
 
             return (
               <div
@@ -110,15 +112,31 @@ const ActionUnionLeft = (props: any) => {
                     })}
                   </div>
                   <div className="text-black font-Montserrat text-[16px] font-[600] leading-[100%] flex flex-col gap-[4px]">
-                    <div className="">
-                      {protocol?.reward_tokens
-                        ?.map((token: any, index: number) => token.symbol)
-                        .join("-")}
+                    <div className="flex items-center gap-[10px]">
+                      <div className="">
+                        {protocol?.reward_tokens
+                          ?.map((token: any, index: number) => token.symbol)
+                          .join("-")}
+                      </div>
+                      {
+                        isIBGT && (
+                          <div className="shrink-0">
+                            <IBGTPoints
+                              isPopover={false}
+                              className="!text-[12px] !font-[400] !h-[18px] !px-[6px]"
+                              cardClassName=""
+                              contentClassName="!z-[110]"
+                              placement={PopoverPlacement.TopLeft}
+                            />
+                          </div>
+                        )
+                      }
                     </div>
                     <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%]">
                       {/^(Hub|Bex)$/i.test(protocol?.protocol || "")
                         ? "Bex"
                         : protocol?.protocol}
+                      {/*[ids: {protocol?.backendId}]*/}
                     </div>
                   </div>
                   {/* {protocol.reward_tokens.map((reward: any, index: number) => (

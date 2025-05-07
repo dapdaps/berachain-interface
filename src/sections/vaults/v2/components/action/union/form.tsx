@@ -6,12 +6,45 @@ import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
 import ButtonWithApprove from "@/components/button/button-with-approve";
 import { useMemo } from "react";
+import LazyImage from '@/components/layz-image';
 
 const ActionUnionForm = (props: any) => {
-  const { className } = props;
+  const { ...restProps } = props;
 
-  const { actionType, currentProtocol, currentRecord, setCurrentProtocol } =
-    useVaultsV2Context();
+  const {
+    actionType,
+    currentProtocol,
+    setCurrentProtocol,
+    isBeraPaw,
+  } = useVaultsV2Context();
+
+  let _currentProtocol = currentProtocol;
+  if (isBeraPaw) {
+    _currentProtocol = currentProtocol.linkVault;
+  }
+
+  return (
+    <ActionUnionFormWithoutVaultsV2Context
+      {...restProps}
+      isBeraPaw={isBeraPaw}
+      actionType={actionType}
+      currentProtocol={_currentProtocol}
+      setCurrentProtocol={setCurrentProtocol}
+    />
+  );
+};
+
+export default ActionUnionForm;
+
+const ActionUnionFormWithoutVaultsV2Context = (props: any) => {
+  const {
+    className,
+    actionType,
+    currentProtocol,
+    setCurrentProtocol,
+    isBeraPaw,
+  } = props;
+
   const {
     amount,
     balanceShown,
@@ -57,6 +90,25 @@ const ActionUnionForm = (props: any) => {
 
   return (
     <div className={clsx("", className)}>
+      {
+        (isBeraPaw && actionType.value === ACTION_TYPE.DEPOSIT) && (
+          <>
+            <div className="flex items-center gap-[10px] text-[18px] font-Montserrat font-bold leading-[90%] text-black">
+              <div className="">Step 1. Deposit Vaults</div>
+              <LazyImage
+                src={currentProtocol.protocolIcon}
+                width={24}
+                height={24}
+                containerClassName="shrink-0 rounded-[4px] border border-[#FFFDEB] overflow-hidden"
+                fallbackSrc="/assets/tokens/default_icon.png"
+              />
+            </div>
+            <div className="text-black font-Montserrat text-[12px] font-[500] leading-[100%] mt-[5px]">
+              Your assets will be deposited in the {currentProtocol.project} Vaults.
+            </div>
+          </>
+        )
+      }
       <ActionInput
         className="mt-[20px]"
         inputError={inputError}
@@ -84,19 +136,19 @@ const ActionUnionForm = (props: any) => {
             currentProtocol.extra_data?.vault_router
               ? currentProtocol.extra_data?.vault_router
               : actionType.value === ACTION_TYPE.DEPOSIT
-              ? currentProtocol.vaultAddress
-              : ""
+                ? currentProtocol.vaultAddress
+                : ""
           }
           token={
             actionType.value === ACTION_TYPE.DEPOSIT
               ? currentProtocol.token
               : // 👇for WeBera
               currentProtocol.extra_data?.vault_router
-              ? {
+                ? {
                   address: currentProtocol.vaultAddress,
                   decimals: currentProtocol.token.decimals
                 }
-              : currentProtocol.token
+                : currentProtocol.token
           }
           amount={amount}
           loading={loading}
@@ -114,5 +166,3 @@ const ActionUnionForm = (props: any) => {
     </div>
   );
 };
-
-export default ActionUnionForm;

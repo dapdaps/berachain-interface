@@ -251,6 +251,13 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       token: bera["stone"]
     },
     {
+      reg: /^LBGT$/i,
+      label: "LBGT",
+      icon: getTokenLogo("LBGT"),
+      sort: 22,
+      token: bera["lbgt"]
+    },
+    {
       reg: /^USDbr/i,
       label: "USDbr",
       icon: getTokenLogo("USDbr"),
@@ -275,7 +282,8 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
     { reg: /^gBERA$/i, label: "gBERA", icon: getTokenLogo("gBERA"), sort: 8 },
     { reg: /^USDbr$/i, label: "USDbr", icon: getTokenLogo("USDbr"), sort: 9 },
     { reg: /^NOME$/i, label: "NOME", icon: getTokenLogo("NOME"), sort: 10 },
-    { reg: /^usdc.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e"), sort: 11 }
+    { reg: /^usdc.e$/i, label: "USDC.e", icon: getTokenLogo("USDC.e"), sort: 11 },
+    { reg: /^lbgt$/i, label: "LBGT", icon: getTokenLogo("lbgt"), sort: 12 },
   ],
   // 👇Useless anymore
   [FILTER_KEYS.PROTOCOLS]: [

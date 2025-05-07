@@ -119,7 +119,6 @@ export default function useRemove({
   const onRemove = async () => {
     if (!contracts) return;
     setLoading(true);
-
     let toastId = toast.loading({ title: "Confirming..." });
 
     try {
@@ -284,8 +283,11 @@ export default function useRemove({
         status,
         transactionHash,
         sub_type: "Remove",
-        tokens: _tokens,
-        amounts: _amounts,
+        tokens: type === 1 ? data.tokens : [exitToken],
+        amounts:
+          type === 1
+            ? data.tokens.map((token: any) => amounts[token.address])
+            : [exitAmount],
         extra_data: {
           action: "Remove Liquidity",
           type: "univ3"

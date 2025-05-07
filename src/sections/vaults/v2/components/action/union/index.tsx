@@ -10,7 +10,7 @@ import useAction from "@/sections/vaults/v2/hooks/use-action";
 const ActionUnion = (props: any) => {
   const { className } = props;
 
-  const { currentProtocol, openAddLp, toggleOpenAddLp } = useVaultsV2Context();
+  const { isBeraPaw, currentProtocol, openAddLp, toggleOpenAddLp } = useVaultsV2Context();
 
   const action = useAction();
   const { updateBalance } = action;
@@ -19,7 +19,7 @@ const ActionUnion = (props: any) => {
     <VaultsV2ActionContextProvider value={action}>
       <div
         className={clsx(
-          "w-full flex flex-col items-stretch gap-[24px]",
+          "w-full flex flex-col items-stretch gap-[24px] max-h-[90dvh] md:max-h-[unset] overflow-y-auto",
           className
         )}
       >
@@ -32,15 +32,9 @@ const ActionUnion = (props: any) => {
           ["Bex", "Kodiak", "BurrBear", "AquaBera"].includes(
             currentProtocol.lpProtocol
           ) && (
-            <AddLiquidityModal
-              dex={currentProtocol.lpProtocol}
-              data={{
-                ...currentProtocol,
-                symbol: currentProtocol?.tokens
-                  ?.map((token: any, index: number) => token.symbol)
-                  .join("-"),
-                version: currentProtocol.extra_data?.pool_version
-              }}
+            <MintLPModal
+              isBeraPaw={isBeraPaw}
+              currentProtocol={currentProtocol}
               open={openAddLp}
               onClose={() => {
                 toggleOpenAddLp(false);
@@ -54,3 +48,26 @@ const ActionUnion = (props: any) => {
 };
 
 export default ActionUnion;
+
+const MintLPModal = (props: any) => {
+  const { className, currentProtocol, isBeraPaw, ...restProps } = props;
+
+  let _currentProtocol = currentProtocol;
+  if (isBeraPaw) {
+    _currentProtocol = currentProtocol.linkVault;
+  }
+
+  return (
+    <AddLiquidityModal
+      {...restProps}
+      dex={_currentProtocol.lpProtocol}
+      data={{
+        ..._currentProtocol,
+        symbol: _currentProtocol?.tokens
+          ?.map((token: any, index: number) => token.symbol)
+          .join("-"),
+        version: _currentProtocol.extra_data?.pool_version
+      }}
+    />
+  );
+};

@@ -133,7 +133,7 @@ export const RewardIconContent = (props: any) => {
             rel="noreferrer nofollow"
             className="flex-1 w-0 flex items-center"
           >
-            <div className="whitespace-nowrap overflow-hidden text-ellipsis relative">
+            <div className="whitespace-nowrap overflow-hidden text-ellipsis relative" title={reward.symbol}>
               {reward.symbol}
               <div className="absolute bottom-0 left-0 w-full h-[1px] border-b border-dashed border-black"></div>
             </div>

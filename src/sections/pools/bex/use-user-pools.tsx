@@ -54,10 +54,12 @@ export default function useUserPools() {
           liquidity: pool.dynamicData.totalLiquidity,
           deposit: pool.userBalance.totalBalanceUsd,
           balance: pool.userBalance.walletBalance,
-          shares: Big(pool.userBalance.totalBalanceUsd)
-            .div(pool.dynamicData.totalLiquidity)
-            .mul(100)
-            .toString(),
+          shares:
+            !Big(pool.dynamicData.totalLiquidity).eq(0) &&
+            Big(pool.userBalance.totalBalanceUsd)
+              .div(pool.dynamicData.totalLiquidity)
+              .mul(100)
+              .toString(),
           type: pool.type
         };
       });
@@ -73,6 +75,7 @@ export default function useUserPools() {
 
   useEffect(() => {
     if (!account || !provider) return;
+
     queryPools();
   }, [account, provider]);
 

@@ -8,7 +8,7 @@ import useToast from '@/hooks/use-toast';
 import useAddAction from '@/hooks/use-add-action';
 import useExecutionContract from '@/hooks/use-execution-contract';
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import {
   ERC20_ABI,
   ETHVaultWithSlippage_ABI,
@@ -17,6 +17,17 @@ import {
 } from '@/sections/staking/Datas/AquaBera';
 import TokenSelector from '@/sections/bridge/TokenSelector';
 import { MAX_APPROVE } from '@/hooks/use-approve';
+import { bera } from '@/configs/tokens/bera';
+import {
+  ABI,
+  ABI as BERAPAW_ABI,
+  LPStakingWBERALBGTPoolAddress,
+  LPStakingWBERALBGTVaultAddress
+} from '@/sections/staking/hooks/use-berapaw';
+import LazyImage from '@/components/layz-image';
+import onAction from '@/sections/vaults/dapps/berapaw/action';
+import { DEFAULT_CHAIN_ID } from '@/configs';
+import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 
 const template = "AquaBera";
 
@@ -31,12 +42,14 @@ const Content = (props: any) => {
     onSuccess
   } = props;
 
+  const isBeraPaw = config.name === "BeraPaw";
+
   const { account, provider, chainId } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("dapp");
   const { executionContract } = useExecutionContract();
   const RangeList = [0.25, 0.5, 0.75, 1];
-  const [isDeposit, setIsDeposit] = useState<boolean>(false);
+  const [isDeposit, setIsDeposit] = useState<boolean>();
   const [isBera, setIsBera] = useState<boolean>(false);
   const [apr, setApr] = useState("");
   const [token0, setToken0] = useState<any>(null);
@@ -92,7 +105,7 @@ const Content = (props: any) => {
         setBalance(ethers.utils.formatUnits(response));
       } else {
         const contract = new ethers.Contract(
-          token0?.address,
+          isBeraPaw ? data.pool_address : token0?.address,
           ERC20_ABI,
           provider
         );
@@ -100,6 +113,32 @@ const Content = (props: any) => {
         setBalance(ethers.utils.formatUnits(response));
       }
     } else {
+      if (isBeraPaw) {
+        if (data.pool_address === bera["lbgt"].address) {
+          try {
+            const stLBGTContract = new ethers.Contract(bera["stlbgt"].address, BERAPAW_ABI, provider);
+            const stLBGTBalance = await stLBGTContract.balanceOf(account);
+            const stLBGTPreviewRedeem = await stLBGTContract.previewRedeem(stLBGTBalance);
+            setBalance(ethers.utils.formatUnits(stLBGTPreviewRedeem || "0", bera["stlbgt"].decimals));
+          } catch (err: any) {
+            console.log("get %s balance failed: %o", data.pool_address, err);
+          }
+          return;
+        }
+        if (data.pool_address === LPStakingWBERALBGTPoolAddress) {
+          try {
+            const lpContract = new ethers.Contract(LPStakingWBERALBGTVaultAddress, BERAPAW_ABI, provider);
+            const lpBalance = await lpContract.balanceOf(account);
+            const LPStakingPoolContract = new Contract(LPStakingWBERALBGTPoolAddress, ABI, provider);
+            const LPDecimals = await LPStakingPoolContract.callStatic.decimals();
+            setBalance(ethers.utils.formatUnits(lpBalance || "0", LPDecimals));
+          } catch (err: any) {
+            console.log("get %s balance failed: %o", data.pool_address, err);
+          }
+          return;
+        }
+        return;
+      }
       const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider);
       const balanceOfResult = await contract.balanceOf(account);
       const getTotalAmountsResult = await contract.getTotalAmounts();
@@ -124,20 +163,25 @@ const Content = (props: any) => {
   };
   const getMaxDepositAmount = async () => {
     const contract = new ethers.Contract(ichiAddress, ICHI_ABI, provider);
-    const address0 = await contract.token0();
-    const address1 = await contract.token1();
-    if (
-      token0?.address?.toLocaleLowerCase() === address0?.toLocaleLowerCase()
-    ) {
-      const response0 = await contract.deposit0Max();
-      setDepositMaxAmount(
-        ethers.utils.formatUnits(response0, token0?.decimals)
-      );
-    } else {
-      const response1 = await contract.deposit1Max();
-      setDepositMaxAmount(
-        ethers.utils.formatUnits(response1, token0?.decimals)
-      );
+    try {
+      const address0 = await contract.token0();
+      const address1 = await contract.token1();
+      if (
+        token0?.address?.toLocaleLowerCase() === address0?.toLocaleLowerCase()
+      ) {
+        const response0 = await contract.deposit0Max();
+        setDepositMaxAmount(
+          ethers.utils.formatUnits(response0, token0?.decimals)
+        );
+      } else {
+        const response1 = await contract.deposit1Max();
+        setDepositMaxAmount(
+          ethers.utils.formatUnits(response1, token0?.decimals)
+        );
+      }
+    } catch (err: any) {
+      setDepositMaxAmount(ethers.utils.formatUnits(MAX_APPROVE, token0?.decimals));
+      console.log('getMaxDepositAmount failed: %o', err);
     }
   };
   const handleSuccess = () => {
@@ -145,7 +189,7 @@ const Content = (props: any) => {
     setUpdater(Date.now());
   };
 
-  const handleDepositOrWithdraw = (updateState: any) => {
+  const handleDepositOrWithdraw = async (updateState: any) => {
     const abi = isDeposit
       ? isBera
         ? ETHVaultWithSlippage_ABI
@@ -156,12 +200,70 @@ const Content = (props: any) => {
         ? "depositETH"
         : "forwardDepositToICHIVault"
       : "withdraw";
-    const toastId = toast?.loading({
+    let toastId = toast?.loading({
       title: isDeposit ? "Depositing..." : "Withdrawing..."
     });
     updateState({
       isLoading: true
     });
+
+    if (isBeraPaw) {
+      const actionType = isDeposit ? "Deposit" : "Withdraw";
+      try {
+        const beraPawTx = await onAction({
+          actionType: actionType,
+          signer: provider?.getSigner(),
+          account,
+          amount: Big(inAmount || 0)
+            .mul(10 ** data.decimals)
+            .toFixed(0),
+          currentRecord: {
+            vaultAddress: data.vault_address,
+          },
+          dappParams: {},
+        });
+        toast?.dismiss(toastId);
+        if (!beraPawTx) {
+          updateState({
+            isLoading: false
+          });
+          toast.fail({ title: actionType + " failed!" });
+          return;
+        }
+        toastId = toast.loading({ title: "Pending..." });
+        const { status, transactionHash } = await beraPawTx.wait();
+        toast.dismiss(toastId);
+        updateState({
+          isLoading: true
+        });
+        if (status === 1) {
+          toast.success({
+            title: actionType + " successful!",
+            tx: transactionHash,
+            chainId: DEFAULT_CHAIN_ID
+          });
+          const timer = setTimeout(() => {
+            clearTimeout(timer);
+            handleSuccess?.();
+          }, 3000);
+          return;
+        }
+        toast.fail({ title: actionType + " failed!" });
+      } catch (err: any) {
+        updateState({
+          isLoading: false
+        });
+        toast?.dismiss(toastId);
+        toast?.fail({
+          title: actionType + "failed!",
+          text: err?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
+            : err?.message ?? ""
+        })
+      }
+      return;
+    }
+
     const contract = new ethers.Contract(
       isDeposit ? vaultAddress : ichiAddress,
       abi,
@@ -284,10 +386,16 @@ const Content = (props: any) => {
   };
 
   useEffect(() => {
-    if (show && account && token0 && ichiAddress) {
+    if (show && account && token0 && ichiAddress && !isBeraPaw) {
       getBalance();
     }
-  }, [account, token0, show, updater, isBera, ichiAddress]);
+  }, [account, token0, show, updater, isBera, ichiAddress, isBeraPaw]);
+
+  useEffect(() => {
+    if (show && account && isBeraPaw && isDeposit !== void 0) {
+      getBalance();
+    }
+  }, [account, show, updater, isBeraPaw, data, isDeposit]);
 
   useEffect(() => {
     if (show && ichiAddress) {
@@ -305,10 +413,10 @@ const Content = (props: any) => {
   }, [isBera, config]);
 
   useEffect(() => {
-    setApr(data?.pool?.apr);
+    setApr(isBeraPaw ? data.apr : data?.pool?.apr);
     setIchiAddress(data?.pool?.ichiAddress);
     setValues(data?.pool?.values);
-  }, [data?.pool]);
+  }, [data?.pool, isBeraPaw]);
 
   useEffect(() => {
     if (show) {
@@ -339,74 +447,82 @@ const Content = (props: any) => {
         </div>
 
         <div className="flex items-center gap-[16px]">
-          <div className="flex-1 h-[60px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]">
-            <div className="flex items-center gap-[10px]">
-              {token0?.icon ? (
-                <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                  <img
-                    className="w-full"
-                    src={token0?.icon}
-                    alt={token0?.symbol}
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
-                  {token0?.symbol?.slice(0, 1)}
-                </div>
-              )}
+          {
+            token0 && (
+              <div className="flex-1 h-[60px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]">
+                <div className="flex items-center gap-[10px]">
+                  {token0?.icon ? (
+                    <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                      <img
+                        className="w-full"
+                        src={token0?.icon}
+                        alt={token0?.symbol}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                      {token0?.symbol?.slice(0, 1)}
+                    </div>
+                  )}
 
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
-                {token0?.symbol}
+                  <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                    {token0?.symbol}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )
+          }
 
-          <div
-            className="flex-1 h-[60px] gap-[8px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]"
-            onClick={() => {
-              pairedTokens?.length > 0 && setTokenSelectorShow(true);
-            }}
-          >
-            <div className="flex items-center gap-[10px]">
-              {token1?.icon ? (
-                <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                  <img
-                    className="w-full"
-                    src={token1?.icon}
-                    alt={token1?.symbol}
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
-                  {token1?.symbol?.slice(0, 1)}
-                </div>
-              )}
-              <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
-                {token1?.symbol}
-              </div>
-            </div>
-            {pairedTokens?.length > 0 && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="12"
-                height="7"
-                viewBox="0 0 12 7"
-                fill="none"
+          {
+            token1 && (
+              <div
+                className="flex-1 h-[60px] gap-[8px] flex items-center pl-[14px] rounded-[8px] border border-[#373A53]"
+                onClick={() => {
+                  pairedTokens?.length > 0 && setTokenSelectorShow(true);
+                }}
               >
-                <path
-                  d="M1 1L6 5L11 1"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            )}
-          </div>
+                <div className="flex items-center gap-[10px]">
+                  {token1?.icon ? (
+                    <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                      <img
+                        className="w-full"
+                        src={token1?.icon}
+                        alt={token1?.symbol}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                      {token1?.symbol?.slice(0, 1)}
+                    </div>
+                  )}
+                  <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                    {token1?.symbol}
+                  </div>
+                </div>
+                {pairedTokens?.length > 0 && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="7"
+                    viewBox="0 0 12 7"
+                    fill="none"
+                  >
+                    <path
+                      d="M1 1L6 5L11 1"
+                      stroke="black"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                )}
+              </div>
+            )
+          }
         </div>
 
         <div className="flex items-center justify-between my-[24px]">
           <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
-            7-day Fee APR
+            {isBeraPaw ? "APR" : "7-day Fee APR"}
           </div>
           <div className="text-[#7EA82B] font-Montserrat text-[16px] font-semibold leading-[90%]">
             {formatValueDecimal(apr, "", 2, false, false)}%
@@ -468,7 +584,7 @@ const Content = (props: any) => {
            )} */}
         </div>
 
-        {isDeposit && (
+        {(isDeposit || isBeraPaw) && (
           <div className="mt-[12px] mb-[20px] flex flex-col gap-[9px] h-[90px] rounded-[12px] border border-[#373A53] bg-white">
             <div className="pt-[18px] pl-[13px] pr-[20px] flex items-center justify-between">
               <div className="flex-1">
@@ -482,25 +598,49 @@ const Content = (props: any) => {
                   }
                 />
               </div>
-              <div className="flex items-center gap-[9px]">
-                {token0?.icon ? (
-                  <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
-                    <img
-                      className="w-full"
-                      src={token0?.icon}
-                      alt={token0?.symbol}
-                    />
+              {
+                isBeraPaw ? (
+                  <div className="flex items-center gap-[9px]">
+                    <div className="flex items-center">
+                      {
+                        data.underlying_tokens.map((token: any, index: number) => (
+                          <LazyImage
+                            key={index}
+                            src={token.icon}
+                            width={36}
+                            height={36}
+                            containerClassName={clsx("shrink-0 rounded-full overflow-hidden", index > 0 && "ml-[-15px]")}
+                            fallbackSrc="/assets/tokens/default_icon.png"
+                          />
+                        ))
+                      }
+                    </div>
+                    <div className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                      {data.underlying_tokens.map((token: any) => token.symbol).join("-")}
+                    </div>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
-                    {token0?.symbol?.slice(0, 1)}
-                  </div>
-                )}
+                  <div className="flex items-center gap-[9px]">
+                    {token0?.icon ? (
+                      <div className="w-[36px] h-[36px] rounded-full overflow-hidden">
+                        <img
+                          className="w-full"
+                          src={token0?.icon}
+                          alt={token0?.symbol}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center w-[36px] h-[36px] rounded-[4px] bg-gray-800 text-white font-bold">
+                        {token0?.symbol?.slice(0, 1)}
+                      </div>
+                    )}
 
-                <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
-                    {isBera ? "BERA" : token0?.symbol}
-                  </span>
-              </div>
+                    <span className="text-black font-Montserrat text-[16px] font-semibold leading-[90%]">
+                      {isBera ? "BERA" : token0?.symbol}
+                    </span>
+                  </div>
+                )
+              }
             </div>
             <div className="flex justify-end pr-[20px]">
               <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
@@ -561,61 +701,65 @@ const Content = (props: any) => {
           />
         </div>
         {isDeposit ? (
-          <div className="mt-[-16px] mb-[8px] flex justify-center text-red-600 font-Montserrat text-[14px] font-bold">
-            Max {token0?.symbol} Deposit {depositMaxAmout ? (depositMaxAmout.toString().replace(/\./g, '') === MAX_APPROVE ? " is the maximum value of Uint256" : depositMaxAmout) : depositMaxAmout}
-          </div>
-        ) : (
-          <div className="mt-[-16px] mb-[8px] flex justify-end">
-            <div className="flex flex-col gap-[2px]">
-              <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
-                My Positon{" "}
-                {formatValueDecimal(
-                  Big(data?.pool?.usdDepositAmount ?? 0)
-                    .times(percentage)
-                    .div(100)
-                    .toFixed(),
-                  "$",
-                  2,
-                  false,
-                  false
-                )}
-              </div>
-              <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
-                {token0?.symbol}{" "}
-                {formatValueDecimal(
-                  Big(values?.[0] ?? 0)
-                    .times(percentage)
-                    .div(100)
-                    .toFixed(),
-                  "",
-                  2,
-                  false,
-                  false
-                )}
-              </div>
-              <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
-                {token1?.symbol}{" "}
-                {formatValueDecimal(
-                  Big(values?.[1] ?? 0)
-                    .times(percentage)
-                    .div(100)
-                    .toFixed(),
-                  "",
-                  2,
-                  false,
-                  false
-                )}
-              </div>
-
+          !isBeraPaw && (
+            <div className="mt-[-16px] mb-[8px] flex justify-center text-red-600 font-Montserrat text-[14px] font-bold">
+              Max {token0?.symbol} Deposit {depositMaxAmout ? (depositMaxAmout.toString().replace(/\./g, '') === MAX_APPROVE ? " is the maximum value of Uint256" : depositMaxAmout) : depositMaxAmout}
             </div>
-          </div>
+          )
+        ) : (
+          !isBeraPaw && (
+            <div className="mt-[-16px] mb-[8px] flex justify-end">
+              <div className="flex flex-col gap-[2px]">
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  My Positon{" "}
+                  {formatValueDecimal(
+                    Big(data?.pool?.usdDepositAmount ?? 0)
+                      .times(percentage)
+                      .div(100)
+                      .toFixed(),
+                    "$",
+                    2,
+                    false,
+                    false
+                  )}
+                </div>
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  {token0?.symbol}{" "}
+                  {formatValueDecimal(
+                    Big(values?.[0] ?? 0)
+                      .times(percentage)
+                      .div(100)
+                      .toFixed(),
+                    "",
+                    2,
+                    false,
+                    false
+                  )}
+                </div>
+                <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium text-right">
+                  {token1?.symbol}{" "}
+                  {formatValueDecimal(
+                    Big(values?.[1] ?? 0)
+                      .times(percentage)
+                      .div(100)
+                      .toFixed(),
+                    "",
+                    2,
+                    false,
+                    false
+                  )}
+                </div>
+
+              </div>
+            </div>
+          )
         )}
         {isDeposit ? (
           <Button
             {...{
               type: "deposit",
-              symbol: token0?.symbol,
-              amount: Big(inAmount ? inAmount : 0).gt(
+              symbol: isBeraPaw ? data.symbol : token0?.symbol,
+              amount: isBeraPaw ? inAmount : Big(inAmount ? inAmount : 0).gt(
                 depositMaxAmout ? depositMaxAmout : 0
               )
                 ? -1
@@ -623,8 +767,8 @@ const Content = (props: any) => {
               template,
               decimals: token0?.decimals,
               balance,
-              address: token0?.address,
-              vaultAddress,
+              address: isBeraPaw ? data.pool_address : token0?.address,
+              vaultAddress: isBeraPaw ? data.vault_address : vaultAddress,
               onDepositOrWithdraw: handleDepositOrWithdraw
             } as any}
           >
@@ -634,13 +778,13 @@ const Content = (props: any) => {
           <Button
             {...{
               type: "widthdraw",
-              symbol: token0?.symbol,
+              symbol: isBeraPaw ? data.symbol : token0?.symbol,
               amount: inAmount,
               template,
               decimals: token0?.decimals,
               balance,
-              address: token0?.address,
-              vaultAddress,
+              address: isBeraPaw ? data.pool_address : token0?.address,
+              vaultAddress: isBeraPaw ? data.vault_address : vaultAddress,
               onDepositOrWithdraw: handleDepositOrWithdraw
             } as any}
           >

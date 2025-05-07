@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { MutableRefObject, useMemo, useRef, useState } from 'react';
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
@@ -12,27 +12,38 @@ import useClickTracking from "@/hooks/use-click-tracking";
 import useMemeswapBalance from "./use-memeswap-balance";
 
 export default function useAction(): Action {
+  const beraPawRef = useRef<any>();
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
   const { addAction } = useAddAction("vaults");
   const [amount, setAmount] = useState<string>();
   const [dappParams, setDappParams] = useState<any>({});
-  const { currentProtocol, actionType, toggleActionVisible, getListData } =
-    useVaultsV2Context();
+  const {
+    currentProtocol,
+    actionType,
+    toggleActionVisible,
+    getListData,
+    isBeraPaw,
+  } = useVaultsV2Context();
+
+  let _currentProtocol = currentProtocol;
+  if (isBeraPaw) {
+    _currentProtocol = currentProtocol?.linkVault;
+  }
 
   const { tokenBalance, update, isLoading } = useTokenBalance(
     actionType.value === ACTION_TYPE.DEPOSIT
-      ? currentProtocol?.token?.address
-      : !["Kodiak", "Memeswap"].includes(currentProtocol.protocol)
-      ? currentProtocol?.vaultAddress
+      ? _currentProtocol?.token?.address
+      : !["Kodiak", "Memeswap"].includes(_currentProtocol.protocol)
+      ? _currentProtocol?.vaultAddress
       : "",
-    currentProtocol.protocol === "Yeet" &&
+    _currentProtocol.protocol === "Yeet" &&
       actionType.value === ACTION_TYPE.WITHDRAW
       ? 23
-      : currentProtocol?.token?.decimals
+      : _currentProtocol?.token?.decimals
   );
- 
+
   const {
     balance: memeswapBalance,
     update: updateMemeswapBalance,
@@ -45,15 +56,15 @@ export default function useAction(): Action {
   const [balanceShown, balanceLoading, updateBalance] = useMemo(() => {
     if (
       actionType.value === ACTION_TYPE.DEPOSIT ||
-      ["D2 Finance", "Yeet"].includes(currentProtocol.protocol)
+      ["D2 Finance", "Yeet"].includes(_currentProtocol.protocol)
     ) {
       return [tokenBalance, isLoading, update];
     }
-    if (currentProtocol.protocol === "Memeswap") {
+    if (_currentProtocol.protocol === "Memeswap") {
       return [memeswapBalance, memeswapLoading, updateMemeswapBalance];
     }
-    return [currentProtocol?.user_stake?.amount || "0", isLoading, update];
-  }, [actionType, tokenBalance, currentProtocol?.user_stake, memeswapBalance]);
+    return [Big(tokenBalance || 0).gt(0) ? tokenBalance : _currentProtocol?.user_stake?.amount || "0", isLoading, update];
+  }, [actionType, tokenBalance, _currentProtocol?.user_stake, memeswapBalance, isLoading, update]);
 
   const [inputError, inputErrorMessage] = useMemo<
     [boolean, string | undefined]
@@ -65,7 +76,7 @@ export default function useAction(): Action {
         return [true, "Insufficient Balance"];
       }
       if (
-        currentProtocol.protocol === "D2 Finance" &&
+        _currentProtocol.protocol === "D2 Finance" &&
         Big(balanceShown || 0).lt(1)
       ) {
         return [true, "At least 1 token"];
@@ -84,14 +95,14 @@ export default function useAction(): Action {
   };
 
   const onAction = async () => {
-    if (!currentProtocol) return;
+    if (!_currentProtocol) return;
 
     if (actionType.value !== ACTION_TYPE.EXIT) {
       handleReportWithoutDebounce(
         actionType.value === ACTION_TYPE.DEPOSIT
           ? "1022-001-010"
           : "1022-001-011",
-        currentProtocol.vaultAddress
+        _currentProtocol.vaultAddress
       );
     }
 
@@ -105,9 +116,9 @@ export default function useAction(): Action {
         signer,
         account,
         amount: Big(amount || 0)
-          .mul(10 ** currentProtocol.token.decimals)
+          .mul(10 ** _currentProtocol.token.decimals)
           .toFixed(0),
-        currentRecord: currentProtocol,
+        currentRecord: _currentProtocol,
         dappParams
       });
       toast.dismiss(toastId);
@@ -125,7 +136,11 @@ export default function useAction(): Action {
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
-        toggleActionVisible({ visible: false });
+        if (isBeraPaw && actionType.value === ACTION_TYPE.DEPOSIT) {
+          setAmount("");
+        } else {
+          toggleActionVisible({ visible: false });
+        }
         getListData();
       } else {
         toast.fail({ title: actionType.button + " failed!" });
@@ -136,20 +151,20 @@ export default function useAction(): Action {
       addAction?.({
         type: "Staking",
         action: actionType.button === "Deposit" ? "Stake" : "Unstake",
-        token: currentProtocol.token,
+        token: _currentProtocol.token,
         amount,
-        template: currentProtocol.protocol,
+        template: _currentProtocol.protocol,
         add: false,
         status,
         transactionHash,
         sub_type: actionType.button === "Deposit" ? "Stake" : "Unstake",
         tokens:
-          currentProtocol.tokens.length === 1
-            ? currentProtocol.tokens
+          _currentProtocol.tokens.length === 1
+            ? _currentProtocol.tokens
             : [
                 {
-                  ...currentProtocol.token,
-                  symbol: currentProtocol.tokens
+                  ..._currentProtocol.token,
+                  symbol: _currentProtocol.tokens
                     .map((token: any) => token.symbol)
                     .join("-")
                 }
@@ -157,7 +172,10 @@ export default function useAction(): Action {
         amounts: [amount],
         extra_data: {}
       });
+      beraPawRef.current?.getEstimateMintLBGT();
+      updateBalance?.();
     } catch (err: any) {
+      console.log('err: %o', err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({
@@ -182,7 +200,8 @@ export default function useAction(): Action {
     dappParams,
     setDappParams,
     balanceShown,
-    queuedAmount
+    queuedAmount,
+    beraPawRef
   };
 }
 
@@ -200,4 +219,5 @@ export interface Action {
   setDappParams: React.Dispatch<React.SetStateAction<any>>;
   balanceShown: string;
   queuedAmount?: string;
+  beraPawRef: MutableRefObject<any>;
 }

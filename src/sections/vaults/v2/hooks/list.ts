@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   StrategyPool,
   ORDER_DIRECTION,
@@ -42,9 +42,11 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
   balance: "0"
 }));
 
-export function useList(): List {
+export function useList(notNeedingFetchData?: boolean): List {
   const { account } = useCustomAccount();
   const isMobile = useIsMobile();
+  const filterRef = useRef<any>();
+  const boycoAssetsRef = useRef<any>();
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
@@ -72,130 +74,218 @@ export function useList(): List {
   const [searchValueDelay, setSearchValueDelay] = useState<string>();
   const [filterAssetsViewMore, setFilterAssetsViewMore] = useState(false);
   const [vaultsStaked, setVaultsStaked] = useState(false);
+  const [vaultsBoyco, setVaultsBoyco] = useState(false);
+  const [boycoAssetsSelected, setBoycoAssetsSelected] = useState<any>([]);
 
   // pagination & grouped by pool_address & sorted & filters
+  // 20250425#Added BeraPaw pool, BeraPaw's pool_address corresponds to hub's vault_address;
+  // After merging non-BeraPaw pools, check if there are any pools in the list whose vault_address matches
+  // BeraPaw pool's pool_address, if match then append to the list
   const [dataGroupByPool, dataGroupByPoolAll] = useMemo(() => {
     if (!data || data.length === 0) return [[], []];
 
-    const grouped = data.reduce((acc: any[], item: any) => {
-      const group = acc.find((g: any) => g.pool_address === item.pool_address);
-      if (group) {
-        group.list.push(item);
-        group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
-        group.user_stake.amount = Big(group.user_stake?.amount || 0).plus(
-          item.user_stake?.amount || 0
-        );
-        group.user_stake.usd = Big(group.user_stake?.usd || 0).plus(
-          item.user_stake?.usd || 0
-        );
-        if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
-          group.totalApy[0] = item.totalApy;
-          group.totalApyList[0] = { apr: item.apr, apy: item.apr.pool };
+    const beraPawList = data.filter(
+      (item: any) => item.project?.toLowerCase() === "berapaw"
+    );
+    const hubList = data.filter(
+      (item: any) => item.project?.toLowerCase() !== "berapaw"
+    );
+
+    const addIcon2List = (iconList: any, icon: any) => {
+      if (iconList.some((_icon: any) => _icon === icon)) {
+        return;
+      }
+      iconList.push(icon);
+    };
+
+    const addItem2Group = (group: any, item: any) => {
+      group.list.push(item);
+      group.tvl = Big(group.tvl).plus(Big(item.tvl || 0));
+      group.user_stake.amount = Big(group.user_stake?.amount || 0).plus(
+        item.user_stake?.amount || 0
+      );
+      group.user_stake.usd = Big(group.user_stake?.usd || 0).plus(
+        item.user_stake?.usd || 0
+      );
+      if (Big(item.totalApy || 0).lt(Big(group.totalApy[0] || 0))) {
+        group.totalApy[0] = item.totalApy;
+        group.totalApyList[0] = { apr: item.apr, apy: item.apr.pool };
+      }
+      if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
+        group.totalApy[1] = item.totalApy;
+        group.totalApyList[1] = { apr: item.apr, apy: item.apr.pool };
+      }
+      group.apr.push(item.apr);
+      addIcon2List(group.creatorProtocolIcon, item.creatorProtocolIcon);
+      addIcon2List(group.protocolIcon, item.protocolIcon);
+      addIcon2List(group.poolProjectIcon, item.poolProjectIcon);
+      group.reward_tokens = uniqBy(
+        group.reward_tokens.concat(item.reward_tokens),
+        "address"
+      );
+      group.user_reward = group.user_reward.concat(item.user_reward);
+      group.balance = Big(group.balance).plus(item.balance || 0);
+
+      item.tokens?.forEach((token: any) => {
+        if (
+          !group.tokens?.some(
+            (_token: any) =>
+              _token.address.toLowerCase() === token.address.toLowerCase()
+          )
+        ) {
+          group.tokens.push(token);
         }
-        if (Big(item.totalApy || 0).gt(Big(group.totalApy[1] || 0))) {
-          group.totalApy[1] = item.totalApy;
-          group.totalApyList[1] = { apr: item.apr, apy: item.apr.pool };
-        }
-        group.apr.push(item.apr);
-        group.creatorProtocolIcon.push(item.creatorProtocolIcon);
-        group.protocolIcon.push(item.protocolIcon);
-        group.poolProjectIcon.push(item.poolProjectIcon);
-        group.reward_tokens = uniqBy(
-          group.reward_tokens.concat(item.reward_tokens),
-          "address"
+      });
+
+      return group;
+    };
+
+    const generateGroup = (listData: any, defaultGroupList = []) => {
+      return listData.reduce((acc: any[], item: any) => {
+        const group = acc.find(
+          (g: any) => g.pool_address === item.pool_address
         );
-        group.user_reward = group.user_reward.concat(item.user_reward);
-        group.balance = Big(group.balance).plus(item.balance || 0);
+        if (group) {
+          addItem2Group(group, item);
+        } else {
+          acc.push({
+            pool_address: item.pool_address,
+            pool_project: item.pool_project,
+            name: item.name,
+            tvl: Big(item.tvl || 0),
+            user_stake: {
+              amount: Big(item.user_stake?.amount || 0),
+              usd: Big(item.user_stake?.usd || 0)
+            },
+            // [min, max]
+            totalApy: [item.totalApy, item.totalApy],
+            totalApyList: [
+              { apr: item.apr, apy: item.apr.pool },
+              { apr: item.apr, apy: item.apr.pool }
+            ],
+            apr: [item.apr],
+            creatorProtocolIcon: [item.creatorProtocolIcon],
+            protocolIcon: [item.protocolIcon],
+            poolProjectIcon: [item.poolProjectIcon],
+            tokens: item.tokens,
+            reward_tokens: item.reward_tokens || [],
+            user_reward: item.user_reward || [],
+            balance: Big(item.balance || 0),
+            list: [item]
+          });
+        }
+        return acc;
+      }, defaultGroupList);
+    };
+
+    const grouped = generateGroup(hubList);
+
+    grouped.forEach((group: any) => {
+      for (let i = beraPawList.length - 1; i >= 0; i--) {
+        const currentBeraPaw = beraPawList[i];
+        const linkVault = group.list.find(
+          (_protocol: any) =>
+            _protocol.vault_address === currentBeraPaw.pool_address
+        );
+        if (linkVault) {
+          currentBeraPaw.linkVault = linkVault;
+          addItem2Group(group, currentBeraPaw);
+          beraPawList.splice(i, 1);
+          break;
+        }
+      }
+    });
+
+    const groupedWithBeraPaw = generateGroup(beraPawList, grouped);
+
+    const filteredData = groupedWithBeraPaw.filter((item: any) => {
+      // Boyco
+      if (vaultsBoyco) {
+        if (!boycoAssetsSelected?.some((asset: any) => asset.pool_address.some((pool: any) => item.pool_address === pool))) {
+          return false;
+        }
       } else {
-        acc.push({
-          pool_address: item.pool_address,
-          pool_project: item.pool_project,
-          name: item.name,
-          tvl: Big(item.tvl || 0),
-          user_stake: {
-            amount: Big(item.user_stake?.amount || 0),
-            usd: Big(item.user_stake?.usd || 0)
-          },
-          // [min, max]
-          totalApy: [item.totalApy, item.totalApy],
-          totalApyList: [
-            { apr: item.apr, apy: item.apr.pool },
-            { apr: item.apr, apy: item.apr.pool }
-          ],
-          apr: [item.apr],
-          creatorProtocolIcon: [item.creatorProtocolIcon],
-          protocolIcon: [item.protocolIcon],
-          poolProjectIcon: [item.poolProjectIcon],
-          tokens: item.tokens,
-          reward_tokens: item.reward_tokens || [],
-          user_reward: item.user_reward || [],
-          balance: Big(item.balance || 0),
-          list: [item]
-        });
-      }
-      return acc;
-    }, []);
-
-    const filteredData = grouped.filter((item: any) => {
-      // Deposit Asset
-      if (
-        filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
-        !item.tokens.some((token: any) =>
-          filterSelected[FILTER_KEYS.ASSETS].some((filter) =>
-            filter.reg.test(token.symbol)
+        // Deposit Asset
+        if (
+          filterSelected[FILTER_KEYS.ASSETS].length > 0 &&
+          !item.tokens.some((token: any) =>
+            filterSelected[FILTER_KEYS.ASSETS].some((filter) =>
+              filter.reg.test(token.symbol)
+            )
           )
-        )
-      ) {
-        return false;
-      }
+        ) {
+          return false;
+        }
 
-      // Reward Asset
-      if (
-        filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
-        !item.reward_tokens.some((token: any) =>
-          filterSelected[FILTER_KEYS.REWARDS].some((filter) =>
-            filter.reg.test(token.symbol)
+        // Reward Asset
+        if (
+          filterSelected[FILTER_KEYS.REWARDS].length > 0 &&
+          !item.reward_tokens.some((token: any) =>
+            filterSelected[FILTER_KEYS.REWARDS].some((filter) =>
+              filter.reg.test(token.symbol)
+            )
           )
-        )
-      ) {
-        return false;
-      }
+        ) {
+          return false;
+        }
 
-      // Defi Protocol
-      if (
-        filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
-        !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
-          item.list.some((__it: any) => filter.reg.test(__it.project))
-        )
-      ) {
-        return false;
-      }
+        // Defi Protocol
+        if (
+          filterSelected[FILTER_KEYS.PROTOCOLS].length > 0 &&
+          !filterSelected[FILTER_KEYS.PROTOCOLS].some((filter) =>
+            item.list.some((__it: any) => filter.reg.test(__it.project))
+          )
+        ) {
+          return false;
+        }
 
-      if (
-        filterSelected[FILTER_KEYS.CREATORS].length > 0 &&
-        !filterSelected[FILTER_KEYS.CREATORS].some((filter) =>
-          filter.reg.test(item.creator_project)
-        )
-      ) {
-        return false;
+        if (
+          filterSelected[FILTER_KEYS.CREATORS].length > 0 &&
+          !filterSelected[FILTER_KEYS.CREATORS].some((filter) =>
+            filter.reg.test(item.creator_project)
+          )
+        ) {
+          return false;
+        }
       }
 
       const _search = trim(searchValueDelay || "").toLowerCase();
-      if (
-        _search &&
-        !item.tokens?.some((tk: any) =>
-          tk.symbol?.toLowerCase().includes(_search)
-        ) &&
-        !item.reward_tokens?.some((tk: any) =>
-          tk.symbol?.toLowerCase().includes(_search)
-        ) &&
-        !item.pool_project?.toLowerCase().includes(_search) &&
-        !item.list.some((__it: any) =>
-          __it.project?.toLowerCase().includes(_search)
-        ) &&
-        !item.name?.toLowerCase().includes(_search)
-      ) {
-        return false;
+
+      if (_search) {
+        if (/[_\-|/\\,:~]/.test(_search) && !item.name?.toLowerCase().includes(_search)) {
+          const matchTokens = item.list.some((v: any) => {
+            if (v.tokens.length < 2) return false;
+            const _regPrefix1 = new RegExp(`^${v.tokens[0].symbol}`, "i");
+            const _regSuffix1 = new RegExp(`${v.tokens[1].symbol}$`, "i");
+            const _regPrefix2 = new RegExp(`^${v.tokens[1].symbol}`, "i");
+            const _regSuffix2 = new RegExp(`${v.tokens[0].symbol}$`, "i");
+            if (_regPrefix1.test(_search) && _regSuffix1.test(_search)) {
+              return true;
+            }
+            if (_regPrefix2.test(_search) && _regSuffix2.test(_search)) {
+              return true;
+            }
+            return false;
+          });
+          if (!matchTokens) return false;
+        }
+        else {
+          if (
+            !item.tokens?.some((tk: any) =>
+              tk.symbol?.toLowerCase().includes(_search)
+            ) &&
+            !item.reward_tokens?.some((tk: any) =>
+              tk.symbol?.toLowerCase().includes(_search)
+            ) &&
+            !item.pool_project?.toLowerCase().includes(_search) &&
+            !item.list.some((__it: any) =>
+              __it.project?.toLowerCase().includes(_search)
+            ) &&
+            !item.name?.toLowerCase().includes(_search)
+          ) {
+            return false;
+          }
+        }
       }
 
       if (vaultsStaked && Big(item.user_stake?.amount || 0).lte(0)) {
@@ -268,12 +358,12 @@ export function useList(): List {
     setPageTotal(Math.ceil(sortedData.length / pageSize));
 
     if (isMobile) {
-      return [sortedData, grouped];
+      return [sortedData, groupedWithBeraPaw];
     }
 
     return [
       sortedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
-      grouped
+      groupedWithBeraPaw
     ];
   }, [
     data,
@@ -284,7 +374,9 @@ export function useList(): List {
     isMobile,
     orderKeys,
     defaultOrder,
-    vaultsStaked
+    vaultsStaked,
+    vaultsBoyco,
+    boycoAssetsSelected
   ]);
 
   const [dataTopAPY, dataTopTVL, dataHotStrategy] = useMemo<any>(() => {
@@ -420,6 +512,7 @@ export function useList(): List {
   }, [data]);
 
   const getData = async () => {
+    if (notNeedingFetchData) return;
     setLoading(true);
     try {
       const res = await axios.get(`${BASE_URL}/api/go/vaults/list`, {
@@ -433,6 +526,25 @@ export function useList(): List {
       }
 
       const _list = res.data.data || [];
+
+      const _currentTokenAddress = (item: any) => {
+        let _addr = item.pool_address;
+        if (
+          item.project?.toLowerCase() === "berapaw" &&
+          _list.some(
+            (it: any) =>
+              it.id !== item.id &&
+              it.vault_address.toLowerCase() === item.pool_address.toLowerCase()
+          )
+        ) {
+          _addr = item.vault_address;
+        }
+        if (_addr === "0x0000000000000000000000000000000000000000") {
+          _addr = "native";
+        }
+        return _addr;
+      };
+
       let _dolomite_bera: any;
       let d2FinanceIdx = -1;
       const _data = _list
@@ -484,10 +596,7 @@ export function useList(): List {
           item.totalApy = totalApy;
           item.token = {
             // symbol: item.name,
-            address:
-              item.pool_address === "0x0000000000000000000000000000000000000000"
-                ? "native"
-                : item.pool_address,
+            address: _currentTokenAddress(item),
             decimals: 18
           };
           item.protocol = item.project;
@@ -642,6 +751,7 @@ export function useList(): List {
 
   const handleSearchValue = (_searchValue?: string) => {
     setSearchValue(_searchValue);
+    togglePageIndex(PAGINATION_ACTION.FIRST);
   };
 
   const toggleFilterSelected = (key: FILTER_KEYS, item: FilterItem) => {
@@ -660,6 +770,14 @@ export function useList(): List {
     }
     setFilterSelected(_filterSelected);
     togglePageIndex(PAGINATION_ACTION.FIRST);
+    const isSthSelected = Object.values(_filterSelected).some((f) => f.length > 0);
+    if (isSthSelected) {
+      setVaultsBoyco(false);
+      setBoycoAssetsSelected([]);
+    } else {
+      setVaultsBoyco(true);
+      setBoycoAssetsSelected(boycoAssetsRef.current || []);
+    }
   };
 
   const toggleAvailableAssets = (_availableAssets?: boolean) => {
@@ -688,6 +806,20 @@ export function useList(): List {
   const clearFilterSelected = () => {
     setFilterSelected(cloneDeep(DEFAULT_FILTER_SELECTED));
     togglePageIndex(PAGINATION_ACTION.FIRST);
+  };
+
+  const toggleVaultsBoyco = (_vaultsBoyco?: boolean) => {
+    const __vaultsBoyco =
+      typeof _vaultsBoyco === "boolean" ? _vaultsBoyco : !vaultsBoyco;
+    if (__vaultsBoyco) {
+      clearFilterSelected();
+    }
+    setVaultsBoyco(__vaultsBoyco);
+    if (!__vaultsBoyco) {
+      setBoycoAssetsSelected([]);
+    } else {
+      setBoycoAssetsSelected(boycoAssetsRef.current || []);
+    }
   };
 
   const getFilterAssetsBalance = async () => {
@@ -743,6 +875,25 @@ export function useList(): List {
     setFilterAssetsBalanceLoading(false);
   };
 
+  const onBoycoAssetsSelect = (item: any) => {
+    if (item === "clear") {
+      setBoycoAssetsSelected([]);
+      toggleVaultsBoyco(false);
+      return;
+    }
+    if (boycoAssetsSelected?.some((asset: any) => asset.key === item.key)) {
+      setBoycoAssetsSelected((_boycoAssetsSelected: any) => {
+        const _selected = _boycoAssetsSelected.filter((asset: any) => asset.key !== item.key);
+        if (!_selected.length) {
+          toggleVaultsBoyco(false);
+        }
+        return _selected;
+      });
+    } else {
+      setBoycoAssetsSelected((_boycoAssetsSelected: any) => [..._boycoAssetsSelected, { ...item }]);
+    }
+  };
+
   useEffect(() => {
     getData();
     if (account) {
@@ -765,6 +916,7 @@ export function useList(): List {
     listData: data,
     getListData: getData,
     listDataGroupByPool: dataGroupByPool,
+    listDataGroupByPoolAll: dataGroupByPoolAll,
     listDataTopAPY: dataTopAPY,
     listDataTopTVL: dataTopTVL,
     listDataHotStrategy: dataHotStrategy,
@@ -800,7 +952,13 @@ export function useList(): List {
     toggleListFilterAssetsViewMore: toggleFilterAssetsViewMore,
     listVaultsStaked: vaultsStaked,
     toggleListVaultsStaked: toggleVaultsStaked,
-    listDefaultOrder: defaultOrder
+    listDefaultOrder: defaultOrder,
+    vaultsBoyco,
+    toggleVaultsBoyco,
+    filterRef,
+    boycoAssetsSelected,
+    onBoycoAssetsSelect,
+    boycoAssetsRef,
   };
 }
 
@@ -808,6 +966,7 @@ export interface List {
   listData: any;
   getListData: () => Promise<void>;
   listDataGroupByPool: any;
+  listDataGroupByPoolAll: any;
   listDataTopAPY: any;
   listDataTopTVL: any;
   listDataHotStrategy: any;
@@ -850,6 +1009,12 @@ export interface List {
   listVaultsStaked: boolean;
   toggleListVaultsStaked: (_listVaultsStaked?: boolean) => void;
   listDefaultOrder: boolean;
+  vaultsBoyco: any;
+  toggleVaultsBoyco: (vaultsBoyco?: any) => void;
+  filterRef: any;
+  boycoAssetsSelected: any;
+  onBoycoAssetsSelect: (item: any) => void;
+  boycoAssetsRef: any;
 }
 
 function parseJSONString(str: any, defaultValue: any = {}) {

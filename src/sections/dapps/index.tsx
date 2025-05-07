@@ -111,12 +111,7 @@ const SECOND_LIST = [
     ],
     dApps: [
       {
-        icon: "/images/dapps/ramen.svg",
-        name: "Ramen",
-        label: "Ramen",
-        type: "Launchpad",
-        className: "",
-        disabled: true
+        ..._dApps["berapaw"],
       }
     ]
   },
@@ -374,9 +369,8 @@ const DAppsView = () => {
   const router = useRouter();
 
   const onNavigateTo = (_dApp: any) => {
-    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${
-      _dApp.name
-    }`;
+    let dAppPath = `/${_dApp.type === "swap" ? "dex" : _dApp.type}/${_dApp.name
+      }`;
     if (_dApp.name === "berps") {
       dAppPath += `?id=BHONEY&tab=0`;
     }
@@ -527,19 +521,9 @@ const DAppsView = () => {
             </div>
           </>
         )}
-
-        <div
-          className="absolute bottom-0 left-0 right-0 hidden md:block"
-          style={{
-            backgroundImage: "url('/images/mobile/dapp-bg.png')",
-            backgroundSize: "100%",
-            backgroundPosition: "top",
-            backgroundRepeat: "no-repeat",
-            width: "100%",
-            height: visibleHeight < 750 ? "40.897vw" : "75.897vw",
-            zIndex: 0
-          }}
-        ></div>
+        <div className="absolute bottom-0 left-0 right-0 hidden md:block">
+          <img className="w-full" src="/images/mobile/dapp-bg.png" alt="dapp-bg" />
+        </div>
       </div>
     </div>
   );

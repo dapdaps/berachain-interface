@@ -102,9 +102,13 @@ const VaultsTable = (props: any) => {
     return {
       ...c,
       renderTitle: (column: any, columnIdx: any) => {
-        const isCustomSort = Object.keys(OrderKeys).some((o) => o === column.dataIndex);
+        const isCustomSort = Object.keys(OrderKeys).some(
+          (o) => o === column.dataIndex
+        );
         if (isCustomSort) {
-          const currentOrder = listOrderKeys.find((k) => k.value === column.dataIndex);
+          const currentOrder = listOrderKeys.find(
+            (k) => k.value === column.dataIndex
+          );
           return (
             <div className="flex items-center gap-[5px]">
               {column.title}
@@ -112,9 +116,13 @@ const VaultsTable = (props: any) => {
                 type="button"
                 className={clsx(
                   "bg-[url('/images/vaults/v2/triangle.svg')] bg-no-repeat bg-center bg-contain w-[14px] h-[14px] transition-all duration-300",
-                  currentOrder?.direction === ORDER_DIRECTION.ASC ? "rotate-180" : "",
-                  currentOrder?.value === listOrderKeys[0]?.value ? "opacity-100" : "opacity-50",
-                  listDefaultOrder && "!opacity-50",
+                  currentOrder?.direction === ORDER_DIRECTION.ASC
+                    ? "rotate-180"
+                    : "",
+                  currentOrder?.value === listOrderKeys[0]?.value
+                    ? "opacity-100"
+                    : "opacity-50",
+                  listDefaultOrder && "!opacity-50"
                 )}
                 onClick={() => {
                   toggleListOrder(column.dataIndex);

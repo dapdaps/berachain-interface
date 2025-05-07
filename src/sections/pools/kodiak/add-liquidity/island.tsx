@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from 'react';
 import Big from "big.js";
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import Button from "../../components/button/increase-button";
@@ -21,6 +21,9 @@ export default function AddLiquidity({
   defaultToken1,
   ...rest
 }: any) {
+  const input0Ref = useRef<any>();
+  const input1Ref = useRef<any>();
+
   const [amount0, setAmount0] = useState<any>("");
   const [amount1, setAmount1] = useState<any>("");
   const [balance0, setBalance0] = useState("");
@@ -84,6 +87,7 @@ export default function AddLiquidity({
   return (
     <>
       <Input
+        ref={input0Ref}
         value={amount0}
         readOnly
         token={token0}
@@ -97,6 +101,7 @@ export default function AddLiquidity({
         prices={prices}
       />
       <Input
+        ref={input1Ref}
         value={amount1}
         readOnly
         token={token1}
@@ -130,6 +135,11 @@ export default function AddLiquidity({
           show={!!selectedToken}
           onClose={() => {
             setSelectedToken(null);
+          }}
+          onSuccess={() => {
+            setSelectedToken(null);
+            input0Ref.current?.updateBalance();
+            input1Ref.current?.updateBalance();
           }}
           from="marketplace"
         />

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { ACTION_TYPE } from '@/sections/vaults/v2/config';
+import IBGTPoints from '@/sections/vaults/v2/components/ibgt-points';
 
 const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type } = props;
@@ -127,8 +128,13 @@ const RewardTopCard = (props: RewardTopCardProps) => {
             className="absolute w-[107px] md:w-[38px] h-[100px] md:h-[36px] object-contain object-center shrink-0 -translate-y-[40px] md:-translate-y-[15px] md:-translate-x-[15px]"
           />
           <div className="pl-[115px] md:pl-[28px] text-black font-CherryBomb text-[32px] md:text-[18px] font-normal leading-[90%]">
-            <div className="">
-              {currentItem.title}
+            <div className="flex items-center gap-[10px]">
+              <div>{currentItem.title}</div>
+              {
+                currentItem.type ===RewardTopCardType.iBgt && (
+                  <IBGTPoints />
+                )
+              }
             </div>
             {
               !isMobile && (
