@@ -65,8 +65,9 @@ const ActionUnionFormWithoutVaultsV2Context = (props: any) => {
     if (
       currentProtocol.protocol === "Smilee" &&
       actionType.value === ACTION_TYPE.WITHDRAW
-    )
+    ) {
       return true;
+    }
 
     if (currentProtocol.protocol === "D2 Finance") {
       if (
@@ -85,8 +86,13 @@ const ActionUnionFormWithoutVaultsV2Context = (props: any) => {
         return true;
       }
     }
+
+    if (currentProtocol.depositDisabled && actionType.value === ACTION_TYPE.DEPOSIT) {
+      return true;
+    }
+
     return false;
-  }, [inputError, loading, currentProtocol.protocol]);
+  }, [inputError, loading, currentProtocol.protocol, currentProtocol.depositDisabled, actionType]);
 
   return (
     <div className={clsx("", className)}>
