@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks';
 import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getTokenLogo } from '@/sections/dashboard/utils';
 import Big from 'big.js';
 import { usePriceStore } from '@/stores/usePriceStore';
@@ -35,6 +35,9 @@ export function useBerapaw(props: any) {
     return provider?.getSigner(account);
   }, [provider, account]);
   const isMobile = useIsMobile();
+
+  const timer1 = useRef<any>();
+  const timer2 = useRef<any>();
 
   const { host, query } = vaults ?? {};
   const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
@@ -365,20 +368,33 @@ export function useBerapaw(props: any) {
         provider
       });
       const [
-        [lbgtTotalAssets],
-        [lbgtRewardRate],
-        [lbgtBalanceOf],
-        [userLbgtBalanceOf],
-        [userLPBalanceOf],
-        [LPVaultTotalSupply],
-        [LPPoolTotalSupply],
-        [LBGTRewardForDuration],
-        [LPRewardForDuration],
-        [userLPVaultBalanceOf],
-        [userClaimLBGTAmount],
-        [userClaimPPAWAmount],
-        [LPPoolId],
+        lbgtTotalAssetsRes,
+        lbgtRewardRateRes,
+        lbgtBalanceOfRes,
+        userLbgtBalanceOfRes,
+        userLPBalanceOfRes,
+        LPVaultTotalSupplyRes,
+        LPPoolTotalSupplyRes,
+        LBGTRewardForDurationRes,
+        LPRewardForDurationRes,
+        userLPVaultBalanceOfRes,
+        userClaimLBGTAmountRes,
+        userClaimPPAWAmountRes,
+        LPPoolIdRes,
       ] = stakeLBGTData;
+      const [lbgtTotalAssets] = lbgtTotalAssetsRes ?? [];
+      const [lbgtRewardRate] = lbgtRewardRateRes ?? [];
+      const [lbgtBalanceOf] = lbgtBalanceOfRes ?? [];
+      const [userLbgtBalanceOf] = userLbgtBalanceOfRes ?? [];
+      const [userLPBalanceOf] = userLPBalanceOfRes ?? [];
+      const [LPVaultTotalSupply] = LPVaultTotalSupplyRes ?? [];
+      const [LPPoolTotalSupply] = LPPoolTotalSupplyRes ?? [];
+      const [LBGTRewardForDuration] = LBGTRewardForDurationRes ?? [];
+      const [LPRewardForDuration] = LPRewardForDurationRes ?? [];
+      const [userLPVaultBalanceOf] = userLPVaultBalanceOfRes ?? [];
+      const [userClaimLBGTAmount] = userClaimLBGTAmountRes ?? [];
+      const [userClaimPPAWAmount] = userClaimPPAWAmountRes ?? [];
+      const [LPPoolId] = LPPoolIdRes ?? [];
       const lbgtTVL = Big(utils.formatUnits(lbgtTotalAssets || "0", bera["lbgt"].decimals)).times(LBGTPrice);
       const lbgtAPR = Big(utils.formatUnits(lbgtRewardRate || "0", 36)).times(Big(31536000).div(utils.formatUnits(lbgtBalanceOf || "1", bera["lbgt"].decimals))).times(100);
 
@@ -389,7 +405,7 @@ export function useBerapaw(props: any) {
           {
             address: bera["stlbgt"].address,
             name: "previewRedeem",
-            params: [userLbgtBalanceOf]
+            params: [userLbgtBalanceOf || "0"]
           },
           {
             address: BexVaultRouteAddress,
@@ -401,14 +417,17 @@ export function useBerapaw(props: any) {
         provider
       });
       const [
-        [lbgtPreviewRedeem],
-        [LPPoolTokens, LPPoolBalanceOf],
+        lbgtPreviewRedeemRes,
+        LPPoolTokensRes,
       ] = stakeLBGTDataWithdraw;
+
+      const [lbgtPreviewRedeem] = lbgtPreviewRedeemRes ?? [];
+      const [LPPoolTokens, LPPoolBalanceOf] = LPPoolTokensRes ?? [];
 
       const userStakedLBGTAmount = utils.formatUnits(lbgtPreviewRedeem || "0", bera["stlbgt"].decimals);
       const userStakedLPAmount = utils.formatUnits(userLPVaultBalanceOf || "0", LPDecimals);
-      const WBERAPoolBalance = utils.formatUnits(LPPoolBalanceOf[0] || "0", bera["wbera"].decimals);
-      const LBGTPoolBalance = utils.formatUnits(LPPoolBalanceOf[1] || "0", bera["lbgt"].decimals);
+      const WBERAPoolBalance = utils.formatUnits(LPPoolBalanceOf?.[0] || "0", bera["wbera"].decimals);
+      const LBGTPoolBalance = utils.formatUnits(LPPoolBalanceOf?.[1] || "0", bera["lbgt"].decimals);
       const LPTvl = Big(WBERAPoolBalance || "0").times(WBERAPrice).plus(Big(LBGTPoolBalance || "0").times(LBGTPrice));
       const LPTokenPrice = Big(LPTvl).div(utils.formatUnits(LPPoolTotalSupply || "0", LPDecimals));
       const LPVaultTvl = Big(utils.formatUnits(LPVaultTotalSupply || "0", LPDecimals) || "0").times(LPTokenPrice);
@@ -505,24 +524,24 @@ export function useBerapaw(props: any) {
 
   useEffect(() => {
     if (!name || name !== "BeraPaw") return;
-    let timer1: any;
-    let timer2: any;
     if (currentTab === "vaults") {
-      timer1 = setTimeout(() => {
-        clearTimeout(timer1);
+      clearTimeout(timer2.current);
+      timer1.current = setTimeout(() => {
+        clearTimeout(timer1.current);
         getTotalData();
       }, 1000);
     }
     if (currentTab === "stake") {
-      timer2 = setTimeout(() => {
-        clearTimeout(timer2);
+      clearTimeout(timer1.current);
+      timer2.current = setTimeout(() => {
+        clearTimeout(timer2.current);
         getStakeData();
       }, 1000);
     }
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      clearTimeout(timer1.current);
+      clearTimeout(timer2.current);
     };
   }, [name, account, provider, currentTab]);
 
