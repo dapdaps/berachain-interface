@@ -42,6 +42,15 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
   balance: "0"
 }));
 
+const DISABLED_DEPOSIT_VAULTS = [
+  {
+    project: "D2 Finance",
+    pool_project: "D2 Finance",
+    pool_address: "0x549943e04f40284185054145c6e4e9568c1d3241",
+    vault_address: "0x36b933554782b108bb9962ac00c498acbceb706d",
+  },
+];
+
 export function useList(notNeedingFetchData?: boolean): List {
   const { account } = useCustomAccount();
   const isMobile = useIsMobile();
@@ -550,6 +559,17 @@ export function useList(notNeedingFetchData?: boolean): List {
       const _data = _list
         // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any, index: number) => {
+          for (const disabledDepositVault of DISABLED_DEPOSIT_VAULTS) {
+            if (
+              disabledDepositVault.project.toLowerCase() === item.project.toLowerCase()
+              && disabledDepositVault.pool_project.toLowerCase() === item.pool_project.toLowerCase()
+              && disabledDepositVault.pool_address.toLowerCase() === item.pool_address.toLowerCase()
+              && disabledDepositVault.vault_address.toLowerCase() === item.vault_address.toLowerCase()
+            ) {
+              item.depositDisabled = true;
+              break;
+            }
+          }
           item.apr = parseJSONString(item.apr, {});
           item.reward_tokens = parseJSONString(item.reward_tokens, []);
           item.tokens = parseJSONString(item.tokens, []);
@@ -775,7 +795,8 @@ export function useList(notNeedingFetchData?: boolean): List {
       setVaultsBoyco(false);
       setBoycoAssetsSelected([]);
     } else {
-      setVaultsBoyco(true);
+      // 👇this condition is not necessary
+      // setVaultsBoyco(true);
       setBoycoAssetsSelected(boycoAssetsRef.current || []);
     }
   };
