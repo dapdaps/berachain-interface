@@ -170,7 +170,9 @@ const Filter = (props: any, ref: any) => {
           disabled={listLoading || listFilterAssetsBalanceLoading}
           value={vaultsBoyco}
           onChange={() => {
-            if (!boycoAssets?.length) return;
+            // if users had no boycoAssets, they cannot close this Switch
+            // 👇DO NOT SET THE CONDITION
+            // if (!boycoAssets?.length) return;
             const _vaultsBoyco = !vaultsBoyco;
             toggleVaultsBoyco?.(_vaultsBoyco);
             if (isMobile) {
@@ -182,24 +184,31 @@ const Filter = (props: any, ref: any) => {
       </div>
       <FilterGroup title="" loading={listLoading || boycoLoading}>
         {boycoAssets && boycoAssets?.length > 0 ? (
-          boycoAssets?.map((it: any, idx: any) => (
-            <AssetButton
-              disabled={!vaultsBoyco}
-              isAutoSelect={true}
-              key={idx}
-              className=""
-              item={it}
-              selected={boycoAssetsSelected?.some(
-                (asset: any) => asset.key === it.key
-              )}
-              onSelect={(_it: any, opts: any) => {
-                onBoycoAssetsSelect(it);
-                if (isMobile && !opts.isAutoSelect) {
-                  toggleListFilterVisible();
-                }
-              }}
-            />
-          ))
+          boycoAssets?.map((it: any, idx: any) => {
+            const _selected = boycoAssetsSelected?.some(
+              (asset: any) => asset.key === it.key
+            );
+            return (
+              <AssetButton
+                disabled={!vaultsBoyco}
+                isAutoSelect={isFromBoyco}
+                key={idx}
+                className={clsx(
+                  "!text-black",
+                  _selected ? "!bg-[rgba(253,213,76,0.5)] !border-[rgba(0,0,0,0.5)]" : "!bg-[rgba(253,213,76,0)] !border-[rgba(0,0,0,0.2)]"
+                )}
+                textClassName={clsx("!text-black")}
+                item={it}
+                selected={_selected}
+                onSelect={(_it: any, opts: any) => {
+                  onBoycoAssetsSelect(it);
+                  if (isMobile && !opts.isAutoSelect) {
+                    toggleListFilterVisible();
+                  }
+                }}
+              />
+            );
+          })
         ) : (
           <div className="w-full flex justify-center items-center">
             <Empty desc="No assets available" />
