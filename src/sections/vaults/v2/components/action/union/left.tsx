@@ -118,7 +118,7 @@ const ActionUnionLeft = (props: any) => {
                           ?.map((token: any, index: number) => token.symbol)
                           .join("-")}
                       </div>
-                      {
+                      {/*{
                         isIBGT && (
                           <div className="shrink-0 flex items-center gap-[4px]">
                             <IBGTPoints
@@ -130,7 +130,7 @@ const ActionUnionLeft = (props: any) => {
                             />
                           </div>
                         )
-                      }
+                      }*/}
                       {
                         protocol?.extra_data?.pp_multiplier && (
                           <IBGTPointsMultiplier record={protocol} contentClassName="!z-[110]" isPopover={false} />
