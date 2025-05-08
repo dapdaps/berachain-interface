@@ -31,7 +31,7 @@ const DashboardPortfolio = (props: Props) => {
   return (
     <div className='h-full overflow-y-auto'>
       <>
-          <div className='flex justify-center gap-3 items-center'>
+          <div className='flex justify-center gap-10 items-center'>
             <div className='hidden lg:block'>
               <h5 className='font-CherryBomb text-black text-center text-[32px] font-[400] leading-[95%]'>
                 {loading ? (
@@ -50,9 +50,7 @@ const DashboardPortfolio = (props: Props) => {
                 <h5 className='font-CherryBomb underline text-black text-center text-[32px] font-[400] leading-[95%] cursor-pointer'>
                 {pointsLoading ? (
                   <Skeleton width={140} height={30} />
-                ) : (
-                  numberFormatter(userPoints?.points || 0, 2, true)
-                )}
+                ) : Big(userPoints?.points ?? 0).toFixed(0)}
               </h5>
               </div>
               <div className='text-[#3D405A] text-[14px] font-[500] text-center mt-[8px]'>
