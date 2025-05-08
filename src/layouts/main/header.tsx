@@ -92,7 +92,7 @@ const MainLayoutHeader = (props: Props) => {
           <div className="cursor-pointer pl-[5px] flex items-center gap-[4px] w-[130px] h-[30px] rounded-[18px] border border-black bg-[#4485FF] active:shadow-none active:translate-y-[3px] shadow-[0_3px_0_0_black] bg-[url('/images/hall/icon-hall-button-bg.svg')] bg-center"
             onClick={() => {
               hallStore.set({
-                currentTab: "bgt"
+                currentTab: "validators"
               })
               router.replace("/hall")
             }}
