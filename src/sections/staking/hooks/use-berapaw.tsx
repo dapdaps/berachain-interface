@@ -174,6 +174,35 @@ export function useBerapaw(props: any) {
     });
   };
 
+  const getPoolTotalSupply = async (vaults: any) => {
+    return new Promise((resolve) => {
+      const calls = vaults.map((it: any) => ({
+        address: it.stakingToken.address,
+        name: "totalSupply",
+        params: []
+      }));
+      multicall({
+        abi: ABI,
+        calls,
+        options: {},
+        multicallAddress,
+        provider
+      }).then((res: any) => {
+        if (res && res.length) {
+          resolve(res.map((it: any, idx: number) => {
+            if (!it) return "0";
+            return ethers.utils.formatUnits(it[0] || "0", vaults[idx].stakingToken?.decimals || 18);
+          }));
+          return;
+        }
+        resolve([]);
+      }).catch((err: any) => {
+        console.log("get PoolTotalSupply error: %o", err);
+        resolve([]);
+      });
+    });
+  };
+
   const { data: totalData, runAsync: getTotalData, loading: totalDataLoading } = useRequest(async () => {
     try {
       const res = await axios.post(host, query({ pageSize: 300 }));
@@ -201,6 +230,7 @@ export function useBerapaw(props: any) {
     const allEarnedAmount: any = await getEarnedAmount(pageData);
     const allBalances: any = await getBalance(pageData);
     const allApproved: any = await getApproved(pageData);
+    const allPoolTotalSupply: any = await getPoolTotalSupply(pageData);
 
     for (let i = 0; i < pageData.length; i++) {
       const it = pageData[i];
@@ -220,7 +250,8 @@ export function useBerapaw(props: any) {
       it.estimateMintAmount = Big(allEarnedAmount[i] || 0).times(Big(1).minus(allPercentual[i] || 0));
       it.approved = allApproved[i] || false;
       it.positionAmount = allBalances[i] || "0";
-      it.price = prices[it.stakingToken?.address?.toLowerCase()] || "1";
+      it.poolTotalSupply = allPoolTotalSupply[i] || 1;
+      it.price = Big(it.dynamicData?.tvl || 0).div(it.poolTotalSupply);
       it.positionAmountUsd = Big(it.positionAmount).times(it.price);
     }
 
@@ -722,4 +753,4 @@ export const ABI = [
     stateMutability: "view",
     type: "function"
   },
-]
+];
