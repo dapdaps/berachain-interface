@@ -53,8 +53,7 @@ const ActionUnionPotions = (props: any) => {
         {[
           "Bex",
           "Kodiak",
-          // ⚠️@Bob#14:56 2025-04-16 Remove the button of Mint LP witch protocol is BurrBear
-          // "BurrBear"
+          "BurrBear",
           // ⚠️@Bob#15:17 2025-04-18 Add the button of Mint LP witch protocol is AquaBera
           "AquaBera"
         ].includes(currentProtocol.lpProtocol) &&
