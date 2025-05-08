@@ -523,6 +523,7 @@ export function useList(notNeedingFetchData?: boolean): List {
   const getData = async () => {
     if (notNeedingFetchData) return;
     setLoading(true);
+    let _data: any = [];
     try {
       const res = await axios.get(`${BASE_URL}/api/go/vaults/list`, {
         params: {
@@ -556,7 +557,7 @@ export function useList(notNeedingFetchData?: boolean): List {
 
       let _dolomite_bera: any;
       let d2FinanceIdx = -1;
-      const _data = _list
+      _data = _list
         // .filter((item: any) => SUPPORTED_PROTOCOLS.includes(item.pool_project))
         .map((item: any, index: number) => {
           for (const disabledDepositVault of DISABLED_DEPOSIT_VAULTS) {
@@ -687,11 +688,10 @@ export function useList(notNeedingFetchData?: boolean): List {
         };
         _data[d2FinanceIdx].token = _data[d2FinanceIdx].tokens[0];
       }
-
-      setData(_data);
     } catch (err: any) {
       console.log("get vaults list error:", err.message);
     }
+    setData(_data);
     setLoading(false);
   };
 

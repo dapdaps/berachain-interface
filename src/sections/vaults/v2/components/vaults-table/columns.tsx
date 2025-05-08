@@ -16,12 +16,13 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { uniq } from "lodash";
 import DoubleTokenIcons from "@/components/token-icon/double";
+import { IBGTPointsMultiplier } from '@/sections/vaults/v2/components/ibgt-points';
 
 export const Pool = (props: any) => {
   const { record, className } = props;
 
   return (
-    <div className={clsx("flex flex-col gap-[1px] items-stretch", className)}>
+    <div className={clsx("flex flex-col gap-[1px] items-stretch pr-[4px]", className)}>
       <div className="text-[16px] flex items-center gap-[4px] whitespace-nowrap w-full">
         <div className="overflow-hidden text-ellipsis">
           {record.tokens.map((tk: any) => tk.symbol).join("-")}
@@ -37,6 +38,14 @@ export const Pool = (props: any) => {
             }}
           />
         )}
+        {
+          record.list.some((vault: any) => !!vault.extra_data?.pp_multiplier) && (
+            <IBGTPointsMultiplier
+              record={record.list.find((vault: any) => !!vault.extra_data?.pp_multiplier)}
+              triggerContainerClassName="shrink-0"
+            />
+          )
+        }
       </div>
       <div
         className="text-[12px] truncate"
@@ -187,10 +196,10 @@ export const APY = (props: any) => {
       popoverRef3.current?.onClose();
     };
 
-    containerRef.current?.addEventListener("scroll", handleScroll);
+    containerRef?.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
+      containerRef?.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -269,10 +278,10 @@ export const Rewards = (props: any) => {
       popoverRef.current?.onClose();
     };
 
-    containerRef.current?.addEventListener("scroll", handleScroll);
+    containerRef?.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
+      containerRef?.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -350,10 +359,10 @@ export const Yours = (props: any) => {
       popoverRef.current?.onClose();
     };
 
-    containerRef.current?.addEventListener("scroll", handleScroll);
+    containerRef?.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
+      containerRef?.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
