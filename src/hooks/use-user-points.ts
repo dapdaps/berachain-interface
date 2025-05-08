@@ -27,7 +27,7 @@ export default function useUserPoints() {
 
   async function getUserHistoryPoints() {
     try {
-      setLoading(true);
+      setUserHistoryLoading(true);
       baseUrl.searchParams.append("path", `api/points/user/${account}/history`);
       baseUrl.searchParams.append("params", "chainId=80094");
       const result = await get(baseUrl.toString());
@@ -35,7 +35,7 @@ export default function useUserPoints() {
     } catch (error) {
       console.error("Failed to fetch user points:", error);
     } finally {
-      setLoading(false);
+      setUserHistoryLoading(false);
     }
   }
 

@@ -26,6 +26,10 @@ const nextConfig = {
       destination: "https://asset.dapdap.net/:path*"
     },
     {
+      source: "/db3/:path*",
+      destination: "https://assets.db3.app/:path*"
+    },
+    {
       source: "/dapdap/:path*",
       destination: BASE_URL + "/:path*"
     },
