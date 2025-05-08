@@ -614,10 +614,11 @@ export function useList(notNeedingFetchData?: boolean): List {
               });
           }
           item.totalApy = totalApy;
+          const poolToken = item.tokens?.find((_token: any) => _token.address.toLowerCase() === item.pool_address.toLowerCase());
           item.token = {
             // symbol: item.name,
             address: _currentTokenAddress(item),
-            decimals: 18
+            decimals: poolToken?.decimals || 18
           };
           item.protocol = item.project;
           item.protocolIcon = getDappLogo(item.project);
