@@ -11,6 +11,9 @@ import UserCard from './user-card';
 import useUser from '@/hooks/use-user';
 import DappCard from './dapp-card';
 import useIsMobile from '@/hooks/use-isMobile';
+import useUserPoints from '@/hooks/use-user-points';
+import Modal from '@/components/modal';
+import ModalPointsInfrared from './modal-points-infrared';
 
 const DashboardPortfolio = (props: Props) => {
   const { loading, dapps, totalBalance, tvls, tvlsLoading } = props;
@@ -18,6 +21,8 @@ const DashboardPortfolio = (props: Props) => {
   const { handleReport } = useClickTracking();
   const { userInfo } = useUser();
   const isMobile = useIsMobile();
+  const { loading: pointsLoading, userPoints = { points: 0 } } = useUserPoints()
+  const [openUserPoints, setOpenUserPoints] = React.useState(false);
 
   useEffect(() => {
     handleReport(isMobile ? '1018-002' : '1011-002');
@@ -26,18 +31,36 @@ const DashboardPortfolio = (props: Props) => {
   return (
     <div className='h-full overflow-y-auto'>
       <>
-        <div className='hidden lg:block'>
-          <h5 className='font-CherryBomb text-black text-center text-[32px] font-[400] leading-[95%]'>
-            {loading ? (
-              <Skeleton width={140} height={30} />
-            ) : (
-              numberFormatter(totalBalance, 2, true, { prefix: '$' })
-            )}
-          </h5>
-          <div className='text-[#3D405A] text-[14px] font-[500] text-center mt-[8px]'>
-            Total assets value
+          <div className='flex justify-center gap-3 items-center'>
+            <div className='hidden lg:block'>
+              <h5 className='font-CherryBomb text-black text-center text-[32px] font-[400] leading-[95%]'>
+                {loading ? (
+                  <Skeleton width={140} height={30} />
+                ) : (
+                  numberFormatter(totalBalance, 2, true, { prefix: '$' })
+                )}
+              </h5>
+              <div className='text-[#3D405A] text-[14px] font-[500] text-center mt-[8px]'>
+                Total assetsss value
+              </div>
+            </div>
+            <div className='flex flex-col items-center' onClick={() => setOpenUserPoints(true)}>
+              <div className='flex items-center gap-2'>
+                <img src="/db3/dapp/infrared.png" className="w-6 h-6 rounded-full" alt="" />
+                <h5 className='font-CherryBomb underline text-black text-center text-[32px] font-[400] leading-[95%] cursor-pointer'>
+                {pointsLoading ? (
+                  <Skeleton width={140} height={30} />
+                ) : (
+                  numberFormatter(userPoints?.points || 0, 2, true)
+                )}
+              </h5>
+              </div>
+              <div className='text-[#3D405A] text-[14px] font-[500] text-center mt-[8px]'>
+                Infrared Points
+              </div>
+            </div>
           </div>
-        </div>
+
         <div className='hidden md:block'>
           <UserCard
             userInfo={userInfo}
@@ -117,6 +140,7 @@ const DashboardPortfolio = (props: Props) => {
           </div>
         )}
       </section>
+      <ModalPointsInfrared open={openUserPoints} onClose={() => setOpenUserPoints(false)}></ModalPointsInfrared>
     </div>
   );
 };
