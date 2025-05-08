@@ -71,7 +71,8 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
               dataKey="date" 
               tick={{ fontSize: 12 }} 
               axisLine={false} 
-              tickLine={false} 
+              tickLine={false}
+              interval={Math.ceil(filteredData.length / 15) - 1}
             />
             <YAxis 
               tick={{ fontSize: 12 }} 
