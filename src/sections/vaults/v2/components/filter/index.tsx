@@ -191,7 +191,7 @@ const Filter = (props: any, ref: any) => {
             return (
               <AssetButton
                 disabled={!vaultsBoyco}
-                isAutoSelect={true}
+                isAutoSelect={isFromBoyco}
                 key={idx}
                 className={clsx(
                   "!text-black",
