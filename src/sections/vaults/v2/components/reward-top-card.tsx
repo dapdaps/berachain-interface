@@ -116,6 +116,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
   return (
     <div
       className={clsx('h-[160px] md:h-[115px] shrink-0 w-full p-[24px_22px_18px_24px] md:p-[8px_10px_10px] rounded-[10px] border border-black', className)}
+      id={`VaultsRewardTopCard_${type}`}
       style={{
         backgroundColor: currentItem.bg,
       }}

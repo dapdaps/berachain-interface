@@ -17,6 +17,7 @@ import SubmitVault from "@/sections/vaults/v2/components/feedback/submit-vault";
 import { useRef } from 'react';
 import Aggregating from "@/sections/vaults/v2/components/aggregating";
 import RewardTopCard from "@/sections/vaults/v2/components/reward-top-card";
+import Announcement from '@/sections/vaults/v2/components/announcement';
 
 const VaultsV2 = (props: any) => {
   const {} = props;
@@ -27,6 +28,7 @@ const VaultsV2 = (props: any) => {
 
   return (
     <VaultsV2ContextProvider value={{ ...vaultsV2, ...list,  containerRef }}>
+      <Announcement />
       <div
         ref={containerRef}
         className="relative w-full min-w-[1257px] min-h-[750px] pb-[56px]"
