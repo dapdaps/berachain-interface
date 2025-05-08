@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 
 const AssetButton = (props: any) => {
-  const { item, className, onSelect, selected, disabled, isAutoSelect } = props;
+  const { item, className, textClassName, onSelect, selected, disabled, isAutoSelect } = props;
 
   useEffect(() => {
     if (!isAutoSelect) return;
@@ -36,7 +36,7 @@ const AssetButton = (props: any) => {
           />
         ))}
       </div>
-      <div className={clsx('text-[14px] leading-[100%]', selected ? 'text-[#F2E6D4]' : 'text-[#392C1D]')}>
+      <div className={clsx('text-[14px] leading-[100%]', selected ? 'text-[#F2E6D4]' : 'text-[#392C1D]', textClassName)}>
         <span className="font-bold">
           {numberFormatter(item.amount, 2, true, {
             isShort: true
