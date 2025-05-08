@@ -5,20 +5,12 @@ import Tabs from "@/components/tabs";
 import BgtPageView from "@/sections/bgt";
 import IbgtPageView from "@/sections/bgt/ibgt";
 import { useHall } from "@/stores/hall";
-import { useParams, useSearchParams } from "next/navigation";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import Validators from "../bgt/validators";
 export default memo(function HallView() {
   const store = useHall()
-  const searchParams = useSearchParams()
-  const defaultCurrentTab = searchParams.get("tab") || store.currentTab
 
-  const [currentTab, setCurrentTab] = useState<string>(["bgt", "ibgt", "validators"].includes(defaultCurrentTab) ? defaultCurrentTab : "bgt");
-  useEffect(() => {
-    store.set({
-      currentTab
-    })
-  }, [currentTab])
+  const currentTab = useMemo(() => ["bgt", "ibgt", "validators"].includes(store.currentTab) ? store.currentTab : "validators")
   return (
     <BearBackground type="hall">
       <div className="py-[22px] flex flex-col items-center h-full overflow-scroll">
@@ -37,7 +29,11 @@ export default memo(function HallView() {
               page="hall"
               maxTabs={1}
               currentTab={currentTab}
-              onChange={(key) => setCurrentTab(key as string)}
+              onChange={(key) => {
+                store.set({
+                  currentTab: key
+                })
+              }}
               tabs={[
                 {
                   key: "bgt",
