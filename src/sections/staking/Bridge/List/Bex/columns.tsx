@@ -91,7 +91,7 @@ export const ColumnPosition = (props: any) => {
 
   return (
     <div className={clsx("flex items-center gap-[8px]", className)}>
-      {numberFormatter(isStake ? data.user_stake?.amount : data.positionAmount, 2, true, { isShort: true, isShortUppercase: true })}
+      {numberFormatter(isStake ? data.user_stake?.amount : data.positionAmountUsd, 2, true, { prefix: isStake ? "" : "$", isShort: true, isShortUppercase: true, round: 0 })}
     </div>
   );
 };

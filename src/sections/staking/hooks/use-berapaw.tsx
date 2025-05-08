@@ -30,7 +30,7 @@ export function useBerapaw(props: any) {
   const { vaults, name } = props;
 
   const { currentTab } = useBeraPawContext();
-  const prices = usePriceStore((store) => store.price);
+  const prices = usePriceStore((store) => store.beraTownPrice);
   const { account, provider } = useCustomAccount();
   const signer = useMemo(() => {
     return provider?.getSigner(account);
@@ -220,6 +220,8 @@ export function useBerapaw(props: any) {
       it.estimateMintAmount = Big(allEarnedAmount[i] || 0).times(Big(1).minus(allPercentual[i] || 0));
       it.approved = allApproved[i] || false;
       it.positionAmount = allBalances[i] || "0";
+      it.price = prices[it.stakingToken?.address?.toLowerCase()] || "1";
+      it.positionAmountUsd = Big(it.positionAmount).times(it.price);
     }
 
     setPageIndex(__pageIndex);
