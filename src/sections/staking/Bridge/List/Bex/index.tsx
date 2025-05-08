@@ -831,8 +831,8 @@ const List = forwardRef<any, any>((props, ref) => {
               onPageChange={(page) => {
                 reload(page);
               }}
-              isLast={false}
-              isFirst={false}
+              isLast={true}
+              isFirst={true}
               loading={loading}
             />
           </div>

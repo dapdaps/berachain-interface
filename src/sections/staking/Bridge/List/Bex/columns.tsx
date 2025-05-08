@@ -5,6 +5,8 @@ import Big from 'big.js';
 import { bera } from '@/configs/tokens/bera';
 import Button from '@/components/button';
 import Link from 'next/link';
+import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import Card from '@/components/card';
 
 export const ColumnPool = (props: any) => {
   const { className, data, nameClassName, iconClassName } = props;
@@ -50,11 +52,31 @@ export const ColumnPool = (props: any) => {
             href={`/bgt/gauge?address=${data.vaultAddress}`}
             prefetch={true}
             className={clsx(
-              "text-black font-Montserrat text-[16px] font-[400] leading-[120%] break-all cursor-pointer underline decoration-dashed underline-offset-2",
+              "flex-1 w-0  text-black font-Montserrat text-[16px] font-[400] leading-[120%] cursor-pointer flex flex-col gap-[5px]",
               nameClassName
             )}
           >
-            {data.stakingToken?.symbol} <span className="inline-block w-[16px] h-[16px] translate-y-0.5 bg-[url('/images/vaults/v2/open-link.svg')] bg-no-repeat bg-center bg-contain"></span>
+            <Popover
+              trigger={PopoverTrigger.Hover}
+              placement={PopoverPlacement.TopLeft}
+              content={(
+                <Card className="!text-[14px] !p-[10px_10px] !rounded-[8px] w-[250px] !leading-[1.2]">
+                  <div className="">
+                    <strong>Staking Token: </strong>{data.stakingToken?.symbol}
+                  </div>
+                  <div className="text-[0.85em] mt-[0.3em]">
+                    Acquired by depositing liquidity into the {data.metadata?.name} Pool on {data.metadata?.protocolName}
+                  </div>
+                </Card>
+              )}
+              closeDelayDuration={0}
+            >
+              <div className="whitespace-nowrap overflow-hidden text-ellipsis underline decoration-dashed underline-offset-2">
+                {data.metadata?.name}&nbsp;
+                <span className="inline-block w-[16px] h-[16px] translate-y-0.5 bg-[url('/images/vaults/v2/open-link.svg')] bg-no-repeat bg-center bg-contain"></span>
+              </div>
+            </Popover>
+            <div className="shrink-0 text-[10px] text-[#666] leading-[9px] font-Montserrat font-medium">{data.metadata?.protocolName}</div>
           </Link>
         )
       }

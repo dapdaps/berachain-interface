@@ -148,7 +148,7 @@ export function useBerapaw(props: any) {
   const getBalance = async (vaults: any) => {
     return new Promise((resolve) => {
       const balanceCalls = vaults.map((it: any) => ({
-        address: it.stakingToken?.address,
+        address: it.vaultAddress,
         name: "balanceOf",
         params: [account]
       }));
