@@ -50,28 +50,26 @@ const ActionUnionPotions = (props: any) => {
               .join("-")}
           </div>
         </div>
-        {
-          [
-            "Bex",
-            "Kodiak",
-            // ⚠️@Bob#14:56 2025-04-16 Remove the button of Mint LP witch protocol is BurrBear
-            // "BurrBear"
-            // ⚠️@Bob#15:17 2025-04-18 Add the button of Mint LP witch protocol is AquaBera
-            "AquaBera",
-          ].includes(currentProtocol.lpProtocol) &&
-            actionType.value === ACTION_TYPE.DEPOSIT && (
-              <button
-                type="button"
-                className="flex justify-center items-center w-[148px] h-[46px] flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[18px] font-semibold leading-[90%]"
-                onClick={() => {
-                  toggleOpenAddLp(true);
-                }}
-              >
-                Mint LP
-              </button>
-          )
-        }
-        {(["D2 Finance"].includes(currentProtocol.lpProtocol) || (currentProtocol?.tokens?.length < 2)) &&
+        {[
+          "Bex",
+          "Kodiak",
+          // ⚠️@Bob#14:56 2025-04-16 Remove the button of Mint LP witch protocol is BurrBear
+          // "BurrBear"
+          // ⚠️@Bob#15:17 2025-04-18 Add the button of Mint LP witch protocol is AquaBera
+          "AquaBera"
+        ].includes(currentProtocol.lpProtocol) &&
+          actionType.value === ACTION_TYPE.DEPOSIT && (
+            <button
+              type="button"
+              className="flex justify-center items-center w-[148px] h-[46px] flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[18px] font-semibold leading-[90%]"
+              onClick={() => {
+                toggleOpenAddLp(true);
+              }}
+            >
+              Mint LP
+            </button>
+          )}
+        {["D2 Finance"].includes(currentProtocol.lpProtocol) &&
           actionType.value === ACTION_TYPE.DEPOSIT && (
             <button
               type="button"
@@ -86,7 +84,9 @@ const ActionUnionPotions = (props: any) => {
       </div>
       {swapToken && (
         <SwapModal
-          defaultInputCurrency={swapToken?.symbol === "BERA" ? void 0 : bera["bera"]}
+          defaultInputCurrency={
+            swapToken?.symbol === "BERA" ? void 0 : bera["bera"]
+          }
           defaultOutputCurrency={swapToken}
           outputCurrencyReadonly={true}
           show={!!swapToken}

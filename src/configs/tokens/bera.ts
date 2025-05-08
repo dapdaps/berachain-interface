@@ -392,7 +392,7 @@ export const bera: { [key: string]: Token } = {
     symbol: "pPAW",
     name: "Pre-TGE Paw",
     decimals: 18,
-    icon: "/assets/tokens/ppaw.svg",
+    icon: "/assets/tokens/ppaw.svg"
   },
   nome: {
     chainId: CHAIN_ID,
