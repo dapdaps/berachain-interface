@@ -20,8 +20,9 @@ import { useAction } from '@/sections/vaults/v2/components/action/union/berapaw/
 import useIsMobile from '@/hooks/use-isMobile';
 import { useBeraPawContext } from '@/sections/staking/dapps/berapaw/context';
 import { bera } from '@/configs/tokens/bera';
+import Link from 'next/link';
 
-const pageSize = 10;
+const pageSize = 9;
 export const LPStakingWBERALBGTPoolAddress = "0x705fc16ba5a1eb67051934f2fb17eacae660f6c7";
 export const LPStakingWBERALBGTVaultAddress = "0xa77dee7bc36c463bB3E39804c9C7b13427D712B0";
 
@@ -259,6 +260,7 @@ export function useBerapaw(props: any) {
     const _list: any = [
       {
         type: "stake",
+        description: "Stake LBGT and autocompound boosted incentives and native fees.",
         pool_address: bera["lbgt"].address,
         vault_address: bera["stlbgt"].address,
         address: bera["stlbgt"].address,
@@ -274,6 +276,11 @@ export function useBerapaw(props: any) {
       },
       {
         type: "stake",
+        description: (
+          <div className="">
+            Stake <Link href={`/dex/bex/pools`} className="underline underline-offset-2 whitespace-nowrap flex-nowrap"><span>LBGT-WBERA LP</span> <span className="inline-block w-[16px] h-[16px] translate-y-0.5 bg-[url('/images/vaults/v2/open-link.svg')] bg-no-repeat bg-center bg-contain"></span></Link> tokens to earn LBGT and pPaw rewards.
+          </div>
+        ),
         pool_address: LPStakingWBERALBGTPoolAddress,
         vault_address: LPStakingWBERALBGTVaultAddress,
         address: LPStakingWBERALBGTVaultAddress,
@@ -437,6 +444,7 @@ export function useBerapaw(props: any) {
 
       // stake LBGT
       _list[0].apr = lbgtAPR;
+      _list[0].apy = Big(1).plus(Big(_list[0].apr).div(100).div(365)).pow(365).minus(1).times(100);
       _list[0].reward_tokens[0].apr = lbgtAPR;
       _list[0].tvl = lbgtTVL;
       _list[0].user_stake = {
@@ -447,6 +455,7 @@ export function useBerapaw(props: any) {
 
       // stake LBGT-WBERA
       _list[1].apr = Big(LBGTApr).plus(PPAWApr);
+      _list[1].apy = Big(1).plus(Big(_list[1].apr).div(100).div(365)).pow(365).minus(1).times(100);
       _list[1].reward_tokens[0].apr = PPAWApr;
       _list[1].reward_tokens[1].apr = LBGTApr;
       _list[1].tvl = LPVaultTvl;
@@ -454,16 +463,18 @@ export function useBerapaw(props: any) {
         amount: userStakedLPAmount,
         usd: Big(userStakedLPAmount || 0).times(LPTokenPrice).toString(),
       };
+      const rewardToken0Amount = utils.formatUnits(userClaimPPAWAmount || "0", _list[1].reward_tokens[0].decimals);
+      const rewardToken1Amount = utils.formatUnits(userClaimLBGTAmount || "0", _list[1].reward_tokens[1].decimals);
       _list[1].user_reward = [
         {
           ..._list[1].reward_tokens[0],
-          amount: userClaimPPAWAmount,
-          usd: Big(userClaimPPAWAmount || 0).times(pPawPrice).toString(),
+          amount: rewardToken0Amount,
+          usd: Big(rewardToken0Amount || 0).times(pPawPrice).toString(),
         },
         {
           ..._list[1].reward_tokens[1],
-          amount: userClaimLBGTAmount,
-          usd: Big(userClaimLBGTAmount || 0).times(LBGTPrice).toString(),
+          amount: rewardToken1Amount,
+          usd: Big(rewardToken1Amount || 0).times(LBGTPrice).toString(),
         }
       ];
     } catch (err: any) {
@@ -529,14 +540,14 @@ export function useBerapaw(props: any) {
       timer1.current = setTimeout(() => {
         clearTimeout(timer1.current);
         getTotalData();
-      }, 1000);
+      }, 0);
     }
     if (currentTab === "stake") {
       clearTimeout(timer1.current);
       timer2.current = setTimeout(() => {
         clearTimeout(timer2.current);
         getStakeData();
-      }, 1000);
+      }, 0);
     }
 
     return () => {
