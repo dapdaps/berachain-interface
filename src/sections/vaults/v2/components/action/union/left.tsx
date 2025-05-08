@@ -123,7 +123,7 @@ const ActionUnionLeft = (props: any) => {
                           <div className="shrink-0">
                             <IBGTPoints
                               isPopover={false}
-                              className="!text-[12px] !font-[400] !h-[18px] !px-[6px]"
+                              className=""
                               cardClassName=""
                               contentClassName="!z-[110]"
                               placement={PopoverPlacement.TopLeft}
