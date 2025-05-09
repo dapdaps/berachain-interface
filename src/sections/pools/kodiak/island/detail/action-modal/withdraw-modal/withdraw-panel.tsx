@@ -3,17 +3,12 @@ import Button from "@/components/button";
 import ModalLoading from "../loading";
 import useWithdraw from "../../../hooks/use-withdraw";
 
-export default function WithdrawPanel({
-  data,
-  amounts,
-  onSuccess,
-  onError
-}: any) {
+export default function WithdrawPanel({ data, amounts, onSuccess, onError, info }: any) {
   const { amount0, amount1, amount } = amounts;
-  console.log('=====amount', amount)
   const { loading, onWithdraw } = useWithdraw({
     data,
     amount,
+    info,
     onSuccess,
     onError
   });

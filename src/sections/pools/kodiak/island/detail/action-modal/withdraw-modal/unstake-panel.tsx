@@ -23,7 +23,7 @@ export default function UnstakePanel({
     return [_ids, _a.div(1e18).toString(), _a0.toString(), _a1.toString()];
   }, [selectedItems]);
   const { loading, onUnstake } = useUnstake({
-    farmContract: data.farmAddress,
+    farmContract: data.farm?.id,
     kekIds,
     token: { symbol: data.symbol },
     amount,

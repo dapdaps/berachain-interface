@@ -78,6 +78,7 @@ export default function StakeModal({
             amount={liquidity}
             lockData={lockData}
             onSuccess={onSuccess}
+            info={info}
           />
         )}
       </>

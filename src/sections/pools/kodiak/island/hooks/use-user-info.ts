@@ -2,35 +2,36 @@ import { Contract } from "ethers";
 import { useEffect, useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import islandAbi from "../abi/island";
+import poolV2Abi from "../../../abi/pool-v2";
 import farmAbi from "../abi/farm";
+import bexFarmAbi from "../abi/bex-farm";
 import { getTokenAmountsV2 } from "../../../helpers";
 import Big from "big.js";
 
-const rewardToken = {
-  icon: "/assets/tokens/kodiak.png",
-  symbol: "KDK"
-};
-
-export default function useUserInfo({
-  islandContract,
-  farmContract,
-  token0,
-  token1,
-  price
-}: any) {
-  const [info, setInfo] = useState<any>({
-    rewardToken
-  });
+export default function useUserInfo(data: any) {
+  const [info, setInfo] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const { account, provider } = useCustomAccount();
 
   const queryInfo = async () => {
     try {
       setLoading(true);
-      const IslandContract = new Contract(islandContract, islandAbi, provider);
+
+      const IslandContract = new Contract(
+        data.id,
+        data.type === "v2" ? poolV2Abi : islandAbi,
+        provider
+      );
       const balanceRes = await IslandContract.balanceOf(account);
-      const reverses = await IslandContract.getUnderlyingBalances();
-      const totalSupply = await IslandContract.totalSupply();
+
+      const reverses = await IslandContract[
+        data.type === "v2" ? "getReserves" : "getUnderlyingBalances"
+      ]();
+
+      const totalSupply = Big(data.tokenLp.totalSupply || 0)
+        .mul(10 ** data.tokenLp.decimals)
+        .toString();
+
       const reserve0 = reverses[0].toString();
       const reserve1 = reverses[1].toString();
 
@@ -39,7 +40,7 @@ export default function useUserInfo({
         .toString();
 
       const balanceUsd = Big(balance || 0)
-        .mul(price || 0)
+        .mul(data.tokenLp.price || 0)
         .toString();
 
       let locked = null;
@@ -47,12 +48,19 @@ export default function useUserInfo({
       let withdrawLp = Big(0);
       let earnedRes = [];
 
-      if (farmContract) {
-        const FarmContract = new Contract(farmContract, farmAbi, provider);
-        const stakedRes = await FarmContract.lockedStakesOf(account);
+      if (data.farm.id) {
+        const FarmContract = new Contract(
+          data.farm.id,
+          data.farm.provider === "kodiak" ? farmAbi : bexFarmAbi,
+          provider
+        );
+        const stakedRes =
+          data.farm.provider === "kodiak"
+            ? await FarmContract.lockedStakesOf(account)
+            : await FarmContract.balanceOf(account);
         earnedRes = await FarmContract.earned(account);
 
-        if (stakedRes && stakedRes.length) {
+        if (stakedRes && stakedRes.length && data.farm.provider === "kodiak") {
           let totalAmount = Big(0);
           const items: any = [];
 
@@ -66,8 +74,8 @@ export default function useUserInfo({
               totalSupply: totalSupply.toString(),
               reserve0,
               reserve1,
-              token0,
-              token1
+              token0: data.token0,
+              token1: data.token1
             });
             items.push({
               multiplier: Big(item.lock_multiplier.toString())
@@ -84,15 +92,31 @@ export default function useUserInfo({
             if (unlocked)
               withdrawLp = withdrawLp.add(item.liquidity.toString());
           });
+
           total = total.add(totalAmount);
           const amount = totalAmount.div(1e18).toString();
           locked = {
             amount,
             amountUsd: Big(amount || 0)
-              .mul(price || 0)
+              .mul(data.tokenLp.price || 0)
               .toString(),
             items
           };
+        }
+
+        if (data.farm.provider === "bgt") {
+          total = total.add(stakedRes ? stakedRes.toString() : 0);
+          const amount = Big(stakedRes ? stakedRes.toString() : 0)
+            .div(1e18)
+            .toString();
+          locked = {
+            amount,
+            amountUsd: Big(amount || 0)
+              .mul(data.tokenLp.price || 0)
+              .toString(),
+            items: []
+          };
+          earnedRes = [earnedRes];
         }
       }
 
@@ -101,8 +125,8 @@ export default function useUserInfo({
         totalSupply: totalSupply.toString(),
         reserve0,
         reserve1,
-        token0,
-        token1
+        token0: data.token0,
+        token1: data.token1
       });
 
       const { amount0: withdrawAmount0, amount1: withdrawAmount1 } =
@@ -111,8 +135,8 @@ export default function useUserInfo({
           totalSupply: totalSupply.toString(),
           reserve0,
           reserve1,
-          token0,
-          token1
+          token0: data.token0,
+          token1: data.token1
         });
 
       const { amount0: balanceAmount0, amount1: balanceAmount1 } =
@@ -121,8 +145,8 @@ export default function useUserInfo({
           totalSupply: totalSupply.toString(),
           reserve0,
           reserve1,
-          token0,
-          token1
+          token0: data.token0,
+          token1: data.token1
         });
 
       setInfo({
@@ -133,22 +157,23 @@ export default function useUserInfo({
         total: total.toString(),
         balanceUsd,
         balance,
-        rewardToken,
         locked,
-        earned: Big(earnedRes?.[0] || 0)
-          .div(1e18)
-          .toString(),
+        earned: earnedRes?.map((it: any) =>
+          Big(it?.toString() || 0)
+            .div(1e18)
+            .toString()
+        ),
         withdraw: {
           amount: withdrawLp.toString(),
           amount0: withdrawAmount0,
           amount1: withdrawAmount1
-        }
+        },
+        reserve0,
+        reserve1
       });
     } catch (err) {
       console.log(err);
-      setInfo({
-        rewardToken
-      });
+      setInfo({});
     } finally {
       setLoading(false);
     }

@@ -24,7 +24,7 @@ interface Props {
   bodyClassName?: string;
   loading?: boolean;
   withoutHeader?: boolean;
-  onChangeSort?: (sort: string) => void;
+  onChangeSort?: (sort: string, type: number) => void;
   itemClassName?: string;
   itemContainerClassName?: string;
   defaultSort?: boolean;
@@ -36,7 +36,7 @@ export default function List({
   maxPage,
   onPageChange,
   bodyClassName,
-  onItemClick = () => { },
+  onItemClick = () => {},
   onChangeSort,
   loading,
   itemClassName,
@@ -53,7 +53,7 @@ export default function List({
       setData([]);
       return;
     }
-    if (!sortItem) {
+    if (!sortItem || onChangeSort) {
       setData(list);
       return;
     }
@@ -79,12 +79,10 @@ export default function List({
                   onClick={() => {
                     if (item.sort) {
                       if (onChangeSort) {
-                        setSortType(-sortType);
-                        onChangeSort(item.key, -sortType)
-                      } else {
-                        setSortType(-sortType);
-                        setSortItem(item.key);
+                        onChangeSort(item.key, -sortType);
                       }
+                      setSortType(-sortType);
+                      setSortItem(item.key);
                     }
                   }}
                   className="text-[14px] font-medium pl-[10px] py-[5px] text-center flex gap-[10px] items-center"

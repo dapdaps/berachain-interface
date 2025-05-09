@@ -33,7 +33,7 @@ export default function Mobile({
               earned={info?.earned}
               rewardToken={info?.rewardToken}
               onSuccess={onSuccess}
-              farmContract={data.farmAddress}
+              farm={data.farm}
             />
           </>
         )}

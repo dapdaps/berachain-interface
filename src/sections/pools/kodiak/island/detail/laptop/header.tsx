@@ -34,21 +34,21 @@ export default function Header({ onBack = () => {}, data }: any) {
         </div>
         <div className="flex gap-[60px] mt-[8px]">
           <div>
-            <div className="text-[14px] font-medium">TVL</div>
+            <div className="text-[14px] font-medium">Pool TVL</div>
             <div className="text-[18px] font-semibold">
-              ${balanceShortFormated(data.tvl, 2)}
+              ${balanceShortFormated(data.poolTvl, 2)}
             </div>
           </div>
           <div>
-            <div className="text-[14px] font-medium">Island APR</div>
+            <div className="text-[14px] font-medium">APR</div>
             <div className="text-[18px] font-semibold">
               {Number(data?.apr || 0).toFixed(2)}%
             </div>
           </div>
           <div>
-            <div className="text-[14px] font-medium">Volume (All Time)</div>
+            <div className="text-[14px] font-medium">Farm TVL</div>
             <div className="text-[18px] font-semibold">
-              ${balanceShortFormated(data.volume, 2)}
+              ${data.farm?.tvl ? balanceShortFormated(data.farm.tvl, 2) : "-"}
             </div>
           </div>
         </div>
