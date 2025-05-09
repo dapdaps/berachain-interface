@@ -161,7 +161,7 @@ export default function useUserInfo(data: any) {
         earned: earnedRes?.map((it: any) =>
           Big(it?.toString() || 0)
             .div(1e18)
-            .toString()
+            .toFixed(18)
         ),
         withdraw: {
           amount: withdrawLp.toString(),

@@ -129,14 +129,14 @@ export default function SelectPanel({
             Withdraw from Staking
           </div>
           <div className="text-[14px] font-medium">
-            {balanceFormated(stakedAmounts.amount0, 4)}
-            {data.token0.symbol}/{balanceFormated(stakedAmounts.amount1, 4)}
+            {balanceFormated(stakedAmounts.amount0, 4)} {data.token0.symbol}/
+            {balanceFormated(stakedAmounts.amount1, 4)}
             {data.token1.symbol}
           </div>
         </div>
         <div className="flex items-center justify-between mt-[6px]">
           <div className="text-[14px] font-medium	text-[#3D405A]">
-            Withdraw from Island
+            Withdraw from Pool
           </div>
           <div className="text-[14px] font-medium">
             {balanceFormated(islandAmount0, 4)}

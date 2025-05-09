@@ -51,7 +51,7 @@ export default function WithdrawModal({
 
   return (
     <Basic
-      title={"Withdraw from Island"}
+      title={"Withdraw from Pool"}
       open={open}
       onClose={() => {
         onClose();
