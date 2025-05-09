@@ -80,22 +80,29 @@ const Item = ({ record, setSelectedRecord }: any) => {
       </div>
       <div className="flex mt-[16px]">
         <div className="w-1/3 flex flex-col items-start">
-          <div className="text-[14px] text-[#3D405A] font-medium">TVL</div>
+          <div className="text-[14px] text-[#3D405A] font-medium">Pool TVL</div>
           <div className="text-[15px] font-semibold">
-            ${balanceShortFormated(record["tvl"], 2)}
+            ${balanceShortFormated(record["poolTvl"], 2)}
           </div>
         </div>
         <div className="w-1/3 flex flex-col items-center">
-          <div className="text-[14px] text-[#3D405A] font-medium">Volume</div>
+          <div className="text-[14px] text-[#3D405A] font-medium">Farm TVL</div>
           <div className="text-[15px] font-semibold">
-            ${balanceShortFormated(record["volume"], 2)}
+            ${record.farm?.tvl ? balanceShortFormated(record.farm.tvl, 2) : "-"}
           </div>
         </div>
         <div className="w-1/3 flex flex-col items-end">
           <div className="text-[14px] text-[#3D405A] font-medium">APR</div>
-          <div className="text-[15px] font-semibold">
-            {record.apr ? Big(record.apr).toFixed(2) : "-"}%
+          <div className="flex items-center gap-[4px] text-[15px] font-semibold">
+            <span>{`${record.apr ? Big(record.apr).toFixed(2) : "-"}%`}</span>
+            {record.farm?.provider === "bgt" && (
+              <img
+                src="/images/icon-bgt.svg"
+                className="w-[20px] h-[20px] rounded-full"
+              />
+            )}
           </div>
+          <div className=""></div>
         </div>
       </div>
     </div>

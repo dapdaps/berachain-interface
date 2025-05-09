@@ -1,7 +1,7 @@
 import List from "@/sections/marketplace/components/list";
 import { balanceShortFormated } from "@/utils/balance";
 import { numberFormatter } from "@/utils/number-formatter";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import PoolTable from "../../../components/pool-table";
 import Big from "big.js";
 
@@ -15,26 +15,36 @@ export default function Laptop({
   onSelect,
   loading
 }: any) {
-  const list = useMemo(
-    () =>
-      pools.filter((pool: any) => {
-        let flag = true;
-        if (
-          searchVal &&
-          !(
-            pool.token0.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token0.symbol
-              .toLowerCase()
-              .includes(searchVal.toLowerCase()) ||
-            pool.token1.name.toLowerCase().includes(searchVal.toLowerCase()) ||
-            pool.token1.symbol.toLowerCase().includes(searchVal.toLowerCase())
-          )
+  const [sort, setSort] = useState<any>({});
+
+  const list = useMemo(() => {
+    const _pools = pools.filter((pool: any) => {
+      let flag = true;
+      if (
+        searchVal &&
+        !(
+          pool.token0.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+          pool.token0.symbol.toLowerCase().includes(searchVal.toLowerCase()) ||
+          pool.token1.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+          pool.token1.symbol.toLowerCase().includes(searchVal.toLowerCase())
         )
-          flag = false;
-        return flag;
-      }),
-    [pools, searchVal]
-  );
+      )
+        flag = false;
+      return flag;
+    });
+
+    if (sort.key) {
+      _pools.sort((a: any, b: any) => {
+        if (sort.type === 1) {
+          return a[sort.key] - b[sort.key];
+        } else {
+          return b[sort.key] - a[sort.key];
+        }
+      });
+    }
+
+    return _pools;
+  }, [pools, searchVal, sort]);
 
   const maxPage = useMemo(() => {
     return Math.ceil(list.length / PAGE_SIZE) || 1;
@@ -59,7 +69,7 @@ export default function Laptop({
       title: "Pool",
       key: "pool",
       sort: false,
-      width: "45%",
+      width: "35%",
       render: (item: any, index: number) => {
         return <PoolTable item={item} />;
       }
@@ -68,29 +78,52 @@ export default function Laptop({
       title: "Apr",
       key: "apr",
       sort: true,
-      width: "20%",
+      width: "15%",
       render: (item: any, index: number) => {
-        return Big(item?.["apr"] ?? 0).gt(0)
-          ? `${numberFormatter(item["apr"], 2, true)}%`
+        return (
+          <div className="flex items-center gap-[4px]">
+            <span>
+              {Big(item?.["apr"] ?? 0).gt(0)
+                ? `${numberFormatter(item["apr"], 2, true)}%`
+                : "-"}
+            </span>
+            {item.farm?.provider === "bgt" && (
+              <img
+                src="/images/icon-bgt.svg"
+                className="w-[20px] h-[20px] rounded-full"
+              />
+            )}
+          </div>
+        );
+      }
+    },
+    {
+      title: "Pool TVL",
+      key: "poolTvl",
+      sort: true,
+      width: "15%",
+      render: (item: any, index: number) => {
+        return item["poolTvl"] ? balanceShortFormated(item["poolTvl"], 2) : "-";
+      }
+    },
+    {
+      title: "Farm TVL",
+      key: "farmTvl",
+      sort: true,
+      width: "15%",
+      render: (item: any, index: number) => {
+        return item.farm?.tvl ? balanceShortFormated(item.farm.tvl, 2) : "-";
+      }
+    },
+    {
+      title: "Holdings",
+      key: "balanceUSD",
+      sort: true,
+      width: "15%",
+      render: (item: any, index: number) => {
+        return item.balanceUSD
+          ? "$" + balanceShortFormated(item.balanceUSD, 2)
           : "-";
-      }
-    },
-    {
-      title: "TVL",
-      key: "tvl",
-      sort: true,
-      width: "15%",
-      render: (item: any, index: number) => {
-        return item["tvl"] ? balanceShortFormated(item["tvl"], 2) : "-";
-      }
-    },
-    {
-      title: "Volume",
-      key: "volume",
-      sort: true,
-      width: "15%",
-      render: (item: any, index: number) => {
-        return item["volume"] ? balanceShortFormated(item["volume"], 2) : "-";
       }
     }
   ];
@@ -107,6 +140,12 @@ export default function Laptop({
           onSelect(item);
         }}
         loading={loading}
+        onChangeSort={(sort: string, type: number) => {
+          setSort({
+            key: sort,
+            type
+          });
+        }}
       />
     </div>
   );

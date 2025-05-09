@@ -4,9 +4,10 @@ import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import farmAbi from "../abi/farm";
+import bexFarmAbi from "../abi/bex-farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
-
-export default function useClaim({ earned, farmContract, onSuccess }: any) {
+import Big from "big.js";
+export default function useClaim({ earned, farm, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -17,8 +18,22 @@ export default function useClaim({ earned, farmContract, onSuccess }: any) {
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const FarmContract = new Contract(farmContract, farmAbi, signer);
-      const tx = await FarmContract.getReward();
+      const FarmContract = new Contract(
+        farm.id,
+        farm.provider === "kodiak" ? farmAbi : bexFarmAbi,
+        signer
+      );
+      const params = farm.provider === "kodiak" ? [] : [account, account];
+
+      const estimateGas = await FarmContract.estimateGas.getReward(...params);
+
+      console.log("estimateGas", estimateGas.toString());
+
+      const tx = await FarmContract.getReward(...params, {
+        gasLimit: estimateGas
+          ? Big(estimateGas.toString()).mul(1.2).toFixed(0)
+          : 5000000
+      });
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
@@ -36,13 +51,14 @@ export default function useClaim({ earned, farmContract, onSuccess }: any) {
       addAction?.({
         type: "Staking",
         action: "Claim",
-        tokens: [{ symbol: "KDK" }],
-        amount: earned,
+        tokens: farm.rewardTokens,
+        amounts: earned,
         template: "Kodiak",
         status: status,
         transactionHash,
         chain_id: DEFAULT_CHAIN_ID,
-        sub_type: "Claim"
+        sub_type: "Claim",
+        extra_data: {}
       });
     } catch (err: any) {
       toast.dismiss(toastId);

@@ -3,15 +3,14 @@ import Button from "@/components/button";
 import ModalLoading from "../loading";
 import useApprove from "@/hooks/use-approve";
 import { useEffect, useMemo } from "react";
-import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function ApprovePanel({ data, amount, onSuccess }: any) {
   const token = useMemo(
     () => ({
-      address: data.id,
-      symbol: data.symbol,
-      chainId: DEFAULT_CHAIN_ID,
-      decimals: 18,
+      address: data.tokenLp.id,
+      symbol: data.tokenLp.symbol,
+      chainId: 80094,
+      decimals: data.tokenLp.decimals,
       icon: data.icon
     }),
     [data]
@@ -21,7 +20,7 @@ export default function ApprovePanel({ data, amount, onSuccess }: any) {
     token,
     amount,
     isMax: true,
-    spender: data.farmAddress,
+    spender: data.farm?.id,
     onSuccess() {}
   });
 
@@ -33,14 +32,18 @@ export default function ApprovePanel({ data, amount, onSuccess }: any) {
     <ModalLoading title="Checking Allowance" />
   ) : (
     <>
-      <AllowancePanel amount={amount} allowance={allowance} token={token} />
+      <AllowancePanel
+        amount={amount}
+        allowance={allowance}
+        token={data.tokenLp}
+      />
       <Button
         loading={approving}
         type="primary"
         className="w-full h-[46px] mt-[16px]"
         onClick={approve}
       >
-        Approve {token.symbol}
+        Approve {data.tokenLp.symbol}
       </Button>
     </>
   );

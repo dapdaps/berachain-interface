@@ -22,11 +22,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
   const [balance1, setBalance1] = useState("");
   const [receives, setReceives] = useState<any>();
   const { account, chainId } = useCustomAccount();
-  const { querying, queryAmounts } = useDepositAmount({
-    islandContract: data.id,
-    token0: data.token0,
-    token1: data.token1
-  });
+  const { querying, queryAmounts } = useDepositAmount(data, info);
 
   const errorTips = useMemo(() => {
     if (!amount0 || !amount1) return "Enter an amount";
@@ -96,9 +92,9 @@ export default function Deposit({ data, info, onSuccess }: any) {
               </div>
               <div>
                 (${" "}
-                {receives?.received && data.price
+                {receives?.received && data.tokenLp.price
                   ? balanceFormated(
-                      Big(receives.received).mul(data.price).toString(),
+                      Big(receives.received).mul(data.tokenLp.price).toString(),
                       5
                     )
                   : "-"}{" "}
@@ -119,11 +115,13 @@ export default function Deposit({ data, info, onSuccess }: any) {
                   : "-"}{" "}
                 {data.symbol}
               </div>
-              {receives?.miniReceived && data.price && (
+              {receives?.miniReceived && data.tokenLp.price && (
                 <div>
                   (${" "}
                   {balanceFormated(
-                    Big(receives.miniReceived).mul(data.price).toString(),
+                    Big(receives.miniReceived)
+                      .mul(data.tokenLp.price)
+                      .toString(),
                     5
                   )}
                   )
@@ -133,7 +131,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
           )}
         </div>
       </div>
-      {!!data.farmAddress && (
+      {!!data.farm?.id && (
         <SwitchTabs
           tabs={[
             { label: "Deposit only", value: "deposit" },

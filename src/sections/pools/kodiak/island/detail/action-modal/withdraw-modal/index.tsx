@@ -107,6 +107,7 @@ export default function WithdrawModal({
               amounts={withdrawData}
               onSuccess={onSuccess}
               onError={() => {}}
+              info={info}
             />
           )}
         </>

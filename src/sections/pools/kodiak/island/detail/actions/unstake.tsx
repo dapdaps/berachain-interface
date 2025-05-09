@@ -1,18 +1,30 @@
 import Button from "@/components/button";
-import { useState } from "react";
+import Input from "@/sections/pools/components/deposit-amounts/input";
+import { useMemo, useState } from "react";
 import useUnstake from "../../hooks/use-unstake";
 import Big from "big.js";
 import { remove, uniq } from "lodash";
 import Item from "./stake-item";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function Unstake({ data, info, onSuccess }: any) {
   const [amount, setAmount] = useState("");
   const [kekIds, setKekIds] = useState<any>([]);
   const [amount0, setAmount0] = useState("");
   const [amount1, setAmount1] = useState("");
+  const [balance, setBalance] = useState("");
+  const token = useMemo(
+    () => ({
+      address: data.farm.id,
+      symbol: data.tokenLp.symbol,
+      chainId: DEFAULT_CHAIN_ID,
+      decimals: 18,
+      icon: data.icon
+    }),
+    [data]
+  );
 
   const { loading, onUnstake } = useUnstake({
-    farmContract: data.farmAddress,
     kekIds,
     token: { symbol: data.symbol },
     amount,
@@ -44,26 +56,50 @@ export default function Unstake({ data, info, onSuccess }: any) {
     setAmount1(_a1.toString());
   };
 
+  const errorTips = useMemo(() => {
+    if (data.farm.provider === "kodiak") {
+      if (!kekIds.length) return "Select a position";
+    }
+    if (data.farm.provider === "bgt") {
+      if (!amount) return "Enter an amount";
+      if (Big(balance || 0).lt(amount)) return "Insufficient Balance";
+    }
+
+    return "";
+  }, [amount, balance, kekIds]);
+
   return (
     <>
-      {info.locked.items.map((item: any) => (
-        <Item
-          key={item.kek_id}
-          token0={data.token0}
-          token1={data.token1}
-          item={item}
-          onClick={onSelect}
-          active={kekIds.includes(item.kek_id)}
+      {data.farm.provider === "kodiak" &&
+        info.locked.items.map((item: any) => (
+          <Item
+            key={item.kek_id}
+            token0={data.token0}
+            token1={data.token1}
+            item={item}
+            onClick={onSelect}
+            active={kekIds.includes(item.kek_id)}
+          />
+        ))}
+      {data.farm.provider === "bgt" && (
+        <Input
+          value={amount}
+          token={token}
+          className="mt-[16px]"
+          setValue={(val: any) => {
+            setAmount(val);
+          }}
+          onLoad={setBalance}
         />
-      ))}
+      )}
       <Button
-        disabled={!kekIds.length}
+        disabled={!!errorTips}
         type="primary"
         className="w-full h-[46px] mt-[16px]"
         loading={loading}
         onClick={onUnstake}
       >
-        {!!kekIds.length ? "Unstake" : "None Positions"}
+        {errorTips || "Unstake"}
       </Button>
     </>
   );
