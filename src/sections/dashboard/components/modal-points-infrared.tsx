@@ -56,8 +56,8 @@ const ModalPointsInfrared = ({
         </div>
         </div>
         {
-          userHistoryPoints && userHistoryPoints.history.length > 0 && (
-            <PointsChart timeRange={timeRange} history={userHistoryPoints.history}></PointsChart>
+          userHistoryPoints && userHistoryPoints?.length > 0 && (
+            <PointsChart timeRange={timeRange} history={userHistoryPoints}></PointsChart>
           ) 
         }
     </div>
