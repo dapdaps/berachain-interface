@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { bera } from "@/configs/tokens/bera";
 import { asyncFetch } from "@/utils/http";
+import { multicall } from "@/utils/multicall";
 
 export default function useInfraredData(props: any) {
   const {
@@ -202,32 +203,6 @@ export default function useInfraredData(props: any) {
     }
   ];
 
-  const MulticallContract =
-    multicallAddress &&
-    new ethers.Contract(multicallAddress, MULTICALL_ABI, provider?.getSigner());
-  const multicallv2 = (abi, calls, options, onSuccess, onError) => {
-    const { requireSuccess, ...overrides } = options || {};
-    const itf = new ethers.utils.Interface(abi);
-    const calldata = calls.map((call) => ({
-      target: call.address.toLowerCase(),
-      callData: itf?.encodeFunctionData(call.name, call.params)
-    }));
-    MulticallContract?.callStatic
-      .tryAggregate(requireSuccess || true, calldata, overrides)
-      .then((res) => {
-        onSuccess(
-          res.map((call, i) => {
-            const [result, data] = call;
-            return result && data !== "0x"
-              ? itf.decodeFunctionResult(calls[i].name, data)
-              : null;
-          })
-        );
-      })
-      .catch((err) => {
-        onError?.(err);
-      });
-  };
 
   function formatedData() {
     onLoad({
@@ -295,6 +270,7 @@ export default function useInfraredData(props: any) {
         type: "Staking",
         vaultAddress: item.address,
         rewardSymbol: item?.reward_tokens?.[0]?.symbol,
+
         platform: "infrared",
         protocolType: ["bex", "kodiak"].includes(item?.protocol?.id)
           ? "AMM"
@@ -316,13 +292,12 @@ export default function useInfraredData(props: any) {
       apy: Big(ibgt?.apr || 0).times(100).toFixed(),
       initialData: ibgt,
       type: "Staking",
-      rewardSymbol: "HONEY",
       platform: "infrared",
       protocolType: "-"
     })
     formatedData("dataList");
   }
-  function getUsdDepositAmount() {
+  async function getUsdDepositAmount() {
     const calls = [];
     dataList.forEach((data) => {
       const _address = ethers.utils.getAddress(data.vaultAddress);
@@ -332,71 +307,81 @@ export default function useInfraredData(props: any) {
         params: [sender]
       });
     });
-    multicallv2(
-      ERC20_ABI,
+    const result = await multicall({
+      abi: ERC20_ABI,
       calls,
-      {},
-      (result) => {
+      options: {
 
-        for (let i = 0; i < dataList.length; i++) {
-          const element = dataList[i];
-          dataList[i].depositAmount = Big(
-            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
-          ).toFixed();
-          dataList[i].usdDepositAmount = Big(
-            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
-          )
-            .times(element?.initialData?.stake_token?.price ?? 0)
-            .toFixed();
-        }
-        formatedData("getUsdDepositAmount");
       },
-      (error) => {
-        console.log("=error", error);
-      }
-    );
-  }
+      multicallAddress,
+      provider
+    })
+    for (let i = 0; i < dataList.length; i++) {
+      const element = dataList[i];
+      dataList[i].depositAmount = Big(
+        ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
+      ).toFixed();
+      dataList[i].usdDepositAmount = Big(
+        ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
+      )
+        .times(element?.initialData?.stake_token?.price ?? 0)
+        .toFixed();
+    }
+    formatedData("getUsdDepositAmount");
 
-  function getEarned() {
+  }
+  async function getRewardsEarned(vaultAddress, tokens) {
     const calls = [];
-    dataList.forEach((data) => {
+    tokens.forEach((reward_token) => {
       calls.push({
-        address: ethers.utils.getAddress(data.vaultAddress),
+        address: ethers.utils.getAddress(vaultAddress),
         name: "earned",
         params: [
           sender,
-          data?.id === "iBGT"
-            ? "0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce"
-            : IBGT_ADDRESS
+          reward_token?.address
         ]
       });
     });
-
-    multicallv2(
-      ERC20_ABI,
-      calls,
-      {},
-      (result) => {
-        for (let i = 0; i < dataList.length; i++) {
-          const element = dataList[i];
-          dataList[i].earned = Big(
-            ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
-          ).toFixed();
-        }
-        formatedData("getEarned");
-      },
-      (error) => {
-        console.log("=error", error);
+    try {
+      const result = await multicall({
+        abi: ERC20_ABI,
+        options: {},
+        calls,
+        multicallAddress,
+        provider
+      })
+      const rewards = []
+      for (let i = 0; i < result.length; i++) {
+        const earned = result?.[i] ? Big(ethers.utils.formatUnits(result[i][0])).toFixed() : 0
+        if (Big(earned).gt(0)) rewards.push({
+          ...tokens[i],
+          earned
+        })
       }
-    );
+      return rewards;
+    } catch (error) {
+      console.log(error)
+    }
   }
+  async function getRewards() {
+    const promiseArray = []
+    dataList.forEach(data => {
+      promiseArray.push(getRewardsEarned(data?.vaultAddress, data?.initialData?.reward_tokens))
+    })
+    const result = await Promise.all(promiseArray)
+    for (let i = 0; i < result.length; i++) {
+      dataList[i].rewards = result[i]
+    }
+    formatedData(getRewards)
+  }
+
 
   useEffect(() => {
     if (name !== "Infrared" || !allData) return;
     getDataList().then(() => {
       if (sender && provider) {
+        getRewards()
         getUsdDepositAmount();
-        getEarned();
       }
     });
   }, [allData, sender, provider, reloadCount]);
