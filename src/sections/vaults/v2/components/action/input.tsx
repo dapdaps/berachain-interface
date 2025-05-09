@@ -31,7 +31,12 @@ const ActionInput = (props: any) => {
 
   const [currentToken, setCurrentToken] = useState(record.token);
 
+  const [isDepositDisabled] = useMemo(() => {
+    return [record.depositDisabled && actionType.value === ACTION_TYPE.DEPOSIT];
+  }, [record, actionType]);
+
   const handleBalance = () => {
+    if (isDepositDisabled) return;
     onChange(balance);
   };
 
@@ -48,7 +53,7 @@ const ActionInput = (props: any) => {
     <div
       className={clsx(
         "mt-[20px] h-[90px] rounded-[12px] border flex flex-col items-stretch gap-[15px] pl-[13px] pr-[14px] pt-[20px] pb-[13px]",
-        inputError
+        (inputError || isDepositDisabled)
           ? "border-[#CE4314] bg-[#FFEFEF]"
           : "border-[#373A53] bg-[#FFF]",
         className
@@ -58,10 +63,12 @@ const ActionInput = (props: any) => {
         <InputNumber
           value={value}
           onNumberChange={onChange}
-          placeholder="0"
+          disabled={isDepositDisabled}
+          placeholder={isDepositDisabled ? "Vault is now closed" : "0"}
           className={clsx(
             "flex-1 w-0 h-[26px] text-[20px] font-Montserrat !bg-[unset]",
-            inputError ? "text-[#FF3F3F]" : "text-black"
+            inputError ? "text-[#FF3F3F]" : "text-black",
+            isDepositDisabled && "placeholder:text-[#CE4314] cursor-not-allowed"
           )}
         />
         <div className={clsx("flex items-center justify-end shrink-0")}>
@@ -170,7 +177,7 @@ const ActionInput = (props: any) => {
           ) : (
             <button
               type="button"
-              disabled={Big(balance || 0).lte(0)}
+              disabled={Big(balance || 0).lte(0) || isDepositDisabled}
               className="underline underline-offset-2 cursor-pointer disabled:opacity-30 disabled:!cursor-not-allowed"
               onClick={handleBalance}
             >

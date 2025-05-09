@@ -78,7 +78,7 @@ export default function SupplyPanel({
             Est. received
           </div>
           <div className="font-semibold text-[16px]">
-            {balanceFormated(received, 6)} Island tokens{" "}
+            {balanceFormated(received, 6)} {data.tokenLp.symbol}{" "}
           </div>
         </div>
       </div>

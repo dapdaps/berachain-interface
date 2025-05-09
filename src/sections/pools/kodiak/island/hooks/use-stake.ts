@@ -4,17 +4,17 @@ import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import { Contract } from "ethers";
 import farmAbi from "../abi/farm";
-import islandAbi from "../abi/island";
+import bexFarmAbi from "../abi/bex-farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
 import { getTokenAmountsV2 } from "../../../helpers";
 
 export default function useStake({
-  farmContract,
   amount,
   days,
   token,
   data,
+  info,
   onSuccess
 }: any) {
   const [loading, setLoading] = useState(false);
@@ -27,21 +27,45 @@ export default function useStake({
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const FarmContract = new Contract(farmContract, farmAbi, signer);
-      const IslandContract = new Contract(data.id, islandAbi, provider);
-      const reverses = await IslandContract.getUnderlyingBalances();
-      const totalSupply = await IslandContract.totalSupply();
+      const FarmContract = new Contract(
+        data.farm.id,
+        data.farm.provider === "kodiak" ? farmAbi : bexFarmAbi,
+        signer
+      );
+      const totalSupply = Big(data.tokenLp.totalSupply || 0)
+        .mul(10 ** data.tokenLp.decimals)
+        .toString();
       const secs = days * 86400;
       const liquidity = Big(amount).mul(1e18).toFixed(0);
       const { amount0, amount1 } = getTokenAmountsV2({
         liquidity,
         totalSupply: totalSupply.toString(),
-        reserve0: reverses[0].toString(),
-        reserve1: reverses[1].toString(),
+        reserve0: info.reserve0,
+        reserve1: info.reserve0,
         token0: data.token0,
         token1: data.token1
       });
-      const tx = await FarmContract.stakeLocked(liquidity, secs);
+
+      let method = "";
+      let params = [];
+
+      if (data.farm.provider === "kodiak") {
+        method = "stakeLocked";
+        params = [liquidity, secs];
+      } else {
+        method = "stake";
+        params = [liquidity];
+      }
+      console.log(data.farm.provider, method, params);
+      const estimateGas = await FarmContract.estimateGas[method](...params);
+
+      console.log("estimateGas", estimateGas.toString());
+      const tx = await FarmContract[method](...params, {
+        gasLimit: estimateGas
+          ? Big(estimateGas.toString()).mul(1.2).toFixed(0)
+          : 5000000
+      });
+
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
@@ -72,6 +96,7 @@ export default function useStake({
         extra_data: {}
       });
     } catch (err: any) {
+      console.log(err);
       toast.dismiss(toastId);
       setLoading(false);
       toast.fail({

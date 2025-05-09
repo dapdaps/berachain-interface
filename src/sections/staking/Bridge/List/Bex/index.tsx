@@ -783,7 +783,10 @@ const List = forwardRef<any, any>((props, ref) => {
       ) : state?.filterList && state?.filterList?.length > 0 ? (
         <div
           ref={bodyRef}
-          className="bex-table-body flex flex-col gap-[2px] h-[calc(100vh-580px)] overflow-y-scroll"
+          className={clsx(
+            "bex-table-body flex flex-col gap-[2px] overflow-y-scroll",
+            isBeraPaw ? "h-[calc(100dvh-440px)]" : "h-[calc(100vh-580px)]"
+          )}
         >
           {state?.filterList.map((data: any, index: number) => {
             return (
@@ -828,8 +831,8 @@ const List = forwardRef<any, any>((props, ref) => {
               onPageChange={(page) => {
                 reload(page);
               }}
-              isLast={false}
-              isFirst={false}
+              isLast={true}
+              isFirst={true}
               loading={loading}
             />
           </div>

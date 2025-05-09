@@ -12,11 +12,10 @@ import { useBerps } from '@/sections/staking/hooks/use-berps';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import multicallAddresses from '@/configs/contract/multicall';
 import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
-import React, { useImperativeHandle, useMemo, useRef, useEffect } from 'react';
+import React, { useImperativeHandle, useMemo, useRef } from 'react';
 import { cloneDeep } from 'lodash';
 import useCustomAccount from '@/hooks/use-account';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
-import LazyImage from '@/components/layz-image';
 import {
   ColumnAction,
   ColumnAPR,
@@ -170,28 +169,11 @@ const MobileContent = (props: any, ref: any) => {
     data,
     loading,
     reload,
+    pageIndex,
+    pageTotal,
+    pending,
   };
   useImperativeHandle(ref, () => refs);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!contentRef.current || !isBeraPaw || !pageIndex || !pageTotal) return;
-      
-      const { scrollHeight, scrollTop, clientHeight } = contentRef.current;
-      const isBottom = scrollHeight - scrollTop - clientHeight < 20;
-
-      if (isBottom && !loading && pageIndex < pageTotal) {
-        reload(pageIndex + 1);
-      }
-    };
-
-    const current = contentRef.current;
-    current?.addEventListener('scroll', handleScroll);
-
-    return () => {
-      current?.removeEventListener('scroll', handleScroll);
-    };
-  }, [isBeraPaw, loading, pageIndex, pageTotal, reload]);
 
   return (
     <div
@@ -361,7 +343,7 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim, pending, currentItem, on
 
   if (isBeraPaw) {
     return (
-      <div className="bg-white/50 rounded-[10px] backdrop-blur-sm p-[14px]">
+      <div className="bg-[rgba(0,0,0,0.06)] rounded-[10px] backdrop-blur-sm p-[14px]">
         <div className="flex justify-between items-center gap-[10px]">
           <ColumnPool
             data={data}

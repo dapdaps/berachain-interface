@@ -77,7 +77,8 @@ export class OogaBooga {
           ]
         }
       ],
-      txn: { ...txn, gasLimit: estimateGas.toFixed(0) }
+      txn: { ...txn, gasLimit: estimateGas.toFixed(0) },
+      template: "Ooga Booga"
     };
 
     return returnData;

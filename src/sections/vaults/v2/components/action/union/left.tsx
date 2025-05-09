@@ -10,7 +10,7 @@ import Card from "@/components/card";
 import useIsMobile from "@/hooks/use-isMobile";
 import { RewardIconContent } from "@/sections/vaults/v2/components/reward-icon";
 import DoubleTokenIcons from "@/components/token-icon/double";
-import IBGTPoints from '@/sections/vaults/v2/components/ibgt-points';
+import IBGTPoints, { IBGTPointsMultiplier } from '@/sections/vaults/v2/components/ibgt-points';
 
 const ActionUnionLeft = (props: any) => {
   const { className } = props;
@@ -118,17 +118,22 @@ const ActionUnionLeft = (props: any) => {
                           ?.map((token: any, index: number) => token.symbol)
                           .join("-")}
                       </div>
-                      {
+                      {/*{
                         isIBGT && (
-                          <div className="shrink-0">
+                          <div className="shrink-0 flex items-center gap-[4px]">
                             <IBGTPoints
                               isPopover={false}
-                              className="!text-[12px] !font-[400] !h-[18px] !px-[6px]"
+                              className=""
                               cardClassName=""
                               contentClassName="!z-[110]"
                               placement={PopoverPlacement.TopLeft}
                             />
                           </div>
+                        )
+                      }*/}
+                      {
+                        protocol?.extra_data?.pp_multiplier && (
+                          <IBGTPointsMultiplier record={protocol} contentClassName="!z-[110]" isPopover={false} />
                         )
                       }
                     </div>
