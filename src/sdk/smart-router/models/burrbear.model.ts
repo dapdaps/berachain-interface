@@ -56,6 +56,6 @@ export class BurrBear {
     this.balancer.setPools(pools);
     const bestTrade = await this.balancer.bestTrade(params);
 
-    return bestTrade;
+    return { ...bestTrade, template: "BurrBear" };
   }
 }
