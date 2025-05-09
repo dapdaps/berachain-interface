@@ -76,7 +76,8 @@ export default function useUnstake({
         transactionHash,
         tokens: [data.token0, data.token1],
         amounts: [amount0, amount1],
-        extra_data: {}
+        extra_data: {},
+        sub_type: "Unstake"
       });
     } catch (err: any) {
       console.log(err);
