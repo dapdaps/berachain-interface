@@ -45,10 +45,5 @@ async function multiQuoter(params: any): Promise<any> {
   });
   const result = await Promise.all(calls);
 
-  return result
-    .filter((item: any) => item && item.outputCurrencyAmount)
-    .map((item: any, i: number) => ({
-      ...item,
-      template: filteredTemplates[i]
-    }));
+  return result.filter((item: any) => item && item.outputCurrencyAmount);
 }
