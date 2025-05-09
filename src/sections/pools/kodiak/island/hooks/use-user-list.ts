@@ -1,166 +1,150 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import useCustomAccount from "@/hooks/use-account";
-import usePoolsIslands from "../../use-pools-islands";
-import islandAbi from "../abi/island";
-import farmAbi from "../abi/farm";
-import { multicall, multicallAddresses } from "@/utils/multicall";
-import { DEFAULT_CHAIN_ID } from "@/configs";
-import Big from "big.js";
-import { getTokenAmountsV2 } from "@/sections/pools/helpers";
-
-const rewardToken = {
-  icon: "/assets/tokens/kodiak.png",
-  symbol: "KDK"
-};
+import config from "@/configs/pools/kodiak";
+import { tickToPrice } from "@/sections/pools/tick-math";
+import { balanceFormated } from "@/utils/balance";
+import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
+import useAccount from "@/hooks/use-account";
+import { useDebounceFn } from "ahooks";
 
 export default function useUserList() {
+  const [pools, setPools] = useState<any>([]);
   const [loading, setLoading] = useState(true);
-  const { account, provider } = useCustomAccount();
-  const [list, setList] = useState<any>([]);
-  const { pools, loading: poolLoading } = usePoolsIslands();
+  const kodiakTokensStore: any = useKodiakTokensStore();
+  const { account } = useAccount();
 
-  const queryList = async () => {
+  const queryPools = async () => {
     try {
-      setList([]);
-      setLoading(true);
-      const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
-      const balanceCalls: any = [];
-      const reversesCalls: any = [];
-      const totalSupplyCalls: any = [];
-      const stakedCalls: any = [];
-      const earnedCalls: any = [];
-      pools.forEach((pool: any) => {
-        balanceCalls.push({
-          address: pool.id,
-          name: "balanceOf",
-          params: [account]
+      const calls = [
+        axios.get(
+          `https://staging.backend.kodiak.finance/vaults?orderBy=balance&orderDirection=desc&limit=100&offset=0&chainId=80094&user=${account}`
+        )
+      ];
+      if (Object.values(kodiakTokensStore.tokens).length === 0) {
+        calls.push(
+          axios.get("https://api.panda.kodiak.finance/80094/tokenList.json")
+        );
+        calls.push(
+          axios.get(
+            "https://static.kodiak.finance/tokenLists/berachain_mainnet.json"
+          )
+        );
+      }
+      const [topPoolsResult, pandaResponse, normalResponse] = await Promise.all(
+        calls
+      );
+
+      let tokens: any = kodiakTokensStore.tokens;
+      if (pandaResponse && normalResponse) {
+        const _tokens = [
+          ...pandaResponse.data.tokens,
+          ...normalResponse.data.tokens
+        ].map((token: any) => ({
+          ...token,
+          icon: token.logoURI
+        }));
+        tokens = _tokens.reduce(
+          (acc, curr) => ({ ...acc, [curr.address.toLowerCase()]: curr }),
+          {}
+        );
+        kodiakTokensStore.set({
+          tokens
         });
-        reversesCalls.push({
-          address: pool.id,
-          name: "getUnderlyingBalances"
-        });
-        totalSupplyCalls.push({
-          address: pool.id,
-          name: "totalSupply"
-        });
-        if (pool.farmAddress) {
-          stakedCalls.push({
-            address: pool.farmAddress,
-            name: "lockedStakesOf",
-            params: [account]
-          });
-          earnedCalls.push({
-            address: pool.farmAddress,
-            name: "earned",
-            params: [account]
-          });
-        }
-      });
-      const args = {
-        abi: islandAbi,
-        options: {},
-        multicallAddress,
-        provider
+      }
+
+      const getToken = (token: any) => {
+        return token.id === "0x6969696969696969696969696969696969696969" &&
+          tokens["native"]
+          ? tokens["native"]
+          : tokens[token.id.toLowerCase()] || { ...token, address: token.id };
       };
 
-      const [balanceRes, reversesRes, totalSupplyRes, stakedRes, earnedRes] =
-        await Promise.all([
-          multicall({
-            ...args,
-            calls: balanceCalls
-          }),
-          multicall({
-            ...args,
-            calls: reversesCalls
-          }),
-          multicall({
-            ...args,
-            calls: totalSupplyCalls
-          }),
-          multicall({
-            ...args,
-            abi: farmAbi,
-            calls: stakedCalls
-          }),
-          multicall({
-            ...args,
-            abi: farmAbi,
-            calls: earnedCalls
+      setPools(
+        topPoolsResult.data.data
+          .filter((item: any) => item.balanceUSD > 0)
+          .map((item: any) => {
+            const _token0 = getToken(item.token0);
+            const _token1 = getToken(item.token1);
+
+            if (item.farm?.rewardTokens.length > 0) {
+              item.farm.rewardTokens.forEach((rewardToken: any) => {
+                rewardToken.icon =
+                  rewardToken.symbol === "BGT"
+                    ? "/images/icon-bgt.svg"
+                    : getToken(rewardToken)?.icon ||
+                      "/assets/tokens/default_icon.png";
+              });
+            }
+
+            const lowerPrice =
+              item.lowerTick < -887000
+                ? "0"
+                : balanceFormated(
+                    tickToPrice({
+                      tick: item.lowerTick,
+                      token0: _token0,
+                      token1: _token1
+                    }),
+                    2
+                  );
+            const upperPrice =
+              item.upperTick > 887000
+                ? "∞"
+                : balanceFormated(
+                    tickToPrice({
+                      tick: item.upperTick,
+                      token0: _token0,
+                      token1: _token1
+                    }),
+                    2
+                  );
+            return {
+              token0: {
+                ..._token0,
+                icon: _token0.icon || "/assets/tokens/default_icon.png"
+              },
+              token1: {
+                ..._token1,
+                icon: _token1.icon || "/assets/tokens/default_icon.png"
+              },
+              fee: item.feeTier,
+              poolTvl: item.tvl,
+              // version: item.pool.tick ? "v3" : "v2",
+              type: item.provider === "kodiak" ? "island" : "v2",
+              apr: item.totalApr,
+              lowerPrice,
+              upperPrice,
+              id: item.id,
+              farm: item.farm,
+              balanceUSD: item.balanceUSD,
+              pool: {
+                lowerTick: item.lowerTick,
+                upperTick: item.upperTick,
+                tick: item.currentTick
+              },
+              router:
+                item.provider === "kodiak"
+                  ? config.stakingRouter
+                  : config.contracts[80094].RouterV2,
+              tokenLp: item.tokenLp,
+              icon: "/assets/tokens/kodiak.png"
+            };
           })
-        ]);
-
-      let stakedI = 0;
-
-      console.log('====balanceRes', balanceRes)
-
-      const _list: any = [];
-      pools.forEach((pool: any, i: number) => {
-        const _balance = balanceRes[i] ? balanceRes[i].toString() : 0;
-
-        let total = Big(_balance);
-        let locked = Big(0);
-        let earned = "0";
-        const reserve0 = reversesRes[i] ? reversesRes[i][0].toString() : 0;
-        const reserve1 = reversesRes[i] ? reversesRes[i][1].toString() : 0;
-
-        if (pool.farmAddress) {
-          const staked = stakedRes[stakedI][0];
-          if (staked && staked.length) {
-            let totalAmount = Big(0);
-
-            staked.forEach((item: any) => {
-              totalAmount = totalAmount.add(item.liquidity.toString());
-              const unlocked = Big(item.ending_timestamp.toString()).lt(
-                Date.now() / 1000
-              );
-              if (!unlocked) locked = locked.add(item.liquidity.toString());
-            });
-            total = total.add(totalAmount);
-          }
-
-          earned = earnedRes[stakedI][0][0].toString();
-          stakedI++;
-        }
-
-        if (total.eq(0)) return;
-
-        const { amount0, amount1 } = getTokenAmountsV2({
-          liquidity: total.toString(),
-          totalSupply: totalSupplyRes[i].toString(),
-          reserve0,
-          reserve1,
-          token0: pool.token0,
-          token1: pool.token1
-        });
-
-        _list.push({
-          pool,
-          rewardToken,
-          user: {
-            total: Big(total.toString()).div(1e18).toString(),
-            amount0,
-            amount1,
-            balance: Big(_balance).div(1e18).toString(),
-            locked: Big(locked.toString()).div(1e18).toString(),
-            earned: Big(earned).div(1e18).toString()
-          }
-        });
-      });
-      setList(_list);
+      );
     } catch (err) {
-      console.log("149===========", err);
+      console.log(128, err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (account && provider && pools?.length) {
-      queryList();
-    } else {
-      setLoading(false);
-    }
-  }, [account, provider, pools]);
+  const { run: runQueryPools } = useDebounceFn(queryPools, {
+    wait: 500
+  });
 
-  return { list, loading: loading || poolLoading };
+  useEffect(() => {
+    if (account) runQueryPools();
+  }, [account]);
+
+  return { list: pools, loading };
 }

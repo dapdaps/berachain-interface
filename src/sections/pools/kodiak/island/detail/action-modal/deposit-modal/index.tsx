@@ -80,8 +80,8 @@ export default function DepositModal({
         </div>
       );
     if (step === 6) return "Confirm Stake";
-    return "Deposit Liquidity to Island";
-  }, [step, type]);
+    return "Deposit Liquidity to Pool";
+  }, [step, type, data]);
 
   useEffect(() => {
     let _step = 1;
@@ -180,6 +180,7 @@ export default function DepositModal({
               amount={received}
               lockData={lockData}
               onSuccess={onSuccess}
+              info={info}
             />
           )}
         </>

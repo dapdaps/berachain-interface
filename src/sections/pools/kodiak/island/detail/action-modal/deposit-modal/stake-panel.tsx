@@ -3,15 +3,23 @@ import Big from "big.js";
 import Button from "@/components/button";
 import useStake from "../../../hooks/use-stake";
 
-export default function StakePanel({ data, amount, lockData, onSuccess }: any) {
+export default function StakePanel({
+  data,
+  amount,
+  lockData,
+  onSuccess,
+  info
+}: any) {
   const { loading, onStake } = useStake({
-    farmContract: data.farmAddress,
+    farmContract: data.farm?.id,
     data,
     amount,
     days: lockData.days,
-    token: { symbol: data.symbol },
-    onSuccess
+    token: data.tokenLp,
+    onSuccess,
+    info
   });
+
   return (
     <>
       <div className="mt-[20px] rounded-[12px] border border-[#373A53] p-[12px]">
@@ -22,13 +30,16 @@ export default function StakePanel({ data, amount, lockData, onSuccess }: any) {
             </div>
             <div className="text-[14px] font-medium">
               (${" "}
-              {amount && data.price
-                ? balanceFormated(Big(amount).mul(data.price).toString(), 5)
+              {amount && data.tokenLp.price
+                ? balanceFormated(
+                    Big(amount).mul(data.tokenLp.price).toString(),
+                    5
+                  )
                 : "-"}{" "}
               )
             </div>
           </div>
-          <div className="font-semibold text-[16px]">{data.symbol}</div>
+          <div className="font-semibold text-[16px]">{data.tokenLp.symbol}</div>
         </div>
       </div>
       <div className="mt-[20px] rounded-[12px] border border-[#373A53] p-[12px] text-[14px] font-medium text-[#3D405A]">
@@ -40,10 +51,12 @@ export default function StakePanel({ data, amount, lockData, onSuccess }: any) {
           <div>APR</div>
           <div>{Number(data?.apr || 0).toFixed(2)}%</div>
         </div>
-        <div className="flex items-center justify-between mt-[6px]">
-          <div>Multiplier</div>
-          <div>x{lockData.multiplier}</div>
-        </div>
+        {data.farm.provider === "kodiak" && (
+          <div className="flex items-center justify-between mt-[6px]">
+            <div>Multiplier</div>
+            <div>x{lockData.multiplier}</div>
+          </div>
+        )}
         <div className="flex items-center justify-between mt-[6px]">
           <div>Est. received</div>
           <div>-</div>

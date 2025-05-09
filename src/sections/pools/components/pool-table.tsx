@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import LazyImage from '@/components/layz-image';
 
 export default function PoolTable({ item, onClick = () => {} }: any) {
-  const router = useRouter();
+
   const tokens = useMemo(
     () => item.tokens || [item.token0, item.token1],
     [item]

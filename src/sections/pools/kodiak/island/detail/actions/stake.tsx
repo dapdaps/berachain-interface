@@ -12,7 +12,7 @@ export default function Stake({ data, info, onSuccess }: any) {
   const token = useMemo(
     () => ({
       address: data.id,
-      symbol: data.symbol,
+      symbol: data.tokenLp.symbol,
       chainId: DEFAULT_CHAIN_ID,
       decimals: 18,
       icon: data.icon

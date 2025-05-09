@@ -7,7 +7,7 @@ const SimpleTotal = ({ data }: any) => {
   return (
     <div className="flex items-center justify-between text-[16px]">
       <div className="font-semibold">My Deposits</div>
-      <div className="font-bold">${balanceFormated(data.totalUsd, 2)}</div>
+      <div className="font-bold">${balanceFormated(data.balanceUsd, 2)}</div>
     </div>
   );
 };
@@ -56,6 +56,7 @@ const Total = ({ data, symbol }: any) => {
 
 export default function Mydeposit({ info = {}, token0, token1, symbol }: any) {
   const isMobile = useIsMobile();
+
   return (
     <div
       className={clsx(

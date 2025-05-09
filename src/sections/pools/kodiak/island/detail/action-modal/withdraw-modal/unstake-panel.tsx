@@ -23,7 +23,7 @@ export default function UnstakePanel({
     return [_ids, _a.div(1e18).toString(), _a0.toString(), _a1.toString()];
   }, [selectedItems]);
   const { loading, onUnstake } = useUnstake({
-    farmContract: data.farmAddress,
+    farmContract: data.farm?.id,
     kekIds,
     token: { symbol: data.symbol },
     amount,
@@ -71,23 +71,32 @@ export default function UnstakePanel({
         <div className="text-[14px] text-black/50">
           You will also unlock the following tokens as rewards
         </div>
-        <div className="flex items-center justify-between mt-[6px]">
-          <div className="flex gap-[4px] items-center text-[14px] font-medium	text-[#3D405A]">
-            <img
-              src={data.icon}
-              alt={data.symbol}
-              width={26}
-              height={26}
-              className="rounded-full"
-            />
-            <div>KDK</div>
+        {data.farm?.rewardTokens?.map((rewardToken: any, i: number) => (
+          <div
+            className="flex items-start justify-between mt-[10px]"
+            key={rewardToken.id}
+          >
+            <div className="flex items-center gap-[9px]">
+              <img
+                src={rewardToken.icon}
+                alt={rewardToken.symbol}
+                width={26}
+                height={26}
+                className="rounded-full"
+              />
+              <div className="font-semibold text-[14px]">
+                {rewardToken.symbol}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="font-semibold text-[14px]">
+                {info?.earned?.[i] ? balanceFormated(info.earned[i], 4) : "-"}
+              </div>
+              {/* <div className="font-medium text-[12px]">0.46 KODIAK-1</div> */}
+            </div>
           </div>
-          <div className="text-[14px] font-medium">
-            {balanceFormated(info.earned, 6)}
-          </div>
-        </div>
+        ))}
       </div>
-
       <Button
         type="primary"
         className="w-full h-[46px] mt-[16px]"
