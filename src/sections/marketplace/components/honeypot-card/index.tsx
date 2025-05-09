@@ -183,7 +183,7 @@ const HoneypotCard = (props: any) => {
                       margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
                     >
                       <YAxis
-                        domain={getCustomDomain(priceData, priceKey)}
+                        domain={getCustomDomain(priceData, priceKey || "price")}
                         hide
                       />
                       <Line
