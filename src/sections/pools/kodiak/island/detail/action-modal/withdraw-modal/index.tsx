@@ -49,18 +49,17 @@ export default function WithdrawModal({
     setStep(_step);
   }, [approved]);
 
+  const maxStep = data.farm.provider === "bgt" ? 3 : 4;
+
   return (
     <Basic
       title={"Withdraw from Pool"}
       open={open}
       onClose={() => {
         onClose();
-        if (step === 3 && withdrawData.selectedItems.length) {
-          onSuccess();
-        }
       }}
     >
-      <Steps num={4} active={step} className="mt-[20px]" />
+      <Steps num={maxStep} active={step} className="mt-[20px]" />
       {checking ? (
         <ModalLoading title="Checking Allowance" />
       ) : !approved ? (
@@ -87,11 +86,11 @@ export default function WithdrawModal({
               percent={percent}
               onSuccess={(data: any) => {
                 setWithdrawData(data);
-                setStep(data.selectedItems.length ? 3 : 4);
+                setStep(data.selectedItems.length ? 3 : maxStep);
               }}
             />
           )}
-          {step === 3 && (
+          {step === 3 && data.farm.provider === "kodiak" && (
             <UnstakePanel
               data={data}
               info={info}
@@ -101,7 +100,7 @@ export default function WithdrawModal({
               selectedItems={withdrawData.selectedItems}
             />
           )}
-          {step === 4 && (
+          {step === maxStep && (
             <WithdrawPanel
               data={data}
               amounts={withdrawData}
