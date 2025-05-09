@@ -16,7 +16,7 @@ export default function Yours({ setIsPlain }: any) {
     <>
       {record ? (
         <Detail
-          data={record.pool}
+          data={record}
           onBack={() => {
             setRecord(null);
           }}

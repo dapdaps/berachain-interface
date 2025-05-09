@@ -9,91 +9,20 @@ const Item = ({ record, onClick }: any) => {
   return (
     <div className="rounded-[10px] bg-black/10 p-[14px]">
       <div className="flex justify-between">
-        <PoolTable item={{ ...record.pool, fee: "" }} />
+        <PoolTable item={{ ...record, fee: "" }} />
         <div className="text-right">
           <div className="text-[16px] font-bold">
-            $
-            {balanceFormated(
-              Big(record.user.total).mul(record.pool.price).toString(),
-              1
-            )}
+            ${balanceFormated(Big(record.balanceUSD).toString(), 3)}
           </div>
           <div className="text-[12px] font-medium">
-            {balanceFormated(record.user.total, 2)}
+            {balanceFormated(
+              Big(record.balanceUSD).div(record.tokenLp.price).toString(),
+              6
+            )}{" "}
           </div>
         </div>
       </div>
-      <div className="mt-[8px] flex items-center">
-        <div className="w-1/2 flex items-center gap-[8px]">
-          <img
-            src={record.pool.token0.icon}
-            width={20}
-            height={20}
-            className="rounded-full"
-            alt={record.pool.token0.symbol}
-          />
-          <div className="text-[14px] font-medium">
-            {record.pool.token0.symbol}:{" "}
-            {balanceFormated(record.user.amount0, 3)}
-          </div>
-        </div>
-        <div className="w-1/2 flex items-center gap-[8px]">
-          <img
-            src={record.pool.token1.icon}
-            width={20}
-            height={20}
-            className="rounded-full"
-            alt={record.pool.token1.symbol}
-          />
-          <div className="text-[14px] font-medium">
-            {record.pool.token1.symbol}:{" "}
-            {balanceFormated(record.user.amount1, 3)}
-          </div>
-        </div>
-      </div>
-      <div className="mt-[8px] flex">
-        <div className="w-1/3">
-          <div className="text-[#3D405A] text-[14px] font-medium">
-            Available
-          </div>
-          <div className="text-[16px] font-medium">
-            $
-            {balanceFormated(
-              Big(record.user.total).mul(record.pool.price).toString(),
-              2
-            )}
-          </div>
-          <div className="text-[#3D405A] text-[12px] font-medium">
-            {balanceFormated(record.user.balance, 3)} {record.pool.symbol}
-          </div>
-        </div>
-        <div className="w-1/3">
-          <div className="text-[#3D405A] text-[14px] font-medium">Locked</div>
-          <div className="text-[16px] font-medium">
-            $
-            {balanceFormated(
-              Big(record.user.locked).mul(record.pool.price).toString(),
-              2
-            )}
-          </div>
-          <div className="text-[#3D405A] text-[12px] font-medium">
-            {balanceFormated(record.user.locked, 3)} {record.pool.symbol}
-          </div>
-        </div>
-        <div className="w-1/3">
-          <div className="text-[#3D405A] text-[14px] font-medium">Earned</div>
-          <div className="text-[16px] font-medium">
-            $
-            {balanceFormated(
-              Big(record.user.earned).mul(record.pool.price).toString(),
-              2
-            )}
-          </div>
-          <div className="text-[#3D405A] text-[12px] font-medium">
-            {balanceFormated(record.user.earned, 2)} {record.rewardToken.symbol}
-          </div>
-        </div>
-      </div>
+
       <button
         onClick={() => {
           onClick(record);

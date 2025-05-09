@@ -22,7 +22,7 @@ export default function columns({ page, PAGE_SIZE }: any) {
       }
     },
     {
-      title: "Pool APR",
+      title: "APR",
       key: "apr",
       sort: true,
       width: "15%",
