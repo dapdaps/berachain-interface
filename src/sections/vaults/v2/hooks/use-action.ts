@@ -95,7 +95,7 @@ export default function useAction(): Action {
       return [beraPawLBGTWithdrawBalance, isLoading || beraPawLBGTWithdrawBalanceLoading, update];
     }
     return [Big(tokenBalance || 0).gt(0) ? tokenBalance : _currentProtocol?.user_stake?.amount || "0", isLoading, update];
-  }, [actionType, tokenBalance, _currentProtocol?.user_stake, memeswapBalance, isLoading, update, beraPawLBGTWithdrawBalance, beraPawLBGTWithdrawBalanceLoading]);
+  }, [actionType, tokenBalance, _currentProtocol, memeswapBalance, isLoading, update, beraPawLBGTWithdrawBalance, beraPawLBGTWithdrawBalanceLoading]);
 
   const [inputError, inputErrorMessage] = useMemo<
     [boolean, string | undefined]
