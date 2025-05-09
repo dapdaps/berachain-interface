@@ -97,7 +97,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
                       Big(receives.received).mul(data.tokenLp.price).toString(),
                       5
                     )
-                  : "-"}{" "}
+                  : "-"}
                 )
               </div>
             </div>

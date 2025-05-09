@@ -35,16 +35,6 @@ export default function useDepositAmount(data: any, info: any) {
         const _r0 = Big(_amount0).mul(ts).div(info.reserve0);
         const _r1 = Big(_amount1).mul(ts).div(info.reserve1);
         const received = _r0.lt(_r1) ? _r0 : _r1;
-        console.log(
-          34,
-          info.reserve0,
-          info.reserve1,
-          ts.toString(),
-          _r0.toString(),
-          _r1.toString(),
-          _amount0,
-          _amount1
-        );
 
         cb({
           amount0: _amount0,
