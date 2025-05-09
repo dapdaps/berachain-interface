@@ -144,6 +144,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
             });
           });
         setTrade(_markets[0]);
+        console.log("trade from", _markets[0].name);
       } catch (err) {
         console.log(err);
         setTrade(null);

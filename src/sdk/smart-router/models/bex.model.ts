@@ -73,7 +73,8 @@ export class Bex {
       outputCurrencyAmount: returnAmount,
       noPair: false,
       routerAddress,
-      routes: [{ percentage: 100, routes: formatedRoutes }]
+      routes: [{ percentage: 100, routes: formatedRoutes }],
+      template: "Bex"
     };
 
     if (!account) return returnData;

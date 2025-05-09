@@ -127,7 +127,8 @@ export class Kodiak {
       outputCurrencyAmount,
       noPair: false,
       routerAddress,
-      routes: bestTrade.routes
+      routes: bestTrade.routes,
+      template: "Kodiak"
     };
 
     const provider = new providers.JsonRpcProvider(
@@ -204,7 +205,8 @@ export class Kodiak {
       outputCurrencyAmount,
       noPair: false,
       routerAddress: this.ROUTER_V3[inputCurrency.chainId],
-      routes: bestTrade.routes
+      routes: bestTrade.routes,
+      template: "Kodiak"
     };
 
     const RouterIface = new utils.Interface(this.ROUTER_ABI);
