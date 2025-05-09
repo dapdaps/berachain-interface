@@ -4,7 +4,7 @@ import { balanceShortFormated } from "@/utils/balance";
 import Empty from "@/components/empty";
 import CircleLoading from "@/components/circle-loading";
 import Big from "big.js";
-
+import clsx from "clsx";
 const Item = ({ record, setSelectedRecord }: any) => {
   return (
     <div className="rounded-[10px] bg-black/10 p-[14px]">
@@ -95,12 +95,18 @@ const Item = ({ record, setSelectedRecord }: any) => {
           <div className="text-[14px] text-[#3D405A] font-medium">APR</div>
           <div className="flex items-center gap-[4px] text-[15px] font-semibold">
             <span>{`${record.apr ? Big(record.apr).toFixed(2) : "-"}%`}</span>
-            {record.farm?.provider === "bgt" && (
-              <img
-                src="/images/icon-bgt.svg"
-                className="w-[20px] h-[20px] rounded-full"
-              />
-            )}
+            <div className="flex items-center">
+              {record.farm?.rewardTokens.map((token: any, i: number) => (
+                <img
+                  key={token.id}
+                  src={token.icon}
+                  className={clsx(
+                    "w-[20px] h-[20px] rounded-full",
+                    i !== 0 && "ml-[-10px]"
+                  )}
+                />
+              ))}
+            </div>
           </div>
           <div className=""></div>
         </div>

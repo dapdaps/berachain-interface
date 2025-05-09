@@ -4,7 +4,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import { useMemo, useState } from "react";
 import PoolTable from "../../../components/pool-table";
 import Big from "big.js";
-
+import clsx from "clsx";
 const PAGE_SIZE = 9;
 
 export default function Laptop({
@@ -87,12 +87,18 @@ export default function Laptop({
                 ? `${numberFormatter(item["apr"], 2, true)}%`
                 : "-"}
             </span>
-            {item.farm?.provider === "bgt" && (
-              <img
-                src="/images/icon-bgt.svg"
-                className="w-[20px] h-[20px] rounded-full"
-              />
-            )}
+            <div className="flex items-center">
+              {item.farm?.rewardTokens.map((token: any, i: number) => (
+                <img
+                  key={token.id}
+                  src={token.icon}
+                  className={clsx(
+                    "w-[20px] h-[20px] rounded-full",
+                    i !== 0 && "ml-[-10px]"
+                  )}
+                />
+              ))}
+            </div>
           </div>
         );
       }
