@@ -14,6 +14,8 @@ import IbgtAmount from "../components/ibgt-amount";
 import { numberFormatter } from "@/utils/number-formatter";
 import useUserPoints from "@/hooks/use-user-points";
 import InfraredTop from "@/sections/staking/components/infrared-top";
+import Card from "@/components/card";
+import InfraredRewards from "@/sections/staking/components/infrared-rewards";
 export default memo(function IbgtMain() {
   const router = useRouter();
   const {
@@ -33,9 +35,12 @@ export default memo(function IbgtMain() {
     handleWithdraw,
     handleClaim,
     symbol,
+    claiming,
     handleMintIBGT
   } = useIBGT();
+  const rewards = data?.rewards
   const { userPoints } = useUserPoints()
+  console.log('===rewards', rewards)
   const {
     balances,
     inAmount,
@@ -143,32 +148,7 @@ export default memo(function IbgtMain() {
           </div>
           <div className="w-full h-[1px] bg-black/[0.15]" />
           <div className="pt-[19px] pl-[17px]">
-            <div className="mb-[27px] text-black font-Montserrat text-[18px] font-bold leading-[90%]">
-              Rewards
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[14px]">
-                <div className="w-[32px] h-[32px] rounded-full">
-                  <img
-                    src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase() ?? "honey"
-                      }.svg`}
-                  />
-                </div>
-
-                <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-                  {formatValueDecimal(data?.earned, "", 2)} {data?.rewardSymbol}
-                </div>
-              </div>
-              {Big(data?.earned ?? 0).gt(0) && (
-                <div
-                  className="cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%]"
-                  onClick={handleClaim}
-                >
-                  Claim
-                </div>
-              )}
-            </div>
+            <InfraredRewards rewards={rewards} claiming={claiming} handleClaim={handleClaim} />
           </div>
         </div>
 

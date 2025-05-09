@@ -4,7 +4,7 @@ import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
 import clsx from "clsx";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 export default memo(function InfraredTop({
   hiddenRewards,
   pointsClass
@@ -14,7 +14,7 @@ export default memo(function InfraredTop({
 }) {
   const { dataList, loading, fetchAllData: reload } = useInfraredList();
   const { userPoints } = useUserPoints()
-  const rewards = useMemo(() => dataList?.filter(data => Big(data?.earned ?? 0).gt(0)), [dataList])
+  const pools = useMemo(() => dataList?.filter(data => data?.rewards?.length > 0), [dataList])
 
   return (
     <div className="md:px-[10px] px-[30px] md:pb-0 md:pt-[15px] pb-[23px] flex items-center justify-between md:flex-col">
@@ -24,8 +24,8 @@ export default memo(function InfraredTop({
             <div className="">Rewards</div>
             <div className="md:h-[32px] h-[40px]">
               {
-                rewards?.length > 0 ? (
-                  <IbgtRewards rewards={rewards} onSuccess={reload} />
+                pools?.length > 0 ? (
+                  <IbgtRewards pools={pools} onSuccess={reload} />
                 ) : (
                   <>-</>
                 )

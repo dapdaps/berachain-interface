@@ -62,7 +62,7 @@ export function useIBGT() {
   const searchParamFrom = searchParams.get("from");
   const { addAction } = useAddAction(searchParamFrom === "vaults" ? "vaults" : "ibgt");
   const sender = account;
-
+  const [claiming, setClaiming] = useState(false);
   const [data, setData] = useState<DataType>({
     count: 0,
     total: 0,
@@ -492,6 +492,7 @@ export function useIBGT() {
       abi,
       provider.getSigner()
     );
+    setClaiming(true);
     const createTx = (gas: any) => {
       contract
         .getReward({ gasLimit: gas })
@@ -518,9 +519,11 @@ export function useIBGT() {
           setTimeout(() => {
             onSuccess?.();
           }, 3000);
+          setClaiming(false);
         })
         .catch((error: Error) => {
           console.log("error: ", error);
+          setClaiming(false);
           toast?.dismiss(toastId);
           toast?.fail({
             title: "Claim Failed!",
@@ -538,6 +541,7 @@ export function useIBGT() {
       .catch((err: any) => {
         createTx(4000000);
       });
+      
   };
   const onSuccess = function () {
     updateState({
@@ -590,6 +594,7 @@ export function useIBGT() {
     handleClaim,
     onSuccess,
     symbol,
+    claiming,
     handleMintIBGT
   };
 }
