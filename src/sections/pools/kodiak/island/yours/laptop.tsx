@@ -9,7 +9,7 @@ export default function Laptop({ onClick }: any) {
   return (
     <div>
       <div className="text-[20px] font-bold mt-[20px] mb-[10px]">
-        Your Islands
+        Your Top Pools
       </div>
       <List
         meta={[
@@ -17,24 +17,29 @@ export default function Laptop({ onClick }: any) {
             title: "Deposits",
             key: "deposits",
             sort: false,
-            width: "25%",
+            width: "45%",
             render: (item: any, index: number) => {
               return (
                 <div className="flex items-center gap-[10px]">
-                  <img
-                    src={item.token0.icon}
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                    alt={item.token0.symbol}
-                  />
-                  <img
-                    src={item.token1.icon}
-                    width={30}
-                    height={30}
-                    className="rounded-full ml-[-20px]"
-                    alt={item.token1.symbol}
-                  />
+                  <div className="flex items-center gap-[10px]">
+                    <img
+                      src={item.token0.icon}
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                      alt={item.token0.symbol}
+                    />
+                    <img
+                      src={item.token1.icon}
+                      width={30}
+                      height={30}
+                      className="rounded-full ml-[-20px]"
+                      alt={item.token1.symbol}
+                    />
+                  </div>
+                  <div className="text-[16px] font-medium">
+                    {item.tokenLp.symbol}
+                  </div>
                 </div>
               );
             }
@@ -43,7 +48,7 @@ export default function Laptop({ onClick }: any) {
             title: "Holdings",
             key: "balanceUSD",
             sort: true,
-            width: "60%",
+            width: "40%",
             render: (item: any, index: number) => {
               return (
                 <div>

@@ -75,7 +75,7 @@ export default function Laptop({
       }
     },
     {
-      title: "Apr",
+      title: "APR",
       key: "apr",
       sort: true,
       width: "15%",
