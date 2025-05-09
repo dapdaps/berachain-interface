@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { useIBGT } from '@/hooks/use-ibgt';
 import { useMemo } from 'react';
 import { numberFormatter } from '@/utils/number-formatter';
 import { BGT_ADDRESS, useBGT } from '@/hooks/use-bgt';
@@ -15,10 +14,9 @@ import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 import IBGTPoints from '@/sections/vaults/v2/components/ibgt-points';
 
 const RewardTopCard = (props: RewardTopCardProps) => {
-  const { className, type } = props;
+  const { className, type, loading, pool } = props;
 
   const isMobile = useIsMobile();
-  const { tokenData: iBGTTokenData, loading: iBGTLoading } = useIBGT();
   const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
   const { toggleActionVisible, listDataGroupByPool } = useVaultsV2Context();
 
@@ -84,9 +82,9 @@ const RewardTopCard = (props: RewardTopCardProps) => {
   const [apr, aprLabel, aprLoading] = useMemo(() => {
     if (type === RewardTopCardType.iBgt) {
       return [
-        numberFormatter(iBGTTokenData?.apy, 2, true) + "%",
+        numberFormatter(pool?.totalApy[1], 2, true) + "%",
         "APR",
-        iBGTLoading
+        loading
       ];
     }
     return [
@@ -94,24 +92,39 @@ const RewardTopCard = (props: RewardTopCardProps) => {
       "BGT/Year",
       BGTLoading
     ];
-  }, [type, iBGTTokenData, BGTPageData, iBGTLoading, BGTLoading]);
+  }, [type, BGTLoading, BGTPageData, loading, pool]);
 
   const [reward, rewardLabel, rewardIcon, rewardLoading] = useMemo(() => {
     if (type === RewardTopCardType.iBgt) {
       return [
-        iBGTTokenData?.rewardSymbol,
+        pool?.reward_tokens?.map((token: any) => token.symbol).join("-"),
         "Reward",
-        `/images/dapps/infrared/${iBGTTokenData?.rewardSymbol?.toLocaleLowerCase() ?? 'honey'}.svg`,
-        iBGTLoading
+        <div className="flex items-center shrink-0">
+          {
+            pool?.reward_tokens?.map((token: any, idx: number) => (
+              <img
+                key={token.address}
+                src={token.icon}
+                alt=""
+                className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-[6px]", idx > 0 && "ml-[-15px]")}
+              />
+            ))
+          }
+        </div>,
+        loading
       ];
     }
     return [
       BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.name,
       "Top Validator",
-      BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.logoURI,
+      <img
+        src={BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.logoURI}
+        alt=""
+        className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-full")}
+      />,
       BGTLoading
     ];
-  }, [type, iBGTTokenData, BGTPageData, iBGTLoading, BGTLoading]);
+  }, [type, BGTPageData, BGTLoading, loading, pool]);
 
   return (
     <div
@@ -174,13 +187,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
               {
                 rewardLoading ? (
                   <Skeleton height={30} width={30} borderRadius={type === RewardTopCardType.iBgt ? 15 : 6} />
-                ) : (
-                  <img
-                    src={rewardIcon}
-                    alt=""
-                    className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-[6px]", type === RewardTopCardType.iBgt && "rounded-full")}
-                  />
-                )
+                ) : rewardIcon
               }
               <div className="text-black font-Montserrat text-[16px] font-[700] leading-[120%]">
                 <div className="text-[14px] font-[500]">
@@ -248,6 +255,8 @@ export default RewardTopCard;
 export interface RewardTopCardProps {
   type: RewardTopCardType;
   className?: string;
+  loading?: boolean;
+  pool?: any;
 }
 
 export enum RewardTopCardType {

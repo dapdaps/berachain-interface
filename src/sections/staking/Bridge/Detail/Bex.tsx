@@ -1,5 +1,6 @@
+import Card from "@/components/card";
 import CircleLoading from "@/components/circle-loading";
-import Popover, { PopoverPlacement } from "@/components/popover";
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import DolomiteConfig from '@/configs/lending/dolomite';
 import useCustomAccount from "@/hooks/use-account";
@@ -7,10 +8,10 @@ import useAddAction from "@/hooks/use-add-action";
 import IbgtAmount from "@/sections/bgt/components/ibgt-amount";
 import ActionPanel from "@/sections/Lending/components/action-panel";
 import DolomiteData from "@/sections/Lending/datas/dolomite";
-import { formatValueDecimal } from "@/utils/balance";
 import { numberFormatter } from '@/utils/number-formatter';
 import Big from "big.js";
 import { useEffect, useMemo, useState } from "react";
+import InfaredRewards from "@/sections/staking/components/infrared-rewards";
 
 
 function DolomiteButton({
@@ -107,6 +108,7 @@ function DolomiteButton({
   )
 }
 const DetailBex = (props: any) => {
+  const { account, provider } = useCustomAccount()
   const {
     data,
     mintData,
@@ -116,11 +118,16 @@ const DetailBex = (props: any) => {
     isInfraredBerps,
     onRefresh
   } = props;
-
   const protocol = data?.initialData?.protocol?.id;
+  const rewards = data?.rewards
+
+
+
   const handleMint = () => {
     setShowAddModal(true);
   };
+
+
   return (
     <div className="flex-1 pr-[24px] pl-[13px] h-[300px] bg-black/[0.06]">
       <div className="pt-[21px] pr-[2px] pb-[46px] pl-[17px]">
@@ -174,33 +181,9 @@ const DetailBex = (props: any) => {
       </div>
       <div className="w-full h-[1px] bg-black/[0.15]" />
       <div className="pt-[19px] pl-[17px]">
-        <div className="mb-[27px] text-black font-Montserrat text-[18px] font-bold leading-[90%]">
-          Rewards
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-[14px]">
-            <div className="w-[32px] h-[32px] rounded-full">
-              <img
-                src={`/images/dapps/infrared/${data?.rewardSymbol?.toLocaleLowerCase()}.svg`}
-              />
-            </div>
-            <div className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-              {formatValueDecimal(data?.earned, "", 2)} {data?.rewardSymbol}
-            </div>
-          </div>
-          {Big(data?.earned ?? 0).gt(0) && (
-            <button
-              disabled={claiming}
-              className="cursor-pointer flex items-center justify-center w-[148px] h-[46px] rounded-[10px] border border-black bg-[#FFDC50] text-black font-Montserrat text-[18px] font-semibold leading-[90%] disabled:opacity-30"
-              onClick={handleClaim}
-            >
-              {claiming ? <CircleLoading size={14} className="mr-3" /> : ""}{" "}
-              Claim
-            </button>
-          )}
-        </div>
+        <InfaredRewards rewards={rewards} claiming={claiming} handleClaim={handleClaim} />
       </div>
-    </div >
+    </div>
   );
 };
 

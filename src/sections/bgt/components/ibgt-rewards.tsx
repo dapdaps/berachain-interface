@@ -9,10 +9,10 @@ import useToast from "@/hooks/use-toast";
 import Loading from "@/components/loading";
 import { usePriceStore } from "@/stores/usePriceStore";
 export default memo(function IbgtRewards({
-  rewards,
+  pools,
   onSuccess
 }: {
-  rewards: any,
+  pools: any,
   onSuccess: VoidFunction
 }) {
   const toast = useToast()
@@ -20,7 +20,17 @@ export default memo(function IbgtRewards({
   const { account, provider, chainId } = useCustomAccount()
   const multicallAddress = multicallAddresses[chainId];
   const [loading, setLoading] = useState(false)
-  const count = useMemo(() => rewards?.reduce((acc, curr) => acc = Big(acc).plus(Big(curr?.earned ?? 0).times(prices?.[curr?.rewardSymbol] ?? 0)), 0), [rewards])
+  const [rewards, count] = useMemo(() => {
+    let count = Big(0)
+    const map = new Map()
+    pools?.forEach(pool => {
+      pool.rewards.forEach(reward => {
+        map.set(reward.symbol, reward)
+        count = Big(count).plus(Big(reward?.earned).times(reward?.price))
+      })
+    })
+    return [[...map.values()], count]
+  }, [pools])
   const handleClaimAllRewards = async () => {
     const toastId = toast?.loading({
       title: `Claim All Rewards...`
@@ -40,7 +50,7 @@ export default memo(function IbgtRewards({
       "type": "function"
     }]
     const erc20Interface = new ethers.utils.Interface(abi);
-    rewards?.forEach(reward => {
+    pools?.forEach(reward => {
       calls.push({
         target: reward?.vaultAddress,
         allowFailure: true,
@@ -84,7 +94,7 @@ export default memo(function IbgtRewards({
         <div className="flex items-center min-w-[50px]">
           {
             rewards?.map((reward, index) => (
-              <img className="w-[30px] h-[30px] rounded-full" style={{ objectPosition: "left center", marginLeft: -10 * index }} src={`/images/dapps/infrared/${reward?.rewardSymbol?.toLocaleLowerCase()}.svg`} alt={reward?.rewardSymbol} />
+              <img className="w-[30px] h-[30px] rounded-full" style={{ objectPosition: "left center", marginLeft: -10 * index }} src={reward?.image} alt={reward?.symbol} />
             ))
           }
         </div>

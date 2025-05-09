@@ -45,7 +45,11 @@ const VaultsV2 = (props: any) => {
         <Aggregating />
         <div className="w-[1257px] mx-auto pt-[42px]">
           <div className="w-full grid grid-cols-2 gap-[20px]">
-            <RewardTopCard type={1} />
+            <RewardTopCard
+              type={1}
+              loading={list.listLoading}
+              pool={list.listDataGroupByPoolAll?.find(((pool: any) => pool.pool_address.toLowerCase() === "0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b"))}
+            />
             <RewardTopCard type={0} />
           </div>
           <div className="min-h-[320px] pt-[25px] flex justify-between items-start gap-[13px] w-full text-[14px] text-black leading-[90%] font-[500] font-Montserrat">
