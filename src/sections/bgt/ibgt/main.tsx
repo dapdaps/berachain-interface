@@ -40,7 +40,6 @@ export default memo(function IbgtMain() {
   } = useIBGT();
   const rewards = data?.rewards
   const { userPoints } = useUserPoints()
-  console.log('===rewards', rewards)
   const {
     balances,
     inAmount,
