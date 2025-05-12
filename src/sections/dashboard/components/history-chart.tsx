@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts'
 import dayjs from 'dayjs'
 import DropdownSelector from './dropdown-selector'
+import useIsMobile from '@/hooks/use-isMobile'
 
 interface PointHistory {
   timestamp: string
@@ -55,6 +56,7 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
     return Math.ceil(max * 1.1) // 增加10%的空间使图表不会紧贴顶部
   }, [filteredData])
 
+  const isMobile = useIsMobile()
 
   return (
     <div className="w-full">
@@ -72,7 +74,7 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
               tick={{ fontSize: 12 }} 
               axisLine={false} 
               tickLine={false}
-              interval={Math.ceil(filteredData.length / 15) - 1}
+              interval={Math.max(0, Math.ceil(filteredData.length / (isMobile ? 6 : 15)) - 1)}
             />
             <YAxis 
               tick={{ fontSize: 12 }} 

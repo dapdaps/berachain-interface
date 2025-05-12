@@ -67,7 +67,7 @@ const DashboardWallet = (props: Props) => {
 
   return (
     <div className='h-full overflow-y-auto'>
-      <UserCard loading={loading} totalBalance={totalBalance} />
+      <UserCard type="wallet" loading={loading} totalBalance={totalBalance} />
       <FlexTable
         columns={columns}
         list={tokens}
