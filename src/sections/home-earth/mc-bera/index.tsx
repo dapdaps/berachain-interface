@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
+import { ChatLayout } from '@/components/chat';
 
 const McBera = (props: any) => {
   const { className } = props;
@@ -35,7 +36,7 @@ const McBera = (props: any) => {
         <div className="relative z-[2] flex items-end justify-center w-full h-full bg-[url('/images/home-earth/mc-bera/bg-table.png')] bg-no-repeat bg-bottom bg-[length:100%_358px]">
           <div className="relative z-[1] w-[281px] h-[204px] translate-x-[70px] translate-y-[-40px] bg-[url('/images/home-earth/mc-bera/bg-books.png')] bg-no-repeat bg-bottom bg-contain" />
           <div className="relative z-[2] w-[1036px] h-[780px] bg-[url('/images/home-earth/mc-bera/bg-computer.png')] bg-no-repeat bg-bottom bg-contain">
-
+            <ChatLayout />
           </div>
           <div className="relative z-[1] w-[266px] h-[240px] translate-x-[-20px] translate-y-[-50px] bg-[url('/images/home-earth/mc-bera/bg-photo.png')] bg-no-repeat bg-bottom bg-contain" />
         </div>
