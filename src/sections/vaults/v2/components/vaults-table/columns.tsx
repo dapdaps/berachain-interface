@@ -297,11 +297,11 @@ export const Rewards = (props: any) => {
             trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
             placement={PopoverPlacement.Top}
             content={
-              <Card className="!rounded-[10px] !bg-white !p-[5px_10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+              <Card className="!rounded-[10px] !bg-white !p-[5px_10px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                 <RewardIconContent
                   reward={reward}
                   record={record}
-                  className=""
+                  className="!w-[unset]"
                   isNumber={false}
                 />
               </Card>
