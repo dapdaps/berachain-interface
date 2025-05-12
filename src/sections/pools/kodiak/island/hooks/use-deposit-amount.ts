@@ -6,7 +6,7 @@ import islandAbi from "../abi/island";
 import Big from "big.js";
 import { getAnotherAmountOutV2 } from "@/sections/pools/helpers";
 
-export default function useDepositAmount(data: any, info: any) {
+export default function useDepositAmount(data: any, info?: any) {
   const [querying, setQuerying] = useState(false);
   const { provider } = useCustomAccount();
   const slippage = useSettingsStore((store: any) => store.slippage);
@@ -44,6 +44,7 @@ export default function useDepositAmount(data: any, info: any) {
         });
         return;
       }
+
       const IslandContract = new Contract(data.id, islandAbi, provider);
       const params = amount0
         ? [

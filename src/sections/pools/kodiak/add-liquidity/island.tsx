@@ -37,6 +37,7 @@ export default function AddLiquidity({
   }, [defaultToken0, defaultToken1]);
 
   const { querying, queryAmounts } = useDepositAmount({
+    id: rest?.id,
     islandContract: rest?.id || rest?.stakingToken?.address,
     token0,
     token1

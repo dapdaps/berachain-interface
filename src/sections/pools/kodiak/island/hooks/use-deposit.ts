@@ -91,9 +91,7 @@ export default function useDeposit({
               account,
               _deadline
             ];
-      }
-
-      if (data.type === "island") {
+      } else {
         method = nativeToken ? "addLiquidityNative" : "addLiquidity";
         params = [
           data.id,
@@ -108,6 +106,8 @@ export default function useDeposit({
           account
         ];
       }
+
+     
 
       const estimateGas = await RouterContract.estimateGas[method](
         ...params,
