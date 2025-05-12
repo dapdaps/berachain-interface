@@ -24,12 +24,11 @@ const ModalPointsInfrared = ({
   return (<Modal 
     open={open}
     onClose={onClose}
-    isMaskClose={false}
   >
-    <div className='p-[40px] w-[950px] h-[456px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)]'>
+    <div className='lg:p-[40px] lg:w-[950px] lg:h-[456px] lg:rounded-[20px] md:rounded-t-[20px] md:p-5 border lg:border-black bg-[#FFFDEB] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)]'>
         <div className="font-CherryBomb text-[32px] leading-[90%] font-400 mb-[34px]">Infrared Points</div>
-        <div className="w-full flex justify-between">
-        <div className={clsx("flex md:justify-between gap-[60px] text-black font-Montserrat md:text-[14px] text-[16px] font-medium leading-[100%] md:w-full md:text-white md:p-[11px_20px_13px] md:rounded-[10px] md:bg-black/50")}>
+        <div className="w-full flex md:flex-col justify-between">
+        <div className={clsx("flex md:justify-between gap-[60px] text-black font-Montserrat md:text-[14px] text-[16px] font-medium leading-[100%] md:w-full md:text-white md:p-[11px_20px_13px] md:rounded-[10px] md:bg-black/25")}>
             <div className="flex flex-col gap-[8px]">
             <span className="font-Montserrat text-[14px] text-[#3D405A] font-[500]">Points</span>
             <div className="flex items-center gap-1">
@@ -51,7 +50,7 @@ const ModalPointsInfrared = ({
             <span className="leading-[40px] md:leading-[100%] font-[700]">{userPoints?.rank}</span>
             </div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center md:justify-end">
           <DropdownSelector onSelect={onTimeRangeChange} defaultValue="Last 3 months" />
         </div>
         </div>

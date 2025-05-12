@@ -1,7 +1,8 @@
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Dispatch, forwardRef, SetStateAction, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Dispatch, forwardRef, SetStateAction, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useDebounceFn } from 'ahooks';
+import useIsMobile from '@/hooks/use-isMobile';
 
 // Placement:
 //            TopLeft         Top         TopRight
@@ -26,12 +27,22 @@ const Popover = forwardRef((props: Props, ref: any) => {
     closeDelayDuration = 300,
   } = props;
 
+  const isMobile = useIsMobile();
+
   const triggerRef = useRef<any>();
 
   const [visible, setVisible] = useState(false);
   const [realVisible, setRealVisible] = useState(false);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
+
+  const _trigger = useMemo(() => {
+    let __trigger = trigger;
+    if (isMobile && __trigger === PopoverTrigger.Hover) {
+      __trigger = PopoverTrigger.Click;
+    }
+    return __trigger;
+  }, [isMobile, trigger]);
 
   const { run: closeDelay, cancel: closeCancel } = useDebounceFn(() => {
     setVisible(false);
@@ -53,7 +64,7 @@ const Popover = forwardRef((props: Props, ref: any) => {
         style={triggerContainerStyle}
         className={triggerContainerClassName}
         onClick={async (e) => {
-          if (trigger === PopoverTrigger.Hover) return;
+          if (_trigger === PopoverTrigger.Hover) return;
           if (onClickBefore) {
             const isContinue = await onClickBefore(e, () => {
               setVisible(true);
@@ -63,12 +74,12 @@ const Popover = forwardRef((props: Props, ref: any) => {
           setVisible(true);
         }}
         onMouseEnter={() => {
-          if (trigger === PopoverTrigger.Click) return;
+          if (_trigger === PopoverTrigger.Click) return;
           closeCancel();
           setVisible(true);
         }}
         onMouseLeave={() => {
-          if (trigger === PopoverTrigger.Click) return;
+          if (_trigger === PopoverTrigger.Click) return;
           closeDelay();
         }}
       >
@@ -167,7 +178,7 @@ const Popover = forwardRef((props: Props, ref: any) => {
             setVisible={setVisible}
             closeDelay={closeDelay}
             closeCancel={closeCancel}
-            trigger={trigger}
+            trigger={_trigger}
           >
             {content}
           </Card>,
