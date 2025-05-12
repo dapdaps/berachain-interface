@@ -87,7 +87,7 @@ const HomeEarthTop = (props: any) => {
           )}
         </AnimatePresence>
       </div>
-      <Vaults className="!left-[unset] right-0 !top-[150px]" />
+      <Vaults className="!left-[unset] right-[100px] !top-[150px]" />
     </div>
   );
 };

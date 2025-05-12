@@ -17,6 +17,7 @@ import RainyDay from '@/components/rainy-day';
 import { useRainyDay } from '@/hooks/use-rainy-day';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useActivityStore } from "@/stores/useActivityStore";
+import NavigationMenu from '@/sections/home-earth/components/menu';
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -284,6 +285,7 @@ const MainLayout = (props: Props) => {
           )
         }
       </AnimatePresence>
+      <NavigationMenu />
     </div>
   );
 };
