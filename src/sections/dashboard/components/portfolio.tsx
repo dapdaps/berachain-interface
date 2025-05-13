@@ -161,14 +161,14 @@ const Card = (props: any) => {
   return (
     <div className='bg-[#FFDC50] rounded-[10px] p-[12px_9px_15px_15px] flex-1 md:w-1/2'>
       <div className='flex justify-between items-center gap-[10px]'>
-        <div className=''>{title}</div>
+        <div className='whitespace-nowrap'>{title}</div>
         <div
-          className='rounded-[8px] bg-[#FFFDEB] text-center w-[22px] h-[22px] border border-[#373A53] leading-[20px] text-[#3D405A] text-[14px] font-[500]'
+          className='rounded-[8px] bg-[#FFFDEB] text-center min-w-[22px] px-[4px] h-[22px] border border-[#373A53] leading-[20px] text-[#3D405A] text-[14px] font-[500]'
           style={{
             opacity: Big(amount).lte(0) ? 0.3 : 1
           }}
         >
-          {amount}
+          {numberFormatter(amount, 1, true, { isShort: true, isShortUppercase: true })}
         </div>
       </div>
       {loading ? (
