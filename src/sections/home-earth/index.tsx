@@ -24,7 +24,9 @@ import { HomeEarthContext } from "./context";
 import Boyco from "../boyco";
 import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
-import McBera from '@/sections/home-earth/mc-bera';
+import dynamic from 'next/dynamic';
+
+const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 
 // seconds per lap
 const SPEED = 200;
@@ -179,7 +181,7 @@ const HomeEarth = () => {
         <div className="w-full">
           <div
             ref={contentRef}
-            className="w-full sticky z-[1] top-[68px] h-[calc(100dvh_-_68px)] flex flex-col items-center"
+            className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
           >
             {/*<BerachainFixes />*/}
             <BeraPrice />

@@ -21,7 +21,7 @@ const MENU_LIST = [
   {
     label: "Lending",
     bg: "#98F6CD",
-    href: "/lending"
+    href: "/lending/dolomite"
   },
   {
     label: "Vaults",

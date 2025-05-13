@@ -102,7 +102,7 @@ const MainLayout = (props: Props) => {
     return {};
   }, [currentScene, isRainyDay, rainyDay, pathname, isDefaultTheme, themeConfig.primaryColor]);
 
-  const routes = ["/earn", "/activity/christmas"];
+  const routes = ["/", "/earn", "/activity/christmas"];
 
 
 
