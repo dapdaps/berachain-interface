@@ -230,9 +230,12 @@ const DelegateContent = (props: any) => {
               });
             }}
           >
-            <div className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden">
-              <img src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={validator?.metadata?.name} />
-            </div>
+            <CustomImage
+              alt={validator?.metadata?.name}
+              src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+              className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
+              errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+            />
             <div className="ml-[8px] mr-[10px] w-[65px] text-ellipsis overflow-hidden text-black font-Montserrat text-[16px] whitespace-nowrap font-semibold leading-[90%]">
               {validator?.metadata?.name ?? formatLongText(validator?.pubkey, 4, 4)}
             </div>
@@ -254,13 +257,13 @@ const DelegateContent = (props: any) => {
         </div>
         <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
           balance: <span
-          onClick={() => {
-            updateState({
-              inAmount: state?.balance
-            })
-          }}
-          className="underline cursor-pointer"
-        >{formatValueDecimal(state?.balance, "", 2)}</span> BGT
+            onClick={() => {
+              updateState({
+                inAmount: state?.balance
+              })
+            }}
+            className="underline cursor-pointer"
+          >{formatValueDecimal(state?.balance, "", 2)}</span> BGT
         </div>
         <div className="mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]">
           <div className="flex items-center gap-[8px]">
