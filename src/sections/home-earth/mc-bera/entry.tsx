@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import McBeraArrow from '@/sections/home-earth/mc-bera/components/arrow';
 import ReactDOM from 'react-dom';
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const McBeraEntry = (props: any) => {
   const { isRoot } = props;
@@ -33,15 +34,18 @@ const McBeraEntryContent = (props: any) => {
   };
 
   return (
-    <button
+    <motion.button
       type="button"
       className={clsx('absolute z-[5] bottom-[15px] left-1/2 -translate-x-1/2 w-[227px] h-9 flex-shrink-0 text-black text-center font-CherryBomb flex items-center justify-center text-lg font-normal leading-[90%] rounded-[10px] bg-white/80 backdrop-blur-sm', className)}
       onClick={onOpenMcBera}
+      initial={{ opacity: 0, y: -100, x: "-50%" }}
+      animate={{ opacity: 1, y: 0, x: "-50%" }}
+      exit={{ opacity: 0, y: -100, x: "-50%" }}
     >
       <div className="">
         {isOpen ? "Walk to Home" : "Walk in Beratown"}
       </div>
       <McBeraArrow className={clsx("absolute right-[12px]", isOpen ? "rotate-0" : "rotate-180")} />
-    </button>
+    </motion.button>
   );
 };

@@ -82,13 +82,11 @@ const McBera = (props: any) => {
         <AnimatePresence mode="wait">
           {
             screenVisible && (
-              <motion.div
-                initial={{ opacity: 0, y: -100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -100 }}
-              >
-                <McBeraEntry isRoot={true} className="!fixed !bottom-[unset] top-[20px] !z-[51]" isOpen={false} />
-              </motion.div>
+              <McBeraEntry
+                isRoot={true}
+                className="!fixed !bottom-[unset] top-[20px] !z-[51]"
+                isOpen={false}
+              />
             )
           }
         </AnimatePresence>
