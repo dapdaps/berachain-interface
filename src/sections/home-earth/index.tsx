@@ -24,7 +24,9 @@ import { HomeEarthContext } from "./context";
 import Boyco from "../boyco";
 import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
-import McBera from '@/sections/home-earth/mc-bera';
+import dynamic from 'next/dynamic';
+
+const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 
 // seconds per lap
 const SPEED = 200;

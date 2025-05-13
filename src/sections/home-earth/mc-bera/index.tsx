@@ -5,7 +5,7 @@ import { useDebounceFn } from 'ahooks';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
-const ChatLayout = dynamic(() => import('@/components/chat'));
+const ChatLayout = dynamic(() => import('@/components/chat'), { ssr: false });
 
 const McBera = (props: any) => {
   const { className } = props;
