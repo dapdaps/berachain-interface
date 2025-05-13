@@ -11,9 +11,11 @@ import { useVaultsV2Context } from "@/sections/vaults/v2/context";
 import { useEffect, useMemo, useRef } from "react";
 import DoubleTokenIcons from "@/components/token-icon/double";
 import { motion } from "framer-motion";
+import { usePriceStore } from '@/stores/usePriceStore';
+import Big from 'big.js';
 
 const RewardIcon = (props: any) => {
-  const { reward, className } = props;
+  const { reward, className, cardClassName } = props;
 
   const isMobile = useIsMobile();
   const { containerRef } = useVaultsV2Context();
@@ -25,10 +27,10 @@ const RewardIcon = (props: any) => {
       popoverRef.current?.onClose();
     };
 
-    containerRef.current?.addEventListener("scroll", handleScroll);
+    containerRef?.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
+      containerRef?.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -38,7 +40,7 @@ const RewardIcon = (props: any) => {
       trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
       placement={PopoverPlacement.Bottom}
       content={
-        <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px]">
+        <Card className={clsx("!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px]", cardClassName)}>
           <RewardIconContent reward={reward} />
         </Card>
       }
@@ -86,8 +88,18 @@ export const RewardIconContent = (props: any) => {
   const { reward, className, isNumber = true, record } = props;
 
   const { toggleClaimVisible, setCurrentProtocol } = useVaultsV2Context();
+  const prices = usePriceStore(store => store.beraTownPrice);
 
-  const [claimRecord, claimToken] = useMemo(() => {
+  const rewardUsd = useMemo(() => {
+    let price = prices[reward.symbol];
+    if (!price) {
+      price = prices[reward.address];
+    }
+    if (!price) return null;
+    return numberFormatter(Big(price).times(reward.amount || 0), 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
+  }, [reward, prices]);
+
+  const [claimRecord, claimToken, claimTokenUsd] = useMemo(() => {
     if (!record) return [];
     let _claimToken: any;
     const _claimRecord = record.list.find((it: any) =>
@@ -99,6 +111,16 @@ export const RewardIconContent = (props: any) => {
         return false;
       })
     );
+    if (_claimToken) {
+      let price = prices[_claimToken.symbol];
+      if (!price) {
+        price = prices[_claimToken.address];
+      }
+      if (!price) {
+        return [_claimRecord, _claimToken];
+      }
+      return [_claimRecord, _claimToken, numberFormatter(Big(price).times(_claimToken.amount || 0), 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true })];
+    }
     return [_claimRecord, _claimToken];
   }, [record, reward]);
 
@@ -110,7 +132,12 @@ export const RewardIconContent = (props: any) => {
           className
         )}
       >
-        <div className="flex items-center gap-[5px] flex-1 w-0">
+        <div
+          className={clsx(
+            "flex items-center gap-[5px] flex-1",
+            isNumber ? "w-0" : ""
+          )}
+        >
           {typeof reward.icon === "string" ? (
             <LazyImage
               src={reward.icon}
@@ -131,7 +158,10 @@ export const RewardIconContent = (props: any) => {
             href={reward.link}
             target="_blank"
             rel="noreferrer nofollow"
-            className="flex-1 w-0 flex items-center"
+            className={clsx(
+              "flex-1 flex items-center",
+              isNumber ? "w-0" : ""
+            )}
           >
             <div className="whitespace-nowrap overflow-hidden text-ellipsis relative" title={reward.symbol}>
               {reward.symbol}
@@ -146,10 +176,12 @@ export const RewardIconContent = (props: any) => {
         </div>
         {isNumber && (
           <div className="flex items-center justify-end shrink-0">
-            {numberFormatter(reward.amount, 6, true, {
-              isShort: true,
-              isShortUppercase: true
-            })}
+            <div className="">
+              {numberFormatter(reward.amount, 6, true, {
+                isShort: true,
+                isShortUppercase: true
+              })}{rewardUsd && `(${rewardUsd})`}
+            </div>
           </div>
         )}
       </div>
@@ -160,7 +192,7 @@ export const RewardIconContent = (props: any) => {
             {numberFormatter(claimToken.amount, 6, true, {
               isShort: true,
               isShortUppercase: true
-            })}
+            })}{claimTokenUsd && `(${claimTokenUsd})`}
           </div>
           {!["BeraBorrow"].includes(claimRecord.protocol) && (
             <button

@@ -4,10 +4,11 @@ import { useState, useEffect, useMemo } from 'react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts'
 import dayjs from 'dayjs'
 import DropdownSelector from './dropdown-selector'
+import useIsMobile from '@/hooks/use-isMobile'
 
 interface PointHistory {
   timestamp: string
-  points: number
+  value: number
 }
 
 interface Props {
@@ -42,7 +43,7 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
       .filter(item => dayjs(item.timestamp).isAfter(startDate))
       .map(item => ({
         date: dayjs(item.timestamp).format('DD MMM'),
-        points: Number(item.points),
+        value: Number(item.value),
         rawTimestamp: item.timestamp // 保留原始时间戳用于排序
       }))
       .sort((a, b) => dayjs(a.rawTimestamp).valueOf() - dayjs(b.rawTimestamp).valueOf())
@@ -51,10 +52,11 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
   // 计算Y轴的最大值，确保图表尺度合适
   const maxPoints = useMemo(() => {
     if (filteredData.length === 0) return 100
-    const max = Math.max(...filteredData.map(item => item.points))
+    const max = Math.max(...filteredData.map(item => item.value))
     return Math.ceil(max * 1.1) // 增加10%的空间使图表不会紧贴顶部
   }, [filteredData])
 
+  const isMobile = useIsMobile()
 
   return (
     <div className="w-full">
@@ -72,7 +74,7 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
               tick={{ fontSize: 12 }} 
               axisLine={false} 
               tickLine={false}
-              interval={Math.ceil(filteredData.length / 15) - 1}
+              interval={Math.max(0, Math.ceil(filteredData.length / (isMobile ? 6 : 15)) - 1)}
             />
             <YAxis 
               tick={{ fontSize: 12 }} 
@@ -91,7 +93,7 @@ const UserPointsChart: React.FC<Props> = ({ history,  timeRange }) => {
             />
             <Area
               type="monotone"
-              dataKey="points"
+              dataKey="value"
               stroke="#000"
               fill="url(#colorPoints)"
               strokeWidth={1}

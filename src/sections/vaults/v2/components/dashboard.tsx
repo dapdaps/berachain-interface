@@ -32,10 +32,10 @@ const Dashboard = (props: any) => {
       popoverRef.current?.onClose();
     };
 
-    containerRef.current?.addEventListener("scroll", handleScroll);
+    containerRef?.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
+      containerRef?.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -65,6 +65,7 @@ const Dashboard = (props: any) => {
                           key={idx}
                           reward={reward}
                           className={idx > 0 ? "ml-[-6px]" : ""}
+                          cardClassName="!w-[250px]"
                         />
                       ))
                     }
@@ -75,7 +76,7 @@ const Dashboard = (props: any) => {
                           trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
                           placement={PopoverPlacement.Bottom}
                           content={(
-                            <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+                            <Card className="!rounded-[10px] !p-[10px] w-[260px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                               {
                                 totalUserRewardTokens.slice(visibleRewardTokenLength).map((reward, idx) => (
                                   <RewardIconContent

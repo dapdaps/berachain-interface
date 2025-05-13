@@ -10,6 +10,10 @@ import Big from "big.js";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import useClickTracking from "@/hooks/use-click-tracking";
 import useMemeswapBalance from "./use-memeswap-balance";
+import { bera } from '@/configs/tokens/bera';
+import { useRequest } from 'ahooks';
+import { Contract, utils } from 'ethers';
+import { ABI } from '@/sections/staking/hooks/use-berapaw';
 
 export default function useAction(): Action {
   const beraPawRef = useRef<any>();
@@ -51,6 +55,26 @@ export default function useAction(): Action {
     queuedAmount
   } = useMemeswapBalance();
 
+  const { data: beraPawLBGTWithdrawBalance, loading: beraPawLBGTWithdrawBalanceLoading } = useRequest(async () => {
+    if (actionType.value === ACTION_TYPE.DEPOSIT || !account) {
+      return "0";
+    }
+    if (
+      _currentProtocol.protocol !== "BeraPaw"
+      || _currentProtocol.vault_address.toLowerCase() !== bera["stlbgt"].address.toLowerCase()
+    ) {
+      return "0";
+    }
+    try {
+      const stLBGTContract = new Contract(_currentProtocol.vault_address, ABI, provider);
+      const stLBGTPreviewRedeem = await stLBGTContract.previewRedeem(utils.parseUnits(tokenBalance, bera["stlbgt"].decimals));
+      return utils.formatUnits(stLBGTPreviewRedeem, bera["stlbgt"].decimals);
+    } catch (err: any) {
+      console.log("get berapaw LBGT withdraw balance error: %o", err);
+    }
+    return "0";
+  }, { refreshDeps: [actionType, account, provider, tokenBalance, _currentProtocol] });
+
   const { handleReportWithoutDebounce } = useClickTracking();
 
   const [balanceShown, balanceLoading, updateBalance] = useMemo(() => {
@@ -63,8 +87,15 @@ export default function useAction(): Action {
     if (_currentProtocol.protocol === "Memeswap") {
       return [memeswapBalance, memeswapLoading, updateMemeswapBalance];
     }
+    // stake BeraPaw LBGT
+    if (
+      _currentProtocol.protocol === "BeraPaw"
+      && _currentProtocol.vault_address.toLowerCase() === bera["stlbgt"].address.toLowerCase()
+    ) {
+      return [beraPawLBGTWithdrawBalance, isLoading || beraPawLBGTWithdrawBalanceLoading, update];
+    }
     return [Big(tokenBalance || 0).gt(0) ? tokenBalance : _currentProtocol?.user_stake?.amount || "0", isLoading, update];
-  }, [actionType, tokenBalance, _currentProtocol, memeswapBalance, isLoading, update]);
+  }, [actionType, tokenBalance, _currentProtocol, memeswapBalance, isLoading, update, beraPawLBGTWithdrawBalance, beraPawLBGTWithdrawBalanceLoading]);
 
   const [inputError, inputErrorMessage] = useMemo<
     [boolean, string | undefined]

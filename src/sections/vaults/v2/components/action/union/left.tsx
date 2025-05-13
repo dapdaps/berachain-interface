@@ -63,13 +63,14 @@ const ActionUnionLeft = (props: any) => {
                           key={idx}
                           triggerContainerClassName="inline-block"
                           content={
-                            <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+                            <Card className="!rounded-[10px] !p-[10px] w-[unset] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                               <RewardIconContent
                                 reward={{
                                   ...token,
                                   amount: currentRewardToken?.amount
                                 }}
                                 className=""
+                                isNumber={false}
                               />
                             </Card>
                           }

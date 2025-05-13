@@ -18,6 +18,7 @@ import { useRef } from "react";
 import { Description, Statistics, Tips } from '@/sections/vaults/v2/components/aggregating';
 import RewardTopCard from '@/sections/vaults/v2/components/reward-top-card';
 import useBoycoData from '@/sections/boyco/use-data';
+import Announcement from '@/sections/vaults/v2/components/announcement';
 
 const VaultsV2Mobile = (props: any) => {
   const {} = props;
@@ -33,7 +34,9 @@ const VaultsV2Mobile = (props: any) => {
         ref={containerRef}
         className="relative w-full h-full overflow-y-auto pb-[64px] bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover"
       >
-        <div className="pt-[23px] px-[16px] flex justify-center items-center">
+        <Announcement containerClassName="!fixed" />
+
+        <div className="pt-[40px] px-[16px] flex justify-center items-center">
           <PageBack className="absolute left-[17px]" />
           <div className="w-full h-[50px] flex justify-center items-center gap-[10px] mx-auto shrink-0 text-white text-center font-[400] font-CherryBomb text-[30px] leading-[90%]">
             <div className="">Vaults</div>
