@@ -16,7 +16,7 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
   const dappList = useMemo(() => {
     return Object.values(dapps).filter((_dapp) => {
       if (isPool) {
-        return _dapp.name !== "Ooga Booga";
+        return _dapp.name !== "Ooga Booga" && _dapp.name !== dapp.name;
       }
       return _dapp.name !== dapp.name;
     });
