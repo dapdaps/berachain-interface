@@ -1,6 +1,5 @@
 import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
-import { get } from '@/utils/http';
 import {
   formatExecution,
   gasFormatter,
@@ -9,6 +8,7 @@ import {
 import useUser from '@/hooks/use-user';
 import { upperFirst } from 'lodash';
 import useIsMobile from '@/hooks/use-isMobile';
+import axios from 'axios';
 
 export function useRecords(props: Props) {
   const { currentChain } = props;
@@ -44,9 +44,13 @@ export function useRecords(props: Props) {
     try {
       setLoading(true);
       setRecords([]);
-      const result = await get(`/api.db3.app/api/transaction/list`, _params, { isSkipFormatUrl: true });
+      const url = new URL("https://api.db3.app/api/transaction/list");
+      for (const paramKey in _params) {
+        url.searchParams.set(paramKey, _params[paramKey] ?? "");
+      }
+      const result = await axios.get(url.toString());
 
-      const _list = result.data.list
+      const _list = result.data.data?.list
         // ?.filter((record: any) => record.token_in && record)
         .map((record: any) => {
           return {
@@ -64,7 +68,7 @@ export function useRecords(props: Props) {
 
       setRecords(_list);
 
-      setHasMore(result.data.has_more);
+      setHasMore(result.data.data?.has_more);
       if (_pageIndex > pageTotal) {
         setPageTotal(_pageIndex);
       }
