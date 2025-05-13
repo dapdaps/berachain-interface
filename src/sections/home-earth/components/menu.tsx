@@ -4,40 +4,40 @@ import Link from 'next/link';
 
 const MENU_LIST = [
   {
-    label: 'Home',
-    bg: '#FFDC50',
-    href: '/',
+    label: "Home",
+    bg: "#FFDC50",
+    href: "/"
   },
   {
-    label: 'Swap',
-    bg: '#D8FF8D',
-    href: '/dex/kodiak',
+    label: "Swap",
+    bg: "#D8FF8D",
+    href: "/dex/bex"
   },
   {
-    label: 'Bridge',
-    bg: '#FFF5A9',
-    href: '/bridge',
+    label: "Bridge",
+    bg: "#FFF5A9",
+    href: "/bridge"
   },
   {
-    label: 'Lending',
-    bg: '#98F6CD',
-    href: '/lending',
+    label: "Lending",
+    bg: "#98F6CD",
+    href: "/lending"
   },
   {
-    label: 'Vaults',
-    bg: '#F3BBAB',
-    href: '/vaults',
+    label: "Vaults",
+    bg: "#F3BBAB",
+    href: "/vaults"
   },
   {
-    label: 'Tokens',
-    bg: '#C0FF96',
-    href: '/marketplace',
+    label: "Tokens",
+    bg: "#C0FF96",
+    href: "/marketplace"
   },
   {
-    label: 'Portfolio',
-    bg: '#FFF5A9',
-    href: '/portfolio',
-  },
+    label: "Portfolio",
+    bg: "#FFF5A9",
+    href: "/portfolio"
+  }
 ];
 
 const NavigationMenu = (props: any) => {
