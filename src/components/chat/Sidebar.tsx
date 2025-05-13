@@ -4,13 +4,17 @@ import IconHistory from '@public/images/chat/history.svg';
 import IconMore from '@public/images/chat/more.svg';
 import IconEdit from '@public/images/chat/edit.svg';
 import IconDelete from '@public/images/chat/delete.svg';
+import { useChatContext } from './context/chat-context';
+import { fetchChatHistory } from './services/chat-service';
 
 const Sidebar = () => {
-  const [activeChat, setActiveChat] = useState('How to get infrared poi...');
+  const [activeChat, setActiveChat] = useState();
   const [showPopover, setShowPopover] = useState(false);
   const [hoverChat, setHoverChat] = useState<string | null>(null);
-  const [popoverChat, setPopoverChat] = useState<string | null>(null); 
+  const [popoverChat, setPopoverChat] = useState<string | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  
+  const { setChatMode, setCurrentChatId, updateMessages } = useChatContext();
 
   const chatHistory = [
     'How to get infrared poi...',
@@ -29,13 +33,29 @@ const Sidebar = () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, []);
+  
+  const handleNewChat = () => {
+    setChatMode('initial');
+    setCurrentChatId(null);
+    setShowPopover(false);
+  };
+  
+  const handleLoadChat = async (chatId: string) => {
+    try {
+      const messages = await fetchChatHistory(chatId);
+      updateMessages(messages);
+      setCurrentChatId(chatId);
+    } catch (error) {
+      console.error("加载聊天历史失败:", error);
+    }
+  };
 
   return (
     <div className="flex h-[566px]" ref={sidebarRef}>
       <div className="w-[260px] flex flex-col h-full px-2">
         <button 
           className="mt-6 w-full h-[34px] px-2 flex items-center gap-2 py-2 mb-6 hover:rounded-[10px] hover:border hover:border-[#DAD9CD] hover:bg-[#DAD9CD]/30"
-          onClick={() => setShowPopover(false)}
+          onClick={handleNewChat}
         >
             <IconNewChat />
             <span className="font-Montserrat font-[700] leading-[13px] text-[13px] text-black/50">New Chat</span>
@@ -58,6 +78,7 @@ const Sidebar = () => {
                 if (popoverChat !== chat) {
                   setShowPopover(false);
                 }
+                handleLoadChat(`chat-${index}`);
               }}
             >
               <div className="max-w-[210px] truncate font-Montserrat font-[500] leading-[13px] text-[13px] text-black/50">{chat}</div>
