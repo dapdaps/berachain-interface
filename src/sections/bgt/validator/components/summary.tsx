@@ -53,7 +53,7 @@ const Summary = (props: any) => {
             pageData ? (
               <div className="flex items-center gap-[6px]">
                 <span className="text-black font-Montserrat text-[20px] font-semibold leading-[90%]">
-                  {numberFormatter(estReturnPerBGT, 2, true)}
+                  {numberFormatter(estReturnPerBGT, 2, true, { isShort: true, prefix: "$" })}
                 </span>
                 {/* <div className="w-[20px] h-[20px]">
                   <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />

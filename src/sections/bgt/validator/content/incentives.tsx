@@ -1,5 +1,6 @@
 import { TOKENS } from "@/configs";
 import useCustomAccount from "@/hooks/use-account";
+import useToast from "@/hooks/use-toast";
 import { useHall } from "@/stores/hall";
 import { usePriceStore } from "@/stores/usePriceStore";
 import { get } from "@/utils/http";
@@ -53,6 +54,7 @@ const ABI = [{
 const PAGE_SIZE = 100
 function IncentivesContextProvider({ children, pageData }: { children: ReactNode; pageData: any }) {
   const store = useHall()
+  const toast = useToast()
   const { account, provider } = useCustomAccount();
   const prices: any = usePriceStore(store => store.price);
   const [page, setPage] = useState(0)
@@ -119,13 +121,22 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
       const tx = await contract.claim(_claims, {
         gasLimit: new Big(estimateGas).times(1.2).toFixed(0)
       });
+      toast.success({
+        title: "Claim Successful!"
+      })
     } catch (error) {
-      console.log(error)
+      toast?.fail({
+        title: "Claim Failed!",
+        text: error?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
+          : error?.message ?? ""
+      });
     }
-    
     setClaimLoading(false)
     onClose?.()
-    getIncentives?.()
+    setTimeout(() => {
+      getIncentives?.()
+    }, 2000)
   }
 
   function onClose() {
