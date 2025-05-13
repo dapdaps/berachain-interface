@@ -13,6 +13,7 @@ export default memo(function IncentivesEarned() {
     usd_total_unclaimed,
     claimLoading,
     incentivesLoading,
+    setShowModal,
     onClaim,
     handleGetIncentives
   } = useIncentivesContext()

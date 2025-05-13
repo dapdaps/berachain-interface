@@ -164,6 +164,7 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
         usd_total_unclaimed,
         claimLoading,
         incentivesLoading,
+        setShowModal,
         onClose,
         onClaim,
         onChangePage,
