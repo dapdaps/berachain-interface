@@ -1,9 +1,9 @@
 import { useAccount } from 'wagmi';
 import { useState } from 'react';
-import { get } from '@/utils/http';
 import Big from 'big.js';
 import { getTokenLogo } from '@/sections/dashboard/utils';
 import { useAuthQuery } from '@/hooks/use-auth-query';
+import axios from 'axios';
 
 export function useWallet(props: Props) {
   const { currentChain, networkList } = props;
@@ -18,12 +18,12 @@ export function useWallet(props: Props) {
   useAuthQuery({
     query: async () => {
       setLoading(true);
+      const url = new URL("https://api.db3.app/api/balance/list");
+      url.searchParams.set("address", address ?? "");
+      url.searchParams.set("chain_id", currentChain.id);
       try {
-        const result = await get(`/api.db3.app/api/balance/list`, {
-          address,
-          chain_id: currentChain.id,
-        }, { isSkipFormatUrl: true });
-        const _data = result?.data?.list ?? [];
+        const result = await axios.get(url.toString());
+        const _data = result?.data?.data?.list ?? [];
         const _networks: any = {};
         let _totalBalance = new Big(0);
         networkList.forEach((n: any) => {

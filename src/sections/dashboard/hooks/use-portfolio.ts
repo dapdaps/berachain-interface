@@ -2,9 +2,9 @@ import { useState } from "react";
 import Big from "big.js";
 import { useAccount } from "wagmi";
 import { useAuthQuery } from "@/hooks/use-auth-query";
-import { get } from "@/utils/http";
 import { getDappLogo, getTokenLogo } from "@/sections/dashboard/utils";
 import { trim } from 'lodash';
+import axios from 'axios';
 
 // ⚠️`dapp & XXX` path for card in "Your dApps"
 // ⚠️`earn & earnXXX` path for "Manage" button in "Details"
@@ -38,13 +38,13 @@ export function usePortfolio(props: Props) {
       setLoading(true);
       try {
         setDapps([]);
-        const result = await get(`/api.db3.app/api/balance/dapp/list`, {
-          address,
-          chain_id: currentChain.id
-        }, { isSkipFormatUrl: true });
+        const url = new URL("https://api.db3.app/api/balance/dapp/list");
+        url.searchParams.set("address", address ?? "");
+        url.searchParams.set("chain_id", currentChain.id);
+        const result = await axios.get(url.toString());
 
         let _totalBalance = Big(0);
-        const data: any = result?.data?.list || [];
+        const data: any = result?.data?.data?.list || [];
         const dappsList = [];
 
         const _dappsByChain: any = networkList.map((chain: any) => ({
