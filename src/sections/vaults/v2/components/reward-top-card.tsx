@@ -12,6 +12,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 import IBGTPoints from '@/sections/vaults/v2/components/ibgt-points';
+import CustomImage from '@/components/custom-image';
 
 const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type, loading, pool } = props;
@@ -117,9 +118,9 @@ const RewardTopCard = (props: RewardTopCardProps) => {
     return [
       BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.name,
       "Top Validator",
-      <img
+      <CustomImage
         src={BGTPageData?.top3EmittingValidators?.validators?.[0]?.metadata?.logoURI}
-        alt=""
+        errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
         className={clsx("shrink-0 w-[30px] h-[30px] object-contain object-center rounded-full")}
       />,
       BGTLoading
@@ -145,7 +146,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
             <div className="flex items-center gap-[10px]">
               <div>{currentItem.title}</div>
               {
-                currentItem.type ===RewardTopCardType.iBgt && (
+                currentItem.type === RewardTopCardType.iBgt && (
                   <IBGTPoints />
                 )
               }
@@ -154,10 +155,10 @@ const RewardTopCard = (props: RewardTopCardProps) => {
               !isMobile && (
                 <div className="text-[16px] md:text-[10px] font-[400] mt-[7px] md:mt-0">
                   Balance: {
-                  balanceLoading ? (
-                    <Loading size={isMobile ? 10 : 16} />
-                  ) : numberFormatter(balance?.formatted, 2, true, { isShort: true, isShortUppercase: true })
-                }
+                    balanceLoading ? (
+                      <Loading size={isMobile ? 10 : 16} />
+                    ) : numberFormatter(balance?.formatted, 2, true, { isShort: true, isShortUppercase: true })
+                  }
                 </div>
               )
             }

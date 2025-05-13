@@ -25,6 +25,7 @@ import { formatLongText } from "@/utils/utils";
 import { useBgtStore } from "@/stores/bgt";
 import QueueList from "./queue-list";
 import { useSearchParams } from 'next/navigation';
+import CustomImage from "@/components/custom-image";
 const TABS = [
   {
     value: "Deposit",
@@ -316,9 +317,12 @@ export default memo(function Delegate(props: IProps) {
                 });
               }}
             >
-              <div className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden">
-                <img src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={validator?.metadata?.name} />
-              </div>
+              <CustomImage
+                alt={validator?.metadata?.name}
+                src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
+                errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+              />
               <div className="ml-[8px] mr-[10px] w-[65px] text-ellipsis overflow-hidden text-black font-Montserrat text-[16px] whitespace-nowrap font-semibold leading-[90%]">
                 {validator?.metadata?.name ?? formatLongText(validator?.pubkey, 4, 4)}
               </div>
