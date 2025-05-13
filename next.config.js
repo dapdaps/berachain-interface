@@ -60,10 +60,6 @@ const nextConfig = {
     {
       source: '/api.db3.app/:path*',
       destination: 'https://api.db3.app/:path*'
-    },
-    {
-      source: "/api.hub.berachain/:path*",
-      destination: `https://hub.berachain.com/:path*`
     }
   ],
   webpack: (config, { dev }) => {

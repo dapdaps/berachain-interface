@@ -37,15 +37,6 @@ export function useIncentive(props: any) {
 
   const [list, estReturnPerBGT] = useMemo(() => {
     const totalPercentageNumerator = vaults.reduce((prev: any, curr: any) => Big(prev).plus(curr.percentageNumerator || 0), Big(0));
-    // [token.address]: {
-    //   address: token.address,
-    //   name: token.name,
-    //   symbol: token.symbol,
-    //   decimals: token.decimals,
-    //   vaults: [
-    //     Vault
-    //   ],
-    // }
     const _list = new Map();
     vaults.forEach((item: any, index: number) => {
       item.percentageNumeratorFormatted = Big(item.percentageNumerator || 0).div(totalPercentageNumerator);
