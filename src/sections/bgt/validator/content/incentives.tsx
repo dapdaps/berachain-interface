@@ -1,0 +1,183 @@
+import { TOKENS } from "@/configs";
+import useCustomAccount from "@/hooks/use-account";
+import { useHall } from "@/stores/hall";
+import { usePriceStore } from "@/stores/usePriceStore";
+import { get } from "@/utils/http";
+import { useDebounceFn } from "ahooks";
+import Big from "big.js";
+import { ethers } from "ethers";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+
+
+interface IIncentivesContext {
+
+}
+export const IncentivesContext = createContext<Partial<IIncentivesContext>>({});
+
+const ERC20_ADDRESS = "0xBDDba144482049382eC79CadfA02f0fa0F462dE3"
+const ABI = [{
+  "inputs": [
+    {
+      "components": [
+        {
+          "internalType": "bytes32",
+          "name": "identifier",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "merkleProof",
+          "type": "bytes32[]"
+        }
+      ],
+      "internalType": "struct IBGTIncentiveDistributor.Claim[]",
+      "name": "_claims",
+      "type": "tuple[]"
+    }
+  ],
+  "name": "claim",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+}]
+const PAGE_SIZE = 100
+function IncentivesContextProvider({ children, pageData }: { children: ReactNode; pageData: any }) {
+  const store = useHall()
+  const { account, provider } = useCustomAccount();
+  const prices: any = usePriceStore(store => store.price);
+  const [page, setPage] = useState(0)
+  const [incentives, setIncentives] = useState()
+  const [showModal, setShowModal] = useState(false)
+  const [incentivesLoading, setIncentivesLoading] = useState(true)
+  const [claimLoading, setClaimLoading] = useState(false)
+
+  const usd_total_unclaimed = useMemo(() => incentives?.reduce((acc, curr) => acc = Big(acc).plus(curr?.usd_total_unclaimed ?? 0).toFixed(), 0), incentives)
+  const max_page = useMemo(() => Math.ceil(store?.proofs?.length / 100) - 1, [store?.proofs])
+  const page_incentives = useMemo(() => handleGetIncentives(store?.proofs?.slice(page * 100, (page + 1) * 100)), [store?.proofs, page])
+  const { run: onChangePage } = useDebounceFn((type) => {
+    setPage(type === "prev" ? page - 1 : page + 1)
+  }, {
+    wait: 500
+  })
+  function handleGetIncentives(rewards) {
+    const tokenMap = {};
+    rewards?.forEach(reward => {
+      const token = reward.token;
+      if (!tokenMap[token]) {
+        const total_unclaimed = Big(tokenMap?.[token]?.total_unclaimed ?? 0)
+        tokenMap[token] = {
+          token: reward.token,
+          total_unclaimed: Big(total_unclaimed).plus(reward?.amount ?? 0).toFixed(),
+          available_at: reward.available_at
+        };
+      }
+    });
+    return Object.values(tokenMap).sort((a, b) => b.available_at - a.available_at)?.map(reward => {
+      const token = TOKENS?.[reward?.token?.toLowerCase()]
+      const total_unclaimed = ethers.utils.formatUnits(reward?.total_unclaimed ?? 0)
+      return {
+        ...token,
+        ...reward,
+        total_unclaimed,
+        usd_total_unclaimed: Big(total_unclaimed).times(prices?.[token?.symbol] ?? 0).toFixed()
+      }
+    })
+  }
+
+  async function onClaim() {
+    setClaimLoading(true)
+    const proofs = store?.proofs?.slice(page * 100, (page + 1) * 100)
+    const contract = new ethers.Contract(ERC20_ADDRESS, ABI, provider?.getSigner())
+    const _claims = []
+    proofs?.forEach(proof => {
+      _claims.push({
+        identifier: proof.dist_id,
+        account: proof.recipient,
+        amount: proof.amount,
+        merkleProof: proof.merkle_proof,
+      })
+    });
+    let estimateGas: any = new Big(1000000);
+    try {
+      estimateGas = await contract.estimateGas.claim(_claims);
+    } catch (err: any) {
+      if (err?.code === "UNPREDICTABLE_GAS_LIMIT") {
+        estimateGas = new Big(3000000);
+      }
+    }
+    try {
+      const tx = await contract.claim(_claims, {
+        gasLimit: new Big(estimateGas).times(1.2).toFixed(0)
+      });
+    } catch (error) {
+      console.log(error)
+    }
+    
+    setClaimLoading(false)
+    onClose?.()
+    getIncentives?.()
+  }
+
+  function onClose() {
+    setShowModal(false)
+  }
+
+  async function getIncentives() {
+    try {
+      setIncentivesLoading(true)
+      const result = await get('/api/hub', {
+        path: "/api/portfolio/proofs/",
+        params: "account=" + account + "&validator=" + pageData?.pubkey + "&page=1&perPage=10000"
+      })
+      store.set({
+        proofs: result?.rewards?.sort((a, b) => b.available_at - a.available_at)
+      })
+      setIncentives(handleGetIncentives(result?.rewards))
+    } catch (error) {
+      console.log(error)
+    }
+    setIncentivesLoading(false)
+  }
+  useEffect(() => {
+    pageData && account && Object.keys(prices).length > 0 && getIncentives()
+  }, [pageData, prices, account])
+  return (
+    <IncentivesContext.Provider
+      value={{
+        PAGE_SIZE,
+        page,
+        max_page,
+        pageData,
+        showModal,
+        incentives,
+        page_incentives,
+        usd_total_unclaimed,
+        claimLoading,
+        incentivesLoading,
+        onClose,
+        onClaim,
+        onChangePage,
+        handleGetIncentives
+      }}
+    >
+      {children}
+    </IncentivesContext.Provider>
+  );
+}
+
+export default IncentivesContextProvider;
+export function useIncentivesContext() {
+  const context = useContext(IncentivesContext);
+
+  return context as IIncentivesContext;
+}

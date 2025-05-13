@@ -152,8 +152,8 @@ const nextConfig = {
 const withBundleStatsPlugin =
   process.env.ANALYZE_STATS === "true"
     ? createBundleStatsPlugin({
-        outDir: "./analyze"
-      })
+      outDir: "./analyze"
+    })
     : (conf) => conf;
 
 module.exports = withBundleStatsPlugin(nextConfig);
