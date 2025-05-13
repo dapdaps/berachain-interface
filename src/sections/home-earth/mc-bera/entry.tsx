@@ -1,7 +1,28 @@
 import clsx from 'clsx';
 import McBeraArrow from '@/sections/home-earth/mc-bera/components/arrow';
+import ReactDOM from 'react-dom';
+import React from 'react';
 
 const McBeraEntry = (props: any) => {
+  const { isRoot } = props;
+
+  if (isRoot) {
+    return ReactDOM.createPortal(
+      (
+        <McBeraEntryContent {...props} />
+      ) as any,
+      document.body
+    ) as unknown as React.ReactPortal;
+  }
+
+  return (
+    <McBeraEntryContent {...props} />
+  );
+};
+
+export default McBeraEntry;
+
+const McBeraEntryContent = (props: any) => {
   const { className, isOpen = true } = props;
 
   const onOpenMcBera = () => {
@@ -24,5 +45,3 @@ const McBeraEntry = (props: any) => {
     </button>
   );
 };
-
-export default McBeraEntry;

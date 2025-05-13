@@ -179,7 +179,7 @@ const HomeEarth = () => {
         <div className="w-full">
           <div
             ref={contentRef}
-            className="w-full sticky z-[1] top-[68px] h-[calc(100dvh_-_68px)] flex flex-col items-center"
+            className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
           >
             {/*<BerachainFixes />*/}
             <BeraPrice />
