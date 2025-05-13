@@ -19,6 +19,7 @@ import { ethers } from 'ethers';
 import { BGT_ADDRESS } from '@/sections/bgt/config';
 import { BGT_ABI } from '@/sections/bgt/abi';
 import { DEFAULT_CHAIN_ID } from '@/configs';
+import CustomImage from '@/components/custom-image';
 
 const DelegateContent = (props: any) => {
   const { visible, validator, operationType, onClose, onValidatorSelect, className, isFromVaults, isShowTitle = true } = props;
