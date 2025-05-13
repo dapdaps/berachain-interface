@@ -7,6 +7,7 @@ import { get } from "@/utils/http";
 import { useDebounceFn } from "ahooks";
 import Big from "big.js";
 import { ethers } from "ethers";
+import _ from "lodash";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 
@@ -58,20 +59,25 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
   const { account, provider } = useCustomAccount();
   const prices: any = usePriceStore(store => store.price);
   const [page, setPage] = useState(0)
-  const [incentives, setIncentives] = useState()
+  const [proofs, setProofs] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [incentivesLoading, setIncentivesLoading] = useState(true)
   const [claimLoading, setClaimLoading] = useState(false)
 
+  const incentives = useMemo(() => handleGetIncentives(proofs), [proofs])
+  const page_incentives = useMemo(() => handleGetIncentives(proofs?.slice(page * 100, (page + 1) * 100)), [proofs, page])
   const usd_total_unclaimed = useMemo(() => incentives?.reduce((acc, curr) => acc = Big(acc).plus(curr?.usd_total_unclaimed ?? 0).toFixed(), 0), incentives)
-  const max_page = useMemo(() => Math.ceil(store?.proofs?.length / 100) - 1, [store?.proofs])
-  const page_incentives = useMemo(() => handleGetIncentives(store?.proofs?.slice(page * 100, (page + 1) * 100)), [store?.proofs, page])
+  const max_page = useMemo(() => Math.ceil(proofs?.length / 100) - 1, [proofs])
+
+
+
   const { run: onChangePage } = useDebounceFn((type) => {
     setPage(type === "prev" ? page - 1 : page + 1)
   }, {
     wait: 500
   })
   function handleGetIncentives(rewards) {
+    if (!rewards?.length) return []
     const tokenMap = {};
     rewards?.forEach(reward => {
       const token = reward.token;
@@ -98,10 +104,9 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
 
   async function onClaim() {
     setClaimLoading(true)
-    const proofs = store?.proofs?.slice(page * 100, (page + 1) * 100)
     const contract = new ethers.Contract(ERC20_ADDRESS, ABI, provider?.getSigner())
     const _claims = []
-    proofs?.forEach(proof => {
+    proofs?.slice(page * 100, (page + 1) * 100)?.forEach(proof => {
       _claims.push({
         identifier: proof.dist_id,
         account: proof.recipient,
@@ -134,33 +139,32 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
     }
     setClaimLoading(false)
     onClose?.()
-    setTimeout(() => {
-      getIncentives?.()
-    }, 2000)
+
+    setProofs(prev => {
+      const curr = _.cloneDeep(prev)
+      curr.splice(page * 100, 100)
+      return curr
+    })
   }
 
   function onClose() {
     setShowModal(false)
   }
-
-  async function getIncentives() {
+  async function getProofs() {
     try {
       setIncentivesLoading(true)
       const result = await get('/api/hub', {
         path: "/api/portfolio/proofs/",
         params: "account=" + account + "&validator=" + pageData?.pubkey + "&page=1&perPage=10000"
       })
-      store.set({
-        proofs: result?.rewards?.sort((a, b) => b.available_at - a.available_at)
-      })
-      setIncentives(handleGetIncentives(result?.rewards))
+      setProofs(result?.rewards?.sort((a, b) => b.available_at - a.available_at))
     } catch (error) {
       console.log(error)
     }
     setIncentivesLoading(false)
   }
   useEffect(() => {
-    pageData && account && Object.keys(prices).length > 0 && getIncentives()
+    pageData && account && Object.keys(prices).length > 0 && getProofs()
   }, [pageData, prices, account])
   return (
     <IncentivesContext.Provider
@@ -170,6 +174,7 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
         max_page,
         pageData,
         showModal,
+        proofs,
         incentives,
         page_incentives,
         usd_total_unclaimed,

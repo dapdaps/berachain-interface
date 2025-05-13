@@ -5,7 +5,6 @@ export const useHall = create(
   persist(
     (set, get: any) => ({
       currentTab: "",
-      proofs: null,
       set: (params: any) => set(() => ({ ...params }))
     }),
     {

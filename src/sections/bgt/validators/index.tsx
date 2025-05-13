@@ -330,6 +330,7 @@ export default memo(function Validators() {
             onChangeSortDataIndex={(index) => {
               handleSort(index, sortOrder === "desc" ? "asc" : "desc")
             }}
+            bodyClass="cursor-pointer"
             onRow={(record) => {
               router.push("/bgt/validator?id=" + record.id + "&from=" + searchParamFrom)
             }}

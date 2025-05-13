@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton";
 export default memo(function IncentivesEarned() {
   const {
     PAGE_SIZE,
+    proofs,
     incentives,
     usd_total_unclaimed,
     claimLoading,
@@ -22,7 +23,11 @@ export default memo(function IncentivesEarned() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <span className="text-xl font-semibold">Incentives Earned</span>
-        <span className="text-[#3D405A]">{numberFormatter(usd_total_unclaimed, 2, true, { isShort: true, prefix: '$' })}</span>
+        {
+          incentives?.length > 0 && (
+            <span className="text-[#3D405A]">{numberFormatter(usd_total_unclaimed, 2, true, { isShort: true, prefix: '$' })}</span>
+          )
+        }
       </div>
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-2">
@@ -35,7 +40,7 @@ export default memo(function IncentivesEarned() {
                 </div>
                 <Skeleton width={48} />
               </div>
-            ) : incentives?.map(incentive => {
+            ) : incentives?.length > 0 ? incentives?.map(incentive => {
               return (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-[8px]">
@@ -56,7 +61,9 @@ export default memo(function IncentivesEarned() {
                   </div>
                 </div>
               )
-            })
+            }) : (
+              <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium">Your claimable incentive rewards will show here.</div>
+            )
           }
         </div>
         {
@@ -66,7 +73,7 @@ export default memo(function IncentivesEarned() {
               disabled={claimLoading}
               className="w-full flex justify-center items-center gap-[10px] disabled:opacity-30 disabled:!cursor-not-allowed h-[50px] rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[16px] font-semibold leading-normal"
               onClick={() => {
-                if (store?.proofs?.length > PAGE_SIZE) {
+                if (proofs?.length > PAGE_SIZE) {
                   setShowModal(true)
                 } else {
                   onClaim?.()
