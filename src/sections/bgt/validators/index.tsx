@@ -11,6 +11,7 @@ import useList from "./hooks/use-list";
 import { bera } from "@/configs/tokens/bera";
 import QueueList from "@/sections/bgt/components/delegate/queue-list";
 import { useRouter, useSearchParams } from 'next/navigation';
+import CustomImage from "@/components/custom-image";
 // import usePageData from "./hooks/use-page-data";
 
 export default memo(function Validators() {
@@ -45,9 +46,12 @@ export default memo(function Validators() {
       render: (text: string, record: any) => {
         return (
           <div className="flex items-center gap-[8px]">
-            <div className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden">
-              <img src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={record?.name} />
-            </div>
+            <CustomImage
+              alt={record?.metadata?.name}
+              src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+              className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
+              errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+            />
             <div className="flex-1 min-w-0">
               <div className="truncate text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.metadata?.name ?? formatLongText(record?.pubkey, 4, 4)}</div>
             </div>
@@ -148,9 +152,12 @@ export default memo(function Validators() {
     render: (text: string, record: any) => {
       return (
         <div className="flex items-center gap-[8px]">
-          <div className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden">
-            <img src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"} alt={record?.name} />
-          </div>
+          <CustomImage
+            alt={record?.metadata?.name}
+            src={record?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+            className="w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
+            errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+          />
           <div className="flex-1 min-w-0">
             <div className="truncate text-black font-Montserrat text-[16px] font-medium leading-[90%]">{record?.metadata?.name ?? formatLongText(record?.pubkey, 4, 4)}</div>
           </div>

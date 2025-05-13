@@ -19,6 +19,7 @@ export default memo(function IncentivesModal() {
     pageData,
     showModal,
     page_incentives,
+    usd_total_unclaimed,
     claimLoading,
     onClose,
     onClaim,
@@ -51,7 +52,7 @@ export default memo(function IncentivesModal() {
               </div>
               <div className="cursor-pointer truncate font-semibold hover:underline">{pageData?.metadata?.name}</div>
               <div className="text-xs text-muted-foreground">Current</div>
-              <div className="relative text-nowrap mt-2 text-lg font-semibold">$ 0.01</div>
+              <div className="relative text-nowrap mt-2 text-lg font-semibold">{numberFormatter(usd_total_unclaimed, 2, true, { isShort: true, prefix: '$' })}</div>
             </div>
             <div className="w-full overflow-hidden rounded-b-md">
               <div className="flex max-h-[140px] flex-col items-center gap-2 overflow-y-auto py-4 font-medium">
