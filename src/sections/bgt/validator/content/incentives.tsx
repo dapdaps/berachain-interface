@@ -65,8 +65,9 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
   const [claimLoading, setClaimLoading] = useState(false)
 
   const incentives = useMemo(() => handleGetIncentives(proofs), [proofs])
+
   const page_incentives = useMemo(() => handleGetIncentives(proofs?.slice(page * 100, (page + 1) * 100)), [proofs, page])
-  const usd_total_unclaimed = useMemo(() => incentives?.reduce((acc, curr) => acc = Big(acc).plus(curr?.usd_total_unclaimed ?? 0).toFixed(), 0), incentives)
+  const usd_total_unclaimed = useMemo(() => incentives?.reduce((acc, curr) => acc = Big(acc).plus(curr?.usd_total_unclaimed ?? 0).toFixed(), 0), [incentives])
   const max_page = useMemo(() => Math.ceil(proofs?.length / 100) - 1, [proofs])
 
 
