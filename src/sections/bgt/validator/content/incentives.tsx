@@ -129,6 +129,11 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
       toast.success({
         title: "Claim Successful!"
       })
+      setProofs(prev => {
+        const curr = _.cloneDeep(prev)
+        curr.splice(page * 100, 100)
+        return curr
+      })
     } catch (error) {
       toast?.fail({
         title: "Claim Failed!",
@@ -139,12 +144,6 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
     }
     setClaimLoading(false)
     onClose?.()
-
-    setProofs(prev => {
-      const curr = _.cloneDeep(prev)
-      curr.splice(page * 100, 100)
-      return curr
-    })
   }
 
   function onClose() {
