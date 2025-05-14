@@ -7,6 +7,7 @@ import { ChatProvider, useChatContext } from "./context/chat-context";
 
 const ChatLayoutContent: React.FC = () => {
   const { chatMode } = useChatContext(); 
+  console.log("chatMode", chatMode);
 
   return (
     <div className="w-[984px] h-[608px] mx-auto mt-[6px]">
