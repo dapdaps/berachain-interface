@@ -627,7 +627,7 @@ export const bera: { [key: string]: Token } = {
     symbol: "NAV",
     name: "NavFinance",
     decimals: 18,
-    icon: "/assets/tokens/bixbt.png",
+    icon: "/assets/tokens/nav.png",
     color: "rgb(0,0,0)"
   },
   prg: {
