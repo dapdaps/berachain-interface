@@ -627,7 +627,7 @@ export const bera: { [key: string]: Token } = {
     symbol: "NAV",
     name: "NavFinance",
     decimals: 18,
-    icon: "",
+    icon: "/assets/tokens/nav.png",
     color: "rgb(0,0,0)"
   },
   prg: {
@@ -640,6 +640,23 @@ export const bera: { [key: string]: Token } = {
     color: "rgb(0,0,0)"
   },
 
-
+  ooga: {
+    chainId: CHAIN_ID,
+    address: "0x009af46df68db0e76bfe9ea35663f6ed17877956",
+    symbol: "OOGA",
+    name: "Ooga Token",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+  bixbt: {
+    chainId: CHAIN_ID,
+    address: "0x147c9a7f5265d7ca9a671c3817b212a0cf88856e",
+    symbol: "BIXBT",
+    name: "BeraXBT",
+    decimals: 18,
+    icon: "/assets/tokens/bixbt.webp",
+    color: "rgb(0,0,0)"
+  },
 
 };
