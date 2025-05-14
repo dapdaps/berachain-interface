@@ -5,8 +5,8 @@ import IconWallet from "@public/images/chat/wallet.svg";
 import IconTopVault from "@public/images/chat/top-vault.svg";
 import InterestItem, { INTEREST_ITEMS } from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
-import { useChatContext } from "./context/chat-context";
-import { createNewChat } from "./services/chat-service";
+import { useChatContext } from "../context/chat-context";
+import { createNewChat } from "../services/chat-service";
 
 const optionItems = [
   {

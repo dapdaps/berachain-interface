@@ -2,10 +2,11 @@ import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import LazyImage from "../layz-image";
+import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
-import { useChatContext } from "./context/chat-context";
-import { createNewChat } from "./services/chat-service";
+import { useChatContext } from "../context/chat-context";
+import { createNewChat } from "../services/chat-service";
+import TypingMarkdown from "./TypingMarkdown";
 
 type MessageType = {
   id: string;
@@ -47,11 +48,22 @@ export default function ChatInterface() {
   const displayMessages = contextMessages.length > 0 ? contextMessages : localMessages;
   
   const [inputValue, setInputValue] = useState("");
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // 当消息列表变化时滚动到底部
+  useEffect(() => {
+    scrollToBottom();
   }, [displayMessages]);
+
+  // 处理打字内容大小变化时的滚动
+  const handleMessageResize = () => {
+    scrollToBottom();
+  };
 
   const handleSubmit = async () => {
     if (inputValue.trim() === "") return;
@@ -95,7 +107,7 @@ export default function ChatInterface() {
 
   return (
     <div className="flex flex-col w-[560px] mx-auto">
-      <div className="mt-5 flex-1 overflow-y-auto">
+            <div className="mt-5 flex-1 overflow-y-auto max-h-[500px] hide-scrollbar" ref={messagesContainerRef}>
         {displayMessages.map((message) => (
           <div
             key={message.id}
@@ -130,8 +142,16 @@ export default function ChatInterface() {
                   )}
                 </div>
                 <div className="text-black text-sm leading-tight font-medium font-Montserrat">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
+                  <TypingMarkdown 
+                    content={message.content} 
+                    options={{ 
+                      interval: 30,
+                      step: [1, 3],
+                      initialIndex: 0
+                    }} 
+                    onResize={handleMessageResize}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -139,7 +159,7 @@ export default function ChatInterface() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex items-center relative">
+      <div className="flex items-center relative mt-auto">
           <textarea
             className="font-Montserrat text-[14px] font-[500] leading-[12px] w-full py-[14px] px-4 rounded-lg border border-black bg-white shadow-[inset_6px_5px_0px_0px_rgba(0,0,0,0.25)] focus:outline-none resize-none"
             placeholder="Ask anything..."

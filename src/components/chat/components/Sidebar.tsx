@@ -4,8 +4,8 @@ import IconHistory from '@public/images/chat/history.svg';
 import IconMore from '@public/images/chat/more.svg';
 import IconEdit from '@public/images/chat/edit.svg';
 import IconDelete from '@public/images/chat/delete.svg';
-import { useChatContext } from './context/chat-context';
-import { fetchChatHistory } from './services/chat-service';
+import { useChatContext } from '../context/chat-context';
+import { fetchChatHistory } from '../services/chat-service';
 
 const Sidebar = () => {
   const [activeChat, setActiveChat] = useState();

@@ -1,8 +1,8 @@
 import React from "react";
-import TopBar from "./TopBar";
-import Sidebar from "./Sidebar";
-import MainSection from "./MainSection";
-import ChatInterface from "./ChatInterface";
+import TopBar from "./components/TopBar";
+import Sidebar from "./components/Sidebar";
+import MainSection from "./components/MainSection";
+import ChatInterface from "./components/ChatInterface";
 import { ChatProvider, useChatContext } from "./context/chat-context";
 
 const ChatLayoutContent: React.FC = () => {
