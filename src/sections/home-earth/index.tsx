@@ -18,7 +18,7 @@ import { createRotateAnimation } from "@/sections/home-earth/utils";
 import MobileHome from "@/sections/home/mobile";
 import { useActivityStore } from "@/stores/useActivityStore";
 import clsx from "clsx";
-import { motion, useMotionValue } from 'framer-motion';
+import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useEffect, useRef, useState } from "react";
 import { HomeEarthContext } from "./context";
 import Boyco from "../boyco";
@@ -40,6 +40,19 @@ const BG_SIZE_MAP = {
 const HomeEarth = () => {
   const isMobile = useIsMobile();
   const { isRainyDay, beraPrice } = useRainyDay();
+  const { scrollY } = useScroll();
+
+  const [earthY, setEarthY] = useState(0);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // @ts-ignore
+    const diff = latest - scrollY?.getPrevious();
+    // down
+    if (diff > 0) {
+      setEarthY(-Math.min(Math.max(latest, 0), 230));
+      return;
+    }
+    setEarthY(0);
+  });
 
   const bearRef = useRef<any>();
 
@@ -189,7 +202,17 @@ const HomeEarth = () => {
             <Signpost />
             <HomeEarthTop />
             {/* <Airship /> */}
-            <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
+            <motion.div
+              className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center shrink-0"
+              animate={{
+                y: earthY,
+                height: `calc(100% - 229px - ${earthY}px)`,
+              }}
+              transition={{
+                ease: "linear",
+                duration: 0.6,
+              }}
+            >
               {/*#region Cloud*/}
               <CloudCircle />
               {/*#endregion*/}
@@ -289,7 +312,7 @@ const HomeEarth = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
             <Boyco />
             <McBeraEntry />
           </div>
