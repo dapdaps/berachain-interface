@@ -49,6 +49,11 @@ const List = forwardRef<any, any>((props, ref) => {
     pending,
     currentItem,
     title,
+    sort: customSort,
+    orderBy: customOrderBy,
+    onSort: onCustomSort,
+    search: customSearch,
+    onSearch: onCustomSearch,
   } = props;
 
   const router = useRouter()
@@ -104,6 +109,12 @@ const List = forwardRef<any, any>((props, ref) => {
   }
 
   useEffect(() => {
+    if (isBeraPaw) {
+      updateState({
+        filterList: dataList
+      });
+      return;
+    }
     const cloneDataList = cloneDeep(dataList);
     const _sortList = state?.sortKey
       ? cloneDataList?.sort((prev, next) => {
@@ -118,7 +129,7 @@ const List = forwardRef<any, any>((props, ref) => {
     updateState({
       filterList: _filterList
     });
-  }, [state?.sortKey, state?.direction, state?.filterKey, dataList]);
+  }, [state?.sortKey, state?.direction, state?.filterKey, dataList, isBeraPaw]);
 
   const refs = {
     reload: () => {
@@ -362,7 +373,18 @@ const List = forwardRef<any, any>((props, ref) => {
         {
           width: "13%",
           key: "position",
-          label: "Position",
+          label: (
+            <div className="flex items-center gap-[4px]">
+              <div className="">Position</div>
+              <SortIcon
+                active={customOrderBy === "position"}
+                direction={customSort}
+                onClick={() => {
+                  onCustomSort?.("position");
+                }}
+              />
+            </div>
+          ),
           type: "slot",
           render: (data) => {
             return (
@@ -373,7 +395,18 @@ const List = forwardRef<any, any>((props, ref) => {
         {
           width: "15%",
           key: "tvl",
-          label: "TVL",
+          label: (
+            <div className="flex items-center gap-[4px]">
+              <div className="">TVL</div>
+              <SortIcon
+                active={customOrderBy === "tvl"}
+                direction={customSort}
+                onClick={() => {
+                  onCustomSort?.("tvl");
+                }}
+              />
+            </div>
+          ),
           type: "slot",
           render: (data) => {
             return (
@@ -384,7 +417,18 @@ const List = forwardRef<any, any>((props, ref) => {
         {
           width: "15%",
           key: "apr",
-          label: "APR",
+          label: (
+            <div className="flex items-center gap-[4px]">
+              <div className="">APR</div>
+              <SortIcon
+                active={customOrderBy === "apr"}
+                direction={customSort}
+                onClick={() => {
+                  onCustomSort?.("apr");
+                }}
+              />
+            </div>
+          ),
           type: "slot",
           render: (data) => {
             return (
@@ -635,7 +679,7 @@ const List = forwardRef<any, any>((props, ref) => {
         }
       }
     ];
-  }, [pending, currentItem, name]);
+  }, [pending, currentItem, name, customOrderBy, customSort, onCustomSort]);
 
   const [hasScrollbar, setHasScrollbar] = useState(false);
 
@@ -693,6 +737,34 @@ const List = forwardRef<any, any>((props, ref) => {
             {maxApy}%
           </div>
         </div>
+
+        {
+          isBeraPaw && (
+            <div className="relative flex justify-between items-center gap-[10px] p-[0_5px] w-[200px] h-[40px] shrink-0 bg-white border border-[#373A53] rounded-[8px] text-black font-Montserrat text-base font-normal">
+              <img src="/images/vaults/v2/search.svg" alt="" className="w-[17px] h-[17px] object-center object-contain shrink-0" />
+              <input
+                value={customSearch}
+                type="text"
+                className="border-0 outline-none bg-transparent flex-1 w-0 text-[14px] font-normal pr-[25px]"
+                placeholder="Search Pool"
+                onChange={(e) => {
+                  onCustomSearch(e.target.value);
+                }}
+              />
+              {
+                !!customSearch && (
+                  <button
+                    type="button"
+                    className="w-[21px] h-[21px] bg-[url('/images/vaults/v2/clear.png')] bg-no-repeat bg-center bg-contain shrink-0 absolute right-[5px]"
+                    onClick={() => {
+                      onCustomSearch("");
+                    }}
+                  />
+                )
+              }
+            </div>
+          )
+        }
       </div>
       <div className={clsx("bex-table-header flex items-center pt-[23px] pb-[8px]", {
         'pr-[6px]': hasScrollbar
@@ -742,21 +814,10 @@ const List = forwardRef<any, any>((props, ref) => {
                 {column?.label}
               </div>
               {column?.sort && (
-                <motion.svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="13"
-                  height="8"
-                  viewBox="0 0 13 8"
-                  fill="none"
-                  animate={{
-                    rotate: (state?.sortKey === column?.key && state?.direction === 1) ? 0 : 180,
-                  }}
-                >
-                  <path
-                    d="M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z"
-                    fill={state?.sortKey === column?.key ? "black" : "#D1CEB4"}
-                  />
-                </motion.svg>
+                <SortIcon
+                  active={state?.sortKey === column?.key}
+                  direction={state?.direction === 1 ? "desc" : "asc"}
+                />
               )}
             </div>
           );
@@ -843,3 +904,27 @@ const List = forwardRef<any, any>((props, ref) => {
 });
 
 export default List;
+
+const SortIcon = (props: any) => {
+  const { active, direction, className, onClick } = props;
+
+  return (
+    <motion.svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="13"
+      height="8"
+      viewBox="0 0 13 8"
+      fill="none"
+      className={clsx("shrink-0 cursor-pointer", className)}
+      animate={{
+        rotate: (active && direction === "desc") ? 0 : 180,
+      }}
+      onClick={onClick}
+    >
+      <path
+        d="M5.37058 7.5C5.88774 8.16667 7.18062 8.16667 7.69778 7.5L12.3522 1.5C12.8693 0.833334 12.2229 4.76837e-07 11.1886 4.76837e-07H1.87979C0.845482 4.76837e-07 0.199039 0.833334 0.716193 1.5L5.37058 7.5Z"
+        fill={active ? "black" : "#D1CEB4"}
+      />
+    </motion.svg>
+  );
+};
