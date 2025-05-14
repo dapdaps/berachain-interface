@@ -90,9 +90,11 @@ const McBera = (props: any) => {
             )
           }
         </AnimatePresence>
-        <div className="absolute z-[1] left-0 bottom-[318px] w-[190px] h-[649px] bg-[url('/images/home-earth/mc-bera/bg-window-left.png')] bg-no-repeat bg-left bg-contain"/>
-        <div className="absolute z-[1] right-0 bottom-[318px] w-[200px] h-[652px] bg-[url('/images/home-earth/mc-bera/bg-window-right.png')] bg-no-repeat bg-left bg-contain"/>
-        <div className="relative z-[2] flex items-end justify-center w-full h-full bg-[url('/images/home-earth/mc-bera/bg-table.png')] bg-no-repeat bg-bottom bg-[length:100%_358px]">
+        <div className="absolute z-[2] left-0 bottom-[318px] w-[212px] h-[845px] bg-[url('/images/home-earth/mc-bera/bg-window-left.png')] bg-no-repeat bg-left bg-contain"/>
+        <div className="absolute z-[2] right-0 bottom-[318px] w-[212px] h-[845px] bg-[url('/images/home-earth/mc-bera/bg-window-right.png')] bg-no-repeat bg-left bg-contain"/>
+        <div className="absolute z-[1] left-0 bottom-0 flex items-end justify-center w-[100%] h-[358px] bg-[url('/images/home-earth/mc-bera/bg-table.png')] bg-no-repeat bg-top bg-[length:100%_358px]">
+        </div>
+        <div className="relative z-[3] flex items-end justify-center w-full h-full">
           <div className="relative z-[1] w-[281px] h-[204px] shrink-0 translate-x-[70px] translate-y-[-40px] bg-[url('/images/home-earth/mc-bera/bg-books.png')] bg-no-repeat bg-bottom bg-contain" />
           <div className="relative z-[2] w-[1036px] h-[780px] shrink-0 p-[20px_20px_124px] overflow-hidden bg-[url('/images/home-earth/mc-bera/bg-computer.png')] bg-no-repeat bg-bottom bg-contain">
             <AnimatePresence mode="wait">
