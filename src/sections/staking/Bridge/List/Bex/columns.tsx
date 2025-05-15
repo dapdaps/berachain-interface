@@ -157,6 +157,7 @@ export const ColumnReward = (props: any) => {
             width={24}
             height={24}
             containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
+            fallbackSrc="/assets/tokens/default_icon.png"
           />
         )
       }
