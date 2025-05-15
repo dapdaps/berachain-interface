@@ -48,7 +48,7 @@ export function useBerapaw(props: any) {
   const [pageTotal, setPageTotal] = useState(1);
   const [currentVault, setCurrentVault] = useState<any>();
   const [maxAPR, setMaxAPR] = useState<any>();
-  const [orderBy, setOrderBy] = useState<any>("position");
+  const [orderBy, setOrderBy] = useState<any>("tvl");
   const [sort, setSort] = useState<any>("desc");
   const [search, setSearch] = useState<any>("");
 
@@ -214,7 +214,18 @@ export function useBerapaw(props: any) {
       if (res.status !== 200 || !res.data.data?.polGetRewardVaults?.vaults) {
         return [];
       }
-      const { vaults: _vaults, pagination } = res.data.data.polGetRewardVaults;
+      let { vaults: _vaults, pagination } = res.data.data.polGetRewardVaults;
+      let noMetadataVaults = 0;
+      _vaults = _vaults.filter((it: any) => {
+        if (!it.metadata) {
+          noMetadataVaults += 1;
+          return false;
+        }
+        return true;
+      });
+      if (pagination?.totalCount) {
+        pagination.totalCount -= noMetadataVaults;
+      }
       setPageTotal(Math.ceil(Big(pagination?.totalCount || 0).div(pageSize).toNumber()));
 
       const allPercentual: any = await getPercentual(_vaults);
@@ -542,8 +553,15 @@ export function useBerapaw(props: any) {
   }, { manual: true });
 
   const onSort = (_orderBy: "apr" | "position" | "tvl", _sort?: "asc" | "desc") => {
+    let __sort = _sort;
+    if (typeof _sort === "undefined") {
+      if (_orderBy !== orderBy) {
+        __sort = "desc";
+      } else {
+        __sort = sort === "asc" ? "desc" : "asc";
+      }
+    }
     setOrderBy(_orderBy);
-    const __sort = typeof _sort === "undefined" ? (sort === "asc" ? "desc" : "asc") : _sort;
     setSort(__sort);
   };
 
