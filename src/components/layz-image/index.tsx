@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useInView } from 'framer-motion';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const LazyImage = (props: Props) => {
   const {
@@ -21,6 +21,7 @@ const LazyImage = (props: Props) => {
   const isInView = useInView(containerRef, { once: true });
 
   const [isLoaded, setLoaded] = useState(false);
+  const [isError, setError] = useState(false);
 
   const renderFallback = useMemo(() => {
     if (typeof fallbackSrc === 'string') {
@@ -31,6 +32,11 @@ const LazyImage = (props: Props) => {
     }
     return DapDapLogo;
   }, [fallbackSrc]);
+
+  useEffect(() => {
+    setLoaded(false);
+    setError(false);
+  }, [src]);
 
   return (
     <motion.div
@@ -46,7 +52,7 @@ const LazyImage = (props: Props) => {
       <AnimatePresence mode="wait">
         {isInView && (
           <motion.img
-            key="real-image"
+            key={src + "real-image"}
             src={src}
             alt={alt ?? ''}
             style={style}
@@ -55,7 +61,7 @@ const LazyImage = (props: Props) => {
               hidden: { opacity: 0 },
               visible: { opacity: 1 }
             }}
-            animate={isLoaded ? 'visible' : 'hidden'}
+            animate={(isLoaded && !isError) ? 'visible' : 'hidden'}
             exit="hidden"
             initial="hidden"
             transition={{ duration: 0.3, ease: 'easeInOut', delay: delay }}
@@ -63,13 +69,14 @@ const LazyImage = (props: Props) => {
               setLoaded(true);
             }}
             onError={(e) => {
-              console.log('LazyImage caught the error: %o, src: %s', e, src);
+              // console.log('LazyImage caught the error: %o, src: %s', e, src);
+              setError(true);
             }}
           />
         )}
-        {(!isInView || !isLoaded) && (
+        {(!isInView || !isLoaded || isError) && (
           <motion.div
-            key="fallback-image"
+            key={src + "fallback-image"}
             className="absolute z-[1] left-0 top-0 w-full h-full flex justify-center items-center"
             variants={{
               hidden: {
