@@ -313,7 +313,19 @@ const HomeEarth = () => {
                 </div>
               )}
             </motion.div>
-            <Boyco />
+            <Boyco
+              style={{
+                transformOrigin: "top",
+                scale: 0.8,
+              }}
+              animate={{
+                y: earthY,
+              }}
+              transition={{
+                ease: "linear",
+                duration: 0.6,
+              }}
+            />
             <McBeraEntry />
           </div>
           <McBera topRef={contentRef} />

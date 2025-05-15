@@ -9,12 +9,12 @@ export const RPC_API_KEYS: {
   1: "https://api.zan.top/node/v1/eth/mainnet/ff581749dd63422abccd9be5ed56f09d"
 };
 
-export default memo(function Boyco() {
+export default memo(function Boyco(props: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <HomeEntry onOpenModal={() => setIsModalOpen(true)} />
+      <HomeEntry {...props} onOpenModal={() => setIsModalOpen(true)} />
       {isModalOpen && (
         <BoycoProvider>
           {isModalOpen && (
