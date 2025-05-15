@@ -214,7 +214,18 @@ export function useBerapaw(props: any) {
       if (res.status !== 200 || !res.data.data?.polGetRewardVaults?.vaults) {
         return [];
       }
-      const { vaults: _vaults, pagination } = res.data.data.polGetRewardVaults;
+      let { vaults: _vaults, pagination } = res.data.data.polGetRewardVaults;
+      let noMetadataVaults = 0;
+      _vaults = _vaults.filter((it: any) => {
+        if (!it.metadata) {
+          noMetadataVaults += 1;
+          return false;
+        }
+        return true;
+      });
+      if (pagination?.totalCount) {
+        pagination.totalCount -= noMetadataVaults;
+      }
       setPageTotal(Math.ceil(Big(pagination?.totalCount || 0).div(pageSize).toNumber()));
 
       const allPercentual: any = await getPercentual(_vaults);
