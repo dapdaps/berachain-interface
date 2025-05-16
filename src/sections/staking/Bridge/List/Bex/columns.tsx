@@ -7,6 +7,7 @@ import Button from '@/components/button';
 import Link from 'next/link';
 import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
 import Card from '@/components/card';
+import { formatLongText } from '@/utils/utils';
 
 export const ColumnPool = (props: any) => {
   const { className, data, nameClassName, iconClassName } = props;
@@ -72,11 +73,13 @@ export const ColumnPool = (props: any) => {
               closeDelayDuration={0}
             >
               <div className="whitespace-nowrap overflow-hidden text-ellipsis underline decoration-dashed underline-offset-2">
-                {data.metadata?.name}&nbsp;
+                {data.metadata?.name ?? formatLongText(data.id, 6, 4)}&nbsp;
                 <span className="inline-block w-[16px] h-[16px] translate-y-0.5 bg-[url('/images/vaults/v2/open-link.svg')] bg-no-repeat bg-center bg-contain"></span>
               </div>
             </Popover>
-            <div className="shrink-0 text-[10px] text-[#666] leading-[9px] font-Montserrat font-medium">{data.metadata?.protocolName}</div>
+            <div className="shrink-0 text-[10px] text-[#666] leading-[9px] font-Montserrat font-medium">
+              {data.metadata?.protocolName ?? ""}
+            </div>
           </Link>
         )
       }
@@ -157,6 +160,7 @@ export const ColumnReward = (props: any) => {
             width={24}
             height={24}
             containerClassName={clsx("shrink-0 rounded-full overflow-hidden")}
+            fallbackSrc="/assets/tokens/default_icon.png"
           />
         )
       }

@@ -21,6 +21,7 @@ import useIsMobile from '@/hooks/use-isMobile';
 import { useBeraPawContext } from '@/sections/staking/dapps/berapaw/context';
 import { bera } from '@/configs/tokens/bera';
 import Link from 'next/link';
+import { trim } from 'lodash';
 
 const pageSize = 9;
 export const LPStakingWBERALBGTPoolAddress = "0x705fc16ba5a1eb67051934f2fb17eacae660f6c7";
@@ -47,6 +48,9 @@ export function useBerapaw(props: any) {
   const [pageTotal, setPageTotal] = useState(1);
   const [currentVault, setCurrentVault] = useState<any>();
   const [maxAPR, setMaxAPR] = useState<any>();
+  const [orderBy, setOrderBy] = useState<any>("tvl");
+  const [sort, setSort] = useState<any>("desc");
+  const [search, setSearch] = useState<any>("");
 
   const {
     onApprove,
@@ -205,14 +209,55 @@ export function useBerapaw(props: any) {
 
   const { data: totalData, runAsync: getTotalData, loading: totalDataLoading } = useRequest(async () => {
     try {
+      const { LBGT: LBGTPrice = 1, BERA: BERAPrice = 1 } = prices;
       const res = await axios.post(host, query({ pageSize: 300 }));
       if (res.status !== 200 || !res.data.data?.polGetRewardVaults?.vaults) {
         return [];
       }
       const { vaults: _vaults, pagination } = res.data.data.polGetRewardVaults;
+      // let noMetadataVaults = 0;
+      // _vaults = _vaults.filter((it: any) => {
+      //   if (!it.metadata) {
+      //     noMetadataVaults += 1;
+      //     return false;
+      //   }
+      //   return true;
+      // });
+      // if (pagination?.totalCount) {
+      //   pagination.totalCount -= noMetadataVaults;
+      // }
       setPageTotal(Math.ceil(Big(pagination?.totalCount || 0).div(pageSize).toNumber()));
 
-      return _vaults.sort((a: any, b: any) => Big(b.dynamicData?.apr || 0).minus(Big(a.dynamicData?.apr || 0)));
+      const allPercentual: any = await getPercentual(_vaults);
+      const allEarnedAmount: any = await getEarnedAmount(_vaults);
+      const allBalances: any = await getBalance(_vaults);
+      const allApproved: any = await getApproved(_vaults);
+      const allPoolTotalSupply: any = await getPoolTotalSupply(_vaults);
+
+      for (let i = 0; i < _vaults.length; i++) {
+        const it = _vaults[i];
+        it.type = "vaults";
+        const underlyingTokens = it.activeIncentives?.map((incentive: any) => ({
+          ...incentive.token,
+          icon: getTokenLogo(incentive.token?.symbol),
+
+        })) ?? [];
+        // const percentual = await getPercentual(it.vaultAddress);
+        // console.log('rewardVault[%s] percentual: %o', it.vaultAddress, percentual);
+        it.underlyingTokens = underlyingTokens;
+        // LBGT APR：=BGT APR × Price × (1 − BribeBack Percentual)
+        // Price= LBGT price / bera price
+        // BribeBack Percentual = mint bribeBack percentual / 1e18
+        it.LBGTApr = Big(it.dynamicData?.apr || 0).times(Big(LBGTPrice).div(BERAPrice)).times(Big(1).minus(allPercentual[i] || 0));
+        it.estimateMintAmount = Big(allEarnedAmount[i] || 0).times(Big(1).minus(allPercentual[i] || 0));
+        it.approved = allApproved[i] || false;
+        it.positionAmount = allBalances[i] || "0";
+        it.poolTotalSupply = allPoolTotalSupply[i] || 1;
+        it.price = +it.poolTotalSupply > 0 ? Big(it.dynamicData?.tvl || 0).div(it.poolTotalSupply) : 0;
+        it.positionAmountUsd = Big(it.positionAmount).times(it.price);
+      }
+
+      return _vaults;
     } catch (err: any) {
       console.log("get berapaw vaults failed: %o", err);
     }
@@ -222,47 +267,37 @@ export function useBerapaw(props: any) {
   const { data: vaultsData, runAsync: getVaultsData, loading: vaultsDataLoading } = useRequest(async (_pageIndex?: number) => {
     const __pageIndex = typeof _pageIndex === "undefined" ? pageIndex : _pageIndex;
 
-    const { LBGT: LBGTPrice = 1, BERA: BERAPrice = 1 } = prices;
-
-    const pageData = totalData.slice(isMobile ? 0 : (__pageIndex - 1) * pageSize, __pageIndex * pageSize);
-
-    const allPercentual: any = await getPercentual(pageData);
-    const allEarnedAmount: any = await getEarnedAmount(pageData);
-    const allBalances: any = await getBalance(pageData);
-    const allApproved: any = await getApproved(pageData);
-    const allPoolTotalSupply: any = await getPoolTotalSupply(pageData);
-
-    for (let i = 0; i < pageData.length; i++) {
-      const it = pageData[i];
-      it.type = "vaults";
-      const underlyingTokens = it.activeIncentives?.map((incentive: any) => ({
-        ...incentive.token,
-        icon: getTokenLogo(incentive.token?.symbol),
-
-      })) ?? [];
-      // const percentual = await getPercentual(it.vaultAddress);
-      // console.log('rewardVault[%s] percentual: %o', it.vaultAddress, percentual);
-      it.underlyingTokens = underlyingTokens;
-      // LBGT APR：=BGT APR × Price × (1 − BribeBack Percentual)
-      // Price= LBGT price / bera price
-      // BribeBack Percentual = mint bribeBack percentual / 1e18
-      it.LBGTApr = Big(it.dynamicData?.apr || 0).times(Big(LBGTPrice).div(BERAPrice)).times(Big(1).minus(allPercentual[i] || 0));
-      it.estimateMintAmount = Big(allEarnedAmount[i] || 0).times(Big(1).minus(allPercentual[i] || 0));
-      it.approved = allApproved[i] || false;
-      it.positionAmount = allBalances[i] || "0";
-      it.poolTotalSupply = allPoolTotalSupply[i] || 1;
-      it.price = Big(it.dynamicData?.tvl || 0).div(it.poolTotalSupply);
-      it.positionAmountUsd = Big(it.positionAmount).times(it.price);
-    }
+    const sortedData = totalData.sort((a: any, b: any) => {
+      if (orderBy === "tvl") {
+        if (Big(a.dynamicData?.tvl || 0)[sort === "desc" ? "gt" : "lt"](Big(b.dynamicData?.tvl || 0))) return -1;
+        if (Big(a.dynamicData?.tvl || 0)[sort === "desc" ? "lt" : "gt"](Big(b.dynamicData?.tvl || 0))) return 1;
+        return 0;
+      }
+      if (orderBy === "apr") {
+        if (Big(Big(a.LBGTApr || 0).plus(a.dynamicData?.apr || 0))[sort === "desc" ? "gt" : "lt"](Big(b.LBGTApr || 0).plus(b.dynamicData?.apr || 0))) return -1;
+        if (Big(Big(a.LBGTApr || 0).plus(a.dynamicData?.apr || 0))[sort === "desc" ? "lt" : "gt"](Big(b.LBGTApr || 0).plus(b.dynamicData?.apr || 0))) return 1;
+        return 0;
+      }
+      if (orderBy === "position") {
+        if (Big(a.positionAmountUsd || 0)[sort === "desc" ? "gt" : "lt"](Big(b.positionAmountUsd || 0))) return -1;
+        if (Big(a.positionAmountUsd || 0)[sort === "desc" ? "lt" : "gt"](Big(b.positionAmountUsd || 0))) return 1;
+        return 0;
+      }
+      return 0;
+    });
+    const _search = trim(search || "").toLowerCase();
+    const searchData = sortedData.filter((it: any) => {
+      if (it.metadata?.name?.toLowerCase().includes(_search)) return true;
+      if (it.stakingToken?.symbol?.toLowerCase().includes(_search)) return true;
+      if (it.stakingToken?.address?.toLowerCase() === _search) return true;
+      if (it.underlyingTokens?.some((token: any) => token.symbol?.toLowerCase().includes(_search) || token.address?.toLowerCase() === _search)) return true;
+      return false;
+    });
+    const pageData = searchData.slice(isMobile ? 0 : (__pageIndex - 1) * pageSize, __pageIndex * pageSize);
 
     setPageIndex(__pageIndex);
 
-    return pageData.sort((a: any, b: any) => {
-      if (isMobile) {
-        return Big(b.dynamicData?.apr || 0).minus(Big(a.dynamicData?.apr || 0));
-      }
-      return Big(a.dynamicData?.apr || 0).minus(Big(b.dynamicData?.apr || 0));
-    });
+    return pageData;
   }, { manual: true });
 
   const handleAction = async (record: any, type: any) => {
@@ -517,6 +552,23 @@ export function useBerapaw(props: any) {
     return _list;
   }, { manual: true });
 
+  const onSort = (_orderBy: "apr" | "position" | "tvl", _sort?: "asc" | "desc") => {
+    let __sort = _sort;
+    if (typeof _sort === "undefined") {
+      if (_orderBy !== orderBy) {
+        __sort = "desc";
+      } else {
+        __sort = sort === "asc" ? "desc" : "asc";
+      }
+    }
+    setOrderBy(_orderBy);
+    setSort(__sort);
+  };
+
+  const onSearch = (_search?: string) => {
+    setSearch(_search);
+  };
+
   const [totalTVL, maxBgtAPRVault] = useMemo<any[]>(() => {
     if (currentTab === "stake") {
       if (!stakeData) return ["0", "0"];
@@ -587,11 +639,11 @@ export function useBerapaw(props: any) {
       clearTimeout(timer1.current);
       clearTimeout(timer2.current);
     };
-  }, [name, account, provider, currentTab]);
+  }, [name, account, provider, currentTab, prices]);
 
   useEffect(() => {
     getVaultsData();
-  }, [totalData]);
+  }, [totalData, pageIndex, sort, orderBy, search]);
 
   useEffect(() => {
     if (!maxBgtAPRVault) return;
@@ -629,6 +681,11 @@ export function useBerapaw(props: any) {
     currentVault,
     totalTVL,
     maxAPR,
+    orderBy,
+    sort,
+    onSort,
+    search,
+    onSearch,
   };
 }
 
