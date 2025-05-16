@@ -77,7 +77,9 @@ export const ColumnPool = (props: any) => {
                 <span className="inline-block w-[16px] h-[16px] translate-y-0.5 bg-[url('/images/vaults/v2/open-link.svg')] bg-no-repeat bg-center bg-contain"></span>
               </div>
             </Popover>
-            <div className="shrink-0 text-[10px] text-[#666] leading-[9px] font-Montserrat font-medium">{data.metadata?.protocolName}</div>
+            <div className="shrink-0 text-[10px] text-[#666] leading-[9px] font-Montserrat font-medium">
+              {data.metadata?.protocolName ?? ""}
+            </div>
           </Link>
         )
       }
