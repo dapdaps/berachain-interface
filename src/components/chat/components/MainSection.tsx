@@ -5,7 +5,7 @@ import IconWallet from "@public/images/chat/wallet.svg";
 import IconTopVault from "@public/images/chat/top-vault.svg";
 import InterestItem, { INTEREST_ITEMS } from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
-import { useChatContext } from "../context/chat-context";
+import { Message, useChatContext } from "../context/chat-context";
 import { createNewChat } from "../services/chat-service";
 
 const optionItems = [
@@ -29,8 +29,8 @@ const optionItems = [
 export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
   const [selectedOption, setSelectedOption] = useState("positions");
-  
-  const { startNewChat, addMessage, addChatHistory } = useChatContext();
+
+  const { startNewChat, addMessage, addChatHistory, updateMessage } = useChatContext();
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -46,13 +46,23 @@ export default function MainSection() {
         startNewChat(inputValue);
         const userMessage = inputValue;
         setInputValue("");
-        const { messages, chatHistory } = await createNewChat(userMessage);
-        if (messages.length > 1) {
-          addMessage(messages[1]);
-        }
-        addChatHistory(chatHistory);
+        
+      await createNewChat(userMessage, {
+        updateMessage: (updatedMessage: Message) => {
+          if (updatedMessage.sender === "assistant") {
+            updateMessage(updatedMessage);
+          }
+        },
+        addChatHistory,
+      });
       } catch (error) {
-        console.error("Set Error:", error);
+        console.error("Chat error:", error);
+        addMessage({
+          id: Date.now().toString(),
+          sender: "assistant",
+          senderName: "McBera",
+          content: "Sorry, I can't assist with that."
+        });
       }
     }
   };

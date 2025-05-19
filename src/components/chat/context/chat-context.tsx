@@ -29,6 +29,7 @@ interface ChatContextType {
   addMessage: (message: Message) => void;
   addChatHistory: (history: ChatHistory) => void;
   updateMessages: (messages: Message[]) => void;
+  updateMessage: (updatedMessage: Message) => void; 
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -39,7 +40,6 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
 
-  // 开始新聊天 - 只负责状态更新
   const startNewChat = (userMessage: string) => {
     const userMessageObj: Message = {
       id: Date.now().toString(),
@@ -47,26 +47,42 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       content: userMessage,
     };
     
-    setMessages([userMessageObj]);
-    setChatMode('chat');
-    // 实际的聊天ID应该由API创建返回，这里临时使用时间戳
-    setCurrentChatId(Date.now().toString());
+  const assistantMessageObj: Message = {
+    id: (Date.now() + 1).toString(),
+    sender: 'assistant',
+    senderName: 'McBera',
+    content: '',
   };
   
-  // 添加消息
+  setMessages([userMessageObj, assistantMessageObj]);
+  
+    setChatMode('chat');
+    
+    const newChatId = Date.now().toString();
+    setCurrentChatId(newChatId);
+    
+    return { userMessageObj, chatId: newChatId };
+  };
+  
   const addMessage = (message: Message) => {
     setMessages(prev => [...prev, message]);
   };
   
-  // 添加聊天历史
   const addChatHistory = (history: ChatHistory) => {
     setChatHistories(prev => [history, ...prev]);
   };
   
-  // 更新消息列表（用于加载历史记录）
   const updateMessages = (newMessages: Message[]) => {
     setMessages(newMessages);
     setChatMode('chat');
+  };
+
+  const updateMessage = (updatedMessage: Message) => {
+    setMessages(prevMessages => 
+      prevMessages.map(msg => 
+        msg.id === updatedMessage.id ? { ...msg, content: updatedMessage.content } : msg
+      )
+    );
   };
 
   return (
@@ -83,7 +99,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         startNewChat,
         addMessage,
         addChatHistory,
-        updateMessages
+        updateMessages,
+        updateMessage 
       }}
     >
       {children}

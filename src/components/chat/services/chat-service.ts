@@ -1,40 +1,58 @@
-import { Message, ChatHistory } from '../context/chat-context';
+import { Message, ChatHistory } from "../context/chat-context";
+import { 
+  ChatCallbacks, 
+  processSSEStream, 
+  sendChatSSERequest 
+} from "./chat-stream-handler";
 
-export const createNewChat = async (message: string): Promise<{
+
+export const createChatMessages = (message: string): { 
+  userMessage: Message, 
+  assistantMessage: Message, 
+  chatId: string 
+} => {
+  const chatId = Date.now().toString();
+
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    sender: "user",
+    content: message,
+  };
+
+  const assistantMessage: Message = {
+    id: (Date.now() + 1).toString(),
+    sender: "assistant",
+    senderName: "McBera",
+    content: "",
+  };
+
+  return { userMessage, assistantMessage, chatId };
+};
+
+export const createNewChat = async (
+  message: string,
+  contextCallbacks?: ChatCallbacks
+): Promise<{
   messages: Message[];
   chatHistory: ChatHistory;
 }> => {
   try {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      sender: 'user',
-      content: message,
-    };
+    const { assistantMessage, chatId } = createChatMessages(message);
+
+    const response = await sendChatSSERequest(message, chatId);
     
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      sender: 'assistant',
-      senderName: 'McBera',
-      content: 'This is a simulated response. In a real application, this should be the API response.',
-    };
-    
-    const chatId = Date.now().toString();
-    
-    const chatHistory: ChatHistory = {
-      id: chatId,
-      title: message.length > 20 ? `${message.substring(0, 20)}...` : message,
-      lastMessage: assistantMessage.content,
-      timestamp: new Date().toISOString(),
-    };
-    
-    return {
-      messages: [userMessage, assistantMessage],
-      chatHistory
-    };
+    return processSSEStream(
+      response,
+      assistantMessage,
+      chatId,
+      message,
+      contextCallbacks
+    ).catch((error) => {
+      console.error("Processing stream error:", error);
+      throw error;
+    });
   } catch (error) {
-    console.error('Create New Chat Failed:', error);
+    console.error("Create New Chat Failed:", error);
     throw error;
   }
 };
@@ -42,52 +60,52 @@ export const createNewChat = async (message: string): Promise<{
 export const fetchChatHistory = async (chatId: string): Promise<Message[]> => {
   try {
     console.log(`Get Chat history ${chatId}`);
-    
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const historyMessages: Message[] = [
       {
-        id: '1',
-        sender: 'user',
+        id: "1",
+        sender: "user",
         content: `This is id ${chatId} message from user.`,
       },
       {
-        id: '2',
-        sender: 'assistant',
-        senderName: 'McBera',
-        content: 'This is a simulated response from the assistant.',
+        id: "2",
+        sender: "assistant",
+        senderName: "McBera",
+        content: "This is a simulated response from the assistant.",
       },
     ];
-    
+
     return historyMessages;
   } catch (error) {
-    console.error('Get History:', error);
+    console.error("Get History:", error);
     throw error;
   }
 };
 
 export const fetchChatHistoryList = async (): Promise<ChatHistory[]> => {
   try {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const histories: ChatHistory[] = [
       {
-        id: '1',
-        title: 'How to use DapDap',
-        lastMessage: 'Connect...',
+        id: "1",
+        title: "How to use DapDap",
+        lastMessage: "Connect...",
         timestamp: new Date().toISOString(),
       },
       {
-        id: '2',
-        title: 'Berachain title',
-        lastMessage: 'Berachain is focused on DeFi...',
+        id: "2",
+        title: "Berachain title",
+        lastMessage: "Berachain is focused on DeFi...",
         timestamp: new Date(Date.now() - 86400000).toISOString(), // 昨天
       },
     ];
-    
+
     return histories;
   } catch (error) {
-    console.error('Get History:', error);
+    console.error("Get History:", error);
     throw error;
   }
 };
