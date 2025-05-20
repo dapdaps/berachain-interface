@@ -1,5 +1,6 @@
 import { ChatHistory, Message } from "../context/chat-context";
 import { postSSE } from "@/utils/http";
+import { handleFunctionOutput } from "./chat-action-output";
 
 export interface ChatCallbacks {
   addMessage?: (message: Message) => void;
@@ -224,6 +225,8 @@ const handleCompletionEvent = (
           });
         }
       } else if (jsonData.type === "Action" && jsonData.function) {
+        console.log("Action --- model jsonData:", jsonData);
+
         handleFunctionOutput(jsonData.function, jsonData.text || "");
       }
     } catch (e) {
@@ -320,17 +323,4 @@ export const sendChatSSERequest = async (
   );
 };
 
-export const handleFunctionOutput = (functionType: string, content: string): void => {
-  switch (functionType) {
-    case "swap":
-      break;
-    case "getHotTokens":
-      break;
-    case "getInterestVaults":
-      break;
-    case "getVaultsPositions":
-      break;
-    case "getWalletAssets":
-      break;
-  }
-};
+

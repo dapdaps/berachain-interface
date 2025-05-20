@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { createNewChat } from '../utils/chat-service';
 
 type ChatMode = 'initial' | 'chat';
 
@@ -30,6 +31,7 @@ interface ChatContextType {
   addChatHistory: (history: ChatHistory) => void;
   updateMessages: (messages: Message[]) => void;
   updateMessage: (updatedMessage: Message) => void; 
+  sendChatMessage: (message: string) => Promise<void>; 
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -85,6 +87,29 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   };
 
+  const sendChatMessage = async (message: string) => {
+    try {
+      startNewChat(message);
+      
+      await createNewChat(message, {
+        updateMessage: (updatedMessage: Message) => {
+          if (updatedMessage.sender === "assistant") {
+            updateMessage(updatedMessage);
+          }
+        },
+        addChatHistory,
+      });
+    } catch (error) {
+      console.error("Chat error:", error);
+      addMessage({
+        id: Date.now().toString(),
+        sender: "assistant",
+        senderName: "McBera",
+        content: "Sorry, I can't assist with that."
+      });
+    }
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -100,7 +125,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addMessage,
         addChatHistory,
         updateMessages,
-        updateMessage 
+        updateMessage,
+        sendChatMessage
       }}
     >
       {children}

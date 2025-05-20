@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
-import { createNewChat } from "../services/chat-service";
+import { createNewChat } from "../utils/chat-service";
 import TypingMarkdown from "./TypingMarkdown";
 
 export type MessageType = {
