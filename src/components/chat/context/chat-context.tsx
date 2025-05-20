@@ -11,10 +11,11 @@ export type Message = {
 };
 
 export type ChatHistory = {
-  id: string;
+  id?: string;
   title: string;
   lastMessage: string;
   timestamp: string;
+  sessionId?: string; 
 };
 
 interface ChatContextType {
@@ -22,6 +23,8 @@ interface ChatContextType {
   setChatMode: (mode: ChatMode) => void;
   currentChatId: string | null;
   setCurrentChatId: (id: string | null) => void;
+  sessionId: string | null;
+  setSessionId: (id: string | null) => void;
   messages: Message[];
   setMessages: (messages: Message[]) => void;
   chatHistories: ChatHistory[];
@@ -39,6 +42,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [chatMode, setChatMode] = useState<ChatMode>('initial');
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
 
@@ -49,15 +53,15 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       content: userMessage,
     };
     
-  const assistantMessageObj: Message = {
-    id: (Date.now() + 1).toString(),
-    sender: 'assistant',
-    senderName: 'McBera',
-    content: '',
-  };
-  
-  setMessages([userMessageObj, assistantMessageObj]);
-  
+    const assistantMessageObj: Message = {
+      id: (Date.now() + 1).toString(),
+      sender: 'assistant',
+      senderName: 'McBera',
+      content: '',
+    };
+    
+    setMessages([userMessageObj, assistantMessageObj]);
+    
     setChatMode('chat');
     
     const newChatId = Date.now().toString();
@@ -71,6 +75,10 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
   
   const addChatHistory = (history: ChatHistory) => {
+    // 如果有sessionId，确保添加到历史记录中
+    if (sessionId) {
+      history.sessionId = sessionId;
+    }
     setChatHistories(prev => [history, ...prev]);
   };
   
@@ -89,6 +97,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const sendChatMessage = async (message: string) => {
     try {
+      setSessionId(null);
       startNewChat(message);
       
       await createNewChat(message, {
@@ -98,6 +107,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         },
         addChatHistory,
+        setSessionId,
+        getSessionId: () => null, 
       });
     } catch (error) {
       console.error("Chat error:", error);
@@ -117,6 +128,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setChatMode,
         currentChatId,
         setCurrentChatId,
+        sessionId,
+        setSessionId,
         messages,
         setMessages,
         chatHistories,

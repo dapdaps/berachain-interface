@@ -34,6 +34,8 @@ const {
   startNewChat,
   setMessages,
   updateMessage,
+  sessionId,
+  setSessionId
 } = useChatContext();
 
   const displayMessages =
@@ -62,7 +64,10 @@ const {
     const userMessage = inputValue;
     setInputValue("");
 
-    if (contextMessages.length > 0) {
+    const isNewChat = contextMessages.length === 0;
+    
+    if (!isNewChat) {
+      // 继续现有对话
       const newUserMessage: Message = {
         id: Date.now().toString(),
         sender: "user",
@@ -78,38 +83,52 @@ const {
         content: "",
       };
       addMessage(emptyAssistantMessage);
+      
+      await createNewChat(userMessage, {
+        updateMessage: (updatedMessage: Message) => {
+          if (updatedMessage.sender === "assistant") {
+            updateMessage(updatedMessage);
+          }
+        },
+        addChatHistory,
+        setSessionId,
+        getSessionId: () => sessionId // 继续对话时传递现有sessionId
+      });
     } else {
+      // 新建聊天
       startNewChat(userMessage);
+      
+      await createNewChat(userMessage, {
+        updateMessage: (updatedMessage: Message) => {
+          if (updatedMessage.sender === "assistant") {
+            updateMessage(updatedMessage);
+          }
+        },
+        addChatHistory,
+        setSessionId,
+        getSessionId: () => null // 新建聊天时不传sessionId
+      });
     }
-
-    await createNewChat(userMessage, {
-      updateMessage: (updatedMessage: Message) => {
-        if (updatedMessage.sender === "assistant") {
-          updateMessage(updatedMessage);
-        }
-      },
-      addChatHistory,
-    });
     
-    } catch (error) {
-      console.error("Get error:", error);
-      if (contextMessages.length > 0) {
-        const updatedMessages = contextMessages.map((msg: Message) =>
-          msg.sender === "assistant" && msg.content === ""
-            ? { ...msg, content: "Sorry, I can't assist with that." }
-            : msg
-        );
-        setMessages(updatedMessages);
-      } else {
-        addMessage({
-          id: Date.now().toString(),
-          sender: "assistant",
-          senderName: "McBera",
-          content: "Sorry, I can't assist with that.",
-        });
-      }
+  } catch (error) {
+    console.error("Get error:", error);
+    if (contextMessages.length > 0) {
+      const updatedMessages = contextMessages.map((msg: Message) =>
+        msg.sender === "assistant" && msg.content === ""
+          ? { ...msg, content: "Sorry, I can't assist with that." }
+          : msg
+      );
+      setMessages(updatedMessages);
+    } else {
+      addMessage({
+        id: Date.now().toString(),
+        sender: "assistant",
+        senderName: "McBera",
+        content: "Sorry, I can't assist with that.",
+      });
     }
-  };
+  }
+};
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {

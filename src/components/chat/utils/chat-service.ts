@@ -8,11 +8,8 @@ import {
 
 export const createChatMessages = (message: string): { 
   userMessage: Message, 
-  assistantMessage: Message, 
-  chatId: string 
+  assistantMessage: Message 
 } => {
-  const chatId = Date.now().toString();
-
   const userMessage: Message = {
     id: Date.now().toString(),
     sender: "user",
@@ -26,7 +23,7 @@ export const createChatMessages = (message: string): {
     content: "",
   };
 
-  return { userMessage, assistantMessage, chatId };
+  return { userMessage, assistantMessage };
 };
 
 export const createNewChat = async (
@@ -37,14 +34,19 @@ export const createNewChat = async (
   chatHistory: ChatHistory;
 }> => {
   try {
-    const { assistantMessage, chatId } = createChatMessages(message);
-
-    const response = await sendChatSSERequest(message, chatId);
+    const { assistantMessage } = createChatMessages(message);
+    
+    const existingSessionId = contextCallbacks?.getSessionId?.();
+    const sessionIdToUse = existingSessionId || "";
+    
+    const response = await sendChatSSERequest(message, sessionIdToUse);
+    
+    const tempLocalId = Date.now().toString();
     
     return processSSEStream(
       response,
       assistantMessage,
-      chatId,
+      tempLocalId, 
       message,
       contextCallbacks
     ).catch((error) => {

@@ -40,14 +40,14 @@ export default function MainSection() {
     console.log("Selected option:", option);
     const userMessage = option.text;
     setInputValue("");
-    await sendChatMessage(userMessage);
+    await sendChatMessage(userMessage); 
   };
 
   const handleSubmit = async () => {
     if (inputValue.trim()) {
       const userMessage = inputValue;
       setInputValue("");
-      await sendChatMessage(userMessage);
+      await sendChatMessage(userMessage); 
     }
   };
 

@@ -1,37 +1,43 @@
 import { ChatHistory, Message } from "../context/chat-context";
 import { postSSE } from "@/utils/http";
 import { handleFunctionOutput } from "./chat-action-output";
+import { String } from "lodash";
 
 export interface ChatCallbacks {
   addMessage?: (message: Message) => void;
   updateMessage?: (message: Message) => void;
   addChatHistory?: (history: ChatHistory) => void;
+  setSessionId?: (sessionId: string) => void;
+  getSessionId?: () => string | null; 
 }
 
 type SSEResponseType = {
   type?: string;
   text?: string;
   function?: string;
+  sessionId?: string;
 };
 
 
 export const createChatHistory = (
-  chatId: string, 
+  localId: string, 
   message: string, 
-  assistantContent: string
+  assistantContent: string,
+  serverSessionId?: string
 ): ChatHistory => {
   return {
-    id: chatId,
+    id: serverSessionId || localId,
     title: message.length > 20 ? `${message.substring(0, 20)}...` : message,
     lastMessage: assistantContent || "No response",
     timestamp: new Date().toISOString(),
+    sessionId: serverSessionId
   };
 };
 
 export const processSSEStream = async (
   response: Response,
   assistantMessage: Message,
-  chatId: string,
+  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks
 ): Promise<{
@@ -53,13 +59,20 @@ export const processSSEStream = async (
     let buffer = "";
     const abortController = new AbortController();
 
+    let serverSessionId: string | undefined;
+
     function processStream(
       result: ReadableStreamReadResult<Uint8Array>
     ): Promise<void> {
       if (result.done) {
         console.log("Data stream closed");
 
-        const chatHistory = createChatHistory(chatId, userMessage, assistantMessage.content);
+        const chatHistory = createChatHistory(
+          localId, 
+          userMessage, 
+          assistantMessage.content, 
+          serverSessionId
+        );
         
         if (callbacks?.addChatHistory) {
           callbacks.addChatHistory(chatHistory);
@@ -104,7 +117,7 @@ export const processSSEStream = async (
           data, 
           fullResponse, 
           assistantMessage, 
-          chatId, 
+          localId, 
           userMessage, 
           callbacks, 
           abortController,
@@ -127,19 +140,37 @@ export const handleSSEMessage = (
   data: string,
   fullResponse: string,
   assistantMessage: Message,
-  chatId: string,
+  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
   updateFullResponse?: (response: string) => void,
-  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void
+  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
+  serverSessionIdRef?: { current?: string }
 ): void => {
-  if (event === "completion") {
+  if (event === "meta") {
+    try {
+      const metaData = JSON.parse(data);
+      if (metaData.sessionId) {
+        console.log("Got sessionId from server:", metaData.sessionId);
+        
+        if (serverSessionIdRef) {
+          serverSessionIdRef.current = metaData.sessionId;
+        }
+        
+        if (callbacks?.setSessionId) {
+          callbacks.setSessionId(metaData.sessionId);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse meta data:", e);
+    }
+  } else if (event === "completion") {
     handleCompletionEvent(
       data, 
       fullResponse, 
       assistantMessage, 
-      chatId, 
+      localId, 
       userMessage, 
       callbacks, 
       abortController, 
@@ -151,7 +182,7 @@ export const handleSSEMessage = (
       data, 
       fullResponse, 
       assistantMessage, 
-      chatId, 
+      localId, 
       userMessage, 
       callbacks, 
       abortController, 
@@ -165,12 +196,13 @@ const handleCompletionEvent = (
   data: string,
   fullResponse: string,
   assistantMessage: Message,
-  chatId: string,
+  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
   updateFullResponse?: (response: string) => void,
-  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void
+  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
+  serverSessionId?: string
 ): void => {
   if (data === "[DONE]") {
     let responseContent = fullResponse.trim();
@@ -186,7 +218,12 @@ const handleCompletionEvent = (
       }
     }
 
-    const chatHistory = createChatHistory(chatId, userMessage, assistantMessage.content);
+    const chatHistory = createChatHistory(
+      localId, 
+      userMessage, 
+      assistantMessage.content,
+      serverSessionId
+    );
 
     if (callbacks?.addChatHistory) {
       callbacks.addChatHistory(chatHistory);
@@ -239,7 +276,7 @@ const handleDataWithoutEvent = (
   data: string,
   fullResponse: string,
   assistantMessage: Message,
-  chatId: string,
+  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
@@ -247,7 +284,7 @@ const handleDataWithoutEvent = (
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void
 ): void => {
   if (data === "[DONE]") {
-    const chatHistory = createChatHistory(chatId, userMessage, assistantMessage.content);
+    const chatHistory = createChatHistory(localId, userMessage, assistantMessage.content);
 
     if (callbacks?.addChatHistory) {
       callbacks.addChatHistory(chatHistory);
@@ -312,15 +349,19 @@ const handleDataWithoutEvent = (
 
 export const sendChatSSERequest = async (
   message: string,
-  chatId: string
+  sessionId: string
 ): Promise<Response> => {
-  return postSSE(
-    `/api/go/chat/conversation?msg=${encodeURIComponent(message)}&sessionId=${chatId}`,
-    {
-      msg: encodeURIComponent(message),
-      sessionId: chatId,
-    }
-  );
+  let url = `/api/go/chat/conversation?msg=${encodeURIComponent(message)}`;
+  const data: Record<string, string> = {
+    msg: encodeURIComponent(message),
+  };
+
+  if (sessionId) {
+    url += `&sessionId=${sessionId}`;
+    data.sessionId = sessionId;
+  }
+
+  return postSSE(url, data);
 };
 
 
