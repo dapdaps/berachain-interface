@@ -1,14 +1,16 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { createNewChat } from '../utils/chat-service';
+import { RichMessageContent } from "../utils/chat-stream-handler";
 
 type ChatMode = 'initial' | 'chat';
 
-export type Message = {
+export interface Message {
   id: string;
-  sender: 'user' | 'assistant';
+  sender: "user" | "assistant";
   content: string;
   senderName?: string;
-};
+  richContent?: RichMessageContent; // 添加富文本内容字段
+}
 
 export type ChatHistory = {
   id?: string;
@@ -90,7 +92,12 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updateMessage = (updatedMessage: Message) => {
     setMessages(prevMessages => 
       prevMessages.map(msg => 
-        msg.id === updatedMessage.id ? { ...msg, content: updatedMessage.content } : msg
+        msg.id === updatedMessage.id ? 
+        { 
+          ...msg, 
+          content: updatedMessage.content,
+          richContent: updatedMessage.richContent 
+        } : msg
       )
     );
   };

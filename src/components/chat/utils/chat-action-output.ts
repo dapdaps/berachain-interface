@@ -1,3 +1,5 @@
+import useSwapStore from "../stores/useSwapStores";
+
 export const handleFunctionOutput = (functionType: string, content: string): void => {
   const parsedContent = typeof content === "string" ? JSON.parse(content) : content;
 
@@ -5,6 +7,11 @@ export const handleFunctionOutput = (functionType: string, content: string): voi
 
   switch (functionType) {
     case "swap":
+      const swapStore = useSwapStore.getState();
+      swapStore.openSwapModal();
+      if (parsedContent && parsedContent.inputCurrency) {
+        swapStore.setDefaultInputCurrency?.(parsedContent.inputCurrency);
+      }
       break;
     case "getHotTokens":
       break;

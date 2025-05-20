@@ -5,7 +5,9 @@ import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat } from "../utils/chat-service";
-import TypingMarkdown from "./TypingMarkdown";
+import InteractiveMarkdown from "./InteractiveMarkdown";
+import McBeraLayout from "../McBera";
+import { initializeActionHandlers } from "../utils/action-manager";
 
 export type MessageType = {
   id: string;
@@ -27,16 +29,16 @@ const UserAvatar: React.FC = () => {
 };
 
 export default function ChatInterface() {
-const {
-  messages: contextMessages,
-  addMessage,
-  addChatHistory,
-  startNewChat,
-  setMessages,
-  updateMessage,
-  sessionId,
-  setSessionId
-} = useChatContext();
+  const {
+    messages: contextMessages,
+    addMessage,
+    addChatHistory,
+    startNewChat,
+    setMessages,
+    updateMessage,
+    sessionId,
+    setSessionId
+  } = useChatContext();
 
   const displayMessages =
     contextMessages.length > 0 ? contextMessages : [];
@@ -44,6 +46,7 @@ const {
   const [inputValue, setInputValue] = useState("");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,7 +70,6 @@ const {
     const isNewChat = contextMessages.length === 0;
     
     if (!isNewChat) {
-      // 继续现有对话
       const newUserMessage: Message = {
         id: Date.now().toString(),
         sender: "user",
@@ -92,10 +94,9 @@ const {
         },
         addChatHistory,
         setSessionId,
-        getSessionId: () => sessionId // 继续对话时传递现有sessionId
+        getSessionId: () => sessionId 
       });
     } else {
-      // 新建聊天
       startNewChat(userMessage);
       
       await createNewChat(userMessage, {
@@ -106,7 +107,7 @@ const {
         },
         addChatHistory,
         setSessionId,
-        getSessionId: () => null // 新建聊天时不传sessionId
+        getSessionId: () => null 
       });
     }
     
@@ -137,68 +138,70 @@ const {
     }
   };
 
+  useEffect(() => {
+    initializeActionHandlers();
+  }, []);
+
   return (
     <div className="flex flex-col w-[560px] mx-auto">
       <div
         className="mt-5 flex-1 overflow-y-auto max-h-[500px] hide-scrollbar"
         ref={messagesContainerRef}
       >
-        {displayMessages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex items-start mb-4 ${
-              message.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            {message.sender === "user" ? (
-              <div className="flex flex-col items-end">
-                <div
-                  className={`
-                  max-w-[300px] border border-[#DAD9CD] rounded-[10px] bg-opacity-30 bg-[#DAD9CD] px-[5px] py-1 flex items-center gap-2`}
-                >
-                  <UserAvatar />
-                  <div className="font-Montserrat text-black/50 text-[14px] leading-[14px] font-[500]">
-                    {message.content}
+        {displayMessages.map((message) => {
+          return (
+            <div
+              key={message.id}
+              className={`flex items-start mb-4 ${
+                message.sender === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              {message.sender === "user" ? (
+                <div className="flex flex-col items-end">
+                  <div
+                    className={`
+                    max-w-[300px] border border-[#DAD9CD] rounded-[10px] bg-opacity-30 bg-[#DAD9CD] px-[5px] py-1 flex items-center gap-2`}
+                  >
+                    <UserAvatar />
+                    <div className="font-Montserrat text-black/50 text-[14px] leading-[14px] font-[500]">
+                      {message.content}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-start">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-[26px] h-[26px] flex-shrink-0 aspect-square flex items-center justify-center">
-                    <img
-                      src="/images/chat/mcbera.png"
-                      className="w-full object-contain"
-                      alt=""
-                    />
+              ) : (
+                <div className="flex flex-col items-start">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-[26px] h-[26px] flex-shrink-0 aspect-square flex items-center justify-center">
+                      <img
+                        src="/images/chat/mcbera.png"
+                        className="w-full object-contain"
+                        alt=""
+                      />
+                    </div>
+                    {message.senderName && (
+                      <span className="text-sm text-black/50 font-[500] font-Montserrat">
+                        {message.senderName}:
+                      </span>
+                    )}
                   </div>
-                  {message.senderName && (
-                    <span className="text-sm text-black/50 font-[500] font-Montserrat">
-                      {message.senderName}:
-                    </span>
-                  )}
+                  <div className="text-black text-sm leading-tight font-medium font-Montserrat">
+                    {message.sender === "assistant" && message.content === "" ? (
+                      <div className="text-gray-500">Thinking...</div>
+                    ) : message.sender === "assistant" && message.content ? (
+                      <InteractiveMarkdown
+                        content={message.content}
+                        richContent={message.richContent}
+                        onResize={handleMessageResize}
+                      />
+                    ) : (
+                      <div className="text-gray-500">No Data</div>
+                    )}
+                  </div>
                 </div>
-                <div className="text-black text-sm leading-tight font-medium font-Montserrat">
-                  {message.sender === "assistant" && message.content === "" ? (
-                    <div className="text-gray-500">Thinking...</div>
-                  ) : message.sender === "assistant" && message.content ? (
-                    <TypingMarkdown
-                      content={message.content}
-                      options={{
-                        interval: 30,
-                        step: [1, 3],
-                        initialIndex: 0,
-                      }}
-                      onResize={handleMessageResize}
-                    />
-                  ) : (
-                    <div className="text-gray-500">No Data</div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 
@@ -217,6 +220,9 @@ const {
           <IconSend />
         </div>
       </div>
+
+      <McBeraLayout />
+      
     </div>
   );
 }
