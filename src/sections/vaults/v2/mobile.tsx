@@ -63,7 +63,11 @@ const VaultsV2Mobile = (props: any) => {
           >
             <SwiperSlide>
               <div className="pl-[10px] pt-[10px]">
-                <RewardTopCard type={1} />
+                <RewardTopCard
+                  type={1}
+                  loading={list.listLoading}
+                  pool={list.listDataGroupByPoolAll?.find(((pool: any) => pool.pool_address.toLowerCase() === "0xac03caba51e17c86c921e1f6cbfbdc91f8bb2e6b"))}
+                />
               </div>
             </SwiperSlide>
             <SwiperSlide>
