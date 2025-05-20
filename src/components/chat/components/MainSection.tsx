@@ -6,7 +6,6 @@ import IconTopVault from "@public/images/chat/top-vault.svg";
 import InterestItem, { INTEREST_ITEMS } from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
 import { useChatContext } from "../context/chat-context";
-import { createNewChat } from "../services/chat-service";
 
 const optionItems = [
   {
@@ -29,31 +28,26 @@ const optionItems = [
 export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
   const [selectedOption, setSelectedOption] = useState("positions");
-  
-  const { startNewChat, addMessage, addChatHistory } = useChatContext();
+
+  const { sendChatMessage } = useChatContext();
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
   };
 
-  const handleOptionClick = (option: any) => {
+  const handleOptionClick = async (option: any) => {
     setSelectedOption(option);
+    console.log("Selected option:", option);
+    const userMessage = option.text;
+    setInputValue("");
+    await sendChatMessage(userMessage); 
   };
 
   const handleSubmit = async () => {
     if (inputValue.trim()) {
-      try {
-        startNewChat(inputValue);
-        const userMessage = inputValue;
-        setInputValue("");
-        const { messages, chatHistory } = await createNewChat(userMessage);
-        if (messages.length > 1) {
-          addMessage(messages[1]);
-        }
-        addChatHistory(chatHistory);
-      } catch (error) {
-        console.error("Set Error:", error);
-      }
+      const userMessage = inputValue;
+      setInputValue("");
+      await sendChatMessage(userMessage); 
     }
   };
 

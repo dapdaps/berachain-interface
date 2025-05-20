@@ -5,10 +5,9 @@ type OptionItemProps = {
   icon: React.ReactNode;
   text: string;
   isSelected: boolean;
-  onClick: (id: string) => void;
+  onClick: (params: { id: string, text: string }) => void;
 };
 
-// 单个选项按钮组件
 export const OptionItem: React.FC<OptionItemProps> = ({ 
   id, 
   icon, 
@@ -18,12 +17,8 @@ export const OptionItem: React.FC<OptionItemProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-center gap-2 flex-1 cursor-pointer px-[8px] h-8 rounded-lg border border-[#DAD9CD] transition-colors ${
-        isSelected 
-        ? 'text-[#471C1C] bg-[#DAD9CD]/30' 
-        : 'text-[#999]'
-      }`}
-      onClick={() => onClick(id)}
+      className="flex items-center justify-center gap-2 flex-1 cursor-pointer px-[8px] h-8 rounded-lg border border-[#DAD9CD] transition-colors text-[#999] hover:text-[#471C1C] hover:bg-[#DAD9CD]/30"
+      onClick={() => onClick({ id, text })}
     >
       {icon}
       <span className="font-Montserrat font-[500] leading-[13px] text-[13px]">{text}</span>
@@ -40,7 +35,7 @@ type OptionData = {
 type OptionTabsProps = {
   options: OptionData[];
   selectedOption: string;
-  onOptionClick: (option: string) => void;
+  onOptionClick:  (params: { id: string, text: string }) => void;
   className?: string;
 };
 

@@ -127,6 +127,20 @@ const getWithoutActive = async (
   return res.json() as any;
 };
 
+const postSSE = async (url: string, data?: object): Promise<Response> => {
+  const tokens = JSON.parse(window.sessionStorage.getItem(AUTH_TOKENS) || "{}");
+  const response = await fetch(getUrl(url), {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${tokens.state?.accessToken?.access_token || ""}`,
+      "Content-Type": "application/json"
+    },
+    body: data ? JSON.stringify(data) : undefined
+  });
+  
+  return response;
+};
+
 const post = async (url: string, data?: object, options?: object) => {
   const tokens = JSON.parse(window.sessionStorage.getItem(AUTH_TOKENS) || "{}");
   const res = await fetch(getUrl(url), {
@@ -181,6 +195,7 @@ export {
   get,
   getWithToken,
   post,
+  postSSE,
   getWithoutActive,
   deleteRequest,
   AUTH_TOKENS,
