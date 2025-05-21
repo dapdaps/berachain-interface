@@ -2,7 +2,7 @@ import { useRequest } from 'ahooks';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import { List } from '@/sections/vaults/v2/hooks/list';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 export function useVaults(props: { vaultsList: List }): Vaults {
   const { vaultsList } = props;
@@ -32,6 +32,18 @@ export function useVaults(props: { vaultsList: List }): Vaults {
     return [];
   }, { manual: true, debounceWait: 1000 });
 
+  const { runAsync: getRecommendChat, data: recommendChat, loading: recommendChatLoading } = useRequest(async () => {
+    try {
+      const res = await get("/api/go/chat/recommend/list");
+      if (res.code !== 200) return [];
+      const _list = res.data || [];
+      return _list;
+    } catch (err: any) {
+      console.log('get recommend chat failed: %o', err);
+    }
+    return [];
+  });
+
   useEffect(() => {
     if (!account || !listDataGroupByPoolAll || !listDataGroupByPoolAll.length) return;
     getRecommendList();
@@ -41,6 +53,9 @@ export function useVaults(props: { vaultsList: List }): Vaults {
     getRecommendList,
     recommendList,
     recommendListLoading,
+    getRecommendChat,
+    recommendChat,
+    recommendChatLoading,
   };
 }
 
@@ -48,4 +63,7 @@ export interface Vaults {
   getRecommendList: () => Promise<any>;
   recommendList: any;
   recommendListLoading: boolean;
+  getRecommendChat: () => Promise<any>;
+  recommendChat: any;
+  recommendChatLoading: boolean;
 }
