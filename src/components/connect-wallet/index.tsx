@@ -383,7 +383,7 @@ const User = (props: any) => {
         placement={PopoverPlacement.BottomRight}
         content={isMobile ? null : content}
         contentStyle={{
-          zIndex: 50
+          zIndex: 52
         }}
       >
         {address && userInfo?.avatar ? (
