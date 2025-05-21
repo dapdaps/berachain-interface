@@ -43,7 +43,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
           {richContent.actions.map((action, index) => (
             <button
               key={index}
-              className="px-3 py-1 bg-[#DAD9CD] hover:bg-[#C8C7B7] rounded-md text-sm font-medium"
+              className="px-3 py-1 bg-[#DAD9CD] hover:bg-[#C8C7B7] rounded-md text-sm font-Montserrat"
               onClick={() => handleActionClick(action.type, action.params)}
             >
               {action.label}
