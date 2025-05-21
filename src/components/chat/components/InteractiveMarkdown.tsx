@@ -3,6 +3,8 @@ import { RichMessageContent } from '../utils/chat-stream-handler';
 import TypingMarkdown from './TypingMarkdown';
 import useSwapStore from '../stores/useSwapStores';
 import SwapCard from '../McBera/SwapCard';
+import { useChatContext, Message } from '../context/chat-context';
+import { createNewChat } from '../utils/chat-service';
 
 interface InteractiveMarkdownProps {
   content: string;
@@ -16,6 +18,14 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   onResize 
 }) => {
   const swapStore = useSwapStore();
+
+  const { 
+    addMessage, 
+    updateMessage, 
+    sessionId, 
+    setSessionId, 
+    addChatHistory,
+  } = useChatContext();
   
   useEffect(() => {
     if (onResize) {
@@ -23,8 +33,48 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
     }
   }, [content, onResize]);
 
-  const handleActionClick = (actionType: string, params?: any) => {
+  const handleActionClick = async (actionType: string, params?: any) => {
     console.log(`Action button clicked: ${actionType}`, params);
+    if (actionType === 'chat') {
+      try {
+        const userMessage = params.label;
+        
+        const newUserMessage: Message = {
+          id: Date.now().toString(),
+          sender: "user",
+          content: userMessage,
+        };
+        addMessage(newUserMessage);
+        
+        const assistantMessageId = (Date.now() + 1).toString();
+        const emptyAssistantMessage: Message = {
+          id: assistantMessageId,
+          sender: "assistant",
+          senderName: "McBera",
+          content: "",
+        };
+        addMessage(emptyAssistantMessage);
+        
+        await createNewChat(userMessage, {
+          updateMessage: (updatedMessage: Message) => {
+            if (updatedMessage.sender === "assistant") {
+              updateMessage(updatedMessage);
+            }
+          },
+          addChatHistory,
+          setSessionId,
+          getSessionId: () => sessionId 
+        });
+      } catch (error) {
+        console.error("Chat action error:", error);
+        addMessage({
+          id: Date.now().toString(),
+          sender: "assistant",
+          senderName: "McBera",
+          content: "Sorry, I can't assist with that."
+        });
+      }
+    }
   };
   
   const handleBoldTextClick = () => {
@@ -77,7 +127,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
             <button
               key={index}
               className="w-auto max-w-full px-2 py-1 border border-[#DAD9CD] hover:bg-[#DAD9CD]/30 text-[#999999] hover:text-[#471C1C] rounded-[18px] text-[13px] font-Montserrat"
-              onClick={() => handleActionClick(action.type, action.label)}
+              onClick={() => handleActionClick(action.type, action)}
             >
               {action.label}
             </button>
