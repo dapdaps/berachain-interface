@@ -54,9 +54,6 @@ export const handleSwapOutput = (
     richContent: richContent,
   };
 
-  assistantMessage.content = messageText;
-  assistantMessage.richContent = richContent;
-
   if (updateFullResponse) {
     updateFullResponse(messageText);
   }

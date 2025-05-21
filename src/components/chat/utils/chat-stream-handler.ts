@@ -34,11 +34,10 @@ export const createChatHistory = (
   serverSessionId?: string
 ): ChatHistory => {
   return {
-    id: serverSessionId || localId,
+    session_id: serverSessionId || localId,
     title: message.length > 20 ? `${message.substring(0, 20)}...` : message,
-    lastMessage: assistantContent || "No response",
-    timestamp: new Date().toISOString(),
-    sessionId: serverSessionId
+    address: '', 
+    timestamp: Math.floor(Date.now() / 1000) // 转换为秒级时间戳，与API格式一致
   };
 };
 
@@ -363,6 +362,7 @@ export const sendChatSSERequest = async (
     msg: encodeURIComponent(message),
   };
 
+  // 如果有会话ID，添加到请求中以关联历史记录
   if (sessionId) {
     url += `&sessionId=${sessionId}`;
     data.sessionId = sessionId;

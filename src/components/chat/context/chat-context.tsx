@@ -16,11 +16,10 @@ export interface Message {
 }
 
 export type ChatHistory = {
-  id?: string;
+  timestamp: number; 
+  address: string;
+  session_id: string;
   title: string;
-  lastMessage: string;
-  timestamp: string;
-  sessionId?: string; 
 };
 
 interface ChatContextType {
@@ -82,9 +81,8 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   };
   
   const addChatHistory = (history: ChatHistory) => {
-    // 如果有sessionId，确保添加到历史记录中
     if (sessionId) {
-      history.sessionId = sessionId;
+      history.session_id = sessionId;
     }
     setChatHistories(prev => [history, ...prev]);
   };

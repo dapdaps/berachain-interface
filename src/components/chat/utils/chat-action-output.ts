@@ -10,10 +10,15 @@ export const handleFunctionOutput = (
   updateFullResponse?: (response: string) => void,
   callbacks?: ChatCallbacks
 ): void => {
-  const parsedContent =
-    typeof content === "string" ? JSON.parse(content) : content;
-
-  console.log("Function output:", parsedContent);
+  let parsedContent;
+  
+  try {
+    parsedContent = typeof content === "string" ? JSON.parse(content) : content;
+    console.log("Function output:", parsedContent);
+  } catch (e) {
+    console.error("Failed to parse function output content:", e);
+    return; 
+  }
 
   switch (functionType) {
     case "swap":

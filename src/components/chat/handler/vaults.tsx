@@ -26,9 +26,6 @@ export const handleVaultsOutput = (
     component: <VaultsCard parsedContent={parsedContent} />
   };
 
-  assistantMessage.content = messageText;
-  assistantMessage.richContent = richContent;
-
   if (updateFullResponse) {
     updateFullResponse(messageText);
   }
