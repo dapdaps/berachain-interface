@@ -20,7 +20,7 @@ export function useVaults(props: { vaultsList: List }): Vaults {
       const groupedList: any = [];
       _list.forEach((vault: any) => {
         const currGroup = listDataGroupByPoolAll.find((_grouped: any) => _grouped.list.some((_vault: any) => _vault.backendId === vault.id));
-        if (currGroup) {
+        if (currGroup && !groupedList.some((it: any) => it.pool_address === currGroup.pool_address)) {
           groupedList.push(currGroup);
         }
       });
