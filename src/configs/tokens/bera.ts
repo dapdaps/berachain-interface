@@ -584,5 +584,79 @@ export const bera: { [key: string]: Token } = {
     decimals: 18,
     icon: "/assets/tokens/plug.webp",
     color: "rgb(0,0,0)"
-  }
+  },
+  bread: {
+    chainId: CHAIN_ID,
+    address: "0x0003eedfdd020bf60d10cf684abac7c4534b7ead",
+    symbol: "BREAD",
+    name: "Bread",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+  dolomite: {
+    chainId: CHAIN_ID,
+    address: "0x0f81001ef0a83ecce5ccebf63eb302c70a39a654",
+    symbol: "DOLO",
+    name: "Dolomite",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+  ybgt: {
+    chainId: CHAIN_ID,
+    address: "0x7e768f47dfdd5dae874aac233f1bc5817137e453",
+    symbol: "yBGT",
+    name: "Bearn BGT",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+  osbgt: {
+    chainId: CHAIN_ID,
+    address: "0xd2c41bf4033a83c0fc3a7f58a392bf37d6dcdb58",
+    symbol: "osBGT",
+    name: "OpenState BGT",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+  nav: {
+    chainId: CHAIN_ID,
+    address: "0x6536cead649249cae42fc9bfb1f999429b3ec755",
+    symbol: "NAV",
+    name: "NavFinance",
+    decimals: 18,
+    icon: "/assets/tokens/nav.png",
+    color: "rgb(0,0,0)"
+  },
+  prg: {
+    chainId: CHAIN_ID,
+    address: "0xbf2e152f460090ace91a456e3dee5acf703f27ad",
+    symbol: "PRG",
+    name: "Porridge",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+
+  ooga: {
+    chainId: CHAIN_ID,
+    address: "0x009af46df68db0e76bfe9ea35663f6ed17877956",
+    symbol: "OOGA",
+    name: "Ooga Token",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+  bixbt: {
+    chainId: CHAIN_ID,
+    address: "0x147c9a7f5265d7ca9a671c3817b212a0cf88856e",
+    symbol: "BIXBT",
+    name: "BeraXBT",
+    decimals: 18,
+    icon: "/assets/tokens/bixbt.webp",
+    color: "rgb(0,0,0)"
+  },
+
 };

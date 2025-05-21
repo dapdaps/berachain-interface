@@ -21,6 +21,8 @@ import { Contract, providers, utils } from "ethers";
 import { TOKEN_ABI } from "@/hooks/use-token-balance";
 import { bera } from "@/configs/tokens/bera";
 import useIsMobile from "@/hooks/use-isMobile";
+import getD2FinanceInfo from "@/sections/vaults/dapps/d2-finance/info";
+import { usePriceStore } from '@/stores/usePriceStore';
 import { addItem2Group, generateGroup, vaultsDataFormatter } from '@/sections/vaults/v2/utils';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
@@ -43,6 +45,8 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
 export function useList(notNeedingFetchData?: boolean): List {
   const { account } = useCustomAccount();
   const isMobile = useIsMobile();
+  const prices = usePriceStore(store => store.beraTownPrice);
+
   const filterRef = useRef<any>();
   const boycoAssetsRef = useRef<any>();
 
@@ -374,14 +378,23 @@ export function useList(notNeedingFetchData?: boolean): List {
       }
     });
 
-    const totalUserRewardTokens = Array.from(rewardTokensMap.values());
+    const totalUserRewardTokens = Array.from(rewardTokensMap.values()).map((it: any) => {
+      let price = prices?.[it.symbol];
+      if (!price) {
+        price = prices?.[it.address];
+      }
+      return {
+        ...it,
+        usd: Big(it.amount || 0).times(price || 0),
+      };
+    });
     return [
       _totalUserStakeUsd,
       _totalUserRewardUsd,
       _totalUserVaultsCount,
       totalUserRewardTokens
     ];
-  }, [data]);
+  }, [data, prices]);
 
   const [rewardTokens, poolProjects, creatorProjects] = useMemo(() => {
     const _tokens = data

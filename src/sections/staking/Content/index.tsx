@@ -55,6 +55,11 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     currentVault: currentBerapawItem,
     maxAPR: berapawMaxApr,
     totalTVL: berapawTotalTVL,
+    orderBy: berapawOrderBy,
+    sort: berapawSort,
+    onSort: onBerapawSort,
+    search: berapawSearch,
+    onSearch: onBerapawSearch,
   } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { ALL_DATA_URL, addresses, pairs, description } = dexConfig ?? {};
@@ -226,6 +231,11 @@ export default function Staking({ dapp, className, listTitle }: Props) {
           pending={pending}
           currentItem={currentItem}
           title={listTitle}
+          sort={berapawSort}
+          orderBy={berapawOrderBy}
+          onSort={onBerapawSort}
+          search={berapawSearch}
+          onSearch={onBerapawSearch}
         />
       )}
       <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />

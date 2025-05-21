@@ -6,6 +6,10 @@ import Summary from '@/sections/bgt/validator/components/summary';
 import { memo } from "react";
 import Incentives from '@/sections/bgt/validator/components/incentives';
 import RewardWeights from '@/sections/bgt/validator/components/reward-weights';
+import IncentivesEarned from "./components/incentives-earned";
+import Queued from "./components/queued";
+import YourBoosts from "./components/your-boosts";
+import IncentivesContextProvider from "./content/incentives";
 
 export default memo(function Validator(props: any) {
   const {
@@ -24,13 +28,23 @@ export default memo(function Validator(props: any) {
     currentValidatorLoading,
     incentiveList,
   } = props;
-
   return (
     <div className="flex flex-col h-full overflow-auto items-center py-[75px]">
       <BgtHead bgtData={bgtData} />
       <div className="relative w-[1200px] p-[30px] rounded-[20px] border border-black bg-[#FFFDEB] shadow-[10px_10px_0_0_rgba(0,0,0,0.25)">
         <Back />
         <Nav pageData={pageData} handleClick={handleClick} />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 my-[20px]">
+          <div className="flex flex-col gap-4 flex-1 p-4 border border-[#9999] rounded-[8px]">
+            <YourBoosts />
+            <Queued />
+          </div>
+          <IncentivesContextProvider pageData={pageData}>
+            <div className="flex-1 p-4 border border-[#9999] rounded-[8px]">
+              <IncentivesEarned />
+            </div>
+          </IncentivesContextProvider>
+        </div>
         <Summary
           vaults={vaults}
           pageData={pageData}

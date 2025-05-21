@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuthQuery } from '@/hooks/use-auth-query';
-import { get } from '@/utils/http';
 import { useAccount } from 'wagmi';
+import axios from 'axios';
 
 export function useTvl(props: Props) {
   const { currentChain, networkList } = props;
@@ -29,11 +29,11 @@ export function useTvl(props: Props) {
     query: async () => {
       try {
         setLoading(true);
-        const result = await get(`/api.db3.app/api/account/protocol/volume`, {
-          address,
-          chain_id: currentChain.id,
-        }, { isSkipFormatUrl: true });
-        const data = result?.data?.list ?? [];
+        const url = new URL("https://api.db3.app/api/account/protocol/volume");
+        url.searchParams.set("address", address ?? "");
+        url.searchParams.set("chain_id", currentChain.id);
+        const result = await axios.get(url.toString());
+        const data = result?.data?.data?.list ?? [];
         tvlsFormatter(data);
         setLoading(false);
       } catch (error) {

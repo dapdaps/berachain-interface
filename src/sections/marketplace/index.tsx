@@ -30,7 +30,7 @@ const MemeTokens: any = [
   bera.bblast,
   bera.bm,
   bera.henlo,
-  bera.lbgt,
+  // bera.lbgt,
   bera.azt,
   bera.artio,
   bera.bitcoin

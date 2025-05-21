@@ -56,10 +56,6 @@ const nextConfig = {
     {
       source: "/api.dapdap.net/:path*",
       destination: `https://api.dapdap.net/:path*`
-    },
-    {
-      source: '/api.db3.app/:path*',
-      destination: 'https://api.db3.app/:path*'
     }
   ],
   webpack: (config, { dev }) => {
@@ -156,8 +152,8 @@ const nextConfig = {
 const withBundleStatsPlugin =
   process.env.ANALYZE_STATS === "true"
     ? createBundleStatsPlugin({
-        outDir: "./analyze"
-      })
+      outDir: "./analyze"
+    })
     : (conf) => conf;
 
 module.exports = withBundleStatsPlugin(nextConfig);

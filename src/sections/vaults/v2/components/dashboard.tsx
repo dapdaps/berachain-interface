@@ -8,6 +8,7 @@ import Card from '@/components/card';
 import RewardIcon, { RewardIconContent } from '@/sections/vaults/v2/components/reward-icon';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useEffect, useRef } from 'react';
+import Big from 'big.js';
 
 const Dashboard = (props: any) => {
   const { className } = props;
@@ -22,7 +23,7 @@ const Dashboard = (props: any) => {
   } = useVaultsV2Context();
   const isMobile = useIsMobile();
 
-  const visibleRewardTokenLength = isMobile ? 3 : 5;
+  const visibleRewardTokenLength = isMobile ? 2 : 5;
 
   const { containerRef } = useVaultsV2Context();
   const popoverRef = useRef<any>();
@@ -32,10 +33,10 @@ const Dashboard = (props: any) => {
       popoverRef.current?.onClose();
     };
 
-    containerRef.current?.addEventListener("scroll", handleScroll);
+    containerRef?.current?.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
+      containerRef?.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -53,18 +54,33 @@ const Dashboard = (props: any) => {
               {
                 listLoading ? (
                   <>
-                    <Skeleton height={26} width={26} borderRadius={13} />
+                    <Skeleton height={26} width={40} borderRadius={4} />
+                    <Skeleton height={26} width={26} borderRadius={13} className="ml-[5px]" />
                     <Skeleton height={26} width={26} borderRadius={13} className="ml-[-6px]" />
                     <Skeleton height={26} width={26} borderRadius={13} className="ml-[-6px]" />
                   </>
                 ) : (totalUserRewardTokens.length > 0 ? (
                   <>
+                    <div className="mr-[5px]">
+                      {numberFormatter(
+                        totalUserRewardTokens.reduce((prev: any, curr: any) => Big(prev).plus(curr.usd || 0), Big(0)),
+                        2,
+                        true,
+                        {
+                          isShort: true,
+                          isShortUppercase: true,
+                          isZeroPrecision: true,
+                          prefix: "$",
+                        }
+                      )}
+                    </div>
                     {
                       totalUserRewardTokens.slice(0, visibleRewardTokenLength).map((reward, idx) => (
                         <RewardIcon
                           key={idx}
                           reward={reward}
-                          className={idx > 0 ? "ml-[-6px]" : ""}
+                          className={idx > 0 ? "ml-[-12px]" : ""}
+                          cardClassName="!w-[250px]"
                         />
                       ))
                     }
@@ -75,7 +91,7 @@ const Dashboard = (props: any) => {
                           trigger={isMobile ? PopoverTrigger.Click : PopoverTrigger.Hover}
                           placement={PopoverPlacement.Bottom}
                           content={(
-                            <Card className="!rounded-[10px] !p-[10px] w-[200px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
+                            <Card className="!rounded-[10px] !p-[10px] w-[260px] flex flex-col items-stretch gap-[10px_5px] max-h-[150px] overflow-y-auto">
                               {
                                 totalUserRewardTokens.slice(visibleRewardTokenLength).map((reward, idx) => (
                                   <RewardIconContent
@@ -89,7 +105,7 @@ const Dashboard = (props: any) => {
                           )}
                         >
                           <motion.div
-                            className="relative bg-[url('/images/vaults/v2/more-icon.svg')] bg-no-repeat bg-center bg-cover w-[26px] h-[26px] rounded-full overflow-hidden cursor-pointer ml-[-6px] border border-black bg-[#D1CEB4]"
+                            className="relative bg-[url('/images/vaults/v2/more-icon.svg')] bg-no-repeat bg-center bg-cover w-[26px] h-[26px] rounded-full overflow-hidden cursor-pointer ml-[-12px] border border-black bg-[#D1CEB4]"
                             variants={{
                               focus: {
                                 scale: 1.1,

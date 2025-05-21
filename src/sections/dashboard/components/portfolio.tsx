@@ -31,7 +31,7 @@ const DashboardPortfolio = (props: Props) => {
   return (
     <div className='h-full overflow-y-auto'>
       <>
-          <div className='flex justify-center gap-[240px] items-center'>
+          <div className='flex justify-center gap-[240px] items-center md:hidden'>
             <div className='hidden lg:block'>
               <h5 className='font-CherryBomb text-black text-center text-[32px] font-[400] leading-[95%]'>
                 {loading ? (
@@ -44,7 +44,7 @@ const DashboardPortfolio = (props: Props) => {
                 Total assetsss value
               </div>
             </div>
-            <div className='flex flex-col items-center' onClick={() => setOpenUserPoints(true)}>
+            <div className='flex flex-col items-center md:my-2' onClick={() => setOpenUserPoints(true)}>
               <div className='flex items-center gap-2'>
                 <img src="/db3/dapp/infrared.png" className="w-6 h-6 rounded-full mt-1" alt="" />
                 <h5 className='font-CherryBomb underline text-black text-center text-[32px] font-[400] leading-[95%] cursor-pointer'>
@@ -61,9 +61,11 @@ const DashboardPortfolio = (props: Props) => {
 
         <div className='hidden md:block'>
           <UserCard
+            setOpenUserPoints={setOpenUserPoints}
             userInfo={userInfo}
             loading={loading}
             totalBalance={totalBalance}
+            type='portfolio'
           />
         </div>
       </>
@@ -159,14 +161,14 @@ const Card = (props: any) => {
   return (
     <div className='bg-[#FFDC50] rounded-[10px] p-[12px_9px_15px_15px] flex-1 md:w-1/2'>
       <div className='flex justify-between items-center gap-[10px]'>
-        <div className=''>{title}</div>
+        <div className='whitespace-nowrap'>{title}</div>
         <div
-          className='rounded-[8px] bg-[#FFFDEB] text-center w-[22px] h-[22px] border border-[#373A53] leading-[20px] text-[#3D405A] text-[14px] font-[500]'
+          className='rounded-[8px] bg-[#FFFDEB] text-center min-w-[22px] px-[4px] h-[22px] border border-[#373A53] leading-[20px] text-[#3D405A] text-[14px] font-[500]'
           style={{
             opacity: Big(amount).lte(0) ? 0.3 : 1
           }}
         >
-          {amount}
+          {numberFormatter(amount, 1, true, { isShort: true, isShortUppercase: true })}
         </div>
       </div>
       {loading ? (

@@ -6,6 +6,8 @@ import useValidator from '@/hooks/use-validator';
 import Delegate from '@/sections/bgt/components/delegate';
 import useValidators from '@/sections/bgt/components/delegate/hooks/use-validators';
 import { OperationTypeType } from '@/sections/bgt/types';
+import { useCurrentValidator } from '@/sections/bgt/validator/hooks/use-current-validator';
+import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
 import BgtValidatorLaptop from '@/sections/bgt/validator/laptop';
 import BgtValidatorMobile from '@/sections/bgt/validator/mobile';
 import { formatValueDecimal } from '@/utils/balance';
@@ -13,8 +15,6 @@ import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { useIncentive } from '@/sections/bgt/validator/hooks/use-incentive';
-import { useCurrentValidator } from '@/sections/bgt/validator/hooks/use-current-validator';
 
 const BgtValidator = (props: any) => {
   const { id } = props;
