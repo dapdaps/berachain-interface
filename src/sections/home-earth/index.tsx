@@ -250,7 +250,7 @@ const HomeEarth = () => {
               >
                 <div className="w-full h-full relative">
                   <img
-                     data-bp={isDefaultTheme() ? "1010-021" : "1010-022"}
+                    data-bp={isDefaultTheme() ? "1010-021" : "1010-022"}
                     onClick={() => toggleTheme()}
                     src={
                       isDefaultTheme()

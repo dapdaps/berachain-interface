@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { executeAction } from '../utils/action-manager';
+import React, { useEffect, useState } from 'react';
 import { RichMessageContent } from '../utils/chat-stream-handler';
 import TypingMarkdown from './TypingMarkdown';
+import useSwapStore from '../stores/useSwapStores';
+import SwapCard from '../McBera/SwapCard';
 
 interface InteractiveMarkdownProps {
   content: string;
@@ -14,6 +15,9 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   richContent,
   onResize 
 }) => {
+  const [showSwapModal, setShowSwapModal] = useState(false);
+  const swapStore = useSwapStore();
+  
   useEffect(() => {
     if (onResize) {
       onResize();
@@ -22,11 +26,35 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
 
   const handleActionClick = (actionType: string, params?: any) => {
     console.log(`Action button clicked: ${actionType}`, params);
-    executeAction(actionType, params);
+  };
+  
+  const handleBoldTextClick = () => {
+    setShowSwapModal(true);
   };
 
-  return (
-    <div className="interactive-markdown">
+  const renderContent = () => {
+    const boldRegex = /\*\*([^*]+)\*\*/;
+    const match = content.match(boldRegex);
+    
+    if (match) {
+      const symbolName = match[1]; 
+      const parts = content.split(boldRegex);
+      
+      return (
+        <div className="markdown-content">
+          {parts[0]}
+          <span 
+            className="font-bold cursor-pointer text-[#471C1C] underline" 
+            onClick={handleBoldTextClick}
+          >
+            {symbolName}
+          </span>
+          {parts[2]}
+        </div>
+      );
+    }
+    
+    return (
       <TypingMarkdown 
         options={{
           interval: 30,
@@ -35,21 +63,36 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
         }}
         content={content}  
       />
+    );
+  };
+
+  return (
+    <div className="interactive-markdown">
+      {renderContent()}
 
       {!richContent && <div style={{display: 'none'}}>No rich content available</div>}
 
       {richContent?.actions && richContent.actions.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-[14px] flex flex-col items-start gap-2">
           {richContent.actions.map((action, index) => (
             <button
               key={index}
-              className="px-3 py-1 bg-[#DAD9CD] hover:bg-[#C8C7B7] rounded-md text-sm font-medium"
-              onClick={() => handleActionClick(action.type, action.params)}
+              className="w-auto max-w-full px-2 py-1 border border-[#DAD9CD] hover:bg-[#DAD9CD]/30 text-[#999999] hover:text-[#471C1C] rounded-[18px] text-[13px] font-Montserrat"
+              onClick={() => handleActionClick(action.type, action.label)}
             >
               {action.label}
             </button>
           ))}
         </div>
+      )}
+      
+      {showSwapModal && (
+        <SwapCard
+          defaultInputCurrency={swapStore.defaultInputCurrency}
+          defaultOutputCurrency={swapStore.defaultOutputCurrency}
+          show={showSwapModal}
+          setShow={setShowSwapModal}
+        />
       )}
     </div>
   );

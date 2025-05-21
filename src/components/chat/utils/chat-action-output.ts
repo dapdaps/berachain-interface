@@ -1,17 +1,22 @@
-import useSwapStore from "../stores/useSwapStores";
+import { Message } from "../context/chat-context";
+import { handleSwapOutput } from "../handler/swap";
+import { ChatCallbacks } from "./chat-stream-handler";
 
-export const handleFunctionOutput = (functionType: string, content: string): void => {
-  const parsedContent = typeof content === "string" ? JSON.parse(content) : content;
+export const handleFunctionOutput = (
+  functionType: string,
+  content: string,
+  assistantMessage: Message,
+  updateFullResponse?: (response: string) => void,
+  callbacks?: ChatCallbacks
+): void => {
+  const parsedContent =
+    typeof content === "string" ? JSON.parse(content) : content;
 
   console.log("Function output:", parsedContent);
 
   switch (functionType) {
     case "swap":
-      const swapStore = useSwapStore.getState();
-      swapStore.openSwapModal();
-      if (parsedContent && parsedContent.inputCurrency) {
-        swapStore.setDefaultInputCurrency?.(parsedContent.inputCurrency);
-      }
+      handleSwapOutput(parsedContent, assistantMessage, updateFullResponse, callbacks);
       break;
     case "getHotTokens":
       break;

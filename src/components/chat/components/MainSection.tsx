@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import IconSend from "@public/images/chat/send.svg";
 import IconCheckPosition from "@public/images/chat/check-position.svg";
 import IconWallet from "@public/images/chat/wallet.svg";
 import IconTopVault from "@public/images/chat/top-vault.svg";
-import InterestItem, { INTEREST_ITEMS } from "./InterestItem";
+import InterestItem from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
 import { useChatContext } from "../context/chat-context";
 
@@ -29,7 +29,7 @@ export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
   const [selectedOption, setSelectedOption] = useState("positions");
 
-  const { sendChatMessage } = useChatContext();
+  const { sendChatMessage, vaults } = useChatContext();
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -84,23 +84,25 @@ export default function MainSection() {
           className="mt-4"
         />
 
-        <div className="w-full mt-20 font-Montserrat">
-          <h2 className="font-Montserrat text-[13px] font-[700] leading-[13px] mb-3">
-            You might be interested in
-          </h2>
-          <div className="flex flex-col gap-2">
-            {INTEREST_ITEMS.map((item, index) => (
-              <InterestItem
-                key={index}
-                item={{
-                  ...item,
-                  onClick: () =>
-                    console.log("Interest item clicked:", item.title),
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        {
+          vaults.recommendList?.length > 0 && (
+            <div className="w-full mt-20 font-Montserrat">
+              <h2 className="font-Montserrat text-[13px] font-[700] leading-[13px] mb-3">
+                You might be interested in
+              </h2>
+              <div className="flex flex-col gap-2">
+                {
+                  vaults.recommendList?.map((item: any, index: number) => (
+                    <InterestItem
+                      key={index}
+                      item={item}
+                    />
+                  ))
+                }
+              </div>
+            </div>
+          )
+        }
       </div>
     </div>
   );

@@ -271,40 +271,7 @@ const handleCompletionEvent = (
         }
       } else if (jsonData.type === "Action" && jsonData.function) {
         console.log("Action --- model jsonData:", jsonData);
-
-        handleFunctionOutput(jsonData.function, jsonData.text || "");
-        
-        if (jsonData.function === "swap") {
-          const messageText = fullResponse + "\n\nI can help you swap tokens. Would you like to proceed?";
-          
-          const richContent: RichMessageContent = {
-            text: messageText,
-            actions: [{
-              type: "swap",
-              label: "Open Swap Interface",
-              params: {} 
-            }]
-          };
-
-          console.log("Creating rich content for message:", richContent);
-          
-          const updatedMessage: Message = {
-            ...assistantMessage,
-            content: messageText,
-            richContent: richContent
-          };
-          
-          assistantMessage.content = messageText;
-          assistantMessage.richContent = richContent;
-          
-          if (updateFullResponse) {
-            updateFullResponse(messageText);
-          }
-          
-          if (callbacks?.updateMessage) {
-            callbacks.updateMessage(updatedMessage);
-          }
-        }
+        handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, updateFullResponse, callbacks);
       }
     } catch (e) {
       console.error("Failed to parse SSE data:", e, data);
