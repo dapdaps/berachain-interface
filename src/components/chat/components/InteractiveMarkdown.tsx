@@ -39,12 +39,12 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
       {!richContent && <div style={{display: 'none'}}>No rich content available</div>}
 
       {richContent?.actions && richContent.actions.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-[14px] flex flex-col items-start gap-2">
           {richContent.actions.map((action, index) => (
             <button
               key={index}
-              className="px-3 py-1 bg-[#DAD9CD] hover:bg-[#C8C7B7] rounded-md text-sm font-Montserrat"
-              onClick={() => handleActionClick(action.type, action.params)}
+              className="w-auto max-w-full px-2 py-1 border border-[#DAD9CD] hover:bg-[#DAD9CD]/30 text-[#999999] hover:text-[#471C1C] rounded-[18px] text-[13px] font-Montserrat"
+              onClick={() => handleActionClick(action.type, action.label)}
             >
               {action.label}
             </button>

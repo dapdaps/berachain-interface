@@ -8,7 +8,7 @@ export const handleSwapOutput = (
   updateFullResponse?: (response: string) => void,
   callbacks?: ChatCallbacks,
 ): void => {
-  const messageText = "\n\nOf course, BeraTown provides an all-in-one trading service,you can do this here: ?";
+  const messageText = "\n\nOf course, BeraTown provides an all-in-one trading service, you can do this here: ?";
 
   const actions = [
     {
