@@ -4,14 +4,13 @@ import Sidebar from "./components/Sidebar";
 import MainSection from "./components/MainSection";
 import ChatInterface from "./components/ChatInterface";
 import { ChatProvider, useChatContext } from "./context/chat-context";
-import VaultsV2ContextProvider from '@/sections/vaults/v2/context';
+import VaultsV2ContextProvider, { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { useVaultsV2 } from '@/sections/vaults/v2/hooks';
 import ActionModal from '@/sections/vaults/v2/components/action/modal';
 import { useList } from '@/sections/vaults/v2/hooks/list';
 
 const ChatLayoutContent: React.FC = () => {
-  const { chatMode } = useChatContext(); 
-  console.log("chatMode", chatMode);
+  const { chatMode } = useChatContext();
 
   return (
     <div className="w-[984px] h-[608px] mx-auto mt-[6px]">

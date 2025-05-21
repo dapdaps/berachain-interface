@@ -2,12 +2,12 @@ import { useRequest } from 'ahooks';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import { List } from '@/sections/vaults/v2/hooks/list';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export function useVaults(props: { vaultsList: List }): Vaults {
   const { vaultsList } = props;
 
-  const { listDataGroupByPoolAll, listLoading } = vaultsList ?? {};
+  const { listDataGroupByPoolAll } = vaultsList ?? {};
 
   const { account } = useCustomAccount();
 
