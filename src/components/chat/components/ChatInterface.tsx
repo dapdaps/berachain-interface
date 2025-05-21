@@ -186,6 +186,7 @@ export default function ChatInterface() {
                       <InteractiveMarkdown
                         content={message.content}
                         richContent={message.richContent}
+                        component={message.component}
                         onResize={handleMessageResize}
                       />
                     ) : (

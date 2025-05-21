@@ -1,6 +1,7 @@
 import { Message } from "../context/chat-context";
 import { handleSwapOutput } from "../handler/swap";
 import { ChatCallbacks } from "./chat-stream-handler";
+import { handleVaultsOutput } from '@/components/chat/handler/vaults';
 
 export const handleFunctionOutput = (
   functionType: string,
@@ -25,6 +26,9 @@ export const handleFunctionOutput = (
     case "getVaultsPositions":
       break;
     case "getWalletAssets":
+      break;
+    case "filterVaults":
+      handleVaultsOutput(parsedContent, assistantMessage, updateFullResponse, callbacks);
       break;
   }
 };

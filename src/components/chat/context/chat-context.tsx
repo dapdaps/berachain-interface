@@ -12,6 +12,7 @@ export interface Message {
   content: string;
   senderName?: string;
   richContent?: RichMessageContent; // 添加富文本内容字段
+  component?: any;
 }
 
 export type ChatHistory = {
@@ -100,7 +101,8 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
         { 
           ...msg, 
           content: updatedMessage.content,
-          richContent: updatedMessage.richContent 
+          richContent: updatedMessage.richContent,
+          component: updatedMessage.component,
         } : msg
       )
     );

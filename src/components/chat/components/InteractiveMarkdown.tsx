@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { RichMessageContent } from '../utils/chat-stream-handler';
 import TypingMarkdown from './TypingMarkdown';
 import useSwapStore from '../stores/useSwapStores';
@@ -9,13 +9,15 @@ import { createNewChat } from '../utils/chat-service';
 interface InteractiveMarkdownProps {
   content: string;
   richContent?: RichMessageContent;
+  component?: any;
   onResize?: () => void;
 }
 
 const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({ 
   content, 
   richContent,
-  onResize 
+  component,
+  onResize
 }) => {
   const swapStore = useSwapStore();
 
@@ -84,7 +86,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   const renderContent = () => {
     const boldRegex = /\*\*([^*]+)\*\*/;
     const match = content.match(boldRegex);
-    
+
     if (match) {
       const symbolName = match[1]; 
       const parts = content.split(boldRegex);
@@ -102,7 +104,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
         </div>
       );
     }
-    
+
     return (
       <TypingMarkdown 
         options={{
@@ -118,22 +120,27 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   return (
     <div className="interactive-markdown">
       {renderContent()}
+      {
+        component ? component : (
+          <>
+            {!richContent && <div style={{display: 'none'}}>No rich content available</div>}
 
-      {!richContent && <div style={{display: 'none'}}>No rich content available</div>}
-
-      {richContent?.actions && richContent.actions.length > 0 && (
-        <div className="mt-[14px] flex flex-col items-start gap-2">
-          {richContent.actions.map((action, index) => (
-            <button
-              key={index}
-              className="w-auto max-w-full px-2 py-1 border border-[#DAD9CD] hover:bg-[#DAD9CD]/30 text-[#999999] hover:text-[#471C1C] rounded-[18px] text-[13px] font-Montserrat"
-              onClick={() => handleActionClick(action.type, action)}
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
-      )}
+            {richContent?.actions && richContent.actions.length > 0 && (
+              <div className="mt-[14px] flex flex-col items-start gap-2">
+                {richContent.actions.map((action, index) => (
+                  <button
+                    key={index}
+                    className="w-auto max-w-full px-2 py-1 border border-[#DAD9CD] hover:bg-[#DAD9CD]/30 text-[#999999] hover:text-[#471C1C] rounded-[18px] text-[13px] font-Montserrat"
+                    onClick={() => handleActionClick(action.type, action)}
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        )
+      }
     </div>
   );
 };
