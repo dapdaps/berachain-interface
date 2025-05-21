@@ -4,7 +4,6 @@ import SwapCard from "./SwapCard";
 
 const McBeraLayout = () => {
     const { isSwapModalOpen, closeSwapModal, defaultInputCurrency, defaultOutputCurrency } = useSwapStore();
-    console.log("McBeraLayout", isSwapModalOpen, defaultInputCurrency, defaultOutputCurrency);
     return (
         <>
             <SwapCard 

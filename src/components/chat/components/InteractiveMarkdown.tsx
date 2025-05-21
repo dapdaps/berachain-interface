@@ -15,7 +15,6 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   richContent,
   onResize 
 }) => {
-  const [showSwapModal, setShowSwapModal] = useState(false);
   const swapStore = useSwapStore();
   
   useEffect(() => {
@@ -29,7 +28,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   };
   
   const handleBoldTextClick = () => {
-    setShowSwapModal(true);
+    swapStore.openSwapModal();
   };
 
   const renderContent = () => {
@@ -84,15 +83,6 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
             </button>
           ))}
         </div>
-      )}
-      
-      {showSwapModal && (
-        <SwapCard
-          defaultInputCurrency={swapStore.defaultInputCurrency}
-          defaultOutputCurrency={swapStore.defaultOutputCurrency}
-          show={showSwapModal}
-          setShow={setShowSwapModal}
-        />
       )}
     </div>
   );
