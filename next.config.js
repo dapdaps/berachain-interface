@@ -56,7 +56,11 @@ const nextConfig = {
     {
       source: "/api.dapdap.net/:path*",
       destination: `https://api.dapdap.net/:path*`
-    }
+    },
+    {
+      source: "/api-claim.berachain.com/:path*",
+      destination: `https://api-claim.berachain.com/:path*`
+    },
   ],
   webpack: (config, { dev }) => {
     config.resolve.alias.stream = "stream-browserify";
