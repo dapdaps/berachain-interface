@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useRef } from 'react';
 import TopBar from "./components/TopBar";
 import Sidebar from "./components/Sidebar";
 import MainSection from "./components/MainSection";
 import ChatInterface from "./components/ChatInterface";
 import { ChatProvider, useChatContext } from "./context/chat-context";
+import VaultsV2ContextProvider from '@/sections/vaults/v2/context';
+import { useVaultsV2 } from '@/sections/vaults/v2/hooks';
+import ActionModal from '@/sections/vaults/v2/components/action/modal';
+import { useList } from '@/sections/vaults/v2/hooks/list';
 
 const ChatLayoutContent: React.FC = () => {
   const { chatMode } = useChatContext(); 
@@ -23,9 +27,23 @@ const ChatLayoutContent: React.FC = () => {
 };
 
 export const ChatLayout: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const vaultsV2 = useVaultsV2();
+  // Need all data to calculate user stake assets and support popup
+  const list = useList();
+
   return (
-    <ChatProvider>
-      <ChatLayoutContent />
+    <ChatProvider vaultsList={list}>
+      <VaultsV2ContextProvider
+        value={{
+          ...vaultsV2,
+          ...list,
+          containerRef,
+        }}
+      >
+        <ChatLayoutContent />
+        <ActionModal />
+      </VaultsV2ContextProvider>
     </ChatProvider>
   );
 };

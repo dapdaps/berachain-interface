@@ -8,6 +8,7 @@ import useClickTracking from "@/hooks/use-click-tracking";
 import { BASE_URL, get } from '@/utils/http';
 import axios from 'axios';
 import { useRequest } from 'ahooks';
+import { maxBy } from 'lodash';
 
 export function useVaultsV2(): VaultsV2 {
   const [actionVisible, setActionVisible] = useState(false);
@@ -48,7 +49,8 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
-    setCurrentProtocol(_actionVisible && record ? record.list?.[0] : null);
+    const maxApyRecord = maxBy(record?.list ?? [], (item: any) => item.totalApy.toNumber());
+    setCurrentProtocol(_actionVisible && record ? maxApyRecord : null);
   };
 
   const toggleActionType = (_actionType?: ActionType) => {

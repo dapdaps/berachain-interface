@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { createNewChat } from '../utils/chat-service';
 import { RichMessageContent } from "../utils/chat-stream-handler";
+import { useVaults, Vaults } from '@/components/chat/hooks/useVaults';
+import { List } from '@/sections/vaults/v2/hooks/list';
 
 type ChatMode = 'initial' | 'chat';
 
@@ -36,17 +38,19 @@ interface ChatContextType {
   addChatHistory: (history: ChatHistory) => void;
   updateMessages: (messages: Message[]) => void;
   updateMessage: (updatedMessage: Message) => void; 
-  sendChatMessage: (message: string) => Promise<void>; 
+  sendChatMessage: (message: string) => Promise<void>;
+  vaults: Vaults;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> = ({ children, vaultsList }) => {
   const [chatMode, setChatMode] = useState<ChatMode>('initial');
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
+  const vaults = useVaults({ vaultsList });
 
   const startNewChat = (userMessage: string) => {
     const userMessageObj: Message = {
@@ -146,7 +150,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addChatHistory,
         updateMessages,
         updateMessage,
-        sendChatMessage
+        sendChatMessage,
+        vaults
       }}
     >
       {children}
