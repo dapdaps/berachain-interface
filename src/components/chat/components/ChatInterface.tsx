@@ -7,7 +7,6 @@ import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat } from "../utils/chat-service";
 import InteractiveMarkdown from "./InteractiveMarkdown";
 import McBeraLayout from "../McBera";
-import { initializeActionHandlers } from "../utils/action-manager";
 
 export type MessageType = {
   id: string;
@@ -137,10 +136,6 @@ export default function ChatInterface() {
       handleSubmit();
     }
   };
-
-  useEffect(() => {
-    initializeActionHandlers();
-  }, []);
 
   return (
     <div className="flex flex-col w-[560px] mx-auto">

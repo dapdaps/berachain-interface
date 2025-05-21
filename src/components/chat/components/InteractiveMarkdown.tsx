@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { executeAction } from '../utils/action-manager';
+import React, { useEffect, useState } from 'react';
 import { RichMessageContent } from '../utils/chat-stream-handler';
 import TypingMarkdown from './TypingMarkdown';
+import useSwapStore from '../stores/useSwapStores';
+import SwapCard from '../McBera/SwapCard';
 
 interface InteractiveMarkdownProps {
   content: string;
@@ -14,6 +15,9 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   richContent,
   onResize 
 }) => {
+  const [showSwapModal, setShowSwapModal] = useState(false);
+  const swapStore = useSwapStore();
+  
   useEffect(() => {
     if (onResize) {
       onResize();
@@ -22,11 +26,35 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
 
   const handleActionClick = (actionType: string, params?: any) => {
     console.log(`Action button clicked: ${actionType}`, params);
-    executeAction(actionType, params);
+  };
+  
+  const handleBoldTextClick = () => {
+    setShowSwapModal(true);
   };
 
-  return (
-    <div className="interactive-markdown">
+  const renderContent = () => {
+    const boldRegex = /\*\*([^*]+)\*\*/;
+    const match = content.match(boldRegex);
+    
+    if (match) {
+      const symbolName = match[1]; 
+      const parts = content.split(boldRegex);
+      
+      return (
+        <div className="markdown-content">
+          {parts[0]}
+          <span 
+            className="font-bold cursor-pointer text-[#471C1C] underline" 
+            onClick={handleBoldTextClick}
+          >
+            {symbolName}
+          </span>
+          {parts[2]}
+        </div>
+      );
+    }
+    
+    return (
       <TypingMarkdown 
         options={{
           interval: 30,
@@ -35,6 +63,12 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
         }}
         content={content}  
       />
+    );
+  };
+
+  return (
+    <div className="interactive-markdown">
+      {renderContent()}
 
       {!richContent && <div style={{display: 'none'}}>No rich content available</div>}
 
@@ -50,6 +84,15 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
             </button>
           ))}
         </div>
+      )}
+      
+      {showSwapModal && (
+        <SwapCard
+          defaultInputCurrency={swapStore.defaultInputCurrency}
+          defaultOutputCurrency={swapStore.defaultOutputCurrency}
+          show={showSwapModal}
+          setShow={setShowSwapModal}
+        />
       )}
     </div>
   );
