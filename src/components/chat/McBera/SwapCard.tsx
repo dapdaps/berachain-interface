@@ -19,6 +19,8 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
     openSwapModal,
     defaultInputCurrency,
     defaultOutputCurrency,
+    setDefaultInputCurrency,
+    setDefaultOutputCurrency,
   } = useSwapStore();
 
   const { addMessage, updateMessage, sessionId, setSessionId, addChatHistory } =
@@ -122,7 +124,14 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
     return null;
   };
 
-  console.log("rendering SwapCard", defaultInputCurrency, defaultOutputCurrency);
+  useEffect(() => {
+    return () => {
+      closeSwapModal();
+      setDefaultInputCurrency(null);
+      setDefaultOutputCurrency(null);
+    };
+  }, [closeSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency]);
+
 
   return (
     <>
