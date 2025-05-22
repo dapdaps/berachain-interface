@@ -5,7 +5,7 @@ import IconMore from '@public/images/chat/more.svg';
 import IconEdit from '@public/images/chat/edit.svg';
 import IconDelete from '@public/images/chat/delete.svg';
 import { useChatContext } from '../context/chat-context';
-import { fetchChatHistory, fetchChatHistoryList } from '../utils/chat-service';
+import { fetchChatHistory, fetchChatHistoryList, editChatHistoryItemName } from '../utils/chat-service';
 import { useAccount } from 'wagmi';
 import { ChatHistory } from '../context/chat-context';
 
@@ -16,6 +16,9 @@ const Sidebar = () => {
   const [popoverChat, setPopoverChat] = useState<string | null>(null);
   const [localChatHistories, setLocalChatHistories] = useState<ChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [editingChatId, setEditingChatId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState<string>("");
+  const editInputRef = useRef<HTMLInputElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { address } = useAccount();
   
@@ -40,29 +43,35 @@ const Sidebar = () => {
     };
   }, []);
 
-useEffect(() => {
-  const loadChatHistories = async () => {
-    if (address) {
-      setIsLoading(true);
-      try {
-        const response = await fetchChatHistoryList(address);
-        if (response && response.data && response.data.length > 0) {
-          const sortedHistories = [...response.data].sort((a, b) => {
-            return b.timestamp - a.timestamp;
-          });
-          setLocalChatHistories(sortedHistories);
-          setChatHistories(sortedHistories);
-        }
-      } catch (error) {
-        console.error("Get history failed:", error);
-      } finally {
-        setIsLoading(false);
-      }
+  useEffect(() => {
+    if (editingChatId && editInputRef.current) {
+      editInputRef.current.focus();
     }
-  };
+  }, [editingChatId]);
 
-  loadChatHistories();
-}, [address, setChatHistories]);
+  useEffect(() => {
+    const loadChatHistories = async () => {
+      if (address) {
+        setIsLoading(true);
+        try {
+          const response = await fetchChatHistoryList(address);
+          if (response && response.data && response.data.length > 0) {
+            const sortedHistories = [...response.data].sort((a, b) => {
+              return b.timestamp - a.timestamp;
+            });
+            setLocalChatHistories(sortedHistories);
+            setChatHistories(sortedHistories);
+          }
+        } catch (error) {
+          console.error("Get history failed:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadChatHistories();
+  }, [address, setChatHistories]);
   
   const handleNewChat = () => {
     setChatMode('initial');
@@ -87,6 +96,50 @@ useEffect(() => {
       return decodeURIComponent(title);
     } catch (e) {
       return title; 
+    }
+  };
+
+  const handleEditChatName = (e: React.MouseEvent, chat: ChatHistory) => {
+    e.stopPropagation();
+    setShowPopover(false);
+    setActiveChat(chat.session_id);
+    setCurrentChatId(chat.session_id);
+    setSessionId(chat.session_id);
+    setEditingChatId(chat.session_id);
+    setEditTitle(decodeTitle(chat.title));
+  };
+
+  const handleSaveChatName = async (sessionId: string) => {
+    if (!editTitle.trim()) return;
+    
+    try {
+      await editChatHistoryItemName(sessionId, encodeURIComponent(editTitle.trim()));
+      // 更新本地状态
+      setLocalChatHistories(prevHistories => 
+        prevHistories.map(chat => 
+          chat.session_id === sessionId 
+            ? { ...chat, title: encodeURIComponent(editTitle.trim()) } 
+            : chat
+        )
+      );
+      setChatHistories(prevHistories => 
+        prevHistories.map(chat => 
+          chat.session_id === sessionId 
+            ? { ...chat, title: encodeURIComponent(editTitle.trim()) } 
+            : chat
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update chat name:", error);
+    } finally {
+      setEditingChatId(null);
+    }
+  };
+
+  const handleTitleInputKeyDown = (e: React.KeyboardEvent, sessionId: string) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveChatName(sessionId);
     }
   };
 
@@ -125,12 +178,26 @@ useEffect(() => {
                     if (popoverChat !== chat.session_id) {
                       setShowPopover(false);
                     }
-                    handleLoadChat(chat.session_id, chat.address);
+                    if (editingChatId !== chat.session_id) {
+                      handleLoadChat(chat.session_id, chat.address);
+                    }
                   }}
                 >
-                  <div className="max-w-[210px] truncate font-Montserrat font-[500] leading-[13px] text-[13px] text-black/50">{decodedTitle}</div>
+                  {editingChatId === chat.session_id ? (
+                    <input
+                      ref={editInputRef}
+                      className="w-full max-w-[210px] bg-transparent outline-none font-Montserrat font-[500] leading-[13px] text-[13px] text-black/70"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      onBlur={() => handleSaveChatName(chat.session_id)}
+                      onKeyDown={(e) => handleTitleInputKeyDown(e, chat.session_id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <div className="max-w-[210px] truncate font-Montserrat font-[500] leading-[13px] text-[13px] text-black/50">{decodedTitle}</div>
+                  )}
 
-                  {hoverChat === chat.session_id && (
+                  {hoverChat === chat.session_id && editingChatId !== chat.session_id && (
                     <button 
                       className="absolute right-2 top-1/2 transform -translate-y-1/2"
                       onClick={(e) => {
@@ -152,7 +219,7 @@ useEffect(() => {
                       <div className="p-[8px_5px]">
                         <button 
                           className="font-Montserrat flex items-center gap-2 w-full p-[9px_12px] text-[#471C1C] font-[500] leading-[14px] text-[14px] hover:bg-[#000]/[0.06] rounded-md transition-colors"
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => handleEditChatName(e, chat)}
                         >
                           <IconEdit />
                           <span>Edit chat name</span>

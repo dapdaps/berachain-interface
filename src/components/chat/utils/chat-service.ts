@@ -1,4 +1,4 @@
-import { get } from "@/utils/http";
+import { get, post } from "@/utils/http";
 import { Message, ChatHistory } from "../context/chat-context";
 import { 
   ChatCallbacks, 
@@ -133,6 +133,28 @@ export const fetchChatHistoryList = async (address: any): Promise<{ code: number
     return await get(`/api/go/chat/conversation/list?address=${address}`);
   } catch (error) {
     console.error("Get Chat History List:", error);
+    throw error;
+  }
+};
+
+
+export const editChatHistoryItemName = async (sessionId: string, title: string): Promise<{ code: number; data: string }> => {
+  try {
+    const encodedTitle = title.includes('%') ? title : encodeURIComponent(title);
+    const response = await post(`/api/go/chat/conversation/title?sessionId=${sessionId}&title=${encodedTitle}`, { sessionId, title: encodedTitle });
+    return response.data;
+  } catch (error) {
+    console.error("Edit Chat History Item Name:", error);
+    throw error;
+  }
+};
+
+export const deleteChatHistoryItem = async (sessionId: string): Promise<{ code: number; data: string }> => {
+  try {
+    const response = await post(`/api/go/chat/conversation/delete?sessionId=${sessionId}`, { sessionId });
+    return response.data;
+  } catch (error) {
+    console.error("Delete Chat History Item:", error);
     throw error;
   }
 };
