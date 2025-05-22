@@ -154,7 +154,7 @@ export default function ChatInterface() {
                 <div className="flex flex-col items-end">
                   <div
                     className={`
-                    max-w-[300px] border border-[#DAD9CD] rounded-[10px] bg-opacity-30 bg-[#DAD9CD] px-[5px] py-1 flex items-center gap-2`}
+                    max-w-[300px] break-all border border-[#DAD9CD] rounded-[10px] bg-opacity-30 bg-[#DAD9CD] px-[5px] py-1 flex items-center gap-2`}
                   >
                     <UserAvatar />
                     <div className="font-Montserrat text-black/50 text-[14px] leading-[14px] font-[500]">

@@ -3,6 +3,7 @@ import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import { List } from '@/sections/vaults/v2/hooks/list';
 import { useEffect, useMemo } from 'react';
+import Big from 'big.js';
 
 export function useVaults(props: { vaultsList: List }): Vaults {
   const { vaultsList } = props;
@@ -36,6 +37,22 @@ export function useVaults(props: { vaultsList: List }): Vaults {
     return groupedList;
   }, [recommendList, listDataGroupByPoolAll]);
 
+  const recommendWithGroupedList = useMemo(() => {
+    if (!recommendList || !recommendList.length || !listDataGroupByPoolAll || !listDataGroupByPoolAll.length) return [];
+    return recommendList.map((item: any) => {
+      const _groupVault = listDataGroupByPoolAll.find((_item: any) => _item.list?.some((_vault: any) => _vault.backendId === item.id));
+      let _totalApr = Big(0);
+      for (const key in item.apr) {
+        _totalApr = Big(_totalApr).plus(item.apr[key] || 0);
+      }
+      return {
+        ...item,
+        totalApr: _totalApr,
+        groupVault: _groupVault,
+      };
+    });
+  }, [recommendList, listDataGroupByPoolAll]);
+
   const { runAsync: getRecommendChat, data: recommendChat, loading: recommendChatLoading } = useRequest(async () => {
     try {
       const res = await get("/api/go/chat/recommend/list");
@@ -55,7 +72,7 @@ export function useVaults(props: { vaultsList: List }): Vaults {
 
   return {
     getRecommendList,
-    recommendList: recommendGroupedList,
+    recommendList: recommendWithGroupedList,
     recommendListLoading: recommendListLoading || listLoading,
     getRecommendChat,
     recommendChat,

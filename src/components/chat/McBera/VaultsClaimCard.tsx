@@ -10,7 +10,9 @@ import { useVaultAction } from '@/components/chat/hooks/useVaultAction';
 import { useThrottleFn } from 'ahooks';
 
 const VaultsClaimCard = (props: any) => {
-  const { parsedContent } = props;
+  const { parsedContent, functionType } = props;
+
+  const isGetVaultsReward = functionType === "getVaultsReward";
 
   const { vaultsList } = useVaultAction(props);
   const prices = usePriceStore((store: any) => store.beraTownPrice);
@@ -53,7 +55,12 @@ const VaultsClaimCard = (props: any) => {
         Your total value of rewards is <strong>{numberFormatter(totalRewardUsd, 2, true, { prefix: "$", isZeroPrecision: true })}</strong><br />Here's the distribution of rewards:
       </div>
       {
-        parsedContent?.filter((vault: any) => !!vault.user_reward && vault.user_reward.length > 0).map((vault: any) => (
+        parsedContent?.filter((vault: any) => {
+          if (isGetVaultsReward) {
+            return !!vault.user_reward && vault.user_reward.length > 0;
+          }
+          return true;
+        }).map((vault: any) => (
           <div className="flex justify-between items-center pl-[10px] pr-[10px] h-[48px] shrink-0 rounded-[10px] border border-[#D6D1CC] text-[#392C1D] font-montserrat text-[12px] font-medium leading-[100%]">
             <div className="flex items-center gap-[8px] flex-1 overflow-hidden">
               {

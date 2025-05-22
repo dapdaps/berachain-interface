@@ -20,6 +20,7 @@ export const handleVaultsOutput = (
   const isGetVaultsPositions = functionType === "getVaultsPositions";
   const isGetVaultsReward = functionType === "getVaultsReward";
   const isGetWalletAssets = functionType === "getWalletAssets";
+  const isGetInterestVaults = functionType === "getInterestVaults";
 
   let messageText = `Based on your interest in this token, here are some top-performing vaults you might want to explore:`;
   let component = (
@@ -35,13 +36,19 @@ export const handleVaultsOutput = (
   if (isGetVaultsReward) {
     messageText = "\n";
     component = (
-      <VaultsClaimCard parsedContent={parsedContent} />
+      <VaultsClaimCard functionType={functionType} parsedContent={parsedContent} />
     );
   }
   if (isGetWalletAssets) {
     messageText = "\n";
     component = (
       <WalletAssetsCard parsedContent={parsedContent} />
+    );
+  }
+  if (isGetInterestVaults) {
+    messageText = "Based on your assets, we recommend these top vaults for you:";
+    component = (
+      <VaultsCard parsedContent={parsedContent} />
     );
   }
 
