@@ -115,6 +115,9 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
           } catch (e) {
             console.error("Failed to parse function output in history:", e);
           }
+        } else if (item.reply === "") {
+          const errorMessage = "Sorry, no results found. Please try asking a different question.";
+          assistantMessage.content = errorMessage
         }
         
         historyMessages.push(assistantMessage);
