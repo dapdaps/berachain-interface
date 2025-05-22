@@ -2,12 +2,12 @@ import { useRequest } from 'ahooks';
 import { get } from '@/utils/http';
 import useCustomAccount from '@/hooks/use-account';
 import { List } from '@/sections/vaults/v2/hooks/list';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export function useVaults(props: { vaultsList: List }): Vaults {
   const { vaultsList } = props;
 
-  const { listDataGroupByPoolAll } = vaultsList ?? {};
+  const { listDataGroupByPoolAll, listLoading } = vaultsList ?? {};
 
   const { account } = useCustomAccount();
 
@@ -16,21 +16,25 @@ export function useVaults(props: { vaultsList: List }): Vaults {
     try {
       const res = await get("/api/go/vaults/interest", { address: account });
       if (res.code !== 200) return [];
-      const _list = res.data || [];
-      const groupedList: any = [];
-      _list.forEach((vault: any) => {
-        const currGroup = listDataGroupByPoolAll.find((_grouped: any) => _grouped.list.some((_vault: any) => _vault.backendId === vault.id));
-        if (currGroup && !groupedList.some((it: any) => it.pool_address === currGroup.pool_address)) {
-          groupedList.push(currGroup);
-        }
-      });
-
-      return groupedList;
+      return res.data || [];
     } catch (err: any) {
       console.log('get recommend list failed: %o', err);
     }
     return [];
   }, { manual: true, debounceWait: 1000 });
+
+  const recommendGroupedList = useMemo(() => {
+    if (!recommendList || !recommendList.length || !listDataGroupByPoolAll || !listDataGroupByPoolAll.length) return [];
+    const groupedList: any = [];
+    recommendList.forEach((vault: any) => {
+      const currGroup = listDataGroupByPoolAll.find((_grouped: any) => _grouped.list.some((_vault: any) => _vault.backendId === vault.id));
+      if (currGroup && !groupedList.some((it: any) => it.pool_address === currGroup.pool_address)) {
+        groupedList.push(currGroup);
+      }
+    });
+
+    return groupedList;
+  }, [recommendList, listDataGroupByPoolAll]);
 
   const { runAsync: getRecommendChat, data: recommendChat, loading: recommendChatLoading } = useRequest(async () => {
     try {
@@ -45,14 +49,14 @@ export function useVaults(props: { vaultsList: List }): Vaults {
   });
 
   useEffect(() => {
-    if (!account || !listDataGroupByPoolAll || !listDataGroupByPoolAll.length) return;
+    if (!account) return;
     getRecommendList();
-  }, [listDataGroupByPoolAll, account]);
+  }, [account]);
 
   return {
     getRecommendList,
-    recommendList,
-    recommendListLoading,
+    recommendList: recommendGroupedList,
+    recommendListLoading: recommendListLoading || listLoading,
     getRecommendChat,
     recommendChat,
     recommendChatLoading,

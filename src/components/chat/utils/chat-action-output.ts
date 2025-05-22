@@ -42,5 +42,8 @@ export const handleFunctionOutput = (
     case "filterVaults":
       handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
+    case "getVaultsReward":
+      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
+      break;
   }
 };
