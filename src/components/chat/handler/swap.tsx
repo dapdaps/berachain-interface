@@ -63,9 +63,12 @@ export const handleSwapOutput = (
   }
 
   const swapStore = useSwapStore.getState();
+
   if (parsedContent && parsedContent.output_token) {
     swapStore?.setDefaultOutputCurrency?.(parsedContent.output_token);
-  } else if (parsedContent && parsedContent.input_token) {
+  } 
+  
+  if (parsedContent && parsedContent.input_token) {
     swapStore?.setDefaultInputCurrency?.(parsedContent.input_token);
   }
 };

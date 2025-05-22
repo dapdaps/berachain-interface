@@ -4,6 +4,8 @@ import { numberFormatter } from '@/utils/number-formatter';
 import { Message, useChatContext } from '@/components/chat/context/chat-context';
 import { useThrottleFn } from 'ahooks';
 import { createNewChat } from '@/components/chat/utils/chat-service';
+import { motion } from "framer-motion";
+import { motionStaggerChildren, motionStaggerParent } from '@/components/chat/utils/motion-stagger-children';
 
 const TYPES = {
   vaults: {
@@ -71,16 +73,20 @@ export default function InvestCard(props: {
   }, { wait: 1000 });
 
   return (
-    <div className="mt-[10px] w-full min-w-[554px] flex flex-col gap-[8px]">
+    <motion.div
+      className="mt-[10px] w-full min-w-[554px] flex flex-col gap-[8px]"
+      {...motionStaggerParent(0.1)}
+    >
       {
         vaultsList?.map((vault: any, idx: number) => (
-          <div
+          <motion.div
             key={idx}
             className={clsx(
               "flex items-center h-[62px] rounded-[10px] border border-[#D6D1CC] cursor-pointer",
               className
             )}
             onClick={() => handleOpen(vault)}
+            {...motionStaggerChildren}
           >
             <div className="flex grow relative pl-[35px] pr-[12px] justify-between items-center text-[#392C1D">
               <div
@@ -114,10 +120,13 @@ export default function InvestCard(props: {
             <button className="flex justify-center items-center w-[44px] h-[62px] border-l border-[#D6D1CC] shrink-0">
               <IconArrowRightIcon />
             </button>
-          </div>
+          </motion.div>
         ))
       }
-      <div className="mt-[10px]">
+      <motion.div
+        className="mt-[10px]"
+        {...motionStaggerChildren}
+      >
         <ChatButton
           icon="/images/home-earth/mc-bera/icon-gift.svg"
           onClick={() => {
@@ -144,8 +153,8 @@ export default function InvestCard(props: {
         >
           Top vault via my assets
         </ChatButton>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

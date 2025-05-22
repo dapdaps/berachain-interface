@@ -8,8 +8,11 @@ import { useChatContext } from '../context/chat-context';
 import { fetchChatHistory, fetchChatHistoryList, editChatHistoryItemName, deleteChatHistoryItem } from '../utils/chat-service';
 import { useAccount } from 'wagmi';
 import { ChatHistory } from '../context/chat-context';
+import { useScroll } from '@/components/chat/hooks/useScroll';
 
 const Sidebar = () => {
+  const { containerRef } = useScroll();
+
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [showPopover, setShowPopover] = useState(false);
   const [hoverChat, setHoverChat] = useState<string | null>(null);
@@ -179,7 +182,7 @@ const handleDeleteChat = async (e: React.MouseEvent, chat: ChatHistory) => {
           <span className="font-Montserrat font-[700] leading-[13px] text-[13px] text-black/50">History</span>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div ref={containerRef} className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="flex justify-center items-center h-20">
               <span className="text-sm text-black/50">Loading...</span>
