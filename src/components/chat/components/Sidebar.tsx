@@ -5,7 +5,7 @@ import IconMore from '@public/images/chat/more.svg';
 import IconEdit from '@public/images/chat/edit.svg';
 import IconDelete from '@public/images/chat/delete.svg';
 import { useChatContext } from '../context/chat-context';
-import { fetchChatHistory, fetchChatHistoryList, editChatHistoryItemName } from '../utils/chat-service';
+import { fetchChatHistory, fetchChatHistoryList, editChatHistoryItemName, deleteChatHistoryItem } from '../utils/chat-service';
 import { useAccount } from 'wagmi';
 import { ChatHistory } from '../context/chat-context';
 
@@ -114,7 +114,6 @@ const Sidebar = () => {
     
     try {
       await editChatHistoryItemName(sessionId, encodeURIComponent(editTitle.trim()));
-      // 更新本地状态
       setLocalChatHistories(prevHistories => 
         prevHistories.map(chat => 
           chat.session_id === sessionId 
@@ -122,13 +121,12 @@ const Sidebar = () => {
             : chat
         )
       );
-      setChatHistories(prevHistories => 
-        prevHistories.map(chat => 
-          chat.session_id === sessionId 
-            ? { ...chat, title: encodeURIComponent(editTitle.trim()) } 
-            : chat
-        )
-      );
+
+      setChatHistories(localChatHistories.map(chat => 
+        chat.session_id === sessionId 
+          ? { ...chat, title: encodeURIComponent(editTitle.trim()) } 
+          : chat
+      ));
     } catch (error) {
       console.error("Failed to update chat name:", error);
     } finally {
@@ -142,6 +140,28 @@ const Sidebar = () => {
       handleSaveChatName(sessionId);
     }
   };
+
+const handleDeleteChat = async (e: React.MouseEvent, chat: ChatHistory) => {
+  e.stopPropagation();
+  setShowPopover(false);
+  
+  try {
+    await deleteChatHistoryItem(chat.session_id);
+    
+    const updatedHistories = localChatHistories.filter(
+      item => item.session_id !== chat.session_id
+    );
+    setLocalChatHistories(updatedHistories);
+    setChatHistories(updatedHistories);
+    
+    if (chat.session_id === activeChat) {
+      handleNewChat();
+    }
+  } catch (error) {
+    console.error("Delete chat failed:", error);
+  }
+};
+
 
   return (
     <div className="flex h-[566px]" ref={sidebarRef}>
@@ -226,7 +246,7 @@ const Sidebar = () => {
                         </button>
                         <button 
                           className="font-Montserrat flex items-center gap-2 w-full p-[9px_12px] leading-[14px] font-[500] text-[14px] text-[#FF888A] hover:bg-[#000]/[0.06] rounded-md transition-colors"
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => handleDeleteChat(e, chat)}
                         >
                           <IconDelete />
                           <span>Delete</span>

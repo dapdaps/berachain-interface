@@ -1,4 +1,4 @@
-import { get, post } from "@/utils/http";
+import { deleteRequest, get, post } from "@/utils/http";
 import { Message, ChatHistory } from "../context/chat-context";
 import { 
   ChatCallbacks, 
@@ -151,7 +151,7 @@ export const editChatHistoryItemName = async (sessionId: string, title: string):
 
 export const deleteChatHistoryItem = async (sessionId: string): Promise<{ code: number; data: string }> => {
   try {
-    const response = await post(`/api/go/chat/conversation/delete?sessionId=${sessionId}`, { sessionId });
+    const response = await deleteRequest(`/api/go/chat/conversation?sessionId=${sessionId}`, { sessionId });
     return response.data;
   } catch (error) {
     console.error("Delete Chat History Item:", error);
