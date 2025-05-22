@@ -37,7 +37,7 @@ export const createChatHistory = (
     session_id: serverSessionId || localId,
     title: message.length > 20 ? `${message.substring(0, 20)}...` : message,
     address: '', 
-    timestamp: Math.floor(Date.now() / 1000) // 转换为秒级时间戳，与API格式一致
+    timestamp: Math.floor(Date.now() / 1000)
   };
 };
 
@@ -119,7 +119,7 @@ export const processSSEStream = async (
 
         console.log("SSE:", event, "SSE DATA:", data);
         
-        handleSSEMessage(
+        const updatedFullResponse = handleSSEMessage(
           event, 
           data, 
           fullResponse, 
@@ -130,6 +130,10 @@ export const processSSEStream = async (
           abortController,
           resolve
         );
+        
+        if (updatedFullResponse !== undefined) {
+          fullResponse = updatedFullResponse;
+        }
       }
 
       return reader.read().then(processStream);
@@ -150,7 +154,7 @@ export const handleSSEMessage = (
   abortController?: AbortController,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
   serverSessionIdRef?: { current?: string }
-): void => {
+): string | undefined => {  // 修改返回类型，允许返回更新后的 fullResponse
   if (event === "meta") {
     try {
       const metaData = JSON.parse(data);
@@ -168,8 +172,9 @@ export const handleSSEMessage = (
     } catch (e) {
       console.error("Failed to parse meta data:", e);
     }
+    return fullResponse; 
   } else if (event === "completion") {
-    handleCompletionEvent(
+    return handleCompletionEvent(
       data, 
       fullResponse, 
       assistantMessage, 
@@ -180,7 +185,7 @@ export const handleSSEMessage = (
       resolvePromise
     );
   } else if (!event && data) {
-    handleDataWithoutEvent(
+    return handleDataWithoutEvent(
       data, 
       fullResponse, 
       assistantMessage, 
@@ -191,6 +196,7 @@ export const handleSSEMessage = (
       resolvePromise
     );
   }
+  return fullResponse; 
 };
 
 const handleCompletionEvent = (
@@ -203,7 +209,7 @@ const handleCompletionEvent = (
   abortController?: AbortController,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
   serverSessionId?: string
-): void => {
+): string => {  
   if (data === "[DONE]") {
     let responseContent = fullResponse.trim();
     if (!responseContent) {
@@ -242,6 +248,7 @@ const handleCompletionEvent = (
     if (abortController) {
       abortController.abort();
     }
+    return fullResponse; 
   } else {
     try {
       const jsonData: SSEResponseType = typeof data === "string" ? JSON.parse(data) : data;
@@ -257,6 +264,8 @@ const handleCompletionEvent = (
             content: updatedResponse,
           });
         }
+        
+        return updatedResponse; 
       } else if (jsonData.type === "Action" && jsonData.function) {
         console.log("Action --- model jsonData:", jsonData);
         handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks);
@@ -264,6 +273,7 @@ const handleCompletionEvent = (
     } catch (e) {
       console.error("Failed to parse SSE data:", e, data);
     }
+    return fullResponse; 
   }
 };
 
@@ -276,7 +286,7 @@ const handleDataWithoutEvent = (
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void
-): void => {
+) => { 
   if (data === "[DONE]") {
     const chatHistory = createChatHistory(localId, userMessage, assistantMessage.content);
 
