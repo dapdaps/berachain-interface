@@ -71,7 +71,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
 
   const renderContent = () => {
     if (!content) {
-      // 如果没有内容，则标记为完成
       useEffect(() => {
         setContentFinished(true);
       }, []);
@@ -90,7 +89,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
         step: [1, 3],
       });
 
-      // 当打字动画完成时，更新状态
       useEffect(() => {
         if (!isTyping) {
           setContentFinished(true);
@@ -123,6 +121,8 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
 
     return null;
   };
+
+  console.log("rendering SwapCard", defaultInputCurrency, defaultOutputCurrency);
 
   return (
     <>
