@@ -1,3 +1,6 @@
+import React from 'react';
+import SwapCard from '@/components/chat/McBera/SwapCard';
+
 import { Message } from "../context/chat-context";
 import useSwapStore from "../stores/useSwapStores";
 import {
@@ -8,7 +11,6 @@ import {
 export const handleSwapOutput = (
   parsedContent: any,
   assistantMessage: Message,
-  updateFullResponse?: (response: string) => void,
   callbacks?: ChatCallbacks
 ): void => {
   let messageText =
@@ -52,14 +54,9 @@ export const handleSwapOutput = (
     ...assistantMessage,
     content: messageText,
     richContent: richContent,
+    skipTyping: true,
+    component: <SwapCard content={messageText} richContent={richContent} />,
   };
-
-  assistantMessage.content = messageText;
-  assistantMessage.richContent = richContent;
-
-  if (updateFullResponse) {
-    updateFullResponse(messageText);
-  }
 
   if (callbacks?.updateMessage) {
     callbacks.updateMessage(updatedMessage);

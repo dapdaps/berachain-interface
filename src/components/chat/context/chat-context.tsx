@@ -12,14 +12,15 @@ export interface Message {
   content: string;
   senderName?: string;
   richContent?: RichMessageContent; // 添加富文本内容字段
+  component?: any;
+  skipTyping?: boolean;
 }
 
 export type ChatHistory = {
-  id?: string;
+  timestamp: number; 
+  address: string;
+  session_id: string;
   title: string;
-  lastMessage: string;
-  timestamp: string;
-  sessionId?: string; 
 };
 
 interface ChatContextType {
@@ -81,9 +82,8 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   };
   
   const addChatHistory = (history: ChatHistory) => {
-    // 如果有sessionId，确保添加到历史记录中
     if (sessionId) {
-      history.sessionId = sessionId;
+      history.session_id = sessionId;
     }
     setChatHistories(prev => [history, ...prev]);
   };
@@ -100,7 +100,9 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
         { 
           ...msg, 
           content: updatedMessage.content,
-          richContent: updatedMessage.richContent 
+          richContent: updatedMessage.richContent,
+          component: updatedMessage.component,
+          skipTyping: updatedMessage.skipTyping,
         } : msg
       )
     );

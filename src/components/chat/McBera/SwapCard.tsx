@@ -1,29 +1,133 @@
+import React from "react";
 import { bera } from "@/configs/tokens/bera";
 import SwapModal from "@/sections/swap/SwapModal";
+import useSwapStore from "../stores/useSwapStores";
+import { useChatContext, Message } from "../context/chat-context";
+import { createNewChat } from "../utils/chat-service";
+import { RichMessageContent } from "../utils/chat-stream-handler";
 
-const SwapCard = ({
-    defaultInputCurrency,
-    defaultOutputCurrency,
-    show,
-    setShow
-}: {
-    defaultInputCurrency: any;
-    defaultOutputCurrency: any;
-    show: boolean;
-    setShow: (show: boolean) => void;
-}) => {
-    return (
-        <SwapModal
-          defaultInputCurrency={bera[defaultInputCurrency?.symbol?.toLowerCase()] || defaultInputCurrency}
-          defaultOutputCurrency={bera[defaultOutputCurrency?.symbol?.toLowerCase()] || defaultOutputCurrency}
-        //   outputCurrencyReadonly={true}
-          show={!!show}
-          onClose={() => {
-            setShow(false);
-          }}
-          from="marketplace"
-        />
-    )
+interface SwapCardProps {
+  content?: string;
+  richContent?: RichMessageContent;
 }
+
+const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
+  const { 
+    isSwapModalOpen, 
+    closeSwapModal, 
+    openSwapModal,
+    defaultInputCurrency, 
+    defaultOutputCurrency 
+  } = useSwapStore();
+
+  const { 
+    addMessage, 
+    updateMessage, 
+    sessionId, 
+    setSessionId, 
+    addChatHistory,
+  } = useChatContext();
+
+  const handleActionClick = async (actionType: string, params?: any) => {
+    console.log(`Action button clicked: ${actionType}`, params);
+    if (actionType === 'chat') {
+      try {
+        const userMessage = params.label;
+        
+        const newUserMessage: Message = {
+          id: Date.now().toString(),
+          sender: "user",
+          content: userMessage,
+        };
+        addMessage(newUserMessage);
+        
+        const assistantMessageId = (Date.now() + 1).toString();
+        const emptyAssistantMessage: Message = {
+          id: assistantMessageId,
+          sender: "assistant",
+          senderName: "McBera",
+          content: "",
+        };
+        addMessage(emptyAssistantMessage);
+        
+        await createNewChat(userMessage, {
+          updateMessage: (updatedMessage: Message) => {
+            if (updatedMessage.sender === "assistant") {
+              updateMessage(updatedMessage);
+            }
+          },
+          addChatHistory,
+          setSessionId,
+          getSessionId: () => sessionId 
+        });
+      } catch (error) {
+        console.error("Chat action error:", error);
+        addMessage({
+          id: Date.now().toString(),
+          sender: "assistant",
+          senderName: "McBera",
+          content: "Sorry, I can't assist with that."
+        });
+      }
+    }
+  };
+
+  const renderContent = () => {
+    if (!content) return null;
+    
+    const boldRegex = /\*\*([^*]+)\*\*/;
+    const match = content.match(boldRegex);
+
+    if (match) {
+      const symbolName = match[1]; 
+      const parts = content.split(boldRegex);
+      
+      return (
+        <div className="markdown-content">
+          {parts[0]}
+          <span 
+            className="font-bold cursor-pointer text-[#471C1C] underline" 
+            onClick={openSwapModal}
+          >
+            {symbolName}
+          </span>
+          {parts[2]}
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  return (
+    <>
+      {renderContent()}
+      
+      {richContent?.actions && richContent.actions.length > 0 && (
+        <div className="mt-[14px] flex flex-col items-start gap-2">
+          {richContent.actions.map((action, index) => (
+            <button
+              key={index}
+              className="w-auto max-w-full px-2 py-1 border border-[#DAD9CD] hover:bg-[#DAD9CD]/30 text-[#999999] hover:text-[#471C1C] rounded-[18px] text-[13px] font-Montserrat"
+              onClick={() => handleActionClick(action.type, action)}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      )}
+      
+      <SwapModal
+        defaultInputCurrency={bera[defaultInputCurrency?.symbol?.toLowerCase()] || defaultInputCurrency}
+        defaultOutputCurrency={bera[defaultOutputCurrency?.symbol?.toLowerCase()] || defaultOutputCurrency}
+        show={!!isSwapModalOpen}
+        onClose={() => {
+          closeSwapModal();
+        }}
+        from="marketplace"
+      />
+    </>
+  );
+};
     
 export default SwapCard;

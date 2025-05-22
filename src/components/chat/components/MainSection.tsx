@@ -1,33 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import IconSend from "@public/images/chat/send.svg";
-import IconCheckPosition from "@public/images/chat/check-position.svg";
-import IconWallet from "@public/images/chat/wallet.svg";
-import IconTopVault from "@public/images/chat/top-vault.svg";
 import InterestItem from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
 import { useChatContext } from "../context/chat-context";
 
-const optionItems = [
-  {
-    id: "positions",
-    icon: <IconCheckPosition />,
-    text: "Check my positions",
-  },
-  {
-    id: "wallet",
-    icon: <IconWallet />,
-    text: "Check my wallet assets",
-  },
-  {
-    id: "vault",
-    icon: <IconTopVault />,
-    text: "Top vault via my assets",
-  },
-];
-
 export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
-  const [selectedOption, setSelectedOption] = useState("positions");
+  const [selectedOption, setSelectedOption] = useState<any>();
 
   const { sendChatMessage, vaults } = useChatContext();
 
@@ -38,7 +17,7 @@ export default function MainSection() {
   const handleOptionClick = async (option: any) => {
     setSelectedOption(option);
     console.log("Selected option:", option);
-    const userMessage = option.text;
+    const userMessage = option.content;
     setInputValue("");
     await sendChatMessage(userMessage); 
   };
@@ -78,7 +57,8 @@ export default function MainSection() {
         </div>
 
         <QuickOptionTabs
-          options={optionItems}
+          options={vaults.recommendChat}
+          loading={vaults.recommendChatLoading}
           selectedOption={selectedOption}
           onOptionClick={handleOptionClick}
           className="mt-4"
