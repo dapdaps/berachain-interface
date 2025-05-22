@@ -1,4 +1,6 @@
 import clsx from "clsx";
+import { useVaultAction } from '@/components/chat/hooks/useVaultAction';
+import { numberFormatter } from '@/utils/number-formatter';
 
 const TYPES = {
   vaults: {
@@ -15,50 +17,66 @@ const TYPES = {
   }
 };
 
-export default function InvestCard({
-  className,
-  type
-}: {
+export default function InvestCard(props: {
   className?: string;
   type: keyof typeof TYPES;
+  parsedContent: any;
 }) {
+  const {
+    className,
+    type
+  } = props;
+
   const config = TYPES[type];
+  const { vaultsList, handleOpen } = useVaultAction(props);
 
   return (
-    <div
-      className={clsx(
-        "flex items-center h-[62px] rounded-[10px] border border-[#D6D1CC]",
-        className
-      )}
-    >
-      <div className="flex grow relative pl-[35px] pr-[12px] justify-between items-center text-[#392C1D">
-        <div
-          className={clsx(
-            "rotate-[90deg] absolute top-[9px] left-[-18px] rounded-b-[10px] w-[60px] h-[25px] flex items-center justify-center",
-            config.bg
-          )}
-        >
-          <span className="text-[12px] font-semibold text-white">
-            {config.label}
-          </span>
-        </div>
-        <div>
-          <div className="font-bold text-[14px]">WBERA-HENLO</div>
-          <div className="text-[12px] font-medium flex items-center gap-[6px] mt-[4px]">
-            <RewardIcon />
-            <span>BDT</span>
+    <div className="mt-[10px] w-full min-w-[554px] flex flex-col gap-[8px]">
+      {
+        vaultsList?.map((vault: any, idx: number) => (
+          <div
+            key={idx}
+            className={clsx(
+              "flex items-center h-[62px] rounded-[10px] border border-[#D6D1CC] cursor-pointer",
+              className
+            )}
+            onClick={() => handleOpen(vault)}
+          >
+            <div className="flex grow relative pl-[35px] pr-[12px] justify-between items-center text-[#392C1D">
+              <div
+                className={clsx(
+                  "rotate-[90deg] absolute top-1/2 -translate-y-1/2 left-[-18px] rounded-b-[10px] w-[60px] h-[25px] flex items-center justify-center shrink-0",
+                  config.bg
+                )}
+              >
+                <span className="text-[12px] font-semibold text-white">
+                  {config.label}
+                </span>
+              </div>
+              <div className="flex-1 w-0 overflow-hidden">
+                <div className="font-bold text-[14px]">
+                  {vault.tokens.map((token: any) => token.symbol).join("-")}
+                </div>
+                <div className="text-[12px] font-medium flex items-center gap-[6px] mt-[4px]">
+                  <RewardIcon />
+                  <span>{vault.reward_tokens.map((token: any) => token.symbol).join("/")}</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-end shrink-0">
+                <span className="font-bold text-[14px]">
+                  {numberFormatter(vault.user_stake?.usd, 2, true, { prefix: "$", isShort: true, isZeroPrecision: true, isShortUppercase: true })}
+                </span>
+                <span className="text-[12px] font-medium mt-[4px]">
+                  +{numberFormatter(vault.total_user_reward_usd, 2, true, { prefix: "$", isShort: true, isZeroPrecision: true, isShortUppercase: true })}
+                </span>
+              </div>
+            </div>
+            <button className="flex justify-center items-center w-[44px] h-[62px] border-l border-[#D6D1CC] shrink-0">
+              <IconArrowRightIcon />
+            </button>
           </div>
-        </div>
-        <div className="flex flex-col items-end">
-          <span className="font-bold text-[14px]">$1967.35</span>
-          <span className="text-[12px] font-medium mt-[4px]">
-            +3.52 ($18.35)
-          </span>
-        </div>
-      </div>
-      <button className="flex justify-center items-center w-[44px] h-[62px] border-l border-[#D6D1CC]">
-        <IconArrowRightIcon />
-      </button>
+        ))
+      }
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Message } from "../context/chat-context";
+import { handleHotTokensOutput } from "../handler/hot-tokens";
 import { handleSwapOutput } from "../handler/swap";
 import { ChatCallbacks } from "./chat-stream-handler";
 import { handleVaultsOutput } from "@/components/chat/handler/vaults";
@@ -29,15 +30,17 @@ export const handleFunctionOutput = (
       handleSwapOutput(parsedContent, assistantMessage, callbacks);
       break;
     case "getHotTokens":
+      handleHotTokensOutput(parsedContent, assistantMessage, callbacks);
       break;
     case "getInterestVaults":
       break;
     case "getVaultsPositions":
+      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
     case "getWalletAssets":
       break;
     case "filterVaults":
-      handleVaultsOutput(parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
   }
 };
