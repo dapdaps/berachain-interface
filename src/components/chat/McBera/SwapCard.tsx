@@ -5,6 +5,7 @@ import useSwapStore from "../stores/useSwapStores";
 import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat } from "../utils/chat-service";
 import { RichMessageContent } from "../utils/chat-stream-handler";
+import { useTypewriter } from "../hooks/useTypewriter";
 
 interface SwapCardProps {
   content?: string;
@@ -77,10 +78,23 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
     
     const boldRegex = /\*\*([^*]+)\*\*/;
     const match = content.match(boldRegex);
-
+    
     if (match) {
-      const symbolName = match[1]; 
+      const symbolName = match[1];
       const parts = content.split(boldRegex);
+      
+      const { typedContent, isTyping } = useTypewriter(content, { 
+        interval: 40, 
+        step: [1, 3] 
+      });
+      
+      if (isTyping) {
+        return (
+          <div className="markdown-content">
+            {typedContent}
+          </div>
+        );
+      } 
       
       return (
         <div className="markdown-content">
