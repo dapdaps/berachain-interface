@@ -79,6 +79,7 @@ const Sidebar = () => {
   const handleNewChat = () => {
     setChatMode('initial');
     setCurrentChatId(null);
+    setActiveChat(null); // 重置activeChat状态，确保没有历史记录被选中
     setShowPopover(false);
   };
   

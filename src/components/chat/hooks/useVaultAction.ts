@@ -44,11 +44,12 @@ export const useVaultAction = (props: any) => {
     });
   }, [parsedContent, vaultsList]);
 
-  const handleOpen = (vault: any) => {
+  const handleOpen = (vault: any, defaultProtocol?: any) => {
     toggleActionVisible({
       type: ACTION_TYPE.DEPOSIT,
       record: vault,
-      visible: true
+      visible: true,
+      defaultProtocol
     });
   };
 
