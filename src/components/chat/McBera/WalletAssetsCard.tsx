@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import LazyImage from '@/components/layz-image';
 import { numberFormatter } from '@/utils/number-formatter';
 import clsx from 'clsx';
@@ -8,9 +8,16 @@ import ReactMarkdown from 'react-markdown';
 import { useTypewriter } from '@/components/chat/hooks/useTypewriter';
 import { motion } from 'framer-motion';
 import { motionStaggerChildren, motionStaggerParent } from '@/components/chat/utils/motion-stagger-children';
+import { useThrottleFn } from 'ahooks';
+import { bera } from '@/configs/tokens/bera';
+import SwapModal from '@/sections/swap/SwapModal';
 
 const WalletAssetsCard = (props: any) => {
   const { parsedContent } = props;
+
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState<boolean>(false);
+  const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>();
+  const [defaultOutputCurrency, setDefaultOutputCurrency] = useState<any>();
 
   const totalAssetsUsd = useMemo(() => {
     return parsedContent?.reduce((prev: any, curr: any) => {
@@ -28,6 +35,18 @@ const WalletAssetsCard = (props: any) => {
     step: [1, 3],
     initialIndex: 0,
   });
+
+  const { run: handleSwap } = useThrottleFn((asset: any) => {
+    if (asset.symbol === 'BERA') {
+      setDefaultInputCurrency(bera["honey"]);
+      setDefaultOutputCurrency(bera["bera"]);
+      setIsSwapModalOpen(true);
+      return;
+    }
+    setDefaultInputCurrency(bera["bera"]);
+    setDefaultOutputCurrency(asset);
+    setIsSwapModalOpen(true);
+  }, { wait: 1000 });
 
   return (
     <div className="w-full min-w-[554px]">
@@ -63,11 +82,33 @@ const WalletAssetsCard = (props: any) => {
                 <div className="text-[#392C1D] font-[700] flex items-center">
                   {numberFormatter(asset.amount, 2, true, { isShort: true, isZeroPrecision: true, isShortUppercase: true })}({numberFormatter(asset.usd, 2, true, { prefix: "$", isShort: true, isZeroPrecision: true, isShortUppercase: true })})
                 </div>
+                <button
+                  type="button"
+                  className="px-[9px] h-[22px] shrink-0 rounded-[6px] border border-black bg-[#FFF5A9] shadow-[2px_2px_0px_0px_#000] text-[#392C1D] font-montserrat text-[14px] font-medium leading-[100%]"
+                  onClick={() => handleSwap(asset)}
+                >
+                  Swap
+                </button>
               </div>
             </motion.div>
           ))
         }
       </motion.div>
+      <SwapModal
+        defaultInputCurrency={
+          bera[defaultInputCurrency?.symbol?.toLowerCase()] ||
+          defaultInputCurrency
+        }
+        defaultOutputCurrency={
+          bera[defaultOutputCurrency?.symbol?.toLowerCase()] ||
+          defaultOutputCurrency
+        }
+        show={isSwapModalOpen}
+        onClose={() => {
+          setIsSwapModalOpen(false);
+        }}
+        from="ai-chat"
+      />
     </div>
   );
 };
