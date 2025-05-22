@@ -55,7 +55,7 @@ const HotTokensCard = ({ parsedContent }: any) => {
         onClose={() => {
           closeSwapModal();
         }}
-        from="marketplace"
+        from="ai-chat"
       />
     </div>
   );

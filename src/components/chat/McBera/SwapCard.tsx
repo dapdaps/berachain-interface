@@ -138,7 +138,7 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
         onClose={() => {
           closeSwapModal();
         }}
-        from="marketplace"
+        from="ai-chat"
       />
     </>
   );
