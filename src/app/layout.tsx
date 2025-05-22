@@ -10,7 +10,7 @@ import MobileLayout from "@/layouts/mobile";
 import { useTapSoundStore } from "@/stores/tap-sound";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import Script from 'next/script';
-import React, { Suspense, useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
@@ -20,6 +20,8 @@ import "@radix-ui/themes/styles.css"
 import "@near-wallet-selector/modal-ui/styles.css"
 import "@near-wallet-selector/account-export/styles.css"
 import PointMasker from "@/components/point-masker";
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 
 
 
@@ -29,6 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+
+  const isChatHome = useMemo(() => {
+    return !isMobile && pathname === "/";
+  }, [pathname, isMobile]);
 
   const tapRef = useRef<any>(null);
   const tapSound = useTapSoundStore();
@@ -42,7 +49,10 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en" className="md:overflow-hidden">
+    <html
+      lang="en"
+      className="md:overflow-hidden"
+    >
       <head>
         <title>BeraTown</title>
         <meta
@@ -52,7 +62,9 @@ export default function RootLayout({
         <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/images/favicon.ico" />
       </head>
-      <body className="md:overflow-hidden">
+      <body
+        className={clsx("md:overflow-hidden", isChatHome && "overflow-hidden")}
+      >
         <WagmiProvider>
             <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
               <SceneContextProvider>

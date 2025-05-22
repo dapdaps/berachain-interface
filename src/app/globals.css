@@ -120,7 +120,6 @@ body::-webkit-scrollbar,
 div::-webkit-scrollbar {
   width: 6px;
   height: 6px;
-  /**/
 }
 body::-webkit-scrollbar-track,
 div::-webkit-scrollbar-track {
