@@ -2,7 +2,6 @@ import React from 'react';
 import SwapCard from '@/components/chat/McBera/SwapCard';
 
 import { Message } from "../context/chat-context";
-import useSwapStore from "../stores/useSwapStores";
 import {
   ChatCallbacks,
   RichMessageContent,
@@ -55,20 +54,10 @@ export const handleSwapOutput = (
     content: messageText,
     richContent: richContent,
     skipTyping: true,
-    component: <SwapCard content={messageText} richContent={richContent} />,
+    component: <SwapCard parsedContent={parsedContent} content={messageText} richContent={richContent} />,
   };
 
   if (callbacks?.updateMessage) {
     callbacks.updateMessage(updatedMessage);
-  }
-
-  const swapStore = useSwapStore.getState();
-
-  if (parsedContent && parsedContent.output_token) {
-    swapStore?.setDefaultOutputCurrency?.(parsedContent.output_token);
-  } 
-  
-  if (parsedContent && parsedContent.input_token) {
-    swapStore?.setDefaultInputCurrency?.(parsedContent.input_token);
   }
 };
