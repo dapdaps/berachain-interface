@@ -8,11 +8,12 @@ import { RichMessageContent } from "../utils/chat-stream-handler";
 import { useTypewriter } from "../hooks/useTypewriter";
 
 interface SwapCardProps {
+  parsedContent: any
   content?: string;
   richContent?: RichMessageContent;
 }
 
-const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
+const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent }) => {
   const {
     isSwapModalOpen,
     closeSwapModal,
@@ -22,6 +23,16 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
     setDefaultInputCurrency,
     setDefaultOutputCurrency,
   } = useSwapStore();
+
+  useEffect(() => {
+    if (parsedContent && parsedContent.output_token) {
+      setDefaultOutputCurrency?.(parsedContent.output_token);
+    } 
+    
+    if (parsedContent && parsedContent.input_token) {
+      setDefaultInputCurrency?.(parsedContent.input_token);
+    }
+  }, [parsedContent, setDefaultInputCurrency, setDefaultOutputCurrency]);
 
   const { addMessage, updateMessage, sessionId, setSessionId, addChatHistory } =
     useChatContext();
@@ -131,7 +142,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ content, richContent }) => {
       setDefaultOutputCurrency(null);
     };
   }, [closeSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency]);
-
 
   return (
     <>
