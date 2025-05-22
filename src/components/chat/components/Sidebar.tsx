@@ -34,7 +34,8 @@ const Sidebar = () => {
     setCurrentChatId, 
     updateMessages,
     setSessionId,
-    setChatHistories
+    setChatHistories,
+    chatHistories 
   } = useChatContext();
 
   useEffect(() => {
@@ -79,6 +80,12 @@ const Sidebar = () => {
 
     loadChatHistories();
   }, [address, setChatHistories]);
+  
+  useEffect(() => {
+    if (chatHistories && chatHistories.length > 0) {
+      setLocalChatHistories(chatHistories);
+    }
+  }, [chatHistories]);
   
   const handleNewChat = () => {
     setChatMode('initial');
