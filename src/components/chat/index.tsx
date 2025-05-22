@@ -8,6 +8,8 @@ import VaultsV2ContextProvider, { useVaultsV2Context } from '@/sections/vaults/v
 import { useVaultsV2 } from '@/sections/vaults/v2/hooks';
 import ActionModal from '@/sections/vaults/v2/components/action/modal';
 import { useList } from '@/sections/vaults/v2/hooks/list';
+import ClaimModal from '@/sections/vaults/v2/components/claim/modal';
+import ClaimSuccessModal from '@/sections/vaults/v2/components/claim/success';
 
 const ChatLayoutContent: React.FC = () => {
   const { chatMode } = useChatContext();
@@ -42,6 +44,8 @@ export const ChatLayout: React.FC = () => {
       >
         <ChatLayoutContent />
         <ActionModal />
+        <ClaimModal />
+        <ClaimSuccessModal />
       </VaultsV2ContextProvider>
     </ChatProvider>
   );

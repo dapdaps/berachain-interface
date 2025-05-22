@@ -1,6 +1,13 @@
 import clsx from "clsx";
 import { useVaultAction } from '@/components/chat/hooks/useVaultAction';
 import { numberFormatter } from '@/utils/number-formatter';
+import { Message, useChatContext } from '@/components/chat/context/chat-context';
+import { useThrottleFn } from 'ahooks';
+import { v4 as uuidv4 } from 'uuid';
+import { createNewChat } from '@/components/chat/utils/chat-service';
+import { usePriceStore } from '@/stores/usePriceStore';
+import { useMemo } from 'react';
+import Big from 'big.js';
 
 const TYPES = {
   vaults: {
@@ -29,6 +36,43 @@ export default function InvestCard(props: {
 
   const config = TYPES[type];
   const { vaultsList, handleOpen } = useVaultAction(props);
+  const { addMessage, updateMessage, addChatHistory, setSessionId, sessionId } = useChatContext();
+
+  const { run: handleMessage } = useThrottleFn(async (chatMsg: string) => {
+    addMessage({
+      id: uuidv4(),
+      sender: "user",
+      content: chatMsg,
+    });
+    const assistantMessageId = uuidv4();
+    const emptyAssistantMessage: Message = {
+      id: assistantMessageId,
+      sender: "assistant",
+      senderName: "McBera",
+      content: "",
+    };
+    addMessage(emptyAssistantMessage);
+    try {
+      await createNewChat(chatMsg, {
+        updateMessage: (updatedMessage: Message) => {
+          if (updatedMessage.sender === "assistant") {
+            updateMessage(updatedMessage);
+          }
+        },
+        addChatHistory,
+        setSessionId,
+        getSessionId: () => sessionId
+      });
+    } catch (err: any) {
+      console.log('%s err: %o', chatMsg, err);
+      addMessage({
+        id: uuidv4(),
+        sender: "assistant",
+        senderName: "McBera",
+        content: "Sorry, I can't assist with that."
+      });
+    }
+  }, { wait: 1000 });
 
   return (
     <div className="mt-[10px] w-full min-w-[554px] flex flex-col gap-[8px]">
@@ -77,6 +121,34 @@ export default function InvestCard(props: {
           </div>
         ))
       }
+      <div className="mt-[10px]">
+        <ChatButton
+          icon="/images/home-earth/mc-bera/icon-gift.svg"
+          onClick={() => {
+            handleMessage("Check & claim my rewards");
+          }}
+        >
+          Check & claim my rewards
+        </ChatButton>
+        <ChatButton
+          className="mt-[8px]"
+          icon="/images/home-earth/mc-bera/icon-wallet.svg"
+          onClick={() => {
+            handleMessage("Check my wallet assets");
+          }}
+        >
+          Check my wallet assets
+        </ChatButton>
+        <ChatButton
+          className="mt-[8px]"
+          icon="/images/home-earth/mc-bera/icon-asset.svg"
+          onClick={() => {
+            handleMessage("Top vault via my assets");
+          }}
+        >
+          Top vault via my assets
+        </ChatButton>
+      </div>
     </div>
   );
 }
@@ -115,5 +187,26 @@ const RewardIcon = () => {
         fill="#392C1D"
       />
     </svg>
+  );
+};
+
+export const ChatButton = (props: any) => {
+  const { children, className, icon, ...rest } = props;
+
+  return (
+    <button
+      type="button"
+      className={clsx("flex items-center justify-center transition-all duration-150 hover:bg-[rgba(218,217,205,0.30)] hover:text-[#471C1C] gap-[8px] h-[32px] rounded-[10px] border border-[#DAD9CD] px-[8px] text-[#999] font-montserrat text-[13px] font-medium leading-[120%] shrink-0", className)}
+      {...rest}
+    >
+      {
+        icon && (
+          <img src={icon} alt="" className="shrink-0 w-[18px] h-[18px] object-center object-contain" />
+        )
+      }
+      <div className="flex-1">
+        {children}
+      </div>
+    </button>
   );
 };
