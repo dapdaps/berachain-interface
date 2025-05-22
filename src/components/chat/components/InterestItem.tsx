@@ -4,6 +4,8 @@ import { numberFormatter } from '@/utils/number-formatter';
 import { useChatContext } from '@/components/chat/context/chat-context';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { ACTION_TYPE } from '@/sections/vaults/v2/config';
+import { motion } from 'framer-motion';
+import { motionStaggerChildren } from '@/components/chat/utils/motion-stagger-children';
 
 const InterestItem: React.FC<any> = ({ item, onClick }) => {
   const { tokens, totalApr } = item;
@@ -26,8 +28,9 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
   };
 
   return (
-    <div
+    <motion.div
       className="flex justify-between items-center cursor-pointer font-Montserrat p-[6px] h-[38px] border border-[#DAD9CD] rounded-lg"
+      {...motionStaggerChildren}
       onClick={handleClick}
     >
       <div className="flex items-center gap-[14px]">
@@ -42,7 +45,7 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
           </span>
       </div>
       <IconArrow />
-    </div>
+    </motion.div>
   );
 };
 
