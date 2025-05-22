@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import { useDebounceFn } from 'ahooks';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 const ChatLayout = dynamic(() => import('@/components/chat').then(mod => mod.ChatLayout || mod), { ssr: false });
@@ -10,6 +10,7 @@ const ChatLayout = dynamic(() => import('@/components/chat').then(mod => mod.Cha
 const McBera = (props: any) => {
   const { className } = props;
 
+  const computerContainerRef = useRef<any>();
   const [screenVisible, setScreenVisible] = useState(false);
 
   const { scrollY, scrollYProgress } = useScroll();
@@ -37,6 +38,32 @@ const McBera = (props: any) => {
   const { run: onScreenVisible, cancel: onScreenVisibleCancel } = useDebounceFn((_scrollYProgress: number) => {
     setScreenVisible(_scrollYProgress >= 0.98);
   }, { wait: 150 });
+
+  const handleComputerContainerClick = (e: any) => {
+    // table height: 358px
+    // left window width: 212px
+    // right window width: 212px
+    if (computerContainerRef.current.contains(e.target)) {
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = rect.bottom - e.clientY;
+
+    const isBottomArea = y <= 358;
+    const isLeftArea = x <= 212;
+    const isRightArea = rect.width - x <= 212;
+
+    if (isBottomArea || isLeftArea || isRightArea) {
+      return;
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.98) {
@@ -94,9 +121,9 @@ const McBera = (props: any) => {
         <div className="absolute z-[2] right-0 bottom-[318px] w-[212px] h-[845px] bg-[url('/images/home-earth/mc-bera/bg-window-right.png')] bg-no-repeat bg-left bg-contain"/>
         <div className="absolute z-[1] left-0 bottom-0 flex items-end justify-center w-[100%] h-[358px] bg-[url('/images/home-earth/mc-bera/bg-table.png')] bg-no-repeat bg-top bg-[length:100%_358px]">
         </div>
-        <div className="relative z-[3] flex items-end justify-center w-full h-full">
+        <div onClick={handleComputerContainerClick} className="relative z-[3] flex items-end justify-center w-full h-full">
           <div className="relative z-[1] w-[281px] h-[204px] shrink-0 translate-x-[70px] translate-y-[-40px] bg-[url('/images/home-earth/mc-bera/bg-books.png')] bg-no-repeat bg-bottom bg-contain" />
-          <div className="relative z-[2] w-[1036px] h-[780px] shrink-0 p-[20px_20px_124px] overflow-hidden bg-[url('/images/home-earth/mc-bera/bg-computer.png')] bg-no-repeat bg-bottom bg-contain">
+          <div ref={computerContainerRef} className="relative z-[2] w-[1036px] h-[780px] shrink-0 p-[20px_20px_124px] overflow-hidden bg-[url('/images/home-earth/mc-bera/bg-computer.png')] bg-no-repeat bg-bottom bg-contain">
             <AnimatePresence mode="wait">
               {
                 screenVisible && (
