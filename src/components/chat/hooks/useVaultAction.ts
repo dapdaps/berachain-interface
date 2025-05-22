@@ -29,6 +29,21 @@ export const useVaultAction = (props: any) => {
     return _vaultsList;
   }, [parsedContent, listDataGroupByPoolAll, prices]);
 
+  const vaultsShowList = useMemo(() => {
+    return parsedContent?.map((item: any) => {
+      const _groupVault = vaultsList.find((_item: any) => _item.list?.some((_vault: any) => _vault.backendId === item.id));
+      let _totalApr = Big(0);
+      for (const key in item.apr) {
+        _totalApr = Big(_totalApr).plus(item.apr[key] || 0);
+      }
+      return {
+        ...item,
+        totalApr: _totalApr,
+        groupVault: _groupVault,
+      };
+    });
+  }, [parsedContent, vaultsList]);
+
   const handleOpen = (vault: any) => {
     toggleActionVisible({
       type: ACTION_TYPE.DEPOSIT,
@@ -40,5 +55,6 @@ export const useVaultAction = (props: any) => {
   return {
     vaultsList,
     handleOpen,
+    vaultsShowList,
   };
 }

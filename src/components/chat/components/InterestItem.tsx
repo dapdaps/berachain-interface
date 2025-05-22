@@ -5,16 +5,20 @@ import { useChatContext } from '@/components/chat/context/chat-context';
 import { useVaultsV2Context } from '@/sections/vaults/v2/context';
 import { ACTION_TYPE } from '@/sections/vaults/v2/config';
 
-const InterestItem: React.FC<any> = ({ item }) => {
-  const { tokens, totalApy } = item;
+const InterestItem: React.FC<any> = ({ item, onClick }) => {
+  const { tokens, totalApr } = item;
 
   const { vaults } = useChatContext();
   const { toggleActionVisible } = useVaultsV2Context();
 
   const handleClick = () => {
+    if (typeof onClick === "function") {
+      onClick?.();
+      return;
+    }
     toggleActionVisible({
       type: ACTION_TYPE.DEPOSIT,
-      record: item,
+      record: item.groupVault,
       visible: true
     });
   };
@@ -32,7 +36,7 @@ const InterestItem: React.FC<any> = ({ item }) => {
             Vaults
           </span>
         <span className="text-[13px] leading-[13px] text-[rgba(0,0,0,0.5)]">
-            Join <strong>{tokens?.map((token: any) => token.symbol).join("-")}</strong> vaults, earning APY up to <strong>{numberFormatter(totalApy?.[1], 2, true, { isShort: true, isShortUppercase: true })}%</strong>
+            Join <strong>{tokens?.map((token: any) => token.symbol).join("-")}</strong> vaults, earning APY up to <strong>{numberFormatter(totalApr, 2, true, { isShort: true, isShortUppercase: true })}%</strong>
           </span>
       </div>
       <IconArrow />
