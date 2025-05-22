@@ -163,7 +163,7 @@ export default function ChatInterface() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col items-start w-full">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-[26px] h-[26px] flex-shrink-0 aspect-square flex items-center justify-center">
                       <img
@@ -178,7 +178,7 @@ export default function ChatInterface() {
                       </span>
                     )}
                   </div>
-                  <div className="text-black text-sm leading-tight font-medium font-Montserrat">
+                  <div className="text-black text-sm leading-tight font-medium font-Montserrat w-full">
                     {message.sender === "assistant" && message.content === "" ? (
                       <div className="text-gray-500">Thinking...</div>
                     ) : message.sender === "assistant" && message.content ? (
