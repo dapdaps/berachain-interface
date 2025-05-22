@@ -38,6 +38,7 @@ export const handleFunctionOutput = (
       handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
     case "getWalletAssets":
+      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
     case "filterVaults":
       handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
