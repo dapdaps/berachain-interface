@@ -154,7 +154,7 @@ export const handleSSEMessage = (
   abortController?: AbortController,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
   serverSessionIdRef?: { current?: string }
-): string | undefined => {  // 修改返回类型，允许返回更新后的 fullResponse
+) => {  
   if (event === "meta") {
     try {
       const metaData = JSON.parse(data);
@@ -268,7 +268,19 @@ const handleCompletionEvent = (
         return updatedResponse; 
       } else if (jsonData.type === "Action" && jsonData.function) {
         console.log("Action --- model jsonData:", jsonData);
-        handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks);
+        if (jsonData.text === '') {
+          const errorMessage = "Sorry, no results found. Please try asking a different question.";
+          assistantMessage.content = errorMessage;
+          
+          if (callbacks?.updateMessage) {
+            callbacks.updateMessage({
+              ...assistantMessage,
+              content: errorMessage,
+            });
+          }
+        } else {
+          handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks);
+        }
       }
     } catch (e) {
       console.error("Failed to parse SSE data:", e, data);
