@@ -33,11 +33,12 @@ export const handleFunctionOutput = (
     case "getInterestVaults":
       break;
     case "getVaultsPositions":
+      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
     case "getWalletAssets":
       break;
     case "filterVaults":
-      handleVaultsOutput(parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
       break;
   }
 };
