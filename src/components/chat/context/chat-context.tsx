@@ -1,8 +1,9 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { createNewChat } from '../utils/chat-service';
+import { createNewChat, fetchChatHistoryList } from '../utils/chat-service';
 import { RichMessageContent } from "../utils/chat-stream-handler";
 import { useVaults, Vaults } from '@/components/chat/hooks/useVaults';
 import { List } from '@/sections/vaults/v2/hooks/list';
+import { useAccount } from 'wagmi';
 
 type ChatMode = 'initial' | 'chat';
 
@@ -55,7 +56,7 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const vaults = useVaults({ vaultsList });
   const [isFromHistory, setIsFromHistory] = useState<boolean>(false);
-
+  const { address } = useAccount();
 
   const startNewChat = (userMessage: string) => {
     const userMessageObj: Message = {
@@ -86,10 +87,18 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   };
   
   const addChatHistory = (history: ChatHistory) => {
-    if (sessionId) {
-      history.session_id = sessionId;
-    }
-    setChatHistories(prev => [history, ...prev]);
+      fetchChatHistoryList(address)
+        .then(response => {
+          if (response && response.data && response.data.length > 0) {
+            const sortedHistories = [...response.data].sort((a, b) => {
+              return b.timestamp - a.timestamp;
+            });
+            setChatHistories(sortedHistories);
+          }
+        })
+        .catch(error => {
+          console.error("Silent history refresh failed:", error);
+        });
   };
   
   const updateMessages = (newMessages: Message[]) => {
