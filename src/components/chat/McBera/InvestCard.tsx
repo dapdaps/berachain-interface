@@ -33,7 +33,7 @@ export default function InvestCard(props: {
   } = props;
 
   const config = TYPES[type];
-  const { vaultsList, handleOpen } = useVaultAction(props);
+  const { vaultsList, vaultsShowList, handleOpen } = useVaultAction(props);
   const { addMessage, updateMessage, addChatHistory, setSessionId, sessionId } = useChatContext();
 
   const { run: handleMessage } = useThrottleFn(async (chatMsg: string) => {
@@ -78,14 +78,17 @@ export default function InvestCard(props: {
       {...motionStaggerParent(0.1)}
     >
       {
-        vaultsList?.map((vault: any, idx: number) => (
+        vaultsShowList?.map((vault: any, idx: number) => (
           <motion.div
             key={idx}
             className={clsx(
               "flex items-center h-[62px] rounded-[10px] border border-[#D6D1CC] cursor-pointer",
               className
             )}
-            onClick={() => handleOpen(vault)}
+            onClick={() => {
+              const _defaultProtocol = vault.groupVault.list?.find((it: any) => it.backendId === vault.id);
+              handleOpen(vault.groupVault, _defaultProtocol);
+            }}
             {...motionStaggerChildren}
           >
             <div className="flex grow relative pl-[35px] pr-[12px] justify-between items-center text-[#392C1D">
