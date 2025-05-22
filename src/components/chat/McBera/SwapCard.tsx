@@ -34,7 +34,7 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     }
   }, [parsedContent, setDefaultInputCurrency, setDefaultOutputCurrency]);
 
-  const { addMessage, updateMessage, sessionId, setSessionId, addChatHistory } =
+  const { addMessage, updateMessage, sessionId, setSessionId, addChatHistory, isFromHistory } =
     useChatContext();
 
   const [contentFinished, setContentFinished] = useState(false);
@@ -96,6 +96,25 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     if (match) {
       const symbolName = match[1];
       const parts = content.split(boldRegex);
+
+      if (isFromHistory) {
+        useEffect(() => {
+          setContentFinished(true);
+        }, []);
+        
+        return (
+          <div className="markdown-content">
+            {parts[0]}
+            <span
+              className="font-bold cursor-pointer text-[#471C1C] underline"
+              onClick={openSwapModal}
+            >
+              {symbolName}
+            </span>
+            {parts[2]}
+          </div>
+        );
+      }
 
       const { typedContent, isTyping } = useTypewriter(content, {
         interval: 40,

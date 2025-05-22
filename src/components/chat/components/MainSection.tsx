@@ -8,7 +8,7 @@ export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
   const [selectedOption, setSelectedOption] = useState<any>();
 
-  const { sendChatMessage, vaults } = useChatContext();
+  const { sendChatMessage, vaults, setIsFromHistory } = useChatContext();
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -20,6 +20,7 @@ export default function MainSection() {
     const userMessage = option.content;
     setInputValue("");
     await sendChatMessage(userMessage); 
+    setIsFromHistory(false);
   };
 
   const handleSubmit = async () => {
@@ -27,6 +28,7 @@ export default function MainSection() {
       const userMessage = inputValue;
       setInputValue("");
       await sendChatMessage(userMessage); 
+      setIsFromHistory(false);
     }
   };
 
