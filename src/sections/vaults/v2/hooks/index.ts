@@ -35,8 +35,9 @@ export function useVaultsV2(): VaultsV2 {
     visible?: boolean;
     type?: ACTION_TYPE;
     record?: any;
+    defaultProtocol?: any;
   }) => {
-    const { visible: _actionVisible, type: _actionType, record } = params ?? {};
+    const { visible: _actionVisible, type: _actionType, record, defaultProtocol } = params ?? {};
 
     if (_actionVisible) {
       handleReportWithoutDebounce("1022-001-009", record.pool_address);
@@ -49,7 +50,10 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
-    const maxApyRecord = maxBy(record?.list ?? [], (item: any) => item.totalApy.toNumber());
+    let maxApyRecord = maxBy(record?.list ?? [], (item: any) => item.totalApy.toNumber());
+    if (defaultProtocol) {
+      maxApyRecord = defaultProtocol;
+    }
     setCurrentProtocol(_actionVisible && record ? maxApyRecord : null);
   };
 
@@ -148,6 +152,7 @@ export interface VaultsV2 {
     visible?: boolean;
     type?: ACTION_TYPE;
     record?: any;
+    defaultProtocol?: any;
   }) => void;
   claimVisible: boolean;
   toggleClaimVisible: (claimVisible?: boolean, reward?: any) => void;

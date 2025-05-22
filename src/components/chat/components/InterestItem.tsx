@@ -16,10 +16,12 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
       onClick?.();
       return;
     }
+    const currentProtocol = item.groupVault.list.find((it: any) => it.backendId === item.id);
     toggleActionVisible({
       type: ACTION_TYPE.DEPOSIT,
       record: item.groupVault,
-      visible: true
+      visible: true,
+      defaultProtocol: currentProtocol,
     });
   };
 
