@@ -37,9 +37,6 @@ export const handleVaultsOutput = (
     );
   }
 
-  console.log('messageText: %o', messageText);
-  console.log('component: %o', component);
-
   const richContent: RichMessageContent = {
     text: messageText,
     actions: [],

@@ -3,11 +3,7 @@ import { useVaultAction } from '@/components/chat/hooks/useVaultAction';
 import { numberFormatter } from '@/utils/number-formatter';
 import { Message, useChatContext } from '@/components/chat/context/chat-context';
 import { useThrottleFn } from 'ahooks';
-import { v4 as uuidv4 } from 'uuid';
 import { createNewChat } from '@/components/chat/utils/chat-service';
-import { usePriceStore } from '@/stores/usePriceStore';
-import { useMemo } from 'react';
-import Big from 'big.js';
 
 const TYPES = {
   vaults: {
@@ -40,11 +36,11 @@ export default function InvestCard(props: {
 
   const { run: handleMessage } = useThrottleFn(async (chatMsg: string) => {
     addMessage({
-      id: uuidv4(),
+      id: Date.now().toString(),
       sender: "user",
       content: chatMsg,
     });
-    const assistantMessageId = uuidv4();
+    const assistantMessageId = (Date.now() + 1).toString();
     const emptyAssistantMessage: Message = {
       id: assistantMessageId,
       sender: "assistant",
@@ -66,7 +62,7 @@ export default function InvestCard(props: {
     } catch (err: any) {
       console.log('%s err: %o', chatMsg, err);
       addMessage({
-        id: uuidv4(),
+        id: Date.now().toString(),
         sender: "assistant",
         senderName: "McBera",
         content: "Sorry, I can't assist with that."
