@@ -153,7 +153,7 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
   async function getProofs() {
     try {
       setIncentivesLoading(true)
-      const response = await fetch("/api-claim.berachain.com/api/v1/wallets/0x8C7f311f5174b636Bc1849e523810b1e9a4B7a1D/proofs/validator/0x83fd53710b75c2115bd0aac128b739eb9fa9e262603dacdf834030abb1bf4c8a6c00bb72b314c123d77f4ff40cd4d49a?page=1&per_page=10000")
+      const response = await fetch(`/api-claim.berachain.com/api/v1/wallets/${account}/proofs/validator/${pageData?.pubkey}?page=1&per_page=10000`)
       const result = (await response.json()) as any;
       console.log("====result", result)
       setProofs(result?.rewards?.sort((a, b) => b.available_at - a.available_at))
@@ -163,6 +163,8 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
     setIncentivesLoading(false)
   }
   useEffect(() => {
+    console.log("====pageData", pageData)
+    console.log("===Object.keys(prices)", Object.keys(prices))
     pageData && account && Object.keys(prices).length > 0 && getProofs()
   }, [pageData, prices, account])
   return (

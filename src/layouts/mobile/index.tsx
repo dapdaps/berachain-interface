@@ -14,6 +14,7 @@ import useUser from "@/hooks/use-user";
 import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
 import GuidingTutorial from "@/components/GuidingTour/mainnet";
+import useTokenPrice from "@/hooks/use-token-price";
 
 const menuItems = [
   // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -132,6 +133,7 @@ const dapps: DApp[] = [
 const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
+  const { initializePrice } = useTokenPrice();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDappsOpen, setIsDappsOpen] = useState(false);
 
@@ -197,6 +199,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     handleReportNoCode();
+    initializePrice();
   }, []);
 
   const routes: any = [];
@@ -207,9 +210,8 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div
-      className={`relative overflow-hidden ${
-        routes.includes(pathname) ? "min-h-full" : "h-full"
-      }`}
+      className={`relative overflow-hidden ${routes.includes(pathname) ? "min-h-full" : "h-full"
+        }`}
       style={{
         backgroundColor: !routes.includes(pathname) ? "#96d6ff" : "transparent"
       }}
@@ -283,7 +285,7 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
           className={clsx(
             "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
             pathname === "/" &&
-              "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
+            "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
           )}
         >
           <div className="flex items-center gap-3">
