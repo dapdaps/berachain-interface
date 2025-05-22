@@ -128,9 +128,6 @@ export const processSSEStream = async (
           userMessage, 
           callbacks, 
           abortController,
-          (updatedResponse) => {
-            fullResponse = updatedResponse;
-          },
           resolve
         );
       }
@@ -151,7 +148,6 @@ export const handleSSEMessage = (
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  updateFullResponse?: (response: string) => void,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
   serverSessionIdRef?: { current?: string }
 ): void => {
@@ -181,7 +177,6 @@ export const handleSSEMessage = (
       userMessage, 
       callbacks, 
       abortController, 
-      updateFullResponse, 
       resolvePromise
     );
   } else if (!event && data) {
@@ -193,7 +188,6 @@ export const handleSSEMessage = (
       userMessage, 
       callbacks, 
       abortController, 
-      updateFullResponse, 
       resolvePromise
     );
   }
@@ -207,7 +201,6 @@ const handleCompletionEvent = (
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  updateFullResponse?: (response: string) => void,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
   serverSessionId?: string
 ): void => {
@@ -256,10 +249,6 @@ const handleCompletionEvent = (
       if (jsonData.type === "Chunk" && jsonData.text) {
         const updatedResponse = fullResponse + jsonData.text;
         
-        if (updateFullResponse) {
-          updateFullResponse(updatedResponse);
-        }
-        
         assistantMessage.content = updatedResponse;
 
         if (callbacks?.updateMessage) {
@@ -270,7 +259,7 @@ const handleCompletionEvent = (
         }
       } else if (jsonData.type === "Action" && jsonData.function) {
         console.log("Action --- model jsonData:", jsonData);
-        handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, updateFullResponse, callbacks);
+        handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks);
       }
     } catch (e) {
       console.error("Failed to parse SSE data:", e, data);
@@ -286,7 +275,6 @@ const handleDataWithoutEvent = (
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  updateFullResponse?: (response: string) => void,
   resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void
 ): void => {
   if (data === "[DONE]") {
@@ -321,10 +309,6 @@ const handleDataWithoutEvent = (
       if (jsonData.type === "Chunk" && jsonData.text) {
         const updatedResponse = fullResponse + jsonData.text;
         
-        if (updateFullResponse) {
-          updateFullResponse(updatedResponse);
-        }
-        
         assistantMessage.content = updatedResponse;
 
         if (callbacks?.updateMessage) {
@@ -336,10 +320,6 @@ const handleDataWithoutEvent = (
       }
     } catch (e) {
       const updatedResponse = fullResponse + `${data} `;
-      
-      if (updateFullResponse) {
-        updateFullResponse(updatedResponse);
-      }
       
       assistantMessage.content = updatedResponse;
 
@@ -362,7 +342,6 @@ export const sendChatSSERequest = async (
     msg: encodeURIComponent(message),
   };
 
-  // 如果有会话ID，添加到请求中以关联历史记录
   if (sessionId) {
     url += `&sessionId=${sessionId}`;
     data.sessionId = sessionId;

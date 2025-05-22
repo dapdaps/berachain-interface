@@ -117,7 +117,7 @@ useEffect(() => {
               return (
                 <div 
                   key={chat.session_id}
-                  className={`relative h-[32px] flex items-center py-1.5 px-[30px] text-sm rounded-lg mb-1 cursor-pointer ${activeChat === chat.session_id ? 'bg-[#DAD9CD]/30 border border-[#DAD9CD]' : 'hover:bg-[#DAD9CD]/30'}`}
+                  className={`relative h-[32px] flex items-center py-1.5 px-[30px] text-sm rounded-lg mb-1 cursor-pointer ${activeChat === chat.session_id  ? 'bg-[#DAD9CD]/30 border border-[#DAD9CD]' : 'hover:bg-[#DAD9CD]/30'}`}
                   onMouseEnter={() => setHoverChat(chat.session_id)}
                   onMouseLeave={() => setHoverChat(null)}
                   onClick={() => {

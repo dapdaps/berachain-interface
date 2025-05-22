@@ -9,7 +9,6 @@ import VaultsCard from '@/components/chat/McBera/VaultsCard';
 export const handleVaultsOutput = (
   parsedContent: any,
   assistantMessage: Message,
-  updateFullResponse?: (response: string) => void,
   callbacks?: ChatCallbacks
 ): void => {
   const messageText = `Based on your interest in this token, here are some top-performing vaults you might want to explore:`;
@@ -25,10 +24,6 @@ export const handleVaultsOutput = (
     richContent: richContent,
     component: <VaultsCard parsedContent={parsedContent} />
   };
-
-  if (updateFullResponse) {
-    updateFullResponse(messageText);
-  }
 
   if (callbacks?.updateMessage) {
     callbacks.updateMessage(updatedMessage);

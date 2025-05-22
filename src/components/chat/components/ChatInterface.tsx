@@ -6,7 +6,6 @@ import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat } from "../utils/chat-service";
 import InteractiveMarkdown from "./InteractiveMarkdown";
-import McBeraLayout from "../McBera";
 
 export type MessageType = {
   id: string;
@@ -185,9 +184,9 @@ export default function ChatInterface() {
                     ) : message.sender === "assistant" && message.content ? (
                       <InteractiveMarkdown
                         content={message.content}
-                        richContent={message.richContent}
                         component={message.component}
                         onResize={handleMessageResize}
+                        skipTyping={message.skipTyping}
                       />
                     ) : (
                       <div className="text-gray-500">No Data</div>
@@ -216,9 +215,6 @@ export default function ChatInterface() {
           <IconSend />
         </div>
       </div>
-
-      <McBeraLayout />
-      
     </div>
   );
 }

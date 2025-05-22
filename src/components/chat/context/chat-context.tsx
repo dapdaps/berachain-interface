@@ -13,6 +13,7 @@ export interface Message {
   senderName?: string;
   richContent?: RichMessageContent; // 添加富文本内容字段
   component?: any;
+  skipTyping?: boolean;
 }
 
 export type ChatHistory = {
@@ -101,6 +102,7 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
           content: updatedMessage.content,
           richContent: updatedMessage.richContent,
           component: updatedMessage.component,
+          skipTyping: updatedMessage.skipTyping,
         } : msg
       )
     );

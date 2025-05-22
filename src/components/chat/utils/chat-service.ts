@@ -101,6 +101,8 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
               updateMessage: (updatedMessage: Message) => {
                 assistantMessage.content = updatedMessage.content;
                 assistantMessage.richContent = updatedMessage.richContent;
+                assistantMessage.skipTyping = updatedMessage.skipTyping;
+                assistantMessage.component = updatedMessage.component;
               }
             };
             
@@ -108,7 +110,6 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
               functionOutput, 
               functionContent, 
               assistantMessage,
-              undefined,
               historyCallbacks
             );
           } catch (e) {
