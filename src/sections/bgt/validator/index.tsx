@@ -178,7 +178,7 @@ const BgtValidator = (props: any) => {
   }, [defaultId, id]);
 
   useEffect(() => {
-    getValidators();
+    // getValidators();
   }, []);
 
   return (

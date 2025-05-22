@@ -1,10 +1,11 @@
 import useCustomAccount from "@/hooks/use-account";
 import { BEARCHAIN_API } from "@/hooks/use-bgt";
-import { post } from "@/utils/http";
-import { useEffect, useMemo, useState } from "react";
 import useDelegationQueue from "@/sections/bgt/components/delegate/hooks/use-delegation-queue";
-import _ from "lodash";
 import { useBgtStore } from "@/stores/bgt";
+import { post } from "@/utils/http";
+import { useDebounceFn } from 'ahooks';
+import _ from "lodash";
+import { useEffect, useMemo, useState } from "react";
 
 const pageSize = 10
 export default function useList(currentTab: string) {
@@ -34,7 +35,7 @@ export default function useList(currentTab: string) {
     }
   }, [sortBy, sortOrder, search, page])
 
-  const getValidators = async () => {
+  const { run: getValidators } = useDebounceFn(async () => {
     setLoading(true);
     const res = await getValidatorsResponse(variables);
     if (!res) {
@@ -48,7 +49,9 @@ export default function useList(currentTab: string) {
       totalCount: pagination?.totalCount
     });
     setLoading(false);
-  }
+  }, {
+    wait: 300
+  })
 
   async function getUserValidators() {
     try {
@@ -96,8 +99,6 @@ export default function useList(currentTab: string) {
     } else if (currentTab === "my") {
       getUserValidators()
     } else {
-      // const validators = await getUserValidators()
-      // validators?.length > 0 && getDelegationQueue(validators)
       getDelegationQueue()
     }
   }
@@ -120,7 +121,7 @@ export default function useList(currentTab: string) {
   }
 }
 
-export const getValidatorsResponse = async (variables: any) => {
+export const { run: getValidatorsResponse } = async (variables: any) => {
   try {
     const response = await post(BEARCHAIN_API, {
       variables,

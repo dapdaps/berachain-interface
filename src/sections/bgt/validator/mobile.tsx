@@ -1,18 +1,19 @@
-import Back from '@/sections/bgt/validator/components/back';
-import Nav from '@/sections/bgt/validator/components/nav';
-import Summary from '@/sections/bgt/validator/components/summary';
-import SwitchTabs from '@/components/switch-tabs';
-import React, { useMemo } from 'react';
+import Card from '@/components/card';
 import Empty from '@/components/empty';
-import Incentives from '@/sections/bgt/validator/components/incentives';
-import RewardWeights from '@/sections/bgt/validator/components/reward-weights';
-import { bera } from '@/configs/tokens/bera';
 import LazyImage from '@/components/layz-image';
+import BgtHead from '@/sections/bgt/components/bgt-head';
+import Back from '@/sections/bgt/validator/components/back';
+import Incentives from '@/sections/bgt/validator/components/incentives';
+import Nav from '@/sections/bgt/validator/components/nav';
+import RewardWeights from '@/sections/bgt/validator/components/reward-weights';
+import Summary from '@/sections/bgt/validator/components/summary';
 import { DefaultIcon, getTokenLogo } from '@/sections/dashboard/utils';
 import clsx from 'clsx';
-import Card from '@/components/card';
-import BgtHead from '@/sections/bgt/components/bgt-head';
-
+import { useMemo } from 'react';
+import IncentivesEarned from './components/incentives-earned';
+import Queued from './components/queued';
+import YourBoosts from './components/your-boosts';
+import IncentivesContextProvider from "./content/incentives";
 const BgtValidatorMobile = (props: any) => {
   const {
     bgtData,
@@ -66,9 +67,9 @@ const BgtValidatorMobile = (props: any) => {
       _columns.push(Columns[proposal]);
     }
     if (incentive > -1) {
-      _columns.push(Columns[incentive]); 
+      _columns.push(Columns[incentive]);
     }
-  
+
     return _columns;
   }, [Columns]);
 
@@ -83,6 +84,17 @@ const BgtValidatorMobile = (props: any) => {
         />
         <Back onBack={onBack} />
         <Nav pageData={pageData} handleClick={handleClick} />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 my-[20px]">
+          <div className="flex flex-col gap-4 flex-1 p-4 border border-[#9999] rounded-[8px]">
+            <YourBoosts />
+            <Queued />
+          </div>
+          <IncentivesContextProvider pageData={pageData}>
+            <div className="flex-1 p-4 border border-[#9999] rounded-[8px]">
+              <IncentivesEarned />
+            </div>
+          </IncentivesContextProvider>
+        </div>
         <Summary
           vaults={vaults}
           pageData={pageData}
@@ -91,24 +103,6 @@ const BgtValidatorMobile = (props: any) => {
           currentValidatorLoading={currentValidatorLoading}
         />
         <Incentives className="mt-[28px]" list={incentiveList} loading={loading} />
-        {/* <SwitchTabs
-         current={currentTab}
-         tabs={Tabs}
-         onChange={(key) => setCurrentTab(key as string)}
-         style={{
-         width: '100%',
-         height: 40,
-         padding: 4,
-         borderRadius: 12,
-         }}
-         tabStyle={{
-         fontWeight: 500,
-         fontSize: 14,
-         }}
-         cursorStyle={{
-         borderRadius: 10,
-         }}
-         /> */}
         <RewardWeights className="mt-[26px]" vaults={vaults} loading={loading} pageData={pageData} />
         {
           listData.length > 0 ? listData.map((d: any, idx: number) => {
@@ -123,11 +117,10 @@ const BgtValidatorMobile = (props: any) => {
                     columns.map((c: any, index: number) => (
                       <div
                         key={`col-${index}`}
-                        className={`${
-                          index % 2 === 0
-                            ? (c.dataIndex === 'vaults' ? 'w-[75%]' : 'w-[60%]')
-                            : (c.dataIndex === 'incentives' ? 'w-[25%]' : 'w-[40%]')
-                        }`}
+                        className={`${index % 2 === 0
+                          ? (c.dataIndex === 'vaults' ? 'w-[75%]' : 'w-[60%]')
+                          : (c.dataIndex === 'incentives' ? 'w-[25%]' : 'w-[40%]')
+                          }`}
                       >
                         {['proposal', 'incentive'].includes(c.dataIndex) && (
                           <div className="text-[#3D405A] font-[500] text-[14px] mb-[5px] whitespace-nowrap">{c.title}</div>
@@ -145,14 +138,14 @@ const BgtValidatorMobile = (props: any) => {
                                   />
                                 )) : (
                                   <span className="text-black font-Montserrat text-[12px] font-semibold">
-                                  No Incentives
-                                </span>
+                                    No Incentives
+                                  </span>
                                 )
                               }
                             </div>
                             <span className="text-black font-[500] text-[12px] mb-[5px] whitespace-nowrap leading-[90%]">
-                            Incentives
-                          </span>
+                              Incentives
+                            </span>
                           </div>
                         ) : c.render(d[c.dataIndex], d)}
                       </div>
