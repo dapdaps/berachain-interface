@@ -43,6 +43,7 @@ export default function ChatInterface() {
     contextMessages.length > 0 ? contextMessages : [];
 
   const [inputValue, setInputValue] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { containerRef } = useScroll();
   
@@ -131,7 +132,7 @@ export default function ChatInterface() {
 };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !isComposing) {
       e.preventDefault();
       handleSubmit();
     }
@@ -208,6 +209,12 @@ export default function ChatInterface() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
+          onCompositionStart={() => {
+            setIsComposing(true);
+          }}
+          onCompositionEnd={() => {
+            setIsComposing(false);
+          }}
         />
         <div
           className="absolute right-3 bottom-3 cursor-pointer"
