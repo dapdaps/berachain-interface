@@ -9,9 +9,11 @@ import { fetchChatHistory, fetchChatHistoryList, editChatHistoryItemName, delete
 import { useAccount } from 'wagmi';
 import { ChatHistory } from '../context/chat-context';
 import { useScroll } from '@/components/chat/hooks/useScroll';
+import Popover, { PopoverPlacement } from '@/components/popover';
 
 const Sidebar = () => {
   const { containerRef } = useScroll();
+  const editPopoverRef = useRef<any>();
 
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [showPopover, setShowPopover] = useState(false);
@@ -106,6 +108,7 @@ const Sidebar = () => {
   const handleEditChatName = (e: React.MouseEvent, chat: ChatHistory) => {
     e.stopPropagation();
     setShowPopover(false);
+    editPopoverRef.current?.onClose();
     setActiveChat(chat.session_id);
     setCurrentChatId(chat.session_id);
     setSessionId(chat.session_id);
@@ -148,6 +151,7 @@ const Sidebar = () => {
 const handleDeleteChat = async (e: React.MouseEvent, chat: ChatHistory) => {
   e.stopPropagation();
   setShowPopover(false);
+  editPopoverRef.current?.onClose();
   
   try {
     await deleteChatHistoryItem(chat.session_id);
@@ -222,20 +226,41 @@ const handleDeleteChat = async (e: React.MouseEvent, chat: ChatHistory) => {
                   )}
 
                   {hoverChat === chat.session_id && editingChatId !== chat.session_id && (
-                    <button 
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                      onClick={(e) => {
+                    <Popover
+                      ref={editPopoverRef}
+                      content={(
+                        <div className="w-[174px] bg-white rounded-[10px] border border-[#C7C7C7] shadow-[4px_4px_4px_rgba(0,0,0,0.25)]">
+                          <div className="p-[8px_5px]">
+                            <button
+                              className="font-Montserrat flex items-center gap-2 w-full p-[9px_12px] text-[#471C1C] font-[500] leading-[14px] text-[14px] hover:bg-[#000]/[0.06] rounded-md transition-colors"
+                              onClick={(e) => handleEditChatName(e, chat)}
+                            >
+                              <IconEdit />
+                              <span>Edit chat name</span>
+                            </button>
+                            <button
+                              className="font-Montserrat flex items-center gap-2 w-full p-[9px_12px] leading-[14px] font-[500] text-[14px] text-[#FF888A] hover:bg-[#000]/[0.06] rounded-md transition-colors"
+                              onClick={(e) => handleDeleteChat(e, chat)}
+                            >
+                              <IconDelete />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      placement={PopoverPlacement.TopRight}
+                      contentClassName="!z-[151]"
+                      triggerContainerClassName="absolute right-2 top-1/2 transform -translate-y-1/2"
+                      onClickBefore={async (e) => {
                         e.stopPropagation();
-                        if (popoverChat === chat.session_id) {
-                          setShowPopover(!showPopover);
-                        } else {
-                          setShowPopover(true);
-                          setPopoverChat(chat.session_id);
-                        }
+                        setPopoverChat(chat.session_id);
+                        return true;
                       }}
                     >
-                      <IconMore />
-                    </button>
+                      <button type="button" className="">
+                        <IconMore />
+                      </button>
+                    </Popover>
                   )}
 
                   {showPopover && popoverChat === chat.session_id && (
