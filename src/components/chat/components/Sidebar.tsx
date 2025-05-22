@@ -28,11 +28,13 @@ const Sidebar = () => {
   const { address } = useAccount();
   
   const { 
+    isFromHistory,
+    setIsFromHistory,
     setChatMode, 
     setCurrentChatId, 
     updateMessages,
     setSessionId,
-    setChatHistories 
+    setChatHistories
   } = useChatContext();
 
   useEffect(() => {
@@ -81,8 +83,9 @@ const Sidebar = () => {
   const handleNewChat = () => {
     setChatMode('initial');
     setCurrentChatId(null);
-    setActiveChat(null); // 重置activeChat状态，确保没有历史记录被选中
+    setActiveChat(null);
     setShowPopover(false);
+    setIsFromHistory(false);
   };
   
   const handleLoadChat = async (sessionId: string, address: string) => {
@@ -92,6 +95,7 @@ const Sidebar = () => {
       setCurrentChatId(sessionId);
       setSessionId(sessionId);
       setChatMode('chat');
+      setIsFromHistory(true);
     } catch (error) {
       console.error("load chat history failed:", error);
     }

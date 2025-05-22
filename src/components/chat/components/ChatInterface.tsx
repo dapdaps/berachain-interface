@@ -36,6 +36,8 @@ export default function ChatInterface() {
     setMessages,
     updateMessage,
     sessionId,
+    isFromHistory,
+    setIsFromHistory,
     setSessionId
   } = useChatContext();
 
@@ -54,7 +56,7 @@ export default function ChatInterface() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [displayMessages]);
+  }, [displayMessages, isFromHistory]);
 
   const handleMessageResize = () => {
     scrollToBottom();
@@ -68,7 +70,7 @@ export default function ChatInterface() {
     setInputValue("");
 
     const isNewChat = contextMessages.length === 0;
-    
+    setIsFromHistory(false);
     if (!isNewChat) {
       const newUserMessage: Message = {
         id: Date.now().toString(),

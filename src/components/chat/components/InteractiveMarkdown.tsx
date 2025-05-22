@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import TypingMarkdown from './TypingMarkdown';
+import { useChatContext } from '../context/chat-context';
+import ReactMarkdown from 'react-markdown';
 
 interface InteractiveMarkdownProps {
   content: string;
@@ -19,6 +21,17 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
       onResize();
     }
   }, [content, onResize]);
+
+  const { isFromHistory } = useChatContext()
+
+  if (isFromHistory && !skipTyping) {
+    return (
+      <div className="interactive-markdown">
+        <ReactMarkdown>{content}</ReactMarkdown>
+        {component}
+      </div>
+    );
+  }
 
   return (
     <div className="interactive-markdown">

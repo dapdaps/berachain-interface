@@ -41,6 +41,8 @@ interface ChatContextType {
   updateMessage: (updatedMessage: Message) => void; 
   sendChatMessage: (message: string) => Promise<void>;
   vaults: Vaults;
+  isFromHistory: boolean;
+  setIsFromHistory: (isFromHistory: boolean) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -52,6 +54,8 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const vaults = useVaults({ vaultsList });
+  const [isFromHistory, setIsFromHistory] = useState<boolean>(false);
+
 
   const startNewChat = (userMessage: string) => {
     const userMessageObj: Message = {
@@ -153,6 +157,8 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
         updateMessages,
         updateMessage,
         sendChatMessage,
+        isFromHistory,
+        setIsFromHistory,
         vaults
       }}
     >
