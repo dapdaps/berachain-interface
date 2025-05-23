@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from 'react';
 import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
@@ -50,17 +50,17 @@ export default function ChatInterface() {
   const { containerRef } = useScroll();
   
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
   }, [displayMessages, isFromHistory]);
 
-  const handleMessageResize = () => {
+  const handleMessageResize = useCallback(() => {
     scrollToBottom();
-  };
+  }, []);
 
   const handleSubmit = async () => {
   if (inputValue.trim() === "") return;
