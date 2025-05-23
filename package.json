@@ -64,6 +64,7 @@
     "react-shadow": "^20.6.0",
     "react-toastify": "^10.0.5",
     "recharts": "^2.15.1",
+    "remark-gfm": "^4.0.1",
     "ripple-address-codec": "^5.0.0",
     "royco": "^0.10.114",
     "rxjs": "^7.8.1",

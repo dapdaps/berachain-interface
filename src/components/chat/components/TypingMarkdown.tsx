@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useTypewriter, Options } from '../hooks/useTypewriter';
 import { clsx } from 'clsx';
+import remarkGfm from 'remark-gfm';
 
 interface TypingMarkdownProps {
   content: string;
@@ -43,7 +44,7 @@ const TypingMarkdown: React.FC<TypingMarkdownProps> = ({
       className={clsx(className)} 
       data-typing={isTyping ? 'true' : 'false'}
     >
-      <ReactMarkdown>{typedContent}</ReactMarkdown>
+       <ReactMarkdown remarkPlugins={[remarkGfm]}>{typedContent}</ReactMarkdown>
     </div>
   );
 };
