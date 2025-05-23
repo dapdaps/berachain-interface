@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import TypingMarkdown from './TypingMarkdown';
 import { useChatContext } from '../context/chat-context';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface InteractiveMarkdownProps {
   content: string;
@@ -27,7 +28,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   if (isFromHistory && !skipTyping) {
     return (
       <div className="interactive-markdown">
-        <ReactMarkdown>{content}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         {component}
       </div>
     );
