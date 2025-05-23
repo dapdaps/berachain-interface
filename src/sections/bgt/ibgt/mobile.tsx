@@ -1,18 +1,16 @@
-import { useState } from "react";
-import Drawer from "@/components/drawer";
-import { useIBGT } from "@/hooks/use-ibgt";
-import IbgtHead from "@/sections/bgt/components/ibgt-head";
 import SwitchTabs from "@/components/switch-tabs";
-import Big from "big.js";
-import { formatThousandsSeparator, formatValueDecimal } from "@/utils/balance";
-import Modal from "@/components/modal";
-import IbgtForm from "@/sections/bgt/components/ibgt-form";
-import { AnimatePresence } from "framer-motion";
-import useToast from "@/hooks/use-toast";
 import { beraB } from "@/configs/tokens/bera-bArtio";
-import { createWalletClient, custom } from "viem";
-import { berachainTestnetbArtio } from "@reown/appkit/networks";
+import { useIBGT } from "@/hooks/use-ibgt";
+import useToast from "@/hooks/use-toast";
+import IbgtForm from "@/sections/bgt/components/ibgt-form";
+import InfraredRewards from "@/sections/staking/components/infrared-rewards";
 import InfraredTop from "@/sections/staking/components/infrared-top";
+import { formatValueDecimal } from "@/utils/balance";
+import { berachainTestnetbArtio } from "@reown/appkit/networks";
+import Big from "big.js";
+import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { createWalletClient, custom } from "viem";
 
 const IBGTMobileView = (props: Props) => {
   // const { visible, onClose } = props;
@@ -34,11 +32,11 @@ const IBGTMobileView = (props: Props) => {
     handleWithdraw,
     handleClaim,
     symbol,
+    claiming,
     handleMintIBGT
   } = useIBGT(props);
-
+  const rewards = data?.rewards
   const toast = useToast();
-
   const [tab, setTab] = useState<any>(tabs[0]);
 
   const {
@@ -158,15 +156,9 @@ const IBGTMobileView = (props: Props) => {
                 <div className="text-[20px] font-[600]">{formatValueDecimal(data?.depositAmount ?? 0, '', 2, false, false)}</div>
                 <div className="">iBGT</div>
               </div>
-              <button
-                type="button"
-                className="border border-[#373A53] rounded-[10px] h-[36px] leading-[34px] px-[16px] text-[14px] font-[500] text-center"
-                onClick={handleMintIBGT}
-              >
-                Mint iBGT
-              </button>
             </div>
-            <div className="flex flex-col items-center gap-[7px] text-[14px] font-[500]">
+            <InfraredRewards rewards={rewards} claiming={claiming} handleClaim={handleClaim} />
+            {/* <div className="flex flex-col items-center gap-[7px] text-[14px] font-[500]">
               <div className="">Rewards</div>
               <div className="flex justify-center items-center gap-[7px]">
                 <img
@@ -189,7 +181,7 @@ const IBGTMobileView = (props: Props) => {
               >
                 Claim
               </button>
-            </div>
+            </div> */}
             <div className="absolute w-[1px] h-[37px] bg-[#373A53] left-[50%] top-[23px] translate-x-[-50%]"></div>
           </div>
         </div>

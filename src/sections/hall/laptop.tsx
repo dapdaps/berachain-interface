@@ -9,7 +9,6 @@ import { memo, useMemo } from "react";
 import Validators from "../bgt/validators";
 export default memo(function Laptop() {
   const store = useHall()
-
   const currentTab = useMemo(() => ["bgt", "ibgt", "validators"].includes(store.currentTab) ? store.currentTab : "validators")
   return (
     <BearBackground type="hall">
