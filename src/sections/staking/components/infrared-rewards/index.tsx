@@ -23,11 +23,11 @@ export default memo(function InfaredRewards({
   }, [rewards])
 
   return (
-    <>
-      <div className="mb-[27px] text-black font-Montserrat text-[18px] font-bold leading-[90%]">
+    <div className="flex flex-col gap-[27px] md:gap-[7px]">
+      <div className="text-black font-Montserrat text-[18px] md:text-[14px] font-bold md:font-normal leading-[90%]">
         Rewards
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center md:flex-col md:gap-[7px] justify-between">
         <Popover
           trigger={PopoverTrigger.Hover}
           placement={PopoverPlacement.Bottom}
@@ -82,6 +82,6 @@ export default memo(function InfaredRewards({
           </button>
         )}
       </div>
-    </>
+    </div>
   )
 })

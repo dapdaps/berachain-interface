@@ -1,22 +1,21 @@
+import Vaults from "@/components/vaults";
 import { useChristmas } from "@/hooks/use-christmas";
 import { useProgressRouter } from "@/hooks/use-progress-router";
+import { useRainyDay } from "@/hooks/use-rainy-day";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
-import MobileHeader from "@/sections/home/mobile/header";
+import Boyco from "@/sections/boyco";
+import BeraPrice from "@/sections/home-earth/components/bera-price";
+import Signpost from "@/sections/home-earth/components/signpost";
+import { HomeEarthContext } from "@/sections/home-earth/context";
+import EntryCard from "@/sections/home/mobile/entry-card";
+import { useHall } from "@/stores/hall";
 import { useTapSoundStore } from "@/stores/tap-sound";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import VaultsEnterance from "../vaults-enterance";
-import EntryCard from "@/sections/home/mobile/entry-card";
-import VaultsEntrance from "@/sections/vaults/v2/entrance";
-import Signpost from "@/sections/home-earth/components/signpost";
-import BeraPrice from "@/sections/home-earth/components/bera-price";
-import { HomeEarthContext } from "@/sections/home-earth/context";
-import { useRainyDay } from "@/hooks/use-rainy-day";
-import Vaults from "@/components/vaults";
-import Boyco from "@/sections/boyco";
 
 const Home = () => {
+  const hallStore = useHall()
   const router = useProgressRouter();
   const tapSound = useTapSoundStore();
   const { isRainyDay, beraPrice } = useRainyDay({ isLoadPrice: true });
@@ -240,6 +239,9 @@ const Home = () => {
                 className="w-[52.308vw] h-[38.205vw] translate-y-[50vw] translate-x-[3vw]"
                 // data-bp="1015-011"
                 onClick={() => {
+                  hallStore.set({
+                    currentTab: "validators"
+                  })
                   router.push("/hall");
                   tapSound.play?.();
                 }}
