@@ -28,7 +28,7 @@ export default memo(function IncentivesModal() {
   return (
     <Modal open={showModal} onClose={onClose}>
       <Card>
-        <div className="w-[500px] flex flex-col items-center">
+        <div className="md:w-full w-[500px] flex flex-col items-center">
           <div>Claim Incentives</div>
           <div>You have multiple incentives periods to be claimed</div>
           <div className="mb-3 flex w-full items-center justify-between rounded-md border border-border px-4 py-2">

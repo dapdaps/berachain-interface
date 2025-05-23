@@ -1,14 +1,28 @@
 import useCustomAccount from "@/hooks/use-account";
 import { BEARCHAIN_API } from "@/hooks/use-bgt";
-import { post } from "@/utils/http";
-import { useEffect, useMemo, useState } from "react";
 import useDelegationQueue from "@/sections/bgt/components/delegate/hooks/use-delegation-queue";
-import _ from "lodash";
 import { useBgtStore } from "@/stores/bgt";
+import { post } from "@/utils/http";
+import { useDebounceFn } from 'ahooks';
+import _ from "lodash";
+import { useEffect, useMemo, useState } from "react";
 
 const pageSize = 10
-export default function useList(currentTab: string) {
 
+export const getValidatorsResponse = async (variables: any) => {
+  try {
+    const response = await post(BEARCHAIN_API, {
+      variables,
+      "operationName": "GetValidators",
+      "query": "query GetValidators($where: GqlValidatorFilter, $sortBy: GqlValidatorOrderBy = lastDayDistributedBGTAmount, $sortOrder: GqlValidatorOrderDirection = desc, $pageSize: Int, $skip: Int, $search: String, $chain: GqlChain) {\n  validators: polGetValidators(\n    where: $where\n    orderBy: $sortBy\n    orderDirection: $sortOrder\n    first: $pageSize\n    skip: $skip\n    search: $search\n    chain: $chain\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      totalPages\n      pageSize\n      __typename\n    }\n    validators {\n      ...ApiValidator\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiValidator on GqlValidator {\n  ...ApiValidatorMinimal\n  operator\n  rewardAllocationWeights {\n    ...ApiRewardAllocationWeight\n    __typename\n  }\n  lastBlockUptime {\n    isActive\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    website\n    description\n    __typename\n  }\n  __typename\n}\n\nfragment ApiValidatorMinimal on GqlValidator {\n  id\n  pubkey\n  operator\n  metadata {\n    name\n    logoURI\n    __typename\n  }\n  dynamicData {\n    activeBoostAmount\n    usersActiveBoostCount\n    queuedBoostAmount\n    usersQueuedBoostCount\n    allTimeDistributedBGTAmount\n    rewardRate\n    stakedBeraAmount\n    lastDayDistributedBGTAmount\n    activeBoostAmountRank\n    boostApr\n    commissionOnIncentives\n    __typename\n  }\n  __typename\n}\n\nfragment ApiRewardAllocationWeight on GqlValidatorRewardAllocationWeight {\n  percentageNumerator\n  validatorId\n  receivingVault {\n    ...ApiVault\n    __typename\n  }\n  receiver\n  startBlock\n  __typename\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    activeIncentivesRateUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}"
+    });
+    return response?.data?.validators;
+  } catch (error) {
+    console.error(error)
+  }
+  return false;
+}
+export default function useList(currentTab: string) {
   const store: any = useBgtStore()
   const { loading: loadingDelegationQueue, delegationQueue, getDelegationQueue } = useDelegationQueue();
   const { account } = useCustomAccount()
@@ -34,7 +48,7 @@ export default function useList(currentTab: string) {
     }
   }, [sortBy, sortOrder, search, page])
 
-  const getValidators = async () => {
+  const { run: getValidators } = useDebounceFn(async () => {
     setLoading(true);
     const res = await getValidatorsResponse(variables);
     if (!res) {
@@ -48,7 +62,9 @@ export default function useList(currentTab: string) {
       totalCount: pagination?.totalCount
     });
     setLoading(false);
-  }
+  }, {
+    wait: 300
+  })
 
   async function getUserValidators() {
     try {
@@ -96,8 +112,6 @@ export default function useList(currentTab: string) {
     } else if (currentTab === "my") {
       getUserValidators()
     } else {
-      // const validators = await getUserValidators()
-      // validators?.length > 0 && getDelegationQueue(validators)
       getDelegationQueue()
     }
   }
@@ -120,16 +134,4 @@ export default function useList(currentTab: string) {
   }
 }
 
-export const getValidatorsResponse = async (variables: any) => {
-  try {
-    const response = await post(BEARCHAIN_API, {
-      variables,
-      "operationName": "GetValidators",
-      "query": "query GetValidators($where: GqlValidatorFilter, $sortBy: GqlValidatorOrderBy = lastDayDistributedBGTAmount, $sortOrder: GqlValidatorOrderDirection = desc, $pageSize: Int, $skip: Int, $search: String, $chain: GqlChain) {\n  validators: polGetValidators(\n    where: $where\n    orderBy: $sortBy\n    orderDirection: $sortOrder\n    first: $pageSize\n    skip: $skip\n    search: $search\n    chain: $chain\n  ) {\n    pagination {\n      currentPage\n      totalCount\n      totalPages\n      pageSize\n      __typename\n    }\n    validators {\n      ...ApiValidator\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ApiValidator on GqlValidator {\n  ...ApiValidatorMinimal\n  operator\n  rewardAllocationWeights {\n    ...ApiRewardAllocationWeight\n    __typename\n  }\n  lastBlockUptime {\n    isActive\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    website\n    description\n    __typename\n  }\n  __typename\n}\n\nfragment ApiValidatorMinimal on GqlValidator {\n  id\n  pubkey\n  operator\n  metadata {\n    name\n    logoURI\n    __typename\n  }\n  dynamicData {\n    activeBoostAmount\n    usersActiveBoostCount\n    queuedBoostAmount\n    usersQueuedBoostCount\n    allTimeDistributedBGTAmount\n    rewardRate\n    stakedBeraAmount\n    lastDayDistributedBGTAmount\n    activeBoostAmountRank\n    boostApr\n    commissionOnIncentives\n    __typename\n  }\n  __typename\n}\n\nfragment ApiRewardAllocationWeight on GqlValidatorRewardAllocationWeight {\n  percentageNumerator\n  validatorId\n  receivingVault {\n    ...ApiVault\n    __typename\n  }\n  receiver\n  startBlock\n  __typename\n}\n\nfragment ApiVault on GqlRewardVault {\n  id: vaultAddress\n  vaultAddress\n  address: vaultAddress\n  isVaultWhitelisted\n  dynamicData {\n    allTimeReceivedBGTAmount\n    apr\n    bgtCapturePercentage\n    activeIncentivesValueUsd\n    activeIncentivesRateUsd\n    __typename\n  }\n  stakingToken {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  metadata {\n    name\n    logoURI\n    url\n    protocolName\n    description\n    __typename\n  }\n  activeIncentives {\n    ...ApiVaultIncentive\n    __typename\n  }\n  __typename\n}\n\nfragment ApiVaultIncentive on GqlRewardVaultIncentive {\n  active\n  remainingAmount\n  remainingAmountUsd\n  incentiveRate\n  tokenAddress\n  token {\n    address\n    name\n    symbol\n    decimals\n    __typename\n  }\n  __typename\n}"
-    });
-    return response?.data?.validators;
-  } catch (error) {
-    console.error(error)
-  }
-  return false;
-}
+
