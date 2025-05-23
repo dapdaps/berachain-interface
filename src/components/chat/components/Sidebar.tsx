@@ -29,11 +29,11 @@ const Sidebar = () => {
   const { address } = useAccount();
   
   const { 
-    isFromHistory,
     setIsFromHistory,
     setChatMode, 
     setCurrentChatId, 
     updateMessages,
+    sessionId,
     setSessionId,
     setChatHistories,
     chatHistories,
@@ -86,6 +86,7 @@ const Sidebar = () => {
   useEffect(() => {
     if (chatHistories && chatHistories.length > 0) {
       setLocalChatHistories(chatHistories);
+      setActiveChat(sessionId);
     }
   }, [chatHistories]);
   
