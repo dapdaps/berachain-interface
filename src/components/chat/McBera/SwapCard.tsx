@@ -76,7 +76,9 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
         };
         addMessage(emptyAssistantMessage);
 
-        await createNewChat(userMessage, {
+        await createNewChat(userMessage,
+          emptyAssistantMessage,
+           {
           updateMessage: (updatedMessage: Message) => {
             if (updatedMessage.sender === "assistant") {
               updateMessage(updatedMessage);

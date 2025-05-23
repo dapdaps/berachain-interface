@@ -111,16 +111,19 @@ export default function ChatInterface() {
       };
       addMessage(newUserMessage);
       
-      const assistantMessageId = (Date.now() + 1).toString();
-      const emptyAssistantMessage: Message = {
-        id: assistantMessageId,
-        sender: "assistant",
-        senderName: "McBera",
-        content: "",
-      };
-      addMessage(emptyAssistantMessage);
-      
-      await createNewChat(userMessage, {
+    const assistantMessageId = (Date.now() + 1).toString();
+    const emptyAssistantMessage: Message = {
+      id: assistantMessageId,
+      sender: "assistant",
+      senderName: "McBera",
+      content: "",
+    };
+    addMessage(emptyAssistantMessage);
+
+    await createNewChat(
+      userMessage,
+      emptyAssistantMessage,
+      {
         updateMessage: (updatedMessage: Message) => {
           if (updatedMessage.sender === "assistant") {
             updateMessage(updatedMessage);
@@ -129,11 +132,20 @@ export default function ChatInterface() {
         addChatHistory,
         setSessionId,
         getSessionId: () => sessionId 
-      });
+      }
+    );
     } else {
       startNewChat(userMessage);
-      
-      await createNewChat(userMessage, {
+          const assistantMessageId = (Date.now() + 1).toString();
+          const emptyAssistantMessage: Message = {
+            id: assistantMessageId,
+            sender: "assistant",
+            senderName: "McBera",
+            content: "",
+          };
+      await createNewChat(userMessage, 
+        emptyAssistantMessage, // 传入已创建的消息对象
+        {
         updateMessage: (updatedMessage: Message) => {
           if (updatedMessage.sender === "assistant") {
             updateMessage(updatedMessage);

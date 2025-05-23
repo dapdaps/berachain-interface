@@ -59,35 +59,36 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   const [isFromHistory, setIsFromHistory] = useState<boolean>(false);
   const { address } = useAccount();
 
-  const startNewChat = (userMessage: string) => {
-    const userMessageObj: Message = {
-      id: Date.now().toString(),
-      sender: 'user',
-      content: userMessage,
-    };
-    
-    const assistantMessageObj: Message = {
-      id: (Date.now() + 1).toString(),
-      sender: 'assistant',
-      senderName: 'McBera',
-      content: '',
-    };
-    
-    setMessages([userMessageObj, assistantMessageObj]);
-    
-    setChatMode('chat');
-    
-    const newChatId = Date.now().toString();
-    setCurrentChatId(newChatId);
-    
-    return { userMessageObj, chatId: newChatId };
+const startNewChat = (userMessage: string) => {
+  const userMessageObj: Message = {
+    id: Date.now().toString(),
+    sender: 'user',
+    content: userMessage,
   };
+  
+  const assistantMessageObj: Message = {
+    id: (Date.now() + 1).toString(),
+    sender: 'assistant',
+    senderName: 'McBera',
+    content: '',
+  };
+  
+  setMessages([userMessageObj, assistantMessageObj]);
+  
+  setChatMode('chat');
+  
+  const newChatId = Date.now().toString();
+  setCurrentChatId(newChatId);
+  
+  // 返回 assistantMessageObj
+  return { userMessageObj, assistantMessageObj, chatId: newChatId };
+};
   
   const addMessage = (message: Message) => {
     setMessages(prev => [...prev, message]);
   };
   
-  const addChatHistory = (history: ChatHistory) => {
+  const addChatHistory = () => {
       fetchChatHistoryList(address)
         .then(response => {
           if (response && response.data && response.data.length > 0) {
@@ -122,12 +123,15 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
     );
   };
 
-  const sendChatMessage = async (message: string) => {
-    try {
-      setSessionId(null);
-      startNewChat(message);
-      
-      await createNewChat(message, {
+const sendChatMessage = async (message: string) => {
+  try {
+    setSessionId(null);
+    const { assistantMessageObj } = startNewChat(message);
+    
+    await createNewChat(
+      message,
+      assistantMessageObj, 
+      {
         updateMessage: (updatedMessage: Message) => {
           if (updatedMessage.sender === "assistant") {
             updateMessage(updatedMessage);
@@ -135,18 +139,19 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
         },
         addChatHistory,
         setSessionId,
-        getSessionId: () => null, 
-      });
-    } catch (error) {
-      console.error("Chat error:", error);
-      addMessage({
-        id: Date.now().toString(),
-        sender: "assistant",
-        senderName: "McBera",
-        content: "Sorry, I can't assist with that."
-      });
-    }
-  };
+        getSessionId: () => null,
+      }
+    );
+  } catch (error) {
+    console.error("Chat error:", error);
+    addMessage({
+      id: Date.now().toString(),
+      sender: "assistant",
+      senderName: "McBera",
+      content: "Sorry, I can't assist with that."
+    });
+  }
+};
 
   return (
     <ChatContext.Provider

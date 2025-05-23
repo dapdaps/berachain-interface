@@ -51,7 +51,9 @@ export default function InvestCard(props: {
     };
     addMessage(emptyAssistantMessage);
     try {
-      await createNewChat(chatMsg, {
+      await createNewChat(chatMsg,
+        emptyAssistantMessage,
+        {
         updateMessage: (updatedMessage: Message) => {
           if (updatedMessage.sender === "assistant") {
             updateMessage(updatedMessage);
