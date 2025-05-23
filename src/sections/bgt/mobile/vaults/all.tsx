@@ -10,7 +10,6 @@ import Big from 'big.js';
 import { useRouter } from "next/navigation";
 const AllVaults = (props: any) => {
 
-  const router = useRouter()
   const {
     data,
     isLoading,
@@ -39,8 +38,7 @@ const AllVaults = (props: any) => {
               </div>
               <div className="w-[95px] h-[32px] rounded-[10px] bg-white border border-black flex items-center justify-center cursor-pointer text-[16px] font-Montserrat"
                 onClick={() => {
-                  // onDeposit?.(record)
-                  router.push("/bgt/gauge?address=" + record?.bera_vault_address)
+                  onDeposit?.(record)
                 }}
               >
                 Deposit

@@ -119,6 +119,17 @@ const BGTMobileView = (props: Props) => {
           }
         </AnimatePresence>
       </div>
+      <BgtGaugeDrawer
+        visible={gaugeVisible}
+        bgtData={bgtData}
+        id={gaugeId}
+        onClose={() => {
+          setGaugeVisible(false);
+        }}
+        onBack={() => {
+          setGaugeVisible(false);
+        }}
+      />
       {/* <Drawer
         visible={visible}
         onClose={onClose}
