@@ -10,14 +10,11 @@ import { motion } from 'framer-motion';
 import { motionStaggerChildren, motionStaggerParent } from '@/components/chat/utils/motion-stagger-children';
 import { useThrottleFn } from 'ahooks';
 import { bera } from '@/configs/tokens/bera';
-import SwapModal from '@/sections/swap/SwapModal';
+import useSwapStore from '../stores/useSwapStores';
 
 const WalletAssetsCard = (props: any) => {
   const { parsedContent } = props;
-
-  const [isSwapModalOpen, setIsSwapModalOpen] = useState<boolean>(false);
-  const [defaultInputCurrency, setDefaultInputCurrency] = useState<any>();
-  const [defaultOutputCurrency, setDefaultOutputCurrency] = useState<any>();
+  const { setDefaultInputCurrency, setDefaultOutputCurrency, openSwapModal } = useSwapStore();
 
   const totalAssetsUsd = useMemo(() => {
     return parsedContent?.reduce((prev: any, curr: any) => {
@@ -40,12 +37,12 @@ const WalletAssetsCard = (props: any) => {
     if (asset.symbol === 'BERA') {
       setDefaultInputCurrency(bera["honey"]);
       setDefaultOutputCurrency(bera["bera"]);
-      setIsSwapModalOpen(true);
+      openSwapModal();
       return;
     }
     setDefaultInputCurrency(bera["bera"]);
     setDefaultOutputCurrency(asset);
-    setIsSwapModalOpen(true);
+    openSwapModal();
   }, { wait: 1000 });
 
   return (
@@ -94,21 +91,6 @@ const WalletAssetsCard = (props: any) => {
           ))
         }
       </motion.div>
-      <SwapModal
-        defaultInputCurrency={
-          bera[defaultInputCurrency?.symbol?.toLowerCase()] ||
-          defaultInputCurrency
-        }
-        defaultOutputCurrency={
-          bera[defaultOutputCurrency?.symbol?.toLowerCase()] ||
-          defaultOutputCurrency
-        }
-        show={isSwapModalOpen}
-        onClose={() => {
-          setIsSwapModalOpen(false);
-        }}
-        from="ai-chat"
-      />
     </div>
   );
 };
