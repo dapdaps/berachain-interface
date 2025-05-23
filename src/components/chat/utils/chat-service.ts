@@ -30,13 +30,12 @@ export const createChatMessages = (message: string): {
 
 export const createNewChat = async (
   message: string,
+  assistantMessage: Message, // 添加这个参数，接收外部创建的消息对象
   contextCallbacks?: ChatCallbacks
 ): Promise<{
   messages: Message[];
 }> => {
   try {
-    const { assistantMessage } = createChatMessages(message);
-    
     const existingSessionId = contextCallbacks?.getSessionId?.();
     const sessionIdToUse = existingSessionId || "";
     
