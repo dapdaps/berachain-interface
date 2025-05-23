@@ -42,10 +42,13 @@ const HotTokensCard = ({ parsedContent }: any) => {
             <div className="font-Montserrat font-[700] text-[14px] text-[#392C1D] leading-[1]">
               Price: {numberFormatter(token.price || 0, 3, true)}
             </div>
-            <IconSwap
-              className="cursor-pointer"
-              onClick={() => handleTokenSwap(token)}
-            />
+                <button
+                  type="button"
+                  className="px-[9px] h-[22px] shrink-0 rounded-[6px] border border-black bg-[#FFF5A9] shadow-[2px_2px_0px_0px_#000] text-[#392C1D] font-montserrat text-[14px] font-medium leading-[100%]"
+                  onClick={() => handleTokenSwap(token)}
+                >
+                  Swap
+                </button>
           </div>
         </div>
       ))}

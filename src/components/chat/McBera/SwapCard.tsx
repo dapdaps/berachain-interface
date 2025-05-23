@@ -24,16 +24,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     setDefaultOutputCurrency,
   } = useSwapStore();
 
-  useEffect(() => {
-    if (parsedContent && parsedContent.output_token) {
-      setDefaultOutputCurrency?.(parsedContent.output_token);
-    } 
-    
-    if (parsedContent && parsedContent.input_token) {
-      setDefaultInputCurrency?.(parsedContent.input_token);
-    }
-  }, [parsedContent, setDefaultInputCurrency, setDefaultOutputCurrency]);
-
   const { addMessage, updateMessage, sessionId, setSessionId, addChatHistory, isFromHistory } =
     useChatContext();
 
@@ -82,6 +72,22 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     }
   };
 
+  const handleAction = async () => {
+    if (parsedContent && parsedContent.input_token) {
+      setDefaultInputCurrency?.(parsedContent.input_token);
+    } else {
+      setDefaultInputCurrency?.(defaultInputCurrency);
+    }
+
+    if (parsedContent && parsedContent.output_token) {
+      setDefaultOutputCurrency?.(parsedContent.output_token);
+    } else {
+      setDefaultOutputCurrency?.(defaultOutputCurrency);
+    }
+
+    openSwapModal();
+  }
+
   const renderContent = () => {
     if (!content) {
       useEffect(() => {
@@ -107,7 +113,7 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
             {parts[0]}
             <span
               className="font-bold cursor-pointer text-[#471C1C] underline"
-              onClick={openSwapModal}
+              onClick={handleAction}
             >
               {symbolName}
             </span>
