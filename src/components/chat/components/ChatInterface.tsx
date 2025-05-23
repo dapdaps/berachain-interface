@@ -8,6 +8,10 @@ import { createNewChat } from "../utils/chat-service";
 import InteractiveMarkdown from "./InteractiveMarkdown";
 import { useScroll } from '@/components/chat/hooks/useScroll';
 
+import useSwapStore from "../stores/useSwapStores";
+import SwapModal from "@/sections/swap/SwapModal";
+import { bera } from "@/configs/tokens/bera";
+
 export type MessageType = {
   id: string;
   sender: "user" | "assistant";
@@ -40,6 +44,13 @@ export default function ChatInterface() {
     setIsFromHistory,
     setSessionId
   } = useChatContext();
+
+  const {
+    isSwapModalOpen,
+    closeSwapModal,
+    defaultInputCurrency,
+    defaultOutputCurrency
+  } = useSwapStore();
 
   const displayMessages =
     contextMessages.length > 0 ? contextMessages : [];
@@ -271,6 +282,23 @@ export default function ChatInterface() {
           <IconSend />
         </div>
       </div>
+      
+      {/* 全局 SwapModal */}
+      <SwapModal
+        defaultInputCurrency={
+          bera[defaultInputCurrency?.symbol?.toLowerCase()] ||
+          defaultInputCurrency
+        }
+        defaultOutputCurrency={
+          bera[defaultOutputCurrency?.symbol?.toLowerCase()] ||
+          defaultOutputCurrency
+        }
+        show={!!isSwapModalOpen}
+        onClose={() => {
+          closeSwapModal();
+        }}
+        from="ai-chat"
+      />
     </div>
   );
 }

@@ -2,17 +2,13 @@ import { bera } from "@/configs/tokens/bera";
 import LazyImage from "@/components/layz-image";
 import IconSwap from "@public/images/chat/swap.svg";
 import { numberFormatter } from "@/utils/number-formatter";
-import { useEffect, useState } from "react";
-import SwapModal from "@/sections/swap/SwapModal";
 import useSwapStore from "../stores/useSwapStores";
 
 const HotTokensCard = ({ parsedContent }: any) => {
-  const [token, setToken] = useState<any>(null);
-
-  const { isSwapModalOpen, openSwapModal, closeSwapModal } = useSwapStore();
+  const { openSwapModal, setDefaultOutputCurrency } = useSwapStore();
 
   const handleTokenSwap = (token: any) => {
-    setToken(token);
+    setDefaultOutputCurrency(token);
     openSwapModal();
   };
 
@@ -52,14 +48,6 @@ const HotTokensCard = ({ parsedContent }: any) => {
           </div>
         </div>
       ))}
-      <SwapModal
-        defaultOutputCurrency={bera[token?.symbol?.toLowerCase()] || token}
-        show={!!isSwapModalOpen}
-        onClose={() => {
-          closeSwapModal();
-        }}
-        from="ai-chat"
-      />
     </div>
   );
 };

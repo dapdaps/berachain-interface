@@ -15,7 +15,11 @@ const useSwapStore = create<SwapState>((set) => ({
     defaultInputCurrency: null,
     defaultOutputCurrency: null,
     openSwapModal: () => set({ isSwapModalOpen: true }),
-    closeSwapModal: () => set({ isSwapModalOpen: false }),
+    closeSwapModal: () => set({ 
+      isSwapModalOpen: false,
+      defaultInputCurrency: null, 
+      defaultOutputCurrency: null 
+    }),
     setDefaultInputCurrency: (currency: any) => set({ defaultInputCurrency: currency }),
     setDefaultOutputCurrency: (currency: any) => set({ defaultOutputCurrency: currency })
 }));
