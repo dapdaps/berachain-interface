@@ -1,11 +1,14 @@
+import CustomImage from '@/components/custom-image';
 import useClickTracking from '@/hooks/use-click-tracking';
 import Select from "@/sections/bgt/components/delegate/select";
-import { formatThousandsSeparator, formatValueDecimal } from '@/utils/balance';
+import { formatValueDecimal } from '@/utils/balance';
 import { formatLongText } from '@/utils/utils';
 import Big from 'big.js';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 const Market = (props: any) => {
+  const router = useRouter()
   const { pageData, onTop3, bgtData } = props;
   const { handleReport } = useClickTracking();
   const [selectVisible, setSelectVisible] = useState(false)
@@ -47,9 +50,9 @@ const Market = (props: any) => {
           <div className="text-[#3D405A] font-[500] text-[14px]">
             Top 3 Validators
           </div>
-          <div className="text-[#3D405A] text-[14px] underline" onClick={() => {
+          {/* <div className="text-[#3D405A] text-[14px] underline" onClick={() => {
             setSelectVisible(true)
-          }}>More</div>
+          }}>More</div> */}
         </div>
         <div className="mt-[10px]">
           {
@@ -57,14 +60,17 @@ const Market = (props: any) => {
               <div
                 key={idx}
                 className="mt-[10px] pl-[5px] pr-[14px] border border-[#373A53] rounded-[12px] bg-white h-[46px] flex justify-between items-center"
-                onClick={() => onTop3(validator)}
+                onClick={() => {
+                  router.push("/bgt/validator?id=" + validator?.id)
+                }}
                 data-bp={validator.bpMobile}
               >
                 <div className="flex items-center gap-[7px]">
-                  <img
-                    src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+                  <CustomImage
                     alt={validator?.metadata?.name}
+                    src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
                     className="w-[26px] h-[26px] rounded-full"
+                    errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
                   />
                   <div className="text-[16px] text-black font-[600]">
                     {validator?.metadata?.name || formatLongText(validator?.pubkey, 4, 4)}

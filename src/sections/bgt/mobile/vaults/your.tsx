@@ -3,6 +3,7 @@ import Loading from '@/components/loading';
 import useClickTracking from '@/hooks/use-click-tracking';
 import BgtEmpty from '@/sections/bgt/components/bgt-empty';
 import { formatValueDecimal } from '@/utils/balance';
+import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
@@ -15,6 +16,7 @@ const YourVaults = (props: any) => {
     handleReport('1016-002');
   }, []);
 
+  console.log("====filterList", filterList)
   return (
     <motion.div
       key="vaults"
@@ -38,6 +40,7 @@ const YourVaults = (props: any) => {
               {
                 filterList.map((record: any, idx: number) => {
                   console.log(record?.earned, record?.earnedShown);
+                  const vault = record?.vault
                   return (
                     <div key={idx} className="bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[16px_14px_11px_12px]">
 
@@ -46,24 +49,24 @@ const YourVaults = (props: any) => {
                         <div className='flex items-center gap-[16px]'>
                           <div className='relative'>
                             <div className='w-[30px] h-[30px] rounded-full'>
-                              <img src={record?.logoURI} />
+                              <img src={vault?.metadata?.logoURI ?? "/images/bgt-logo.svg"} />
                             </div>
                             <div className="absolute right-[-6px] bottom-[-2px] w-[16px]">
-                              <img src={record?.productMetadata?.logoURI} />
+                              <img src={getProtocolIcon(vault?.metadata?.protocolName)} />
                             </div>
                           </div>
                           <div className="flex flex-col gap-[5px]">
-                            <div className='text-black font-Montserrat text-[16px] font-semibold leading-[90%]'>{record?.name}</div>
-                            <div className='text-black font-Montserrat text-[12px] font-medium leading-[90%]'>{record?.productMetadata?.name}</div>
+                            <div className='text-black font-Montserrat text-[16px] font-semibold leading-[100%]'>{vault?.metadata?.name ? vault?.metadata?.name : formatLongText(vault?.id, 4, 4)}</div>
+                            <div className='text-black font-Montserrat text-[12px] font-medium leading-[100%]'>{vault?.metadata?.protocolName ?? "OTHER"}</div>
                           </div>
                         </div>
 
                         <div>
-                          <div className="text-[#3D405A] text-[14px] font-[500] text-right">
+                          <div className="text-[#3D405A] text-[14px] leading-[16px] font-[500] text-right">
                             Amount Deposited
                           </div>
-                          <div className="flex items-center justify-end gap-[7px] mt-[6px]">
-                            <div className="text-black text-[16px] font-[600]">
+                          <div className="flex items-center justify-end gap-[7px] mt-[5px]">
+                            <div className="text-black text-[16px] font-[600] leading-[12px]">
                               {formatValueDecimal(record?.depositAmount, "", 2)}
                             </div>
                           </div>
@@ -82,7 +85,7 @@ const YourVaults = (props: any) => {
                               className="w-[22px] h-[22px] rounded-full"
                             />
                             <div className="text-[#7EA82B] text-[16px] font-[600]">
-                              {record?.earnedShown ?? 0}
+                              {formatValueDecimal(record?.earned ?? 0, "", 2)}
                             </div>
                           </div>
                         </div>
