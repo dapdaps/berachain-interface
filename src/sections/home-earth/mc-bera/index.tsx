@@ -40,29 +40,27 @@ const McBera = (props: any) => {
   }, { wait: 150 });
 
   const handleComputerContainerClick = (e: any) => {
-    // table height: 358px
-    // left window width: 212px
-    // right window width: 212px
-    if (computerContainerRef.current.contains(e.target)) {
-      return;
+    if (e.target === e.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = rect.bottom - e.clientY;
+
+      // table height: 358px
+      // left window width: 212px
+      // right window width: 212px
+      const isBottomArea = y <= 358;
+      const isLeftArea = x <= 212;
+      const isRightArea = rect.width - x <= 212;
+
+      if (isBottomArea || isLeftArea || isRightArea) {
+        return;
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = rect.bottom - e.clientY;
-
-    const isBottomArea = y <= 358;
-    const isLeftArea = x <= 212;
-    const isRightArea = rect.width - x <= 212;
-
-    if (isBottomArea || isLeftArea || isRightArea) {
-      return;
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
   };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
