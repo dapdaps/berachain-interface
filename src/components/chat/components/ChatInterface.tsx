@@ -19,7 +19,7 @@ const UserAvatar: React.FC = () => {
   const { userInfo } = useUser();
   const { address } = useAccount();
   return !address || !userInfo.avatar ? (
-    <div className="w-[26px] h-[26px] rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
+    <div className="shrink-0 w-[26px] h-[26px] rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#00D1FF_0deg,#FF008A_360deg)]" />
   ) : (
     <div className="w-[26px] h-[26px] shrink-0">
       <LazyImage src={userInfo.avatar} className="rounded-full shrink-0 " />
