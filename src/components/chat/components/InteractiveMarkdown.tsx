@@ -42,7 +42,8 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
             step: [1, 3],
             initialIndex: 0,
           }}
-          content={content}  
+          content={content}
+          onScrollToBottom={onResize}
         />
       )}
       {component}

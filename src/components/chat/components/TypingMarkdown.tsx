@@ -8,13 +8,15 @@ interface TypingMarkdownProps {
   className?: string;
   options?: Options;
   onResize?: (element: HTMLDivElement) => void;
+  onScrollToBottom?: () => void;
 }
 
 const TypingMarkdown: React.FC<TypingMarkdownProps> = ({ 
   content, 
   className, 
   options,
-  onResize 
+  onResize,
+  onScrollToBottom
 }) => {
   const { typedContent, isTyping } = useTypewriter(content, options);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,7 +38,11 @@ const TypingMarkdown: React.FC<TypingMarkdownProps> = ({
       resizeObserver.disconnect();
     };
   }, [onResize]);
-  
+
+  useEffect(() => {
+    onScrollToBottom?.();
+  }, [typedContent]);
+
   return (
     <div 
       ref={containerRef}
