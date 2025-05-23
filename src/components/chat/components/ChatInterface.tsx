@@ -47,15 +47,47 @@ export default function ChatInterface() {
   const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const timer = useRef<any>(null);
   const { containerRef } = useScroll();
-  
 
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = useCallback((isToLastUserMessage?: boolean) => {
+    const getOffsetTopRelativeToContainer = (child: any, container: any) => {
+      const childRect = child?.getBoundingClientRect();
+      const containerRect = container?.getBoundingClientRect();
+      return childRect.top - containerRect.top + container.scrollTop;
+    }
+    const chatContainer = containerRef.current;
+
+    clearTimeout(timer.current);
+
+    if (chatContainer) {
+      if (isToLastUserMessage) {
+        const userMessages = chatContainer.querySelectorAll('[data-role="user"]');
+        const lastUserMessage = userMessages[userMessages.length - 1] as HTMLElement;
+        if (lastUserMessage) {
+          const elementOffset = getOffsetTopRelativeToContainer(lastUserMessage, chatContainer);
+          timer.current = setTimeout(() => {
+            chatContainer.scrollTo({
+              top: elementOffset,
+              behavior: 'smooth'
+            });
+            clearTimeout(timer.current);
+          }, 0);
+          return;
+        }
+      }
+      timer.current = setTimeout(() => {
+        chatContainer.scrollTo({
+          top: chatContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+        clearTimeout(timer.current);
+      }, 0);
+    }
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
+    scrollToBottom(isFromHistory);
   }, [displayMessages, isFromHistory]);
 
   const handleMessageResize = useCallback(() => {
@@ -150,6 +182,7 @@ export default function ChatInterface() {
           return (
             <div
               key={message.id}
+              data-role={message.sender}
               className={`flex items-start mb-4 ${
                 message.sender === "user" ? "justify-end" : "justify-start"
               }`}
