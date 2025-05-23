@@ -129,16 +129,7 @@ const IBGTMobileView = (props: Props) => {
                     : "-"}
                   %
                 </span>
-                <svg
-                  className="absolute bottom-[-6px] left-0"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="46"
-                  height="2"
-                  viewBox="0 0 46 2"
-                  fill="none"
-                >
-                  <path d="M0 1L46 1" stroke="black" strokeDasharray="2 2" />
-                </svg>
+                <div className="border-b border-black border-dashed" />
               </div>
             </div>
           </div>

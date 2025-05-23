@@ -13,6 +13,7 @@ import { useTapSoundStore } from "@/stores/tap-sound";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import MobileHeader from "./header";
 
 const Home = () => {
   const hallStore = useHall()
@@ -56,7 +57,7 @@ const Home = () => {
             : "bg-[#B6DF5D]"
         )}
       >
-        {/* <MobileHeader /> */}
+        <MobileHeader />
 
         <div
           className="w-full h-full overflow-y-scroll overflow-x-hidden scrollbar-hide"
