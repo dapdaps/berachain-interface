@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { bera } from "@/configs/tokens/bera";
-import SwapModal from "@/sections/swap/SwapModal";
 import useSwapStore from "../stores/useSwapStores";
 import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat } from "../utils/chat-service";
@@ -15,11 +14,7 @@ interface SwapCardProps {
 
 const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent }) => {
   const {
-    isSwapModalOpen,
-    closeSwapModal,
     openSwapModal,
-    defaultInputCurrency,
-    defaultOutputCurrency,
     setDefaultInputCurrency,
     setDefaultOutputCurrency,
   } = useSwapStore();
@@ -46,14 +41,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
       setContentFinished(false);
     }
   }, [isTyping, isFromHistory, content]);
-
-  useEffect(() => {
-    return () => {
-      closeSwapModal();
-      setDefaultInputCurrency(null);
-      setDefaultOutputCurrency(null);
-    };
-  }, [closeSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency]);
 
   const handleActionClick = async (actionType: string, params?: any) => {
     if (actionType === "chat") {
@@ -102,15 +89,11 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
 
   const handleAction = async () => {
     if (parsedContent && parsedContent.input_token) {
-      setDefaultInputCurrency?.(parsedContent.input_token);
-    } else {
-      setDefaultInputCurrency?.(defaultInputCurrency);
+      setDefaultInputCurrency(parsedContent.input_token);
     }
 
     if (parsedContent && parsedContent.output_token) {
-      setDefaultOutputCurrency?.(parsedContent.output_token);
-    } else {
-      setDefaultOutputCurrency?.(defaultOutputCurrency);
+      setDefaultOutputCurrency(parsedContent.output_token);
     }
 
     openSwapModal();
@@ -163,22 +146,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
             ))}
           </div>
         )}
-
-      <SwapModal
-        defaultInputCurrency={
-          bera[defaultInputCurrency?.symbol?.toLowerCase()] ||
-          defaultInputCurrency
-        }
-        defaultOutputCurrency={
-          bera[defaultOutputCurrency?.symbol?.toLowerCase()] ||
-          defaultOutputCurrency
-        }
-        show={!!isSwapModalOpen}
-        onClose={() => {
-          closeSwapModal();
-        }}
-        from="ai-chat"
-      />
     </>
   );
 };
