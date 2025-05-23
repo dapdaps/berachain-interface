@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 interface InteractiveMarkdownProps {
+  message: any;
   content: string;
   component?: React.ReactNode;
   onResize?: () => void;
@@ -12,6 +13,7 @@ interface InteractiveMarkdownProps {
 }
 
 const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({ 
+  message,
   content, 
   component,
   onResize,
@@ -25,10 +27,10 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
 
   const { isFromHistory } = useChatContext()
 
-  if (isFromHistory && !skipTyping) {
+  if (isFromHistory && !skipTyping || message.isFromHistory) {
     return (
       <div className="interactive-markdown">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        {!skipTyping && <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>}
         {component}
       </div>
     );
@@ -36,8 +38,8 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
 
   return (
     <div className="interactive-markdown">
-      {!skipTyping && (
-        <TypingMarkdown 
+        {
+          !skipTyping && <TypingMarkdown 
           options={{
             interval: 30,
             step: [1, 3],
@@ -46,7 +48,7 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
           content={content}
           onScrollToBottom={onResize}
         />
-      )}
+        }
       {component}
     </div>
   );

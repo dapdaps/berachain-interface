@@ -15,6 +15,7 @@ export interface Message {
   richContent?: RichMessageContent; // 添加富文本内容字段
   component?: any;
   skipTyping?: boolean;
+  isFromHistory?: boolean;
 }
 
 export type ChatHistory = {

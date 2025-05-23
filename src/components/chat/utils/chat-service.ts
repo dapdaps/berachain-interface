@@ -86,6 +86,7 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
           sender: "assistant",
           senderName: "McBera",
           content: item.reply || "",
+          isFromHistory: true,
         };
         
         if (item.action && item.reply) {
@@ -140,7 +141,7 @@ export const fetchChatHistoryList = async (address: any): Promise<{ code: number
 export const editChatHistoryItemName = async (sessionId: string, title: string): Promise<{ code: number; data: string }> => {
   try {
     const encodedTitle = title.includes('%') ? title : encodeURIComponent(title);
-    const response = await post(`/api/go/chat/conversation/title?sessionId=${sessionId}&title=${encodedTitle}`, { sessionId, title: encodedTitle });
+    const response = await post(`/api/go/chat/conversation/title`, { sessionId, title: encodedTitle });
     return response.data;
   } catch (error) {
     console.error("Edit Chat History Item Name:", error);
