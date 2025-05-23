@@ -86,7 +86,7 @@ export default function InvestCard(props: {
               className
             )}
             onClick={() => {
-              const _defaultProtocol = vault.groupVault.list?.find((it: any) => it.backendId === vault.id);
+              const _defaultProtocol = vault.groupVault?.list?.find((it: any) => it.backendId === vault.id);
               handleOpen(vault.groupVault, _defaultProtocol);
             }}
             {...motionStaggerChildren}
@@ -108,7 +108,7 @@ export default function InvestCard(props: {
                 </div>
                 <div className="text-[12px] font-medium flex items-center gap-[6px] mt-[4px]">
                   <RewardIcon />
-                  <span>{vault.reward_tokens.map((token: any) => token.symbol).join("/")}</span>
+                  <span>{vault.reward_tokens?.map((token: any) => token.symbol).join("/")}</span>
                 </div>
               </div>
               <div className="flex flex-col items-end shrink-0">
