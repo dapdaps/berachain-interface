@@ -4,20 +4,28 @@ import { useChatContext } from '../context/chat-context';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+const DEFAULT_TYPING_OPTIONS = {
+  interval: 30,
+  step: [1, 3],
+  initialIndex: 0,
+};
+
 interface InteractiveMarkdownProps {
   message: any;
   content: string;
   component?: React.ReactNode;
   onResize?: () => void;
-  skipTyping?: boolean; 
+  skipTyping?: boolean;
+  typingOptions?: typeof DEFAULT_TYPING_OPTIONS;
 }
 
-const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({ 
+const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
   message,
-  content, 
+  content,
   component,
   onResize,
-  skipTyping = false
+  skipTyping = false,
+  typingOptions = DEFAULT_TYPING_OPTIONS
 }) => {
   useEffect(() => {
     if (onResize) {
@@ -25,12 +33,15 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
     }
   }, [content, onResize]);
 
-  const { isFromHistory } = useChatContext()
-
-  if (isFromHistory && !skipTyping || message.isFromHistory) {
+  const { isFromHistory } = useChatContext();
+  
+  const shouldShowTyping = !skipTyping;
+  const isHistoryMessage = isFromHistory || message.isFromHistory;
+  const useTypingAnimation = shouldShowTyping && !isHistoryMessage;
+  
+  if (!shouldShowTyping) {
     return (
       <div className="interactive-markdown">
-        {!skipTyping && <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>}
         {component}
       </div>
     );
@@ -38,17 +49,15 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
 
   return (
     <div className="interactive-markdown">
-        {
-          !skipTyping && <TypingMarkdown 
-          options={{
-            interval: 30,
-            step: [1, 3],
-            initialIndex: 0,
-          }}
+      {useTypingAnimation ? (
+        <TypingMarkdown 
+          options={typingOptions}
           content={content}
           onScrollToBottom={onResize}
         />
-        }
+      ) : (
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      )}
       {component}
     </div>
   );
