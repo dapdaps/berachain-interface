@@ -220,6 +220,7 @@ export default function ChatInterface() {
                       <div className="text-gray-500">Thinking...</div>
                     ) : message.sender === "assistant" && message.content ? (
                       <InteractiveMarkdown
+                        message={message}
                         content={message.content}
                         component={message.component}
                         onResize={handleMessageResize}

@@ -28,6 +28,32 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     useChatContext();
 
   const [contentFinished, setContentFinished] = useState(false);
+  
+  const { typedContent, isTyping } = useTypewriter(content || "", {
+    interval: 40,
+    step: [1, 3],
+  });
+  
+  const boldRegex = /\*\*([^*]+)\*\*/;
+  const match = content ? content.match(boldRegex) : null;
+  const symbolName = match ? match[1] : null;
+  const contentParts = content ? content.split(boldRegex) : [];
+
+  useEffect(() => {
+    if (isFromHistory || !content || !isTyping) {
+      setContentFinished(true);
+    } else {
+      setContentFinished(false);
+    }
+  }, [isTyping, isFromHistory, content]);
+
+  useEffect(() => {
+    return () => {
+      closeSwapModal();
+      setDefaultInputCurrency(null);
+      setDefaultOutputCurrency(null);
+    };
+  }, [closeSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency]);
 
   const handleActionClick = async (actionType: string, params?: any) => {
     if (actionType === "chat") {
@@ -88,85 +114,33 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     openSwapModal();
   }
 
+  // 渲染内容
   const renderContent = () => {
     if (!content) {
-      useEffect(() => {
-        setContentFinished(true);
-      }, []);
       return null;
     }
 
-    const boldRegex = /\*\*([^*]+)\*\*/;
-    const match = content.match(boldRegex);
-    
     if (match) {
-      const symbolName = match[1];
-      const parts = content.split(boldRegex);
-
-      if (isFromHistory) {
-        useEffect(() => {
-          setContentFinished(true);
-        }, []);
-        
+      if (isFromHistory || !isTyping) {
         return (
           <div className="markdown-content">
-            {parts[0]}
+            {contentParts[0]}
             <span
               className="font-bold cursor-pointer text-[#471C1C] underline"
               onClick={handleAction}
             >
               {symbolName}
             </span>
-            {parts[2]}
+            {contentParts[2]}
           </div>
         );
       }
-
-      const { typedContent, isTyping } = useTypewriter(content, {
-        interval: 40,
-        step: [1, 3],
-      });
-
-      useEffect(() => {
-        if (!isTyping) {
-          setContentFinished(true);
-        } else {
-          setContentFinished(false);
-        }
-      }, [isTyping]);
-
-      if (isTyping) {
-        return <div className="markdown-content">{typedContent}</div>;
-      }
-
-      return (
-        <div className="markdown-content">
-          {parts[0]}
-          <span
-            className="font-bold cursor-pointer text-[#471C1C] underline"
-            onClick={openSwapModal}
-          >
-            {symbolName}
-          </span>
-          {parts[2]}
-        </div>
-      );
+      
+      return <div className="markdown-content">{typedContent}</div>;
     }
 
-    useEffect(() => {
-      setContentFinished(true);
-    }, []);
-
-    return null;
+    return <div className="markdown-content">{content}</div>;
   };
-
-  useEffect(() => {
-    return () => {
-      closeSwapModal();
-      setDefaultInputCurrency(null);
-      setDefaultOutputCurrency(null);
-    };
-  }, [closeSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency]);
 
   return (
     <>

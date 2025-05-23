@@ -331,13 +331,12 @@ export const sendChatSSERequest = async (
   message: string,
   sessionId: string
 ): Promise<Response> => {
-  let url = `/api/go/chat/conversation?msg=${encodeURIComponent(message)}`;
+  let url = `/api/go/chat/conversation`;
   const data: Record<string, string> = {
-    msg: encodeURIComponent(message),
+    msg: message,
   };
 
   if (sessionId) {
-    url += `&sessionId=${sessionId}`;
     data.sessionId = sessionId;
   }
 
