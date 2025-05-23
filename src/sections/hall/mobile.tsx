@@ -10,7 +10,7 @@ import { memo, useMemo } from "react";
 export default memo(function Mobile() {
   const store = useHall()
 
-  const currentTab = useMemo(() => ["bgt", "ibgt", "validators"].includes(store.currentTab) ? store.currentTab : "bgt")
+  const currentTab = useMemo(() => ["bgt", "ibgt", "validators"].includes(store.currentTab) ? store.currentTab : "validators")
   return (
     <div className="flex flex-col">
       <PageBack className="absolute left-[12px] top-[17px]" />
