@@ -37,7 +37,7 @@ interface ChatContextType {
   setChatHistories: (histories: ChatHistory[]) => void;
   startNewChat: (userMessage: string) => void;
   addMessage: (message: Message) => void;
-  addChatHistory: (history: ChatHistory) => void;
+  addChatHistory: (history?: ChatHistory) => void;
   updateMessages: (messages: Message[]) => void;
   updateMessage: (updatedMessage: Message) => void; 
   sendChatMessage: (message: string) => Promise<void>;

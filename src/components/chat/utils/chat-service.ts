@@ -33,7 +33,6 @@ export const createNewChat = async (
   contextCallbacks?: ChatCallbacks
 ): Promise<{
   messages: Message[];
-  chatHistory: ChatHistory;
 }> => {
   try {
     const { assistantMessage } = createChatMessages(message);
@@ -43,12 +42,9 @@ export const createNewChat = async (
     
     const response = await sendChatSSERequest(message, sessionIdToUse);
     
-    const tempLocalId = Date.now().toString();
-    
     return processSSEStream(
       response,
       assistantMessage,
-      tempLocalId, 
       message,
       contextCallbacks
     ).catch((error) => {

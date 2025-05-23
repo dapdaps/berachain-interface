@@ -5,7 +5,7 @@ import { handleFunctionOutput } from "./chat-action-output";
 export interface ChatCallbacks {
   addMessage?: (message: Message) => void;
   updateMessage?: (message: Message) => void;
-  addChatHistory?: (history: ChatHistory) => void;
+  addChatHistory?: (history?: ChatHistory) => void;
   setSessionId?: (sessionId: string) => void;
   getSessionId?: () => string | null; 
 }
@@ -44,12 +44,10 @@ export const createChatHistory = (
 export const processSSEStream = async (
   response: Response,
   assistantMessage: Message,
-  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks
 ): Promise<{
   messages: Message[];
-  chatHistory: ChatHistory;
 }> => {
   return new Promise((resolve, reject) => {
     if (!response.ok) {
@@ -66,23 +64,14 @@ export const processSSEStream = async (
     let buffer = "";
     const abortController = new AbortController();
 
-    let serverSessionId: string | undefined;
-
     function processStream(
       result: ReadableStreamReadResult<Uint8Array>
     ): Promise<void> {
       if (result.done) {
         console.log("Data stream closed");
 
-        const chatHistory = createChatHistory(
-          localId, 
-          userMessage, 
-          assistantMessage.content, 
-          serverSessionId
-        );
-        
         if (callbacks?.addChatHistory) {
-          callbacks.addChatHistory(chatHistory);
+          callbacks.addChatHistory();
         }
         
         resolve({
@@ -90,7 +79,6 @@ export const processSSEStream = async (
             { id: assistantMessage.id, sender: "user", content: userMessage },
             assistantMessage
           ],
-          chatHistory,
         });
 
         return Promise.resolve();
@@ -124,7 +112,6 @@ export const processSSEStream = async (
           data, 
           fullResponse, 
           assistantMessage, 
-          localId, 
           userMessage, 
           callbacks, 
           abortController,
@@ -148,11 +135,10 @@ export const handleSSEMessage = (
   data: string,
   fullResponse: string,
   assistantMessage: Message,
-  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
+  resolvePromise?: (result: { messages: Message[]; }) => void,
   serverSessionIdRef?: { current?: string }
 ) => {  
   if (event === "meta") {
@@ -178,7 +164,6 @@ export const handleSSEMessage = (
       data, 
       fullResponse, 
       assistantMessage, 
-      localId, 
       userMessage, 
       callbacks, 
       abortController, 
@@ -189,7 +174,6 @@ export const handleSSEMessage = (
       data, 
       fullResponse, 
       assistantMessage, 
-      localId, 
       userMessage, 
       callbacks, 
       abortController, 
@@ -203,12 +187,10 @@ const handleCompletionEvent = (
   data: string,
   fullResponse: string,
   assistantMessage: Message,
-  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void,
-  serverSessionId?: string
+  resolvePromise?: (result: { messages: Message[]; }) => void,
 ): string => {  
   if (data === "[DONE]") {
     let responseContent = fullResponse.trim();
@@ -224,15 +206,9 @@ const handleCompletionEvent = (
       }
     }
 
-    const chatHistory = createChatHistory(
-      localId, 
-      userMessage, 
-      assistantMessage.content,
-      serverSessionId
-    );
 
     if (callbacks?.addChatHistory) {
-      callbacks.addChatHistory(chatHistory);
+      callbacks.addChatHistory();
     }
 
     if (resolvePromise) {
@@ -241,7 +217,6 @@ const handleCompletionEvent = (
           { id: assistantMessage.id, sender: "user", content: userMessage },
           assistantMessage
         ],
-        chatHistory,
       });
     }
 
@@ -293,17 +268,15 @@ const handleDataWithoutEvent = (
   data: string,
   fullResponse: string,
   assistantMessage: Message,
-  localId: string,
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  resolvePromise?: (result: { messages: Message[]; chatHistory: ChatHistory }) => void
+  resolvePromise?: (result: { messages: Message[]; }) => void
 ) => { 
   if (data === "[DONE]") {
-    const chatHistory = createChatHistory(localId, userMessage, assistantMessage.content);
 
     if (callbacks?.addChatHistory) {
-      callbacks.addChatHistory(chatHistory);
+      callbacks.addChatHistory();
     }
 
     if (resolvePromise) {
@@ -312,7 +285,6 @@ const handleDataWithoutEvent = (
           { id: assistantMessage.id, sender: "user", content: userMessage },
           assistantMessage
         ],
-        chatHistory,
       });
     }
 
