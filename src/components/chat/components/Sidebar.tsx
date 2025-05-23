@@ -10,6 +10,7 @@ import { useAccount } from 'wagmi';
 import { ChatHistory } from '../context/chat-context';
 import { useScroll } from '@/components/chat/hooks/useScroll';
 import Popover, { PopoverPlacement } from '@/components/popover';
+import clsx from 'clsx';
 
 const Sidebar = () => {
   const { containerRef } = useScroll();
@@ -35,7 +36,8 @@ const Sidebar = () => {
     updateMessages,
     setSessionId,
     setChatHistories,
-    chatHistories 
+    chatHistories,
+    chatMode
   } = useChatContext();
 
   useEffect(() => {
@@ -186,7 +188,10 @@ const handleDeleteChat = async (e: React.MouseEvent, chat: ChatHistory) => {
     <div className="flex h-[566px]" ref={sidebarRef}>
       <div className="w-[260px] flex flex-col h-full px-2">
         <button 
-          className="mt-6 w-full h-[34px] px-2 flex items-center gap-2 py-2 mb-6 hover:rounded-[10px] hover:border hover:border-[#DAD9CD] hover:bg-[#DAD9CD]/30"
+          className={clsx(
+            "mt-6 w-full h-[34px] px-2 flex items-center gap-2 py-2 mb-6 rounded-[10px] hover:border border-[#DAD9CD] hover:bg-[#DAD9CD]/30",
+            chatMode === 'initial' && "border bg-[#DAD9CD]/30",
+          )}
           onClick={handleNewChat}
         >
             <IconNewChat />
