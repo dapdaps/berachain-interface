@@ -42,7 +42,9 @@ export default function ChatInterface() {
     sessionId,
     isFromHistory,
     setIsFromHistory,
-    setSessionId
+    setSessionId,
+    isProcessing,
+    setIsProcessing
   } = useChatContext();
 
   const {
@@ -106,12 +108,12 @@ export default function ChatInterface() {
   }, []);
 
   const handleSubmit = async () => {
-  if (inputValue.trim() === "") return;
+  if (inputValue.trim() === "" || isProcessing) return;
 
   try {
     const userMessage = inputValue;
     setInputValue("");
-
+    setIsProcessing(true);
     const isNewChat = contextMessages.length === 0;
     setIsFromHistory(false);
     if (!isNewChat) {
@@ -142,7 +144,10 @@ export default function ChatInterface() {
         },
         addChatHistory,
         setSessionId,
-        getSessionId: () => sessionId 
+        getSessionId: () => sessionId,
+        onComplete: () => {
+          setIsProcessing(false);
+        }
       }
     );
     } else {
@@ -164,12 +169,16 @@ export default function ChatInterface() {
         },
         addChatHistory,
         setSessionId,
-        getSessionId: () => null 
+        getSessionId: () => null,
+        onComplete: () => {
+          setIsProcessing(false);
+        }
       });
     }
     
   } catch (error) {
     console.error("Get error:", error);
+    setIsProcessing(false);
     if (contextMessages.length > 0) {
       const updatedMessages = contextMessages.map((msg: Message) =>
         msg.sender === "assistant" && msg.content === ""
@@ -275,10 +284,11 @@ export default function ChatInterface() {
             setIsComposing(false);
           }}
         />
-        <div
-          className="absolute right-3 bottom-3 cursor-pointer"
-          onClick={handleSubmit}
-        >
+      <div
+       onClick={handleSubmit}
+        className={`absolute right-3 bottom-3 ${
+          isProcessing ? 'opacity-40 pointer-events-none' : 'cursor-pointer'
+        }`}>
           <IconSend />
         </div>
       </div>

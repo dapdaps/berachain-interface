@@ -34,7 +34,7 @@ export default function InvestCard(props: {
 
   const config = TYPES[type];
   const { vaultsList, vaultsShowList, handleOpen } = useVaultAction(props);
-  const { addMessage, updateMessage, addChatHistory, setSessionId, sessionId } = useChatContext();
+  const { addMessage, updateMessage, addChatHistory, setSessionId, sessionId, setIsProcessing } = useChatContext();
 
   const { run: handleMessage } = useThrottleFn(async (chatMsg: string) => {
     addMessage({
@@ -51,6 +51,7 @@ export default function InvestCard(props: {
     };
     addMessage(emptyAssistantMessage);
     try {
+      setIsProcessing(true);
       await createNewChat(chatMsg,
         emptyAssistantMessage,
         {
@@ -61,10 +62,14 @@ export default function InvestCard(props: {
         },
         addChatHistory,
         setSessionId,
-        getSessionId: () => sessionId
+        getSessionId: () => sessionId,
+        onComplete: () => {
+          setIsProcessing(false);
+        }
       });
     } catch (err: any) {
       console.log('%s err: %o', chatMsg, err);
+      setIsProcessing(false);
       addMessage({
         id: Date.now().toString(),
         sender: "assistant",

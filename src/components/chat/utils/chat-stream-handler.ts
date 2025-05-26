@@ -8,6 +8,7 @@ export interface ChatCallbacks {
   addChatHistory?: (history?: ChatHistory) => void;
   setSessionId?: (sessionId: string) => void;
   getSessionId?: () => string | null; 
+  onComplete?: () => void; 
 }
 
 export interface RichMessageContent {
@@ -205,7 +206,11 @@ const handleCompletionEvent = (
         });
       }
     }
+    console.log("Final callbacks:", callbacks);
 
+    if (callbacks?.onComplete) {
+      callbacks.onComplete();
+    }
 
     if (callbacks?.addChatHistory) {
       callbacks.addChatHistory();
@@ -278,6 +283,11 @@ const handleDataWithoutEvent = (
     if (callbacks?.addChatHistory) {
       callbacks.addChatHistory();
     }
+
+    if (callbacks?.onComplete) {
+      callbacks.onComplete();
+    }
+
 
     if (resolvePromise) {
       resolvePromise({
