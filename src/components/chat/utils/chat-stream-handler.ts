@@ -9,6 +9,7 @@ export interface ChatCallbacks {
   setSessionId?: (sessionId: string) => void;
   getSessionId?: () => string | null; 
   onComplete?: () => void; 
+  onError?: () => void;
 }
 
 export interface RichMessageContent {
@@ -52,10 +53,16 @@ export const processSSEStream = async (
 }> => {
   return new Promise((resolve, reject) => {
     if (!response.ok) {
+      if (callbacks?.onError) {
+        callbacks.onError();
+      }
       throw new Error(`HTTP Error: ${response.status}`);
     }
 
     if (!response.body) {
+      if (callbacks?.onError) {
+        callbacks.onError();
+      }
       throw new Error("Response body is null");
     }
 
@@ -264,6 +271,9 @@ const handleCompletionEvent = (
       }
     } catch (e) {
       console.error("Failed to parse SSE data:", e, data);
+      if (callbacks?.onError) {
+        callbacks.onError();
+      }
     }
     return fullResponse; 
   }

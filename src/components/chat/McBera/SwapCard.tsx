@@ -74,15 +74,15 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
           addChatHistory,
           setSessionId,
           getSessionId: () => sessionId,
+          onError: () => {
+            updateMessage({
+              ...emptyAssistantMessage,
+              content: "Sorry, I can't assist with that."
+            });
+          }
         });
       } catch (error) {
         console.error("Chat action error:", error);
-        addMessage({
-          id: Date.now().toString(),
-          sender: "assistant",
-          senderName: "McBera",
-          content: "Sorry, I can't assist with that.",
-        });
       }
     }
   };
