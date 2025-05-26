@@ -147,6 +147,13 @@ export default function ChatInterface() {
         getSessionId: () => sessionId,
         onComplete: () => {
           setIsProcessing(false);
+        },
+        onError: () => {
+          updateMessage({
+            ...emptyAssistantMessage,
+            content: "Sorry, I can't assist with that."
+          });
+          setIsProcessing(false);
         }
       }
     );
@@ -172,6 +179,13 @@ export default function ChatInterface() {
         getSessionId: () => null,
         onComplete: () => {
           setIsProcessing(false);
+        },
+        onError: () => {
+          updateMessage({
+            ...emptyAssistantMessage,
+            content: "Sorry, I can't assist with that."
+          });
+          setIsProcessing(false);
         }
       });
     }
@@ -179,19 +193,14 @@ export default function ChatInterface() {
   } catch (error) {
     console.error("Get error:", error);
     setIsProcessing(false);
-    if (contextMessages.length > 0) {
-      const updatedMessages = contextMessages.map((msg: Message) =>
-        msg.sender === "assistant" && msg.content === ""
-          ? { ...msg, content: "Sorry, I can't assist with that." }
-          : msg
-      );
-      setMessages(updatedMessages);
-    } else {
-      addMessage({
-        id: Date.now().toString(),
-        sender: "assistant",
-        senderName: "McBera",
-        content: "Sorry, I can't assist with that.",
+    // 当出现异常时，更新最后一条助手消息而不是添加新消息
+    const lastAssistantMessage = [...contextMessages].reverse().find(
+      msg => msg.sender === "assistant"
+    );
+    if (lastAssistantMessage) {
+      updateMessage({
+        ...lastAssistantMessage,
+        content: "Sorry, I can't assist with that."
       });
     }
   }

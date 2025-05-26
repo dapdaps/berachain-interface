@@ -65,15 +65,20 @@ export default function InvestCard(props: {
         getSessionId: () => sessionId,
         onComplete: () => {
           setIsProcessing(false);
+        },
+        onError: () => {
+          updateMessage({
+            ...emptyAssistantMessage,
+            content: "Sorry, I can't assist with that."
+          });
+          setIsProcessing(false);
         }
       });
     } catch (err: any) {
       console.log('%s err: %o', chatMsg, err);
       setIsProcessing(false);
-      addMessage({
-        id: Date.now().toString(),
-        sender: "assistant",
-        senderName: "McBera",
+      updateMessage({
+        ...emptyAssistantMessage,
         content: "Sorry, I can't assist with that."
       });
     }
