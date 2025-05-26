@@ -29,7 +29,7 @@ const Laptop = ({ params, router, dapp, children, isPool }: any) => {
         showBackText={false}
       />
       {params.dapp === "ooga-booga" ? (
-        <div className="h-[80px]" />
+        <div className="h-[56px]" />
       ) : (
         <SwitchTabs
           tabs={[
