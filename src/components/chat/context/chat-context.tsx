@@ -45,6 +45,8 @@ interface ChatContextType {
   vaults: Vaults;
   isFromHistory: boolean;
   setIsFromHistory: (isFromHistory: boolean) => void;
+  isProcessing: boolean;
+  setIsProcessing: (isProcessing: boolean) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -58,6 +60,8 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   const vaults = useVaults({ vaultsList });
   const [isFromHistory, setIsFromHistory] = useState<boolean>(false);
   const { address } = useAccount();
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  
 
 const startNewChat = (userMessage: string) => {
   const userMessageObj: Message = {
@@ -123,35 +127,41 @@ const startNewChat = (userMessage: string) => {
     );
   };
 
-const sendChatMessage = async (message: string) => {
-  try {
-    setSessionId(null);
-    const { assistantMessageObj } = startNewChat(message);
-    
-    await createNewChat(
-      message,
-      assistantMessageObj, 
-      {
-        updateMessage: (updatedMessage: Message) => {
-          if (updatedMessage.sender === "assistant") {
-            updateMessage(updatedMessage);
+  const sendChatMessage = async (message: string) => {
+    try {
+      setIsProcessing(true);
+      setSessionId(null);
+      const { assistantMessageObj } = startNewChat(message);
+      
+      await createNewChat(
+        message,
+        assistantMessageObj, 
+        {
+          updateMessage: (updatedMessage: Message) => {
+            if (updatedMessage.sender === "assistant") {
+              updateMessage(updatedMessage);
+            }
+          },
+          addChatHistory,
+          setSessionId,
+          getSessionId: () => null,
+          onComplete: () => {
+            console.log("Chat completed");
+            setIsProcessing(false);
           }
-        },
-        addChatHistory,
-        setSessionId,
-        getSessionId: () => null,
-      }
-    );
-  } catch (error) {
-    console.error("Chat error:", error);
-    addMessage({
-      id: Date.now().toString(),
-      sender: "assistant",
-      senderName: "McBera",
-      content: "Sorry, I can't assist with that."
-    });
-  }
-};
+        }
+      );
+    } catch (error) {
+      console.error("Chat error:", error);
+      setIsProcessing(false);
+      addMessage({
+        id: Date.now().toString(),
+        sender: "assistant",
+        senderName: "McBera",
+        content: "Sorry, I can't assist with that."
+      });
+    }
+  };
 
   return (
     <ChatContext.Provider
@@ -174,7 +184,9 @@ const sendChatMessage = async (message: string) => {
         sendChatMessage,
         isFromHistory,
         setIsFromHistory,
-        vaults
+        vaults,
+        isProcessing,
+        setIsProcessing,
       }}
     >
       {children}
