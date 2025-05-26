@@ -62,6 +62,7 @@ const networks = {
     liquidationRatio: "1.25",
     interestRatesApi: "/api.dolomite.io/tokens/80094/interest-rates",
     pricesApi: "/api.dolomite.io/tokens/80094/prices",
+    // upgrade to 0.1.4-fix from 0.1.4
     graphApi:
       "https://api.goldsky.com/api/public/project_clyuw4gvq4d5801tegx0aafpu/subgraphs/dolomite-berachain-mainnet/v0.1.4-fix/gn",
     ...graphConfig,
