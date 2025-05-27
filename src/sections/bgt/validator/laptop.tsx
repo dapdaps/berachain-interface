@@ -36,7 +36,7 @@ export default memo(function Validator(props: any) {
         <Nav pageData={pageData} handleClick={handleClick} />
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 my-[20px]">
           <div className="flex flex-col gap-4 flex-1 p-4 border border-[#9999] rounded-[8px]">
-            <YourBoosts />
+            <YourBoosts pageData={pageData} />
             <Queued />
           </div>
           <IncentivesContextProvider pageData={pageData}>
