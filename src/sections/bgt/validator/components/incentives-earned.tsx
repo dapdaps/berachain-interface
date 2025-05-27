@@ -5,8 +5,10 @@ import { numberFormatter } from "@/utils/number-formatter";
 import { memo } from "react";
 import IncentivesModal from "./incentives-modal";
 import Skeleton from "react-loading-skeleton";
+import useCustomAccount from "@/hooks/use-account";
 
 export default memo(function IncentivesEarned() {
+  const { account } = useCustomAccount()
   const {
     PAGE_SIZE,
     proofs,
@@ -32,7 +34,7 @@ export default memo(function IncentivesEarned() {
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-2">
           {
-            incentivesLoading ? (
+            account ? (incentivesLoading ? (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-[8px]">
                   <Skeleton width={24} />
@@ -63,6 +65,8 @@ export default memo(function IncentivesEarned() {
               )
             }) : (
               <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium">Your claimable incentive rewards will show here.</div>
+            )) : (
+              <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium">Connect your wallet to see any unclaimed incentives.</div>
             )
           }
         </div>

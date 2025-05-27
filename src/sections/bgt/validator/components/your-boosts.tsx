@@ -8,7 +8,9 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import Big from "big.js";
 import Skeleton from "react-loading-skeleton";
 
-export default memo(function YourBoosts() {
+export default memo(function YourBoosts({
+  pageData
+}) {
   const prices: any = usePriceStore(store => store.price);
   const { account, provider } = useCustomAccount()
   const [loading, setLoading] = useState(true)
@@ -18,7 +20,7 @@ export default memo(function YourBoosts() {
     try {
       const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider);
       setLoading(true)
-      const response = await contract?.unboostedBalanceOf(account)
+      const response = await contract?.boosted(account, pageData?.pubkey)
       setBoosts(ethers.utils.formatUnits(response))
     } catch (error) {
       console.log(error)
@@ -26,28 +28,32 @@ export default memo(function YourBoosts() {
     setLoading(false)
   }
   useEffect(() => {
-    account && provider && getBoosts()
-  }, [account, provider])
+    account && provider && pageData && getBoosts()
+  }, [account, pageData, provider])
   return (
     <div className="flex flex-col gap-4">
       <div className="text-xl font-semibold">Your Boosts</div>
-      <div className="flex items-center justify-between font-medium leading-6">
-        {
-          loading ? (
-            <Skeleton width={36} />
-          ) : (
-            <div className="flex items-center gap-[8px]">
-              <div className="w-[24px]">
-                <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />
-              </div>
-              <span className="text-black">
-                {numberFormatter(boosts, 2, true, { isShort: true })} BGT
-              </span>
-            </div>
-          )
-        }
-        <span className="text-[#3D405A]">{numberFormatter(Big(boosts).times(prices?.["iBGT"] ?? 0).toFixed(), 2, true, { isShort: true, prefix: "$" })}</span>
-      </div>
+      {
+        account ? (
+          <div className="flex items-center justify-between font-medium leading-6">
+            {
+              loading ? (
+                <Skeleton width={36} />
+              ) : (
+                <div className="flex items-center gap-[8px]">
+                  <div className="w-[24px]">
+                    <img src="/images/dapps/infrared/bgt.svg" alt="bgt" />
+                  </div>
+                  <span className="text-black">
+                    {numberFormatter(boosts, 2, true, { isShort: true })} BGT
+                  </span>
+                </div>
+              )
+            }
+            <span className="text-[#3D405A]">{numberFormatter(Big(boosts).times(prices?.["iBGT"] ?? 0).toFixed(), 2, true, { isShort: true, prefix: "$" })}</span>
+          </div>
+        ) : <></>
+      }
     </div>
   )
 })

@@ -657,4 +657,14 @@ export const bera: { [key: string]: Token } = {
     icon: "/assets/tokens/bixbt.webp",
     color: "rgb(0,0,0)"
   },
+  qia: {
+    chainId: CHAIN_ID,
+    address: "0x41fc191d145307667ea3e50f244b78de9cddf53f",
+    symbol: "QIA",
+    name: "Quod In Altum",
+    decimals: 18,
+    icon: "",
+    color: "rgb(0,0,0)"
+  },
+
 };
