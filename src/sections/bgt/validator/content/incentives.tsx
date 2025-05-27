@@ -67,9 +67,7 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
   const incentives = useMemo(() => tokenCurrentPrices && handleGetIncentives(proofs), [proofs, tokenCurrentPrices])
 
   const page_incentives = useMemo(() => tokenCurrentPrices && handleGetIncentives(proofs?.slice(page * 100, (page + 1) * 100)), [proofs, tokenCurrentPrices, page])
-  const usd_total_unclaimed = useMemo(() => {
-    return incentives?.reduce((acc, curr) => acc = Big(acc).plus(curr?.usd_total_unclaimed ?? 0).toFixed(), 0)
-  }, [incentives])
+  const usd_total_unclaimed = useMemo(() => incentives?.reduce((acc, curr) => acc = Big(acc).plus(curr?.usd_total_unclaimed ?? 0).toFixed(), 0), [incentives])
   const max_page = useMemo(() => Math.ceil(proofs?.length / 100) - 1, [proofs])
 
   const { run: onChangePage } = useDebounceFn((type) => {
@@ -100,7 +98,7 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
     const priceMap = {
     }
     response?.data?.tokenGetCurrentPrices?.forEach(token => {
-      priceMap[token?.address] = token?.price
+      priceMap[token?.address?.toLocaleLowerCase()] = token?.price
     })
     setTokenCurrentPrices(priceMap)
   }
@@ -110,14 +108,13 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
     const tokenMap = {};
     rewards?.forEach(reward => {
       const token = reward.token;
-      if (!tokenMap[token]) {
-        const total_unclaimed = Big(tokenMap?.[token]?.total_unclaimed ?? 0)
-        tokenMap[token] = {
-          token: reward.token,
-          total_unclaimed: Big(total_unclaimed).plus(reward?.amount ?? 0).toFixed(),
-          available_at: reward.available_at
-        };
-      }
+      const total_unclaimed = Big(tokenMap?.[token]?.total_unclaimed ?? 0)
+      tokenMap[token] = {
+        token: reward.token,
+        total_unclaimed: Big(total_unclaimed).plus(reward?.amount ?? 0).toFixed(),
+        count: (tokenMap?.[token]?.count ?? 0 + 1),
+        available_at: reward.available_at
+      };
     });
     return Object.values(tokenMap).sort((a, b) => b.available_at - a.available_at)?.map(reward => {
       const token = TOKENS?.[reward?.token?.toLowerCase()]
@@ -126,7 +123,7 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
         ...token,
         ...reward,
         total_unclaimed,
-        usd_total_unclaimed: Big(total_unclaimed).times(tokenCurrentPrices?.[token?.address] ?? 0).toFixed()
+        usd_total_unclaimed: Big(total_unclaimed).times(tokenCurrentPrices?.[token?.address?.toLocaleLowerCase()] ?? 0).toFixed()
       }
     })
   }
@@ -191,7 +188,11 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
     setIncentivesLoading(false)
   }
   useEffect(() => {
-    pageData && account && Object.keys(prices).length > 0 && getProofs()
+    if (pageData && account && Object.keys(prices).length > 0) {
+      getProofs()
+    } else {
+      setProofs(null)
+    }
   }, [pageData, prices, account])
   return (
     <IncentivesContext.Provider
