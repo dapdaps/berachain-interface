@@ -1,11 +1,12 @@
-import { BGT_ADDRESS } from "@/hooks/use-bgt";
-import { memo, useEffect, useState } from "react";
-import { BGT_ABI } from "@/sections/bgt/abi";
 import useCustomAccount from "@/hooks/use-account";
-import { ethers } from "ethers";
-import { numberFormatter } from "@/utils/number-formatter";
+import { BGT_ADDRESS } from "@/hooks/use-bgt";
+import { BGT_ABI } from "@/sections/bgt/abi";
 import { usePriceStore } from "@/stores/usePriceStore";
+import { asyncFetch } from "@/utils/http";
+import { numberFormatter } from "@/utils/number-formatter";
 import Big from "big.js";
+import { ethers } from "ethers";
+import { memo, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 export default memo(function YourBoosts({
@@ -16,6 +17,29 @@ export default memo(function YourBoosts({
   const [loading, setLoading] = useState(true)
 
   const [boosts, setBoosts] = useState(0)
+  const [bgtPrice, setBgtPrice] = useState(0)
+
+
+  async function handleGetBgtPrice() {
+    const response = await asyncFetch("https://api.berachain.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        operationName: "GetTokenCurrentPrices",
+        variables: {
+          "chains": [
+            "BERACHAIN"
+          ],
+          "addressIn": [BGT_ADDRESS]
+        },
+        query:
+          "query GetTokenCurrentPrices($chains: [GqlChain!]!, $addressIn: [String!]!) {\n  tokenGetCurrentPrices(chains: $chains, addressIn: $addressIn) {\n    address\n    chain\n    price\n    updatedAt\n    updatedBy\n    __typename\n  }\n}"
+      })
+    })
+    setBgtPrice(response?.data?.tokenGetCurrentPrices?.[0]?.price)
+  }
   async function getBoosts() {
     try {
       const contract = new ethers.Contract(BGT_ADDRESS, BGT_ABI, provider);
@@ -27,8 +51,12 @@ export default memo(function YourBoosts({
     }
     setLoading(false)
   }
+
   useEffect(() => {
-    account && provider && pageData && getBoosts()
+    if (account && provider && pageData) {
+      getBoosts()
+      handleGetBgtPrice()
+    }
   }, [account, pageData, provider])
   return (
     <div className="flex flex-col gap-4">
@@ -50,7 +78,7 @@ export default memo(function YourBoosts({
                 </div>
               )
             }
-            <span className="text-[#3D405A]">{numberFormatter(Big(boosts).times(prices?.["iBGT"] ?? 0).toFixed(), 2, true, { isShort: true, prefix: "$" })}</span>
+            <span className="text-[#3D405A]">{numberFormatter(Big(boosts).times(bgtPrice ?? 0).toFixed(), 2, true, { isShort: true, prefix: "$" })}</span>
           </div>
         ) : <></>
       }
