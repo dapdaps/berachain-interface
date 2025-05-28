@@ -95,7 +95,7 @@ const handleSpecialEmptyResponse = (
       }
       break;
     case "getWalletAssets":
-      messageText = "No assets found. Try bridging some assets to get started: [Bridge Bera](/bridge)";
+      messageText = "No assets found. Try bridging some assets to get started: [Bridge Bera](/bridge/lifi?fromToken=eth&toToken=bera)";
       break;
     case "getInterestVaults":
       messageText = "No top vaults found. More vaults you might be interested in:";
