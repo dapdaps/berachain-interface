@@ -30,7 +30,7 @@ export const createChatMessages = (message: string): {
 
 export const createNewChat = async (
   message: string,
-  assistantMessage: Message, // 添加这个参数，接收外部创建的消息对象
+  assistantMessage: Message, 
   contextCallbacks?: ChatCallbacks
 ): Promise<{
   messages: Message[];
@@ -62,23 +62,24 @@ interface ChatMessageResponse {
   message: string;
   reply: string;
   action: string;
+  extra?: string; 
   timestamp: number;
 }
 
 export const fetchChatHistory = async (address: string, sessionId: string): Promise<Message[]> => {
   try {
-
     const response = await get(`/api/go/chat/conversation/message?address=${address}&sessionId=${sessionId}`);
-
     const historyMessages: Message[] = [];
     
     if (response.data && Array.isArray(response.data)) {
       response.data.forEach((item: ChatMessageResponse, index: number) => {
-        historyMessages.push({
-          id: `user-${Date.now()}-${index}`,
-          sender: "user",
-          content: item.message ? decodeURIComponent(item.message) : "",
-        });
+        if (item.message && item.message.trim() !== "") {
+          historyMessages.push({
+            id: `user-${Date.now()}-${index}`,
+            sender: "user",
+            content: decodeURIComponent(item.message),
+          });
+        }
         
         const assistantMessage: Message = {
           id: `assistant-${Date.now()}-${index}`,
@@ -88,32 +89,37 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
           isFromHistory: true,
         };
         
-        if (item.action && item.reply) {
+        const historyCallbacks: ChatCallbacks = {
+          updateMessage: (updatedMessage: Message) => {
+            assistantMessage.content = updatedMessage.content;
+            assistantMessage.richContent = updatedMessage.richContent;
+            assistantMessage.skipTyping = updatedMessage.skipTyping;
+            assistantMessage.component = updatedMessage.component;
+          }
+        };
+        
+        if (item.action) {
+          const functionType = item.action;
+          const functionContent = item.reply || "";
+          const extra = item.extra;
+          
           try {
-            const functionOutput = item.action;
-            const functionContent = item.reply;
-            
-            const historyCallbacks: ChatCallbacks = {
-              updateMessage: (updatedMessage: Message) => {
-                assistantMessage.content = updatedMessage.content;
-                assistantMessage.richContent = updatedMessage.richContent;
-                assistantMessage.skipTyping = updatedMessage.skipTyping;
-                assistantMessage.component = updatedMessage.component;
-              }
-            };
-            
             handleFunctionOutput(
-              functionOutput, 
+              functionType, 
               functionContent, 
               assistantMessage,
-              historyCallbacks
+              historyCallbacks,
+              extra
             );
           } catch (e) {
             console.error("Failed to parse function output in history:", e);
+            if (item.reply === "") {
+              assistantMessage.content = "Sorry, no results found. Please try asking a different question.";
+            }
           }
-        } else if (item.reply === "") {
-          const errorMessage = "Sorry, no results found. Please try asking a different question.";
-          assistantMessage.content = errorMessage
+        } 
+        else if (item.reply === "") {
+          assistantMessage.content = "Sorry, no results found. Please try asking a different question.";
         }
         
         historyMessages.push(assistantMessage);
@@ -157,3 +163,13 @@ export const deleteChatHistoryItem = async (sessionId: string): Promise<{ code: 
     throw error;
   }
 };
+
+export const postAddMessageItem = async (reply: string, sessionId: string) => {
+  try {
+    const response = await post(`/api/go/chat/message/add`, { reply, sessionId });
+    return response.data;
+  } catch (error) {
+    console.error("Add Message Item:", error);
+    throw error;
+  }
+}

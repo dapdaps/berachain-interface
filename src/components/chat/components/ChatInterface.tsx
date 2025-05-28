@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
-import { createNewChat } from "../utils/chat-service";
+import { createNewChat, postAddMessageItem } from "../utils/chat-service";
 import InteractiveMarkdown from "./InteractiveMarkdown";
 import { useScroll } from '@/components/chat/hooks/useScroll';
 
@@ -222,6 +222,8 @@ export default function ChatInterface() {
     }
   };
 
+  console.log("ChatInterface rendered with messages:", displayMessages);
+
   return (
     <div className="flex flex-col w-[560px] mx-auto">
       <div
@@ -339,6 +341,7 @@ export default function ChatInterface() {
           };
           setIsFromHistory(false);
           addMessage(successMessage);
+          postAddMessageItem(messageContent, sessionId!)
         }}
         from="ai-chat"
       />
