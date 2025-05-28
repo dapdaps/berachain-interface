@@ -26,6 +26,7 @@ type SSEResponseType = {
   text?: string;
   function?: string;
   sessionId?: string;
+  extra?: string;
 };
 
 
@@ -255,7 +256,10 @@ const handleCompletionEvent = (
         return updatedResponse; 
       } else if (jsonData.type === "Action" && jsonData.function) {
         console.log("Action --- model jsonData:", jsonData);
-        if (jsonData.text === '') {
+        if (jsonData.text === '' && 
+            ["getVaultsPositions", "getWalletAssets", "getInterestVaults"].includes(jsonData.function)) {
+          handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks, jsonData.extra);
+        } else if (jsonData.text === '') {
           const errorMessage = "Sorry, no results found. Please try asking a different question.";
           assistantMessage.content = errorMessage;
           

@@ -222,6 +222,8 @@ export default function ChatInterface() {
     }
   };
 
+  console.log("ChatInterface rendered with messages:", displayMessages);
+
   return (
     <div className="flex flex-col w-[560px] mx-auto">
       <div

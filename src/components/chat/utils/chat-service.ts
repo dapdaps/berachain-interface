@@ -62,14 +62,13 @@ interface ChatMessageResponse {
   message: string;
   reply: string;
   action: string;
+  extra?: string; 
   timestamp: number;
 }
 
 export const fetchChatHistory = async (address: string, sessionId: string): Promise<Message[]> => {
   try {
-
     const response = await get(`/api/go/chat/conversation/message?address=${address}&sessionId=${sessionId}`);
-
     const historyMessages: Message[] = [];
     
     if (response.data && Array.isArray(response.data)) {
@@ -88,34 +87,41 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
           isFromHistory: true,
         };
         
-        if (item.action && item.reply) {
+        const historyCallbacks: ChatCallbacks = {
+          updateMessage: (updatedMessage: Message) => {
+            assistantMessage.content = updatedMessage.content;
+            assistantMessage.richContent = updatedMessage.richContent;
+            assistantMessage.skipTyping = updatedMessage.skipTyping;
+            assistantMessage.component = updatedMessage.component;
+          }
+        };
+        
+        if (item.action) {
+          const functionType = item.action;
+          const functionContent = item.reply || "";
+          const extra = item.extra;
+          
           try {
-            const functionOutput = item.action;
-            const functionContent = item.reply;
-            
-            const historyCallbacks: ChatCallbacks = {
-              updateMessage: (updatedMessage: Message) => {
-                assistantMessage.content = updatedMessage.content;
-                assistantMessage.richContent = updatedMessage.richContent;
-                assistantMessage.skipTyping = updatedMessage.skipTyping;
-                assistantMessage.component = updatedMessage.component;
-              }
-            };
-            
             handleFunctionOutput(
-              functionOutput, 
+              functionType, 
               functionContent, 
               assistantMessage,
-              historyCallbacks
+              historyCallbacks,
+              extra
             );
           } catch (e) {
             console.error("Failed to parse function output in history:", e);
+            // 如果处理失败，确保显示一个默认消息
+            if (item.reply === "") {
+              assistantMessage.content = "Sorry, no results found. Please try asking a different question.";
+            }
           }
-        } else if (item.reply === "") {
-          const errorMessage = "Sorry, no results found. Please try asking a different question.";
-          assistantMessage.content = errorMessage
+        } 
+        else if (item.reply === "") {
+          assistantMessage.content = "Sorry, no results found. Please try asking a different question.";
         }
         
+        // 添加助手消息到历史记录
         historyMessages.push(assistantMessage);
       });
     }
