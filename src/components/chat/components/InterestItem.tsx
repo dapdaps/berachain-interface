@@ -14,7 +14,7 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
   const { toggleActionVisible } = useVaultsV2Context();
 
   const currentProtocol = useMemo(() => {
-    return item.groupVault.list.find((it: any) => it.backendId === item.id);
+    return item?.groupVault.list.find((it: any) => it.backendId === item.id);
   }, [item]);
 
   const handleClick = () => {

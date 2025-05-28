@@ -30,7 +30,7 @@ export const createChatMessages = (message: string): {
 
 export const createNewChat = async (
   message: string,
-  assistantMessage: Message, // 添加这个参数，接收外部创建的消息对象
+  assistantMessage: Message, 
   contextCallbacks?: ChatCallbacks
 ): Promise<{
   messages: Message[];
@@ -73,11 +73,13 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
     
     if (response.data && Array.isArray(response.data)) {
       response.data.forEach((item: ChatMessageResponse, index: number) => {
-        historyMessages.push({
-          id: `user-${Date.now()}-${index}`,
-          sender: "user",
-          content: item.message ? decodeURIComponent(item.message) : "",
-        });
+        if (item.message && item.message.trim() !== "") {
+          historyMessages.push({
+            id: `user-${Date.now()}-${index}`,
+            sender: "user",
+            content: decodeURIComponent(item.message),
+          });
+        }
         
         const assistantMessage: Message = {
           id: `assistant-${Date.now()}-${index}`,
@@ -111,7 +113,6 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
             );
           } catch (e) {
             console.error("Failed to parse function output in history:", e);
-            // 如果处理失败，确保显示一个默认消息
             if (item.reply === "") {
               assistantMessage.content = "Sorry, no results found. Please try asking a different question.";
             }
@@ -121,7 +122,6 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
           assistantMessage.content = "Sorry, no results found. Please try asking a different question.";
         }
         
-        // 添加助手消息到历史记录
         historyMessages.push(assistantMessage);
       });
     }
@@ -163,3 +163,13 @@ export const deleteChatHistoryItem = async (sessionId: string): Promise<{ code: 
     throw error;
   }
 };
+
+export const postAddMessageItem = async (reply: string, sessionId: string) => {
+  try {
+    const response = await post(`/api/go/chat/message/add`, { reply, sessionId });
+    return response.data;
+  } catch (error) {
+    console.error("Add Message Item:", error);
+    throw error;
+  }
+}
