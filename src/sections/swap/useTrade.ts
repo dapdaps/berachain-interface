@@ -174,7 +174,14 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
           tx: transactionHash,
           chainId
         });
-        onSuccess?.();
+        onSuccess?.({
+          inputCurrency: trade.inputCurrency,
+          outputCurrency: trade.outputCurrency,
+          inputCurrencyAmount: trade.inputCurrencyAmount,
+          outputCurrencyAmount: trade.outputCurrencyAmount,
+          transactionHash: transactionHash,
+          tradeFrom: trade.name,
+        });
       } else {
         toast.fail({ title: `Swap failed!` });
       }

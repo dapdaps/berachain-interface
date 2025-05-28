@@ -19,6 +19,16 @@ export type MessageType = {
   senderName?: string;
 };
 
+interface ITrade {
+  inputCurrencyAmount: string;
+  outputCurrencyAmount: string;
+  inputCurrency: any;
+  outputCurrency: any;
+  transactionHash: string;
+  tradeFrom: string;
+}
+
+
 const UserAvatar: React.FC = () => {
   const { userInfo } = useUser();
   const { address } = useAccount();
@@ -193,7 +203,6 @@ export default function ChatInterface() {
   } catch (error) {
     console.error("Get error:", error);
     setIsProcessing(false);
-    // 当出现异常时，更新最后一条助手消息而不是添加新消息
     const lastAssistantMessage = [...contextMessages].reverse().find(
       msg => msg.sender === "assistant"
     );
@@ -315,6 +324,21 @@ export default function ChatInterface() {
         show={!!isSwapModalOpen}
         onClose={() => {
           closeSwapModal();
+        }}
+        onSuccess={(trade: ITrade) => {
+          const successMessageId = Date.now().toString();
+          const txUrl = `https://berascan.com/tx/${trade.transactionHash}`;
+
+          const messageContent = `You swapped ${trade.inputCurrencyAmount} ${trade.inputCurrency?.symbol || ''} for ${trade.outputCurrencyAmount} ${trade.outputCurrency?.symbol || ''} via ${trade.tradeFrom}\n Here is Tx: [${txUrl}](${txUrl})`;
+
+          const successMessage: Message = {
+            id: successMessageId,
+            sender: "assistant",
+            senderName: "McBera",
+            content: messageContent,
+          };
+          setIsFromHistory(false);
+          addMessage(successMessage);
         }}
         from="ai-chat"
       />

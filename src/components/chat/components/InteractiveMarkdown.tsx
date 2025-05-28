@@ -56,7 +56,13 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
           onScrollToBottom={onResize}
         />
       ) : (
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <ReactMarkdown
+        components={{
+          a: ({ node, ...props }) => (
+            <a {...props} target="_blank" rel="noopener noreferrer" />
+          ),
+        }}
+         remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       )}
       {component}
     </div>

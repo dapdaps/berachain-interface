@@ -89,6 +89,10 @@ const startNewChat = (userMessage: string) => {
 };
   
   const addMessage = (message: Message) => {
+
+    console.log("Adding message:", message);
+    console.log("messages:", messages);
+
     setMessages(prev => [...prev, message]);
   };
   

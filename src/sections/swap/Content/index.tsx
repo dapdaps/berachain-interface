@@ -47,10 +47,10 @@ export default function Swap({
     chainId: DEFAULT_CHAIN_ID,
     template: dapp.name,
     from,
-    onSuccess: () => {
+    onSuccess: (trade: any) => {
       setUpdater(Date.now());
       runQuoter();
-      onSuccess?.();
+      onSuccess?.(trade);
     }
   });
 
