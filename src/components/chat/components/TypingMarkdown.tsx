@@ -50,7 +50,13 @@ const TypingMarkdown: React.FC<TypingMarkdownProps> = ({
       className={clsx(className)} 
       data-typing={isTyping ? 'true' : 'false'}
     >
-       <ReactMarkdown remarkPlugins={[remarkGfm]}>{typedContent}</ReactMarkdown>
+       <ReactMarkdown 
+        components={{
+          a: ({node, ...props}) => (
+            <a {...props} target="_blank" rel="noopener noreferrer" />
+          ),
+        }}
+        remarkPlugins={[remarkGfm]}>{typedContent}</ReactMarkdown>
     </div>
   );
 };
