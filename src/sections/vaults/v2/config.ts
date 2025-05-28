@@ -272,14 +272,14 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       token: bera["henlo"]
     },
     {
-      reg: /^Pollen$/i,
+      reg: /^POLLEN$/i,
       label: "POLLEN",
       icon: getTokenLogo("POLLEN"),
       sort: 24,
       token: bera["pollen"]
     },
     {
-      reg: /^wizz$/i,
+      reg: /^WIZZ$/i,
       label: "WIZZ",
       icon: getTokenLogo("WIZZ"),
       sort: 25,
