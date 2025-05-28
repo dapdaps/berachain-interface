@@ -263,7 +263,28 @@ export const FILTERS: Record<FILTER_KEYS, FilterItem[]> = {
       icon: getTokenLogo("USDbr"),
       sort: 21,
       token: bera["usdbr"]
-    }
+    },
+    {
+      reg: /^HENLO$/i,
+      label: "HENLO",
+      icon: getTokenLogo("HENLO"),
+      sort: 23,
+      token: bera["henlo"]
+    },
+    {
+      reg: /^POLLEN$/i,
+      label: "POLLEN",
+      icon: getTokenLogo("POLLEN"),
+      sort: 24,
+      token: bera["pollen"]
+    },
+    {
+      reg: /^WIZZ$/i,
+      label: "WIZZ",
+      icon: getTokenLogo("WIZZ"),
+      sort: 25,
+      token: bera["wizz"]
+    },
     // { reg: /^STGUSDC$/i, label: "STGUSDC", icon: getTokenLogo("USDC"), token: bera.usdc },
   ],
   [FILTER_KEYS.REWARDS]: [
