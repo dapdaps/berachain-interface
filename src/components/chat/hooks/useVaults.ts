@@ -12,7 +12,7 @@ export function useVaults(props: { vaultsList: List }): Vaults {
 
   const { account } = useCustomAccount();
 
-  const { runAsync: getRecommendList, data: recommendList, loading: recommendListLoading } = useRequest(async () => {
+  const { runAsync: getRecommendList, data: recommendList, loading: recommendListLoading, mutate: setRecommendList } = useRequest(async () => {
     if (!account) return [];
     try {
       const res = await get("/api/go/vaults/interest", { address: account });
@@ -65,6 +65,10 @@ export function useVaults(props: { vaultsList: List }): Vaults {
     return [];
   });
 
+  const resetRecommendList = () => {
+    setRecommendList([]);
+  };
+
   useEffect(() => {
     if (!account) return;
     getRecommendList();
@@ -77,6 +81,7 @@ export function useVaults(props: { vaultsList: List }): Vaults {
     getRecommendChat,
     recommendChat,
     recommendChatLoading,
+    resetRecommendList,
   };
 }
 
@@ -87,4 +92,5 @@ export interface Vaults {
   getRecommendChat: () => Promise<any>;
   recommendChat: any;
   recommendChatLoading: boolean;
+  resetRecommendList: () => void;
 }

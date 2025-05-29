@@ -47,6 +47,7 @@ interface ChatContextType {
   setIsFromHistory: (isFromHistory: boolean) => void;
   isProcessing: boolean;
   setIsProcessing: (isProcessing: boolean) => void;
+  resetChatState: () => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -62,6 +63,17 @@ export const ChatProvider: React.FC<{ children: ReactNode; vaultsList: List; }> 
   const { address } = useAccount();
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
   
+
+const resetChatState = () => {
+    setChatMode('initial');
+    setMessages([]);
+    setIsFromHistory(false);
+    setSessionId(null);
+    setChatHistories([]);
+    if (vaults.resetRecommendList) {
+      vaults.resetRecommendList();
+    }
+  };
 
 const startNewChat = (userMessage: string) => {
   const userMessageObj: Message = {
@@ -191,6 +203,7 @@ const startNewChat = (userMessage: string) => {
         vaults,
         isProcessing,
         setIsProcessing,
+        resetChatState
       }}
     >
       {children}

@@ -59,36 +59,50 @@ const Sidebar = () => {
     }
   }, [editingChatId]);
 
-  useEffect(() => {
-    const loadChatHistories = async () => {
-      if (address) {
-        setIsLoading(true);
-        try {
-          const response = await fetchChatHistoryList(address);
-          if (response && response.data && response.data.length > 0) {
-            const sortedHistories = [...response.data].sort((a, b) => {
-              return b.timestamp - a.timestamp;
-            });
-            setLocalChatHistories(sortedHistories);
-            setChatHistories(sortedHistories);
-          }
-        } catch (error) {
-          console.error("Get history failed:", error);
-        } finally {
-          setIsLoading(false);
+useEffect(() => {
+  const loadChatHistories = async () => {
+    if (address) {
+      setIsLoading(true);
+      try {
+        const response = await fetchChatHistoryList(address);
+        if (response && response.data && response.data.length > 0) {
+          const sortedHistories = [...response.data].sort((a, b) => {
+            return b.timestamp - a.timestamp;
+          });
+          setLocalChatHistories(sortedHistories);
+          setChatHistories(sortedHistories);
         }
+      } catch (error) {
+        console.error("Get history failed:", error);
+      } finally {
+        setIsLoading(false);
       }
-    };
-
-    loadChatHistories();
-  }, [address, setChatHistories]);
-  
-  useEffect(() => {
-    if (chatHistories && chatHistories.length > 0) {
-      setLocalChatHistories(chatHistories);
-      setActiveChat(sessionId);
+    } else {
+      setLocalChatHistories([]);
+      setActiveChat(null);
+      setEditingChatId(null);
+      setShowPopover(false);
+      setHoverChat(null);
+      setPopoverChat(null);
     }
-  }, [chatHistories]);
+  };
+
+  loadChatHistories();
+}, [address, setChatHistories]);
+  
+useEffect(() => {
+  if (chatHistories && chatHistories.length > 0) {
+    setLocalChatHistories(chatHistories);
+    setActiveChat(sessionId);
+  } else if (chatHistories && chatHistories.length === 0) {
+    setLocalChatHistories([]);
+    setActiveChat(null);
+    setEditingChatId(null);
+    setShowPopover(false);
+    setHoverChat(null);
+    setPopoverChat(null);
+  }
+}, [chatHistories, sessionId]);
   
   const handleNewChat = () => {
     setChatMode('initial');

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IconSend from "@public/images/chat/send.svg";
 import InterestItem from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
@@ -10,10 +10,18 @@ export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
   const [selectedOption, setSelectedOption] = useState<any>();
 
-  const { sendChatMessage, vaults, setIsFromHistory } = useChatContext();
+  const { sendChatMessage, vaults, setIsFromHistory, resetChatState } =
+    useChatContext();
 
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { open } = useAppKit();
+
+  useEffect(() => {
+    console.log("ChatInterface mounted with address:", address);
+    if (!isConnected && !address) {
+      resetChatState();
+    }
+  }, [address]);
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
