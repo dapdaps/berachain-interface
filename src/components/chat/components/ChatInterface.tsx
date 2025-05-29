@@ -55,7 +55,10 @@ export default function ChatInterface() {
     setIsFromHistory,
     setSessionId,
     isProcessing,
-    setIsProcessing
+    setChatMode,
+    setIsProcessing,
+    setChatHistories,
+    resetChatState
   } = useChatContext();
 
   const {
@@ -74,8 +77,16 @@ export default function ChatInterface() {
   const timer = useRef<any>(null);
   const { containerRef } = useScroll();
 
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { open } = useAppKit();
+
+
+  useEffect(() => {
+    console.log("ChatInterface mounted with address:", address);
+    if (!isConnected && !address) {
+      resetChatState();
+    }
+  }, [address]);
 
   const scrollToBottom = useCallback((isToLastUserMessage?: boolean) => {
     const getOffsetTopRelativeToContainer = (child: any, container: any) => {
