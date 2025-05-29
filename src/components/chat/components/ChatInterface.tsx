@@ -11,6 +11,7 @@ import { useScroll } from '@/components/chat/hooks/useScroll';
 import useSwapStore from "../stores/useSwapStores";
 import SwapModal from "@/sections/swap/SwapModal";
 import { bera } from "@/configs/tokens/bera";
+import { useAppKit } from "@reown/appkit/react";
 
 export type MessageType = {
   id: string;
@@ -73,6 +74,9 @@ export default function ChatInterface() {
   const timer = useRef<any>(null);
   const { containerRef } = useScroll();
 
+  const { address } = useAccount();
+  const { open } = useAppKit();
+
   const scrollToBottom = useCallback((isToLastUserMessage?: boolean) => {
     const getOffsetTopRelativeToContainer = (child: any, container: any) => {
       const childRect = child?.getBoundingClientRect();
@@ -118,6 +122,12 @@ export default function ChatInterface() {
   }, []);
 
   const handleSubmit = async () => {
+
+  if (!address) {
+    open();
+    return;
+  }
+
   if (inputValue.trim() === "" || isProcessing) return;
 
   try {
