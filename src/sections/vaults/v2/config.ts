@@ -470,3 +470,12 @@ export enum PAGINATION_ACTION {
   NEXT = "next",
   LAST = "last"
 }
+
+export const DISABLED_DEPOSIT_VAULTS = [
+  {
+    project: "D2 Finance",
+    pool_project: "D2 Finance",
+    pool_address: "0x549943e04f40284185054145c6e4e9568c1d3241",
+    vault_address: "0x36b933554782b108bb9962ac00c498acbceb706d",
+  },
+];

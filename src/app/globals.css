@@ -119,7 +119,6 @@ body::-webkit-scrollbar,
 div::-webkit-scrollbar {
   width: 6px;
   height: 6px;
-  /**/
 }
 body::-webkit-scrollbar-track,
 div::-webkit-scrollbar-track {
@@ -207,4 +206,14 @@ input[type="number"]::-webkit-inner-spin-button {
   @media (max-width: 900px) {
     font-size: 24px;
   };
+}
+.interactive-markdown {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.interactive-markdown a {
+  text-decoration: underline;
+  font-weight: 700;
+  font-family: 'Montserrat'
 }

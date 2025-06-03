@@ -8,6 +8,7 @@ import useClickTracking from "@/hooks/use-click-tracking";
 import { BASE_URL, get } from '@/utils/http';
 import axios from 'axios';
 import { useRequest } from 'ahooks';
+import { maxBy } from 'lodash';
 
 export function useVaultsV2(): VaultsV2 {
   const [actionVisible, setActionVisible] = useState(false);
@@ -34,8 +35,9 @@ export function useVaultsV2(): VaultsV2 {
     visible?: boolean;
     type?: ACTION_TYPE;
     record?: any;
+    defaultProtocol?: any;
   }) => {
-    const { visible: _actionVisible, type: _actionType, record } = params ?? {};
+    const { visible: _actionVisible, type: _actionType, record, defaultProtocol } = params ?? {};
 
     if (_actionVisible) {
       handleReportWithoutDebounce("1022-001-009", record.pool_address);
@@ -48,7 +50,11 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
-    setCurrentProtocol(_actionVisible && record ? record.list?.[0] : null);
+    let maxApyRecord = maxBy(record?.list ?? [], (item: any) => item.totalApy.toNumber());
+    if (defaultProtocol) {
+      maxApyRecord = defaultProtocol;
+    }
+    setCurrentProtocol(_actionVisible && record ? maxApyRecord : null);
   };
 
   const toggleActionType = (_actionType?: ActionType) => {
@@ -146,6 +152,7 @@ export interface VaultsV2 {
     visible?: boolean;
     type?: ACTION_TYPE;
     record?: any;
+    defaultProtocol?: any;
   }) => void;
   claimVisible: boolean;
   toggleClaimVisible: (claimVisible?: boolean, reward?: any) => void;

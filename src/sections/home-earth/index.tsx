@@ -18,10 +18,15 @@ import { createRotateAnimation } from "@/sections/home-earth/utils";
 import MobileHome from "@/sections/home/mobile";
 import { useActivityStore } from "@/stores/useActivityStore";
 import clsx from "clsx";
-import { motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useEffect, useRef, useState } from "react";
 import { HomeEarthContext } from "./context";
 import Boyco from "../boyco";
+import McBeraProvider from '@/sections/home-earth/mc-bera/context';
+import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
+import dynamic from 'next/dynamic';
+
+const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 
 // seconds per lap
 const SPEED = 200;
@@ -35,6 +40,19 @@ const BG_SIZE_MAP = {
 const HomeEarth = () => {
   const isMobile = useIsMobile();
   const { isRainyDay, beraPrice } = useRainyDay();
+  const { scrollY } = useScroll();
+
+  const [earthY, setEarthY] = useState(0);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // @ts-ignore
+    const diff = latest - scrollY?.getPrevious();
+    // down
+    if (diff > 0) {
+      setEarthY(-Math.min(Math.max(latest, 0), 230));
+      return;
+    }
+    setEarthY(0);
+  });
 
   const bearRef = useRef<any>();
 
@@ -59,6 +77,7 @@ const HomeEarth = () => {
   const navigationDragEndedTimesRef = useRef(0);
   const navigationStartPointPositionRef = useRef({ x: 0, y: 0 });
 
+  const contentRef = useRef<any>();
   const [isDragging, setIsDragging] = useState(false);
   const [hoverIndex, setHoverIndex] = useState<any>();
 
@@ -171,117 +190,148 @@ const HomeEarth = () => {
         size: BG_SIZE_MAP[activeTheme] || SIZE
       }}
     >
-      <div className="w-full relative h-[calc(100dvh_-_68px)] flex flex-col items-center">
-        {/*<BerachainFixes />*/}
-        <BeraPrice />
-        <Follower />
-        <Signpost />
-        <HomeEarthTop />
-        <Airship />
-        <div className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center">
-          {/*#region Cloud*/}
-          <CloudCircle />
-          {/*#endregion*/}
-          {isDefaultTheme() && (
-            <>
-              {/*#region Mountain*/}
-              <MountainCircle />
-              {/*#endregion*/}
-            </>
-          )}
-          {/*#region Navigation*/}
-          <Navigation />
-          {/*#endregion*/}
-
-          <Popover
-            trigger={PopoverTrigger.Hover}
-            placement={PopoverPlacement.Top}
-            offset={0}
-            content={
-              <img
-                src={
-                  isDefaultTheme()
-                    ? "/images/home-earth/signpost-baddies.svg"
-                    : "/images/home-earth/signpost-mcbera.svg"
-                }
-                className={
-                  isDefaultTheme() ? "w-[127px] h-[57px]" : "w-[168px] h-[57px]"
-                }
-              />
-            }
-            triggerContainerClassName={clsx(
-              "absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110",
-              isDefaultTheme() ? "right-[150px]" : "right-[130px]"
-            )}
+      <McBeraProvider>
+        <div className="w-full">
+          <div
+            ref={contentRef}
+            className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
           >
-            <div className="w-full h-full relative">
-              <img
-                data-bp={isDefaultTheme() ? "1010-021" : "1010-022"}
-                onClick={() => toggleTheme()}
-                src={
-                  isDefaultTheme()
-                    ? "/images/theme-baddies.png"
-                    : "/images/theme-default.png"
-                }
-                className={clsx(
-                  "relative z-[4]",
-                  isDefaultTheme()
-                    ? "w-[103px] h-[95px]"
-                    : "w-[136px] h-[108px]"
-                )}
-                alt={
-                  isDefaultTheme()
-                    ? "Switch to LGBT Theme"
-                    : "Switch to Default Theme"
-                }
-              />
-              {!isDefaultTheme() && (
-                <img
-                  src="/images/home-earth/likes/heart.gif"
-                  className="absolute top-[-40px] left-[-40px] z-0"
-                  alt=""
-                />
-              )}
-            </div>
-          </Popover>
-          {isDefaultTheme() ? (
-            <img
-              ref={bearRef}
-              src="/images/background/bear.gif"
-              alt=""
-              className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
-            />
-          ) : (
-            <div
-              className="absolute z-[4] top-[32.4dvh] pointer-events-none"
-              ref={bearRef}
+            {/*<BerachainFixes />*/}
+            <BeraPrice />
+            <Follower />
+            <Signpost />
+            <HomeEarthTop />
+            {/* <Airship /> */}
+            <motion.div
+              className="relative w-full overflow-hidden h-[calc(100%_-_229px)] flex justify-center shrink-0"
+              animate={{
+                y: earthY,
+                height: `calc(100% - 229px - ${earthY}px)`,
+              }}
+              transition={{
+                ease: "linear",
+                duration: 0.6,
+              }}
             >
-              <div className="w-[289px] h-[289px] relative">
-                <motion.img
-                  src="/images/home-earth/lgbt-role.png"
-                  className="w-full h-full relative z-10"
-                  alt=""
-                  animate={{
-                    y: [0, -10, 0],
-                    x: [0, 5, 0]
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
+              {/*#region Cloud*/}
+              <CloudCircle />
+              {/*#endregion*/}
+              {isDefaultTheme() && (
+                <>
+                  {/*#region Mountain*/}
+                  <MountainCircle />
+                  {/*#endregion*/}
+                </>
+              )}
+              {/*#region Navigation*/}
+              <Navigation />
+              {/*#endregion*/}
+
+              <Popover
+                trigger={PopoverTrigger.Hover}
+                placement={PopoverPlacement.Top}
+                offset={0}
+                content={
+                  <img
+                    src={
+                      isDefaultTheme()
+                        ? "/images/home-earth/signpost-baddies.svg"
+                        : "/images/home-earth/signpost-mcbera.svg"
+                    }
+                    className={
+                      isDefaultTheme() ? "w-[127px] h-[57px]" : "w-[168px] h-[57px]"
+                    }
+                  />
+                }
+                triggerContainerClassName={clsx(
+                  "absolute z-[4] cursor-pointer bottom-0 transition-transform hover:scale-110",
+                  isDefaultTheme() ? "right-[150px]" : "right-[130px]"
+                )}
+              >
+                <div className="w-full h-full relative">
+                  <img
+                    data-bp={isDefaultTheme() ? "1010-021" : "1010-022"}
+                    onClick={() => toggleTheme()}
+                    src={
+                      isDefaultTheme()
+                        ? "/images/theme-baddies.png"
+                        : "/images/theme-default.png"
+                    }
+                    className={clsx(
+                      "relative z-[4]",
+                      isDefaultTheme()
+                        ? "w-[103px] h-[95px]"
+                        : "w-[136px] h-[108px]"
+                    )}
+                    alt={
+                      isDefaultTheme()
+                        ? "Switch to LGBT Theme"
+                        : "Switch to Default Theme"
+                    }
+                  />
+                  {!isDefaultTheme() && (
+                    <img
+                      src="/images/home-earth/likes/heart.gif"
+                      className="absolute top-[-40px] left-[-40px] z-0"
+                      alt=""
+                    />
+                  )}
+                </div>
+              </Popover>
+              {isDefaultTheme() ? (
                 <img
-                  src="/images/home-earth/role-wave.svg"
-                  className="absolute bottom-[15px] left-[18px] z-0"
+                  ref={bearRef}
+                  src="/images/background/bear.gif"
                   alt=""
+                  className="w-[360px] h-[356px] absolute z-[4] top-[37.4dvh] pointer-events-none"
                 />
-              </div>
-            </div>
-          )}
+              ) : (
+                <div
+                  className="absolute z-[4] top-[32.4dvh] pointer-events-none"
+                  ref={bearRef}
+                >
+                  <div className="w-[289px] h-[289px] relative">
+                    <motion.img
+                      src="/images/home-earth/lgbt-role.png"
+                      className="w-full h-full relative z-10"
+                      alt=""
+                      animate={{
+                        y: [0, -10, 0],
+                        x: [0, 5, 0]
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    />
+                    <img
+                      src="/images/home-earth/role-wave.svg"
+                      className="absolute bottom-[15px] left-[18px] z-0"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              )}
+            </motion.div>
+            <Boyco
+              style={{
+                transformOrigin: "top",
+                scale: 0.8,
+              }}
+              animate={{
+                y: earthY,
+              }}
+              transition={{
+                ease: "linear",
+                duration: 0.6,
+              }}
+            />
+            <McBeraEntry />
+          </div>
+          <McBera topRef={contentRef} />
         </div>
-        <Boyco />
-      </div>
+      </McBeraProvider>
     </HomeEarthContext.Provider>
   );
 };

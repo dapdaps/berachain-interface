@@ -34,7 +34,7 @@ const BeraBgHome = () => {
           <Flowers />
           <Bear className='absolute w-[360px] left-1/2 bottom-[32px] translate-x-[-168px] z-10' />
           <Ground />
-          <Airship />
+          {/* <Airship /> */}
         </motion.div>
       )}
     </AnimatePresence>

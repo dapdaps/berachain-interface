@@ -4,7 +4,7 @@ import Vaults from "@/components/vaults";
 import { HomeEarthContext } from "@/sections/home-earth/context";
 import { VisibleAnimation } from "@/sections/home-earth/utils";
 import { useActivityStore } from "@/stores/useActivityStore";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import { useContext } from "react";
 import LGBTLogo from "./lgbt-animated-logo";
 
@@ -12,10 +12,15 @@ const HomeEarthTop = (props: any) => {
   const {} = props;
   const { isDefaultTheme } = useActivityStore();
   const { isRainyDay } = useContext(HomeEarthContext);
+  const { scrollY } = useScroll();
+
+  const logoY = useTransform(scrollY, (value) => {
+    return -Math.max(0, value);
+  });
 
   return (
     <div className="relative w-full pt-[20px] flex justify-center shrink-0">
-      <div className="mt-[40px]">
+      <motion.div className="mt-[40px]" style={{ y: logoY }}>
         {isDefaultTheme() ? (
           <motion.img
             src="/images/home-earth/beratown-logo.png"
@@ -44,7 +49,7 @@ const HomeEarthTop = (props: any) => {
         ) : (
           <LGBTLogo />
         )}
-      </div>
+      </motion.div>
       <div className="absolute left-0 -top-[88px] w-[472px] h-[371px] overflow-hidden">
         <AnimatePresence mode="wait">
           {isRainyDay ? (
@@ -87,7 +92,7 @@ const HomeEarthTop = (props: any) => {
           )}
         </AnimatePresence>
       </div>
-      <Vaults className="!left-[unset] right-0 !top-[150px]" />
+      <Vaults className="!left-[unset] right-[100px] !top-[150px]" />
     </div>
   );
 };
