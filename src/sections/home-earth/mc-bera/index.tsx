@@ -93,7 +93,7 @@ const McBera = (props: any) => {
   });
 
   return (
-    <div className="relative z-[10] w-full overflow-hidden">
+    <div className="fixed top-0 left-0 z-[10] w-full overflow-hidden">
       <motion.div
         className={clsx("relative w-full h-[100dvh]", className)}
         style={{
