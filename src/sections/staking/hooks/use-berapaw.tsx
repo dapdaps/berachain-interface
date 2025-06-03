@@ -306,7 +306,7 @@ export function useBerapaw(props: any) {
       if (minting) return;
       const res = await onMint({ rewardVault: record.vaultAddress });
       if (res?.success) {
-        getVaultsData();
+        getTotalData();
       }
       return;
     }
@@ -314,7 +314,7 @@ export function useBerapaw(props: any) {
       if (approving) return;
       const res = await onApprove({ rewardVault: record.vaultAddress });
       if (res) {
-        getVaultsData();
+        getTotalData();
       }
     }
   };
