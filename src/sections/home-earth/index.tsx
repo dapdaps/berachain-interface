@@ -21,7 +21,6 @@ import clsx from "clsx";
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useEffect, useRef, useState } from "react";
 import { HomeEarthContext } from "./context";
-import Boyco from "../boyco";
 import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
@@ -314,19 +313,6 @@ const HomeEarth = () => {
                 </div>
               )}
             </motion.div>
-            <Boyco
-              style={{
-                transformOrigin: "top",
-                scale: 0.8,
-              }}
-              animate={{
-                y: earthY,
-              }}
-              transition={{
-                ease: "linear",
-                duration: 0.6,
-              }}
-            />
             <McBeraEntry />
           </div>
           <McBera topRef={contentRef} />
