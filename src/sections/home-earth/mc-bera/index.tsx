@@ -11,7 +11,7 @@ const McBera = (props: any) => {
   const { className } = props;
 
   const computerContainerRef = useRef<any>();
-  const [screenVisible, setScreenVisible] = useState(false);
+  const [screenVisible, setScreenVisible] = useState(true);
 
   const { scrollY, scrollYProgress } = useScroll();
   const scale = useTransform(scrollYProgress, (value) => {
@@ -36,7 +36,7 @@ const McBera = (props: any) => {
   }, { wait: 15 });
 
   const { run: onScreenVisible, cancel: onScreenVisibleCancel } = useDebounceFn((_scrollYProgress: number) => {
-    setScreenVisible(_scrollYProgress >= 0.98);
+    setScreenVisible(true);
   }, { wait: 150 });
 
   const handleComputerContainerClick = (e: any) => {
@@ -65,7 +65,7 @@ const McBera = (props: any) => {
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.98) {
-      setScreenVisible(false);
+      setScreenVisible(true);
     }
     onScreenVisibleCancel();
     onScreenVisible(latest);
@@ -93,7 +93,7 @@ const McBera = (props: any) => {
   });
 
   return (
-    <div className="relative z-[10] w-full overflow-hidden">
+    <div className="fixed top-0 left-0 z-[10] w-full overflow-hidden">
       <motion.div
         className={clsx("relative w-full h-[100dvh]", className)}
         style={{
@@ -104,7 +104,7 @@ const McBera = (props: any) => {
           ease: "linear",
         }}
       >
-        <AnimatePresence mode="wait">
+        {/* <AnimatePresence mode="wait">
           {
             screenVisible && (
               <McBeraEntry
@@ -114,7 +114,7 @@ const McBera = (props: any) => {
               />
             )
           }
-        </AnimatePresence>
+        </AnimatePresence> */}
         <div className="absolute z-[2] left-0 bottom-[318px] w-[212px] h-[845px] bg-[url('/images/home-earth/mc-bera/bg-window-left.png')] bg-no-repeat bg-left bg-contain"/>
         <div className="absolute z-[2] right-0 bottom-[318px] w-[212px] h-[845px] bg-[url('/images/home-earth/mc-bera/bg-window-right.png')] bg-no-repeat bg-left bg-contain"/>
         <div className="absolute z-[1] left-0 bottom-0 flex items-end justify-center w-[100%] h-[358px] bg-[url('/images/home-earth/mc-bera/bg-table.png')] bg-no-repeat bg-top bg-[length:100%_358px]">

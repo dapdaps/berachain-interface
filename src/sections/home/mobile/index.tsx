@@ -3,7 +3,6 @@ import { useChristmas } from "@/hooks/use-christmas";
 import { useProgressRouter } from "@/hooks/use-progress-router";
 import { useRainyDay } from "@/hooks/use-rainy-day";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
-import Boyco from "@/sections/boyco";
 import BeraPrice from "@/sections/home-earth/components/bera-price";
 import Signpost from "@/sections/home-earth/components/signpost";
 import { HomeEarthContext } from "@/sections/home-earth/context";
@@ -223,7 +222,7 @@ const Home = () => {
             <div
               className="relative w-full overflow-hidden pb-[60px]"
               style={{
-                backgroundImage: "url('/images/mobile/beratown-home.svg')",
+                backgroundImage: "url('/images/mobile/beratown-home-normal.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "top",
                 backgroundRepeat: "no-repeat",
@@ -231,13 +230,11 @@ const Home = () => {
                 minHeight: "100dvh"
               }}
             >
-              <Boyco />
-
-              <Vaults className="!absolute z-[2] !left-[unset] !top-[130px] right-[-30px] scale-[0.78] origin-right" />
+              <Vaults className="!absolute z-[2] !left-[unset] !top-[50px] right-[-30px] scale-[0.78] origin-right" />
 
               {/*#region Hall*/}
               <motion.div
-                className="w-[52.308vw] h-[38.205vw] translate-y-[50vw] translate-x-[3vw]"
+                className="w-[52.308vw] h-[38.205vw] translate-y-[30vw] translate-x-[3vw]"
                 // data-bp="1015-011"
                 onClick={() => {
                   hallStore.set({
@@ -266,7 +263,7 @@ const Home = () => {
               {/*#endregion*/}
 
               <motion.div
-                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[48vw] translate-x-[10.256vw]"
+                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[40vw] translate-x-[10.256vw]"
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {

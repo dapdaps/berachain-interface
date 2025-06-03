@@ -260,8 +260,8 @@ export default function useInfraredData(props: any) {
         strategy: "Dynamic",
         strategy2: "",
         ...tokensInfo,
-        decimals: item.stake_token.decimals,
-        LP_ADDRESS: item.stake_token.address,
+        decimals: item.stake_token?.decimals,
+        LP_ADDRESS: item.stake_token?.address,
         tvl: Big(item?.tvl || 0).toFixed(),
         apy: Big(item?.apr || 0)
           .times(100)
@@ -332,7 +332,7 @@ export default function useInfraredData(props: any) {
   }
   async function getRewardsEarned(vaultAddress, tokens) {
     const calls = [];
-    tokens.forEach((reward_token) => {
+    tokens?.forEach((reward_token) => {
       calls.push({
         address: ethers.utils.getAddress(vaultAddress),
         name: "earned",
@@ -365,7 +365,7 @@ export default function useInfraredData(props: any) {
   }
   async function getRewards() {
     const promiseArray = []
-    dataList.forEach(data => {
+    dataList?.forEach(data => {
       promiseArray.push(getRewardsEarned(data?.vaultAddress, data?.initialData?.reward_tokens))
     })
     const result = await Promise.all(promiseArray)
