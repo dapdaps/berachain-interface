@@ -15,13 +15,15 @@ const McBera = (props: any) => {
 
   const { scrollY, scrollYProgress } = useScroll();
   const scale = useTransform(scrollYProgress, (value) => {
-    return Math.max(1, Math.min(2 - value, 2));
+    return 1;
+    // return Math.max(1, Math.min(2 - value, 2));
   });
   const opacity = useTransform(scrollYProgress, (value) => {
-    if (value > 0.1) {
-      return 1;
-    }
-    return Math.min(Math.max(value * 10, 0), 1);
+    return 1;
+    // if (value > 0.1) {
+    //   return 1;
+    // }
+    // return Math.min(Math.max(value * 10, 0), 1);
   });
   const { run: scrollSnap, cancel: scrollSnapCancel } = useDebounceFn((_direction: "up" | "down") => {
     let _scrollTop = 0;
@@ -78,18 +80,18 @@ const McBera = (props: any) => {
     const diff = latest - scrollY?.getPrevious();
     // console.log("%cTrigger scroll diff: %s", "background:#96D6FF;color:#000;", diff);
     const triggerOffset = 1;
-    if (Math.abs(diff) >= triggerOffset) {
-      // down
-      if (diff > 0) {
-        scrollSnapCancel();
-        scrollSnap("down");
-      }
-      // up
-      else {
-        scrollSnapCancel();
-        scrollSnap("up");
-      }
-    }
+    // if (Math.abs(diff) >= triggerOffset) {
+    //   // down
+    //   if (diff > 0) {
+    //     scrollSnapCancel();
+    //     scrollSnap("down");
+    //   }
+    //   // up
+    //   else {
+    //     scrollSnapCancel();
+    //     scrollSnap("up");
+    //   }
+    // }
   });
 
   return (
@@ -119,7 +121,7 @@ const McBera = (props: any) => {
         <div className="absolute z-[2] right-0 bottom-[318px] w-[212px] h-[845px] bg-[url('/images/home-earth/mc-bera/bg-window-right.png')] bg-no-repeat bg-left bg-contain"/>
         <div className="absolute z-[1] left-0 bottom-0 flex items-end justify-center w-[100%] h-[358px] bg-[url('/images/home-earth/mc-bera/bg-table.png')] bg-no-repeat bg-top bg-[length:100%_358px]">
         </div>
-        <div onClick={handleComputerContainerClick} className="relative z-[3] flex items-end justify-center w-full h-full">
+        <div className="relative z-[3] flex items-end justify-center w-full h-full">
           <div className="relative z-[1] w-[281px] h-[204px] shrink-0 translate-x-[70px] translate-y-[-40px] bg-[url('/images/home-earth/mc-bera/bg-books.png')] bg-no-repeat bg-bottom bg-contain" />
           <div ref={computerContainerRef} className="relative z-[2] w-[1036px] h-[780px] shrink-0 p-[20px_20px_124px] overflow-hidden bg-[url('/images/home-earth/mc-bera/bg-computer.png')] bg-no-repeat bg-bottom bg-contain">
             <AnimatePresence mode="wait">
