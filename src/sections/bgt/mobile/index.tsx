@@ -37,23 +37,12 @@ const BGTMobileView = (props: Props) => {
     setSortDataIndex,
     pageData,
     filterList,
+    vaults,
+    vaultsLoading,
     handleClaim,
     handleExplore,
     handleValidator,
   } = useBGT(tab);
-
-  const {
-    data: vaults,
-    params,
-    loading: isLoading,
-    maxPage,
-    setPage,
-    setSortBy,
-  } = useVaultList({
-    sortBy: "activeIncentivesInHoney",
-    sortOrder: "desc",
-    add: true
-  });
 
   const [infraredVisible, setInfraredVisible] = useState(false);
   const [gaugeVisible, setGaugeVisible] = useState(false)
@@ -85,7 +74,63 @@ const BGTMobileView = (props: Props) => {
 
   return (
     <>
-      <Drawer
+      {/* <BgtHead
+        bgtData={bgtData}
+        style={{ position: 'absolute', zIndex: 2 }}
+        className="scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%]"
+      /> */}
+      <div className="pt-[50px] flex-1 overflow-auto" onScroll={scroll}>
+        <Market
+          pageData={pageData}
+          onTop3={onTop3}
+          bgtData={bgtData}
+        />
+        <div className='px-[12px]'>
+          <SwitchTabs
+            tabs={[
+              { label: 'All Vaults', value: 'all' },
+              { label: 'Your Vaults', value: 'your' },
+            ]}
+            onChange={(val) => {
+              setTab(val);
+            }}
+            current={tab}
+            style={{ height: 40, borderRadius: 12 }}
+            cursorStyle={{ borderRadius: 10 }}
+          />
+        </div>
+
+
+        <AnimatePresence mode="wait">
+          {
+            tab === 'all' ? (
+              <AllVaults
+                data={vaults}
+                isLoading={vaultsLoading}
+                onDeposit={handleDeposit}
+              />
+            ) : (
+              <YourVaults
+                filterList={filterList}
+                isLoading={isBGTLoading}
+                handleExplore={handleExplore}
+              />
+            )
+          }
+        </AnimatePresence>
+      </div>
+      <BgtGaugeDrawer
+        visible={gaugeVisible}
+        bgtData={bgtData}
+        id={gaugeId}
+        onClose={() => {
+          setGaugeVisible(false);
+        }}
+        onBack={() => {
+          setGaugeVisible(false);
+        }}
+      />
+      {/* <Drawer
         visible={visible}
         onClose={onClose}
         size="80dvh"
@@ -159,7 +204,7 @@ const BGTMobileView = (props: Props) => {
         onBack={() => {
           setGaugeVisible(false);
         }}
-      />
+      /> */}
     </>
   );
 };
