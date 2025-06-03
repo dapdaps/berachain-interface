@@ -53,12 +53,12 @@ const Filter = (props: any, ref: any) => {
     vaults: boycoVaults,
     loading: boycoLoading
   } = boycoData || {};
-  const isFromBoyco = searchParams.get("from") === "boyco";
+  // const isFromBoyco = searchParams.get("from") === "boyco";
 
-  useEffect(() => {
-    if (boycoLoading || !isFromBoyco) return;
-    toggleVaultsBoyco(boycoAssets?.length);
-  }, [boycoLoading, isFromBoyco]);
+  // useEffect(() => {
+  //   if (boycoLoading || !isFromBoyco) return;
+  //   toggleVaultsBoyco(boycoAssets?.length);
+  // }, [boycoLoading, isFromBoyco]);
 
   useEffect(() => {
     boycoAssetsRef.current = boycoAssets;
@@ -162,7 +162,7 @@ const Filter = (props: any, ref: any) => {
         </button>
       </div>
       {/*#region 👇Boyco*/}
-      <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
+      {/* <div className="flex justify-between items-center gap-[10px] pl-[10px] pr-[10px] pt-[20px]">
         <div className="text-[15px] font-[500]">
           Your available Boyco assets only
         </div>
@@ -214,7 +214,7 @@ const Filter = (props: any, ref: any) => {
             <Empty desc="No assets available" />
           </div>
         )}
-      </FilterGroup>
+      </FilterGroup> */}
       {/*#endregion 👆*/}
       <div className="text-[15px] font-[600] pt-[26px] px-[12px]">
         Deposit Asset
