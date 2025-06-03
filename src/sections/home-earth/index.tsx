@@ -314,9 +314,9 @@ const HomeEarth = () => {
                 </div>
               )}
             </motion.div>
-            <McBeraEntry />
+            {/* <McBeraEntry /> */}
           </div>
-          <McBera topRef={contentRef} />
+          {/* <McBera topRef={contentRef} /> */}
         </div>
       </McBeraProvider>
     </HomeEarthContext.Provider>
