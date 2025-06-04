@@ -165,7 +165,7 @@ export default function EnsoModal({ open, onSuccess }: any) {
             <div className="flex justify-between items-center">
               {step === 1 ? (
                 <span className="text-[#C84F27] text-[14px] font-semibold">
-                  You don’t have enougt {token.symbol}, your balance{" "}
+                  You don’t have enough {token.symbol}, your balance{" "}
                   {numberFormatter(tokenBalance, 2, true)}
                 </span>
               ) : (

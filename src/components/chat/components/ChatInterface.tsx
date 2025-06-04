@@ -245,9 +245,9 @@ export default function ChatInterface() {
   console.log("ChatInterface rendered with messages:", displayMessages);
 
   return (
-    <div className="flex flex-col w-[560px] mx-auto">
+    <div className="flex flex-col justify-center  w-[600px]  mx-auto">
       <div
-        className="mt-5 flex-1 overflow-y-auto max-h-[500px] hide-scrollbar"
+        className="mt-5 flex-1 overflow-y-auto pr-[20px] max-h-[500px] hide-scrollbar"
         ref={containerRef}
       >
         {displayMessages.map((message) => {
@@ -311,7 +311,7 @@ export default function ChatInterface() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex items-center relative mt-auto">
+      <div className="flex w-[560px] items-center relative mt-auto">
         <textarea
           className="font-Montserrat text-[14px] font-[500] leading-[12px] w-full py-[14px] px-4 rounded-lg border border-black bg-white shadow-[inset_6px_5px_0px_0px_rgba(0,0,0,0.25)] focus:outline-none resize-none"
           placeholder="Ask anything..."
