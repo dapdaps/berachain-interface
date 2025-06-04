@@ -18,7 +18,7 @@ import { useMemo, useRef, useState } from "react";
 import Detail from "../Bridge/Detail";
 import List from "../Bridge/List";
 import Modal from "../Bridge/Modal";
-import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
+import { useBerapaw } from "@/sections/staking/hooks/use-berapaw";
 
 type Props = {
   dapp: any;
@@ -37,7 +37,7 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     if (dapp?.name === "BeraPaw") {
       return {
         ...dapp?.chains[DEFAULT_CHAIN_ID],
-        ...dapp,
+        ...dapp
       };
     }
     return isVaults ? null : dapp?.chains[DEFAULT_CHAIN_ID];
@@ -59,7 +59,7 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     sort: berapawSort,
     onSort: onBerapawSort,
     search: berapawSearch,
-    onSearch: onBerapawSearch,
+    onSearch: onBerapawSearch
   } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { ALL_DATA_URL, addresses, pairs, description } = dexConfig ?? {};
@@ -103,39 +103,41 @@ export default function Staking({ dapp, className, listTitle }: Props) {
         return;
       }
     }
-    router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=${index}`);
+    router.push(
+      `/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=${index}`
+    );
   };
 
   const listProps = isVaults
     ? {
-      name: "vaults",
-      description:
-        "Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) & Boosted Yield.",
-      pairs: [],
-      sender,
-      chainId,
-      provider,
-      multicallAddress,
-      onChangeData
-    }
+        name: "vaults",
+        description:
+          "Deposit or mint BGT-whitelisted LP tokens to earn iBGT (liquid BGT) & Boosted Yield.",
+        pairs: [],
+        sender,
+        chainId,
+        provider,
+        multicallAddress,
+        onChangeData
+      }
     : {
-      name: dapp.name,
-      description,
-      pairs,
-      sender,
-      chainId,
-      provider,
-      addresses,
-      ALL_DATA_URL,
-      multicallAddress,
-      onChangeData
-    };
+        name: dapp.name,
+        description,
+        pairs,
+        sender,
+        chainId,
+        provider,
+        addresses,
+        ALL_DATA_URL,
+        multicallAddress,
+        onChangeData
+      };
 
   const {
     dataList: infraredData,
     loading: infraredLoading,
     fetchAllData: infraredReload,
-    maxApr: infraredMaxApr,
+    maxApr: infraredMaxApr
   } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
   const {
     dataList: aquaBeraData,
@@ -149,7 +151,17 @@ export default function Staking({ dapp, className, listTitle }: Props) {
   } = useBerps(listProps);
 
   const { getMergeDataList } = useMergeDataList();
-  const [dataList, loading, reload, maxApr, totalTVL, pageIndex, pageTotal, pending, currentItem] = useMemo(() => {
+  const [
+    dataList,
+    loading,
+    reload,
+    maxApr,
+    totalTVL,
+    pageIndex,
+    pageTotal,
+    pending,
+    currentItem
+  ] = useMemo(() => {
     if (isVaults) {
       return [
         getMergeDataList({
@@ -161,7 +173,7 @@ export default function Staking({ dapp, className, listTitle }: Props) {
           infraredReload();
           aquabearReload();
         },
-        infraredMaxApr,
+        infraredMaxApr
       ];
     } else {
       if (dapp.name === "Berps") {
@@ -204,7 +216,7 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     currentBerapawItem,
     berapawMaxApr,
     berapawTotalTVL,
-    infraredMaxApr,
+    infraredMaxApr
   ]);
 
   return (
@@ -213,7 +225,7 @@ export default function Staking({ dapp, className, listTitle }: Props) {
         <Detail
           dapp={dapp}
           onSuccess={() => {
-            reload?.()
+            reload?.();
           }}
           loading={loading}
         />
