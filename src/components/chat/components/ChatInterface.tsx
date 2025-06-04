@@ -1,15 +1,16 @@
 import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from "react";
 import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat, postAddMessageItem } from "../utils/chat-service";
 import InteractiveMarkdown from "./InteractiveMarkdown";
-import { useScroll } from '@/components/chat/hooks/useScroll';
-
+import { useScroll } from "@/components/chat/hooks/useScroll";
 import useSwapStore from "../stores/useSwapStores";
 import SwapModal from "@/sections/swap/SwapModal";
+import useEnsoStore from "../stores/useEnsoStore";
+import EnsoModal from "../McBera/EnsoCard/modal";
 import { bera } from "@/configs/tokens/bera";
 import { useAppKit } from "@reown/appkit/react";
 
@@ -28,7 +29,6 @@ interface ITrade {
   transactionHash: string;
   tradeFrom: string;
 }
-
 
 const UserAvatar: React.FC = () => {
   const { userInfo } = useUser();
@@ -65,11 +65,13 @@ export default function ChatInterface() {
     isSwapModalOpen,
     closeSwapModal,
     defaultInputCurrency,
-    defaultOutputCurrency
+    defaultOutputCurrency,
+    successCb: swapSuccessCallback
   } = useSwapStore();
 
-  const displayMessages =
-    contextMessages.length > 0 ? contextMessages : [];
+  const ensoStore = useEnsoStore();
+
+  const displayMessages = contextMessages.length > 0 ? contextMessages : [];
 
   const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
@@ -79,7 +81,6 @@ export default function ChatInterface() {
 
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
-
 
   useEffect(() => {
     console.log("ChatInterface mounted with address:", address);
@@ -93,21 +94,27 @@ export default function ChatInterface() {
       const childRect = child?.getBoundingClientRect();
       const containerRect = container?.getBoundingClientRect();
       return childRect.top - containerRect.top + container.scrollTop;
-    }
+    };
     const chatContainer = containerRef.current;
 
     clearTimeout(timer.current);
 
     if (chatContainer) {
       if (isToLastUserMessage) {
-        const userMessages = chatContainer.querySelectorAll('[data-role="user"]');
-        const lastUserMessage = userMessages[userMessages.length - 1] as HTMLElement;
+        const userMessages =
+          chatContainer.querySelectorAll('[data-role="user"]');
+        const lastUserMessage = userMessages[
+          userMessages.length - 1
+        ] as HTMLElement;
         if (lastUserMessage) {
-          const elementOffset = getOffsetTopRelativeToContainer(lastUserMessage, chatContainer);
+          const elementOffset = getOffsetTopRelativeToContainer(
+            lastUserMessage,
+            chatContainer
+          );
           timer.current = setTimeout(() => {
             chatContainer.scrollTo({
               top: elementOffset,
-              behavior: 'smooth'
+              behavior: "smooth"
             });
             clearTimeout(timer.current);
           }, 0);
@@ -117,7 +124,7 @@ export default function ChatInterface() {
       timer.current = setTimeout(() => {
         chatContainer.scrollTo({
           top: chatContainer.scrollHeight,
-          behavior: 'smooth'
+          behavior: "smooth"
         });
         clearTimeout(timer.current);
       }, 0);
@@ -133,108 +140,100 @@ export default function ChatInterface() {
   }, []);
 
   const handleSubmit = async () => {
+    if (!address) {
+      open();
+      return;
+    }
 
-  if (!address) {
-    open();
-    return;
-  }
+    if (inputValue.trim() === "" || isProcessing) return;
 
-  if (inputValue.trim() === "" || isProcessing) return;
+    try {
+      const userMessage = inputValue;
+      setInputValue("");
+      setIsProcessing(true);
+      const isNewChat = contextMessages.length === 0;
+      setIsFromHistory(false);
+      if (!isNewChat) {
+        const newUserMessage: Message = {
+          id: Date.now().toString(),
+          sender: "user",
+          content: userMessage
+        };
+        addMessage(newUserMessage);
 
-  try {
-    const userMessage = inputValue;
-    setInputValue("");
-    setIsProcessing(true);
-    const isNewChat = contextMessages.length === 0;
-    setIsFromHistory(false);
-    if (!isNewChat) {
-      const newUserMessage: Message = {
-        id: Date.now().toString(),
-        sender: "user",
-        content: userMessage,
-      };
-      addMessage(newUserMessage);
-      
-    const assistantMessageId = (Date.now() + 1).toString();
-    const emptyAssistantMessage: Message = {
-      id: assistantMessageId,
-      sender: "assistant",
-      senderName: "McBera",
-      content: "",
-    };
-    addMessage(emptyAssistantMessage);
+        const assistantMessageId = (Date.now() + 1).toString();
+        const emptyAssistantMessage: Message = {
+          id: assistantMessageId,
+          sender: "assistant",
+          senderName: "McBera",
+          content: ""
+        };
+        addMessage(emptyAssistantMessage);
 
-    await createNewChat(
-      userMessage,
-      emptyAssistantMessage,
-      {
-        updateMessage: (updatedMessage: Message) => {
-          if (updatedMessage.sender === "assistant") {
-            updateMessage(updatedMessage);
+        await createNewChat(userMessage, emptyAssistantMessage, {
+          updateMessage: (updatedMessage: Message) => {
+            if (updatedMessage.sender === "assistant") {
+              updateMessage(updatedMessage);
+            }
+          },
+          addChatHistory,
+          setSessionId,
+          getSessionId: () => sessionId,
+          onComplete: () => {
+            setIsProcessing(false);
+          },
+          onError: () => {
+            updateMessage({
+              ...emptyAssistantMessage,
+              content: "Sorry, I can't assist with that."
+            });
+            setIsProcessing(false);
           }
-        },
-        addChatHistory,
-        setSessionId,
-        getSessionId: () => sessionId,
-        onComplete: () => {
-          setIsProcessing(false);
-        },
-        onError: () => {
-          updateMessage({
-            ...emptyAssistantMessage,
-            content: "Sorry, I can't assist with that."
-          });
-          setIsProcessing(false);
-        }
+        });
+      } else {
+        startNewChat(userMessage);
+        const assistantMessageId = (Date.now() + 1).toString();
+        const emptyAssistantMessage: Message = {
+          id: assistantMessageId,
+          sender: "assistant",
+          senderName: "McBera",
+          content: ""
+        };
+        await createNewChat(userMessage, emptyAssistantMessage, {
+          updateMessage: (updatedMessage: Message) => {
+            if (updatedMessage.sender === "assistant") {
+              updateMessage(updatedMessage);
+            }
+          },
+          addChatHistory,
+          setSessionId,
+          getSessionId: () => null,
+          onComplete: () => {
+            setIsProcessing(false);
+          },
+          onError: () => {
+            updateMessage({
+              ...emptyAssistantMessage,
+              content: "Sorry, I can't assist with that."
+            });
+            setIsProcessing(false);
+          }
+        });
       }
-    );
-    } else {
-      startNewChat(userMessage);
-          const assistantMessageId = (Date.now() + 1).toString();
-          const emptyAssistantMessage: Message = {
-            id: assistantMessageId,
-            sender: "assistant",
-            senderName: "McBera",
-            content: "",
-          };
-      await createNewChat(userMessage, 
-        emptyAssistantMessage, // 传入已创建的消息对象
-        {
-        updateMessage: (updatedMessage: Message) => {
-          if (updatedMessage.sender === "assistant") {
-            updateMessage(updatedMessage);
-          }
-        },
-        addChatHistory,
-        setSessionId,
-        getSessionId: () => null,
-        onComplete: () => {
-          setIsProcessing(false);
-        },
-        onError: () => {
-          updateMessage({
-            ...emptyAssistantMessage,
-            content: "Sorry, I can't assist with that."
-          });
-          setIsProcessing(false);
-        }
-      });
+    } catch (error) {
+      console.error("Get error:", error);
+      setIsProcessing(false);
+      const lastAssistantMessage = [...contextMessages]
+        .reverse()
+        .find((msg) => msg.sender === "assistant");
+      if (lastAssistantMessage) {
+        updateMessage({
+          ...lastAssistantMessage,
+          content: "Sorry, I can't assist with that."
+        });
+      }
     }
-    
-  } catch (error) {
-    console.error("Get error:", error);
-    setIsProcessing(false);
-    const lastAssistantMessage = [...contextMessages].reverse().find(
-      msg => msg.sender === "assistant"
-    );
-    if (lastAssistantMessage) {
-      updateMessage({
-        ...lastAssistantMessage,
-        content: "Sorry, I can't assist with that."
-      });
-    }
-  }
-};
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey && !isComposing) {
@@ -289,7 +288,8 @@ export default function ChatInterface() {
                     )}
                   </div>
                   <div className="text-black text-sm leading-tight font-medium font-Montserrat w-full">
-                    {message.sender === "assistant" && message.content === "" ? (
+                    {message.sender === "assistant" &&
+                    message.content === "" ? (
                       <div className="text-gray-500">Thinking...</div>
                     ) : message.sender === "assistant" && message.content ? (
                       <InteractiveMarkdown
@@ -325,16 +325,15 @@ export default function ChatInterface() {
             setIsComposing(false);
           }}
         />
-      <div
-       onClick={handleSubmit}
-        className={`absolute right-3 bottom-3 ${
-          isProcessing ? 'opacity-40 pointer-events-none' : 'cursor-pointer'
-        }`}>
+        <div
+          onClick={handleSubmit}
+          className={`absolute right-3 bottom-3 ${
+            isProcessing ? "opacity-40 pointer-events-none" : "cursor-pointer"
+          }`}
+        >
           <IconSend />
         </div>
       </div>
-      
-      {/* 全局 SwapModal */}
       <SwapModal
         defaultInputCurrency={
           bera[defaultInputCurrency?.symbol?.toLowerCase()] ||
@@ -349,23 +348,56 @@ export default function ChatInterface() {
           closeSwapModal();
         }}
         onSuccess={(trade: ITrade) => {
+          if (swapSuccessCallback) {
+            swapSuccessCallback();
+            return;
+          }
           const successMessageId = Date.now().toString();
           const txUrl = `https://berascan.com/tx/${trade.transactionHash}`;
 
-          const messageContent = `You swapped ${trade.inputCurrencyAmount} ${trade.inputCurrency?.symbol || ''} for ${trade.outputCurrencyAmount} ${trade.outputCurrency?.symbol || ''} via ${trade.tradeFrom}\n Here is Tx: [${txUrl}](${txUrl})`;
+          const messageContent = `You swapped ${trade.inputCurrencyAmount} ${
+            trade.inputCurrency?.symbol || ""
+          } for ${trade.outputCurrencyAmount} ${
+            trade.outputCurrency?.symbol || ""
+          } via ${trade.tradeFrom}\n Here is Tx: [${txUrl}](${txUrl})`;
 
           const successMessage: Message = {
             id: successMessageId,
             sender: "assistant",
             senderName: "McBera",
-            content: messageContent,
+            content: messageContent
           };
           setIsFromHistory(false);
           addMessage(successMessage);
-          postAddMessageItem(messageContent, sessionId!)
+          postAddMessageItem(messageContent, sessionId!);
         }}
         from="ai-chat"
       />
+      {ensoStore.modalOpen && (
+        <EnsoModal
+          open={ensoStore.modalOpen}
+          onSuccess={({ transactionHash, amount, symbol, isSuccess }: any) => {
+            const successMessageId = Date.now().toString();
+            const txUrl = `https://berascan.com/tx/${transactionHash}`;
+
+            const messageContent = `${
+              isSuccess ? "✅" : "❌"
+            } You staked ${amount} ${symbol || ""} via enso ${
+              isSuccess ? "successfully" : "failly"
+            }.\n Here is Tx: [${txUrl}](${txUrl})`;
+
+            const successMessage: Message = {
+              id: successMessageId,
+              sender: "assistant",
+              senderName: "McBera",
+              content: messageContent
+            };
+            setIsFromHistory(false);
+            addMessage(successMessage);
+            postAddMessageItem(messageContent, sessionId!);
+          }}
+        />
+      )}
     </div>
   );
 }
