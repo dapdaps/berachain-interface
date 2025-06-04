@@ -29,7 +29,7 @@ export default function EnsoCard({ data }: any) {
     }
   }, [data]);
 
-  return data.enso.statusCode > 0 ? (
+  return data.enso.statusCode > 0 || !data.enso?.tx ? (
     "Oops, no route found. Please switch tokens, or try again later."
   ) : (
     <div className="text-[#471C1C] text-[14px] font-medium">
@@ -47,16 +47,16 @@ export default function EnsoCard({ data }: any) {
             <div className="w-[56px] h-[26px] shrink-0 leading-[26px] text-center rounded-[6px] border border-[#000000] bg-[#FF888A] text-[12px] text-black font-bold">
               Vaults
             </div>
-            <div className="text-[13px] text-black/50 truncate flex gap-[4px]">
-              Join{" "}
+            <div className="text-[13px] text-black/50 truncate flex">
+              {vault.project}
               <span
-                className="font-bold truncate max-w-[162px]"
+                className="font-bold truncate max-w-[162px] ml-[4px]"
                 title={vault.name}
               >
                 {vault.name}
-              </span>{" "}
-              vaults, earning APY up to{" "}
-              <span className="font-bold">
+              </span>
+              , APY up to{" "}
+              <span className="font-bold ml-[4px]">
                 {numberFormatter(apr, 2, true)}%
               </span>
             </div>
