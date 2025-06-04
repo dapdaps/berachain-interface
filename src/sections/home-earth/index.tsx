@@ -21,12 +21,12 @@ import clsx from "clsx";
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useEffect, useRef, useState } from "react";
 import { HomeEarthContext } from "./context";
-import Boyco from "../boyco";
 import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
+import McBera from '@/sections/home-earth/mc-bera';
 
-const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
+// const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 
 // seconds per lap
 const SPEED = 200;
@@ -194,7 +194,7 @@ const HomeEarth = () => {
         <div className="w-full">
           <div
             ref={contentRef}
-            className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
+            className="w-full relative z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
           >
             {/*<BerachainFixes />*/}
             <BeraPrice />
@@ -314,22 +314,9 @@ const HomeEarth = () => {
                 </div>
               )}
             </motion.div>
-            <Boyco
-              style={{
-                transformOrigin: "top",
-                scale: 0.8,
-              }}
-              animate={{
-                y: earthY,
-              }}
-              transition={{
-                ease: "linear",
-                duration: 0.6,
-              }}
-            />
-            <McBeraEntry />
+            {/* <McBeraEntry /> */}
           </div>
-          <McBera topRef={contentRef} />
+          {/* <McBera topRef={contentRef} /> */}
         </div>
       </McBeraProvider>
     </HomeEarthContext.Provider>

@@ -8,6 +8,7 @@ export default function () {
   const setPriceStore = usePriceStore((store: any) => store.set);
   const [pending, setPending] = useState(false);
   const initializePrice = useCallback(async () => {
+    console.log("======11111========")
     if (pending) return;
     setPending(true);
     let beraTownPrice: any = {};

@@ -362,6 +362,7 @@ export default function useAquaBeraData(props: any) {
     ]
     const totalSupplyCalls = [
     ]
+    const token0Calls = []
     for (let i = 0; i < _dataList.length; i++) {
       const _data = _dataList[i]
       balanceOfCalls.push({
@@ -376,6 +377,11 @@ export default function useAquaBeraData(props: any) {
       totalSupplyCalls.push({
         address: _data?.ichiAddress,
         name: 'totalSupply',
+      })
+
+      token0Calls.push({
+        address: _data?.ichiAddress,
+        name: 'token0',
       })
     }
     try {
@@ -400,17 +406,23 @@ export default function useAquaBeraData(props: any) {
         multicallAddress,
         provider
       })
+      const token0Result = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: token0Calls,
+        multicallAddress,
+        provider
+      })
       for (let i = 0; i < _dataList.length; i++) {
         const totalSupply = ethers.utils.formatUnits(totalSupplyResult?.[i]?.[0])
         const shares = ethers.utils.formatUnits(balanceOfResult?.[i]?.[0] ?? 0)
-        // const [token0, token1] = _dataList[i].tokens
-        const [token0, token1] = _dataList[i].chainTopTokens
+        const token0Address = token0Result?.[i]?.[0]
+        const [token0, token1] = token0Address?.toLocaleLowerCase() ?? "" === _dataList[i]?.tokens?.[0]?.address ? _dataList[i]?.tokens : _dataList[i]?.tokens?.reverse()
         const amt0 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[0], token0?.decimals)
         const amt1 = ethers.utils.formatUnits(getTotalAmountsResult?.[i]?.[1], token1?.decimals)
         const value0 = Big(amt0).times(shares).div(totalSupply).toFixed()
         const value1 = Big(amt1).times(shares).div(totalSupply).toFixed()
-
-        _dataList[i].values = token0?.symbol === _dataList?.[i]?.symbol ? [value0, value1] : [value1, value0]
+        _dataList[i].values = token0Address?.toLocaleLowerCase() ?? "" === _dataList[i]?.tokens?.[0]?.address?.toLocaleLowerCase() ?? "" ? [value0, value1] : [value1, value0]
         _dataList[i].yourValue = Big(amt0).plus(amt1).times(shares).div(totalSupply).toFixed()
         _dataList[i].usdDepositAmount = Big(value0).times(prices?.[token0?.symbol] ?? 0).plus(Big(value1).times(prices?.[token1?.symbol] ?? 0)).toFixed()
       }
@@ -424,12 +436,18 @@ export default function useAquaBeraData(props: any) {
     const calls = [
 
     ]
+    const token0Calls = []
     _dataList?.forEach(_data => {
       calls.push({
         address: _data?.ichiAddress,
         name: 'getTotalAmounts',
       })
+      token0Calls.push({
+        address: _data?.ichiAddress,
+        name: 'token0',
+      })
     })
+
     try {
       const result = await multicall({
         abi: ICHI_ABI,
@@ -438,10 +456,18 @@ export default function useAquaBeraData(props: any) {
         multicallAddress,
         provider
       })
+      const token0Result = await multicall({
+        abi: ICHI_ABI,
+        options: {},
+        calls: token0Calls,
+        multicallAddress,
+        provider
+      })
       for (let i = 0; i < _dataList?.length; i++) {
         const _data = _dataList[i];
         const [amount0, amount1] = result?.[i]
-        const [token0, token1] = _dataList[i].chainTopTokens
+        const token0Address = token0Result?.[i]?.[0]
+        const [token0, token1] = token0Address?.toLocaleLowerCase() ?? "" === _dataList[i]?.tokens?.[0]?.address ? _dataList[i]?.tokens : _dataList[i]?.tokens?.reverse()
         _dataList[i].tvl = Big(ethers.utils.formatUnits(amount0, token0?.decimals)).times(prices?.[token0?.symbol] ?? 0).plus(Big(ethers.utils.formatUnits(amount1, token1?.decimals)).times(prices?.[token1?.symbol] ?? 0)).toFixed()
       }
     } catch (error) {

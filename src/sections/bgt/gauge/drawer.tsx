@@ -10,11 +10,10 @@ const BgtGaugeDrawer = (props: any) => {
       visible={visible}
       onClose={onClose}
     >
-      <div className="h-full">
+      <div className="h-full rounded-t-[20px] overflow-hidden">
         <BgtHead
           bgtData={bgtData}
-          style={{ position: 'absolute' }}
-          className="scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%] z-[10]"
+          className="!absolute scale-75 translate-y-[-50%] left-[50%] translate-x-[-50%] z-[10]"
         />
         <Index {...rest} />
       </div>

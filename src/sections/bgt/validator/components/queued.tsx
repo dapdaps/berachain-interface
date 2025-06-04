@@ -17,7 +17,7 @@ export default memo(function Queued() {
       getDelegationQueue();
     }
   }, [account, provider])
-  return (
+  return account ? (
     <div>
       <div className="text-xl font-semibold mb-4">Queued</div>
       <QueueList
@@ -26,5 +26,7 @@ export default memo(function Queued() {
         onSuccess={onSuccess}
       />
     </div>
+  ) : (
+    <div className="text-center text-[#3D405A] font-Montserrat text-[14px] font-medium">Connect your wallet to see your boosts.</div>
   )
 })

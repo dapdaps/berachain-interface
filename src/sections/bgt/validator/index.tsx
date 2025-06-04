@@ -15,6 +15,9 @@ import { formatLongText, getProtocolIcon } from '@/utils/utils';
 import Big from 'big.js';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import SwitchNetwork from "@/components/switch-network";
+import chains from '@/configs/chains';
+import { DEFAULT_CHAIN_ID } from '@/configs';
 
 const BgtValidator = (props: any) => {
   const { id } = props;
@@ -178,7 +181,7 @@ const BgtValidator = (props: any) => {
   }, [defaultId, id]);
 
   useEffect(() => {
-    getValidators();
+    // getValidators();
   }, []);
 
   return (
@@ -227,6 +230,8 @@ const BgtValidator = (props: any) => {
           setValidatorId(value?.id);
         }}
       />
+
+      <SwitchNetwork targetChain={chains[DEFAULT_CHAIN_ID]} />
     </>
   );
 };

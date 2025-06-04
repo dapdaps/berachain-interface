@@ -41,7 +41,7 @@ const Laptop = (props: any) => {
 const Mobile = ({ children, active, onClick, disabled }: any) => {
   return (
     <div
-      className={`hidden h-[56px] grow rounded-[16px] md:flex ${
+      className={`flex-1 hidden h-[56px] grow rounded-[16px] md:flex ${
         active && 'border border-black bg-[#FFDC50]'
       } text-[15px] font-[700] leading-[13.5px] text-center font-Montserrat`}
       onClick={!disabled && onClick}

@@ -1,22 +1,21 @@
+import Vaults from "@/components/vaults";
 import { useChristmas } from "@/hooks/use-christmas";
 import { useProgressRouter } from "@/hooks/use-progress-router";
+import { useRainyDay } from "@/hooks/use-rainy-day";
 import ChristmasEnterance from "@/sections/activity/christmas/enterance";
-import MobileHeader from "@/sections/home/mobile/header";
+import BeraPrice from "@/sections/home-earth/components/bera-price";
+import Signpost from "@/sections/home-earth/components/signpost";
+import { HomeEarthContext } from "@/sections/home-earth/context";
+import EntryCard from "@/sections/home/mobile/entry-card";
+import { useHall } from "@/stores/hall";
 import { useTapSoundStore } from "@/stores/tap-sound";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import VaultsEnterance from "../vaults-enterance";
-import EntryCard from "@/sections/home/mobile/entry-card";
-import VaultsEntrance from "@/sections/vaults/v2/entrance";
-import Signpost from "@/sections/home-earth/components/signpost";
-import BeraPrice from "@/sections/home-earth/components/bera-price";
-import { HomeEarthContext } from "@/sections/home-earth/context";
-import { useRainyDay } from "@/hooks/use-rainy-day";
-import Vaults from "@/components/vaults";
-import Boyco from "@/sections/boyco";
+import MobileHeader from "./header";
 
 const Home = () => {
+  const hallStore = useHall()
   const router = useProgressRouter();
   const tapSound = useTapSoundStore();
   const { isRainyDay, beraPrice } = useRainyDay({ isLoadPrice: true });
@@ -223,7 +222,7 @@ const Home = () => {
             <div
               className="relative w-full overflow-hidden pb-[60px]"
               style={{
-                backgroundImage: "url('/images/mobile/beratown-home.svg')",
+                backgroundImage: "url('/images/mobile/beratown-home-normal.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "top",
                 backgroundRepeat: "no-repeat",
@@ -231,35 +230,40 @@ const Home = () => {
                 minHeight: "100dvh"
               }}
             >
-              <Boyco />
+              <Vaults className="!absolute z-[2] !left-[unset] !top-[50px] right-[-30px] scale-[0.78] origin-right" />
 
-              <Vaults className="!absolute z-[2] !left-[unset] !top-[130px] right-[-30px] scale-[0.78] origin-right" />
-
-              {/*#region Beraciaga*/}
+              {/*#region Hall*/}
               <motion.div
-                className="w-[187px] h-[41vw] translate-y-[50vw] translate-x-[3vw] opacity-50"
-                // whileTap="tap"
-                // style={{ clipPath: `path("M18.9114 5.11072C2.51142 13.1107 -2.58852 33.6113 -0.588519 43.6113C-0.588519 53.1114 1.91148 77.8111 1.91148 86.6111C1.91148 95.4111 14.0781 97.2778 18.9114 97.1111C17.5781 100.444 15.7114 109.611 18.9114 119.611C22.9114 132.111 77.9114 129.111 88.9114 124.611C97.7114 121.011 99.5781 102.778 99.4114 94.1111L126.411 84.1113C152.912 84.1113 161.411 86.1113 175.411 84.1113C189.411 82.1113 187.911 75.6111 179.411 61.6111C172.611 50.4111 153.245 53.9444 144.411 57.1111C135.911 35.6111 103.411 0.611248 90.9114 -2.38875C78.4114 -5.38875 39.4114 -4.88928 18.9114 5.11072Z")` }}
-                data-bp="1015-011"
+                className="w-[52.308vw] h-[38.205vw] translate-y-[30vw] translate-x-[3vw]"
+                // data-bp="1015-011"
+                onClick={() => {
+                  hallStore.set({
+                    currentTab: "validators"
+                  })
+                  router.push("/hall");
+                  tapSound.play?.();
+                }}
               >
                 <motion.img
-                  src="/images/mobile/home/bg-beraciaga.svg"
+                  src="/images/mobile/home/bg-hall.svg"
                   alt=""
                   className="w-full h-full"
                   variants={EntryAnimationBg}
                   transition={EntryAnimation}
                 />
                 <motion.img
-                  src="/images/mobile/home/text-beraciaga.svg"
-                  className="absolute left-[9.5vw] top-[5vw] w-[28.2vw] h-[10.5vw]"
+                  src="/images/mobile/home/text-hall.svg"
+                  className="absolute left-[20.709vw] top-[24.872vw] w-[34.615vw] h-[8.205vw]"
                   variants={EntryAnimationSignpost}
                   transition={EntryAnimation}
                 />
               </motion.div>
+
+
               {/*#endregion*/}
 
               <motion.div
-                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[48vw] translate-x-[10.256vw]"
+                className="w-[182px] h-[25.128vw] mt-[10vw] translate-y-[40vw] translate-x-[10.256vw]"
                 whileTap="tap"
                 data-bp="1015-003"
                 onClick={() => {
@@ -383,13 +387,6 @@ const Home = () => {
                   variants={EntryAnimationBg}
                   transition={EntryAnimation}
                 />
-                {/* <motion.img
-                 src="/images/mobile/home/text-vaults.png"
-                 className="absolute left-[32.307vw] top-[7.692vw] w-[21.538vw] h-[11.794vw]"
-                 alt=""
-                 variants={EntryAnimationSignpost}
-                 transition={EntryAnimation}
-                 /> */}
 
                 <EntryCard
                   className="right-[18.974vw] top-[7.692vw] w-[28.538vw] h-[8.794vw] whitespace-nowrap"
