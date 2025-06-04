@@ -11,7 +11,7 @@ const MENU_LIST = [
   {
     label: "Swap",
     bg: "#D8FF8D",
-    href: "/dex/bex"
+    href: "/swap"
   },
   {
     label: "Bridge",
@@ -21,7 +21,7 @@ const MENU_LIST = [
   {
     label: "Lending",
     bg: "#98F6CD",
-    href: "/lending/dolomite"
+    href: "/lending"
   },
   {
     label: "Vaults",
