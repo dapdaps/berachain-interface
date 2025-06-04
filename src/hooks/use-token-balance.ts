@@ -48,7 +48,10 @@ export default function useTokenBalance(
 
     setIsLoading(true);
     try {
-      if (address === "native") {
+      if (
+        address === "native" ||
+        address === "0x0000000000000000000000000000000000000000"
+      ) {
         const rawBalance = await _provider.getBalance(account);
         setTokenBalance(utils.formatEther(rawBalance));
       } else {

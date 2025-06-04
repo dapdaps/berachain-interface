@@ -3,7 +3,8 @@ import { handleHotTokensOutput } from "../handler/hot-tokens";
 import { handleSwapOutput } from "../handler/swap";
 import { ChatCallbacks } from "./chat-stream-handler";
 import { handleVaultsOutput } from "@/components/chat/handler/vaults";
-import VaultsCard from '@/components/chat/McBera/VaultsCard';
+import { handleEnsoOutput } from "../handler/enso";
+import VaultsCard from "@/components/chat/McBera/VaultsCard";
 
 export const handleFunctionOutput = (
   functionType: string,
@@ -12,9 +13,14 @@ export const handleFunctionOutput = (
   callbacks?: ChatCallbacks,
   extra?: string
 ): void => {
-  if (content === "" && ["getVaultsPositions", "getWalletAssets", "getInterestVaults"].includes(functionType)) {
+  if (
+    content === "" &&
+    ["getVaultsPositions", "getWalletAssets", "getInterestVaults"].includes(
+      functionType
+    )
+  ) {
     let parsedExtra = undefined;
-    
+
     if (extra) {
       try {
         parsedExtra = JSON.parse(extra);
@@ -23,8 +29,13 @@ export const handleFunctionOutput = (
         console.error("Failed to parse extra data:", e);
       }
     }
-    
-    handleSpecialEmptyResponse(functionType, parsedExtra, assistantMessage, callbacks);
+
+    handleSpecialEmptyResponse(
+      functionType,
+      parsedExtra,
+      assistantMessage,
+      callbacks
+    );
     return;
   }
 
@@ -45,19 +56,47 @@ export const handleFunctionOutput = (
       handleHotTokensOutput(parsedContent, assistantMessage, callbacks);
       break;
     case "getInterestVaults":
-      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(
+        functionType,
+        parsedContent,
+        assistantMessage,
+        callbacks
+      );
       break;
     case "getVaultsPositions":
-      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(
+        functionType,
+        parsedContent,
+        assistantMessage,
+        callbacks
+      );
       break;
     case "getWalletAssets":
-      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(
+        functionType,
+        parsedContent,
+        assistantMessage,
+        callbacks
+      );
       break;
     case "filterVaults":
-      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(
+        functionType,
+        parsedContent,
+        assistantMessage,
+        callbacks
+      );
       break;
     case "getVaultsReward":
-      handleVaultsOutput(functionType, parsedContent, assistantMessage, callbacks);
+      handleVaultsOutput(
+        functionType,
+        parsedContent,
+        assistantMessage,
+        callbacks
+      );
+      break;
+    case "bundle":
+      handleEnsoOutput(parsedContent, assistantMessage, callbacks);
       break;
   }
 };
@@ -73,8 +112,8 @@ const handleSpecialEmptyResponse = (
 
   const parseFallbackSuggestion = (suggestion: any) => {
     try {
-      return typeof suggestion === 'string' 
-        ? JSON.parse(suggestion) 
+      return typeof suggestion === "string"
+        ? JSON.parse(suggestion)
         : suggestion;
     } catch (e) {
       console.error("Failed to parse fallback_suggestion:", e);
@@ -83,27 +122,40 @@ const handleSpecialEmptyResponse = (
   };
 
   switch (functionType) {
-    case "getVaultsPositions": 
-      messageText = "No positions found. Create or deposit into a vault to get started:";
+    case "getVaultsPositions":
+      messageText =
+        "No positions found. Create or deposit into a vault to get started:";
       if (extraData.fallback_suggestion) {
-        const parsedSuggestion = parseFallbackSuggestion(extraData.fallback_suggestion);
+        const parsedSuggestion = parseFallbackSuggestion(
+          extraData.fallback_suggestion
+        );
         if (parsedSuggestion) {
           component = (
-            <VaultsCard parsedContent={parsedSuggestion} isFallbackSuggestion={true} />
+            <VaultsCard
+              parsedContent={parsedSuggestion}
+              isFallbackSuggestion={true}
+            />
           );
         }
       }
       break;
     case "getWalletAssets":
-      messageText = "No assets found. Try bridging some assets to get started: [Bridge Bera](/bridge/lifi?fromToken=eth&toToken=bera)";
+      messageText =
+        "No assets found. Try bridging some assets to get started: [Bridge Bera](/bridge/lifi?fromToken=eth&toToken=bera)";
       break;
     case "getInterestVaults":
-      messageText = "No top vaults found. More vaults you might be interested in:";
+      messageText =
+        "No top vaults found. More vaults you might be interested in:";
       if (extraData.fallback_suggestion) {
-        const parsedSuggestion = parseFallbackSuggestion(extraData.fallback_suggestion);
+        const parsedSuggestion = parseFallbackSuggestion(
+          extraData.fallback_suggestion
+        );
         if (parsedSuggestion) {
           component = (
-            <VaultsCard parsedContent={parsedSuggestion} isFallbackSuggestion={true} />
+            <VaultsCard
+              parsedContent={parsedSuggestion}
+              isFallbackSuggestion={true}
+            />
           );
         }
       }
@@ -112,14 +164,14 @@ const handleSpecialEmptyResponse = (
 
   const richContent = {
     text: messageText,
-    actions: [],
+    actions: []
   };
 
   const updatedMessage = {
     ...assistantMessage,
     content: messageText,
     richContent,
-    component,
+    component
   };
 
   if (callbacks?.updateMessage) {
