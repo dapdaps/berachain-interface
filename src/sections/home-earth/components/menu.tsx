@@ -31,7 +31,7 @@ const MENU_LIST = [
   {
     label: "Tokens",
     bg: "#C0FF96",
-    href: "/marketplace"
+    href: "/tokens"
   },
   {
     label: "Portfolio",
