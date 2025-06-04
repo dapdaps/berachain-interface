@@ -211,11 +211,22 @@ export const ColumnAction = (props: any) => {
   }
 
   const disabled = !data.estimateMintAmount || Big(data.estimateMintAmount).lte(0);
-  if (data.approved) {
-    return (
+  return (
+    <div className="w-full grid grid-cols-2 gap-[8px]">
       <Button
         type="primary"
         disabled={false}
+        className={clsx(buttonClassName, className)}
+        loading={pending && currentItem?.id === data.id}
+        onClick={() => {
+          onChangeData?.(data, "approve");
+        }}
+      >
+        Stake
+      </Button>
+      <Button
+        type="primary"
+        disabled={!data.approved}
         className={clsx(buttonClassName, className)}
         loading={pending && currentItem?.id === data.id}
         onClick={() => {
@@ -224,19 +235,6 @@ export const ColumnAction = (props: any) => {
       >
         Mint
       </Button>
-    );
-  }
-  return (
-    <Button
-      type="primary"
-      disabled={disabled}
-      className={clsx(buttonClassName, className)}
-      loading={pending && currentItem?.id === data.id}
-      onClick={() => {
-        onChangeData?.(data, "approve");
-      }}
-    >
-      Approve
-    </Button>
+    </div>
   );
 };

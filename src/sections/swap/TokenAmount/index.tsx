@@ -18,7 +18,11 @@ export default function TokenAmout({
   onCurrencySelectOpen,
   onAmountChange,
   onUpdateCurrencyBalance,
-  updater
+  updater,
+  isPrice = true,
+  balanceLabel = "balance",
+  balanceClassName = "",
+  onBalanceClick
 }: any) {
   const tokenPrice = useMemo(
     () => (currency ? prices[currency.priceKey || currency.symbol] : 0),
@@ -155,25 +159,31 @@ export default function TokenAmout({
         className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]"
       >
         <div className="flex items-center gap-[4px]">
-          balance:{" "}
+          {balanceLabel}:{" "}
           {isLoading ? (
             <Loading />
           ) : (
             <span
+              className={balanceClassName}
               style={{
                 textDecoration: disabled ? "none" : "underline"
               }}
+              onClick={() => onBalanceClick?.(tokenBalance)}
             >
               {currency ? balanceFormated(tokenBalance) : "-"}
             </span>
           )}
         </div>
-        <div>
-          $
-          {amount && tokenPrice
-            ? balanceFormated(Big(amount).mul(tokenPrice).toString())
-            : "-"}
-        </div>
+        {
+          isPrice && (
+            <div>
+              $
+              {amount && tokenPrice
+                ? balanceFormated(Big(amount).mul(tokenPrice).toString())
+                : "-"}
+            </div>
+          )
+        }
       </div>
     </div>
   );
