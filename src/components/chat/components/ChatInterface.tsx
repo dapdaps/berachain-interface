@@ -11,6 +11,8 @@ import useSwapStore from "../stores/useSwapStores";
 import SwapModal from "@/sections/swap/SwapModal";
 import useEnsoStore from "../stores/useEnsoStore";
 import EnsoModal from "../McBera/EnsoCard/modal";
+import useHaikuStore from "../stores/useHaikuStore";
+import HaikuModal from "../McBera/SwapCard/Haiku/modal";
 import { bera } from "@/configs/tokens/bera";
 import { useAppKit } from "@reown/appkit/react";
 
@@ -70,6 +72,8 @@ export default function ChatInterface() {
   } = useSwapStore();
 
   const ensoStore = useEnsoStore();
+
+  const haikuStore = useHaikuStore();
 
   const displayMessages = contextMessages.length > 0 ? contextMessages : [];
 
@@ -242,6 +246,20 @@ export default function ChatInterface() {
     }
   };
 
+  const successCb = ({ messageContent }: any) => {
+    const successMessageId = Date.now().toString();
+
+    const successMessage: Message = {
+      id: successMessageId,
+      sender: "assistant",
+      senderName: "McBera",
+      content: messageContent
+    };
+    setIsFromHistory(false);
+    addMessage(successMessage);
+    postAddMessageItem(messageContent, sessionId!);
+  };
+
   console.log("ChatInterface rendered with messages:", displayMessages);
 
   return (
@@ -352,7 +370,7 @@ export default function ChatInterface() {
             swapSuccessCallback();
             return;
           }
-          const successMessageId = Date.now().toString();
+
           const txUrl = `https://berascan.com/tx/${trade.transactionHash}`;
 
           const messageContent = `You swapped ${trade.inputCurrencyAmount} ${
@@ -361,15 +379,7 @@ export default function ChatInterface() {
             trade.outputCurrency?.symbol || ""
           } via ${trade.tradeFrom}\n Here is Tx: [${txUrl}](${txUrl})`;
 
-          const successMessage: Message = {
-            id: successMessageId,
-            sender: "assistant",
-            senderName: "McBera",
-            content: messageContent
-          };
-          setIsFromHistory(false);
-          addMessage(successMessage);
-          postAddMessageItem(messageContent, sessionId!);
+          successCb({ messageContent });
         }}
         from="ai-chat"
       />
@@ -377,7 +387,6 @@ export default function ChatInterface() {
         <EnsoModal
           open={ensoStore.modalOpen}
           onSuccess={({ transactionHash, amount, symbol, isSuccess }: any) => {
-            const successMessageId = Date.now().toString();
             const txUrl = `https://berascan.com/tx/${transactionHash}`;
 
             const messageContent = `${
@@ -386,15 +395,34 @@ export default function ChatInterface() {
               isSuccess ? "successfully" : "failly"
             }.\n Here is Tx: [${txUrl}](${txUrl})`;
 
-            const successMessage: Message = {
-              id: successMessageId,
-              sender: "assistant",
-              senderName: "McBera",
-              content: messageContent
-            };
-            setIsFromHistory(false);
-            addMessage(successMessage);
-            postAddMessageItem(messageContent, sessionId!);
+            successCb({ messageContent });
+          }}
+        />
+      )}
+      {haikuStore.modalOpen && (
+        <HaikuModal
+          open={haikuStore.modalOpen}
+          onSuccess={({
+            transactionHash,
+            inputCurrencyAmount,
+            inputCurrency,
+            outputCurrencyAmount,
+            outputCurrency,
+            isSuccess
+          }: any) => {
+            const txUrl = `https://berascan.com/tx/${transactionHash}`;
+
+            const messageContent = `${
+              isSuccess ? "✅" : "❌"
+            } You swapped ${inputCurrencyAmount} ${
+              inputCurrency?.symbol || ""
+            } for ${outputCurrencyAmount} ${
+              outputCurrency?.symbol || ""
+            } via Haiku\n ${
+              transactionHash ? `Here is Tx: [${txUrl}](${txUrl})` : ""
+            }`;
+
+            successCb({ messageContent });
           }}
         />
       )}
