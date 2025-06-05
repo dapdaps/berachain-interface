@@ -38,8 +38,8 @@ export default memo(function IbgtMain() {
     claiming,
     handleMintIBGT
   } = useIBGT();
-  const rewards = data?.rewards
-  const { userPoints } = useUserPoints()
+  const rewards = data?.rewards;
+  const { userPoints } = useUserPoints();
   const {
     balances,
     inAmount,
@@ -100,9 +100,9 @@ export default memo(function IbgtMain() {
             <div className="cursor-pointer text-black font-Montserrat text-[20px] font-semibold leading-[90%] underline">
               {ibgtData?.total
                 ? Big(ibgtData?.staked)
-                  .div(ibgtData?.total)
-                  .times(100)
-                  .toFixed(2)
+                    .div(ibgtData?.total)
+                    .times(100)
+                    .toFixed(2)
                 : "-"}
               %
             </div>
@@ -147,7 +147,11 @@ export default memo(function IbgtMain() {
           </div>
           <div className="w-full h-[1px] bg-black/[0.15]" />
           <div className="pt-[19px] pl-[17px]">
-            <InfraredRewards rewards={rewards} claiming={claiming} handleClaim={handleClaim} />
+            <InfraredRewards
+              rewards={rewards}
+              claiming={claiming}
+              handleClaim={handleClaim}
+            />
           </div>
         </div>
 
@@ -184,9 +188,9 @@ export default memo(function IbgtMain() {
                 <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {inAmount
                     ? "$" +
-                    Big(inAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2)
+                      Big(inAmount)
+                        .times(data?.initialData?.stakeToken?.price ?? 0)
+                        .toFixed(2)
                     : "-"}
                 </span>
                 <div
@@ -258,9 +262,9 @@ export default memo(function IbgtMain() {
                 <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {lpAmount
                     ? "$" +
-                    Big(lpAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2)
+                      Big(lpAmount)
+                        .times(data?.initialData?.stakeToken?.price ?? 0)
+                        .toFixed(2)
                     : "-"}
                 </span>
                 <div
