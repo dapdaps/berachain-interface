@@ -88,7 +88,7 @@ export default function EnsoModal({ open, onSuccess }: any) {
           });
         }}
       >
-        <div className="w-[608px] rounded-[20px] border border-[#000000] bg-[#FFFDEB] px-[24px] pt-[16px] pb-[30px]">
+        <div className="w-[608px] rounded-[20px] border border-[#000000] bg-[#FFFDEB] px-[24px] pt-[16px] pb-[10px]">
           <div className="text-[24px] text-black font-semibold">
             {vault.name} Vaults
           </div>
@@ -241,6 +241,10 @@ export default function EnsoModal({ open, onSuccess }: any) {
                 Confirm
               </Button>
             </div>
+          </div>
+          <div className="flex justify-center items-center gap-[4px] mt-[20px]">
+            <div className="text-[12px]">Powered by</div>
+            <img src="/images/enso-logo.webp" className="w-[72px] h-[12px]" />
           </div>
         </div>
       </Modal>
