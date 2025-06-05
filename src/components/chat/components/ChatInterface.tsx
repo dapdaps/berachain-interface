@@ -93,55 +93,11 @@ export default function ChatInterface() {
     }
   }, [address]);
 
-  const scrollToBottom = useCallback((isToLastUserMessage?: boolean) => {
-    const getOffsetTopRelativeToContainer = (child: any, container: any) => {
-      const childRect = child?.getBoundingClientRect();
-      const containerRect = container?.getBoundingClientRect();
-      return childRect.top - containerRect.top + container.scrollTop;
-    };
-    const chatContainer = containerRef.current;
-
-    clearTimeout(timer.current);
-
-    if (chatContainer) {
-      if (isToLastUserMessage) {
-        const userMessages =
-          chatContainer.querySelectorAll('[data-role="user"]');
-        const lastUserMessage = userMessages[
-          userMessages.length - 1
-        ] as HTMLElement;
-        if (lastUserMessage) {
-          const elementOffset = getOffsetTopRelativeToContainer(
-            lastUserMessage,
-            chatContainer
-          );
-          timer.current = setTimeout(() => {
-            chatContainer.scrollTo({
-              top: elementOffset,
-              behavior: "smooth"
-            });
-            clearTimeout(timer.current);
-          }, 0);
-          return;
-        }
-      }
-      timer.current = setTimeout(() => {
-        chatContainer.scrollTo({
-          top: chatContainer.scrollHeight,
-          behavior: "smooth"
-        });
-        clearTimeout(timer.current);
-      }, 0);
-    }
-  }, []);
-
   useEffect(() => {
-    scrollToBottom(isFromHistory);
-  }, [displayMessages, isFromHistory]);
-
-  const handleMessageResize = useCallback(() => {
-    scrollToBottom();
-  }, []);
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView();
+    }, 500);
+  }, [displayMessages]);
 
   const handleSubmit = async () => {
     if (!address) {
@@ -263,9 +219,9 @@ export default function ChatInterface() {
   console.log("ChatInterface rendered with messages:", displayMessages);
 
   return (
-    <div className="flex flex-col justify-center  w-[600px]  mx-auto">
+    <div className="flex flex-col justify-center w-[600px] mx-auto">
       <div
-        className="mt-5 flex-1 overflow-y-auto pr-[20px] max-h-[500px] hide-scrollbar"
+        className="mt-5 overflow-y-auto pr-[20px] h-[500px]"
         ref={containerRef}
       >
         {displayMessages.map((message) => {
@@ -314,7 +270,11 @@ export default function ChatInterface() {
                         message={message}
                         content={message.content}
                         component={message.component}
-                        onResize={handleMessageResize}
+                        onResize={() => {
+                          messagesEndRef.current?.scrollIntoView({
+                            behavior: "smooth"
+                          });
+                        }}
                         skipTyping={message.skipTyping}
                       />
                     ) : (
@@ -326,7 +286,7 @@ export default function ChatInterface() {
             </div>
           );
         })}
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-[1px]" />
       </div>
 
       <div className="flex w-[560px] items-center relative mt-auto">
