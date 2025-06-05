@@ -10,6 +10,8 @@ import { useCallback, useMemo, useState } from "react";
 import useAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
 import Big from "big.js";
+import ButtonWithCheckingChain from "@/components/button/button-with-checking-chain";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function EnsoModal({ open, onSuccess }: any) {
   const ensoStore = useEnsoStore();
@@ -30,9 +32,10 @@ export default function EnsoModal({ open, onSuccess }: any) {
   const [loading, setLoading] = useState(false);
   // const [result, setResult] = useState(0); // 1 for success, 2 for fail
   // const [txHash, setTxHash] = useState("");
-  const { account, provider } = useAccount();
+  const { account, provider, chainId } = useAccount();
 
   const step = useMemo(() => {
+    if (chainId !== DEFAULT_CHAIN_ID) return 1;
     if (!tokenBalance) return 0;
     if (Big(tokenBalance).lt(token.amount)) {
       return 1;
@@ -148,22 +151,31 @@ export default function EnsoModal({ open, onSuccess }: any) {
                   Confirm Token amount
                 </div>
               </div>
-              {step > 1 ? (
+              {step > 1 && (
                 <div className="flex gap-[4px] items-center">
                   <span className="text-[16px] font-semibold">
                     {token.amount} {token.symbol}
                   </span>
                   <CheckedIcon />
                 </div>
-              ) : (
-                <div className="text-[16px] font-semibold">
-                  <span className="text-[#C84F27]">{token.amount}</span>{" "}
-                  <span>{token.symbol}</span>
-                </div>
               )}
+              {step === 1 &&
+                (chainId === DEFAULT_CHAIN_ID ? (
+                  <div className="text-[16px] font-semibold">
+                    <span className="text-[#C84F27]">{token.amount}</span>{" "}
+                    <span>{token.symbol}</span>
+                  </div>
+                ) : (
+                  <ButtonWithCheckingChain
+                    buttonProps={{
+                      type: "primary",
+                      className: "h-[40px] !text-[14px] font-semibold px-[0px]"
+                    }}
+                  />
+                ))}
             </div>
             <div className="flex justify-between items-center">
-              {step === 1 ? (
+              {step === 1 && chainId === DEFAULT_CHAIN_ID ? (
                 <span className="text-[#C84F27] text-[14px] font-semibold">
                   You don’t have enough {token.symbol}, your balance{" "}
                   {numberFormatter(tokenBalance, 2, true)}
@@ -171,7 +183,7 @@ export default function EnsoModal({ open, onSuccess }: any) {
               ) : (
                 <div />
               )}
-              {step === 1 && (
+              {step === 1 && chainId === DEFAULT_CHAIN_ID && (
                 <Button
                   type="primary"
                   className="h-[40px] !text-[14px] font-semibold px-[0px]"

@@ -2,6 +2,8 @@ import { Contract, providers, utils } from "ethers";
 import { useEffect, useState } from "react";
 import useAccount from "@/hooks/use-account";
 import chains from "@/configs/chains";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import { setBalance } from "viem/actions";
 
 export const TOKEN_ABI = [
   {
@@ -70,6 +72,10 @@ export default function useTokenBalance(
     setFresh((n) => n + 1);
   };
   useEffect(() => {
+    if (walletChainId !== DEFAULT_CHAIN_ID) {
+      setTokenBalance("");
+      return;
+    }
     getBalance();
   }, [account, address, decimals, fresh, chainId, walletChainId]);
 
