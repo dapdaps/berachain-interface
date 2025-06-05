@@ -44,6 +44,13 @@ const SwapCard: React.FC<SwapCardProps> = ({
   useEffect(() => {
     if (isFromHistory || !content || !isTyping) {
       setContentFinished(true);
+      const ele = document.getElementById("chat-bottom");
+      if (ele)
+        setTimeout(() => {
+          ele.scrollIntoView({
+            behavior: "smooth"
+          });
+        }, 500);
     } else {
       setContentFinished(false);
     }

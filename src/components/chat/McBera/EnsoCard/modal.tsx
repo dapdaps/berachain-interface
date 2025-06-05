@@ -15,7 +15,8 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function EnsoModal({ open, onSuccess }: any) {
   const ensoStore = useEnsoStore();
-  const { setDefaultOutputCurrency, openSwapModal } = useSwapStore();
+  const { setDefaultOutputCurrency, openSwapModal, closeSwapModal } =
+    useSwapStore();
   const { addAction } = useAddAction("ai-chat");
 
   const { vault, enso, token, apr } = ensoStore.data;
@@ -190,9 +191,7 @@ export default function EnsoModal({ open, onSuccess }: any) {
                   onClick={() => {
                     setDefaultOutputCurrency(token);
                     openSwapModal(() => {
-                      ensoStore.set({
-                        modalOpen: false
-                      });
+                      closeSwapModal();
                       updateBalance();
                     });
                   }}
