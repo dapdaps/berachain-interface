@@ -387,7 +387,7 @@ const List = forwardRef<any, any>((props, ref) => {
           }
         },
         {
-          width: "13%",
+          width: "10%",
           key: "position",
           label: (
             <div className="flex items-center gap-[4px]">
@@ -447,7 +447,7 @@ const List = forwardRef<any, any>((props, ref) => {
           }
         },
         {
-          width: "13%",
+          width: "10%",
           key: "reward",
           label: "Reward",
           type: "slot",
@@ -456,7 +456,7 @@ const List = forwardRef<any, any>((props, ref) => {
           }
         },
         {
-          width: "13%",
+          width: "18%",
           key: "action",
           label: "",
           type: "slot",

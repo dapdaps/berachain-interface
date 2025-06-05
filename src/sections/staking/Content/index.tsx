@@ -18,7 +18,8 @@ import { useMemo, useRef, useState } from "react";
 import Detail from "../Bridge/Detail";
 import List from "../Bridge/List";
 import Modal from "../Bridge/Modal";
-import { useBerapaw } from "@/sections/staking/hooks/use-berapaw";
+import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
+import BerapawModal from "../Bridge/Modal/berapaw/modal";
 
 type Props = {
   dapp: any;
@@ -59,7 +60,13 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     sort: berapawSort,
     onSort: onBerapawSort,
     search: berapawSearch,
-    onSearch: onBerapawSearch
+    onSearch: onBerapawSearch,
+    stakeModalVisible,
+    stakeModalData,
+    onStakeModalClose,
+    handleApprove: onBerapawApprove,
+    handleStake: onBerapawStake,
+    staking: berapawStaking,
   } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { ALL_DATA_URL, addresses, pairs, description } = dexConfig ?? {};
@@ -267,6 +274,19 @@ export default function Staking({ dapp, className, listTitle }: Props) {
           setCheckedRecord(null);
           listRef?.current?.changeCheckedIndex(-1);
         }}
+      />
+      <BerapawModal
+        show={stakeModalVisible}
+        data={stakeModalData}
+        onClose={onStakeModalClose}
+        onSuccess={() => {
+          onStakeModalClose();
+          berapawReload();
+        }}
+        onApprove={onBerapawApprove}
+        approving={berapawApproving}
+        onStake={onBerapawStake}
+        staking={berapawStaking}
       />
     </Card>
   );
