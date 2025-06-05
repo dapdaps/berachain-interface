@@ -12,6 +12,8 @@ import { getTokenLogo } from "@/sections/dashboard/utils";
 import { post } from "@/utils/http";
 import Big from "big.js";
 import LogoIcon from "./icon";
+import ButtonWithCheckingChain from "@/components/button/button-with-checking-chain";
+import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function HaikuModal({ open, onSuccess }: any) {
   const haikuStore = useHaikuStore();
@@ -35,9 +37,10 @@ export default function HaikuModal({ open, onSuccess }: any) {
   }, [haiku]);
 
   const [loading, setLoading] = useState(false);
-  const { account, provider } = useAccount();
+  const { account, provider, chainId } = useAccount();
 
   const step = useMemo(() => {
+    if (chainId !== DEFAULT_CHAIN_ID) return 1;
     if (!tokenBalance) return 0;
     if (Big(tokenBalance).lt(input_token.amount)) {
       return 1;
@@ -237,22 +240,31 @@ export default function HaikuModal({ open, onSuccess }: any) {
                 Confirm Token amount
               </div>
             </div>
-            {step > 1 ? (
+            {step > 1 && (
               <div className="flex gap-[4px] items-center">
                 <span className="text-[16px] font-semibold">
                   {input_token.amount} {input_token.symbol}
                 </span>
                 <CheckedIcon />
               </div>
-            ) : (
-              <div className="text-[16px] font-semibold">
-                <span className="text-[#C84F27]">{input_token.amount}</span>{" "}
-                <span>{input_token.symbol}</span>
-              </div>
             )}
+            {step === 1 &&
+              (chainId === DEFAULT_CHAIN_ID ? (
+                <div className="text-[16px] font-semibold">
+                  <span className="text-[#C84F27]">{input_token.amount}</span>{" "}
+                  <span>{input_token.symbol}</span>
+                </div>
+              ) : (
+                <ButtonWithCheckingChain
+                  buttonProps={{
+                    type: "primary",
+                    className: "h-[40px] !text-[14px] font-semibold px-[0px]"
+                  }}
+                />
+              ))}
           </div>
           <div className="flex justify-between items-center">
-            {step === 1 ? (
+            {step === 1 && chainId === DEFAULT_CHAIN_ID ? (
               <span className="text-[#C84F27] text-[14px] font-semibold">
                 You don’t have enough {input_token.symbol}, your balance{" "}
                 {numberFormatter(tokenBalance, 2, true)}
@@ -260,7 +272,7 @@ export default function HaikuModal({ open, onSuccess }: any) {
             ) : (
               <div />
             )}
-            {step === 1 && (
+            {step === 1 && chainId === DEFAULT_CHAIN_ID && (
               <Button
                 type="primary"
                 className="h-[40px] !text-[14px] font-semibold px-[0px]"
