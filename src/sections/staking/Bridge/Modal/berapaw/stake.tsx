@@ -24,9 +24,6 @@ const BerapawStake = (props: any) => {
         outputCurrencyReadonly={true}
         isPrice={false}
         balanceClassName="!underline underline-offset-2 cursor-pointer"
-        onBalanceClick={(balance: any) => {
-          onAmountChange(balance);
-        }}
         updater={1}
       />
       {

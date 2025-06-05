@@ -22,7 +22,7 @@ export default function TokenAmout({
   isPrice = true,
   balanceLabel = "balance",
   balanceClassName = "",
-  onBalanceClick
+  inputDisabled
 }: any) {
   const tokenPrice = useMemo(
     () => (currency ? prices[currency.priceKey || currency.symbol] : 0),
@@ -123,6 +123,7 @@ export default function TokenAmout({
               setRange(val);
             }}
             placeholder="0"
+            disabled={inputDisabled}
           />
         </div>
       </div>
@@ -168,7 +169,6 @@ export default function TokenAmout({
               style={{
                 textDecoration: disabled ? "none" : "underline"
               }}
-              onClick={() => onBalanceClick?.(tokenBalance)}
             >
               {currency ? balanceFormated(tokenBalance) : "-"}
             </span>

@@ -75,6 +75,7 @@ export function useAction(props?: Props) {
       error = res;
     } catch (err: any) {
       error = err;
+      console.log("stake failed: %o", error);
     }
     toast.fail({
       title: "Stake Failed!",

@@ -3,6 +3,8 @@ import ExchangeIcon from "@/sections/swap/Content/ExchangeIcon";
 import SubmitBtn from "@/sections/swap/SubmitBtn";
 import TokenAmount from "@/sections/swap/TokenAmount";
 import Big from "big.js";
+import clsx from "clsx";
+import { useMemo } from "react";
 
 const BerapawZap = (props: any) => {
   const {
@@ -12,9 +14,21 @@ const BerapawZap = (props: any) => {
     setInputCurrencyAmount,
     prices,
     outputCurrencyAmount,
-    setOutputCurrencyAmount,
     loading,
+    onOpenTokenSelector,
+    slippage,
+    setSlippage,
+    slippageList,
+    onSwap,
+    onRefresh,
+    zapData,
   } = props;
+
+  const [spender] = useMemo(() => {
+    const { approve = {} } = zapData ?? {};
+    const { spender } = approve;
+    return [spender];
+  }, [zapData]);
 
   return (
     <div className="mt-[10px]">
@@ -25,14 +39,9 @@ const BerapawZap = (props: any) => {
         prices={prices}
         isPrice={false}
         account
-        onCurrencySelectOpen={() => {
-          
-        }}
+        onCurrencySelectOpen={onOpenTokenSelector}
         onAmountChange={(_amount: string) => {
           setInputCurrencyAmount(_amount);
-        }}
-        onBalanceClick={(balance: any) => {
-          setInputCurrencyAmount(balance);
         }}
         updater={1}
       />
@@ -46,13 +55,7 @@ const BerapawZap = (props: any) => {
         prices={prices}
         account
         outputCurrencyReadonly={true}
-        onAmountChange={(_amount: string) => {
-          setOutputCurrencyAmount(_amount);
-        }}
-        onBalanceClick={(balance: any) => {
-          setOutputCurrencyAmount(balance);
-        }}
-        balanceClassName="!underline underline-offset-2 cursor-pointer"
+        inputDisabled={true}
         updater={2}
       />
       <SubmitBtn
@@ -60,17 +63,38 @@ const BerapawZap = (props: any) => {
           chainId: DEFAULT_CHAIN_ID
         }}
         amount={inputCurrencyAmount}
-        spender={data?.vaultAddress}
+        spender={spender}
         errorTips={null}
-        token={data?.stakingToken}
-        loading={false}
-        onClick={() => { }}
+        token={inputCurrency}
+        loading={loading}
+        onClick={onSwap}
         disabled={!inputCurrencyAmount || Big(inputCurrencyAmount).lte(0)}
-        onRefresh={() => { }}
+        onRefresh={onRefresh}
         updater={1}
       >
         Swap & Stake
       </SubmitBtn>
+      <div className="mt-[20px] flex items-center justify-end gap-[4px]">
+        <div className="">Max. Slippage:</div>
+        <div className="flex gap-[8px] items-center">
+          {
+            slippageList.map((item: any) => (
+              <button
+                type="button"
+                className={clsx(
+                  "w-[48px] h-[22px] flex-shrink-0 rounded-[6px] border border-[#373A53] text-black text-center font-Montserrat text-[14px] font-normal hover:bg-[#FFDC50] transition-all duration-150",
+                  slippage === item.value && "bg-[#FFDC50]"
+                )}
+                onClick={() => {
+                  setSlippage(item.value);
+                }}
+              >
+                {item.label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
     </div>
   );
 };
