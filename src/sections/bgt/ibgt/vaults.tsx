@@ -62,7 +62,7 @@ export default function Vaults() {
               )}
             </div>
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {data?.initialData?.name || "iBGT"}
+              {data?.id || "iBGT"}
             </div>
           </div>
         );
