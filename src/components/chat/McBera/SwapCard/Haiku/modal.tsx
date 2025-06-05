@@ -17,7 +17,8 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function HaikuModal({ open, onSuccess }: any) {
   const haikuStore = useHaikuStore();
-  const { setDefaultOutputCurrency, openSwapModal } = useSwapStore();
+  const { setDefaultOutputCurrency, openSwapModal, closeSwapModal } =
+    useSwapStore();
   const { addAction } = useAddAction("ai-chat");
   const [approved, setApproved] = useState(false);
   const [approving, setApproving] = useState(false);
@@ -279,9 +280,7 @@ export default function HaikuModal({ open, onSuccess }: any) {
                 onClick={() => {
                   setDefaultOutputCurrency(input_token);
                   openSwapModal(() => {
-                    haikuStore.set({
-                      modalOpen: false
-                    });
+                    closeSwapModal();
                     updateBalance();
                   });
                 }}

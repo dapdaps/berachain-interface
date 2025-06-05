@@ -99,14 +99,10 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
           account
         };
 
-        if (_template) {
-          params.template = _template;
+        if (typeof template === "string") {
+          params.template = template;
         } else {
-          if (typeof template === "string") {
-            params.template = template;
-          } else {
-            params.templates = template;
-          }
+          params.templates = template;
         }
 
         const data = await quoter(params);

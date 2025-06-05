@@ -1,12 +1,11 @@
 import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, memo } from "react";
 import LazyImage from "../../layz-image";
 import IconSend from "@public/images/chat/send.svg";
 import { useChatContext, Message } from "../context/chat-context";
 import { createNewChat, postAddMessageItem } from "../utils/chat-service";
 import InteractiveMarkdown from "./InteractiveMarkdown";
-import { useScroll } from "@/components/chat/hooks/useScroll";
 import useSwapStore from "../stores/useSwapStores";
 import SwapModal from "@/sections/swap/SwapModal";
 import useEnsoStore from "../stores/useEnsoStore";
@@ -45,43 +44,25 @@ const UserAvatar: React.FC = () => {
 };
 
 export default function ChatInterface() {
+  const timerRef = useRef<any>();
   const {
     messages: contextMessages,
     addMessage,
     addChatHistory,
     startNewChat,
-    setMessages,
     updateMessage,
     sessionId,
     isFromHistory,
     setIsFromHistory,
     setSessionId,
     isProcessing,
-    setChatMode,
     setIsProcessing,
-    setChatHistories,
     resetChatState
   } = useChatContext();
 
-  const {
-    isSwapModalOpen,
-    closeSwapModal,
-    defaultInputCurrency,
-    defaultOutputCurrency,
-    successCb: swapSuccessCallback
-  } = useSwapStore();
-
-  const ensoStore = useEnsoStore();
-
-  const haikuStore = useHaikuStore();
-
-  const displayMessages = contextMessages.length > 0 ? contextMessages : [];
-
-  const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timer = useRef<any>(null);
-  const { containerRef } = useScroll();
 
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
@@ -93,13 +74,7 @@ export default function ChatInterface() {
     }
   }, [address]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView();
-    }, 500);
-  }, [displayMessages]);
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (inputValue: string) => {
     if (!address) {
       open();
       return;
@@ -109,7 +84,6 @@ export default function ChatInterface() {
 
     try {
       const userMessage = inputValue;
-      setInputValue("");
       setIsProcessing(true);
       const isNewChat = contextMessages.length === 0;
       setIsFromHistory(false);
@@ -120,7 +94,7 @@ export default function ChatInterface() {
           content: userMessage
         };
         addMessage(newUserMessage);
-
+        onScrollToBottom(0);
         const assistantMessageId = (Date.now() + 1).toString();
         const emptyAssistantMessage: Message = {
           id: assistantMessageId,
@@ -180,6 +154,7 @@ export default function ChatInterface() {
           }
         });
       }
+      onScrollToBottom(1000);
     } catch (error) {
       console.error("Get error:", error);
       setIsProcessing(false);
@@ -195,123 +170,140 @@ export default function ChatInterface() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey && !isComposing) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
+  const onScrollToBottom = useCallback(
+    (delay = 500) => {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({
+          behavior: "smooth"
+        });
+      }, delay);
+    },
+    [messagesEndRef.current]
+  );
 
-  const successCb = ({ messageContent }: any) => {
-    const successMessageId = Date.now().toString();
+  const successCb = useCallback(() => {
+    ({ messageContent }: any) => {
+      const successMessageId = Date.now().toString();
 
-    const successMessage: Message = {
-      id: successMessageId,
-      sender: "assistant",
-      senderName: "McBera",
-      content: messageContent
+      const successMessage: Message = {
+        id: successMessageId,
+        sender: "assistant",
+        senderName: "McBera",
+        content: messageContent
+      };
+      setIsFromHistory(false);
+      addMessage(successMessage);
+      postAddMessageItem(messageContent, sessionId!);
     };
-    setIsFromHistory(false);
-    addMessage(successMessage);
-    postAddMessageItem(messageContent, sessionId!);
-  };
-
-  console.log("ChatInterface rendered with messages:", displayMessages);
+  }, [sessionId]);
 
   return (
     <div className="flex flex-col justify-center w-[600px] mx-auto">
-      <div
-        className="mt-5 overflow-y-auto pr-[20px] h-[500px]"
-        ref={containerRef}
-      >
-        {displayMessages.map((message) => {
-          return (
-            <div
-              key={message.id}
-              data-role={message.sender}
-              className={`flex items-start mb-4 ${
-                message.sender === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              {message.sender === "user" ? (
-                <div className="flex flex-col items-end">
-                  <div
-                    className={`
-                    max-w-[300px] break-all border border-[#DAD9CD] rounded-[10px] bg-opacity-30 bg-[#DAD9CD] px-[5px] py-1 flex items-center gap-2`}
-                  >
-                    <UserAvatar />
-                    <div className="font-Montserrat text-black/50 text-[14px] leading-[14px] font-[500]">
-                      {message.content}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-start w-full">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-[26px] h-[26px] flex-shrink-0 aspect-square flex items-center justify-center">
-                      <img
-                        src="/images/chat/mcbera.png"
-                        className="w-full object-contain"
-                        alt=""
-                      />
-                    </div>
-                    {message.senderName && (
-                      <span className="text-sm text-black/50 font-[500] font-Montserrat">
-                        {message.senderName}:
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-black text-sm leading-tight font-medium font-Montserrat w-full">
-                    {message.sender === "assistant" &&
-                    message.content === "" ? (
-                      <div className="text-gray-500">Thinking...</div>
-                    ) : message.sender === "assistant" && message.content ? (
-                      <InteractiveMarkdown
-                        message={message}
-                        content={message.content}
-                        component={message.component}
-                        onResize={() => {
-                          messagesEndRef.current?.scrollIntoView({
-                            behavior: "smooth"
-                          });
-                        }}
-                        skipTyping={message.skipTyping}
-                      />
-                    ) : (
-                      <div className="text-gray-500">No Data</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-        <div ref={messagesEndRef} className="h-[1px]" />
-      </div>
+      <List {...{ messagesEndRef, contextMessages, isFromHistory }} />
+      <Send
+        {...{
+          setIsComposing,
+          handleSubmit,
+          isProcessing,
+          isComposing
+        }}
+      />
+      <Modals {...{ successCb }} />
+    </div>
+  );
+}
 
-      <div className="flex w-[560px] items-center relative mt-auto">
-        <textarea
-          className="font-Montserrat text-[14px] font-[500] leading-[12px] w-full py-[14px] px-4 rounded-lg border border-black bg-white shadow-[inset_6px_5px_0px_0px_rgba(0,0,0,0.25)] focus:outline-none resize-none"
-          placeholder="Ask anything..."
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onCompositionStart={() => {
-            setIsComposing(true);
-          }}
-          onCompositionEnd={() => {
-            setIsComposing(false);
-          }}
-        />
-        <div
-          onClick={handleSubmit}
-          className={`absolute right-3 bottom-3 ${
-            isProcessing ? "opacity-40 pointer-events-none" : "cursor-pointer"
-          }`}
-        >
-          <IconSend />
-        </div>
-      </div>
+const List = ({ messagesEndRef, contextMessages, isFromHistory }: any) => {
+  const displayMessages = useMemo(
+    () => (contextMessages.length > 0 ? contextMessages : []),
+    [contextMessages]
+  );
+  useEffect(() => {
+    if (isFromHistory) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView();
+      }, 500);
+    }
+  }, [displayMessages, isFromHistory]);
+  return (
+    <div className="mt-5 overflow-y-auto pr-[20px] h-[500px]">
+      {displayMessages.map((message: any) => {
+        return (
+          <div
+            key={message.id}
+            data-role={message.sender}
+            className={`flex items-start mb-4 ${
+              message.sender === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            {message.sender === "user" ? (
+              <div className="flex flex-col items-end">
+                <div
+                  className={`
+                    max-w-[300px] break-all border border-[#DAD9CD] rounded-[10px] bg-opacity-30 bg-[#DAD9CD] px-[5px] py-1 flex items-center gap-2`}
+                >
+                  <UserAvatar />
+                  <div className="font-Montserrat text-black/50 text-[14px] leading-[14px] font-[500]">
+                    {message.content}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-start w-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-[26px] h-[26px] flex-shrink-0 aspect-square flex items-center justify-center">
+                    <img
+                      src="/images/chat/mcbera.png"
+                      className="w-full object-contain"
+                      alt=""
+                    />
+                  </div>
+                  {message.senderName && (
+                    <span className="text-sm text-black/50 font-[500] font-Montserrat">
+                      {message.senderName}:
+                    </span>
+                  )}
+                </div>
+                <div className="text-black text-sm leading-tight font-medium font-Montserrat w-full">
+                  {message.sender === "assistant" && message.content === "" ? (
+                    <div className="text-gray-500">Thinking...</div>
+                  ) : message.sender === "assistant" && message.content ? (
+                    <InteractiveMarkdown
+                      message={message}
+                      content={message.content}
+                      component={message.component}
+                      skipTyping={message.skipTyping}
+                    />
+                  ) : (
+                    <div className="text-gray-500">No Data</div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <div ref={messagesEndRef} className="h-[1px]" id="chat-bottom" />
+    </div>
+  );
+};
+
+export const Modals = memo(({ successCb }: any) => {
+  const {
+    isSwapModalOpen,
+    closeSwapModal,
+    defaultInputCurrency,
+    defaultOutputCurrency,
+    successCb: swapSuccessCallback
+  } = useSwapStore();
+
+  const ensoStore = useEnsoStore();
+
+  const haikuStore = useHaikuStore();
+
+  return (
+    <>
       <SwapModal
         defaultInputCurrency={
           bera[defaultInputCurrency?.symbol?.toLowerCase()] ||
@@ -386,6 +378,50 @@ export default function ChatInterface() {
           }}
         />
       )}
+    </>
+  );
+});
+
+const Send = ({
+  setIsComposing,
+  handleSubmit,
+  isProcessing,
+  isComposing
+}: any) => {
+  const [inputValue, setInputValue] = useState("");
+
+  return (
+    <div className="flex w-[560px] items-center relative mt-auto">
+      <textarea
+        className="font-Montserrat text-[14px] font-[500] leading-[12px] w-full py-[14px] px-4 rounded-lg border border-black bg-white shadow-[inset_6px_5px_0px_0px_rgba(0,0,0,0.25)] focus:outline-none resize-none"
+        placeholder="Ask anything..."
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey && !isComposing) {
+            e.preventDefault();
+            handleSubmit(inputValue);
+            setInputValue("");
+          }
+        }}
+        onCompositionStart={() => {
+          setIsComposing(true);
+        }}
+        onCompositionEnd={() => {
+          setIsComposing(false);
+        }}
+      />
+      <div
+        onClick={() => {
+          handleSubmit(inputValue);
+          setInputValue("");
+        }}
+        className={`absolute right-3 bottom-3 ${
+          isProcessing ? "opacity-40 pointer-events-none" : "cursor-pointer"
+        }`}
+      >
+        <IconSend />
+      </div>
     </div>
   );
-}
+};
