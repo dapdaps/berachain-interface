@@ -5,14 +5,14 @@ import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import useToast from "@/hooks/use-toast";
 import { useMultiState } from "@/hooks/use-multi-state";
 import Big from "big.js";
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from "next/navigation";
 import useClickTracking from "@/hooks/use-click-tracking";
 import useAddAction from "@/hooks/use-add-action";
 import useLpToAmount from "@/hooks/use-lp-to-amount";
-import { bera } from '@/configs/tokens/bera';
+import { bera } from "@/configs/tokens/bera";
 
 export const IBGT_ADDRESS = "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b";
-export const STAKED_IBGT_ADDRESS = "0x75f3be06b02e235f6d0e7ef2d462b29739168301"
+export const STAKED_IBGT_ADDRESS = "0x75f3be06b02e235f6d0e7ef2d462b29739168301";
 export const ABI = [
   {
     inputs: [
@@ -54,13 +54,15 @@ export type DataType = {
   staked: number | string;
 };
 export function useIBGT() {
-  const { chainId } = useCustomAccount()
+  const { chainId } = useCustomAccount();
   const router = useRouter();
   const { handleReport } = useClickTracking();
   const { provider, account } = useCustomAccount();
   const searchParams = useSearchParams();
   const searchParamFrom = searchParams.get("from");
-  const { addAction } = useAddAction(searchParamFrom === "vaults" ? "vaults" : "ibgt");
+  const { addAction } = useAddAction(
+    searchParamFrom === "vaults" ? "vaults" : "ibgt"
+  );
   const sender = account;
   const [claiming, setClaiming] = useState(false);
   const [data, setData] = useState<DataType>({
@@ -71,7 +73,11 @@ export function useIBGT() {
 
   const queryData = async function () {
     const FirstContract = new ethers.Contract(IBGT_ADDRESS, ABI, provider);
-    const SecondContract = new ethers.Contract(STAKED_IBGT_ADDRESS, ABI, provider)
+    const SecondContract = new ethers.Contract(
+      STAKED_IBGT_ADDRESS,
+      ABI,
+      provider
+    );
     try {
       const balanceOfResult = await FirstContract?.balanceOf(account);
       const totalSupplyResult = await FirstContract?.totalSupply();
@@ -117,21 +123,25 @@ export function useIBGT() {
   } = state;
 
   const { loading, dataList, fullDataList } = useInfraredList(updater);
+
   const tokenData = useMemo(
     () => fullDataList?.find((d: any) => d.id === "iBGT"),
     [fullDataList]
   );
+
   const { tokens, decimals, id, LP_ADDRESS, rewardSymbol } = tokenData ?? {};
   const multipleAttributesTokens = useMemo(() => {
     if (Array.isArray(tokens)) {
       return tokens.map((token: any) => {
         let _token: any = {
-          symbol: token,
+          symbol: token
         };
-        const currToken = Object.values(bera).find((_t) => _t.symbol.toLowerCase() === token.toLowerCase());
+        const currToken = Object.values(bera).find(
+          (_t) => _t.symbol.toLowerCase() === token.toLowerCase()
+        );
         if (currToken) {
           _token = {
-            ...currToken,
+            ...currToken
           };
         }
         return _token;
@@ -140,9 +150,11 @@ export function useIBGT() {
     return [];
   }, [tokens]);
   const rewardTokenWithMultipleAttributes = useMemo(() => {
-    const currToken = Object.values(bera).find((_t) => _t.symbol.toLowerCase() === rewardSymbol?.toLowerCase());
+    const currToken = Object.values(bera).find(
+      (_t) => _t.symbol.toLowerCase() === rewardSymbol?.toLowerCase()
+    );
     return {
-      ...currToken,
+      ...currToken
     };
   }, [rewardSymbol]);
 
@@ -153,10 +165,10 @@ export function useIBGT() {
     !lpAmount || !lpBalance
       ? "-"
       : parseFloat(
-        Big(lpAmount)
-          .div(Big(lpBalance).gt(0) ? lpBalance : 1)
-          .toFixed(4)
-      );
+          Big(lpAmount)
+            .div(Big(lpBalance).gt(0) ? lpBalance : 1)
+            .toFixed(4)
+        );
 
   const { handleGetAmount } = useLpToAmount(LP_ADDRESS);
 
@@ -176,11 +188,7 @@ export function useIBGT() {
   };
   const updateBalance = () => {
     const abi = ["function balanceOf(address) view returns (uint256)"];
-    const contract = new ethers.Contract(
-      LP_ADDRESS,
-      abi,
-      provider
-    );
+    const contract = new ethers.Contract(LP_ADDRESS, abi, provider);
     contract
       .balanceOf(sender)
       .then((balanceBig: any) => {
@@ -541,7 +549,6 @@ export function useIBGT() {
       .catch((err: any) => {
         createTx(4000000);
       });
-      
   };
   const onSuccess = function () {
     updateState({
