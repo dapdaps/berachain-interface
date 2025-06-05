@@ -92,6 +92,19 @@ export const BERAPAW_APPROVE_ABI = [
     ],
     stateMutability: 'nonpayable',
     type: 'function'
+  },
+  {
+    type: "function",
+    name: "stake",
+    inputs: [
+      {
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256"
+      }
+    ],
+    outputs: [],
+    stateMutability: "nonpayable"
   }
 ];
 

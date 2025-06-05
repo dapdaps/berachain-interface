@@ -60,6 +60,8 @@ export function useBerapaw(props: any) {
     approved,
     onMint,
     minting,
+    onStake,
+    staking,
   } = useAction({
     rewardVault: currentVault?.vaultAddress,
   });
@@ -317,11 +319,24 @@ export function useBerapaw(props: any) {
       // 250604 Open a modal
       setStakeModalVisible(true);
       setStakeModalData(record);
-      // if (approving) return;
-      // const res = await onApprove({ rewardVault: record.vaultAddress });
-      // if (res) {
-      //   getTotalData();
-      // }
+    }
+  };
+
+  const handleApprove = async (record: any) => {
+    if (approving) return;
+    const res = await onApprove({ rewardVault: record.vaultAddress });
+    if (res) {
+      getTotalData();
+      onStakeModalClose();
+    }
+  };
+
+  const handleStake = async (record: any, amount: string) => {
+    if (staking) return;
+    const res = await onStake({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
+    if (res) {
+      getTotalData();
+      onStakeModalClose();
     }
   };
 
@@ -700,6 +715,9 @@ export function useBerapaw(props: any) {
     stakeModalVisible,
     onStakeModalClose,
     stakeModalData,
+    handleApprove,
+    handleStake,
+    staking,
   };
 }
 

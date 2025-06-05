@@ -44,7 +44,7 @@ const BerapawStakeContent = (props: any) => {
       {
         currentTab === TABS[0].value && (
           <BerapawStake
-            data={data}
+            {...props}
             amount={stakeAmount}
             onAmountChange={(_amount: string) => {
               setStakeAmount(_amount);
@@ -56,7 +56,7 @@ const BerapawStakeContent = (props: any) => {
       {
         currentTab === TABS[1].value && (
           <BerapawZap
-            data={data}
+            {...props}
             prices={prices}
             inputCurrencyAmount={inputCurrencyAmount}
             setInputCurrencyAmount={setInputCurrencyAmount}

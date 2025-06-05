@@ -1,5 +1,5 @@
 import { useRequest } from 'ahooks';
-import { Contract, ethers } from 'ethers';
+import { Contract, ethers, utils } from 'ethers';
 import {
   BERAPAW_APPROVE_ABI,
   BERAPAW_MINT_ABI,
@@ -45,6 +45,39 @@ export function useAction(props?: Props) {
     }
     toast.fail({
       title: "Approve Failed!",
+      text: error?.message?.includes("user rejected transaction")
+        ? "User rejected transaction"
+        : ""
+    });
+    return false;
+  }, {
+    manual: true,
+  });
+
+  const { runAsync: onStake, loading: staking } = useRequest(async (requestParams?: StakeProps) => {
+    const _rewardVault = requestParams?.rewardVault ?? rewardVault;
+    const amount = requestParams?.amount ?? "0";
+
+    if (!account || !provider || !_rewardVault || !amount || Big(amount).lte(0)) return;
+    const approveContract = new Contract(_rewardVault, BERAPAW_APPROVE_ABI, signer);
+    const params = [utils.parseUnits(amount, requestParams?.token?.decimals ?? 18)];
+    let error: any;
+    try {
+      const options = await getEstimateGas(approveContract, "stake", params);
+      const tx = await approveContract.stake(...params, options);
+      const res = await tx.wait();
+      if (res.status === 1) {
+        toast.success({
+          title: 'Stake successful!'
+        });
+        return true;
+      }
+      error = res;
+    } catch (err: any) {
+      error = err;
+    }
+    toast.fail({
+      title: "Stake Failed!",
       text: error?.message?.includes("user rejected transaction")
         ? "User rejected transaction"
         : ""
@@ -149,9 +182,16 @@ export function useAction(props?: Props) {
     mintResult,
     approved,
     approvedLoading,
+    onStake,
+    staking,
   };
 }
 
 interface Props {
   rewardVault?: string;
+}
+
+interface StakeProps extends Props {
+  amount: string;
+  token: any;
 }

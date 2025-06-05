@@ -214,10 +214,10 @@ export const ColumnAction = (props: any) => {
   return (
     <div className="w-full grid grid-cols-2 gap-[8px]">
       <Button
-        type="primary"
+        type="default"
         disabled={false}
         className={clsx(buttonClassName, className)}
-        loading={pending && currentItem?.id === data.id}
+        loading={false}
         onClick={() => {
           onChangeData?.(data, "approve");
         }}

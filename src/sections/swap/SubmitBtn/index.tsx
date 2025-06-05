@@ -5,7 +5,7 @@ import { useSwitchChain } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { useEffect } from 'react';
 
-const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
+export const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
     <button
       onClick={onClick}

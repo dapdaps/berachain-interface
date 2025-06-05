@@ -5,7 +5,7 @@ const BerapawModal = (props: any) => {
   const { show, onClose } = props;
 
   return (
-    <Modal open={show} onClose={onClose}>
+    <Modal open={show} onClose={onClose} isMaskClose={false}>
       <Content {...props} />
     </Modal>
   );

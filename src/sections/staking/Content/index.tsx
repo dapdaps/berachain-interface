@@ -64,6 +64,9 @@ export default function Staking({ dapp, className, listTitle }: Props) {
     stakeModalVisible,
     stakeModalData,
     onStakeModalClose,
+    handleApprove: onBerapawApprove,
+    handleStake: onBerapawStake,
+    staking: berapawStaking,
   } = useBerapaw({ ...dapp, ...dexConfig });
 
   const { ALL_DATA_URL, addresses, pairs, description } = dexConfig ?? {};
@@ -265,8 +268,13 @@ export default function Staking({ dapp, className, listTitle }: Props) {
         data={stakeModalData}
         onClose={onStakeModalClose}
         onSuccess={() => {
-          
+          onStakeModalClose();
+          berapawReload();
         }}
+        onApprove={onBerapawApprove}
+        approving={berapawApproving}
+        onStake={onBerapawStake}
+        staking={berapawStaking}
       />
     </Card>
   );
