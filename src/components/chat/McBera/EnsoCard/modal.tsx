@@ -244,7 +244,8 @@ export default function EnsoModal({ open, onSuccess }: any) {
           </div>
           <div className="flex justify-center items-center gap-[4px] mt-[20px]">
             <div className="text-[12px]">Powered by</div>
-            <img src="/images/enso-logo.webp" className="w-[72px] h-[12px]" />
+            <img src="/images/enso-logo.png" className="w-[26px] h-[26px]" />
+            <div className="text-[12px]">ENSO</div>
           </div>
         </div>
       </Modal>
