@@ -113,6 +113,7 @@ export default function HaikuModal({ open, onSuccess }: any) {
         isSuccess: status === 1
       });
     } catch (err: any) {
+      console.log("swap err", err);
     } finally {
       setLoading(false);
     }
@@ -157,6 +158,7 @@ export default function HaikuModal({ open, onSuccess }: any) {
       permitSignature.current = signature;
       setApproved(true);
     } catch (err) {
+      console.log("signature err", err);
     } finally {
       setApproving(false);
     }
