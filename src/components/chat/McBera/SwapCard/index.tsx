@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useSwapStore from "../../stores/useSwapStores";
 import { useChatContext, Message } from "../../context/chat-context";
 import { createNewChat } from "../../utils/chat-service";
 import { RichMessageContent } from "../../utils/chat-stream-handler";
 import { useTypewriter } from "../../hooks/useTypewriter";
 import Haiku from "./Haiku";
+import useCustomAccount from "@/hooks/use-account";
 
 interface SwapCardProps {
   parsedContent: any;
@@ -19,6 +20,13 @@ const SwapCard: React.FC<SwapCardProps> = ({
 }) => {
   const { openSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency } =
     useSwapStore();
+
+  const { provider, account } = useCustomAccount();
+
+  const isSupportPermit2 = useMemo(() => {
+    if (!provider || !account) return false;
+    return !!provider.getSigner(account)._signTypedData;
+  }, [provider, account]);
 
   const {
     addMessage,
@@ -141,7 +149,9 @@ const SwapCard: React.FC<SwapCardProps> = ({
   return (
     <>
       {renderContent()}
-      {parsedContent.haiku && contentFinished && <Haiku data={parsedContent} />}
+      {parsedContent.haiku && contentFinished && isSupportPermit2 && (
+        <Haiku data={parsedContent} />
+      )}
       {contentFinished &&
         richContent?.actions &&
         richContent.actions.length > 0 && (
