@@ -46,6 +46,7 @@ const Dashboard = (props: any) => {
         <Item
           label="You Invested"
           value={numberFormatter(totalUserStakeUsd, 2, true, { prefix: "$" })}
+          valueClassName="h-[26px] flex items-center"
         />
         <Item
           label="Your Rewards"
@@ -123,6 +124,7 @@ const Dashboard = (props: any) => {
               }
             </div>
           )}
+          valueClassName="h-[26px] flex items-center"
         />
       </div>
       <Item
@@ -149,7 +151,7 @@ const Dashboard = (props: any) => {
             </svg>
           </div>
         )}
-        valueClassName="underline cursor-pointer"
+        valueClassName="underline cursor-pointer h-[26px] flex items-center"
         className="lg:items-end"
         onClick={() => {
           toggleListVaultsStaked();
