@@ -321,7 +321,7 @@ export default function useInfraredData(props: any) {
       dataList[i].usdDepositAmount = Big(
         ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
       )
-        .times(element?.initialData?.stake_token?.price ?? 0)
+        .times(element?.initialData?.stakeToken?.price ?? 0)
         .toFixed();
     }
     formatedData("getUsdDepositAmount");
@@ -363,7 +363,7 @@ export default function useInfraredData(props: any) {
     const promiseArray = [];
     dataList?.forEach((data) => {
       promiseArray.push(
-        getRewardsEarned(data?.vaultAddress, data?.initialData?.reward_tokens)
+        getRewardsEarned(data?.vaultAddress, data?.initialData?.rewardTokens)
       );
     });
     const result = await Promise.all(promiseArray);
