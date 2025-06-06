@@ -182,7 +182,7 @@ export default function ChatInterface() {
     [messagesEndRef.current]
   );
 
-  const successCb = useCallback(() => {
+  const successCb = useCallback(
     ({ messageContent }: any) => {
       const successMessageId = Date.now().toString();
 
@@ -195,8 +195,9 @@ export default function ChatInterface() {
       setIsFromHistory(false);
       addMessage(successMessage);
       postAddMessageItem(messageContent, sessionId!);
-    };
-  }, [sessionId]);
+    },
+    [sessionId]
+  );
 
   return (
     <div className="flex flex-col justify-center w-[600px] mx-auto">
@@ -209,7 +210,7 @@ export default function ChatInterface() {
           isComposing
         }}
       />
-      <Modals {...{ successCb }} />
+      <Modals successCb={successCb} />
     </div>
   );
 }
@@ -274,6 +275,11 @@ const List = ({ messagesEndRef, contextMessages, isFromHistory }: any) => {
                       content={message.content}
                       component={message.component}
                       skipTyping={message.skipTyping}
+                      onResize={() => {
+                        messagesEndRef.current?.scrollIntoView({
+                          behavior: "smooth"
+                        });
+                      }}
                     />
                   ) : (
                     <div className="text-gray-500">No Data</div>
