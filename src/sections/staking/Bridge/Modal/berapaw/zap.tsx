@@ -22,6 +22,7 @@ const BerapawZap = (props: any) => {
     onSwap,
     onRefresh,
     zapData,
+    tokenData,
   } = props;
 
   const [spender] = useMemo(() => {
@@ -48,7 +49,10 @@ const BerapawZap = (props: any) => {
       <ExchangeIcon />
       <TokenAmount
         type="out"
-        currency={data?.stakingToken}
+        currency={{
+          ...data?.stakingToken,
+          icon: tokenData?.logosUri?.[0]
+        }}
         amount={outputCurrencyAmount}
         isPrice={false}
         disabled
