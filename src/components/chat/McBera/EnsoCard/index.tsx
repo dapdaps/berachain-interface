@@ -40,7 +40,14 @@ export default function EnsoCard({ data }: any) {
         </span>
         .
       </div>
-      <div className="mt-[4px]">☑️ Best route found:</div>
+      <div className="mt-[4px] flex items-center">
+        <span>☑️ Best route found on</span>
+        <img
+          src="/images/enso-logo.png"
+          className="w-[26px] h-[26px] ml-[4px]"
+        />
+        <span className="text-[12px] ml-[2px]">ENSO:</span>
+      </div>
       <div className="mt-[6px]">
         <div className="border border-[#DAD9CD] rounded-[10px] p-[6px] flex items-center justify-between">
           <div className="flex gap-[10px] items-center">
