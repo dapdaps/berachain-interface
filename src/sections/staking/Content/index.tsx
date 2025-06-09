@@ -287,6 +287,7 @@ export default function Staking({ dapp, className, listTitle }: Props) {
         approving={berapawApproving}
         onStake={onBerapawStake}
         staking={berapawStaking}
+        dexConfig={dexConfig}
       />
     </Card>
   );

@@ -4,7 +4,7 @@ import TokenAmount from "@/sections/swap/TokenAmount";
 import Big from "big.js";
 
 const BerapawStake = (props: any) => {
-  const { data, amount, onAmountChange, prices, onAprrove, aprroving, onStake, staking } = props;
+  const { data, amount, onAmountChange, prices, onApprove, approving, onStake, staking, tokenData } = props;
 
   return (
     <div className="">
@@ -13,7 +13,10 @@ const BerapawStake = (props: any) => {
       </div>
       <TokenAmount
         type="out"
-        currency={data?.stakingToken}
+        currency={{
+          ...data?.stakingToken,
+          icon: tokenData?.logosUri?.[0]
+        }}
         amount={amount}
         onAmountChange={(_amount: string) => {
           onAmountChange(_amount);
@@ -48,9 +51,9 @@ const BerapawStake = (props: any) => {
           </SubmitBtn>
         ) : (
           <BaseButton
-            onClick={() => onAprrove(data)}
-            loading={aprroving}
-            disabled={aprroving}
+            onClick={() => onApprove(data)}
+            loading={approving}
+            disabled={approving}
           >
             Set Operator & Start Earning
           </BaseButton>

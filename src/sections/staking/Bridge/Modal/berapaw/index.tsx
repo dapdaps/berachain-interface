@@ -47,7 +47,12 @@ const SLIPPAGE_MAP = new Map([
 ]);
 
 const BerapawStakeContent = (props: any) => {
-  const { data, onSuccess } = props;
+  const { data, onSuccess, dexConfig } = props;
+
+  const { chains } = dexConfig ?? {};
+  const dAppConfig = chains?.[DEFAULT_CHAIN_ID] ?? {};
+  const { vaults } = dAppConfig ?? {};
+  const { queryTokenUrl } = vaults ?? {};
 
   const toast = useToast();
   const { account, provider } = useCustomAccount();
@@ -81,7 +86,7 @@ const BerapawStakeContent = (props: any) => {
       }
       return 1;
     });
-    setInputCurrency(_tokenList[0] ?? bera["bera"]);
+    // setInputCurrency(_tokenList[0] ?? bera["bera"]);
     return _tokenList;
   }, { refreshDeps: [account], ready: !!account });
 
@@ -152,6 +157,12 @@ const BerapawStakeContent = (props: any) => {
     }
   }, { manual: true, throttleWait: 1 });
 
+  const { data: tokenData, loading: tokenDataLoading } = useRequest(async () => {
+    const res = await axios.get(queryTokenUrl({ address: data?.stakingToken?.address }));
+    if (res.status !== 200 || !res.data || !res.data?.data || !res.data?.data?.length) return {};
+    return res.data?.data?.[0];
+  }, { refreshDeps: [queryTokenUrl, data?.stakingToken?.address] });
+
   useEffect(() => {
     const { route = {} } = zapData ?? {};
     const { amountOut = "" } = route ?? {};
@@ -184,6 +195,7 @@ const BerapawStakeContent = (props: any) => {
               setStakeAmount(_amount);
             }}
             prices={prices}
+            tokenData={tokenData}
           />
         )
       }
@@ -206,6 +218,7 @@ const BerapawStakeContent = (props: any) => {
             onSwap={handleSwap}
             onRefresh={getZapData}
             zapData={zapData}
+            tokenData={tokenData}
           />
         )
       }
