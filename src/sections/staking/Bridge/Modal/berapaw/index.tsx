@@ -47,7 +47,7 @@ const SLIPPAGE_MAP = new Map([
 ]);
 
 const BerapawStakeContent = (props: any) => {
-  const { data, onSuccess, dexConfig } = props;
+  const { data, onSuccess, dexConfig, defaultTab } = props;
 
   const { chains } = dexConfig ?? {};
   const dAppConfig = chains?.[DEFAULT_CHAIN_ID] ?? {};
@@ -61,12 +61,12 @@ const BerapawStakeContent = (props: any) => {
   const [inputCurrencyAmount, setInputCurrencyAmount] = useState<any>();
   const [inputCurrency, setInputCurrency] = useState<any>(bera["bera"]);
   const [outputCurrencyAmount, setOutputCurrencyAmount] = useState<any>();
-  const [currentTab, setCurrentTab] = useState<any>(TABS[0].value);
+  const [currentTab, setCurrentTab] = useState<any>(defaultTab ?? TABS[0].value);
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<number>(SLIPPAGE_MAP.get(50)?.value ?? 50);
 
   const onTokenSelect = (_token: any) => {
-    setInputCurrency(_token);
+    setInputCurrency(_token || bera["bera"]);
     setTokenSelectorVisible(false);
   };
 
@@ -98,13 +98,18 @@ const BerapawStakeContent = (props: any) => {
 
     const approveUrl = new URL("https://api.enso.finance/api/v1/wallet/approve");
     approveUrl.searchParams.set("fromAddress", account);
-    approveUrl.searchParams.set("tokenAddress", inputCurrency.token);
+    approveUrl.searchParams.set("tokenAddress", inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address);
     approveUrl.searchParams.set("chainId", DEFAULT_CHAIN_ID + "");
     approveUrl.searchParams.set("amount", amountIn.toString());
     approveUrl.searchParams.set("routingStrategy", "router");
+
+    if (!data?.stakingToken?.address) {
+      return {};
+    }
+
     const routeUrl = new URL("https://api.enso.finance/api/v1/shortcuts/route");
     routeUrl.searchParams.set("amountIn", amountIn.toString());
-    routeUrl.searchParams.set("tokenIn", inputCurrency.token);
+    routeUrl.searchParams.set("tokenIn", inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address);
     routeUrl.searchParams.set("tokenOut", data?.stakingToken?.address);
     routeUrl.searchParams.set("slippage", slippage.toString());
     routeUrl.searchParams.set("fromAddress", account);
@@ -116,8 +121,7 @@ const BerapawStakeContent = (props: any) => {
       axios.get(approveUrl.toString()),
       axios.get(routeUrl.toString())
     ]);
-    console.log("approveRes: %o", approveRes);
-    console.log("routeRes: %o", routeRes);
+
     if (approveRes.status !== 200 || routeRes.status !== 200) {
       return {};
     }

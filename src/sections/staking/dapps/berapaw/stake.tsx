@@ -26,6 +26,7 @@ import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover'
 import NormalCard from '@/components/card';
 import onClaim from '@/sections/vaults/dapps/berapaw/claim';
 import Skeleton from 'react-loading-skeleton';
+import BerapawModal from '../../Bridge/Modal/berapaw/modal';
 
 const Stake = (props: any) => {
   const { className, dapp } = props;
@@ -39,6 +40,14 @@ const Stake = (props: any) => {
     dataList,
     loading,
     getDataList,
+    handleAction: berapawHandleAction,
+    approving: berapawApproving,
+    stakeModalVisible,
+    stakeModalData,
+    onStakeModalClose,
+    handleApprove: onBerapawApprove,
+    handleStake: onBerapawStake,
+    staking: berapawStaking,
   } = useBerapaw({ ...dapp, ...dexConfig });
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -84,7 +93,7 @@ const Stake = (props: any) => {
       toast.fail({ title: "Claim failed!" });
     } catch (err: any) {
       toast?.dismiss(toastId);
-      const msg =  err?.message?.includes("user rejected transaction")
+      const msg = err?.message?.includes("user rejected transaction")
         ? "User rejected transaction"
         : err?.message ?? "";
       toast?.fail({
@@ -146,7 +155,7 @@ const Stake = (props: any) => {
                           src={token.icon}
                           width={30}
                           height={30}
-                          containerClassName={clsx("shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-15px]" )}
+                          containerClassName={clsx("shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-15px]")}
                           fallbackSrc="/assets/tokens/default_icon.png"
                         />
                       ))
@@ -201,6 +210,7 @@ const Stake = (props: any) => {
                     });
                     getDataList();
                   }}
+                  berapawHandleAction={berapawHandleAction}
                 >
                   {
                     isLBGTVault && (
@@ -323,6 +333,21 @@ const Stake = (props: any) => {
           );
         })
       }
+      <BerapawModal
+        defaultTab="zap"
+        show={stakeModalVisible}
+        data={stakeModalData}
+        onClose={onStakeModalClose}
+        onSuccess={() => {
+          onStakeModalClose();
+          getDataList();
+        }}
+        onApprove={onBerapawApprove}
+        approving={berapawApproving}
+        onStake={onBerapawStake}
+        staking={berapawStaking}
+        dexConfig={dexConfig}
+      />
     </div>
   );
 };
@@ -393,6 +418,7 @@ const Form = (props: any) => {
     onAmountChange,
     children,
     onSuccess,
+    berapawHandleAction,
   } = props;
 
   const toast = useToast();
@@ -478,7 +504,7 @@ const Form = (props: any) => {
       toast.fail({ title: actionType + " failed!" });
     } catch (err: any) {
       toast?.dismiss(toastId);
-      const msg =  err?.message?.includes("user rejected transaction")
+      const msg = err?.message?.includes("user rejected transaction")
         ? "User rejected transaction"
         : err?.message ?? "";
       toast?.fail({
@@ -520,7 +546,7 @@ const Form = (props: any) => {
                   src={token.icon}
                   width={26}
                   height={26}
-                  containerClassName={clsx("shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-10px]" )}
+                  containerClassName={clsx("shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-10px]")}
                   fallbackSrc="/assets/tokens/default_icon.png"
                 />
               ))
@@ -531,9 +557,10 @@ const Form = (props: any) => {
           </div>
         </div>
       </div>
-      <div className={clsx("mt-[20px] w-full", pending && "opacity-[0.5] !cursor-not-allowed")}>
+      <div className={clsx("mt-[20px] w-full flex items-center gap-[10px] justify-between", pending && "opacity-[0.5] !cursor-not-allowed")}>
         {/*@ts-ignore*/}
         <Button
+          className="flex-1"
           type={currentTab}
           symbol={data.symbol}
           amount={amount}
@@ -545,6 +572,15 @@ const Form = (props: any) => {
         >
           {pending ? (<Loading size={16} />) : currentTabItem?.label ?? ""}
         </Button>
+        <button
+          type="button"
+          className="shrink-0 px-[25px] flex items-center justify-center h-[60px] rounded-[10px] border border-black bg-[#FFDC50]  text-black font-Montserrat text-[18px] font-semibold leading-[90%]"
+          onClick={() => {
+            berapawHandleAction(data, "approve");
+          }}
+        >
+          Zap
+        </button>
       </div>
       <div className="mt-[10px]">
         {children}

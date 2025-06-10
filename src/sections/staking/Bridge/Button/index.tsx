@@ -19,6 +19,7 @@ export default memo(function Button(props: IProps) {
     address,
     vaultAddress,
     onDepositOrWithdraw,
+    className,
   } = props
 
   const { account, provider, chainId } = useCustomAccount()
@@ -120,19 +121,19 @@ export default memo(function Button(props: IProps) {
   }, [amount])
   if (isInSufficient) {
     return (
-      <div className={clsx(BTN_CLASS, 'opacity-60 !cursor-not-allowed')}>InSufficient Balance</div>
+      <div className={clsx(BTN_CLASS, 'opacity-60 !cursor-not-allowed', className)}>InSufficient Balance</div>
     )
   }
 
   if (Number(amount) <= 0 || minAmount && Big(amount).lt(minAmount)) {
     return (
-      <div className={clsx(BTN_CLASS, 'opacity-60 !cursor-not-allowed')}>{props?.children}</div>
+      <div className={clsx(BTN_CLASS, 'opacity-60 !cursor-not-allowed', className)}>{props?.children}</div>
     )
   }
 
   if (state?.isLoading) {
     return (
-      <div className={clsx(BTN_CLASS, '!opacity-50 !cursor-not-allowed')}>
+      <div className={clsx(BTN_CLASS, '!opacity-50 !cursor-not-allowed', className)}>
         <CircleLoading size={14} />
       </div>
     )
@@ -140,7 +141,7 @@ export default memo(function Button(props: IProps) {
 
   if (state?.isApproved && !state?.isApproving || type === "withdraw") {
     return (
-      <div className={BTN_CLASS} onClick={() => onDepositOrWithdraw(updateState)}>{props?.children}</div>
+      <div className={clsx(BTN_CLASS, className)} onClick={() => onDepositOrWithdraw(updateState)}>{props?.children}</div>
     )
   } else {
     return (
@@ -150,7 +151,8 @@ export default memo(function Button(props: IProps) {
           BTN_CLASS,
           {
             'opacity-50': state?.isApproved || state?.isApproving
-          }
+          },
+          className
         )}
         onClick={() => handleApprove()}
       >
@@ -178,4 +180,5 @@ interface IProps {
   address: string;
   vaultAddress?: string;
   onDepositOrWithdraw: any;
+  className?: any;
 }
