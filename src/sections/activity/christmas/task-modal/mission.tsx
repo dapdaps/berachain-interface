@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { ChristmasContext } from '@/sections/activity/christmas/context';
 import { useWalletName } from '@/hooks/use-wallet-name';
 import useCustomAccount from '@/hooks/use-account';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import BerasigPrompt from '@/sections/activity/christmas/task-modal/berasig-prompt';
 
 export default function Mission({ mission }: Props) {
@@ -19,7 +19,7 @@ export default function Mission({ mission }: Props) {
   } = useContext(ChristmasContext);
   const { name: walletName } = useWalletName();
   const { account } = useCustomAccount();
-  const modal = useAppKit();
+  const modal = useConnectModal();
 
   const [nftMissionValid, setNftMissionValid] = useState(false);
 
@@ -51,7 +51,7 @@ export default function Mission({ mission }: Props) {
 
   const handleMission = () => {
     if (!account) {
-      modal.open({ view: 'Connect' });
+      modal.openConnectModal?.();
       return;
     }
     if (mission.name === 'Beraji') {
@@ -68,7 +68,7 @@ export default function Mission({ mission }: Props) {
       if (walletName !== 'Berasig') {
         // @ts-ignore
         // window.berasig.ethereum.request({ method: 'eth_requestAccounts' });
-        modal.open({ view: 'Connect' });
+        modal.openConnectModal?.();
         return;
       }
       if (!missionVisited) {

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import LazyImage from "@/components/layz-image";
 import Skeleton from "react-loading-skeleton";
 import { numberFormatter } from "@/utils/number-formatter";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccount } from "wagmi";
 import useUser from "@/hooks/use-user";
 import useUserPoints from "@/hooks/use-user-points";
@@ -14,7 +14,7 @@ export default function UserCard({
   type = "portfolio",
   setOpenUserPoints
 }: any) {
-  const modal = useAppKit();
+  const modal = useConnectModal();
   const { address } = useAccount();
   const { accessToken, getUserInfo, userInfo } = useUser();
   const { loading: pointsLoading, userPoints = { points: 0 } } =
@@ -45,7 +45,7 @@ export default function UserCard({
           className="underline"
           type="button"
           onClick={() => {
-            modal.open();
+            modal.openConnectModal?.();
           }}
         >
           Connect Wallet

@@ -13,7 +13,7 @@ import EnsoModal from "../McBera/EnsoCard/modal";
 import useHaikuStore from "../stores/useHaikuStore";
 import HaikuModal from "../McBera/SwapCard/Haiku/modal";
 import { bera } from "@/configs/tokens/bera";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export type MessageType = {
   id: string;
@@ -65,7 +65,7 @@ export default function ChatInterface() {
   const timer = useRef<any>(null);
 
   const { address, isConnected } = useAccount();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
 
   useEffect(() => {
     console.log("ChatInterface mounted with address:", address);

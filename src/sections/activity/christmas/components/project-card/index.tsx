@@ -1,7 +1,7 @@
 import CheckButton from "../check-button";
 import Button from "../../task-modal/button";
 import useCustomAccount from '@/hooks/use-account';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Big from 'big.js';
 
 export default function ProjectCard(props: any) {
@@ -19,7 +19,7 @@ export default function ProjectCard(props: any) {
   } = props;
 
   const { account } = useCustomAccount();
-  const modal = useAppKit();
+  const modal = useConnectModal();
 
   return (
     <div className="relative text-black flex flex-col items-center w-[230px] h-[358px] p-[20px] pb-[26px] rounded-[20px] border border-black bg-[#B5956E] shadow-[-20px_26px_60px_0px_rgba(0, 0, 0, 0.20)_inset] md:w-full md:p-[28px_15px_15px] md:h-[unset]">
@@ -42,7 +42,7 @@ export default function ProjectCard(props: any) {
         className="w-full mt-auto"
         onClick={() => {
           if (!account) {
-            modal.open({ view: 'Connect' });
+            modal.openConnectModal?.();
             return;
           }
           onOpen();

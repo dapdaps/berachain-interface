@@ -1,12 +1,12 @@
 import Button from "./base-button";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export default function ConnectWalletButton({ className }: any) {
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
   return (
     <Button
       onClick={() => {
-        open();
+        openConnectModal?.();
       }}
       className={className}
     >

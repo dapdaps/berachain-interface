@@ -14,7 +14,7 @@ import useUser from "@/hooks/use-user";
 import { useWalletName } from '@/hooks/use-wallet-name';
 import { ChainType, State } from "@/sections/near-intents/hooks/useConnectWallet";
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useDebounceFn } from 'ahooks';
 import Big from "big.js";
 import { utils } from "ethers";
@@ -42,7 +42,7 @@ const dropdownAnimations = {
 
 
 const ConnectWallet = ({ className }: { className?: string }) => {
-  const modal = useAppKit();
+  const modal = useConnectModal();
   const { removeWallet } = useConnectedWalletsStore.getState();
   const currentWallet = useRef<State>();
   const [_, setUpdater] = useState({})
@@ -87,7 +87,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       return;
     }
 
-    !address && modal.open();
+    !address && modal.openConnectModal?.();
   };
 
   const addressShown = useMemo(() => {
