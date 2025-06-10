@@ -89,6 +89,23 @@ const connectors: any = connectorsForWallets(
 //   allowUnsupportedChain: true
 // });
 
+const wagmiConfig = createConfig({
+  ...config,
+  connectors,
+  client: ({ chain }) => {
+    if (chain.id === berachain.id) {
+      return createClient({
+        chain,
+        transport: fallback([http("https://rpc.berachain.com")]),
+      })
+    }
+    return createClient({
+      chain,
+      transport: http()
+    })
+  }
+});
+
 function ContextProvider({
   children,
   cookies
@@ -96,22 +113,7 @@ function ContextProvider({
   children: ReactNode;
   cookies?: string | null;
 }) {
-  const wagmiConfig = createConfig({
-    ...config,
-    connectors,
-    client: ({ chain }) => {
-      if (chain.id === berachain.id) {
-        return createClient({
-          chain,
-          transport: fallback([http("https://rpc.berachain.com")]),
-        })
-      }
-      return createClient({
-        chain,
-        transport: http()
-      })
-    }
-  });
+  
   const initialState = cookieToInitialState(
     wagmiConfig,
     cookies
