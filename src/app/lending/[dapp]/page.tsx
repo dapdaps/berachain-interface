@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import useClickTracking from '@/hooks/use-click-tracking';
 import useIsMobile from '@/hooks/use-isMobile';
 import DAppConfig from '@/configs/dapp';
+import { DEFAULT_LENDING_DAPP } from '@/configs';
 
 const LendingView = dynamic(() => import('@/sections/Lending'));
 
@@ -17,7 +18,7 @@ export default function LendingDAppPage() {
   const { initializePrice } = useTokenPrice();
   const { handleReport } = useClickTracking();
   const isMobile = useIsMobile();
-  const dApp = DAppConfig[dapp as string];
+  const dApp = DAppConfig[dapp as string] || DAppConfig[DEFAULT_LENDING_DAPP];
 
   useEffect(() => {
     switch (dapp) {
