@@ -22,7 +22,7 @@ import {
 } from "wagmi"
 import { useEVMWalletActions } from "./useEVMWalletActions"
 import { useNearWalletActions } from "./useNearWalletActions"
-import { useAppKit } from "@reown/appkit/react"
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useConnectedWalletsStore } from '@/stores/useConnectedWalletsStore';
 import { useEffect } from 'react';
 import useIsMobile from "@/hooks/use-isMobile"
@@ -70,7 +70,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
 
   const { addWallet, removeWallet, connectedWallets, isWalletConnected } = useConnectedWalletsStore();
   const currentState = connectedWallets[0]; // 第一个钱包为当前活跃钱包
-  const modal = useAppKit();
+  const modal = useConnectModal();
   /**
    * NEAR:
    * Down below are Near Wallet handlers and actions
@@ -111,7 +111,7 @@ export const useConnectWallet = (): ConnectWalletAction => {
   }, [evmWalletAccount.address]);
 
   const handleSignInViaWagmi = async (): Promise<void> => {
-    await modal.open()
+    await modal.openConnectModal?.()
     // await evmWalletConnect.connectAsync({ connector })
   }
   const handleSignOutViaWagmi = async () => {

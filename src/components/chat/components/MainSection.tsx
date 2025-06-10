@@ -4,7 +4,7 @@ import InterestItem from "./InterestItem";
 import QuickOptionTabs from "./QuickOptionTabs";
 import { useChatContext } from "../context/chat-context";
 import { useAccount } from "wagmi";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
@@ -14,7 +14,7 @@ export default function MainSection() {
     useChatContext();
 
   const { address, isConnected } = useAccount();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
 
   useEffect(() => {
     console.log("ChatInterface mounted with address:", address);
@@ -29,7 +29,7 @@ export default function MainSection() {
 
   const handleOptionClick = async (option: any) => {
     if (!address) {
-      open();
+      openConnectModal?.();
       return;
     }
 
@@ -42,7 +42,7 @@ export default function MainSection() {
 
   const handleSubmit = async () => {
     if (!address) {
-      open();
+      openConnectModal?.();
       return;
     }
 

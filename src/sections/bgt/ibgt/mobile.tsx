@@ -6,7 +6,7 @@ import IbgtForm from "@/sections/bgt/components/ibgt-form";
 import InfraredRewards from "@/sections/staking/components/infrared-rewards";
 import InfraredTop from "@/sections/staking/components/infrared-top";
 import { formatValueDecimal } from "@/utils/balance";
-import { berachainTestnetbArtio } from "@reown/appkit/networks";
+import { berachainTestnetbArtio } from "viem/chains";
 import Big from "big.js";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";

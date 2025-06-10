@@ -1,27 +1,28 @@
-import { useWalletInfo } from '@reown/appkit/react';
-import { useAccount as useWagmiAccount } from 'wagmi';
+import { useAccount as useWagmiAccount, useConnectors  } from 'wagmi';
 import { useMemo } from 'react';
 
 export function useWalletName() {
-  const { walletInfo } = useWalletInfo();
   const { connector } = useWagmiAccount();
+  const connectors = useConnectors();
 
   const info = useMemo(() => {
+    const currentConnector = connectors.find((c) => c.id === connector?.id);
+
     let walletName = connector?.name || '';
     let walletIcon = connector?.icon || '';
-    if (!walletName) {
-      walletName = walletInfo?.name || '';
+    if (!walletName && currentConnector) {
+      walletName = currentConnector.name || connector?.name || 'Unknown Wallet';
       walletName = walletName.replace(/^io\./, '');
       walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);
     }
-    if (!walletIcon) {
-      walletIcon = walletInfo?.icon || '';
+    if (!walletIcon && currentConnector) {
+      walletIcon = currentConnector.icon || '';
     }
     if (/^BeraSig/.test(walletName)) {
       walletName = 'Berasig';
     }
     return { name: walletName, icon: walletIcon };
-  }, [walletInfo, connector]);
+  }, [connectors, connector]);
 
   return { ...info };
 }

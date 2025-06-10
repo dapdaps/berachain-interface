@@ -1,5 +1,5 @@
 import Loading from "@/components/loading";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccount, useSwitchChain, useConnect } from "wagmi";
 
 
@@ -9,14 +9,14 @@ export default function SubmitBtn(props: any) {
   const { comingSoon, onClick, isLoading, disabled, fromChainId } = props;
   const { switchChain } = useSwitchChain()
   const { address, chainId } = useAccount()
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
 
   if (!address) {
     return <button
     type="button"
     className={cls}
     onClick={() => {
-      open()
+      openConnectModal?.()
     }}  
     >
       Connect Wallet

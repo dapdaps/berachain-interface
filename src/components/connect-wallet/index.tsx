@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useAccount, useBalance, useDisconnect, useSwitchChain } from "wagmi";
 import Image from "next/image";
@@ -44,7 +44,7 @@ import chains from '@/sections/bridge/lib/util/chainConfig'
 import { useBgtCount } from "@/hooks/use-bgt-count";
 
 const ConnectWallet = ({ className }: { className?: string }) => {
-  const modal = useAppKit();
+  const modal = useConnectModal();
   const { removeWallet } = useConnectedWalletsStore.getState();
   const currentWallet = useRef<State>();
   const [_, setUpdater] = useState({})
@@ -89,7 +89,7 @@ const ConnectWallet = ({ className }: { className?: string }) => {
       return;
     }
 
-    !address && modal.open();
+    !address && modal.openConnectModal?.();
   };
 
   const addressShown = useMemo(() => {
