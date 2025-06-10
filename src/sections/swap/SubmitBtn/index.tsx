@@ -5,7 +5,7 @@ import { useSwitchChain } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { useEffect } from 'react';
 
-const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
+export const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
   return (
     <button
       onClick={onClick}
@@ -27,7 +27,8 @@ export default function SubmitBtn({
   disabled,
   onClick,
   onRefresh,
-  updater
+  updater,
+  children
 }: any) {
   const { approve, approved, approving, checking, checkApproved } = useApprove({
     amount,
@@ -86,7 +87,7 @@ export default function SubmitBtn({
 
   return (
     <BaseButton onClick={onClick} disabled={disabled}>
-      Swap
+      {children ? children : 'Swap'}
     </BaseButton>
   );
 }
