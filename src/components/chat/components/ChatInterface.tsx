@@ -11,7 +11,7 @@ import { useScroll } from '@/components/chat/hooks/useScroll';
 import useSwapStore from "../stores/useSwapStores";
 import SwapModal from "@/sections/swap/SwapModal";
 import { bera } from "@/configs/tokens/bera";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export type MessageType = {
   id: string;
@@ -78,7 +78,7 @@ export default function ChatInterface() {
   const { containerRef } = useScroll();
 
   const { address, isConnected } = useAccount();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
 
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function ChatInterface() {
   const handleSubmit = async () => {
 
   if (!address) {
-    open();
+    openConnectModal?.();
     return;
   }
 

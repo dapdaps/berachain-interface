@@ -4,7 +4,7 @@ import useToast from "@/hooks/use-toast"
 import { LIST_TOKENS } from "@/sections/near-intents/constants/tokens"
 import { useConnectWallet } from "@/sections/near-intents/hooks/useConnectWallet"
 import { Callout, Flex } from "@radix-ui/themes"
-import { useAppKit } from "@reown/appkit/react"
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useSelector } from "@xstate/react"
 import {
   Fragment,
@@ -68,7 +68,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
   const intentRefs = snapshot.context.intentRefs
 
   const { data: tokensUsdPriceData } = useTokensUsdPrices()
-  const modal = useAppKit()
+  const modal = useConnectModal()
 
   // const [currentTab, setCurrentTab] = useState<string>('trading_challenge');
 
@@ -250,7 +250,7 @@ export const SwapForm = ({ onNavigateDeposit }: SwapFormProps) => {
                   })
                   return
                 }
-                modal.open()
+                modal.openConnectModal?.()
               }}
             >
               Connect Wallet

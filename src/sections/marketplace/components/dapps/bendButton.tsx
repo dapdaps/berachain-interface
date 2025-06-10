@@ -1,6 +1,6 @@
 import useApprove from '@/hooks/use-approve';
 import { useAccount, useSwitchChain } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '@/components/button';
 import type { Chain, Token } from '@/types';
 import Big from 'big.js';
@@ -26,7 +26,7 @@ const BendingButton = ({
 }: Props) => {
   const toast = useToast();
   const { isPending, switchChain } = useSwitchChain();
-  const modal = useAppKit();
+  const modal = useConnectModal();
   const { address, chainId } = useAccount();
 
   const [pending, setPending] = useState(false);
@@ -57,7 +57,7 @@ const BendingButton = ({
       <Button
         type={type}
         onClick={() => {
-          modal.open();
+          modal.openConnectModal?.();
         }}
         style={style}
         disabled={loading || disabled}
