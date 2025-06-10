@@ -62,6 +62,8 @@ export function useBerapaw(props: any) {
     minting,
     onStake,
     staking,
+    onDeposit,
+    depositing,
   } = useAction({
     rewardVault: currentVault?.vaultAddress,
   });
@@ -331,9 +333,15 @@ export function useBerapaw(props: any) {
     }
   };
 
-  const handleStake = async (record: any, amount: string) => {
-    if (staking) return;
-    const res = await onStake({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
+  const handleStake = async (record: any, amount: string, type: "stake" | "deposit" = "stake") => {
+    let res: any;
+    if (type === "deposit") {
+      if (depositing) return;
+      res = await onDeposit({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
+    } else {
+      if (staking) return;
+      res = await onStake({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
+    }
     if (res) {
       getTotalData();
       onStakeModalClose();
@@ -367,6 +375,12 @@ export function useBerapaw(props: any) {
           { ...bera["lbgt"] },
         ],
         token0: { ...bera["lbgt"] },
+        stakingToken: { ...bera["lbgt"] },
+        metadata: {
+          name: "LBGT"
+        },
+        approved: true,
+        vaultAddress: bera["stlbgt"].address,
       },
       {
         type: "stake",
@@ -378,7 +392,7 @@ export function useBerapaw(props: any) {
         pool_address: LPStakingWBERALBGTPoolAddress,
         vault_address: LPStakingWBERALBGTVaultAddress,
         address: LPStakingWBERALBGTVaultAddress,
-        symbol: "WBERA_LBGT",
+        symbol: "LBGT-WBERA",
         decimals: LPDecimals,
         underlying_tokens: [
           { ...bera["wbera"] },
@@ -390,6 +404,17 @@ export function useBerapaw(props: any) {
         ],
         token0: { ...bera["wbera"] },
         token1: { ...bera["lbgt"] },
+        stakingToken: {
+          address: LPStakingWBERALBGTPoolAddress,
+          symbol: "LBGT-WBERA",
+          name: "50WBERA-50LBGT-WEIGHTED",
+          decimals: LPDecimals,
+        },
+        metadata: {
+          name: "LBGT-WBERA"
+        },
+        approved: true,
+        vaultAddress: LPStakingWBERALBGTVaultAddress,
       },
     ];
     const { LBGT: LBGTPrice = 1, WBERA: WBERAPrice = 1 } = prices;
@@ -717,7 +742,7 @@ export function useBerapaw(props: any) {
     stakeModalData,
     handleApprove,
     handleStake,
-    staking,
+    staking: staking || depositing,
   };
 }
 

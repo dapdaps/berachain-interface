@@ -41,7 +41,7 @@ const BerapawStake = (props: any) => {
             token={data?.stakingToken}
             loading={staking}
             onClick={() => {
-              onStake(data, amount);
+              onStake(data, amount, data?.stakingToken?.symbol === "LBGT" ? "deposit" : "stake");
             }}
             disabled={!amount || Big(amount).lte(0) || staking}
             onRefresh={() => { }}
