@@ -1,11 +1,14 @@
-import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
+import Popover, {
+  PopoverPlacement,
+  PopoverTrigger
+} from "@/components/popover";
 import { useMultiState } from "@/hooks/use-multi-state";
 import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
 import { formatValueDecimal } from "@/utils/balance";
-import { getProtocolIcon } from '@/utils/utils';
+import { getProtocolIcon } from "@/utils/utils";
 import Big from "big.js";
 import clsx from "clsx";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import { cloneDeep } from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -59,7 +62,7 @@ export default function Vaults() {
               )}
             </div>
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {data?.initialData?.name || "iBGT"}
+              {data?.id || "iBGT"}
             </div>
           </div>
         );
@@ -73,10 +76,7 @@ export default function Vaults() {
       render: (data: any) => {
         const protocol = data?.initialData?.protocol;
         return (
-          <img
-            style={{ width: 26 }}
-            src={getProtocolIcon(protocol?.id)}
-          />
+          <img style={{ width: 26 }} src={getProtocolIcon(protocol?.id)} />
         );
       }
     },
@@ -100,18 +100,19 @@ export default function Vaults() {
       label: "Points",
       type: "slot",
       sort: true,
-      render: (data) => {
+      render: (data: any) => {
         return (
           <Popover
             trigger={PopoverTrigger.Hover}
             placement={PopoverPlacement.Top}
-            content={(
-              <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
-            )}
+            content={
+              <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
+                data?.initialData?.pointsMultiplier + "x"
+              } points per iBGT claimed.`}</div>
+            }
           >
-
             <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {data?.initialData?.pp_multiplier}x
+              {data?.initialData?.pointsMultiplier}x
             </div>
           </Popover>
         );
@@ -131,7 +132,6 @@ export default function Vaults() {
         );
       }
     },
-
 
     {
       width: "12%",
@@ -168,7 +168,9 @@ export default function Vaults() {
               fill="none"
               className="cursor-pointer"
               onClick={() => {
-                router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=0`);
+                router.push(
+                  `/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=0`
+                );
               }}
             >
               <rect
@@ -198,7 +200,9 @@ export default function Vaults() {
               }
               onClick={() => {
                 if (Big(data?.usdDepositAmount ?? 0).gt(0)) {
-                  router.push(`/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=1`);
+                  router.push(
+                    `/staking/infrared?id=${data.id}&vaultAddress=${data?.vaultAddress}&tab=1`
+                  );
                 }
               }}
             >
@@ -227,9 +231,10 @@ export default function Vaults() {
     updateState({
       filterList: state?.sortKey
         ? cloneDataList?.sort((prev: any, next: any) => {
-          return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
-            ? state.direction : -state?.direction;
-        })
+            return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
+              ? state.direction
+              : -state?.direction;
+          })
         : cloneDataList
     });
   }, [state?.sortKey, state?.direction, dataList]);
@@ -265,7 +270,10 @@ export default function Vaults() {
                   viewBox="0 0 13 8"
                   fill="none"
                   animate={{
-                    rotate: (state?.sortKey === column?.key && state?.direction === 1) ? 0 : 180,
+                    rotate:
+                      state?.sortKey === column?.key && state?.direction === 1
+                        ? 0
+                        : 180
                   }}
                 >
                   <path

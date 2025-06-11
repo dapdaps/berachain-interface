@@ -2,7 +2,7 @@ import Card from "@/components/card";
 import Loading from "@/components/loading";
 import Modal from "@/components/modal";
 import useCustomAccount from "@/hooks/use-account";
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Big from "big.js";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
@@ -14,7 +14,7 @@ export default memo(function ImportEquipments({
   const {
     account
   } = useCustomAccount()
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
   const searchParams = useSearchParams()
   const toast = useToast();
 
@@ -193,7 +193,7 @@ export default memo(function ImportEquipments({
               <div
                 className="cursor-pointer flex items-center justify-center mx-auto w-[292px] h-[52px] rounded-[16px] border border-black bg-[#FFD335] text-black font-Montserrat text-[16px] font-bold"
                 onClick={() => {
-                  open()
+                  openConnectModal?.()
                 }}
               >
                 Connect Wallet

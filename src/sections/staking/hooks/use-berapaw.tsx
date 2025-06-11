@@ -51,6 +51,8 @@ export function useBerapaw(props: any) {
   const [orderBy, setOrderBy] = useState<any>("tvl");
   const [sort, setSort] = useState<any>("desc");
   const [search, setSearch] = useState<any>("");
+  const [stakeModalVisible, setStakeModalVisible] = useState<boolean>(false);
+  const [stakeModalData, setStakeModalData] = useState<any>();
 
   const {
     onApprove,
@@ -58,6 +60,8 @@ export function useBerapaw(props: any) {
     approved,
     onMint,
     minting,
+    onStake,
+    staking,
   } = useAction({
     rewardVault: currentVault?.vaultAddress,
   });
@@ -255,6 +259,7 @@ export function useBerapaw(props: any) {
         it.poolTotalSupply = allPoolTotalSupply[i] || 1;
         it.price = +it.poolTotalSupply > 0 ? Big(it.dynamicData?.tvl || 0).div(it.poolTotalSupply) : 0;
         it.positionAmountUsd = Big(it.positionAmount).times(it.price);
+        it.stakingToken.icon = getTokenLogo(it.stakingToken?.symbol);
       }
 
       return _vaults;
@@ -311,12 +316,33 @@ export function useBerapaw(props: any) {
       return;
     }
     if (type === "approve") {
-      if (approving) return;
-      const res = await onApprove({ rewardVault: record.vaultAddress });
-      if (res) {
-        getTotalData();
-      }
+      // 250604 Open a modal
+      setStakeModalVisible(true);
+      setStakeModalData(record);
     }
+  };
+
+  const handleApprove = async (record: any) => {
+    if (approving) return;
+    const res = await onApprove({ rewardVault: record.vaultAddress });
+    if (res) {
+      getTotalData();
+      onStakeModalClose();
+    }
+  };
+
+  const handleStake = async (record: any, amount: string) => {
+    if (staking) return;
+    const res = await onStake({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
+    if (res) {
+      getTotalData();
+      onStakeModalClose();
+    }
+  };
+
+  const onStakeModalClose = () => {
+    setStakeModalVisible(false);
+    setStakeModalData(null);
   };
 
   const { data: stakeData, runAsync: getStakeData, loading: stakeDataLoading } = useRequest(async () => {
@@ -686,6 +712,12 @@ export function useBerapaw(props: any) {
     onSort,
     search,
     onSearch,
+    stakeModalVisible,
+    onStakeModalClose,
+    stakeModalData,
+    handleApprove,
+    handleStake,
+    staking,
   };
 }
 

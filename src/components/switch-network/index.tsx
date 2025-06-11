@@ -2,7 +2,7 @@
 
 import Button from '@/components/button';
 import Loading from '@/components/circle-loading';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactDOM from 'react-dom';
 import { useAccount, useSwitchChain } from 'wagmi';
@@ -12,14 +12,14 @@ const SwitchNetwork = (props: Props) => {
   const { targetChain } = props;
 
   const { chainId } = useAccount();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
   const { isPending, switchChain } = useSwitchChain();
 
   const handleOpenOrSwitch = () => {
     if (chainId) {
       switchChain({ chainId: targetChain.id });
     } else {
-      open()
+      openConnectModal?.()
     }
   };
 

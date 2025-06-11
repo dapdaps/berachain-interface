@@ -19,7 +19,7 @@ import {
   blast,
   mode,
   aurora
-} from "@reown/appkit/networks";
+} from "viem/chains";
 
 
 export const turbo = {

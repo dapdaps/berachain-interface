@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useCountDown } from "../hooks/use-count-down";
 import { MintStatus } from "../types";
 import { useAccount, useSwitchChain } from "wagmi";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Loading from "@/components/loading";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
@@ -22,7 +22,7 @@ const Button: FC<MintButtonProps> = ({
   onCountdownEnd,
 }) => {
   const { address, chainId } = useAccount();
-  const modal = useAppKit();
+  const modal = useConnectModal();
 
   const { isPending, switchChain } = useSwitchChain();
 
@@ -30,7 +30,7 @@ const Button: FC<MintButtonProps> = ({
     return (
       <button
         className="w-full bg-[#FFDC50] border border-black h-[46px] font-Montserrat text-[18px] rounded-[10px]"
-        onClick={() => modal.open()}
+        onClick={() => modal.openConnectModal?.()}
       >
         Connect Wallet
       </button>

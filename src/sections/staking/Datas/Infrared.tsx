@@ -203,26 +203,32 @@ export default function useInfraredData(props: any) {
     }
   ];
 
-
   function formatedData() {
     onLoad({
       dataList: dataList?.filter(
         (data) =>
-          ["bex", "kodiak", "beraborrow", "berps", "honeypot", "dolomite"].includes(
-            data?.initialData?.protocol?.id
-          ) || data?.id === "iBGT"
+          [
+            "bex",
+            "kodiak",
+            "beraborrow",
+            "berps",
+            "honeypot",
+            "dolomite"
+          ].includes(data?.initialData?.protocol?.id) || data?.id === "iBGT"
       ),
       fullDataList: dataList
     });
   }
 
   async function getIbgtData() {
-    return await asyncFetch(`${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fvault%2Finfrared-ibgt&params=chainId%3D80094`)
+    return await asyncFetch(
+      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fvault%2Finfrared-ibgt&params=chainId%3D80094`
+    );
   }
   async function getDataList() {
     allData?.forEach((item) => {
       if (!["kodiak", "dolomite", "bex"].includes(item?.protocol?.id)) return;
-      item?.reward_tokens?.forEach((it: any) => {
+      item?.rewardTokens?.forEach((it: any) => {
         const curr = Object.values(bera).find(
           (_it) => _it.address.toLowerCase() === it.address.toLowerCase()
         );
@@ -234,34 +240,26 @@ export default function useInfraredData(props: any) {
         images: []
       };
 
-      if (item?.underlying_tokens?.length > 1) {
-        const array = item?.name?.split("-") ?? [];
-        const symbol0 = array[0];
-        const symbol1 = array[1];
-        const token0 =
-          item.underlying_tokens?.find((token) => token?.symbol?.toLocaleLowerCase() === symbol0?.toLocaleLowerCase()) ?? null;
-        const token1 =
-          item.underlying_tokens?.find((token) => token?.symbol?.toLocaleLowerCase() === symbol1?.toLocaleLowerCase()) ?? null;
-
-
-        [token0, token1]?.filter(token => !!token)?.forEach((slip: any, i: number) => {
-          tokensInfo[`decimals${i}`] = slip.decimals;
-          tokensInfo.tokens.push(slip.name);
-          tokensInfo.images.push(slip.image);
-        })
+      if (item?.underlyingTokens?.length > 1) {
+        item.underlyingTokens
+          ?.filter((token) => !!token)
+          ?.forEach((slip: any, i: number) => {
+            tokensInfo[`decimals${i}`] = slip.decimals;
+            tokensInfo.tokens.push(slip.name);
+            tokensInfo.images.push(slip.image);
+          });
       } else {
-        tokensInfo.tokens.push(item?.underlying_tokens?.[0]?.name);
-        tokensInfo.images.push(item?.underlying_tokens?.[0]?.image);
+        tokensInfo.tokens.push(item?.underlyingTokens?.[0]?.name);
+        tokensInfo.images.push(item?.underlyingTokens?.[0]?.image);
       }
 
-
       const _data = {
-        id: item.name,
+        id: item.name || item.stakeToken?.name,
         strategy: "Dynamic",
         strategy2: "",
         ...tokensInfo,
-        decimals: item.stake_token?.decimals,
-        LP_ADDRESS: item.stake_token?.address,
+        decimals: item.stakeToken?.decimals,
+        LP_ADDRESS: item.stakeToken?.address,
         tvl: Big(item?.tvl || 0).toFixed(),
         apy: Big(item?.apr || 0)
           .times(100)
@@ -269,8 +267,7 @@ export default function useInfraredData(props: any) {
         initialData: item,
         type: "Staking",
         vaultAddress: item.address,
-        rewardSymbol: item?.reward_tokens?.[0]?.symbol,
-
+        rewardSymbol: item?.rewardTokens?.[0]?.symbol,
         platform: "infrared",
         protocolType: ["bex", "kodiak"].includes(item?.protocol?.id)
           ? "AMM"
@@ -278,23 +275,25 @@ export default function useInfraredData(props: any) {
       };
       dataList.push(_data);
     });
-    const ibgt = await getIbgtData()
+    const ibgt = await getIbgtData();
     dataList.unshift({
-      id: 'iBGT',
-      tokens: ['iBGT'],
-      images: ['/images/dapps/infrared/ibgt.svg'],
+      id: "iBGT",
+      tokens: ["iBGT"],
+      images: ["/images/dapps/infrared/ibgt.svg"],
       decimals: 18,
       decimals0: 18,
       decimals1: 18,
-      LP_ADDRESS: '0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b',
-      vaultAddress: '0x75F3Be06b02E235f6d0E7EF2D462b29739168301',
+      LP_ADDRESS: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+      vaultAddress: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
       tvl: Big(ibgt?.tvl || 0).toFixed(),
-      apy: Big(ibgt?.apr || 0).times(100).toFixed(),
+      apy: Big(ibgt?.apr || 0)
+        .times(100)
+        .toFixed(),
       initialData: ibgt,
       type: "Staking",
       platform: "infrared",
       protocolType: "-"
-    })
+    });
     formatedData("dataList");
   }
   async function getUsdDepositAmount() {
@@ -310,12 +309,10 @@ export default function useInfraredData(props: any) {
     const result = await multicall({
       abi: ERC20_ABI,
       calls,
-      options: {
-
-      },
+      options: {},
       multicallAddress,
       provider
-    })
+    });
     for (let i = 0; i < dataList.length; i++) {
       const element = dataList[i];
       dataList[i].depositAmount = Big(
@@ -324,11 +321,10 @@ export default function useInfraredData(props: any) {
       dataList[i].usdDepositAmount = Big(
         ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
       )
-        .times(element?.initialData?.stake_token?.price ?? 0)
+        .times(element?.initialData?.stakeToken?.price ?? 0)
         .toFixed();
     }
     formatedData("getUsdDepositAmount");
-
   }
   async function getRewardsEarned(vaultAddress, tokens) {
     const calls = [];
@@ -336,10 +332,7 @@ export default function useInfraredData(props: any) {
       calls.push({
         address: ethers.utils.getAddress(vaultAddress),
         name: "earned",
-        params: [
-          sender,
-          reward_token?.address
-        ]
+        params: [sender, reward_token?.address]
       });
     });
     try {
@@ -349,38 +342,42 @@ export default function useInfraredData(props: any) {
         calls,
         multicallAddress,
         provider
-      })
-      const rewards = []
+      });
+      const rewards = [];
       for (let i = 0; i < result.length; i++) {
-        const earned = result?.[i] ? Big(ethers.utils.formatUnits(result[i][0])).toFixed() : 0
-        if (Big(earned).gt(0)) rewards.push({
-          ...tokens[i],
-          earned
-        })
+        const earned = result?.[i]
+          ? Big(ethers.utils.formatUnits(result[i][0])).toFixed()
+          : 0;
+        if (Big(earned).gt(0))
+          rewards.push({
+            ...tokens[i],
+            earned
+          });
       }
       return rewards;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
   async function getRewards() {
-    const promiseArray = []
-    dataList?.forEach(data => {
-      promiseArray.push(getRewardsEarned(data?.vaultAddress, data?.initialData?.reward_tokens))
-    })
-    const result = await Promise.all(promiseArray)
+    const promiseArray = [];
+    dataList?.forEach((data) => {
+      promiseArray.push(
+        getRewardsEarned(data?.vaultAddress, data?.initialData?.rewardTokens)
+      );
+    });
+    const result = await Promise.all(promiseArray);
     for (let i = 0; i < result.length; i++) {
-      dataList[i].rewards = result[i]
+      dataList[i].rewards = result[i];
     }
-    formatedData(getRewards)
+    formatedData(getRewards);
   }
-
 
   useEffect(() => {
     if (name !== "Infrared" || !allData) return;
     getDataList().then(() => {
       if (sender && provider) {
-        getRewards()
+        getRewards();
         getUsdDepositAmount();
       }
     });

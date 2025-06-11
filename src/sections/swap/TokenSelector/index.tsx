@@ -24,7 +24,9 @@ export default function CurrencySelect({
   onSelect,
   selectedTokenAddress,
   showSearch = true,
-  showBalance = true
+  showBalance = true,
+  isSortByBalance = true,
+  customBalanceFormatter,
 }: any) {
   const [tab, setTab] = useState("All");
   const [searchVal, setSearchVal] = useState("");
@@ -208,10 +210,13 @@ export default function CurrencySelect({
           {currencies
             ?.slice()
             ?.sort((a: any, b: any) => {
-              const balanceA = balances[a.address] || "0";
-              const balanceB = balances[b.address] || "0";
+              if (isSortByBalance) {
+                const balanceA = balances[a.address] || "0";
+                const balanceB = balances[b.address] || "0";
 
-              return Big(balanceA || 0)?.gt(balanceB || 0) ? -1 : 1;
+                return Big(balanceA || 0)?.gt(balanceB || 0) ? -1 : 1;
+              }
+              return 0;
             })
             ?.map((currency: any) => (
               <CurrencyRow
@@ -228,6 +233,7 @@ export default function CurrencySelect({
                 loading={balancesLoading}
                 balance={balances[currency.address]}
                 showBalance={showBalance}
+                customBalanceFormatter={customBalanceFormatter}
               />
             ))}
           {(!currencies || !currencies?.length) && !loading && !importToken && (

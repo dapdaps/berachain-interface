@@ -14,7 +14,7 @@ import useOpenBox from "../hooks/use-open-box";
 import { getUTCTimestamp } from '@/utils/date';
 import DailyQuest from '@/sections/activity/christmas/components/daily-quest';
 import Big from 'big.js';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import useCustomAccount from '@/hooks/use-account';
 import { numberFormatter } from '@/utils/number-formatter';
 import * as dateFns from 'date-fns';
@@ -47,7 +47,7 @@ const GiftBox = () => {
     isMobile,
     activityInvalid
   } = useContext(ChristmasContext);
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
   const { account } = useCustomAccount();
 
   const [openType, setOpenType] = useState(0);
@@ -168,7 +168,7 @@ const GiftBox = () => {
               loading={userInfoLoading}
               onClick={() => {
                 if (!account) {
-                  open({ view: 'Connect' });
+                  openConnectModal?.();
                   return;
                 }
                 getUserInfo?.();
@@ -180,7 +180,7 @@ const GiftBox = () => {
             <Button
               onClick={() => {
                 if (!account) {
-                  open({ view: 'Connect' });
+                  openConnectModal?.();
                   return;
                 }
                 setOpenType(2);
