@@ -7,6 +7,7 @@ import { handleEnsoOutput } from "../handler/enso";
 import { handleBridgeOutput } from "../handler/bridge";
 import { handleLendOutput } from "../handler/lend";
 import VaultsCard from "@/components/chat/McBera/VaultsCard";
+import { handleBgtBoostOutput } from "../handler/bgt-boost";
 
 export const handleFunctionOutput = (
   functionType: string,
@@ -105,6 +106,9 @@ export const handleFunctionOutput = (
       break;
     case "lend":
       handleLendOutput(parsedContent, assistantMessage, callbacks);
+      break;
+    case "boost":
+      handleBgtBoostOutput(parsedContent, assistantMessage, callbacks);
       break;
   }
 };

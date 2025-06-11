@@ -14,6 +14,8 @@ import useHaikuStore from "../stores/useHaikuStore";
 import HaikuModal from "../McBera/SwapCard/Haiku/modal";
 import useBridgeStore from "../stores/useBridgeStore";
 import BridgeModal from "@/sections/bridge/bridge-modal";
+import useBgtBoostStore from "../stores/useBgtBoostStore";
+import BgtBoostModal from "@/sections/bgt/components/delegate";
 import { bera } from "@/configs/tokens/bera";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 
@@ -312,6 +314,8 @@ export const Modals = memo(({ successCb }: any) => {
 
   const bridgeStore = useBridgeStore();
 
+  const bgtBoostStore = useBgtBoostStore();
+
   return (
     <>
       <SwapModal
@@ -405,6 +409,27 @@ export const Modals = memo(({ successCb }: any) => {
               result.txHash ? `Here is Tx: [${txUrl}](${txUrl})` : ""
             }`;
 
+            successCb({ messageContent });
+          }}
+        />
+      )}
+      {bgtBoostStore.modalOpen && (
+        <BgtBoostModal
+          visible={bgtBoostStore.modalOpen}
+          onClose={() => bgtBoostStore.set({ modalOpen: false })}
+          validator={bgtBoostStore.data}
+          onValidatorSelect={(validator: any) => {
+            bgtBoostStore.set({ data: validator });
+          }}
+          operationType="delegate"
+          onCallback={(result: any) => {
+            const txUrl = `https://berascan.com/tx/${result.txHash}`;
+
+            const messageContent = `${
+              result.isSuccess ? "✅" : "❌"
+            } You boosted ${result.amount} BGT via ${
+              bgtBoostStore.data.metadata.name
+            }\n ${result.txHash ? `Here is Tx: [${txUrl}](${txUrl})` : ""}`;
             successCb({ messageContent });
           }}
         />

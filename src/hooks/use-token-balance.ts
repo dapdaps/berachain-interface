@@ -76,6 +76,7 @@ export default function useTokenBalance(
       setTokenBalance("");
       return;
     }
+
     getBalance();
   }, [account, address, decimals, fresh, chainId, walletChainId]);
 
