@@ -4,6 +4,7 @@ import { handleSwapOutput } from "../handler/swap";
 import { ChatCallbacks } from "./chat-stream-handler";
 import { handleVaultsOutput } from "@/components/chat/handler/vaults";
 import { handleEnsoOutput } from "../handler/enso";
+import { handleBridgeOutput } from "../handler/bridge";
 import VaultsCard from "@/components/chat/McBera/VaultsCard";
 
 export const handleFunctionOutput = (
@@ -41,7 +42,8 @@ export const handleFunctionOutput = (
 
   let parsedContent;
   try {
-    parsedContent = typeof content === "string" ? JSON.parse(content) : content;
+    parsedContent =
+      typeof content === "string" && content ? JSON.parse(content) : content;
     console.log("Function output:", parsedContent);
   } catch (e) {
     console.error("Failed to parse function output content:", e);
@@ -97,6 +99,9 @@ export const handleFunctionOutput = (
       break;
     case "bundle":
       handleEnsoOutput(parsedContent, assistantMessage, callbacks);
+      break;
+    case "bridge":
+      handleBridgeOutput(parsedContent, assistantMessage, callbacks);
       break;
   }
 };

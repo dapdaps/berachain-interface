@@ -12,8 +12,10 @@ import useEnsoStore from "../stores/useEnsoStore";
 import EnsoModal from "../McBera/EnsoCard/modal";
 import useHaikuStore from "../stores/useHaikuStore";
 import HaikuModal from "../McBera/SwapCard/Haiku/modal";
+import useBridgeStore from "../stores/useBridgeStore";
+import BridgeModal from "@/sections/bridge/bridge-modal";
 import { bera } from "@/configs/tokens/bera";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export type MessageType = {
   id: string;
@@ -65,7 +67,7 @@ export default function ChatInterface() {
   const timer = useRef<any>(null);
 
   const { address, isConnected } = useAccount();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
 
   useEffect(() => {
     console.log("ChatInterface mounted with address:", address);
@@ -76,7 +78,7 @@ export default function ChatInterface() {
 
   const handleSubmit = async (inputValue: string) => {
     if (!address) {
-      open();
+      openConnectModal?.();
       return;
     }
 
@@ -308,6 +310,8 @@ export const Modals = memo(({ successCb }: any) => {
 
   const haikuStore = useHaikuStore();
 
+  const bridgeStore = useBridgeStore();
+
   return (
     <>
       <SwapModal
@@ -378,6 +382,27 @@ export const Modals = memo(({ successCb }: any) => {
               outputCurrency?.symbol || ""
             } via Haiku\n ${
               transactionHash ? `Here is Tx: [${txUrl}](${txUrl})` : ""
+            }`;
+
+            successCb({ messageContent });
+          }}
+        />
+      )}
+      {bridgeStore.modalOpen && (
+        <BridgeModal
+          open={bridgeStore.modalOpen}
+          onClose={() => bridgeStore.set({ modalOpen: false })}
+          onCallback={(result: any) => {
+            const txUrl = `https://berascan.com/tx/${result.txHash}`;
+
+            const messageContent = `${
+              result.isSuccess ? "✅" : "❌"
+            } You bridged ${result.inputCurrencyAmount} ${
+              result.inputCurrency?.symbol || ""
+            } for ${result.outputCurrencyAmount} ${
+              result.outputCurrency?.symbol || ""
+            } via ${result.template}\n ${
+              result.txHash ? `Here is Tx: [${txUrl}](${txUrl})` : ""
             }`;
 
             successCb({ messageContent });
