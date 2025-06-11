@@ -1,30 +1,39 @@
-import Back from '@/sections/bgt/validator/components/back';
-import { formatLongText } from '@/utils/utils';
-import { formatValueDecimal } from '@/utils/balance';
-import clsx from 'clsx';
-import Big from 'big.js';
-import Range from '@/components/range';
-import Button from '@/sections/bgt/components/delegate/button';
-import QueueList from '@/sections/bgt/components/delegate/queue-list';
-import React, { useEffect } from 'react';
-import Select from '@/sections/bgt/components/delegate/select';
-import useCustomAccount from '@/hooks/use-account';
-import useIsMobile from '@/hooks/use-isMobile';
-import useToast from '@/hooks/use-toast';
-import { useSearchParams } from 'next/navigation';
-import useAddAction from '@/hooks/use-add-action';
-import useDelegationQueue from '@/sections/bgt/components/delegate/hooks/use-delegation-queue';
-import { useMultiState } from '@/hooks/use-multi-state';
-import { ethers } from 'ethers';
-import { BGT_ADDRESS } from '@/sections/bgt/config';
-import { BGT_ABI } from '@/sections/bgt/abi';
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import CustomImage from '@/components/custom-image';
+import Back from "@/sections/bgt/validator/components/back";
+import { formatLongText } from "@/utils/utils";
+import { formatValueDecimal } from "@/utils/balance";
+import clsx from "clsx";
+import Big from "big.js";
+import Range from "@/components/range";
+import Button from "./button";
+import QueueList from "@/sections/bgt/components/delegate/queue-list";
+import React, { useEffect } from "react";
+import Select from "@/sections/bgt/components/delegate/select";
+import useCustomAccount from "@/hooks/use-account";
+import useIsMobile from "@/hooks/use-isMobile";
+import useToast from "@/hooks/use-toast";
+import { useSearchParams } from "next/navigation";
+import useAddAction from "@/hooks/use-add-action";
+import useDelegationQueue from "@/sections/bgt/components/delegate/hooks/use-delegation-queue";
+import { useMultiState } from "@/hooks/use-multi-state";
+import { ethers } from "ethers";
+import { BGT_ADDRESS } from "@/sections/bgt/config";
+import { BGT_ABI } from "@/sections/bgt/abi";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import CustomImage from "@/components/custom-image";
 
 const DelegateContent = (props: any) => {
-  const { visible, validator, operationType, onClose, onValidatorSelect, className, isFromVaults, isShowTitle = true } = props;
+  const {
+    visible,
+    validator,
+    operationType,
+    onClose,
+    onValidatorSelect,
+    className,
+    isFromVaults,
+    isShowTitle = true
+  } = props;
 
-  console.log('operationType: %o', operationType);
+  console.log("operationType: %o", operationType);
 
   const { provider, account } = useCustomAccount();
   const isMobile = useIsMobile();
@@ -32,7 +41,9 @@ const DelegateContent = (props: any) => {
   const toast = useToast();
   const searchParams = useSearchParams();
   const searchParamFrom = searchParams.get("from");
-  const { addAction } = useAddAction((searchParamFrom === "vaults" || isFromVaults) ? "vaults" : "bgt");
+  const { addAction } = useAddAction(
+    searchParamFrom === "vaults" || isFromVaults ? "vaults" : "bgt"
+  );
   const { loading, delegationQueue, getDelegationQueue } = useDelegationQueue();
 
   const [state, updateState] = useMultiState({
@@ -66,9 +77,9 @@ const DelegateContent = (props: any) => {
     return Big(state?.balance).eq(0)
       ? 0
       : Big(_amount)
-        .div(state?.balance ?? 1)
-        .times(100)
-        .toFixed();
+          .div(state?.balance ?? 1)
+          .times(100)
+          .toFixed();
   };
   const handleAmountChange = (_amount: string) => {
     const amount = _amount.replace(/\s+/g, "");
@@ -153,7 +164,7 @@ const DelegateContent = (props: any) => {
             validator: validator?.address?.toLocaleLowerCase(),
             token0Symbol: "BGT",
             amount0: state.inAmount,
-            token0Address: "0x656b95e550c07a9ffe548bd4085c72418ceb1dba",
+            token0Address: "0x656b95e550c07a9ffe548bd4085c72418ceb1dba"
           })
         });
         updateState({
@@ -190,7 +201,7 @@ const DelegateContent = (props: any) => {
     updateState({
       updater: Date.now()
     });
-    onClose?.()
+    onClose?.();
   };
 
   useEffect(() => {
@@ -208,14 +219,12 @@ const DelegateContent = (props: any) => {
   return (
     <>
       <div className={clsx("", className)}>
-        {
-          isShowTitle && (
-            <div className="flex items-center gap-[16px] text-black font-Montserrat text-[20px] font-bold leading-[90%]">
-              {isMobile && <Back onBack={onClose} />}
-              {operationType === "delegate" ? "Delegate" : "Unbond"}
-            </div>
-          )
-        }
+        {isShowTitle && (
+          <div className="flex items-center gap-[16px] text-black font-Montserrat text-[20px] font-bold leading-[90%]">
+            {isMobile && <Back onBack={onClose} />}
+            {operationType === "delegate" ? "Delegate" : "Unbond"}
+          </div>
+        )}
         <div className="mt-[35px] mb-[12px] w-full h-[72px] flex items-center gap-[8px] justify-between rounded-[12px] border border-[#373A53] bg-white">
           <input
             value={state?.inAmount}
@@ -233,12 +242,16 @@ const DelegateContent = (props: any) => {
           >
             <CustomImage
               alt={validator?.metadata?.name}
-              src={validator?.metadata?.logoURI ?? "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"}
+              src={
+                validator?.metadata?.logoURI ??
+                "https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
+              }
               className="min-w-[26px] w-[26px] h-[26px] rounded-[15px] border border-black overflow-hidden"
               errorImage="https://res.cloudinary.com/duv0g402y/image/upload/v1739449352/validators/icons/hm89bhgw1h2eydgtrmeu.png"
             />
             <div className="ml-[8px] mr-[10px] w-[65px] text-ellipsis overflow-hidden text-black font-Montserrat text-[16px] whitespace-nowrap font-semibold leading-[90%]">
-              {validator?.metadata?.name ?? formatLongText(validator?.pubkey, 4, 4)}
+              {validator?.metadata?.name ??
+                formatLongText(validator?.pubkey, 4, 4)}
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -257,14 +270,18 @@ const DelegateContent = (props: any) => {
           </div>
         </div>
         <div className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
-          balance: <span
+          balance:{" "}
+          <span
             onClick={() => {
               updateState({
                 inAmount: state?.balance
-              })
+              });
             }}
             className="underline cursor-pointer"
-          >{formatValueDecimal(state?.balance, "", 2)}</span> BGT
+          >
+            {formatValueDecimal(state?.balance, "", 2)}
+          </span>{" "}
+          BGT
         </div>
         <div className="mt-[12px] mb-[24px] flex md:flex-col items-center md:items-stretch gap-[24px]">
           <div className="flex items-center gap-[8px]">
