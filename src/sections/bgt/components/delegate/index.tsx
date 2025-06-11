@@ -36,3 +36,5 @@ const Delegate = memo((props: IProps) => {
     </Modal>
   );
 });
+
+export default Delegate;

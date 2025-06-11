@@ -18,6 +18,7 @@ import useBgtBoostStore from "../stores/useBgtBoostStore";
 import BgtBoostModal from "@/sections/bgt/components/delegate";
 import { bera } from "@/configs/tokens/bera";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useDebounceFn } from "ahooks";
 
 export type MessageType = {
   id: string;
@@ -66,7 +67,6 @@ export default function ChatInterface() {
 
   const [isComposing, setIsComposing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const timer = useRef<any>(null);
 
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
@@ -224,13 +224,25 @@ const List = ({ messagesEndRef, contextMessages, isFromHistory }: any) => {
     () => (contextMessages.length > 0 ? contextMessages : []),
     [contextMessages]
   );
+  const mountedRef = useRef(false);
   useEffect(() => {
-    if (isFromHistory) {
+    if (isFromHistory && !mountedRef.current) {
       setTimeout(() => {
+        mountedRef.current = true;
         messagesEndRef.current?.scrollIntoView();
       }, 500);
     }
   }, [displayMessages, isFromHistory]);
+
+  const { run } = useDebounceFn(
+    () => {
+      if (isFromHistory) return;
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth"
+      });
+    },
+    { wait: 50 }
+  );
   return (
     <div className="mt-5 overflow-y-auto pr-[20px] h-[500px]">
       {displayMessages.map((message: any) => {
@@ -279,11 +291,7 @@ const List = ({ messagesEndRef, contextMessages, isFromHistory }: any) => {
                       content={message.content}
                       component={message.component}
                       skipTyping={message.skipTyping}
-                      onResize={() => {
-                        messagesEndRef.current?.scrollIntoView({
-                          behavior: "smooth"
-                        });
-                      }}
+                      onResize={run}
                     />
                   ) : (
                     <div className="text-gray-500">No Data</div>
