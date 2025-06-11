@@ -1,7 +1,7 @@
 import Button from "./index";
 import useAccount from "@/hooks/use-account";
 import { useSwitchChain } from "wagmi";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
 export default function ButtonWithCheckingChain({
@@ -12,14 +12,14 @@ export default function ButtonWithCheckingChain({
   loading
 }: any) {
   const { isPending: switching, switchChain } = useSwitchChain();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
   const { account, chainId } = useAccount();
 
   if (!account || !chainId) {
     return (
       <Button
         onClick={() => {
-          open();
+          openConnectModal?.();
         }}
         {...buttonProps}
       >
