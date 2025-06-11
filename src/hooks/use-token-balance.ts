@@ -72,11 +72,10 @@ export default function useTokenBalance(
     setFresh((n) => n + 1);
   };
   useEffect(() => {
-    if (walletChainId !== DEFAULT_CHAIN_ID) {
-      setTokenBalance("");
-      return;
-    }
-
+    // if (walletChainId !== DEFAULT_CHAIN_ID) {
+    //   setTokenBalance("");
+    //   return;
+    // }
     getBalance();
   }, [account, address, decimals, fresh, chainId, walletChainId]);
 
