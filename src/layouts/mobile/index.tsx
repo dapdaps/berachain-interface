@@ -346,13 +346,19 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                     className="cursor-pointer"
                   />
                 </Link>
-                <img
-                  onClick={() => window.open("https://dapdap.mirror.xyz")}
-                  src="/images/mobile/mirror.png"
-                  className="w-[29px] h-[29px]"
-                  alt=""
+                <Link
+                  className="w-[29px] h-[29px] rounded-full cursor-pointer bg-[rgba(255,_255,_255,_0.50)] backdrop-blur-[5px] bg-[url('/images/mirror.png')] bg-no-repeat bg-center bg-[length:16px_16px]"
+                  href="https://dapdap.mirror.xyz"
+                  target="_blank"
                   data-bp="1015-002-009"
-                />
+                >
+                </Link>
+                <Link
+                  className="w-[29px] h-[29px] rounded-full cursor-pointer bg-[rgba(255,_255,_255,_0.50)] backdrop-blur-[5px] bg-[url('/images/icon-gitbook.svg')] bg-no-repeat bg-center bg-[length:16px_16px]"
+                  href="https://bera.town/docs"
+                  target="_blank"
+                >
+                </Link>
               </>
             )}
           </div>
