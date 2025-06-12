@@ -65,7 +65,7 @@ export default function BridgeContent({
     derection: 1,
     account: address,
     defaultBridgeText: "Bridge",
-    tool: bridgeType
+    tool: showRoute ? undefined : bridgeType
   });
 
   const _allTokens = useMemo(() => {
