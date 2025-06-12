@@ -63,8 +63,8 @@ export async function getQuote(quoteRequest: QuoteRequest, signer: Signer, callb
       }
     }
   } else {
-    const stargateRoute = getStargateRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('stargate:', e))
-    quoteP.push(stargateRoute)
+    quoteP.push(getStargateRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('stargate:', e)))
+    quoteP.push(getJumperRoute(quoteRequest, signer).then(emitRes).catch(e => console.log('jumper:', e)))
   }
 
   const resList: (QuoteResponse | QuoteResponse[] | null | void)[] = await Promise.all(quoteP)
