@@ -26,7 +26,8 @@ export default function BridgeContent({
   defaultToToken,
   isShowConfirm = true,
   onCallback,
-  onShowHistory
+  onShowHistory,
+  showRoute = false
 }: any) {
   const [confirmShow, setConfirmShow] = useState(false);
   const { address } = useAccount();
@@ -64,7 +65,7 @@ export default function BridgeContent({
     derection: 1,
     account: address,
     defaultBridgeText: "Bridge",
-    tool: bridgeType
+    tool: showRoute ? undefined : bridgeType
   });
 
   const _allTokens = useMemo(() => {
