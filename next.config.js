@@ -150,7 +150,14 @@ const nextConfig = {
   },
   images: {
     domains: ["s3.amazonaws.com", "assets.db3.app"]
-  }
+  },
+  redirects: async () => [
+    {
+      source: "/docs",
+      destination: "https://docs.dapdap.net/apps/beratown",
+      permanent: true
+    }
+  ]
 };
 
 const withBundleStatsPlugin =
