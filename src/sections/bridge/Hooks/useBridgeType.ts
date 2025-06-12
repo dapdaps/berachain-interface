@@ -14,7 +14,7 @@ export default function useBridgeType() {
         if (dappName) {
             return toolMap[(dappName as string).toLowerCase()] || 'jumper'
         }
-        return undefined
+        return 'jumper'
     }, [dappName])
    
 

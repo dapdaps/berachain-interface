@@ -26,7 +26,8 @@ export default function BridgeContent({
   defaultToToken,
   isShowConfirm = true,
   onCallback,
-  onShowHistory
+  onShowHistory,
+  showRoute = false
 }: any) {
   const [confirmShow, setConfirmShow] = useState(false);
   const { address } = useAccount();

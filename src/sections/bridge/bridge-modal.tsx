@@ -18,6 +18,7 @@ export default function BridgeModal({
         onCallback={onCallback}
         defaultFromToken={defaultFromToken}
         defaultToToken={defaultToToken}
+        showRoute={true}
       />
     </Modal>
   );
