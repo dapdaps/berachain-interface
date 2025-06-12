@@ -21,7 +21,7 @@ import useToast from '@/hooks/use-toast';
 import { usePathname } from 'next/navigation';
 
 const GuidingTutorial = (props: any) => {
-  const {} = props;
+  const { } = props;
   const pathname = usePathname();
 
   const { address } = useAccount();
@@ -30,6 +30,8 @@ const GuidingTutorial = (props: any) => {
     setVisited,
     setExitConfirmVisible,
     setProfileVisible,
+    setChoosePillVisible,
+    setGetBeraVisible,
     getBeraVisible,
     doneVisible,
     choosePillVisible,
@@ -44,11 +46,26 @@ const GuidingTutorial = (props: any) => {
   const handleClose = (isConfirm = true) => {
     setEntryVisible(false);
 
-    if (isConfirm) {
-      setExitConfirmVisible(true);
+    // if (isConfirm) {
+    //   setExitConfirmVisible(true);
+    //   return;
+    // }
+
+    setVisited(address, true);
+
+    if (profileVisible) {
+      setProfileVisible(false);
       return;
     }
-    setVisited(address, true);
+    if (choosePillVisible) {
+      setChoosePillVisible(false);
+      return;
+    }
+    if (getBeraVisible) {
+      setGetBeraVisible(false);
+      return;
+    }
+    setEntryVisible(false);
   };
 
   const handleNext = () => {
@@ -104,7 +121,7 @@ const GuidingTutorial = (props: any) => {
         handlePrize,
         prizing: pending,
       }}
-     >
+    >
       <Modal
         open={entryVisible}
         onClose={handleClose}

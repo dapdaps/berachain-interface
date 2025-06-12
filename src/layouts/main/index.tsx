@@ -239,7 +239,19 @@ const MainLayout = (props: Props) => {
             />
           </svg>
         </Link>
-
+        <Link
+          className="hover:scale-110 ease-in-out duration-300 w-[26px] h-[26px] rounded-full bg-white/50 flex items-center justify-center cursor-pointer"
+          href="https://bera.town/docs"
+          target="_blank"
+        >
+          <Image
+            src="/images/icon-gitbook.svg"
+            alt="gitbook"
+            width={16}
+            height={16}
+            className="cursor-pointer"
+          />
+        </Link>
         <Link
           className="hover:scale-110 ease-in-out duration-300 w-[26px] h-[26px] rounded-full bg-white/50 flex items-center justify-center cursor-pointer"
           href="https://dapdap.mirror.xyz/FSRc-5-o7gHVfTnFDgYPFOMktA7kWreb-m0S3paQCdk"
