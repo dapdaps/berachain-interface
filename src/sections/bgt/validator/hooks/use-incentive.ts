@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BEARCHAIN_API } from '@/hooks/use-bgt';
 import Big from 'big.js';
 import { getTokenLogo } from '@/sections/dashboard/utils';
-import { berachain } from '@reown/appkit/networks';
+import { berachain } from 'viem/chains';
 
 export function useIncentive(props: any) {
   const { vaults = [] } = props;

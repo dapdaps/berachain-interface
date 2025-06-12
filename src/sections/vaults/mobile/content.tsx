@@ -1,28 +1,31 @@
-import Empty from '@/components/empty';
-import CircleLoading from '@/components/circle-loading';
-import clsx from 'clsx';
-import Big from 'big.js';
-import { formatValueDecimal } from '@/utils/balance';
-import { getProtocolIcon } from '@/utils/utils';
-import UserInfo from '@/sections/vaults/mobile/user-info';
-import useInfraredList from '@/sections/staking/hooks/use-infrared-list';
-import useAquaBera from '@/sections/staking/hooks/use-aquabera';
-import useMergeDataList from '@/hooks/use-merge-data-list';
-import { useBerps } from '@/sections/staking/hooks/use-berps';
-import { DEFAULT_CHAIN_ID } from '@/configs';
-import multicallAddresses from '@/configs/contract/multicall';
-import { useBerapaw } from '@/sections/staking/hooks/use-berapaw';
-import React, { useImperativeHandle, useMemo, useRef } from 'react';
-import { cloneDeep } from 'lodash';
-import useCustomAccount from '@/hooks/use-account';
-import Popover, { PopoverPlacement, PopoverTrigger } from '@/components/popover';
+import Empty from "@/components/empty";
+import CircleLoading from "@/components/circle-loading";
+import clsx from "clsx";
+import Big from "big.js";
+import { formatValueDecimal } from "@/utils/balance";
+import { getProtocolIcon } from "@/utils/utils";
+import UserInfo from "@/sections/vaults/mobile/user-info";
+import useInfraredList from "@/sections/staking/hooks/use-infrared-list";
+import useAquaBera from "@/sections/staking/hooks/use-aquabera";
+import useMergeDataList from "@/hooks/use-merge-data-list";
+import { useBerps } from "@/sections/staking/hooks/use-berps";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import multicallAddresses from "@/configs/contract/multicall";
+import { useBerapaw } from "@/sections/staking/hooks/use-berapaw";
+import React, { useImperativeHandle, useMemo, useRef } from "react";
+import { cloneDeep } from "lodash";
+import useCustomAccount from "@/hooks/use-account";
+import Popover, {
+  PopoverPlacement,
+  PopoverTrigger
+} from "@/components/popover";
 import {
   ColumnAction,
   ColumnAPR,
   ColumnPool,
   ColumnPosition,
   ColumnTVL
-} from '@/sections/staking/Bridge/List/Bex/columns';
+} from "@/sections/staking/Bridge/List/Bex/columns";
 
 // ⚠️Moved from src/sections/vaults/mobile/index.tsx
 const MobileContent = (props: any, ref: any) => {
@@ -35,7 +38,7 @@ const MobileContent = (props: any, ref: any) => {
     setEarned,
     sortItem,
     hasStaked,
-    sortType,
+    sortType
   } = props;
 
   const isBeraPaw = dapp?.name === "BeraPaw";
@@ -47,7 +50,7 @@ const MobileContent = (props: any, ref: any) => {
     dataList: infraredData,
     loading: infraredLoading,
     fetchAllData: infraredReload,
-    maxApr: infraredMaxApr,
+    maxApr: infraredMaxApr
   } = useInfraredList(0, isVaults ? "Infrared" : dapp?.name);
   const {
     dataList: aquaBeraData,
@@ -80,7 +83,7 @@ const MobileContent = (props: any, ref: any) => {
     minting: berapawMinting,
     currentVault: currentBerapawItem,
     maxAPR: berapawMaxApr,
-    totalTVL: berapawTotalTVL,
+    totalTVL: berapawTotalTVL
   } = useBerapaw({ ...dapp, ...dapp?.chains[DEFAULT_CHAIN_ID] });
 
   const [
@@ -105,7 +108,7 @@ const MobileContent = (props: any, ref: any) => {
           infraredReload();
           aquabearReload();
         },
-        infraredMaxApr,
+        infraredMaxApr
       ];
     } else {
       if (dapp?.name === "Berps") {
@@ -148,7 +151,7 @@ const MobileContent = (props: any, ref: any) => {
     currentBerapawItem,
     berapawMaxApr,
     berapawTotalTVL,
-    infraredMaxApr,
+    infraredMaxApr
   ]);
 
   const data = useMemo(() => {
@@ -171,7 +174,7 @@ const MobileContent = (props: any, ref: any) => {
     reload,
     pageIndex,
     pageTotal,
-    pending,
+    pending
   };
   useImperativeHandle(ref, () => refs);
 
@@ -181,7 +184,7 @@ const MobileContent = (props: any, ref: any) => {
       className={clsx(
         "relative z-[2] flex flex-col gap-[12px] mt-[12px] h-[calc(100dvh-260px)] overflow-y-auto pb-[50px]",
         isBeraPaw ? "" : "px-[12px]",
-        className,
+        className
       )}
     >
       {data.map((item: any, idx: number) => (
@@ -217,7 +220,17 @@ const MobileContent = (props: any, ref: any) => {
 
 export default React.forwardRef(MobileContent);
 
-const Item = ({ data, dapp, isVaults, onClick, onClaim, pending, currentItem, onChangeData, isBeraPaw }: any) => {
+const Item = ({
+  data,
+  dapp,
+  isVaults,
+  onClick,
+  onClaim,
+  pending,
+  currentItem,
+  onChangeData,
+  isBeraPaw
+}: any) => {
   const protocol = data?.initialData?.protocol;
   const isBerps = dapp?.name === "Berps";
   const isAquaBera = dapp?.name === "AquaBera";
@@ -458,16 +471,16 @@ const Item = ({ data, dapp, isVaults, onClick, onClaim, pending, currentItem, on
             <Popover
               trigger={PopoverTrigger.Click}
               placement={PopoverPlacement.Top}
-              content={(
-                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
-              )}
+              content={
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
+                  data?.initialData?.pointsMultiplier + "x"
+                } points per iBGT claimed.`}</div>
+              }
             >
               <div className="font-semibold	text-[16px] mt-[8px] underline">
-                {data?.initialData?.pp_multiplier}x
+                {data?.initialData?.pointsMultiplier}x
               </div>
             </Popover>
-
-
           </div>
 
           <div className="text-right">
@@ -597,11 +610,19 @@ const LabelAndValue = (props: any) => {
   const { className, label, children, labelClassName, valueClassName } = props;
 
   return (
-    <div className={clsx("text-[#3D405A] font-Montserrat text-[14px] md:text-[12px] font-medium leading-normal", className)}>
-      <div className={clsx('', labelClassName)}>
-        {label}
-      </div>
-      <div className={clsx("text-black text-[16px] font-[600] md:text-[12px] flex items-center gap-[4px]", valueClassName)}>
+    <div
+      className={clsx(
+        "text-[#3D405A] font-Montserrat text-[14px] md:text-[12px] font-medium leading-normal",
+        className
+      )}
+    >
+      <div className={clsx("", labelClassName)}>{label}</div>
+      <div
+        className={clsx(
+          "text-black text-[16px] font-[600] md:text-[12px] flex items-center gap-[4px]",
+          valueClassName
+        )}
+      >
         {children}
       </div>
     </div>

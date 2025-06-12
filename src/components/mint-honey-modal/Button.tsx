@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Loading from "@/components/loading";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import useApprove from "@/hooks/use-approve";
@@ -30,7 +30,7 @@ const Button: FC<MintButtonProps> = ({
   currency
 }) => {
   const { address, chainId } = useAccount();
-  const modal = useAppKit();
+  const modal = useConnectModal();
 
   const { tokenBalance, update } = useTokenBalance(
     currency?.isNative ? "native" : currency?.address,
@@ -56,7 +56,7 @@ const Button: FC<MintButtonProps> = ({
     return (
       <button
         className="w-full font-Montserrat text-[#3D405A] text-[18px] font-[500] bg-[#FFDC50] rounded-[10px] border border-black flex items-center justify-center h-[46px]"
-        onClick={() => modal.open()}
+        onClick={() => modal.openConnectModal?.()}
       >
         Connect Wallet
       </button>

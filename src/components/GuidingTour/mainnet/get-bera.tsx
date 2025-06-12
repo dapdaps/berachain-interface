@@ -6,7 +6,7 @@ import Title from '@/components/GuidingTour/mainnet/components/title';
 import Article from '@/components/GuidingTour/mainnet/components/article';
 import useIsMobile from '@/hooks/use-isMobile';
 import { useAccount } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useContext } from 'react';
 import { GuidingTourContext } from './context';
 
@@ -149,7 +149,7 @@ const Foot = (props: any) => {
   const { handleNext, loading } = props;
 
   const { address } = useAccount();
-  const modal = useAppKit();
+  const modal = useConnectModal();
 
   return (
     <div className="flex justify-center items-center mt-[24px]">
@@ -158,7 +158,7 @@ const Foot = (props: any) => {
         className="w-[354px]"
         onClick={() => {
           if (!address) {
-            modal.open();
+            modal.openConnectModal?.();
             return;
           }
           handleNext();

@@ -12,15 +12,23 @@ import { getProtocolIcon } from "@/utils/utils";
 import Big from "big.js";
 import clsx from "clsx";
 import { cloneDeep } from "lodash";
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState, useCallback } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  useCallback
+} from "react";
 import Skeleton from "react-loading-skeleton";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import LazyImage from '@/components/layz-image';
-import { numberFormatter } from '@/utils/number-formatter';
-import { bera } from '@/configs/tokens/bera';
-import Button from '@/components/button';
-import Pager from '@/components/pager';
+import LazyImage from "@/components/layz-image";
+import { numberFormatter } from "@/utils/number-formatter";
+import { bera } from "@/configs/tokens/bera";
+import Button from "@/components/button";
+import Pager from "@/components/pager";
 import {
   ColumnAction,
   ColumnAPR,
@@ -28,7 +36,7 @@ import {
   ColumnPosition,
   ColumnReward,
   ColumnTVL
-} from '@/sections/staking/Bridge/List/Bex/columns';
+} from "@/sections/staking/Bridge/List/Bex/columns";
 
 const List = forwardRef<any, any>((props, ref) => {
   const {
@@ -53,10 +61,10 @@ const List = forwardRef<any, any>((props, ref) => {
     orderBy: customOrderBy,
     onSort: onCustomSort,
     search: customSearch,
-    onSearch: onCustomSearch,
+    onSearch: onCustomSearch
   } = props;
 
-  const router = useRouter()
+  const router = useRouter();
 
   const isBeraPaw = name === "BeraPaw";
 
@@ -70,10 +78,13 @@ const List = forwardRef<any, any>((props, ref) => {
     direction: 1
   });
 
-
   const tvl = useMemo(() => {
     if (totalTVL) {
-      return numberFormatter(totalTVL, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" });
+      return numberFormatter(totalTVL, 2, true, {
+        isShort: true,
+        isShortUppercase: true,
+        prefix: "$"
+      });
     }
     return formatValueDecimal(
       dataList?.reduce((prev, cur) => {
@@ -85,7 +96,11 @@ const List = forwardRef<any, any>((props, ref) => {
     );
   }, [dataList, totalTVL]);
   const maxApy = useMemo(() => {
-    if (maxApr) return numberFormatter(maxApr, 2, true, { isShort: true, isShortUppercase: true });
+    if (maxApr)
+      return numberFormatter(maxApr, 2, true, {
+        isShort: true,
+        isShortUppercase: true
+      });
     let apy = 0;
     if (!dataList) return apy;
     dataList.forEach((it: any) => {
@@ -95,7 +110,6 @@ const List = forwardRef<any, any>((props, ref) => {
     });
     return Big(apy).toFixed(2);
   }, [dataList, maxApr]);
-
 
   function renderTD(data: any, column: ColumnType, index: number) {
     if (column.type === "slot") {
@@ -118,14 +132,16 @@ const List = forwardRef<any, any>((props, ref) => {
     const cloneDataList = cloneDeep(dataList);
     const _sortList = state?.sortKey
       ? cloneDataList?.sort((prev, next) => {
-        return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
-          ? state.direction : -state?.direction;
-      })
+          return Big(next[state?.sortKey] || 0).gt(prev[state?.sortKey] || 0)
+            ? state.direction
+            : -state?.direction;
+        })
       : cloneDataList;
     const [key, value] = state?.filterKey.split("|");
     const _filterList = key
       ? _sortList?.filter((_data) => value === "all" || _data[key] === value)
       : _sortList;
+
     updateState({
       filterList: _filterList
     });
@@ -155,9 +171,7 @@ const List = forwardRef<any, any>((props, ref) => {
                   placement={PopoverPlacement.Bottom}
                   content={
                     <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-                      {data?.platform === "infrared"
-                        ? data?.id
-                        : pool?.name}
+                      {data?.platform === "infrared" ? data?.id : pool?.name}
                     </div>
                   }
                   contentClassName="px-[20px] py-[10px] rounded-[8px] border border-black bg-[#FFFDEB]"
@@ -192,7 +206,9 @@ const List = forwardRef<any, any>((props, ref) => {
             return (
               <img
                 style={{ width: 26 }}
-                src={getProtocolIcon(data?.platform === 'infrared' ? protocol?.id : "aquabera")}
+                src={getProtocolIcon(
+                  data?.platform === "infrared" ? protocol?.id : "aquabera"
+                )}
               />
             );
           }
@@ -213,7 +229,9 @@ const List = forwardRef<any, any>((props, ref) => {
               <div className="px-[21px]">
                 <img
                   style={{ width: 26 }}
-                  src={getProtocolIcon(data?.platform === "infrared" ? "dolomite" : "aquabera")}
+                  src={getProtocolIcon(
+                    data?.platform === "infrared" ? "dolomite" : "aquabera"
+                  )}
                 />
               </div>
             );
@@ -246,8 +264,8 @@ const List = forwardRef<any, any>((props, ref) => {
                   ? Big(data?.minApr).eq(data?.maxApr)
                     ? `${Big(data?.maxApr ?? 0).toFixed(2)}%`
                     : `${Big(data?.minApr ?? 0).toFixed(2)}%-${Big(
-                      data?.maxApr ?? 0
-                    ).toFixed(2)}%`
+                        data?.maxApr ?? 0
+                      ).toFixed(2)}%`
                   : `${Big(data?.apy ?? 0).toFixed(2)}%`}
               </div>
             );
@@ -324,7 +342,7 @@ const List = forwardRef<any, any>((props, ref) => {
                   }
                   onClick={() => {
                     Big(data?.usdDepositAmount ?? 0).gt(0) &&
-                    onChangeData(data, 1);
+                      onChangeData(data, 1);
                   }}
                 >
                   <g
@@ -365,13 +383,11 @@ const List = forwardRef<any, any>((props, ref) => {
           label: "Pool",
           type: "slot",
           render: (data) => {
-            return (
-              <ColumnPool data={data} />
-            );
+            return <ColumnPool data={data} />;
           }
         },
         {
-          width: "13%",
+          width: "10%",
           key: "position",
           label: (
             <div className="flex items-center gap-[4px]">
@@ -387,9 +403,7 @@ const List = forwardRef<any, any>((props, ref) => {
           ),
           type: "slot",
           render: (data) => {
-            return (
-              <ColumnPosition data={data} />
-            );
+            return <ColumnPosition data={data} />;
           }
         },
         {
@@ -409,9 +423,7 @@ const List = forwardRef<any, any>((props, ref) => {
           ),
           type: "slot",
           render: (data) => {
-            return (
-              <ColumnTVL data={data} />
-            );
+            return <ColumnTVL data={data} />;
           }
         },
         {
@@ -431,24 +443,20 @@ const List = forwardRef<any, any>((props, ref) => {
           ),
           type: "slot",
           render: (data) => {
-            return (
-              <ColumnAPR data={data} />
-            );
+            return <ColumnAPR data={data} />;
           }
         },
         {
-          width: "13%",
+          width: "10%",
           key: "reward",
           label: "Reward",
           type: "slot",
           render: (data) => {
-            return (
-              <ColumnReward data={data} />
-            );
+            return <ColumnReward data={data} />;
           }
         },
         {
-          width: "13%",
+          width: "18%",
           key: "action",
           label: "",
           type: "slot",
@@ -462,7 +470,7 @@ const List = forwardRef<any, any>((props, ref) => {
               />
             );
           }
-        },
+        }
       ];
     }
     return [
@@ -492,18 +500,19 @@ const List = forwardRef<any, any>((props, ref) => {
               <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
                 {data?.id || "iBGT"}
               </div>
-              {
-                data?.initialData?.protocol?.id === "bex" && (
-                  <div
-                    className="w-[30px] cursor-pointer"
-                    onClick={() => {
-                      router.push("/bgt/gauge?address=" + data?.initialData?.bera_vault_address)
-                    }}
-                  >
-                    <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
-                  </div>
-                )
-              }
+              {data?.initialData?.protocol?.id === "bex" && (
+                <div
+                  className="w-[30px] cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      "/bgt/gauge?address=" +
+                        data?.initialData?.bera_vault_address
+                    );
+                  }}
+                >
+                  <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
+                </div>
+              )}
             </div>
           );
         }
@@ -516,10 +525,7 @@ const List = forwardRef<any, any>((props, ref) => {
         render: (data: any) => {
           const protocol = data?.initialData?.protocol;
           return (
-            <img
-              style={{ width: 26 }}
-              src={getProtocolIcon(protocol?.id)}
-            />
+            <img style={{ width: 26 }} src={getProtocolIcon(protocol?.id)} />
           );
         }
       },
@@ -550,13 +556,14 @@ const List = forwardRef<any, any>((props, ref) => {
             <Popover
               trigger={PopoverTrigger.Hover}
               placement={PopoverPlacement.Top}
-              content={(
-                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${data?.initialData?.pp_multiplier + "x"} points per iBGT claimed.`}</div>
-              )}
+              content={
+                <div className="rounded-[20px] border border-black bg-[#FFFDEB] shadow-shadow1 p-[5px_10px] max-w-[280px] text-center">{`This vault earns ${
+                  data?.initialData?.pointsMultiplier + "x"
+                } points per iBGT claimed.`}</div>
+              }
             >
-
               <div className="underline cursor-pointer text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-                {data?.initialData?.pp_multiplier}x
+                {data?.initialData?.pointsMultiplier}x
               </div>
             </Popover>
           );
@@ -590,13 +597,7 @@ const List = forwardRef<any, any>((props, ref) => {
                 { "opacity-30	": Big(data?.usdDepositAmount ?? 0).eq(0) }
               )}
             >
-              {formatValueDecimal(
-                data?.usdDepositAmount,
-                "$",
-                2,
-                true,
-                false
-              )}
+              {formatValueDecimal(data?.usdDepositAmount, "$", 2, true, false)}
             </div>
           );
         }
@@ -647,13 +648,11 @@ const List = forwardRef<any, any>((props, ref) => {
                 }
                 onClick={() => {
                   Big(data?.usdDepositAmount ?? 0).gt(0) &&
-                  onChangeData(data, 1);
+                    onChangeData(data, 1);
                 }}
               >
                 <g
-                  opacity={
-                    Big(data?.usdDepositAmount ?? 0).eq(0) ? "0.3" : "1"
-                  }
+                  opacity={Big(data?.usdDepositAmount ?? 0).eq(0) ? "0.3" : "1"}
                 >
                   <rect
                     x="0.5"
@@ -685,7 +684,8 @@ const List = forwardRef<any, any>((props, ref) => {
 
   const checkScrollbar = useCallback(() => {
     if (bodyRef.current) {
-      const hasVerticalScrollbar = bodyRef.current.scrollHeight > bodyRef.current.clientHeight;
+      const hasVerticalScrollbar =
+        bodyRef.current.scrollHeight > bodyRef.current.clientHeight;
       setHasScrollbar(hasVerticalScrollbar);
     }
   }, []);
@@ -695,9 +695,9 @@ const List = forwardRef<any, any>((props, ref) => {
   }, [state?.filterList, checkScrollbar]);
 
   useEffect(() => {
-    window.addEventListener('resize', checkScrollbar);
+    window.addEventListener("resize", checkScrollbar);
     return () => {
-      window.removeEventListener('resize', checkScrollbar);
+      window.removeEventListener("resize", checkScrollbar);
     };
   }, [checkScrollbar]);
 
@@ -714,11 +714,7 @@ const List = forwardRef<any, any>((props, ref) => {
       >
         {description}
       </div>
-      {
-        !isBeraPaw && (
-          <InfraredTop />
-        )
-      }
+      {!isBeraPaw && <InfraredTop />}
       <div className="flex items-center h-[90px] rounded-[10px] p-[18px] bg-[#FFDC50]">
         <div className="flex flex-col gap-[12px] w-[20%]">
           <div className="text-[#3D405A] font-Montserrat text-[14px] font-medium">
@@ -738,37 +734,42 @@ const List = forwardRef<any, any>((props, ref) => {
           </div>
         </div>
 
-        {
-          isBeraPaw && (
-            <div className="relative flex justify-between items-center gap-[10px] p-[0_5px] w-[200px] h-[40px] shrink-0 bg-white border border-[#373A53] rounded-[8px] text-black font-Montserrat text-base font-normal">
-              <img src="/images/vaults/v2/search.svg" alt="" className="w-[17px] h-[17px] object-center object-contain shrink-0" />
-              <input
-                value={customSearch}
-                type="text"
-                className="border-0 outline-none bg-transparent flex-1 w-0 text-[14px] font-normal pr-[25px]"
-                placeholder="Search Pool"
-                onChange={(e) => {
-                  onCustomSearch(e.target.value);
+        {isBeraPaw && (
+          <div className="relative flex justify-between items-center gap-[10px] p-[0_5px] w-[200px] h-[40px] shrink-0 bg-white border border-[#373A53] rounded-[8px] text-black font-Montserrat text-base font-normal">
+            <img
+              src="/images/vaults/v2/search.svg"
+              alt=""
+              className="w-[17px] h-[17px] object-center object-contain shrink-0"
+            />
+            <input
+              value={customSearch}
+              type="text"
+              className="border-0 outline-none bg-transparent flex-1 w-0 text-[14px] font-normal pr-[25px]"
+              placeholder="Search Pool"
+              onChange={(e) => {
+                onCustomSearch(e.target.value);
+              }}
+            />
+            {!!customSearch && (
+              <button
+                type="button"
+                className="w-[21px] h-[21px] bg-[url('/images/vaults/v2/clear.png')] bg-no-repeat bg-center bg-contain shrink-0 absolute right-[5px]"
+                onClick={() => {
+                  onCustomSearch("");
                 }}
               />
-              {
-                !!customSearch && (
-                  <button
-                    type="button"
-                    className="w-[21px] h-[21px] bg-[url('/images/vaults/v2/clear.png')] bg-no-repeat bg-center bg-contain shrink-0 absolute right-[5px]"
-                    onClick={() => {
-                      onCustomSearch("");
-                    }}
-                  />
-                )
-              }
-            </div>
-          )
-        }
+            )}
+          </div>
+        )}
       </div>
-      <div className={clsx("bex-table-header flex items-center pt-[23px] pb-[8px]", {
-        'pr-[6px]': hasScrollbar
-      })}>
+      <div
+        className={clsx(
+          "bex-table-header flex items-center pt-[23px] pb-[8px]",
+          {
+            "pr-[6px]": hasScrollbar
+          }
+        )}
+      >
         {columnList.map((column: ColumnType, index: number) => {
           return column?.isFilter ? (
             <div
@@ -785,7 +786,6 @@ const List = forwardRef<any, any>((props, ref) => {
                   </div>
                 }
                 onChange={(val: any) => {
-                  console.log(val);
                   updateState({
                     filterKey: `${column?.key}|${val?.key}`
                   });
@@ -828,17 +828,13 @@ const List = forwardRef<any, any>((props, ref) => {
         <div
           className={clsx("grid gap-[4px]")}
           style={{
-            gridTemplateColumns: columnList.map((column: ColumnType) => column?.width).join(" "),
+            gridTemplateColumns: columnList
+              .map((column: ColumnType) => column?.width)
+              .join(" ")
           }}
         >
           {columnList.map((column: ColumnType, idx: number) => {
-            return (
-              <Skeleton
-                key={idx}
-                width="100%"
-                height={58}
-              />
-            );
+            return <Skeleton key={idx} width="100%" height={58} />;
           })}
         </div>
       ) : state?.filterList && state?.filterList?.length > 0 ? (
@@ -883,22 +879,20 @@ const List = forwardRef<any, any>((props, ref) => {
         </div>
       )}
 
-      {
-        isBeraPaw && (
-          <div className="mt-[10px] flex justify-end">
-            <Pager
-              defaultPage={pageIndex}
-              maxPage={pageTotal}
-              onPageChange={(page) => {
-                reload(page);
-              }}
-              isLast={true}
-              isFirst={true}
-              loading={loading}
-            />
-          </div>
-        )
-      }
+      {isBeraPaw && (
+        <div className="mt-[10px] flex justify-end">
+          <Pager
+            defaultPage={pageIndex}
+            maxPage={pageTotal}
+            onPageChange={(page) => {
+              reload(page);
+            }}
+            isLast={true}
+            isFirst={true}
+            loading={loading}
+          />
+        </div>
+      )}
     </div>
   );
 });
@@ -917,7 +911,7 @@ const SortIcon = (props: any) => {
       fill="none"
       className={clsx("shrink-0 cursor-pointer", className)}
       animate={{
-        rotate: (active && direction === "desc") ? 0 : 180,
+        rotate: active && direction === "desc" ? 0 : 180
       }}
       onClick={onClick}
     >

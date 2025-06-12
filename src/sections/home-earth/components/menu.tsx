@@ -6,37 +6,50 @@ const MENU_LIST = [
   {
     label: "Home",
     bg: "#FFDC50",
-    href: "/"
+    href: "/",
+    sort: 1
   },
   {
     label: "Swap",
     bg: "#D8FF8D",
-    href: "/dex/bex"
+    href: "/swap",
+    sort: 3
   },
   {
     label: "Bridge",
     bg: "#FFF5A9",
-    href: "/bridge"
+    href: "/bridge",
+    sort: 2
   },
   {
-    label: "Lending",
+    label: "Lend",
     bg: "#98F6CD",
-    href: "/lending/dolomite"
+    href: "/lend",
+    sort: 4
   },
   {
     label: "Vaults",
     bg: "#F3BBAB",
-    href: "/vaults"
+    href: "/vaults",
+    sort: 5
   },
   {
     label: "Tokens",
     bg: "#C0FF96",
-    href: "/marketplace"
+    href: "/tokens",
+    sort: 6
   },
   {
     label: "Portfolio",
     bg: "#FFF5A9",
-    href: "/portfolio"
+    href: "/portfolio",
+    sort: 7
+  },
+  {
+    label: "Boost",
+    bg: "#DAA56B",
+    href: "/validators",
+    sort: 8
   }
 ];
 
@@ -46,7 +59,7 @@ const NavigationMenu = (props: any) => {
   return (
     <div className={clsx("fixed z-[51] right-0 top-[150px] flex flex-col gap-[10px] items-end", className)}>
       {
-        MENU_LIST.map((menu, index) => (
+        MENU_LIST.sort((a, b) => a.sort - b.sort).map((menu, index) => (
           <motion.div
             initial={{ x: 20 }}
             whileHover={{ x: 5 }}

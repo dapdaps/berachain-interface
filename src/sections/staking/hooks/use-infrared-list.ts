@@ -25,15 +25,19 @@ export default function useInfraredList(updater?: number, name?: string) {
     [chainId]
   );
 
-
-  const { run: debounceFetchAllData } = useDebounceFn(() => {
-    !loading && fetchAllData()
-  }, {
-    wait: 300
-  })
+  const { run: debounceFetchAllData } = useDebounceFn(
+    () => {
+      !loading && fetchAllData();
+    },
+    {
+      wait: 300
+    }
+  );
   function fetchAllData() {
     setLoading(true);
-    asyncFetch(`${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fvaults&params=chainId%3D80094%26offset%3D0%26limit%3D100`).then((res) => {
+    asyncFetch(
+      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fvaults&params=chainId%3D80094%26offset%3D0%26limit%3D100`
+    ).then((res) => {
       setAllData(res?.vaults);
       setMaxApr(res?.aprMax);
     });

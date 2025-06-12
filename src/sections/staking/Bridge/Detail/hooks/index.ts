@@ -487,23 +487,29 @@ export function useDetail(props: any) {
     if (!protocol) return;
     const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id;
     if (!["kodiak", "bex"].includes(protocolId)) return null;
-    const underlying_tokens = data?.initialData?.underlying_tokens.map(
-      (token: any) => ({ ...token, icon: token?.image })
-    );
+
+    const tokens =
+      data?.initialData?.underlying_tokens ||
+      data?.initialData?.underlyingTokens ||
+      [];
+    const underlying_tokens = tokens?.map((token: any) => ({
+      ...token,
+      icon: token?.image
+    }));
     if (
       protocolId === "kodiak" &&
-      data?.initialData.stake_token.symbol !== "UNI-V2"
+      data?.initialData.stakeToken.symbol !== "UNI-V2"
     ) {
       return {
         token0: underlying_tokens[0],
         token1: underlying_tokens[1],
         version: "island",
         protocol: "kodiak",
-        stakingToken: data?.initialData?.stake_token
+        stakingToken: data?.initialData?.stakeToken
       };
     }
     const index = kodiak?.islands?.findIndex(
-      (address: string) => data?.initialData?.stake_token?.address === address
+      (address: string) => data?.initialData?.stakeToken?.address === address
     );
 
     if (protocolId === "bex") {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import LendingButton from '@/components/button';
 
 interface ButtonProps {
@@ -32,7 +32,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const { address, chainId } = useAccount();
   const { isPending, switchChain } = useSwitchChain();
-  const modal = useAppKit();
+  const modal = useConnectModal();
 
   const baseClasses = 'px-4 py-2 rounded-full font-Montserrat text-sm font-medium !leading-[17.07px] text-center';
   
@@ -58,7 +58,7 @@ const Button: React.FC<ButtonProps> = ({
       <button
         type={type}
         className={buttonClasses}
-        onClick={() => modal.open()}
+        onClick={() => modal.openConnectModal?.()}
         style={style}
       >
         Connect Wallet

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Loading from "@/components/circle-loading";
 import { balanceFormated } from "@/utils/balance";
 import useToast from "@/hooks/use-toast";
+import LazyImage from "@/components/layz-image";
 
 const StyledCurrencyRow = styled.div`
   padding: 14px 20px;
@@ -67,7 +68,8 @@ export default function CurrencyRow({
   onClick,
   balance,
   loading,
-  showBalance
+  showBalance,
+  customBalanceFormatter
 }: any) {
   const isActive = currency.address === selectedTokenAddress;
 
@@ -86,8 +88,12 @@ export default function CurrencyRow({
       onClick={onClick}
     >
       <CurrencyLabel>
-        <CurrencyIcon
-          src={currency.icon || "/images/tokens/default_icon.png"}
+        <LazyImage
+          width={26}
+          height={26}
+          src={currency.icon}
+          fallbackSrc="/assets/tokens/default_icon.png"
+          containerClassName="rounded-full shrink-0 mr-[8px] overflow-hidden"
         />
         <div>
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
@@ -122,7 +128,7 @@ export default function CurrencyRow({
             <Loading />
           ) : (
             <>
-              {balanceFormated(balance)}
+              {typeof customBalanceFormatter === "function" ? customBalanceFormatter(currency, balance) : balanceFormated(balance)}
               {isActive ? checkIcon : <div style={{ width: 16 }} />}
             </>
           )}
