@@ -7,12 +7,10 @@ import chains from '../lib/util/chainConfig'
 
 import { tokenPairs } from '../lib/bridges/stargate/config'
 import { balanceFormated } from '@/utils/balance';
-import useBridgeType from '../Hooks/useBridgeType';
 import useAllToken from '../Hooks/useAllToken';
 
 export default function History({ pendingCount, historyCount, list, setIsOpen, activeTab, setActiveTab }: { pendingCount: number, historyCount: number, list: any[], setIsOpen: (isOpen: boolean) => void, activeTab: string, setActiveTab: (tab: string) => void }) {
     const isMobile = useIsMobile();
-    const { bridgeType } = useBridgeType()
     const allTokens = useAllToken()
     const filteredList = list.filter((item: any) =>
         activeTab === 'pending' ? Number(item.bridge_status) !== 4 : Number(item.bridge_status) === 4

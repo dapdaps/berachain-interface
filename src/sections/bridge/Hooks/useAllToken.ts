@@ -10,8 +10,7 @@ export default function useAllToken() {
   const { bridgeType } = useBridgeType()
 
   const allTokens = useMemo(() => {
-
-    return _allTokens[bridgeType]
+    return _allTokens[bridgeType || 'jumper']
   }, [bridgeType])
 
   return allTokens

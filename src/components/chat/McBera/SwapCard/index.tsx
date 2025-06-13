@@ -1,34 +1,49 @@
-import React, { useEffect, useState } from "react";
-import { bera } from "@/configs/tokens/bera";
-import useSwapStore from "../stores/useSwapStores";
-import { useChatContext, Message } from "../context/chat-context";
-import { createNewChat } from "../utils/chat-service";
-import { RichMessageContent } from "../utils/chat-stream-handler";
-import { useTypewriter } from "../hooks/useTypewriter";
+import React, { useEffect, useMemo, useState } from "react";
+import useSwapStore from "../../stores/useSwapStores";
+import { useChatContext, Message } from "../../context/chat-context";
+import { createNewChat } from "../../utils/chat-service";
+import { RichMessageContent } from "../../utils/chat-stream-handler";
+import { useTypewriter } from "../../hooks/useTypewriter";
+import Haiku from "./Haiku";
+import useCustomAccount from "@/hooks/use-account";
 
 interface SwapCardProps {
-  parsedContent: any
+  parsedContent: any;
   content?: string;
   richContent?: RichMessageContent;
 }
 
-const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent }) => {
-  const {
-    openSwapModal,
-    setDefaultInputCurrency,
-    setDefaultOutputCurrency,
-  } = useSwapStore();
+const SwapCard: React.FC<SwapCardProps> = ({
+  parsedContent,
+  content,
+  richContent
+}) => {
+  const { openSwapModal, setDefaultInputCurrency, setDefaultOutputCurrency } =
+    useSwapStore();
 
-  const { addMessage, updateMessage, sessionId, setSessionId, addChatHistory, isFromHistory } =
-    useChatContext();
+  const { provider, account } = useCustomAccount();
+
+  const isSupportPermit2 = useMemo(() => {
+    if (!provider || !account) return false;
+    return !!provider.getSigner(account)._signTypedData;
+  }, [provider, account]);
+
+  const {
+    addMessage,
+    updateMessage,
+    sessionId,
+    setSessionId,
+    addChatHistory,
+    isFromHistory
+  } = useChatContext();
 
   const [contentFinished, setContentFinished] = useState(false);
-  
+
   const { typedContent, isTyping } = useTypewriter(content || "", {
     interval: 40,
-    step: [1, 3],
+    step: [1, 3]
   });
-  
+
   const boldRegex = /\*\*([^*]+)\*\*/;
   const match = content ? content.match(boldRegex) : null;
   const symbolName = match ? match[1] : null;
@@ -37,6 +52,13 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
   useEffect(() => {
     if (isFromHistory || !content || !isTyping) {
       setContentFinished(true);
+      const ele = document.getElementById("chat-bottom");
+      if (ele)
+        setTimeout(() => {
+          ele.scrollIntoView({
+            behavior: "smooth"
+          });
+        }, 500);
     } else {
       setContentFinished(false);
     }
@@ -50,7 +72,7 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
         const newUserMessage: Message = {
           id: Date.now().toString(),
           sender: "user",
-          content: userMessage,
+          content: userMessage
         };
         addMessage(newUserMessage);
 
@@ -59,13 +81,11 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
           id: assistantMessageId,
           sender: "assistant",
           senderName: "McBera",
-          content: "",
+          content: ""
         };
         addMessage(emptyAssistantMessage);
 
-        await createNewChat(userMessage,
-          emptyAssistantMessage,
-           {
+        await createNewChat(userMessage, emptyAssistantMessage, {
           updateMessage: (updatedMessage: Message) => {
             if (updatedMessage.sender === "assistant") {
               updateMessage(updatedMessage);
@@ -97,9 +117,8 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
     }
 
     openSwapModal();
-  }
+  };
 
-  // 渲染内容
   const renderContent = () => {
     if (!content) {
       return null;
@@ -120,7 +139,7 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
           </div>
         );
       }
-      
+
       return <div className="markdown-content">{typedContent}</div>;
     }
 
@@ -130,7 +149,9 @@ const SwapCard: React.FC<SwapCardProps> = ({ parsedContent, content, richContent
   return (
     <>
       {renderContent()}
-
+      {parsedContent.haiku && contentFinished && isSupportPermit2 && (
+        <Haiku data={parsedContent} />
+      )}
       {contentFinished &&
         richContent?.actions &&
         richContent.actions.length > 0 && (

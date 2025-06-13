@@ -55,8 +55,13 @@ export default function Swap({
   });
 
   const { run: runQuoter } = useDebounceFn(
-    () => {
-      onQuoter({ inputCurrency, outputCurrency, inputCurrencyAmount });
+    (template?: string) => {
+      onQuoter({
+        inputCurrency,
+        outputCurrency,
+        inputCurrencyAmount,
+        template
+      });
       setOutputCurrencyAmount("");
     },
     {
@@ -219,7 +224,7 @@ export default function Swap({
           onClick={onSwap}
           disabled={trade?.noPair || !trade?.txn}
           onRefresh={() => {
-            runQuoter();
+            runQuoter(trade?.name);
           }}
           updater={`button-${updater}`}
         />

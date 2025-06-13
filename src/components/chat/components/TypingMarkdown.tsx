@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { useTypewriter, Options } from '../hooks/useTypewriter';
-import { clsx } from 'clsx';
-import remarkGfm from 'remark-gfm';
+import React, { useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import { useTypewriter, Options } from "../hooks/useTypewriter";
+import { clsx } from "clsx";
+import remarkGfm from "remark-gfm";
 
 interface TypingMarkdownProps {
   content: string;
@@ -12,29 +12,29 @@ interface TypingMarkdownProps {
   onScrollToBottom?: () => void;
 }
 
-const TypingMarkdown: React.FC<TypingMarkdownProps> = ({ 
-  content, 
-  className, 
+const TypingMarkdown: React.FC<TypingMarkdownProps> = ({
+  content,
+  className,
   options,
   onResize,
   onScrollToBottom
 }) => {
   const { typedContent, isTyping } = useTypewriter(content, options);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
-    if (!('ResizeObserver' in window) || !onResize || !containerRef.current) {
+    if (!("ResizeObserver" in window) || !onResize || !containerRef.current) {
       return;
     }
-    
+
     const resizeObserver = new ResizeObserver(() => {
       if (containerRef.current) {
         onResize(containerRef.current);
       }
     });
-    
+
     resizeObserver.observe(containerRef.current);
-    
+
     return () => {
       resizeObserver.disconnect();
     };
@@ -45,18 +45,21 @@ const TypingMarkdown: React.FC<TypingMarkdownProps> = ({
   }, [typedContent]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className={clsx(className)} 
-      data-typing={isTyping ? 'true' : 'false'}
+      className={clsx(className)}
+      data-typing={isTyping ? "true" : "false"}
     >
-       <ReactMarkdown 
+      <ReactMarkdown
         components={{
-          a: ({node, ...props}) => (
+          a: ({ node, ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
-          ),
+          )
         }}
-        remarkPlugins={[remarkGfm]}>{typedContent}</ReactMarkdown>
+        remarkPlugins={[remarkGfm]}
+      >
+        {typedContent}
+      </ReactMarkdown>
     </div>
   );
 };

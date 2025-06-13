@@ -1,21 +1,32 @@
-import { useDebounce } from 'ahooks';
-import Big from 'big.js';
-import { useCallback, useEffect, useState } from 'react';
-import type { engineType, ExecuteRequest, QuoteRequest, QuoteResponse } from '../lib/type';
-import { execute, getQuote, getStatus } from '../lib/index';
+import { useDebounce } from "ahooks";
+import Big from "big.js";
+import { useCallback, useEffect, useState } from "react";
+import type {
+  engineType,
+  ExecuteRequest,
+  QuoteRequest,
+  QuoteResponse
+} from "../lib/type";
+import { execute, getQuote, getStatus } from "../lib/index";
 
-import useAccount from '@/hooks/use-account';
+import useAccount from "@/hooks/use-account";
 
-import useTokenBalance from '@/hooks/use-token-balance';
-import useToast from '@/hooks/use-toast';
-import type { Chain, Token } from '@/types';
-import { addressFormated, balanceFormated, errorFormated, getFullNum, percentFormated } from '@/utils/balance';
+import useTokenBalance from "@/hooks/use-token-balance";
+import useToast from "@/hooks/use-toast";
+import type { Chain, Token } from "@/types";
+import {
+  addressFormated,
+  balanceFormated,
+  errorFormated,
+  getFullNum,
+  percentFormated
+} from "@/utils/balance";
 
-import useQuote from './useQuote';
+import useQuote from "./useQuote";
 // import useRouteSorted from './useRouteSorted';
-import useAddAction from '@/hooks/use-add-action';
-import { getChainScan } from '../lib/util';
-import useRouteSorted from './useRouteSorted';
+import useAddAction from "@/hooks/use-add-action";
+import { getChainScan } from "../lib/util";
+import useRouteSorted from "./useRouteSorted";
 
 interface BridgeProps {
   originFromChain: Chain;
@@ -26,17 +37,25 @@ interface BridgeProps {
   tool?: engineType;
 }
 
-export default function useBridge({ originFromChain, originToChain, derection, defaultBridgeText, tool }: BridgeProps) {
+export default function useBridge({
+  originFromChain,
+  originToChain,
+  derection,
+  defaultBridgeText,
+  tool
+}: BridgeProps) {
   const [fromChain, setFromChain] = useState(originFromChain);
   const [toChain, setToChain] = useState(originToChain);
 
   const { account, chainId, provider } = useAccount();
   const [fromToken, setFromToken] = useState<Token>();
   const [toToken, setToToken] = useState<Token>();
-  const [sendAmount, setSendAmount] = useState('');
+  const [sendAmount, setSendAmount] = useState("");
   const [updateBanlance, setUpdateBanlance] = useState(1);
-  const [reciveAmount, setReciveAmount] = useState('');
-  const [selectedRoute, setSelectedRoute] = useState<QuoteResponse | null>(null);
+  const [reciveAmount, setReciveAmount] = useState("");
+  const [selectedRoute, setSelectedRoute] = useState<QuoteResponse | null>(
+    null
+  );
   const [identification, setIdentification] = useState(Date.now());
   const [routeSortType, setRouteSortType] = useState(1);
   const [sendDisabled, setSendDisabled] = useState<boolean>(false);
@@ -44,12 +63,14 @@ export default function useBridge({ originFromChain, originToChain, derection, d
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const { tokenBalance: balance } = useTokenBalance(
-    fromToken ? (fromToken.isNative ? 'native' : fromToken.address) : '', fromToken?.decimals ?? 0, fromChain?.chainId ?? 0
+    fromToken ? (fromToken.isNative ? "native" : fromToken.address) : "",
+    fromToken?.decimals ?? 0,
+    fromChain?.chainId ?? 0
   );
 
   const inputValue = useDebounce(sendAmount, { wait: 500 });
 
-  const { addAction } = useAddAction('bridge');
+  const { addAction } = useAddAction("bridge");
   const { fail, success } = useToast();
   const [quoteReques, setQuoteRequest] = useState<QuoteRequest | null>(null);
 
@@ -60,7 +81,14 @@ export default function useBridge({ originFromChain, originToChain, derection, d
   });
 
   useEffect(() => {
-    if (!fromChain || !toChain || !fromToken || !toToken || !account || !inputValue) {
+    if (
+      !fromChain ||
+      !toChain ||
+      !fromToken ||
+      !toToken ||
+      !account ||
+      !inputValue
+    ) {
       return;
     }
 
@@ -72,7 +100,7 @@ export default function useBridge({ originFromChain, originToChain, derection, d
       return;
     }
 
-    setReciveAmount('');
+    setReciveAmount("");
     setSelectedRoute(null);
 
     const identification = Date.now();
@@ -94,14 +122,21 @@ export default function useBridge({ originFromChain, originToChain, derection, d
       destAddress: account as string,
       amount: new Big(inputValue).mul(10 ** fromToken?.decimals),
       identification,
-      exclude: ['official'],
+      exclude: ["official"],
       UNIZEN_AUTH_KEY: process.env.NEXT_PUBLIC_UNIZEN_AUTH_KEY,
       engine: tool ? [tool] : null
     });
   }, [fromChain, toChain, fromToken, toToken, account, inputValue, tool]);
 
   useEffect(() => {
-    if (!fromChain || !toChain || !fromToken || !toToken || !account || !inputValue) {
+    if (
+      !fromChain ||
+      !toChain ||
+      !fromToken ||
+      !toToken ||
+      !account ||
+      !inputValue
+    ) {
       setSendDisabled(true);
       setDisableText(defaultBridgeText);
       return;
@@ -115,26 +150,38 @@ export default function useBridge({ originFromChain, originToChain, derection, d
 
     if (balance && Number(inputValue) > Number(balance)) {
       setSendDisabled(true);
-      setDisableText('Insufficient balance');
+      setDisableText("Insufficient balance");
       return;
     }
 
     if (!routes?.length) {
       setSendDisabled(true);
-      setDisableText('No route');
+      setDisableText("No route");
       return;
     }
 
     setSendDisabled(false);
     setDisableText(defaultBridgeText);
-  }, [fromChain, toChain, fromToken, toToken, account, inputValue, balance, routes, defaultBridgeText]);
+  }, [
+    fromChain,
+    toChain,
+    fromToken,
+    toToken,
+    account,
+    inputValue,
+    balance,
+    routes,
+    defaultBridgeText
+  ]);
 
   useEffect(() => {
     if (selectedRoute && toToken) {
-      const reciveAmount = new Big(selectedRoute.receiveAmount).div(10 ** toToken.decimals).toNumber();
+      const reciveAmount = new Big(selectedRoute.receiveAmount)
+        .div(10 ** toToken.decimals)
+        .toNumber();
       setReciveAmount(getFullNum(reciveAmount));
     } else {
-      setReciveAmount('');
+      setReciveAmount("");
     }
   }, [selectedRoute, toToken]);
 
@@ -145,7 +192,7 @@ export default function useBridge({ originFromChain, originToChain, derection, d
         const txHash = await execute(selectedRoute, provider?.getSigner());
 
         if (!txHash) {
-          return;
+          return { isSuccess: false };
         }
 
         const actionParams = {
@@ -175,7 +222,7 @@ export default function useBridge({ originFromChain, originToChain, derection, d
         // saveTransaction(actionParams);
 
         addAction({
-          type: 'Bridge',
+          type: "Bridge",
           fromChainId: fromChain.chainId,
           toChainId: toChain.chainId,
           token: fromToken,
@@ -188,23 +235,21 @@ export default function useBridge({ originFromChain, originToChain, derection, d
         });
 
         success({
-          title: 'Transaction success',
-          text: ''
+          title: "Transaction success",
+          text: ""
         });
 
-
         setIsSending(false);
-        return true;
+        return { isSuccess: true, txHash };
       } catch (err: any) {
         console.log(err.title, err.message, err);
         fail({
-          title: 'Transaction failed',
+          title: "Transaction failed",
           text: errorFormated(err)
         });
-     
       }
       setIsSending(false);
-      return false;
+      return { isSuccess: false };
     }
   };
 

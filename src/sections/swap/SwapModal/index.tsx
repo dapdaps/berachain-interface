@@ -1,10 +1,10 @@
 import Modal from "@/components/modal";
 import Content from "../Content";
 import { dexs } from "@/configs/swap";
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 
-export default function SwapModal({
+export default memo(function SwapModal({
   defaultInputCurrency,
   defaultOutputCurrency,
   outputCurrencyReadonly = false,
@@ -42,4 +42,4 @@ export default function SwapModal({
       />
     </Modal>
   );
-}
+});

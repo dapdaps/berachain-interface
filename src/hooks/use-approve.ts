@@ -35,7 +35,10 @@ export default function useApprove({
 
   const checkApproved = async () => {
     if (!token?.address || !amount || !spender) return;
-    if (token.address === "native") {
+    if (
+      token?.address === "0x0000000000000000000000000000000000000000" ||
+      token?.address === "native"
+    ) {
       setApproved(true);
       setChecking(false);
       return;
@@ -63,6 +66,7 @@ export default function useApprove({
         signer
       );
       const allowanceRes = await TokenContract.allowance(address, spender);
+
       const _allowance = ethers.utils.formatUnits(
         allowanceRes.toString(),
         token.decimals
@@ -145,10 +149,16 @@ export default function useApprove({
   };
 
   useEffect(() => {
-    if (token?.isNative || isSkip) {
+    if (
+      token?.isNative ||
+      isSkip ||
+      token?.address === "0x0000000000000000000000000000000000000000" ||
+      token?.address === "native"
+    ) {
       setApproved(true);
       return;
     }
+
     if (token && amount && spender) checkApproved();
   }, [token, amount, spender, isSkip]);
 
