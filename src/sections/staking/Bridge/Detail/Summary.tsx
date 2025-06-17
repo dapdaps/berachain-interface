@@ -14,8 +14,6 @@ const DetailSummary = (props: any) => {
 
   const router = useRouter();
 
-  const protocol = data?.initialData?.pool?.protocol;
-
   const isBerps = data?.name === "Berps";
 
   return (
@@ -171,9 +169,9 @@ const DetailSummary = (props: any) => {
             height={18}
             className=""
             value={
-              data?.initialData?.protocol?.name === "BEX"
+              data?.protocol?.toUpperCase() === "BEX"
                 ? "Bex"
-                : data?.initialData?.protocol?.name || "-"
+                : data?.protocol || "-"
             }
           />
         </div>

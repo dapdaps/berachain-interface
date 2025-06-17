@@ -1,6 +1,6 @@
 import { useMultiState } from "@/hooks/use-multi-state";
 import Big from "big.js";
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { stakeAbi, withdrawAbi } from "@/sections/staking/Bridge/Detail";
 import kodiak from "@/configs/pools/kodiak";
@@ -8,16 +8,19 @@ import { useProvider } from "@/hooks/use-provider";
 import useAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
+import infraredVaultAbi from "@/sections/staking/abi/infrared-vault";
+import useTokenInfo from "@/hooks/use-token-info";
 
 export function useDetail(props: any) {
-  const { id, name, data, defaultIndex, vaultAddress } = props;
+  const { id, name, data, defaultIndex } = props;
 
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
   const toast = useToast();
 
   const { addAction } = useAddAction("dapp");
-
+  const [stakeToken, setStakeToken] = useState<any>(null);
+  const { queryToken } = useTokenInfo();
   const detailBerpsRef = useRef<any>();
   const [claiming, setClaiming] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -26,11 +29,11 @@ export function useDetail(props: any) {
   const isBERPS = name === "Berps";
   const isInfraredBerps =
     name === "Infrared" &&
-    data?.initialData?.pool?.protocol?.id === "berps" &&
-    data?.initialData?.pool?.name === "BHONEY";
+    data?.initialData?.protocol === "berps" &&
+    data?.poolName?.toUpperCase() === "BHONEY";
 
   const symbol = isBERPS ? data?.depositToken?.symbol : id;
-  const { decimals, tokens, LP_ADDRESS } = data || {};
+  const { decimals, tokens } = data || {};
 
   const [state, updateState] = useMultiState<any>({
     balances: [],
@@ -56,7 +59,9 @@ export function useDetail(props: any) {
   } = state;
 
   const sourceBalances: any = {};
-  const contractAddr = isBERPS ? data?.depositToken?.address : LP_ADDRESS;
+  const contractAddr = useMemo(() => {
+    return isBERPS ? data?.depositToken?.address : stakeToken?.address;
+  }, [isBERPS, stakeToken]);
 
   const approveSpender = isBERPS
     ? data?.withdrawToken?.address
@@ -100,6 +105,7 @@ export function useDetail(props: any) {
     });
   };
   const updateBalance = () => {
+    if (!contractAddr) return;
     const abi = ["function balanceOf(address) view returns (uint256)"];
     const contract = new ethers.Contract(
       contractAddr,
@@ -254,9 +260,7 @@ export function useDetail(props: any) {
           addAction?.({
             type: "Staking",
             action: "Staking",
-            tokens: data?.initialData?.stake_token
-              ? [data.initialData.stake_token]
-              : [],
+            tokens: stakeToken ? [stakeToken] : [],
             amount: inAmount,
             amounts: [inAmount],
             template: name || "Infrared",
@@ -339,9 +343,7 @@ export function useDetail(props: any) {
           addAction?.({
             type: "Staking",
             action: "UnStake",
-            tokens: data?.initialData?.stake_token
-              ? [data.initialData.stake_token]
-              : [],
+            tokens: stakeToken ? [stakeToken] : [],
             amount: lpAmount,
             amounts: [lpAmount],
             template: name || "Infrared",
@@ -417,7 +419,7 @@ export function useDetail(props: any) {
       .then((tx: any) => tx.wait())
       .then((receipt: any) => {
         const { status, transactionHash } = receipt ?? {};
-        const rewardToken = data?.initialData?.reward_tokens.find(
+        const rewardToken = data?.initialData?.rewardTokens.find(
           (token: any) => token.symbol === data?.rewardSymbol
         );
         addAction?.({
@@ -479,45 +481,40 @@ export function useDetail(props: any) {
   };
 
   const mintData = useMemo<any>(() => {
-    const protocol = data?.initialData?.protocol;
-    if (!protocol) return;
-    const protocolId = protocol?.id === "bex" ? "bex" : protocol?.id;
+    const protocol = data?.protocol;
+    if (!protocol || !stakeToken) return;
+    const protocolId = protocol === "bex" ? "bex" : protocol;
     if (!["kodiak", "bex"].includes(protocolId)) return null;
 
-    const tokens =
-      data?.initialData?.underlying_tokens ||
-      data?.initialData?.underlyingTokens ||
-      [];
+    const tokens = data?.initialData?.underlyingTokens || [];
     const underlying_tokens = tokens?.map((token: any) => ({
       ...token,
       icon: token?.image
     }));
+
     if (
       protocolId === "kodiak" &&
-      data?.initialData.stakeToken.symbol !== "UNI-V2"
+      stakeToken.name?.toLowerCase().includes("island")
     ) {
       return {
         token0: underlying_tokens[0],
         token1: underlying_tokens[1],
         version: "island",
         protocol: "kodiak",
-        stakingToken: data?.initialData?.stakeToken
+        stakingToken: stakeToken
       };
     }
     const index = kodiak?.islands?.findIndex(
-      (address: string) => data?.initialData?.stakeToken?.address === address
+      (address: string) => stakeToken?.address === address
     );
 
     if (protocolId === "bex") {
-      const match = data?.initialData?.mint_url?.match(
-        /\/pools\/(0x[a-fA-F0-9]{64})/
-      );
-      const id = match ? match[1] : null;
       return {
-        id,
+        id: stakeToken.poolId,
         protocol: protocolId,
-        symbol: data?.id,
-        tokens: [underlying_tokens[0], underlying_tokens[1]]
+        symbol: stakeToken.symbol,
+        tokens: [underlying_tokens[0], underlying_tokens[1]],
+        poolType: stakeToken.poolType
       };
     } else {
       if (index > -1) {
@@ -526,12 +523,12 @@ export function useDetail(props: any) {
           token0: underlying_tokens[0],
           token1: underlying_tokens[1],
           version: "island",
-          stakingToken: data?.initialData?.stake_token
+          stakingToken: stakeToken
         };
       }
       if (underlying_tokens?.length === 2) {
         return {
-          protocol: protocol?.id,
+          protocol: protocol,
           token0: underlying_tokens[0],
           token1: underlying_tokens[1],
           version: "v2"
@@ -539,7 +536,7 @@ export function useDetail(props: any) {
       }
     }
     return null;
-  }, [data]);
+  }, [data, stakeToken]);
 
   const withdrawable = useMemo(() => {
     return !(isWithdrawInsufficient || isLoading || Number(lpAmount || 0) <= 0);
@@ -547,9 +544,64 @@ export function useDetail(props: any) {
 
   useEffect(() => {
     if (!sender || !data.vaultAddress || !provider) return;
-    updateBalance();
+
     updateLPBalance();
+    updateBalance();
   }, [sender, data, updater, provider]);
+
+  useEffect(() => {
+    if (!data?.vaultAddress || !provider) return;
+    const getStakeTokenAddress = async () => {
+      const VaultContract = new Contract(
+        data?.vaultAddress,
+        infraredVaultAbi,
+        provider
+      );
+      const stakeTokenAddress = await VaultContract.stakingToken();
+      let poolId = "";
+      let poolType = "";
+      if (data.protocol === "bex") {
+        const TokenContract = new Contract(
+          stakeTokenAddress,
+          [
+            {
+              inputs: [],
+              name: "getPoolId",
+              outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+              stateMutability: "view",
+              type: "function"
+            },
+            {
+              inputs: [],
+              name: "version",
+              outputs: [{ internalType: "string", name: "", type: "string" }],
+              stateMutability: "view",
+              type: "function"
+            }
+          ],
+          provider
+        );
+        poolId = await TokenContract.getPoolId();
+        const versionData = await TokenContract.version();
+        poolType = JSON.parse(versionData).name;
+      }
+      queryToken({
+        address: stakeTokenAddress,
+        callback: (res: any) => {
+          setStakeToken({
+            name: res[0][0],
+            symbol: res[1][0],
+            decimals: res[2][0],
+            address: stakeTokenAddress,
+            poolId,
+            poolType
+          });
+          updateBalance();
+        }
+      });
+    };
+    getStakeTokenAddress();
+  }, [data?.vaultAddress, provider]);
 
   return {
     state,

@@ -146,7 +146,7 @@ const WithdrawQueue = forwardRef<any, any>((props, ref) => {
             action: "UnStake",
             tokens: [data?.withdrawToken],
             amount: record.amount,
-            template: data?.initialData?.pool?.protocol,
+            template: data?.protocol,
             status: status,
             transactionHash,
             chain_id: chainId,

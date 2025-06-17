@@ -202,12 +202,12 @@ const List = forwardRef<any, any>((props, ref) => {
           label: "Protocol",
           type: "slot",
           render: (data: any) => {
-            const protocol = data?.initialData?.protocol;
+            const protocol = data?.protocol;
             return (
               <img
                 style={{ width: 26 }}
                 src={getProtocolIcon(
-                  data?.platform === "infrared" ? protocol?.id : "aquabera"
+                  data?.platform === "infrared" ? protocol : "aquabera"
                 )}
               />
             );
@@ -500,14 +500,11 @@ const List = forwardRef<any, any>((props, ref) => {
               <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
                 {data?.id || "iBGT"}
               </div>
-              {data?.initialData?.protocol?.id === "bex" && (
+              {data?.protocol === "bex" && (
                 <div
                   className="w-[30px] cursor-pointer"
                   onClick={() => {
-                    router.push(
-                      "/bgt/gauge?address=" +
-                        data?.initialData?.bera_vault_address
-                    );
+                    router.push("/bgt/gauge?address=" + data?.vaultAddress);
                   }}
                 >
                   <img src="/images/hall/icon-bgt.svg" alt="icon-bgt" />
@@ -523,10 +520,8 @@ const List = forwardRef<any, any>((props, ref) => {
         label: "Protocol",
         type: "slot",
         render: (data: any) => {
-          const protocol = data?.initialData?.protocol;
-          return (
-            <img style={{ width: 26 }} src={getProtocolIcon(protocol?.id)} />
-          );
+          const protocol = data?.protocol;
+          return <img style={{ width: 26 }} src={getProtocolIcon(protocol)} />;
         }
       },
 

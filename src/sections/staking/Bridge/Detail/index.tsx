@@ -21,7 +21,7 @@ export default memo(function Detail(props: any) {
   const ibgtVaults: any = useIbgtVaults();
   const id = params.get("id");
   const defaultIndex = params.get("tab");
-  const vaultAddress = params.get("vaultAddress")
+  const vaultAddress = params.get("vaultAddress");
   const pathname = usePathname();
   const router = useRouter();
   const data = useMemo(() => {
@@ -29,7 +29,9 @@ export default memo(function Detail(props: any) {
       return ibgtVaults.berpsVaults.find((item: any) => item.id === id);
     }
 
-    return ibgtVaults.vaults.find((item: any) => item.vaultAddress === vaultAddress);
+    return ibgtVaults.vaults.find(
+      (item: any) => item.vaultAddress === vaultAddress
+    );
   }, [id, name, ibgtVaults]);
 
   const tabs: any = ["Stake", "Unstake"];
@@ -78,10 +80,8 @@ export default memo(function Detail(props: any) {
   } = state;
 
   useEffect(() => {
-    updater > 0 && onSuccess?.()
-  }, [updater])
-
-
+    updater > 0 && onSuccess?.();
+  }, [updater]);
 
   return (
     <div>
@@ -117,7 +117,9 @@ export default memo(function Detail(props: any) {
                     : ""
                 ])}
                 onClick={() => {
-                  router.replace(`${pathname}?id=${id}&vaultAddress=${vaultAddress}&tab=${index}`);
+                  router.replace(
+                    `${pathname}?id=${id}&vaultAddress=${vaultAddress}&tab=${index}`
+                  );
                 }}
               >
                 <span className="text-black font-Montserrat text-[18px] font-semibold leading-[90%]">
@@ -172,9 +174,9 @@ export default memo(function Detail(props: any) {
                 <span className="text-[#3D405A] font-Montserrat text-[12px] font-medium">
                   {lpAmount
                     ? "$" +
-                    Big(lpAmount)
-                      .times(data?.initialData?.stake_token?.price ?? 0)
-                      .toFixed(2)
+                      Big(lpAmount)
+                        .times(data?.initialData?.stakeTokenPrice ?? 0)
+                        .toFixed(2)
                     : "-"}
                 </span>
                 <div

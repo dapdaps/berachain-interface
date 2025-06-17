@@ -244,6 +244,15 @@ export default memo(function Bex(props) {
         outputs: [],
         stateMutability: "nonpayable",
         type: "function"
+      },
+      {
+        inputs: [],
+        name: "stakingToken",
+        outputs: [
+          { internalType: "contract ERC20", name: "", type: "address" }
+        ],
+        stateMutability: "view",
+        type: "function"
       }
     ];
     const contract = new ethers.Contract(
@@ -258,11 +267,17 @@ export default memo(function Bex(props) {
     })
       .then((receipt: any) => {
         const { status, transactionHash } = receipt;
+        const stakingToken = await contract.stakingToken();
         addAction?.({
           type: "Staking",
           action: "Staking",
-          tokens: data?.initialData?.stake_token
-            ? [data.initialData.stake_token]
+          tokens: stakingToken
+            ? [
+                {
+                  address: stakingToken,
+                  symbol: data?.poolName
+                }
+              ]
             : [],
           amount: inAmount,
           amounts: [inAmount],
