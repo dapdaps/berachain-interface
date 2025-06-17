@@ -29,7 +29,12 @@ const TopBar: React.FC<any> = () => {
   return (
     <div className="h-[36px] w-full flex items-center px-4 text-sm text-black border-b border-[#392C1D]/10">
       <div className="flex items-center h-6 flex-1 overflow-hidden">
-        <div className="text-[18px] leading-[18px] font-CherryBomb whitespace-nowrap">BM! Beratown</div>
+        <div className="flex items-center gap-[10px] text-[18px] leading-[90%] font-CherryBomb whitespace-nowrap">
+          <div className="shrink-0 px-[7px] h-[20px] rounded-[18px] bg-black/50 text-white font-Montserrat text-xs font-medium flex items-center justify-center">
+            Beta
+          </div>
+          <div className="h-[20px]">BM! Beratown</div>
+        </div>
         <Divider />
         <div className="whitespace-nowrap font-Montserrat leading-[1] text-[12px] font-[500]">Account: <span className="font-[700]">{formatLongText(account, 5, 4)}</span></div>
         <Divider />
