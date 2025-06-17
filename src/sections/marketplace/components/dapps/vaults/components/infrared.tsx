@@ -265,7 +265,7 @@ export default memo(function Bex(props) {
       method: "stake",
       params: [wei]
     })
-      .then((receipt: any) => {
+      .then(async (receipt: any) => {
         const { status, transactionHash } = receipt;
         const stakingToken = await contract.stakingToken();
         addAction?.({
