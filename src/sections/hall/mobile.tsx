@@ -40,18 +40,18 @@ export default memo(function Mobile() {
               ),
               children: <BGTMobileView />
             },
-            {
-              key: "ibgt",
-              label: (
-                <div className="w-full flex flex-col items-center justify-center gap-[6px]">
-                  <div className="w-[24px]">
-                    <img src="/images/dapps/infrared/ibgt.svg" alt="ibgt" />
-                  </div>
-                  <div className="text-black font-Montserrat text-[14px] font-bold leading-[90%]">iBGT</div>
-                </div>
-              ),
-              children: <IBGTMobileView />
-            },
+            // {
+            //   key: "ibgt",
+            //   label: (
+            //     <div className="w-full flex flex-col items-center justify-center gap-[6px]">
+            //       <div className="w-[24px]">
+            //         <img src="/images/dapps/infrared/ibgt.svg" alt="ibgt" />
+            //       </div>
+            //       <div className="text-black font-Montserrat text-[14px] font-bold leading-[90%]">iBGT</div>
+            //     </div>
+            //   ),
+            //   children: <IBGTMobileView />
+            // },
             {
               key: "validators",
               label: (
