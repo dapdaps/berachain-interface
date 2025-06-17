@@ -2,7 +2,7 @@ import Loading from '@/components/circle-loading';
 import useApprove from '@/hooks/use-approve';
 import useAccount from '@/hooks/use-account';
 import { useSwitchChain } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useEffect } from 'react';
 
 export const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
@@ -37,7 +37,7 @@ export default function SubmitBtn({
     onSuccess: onRefresh
   });
   const { isPending: switching, switchChain } = useSwitchChain();
-  const { open } = useAppKit();
+  const { openConnectModal } = useConnectModal();
   const { account, chainId } = useAccount();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function SubmitBtn({
     return (
       <BaseButton
         onClick={() => {
-          open();
+          openConnectModal?.();
         }}
       >
         Connect wallet

@@ -1,5 +1,5 @@
 import useCustomAccount from '@/hooks/use-account';
-import { useAppKit } from '@reown/appkit/react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import useUser from '@/hooks/use-user';
 import { useRef } from 'react';
 
@@ -7,7 +7,7 @@ export function useAuthCheck(props?: Props) {
   const { isNeedAt = true, isQuiet } = props ?? {};
 
   const { account } = useCustomAccount();
-  const modal = useAppKit();
+  const modal = useConnectModal();
   const { accessToken, accessTokenLoading } = useUser();
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -32,7 +32,7 @@ export function useAuthCheck(props?: Props) {
         if (realQuiet) {
           return;
         }
-        await modal.open();
+        await modal.openConnectModal?.();
         // ⚠️ Unable to synchronize and retrieve the wallet login status
         // must wait until the user clicks again to check the accessToken
         // checkAt();

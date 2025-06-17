@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import useClickTracking from "@/hooks/use-click-tracking";
 import { useEffect } from "react";
 import useCustomAccount from "@/hooks/use-account";
-import { useAppKit } from "@reown/appkit/react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { post } from "@/utils/http";
 import { useAccount } from "wagmi";
 import { useWalletName } from "@/hooks/use-wallet-name";
@@ -219,7 +219,7 @@ const Content = () => {
   const { address, isConnecting, isConnected } = useAccount();
   const params = useParams();
   const name = typeof params.name === "string" ? params.name : "";
-  const modal = useAppKit();
+  const modal = useConnectModal();
   const { toggleTheme, isDefaultTheme } = useActivityStore();
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -260,7 +260,7 @@ const Content = () => {
 
   const handleConnect = async () => {
     if (address) return;
-    await modal.open();
+    await modal.openConnectModal?.();
   };
 
   const handleGo = () => {
