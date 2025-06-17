@@ -24,6 +24,7 @@ import { HomeEarthContext } from "./context";
 import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
+import McBeraView from '@/sections/home-earth/mc-bera';
 
 const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 
@@ -36,7 +37,9 @@ const BG_SIZE_MAP = {
   lgbt: SIZE
 };
 
-const HomeEarth = () => {
+const HomeEarth = (props: any) => {
+  const { containerRef } = props;
+
   const isMobile = useIsMobile();
   const { isRainyDay, beraPrice } = useRainyDay();
   const { scrollY } = useScroll();
@@ -190,7 +193,7 @@ const HomeEarth = () => {
       }}
     >
       <McBeraProvider>
-        <div className="w-full">
+        <div className="w-full" ref={containerRef}>
           <div
             ref={contentRef}
             className="w-full sticky z-[1] top-0 h-[100dvh] pt-[68px] flex flex-col items-center overflow-hidden"
@@ -315,7 +318,7 @@ const HomeEarth = () => {
             </motion.div>
             <McBeraEntry />
           </div>
-          <McBera topRef={contentRef} />
+          <McBeraView topRef={contentRef} />
         </div>
       </McBeraProvider>
     </HomeEarthContext.Provider>
