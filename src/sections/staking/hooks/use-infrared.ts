@@ -125,6 +125,15 @@ export default function useInfrared({
           outputs: [],
           stateMutability: "nonpayable",
           type: "function"
+        },
+        {
+          inputs: [],
+          name: "stakingToken",
+          outputs: [
+            { internalType: "contract ERC20", name: "", type: "address" }
+          ],
+          stateMutability: "view",
+          type: "function"
         }
       ];
       const contract = new ethers.Contract(
@@ -140,12 +149,12 @@ export default function useInfrared({
       }
       const tx = await contract[type ? unStakeMethod : stakeMethod](...params);
       const { status, transactionHash } = await tx.wait();
-
+      const stakeTokenAddress = await contract.stakingToken();
       addAction?.({
         type: "Staking",
         action: type ? "UnStake" : "Staking",
-        tokens: data?.initialData?.stake_token
-          ? [data.initialData.stake_token]
+        tokens: stakeTokenAddress
+          ? [{ address: stakeTokenAddress, symbol: data?.poolName }]
           : [],
         amount: amount,
         template: "Infrared",

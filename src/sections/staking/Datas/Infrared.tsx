@@ -227,7 +227,8 @@ export default function useInfraredData(props: any) {
   }
   async function getDataList() {
     allData?.forEach((item) => {
-      const protocol = item?.slug?.split("-")[0];
+      const [protocol, ...restSlug] = item?.slug?.split("-");
+      const poolName = restSlug.join("-");
       if (!["kodiak", "dolomite", "bex"].includes(protocol)) return;
       item?.rewardTokens?.forEach((it: any) => {
         const curr = Object.values(bera).find(
@@ -255,13 +256,12 @@ export default function useInfraredData(props: any) {
       }
 
       const _data = {
-        id: item.name || item.stakeToken?.name,
+        id: item.name,
         strategy: "Dynamic",
         strategy2: "",
         ...tokensInfo,
-        decimals: item.stakeToken?.decimals,
-        LP_ADDRESS: item.stakeToken?.address,
         tvl: Big(item?.tvl || 0).toFixed(),
+        poolName,
         apy: Big(item?.apr || 0)
           .times(100)
           .toFixed(),
@@ -324,7 +324,7 @@ export default function useInfraredData(props: any) {
       dataList[i].usdDepositAmount = Big(
         ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
       )
-        .times(element?.initialData?.stakeToken?.price ?? 0)
+        .times(element?.initialData?.stakeTokenPrice ?? 0)
         .toFixed();
     }
     formatedData("getUsdDepositAmount");

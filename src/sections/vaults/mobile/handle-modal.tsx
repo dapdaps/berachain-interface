@@ -29,12 +29,11 @@ export default function HandleModal({
   type,
   onSuccess
 }: any) {
-  const pool = data?.initialData?.pool;
   const isBERPS = data?.name === "Berps";
   const isInfraredBerps =
     data?.name === "Infrared" &&
-    data?.initialData?.pool?.protocol === "BERPS" &&
-    data?.initialData?.pool?.name === "BHONEY";
+    data?.protocol?.toUpperCase() === "BERPS" &&
+    data?.poolName?.toUpperCase() === "BHONEY";
   const vaultAddress = isBERPS
     ? data?.withdrawToken?.address
     : data.vaultAddress;
@@ -46,8 +45,8 @@ export default function HandleModal({
       }
       return data?.depositToken?.symbol;
     }
-    return pool?.name || data.tokens[0];
-  }, [isBERPS, type, pool, data]);
+    return data?.poolName || data.tokens[0];
+  }, [isBERPS, type, data]);
 
   const [value, setValue] = useState("");
   const [percent, setPercent] = useState(0);
@@ -84,12 +83,12 @@ export default function HandleModal({
           icons: data.images
         }
       : {
-          address: pool?.lp_token_address || data.LP_ADDRESS,
+          address: data.LP_ADDRESS,
           decimals: 18,
-          symbol: pool?.name || data.tokens[0],
+          symbol: data?.poolName || data.tokens[0],
           icons: data.images
         };
-  }, [pool, type, isBERPS]);
+  }, [type, isBERPS]);
 
   useEffect(() => {
     if (!show) {
@@ -194,10 +193,10 @@ export default function HandleModal({
           </div>
           {!!balance && Big(balance).eq(0) && !isBERPS && (
             <div className="mt-[16px] text-center text-[#FD4C67] text-[14px] font-medium">
-              You don’t have any {pool?.name || data.tokens[0]} yet
+              You don’t have any {data?.poolName || data.tokens[0]} yet
             </div>
           )}
-          {((["BEX"].includes(pool?.protocol) && type === 0) ||
+          {((["bex"].includes(data?.protocol) && type === 0) ||
             isInfraredBerps) && (
             <div
               onClick={() => {
@@ -209,7 +208,7 @@ export default function HandleModal({
               }}
               className="flex items-center justify-center gap-[8px] mt-[16px] text-center text-[18px] font-semibold"
             >
-              <div>Mint {pool?.name} LP</div>
+              <div>Mint {data?.poolName} LP</div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="8"
@@ -228,25 +227,23 @@ export default function HandleModal({
           )}
         </div>
       </Modal>
-      {pool &&
-        data.tokens.length === 2 &&
-        pool.underlying_tokens?.length === 2 && (
-          <IncreaseLiquidityModal
-            open={showMint}
-            onClose={() => {
-              setShowMint(false);
-            }}
-            onSuccess={() => {
-              onSuccess();
-            }}
-            data={{
-              token0: { ...pool?.underlying_tokens[0], icon: data.images[0] },
-              token1: { ...pool?.underlying_tokens[1], icon: data.images[1] }
-            }}
-            dex={pool?.protocol}
-            title={`Mint ${pool?.underlying_tokens[0]?.symbol}-${pool?.underlying_tokens[1]?.symbol}`}
-          />
-        )}
+      {data.tokens.length === 2 && data.underlyingTokens?.length === 2 && (
+        <IncreaseLiquidityModal
+          open={showMint}
+          onClose={() => {
+            setShowMint(false);
+          }}
+          onSuccess={() => {
+            onSuccess();
+          }}
+          data={{
+            token0: { ...data?.underlyingTokens[0], icon: data.images[0] },
+            token1: { ...data?.underlyingTokens[1], icon: data.images[1] }
+          }}
+          dex={data?.protocol}
+          title={`Mint ${data?.underlyingTokens[0]?.symbol}-${data?.underlyingTokens[1]?.symbol}`}
+        />
+      )}
       <BerpsDeposit
         visible={showBerpsMint}
         onClose={() => {
