@@ -34,7 +34,7 @@ export default function RootLayout({
   const pathname = usePathname();
 
   const isChatHome = useMemo(() => {
-    return !isMobile && pathname === "/";
+    return !isMobile && ["/", "/home"].includes(pathname);
   }, [pathname, isMobile]);
 
   const tapRef = useRef<any>(null);

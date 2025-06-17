@@ -74,7 +74,7 @@ const MainLayout = (props: Props) => {
       return { background: rainyDay?.bg };
     }
 
-    if ((['/', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent', '/ibgt', '/lend', '/swap', '/tokens', '/validators', '/hall'].includes(pathname)
+    if ((['/', '/home', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent', '/ibgt', '/lend', '/swap', '/tokens', '/validators', '/hall'].includes(pathname)
         || pathname.startsWith('/lending/') 
         || pathname.startsWith('/staking/') 
         || pathname.startsWith('/bridge/') 
@@ -102,7 +102,7 @@ const MainLayout = (props: Props) => {
     return {};
   }, [currentScene, isRainyDay, rainyDay, pathname, isDefaultTheme, themeConfig.primaryColor]);
 
-  const routes = ["/", "/earn", "/activity/christmas"];
+  const routes = ["/", "/earn", "/activity/christmas", "/home"];
 
 
 
