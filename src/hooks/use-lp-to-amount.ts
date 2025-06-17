@@ -5,10 +5,8 @@ import { useProvider } from "./use-provider";
 import { useEffect, useState } from "react";
 import Big from "big.js";
 
-export default function useLpToAmount(address: string, product: any) {
+export default function useLpToAmount(address: string, product?: any) {
   const { provider } = useProvider();
-
-  const [pool, setPool] = useState(null);
   const [reserve0, setReserve0] = useState(0);
   const [reserve1, setReserve1] = useState(0);
   const [totalSupply, setTotalSupply] = useState();

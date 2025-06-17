@@ -36,7 +36,7 @@ export default function useInfraredList(updater?: number, name?: string) {
   function fetchAllData() {
     setLoading(true);
     asyncFetch(
-      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fvaults&params=chainId%3D80094%26offset%3D0%26limit%3D100`
+      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fbackend-vaults&params=chainId%3D80094`
     ).then((res) => {
       setAllData(res?.vaults);
       setMaxApr(res?.aprMax);

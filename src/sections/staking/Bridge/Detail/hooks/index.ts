@@ -7,7 +7,6 @@ import kodiak from "@/configs/pools/kodiak";
 import { useProvider } from "@/hooks/use-provider";
 import useAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
-import useLpToAmount from "@/hooks/use-lp-to-amount";
 import useAddAction from "@/hooks/use-add-action";
 
 export function useDetail(props: any) {
@@ -16,10 +15,7 @@ export function useDetail(props: any) {
   const { provider } = useProvider();
   const { account: sender, chainId } = useAccount();
   const toast = useToast();
-  const { handleGetAmount } = useLpToAmount(
-    data?.LP_ADDRESS,
-    data?.initialData?.protocol
-  );
+
   const { addAction } = useAddAction("dapp");
 
   const detailBerpsRef = useRef<any>();

@@ -2,7 +2,6 @@ import { useState } from "react";
 import useToast from "@/hooks/use-toast";
 import useCustomAccount from "@/hooks/use-account";
 import useAddAction from "@/hooks/use-add-action";
-import useLpToAmount from "@/hooks/use-lp-to-amount";
 import { ethers } from "ethers";
 import Big from "big.js";
 import { DEFAULT_CHAIN_ID } from "@/configs";
