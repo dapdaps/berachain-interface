@@ -18,7 +18,7 @@ const ChatLayoutContent: React.FC = () => {
     <div className="w-[984px] h-[608px] mx-auto mt-[6px]">
       <div className="w-full h-full bg-[#FFFDEB] rounded-[16px]">
         <TopBar />
-        <div className="flex flex-1 overflow-hidden mt-2.5 bg-[url('/images/home-earth/logo-light.png')] bg-no-repeat bg-[position:310px_190px] bg-[size:307px_189px]">
+        <div className="flex flex-1 overflow-hidden mt-2.5">
           <Sidebar />
           {chatMode === 'initial' ? <MainSection /> : <ChatInterface />}
         </div>
