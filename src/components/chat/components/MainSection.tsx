@@ -5,6 +5,7 @@ import QuickOptionTabs from "./QuickOptionTabs";
 import { useChatContext } from "../context/chat-context";
 import { useAccount } from "wagmi";
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useAuthCheck } from "@/hooks/use-auth-check";
 
 export default function MainSection() {
   const [inputValue, setInputValue] = useState("");
@@ -15,6 +16,7 @@ export default function MainSection() {
 
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const { onAuthCheck } = useAuthCheck();
 
   useEffect(() => {
     console.log("ChatInterface mounted with address:", address);
@@ -45,6 +47,8 @@ export default function MainSection() {
       openConnectModal?.();
       return;
     }
+
+    await onAuthCheck();
 
     if (inputValue.trim()) {
       const userMessage = inputValue;
