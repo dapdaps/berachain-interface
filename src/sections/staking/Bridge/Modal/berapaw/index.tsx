@@ -12,7 +12,7 @@ import Big from "big.js";
 import TokenSelector from "@/sections/swap/TokenSelector";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { getTokenLogo } from "@/sections/dashboard/utils";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import { numberFormatter } from "@/utils/number-formatter";
 import useToast from "@/hooks/use-toast";
 
@@ -47,7 +47,7 @@ const SLIPPAGE_MAP = new Map([
 ]);
 
 const BerapawStakeContent = (props: any) => {
-  const { data, onSuccess, dexConfig, defaultTab } = props;
+  const { data, onSuccess, dexConfig, defaultTab, onStake, onApprove } = props;
 
   const { chains } = dexConfig ?? {};
   const dAppConfig = chains?.[DEFAULT_CHAIN_ID] ?? {};
@@ -133,19 +133,123 @@ const BerapawStakeContent = (props: any) => {
     const { route = {} } = zapData ?? {};
     const signer = provider.getSigner(account);
     let toastId = toast.loading({ title: "Confirming..." });
+    let currentStep = "Swap";
     try {
       const tx = await signer.sendTransaction(route.tx);
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending...", tx: tx.hash, chainId: DEFAULT_CHAIN_ID });
-      const { status, transactionHash } = await tx.wait();
+      const txReceipt = await tx.wait();
       toast.dismiss(toastId);
 
+      const { status, transactionHash } = txReceipt;
+
       if (status === 1) {
-        toast.success({
+        toast.dismiss(toastId);
+        toastId = toast.success({
           title: `Swap Successful!`,
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
+        //#region set operator
+        if (!data?.approved) {
+          currentStep = "Set operator";
+          const operatorRes = await onApprove?.(data, { isReload: false });
+          if (!operatorRes) {
+            return;
+          }
+        }
+        //#endregion
+        //#region get balance of staking token
+        const contract = new ethers.Contract(
+          data?.stakingToken?.address,
+          [
+            {
+              inputs: [
+                { internalType: 'address', name: 'account', type: 'address' }
+              ],
+              name: 'balanceOf',
+              outputs: [
+                { internalType: 'uint256', name: '', type: 'uint256' }
+              ],
+              stateMutability: 'view',
+              type: 'function'
+            }
+          ],
+          provider
+        );
+        const balance = await contract.balanceOf(account);
+        const realBalance = ethers.utils.formatUnits(balance, data?.stakingToken?.decimals);
+        const estimatedAmountOut = ethers.utils.formatUnits(route.amountOut, data?.stakingToken?.decimals);
+        let realAmountOut = estimatedAmountOut;
+        if (Big(realBalance).lt(estimatedAmountOut)) {
+          realAmountOut = realBalance;
+        }
+        //#endregion
+        //#region check stake amount approved
+        currentStep = "Approve";
+        const spenderAddress = data?.vaultAddress;
+        const tokenContract = new ethers.Contract(
+          data?.stakingToken?.address,
+          [
+            {
+              inputs: [
+                { internalType: "address", name: "", type: "address" },
+                { internalType: "address", name: "", type: "address" }
+              ],
+              name: "allowance",
+              outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+              stateMutability: "view",
+              type: "function"
+            },
+            {
+              inputs: [
+                { internalType: "address", name: "spender", type: "address" },
+                { internalType: "uint256", name: "value", type: "uint256" }
+              ],
+              name: "approve",
+              outputs: [{ internalType: "bool", name: "", type: "bool" }],
+              stateMutability: "nonpayable",
+              type: "function"
+            }
+          ],
+          signer
+        );
+        const allowanceRes = await tokenContract.allowance(account, spenderAddress);
+        const allowanceAmount = ethers.utils.formatUnits(
+          allowanceRes.toString(),
+          data?.stakingToken?.decimals
+        );
+        //#endregion
+        //#region approve stake amount
+        if (Big(allowanceAmount).lt(realAmountOut)) {
+          const encodedRealAmount = ethers.utils.parseUnits(realAmountOut, data?.stakingToken?.decimals);
+          let estimateGas = "5000000";
+          try {
+            const estimateGasRes = await tokenContract.estimateGas.approve(spenderAddress, encodedRealAmount);
+            estimateGas = Big(estimateGasRes.toString()).times(1.2).toFixed(0);
+          } catch (err) {
+            console.log("get estimate gas err: %o", err);
+          }
+          const approveTx = await tokenContract.approve(spenderAddress, encodedRealAmount, { gasLimit: estimateGas });
+          toastId = toast.loading({ title: "Pending...", tx: approveTx.hash, chainId: DEFAULT_CHAIN_ID });
+          const approveTxReceipt = await approveTx.wait();
+          //#region stake
+          if (approveTxReceipt.status === 1) {
+            toast.dismiss(toastId);
+            toastId = toast.success({
+              title: "Approve Successful!"
+            });
+
+            currentStep = "Stake";
+            const stakeSuccess = await onStake?.(data, realAmountOut, data?.stakingToken?.symbol === "LBGT" ? "deposit" : "stake");
+            if (!stakeSuccess) {
+              return;
+            }
+            toast.dismiss(toastId);
+          }
+          //#endregion
+        }
+        //#endregion
         onSuccess?.();
       } else {
         toast.fail({ title: `Swap failed!` });
@@ -155,7 +259,7 @@ const BerapawStakeContent = (props: any) => {
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Swap failed!`
+          : `${currentStep} failed!`
       });
       console.log(err);
     }
