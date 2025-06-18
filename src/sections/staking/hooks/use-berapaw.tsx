@@ -324,28 +324,35 @@ export function useBerapaw(props: any) {
     }
   };
 
-  const handleApprove = async (record: any) => {
-    if (approving) return;
+  const handleApprove = async (record: any, opts?: { isReload?: boolean; }) => {
+    const { isReload = true } = opts ?? {};
+    if (approving) return false;
     const res = await onApprove({ rewardVault: record.vaultAddress });
     if (res) {
-      getTotalData();
-      onStakeModalClose();
+      if (isReload) {
+        getTotalData();
+        onStakeModalClose();
+      }
+      return true;
     }
+    return false;
   };
 
   const handleStake = async (record: any, amount: string, type: "stake" | "deposit" = "stake") => {
     let res: any;
     if (type === "deposit") {
-      if (depositing) return;
+      if (depositing) return false;
       res = await onDeposit({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
     } else {
-      if (staking) return;
+      if (staking) return false;
       res = await onStake({ rewardVault: record.vaultAddress, amount, token: record.stakingToken });
     }
     if (res) {
       getTotalData();
       onStakeModalClose();
+      return true;
     }
+    return false;
   };
 
   const onStakeModalClose = () => {
