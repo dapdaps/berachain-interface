@@ -16,6 +16,8 @@ export interface Message {
   component?: any;
   skipTyping?: boolean;
   isFromHistory?: boolean;
+  backendId?: number;
+  like_status?: number;
 }
 
 export type ChatHistory = {
@@ -129,18 +131,27 @@ const startNewChat = (userMessage: string) => {
   };
 
   const updateMessage = (updatedMessage: Message) => {
-    setMessages(prevMessages => 
-      prevMessages.map(msg => 
-        msg.id === updatedMessage.id ? 
-        { 
-          ...msg, 
-          content: updatedMessage.content,
-          richContent: updatedMessage.richContent,
-          component: updatedMessage.component,
-          skipTyping: updatedMessage.skipTyping,
-        } : msg
-      )
-    );
+    setMessages(prevMessages => {
+      return prevMessages.map((msg) => {
+        if (msg.id === updatedMessage.id) {
+          const _newObj = {
+            ...msg, 
+            content: updatedMessage.content,
+            richContent: updatedMessage.richContent,
+            component: updatedMessage.component,
+            skipTyping: updatedMessage.skipTyping,
+          };
+          if (typeof updatedMessage.backendId !== "undefined") {
+            _newObj.backendId = updatedMessage.backendId;
+          }
+          if (typeof updatedMessage.like_status !== "undefined") {
+            _newObj.like_status = updatedMessage.like_status;
+          }
+          return _newObj;
+        }
+        return msg;
+      });
+    });
   };
 
   const sendChatMessage = async (message: string) => {

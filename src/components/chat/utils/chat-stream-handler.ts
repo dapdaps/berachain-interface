@@ -162,6 +162,12 @@ export const handleSSEMessage = (
         if (callbacks?.setSessionId) {
           callbacks.setSessionId(metaData.sessionId);
         }
+
+        callbacks?.updateMessage?.({
+          ...assistantMessage,
+          backendId: metaData.message_id,
+          like_status: 0
+        });
       }
     } catch (e) {
       console.error("Failed to parse meta data:", e);
