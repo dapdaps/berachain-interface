@@ -19,6 +19,7 @@ export default function BridgeModal({
         defaultFromToken={defaultFromToken}
         defaultToToken={defaultToToken}
         showRoute={true}
+        isShowConfirm={false}
       />
     </Modal>
   );

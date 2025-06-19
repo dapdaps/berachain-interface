@@ -419,7 +419,7 @@ export const Modals = memo(({ successCb }: any) => {
             } via ${result.template}\n ${
               result.txHash ? `Here is Tx: [${txUrl}](${txUrl})` : ""
             }`;
-
+            bridgeStore.set({ modalOpen: false })
             successCb({ messageContent });
           }}
         />
