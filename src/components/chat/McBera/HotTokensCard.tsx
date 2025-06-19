@@ -5,10 +5,16 @@ import { numberFormatter } from "@/utils/number-formatter";
 import useSwapStore from "../stores/useSwapStores";
 
 const HotTokensCard = ({ parsedContent }: any) => {
-  const { openSwapModal, setDefaultOutputCurrency } = useSwapStore();
+  const { openSwapModal, setDefaultOutputCurrency, setDefaultInputCurrency } = useSwapStore();
 
   const handleTokenSwap = (token: any) => {
-    setDefaultOutputCurrency(token);
+    if (token.symbol === "BERA") {
+      setDefaultInputCurrency(token);
+      setDefaultOutputCurrency(bera['honey']);
+    } else {
+      setDefaultInputCurrency(token);
+      setDefaultOutputCurrency(bera['bera']);
+    }
     openSwapModal();
   };
 
