@@ -36,7 +36,7 @@ const Stake = (props: any) => {
           {inAmount
             ? "$" +
               Big(inAmount)
-                .times(data?.initialData?.stake_token?.price ?? 0)
+                .times(data?.initialData?.stakeTokenPrice ?? 0)
                 .toFixed(2)
             : "-"}
         </span>

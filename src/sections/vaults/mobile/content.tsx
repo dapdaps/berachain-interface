@@ -231,7 +231,7 @@ const Item = ({
   onChangeData,
   isBeraPaw
 }: any) => {
-  const protocol = data?.initialData?.protocol;
+  const protocol = data?.protocol;
   const isBerps = dapp?.name === "Berps";
   const isAquaBera = dapp?.name === "AquaBera";
 
@@ -422,11 +422,7 @@ const Item = ({
               />
             </div>
             <div>
-              <div className="text-[16px] font-semibold">
-                {data?.platform === "infrared"
-                  ? data?.initialData?.name
-                  : data?.pool?.name}
-              </div>
+              <div className="text-[16px] font-semibold">{data?.poolName}</div>
               <div className="text-[14px] mt-[4px]">{protocol?.name}</div>
             </div>
           </div>

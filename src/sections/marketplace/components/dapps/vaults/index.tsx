@@ -1,10 +1,8 @@
-
-import { MarketplaceContext } from '@/sections/marketplace/context';
+import { MarketplaceContext } from "@/sections/marketplace/context";
 import { memo, useContext } from "react";
-import InfraredModal from './components/infrared';
-import AquaberaModal from './components/aquabera';
+import InfraredModal from "./components/infrared";
+import AquaberaModal from "./components/aquabera";
 export default memo(function Vaults() {
-
   const {
     vaultsVisible,
     setVaultsVisible,
@@ -32,5 +30,5 @@ export default memo(function Vaults() {
       setVisible={setVaultsVisible}
       refresh={refreshRef?.current}
     />
-  )
-})
+  );
+});

@@ -39,7 +39,7 @@ export default memo(function IbgtMain() {
     handleMintIBGT
   } = useIBGT();
   const rewards = data?.rewards;
-  const { userPoints } = useUserPoints();
+
   const {
     balances,
     inAmount,
@@ -189,7 +189,7 @@ export default memo(function IbgtMain() {
                   {inAmount
                     ? "$" +
                       Big(inAmount)
-                        .times(data?.initialData?.stakeToken?.price ?? 0)
+                        .times(data?.initialData?.stakeTokenPrice ?? 0)
                         .toFixed(2)
                     : "-"}
                 </span>
@@ -263,7 +263,7 @@ export default memo(function IbgtMain() {
                   {lpAmount
                     ? "$" +
                       Big(lpAmount)
-                        .times(data?.initialData?.stakeToken?.price ?? 0)
+                        .times(data?.initialData?.stakeTokenPrice ?? 0)
                         .toFixed(2)
                     : "-"}
                 </span>

@@ -214,7 +214,7 @@ export default function useInfraredData(props: any) {
             "berps",
             "honeypot",
             "dolomite"
-          ].includes(data?.initialData?.protocol?.id) || data?.id === "iBGT"
+          ].includes(data?.protocol) || data?.id === "iBGT"
       ),
       fullDataList: dataList
     });
@@ -222,12 +222,14 @@ export default function useInfraredData(props: any) {
 
   async function getIbgtData() {
     return await asyncFetch(
-      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fvault%2Finfrared-ibgt&params=chainId%3D80094`
+      `${process.env.NEXT_PUBLIC_API}/api/infrared?path=api%2Fbackend-vaults%2Finfrared-ibgt&params=chainId%3D80094`
     );
   }
   async function getDataList() {
     allData?.forEach((item) => {
-      if (!["kodiak", "dolomite", "bex"].includes(item?.protocol?.id)) return;
+      const [protocol, ...restSlug] = item?.slug?.split("-");
+      const poolName = restSlug.join("-");
+      if (!["kodiak", "dolomite", "bex"].includes(protocol)) return;
       item?.rewardTokens?.forEach((it: any) => {
         const curr = Object.values(bera).find(
           (_it) => _it.address.toLowerCase() === it.address.toLowerCase()
@@ -254,13 +256,12 @@ export default function useInfraredData(props: any) {
       }
 
       const _data = {
-        id: item.name || item.stakeToken?.name,
+        id: item.name,
         strategy: "Dynamic",
         strategy2: "",
         ...tokensInfo,
-        decimals: item.stakeToken?.decimals,
-        LP_ADDRESS: item.stakeToken?.address,
         tvl: Big(item?.tvl || 0).toFixed(),
+        poolName,
         apy: Big(item?.apr || 0)
           .times(100)
           .toFixed(),
@@ -269,7 +270,8 @@ export default function useInfraredData(props: any) {
         vaultAddress: item.address,
         rewardSymbol: item?.rewardTokens?.[0]?.symbol,
         platform: "infrared",
-        protocolType: ["bex", "kodiak"].includes(item?.protocol?.id)
+        protocol,
+        protocolType: ["bex", "kodiak"].includes(protocol)
           ? "AMM"
           : "Perpetuals"
       };
@@ -294,6 +296,7 @@ export default function useInfraredData(props: any) {
       platform: "infrared",
       protocolType: "-"
     });
+
     formatedData("dataList");
   }
   async function getUsdDepositAmount() {
@@ -321,7 +324,7 @@ export default function useInfraredData(props: any) {
       dataList[i].usdDepositAmount = Big(
         ethers.utils.formatUnits(result?.[i]?.[0] ?? 0)
       )
-        .times(element?.initialData?.stakeToken?.price ?? 0)
+        .times(element?.initialData?.stakeTokenPrice ?? 0)
         .toFixed();
     }
     formatedData("getUsdDepositAmount");

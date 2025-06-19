@@ -38,7 +38,7 @@ export default function useInfrared({
       );
       const tx = await contract.getReward();
       const { status, transactionHash } = await tx.wait();
-      const rewardToken = data?.initialData?.reward_tokens.find(
+      const rewardToken = data?.initialData?.rewardTokens.find(
         (token: any) => token.symbol === data?.rewardSymbol
       );
       addAction?.({
