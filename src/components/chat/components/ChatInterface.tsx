@@ -19,6 +19,7 @@ import BgtBoostModal from "@/sections/bgt/components/delegate";
 import { bera } from "@/configs/tokens/bera";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useDebounceFn } from "ahooks";
+import chains from "@/sections/bridge/lib/util/chainConfig";
 
 export type MessageType = {
   id: string;
@@ -405,7 +406,9 @@ export const Modals = memo(({ successCb }: any) => {
           open={bridgeStore.modalOpen}
           onClose={() => bridgeStore.set({ modalOpen: false })}
           onCallback={(result: any) => {
-            const txUrl = `https://berascan.com/tx/${result.txHash}`;
+            const txUrl = `${chains[
+              result.inputCurrency.chainId
+            ].blockExplorers.replace(/\/$/, "")}/tx/${result.txHash}`;
 
             const messageContent = `${
               result.isSuccess ? "✅" : "❌"
