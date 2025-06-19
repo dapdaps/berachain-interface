@@ -31,8 +31,6 @@ export default function Invest(props: any) {
 
   const isMobile = useIsMobile();
 
-
-
   const Tabs: any = [
     { value: "Single", label: "Single Token" },
     { value: "LP", label: "LP" }
@@ -57,13 +55,12 @@ export default function Invest(props: any) {
   const [checkedIndex, setCheckedIndex] = useState(-1);
   const [checkedRecord, setCheckedRecord] = useState(null);
 
-
   const filterList = useMemo(() => {
     let _filterList = dataList
       .filter((data) => (searchVal ? data?.id.indexOf(searchVal) > -1 : true))
       .filter((data) =>
         rateKey === "Single"
-          ? (data?.tokens?.length === 1 || data?.platform === "aquabera")
+          ? data?.tokens?.length === 1 || data?.platform === "aquabera"
           : data?.tokens?.length === 2 && data?.platform !== "aquabera"
       );
     if (checked) {
@@ -73,15 +70,14 @@ export default function Invest(props: any) {
     }
     return sortDataIndex
       ? cloneDeep(_filterList).sort((prev, next) => {
-        return Big(next[sortDataIndex] || 0).gt(prev[sortDataIndex] || 0)
-          ? sortDataDirection
-          : -sortDataDirection;
-      })
+          return Big(next[sortDataIndex] || 0).gt(prev[sortDataIndex] || 0)
+            ? sortDataDirection
+            : -sortDataDirection;
+        })
       : _filterList;
   }, [dataList, sortDataIndex, sortDataDirection, searchVal, rateKey, checked]);
 
   const handleMobileAction = (record, type) => {
-
     if (record?.platform === "aquabera") {
       openAquaBera(record, type, refresh).then(() => {
         setVaultsVisible(true);
@@ -100,7 +96,7 @@ export default function Invest(props: any) {
   };
 
   function refresh() {
-    setUpdater(Date.now())
+    setUpdater(Date.now());
   }
   useEffect(() => {
     isMobile && handleReport("1019-003");
@@ -125,7 +121,7 @@ export default function Invest(props: any) {
         width: "25%",
         render: (text: string, record: any) => {
           const pool = record?.pool;
-          const name = pool?.protocol || record.name
+          const name = pool?.protocol || record.name;
           return (
             <div
               className="flex items-center gap-[10px]"
@@ -178,10 +174,10 @@ export default function Invest(props: any) {
                 pool?.protocol === "Bex"
                   ? "/images/dapps/bex.svg"
                   : pool?.protocol === "aquabera"
-                    ? "/images/dapps/infrared/aquabera.png"
-                    : pool?.protocol === "Kodiak Finance"
-                      ? "/images/dapps/kodiak.svg"
-                      : "/images/dapps/infrared/berps.svg"
+                  ? "/images/dapps/infrared/aquabera.png"
+                  : pool?.protocol === "Kodiak Finance"
+                  ? "/images/dapps/kodiak.svg"
+                  : "/images/dapps/infrared/berps.svg"
               }
             />
           );
@@ -245,17 +241,17 @@ export default function Invest(props: any) {
             const _data = {
               pool: record,
               token0: record?.tokens?.[0],
-              token1: record?.tokens?.[1],
-            }
+              token1: record?.tokens?.[1]
+            };
             return (
-              <div className='flex gap-[10px]'>
+              <div className="flex gap-[10px]">
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='34'
-                  height='34'
-                  viewBox='0 0 34 34'
-                  fill='none'
-                  className='cursor-pointer'
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  fill="none"
+                  className="cursor-pointer"
                   onClick={() => {
                     openAquaBera(_data, 0, refresh).then(() => {
                       setVaultsVisible(true);
@@ -263,29 +259,29 @@ export default function Invest(props: any) {
                   }}
                 >
                   <rect
-                    x='0.5'
-                    y='0.5'
-                    width='33'
-                    height='33'
-                    rx='10.5'
-                    fill='white'
-                    stroke='#373A53'
+                    x="0.5"
+                    y="0.5"
+                    width="33"
+                    height="33"
+                    rx="10.5"
+                    fill="white"
+                    stroke="#373A53"
                   />
                   <path
-                    d='M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z'
-                    fill='black'
+                    d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
+                    fill="black"
                   />
                 </svg>
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='34'
-                  height='34'
-                  viewBox='0 0 34 34'
-                  fill='none'
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  fill="none"
                   className={
                     Big(record?.yourValue ?? 0).eq(0)
-                      ? 'cursor-not-allowed'
-                      : 'cursor-pointer'
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer"
                   }
                   onClick={() => {
                     if (Big(record?.yourValue ?? 0).gt(0)) {
@@ -295,17 +291,24 @@ export default function Invest(props: any) {
                     }
                   }}
                 >
-                  <g opacity={Big(record?.yourValue ?? 0).eq(0) ? '0.3' : '1'}>
+                  <g opacity={Big(record?.yourValue ?? 0).eq(0) ? "0.3" : "1"}>
                     <rect
-                      x='0.5'
-                      y='0.5'
-                      width='33'
-                      height='33'
-                      rx='10.5'
-                      fill='white'
-                      stroke='#373A53'
+                      x="0.5"
+                      y="0.5"
+                      width="33"
+                      height="33"
+                      rx="10.5"
+                      fill="white"
+                      stroke="#373A53"
                     />
-                    <rect x='11' y='16' width='13' height='2' rx='1' fill='black' />
+                    <rect
+                      x="11"
+                      y="16"
+                      width="13"
+                      height="2"
+                      rx="1"
+                      fill="black"
+                    />
                   </g>
                 </svg>
               </div>
@@ -316,53 +319,67 @@ export default function Invest(props: any) {
             return (
               <div className="flex items-center gap-2">
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='34'
-                  height='34'
-                  viewBox='0 0 34 34'
-                  fill='none'
-                  className='cursor-pointer'
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  fill="none"
+                  className="cursor-pointer"
                   onClick={() => handleInfrared(record, 0)}
                 >
                   <rect
-                    x='0.5'
-                    y='0.5'
-                    width='33'
-                    height='33'
-                    rx='10.5'
-                    fill='white'
-                    stroke='#373A53'
+                    x="0.5"
+                    y="0.5"
+                    width="33"
+                    height="33"
+                    rx="10.5"
+                    fill="white"
+                    stroke="#373A53"
                   />
                   <path
-                    d='M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z'
-                    fill='black'
+                    d="M18.0211 18.0921L22.7387 18.0922C23.0934 18.0921 23.381 17.8651 23.3809 17.5852L23.3809 16.5566C23.3809 16.2767 23.0932 16.0504 22.7383 16.05L18.021 16.0502L18.0209 11.3328C18.0211 10.9779 17.7943 10.6901 17.5142 10.6902L16.4855 10.6903C16.2059 10.6901 15.9789 10.9777 15.9791 11.3327L15.9792 16.0502L11.2615 16.0503C10.9069 16.0503 10.6191 16.2767 10.6191 16.5567L10.6191 17.5853C10.6191 17.8652 10.9068 18.0922 11.2614 18.0923L15.9792 18.0922L15.9792 22.8093C15.9791 23.1647 16.2058 23.4519 16.4857 23.452L17.5144 23.4519C17.7942 23.4518 18.0211 23.1644 18.0213 22.8097L18.0211 18.0921Z"
+                    fill="black"
                   />
                 </svg>
 
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='34'
-                  height='34'
-                  viewBox='0 0 34 34'
-                  fill='none'
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="34"
+                  height="34"
+                  viewBox="0 0 34 34"
+                  fill="none"
                   className={
                     Big(record?.depositAmount ?? 0).eq(0)
-                      ? 'cursor-not-allowed'
-                      : 'cursor-pointer'
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer"
                   }
-                  onClick={() => Big(record?.depositAmount ?? 0).gt(0) && handleInfrared(record, 1)}
+                  onClick={() =>
+                    Big(record?.depositAmount ?? 0).gt(0) &&
+                    handleInfrared(record, 1)
+                  }
                 >
-                  <g opacity={Big(record?.depositAmount ?? 0).eq(0) ? '0.3' : '1'}>
+                  <g
+                    opacity={
+                      Big(record?.depositAmount ?? 0).eq(0) ? "0.3" : "1"
+                    }
+                  >
                     <rect
-                      x='0.5'
-                      y='0.5'
-                      width='33'
-                      height='33'
-                      rx='10.5'
-                      fill='white'
-                      stroke='#373A53'
+                      x="0.5"
+                      y="0.5"
+                      width="33"
+                      height="33"
+                      rx="10.5"
+                      fill="white"
+                      stroke="#373A53"
                     />
-                    <rect x='11' y='16' width='13' height='2' rx='1' fill='black' />
+                    <rect
+                      x="11"
+                      y="16"
+                      width="13"
+                      height="2"
+                      rx="1"
+                      fill="black"
+                    />
                   </g>
                 </svg>
               </div>
@@ -395,49 +412,38 @@ export default function Invest(props: any) {
             isValid ? (
               <div className="decoration-solid">
                 {numberFormatter(record?.usdDepositAmount, 2, true, {
-                  prefix: '$',
+                  prefix: "$",
                   isShort: true
                 })}
               </div>
             ) : (
-              <div className="opacity-30">
-                $0.00
-              </div>
+              <div className="opacity-30">$0.00</div>
             )
           ) : (
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%] flex items-center gap-[6px]">
               {isValid && (
                 <div className="flex items-center">
-
-                  {
-                    record.images[0] && (
-                      <div className="w-[20px] rounded-full overflow-hidden">
-                        <img src={record.images[0]} alt="icon_0" />
-                      </div>
-                    )
-                  }
-                  {
-                    record.images[1] && (
-                      <div className="w-[20px] rounded-full overflow-hidden ml-[-10px]">
-                        <img src={record.images[1]} alt="icon_1" />
-                      </div>
-                    )
-                  }
+                  {record.images[0] && (
+                    <div className="w-[20px] rounded-full overflow-hidden">
+                      <img src={record.images[0]} alt="icon_0" />
+                    </div>
+                  )}
+                  {record.images[1] && (
+                    <div className="w-[20px] rounded-full overflow-hidden ml-[-10px]">
+                      <img src={record.images[1]} alt="icon_1" />
+                    </div>
+                  )}
                 </div>
               )}
-              {
-                isValid ? (
-                  <div className="underline decoration-solid">
-                    {numberFormatter(record.depositAmount, 2, true, {
-                      isShort: true
-                    })}
-                  </div>
-                ) : (
-                  <div className="opacity-30">
-                    $0.00
-                  </div>
-                )
-              }
+              {isValid ? (
+                <div className="underline decoration-solid">
+                  {numberFormatter(record.depositAmount, 2, true, {
+                    isShort: true
+                  })}
+                </div>
+              ) : (
+                <div className="opacity-30">$0.00</div>
+              )}
             </div>
           );
         }
@@ -451,38 +457,35 @@ export default function Invest(props: any) {
           const isValid = Big(record.earned || 0).gt(0);
           return (
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {
-                isValid ? (
-                  <div className="flex items-center gap-[6px]">
-                    {record?.initialData?.reward_tokens?.[0]?.icon && (
-                      <div className="flex items-center">
-                        <LazyImage
-                          src={record?.initialData?.reward_tokens?.[0]?.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className="rounded-full"
-                        />
-                      </div>
-                    )}
-                    {record?.platform === "aquabera" ? "-" : numberFormatter(record.earned, 2, true, { isShort: true })}
-                  </div>
-
-                ) : (
-                  <div className="opacity-30">
-                    $0.00
-                  </div>
-                )
-              }
+              {isValid ? (
+                <div className="flex items-center gap-[6px]">
+                  {record?.initialData?.rewardTokens?.[0]?.icon && (
+                    <div className="flex items-center">
+                      <LazyImage
+                        src={record?.initialData?.rewardTokens?.[0]?.icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="rounded-full"
+                      />
+                    </div>
+                  )}
+                  {record?.platform === "aquabera"
+                    ? "-"
+                    : numberFormatter(record.earned, 2, true, {
+                        isShort: true
+                      })}
+                </div>
+              ) : (
+                <div className="opacity-30">$0.00</div>
+              )}
             </div>
           );
         }
       });
     }
     return _columns;
-  }, [openInfrared, source,]);
-
-
+  }, [openInfrared, source]);
 
   return (
     <div>

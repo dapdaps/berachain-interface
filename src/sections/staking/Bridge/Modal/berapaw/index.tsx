@@ -12,7 +12,7 @@ import Big from "big.js";
 import TokenSelector from "@/sections/swap/TokenSelector";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { getTokenLogo } from "@/sections/dashboard/utils";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import { numberFormatter } from "@/utils/number-formatter";
 import useToast from "@/hooks/use-toast";
 
@@ -47,7 +47,7 @@ const SLIPPAGE_MAP = new Map([
 ]);
 
 const BerapawStakeContent = (props: any) => {
-  const { data, onSuccess, dexConfig } = props;
+  const { data, onSuccess, dexConfig, defaultTab, onStake, onApprove } = props;
 
   const { chains } = dexConfig ?? {};
   const dAppConfig = chains?.[DEFAULT_CHAIN_ID] ?? {};
@@ -61,12 +61,12 @@ const BerapawStakeContent = (props: any) => {
   const [inputCurrencyAmount, setInputCurrencyAmount] = useState<any>();
   const [inputCurrency, setInputCurrency] = useState<any>(bera["bera"]);
   const [outputCurrencyAmount, setOutputCurrencyAmount] = useState<any>();
-  const [currentTab, setCurrentTab] = useState<any>(TABS[0].value);
+  const [currentTab, setCurrentTab] = useState<any>(defaultTab ?? TABS[0].value);
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<boolean>(false);
   const [slippage, setSlippage] = useState<number>(SLIPPAGE_MAP.get(50)?.value ?? 50);
 
   const onTokenSelect = (_token: any) => {
-    setInputCurrency(_token);
+    setInputCurrency(_token || bera["bera"]);
     setTokenSelectorVisible(false);
   };
 
@@ -98,13 +98,18 @@ const BerapawStakeContent = (props: any) => {
 
     const approveUrl = new URL("https://api.enso.finance/api/v1/wallet/approve");
     approveUrl.searchParams.set("fromAddress", account);
-    approveUrl.searchParams.set("tokenAddress", inputCurrency.token);
+    approveUrl.searchParams.set("tokenAddress", inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address);
     approveUrl.searchParams.set("chainId", DEFAULT_CHAIN_ID + "");
     approveUrl.searchParams.set("amount", amountIn.toString());
     approveUrl.searchParams.set("routingStrategy", "router");
+
+    if (!data?.stakingToken?.address) {
+      return {};
+    }
+
     const routeUrl = new URL("https://api.enso.finance/api/v1/shortcuts/route");
     routeUrl.searchParams.set("amountIn", amountIn.toString());
-    routeUrl.searchParams.set("tokenIn", inputCurrency.token);
+    routeUrl.searchParams.set("tokenIn", inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address);
     routeUrl.searchParams.set("tokenOut", data?.stakingToken?.address);
     routeUrl.searchParams.set("slippage", slippage.toString());
     routeUrl.searchParams.set("fromAddress", account);
@@ -116,8 +121,7 @@ const BerapawStakeContent = (props: any) => {
       axios.get(approveUrl.toString()),
       axios.get(routeUrl.toString())
     ]);
-    console.log("approveRes: %o", approveRes);
-    console.log("routeRes: %o", routeRes);
+
     if (approveRes.status !== 200 || routeRes.status !== 200) {
       return {};
     }
@@ -129,19 +133,123 @@ const BerapawStakeContent = (props: any) => {
     const { route = {} } = zapData ?? {};
     const signer = provider.getSigner(account);
     let toastId = toast.loading({ title: "Confirming..." });
+    let currentStep = "Swap";
     try {
       const tx = await signer.sendTransaction(route.tx);
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Pending...", tx: tx.hash, chainId: DEFAULT_CHAIN_ID });
-      const { status, transactionHash } = await tx.wait();
+      const txReceipt = await tx.wait();
       toast.dismiss(toastId);
 
+      const { status, transactionHash } = txReceipt;
+
       if (status === 1) {
-        toast.success({
+        toast.dismiss(toastId);
+        toastId = toast.success({
           title: `Swap Successful!`,
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
+        //#region set operator
+        if (!data?.approved) {
+          currentStep = "Set operator";
+          const operatorRes = await onApprove?.(data, { isReload: false });
+          if (!operatorRes) {
+            return;
+          }
+        }
+        //#endregion
+        //#region get balance of staking token
+        const contract = new ethers.Contract(
+          data?.stakingToken?.address,
+          [
+            {
+              inputs: [
+                { internalType: 'address', name: 'account', type: 'address' }
+              ],
+              name: 'balanceOf',
+              outputs: [
+                { internalType: 'uint256', name: '', type: 'uint256' }
+              ],
+              stateMutability: 'view',
+              type: 'function'
+            }
+          ],
+          provider
+        );
+        const balance = await contract.balanceOf(account);
+        const realBalance = ethers.utils.formatUnits(balance, data?.stakingToken?.decimals);
+        const estimatedAmountOut = ethers.utils.formatUnits(route.amountOut, data?.stakingToken?.decimals);
+        let realAmountOut = estimatedAmountOut;
+        if (Big(realBalance).lt(estimatedAmountOut)) {
+          realAmountOut = realBalance;
+        }
+        //#endregion
+        //#region check stake amount approved
+        currentStep = "Approve";
+        const spenderAddress = data?.vaultAddress;
+        const tokenContract = new ethers.Contract(
+          data?.stakingToken?.address,
+          [
+            {
+              inputs: [
+                { internalType: "address", name: "", type: "address" },
+                { internalType: "address", name: "", type: "address" }
+              ],
+              name: "allowance",
+              outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+              stateMutability: "view",
+              type: "function"
+            },
+            {
+              inputs: [
+                { internalType: "address", name: "spender", type: "address" },
+                { internalType: "uint256", name: "value", type: "uint256" }
+              ],
+              name: "approve",
+              outputs: [{ internalType: "bool", name: "", type: "bool" }],
+              stateMutability: "nonpayable",
+              type: "function"
+            }
+          ],
+          signer
+        );
+        const allowanceRes = await tokenContract.allowance(account, spenderAddress);
+        const allowanceAmount = ethers.utils.formatUnits(
+          allowanceRes.toString(),
+          data?.stakingToken?.decimals
+        );
+        //#endregion
+        //#region approve stake amount
+        if (Big(allowanceAmount).lt(realAmountOut)) {
+          const encodedRealAmount = ethers.utils.parseUnits(realAmountOut, data?.stakingToken?.decimals);
+          let estimateGas = "5000000";
+          try {
+            const estimateGasRes = await tokenContract.estimateGas.approve(spenderAddress, encodedRealAmount);
+            estimateGas = Big(estimateGasRes.toString()).times(1.2).toFixed(0);
+          } catch (err) {
+            console.log("get estimate gas err: %o", err);
+          }
+          const approveTx = await tokenContract.approve(spenderAddress, encodedRealAmount, { gasLimit: estimateGas });
+          toastId = toast.loading({ title: "Pending...", tx: approveTx.hash, chainId: DEFAULT_CHAIN_ID });
+          const approveTxReceipt = await approveTx.wait();
+          //#region stake
+          if (approveTxReceipt.status === 1) {
+            toast.dismiss(toastId);
+            toastId = toast.success({
+              title: "Approve Successful!"
+            });
+
+            currentStep = "Stake";
+            const stakeSuccess = await onStake?.(data, realAmountOut, data?.stakingToken?.symbol === "LBGT" ? "deposit" : "stake");
+            if (!stakeSuccess) {
+              return;
+            }
+            toast.dismiss(toastId);
+          }
+          //#endregion
+        }
+        //#endregion
         onSuccess?.();
       } else {
         toast.fail({ title: `Swap failed!` });
@@ -151,7 +259,7 @@ const BerapawStakeContent = (props: any) => {
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : `Swap failed!`
+          : `${currentStep} failed!`
       });
       console.log(err);
     }

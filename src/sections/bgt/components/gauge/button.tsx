@@ -35,14 +35,15 @@ export default memo(function Button(props: IProps) {
   const [state, updateState] = useMultiState({
     isLoading: false,
     isApproved: true,
-    isApproving: false
+    isApproving: false,
+    isError: false
   });
   const BTN_CLASS =
     "cursor-pointer flex items-center justify-center h-[60px] rounded-[10px] border border-black bg-[#FFDC50]  text-black font-Montserrat text-[18px] font-semibold leading-[90%]";
 
   const isInSufficient = Number(amount) > Number(balance);
 
-  const checkApproval = (_amount) => {
+  const checkApproval = (_amount: any) => {
     const wei: any = ethers.utils.parseUnits(
       Big(_amount).toFixed(decimals),
       decimals

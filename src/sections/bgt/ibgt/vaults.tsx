@@ -43,7 +43,6 @@ export default function Vaults() {
       label: "Pool",
       type: "slot",
       render: (data: any) => {
-        const pool = data?.initialData?.pool;
         return (
           <div className="flex items-center gap-[8px]">
             <div className="flex items-center">
@@ -62,26 +61,24 @@ export default function Vaults() {
               )}
             </div>
             <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-              {data?.id || "iBGT"}
+              {data?.poolName?.toUpperCase() || "iBGT"}
             </div>
           </div>
         );
       }
     },
     {
-      width: "15%",
+      width: "18%",
       key: "protocol",
       label: "Protocol",
       type: "slot",
       render: (data: any) => {
-        const protocol = data?.initialData?.protocol;
-        return (
-          <img style={{ width: 26 }} src={getProtocolIcon(protocol?.id)} />
-        );
+        const protocol = data?.protocol;
+        return <img style={{ width: 26 }} src={getProtocolIcon(protocol)} />;
       }
     },
     {
-      width: "12%",
+      width: "15%",
       key: "apy",
       label: "APY",
       type: "slot",
@@ -95,7 +92,7 @@ export default function Vaults() {
       }
     },
     {
-      width: "12%",
+      width: "15%",
       key: "points",
       label: "Points",
       type: "slot",
@@ -119,7 +116,7 @@ export default function Vaults() {
       }
     },
     {
-      width: "12%",
+      width: "15%",
       key: "tvl",
       label: "TVL",
       type: "slot",
@@ -133,25 +130,25 @@ export default function Vaults() {
       }
     },
 
-    {
-      width: "12%",
-      key: "usdDepositAmount",
-      label: "Yours",
-      type: "slot",
-      sort: true,
-      render: (data: any) => {
-        return (
-          <div
-            className={clsx(
-              "text-black font-Montserrat text-[16px] font-medium leading-[100%]",
-              { "opacity-30	": Big(data?.usdDepositAmount ?? 0).eq(0) }
-            )}
-          >
-            {formatValueDecimal(data?.usdDepositAmount, "$", 2, true, false)}
-          </div>
-        );
-      }
-    },
+    // {
+    //   width: "12%",
+    //   key: "usdDepositAmount",
+    //   label: "Yours",
+    //   type: "slot",
+    //   sort: true,
+    //   render: (data: any) => {
+    //     return (
+    //       <div
+    //         className={clsx(
+    //           "text-black font-Montserrat text-[16px] font-medium leading-[100%]",
+    //           { "opacity-30	": Big(data?.usdDepositAmount ?? 0).eq(0) }
+    //         )}
+    //       >
+    //         {formatValueDecimal(data?.usdDepositAmount, "$", 2, true, false)}
+    //       </div>
+    //     );
+    //   }
+    // },
     {
       width: "12%",
       key: "action",

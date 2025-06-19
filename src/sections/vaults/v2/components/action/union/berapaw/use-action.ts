@@ -88,6 +88,40 @@ export function useAction(props?: Props) {
     manual: true,
   });
 
+  const { runAsync: onDeposit, loading: depositing } = useRequest(async (requestParams?: StakeProps) => {
+    const _rewardVault = requestParams?.rewardVault ?? rewardVault;
+    const amount = requestParams?.amount ?? "0";
+
+    if (!account || !provider || !_rewardVault || !amount || Big(amount).lte(0)) return;
+    const approveContract = new Contract(_rewardVault, BERAPAW_VAULT_ABI, signer);
+    const params = [utils.parseUnits(amount, requestParams?.token?.decimals ?? 18), account];
+    let error: any;
+    try {
+      const options = await getEstimateGas(approveContract, "deposit", params);
+      const tx = await approveContract.deposit(...params, options);
+      const res = await tx.wait();
+      if (res.status === 1) {
+        toast.success({
+          title: 'Stake successful!'
+        });
+        return true;
+      }
+      error = res;
+    } catch (err: any) {
+      error = err;
+      console.log("stake failed: %o", error);
+    }
+    toast.fail({
+      title: "Stake Failed!",
+      text: error?.message?.includes("user rejected transaction")
+        ? "User rejected transaction"
+        : ""
+    });
+    return false;
+  }, {
+    manual: true,
+  });
+
   const { data: approved, loading: approvedLoading } = useRequest(async () => {
     if (!account || !provider || !rewardVault) return false;
     const approveContract = new Contract(rewardVault, BERAPAW_APPROVE_ABI, signer);
@@ -185,6 +219,8 @@ export function useAction(props?: Props) {
     approvedLoading,
     onStake,
     staking,
+    onDeposit,
+    depositing,
   };
 }
 

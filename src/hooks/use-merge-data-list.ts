@@ -1,32 +1,32 @@
-import { usePriceStore } from '@/stores/usePriceStore';
-import Big from 'big.js';
+import { usePriceStore } from "@/stores/usePriceStore";
+import Big from "big.js";
 export default function useMergeDataList() {
-  const prices = usePriceStore(store => store.price);
+  const prices = usePriceStore((store) => store.price);
   const getMergeDataList = ({
     infrared,
     aquaBera
   }: {
     infrared: any;
-    aquaBera: any
+    aquaBera: any;
   }) => {
-    const _dataList = []
+    const _dataList: any[] = [];
     infrared?.forEach((_data: any) => {
       _dataList.push({
         ..._data,
         pool: {
-          name: _data?.initialData?.pool?.name || 'iBGT',
-          protocol: _data?.initialData?.pool?.protocol
+          name: _data?.poolName || "iBGT",
+          protocol: _data?.protocol
         },
         platform: "infrared"
-      })
-    })
+      });
+    });
     aquaBera?.forEach((_data: any) => {
-      const images = []
-      const tokens = []
-      _data?.tokens?.forEach(token => {
-        images.push(token?.icon)
-        tokens.push(token?.symbol)
-      })
+      const images: any[] = [];
+      const tokens: any[] = [];
+      _data?.tokens?.forEach((token: any) => {
+        images.push(token?.icon);
+        tokens.push(token?.symbol);
+      });
       _dataList.push({
         ..._data,
         images,
@@ -39,15 +39,15 @@ export default function useMergeDataList() {
         poolName: _data?.id,
         pool: {
           name: _data?.id,
-          protocol: 'aquabera'
-        },
-      })
-    })
+          protocol: "aquabera"
+        }
+      });
+    });
 
-    return _dataList
-  }
+    return _dataList;
+  };
 
   return {
     getMergeDataList
-  }
+  };
 }
