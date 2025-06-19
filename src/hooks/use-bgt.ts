@@ -197,6 +197,7 @@ export function useBGT(tab?: string) {
   const [myVaults, setMyVaults] = useState<any>(null);
 
   const [pageData, setPageData] = useState<any>(null);
+  const [pageDataLoading, setPageDataLoading] = useState<any>(false);
 
   const multicallAddress = multicallAddresses[DEFAULT_CHAIN_ID];
 
@@ -207,6 +208,7 @@ export function useBGT(tab?: string) {
     )
     : yourVaults;
   const queryPageData = async function () {
+    setPageDataLoading(true);
     const result = await asyncFetch(
       BEARCHAIN_API,
       {
@@ -242,7 +244,8 @@ export function useBGT(tab?: string) {
     setPageData(result?.data);
     store.set({
       totalCount: top3EmittingValidators?.pagination?.totalCount
-    })
+    });
+    setPageDataLoading(false);
   };
 
   const refresh = function () {
@@ -439,6 +442,7 @@ export function useBGT(tab?: string) {
     sortDataIndex,
     setSortDataIndex,
     pageData,
+    pageDataLoading,
     queryPageData,
     vaults,
     vaultsLoading,

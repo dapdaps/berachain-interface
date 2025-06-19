@@ -22,7 +22,7 @@ const RewardTopCard = (props: RewardTopCardProps) => {
   const { className, type, loading, pool } = props;
 
   const isMobile = useIsMobile();
-  const { pageData: BGTPageData, loading: BGTLoading } = useBGT("all");
+  const { pageData: BGTPageData, pageDataLoading: BGTLoading } = useBGT("all");
   const { loading: validatorDetailLoading, pageData: validatorDetailData, getPageData: getValidatorDetailData } = useValidator();
   const { estReturnPerBGT, list: incentiveList, priceDataLoading: incentiveLoading } = useIncentive({
     // @ts-ignore
