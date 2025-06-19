@@ -33,7 +33,7 @@ export const handleVaultsOutput = (
     
     if (hasPositions) {
       const totalStakedUsd = parsedContent?.reduce((prev: any, curr: any) => Big(prev).plus(curr.user_stake?.usd || 0), Big(0));
-      messageText = `Your total investing is **${numberFormatter(totalStakedUsd, 2, true, { prefix: "$", isZeroPrecision: true })}**\n\nHere's the distribution of invest:`;
+      messageText = `Your total investing is **${numberFormatter(totalStakedUsd, 2, true, { prefix: "$", isZeroPrecision: true })}**\n\nHere’s a breakdown of your DeFi position:`;
       component = (
         <InvestCard type="vaults" parsedContent={parsedContent} />
       );
