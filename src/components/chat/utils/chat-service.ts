@@ -64,6 +64,8 @@ interface ChatMessageResponse {
   action: string;
   extra?: string; 
   timestamp: number;
+  id: number;
+  like_status: number;
 }
 
 export const fetchChatHistory = async (address: string, sessionId: string): Promise<Message[]> => {
@@ -87,6 +89,8 @@ export const fetchChatHistory = async (address: string, sessionId: string): Prom
           senderName: "McBera",
           content: item.reply || "",
           isFromHistory: true,
+          backendId: item.id,
+          like_status: item.like_status,
         };
         
         const historyCallbacks: ChatCallbacks = {

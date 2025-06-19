@@ -35,13 +35,13 @@ const WalletAssetsCard = (props: any) => {
 
   const { run: handleSwap } = useThrottleFn((asset: any) => {
     if (asset.symbol === 'BERA') {
-      setDefaultInputCurrency(bera["honey"]);
-      setDefaultOutputCurrency(bera["bera"]);
+      setDefaultInputCurrency(bera["bera"]);
+      setDefaultOutputCurrency(bera["honey"]);
       openSwapModal();
       return;
     }
-    setDefaultInputCurrency(bera["bera"]);
-    setDefaultOutputCurrency(asset);
+    setDefaultInputCurrency(asset);
+    setDefaultOutputCurrency(bera["bera"]);
     openSwapModal();
   }, { wait: 1000 });
 
