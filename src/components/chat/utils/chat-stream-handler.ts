@@ -29,6 +29,9 @@ type SSEResponseType = {
   extra?: string;
 };
 
+const errorMessage =
+  "Sorry, no results found. Please try asking a different question.";
+
 export const createChatHistory = (
   localId: string,
   message: string,
@@ -183,6 +186,8 @@ export const handleSSEMessage = (
       abortController,
       resolvePromise
     );
+  } else if (event === "error") {
+    return handleErrorEvent(assistantMessage, callbacks);
   } else if (!event && data) {
     return handleDataWithoutEvent(
       data,
@@ -195,6 +200,20 @@ export const handleSSEMessage = (
     );
   }
   return fullResponse;
+};
+
+const handleErrorEvent = (
+  assistantMessage: Message,
+  callbacks?: ChatCallbacks
+) => {
+  assistantMessage.content = errorMessage;
+
+  if (callbacks?.updateMessage) {
+    callbacks.updateMessage({
+      ...assistantMessage,
+      content: errorMessage
+    });
+  }
 };
 
 const handleCompletionEvent = (
@@ -280,8 +299,6 @@ const handleCompletionEvent = (
             jsonData.extra
           );
         } else if (jsonData.text === "") {
-          const errorMessage =
-            "Sorry, no results found. Please try asking a different question.";
           assistantMessage.content = errorMessage;
 
           if (callbacks?.updateMessage) {
