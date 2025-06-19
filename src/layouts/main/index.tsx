@@ -2,7 +2,7 @@
 
 import useTokenPrice from "@/hooks/use-token-price";
 import MainLayoutHeader from "@/layouts/main/header";
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import MapModal from "@/sections/home/map-modal";
 import useUser from "@/hooks/use-user";
@@ -10,14 +10,14 @@ import { useAccount } from "wagmi";
 import Link from "next/link";
 import Image from "next/image";
 import useClickTracking from "@/hooks/use-click-tracking";
-import GuidingTutorial from '@/components/GuidingTour/mainnet';
-import { SceneContext } from '@/context/scene';
-import { SceneStatus } from '@/configs/scene';
-import RainyDay from '@/components/rainy-day';
-import { useRainyDay } from '@/hooks/use-rainy-day';
-import { AnimatePresence, motion } from 'framer-motion';
+import GuidingTutorial from "@/components/GuidingTour/mainnet";
+import { SceneContext } from "@/context/scene";
+import { SceneStatus } from "@/configs/scene";
+import RainyDay from "@/components/rainy-day";
+import { useRainyDay } from "@/hooks/use-rainy-day";
+import { AnimatePresence, motion } from "framer-motion";
 import { useActivityStore } from "@/stores/useActivityStore";
-import NavigationMenu from '@/sections/home-earth/components/menu';
+import NavigationMenu from "@/sections/home-earth/components/menu";
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -43,7 +43,10 @@ const MainLayout = (props: Props) => {
     getAccessToken();
   }, [address]);
 
-  const isVaults = useMemo(() => pathname === "/vaults" || pathname.startsWith('/vaults/'), [pathname]);
+  const isVaults = useMemo(
+    () => pathname === "/vaults" || pathname.startsWith("/vaults/"),
+    [pathname]
+  );
 
   const bg = useMemo(() => {
     if (isVaults) {
@@ -55,31 +58,44 @@ const MainLayout = (props: Props) => {
   const sceneStyles = useMemo(() => {
     if (isVaults) {
       return {
-        background: "rgba(0, 0, 0, 0.9) url('/images/vaults/v2/bg.png') no-repeat top center / cover"
+        background:
+          "rgba(0, 0, 0, 0.9) url('/images/vaults/v2/bg.png') no-repeat top center / cover"
       };
     }
 
     if (
       isRainyDay &&
-      (
-        rainyDay?.bgPathname === 'ALL' ||
-        rainyDay?.bgPathname.includes(pathname)
-      ) &&
-      (
-        !rainyDay?.excludePathname?.includes?.(pathname) &&
-        rainyDay?.excludePathname !== 'ALL'
-      ) &&
+      (rainyDay?.bgPathname === "ALL" ||
+        rainyDay?.bgPathname.includes(pathname)) &&
+      !rainyDay?.excludePathname?.includes?.(pathname) &&
+      rainyDay?.excludePathname !== "ALL" &&
       isDefaultTheme()
     ) {
       return { background: rainyDay?.bg };
     }
 
-    if ((['/', '/home', '/bridge', '/dapps', '/portfolio', '/kingdomly', '/bintent', '/ibgt', '/lend', '/swap', '/tokens', '/validators', '/hall'].includes(pathname)
-        || pathname.startsWith('/lending/') 
-        || pathname.startsWith('/staking/') 
-        || pathname.startsWith('/bridge/') 
-        || pathname.startsWith('/dex/')) 
-        && !isDefaultTheme()) {
+    if (
+      ([
+        "/",
+        "/home",
+        "/bridge",
+        "/dapps",
+        "/portfolio",
+        "/kingdomly",
+        "/bintent",
+        "/ibgt",
+        "/lend",
+        "/swap",
+        "/tokens",
+        "/validators",
+        "/hall"
+      ].includes(pathname) ||
+        pathname.startsWith("/lending/") ||
+        pathname.startsWith("/staking/") ||
+        pathname.startsWith("/bridge/") ||
+        pathname.startsWith("/dex/")) &&
+      !isDefaultTheme()
+    ) {
       return {
         backgroundColor: themeConfig.primaryColor
       };
@@ -91,20 +107,24 @@ const MainLayout = (props: Props) => {
       }
     }
 
-
-    if (pathname.startsWith('/invite/')) {
+    if (pathname.startsWith("/invite/")) {
       return {
-        height: '100vh',
-        overflow: 'hidden',
-      }
+        height: "100vh",
+        overflow: "hidden"
+      };
     }
 
     return {};
-  }, [currentScene, isRainyDay, rainyDay, pathname, isDefaultTheme, themeConfig.primaryColor]);
+  }, [
+    currentScene,
+    isRainyDay,
+    rainyDay,
+    pathname,
+    isDefaultTheme,
+    themeConfig.primaryColor
+  ]);
 
   const routes = ["/", "/earn", "/activity/christmas", "/home"];
-
-
 
   return (
     <div
@@ -112,16 +132,14 @@ const MainLayout = (props: Props) => {
       className={`min-h-screen relative flex flex-col items-stretch justify-start transition-background duration-150 ${bg}`}
       style={{
         ...sceneStyles,
-        ...style,
+        ...style
       }}
       onClick={handleTrack}
     >
       <MainLayoutHeader
         className={routes.includes(pathname) ? "bg-transparent !fixed" : ""}
       />
-      <div className="grow">
-        {children}
-      </div>
+      <div className="grow">{children}</div>
       <div className="fixed left-[16px] bottom-[16px] z-[13] flex items-center gap-[6px]">
         <Link
           className="hover:scale-110 ease-in-out duration-300 w-[90px] h-[26px] rounded-full bg-white/50 flex items-center justify-center cursor-pointer"
@@ -270,32 +288,27 @@ const MainLayout = (props: Props) => {
       <MapModal />
       <GuidingTutorial />
       <AnimatePresence mode="wait">
-        {
-          isRainyDay &&
-          (rainyDay?.bgPathname === 'ALL' || rainyDay?.bgPathname.includes(pathname)) &&
-          (rainyDay?.excludePathname !== 'ALL' && !rainyDay?.excludePathname?.includes?.(pathname)) &&
-          isDefaultTheme() &&
-          (
+        {isRainyDay &&
+          (rainyDay?.bgPathname === "ALL" ||
+            rainyDay?.bgPathname.includes(pathname)) &&
+          rainyDay?.excludePathname !== "ALL" &&
+          !rainyDay?.excludePathname?.includes?.(pathname) &&
+          isDefaultTheme() && (
             <motion.div
               variants={{
                 visible: { opacity: 1 },
-                invisible: { opacity: 0 },
+                invisible: { opacity: 0 }
               }}
               animate="visible"
               initial="invisible"
               exit="invisible"
               transition={{
-                duration: 2,
+                duration: 2
               }}
             >
-              <RainyDay
-                dropCount={120}
-                minSpeed={0.5}
-                maxSpeed={2}
-              />
+              <RainyDay dropCount={120} minSpeed={0.5} maxSpeed={2} />
             </motion.div>
-          )
-        }
+          )}
       </AnimatePresence>
       <NavigationMenu />
     </div>
