@@ -127,5 +127,23 @@ export const BERAPAW_VAULT_ABI = [
       }
     ],
     stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "deposit",
+    inputs: [
+      {
+        name: "assets",
+        type: "uint256",
+        internalType: "uint256"
+      },
+      {
+        name: "receiver",
+        type: "address",
+        internalType: "address"
+      }
+    ],
+    outputs: [],
+    stateMutability: "nonpayable"
   }
 ];
