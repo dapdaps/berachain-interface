@@ -5,8 +5,15 @@ import clsx from "clsx";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
 import ButtonWithApprove from "@/components/button/button-with-approve";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import LazyImage from '@/components/layz-image';
+import SwitchTabs from "@/components/switch-tabs";
+import BerapawZap from "@/sections/staking/Bridge/Modal/berapaw/zap";
+import { SLIPPAGE_MAP, useZap } from "@/sections/staking/hooks/use-zap";
+import TokenSelector from "@/sections/swap/TokenSelector";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import { numberFormatter } from "@/utils/number-formatter";
+import berapawConfig from "@/configs/staking/dapps/berapaw";
 
 const ActionUnionForm = (props: any) => {
   const { ...restProps } = props;
@@ -18,9 +25,124 @@ const ActionUnionForm = (props: any) => {
     isBeraPaw,
   } = useVaultsV2Context();
 
+  const [currentTab, setCurrentTab] = useState<any>("deposit");
+  const LPToken = useMemo(() => {
+    return {
+      ...currentProtocol?.token,
+      symbol: currentProtocol?.tokens?.map((token: any) => token.symbol).join("-"),
+    };
+  }, [currentProtocol?.token, currentProtocol?.tokens]);
+  const {
+    account,
+    provider,
+    prices,
+    inputCurrencyAmount,
+    setInputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrency,
+    tokenSelectorVisible,
+    setTokenSelectorVisible,
+    slippage,
+    setSlippage,
+    tokenData,
+    tokenDataLoading,
+    tokenList,
+    tokenListLoading,
+    zapData,
+    zapDataLoading,
+    getZapData,
+    swapLoading,
+    handleSwap,
+    onTokenSelect,
+  } = useZap({
+    queryTokenUrl: (berapawConfig as any).chains[DEFAULT_CHAIN_ID]?.vaults?.queryTokenUrl,
+    token: LPToken,
+    onAfterSwap: async (params: any) => {
+      const { signer, route } = params;
+      let { currentStep, toastId } = params;
+      return {
+        currentStep,
+        toastId,
+      };
+    },
+    onSwapSuccess: () => { }
+  });
+
   let _currentProtocol = currentProtocol;
   if (isBeraPaw) {
     _currentProtocol = currentProtocol.linkVault;
+  }
+
+  if (actionType.value === ACTION_TYPE.DEPOSIT) {
+    return (
+      <div className="mt-[10px]">
+        <SwitchTabs
+          tabs={[{
+            value: 'deposit',
+            label: "Deposit"
+          }, {
+            value: 'zap',
+            label: "Zap"
+          }]}
+          current={currentTab}
+          onChange={(value: any) => {
+            setCurrentTab(value);
+          }}
+        />
+        {
+          currentTab === "deposit" && (
+            <ActionUnionFormWithoutVaultsV2Context
+              {...restProps}
+              isBeraPaw={isBeraPaw}
+              actionType={actionType}
+              currentProtocol={_currentProtocol}
+              setCurrentProtocol={setCurrentProtocol}
+            />
+          )
+        }
+        {
+          currentTab === "zap" && (
+            <BerapawZap
+              data={{
+                stakingToken: LPToken,
+              }}
+              prices={prices}
+              inputCurrencyAmount={inputCurrencyAmount}
+              setInputCurrencyAmount={setInputCurrencyAmount}
+              outputCurrencyAmount={outputCurrencyAmount}
+              inputCurrency={inputCurrency}
+              loading={tokenListLoading || zapDataLoading || swapLoading}
+              onOpenTokenSelector={() => {
+                setTokenSelectorVisible(true);
+              }}
+              slippage={slippage}
+              setSlippage={setSlippage}
+              slippageList={Array.from(SLIPPAGE_MAP.values())}
+              onSwap={handleSwap}
+              onRefresh={getZapData}
+              zapData={zapData}
+              tokenData={tokenData}
+            />
+          )
+        }
+        <TokenSelector
+          display={tokenSelectorVisible}
+          tokens={tokenList ?? []}
+          selectedTokenAddress={inputCurrency?.address}
+          chainId={DEFAULT_CHAIN_ID}
+          account={account}
+          onSelect={onTokenSelect}
+          onClose={() => {
+            setTokenSelectorVisible(false);
+          }}
+          showSearch={false}
+          isSortByBalance={false}
+          customBalanceFormatter={(currency: any, balance: string) => {
+            return numberFormatter(currency.value, 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
+          }}
+        />
+      </div>
+    );
   }
 
   return (
