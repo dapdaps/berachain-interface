@@ -498,7 +498,7 @@ const List = forwardRef<any, any>((props, ref) => {
                 )}
               </div>
               <div className="text-black font-Montserrat text-[16px] font-medium leading-[100%]">
-                {data?.id || "iBGT"}
+                {data?.poolName ? data.poolName.toUpperCase() : "iBGT"}
               </div>
               {data?.protocol === "bex" && (
                 <div
