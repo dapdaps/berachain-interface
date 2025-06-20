@@ -6,6 +6,7 @@ import { useThrottleFn } from 'ahooks';
 import { createNewChat } from '@/components/chat/utils/chat-service';
 import { motion } from "framer-motion";
 import { motionStaggerChildren, motionStaggerParent } from '@/components/chat/utils/motion-stagger-children';
+import { useRef, useCallback, useEffect } from "react";
 
 const TYPES = {
   vaults: {
@@ -35,6 +36,7 @@ export default function InvestCard(props: {
   const config = TYPES[type];
   const { vaultsList, vaultsShowList, handleOpen } = useVaultAction(props);
   const { addMessage, updateMessage, addChatHistory, setSessionId, sessionId, setIsProcessing } = useChatContext();
+  const scrollTimer = useRef<any>();
 
   const { run: handleMessage } = useThrottleFn(async (chatMsg: string) => {
     addMessage({
@@ -82,7 +84,21 @@ export default function InvestCard(props: {
         content: "Sorry, I can't assist with that."
       });
     }
+    onScrollToBottom();
   }, { wait: 1000 });
+
+  const onScrollToBottom = useCallback(() => {
+    scrollTimer.current = setTimeout(() => {
+      clearTimeout(scrollTimer.current);
+      document.getElementById("chat-bottom")?.scrollIntoView({
+        behavior: "smooth"
+      });
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    clearTimeout(scrollTimer.current);
+  }, []);
 
   return (
     <motion.div
@@ -146,6 +162,7 @@ export default function InvestCard(props: {
           icon="/images/home-earth/mc-bera/icon-gift.svg"
           onClick={() => {
             handleMessage("Check & claim my rewards");
+            onScrollToBottom();
           }}
         >
           Check & claim my rewards
@@ -155,6 +172,7 @@ export default function InvestCard(props: {
           icon="/images/home-earth/mc-bera/icon-wallet.svg"
           onClick={() => {
             handleMessage("Check my wallet assets");
+            onScrollToBottom();
           }}
         >
           Check my wallet assets
@@ -164,6 +182,7 @@ export default function InvestCard(props: {
           icon="/images/home-earth/mc-bera/icon-asset.svg"
           onClick={() => {
             handleMessage("Top vaults based on my assets");
+            onScrollToBottom();
           }}
         >
           Top vaults based on my assets
