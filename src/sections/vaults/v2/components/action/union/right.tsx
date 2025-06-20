@@ -17,6 +17,7 @@ const ActionUnionRight = (props: any) => {
     currentProtocol,
     toggleActionVisible,
     getListData,
+    currentDepositTab,
   } = useVaultsV2Context();
   const { beraPawRef, updateBalance } = useVaultsV2ActionContext();
 
@@ -97,7 +98,7 @@ const ActionUnionRight = (props: any) => {
           <>
             <ActionUnionForm className="mt-[17px]" />
             {
-              (isBeraPaw && actionType.value === ACTION_TYPE.DEPOSIT) && (
+              (isBeraPaw && actionType.value === ACTION_TYPE.DEPOSIT && currentDepositTab === "deposit") && (
                 <Berapaw
                   ref={beraPawRef}
                   currentProtocol={currentProtocol}
