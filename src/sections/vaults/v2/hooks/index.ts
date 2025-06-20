@@ -24,6 +24,7 @@ export function useVaultsV2(): VaultsV2 {
   const [successReward, setSuccessReward] = useState<any>(null);
   const [openAddLp, setOpenAddLp] = useState(false);
   const [swapToken, setSwapToken] = useState<any>(null);
+  const [currentDepositTab, setCurrentDepositTab] = useState<any>("deposit");
 
   const [isBeraPaw] = useMemo(() => {
     return [currentProtocol?.project?.toLowerCase() === "berapaw" && currentProtocol?.linkVault];
@@ -141,6 +142,8 @@ export function useVaultsV2(): VaultsV2 {
     getTotalStatistics,
     totalStatisticsLoading,
     isBeraPaw,
+    currentDepositTab,
+    setCurrentDepositTab,
   };
 }
 
@@ -176,4 +179,6 @@ export interface VaultsV2 {
   getTotalStatistics: () => Promise<void>;
   totalStatisticsLoading: boolean;
   isBeraPaw: boolean;
+  currentDepositTab: any;
+  setCurrentDepositTab: Dispatch<any>;
 }

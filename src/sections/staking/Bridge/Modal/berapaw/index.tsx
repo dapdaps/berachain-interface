@@ -1,7 +1,7 @@
 import Card from "@/components/card";
 import SwitchTabs from "@/components/switch-tabs";
 import { useState } from "react";
-import BerapawZap from "./zap";
+import BerapawZap, { ZapSlippage } from "./zap";
 import BerapawStake from "./stake";
 import useCustomAccount from "@/hooks/use-account";
 import Big from "big.js";
@@ -29,7 +29,6 @@ const BerapawStakeContent = (props: any) => {
   const { chains } = dexConfig ?? {};
   const dAppConfig = chains?.[DEFAULT_CHAIN_ID] ?? {};
   const { vaults } = dAppConfig ?? {};
-  const { queryTokenUrl } = vaults ?? {};
 
   const {
     prices,
@@ -51,16 +50,24 @@ const BerapawStakeContent = (props: any) => {
     swapLoading,
     handleSwap,
     onTokenSelect,
+    currentZapStepText,
   } = useZap({
-    queryTokenUrl,
     token: data?.stakingToken,
+    totalStep: !!data?.approved ? 3 : 4,
     onAfterSwap: async (params: any) => {
-      const { signer, route } = params;
+      const {
+        signer,
+        route,
+        setCurrentZapStep,
+        setCurrentZapStepNo
+      } = params;
       let { currentStep, toastId } = params;
 
       //#region set operator
       if (!data?.approved) {
         currentStep = "Set operator";
+        setCurrentZapStep("Set operator");
+        setCurrentZapStepNo(2);
         const operatorRes = await onApprove?.(data, { isReload: false });
         if (!operatorRes) {
           return {
@@ -98,6 +105,8 @@ const BerapawStakeContent = (props: any) => {
       //#endregion
       //#region check stake amount approved
       currentStep = "Approve";
+      setCurrentZapStep("Approve");
+      setCurrentZapStepNo(!!data?.approved ? 2 : 3);
       const spenderAddress = data?.vaultAddress;
       const tokenContract = new ethers.Contract(
         data?.stakingToken?.address,
@@ -152,6 +161,8 @@ const BerapawStakeContent = (props: any) => {
           });
 
           currentStep = "Stake";
+          setCurrentZapStep("Stake");
+          setCurrentZapStepNo(!!data?.approved ? 3 : 4);
           const stakeSuccess = await onStake?.(data, realAmountOut, data?.stakingToken?.symbol === "LBGT" ? "deposit" : "stake");
           if (!stakeSuccess) {
             return {
@@ -162,6 +173,18 @@ const BerapawStakeContent = (props: any) => {
           toast.dismiss(toastId);
         }
         //#endregion
+      } else {
+        currentStep = "Stake";
+        setCurrentZapStep("Stake");
+        setCurrentZapStepNo(!!data?.approved ? 3 : 4);
+        const stakeSuccess = await onStake?.(data, realAmountOut, data?.stakingToken?.symbol === "LBGT" ? "deposit" : "stake");
+        if (!stakeSuccess) {
+          return {
+            currentStep,
+            toastId,
+          };
+        }
+        toast.dismiss(toastId);
       }
       //#endregion
       return {
@@ -181,8 +204,18 @@ const BerapawStakeContent = (props: any) => {
 
   return (
     <Card className="w-[500px] text-black font-Montserrat text-[14px] font-medium leading-normal">
-      <div className="text-black font-CherryBomb text-[20px] leading-[90%]">
-        Zap into {data?.metadata?.name}
+      <div className="text-black font-CherryBomb text-[20px] leading-[90%] flex items-center justify-between">
+        <div>Zap into {data?.metadata?.name}</div>
+        {
+          currentTab === TABS[1].value && (
+            <ZapSlippage
+              className="translate-x-[-45px]"
+              slippage={slippage}
+              setSlippage={setSlippage}
+              slippageList={Array.from(SLIPPAGE_MAP.values())}
+            />
+          )
+        }
       </div>
       <SwitchTabs
         className="mt-[20px]"
@@ -218,13 +251,12 @@ const BerapawStakeContent = (props: any) => {
             onOpenTokenSelector={() => {
               setTokenSelectorVisible(true);
             }}
-            slippage={slippage}
-            setSlippage={setSlippage}
             slippageList={Array.from(SLIPPAGE_MAP.values())}
             onSwap={handleSwap}
             onRefresh={getZapData}
             zapData={zapData}
             tokenData={tokenData}
+            currentZapStepText={currentZapStepText}
           />
         )
       }

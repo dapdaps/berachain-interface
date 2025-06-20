@@ -1,10 +1,12 @@
+import Card from "@/components/card";
+import Popover, { PopoverPlacement } from "@/components/popover";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import ExchangeIcon from "@/sections/swap/Content/ExchangeIcon";
 import SubmitBtn from "@/sections/swap/SubmitBtn";
 import TokenAmount from "@/sections/swap/TokenAmount";
 import Big from "big.js";
 import clsx from "clsx";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 
 const BerapawZap = (props: any) => {
   const {
@@ -16,13 +18,11 @@ const BerapawZap = (props: any) => {
     outputCurrencyAmount,
     loading,
     onOpenTokenSelector,
-    slippage,
-    setSlippage,
-    slippageList,
     onSwap,
     onRefresh,
     zapData,
     tokenData,
+    currentZapStepText,
   } = props;
 
   const [spender] = useMemo(() => {
@@ -75,32 +75,70 @@ const BerapawZap = (props: any) => {
         disabled={!inputCurrencyAmount || Big(inputCurrencyAmount).lte(0)}
         onRefresh={onRefresh}
         updater={1}
+        loadingText={currentZapStepText}
       >
         Swap & Stake
       </SubmitBtn>
-      <div className="mt-[20px] flex items-center justify-end gap-[4px]">
-        <div className="">Max. Slippage:</div>
-        <div className="flex gap-[8px] items-center">
-          {
-            slippageList.map((item: any) => (
-              <button
-                type="button"
-                className={clsx(
-                  "w-[48px] h-[22px] flex-shrink-0 rounded-[6px] border border-[#373A53] text-black text-center font-Montserrat text-[14px] font-normal hover:bg-[#FFDC50] transition-all duration-150",
-                  slippage === item.value && "bg-[#FFDC50]"
-                )}
-                onClick={() => {
-                  setSlippage(item.value);
-                }}
-              >
-                {item.label}
-              </button>
-            ))
-          }
-        </div>
-      </div>
+      {
+        zapData?.name && (
+          <div className="flex items-center justify-center gap-[4px] mt-[10px] text-[14px]">
+            <div>Powered by</div>
+            <img src={zapData?.logo} className="w-[16px] h-[16px] object-center object-contain rounded-full shrink-0" />
+            <div>{zapData?.name}</div>
+          </div>
+        )
+      }
     </div>
   );
 };
 
 export default BerapawZap;
+
+export const ZapSlippage = (props: any) => {
+  const {
+    slippage,
+    setSlippage,
+    slippageList,
+    className,
+  } = props;
+
+  const popoverRef = useRef<any>(null);
+
+  return (
+    <Popover
+      ref={popoverRef}
+      contentClassName="!z-[101]"
+      triggerContainerClassName="h-[22px] shrink-0"
+      content={(
+        <Card className="!rounded-[6px] !p-[10px_15px]">
+          <div className="font-[500]">Max. Slippage:</div>
+          <div className="flex gap-[8px] items-center mt-[10px]">
+            {
+              slippageList.map((item: any) => (
+                <button
+                  type="button"
+                  className={clsx(
+                    "w-[48px] h-[22px] flex-shrink-0 rounded-[6px] border border-[#373A53] text-black text-center font-Montserrat text-[14px] font-normal hover:bg-[#FFDC50] transition-all duration-150",
+                    slippage === item.value && "bg-[#FFDC50]"
+                  )}
+                  onClick={() => {
+                    setSlippage(item.value);
+                    popoverRef.current?.onClose();
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))
+            }
+          </div>
+        </Card>
+      )}
+      placement={PopoverPlacement.BottomRight}
+    >
+      <button
+        type="button"
+        className={clsx("w-[22px] h-[22px] shrink-0 bg-[url('/images/icon-setting.svg')] bg-center bg-no-repeat bg-contain", className)}
+      />
+    </Popover>
+  );
+}
