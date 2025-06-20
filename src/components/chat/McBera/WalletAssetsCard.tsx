@@ -11,6 +11,8 @@ import { motionStaggerChildren, motionStaggerParent } from '@/components/chat/ut
 import { useThrottleFn } from 'ahooks';
 import { bera } from '@/configs/tokens/bera';
 import useSwapStore from '../stores/useSwapStores';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 const WalletAssetsCard = (props: any) => {
   const { parsedContent } = props;
@@ -48,7 +50,15 @@ const WalletAssetsCard = (props: any) => {
   return (
     <div className="w-full min-w-[554px]">
       <div data-typing={isTyping ? 'true' : 'false'} className="text-[#392C1D] font-montserrat text-[14px] font-[500] leading-[150%]">
-        <ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            a: ({ node, ...props }) => (
+              <a {...props} target="_blank" rel="noopener noreferrer" />
+            )
+          }}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+        >
           {typedContent}
         </ReactMarkdown>
       </div>
