@@ -163,10 +163,10 @@ export default function InvestCard(props: {
           className="mt-[8px]"
           icon="/images/home-earth/mc-bera/icon-asset.svg"
           onClick={() => {
-            handleMessage("Top vault via my assets");
+            handleMessage("Top vaults based on my assets");
           }}
         >
-          Top vault via my assets
+          Top vaults based on my assets
         </ChatButton>
       </motion.div>
     </motion.div>

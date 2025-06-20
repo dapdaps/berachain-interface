@@ -7,8 +7,8 @@ export interface ChatCallbacks {
   updateMessage?: (message: Message) => void;
   addChatHistory?: (history?: ChatHistory) => void;
   setSessionId?: (sessionId: string) => void;
-  getSessionId?: () => string | null; 
-  onComplete?: () => void; 
+  getSessionId?: () => string | null;
+  onComplete?: () => void;
   onError?: () => void;
 }
 
@@ -29,17 +29,19 @@ type SSEResponseType = {
   extra?: string;
 };
 
+const errorMessage =
+  "Sorry, no results found. Please try asking a different question.";
 
 export const createChatHistory = (
-  localId: string, 
-  message: string, 
+  localId: string,
+  message: string,
   assistantContent: string,
   serverSessionId?: string
 ): ChatHistory => {
   return {
     session_id: serverSessionId || localId,
     title: message.length > 20 ? `${message.substring(0, 20)}...` : message,
-    address: '', 
+    address: "",
     timestamp: Math.floor(Date.now() / 1000)
   };
 };
@@ -82,12 +84,12 @@ export const processSSEStream = async (
         if (callbacks?.addChatHistory) {
           callbacks.addChatHistory();
         }
-        
+
         resolve({
           messages: [
             { id: assistantMessage.id, sender: "user", content: userMessage },
             assistantMessage
-          ],
+          ]
         });
 
         return Promise.resolve();
@@ -115,18 +117,18 @@ export const processSSEStream = async (
         }
 
         console.log("SSE:", event, "SSE DATA:", data);
-        
+
         const updatedFullResponse = handleSSEMessage(
-          event, 
-          data, 
-          fullResponse, 
-          assistantMessage, 
-          userMessage, 
-          callbacks, 
+          event,
+          data,
+          fullResponse,
+          assistantMessage,
+          userMessage,
+          callbacks,
           abortController,
           resolve
         );
-        
+
         if (updatedFullResponse !== undefined) {
           fullResponse = updatedFullResponse;
         }
@@ -147,49 +149,71 @@ export const handleSSEMessage = (
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  resolvePromise?: (result: { messages: Message[]; }) => void,
+  resolvePromise?: (result: { messages: Message[] }) => void,
   serverSessionIdRef?: { current?: string }
-) => {  
+) => {
   if (event === "meta") {
     try {
       const metaData = JSON.parse(data);
       if (metaData.sessionId) {
         console.log("Got sessionId from server:", metaData.sessionId);
-        
+
         if (serverSessionIdRef) {
           serverSessionIdRef.current = metaData.sessionId;
         }
-        
+
         if (callbacks?.setSessionId) {
           callbacks.setSessionId(metaData.sessionId);
         }
+
+        callbacks?.updateMessage?.({
+          ...assistantMessage,
+          backendId: metaData.message_id,
+          like_status: 0
+        });
       }
     } catch (e) {
       console.error("Failed to parse meta data:", e);
     }
-    return fullResponse; 
+    return fullResponse;
   } else if (event === "completion") {
     return handleCompletionEvent(
-      data, 
-      fullResponse, 
-      assistantMessage, 
-      userMessage, 
-      callbacks, 
-      abortController, 
+      data,
+      fullResponse,
+      assistantMessage,
+      userMessage,
+      callbacks,
+      abortController,
       resolvePromise
     );
+  } else if (event === "error") {
+    return handleErrorEvent(assistantMessage, callbacks);
   } else if (!event && data) {
     return handleDataWithoutEvent(
-      data, 
-      fullResponse, 
-      assistantMessage, 
-      userMessage, 
-      callbacks, 
-      abortController, 
+      data,
+      fullResponse,
+      assistantMessage,
+      userMessage,
+      callbacks,
+      abortController,
       resolvePromise
     );
   }
-  return fullResponse; 
+  return fullResponse;
+};
+
+const handleErrorEvent = (
+  assistantMessage: Message,
+  callbacks?: ChatCallbacks
+) => {
+  assistantMessage.content = errorMessage;
+
+  if (callbacks?.updateMessage) {
+    callbacks.updateMessage({
+      ...assistantMessage,
+      content: errorMessage
+    });
+  }
 };
 
 const handleCompletionEvent = (
@@ -199,8 +223,8 @@ const handleCompletionEvent = (
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  resolvePromise?: (result: { messages: Message[]; }) => void,
-): string => {  
+  resolvePromise?: (result: { messages: Message[] }) => void
+): string => {
   if (data === "[DONE]") {
     let responseContent = fullResponse.trim();
     if (!responseContent) {
@@ -210,7 +234,7 @@ const handleCompletionEvent = (
       if (callbacks?.updateMessage) {
         callbacks.updateMessage({
           ...assistantMessage,
-          content: responseContent,
+          content: responseContent
         });
       }
     }
@@ -229,48 +253,67 @@ const handleCompletionEvent = (
         messages: [
           { id: assistantMessage.id, sender: "user", content: userMessage },
           assistantMessage
-        ],
+        ]
       });
     }
 
     if (abortController) {
       abortController.abort();
     }
-    return fullResponse; 
+    return fullResponse;
   } else {
     try {
-      const jsonData: SSEResponseType = typeof data === "string" ? JSON.parse(data) : data;
-      
+      const jsonData: SSEResponseType =
+        typeof data === "string" ? JSON.parse(data) : data;
+
       if (jsonData.type === "Chunk" && jsonData.text) {
         const updatedResponse = fullResponse + jsonData.text;
-        
+
         assistantMessage.content = updatedResponse;
 
         if (callbacks?.updateMessage) {
           callbacks.updateMessage({
             ...assistantMessage,
-            content: updatedResponse,
+            content: updatedResponse
           });
         }
-        
-        return updatedResponse; 
+
+        return updatedResponse;
       } else if (jsonData.type === "Action" && jsonData.function) {
         console.log("Action --- model jsonData:", jsonData);
-        if (jsonData.text === '' && 
-            ["getVaultsPositions", "getWalletAssets", "getInterestVaults"].includes(jsonData.function)) {
-          handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks, jsonData.extra);
-        } else if (jsonData.text === '') {
-          const errorMessage = "Sorry, no results found. Please try asking a different question.";
+        if (
+          jsonData.text === "" &&
+          [
+            "getVaultsPositions",
+            "getWalletAssets",
+            "getInterestVaults",
+            "bridge",
+            "lend"
+          ].includes(jsonData.function)
+        ) {
+          handleFunctionOutput(
+            jsonData.function,
+            jsonData.text || "",
+            assistantMessage,
+            callbacks,
+            jsonData.extra
+          );
+        } else if (jsonData.text === "") {
           assistantMessage.content = errorMessage;
-          
+
           if (callbacks?.updateMessage) {
             callbacks.updateMessage({
               ...assistantMessage,
-              content: errorMessage,
+              content: errorMessage
             });
           }
         } else {
-          handleFunctionOutput(jsonData.function, jsonData.text || "", assistantMessage, callbacks);
+          handleFunctionOutput(
+            jsonData.function,
+            jsonData.text || "",
+            assistantMessage,
+            callbacks
+          );
         }
       }
     } catch (e) {
@@ -279,7 +322,7 @@ const handleCompletionEvent = (
         callbacks.onError();
       }
     }
-    return fullResponse; 
+    return fullResponse;
   }
 };
 
@@ -290,10 +333,9 @@ const handleDataWithoutEvent = (
   userMessage: string,
   callbacks?: ChatCallbacks,
   abortController?: AbortController,
-  resolvePromise?: (result: { messages: Message[]; }) => void
-) => { 
+  resolvePromise?: (result: { messages: Message[] }) => void
+) => {
   if (data === "[DONE]") {
-
     if (callbacks?.addChatHistory) {
       callbacks.addChatHistory();
     }
@@ -302,13 +344,12 @@ const handleDataWithoutEvent = (
       callbacks.onComplete();
     }
 
-
     if (resolvePromise) {
       resolvePromise({
         messages: [
           { id: assistantMessage.id, sender: "user", content: userMessage },
           assistantMessage
-        ],
+        ]
       });
     }
 
@@ -326,25 +367,25 @@ const handleDataWithoutEvent = (
 
       if (jsonData.type === "Chunk" && jsonData.text) {
         const updatedResponse = fullResponse + jsonData.text;
-        
+
         assistantMessage.content = updatedResponse;
 
         if (callbacks?.updateMessage) {
           callbacks.updateMessage({
             ...assistantMessage,
-            content: updatedResponse,
+            content: updatedResponse
           });
         }
       }
     } catch (e) {
       const updatedResponse = fullResponse + `${data} `;
-      
+
       assistantMessage.content = updatedResponse;
 
       if (callbacks?.updateMessage) {
         callbacks.updateMessage({
           ...assistantMessage,
-          content: updatedResponse,
+          content: updatedResponse
         });
       }
     }
@@ -357,7 +398,7 @@ export const sendChatSSERequest = async (
 ): Promise<Response> => {
   let url = `/api/go/chat/conversation`;
   const data: Record<string, string> = {
-    msg: message,
+    msg: message
   };
 
   if (sessionId) {
@@ -366,5 +407,3 @@ export const sendChatSSERequest = async (
 
   return postSSE(url, data);
 };
-
-

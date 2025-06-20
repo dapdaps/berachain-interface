@@ -43,7 +43,7 @@ const McBeraEntryContent = (props: any) => {
       exit={{ opacity: 0, y: -100, x: "-50%" }}
     >
       <div className="">
-        {isOpen ? "Walk to Home" : "Walk in Beratown"}
+        {isOpen ? "Enter Your Home" : "Step into Beratown"}
       </div>
       <McBeraArrow className={clsx("absolute right-[12px]", isOpen ? "rotate-0" : "rotate-180")} />
     </motion.button>

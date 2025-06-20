@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import IconArrow from '@public/images/chat/xs-link.svg';
-import { numberFormatter } from '@/utils/number-formatter';
-import { useChatContext } from '@/components/chat/context/chat-context';
-import { useVaultsV2Context } from '@/sections/vaults/v2/context';
-import { ACTION_TYPE } from '@/sections/vaults/v2/config';
-import { motion } from 'framer-motion';
-import { motionStaggerChildren } from '@/components/chat/utils/motion-stagger-children';
+import React, { useMemo } from "react";
+import IconArrow from "@public/images/chat/xs-link.svg";
+import { numberFormatter } from "@/utils/number-formatter";
+import { useChatContext } from "@/components/chat/context/chat-context";
+import { useVaultsV2Context } from "@/sections/vaults/v2/context";
+import { ACTION_TYPE } from "@/sections/vaults/v2/config";
+import { motion } from "framer-motion";
+import { motionStaggerChildren } from "@/components/chat/utils/motion-stagger-children";
 
 const InterestItem: React.FC<any> = ({ item, onClick }) => {
   const { tokens, totalApr } = item;
@@ -14,7 +14,7 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
   const { toggleActionVisible } = useVaultsV2Context();
 
   const currentProtocol = useMemo(() => {
-    return item?.groupVault.list.find((it: any) => it.backendId === item.id);
+    return item?.groupVault?.list?.find((it: any) => it.backendId === item.id);
   }, [item]);
 
   const handleClick = () => {
@@ -26,7 +26,7 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
       type: ACTION_TYPE.DEPOSIT,
       record: item.groupVault,
       visible: true,
-      defaultProtocol: currentProtocol,
+      defaultProtocol: currentProtocol
     });
   };
 
@@ -37,15 +37,27 @@ const InterestItem: React.FC<any> = ({ item, onClick }) => {
       onClick={handleClick}
     >
       <div className="flex items-center gap-[14px]">
-          <span
-            className="p-2 border border-black leading-[12px] text-xs font-[600] rounded-[6px] font-Montserrat"
-            style={{ backgroundColor: "#FF888A" }}
-          >
-            Vaults
-          </span>
-          <span className="text-[13px] leading-[13px] text-[rgba(0,0,0,0.5)]">
-            Join <strong>{currentProtocol?.protocol} {tokens?.map((token: any) => token.symbol).join("-")}</strong> vaults, earning APY up to <strong>{numberFormatter(totalApr, 2, true, { isShort: true, isShortUppercase: true })}%</strong>
-          </span>
+        <span
+          className="p-2 border border-black leading-[12px] text-xs font-[600] rounded-[6px] font-Montserrat"
+          style={{ backgroundColor: "#FF888A" }}
+        >
+          Vaults
+        </span>
+        <span className="text-[13px] leading-[13px] text-[rgba(0,0,0,0.5)]">
+          Join{" "}
+          <strong>
+            {currentProtocol?.protocol}{" "}
+            {tokens?.map((token: any) => token.symbol).join("-")}
+          </strong>{" "}
+          vaults, earning APY up to{" "}
+          <strong>
+            {numberFormatter(totalApr, 2, true, {
+              isShort: true,
+              isShortUppercase: true
+            })}
+            %
+          </strong>
+        </span>
       </div>
       <IconArrow />
     </motion.div>

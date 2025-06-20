@@ -29,7 +29,7 @@ export const OptionItem: React.FC<OptionItemProps> = ({
         className="shrink-0 object-center object-contain w-[18px] h-[18px]"
         // fallbackSrc="/assets/tokens/default_icon.png"
       />
-      <span className="font-Montserrat font-[500] leading-[13px] text-[13px]">{content}</span>
+      <span className="font-Montserrat font-[500] leading-[13px] text-[13px] whitespace-nowrap">{content}</span>
     </div>
   );
 };

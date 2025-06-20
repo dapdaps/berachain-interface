@@ -22,7 +22,12 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
   const prices = {};
 
   const onQuoter = useCallback(
-    async ({ inputCurrency, outputCurrency, inputCurrencyAmount }: any) => {
+    async ({
+      inputCurrency,
+      outputCurrency,
+      inputCurrencyAmount,
+      template: _template
+    }: any) => {
       setTrade(null);
       if (
         !inputCurrency ||
@@ -99,6 +104,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
         } else {
           params.templates = template;
         }
+
         const data = await quoter(params);
 
         if (!data) {
@@ -180,7 +186,7 @@ export default function useTrade({ chainId, template, from, onSuccess }: any) {
           inputCurrencyAmount: trade.inputCurrencyAmount,
           outputCurrencyAmount: trade.outputCurrencyAmount,
           transactionHash: transactionHash,
-          tradeFrom: trade.name,
+          tradeFrom: trade.name
         });
       } else {
         toast.fail({ title: `Swap failed!` });
