@@ -221,6 +221,8 @@ const ActionUnionForm = (props: any) => {
     return (
       <div className="mt-[10px]">
         <SwitchTabs
+          className="!h-[38px] md:!h-[30px] !rounded-[10px] md:!rounded-[8px]"
+          cursorClassName="!rounded-[8px] md:!rounded-[6px]"
           tabs={[{
             value: 'deposit',
             label: "Deposit"
