@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { useTypewriter, Options } from "../hooks/useTypewriter";
 import { clsx } from "clsx";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 interface TypingMarkdownProps {
   content: string;
@@ -57,6 +58,7 @@ const TypingMarkdown: React.FC<TypingMarkdownProps> = ({
           )
         }}
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
       >
         {typedContent}
       </ReactMarkdown>
