@@ -29,6 +29,7 @@ export const BaseButton = ({ loading, loadingText, onClick, children, disabled =
 export default function SubmitBtn({
   chain,
   spender,
+  isApproveMax,
   token,
   amount,
   loading,
@@ -44,6 +45,7 @@ export default function SubmitBtn({
     amount,
     token,
     spender,
+    isMax: isApproveMax,
     onSuccess: onRefresh
   });
   const { isPending: switching, switchChain } = useSwitchChain();

@@ -76,6 +76,7 @@ const BerapawZap = (props: any) => {
         onRefresh={onRefresh}
         updater={1}
         loadingText={currentZapStepText}
+        isApproveMax={zapData?.name === "Haiku"}
       >
         Swap & Stake
       </SubmitBtn>

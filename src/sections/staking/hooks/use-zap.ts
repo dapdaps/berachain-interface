@@ -1,9 +1,11 @@
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { bera } from "@/configs/tokens/bera";
 import useCustomAccount from "@/hooks/use-account";
+import { useHaiku } from "@/hooks/use-haiku";
 import useToast from "@/hooks/use-toast";
 import { getTokenLogo } from "@/sections/dashboard/utils";
 import { usePriceStore } from "@/stores/usePriceStore";
+import { post } from "@/utils/http";
 import { useRequest } from "ahooks";
 import axios from "axios";
 import Big from "big.js";
@@ -48,6 +50,27 @@ export function useZap(props: any) {
     if (!currentZapStepNo || !currentZapStep) return "";
     return `Step ${currentZapStepNo}/${totalStep}: ${currentZapStep}`;
   }, [currentZapStep, currentZapStepNo, totalStep]);
+
+  const {
+    approved,
+    approving,
+    permitSignature,
+    onConfirm,
+    onApprove,
+    setApproved,
+  } = useHaiku({
+    input_token: {
+      ...inputCurrency,
+      amount: inputCurrencyAmount,
+    },
+    output_token: {
+      ...token,
+      amount: outputCurrencyAmount,
+    },
+    haiku: quoteData.haiku?.response,
+    from: "vaults",
+    onSuccess: (data) => { }
+  });
 
   const onTokenSelect = (_token: any) => {
     if (_token.address.toLowerCase() === token.address.toLowerCase()) {
@@ -134,36 +157,37 @@ export function useZap(props: any) {
     const inputCurrencyAddress = inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address;
     const tokenAddress = token?.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : token?.address;
 
+    const PERMIT2_ADDRESS = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
+
     if (!token?.address) {
       return false;
     }
 
-    const quoteUrl = new URL("https://api.haiku.trade/v1/quoteIntent");
+    const params = {
+      input_token: inputCurrencyAddress,
+      input_token_amount: inputCurrencyAmount,
+      output_token: tokenAddress,
+      receiver: account,
+      slippage: slippage / 10000,
+    };
 
     try {
-      const [quoteRes] = await Promise.all([
-        axios.post(quoteUrl.toString(), {
-          intent: {
-            slippage: Big(slippage).div(10000).toString(),
-            receiver: account,
-            inputPositions: {
-              [`bera:${inputCurrencyAddress}`]: inputCurrencyAmount,
-            },
-            target_weights: {
-              [`bera:${tokenAddress}`]: 1,
-            },
-          },
-          source: "classic"
-        }),
-      ]);
+      const res = await post("/api/go/haiku/quoteIntent", params);
+      if (res.code !== 200) return false;
+      const { balances, gas } = res.data ?? {};
 
-      console.log("quoteRes: %o", quoteRes);
-      // return {
-      //   approve: { spender: "" },
-      //   route: { route: { amountOut: "", tx: "" } },
-      //   name: "Haiku",
-      //   logo: "/images/dapps/haiku.jpg",
-      // };
+      return {
+        approve: { spender: PERMIT2_ADDRESS },
+        route: {
+          amountOut: Big(balances[0].amount || 0).times(10 ** token.decimals).toFixed(0),
+          gas: gas.amount,
+          tx: "",
+          route: []
+        },
+        name: "Haiku",
+        logo: "/images/dapps/haiku.jpg",
+        response: res.data,
+      };
     } catch (err: any) {
       console.log(err);
     }
@@ -174,6 +198,7 @@ export function useZap(props: any) {
     console.log("quoteData: %o", quoteData);
     const quoteList = Object.values(quoteData);
     if (quoteList.length === 0) return {};
+    // return quoteData.haiku;
     // find the best quote
     const bestQuote = quoteList.reduce((prev: any, curr: any) => {
       return Big(prev.route.amountOut).gt(curr.route.amountOut) ? prev : curr;
@@ -185,14 +210,18 @@ export function useZap(props: any) {
     if (!inputCurrencyAmount || Big(inputCurrencyAmount).lte(0) || !account || !inputCurrency) {
       return;
     }
-    quoteEnsoData().then((_ensoData) => {
-      if (!_ensoData) return;
-      setQuoteData((prev: any) => ({ ...prev, enso: _ensoData }));
-    });
-    quoteHaikuData().then((_haikuData) => {
-      if (!_haikuData) return;
-      setQuoteData((prev: any) => ({ ...prev, haiku: _haikuData }));
-    });
+    const [_ensoData, _haikuData] = await Promise.all([
+      quoteEnsoData(),
+      quoteHaikuData(),
+    ]);
+    const _quoteData: any = {};
+    if (_ensoData) {
+      _quoteData.enso = _ensoData;
+    }
+    if (_haikuData) {
+      _quoteData.haiku = _haikuData;
+    }
+    setQuoteData(_quoteData);
   }, { refreshDeps: [inputCurrencyAmount, inputCurrency, token?.address, account, slippage], debounceWait: 0.5 });
 
   const { runAsync: handleSwap, loading: swapLoading } = useRequest(async () => {
@@ -200,49 +229,95 @@ export function useZap(props: any) {
     const { route = {} } = zapData ?? {};
     const signer = provider.getSigner(account);
     let toastId = toast.loading({ title: "Confirming..." });
+
     let currentStep = "Swap";
     setCurrentZapStep("Swap");
     setCurrentZapStepNo(1);
-    try {
-      const tx = await signer.sendTransaction(route.tx);
-      toast.dismiss(toastId);
-      toastId = toast.loading({ title: "Pending...", tx: tx.hash, chainId: DEFAULT_CHAIN_ID });
-      const txReceipt = await tx.wait();
-      toast.dismiss(toastId);
 
-      const { status, transactionHash } = txReceipt;
-
-      if (status === 1) {
-        toast.dismiss(toastId);
-        toastId = toast.success({
-          title: `Swap Successful!`,
-          tx: transactionHash,
-          chainId: DEFAULT_CHAIN_ID
-        });
-        const afterRes = await onAfterSwap?.({
-          currentStep,
-          toastId,
-          signer,
-          route,
-          toast,
-          setCurrentZapStep,
-          setCurrentZapStepNo
-        });
-        currentStep = afterRes?.currentStep ?? currentStep;
-        toastId = afterRes?.toastId ?? toastId;
-        onSwapSuccess?.();
-      } else {
-        toast.fail({ title: `Swap failed!` });
+    if (zapData.name === "Haiku") {
+      console.log("approved: %o", approved);
+      if (!approved) {
+        const res = await onApprove?.();
+        if (!res.isSuccess) {
+          toast.dismiss(toastId);
+          toast.fail({ title: `Approve signature failed!` });
+          getZapData();
+          setCurrentZapStep(void 0);
+          setApproved(false);
+          return;
+        }
       }
-    } catch (err: any) {
+      const swapRes = await onConfirm?.();
       toast.dismiss(toastId);
-      toast.fail({
-        title: err?.message?.includes("user rejected transaction")
-          ? "User rejected transaction"
-          : `${currentStep} failed!`
+      if (!swapRes.isSuccess) {
+        toast.fail({ title: `Swap failed!` });
+        getZapData();
+        setCurrentZapStep(void 0);
+        setApproved(false);
+        return;
+      }
+      toastId = toast.success({
+        title: `Swap Successful!`,
+        tx: swapRes.transactionHash,
+        chainId: DEFAULT_CHAIN_ID
       });
-      console.log(err);
+      const afterRes = await onAfterSwap?.({
+        currentStep,
+        toastId,
+        signer,
+        route,
+        toast,
+        setCurrentZapStep,
+        setCurrentZapStepNo
+      });
+      currentStep = afterRes?.currentStep ?? currentStep;
+      toastId = afterRes?.toastId ?? toastId;
+      onSwapSuccess?.();
+      setApproved(false);
+    } else {
+      try {
+        const tx = await signer.sendTransaction(route.tx);
+        toast.dismiss(toastId);
+        toastId = toast.loading({ title: "Pending...", tx: tx.hash, chainId: DEFAULT_CHAIN_ID });
+        const txReceipt = await tx.wait();
+        toast.dismiss(toastId);
+
+        const { status, transactionHash } = txReceipt;
+
+        toast.dismiss(toastId);
+        if (status === 1) {
+          toastId = toast.success({
+            title: `Swap Successful!`,
+            tx: transactionHash,
+            chainId: DEFAULT_CHAIN_ID
+          });
+          const afterRes = await onAfterSwap?.({
+            currentStep,
+            toastId,
+            signer,
+            route,
+            toast,
+            setCurrentZapStep,
+            setCurrentZapStepNo
+          });
+          currentStep = afterRes?.currentStep ?? currentStep;
+          toastId = afterRes?.toastId ?? toastId;
+          onSwapSuccess?.();
+        } else {
+          toast.fail({ title: `Swap failed!` });
+          getZapData();
+        }
+      } catch (err: any) {
+        toast.dismiss(toastId);
+        toast.fail({
+          title: err?.message?.includes("user rejected transaction")
+            ? "User rejected transaction"
+            : `${currentStep} failed!`
+        });
+        console.log(err);
+      }
     }
+
     setCurrentZapStep(void 0);
   }, { manual: true, throttleWait: 1 });
 
@@ -288,3 +363,127 @@ export function useZap(props: any) {
     currentZapStepText,
   };
 }
+
+const HAIKU_ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "permit2Datas",
+        "type": "bytes[]"
+      },
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes",
+                "name": "data",
+                "type": "bytes"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "balanceBps",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "amountOrOffset",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct DataType.Input[]",
+                "name": "inputs",
+                "type": "tuple[]"
+              },
+              {
+                "internalType": "enum DataType.WrapMode",
+                "name": "wrapMode",
+                "type": "uint8"
+              },
+              {
+                "internalType": "address",
+                "name": "approveTo",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "callback",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct DataType.Logic[]",
+            "name": "logics",
+            "type": "tuple[]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "metadata",
+                "type": "bytes32"
+              }
+            ],
+            "internalType": "struct DataType.Fee[]",
+            "name": "fees",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "referrals",
+            "type": "bytes32[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DataType.LogicBatch",
+        "name": "logicBatch",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "signer",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      },
+      {
+        "internalType": "address[]",
+        "name": "tokensReturn",
+        "type": "address[]"
+      }
+    ],
+    "name": "executeWithSignerFee",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }
+];

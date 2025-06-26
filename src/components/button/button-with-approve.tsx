@@ -62,7 +62,15 @@ export default function ButtonWithApprove({
     );
   }
 
-  if (checking || approving || loading) {
+  if (approving) {
+    return (
+      <Button loading={true} disabled {...buttonProps}>
+        Approving
+      </Button>
+    );
+  }
+
+  if (checking || loading) {
     return (
       <Button loading={true} disabled {...buttonProps}>
         {children}
