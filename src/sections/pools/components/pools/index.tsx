@@ -5,6 +5,8 @@ import AddLiquidityModal from "../../add-liquidity-modal";
 import Laptop from "./laptop";
 import Mobile from "./mobile";
 import useIsMobile from "@/hooks/use-isMobile";
+import clsx from "clsx";
+import { useThrottleFn } from "ahooks";
 
 export default function Pools({
   pools = [],
@@ -12,7 +14,11 @@ export default function Pools({
   currentTab,
   dex,
   tabs,
-  loading
+  loading,
+  withBaults,
+  setWithBaults,
+  pageLoading,
+  setPageLoading,
 }: any) {
   const [searchVal, setSearchVal] = useState("");
   const [selectedReocrd, setSelectedRecord] = useState<any>(null);
@@ -24,11 +30,15 @@ export default function Pools({
     [tabs, currentTab]
   );
 
+  const { run: toggleWithBaults } = useThrottleFn(() => {
+    setWithBaults(!withBaults);
+  }, { wait: 1000 });
+
   return (
     <div className="pb-[20px] md:h-full">
       {!isPlain && (
-        <div className="flex justify-between items-center">
-          <div className="md:px-[12px]">
+        <div className="flex justify-between items-center md:flex-col md:gap-[10px]">
+          <div className="md:px-[12px] md:w-full">
             {currentTab && (
               <SwitchTabs
                 tabs={tabs}
@@ -42,13 +52,40 @@ export default function Pools({
                 tabStyle={{
                   fontSize: 14
                 }}
-                className="md:bg-[#DFDCC4] md:border-none md:rounded-[12px]"
+                className="md:bg-[#DFDCC4] md:border-none md:rounded-[12px] md:mx-auto"
                 cursorClassName="md:rounded-[12px]"
               />
             )}
           </div>
-          <div className="md:hidden">
-            <SearchBox value={searchVal} onChange={setSearchVal} />
+          <div className="md:pb-[5px] md:w-[300px] md:mx-auto flex items-center justify-end gap-[10px]">
+            <button
+              type="button"
+              className={clsx(
+                "disabled:!cursor-not-allowed disabled:opacity-50 cursor-pointer shrink-0 h-[32px] rounded-[6px] border border-[rgba(0,0,0,0.2)] text-[12px] flex items-center justify-center gap-[5px] px-[12px]",
+                withBaults ? "border-[rgba(0,0,0,0.8)]" : "border-[rgba(0,0,0,0.2)]"
+              )}
+              onClick={() => {
+                setPageLoading(true);
+                toggleWithBaults();
+              }}
+              disabled={pageLoading}
+            >
+              <div className="w-[18px] h-[18px] rounded-[4px] border border-[rgba(0,0,0,0.2)] p-[2px]">
+                {
+                  withBaults && (
+                    <div className="w-full h-full rounded-[3px] bg-[#FFDC50]"></div>
+                  )
+                }
+              </div>
+              <div className="font-[500]">Baults</div>
+            </button>
+            <SearchBox
+              value={searchVal}
+              onChange={setSearchVal}
+              containerClassName="flex-1 md:w-0"
+              className="md:rounded-[6px] md:px-[5px] md:w-full"
+              inputClassName="md:h-[30px] md:min-w-[unset] md:flex-1 md:w-0"
+            />
           </div>
         </div>
       )}
@@ -86,7 +123,11 @@ export default function Pools({
             page,
             setPage,
             searchVal,
-            setIsPlain
+            setIsPlain,
+            withBaults,
+            setWithBaults,
+            pageLoading,
+            setPageLoading,
           }}
         />
       )}

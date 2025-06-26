@@ -5,6 +5,8 @@ import Island from "./island";
 
 export default function Pools() {
   const [version, setVersion] = useState("islands");
+  const [withBaults, setWithBaults] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
 
   const pools = useMemo(
     () =>
@@ -34,6 +36,10 @@ export default function Pools() {
       dex="kodiak"
       currentTab={version}
       onChangeTab={setVersion}
+      withBaults={withBaults}
+      setWithBaults={setWithBaults}
+      pageLoading={pageLoading}
+      setPageLoading={setPageLoading}
       tabs={[
         { label: "Top Pools", value: "islands", content: Island },
         { label: "V3 Pools", value: "v3" },
