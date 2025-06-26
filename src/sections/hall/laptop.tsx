@@ -46,18 +46,18 @@ export default memo(function Laptop() {
                   ),
                   children: <BgtPageView />
                 },
-                // {
-                //   key: "ibgt",
-                //   label: (
-                //     <div className="flex items-center gap-[10px]">
-                //       <div className="w-[30px]">
-                //         <img src="/images/dapps/infrared/ibgt.svg" alt="ibgt" />
-                //       </div>
-                //       <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">iBGT</div>
-                //     </div>
-                //   ),
-                //   children: <IbgtPageView />
-                // },
+                {
+                  key: "ibgt",
+                  label: (
+                    <div className="flex items-center gap-[10px]">
+                      <div className="w-[30px]">
+                        <img src="/images/dapps/infrared/ibgt.svg" alt="ibgt" />
+                      </div>
+                      <div className="text-black font-Montserrat text-[18px] font-bold leading-[90%]">iBGT</div>
+                    </div>
+                  ),
+                  children: <IbgtPageView />
+                },
                 {
                   key: "validators",
                   label: (
