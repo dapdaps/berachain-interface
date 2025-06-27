@@ -55,6 +55,7 @@ export default function EnsoModal({ open, onSuccess }: any) {
       // setTxHash(transactionHash);
 
       addAction({
+        type: "Staking",
         action: "Stake",
         token,
         amount: token.amount,
