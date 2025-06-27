@@ -70,10 +70,15 @@ export default function Pools({
               }}
               disabled={pageLoading}
             >
-              <div className="w-[18px] h-[18px] rounded-[4px] border border-[rgba(0,0,0,0.2)] p-[2px]">
+              <div
+                className={clsx(
+                  "w-[20px] h-[20px] rounded-[4px] border border-[rgba(0,0,0,1)] shadow-[2px_2px_0px_0px_rgba(0,_0,_0,_0.25)_inset] flex items-center justify-center",
+                  withBaults ? "bg-[#FFDC50]" : "bg-[#E9E3B5]"
+                )}
+              >
                 {
                   withBaults && (
-                    <div className="w-full h-full rounded-[3px] bg-[#FFDC50]"></div>
+                    <img src="/images/icon-check.svg" alt="" className="w-[12px] h-[10px] object-contain object-center shrink-0 translate-x-[1px] translate-y-[1.5px]" />
                   )
                 }
               </div>

@@ -5,12 +5,13 @@ import Actions from "../actions";
 import Loading from "@/components/loading";
 
 export default function Laptop({
-  onBack = () => {},
+  onBack = () => { },
   data,
   info,
   loading,
   onSuccess
 }: any) {
+
   return (
     <div className="h-[calc(100vh-380px)] overflow-y-auto">
       <Header data={data} onBack={onBack} />

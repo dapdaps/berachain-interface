@@ -135,7 +135,8 @@ export default function usePoolsIslands(props?: { withBaults?: boolean; setPageL
                 ? config.stakingRouter
                 : config.contracts[80094].RouterV2,
             tokenLp: item.tokenLp,
-            icon: "/assets/tokens/kodiak.png"
+            icon: "/assets/tokens/kodiak.png",
+            baults: item.baults
           };
         })
       );

@@ -12,6 +12,7 @@ import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
 import useCustomAccount from "@/hooks/use-account";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import Baults from "../../../baults";
 
 export default function Deposit({ data, info, onSuccess }: any) {
   const [type, setType] = useState("deposit");
@@ -23,6 +24,15 @@ export default function Deposit({ data, info, onSuccess }: any) {
   const [receives, setReceives] = useState<any>();
   const { account, chainId } = useCustomAccount();
   const { querying, queryAmounts } = useDepositAmount(data, info);
+  const [autoCompound, setAutoCompound] = useState(true);
+
+  const toggleType = (_type: string) => {
+    setType(_type);
+    if (_type !== "deposit") {
+      setAutoCompound(false);
+      return;
+    }
+  };
 
   const errorTips = useMemo(() => {
     if (!amount0 || !amount1) return "Enter an amount";
@@ -94,9 +104,9 @@ export default function Deposit({ data, info, onSuccess }: any) {
                 (${" "}
                 {receives?.received && data.tokenLp.price
                   ? balanceFormated(
-                      Big(receives.received).mul(data.tokenLp.price).toString(),
-                      5
-                    )
+                    Big(receives.received).mul(data.tokenLp.price).toString(),
+                    5
+                  )
                   : "-"}
                 )
               </div>
@@ -138,12 +148,19 @@ export default function Deposit({ data, info, onSuccess }: any) {
             { label: "With staking", value: "staking" }
           ]}
           current={type}
-          onChange={setType}
+          onChange={toggleType}
           className="mt-[14px] !h-[40px] !p-[3px_4px] !bg-[#DFDCC4] md:!border-none md:!bg-transparent md:!p-0"
           cursorClassName="md:!rounded-[10px]"
           tabClassName="font-semibold md:font-medium"
         />
       )}
+      <Baults
+        data={data}
+        info={info}
+        onSuccess={onSuccess}
+        autoCompound={autoCompound}
+        setAutoCompound={setAutoCompound}
+      />
       {account ? (
         chainId !== DEFAULT_CHAIN_ID ? (
           <SwitchNetworkButton className="!h-[46px]" />
