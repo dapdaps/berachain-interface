@@ -77,7 +77,7 @@ export default function HaikuModal({ open, onSuccess }: any) {
       const txn = {
         data: res.data.data,
         to: res.data.to,
-        value: Big(Number(res.data.value.hex)).toFixed(0)
+        value: typeof res.data.value === "string" ? res.data.value : Big(Number(res.data.value.hex)).toFixed(0)
       };
 
       const estimateGas = haiku.gas?.amount
