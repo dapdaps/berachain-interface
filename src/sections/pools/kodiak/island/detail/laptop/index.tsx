@@ -9,7 +9,8 @@ export default function Laptop({
   data,
   info,
   loading,
-  onSuccess
+  onSuccess,
+  dapp
 }: any) {
 
   return (
@@ -37,7 +38,7 @@ export default function Laptop({
               />
             )}
           </div>
-          <Actions data={data} info={info} onSuccess={onSuccess} />
+          <Actions data={data} info={info} onSuccess={onSuccess} dapp={dapp} />
         </div>
       )}
     </div>

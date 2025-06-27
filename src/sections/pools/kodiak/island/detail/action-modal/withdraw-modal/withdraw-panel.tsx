@@ -3,14 +3,15 @@ import Button from "@/components/button";
 import ModalLoading from "../loading";
 import useWithdraw from "../../../hooks/use-withdraw";
 
-export default function WithdrawPanel({ data, amounts, onSuccess, onError, info }: any) {
+export default function WithdrawPanel({ data, amounts, onSuccess, onError, info, dapp }: any) {
   const { amount0, amount1, amount } = amounts;
   const { loading, onWithdraw } = useWithdraw({
     data,
     amount,
     info,
     onSuccess,
-    onError
+    onError,
+    dapp
   });
   return loading ? (
     <ModalLoading

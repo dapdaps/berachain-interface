@@ -2,14 +2,24 @@ import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
 import Button from "@/components/button";
 import useStake from "../../../hooks/use-stake";
+import { useShares } from "@/sections/pools/kodiak/baults/hooks/use-shares";
 
 export default function StakePanel({
   data,
   amount,
   lockData,
   onSuccess,
-  info
+  info,
+  dapp,
+  autoCompound
 }: any) {
+  const {
+    baultTokenShareAmount,
+    baultTokenShareAmountLoading,
+  } = useShares({
+    data,
+    lpAmount: amount
+  });
   const { loading, onStake } = useStake({
     farmContract: data.farm?.id,
     data,
@@ -17,7 +27,10 @@ export default function StakePanel({
     days: lockData.days,
     token: data.tokenLp,
     onSuccess,
-    info
+    info,
+    dapp,
+    autoCompound,
+    baultTokenShareAmount
   });
 
   return (
@@ -66,7 +79,7 @@ export default function StakePanel({
         type="primary"
         className="w-full h-[46px] mt-[16px]"
         onClick={onStake}
-        loading={loading}
+        loading={loading || baultTokenShareAmountLoading}
       >
         Stake
       </Button>

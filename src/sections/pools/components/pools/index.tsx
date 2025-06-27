@@ -19,6 +19,7 @@ export default function Pools({
   setWithBaults,
   pageLoading,
   setPageLoading,
+  dapp,
 }: any) {
   const [searchVal, setSearchVal] = useState("");
   const [selectedReocrd, setSelectedRecord] = useState<any>(null);
@@ -133,6 +134,7 @@ export default function Pools({
             setWithBaults,
             pageLoading,
             setPageLoading,
+            dapp,
           }}
         />
       )}

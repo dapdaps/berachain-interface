@@ -3,7 +3,9 @@ import PoolsCom from "../components/pools";
 import { bera } from "@/configs/tokens/bera";
 import Island from "./island";
 
-export default function Pools() {
+export default function Pools(props?: any) {
+  const { dapp } = props ?? {};
+
   const [version, setVersion] = useState("islands");
   const [withBaults, setWithBaults] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
@@ -40,6 +42,7 @@ export default function Pools() {
       setWithBaults={setWithBaults}
       pageLoading={pageLoading}
       setPageLoading={setPageLoading}
+      dapp={dapp}
       tabs={[
         { label: "Top Pools", value: "islands", content: Island },
         { label: "V3 Pools", value: "v3" },

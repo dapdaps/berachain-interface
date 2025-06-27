@@ -6,13 +6,22 @@ import Big from "big.js";
 import { remove, uniq } from "lodash";
 import Item from "./stake-item";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import SwitchTabs from "@/components/switch-tabs";
+import { numberFormatter } from "@/utils/number-formatter";
+import { useShares } from "../../../baults/hooks/use-shares";
+import useApprove from "@/hooks/use-approve";
 
-export default function Unstake({ data, info, onSuccess }: any) {
+export default function Unstake({ data, info, onSuccess, dapp }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+
   const [amount, setAmount] = useState("");
   const [kekIds, setKekIds] = useState<any>([]);
   const [amount0, setAmount0] = useState("");
   const [amount1, setAmount1] = useState("");
   const [balance, setBalance] = useState("");
+  const [currentTab, setCurrentTab] = useState("");
+
   const token = useMemo(
     () => ({
       address: data.farm.id,
@@ -23,7 +32,38 @@ export default function Unstake({ data, info, onSuccess }: any) {
     }),
     [data]
   );
+  const baultToken = useMemo(
+    () => {
+      if (!data.baults?.[0]) return void 0;
+      return {
+        address: data.baults[0].id,
+        symbol: `Bault-${data.tokenLp.symbol}`,
+        chainId: DEFAULT_CHAIN_ID,
+        decimals: data.tokenLp.decimals,
+        icon: data.icon
+      };
+    },
+    [data]
+  );
+  const tabs = useMemo<any>(() => {
+    const _tabs = [];
+    if (Big(info.locked?.amount || 0).gt(0) && data.farm?.id) {
+      _tabs.push({ label: "Reward Vault", value: "rewardVault" });
+    }
+    if (Big(info.lockedBault?.balance || 0).gt(0) && data.baults?.[0]) {
+      _tabs.push({ label: "Auto-Compound", value: "autoCompound" });
+    }
+    setCurrentTab(_tabs[0].value);
+    return _tabs;
+  }, [info]);
 
+  const {
+    baultTokenShareAmount,
+    baultTokenShareAmountLoading,
+  } = useShares({
+    data,
+    lpAmount: amount
+  });
   const { loading, onUnstake } = useUnstake({
     kekIds,
     token: { symbol: data.symbol },
@@ -31,7 +71,17 @@ export default function Unstake({ data, info, onSuccess }: any) {
     onSuccess,
     amount0,
     amount1,
-    data
+    data,
+    dapp,
+    currentTab,
+    baultTokenShareAmount
+  });
+  const { approved, approve, approving, checking, allowance } = useApprove({
+    token: baultToken,
+    amount,
+    isMax: true,
+    spender: baultRouter,
+    onSuccess() {}
   });
 
   const onSelect = (item: any) => {
@@ -70,37 +120,105 @@ export default function Unstake({ data, info, onSuccess }: any) {
 
   return (
     <>
-      {data.farm.provider === "kodiak" &&
-        info.locked.items.map((item: any) => (
-          <Item
-            key={item.kek_id}
-            token0={data.token0}
-            token1={data.token1}
-            item={item}
-            onClick={onSelect}
-            active={kekIds.includes(item.kek_id)}
+      {
+        tabs.length > 1 && (
+          <SwitchTabs
+            tabs={tabs}
+            className="!h-[40px] !bg-[#DFDCC4] mt-[10px]"
+            current={currentTab}
+            onChange={(_tab) => {
+              setAmount("");
+              setCurrentTab(_tab);
+            }}
           />
-        ))}
-      {data.farm.provider === "bgt" && (
-        <Input
-          value={amount}
-          token={token}
-          className="mt-[16px]"
-          setValue={(val: any) => {
-            setAmount(val);
-          }}
-          onLoad={setBalance}
-        />
-      )}
-      <Button
-        disabled={!!errorTips}
-        type="primary"
-        className="w-full h-[46px] mt-[16px]"
-        loading={loading}
-        onClick={onUnstake}
-      >
-        {errorTips || "Unstake"}
-      </Button>
+        )
+      }
+
+      {
+        currentTab === "rewardVault" && (
+          <>
+            {data.farm.provider === "kodiak" &&
+              info.locked.items.map((item: any) => (
+                <Item
+                  key={item.kek_id}
+                  token0={data.token0}
+                  token1={data.token1}
+                  item={item}
+                  onClick={onSelect}
+                  active={kekIds.includes(item.kek_id)}
+                />
+              ))}
+            {data.farm.provider === "bgt" && (
+              <Input
+                value={amount}
+                token={token}
+                className="mt-[16px]"
+                setValue={(val: any) => {
+                  setAmount(val);
+                }}
+                onLoad={setBalance}
+              />
+            )}
+            <Button
+              disabled={!!errorTips}
+              type="primary"
+              className="w-full h-[46px] mt-[16px]"
+              loading={loading}
+              onClick={onUnstake}
+            >
+              {errorTips || "Unstake"}
+            </Button>
+          </>
+        )
+      }
+
+      {
+        currentTab === "autoCompound" && (
+          <>
+            <div className="rounded-[12px] border-[#373A53] border p-[14px] mt-[10px] text-[14px] text-[#000] font-medium leading-[1.5]">
+              <div className="flex justify-between items-start gap-[10px]">
+                <div className="">
+                  Your Auto-Compound Shares:
+                </div>
+                <div className="w-[180px] shrink-0 flex justify-end items-center gap-[5px] font-[700]">
+                  <div>{numberFormatter(info.lockedBault?.balance, 9, true, { isShort: true, isShortUppercase: true })} Bault-{data.tokenLp.symbol}</div>
+                  {/* <img src={data.icon} alt="" className="w-[20px] h-[20px] rounded-full shrink-0" /> */}
+                </div>
+              </div>
+              <div className="flex justify-between items-start gap-[10px]">
+                <div className=""></div>
+                <div className="w-[180px] shrink-0 text-[#3D405A] text-[12px]">
+                  ≈{numberFormatter(info.lockedBault?.receiveLpAmount, 9, true, { isShort: true, isShortUppercase: true })} {data.tokenLp.symbol}
+                </div>
+              </div>
+            </div>
+            <Input
+              value={amount}
+              token={baultToken}
+              className="mt-[16px]"
+              setValue={(val: any) => {
+                setAmount(val);
+              }}
+              onLoad={setBalance}
+            />
+            <Button
+              disabled={!!errorTips || baultTokenShareAmountLoading || checking || approving}
+              type="primary"
+              className="w-full h-[46px] mt-[16px]"
+              loading={loading || baultTokenShareAmountLoading || checking || approving}
+              onClick={() => {
+                if (!approved) {
+                  approve();
+                  return;
+                }
+                onUnstake();
+              }}
+            >
+              {errorTips || approved ? "Redeem" : "Approve " + baultToken?.symbol}
+            </Button>
+          </>
+        )
+      }
     </>
   );
 }

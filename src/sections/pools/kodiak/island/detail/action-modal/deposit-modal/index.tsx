@@ -19,8 +19,15 @@ export default function DepositModal({
   received,
   type,
   onClose,
-  onSuccess
+  onSuccess,
+  dapp,
+  autoCompound
 }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+  const { baults } = data ?? {};
+  const isBault = baults && baults.length > 0;
+
   const [step, setStep] = useState(1);
   const [lockData, setLockData] = useState();
   const {
@@ -33,8 +40,8 @@ export default function DepositModal({
     token: data.token0,
     amount: amount0,
     isMax: true,
-    spender: data.router,
-    onSuccess() {}
+    spender: (isBault && baultRouter) ? baultRouter : data.router,
+    onSuccess() { }
   });
   const {
     approved: token1Approved,
@@ -46,8 +53,8 @@ export default function DepositModal({
     token: data.token1,
     amount: amount1,
     isMax: true,
-    spender: data.router,
-    onSuccess() {}
+    spender: (isBault && baultRouter) ? baultRouter : data.router,
+    onSuccess() { }
   });
 
   const title = useMemo(() => {
@@ -135,6 +142,7 @@ export default function DepositModal({
         <>
           {type === "deposit" && step === 3 && (
             <SupplyPanel
+              dapp={dapp}
               data={data}
               amount0={amount0}
               amount1={amount1}
@@ -144,6 +152,7 @@ export default function DepositModal({
           )}
           {type === "staking" && step === 3 && (
             <LockTimePanel
+              dapp={dapp}
               data={data}
               info={info}
               received={received}
@@ -155,6 +164,7 @@ export default function DepositModal({
           )}
           {type === "staking" && step === 4 && (
             <SupplyPanel
+              dapp={dapp}
               data={data}
               amount0={amount0}
               amount1={amount1}
@@ -167,7 +177,9 @@ export default function DepositModal({
           )}
           {type === "staking" && step === 5 && (
             <ApprovePanel
+              dapp={dapp}
               data={data}
+              autoCompound={autoCompound}
               amount={received}
               onSuccess={() => {
                 setStep(6);
@@ -176,6 +188,7 @@ export default function DepositModal({
           )}
           {type === "staking" && step === 6 && (
             <StakePanel
+              dapp={dapp}
               data={data}
               amount={received}
               lockData={lockData}

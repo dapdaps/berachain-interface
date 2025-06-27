@@ -1,17 +1,29 @@
 import Card from "@/components/card";
+import Loading from "@/components/loading";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
 import Switch from "@/components/switch";
+import { numberFormatter } from "@/utils/number-formatter";
+import { useShares } from "./hooks/use-shares";
+import Big from "big.js";
 
 const Baults = (props: any) => {
-  const { data, autoCompound, setAutoCompound } = props;
+  const { data, autoCompound, setAutoCompound, lpAmount } = props;
 
   const { tokenLp, baults } = data ?? {};
-
-  console.log('data: %o', data);
 
   if (!baults || !baults.length) {
     return null;
   }
+
+  const {
+    exitFee,
+    depositFee,
+    baultTokenShareAmount,
+    baultTokenShareAmountLoading,
+  } = useShares({
+    data,
+    lpAmount
+  });
 
   return (
     <div className="mt-[15px]">
@@ -53,7 +65,13 @@ const Baults = (props: any) => {
                 </div>
               </div>
               <div className="font-[700]">
-                ~9.76
+                {
+                  baultTokenShareAmountLoading ? (
+                    <Loading size={14} />
+                  ) : (
+                    `~${numberFormatter(baultTokenShareAmount?.amount, 6, true, { isShort: true, isShortUppercase: true })}`
+                  )
+                }
               </div>
             </div>
             <div className="text-[0.8em] leading-[1.2] mt-[10px]">
@@ -68,7 +86,16 @@ const Baults = (props: any) => {
                 Deposit Fee:
               </div>
               <div className="">
-                0.00%
+                {
+                  baultTokenShareAmountLoading ? (
+                    <Loading size={14} />
+                  ) : numberFormatter(
+                    (lpAmount && Big(lpAmount).gt(0)) ? depositFee / 100 : 0,
+                    3,
+                    true,
+                    { isShort: true, isShortUppercase: true, isZeroPrecision: true }
+                  ) + "%"
+                }
               </div>
             </div>
             <div className="flex justify-between items-center gap-[10px] whitespace-nowrap text-[#3D405A]">
@@ -76,7 +103,16 @@ const Baults = (props: any) => {
                 Exit Fee:
               </div>
               <div className="">
-                0.00%
+                {
+                  baultTokenShareAmountLoading ? (
+                    <Loading size={14} />
+                  ) : numberFormatter(
+                    (lpAmount && Big(lpAmount).gt(0)) ? exitFee / 100 : 0,
+                    3,
+                    true,
+                    { isShort: true, isShortUppercase: true, isZeroPrecision: true }
+                  ) + "%"
+                }
               </div>
             </div>
           </div>

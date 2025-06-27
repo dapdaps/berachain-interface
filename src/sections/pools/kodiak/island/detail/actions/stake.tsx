@@ -4,11 +4,14 @@ import StakeModal from "../action-modal/stake-modal";
 import { useState, useMemo } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
+import Baults from "../../../baults";
 
-export default function Stake({ data, info, onSuccess }: any) {
+export default function Stake({ data, info, onSuccess, dapp }: any) {
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState("");
+  const [autoCompound, setAutoCompound] = useState(true);
+
   const token = useMemo(
     () => ({
       address: data.id,
@@ -35,6 +38,14 @@ export default function Stake({ data, info, onSuccess }: any) {
         }}
         onLoad={setBalance}
       />
+      <Baults
+        lpAmount={amount}
+        data={data}
+        info={info}
+        onSuccess={onSuccess}
+        autoCompound={autoCompound}
+        setAutoCompound={setAutoCompound}
+      />
       <Button
         disabled={!!errorTips}
         type="primary"
@@ -43,10 +54,12 @@ export default function Stake({ data, info, onSuccess }: any) {
           setShowModal(true);
         }}
       >
-        {errorTips || "Stake"}
+        {errorTips || (autoCompound ? "Stake to Auto-Compound" : "Stake")}
       </Button>
       {showModal && (
         <StakeModal
+          dapp={dapp}
+          autoCompound={autoCompound}
           data={data}
           info={info}
           liquidity={amount}

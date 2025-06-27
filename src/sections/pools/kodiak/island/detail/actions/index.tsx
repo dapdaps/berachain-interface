@@ -17,8 +17,12 @@ export default function Actions(props: any) {
       _tabs.push({ label: "Withdraw", value: "withdraw" });
     if (Big(info.balance || 0).gt(0) && data.farm?.id)
       _tabs.push({ label: "Stake", value: "stake" });
-    if (Big(info.locked?.amount || 0).gt(0) && data.farm?.id)
+    if (
+      (Big(info.locked?.amount || 0).gt(0) && data.farm?.id) ||
+      (Big(info.lockedBault?.balance || 0).gt(0) && data.baults?.[0])
+    ) {
       _tabs.push({ label: "Unstake", value: "unstake" });
+    }
     return _tabs;
   }, [info]);
 

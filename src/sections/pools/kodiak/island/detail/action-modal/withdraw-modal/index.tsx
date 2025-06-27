@@ -19,8 +19,14 @@ export default function WithdrawModal({
   percent,
   open,
   onClose,
-  onSuccess
+  onSuccess,
+  dapp
 }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+  const { baults } = data ?? {};
+  const isBault = baults && baults.length > 0;
+
   const [step, setStep] = useState(1);
   const [withdrawData, setWithdrawData] = useState<any>({});
 
@@ -39,8 +45,8 @@ export default function WithdrawModal({
     token,
     amount,
     isMax: true,
-    spender: data.router,
-    onSuccess() {}
+    spender: (isBault && baultRouter) ? baultRouter : data.router,
+    onSuccess() { }
   });
 
   useEffect(() => {
@@ -92,6 +98,7 @@ export default function WithdrawModal({
           )}
           {step === 3 && data.farm.provider === "kodiak" && (
             <UnstakePanel
+              dapp={dapp}
               data={data}
               info={info}
               onSuccess={() => {
@@ -102,10 +109,11 @@ export default function WithdrawModal({
           )}
           {step === maxStep && (
             <WithdrawPanel
+              dapp={dapp}
               data={data}
               amounts={withdrawData}
               onSuccess={onSuccess}
-              onError={() => {}}
+              onError={() => { }}
               info={info}
             />
           )}

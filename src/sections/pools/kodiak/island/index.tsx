@@ -3,7 +3,7 @@ import Detail from "./detail";
 import { useEffect, useState } from "react";
 import usePoolsIslands from "../use-pools-islands";
 
-export default function Island({ page, setPage, searchVal, setIsPlain, withBaults, setPageLoading }: any) {
+export default function Island({ page, setPage, searchVal, setIsPlain, withBaults, setPageLoading, dapp }: any) {
   const { loading, pools: islands } = usePoolsIslands({ withBaults, setPageLoading });
   const [record, setRecord] = useState<any>();
 
@@ -14,6 +14,7 @@ export default function Island({ page, setPage, searchVal, setIsPlain, withBault
   return record ? (
     <Detail
       data={record}
+      dapp={dapp}
       onBack={() => {
         setRecord(null);
       }}

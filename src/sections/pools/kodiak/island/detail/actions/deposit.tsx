@@ -14,7 +14,7 @@ import useCustomAccount from "@/hooks/use-account";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Baults from "../../../baults";
 
-export default function Deposit({ data, info, onSuccess }: any) {
+export default function Deposit({ data, info, onSuccess, dapp }: any) {
   const [type, setType] = useState("deposit");
   const [amount0, setAmount0] = useState("");
   const [amount1, setAmount1] = useState("");
@@ -155,6 +155,7 @@ export default function Deposit({ data, info, onSuccess }: any) {
         />
       )}
       <Baults
+        lpAmount={receives?.received}
         data={data}
         info={info}
         onSuccess={onSuccess}
@@ -182,6 +183,8 @@ export default function Deposit({ data, info, onSuccess }: any) {
 
       {showModal && (
         <DepositOnly
+          dapp={dapp}
+          autoCompound={autoCompound}
           data={data}
           info={info}
           amount0={amount0}
