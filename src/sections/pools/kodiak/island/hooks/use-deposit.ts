@@ -17,8 +17,14 @@ export default function useDeposit({
   amount1,
   received,
   type,
-  onSuccess
+  onSuccess,
+  dapp
 }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+  const { baults } = data ?? {};
+  const isBault = baults && baults.length > 0;
+
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -32,7 +38,7 @@ export default function useDeposit({
       setLoading(true);
       const signer = provider.getSigner(account);
       const RouterContract = new Contract(
-        data.router,
+        (isBault && baultRouter) ? baultRouter : data.router,
         data.type === "v2" ? routerV2Abi : routerAbi,
         signer
       );

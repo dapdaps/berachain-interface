@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import Big from "big.js";
 import { balanceFormated } from "@/utils/balance";
 
-export default function Withdraw({ data, info, onSuccess }: any) {
+export default function Withdraw({ data, info, onSuccess, dapp }: any) {
 
   const [percent, setPercent] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -128,6 +128,7 @@ export default function Withdraw({ data, info, onSuccess }: any) {
       </Button>
       {showModal && (
         <WithdrawModal
+          dapp={dapp}
           data={data}
           info={info}
           amount={amount}

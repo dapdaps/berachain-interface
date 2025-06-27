@@ -15,12 +15,12 @@ export default function Pools({ dapp }: any) {
         {
           key: "list",
           label: <div className="text-[18px] font-bold">Liquidity</div>,
-          children: <PoolsC dex={dapp.name} />
+          children: <PoolsC dapp={dapp} dex={dapp.name} />
         },
         {
           key: "yours",
           label: <div className="text-[18px] font-bold">Yours</div>,
-          children: <YoursC dex={dapp.name} />
+          children: <YoursC dapp={dapp} dex={dapp.name} />
         }
       ]}
       onChange={(tabKey: any) => {

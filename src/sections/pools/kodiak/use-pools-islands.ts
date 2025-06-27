@@ -7,18 +7,28 @@ import { useKodiakTokensStore } from "@/stores/kodiak-tokens";
 import useAccount from "@/hooks/use-account";
 import { useDebounceFn } from "ahooks";
 
-export default function usePoolsIslands() {
+export default function usePoolsIslands(props?: { withBaults?: boolean; setPageLoading?: (loading: boolean) => void }) {
+  const { withBaults, setPageLoading } = props ?? {};
+
   const [pools, setPools] = useState<any>();
   const [loading, setLoading] = useState(true);
   const kodiakTokensStore: any = useKodiakTokensStore();
   const { account } = useAccount();
 
   const queryPools = async () => {
+    setPageLoading?.(true);
     try {
+      const vaultsUrl = new URL("https://staging.backend.kodiak.finance/vaults");
+      vaultsUrl.searchParams.set("orderBy", "totalApr");
+      vaultsUrl.searchParams.set("orderDirection", "desc");
+      vaultsUrl.searchParams.set("limit", "100");
+      vaultsUrl.searchParams.set("offset", "0");
+      vaultsUrl.searchParams.set("chainId", "80094");
+      vaultsUrl.searchParams.set("minimumTvl", "10000");
+      vaultsUrl.searchParams.set("user", account);
+      vaultsUrl.searchParams.set("withBaults", !!withBaults + "");
       const calls = [
-        axios.get(
-          `https://staging.backend.kodiak.finance/vaults?orderBy=totalApr&orderDirection=desc&limit=100&offset=0&chainId=80094&minimumTvl=10000&user=${account}`
-        )
+        axios.get(vaultsUrl.toString())
       ];
       if (Object.values(kodiakTokensStore.tokens).length === 0) {
         calls.push(
@@ -125,7 +135,8 @@ export default function usePoolsIslands() {
                 ? config.stakingRouter
                 : config.contracts[80094].RouterV2,
             tokenLp: item.tokenLp,
-            icon: "/assets/tokens/kodiak.png"
+            icon: "/assets/tokens/kodiak.png",
+            baults: item.baults
           };
         })
       );
@@ -133,6 +144,7 @@ export default function usePoolsIslands() {
       console.log(128, err);
     } finally {
       setLoading(false);
+      setPageLoading?.(false);
     }
   };
 
@@ -142,7 +154,7 @@ export default function usePoolsIslands() {
 
   useEffect(() => {
     runQueryPools();
-  }, [account]);
+  }, [account, withBaults]);
 
   return { pools, loading };
 }

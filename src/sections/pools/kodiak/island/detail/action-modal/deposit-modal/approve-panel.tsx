@@ -4,7 +4,10 @@ import ModalLoading from "../loading";
 import useApprove from "@/hooks/use-approve";
 import { useEffect, useMemo } from "react";
 
-export default function ApprovePanel({ data, amount, onSuccess }: any) {
+export default function ApprovePanel({ data, amount, onSuccess, autoCompound, dapp }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+
   const token = useMemo(
     () => ({
       address: data.tokenLp.id,
@@ -20,7 +23,7 @@ export default function ApprovePanel({ data, amount, onSuccess }: any) {
     token,
     amount,
     isMax: true,
-    spender: data.farm?.id,
+    spender: (autoCompound && baultRouter) ? baultRouter : data.farm?.id,
     onSuccess() {}
   });
 

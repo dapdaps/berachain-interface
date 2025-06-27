@@ -2,12 +2,13 @@ import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import farmAbi from "../abi/farm";
 import bexFarmAbi from "../abi/bex-farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
 import { getTokenAmountsV2 } from "../../../helpers";
+import { BAULT_ROUTER_ABI } from "../../baults/abi";
 
 export default function useStake({
   amount,
@@ -15,8 +16,15 @@ export default function useStake({
   token,
   data,
   info,
-  onSuccess
+  onSuccess,
+  dapp,
+  autoCompound,
+  baultTokenShareAmount
 }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+  const { baults, tokenLp } = data ?? {};
+
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -27,11 +35,14 @@ export default function useStake({
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const FarmContract = new Contract(
+      let FarmContract = new Contract(
         data.farm.id,
         data.farm.provider === "kodiak" ? farmAbi : bexFarmAbi,
         signer
       );
+      if (autoCompound && baultRouter) {
+        FarmContract = new Contract(baultRouter, BAULT_ROUTER_ABI, signer);
+      }
       const totalSupply = Big(data.tokenLp.totalSupply || 0)
         .mul(10 ** data.tokenLp.decimals)
         .toString();
@@ -47,7 +58,7 @@ export default function useStake({
       });
 
       let method = "";
-      let params = [];
+      let params: any = [];
 
       if (data.farm.provider === "kodiak") {
         method = "stakeLocked";
@@ -56,6 +67,17 @@ export default function useStake({
         method = "stake";
         params = [liquidity];
       }
+
+      if (autoCompound && baultRouter && baults[0]?.id) {
+        method = "depositIntoBault";
+        params = [
+          baults[0].id,
+          liquidity,
+          utils.parseUnits(Big(baultTokenShareAmount.amount || 0).times(0.98).toFixed(tokenLp.decimals), tokenLp.decimals),
+          account
+        ];
+      }
+
       console.log(data.farm.provider, method, params);
       const estimateGas = await FarmContract.estimateGas[method](...params);
 

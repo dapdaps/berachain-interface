@@ -21,6 +21,7 @@ export default {
       "https://api.goldsky.com/api/public/project_clpx84oel0al201r78jsl0r3i/subgraphs/kodiak-v3-berachain-mainnet/latest/gn"
   },
   stakingRouter: "0x679a7C63FC83b6A4D9C1F931891d705483d4791F",
+  baultRouter: "0x89c8c594f8Dea5600bf8A30877E921a5E63DCCF3",
   sweetenedIslands: {
     "0x4a254b11810b8ebb63c5468e438fc561cb1bb1da": {
       name: "BERA-HONEY",

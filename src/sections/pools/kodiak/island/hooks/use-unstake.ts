@@ -2,11 +2,12 @@ import { useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import farmAbi from "../abi/farm";
 import bexFarmAbi from "../abi/bex-farm";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
+import { BAULT_ROUTER_ABI } from "../../baults/abi";
 export default function useUnstake({
   kekIds,
   token,
@@ -14,8 +15,15 @@ export default function useUnstake({
   amount0,
   amount1,
   data,
-  onSuccess
+  onSuccess,
+  dapp,
+  currentTab,
+  baultTokenShareAmount
 }: any) {
+  const { poolConfig } = dapp ?? {};
+  const { baultRouter } = poolConfig ?? {};
+  const { baults, tokenLp } = data ?? {};
+
   const [loading, setLoading] = useState(false);
   const { account, provider } = useCustomAccount();
   const toast = useToast();
@@ -26,11 +34,18 @@ export default function useUnstake({
     try {
       setLoading(true);
       const signer = provider.getSigner(account);
-      const FarmContract = new Contract(
+      let FarmContract = new Contract(
         data.farm.id,
         data.farm.provider === "kodiak" ? farmAbi : bexFarmAbi,
         signer
       );
+      if (currentTab === "autoCompound") {
+        FarmContract = new Contract(
+          baultRouter,
+          BAULT_ROUTER_ABI,
+          signer
+        );
+      }
 
       let method = "";
       let params = [];
@@ -41,6 +56,16 @@ export default function useUnstake({
       } else {
         method = "withdraw";
         params = [Big(amount).mul(1e18).toFixed(0)];
+      }
+
+      if (currentTab === "autoCompound" && baultRouter && baults[0]?.id) {
+        method = "redeemFromBault";
+        params = [
+          baults[0].id,
+          Big(amount).mul(1e18).toFixed(0),
+          utils.parseUnits(Big(baultTokenShareAmount.amount || 0).times(0.98).toFixed(tokenLp.decimals), tokenLp.decimals),
+          account
+        ];
       }
 
       const estimateGas = await FarmContract.estimateGas[method](...params);
