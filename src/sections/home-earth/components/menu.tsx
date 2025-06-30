@@ -1,6 +1,9 @@
+"use client";
+
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const MENU_LIST = [
   {
@@ -56,8 +59,17 @@ const MENU_LIST = [
 const NavigationMenu = (props: any) => {
   const { className } = props;
 
+  const pathname = usePathname();
+  const isBintent = pathname.includes("/bintent");
+
   return (
-    <div className={clsx("fixed z-[51] right-0 top-[150px] flex flex-col gap-[10px] items-end", className)}>
+    <div
+      className={clsx(
+        "fixed z-[51] top-[150px] flex flex-col gap-[10px] items-end",
+        isBintent ? "right-[-20px]" : "right-0",
+        className
+      )}
+    >
       {
         MENU_LIST.sort((a, b) => a.sort - b.sort).map((menu, index) => (
           <motion.div
