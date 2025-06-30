@@ -18,7 +18,9 @@ import ConnectWalletBar from "../../components/ConnectWalletBar";
 import { useConnectedWalletsStore } from "@/stores/useConnectedWalletsStore";
 import useToast from "@/hooks/use-toast";
 
-const Portfolio = () => {
+const Portfolio = (props: any) => {
+  const { className } = props;
+
   const [assetList, setAssetList] = useState<SelectItemToken[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const { data, isLoading } = useTokensStore((state) => state);
@@ -197,7 +199,8 @@ const Portfolio = () => {
       className={clsx(
         isMobile
           ? ""
-          : "w-[340px] mr-5 bg-[#FFFDEB] h-[680px] border border-[#373A53] rounded-[30px] shadow-shadow1 overflow-hidden"
+          : "w-[340px] mr-5 bg-[#FFFDEB] h-[680px] border border-[#373A53] rounded-[30px] shadow-shadow1 overflow-hidden",
+          className
       )}
     >
       {!isMobile && <ConnectWalletBar />}

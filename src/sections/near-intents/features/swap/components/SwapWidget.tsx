@@ -59,8 +59,8 @@ export const SwapWidget = memo(({
   const [currentTab, setCurrentTab] = useState<string>('assets');
 
   const Laptop = () => (
-    <div className="flex justify-end items-start w-full">
-      <div className="w-[520px] flex flex-col justify-center absolute left-1/2 transform -translate-x-1/2">
+    <div className="relative w-full flex justify-center items-start gap-[15px]">
+      <div className="relative z-[2] w-[520px] flex flex-col justify-center">
         <div className="mb-[18px] flex justify-between items-center p-[17px] bg-[#FFFDEB] border border-[#373A53] rounded-[20px] shadow-shadow1">
           <div className="font-Montserrat font-[600]">
             Complete a Deposit to Start Your Trading Journey.
@@ -71,7 +71,7 @@ export const SwapWidget = memo(({
         </div>
         <SwapForm />
       </div>
-      <Portfolio />
+      <Portfolio className="absolute z-[1] right-[70px]" />
     </div>
   )
 
