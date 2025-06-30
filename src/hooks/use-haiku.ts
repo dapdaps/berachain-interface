@@ -65,7 +65,7 @@ export function useHaiku(props: Props) {
       const txn = {
         data: res.data.data,
         to: res.data.to,
-        value: Big(Number(res.data.value)).toFixed(0)
+        value: typeof res.data.value === "string" ? res.data.value : Big(Number(res.data.value.hex)).toFixed(0)
       };
 
       const estimateGas = haiku.gas?.amount

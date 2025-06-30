@@ -1,6 +1,7 @@
 import Card from "@/components/card";
 import Popover, { PopoverPlacement } from "@/components/popover";
 import { DEFAULT_CHAIN_ID } from "@/configs";
+import { getTokenLogo } from "@/sections/dashboard/utils";
 import ExchangeIcon from "@/sections/swap/Content/ExchangeIcon";
 import SubmitBtn from "@/sections/swap/SubmitBtn";
 import TokenAmount from "@/sections/swap/TokenAmount";
@@ -51,7 +52,7 @@ const BerapawZap = (props: any) => {
         type="out"
         currency={{
           ...data?.stakingToken,
-          icon: tokenData?.logosUri?.[0]
+          icon: tokenData?.logosUri?.[0] || getTokenLogo(data?.stakingToken?.symbol)
         }}
         amount={outputCurrencyAmount}
         isPrice={false}

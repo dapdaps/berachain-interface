@@ -323,7 +323,8 @@ export function useZap(props: any) {
 
   // get token data from enso
   const { data: tokenData, loading: tokenDataLoading } = useRequest(async () => {
-    const res = await axios.get(`https://api.enso.finance/api/v1/tokens?address=${token?.address}&chainId=80094&includeMetadata=true&page=1`);
+    const tokenAddress = token?.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : token?.address;
+    const res = await axios.get(`https://api.enso.finance/api/v1/tokens?address=${tokenAddress}&chainId=80094&includeMetadata=true&page=1`);
     if (res.status !== 200 || !res.data || !res.data?.data || !res.data?.data?.length) return {};
     return res.data?.data?.[0];
   }, { refreshDeps: [token?.address] });
