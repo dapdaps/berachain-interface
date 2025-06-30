@@ -61,6 +61,10 @@ const nextConfig = {
       source: "/api-claim.berachain.com/:path*",
       destination: `https://api-claim.berachain.com/:path*`
     },
+    {
+      source: "/api.haiku.trade/:path*",
+      destination: `https://api.haiku.trade/:path*`
+    },
   ],
   webpack: (config, { dev }) => {
     config.resolve.alias.stream = "stream-browserify";

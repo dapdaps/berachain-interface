@@ -5,9 +5,10 @@ import { getTokenLogo } from "@/sections/dashboard/utils";
 import ExchangeIcon from "@/sections/swap/Content/ExchangeIcon";
 import SubmitBtn from "@/sections/swap/SubmitBtn";
 import TokenAmount from "@/sections/swap/TokenAmount";
+import { useDebounceFn } from "ahooks";
 import Big from "big.js";
 import clsx from "clsx";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const BerapawZap = (props: any) => {
   const {
@@ -32,18 +33,26 @@ const BerapawZap = (props: any) => {
     return [spender];
   }, [zapData]);
 
+  const [_inputCurrencyAmount, _setInputCurrencyAmount] = useState(inputCurrencyAmount);
+  const { run: onAmountChange } = useDebounceFn(setInputCurrencyAmount, { wait: 1000 });
+
+  useEffect(() => {
+    _setInputCurrencyAmount(inputCurrencyAmount);
+  }, [inputCurrencyAmount]);
+
   return (
     <div className="mt-[10px]">
       <TokenAmount
         type="in"
         currency={inputCurrency}
-        amount={inputCurrencyAmount}
+        amount={_inputCurrencyAmount}
         prices={prices}
         isPrice={false}
         account
         onCurrencySelectOpen={onOpenTokenSelector}
         onAmountChange={(_amount: string) => {
-          setInputCurrencyAmount(_amount);
+          _setInputCurrencyAmount(_amount);
+          onAmountChange(_amount);
         }}
         updater={1}
       />
@@ -67,13 +76,13 @@ const BerapawZap = (props: any) => {
         chain={{
           chainId: DEFAULT_CHAIN_ID
         }}
-        amount={inputCurrencyAmount}
+        amount={_inputCurrencyAmount}
         spender={spender}
         errorTips={null}
         token={inputCurrency}
         loading={loading}
         onClick={onSwap}
-        disabled={!inputCurrencyAmount || Big(inputCurrencyAmount).lte(0)}
+        disabled={!_inputCurrencyAmount || Big(_inputCurrencyAmount || 0).lte(0)}
         onRefresh={onRefresh}
         updater={1}
         loadingText={currentZapStepText}

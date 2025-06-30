@@ -171,28 +171,52 @@ export function useZap(props: any) {
       slippage: slippage / 10000,
     };
 
-    try {
-      const res = await post("/api/go/haiku/quoteIntent", params);
-      if (res.code !== 200) return false;
-      const { balances, gas } = res.data ?? {};
+    const { vaultTokens = [], tokens = [] } = haikuTokenList ?? {};
+    if (
+      (
+        tokens.some((_token: any) => _token.address.toLowerCase() === inputCurrencyAddress.toLowerCase()) ||
+        vaultTokens.some((_token: any) => _token.underlying_iid?.split(":")[1].toLowerCase() === inputCurrencyAddress.toLowerCase())
+      ) && (
+        tokens.some((_token: any) => _token.address.toLowerCase() === tokenAddress.toLowerCase()) ||
+        vaultTokens.some((_token: any) => _token.underlying_iid?.split(":")[1].toLowerCase() === tokenAddress.toLowerCase())
+      )
+    ) {
+      try {
+        const res = await post("/api/go/haiku/quoteIntent", params);
+        if (res.code !== 200) return false;
+        const { balances, gas } = res.data ?? {};
 
-      return {
-        approve: { spender: PERMIT2_ADDRESS },
-        route: {
-          amountOut: Big(balances[0].amount || 0).times(10 ** token.decimals).toFixed(0),
-          gas: gas.amount,
-          tx: "",
-          route: []
-        },
-        name: "Haiku",
-        logo: "/images/dapps/haiku.jpg",
-        response: res.data,
-      };
-    } catch (err: any) {
-      console.log(err);
+        return {
+          approve: { spender: PERMIT2_ADDRESS },
+          route: {
+            amountOut: Big(balances[0].amount || 0).times(10 ** token.decimals).toFixed(0),
+            gas: gas.amount,
+            tx: "",
+            route: []
+          },
+          name: "Haiku",
+          logo: "/images/dapps/haiku.jpg",
+          response: res.data,
+        };
+      } catch (err: any) {
+        console.log(err);
+      }
     }
+
     return false;
   }, { manual: true });
+
+  const { data: haikuTokenList, loading: haikuTokenListLoading } = useRequest(async () => {
+    const res = await axios({
+      url: "/api.haiku.trade/v1/tokenList",
+      method: "GET",
+      params: {
+        chainId: DEFAULT_CHAIN_ID,
+      },
+    });
+    if (res.status !== 200) return {};
+    return res.data.tokenList;
+  }, {});
 
   const zapData = useMemo<any>(() => {
     console.log("quoteData: %o", quoteData);
@@ -222,7 +246,7 @@ export function useZap(props: any) {
       _quoteData.haiku = _haikuData;
     }
     setQuoteData(_quoteData);
-  }, { refreshDeps: [inputCurrencyAmount, inputCurrency, token?.address, account, slippage], debounceWait: 0.5 });
+  }, { refreshDeps: [inputCurrencyAmount, inputCurrency, token?.address, account, slippage, haikuTokenList], debounceWait: 0.5 });
 
   const { runAsync: handleSwap, loading: swapLoading } = useRequest(async () => {
     if (!zapData || !account || !provider) return;
@@ -352,16 +376,16 @@ export function useZap(props: any) {
     slippage,
     setSlippage,
     tokenData,
-    tokenDataLoading,
+    tokenDataLoading: tokenDataLoading,
     tokenList,
     tokenListLoading,
     zapData,
-    zapDataLoading: ensoDataLoading || haikuDataLoading,
+    zapDataLoading: ensoDataLoading || haikuDataLoading || haikuTokenListLoading,
     getZapData,
     swapLoading,
     handleSwap,
     onTokenSelect,
-    currentZapStepText,
+    currentZapStepText
   };
 }
 
