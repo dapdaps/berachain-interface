@@ -52,7 +52,7 @@ const BerapawZap = (props: any) => {
         type="out"
         currency={{
           ...data?.stakingToken,
-          icon: tokenData?.logosUri?.[0] || getTokenLogo(data?.stakingToken?.symbol)
+          icon: tokenData?.logosUri?.[0] || getTokenLogo(data?.stakingToken?.address === "native" ? "BERA" : data?.stakingToken?.address)
         }}
         amount={outputCurrencyAmount}
         isPrice={false}
