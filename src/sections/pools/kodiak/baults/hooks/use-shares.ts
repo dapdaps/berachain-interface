@@ -26,8 +26,8 @@ export function useShares(props: any) {
     const contract = new Contract(baultContractAddress, BAULT_ABI, provider);
     let response: any;
     try {
-      response = await contract.convertToShares(utils.parseUnits(lpAmount, lpDecimals));
-      result.amount = utils.formatUnits(response, lpDecimals);
+      response = await contract.convertToShares(utils.parseUnits(Big(lpAmount || 0).toFixed(lpDecimals), lpDecimals));
+      result.amount = utils.formatUnits(response || "0", lpDecimals);
       result.value = response;
       return result;
     } catch (error) {
