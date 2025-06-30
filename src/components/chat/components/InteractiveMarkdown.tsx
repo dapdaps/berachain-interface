@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import TypingMarkdown from './TypingMarkdown';
 import { useChatContext } from '../context/chat-context';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import useToast from '@/hooks/use-toast';
 import clsx from 'clsx';
@@ -116,7 +117,11 @@ const InteractiveMarkdown: React.FC<InteractiveMarkdownProps> = ({
               <a {...props} target="_blank" rel="noopener noreferrer" />
             ),
           }}
-          remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+        >
+            {content}
+          </ReactMarkdown>
       )}
       <div ref={componentRef}>
         {component}

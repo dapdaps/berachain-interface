@@ -11,6 +11,9 @@ import { useThrottleFn } from 'ahooks';
 import { useTypewriter } from '@/components/chat/hooks/useTypewriter';
 import { motion } from 'framer-motion';
 import { motionStaggerChildren, motionStaggerParent } from '@/components/chat/utils/motion-stagger-children';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 const VaultsClaimCard = (props: any) => {
   const { parsedContent, functionType } = props;
@@ -65,7 +68,17 @@ const VaultsClaimCard = (props: any) => {
   return (
     <div className="w-full min-w-[554px]">
       <div data-typing={isTyping ? 'true' : 'false'} className="text-[#392C1D] font-montserrat text-[14px] font-medium leading-[150%]">
-        {typedContent}
+        <ReactMarkdown
+          components={{
+            a: ({ node, ...props }) => (
+              <a {...props} target="_blank" rel="noopener noreferrer" />
+            )
+          }}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+        >
+          {typedContent}
+        </ReactMarkdown>
       </div>
       <motion.div
         className="mt-[10px] w-full flex flex-col gap-[8px]"

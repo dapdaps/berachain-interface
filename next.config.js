@@ -156,6 +156,11 @@ const nextConfig = {
       source: "/docs",
       destination: "https://docs.dapdap.net/apps/beratown",
       permanent: true
+    },
+    {
+      source: "/boost",
+      destination: "/validators",
+      permanent: true
     }
   ]
 };
