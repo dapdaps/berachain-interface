@@ -29,7 +29,14 @@ const ActionUnion = (props: any) => {
           <ActionUnionRight className="md:order-1" />
         </div>
         {!!currentProtocol &&
-          ["Bex", "Kodiak", "BurrBear", "AquaBera"].includes(
+          [
+            "Bex",
+            "Kodiak",
+            "BurrBear",
+            // ⚠️@Bob#15:17 2025-04-18 Add the button of Mint LP witch protocol is AquaBera
+            "AquaBera",
+            "Aquabera",
+          ].includes(
             currentProtocol.lpProtocol
           ) && (
             <MintLPModal
