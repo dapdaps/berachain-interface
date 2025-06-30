@@ -55,7 +55,8 @@ const ActionUnionPotions = (props: any) => {
           "Kodiak",
           "BurrBear",
           // ⚠️@Bob#15:17 2025-04-18 Add the button of Mint LP witch protocol is AquaBera
-          "AquaBera"
+          "AquaBera",
+          "Aquabera",
         ].includes(currentProtocol.lpProtocol) &&
           actionType.value === ACTION_TYPE.DEPOSIT && (
             <button
