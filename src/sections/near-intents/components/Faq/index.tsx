@@ -1,7 +1,7 @@
 import Card from "@/components/card"
 import Modal from "@/components/modal"
 import clsx from "clsx"
-import { memo, useState } from "react"
+import { memo, useEffect, useState } from "react"
 
 export default memo(function Faq() {
   const [faqVisible, setFaqVisible] = useState(false)
@@ -27,7 +27,7 @@ export default memo(function Faq() {
         <div className="pl-[14px] flex gap-[6px]"><span className="mt-[6px] w-[8px] h-[8px] rounded-full border border-black" />The tokens are credited to your balance.</div>
         <div className="flex gap-[6px]"><span className="mt-[6px] w-[8px] h-[8px] rounded-full bg-black" />Step 2. Create an Intent</div>
         <div className="pl-[14px] flex gap-[6px]"><span className="mt-[6px] w-[8px] h-[8px] rounded-full border border-black" />Choose tokens which you want to swap (e.g. swap ETH on Ethereum to SOL on Solana)</div>
-        <div className="pl-[14px] flex gap-[6px]"><span className="mt-[6px] w-[8px] h-[8px] rounded-full border border-black" />Press “Swap”</div>
+        <div className="pl-[14px] flex gap-[6px]"><span className="mt-[6px] w-[8px] h-[8px] rounded-full border border-black" />Press "Swap"</div>
         <div className="pl-[14px] flex gap-[6px]"><span className="mt-[6px] w-[8px] h-[8px] rounded-full border border-black" />Bintent automatically finds the best rate and offers you to sign the transaction</div>
         <div className="flex gap-[6px]"><span className="min-w-[8px] mt-[6px] w-[8px] h-[8px] rounded-full bg-black" />To withdraw your assets, click the "Withdraw" button and select which token you want to withdraw and to which chain.</div>
       </div>
@@ -39,14 +39,14 @@ export default memo(function Faq() {
         <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">1.</span>Best price execution without bridging: Bintent scans multiple liquidity sources (onchain, CeFi, DeFi, and off-chain) to find the best price for your swap.</div>
         <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">2.</span>No gas fees, lower costs and faster execution: solvers optimize for both cost and speed, reducing unnecessary fees and delays.</div>
         <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">3.</span>Simplified user experience: no need to understand bridge mechanics, swap routes, or liquidity sources—Bintent handles everything for you.</div>
-        <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">4.</span>One account, any chain: supporting liquidity from non-smart contract chains like Bitcoin, Dogecoin, and XRP, Beratown users don’t need to switch wallets or manage multiple accounts to access assets across different networks.</div>
+        <div className="flex gap-[6px]"><span className="min-w-[8px] w-[8px]">4.</span>One account, any chain: supporting liquidity from non-smart contract chains like Bitcoin, Dogecoin, and XRP, Beratown users don't need to switch wallets or manage multiple accounts to access assets across different networks.</div>
       </div>
     )
   }, {
     question: "I see that I need to deposit my assets. Am I able to withdraw these at any time? ",
     answer: (
       <div className="text-[#3D405A] text-[14px] font-medium leading-[150%]">
-        You can deposit or withdraw your assets at any time. Simply click on ‘deposit’ and/or ‘withdraw’.
+        You can deposit or withdraw your assets at any time. Simply click on 'deposit' and/or 'withdraw'.
       </div>
     )
   }, {
@@ -62,11 +62,37 @@ export default memo(function Faq() {
       </div>
     )
   }]
+  const [offset, setOffset] = useState<any>(328);
+
+  useEffect(() => {
+    const onResize = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 1645) {
+        const decrease = (1645 - windowWidth) / 2;
+        const newOffset = Math.max(200, 328 - decrease);
+        setOffset(newOffset);
+      } else {
+        setOffset(328);
+      }
+    }
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+    }
+  }, []);
+
   return (
     <>
-      <div onClick={() => {
-        setFaqVisible(true)
-      }} className="cursor-pointer absolute w-[109px] bottom-[191px] left-1/2 translate-x-[calc(-50%_+_328px)]">
+      <div
+        onClick={() => {
+          setFaqVisible(true)
+        }}
+        className="cursor-pointer absolute w-[109px] bottom-[191px] left-1/2"
+        style={{
+          transform: `translateX(calc(-50% + ${offset}px))`
+        }}
+      >
         <img src="/images/faq_signs.svg" alt="faq_signs" />
       </div>
       <Modal
