@@ -69,7 +69,7 @@ const Baults = (props: any) => {
                   baultTokenShareAmountLoading ? (
                     <Loading size={14} />
                   ) : (
-                    `~${numberFormatter(baultTokenShareAmount?.amount, 6, true, { isShort: true, isShortUppercase: true })}`
+                    `~${numberFormatter(baultTokenShareAmount?.amount, 12, true, { isShort: true, isShortUppercase: true, round: 0 })}`
                   )
                 }
               </div>
