@@ -20,7 +20,7 @@ const Total = ({ data, symbol }: any) => {
         <div className="font-semibold text-[16px]">My Deposits</div>
         <div className="font-bold text-[16px] mt-[8px]">
           {numberFormatter(
-            Big(data.balanceUsd).add(data.locked.amountUsd).add(data.lockedBault.receiveLpAmountUsd || 0).toString(),
+            Big(data.balanceUsd).add(data.locked.amountUsd).add(data.lockedBault?.receiveLpAmountUsd || 0).toString(),
             2,
             true,
             { isShort: true, round: 0, prefix: "$" }
@@ -28,7 +28,7 @@ const Total = ({ data, symbol }: any) => {
         </div>
         <div className="font-medium text-[12px] mt-[4px]">
           {numberFormatter(
-            Big(data.balance).add(data.locked.amount).add(data.lockedBault.receiveLpAmount || 0).toString(),
+            Big(data.balance).add(data.locked.amount).add(data.lockedBault?.receiveLpAmount || 0).toString(),
             6,
             true,
             { isShort: true, round: 0 }
@@ -55,7 +55,7 @@ const Total = ({ data, symbol }: any) => {
         </div>
       </div>
       {
-        Big(data.lockedBault.receiveLpAmount || 0).gt(0) && (
+        Big(data.lockedBault?.receiveLpAmount || 0).gt(0) && (
           <div>
             <div className="font-semibold text-[16px]">Bault</div>
             <div className="font-bold text-[16px] mt-[8px]">
