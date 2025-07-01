@@ -11,7 +11,10 @@ export default function StakeModal({
   open,
   liquidity,
   onClose,
-  onSuccess
+  onSuccess,
+  dapp,
+  autoCompound,
+  isMigrate
 }: any) {
   const [step, setStep] = useState(1);
   const [lockData, setLockData] = useState();
@@ -54,8 +57,14 @@ export default function StakeModal({
         {step === 1 && (
           <ApprovePanel
             data={data}
+            dapp={dapp}
+            autoCompound={autoCompound}
             amount={liquidity}
             onSuccess={() => {
+              if (isMigrate) {
+                setStep(3);
+                return;
+              }
               setStep(2);
             }}
           />
@@ -75,10 +84,13 @@ export default function StakeModal({
         {step === 3 && (
           <StakePanel
             data={data}
+            dapp={dapp}
+            autoCompound={autoCompound}
             amount={liquidity}
             lockData={lockData}
             onSuccess={onSuccess}
             info={info}
+            isMigrate={isMigrate}
           />
         )}
       </>

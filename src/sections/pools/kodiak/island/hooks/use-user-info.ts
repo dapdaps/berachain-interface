@@ -1,4 +1,4 @@
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import { useEffect, useState } from "react";
 import useCustomAccount from "@/hooks/use-account";
 import islandAbi from "../abi/island";
@@ -7,15 +7,18 @@ import farmAbi from "../abi/farm";
 import bexFarmAbi from "../abi/bex-farm";
 import { getTokenAmountsV2 } from "../../../helpers";
 import Big from "big.js";
+import { BAULT_ABI } from "../../baults/abi";
 
 export default function useUserInfo(data: any) {
   const [info, setInfo] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const { account, provider } = useCustomAccount();
 
-  const queryInfo = async () => {
+  const queryInfo = async (params?: { isLoading?: boolean; }) => {
+    const { isLoading = true } = params ?? {};
+
     try {
-      setLoading(true);
+      setLoading(isLoading);
 
       const IslandContract = new Contract(
         data.id,
@@ -44,6 +47,7 @@ export default function useUserInfo(data: any) {
         .toString();
 
       let locked = null;
+      let lockedBault: any;
       let total = Big(balanceRes.toString());
       let withdrawLp = Big(0);
       let earnedRes = [];
@@ -149,6 +153,30 @@ export default function useUserInfo(data: any) {
           token1: data.token1
         });
 
+      if (data.baults?.[0]) {
+        const BaultContract = new Contract(
+          data.baults[0].id,
+          BAULT_ABI,
+          provider
+        );
+        try {
+          const baultBalance = await BaultContract.balanceOf(account);
+          const baultBalanceFormatted = utils.formatUnits(baultBalance || "0", data.tokenLp.decimals);
+          lockedBault = {
+            balance: baultBalanceFormatted,
+          };
+          try {
+            const baultTokenLpAmount = await BaultContract.convertToAssets(baultBalance);
+            lockedBault.receiveLpAmount = utils.formatUnits(baultTokenLpAmount || "0", data.tokenLp.decimals);
+            lockedBault.receiveLpAmountUsd = Big(lockedBault.receiveLpAmount || 0).mul(data.tokenLp.price || 0).toString();
+          } catch (err: any) {
+            console.log('convertToAssets error: %o', err);
+          }
+        } catch (err: any) {
+          console.log('balanceOf error: %o', err);
+        }
+      }
+
       setInfo({
         token0Amount: amount0,
         token1Amount: amount1,
@@ -158,6 +186,7 @@ export default function useUserInfo(data: any) {
         balanceUsd,
         balance,
         locked,
+        lockedBault,
         earned: earnedRes?.map((it: any) =>
           Big(it?.toString() || 0)
             .div(1e18)

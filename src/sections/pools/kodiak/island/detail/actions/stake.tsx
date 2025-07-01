@@ -1,14 +1,17 @@
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import Button from "@/components/button";
 import StakeModal from "../action-modal/stake-modal";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
+import Baults from "../../../baults";
 
-export default function Stake({ data, info, onSuccess }: any) {
+export default function Stake({ data, info, onSuccess, dapp, isMigrate, amountMigrate }: any) {
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState("");
+  const [autoCompound, setAutoCompound] = useState(true);
+
   const token = useMemo(
     () => ({
       address: data.id,
@@ -24,6 +27,13 @@ export default function Stake({ data, info, onSuccess }: any) {
     if (Big(balance || 0).lt(amount)) return "Insufficient Balance";
     return "";
   }, [amount, balance]);
+
+  useEffect(() => {
+    if (isMigrate) {
+      setAmount(amountMigrate);
+    }
+  }, [isMigrate, amountMigrate]);
+
   return (
     <>
       <Input
@@ -34,7 +44,20 @@ export default function Stake({ data, info, onSuccess }: any) {
           setAmount(val);
         }}
         onLoad={setBalance}
+        disabled={isMigrate}
       />
+      {
+        !isMigrate && (
+          <Baults
+            lpAmount={amount}
+            data={data}
+            info={info}
+            onSuccess={onSuccess}
+            autoCompound={autoCompound}
+            setAutoCompound={setAutoCompound}
+          />
+        )
+      }
       <Button
         disabled={!!errorTips}
         type="primary"
@@ -43,10 +66,12 @@ export default function Stake({ data, info, onSuccess }: any) {
           setShowModal(true);
         }}
       >
-        {errorTips || "Stake"}
+        {errorTips || (autoCompound ? "Stake to Auto-Compound" : "Stake")}
       </Button>
       {showModal && (
         <StakeModal
+          dapp={dapp}
+          autoCompound={autoCompound}
           data={data}
           info={info}
           liquidity={amount}
@@ -58,6 +83,7 @@ export default function Stake({ data, info, onSuccess }: any) {
             setShowModal(false);
             onSuccess();
           }}
+          isMigrate={isMigrate}
         />
       )}
     </>

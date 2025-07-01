@@ -3,8 +3,10 @@ import Big from "big.js";
 import Button from "@/components/button";
 import ModalLoading from "../loading";
 import useDeposit from "../../../hooks/use-deposit";
+import BaultsInfo from "@/sections/pools/kodiak/baults/info";
 
 export default function SupplyPanel({
+  dapp,
   data,
   amount0,
   amount1,
@@ -18,7 +20,8 @@ export default function SupplyPanel({
     amount1,
     received,
     type,
-    onSuccess
+    onSuccess,
+    dapp
   });
 
   return loading ? (
@@ -30,6 +33,7 @@ export default function SupplyPanel({
     />
   ) : (
     <>
+      <BaultsInfo data={data} lpAmount={received} />
       <div className="mt-[20px] rounded-[12px] border border-[#373A53] p-[12px]">
         <div className="flex items-center justify-between">
           <div className="text-[14px] font-medium	text-[#3D405A]">
