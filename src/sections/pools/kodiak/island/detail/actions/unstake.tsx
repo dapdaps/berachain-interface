@@ -11,7 +11,7 @@ import { numberFormatter } from "@/utils/number-formatter";
 import { useShares } from "../../../baults/hooks/use-shares";
 import useApprove from "@/hooks/use-approve";
 
-export default function Unstake({ data, info, onSuccess, dapp }: any) {
+export default function Unstake({ data, info, onSuccess, dapp, isMigrate }: any) {
   const { poolConfig } = dapp ?? {};
   const { baultRouter } = poolConfig ?? {};
 
@@ -50,12 +50,12 @@ export default function Unstake({ data, info, onSuccess, dapp }: any) {
     if (Big(info.locked?.amount || 0).gt(0) && data.farm?.id) {
       _tabs.push({ label: "Reward Vault", value: "rewardVault" });
     }
-    if (Big(info.lockedBault?.balance || 0).gt(0) && data.baults?.[0]) {
+    if (Big(info.lockedBault?.balance || 0).gt(0) && data.baults?.[0] && !isMigrate) {
       _tabs.push({ label: "Auto-Compound", value: "autoCompound" });
     }
     setCurrentTab(_tabs[0].value);
     return _tabs;
-  }, [info]);
+  }, [info, isMigrate]);
 
   const {
     baultTokenShareAmount,
@@ -68,7 +68,13 @@ export default function Unstake({ data, info, onSuccess, dapp }: any) {
     kekIds,
     token: { symbol: data.symbol },
     amount,
-    onSuccess,
+    onSuccess: () => {
+      if (isMigrate) {
+        onSuccess?.({ amount });
+        return;
+      }
+      onSuccess?.();
+    },
     amount0,
     amount1,
     data,
@@ -81,7 +87,7 @@ export default function Unstake({ data, info, onSuccess, dapp }: any) {
     amount,
     isMax: true,
     spender: baultRouter,
-    onSuccess() {}
+    onSuccess() { }
   });
 
   const onSelect = (item: any) => {
@@ -159,6 +165,16 @@ export default function Unstake({ data, info, onSuccess, dapp }: any) {
                 onLoad={setBalance}
               />
             )}
+            {
+              isMigrate && (
+                <div className="w-full border border-[#CE4314] rounded-[12px] bg-[#FFEFEF] p-[10px] mt-[16px]">
+                  <div className="font-[600]">Important</div>
+                  <div className="text-[14px]">
+                    Any unclaimed rewards in your current vault will not be automatically migrated. Make sure to claim them separately before or after migration.
+                  </div>
+                </div>
+              )
+            }
             <Button
               disabled={!!errorTips}
               type="primary"

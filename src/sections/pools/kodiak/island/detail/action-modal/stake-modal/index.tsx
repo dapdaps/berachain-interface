@@ -13,7 +13,8 @@ export default function StakeModal({
   onClose,
   onSuccess,
   dapp,
-  autoCompound
+  autoCompound,
+  isMigrate
 }: any) {
   const [step, setStep] = useState(1);
   const [lockData, setLockData] = useState();
@@ -60,6 +61,10 @@ export default function StakeModal({
             autoCompound={autoCompound}
             amount={liquidity}
             onSuccess={() => {
+              if (isMigrate) {
+                setStep(3);
+                return;
+              }
               setStep(2);
             }}
           />
@@ -85,6 +90,7 @@ export default function StakeModal({
             lockData={lockData}
             onSuccess={onSuccess}
             info={info}
+            isMigrate={isMigrate}
           />
         )}
       </>

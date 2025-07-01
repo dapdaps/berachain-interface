@@ -1,12 +1,12 @@
 import Input from "@/sections/pools/components/deposit-amounts/input";
 import Button from "@/components/button";
 import StakeModal from "../action-modal/stake-modal";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import Big from "big.js";
 import Baults from "../../../baults";
 
-export default function Stake({ data, info, onSuccess, dapp }: any) {
+export default function Stake({ data, info, onSuccess, dapp, isMigrate, amountMigrate }: any) {
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState("");
@@ -27,6 +27,13 @@ export default function Stake({ data, info, onSuccess, dapp }: any) {
     if (Big(balance || 0).lt(amount)) return "Insufficient Balance";
     return "";
   }, [amount, balance]);
+
+  useEffect(() => {
+    if (isMigrate) {
+      setAmount(amountMigrate);
+    }
+  }, [isMigrate, amountMigrate]);
+
   return (
     <>
       <Input
@@ -37,15 +44,20 @@ export default function Stake({ data, info, onSuccess, dapp }: any) {
           setAmount(val);
         }}
         onLoad={setBalance}
+        disabled={isMigrate}
       />
-      <Baults
-        lpAmount={amount}
-        data={data}
-        info={info}
-        onSuccess={onSuccess}
-        autoCompound={autoCompound}
-        setAutoCompound={setAutoCompound}
-      />
+      {
+        !isMigrate && (
+          <Baults
+            lpAmount={amount}
+            data={data}
+            info={info}
+            onSuccess={onSuccess}
+            autoCompound={autoCompound}
+            setAutoCompound={setAutoCompound}
+          />
+        )
+      }
       <Button
         disabled={!!errorTips}
         type="primary"
@@ -71,6 +83,7 @@ export default function Stake({ data, info, onSuccess, dapp }: any) {
             setShowModal(false);
             onSuccess();
           }}
+          isMigrate={isMigrate}
         />
       )}
     </>

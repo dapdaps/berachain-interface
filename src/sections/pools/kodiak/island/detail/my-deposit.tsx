@@ -2,12 +2,13 @@ import { balanceFormated } from "@/utils/balance";
 import Big from "big.js";
 import clsx from "clsx";
 import useIsMobile from "@/hooks/use-isMobile";
+import { numberFormatter } from "@/utils/number-formatter";
 
 const SimpleTotal = ({ data }: any) => {
   return (
     <div className="flex items-center justify-between text-[16px]">
       <div className="font-semibold">My Deposits</div>
-      <div className="font-bold">${balanceFormated(data.balanceUsd, 2)}</div>
+      <div className="font-bold">{numberFormatter(data.balanceUsd, 2, true, { isShort: true, round: 0, prefix: "$" })}</div>
     </div>
   );
 };
@@ -18,16 +19,19 @@ const Total = ({ data, symbol }: any) => {
       <div>
         <div className="font-semibold text-[16px]">My Deposits</div>
         <div className="font-bold text-[16px] mt-[8px]">
-          $
-          {balanceFormated(
-            Big(data.balanceUsd).add(data.locked.amountUsd).toString(),
-            2
+          {numberFormatter(
+            Big(data.balanceUsd).add(data.locked.amountUsd).add(data.lockedBault.receiveLpAmountUsd || 0).toString(),
+            2,
+            true,
+            { isShort: true, round: 0, prefix: "$" }
           )}
         </div>
         <div className="font-medium text-[12px] mt-[4px]">
-          {balanceFormated(
-            Big(data.balance).add(data.locked.amount).toString(),
-            2
+          {numberFormatter(
+            Big(data.balance).add(data.locked.amount).add(data.lockedBault.receiveLpAmount || 0).toString(),
+            6,
+            true,
+            { isShort: true, round: 0 }
           )}{" "}
           {symbol}
         </div>
@@ -35,21 +39,34 @@ const Total = ({ data, symbol }: any) => {
       <div>
         <div className="font-semibold text-[16px]">Available</div>
         <div className="font-bold text-[16px] mt-[8px]">
-          ${balanceFormated(data.balanceUsd, 2)}{" "}
+          {numberFormatter(data.balanceUsd, 2, true, { isShort: true, round: 0, prefix: "$" })}{" "}
         </div>
         <div className="font-medium text-[12px] mt-[4px]">
-          {balanceFormated(data.balance, 2)} {symbol}
+          {numberFormatter(data.balance, 6, true, { isShort: true, round: 0 })} {symbol}
         </div>
       </div>
       <div>
         <div className="font-semibold text-[16px]">Locked</div>
         <div className="font-bold text-[16px] mt-[8px]">
-          ${balanceFormated(data.locked.amountUsd, 2)}
+          {numberFormatter(data.locked.amountUsd, 2, true, { isShort: true, round: 0, prefix: "$" })}
         </div>
         <div className="font-medium text-[12px] mt-[3px]">
-          {balanceFormated(data.locked.amount, 2)} {symbol}
+          {numberFormatter(data.locked.amount, 6, true, { isShort: true, round: 0 })} {symbol}
         </div>
       </div>
+      {
+        Big(data.lockedBault.receiveLpAmount || 0).gt(0) && (
+          <div>
+            <div className="font-semibold text-[16px]">Bault</div>
+            <div className="font-bold text-[16px] mt-[8px]">
+              {numberFormatter(data.lockedBault.receiveLpAmountUsd, 2, true, { isShort: true, round: 0, prefix: "$" })}
+            </div>
+            <div className="font-medium text-[12px] mt-[3px]">
+              {numberFormatter(data.lockedBault.receiveLpAmount, 6, true, { isShort: true, round: 0 })} {symbol}
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };
