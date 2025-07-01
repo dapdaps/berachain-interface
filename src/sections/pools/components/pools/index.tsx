@@ -39,7 +39,7 @@ export default function Pools({
     <div className="pb-[20px] md:h-full">
       {!isPlain && (
         <div className="flex justify-between items-center md:flex-col md:gap-[10px]">
-          <div className="md:px-[12px] md:w-full">
+          <div className="md:px-[12px] md:w-full flex items-center gap-[10px]">
             {currentTab && (
               <SwitchTabs
                 tabs={tabs}
@@ -57,34 +57,28 @@ export default function Pools({
                 cursorClassName="md:rounded-[12px]"
               />
             )}
+            {
+              !isMobile && (
+                <BaultsBtn
+                  withBaults={withBaults}
+                  setPageLoading={setPageLoading}
+                  toggleWithBaults={toggleWithBaults}
+                  pageLoading={pageLoading}
+                />
+              )
+            }
           </div>
           <div className="md:pb-[5px] md:w-[300px] md:mx-auto flex items-center justify-end gap-[10px]">
-            <button
-              type="button"
-              className={clsx(
-                "disabled:!cursor-not-allowed disabled:opacity-50 cursor-pointer shrink-0 h-[32px] rounded-[6px] border border-[rgba(0,0,0,0.2)] text-[12px] flex items-center justify-center gap-[5px] px-[12px]",
-                withBaults ? "border-[rgba(0,0,0,0.8)]" : "border-[rgba(0,0,0,0.2)]"
-              )}
-              onClick={() => {
-                setPageLoading(true);
-                toggleWithBaults();
-              }}
-              disabled={pageLoading}
-            >
-              <div
-                className={clsx(
-                  "w-[20px] h-[20px] rounded-[4px] border border-[rgba(0,0,0,1)] shadow-[2px_2px_0px_0px_rgba(0,_0,_0,_0.25)_inset] flex items-center justify-center",
-                  withBaults ? "bg-[#FFDC50]" : "bg-[#E9E3B5]"
-                )}
-              >
-                {
-                  withBaults && (
-                    <img src="/images/icon-check.svg" alt="" className="w-[12px] h-[10px] object-contain object-center shrink-0 translate-x-[1px] translate-y-[1.5px]" />
-                  )
-                }
-              </div>
-              <div className="font-[500]">Baults</div>
-            </button>
+            {
+              isMobile && (
+                <BaultsBtn
+                  withBaults={withBaults}
+                  setPageLoading={setPageLoading}
+                  toggleWithBaults={toggleWithBaults}
+                  pageLoading={pageLoading}
+                />
+              )
+            }
             <SearchBox
               value={searchVal}
               onChange={setSearchVal}
@@ -150,5 +144,46 @@ export default function Pools({
         />
       )}
     </div>
+  );
+}
+
+const BaultsBtn = (props: any) => {
+  const {
+    withBaults,
+    setPageLoading,
+    toggleWithBaults,
+    pageLoading,
+  } = props;
+
+  return (
+    <button
+      type="button"
+      className={clsx(
+        "relative disabled:!cursor-not-allowed disabled:opacity-50 cursor-pointer shrink-0 h-[32px] rounded-[6px] border border-[rgba(0,0,0,0.2)] text-[12px] flex items-center justify-center gap-[5px] px-[12px]",
+        withBaults ? "border-[rgba(0,0,0,0.8)]" : "border-[rgba(0,0,0,0.2)]"
+      )}
+      onClick={() => {
+        setPageLoading(true);
+        toggleWithBaults();
+      }}
+      disabled={pageLoading}
+    >
+      <div className="absolute top-[-14px] md:top-[-10px] right-[-10px] px-[6px] rounded-[12px] font-[500] h-[24px] md:h-[20px] bg-[#FFDC50] flex items-center justify-center">
+        new
+      </div>
+      <div
+        className={clsx(
+          "w-[20px] h-[20px] rounded-[4px] border border-[rgba(0,0,0,1)] shadow-[2px_2px_0px_0px_rgba(0,_0,_0,_0.25)_inset] flex items-center justify-center",
+          withBaults ? "bg-[#FFDC50]" : "bg-[#E9E3B5]"
+        )}
+      >
+        {
+          withBaults && (
+            <img src="/images/icon-check.svg" alt="" className="w-[12px] h-[10px] object-contain object-center shrink-0 translate-x-[1px] translate-y-[1.5px]" />
+          )
+        }
+      </div>
+      <div className="font-[500]">Baults</div>
+    </button>
   );
 }
