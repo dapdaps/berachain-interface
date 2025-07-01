@@ -10,7 +10,7 @@ import { useRequest } from "ahooks";
 import axios from "axios";
 import Big from "big.js";
 import { utils } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export const SLIPPAGE_MAP = new Map([
   [10, {
@@ -32,7 +32,7 @@ export const SLIPPAGE_MAP = new Map([
 ]);
 
 export function useZap(props: any) {
-  const { token, onAfterSwap, onSwapSuccess, totalStep } = props;
+  const { token, stakeToken, onAfterSwap, onSwapSuccess, totalStep } = props;
 
   const toast = useToast();
   const { account, provider } = useCustomAccount();
@@ -45,6 +45,8 @@ export function useZap(props: any) {
   const [quoteData, setQuoteData] = useState<any>({});
   const [currentZapStep, setCurrentZapStep] = useState<string>();
   const [currentZapStepNo, setCurrentZapStepNo] = useState<number>();
+
+  const timerRef = useRef<any>();
 
   const currentZapStepText = useMemo(() => {
     if (!currentZapStepNo || !currentZapStep) return "";
@@ -102,15 +104,21 @@ export function useZap(props: any) {
     return _tokenList;
   }, { refreshDeps: [account], ready: !!account });
 
+  const checkSupportToken = (inputTokenAddress: string, outputTokenAddress: string, tokenList: any) => {
+    return tokenList.some((_token: any) => _token.address.toLowerCase() === inputTokenAddress.toLowerCase()) && tokenList.some((_token: any) => _token.address.toLowerCase() === outputTokenAddress.toLowerCase());
+  };
+
   const { runAsync: quoteEnsoData, data: ensoData, loading: ensoDataLoading } = useRequest(async () => {
     const amountIn = utils.parseUnits(inputCurrencyAmount, inputCurrency.decimals);
     const inputCurrencyAddress = inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address;
     const tokenAddress = token?.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : token?.address;
+    const stakeTokenAddress = stakeToken?.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : stakeToken?.address;
 
     // get approve spender address
     const approveUrl = new URL("https://api.enso.finance/api/v1/wallet/approve");
     approveUrl.searchParams.set("fromAddress", account);
-    approveUrl.searchParams.set("tokenAddress", inputCurrencyAddress);
+    // approveUrl.searchParams.set("tokenAddress", inputCurrencyAddress);
+    approveUrl.searchParams.set("tokenAddress", stakeTokenAddress);
     approveUrl.searchParams.set("chainId", DEFAULT_CHAIN_ID + "");
     approveUrl.searchParams.set("amount", amountIn.toString());
     approveUrl.searchParams.set("routingStrategy", "router");
@@ -122,13 +130,44 @@ export function useZap(props: any) {
     const routeUrl = new URL("https://api.enso.finance/api/v1/shortcuts/route");
     routeUrl.searchParams.set("amountIn", amountIn.toString());
     routeUrl.searchParams.set("tokenIn", inputCurrencyAddress);
-    routeUrl.searchParams.set("tokenOut", tokenAddress);
+    // routeUrl.searchParams.set("tokenOut", tokenAddress);
+    routeUrl.searchParams.set("tokenOut", stakeTokenAddress);
     routeUrl.searchParams.set("slippage", slippage.toString());
     routeUrl.searchParams.set("fromAddress", account);
     routeUrl.searchParams.set("receiver", account);
     routeUrl.searchParams.set("spender", account);
     routeUrl.searchParams.set("routingStrategy", "router");
     routeUrl.searchParams.set("chainId", DEFAULT_CHAIN_ID + "");
+    let stakeSupport = true;
+
+    const delayRequestAgain = () => new Promise((resolve) => {
+      approveUrl.searchParams.set("tokenAddress", inputCurrencyAddress);
+      routeUrl.searchParams.set("tokenOut", tokenAddress);
+      timerRef.current = setTimeout(async () => {
+        clearTimeout(timerRef.current);
+        try {
+          const [approveRes2, routeRes2] = await Promise.all([
+            axios.get(approveUrl.toString()),
+            axios.get(routeUrl.toString())
+          ]);
+          if (approveRes2.status !== 200 || routeRes2.status !== 200) {
+            resolve(false);
+            return;
+          }
+          resolve({
+            approve: approveRes2.data,
+            route: routeRes2.data,
+            name: "Enso",
+            logo: "/images/dapps/enso.png",
+            stakeSupport,
+          });
+          return;
+        } catch (err: any) {
+          console.log(err);
+        }
+        resolve(false);
+      }, 1000);
+    });
 
     try {
       const [approveRes, routeRes] = await Promise.all([
@@ -137,25 +176,30 @@ export function useZap(props: any) {
       ]);
 
       if (approveRes.status !== 200 || routeRes.status !== 200) {
-        return false;
+        stakeSupport = false;
+        const resAgain = await delayRequestAgain();
+        return resAgain;
       }
       return {
         approve: approveRes.data,
         route: routeRes.data,
         name: "Enso",
         logo: "/images/dapps/enso.png",
+        stakeSupport,
       };
     } catch (err: any) {
       console.log(err);
+      stakeSupport = false;
+      const resAgain = await delayRequestAgain();
+      return resAgain;
     }
-
-    return false;
   }, { manual: true });
 
   const { runAsync: quoteHaikuData, data: haikuData, loading: haikuDataLoading } = useRequest(async () => {
     const amountIn = utils.parseUnits(inputCurrencyAmount, inputCurrency.decimals);
     const inputCurrencyAddress = inputCurrency.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : inputCurrency.address;
     const tokenAddress = token?.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : token?.address;
+    const stakeTokenAddress = stakeToken?.address === "native" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : stakeToken?.address;
 
     const PERMIT2_ADDRESS = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 
@@ -166,21 +210,20 @@ export function useZap(props: any) {
     const params = {
       input_token: inputCurrencyAddress,
       input_token_amount: inputCurrencyAmount,
-      output_token: tokenAddress,
+      // output_token: tokenAddress,
+      output_token: stakeTokenAddress,
       receiver: account,
       slippage: slippage / 10000,
     };
+    let stakeSupport = true;
 
     const { vaultTokens = [], tokens = [] } = haikuTokenList ?? {};
-    if (
-      (
-        tokens.some((_token: any) => _token.address.toLowerCase() === inputCurrencyAddress.toLowerCase()) ||
-        vaultTokens.some((_token: any) => _token.underlying_iid?.split(":")[1].toLowerCase() === inputCurrencyAddress.toLowerCase())
-      ) && (
-        tokens.some((_token: any) => _token.address.toLowerCase() === tokenAddress.toLowerCase()) ||
-        vaultTokens.some((_token: any) => _token.underlying_iid?.split(":")[1].toLowerCase() === tokenAddress.toLowerCase())
-      )
-    ) {
+    // unsupport swap
+    if (!checkSupportToken(inputCurrencyAddress, params.output_token, tokens) && !checkSupportToken(inputCurrencyAddress, params.output_token, vaultTokens)) {
+      params.output_token = tokenAddress;
+      stakeSupport = false;
+    }
+    if (checkSupportToken(inputCurrencyAddress, params.output_token, tokens) || checkSupportToken(inputCurrencyAddress, params.output_token, vaultTokens)) {
       try {
         const res = await post("/api/go/haiku/quoteIntent", params);
         if (res.code !== 200) return false;
@@ -197,6 +240,7 @@ export function useZap(props: any) {
           name: "Haiku",
           logo: "/images/dapps/haiku.jpg",
           response: res.data,
+          stakeSupport,
         };
       } catch (err: any) {
         console.log(err);
@@ -250,7 +294,7 @@ export function useZap(props: any) {
 
   const { runAsync: handleSwap, loading: swapLoading } = useRequest(async () => {
     if (!zapData || !account || !provider) return;
-    const { route = {} } = zapData ?? {};
+    const { route = {}, stakeSupport } = zapData ?? {};
     const signer = provider.getSigner(account);
     let toastId = toast.loading({ title: "Confirming..." });
 
@@ -259,7 +303,6 @@ export function useZap(props: any) {
     setCurrentZapStepNo(1);
 
     if (zapData.name === "Haiku") {
-      console.log("approved: %o", approved);
       if (!approved) {
         const res = await onApprove?.();
         if (!res.isSuccess) {
@@ -285,17 +328,19 @@ export function useZap(props: any) {
         tx: swapRes.transactionHash,
         chainId: DEFAULT_CHAIN_ID
       });
-      const afterRes = await onAfterSwap?.({
-        currentStep,
-        toastId,
-        signer,
-        route,
-        toast,
-        setCurrentZapStep,
-        setCurrentZapStepNo
-      });
-      currentStep = afterRes?.currentStep ?? currentStep;
-      toastId = afterRes?.toastId ?? toastId;
+      if (!stakeSupport) {
+        const afterRes = await onAfterSwap?.({
+          currentStep,
+          toastId,
+          signer,
+          route,
+          toast,
+          setCurrentZapStep,
+          setCurrentZapStepNo
+        });
+        currentStep = afterRes?.currentStep ?? currentStep;
+        toastId = afterRes?.toastId ?? toastId;
+      }
       onSwapSuccess?.();
       setApproved(false);
     } else {
@@ -315,17 +360,19 @@ export function useZap(props: any) {
             tx: transactionHash,
             chainId: DEFAULT_CHAIN_ID
           });
-          const afterRes = await onAfterSwap?.({
-            currentStep,
-            toastId,
-            signer,
-            route,
-            toast,
-            setCurrentZapStep,
-            setCurrentZapStepNo
-          });
-          currentStep = afterRes?.currentStep ?? currentStep;
-          toastId = afterRes?.toastId ?? toastId;
+          if (!stakeSupport) {
+            const afterRes = await onAfterSwap?.({
+              currentStep,
+              toastId,
+              signer,
+              route,
+              toast,
+              setCurrentZapStep,
+              setCurrentZapStepNo
+            });
+            currentStep = afterRes?.currentStep ?? currentStep;
+            toastId = afterRes?.toastId ?? toastId;
+          }
           onSwapSuccess?.();
         } else {
           toast.fail({ title: `Swap failed!` });
@@ -362,6 +409,12 @@ export function useZap(props: any) {
     }
     setOutputCurrencyAmount(utils.formatUnits(amountOut, token?.decimals));
   }, [zapData]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, []);
 
   return {
     account,

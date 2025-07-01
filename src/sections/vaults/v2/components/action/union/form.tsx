@@ -91,6 +91,10 @@ const ActionUnionForm = (props: any) => {
     currentZapStepText,
   } = useZap({
     token: LPToken,
+    stakeToken: {
+      ...LPToken,
+      address: _currentProtocol.vaultAddress,
+    },
     totalStep: 3,
     onAfterSwap: async (params: any) => {
       const {
