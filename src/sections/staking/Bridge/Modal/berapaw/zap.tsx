@@ -8,9 +8,9 @@ import TokenAmount from "@/sections/swap/TokenAmount";
 import { useDebounceFn } from "ahooks";
 import Big from "big.js";
 import clsx from "clsx";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
-const BerapawZap = (props: any) => {
+const BerapawZap = (props: any, ref: any) => {
   const {
     data,
     inputCurrency,
@@ -34,11 +34,29 @@ const BerapawZap = (props: any) => {
   }, [zapData]);
 
   const [_inputCurrencyAmount, _setInputCurrencyAmount] = useState(inputCurrencyAmount);
+  const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState(1);
+  const [outputCurrencyUpdater, setOutputCurrencyUpdater] = useState(1);
+
+  const buttonText = useMemo(() => {
+    if (!_inputCurrencyAmount || Big(_inputCurrencyAmount || 0).lte(0)) {
+      return "Enter an Amount";
+    }
+    return null;
+  }, [_inputCurrencyAmount]);
+
   const { run: onAmountChange } = useDebounceFn(setInputCurrencyAmount, { wait: 1000 });
 
   useEffect(() => {
     _setInputCurrencyAmount(inputCurrencyAmount);
   }, [inputCurrencyAmount]);
+
+  const refs = {
+    updateBalance: () => {
+      setInputCurrencyUpdater((prev) => prev + 1);
+      setOutputCurrencyUpdater((prev) => prev + 1);
+    }
+  };
+  useImperativeHandle(ref, () => refs);
 
   return (
     <div className="mt-[10px]">
@@ -54,7 +72,7 @@ const BerapawZap = (props: any) => {
           _setInputCurrencyAmount(_amount);
           onAmountChange(_amount);
         }}
-        updater={1}
+        updater={inputCurrencyUpdater}
       />
       <ExchangeIcon />
       <TokenAmount
@@ -70,7 +88,7 @@ const BerapawZap = (props: any) => {
         account
         outputCurrencyReadonly={true}
         inputDisabled={true}
-        updater={2}
+        updater={outputCurrencyUpdater}
       />
       <SubmitBtn
         chain={{
@@ -78,7 +96,7 @@ const BerapawZap = (props: any) => {
         }}
         amount={_inputCurrencyAmount}
         spender={spender}
-        errorTips={null}
+        errorTips={buttonText}
         token={inputCurrency}
         loading={loading}
         onClick={onSwap}
@@ -103,7 +121,7 @@ const BerapawZap = (props: any) => {
   );
 };
 
-export default BerapawZap;
+export default forwardRef(BerapawZap);
 
 export const ZapSlippage = (props: any) => {
   const {
