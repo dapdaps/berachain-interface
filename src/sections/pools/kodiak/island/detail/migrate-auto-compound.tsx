@@ -20,7 +20,7 @@ const MigrateAutoCompound = (props: any) => {
   const [step, setStep] = useState(1);
   const [amountMigrate, setAmountMigrate] = useState("");
 
-  if (!info?.locked.amount || Big(info.locked.amount || 0).lte(0)) {
+  if (!info?.locked?.amount || Big(info.locked.amount || 0).lte(0)) {
     return null;
   }
 
