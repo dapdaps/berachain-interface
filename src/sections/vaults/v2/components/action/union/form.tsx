@@ -23,6 +23,7 @@ const ActionUnionForm = (props: any) => {
 
   const {
     actionType,
+    formType,
     currentProtocol,
     setCurrentProtocol,
     isBeraPaw,
@@ -226,104 +227,72 @@ const ActionUnionForm = (props: any) => {
     }
   });
 
-  if (actionType.value === ACTION_TYPE.DEPOSIT) {
+  if (formType === "zap") {
     return (
-      <div className="mt-[10px]">
-        <SwitchTabs
-          className="!h-[38px] md:!h-[30px] !rounded-[10px] md:!rounded-[8px]"
-          cursorClassName="!rounded-[8px] md:!rounded-[6px]"
-          tabs={[{
-            value: 'deposit',
-            label: "Deposit"
-          }, {
-            value: 'zap',
-            label: "Zap"
-          }]}
-          current={currentDepositTab}
-          onChange={(value: any) => {
-            setCurrentDepositTab(value);
+      <div className="">
+        <div className="flex justify-between items-center">
+          <div className="text-black font-Montserrat text-[18px] font-[600] leading-[90%]">
+            Zap into {LPToken.symbol}
+          </div>
+          <ZapSlippage
+            className=""
+            slippage={slippage}
+            setSlippage={setSlippage}
+            slippageList={Array.from(SLIPPAGE_MAP.values())}
+          />
+        </div>
+        <BerapawZap
+          ref={berapawZapRef}
+          data={{
+            stakingToken: LPToken,
           }}
-        />
-        {
-          currentDepositTab === "deposit" && (
-            <ActionUnionFormWithoutVaultsV2Context
-              {...restProps}
-              isBeraPaw={isBeraPaw}
-              actionType={actionType}
-              currentProtocol={_currentProtocol}
-              setCurrentProtocol={setCurrentProtocol}
-              spenderAddress={spenderAddress}
-              spenderToken={spenderToken}
-            />
-          )
-        }
-        {
-          currentDepositTab === "zap" && (
-            <div>
-              <div className="flex justify-between items-center mt-[10px]">
-                <div className="text-black font-Montserrat text-[18px] font-[600] leading-[90%]">
-                  Zap into {LPToken.symbol}
-                </div>
-                <ZapSlippage
-                  className=""
-                  slippage={slippage}
-                  setSlippage={setSlippage}
-                  slippageList={Array.from(SLIPPAGE_MAP.values())}
-                />
-              </div>
-              <BerapawZap
-                ref={berapawZapRef}
-                data={{
-                  stakingToken: LPToken,
-                }}
-                prices={prices}
-                inputCurrencyAmount={inputCurrencyAmount}
-                setInputCurrencyAmount={setInputCurrencyAmount}
-                outputCurrencyAmount={outputCurrencyAmount}
-                inputCurrency={inputCurrency}
-                loading={tokenListLoading || zapDataLoading || swapLoading}
-                onOpenTokenSelector={() => {
-                  setTokenSelectorVisible(true);
-                }}
-                onSwap={handleSwap}
-                onRefresh={getZapData}
-                zapData={zapData}
-                tokenData={tokenData}
-                currentZapStepText={currentZapStepText}
-              />
-            </div>
-          )
-        }
-        <TokenSelector
-          display={tokenSelectorVisible}
-          tokens={tokenList ?? []}
-          selectedTokenAddress={inputCurrency?.address}
-          chainId={DEFAULT_CHAIN_ID}
-          account={account}
-          onSelect={onTokenSelect}
-          onClose={() => {
-            setTokenSelectorVisible(false);
+          prices={prices}
+          inputCurrencyAmount={inputCurrencyAmount}
+          setInputCurrencyAmount={setInputCurrencyAmount}
+          outputCurrencyAmount={outputCurrencyAmount}
+          inputCurrency={inputCurrency}
+          loading={tokenListLoading || zapDataLoading || swapLoading}
+          onOpenTokenSelector={() => {
+            setTokenSelectorVisible(true);
           }}
-          showSearch={false}
-          isSortByBalance={false}
-          customBalanceFormatter={(currency: any, balance: string) => {
-            return numberFormatter(currency.value, 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
-          }}
+          onSwap={handleSwap}
+          onRefresh={getZapData}
+          zapData={zapData}
+          tokenData={tokenData}
+          currentZapStepText={currentZapStepText}
         />
       </div>
     );
   }
 
   return (
-    <ActionUnionFormWithoutVaultsV2Context
-      {...restProps}
-      isBeraPaw={isBeraPaw}
-      actionType={actionType}
-      currentProtocol={_currentProtocol}
-      setCurrentProtocol={setCurrentProtocol}
-      spenderAddress={spenderAddress}
-      spenderToken={spenderToken}
-    />
+    <>
+      <ActionUnionFormWithoutVaultsV2Context
+        {...restProps}
+        isBeraPaw={isBeraPaw}
+        actionType={actionType}
+        currentProtocol={_currentProtocol}
+        setCurrentProtocol={setCurrentProtocol}
+        spenderAddress={spenderAddress}
+        spenderToken={spenderToken}
+      />
+      <TokenSelector
+        display={tokenSelectorVisible}
+        tokens={tokenList ?? []}
+        selectedTokenAddress={inputCurrency?.address}
+        chainId={DEFAULT_CHAIN_ID}
+        account={account}
+        onSelect={onTokenSelect}
+        onClose={() => {
+          setTokenSelectorVisible(false);
+        }}
+        showSearch={false}
+        isSortByBalance={false}
+        customBalanceFormatter={(currency: any, balance: string) => {
+          return numberFormatter(currency.value, 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
+        }}
+      />
+    </>
   );
 };
 
