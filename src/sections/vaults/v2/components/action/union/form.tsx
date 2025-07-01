@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
 import ButtonWithApprove from "@/components/button/button-with-approve";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import LazyImage from '@/components/layz-image';
 import SwitchTabs from "@/components/switch-tabs";
 import BerapawZap, { ZapSlippage } from "@/sections/staking/Bridge/Modal/berapaw/zap";
@@ -19,6 +19,8 @@ import Big from "big.js";
 const ActionUnionForm = (props: any) => {
   const { ...restProps } = props;
 
+  const berapawZapRef = useRef<any>(null);
+
   const {
     actionType,
     currentProtocol,
@@ -29,7 +31,7 @@ const ActionUnionForm = (props: any) => {
   } = useVaultsV2Context();
 
   const {
-    onAction
+    onAction,
   } = useVaultsV2ActionContext();
 
   const _currentProtocol = useMemo(() => {
@@ -218,7 +220,10 @@ const ActionUnionForm = (props: any) => {
         toastId,
       };
     },
-    onSwapSuccess: () => { }
+    onSwapSuccess: () => {
+      setInputCurrencyAmount("");
+      berapawZapRef.current?.updateBalance?.();
+    }
   });
 
   if (actionType.value === ACTION_TYPE.DEPOSIT) {
@@ -267,6 +272,7 @@ const ActionUnionForm = (props: any) => {
                 />
               </div>
               <BerapawZap
+                ref={berapawZapRef}
                 data={{
                   stakingToken: LPToken,
                 }}

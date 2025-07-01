@@ -217,13 +217,14 @@ export function useZap(props: any) {
     };
     let stakeSupport = true;
 
-    const { vaultTokens = [], tokens = [] } = haikuTokenList ?? {};
+    const { vaultTokens = [], tokens = [], weightedLiquidityTokens = [] } = haikuTokenList ?? {};
     // unsupport swap
-    if (!checkSupportToken(inputCurrencyAddress, params.output_token, tokens) && !checkSupportToken(inputCurrencyAddress, params.output_token, vaultTokens)) {
+   
+    if (!checkSupportToken(inputCurrencyAddress, params.output_token, [...tokens, ...vaultTokens, ...weightedLiquidityTokens])) {
       params.output_token = tokenAddress;
       stakeSupport = false;
     }
-    if (checkSupportToken(inputCurrencyAddress, params.output_token, tokens) || checkSupportToken(inputCurrencyAddress, params.output_token, vaultTokens)) {
+    if (checkSupportToken(inputCurrencyAddress, params.output_token, [...tokens, ...vaultTokens, ...weightedLiquidityTokens])) {
       try {
         const res = await post("/api/go/haiku/quoteIntent", params);
         if (res.code !== 200) return false;
@@ -259,7 +260,10 @@ export function useZap(props: any) {
       },
     });
     if (res.status !== 200) return {};
-    return res.data.tokenList;
+    return {
+      ...res.data.tokenList,
+      // vaultTokens: res.data.tokenList.vaultTokens?.map((_token: any) => ({ ..._token, backendAddress: _token.address, address: _token.underlying_iid?.split(":")[1] })),
+    };
   }, {});
 
   const zapData = useMemo<any>(() => {
@@ -276,6 +280,7 @@ export function useZap(props: any) {
 
   const { runAsync: getZapData } = useRequest(async () => {
     if (!inputCurrencyAmount || Big(inputCurrencyAmount).lte(0) || !account || !inputCurrency) {
+      setOutputCurrencyAmount("");
       return;
     }
     const [_ensoData, _haikuData] = await Promise.all([
