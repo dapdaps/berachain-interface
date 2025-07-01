@@ -14,9 +14,11 @@ export default function useUserInfo(data: any) {
   const [loading, setLoading] = useState(true);
   const { account, provider } = useCustomAccount();
 
-  const queryInfo = async () => {
+  const queryInfo = async (params?: { isLoading?: boolean; }) => {
+    const { isLoading = true } = params ?? {};
+
     try {
-      setLoading(true);
+      setLoading(isLoading);
 
       const IslandContract = new Contract(
         data.id,
@@ -166,7 +168,7 @@ export default function useUserInfo(data: any) {
           try {
             const baultTokenLpAmount = await BaultContract.convertToAssets(baultBalance);
             lockedBault.receiveLpAmount = utils.formatUnits(baultTokenLpAmount || "0", data.tokenLp.decimals);
-            lockedBault.receiveLpAmountUsd = Big(lockedBault.amount || 0).mul(data.tokenLp.price || 0).toString();
+            lockedBault.receiveLpAmountUsd = Big(lockedBault.receiveLpAmount || 0).mul(data.tokenLp.price || 0).toString();
           } catch (err: any) {
             console.log('convertToAssets error: %o', err);
           }

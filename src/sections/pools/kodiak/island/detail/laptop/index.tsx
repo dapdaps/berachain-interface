@@ -3,6 +3,7 @@ import Mydeposit from "../my-deposit";
 import Earn from "../earn";
 import Actions from "../actions";
 import Loading from "@/components/loading";
+import MigrateAutoCompound from "../migrate-auto-compound";
 
 export default function Laptop({
   onBack = () => { },
@@ -29,6 +30,7 @@ export default function Laptop({
               token1={data.token1}
               symbol={data.symbol}
             />
+            <MigrateAutoCompound data={data} info={info} onSuccess={onSuccess} dapp={dapp} />
             {data.farm && (
               <Earn
                 earned={info?.earned}
