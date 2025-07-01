@@ -30,14 +30,14 @@ export const Pool = (props: any) => {
         {record.reward_tokens?.some((tk: any) =>
           ["BGT"].includes(tk.symbol?.toUpperCase?.())
         ) && (
-          <Link
-            href="/hall?from=vaults"
-            className="w-[20px] h-[20px] block shrink-0 bg-no-repeat bg-center bg-contain"
-            style={{
-              backgroundImage: 'url("/images/vaults/v2/hub.png")'
-            }}
-          />
-        )}
+            <Link
+              href="/hall?from=vaults"
+              className="w-[20px] h-[20px] block shrink-0 bg-no-repeat bg-center bg-contain"
+              style={{
+                backgroundImage: 'url("/images/vaults/v2/hub.png")'
+              }}
+            />
+          )}
         {
           record.list.some((vault: any) => !!vault.extra_data?.pp_multiplier) && (
             <IBGTPointsMultiplier
@@ -77,7 +77,7 @@ export const Vaults = (props: any) => {
               "shrink-0 overflow-hidden rounded-[8px] border border-[#FFFDEB]",
             )}
             containerStyle={{
-              marginLeft:  idx > 0 ?(record.protocolIcon.length < 5 ? -6 : -record.protocolIcon.length * 2 - 2 ) :0
+              marginLeft: idx > 0 ? (record.protocolIcon.length < 5 ? -6 : -record.protocolIcon.length * 2 - 2) : 0
             }}
             fallbackSrc="/assets/tokens/default_icon.png"
           />
@@ -94,18 +94,49 @@ export const DepositButton = (props: any) => {
   const { toggleActionVisible } = useVaultsV2Context();
 
   return (
-    <button
-      type="button"
-      className="shrink-0 w-[32px] h-[32px] bg-white rounded-[10px] bg-[url('/images/vaults/v2/deposit.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
-      {...restProps}
-      onClick={() => {
-        toggleActionVisible({
-          type: ACTION_TYPE.DEPOSIT,
-          record,
-          visible: true
-        });
-      }}
-    />
+    <Popover
+      content={(
+        <div className="w-[193px] h-[104px] p-[9px_8px] shrink-0 rounded-[10px] border border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] text-black font-Montserrat text-[14px] font-normal font-[500] leading-[100%]">
+          <button
+            type="button"
+            className="w-full h-[40px] flex-shrink-0 rounded-[10px] border border-black hover:bg-[#FFDC50] transition-all duration-150"
+            onClick={() => {
+              toggleActionVisible({
+                type: ACTION_TYPE.DEPOSIT,
+                formType: "deposit",
+                record,
+                visible: true
+              });
+            }}
+            {...restProps}
+          >
+            Deposit
+          </button>
+          <button
+            type="button"
+            className="mt-[6px] w-full h-[40px] flex-shrink-0 rounded-[10px] border border-black hover:bg-[#FFDC50] transition-all duration-150"
+            onClick={() => {
+              toggleActionVisible({
+                type: ACTION_TYPE.DEPOSIT,
+                formType: "zap",
+                record,
+                visible: true
+              });
+            }}
+            {...restProps}
+          >
+            ZAP
+          </button>
+        </div>
+      )}
+      placement={PopoverPlacement.Bottom}
+    >
+      <button
+        type="button"
+        className="shrink-0 w-[32px] h-[32px] bg-white rounded-[10px] bg-[url('/images/vaults/v2/deposit.svg')] bg-no-repeat bg-center bg-contain disabled:!cursor-not-allowed disabled:opacity-[0.3]"
+        {...restProps}
+      />
+    </Popover>
   );
 };
 

@@ -13,6 +13,7 @@ const ActionUnionRight = (props: any) => {
   const {
     isBeraPaw,
     actionType,
+    formType,
     toggleActionType,
     currentProtocol,
     toggleActionVisible,
@@ -29,62 +30,66 @@ const ActionUnionRight = (props: any) => {
       )}
     >
       {/*#region 👇Switch Header*/}
-      <div
-        className={clsx(
-          "relative grid  h-[56px] flex-shrink-0 w-full rounded-[12px] border border-[#373A53] bg-white p-[5px_4px] text-center text-[18px] font-[600] leading-[90%] font-Montserrat text-[#000]",
-          currentProtocol.protocol === "Memeswap"
-            ? "grid-cols-3"
-            : "grid-cols-2"
-        )}
-      >
-        <div
-          className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
-          onClick={() => {
-            toggleActionType(ActionTypes[ACTION_TYPE.DEPOSIT]);
-            updateBalance?.();
-          }}
-        >
-          Deposit
-        </div>
-        {currentProtocol.protocol === "Memeswap" && (
+      {
+        formType !== "zap" && (
           <div
-            className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
-            onClick={() => {
-              toggleActionType(ActionTypes[ACTION_TYPE.EXIT]);
-              updateBalance?.();
-            }}
+            className={clsx(
+              "relative grid  h-[56px] flex-shrink-0 w-full rounded-[12px] border border-[#373A53] bg-white p-[5px_4px] text-center text-[18px] font-[600] leading-[90%] font-Montserrat text-[#000]",
+              currentProtocol.protocol === "Memeswap"
+                ? "grid-cols-3"
+                : "grid-cols-2"
+            )}
           >
-            Exit
+            <div
+              className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
+              onClick={() => {
+                toggleActionType(ActionTypes[ACTION_TYPE.DEPOSIT]);
+                updateBalance?.();
+              }}
+            >
+              Deposit
+            </div>
+            {currentProtocol.protocol === "Memeswap" && (
+              <div
+                className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
+                onClick={() => {
+                  toggleActionType(ActionTypes[ACTION_TYPE.EXIT]);
+                  updateBalance?.();
+                }}
+              >
+                Exit
+              </div>
+            )}
+            <div
+              className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
+              onClick={() => {
+                toggleActionType(ActionTypes[ACTION_TYPE.WITHDRAW]);
+                updateBalance?.();
+              }}
+            >
+              Withdraw
+            </div>
+            <motion.div
+              className={clsx(
+                "absolute z-[0] w-[calc((100%_-_8px)_/_2)] h-[calc(100%_-_10px)] rounded-[10px] border border-[#000] bg-[#FFDC50] left-[4px] top-[5px]",
+                currentProtocol.protocol === "Memeswap"
+                  ? "w-[calc((100%_-_8px)_/_3)]"
+                  : "w-[calc((100%_-_8px)_/_2)]"
+              )}
+              animate={{
+                x:
+                  actionType.value === ActionTypes[ACTION_TYPE.DEPOSIT].value
+                    ? 0
+                    : actionType.value === ActionTypes[ACTION_TYPE.EXIT].value
+                      ? "100%"
+                      : currentProtocol.protocol === "Memeswap"
+                        ? "200%"
+                        : "100%"
+              }}
+            />
           </div>
-        )}
-        <div
-          className="relative z-[1] h-full rounded-[10px] flex justify-center items-center cursor-pointer"
-          onClick={() => {
-            toggleActionType(ActionTypes[ACTION_TYPE.WITHDRAW]);
-            updateBalance?.();
-          }}
-        >
-          Withdraw
-        </div>
-        <motion.div
-          className={clsx(
-            "absolute z-[0] w-[calc((100%_-_8px)_/_2)] h-[calc(100%_-_10px)] rounded-[10px] border border-[#000] bg-[#FFDC50] left-[4px] top-[5px]",
-            currentProtocol.protocol === "Memeswap"
-              ? "w-[calc((100%_-_8px)_/_3)]"
-              : "w-[calc((100%_-_8px)_/_2)]"
-          )}
-          animate={{
-            x:
-              actionType.value === ActionTypes[ACTION_TYPE.DEPOSIT].value
-                ? 0
-                : actionType.value === ActionTypes[ACTION_TYPE.EXIT].value
-                ? "100%"
-                : currentProtocol.protocol === "Memeswap"
-                ? "200%"
-                : "100%"
-          }}
-        />
-      </div>
+        )
+      }
       {/*#endregion 👆*/}
 
       {/*#region 👇Form*/}
