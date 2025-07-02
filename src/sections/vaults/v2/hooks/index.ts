@@ -159,6 +159,7 @@ export interface VaultsV2 {
   toggleActionVisible: (params?: {
     visible?: boolean;
     type?: ACTION_TYPE;
+    formType?: string;
     record?: any;
     defaultProtocol?: any;
   }) => void;
