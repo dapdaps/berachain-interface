@@ -11,6 +11,7 @@ const ActionUnionPotions = (props: any) => {
 
   const {
     currentProtocol,
+    formType,
     actionType,
     swapToken,
     toggleOpenAddLp,
@@ -58,7 +59,8 @@ const ActionUnionPotions = (props: any) => {
           "AquaBera",
           "Aquabera",
         ].includes(currentProtocol.lpProtocol) &&
-          actionType.value === ACTION_TYPE.DEPOSIT && (
+          actionType.value === ACTION_TYPE.DEPOSIT
+          && formType !== "zap" && (
             <button
               type="button"
               className="flex justify-center items-center w-[148px] h-[46px] flex-shrink-0 rounded-[10px] border border-[#000] bg-[#FFDC50] text-[#000] text-center font-Montserrat text-[18px] font-semibold leading-[90%]"
