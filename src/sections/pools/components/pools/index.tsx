@@ -29,6 +29,7 @@ export default function Pools({
   const [isPlain, setIsPlain] = useState(false);
   const isMobile = useIsMobile();
   const [kodiakPools, setKodiakPools] = useState<any>([]);
+  const [kodiakCurrentPool, setKodiakCurrentPool] = useState<any>();
   const TabContent = useMemo(
     () => tabs?.find((tab: any) => tab.value === currentTab)?.content,
     [tabs, currentTab]
@@ -41,7 +42,7 @@ export default function Pools({
   const isKodiak = useMemo(() => dapp?.name === "Kodiak", [dapp]);
 
   const [kodiakTotalTvl, kodiakMyDeposits] = useMemo(() => {
-    if (!kodiakPools || isKodiak) return [Big(0), Big(0)];
+    if (!kodiakPools || !isKodiak) return [Big(0), Big(0)];
     const totalTvl = kodiakPools?.reduce((acc: number, pool: any) => Big(acc).plus(pool.poolTvl || 0), Big(0));
     const myDeposits = kodiakPools?.reduce((acc: number, pool: any) => Big(acc).plus(pool.balanceUSD || 0), Big(0));
     return [totalTvl, myDeposits];
@@ -50,7 +51,7 @@ export default function Pools({
   return (
     <div className="pb-[0px] md:h-full md:overflow-y-auto">
       {
-        !!TabContent && isKodiak && (
+        !!TabContent && isKodiak && !kodiakCurrentPool && (
           <div className="h-[77px] md:h-[unset] flex justify-between items-start gap-[10px] w-full mb-[15px] p-[20px_30px_22px] md:p-[10px_10px] rounded-[10px] bg-[#FFDC50] text-[#000] font-montserrat text-[14px] font-[400] leading-[90%]">
             <div className="flex flex-col gap-[10px] md:gap-[8px]">
               <div className="text-[18px] md:text-[16px] font-semibold">
@@ -176,6 +177,11 @@ export default function Pools({
             loadPools: (_pools: any) => {
               if (isKodiak && _pools) {
                 setKodiakPools(_pools || []);
+              }
+            },
+            loadCurrent: (_record: any) => {
+              if (isKodiak) {
+                setKodiakCurrentPool(_record);
               }
             }
           }}
