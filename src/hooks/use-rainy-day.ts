@@ -5,6 +5,7 @@ import { random } from 'lodash';
 import Big from 'big.js';
 import { RAINY_DAY, useRainyDayStore } from '@/stores/rainy-day';
 import { useActivityStore } from '@/stores/useActivityStore';
+import axios from 'axios';
 
 export function useRainyDay(props?: { isLoadPrice?: boolean; }) {
   const { isLoadPrice } = props || {};
@@ -20,9 +21,9 @@ export function useRainyDay(props?: { isLoadPrice?: boolean; }) {
 
   const getBera1DPrice = async () => {
     try {
-      const res = await fetch('/api.dapdap.net/api/token/price/latest').then(res => res.json());
-      if (res.code === 0) {
-        const beraRes = res.data['BERA'];
+      const res = await axios.get('https://api.dapdap.net/api/token/price/latest');
+      if (res.status === 200 &&res.data.code === 0) {
+        const beraRes = res.data.data['BERA'];
         setRainyDay({
           ...RAINY_DAY,
           status: Big(beraRes.change_percent || 0).lt(0) ? SceneStatus.Ongoing : SceneStatus.Ended,
