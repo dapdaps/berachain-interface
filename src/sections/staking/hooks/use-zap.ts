@@ -239,7 +239,7 @@ export function useZap(props: any) {
             route: []
           },
           name: "Haiku",
-          logo: "/images/dapps/haiku.jpg",
+          logo: "/images/vaults/v2/zap/logo-haiku.svg",
           response: res.data,
           stakeSupport,
         };

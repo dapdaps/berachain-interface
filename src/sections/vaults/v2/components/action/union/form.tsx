@@ -66,6 +66,7 @@ const ActionUnionForm = (props: any) => {
     return {
       ...currentProtocol?.token,
       symbol: currentProtocol?.tokens?.map((token: any) => token.symbol).join("-"),
+      underlyingTokens: currentProtocol?.tokens,
     };
   }, [currentProtocol?.token, currentProtocol?.tokens]);
 
@@ -230,7 +231,7 @@ const ActionUnionForm = (props: any) => {
   if (formType === "zap") {
     return (
       <div className="">
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <div className="text-black font-Montserrat text-[18px] font-[600] leading-[90%]">
             Zap into {LPToken.symbol}
           </div>
@@ -240,8 +241,10 @@ const ActionUnionForm = (props: any) => {
             setSlippage={setSlippage}
             slippageList={Array.from(SLIPPAGE_MAP.values())}
           />
-        </div>
+        </div> */}
         <BerapawZap
+          className="!mt-[unset]"
+          isSimple={true}
           ref={berapawZapRef}
           data={{
             stakingToken: LPToken,
@@ -260,6 +263,22 @@ const ActionUnionForm = (props: any) => {
           zapData={zapData}
           tokenData={tokenData}
           currentZapStepText={currentZapStepText}
+        />
+        <TokenSelector
+          display={tokenSelectorVisible}
+          tokens={tokenList ?? []}
+          selectedTokenAddress={inputCurrency?.address}
+          chainId={DEFAULT_CHAIN_ID}
+          account={account}
+          onSelect={onTokenSelect}
+          onClose={() => {
+            setTokenSelectorVisible(false);
+          }}
+          showSearch={false}
+          isSortByBalance={false}
+          customBalanceFormatter={(currency: any, balance: string) => {
+            return numberFormatter(currency.value, 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
+          }}
         />
       </div>
     );
