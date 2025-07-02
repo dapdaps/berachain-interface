@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import usePoolsIslands from "../use-pools-islands";
 
 export default function Island({ page, setPage, searchVal, setIsPlain, withBaults, setPageLoading, dapp, loadPools, loadCurrent }: any) {
-  const { loading, pools: islands } = usePoolsIslands({ withBaults, setPageLoading });
+  const { loading, pools: islands, allPools } = usePoolsIslands({ withBaults, setPageLoading });
   const [record, setRecord] = useState<any>();
 
   useEffect(() => {
@@ -13,8 +13,8 @@ export default function Island({ page, setPage, searchVal, setIsPlain, withBault
   }, [record]);
 
   useEffect(() => {
-    loadPools?.(islands);
-  }, [islands]);
+    loadPools?.(allPools || islands);
+  }, [allPools, islands]);
 
   return record ? (
     <Detail
