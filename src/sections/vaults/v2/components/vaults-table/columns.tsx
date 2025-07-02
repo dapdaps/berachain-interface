@@ -91,10 +91,13 @@ export const Vaults = (props: any) => {
 export const DepositButton = (props: any) => {
   const { record, index, className, ...restProps } = props;
 
+  const popoverRef = useRef<any>();
+
   const { toggleActionVisible } = useVaultsV2Context();
 
   return (
     <Popover
+      ref={popoverRef}
       content={(
         <div className="w-[193px] h-[104px] p-[9px_8px] shrink-0 rounded-[10px] border border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] text-black font-Montserrat text-[14px] font-normal font-[500] leading-[100%]">
           <button
@@ -107,6 +110,7 @@ export const DepositButton = (props: any) => {
                 record,
                 visible: true
               });
+              popoverRef.current?.onClose();
             }}
             {...restProps}
           >
@@ -122,6 +126,7 @@ export const DepositButton = (props: any) => {
                 record,
                 visible: true
               });
+              popoverRef.current?.onClose();
             }}
             {...restProps}
           >
