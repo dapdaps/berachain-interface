@@ -18,18 +18,28 @@ export default function useUserInfo(data: any) {
     const { isLoading = true } = params ?? {};
 
     try {
-      setLoading(isLoading);
+      setLoading(!!isLoading);
 
       const IslandContract = new Contract(
         data.id,
         data.type === "v2" ? poolV2Abi : islandAbi,
         provider
       );
-      const balanceRes = await IslandContract.balanceOf(account);
+      let balanceRes: any;
+      try {
+        balanceRes = await IslandContract.balanceOf(account);
+      } catch (err) {
+        console.log('balanceOf error: %o', err);
+      }
 
-      const reverses = await IslandContract[
-        data.type === "v2" ? "getReserves" : "getUnderlyingBalances"
-      ]();
+      let reverses: any;
+      try {
+        reverses = await IslandContract[
+          data.type === "v2" ? "getReserves" : "getUnderlyingBalances"
+        ]();
+      } catch(err: any) {
+        console.log('%s error: %o', data.type === "v2" ? "getReserves" : "getUnderlyingBalances", err);
+      }
 
       const totalSupply = Big(data.tokenLp.totalSupply || 0)
         .mul(10 ** data.tokenLp.decimals)
