@@ -1,4 +1,5 @@
 import Card from "@/components/card";
+import InputNumber from "@/components/input-number";
 import Popover, { PopoverPlacement } from "@/components/popover";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { getTokenLogo } from "@/sections/dashboard/utils";
@@ -12,6 +13,7 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 
 const BerapawZap = (props: any, ref: any) => {
   const {
+    isSimple,
     data,
     inputCurrency,
     inputCurrencyAmount,
@@ -57,6 +59,35 @@ const BerapawZap = (props: any, ref: any) => {
     }
   };
   useImperativeHandle(ref, () => refs);
+
+  if (isSimple) {
+    return (
+      <div className="mt-[10px]">
+        <div className="w-full h-[72px] rounded-[12px] border border-[#373A53] bg-white text-[#3D405A] font-montserrat text-[12px] font-medium leading-normal">
+          <div className="w-full flex justify-between items-center gap-[10px] h-[26px]">
+            <div className="w-0 h-full flex-1 overflow-hidden">
+              <InputNumber className="w-full h-full text-black font-montserrat text-[26px] font-bold leading-[100%]" />
+            </div>
+            <div className="shrink-0 flex justify-end items-center gap-[8px]">
+              <div className="flex items-center">
+                <img src={inputCurrency.icon} alt="" className="w-[26px] h-[26px] object-center object-contain rounded-full shrink-0" />
+              </div>
+              <div className="text-black font-montserrat text-[16px] font-[600] leading-[90%]">
+                {inputCurrency.symbol}
+              </div>
+              <img src="/images/vaults/v2/zap/icon-arrow-down.svg" alt="" className="w-[12px] h-[7px] object-center object-contain shrink-0" />
+            </div>
+          </div>
+          <div className="w-full flex justify-between items-center gap-[10px] whitespace-nowrap overflow-hidden">
+            <div className="">$18.23</div>
+            <div className="">
+            balance: 100
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-[10px]">
