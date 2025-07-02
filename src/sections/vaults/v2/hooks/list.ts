@@ -24,6 +24,8 @@ import useIsMobile from "@/hooks/use-isMobile";
 import getD2FinanceInfo from "@/sections/vaults/dapps/d2-finance/info";
 import { usePriceStore } from '@/stores/usePriceStore';
 import { addItem2Group, generateGroup, vaultsDataFormatter } from '@/sections/vaults/v2/utils';
+import { multicall, multicallAddresses } from '@/utils/multicall';
+import { DEFAULT_CHAIN_ID } from '@/configs';
 
 const DEFAULT_FILTER_SELECTED: Record<FILTER_KEYS, FilterItem[]> = {
   [FILTER_KEYS.ASSETS]: [],
@@ -43,7 +45,7 @@ const DEFAULT_FILTER_ASSETS_BALANCE: {
 }));
 
 export function useList(notNeedingFetchData?: boolean): List {
-  const { account } = useCustomAccount();
+  const { account, provider } = useCustomAccount();
   const isMobile = useIsMobile();
   const prices = usePriceStore(store => store.beraTownPrice);
 
@@ -496,8 +498,8 @@ export function useList(notNeedingFetchData?: boolean): List {
           ? ORDER_DIRECTION.DESC
           : ORDER_DIRECTION.ASC
         : _orderKeys[0]?.direction === ORDER_DIRECTION.ASC
-        ? ORDER_DIRECTION.DESC
-        : ORDER_DIRECTION.ASC;
+          ? ORDER_DIRECTION.DESC
+          : ORDER_DIRECTION.ASC;
       setOrderKeys(_orderKeys);
     }
     // new order
@@ -643,11 +645,25 @@ export function useList(notNeedingFetchData?: boolean): List {
       };
     };
     try {
-      const balances = await Promise.all(
-        filterAssetsBalance.map((it) => getBalance(it))
-      );
+      const _filterAssetsBalance = filterAssetsBalance.filter((it) => it.address !== "native" && !!it.address);
+      const calls = _filterAssetsBalance.map((it) => ({
+        address: it.address,
+        name: "balanceOf",
+        params: [account]
+      }));
+      let balances: any = await multicall({
+        abi: TOKEN_ABI,
+        options: {},
+        calls,
+        multicallAddress: multicallAddresses[DEFAULT_CHAIN_ID],
+        provider,
+      });
+      balances = balances.map((it: any, _idx: number) => ({
+        ..._filterAssetsBalance[_idx],
+        balance: it ? utils.formatUnits(it[0], _filterAssetsBalance[_idx].decimals) : "0"
+      }));
       const WBERABalance = await getBalance(bera.wbera);
-      const BERABalance = balances.find((it) => it.symbol === "BERA");
+      const BERABalance = await getBalance(bera.bera);
       if (
         BERABalance &&
         Big(BERABalance.balance || 0).lte(0) &&
@@ -657,7 +673,7 @@ export function useList(notNeedingFetchData?: boolean): List {
       }
       setFilterAssetsBalance(balances);
     } catch (error) {
-      console.error("Error fetching balances:", error);
+      console.log("Error fetching balances:", error);
     }
     setFilterAssetsBalanceLoading(false);
   };
@@ -683,10 +699,13 @@ export function useList(notNeedingFetchData?: boolean): List {
 
   useEffect(() => {
     getData();
-    if (account) {
+  }, [account]);
+
+  useEffect(() => {
+    if (account && provider) {
       getFilterAssetsBalance();
     }
-  }, [account]);
+  }, [account, provider]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

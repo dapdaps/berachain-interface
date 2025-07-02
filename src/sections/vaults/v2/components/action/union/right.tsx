@@ -25,7 +25,7 @@ const ActionUnionRight = (props: any) => {
   return (
     <div
       className={clsx(
-        "w-full bg-[rgba(0,0,0,0.06)] rounded-[10px] p-[24px_20px_20px_20px]",
+        "w-full rounded-[10px]",
         className
       )}
     >
