@@ -141,7 +141,7 @@ export default function Laptop({
         list={data}
         maxPage={maxPage}
         onPageChange={setPage}
-        bodyClassName="h-[480px] overflow-y-auto"
+        bodyClassName="h-[400px] overflow-y-auto"
         onItemClick={(item: any) => {
           onSelect(item);
         }}

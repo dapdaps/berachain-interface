@@ -137,7 +137,7 @@ export default function IslandMobile({ pools, loading, onSelect, searchVal }: an
   }, [pools, searchVal]);
 
   return (
-    <div className="px-[12px] pb-[18px] pt-[16px] flex flex-col gap-[12px] h-[calc(100%-80px)] overflow-y-auto">
+    <div className="px-[12px] pb-[18px] pt-[16px] flex flex-col gap-[12px]">
       {list.length === 0 && !loading && (
         <div className="mt-[50px] w-full flex justify-center items-center">
           <Empty desc="No Pools." />

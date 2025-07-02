@@ -17,7 +17,7 @@ export default function useUserList() {
     try {
       const calls = [
         axios.get(
-          `https://staging.backend.kodiak.finance/vaults?orderBy=balance&orderDirection=desc&limit=100&offset=0&chainId=80094&user=${account}`
+          `https://backend.kodiak.finance/vaults?orderBy=balance&orderDirection=desc&limit=100&offset=0&chainId=80094&user=${account}`
         )
       ];
       if (Object.values(kodiakTokensStore.tokens).length === 0) {

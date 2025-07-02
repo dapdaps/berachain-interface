@@ -197,14 +197,14 @@ export default function Unstake({ data, info, onSuccess, dapp, isMigrate }: any)
                   Your Auto-Compound Shares:
                 </div>
                 <div className="w-[180px] shrink-0 flex justify-end items-center gap-[5px] font-[700]">
-                  <div>{numberFormatter(info.lockedBault?.balance, 9, true, { isShort: true, isShortUppercase: true })} Bault-{data.tokenLp.symbol}</div>
+                  <div>{numberFormatter(info.lockedBault?.balance, 9, true, { isShort: false, isShortUppercase: true })} Bault-{data.tokenLp.symbol}</div>
                   {/* <img src={data.icon} alt="" className="w-[20px] h-[20px] rounded-full shrink-0" /> */}
                 </div>
               </div>
               <div className="flex justify-between items-start gap-[10px]">
                 <div className=""></div>
                 <div className="w-[180px] shrink-0 text-[#3D405A] text-[12px]">
-                  ≈{numberFormatter(info.lockedBault?.receiveLpAmount, 9, true, { isShort: true, isShortUppercase: true })} {data.tokenLp.symbol}
+                  ≈{numberFormatter(info.lockedBault?.receiveLpAmount, 9, true, { isShort: false, isShortUppercase: true })} {data.tokenLp.symbol}
                 </div>
               </div>
             </div>
