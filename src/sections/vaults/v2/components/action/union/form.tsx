@@ -277,7 +277,7 @@ const ActionUnionForm = (props: any) => {
           showSearch={false}
           isSortByBalance={false}
           customBalanceFormatter={(currency: any, balance: string) => {
-            return numberFormatter(currency.value, 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
+            return numberFormatter(balance, 4, true, { isShort: true, isShortUppercase: true, isZeroPrecision: true });
           }}
         />
       </div>
