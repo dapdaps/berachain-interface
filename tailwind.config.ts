@@ -29,7 +29,8 @@ const config: Config = {
     },
     screens: {
       md: { max: "768px" },
-      lg: { min: "769px" }
+      lg: { min: "769px" },
+      xl: { min: "1450px" }
     },
     animation: {
       "snow-down": "snowDown 10s linear infinite",

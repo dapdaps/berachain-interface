@@ -60,13 +60,13 @@ const NavigationMenu = (props: any) => {
   const { className } = props;
 
   const pathname = usePathname();
-  const isBintent = pathname.includes("/bintent");
+  const isSmall = ["/bintent"].includes(pathname);
 
   return (
     <div
       className={clsx(
         "fixed z-[51] top-[150px] flex flex-col gap-[10px] items-end",
-        isBintent ? "right-[-20px]" : "right-0",
+        isSmall ? "right-[-20px]" : "right-0",
         className
       )}
     >
