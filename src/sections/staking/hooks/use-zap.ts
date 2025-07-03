@@ -219,7 +219,7 @@ export function useZap(props: any) {
 
     const { vaultTokens = [], tokens = [], weightedLiquidityTokens = [] } = haikuTokenList ?? {};
     // unsupport swap
-   
+
     if (!checkSupportToken(inputCurrencyAddress, params.output_token, [...tokens, ...vaultTokens, ...weightedLiquidityTokens])) {
       params.output_token = tokenAddress;
       stakeSupport = false;
@@ -346,7 +346,12 @@ export function useZap(props: any) {
         currentStep = afterRes?.currentStep ?? currentStep;
         toastId = afterRes?.toastId ?? toastId;
       }
-      onSwapSuccess?.();
+      onSwapSuccess?.({
+        stakeSupport,
+        outputCurrencyAmount,
+        transactionHash: swapRes.transactionHash,
+        status: swapRes.status
+      });
       setApproved(false);
     } else {
       try {
@@ -378,7 +383,12 @@ export function useZap(props: any) {
             currentStep = afterRes?.currentStep ?? currentStep;
             toastId = afterRes?.toastId ?? toastId;
           }
-          onSwapSuccess?.();
+          onSwapSuccess?.({
+            stakeSupport,
+            outputCurrencyAmount,
+            transactionHash,
+            status
+          });
         } else {
           toast.fail({ title: `Swap failed!` });
           getZapData();
