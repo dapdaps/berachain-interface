@@ -97,7 +97,7 @@ export function useHaiku(props: Props) {
         ...baseReturn,
         isSuccess: status === 1
       });
-      return { isSuccess: status === 1, transactionHash };
+      return { isSuccess: status === 1, transactionHash, status };
     } catch (err: any) {
       console.log("swap err", err);
     } finally {

@@ -15,11 +15,14 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { numberFormatter } from "@/utils/number-formatter";
 import { ethers } from "ethers";
 import Big from "big.js";
+import useAddAction from "@/hooks/use-add-action";
 
 const ActionUnionForm = (props: any) => {
   const { ...restProps } = props;
 
   const berapawZapRef = useRef<any>(null);
+
+  const { addAction } = useAddAction("vaults");
 
   const {
     actionType,
@@ -222,9 +225,37 @@ const ActionUnionForm = (props: any) => {
         toastId,
       };
     },
-    onSwapSuccess: () => {
+    onSwapSuccess: ({ stakeSupport, outputCurrencyAmount, transactionHash, status }: any) => {
       setInputCurrencyAmount("");
       berapawZapRef.current?.updateBalance?.();
+      // ⚠️ This means the user successfully staked LP tokens through zap
+      // the output amount may be not accurate
+      if (stakeSupport) {
+        addAction?.({
+          type: "Staking",
+          action: "Stake",
+          token: _currentProtocol.token,
+          amount: outputCurrencyAmount,
+          template: _currentProtocol.protocol,
+          add: false,
+          status,
+          transactionHash,
+          sub_type: "Zap",
+          tokens:
+            _currentProtocol.tokens.length === 1
+              ? _currentProtocol.tokens
+              : [
+                  {
+                    ..._currentProtocol.token,
+                    symbol: _currentProtocol.tokens
+                      .map((token: any) => token.symbol)
+                      .join("-")
+                  }
+                ],
+          amounts: [outputCurrencyAmount],
+          extra_data: {}
+        });
+      }
     }
   });
 
