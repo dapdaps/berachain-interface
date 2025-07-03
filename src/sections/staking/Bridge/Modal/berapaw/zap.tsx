@@ -45,14 +45,18 @@ const BerapawZap = (props: any, ref: any) => {
 
   const [_inputCurrencyAmount, _setInputCurrencyAmount] = useState(inputCurrencyAmount);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState(1);
+  const [inputCurrencyBalance, setInputCurrencyBalance] = useState<any>("0");
   const [outputCurrencyUpdater, setOutputCurrencyUpdater] = useState(1);
 
   const buttonText = useMemo(() => {
     if (!_inputCurrencyAmount || Big(_inputCurrencyAmount || 0).lte(0)) {
       return "Enter an Amount";
     }
+    if (!inputCurrencyBalance || Big(inputCurrencyBalance || 0).lt(Big(_inputCurrencyAmount || 0))) {
+      return "Insufficient Balance";
+    }
     return null;
-  }, [_inputCurrencyAmount]);
+  }, [_inputCurrencyAmount, inputCurrencyBalance]);
 
   const { run: onAmountChange } = useDebounceFn(setInputCurrencyAmount, { wait: 1000 });
 
@@ -83,6 +87,9 @@ const BerapawZap = (props: any, ref: any) => {
               token={inputCurrency}
               tokenBalanceUpdater={inputCurrencyUpdater}
               onTokenSelectOpen={onOpenTokenSelector}
+              loadTokenBalance={(_inputTokenBalance: string) => {
+                setInputCurrencyBalance(_inputTokenBalance);
+              }}
             />
             <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[42px] h-[42px] shrink-0 bg-[#FFFDEB] rounded-[12px] p-[4px]">
               <div className="w-full h-full bg-[#BC9549] bg-[url('/images/vaults/v2/zap/icon-arrow-handle-down.svg')] bg-center bg-no-repeat bg-[length:11px_auto] rounded-[8px]"></div>
@@ -114,6 +121,9 @@ const BerapawZap = (props: any, ref: any) => {
                 onAmountChange(_amount);
               }}
               updater={inputCurrencyUpdater}
+              onUpdateCurrencyBalance={(_balance: string) => {
+                setInputCurrencyBalance(_balance);
+              }}
             />
             <ExchangeIcon />
             <TokenAmount
@@ -226,6 +236,7 @@ export const SimpleTokenInput = forwardRef((props: any, ref: any) => {
     tokenBalanceUpdater,
     isPrice = true,
     onTokenSelectOpen,
+    loadTokenBalance,
   } = props;
 
   const prices = usePriceStore((store: any) => store.price);
@@ -248,6 +259,10 @@ export const SimpleTokenInput = forwardRef((props: any, ref: any) => {
   useEffect(() => {
     updateTokenBalance();
   }, [tokenBalanceUpdater]);
+
+  useEffect(() => {
+    loadTokenBalance?.(tokenBalance);
+  }, [tokenBalance]);
 
   const refs = {
     updateTokenBalance,
