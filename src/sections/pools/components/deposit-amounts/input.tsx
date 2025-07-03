@@ -108,7 +108,7 @@ const Input = ({
           ) : (
             <StyledBalance
               onClick={() => {
-                if (isNaN(Number(balance))) return;
+                if (isNaN(Number(balance)) || disabled) return;
                 setValue(balanceFormated(new Big(balance).toFixed(18), 18));
               }}
               className="cursor-pointer"

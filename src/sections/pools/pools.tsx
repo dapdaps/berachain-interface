@@ -10,6 +10,6 @@ const PoolsPanel = ({ dex, ...rest }: any) => {
   if (dex?.toLowerCase() === "burrbear") return <BurrBear {...rest} />;
 };
 
-export default function Pools({ dex }: any) {
-  return <PoolsPanel dex={dex} />;
+export default function Pools({ dapp, dex }: any) {
+  return <PoolsPanel dex={dex} dapp={dapp} />;
 }

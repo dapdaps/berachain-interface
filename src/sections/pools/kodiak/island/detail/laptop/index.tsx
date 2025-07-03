@@ -3,14 +3,17 @@ import Mydeposit from "../my-deposit";
 import Earn from "../earn";
 import Actions from "../actions";
 import Loading from "@/components/loading";
+import MigrateAutoCompound from "../migrate-auto-compound";
 
 export default function Laptop({
-  onBack = () => {},
+  onBack = () => { },
   data,
   info,
   loading,
-  onSuccess
+  onSuccess,
+  dapp
 }: any) {
+
   return (
     <div className="h-[calc(100vh-380px)] overflow-y-auto">
       <Header data={data} onBack={onBack} />
@@ -27,6 +30,7 @@ export default function Laptop({
               token1={data.token1}
               symbol={data.symbol}
             />
+            <MigrateAutoCompound data={data} info={info} onSuccess={onSuccess} dapp={dapp} />
             {data.farm && (
               <Earn
                 earned={info?.earned}
@@ -36,7 +40,7 @@ export default function Laptop({
               />
             )}
           </div>
-          <Actions data={data} info={info} onSuccess={onSuccess} />
+          <Actions data={data} info={info} onSuccess={onSuccess} dapp={dapp} />
         </div>
       )}
     </div>

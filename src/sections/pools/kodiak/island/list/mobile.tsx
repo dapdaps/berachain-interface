@@ -5,6 +5,7 @@ import Empty from "@/components/empty";
 import CircleLoading from "@/components/circle-loading";
 import Big from "big.js";
 import clsx from "clsx";
+import { useMemo } from "react";
 const Item = ({ record, setSelectedRecord }: any) => {
   return (
     <div className="rounded-[10px] bg-black/10 p-[14px]">
@@ -115,10 +116,29 @@ const Item = ({ record, setSelectedRecord }: any) => {
   );
 };
 
-export default function IslandMobile({ pools, loading, onSelect }: any) {
+export default function IslandMobile({ pools, loading, onSelect, searchVal }: any) {
+  const list = useMemo(() => {
+    const _pools = pools.filter((pool: any) => {
+      let flag = true;
+      if (
+        searchVal &&
+        !(
+          pool.token0.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+          pool.token0.symbol.toLowerCase().includes(searchVal.toLowerCase()) ||
+          pool.token1.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+          pool.token1.symbol.toLowerCase().includes(searchVal.toLowerCase())
+        )
+      )
+        flag = false;
+      return flag;
+    });
+
+    return _pools;
+  }, [pools, searchVal]);
+
   return (
-    <div className="px-[12px] pb-[18px] pt-[16px] flex flex-col gap-[12px] h-[calc(100%-80px)] overflow-y-auto">
-      {pools.length === 0 && !loading && (
+    <div className="px-[12px] pb-[18px] pt-[16px] flex flex-col gap-[12px]">
+      {list.length === 0 && !loading && (
         <div className="mt-[50px] w-full flex justify-center items-center">
           <Empty desc="No Pools." />
         </div>
@@ -128,7 +148,7 @@ export default function IslandMobile({ pools, loading, onSelect }: any) {
           <CircleLoading />
         </div>
       )}
-      {pools.map((item: any, idx: number) => (
+      {list.map((item: any, idx: number) => (
         <Item key={idx} record={item} setSelectedRecord={onSelect} />
       ))}
     </div>
