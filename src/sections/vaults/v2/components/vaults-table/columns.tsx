@@ -99,10 +99,10 @@ export const DepositButton = (props: any) => {
     <Popover
       ref={popoverRef}
       content={(
-        <div className="w-[193px] h-[104px] p-[9px_8px] shrink-0 rounded-[10px] border border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] text-black font-Montserrat text-[14px] font-normal font-[500] leading-[100%]">
+        <div className="w-[218px] h-[127px] p-[8px_8px] shrink-0 rounded-[10px] border border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] text-black font-Montserrat text-[14px] font-[700] leading-[100%]">
           <button
             type="button"
-            className="w-full h-[40px] flex-shrink-0 rounded-[10px] border border-black hover:bg-[#FFDC50] transition-all duration-150"
+            className="w-full h-[40px] flex-shrink-0 rounded-[10px] border border-black bg-[#FFF2BE] hover:bg-[#FFDC50] transition-all duration-150"
             onClick={() => {
               toggleActionVisible({
                 type: ACTION_TYPE.DEPOSIT,
@@ -118,7 +118,7 @@ export const DepositButton = (props: any) => {
           </button>
           <button
             type="button"
-            className="mt-[6px] w-full h-[40px] flex-shrink-0 rounded-[10px] border border-black hover:bg-[#FFDC50] transition-all duration-150"
+            className="mt-[4px] flex items-center gap-[6px] justify-center w-full h-[40px] flex-shrink-0 rounded-[10px] border border-black bg-[#FFF2BE] hover:bg-[#FFDC50] hover:bg-[url('/images/vaults/v2/zap/bg-zap-button.png')] bg-no-repeat bg-cover bg-center transition-all duration-150"
             onClick={() => {
               toggleActionVisible({
                 type: ACTION_TYPE.DEPOSIT,
@@ -130,8 +130,22 @@ export const DepositButton = (props: any) => {
             }}
             {...restProps}
           >
-            ZAP
+             <img src="/images/vaults/v2/zap/icon-zap.svg" className="w-[16px] h-[16px] shrink-0 origin-center object-contain" />
+            <div className="">ZAP</div>
           </button>
+          <div className="flex justify-center items-center mt-[4px] text-[rgba(0,0,0,0.6)] font-Montserrat text-[12px] font-bold leading-normal">
+            <div className="font-[500]">
+              Powered by
+            </div>
+            <div className="flex items-center ml-[2px]">
+              <img src="/images/vaults/v2/zap/logo-haiku.svg" className="w-[22px] h-[22px] shrink-0 origin-center object-contain opacity-60" />
+              <div className="">Haiku</div>
+            </div>
+            <div className="flex items-center ml-[5px]">
+              <img src="/images/dapps/enso.png" className="w-[16px] h-[16px] shrink-0 origin-center object-contain opacity-60" />
+              <div className="">ENSO</div>
+            </div>
+          </div>
         </div>
       )}
       placement={PopoverPlacement.Bottom}
