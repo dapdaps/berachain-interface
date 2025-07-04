@@ -137,11 +137,11 @@ export const DepositButton = (props: any) => {
             <div className="font-[500]">
               Powered by
             </div>
-            <div className="flex items-center ml-[2px]">
+            <div className="flex items-center gap-[2px] ml-[2px]">
               <img src="/images/vaults/v2/zap/logo-haiku.svg" className="w-[22px] h-[22px] shrink-0 origin-center object-contain opacity-60" />
               <div className="">Haiku</div>
             </div>
-            <div className="flex items-center ml-[5px]">
+            <div className="flex items-center gap-[2px] ml-[5px]">
               <img src="/images/dapps/enso.png" className="w-[16px] h-[16px] shrink-0 origin-center object-contain opacity-60" />
               <div className="">ENSO</div>
             </div>
