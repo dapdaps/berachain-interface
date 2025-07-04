@@ -15,6 +15,7 @@ export function useVaultsV2(): VaultsV2 {
   const [actionType, setActionType] = useState<ActionType>(
     ActionTypes[ACTION_TYPE.DEPOSIT]
   );
+  const [formType, setFormType] = useState<string>("deposit");
   const [claimVisible, setClaimVisible] = useState(false);
   const [claimSuccessVisible, setClaimSuccessVisible] = useState(false);
   const [strategyVisible, setStrategyVisible] = useState(false);
@@ -24,6 +25,7 @@ export function useVaultsV2(): VaultsV2 {
   const [successReward, setSuccessReward] = useState<any>(null);
   const [openAddLp, setOpenAddLp] = useState(false);
   const [swapToken, setSwapToken] = useState<any>(null);
+  const [currentDepositTab, setCurrentDepositTab] = useState<any>("deposit");
 
   const [isBeraPaw] = useMemo(() => {
     return [currentProtocol?.project?.toLowerCase() === "berapaw" && currentProtocol?.linkVault];
@@ -34,10 +36,11 @@ export function useVaultsV2(): VaultsV2 {
   const toggleActionVisible = (params?: {
     visible?: boolean;
     type?: ACTION_TYPE;
+    formType?: string;
     record?: any;
     defaultProtocol?: any;
   }) => {
-    const { visible: _actionVisible, type: _actionType, record, defaultProtocol } = params ?? {};
+    const { visible: _actionVisible, type: _actionType, record, defaultProtocol, formType } = params ?? {};
 
     if (_actionVisible) {
       handleReportWithoutDebounce("1022-001-009", record.pool_address);
@@ -50,6 +53,7 @@ export function useVaultsV2(): VaultsV2 {
     if (_actionType) {
       setActionType(ActionTypes[_actionType]);
     }
+    setFormType(formType ?? "deposit");
     let maxApyRecord = maxBy(record?.list ?? [], (item: any) => item.totalApy.toNumber());
     if (defaultProtocol) {
       maxApyRecord = defaultProtocol;
@@ -119,6 +123,7 @@ export function useVaultsV2(): VaultsV2 {
 
   return {
     actionType,
+    formType,
     actionVisible,
     claimVisible,
     claimSuccessVisible,
@@ -141,16 +146,20 @@ export function useVaultsV2(): VaultsV2 {
     getTotalStatistics,
     totalStatisticsLoading,
     isBeraPaw,
+    currentDepositTab,
+    setCurrentDepositTab,
   };
 }
 
 export interface VaultsV2 {
   actionType: ActionType;
+  formType: string;
   currentRecord?: any;
   actionVisible: boolean;
   toggleActionVisible: (params?: {
     visible?: boolean;
     type?: ACTION_TYPE;
+    formType?: string;
     record?: any;
     defaultProtocol?: any;
   }) => void;
@@ -176,4 +185,6 @@ export interface VaultsV2 {
   getTotalStatistics: () => Promise<void>;
   totalStatisticsLoading: boolean;
   isBeraPaw: boolean;
+  currentDepositTab: any;
+  setCurrentDepositTab: Dispatch<any>;
 }

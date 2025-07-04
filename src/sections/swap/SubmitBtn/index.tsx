@@ -5,14 +5,23 @@ import { useSwitchChain } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useEffect } from 'react';
 
-export const BaseButton = ({ loading, onClick, children, disabled = false }: any) => {
+export const BaseButton = ({ loading, loadingText, onClick, children, disabled = false }: any) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className='h-[60px] md:h-[46px] w-full duration-500 hover:opacity-70 active:opacity-90 flex items-center justify-center border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] md:text-[16px] font-[600] mt-[16px] cursor-pointer'
+      className='h-[60px] md:h-[46px] w-full duration-500 hover:opacity-70 active:opacity-90 disabled:opacity-30 flex items-center justify-center gap-[10px] border border-[#000000] rounded-[10px] bg-[#FFDC50] text-[18px] md:text-[16px] font-[600] mt-[16px] cursor-pointer'
     >
-      {loading ? <Loading /> : children}
+      {loading ? (
+        <>
+          <Loading />
+          {
+            !!loadingText && (
+              <div>{loadingText}</div>
+            )
+          }
+        </>
+      ) : children}
     </button>
   );
 };
@@ -20,9 +29,11 @@ export const BaseButton = ({ loading, onClick, children, disabled = false }: any
 export default function SubmitBtn({
   chain,
   spender,
+  isApproveMax,
   token,
   amount,
   loading,
+  loadingText,
   errorTips,
   disabled,
   onClick,
@@ -34,6 +45,7 @@ export default function SubmitBtn({
     amount,
     token,
     spender,
+    isMax: isApproveMax,
     onSuccess: onRefresh
   });
   const { isPending: switching, switchChain } = useSwitchChain();
@@ -72,7 +84,13 @@ export default function SubmitBtn({
   }
 
   if (checking || approving || loading) {
-    return <BaseButton loading={true} disabled />;
+    return (
+      <BaseButton
+        loading={true}
+        disabled
+        loadingText={loadingText}
+      />
+    );
   }
 
   if (errorTips) {

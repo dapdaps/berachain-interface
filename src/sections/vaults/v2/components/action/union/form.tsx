@@ -5,32 +5,344 @@ import clsx from "clsx";
 import { ACTION_TYPE } from "@/sections/vaults/v2/config";
 import ActionRangeDays from "@/sections/vaults/v2/components/action/range-days";
 import ButtonWithApprove from "@/components/button/button-with-approve";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import LazyImage from '@/components/layz-image';
+import SwitchTabs from "@/components/switch-tabs";
+import BerapawZap, { ZapSlippage } from "@/sections/staking/Bridge/Modal/berapaw/zap";
+import { SLIPPAGE_MAP, useZap } from "@/sections/staking/hooks/use-zap";
+import TokenSelector from "@/sections/swap/TokenSelector";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import { numberFormatter } from "@/utils/number-formatter";
+import { ethers } from "ethers";
+import Big from "big.js";
+import useAddAction from "@/hooks/use-add-action";
 
 const ActionUnionForm = (props: any) => {
   const { ...restProps } = props;
 
+  const berapawZapRef = useRef<any>(null);
+
+  const { addAction } = useAddAction("vaults");
+
   const {
     actionType,
+    formType,
     currentProtocol,
     setCurrentProtocol,
     isBeraPaw,
+    currentDepositTab,
+    setCurrentDepositTab,
   } = useVaultsV2Context();
 
-  let _currentProtocol = currentProtocol;
-  if (isBeraPaw) {
-    _currentProtocol = currentProtocol.linkVault;
+  const {
+    onAction,
+  } = useVaultsV2ActionContext();
+
+  const _currentProtocol = useMemo(() => {
+    if (isBeraPaw) {
+      return currentProtocol.linkVault;
+    }
+    return currentProtocol;
+  }, [isBeraPaw, currentProtocol]);
+
+  const [spenderAddress, spenderToken] = useMemo(() => {
+    return [
+      // 👇for WeBera
+      _currentProtocol.extra_data?.vault_router
+        ? _currentProtocol.extra_data?.vault_router
+        : actionType.value === ACTION_TYPE.DEPOSIT
+          ? _currentProtocol.vaultAddress
+          : "",
+      actionType.value === ACTION_TYPE.DEPOSIT
+        ? _currentProtocol.token
+        : // 👇for WeBera
+        _currentProtocol.extra_data?.vault_router
+          ? {
+            address: _currentProtocol.vaultAddress,
+            decimals: _currentProtocol.token.decimals
+          }
+          : _currentProtocol.token
+    ];
+  }, [_currentProtocol, actionType]);
+
+  const LPToken = useMemo(() => {
+    return {
+      ...currentProtocol?.token,
+      symbol: currentProtocol?.tokens?.map((token: any) => token.symbol).join("-"),
+      underlyingTokens: currentProtocol?.tokens,
+    };
+  }, [currentProtocol?.token, currentProtocol?.tokens]);
+
+  const {
+    account,
+    provider,
+    prices,
+    inputCurrencyAmount,
+    setInputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrency,
+    tokenSelectorVisible,
+    setTokenSelectorVisible,
+    slippage,
+    setSlippage,
+    tokenData,
+    tokenDataLoading,
+    tokenList,
+    tokenListLoading,
+    zapData,
+    zapDataLoading,
+    getZapData,
+    swapLoading,
+    handleSwap,
+    onTokenSelect,
+    currentZapStepText,
+  } = useZap({
+    token: LPToken,
+    stakeToken: {
+      ...LPToken,
+      address: _currentProtocol.vaultAddress,
+    },
+    totalStep: 3,
+    onAfterSwap: async (params: any) => {
+      const {
+        signer,
+        route,
+        toast,
+        setCurrentZapStep,
+        setCurrentZapStepNo
+      } = params;
+      let { currentStep, toastId } = params;
+
+      //#region get balance of staking token
+      const contract = new ethers.Contract(
+        LPToken?.address,
+        [
+          {
+            inputs: [
+              { internalType: 'address', name: 'account', type: 'address' }
+            ],
+            name: 'balanceOf',
+            outputs: [
+              { internalType: 'uint256', name: '', type: 'uint256' }
+            ],
+            stateMutability: 'view',
+            type: 'function'
+          }
+        ],
+        provider
+      );
+      const balance = await contract.balanceOf(account);
+      const realBalance = ethers.utils.formatUnits(balance, LPToken?.decimals);
+      const estimatedAmountOut = ethers.utils.formatUnits(route.amountOut, LPToken?.decimals);
+      let realAmountOut = estimatedAmountOut;
+      if (Big(realBalance).lt(estimatedAmountOut)) {
+        realAmountOut = realBalance;
+      }
+      //#endregion
+
+      //#region check stake amount approved
+      currentStep = "Approve";
+      setCurrentZapStep("Approve");
+      setCurrentZapStepNo(2);
+      const tokenContract = new ethers.Contract(
+        LPToken?.address,
+        [
+          {
+            inputs: [
+              { internalType: "address", name: "", type: "address" },
+              { internalType: "address", name: "", type: "address" }
+            ],
+            name: "allowance",
+            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+            stateMutability: "view",
+            type: "function"
+          },
+          {
+            inputs: [
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" }
+            ],
+            name: "approve",
+            outputs: [{ internalType: "bool", name: "", type: "bool" }],
+            stateMutability: "nonpayable",
+            type: "function"
+          }
+        ],
+        signer
+      );
+      const allowanceRes = await tokenContract.allowance(account, spenderAddress);
+      const allowanceAmount = ethers.utils.formatUnits(
+        allowanceRes.toString(),
+        LPToken?.decimals
+      );
+      //#endregion
+
+      //#region approve stake amount
+      if (Big(allowanceAmount).lt(realAmountOut)) {
+        const encodedRealAmount = ethers.utils.parseUnits(realAmountOut, LPToken?.decimals);
+        let estimateGas = "5000000";
+        try {
+          const estimateGasRes = await tokenContract.estimateGas.approve(spenderAddress, encodedRealAmount);
+          estimateGas = Big(estimateGasRes.toString()).times(1.2).toFixed(0);
+        } catch (err) {
+          console.log("get estimate gas err: %o", err);
+        }
+        const approveTx = await tokenContract.approve(spenderAddress, encodedRealAmount, { gasLimit: estimateGas });
+        toastId = toast.loading({ title: "Pending...", tx: approveTx.hash, chainId: DEFAULT_CHAIN_ID });
+        const approveTxReceipt = await approveTx.wait();
+        if (approveTxReceipt.status === 1) {
+          toast.dismiss(toastId);
+          toastId = toast.success({
+            title: "Approve Successful!"
+          });
+          currentStep = "Stake";
+          setCurrentZapStep("Stake");
+          setCurrentZapStepNo(3);
+          const stakeSuccess = await onAction({ amount: realAmountOut });
+          if (!stakeSuccess) {
+            return {
+              currentStep,
+              toastId,
+            };
+          }
+        }
+      }
+      else {
+        currentStep = "Stake";
+        setCurrentZapStep("Stake");
+        setCurrentZapStepNo(3);
+        const stakeSuccess = await onAction({ amount: realAmountOut });
+        if (!stakeSuccess) {
+          return {
+            currentStep,
+            toastId,
+          };
+        }
+      }
+      //#endregion
+      return {
+        currentStep,
+        toastId,
+      };
+    },
+    onSwapSuccess: ({ stakeSupport, outputCurrencyAmount, transactionHash, status }: any) => {
+      setInputCurrencyAmount("");
+      berapawZapRef.current?.updateBalance?.();
+      // ⚠️ This means the user successfully staked LP tokens through zap
+      // the output amount may be not accurate
+      if (stakeSupport) {
+        addAction?.({
+          type: "Staking",
+          action: "Stake",
+          token: _currentProtocol.token,
+          amount: outputCurrencyAmount,
+          template: _currentProtocol.protocol,
+          add: false,
+          status,
+          transactionHash,
+          sub_type: "Zap",
+          tokens:
+            _currentProtocol.tokens.length === 1
+              ? _currentProtocol.tokens
+              : [
+                  {
+                    ..._currentProtocol.token,
+                    symbol: _currentProtocol.tokens
+                      .map((token: any) => token.symbol)
+                      .join("-")
+                  }
+                ],
+          amounts: [outputCurrencyAmount],
+          extra_data: {}
+        });
+      }
+    }
+  });
+
+  if (formType === "zap") {
+    return (
+      <div className="">
+        {/* <div className="flex justify-between items-center">
+          <div className="text-black font-Montserrat text-[18px] font-[600] leading-[90%]">
+            Zap into {LPToken.symbol}
+          </div>
+          <ZapSlippage
+            className=""
+            slippage={slippage}
+            setSlippage={setSlippage}
+            slippageList={Array.from(SLIPPAGE_MAP.values())}
+          />
+        </div> */}
+        <BerapawZap
+          className="!mt-[unset]"
+          isSimple={true}
+          ref={berapawZapRef}
+          data={{
+            stakingToken: LPToken,
+          }}
+          prices={prices}
+          inputCurrencyAmount={inputCurrencyAmount}
+          setInputCurrencyAmount={setInputCurrencyAmount}
+          outputCurrencyAmount={outputCurrencyAmount}
+          inputCurrency={inputCurrency}
+          loading={tokenListLoading || zapDataLoading || swapLoading}
+          onOpenTokenSelector={() => {
+            setTokenSelectorVisible(true);
+          }}
+          onSwap={handleSwap}
+          onRefresh={getZapData}
+          zapData={zapData}
+          tokenData={tokenData}
+          currentZapStepText={currentZapStepText}
+        />
+        <TokenSelector
+          display={tokenSelectorVisible}
+          tokens={tokenList ?? []}
+          selectedTokenAddress={inputCurrency?.address}
+          chainId={DEFAULT_CHAIN_ID}
+          account={account}
+          onSelect={onTokenSelect}
+          onClose={() => {
+            setTokenSelectorVisible(false);
+          }}
+          showSearch={false}
+          isSortByBalance={false}
+          customBalanceFormatter={(currency: any, balance: string) => {
+            return numberFormatter(balance, 4, true, { isShort: true, isShortUppercase: true, isZeroPrecision: true });
+          }}
+        />
+      </div>
+    );
   }
 
   return (
-    <ActionUnionFormWithoutVaultsV2Context
-      {...restProps}
-      isBeraPaw={isBeraPaw}
-      actionType={actionType}
-      currentProtocol={_currentProtocol}
-      setCurrentProtocol={setCurrentProtocol}
-    />
+    <>
+      <ActionUnionFormWithoutVaultsV2Context
+        {...restProps}
+        isBeraPaw={isBeraPaw}
+        actionType={actionType}
+        currentProtocol={_currentProtocol}
+        setCurrentProtocol={setCurrentProtocol}
+        spenderAddress={spenderAddress}
+        spenderToken={spenderToken}
+      />
+      <TokenSelector
+        display={tokenSelectorVisible}
+        tokens={tokenList ?? []}
+        selectedTokenAddress={inputCurrency?.address}
+        chainId={DEFAULT_CHAIN_ID}
+        account={account}
+        onSelect={onTokenSelect}
+        onClose={() => {
+          setTokenSelectorVisible(false);
+        }}
+        showSearch={false}
+        isSortByBalance={false}
+        customBalanceFormatter={(currency: any, balance: string) => {
+          return numberFormatter(currency.value, 2, true, { prefix: "$", isShort: true, isShortUppercase: true, isZeroPrecision: true });
+        }}
+      />
+    </>
   );
 };
 
@@ -43,6 +355,8 @@ const ActionUnionFormWithoutVaultsV2Context = (props: any) => {
     currentProtocol,
     setCurrentProtocol,
     isBeraPaw,
+    spenderAddress,
+    spenderToken,
   } = props;
 
   const {
@@ -137,25 +451,8 @@ const ActionUnionFormWithoutVaultsV2Context = (props: any) => {
         )}
       <div className="mt-[20px] flex justify-center">
         <ButtonWithApprove
-          spender={
-            // 👇for WeBera
-            currentProtocol.extra_data?.vault_router
-              ? currentProtocol.extra_data?.vault_router
-              : actionType.value === ACTION_TYPE.DEPOSIT
-                ? currentProtocol.vaultAddress
-                : ""
-          }
-          token={
-            actionType.value === ACTION_TYPE.DEPOSIT
-              ? currentProtocol.token
-              : // 👇for WeBera
-              currentProtocol.extra_data?.vault_router
-                ? {
-                  address: currentProtocol.vaultAddress,
-                  decimals: currentProtocol.token.decimals
-                }
-                : currentProtocol.token
-          }
+          spender={spenderAddress}
+          token={spenderToken}
           amount={amount}
           loading={loading}
           errorTips={inputErrorMessage}

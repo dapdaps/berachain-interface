@@ -125,8 +125,10 @@ export default function useAction(): Action {
     setAmount(_amount);
   };
 
-  const onAction = async () => {
-    if (!_currentProtocol) return;
+  const onAction = async (params?: any) => {
+    if (!_currentProtocol) return false;
+
+    const actionAmount = params?.amount || amount;
 
     if (actionType.value !== ACTION_TYPE.EXIT) {
       handleReportWithoutDebounce(
@@ -146,7 +148,7 @@ export default function useAction(): Action {
         actionType: actionType.button,
         signer,
         account,
-        amount: Big(amount || 0)
+        amount: Big(actionAmount || 0)
           .mul(10 ** _currentProtocol.token.decimals)
           .toFixed(0),
         currentRecord: _currentProtocol,
@@ -156,7 +158,7 @@ export default function useAction(): Action {
       if (!tx) {
         setLoading(false);
         toast.fail({ title: actionType.button + " failed!" });
-        return;
+        return false;
       }
       toastId = toast.loading({ title: "Pending..." });
       const { status, transactionHash } = await tx.wait();
@@ -178,7 +180,7 @@ export default function useAction(): Action {
       }
       setLoading(false);
 
-      if (actionType.button === "Exit") return;
+      if (actionType.button === "Exit") return true;
       addAction?.({
         type: "Staking",
         action: actionType.button === "Deposit" ? "Stake" : "Unstake",
@@ -216,6 +218,7 @@ export default function useAction(): Action {
       });
       setLoading(false);
     }
+    return true;
   };
 
   return {
@@ -238,7 +241,7 @@ export default function useAction(): Action {
 
 export interface Action {
   loading: boolean;
-  onAction: () => Promise<void>;
+  onAction: (params?: { amount?: string; }) => Promise<boolean>;
   amount: string | undefined;
   handleAmountChange: (_amount: string) => void;
   inputError: boolean;
