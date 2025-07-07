@@ -95,6 +95,18 @@ export const DepositButton = (props: any) => {
 
   const { toggleActionVisible } = useVaultsV2Context();
 
+  useEffect(() => {
+    const handleScroll = () => {
+      popoverRef.current?.onClose();
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <Popover
       ref={popoverRef}
@@ -246,10 +258,10 @@ export const APY = (props: any) => {
       popoverRef3.current?.onClose();
     };
 
-    containerRef?.current?.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      containerRef?.current?.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
