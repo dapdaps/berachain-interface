@@ -53,7 +53,7 @@ const networks = {
     // 1-0.5%=0.995
     borrowingFee: 0.005,
     // Minimum Debt of 2 required
-    minimumDebt: 69,
+    minimumDebt: 0,
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.9/gn',
     denManagersParams: (market: any) => ({

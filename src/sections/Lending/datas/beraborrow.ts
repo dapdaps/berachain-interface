@@ -392,7 +392,7 @@ const BeraborrowData = (props: any) => {
             resolve(result);
           })
           .catch((err: any) => {
-            resolve({});
+            resolve([]);
             console.log("getBorrows failure: %o", err);
           });
       });

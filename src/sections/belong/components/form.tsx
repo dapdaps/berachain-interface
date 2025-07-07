@@ -1,14 +1,41 @@
 import InputNumber from "@/components/input-number";
 import LazyImage from "@/components/layz-image";
 import Range from "@/components/range";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useState } from "react";
+import beraborrowConfig from "@/configs/lending/beraborrow";
+import { DEFAULT_CHAIN_ID } from "@/configs";
+import { usePriceStore } from "@/stores/usePriceStore";
+import useCustomAccount from "@/hooks/use-account";
+
+const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
 const BelongForm = (props: any) => {
   const { } = props;
 
+  const { basic, networks }: any = beraborrowConfig;
+  const { markets = [] } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
+
+  const { account, provider, chainId } = useCustomAccount();
+  const prices = usePriceStore((store) => store.price);
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [depositAmount, setDepositAmount] = useState("");
   const [totalDebt, setTotalDebt] = useState("");
   const [leverage, setLeverage] = useState(0);
+  const [currentMarket, setCurrentMarket] = useState<any>(markets[0]);
+
+  const isChainSupported = useMemo(() => {
+    if (!chainId) {
+      return false;
+    }
+    const currChain = networks[chainId];
+    return !!currChain;
+  }, [chainId]);
+
+  useEffect(() => {
+    setLoading(isChainSupported);
+  }, [isChainSupported, account]);
 
   return (
     <div className="w-[500px] mx-auto mt-[20px]">
@@ -19,15 +46,15 @@ const BelongForm = (props: any) => {
         <div className="flex justify-between items-center gap-[10px]">
           <div className="shrink-0 flex items-center gap-[4px]">
             <LazyImage
-              src="/images/berachain.png"
+              src={currentMarket?.icon}
               fallbackSrc="/assets/tokens/default_icon.png"
               alt=""
               containerClassName="!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden"
             />
             <div className="">
-              ETH
+              {currentMarket?.symbol}
             </div>
-            <img src="/images/icon-arrow.svg" alt="" className="w-[12px] h-[12px] shrink-0" />
+            <img src="/images/belong/icon-arrow.svg" alt="" className="w-[12px] h-[12px] shrink-0" />
           </div>
           <InputNumber
             className="flex-1 bg-[#3D405A]"
@@ -141,6 +168,21 @@ const BelongForm = (props: any) => {
           deposit
         </button>
       </div>
+
+      <BeraborrowData
+        {...networks[DEFAULT_CHAIN_ID + '']}
+        {...basic}
+        markets={[currentMarket]}
+        chainId={chainId}
+        prices={prices}
+        update={loading}
+        account={account}
+        provider={provider}
+        onLoad={(res: any) => {
+          console.log('Beraborrow data res: %o', res);
+          setLoading(false);
+        }}
+      />
     </div>
   );
 };
