@@ -18,6 +18,9 @@ import { useRainyDay } from "@/hooks/use-rainy-day";
 import { AnimatePresence, motion } from "framer-motion";
 import { useActivityStore } from "@/stores/useActivityStore";
 import NavigationMenu from "@/sections/home-earth/components/menu";
+import Downtime from "@/components/downtime";
+
+const isSystemMaintenanceDowntime = process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true";
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
@@ -130,16 +133,24 @@ const MainLayout = (props: Props) => {
     <div
       id="layout"
       className={`min-h-screen relative flex flex-col items-stretch justify-start transition-background duration-150 ${bg}`}
-      style={{
+      style={isSystemMaintenanceDowntime ? {} : {
         ...sceneStyles,
         ...style
       }}
       onClick={handleTrack}
     >
-      <MainLayoutHeader
-        className={routes.includes(pathname) ? "bg-transparent !fixed" : ""}
-      />
-      <div className="grow">{children}</div>
+      {
+        isSystemMaintenanceDowntime ? (
+          <Downtime />
+        ) : (
+          <>
+            <MainLayoutHeader
+              className={routes.includes(pathname) ? "bg-transparent !fixed" : ""}
+            />
+            <div className="grow">{children}</div>
+          </>
+        )
+      }
       <div className="fixed left-[16px] bottom-[16px] z-[13] flex items-center gap-[6px]">
         <Link
           className="hover:scale-110 ease-in-out duration-300 w-[90px] h-[26px] rounded-full bg-white/50 flex items-center justify-center cursor-pointer"
@@ -287,30 +298,36 @@ const MainLayout = (props: Props) => {
       </div>
       <MapModal />
       <GuidingTutorial />
-      <AnimatePresence mode="wait">
-        {isRainyDay &&
-          (rainyDay?.bgPathname === "ALL" ||
-            rainyDay?.bgPathname.includes(pathname)) &&
-          rainyDay?.excludePathname !== "ALL" &&
-          !rainyDay?.excludePathname?.includes?.(pathname) &&
-          isDefaultTheme() && (
-            <motion.div
-              variants={{
-                visible: { opacity: 1 },
-                invisible: { opacity: 0 }
-              }}
-              animate="visible"
-              initial="invisible"
-              exit="invisible"
-              transition={{
-                duration: 2
-              }}
-            >
-              <RainyDay dropCount={120} minSpeed={0.5} maxSpeed={2} />
-            </motion.div>
-          )}
-      </AnimatePresence>
-      <NavigationMenu />
+      {
+        !isSystemMaintenanceDowntime && (
+          <>
+            <AnimatePresence mode="wait">
+              {isRainyDay &&
+                (rainyDay?.bgPathname === "ALL" ||
+                  rainyDay?.bgPathname.includes(pathname)) &&
+                rainyDay?.excludePathname !== "ALL" &&
+                !rainyDay?.excludePathname?.includes?.(pathname) &&
+                isDefaultTheme() && (
+                  <motion.div
+                    variants={{
+                      visible: { opacity: 1 },
+                      invisible: { opacity: 0 }
+                    }}
+                    animate="visible"
+                    initial="invisible"
+                    exit="invisible"
+                    transition={{
+                      duration: 2
+                    }}
+                  >
+                    <RainyDay dropCount={120} minSpeed={0.5} maxSpeed={2} />
+                  </motion.div>
+                )}
+            </AnimatePresence>
+            <NavigationMenu />
+          </>
+        )
+      }
     </div>
   );
 };
