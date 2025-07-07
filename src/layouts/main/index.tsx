@@ -52,11 +52,11 @@ const MainLayout = (props: Props) => {
   );
 
   const bg = useMemo(() => {
-    if (isVaults) {
+    if (isVaults && !isSystemMaintenanceDowntime) {
       return "bg-[url('/images/vaults/v2/bg.png')] bg-black/90 bg-no-repeat bg-top bg-cover";
     }
     return "bg-[var(--background)]";
-  }, [isVaults, pathname]);
+  }, [isVaults, pathname, isSystemMaintenanceDowntime]);
 
   const sceneStyles = useMemo(() => {
     if (isVaults) {
