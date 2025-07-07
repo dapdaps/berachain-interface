@@ -5,8 +5,7 @@ import TapSound from "@/components/tap-sound";
 import SceneContextProvider from "@/context/scene";
 import WagmiProvider from "@/context/wagmi";
 import useIsMobile from "@/hooks/use-isMobile";
-import MainLayout from "@/layouts/main";
-import MobileLayout from "@/layouts/mobile";
+import AppLayout from "@/layouts";
 import { useTapSoundStore } from "@/stores/tap-sound";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import Script from 'next/script';
@@ -68,11 +67,9 @@ export default function RootLayout({
             <SkeletonTheme baseColor="#7990F4" highlightColor="#FFDC50">
               <SceneContextProvider>
                 <Suspense>
-                  {isMobile ? (
-                    <MobileLayout>{children}</MobileLayout>
-                  ) : (
-                    <MainLayout>{children}</MainLayout>
-                  )}
+                  <AppLayout>
+                    {children}
+                  </AppLayout>
                   <Rpc />
                 </Suspense>
               </SceneContextProvider>
