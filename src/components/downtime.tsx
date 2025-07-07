@@ -3,6 +3,7 @@ import useIsMobile from "@/hooks/use-isMobile";
 import clsx from "clsx";
 
 const size = 3500;
+const systemMaintenanceDowntimeExpected = process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME_EXPECTED || "July 7, 2025 at 18:00 UTC";
 
 const Downtime = () => {
   const isMobile = useIsMobile();
@@ -96,7 +97,7 @@ const Downtime = () => {
               We're currently performing scheduled maintenance to improve your experience. Please check back soon.
             </div>
             <div className="text-[16px] mt-[6px]">
-              Expected to be back online: July 7, 2025 at 18:00 UTC
+              Expected to be back online: {systemMaintenanceDowntimeExpected}
             </div>
           </div>
         </motion.div>
