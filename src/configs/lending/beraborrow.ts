@@ -48,12 +48,12 @@ const networks = {
       earnToken: bera['snect'],
     },
     // lt 160 = Risky, otherwise is Good
-    riskyRatio: 220,
+    riskyRatio: 160,
     liquidationReserve: 1,
     // 1-0.5%=0.995
     borrowingFee: 0.005,
     // Minimum Debt of 2 required
-    minimumDebt: 0,
+    minimumDebt: 69,
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.9/gn',
     denManagersParams: (market: any) => ({
@@ -127,9 +127,9 @@ const networks = {
         vault: 'beraWrapper',
         collVault: "0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B",
         denManager: '0xf1356Cb726C2988C65c5313350C9115D9Af0f954',
-        MCR: 200,
+        MCR: 150,
         CCR: 150,
-        TCR: 459,
+        TCR: 197,
         collIndex: 12
       },
       {

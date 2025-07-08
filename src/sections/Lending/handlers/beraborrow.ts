@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { multicall } from "@/utils/multicall";
 import multicallAddresses from "@/configs/contract/multicall";
 import { bera } from "@/configs/tokens/bera";
+import { zeroAddress } from "viem";
 
 const ABI: any = {
   beraWrapper: [
@@ -782,6 +783,40 @@ const SORTED_DENS_ABI = [
       }
     ],
     stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "findInsertPosition",
+    inputs: [
+      {
+        name: "_NICR",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "_prevId",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "_nextId",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    stateMutability: "view",
   }
 ];
 
@@ -899,159 +934,6 @@ const BeraborrowHandler = (props: any) => {
       actionText
     );
 
-    const getHint = () => {
-      return new Promise((resolve) => {
-        multicall({
-          abi: DEN_MANAGER_ABI,
-          calls: [
-            {
-              address: market.denManager,
-              name: "getDenOwnersCount",
-              params: []
-            },
-            {
-              address: market.denManager,
-              name: "sortedDens",
-              params: []
-            }
-          ],
-          options: {},
-          multicallAddress,
-          provider: provider
-        })
-          .then(async (denManagerRes: any) => {
-            const [[numberOfDens], [sortedDensAddress]] = denManagerRes || [];
-            const totalNumberOfTrials = Math.ceil(
-              15 * Math.sqrt(Number(numberOfDens.toString()))
-            );
-            const [firstTrials, ...restOfTrials] = generateTrials(
-              totalNumberOfTrials
-            ) as any;
-            const hintContract = new ethers.Contract(
-              config.multiCollateralHintHelpers,
-              HINT_ABI,
-              provider
-            );
-            let NICR: any = Big(0);
-            if (
-              totalAmount &&
-              Big(totalAmount).gt(0) &&
-              totalBorrowAmount &&
-              Big(totalBorrowAmount).gt(0)
-            ) {
-              const debtValue = Big(totalBorrowAmount).toFixed(2);
-              console.log(
-                "%ccollValue: %o",
-                "background:#808000;color:#fff;",
-                totalAmount
-              );
-              console.log(
-                "%cdebtValue: %o",
-                "background:#808000;color:#fff;",
-                debtValue
-              );
-              NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
-            }
-            console.log(
-              "%cNICR: %o",
-              "background:#808000;color:#fff;",
-              NICR.toFixed(0)
-            );
-            const _collectApproxHint = (
-              latestRandomSeed: any,
-              results: any,
-              numberOfTrials: any,
-              dmAddr: any,
-              nominalCollateralRatio: any
-            ) => {
-              const approxHintParams = [
-                dmAddr,
-                ethers.BigNumber.from(nominalCollateralRatio),
-                // ethers.BigNumber.from('149220641726481938471'),
-                ethers.BigNumber.from(numberOfTrials),
-                // ethers.BigNumber.from('2500'),
-                ethers.BigNumber.from(latestRandomSeed)
-                // ethers.BigNumber.from('7563636496275551'),
-              ];
-              return new Promise((resolve) => {
-                hintContract
-                  .getApproxHint(...approxHintParams)
-                  .then((hintRes: any) => {
-                    resolve({
-                      latestRandomSeed: hintRes.latestRandomSeed,
-                      results: [
-                        ...results,
-                        { hintAddress: hintRes.hintAddress, diff: hintRes.diff }
-                      ]
-                    });
-                  })
-                  .catch((err: any) => {
-                    console.log("hintRes err: %o", err);
-                    resolve({});
-                  });
-              });
-            };
-            const { results } = await restOfTrials.reduce(
-              (p: any, numberOfTrials: any) =>
-                p.then((state: any) => {
-                  _collectApproxHint(
-                    state.latestRandomSeed,
-                    state.results,
-                    numberOfTrials,
-                    market.denManager,
-                    NICR.toFixed(0)
-                  );
-                }),
-              _collectApproxHint(
-                randomBigInt(),
-                [],
-                firstTrials,
-                market.denManager,
-                NICR.toFixed(0)
-              )
-            );
-            const { hintAddress } = results?.reduce((a: any, b: any) =>
-              a.diff < b.diff ? a : b
-            );
-
-            multicall({
-              abi: SORTED_DENS_ABI,
-              calls: [
-                {
-                  address: sortedDensAddress,
-                  name: "getPrev",
-                  params: [hintAddress]
-                },
-                {
-                  address: sortedDensAddress,
-                  name: "getNext",
-                  params: [hintAddress]
-                }
-              ],
-              options: {},
-              multicallAddress,
-              provider: provider
-            })
-              .then((sortedDensRes: any) => {
-                const lowerHint = sortedDensRes?.[0]?.[0] ?? account;
-                const upperHint = sortedDensRes?.[1]?.[0] ?? account;
-                console.log("sortedDensRes: %o", sortedDensRes);
-                console.log("lowerHint: %o", lowerHint);
-                console.log("upperHint: %o", upperHint);
-                resolve({ lowerHint, upperHint });
-              })
-              .catch((sortedDensErr: any) => {
-                console.log("sortedDensErr: %o", sortedDensErr);
-                resolve({ lowerHint: account, upperHint: account });
-              });
-          })
-          .catch((err: any) => {
-            console.log("get DenManager failed: %o", err);
-            resolve({ lowerHint: account, upperHint: account });
-          });
-      });
-    };
-
     const getPreDeposit = () => {
       if (![bera["honey"].address].includes(market.address)) {
         return "0x";
@@ -1078,7 +960,15 @@ const BeraborrowHandler = (props: any) => {
       return new Promise(async (resolve) => {
         let method = "";
         let params: any = [];
-        const hint: any = await getHint();
+        const hint: any = await getHint({
+          market,
+          account,
+          chainId,
+          provider,
+          multiCollateralHintHelpers: config.multiCollateralHintHelpers,
+          totalAmount,
+          totalBorrowAmount,
+        });
 
         let _preDeposit: any = getPreDeposit();
         method = "openDenVault";
@@ -1229,3 +1119,212 @@ const BeraborrowHandler = (props: any) => {
 };
 
 export default BeraborrowHandler;
+
+export const getHint = async (params: any) => {
+  const {
+    market,
+    account,
+    chainId,
+    provider,
+    multiCollateralHintHelpers,
+    totalAmount,
+    totalBorrowAmount,
+  } = params;
+
+  const multicallAddress = multicallAddresses[chainId];
+
+  let denManagerRes: any;
+  try {
+    denManagerRes = await multicall({
+      abi: DEN_MANAGER_ABI,
+      calls: [
+        {
+          address: market.denManager,
+          name: "getDenOwnersCount",
+          params: []
+        },
+        {
+          address: market.denManager,
+          name: "sortedDens",
+          params: []
+        }
+      ],
+      options: {},
+      multicallAddress,
+      provider: provider
+    });
+  } catch (err) {
+    console.log("get DenManager failed: %o", err);
+  }
+
+  const [[numberOfDens], [sortedDensAddress]] = denManagerRes || [];
+
+  if (!numberOfDens) {
+    return [zeroAddress, zeroAddress];
+  }
+
+  const totalNumberOfTrials = Math.ceil(
+    15 * Math.sqrt(Number(numberOfDens.toString()))
+  );
+  const [firstTrials, ...restOfTrials] = generateTrials(
+    totalNumberOfTrials
+  ) as any;
+  const hintContract = new ethers.Contract(
+    multiCollateralHintHelpers,
+    HINT_ABI,
+    provider
+  );
+  let NICR: any = Big(0);
+  if (
+    totalAmount &&
+    Big(totalAmount).gt(0) &&
+    totalBorrowAmount &&
+    Big(totalBorrowAmount).gt(0)
+  ) {
+    const debtValue = Big(totalBorrowAmount).toFixed(2);
+    console.log(
+      "%ccollValue: %o",
+      "background:#808000;color:#fff;",
+      totalAmount
+    );
+    console.log(
+      "%cdebtValue: %o",
+      "background:#808000;color:#fff;",
+      debtValue
+    );
+    NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
+  }
+  console.log(
+    "%cNICR: %o",
+    "background:#808000;color:#fff;",
+    NICR.toFixed(0)
+  );
+  const _collectApproxHint = (
+    latestRandomSeed: any,
+    results: any,
+    numberOfTrials: any,
+    dmAddr: any,
+    nominalCollateralRatio: any
+  ) => {
+    const approxHintParams = [
+      dmAddr,
+      ethers.BigNumber.from(nominalCollateralRatio),
+      // ethers.BigNumber.from('149220641726481938471'),
+      ethers.BigNumber.from(numberOfTrials),
+      // ethers.BigNumber.from('2500'),
+      ethers.BigNumber.from(latestRandomSeed)
+      // ethers.BigNumber.from('7563636496275551'),
+    ];
+    return new Promise((resolve) => {
+      hintContract
+        .getApproxHint(...approxHintParams)
+        .then((hintRes: any) => {
+          resolve({
+            latestRandomSeed: hintRes.latestRandomSeed,
+            results: [
+              ...results,
+              { hintAddress: hintRes.hintAddress, diff: hintRes.diff }
+            ]
+          });
+        })
+        .catch((err: any) => {
+          console.log("hintRes err: %o", err);
+          resolve({});
+        });
+    });
+  };
+  const { results } = await restOfTrials.reduce(
+    (p: any, numberOfTrials: any) =>
+      p.then((state: any) => {
+        _collectApproxHint(
+          state.latestRandomSeed,
+          state.results,
+          numberOfTrials,
+          market.denManager,
+          NICR.toFixed(0)
+        );
+      }),
+    _collectApproxHint(
+      randomBigInt(),
+      [],
+      firstTrials,
+      market.denManager,
+      NICR.toFixed(0)
+    )
+  );
+  const { hintAddress } = results?.reduce((a: any, b: any) =>
+    a.diff < b.diff ? a : b
+  );
+
+  let sortedDensRes: any;
+  try {
+    sortedDensRes = await multicall({
+      abi: SORTED_DENS_ABI,
+      calls: [
+        {
+          address: sortedDensAddress,
+          name: "getPrev",
+          params: [hintAddress]
+        },
+        {
+          address: sortedDensAddress,
+          name: "getNext",
+          params: [hintAddress]
+        }
+      ],
+      options: {},
+      multicallAddress,
+      provider: provider
+    });
+  } catch (err: any) {
+    console.log("get sortedDens failed: %o", err);
+  }
+
+  console.log("sortedDensRes: %o", sortedDensRes);
+
+  const lowerHint = sortedDensRes?.[0]?.[0] ?? account;
+  const upperHint = sortedDensRes?.[1]?.[0] ?? account;
+
+  console.log("lowerHint: %o", lowerHint);
+  console.log("upperHint: %o", upperHint);
+
+  const findInsertPositionContract = new ethers.Contract(
+    sortedDensAddress,
+    SORTED_DENS_ABI,
+    provider
+  );
+  let findInsertPositionRes: any;
+  try {
+    findInsertPositionRes = await findInsertPositionContract.findInsertPosition(
+      NICR.toFixed(0),
+      lowerHint,
+      upperHint
+    );
+  } catch (err: any) {
+    console.log("findInsertPosition failed: %o", err);
+  }
+  console.log("findInsertPositionRes: %o", findInsertPositionRes);
+  let [prev, next] = findInsertPositionRes ?? [];
+  console.log("source prev: %o", prev);
+  console.log("source next: %o", next);
+  if (account) {
+    // In the case of reinsertion, the address of the Den being reinserted is not a usable hint,
+    // because it is deleted from the list before the reinsertion.
+    // "Jump over" the Den to get the proper hint.
+    if (prev === account) {
+      prev = lowerHint;
+    } else if (next === account) {
+      next = upperHint;
+    }
+  }
+  // Don't use `address(0)` as hint as it can result in huge gas cost.
+  if (prev === zeroAddress) {
+    prev = next;
+  } else if (next === zeroAddress) {
+    next = prev;
+  }
+
+  console.log("final prev: %o", prev);
+  console.log("final next: %o", next);
+  return { lowerHint: prev, upperHint: next };
+};

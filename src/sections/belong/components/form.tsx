@@ -7,23 +7,43 @@ import beraborrowConfig from "@/configs/lending/beraborrow";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { usePriceStore } from "@/stores/usePriceStore";
 import useCustomAccount from "@/hooks/use-account";
+import { numberFormatter } from "@/utils/number-formatter";
+import Skeleton from "react-loading-skeleton";
+import { ActionText, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
+import Big from "big.js";
+import Health from "@/sections/Lending/Beraborrow/health";
+import { useRequest } from "ahooks";
+import { getHint } from "@/sections/Lending/handlers/beraborrow";
+import axios from "axios";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
+
+const DEFAULT_SLIPPAGE_TOLERANCE = "0.5";
+const MAXIMUM_BORROWING_MINT_RATE = "0";
 
 const BelongForm = (props: any) => {
   const { } = props;
 
   const { basic, networks }: any = beraborrowConfig;
-  const { markets = [] } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
+  const { markets = [], riskyRatio, liquidationReserve, borrowingFee, minimumDebt, multiCollateralHintHelpers } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
 
   const { account, provider, chainId } = useCustomAccount();
   const prices = usePriceStore((store) => store.price);
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [depositAmount, setDepositAmount] = useState("");
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [totalDebt, setTotalDebt] = useState("");
   const [leverage, setLeverage] = useState(0);
   const [currentMarket, setCurrentMarket] = useState<any>(markets[0]);
+  const [data, setData] = useState<any>();
+
+  const [currentMarketData] = useMemo(() => {
+    if (!data || !data.markets || !data.markets.length) {
+      return [];
+    }
+    return [
+      { ...data, ...data.markets[0] }
+    ];
+  }, [data]);
 
   const isChainSupported = useMemo(() => {
     if (!chainId) {
@@ -33,9 +53,115 @@ const BelongForm = (props: any) => {
     return !!currChain;
   }, [chainId]);
 
+  const beraborrowData = useBeraborrow({
+    type: ActionText.Borrow,
+    market: currentMarketData || currentMarket,
+    riskyRatio,
+    borrowingFee,
+    liquidationReserve,
+    minimumDebt,
+    onSuccess: () => {},
+  });
+  const {
+    handleClosePosition,
+    loading,
+    amount,
+    borrowAmount,
+    totalAmount,
+    totalBorrowAmount,
+    liquidationPriceNew,
+    handleAmount,
+    collateralBalance,
+    previewAmount,
+    borrowTokenLabel,
+    borrowBalance,
+    handleBorrowAmount,
+    borrowLimit,
+    ratioRisk,
+    ratio,
+    handleRatio,
+    buttonValid,
+    inputLoading,
+    toastLoadingMsg,
+    txData,
+    getTxData,
+    reloadList,
+    addAction,
+    actionText,
+    address,
+    totalCollAmount,
+    ratioValue,
+    setTxData,
+    setLoading,
+    setInputLoading,
+    closePosition,
+    setClosePosition,
+  } = beraborrowData;
+  console.log('beraborrowData: %o', beraborrowData);
+  console.log('currentMarketData: %o', currentMarketData);
+
+  const newValue = useMemo(() => {
+    return (currentMarketData && (amount && Big(amount).gt(0)) || (borrowAmount && Big(borrowAmount).gt(0))) ? {
+      balanceUsdShown: numberFormatter(Big(totalAmount).times(currentMarketData.price || 1), 2, true, { prefix: '$' }),
+      balanceShown: numberFormatter(totalAmount, 2, true),
+      borrowedShown: numberFormatter(totalBorrowAmount, 2, true),
+      liquidationPriceShown: numberFormatter(liquidationPriceNew, 2, true, { prefix: '$', round: Big.roundDown }),
+      liquidationPrice: liquidationPriceNew,
+    } : {};
+  }, [currentMarketData, amount, borrowAmount, totalAmount, totalBorrowAmount, liquidationPriceNew]);
+
+  const { runAsync: automaticLooping, loading: automaticLoopingLoading, data: automaticLoopingData } = useRequest(async () => {
+    if (!borrowLimit || Big(borrowLimit).lte(0) || !currentMarketData || !currentMarketData.borrowToken) {
+      return;
+    }
+
+    const maxBorrowingRate = Big(ratio || 0).plus(DEFAULT_SLIPPAGE_TOLERANCE);
+    const debtAmount = borrowLimit;
+    const hints = await getHint({
+      market: currentMarketData,
+      account,
+      chainId,
+      provider,
+      multiCollateralHintHelpers,
+      totalAmount,
+      totalBorrowAmount,
+    });
+    let dexCalldataResp: any;
+    const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/leverage-swap");
+    DexCallURL.searchParams.set("user", account);
+    DexCallURL.searchParams.set("dmAddr", currentMarketData.denManager);
+    DexCallURL.searchParams.set("marginInShares", debtAmount);
+    DexCallURL.searchParams.set("leverage", "1");
+    DexCallURL.searchParams.set("debtAmount", debtAmount);
+    DexCallURL.searchParams.set("slippage", DEFAULT_SLIPPAGE_TOLERANCE);
+    try {
+      dexCalldataResp = await axios.get(DexCallURL.toString());
+    } catch (err: any) {
+      console.log('automaticLooping failed: %o', err);
+    }
+    console.log('dexCalldataResp: %o', dexCalldataResp);
+    console.log('hints: %o', hints);
+  }, {
+     refreshDeps: [
+      ratio,
+      borrowLimit,
+      currentMarketData,
+      account,
+      chainId,
+      provider,
+      totalAmount,
+      totalBorrowAmount,
+     ],
+      debounceWait: 1000,
+    });
+
+  const { runAsync: setBorrowAmount } = useRequest(async () => {
+    handleBorrowAmount(borrowLimit);
+  }, { refreshDeps: [borrowLimit], debounceWait: 1000 });
+
   useEffect(() => {
-    setLoading(isChainSupported);
-  }, [isChainSupported, account]);
+    setDataLoading(isChainSupported);
+  }, [isChainSupported, account, currentMarket]);
 
   return (
     <div className="w-[500px] mx-auto mt-[20px]">
@@ -58,12 +184,25 @@ const BelongForm = (props: any) => {
           </div>
           <InputNumber
             className="flex-1 bg-[#3D405A]"
-            value={depositAmount}
-            onNumberChange={(value) => setDepositAmount(value)}
+            value={amount}
+            onNumberChange={(value) => handleAmount(value)}
           />
         </div>
-        <div className="">
-          Balance: 0
+        <div className="flex items-center gap-[2px]">
+          Balance: {
+            dataLoading
+              ? <Skeleton width={60} height={16} borderRadius={2} />
+              : (
+                <span
+                  className="underline underline-offset-2 cursor-pointer"
+                  onClick={() => {
+                    handleAmount(currentMarketData?.walletBalance || "0");
+                  }}
+                >
+                  {numberFormatter(currentMarketData?.walletBalance, 4, true, { isShort: true, isShortUppercase: true })}
+                </span>
+              )
+          } {currentMarket?.symbol}
         </div>
         <div className="flex items-center gap-[2px]">
           <div className="">25%</div>
@@ -78,7 +217,7 @@ const BelongForm = (props: any) => {
             Liquidation price
           </div>
           <div className="">
-            Ratio: 221.4%
+            Ratio: {ratio || 0}%
           </div>
         </div>
         <div className="flex justify-between items-center gap-[40px]">
@@ -100,13 +239,13 @@ const BelongForm = (props: any) => {
             </div>
           </div>
           <div className="">
-            <div className="">$2,800.45</div>
+            <div className="">{newValue?.liquidationPriceShown || "$0.00"}</div>
             <div className="flex items-center gap-[2px]">
               <div className="">
                 Current:
               </div>
               <div className="">
-                $33.54
+                {currentMarketData?.priceShown}
               </div>
             </div>
           </div>
@@ -143,16 +282,14 @@ const BelongForm = (props: any) => {
             Fee:
           </div>
           <div className="">
-            0.00%
+            1.25%
           </div>
         </div>
         <div className="flex items-center gap-[2px]">
           <div className="">
             Liquidation risk:
           </div>
-          <div className="text-green-600">
-            Meduim
-          </div>
+          <Health risk={ratioRisk} />
         </div>
       </div>
       <div className="w-full">
@@ -175,12 +312,13 @@ const BelongForm = (props: any) => {
         markets={[currentMarket]}
         chainId={chainId}
         prices={prices}
-        update={loading}
+        update={dataLoading}
         account={account}
         provider={provider}
         onLoad={(res: any) => {
           console.log('Beraborrow data res: %o', res);
-          setLoading(false);
+          setData(res);
+          setDataLoading(false);
         }}
       />
     </div>
