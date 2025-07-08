@@ -131,7 +131,8 @@ const dapps: DApp[] = [
   }
 ];
 
-const isSystemMaintenanceDowntime = true;
+// process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
+const isSystemMaintenanceDowntime = false;
 
 const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   children

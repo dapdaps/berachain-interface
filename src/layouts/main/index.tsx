@@ -20,7 +20,8 @@ import { useActivityStore } from "@/stores/useActivityStore";
 import NavigationMenu from "@/sections/home-earth/components/menu";
 import Downtime from "@/components/downtime";
 
-const isSystemMaintenanceDowntime = true;
+// process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
+const isSystemMaintenanceDowntime = false;
 
 const MainLayout = (props: Props) => {
   const { children, style } = props;
