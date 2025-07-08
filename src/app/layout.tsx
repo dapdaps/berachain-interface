@@ -54,7 +54,7 @@ export default function RootLayout({
       className="md:overflow-hidden"
     >
       <head>
-        <title>BeraTown</title>
+        <title>Beratown</title>
         <meta
           name="description"
           content="Effortlessly explore & dive into all dApps in the Bera ecosystem from one streamlined hub."
