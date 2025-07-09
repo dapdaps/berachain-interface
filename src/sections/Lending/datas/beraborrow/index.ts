@@ -6,6 +6,7 @@ import multicallAddresses from "@/configs/contract/multicall";
 import { multicall } from "@/utils/multicall";
 
 import { numberFormatter } from "@/utils/number-formatter";
+import { Den, UserDen, UserDenStatus, SCALING_FACTOR as SCALING_FACTOR_DEN, DenStatusWithGoldsky } from "./den";
 
 const ERC20_ABI = [
   {
@@ -68,6 +69,123 @@ const DEN_ABI = [
       }
     ],
     stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getEntireDebtAndColl",
+    inputs: [
+      {
+        internalType: "address",
+        name: "_borrower",
+        type: "address"
+      }
+    ],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "debt",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "coll",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "pendingDebtReward",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "pendingCollateralReward",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getDenStatus",
+    inputs: [
+      {
+        internalType: "address",
+        name: "_borrower",
+        type: "address"
+      }
+    ],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getEntireSystemBalances",
+    inputs: [],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "MCR",
+    inputs: [],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "CCR",
+    inputs: [],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view"
+  }
+];
+const BERABORROW_CORE_ABI = [
+  {
+    "inputs": [],
+    "name": "CCR",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ];
 
@@ -142,7 +260,6 @@ const getAPY = async (
     )
     .toNumber();
 
-  console.log("====contractAddress", contractAddress);
   const calls = [
     {
       address: contractAddress,
@@ -155,8 +272,6 @@ const getAPY = async (
       params: []
     }
   ];
-
-  console.log("====blockNumberOneWeekAgo====", blockNumberOneWeekAgo);
 
   let [
     blockOneWeekAgo,
@@ -202,8 +317,8 @@ const getAPY = async (
   const apy = Big(sharePriceOneWeekAgo).eq(0)
     ? 0
     : Big(Big(SECONDS_IN_YEAR).div(realOneWeekAgo)).times(
-        Math.log(Big(sharePriceNow).div(sharePriceOneWeekAgo).toNumber())
-      );
+      Math.log(Big(sharePriceNow).div(sharePriceOneWeekAgo).toNumber())
+    );
 
   // return BigInt((apy * Number(SCALING_FACTOR)).toFixed(0));
   return Big(apy).times(SCALING_FACTOR).toFixed(0);
@@ -223,15 +338,15 @@ const BeraborrowData = (props: any) => {
     update,
     provider,
     chainId,
-    borrowToken
+    borrowToken,
+    beraborrowCore
   } = props;
 
   const multicallAddress = multicallAddresses[chainId];
 
   useEffect(() => {
-    console.log(!update, !account, !provider, "<-----------------");
     if (!update || !account || !provider) return;
-    const handleGetDenManager = (market) => {
+    const handleGetDenManager = (market: any) => {
       return new Promise((resolve) => {
         axios
           .post(graphApi, denManagersParams(market))
@@ -253,17 +368,17 @@ const BeraborrowData = (props: any) => {
       });
     };
     const getDenManagers = () => {
-      const promiseArray = [];
-      markets.forEach((market) => {
+      const promiseArray: any = [];
+      markets.forEach((market: any) => {
         promiseArray.push(handleGetDenManager(market));
       });
 
       try {
         return Promise.all(promiseArray);
-      } catch (error) {
-        resolve([]);
+      } catch (err) {
         console.log("getDenManagers failure: %o", err);
       }
+      return [];
       // return new Promise((resolve) => {
       //   axios
       //     .post(graphApi, denManagersParams(markets))
@@ -382,7 +497,6 @@ const BeraborrowData = (props: any) => {
                 );
               });
 
-              console.log("====curr", curr);
               if (!curr) return obj;
               obj.collateral = ethers.utils.formatUnits(curr.collateral);
               obj.debt = ethers.utils.formatUnits(curr.debt);
@@ -423,9 +537,9 @@ const BeraborrowData = (props: any) => {
               result[tokenList[i].address.toLowerCase()] =
                 res[i] && res[i][0]
                   ? ethers.utils.formatUnits(
-                      res[i][0]._hex,
-                      tokenList[i].decimals
-                    )
+                    res[i][0]._hex,
+                    tokenList[i].decimals
+                  )
                   : "0";
             }
             if (nativeOToken) {
@@ -513,7 +627,6 @@ const BeraborrowData = (props: any) => {
     const getNectData = () => {
       const result: any = {};
 
-      console.log("====borrowToken====", borrowToken);
       return new Promise((resolve) => {
         const calls = [
           {
@@ -555,66 +668,147 @@ const BeraborrowData = (props: any) => {
       });
     };
 
+    const getDenDetails = async () => {
+      let denDetailsRes: any;
+      const result: any = [];
+      const calls: any = [];
+      // 0 - getEntireDebtAndColl
+      // 1 - getDenStatus
+      // 2 - getEntireSystemBalances
+      // 3 - MCR
+      // 4 - CCR
+      markets.forEach((token: any) => {
+        calls.push({
+          address: token.denManager,
+          name: "getEntireDebtAndColl",
+          params: [account]
+        });
+        calls.push({
+          address: token.denManager,
+          name: "getDenStatus",
+          params: [account]
+        });
+        calls.push({
+          address: token.denManager,
+          name: "getEntireSystemBalances",
+          params: []
+        });
+        calls.push({
+          address: token.denManager,
+          name: "MCR",
+          params: []
+        });
+        calls.push({
+          address: beraborrowCore,
+          name: "CCR",
+          params: []
+        });
+      });
+      try {
+        denDetailsRes = await multicall({
+          abi: [...DEN_ABI, ...BERABORROW_CORE_ABI],
+          calls,
+          options: {},
+          multicallAddress,
+          provider: provider
+        });
+        console.log("denDetailsRes: %o", denDetailsRes);
+        markets.forEach((token: any, index: number) => {
+          let EntireDebtAndColl = denDetailsRes?.[index * 5] ?? [];
+          let DenStatus = denDetailsRes?.[index * 5 + 1]?.[0] ?? "";
+          let EntireSystemBalances = denDetailsRes?.[index * 5 + 2] ?? [];
+          DenStatus = DenStatus ? Number(DenStatus.toString()) : 0;
+          let MCR = denDetailsRes?.[index * 5 + 3]?.[0] ?? "0";
+          let CCR = denDetailsRes?.[index * 5 + 4]?.[0] ?? "0";
+          MCR = utils.formatUnits(MCR, 18);
+          CCR = utils.formatUnits(CCR, 18);
+
+          let [debt = "0", coll = "0"] = EntireDebtAndColl;
+          let [totalColl = "0", totalDebt = "0", price = "0"] = EntireSystemBalances;
+          const densTotal = new Den(BigInt(totalColl.toString()), BigInt(totalDebt.toString()));
+          const den = DenStatus === UserDenStatus.active
+            ? new UserDen(account, UserDenStatus[DenStatus], BigInt(coll.toString()), BigInt(debt.toString()))
+            : new UserDen(account, UserDenStatus[DenStatus]);
+
+          result.push({
+            id: token.id,
+            MCR: Big(MCR).times(100).toFixed(0),
+            CCR: Big(CCR).times(100).toFixed(0),
+            denStatus: DenStatus,
+            densTotal,
+            den,
+          });
+        });
+      } catch (err: any) {
+        console.log("getDenDetails failed: %o", err);
+      }
+      return result;
+    };
+
     const getCTokensData = async () => {
       try {
         const [
           DenManagers,
           Prices,
-          Borrows,
+          // Borrows,
           WalletBalance,
           BorrowWalletBalance,
           TCRs,
           NECTPrice,
-          NECTData
+          NECTData,
+          DenDetails
         ]: any = await Promise.all([
           getDenManagers(),
           getPrices(),
-          getBorrows(),
+          // getBorrows(),
           getWalletBalance(),
           getBorrowWalletBalance(),
           getTCR(),
           getNectPrice(),
-          getNectData()
+          getNectData(),
+          getDenDetails()
         ]);
+        console.log("Prices: %o", Prices);
         let borrowTokenRes: any = borrowToken;
-        console.log("===Borrows", Borrows);
         const result = markets.map((market: any) => {
           let _address = market.address.toLowerCase();
           // if (market.isNative && wrappedToken) {
           //   _address = wrappedToken.address.toLowerCase();
           // }
 
-          const currBorrow = Borrows.find((b: any) => b.id === market.id);
-          console.log("====currBorrow", currBorrow);
           const currPrice = Prices.find((b: any) => b.id === market.id);
           const currDenManager = DenManagers?.find(
             (b: any) => b.id === market.id
           );
-
-          console.log("====DenManagers", DenManagers);
-          console.log("====currDenManager", currDenManager);
           const currTCR = TCRs.find((b: any) => b.id === market.id);
           const currWalletBalance = WalletBalance[_address];
-          let liquidationPrice = Big(0);
-          if (Big(currBorrow?.collateral || 0).gt(0)) {
-            liquidationPrice = Big(currBorrow?.debt || 0)
-              .times(Big(parseFloat(market.MCR)).div(100))
-              .div(currBorrow?.collateral);
-          }
-          const balanceUsd = Big(currBorrow?.collateral || 0).times(
-            currPrice?.price || 0
-          );
-
-          console.log("====balanceUsd", balanceUsd);
-          let collateralRatio = Big(0);
-          if (Big(currBorrow?.debt || 0).gt(0)) {
-            collateralRatio = Big(balanceUsd).div(currBorrow?.debt).times(100);
-          }
+         
           const TCR = calcTCR(
             currTCR?.totalCollateral,
             currTCR?.totalDebt,
             currPrice?.price
           );
+
+          const denDetails = DenDetails.find((b: any) => b.id === market.id);
+          let currentDebt = denDetails?.den?.debt;
+          let currentColl = denDetails?.den?.collateral;
+          currentDebt = Big(currentDebt.toString()).div(SCALING_FACTOR_DEN.toString()).toString();
+          currentColl = Big(currentColl.toString()).div(SCALING_FACTOR_DEN.toString()).toString();
+
+          let liquidationPrice = Big(0);
+          if (Big(currentColl || 0).gt(0)) {
+            liquidationPrice = Big(currentDebt || 0)
+              .times(Big(parseFloat(market.MCR)).div(100))
+              .div(currentColl);
+          }
+          const balanceUsd = Big(currentColl || 0).times(
+            currPrice?.price || 0
+          );
+
+          let collateralRatio = Big(0);
+          if (Big(currentDebt || 0).gt(0)) {
+            collateralRatio = Big(balanceUsd).div(currentDebt).times(100);
+          }
 
           borrowTokenRes = {
             ...borrowToken,
@@ -633,16 +827,21 @@ const BeraborrowData = (props: any) => {
             ...market,
             riskyRatio,
             TCR,
+            MCR: denDetails?.MCR,
+            CCR: denDetails?.CCR,
+            denStatus: denDetails?.denStatus,
+            densTotal: denDetails?.densTotal,
+            den: denDetails?.den,
             borrowToken: borrowTokenRes,
-            status: currBorrow?.status,
-            balance: currBorrow?.collateral,
+            status: DenStatusWithGoldsky[denDetails?.denStatus],
+            balance: currentColl,
             balanceUsd: balanceUsd.toFixed(2),
-            balanceShown: numberFormatter(currBorrow?.collateral, 2, true),
+            balanceShown: numberFormatter(currentColl, 2, true),
             balanceUsdShown: numberFormatter(balanceUsd, 2, true, {
               prefix: "$"
             }),
-            borrowed: currBorrow?.debt,
-            borrowedShown: numberFormatter(currBorrow?.debt, 2, true),
+            borrowed: currentDebt,
+            borrowedShown: numberFormatter(currentDebt, 2, true),
             walletBalance: currWalletBalance,
             walletBalanceShown: numberFormatter(currWalletBalance, 2, true),
             price: currPrice?.price,
@@ -666,7 +865,7 @@ const BeraborrowData = (props: any) => {
           };
         });
 
-        console.log("====result====", result);
+        console.log("====result: %o", result);
         onLoad({
           borrowToken: borrowTokenRes,
           markets: result

@@ -368,7 +368,7 @@ export const CollateralAction: any = {
   [ActionText.Repay]: 'Withdraw',
 };
 
-const BASE_COLLATERAL_VAULT_ABI = [
+export const BASE_COLLATERAL_VAULT_ABI = [
   {
     type: "function",
     name: "previewDeposit",
@@ -378,7 +378,7 @@ const BASE_COLLATERAL_VAULT_ABI = [
   },
 ];
 
-const getPreviewDeposit = ({ amount, market, provider }: { amount: string; market: any; provider: any; }) => {
+export const getPreviewDeposit = ({ amount, market, provider }: { amount: string; market: any; provider: any; }) => {
   return new Promise((resolve) => {
     if (!amount || Big(amount).lte(0)) {
       resolve('0');
@@ -393,7 +393,6 @@ const getPreviewDeposit = ({ amount, market, provider }: { amount: string; marke
       console.log('getPreviewDeposit failed: %o', err);
       resolve(amount);
     }).finally(() => {
-      console.log('getPreviewDeposit amount: %o', amount);
     });
   });
 };
@@ -419,4 +418,22 @@ const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: an
   const _ratio = numberRemoveEndZero(_ratioVal.toFixed(2));
   return { ratio: _ratio, ratioValue: _ratioVal };
 };
+
+export const LEVERAGE_ROUTER_ABI = [
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "currentColl", "type": "uint256" },
+      { "internalType": "uint256", "name": "currentDebt", "type": "uint256" },
+      { "internalType": "uint256", "name": "margin", "type": "uint256" },
+      { "internalType": "uint256", "name": "price", "type": "uint256" },
+      { "internalType": "uint256", "name": "minimumCR", "type": "uint256" }
+    ],
+    "name": "calculateMaxLeverage",
+    "outputs": [
+      { "internalType": "uint256", "name": "maxLeverageInBp", "type": "uint256" }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+];
 

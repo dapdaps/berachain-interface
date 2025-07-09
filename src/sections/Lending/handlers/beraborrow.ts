@@ -1174,31 +1174,49 @@ export const getHint = async (params: any) => {
     HINT_ABI,
     provider
   );
+
   let NICR: any = Big(0);
-  if (
-    totalAmount &&
-    Big(totalAmount).gt(0) &&
-    totalBorrowAmount &&
-    Big(totalBorrowAmount).gt(0)
-  ) {
-    const debtValue = Big(totalBorrowAmount).toFixed(2);
+  if (market.den) {
+    NICR = market.den._nominalCollateralRatio;
+    NICR = Big(NICR.toString());
     console.log(
-      "%ccollValue: %o",
+      "%cGet NICR from den: %o",
       "background:#808000;color:#fff;",
-      totalAmount
+      NICR.toFixed(0)
     );
-    console.log(
-      "%cdebtValue: %o",
-      "background:#808000;color:#fff;",
-      debtValue
-    );
-    NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
+  } else {
+    if (
+      totalAmount &&
+      Big(totalAmount).gt(0) &&
+      totalBorrowAmount &&
+      Big(totalBorrowAmount).gt(0)
+    ) {
+      const debtValue = Big(totalBorrowAmount).toFixed(2);
+      console.log(
+        "%ccollValue: %o",
+        "background:#808000;color:#fff;",
+        totalAmount
+      );
+      console.log(
+        "%cdebtValue: %o",
+        "background:#808000;color:#fff;",
+        debtValue
+      );
+      NICR = Big(Big(totalAmount).toFixed(2)).mul(1e20).div(debtValue);
+      console.log(
+        "%cGet NICR from calculate: %o",
+        "background:#808000;color:#fff;",
+        NICR.toFixed(0)
+      );
+    }
   }
+
   console.log(
     "%cNICR: %o",
     "background:#808000;color:#fff;",
     NICR.toFixed(0)
   );
+
   const _collectApproxHint = (
     latestRandomSeed: any,
     results: any,

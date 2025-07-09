@@ -9,23 +9,33 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import useCustomAccount from "@/hooks/use-account";
 import { numberFormatter } from "@/utils/number-formatter";
 import Skeleton from "react-loading-skeleton";
-import { ActionText, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
+import { ActionText, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
 import Big from "big.js";
 import Health from "@/sections/Lending/Beraborrow/health";
 import { useRequest } from "ahooks";
 import { getHint } from "@/sections/Lending/handlers/beraborrow";
 import axios from "axios";
+import { SCALING_FACTOR } from "@/sections/Lending/datas/beraborrow/den";
+import { Contract } from "ethers";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
-const DEFAULT_SLIPPAGE_TOLERANCE = "0.5";
+const DEFAULT_SLIPPAGE_TOLERANCE = "0.05";
 const MAXIMUM_BORROWING_MINT_RATE = "0";
 
 const BelongForm = (props: any) => {
   const { } = props;
 
   const { basic, networks }: any = beraborrowConfig;
-  const { markets = [], riskyRatio, liquidationReserve, borrowingFee, minimumDebt, multiCollateralHintHelpers } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
+  const {
+    markets = [],
+    riskyRatio,
+    liquidationReserve,
+    borrowingFee,
+    minimumDebt,
+    multiCollateralHintHelpers,
+    leverageRouter,
+  } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
 
   const { account, provider, chainId } = useCustomAccount();
   const prices = usePriceStore((store) => store.price);
@@ -60,7 +70,7 @@ const BelongForm = (props: any) => {
     borrowingFee,
     liquidationReserve,
     minimumDebt,
-    onSuccess: () => {},
+    onSuccess: () => { },
   });
   const {
     handleClosePosition,
@@ -97,8 +107,8 @@ const BelongForm = (props: any) => {
     closePosition,
     setClosePosition,
   } = beraborrowData;
-  console.log('beraborrowData: %o', beraborrowData);
-  console.log('currentMarketData: %o', currentMarketData);
+  // console.log('beraborrowData: %o', beraborrowData);
+  // console.log('currentMarketData: %o', currentMarketData);
 
   const newValue = useMemo(() => {
     return (currentMarketData && (amount && Big(amount).gt(0)) || (borrowAmount && Big(borrowAmount).gt(0))) ? {
@@ -115,24 +125,53 @@ const BelongForm = (props: any) => {
       return;
     }
 
-    const maxBorrowingRate = Big(ratio || 0).plus(DEFAULT_SLIPPAGE_TOLERANCE);
-    const debtAmount = borrowLimit;
-    const hints = await getHint({
+    const priceBig = BigInt(Big(currentMarketData.price).times(SCALING_FACTOR.toString()).toFixed(0));
+    const MCRBig = BigInt(Big(currentMarketData.MCR).div(100).times(SCALING_FACTOR.toString()).toFixed(0));
+
+    // First get the latest den
+    const addedCollateralDen = currentMarketData.den?.addCollateral(BigInt(Big(amount || 0).times(SCALING_FACTOR.toString()).toFixed(0)));
+    // Get the accumulated collateral
+    const addedCollateral = addedCollateralDen.collateral;
+    // Get the accumulated debt
+    const addedDebt = addedCollateralDen.debt;
+    // Get the accumulated PreviewDeposit
+    let addedPreviewDeposit: any = await getPreviewDeposit({
+      amount: Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()).toString(),
       market: currentMarketData,
-      account,
-      chainId,
       provider,
-      multiCollateralHintHelpers,
-      totalAmount,
-      totalBorrowAmount,
     });
+    addedPreviewDeposit = BigInt(Big(addedPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+    console.log('Get accumulated PreviewDeposit: %o', addedPreviewDeposit);
+    // Convert CollateralShares
+    const collateralSharesDen = addedCollateralDen.convertCollateralToCollateralShares(addedPreviewDeposit);
+    // Get the accumulated CollateralShares
+    const addedCollateralShares = collateralSharesDen.getCollateralShares();
+    console.log('Get accumulated CollateralShares: %o', addedCollateralShares);
+    // Calculate maximum leverage
+    let maxLeverageRes: any;
+    try {
+      const calculateMaxLeverageParams = [
+        addedCollateral,
+        addedDebt,
+        addedCollateralShares,
+        priceBig,
+        MCRBig,
+      ];
+      const res = await new Contract(leverageRouter, LEVERAGE_ROUTER_ABI, provider).calculateMaxLeverage(...calculateMaxLeverageParams);
+      maxLeverageRes = res?.toString() || 1;
+    } catch (err: any) {
+      console.log('Failed to calculate maximum leverage: %o', err);
+    }
+    console.log('Maximum leverage: %o', maxLeverageRes);
+
+    // Get swap
     let dexCalldataResp: any;
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/leverage-swap");
     DexCallURL.searchParams.set("user", account);
     DexCallURL.searchParams.set("dmAddr", currentMarketData.denManager);
-    DexCallURL.searchParams.set("marginInShares", debtAmount);
+    DexCallURL.searchParams.set("marginInShares", addedCollateralShares);
     DexCallURL.searchParams.set("leverage", "1");
-    DexCallURL.searchParams.set("debtAmount", debtAmount);
+    DexCallURL.searchParams.set("debtAmount", addedDebt);
     DexCallURL.searchParams.set("slippage", DEFAULT_SLIPPAGE_TOLERANCE);
     try {
       dexCalldataResp = await axios.get(DexCallURL.toString());
@@ -140,9 +179,24 @@ const BelongForm = (props: any) => {
       console.log('automaticLooping failed: %o', err);
     }
     console.log('dexCalldataResp: %o', dexCalldataResp);
+
+    // Get hints
+    const hints = await getHint({
+      market: {
+        ...currentMarketData,
+        den: addedCollateralDen,
+      },
+      account,
+      chainId,
+      provider,
+      multiCollateralHintHelpers,
+      totalAmount,
+      totalBorrowAmount,
+    });
     console.log('hints: %o', hints);
   }, {
-     refreshDeps: [
+    refreshDeps: [
+      amount,
       ratio,
       borrowLimit,
       currentMarketData,
@@ -151,9 +205,10 @@ const BelongForm = (props: any) => {
       provider,
       totalAmount,
       totalBorrowAmount,
-     ],
-      debounceWait: 1000,
-    });
+      previewAmount,
+    ],
+    debounceWait: 1000,
+  });
 
   const { runAsync: setBorrowAmount } = useRequest(async () => {
     handleBorrowAmount(borrowLimit);
