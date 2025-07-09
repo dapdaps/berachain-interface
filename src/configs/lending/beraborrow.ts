@@ -57,7 +57,7 @@ const networks = {
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     beraborrowCore: '0x12347cAF4300B1c4a9bF0Ae7DE2531A2BCFB93E9',
     leverageRouter: '0xd4b8dd2c8371E3A4c75ce96860351840638AbB50',
-    graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.9/gn',
+    graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.12/gn',
     denManagersParams: (market: any) => ({
       "operationName": "GetDenManager",
       "variables": { "id": market?.denManager?.toLocaleLowerCase() },
@@ -132,7 +132,8 @@ const networks = {
         MCR: 150,
         CCR: 150,
         TCR: 197,
-        collIndex: 12
+        collIndex: 12,
+        isLeverage: false,
       },
       {
         id: 2,
@@ -145,7 +146,8 @@ const networks = {
         MCR: 140,
         CCR: 150,
         TCR: 241,
-        collIndex: 19
+        collIndex: 19,
+        isLeverage: true,
       },
       {
         id: 3,
@@ -158,7 +160,8 @@ const networks = {
         MCR: 110,
         CCR: 150,
         TCR: 186,
-        collIndex: 13
+        collIndex: 13,
+        isLeverage: true,
       },
       {
         id: 4,
@@ -171,7 +174,8 @@ const networks = {
         MCR: 140,
         CCR: 150,
         TCR: 340,
-        collIndex: 18
+        collIndex: 18,
+        isLeverage: true,
       },
       {
         id: 5,
@@ -184,7 +188,8 @@ const networks = {
         MCR: 130,
         CCR: 150,
         TCR: 301,
-        collIndex: 26
+        collIndex: 26,
+        isLeverage: true,
       },
       {
         id: 6,
@@ -197,7 +202,22 @@ const networks = {
         MCR: 150,
         CCR: 150,
         TCR: 438,
-        collIndex: 25
+        collIndex: 25,
+        isLeverage: true,
+      },
+      {
+        id: 7,
+        ...bera['wbera'],
+        underlyingTokens: [bera['wbera']],
+        collToken: bera['wbera'],
+        vault: 'beraWrapper',
+        collVault: "0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B",
+        denManager: '0xf1356Cb726C2988C65c5313350C9115D9Af0f954',
+        MCR: 150,
+        CCR: 150,
+        TCR: 197,
+        collIndex: 12,
+        isLeverage: true,
       },
     ],
   }

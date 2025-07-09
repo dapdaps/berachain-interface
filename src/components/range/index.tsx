@@ -27,7 +27,11 @@ export default function Range({ value, onChange, style, className, debounceWait 
         type="range"
         value={inputValue}
         onChange={(e) => {
-          onRangeChange(e);
+          if (debounceWait <= 0) {
+            onChange(e);
+          } else {
+            onRangeChange(e);
+          }
           setInputValue(e.target.value);
         }}
         className="appearance-none"

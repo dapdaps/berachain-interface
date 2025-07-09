@@ -421,19 +421,35 @@ const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: an
 
 export const LEVERAGE_ROUTER_ABI = [
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "currentColl", "type": "uint256" },
-      { "internalType": "uint256", "name": "currentDebt", "type": "uint256" },
-      { "internalType": "uint256", "name": "margin", "type": "uint256" },
-      { "internalType": "uint256", "name": "price", "type": "uint256" },
-      { "internalType": "uint256", "name": "minimumCR", "type": "uint256" }
+    inputs: [
+      { internalType: "uint256", name: "currentColl", type: "uint256" },
+      { internalType: "uint256", name: "currentDebt", type: "uint256" },
+      { internalType: "uint256", name: "margin", type: "uint256" },
+      { internalType: "uint256", name: "price", type: "uint256" },
+      { internalType: "uint256", name: "minimumCR", type: "uint256" }
     ],
-    "name": "calculateMaxLeverage",
-    "outputs": [
-      { "internalType": "uint256", "name": "maxLeverageInBp", "type": "uint256" }
+    name: "calculateMaxLeverage",
+    outputs: [
+      { internalType: "uint256", name: "maxLeverageInBp", type: "uint256" }
     ],
-    "stateMutability": "pure",
-    "type": "function"
+    stateMutability: "pure",
+    type: "function"
+  },
+  {
+    inputs: [
+      { internalType: "contract IDenManager", name: "denManager", type: "address" },
+      { internalType: "address", name: "position", type: "address" },
+      { internalType: "uint256", name: "margin", type: "uint256" },
+      { internalType: "uint256", name: "leverage", type: "uint256" },
+      { internalType: "uint256", name: "minimumCR", type: "uint256" },
+      { internalType: "bool", name: "isRecoveryMode", type: "bool" }
+    ],
+    name: "calculateDebtAmount",
+    outputs: [
+      { internalType: "uint256", name: "debtAmount", type: "uint256" }
+    ],
+    stateMutability: "view",
+    type: "function"
   }
 ];
 
