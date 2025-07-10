@@ -171,6 +171,19 @@ const DEN_ABI = [
       }
     ],
     stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getBorrowingRate",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
   }
 ];
 const BERABORROW_CORE_ABI = [
@@ -703,6 +716,11 @@ const BeraborrowData = (props: any) => {
           name: "CCR",
           params: []
         });
+        calls.push({
+          address: token.denManager,
+          name: "getBorrowingRate",
+          params: []
+        });
       });
       try {
         denDetailsRes = await multicall({
@@ -712,7 +730,6 @@ const BeraborrowData = (props: any) => {
           multicallAddress,
           provider: provider
         });
-        console.log("denDetailsRes: %o", denDetailsRes);
         markets.forEach((token: any, index: number) => {
           let EntireDebtAndColl = denDetailsRes?.[index * 5] ?? [];
           let DenStatus = denDetailsRes?.[index * 5 + 1]?.[0] ?? "";
@@ -730,6 +747,9 @@ const BeraborrowData = (props: any) => {
             ? new UserDen(account, UserDenStatus[DenStatus], BigInt(coll.toString()), BigInt(debt.toString()))
             : new UserDen(account, UserDenStatus[DenStatus]);
 
+          let BorrowingRate = denDetailsRes?.[index * 5 + 5]?.[0] ?? "0";
+          BorrowingRate = utils.formatUnits(BorrowingRate, 18);
+
           result.push({
             id: token.id,
             MCR: Big(MCR).times(100).toFixed(0),
@@ -737,6 +757,7 @@ const BeraborrowData = (props: any) => {
             denStatus: DenStatus,
             densTotal,
             den,
+            borrowingRate: BorrowingRate,
           });
         });
       } catch (err: any) {
@@ -768,7 +789,6 @@ const BeraborrowData = (props: any) => {
           getNectData(),
           getDenDetails()
         ]);
-        console.log("Prices: %o", Prices);
         let borrowTokenRes: any = borrowToken;
         const result = markets.map((market: any) => {
           let _address = market.address.toLowerCase();
@@ -832,6 +852,7 @@ const BeraborrowData = (props: any) => {
             denStatus: denDetails?.denStatus,
             densTotal: denDetails?.densTotal,
             den: denDetails?.den,
+            borrowingRate: denDetails?.borrowingRate,
             borrowToken: borrowTokenRes,
             status: DenStatusWithGoldsky[denDetails?.denStatus],
             balance: currentColl,
@@ -865,7 +886,6 @@ const BeraborrowData = (props: any) => {
           };
         });
 
-        console.log("====result: %o", result);
         onLoad({
           borrowToken: borrowTokenRes,
           markets: result

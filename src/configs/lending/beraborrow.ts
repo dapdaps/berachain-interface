@@ -57,6 +57,7 @@ const networks = {
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     beraborrowCore: '0x12347cAF4300B1c4a9bF0Ae7DE2531A2BCFB93E9',
     leverageRouter: '0xd4b8dd2c8371E3A4c75ce96860351840638AbB50',
+    KodiIBERAWgBERADenManageAddress: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
     graphApi: 'https://api.goldsky.com/api/public/project_cm0v01jq86ry701rr6jta9tqm/subgraphs/bera-borrow-prod/1.0.12/gn',
     denManagersParams: (market: any) => ({
       "operationName": "GetDenManager",

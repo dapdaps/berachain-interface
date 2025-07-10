@@ -450,6 +450,179 @@ export const LEVERAGE_ROUTER_ABI = [
     ],
     stateMutability: "view",
     type: "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IDenManager",
+        "name": "denManager",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "flashloanNectAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "marginCollAmount",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "maxFeePercentage",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "upperHint",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "lowerHint",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct ILeverageRouter.DenParams",
+            "name": "denParams",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "dexCalldata",
+                "type": "bytes"
+              },
+              {
+                "internalType": "uint256",
+                "name": "outputMin",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "swapRouter",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct ILeverageRouter.DexAggregatorParams",
+            "name": "nectToColl",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct ILeverageRouter.DenLoopingParams",
+        "name": "denLoopingParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "automaticLoopingOpenDen",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IDenManager",
+        "name": "denManager",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "flashloanNectAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "marginCollAmount",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "maxFeePercentage",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "upperHint",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "lowerHint",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct ILeverageRouter.DenParams",
+            "name": "denParams",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "dexCalldata",
+                "type": "bytes"
+              },
+              {
+                "internalType": "uint256",
+                "name": "outputMin",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "swapRouter",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct ILeverageRouter.DexAggregatorParams",
+            "name": "nectToColl",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct ILeverageRouter.DenLoopingParams",
+        "name": "denLoopingParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "automaticLoopingAddCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
+
+export const BORROWER_OPERATIONS_ABI = [
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "address", "name": "caller", "type": "address" }
+    ],
+    "name": "isApprovedDelegate",
+    "outputs": [
+      { "internalType": "bool", "name": "isApproved", "type": "bool" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_delegate", "type": "address" },
+      { "internalType": "bool", "name": "_isApproved", "type": "bool" }
+    ],
+    "name": "setDelegateApproval",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ];
 

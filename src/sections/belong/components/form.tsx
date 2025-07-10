@@ -9,7 +9,7 @@ import { usePriceStore } from "@/stores/usePriceStore";
 import useCustomAccount from "@/hooks/use-account";
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
 import Skeleton from "react-loading-skeleton";
-import { ActionText, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
+import { ActionText, BORROWER_OPERATIONS_ABI, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
 import Big from "big.js";
 import Health, { getStatus } from "@/sections/Lending/Beraborrow/health";
 import { useRequest } from "ahooks";
@@ -17,11 +17,19 @@ import { getHint } from "@/sections/Lending/handlers/beraborrow";
 import axios from "axios";
 import { _normalizeDenCreation, Den, SCALING_FACTOR, SCALING_FACTOR_BP, UserDenStatus } from "@/sections/Lending/datas/beraborrow/den";
 import { Contract, utils } from "ethers";
+import useToast from "@/hooks/use-toast";
+import useAddAction from "@/hooks/use-add-action";
+import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
+import Card from "@/components/card";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import Loading from "@/components/loading";
+import { useSwitchChain } from 'wagmi';
+import useApprove from "@/hooks/use-approve";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
-const DEFAULT_SLIPPAGE_TOLERANCE = BigInt(5000000000000000);
-const MAXIMUM_BORROWING_MINT_RATE = BigInt(0);
+const DEFAULT_SLIPPAGE_TOLERANCE = BigInt(10000000000000000);
+const MAXIMUM_BORROWING_MINT_RATE = BigInt(50000000000000000);
 
 const BelongForm = (props: any) => {
   const { } = props;
@@ -35,18 +43,24 @@ const BelongForm = (props: any) => {
     minimumDebt,
     multiCollateralHintHelpers,
     leverageRouter,
+    borrowerOperations,
   } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
   markets = markets.filter((m: any) => m.isLeverage);
 
   const { account, provider, chainId } = useCustomAccount();
   const prices = usePriceStore((store) => store.price);
+  const toast = useToast();
+  const { addAction } = useAddAction("belong");
+  const modal = useConnectModal();
+  const { switchChain } = useSwitchChain();
 
   const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const [totalDebt, setTotalDebt] = useState("");
   const [leverage, setLeverage] = useState("1.5");
   const [leverageProgress, setLeverageProgress] = useState(0);
   const [currentMarket, setCurrentMarket] = useState<any>(markets[5]);
   const [data, setData] = useState<any>();
+  const [marginInSharesData, setMarginInSharesData] = useState<any>();
+  const [maxLeverage, setMaxLeverage] = useState<any>("1");
 
   const [currentMarketData] = useMemo(() => {
     if (!data || !data.markets || !data.markets.length) {
@@ -92,13 +106,11 @@ const BelongForm = (props: any) => {
     ratioRisk,
     ratio,
     handleRatio,
-    buttonValid,
     inputLoading,
     toastLoadingMsg,
     txData,
     getTxData,
     reloadList,
-    addAction,
     actionText,
     address,
     totalCollAmount,
@@ -109,18 +121,31 @@ const BelongForm = (props: any) => {
     closePosition,
     setClosePosition,
   } = beraborrowData;
-  // console.log('beraborrowData: %o', beraborrowData);
-  // console.log('currentMarketData: %o', currentMarketData);
 
-  const { runAsync: getMarginInShares, data: marginInSharesData, loading: marginInSharesLoading } = useRequest(async () => {
+  const {
+    approved: collateralApproved,
+    approve: onCollateralApprove,
+    approving: collateralApproving,
+    checking: collateralChecking,
+    allowance: collateralAllowance,
+    checkApproved: collateralCheckApproved,
+  } = useApprove({
+    token: currentMarket,
+    amount,
+    spender: leverageRouter,
+  });
+
+  const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
     if (!currentMarketData) {
       return;
     }
     const priceBig = BigInt(Big(currentMarketData.price).times(SCALING_FACTOR.toString()).toFixed(0));
     const debtPriceBig = BigInt(Big(currentMarketData.borrowToken.realPrice).times(SCALING_FACTOR.toString()).toFixed(0));
     const MCRBig = BigInt(Big(currentMarketData.MCR).div(100).times(SCALING_FACTOR.toString()).toFixed(0));
+    const borrowingRateBig = BigInt(Big(currentMarketData.borrowingRate).times(SCALING_FACTOR.toString()).toFixed(0));
     const leverageBP = BigInt(Big(leverage).minus(1).times(SCALING_FACTOR_BP.toString()).toFixed(0));
     const liquidationReserveBig = BigInt(Big(liquidationReserve).times(SCALING_FACTOR.toString()).toFixed(0));
+    const amountBig = BigInt(Big(amount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
 
     // First get the latest den
     const addedCollateralDen = currentMarketData.den?.addCollateral(BigInt(Big(amount || 0).times(SCALING_FACTOR.toString()).toFixed(0)));
@@ -135,20 +160,18 @@ const BelongForm = (props: any) => {
 
     // Get the accumulated PreviewDeposit
     let addedPreviewDeposit: any = await getPreviewDeposit({
-      amount: Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()).toString(),
+      amount: amount || "0",
       market: currentMarketData,
       provider,
     });
     addedPreviewDeposit = BigInt(Big(addedPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
-    console.log('Get accumulated PreviewDeposit: %o', addedPreviewDeposit);
     // Convert CollateralShares
     const collateralSharesDen = addedCollateralDen.convertCollateralToCollateralShares(addedPreviewDeposit);
     // Get the accumulated CollateralShares
     const addedCollateralShares = collateralSharesDen.getCollateralShares();
-    console.log('Get accumulated CollateralShares: %o', addedCollateralShares);
 
     // Calculate maximum leverage
-    let maxLeverageRes: any = 1;
+    let maxLeverageRes: any = "1";
     try {
       const calculateMaxLeverageParams = [
         addedCollateral,
@@ -158,16 +181,26 @@ const BelongForm = (props: any) => {
         MCRBig,
       ];
       const res = await new Contract(leverageRouter, LEVERAGE_ROUTER_ABI, provider).calculateMaxLeverage(...calculateMaxLeverageParams);
-      maxLeverageRes = res?.toString() || 1;
+      maxLeverageRes = res ? Big(Big(res.toString()).div(SCALING_FACTOR_BP.toString()).toFixed(1, 0)) : "1";
+      setMaxLeverage((_maxLeverage: any) => {
+        if (maxLeverageRes !== _maxLeverage && Big(maxLeverageRes).gt(1)) {
+          const _leverageProgress = Big(Big(leverage).minus(1)).div(Big(maxLeverageRes).minus(1)).times(100).toNumber();
+          setLeverageProgress(_leverageProgress);
+        }
+        return maxLeverageRes;
+      });
+      if (Big(maxLeverageRes).lt(1.5)) {
+        setLeverage("1");
+      }
     } catch (err: any) {
       console.log('Failed to calculate maximum leverage: %o', err);
     }
-    console.log('Maximum leverage: %o', maxLeverageRes);
 
     return {
       priceBig,
       debtPriceBig,
       MCRBig,
+      borrowingRateBig,
       leverageBP,
       addedCollateral,
       addedDebt,
@@ -175,20 +208,14 @@ const BelongForm = (props: any) => {
       addedCollateralDen,
       marginInShares: addedCollateralShares,
       liquidationReserveBig,
-      maxLeverageRes,
+      amountBig,
     };
   }, {
-    refreshDeps: [
-      amount,
-      currentMarketData,
-      leverage,
-      provider,
-      account,
-    ],
+    manual: true,
     debounceWait: 1000,
   });
 
-  const { runAsync: calculateDebtAmount, loading: calculateDebtAmountLoading, data: calculateDebtAmountData } = useRequest(async () => {
+  const { runAsync: calculateDebtAmount, data: calculateDebtAmountData, loading: calculateDebtAmountLoading } = useRequest(async () => {
     if (!marginInSharesData || !currentMarketData || !currentMarketData.borrowToken) {
       return { big: BigInt(0), value: "0", fee: "0" };
     }
@@ -205,6 +232,7 @@ const BelongForm = (props: any) => {
       marginInShares,
       liquidationReserveBig,
     } = marginInSharesData;
+    const isActive = currentMarketData.denStatus === UserDenStatus.active;
 
     // Calculate leveraged debt
     const leveragedDebt = addedCollateralDen.calculateLeveragedDebt(
@@ -214,17 +242,16 @@ const BelongForm = (props: any) => {
       debtPriceBig,
     );
     const borrowingFeeBig = BigInt(Big(leveragedDebt.toString()).times(borrowingFee).toFixed(0));
-    const totalDebt = leveragedDebt + borrowingFeeBig + liquidationReserveBig;
-    console.log('Leveraged debt: %o', totalDebt.toString());
-    console.log('borrowingFeeBig 0.5%: %o', borrowingFeeBig.toString());
-    console.log('liquidationReserve: %o', liquidationReserveBig.toString());
+    const totalDebt = addedCollateralDen.debt + leveragedDebt + borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig);
     const totalDebtValue = Big(totalDebt.toString()).div(SCALING_FACTOR.toString()).toString();
-    console.log('Total Leveraged debt: %o', totalDebtValue);
+    const debtValue = Big(leveragedDebt.toString()).div(SCALING_FACTOR.toString()).toString();
     handleBorrowAmount(totalDebtValue);
     return {
-      big: totalDebt,
-      value: totalDebtValue,
-      fee: Big((borrowingFeeBig + liquidationReserveBig).toString()).div(SCALING_FACTOR.toString()).toString(),
+      big: leveragedDebt,
+      value: debtValue,
+      totalBig: totalDebt,
+      totalValue: totalDebtValue,
+      fee: Big((borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).toString()).div(SCALING_FACTOR.toString()).toString(),
     };
   }, {
     refreshDeps: [
@@ -237,7 +264,7 @@ const BelongForm = (props: any) => {
     debounceWait: 1000,
   });
 
-  const { runAsync: automaticLooping, loading: automaticLoopingLoading, data: automaticLoopingData } = useRequest(async () => {
+  const { runAsync: automaticLooping, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
     if (!marginInSharesData || !calculateDebtAmountData || calculateDebtAmountData.big === BigInt(0) || !currentMarketData || !currentMarketData.borrowToken) {
       return;
     }
@@ -252,17 +279,18 @@ const BelongForm = (props: any) => {
       addedPreviewDeposit,
       addedCollateralDen,
       marginInShares,
+      amountBig,
     } = marginInSharesData;
-    const { big: totalDebtBig, value: totalDebtValue } = calculateDebtAmountData;
+    const { big: debtBig, value: debtValue, totalBig: totalDebtBig, totalValue: totalDebtValue } = calculateDebtAmountData;
 
     // Get swap
     let dexCalldataResp: any;
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/leverage-swap");
     DexCallURL.searchParams.set("user", account);
     DexCallURL.searchParams.set("dmAddr", currentMarketData.denManager);
-    DexCallURL.searchParams.set("marginInShares", addedCollateral);
+    DexCallURL.searchParams.set("marginInShares", amountBig.toString());
     DexCallURL.searchParams.set("leverage", Big(leverage || 0).times(SCALING_FACTOR_BP.toString()).toFixed(0));
-    DexCallURL.searchParams.set("debtAmount", totalDebtBig);
+    DexCallURL.searchParams.set("debtAmount", debtBig);
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
     try {
       dexCalldataResp = await axios.get(DexCallURL.toString());
@@ -274,20 +302,21 @@ const BelongForm = (props: any) => {
       return;
     }
 
+    const { amountOut } = dexCalldataResp.data.data;
+
     const currentPrice = prices[currentMarketData.address] || prices[currentMarketData.symbol] || 0;
-    const amountOutUsdValue = Big(dexCalldataResp.data.data.amountOut).div(10 ** currentMarketData.decimals).plus(Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()));
+    const _amountOutValue = Big(amountOut).div(10 ** currentMarketData.decimals).plus(Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()));
     const route = {
       ...dexCalldataResp.data.data,
-      amountOutValue: numberRemoveEndZero(amountOutUsdValue.toFixed(currentMarketData.decimals)),
-      amountOutUsd: Big(amountOutUsdValue).times(currentPrice).toFixed(2),
+      amountOutValue: numberRemoveEndZero(_amountOutValue.toFixed(currentMarketData.decimals)),
+      amountOutUsd: Big(_amountOutValue).times(currentPrice).toFixed(2),
     };
-    console.log('dexCalldata: %o', route);
 
     // Get liquidation price
-    const dexCollOutput = BigInt(dexCalldataResp.data.data.amountOut);
-    const dexCollOutputInShares = (dexCollOutput * marginInShares) / SCALING_FACTOR;
-    const params: any = { borrowNECT: totalDebtBig, depositCollateral: dexCollOutputInShares + marginInShares };
-    const newDen = new Den(dexCollOutput + addedCollateral, totalDebtBig);
+    const dexCollOutput = BigInt(amountOut);
+    const dexCollOutputInShares = dexCollOutput + addedCollateral;
+    const params: any = { borrowNECT: debtBig, depositCollateral: dexCollOutputInShares };
+    const newDen = new Den(dexCollOutput, debtBig);
     const _liquidationPrice = newDen.calculateLiquidationPrice(MCRBig);
     const liquidationPrice = {
       big: _liquidationPrice,
@@ -305,10 +334,10 @@ const BelongForm = (props: any) => {
       provider,
       multiCollateralHintHelpers,
     });
-    console.log('hints: %o', hints);
 
     // Get ratio
-    const leverageRatio = newDen.collateralRatio(priceBig);
+    const newRatioDen = new Den(dexCollOutput + addedCollateral, totalDebtBig);
+    const leverageRatio = newRatioDen.collateralRatio(priceBig);
 
     return {
       route,
@@ -319,7 +348,7 @@ const BelongForm = (props: any) => {
         value: Big(leverageRatio.toString()).div(SCALING_FACTOR.toString()).times(100).toString(),
       },
       params,
-      den: newDen,
+      den: newRatioDen,
     };
   }, {
     refreshDeps: [
@@ -335,48 +364,321 @@ const BelongForm = (props: any) => {
   });
 
   const handleLeverageChange = (value: any) => {
-    if (!marginInSharesData) {
+    if (Big(maxLeverage || 1).lte(1)) {
       return;
     }
-    const { maxLeverageRes } = marginInSharesData;
-    if (!maxLeverageRes || Big(maxLeverageRes).eq(0)) return;
     setLeverageProgress(value);
-    const leverage = Big(maxLeverageRes).div(SCALING_FACTOR_BP.toString()).minus(1).times(Big(value || 0).div(100)).plus(1).toFixed(1);
+    const leverage = Big(maxLeverage).minus(1).times(Big(value || 0).div(100)).plus(1).toFixed(1);
     setLeverage(leverage);
   };
 
-  const { runAsync: handleDeposit, loading: handleDepositLoading } = useRequest(async () => {
-    if (!automaticLoopingData || !currentMarketData || !currentMarketData.den) {
+  const { runAsync: getApproved, loading: checkApproving, data: approved } = useRequest(async () => {
+    if (!account || !provider) {
+      return false;
+    }
+
+    const borrowerOperationsContract = new Contract(borrowerOperations, BORROWER_OPERATIONS_ABI, provider);
+    const isApproved = await borrowerOperationsContract.isApprovedDelegate(account, leverageRouter);
+    return isApproved;
+  }, {
+    refreshDeps: [
+      account,
+      provider,
+    ]
+  });
+
+  const { runAsync: setApprove, loading: approving } = useRequest(async () => {
+    if (!account || !provider) {
       return;
     }
-    const { route, hints } = automaticLoopingData;
+
+    let toastId = toast.loading({ title: "Approving..." });
+    const signer = provider.getSigner(account);
+    const borrowerOperationsContract = new Contract(borrowerOperations, BORROWER_OPERATIONS_ABI, signer);
+    try {
+      const tx = await borrowerOperationsContract.setDelegateApproval(leverageRouter, true);
+      toast.dismiss(toastId);
+      toastId = toast.loading({ title: "Confirming...", tx: tx.hash, chainId: DEFAULT_CHAIN_ID });
+      const { status, transactionHash } = await tx.wait();
+      toast.dismiss(toastId);
+      if (status === 1) {
+        toast.success({ title: "Approved successfully!", tx: transactionHash, chainId: DEFAULT_CHAIN_ID });
+      } else {
+        toast.fail({ title: "Approve Failed!" });
+      }
+    } catch (err: any) {
+      toast.dismiss(toastId);
+      toast.fail({
+        title: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
+          : ""
+      });
+    }
+    getApproved();
+  }, {
+    manual: true
+  });
+
+  const { runAsync: handleDeposit, loading: handleDepositLoading } = useRequest(async () => {
+    if (!account) {
+      modal.openConnectModal?.();
+      return;
+    }
+
+    if (DEFAULT_CHAIN_ID !== chainId) {
+      switchChain({
+        chainId: DEFAULT_CHAIN_ID,
+      });
+      return;
+    }
+
+    if (!automaticLoopingData || !currentMarketData || !currentMarketData.den || !marginInSharesData) {
+      return;
+    }
+
+    const { route, hints }: any = automaticLoopingData;
     if (!route || !hints) {
       return;
     }
+
+    if (!approved) {
+      setApprove();
+      return;
+    }
+
+    if (!collateralApproved && Big(amount || 0).gt(0)) {
+      onCollateralApprove();
+      return;
+    }
+
+    const signer = provider.getSigner(account);
+    let toastId = toast.loading({ title: "Leveraging..." });
+
+    const {
+      priceBig,
+      debtPriceBig,
+      MCRBig,
+      leverageBP,
+      addedCollateral,
+      addedDebt,
+      addedPreviewDeposit,
+      addedCollateralDen,
+      marginInShares,
+      borrowingRateBig,
+      amountBig,
+    } = marginInSharesData;
+
     const isActive = currentMarketData.denStatus === UserDenStatus.active;
+    const liquidationReserveBig = BigInt(Big(liquidationReserve).times(SCALING_FACTOR.toString()).toFixed(0));
     const normalizedParams = _normalizeDenCreation(automaticLoopingData.params);
-    const maxBorrowingRate = automaticLoopingData.leverageRatio.big + DEFAULT_SLIPPAGE_TOLERANCE;
+    const maxBorrowingRate = borrowingRateBig + DEFAULT_SLIPPAGE_TOLERANCE < MAXIMUM_BORROWING_MINT_RATE ? borrowingRateBig + DEFAULT_SLIPPAGE_TOLERANCE : MAXIMUM_BORROWING_MINT_RATE;
     const debtAmount = normalizedParams.borrowNECT;
-    const newDen = Den.create(normalizedParams, BigInt(Big(liquidationReserve).times(SCALING_FACTOR.toString()).toFixed(0)), automaticLoopingData.leverageRatio.big);
+    const newDen = Den.create(normalizedParams, liquidationReserveBig, borrowingRateBig);
     const swapRouter = route.tx.to;
     const dexCalldata = route.tx.data;
     const dexCollOutput = BigInt(route.amountOut);
     const dexCollOutputMin = dexCollOutput - (dexCollOutput * DEFAULT_SLIPPAGE_TOLERANCE) / SCALING_FACTOR;
+
+    // estimate gas
+    // const decayedBorrowingRate = maxBorrowingRate;
+    // const decayedDen = Den.create(normalizedParams, liquidationReserveBig, decayedBorrowingRate);
+    // const denRecreate = Den.recreate(decayedDen, liquidationReserveBig, borrowingRateBig);
+    // if (denRecreate === undefined) {
+    //   toast.dismiss(toastId);
+    //   toast.fail({
+    //     title: "Leverage Failed!",
+    //     text: "Den's unable to recreate"
+    //   });
+    //   return;
+    // }
+    const leverageContract = new Contract(leverageRouter, LEVERAGE_ROUTER_ABI, signer);
+    let leverageMethod = "automaticLoopingOpenDen";
+    const leverageParams = [
+      currentMarketData.denManager,
+      {
+        flashloanNectAmount: debtAmount,
+        marginCollAmount: amountBig,
+        denParams: { maxFeePercentage: maxBorrowingRate, upperHint: hints.lowerHint, lowerHint: hints.upperHint },
+        nectToColl: { dexCalldata: dexCalldata, outputMin: dexCollOutputMin, swapRouter },
+      },
+    ];
+    const leverageOptions: any = {};
+
+    if (!isActive) {
+      leverageMethod = "automaticLoopingAddCollateral";
+    }
+
+    try {
+      leverageOptions.gasLimit = await leverageContract.estimateGas[leverageMethod](...leverageParams);
+    } catch (err: any) {
+      console.log("estimate gas error: %o", err);
+      leverageOptions.gasLimit = 4000000;
+    }
+    try {
+      const tx = await leverageContract[leverageMethod](...leverageParams, leverageOptions);
+
+      toast.dismiss(toastId);
+      toastId = toast.loading({
+        title: "Confirming...",
+        tx: tx.hash,
+        chainId: DEFAULT_CHAIN_ID
+      });
+
+      const { status, transactionHash } = await tx.wait();
+
+      toast.dismiss(toastId);
+      if (status === 1) {
+        toast.success({
+          title: "Leverage successful!",
+          tx: transactionHash,
+          chainId: DEFAULT_CHAIN_ID
+        });
+      } else {
+        toast.fail({ title: "Leverage failed!" });
+      }
+      setDataLoading(true);
+      addAction({
+        type: 'Lending',
+        action: 'Leverage',
+        token: currentMarket,
+        amount: Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()).toString(),
+        template: "Beraborrow",
+        add: false,
+        status,
+        transactionHash
+      });
+    } catch (err: any) {
+      console.log(`${leverageMethod} error: %o`, err);
+      toast.dismiss(toastId);
+      toast.fail({
+        title: "Leverage Failed!",
+        text: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
+          : ""
+      });
+    }
   }, { manual: true });
 
-  useEffect(() => {
-    if (!marginInSharesData?.maxLeverageRes) {
-      return;
+  const buttonValid = useMemo(() => {
+    const result: any = { valid: true, text: "Delegate, Approve and Leverage", loading: false };
+
+    if (!account) {
+      result.text = `Connect Wallet`;
+      return result;
     }
-    const { maxLeverageRes } = marginInSharesData;
-    if (!maxLeverageRes || Big(maxLeverageRes).eq(0)) return;
-    const leverageProgress = Big(leverage).minus(1).times(SCALING_FACTOR_BP.toString()).div(Big(maxLeverageRes).minus(1)).times(100).toNumber();
-    setLeverageProgress(leverageProgress);
-  }, [marginInSharesData?.maxLeverageRes]);
+
+    if (DEFAULT_CHAIN_ID !== chainId) {
+      result.text = `Switch Network`;
+      return result;
+    }
+
+    if (handleDepositLoading || marginInSharesLoading || calculateDebtAmountLoading || automaticLoopingLoading || checkApproving || approving || collateralChecking || collateralApproving) {
+      result.loading = true;
+    }
+
+    if (!currentMarketData?.den) {
+      result.valid = false;
+      result.text = `Loading...`;
+      return result;
+    }
+
+    if (!marginInSharesData || !automaticLoopingData || !calculateDebtAmountData) {
+      result.valid = false;
+      return result;
+    }
+
+    if (marginInSharesData.addedCollateral <= BigInt(0)) {
+      result.valid = false;
+      result.text = `Insufficient Collateral`;
+      return result;
+    }
+
+    if (Big(automaticLoopingData.leverageRatio?.value ?? 0).lt(currentMarketData.MCR)) {
+      result.valid = false;
+      result.text = `Ratio must be at least ${currentMarketData.MCR}%`;
+      return result;
+    }
+
+    if (Big(calculateDebtAmountData.totalValue ?? 0).lt(minimumDebt)) {
+      result.valid = false;
+      result.text = (
+        <div className='flex items-center justify-center gap-[8px]'>
+          <Popover
+            trigger={PopoverTrigger.Hover}
+            placement={PopoverPlacement.Top}
+            contentStyle={{ zIndex: 200 }}
+            content={(
+              <Card className="w-[300px] text-[14px] !p-[10px] !rounded-[4px]">
+                A minimum debt of {minimumDebt} is required to proceed with this action. Please increase the amount of 70 you are minting or Close your Position
+              </Card>
+            )}
+          >
+            <img src="/images/icon-tips.svg" alt="" className="w-[18px] h-[18px] cursor-pointer" />
+          </Popover>
+          <span>{`Minimum Debt of ${minimumDebt} required`}</span>
+        </div>
+      );
+      return result;
+    }
+
+    if (Big(amount || 0).gt(currentMarketData.walletBalance || 0)) {
+      result.valid = false;
+      result.text = `Insufficient ${currentMarketData.symbol} Balance`;
+      return result;
+    }
+
+    if (!approved) {
+      result.text = `Approve Delegate`;
+      return result;
+    }
+
+    result.text = "Approve and Leverage";
+
+    if (!collateralApproved && Big(amount || 0).gt(0)) {
+      result.text = `Approve ${currentMarketData.symbol}`;
+      return result;
+    }
+
+    result.text = "Leverage";
+
+    return result;
+  }, [
+    account,
+    amount,
+    chainId,
+    currentMarketData,
+    marginInSharesData,
+    automaticLoopingData,
+    calculateDebtAmountData,
+    handleDepositLoading,
+    marginInSharesLoading,
+    calculateDebtAmountLoading,
+    automaticLoopingLoading,
+    approved,
+    checkApproving,
+    approving,
+    collateralApproved,
+    collateralApproving,
+    collateralChecking,
+  ]);
 
   useEffect(() => {
     setDataLoading(isChainSupported);
   }, [isChainSupported, account, currentMarket]);
+
+  useEffect(() => {
+    setMarginInSharesData(void 0);
+    cancelGetMarginInShares();
+    getMarginInShares().then((_marginInSharesData: any) => {
+      setMarginInSharesData(_marginInSharesData);
+    });
+  }, [
+    amount,
+    currentMarketData,
+    leverage,
+    provider,
+    account,
+  ]);
 
   return (
     <div className="w-[500px] mx-auto mt-[20px]">
@@ -516,9 +818,16 @@ const BelongForm = (props: any) => {
       <div className="w-full">
         <button
           type="button"
-          className="w-full bg-green-600 text-black uppercase flex justify-center items-center h-[40px] rounded-[2px]"
+          className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-green-600 text-black flex justify-center items-center h-[40px] rounded-[2px]"
+          disabled={!buttonValid.valid}
+          onClick={handleDeposit}
         >
-          deposit
+          {
+            buttonValid.loading && (
+              <Loading size={16} />
+            )
+          }
+          <div>{buttonValid.text}</div>
         </button>
       </div>
 

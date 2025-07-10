@@ -896,8 +896,6 @@ const BeraborrowHandler = (props: any) => {
   useEffect(() => {
     if (!update) return;
 
-
-    console.log('====market.vault', market.vault)
     const multicallAddress = multicallAddresses[chainId];
     const contractAddress = config[market.vault];
     const abi = ABI[market.vault];
@@ -1049,7 +1047,6 @@ const BeraborrowHandler = (props: any) => {
             : void 0
       };
 
-      console.log('====method', method)
       const createTx = (gas?: any) => {
         const _gas = gas ? Big(gas.toString()).mul(1.2).toFixed(0) : "4000000";
         contract.populateTransaction[method](...params, {
@@ -1104,7 +1101,6 @@ const BeraborrowHandler = (props: any) => {
       return;
     }
 
-    console.log('====contractAddress====', contractAddress)
     const contract = new ethers.Contract(
       contractAddress,
       abi,
@@ -1298,13 +1294,8 @@ export const getHint = async (params: any) => {
     console.log("get sortedDens failed: %o", err);
   }
 
-  console.log("sortedDensRes: %o", sortedDensRes);
-
   const lowerHint = sortedDensRes?.[0]?.[0] ?? account;
   const upperHint = sortedDensRes?.[1]?.[0] ?? account;
-
-  console.log("lowerHint: %o", lowerHint);
-  console.log("upperHint: %o", upperHint);
 
   const findInsertPositionContract = new ethers.Contract(
     sortedDensAddress,
@@ -1321,10 +1312,7 @@ export const getHint = async (params: any) => {
   } catch (err: any) {
     console.log("findInsertPosition failed: %o", err);
   }
-  console.log("findInsertPositionRes: %o", findInsertPositionRes);
   let [prev, next] = findInsertPositionRes ?? [];
-  console.log("source prev: %o", prev);
-  console.log("source next: %o", next);
   if (account) {
     // In the case of reinsertion, the address of the Den being reinserted is not a usable hint,
     // because it is deleted from the list before the reinsertion.
@@ -1342,7 +1330,5 @@ export const getHint = async (params: any) => {
     next = prev;
   }
 
-  console.log("final prev: %o", prev);
-  console.log("final next: %o", next);
   return { lowerHint: prev, upperHint: next };
 };
