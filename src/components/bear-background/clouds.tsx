@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import CloudSvg from '@public/images/background/cloud.svg';
 import CloudRainySvg from '@public/images/background/cloud-rainy.svg';
 import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 
 export const Clouds = (props: any) => {
   const { isRainyDay } = props;
@@ -81,7 +82,7 @@ export const Clouds = (props: any) => {
 };
 
 export const DappClouds = (props: any) => {
-  const { isRainyDay } = props;
+  const { isRainyDay, cloud1ClassName, cloud2ClassName, cloud3ClassName } = props;
 
   const [screenWidth, setScreenWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
@@ -113,7 +114,7 @@ export const DappClouds = (props: any) => {
           ease: 'linear',
           repeat: Infinity
         }}
-        className='absolute bottom-[479px]'
+        className={clsx('absolute bottom-[479px]', cloud1ClassName)}
       >
         {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
@@ -130,7 +131,7 @@ export const DappClouds = (props: any) => {
           repeat: Infinity,
           delay: 8
         }}
-        className='absolute bottom-[559px]'
+        className={clsx('absolute bottom-[559px]', cloud2ClassName)}
       >
         {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>
@@ -147,7 +148,7 @@ export const DappClouds = (props: any) => {
           repeat: Infinity,
           delay: 16
         }}
-        className='absolute bottom-[129px]'
+        className={clsx('absolute bottom-[129px]', cloud3ClassName)}
       >
         {isRainyDay ? <CloudRainySvg /> : <CloudSvg />}
       </motion.div>

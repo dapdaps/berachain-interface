@@ -25,6 +25,11 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Loading from "@/components/loading";
 import { useSwitchChain } from 'wagmi';
 import useApprove from "@/hooks/use-approve";
+import TokenAmount from "@/sections/swap/TokenAmount";
+import TokenSelector from "@/sections/swap/TokenSelector";
+import BelongTips from "./tips";
+import clsx from "clsx";
+import Link from "next/link";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -32,7 +37,7 @@ const DEFAULT_SLIPPAGE_TOLERANCE = BigInt(10000000000000000);
 const MAXIMUM_BORROWING_MINT_RATE = BigInt(50000000000000000);
 
 const BelongForm = (props: any) => {
-  const { } = props;
+  const { className } = props;
 
   const { basic, networks }: any = beraborrowConfig;
   let {
@@ -61,6 +66,8 @@ const BelongForm = (props: any) => {
   const [data, setData] = useState<any>();
   const [marginInSharesData, setMarginInSharesData] = useState<any>();
   const [maxLeverage, setMaxLeverage] = useState<any>("1");
+  const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
+  const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
 
   const [currentMarketData] = useMemo(() => {
     if (!data || !data.markets || !data.markets.length) {
@@ -241,6 +248,7 @@ const BelongForm = (props: any) => {
       priceBig,
       debtPriceBig,
     );
+    const borrowingFeeValue = Big(leveragedDebt.toString()).div(SCALING_FACTOR.toString()).times(borrowingFee).toFixed(2);
     const borrowingFeeBig = BigInt(Big(leveragedDebt.toString()).times(borrowingFee).toFixed(0));
     const totalDebt = addedCollateralDen.debt + leveragedDebt + borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig);
     const totalDebtValue = Big(totalDebt.toString()).div(SCALING_FACTOR.toString()).toString();
@@ -251,6 +259,8 @@ const BelongForm = (props: any) => {
       value: debtValue,
       totalBig: totalDebt,
       totalValue: totalDebtValue,
+      borrowingFee: borrowingFeeValue,
+      liquidationReserveFee: isActive ? "0" : liquidationReserve,
       fee: Big((borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).toString()).div(SCALING_FACTOR.toString()).toString(),
     };
   }, {
@@ -560,7 +570,7 @@ const BelongForm = (props: any) => {
   }, { manual: true });
 
   const buttonValid = useMemo(() => {
-    const result: any = { valid: true, text: "Delegate, Approve and Leverage", loading: false };
+    const result: any = { valid: true, text: "Delegate, Approve and Deposit", loading: false };
 
     if (!account) {
       result.text = `Connect Wallet`;
@@ -632,14 +642,14 @@ const BelongForm = (props: any) => {
       return result;
     }
 
-    result.text = "Approve and Leverage";
+    result.text = "Approve and Deposit";
 
     if (!collateralApproved && Big(amount || 0).gt(0)) {
       result.text = `Approve ${currentMarketData.symbol}`;
       return result;
     }
 
-    result.text = "Leverage";
+    result.text = "Deposit";
 
     return result;
   }, [
@@ -662,6 +672,10 @@ const BelongForm = (props: any) => {
     collateralChecking,
   ]);
 
+  const riskData = useMemo(() => {
+    return getStatus(currentMarketData, automaticLoopingData?.leverageRatio?.value || "0");
+  }, [currentMarketData, automaticLoopingData]);
+
   useEffect(() => {
     setDataLoading(isChainSupported);
   }, [isChainSupported, account, currentMarket]);
@@ -681,171 +695,250 @@ const BelongForm = (props: any) => {
   ]);
 
   return (
-    <div className="w-[500px] mx-auto mt-[20px]">
-      <div className="w-full">
-        <div className="">
-          Deposit collateral
-        </div>
-        <div className="flex justify-between items-center gap-[10px]">
-          <div className="shrink-0 flex items-center gap-[4px]">
-            <LazyImage
-              src={currentMarket?.icon}
-              fallbackSrc="/assets/tokens/default_icon.png"
-              alt=""
-              containerClassName="!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden"
-            />
-            <div className="">
-              {currentMarket?.symbol}
-            </div>
-            <img src="/images/belong/icon-arrow.svg" alt="" className="w-[12px] h-[12px] shrink-0" />
-          </div>
-          <InputNumber
-            className="flex-1 bg-[#3D405A]"
-            value={amount}
-            onNumberChange={(value) => handleAmount(value)}
-          />
-        </div>
-        <div className="flex items-center gap-[2px]">
-          Balance: {
-            dataLoading
-              ? <Skeleton width={60} height={16} borderRadius={2} />
-              : (
-                <span
-                  className="underline underline-offset-2 cursor-pointer"
-                  onClick={() => {
-                    handleAmount(currentMarketData?.walletBalance || "0");
-                  }}
-                >
-                  {numberFormatter(currentMarketData?.walletBalance, 4, true, { isShort: true, isShortUppercase: true })}
-                </span>
-              )
-          } {currentMarket?.symbol}
-        </div>
-        <div className="flex items-center gap-[2px]">
-          <div className="">25%</div>
-          <div className="">50%</div>
-          <div className="">75%</div>
-          <div className="uppercase">max</div>
-        </div>
-      </div>
-      <div className="w-full">
-        <div className="flex justify-between items-center">
-          <div className="">
-            Liquidation price
-          </div>
-          <div className="">
-            Ratio: {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
-          </div>
-        </div>
-        <div className="flex justify-between items-center gap-[40px]">
-          <div className="">
-            <Range
-              type="range"
-              value={leverageProgress}
-              onChange={(e: any) => handleLeverageChange(e.target.value)}
-              className="!mt-[unset] range-green"
-              color="#16a34a"
-              debounceWait={0}
-            />
-            <div className="flex items-center gap-[2px]">
-              <div className="">
-                Leverage:
-              </div>
-              <div className="">
-                {leverage}x
-              </div>
-            </div>
-          </div>
-          <div className="">
-            <div className="">
-              {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
-            </div>
-            <div className="flex items-center gap-[2px]">
-              <div className="">
-                Current:
-              </div>
-              <div className="">
-                {currentMarketData?.priceShown}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="w-full">
-        <div className="flex justify-between items-center">
-          <div className="">
-            Total debt
-          </div>
-          <div className="flex items-center gap-[2px]">
-            <div className="">
-              Exposure:
-            </div>
-            <div className="">
-              {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center gap-[10px]">
-          <input
-            type="text"
-            value={numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
-            className="flex-1 bg-[#3D405A]"
-            disabled
-          />
-          <div className="shrink-0">
-            {currentMarket?.symbol}
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex justify-end items-center gap-[10px]">
-        <div className="flex items-center gap-[2px]">
-          <div className="">
-            Liquidation risk:
-          </div>
-          <Health risk={getStatus(currentMarketData, automaticLoopingData?.leverageRatio?.value || "0")} />
-        </div>
-      </div>
-      <div className="w-full flex justify-between items-center gap-[10px]">
-        <div className="flex items-center gap-[2px]">
-          <div className="">Total Debt:</div>
-          <div className="">{numberFormatter(calculateDebtAmountData?.value, 8, true, { isShort: true, isShortUppercase: true })}</div>
-        </div>
-        <div className="flex items-center gap-[2px]">
-          <div className="">Fee:</div>
-          <div className="">{numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}</div>
-        </div>
-      </div>
-      <div className="w-full">
-        <button
-          type="button"
-          className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-green-600 text-black flex justify-center items-center h-[40px] rounded-[2px]"
-          disabled={!buttonValid.valid}
-          onClick={handleDeposit}
-        >
-          {
-            buttonValid.loading && (
-              <Loading size={16} />
-            )
-          }
-          <div>{buttonValid.text}</div>
-        </button>
-      </div>
+    <div className={clsx("", className)}>
+      <Card className="w-full !p-[20px] !rounded-[20px] text-[#3D405A] text-[14px] font-Montserrat font-[500]">
 
-      <BeraborrowData
-        {...networks[DEFAULT_CHAIN_ID + '']}
-        {...basic}
-        markets={[currentMarket]}
-        chainId={chainId}
-        prices={prices}
-        update={dataLoading}
-        account={account}
-        provider={provider}
-        onLoad={(res: any) => {
-          console.log('Beraborrow data res: %o', res);
-          setData(res);
-          setDataLoading(false);
-        }}
-      />
+        {/*#region Deposit collateral*/}
+        <div className="w-full">
+          <div className="">
+            Deposit collateral
+          </div>
+          <TokenAmount
+            className="!p-[14px_12px_10px] mt-[10px] w-full"
+            type="in"
+            currency={currentMarket}
+            amount={amount}
+            prices={prices}
+            isPrice={true}
+            account
+            onCurrencySelectOpen={() => {
+              setTokenSelectorVisible(true);
+            }}
+            onAmountChange={(_amount: string) => {
+              handleAmount(_amount);
+            }}
+            updater={inputCurrencyUpdater}
+            onUpdateCurrencyBalance={(_balance: string) => { }}
+          />
+        </div>
+        {/*#endregion*/}
+
+        {/*#region Liquidation price*/}
+        <div className="w-full mt-[16px]">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-[2px]">
+              <div>Liquidation price</div>
+              <BelongTips className="">
+                Liquidation Price is the price the Collateral will have to reach to be liquidated
+              </BelongTips>
+            </div>
+            <div className="flex justify-end items-center gap-[2px]">
+              <div>Ratio:</div>
+              <div style={{ color: `rgb(${riskData?.color})` }}>
+                {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
+              </div>
+              <BelongTips>
+                The ratio of your {currentMarket?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {currentMarketData?.MCR ?? 150}% to avoid liquidations.
+              </BelongTips>
+            </div>
+          </div>
+          <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
+            <div className="w-full flex justify-between items-center gap-[20px]">
+              <Range
+                type="range"
+                value={leverageProgress}
+                onChange={(e: any) => handleLeverageChange(e.target.value)}
+                className="!mt-[unset] w-[216px]"
+                debounceWait={0}
+              />
+              <div className="text-[20px]">
+                {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
+              </div>
+            </div>
+            <div className="w-full flex justify-between items-center gap-[20px] mt-[8px]">
+              <div className="flex items-center gap-[2px] text-[12px] leading-[100%]">
+                <div className="">
+                  Leverage:
+                </div>
+                <div className="font-[600]">
+                  {leverage}x
+                </div>
+              </div>
+              <div className="flex justify-end items-center gap-[2px] text-[12px] leading-[100%]">
+                <div className="">
+                  Current:
+                </div>
+                <div className="font-[600]">
+                  {currentMarketData?.priceShown}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/*#endregion*/}
+
+        {/*#region Total debt*/}
+        <div className="w-full mt-[16px]">
+          <div className="flex justify-between items-center flex-nowrap">
+            <div className="flex items-center gap-[2px]">
+              <div>Total debt</div>
+              <BelongTips className="">
+                <div className="font-[500] text-black">What is this Debt?</div>
+                <div className="mt-[5px]">Debt minted to swap to {currentMarket?.symbol} to amplify the position size</div>
+              </BelongTips>
+            </div>
+            <div className="flex items-center gap-[2px]">
+              <div className="flex items-center gap-[2px]">
+                <div>Exposure:</div>
+              </div>
+              <div className="">
+                {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
+              </div>
+              <BelongTips className="">
+                The Amount of {currentMarket?.symbol} you will have after the leveraging swap
+              </BelongTips>
+            </div>
+          </div>
+          <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[15px_12px] rounded-[12px]">
+            <div className="text-black font-[500] text-[20px]">
+              {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
+            </div>
+            <div className="shrink-0 flex justify-end items-center gap-[3px]">
+              <div className="flex items-center shrink-0">
+                {
+                  currentMarket?.underlyingTokens?.map((token: any, idx: number) => (
+                    <LazyImage
+                      key={token.address}
+                      src={token.icon}
+                      alt={token.symbol}
+                      containerClassName={clsx("!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-8px]")}
+                    />
+                  ))
+                }
+              </div>
+              <div className="text-[16px] text-black font-[600] shrink-0">
+                {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/*#endregion*/}
+
+        {/*#region Risk & Fee*/}
+        <div className="mt-[10px] flex justify-between items-center gap-[20px] text-[12px]">
+          <div className="flex items-center gap-[2px]">
+            <div className="">Fee:</div>
+            <div className="">
+              {numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}
+            </div>
+            <BelongTips className="">
+              <div className="font-[500] text-black">Fee Breakdown</div>
+              <div className="mt-[5px]">
+                <div className="flex justify-between items-center gap-[10px]">
+                  <div className="">Net debt:</div>
+                  <div className="">{numberFormatter(calculateDebtAmountData?.value, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                </div>
+                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+                  <div className="">Borrowing fee({numberFormatter(Big(currentMarketData?.borrowingRate ?? 0).times(100), 2, true)}%):</div>
+                  <div className="">{numberFormatter(calculateDebtAmountData?.borrowingFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                </div>
+                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+                  <div className="">Liquidation reserve:</div>
+                  <div className="">{numberFormatter(calculateDebtAmountData?.liquidationReserveFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                </div>
+                <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
+                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+                  <div className="">Total debt:</div>
+                  <div className="">{numberFormatter(calculateDebtAmountData?.totalValue, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                </div>
+              </div>
+            </BelongTips>
+          </div>
+          <div className="flex justify-end items-center gap-[2px]">
+            <div className="">Liquidation risk:</div>
+            <div className="font-[600]" style={{ color: `rgb(${riskData?.color})` }}>{riskData?.name}</div>
+          </div>
+        </div>
+        {/*#endregion*/}
+
+        <Link
+          prefetch
+          href="/lending/beraborrow"
+          className="block mt-[20px] w-full cursor-pointer"
+        >
+          Transaction details &gt;
+        </Link>
+
+        <div className="w-full">
+          <button
+            type="button"
+            className="mt-[11px] disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black flex justify-center items-center h-[60px] rounded-[10px] border border-[#000]"
+            disabled={!buttonValid.valid}
+            onClick={handleDeposit}
+          >
+            {
+              buttonValid.loading && (
+                <Loading size={16} />
+              )
+            }
+            <div>{buttonValid.text}</div>
+          </button>
+        </div>
+
+        <TokenSelector
+          display={tokenSelectorVisible}
+          tokens={markets ?? []}
+          selectedTokenAddress={currentMarket?.address}
+          chainId={DEFAULT_CHAIN_ID}
+          account={account}
+          onSelect={(token: any) => {
+            setCurrentMarket(token);
+            setTokenSelectorVisible(false);
+          }}
+          onClose={() => {
+            setTokenSelectorVisible(false);
+          }}
+          showSearch={false}
+          isSortByBalance={true}
+        />
+
+        <BeraborrowData
+          {...networks[DEFAULT_CHAIN_ID + '']}
+          {...basic}
+          markets={[currentMarket]}
+          chainId={chainId}
+          prices={prices}
+          update={dataLoading}
+          account={account}
+          provider={provider}
+          onLoad={(res: any) => {
+            console.log('Beraborrow data res: %o', res);
+            setData(res);
+            setDataLoading(false);
+          }}
+        />
+      </Card>
+      <div className="w-full mt-[16px] flex items-center gap-[2px] pl-[21px] text-[12px] text-[#3D405A] font-[500] font-Montserrat leading-[100%]">
+        <div className="">View on</div>
+        <Link
+          className="block underline underline-offset-2"
+          href="https://berascan.com/address/0x88c983bf3d4a9adcee14e1b4f1c446c4c5853ea3"
+          target="_blank"
+          rel="noreferrer nofollow"
+        >
+          Berscan
+        </Link>
+        <div className="">&gt;</div>
+        <div className="">or</div>
+        <Link
+          className="block underline underline-offset-2"
+          href="/vaults?protocol=Beraborrow"
+          prefetch
+        >
+          Beraborrow
+        </Link>
+        <div className="">&gt;</div>
+      </div>
     </div>
   );
 };

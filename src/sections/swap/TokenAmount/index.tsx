@@ -7,8 +7,10 @@ import Range from "@/components/range";
 import { motion } from "framer-motion";
 import Big from "big.js";
 import LazyImage from '@/components/layz-image';
+import clsx from "clsx";
 
 export default function TokenAmout({
+  className,
   type,
   amount,
   disabled,
@@ -69,7 +71,7 @@ export default function TokenAmout({
   }, [updater]);
 
   return (
-    <div className="border border-[#000] rounded-[12px] p-[14px] bg-white">
+    <div className={clsx("border border-[#000] rounded-[12px] p-[14px] bg-white leading-[100%]", className)}>
       <div className="flex items-center justify-between gap-[10px]">
         <div
           className={`${
@@ -128,28 +130,6 @@ export default function TokenAmout({
         </div>
       </div>
 
-      {type === "in" && (
-        <div className="flex justify-between md:flex-col md:items-stretch md:justify-start items-center gap-[22px] mt-[12px]">
-          <div className="flex items-center gap-[8px]">
-            {BalancePercentList.map((p) => (
-              <motion.div
-                key={p.value}
-                className="cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[14px] font-[400] px-[8px]"
-                animate={percent == p.value ? { background: "#FFDC50" } : {}}
-                onClick={() => handleRangeChange({ target: p })}
-              >
-                {p.label}
-              </motion.div>
-            ))}
-          </div>
-          <Range
-            style={{ marginTop: 0, flex: 1 }}
-            value={percent}
-            onChange={handleRangeChange}
-          />
-        </div>
-      )}
-
       <div
         onClick={() => {
           const formatedBalance = balanceFormated(tokenBalance);
@@ -157,12 +137,12 @@ export default function TokenAmout({
           onAmountChange?.(tokenBalance);
           setRange(tokenBalance);
         }}
-        className="flex items-center justify-between text-[#3D405A] mt-[10px] font-medium text-[12px]"
+        className="flex items-center justify-between text-[#3D405A] mt-[6px] font-medium text-[12px]"
       >
         <div className="flex items-center gap-[4px]">
           {balanceLabel}:{" "}
           {isLoading ? (
-            <Loading />
+            <Loading size={12} />
           ) : (
             <span
               className={balanceClassName}
@@ -185,6 +165,28 @@ export default function TokenAmout({
           )
         }
       </div>
+
+      {type === "in" && (
+        <div className="flex justify-between md:flex-col md:items-stretch md:justify-start items-center gap-[22px] mt-[10px]">
+          <div className="flex items-center gap-[8px]">
+            {BalancePercentList.map((p) => (
+              <motion.div
+                key={p.value}
+                className="cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[14px] font-[400] px-[8px] flex justify-center items-center"
+                animate={percent == p.value ? { background: "#FFDC50" } : {}}
+                onClick={() => handleRangeChange({ target: p })}
+              >
+                {p.label}
+              </motion.div>
+            ))}
+          </div>
+          <Range
+            style={{ marginTop: 0, flex: 1 }}
+            value={percent}
+            onChange={handleRangeChange}
+          />
+        </div>
+      )}
     </div>
   );
 }
