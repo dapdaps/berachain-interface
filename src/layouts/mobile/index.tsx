@@ -15,6 +15,7 @@ import { useChristmas } from "@/hooks/use-christmas";
 import clsx from "clsx";
 import GuidingTutorial from "@/components/GuidingTour/mainnet";
 import useTokenPrice from "@/hooks/use-token-price";
+import Downtime from "@/components/downtime";
 
 const menuItems = [
   // { id: 1, title: "Bera Cave", href: "/cave", dataBp: "1015-002-001" },
@@ -130,6 +131,9 @@ const dapps: DApp[] = [
   }
 ];
 
+// process.env.NEXT_PUBLIC_SYSTEM_MAINTENANCE_DOWNTIME === "true"
+const isSystemMaintenanceDowntime = false;
+
 const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
@@ -217,80 +221,85 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
       }}
       onClick={handleTrack}
     >
-      <main className="h-full">{children}</main>
-      {/* Menu Overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: "100%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-12 pb-24 z-[50]"
-            style={{
-              overflowY: isDappsOpen ? "scroll" : "auto"
-            }}
-          >
-            <div className="w-full max-w-md flex justify-center items-center flex-col gap-4">
-              {menuItems.map((item) => (
-                <div
-                  key={item.id}
-                  className={clsx(
-                    "w-full flex justify-center items-center flex-col relative z-0 whitespace-nowrap",
-                    item.disabled && "opacity-50"
-                  )}
+      {
+        isSystemMaintenanceDowntime ? (
+          <Downtime />
+        ) : (
+          <>
+            <main className="h-full">{children}</main>
+            {/* Menu Overlay */}
+            <AnimatePresence>
+              {isMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: "100%" }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: "100%" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="fixed inset-0 bg-[#F6EFC8] flex flex-col items-center pt-12 pb-24 z-[50]"
+                  style={{
+                    overflowY: isDappsOpen ? "scroll" : "auto"
+                  }}
                 >
-                  <MenuButton
-                    href={item.disabled ? "" : item.href}
-                    hasDropdown={item.hasDropdown}
-                    isActive={item.hasDropdown && isDappsOpen}
-                    onClick={item.hasDropdown ? toggleDapps : undefined}
-                    toggle={toggleMenu}
-                    dataBp={item.dataBp}
-                  >
-                    {item.title}
-                  </MenuButton>
-
-                  <AnimatePresence>
-                    {item.hasDropdown && isDappsOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{
-                          opacity: 1,
-                          height: "auto",
-                          transition: { duration: 0.3 }
-                        }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="w-full -mt-6 px-4 py-6 bg-[#D5CDA1] overflow-hidden z-[-1] pt-[13.84vw]"
+                  <div className="w-full max-w-md flex justify-center items-center flex-col gap-4">
+                    {menuItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className={clsx(
+                          "w-full flex justify-center items-center flex-col relative z-0 whitespace-nowrap",
+                          item.disabled && "opacity-50"
+                        )}
                       >
-                        <div className="grid grid-cols-4 gap-x-4 gap-y-6">
-                          {dapps.map((dapp) => (
-                            <DAppIcon key={dapp.id} dapp={dapp} />
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
-            </div>
-            <div className="absolute h-9 bottom-[68px] left-0 right-0 flex px-4 items-center justify-between"></div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                        <MenuButton
+                          href={item.disabled ? "" : item.href}
+                          hasDropdown={item.hasDropdown}
+                          isActive={item.hasDropdown && isDappsOpen}
+                          onClick={item.hasDropdown ? toggleDapps : undefined}
+                          toggle={toggleMenu}
+                          dataBp={item.dataBp}
+                        >
+                          {item.title}
+                        </MenuButton>
 
-      {/* Bottom Navigation */}
-      {!pathname.startsWith("/invite/") && (
-        <div
-          className={clsx(
-            "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
-            pathname === "/" &&
-            "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
-          )}
-        >
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              {/* {["/"].includes(pathname) && isChristmas && (
+                        <AnimatePresence>
+                          {item.hasDropdown && isDappsOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{
+                                opacity: 1,
+                                height: "auto",
+                                transition: { duration: 0.3 }
+                              }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="w-full -mt-6 px-4 py-6 bg-[#D5CDA1] overflow-hidden z-[-1] pt-[13.84vw]"
+                            >
+                              <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+                                {dapps.map((dapp) => (
+                                  <DAppIcon key={dapp.id} dapp={dapp} />
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="absolute h-9 bottom-[68px] left-0 right-0 flex px-4 items-center justify-between"></div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Bottom Navigation */}
+            {!pathname.startsWith("/invite/") && (
+              <div
+                className={clsx(
+                  "fixed bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3 z-[50]",
+                  pathname === "/" &&
+                  "bg-[linear-gradient(0deg,_#7EA82B_0%,_rgba(126,_168,_43,_0.00)_100%)]"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    {/* {["/"].includes(pathname) && isChristmas && (
                 <motion.div
                   className="absolute w-[31.718vw] -left-[2.564vw] -top-[31.282vw] z-[1]"
                   onClick={() => {
@@ -313,57 +322,57 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                   />
                 </motion.div>
               )} */}
-              <motion.img
-                src="/images/mobile/town.png"
-                alt="Town"
-                className="relative w-[15.9vw] h-auto z-[2]"
-                onClick={handleHome}
-                transition={{
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 10
-                }}
-                whileTap={{
-                  y: 8,
-                  scale: 0.95
-                }}
-                data-bp="1015-001"
-              />
-            </div>
-            {isMenuOpen && (
-              <>
-                <Link
-                  className="z-[4] hover:scale-110 ease-in-out duration-300 w-[98px] h-[28px] rounded-full bg-[rgba(217,217,217,0.5)]"
-                  href="https://app.dapdap.net?from=berachain"
-                  target="_blank"
-                  data-bp="1015-002-008"
-                >
-                  <Image
-                    src="/images/dapdap.svg"
-                    alt="dapdap-link"
-                    width={98}
-                    height={28}
-                    className="cursor-pointer"
-                  />
-                </Link>
-                <Link
-                  className="w-[29px] h-[29px] rounded-full cursor-pointer bg-[rgba(255,_255,_255,_0.50)] backdrop-blur-[5px] bg-[url('/images/mirror.png')] bg-no-repeat bg-center bg-[length:16px_16px]"
-                  href="https://dapdap.mirror.xyz"
-                  target="_blank"
-                  data-bp="1015-002-009"
-                >
-                </Link>
-                <Link
-                  className="w-[29px] h-[29px] rounded-full cursor-pointer bg-[rgba(255,_255,_255,_0.50)] backdrop-blur-[5px] bg-[url('/images/icon-gitbook.svg')] bg-no-repeat bg-center bg-[length:16px_16px]"
-                  href="https://bera.town/docs"
-                  target="_blank"
-                >
-                </Link>
-              </>
-            )}
-          </div>
-          <div className="flex items-center gap-[20px]">
-            {/* {isMenuOpen && (
+                    <motion.img
+                      src="/images/mobile/town.png"
+                      alt="Town"
+                      className="relative w-[15.9vw] h-auto z-[2]"
+                      onClick={handleHome}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 10
+                      }}
+                      whileTap={{
+                        y: 8,
+                        scale: 0.95
+                      }}
+                      data-bp="1015-001"
+                    />
+                  </div>
+                  {isMenuOpen && (
+                    <>
+                      <Link
+                        className="z-[4] hover:scale-110 ease-in-out duration-300 w-[98px] h-[28px] rounded-full bg-[rgba(217,217,217,0.5)]"
+                        href="https://app.dapdap.net?from=berachain"
+                        target="_blank"
+                        data-bp="1015-002-008"
+                      >
+                        <Image
+                          src="/images/dapdap.svg"
+                          alt="dapdap-link"
+                          width={98}
+                          height={28}
+                          className="cursor-pointer"
+                        />
+                      </Link>
+                      <Link
+                        className="w-[29px] h-[29px] rounded-full cursor-pointer bg-[rgba(255,_255,_255,_0.50)] backdrop-blur-[5px] bg-[url('/images/mirror.png')] bg-no-repeat bg-center bg-[length:16px_16px]"
+                        href="https://dapdap.mirror.xyz"
+                        target="_blank"
+                        data-bp="1015-002-009"
+                      >
+                      </Link>
+                      <Link
+                        className="w-[29px] h-[29px] rounded-full cursor-pointer bg-[rgba(255,_255,_255,_0.50)] backdrop-blur-[5px] bg-[url('/images/icon-gitbook.svg')] bg-no-repeat bg-center bg-[length:16px_16px]"
+                        href="https://bera.town/docs"
+                        target="_blank"
+                      >
+                      </Link>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-[20px]">
+                  {/* {isMenuOpen && (
               <div
                 className="cursor-pointer"
                 onClick={() => {
@@ -398,23 +407,26 @@ const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
                 </svg>
               </div>
             )} */}
-            <motion.button
-              onClick={toggleMenu}
-              whileTap={{ scale: 0.95, y: 8 }}
-              transition={{
-                type: "spring",
-                stiffness: 200,
-                damping: 10
-              }}
-              className="bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center"
-              data-bp="1015-002"
-            >
-              {isMenuOpen ? <IconClose /> : <IconMenu />}
-            </motion.button>
-          </div>
-        </div>
-      )}
-      <GuidingTutorial />
+                  <motion.button
+                    onClick={toggleMenu}
+                    whileTap={{ scale: 0.95, y: 8 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 10
+                    }}
+                    className="bg-[#fff] bg-opacity-60 backdrop-blur-[10px] p-[10px] rounded-[22px] w-[50px] h-[40px] flex items-center justify-center"
+                    data-bp="1015-002"
+                  >
+                    {isMenuOpen ? <IconClose /> : <IconMenu />}
+                  </motion.button>
+                </div>
+              </div>
+            )}
+            <GuidingTutorial />
+          </>
+        )
+      }
     </div>
   );
 };
