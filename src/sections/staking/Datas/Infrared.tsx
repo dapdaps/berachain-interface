@@ -291,7 +291,10 @@ export default function useInfraredData(props: any) {
       apy: Big(ibgt?.apr || 0)
         .times(100)
         .toFixed(),
-      initialData: ibgt,
+      initialData: {
+        ...ibgt,
+        stakeTokenPrice: ibgt.depositTokenPrice,
+      },
       type: "Staking",
       platform: "infrared",
       protocolType: "-"
