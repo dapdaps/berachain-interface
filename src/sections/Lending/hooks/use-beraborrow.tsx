@@ -399,7 +399,7 @@ export const getPreviewDeposit = ({ amount, market, provider }: { amount: string
 
 const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: any; liquidationReserve: number; type: ActionText; borrowingFee: number; }) => {
   const { _amount, _borrowAmount, market, type, liquidationReserve, borrowingFee } = props;
-  const collateralValue = Big(_amount || 0).times(market.price);
+  const collateralValue = Big(_amount || 0).times(market.price || 0);
   if (!_borrowAmount || Big(_borrowAmount).lte(0)) {
     const _ratioVal = Big(collateralValue).div(1).times(100);
     return {
@@ -407,7 +407,7 @@ const calcRatio = (props: { _amount?: string; _borrowAmount?: string; market: an
       ratioValue: _ratioVal,
     };
   }
-  const borrowValue = Big(_borrowAmount).times(market.borrowToken.price);
+  const borrowValue = Big(_borrowAmount).times(market.borrowToken?.price || 0);
   let _ratioVal = Big(collateralValue).div(Big(borrowValue)).times(100);
   if (market.status === 'open') {
     _ratioVal = Big(collateralValue).div(Big(borrowValue)).times(100);

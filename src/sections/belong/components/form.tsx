@@ -1,4 +1,3 @@
-import InputNumber from "@/components/input-number";
 import LazyImage from "@/components/layz-image";
 import Range from "@/components/range";
 import dynamic from "next/dynamic";
@@ -8,15 +7,14 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { usePriceStore } from "@/stores/usePriceStore";
 import useCustomAccount from "@/hooks/use-account";
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
-import Skeleton from "react-loading-skeleton";
 import { ActionText, BORROWER_OPERATIONS_ABI, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
 import Big from "big.js";
-import Health, { getStatus } from "@/sections/Lending/Beraborrow/health";
+import { getStatus } from "@/sections/Lending/Beraborrow/health";
 import { useRequest } from "ahooks";
 import { getHint } from "@/sections/Lending/handlers/beraborrow";
 import axios from "axios";
 import { _normalizeDenCreation, Den, SCALING_FACTOR, SCALING_FACTOR_BP, UserDenStatus } from "@/sections/Lending/datas/beraborrow/den";
-import { Contract, utils } from "ethers";
+import { Contract } from "ethers";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
@@ -52,6 +50,9 @@ const BelongForm = (props: any) => {
   } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
   markets = markets.filter((m: any) => m.isLeverage);
 
+  // KODI iBERA-wgBERA
+  const TARGET_MARKET = markets.find((m: any) => m.id === 8);
+
   const { account, provider, chainId } = useCustomAccount();
   const prices = usePriceStore((store) => store.price);
   const toast = useToast();
@@ -59,22 +60,30 @@ const BelongForm = (props: any) => {
   const modal = useConnectModal();
   const { switchChain } = useSwitchChain();
 
+  const [currentInputMarket, setCurrentInputMarket] = useState<any>(markets[0]);
+  const [currentInputAmount, setCurrentInputAmount] = useState<any>();
+
   const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const [leverage, setLeverage] = useState("1.5");
+  const [leverage, setLeverage] = useState("1");
   const [leverageProgress, setLeverageProgress] = useState(0);
-  const [currentMarket, setCurrentMarket] = useState<any>(markets[5]);
+  const [currentMarket] = useState<any>(TARGET_MARKET);
   const [data, setData] = useState<any>();
   const [marginInSharesData, setMarginInSharesData] = useState<any>();
   const [maxLeverage, setMaxLeverage] = useState<any>("1");
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
 
-  const [currentMarketData] = useMemo(() => {
+  const [isLeverage] = useMemo(() => {
+    return [!!leverage && Big(leverage).gt(1)];
+  }, [leverage]);
+
+  const [currentMarketData, currentInputMarketData] = useMemo(() => {
     if (!data || !data.markets || !data.markets.length) {
       return [];
     }
     return [
-      { ...data, ...data.markets[0] }
+      { ...data, ...data.markets[0] },
+      { ...data, ...data.markets[1] },
     ];
   }, [data]);
 
@@ -142,6 +151,69 @@ const BelongForm = (props: any) => {
     spender: leverageRouter,
   });
 
+  const { runAsync: getOutputAmountData, loading: outputAmountDataLoading, data: outputAmountData } = useRequest(async () => {
+    if (!currentInputMarket || !account || !currentInputAmount || Big(currentInputAmount).lte(0)) {
+      handleAmount("");
+      return;
+    }
+    if (currentInputMarket.address === currentMarket.address) {
+      handleAmount(currentInputAmount);
+      return {
+        amountOutValue: currentInputAmount,
+        amountOutBig: BigInt(Big(currentInputAmount).times(SCALING_FACTOR.toString()).toFixed(0)),
+      };
+    }
+    const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/swap");
+    DexCallURL.searchParams.set("tokenIn", currentInputMarket.isNative ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : currentInputMarket.address);
+    DexCallURL.searchParams.set("tokenOut", currentMarket.address);
+    DexCallURL.searchParams.set("to", account);
+    DexCallURL.searchParams.set("amount", Big(currentInputAmount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+    DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
+    try {
+      const res = await axios({
+        url: DexCallURL.toString(),
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 200 && res.data?.data?.amountOut) {
+        const { amountOut } = res.data.data;
+        const amountOutValue = numberRemoveEndZero(Big(amountOut).div(SCALING_FACTOR.toString()).toFixed(currentMarket.decimals));
+        handleAmount(amountOutValue);
+        return {
+          ...res.data.data,
+          amountOutValue,
+          amountOutBig: BigInt(amountOut),
+        };
+      }
+      console.log("getOutputAmount res: %o", res);
+    } catch (err: any) {
+      console.log('getOutputAmount failed: %o', err);
+    }
+    handleAmount("");
+  }, {
+    refreshDeps: [
+      currentInputMarket,
+      account,
+      currentInputAmount,
+    ],
+    debounceWait: 1000,
+  });
+
+  const {
+    approved: inputApproved,
+    approve: onInputApprove,
+    approving: inputApproving,
+    checking: inputChecking,
+    allowance: inputAllowance,
+    checkApproved: inputCheckApproved,
+  } = useApprove({
+    token: currentInputMarket,
+    amount: currentInputAmount,
+    spender: outputAmountData?.tx?.to,
+  });
+
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
     if (!currentMarketData) {
       return;
@@ -177,7 +249,7 @@ const BelongForm = (props: any) => {
     // Get the accumulated CollateralShares
     const addedCollateralShares = collateralSharesDen.getCollateralShares();
 
-    // Calculate maximum leverage
+    // Calculate maximum _leverage
     let maxLeverageRes: any = "1";
     try {
       const calculateMaxLeverageParams = [
@@ -200,7 +272,7 @@ const BelongForm = (props: any) => {
         setLeverage("1");
       }
     } catch (err: any) {
-      console.log('Failed to calculate maximum leverage: %o', err);
+      console.log('Failed to calculate maximum _leverage: %o', err);
     }
 
     return {
@@ -222,11 +294,10 @@ const BelongForm = (props: any) => {
     debounceWait: 1000,
   });
 
-  const { runAsync: calculateDebtAmount, data: calculateDebtAmountData, loading: calculateDebtAmountLoading } = useRequest(async () => {
+  const calculateDebtAmountData = useMemo(() => {
     if (!marginInSharesData || !currentMarketData || !currentMarketData.borrowToken) {
       return { big: BigInt(0), value: "0", fee: "0" };
     }
-
     const {
       priceBig,
       debtPriceBig,
@@ -263,16 +334,13 @@ const BelongForm = (props: any) => {
       liquidationReserveFee: isActive ? "0" : liquidationReserve,
       fee: Big((borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).toString()).div(SCALING_FACTOR.toString()).toString(),
     };
-  }, {
-    refreshDeps: [
-      marginInSharesData,
-      currentMarketData,
-      account,
-      chainId,
-      provider,
-    ],
-    debounceWait: 1000,
-  });
+  }, [
+    marginInSharesData,
+    currentMarketData,
+    account,
+    chainId,
+    provider,
+  ]);
 
   const { runAsync: automaticLooping, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
     if (!marginInSharesData || !calculateDebtAmountData || calculateDebtAmountData.big === BigInt(0) || !currentMarketData || !currentMarketData.borrowToken) {
@@ -378,8 +446,8 @@ const BelongForm = (props: any) => {
       return;
     }
     setLeverageProgress(value);
-    const leverage = Big(maxLeverage).minus(1).times(Big(value || 0).div(100)).plus(1).toFixed(1);
-    setLeverage(leverage);
+    const _leverage = Big(maxLeverage).minus(1).times(Big(value || 0).div(100)).plus(1).toFixed(1);
+    setLeverage(_leverage);
   };
 
   const { runAsync: getApproved, loading: checkApproving, data: approved } = useRequest(async () => {
@@ -442,6 +510,12 @@ const BelongForm = (props: any) => {
       return;
     }
 
+    // Without leverage
+    if (!isLeverage) {
+      // TODO
+      return;
+    }
+
     if (!automaticLoopingData || !currentMarketData || !currentMarketData.den || !marginInSharesData) {
       return;
     }
@@ -458,6 +532,12 @@ const BelongForm = (props: any) => {
 
     if (!collateralApproved && Big(amount || 0).gt(0)) {
       onCollateralApprove();
+      return;
+    }
+
+    // swap approve
+    if (!inputApproved) {
+      onInputApprove();
       return;
     }
 
@@ -572,6 +652,7 @@ const BelongForm = (props: any) => {
   const buttonValid = useMemo(() => {
     const result: any = { valid: true, text: "Delegate, Approve and Deposit", loading: false };
 
+    //#region Check account
     if (!account) {
       result.text = `Connect Wallet`;
       return result;
@@ -581,17 +662,59 @@ const BelongForm = (props: any) => {
       result.text = `Switch Network`;
       return result;
     }
+    //#endregion
 
-    if (handleDepositLoading || marginInSharesLoading || calculateDebtAmountLoading || automaticLoopingLoading || checkApproving || approving || collateralChecking || collateralApproving) {
+    //#region Check input amount
+    if (!currentInputAmount || Big(currentInputAmount || 0).lte(0)) {
+      result.valid = false;
+      result.text = `Enter an amount`;
+      return result;
+    }
+    //#endregion
+
+    //#region Check loading
+    if (
+      handleDepositLoading
+      || marginInSharesLoading
+      || automaticLoopingLoading
+      || checkApproving
+      || approving
+      || collateralChecking
+      || collateralApproving
+      || outputAmountDataLoading
+    ) {
       result.loading = true;
     }
+    //#endregion
 
-    if (!currentMarketData?.den) {
+    //#region Check den
+    if (!currentMarketData?.den || !currentInputMarketData?.den) {
       result.valid = false;
       result.text = `Loading...`;
       return result;
     }
+    //#endregion
 
+    //#region Without leverage
+    if (!isLeverage) {
+      result.text = "Please increase the leverage";
+      result.valid = false;
+      // // Check wallet balance
+      // if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
+      //   result.valid = false;
+      //   result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
+      //   return result;
+      // }
+      // // Check approve
+      // if (!inputApproved) {
+      //   result.text = `Approve ${currentInputMarket.symbol}`;
+      //   return result;
+      // }
+      return result;
+    }
+    //#endregion
+
+    // Leverage
     if (!marginInSharesData || !automaticLoopingData || !calculateDebtAmountData) {
       result.valid = false;
       return result;
@@ -631,9 +754,9 @@ const BelongForm = (props: any) => {
       return result;
     }
 
-    if (Big(amount || 0).gt(currentMarketData.walletBalance || 0)) {
+    if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
       result.valid = false;
-      result.text = `Insufficient ${currentMarketData.symbol} Balance`;
+      result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
       return result;
     }
 
@@ -655,6 +778,7 @@ const BelongForm = (props: any) => {
   }, [
     account,
     amount,
+    currentInputAmount,
     chainId,
     currentMarketData,
     marginInSharesData,
@@ -662,7 +786,6 @@ const BelongForm = (props: any) => {
     calculateDebtAmountData,
     handleDepositLoading,
     marginInSharesLoading,
-    calculateDebtAmountLoading,
     automaticLoopingLoading,
     approved,
     checkApproving,
@@ -670,6 +793,10 @@ const BelongForm = (props: any) => {
     collateralApproved,
     collateralApproving,
     collateralChecking,
+    outputAmountDataLoading,
+    currentInputMarketData,
+    isLeverage,
+    inputApproved,
   ]);
 
   const riskData = useMemo(() => {
@@ -696,18 +823,18 @@ const BelongForm = (props: any) => {
 
   return (
     <div className={clsx("", className)}>
-      <Card className="w-full !p-[20px] !rounded-[20px] text-[#3D405A] text-[14px] font-Montserrat font-[500]">
+      <Card className="w-full !p-[20px] !rounded-[20px] text-[#000] text-[12px] font-Montserrat font-[500]">
 
         {/*#region Deposit collateral*/}
         <div className="w-full">
-          <div className="">
-            Deposit collateral
+          <div className="text-[12px] text-[#A1A0A1]">
+            Deposit
           </div>
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"
             type="in"
-            currency={currentMarket}
-            amount={amount}
+            currency={currentInputMarket}
+            amount={currentInputAmount}
             prices={prices}
             isPrice={true}
             account
@@ -715,119 +842,155 @@ const BelongForm = (props: any) => {
               setTokenSelectorVisible(true);
             }}
             onAmountChange={(_amount: string) => {
-              handleAmount(_amount);
+              setCurrentInputAmount(_amount);
             }}
             updater={inputCurrencyUpdater}
+            balanceLabel="Balance"
             onUpdateCurrencyBalance={(_balance: string) => { }}
+            balancePercentClassName={({ selected }: any) => {
+              if (selected) {
+                return "!border-[#000] text-[#000]";
+              }
+              return "!border-[#D9D9D9] text-[#808290]";
+            }}
+            isRange={false}
+            balanceContainerClassName="!text-[#A1A0A1]"
           />
         </div>
         {/*#endregion*/}
 
-        {/*#region Liquidation price*/}
-        <div className="w-full mt-[16px]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-[2px]">
-              <div>Liquidation price</div>
-              <BelongTips className="">
-                Liquidation Price is the price the Collateral will have to reach to be liquidated
-              </BelongTips>
+        {/*#region Leverage*/}
+        <div className="mt-[12px]">
+          <div className="flex justify-between items-center gap-[10px] text-[#A1A0A1] text-[12px]">
+            <div className="flex items-center gap-[2px] text-[12px] leading-[100%]">
+              <div className="">
+                Leverage:
+              </div>
+              <div className="font-[600] text-black">
+                {leverage}x
+              </div>
             </div>
             <div className="flex justify-end items-center gap-[2px]">
-              <div>Ratio:</div>
-              <div style={{ color: `rgb(${riskData?.color})` }}>
-                {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
+              <div className="">Liquidation risk:</div>
+              <div
+                className={clsx((!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "" : "font-[600]")}
+                style={{
+                  color: (!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "#A1A0A1" : `rgb(${riskData?.color})`
+                }}>
+                {(!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "None" : riskData?.name}
               </div>
-              <BelongTips>
-                The ratio of your {currentMarket?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {currentMarketData?.MCR ?? 150}% to avoid liquidations.
-              </BelongTips>
             </div>
           </div>
-          <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
-            <div className="w-full flex justify-between items-center gap-[20px]">
-              <Range
-                type="range"
-                value={leverageProgress}
-                onChange={(e: any) => handleLeverageChange(e.target.value)}
-                className="!mt-[unset] w-[216px]"
-                debounceWait={0}
-              />
-              <div className="text-[20px]">
-                {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
-              </div>
-            </div>
-            <div className="w-full flex justify-between items-center gap-[20px] mt-[8px]">
-              <div className="flex items-center gap-[2px] text-[12px] leading-[100%]">
-                <div className="">
-                  Leverage:
-                </div>
-                <div className="font-[600]">
-                  {leverage}x
-                </div>
-              </div>
-              <div className="flex justify-end items-center gap-[2px] text-[12px] leading-[100%]">
-                <div className="">
-                  Current:
-                </div>
-                <div className="font-[600]">
-                  {currentMarketData?.priceShown}
-                </div>
-              </div>
-            </div>
+          <div className="mt-[13px]">
+            <Range
+              type="range"
+              value={leverageProgress}
+              onChange={(e: any) => handleLeverageChange(e.target.value)}
+              className="!mt-[unset] w-full"
+              debounceWait={0}
+              inputClassName="!h-[16px]"
+              activeBarClassName="!h-[16px]"
+            />
           </div>
         </div>
         {/*#endregion*/}
 
-        {/*#region Total debt*/}
-        <div className="w-full mt-[16px]">
-          <div className="flex justify-between items-center flex-nowrap">
-            <div className="flex items-center gap-[2px]">
-              <div>Total debt</div>
-              <BelongTips className="">
-                <div className="font-[500] text-black">What is this Debt?</div>
-                <div className="mt-[5px]">Debt minted to swap to {currentMarket?.symbol} to amplify the position size</div>
-              </BelongTips>
-            </div>
-            <div className="flex items-center gap-[2px]">
-              <div className="flex items-center gap-[2px]">
-                <div>Exposure:</div>
+        {
+          (leverage && Big(leverage).gt(1)) && (
+            <>
+              {/*#region Liquidation price*/}
+              <div className="w-full mt-[16px]">
+                <div className="flex justify-between items-center text-[#A1A0A1]">
+                  <div className="flex items-center gap-[2px]">
+                    <div>Liquidation price</div>
+                    <BelongTips className="">
+                      Liquidation Price is the price the Collateral will have to reach to be liquidated
+                    </BelongTips>
+                  </div>
+                  <div className="flex justify-end items-center gap-[2px]">
+                    <div>Ratio:</div>
+                    <div style={{ color: `rgb(${riskData?.color})` }}>
+                      {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
+                    </div>
+                    <BelongTips>
+                      The ratio of your {currentMarket?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {currentMarketData?.MCR ?? 150}% to avoid liquidations.
+                    </BelongTips>
+                  </div>
+                </div>
+                <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
+                  <div className="w-full flex justify-between items-center gap-[20px]">
+                    <div className="text-[20px]">
+                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
+                    </div>
+                  </div>
+                  <div className="w-full flex justify-between items-center gap-[20px] mt-[13px]">
+                    <div className="flex justify-end items-center gap-[2px] text-[12px] leading-[100%]">
+                      <div className="text-[#A1A0A1]">
+                        Current:
+                      </div>
+                      <div className="font-[600]">
+                        {currentMarketData?.priceShown}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="">
-                {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
-              </div>
-              <BelongTips className="">
-                The Amount of {currentMarket?.symbol} you will have after the leveraging swap
-              </BelongTips>
-            </div>
-          </div>
-          <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[15px_12px] rounded-[12px]">
-            <div className="text-black font-[500] text-[20px]">
-              {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
-            </div>
-            <div className="shrink-0 flex justify-end items-center gap-[3px]">
-              <div className="flex items-center shrink-0">
-                {
-                  currentMarket?.underlyingTokens?.map((token: any, idx: number) => (
-                    <LazyImage
-                      key={token.address}
-                      src={token.icon}
-                      alt={token.symbol}
-                      containerClassName={clsx("!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-8px]")}
-                    />
-                  ))
-                }
-              </div>
-              <div className="text-[16px] text-black font-[600] shrink-0">
-                {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/*#endregion*/}
+              {/*#endregion*/}
 
-        {/*#region Risk & Fee*/}
-        <div className="mt-[10px] flex justify-between items-center gap-[20px] text-[12px]">
+              {/*#region Total debt*/}
+              <div className="w-full mt-[16px]">
+                <div className="flex justify-between items-center flex-nowrap text-[#A1A0A1]">
+                  <div className="flex items-center gap-[2px]">
+                    <div>Total debt</div>
+                    <BelongTips className="">
+                      <div className="font-[500] text-black">What is this Debt?</div>
+                      <div className="mt-[5px]">Debt minted to swap to {currentMarket?.symbol} to amplify the position size</div>
+                    </BelongTips>
+                  </div>
+                  <div className="flex items-center gap-[2px]">
+                    <div className="flex items-center gap-[2px]">
+                      <div>Exposure:</div>
+                    </div>
+                    <div className="text-black">
+                      {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
+                    </div>
+                    <BelongTips className="">
+                      The Amount of {currentMarket?.symbol} you will have after the leveraging swap
+                    </BelongTips>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[12px_12px] rounded-[12px]">
+                  <div className="text-black font-[500] text-[20px]">
+                    {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
+                  </div>
+                  <div className="shrink-0 flex justify-end items-center gap-[3px] border border-[#373A53] rounded-[8px] p-[8px_12px]">
+                    <div className="flex items-center shrink-0">
+                      {
+                        currentMarket?.underlyingTokens?.map((token: any, idx: number) => (
+                          <LazyImage
+                            key={token.address}
+                            src={token.icon}
+                            alt={token.symbol}
+                            containerClassName={clsx("!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-8px]")}
+                          />
+                        ))
+                      }
+                    </div>
+                    <div className="text-[16px] text-black font-[600] shrink-0">
+                      {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*#endregion*/}
+            </>
+          )
+        }
+
+        {/*#region transaction details & Fee*/}
+        <div className="mt-[29px] flex justify-between items-center gap-[20px] text-[12px]">
           <div className="flex items-center gap-[2px]">
-            <div className="">Fee:</div>
+            <div className="text-[#808290]">Fee:</div>
             <div className="">
               {numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}
             </div>
@@ -854,25 +1017,20 @@ const BelongForm = (props: any) => {
               </div>
             </BelongTips>
           </div>
-          <div className="flex justify-end items-center gap-[2px]">
-            <div className="">Liquidation risk:</div>
-            <div className="font-[600]" style={{ color: `rgb(${riskData?.color})` }}>{riskData?.name}</div>
-          </div>
+          <Link
+            prefetch
+            href="/lending/beraborrow"
+            className="block cursor-pointer"
+          >
+            Transaction details &gt;
+          </Link>
         </div>
         {/*#endregion*/}
 
-        <Link
-          prefetch
-          href="/lending/beraborrow"
-          className="block mt-[20px] w-full cursor-pointer"
-        >
-          Transaction details &gt;
-        </Link>
-
-        <div className="w-full">
+        <div className="w-full mt-[13px]">
           <button
             type="button"
-            className="mt-[11px] disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black flex justify-center items-center h-[60px] rounded-[10px] border border-[#000]"
+            className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black text-[16px] flex justify-center items-center h-[40px] rounded-[10px] border border-[#000]"
             disabled={!buttonValid.valid}
             onClick={handleDeposit}
           >
@@ -892,7 +1050,7 @@ const BelongForm = (props: any) => {
           chainId={DEFAULT_CHAIN_ID}
           account={account}
           onSelect={(token: any) => {
-            setCurrentMarket(token);
+            setCurrentInputMarket(token);
             setTokenSelectorVisible(false);
           }}
           onClose={() => {
@@ -905,7 +1063,7 @@ const BelongForm = (props: any) => {
         <BeraborrowData
           {...networks[DEFAULT_CHAIN_ID + '']}
           {...basic}
-          markets={[currentMarket]}
+          markets={[currentMarket, currentInputMarket]}
           chainId={chainId}
           prices={prices}
           update={dataLoading}
@@ -918,7 +1076,7 @@ const BelongForm = (props: any) => {
           }}
         />
       </Card>
-      <div className="w-full mt-[16px] flex items-center gap-[2px] pl-[21px] text-[12px] text-[#3D405A] font-[500] font-Montserrat leading-[100%]">
+      <div className="w-full mt-[16px] flex items-center gap-[2px] pl-[21px] text-[12px] text-[#F8F8F8] font-[500] font-Montserrat leading-[100%]">
         <div className="">View on</div>
         <Link
           className="block underline underline-offset-2"
