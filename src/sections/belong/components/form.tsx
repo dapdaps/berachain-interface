@@ -50,6 +50,9 @@ const BelongForm = (props: any) => {
   } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
   markets = markets.filter((m: any) => m.isLeverage);
 
+  // KODI iBERA-wgBERA
+  const TARGET_MARKET = markets.find((m: any) => m.id === 8);
+
   const { account, provider, chainId } = useCustomAccount();
   const prices = usePriceStore((store) => store.price);
   const toast = useToast();
@@ -57,22 +60,30 @@ const BelongForm = (props: any) => {
   const modal = useConnectModal();
   const { switchChain } = useSwitchChain();
 
+  const [currentInputMarket, setCurrentInputMarket] = useState<any>(markets[0]);
+  const [currentInputAmount, setCurrentInputAmount] = useState<any>();
+
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [leverage, setLeverage] = useState("1");
   const [leverageProgress, setLeverageProgress] = useState(0);
-  const [currentMarket, setCurrentMarket] = useState<any>(markets[5]);
+  const [currentMarket] = useState<any>(TARGET_MARKET);
   const [data, setData] = useState<any>();
   const [marginInSharesData, setMarginInSharesData] = useState<any>();
   const [maxLeverage, setMaxLeverage] = useState<any>("1");
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
 
-  const [currentMarketData] = useMemo(() => {
+  const [isLeverage] = useMemo(() => {
+    return [!!leverage && Big(leverage).gt(1)];
+  }, [leverage]);
+
+  const [currentMarketData, currentInputMarketData] = useMemo(() => {
     if (!data || !data.markets || !data.markets.length) {
       return [];
     }
     return [
-      { ...data, ...data.markets[0] }
+      { ...data, ...data.markets[0] },
+      { ...data, ...data.markets[1] },
     ];
   }, [data]);
 
@@ -140,6 +151,69 @@ const BelongForm = (props: any) => {
     spender: leverageRouter,
   });
 
+  const { runAsync: getOutputAmountData, loading: outputAmountDataLoading, data: outputAmountData } = useRequest(async () => {
+    if (!currentInputMarket || !account || !currentInputAmount || Big(currentInputAmount).lte(0)) {
+      handleAmount("");
+      return;
+    }
+    if (currentInputMarket.address === currentMarket.address) {
+      handleAmount(currentInputAmount);
+      return {
+        amountOutValue: currentInputAmount,
+        amountOutBig: BigInt(Big(currentInputAmount).times(SCALING_FACTOR.toString()).toFixed(0)),
+      };
+    }
+    const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/swap");
+    DexCallURL.searchParams.set("tokenIn", currentInputMarket.isNative ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : currentInputMarket.address);
+    DexCallURL.searchParams.set("tokenOut", currentMarket.address);
+    DexCallURL.searchParams.set("to", account);
+    DexCallURL.searchParams.set("amount", Big(currentInputAmount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+    DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
+    try {
+      const res = await axios({
+        url: DexCallURL.toString(),
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 200 && res.data?.data?.amountOut) {
+        const { amountOut } = res.data.data;
+        const amountOutValue = numberRemoveEndZero(Big(amountOut).div(SCALING_FACTOR.toString()).toFixed(currentMarket.decimals));
+        handleAmount(amountOutValue);
+        return {
+          ...res.data.data,
+          amountOutValue,
+          amountOutBig: BigInt(amountOut),
+        };
+      }
+      console.log("getOutputAmount res: %o", res);
+    } catch (err: any) {
+      console.log('getOutputAmount failed: %o', err);
+    }
+    handleAmount("");
+  }, {
+    refreshDeps: [
+      currentInputMarket,
+      account,
+      currentInputAmount,
+    ],
+    debounceWait: 1000,
+  });
+
+  const {
+    approved: inputApproved,
+    approve: onInputApprove,
+    approving: inputApproving,
+    checking: inputChecking,
+    allowance: inputAllowance,
+    checkApproved: inputCheckApproved,
+  } = useApprove({
+    token: currentInputMarket,
+    amount: currentInputAmount,
+    spender: outputAmountData?.tx?.to,
+  });
+
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
     if (!currentMarketData) {
       return;
@@ -175,7 +249,7 @@ const BelongForm = (props: any) => {
     // Get the accumulated CollateralShares
     const addedCollateralShares = collateralSharesDen.getCollateralShares();
 
-    // Calculate maximum leverage
+    // Calculate maximum _leverage
     let maxLeverageRes: any = "1";
     try {
       const calculateMaxLeverageParams = [
@@ -198,7 +272,7 @@ const BelongForm = (props: any) => {
         setLeverage("1");
       }
     } catch (err: any) {
-      console.log('Failed to calculate maximum leverage: %o', err);
+      console.log('Failed to calculate maximum _leverage: %o', err);
     }
 
     return {
@@ -220,11 +294,10 @@ const BelongForm = (props: any) => {
     debounceWait: 1000,
   });
 
-  const { runAsync: calculateDebtAmount, data: calculateDebtAmountData, loading: calculateDebtAmountLoading } = useRequest(async () => {
+  const calculateDebtAmountData = useMemo(() => {
     if (!marginInSharesData || !currentMarketData || !currentMarketData.borrowToken) {
       return { big: BigInt(0), value: "0", fee: "0" };
     }
-
     const {
       priceBig,
       debtPriceBig,
@@ -261,16 +334,13 @@ const BelongForm = (props: any) => {
       liquidationReserveFee: isActive ? "0" : liquidationReserve,
       fee: Big((borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).toString()).div(SCALING_FACTOR.toString()).toString(),
     };
-  }, {
-    refreshDeps: [
-      marginInSharesData,
-      currentMarketData,
-      account,
-      chainId,
-      provider,
-    ],
-    debounceWait: 1000,
-  });
+  }, [
+    marginInSharesData,
+    currentMarketData,
+    account,
+    chainId,
+    provider,
+  ]);
 
   const { runAsync: automaticLooping, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
     if (!marginInSharesData || !calculateDebtAmountData || calculateDebtAmountData.big === BigInt(0) || !currentMarketData || !currentMarketData.borrowToken) {
@@ -376,8 +446,8 @@ const BelongForm = (props: any) => {
       return;
     }
     setLeverageProgress(value);
-    const leverage = Big(maxLeverage).minus(1).times(Big(value || 0).div(100)).plus(1).toFixed(1);
-    setLeverage(leverage);
+    const _leverage = Big(maxLeverage).minus(1).times(Big(value || 0).div(100)).plus(1).toFixed(1);
+    setLeverage(_leverage);
   };
 
   const { runAsync: getApproved, loading: checkApproving, data: approved } = useRequest(async () => {
@@ -440,6 +510,12 @@ const BelongForm = (props: any) => {
       return;
     }
 
+    // Without leverage
+    if (!isLeverage) {
+      // TODO
+      return;
+    }
+
     if (!automaticLoopingData || !currentMarketData || !currentMarketData.den || !marginInSharesData) {
       return;
     }
@@ -456,6 +532,12 @@ const BelongForm = (props: any) => {
 
     if (!collateralApproved && Big(amount || 0).gt(0)) {
       onCollateralApprove();
+      return;
+    }
+
+    // swap approve
+    if (!inputApproved) {
+      onInputApprove();
       return;
     }
 
@@ -570,6 +652,7 @@ const BelongForm = (props: any) => {
   const buttonValid = useMemo(() => {
     const result: any = { valid: true, text: "Delegate, Approve and Deposit", loading: false };
 
+    //#region Check account
     if (!account) {
       result.text = `Connect Wallet`;
       return result;
@@ -579,23 +662,59 @@ const BelongForm = (props: any) => {
       result.text = `Switch Network`;
       return result;
     }
+    //#endregion
 
-    if (!amount || Big(amount || 0).lte(0)) {
+    //#region Check input amount
+    if (!currentInputAmount || Big(currentInputAmount || 0).lte(0)) {
       result.valid = false;
       result.text = `Enter an amount`;
       return result;
     }
+    //#endregion
 
-    if (handleDepositLoading || marginInSharesLoading || calculateDebtAmountLoading || automaticLoopingLoading || checkApproving || approving || collateralChecking || collateralApproving) {
+    //#region Check loading
+    if (
+      handleDepositLoading
+      || marginInSharesLoading
+      || automaticLoopingLoading
+      || checkApproving
+      || approving
+      || collateralChecking
+      || collateralApproving
+      || outputAmountDataLoading
+    ) {
       result.loading = true;
     }
+    //#endregion
 
-    if (!currentMarketData?.den) {
+    //#region Check den
+    if (!currentMarketData?.den || !currentInputMarketData?.den) {
       result.valid = false;
       result.text = `Loading...`;
       return result;
     }
+    //#endregion
 
+    //#region Without leverage
+    if (!isLeverage) {
+      result.text = "Please increase the leverage";
+      result.valid = false;
+      // // Check wallet balance
+      // if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
+      //   result.valid = false;
+      //   result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
+      //   return result;
+      // }
+      // // Check approve
+      // if (!inputApproved) {
+      //   result.text = `Approve ${currentInputMarket.symbol}`;
+      //   return result;
+      // }
+      return result;
+    }
+    //#endregion
+
+    // Leverage
     if (!marginInSharesData || !automaticLoopingData || !calculateDebtAmountData) {
       result.valid = false;
       return result;
@@ -635,9 +754,9 @@ const BelongForm = (props: any) => {
       return result;
     }
 
-    if (Big(amount || 0).gt(currentMarketData.walletBalance || 0)) {
+    if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
       result.valid = false;
-      result.text = `Insufficient ${currentMarketData.symbol} Balance`;
+      result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
       return result;
     }
 
@@ -659,6 +778,7 @@ const BelongForm = (props: any) => {
   }, [
     account,
     amount,
+    currentInputAmount,
     chainId,
     currentMarketData,
     marginInSharesData,
@@ -666,7 +786,6 @@ const BelongForm = (props: any) => {
     calculateDebtAmountData,
     handleDepositLoading,
     marginInSharesLoading,
-    calculateDebtAmountLoading,
     automaticLoopingLoading,
     approved,
     checkApproving,
@@ -674,6 +793,10 @@ const BelongForm = (props: any) => {
     collateralApproved,
     collateralApproving,
     collateralChecking,
+    outputAmountDataLoading,
+    currentInputMarketData,
+    isLeverage,
+    inputApproved,
   ]);
 
   const riskData = useMemo(() => {
@@ -710,8 +833,8 @@ const BelongForm = (props: any) => {
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"
             type="in"
-            currency={currentMarket}
-            amount={amount}
+            currency={currentInputMarket}
+            amount={currentInputAmount}
             prices={prices}
             isPrice={true}
             account
@@ -719,7 +842,7 @@ const BelongForm = (props: any) => {
               setTokenSelectorVisible(true);
             }}
             onAmountChange={(_amount: string) => {
-              handleAmount(_amount);
+              setCurrentInputAmount(_amount);
             }}
             updater={inputCurrencyUpdater}
             balanceLabel="Balance"
@@ -927,7 +1050,7 @@ const BelongForm = (props: any) => {
           chainId={DEFAULT_CHAIN_ID}
           account={account}
           onSelect={(token: any) => {
-            setCurrentMarket(token);
+            setCurrentInputMarket(token);
             setTokenSelectorVisible(false);
           }}
           onClose={() => {
@@ -940,7 +1063,7 @@ const BelongForm = (props: any) => {
         <BeraborrowData
           {...networks[DEFAULT_CHAIN_ID + '']}
           {...basic}
-          markets={[currentMarket]}
+          markets={[currentMarket, currentInputMarket]}
           chainId={chainId}
           prices={prices}
           update={dataLoading}

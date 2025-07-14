@@ -144,7 +144,7 @@ const networks = {
         CCR: 150,
         TCR: 197,
         collIndex: 12,
-        isLeverage: false,
+        isLeverage: true,
       },
       {
         id: 2,
