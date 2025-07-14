@@ -25,6 +25,7 @@ import McBeraProvider from '@/sections/home-earth/mc-bera/context';
 import McBeraEntry from '@/sections/home-earth/mc-bera/entry';
 import dynamic from 'next/dynamic';
 import McBeraView from '@/sections/home-earth/mc-bera';
+import BelongEntry from "../belong/entry";
 
 const McBera = dynamic(() => import('@/sections/home-earth/mc-bera'), { ssr: false });
 
@@ -315,6 +316,7 @@ const HomeEarth = (props: any) => {
                   </div>
                 </div>
               )}
+              <BelongEntry />
             </motion.div>
             <McBeraEntry />
           </div>

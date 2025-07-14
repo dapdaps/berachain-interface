@@ -38,7 +38,7 @@ export default function CurrencySelect({
     loading: balancesLoading,
     balances = {},
     queryBalance
-  } = useTokensBalance(showBalance ? tokens : []);
+  } = useTokensBalance((showBalance && display) ? tokens : []);
 
   const handleSearch = () => {
     let tokenIsAvailable = false;

@@ -988,11 +988,12 @@ const BridgeGround = function (props: any) {
 };
 
 type PropsType = {
-  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'bgt-lst' | 'campaign';
+  type: 'home' | 'dashboard' | 'bridge' | 'dapps' | 'dapp' | 'cave' | 'hall' | 'bintent' | 'bgt-lst' | 'campaign' | 'belong';
   children: React.ReactNode;
+  style?: React.CSSProperties;
 };
 
-export default memo(function BearBackground({ type, children }: PropsType) {
+export default memo(function BearBackground({ type, children, style }: PropsType) {
   const { isRainyDay } = useRainyDay();
   const { isDefaultTheme } = useActivityStore()
 
@@ -1002,7 +1003,8 @@ export default memo(function BearBackground({ type, children }: PropsType) {
       style={{
         height: 'calc(100dvh - 68px)',
         minHeight: 899,
-        overflow: type === "cave" ? "visible" : 'hidden'
+        overflow: type === "cave" ? "visible" : 'hidden',
+        ...style,
       }}
     >
       {type === 'home' ? (
@@ -1103,6 +1105,20 @@ export default memo(function BearBackground({ type, children }: PropsType) {
           <div className='absolute bottom-0 left-0 right-0'>
             <img className='w-full' src="/images/background/lst-ground.svg" alt="lst-ground" />
           </div>
+        </>
+      ) : type === 'belong' ? (
+        <>
+          <DappClouds
+            isRainyDay={isRainyDay}
+            cloud1ClassName="!bottom-[unset] top-[111px]"
+            cloud2ClassName="!bottom-[unset] top-[412px]"
+            cloud3ClassName="!bottom-[unset] top-[788px]"
+          />
+          <img
+            src="/images/belong/bg-mascot.png"
+            className="absolute right-0 bottom-0 w-[380px] h-[380px] object-center object-contain"
+            alt=""
+          />
         </>
       ) : (
         <></>

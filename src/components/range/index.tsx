@@ -3,7 +3,7 @@ import { useDebounceFn } from "ahooks";
 import "./index.css";
 import { useEffect, useState } from "react";
 
-export default function Range({ value, onChange, style, className, debounceWait = 1000 }: any) {
+export default function Range({ value, onChange, style, className, debounceWait = 1000, color = "#ffdc50" }: any) {
   const [inputValue, setInputValue] = useState(value);
 
   const { run: onRangeChange, cancel: cancelRangeChange } = useDebounceFn(onChange, { wait: debounceWait });
@@ -27,7 +27,11 @@ export default function Range({ value, onChange, style, className, debounceWait 
         type="range"
         value={inputValue}
         onChange={(e) => {
-          onRangeChange(e);
+          if (debounceWait <= 0) {
+            onChange(e);
+          } else {
+            onRangeChange(e);
+          }
           setInputValue(e.target.value);
         }}
         className="appearance-none"
@@ -36,7 +40,7 @@ export default function Range({ value, onChange, style, className, debounceWait 
         className={clsx(
           "absolute top-0 left-0 h-[8px] rounded-[16px] bg-[#ffdc50]"
         )}
-        style={{ width: inputValue + "%" }}
+        style={{ width: inputValue + "%", background: color }}
       />
     </div>
   );

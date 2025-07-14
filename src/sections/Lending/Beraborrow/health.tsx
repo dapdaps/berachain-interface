@@ -47,7 +47,7 @@ export const Status: any = {
 };
 
 export const getStatus = (market: any, ratio?: string) => {
-  const { CCR, TCR } = market;
+  const { CCR = 150, TCR = 200 } = market ?? {};
   const _ratio = ratio || 0;
   if (Big(_ratio).lt(CCR)) {
     return Status.HighRisk;

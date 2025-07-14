@@ -5,9 +5,10 @@ import { useAccount } from 'wagmi';
 import { useProvider } from '@/hooks/use-provider';
 import { DEFAULT_CHAIN_ID } from '@/configs';
 import Markets from '@/sections/Lending/components/markets';
-import BorrowModal, { ActionText } from '@/sections/Lending/Beraborrow/form';
+import BorrowModal from '@/sections/Lending/Beraborrow/form';
 import { usePriceStore } from '@/stores/usePriceStore';
 import Big from 'big.js';
+import { ActionText } from '../hooks/use-beraborrow';
 
 const BeraborrowData = dynamic(() => import('../datas/beraborrow'));
 
