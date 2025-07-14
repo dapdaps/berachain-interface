@@ -1,83 +1,77 @@
 import clsx from "clsx";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { useRef } from "react";
+import BelongTitle from "./title";
 
 const Steps = [
   {
     key: 1,
-    title: "1. ONE CLICK ZAP TO wgBERA-iBERA",
+    title: "ONE CLICK ZAP TO wgBERA-iBERA",
     content: "Zap your bags and they will be automatically deposited directly into the wgBERA-iBERA on Kodiak, the best BERA stable performing pool.",
-    banner: "/images/belong/banner-zap.png",
-    bannerTop: 20,
+    banner: "/images/belong/v2/banner-zap.png",
+    icon: "/images/belong/v2/icon-plus-black.svg",
   },
   {
     key: 2,
-    title: "2. LP TOKEN IS LOCKED TO BORROW NECT",
+    title: "LP TOKEN IS LOCKED TO BORROW NECT",
     content: "NECT, one of the major stablecoins within Berachain, is automatically minted in background as soon as you click the button \"Deposit\" above.",
-    banner: "/images/belong/banner-lock-lp.png",
-    bannerTop: 20,
+    banner: "/images/belong/v2/banner-nect.png",
+    icon: "/images/belong/v2/icon-plus-primary.svg",
   },
   {
     key: 3,
-    title: "3. EXPOSURE INCREASE BY LOOPING UP TO 5x",
+    title: "EXPOSURE INCREASE BY LOOPING UP TO 5x",
     content: "NECT is being sold to buy more wgBERA and iBERA, compouding your position within the pool and the exposition to BERA. Watch out for liquidations, check more details here: BERABORROW LINK TO WGBERA-IBERA LP VAULT",
-    banner: "/images/belong/banner-leverage.png",
-    bannerTop: 10,
+    banner: "/images/belong/v2/banner-leverage.png",
+    icon: "/images/belong/v2/icon-plus-black.svg",
   },
 ];
 
 const HowWork = (props: any) => {
   const { className, style } = props;
 
-  const swiperRef = useRef<any>(null);
-
   return (
     <div className={clsx("", className)} style={style}>
-      <div className="text-[#3D405A] font-Montserrat text-[20px] font-semibold leading-normal">
+      <BelongTitle>
         How does it work?
-      </div>
-      <div className="relative w-full h-[330px] rounded-[20px] mt-[10px] bg-[rgba(255,255,255,0.5)] backdrop-blur-[10px] text-[#3D405A] font-Montserrat text-[12px] font-[500] leading-[120%]">
-        <Swiper
-          modules={[]}
-          loop={true}
-          className="w-full h-full"
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
-        >
-          {
-            Steps.map((item) => {
-              return (
-                <SwiperSlide key={item.key}>
-                  <div
-                    className="w-full h-full p-[22px_12px_17px] flex justify-center items-end bg-no-repeat bg-[length:65%_auto]"
-                    style={{
-                      backgroundImage: `url(${item.banner})`,
-                      backgroundPosition: `center top ${item.bannerTop}px`
-                    }}
-                  >
-                    <div className="w-full">
-                      <div className="text-[#471C1C] font-Montserrat text-[16px] font-semibold leading-[80%] text-center">
-                        {item.title}
-                      </div>
-                      <div className="mt-[14px]">
-                        {item.content}
-                      </div>
+      </BelongTitle>
+      <div className="relative w-full mt-[67px] flex flex-col gap-[40px]">
+        {
+          Steps.map((item, index) => {
+            return (
+              <div
+                key={item.key}
+                className={clsx(
+                  "w-full h-[380px] p-[20px] flex justify-between items-center gap-[12px] rounded-[20px] border border-black backdrop-blur-[10px] text-black font-Montserrat text-[16px] font-[400] leading-[120%]",
+                  index % 2 === 0 ? "flex-row bg-[#FFDC50]" : "flex-row-reverse bg-[#FFFDEB]"
+                )}
+              >
+                <div className="h-full flex flex-col justify-between p-[40px]">
+                  <div className="flex justify-between items-start">
+                    <div className="text-[#471C1C] font-CherryBomb text-[30px] font-[400] leading-[80%] uppercase">
+                      {item.key}.
+                    </div>
+                    <img
+                      src={item.icon}
+                      alt=""
+                      className={clsx(
+                        "w-[10px] h-[10px] object-contain object-center shrink-0",
+                        index % 2 !== 0 && "translate-x-[-220px]"
+                      )}
+                    />
+                  </div>
+                  <div className="">
+                    <div className="text-[#471C1C] font-CherryBomb text-[30px] font-normal leading-[80%] uppercase">
+                      {item.title}
+                    </div>
+                    <div className="mt-[20px]">
+                      {item.content}
                     </div>
                   </div>
-                </SwiperSlide>
-              );
-            })
-          }
-        </Swiper>
-        <button
-          type="button"
-          className="w-[30px] h-[30px] rounded-full bg-[url('/images/belong/icon-prev.png')] bg-no-repeat bg-center bg-contain absolute top-1/2 -translate-y-1/2 left-[12px] z-[1]"
-          onClick={() => swiperRef.current?.slidePrev()}
-        />
-        <button
-          type="button"
-          className="w-[30px] h-[30px] rounded-full bg-[url('/images/belong/icon-next.png')] bg-no-repeat bg-center bg-contain absolute top-1/2 -translate-y-1/2 right-[12px] z-[1]"
-          onClick={() => swiperRef.current?.slideNext()}
-        />
+                </div>
+                <img src={item.banner} alt="" className="w-[454px] h-full object-contain object-center shrink-0 pointer-events-none" />
+              </div>
+            );
+          })
+        }
       </div>
     </div>
   );

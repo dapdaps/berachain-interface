@@ -1,6 +1,6 @@
 import axios from "axios";
 import Big from "big.js";
-import { ethers, utils } from "ethers";
+import { Contract, ethers, utils } from "ethers";
 import { useEffect } from "react";
 import multicallAddresses from "@/configs/contract/multicall";
 import { multicall } from "@/utils/multicall";
@@ -227,6 +227,26 @@ const APY_ABI = [
   }
 ];
 
+const DEN_MANAGER_GETTERS_ABI = [
+  {
+    inputs: [],
+    name: "getAllCollateralsAndDenManagers",
+    outputs: [
+      {
+        components: [
+          { internalType: "address", name: "collateral", type: "address" },
+          { internalType: "address[]", name: "denManagers", type: "address[]" }
+        ],
+        internalType: "struct DenManagerGetters.Collateral[]",
+        name: "",
+        type: "tuple[]"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  }
+];
+
 const calcTCR = (collateral: any, debt: any, price: any) => {
   if (!collateral || Big(collateral).lte(0)) return 0;
   if (!debt || Big(debt).lte(0)) return 0;
@@ -352,7 +372,8 @@ const BeraborrowData = (props: any) => {
     provider,
     chainId,
     borrowToken,
-    beraborrowCore
+    beraborrowCore,
+    denManagerGetters
   } = props;
 
   const multicallAddress = multicallAddresses[chainId];
@@ -765,6 +786,16 @@ const BeraborrowData = (props: any) => {
       }
       return result;
     };
+
+    // const getDenManagerGetters = async () => {
+    //   const contract = new Contract(denManagerGetters, DEN_MANAGER_GETTERS_ABI, provider);
+    //   const res = await contract.getAllCollateralsAndDenManagers();
+    //   return res.map((item: any, index: number) => ({
+    //     index,
+    //     collateral: item.collateral,
+    //     denManagers: item.denManagers,
+    //   }));
+    // };
 
     const getCTokensData = async () => {
       try {

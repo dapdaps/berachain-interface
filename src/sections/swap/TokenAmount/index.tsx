@@ -24,7 +24,10 @@ export default function TokenAmout({
   isPrice = true,
   balanceLabel = "balance",
   balanceClassName = "",
-  inputDisabled
+  balancePercentClassName,
+  balanceContainerClassName,
+  inputDisabled,
+  isRange = true
 }: any) {
   const tokenPrice = useMemo(
     () => (currency ? prices[currency.priceKey || currency.symbol] : 0),
@@ -74,9 +77,8 @@ export default function TokenAmout({
     <div className={clsx("border border-[#000] rounded-[12px] p-[14px] bg-white leading-[100%]", className)}>
       <div className="flex items-center justify-between gap-[10px]">
         <div
-          className={`${
-            outputCurrencyReadonly ? "" : "border bg-[#FFFDEB]"
-          } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px] cursor-pointer`}
+          className={`${outputCurrencyReadonly ? "" : "border bg-[#FFFDEB]"
+            } flex items-center justify-between border-[#000] rounded-[8px]  w-[176px] h-[46px] px-[7px] cursor-pointer`}
           onClick={() => {
             onCurrencySelectOpen();
           }}
@@ -84,11 +86,28 @@ export default function TokenAmout({
           {currency ? (
             <div className="flex items-center gap-[10px]">
               <div className="relative shrink-0">
-                <LazyImage
-                  src={currency.icon}
-                  fallbackSrc="/assets/tokens/default_icon.png"
-                  containerClassName="!w-[26px] !h-[26px] shrink-0 rounded-full overflow-hidden"
-                />
+                {
+                  (!currency.icon && currency.underlyingTokens) ? (
+                    <div className="flex items-center">
+                      {
+                        currency.underlyingTokens.map((_currency: any, _index: number) => (
+                          <LazyImage
+                            key={_index}
+                            src={_currency.icon}
+                            fallbackSrc="/assets/tokens/default_icon.png"
+                            containerClassName={clsx("!w-[26px] !h-[26px] shrink-0 rounded-full overflow-hidden", _index > 0 && "ml-[-15px]")}
+                          />
+                        ))
+                      }
+                    </div>
+                  ) : (
+                    <LazyImage
+                      src={currency.icon}
+                      fallbackSrc="/assets/tokens/default_icon.png"
+                      containerClassName="!w-[26px] !h-[26px] shrink-0 rounded-full overflow-hidden"
+                    />
+                  )
+                }
               </div>
               <div className="text-[16px] font-[600] max-w-[100px] truncate">
                 {currency?.symbol}
@@ -137,7 +156,7 @@ export default function TokenAmout({
           onAmountChange?.(tokenBalance);
           setRange(tokenBalance);
         }}
-        className="flex items-center justify-between text-[#3D405A] mt-[6px] font-medium text-[12px]"
+        className={clsx("flex items-center justify-between text-[#3D405A] mt-[6px] font-medium text-[12px]", balanceContainerClassName)}
       >
         <div className="flex items-center gap-[4px]">
           {balanceLabel}:{" "}
@@ -172,7 +191,10 @@ export default function TokenAmout({
             {BalancePercentList.map((p) => (
               <motion.div
                 key={p.value}
-                className="cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[14px] font-[400] px-[8px] flex justify-center items-center"
+                className={clsx(
+                  "cursor-pointer h-[22px] rounded-[6px] border border-[#373A53] text-black text-[14px] font-[400] px-[8px] flex justify-center items-center",
+                  typeof balancePercentClassName === "function" ? balancePercentClassName?.({ selected: percent == p.value }) : balancePercentClassName)
+                }
                 animate={percent == p.value ? { background: "#FFDC50" } : {}}
                 onClick={() => handleRangeChange({ target: p })}
               >
@@ -180,11 +202,15 @@ export default function TokenAmout({
               </motion.div>
             ))}
           </div>
-          <Range
-            style={{ marginTop: 0, flex: 1 }}
-            value={percent}
-            onChange={handleRangeChange}
-          />
+          {
+            isRange && (
+              <Range
+                style={{ marginTop: 0, flex: 1 }}
+                value={percent}
+                onChange={handleRangeChange}
+              />
+            )
+          }
         </div>
       )}
     </div>

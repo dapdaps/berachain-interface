@@ -1,4 +1,3 @@
-import InputNumber from "@/components/input-number";
 import LazyImage from "@/components/layz-image";
 import Range from "@/components/range";
 import dynamic from "next/dynamic";
@@ -8,15 +7,14 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { usePriceStore } from "@/stores/usePriceStore";
 import useCustomAccount from "@/hooks/use-account";
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
-import Skeleton from "react-loading-skeleton";
 import { ActionText, BORROWER_OPERATIONS_ABI, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
 import Big from "big.js";
-import Health, { getStatus } from "@/sections/Lending/Beraborrow/health";
+import { getStatus } from "@/sections/Lending/Beraborrow/health";
 import { useRequest } from "ahooks";
 import { getHint } from "@/sections/Lending/handlers/beraborrow";
 import axios from "axios";
 import { _normalizeDenCreation, Den, SCALING_FACTOR, SCALING_FACTOR_BP, UserDenStatus } from "@/sections/Lending/datas/beraborrow/den";
-import { Contract, utils } from "ethers";
+import { Contract } from "ethers";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
@@ -60,7 +58,7 @@ const BelongForm = (props: any) => {
   const { switchChain } = useSwitchChain();
 
   const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const [leverage, setLeverage] = useState("1.5");
+  const [leverage, setLeverage] = useState("1");
   const [leverageProgress, setLeverageProgress] = useState(0);
   const [currentMarket, setCurrentMarket] = useState<any>(markets[5]);
   const [data, setData] = useState<any>();
@@ -582,6 +580,12 @@ const BelongForm = (props: any) => {
       return result;
     }
 
+    if (!amount || Big(amount || 0).lte(0)) {
+      result.valid = false;
+      result.text = `Enter an amount`;
+      return result;
+    }
+
     if (handleDepositLoading || marginInSharesLoading || calculateDebtAmountLoading || automaticLoopingLoading || checkApproving || approving || collateralChecking || collateralApproving) {
       result.loading = true;
     }
@@ -696,12 +700,12 @@ const BelongForm = (props: any) => {
 
   return (
     <div className={clsx("", className)}>
-      <Card className="w-full !p-[20px] !rounded-[20px] text-[#3D405A] text-[14px] font-Montserrat font-[500]">
+      <Card className="w-full !p-[20px] !rounded-[20px] text-[#000] text-[12px] font-Montserrat font-[500]">
 
         {/*#region Deposit collateral*/}
         <div className="w-full">
-          <div className="">
-            Deposit collateral
+          <div className="text-[12px] text-[#A1A0A1]">
+            Deposit
           </div>
           <TokenAmount
             className="!p-[14px_12px_10px] mt-[10px] w-full"
@@ -718,116 +722,152 @@ const BelongForm = (props: any) => {
               handleAmount(_amount);
             }}
             updater={inputCurrencyUpdater}
+            balanceLabel="Balance"
             onUpdateCurrencyBalance={(_balance: string) => { }}
+            balancePercentClassName={({ selected }: any) => {
+              if (selected) {
+                return "!border-[#000] text-[#000]";
+              }
+              return "!border-[#D9D9D9] text-[#808290]";
+            }}
+            isRange={false}
+            balanceContainerClassName="!text-[#A1A0A1]"
           />
         </div>
         {/*#endregion*/}
 
-        {/*#region Liquidation price*/}
-        <div className="w-full mt-[16px]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-[2px]">
-              <div>Liquidation price</div>
-              <BelongTips className="">
-                Liquidation Price is the price the Collateral will have to reach to be liquidated
-              </BelongTips>
+        {/*#region Leverage*/}
+        <div className="mt-[12px]">
+          <div className="flex justify-between items-center gap-[10px] text-[#A1A0A1] text-[12px]">
+            <div className="flex items-center gap-[2px] text-[12px] leading-[100%]">
+              <div className="">
+                Leverage:
+              </div>
+              <div className="font-[600] text-black">
+                {leverage}x
+              </div>
             </div>
             <div className="flex justify-end items-center gap-[2px]">
-              <div>Ratio:</div>
-              <div style={{ color: `rgb(${riskData?.color})` }}>
-                {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
+              <div className="">Liquidation risk:</div>
+              <div
+                className={clsx((!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "" : "font-[600]")}
+                style={{
+                  color: (!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "#A1A0A1" : `rgb(${riskData?.color})`
+                }}>
+                {(!leverage || Big(leverage).lte(1) || !automaticLoopingData) ? "None" : riskData?.name}
               </div>
-              <BelongTips>
-                The ratio of your {currentMarket?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {currentMarketData?.MCR ?? 150}% to avoid liquidations.
-              </BelongTips>
             </div>
           </div>
-          <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
-            <div className="w-full flex justify-between items-center gap-[20px]">
-              <Range
-                type="range"
-                value={leverageProgress}
-                onChange={(e: any) => handleLeverageChange(e.target.value)}
-                className="!mt-[unset] w-[216px]"
-                debounceWait={0}
-              />
-              <div className="text-[20px]">
-                {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
-              </div>
-            </div>
-            <div className="w-full flex justify-between items-center gap-[20px] mt-[8px]">
-              <div className="flex items-center gap-[2px] text-[12px] leading-[100%]">
-                <div className="">
-                  Leverage:
-                </div>
-                <div className="font-[600]">
-                  {leverage}x
-                </div>
-              </div>
-              <div className="flex justify-end items-center gap-[2px] text-[12px] leading-[100%]">
-                <div className="">
-                  Current:
-                </div>
-                <div className="font-[600]">
-                  {currentMarketData?.priceShown}
-                </div>
-              </div>
-            </div>
+          <div className="mt-[13px]">
+            <Range
+              type="range"
+              value={leverageProgress}
+              onChange={(e: any) => handleLeverageChange(e.target.value)}
+              className="!mt-[unset] w-full"
+              debounceWait={0}
+              inputClassName="!h-[16px]"
+              activeBarClassName="!h-[16px]"
+            />
           </div>
         </div>
         {/*#endregion*/}
 
-        {/*#region Total debt*/}
-        <div className="w-full mt-[16px]">
-          <div className="flex justify-between items-center flex-nowrap">
-            <div className="flex items-center gap-[2px]">
-              <div>Total debt</div>
-              <BelongTips className="">
-                <div className="font-[500] text-black">What is this Debt?</div>
-                <div className="mt-[5px]">Debt minted to swap to {currentMarket?.symbol} to amplify the position size</div>
-              </BelongTips>
-            </div>
-            <div className="flex items-center gap-[2px]">
-              <div className="flex items-center gap-[2px]">
-                <div>Exposure:</div>
+        {
+          (leverage && Big(leverage).gt(1)) && (
+            <>
+              {/*#region Liquidation price*/}
+              <div className="w-full mt-[16px]">
+                <div className="flex justify-between items-center text-[#A1A0A1]">
+                  <div className="flex items-center gap-[2px]">
+                    <div>Liquidation price</div>
+                    <BelongTips className="">
+                      Liquidation Price is the price the Collateral will have to reach to be liquidated
+                    </BelongTips>
+                  </div>
+                  <div className="flex justify-end items-center gap-[2px]">
+                    <div>Ratio:</div>
+                    <div style={{ color: `rgb(${riskData?.color})` }}>
+                      {numberFormatter(automaticLoopingData?.leverageRatio?.value, 2, true, { isShort: true, isShortUppercase: true })}%
+                    </div>
+                    <BelongTips>
+                      The ratio of your {currentMarket?.symbol}'s value to your NECT debt. It's vital to maintain this ratio above the minimum ratio of {currentMarketData?.MCR ?? 150}% to avoid liquidations.
+                    </BelongTips>
+                  </div>
+                </div>
+                <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
+                  <div className="w-full flex justify-between items-center gap-[20px]">
+                    <div className="text-[20px]">
+                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
+                    </div>
+                  </div>
+                  <div className="w-full flex justify-between items-center gap-[20px] mt-[13px]">
+                    <div className="flex justify-end items-center gap-[2px] text-[12px] leading-[100%]">
+                      <div className="text-[#A1A0A1]">
+                        Current:
+                      </div>
+                      <div className="font-[600]">
+                        {currentMarketData?.priceShown}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="">
-                {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
-              </div>
-              <BelongTips className="">
-                The Amount of {currentMarket?.symbol} you will have after the leveraging swap
-              </BelongTips>
-            </div>
-          </div>
-          <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[15px_12px] rounded-[12px]">
-            <div className="text-black font-[500] text-[20px]">
-              {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
-            </div>
-            <div className="shrink-0 flex justify-end items-center gap-[3px]">
-              <div className="flex items-center shrink-0">
-                {
-                  currentMarket?.underlyingTokens?.map((token: any, idx: number) => (
-                    <LazyImage
-                      key={token.address}
-                      src={token.icon}
-                      alt={token.symbol}
-                      containerClassName={clsx("!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-8px]")}
-                    />
-                  ))
-                }
-              </div>
-              <div className="text-[16px] text-black font-[600] shrink-0">
-                {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/*#endregion*/}
+              {/*#endregion*/}
 
-        {/*#region Risk & Fee*/}
-        <div className="mt-[10px] flex justify-between items-center gap-[20px] text-[12px]">
+              {/*#region Total debt*/}
+              <div className="w-full mt-[16px]">
+                <div className="flex justify-between items-center flex-nowrap text-[#A1A0A1]">
+                  <div className="flex items-center gap-[2px]">
+                    <div>Total debt</div>
+                    <BelongTips className="">
+                      <div className="font-[500] text-black">What is this Debt?</div>
+                      <div className="mt-[5px]">Debt minted to swap to {currentMarket?.symbol} to amplify the position size</div>
+                    </BelongTips>
+                  </div>
+                  <div className="flex items-center gap-[2px]">
+                    <div className="flex items-center gap-[2px]">
+                      <div>Exposure:</div>
+                    </div>
+                    <div className="text-black">
+                      {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
+                    </div>
+                    <BelongTips className="">
+                      The Amount of {currentMarket?.symbol} you will have after the leveraging swap
+                    </BelongTips>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[12px_12px] rounded-[12px]">
+                  <div className="text-black font-[500] text-[20px]">
+                    {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
+                  </div>
+                  <div className="shrink-0 flex justify-end items-center gap-[3px] border border-[#373A53] rounded-[8px] p-[8px_12px]">
+                    <div className="flex items-center shrink-0">
+                      {
+                        currentMarket?.underlyingTokens?.map((token: any, idx: number) => (
+                          <LazyImage
+                            key={token.address}
+                            src={token.icon}
+                            alt={token.symbol}
+                            containerClassName={clsx("!w-[20px] !h-[20px] shrink-0 rounded-full overflow-hidden", idx > 0 && "ml-[-8px]")}
+                          />
+                        ))
+                      }
+                    </div>
+                    <div className="text-[16px] text-black font-[600] shrink-0">
+                      {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*#endregion*/}
+            </>
+          )
+        }
+
+        {/*#region transaction details & Fee*/}
+        <div className="mt-[29px] flex justify-between items-center gap-[20px] text-[12px]">
           <div className="flex items-center gap-[2px]">
-            <div className="">Fee:</div>
+            <div className="text-[#808290]">Fee:</div>
             <div className="">
               {numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}
             </div>
@@ -854,25 +894,20 @@ const BelongForm = (props: any) => {
               </div>
             </BelongTips>
           </div>
-          <div className="flex justify-end items-center gap-[2px]">
-            <div className="">Liquidation risk:</div>
-            <div className="font-[600]" style={{ color: `rgb(${riskData?.color})` }}>{riskData?.name}</div>
-          </div>
+          <Link
+            prefetch
+            href="/lending/beraborrow"
+            className="block cursor-pointer"
+          >
+            Transaction details &gt;
+          </Link>
         </div>
         {/*#endregion*/}
 
-        <Link
-          prefetch
-          href="/lending/beraborrow"
-          className="block mt-[20px] w-full cursor-pointer"
-        >
-          Transaction details &gt;
-        </Link>
-
-        <div className="w-full">
+        <div className="w-full mt-[13px]">
           <button
             type="button"
-            className="mt-[11px] disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black flex justify-center items-center h-[60px] rounded-[10px] border border-[#000]"
+            className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black text-[16px] flex justify-center items-center h-[40px] rounded-[10px] border border-[#000]"
             disabled={!buttonValid.valid}
             onClick={handleDeposit}
           >
@@ -918,7 +953,7 @@ const BelongForm = (props: any) => {
           }}
         />
       </Card>
-      <div className="w-full mt-[16px] flex items-center gap-[2px] pl-[21px] text-[12px] text-[#3D405A] font-[500] font-Montserrat leading-[100%]">
+      <div className="w-full mt-[16px] flex items-center gap-[2px] pl-[21px] text-[12px] text-[#F8F8F8] font-[500] font-Montserrat leading-[100%]">
         <div className="">View on</div>
         <Link
           className="block underline underline-offset-2"

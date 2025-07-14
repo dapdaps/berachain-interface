@@ -4,6 +4,7 @@ import Loading from "@/components/circle-loading";
 import { balanceFormated } from "@/utils/balance";
 import useToast from "@/hooks/use-toast";
 import LazyImage from "@/components/layz-image";
+import clsx from "clsx";
 
 const StyledCurrencyRow = styled.div`
   padding: 14px 20px;
@@ -88,13 +89,33 @@ export default function CurrencyRow({
       onClick={onClick}
     >
       <CurrencyLabel>
-        <LazyImage
-          width={26}
-          height={26}
-          src={currency.icon}
-          fallbackSrc="/assets/tokens/default_icon.png"
-          containerClassName="rounded-full shrink-0 mr-[8px] overflow-hidden"
-        />
+        {
+          (!currency.icon && currency.underlyingTokens) ? (
+            <div className="flex items-center mr-[8px]">
+              {
+                currency.underlyingTokens.map((_curreny: any, _index: number) => (
+                  <LazyImage
+                    key={_index}
+                    width={26}
+                    height={26}
+                    src={_curreny.icon}
+                    fallbackSrc="/assets/tokens/default_icon.png"
+                    containerClassName={clsx("rounded-full shrink-0 overflow-hidden", _index > 0 && "ml-[-15px]")}
+                  />
+                ))
+              }
+            </div>
+          ) : (
+            <LazyImage
+              width={26}
+              height={26}
+              src={currency.icon}
+              fallbackSrc="/assets/tokens/default_icon.png"
+              containerClassName="rounded-full shrink-0 mr-[8px] overflow-hidden"
+            />
+          )
+        }
+
         <div>
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
           <div className="text-[10px] flex items-center gap-[12px]">
@@ -104,9 +125,9 @@ export default function CurrencyRow({
                 <div className="">
                   {currency.address
                     ? `${currency.address.slice(
-                        0,
-                        6
-                      )}...${currency.address.slice(-4)}`
+                      0,
+                      6
+                    )}...${currency.address.slice(-4)}`
                     : ""}
                 </div>
                 <button

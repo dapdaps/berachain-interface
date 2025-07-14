@@ -34,6 +34,14 @@ const assets = {
     decimals: 18,
     icon: "",
   },
+  ["KODI iBERA-wgBERA"]: {
+    address: "0x88c983bf3d4A9Adcee14e1b4f1C446c4C5853EA3",
+    chainId: DEFAULT_CHAIN_ID,
+    symbol: "KODI iBERA-wgBERA",
+    decimals: 18,
+    name: "Kodiak Island iBERA-wgBERA-0.05%",
+    icon: "",
+  },
 };
 
 const networks = {
@@ -41,6 +49,7 @@ const networks = {
     beraWrapper: '0x5f1619FfAEfdE17F7e54f850fe90AD5EE44dbf47',
     borrowerOperations: '0xDB32cA8f3bB099A76D4Ec713a2c2AACB3d8e84B9',
     collVaultRouter: '0x9158d1b0c9Cc4EC7640EAeF0522f710dADeE9a1B',
+    denManagerGetters: '0xFA7908287c1f1B256831c812c7194cb95BB440e6',
     wrappedToken: bera['wbera'],
     borrowToken: {
       ...bera['nect'],
@@ -121,6 +130,7 @@ const networks = {
         `,
       };
     },
+    // ⚠️ DO NOT CHANGE THE ids
     markets: [
       {
         id: 1,
@@ -218,6 +228,20 @@ const networks = {
         CCR: 150,
         TCR: 197,
         collIndex: 12,
+        isLeverage: true,
+      },
+      {
+        id: 8,
+        ...assets["KODI iBERA-wgBERA"],
+        underlyingTokens: [bera["ibera"], bera["wgbera"]],
+        collToken: assets["KODI iBERA-wgBERA"],
+        vault: 'beraWrapper',
+        collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
+        MCR: 120,
+        CCR: 150,
+        TCR: 378,
+        collIndex: 40,
         isLeverage: true,
       },
     ],
