@@ -29,6 +29,7 @@ import BelongTips from "./tips";
 import clsx from "clsx";
 import Link from "next/link";
 import { ERC20_ABI } from "@/hooks/use-tokens-balance";
+import ResultModal from "./result";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -74,6 +75,8 @@ const BelongForm = (props: any) => {
   const [maxLeverage, setMaxLeverage] = useState<any>("1");
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
+  const [resultModalOpen, setResultModalOpen] = useState<any>(false);
+  const [currentLeverageTxHash, setCurrentLeverageTxHash] = useState<any>("");
 
   const [isLeverage] = useMemo(() => {
     return [!!leverage && Big(leverage).gt(1)];
@@ -527,6 +530,7 @@ const BelongForm = (props: any) => {
       }
       toast.success({ title: "Swapped successfully!", tx: transactionHash, chainId: DEFAULT_CHAIN_ID });
     } catch (swapError: any) {
+      toast.dismiss(toastId);
       toast.fail({ title: swapError?.message?.includes("user rejected transaction") ? "User rejected transaction" : "" });
       return false;
     }
@@ -548,7 +552,12 @@ const BelongForm = (props: any) => {
     return { value: _depositAmountValue, big: depositAmountValue };
   }, { manual: true });
 
-  const { runAsync: handleDeposit, loading: handleDepositLoading } = useRequest(async () => {
+  const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
+    let toastId: any;
+    const signer = provider.getSigner(account);
+  }, { manual: true });
+
+  const { runAsync: handleSubmit, loading: submitting } = useRequest(async () => {
     let toastId: any;
     const signer = provider.getSigner(account);
 
@@ -566,7 +575,14 @@ const BelongForm = (props: any) => {
 
     // Without leverage
     if (!isLeverage) {
-      // TODO
+      if (!currentInputSwaped) {
+        const _swappedData = await handleSwap();
+        if (!_swappedData) {
+          return;
+        }
+        // after swap, we should deposit into https://app.beraborrow.com/vault/deposit/Kodiak-iBERA-wgBERA
+        handleDeposit(_swappedData);
+      }
       return;
     }
 
@@ -676,6 +692,7 @@ const BelongForm = (props: any) => {
 
       const { status, transactionHash } = await tx.wait();
 
+      setCurrentLeverageTxHash(transactionHash);
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
@@ -683,6 +700,7 @@ const BelongForm = (props: any) => {
           tx: transactionHash,
           chainId: DEFAULT_CHAIN_ID
         });
+        setResultModalOpen(true);
       } else {
         toast.fail({ title: "Leverage failed!" });
       }
@@ -734,7 +752,7 @@ const BelongForm = (props: any) => {
 
     //#region Check loading
     if (
-      handleDepositLoading
+      submitting
       || marginInSharesLoading
       || automaticLoopingLoading
       || checkApproving
@@ -758,18 +776,20 @@ const BelongForm = (props: any) => {
     //#region Without leverage
     if (!isLeverage) {
       result.text = "DEPOSIT";
-      result.valid = false;
-      // // Check wallet balance
-      // if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
-      //   result.valid = false;
-      //   result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
-      //   return result;
-      // }
-      // // Check approve
-      // if (!inputApproved) {
-      //   result.text = `Approve ${currentInputMarket.symbol}`;
-      //   return result;
-      // }
+      // Check wallet balance
+      if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
+        result.valid = false;
+        result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
+        return result;
+      }
+      if (!currentInputSwaped) {
+        if (!inputApproved) {
+          result.text = `Approve ${currentInputMarket.symbol}`;
+          return result;
+        }
+        result.text = `Swap ${currentInputMarket.symbol} to ${currentMarket.symbol}`;
+        return result;
+      }
       return result;
     }
     //#endregion
@@ -851,7 +871,7 @@ const BelongForm = (props: any) => {
     marginInSharesData,
     automaticLoopingData,
     calculateDebtAmountData,
-    handleDepositLoading,
+    submitting,
     marginInSharesLoading,
     automaticLoopingLoading,
     approved,
@@ -957,7 +977,7 @@ const BelongForm = (props: any) => {
               debounceWait={0}
               inputClassName="!h-[16px]"
               activeBarClassName="!h-[16px]"
-              disabled={!currentInputAmount || Big(currentInputAmount).lte(0) || marginInSharesLoading || handleDepositLoading || !maxLeverage || Big(maxLeverage).lte(1)}
+              disabled={!currentInputAmount || Big(currentInputAmount).lte(0) || marginInSharesLoading || submitting || !maxLeverage || Big(maxLeverage).lte(1)}
             />
           </div>
         </div>
@@ -1100,7 +1120,7 @@ const BelongForm = (props: any) => {
             type="button"
             className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black text-[16px] flex justify-center items-center h-[40px] rounded-[10px] border border-[#000]"
             disabled={!buttonValid.valid || buttonValid.loading}
-            onClick={handleDeposit}
+            onClick={handleSubmit}
           >
             {
               buttonValid.loading && (
@@ -1169,6 +1189,17 @@ const BelongForm = (props: any) => {
         </Link>
         <div className="">&gt;</div>
       </div>
+      <ResultModal
+        open={resultModalOpen}
+        onClose={() => setResultModalOpen(false)}
+        market={currentMarketData}
+        inputMarket={currentInputMarketData}
+        leverage={leverage}
+        liquidationPrice={automaticLoopingData?.liquidationPrice?.value}
+        txHash={currentLeverageTxHash}
+        inputAmount={currentInputAmount}
+        debtAmount={automaticLoopingData?.route?.amountOutValue}
+      />
     </div>
   );
 };
