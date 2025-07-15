@@ -32,6 +32,7 @@ import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 import ResultModal from "./result";
 import useTokenBalance from "@/hooks/use-token-balance";
 import Position from "./position";
+import ShareModal from "./share";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -80,6 +81,7 @@ const BelongForm = (props: any) => {
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
   const [resultModalOpen, setResultModalOpen] = useState<any>(false);
+  const [shareModalOpen, setShareModalOpen] = useState<any>(false);
   const [currentLeverageTxHash, setCurrentLeverageTxHash] = useState<any>("");
 
   const [isLeverage] = useMemo(() => {
@@ -1328,6 +1330,16 @@ const BelongForm = (props: any) => {
         leverage={leverage}
         apy={currentMarketData?.vaultApy}
         market={currentMarketData}
+        setShareModalOpen={setShareModalOpen}
+      />
+      <ShareModal
+        open={shareModalOpen}
+        onClose={() => {
+          setShareModalOpen(false);
+        }}
+        market={currentMarketData}
+        leverage={leverage}
+        apy={currentMarketData?.vaultApy}
       />
     </div>
   );
