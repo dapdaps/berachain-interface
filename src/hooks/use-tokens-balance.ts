@@ -6,6 +6,20 @@ import multicallAddresses from '@/configs/contract/multicall';
 import useAccount from '@/hooks/use-account';
 import { multicall } from '@/utils/multicall';
 
+export const ERC20_ABI = [
+  {
+    inputs: [
+      { internalType: 'address', name: 'account', type: 'address' }
+    ],
+    name: 'balanceOf',
+    outputs: [
+      { internalType: 'uint256', name: '', type: 'uint256' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  }
+];
+
 export default function useTokensBalance(tokens: any) {
   const [loading, setLoading] = useState(false);
   const [balances, setBalances] = useState<any>({});
@@ -45,19 +59,7 @@ export default function useTokensBalance(tokens: any) {
       for (let i = 0; i < splits; i++) {
         requests.push(
           multicall({
-            abi: [
-              {
-                inputs: [
-                  { internalType: 'address', name: 'account', type: 'address' }
-                ],
-                name: 'balanceOf',
-                outputs: [
-                  { internalType: 'uint256', name: '', type: 'uint256' }
-                ],
-                stateMutability: 'view',
-                type: 'function'
-              }
-            ],
+            abi: ERC20_ABI,
             options: {},
             calls:
               i === splits - 1
