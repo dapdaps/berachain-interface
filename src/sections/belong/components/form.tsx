@@ -248,6 +248,7 @@ const BelongForm = (props: any) => {
       return;
     }
     const priceBig = BigInt(Big(currentMarketData.price).times(SCALING_FACTOR.toString()).toFixed(0));
+    const collPriceBig = BigInt(Big(currentMarketData.collPrice).times(SCALING_FACTOR.toString()).toFixed(0));
     const debtPriceBig = BigInt(Big(currentMarketData.borrowToken.realPrice).times(SCALING_FACTOR.toString()).toFixed(0));
     const MCRBig = BigInt(Big(currentMarketData.MCR).div(100).times(SCALING_FACTOR.toString()).toFixed(0));
     const borrowingRateBig = BigInt(Big(currentMarketData.borrowingRate).times(SCALING_FACTOR.toString()).toFixed(0));
@@ -306,6 +307,7 @@ const BelongForm = (props: any) => {
 
     return {
       priceBig,
+      collPriceBig,
       debtPriceBig,
       MCRBig,
       borrowingRateBig,
@@ -329,6 +331,7 @@ const BelongForm = (props: any) => {
     }
     const {
       priceBig,
+      collPriceBig,
       debtPriceBig,
       MCRBig,
       leverageBP,
@@ -345,7 +348,7 @@ const BelongForm = (props: any) => {
     const leveragedDebt = addedCollateralDen.calculateLeveragedDebt(
       addedCollateral,
       leverageBP,
-      priceBig,
+      collPriceBig,
       debtPriceBig,
     );
     const borrowingFeeValue = Big(leveragedDebt.toString()).div(SCALING_FACTOR.toString()).times(borrowingFee).toFixed(2);
@@ -379,6 +382,7 @@ const BelongForm = (props: any) => {
 
     const {
       priceBig,
+      collPriceBig,
       debtPriceBig,
       MCRBig,
       leverageBP,
@@ -396,7 +400,7 @@ const BelongForm = (props: any) => {
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/leverage-swap");
     DexCallURL.searchParams.set("user", account);
     DexCallURL.searchParams.set("dmAddr", currentMarketData.denManager);
-    DexCallURL.searchParams.set("marginInShares", amountBig.toString());
+    DexCallURL.searchParams.set("marginInShares", addedPreviewDeposit.toString());
     DexCallURL.searchParams.set("leverage", Big(leverage || 0).times(SCALING_FACTOR_BP.toString()).toFixed(0));
     DexCallURL.searchParams.set("debtAmount", debtBig);
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
@@ -425,7 +429,6 @@ const BelongForm = (props: any) => {
     const params: any = { borrowNECT: debtBig, depositCollateral: dexCollOutputInShares };
     const newDen = new Den(dexCollOutputInShares, debtBig);
     const _liquidationPrice = newDen.calculateLiquidationPrice(MCRBig);
-    console.log("_liquidationPrice: %o", _liquidationPrice);
     const liquidationPrice = {
       big: _liquidationPrice,
       value: Big(_liquidationPrice.toString()).div(SCALING_FACTOR.toString()).toString(),
@@ -445,7 +448,7 @@ const BelongForm = (props: any) => {
 
     // Get ratio
     const newRatioDen = new Den(dexCollOutput + addedCollateral, totalDebtBig);
-    const leverageRatio = newRatioDen.collateralRatio(priceBig);
+    const leverageRatio = newRatioDen.collateralRatio(collPriceBig);
 
     return {
       route,
@@ -1131,7 +1134,7 @@ const BelongForm = (props: any) => {
                       <div>Exposure:</div>
                     </div>
                     <div className="text-black">
-                      {numberFormatter(automaticLoopingData?.route?.amountOutValue, 2, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
+                      {numberFormatter(automaticLoopingData?.route?.amountOutValue, 6, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
                     </div>
                     <BelongTips className="">
                       The Amount of {currentMarket?.symbol} you will have after the leveraging swap
