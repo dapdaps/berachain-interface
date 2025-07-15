@@ -76,7 +76,7 @@ const BelongForm = (props: any) => {
   const [currentMarket] = useState<any>(TARGET_MARKET);
   const [data, setData] = useState<any>();
   const [marginInSharesData, setMarginInSharesData] = useState<any>();
-  const [maxLeverage, setMaxLeverage] = useState<any>("1");
+  const [maxLeverage, setMaxLeverage] = useState<any>("6");
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
   const [resultModalOpen, setResultModalOpen] = useState<any>(false);
@@ -302,7 +302,7 @@ const BelongForm = (props: any) => {
         }
         return maxLeverageRes;
       });
-      if (Big(maxLeverageRes).lt(1.5)) {
+      if (Big(maxLeverageRes).lt(leverage)) {
         setLeverage("1");
       }
     } catch (err: any) {
@@ -1082,7 +1082,7 @@ const BelongForm = (props: any) => {
               debounceWait={0}
               inputClassName="!h-[16px]"
               activeBarClassName="!h-[16px]"
-              disabled={!currentInputAmount || Big(currentInputAmount).lte(0) || marginInSharesLoading || submitting || !maxLeverage || Big(maxLeverage).lte(1)}
+              disabled={marginInSharesLoading || submitting || !maxLeverage || Big(maxLeverage).lte(1)}
             />
           </div>
         </div>
