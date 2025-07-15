@@ -37,7 +37,7 @@ const assets = {
   ["KODI iBERA-wgBERA"]: {
     address: "0x88c983bf3d4A9Adcee14e1b4f1C446c4C5853EA3",
     chainId: DEFAULT_CHAIN_ID,
-    symbol: "iBERA-wgBERA",
+    symbol: "KODI iBERA-wgBERA",
     decimals: 18,
     name: "Kodiak Island iBERA-wgBERA-0.05%",
     icon: "",
@@ -144,7 +144,6 @@ const networks = {
         CCR: 150,
         TCR: 197,
         collIndex: 12,
-        isLeverage: true,
       },
       {
         id: 2,
@@ -158,7 +157,6 @@ const networks = {
         CCR: 150,
         TCR: 241,
         collIndex: 19,
-        isLeverage: true,
       },
       {
         id: 3,
@@ -172,7 +170,6 @@ const networks = {
         CCR: 150,
         TCR: 186,
         collIndex: 13,
-        isLeverage: true,
       },
       {
         id: 4,
@@ -186,7 +183,6 @@ const networks = {
         CCR: 150,
         TCR: 340,
         collIndex: 18,
-        isLeverage: true,
       },
       {
         id: 5,
@@ -200,7 +196,6 @@ const networks = {
         CCR: 150,
         TCR: 301,
         collIndex: 26,
-        isLeverage: true,
       },
       {
         id: 6,
@@ -214,7 +209,6 @@ const networks = {
         CCR: 150,
         TCR: 438,
         collIndex: 25,
-        isLeverage: true,
       },
       {
         id: 7,
@@ -228,7 +222,20 @@ const networks = {
         CCR: 150,
         TCR: 197,
         collIndex: 12,
-        isLeverage: true,
+      },
+    ],
+    leverageMarkets: [
+      {
+        id: 1,
+        ...bera['bera'],
+        underlyingTokens: [bera['bera']],
+        collToken: bera['bera'],
+      },
+      {
+        id: 7,
+        ...bera['wbera'],
+        underlyingTokens: [bera['wbera']],
+        collToken: bera['wbera'],
       },
       {
         id: 8,
@@ -242,9 +249,56 @@ const networks = {
         CCR: 150,
         TCR: 378,
         collIndex: 40,
-        isLeverage: true,
       },
-    ],
+      {
+        id: 2,
+        ...bera['ibgt'],
+        underlyingTokens: [bera['ibgt']],
+        collToken: bera['ibgt'],
+      },
+      {
+        id: 3,
+        ...bera['wbtc'],
+        underlyingTokens: [bera['wbtc']],
+        collToken: bera['wbtc'],
+      },
+      {
+        id: 9,
+        ...bera["snect"],
+        underlyingTokens: [bera["snect"]],
+        collToken: bera["snect"],
+      },
+      {
+        id: 10,
+        ...bera["wgbera"],
+        underlyingTokens: [bera["wgbera"]],
+        collToken: bera["wgbera"],
+      },
+      {
+        id: 11,
+        ...bera["weth"],
+        underlyingTokens: [bera["weth"]],
+        collToken: bera["weth"],
+      },
+      {
+        id: 12,
+        ...bera["usdc.e"],
+        underlyingTokens: [bera["usdc.e"]],
+        collToken: bera["usdc.e"],
+      },
+      {
+        id: 13,
+        ...bera["honey"],
+        underlyingTokens: [bera["honey"]],
+        collToken: bera["honey"],
+      },
+      {
+        id: 13,
+        ...bera["usdt0"],
+        underlyingTokens: [bera["usdt0"]],
+        collToken: bera["usdt0"],
+      },
+    ]
   }
 };
 
