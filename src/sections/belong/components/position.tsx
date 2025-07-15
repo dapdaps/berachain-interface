@@ -8,7 +8,7 @@ import { Contract } from "ethers";
 import { forwardRef, useImperativeHandle } from "react";
 
 const Position = (props: any, ref: any) => {
-  const { className, leverage, apy, market } = props;
+  const { className, leverage, apy, market, setShareModalOpen } = props;
 
   const { account, provider } = useCustomAccount();
 
@@ -69,6 +69,9 @@ const Position = (props: any, ref: any) => {
       <button
         type="button"
         className="shrink-0 flex justify-center items-center p-[4px_8px] rounded-[6px] border border-black bg-[#rgba(248,248,248,0.08)] gap-[8px] text-[#0F0F0F] text-[12px] uppercase font-[600] font-Montserrat"
+        onClick={() => {
+          setShareModalOpen?.(true);
+        }}
       >
         <div className="">share</div>
         <div className="">&gt;</div>

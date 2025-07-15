@@ -15,7 +15,8 @@ const config: Config = {
       CherryBomb: ["Cherry Bomb"],
       Fuzzy: ["Fuzzy"],
       YouYuan: ["YouYuan"],
-      Syne: ["Syne"]
+      Syne: ["Syne"],
+      SpecialGothicExpandedOne: ["SpecialGothicExpandedOne"]
     },
     backgroundImage: {
       vault: "linear-gradient(245deg, #F18E4E 12.36%, #D5B8DB 63.87%)",

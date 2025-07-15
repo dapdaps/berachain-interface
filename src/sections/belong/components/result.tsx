@@ -3,6 +3,7 @@ import LazyImage from "@/components/layz-image";
 import Modal from "@/components/modal";
 import { numberFormatter } from "@/utils/number-formatter";
 import clsx from "clsx";
+import Capsule from "./capsule";
 
 const ResultModal = (props: any) => {
   const {
@@ -76,8 +77,7 @@ const ResultModal = (props: any) => {
           </div>
         </div>
         <div className="w-full mt-[12px] grid grid-cols-2 gap-[4px]">
-          <div
-            className="flex justify-center items-center gap-[8px] p-[8px] rounded-[6px] text-black/60 bg-[rgba(0,0,0,0.06)] cursor-pointer"
+          <Capsule
             onClick={() => {
               window.open(`https://berascan.com/tx/${txHash}`);
               // onClose?.();
@@ -85,9 +85,8 @@ const ResultModal = (props: any) => {
           >
             <div className="">Tx details</div>
             <div className="">&gt;</div>
-          </div>
-          <div
-            className="flex justify-center items-center gap-[8px] p-[8px] rounded-[6px] text-black/60 bg-[rgba(0,0,0,0.06)] cursor-pointer"
+          </Capsule>
+          <Capsule
             onClick={() => {
               window.open("https://app.beraborrow.com/vault/deposit/Kodiak-iBERA-wgBERA");
               // onClose?.();
@@ -95,9 +94,8 @@ const ResultModal = (props: any) => {
           >
             <div className="">Pool</div>
             <div className="">&gt;</div>
-          </div>
-          <div
-            className="flex justify-center items-center gap-[8px] p-[8px] rounded-[6px] text-black/60 bg-[rgba(0,0,0,0.06)] col-span-2 cursor-pointer"
+          </Capsule>
+          <Capsule
             onClick={() => {
               window.open("https://app.beraborrow.com/vault/withdraw/Kodiak-iBERA-wgBERA");
               // onClose?.();
@@ -105,7 +103,7 @@ const ResultModal = (props: any) => {
           >
             <div className="">Position on Beraborrow</div>
             <div className="">&gt;</div>
-          </div>
+          </Capsule>
         </div>
         <div className="w-full mt-[12px]">
           <button

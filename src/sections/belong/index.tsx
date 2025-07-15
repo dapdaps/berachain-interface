@@ -30,7 +30,7 @@ const BelongView = () => {
       <Partners className="mt-[133px] w-[846px] mx-auto" />
       <img
         src="/images/belong/v2/mc-belong.gif"
-        className="absolute z-0 right-0 top-[550px] w-[380px] h-[380px]"
+        className="absolute z-0 right-0 top-[550px] w-[380px] h-[380px] pointer-events-none"
       />
     </div>
   );
