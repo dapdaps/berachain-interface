@@ -16,7 +16,7 @@ interface IIncentivesContext {
 }
 export const IncentivesContext = createContext<Partial<IIncentivesContext>>({});
 
-const ERC20_ADDRESS = "0xBDDba144482049382eC79CadfA02f0fa0F462dE3"
+const ERC20_ADDRESS = "0x77DA09bC82652f9A14d1b170a001e759640298e6"
 const ABI = [{
   "inputs": [
     {
@@ -129,7 +129,8 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
   }
 
   async function onClaim() {
-    setClaimLoading(true)
+    setClaimLoading(true);
+    let toastId = toast.loading({ title: "Claiming..." });
     const contract = new ethers.Contract(ERC20_ADDRESS, ABI, provider?.getSigner())
     const _claims = []
     proofs?.slice(page * 100, (page + 1) * 100)?.forEach(proof => {
@@ -149,17 +150,42 @@ function IncentivesContextProvider({ children, pageData }: { children: ReactNode
       }
     }
     try {
+      await contract.callStatic.claim(_claims, {
+        gasLimit: new Big(estimateGas).times(1.2).toFixed(0)
+      });
+    } catch (error) {
+      console.log("error: %o", error);
+      toast.dismiss(toastId);
+      toast.fail({
+        title: "Transaction Failed!",
+        text: "Something went wrong. Please try again later."
+      });
+      setClaimLoading(false);
+      onClose?.();
+      return;
+    }
+    try {
       const tx = await contract.claim(_claims, {
         gasLimit: new Big(estimateGas).times(1.2).toFixed(0)
       });
-      toast.success({
-        title: "Claim Successful!"
-      })
-      setProofs(prev => {
-        const curr = _.cloneDeep(prev)
-        curr.splice(page * 100, 100)
-        return curr
-      })
+      toast.dismiss(toastId);
+      toastId = toast.loading({ title: "Confirming..." });
+      const { status, transactionHash } = await tx.wait();
+      toast.dismiss(toastId);
+      if (status === 1) {
+        toast.success({
+          title: "Claim Successful!"
+        })
+        setProofs(prev => {
+          const curr = _.cloneDeep(prev)
+          curr.splice(page * 100, 100)
+          return curr
+        })
+      } else {
+        toast.fail({
+          title: "Claim Failed!"
+        })
+      }
     } catch (error) {
       toast?.fail({
         title: "Claim Failed!",
