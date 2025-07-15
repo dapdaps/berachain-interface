@@ -30,6 +30,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 import ResultModal from "./result";
+import useTokenBalance from "@/hooks/use-token-balance";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -41,7 +42,7 @@ const BelongForm = (props: any) => {
 
   const { basic, networks }: any = beraborrowConfig;
   let {
-    markets = [],
+    leverageMarkets = [],
     riskyRatio,
     liquidationReserve,
     borrowingFee,
@@ -50,10 +51,9 @@ const BelongForm = (props: any) => {
     leverageRouter,
     borrowerOperations,
   } = networks?.[DEFAULT_CHAIN_ID + ''] || {};
-  markets = markets.filter((m: any) => m.isLeverage);
 
   // KODI iBERA-wgBERA
-  const TARGET_MARKET = markets.find((m: any) => m.id === 8);
+  const TARGET_MARKET = leverageMarkets.find((m: any) => m.id === 8);
 
   const { account, provider, chainId } = useCustomAccount();
   const prices = usePriceStore((store) => store.price);
@@ -62,7 +62,7 @@ const BelongForm = (props: any) => {
   const modal = useConnectModal();
   const { switchChain } = useSwitchChain();
 
-  const [currentInputMarket, setCurrentInputMarket] = useState<any>(markets[0]);
+  const [currentInputMarket, setCurrentInputMarket] = useState<any>(leverageMarkets[0]);
   const [currentInputAmount, setCurrentInputAmount] = useState<any>();
   const [currentInputSwaped, setCurrentInputSwaped] = useState<any>(false);
   const [currentInputSwapedData, setCurrentInputSwapedData] = useState<any>();
@@ -83,13 +83,12 @@ const BelongForm = (props: any) => {
     return [!!leverage && Big(leverage).gt(1)];
   }, [leverage]);
 
-  const [currentMarketData, currentInputMarketData] = useMemo(() => {
+  const [currentMarketData] = useMemo(() => {
     if (!data || !data.markets || !data.markets.length) {
       return [];
     }
     return [
       { ...data, ...data.markets[0] },
-      { ...data, ...data.markets[1] },
     ];
   }, [data]);
 
@@ -238,6 +237,11 @@ const BelongForm = (props: any) => {
     amount: currentInputSwapedData?.value,
     spender: currentMarket?.collVault,
   });
+
+  const {
+    tokenBalance: currentInputMarketWalletBalance,
+    update: updateCurrentInputMarketWalletBalance
+  } = useTokenBalance(currentInputMarket.address, currentInputMarket.decimals);
 
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
     if (!currentMarketData) {
@@ -412,15 +416,16 @@ const BelongForm = (props: any) => {
     const route = {
       ...dexCalldataResp.data.data,
       amountOutValue: numberRemoveEndZero(_amountOutValue.toFixed(currentMarketData.decimals)),
-      amountOutUsd: Big(_amountOutValue).times(currentMarketData?.price || 0).toFixed(2),
+      amountOutUsd: Big(_amountOutValue).times(currentMarketData?.collPrice || 0).toFixed(2),
     };
 
     // Get liquidation price
     const dexCollOutput = BigInt(amountOut);
     const dexCollOutputInShares = dexCollOutput + addedCollateral;
     const params: any = { borrowNECT: debtBig, depositCollateral: dexCollOutputInShares };
-    const newDen = new Den(dexCollOutput, debtBig);
+    const newDen = new Den(dexCollOutputInShares, debtBig);
     const _liquidationPrice = newDen.calculateLiquidationPrice(MCRBig);
+    console.log("_liquidationPrice: %o", _liquidationPrice);
     const liquidationPrice = {
       big: _liquidationPrice,
       value: Big(_liquidationPrice.toString()).div(SCALING_FACTOR.toString()).toString(),
@@ -576,6 +581,7 @@ const BelongForm = (props: any) => {
     setCurrentInputSwaped(false);
     setCurrentInputAmount("");
     setCurrentInputSwapedData(void 0);
+    updateCurrentInputMarketWalletBalance();
   };
 
   const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
@@ -841,7 +847,7 @@ const BelongForm = (props: any) => {
     //#endregion
 
     //#region Check den
-    if (!currentMarketData?.den || !currentInputMarketData?.den) {
+    if (!currentMarketData?.den) {
       result.valid = false;
       result.text = `Loading...`;
       return result;
@@ -852,9 +858,9 @@ const BelongForm = (props: any) => {
     if (!isLeverage) {
       result.text = "DEPOSIT";
       // Check wallet balance
-      if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
+      if (Big(currentInputAmount || 0).gt(currentInputMarketWalletBalance || 0)) {
         result.valid = false;
-        result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
+        result.text = `Insufficient ${currentInputMarket.symbol} Balance`;
         return result;
       }
       if (!currentInputSwaped) {
@@ -913,9 +919,9 @@ const BelongForm = (props: any) => {
       return result;
     }
 
-    if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
+    if (Big(currentInputAmount || 0).gt(currentInputMarketWalletBalance || 0)) {
       result.valid = false;
-      result.text = `Insufficient ${currentInputMarketData.symbol} Balance`;
+      result.text = `Insufficient ${currentInputMarket.symbol} Balance`;
       return result;
     }
 
@@ -960,7 +966,8 @@ const BelongForm = (props: any) => {
     collateralApproving,
     collateralChecking,
     outputAmountDataLoading,
-    currentInputMarketData,
+    currentInputMarket,
+    currentInputMarketWalletBalance,
     isLeverage,
     inputApproved,
     inputApproving,
@@ -1092,7 +1099,7 @@ const BelongForm = (props: any) => {
                 <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
                   <div className="w-full flex justify-between items-center gap-[20px]">
                     <div className="text-[20px]">
-                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: 0, prefix: "$" })}
+                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: Big.roundUp, prefix: "$" })}
                     </div>
                   </div>
                   <div className="w-full flex justify-between items-center gap-[20px] mt-[13px]">
@@ -1231,8 +1238,8 @@ const BelongForm = (props: any) => {
 
         <TokenSelector
           display={tokenSelectorVisible}
-          tokens={markets ?? []}
-          selectedTokenAddress={currentMarket?.address}
+          tokens={leverageMarkets ?? []}
+          selectedTokenAddress={currentInputMarket?.address}
           chainId={DEFAULT_CHAIN_ID}
           account={account}
           onSelect={(token: any) => {
@@ -1253,7 +1260,7 @@ const BelongForm = (props: any) => {
         <BeraborrowData
           {...networks[DEFAULT_CHAIN_ID + '']}
           {...basic}
-          markets={[currentMarket, currentInputMarket]}
+          markets={[currentMarket]}
           chainId={chainId}
           prices={prices}
           update={dataLoading}
@@ -1294,7 +1301,7 @@ const BelongForm = (props: any) => {
           afterSuccess();
         }}
         market={currentMarketData}
-        inputMarket={currentInputMarketData}
+        inputMarket={currentInputMarket}
         leverage={leverage}
         liquidationPrice={automaticLoopingData?.liquidationPrice?.value}
         txHash={currentLeverageTxHash}

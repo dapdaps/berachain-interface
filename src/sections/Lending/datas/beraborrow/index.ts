@@ -797,6 +797,19 @@ const BeraborrowData = (props: any) => {
     //   }));
     // };
 
+    const getVaults = async () => {
+      try {
+        const res = await axios.get("https://api.beraborrow.com/v1/vaults");
+        if (res.status !== 200 || !res.data) {
+          return [];
+        }
+        return res.data;
+      } catch (err: any) {
+        console.log("getVaults failed: %o", err);
+      }
+      return [];
+    };
+
     const getCTokensData = async () => {
       try {
         const [
@@ -808,7 +821,8 @@ const BeraborrowData = (props: any) => {
           TCRs,
           NECTPrice,
           NECTData,
-          DenDetails
+          DenDetails,
+          vaultsList
         ]: any = await Promise.all([
           getDenManagers(),
           getPrices(),
@@ -818,7 +832,8 @@ const BeraborrowData = (props: any) => {
           getTCR(),
           getNectPrice(),
           getNectData(),
-          getDenDetails()
+          getDenDetails(),
+          getVaults()
         ]);
         let borrowTokenRes: any = borrowToken;
         const result = markets.map((market: any) => {
@@ -874,6 +889,8 @@ const BeraborrowData = (props: any) => {
             apy: NECTData?.apy || "0.00%"
           };
 
+          const currentVault = vaultsList.find((_vault: any) => _vault.vaultAddress.toLowerCase() === market.collVault.toLowerCase());
+
           return {
             ...market,
             riskyRatio,
@@ -897,6 +914,9 @@ const BeraborrowData = (props: any) => {
             walletBalance: currWalletBalance,
             walletBalanceShown: numberFormatter(currWalletBalance, 2, true),
             price: currPrice?.price,
+            collPrice: currentVault?.collPrice,
+            vaultApy: currentVault?.apy,
+            vaultTvl: currentVault?.tvl,
             priceShown: numberFormatter(currPrice?.price, 2, true, {
               prefix: "$"
             }),
