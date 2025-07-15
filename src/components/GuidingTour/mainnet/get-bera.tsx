@@ -116,7 +116,7 @@ const GetBera = (props: any) => {
               <a href="https://t.me/DapDapDiscussion" target="_blank">
                 <img src="/images/guiding-tour/telegram.svg" alt="" className="w-[56px] h-[56px] md:w-[40px] md:h-[40px]" />
               </a>
-              <a href="https://discord.com/invite/dapdapmeup" target="_blank">
+              <a href="https://discord.com/invite/dapdap" target="_blank">
                 <img src="/images/guiding-tour/discord.svg" alt="" className="w-[56px] h-[56px] md:w-[40px] md:h-[40px]" />
               </a>
             </div>
