@@ -62,7 +62,7 @@ const networks = {
     // 1-0.5%=0.995
     borrowingFee: 0.005,
     // Minimum Debt of 2 required
-    minimumDebt: 0,
+    minimumDebt: 69,
     multiCollateralHintHelpers: '0x4A91b96A615D133e4196655Bc1735430ec97A391',
     beraborrowCore: '0x12347cAF4300B1c4a9bF0Ae7DE2531A2BCFB93E9',
     leverageRouter: '0xd4b8dd2c8371E3A4c75ce96860351840638AbB50',

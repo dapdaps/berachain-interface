@@ -7,7 +7,7 @@ import { DEFAULT_CHAIN_ID } from "@/configs";
 import { usePriceStore } from "@/stores/usePriceStore";
 import useCustomAccount from "@/hooks/use-account";
 import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
-import { ActionText, BORROWER_OPERATIONS_ABI, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
+import { ActionText, BORROWER_OPERATIONS_ABI, COLL_VAULAT_ABI, getPreviewDeposit, LEVERAGE_ROUTER_ABI, useBeraborrow } from "@/sections/Lending/hooks/use-beraborrow";
 import Big from "big.js";
 import { getStatus } from "@/sections/Lending/Beraborrow/health";
 import { useRequest } from "ahooks";
@@ -555,6 +555,39 @@ const BelongForm = (props: any) => {
   const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
     let toastId: any;
     const signer = provider.getSigner(account);
+    const depositContract = new Contract(currentMarketData.collVault, COLL_VAULAT_ABI, signer);
+    const depositOptions: any = {};
+    const depositParams = [
+      params.big,
+      account
+    ];
+    try {
+      const gasLimit = await depositContract.estimateGas.deposit(...depositParams, depositOptions);
+      depositOptions.gasLimit = gasLimit;
+    } catch (err: any) {
+      console.log("estimate gas error: %o", err);
+      depositOptions.gasLimit = 4000000;
+    }
+    try {
+      toastId = toast.loading({ title: "Depositing..." });
+      const tx = await depositContract.deposit(...depositParams, depositOptions);
+      toast.dismiss(toastId);
+      toastId = toast.loading({ title: "Confirming...", tx: tx.hash, chainId: DEFAULT_CHAIN_ID });
+      const { status, transactionHash } = await tx.wait();
+      toast.dismiss(toastId);
+      if (status === 1) {
+        toast.success({ title: "Deposit successfully!", tx: transactionHash, chainId: DEFAULT_CHAIN_ID });
+      } else {
+        toast.fail({ title: "Deposit Failed!" });
+      }
+    } catch (err: any) {
+      toast.dismiss(toastId);
+      toast.fail({
+        title: err?.message?.includes("user rejected transaction")
+          ? "User rejected transaction"
+          : ""
+      });
+    }
   }, { manual: true });
 
   const { runAsync: handleSubmit, loading: submitting } = useRequest(async () => {
@@ -582,7 +615,12 @@ const BelongForm = (props: any) => {
         }
         // after swap, we should deposit into https://app.beraborrow.com/vault/deposit/Kodiak-iBERA-wgBERA
         handleDeposit(_swappedData);
+        return;
       }
+      handleDeposit({
+        value: currentInputAmount,
+        big: BigInt(Big(currentInputAmount).times(10 ** currentInputMarket.decimals).toFixed(0)),
+      });
       return;
     }
 
@@ -760,6 +798,8 @@ const BelongForm = (props: any) => {
       || collateralChecking
       || collateralApproving
       || outputAmountDataLoading
+      || inputApproving
+      || inputChecking
     ) {
       result.loading = true;
     }
@@ -884,6 +924,8 @@ const BelongForm = (props: any) => {
     currentInputMarketData,
     isLeverage,
     inputApproved,
+    inputApproving,
+    inputChecking,
   ]);
 
   const riskData = useMemo(() => {

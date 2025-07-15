@@ -626,3 +626,16 @@ export const BORROWER_OPERATIONS_ABI = [
   }
 ];
 
+export const COLL_VAULAT_ABI = [
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "assets", "type": "uint256" },
+      { "internalType": "address", "name": "receiver", "type": "address" }
+    ],
+    "name": "deposit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+];
+
