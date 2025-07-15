@@ -408,12 +408,11 @@ const BelongForm = (props: any) => {
 
     const { amountOut } = dexCalldataResp.data.data;
 
-    const currentPrice = prices[currentMarketData.address] || prices[currentMarketData.symbol] || 0;
     const _amountOutValue = Big(amountOut).div(10 ** currentMarketData.decimals).plus(Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()));
     const route = {
       ...dexCalldataResp.data.data,
       amountOutValue: numberRemoveEndZero(_amountOutValue.toFixed(currentMarketData.decimals)),
-      amountOutUsd: Big(_amountOutValue).times(currentPrice).toFixed(2),
+      amountOutUsd: Big(_amountOutValue).times(currentMarketData?.price || 0).toFixed(2),
     };
 
     // Get liquidation price
@@ -462,7 +461,6 @@ const BelongForm = (props: any) => {
       account,
       chainId,
       provider,
-      prices,
     ],
     debounceWait: 1000,
   });
