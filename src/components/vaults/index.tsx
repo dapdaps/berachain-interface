@@ -13,13 +13,15 @@ const Vaults = (props: any) => {
         "fixed block z-[1] left-[calc(50%_+_150px)] top-[230px] disabled:opacity-50 disabled:!cursor-not-allowed",
         className
       )}
-      data-bp="1022-001-001"
+      // data-bp="1022-001-001"
       onClick={() => {
-        router.push("/vaults");
+        // router.push("/vaults");
+        router.push("/belong");
       }}
     >
       <img
-        src="/images/home-earth/vaults/entry.2x.png"
+        // src="/images/home-earth/vaults/entry.2x.png"
+        src="/images/belong/v2/banner-entry.png"
         alt=""
         className="animate-shake3 w-[232px] pointer-events-none"
         style={{
