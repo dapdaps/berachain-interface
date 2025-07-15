@@ -252,7 +252,7 @@ const MainLayout = (props: Props) => {
         </Link>
         <Link
           className="hover:scale-110 ease-in-out duration-300 w-[26px] h-[26px] rounded-full bg-white/50 flex items-center justify-center cursor-pointer"
-          href="https://discord.com/invite/dapdapmeup"
+          href="https://discord.gg/invite/dapdap"
           target="_blank"
           data-bp="1010-017"
         >
