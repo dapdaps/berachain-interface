@@ -176,7 +176,7 @@ const BelongForm = (props: any) => {
     }
     const DexCallURL = new URL("https://api.beraborrow.com/v1/enso/swap");
     DexCallURL.searchParams.set("tokenIn", currentInputMarket.isNative ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : currentInputMarket.address);
-    DexCallURL.searchParams.set("tokenOut", currentMarket.address);
+    DexCallURL.searchParams.set("tokenOut", isLeverage ? currentMarket.address : currentMarket.beraborrowToken);
     DexCallURL.searchParams.set("to", account);
     DexCallURL.searchParams.set("amount", Big(currentInputAmount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
@@ -208,6 +208,7 @@ const BelongForm = (props: any) => {
       currentInputMarket,
       account,
       currentInputAmount,
+      isLeverage,
     ],
     debounceWait: 1000,
   });
@@ -529,7 +530,7 @@ const BelongForm = (props: any) => {
     manual: true
   });
 
-  const { runAsync: handleSwap, loading: swapping, data: swappedData } = useRequest(async () => {
+  const { runAsync: handleSwap, loading: swapping, data: swappedData } = useRequest(async (params?: { isDeposit?: boolean; }) => {
     let toastId: any;
     const signer = provider.getSigner(account);
 
@@ -545,20 +546,26 @@ const BelongForm = (props: any) => {
       return false;
     }
     try {
-      toastId = toast.loading({ title: "Swapping..." });
+      toastId = toast.loading({ title: params?.isDeposit ? "Depositing..." : "Swapping..." });
       const swapTx = await signer.sendTransaction(outputAmountData.tx);
       toast.dismiss(toastId);
       toastId = toast.loading({ title: "Confirming...", tx: swapTx.hash, chainId: DEFAULT_CHAIN_ID });
       const { status, transactionHash } = await swapTx.wait();
       toast.dismiss(toastId);
       if (status !== 1) {
-        toast.fail({ title: "Swap Failed!" });
+        toast.fail({ title: `${params?.isDeposit ? "Deposited" : "Swapped"} Failed!` });
         return false;
       }
-      toast.success({ title: "Swapped successfully!", tx: transactionHash, chainId: DEFAULT_CHAIN_ID });
+      toast.success({
+        title: `${params?.isDeposit ? "Deposited" : "Swapped"} successfully!`,
+        tx: transactionHash,
+        chainId: DEFAULT_CHAIN_ID
+      });
     } catch (swapError: any) {
       toast.dismiss(toastId);
-      toast.fail({ title: swapError?.message?.includes("user rejected transaction") ? "User rejected transaction" : "" });
+      toast.fail({
+        title: swapError?.message?.includes("user rejected transaction") ? "User rejected transaction" : `${params?.isDeposit ? "Deposited" : "Swapped"} Failed!`
+      });
       return false;
     }
     // get swapped output amount
@@ -572,11 +579,12 @@ const BelongForm = (props: any) => {
       depositAmountValue = outputTokenBalanceValue;
     }
     const _depositAmountValue = Big(depositAmountValue.toString()).div(10 ** currentMarketData.decimals).toFixed(currentMarketData.decimals);
-    console.log("outputTokenBalanceValue: %o", outputTokenBalanceValue);
-    console.log("swappedOutputAmount: %o", swappedOutputAmount);
-    console.log("_depositAmountValue: %o", _depositAmountValue);
-    setCurrentInputSwaped(true);
-    setCurrentInputSwapedData({ value: _depositAmountValue, big: depositAmountValue });
+    if (params?.isDeposit) {
+      afterSuccess();
+    } else {
+      setCurrentInputSwaped(true);
+      setCurrentInputSwapedData({ value: _depositAmountValue, big: depositAmountValue });
+    }
     return { value: _depositAmountValue, big: depositAmountValue };
   }, { manual: true });
 
@@ -650,19 +658,17 @@ const BelongForm = (props: any) => {
 
     // Without leverage
     if (!isLeverage) {
-      if (!currentInputSwaped) {
-        const _swappedData = await handleSwap();
-        if (!_swappedData) {
-          return;
-        }
-        // after swap, we should deposit into https://app.beraborrow.com/vault/deposit/Kodiak-iBERA-wgBERA
-        await handleDeposit(_swappedData);
-        return;
+      // skip swap and deposit to vault directly
+      if (currentInputMarket.address === currentMarket.address) {
+        await handleDeposit({
+          value: currentInputAmount,
+          big: BigInt(Big(currentInputAmount).times(10 ** currentInputMarket.decimals).toFixed(0)),
+        });
       }
-      await handleDeposit({
-        value: currentInputAmount,
-        big: BigInt(Big(currentInputAmount).times(10 ** currentInputMarket.decimals).toFixed(0)),
-      });
+      // swap to bb token directly
+      else {
+        await handleSwap({ isDeposit: true });
+      }
       return;
     }
 
@@ -866,17 +872,16 @@ const BelongForm = (props: any) => {
         result.text = `Insufficient ${currentInputMarket.symbol} Balance`;
         return result;
       }
-      if (!currentInputSwaped) {
+      if (currentInputMarket.address === currentMarket.address) {
+        if (!depositApproved) {
+          result.text = `Approve ${currentMarket.symbol} deposit`;
+          return result;
+        }
+      } else {
         if (!inputApproved) {
           result.text = `Approve ${currentInputMarket.symbol} swap`;
           return result;
         }
-        result.text = `Swap ${currentInputMarket.symbol} to ${currentMarket.symbol}`;
-        return result;
-      }
-      if (!depositApproved) {
-        result.text = `Approve ${currentMarket.symbol} deposit`;
-        return result;
       }
       return result;
     }
@@ -969,6 +974,7 @@ const BelongForm = (props: any) => {
     collateralApproving,
     collateralChecking,
     outputAmountDataLoading,
+    currentMarket,
     currentInputMarket,
     currentInputMarketWalletBalance,
     isLeverage,
