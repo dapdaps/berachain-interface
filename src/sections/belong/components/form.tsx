@@ -28,6 +28,7 @@ import TokenSelector from "@/sections/swap/TokenSelector";
 import BelongTips from "./tips";
 import clsx from "clsx";
 import Link from "next/link";
+import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -62,6 +63,7 @@ const BelongForm = (props: any) => {
 
   const [currentInputMarket, setCurrentInputMarket] = useState<any>(markets[0]);
   const [currentInputAmount, setCurrentInputAmount] = useState<any>();
+  const [currentInputSwaped, setCurrentInputSwaped] = useState<any>(false);
 
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [leverage, setLeverage] = useState("1");
@@ -152,12 +154,14 @@ const BelongForm = (props: any) => {
   });
 
   const { runAsync: getOutputAmountData, loading: outputAmountDataLoading, data: outputAmountData } = useRequest(async () => {
+    setCurrentInputSwaped(false);
     if (!currentInputMarket || !account || !currentInputAmount || Big(currentInputAmount).lte(0)) {
       handleAmount("");
       return;
     }
     if (currentInputMarket.address === currentMarket.address) {
       handleAmount(currentInputAmount);
+      setCurrentInputSwaped(true);
       return {
         amountOutValue: currentInputAmount,
         amountOutBig: BigInt(Big(currentInputAmount).times(SCALING_FACTOR.toString()).toFixed(0)),
@@ -497,7 +501,57 @@ const BelongForm = (props: any) => {
     manual: true
   });
 
+  const { runAsync: handleSwap, loading: swapping, data: swappedData } = useRequest(async () => {
+    let toastId: any;
+    const signer = provider.getSigner(account);
+
+    // swap approve
+    if (!inputApproved) {
+      onInputApprove();
+      return false;
+    }
+    if (!outputAmountData) {
+      toast.fail({ title: "Failed to get route, please try again later!" });
+      return false;
+    }
+    try {
+      toastId = toast.loading({ title: "Swapping..." });
+      const swapTx = await signer.sendTransaction(outputAmountData.tx);
+      toast.dismiss(toastId);
+      toastId = toast.loading({ title: "Confirming...", tx: swapTx.hash, chainId: DEFAULT_CHAIN_ID });
+      const { status, transactionHash } = await swapTx.wait();
+      toast.dismiss(toastId);
+      if (status !== 1) {
+        toast.fail({ title: "Swap Failed!" });
+        return false;
+      }
+      toast.success({ title: "Swapped successfully!", tx: transactionHash, chainId: DEFAULT_CHAIN_ID });
+    } catch (swapError: any) {
+      toast.fail({ title: swapError?.message?.includes("user rejected transaction") ? "User rejected transaction" : "" });
+      return false;
+    }
+    // get swapped output amount
+    let swappedOutputAmount = BigInt(outputAmountData.amountOut);
+    // get balance of output token
+    const outputTokenContract = new Contract(currentMarketData.address, ERC20_ABI, provider);
+    const outputTokenBalance = await outputTokenContract.balanceOf(account);
+    const outputTokenBalanceValue = outputTokenBalance ? BigInt(outputTokenBalance.toString()) : BigInt(0);
+    let depositAmountValue: any = swappedOutputAmount;
+    if (swappedOutputAmount > outputTokenBalanceValue) {
+      depositAmountValue = outputTokenBalanceValue;
+    }
+    const _depositAmountValue = Big(depositAmountValue.toString()).div(10 ** currentMarketData.decimals).toFixed(currentMarketData.decimals);
+    console.log("outputTokenBalanceValue: %o", outputTokenBalanceValue);
+    console.log("swappedOutputAmount: %o", swappedOutputAmount);
+    console.log("_depositAmountValue: %o", _depositAmountValue);
+    setCurrentInputSwaped(true);
+    return { value: _depositAmountValue, big: depositAmountValue };
+  }, { manual: true });
+
   const { runAsync: handleDeposit, loading: handleDepositLoading } = useRequest(async () => {
+    let toastId: any;
+    const signer = provider.getSigner(account);
+
     if (!account) {
       modal.openConnectModal?.();
       return;
@@ -525,6 +579,18 @@ const BelongForm = (props: any) => {
       return;
     }
 
+    if (!currentInputSwaped) {
+      const _swappedData = await handleSwap();
+      if (!_swappedData) {
+        return;
+      }
+      // after swap, we should reload the marginInSharesData
+      if (Big(_swappedData.value || 0).gt(amount || 0)) {
+        handleAmount(_swappedData.value);
+        return;
+      }
+    }
+
     if (!approved) {
       setApprove();
       return;
@@ -535,14 +601,8 @@ const BelongForm = (props: any) => {
       return;
     }
 
-    // swap approve
-    if (!inputApproved) {
-      onInputApprove();
-      return;
-    }
-
-    const signer = provider.getSigner(account);
-    let toastId = toast.loading({ title: "Leveraging..." });
+    toast.dismiss(toastId);
+    toastId = toast.loading({ title: "Leveraging..." });
 
     const {
       priceBig,
@@ -650,7 +710,7 @@ const BelongForm = (props: any) => {
   }, { manual: true });
 
   const buttonValid = useMemo(() => {
-    const result: any = { valid: true, text: "Delegate, Approve and Deposit", loading: false };
+    const result: any = { valid: true, text: "ACTIVATE LOOPING", loading: false };
 
     //#region Check account
     if (!account) {
@@ -697,7 +757,7 @@ const BelongForm = (props: any) => {
 
     //#region Without leverage
     if (!isLeverage) {
-      result.text = "Please increase the leverage";
+      result.text = "DEPOSIT";
       result.valid = false;
       // // Check wallet balance
       // if (Big(currentInputAmount || 0).gt(currentInputMarketData.walletBalance || 0)) {
@@ -760,19 +820,26 @@ const BelongForm = (props: any) => {
       return result;
     }
 
+    if (!currentInputSwaped) {
+      if (!inputApproved) {
+        result.text = `Approve ${currentInputMarket.symbol}`;
+        return result;
+      }
+      result.text = `Swap ${currentInputMarket.symbol} to ${currentMarket.symbol}`;
+      return result;
+    }
+
     if (!approved) {
       result.text = `Approve Delegate`;
       return result;
     }
-
-    result.text = "Approve and Deposit";
 
     if (!collateralApproved && Big(amount || 0).gt(0)) {
       result.text = `Approve ${currentMarketData.symbol}`;
       return result;
     }
 
-    result.text = "Deposit";
+    result.text = "ACTIVATE LOOPING";
 
     return result;
   }, [
@@ -890,6 +957,7 @@ const BelongForm = (props: any) => {
               debounceWait={0}
               inputClassName="!h-[16px]"
               activeBarClassName="!h-[16px]"
+              disabled={!currentInputAmount || Big(currentInputAmount).lte(0) || marginInSharesLoading || handleDepositLoading || !maxLeverage || Big(maxLeverage).lte(1)}
             />
           </div>
         </div>
@@ -1031,7 +1099,7 @@ const BelongForm = (props: any) => {
           <button
             type="button"
             className="disabled:!cursor-not-allowed disabled:opacity-50 gap-[5px] w-full bg-[#FFDC50] text-black text-[16px] flex justify-center items-center h-[40px] rounded-[10px] border border-[#000]"
-            disabled={!buttonValid.valid}
+            disabled={!buttonValid.valid || buttonValid.loading}
             onClick={handleDeposit}
           >
             {
@@ -1052,6 +1120,10 @@ const BelongForm = (props: any) => {
           onSelect={(token: any) => {
             setCurrentInputMarket(token);
             setTokenSelectorVisible(false);
+            const timer = setTimeout(() => {
+              clearTimeout(timer);
+              setDataLoading(true);
+            }, 0);
           }}
           onClose={() => {
             setTokenSelectorVisible(false);
