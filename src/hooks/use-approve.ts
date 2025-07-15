@@ -10,6 +10,29 @@ import { useAccount } from "wagmi";
 export const MAX_APPROVE =
   "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
+export const APPROVE_ABI = [
+  {
+    inputs: [
+      { internalType: "address", name: "", type: "address" },
+      { internalType: "address", name: "", type: "address" }
+    ],
+    name: "allowance",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "value", type: "uint256" }
+    ],
+    name: "approve",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function"
+  }
+];
+
 export default function useApprove({
   token,
   amount,
@@ -51,18 +74,7 @@ export default function useApprove({
       setChecking(true);
       const TokenContract = new Contract(
         token.address,
-        [
-          {
-            inputs: [
-              { internalType: "address", name: "", type: "address" },
-              { internalType: "address", name: "", type: "address" }
-            ],
-            name: "allowance",
-            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-            stateMutability: "view",
-            type: "function"
-          }
-        ],
+        APPROVE_ABI,
         signer
       );
       const allowanceRes = await TokenContract.allowance(address, spender);
@@ -91,18 +103,7 @@ export default function useApprove({
       const signer = provider.getSigner(address);
       const TokenContract = new Contract(
         token.address,
-        [
-          {
-            inputs: [
-              { internalType: "address", name: "spender", type: "address" },
-              { internalType: "uint256", name: "value", type: "uint256" }
-            ],
-            name: "approve",
-            outputs: [{ internalType: "bool", name: "", type: "bool" }],
-            stateMutability: "nonpayable",
-            type: "function"
-          }
-        ],
+        APPROVE_ABI,
         signer
       );
       let approveValue = amount;

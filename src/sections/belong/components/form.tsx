@@ -65,6 +65,7 @@ const BelongForm = (props: any) => {
   const [currentInputMarket, setCurrentInputMarket] = useState<any>(markets[0]);
   const [currentInputAmount, setCurrentInputAmount] = useState<any>();
   const [currentInputSwaped, setCurrentInputSwaped] = useState<any>(false);
+  const [currentInputSwapedData, setCurrentInputSwapedData] = useState<any>();
 
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [leverage, setLeverage] = useState("1");
@@ -165,6 +166,10 @@ const BelongForm = (props: any) => {
     if (currentInputMarket.address === currentMarket.address) {
       handleAmount(currentInputAmount);
       setCurrentInputSwaped(true);
+      setCurrentInputSwapedData({
+        value: currentInputAmount,
+        big: BigInt(Big(currentInputAmount).times(SCALING_FACTOR.toString()).toFixed(0)),
+      });
       return {
         amountOutValue: currentInputAmount,
         amountOutBig: BigInt(Big(currentInputAmount).times(SCALING_FACTOR.toString()).toFixed(0)),
@@ -219,6 +224,19 @@ const BelongForm = (props: any) => {
     token: currentInputMarket,
     amount: currentInputAmount,
     spender: outputAmountData?.tx?.to,
+  });
+
+  const {
+    approved: depositApproved,
+    approve: onDepositApprove,
+    approving: depositApproving,
+    checking: depositChecking,
+    allowance: depositAllowance,
+    checkApproved: depositCheckApproved,
+  } = useApprove({
+    token: currentMarket,
+    amount: currentInputSwapedData?.value,
+    spender: currentMarket?.collVault,
   });
 
   const { runAsync: getMarginInShares, cancel: cancelGetMarginInShares, loading: marginInSharesLoading } = useRequest(async () => {
@@ -347,6 +365,7 @@ const BelongForm = (props: any) => {
     account,
     chainId,
     provider,
+    isLeverage
   ]);
 
   const { runAsync: automaticLooping, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
@@ -508,6 +527,8 @@ const BelongForm = (props: any) => {
     let toastId: any;
     const signer = provider.getSigner(account);
 
+    setCurrentInputSwapedData(void 0);
+
     // swap approve
     if (!inputApproved) {
       onInputApprove();
@@ -549,8 +570,15 @@ const BelongForm = (props: any) => {
     console.log("swappedOutputAmount: %o", swappedOutputAmount);
     console.log("_depositAmountValue: %o", _depositAmountValue);
     setCurrentInputSwaped(true);
+    setCurrentInputSwapedData({ value: _depositAmountValue, big: depositAmountValue });
     return { value: _depositAmountValue, big: depositAmountValue };
   }, { manual: true });
+
+  const afterSuccess = () => {
+    setCurrentInputSwaped(false);
+    setCurrentInputAmount("");
+    setCurrentInputSwapedData(void 0);
+  };
 
   const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
     let toastId: any;
@@ -561,6 +589,12 @@ const BelongForm = (props: any) => {
       params.big,
       account
     ];
+
+    if (!depositApproved) {
+      onDepositApprove();
+      return;
+    }
+
     try {
       const gasLimit = await depositContract.estimateGas.deposit(...depositParams, depositOptions);
       depositOptions.gasLimit = gasLimit;
@@ -577,6 +611,7 @@ const BelongForm = (props: any) => {
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({ title: "Deposit successfully!", tx: transactionHash, chainId: DEFAULT_CHAIN_ID });
+        afterSuccess();
       } else {
         toast.fail({ title: "Deposit Failed!" });
       }
@@ -614,10 +649,10 @@ const BelongForm = (props: any) => {
           return;
         }
         // after swap, we should deposit into https://app.beraborrow.com/vault/deposit/Kodiak-iBERA-wgBERA
-        handleDeposit(_swappedData);
+        await handleDeposit(_swappedData);
         return;
       }
-      handleDeposit({
+      await handleDeposit({
         value: currentInputAmount,
         big: BigInt(Big(currentInputAmount).times(10 ** currentInputMarket.decimals).toFixed(0)),
       });
@@ -800,6 +835,8 @@ const BelongForm = (props: any) => {
       || outputAmountDataLoading
       || inputApproving
       || inputChecking
+      || depositApproving
+      || depositChecking
     ) {
       result.loading = true;
     }
@@ -824,10 +861,14 @@ const BelongForm = (props: any) => {
       }
       if (!currentInputSwaped) {
         if (!inputApproved) {
-          result.text = `Approve ${currentInputMarket.symbol}`;
+          result.text = `Approve ${currentInputMarket.symbol} swap`;
           return result;
         }
         result.text = `Swap ${currentInputMarket.symbol} to ${currentMarket.symbol}`;
+        return result;
+      }
+      if (!depositApproved) {
+        result.text = `Approve ${currentMarket.symbol} deposit`;
         return result;
       }
       return result;
@@ -926,6 +967,9 @@ const BelongForm = (props: any) => {
     inputApproved,
     inputApproving,
     inputChecking,
+    depositApproving,
+    depositChecking,
+    depositApproved,
   ]);
 
   const riskData = useMemo(() => {
@@ -1119,34 +1163,48 @@ const BelongForm = (props: any) => {
 
         {/*#region transaction details & Fee*/}
         <div className="mt-[29px] flex justify-between items-center gap-[20px] text-[12px]">
-          <div className="flex items-center gap-[2px]">
-            <div className="text-[#808290]">Fee:</div>
-            <div className="">
-              {numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}
-            </div>
-            <BelongTips className="">
-              <div className="font-[500] text-black">Fee Breakdown</div>
-              <div className="mt-[5px]">
-                <div className="flex justify-between items-center gap-[10px]">
-                  <div className="">Net debt:</div>
-                  <div className="">{numberFormatter(calculateDebtAmountData?.value, 8, true, { isShort: true, isShortUppercase: true })}</div>
+          {
+            isLeverage ? (
+              <div className="flex items-center gap-[2px]">
+                <div className="text-[#808290]">Fee:</div>
+                <div className="">
+                  {numberFormatter(calculateDebtAmountData?.fee, 2, true, { isShort: true, isShortUppercase: true })}
                 </div>
-                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
-                  <div className="">Borrowing fee({numberFormatter(Big(currentMarketData?.borrowingRate ?? 0).times(100), 2, true)}%):</div>
-                  <div className="">{numberFormatter(calculateDebtAmountData?.borrowingFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
-                </div>
-                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
-                  <div className="">Liquidation reserve:</div>
-                  <div className="">{numberFormatter(calculateDebtAmountData?.liquidationReserveFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
-                </div>
-                <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
-                <div className="flex justify-between items-center gap-[10px] mt-[5px]">
-                  <div className="">Total debt:</div>
-                  <div className="">{numberFormatter(calculateDebtAmountData?.totalValue, 8, true, { isShort: true, isShortUppercase: true })}</div>
-                </div>
+                <BelongTips className="">
+                  <div className="font-[500] text-black">Fee Breakdown</div>
+                  <div className="mt-[5px]">
+                    <div className="flex justify-between items-center gap-[10px]">
+                      <div className="">Net debt:</div>
+                      <div className="">{numberFormatter(calculateDebtAmountData?.value, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                    </div>
+                    <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+                      <div className="">Borrowing fee({numberFormatter(Big(currentMarketData?.borrowingRate ?? 0).times(100), 2, true)}%):</div>
+                      <div className="">{numberFormatter(calculateDebtAmountData?.borrowingFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                    </div>
+                    <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+                      <div className="">Liquidation reserve:</div>
+                      <div className="">{numberFormatter(calculateDebtAmountData?.liquidationReserveFee, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                    </div>
+                    <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
+                    <div className="flex justify-between items-center gap-[10px] mt-[5px]">
+                      <div className="">Total debt:</div>
+                      <div className="">{numberFormatter(calculateDebtAmountData?.totalValue, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                    </div>
+                  </div>
+                </BelongTips>
               </div>
-            </BelongTips>
-          </div>
+            ) : (
+              <div className="flex items-center gap-[2px]">
+                <div className="text-[#808290]">Price Impact:</div>
+                <div className="">
+                  {numberFormatter(Big(outputAmountData?.priceImpact || 0).div(100), 2, true)}%
+                </div>
+                <BelongTips className="">
+                  Price impact from the swapping
+                </BelongTips>
+              </div>
+            )
+          }
           <Link
             prefetch
             href="/lending/beraborrow"
@@ -1233,7 +1291,10 @@ const BelongForm = (props: any) => {
       </div>
       <ResultModal
         open={resultModalOpen}
-        onClose={() => setResultModalOpen(false)}
+        onClose={() => {
+          setResultModalOpen(false);
+          afterSuccess();
+        }}
         market={currentMarketData}
         inputMarket={currentInputMarketData}
         leverage={leverage}
