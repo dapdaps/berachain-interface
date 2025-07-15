@@ -1,7 +1,7 @@
 import LazyImage from "@/components/layz-image";
 import Range from "@/components/range";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import beraborrowConfig from "@/configs/lending/beraborrow";
 import { DEFAULT_CHAIN_ID } from "@/configs";
 import { usePriceStore } from "@/stores/usePriceStore";
@@ -31,6 +31,7 @@ import Link from "next/link";
 import { ERC20_ABI } from "@/hooks/use-tokens-balance";
 import ResultModal from "./result";
 import useTokenBalance from "@/hooks/use-token-balance";
+import Position from "./position";
 
 const BeraborrowData = dynamic(() => import('@/sections/Lending/datas/beraborrow'));
 
@@ -61,6 +62,8 @@ const BelongForm = (props: any) => {
   const { addAction } = useAddAction("belong");
   const modal = useConnectModal();
   const { switchChain } = useSwitchChain();
+
+  const vaultRef = useRef<any>();
 
   const [currentInputMarket, setCurrentInputMarket] = useState<any>(leverageMarkets[0]);
   const [currentInputAmount, setCurrentInputAmount] = useState<any>();
@@ -287,7 +290,7 @@ const BelongForm = (props: any) => {
         addedCollateral,
         addedDebt,
         addedCollateralShares,
-        priceBig,
+        collPriceBig,
         MCRBig,
       ];
       const res = await new Contract(leverageRouter, LEVERAGE_ROUTER_ABI, provider).calculateMaxLeverage(...calculateMaxLeverageParams);
@@ -593,6 +596,7 @@ const BelongForm = (props: any) => {
     setCurrentInputAmount("");
     setCurrentInputSwapedData(void 0);
     updateCurrentInputMarketWalletBalance();
+    vaultRef.current?.getPositionBalance?.();
   };
 
   const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
@@ -631,11 +635,12 @@ const BelongForm = (props: any) => {
         toast.fail({ title: "Deposit Failed!" });
       }
     } catch (err: any) {
+      console.log("deposit error: %o", err);
       toast.dismiss(toastId);
       toast.fail({
         title: err?.message?.includes("user rejected transaction")
           ? "User rejected transaction"
-          : ""
+          : "Deposit Failed!"
       });
     }
   }, { manual: true });
@@ -1009,7 +1014,7 @@ const BelongForm = (props: any) => {
   ]);
 
   return (
-    <div className={clsx("", className)}>
+    <div className={clsx("relative", className)}>
       <Card className="w-full !p-[20px] !rounded-[20px] text-[#000] text-[12px] font-Montserrat font-[500]">
 
         {/*#region Deposit collateral*/}
@@ -1108,7 +1113,7 @@ const BelongForm = (props: any) => {
                 <div className="w-full bg-white rounded-[12px] border border-[#373A53] p-[12px_12px_10px] mt-[10px]">
                   <div className="w-full flex justify-between items-center gap-[20px]">
                     <div className="text-[20px]">
-                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: true, isShortUppercase: true, round: Big.roundUp, prefix: "$" })}
+                      {numberFormatter(automaticLoopingData?.liquidationPrice?.value, 2, true, { isShort: false, isShortUppercase: true, round: Big.roundUp, prefix: "$" })}
                     </div>
                   </div>
                   <div className="w-full flex justify-between items-center gap-[20px] mt-[13px]">
@@ -1149,7 +1154,7 @@ const BelongForm = (props: any) => {
                 </div>
                 <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[12px_12px] rounded-[12px]">
                   <div className="text-black font-[500] text-[20px]">
-                    {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: true, isShortUppercase: true, prefix: "$" })}
+                    {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: false, isShortUppercase: true, prefix: "$" })}
                   </div>
                   <div className="shrink-0 flex justify-end items-center gap-[3px] border border-[#373A53] rounded-[8px] p-[8px_12px]">
                     <div className="flex items-center shrink-0">
@@ -1316,6 +1321,13 @@ const BelongForm = (props: any) => {
         txHash={currentLeverageTxHash}
         inputAmount={currentInputAmount}
         debtAmount={automaticLoopingData?.route?.amountOutValue}
+      />
+      <Position
+        ref={vaultRef}
+        className="!absolute left-0 bottom-[-100px]"
+        leverage={leverage}
+        apy={currentMarketData?.vaultApy}
+        market={currentMarketData}
       />
     </div>
   );
