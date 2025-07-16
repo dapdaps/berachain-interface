@@ -223,6 +223,21 @@ const networks = {
         TCR: 197,
         collIndex: 12,
       },
+      {
+        id: 8,
+        ...assets["KODI iBERA-wgBERA"],
+        underlyingTokens: [bera["ibera"], bera["wgbera"]],
+        collToken: assets["KODI iBERA-wgBERA"],
+        vault: 'beraWrapper',
+        collVault: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        denManager: '0x652756DAef2900C07EA453CE3c9F114385ecBAe2',
+        // BB.kIBERA-WGBERA(Beraborrow iBERA-wgBERA Kodiak Island)
+        beraborrowToken: "0xD971CDA7FE5952d7c6aA1F50e2808cd1e5346177",
+        MCR: 120,
+        CCR: 150,
+        TCR: 378,
+        collIndex: 40,
+      },
     ],
     leverageMarkets: [
       {
