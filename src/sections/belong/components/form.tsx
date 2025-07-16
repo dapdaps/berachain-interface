@@ -14,7 +14,7 @@ import { useRequest } from "ahooks";
 import { getHint } from "@/sections/Lending/handlers/beraborrow";
 import axios from "axios";
 import { _normalizeDenCreation, Den, SCALING_FACTOR, SCALING_FACTOR_BP, UserDenStatus } from "@/sections/Lending/datas/beraborrow/den";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import useToast from "@/hooks/use-toast";
 import useAddAction from "@/hooks/use-add-action";
 import Popover, { PopoverPlacement, PopoverTrigger } from "@/components/popover";
@@ -81,8 +81,8 @@ const BelongForm = (props: any) => {
   const [tokenSelectorVisible, setTokenSelectorVisible] = useState<any>(false);
   const [inputCurrencyUpdater, setInputCurrencyUpdater] = useState<any>(1);
   const [resultModalOpen, setResultModalOpen] = useState<any>(false);
+  const [resultModalData, setResultModalData] = useState<any>();
   const [shareModalOpen, setShareModalOpen] = useState<any>(false);
-  const [currentLeverageTxHash, setCurrentLeverageTxHash] = useState<any>("");
 
   const [isLeverage] = useMemo(() => {
     return [!!leverage && Big(leverage).gt(1)];
@@ -263,7 +263,8 @@ const BelongForm = (props: any) => {
     const amountBig = BigInt(Big(amount || 0).times(SCALING_FACTOR.toString()).toFixed(0));
 
     // First get the latest den
-    const addedCollateralDen = currentMarketData.den?.addCollateral(BigInt(Big(amount || 0).times(SCALING_FACTOR.toString()).toFixed(0)));
+    const addedCollateralDen = currentMarketData.den?.addCollateral(amountBig);
+    const currentCollateralDen = currentMarketData.den?.setCollateral(amountBig);
     // Get the accumulated collateral
     const addedCollateral = addedCollateralDen.collateral;
     // Get the accumulated debt
@@ -292,7 +293,7 @@ const BelongForm = (props: any) => {
         addedCollateral,
         addedDebt,
         addedCollateralShares,
-        collPriceBig,
+        priceBig,
         MCRBig,
       ];
       const res = await new Contract(leverageRouter, LEVERAGE_ROUTER_ABI, provider).calculateMaxLeverage(...calculateMaxLeverageParams);
@@ -305,7 +306,7 @@ const BelongForm = (props: any) => {
         return maxLeverageRes;
       });
       if (Big(maxLeverageRes).lt(leverage)) {
-        setLeverage("1");
+        setLeverage(Big(maxLeverageRes).lt(1) ? "1" : maxLeverageRes);
       }
     } catch (err: any) {
       console.log('Failed to calculate maximum _leverage: %o', err);
@@ -322,6 +323,7 @@ const BelongForm = (props: any) => {
       addedDebt,
       addedPreviewDeposit,
       addedCollateralDen,
+      currentCollateralDen,
       marginInShares: addedCollateralShares,
       liquidationReserveBig,
       amountBig,
@@ -333,7 +335,13 @@ const BelongForm = (props: any) => {
 
   const calculateDebtAmountData = useMemo(() => {
     if (!marginInSharesData || !currentMarketData || !currentMarketData.borrowToken) {
-      return { big: BigInt(0), value: "0", fee: "0" };
+      return {
+        big: BigInt(0),
+        value: "0",
+        fee: "0",
+        borrowingFeeBig: BigInt(0),
+        liquidationReserveFeeBig: BigInt(0)
+      };
     }
     const {
       priceBig,
@@ -354,23 +362,27 @@ const BelongForm = (props: any) => {
     const leveragedDebt = addedCollateralDen.calculateLeveragedDebt(
       addedCollateral,
       leverageBP,
-      collPriceBig,
+      priceBig,
       debtPriceBig,
     );
-    const borrowingFeeValue = Big(leveragedDebt.toString()).div(SCALING_FACTOR.toString()).times(borrowingFee).toFixed(2);
+    const borrowingFeeValue = Big(leveragedDebt.toString()).div(10 ** currentMarket.decimals).times(borrowingFee).toFixed(2);
     const borrowingFeeBig = BigInt(Big(leveragedDebt.toString()).times(borrowingFee).toFixed(0));
     const totalDebt = addedCollateralDen.debt + leveragedDebt + borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig);
-    const totalDebtValue = Big(totalDebt.toString()).div(SCALING_FACTOR.toString()).toString();
-    const debtValue = Big(leveragedDebt.toString()).div(SCALING_FACTOR.toString()).toString();
+    const totalDebtValue = Big(totalDebt.toString()).div(10 ** currentMarket.decimals).toFixed(currentMarket.decimals);
+    const debtValue = Big(leveragedDebt.toString()).div(10 ** currentMarket.decimals).toFixed(currentMarket.decimals);
     handleBorrowAmount(totalDebtValue);
     return {
       big: leveragedDebt,
       value: debtValue,
       totalBig: totalDebt,
       totalValue: totalDebtValue,
+      currentTotalBig: leveragedDebt + borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig),
+      currentTotalValue: Big(leveragedDebt + borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).div(10 ** currentMarket.decimals).toFixed(currentMarket.decimals),
       borrowingFee: borrowingFeeValue,
+      borrowingFeeBig: BigInt(Big(leveragedDebt.toString()).times(borrowingFee).toFixed(0)),
       liquidationReserveFee: isActive ? "0" : liquidationReserve,
-      fee: Big((borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).toString()).div(SCALING_FACTOR.toString()).toString(),
+      liquidationReserveFeeBig: isActive ? BigInt(0) : liquidationReserveBig,
+      fee: Big((borrowingFeeBig + (isActive ? BigInt(0) : liquidationReserveBig)).toString()).div(10 ** currentMarket.decimals).toString(),
     };
   }, [
     marginInSharesData,
@@ -393,13 +405,21 @@ const BelongForm = (props: any) => {
       MCRBig,
       leverageBP,
       addedCollateral,
+      currentCollateralDen,
       addedDebt,
       addedPreviewDeposit,
       addedCollateralDen,
       marginInShares,
       amountBig,
     } = marginInSharesData;
-    const { big: debtBig, value: debtValue, totalBig: totalDebtBig, totalValue: totalDebtValue } = calculateDebtAmountData;
+    const {
+      big: debtBig,
+      value: debtValue,
+      totalBig: totalDebtBig,
+      totalValue: totalDebtValue,
+      borrowingFeeBig,
+      liquidationReserveFeeBig,
+    } = calculateDebtAmountData;
 
     // Get swap
     let dexCalldataResp: any;
@@ -408,7 +428,7 @@ const BelongForm = (props: any) => {
     DexCallURL.searchParams.set("dmAddr", currentMarketData.denManager);
     DexCallURL.searchParams.set("marginInShares", addedPreviewDeposit.toString());
     DexCallURL.searchParams.set("leverage", Big(leverage || 0).times(SCALING_FACTOR_BP.toString()).toFixed(0));
-    DexCallURL.searchParams.set("debtAmount", debtBig);
+    DexCallURL.searchParams.set("debtAmount", (debtBig - borrowingFeeBig).toString());
     DexCallURL.searchParams.set("slippage", Big(DEFAULT_SLIPPAGE_TOLERANCE.toString()).div(10 ** 16).toString());
     try {
       dexCalldataResp = await axios.get(DexCallURL.toString());
@@ -423,17 +443,20 @@ const BelongForm = (props: any) => {
     const { amountOut } = dexCalldataResp.data.data;
 
     const _amountOutValue = Big(amountOut).div(10 ** currentMarketData.decimals).plus(Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()));
+    const _currentAmountOutValue = Big(amountOut).div(10 ** currentMarketData.decimals).plus(Big(currentCollateralDen.collateral.toString()).div(SCALING_FACTOR.toString()));
     const route = {
       ...dexCalldataResp.data.data,
       amountOutValue: numberRemoveEndZero(_amountOutValue.toFixed(currentMarketData.decimals)),
       amountOutUsd: Big(_amountOutValue).times(currentMarketData?.collPrice || 0).toFixed(2),
+      currentAmountOutValue: numberRemoveEndZero(_currentAmountOutValue.toFixed(currentMarketData.decimals)),
+      currentAmountOutValueUsd: Big(_currentAmountOutValue).times(currentMarketData?.collPrice || 0).toFixed(2),
     };
 
     // Get liquidation price
     const dexCollOutput = BigInt(amountOut);
     const dexCollOutputInShares = dexCollOutput + addedCollateral;
     const params: any = { borrowNECT: debtBig, depositCollateral: dexCollOutputInShares };
-    const newDen = new Den(dexCollOutputInShares, debtBig);
+    const newDen = new Den(dexCollOutputInShares, totalDebtBig);
     const _liquidationPrice = newDen.calculateLiquidationPrice(MCRBig);
     const liquidationPrice = {
       big: _liquidationPrice,
@@ -452,9 +475,16 @@ const BelongForm = (props: any) => {
       multiCollateralHintHelpers,
     });
 
+    let finalPreviewDeposit: any = await getPreviewDeposit({
+      amount: _currentAmountOutValue.toFixed(currentMarketData.decimals),
+      market: currentMarketData,
+      provider,
+    });
+    finalPreviewDeposit = BigInt(Big(finalPreviewDeposit || 0).times(SCALING_FACTOR.toString()).toFixed(0));
+
     // Get ratio
-    const newRatioDen = new Den(dexCollOutput + addedCollateral, totalDebtBig);
-    const leverageRatio = newRatioDen.collateralRatio(collPriceBig);
+    const newRatioDen = new Den(finalPreviewDeposit + currentMarketData.den?.collateral, totalDebtBig);
+    const leverageRatio = newRatioDen.collateralRatio(priceBig);
 
     return {
       route,
@@ -594,11 +624,13 @@ const BelongForm = (props: any) => {
   }, { manual: true });
 
   const afterSuccess = () => {
+    setDataLoading(true);
     setCurrentInputSwaped(false);
     setCurrentInputAmount("");
     setCurrentInputSwapedData(void 0);
     updateCurrentInputMarketWalletBalance();
     vaultRef.current?.getPositionBalance?.();
+    setResultModalData(void 0);
   };
 
   const { runAsync: handleDeposit, loading: depositing } = useRequest(async (params: any) => {
@@ -785,7 +817,6 @@ const BelongForm = (props: any) => {
 
       const { status, transactionHash } = await tx.wait();
 
-      setCurrentLeverageTxHash(transactionHash);
       toast.dismiss(toastId);
       if (status === 1) {
         toast.success({
@@ -794,10 +825,17 @@ const BelongForm = (props: any) => {
           chainId: DEFAULT_CHAIN_ID
         });
         setResultModalOpen(true);
+        const _resultModalData: any = {
+          liquidationPrice: automaticLoopingData?.liquidationPrice?.value,
+          txHash: transactionHash,
+          inputAmount: currentInputAmount,
+          debtAmount: automaticLoopingData?.route?.currentAmountOutValue,
+        };
+        setResultModalData(_resultModalData);
       } else {
         toast.fail({ title: "Leverage failed!" });
+        setDataLoading(true);
       }
-      setDataLoading(true);
       addAction({
         type: 'Lending',
         action: 'Leverage',
@@ -1147,7 +1185,7 @@ const BelongForm = (props: any) => {
                       <div>Exposure:</div>
                     </div>
                     <div className="text-black">
-                      {numberFormatter(automaticLoopingData?.route?.amountOutValue, 6, true, { isShort: true, isShortUppercase: true })} {currentMarket?.symbol}
+                      {numberFormatter(automaticLoopingData?.route?.currentAmountOutValue, 6, true, { isShort: true, isShortUppercase: true })} {currentMarket?.underlyingTokens?.map((token: any) => token.symbol).join("-")}
                     </div>
                     <BelongTips className="">
                       The Amount of {currentMarket?.symbol} you will have after the leveraging swap
@@ -1156,7 +1194,7 @@ const BelongForm = (props: any) => {
                 </div>
                 <div className="flex justify-between items-center gap-[10px] mt-[12px] border border-[#373A53] p-[12px_12px] rounded-[12px]">
                   <div className="text-black font-[500] text-[20px]">
-                    {numberFormatter(automaticLoopingData?.route?.amountOutUsd, 2, true, { isShort: false, isShortUppercase: true, prefix: "$" })}
+                    {numberFormatter(automaticLoopingData?.route?.currentAmountOutValueUsd, 2, true, { isShort: false, isShortUppercase: true, prefix: "$" })}
                   </div>
                   <div className="shrink-0 flex justify-end items-center gap-[3px] border border-[#373A53] rounded-[8px] p-[8px_12px]">
                     <div className="flex items-center shrink-0">
@@ -1209,7 +1247,7 @@ const BelongForm = (props: any) => {
                     <div className="w-full h-[1px] bg-[#A1A0A1] my-[5px]"></div>
                     <div className="flex justify-between items-center gap-[10px] mt-[5px]">
                       <div className="">Total debt:</div>
-                      <div className="">{numberFormatter(calculateDebtAmountData?.totalValue, 8, true, { isShort: true, isShortUppercase: true })}</div>
+                      <div className="">{numberFormatter(calculateDebtAmountData?.currentTotalValue, 8, true, { isShort: true, isShortUppercase: true })}</div>
                     </div>
                   </div>
                 </BelongTips>
@@ -1319,10 +1357,7 @@ const BelongForm = (props: any) => {
         market={currentMarketData}
         inputMarket={currentInputMarket}
         leverage={leverage}
-        liquidationPrice={automaticLoopingData?.liquidationPrice?.value}
-        txHash={currentLeverageTxHash}
-        inputAmount={currentInputAmount}
-        debtAmount={automaticLoopingData?.route?.amountOutValue}
+        {...resultModalData}
       />
       <Position
         ref={vaultRef}

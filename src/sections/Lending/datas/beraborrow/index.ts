@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import multicallAddresses from "@/configs/contract/multicall";
 import { multicall } from "@/utils/multicall";
 
-import { numberFormatter } from "@/utils/number-formatter";
+import { numberFormatter, numberRemoveEndZero } from "@/utils/number-formatter";
 import { Den, UserDen, UserDenStatus, SCALING_FACTOR as SCALING_FACTOR_DEN, DenStatusWithGoldsky } from "./den";
 
 const ERC20_ABI = [
@@ -43,7 +43,7 @@ const ERC20_ABI = [
   }
 ];
 
-const DEN_ABI = [
+export const DEN_ABI = [
   {
     type: "function",
     name: "getTotalActiveCollateral",
@@ -891,6 +891,9 @@ const BeraborrowData = (props: any) => {
 
           const currentVault = vaultsList.find((_vault: any) => _vault.vaultAddress.toLowerCase() === market.collVault.toLowerCase());
 
+          // Underlying Amount = price * currentColl / collPrice
+          const underlyingBalance = numberRemoveEndZero(Big(currPrice?.price || 0).times(currentColl || 0).div(currentVault?.collPrice || 1).toFixed(market.decimals));
+
           return {
             ...market,
             riskyRatio,
@@ -904,6 +907,7 @@ const BeraborrowData = (props: any) => {
             borrowToken: borrowTokenRes,
             status: DenStatusWithGoldsky[denDetails?.denStatus],
             balance: currentColl,
+            underlyingBalance: underlyingBalance,
             balanceUsd: balanceUsd.toFixed(2),
             balanceShown: numberFormatter(currentColl, 2, true),
             balanceUsdShown: numberFormatter(balanceUsd, 2, true, {

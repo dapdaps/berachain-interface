@@ -5,7 +5,7 @@ import { useRequest } from "ahooks";
 import Big from "big.js";
 import clsx from "clsx";
 import { Contract } from "ethers";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useMemo } from "react";
 
 const Position = (props: any, ref: any) => {
   const { className, leverage, apy, market, setShareModalOpen } = props;
@@ -32,6 +32,16 @@ const Position = (props: any, ref: any) => {
     ],
     pollingInterval: 15000,
   });
+  const yourPosition = useMemo(() => {
+    let _yourPosition = Big(0);
+    if (market?.balanceUsd) {
+      _yourPosition = Big(_yourPosition).plus(market.balanceUsd);
+    }
+    if (positionBalance?.balanceUsd) {
+      _yourPosition = Big(_yourPosition).plus(positionBalance.balanceUsd);
+    }
+    return _yourPosition;
+  }, [positionBalance, market]);
 
   const refs = {
     getPositionBalance,
@@ -46,7 +56,7 @@ const Position = (props: any, ref: any) => {
             Your position
           </div>
           <div className="mt-[0px]">
-            {numberFormatter(positionBalance?.balanceUsd, 2, true, { prefix: "$", isShort: true, isShortUppercase: true })}
+            {numberFormatter(yourPosition, 2, true, { prefix: "$", isShort: true, isShortUppercase: true })}
           </div>
         </div>
         <div className="">
@@ -54,7 +64,7 @@ const Position = (props: any, ref: any) => {
             Leverage
           </div>
           <div className="mt-[0px]">
-            {Big(leverage || 0).lte(1) ? "6" : leverage}x
+            5x
           </div>
         </div>
         <div className="">
