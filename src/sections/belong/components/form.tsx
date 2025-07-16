@@ -850,11 +850,11 @@ const BelongForm = (props: any) => {
         type: 'Lending',
         action: 'Leverage',
         token: currentMarket,
-        amount: Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()).toString(),
+        amount: automaticLoopingData?.route?.currentAmountOutValue,
         template: "Beraborrow",
         add: false,
         status,
-        transactionHash
+        transactionHash,
       });
     } catch (err: any) {
       console.log(`${leverageMethod} error: %o`, err);
