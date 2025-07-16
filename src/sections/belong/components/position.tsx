@@ -37,9 +37,9 @@ const Position = (props: any, ref: any) => {
     if (market?.balanceUsd) {
       _yourPosition = Big(_yourPosition).plus(market.balanceUsd);
     }
-    // if (positionBalance?.balanceUsd) {
-    //   _yourPosition = Big(_yourPosition).plus(positionBalance.balanceUsd);
-    // }
+    if (positionBalance?.balanceUsd) {
+      _yourPosition = Big(_yourPosition).plus(positionBalance.balanceUsd);
+    }
     return _yourPosition;
   }, [positionBalance, market]);
 

@@ -394,7 +394,7 @@ const BelongForm = (props: any) => {
     isLeverage
   ]);
 
-  const { runAsync: automaticLooping, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
+  const { runAsync: getAutomaticLoopingData, data: automaticLoopingData, loading: automaticLoopingLoading } = useRequest(async () => {
     if (!marginInSharesData || !calculateDebtAmountData || calculateDebtAmountData.big === BigInt(0) || !currentMarketData || !currentMarketData.borrowToken) {
       return;
     }
@@ -837,18 +837,24 @@ const BelongForm = (props: any) => {
         };
         setResultModalData(_resultModalData);
       } else {
-        toast.fail({ title: "Leverage failed!" });
+        toast.fail({
+          title: "Leverage failed!",
+          text: "Please try again later.",
+          chainId: DEFAULT_CHAIN_ID,
+          tx: transactionHash
+        });
+        getAutomaticLoopingData();
         setDataLoading(true);
       }
       addAction({
         type: 'Lending',
         action: 'Leverage',
         token: currentMarket,
-        amount: Big(addedCollateral.toString()).div(SCALING_FACTOR.toString()).toString(),
+        amount: automaticLoopingData?.route?.currentAmountOutValue,
         template: "Beraborrow",
         add: false,
         status,
-        transactionHash
+        transactionHash,
       });
     } catch (err: any) {
       console.log(`${leverageMethod} error: %o`, err);
@@ -1049,7 +1055,7 @@ const BelongForm = (props: any) => {
       return leverageMarkets;
     }
     const ensoBalanceData = ensoBalanceResp.data.data || [];
-    const _userBalanceTokenList =  ensoBalanceData.map((_token: any) => ({
+    const _userBalanceTokenList = ensoBalanceData.map((_token: any) => ({
       ..._token,
       address: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? "native" : _token.token,
       isNative: _token.token === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? true : false,
@@ -1102,7 +1108,10 @@ const BelongForm = (props: any) => {
             type="in"
             currency={currentInputMarket}
             amount={currentInputAmount}
-            prices={prices}
+            prices={{
+              ...prices,
+              [currentMarket.symbol]: currentMarketData?.collPrice,
+            }}
             isPrice={true}
             account
             onCurrencySelectOpen={() => {
