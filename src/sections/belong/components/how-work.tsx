@@ -33,20 +33,20 @@ const HowWork = (props: any) => {
       <BelongTitle>
         How does it work?
       </BelongTitle>
-      <div className="relative w-full mt-[67px] flex flex-col gap-[40px]">
+      <div className="relative w-full mt-[67px] flex flex-col gap-[40px] md:gap-[20px] md:px-[10px]">
         {
           Steps.map((item, index) => {
             return (
               <div
                 key={item.key}
                 className={clsx(
-                  "w-full h-[380px] p-[20px] flex justify-between items-center gap-[12px] rounded-[20px] border border-black backdrop-blur-[10px] text-black font-Montserrat text-[16px] font-[400] leading-[120%]",
+                  "w-full h-[380px] md:h-[unset] p-[20px] md:p-[10px] flex md:flex-col justify-between items-center gap-[12px] rounded-[20px] border border-black backdrop-blur-[10px] text-black font-Montserrat text-[16px] md:text-[14px] font-[400] leading-[120%]",
                   index % 2 === 0 ? "flex-row bg-[#FFDC50]" : "flex-row-reverse bg-[#FFFDEB]"
                 )}
               >
-                <div className="h-full flex flex-col justify-between p-[40px]">
+                <div className="h-full flex flex-col justify-between p-[40px] md:p-[20px]">
                   <div className="flex justify-between items-start">
-                    <div className="text-[#471C1C] font-CherryBomb text-[30px] font-[400] leading-[80%] uppercase">
+                    <div className="text-[#471C1C] font-CherryBomb text-[30px] md:text-[20px] font-[400] leading-[80%] uppercase">
                       {item.key}.
                     </div>
                     <img
@@ -58,8 +58,8 @@ const HowWork = (props: any) => {
                       )}
                     />
                   </div>
-                  <div className="">
-                    <div className="text-[#471C1C] font-CherryBomb text-[30px] font-normal leading-[80%] uppercase">
+                  <div className="md:mt-[10px]">
+                    <div className="text-[#471C1C] font-CherryBomb text-[30px] md:text-[20px] font-normal leading-[80%] uppercase">
                       {item.title}
                     </div>
                     <div className="mt-[20px]">
@@ -67,7 +67,7 @@ const HowWork = (props: any) => {
                     </div>
                   </div>
                 </div>
-                <img src={item.banner} alt="" className="w-[454px] h-full object-contain object-center shrink-0 pointer-events-none" />
+                <img src={item.banner} alt="" className="w-[454px] md:w-full h-full md:h-[unset] object-contain object-center shrink-0 pointer-events-none" />
               </div>
             );
           })
